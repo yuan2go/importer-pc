@@ -1,0 +1,5 @@
+PASS Windows setup: new protected policy/lease ACL and idempotent reinstall
+PASS Windows setup: rejected corrupt existing policy
+PASS Windows setup: rejected missing policy with retained leases
+PASS Windows setup: rejected ordinary-user writable machine directory
+PASS Windows setup: invalid policy/retained lease/unsafe ACL all preserved and rejected

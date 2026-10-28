@@ -1,0 +1,39 @@
+PASS INSTALLED-LIFECYCLE fresh protected install commits one authoritative deployment and complete receipt
+PASS INSTALLED-LIFECYCLE actual daily process passes installed machine identity after first
+PASS INSTALLED-LIFECYCLE ordinary daily process can read its current program/write data, cannot mutate protected program or relaunch recursively after first
+PASS INSTALLED-LIFECYCLE same-source reinstall keeps account/data/configuration and does not rewrite unchanged trusted roots
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · aaaaaaaa · 0b9b8f27 · 运行.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · aaaaaaaa · 0b9b8f27 · 启动修复.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · aaaaaaaa · 0b9b8f27 · 安装维护.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台.lnk
+PASS INSTALLED-LIFECYCLE actual daily process passes installed machine identity after repair
+PASS INSTALLED-LIFECYCLE ordinary daily process can read its current program/write data, cannot mutate protected program or relaunch recursively after repair
+PASS INSTALLED-LIFECYCLE precommit failure preserves the installed deployment, original data and failed operation receipt
+PASS INSTALLED-LIFECYCLE postcommit interruption is inspected as committed and requires projection repair rather than repeat install
+PASS INSTALLED-LIFECYCLE source update commits the new program while retaining original data and account
+PASS INSTALLED-LIFECYCLE stale/repeated committed install cannot create a second deployment
+PASS INSTALLED-LIFECYCLE different original request cannot borrow the committed registration to repair another deployment
+PASS INSTALLED-LIFECYCLE failed projection repair preserves the fixed original operation and permits inspection, not a fresh installation
+PASS INSTALLED-LIFECYCLE successful repair completes the original receipt, preserves failed bytes and removes the exact previous Start Menu projections
+PASS INSTALLED-LIFECYCLE repeated completed projection repair does not rewrite the original receipt or business data
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · bbbbbbbb · a3647442 · 运行.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · bbbbbbbb · a3647442 · 启动修复.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · bbbbbbbb · a3647442 · 安装维护.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台.lnk
+PASS INSTALLED-LIFECYCLE actual daily process passes installed machine identity after update-repaired
+PASS INSTALLED-LIFECYCLE ordinary daily process can read its current program/write data, cannot mutate protected program or relaunch recursively after update-repaired
+PASS INSTALLED-LIFECYCLE normal repair/update cannot silently switch the original data root
+PASS INSTALLED-LIFECYCLE responsibility rejection occurs before detach or program deletion
+PASS INSTALLED-LIFECYCLE authorized uninstall preserves data/backup and unlisted evidence while removing only its own shortcuts and inventoried program
+PASS INSTALLED-LIFECYCLE retired deployment is removed from the real Windows installed-product projection
+PASS INSTALLED-LIFECYCLE post-uninstall inspection observes actual unlisted remnants without deleting them
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · bbbbbbbb · 8347eda3 · 运行.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · bbbbbbbb · 8347eda3 · 启动修复.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台 · lifecycle-a7f67c11a532 · lifecycle-a7f67c11a532 · bbbbbbbb · 8347eda3 · 安装维护.lnk
+PASS INSTALLED-LIFECYCLE real Unicode shortcut follows the current authoritative release: 菜鸟供包台.lnk
+PASS INSTALLED-LIFECYCLE actual daily process passes installed machine identity after reinstall-after-remove
+PASS INSTALLED-LIFECYCLE ordinary daily process can read its current program/write data, cannot mutate protected program or relaunch recursively after reinstall-after-remove
+PASS INSTALLED-LIFECYCLE uninstall then reinstall retains original seed/data/evidence and starts with ordinary privileges again
+PASS INSTALLED-LIFECYCLE complete lifecycle leaves the real sportmaster deployment, machine runtime policy and trusted-root bytes unchanged
+EVIDENCE D:\DevCache\importer-pc\temp\lifecycle-a7f67c11a532
+BOUNDARY unique synthetic product; actual protected D-drive files/ARP/COM shortcuts/ordinary Windows processes. Business/SDK/RCS, actual restart queue and target-site acceptance NOT_RUN.

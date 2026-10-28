@@ -17,10 +17,20 @@
 - Application 验证入口 `--ordinary-runtime-startup`：真实同用户 NORMALUSER 子进程、原运行守卫、参数往返及不递归转发。
 - 内核验证入口 `--installed-lifecycle-windows`：唯一合成产品的真实受保护程序/数据目录、Windows ARP、Unicode COM 快捷方式、安装→同源修复→不同源更新→提交前失败→提交后修复→卸载→保留数据重装；每个已安装阶段启动真实普通权限子进程，运行原机器身份检查，证明可读程序、可写数据且不能修改程序。错误请求、失败修复和重复完成修复均保持原责任。
 - 原入口 `--runtime-identity`、`--windows-runtime-setup`、`--installer-change-guards`、`--lifecycle-ux`、`--p0-supervisor` 回归通过；包含真实 SQLite 备份/Unknown 拒绝和监督恢复责任。
-- 原生 WPF `--installer-lifecycle` 通过；安装目的和完成重试使用真实 HWND/Dispatcher，部署与启动回调为合成。最终同源冻结介质、首配/卸载按钮、管理服务与单 EXE 冒烟的独立回执随后补入本包证据，不能用开发构建代替冻结交付验证。
+- 原生 WPF `--installer-lifecycle` 通过；安装目的和完成重试使用真实 HWND/Dispatcher，部署与启动回调为合成。同源冻结介质的 `verify-commercial-wpf.ps1 -StartupExperience` 和 `-InstallerFirstRunUi` 均通过（235 / 107 个 PASS 行），包含 PR138 卸载按钮回归及新安装目的/完成打开检查。
+- 同源 `verify-administrator-broker.ps1` 通过（55 个 PASS 行）：真实 SCM/System 服务、受限用户调用、保护凭据/ACL、软件认证、锁定、过期、重放及服务不可用拒绝；使用隔离服务与合成凭据。
+- 最终单 EXE 实际准备、识别原登记为“更新”、显示选项并取消退出，退出码 0；未执行真实 sportmaster 更新。提取缓存使用 D 盘原生 Windows 反斜杠绝对路径。
 
 验证过程中保留了合成介质缺少配置、反射方法重名、误选默认 Supply 桌面构建等原失败日志；修复的是验证输入/定位，未删业务断言或放宽运行保护。
 
 测试使用唯一合成产品 ID 和 D 盘受保护子目录，Windows 注册和文件操作只影响该隔离产品；真实 sportmaster 登记、管理凭据和数据原件保留。没有 SDK/设备控制；实际产品安装及目标工控机/现场资格单独记录。
 
 Windows 机制依据：[受限令牌](https://learn.microsoft.com/en-us/windows/win32/secauthz/restricted-tokens)、[CreateProcessAsUser](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessasuserw)。这是程序以更低权限运行，不能取代原运行和维护守卫。
+
+## 冻结交付
+
+代码及冻结验证源 `221f058333258622b9150f9d2d77c4346c4bb6f5`；后续提交仅整理文档/证据/manifest，不把冻结 SourceCommit 改写成文档提交。版本 1.0.0，现有完整 14 文件 MVS 运行库来自本机获授权介质，未上传 Git。PR137 相机功能未合并。
+
+测试安装器：`D:/deliveries/cainiao-lifecycle-221f0583-20261028/installer/CainiaoSupplyStation_SM_Setup_v1.0.0_win-x64.exe`，247364750 字节；SHA256 `a6cb3a0aa2af1a2670fbbce8a35f1a1304a0ac6a1e1df9e26d3fed5dec4a16eb`。
+
+原 ZIP：`sportmaster-win-x64-221f05833325.zip`，SHA256 `de781c63843e3d7bfb156b911649a6c5416667709a533d6548f56dc16c004877`。实际命令、原日志、边界及合成界面见[公开证据](evidence/install-update-uninstall-identity-01/README.md)。真实 sportmaster 机器安装/更新、实际重启删除队列、SDK/相机/RCS及现场验收未执行。

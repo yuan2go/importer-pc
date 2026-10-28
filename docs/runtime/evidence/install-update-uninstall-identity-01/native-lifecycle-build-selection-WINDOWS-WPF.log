@@ -1,0 +1,7 @@
+FAIL System.TypeLoadException: Could not resolve type 'Ipc.Desktop.StartupSetupWindow' in assembly 'Ipc.Desktop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
+   at System.Reflection.TypeNameResolver.GetType(String escapedTypeName, ReadOnlySpan`1 nestedTypeNames, TypeName parsedName)
+   at System.Reflection.TypeNameResolver.GetSimpleType(TypeName typeName)
+   at System.Reflection.TypeNameResolver.Resolve(TypeName typeName)
+   at System.Reflection.TypeNameResolver.GetType(String typeName, Boolean throwOnError, Boolean ignoreCase, Assembly topLevelAssembly)
+   at Program.VerifyInstallerLifecycle(String evidence, List`1 lines) in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\InstallerLifecycle.cs:line 14
+   at Program.<>c__DisplayClass31_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\Program.cs:line 76

@@ -155,3 +155,7 @@ docs/runtime/evidence/query-filter-ux-01/*.txt -text whitespace=cr-at-eol
 
 # Preserve station recovery test receipts, including failures.
 docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=cr-at-eol,-blank-at-eol
+
+# Keep actual lifecycle receipts, including failed fixture runs, byte-for-byte.
+docs/runtime/evidence/install-update-uninstall-identity-01/**/*.log -text whitespace=cr-at-eol,-blank-at-eof
+docs/runtime/evidence/install-update-uninstall-identity-01/*.log -text whitespace=cr-at-eol,-blank-at-eof

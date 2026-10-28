@@ -1886,9 +1886,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "f6176d893e35266ceba51e68b562a9cfe2c8ebd477ece77de35e8ae4baa03a41",
-      "size_bytes": 9906,
-      "git_blob": "a40b96355d1178c3a24e76a43a7c52fae9cd87eb",
+      "sha256": "e824b2a487aa7371cc7092e2bfcff37b420d478501ac4e118ac4353ab907cea8",
+      "size_bytes": 10085,
+      "git_blob": "10aa60288e3ba25bee9d9c659870d6b36b784ea2",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -2170,9 +2170,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "6f2530d4ee4aa18e3af6144764660294ab31d8d86a1f7e7b69efcd8fd4a31f5a",
-      "size_bytes": 2136,
-      "git_blob": "82127f33dc81ce62b9fc308aea441a4e1fc425e9",
+      "sha256": "0bc929f48e72d9c6ec054b814af4cf167cb8561200c4466a5891a14aa5258fe3",
+      "size_bytes": 2130,
+      "git_blob": "bf71911fdf225133bd8a6e683b0dc072becf8bbb",
       "previous_git_blob": "2374e8f493e1b6bcb47bfce0ddcee8a2f5ddba9e"
     },
     {
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "99771d270abd543ed02be5a126d5d0f78af1b42853423a99da6ea2a07a950567",
-      "size_bytes": 11532,
-      "git_blob": "e47c2ac41cd4d5855499e57499b5d79a3e419f68",
+      "sha256": "bbf1294b83af2e4654e95fc5487115e8db0bb01baa0c8c2ba90568aa8ee21eb8",
+      "size_bytes": 11559,
+      "git_blob": "e378abedcd1efbe4a6948fb477ca3665c1622e53",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -7272,9 +7272,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "847c7d7f81ba5c8b4460834d2229bcaf619ae246802847a2a4e26b45f0568388",
-      "size_bytes": 1907,
-      "git_blob": "33cc2b0d6c5e3313b0cc60d8b70ba22079bb3602"
+      "sha256": "8790d7a665dd75be67a5a4e88339c021507e11d757920110137f6c7d8ba8c920",
+      "size_bytes": 2365,
+      "git_blob": "31f9164ada41a3f4bd89ae77e9e38ff529b802db"
     },
     {
       "path": "docs/design/parallel-task-reconciliation-20261020-02.md",
@@ -45832,9 +45832,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "39dc950b5454b3b26226b03cde80e03a4e4a3bcb090515d7dbd94a80f299af57",
-      "size_bytes": 4704,
-      "git_blob": "03078f221cfa3aab7e61717bdacb30314db011bf"
+      "sha256": "62084513ccef9cac18f02f5e27ade9a9c7fa3acd8cfde6c5c86260387e06a80c",
+      "size_bytes": 5596,
+      "git_blob": "093348ac3d3431c16194538c6b4441d0c3cfa699"
     },
     {
       "path": "docs/runtime/implementation.md",
@@ -54165,9 +54165,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "6b4e6029b4c8ab4b2ee0b4982e53d16358b2e9bd53b2b84df2aabca330dba350",
-      "size_bytes": 6510,
-      "git_blob": "5f3aadd7cf656d1bdfb31f6aa54a1a330c6d98b8",
+      "sha256": "9d3b29b339682706c8b5de8b53dce7df2dae780ff88fb11af59fc1f3c1938568",
+      "size_bytes": 6748,
+      "git_blob": "33071e2e41a2180eea963807830b429874b638d6",
       "pre_parameter_experience_01_identity": {
         "git_blob": "764668a1e1367ff791667814dbabf6f594cc3ecf",
         "sha256": "503b52bde588e77a8a20bee111f4c2fab277c21495b196a0345f8a86a6b89711",
@@ -54182,9 +54182,9 @@
       "version": "camera-sdk-single-code-01",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "2dfff7e82be6b62b2fd139f9d064c30b811b13ba6d82e1812f3b121f08731be7",
-      "size_bytes": 24216,
-      "git_blob": "aa2346e69f87139b9b88cc576165c47297d7678c",
+      "sha256": "fa0b051b376c57a1f53510b05b3c714eb864b2bfd1d350ad56f6b86b460b98cf",
+      "size_bytes": 24315,
+      "git_blob": "0915cc3bb6286fbf79ffc24f73cef320aee83983",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
         "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
@@ -55458,9 +55458,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "4b639c35d2c353e1d084fbfaf843bfc64776fe40b4a89d26678766264579ba9b",
-      "size_bytes": 5609,
-      "git_blob": "f16a490150bd91662728de5d52eb88b4b913512d",
+      "sha256": "32ef8e73d572630a68a33be3b32558e5517ccd38ffc9537c5c813321c045f5b0",
+      "size_bytes": 5605,
+      "git_blob": "10785f0291c54c6ebf6745d2a68234e55035b7e3",
       "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4",
       "pre_publication_no_test_git_blob": "8e93f798d4c4e3966a5b95d5ac0831026864fe3e"
     },
@@ -56511,9 +56511,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "543d843ca1601ebd1912819958bca6d7b6466503258e6fbcf9638919d9930698",
-      "size_bytes": 46403,
-      "git_blob": "3430557d2def6a03123dc08a16615b787de0a47e",
+      "sha256": "b0d1c6c8d73ace4e17c76884699ec609494082b1227ccaa4eff3b6b2cb624abc",
+      "size_bytes": 46420,
+      "git_blob": "5d4221b313abcf77b1c09a2a5213dfee92683c6e",
       "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
       "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
@@ -57086,9 +57086,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "7237a9dd72d0392ca7a8b8f4bff096c3651a51cdccf92da151c7092fb4865da2",
-      "size_bytes": 20172,
-      "git_blob": "6f99bc38287acbcdc4b9f0a5f36694f7a2cc85f0"
+      "sha256": "a77852765f8b9125ed5c587844a9428b2dfb5627c822f5c63aaf14ef9786c4bf",
+      "size_bytes": 20349,
+      "git_blob": "eefca95604a2522da252c9eb79a707873bd06f9a"
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj",
@@ -57198,9 +57198,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "3a4df3dde6d8d8b7612f3e9ed6ff7f052950a98f2bafc9cb01ae20e38f14b5d6",
-      "size_bytes": 2586,
-      "git_blob": "c18b1556674d99a6a2e6040e7c94b164bca3919e"
+      "sha256": "87efea1c6a36a17c1b2aff9d62df7e3b4f4d44f4574060b9c2386b1a122928f2",
+      "size_bytes": 2631,
+      "git_blob": "96cf38b29a4cea9a52bd75e8bef858325f8a52c8"
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/sdk-boundary.json",
@@ -58300,9 +58300,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "e32bb0a5687df1e60590e116981794b64977ef916ac137e2aabf348cd7f72b7f",
-      "size_bytes": 9885,
-      "git_blob": "d2aabf7ca3fe792e54d4fe65c8127170fe2a1122"
+      "sha256": "9115310fd71c5b0645b03247fb1fdc6cb75fb8548038447cff2d34e322615c67",
+      "size_bytes": 11770,
+      "git_blob": "db2a79fa6e2e92862ecc3aeaabb60ebbcb5d0544"
     },
     {
       "path": "src/Ipc.Platform/ObservationSession.cs",
@@ -60639,9 +60639,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
       "storage_scope": "public_repository",
-      "sha256": "31a400cef4fd6dcecac3cf94140373450065358f233e99fd705f1e42db28a026",
-      "size_bytes": 14015,
-      "git_blob": "4d90e75a53b8f455be1844e0b0edd8783488a36d"
+      "sha256": "2a757ba473f5121ffc3742257afd2f3c43252ba54c5db3d1acd2ceaeaa3daad0",
+      "size_bytes": 14060,
+      "git_blob": "599184137649ebc19cc55f63986965ebdd664bfc"
     },
     {
       "path": "docs/runtime/evidence/chinese-interface-copy-01/integrated/WINDOWS-WPF.log",
@@ -89587,9 +89587,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ParameterGuidanceStartup.cs",
-      "sha256": "0d5b8663a2c985cb26f2d13cdcd1bb3beb711fd078988ed35ab6351f4ec46bfe",
-      "size_bytes": 10659,
-      "git_blob": "9b45a7fffa8251c89ead9c640fd6e3d278ec5c81",
+      "sha256": "35a00f338731961088d31b70f98c7ac5c8e14d3659330af757a35980ec0d4fb1",
+      "size_bytes": 10662,
+      "git_blob": "1c76debadee9b14f8406cd32eb189463c1267be0",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -89598,9 +89598,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterGuidanceStartup.cs",
-      "sha256": "70f37498bff0998879360fd2da568e71ed343f942ea923de3295a5005f69d054",
-      "size_bytes": 13693,
-      "git_blob": "3583a88e049307ccbb9f6077bb635d4c6f030c4a",
+      "sha256": "c7d421e9cd7fbb6fb00b4038be0607ea94754a9525986238361461592ddb4262",
+      "size_bytes": 13743,
+      "git_blob": "bb915736d0dd6b529459a7565d35ebcb595f694a",
       "version": "camera-sdk-single-code-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -102507,9 +102507,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "da652d312ce15d6d323af11d1aa3c1ca2c6a5481cf4fc97a1199e8eeecbe8e67",
-      "size_bytes": 9212,
-      "git_blob": "8a069e00ac5ba9bc554c5cac051c38b0137c0b00",
+      "sha256": "e1fe8d6cea09e8604829d1f471eb7019607d00dbeb88584a48fa569f09d1eaa8",
+      "size_bytes": 10128,
+      "git_blob": "5ba0206d38ecf89d03a216c8ceb1c5f76a5fff4d",
       "storage_scope": "public_repository"
     },
     {
@@ -104168,9 +104168,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "5b9752de1b68520c2e75453f22b325fe0b8bb04ff3ca9725306601e945563c69",
-      "size_bytes": 7354,
-      "git_blob": "1907e3725bd4f7a485ddb6d28e4c5fd117de9cf8",
+      "sha256": "fc7cb7011615246f612058d0e8d50e756da79c7b8180960c91f40fbdaa93fa6e",
+      "size_bytes": 11636,
+      "git_blob": "6ec5a7dd22e1d84baf63ce6a84632fd59ac6427c",
       "storage_scope": "public_repository"
     },
     {
@@ -104179,9 +104179,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "ce4d8886a93650d2bfe21703599a0a94bc4755daef00542e777e1f83891ebff3",
-      "size_bytes": 3716,
-      "git_blob": "c6a040204666157cca6569c9ae00f0e0611ca50e",
+      "sha256": "99c5a9d9da473e75580d2efea7fc04458573a74f1864019a6be35807cac84e18",
+      "size_bytes": 5023,
+      "git_blob": "d92dfadd8b5ec5a4cb466538d4282bc7e72b0ab0",
       "storage_scope": "public_repository"
     },
     {
@@ -104190,9 +104190,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "f5d02e246b668593335a76f5617d76e6f2ff92200c0a90b6fa515d7793489800",
-      "size_bytes": 2845,
-      "git_blob": "03d8ccdc4bdf8d9c1b60c62724b1ef53e7f5a4c9",
+      "sha256": "822b4f16708ce3abbe46ea7db6a56609cb91be4cf5c14556ef8de86a34aa7e80",
+      "size_bytes": 3818,
+      "git_blob": "bb1bf13a2aadd3ef2c3420f88a659f0ecefd478d",
       "storage_scope": "public_repository"
     },
     {
@@ -104201,9 +104201,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "2605994e0732e040f1dcb4a4cd93f7c6e8899890cbc169866814dfc2af0673e9",
-      "size_bytes": 2484,
-      "git_blob": "92bb0ea4d2e279ec8b52b60f42eae8d25545ae7c",
+      "sha256": "dc3a6b99320201b3027135c28d9a8f6abca41a71c068002dee1831d970a3cc64",
+      "size_bytes": 3927,
+      "git_blob": "0b28c65fc5a7f35e013c923b1a79870aee2cc79c",
       "storage_scope": "public_repository"
     },
     {
@@ -104212,9 +104212,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "c1ae4da308ba1821474174c35ccd8daa6ad4583aa3fd4d0d3f38ebdcdab3f989",
-      "size_bytes": 2969,
-      "git_blob": "8d4a99788b9feb4e814b7d5789a8f0d4e65e2941",
+      "sha256": "f7774b4b1c5195ec22e5c637667cbe0b8fb0e4b94f377fac51138e542d95668b",
+      "size_bytes": 4590,
+      "git_blob": "07dcea5a00ceefbc78245180dd1230abf45eb189",
       "storage_scope": "public_repository"
     },
     {
@@ -104223,9 +104223,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "ed4ec14229d8b5dc41f2e27bbc3832020e8b8d6388b7383076f770d741fd13f3",
-      "size_bytes": 5636,
-      "git_blob": "ad3bbc2eed4cea0da26d6078bc21ffe6d48f8ec4",
+      "sha256": "1e76f22c13dad2adf688bcff49035ce20def3e93bd2d2dc796435b2c5e37b9b7",
+      "size_bytes": 5955,
+      "git_blob": "889c803cb84fe52c26f4532a44c7c407bf0cc6e9",
       "storage_scope": "public_repository"
     },
     {
@@ -104245,9 +104245,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "9c14a97d5900dec74bde2ef270813fa056423e303cf6683232e0823e54965417",
-      "size_bytes": 7654,
-      "git_blob": "544a6bdc3fc23074a4a2b1851d9b598d9eb55ebf",
+      "sha256": "2c75dc19fa84f9811ff7e0720e6de4657ceee0a912dbd218a46468e53e46a2d2",
+      "size_bytes": 7846,
+      "git_blob": "9e3ed3e1ce7cae787ceaf3376bbcfe8707570885",
       "storage_scope": "public_repository"
     },
     {
@@ -104256,9 +104256,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "624f152059cec31bb04b811e4ad0b4fd406b2348c08ce257a7bb0f9aebae0b15",
-      "size_bytes": 4008,
-      "git_blob": "6f2ee8f2f522b68f96b53d12ead4b4c779647e37",
+      "sha256": "e2f08748c272429825089fc6030e8789ba9252a5ade36130f44c96d563e7af63",
+      "size_bytes": 4917,
+      "git_blob": "bb1718bd127a7f8f09a244ac12a82b3ea2a6468f",
       "storage_scope": "public_repository"
     },
     {
@@ -104325,6 +104325,72 @@
       "sha256": "fd7596b2fcb331bef988cd7edffad8aa9f51382311a9823d0fa31dee50cc26e5",
       "size_bytes": 4672,
       "git_blob": "06680974987244fe698f723b44aacaa8db0d5a34",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/application-per-result.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "1b734744e35d6ae9a0d1274396fd9a7eadff2092c8b975dbe372213ecabca7af",
+      "size_bytes": 798,
+      "git_blob": "e596cc9c379a38d5aac0c0a0cccfc39294158219",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/driver-per-result.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "5107523a54c2982e0acb7cf37f48575a7079d9d08091b78ba3991242e8c3bce6",
+      "size_bytes": 8540,
+      "git_blob": "b91c81cd7c8da151698d1881bbfbca1fc4d0c528",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/native-parameters-per-result.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "0fecaaf27c59c905cb125921c04669303f2541cfa62c07fab7a04eef1c25c543",
+      "size_bytes": 1267,
+      "git_blob": "d79fa07ffef7254ba027a767bb158015130ce33b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/native-sdk-log-route.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "8fa06c011cab91d5eb5fbb24d017809cf5d6dbb3138e9bfd46e2396eb7fa4ff9",
+      "size_bytes": 567,
+      "git_blob": "38701c179fa365f1cda1e822ed2b33b0314de1ea",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/native-startup-per-result.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "03216a7fd1bb554ea8a98445881ccd61aedef0c930eb087f27e05cec3c196137",
+      "size_bytes": 8142,
+      "git_blob": "85d4d264a2782acc05fb3c47b03b9617460fa7ec",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/policy-per-result.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "a56e57f51ceeca697d2be474bdda109c8b7718a20b207c93d38ffe8b351dc312",
+      "size_bytes": 121,
+      "git_blob": "a84f6cbb2703d12ae922e581cbefa8da3ddb5a66",
       "storage_scope": "public_repository"
     }
   ],

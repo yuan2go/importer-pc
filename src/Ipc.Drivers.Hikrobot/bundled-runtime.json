@@ -79,8 +79,8 @@
     },
     {
       "Path": "log4cxx.properties",
-      "Length": 2475,
-      "Sha256": "54EA9AC9EEFFD5A5EC0E2DA111185C1B0B04129DBEE40B33E6ED2B0F4C6F5F89"
+      "Length": 2465,
+      "Sha256": "F81F70B33D2CE4A325641B174880394B75B9CDA07D04914329DCBB468249D28A"
     },
     {
       "Path": "Log_MD_VC120_v3_0_MV.dll",
@@ -182,5 +182,11 @@
       "Length": 696832,
       "Sha256": "7B6ECED4DC1F4BD7D4AA3CFFF4E93ABC9EB01360891013BDBEBF96CDB564A70A"
     }
-  ]
+  ],
+  "LoggingSource": {
+    "Path": "log4cxx.properties",
+    "Length": 2475,
+    "Sha256": "54EA9AC9EEFFD5A5EC0E2DA111185C1B0B04129DBEE40B33E6ED2B0F4C6F5F89"
+  },
+  "LoggingPolicy": "Pinned log4cxx File option uses process-scoped IPC_MVCODEREADER_LOG_ROOT; support copies are pinned in the protected working directory."
 }

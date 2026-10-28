@@ -63,11 +63,11 @@ internal sealed class HikrobotReader : IControlledObservationSource
             throw new InvalidDataException("Explicit canonical camera IPv4 required");
         serial = context.Parameters.GetValueOrDefault("device.serial", "");
         entityMode = context.Parameters.GetValueOrDefault("entity.mode", "observe-only");
-        if (entityMode is not ("observe-only" or "trigger")) throw new InvalidDataException("Unknown entity association policy");
+        if (entityMode is not ("observe-only" or "read-result" or "trigger")) throw new InvalidDataException("Unknown entity association policy");
         acquisitionMode = context.Parameters.GetValueOrDefault("acquisition.mode", "existing");
         if (acquisitionMode is not ("existing" or "continuous" or "external-trigger")) throw new InvalidDataException("Unknown acquisition profile");
         if (acquisitionMode == "continuous" && entityMode == "trigger")
-            throw new InvalidDataException("连续采集不提供一触发一包裹身份；诊断请选择仅观察，作业请选择外部触发");
+            throw new InvalidDataException("连续采集不提供硬件触发身份；请选择逐帧读码上报或仅观察");
         var charset = context.Parameters.GetValueOrDefault("code.encoding", "utf-8");
         encoding = charset switch { "utf-8" => new UTF8Encoding(false, true), "ascii" => Encoding.GetEncoding("us-ascii", EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback), _ => throw new InvalidDataException("Unsupported explicit barcode encoding") };
         capacity = int.Parse(context.Parameters.GetValueOrDefault("queue.capacity", "128"), System.Globalization.CultureInfo.InvariantCulture);
@@ -154,11 +154,12 @@ internal sealed class HikrobotReader : IControlledObservationSource
                 triggers[frame.Channel] = frame.Trigger;
             }
             var source = $"c{frame.Channel}.f{frame.Frame}.e{frame.Event}.t{frame.Trigger}.s{frame.TimestampHigh:x8}{frame.TimestampLow:x8}";
-            // Trigger is a candidate entity boundary only under the explicit policy;
-            // observe-only cannot create a business Read, even if codes are present.
-            var admission = "hik." + Wire.Hash(DeviceId + ":" + Epoch + ":" + frame.Channel + ":" + frame.Trigger)[..40].ToLowerInvariant();
+            // User-approved read-result policy sends each distinct SDK result to RCS,
+            // including repeated codes. It identifies a read request, not a physical parcel.
+            // Exact redelivery of the same SDK frame keeps the original request identity.
+            var admission = "hik." + Wire.Hash(DeviceId + ":" + Epoch + ":" + (entityMode == "read-result" ? "read:" + source : "trigger:" + frame.Channel + ":" + frame.Trigger))[..40].ToLowerInvariant();
             var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, ++sequence, admission,
-                entityMode == "trigger" ? frame.Kind : "UncorrelatedRead", frame.Codes, null, DateTimeOffset.UtcNow);
+                entityMode is "trigger" or "read-result" ? frame.Kind : "UncorrelatedRead", frame.Codes, null, DateTimeOffset.UtcNow);
             var bytes = CodeBytes(observation);
             if (bytes > maximumCodeBytes - bufferedCodeBytes)
             { FramesRejected++; Fault(new IOException("Reader code byte budget exceeded; inspect parcel and reconnect explicitly")); return; }

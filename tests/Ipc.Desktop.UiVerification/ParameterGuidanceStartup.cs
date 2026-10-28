@@ -62,10 +62,10 @@ static partial class Program
             Check(draft.Policy.DiagnosticLogDays == "7" && draft.Policy.HistoryDays == "7", "first-run retention editors contain seven days");
             editor.ShowPage(2, "左相机"); await Flush();
             var association = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode"));
-            Check(association.IsEnabled && Equals(association.SelectedItem, "trigger") && association.Items.Cast<string>().SequenceEqual(new[] { "observe-only", "trigger" }),
-                "MvCodeReader exposes explicit trigger association and observation diagnostics in the shared editor");
+            Check(association.IsEnabled && Equals(association.SelectedItem, "read-result") && association.Items.Cast<string>().SequenceEqual(new[] { "observe-only", "read-result", "trigger" }),
+                "MvCodeReader exposes the approved per-result policy, optional trigger and observation diagnostics in the shared editor");
             var acquisition = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t).EndsWith("/acquisition.mode"));
-            Check(Equals(acquisition.SelectedItem, "external-trigger"), "MvCodeReader starts from the explicit external-trigger profile");
+            Check(Equals(acquisition.SelectedItem, "continuous"), "MvCodeReader starts with continuous acquisition; no PLC or Line source required");
             var deferred = Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == draft.Readers[0].InstanceId + "/ConfigureLater");
             Check(deferred.IsChecked == true, "camera connection remains explicitly deferred until configured");
             deferred.IsChecked = false; await Flush();

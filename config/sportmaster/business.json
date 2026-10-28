@@ -17,8 +17,8 @@
     "Revision": "1",
     "ReplayFile": null,
     "Parameters": {
-      "entity.mode": "trigger",
-      "acquisition.mode": "external-trigger"
+      "entity.mode": "read-result",
+      "acquisition.mode": "continuous"
     }
   },
   "Scale": null,
@@ -51,8 +51,8 @@
         "Revision": "1",
         "ReplayFile": null,
         "Parameters": {
-          "entity.mode": "trigger",
-          "acquisition.mode": "external-trigger"
+          "entity.mode": "read-result",
+          "acquisition.mode": "continuous"
         }
       },
       {
@@ -62,8 +62,8 @@
         "Revision": "1",
         "ReplayFile": null,
         "Parameters": {
-          "entity.mode": "trigger",
-          "acquisition.mode": "external-trigger"
+          "entity.mode": "read-result",
+          "acquisition.mode": "continuous"
         }
       }
     ],

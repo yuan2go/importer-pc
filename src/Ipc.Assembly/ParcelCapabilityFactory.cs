@@ -448,7 +448,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             IControlledObservationSource source;
             if (ParcelConnectionSetup.IsDeferred(c, binding.DeviceId)) source = new DeferredObservationSource(binding.DeviceId);
 #if SPORTMASTER
-            else if (binding.Driver == Ipc.Drivers.Hikrobot.BundledHikrobot.Implementation) source = Ipc.Drivers.Hikrobot.BundledHikrobot.Create(binding);
+            else if (binding.Driver == Ipc.Drivers.Hikrobot.BundledHikrobot.Implementation) source = Ipc.Drivers.Hikrobot.BundledHikrobot.Create(binding, launch.DataRoot);
             else if (binding.Driver == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Implementation) source = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Create(binding);
 #endif
             else if (binding.Driver == "tcp-line") source = new Ipc.Drivers.TcpLineObservationSource(binding);

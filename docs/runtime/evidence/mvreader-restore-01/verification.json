@@ -2,12 +2,12 @@
   "WorkPackage": "MVCODEREADER-RESTORE-01",
   "BaseCommit": "d506f77c7ae385d3808f55d15087a9c652f14730",
   "Date": "2026-10-28",
-  "DriverPortTests": "PASS: 46 inherited reader, 26 MVS, 16 hardening and 9 restoration checks; synthetic native ports",
+  "DriverPortTests": "PASS: 46 inherited reader, 26 MVS, 16 hardening and 11 restoration checks; synthetic native ports. Includes continuous same-code distinct result identities and exact-frame redelivery identity.",
   "ParameterModel": "PASS: current built-in provider and isolated identities",
-  "NativeParameters": "PASS: actual WPF/Dispatcher, daily/first, standard/compact, 125 percent; synthetic values",
-  "DependencyPolicy": "PASS: 21 Python checks",
+  "NativeParameters": "PASS current no-PLC UI: real WPF/Dispatcher daily/first, standard/compact, 125 percent; synthetic values; final copy explicitly says continuous, every result to RCS, no PLC.",
+  "DependencyPolicy": "PASS: 22 Python checks, including exact log-profile transform/working-root copies and tamper rejection.",
   "ActualSdk": "PASS: real MvCodeReader 2.0.0.4 load/enumerate, zero devices; not camera reading",
-  "LocalApplicationFlow": "PASS: synthetic IHikrobotApi -> actual reader/Application/SQLite/loopback HTTP; per-trigger deduplication, same-code new trigger, camera isolation, frozen bytes, no-code and post-stop rejection. Explicit Simulation-only fixture uses the existing runtime identity preflight seam; no production policy or guard changed.",
+  "LocalApplicationFlow": "PASS current no-PLC policy: three identical decoded-code frames emitted as one burst make three actual loopback RCS requests through actual reader/Application/SQLite; fifth independent result verifies camera isolation. Exact original-frame redelivery does not resend. Frozen bytes, no-code rejection and post-stop fence retained. Synthetic native API; explicit Simulation fixture preflight; production guards unchanged.",
   "PhysicalCamera": "NOT_RUN: only WLAN on this computer; user confirms legacy same-camera reading",
   "FieldRcsAndPhysical": "NOT_RUN",
   "Logs": [
@@ -44,7 +44,8 @@
     {
       "Path": "application-loopback-final.log",
       "Sha256": "18f0a8d4e59c0ffa6034cbd734220ff7236813501474c136462fb88adf5de00e",
-      "OriginalLocalSha256": "499e8604fcd29dbf72fa35066537484f71c5db0d6d4aa35237232b7c984560ed"
+      "OriginalLocalSha256": "499e8604fcd29dbf72fa35066537484f71c5db0d6d4aa35237232b7c984560ed",
+      "Scope": "Historical pre-correction trigger-default source; not current no-PLC certification"
     },
     {
       "Path": "rcs-timeout-final.log",
@@ -54,12 +55,50 @@
     {
       "Path": "packaged-sdk-zero.log",
       "Sha256": "9a9f286b405d436c110853da4bbb4e4796875b68bfa8e246a864f6c62912c32f",
-      "OriginalLocalSha256": "043f905c153354b30128f69679a5731f74c89a78c9200f2004037941a5f6836b"
+      "OriginalLocalSha256": "043f905c153354b30128f69679a5731f74c89a78c9200f2004037941a5f6836b",
+      "Scope": "Historical pre-correction trigger-default source; not current no-PLC certification"
     },
     {
       "Path": "native-startup-final.log",
       "Sha256": "810583f32b1320504f97dbecbe2f9a378d2c24c4bb2d9a201bde2cf650de4243",
-      "OriginalLocalSha256": "8be2e0810f8b257789be34a2e74294e724a72b3905401432b023396467b57903"
+      "OriginalLocalSha256": "8be2e0810f8b257789be34a2e74294e724a72b3905401432b023396467b57903",
+      "Scope": "Historical pre-correction trigger-default source; not current no-PLC certification"
+    },
+    {
+      "Path": "application-per-result.log",
+      "Sha256": "1b734744e35d6ae9a0d1274396fd9a7eadff2092c8b975dbe372213ecabca7af",
+      "OriginalLocalSha256": "894eda112ce9e565b593b07db8ba0386c6cab4cc7401f6ac6da065fda5ba7a8c",
+      "Scope": "Current continuous/read-result verification; explicit synthetic/zero-device limits in log"
+    },
+    {
+      "Path": "driver-per-result.log",
+      "Sha256": "5107523a54c2982e0acb7cf37f48575a7079d9d08091b78ba3991242e8c3bce6",
+      "OriginalLocalSha256": "0dc9f23604d4bb795d42fadf0f1d7aaae364acc130c94cf36b97932c0d2090ee",
+      "Scope": "Current continuous/read-result verification; explicit synthetic/zero-device limits in log"
+    },
+    {
+      "Path": "policy-per-result.log",
+      "Sha256": "a56e57f51ceeca697d2be474bdda109c8b7718a20b207c93d38ffe8b351dc312",
+      "OriginalLocalSha256": "6be0b8fb8fe5ec5f6253278da1b552a0b9edc50ae05f7cc163b3d8d358775633",
+      "Scope": "Current continuous/read-result verification; explicit synthetic/zero-device limits in log"
+    },
+    {
+      "Path": "native-sdk-log-route.log",
+      "Sha256": "8fa06c011cab91d5eb5fbb24d017809cf5d6dbb3138e9bfd46e2396eb7fa4ff9",
+      "OriginalLocalSha256": "1bdfa5d5208f7954761cbf0c33351aee872ebef84862949c34f1a7ed14e809b8",
+      "Scope": "Current continuous/read-result verification; explicit synthetic/zero-device limits in log"
+    },
+    {
+      "Path": "native-parameters-per-result.log",
+      "Sha256": "0fecaaf27c59c905cb125921c04669303f2541cfa62c07fab7a04eef1c25c543",
+      "OriginalLocalSha256": "c4793cf06674350736469a21d71d92bb4d95bfd69e86c8ecffd54baf6af5e605",
+      "Scope": "Current continuous/read-result verification; explicit synthetic/zero-device limits in log"
+    },
+    {
+      "Path": "native-startup-per-result.log",
+      "Sha256": "03216a7fd1bb554ea8a98445881ccd61aedef0c930eb087f27e05cec3c196137",
+      "OriginalLocalSha256": "e4003c9eb2de7effd8c310bc9b258ad5aa76a8bf7c1a8820679737a62eb6a082",
+      "Scope": "Current continuous/read-result verification; explicit synthetic/zero-device limits in log"
     }
   ],
   "OriginalFailureHashes": [
@@ -90,15 +129,15 @@
     }
   ],
   "SolutionBuild": "PASS: Sportmaster Release/SelfContained=false, locked, serial MSBuild; zero warnings/errors",
-  "BuildSourceNotes": "Final code additionally includes device identity in trigger admission hashes and rejects software/self-trigger external sources; driver regression rerun after these changes.",
+  "BuildSourceNotes": "Current no-PLC production code and logging profile supersede the earlier trigger-default package. Source-specific rebuild follows this commit.",
   "FirstCiFailure": {
     "Run": 40630506807,
     "Head": "43c0f9ce",
     "Reason": "ParameterGuidanceStartup retained an obsolete MVS-only read-only mode assertion. Updated to assert the new explicit trigger profile, both declared choices and continued deferred connection; no runtime guard changed."
   },
   "RcsTimeoutRegression": "PASS: full timeout/error and rescan/restart suite locally. Synthetic generic admission budget 500ms and component deadline 1500ms preserve the 3:1 override assertion and all no-resend/late-response checks; original 100ms fixture expired its input during 169ms cold ingress on Windows CI.",
-  "NativeStartupRegression": "PASS: actual WPF parameter guidance/startup, explicit trigger choices, independent deferred combinations, preflight and full-screen/Escape/F11; 125 percent DPI.",
-  "PackagedSdk": "PASS: load/enumerate MvCodeReader 2.0.0.4 from the actual frozen delivery vendor directory; zero devices. Not physical reading.",
+  "NativeStartupRegression": "PASS current continuous/read-result default, declared choices, independent deferral combinations and actual WPF full-screen/Escape/F11; 125 percent DPI.",
+  "PackagedSdk": "PASS reviewed log-profile runtime: actual MvCodeReader 2.0.0.4 load/enumerate, zero devices; D log created and prior C log absent. No camera/barcode/field RCS test.",
   "Ci3669": {
     "Run": 40630806782,
     "Head": "3669d43625bfcb4588754c311ed04749a797504b",
@@ -115,17 +154,30 @@
     "SdkRun": 40630806791,
     "SdkConclusion": "PASS: driver/configuration and native parameter editor"
   },
-  "LocalDelivery": {
-    "SourceCommit": "3669d43625bfcb4588754c311ed04749a797504b",
-    "Installer": "CainiaoSupplyStation_SM_Setup_v1.0.0_win-x64.exe",
-    "InstallerBytes": 271584940,
-    "InstallerSha256": "04f6c6ba08ec22661c7eb08dbacc2d14073108ee3886703f27ffbcc6c88c3c6e",
-    "MediaBytes": 166885374,
-    "MediaSha256": "78bfac17eb5baf0162fbe7a6c357080d67bc0857e28cc33243affb026ca8da96",
-    "DependencyCopiesVerified": 70,
-    "SdkScope": "Local offline delivery only; no vendor binaries in Git or public artifacts",
-    "Authenticode": "NOT_SIGNED",
-    "WindowsInstallation": "NOT_RUN",
-    "LaterChanges": "Only verification fixtures and documentation; installer retains its actual SourceCommit"
+  "CurrentUserPolicy": "Final correction: no PLC; computer directly connects camera, each independent recognition result reports to RCS, RCS deduplicates. PCS was corrected to RCS. Default continuous + read-result; no Line/trigger prerequisite.",
+  "SdkLogRouting": "Vendor reads working-directory support files; process environment alone without that configuration was insufficient. Current publisher pins a deterministic single-option transform and copies support files into release/app/desktop working roots. Production pins protected support copies before initialization and uses its configured data root. Standalone diagnostic owns its own process CWD. Earlier zero-byte C log files retained under D temp; original installed vendor SDK unchanged.",
+  "ProductionBoundary": "NOT_READY without existing exact deployment qualification, ordinary runtime account and actual configured identities/contracts. No production approval, real RCS acceptance, physical quantity or physical completion inferred from synthetic checks.",
+  "HistoricalDeliveries": [
+    {
+      "SourceCommit": "3669d43625bfcb4588754c311ed04749a797504b",
+      "Installer": "CainiaoSupplyStation_SM_Setup_v1.0.0_win-x64.exe",
+      "InstallerBytes": 271584940,
+      "InstallerSha256": "04f6c6ba08ec22661c7eb08dbacc2d14073108ee3886703f27ffbcc6c88c3c6e",
+      "MediaBytes": 166885374,
+      "MediaSha256": "78bfac17eb5baf0162fbe7a6c357080d67bc0857e28cc33243affb026ca8da96",
+      "DependencyCopiesVerified": 70,
+      "SdkScope": "Local offline delivery only; no vendor binaries in Git or public artifacts",
+      "Authenticode": "NOT_SIGNED",
+      "WindowsInstallation": "NOT_RUN",
+      "LaterChanges": "Only verification fixtures and documentation; installer retains its actual SourceCommit",
+      "Superseded": "Final no-PLC / per-result user correction; not the current delivery"
+    }
+  ],
+  "CurrentDelivery": "PENDING current-source rebuild; historical 3669d436 installer must not represent the final policy.",
+  "Ci4e5648b3": {
+    "Head": "4e5648b3089a98d21887307c255f03752c93e72d",
+    "EngineeringRun": 40632113236,
+    "SdkRun": 40632113323,
+    "Conclusion": "Both workflows PASS for that historical trigger-default source; does not certify current no-PLC correction."
   }
 }

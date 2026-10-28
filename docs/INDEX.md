@@ -1,4 +1,4 @@
-> 2026-10-28 用户确认同机旧客户端可读码，当前复用入口改为 [MVCODEREADER-RESTORE-01](work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md)：沿现有 MvCodeReader SDK 条码回调与现场一包一次触发接入新版 Application。旧仅 MVS 采图约束保留历史范围；实际识码与现场验收分别记录。
+> 2026-10-28 用户确认同机旧客户端可读码，当前复用入口改为 [MVCODEREADER-RESTORE-01](work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md)：沿现有 MvCodeReader SDK 条码回调与本轮确认的无PLC连续读码、逐结果发RCS接入新版 Application。旧仅 MVS 采图约束保留历史范围；实际识码与现场验收分别记录。
 
 > 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。
 

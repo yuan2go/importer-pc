@@ -131,7 +131,7 @@ public sealed partial class ParameterSettingsControl
         if (draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition")
             page.Body.Children.Add(Text("海康 SDK 随供包台软件安装，通过 IP 和预期序列号连接相机；实际连接与帧请在诊断中核对。尚缺适用的条码识别组件，不会生成条码或供包作业，正式供包不可用。"));
         if (draft.Provider.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader")
-            page.Body.Children.Add(Text("通过 MvCodeReader SDK 接收相机返回的完整条码候选。作业使用现场一包一次的外部触发，并按触发序号防止重复申请；同码新触发是新包裹。请先关闭占用相机的旧客户端或设备工具。实际识码与 RCS 结果在作业和诊断中分别核对。"));
+            page.Body.Children.Add(Text("电脑通过海康 SDK 连续读码。每次有效识别结果均提交 RCS，包含重复条码，由 RCS 负责去重；无需 PLC 或外部触发。启用前请关闭占用相机的旧客户端或设备工具。实际读码与 RCS 结果可在作业和诊断中核对。"));
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
         if (isRcs)
@@ -205,8 +205,8 @@ public sealed partial class ParameterSettingsControl
         var path = draft.InstanceId + "/" + p.Field.Key;
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
         var required = p.Field.Required || cameraCodeRequired || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
-        var label = (draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
-        var help = draft.Provider?.Implementation == "hikrobot-mvs" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
+        var label = (draft.Provider?.Implementation == "hikrobot-idmvs" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
+        var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
         if (p.IsSensitive)
         {

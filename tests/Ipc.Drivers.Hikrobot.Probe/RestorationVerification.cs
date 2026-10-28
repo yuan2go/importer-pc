@@ -33,6 +33,15 @@ internal static class RestorationVerification
             continuous.Emit(0, 1, "SYNTH-DIAGNOSTIC"); await Until(() => seen is not null);
             Check(continuous.Mode == 0 && seen!.Kind == "UncorrelatedRead", "legacy continuous capture really disables triggering and cannot fabricate a business admission");
         }
+        var direct = new Verification.FakeApi(); var decoded = new ConcurrentQueue<Observation>();
+        await using (var source = Reader(direct, new(), "continuous", "read-result"))
+        {
+            await source.StartControlledAsync("read-results", o => { decoded.Enqueue(o); return true; }, _ => { }, default);
+            direct.Emit(0, 1, "SYNTH-SAME"); direct.Emit(0, 2, "SYNTH-SAME"); direct.Emit(0, 1, "SYNTH-SAME");
+            await Until(() => decoded.Count == 3); var all = decoded.ToArray();
+            Check(direct.Mode == 0 && all.All(o => o.Kind == "Read") && all[0].AdmissionId != all[1].AdmissionId, "continuous recognized frames with the same code remain independent RCS read requests; no physical trigger required");
+            Check(all[0].AdmissionId == all[2].AdmissionId, "exact SDK frame redelivery retains its read request identity without barcode deduplication");
+        }
         try { _ = Reader(new(), new(), "continuous"); throw new Exception("Unsafe combination accepted"); }
         catch (InvalidDataException) { Check(true, "continuous frames cannot be configured as triggered parcels"); }
         foreach (var (failure, sourceCode) in new[] { (true, 0u), (false, 7u), (false, 9u) })

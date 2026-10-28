@@ -67,6 +67,28 @@ public static class NativeSdkBoundary
         return LoadFiles(qualified, library, preload);
     }
 
+    // This SDK reads its three support files from the working directory. Pin the
+    // protected executable/release-root copies before any native initialization.
+    public static void PinBundledWorkingConfiguration(Assembly owner, ExtensionFile[] files)
+    {
+        var directory = Path.GetFullPath(Environment.CurrentDirectory);
+        var ownerRoot = Path.GetDirectoryName(Path.GetFullPath(owner.Location))!;
+        if (!OperatingSystem.IsWindows() || files.Length is < 1 or > 8 ||
+            files.Select(f => f.Path).Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length ||
+            files.Any(f => !ExtensionPackages.SafePath(f.Path) || Path.GetFileName(f.Path) != f.Path || f.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || !ExtensionSchema.IsHash(f.Sha256) || f.Length <= 0) ||
+            !string.Equals(directory, ownerRoot, StringComparison.OrdinalIgnoreCase) && !string.Equals(directory, Path.GetDirectoryName(ownerRoot), StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Start MvCodeReader from the protected application/release directory; SDK support configuration is required");
+        lock (gate)
+            foreach (var item in files)
+            {
+                var path = Path.Combine(directory, item.Path);
+                DeploymentQualifications.VerifyInstalledFile(new(path, item.Sha256));
+                if (new FileInfo(path).Length != item.Length) throw new InvalidDataException("SDK support configuration changed: " + item.Path);
+                if (!holds.ContainsKey(path)) holds.Add(path, new(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+                if (!string.Equals(DeploymentQualifications.FileHash(path), item.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("SDK support configuration changed during acquisition");
+            }
+    }
+
     internal static nint LoadFiles(QualificationFile[] files, string library, string[] preload)
     {
         if (!OperatingSystem.IsWindows() || RuntimeInformation.ProcessArchitecture != Architecture.X64)

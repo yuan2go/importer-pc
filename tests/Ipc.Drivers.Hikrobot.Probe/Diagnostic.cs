@@ -42,6 +42,15 @@ internal static class Diagnostic
                 deadline.Stage("load-sdk");
                 for (var parent = new DirectoryInfo(options.SdkDirectory); parent is not null; parent = parent.Parent)
                     if ((parent.Attributes & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("Linked SDK directory refused");
+                var profile = BundledHikrobot.LoggingProfile;
+                var logConfig = Path.Combine(options.SdkDirectory, profile.Path);
+                if (!File.Exists(logConfig) || new FileInfo(logConfig).Length != profile.Length || !string.Equals(Wire.FileHash(logConfig), profile.Sha256, StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidDataException("Use the delivered vendor/hikrobot-idmvs directory with the reviewed SDK log profile");
+                pins.Add(new FileStream(logConfig, FileMode.Open, FileAccess.Read, FileShare.Read));
+                BundledHikrobot.ConfigureProcessLogs(Path.Combine(Path.GetTempPath(), "ipc-mvreader-probe"));
+                // This standalone process owns CWD; the application instead pins
+                // its protected release/executable-directory support copies.
+                Environment.CurrentDirectory = options.SdkDirectory;
                 foreach (var file in Directory.GetFiles(options.SdkDirectory, "*.dll"))
                 {
                     if ((File.GetAttributes(file) & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("Linked SDK file refused");

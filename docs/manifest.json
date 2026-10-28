@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01",
+  "work_package": "WP-IPC-INTEGRATION-20261028",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "635dc2a4b9d27bd65697d57f09bc7ab51ea10676920b1c37aa231eb106efadd6",
-      "size_bytes": 27076,
-      "git_blob": "c01002209a8b9cded8dcbb1290f98d5e20ac8631",
+      "sha256": "f753e7f468c4924a27ec39f3be93cb94e4886a5005de635f02d0ac821e57ba65",
+      "size_bytes": 27365,
+      "git_blob": "6c10514f2ed4fb9aa6ab9dc2d55404441f9ff497",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -1964,9 +1964,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "c4be6df83afcd14c4df35ab48716241e3d4d145bc98e567b9f7639d9a488776b",
+      "sha256": "803235154f154087c390145f9a4096ab3dbc72130a82b81d65be312a71ba7eed",
       "size_bytes": 2847,
-      "git_blob": "a70893f6b8b990e385b7a7b9763b00926ec096a0",
+      "git_blob": "e33d5a011775aa0f78f81a15daaae2a4d3e85259",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "98059a33896709f9f811158fc30a5849a430bcab3d3517eff46cb074e02534eb",
-      "size_bytes": 11194,
-      "git_blob": "7fef5cc0cad427965c18a99198659019d0b1c593",
+      "sha256": "f0f1964a07f4f4a6b94a7a74d358b9b8c7b8f96ccff289ab1635faad9133dc23",
+      "size_bytes": 8439,
+      "git_blob": "66b2143df5409aa99207ddcf0ed2f24a55757f53",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -56925,9 +56925,9 @@
     },
     {
       "path": "src/Ipc.Desktop/ProductMaintenanceWindow.cs",
-      "sha256": "7736365aef77ef6a80d5e847c3a0af6c2e3161a95cd8e44c1b85e0e2b5c00953",
-      "size_bytes": 8318,
-      "git_blob": "4f8f5ae4668d24d879fec7478e0e01674b977710",
+      "sha256": "00ed58f412d926b5e3e8f3247ffae21f13b2109734bb15450f0951d385fee7b6",
+      "size_bytes": 10247,
+      "git_blob": "7966f5031a1f4d62b3a6d6eb55fbcc32cb83eab0",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -59578,9 +59578,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "sha256": "d7a9d443d8e32d6dc04a900b3edce7cf0c6a17af3378bd2e6b96252e3327b639",
-      "size_bytes": 23202,
-      "git_blob": "e11dd976007610bad645cc72eca544e9adb5d802",
+      "sha256": "a053f464499515f2111ce087fcfdc2dec057aa9bcbf00ff81ce7a265ca56b0b2",
+      "size_bytes": 23325,
+      "git_blob": "40815be69c95e6357c3d06748b7263b7afc4dcae",
       "version": "hikrobot-sdk-barcode-02",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -59818,9 +59818,9 @@
     },
     {
       "path": "tests/Ipc.Verification/CommercialRemovalVerification.cs",
-      "sha256": "2f5af6d0b3d7414587feb9aaf5c8804f467a22a52c19ff46ef3c1ace2d3593ae",
-      "size_bytes": 3563,
-      "git_blob": "e8ee71d73478e3a8dde576775739e5818f6ae491",
+      "sha256": "311aaff168f1640c63e8cdd7b2fc5adddeecda674137d39f04f76052ee92336a",
+      "size_bytes": 7458,
+      "git_blob": "20a5f560d9160917c58f987fc3804d76f3a3e32b",
       "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
       "status": "current_review_implementation_or_boundary_record",
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
@@ -62487,9 +62487,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
       "storage_scope": "public_repository",
-      "sha256": "fda6098fe92f26409642bc2441821d974e160b61a2a51396fc88fa64e111f775",
-      "size_bytes": 29421,
-      "git_blob": "a553c20132dca3b4115410fbc953b98b168073bc",
+      "sha256": "569bdcc6c327625f21e36d786ce8f1650b53d674da849d1371652a2e52c6413c",
+      "size_bytes": 29482,
+      "git_blob": "5016c8e63a3039cf533e5b99bbfb6f19182affe7",
       "previous_git_blob": "dcc38bdffa244f0f5f6bcfd084e0df2437c52956"
     },
     {
@@ -99945,9 +99945,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "0641ae70801a1e17a1a298fc0e3e515625eafc0a5ca8fe69252e3322d40f9d5d",
-      "size_bytes": 11937,
-      "git_blob": "844fbfa5e1c69511d53daf75c4d9d19e1610ba35"
+      "sha256": "c77487322736f85e60bccc9ddde76f2fbd35c1e31c7c82aa128f172bcf4ed703",
+      "size_bytes": 12217,
+      "git_blob": "dc1085ed317085be041a2770cf38baac8d8256d6"
     },
     {
       "path": "docs/runtime/lifecycle-ux-implementation-01.md",
@@ -100055,9 +100055,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "ac8e995c585cafb5f29af9f4218b8301d2b965a2da064b81e84f0b745a940abe",
-      "size_bytes": 6959,
-      "git_blob": "8e5efff6b5b7cc023eb93dfbf49f715a187ce9b3"
+      "sha256": "27b610ba84d34b8f66328fb13fdb749c318abd156319a66b859f0915e1a87498",
+      "size_bytes": 9391,
+      "git_blob": "155cddd58617e3927a8b0d666ca04ce47fde246c"
     },
     {
       "path": "tests/Ipc.Application.Verification/LifecycleOptimization.cs",
@@ -104051,6 +104051,182 @@
       "size_bytes": 6354,
       "git_blob": "6744944375d847f0abd31e2ead696937fb62e4b9",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-integration-20261028/FILES.json",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "20404852a7a54150ffa1744fb5b275200d5a3d57495c95ebf0d1b12b6c8a89c6",
+      "size_bytes": 343,
+      "git_blob": "c1664f4c74340b11e583bdbbe21b11fd09f14889",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-integration-20261028/README.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "1214140ce7281a4c9933286c6495e0fb0537573a6ecbdbd048511fc9654796aa",
+      "size_bytes": 242,
+      "git_blob": "361c8a564c59a3df3267acc63f6513b95e947b5f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-integration-20261028/README.md.txt",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "c4be6df83afcd14c4df35ab48716241e3d4d145bc98e567b9f7639d9a488776b",
+      "size_bytes": 2847,
+      "git_blob": "a70893f6b8b990e385b7a7b9763b00926ec096a0",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-integration-20261028/docs__INDEX.md.txt",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "01725085d17bfedadd4f96c2340a76ca17c329c96c94dbe05cbc3ab259ec33fe",
+      "size_bytes": 11469,
+      "git_blob": "14a907fc16c37b9c622e2a27de971480aa351f75",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/.gitattributes",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "0026e00fc6c75d092974455d5036f676127bc95281f3806d8fd95a2099d1faf8",
+      "size_bytes": 47,
+      "git_blob": "c2dcbf9a3eac507ca8ad7b6dad54b48ba903e4b2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/first-kernel-build-failure.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "0028315517ced8e191bd02fc489176a311122b54d29dc8ac16ebd7a91302c8bf",
+      "size_bytes": 420,
+      "git_blob": "47d727f6b04a19cb72222a8c47ec8cba5e9edd14",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/first-native-failure.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "961b5def0984b9f95b0ee5d9cc9f8f2c1ce1549750ace62e0fd311efc79e4fae",
+      "size_bytes": 1731,
+      "git_blob": "1bfdc1d3e56126b23aa1c1b17966bf3b300d5cb4",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/kernel.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "95d6e99380f5f45b2fdea9f2c47fb2766d282c621322ba19e7a8e37cc84558f8",
+      "size_bytes": 1466,
+      "git_blob": "438edbe64403df7f6cbfcea812a9470dab558f17",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/native-actions.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "b062cbae5b275d6afddeecb1874d7cd0501cff61b26dc6ea2c4906588c03244a",
+      "size_bytes": 4064,
+      "git_blob": "228985d5212021680b9a89ffd6e51e0e85ac32d7",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/published-startup.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "a253ed9d3fd2b3c28a1b6e01c6202018e2def79c1b4ef274e61e3aa246786a7c",
+      "size_bytes": 18580,
+      "git_blob": "231dbe8dec251ffd4e9d57453fe2788d11e5caac",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/verification.json",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "9438c3f30ea3a511b72ebcbd0aef2df98bf953de567693da6dfbbc3fffc1192a",
+      "size_bytes": 2276,
+      "git_blob": "768702f8739ee2f3cfe331d9050c8bffda885512",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/integration-20261028.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "38c98fde376bff424ba1224d6b6843504b3a3b35c06c278d526a7c56dde95f58",
+      "size_bytes": 2067,
+      "git_blob": "5f0e872a529bc028d6ba46adb5a26994c01d1aba",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/uninstall-result-actions-01.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "3e85d381c46423dbba43d96fd9c3622b601d1e0ca4b78ad149a3ba6adf461928",
+      "size_bytes": 4138,
+      "git_blob": "9fb2aa7d11a3e880de0d94395879b614ce115c31",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-20261028.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "1364acf550ac8a090b6477a0e7fa5f056b1693ae557a3ebb00ece1967b921b12",
+      "size_bytes": 12067,
+      "git_blob": "1cdba7faee463a9d93ca78d377552ad33252fc6b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UNINSTALL-RESULT-ACTIONS-01.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "89ff99b71a15ca6fefac8057dab4367916f1e4c20b87e6b814ee835654362042",
+      "size_bytes": 1760,
+      "git_blob": "760e8c43b63f5081fd7bdb985f28f6924775e2b2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/UninstallResultActions.cs",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "56d4b0367627c2fe51ecd3620feb9d20e3433650a42862c3df715e9c259d96bc",
+      "size_bytes": 9434,
+      "git_blob": "8afa68bb51c09625f06cac82e3bd932c55e81bbd",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -104130,7 +104306,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-INTEGRATION-20261028.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",

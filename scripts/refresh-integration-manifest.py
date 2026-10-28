@@ -18,10 +18,15 @@ def git(*args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inherit", action="append", default=[])
+    parser.add_argument("--work-package", help="Current work package identity; otherwise preserve the existing manifest identity")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     path = Path("docs/manifest.json")
     current = json.loads(path.read_text(encoding="utf-8-sig"))
+    work_package = args.work_package or current.get("work_package")
+    if not work_package or not work_package.startswith("WP-IPC-"):
+        raise SystemExit("An explicit WP-IPC work package identity is required")
+    previous_order = {row["path"]: index for index, row in enumerate(current["files"])}
     rows = {row["path"]: row for row in current["files"]}
     identities = []
     for ref in args.inherit:
@@ -75,9 +80,9 @@ def main():
                 if previous is None or previous.get("sha256") != sha256 or previous.get("size_bytes", previous.get("size")) != size:
                     raise SystemExit("Manifest differs from staged canonical blob: " + name)
                 continue
-            row = dict(previous or {"path": name, "version": "stability-integration-02",
+            row = dict(previous or {"path": name, "version": work_package.removeprefix("WP-IPC-").lower(),
                 "status": "current_source_or_synthetic_evidence", "purpose": "Integrated source and bounded verification",
-                "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit"})
+                "source": work_package + "; original evidence retains its own SourceCommit"})
             row.update(sha256=sha256, size_bytes=size, git_blob=oid, storage_scope="public_repository")
             result.append(row)
         batch.stdin.close()
@@ -89,10 +94,11 @@ def main():
             raise SystemExit("Manifest checksum differs")
         print("PASS canonical staged manifest: " + str(len(entries)) + " files")
         return
-    current.update(work_package="WP-IPC-STABILITY-INTEGRATION-02",
-        current_implementation_work_package="docs/work-packages/WP-IPC-STABILITY-INTEGRATION-02.md", files=result)
+    result.sort(key=lambda row: (previous_order.get(row["path"], len(previous_order)), row["path"]))
+    current.update(work_package=work_package,
+        current_implementation_work_package="docs/work-packages/" + work_package + ".md", files=result)
     if identities:
-        current["stability_integration_02_sources"] = identities
+        current["integration_sources"] = identities
     path.write_text(json.dumps(current, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     Path("docs/manifest.sha256").write_text(hashlib.sha256(path.read_bytes()).hexdigest() + "  manifest.json\n", encoding="ascii")
     print("Refreshed canonical manifest: " + str(len(result)) + " files")

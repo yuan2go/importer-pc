@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "f753e7f468c4924a27ec39f3be93cb94e4886a5005de635f02d0ac821e57ba65",
-      "size_bytes": 27365,
-      "git_blob": "6c10514f2ed4fb9aa6ab9dc2d55404441f9ff497",
+      "sha256": "ed62b2dcb54bc0682a48445345285afbf446c7354a4ab6d8ec52f63be7229bdc",
+      "size_bytes": 27722,
+      "git_blob": "b70af4b0467d822473c161f633640a90f2c4f49e",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -59150,9 +59150,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "fbf2282f683ba1f68767aedca50323229c3c0bf5acb6863b9af2755729e7a37a",
-      "size_bytes": 27171,
-      "git_blob": "5d7c4045e8f9c3928e6c27a93b1d32799e04b575",
+      "sha256": "fd1f1daf560803b0dfdf6f17d455600a8ecca6feed04ea4a6d86ed494a3582ce",
+      "size_bytes": 27519,
+      "git_blob": "b3ba3a3e5f8dab8766f1106ea83b57321991efd4",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59874,9 +59874,9 @@
     },
     {
       "path": "tests/Ipc.Verification/HardeningVerification.cs",
-      "sha256": "a1a673b46ff9c09a964657ea7a92ec1ee212980c748dac273139249b275908cb",
-      "size_bytes": 23839,
-      "git_blob": "b0ca47214457d1faf96b6f64f93feee37f14ca61",
+      "sha256": "f5d8a7b6c75d84f8a38641540096042b8f6cffa14d26fa63d896f2d33ca6f02d",
+      "size_bytes": 25842,
+      "git_blob": "4036cde189d6eebb1f4218db7bde9470b7a945b1",
       "version": "FIX-14",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
@@ -96610,9 +96610,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "828689114effcbb13b87af3437cb288a19b5333246225f23d25d928879dfc4a0",
-      "size_bytes": 5038,
-      "git_blob": "5bab6115aaa81897cc33a8123fa58be70dd51b1e",
+      "sha256": "2ad73d9f309ec469e6df1a512a6eeabd970b144df1eb5ef9106eb8fb1080d7de",
+      "size_bytes": 5531,
+      "git_blob": "4f665a90017257a4a450765ebf0538f869a8e6bc",
       "storage_scope": "public_repository"
     },
     {
@@ -104226,6 +104226,17 @@
       "sha256": "56d4b0367627c2fe51ecd3620feb9d20e3433650a42862c3df715e9c259d96bc",
       "size_bytes": 9434,
       "git_blob": "8afa68bb51c09625f06cac82e3bd932c55e81bbd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-VALIDATION-20261028.md",
+      "version": "integration-20261028",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
+      "sha256": "c96f1486678a86729f283c571af49a85e8909ab46f160d3b219731ccb409f301",
+      "size_bytes": 2783,
+      "git_blob": "e0d6d5ab861d52f407a1211ff0d98af1ebc68e9a",
       "storage_scope": "public_repository"
     }
   ],

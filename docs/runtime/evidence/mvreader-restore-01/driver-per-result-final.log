@@ -1,0 +1,110 @@
+PASS: x64 callback prefix ABI matches SDK evidence
+PASS: SDK no-code flag permits an absent optional code list
+PASS: reported code without its native list faults instead of inventing no-code
+PASS: no-code frame preserves its own trigger
+PASS: length-aware decode removes only terminal NUL and preserves spaces
+PASS: multiple codes remain multiple without selecting a winner
+PASS: third candidate is preserved in original order for business filtering
+PASS: out-of-ABI code count rejected before reading records
+PASS: out-of-ABI code length rejected before copy
+PASS: invalid configured encoding never replaces bytes into a valid code
+PASS RESTORED READER: explicit profile is applied after open and before callback acquisition
+PASS RESTORED READER: same-trigger frames share one parcel; next trigger with same barcode is a new parcel
+PASS RESTORED READER: diagnostics separate actual frames, code candidates, no-code and multiple-code results
+PASS RESTORED READER: stop fences late frames and actually releases the physical owner
+PASS RESTORED READER: legacy continuous capture really disables triggering and cannot fabricate a business admission
+PASS RESTORED READER: continuous recognized frames with the same code remain independent RCS read requests; no physical trigger required
+PASS RESTORED READER: exact SDK frame redelivery retains its read request identity without barcode deduplication
+PASS RESTORED READER: blank continuous frames stay in bounded diagnostic counters without durable business inputs or false in-flight work
+PASS RESTORED READER: continuous frames cannot be configured as triggered parcels
+PASS RESTORED READER: failed setting or software/self-trigger source refuses acquisition and cleans the original owner
+PASS RESTORED READER: failed setting or software/self-trigger source refuses acquisition and cleans the original owner
+PASS RESTORED READER: failed setting or software/self-trigger source refuses acquisition and cleans the original owner
+PASS: signed declared vendor import accepted statically without loading SDK
+PASS: missing/wrong/duplicate native prerequisite and portable native package rejected
+PASS: actual ALC reader startup refuses native SDK without independent qualification
+PASS: signed preload declaration retains value equality across independent JSON decoding
+PASS: expired qualification, wrong prerequisite owner and missing native entry bytes rejected
+PASS: MVS signed import boundary and real ALC missing-qualification refusal preserve current native policy
+NATIVE_POLICY_PASS
+PASS: same trigger retains entity candidate; same code on new trigger stays distinct
+PASS: frame identities and monotonic ingress sequence retained
+PASS: SDK health uses registered epoch and explicit source
+PASS: stop drains before close/destroy and ignores late callbacks
+PASS: reconnect uses new host epoch without reusing old admission identity
+PASS: old registration callback cannot be relabeled into the new epoch
+PASS: trigger counter reversal/wrap faults rather than merging different entities
+PASS: default observation cannot become business admission
+PASS: trigger mode mismatch fails without changing camera or leaking handle/lease
+PASS: IP matching never falls back to first enumerated device
+PASS: same physical serial rejects different business aliases, then becomes available after original teardown
+PASS: bounded overflow faults instead of silently continuing Ready
+PASS: blocked consumer retains SDK and lease during stop
+PASS: overflow and faulted queued frame both counted; received equals delivered plus rejected plus in-flight after teardown
+PASS: failed native stop retains resources
+PASS: explicit stop retry releases original owner once
+PASS: failed real health roundtrip closes readiness without reconnect/retrigger
+PASS: native health enumeration entered
+PASS: cancelled Stop wait retains actual blocked native owner and handle
+PASS: repeat Stop joins original outstanding teardown
+PASS: native return allows exactly one destroy and lease release
+PASS: startup native enumeration entered before cancellation
+PASS: cancellation cannot end already entered synchronous native call
+PASS: returned cancelled enumeration cannot acquire handle or start grabbing
+PASS: native buffer rejection belongs to conservation and public reason
+PASS: fault reaches independent host publisher
+PASS: blocked host health cannot block native failure/frame callback or reopen ingress
+PASS: stop retains owner while original health publication is in flight
+PASS: health drain precedes one physical owner release
+PASS: representative multi-candidate batch enters consumer
+PASS: byte budget includes blocked in-flight candidate strings before count capacity fills
+PASS: drained byte budget and observation conservation return to zero
+PASS: startup callback is explicitly rejected and accounted when native Start fails before consumer creation
+PASS: diagnostic owns blocked native-stage surrogate
+PASS: overall deadline reports active phase without claiming native completion or releasing owner
+PASS: teardown phase remains visible after overall budget expires
+PASS MVS: x64 layouts match installed vendor header and official managed wrapper cross-check
+PASS MVS: actual acquisition contract cannot manufacture a barcode, observation or business Ready when component is absent
+PASS MVS: native loans are returned before stop/close/destroy/finalize and lease release
+PASS MVS: explicit restart resets capture accounting without creating a new parcel
+PASS MVS: host health exception is explicit but cannot prevent successful native teardown
+PASS MVS: retry after host reporting failure never releases the original native owner twice
+PASS MVS: FreeImageBuffer failure retains original loan, handle and physical owner
+PASS MVS: explicit retry returns original frame once then frees original owner
+PASS MVS: native acquisition surrogate entered
+PASS MVS: cancelled stop wait retains blocked native acquisition owner
+PASS MVS: repeat stop joins the actual outstanding acquisition task
+PASS MVS: actual native return permits one teardown
+PASS MVS: native Start failure cleans returned resources without declaring acquisition success
+PASS MVS: stop failure retains physical ownership
+PASS MVS: stop retry completes original teardown
+PASS MVS: close failure retains physical ownership
+PASS MVS: close retry completes original teardown
+PASS MVS: destroy failure retains physical ownership
+PASS MVS: destroy retry completes original teardown
+PASS MVS: finalize failure retains physical ownership
+PASS MVS: finalize retry completes original teardown
+PASS MVS: overload/frame gap faults one acquisition while the other camera remains isolated
+PASS MVS: ordinary no-trigger/no-frame is not treated as a disconnection
+PASS MVS: actual connection failure fences acquisition without automatic reconnect
+PASS MVS: formal parcel mode is refused without a real recognition component
+PASS MVS: invalid/incomplete frame is returned and never counted as a valid image or decoded barcode
+MVS_SELF_TEST_PASS checks=26; synthetic native ports; real target frames/barcodes NOT_RUN
+PASS HARDENING: MVS native call surrogate is blocked before dispose
+PASS HARDENING: both disposers retain blocked native owner while Start is already refused
+PASS HARDENING: concurrent and repeated MVS disposal performs one successful teardown
+PASS HARDENING: reader native Start surrogate is blocked before dispose
+PASS HARDENING: reader disposal retains in-flight Start and refuses new registration
+PASS HARDENING: dispose during Start neither publishes Ready nor delivers callbacks and frees once
+PASS HARDENING: failed MVS Dispose keeps original native owner, diagnostic failure and Start fence
+PASS HARDENING: retry Dispose resumes the failed stage without repeating completed native Stop
+PASS HARDENING: reader Dispose failure retains callbacks, diagnostic failure and physical owner
+PASS HARDENING: reader Dispose can retry and completes once
+PASS HARDENING: MVS optional diagnostic identity remains pinned across Stop/Start before opening a replacement
+PASS HARDENING: Stopping notification failure cannot prevent cleanup or double-release ownership
+PASS HARDENING: Stopped notification failure cannot prevent cleanup or double-release ownership
+PASS HARDENING: diagnostic copy masks scalar, array, selected, fragment and nested-JSON barcode/credential values
+PASS HARDENING: masking preserves diagnostic status/counts and does not alter original request bytes
+PASS HARDENING: complete nested JSON stays parseable after masking while partial scalar/array fragments fail closed
+HARDENING_SELF_TEST_PASS checks=16; synthetic native ports; real SDK/hardware NOT_RUN
+SELF_TEST_PASS checks=46

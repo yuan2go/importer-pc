@@ -2,12 +2,12 @@
   "WorkPackage": "MVCODEREADER-RESTORE-01",
   "BaseCommit": "d506f77c7ae385d3808f55d15087a9c652f14730",
   "Date": "2026-10-28",
-  "DriverPortTests": "PASS: 46 inherited reader, 26 MVS, 16 hardening and 11 restoration checks; synthetic native ports. Includes continuous same-code distinct result identities and exact-frame redelivery identity.",
+  "DriverPortTests": "PASS: 46 inherited reader, 26 MVS, 16 hardening and 12 restoration checks; synthetic native ports. Includes continuous same-code distinct result identities and exact-frame redelivery identity. Blank continuous frames stay only in diagnostic counters; no false in-flight work.",
   "ParameterModel": "PASS: current built-in provider and isolated identities",
   "NativeParameters": "PASS current no-PLC UI: real WPF/Dispatcher daily/first, standard/compact, 125 percent; synthetic values; final copy explicitly says continuous, every result to RCS, no PLC.",
   "DependencyPolicy": "PASS: 22 Python checks, including exact log-profile transform/working-root copies and tamper rejection.",
   "ActualSdk": "PASS: real MvCodeReader 2.0.0.4 load/enumerate, zero devices; not camera reading",
-  "LocalApplicationFlow": "PASS current no-PLC policy: three identical decoded-code frames emitted as one burst make three actual loopback RCS requests through actual reader/Application/SQLite; fifth independent result verifies camera isolation. Exact original-frame redelivery does not resend. Frozen bytes, no-code rejection and post-stop fence retained. Synthetic native API; explicit Simulation fixture preflight; production guards unchanged.",
+  "LocalApplicationFlow": "PASS current no-PLC policy: three identical decoded-code frames emitted as one burst make three actual loopback RCS requests through actual reader/Application/SQLite; fifth independent result verifies camera isolation. Exact original-frame redelivery does not resend. Frozen bytes, blank-frame diagnostic-only handling and post-stop fence retained. Synthetic native API; explicit Simulation fixture preflight; production guards unchanged.",
   "PhysicalCamera": "NOT_RUN: only WLAN on this computer; user confirms legacy same-camera reading",
   "FieldRcsAndPhysical": "NOT_RUN",
   "Logs": [
@@ -99,6 +99,18 @@
       "Sha256": "03216a7fd1bb554ea8a98445881ccd61aedef0c930eb087f27e05cec3c196137",
       "OriginalLocalSha256": "e4003c9eb2de7effd8c310bc9b258ad5aa76a8bf7c1a8820679737a62eb6a082",
       "Scope": "Current continuous/read-result verification; explicit synthetic/zero-device limits in log"
+    },
+    {
+      "Path": "application-per-result-final.log",
+      "Sha256": "da6cfeef500bdd120ddb8490ebbb9c731c2161c82013f9c61e5a4820f96ee3c9",
+      "OriginalLocalSha256": "477d44f03a9dfc43e2b6522a19074fbcd8c3d884ef2dece737bd782d5c89353d",
+      "Scope": "Final continuous/read-result handling including blank-frame counters; synthetic native port only"
+    },
+    {
+      "Path": "driver-per-result-final.log",
+      "Sha256": "bff27ae3070fb42215173328e50ef7f564fcdad16271e21a7f0ee5d4126e9043",
+      "OriginalLocalSha256": "f22e2827a2804a34138076efa0a8684b11dc0a64612845d7dd6dafdcb5fe2714",
+      "Scope": "Final continuous/read-result handling including blank-frame counters; synthetic native port only"
     }
   ],
   "OriginalFailureHashes": [
@@ -126,6 +138,16 @@
       "Name": "mvreader-rcs-01.log",
       "Sha256": "115267a5ea630d6e540f85a2bc11fede2e4fac13cdc189fcbe94f1e69d50aab4",
       "Scope": "Retained locally; original failure not converted to PASS"
+    },
+    {
+      "Name": "mvreader-per-result-build.log",
+      "Sha256": "c51911b2b7724a4959ca7c1bbb10ef2cd39478315faf59820f32314fc982e753",
+      "Scope": "Original fixture compile failure retained locally; corrected by using actual ParcelRuntime/ParcelOperation API; not represented as PASS"
+    },
+    {
+      "Name": "mvreader-result-final-build.log",
+      "Sha256": "7345eb0d882377340018e4f3a0a2e91766157c1d371274a287452a609b2eb230",
+      "Scope": "Original fixture compile failure retained locally; corrected by using actual ParcelRuntime/ParcelOperation API; not represented as PASS"
     }
   ],
   "SolutionBuild": "PASS: Sportmaster Release/SelfContained=false, locked, serial MSBuild; zero warnings/errors",
@@ -173,11 +195,16 @@
       "Superseded": "Final no-PLC / per-result user correction; not the current delivery"
     }
   ],
-  "CurrentDelivery": "PENDING current-source rebuild; historical 3669d436 installer must not represent the final policy.",
+  "CurrentDelivery": "PENDING final current-source rebuild, including blank-frame handling; 3669d436 and intermediate 3dd90e92 media are not the final delivery.",
   "Ci4e5648b3": {
     "Head": "4e5648b3089a98d21887307c255f03752c93e72d",
     "EngineeringRun": 40632113236,
     "SdkRun": 40632113323,
     "Conclusion": "Both workflows PASS for that historical trigger-default source; does not certify current no-PLC correction."
+  },
+  "IntermediateMedia3dd90e92": {
+    "SourceCommit": "3dd90e92093410a6a9131bac6c6b9bd951693744",
+    "Sha256": "071ad04c9a5af1f5445c1f3c073e002f8bbacb6a218ebf5c7cb496df791923f0",
+    "Scope": "Complete actual-SDK media before final blank-frame handling; no installation or field validation"
   }
 }

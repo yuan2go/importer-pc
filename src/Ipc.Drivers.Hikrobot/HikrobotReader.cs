@@ -43,7 +43,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
     public string Epoch { get; private set; } = "not-started";
     public string ConfirmationSource { get { lock (gate) return "SDK:hikrobot-idmvs:" + context.InstanceId + "; epoch=" + Epoch +
         "; received=" + FramesReceived + "; delivered=" + FramesDelivered + "; rejected=" + FramesRejected + "; inFlight=" + FramesInFlight +
-        "; sequence=" + sequence + "; bufferedBytes=" + bufferedCodeBytes + "; codes=" + CodesReceived + "; noCodeFrames=" + NoCodeFrames + "; multiCodeFrames=" + MultipleCodeFrames + "; acquisition=" + acquisitionMode + "; phase=" + Phase +
+        "; sequence=" + sequence + "; bufferedBytes=" + bufferedCodeBytes + "; codes=" + CodesReceived + "; emptyResultsIgnored=" + EmptyResultsIgnored + "; noCodeFrames=" + NoCodeFrames + "; multiCodeFrames=" + MultipleCodeFrames + "; acquisition=" + acquisitionMode + "; phase=" + Phase +
         (LastFailure is null ? "" : "; failure=" + LastFailure); } }
     public string Phase { get; private set; } = "not-started";
     public string? LastFailure { get; private set; }
@@ -52,8 +52,9 @@ internal sealed class HikrobotReader : IControlledObservationSource
     public long FramesDelivered { get; private set; }
     public long CodesReceived { get; private set; }
     public long NoCodeFrames { get; private set; }
+    public long EmptyResultsIgnored { get; private set; }
     public long MultipleCodeFrames { get; private set; }
-    public long FramesInFlight { get { lock (gate) return FramesReceived - FramesDelivered - FramesRejected; } }
+    public long FramesInFlight { get { lock (gate) return FramesReceived - FramesDelivered - FramesRejected - EmptyResultsIgnored; } }
     internal HikrobotReader(ExtensionContext context, IHikrobotApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged;
@@ -86,7 +87,7 @@ internal sealed class HikrobotReader : IControlledObservationSource
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (created || queue is not null) throw new InvalidOperationException("Previous reader registration still owns resources");
             lock (gate) { if (stopTask is { IsCompleted: false }) throw new InvalidOperationException("Original stop is still running; resources retained"); stopTask = null; }
-            lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = CodesReceived = NoCodeFrames = MultipleCodeFrames = 0;
+            lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = CodesReceived = NoCodeFrames = EmptyResultsIgnored = MultipleCodeFrames = 0;
                 faultSignal = new(TaskCreationOptions.RunContinuationsAsynchronously); }
             // Exactly one fault publisher per registration. Native callbacks only
             // fence local state and signal it; they never call host health code.
@@ -143,7 +144,14 @@ internal sealed class HikrobotReader : IControlledObservationSource
             FramesReceived++;
             if (!accepting || faulted || disposeRequested) { FramesRejected++; return; }
             CodesReceived += frame.Codes.Length;
-            if (frame.Codes.Length == 0) NoCodeFrames++;
+            if (frame.Codes.Length == 0)
+            {
+                NoCodeFrames++;
+                // In the approved triggerless flow an empty video frame has no
+                // successful recognition to report. Keep diagnostics, not a
+                // durable business input for every blank continuous frame.
+                if (entityMode == "read-result") { EmptyResultsIgnored++; return; }
+            }
             if (frame.Codes.Length > 1) MultipleCodeFrames++;
             if (entityMode == "trigger")
             {

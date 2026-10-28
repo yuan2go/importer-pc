@@ -46,8 +46,8 @@ static partial class SportmasterRcs
         Check(Posts() == 5 && completed.Operations.Select(o => o.AdmissionId).Distinct().Count() == 5 && completed.Operations.Any(o => o.PositionId == "right"), "each distinct recognized frame, including the same barcode and the other camera, makes an independent RCS request");
         Check(Wire.Encode(completed.Operations.Single(o => o.Id == original.Id).Wcs!.Request) == frozen, "subsequent scans preserve the original frozen request bytes");
         left.Frame!(new(0, 5, 0, 0, 0, 0, []));
-        await Wait(app, s => s.Inputs!.Any(i => i.Outcome == ParcelInputOutcome.Rejected));
-        Check(Posts() == 5, "no-code callback is recorded as rejected input without a fabricated task");
+        var afterEmpty = await app.SnapshotAsync();
+        Check(Posts() == 5 && afterEmpty.Inputs!.Length == completed.Inputs!.Length, "blank continuous frames do not flood durable business inputs or fabricate RCS requests");
         await app.StopAsync(default);
         var before = Posts(); left.Emit(4, 5, "SYNTH-LATE");
         Check(Posts() == before && factory.Apis.Values.All(a => a.Calls.Contains("destroy")), "late native callback cannot create a task after controlled shutdown");

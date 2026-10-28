@@ -38,9 +38,11 @@ internal static class RestorationVerification
         {
             await source.StartControlledAsync("read-results", o => { decoded.Enqueue(o); return true; }, _ => { }, default);
             direct.Emit(0, 1, "SYNTH-SAME"); direct.Emit(0, 2, "SYNTH-SAME"); direct.Emit(0, 1, "SYNTH-SAME");
-            await Until(() => decoded.Count == 3); var all = decoded.ToArray();
+            await Until(() => source.FramesDelivered == 3); var all = decoded.ToArray();
             Check(direct.Mode == 0 && all.All(o => o.Kind == "Read") && all[0].AdmissionId != all[1].AdmissionId, "continuous recognized frames with the same code remain independent RCS read requests; no physical trigger required");
             Check(all[0].AdmissionId == all[2].AdmissionId, "exact SDK frame redelivery retains its read request identity without barcode deduplication");
+            direct.Frame!(new(0, 3, 0, 0, 0, 0, []));
+            Check(decoded.Count == 3 && source.NoCodeFrames == 1 && source.EmptyResultsIgnored == 1 && source.FramesInFlight == 0 && source.FramesRejected == 0, "blank continuous frames stay in bounded diagnostic counters without durable business inputs or false in-flight work");
         }
         try { _ = Reader(new(), new(), "continuous"); throw new Exception("Unsafe combination accepted"); }
         catch (InvalidDataException) { Check(true, "continuous frames cannot be configured as triggered parcels"); }

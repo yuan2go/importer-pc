@@ -6,7 +6,7 @@
 
 内置 `hikrobot-idmvs` 使用 MvCodeReader 2.0.0.4 的真实 GigE 枚举、CreateHandle、OpenDevice、Ex2 条码回调和 StartGrabbing。IP 与预期序列号唯一匹配，不按枚举下标或同型号第 0 台回退。回调复制完整有界候选及触发/帧/通道/时间身份，原始图像指针不进入 UI；宿主队列交给唯一 Application，复用条码筛选、SQLite 输入与作业账、RCS 格口申请、原请求冻结和 Unknown 不重发。
 
-用户最终纠正：现场没有 PLC，电脑直接接相机；每次识别结果均上报 RCS，由 RCS 去重，PCS 是口误。默认 `acquisition.mode=continuous`、`entity.mode=read-result`。打开设备后、开流前关闭 TriggerMode，使用 SDK 计算的 GigE 包长并读回模式；不要求 Line 或 PLC，不发送软件触发、不改 IP、曝光或码制。每个独立识别帧形成独立请求，同码不同帧也上报；原帧完全重投保留原请求身份。帧身份包括设备/连接代次/帧来源，表示读码请求，不作为物理包裹数量或完成证据。
+用户最终纠正：现场没有 PLC，电脑直接接相机；每次识别结果均上报 RCS，由 RCS 去重，PCS 是口误。默认 `acquisition.mode=continuous`、`entity.mode=read-result`。打开设备后、开流前关闭 TriggerMode，使用 SDK 计算的 GigE 包长并读回模式；不要求 Line 或 PLC，不发送软件触发、不改 IP、曝光或码制。每个通过现有筛选的独立识别帧形成独立请求，同码不同帧也上报；连续空帧只累计无码诊断，不逐帧写业务输入账或伪造请求；原帧完全重投保留原请求身份。帧身份包括设备/连接代次/帧来源，表示读码请求，不作为物理包裹数量或完成证据。
 
 `existing` 沿用设备设置；`observe-only` 只观察，`external-trigger + trigger` 为其他已确认触发现场保留，不是本现场默认。MVIDCodeReader 的算法句柄/绑定/轮询与当前 SDK 不是同一 ABI，本版未复制天猫的 PLC/UDP 解锁、CODE128/长度限制、按型号回退第 0 台或 Thread.Abort。完整候选仍由既有业务筛选；不会把无码或多码未通过筛选伪造为成功上报。
 

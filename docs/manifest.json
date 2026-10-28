@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "bbf1294b83af2e4654e95fc5487115e8db0bb01baa0c8c2ba90568aa8ee21eb8",
-      "size_bytes": 11559,
-      "git_blob": "e378abedcd1efbe4a6948fb477ca3665c1622e53",
+      "sha256": "90e9143f5f69ebec343519cb61eab5d03a6242f563f67542e122c4f38b2274da",
+      "size_bytes": 11641,
+      "git_blob": "1e6dd15fa0631751c3c116a30a10aae57fcd9ea3",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -45832,9 +45832,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "62084513ccef9cac18f02f5e27ade9a9c7fa3acd8cfde6c5c86260387e06a80c",
-      "size_bytes": 5596,
-      "git_blob": "093348ac3d3431c16194538c6b4441d0c3cfa699"
+      "sha256": "616e1d1b9d9a95ef9152fa84ac278b95de20c0bf2da9933393650989b5587fcb",
+      "size_bytes": 5698,
+      "git_blob": "c59a7ee8f24f3fdde6c3e7c62f2f3556536c4fd8"
     },
     {
       "path": "docs/runtime/implementation.md",
@@ -57086,9 +57086,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "a77852765f8b9125ed5c587844a9428b2dfb5627c822f5c63aaf14ef9786c4bf",
-      "size_bytes": 20349,
-      "git_blob": "eefca95604a2522da252c9eb79a707873bd06f9a"
+      "sha256": "20c7374636f6358090a7a8ad3d8dc288481058e9213b0f1184e87768cd620900",
+      "size_bytes": 20861,
+      "git_blob": "79ef016233e97003bf4971cb8b460115e9dff16e"
     },
     {
       "path": "src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj",
@@ -104168,9 +104168,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "fc7cb7011615246f612058d0e8d50e756da79c7b8180960c91f40fbdaa93fa6e",
-      "size_bytes": 11636,
-      "git_blob": "6ec5a7dd22e1d84baf63ce6a84632fd59ac6427c",
+      "sha256": "b690f7bc572fcedd27b9f822db8a425c4e0f156f8d3e3bbd0dc347eaa3e9be37",
+      "size_bytes": 13381,
+      "git_blob": "bc9ab8fef3ead0e3792f125cf1e471f0fa1c5bdc",
       "storage_scope": "public_repository"
     },
     {
@@ -104245,9 +104245,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "2c75dc19fa84f9811ff7e0720e6de4657ceee0a912dbd218a46468e53e46a2d2",
-      "size_bytes": 7846,
-      "git_blob": "9e3ed3e1ce7cae787ceaf3376bbcfe8707570885",
+      "sha256": "91c064e32332af65f70505a9d78ed53fb076a8271440d6de29fe1575b9025ba9",
+      "size_bytes": 7877,
+      "git_blob": "46e8240252d10b44c7908b7b9b6335de66d46a65",
       "storage_scope": "public_repository"
     },
     {
@@ -104256,9 +104256,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MvCodeReader reuse and bounded synthetic verification",
       "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
-      "sha256": "e2f08748c272429825089fc6030e8789ba9252a5ade36130f44c96d563e7af63",
-      "size_bytes": 4917,
-      "git_blob": "bb1718bd127a7f8f09a244ac12a82b3ea2a6468f",
+      "sha256": "7abea7b8dc4a9db631ee7ce737e96481ae482c785d694c0cc675d7d33a976514",
+      "size_bytes": 5261,
+      "git_blob": "17acf463f86eb08be5ff2219a5359d162cb56fed",
       "storage_scope": "public_repository"
     },
     {
@@ -104391,6 +104391,28 @@
       "sha256": "a56e57f51ceeca697d2be474bdda109c8b7718a20b207c93d38ffe8b351dc312",
       "size_bytes": 121,
       "git_blob": "a84f6cbb2703d12ae922e581cbefa8da3ddb5a66",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/application-per-result-final.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "da6cfeef500bdd120ddb8490ebbb9c731c2161c82013f9c61e5a4820f96ee3c9",
+      "size_bytes": 812,
+      "git_blob": "8feea6a55f109ae8a914d58c39948acd1d5e3bda",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvreader-restore-01/driver-per-result-final.log",
+      "version": "mvreader-restore-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "MvCodeReader reuse and bounded synthetic verification",
+      "source": "MVCODEREADER-RESTORE-01; field and historical evidence retain their own scope",
+      "sha256": "bff27ae3070fb42215173328e50ef7f564fcdad16271e21a7f0ee5d4126e9043",
+      "size_bytes": 8678,
+      "git_blob": "776c2aba542d6c3c808986d5ed1757896e3234e1",
       "storage_scope": "public_repository"
     }
   ],

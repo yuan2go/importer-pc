@@ -1,0 +1,19 @@
+{
+  "Installer": "D:\\deliveries\\cainiao-lifecycle-221f0583-20261028\\installer\\CainiaoSupplyStation_SM_Setup_v1.0.0_win-x64.exe",
+  "Sha256": "a6cb3a0aa2af1a2670fbbce8a35f1a1304a0ac6a1e1df9e26d3fed5dec4a16eb",
+  "SourceCommit": "221f058333258622b9150f9d2d77c4346c4bb6f5",
+  "Payload": {
+    "ApplicationId": "sportmaster",
+    "SourceCommit": "221f058333258622b9150f9d2d77c4346c4bb6f5",
+    "SourceBranch": "codex/install-update-uninstall-identity-01",
+    "BusinessModuleShortName": "SM",
+    "BusinessVersion": "1.0.0",
+    "Sha256": "de781c63843e3d7bfb156b911649a6c5416667709a533d6548f56dc16c004877",
+    "ZipBytes": 142701143,
+    "UnpackedBytes": 297948957,
+    "FileCount": 784
+  },
+  "DeliveryFiles": 1,
+  "Authenticode": "NOT_SIGNED",
+  "ActualWindowsInstallation": "NOT_RUN"
+}

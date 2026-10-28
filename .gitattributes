@@ -156,6 +156,9 @@ docs/runtime/evidence/query-filter-ux-01/*.txt -text whitespace=cr-at-eol
 # Preserve station recovery test receipts, including failures.
 docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=cr-at-eol,-blank-at-eol
 
+# Keep actual lifecycle receipts, including failed fixture runs, byte-for-byte.
+docs/runtime/evidence/install-update-uninstall-identity-01/** -text whitespace=cr-at-eol,-blank-at-eof
+
 # Preserve the original design blob and bounded Windows regression receipts.
 docs/archive/pre-hikrobot-boundary-regressions-01/*.md.txt -text
 docs/runtime/evidence/hikrobot-boundary-regressions-01/*.txt -text whitespace=cr-at-eol

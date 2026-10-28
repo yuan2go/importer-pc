@@ -194,6 +194,7 @@ static partial class Program
             Capture(restart ? "uninstall-result-restart" : "uninstall-result-complete", removal); removal.Close();
         }
         await VerifyUninstallResultActions(evidence, lines);
+        await VerifyInstallerLifecycle(evidence, lines);
         lines.Add("Native Windows HWND/Dispatcher, synthetic contracts only; SDK/RCS, installation lifecycle and site NOT_RUN.");
 
         static void FillInitial(ParameterEditorModel model)

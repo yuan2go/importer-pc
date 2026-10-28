@@ -35,6 +35,16 @@ if (args.FirstOrDefault() == "--commercial-removal")
     CommercialRemovalVerification.Run(Path.Combine(Path.GetTempPath(), "ipc-removal-" + Wire.Id()));
     return;
 }
+if (args.FirstOrDefault() == "--installed-lifecycle-windows")
+{
+    if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Actual Windows installation verification required");
+    InstalledLifecycleWindows.Run(); return;
+}
+if (args.FirstOrDefault() == "--lifecycle-ordinary-child")
+{
+    if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+    InstalledLifecycleWindows.Child(args); return;
+}
 SupplyContractRegistration.Register();
 
 if (args.FirstOrDefault() == "--extension-interrupt")

@@ -1,5 +1,7 @@
 # 文档索引
 
+2026-10-28 再次安装后的普通启动及生命周期整改见 [INSTALL-UPDATE-UNINSTALL-IDENTITY-01](work-packages/WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01.md) 和[运行与验证](runtime/install-update-uninstall-identity-01.md)。同用户普通令牌交接不替代原身份和维护权限检查。
+
 卸载结果核对、续办与关闭按钮见 [UNINSTALL-RESULT-ACTIONS-01](work-packages/WP-IPC-UNINSTALL-RESULT-ACTIONS-01.md) 和[运行及验证](runtime/uninstall-result-actions-01.md)。只读磁盘观察与原卸载回执分开，保留来源和固定清单保护。
 
 2026-10-28 海康ABI诊断、当前指引和测试增量见[HIKROBOT-BOUNDARY-REGRESSIONS-01](work-packages/WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01.md)及[实施记录](runtime/hikrobot-boundary-regressions-01.md)。沿用PR132单相机规则；不增加解码能力，不改变生产准入和历史验收。

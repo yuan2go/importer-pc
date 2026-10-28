@@ -27,6 +27,17 @@ public partial class App : System.Windows.Application
         if (e.Args.FirstOrDefault() == "--supervise-desktop")
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            try
+            {
+                if (OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(e.Args)) { Shutdown(0); return; }
+            }
+            catch (Exception error)
+            {
+                crashDiagnostics.Fatal("Supervisor.OrdinaryStartupFailed", error);
+                MessageBox.Show("无法以普通权限启动供包台监督入口。原配置和记录保留；请核对安装记录。\n" + error.Message,
+                    "启动未完成", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(2); return;
+            }
             crashDiagnostics.SetContext("supervisor:" + e.Args.ElementAtOrDefault(1), "no-business-connections", "supervising");
             await DesktopRecoverySupervisor.HandleAsync(e.Args); Shutdown(Environment.ExitCode); return;
         }
@@ -77,6 +88,14 @@ public partial class App : System.Windows.Application
             startup.Show(); MainWindow = startup;
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             var options = selected!; var launch = options.Business;
+            var ordinaryArguments = new List<string>();
+            ordinaryArguments.AddRange(["--config", Path.GetFullPath(launch.ConfigurationDirectory), "--data-root", Path.GetFullPath(launch.DataRoot), "--ui", options.Ui]);
+            if (launch.View is not null) ordinaryArguments.AddRange(["--view", launch.View]);
+            if (launch.Layout is not null) ordinaryArguments.AddRange(["--layout", launch.Layout]);
+            // Reuse PR137's same-user bootstrap before configuration or supervision.
+            // A supervised child must never replace its registered process ID.
+            if (!recoveryChild && OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(ordinaryArguments.ToArray()))
+            { startup.AllowClose = true; Shutdown(0); return; }
             if (!recoveryChild && OperatingSystem.IsWindows() && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")) &&
                 DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is { LifecycleState: "Installed", Recovery.Enabled: true } installed &&
                 Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(installed.DataRoot), StringComparison.OrdinalIgnoreCase) &&

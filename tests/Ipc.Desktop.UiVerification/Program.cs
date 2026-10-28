@@ -73,6 +73,7 @@ static partial class Program
                 }
                 else if (args.Contains("--dual-camera-diagnostics")) await VerifyDualCameraDiagnostics(root, evidence, lines);
                 else if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
+                else if (args.Contains("--installer-lifecycle")) await VerifyInstallerLifecycle(evidence, lines);
                 else if (args.Contains("--installer-first-run-ui")) await VerifyInstallerFirstRunUi(root, evidence, lines);
                 else if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
                 else if (args.Contains("--management-mode")) await VerifyOperatorAdministration(root, evidence, lines);

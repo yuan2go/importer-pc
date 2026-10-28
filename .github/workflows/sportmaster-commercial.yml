@@ -12,6 +12,45 @@ concurrency:
   group: sportmaster-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
+  windows-installation-lifecycle:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    env:
+      DOTNET_INSTALL_DIR: D:/tools/dotnet
+      DOTNET_CLI_HOME: D:/DevCache/importer-pc/dotnet-home
+      NUGET_PACKAGES: D:/DevCache/nuget/packages
+      TEMP: D:/a/_temp
+      TMP: D:/a/_temp
+    steps:
+      - run: git config --global core.longpaths true
+      - uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: core.protectNTFS
+          GIT_CONFIG_VALUE_0: 'false'
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Verify ordinary token and protected install-update-remove-reinstall
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          New-Item -ItemType Directory -Force .artifacts/installation-lifecycle | Out-Null
+          dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --ordinary-runtime-startup *> .artifacts/installation-lifecycle/ordinary.log
+          if ($LASTEXITCODE -ne 0) { Get-Content .artifacts/installation-lifecycle/ordinary.log; exit $LASTEXITCODE }
+          dotnet build tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --initialize-isolated-ci-storage
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --installed-lifecycle-windows *> .artifacts/installation-lifecycle/protected-lifecycle.log
+          if ($LASTEXITCODE -ne 0) { Get-Content .artifacts/installation-lifecycle/protected-lifecycle.log; exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installation-lifecycle-${{ github.sha }}
+          path: .artifacts/installation-lifecycle
   build-test-entrypoints:
     runs-on: ubuntu-latest
     timeout-minutes: 15

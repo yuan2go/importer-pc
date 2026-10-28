@@ -71,8 +71,38 @@ public static partial class WindowsDeploymentSetup
         if (!TrustedProgramRoots.Contains(Path.Combine(MachineRoot, "deployments"), file) || new FileInfo(file).Length > 4 * 1024 * 1024)
             throw new InvalidDataException("原卸载记录不可信");
         var plan = Wire.Decode<RemovalState>(File.ReadAllText(file)); ValidateRemovalState(plan, location);
-        return new(plan.Status == "Prepared" ? "RetiredCleanupPending" : plan.Status, file,
-            [location.DataRoot, location.ConfigurationDirectory], plan.RestartRequired, plan.Remaining ?? [], location.ReleaseRoot);
+        return ObserveRemoval(new(plan.Status == "Prepared" ? "RetiredCleanupPending" : plan.Status, file,
+            [location.DataRoot, location.ConfigurationDirectory], plan.RestartRequired, plan.Remaining ?? [], location.ReleaseRoot), plan.Files);
+    }
+    // The journal records the original action; disk observations must never rewrite it.
+    // Enumerate without following links and with a fixed budget, including unlisted
+    // leftovers for visibility only. Only the original fixed inventory may be cleaned.
+    internal static WindowsRemovalReceipt ObserveRemoval(WindowsRemovalReceipt recorded, string[] inventory)
+    {
+        if (recorded.ReleaseRoot is null || inventory.Length > 16384 || inventory.Any(n => !ExtensionPackages.SafePath(n)) ||
+            inventory.Distinct(StringComparer.OrdinalIgnoreCase).Count() != inventory.Length)
+            throw new InvalidDataException("原卸载清单无效，无法核对残留");
+        var root = Path.GetFullPath(recorded.ReleaseRoot);
+        DeploymentPaths.RequireOrdinaryAncestors(root);
+        if (File.Exists(root)) throw new InvalidDataException("原程序目录已被替换为文件，无法核对残留");
+        var remaining = new List<string>(); var pending = new Stack<string>();
+        if (Directory.Exists(root)) pending.Push(root);
+        while (pending.TryPop(out var directory))
+        {
+            foreach (var entry in Directory.EnumerateFileSystemEntries(directory))
+            {
+                if (remaining.Count >= 32768) throw new InvalidDataException("原程序目录剩余项超出核对预算；原卸载记录保留");
+                DeploymentPaths.RequireOrdinaryAncestors(entry);
+                var isDirectory = (File.GetAttributes(entry) & FileAttributes.Directory) != 0;
+                remaining.Add(Path.GetRelativePath(root, entry) + (isDirectory ? Path.DirectorySeparatorChar.ToString() : ""));
+                if (isDirectory) pending.Push(entry);
+            }
+        }
+        var observed = remaining.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var restart = recorded.RestartRequired && inventory.Any(n => observed.Contains(n.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar)));
+        var status = recorded.Status is not ("RestartRequired" or "RemovedDataRetained" or "RemovedWithRetainedFiles") ? recorded.Status
+            : restart ? "RestartRequired" : remaining.Count == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
+        return recorded with { Status = status, RestartRequired = restart, RemainingFiles = remaining.Order(StringComparer.OrdinalIgnoreCase).ToArray() };
     }
     static void ValidateRemovalState(RemovalState plan, DeploymentLocation location)
     {

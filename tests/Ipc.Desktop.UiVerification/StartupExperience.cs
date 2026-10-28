@@ -193,6 +193,7 @@ static partial class Program
                 !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(), "completed removal never opens an unavailable management dialog and explains its actual restart state");
             Capture(restart ? "uninstall-result-restart" : "uninstall-result-complete", removal); removal.Close();
         }
+        await VerifyUninstallResultActions(evidence, lines);
         lines.Add("Native Windows HWND/Dispatcher, synthetic contracts only; SDK/RCS, installation lifecycle and site NOT_RUN.");
 
         static void FillInitial(ParameterEditorModel model)

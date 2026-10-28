@@ -1,0 +1,70 @@
+{
+  "Date": "2026-10-28",
+  "Status": "VERIFIED_LOCAL",
+  "CodeCommit": "d85bb4a4dba8a7d83ea98359ba48736f6605012a",
+  "BaseCommit": "d506f77c7ae385d3808f55d15087a9c652f14730",
+  "OS": "Microsoft Windows NT 10.0.22631.0",
+  "Dotnet": "10.0.402",
+  "ProductVersion": "1.0.0",
+  "KernelChecks": 17,
+  "NativeChecks": 43,
+  "PublishedStartupChecks": 214,
+  "SourceFiles": [
+    {
+      "Path": "src/Ipc.Desktop/ProductMaintenanceWindow.cs",
+      "GitBlob": "7966f5031a1f4d62b3a6d6eb55fbcc32cb83eab0"
+    },
+    {
+      "Path": "src/Ipc.Platform/DeploymentOperationInspection.cs",
+      "GitBlob": "155cddd58617e3927a8b0d666ca04ce47fde246c"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/UninstallResultActions.cs",
+      "GitBlob": "8afa68bb51c09625f06cac82e3bd932c55e81bbd"
+    },
+    {
+      "Path": "tests/Ipc.Verification/CommercialRemovalVerification.cs",
+      "GitBlob": "20a5f560d9160917c58f987fc3804d76f3a3e32b"
+    }
+  ],
+  "PublishedBinaries": [
+    {
+      "File": "Ipc.Desktop.dll",
+      "Sha256": "7290c932c1634c5ce9eccf9d3c52545b1b603c5e6b1aaccffa0408cdc20ec931"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "dec3bbfa2605f5d776557a099c1cf22516b5c09450293fdfb3b7facacb94893b"
+    }
+  ],
+  "NotRun": [
+    "actual protected uninstall",
+    "actual UAC round trip",
+    "actual Windows reboot cleanup",
+    "installed package replacement",
+    "SDK/device/site"
+  ],
+  "Logs": [
+    {
+      "File": "first-kernel-build-failure.log",
+      "Sha256": "0028315517ced8e191bd02fc489176a311122b54d29dc8ac16ebd7a91302c8bf"
+    },
+    {
+      "File": "first-native-failure.log",
+      "Sha256": "961b5def0984b9f95b0ee5d9cc9f8f2c1ce1549750ace62e0fd311efc79e4fae"
+    },
+    {
+      "File": "kernel.log",
+      "Sha256": "95d6e99380f5f45b2fdea9f2c47fb2766d282c621322ba19e7a8e37cc84558f8"
+    },
+    {
+      "File": "native-actions.log",
+      "Sha256": "b062cbae5b275d6afddeecb1874d7cd0501cff61b26dc6ea2c4906588c03244a"
+    },
+    {
+      "File": "published-startup.log",
+      "Sha256": "a253ed9d3fd2b3c28a1b6e01c6202018e2def79c1b4ef274e61e3aa246786a7c"
+    }
+  ],
+  "PreCommitChecks": "Kernel and dedicated native checks ran before code commit; source Git blobs match CodeCommit. PublishedStartupChecks uses the committed desktop publish."
+}

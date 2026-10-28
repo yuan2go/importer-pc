@@ -56,6 +56,7 @@ static partial class Program
                 else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
                 else if (args.Contains("--debug-log-live")) await VerifyDebugLogLive(root, evidence, lines);
                 else if (args.Contains("--workstation-status-logs")) await VerifyWorkstationStatusLogs(root, evidence, lines);
+                else if (args.Contains("--uninstall-result-actions")) await VerifyUninstallResultActions(evidence, lines);
                 else if (args.Contains("--lifecycle-ux")) await VerifyLifecycleNative(root, evidence, lines);
                 else if (args.Contains("--parameter-guidance-startup")) await VerifyParameterGuidanceStartup(root, evidence, lines);
                 else if (args.Contains("--reliability-logs")) await VerifyReliabilityLogs(root, evidence, lines);

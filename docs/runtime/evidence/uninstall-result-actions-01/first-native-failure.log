@@ -1,0 +1,16 @@
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS source mismatch is visible before a destructive action and cannot submit cleanup
+CAPTURE uninstall-source-mismatch: 960x760 DIP, Windows DPI 1.25/1.25
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS read-only button performs a new inspection and shows completion even when remaining files are unchanged
+PASS UNINSTALL-ACTIONS source guard also rejects a queued call behind the disabled button
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close exits the mismatched result window
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+FAIL System.InvalidOperationException: failed inspection preserves the original evidence and restores close instead of freezing the window
+   at Program.<>c__DisplayClass58_0.<VerifyUninstallResultActions>g__Check|0(Boolean ok, String why) in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\UninstallResultActions.cs:line 20
+   at Program.VerifyUninstallResultActions(String evidence, List`1 lines) in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\UninstallResultActions.cs:line 59
+   at Program.<>c__DisplayClass30_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\Program.cs:line 59

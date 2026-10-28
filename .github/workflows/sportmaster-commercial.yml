@@ -292,6 +292,11 @@ jobs:
           dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --initialize-isolated-ci-storage
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --clean-storage-bootstrap-elevated
+      - name: Read-only uninstall inventory regression
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet run --project tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -- --commercial-removal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Policy rejection tests
         run: |
           . ./scripts/project-environment.ps1

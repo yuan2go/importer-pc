@@ -108,6 +108,7 @@ try
     if (full || selector == "--conformance") await ConformanceVerification.Run(root, url, workspace);
     if (selector == "--architecture") await ArchitectureClosureVerification.Run(root, url, workspace);
     if (selector == "--current-contracts") await CurrentContractVerification.Run(root, url);
+    if (selector == "--query-fixture") await OperationClosureVerification.QueryEndpointLifetime(root, url);
     if (full || selector == "--extensions") await ExtensionVerification.Run(root, url, workspace);
     if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
     if (full || selector == "--followup") await FollowupVerification.Run(root, url, workspace);

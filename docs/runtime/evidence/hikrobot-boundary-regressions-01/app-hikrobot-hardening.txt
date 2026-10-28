@@ -1,0 +1,16 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-bae377169e854bc4b80d32296e276bd4
+PASS SDK HARDENING: distinct physical serials and addresses pass the pure identity stage; qualification is still separate
+PASS SDK HARDENING: identity candidate rejected at identity-0/device.serial
+PASS SDK HARDENING: identity candidate rejected at identity-1/device.serial
+PASS SDK HARDENING: identity candidate rejected at identity-0/device.serial
+PASS SDK HARDENING: identity candidate rejected at device.serial
+PASS SDK HARDENING: identity candidate rejected at device.ip
+PASS SDK HARDENING: Simulation may omit expected serial; driver lifetime pin is checked independently
+PASS SDK HARDENING: explicitly deferred Production source can remain unconfigured without becoming business Ready
+PASS SDK HARDENING: live diagnostic tail has masked barcode but useful response metadata
+PASS SDK HARDENING: new records are masked at write while original business object and historical file are not rewritten
+PASS SDK HARDENING: historical query masks legacy raw barcode without dropping records
+PASS SDK HARDENING: context retains original adjacency without exposing legacy barcode
+PASS SDK HARDENING: export still refuses the protected business-data tree
+PASS SDK HARDENING: export revalidates originals and masks both historical and new barcode fields
+SDK_HARDENING_PASS checks=14; pure identity and actual diagnostic storage/query/export; SDK/Production qualification NOT_RUN

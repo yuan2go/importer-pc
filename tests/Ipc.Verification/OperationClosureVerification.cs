@@ -9,7 +9,7 @@ using Ipc.Platform;
 using Ipc.Supply;
 using Microsoft.Data.Sqlite;
 
-static class OperationClosureVerification
+static partial class OperationClosureVerification
 {
     static void Assert(bool condition, string text)
     { if (!condition) throw new Exception("AC15 " + text); Console.WriteLine("PASS AC15 " + text); }
@@ -17,6 +17,7 @@ static class OperationClosureVerification
     { using var db = new SqliteConnection("Data Source=" + path); db.Open(); using var c = db.CreateCommand(); c.CommandText = sql; c.ExecuteNonQuery(); }
     public static async Task Run(string root, string url, string workspace)
     {
+        await QueryEndpointLifetime(root, url);
         await IndependentReceipts(root, url, false);
         await IndependentReceipts(root, url, true);
         await ConcurrentProductQueries(root, url);
@@ -71,47 +72,10 @@ static class OperationClosureVerification
         var restored = await restarted.Application!.SnapshotAsync();
         Assert(restored.Recovery.Single(x=>x.Request.Id==requestId).Receipts.Single().Status=="RawUnavailable" && !restored.Admit.Allowed,
             "actual Product controlled stop/restart retains missing original without blind resend or resource loss");
-    }
-    sealed class QueryEndpoint : IAsyncDisposable
-    {
-        readonly HttpListener listener = new(); readonly HttpClient client = new(new SocketsHttpHandler { UseProxy=false });
-        readonly Task worker; readonly List<Task> calls = []; readonly string upstream; int queries;
-        public string Url { get; }
-        public TaskCompletionSource BothStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        public TaskCompletionSource[] Release { get; } = [new(TaskCreationOptions.RunContinuationsAsynchronously),new(TaskCreationOptions.RunContinuationsAsynchronously)];
-        public QueryEndpoint(string upstream)
-        {
-            this.upstream = upstream;
-            var socket = new TcpListener(IPAddress.Loopback,0); socket.Start(); var port=((IPEndPoint)socket.LocalEndpoint).Port; socket.Stop();
-            Url=$"http://127.0.0.1:{port}/"; listener.Prefixes.Add(Url); listener.Start();
-            worker=Task.Run(async()=> { try { while(listener.IsListening) { var context=await listener.GetContextAsync(); lock(calls)calls.Add(Handle(context)); } } catch(HttpListenerException) when(!listener.IsListening){} catch(ObjectDisposedException) when(!listener.IsListening){} });
-        }
-        async Task Handle(HttpListenerContext context)
-        {
-            try
-            {
-                var path=context.Request.Url!.AbsolutePath.TrimStart('/');
-                using var message=new HttpRequestMessage(new HttpMethod(context.Request.HttpMethod),upstream+path);
-                if(context.Request.HasEntityBody) { using var reader=new StreamReader(context.Request.InputStream); message.Content=new StringContent(await reader.ReadToEndAsync(),Encoding.UTF8,"application/json"); }
-                using var response=await client.SendAsync(message);
-                var text=await response.Content.ReadAsStringAsync();
-                if(context.Request.HttpMethod=="GET" && path.StartsWith("requests/",StringComparison.Ordinal))
-                {
-                    var slot=Interlocked.Increment(ref queries)-1; if(slot==1)BothStarted.TrySetResult();
-                    await Release[slot].Task;
-                    if(slot==0) text=Wire.Encode(Wire.Decode<IntegrationResponse>(text) with { Result="Rejected",Reason="AC15 Q1 rejection" });
-                }
-                context.Response.StatusCode=(int)response.StatusCode;
-                await context.Response.OutputStream.WriteAsync(Encoding.UTF8.GetBytes(text));
-            }
-            catch(HttpRequestException) { context.Response.Abort(); return; }
-            finally { context.Response.Close(); }
-        }
-        public async ValueTask DisposeAsync()
-        {
-            foreach(var signal in Release)signal.TrySetResult(); listener.Stop(); await worker;
-            Task[] pending; lock(calls)pending=calls.ToArray(); await Task.WhenAll(pending); client.Dispose(); listener.Close();
-        }
+        await restarted.DisposeAsync();
+        await endpoint.DisposeAsync();
+        Assert(endpoint.QueryReplies == 2 && endpoint.Active == 0,
+            "both original query responses completed and no proxy handler remains after controlled stop");
     }
     static async Task BoxResults(string root, string url)
     {

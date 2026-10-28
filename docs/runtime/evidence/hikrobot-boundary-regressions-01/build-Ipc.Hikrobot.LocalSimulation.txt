@@ -1,0 +1,9 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-worktrees\hikrobot-boundary-regressions-01\tests\Ipc.Hikrobot.LocalSimulation\Ipc.Hikrobot.LocalSimulation.csproj (用时 221 毫秒)。
+  Ipc.Hikrobot.LocalSimulation -> D:\projects\importer-pc-worktrees\hikrobot-boundary-regressions-01\tests\Ipc.Hikrobot.LocalSimulation\bin\Release\net10.0\Ipc.Drivers.Hikrobot.Probe.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.29

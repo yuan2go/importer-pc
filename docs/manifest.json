@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01",
+  "work_package": "WP-IPC-INTEGRATION-20261028",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "ea37ac9fd0e124c2ab52d13788bf6f1ca198109ff0a6aa88ea8a6850d52675f5",
-      "size_bytes": 10995,
-      "git_blob": "dc3bf8bda9089328ca77d689486102e52be57949",
+      "sha256": "0138f78a1232d599b38db330e729e9e0baaaa56a0e648029bc8fd1e1a1846d83",
+      "size_bytes": 11424,
+      "git_blob": "ba10cb2f6e76178387847f5b691f48095e19901d",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "ceebf626c867f17289a90e0d96e3962c652879a4daccc6089874a6081e5a5587",
-      "size_bytes": 29507,
-      "git_blob": "241d554f272339375c0897b81b3f2908ef372157",
+      "sha256": "d8f3809ddf0bc1d77bd2ae21a6c64c6db2aac8b16039f6c2affe17811a68a7a9",
+      "size_bytes": 29878,
+      "git_blob": "17a75bfd8f89f9b6cb8f745c6da9310ec3bdac13",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -1964,9 +1964,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "c4be6df83afcd14c4df35ab48716241e3d4d145bc98e567b9f7639d9a488776b",
+      "sha256": "803235154f154087c390145f9a4096ab3dbc72130a82b81d65be312a71ba7eed",
       "size_bytes": 2847,
-      "git_blob": "a70893f6b8b990e385b7a7b9763b00926ec096a0",
+      "git_blob": "e33d5a011775aa0f78f81a15daaae2a4d3e85259",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "2e7be30ad22227bd7bfb61c5edce1d28b79f8d5259a91a24e883e26ee666df63",
-      "size_bytes": 11779,
-      "git_blob": "2929fa63437353e4593d637571d7a084650ab483",
+      "sha256": "b57015fcd119ed05100d38556273c0ba8e928b9831886189484e943fd9dc41b4",
+      "size_bytes": 9059,
+      "git_blob": "2b89a22a94002b82e017bf39f48315d974fb30d6",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -7272,9 +7272,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "2b32affc1f3c72ff243e8fc810ead4bec3fbbc1af03c62beea9dc011a92e86ff",
-      "size_bytes": 3080,
-      "git_blob": "99b616624d79a24e31170b57d18e34a0db68b93d"
+      "sha256": "447cdb2c88d15f894cd1015a57c007507db38c8f3fd441704f16bd86e32e154b",
+      "size_bytes": 4061,
+      "git_blob": "23ef773ef323072475b6c263239f4cdae01c04d4"
     },
     {
       "path": "docs/design/parallel-task-reconciliation-20261020-02.md",
@@ -59138,9 +59138,9 @@
       "version": "camera-sdk-single-code-01",
       "status": "current_source_or_separately_scoped_evidence",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "a21eb431d75b31dd3d5985ccd6e33ed31fe8578f5bfc66b06884f899f26a7a11",
-      "size_bytes": 21278,
-      "git_blob": "e951c779e97cc6caa64738bf26a23149fef63f20",
+      "sha256": "bffc103efe0d88ef4bc6cdee9ee7e9fb26e167402e2bacd248a1926bb9652c12",
+      "size_bytes": 22002,
+      "git_blob": "510b244c76147fadab2c7e92bf9c90ec852b9261",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained"
     },
     {
@@ -59150,9 +59150,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "932dbbb3bba3e5e89e8e9126bf2b23c23e6f62a71c6e94cb685cca4b941223c4",
-      "size_bytes": 27369,
-      "git_blob": "b2562de36991a15a04dca7ff23781d0b964852eb",
+      "sha256": "b7a8b911599bb61d510f01da669a471f1fdea1829f4f92ddc1c867694f306e6a",
+      "size_bytes": 27717,
+      "git_blob": "f3bfdccbefde0be21711d89a62cd46b1add5711b",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59687,9 +59687,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "26587b54f983134b98ac3fb99deb92575dd58694d97e5fa5bb89081b504b2805",
-      "size_bytes": 21840,
-      "git_blob": "1e2198c01b4d15cb448215f1c7ca33a96b9eb5c6",
+      "sha256": "a9fd9e95057b251881e9018284300ef6719b981cee3db738979a9bd04eb4881b",
+      "size_bytes": 23625,
+      "git_blob": "1ec4cca769bece3cecd09dfc984fe735dfc78c19",
       "pre_publication_no_test_git_blob": "245e9094c4444112718fe61984d1e3942abebf5d"
     },
     {
@@ -59874,9 +59874,9 @@
     },
     {
       "path": "tests/Ipc.Verification/HardeningVerification.cs",
-      "sha256": "a1a673b46ff9c09a964657ea7a92ec1ee212980c748dac273139249b275908cb",
-      "size_bytes": 23839,
-      "git_blob": "b0ca47214457d1faf96b6f64f93feee37f14ca61",
+      "sha256": "f5d8a7b6c75d84f8a38641540096042b8f6cffa14d26fa63d896f2d33ca6f02d",
+      "size_bytes": 25842,
+      "git_blob": "4036cde189d6eebb1f4218db7bde9470b7a945b1",
       "version": "FIX-14",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
@@ -59897,9 +59897,9 @@
     },
     {
       "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
-      "sha256": "9c79a9037b2dca7cb61577590a3bb332c1a5b7036d8177bc09aee9bd1adced5b",
-      "size_bytes": 1182,
-      "git_blob": "98b2a52312a622570feb38a2287121a0e4ea3639",
+      "sha256": "c437a7c01954409b8905b70b48525e9790c8b64615b6c7e6c7a14d86d0c35227",
+      "size_bytes": 1238,
+      "git_blob": "039738dd387968f2acf3db9d21d50c1652274e11",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
@@ -59915,9 +59915,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "96578c791b514f6d6189f675de1929ea083829ca3ef4d8c7d48c95c61f7dbf76",
-      "size_bytes": 23127,
-      "git_blob": "8efe6acd4c46cf5192020dd235b44e276c1b00af"
+      "sha256": "5e632396010543865b6595898d06bd1f176183bf811abb4987619aaf8d07a5e4",
+      "size_bytes": 20506,
+      "git_blob": "cb7c96f668c74ccca2da7a0d805400962c13974f"
     },
     {
       "path": "tests/Ipc.Verification/PresentationVerification.cs",
@@ -59944,9 +59944,9 @@
     },
     {
       "path": "tests/Ipc.Verification/Program.cs",
-      "sha256": "8226bc795bb4f06249e1d19066d039fb2f6fb6b0142d0dacb0c03f40067fae1d",
-      "size_bytes": 53158,
-      "git_blob": "303b6a8f12c4144903c82cb71e00e15d787555b7",
+      "sha256": "ca9fb86df538dcdc05fe0ee4da903a963c396b80457e39a3ae034dfc615b9e50",
+      "size_bytes": 53016,
+      "git_blob": "d61973e5d3f683489f05a2b124fc1c6f71331451",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -59995,9 +59995,9 @@
       "purpose": "Authorized generic code, synthetic evidence, current operations or original-byte custody",
       "source": "WP-IPC-UI-MAINTAINABILITY-16 user authorization; historical source metadata retained where unchanged",
       "storage_scope": "public_repository",
-      "sha256": "bba8e1801b9b9f19a9502a70a46410d3f8d1dc0c775618f9e08c7321b6ac7f8b",
-      "size_bytes": 2713,
-      "git_blob": "297601c80e65ce60c36e0f11b7981b10039e9a2d"
+      "sha256": "753df46579771f3520865e2a2847d667df49434ca72bd7641e9201a223b8d87b",
+      "size_bytes": 2913,
+      "git_blob": "307c093acc777e51ffc5de5c2d90a45f35029a93"
     },
     {
       "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
@@ -96610,9 +96610,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "828689114effcbb13b87af3437cb288a19b5333246225f23d25d928879dfc4a0",
-      "size_bytes": 5038,
-      "git_blob": "5bab6115aaa81897cc33a8123fa58be70dd51b1e",
+      "sha256": "2ad73d9f309ec469e6df1a512a6eeabd970b144df1eb5ef9106eb8fb1080d7de",
+      "size_bytes": 5531,
+      "git_blob": "4f665a90017257a4a450765ebf0538f869a8e6bc",
       "storage_scope": "public_repository"
     },
     {
@@ -101715,9 +101715,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "494f4071db17fb04c3df009380b9e690ae0e76b13c19c53f77598ba13c838c28",
-      "size_bytes": 6267,
-      "git_blob": "eef6ec1271a6a924509eadaa574156ac57ab2739",
+      "sha256": "623179693e5e02d569cc344289aedc7dd12cd530be9c37acf68125adec1597fb",
+      "size_bytes": 7430,
+      "git_blob": "4045117538df61e509868ffd3db020a10d09bf66",
       "storage_scope": "public_repository"
     },
     {
@@ -102254,9 +102254,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "997871a0b9ec7964ce44b77c53e7719dbf196d0d66bd80064606d1f67dbae659",
-      "size_bytes": 4686,
-      "git_blob": "0de5e586c81aa6181d3d35a893c3191f28e46354",
+      "sha256": "d3a2151d4c2b767db9d1694cf7597f2ef5105130388c1a5dc28801ea1c152007",
+      "size_bytes": 4813,
+      "git_blob": "30a9aa7f57dd0aef33a315537975132d9b088618",
       "storage_scope": "public_repository"
     },
     {
@@ -102386,9 +102386,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "ac32aa3d3383f21040b1aae1fb6b61c3ac97abe5daa2045bc04e495103746dc6",
-      "size_bytes": 10562,
-      "git_blob": "d3b509d53861d0a4ba1a8de59f61a83dcbd99246",
+      "sha256": "b22dff1bbae58a1c455c7bc9c58a74c0b67b9161111ec40eaf9da34fe35bd2c0",
+      "size_bytes": 10667,
+      "git_blob": "e4877bdcbfa0fcea93a0a77ebb81152801881096",
       "storage_scope": "public_repository"
     },
     {
@@ -103585,9 +103585,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "2e6a6bdd91e411f8c5a7840cff866e72a8df874b354c7e309cfd1e2778e4a85f",
-      "size_bytes": 1123,
-      "git_blob": "92d781ea3c8633e99e4e04ef712de7fbc6d0fd82",
+      "sha256": "4ccff5036cb0eed3bc82b4f819a45252465321f5cfed7fb515b6ded6a106c8df",
+      "size_bytes": 5975,
+      "git_blob": "08fb4e59f566cf76419fc7b37a9ee5b048949a3d",
       "storage_scope": "public_repository"
     },
     {
@@ -104053,6 +104053,435 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/archive/pre-integration-20261028/FILES.json",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "20404852a7a54150ffa1744fb5b275200d5a3d57495c95ebf0d1b12b6c8a89c6",
+      "size_bytes": 343,
+      "git_blob": "c1664f4c74340b11e583bdbbe21b11fd09f14889",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-integration-20261028/README.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "1214140ce7281a4c9933286c6495e0fb0537573a6ecbdbd048511fc9654796aa",
+      "size_bytes": 242,
+      "git_blob": "361c8a564c59a3df3267acc63f6513b95e947b5f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-integration-20261028/README.md.txt",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "c4be6df83afcd14c4df35ab48716241e3d4d145bc98e567b9f7639d9a488776b",
+      "size_bytes": 2847,
+      "git_blob": "a70893f6b8b990e385b7a7b9763b00926ec096a0",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-integration-20261028/docs__INDEX.md.txt",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "01725085d17bfedadd4f96c2340a76ca17c329c96c94dbe05cbc3ab259ec33fe",
+      "size_bytes": 11469,
+      "git_blob": "14a907fc16c37b9c622e2a27de971480aa351f75",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/.gitattributes",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "0026e00fc6c75d092974455d5036f676127bc95281f3806d8fd95a2099d1faf8",
+      "size_bytes": 47,
+      "git_blob": "c2dcbf9a3eac507ca8ad7b6dad54b48ba903e4b2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/first-kernel-build-failure.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "0028315517ced8e191bd02fc489176a311122b54d29dc8ac16ebd7a91302c8bf",
+      "size_bytes": 420,
+      "git_blob": "47d727f6b04a19cb72222a8c47ec8cba5e9edd14",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/first-native-failure.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "961b5def0984b9f95b0ee5d9cc9f8f2c1ce1549750ace62e0fd311efc79e4fae",
+      "size_bytes": 1731,
+      "git_blob": "1bfdc1d3e56126b23aa1c1b17966bf3b300d5cb4",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/kernel.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "95d6e99380f5f45b2fdea9f2c47fb2766d282c621322ba19e7a8e37cc84558f8",
+      "size_bytes": 1466,
+      "git_blob": "438edbe64403df7f6cbfcea812a9470dab558f17",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/native-actions.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "b062cbae5b275d6afddeecb1874d7cd0501cff61b26dc6ea2c4906588c03244a",
+      "size_bytes": 4064,
+      "git_blob": "228985d5212021680b9a89ffd6e51e0e85ac32d7",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/published-startup.log",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "a253ed9d3fd2b3c28a1b6e01c6202018e2def79c1b4ef274e61e3aa246786a7c",
+      "size_bytes": 18580,
+      "git_blob": "231dbe8dec251ffd4e9d57453fe2788d11e5caac",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/uninstall-result-actions-01/verification.json",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "9438c3f30ea3a511b72ebcbd0aef2df98bf953de567693da6dfbbc3fffc1192a",
+      "size_bytes": 2276,
+      "git_blob": "768702f8739ee2f3cfe331d9050c8bffda885512",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/integration-20261028.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "38c98fde376bff424ba1224d6b6843504b3a3b35c06c278d526a7c56dde95f58",
+      "size_bytes": 2067,
+      "git_blob": "5f0e872a529bc028d6ba46adb5a26994c01d1aba",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/uninstall-result-actions-01.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "3e85d381c46423dbba43d96fd9c3622b601d1e0ca4b78ad149a3ba6adf461928",
+      "size_bytes": 4138,
+      "git_blob": "9fb2aa7d11a3e880de0d94395879b614ce115c31",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-20261028.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "1364acf550ac8a090b6477a0e7fa5f056b1693ae557a3ebb00ece1967b921b12",
+      "size_bytes": 12067,
+      "git_blob": "1cdba7faee463a9d93ca78d377552ad33252fc6b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UNINSTALL-RESULT-ACTIONS-01.md",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "89ff99b71a15ca6fefac8057dab4367916f1e4c20b87e6b814ee835654362042",
+      "size_bytes": 1760,
+      "git_blob": "760e8c43b63f5081fd7bdb985f28f6924775e2b2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/UninstallResultActions.cs",
+      "version": "integration-20261028",
+      "status": "current_guidance_or_scoped_evidence",
+      "purpose": "Reconciliation inventory; not a runtime validation claim",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
+      "sha256": "56d4b0367627c2fe51ecd3620feb9d20e3433650a42862c3df715e9c259d96bc",
+      "size_bytes": 9434,
+      "git_blob": "8afa68bb51c09625f06cac82e3bd932c55e81bbd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-VALIDATION-20261028.md",
+      "version": "integration-20261028",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
+      "sha256": "731611a10c9ebfab7d2292e8682cd54071d571759179a3c73390618eb4a70366",
+      "size_bytes": 5964,
+      "git_blob": "7ce5d6bace89679850cf07b62fc596138e9d1471",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-hikrobot-boundary-regressions-01/README.md",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "eb4bff73d1acd17aa5ec69c91fee8c9ae47cb426096db9edca84a8c425360684",
+      "size_bytes": 743,
+      "git_blob": "bf5b4f375c3f4a9b890394b86e3998f52a74e070",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-hikrobot-boundary-regressions-01/hikrobot-reader-01.md.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "2b32affc1f3c72ff243e8fc810ead4bec3fbbc1af03c62beea9dc011a92e86ff",
+      "size_bytes": 3080,
+      "git_blob": "99b616624d79a24e31170b57d18e34a0db68b93d",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/Ipc.Hikrobot.IndependentReview.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "9b1d9ad873ae5584baf6c947266a606362b76fe8d981245946d2d3f5d28b55d6",
+      "size_bytes": 1302,
+      "git_blob": "dc48d5cefbd6e9475ed33b8c22b9850cab0af77e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/Ipc.Hikrobot.LocalSimulation.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "4e96f6dc1528e6ac50b4c43b8aaee21421ce066a1d41b993b0e89d05d9ad47a6",
+      "size_bytes": 1907,
+      "git_blob": "ee89e7e094773200459e845dbff3b00834195894",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/README.md",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "fcdfa0dd82200b7b68d251048bb05a1e1a04787fed235c1a3bdc01c8ef0b2d2d",
+      "size_bytes": 726,
+      "git_blob": "837e9bae4314873c4f913310af7be2d8492d5fd2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/app-deferred-connections.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "49ebe3462d61817b90cbbc115dab1ca491e2aff9979f8c35a9be4db327ad8361",
+      "size_bytes": 14390,
+      "git_blob": "a5a326fcbf6efb562df805a7f8355ce14fac99e1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/app-hikrobot-hardening.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "f1935deab35f050cae1e061bbf0389b9709bcfbd7b83db5404946d202612dfcb",
+      "size_bytes": 1483,
+      "git_blob": "cc9aca98f1ea883b67b189a5032266f1f28da458",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/app-hikrobot-sdk-editing.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "66a810ef12ff9de1b5e5603a3277d23093e4cf00a0c77236ef6ede3ba9aeb2dc",
+      "size_bytes": 596,
+      "git_blob": "6cea4eb4088e1845c68930f98bc19629559e306f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/app-parameter-refactor.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "71051f5180dc05780c702d417eab52c767d2f70ec1ab666acd198b960ec44432",
+      "size_bytes": 8706,
+      "git_blob": "ecb4ba775d4129b1093b464f9154edc0a66fd7d1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/app-rcs-timeout-errors.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "148b8b9395efbafaeb25e1e3a9dcc5bf9e7f2bebe5d129f41fd873e81ea67b30",
+      "size_bytes": 4730,
+      "git_blob": "fd34fe1d2cf1124be104ff322336157a2661b6e0",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/app-station-single-camera.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "size_bytes": 3431,
+      "git_blob": "94df69cb4dc45bfe0aba6e2c8cbc1b873782697d",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/baseline-mvs-runtime.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "a15aed63b863f119813e487d4accc1e00785241f128c1472dcc98a88ce26dbc3",
+      "size_bytes": 535,
+      "git_blob": "71a5cca8903e59fccaba744bb19b71587975d472",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/build-Ipc.Hikrobot.IndependentReview.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "5304d950af5c7b413d77c2f9dbc90bbaee98e409d79733c56a623fe009eb8593",
+      "size_bytes": 491,
+      "git_blob": "679f347c4775b7c8ce9dfb3121ef6e675c79c9b3",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/build-Ipc.Hikrobot.LocalSimulation.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "c909dd6998cbe1922c8ed164fb092d463f2bf326c788c88f897a2c07c4d4570d",
+      "size_bytes": 483,
+      "git_blob": "d60fdcc8fee09713bbfd5f0ed75285840b22da29",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/build-application.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "379475a42ac94af70bb9cb885099a190ac4237272077b0ff071c72f2d65f655b",
+      "size_bytes": 5392,
+      "git_blob": "2eb299469b692a366c9e986f7efc9edcd8efa3b9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/build-probe.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "08cf9cddc3f551841c13d2d0b776ef6557ab430be6ad30dc182a3ff390113280",
+      "size_bytes": 1135,
+      "git_blob": "f7978098f185cc2699f65cf622c6ba4b6ed2888f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/mvs-runtime.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "6d0a76ce0bca96231223cb18a5f53e2880029877cdd561ba29d5ee8829b12ff6",
+      "size_bytes": 1677,
+      "git_blob": "79a59be6343475f5de79616d2dec6afa93d4e199",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/probe-self-test.txt",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "8c8f9a501c614dbd91aa6c19985245f28d222adc602cb0378c63e29ba4a2cbf7",
+      "size_bytes": 7850,
+      "git_blob": "d72899cd9df767badee01532aefdd1478e887a7b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/hikrobot-boundary-regressions-01/verification.json",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "f07c03f20195432a19e0894ea0340fd82f48d536622ef422b5ff7489a56d9a79",
+      "size_bytes": 9289,
+      "git_blob": "322bc3d4a0b558576ce8a82a1160ac6ebd43eaec",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/hikrobot-boundary-regressions-01.md",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "b80855838a25448298032d55077b010f8b8c909a43bb689d47ade886019a5071",
+      "size_bytes": 2657,
+      "git_blob": "4c73eb15573e6e67b263b17d124ab854de023988",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01.md",
+      "version": "hikrobot-boundary-regressions-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Current SDK diagnostic, guidance custody and bounded regression evidence",
+      "source": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01; original design and prior verification retain their own source identities",
+      "sha256": "84c2d00235e6a9b73482c59f6ae53e43535afc9d5c432e17202b407016d00fcc",
+      "size_bytes": 1736,
+      "git_blob": "e782840139d2ad3c218bc4a3dc9518a4e5f57a05",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/OperationClosureVerification.QueryEndpoint.cs",
+      "version": "integration-20261028",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
+      "sha256": "512e101d3e33167e02f4358642cdf1f7dd98ae059ddfcd2e4f4bfd9f2861b4f3",
+      "size_bytes": 13706,
+      "git_blob": "be35e15321050530bf7ea700bd84531196a2e029",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/evidence/install-update-uninstall-identity-01/FILES.json",
       "version": "install-update-uninstall-identity-01",
       "status": "current_source_or_synthetic_evidence",
@@ -104350,83 +104779,6 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/evidence/uninstall-result-actions-01/.gitattributes",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "0026e00fc6c75d092974455d5036f676127bc95281f3806d8fd95a2099d1faf8",
-      "size_bytes": 47,
-      "git_blob": "c2dcbf9a3eac507ca8ad7b6dad54b48ba903e4b2",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/evidence/uninstall-result-actions-01/first-kernel-build-failure.log",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "0028315517ced8e191bd02fc489176a311122b54d29dc8ac16ebd7a91302c8bf",
-      "size_bytes": 420,
-      "git_blob": "47d727f6b04a19cb72222a8c47ec8cba5e9edd14",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/evidence/uninstall-result-actions-01/first-native-failure.log",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "961b5def0984b9f95b0ee5d9cc9f8f2c1ce1549750ace62e0fd311efc79e4fae",
-      "size_bytes": 1731,
-      "git_blob": "1bfdc1d3e56126b23aa1c1b17966bf3b300d5cb4",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/evidence/uninstall-result-actions-01/kernel.log",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "95d6e99380f5f45b2fdea9f2c47fb2766d282c621322ba19e7a8e37cc84558f8",
-      "size_bytes": 1466,
-      "git_blob": "438edbe64403df7f6cbfcea812a9470dab558f17",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/evidence/uninstall-result-actions-01/native-actions.log",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "b062cbae5b275d6afddeecb1874d7cd0501cff61b26dc6ea2c4906588c03244a",
-      "size_bytes": 4064,
-      "git_blob": "228985d5212021680b9a89ffd6e51e0e85ac32d7",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/evidence/uninstall-result-actions-01/published-startup.log",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "a253ed9d3fd2b3c28a1b6e01c6202018e2def79c1b4ef274e61e3aa246786a7c",
-      "size_bytes": 18580,
-      "git_blob": "231dbe8dec251ffd4e9d57453fe2788d11e5caac",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/evidence/uninstall-result-actions-01/verification.json",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "9438c3f30ea3a511b72ebcbd0aef2df98bf953de567693da6dfbbc3fffc1192a",
-      "size_bytes": 2276,
-      "git_blob": "768702f8739ee2f3cfe331d9050c8bffda885512",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "docs/runtime/install-update-uninstall-identity-01.md",
       "version": "install-update-uninstall-identity-01",
       "status": "current_source_or_synthetic_evidence",
@@ -104438,17 +104790,6 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/uninstall-result-actions-01.md",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "3e85d381c46423dbba43d96fd9c3622b601d1e0ca4b78ad149a3ba6adf461928",
-      "size_bytes": 4138,
-      "git_blob": "9fb2aa7d11a3e880de0d94395879b614ce115c31",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "docs/work-packages/WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01.md",
       "version": "install-update-uninstall-identity-01",
       "status": "current_source_or_synthetic_evidence",
@@ -104457,17 +104798,6 @@
       "sha256": "cec3ddd723b152913d3c37ad282640d0d836fd40e8a0bb513eec185e15786cd2",
       "size_bytes": 2190,
       "git_blob": "cf005c35528bb3005d55f19e9673c1ae691d07b3",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/work-packages/WP-IPC-UNINSTALL-RESULT-ACTIONS-01.md",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "89ff99b71a15ca6fefac8057dab4367916f1e4c20b87e6b814ee835654362042",
-      "size_bytes": 1760,
-      "git_blob": "760e8c43b63f5081fd7bdb985f28f6924775e2b2",
       "storage_scope": "public_repository"
     },
     {
@@ -104501,17 +104831,6 @@
       "sha256": "0857373e54ced2f08504aff36a4edabfb77463452527cc4852c5bdec98ecd767",
       "size_bytes": 6637,
       "git_blob": "3d57318d1a4677c3350c22551b86ee56f77e2777",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "tests/Ipc.Desktop.UiVerification/UninstallResultActions.cs",
-      "version": "install-update-uninstall-identity-01",
-      "status": "current_source_or_synthetic_evidence",
-      "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
-      "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "56d4b0367627c2fe51ecd3620feb9d20e3433650a42862c3df715e9c259d96bc",
-      "size_bytes": 9434,
-      "git_blob": "8afa68bb51c09625f06cac82e3bd932c55e81bbd",
       "storage_scope": "public_repository"
     },
     {
@@ -104603,7 +104922,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-INTEGRATION-20261028.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -107383,6 +107702,18 @@
       "commit": "05f28a7650dbeaefa8d96a8173edcd626f635b32",
       "manifest_sha256": "1c4a5ea2aa4d56aa5feb0c4c268d7d1847f52714ffa137651126def7282f109e",
       "work_package": "WP-IPC-DEBUG-LOG-LIVE-01"
+    }
+  ],
+  "integration_sources": [
+    {
+      "commit": "370ccb00b8978758764b727914d82b49a8eb2a13",
+      "manifest_sha256": "01d691401a673819946b603a9f3e9067bae771e487b046b51fad6007ddf0745c",
+      "work_package": "WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01"
+    },
+    {
+      "commit": "e011da261bcae1578976b681153bf92a3b93a26c",
+      "manifest_sha256": "811d29520f2029ccb57e82fe9904bb374a8ad1571280a54df7ffe51262045541",
+      "work_package": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01"
     }
   ],
   "install_update_uninstall_identity_01": {

@@ -235,5 +235,7 @@ try { await using var app = await Open(Config("sportmaster") with { Mode = RunMo
 catch (InvalidDataException ex) { Pass(ex.Message.Contains("Production"), "Production rejects missing real SDK/protocol authority without fallback"); }
 catch (InvalidOperationException ex) when (!OperatingSystem.IsWindows() && ex.Message == "Protected Production drafts require Windows")
 { Pass(true, "non-Windows Production refuses protected persistence before any reference device can start"); }
+catch (InvalidOperationException ex) when (OperatingSystem.IsWindows() && ex.Message == "生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。")
+{ Pass(true, "Windows Production refuses the missing protected management service before reference devices; installed service qualification is separate"); }
 await ResourceRisks.Run(workspace, root);
 Console.WriteLine("PASS AC17 COMPLETE: full reference chains, identity, weight correlation, restart/unknown, old configuration and no repeated external action");

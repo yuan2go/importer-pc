@@ -178,8 +178,25 @@ static class HardeningVerification
                 // Contradictory late evidence is retained and blocked, never promoted to local success.
                 var contrary = new IntegrationResponse(original.Id, original.PayloadHash, Wire.Id(), "Rejected", "SIMULATION unexpected late receipt");
                 await h.App.CompleteAsync(original, null, contrary);
-                Assert(h.Store.Request(original.Id)!.Status == RequestStatus.Unknown && h.Store.Responses(original.Id).Single() == contrary, "Unexpected evidence after proven local cancellation quarantined for " + kind);
-                Assert((await h.App.DetailsAsync(original.Id)).Single().Request.Id == original.Id, "Request alarm detail resolves only original request");
+                var conflict = h.Store.Conflicts(original.Id).Single();
+                var custody = h.Store.Receipts(original.Id).Single();
+                var lateSnapshot = await h.App.SnapshotAsync();
+                Assert(h.Store.Request(original.Id) == original with { Status = RequestStatus.CancelledBeforeDispatch } && h.Store.Responses(original.Id).Length == 0,
+                    "Original local terminal and immutable request retained without authoritative response for " + kind);
+                Assert(conflict.RequestId == original.Id && conflict.AttemptId is null && conflict.OriginalEvidenceId == contrary.EvidenceId &&
+                    conflict.Response == contrary && conflict.ContentSha256 == Wire.Hash(Wire.Encode(contrary)),
+                    "Unexpected late evidence retained under the original request for " + kind);
+                Assert(custody.RequestId == original.Id && custody.AttemptId is null && custody.Status == ReceiptResponsibilityRules.Committed &&
+                    custody.Response == contrary && custody.ContentSha256 == conflict.ContentSha256,
+                    "Unexpected receipt custody durably committed for " + kind);
+                Assert(h.Store.AcceptedQuantity(original.SessionId) == 0 && h.Store.Attempts(original.Id).Length == 0 &&
+                    !lateSnapshot.Admit.Allowed && !lateSnapshot.Close.Allowed &&
+                    lateSnapshot.State.Blocks.Any(x => x.Code == SupplyReasonCodes.ConflictingEvidence && x.Source == original.Id) &&
+                    (await h.App.UnknownRequestsAsync()).Any(x => x.Id == original.Id),
+                    "Conflict remains discoverable and blocked without inventing transmission or acceptance for " + kind);
+                var lateDetail = (await h.App.DetailsAsync(original.Id)).Single();
+                Assert(lateDetail.Request.Id == original.Id && lateDetail.Conflicts.Single() == conflict,
+                    "Request alarm detail resolves original request and unexpected evidence");
             }
         });
         await Check("SIMULATION-v1 baseline JSON compatibility and forward format gate", async () =>
@@ -191,8 +208,12 @@ static class HardeningVerification
             var payload = Wire.Decode<FixturePayload>(original.Payload); var cfg = Rig.Config(url) with { Policy = payload.Policy, FixtureDemand = payload.InitialDemand };
             var contract = new SimulationRequestContract(cfg);
             var intent = new RequestIntent(payload.StationId, payload.SessionId, payload.OwnerId, payload.OwnerRevision, payload.Kind, payload.Barcode, payload.Package, payload.Quantity, payload.CheckToken, payload.Actor);
-            Assert(contract.Encode(intent, payload.Fault) == original.Payload && Wire.Hash(original.Payload) == original.PayloadHash, "Old payload bytes/hash preserved by separated codec");
-            Assert(Wire.Encode(response) == responseText && contract.Authority(original).Actor == payload.Actor, "Old response fields and frozen actor unchanged");
+            // Compare JSON formatting across Windows CRLF and the original LF fixture.
+            // The frozen payload itself and its hash are never normalized or rewritten.
+            Assert(contract.Encode(intent, payload.Fault).ReplaceLineEndings("\n") == original.Payload.ReplaceLineEndings("\n") &&
+                Wire.Hash(original.Payload) == original.PayloadHash, "Original payload/hash retained; codec differs only in host JSON indentation newlines");
+            Assert(Wire.Encode(response).ReplaceLineEndings("\n") == responseText.ReplaceLineEndings("\n") &&
+                contract.Authority(original).Actor == payload.Actor, "Original response fields and frozen actor unchanged across host formatting");
             contract.ValidateResponse(original, response);
             await using var h = await Rig.New(root, url);
             using var db = new SqliteConnection("Data Source=" + h.Store.Path); db.Open(); using var sql = db.CreateCommand(); sql.CommandText = "SELECT count(*) FROM schema_history";

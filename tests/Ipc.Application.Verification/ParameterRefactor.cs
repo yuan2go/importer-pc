@@ -22,6 +22,14 @@ static class ParameterRefactor
         c = c with { Reader = fixtureReaders[0], Topology = c.Topology! with { Readers = fixtureReaders, Positions = c.Topology.Positions.Select(p => p with { ReaderDeviceId = fixtureReaders[Array.FindIndex(oldReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
         Check(!Wire.Encode(c).Contains("BarcodeFilter") && Wire.Encode(Wire.Decode<ParcelConfiguration>(Wire.Encode(c))) == Wire.Encode(c), "missing legacy policy is omitted and round-trips without manufacturing a production rule");
         Check(BarcodeFiltering.Select(null, ["X", "Y"]).Outcome == "MultipleCodes", "legacy policy retains strict single-code compatibility");
+        Check(BarcodeFiltering.Select(null, ["000123 "]).SelectedCode == "000123 ", "business selection preserves leading zeroes and trailing space without normalization");
+        foreach (var controlCode in new[] { "00\0" + "123", "00\u001d123" })
+        {
+            var strict = BarcodeFiltering.Select(null, [controlCode]);
+            var filtered = BarcodeFiltering.Select(new(".*"), [controlCode]);
+            Check(strict.Outcome == "InvalidCode" && strict.SelectedCode is null && filtered.SelectedCode is null &&
+                filtered.Candidates?.Single().Outcome == "InvalidCode", "embedded NUL/GS1 separator remains rejected even under a matching filter; no byte stripping or guard relaxation");
+        }
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["bad", "noise", "OK003"]).SelectedCode == "OK003", "third candidate is evaluated and original order is retained");
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["preOK003", "OK003tail"]).Outcome == "NoMatchingCode", "matching is whole-string rather than substring");
         Check(BarcodeFiltering.Select(new("OK[0-9]+"), ["OK003", "OK004"]).Outcome == "AmbiguousCodes", "multiple valid candidates are ambiguous");

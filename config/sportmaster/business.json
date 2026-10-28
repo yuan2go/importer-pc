@@ -12,13 +12,13 @@
   },
   "Reader": {
     "Role": "parcel-reader",
-    "Driver": "hikrobot-idmvs",
+    "Driver": "hikrobot-mvs-reader",
     "DeviceId": "sportmaster.camera.left",
     "Revision": "1",
     "ReplayFile": null,
     "Parameters": {
       "entity.mode": "read-result",
-      "acquisition.mode": "continuous"
+      "acquisition.trigger": "off"
     }
   },
   "Scale": null,
@@ -46,24 +46,24 @@
     "Readers": [
       {
         "Role": "parcel-reader",
-        "Driver": "hikrobot-idmvs",
+        "Driver": "hikrobot-mvs-reader",
         "DeviceId": "sportmaster.camera.left",
         "Revision": "1",
         "ReplayFile": null,
         "Parameters": {
           "entity.mode": "read-result",
-          "acquisition.mode": "continuous"
+          "acquisition.trigger": "off"
         }
       },
       {
         "Role": "parcel-reader",
-        "Driver": "hikrobot-idmvs",
+        "Driver": "hikrobot-mvs-reader",
         "DeviceId": "sportmaster.camera.right",
         "Revision": "1",
         "ReplayFile": null,
         "Parameters": {
           "entity.mode": "read-result",
-          "acquisition.mode": "continuous"
+          "acquisition.trigger": "off"
         }
       }
     ],

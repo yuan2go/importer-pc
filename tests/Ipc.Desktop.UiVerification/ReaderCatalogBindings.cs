@@ -11,7 +11,7 @@ static partial class Program
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS READER-CATALOG " + text); }
         var initial = new SportmasterFlow().InitialConfiguration();
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), Path.GetTempPath(), null, null)).Catalog();
-        var sdk = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-idmvs");
+        var sdk = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs-reader");
         var devices = initial.Topology!.Readers.Select((r, i) => r with { Parameters = new(r.Parameters!)
         { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-" + i, ["entity.mode"] = "observe-only" } }).ToArray();
         var candidate = initial with { Reader = devices[0], Topology = initial.Topology with { Readers = devices } };

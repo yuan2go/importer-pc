@@ -1,3 +1,7 @@
+当前 MVS 采图＋软件识别运行与联调边界：[MVS-SOFTWARE-READER-01](runtime/mvs-software-reader-01.md)。
+
+> 2026-10-28 最新执行口径以 [MVS-SOFTWARE-READER-01](work-packages/WP-IPC-MVS-SOFTWARE-READER-01.md) 为准：MVS采图＋同一ZXing-C++软件识别引擎进程内接入，逐次识别结果交RCS去重；本轮RCS按用户要求由本机Python模拟。此前MvCodeReader默认路径及通过记录保留原验证范围。
+
 > 2026-10-28 用户确认同机旧客户端可读码，当前复用入口改为 [MVCODEREADER-RESTORE-01](work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md)：沿现有 MvCodeReader SDK 条码回调与本轮确认的无PLC连续读码、逐结果发RCS接入新版 Application。旧仅 MVS 采图约束保留历史范围；实际识码与现场验收分别记录。
 
 > 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。

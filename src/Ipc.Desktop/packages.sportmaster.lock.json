@@ -325,6 +325,11 @@
           "SQLitePCLRaw.core": "2.1.14"
         }
       },
+      "ZXingCpp": {
+        "type": "Transitive",
+        "resolved": "0.5.3",
+        "contentHash": "9/OpxmBgi0d1HRFYrhQ115Szyd/oAhcsG0p21Fp877sH2S+Fjnlrw3yhyCWhjd/uNQTaMnWkPUKfpaCuWXem7g=="
+      },
       "ipc.application.contracts": {
         "type": "Project",
         "dependencies": {
@@ -391,7 +396,8 @@
       "ipc.drivers.hikrobot.mvs": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
+          "Ipc.Platform": "[1.0.0, )",
+          "ZXingCpp": "[0.5.3, )"
         }
       },
       "ipc.integrations": {

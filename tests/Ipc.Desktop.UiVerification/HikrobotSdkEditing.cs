@@ -22,14 +22,14 @@ static partial class Program
             draft.Readers[i].Parameters.Single(p=>p.Field.Key=="device.ip").Value="192.0.2."+(10+i);
             draft.Readers[i].Parameters.Single(p=>p.Field.Key=="device.serial").Value="SYNTH-"+i;
         }
-        Check(draft.Readers.All(r=>r.Provider?.Implementation=="hikrobot-idmvs"&&r.Provider.Package is null),"fresh first setup uses built-in MvCodeReader without inventory");
+        Check(draft.Readers.All(r=>r.Provider?.Implementation=="hikrobot-mvs-reader"&&r.Provider.Package is null),"fresh first setup uses built-in MVS software reader without inventory");
         Check(rcs.Parameters.All(p=>p.Field.Key is not ("source" or "locale")),"fixed source/locale have no editor");
         var model=draft.CreateParameterEditor((p,c)=>Task.FromResult(BarcodeFiltering.Select(p,c)));
         var editor=new ParameterSettingsControl { Model=model };
         var window=new Window { Title="内置SDK参数验证", Content=editor, Width=1120, Height=760 }; window.Show();
         void Fields(ParameterSettingsControl control,CapabilityDraft reader) {
             var names=Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetName).ToArray();
-            Check(names.Contains(reader.InstanceId+"/device.ip")&&names.Contains(reader.InstanceId+"/device.serial")&&names.Contains(reader.InstanceId+"/acquisition.mode"),"actual SDK IP/serial/trigger fields available");
+            Check(names.Contains(reader.InstanceId+"/device.ip")&&names.Contains(reader.InstanceId+"/device.serial")&&names.Contains(reader.InstanceId+"/acquisition.trigger"),"actual SDK IP/serial/trigger fields available");
             Check(!names.Contains(reader.InstanceId+"/device.port")&&!Descendants(control).OfType<TextBlock>().Any(t=>t.Text.Contains("独立驱动包")||t.Text.Contains("TCP空闲")),"no TCP fields or separate driver installation");
             Check(!Descendants(control).OfType<Button>().Any(b=>AutomationProperties.GetAutomationId(b).EndsWith("/OpenPackageInstallation")),"no separate driver-install action");
         }

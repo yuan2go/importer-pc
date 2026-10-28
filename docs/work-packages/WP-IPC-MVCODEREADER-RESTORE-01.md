@@ -1,3 +1,5 @@
+> 当前接续为 [MVS-SOFTWARE-READER-01](WP-IPC-MVS-SOFTWARE-READER-01.md)。真机实测原路径参数写入失败、无帧；旧合成/枚举PASS不能转记为已修复。
+
 # MVCODEREADER-RESTORE-01
 
 > 本轮后续用户纠正优先：现场没有 PLC，电脑直接连接相机；每个独立识别结果均上报 RCS，由 RCS 去重（PCS 为口误）。当前默认 continuous + read-result。下述先前外部触发讨论和 3669d436 介质保留形成时证据，不作为当前现场流程或当前交付。

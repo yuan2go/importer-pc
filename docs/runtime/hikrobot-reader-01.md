@@ -1,5 +1,9 @@
 # 海康读码 SDK：安装、参数与诊断
 
+当前入口已由用户授权切换为 [MVS＋软件识别](mvs-software-reader-01.md)，见 [MVS-SOFTWARE-READER-01](../work-packages/WP-IPC-MVS-SOFTWARE-READER-01.md)。下文为 MVCODEREADER-RESTORE-01 期间旧路径与早期机器状态的历史说明，不代表当前真机识别或安装包状态。当前相机已通过MVS原生采图、.NET软件识别、Application/SQLite和本地模拟RCS响应联调；旧MvCodeReader路径的参数错误及零帧结果不转记为通过。
+
+## 历史路径与验证范围
+
 当前工作包：[MVCODEREADER-RESTORE-01](../work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md)。自有版本 1.0.0，Windows x64。用户确认同一台现场相机的 Sportmaster/MvCodeReader 和天猫/MVIDCodeReader 两条旧路线均能读码，本版优先复用现有 `Ipc.Drivers.Hikrobot`。旧 MVS 采图说明及原验证保持[归档身份](../archive/pre-mvreader-restore-01/README.md)，不把它作为本版必须新增算法 SDK 的依据。
 
 ## 流程和参数

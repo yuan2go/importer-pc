@@ -344,68 +344,17 @@
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
-      "ipc.application.parcelflow.desktop": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Application.Contracts": "[1.0.0, )",
-          "Ipc.Presentation.Wpf": "[1.0.0, )"
-        }
-      },
-      "ipc.application.sportmaster": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Application.ParcelFlow": "[1.0.0, )"
-        }
-      },
-      "ipc.application.sportmaster.desktop": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Application.ParcelFlow.Desktop": "[1.0.0, )"
-        }
-      },
-      "ipc.assembly": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Application.Sportmaster": "[1.0.0, )",
-          "Ipc.Components": "[1.0.0, )",
-          "Ipc.Drivers": "[1.0.0, )",
-          "Ipc.Drivers.Hikrobot": "[1.0.0, )",
-          "Ipc.Drivers.Hikrobot.Mvs": "[1.0.0, )",
-          "Ipc.Integrations": "[1.0.0, )",
-          "Ipc.Platform": "[1.0.0, )",
-          "Ipc.Supply": "[1.0.0, )"
-        }
-      },
-      "ipc.components": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Reference.Protocol": "[1.0.0, )"
-        }
-      },
       "ipc.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Sportmaster.Desktop": "[1.0.0, )",
-          "Ipc.Assembly": "[1.0.0, )",
-          "Ipc.Presentation.Wpf": "[1.0.0, )"
+          "Ipc.Presentation.Wpf": "[1.0.0, )",
+          "Ipc.Product": "[1.0.0, )"
         }
       },
       "ipc.drivers": {
         "type": "Project",
         "dependencies": {
           "Ipc.Reference.Protocol": "[1.0.0, )"
-        }
-      },
-      "ipc.drivers.hikrobot": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
-        }
-      },
-      "ipc.drivers.hikrobot.mvs": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Platform": "[1.0.0, )"
         }
       },
       "ipc.integrations": {
@@ -431,6 +380,15 @@
       },
       "ipc.presentation.wpf": {
         "type": "Project"
+      },
+      "ipc.product": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.ParcelFlow": "[1.0.0, )",
+          "Ipc.Drivers": "[1.0.0, )",
+          "Ipc.Integrations": "[1.0.0, )",
+          "Ipc.Supply": "[1.0.0, )"
+        }
       },
       "ipc.reference.protocol": {
         "type": "Project",

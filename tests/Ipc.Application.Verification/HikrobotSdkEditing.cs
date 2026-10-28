@@ -11,8 +11,8 @@ internal static class HikrobotSdkEditing
         var config = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
         var catalog = new ParcelCapabilityFactory(new(Path.Combine(workspace, "config/sportmaster"), root, null, null)).Catalog();
         var draft = new StartupConfigurationDraft(config, catalog);
-        Check(draft.Readers.All(r => r.Provider?.Implementation == "hikrobot-idmvs" && r.Provider.Package is null), "fresh candidate resolves two real built-in SDK readers without extension setup");
-        Check(catalog.Providers.Count(p => p.Implementation == "hikrobot-idmvs") == 1, "one current SDK descriptor is registered");
+        Check(draft.Readers.All(r => r.Provider?.Implementation == "hikrobot-mvs-reader" && r.Provider.Package is null), "fresh candidate resolves two real built-in SDK readers without extension setup");
+        Check(catalog.Providers.Count(p => p.Implementation == "hikrobot-mvs-reader") == 1, "one current SDK descriptor is registered");
         foreach (var (reader, i) in draft.Readers.Select((r, i) => (r, i))) {
             reader.Parameters.Single(p => p.Field.Key == "device.ip").Value = "192.0.2." + (10+i);
             reader.Parameters.Single(p => p.Field.Key == "device.serial").Value = "SYNTH-" + i;
@@ -23,7 +23,7 @@ internal static class HikrobotSdkEditing
         rcs.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value = "SYNTH-LEFT";
         rcs.Parameters.Single(p => p.Field.Key == "right-bcr-code").Value = "SYNTH-RIGHT";
         var candidate = draft.Build();
-        Check(candidate.Topology!.Readers.All(r => r.Driver == "hikrobot-idmvs" && r.Parameters is not null) && candidate.Extensions is null, "save preserves SDK parameters without extension deployment");
+        Check(candidate.Topology!.Readers.All(r => r.Driver == "hikrobot-mvs-reader" && r.Parameters is not null) && candidate.Extensions is null, "save preserves SDK parameters without extension deployment");
         var restored = new StartupConfigurationDraft(candidate, catalog);
         Check(restored.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.10" && restored.Readers[1].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.11", "reload isolates left and right");
         var active = candidate with { DeferredConnections = [] }; ParcelCapabilityFactory.ValidateHikrobotIdentities(active);

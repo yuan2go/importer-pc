@@ -68,7 +68,7 @@ public sealed partial class ParameterSettingsControl
         RuntimeSummary(page, draft);
         if (Model?.ApplicationId == "sportmaster" && draft.Kind == "observation")
         {
-            var identity = new TextBox { Text = draft.Provider?.Implementation == "hikrobot-idmvs" ? "海康读码 SDK（MvCodeReader，随软件安装）" : "当前候选使用 MVS 采图；请切换为海康读码 SDK 并核对参数", IsReadOnly = true, MinHeight = 40 };
+            var identity = new TextBox { Text = draft.Provider?.Implementation == "hikrobot-mvs-reader" ? "海康 MVS＋软件识别（随软件安装）" : draft.Provider?.Implementation == "hikrobot-idmvs" ? "海康读码 SDK（MvCodeReader，随软件安装）" : "当前候选使用原有驱动；可切换为 MVS＋软件识别并核对参数", IsReadOnly = true, MinHeight = 40 };
             Field(Form(page), "相机连接", identity, null, draft.InstanceId + "/Provider", page);
             locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
         }
@@ -77,7 +77,7 @@ public sealed partial class ParameterSettingsControl
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
         }
-        var choices = draft.Providers.Where(p => Model!.ApplicationId != "sportmaster" || draft.Kind != "observation" || p.Implementation == "hikrobot-idmvs").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
+        var choices = draft.Providers.Where(p => Model!.ApplicationId != "sportmaster" || draft.Kind != "observation" || p.Implementation == "hikrobot-mvs-reader").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation == "hikrobot-mvs-reader" ? "海康 MVS＋软件识别" : p.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
         if (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null || !choices.Any(c => c.Provider == draft.Provider))
         {
             var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
@@ -130,7 +130,7 @@ public sealed partial class ParameterSettingsControl
         var isRcs = ParameterOwnership.IsRcs(draft);
         if (draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition")
             page.Body.Children.Add(Text("海康 SDK 随供包台软件安装，通过 IP 和预期序列号连接相机；实际连接与帧请在诊断中核对。尚缺适用的条码识别组件，不会生成条码或供包作业，正式供包不可用。"));
-        if (draft.Provider.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader")
+        if (draft.Provider.Implementation is "hikrobot-mvs-reader" or "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader")
             page.Body.Children.Add(Text("电脑通过海康 SDK 连续读码。每次有效识别结果均提交 RCS，包含重复条码，由 RCS 负责去重；无需 PLC 或外部触发。启用前请关闭占用相机的旧客户端或设备工具。实际读码与 RCS 结果可在作业和诊断中核对。"));
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
@@ -205,8 +205,8 @@ public sealed partial class ParameterSettingsControl
         var path = draft.InstanceId + "/" + p.Field.Key;
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
         var required = p.Field.Required || cameraCodeRequired || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
-        var label = (draft.Provider?.Implementation == "hikrobot-idmvs" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
-        var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
+        var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
+        var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
         if (p.IsSensitive)
         {

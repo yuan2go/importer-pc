@@ -32,7 +32,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         // DeviceBinding pins the built-in implementation, not a provider version.
         // Use this host's declarative inventory; extension bindings take a separate,
         // exact package/version/module path and must never be upgraded here.
-        var contract = reader.Driver switch { "tcp-line" => "TCP-LINE-OBSERVATION-v1", "hikrobot-mvs" => "HIKROBOT-MVS-ACQUISITION-v1", "hikrobot-idmvs" => "HIKROBOT-IDMVS-OBSERVATION-v1", _ => "CONTROLLED-OBSERVATION-v1" };
+        var contract = reader.Driver switch { "tcp-line" => "TCP-LINE-OBSERVATION-v1", "hikrobot-mvs" => "HIKROBOT-MVS-ACQUISITION-v1", "hikrobot-idmvs" => "HIKROBOT-IDMVS-OBSERVATION-v1", "hikrobot-mvs-reader" => "HIKROBOT-MVS-READRESULT-v1", _ => "CONTROLLED-OBSERVATION-v1" };
         var installed = catalog.Providers.SingleOrDefault(p => p.Kind == "observation" && p.Implementation == reader.Driver &&
             p.Contract == contract && p.Package is null && p.Module is null);
         // An unavailable provider remains unresolved and cannot be built/saved.

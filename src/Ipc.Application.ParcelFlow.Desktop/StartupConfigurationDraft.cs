@@ -63,7 +63,7 @@ public sealed class StartupConfigurationDraft
         var readerBindings = Readers.Select(d => d.BuildReader(c.ApplicationId)).ToArray();
         var devices = ParcelBindings.Readers(c).Select((r, i) => r with { DeviceId = readerBindings[i].Target,
             Driver = readerBindings[i].Package is null ? readerBindings[i].Implementation : "extension:" + readerBindings[i].InstanceId,
-            Parameters = readerBindings[i].Implementation is "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" ? readerBindings[i].Parameters : null }).ToArray();
+            Parameters = readerBindings[i].Implementation is "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" ? readerBindings[i].Parameters : null }).ToArray();
         var instances = readerBindings.Where(b => b.Package is not null).Select(b => new ExtensionInstance(b.InstanceId, b.Package!.Id, b.Module!, b.Target, b.Enabled, b.Parameters)).ToArray();
         var roots = replacements.Values.Concat(readerBindings).Select(b => b.Package).OfType<PackageReference>().Distinct().ToArray();
         var packages = roots.Length == 0 ? [] : ParcelViewModel.ResolvePackageClosure(roots, catalog.Packages ?? []);

@@ -37,7 +37,7 @@ public partial class ParcelViewModel
             if (!ready) notice = health?.ValidityReason(now) ?? "尚无设备确认";
             if (reader.Driver == "tcp-line")
                 notice += (notice.Length == 0 ? "" : "\n") + "连接确认只表示本地 TCP 状态；未提供应用层心跳，静默断网可能延后发现。业务准入与 RCS 结果分别核对。";
-            if (reader.Driver == "hikrobot-idmvs" || extension?.PackageId == "hikrobot.idmvs-reader")
+            if (reader.Driver is "hikrobot-idmvs" or "hikrobot-mvs-reader" || extension?.PackageId == "hikrobot.idmvs-reader")
             {
                 status = ready ? "SDK 连接已确认" : status;
                 notice += (notice.Length == 0 ? "" : "\n") + ((reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", "observe-only") == "observe-only"

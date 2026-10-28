@@ -32,11 +32,11 @@ static class ParameterGuidanceStartup
             "incomplete connection fields are preserved and an untouched deferred candidate round-trips without defaults added");
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && !draft.Build().Wcs!.Parameters.ContainsKey("quantity") &&
-            ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-idmvs" && r.Parameters!["entity.mode"] == "read-result"),
+            ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-mvs-reader" && r.Parameters!["entity.mode"] == "read-result"),
             "current built-in reader selects the confirmed per-result RCS policy without PLC; quantity is absent");
         var mode = draft.Readers[0].Parameters.Single(p => p.Field.Key == "entity.mode");
-        Check(!mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["observe-only", "read-result", "trigger"]) &&
-            draft.Readers[0].Parameters.Single(p => p.Field.Key == "acquisition.mode").Value == "continuous" &&
+        Check(!mode.Field.ReadOnly && mode.Field.Choices!.SequenceEqual(["read-result", "observe-only"]) &&
+            draft.Readers[0].Parameters.Single(p => p.Field.Key == "acquisition.trigger").Value == "off" &&
             draft.Build().DeferredConnections!.Contains(initial.Reader.DeviceId) &&
             draft.Build().Reader.Parameters!["entity.mode"] == "read-result" && initial.Reader.Parameters!["entity.mode"] == "read-result",
             "current SDK declares per-result reporting; continuous capture remains deferred and editing never starts acquisition");

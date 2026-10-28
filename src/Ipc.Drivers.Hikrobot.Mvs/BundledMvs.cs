@@ -16,6 +16,9 @@ public static class BundledMvs
         return Wire.Decode<T>(reader.ReadToEnd());
     }
     public static CapabilityDescriptor Descriptor { get; } = new("observation", Implementation, "1.0.0", Contract, Resource<ParameterField[]>("Mvs.Parameters.json"), new());
+    public const string ReaderImplementation = "hikrobot-mvs-reader";
+    public const string ReaderContract = "HIKROBOT-MVS-READRESULT-v1";
+    public static CapabilityDescriptor ReaderDescriptor { get; } = new("observation", ReaderImplementation, "1.0.0", ReaderContract, Resource<ParameterField[]>("Mvs.ReaderParameters.json"), new());
     sealed record RuntimeInventory(int SchemaVersion, string Abi, string Entry, string[] Preload, ExtensionFile[] Files);
     static readonly Lazy<nint> runtime = new(() => {
         var manifest = Resource<RuntimeInventory>("Mvs.Runtime.json");
@@ -24,7 +27,9 @@ public static class BundledMvs
     }, LazyThreadSafetyMode.ExecutionAndPublication);
     static readonly object resolverGate = new();
     static bool resolverSet;
-    public static IControlledObservationSource Create(DeviceBinding binding)
+    public static IControlledObservationSource Create(DeviceBinding binding) => CreateCore(binding, false);
+    public static IControlledObservationSource CreateReader(DeviceBinding binding) => CreateCore(binding, true);
+    static IControlledObservationSource CreateCore(DeviceBinding binding, bool recognize)
     {
         lock (resolverGate)
         {
@@ -35,7 +40,15 @@ public static class BundledMvs
                 resolverSet = true;
             }
         }
+#if MVS_ACQUISITION_EXTENSION
+        // The existing independent module exports acquisition only. Its frozen
+        // extension closure has no software-reader contract or decoder dependency.
+        if (recognize) throw new NotSupportedException("Software reader belongs to the built-in composition, not the acquisition-only extension");
+        IMonoBarcodeDecoder? decoder = null;
+#else
+        IMonoBarcodeDecoder? decoder = recognize ? new SoftwareDecoder(binding.Parameters?.GetValueOrDefault("code.encoding", "utf-8") ?? "utf-8") : null;
+#endif
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.
-        return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi());
+        return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi(), decoder: decoder);
     }
 }

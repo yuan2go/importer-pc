@@ -8,7 +8,7 @@ public sealed class SportmasterFlow : FlowDefinition
     public override string Id => "sportmaster";
     public override ParcelConfiguration InitialConfiguration()
     {
-        DeviceBinding[] readers = [new("parcel-reader", "hikrobot-idmvs", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.mode"] = "continuous" } }, new("parcel-reader", "hikrobot-idmvs", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.mode"] = "continuous" } }];
+        DeviceBinding[] readers = [new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }, new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }];
         // A draft in Production with unavailable real dependencies cannot silently run a simulation.
         return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
             new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,

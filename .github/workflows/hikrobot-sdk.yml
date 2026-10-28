@@ -44,6 +44,8 @@ jobs:
           . ./scripts/project-environment.ps1
           dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --self-test
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --mvs-software-flow
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-hardening

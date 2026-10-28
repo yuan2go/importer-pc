@@ -2,11 +2,13 @@ using Ipc.Adapters;
 using Ipc.Platform;
 using Ipc.Product;
 using Ipc.Supply;
+using Microsoft.Data.Sqlite;
 
 static class CurrentContractVerification
 {
     public static async Task Run(string root, string url)
     {
+        CorruptDatabaseRefusal(root);
         await using (var fixture = await Rig.New(root, url))
         {
             fixture.AutoConfirmSyntheticHealth = false;
@@ -74,6 +76,23 @@ static class CurrentContractVerification
                 Check(refused && Wire.Encode(missing) == frozen && router.Diagnostics.Length == entries, "missing frozen implementation refuses Execute/Query before borrowing the changed target or constructing another route");
             }
         }
+    }
+    public static void CorruptDatabaseRefusal(string root)
+    {
+        var directory = Path.Combine(root, "corrupt-database-refusal");
+        Directory.CreateDirectory(directory);
+        var database = Path.Combine(directory, "corrupt.db");
+        File.WriteAllText(database, "not a database");
+        var original = File.ReadAllBytes(database);
+        var refused = false;
+        try { using var store = new SupplyStore(database); }
+        catch (InvalidDataException error) when (error.InnerException is SqliteException { SqliteErrorCode: 26 })
+        { refused = true; }
+        Check(refused, "corrupt database is refused by current read-only preflight with its original SQLite cause");
+        Check(File.ReadAllBytes(database).AsSpan().SequenceEqual(original) && File.ReadAllText(database) == "not a database",
+            "corrupt database retained byte-for-byte, never silently replaced");
+        Check(Directory.GetFileSystemEntries(directory).SequenceEqual(new[] { database }),
+            "corrupt database refusal creates no WAL, SHM, journal or replacement files");
     }
     static void Check(bool valid, string message)
     { if (!valid) throw new InvalidOperationException(message); Console.WriteLine("PASS CURRENT " + message); }

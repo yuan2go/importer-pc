@@ -1,0 +1,18 @@
+PASS entire removal inventory is validated before the first deletion
+PASS unlisted files survive and are reported by nonrecursive removal
+PASS reentry completes empty inventoried directories
+PASS already deleted release root is a completed reentry
+PASS absent roots cannot bypass unsafe inventory rejection
+PASS root replaced by a file is retained and rejected
+PASS real Windows sharing violation records restart intent through a synthetic queue callback
+PASS post-unlock reentry completes the original inventory
+PASS read-only inspection reports actual inventoried leftovers without deleting locked or unlocked files
+PASS inspection drops stale reboot leftovers and exposes current unlisted files without modifying them
+PASS post-reboot observation clears stale remaining files while preserving original receipt and recorded facts
+PASS absent directory cannot turn an unconfirmed original operation into completion
+PASS disk observation cannot manufacture a completed receipt from an unknown journal status
+PASS read-only inspection rejects a replaced root without deleting it
+PASS inspection validates original inventory even after root deletion
+PASS inspection refuses linked descendants without following or modifying outside data
+PASS oversized read-only observation refuses completion and preserves every extra file
+NOT_RUN protected uninstall entry, ARP/UAC and actual reboot deletion; this fixture only calls the internal inventory kernel.

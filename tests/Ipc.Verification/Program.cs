@@ -508,8 +508,7 @@ try
         await using (var manual = new ManualObservationSource("manual-device"))
         { await manual.StartControlledAsync(Wire.Id(), x => { accepted.Add(x); return false; }, _ => { }, CancellationToken.None); Assert(!manual.Emit("Enter", "different-entity"), "Rejected queue admission reported to source"); await manual.StopAsync(CancellationToken.None); await Throws<InvalidOperationException>(() => Task.FromResult(manual.Emit("Read", "entity"))); }
         Assert(accepted.Count == 2 && accepted[0].DeviceId != accepted[1].DeviceId && accepted[0].Epoch != accepted[1].Epoch, "Sources retain independent identities/epochs");
-        var bad = Path.Combine(root, "corrupt.db"); File.WriteAllText(bad, "not a database");
-        await Throws<SqliteException>(() => { using var store = new SupplyStore(bad); return Task.CompletedTask; }); Assert(File.ReadAllText(bad) == "not a database", "Corrupt database retained, never silently replaced");
+        CurrentContractVerification.CorruptDatabaseRefusal(root);
     });
     }
     Console.WriteLine("PASS selected verification scope " + selector + "; Windows desktop/SDK/field validation NOT_RUN by this core executable");

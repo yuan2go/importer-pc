@@ -1,0 +1,47 @@
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS source mismatch is visible before a destructive action and cannot submit cleanup
+CAPTURE uninstall-source-mismatch: 960x760 DIP, Windows DPI 1.25/1.25
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS read-only button performs a new inspection and shows completion even when remaining files are unchanged
+PASS UNINSTALL-ACTIONS source guard also rejects a queued call behind the disabled button
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close exits the mismatched result window
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS failed inspection preserves the original evidence and restores close instead of freezing the window; status=卸载核对未完成：synthetic inspection unavailable
+原卸载记录已保留，可重新核对或关闭。; retained=True; close=True
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS successful refresh removes stale residuals and no longer offers cleanup for a clean result
+CAPTURE uninstall-rechecked-compact: 680x500 DIP, Windows DPI 1.25/1.25
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close also exits after inspection recovery
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS uncertain cleanup reports the original unknown result
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS unknown cleanup cannot be resubmitted through the same button
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS same-source cleanup proceeds only after inspection and ends without a duplicate submission action
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS cleanup in progress prevents reentry and disables close
+PASS UNINSTALL-ACTIONS title-bar close cannot abandon an in-flight cleanup
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close becomes available again after cleanup completes
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS unknown result can be closed without resubmitting maintenance or authenticating
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close returns from the actual modal result and restores the installer owner
+BOUNDARY real WPF HWND/Dispatcher and button events; synthetic deployment/inspection/cleanup callbacks. Protected uninstall/UAC/reboot/SDK/site NOT_RUN.

@@ -89598,9 +89598,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterGuidanceStartup.cs",
-      "sha256": "8a38773a84a32f0029033d2cbdbc24639893dda065a2b686aa1d89be55c13048",
-      "size_bytes": 13739,
-      "git_blob": "4c3355d9578e3e4aa46a47e4102403daeb45559f",
+      "sha256": "30506c7af68a1ba492664a96b6cf2f610f44d7e860dbb6a0ae2b6a6ae1b6c060",
+      "size_bytes": 13742,
+      "git_blob": "e8c3f5fe62ea7f8288de71c504bfe8b6d51a5ebc",
       "version": "camera-sdk-single-code-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",

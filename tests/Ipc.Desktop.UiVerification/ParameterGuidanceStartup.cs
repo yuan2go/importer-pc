@@ -64,7 +64,7 @@ static partial class Program
             var association = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode"));
             Check(association.IsEnabled && Equals(association.SelectedItem, "read-result") && association.Items.Cast<string>().SequenceEqual(new[] { "read-result", "observe-only" }),
                 "MVS software reader exposes the approved per-result policy, optional trigger and observation diagnostics in the shared editor");
-            var acquisition = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t).EndsWith("/acquisition.mode"));
+            var acquisition = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t).EndsWith("/acquisition.trigger"));
             Check(Equals(acquisition.SelectedItem, "off"), "MVS software reader starts with continuous acquisition; no PLC or Line source required");
             var deferred = Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == draft.Readers[0].InstanceId + "/ConfigureLater");
             Check(deferred.IsChecked == true, "camera connection remains explicitly deferred until configured");

@@ -14,7 +14,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public string ApplicationId { get; } = applicationId;
     public string StationId { get; } = stationId;
     public ParcelConfigurationLocations? Locations { get; } = locations;
-    public CapabilityDraft[] Readers { get; } = readers;
+    public CapabilityDraft[] Readers { get; } = readers.Select(r => { if (applicationId == "sportmaster") r.UseSimpleCameraConfiguration(); return r; }).ToArray();
     public CapabilityDraft[] Components { get; } = components;
     // Daily schema-3 roles and startup bindings already own their respective candidate.
     // This is a read-only projection; never copy role state into the component inventory.
@@ -113,6 +113,8 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             if (draft.ProviderChangePending) Issue(fieldCategory, draft.InstanceId + "/Provider", "请确认切换并重置参数，或取消切换；当前输入保留。");
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
             if (draft.ConfigureLater) continue;
+            if (draft.IsSimpleCamera && !draft.Parameters.Any(p => p.Field.Key == "device.serial" && !string.IsNullOrWhiteSpace(p.Value)))
+                Issue("驱动", draft.InstanceId + "/device.serial", "请填写相机序列号。");
             var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
                 Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, error.Split(':')[0])), draft.InstanceId + "/" + error.Split(':')[0], draft.Role + " · " + error);

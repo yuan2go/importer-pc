@@ -1,3 +1,5 @@
+当前相机参数与普通启动增量：[CAMERA-CONFIG-STARTUP-02](work-packages/WP-IPC-CAMERA-CONFIG-STARTUP-02.md)。相机页移除触发/读码处理选择及配置状态，固定连续采集、逐次上报；空位置自动不连接。旧手动选择/相机延后勾选说明保留形成时范围。
+
 当前 MVS 采图＋软件识别运行与联调边界：[MVS-SOFTWARE-READER-01](runtime/mvs-software-reader-01.md)。
 
 > 2026-10-28 最新执行口径以 [MVS-SOFTWARE-READER-01](work-packages/WP-IPC-MVS-SOFTWARE-READER-01.md) 为准：MVS采图＋同一ZXing-C++软件识别引擎进程内接入，逐次识别结果交RCS去重；本轮RCS按用户要求由本机Python模拟。此前MvCodeReader默认路径及通过记录保留原验证范围。

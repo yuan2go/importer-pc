@@ -96,8 +96,18 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                     PhaseTo("create"); created = true; api.Create(matches[0]); token.ThrowIfCancellationRequested();
                     PhaseTo("open-exclusive"); api.Open(); opened = true; token.ThrowIfCancellationRequested();
                     PhaseTo("read-parameters");
+                    if (decoder is not null)
+                    {
+                        // Current standalone station has no PLC/trigger dependency.
+                        // Set only when necessary and verify actual device readback.
+                        foreach (var (key, value) in new[] { ("TriggerMode", 0u), ("AcquisitionMode", 2u) })
+                        {
+                            if (api.EnumValue(key) != value) api.SetEnumValue(key, value);
+                            if (api.EnumValue(key) != value) throw new InvalidDataException("Continuous acquisition readback mismatch: " + key);
+                        }
+                    }
                     var trigger = api.EnumValue("TriggerMode");
-                    if (triggerRequirement == "on" && trigger != 1 || triggerRequirement == "off" && trigger != 0)
+                    if (decoder is null && (triggerRequirement == "on" && trigger != 1 || triggerRequirement == "off" && trigger != 0))
                         throw new InvalidDataException("Configured trigger requirement differs from device; no trigger settings were written");
                     if (api.EnumValue("PixelFormat") != MvsNative.Mono8) throw new InvalidDataException("Current target acquisition requires existing Mono8; pixel format was not changed");
                     var payload = api.PayloadSize();

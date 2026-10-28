@@ -83,6 +83,7 @@ static partial class SportmasterRcs
         {
             var pixels = MakeSoftwareBarcode("SYNTH-READ-0001");
             fake!.Enqueue(pixels, 1); fake.Enqueue(pixels, 2); fake.Enqueue(pixels, 5);
+            Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             Check(peer!.Requests.Count(r => r.Body.Contains("sorter.task.dest_request")) == 3 && s.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3,
                 "actual software decoder -> MVS lifecycle -> Application/SQLite -> actual RCS adapter: three identical codes remain three independent requests");
@@ -112,6 +113,15 @@ static partial class SportmasterRcs
                     "rejected/thrown durable ingress retains the original decoded result and fences source after returning native loan");
                 try { await rejected.StartControlledAsync(Wire.Id(), _ => true, _ => { }, default); throw new Exception("Undelivered source restarted blindly"); }
                 catch (InvalidOperationException) { Check(true, "retained input prevents blind SDK restart/redelivery"); }
+            }
+            foreach (var ignore in new[] { false, true })
+            {
+                var refusedApi = new SoftwareFrameApi(reader) { FailConfigure=!ignore, IgnoreConfigure=ignore };
+                await using var refused = new MvsAcquisition(new(reader.DeviceId,reader.DeviceId,reader.Parameters!),refusedApi,
+                    serial=>new ResourceLease(Path.Combine(root,"configuration-leases"),[serial]),decoder:new SoftwareDecoder("utf-8",PrepareZxingFixture));
+                try { await refused.StartControlledAsync(Wire.Id(),_=>true,_=>{},default);throw new Exception("Configuration failure silently accepted"); }
+                catch(Exception ex) when(ex is IOException or InvalidDataException)
+                { Check(!refusedApi.Calls.Contains("start")&&refusedApi.Calls.TakeLast(3).SequenceEqual(["close","destroy","finalize"]),"rejected or ineffective device settings refuse acquisition and release native owner"); }
             }
             Console.WriteLine("MVS_SOFTWARE_FLOW_PASS synthetic pixels/native port, actual ZXingCpp/Application/SQLite/HTTP; field acceptance NOT_RUN");
         }
@@ -192,6 +202,7 @@ static partial class SportmasterRcs
         readonly ConcurrentQueue<(SoftwarePixels Pixels, uint Number)> waiting = new();
         public List<string> Calls = [];
         public int Released;
+        public bool FailConfigure, IgnoreConfigure;
         nint buffer;
         public bool HasFrame { get; private set; }
         public void Enqueue(SoftwarePixels pixels, uint number) => waiting.Enqueue((pixels, number));
@@ -199,7 +210,9 @@ static partial class SportmasterRcs
         public MvsDevice[] Enumerate() => [new(binding.Parameters!["device.ip"], binding.Parameters["device.serial"], "SYNTHETIC", "SYNTHETIC", [])];
         public void Create(MvsDevice d) => Calls.Add("create");
         public void Open() => Calls.Add("open");
-        public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : 0;
+        uint trigger = 1, acquisition;
+        public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? acquisition : trigger;
+        public void SetEnumValue(string key, uint value) { Calls.Add("set:"+key+"="+value); if(FailConfigure)throw new IOException("Synthetic camera write failure");if(IgnoreConfigure)return; if (key=="TriggerMode") trigger=value; else if (key=="AcquisitionMode") acquisition=value; else throw new Exception("Unexpected camera write"); }
         public long PayloadSize() => 8388608;
         public void ConfigureBuffers(uint count) { }
         public void Start() => Calls.Add("start");

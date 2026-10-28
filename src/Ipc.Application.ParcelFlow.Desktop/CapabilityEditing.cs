@@ -85,7 +85,16 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public string Kind { get; }
     public string Role { get; }
     bool enabled, bound, configureLater;
-    public bool ConfigureLater { get => configureLater; set { configureLater = value; Notify(); } }
+    bool simpleCamera;
+    internal bool IsSimpleCamera => simpleCamera && Provider?.Implementation == "hikrobot-mvs-reader";
+    public bool ConfigureLater { get => IsSimpleCamera ? !Parameters.Any(p => p.Field.Key is "device.ip" or "device.serial" && !string.IsNullOrWhiteSpace(p.Value)) : configureLater; set { configureLater = value; Notify(); } }
+    internal void UseSimpleCameraConfiguration() { simpleCamera = true; CameraDefaults(); }
+    void CameraDefaults()
+    {
+        if (!IsSimpleCamera) return;
+        foreach (var p in Parameters.Where(p => p.Field.Key is "entity.mode" or "acquisition.trigger"))
+        { var value = p.Field.Key == "entity.mode" ? "read-result" : "off"; if (p.Value != value) p.Value = value; }
+    }
     string instanceId = "", target = "", contract = "";
     public bool Enabled { get => enabled; set { enabled = value; Notify(); } }
     public bool Bound { get => bound; set { bound = value; Notify(); } }
@@ -109,6 +118,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
             proposedProvider = null;
             provider = value; Parameters.Clear(); originalParameters.Clear(); preserveOmittedDefaults = false;
             if (value is not null) foreach (var parameter in value.Parameters) { var item = new CapabilityParameter(parameter, parameter.Default ?? ""); item.PropertyChanged += (_, _) => Notify(nameof(Parameters)); Parameters.Add(item); }
+            CameraDefaults();
             Contract = value?.Contract ?? "";
             Notify(nameof(Provider)); Notify(nameof(Contract)); Notify(nameof(ProviderIdentity));
         }
@@ -136,6 +146,12 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
             if (!ParameterOwnership.Applicable(this, item.Field.Key)) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
             if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
+        }
+        if (IsSimpleCamera)
+        {
+            parameters["entity.mode"] = "read-result"; parameters["acquisition.trigger"] = "off";
+            if (!ConfigureLater && string.IsNullOrWhiteSpace(parameters.GetValueOrDefault("device.serial")))
+                throw new InvalidOperationException(InstanceId + "/device.serial: 请填写相机序列号。");
         }
         if (!ConfigureLater && ParameterOwnership.StationConflict(this))
             throw new InvalidOperationException("供包台编号不一致；请在系统配置核对原值并填写共同编号");

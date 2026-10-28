@@ -12,7 +12,7 @@ public sealed partial class ParameterSettingsControl
         foreach (var reader in m.Readers)
         {
             var page = Page(2, reader.Role switch { "left" => "左相机", "right" => "右相机", _ => reader.Role + " 读码实例" }, "");
-            if (m.ApplicationId == "sportmaster") page.Body.Children.Add(Text("左右相机至少配置并启用一台即可。未配置的位置不接包，不影响另一台已就绪相机。"));
+            if (m.ApplicationId == "sportmaster") page.Body.Children.Add(Text("填写要使用的相机；另一台不使用时留空。"));
             Capability(page, reader);
         }
         if (m.Readers.Length == 0)
@@ -59,18 +59,32 @@ public sealed partial class ParameterSettingsControl
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
     void Capability(ObjectPage page, CapabilityDraft draft)
     {
-        if (Model?.ApplicationId == "sportmaster" && (draft.Kind == "observation" || ParameterOwnership.IsRcs(draft)))
+        if (Model?.ApplicationId == "sportmaster" && ParameterOwnership.IsRcs(draft))
         {
             var deferred = new CheckBox { Content = "稍后配置此连接", MinHeight = 40 };
             deferred.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(CapabilityDraft.ConfigureLater)) { Source = draft, Mode = BindingMode.TwoWay });
             Field(Form(page), "配置状态", deferred, "勾选后可先进入软件；此连接不启动，相关作业保持阻断。填写完成后取消勾选，保存并重启以启用连接。", draft.InstanceId + "/ConfigureLater", page);
         }
-        RuntimeSummary(page, draft);
+        if (Model?.ApplicationId != "sportmaster" || draft.Kind != "observation") RuntimeSummary(page, draft);
         if (Model?.ApplicationId == "sportmaster" && draft.Kind == "observation")
         {
-            var identity = new TextBox { Text = draft.Provider?.Implementation == "hikrobot-mvs-reader" ? "海康 MVS＋软件识别（随软件安装）" : draft.Provider?.Implementation == "hikrobot-idmvs" ? "海康读码 SDK（MvCodeReader，随软件安装）" : "当前候选使用原有驱动；可切换为 MVS＋软件识别并核对参数", IsReadOnly = true, MinHeight = 40 };
+            var sdkSelected = draft.Provider?.Implementation == "hikrobot-mvs-reader";
+            var identity = new TextBox { Text = sdkSelected ? "海康 MVS＋软件识别（随软件安装）" : draft.Provider?.Implementation == "tcp-line" ? "当前保存的是旧版 TCP 收码连接" : "当前保存的是原有相机连接", IsReadOnly = true, MinHeight = 40 };
             Field(Form(page), "相机连接", identity, null, draft.InstanceId + "/Provider", page);
             locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
+            if (!sdkSelected)
+            {
+                page.Body.Children.Add(Text("这台相机需要通过海康 SDK 连接。请先切换连接方式，再填写相机 IP 和序列号；无需填写 TCP 端口。切换只重置本相机的连接参数，相机编码及另一台相机的设置保留。"));
+                var sdk = draft.Providers.SingleOrDefault(p => p.Implementation == "hikrobot-mvs-reader");
+                var useSdk = new Button { Content = "使用海康 SDK 并重置本相机连接参数", MinHeight = 44, IsEnabled = sdk is not null, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
+                AutomationProperties.SetAutomationId(useSdk, draft.InstanceId + "/ApplyProviderChange");
+                useSdk.Click += (_, _) => { draft.ProposeProvider(sdk!); draft.ApplyProviderChange(); };
+                page.Body.Children.Add(useSdk);
+                if (sdk is null) page.Body.Children.Add(Text("当前安装缺少海康 SDK 相机入口，请使用完整的当前安装包修复。"));
+                return; // Never mix old TCP fields with a proposed SDK connection.
+            }
+            page.Body.Children.Add(Text("IP 地址用于在网卡上找到这台 GigE 相机；序列号用于核对设备身份。SDK 自行处理设备通信，无需配置 TCP 端口。"));
+            page.Body.Children.Add(Text("填写 IP 和序列号，保存重启后连接。此位置不使用相机时，两项留空。软件自动采用连续采集，每次识别结果都上报 RCS。"));
         }
         if (draft.Role == "default-scale")
         {
@@ -143,6 +157,7 @@ public sealed partial class ParameterSettingsControl
         var advanced = new List<CapabilityParameter>();
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
+            if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "tcp-line" && p.Field.Key == "entity.mode") continue;
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") continue;

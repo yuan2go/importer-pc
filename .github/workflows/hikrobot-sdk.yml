@@ -48,6 +48,8 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-sdk-editing
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --ordinary-runtime-startup
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --hikrobot-hardening
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet build tests/Ipc.Hikrobot.IndependentReview -c Release -p:RestoreLockedMode=true -m:1

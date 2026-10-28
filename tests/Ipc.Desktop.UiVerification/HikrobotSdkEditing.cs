@@ -29,7 +29,8 @@ static partial class Program
         var window=new Window { Title="内置SDK参数验证", Content=editor, Width=1120, Height=760 }; window.Show();
         void Fields(ParameterSettingsControl control,CapabilityDraft reader) {
             var names=Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetName).ToArray();
-            Check(names.Contains(reader.InstanceId+"/device.ip")&&names.Contains(reader.InstanceId+"/device.serial")&&names.Contains(reader.InstanceId+"/acquisition.trigger"),"actual SDK IP/serial/trigger fields available");
+            Check(names.Contains(reader.InstanceId+"/device.ip")&&names.Contains(reader.InstanceId+"/device.serial"),"actual SDK IP and serial fields available");
+            Check(!names.Any(n=>n==reader.InstanceId+"/acquisition.trigger"||n==reader.InstanceId+"/entity.mode"||n==reader.InstanceId+"/ConfigureLater") && !Descendants(control).OfType<FrameworkElement>().Any(e=>AutomationProperties.GetAutomationId(e)==reader.InstanceId+"/RuntimeSummary"),"camera page has no trigger/result policy or configuration-state block");
             Check(!names.Contains(reader.InstanceId+"/device.port")&&!Descendants(control).OfType<TextBlock>().Any(t=>t.Text.Contains("独立驱动包")||t.Text.Contains("TCP空闲")),"no TCP fields or separate driver installation");
             Check(!Descendants(control).OfType<Button>().Any(b=>AutomationProperties.GetAutomationId(b).EndsWith("/OpenPackageInstallation")),"no separate driver-install action");
         }
@@ -45,6 +46,21 @@ static partial class Program
             CaptureInternal(evidence,"bundled-sdk-first-left",startup,lines);
             window.Width=800;window.Height=420;await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);window.UpdateLayout();CaptureInternal(evidence,"bundled-sdk-first-compact",startup,lines);
             Check(ReferenceEquals(startup.Model,model),"compact first setup retains same full candidate");
+            var oldReader = config.Reader with { Driver = "tcp-line", Parameters = new() { ["device.ip"] = "192.0.2.80", ["device.port"] = "2001" } };
+            var old = config with { Reader = oldReader, Topology = config.Topology! with { Readers = config.Topology.Readers.Select(r => r.DeviceId == oldReader.DeviceId ? oldReader : r).ToArray() } };
+            var oldDraft = new StartupConfigurationDraft(old,catalog);
+            var oldCode = oldDraft.Capabilities.Single(ParameterOwnership.IsRcs).Parameters.Single(p=>p.Field.Key=="left-bcr-code"); oldCode.Value="SYNTH-MIGRATION";
+            var oldControl = new ParameterSettingsControl { Model=oldDraft.CreateParameterEditor((p,c)=>Task.FromResult(BarcodeFiltering.Select(p,c))) };
+            window.Width=1120;window.Height=760;window.Content=oldControl;oldControl.ShowPage(2,"左相机");await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            Check(!Descendants(oldControl).OfType<TextBox>().Any(t=>AutomationProperties.GetName(t).EndsWith("/device.port")) &&
+                !Descendants(oldControl).OfType<ComboBox>().Any(t=>AutomationProperties.GetAutomationId(t)==oldDraft.Readers[0].InstanceId+"/Provider"),
+                "legacy TCP candidate shows one explicit SDK transition, never a blank selector or TCP port mixed with the SDK");
+            Check(oldDraft.Readers[0].Provider!.Implementation=="tcp-line","merely opening the page never rewrites legacy configuration");
+            Descendants(oldControl).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)==oldDraft.Readers[0].InstanceId+"/ApplyProviderChange").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);window.UpdateLayout();Fields(oldControl,oldDraft.Readers[0]);
+            Check(oldDraft.Readers[0].Provider!.Implementation=="hikrobot-mvs-reader" && oldCode.Value=="SYNTH-MIGRATION" && oldDraft.Readers[1].Provider!.Implementation=="hikrobot-mvs-reader",
+                "explicit transition activates SDK parameter editors while preserving camera code and other camera");
+            CaptureInternal(evidence,"bundled-sdk-legacy-transition",oldControl,lines);
         } finally { window.Close(); }
         lines.Add("BOUNDARY real WPF and built-in descriptors; synthetic values, no device/barcode/site acceptance");
     }

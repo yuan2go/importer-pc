@@ -50,6 +50,7 @@ public sealed class StartupConfigurationDraft
         }).ToArray();
         foreach (var item in Readers.Concat(Capabilities)) item.ConfigureLater = ParcelConnectionSetup.IsDeferred(c, item.Kind == "observation" ? item.Target : item.InstanceId) ||
             initializeDefaults && c.ApplicationId == "sportmaster" && c.DeferredConnections is null && (item.Kind == "observation" || ParameterOwnership.IsRcs(item));
+        if (c.ApplicationId == "sportmaster") foreach (var reader in Readers) reader.UseSimpleCameraConfiguration();
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
         ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(); MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }

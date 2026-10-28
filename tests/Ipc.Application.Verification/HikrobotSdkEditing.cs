@@ -30,6 +30,12 @@ internal static class HikrobotSdkEditing
         var changed = active.Topology!.Readers.Select((r,i) => i == 1 ? r with { Parameters = new(r.Parameters!) { ["device.serial"] = "SYNTH-0" } } : r).ToArray();
         try { ParcelCapabilityFactory.ValidateHikrobotIdentities(active with { Reader=changed[0], Topology=active.Topology with { Readers=changed } }); throw new Exception("Duplicate accepted"); }
         catch (InvalidDataException) { Check(true, "built-in duplicate physical identity rejected"); }
+        Check(draft.Readers.All(r=>!r.ConfigureLater),"complete camera identities activate without a second configuration-state switch");
+        draft.Readers[1].Parameters.Single(p=>p.Field.Key=="device.ip").Value="";
+        draft.Readers[1].Parameters.Single(p=>p.Field.Key=="device.serial").Value="";
+        var single = draft.Build();
+        Check(ParcelConnectionSetup.IsDeferred(single,single.Topology!.Readers[1].DeviceId) && !ParcelConnectionSetup.IsDeferred(single,single.Reader.DeviceId),"empty unused camera is deferred while configured camera remains active");
+        Check(single.Reader.Parameters!["entity.mode"]=="read-result" && single.Reader.Parameters["acquisition.trigger"]=="off","per-result reporting and continuous acquisition are fixed business defaults");
         Console.WriteLine("BOUNDARY model only; native SDK/frame/barcode/site NOT_RUN");
     }
 }

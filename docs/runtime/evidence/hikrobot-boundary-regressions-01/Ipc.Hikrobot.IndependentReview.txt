@@ -1,0 +1,25 @@
+OBSERVE dispose completed: nativeStarts=1; nativeStops=1; leasesReleased=1; phase=stopped
+PASS MVS.ConcurrentDisposeStartMustLeaveNoNativeOwner
+PASS MVS.RepeatedStartRefusedAndStopIdempotent
+PASS MVS.FrameReturningDuringStopIsFreedBeforeDestroy
+PASS MVS.InvalidGeometryAndPixelFormatRefused
+PASS MVS.ExclusiveOpenFailureRollsBackWithoutStarting
+PASS MVS.IdentityChangesWhileRunningFenceAcquisition
+OBSERVE address reuse: openedSerial=SYNTHETIC-LEFT; deliveredDevice=; refused=True
+PASS Reader.AddressReuseMustNotRebindConfiguredLeft
+PASS Reader.PinnedSerialRejectsAddressReuse
+OBSERVE reader stop notification failed: stops=1; destroys=1; leasesReleased=1
+PASS Reader.ThrowingHealthReceiverMustNotPreventNativeTeardown
+PASS Reader.CallbackExceptionFencesAndNeverReturnsReady
+PASS ObservationSession.ReconnectRejectsOldEpoch
+OBSERVE raw barcode persisted=False; synthetic log=D:\DevCache\importer-pc\temp\ipc-hik-review-journal-18d37d71f0e94642a9d73201c068a109
+PASS Journal.OrdinaryParcelMetadataMustNotPersistRawBarcode
+PASS TCP.split-crlf-coalesced
+PASS TCP.empty
+PASS TCP.control
+PASS TCP.overlong
+PASS TCP.invalid-utf8
+PASS TCP.partial-eof
+PASS TCP.silent
+PASS TCP.callback-throw
+INDEPENDENT_REVIEW_RESULT passed=20 failed=0 skipped=0; synthetic only; real hardware NOT_RUN

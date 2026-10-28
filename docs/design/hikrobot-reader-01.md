@@ -1,13 +1,17 @@
 # 海康当前读码接入设计
 
-2026-10-28 当前入口：[MVCODEREADER-RESTORE-01](../work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md)、[运行与诊断](../runtime/hikrobot-reader-01.md)。旧 MVS 采图设计和 SDK/失败记录保留[原字节](../archive/pre-mvreader-restore-01/README.md)。
+当前路线以[MVS-SOFTWARE-READER-01](../work-packages/WP-IPC-MVS-SOFTWARE-READER-01.md)、[相机参数与启动](../work-packages/WP-IPC-CAMERA-CONFIG-STARTUP-02.md)及[运行边界](../runtime/mvs-software-reader-01.md)为准：MVS SDK采图，在同一进程调用ZXing-C++软件识别，再进入既有Application持久输入与RCS请求链。用户已选定SDK路线，不引入TCP生产者、独立读码服务或未授权VM SDK。UI不拥有连接，不创建第二业务实例。F-02/03/05/09、独立Application及原D/RV保持。
 
-用户确认同机两套旧 SDK 均可读码，并最终纠正现场没有 PLC：电脑直接连接相机，所有识别结果均发给 RCS，去重归 RCS；此前 PCS 为口误。内置装配与独立扩展复用现有 MvCodeReader 实现，通过 IP/物理序列号绑定、连续采集、Ex2 回调、完整候选复制、有界队列、Application 筛选及持久化请求进入既有 RCS。UI 不拥有连接，不引入第二业务实例或算法服务。
+每实例按IP及预期物理序列号枚举唯一设备，保留DeviceId→位置拓扑；Production启用要求预期序列号，独立模拟/诊断可省略。首次取得的物理身份在实例重启后仍固定，并使用同一海康GigE租约域防止模块别名双占。全局SDK初始化引用计数、枚举缓冲复制、独占打开及完整原生资源释放后Finalize的边界继承现有硬化，不抢占其他客户端或写设备IP。
 
-默认 `continuous + read-result`。每个独立 SDK 识别帧建立读码请求身份，同码多帧仍各自上报；原帧完全重投保持原身份，避免技术重投变成再次发送。身份包括设备、连接代次和完整帧来源，不按条码合并。该身份描述识别请求，不证明物理包裹数量或物理完成。条码筛选、未知请求不盲重发、原报文冻结、资源和过载守卫保留。`observe-only` 为明确的只观察模式；`trigger` 是其他已确认触发现场的可选策略，不是本现场前提。
+软件读码路径明确设置并读回连续采集、关闭触发；默认 `read-result`，显式 `observe-only`仍只产生不可准入观察。纯MVS采集模块没有解码器时继续仅观察，不能报告业务Ready。不同SDK的ABI、回调和触发合同不互相冒充，不恢复旧PLC/UDP锁或Thread.Abort。
 
-MVIDCodeReader 的采图加算法、MVS 的仅采图与 MvCodeReader 的条码回调分别保留实际能力和 ABI。型号不匹配不回退第 0 台，不复制旧天猫业务的 PLC/UDP 锁、硬编码码制、丢帧节流及 Thread.Abort。新观察沿现有持久输入责任和业务筛选，不因 UI 或日志刷新静默丢弃。
+每个独立识别帧保留设备、epoch和完整帧来源，建立读码请求身份；同码多帧不由驱动合并，技术重投保留原身份。识别请求身份不证明物理包裹数量或完成。Application继续负责候选完整性、筛选、准入、资源、过载和原请求冻结；Unknown不盲重发，RCS响应与物理完成分别记证。
 
-所有 DLL 与 SDK 支持文件由嵌入清单固定字节，沿受保护加载边界在进程期保持，禁止任意 PATH 加载。初始化、停止、回调、物理租约及失败重试继承现有加固。自有版本保持 1.0.0，SourceCommit/SHA256 区分构建。厂商文件留 Git 外；用户确认旧程序可读不等于本版现场验收。
+解码只接受当前已确认的紧密Mono8图像；未确认stride的填充负载不能通过截取前Width×Height字节冒充紧密图。原生帧归还后再调用软件解码和宿主交接。停止期间已经返回的非空识别结果若未交给Application，保留完整Undelivered及故障，阻断原实例重启，不静默丢弃或自动补发。取消等待不等于原生任务已结束，清理失败仍保留原资源责任。
 
-厂商日志配置通过构建时固定变换使用进程级日志目录；SDK 实际从当前目录读取支持文件，因此交付根、app、desktop 均保留受保护的固定副本，加载前核验并持有。相机调用前设置本进程的日志目录到供包台数据根；不修改全机环境或产品进程工作目录。
+当前SM首配和日常复用完整候选、CAS、Pending/Effective与受控启用；每台相机只有一个业务编码供取格口与心跳共用。SDK入口无需TCP端口，物理序列号不是第二个RCS编码。旧连接只能由用户明确切换，打开页面不改写配置；切换保留本相机业务编码、另一相机及原请求。左右可只启用一台就绪相机；空位置不启动、不接包，两台均未配置或RCS未配置时拒绝相关业务。
+
+SDK精确API门禁0x04080201与受保护加载保留；[ABI与编码回归](../work-packages/WP-IPC-HIKROBOT-BOUNDARY-REGRESSIONS-01.md)的实际/预期版本诊断继续有效。DLL和支持文件按嵌入清单核对并持有，不从任意PATH加载。厂商日志使用进程级D盘目录；固定支持副本随精确构建核验，不改变全机环境或产品工作目录。自有版本保持1.0.0，SourceCommit/SHA256区分构建；厂商文件留Git外。
+
+[MvCodeReader阶段原设计](../archive/pre-mvreader-restore-01/README.md)、[ABI回归前设计](../archive/pre-hikrobot-boundary-regressions-01/README.md)及[原01设计/证据](../archive/pre-hikrobot-sdk-barcode-02/README.md)保留原字节和适用范围。既有MvCodeReader有界候选、编码与回调隔离仍守自己的合同，不作为当前MVS软件读码的现场证明。模拟、实际Windows内核、安装冒烟、真实SDK/相机/RCS和现场分别记证；原PASS不能转记到新整合树。

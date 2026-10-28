@@ -86,7 +86,8 @@ internal sealed class MvsApi : IMvsApi
         lock (runtimeGate)
         {
             if (runtimeOwned) throw new InvalidOperationException("MVS runtime already owned");
-            if (MvsNative.MV_CC_GetSDKVersion() != MvsNative.Version) throw new InvalidDataException("This acquisition ABI requires MVS SDK 4.8.2.2 (installed file 4.8.2.1)");
+            var actualVersion = MvsNative.MV_CC_GetSDKVersion();
+            if (actualVersion != MvsNative.Version) throw new InvalidDataException($"This acquisition ABI requires MVS SDK API 0x{MvsNative.Version:X8} (reviewed DLL file 4.8.2.1); actual API 0x{actualVersion:X8}");
             if (owners == 0) MvsNative.Check(MvsNative.MV_CC_Initialize(), "Initialize");
             owners++; runtimeOwned = true;
         }

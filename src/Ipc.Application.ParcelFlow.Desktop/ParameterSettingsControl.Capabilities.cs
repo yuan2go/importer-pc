@@ -81,6 +81,7 @@ public sealed partial class ParameterSettingsControl
                 useSdk.Click += (_, _) => { draft.ProposeProvider(sdk!); draft.ApplyProviderChange(); };
                 page.Body.Children.Add(useSdk);
                 if (sdk is null) page.Body.Children.Add(Text("当前安装缺少海康 SDK 相机入口，请使用完整的当前安装包修复。"));
+                CameraCode(page, draft);
                 return; // Never mix old TCP fields with a proposed SDK connection.
             }
             page.Body.Children.Add(Text("IP 地址用于在网卡上找到这台 GigE 相机；序列号用于核对设备身份。SDK 自行处理设备通信，无需配置 TCP 端口。"));
@@ -168,12 +169,7 @@ public sealed partial class ParameterSettingsControl
         {
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "tcp-line")
                 page.Body.Children.Add(Text("正常作业时，相机扫描一个包裹输出一条完整报文，软件据此向RCS获取分拣信息。请先确认报文与实体包裹一一对应。"));
-            var mappings = Model!.Components.Where(ParameterOwnership.IsRcs).SelectMany(c => c.Parameters.Where(p => p.Field.Key == draft.Role + "-bcr-code").Select(p => (Component: c, Parameter: p))).ToArray();
-            if (mappings.Length > 0)
-            {
-                var codeForm = Form(page, "相机编码");
-                foreach (var mapping in mappings) Parameter(codeForm, page, mapping.Component, mapping.Parameter);
-            }
+            CameraCode(page, draft);
         }
         if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "采集缓冲" : draft.Kind == "observation" ? "识别与缓冲" : "模拟调试选项"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }
 
@@ -183,6 +179,13 @@ public sealed partial class ParameterSettingsControl
             missing.Foreground = Brush("#915300"); page.Body.Children.Insert(0, missing);
         }
         // Type/version/instance/contract are support metadata, not connection inputs.
+    }
+    void CameraCode(ObjectPage page, CapabilityDraft draft)
+    {
+        var mappings = Model!.Components.Where(ParameterOwnership.IsRcs).SelectMany(c => c.Parameters.Where(p => p.Field.Key == draft.Role + "-bcr-code").Select(p => (Component: c, Parameter: p))).ToArray();
+        if (mappings.Length == 0) return;
+        var form = Form(page, "相机编码");
+        foreach (var mapping in mappings) Parameter(form, page, mapping.Component, mapping.Parameter);
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {

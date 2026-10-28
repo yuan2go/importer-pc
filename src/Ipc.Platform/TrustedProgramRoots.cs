@@ -42,7 +42,9 @@ public static class TrustedProgramRoots
         RequireAncestors(parent.FullName);
         if (!Directory.Exists(root)) new DirectoryInfo(root).Create(MachineRuntimeSetup.DirectoryAcl(sid, FileSystemRights.ReadAndExecute));
         RequireAncestors(root);
-        var roots = Read().Append(root).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        var original = Read();
+        if (original.Contains(root, StringComparer.OrdinalIgnoreCase)) return; // Reinstall/repair must not rewrite an unchanged machine policy.
+        var roots = original.Append(root).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
         if (roots.Length > 64) throw new InvalidDataException("受保护根配额已满，须审查已有部署");
         var temporary = RegistryFile + "." + Wire.Id() + ".new";
         using (var file = new FileInfo(temporary).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(sid)))

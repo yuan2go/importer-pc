@@ -1,0 +1,202 @@
+{
+  "SchemaVersion": 1,
+  "Date": "2026-10-28",
+  "BaseCommit": "d506f77c7ae385d3808f55d15087a9c652f14730",
+  "VerifiedSourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac",
+  "ExecutionIdentity": "Tests ran on the working tree before commit; tested source bytes were committed unchanged. Subsequent verification publication is documentation only.",
+  "Environment": {
+    "OS": "Windows-11-10.0.22631-SP0",
+    "Dotnet": "10.0.402",
+    "Python": "3.14.3"
+  },
+  "Preparation": ". ./scripts/project-environment.ps1",
+  "Checks": [
+    {
+      "Log": "baseline-mvs-runtime.txt",
+      "Sha256": "a15aed63b863f119813e487d4accc1e00785241f128c1472dcc98a88ce26dbc3",
+      "Bytes": 535,
+      "Command": "python -m unittest discover -s scripts -p test_mvs_runtime.py -v",
+      "ExitCode": 0,
+      "Scope": "3 tests; pre-change d506f77 baseline",
+      "SourceCommit": "d506f77c7ae385d3808f55d15087a9c652f14730"
+    },
+    {
+      "Log": "mvs-runtime.txt",
+      "Sha256": "6d0a76ce0bca96231223cb18a5f53e2880029877cdd561ba29d5ee8829b12ff6",
+      "Bytes": 1677,
+      "Command": "python -m unittest discover -s scripts -p test_mvs_runtime.py -v",
+      "ExitCode": 0,
+      "Scope": "10 tests; isolated synthetic PE headers, no SDK load",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "build-application.txt",
+      "Sha256": "379475a42ac94af70bb9cb885099a190ac4237272077b0ff071c72f2d65f655b",
+      "Bytes": 5392,
+      "Command": "dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false",
+      "ExitCode": 0,
+      "Scope": "0 warnings, 0 errors",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "build-probe.txt",
+      "Sha256": "08cf9cddc3f551841c13d2d0b776ef6557ab430be6ad30dc182a3ff390113280",
+      "Bytes": 1135,
+      "Command": "dotnet build tests/Ipc.Drivers.Hikrobot.Probe -c Release -p:IpcContractPath=<workspace>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll -p:RestoreLockedMode=true -m:1 -nr:false",
+      "ExitCode": 0,
+      "Scope": "0 warnings, 0 errors",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "probe-self-test.txt",
+      "Sha256": "8c8f9a501c614dbd91aa6c19985245f28d222adc602cb0378c63e29ba4a2cbf7",
+      "Bytes": 7850,
+      "Command": "dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --self-test",
+      "ExitCode": 0,
+      "Scope": "51 reader checks, 26 MVS checks, 16 hardening checks and native policy checks; synthetic",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "build-Ipc.Hikrobot.IndependentReview.txt",
+      "Sha256": "5304d950af5c7b413d77c2f9dbc90bbaee98e409d79733c56a623fe009eb8593",
+      "Bytes": 491,
+      "Command": "dotnet build tests/Ipc.Hikrobot.IndependentReview -c Release -p:RestoreLockedMode=true -m:1 -nr:false",
+      "ExitCode": 0,
+      "Scope": "0 warnings, 0 errors",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "Ipc.Hikrobot.IndependentReview.txt",
+      "Sha256": "9b1d9ad873ae5584baf6c947266a606362b76fe8d981245946d2d3f5d28b55d6",
+      "Bytes": 1302,
+      "Command": "dotnet tests/Ipc.Hikrobot.IndependentReview/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll",
+      "ExitCode": 0,
+      "Scope": "20 cases; failed=0 skipped=0; synthetic only",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "build-Ipc.Hikrobot.LocalSimulation.txt",
+      "Sha256": "c909dd6998cbe1922c8ed164fb092d463f2bf326c788c88f897a2c07c4d4570d",
+      "Bytes": 483,
+      "Command": "dotnet build tests/Ipc.Hikrobot.LocalSimulation -c Release -p:RestoreLockedMode=true -m:1 -nr:false",
+      "ExitCode": 0,
+      "Scope": "0 warnings, 0 errors",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "Ipc.Hikrobot.LocalSimulation.txt",
+      "Sha256": "4e96f6dc1528e6ac50b4c43b8aaee21421ce066a1d41b993b0e89d05d9ad47a6",
+      "Bytes": 1907,
+      "Command": "dotnet tests/Ipc.Hikrobot.LocalSimulation/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll",
+      "ExitCode": 0,
+      "Scope": "7 cases; failed=0 skipped=0; synthetic only",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "app-parameter-refactor.txt",
+      "Sha256": "71051f5180dc05780c702d417eab52c767d2f70ec1ab666acd198b960ec44432",
+      "Bytes": 8706,
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll <workspace> --parameter-refactor",
+      "ExitCode": 0,
+      "Scope": "PASS; synthetic configuration/loopback where applicable",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "app-hikrobot-hardening.txt",
+      "Sha256": "f1935deab35f050cae1e061bbf0389b9709bcfbd7b83db5404946d202612dfcb",
+      "Bytes": 1483,
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll <workspace> --hikrobot-hardening",
+      "ExitCode": 0,
+      "Scope": "PASS; synthetic configuration/loopback where applicable",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "app-hikrobot-sdk-editing.txt",
+      "Sha256": "66a810ef12ff9de1b5e5603a3277d23093e4cf00a0c77236ef6ede3ba9aeb2dc",
+      "Bytes": 596,
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll <workspace> --hikrobot-sdk-editing",
+      "ExitCode": 0,
+      "Scope": "PASS; synthetic configuration/loopback where applicable",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "app-station-single-camera.txt",
+      "Sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "Bytes": 3431,
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll <workspace> --station-single-camera",
+      "ExitCode": 0,
+      "Scope": "PASS; synthetic configuration/loopback where applicable",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "app-deferred-connections.txt",
+      "Sha256": "49ebe3462d61817b90cbbc115dab1ca491e2aff9979f8c35a9be4db327ad8361",
+      "Bytes": 14390,
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll <workspace> --deferred-connections",
+      "ExitCode": 0,
+      "Scope": "PASS; synthetic configuration/loopback where applicable",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    },
+    {
+      "Log": "app-rcs-timeout-errors.txt",
+      "Sha256": "148b8b9395efbafaeb25e1e3a9dcc5bf9e7f2bebe5d129f41fd873e81ea67b30",
+      "Bytes": 4730,
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll <workspace> --rcs-timeout-errors",
+      "ExitCode": 0,
+      "Scope": "PASS; synthetic configuration/loopback where applicable",
+      "SourceCommit": "2f668db0a1bf6650e5088ac63dcf6158e52b81ac"
+    }
+  ],
+  "SourceInputs": [
+    {
+      "Path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsNative.cs",
+      "GitBlob": "e4877bdcbfa0fcea93a0a77ebb81152801881096",
+      "Sha256": "b22dff1bbae58a1c455c7bc9c58a74c0b67b9161111ec40eaf9da34fe35bd2c0"
+    },
+    {
+      "Path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "GitBlob": "db68cba4987e76a72de6ed75e83fac9f427be124",
+      "Sha256": "1daa2751761ad14932ff2fe63cbe6fba51fd9da216aacda0899291767547a8cb"
+    },
+    {
+      "Path": "src/Ipc.Drivers.Hikrobot/NativeMethods.cs",
+      "GitBlob": "d53f32e124c7e49080939bb50fd910d5c6bead3d",
+      "Sha256": "0b0aa899d665362bc6ebd03320ace5198722bca7e027d02b368fd963d3dabc38"
+    },
+    {
+      "Path": "scripts/mvs_runtime.py",
+      "GitBlob": "96b7c8382a71cfbdef850c64697569619fe2c4b5",
+      "Sha256": "f9e967dd6c506c357f5044623e613a33c29d35a953dc4b76a4a207dda6cf2e47"
+    },
+    {
+      "Path": "scripts/test_mvs_runtime.py",
+      "GitBlob": "08fb4e59f566cf76419fc7b37a9ee5b048949a3d",
+      "Sha256": "4ccff5036cb0eed3bc82b4f819a45252465321f5cfed7fb515b6ded6a106c8df"
+    },
+    {
+      "Path": "tests/Ipc.Drivers.Hikrobot.Probe/Verification.cs",
+      "GitBlob": "1ec4cca769bece3cecd09dfc984fe735dfc78c19",
+      "Sha256": "a9fd9e95057b251881e9018284300ef6719b981cee3db738979a9bd04eb4881b"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ParameterRefactor.cs",
+      "GitBlob": "510b244c76147fadab2c7e92bf9c90ec852b9261",
+      "Sha256": "bffc103efe0d88ef4bc6cdee9ee7e9fb26e167402e2bacd248a1926bb9652c12"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow/BarcodeFiltering.cs",
+      "GitBlob": "66d37d4b3d3a151a0555d126f7bf6a72f5f3dd47",
+      "Sha256": "d3d61bc31c899b34f04a9b561625893730cd577ba9571ca47166efd3c5e55b5e"
+    }
+  ],
+  "Boundaries": {
+    "RealSdk": "NOT_RUN",
+    "CameraOpenOrTrigger": "NOT_RUN",
+    "RealPixels": "NOT_RUN",
+    "RealBarcodeRecognition": "BLOCKED_VENDOR_COMPONENT",
+    "ProductionQualification": "NOT_RUN",
+    "RcsFieldAndPhysicalChute": "NOT_RUN",
+    "NewInstallMedium": "NOT_CREATED",
+    "ExistingProductionGuards": "UNCHANGED"
+  }
+}

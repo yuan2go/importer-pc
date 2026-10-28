@@ -328,7 +328,7 @@ static partial class Program
         check(rcsDraft.Parameters.Single(p => p.Field.Key == "chute-code").Value == "OLD-CHUTE", "inactive chute input remains in the raw draft");
         check(model.ValidateFields(), "corrected synthetic provider candidate passes field checks before normal-form captures");
         control.NavigateTo("rcs.one/quantity"); window.UpdateLayout(); capture("parameters-business-rules", control);
-        control.NavigateTo("reader.1/device.ip"); window.UpdateLayout(); capture("parameters-right-driver", control);
+        check(control.NavigateTo("reader.1"), "right camera object remains a valid navigation target after the SDK-only transition"); window.UpdateLayout(); capture("parameters-right-driver", control);
         check(Descendants(control).OfType<TextBox>().Count(t => t.Text == "TAKE-R") == 1 &&
             draft.Readers[1].Parameters.All(p => p.Field.Key != "bcr-code") &&
             !Descendants(control).OfType<FrameworkElement>().Any(t => AutomationProperties.GetName(t) == "reader.1/bcr-code"),

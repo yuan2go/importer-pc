@@ -155,3 +155,16 @@ docs/runtime/evidence/query-filter-ux-01/*.txt -text whitespace=cr-at-eol
 
 # Preserve station recovery test receipts, including failures.
 docs/runtime/evidence/station-single-camera-recovery-01/*.txt -text whitespace=cr-at-eol,-blank-at-eol
+
+# Keep actual lifecycle receipts, including failed fixture runs, byte-for-byte.
+docs/runtime/evidence/install-update-uninstall-identity-01/** -text whitespace=cr-at-eol,-blank-at-eof
+
+# Preserve the original design blob and bounded Windows regression receipts.
+docs/archive/pre-hikrobot-boundary-regressions-01/*.md.txt -text
+docs/runtime/evidence/hikrobot-boundary-regressions-01/*.txt -text whitespace=cr-at-eol
+# Preserve the original empty-input diagnostic's trailing space in this receipt.
+docs/runtime/evidence/hikrobot-boundary-regressions-01/app-parameter-refactor.txt whitespace=cr-at-eol,-blank-at-eol
+
+# Keep PR137's original native receipts and their empty diagnostic fields intact.
+docs/runtime/evidence/mvreader-restore-01/native-startup-final.log -text whitespace=cr-at-eol,-blank-at-eol
+docs/runtime/evidence/mvreader-restore-01/native-startup-per-result.log -text whitespace=cr-at-eol,-blank-at-eol

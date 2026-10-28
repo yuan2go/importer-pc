@@ -48,7 +48,7 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoder = decoder;
-        entityMode = context.Parameters.GetValueOrDefault("entity.mode", "observe-only");
+        entityMode = context.Parameters.GetValueOrDefault("entity.mode", decoder is null ? "observe-only" : "read-result");
         this.acquireLease = acquireLease ?? (actualSerial => new ResourceLease(MachineRuntimePolicy.ResolveLeaseRoot(null), ["device:hikrobot-gige:" + actualSerial]));
         ip = context.Parameters.GetValueOrDefault("device.ip", ""); serial = context.Parameters.GetValueOrDefault("device.serial", "");
         if (!IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255")
@@ -143,6 +143,8 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                     try
                     {
                         ValidateFrame(frame, maximumPayload);
+                        if (decoder is not null && (ulong)frame.Width * frame.Height != frame.Length)
+                            throw new InvalidDataException("MVS software decoding requires a verified tight Mono8 stride");
                         lock (gate)
                         {
                             if (priorFrame is { } prior)
@@ -172,13 +174,15 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                         try { PhaseTo("decode"); codes = decoder!.Decode(pixels, length, checked((int)frame.Width), checked((int)frame.Height)); }
                         finally { ArrayPool<byte>.Shared.Return(pixels, true); }
                         if (codes.Length == 0) { lock (gate) emptyFrames++; }
-                        else if (!token.IsCancellationRequested)
+                        else
                         {
                             var source = "mvs.frame." + frame.Number;
                             var admission = "mvs.read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + source)[..40].ToLowerInvariant();
                             var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, ++sequence, admission,
                                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", codes, null, observedAt);
                             Undelivered = observation;
+                            if (token.IsCancellationRequested)
+                                throw new IOException("Stop requested during decoding; original decoded observation retained; source fenced");
                             if (receiver?.Invoke(observation) != true) throw new IOException("Application rejected decoded input; original decoded observation retained; source fenced");
                             Undelivered = null;
                             lock (gate) { recognized++; candidates += codes.Length; }
@@ -233,6 +237,7 @@ internal sealed class MvsAcquisition : IControlledObservationSource
     async Task StopCore()
     {
         cancel?.Cancel();
+        PhaseTo("stop-requested");
         // Wait for the actual GetImageBuffer/health call, not a cancelled wrapper.
         if (worker is not null) await worker.ConfigureAwait(false);
         Exception? reportingFailure = null;

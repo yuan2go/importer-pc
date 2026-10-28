@@ -1,0 +1,7 @@
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+FAIL System.Reflection.AmbiguousMatchException: Ambiguous match found for 'Ipc.Desktop.StartupSetupWindow Void Render()'.
+   at System.RuntimeType.GetMethodImplCommon(String name, Int32 genericParameterCount, BindingFlags bindingAttr, Binder binder, CallingConventions callConv, Type[] types, ParameterModifier[] modifiers)
+   at System.Type.GetMethod(String name, BindingFlags bindingAttr)
+   at Program.<>c__DisplayClass12_0.<VerifyInstallerLifecycle>g__Render|3(Window w) in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\InstallerLifecycle.cs:line 28
+   at Program.VerifyInstallerLifecycle(String evidence, List`1 lines) in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\InstallerLifecycle.cs:line 43
+   at Program.<>c__DisplayClass31_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-uninstall-buttons\tests\Ipc.Desktop.UiVerification\Program.cs:line 76

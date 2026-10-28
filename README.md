@@ -2,7 +2,7 @@
 
 C#/.NET 10 Windows 工位客户端。Platform 提供机制，Application 拥有业务状态与命令守卫，驱动与集成实现端口；一个业务实例服务多个页面和窗口。
 
-当前阅读入口是[文档索引](docs/INDEX.md)。只支持当前版本从零安装、从零建库；非当前格式拒绝，请使用全新数据目录。本轮收口见[工作包](docs/work-packages/WP-IPC-FRESH-BASELINE-01.md)。2026-10-26 并行任务整合的范围、顺序、不变式和验证状态见[整合工作包](docs/work-packages/WP-IPC-INTEGRATION-20261026.md)。源码合并不代表已发布新安装包或取得现场资格。
+当前阅读入口是[文档索引](docs/INDEX.md)。只支持当前版本从零安装、从零建库；非当前格式拒绝，请使用全新数据目录。本轮收口见[工作包](docs/work-packages/WP-IPC-FRESH-BASELINE-01.md)。2026-10-28 并行任务整合的范围、顺序、不变式和验证状态见[整合工作包](docs/work-packages/WP-IPC-INTEGRATION-20261028.md)。源码合并不代表已发布新安装包或取得现场资格。
 
 | 任务 | 入口 |
 |---|---|

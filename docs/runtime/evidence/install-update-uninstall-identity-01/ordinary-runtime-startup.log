@@ -1,0 +1,5 @@
+PASS ORDINARY-START explicit empty and ordinary arguments are quoted
+PASS ORDINARY-START invalid native command line is rejected before launch
+PASS ORDINARY-START real restricted child starts and passes unchanged ordinary-account validator
+PASS ORDINARY-START same real Windows user loses enabled administrator rights; Unicode, quote, empty and trailing-slash arguments survive
+ORDINARY_START_PASS actual Windows restricted process; no UAC/account/ACL changes, no business or devices

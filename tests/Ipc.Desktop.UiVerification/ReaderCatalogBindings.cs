@@ -36,8 +36,8 @@ static partial class Program
                 var binding = readers[i].Build();
                 Check(readers[i].Role == (i == 0 ? "left" : "right") && binding.Target == devices[i].DeviceId &&
                     binding.Parameters["device.ip"] == devices[i].Parameters!["device.ip"] && binding.Parameters["device.serial"] == devices[i].Parameters!["device.serial"] &&
-                    binding.Parameters["entity.mode"] == "observe-only" && !binding.Parameters.ContainsKey("device.port"),
-                    "SDK device, position, physical identity and observation policy survive current catalog resolution for " + readers[i].Role);
+                    binding.Parameters["entity.mode"] == "read-result" && binding.Parameters["acquisition.trigger"] == "off" && !binding.Parameters.ContainsKey("device.port"),
+                    "SDK device, position and physical identity survive resolution while current fixed reporting defaults apply only to the candidate for " + readers[i].Role);
             }
         }
         foreach (var inventory in new[]

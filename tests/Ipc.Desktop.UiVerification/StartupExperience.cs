@@ -193,6 +193,8 @@ static partial class Program
                 !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(), "completed removal never opens an unavailable management dialog and explains its actual restart state");
             Capture(restart ? "uninstall-result-restart" : "uninstall-result-complete", removal); removal.Close();
         }
+        await VerifyUninstallResultActions(evidence, lines);
+        await VerifyInstallerLifecycle(evidence, lines);
         lines.Add("Native Windows HWND/Dispatcher, synthetic contracts only; SDK/RCS, installation lifecycle and site NOT_RUN.");
 
         static void FillInitial(ParameterEditorModel model)
@@ -213,7 +215,15 @@ static partial class Program
         async Task Ready(Window w)
         {
             for (var i = 0; i < 200 && ((bool)busy.GetValue(w)! || !Descendants(w).OfType<ParameterSettingsControl>().Any()); i++) await Task.Delay(20);
-            Check(!(bool)busy.GetValue(w)! && Descendants(w).OfType<ParameterSettingsControl>().Any(), "startup editor loads without a running application; " + Status(w));
+            var ready = !(bool)busy.GetValue(w)! && Descendants(w).OfType<ParameterSettingsControl>().Any();
+            if (!ready)
+            {
+                Capture("startup-not-ready", w);
+                lines.Add("STARTUP-NOT-READY loaded=" + w.IsLoaded + "; visible=" + w.IsVisible + "; busy=" + busy.GetValue(w)
+                    + "; authorization=" + type.GetField("authorityAllowed", flags)!.GetValue(w)
+                    + "; visible text=" + string.Join(" | ", Descendants(w).OfType<TextBlock>().Where(t => t.IsVisible).Select(t => t.Text)));
+            }
+            Check(ready, "startup editor loads without a running application; " + Status(w));
         }
         void Capture(string name, Window w)
         {

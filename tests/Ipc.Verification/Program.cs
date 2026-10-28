@@ -35,6 +35,16 @@ if (args.FirstOrDefault() == "--commercial-removal")
     CommercialRemovalVerification.Run(Path.Combine(Path.GetTempPath(), "ipc-removal-" + Wire.Id()));
     return;
 }
+if (args.FirstOrDefault() == "--installed-lifecycle-windows")
+{
+    if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Actual Windows installation verification required");
+    InstalledLifecycleWindows.Run(); return;
+}
+if (args.FirstOrDefault() == "--lifecycle-ordinary-child")
+{
+    if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+    InstalledLifecycleWindows.Child(args); return;
+}
 SupplyContractRegistration.Register();
 
 if (args.FirstOrDefault() == "--extension-interrupt")
@@ -108,6 +118,7 @@ try
     if (full || selector == "--conformance") await ConformanceVerification.Run(root, url, workspace);
     if (selector == "--architecture") await ArchitectureClosureVerification.Run(root, url, workspace);
     if (selector == "--current-contracts") await CurrentContractVerification.Run(root, url);
+    if (selector == "--query-fixture") await OperationClosureVerification.QueryEndpointLifetime(root, url);
     if (full || selector == "--extensions") await ExtensionVerification.Run(root, url, workspace);
     if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
     if (full || selector == "--followup") await FollowupVerification.Run(root, url, workspace);
@@ -508,8 +519,7 @@ try
         await using (var manual = new ManualObservationSource("manual-device"))
         { await manual.StartControlledAsync(Wire.Id(), x => { accepted.Add(x); return false; }, _ => { }, CancellationToken.None); Assert(!manual.Emit("Enter", "different-entity"), "Rejected queue admission reported to source"); await manual.StopAsync(CancellationToken.None); await Throws<InvalidOperationException>(() => Task.FromResult(manual.Emit("Read", "entity"))); }
         Assert(accepted.Count == 2 && accepted[0].DeviceId != accepted[1].DeviceId && accepted[0].Epoch != accepted[1].Epoch, "Sources retain independent identities/epochs");
-        var bad = Path.Combine(root, "corrupt.db"); File.WriteAllText(bad, "not a database");
-        await Throws<SqliteException>(() => { using var store = new SupplyStore(bad); return Task.CompletedTask; }); Assert(File.ReadAllText(bad) == "not a database", "Corrupt database retained, never silently replaced");
+        CurrentContractVerification.CorruptDatabaseRefusal(root);
     });
     }
     Console.WriteLine("PASS selected verification scope " + selector + "; Windows desktop/SDK/field validation NOT_RUN by this core executable");

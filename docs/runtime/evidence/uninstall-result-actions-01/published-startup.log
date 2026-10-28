@@ -1,0 +1,221 @@
+PASS READER-CATALOG startup and runtime resolve the actual current built-in SDK descriptor without a package or version substitution
+PASS READER-CATALOG SDK device, position, physical identity and observation policy survive current catalog resolution for left
+PASS READER-CATALOG SDK device, position, physical identity and observation policy survive current catalog resolution for right
+PASS READER-CATALOG startup and runtime resolve the actual current built-in SDK descriptor without a package or version substitution
+PASS READER-CATALOG SDK device, position, physical identity and observation policy survive current catalog resolution for left
+PASS READER-CATALOG SDK device, position, physical identity and observation policy survive current catalog resolution for right
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG missing or incompatible SDK provider stays unresolved
+PASS READER-CATALOG unresolved reader cannot build a savable binding
+PASS READER-CATALOG manual readers retain their field-free contract
+PASS READER-CATALOG extension readers resolve their exact pinned package
+PASS READER-CATALOG another extension version cannot replace the pinned reader
+PASS READER-CATALOG model construction never mutates original configuration bytes
+PASS STARTUP02 equivalent numeric TCP ports with different reader names cannot acquire separate physical leases
+PASS STARTUP02 physical TCP endpoint can be acquired only after the original lease releases
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP framing preserves split UTF8, CRLF and multiple coalesced lines
+PASS STARTUP02 same-code lines retain separate entities and the application-registered epoch
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP disconnection faults the source without automatic reconnect or replay
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 observe-only TCP cannot invent an entity admission boundary
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP overflow is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP invalid-utf8 is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP partial-eof is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 TCP client connects to the configured endpoint without sending commands
+PASS STARTUP02 TCP bounded event wait completes
+PASS STARTUP02 TCP reject is explicit failure, never a truncated or replacement barcode
+PASS STARTUP02 TCP stop drains read and liveness tasks and closes the original socket
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 first configuration has one shared directory without an outer tab bar
+PASS STARTUP02 compact first-configuration heading uses the supply-station name
+PASS STARTUP02 configuration file import is visible on step one
+PASS REFINE01 identical missing-IP errors retain both camera instances
+PASS REFINE01 same instance/field/rule deduplicates without merging cameras
+PASS REFINE01 editing a real bound input clears only its obsolete required error
+PASS REFINE01 IP syntax has its own rule
+PASS REFINE01 syntactically valid unspecified address has a distinct business-address rule
+PASS REFINE01 quantity is fixed policy while unknown specified-chute remains different from explicit false
+PASS REFINE01 field errors expose Chinese rather than schema diagnostics
+PASS REFINE01 specified chute reveals its real conditional field
+PASS REFINE01 disabling specified chute retains process input without validating or navigating to an inapplicable field
+PASS REFINE01 common station input reflects changes to the existing paired fields
+PASS REFINE01 cross-page review has actionable exact-field errors
+PASS REFINE01 review action focuses the right camera, never the left instance
+PASS REFINE01 shared directory exposes 条码筛选
+PASS REFINE01 one body scroll on 条码筛选
+PASS REFINE01 shared directory exposes 接收与等待限制
+PASS REFINE01 one body scroll on 接收与等待限制
+PASS REFINE01 shared directory exposes 供包台标识
+PASS REFINE01 one body scroll on 供包台标识
+PASS REFINE01 shared directory exposes 数据与记录
+PASS REFINE01 one body scroll on 数据与记录
+PASS REFINE01 shared directory exposes RCS 服务
+PASS REFINE01 one body scroll on RCS 服务
+PASS REFINE01 Tab traverses from a parameter without trapping focus
+PASS REFINE01 binary storage unit remains explicitly MiB
+PASS REFINE01 long configuration paths stay complete, wrapping and keyboard-selectable in the shared native form
+PASS REFINE01 native management menu shows the real expiry time in an explicit format
+REFINE01 native DPI=1.25; synthetic configuration; no SDK, production RCS or installation.
+PASS LEAF empty feedback cannot become a fabricated parameter error
+PASS LEAF parameter failure banners suppress raw schema keys as well as field-level errors
+PASS LEAF invalid actual regex blocks this leaf page
+PASS LEAF ordinary error text contains no backing property or raw required rule
+CAPTURE leaf-barcode-error: 960x656 DIP, Windows DPI 1.25/1.25
+PASS LEAF corrected optional rule advances only one leaf, not the entire category
+PASS LEAF whitespace-only optional rules retain the existing absent-filter semantics
+PASS LEAF native page validation finishes within its budget
+PASS LEAF forward directory jump cannot skip a missing value on the current leaf
+PASS LEAF conditional specified chute remains required on its own page
+PASS LEAF explicitly disabling the condition permits the next leaf without deleting retained values
+PASS LEAF numeric error blocks processing page
+PASS LEAF numeric error uses a Chinese name
+PASS LEAF backward navigation retains invalid process-only input: page=格口请求; value=bad
+PASS LEAF native page validation finishes within its budget
+PASS LEAF forward multi-page jump stops at the first invalid intermediate leaf
+PASS LEAF native page validation finishes within its budget
+PASS LEAF keyboard search cannot bypass current-page validation
+PASS LEAF editing bound input clears obsolete field errors and advances to the real next page
+PASS LEAF a stale async regex result cannot advance after input changes
+PASS STARTUP02 step 1 retains the same editor and input
+PASS STARTUP02 step 1 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 1
+PASS STARTUP02 step 2 retains the same editor and input
+PASS STARTUP02 step 2 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 2
+PASS STARTUP02 step 3 retains the same editor and input
+PASS STARTUP02 step 3 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 3
+PASS STARTUP02 step 4 retains the same editor and input
+PASS STARTUP02 step 4 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 4
+PASS STARTUP02 step 5 has at most four visible footer actions
+PASS STARTUP02 footer stays inside the native window on step 5
+PASS STARTUP02 final step offers real save without automatic startup; internal operations have no separate setup entry
+PASS STARTUP02 configuration tools are removed from first setup rather than hidden in a menu
+PASS STARTUP02 import is in the fixed header and encrypted draft persistence remains in the footer
+PASS STARTUP02 small startup window preserves the primary action and scrollable content
+PASS STARTUP02 selecting another service requires an explicit parameter reset decision
+PASS STARTUP02 current service selection applies after explicit reset while station identity is preserved
+PASS STARTUP02 preview import preserves local station identity and leaves the original draft untouched
+PASS STARTUP02 same-build safe templates still use the existing whitelist
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 incompatible import is rejected without altering local input
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 save from the final step returns to the actual invalid field and retains the exact input; step=1
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 full candidate regex failure also returns to its field without erasing input; step=1; active=True; state=填写当前供包台，或从下方导入配置文件。; issues=BarcodePattern; input=[/focus=True
+PASS STARTUP02 revoked first-configuration session preserves an accessible login outside hidden fields and the four-action footer
+PASS STARTUP02 fixed first-configuration login action opens the real software account window after revocation
+PASS STARTUP02 reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration
+PASS STARTUP02 current SDK and built-in RCS candidate passes real static factory validation without constructing ports
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 failed configuration check never calls save or requests startup
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 known save failure is explicit and cannot use the initially clean draft as proof of persistence
+PASS STARTUP02 folded diagnostics retain the original save failure before the authority read-back
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 unknown save result blocks a duplicate submission and startup
+PASS STARTUP02 first-run navigation creates no database or device owner; administrator custody and its diagnostic rotation lock are separate
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 confirmed persistence keeps configuration open without starting runtime
+PASS STARTUP02 one reviewed save is read back then completes configuration without starting runtime; receipt lost=False; result=True; failure=; saved=True
+PASS STARTUP02 startup editor loads without a running application; 填写当前供包台，或从下方导入配置文件。
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 confirmed persistence keeps configuration open without starting runtime
+PASS STARTUP02 one reviewed save is read back then completes configuration without starting runtime; receipt lost=True; result=True; failure=; saved=True
+PASS STARTUP02 incomplete configuration shows a direct continuation instead of generic failure actions
+PASS STARTUP02 incomplete setup has no large empty diagnostic box
+PASS STARTUP02 operation completes within bounded native wait
+PASS STARTUP02 installer version follows the requested format and actual business version
+PASS STARTUP02 installer contains no hidden advanced settings, mode, account, trust or package choices
+PASS STARTUP02 only installation and data folders require editable text
+PASS STARTUP02 installation scope is resolved internally without a customer-facing choice
+PASS STARTUP02 interactive confirmation has no unattended deployment-plan action
+PASS STARTUP02 ordinary confirmation uses Chinese purpose and business names; technical source stays collapsed
+PASS STARTUP02 open-after-install sits beside the finish button in the bottom row
+PASS STARTUP02 completion has no hashed release directory or technical identity dump
+PASS STARTUP02 retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry
+PASS STARTUP02 completed removal never opens an unavailable management dialog and explains its actual restart state
+PASS STARTUP02 retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry
+PASS STARTUP02 completed removal never opens an unavailable management dialog and explains its actual restart state
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS source mismatch is visible before a destructive action and cannot submit cleanup
+CAPTURE uninstall-source-mismatch: 960x760 DIP, Windows DPI 1.25/1.25
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS read-only button performs a new inspection and shows completion even when remaining files are unchanged
+PASS UNINSTALL-ACTIONS source guard also rejects a queued call behind the disabled button
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close exits the mismatched result window
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS failed inspection preserves the original evidence and restores close instead of freezing the window; status=卸载核对未完成：synthetic inspection unavailable
+原卸载记录已保留，可重新核对或关闭。; retained=True; close=True
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS successful refresh removes stale residuals and no longer offers cleanup for a clean result
+CAPTURE uninstall-rechecked-compact: 680x500 DIP, Windows DPI 1.25/1.25
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close also exits after inspection recovery
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS uncertain cleanup reports the original unknown result
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS unknown cleanup cannot be resubmitted through the same button
+PASS UNINSTALL-ACTIONS 只读核对原卸载结果 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS same-source cleanup proceeds only after inspection and ends without a duplicate submission action
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 继续原清单清理… is enabled before input
+PASS UNINSTALL-ACTIONS cleanup in progress prevents reentry and disables close
+PASS UNINSTALL-ACTIONS title-bar close cannot abandon an in-flight cleanup
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close becomes available again after cleanup completes
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS unknown result can be closed without resubmitting maintenance or authenticating
+PASS UNINSTALL-ACTIONS operation returned to the native dispatcher within its wait budget
+PASS UNINSTALL-ACTIONS 关闭 is enabled before input
+PASS UNINSTALL-ACTIONS close returns from the actual modal result and restores the installer owner
+BOUNDARY real WPF HWND/Dispatcher and button events; synthetic deployment/inspection/cleanup callbacks. Protected uninstall/UAC/reboot/SDK/site NOT_RUN.
+Native Windows HWND/Dispatcher, synthetic contracts only; SDK/RCS, installation lifecycle and site NOT_RUN.

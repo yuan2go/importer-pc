@@ -56,6 +56,7 @@ static partial class Program
                 !Descendants(oldControl).OfType<ComboBox>().Any(t=>AutomationProperties.GetAutomationId(t)==oldDraft.Readers[0].InstanceId+"/Provider"),
                 "legacy TCP candidate shows one explicit SDK transition, never a blank selector or TCP port mixed with the SDK");
             Check(oldDraft.Readers[0].Provider!.Implementation=="tcp-line","merely opening the page never rewrites legacy configuration");
+            Check(Descendants(oldControl).OfType<TextBox>().Count(t=>AutomationProperties.GetAutomationId(t)=="sportmaster.integration/left-bcr-code")==1,"legacy transition still exposes exactly one shared camera-code editor");
             Descendants(oldControl).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)==oldDraft.Readers[0].InstanceId+"/ApplyProviderChange").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);window.UpdateLayout();Fields(oldControl,oldDraft.Readers[0]);
             Check(oldDraft.Readers[0].Provider!.Implementation=="hikrobot-mvs-reader" && oldCode.Value=="SYNTH-MIGRATION" && oldDraft.Readers[1].Provider!.Implementation=="hikrobot-mvs-reader",

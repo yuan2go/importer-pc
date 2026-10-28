@@ -1,0 +1,15 @@
+test_declared_x86_dependency_refuses_before_any_copy (test_mvs_runtime.BundledRuntimeInputValidation.test_declared_x86_dependency_refuses_before_any_copy) ... ok
+test_empty_notice_refuses_before_any_copy (test_mvs_runtime.BundledRuntimeInputValidation.test_empty_notice_refuses_before_any_copy) ... ok
+test_missing_later_dependency_refuses_before_any_copy (test_mvs_runtime.BundledRuntimeInputValidation.test_missing_later_dependency_refuses_before_any_copy) ... ok
+test_missing_notice_refuses_before_any_copy (test_mvs_runtime.BundledRuntimeInputValidation.test_missing_notice_refuses_before_any_copy) ... ok
+test_same_size_modified_dependency_refuses_before_any_copy (test_mvs_runtime.BundledRuntimeInputValidation.test_same_size_modified_dependency_refuses_before_any_copy) ... ok
+test_synthetic_control_copies_exact_bytes_without_barcode_readiness (test_mvs_runtime.BundledRuntimeInputValidation.test_synthetic_control_copies_exact_bytes_without_barcode_readiness) ... ok
+test_wrong_size_dependency_refuses_before_any_copy (test_mvs_runtime.BundledRuntimeInputValidation.test_wrong_size_dependency_refuses_before_any_copy) ... ok
+test_explicit_verification_omission_is_not_delivery (test_mvs_runtime.BundledRuntimePolicy.test_explicit_verification_omission_is_not_delivery) ... ok
+test_missing_actual_bytes_refuses_delivery (test_mvs_runtime.BundledRuntimePolicy.test_missing_actual_bytes_refuses_delivery) ... ok
+test_mixed_verification_and_vendor_input_refused (test_mvs_runtime.BundledRuntimePolicy.test_mixed_verification_and_vendor_input_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.371s
+
+OK

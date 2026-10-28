@@ -1,0 +1,55 @@
+PASS BROKER: SCM starts the real frozen System authentication host with protected credentials
+PASS BROKER: old runtime-writable credentials do not become a protected management mode
+PASS BROKER: fixture uses a real Windows token with administrator membership disabled
+PASS BROKER: ordinary Windows caller cannot claim the first protected management mode
+PASS BROKER: approved initial password still needs its actual software password
+PASS BROKER: reused pipe instances retain each complete acknowledged reply across 64 round trips
+PASS BROKER: System store contains salted password hashes, not passwords
+PASS BROKER: mode audit records the real Windows caller context without creating a software account
+PASS BROKER: runtime token cannot read protected password/session state
+PASS BROKER: runtime token cannot replace protected credentials
+PASS BROKER: runtime token cannot delete protected credentials or reopen bootstrap
+PASS BROKER: management-mode password validation works under an ordinary Windows token
+PASS BROKER: ordinary-token software logout immediately revokes its grant
+PASS BROKER: another process/session login revokes the original protected session
+PASS BROKER: management mode can be entered again after session revocation
+PASS BROKER: protected helper authorization cannot be replayed
+PASS BROKER: protected helper ticket cannot change its request
+PASS BROKER: logout revokes an already-consumed helper authorization
+PASS BROKER: protected mode explicitly reentered for operation-scoped delegation
+PASS BROKER: protected operation admission cannot replay
+PASS BROKER: service-owned operation authorization still observes explicit revocation
+PASS BROKER: a missing provisioned credential file fails closed and cannot be overwritten
+PASS BROKER: original protected credentials remain usable after integrity repair
+PASS BROKER: real broker expiry cancels client authority and writes an authentication audit
+PASS BROKER: protected login failure counted 0
+PASS BROKER: protected login failure counted 1
+PASS BROKER: protected login failure counted 2
+PASS BROKER: protected login failure counted 3
+PASS BROKER: protected login failure counted 4
+PASS BROKER: failure lockout is owned by the service and survives a new client
+PASS BROKER: ordinary-token recovery still requires the actual root credential
+PASS BROKER: real protected broker recovery grants no session and revokes previous client authority
+PASS BROKER: ordinary-token root recovery works through the System service and accepts only the replacement password
+PASS BROKER: recovered credential remains unreadable under an ordinary Windows token
+PASS BROKER: protected authority anchor survives service removal; no fallback to the forged local store
+PASS BROKER: missing service refuses authentication instead of silently succeeding
+PASS BROKER: real protected legacy account credentials cannot silently become management mode
+PASS BROKER: even an elevated installer cannot overwrite legacy software proof through first mode setup
+PASS BROKER: ordinary token cannot use old software credentials
+PASS BROKER: ordinary token cannot replace old credentials through initial setup
+PASS BROKER: old protected credentials leave management unavailable
+PASS BROKER: protected refusal retains the old credential ledger byte-for-byte
+PASS BROKER: new current password enters mode independently of historical bytes
+PASS BROKER: current password replacement cancels original authorization
+PASS BROKER: current credential is active before the existing protected deployment migration test
+PASS BROKER: migration fixture starts with a real active source grant
+PASS BROKER: migration copies the single mode password and startup revokes copied sessions before service readiness
+PASS BROKER: migrated protected password works without a username
+PASS BROKER: copied old-session helper proof cannot survive target service startup or a new mode entry
+PASS BROKER: credential migration refuses overwriting an existing target mode password
+PASS BROKER: mode is active before the service-outage exit check
+PASS BROKER: outage fixture preserves the client grant until an explicit exit
+PASS BROKER: exit cancels pending local authority before waiting for an unavailable broker
+PASS BROKER: service-outage exit reports the unavailable server without restoring local authority
+PASS BROKER COMPLETE: actual SCM, System host, restricted Windows token and frozen binaries; no equipment or production qualification

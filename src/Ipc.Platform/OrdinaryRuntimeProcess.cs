@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -12,6 +13,20 @@ namespace Ipc.Platform;
 // environment; every existing runtime/SDK/configuration guard still runs there.
 public static class OrdinaryRuntimeProcess
 {
+    // Shared by the installer completion action and daily executable bootstrap.
+    // Maintenance helpers keep their separate, explicit elevation path.
+    public static uint LaunchForCurrentUser(string executable, string[] arguments, string workingDirectory)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            using var child = Start(executable, arguments, workingDirectory);
+            return child.Id;
+        }
+        var start = new ProcessStartInfo(executable) { UseShellExecute = false, WorkingDirectory = workingDirectory };
+        foreach (var argument in arguments) start.ArgumentList.Add(argument);
+        using var process = Process.Start(start) ?? throw new IOException("Daily runtime process was not created");
+        return checked((uint)process.Id);
+    }
     public static bool RelaunchCurrentIfElevated(string[] arguments)
     {
         if (!OperatingSystem.IsWindows()) return false;
@@ -21,7 +36,7 @@ public static class OrdinaryRuntimeProcess
         var args = Path.GetFileNameWithoutExtension(executable).Equals("dotnet", StringComparison.OrdinalIgnoreCase)
             ? new[] { Assembly.GetEntryAssembly()?.Location ?? throw new IOException("Entry assembly unavailable") }.Concat(arguments).ToArray()
             : arguments;
-        using var child = Start(executable, args, Environment.CurrentDirectory);
+        _ = LaunchForCurrentUser(executable, args, Environment.CurrentDirectory);
         return true; // Process creation only; never a business-start/installation receipt.
     }
 

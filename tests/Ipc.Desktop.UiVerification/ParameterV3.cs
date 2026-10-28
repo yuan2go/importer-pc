@@ -50,7 +50,13 @@ static partial class Program
         var target = new ParameterDiagnosticTarget(left.Capability.InstanceId, left.Original.DeviceId, "左相机");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行地址") && !vm.ParameterRuntimeSummary(target).Contains("SYNTHETIC-EDIT"), "runtime context is derived from Effective rather than edited values");
         Capture("v3-left-running");
-        Descendants(editor).OfType<Button>().Single(b => Equals(b.Content, "连接诊断")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); window.UpdateLayout();
+        Check(!Descendants(editor).OfType<Button>().Any(b => Equals(b.Content, "连接诊断")),
+            "current camera settings omit the removed configuration-status and connection-diagnostics block");
+        Click(window, "返回作业"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+        var leftPosition = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left));
+        var diagnostics = (Button)leftPosition.FindName("PositionDiagnostics");
+        Check(diagnostics.IsVisible && diagnostics.IsEnabled, "current left-position diagnostics action remains visible and enabled");
+        diagnostics.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); window.UpdateLayout();
         Check(vm.SelectedPage == "diagnostics" && Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "左相机"), "selected camera opens its native diagnostics with visible object context");
         Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "设置左相机")), "camera diagnostics provides a direct action for the matching connection");
         Capture("v3-object-diagnostics");
@@ -88,9 +94,8 @@ static partial class Program
         Capture("v3-saved-pending");
         runtime.BeforeMonitorProbe = null; probesRelease.TrySetResult();
 
-        var rcsFields = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(root, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
-        var rcsBinding = config.Wcs! with { Implementation = "sportmaster-rcs-task", Version = "1.3.0", Contract = "SPORTMASTER-RCS-SORTER-v1", Target = "http://192.0.2.10/rcs/sorter/api" };
-        var rcsDescriptor = new CapabilityDescriptor(rcsBinding.Kind, rcsBinding.Implementation, rcsBinding.Version, rcsBinding.Contract, rcsFields, new());
+        var rcsDescriptor = new Ipc.Assembly.ParcelCapabilityFactory(launch).Catalog().Providers.Single(p => p.Kind == "integration" && p.Implementation == "sportmaster-rcs");
+        var rcsBinding = config.Wcs! with { Implementation = rcsDescriptor.Implementation, Version = rcsDescriptor.Version, Contract = rcsDescriptor.Contract, Target = "http://192.0.2.10/rcs/sorter/api" };
         var rcsDraft = new CapabilityDraft(rcsBinding.Kind, [rcsDescriptor], rcsBinding, true, "wcs");
         var rcsControl = new ParameterSettingsControl { RuntimeContext = vm };
         ParameterDiagnosticTarget? requested = null;

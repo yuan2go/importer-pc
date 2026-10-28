@@ -90,33 +90,32 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
             }
             Presentation = new(options.View ?? Presentation.View, options.Layout ?? Presentation.Layout);
             if (!allowedViews.Contains(Presentation.View) || !AllowedLayouts.Contains(Presentation.Layout)) throw new InvalidDataException("Requested View/layout not installed");
-            journal = new(Path.Combine(DataDirectory, "logs"), reason => { application?.Latch("DiagnosticLogFailure", reason); logger.LogError("{Reason}", reason); });
-            if (seed.Extensions?.Packages.Length > 0 || extensionStore?.Inventory().Length > 0)
-                extensionStore!.RegisterConsumer(Path.Combine(DataDirectory, "station.db"));
-            store = new(Path.Combine(DataDirectory, "station.db")) { Journal = journal.Write };
-            if (extensionStore is not null) store.RegisterRecoveryCopy = destination => { if (store.RequiredExtensionPackages().Length > 0) extensionStore.RegisterConsumer(destination); };
+            var databasePath = Path.Combine(DataDirectory, "station.db");
+            var startup = SupplyStore.ReadStartupState(databasePath);
+            ConfigRevision? rejectedPending = null;
+            StationState? rejectedPendingState = null;
             // Effective/pending revisions live in the owned database. Failed activation never
             // replaces the last effective configuration; all changes require controlled restart.
-            var effective = store.CurrentConfig("Effective");
+            var effective = startup.Effective;
             var selected = effective?.Content ?? seed;
             // The data-root lease protects selection. Never let a copied/restored database
             // silently change the station or mode encoded in this deployment's data path.
             var currentErrors = ValidateStartupConfiguration(selected, seed);
             if (currentErrors.Count != 0) throw new InvalidDataException(string.Join("; ", currentErrors));
-            var pending = store.CurrentConfig("PendingActivation");
+            var pending = startup.Pending;
             if (pending is not null)
             {
-                var state = store.Load(); var activationErrors = ValidateStartupConfiguration(pending.Content, seed).ToList();
+                var state = startup.State; var activationErrors = ValidateStartupConfiguration(pending.Content, seed).ToList();
                 if (pending.BaseVersion != selected.Version) activationErrors.Add("Config base version mismatch");
-                if (store.PendingCount() != 0 || state.Session is { Status: not (SessionStatus.Closed or SessionStatus.Rejected) }) activationErrors.Add("Outstanding business prevents activation");
+                if (startup.PendingResponsibilities != 0 || state.Session is { Status: not (SessionStatus.Closed or SessionStatus.Rejected) }) activationErrors.Add("Outstanding business prevents activation");
                 if (state.Quarantined || state.Lanes.Values.Any(x => x.Occupancy != Occupancy.Clear) || state.Blocks.Any(x => x.Code is "LocalDispositionRequired" or "ConflictingEvidence")) activationErrors.Add("Entity/recovery responsibilities prevent activation");
                 var succeeded = activationErrors.Count == 0;
                 if (succeeded) { selected = pending.Content; activating = pending; }
                 else
                 {
                     state.Blocks.RemoveAll(x => x.Code == "ConfigPending"); state.Revision++;
-                    store.Commit(state, "ConfigActivation", pending.Id, "runtime", string.Join("; ", activationErrors),
-                        config: pending with { Status = "ActivationFailed", Reason = string.Join("; ", activationErrors) });
+                    rejectedPendingState = state;
+                    rejectedPending = pending with { Status = "ActivationFailed", Reason = string.Join("; ", activationErrors) };
                 }
             }
             // Acquire the FINAL set atomically (partial acquisition unwinds internally).
@@ -124,7 +123,6 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
             // before these exact station/device resources have been acquired.
             var activationOwner = activating?.Id ?? effective?.Id ?? "initial:" + selected.Version;
             var fingerprint = Wire.Hash(Wire.Encode(selected));
-            store.Commit(store.Load(), "DeploymentPhase", activationOwner, "runtime", "Validated; deployment=" + fingerprint);
             resourceLease = new(leaseRoot, ConfigurationResources(selected));
             if (selected.Extensions is { Packages.Length: > 0 } extensions)
             {
@@ -135,8 +133,19 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
                 extensionLoading = new(extensionStore);
             }
             Configuration = selected;
-            store.Commit(store.Load(), "DeploymentPhase", activationOwner, "runtime", "Final resource and package leases acquired; deployment=" + fingerprint);
+            // The same owned router validates each frozen original under the final leases.
+            // Keep store null on any preflight failure, so catch cannot persist activation failure.
             integrations = new(selected, extensionStore);
+            store = new(databasePath, integrations);
+            journal = new(Path.Combine(DataDirectory, "logs"), reason => { application?.Latch("DiagnosticLogFailure", reason); logger.LogError("{Reason}", reason); });
+            store.Journal = journal.Write;
+            if (seed.Extensions?.Packages.Length > 0 || extensionStore?.Inventory().Length > 0)
+                extensionStore!.RegisterConsumer(databasePath);
+            if (extensionStore is not null) store.RegisterRecoveryCopy = destination => { if (store.RequiredExtensionPackages().Length > 0) extensionStore.RegisterConsumer(destination); };
+            if (rejectedPending is not null)
+                store.Commit(rejectedPendingState!, "ConfigActivation", rejectedPending.Id, "runtime", rejectedPending.Reason, config: rejectedPending);
+            store.Commit(store.Load(), "DeploymentPhase", activationOwner, "runtime", "Validated; deployment=" + fingerprint);
+            store.Commit(store.Load(), "DeploymentPhase", activationOwner, "runtime", "Final resource and package leases acquired; deployment=" + fingerprint);
             integrations.Initialize();
             application = new(store, selected, integrations, configurationValidator: ValidateConfiguration, configurationLeaseFactory: AcquireDeploymentValidationLease);
             await application.SetWcsHealthAsync(false);

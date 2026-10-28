@@ -108,7 +108,7 @@ public sealed partial class SupplyStore
         if (state.Lanes.Values.Any(x => x.Occupancy != Occupancy.Clear)) blockers.Add("EntityDispositionRequired");
         if (quarantined) blockers.Add("RestoreQuarantine");
         var receiptFence = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(sourcePath))!, "receipt-owner-fence.json");
-        if (File.Exists(receiptFence) && Wire.Decode<string[]>(File.ReadAllText(receiptFence)).Length > 0) blockers.Add("ReceiptPersistenceRecoveryRequired");
+        if (System.IO.Path.Exists(receiptFence)) blockers.Add("ReceiptPersistenceRecoveryRequired");
         var ingress = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(sourcePath))!, "receipt-ingress");
         if (Directory.Exists(ingress) && Directory.EnumerateFiles(ingress).Any()) blockers.Add("ReceiptPersistenceRecoveryRequired");
         return new(format, format, CurrentFormatVersion, format == CurrentFormatVersion,

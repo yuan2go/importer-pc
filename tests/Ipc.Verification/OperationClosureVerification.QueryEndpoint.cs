@@ -18,7 +18,7 @@ static partial class OperationClosureVerification
 {
     // Test-only proxy: real request-abort tokens distinguish cancelled health checks
     // from failed business replies. Kestrel drains requests before closing connections.
-    sealed class QueryEndpoint : IAsyncDisposable
+    internal sealed class QueryEndpoint : IAsyncDisposable
     {
         readonly WebApplication host;
         readonly HttpClient client = new(new SocketsHttpHandler { UseProxy = false });
@@ -28,6 +28,9 @@ static partial class OperationClosureVerification
         readonly Func<HttpContext, Task>? beforeWrite;
         readonly bool gateQueries;
         int queries, queryReplies, active, disposed, chunkedPosts;
+        int executeCalls, queryCalls;
+        public int ExecuteCalls => Volatile.Read(ref executeCalls);
+        public int QueryCalls => Volatile.Read(ref queryCalls);
         public int Active => Volatile.Read(ref active);
         public int QueryReplies => Volatile.Read(ref queryReplies);
         public int CancelledHealth => cancelledHealth.Count;
@@ -65,6 +68,8 @@ static partial class OperationClosureVerification
             Interlocked.Increment(ref active);
             var path = context.Request.Path.Value!.TrimStart('/');
             var method = context.Request.Method;
+            if (method == "POST" && path == "requests") Interlocked.Increment(ref executeCalls);
+            if (method == "GET" && path.StartsWith("requests/", StringComparison.Ordinal)) Interlocked.Increment(ref queryCalls);
             var health = method == "GET" && path == "health";
             var phase = "upstream";
             var slot = -1;

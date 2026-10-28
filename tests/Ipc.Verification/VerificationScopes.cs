@@ -16,6 +16,7 @@ internal static class VerificationScopes
         new("--extensions", "E12 controlled packages, install/recovery and actual Product deployment", true),
         new("--architecture", "E13 permanent identity, managed AssemblyRef/dependency closure, typed integration, frozen requests, Stop ownership and selected business assemblies", false),
         new("--current-contracts", "Corrupt databases are refused read-only with original bytes intact; builtin and extension service health use current authority; receipt preflight refuses old fences/unreserved raw before writes; missing frozen implementation never borrows a current route", false),
+        new("--receipt-preflight-product", "Actual Product startup: current crash-WAL, frozen original recovery, no writes/calls on refusal, Pending activation and fallback", false),
         new("--conformance", "AC14 A01-A04/R01-R03; per-service health, configuration CAS and failure retention", true),
         new("--query-fixture", "AC15 query proxy graceful drain, real health cancellation and unexpected fault propagation", true),
         new("--operation-closure", "AC15 independent receipt responsibility Q1/Q2, T3 recovery, current result/input and maintenance/history", true),

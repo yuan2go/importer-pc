@@ -14,6 +14,12 @@
 
 Ipc.Verification locked Release构建、共享身份政策/两项实际入口检查和4项Python启动派发检查通过。验证工程增加Inspection项目引用，锁文件按当前SDK重算，没有包版本升级；全部产品依赖锁保持不变。原身份指南原字节已归档，当前入口说明新的验证边界，原Windows/ACL/系统安装记录不改写。
 
+## B3：管理模式检查服从自动保存合同
+
+删除OperatorAdministration中的两个过期检查：全模拟配置切换Production后期待旧认证异常；已授权SM仍因未手动暂停而拒绝保存。没有把异常类型改宽来凑通过，也没有把错误的拒绝断言改为保留旧分支。首次基线在前一检查失败，实际异常来自现行SM相机准入；原日志保留。
+
+生产旧配置拒绝由sm-built-in-only保护，当前不暂停自动等待/保存/Pending/Effective由mvs-offline-activation保护。management-mode完整入口通过，包括撤权、过期、一次性授权、原密文保全、参数读取与保存权限、日志及异步授权代次。mvs-offline-activation、sm-built-in-only、runtime-identity-boundary均通过。原请求/Unknown及存储只读拒绝另外由audit03-rcs、storage-schema-only复验通过。
+
 ## 待完成
 
-B3管理/保存检查、B4进程夹具、最终计数、验证边界和逐项保留定位在本轮后续批次补齐。厂商SDK、物理相机、客户RCS、原生WPF操作、系统安装及提权备份取消均未执行，NOT_RUN。
+B4进程夹具、最终计数、验证边界和逐项保留定位在本轮后续批次补齐。厂商SDK、物理相机、客户RCS、原生WPF操作、系统安装及提权备份取消均未执行，NOT_RUN。

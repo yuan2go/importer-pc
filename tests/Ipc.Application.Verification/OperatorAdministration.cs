@@ -81,7 +81,6 @@ static class OperatorAdministration
         await using (var realCatalog = new ParcelCapabilityFactory(launch))
         {
             Check(!realCatalog.Requirements(seed.Wcs! with { Implementation = "sportmaster-rcs", Version = "1.0.0", Contract = "SPORTMASTER-RCS-SORTER-v1", Package = null }).Query, "actual package-less RCS requirements reject unsupported authoritative query");
-            await Reject<InvalidOperationException>(() => Task.Run(() => realCatalog.Validate(seed with { Mode = RunMode.Production })), "unprotected local mode state cannot satisfy production authentication capability");
         }
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await app.StartAsync(default);
@@ -90,7 +89,6 @@ static class OperatorAdministration
         Check(initial.CurrentOperator is null, "entering management mode never creates or changes a parcel operator");
         Check(!(await app.SnapshotAsync()).Paused, "management mode entry and parameter catalog reads do not pause feeding");
         await app.CapabilitiesAsync();
-        Check((await app.StageConfigurationAsync(initial.Configuration.Revision, seed with { TimeoutMs = 2000 }, "test")).Status == "Rejected", "management-authorized configuration save still requires pause and drain");
         await app.ExitManagementModeAsync();
         await Reject<UnauthorizedAccessException>(() => app.CapabilitiesAsync(), "optional operator login disabled still protects parameter reads");
         Check((await app.SnapshotAsync()).Configuration.Effective.Wcs!.Parameters.Count == 0, "operator snapshot cannot expose the editable provider configuration");

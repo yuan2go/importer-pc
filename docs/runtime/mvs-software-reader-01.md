@@ -14,7 +14,7 @@
 
 ## 依赖和交付
 
-自身版本保持1.0.0，安装包通过SourceCommit区分。MVS原生依赖沿现有 `--mvs-runtime` 固定目录、ACL、哈希及进程生命周期加载策略；`vendor/zxing-cpp/ZXing.dll` 另按嵌入清单核验，NuGet托管/原生闭包和Apache-2.0声明随离线介质交付。保留MvCodeReader旧路径，因此构建仍需原 `--mvreader-runtime`。厂商文件、字体、真实图像/条码/序列号/本机账本不进入Git或公开Release。
+自身版本保持1.0.0，安装包通过SourceCommit区分。MVS原生依赖沿现有 `--mvs-runtime` 固定目录、ACL、哈希及进程生命周期加载策略；`vendor/zxing-cpp/ZXing.dll` 另按嵌入清单核验，NuGet托管/原生闭包和Apache-2.0声明随离线介质交付。当前SM介质只包含MVS和软件识码依赖，不再接受或要求 `--mvreader-runtime`。厂商文件、字体、真实图像/条码/序列号/本机账本不进入Git或公开Release。
 
 独立 `IpcContractPath` 冻结构建仍仅导出原MVS采集扩展，不含软件读码合同及ZXing依赖；软件识别属于当前内置组合。不能把独立采集模块当作新读码器使用。
 
@@ -32,4 +32,4 @@ python tools/rcs-local-simulator.py --port 18848 --data-root D:/ImporterPc.Local
 
 本机实际相机3072×2048 Mono8，原生MVS＋.NET软件识别＋Application/SQLite＋Python环回RCS：20秒51笔独立请求全部SlotResolved、0 Unknown，服务账本51个不同请求ID、1个模拟分配；另用受保护的随包原生目录及默认驱动工厂10秒21笔全部SlotResolved。真实图像、条码、IP、序列号、账本仅在D盘Git外。以上运行使用独立Simulation夹具及既有测试身份前置接口，不改正式权限守卫。
 
-合成实际ZXing引擎验证同码三帧三份作业/HTTP请求、空白不建作业、原请求不改写、借帧归还和有序停止；既有驱动资源、原生参数和RCS恢复检查分别记录。本机Explorer继承提升权限的问题已补同用户普通令牌启动入口，并通过实际Windows子进程及原身份检查；原安装客户端同令牌启动成功，新冻结介质仍单独核验。正式模式继续要求原精确部署资格、明确配置和普通运行账号。安装器生成、介质依赖检查、Windows启动冒烟与实际现场RCS验收分别记录，不能用上述联调结果替代。
+合成实际ZXing引擎验证同码三帧三份作业/HTTP请求、空白不建作业、原请求不改写、借帧归还和有序停止；既有驱动资源、原生参数和RCS恢复检查分别记录。本机Explorer继承提升权限的问题已补同用户普通令牌启动入口，并通过实际Windows子进程及原身份检查；原安装客户端同令牌启动成功，新冻结介质仍单独核验。正式模式要求受保护安装完整性、SDK字节/ABI/物理身份、明确配置和普通运行账号；内置SM不要求外置扩展目录、信任或按配置签署的扩展资格。安装器生成、介质依赖检查、Windows启动冒烟与实际现场RCS验收分别记录，不能用上述联调结果替代。

@@ -3,7 +3,6 @@
 import argparse
 import os
 from mvs_runtime import publish as publish_mvs
-from mvreader_runtime import publish as publish_mvreader
 import hashlib
 import json
 from pathlib import Path
@@ -31,7 +30,6 @@ p.add_argument('--composition', help='Existing composition matching the selected
 p.add_argument('--extension-package', type=Path, action='append', default=[], help='Exact signed offline Driver/Component package; repeat for its complete dependency closure')
 p.add_argument('--extension-trust', type=Path, help='Independent trust used only for static acceptance; never copied into the candidate')
 p.add_argument('--extension-check-host', type=Path, help='Runnable Assembly with byte-identical public DLLs for a Windows target')
-p.add_argument('--mvreader-runtime', type=Path, default=os.environ.get('IPC_MVREADER_RUNTIME'), help='Reviewed current x64 MvCodeReader runtime; offline build input')
 p.add_argument('--mvs-runtime', type=Path, default=os.environ.get('IPC_MVS_RUNTIME'), help='Build input: reviewed current x64 MVS GigE runtime; never an operator step')
 p.add_argument('--verification-without-vendor-runtime', action='store_true', default=os.environ.get('IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME') == '1', help='Explicit non-delivery verification medium when vendor files are unavailable')
 a = p.parse_args()
@@ -98,7 +96,6 @@ if a.target == 'win-x64':
         if peer.exists() and hashlib.sha256(binary.read_bytes()).digest() != hashlib.sha256(peer.read_bytes()).digest():
             raise ValueError('Console/helper and desktop bytes differ: ' + binary.name)
 if a.application == 'sportmaster' and a.target == 'win-x64':
-    provenance['VendorBarcodeRuntime'] = publish_mvreader(build_source, output, a.mvreader_runtime, a.verification_without_vendor_runtime)
     provenance['VendorRuntime'] = publish_mvs(build_source, output, a.mvs_runtime, a.verification_without_vendor_runtime)
 publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
 publish_provenance(output, provenance)

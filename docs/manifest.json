@@ -106291,9 +106291,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
-      "sha256": "6815ed409c5d0e84b8890acc7fe41201bba0ded0953a1242ff76ada0477418d3",
-      "size_bytes": 13437,
-      "git_blob": "ce440857ae343f273e6e0e90f462218b81fa9e17",
+      "sha256": "cefd6cf46b3b160879a653c910d28b301929d3842f099b75c608cb298904c1b5",
+      "size_bytes": 29087,
+      "git_blob": "23b36fb6f8c89722e61885f69e28697af453d3ae",
       "storage_scope": "public_repository"
     },
     {
@@ -106302,9 +106302,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
-      "sha256": "cf7ca2943769b4e6608dfb519353c5fdff9ab1a8dba170b9a2ca50765c7a73bb",
-      "size_bytes": 12092,
-      "git_blob": "5fdb85f2deba9c4a898c3651e16603b4b833c4c4",
+      "sha256": "4691984258a9d30807e44b180b00619938159d42f610474db258b2c3748ce667",
+      "size_bytes": 13600,
+      "git_blob": "e0d59d87830cdf60166f4b565fddb5e658fcd678",
       "storage_scope": "public_repository"
     },
     {

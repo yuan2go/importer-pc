@@ -55,6 +55,18 @@ ZXing墙钟包括计算和被调度挂起，不能全称CPU计算。优化后90�
 
 计时保留会话累计数量/总和/极值，各阶段分位数仅取最近512样本，逐帧关联也最多512条，新epoch清零。空帧亦有轨迹，宿主交付失败保留Delivered=false；解码异常/停止中识别仍以原Failure/Undelivered为准。SDK时间戳来自核对后的12/16/24偏移，仅保留原值；**未证明频率/时基映射，不能直接换算曝光UTC或帧龄**。
 
+### 干净提交、同一二进制对照
+
+代码提交 `14eead38b828af1e1b32b9be671f38015dbf78e6` 的干净树重建后，在同一个验证二进制内注入测试专用原标量公式，再顺序运行默认生产SIMD/查表公式。每组均为同30张私有图像×3次；两个运行回执WorkingTreeDirty=false、程序集SHA相同，逐图候选数量一致。参考公式仅验证入口可选，正式装配不提供配置开关。SDK、码制、候选及责任守卫保持原实现。
+
+| 阶段 | 原公式累计/P50/最大 ms | 生产公式累计/P50/最大 ms |
+|---|---|---|
+| 对比度 | 1881.166 / 7.989 / 45.724 | 231.261 / 0.800 / 12.351 |
+| ZXing调用 | 25354.300 / 205.724 / 711.433 | 27766.064 / 184.482 / 1413.443 |
+| 完整Decode | 27240.286 / 215.754 / 751.975 | 28002.715 / 186.517 / 1417.484 |
+
+局部对比度累计减少约87.7%，**总体Decode累计墙钟本轮反而增加约2.8%**。不能把局部优化写成完整链性能通过。生产公式轮最长的是一张空结果帧：Decode墙钟1417.486ms、进程CPU406.25ms、该次Gen2增量0；原公式对同一图像最长751.977ms/CPU250ms。可确认显著非CPU墙钟成分、未发生该次Gen2 GC；不能因此断言具体调度器、原生等待或共享锁根因。图像内容影响与运行负载尚需ETW/线程栈区分。这也不等于重现了旧120秒里有码输入的1569ms故障。
+
 ## 真机补采
 
 新 `--mvs-throughput` 已实际尝试，SDK导出/版本加载成功，但未发现匹配原IP/序列号的设备。0帧，未Create/Open/Start，Initialize后完成Finalize，退出1。不能据此断言设备总数为0或硬件损坏。本轮没有新增真机吞吐、拔插或完整时延通过证据。
@@ -75,6 +87,7 @@ dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=
 dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --mvs-contrast-checks
 python scripts/measure-mvs-latency.py --data-root D:/ImporterPc.LocalValidation/NEW-OFFLINE-MEASUREMENT
 # 私有图像另加 --private-pgm-directory <绝对PGM目录>，不输出原图/码内容。
+# 同一二进制顺序A/B：另一全新输出根加 --reference-contrast，复现原公式；默认即生产公式。
 dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --mvs-software-flow --six-megapixel
 python scripts/verify-sm-sdk-python.py --data-root D:/ImporterPc.LocalValidation/NEW-SYNTHETIC-PYTHON
 dotnet build tests/Ipc.Drivers.Hikrobot.Probe -c Release -p:IpcContractPath=<绝对本轮Ipc.Platform.dll路径> -p:RestoreLockedMode=true -m:1 -nr:false

@@ -14,6 +14,7 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
     readonly BootOptions options;
     readonly ILogger<ProductRuntime> logger;
     readonly Func<DeviceBinding, string, IControlledObservationSource> sourceFactory;
+    internal Action RuntimeIdentityPreflight { get; init; } = MachineRuntimePolicy.RequireRuntimeIdentity;
     public ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger) : this(options, logger, ReferenceProduct.CreateSource) { }
     // Only the existing verification friend assembly can supply controlled sources. All
     // configuration/product validation and lease acquisition still precede this factory.
@@ -67,7 +68,7 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
     {
         try
         {
-            MachineRuntimePolicy.RequireRuntimeIdentity();
+            RuntimeIdentityPreflight();
             manifest = Wire.Decode<ProductManifest>(File.ReadAllText(options.Manifest)); allowedViews = manifest.Views.Append("extensions").Distinct().ToArray();
             var seed = Wire.Decode<StationConfig>(File.ReadAllText(options.Station)); Mode = seed.Mode;
             Presentation = Wire.Decode<PresentationSettings>(File.ReadAllText(options.Presentation));

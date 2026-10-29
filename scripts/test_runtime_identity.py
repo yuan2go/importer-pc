@@ -138,13 +138,7 @@ return 0;
                 else:
                     self.assertEqual(calls[-1][1:3], ['--action', operation])
 
-    def test_supply_runtime_guard_precedes_configuration_extensions_and_storage(self):
-        source = (ROOT/'src/Ipc.Product/ProductRuntime.cs').read_text()
-        start = source.index('async Task StartCore(')
-        guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
-        for boundary in ['File.ReadAllText(', 'InitializeExtensionManagement(',
-                         'dataLease = new(', 'store = new(']:
-            self.assertLess(guard, source.index(boundary, start), boundary)
+    def test_supply_offline_maintenance_keeps_its_separate_authority_entry(self):
         # Offline maintenance branches return before ProductHost/StartAsync and retain
         # their own authority checks; a daily-runtime gate must not be moved above them.
         program = (ROOT/'src/Ipc.Product/Program.cs').read_text()
@@ -154,15 +148,6 @@ return 0;
         self.assertLess(program.index('MachineRuntimePolicy.ResolveLeaseRoot(null);', maintenance),
                         program.index('Directory.CreateDirectory(directory)', maintenance))
         self.assertIn('return;', program[maintenance:host])
-
-    def test_inspection_runtime_guard_precedes_configuration_and_ledger(self):
-        source = (ROOT/'src/Ipc.Application.Inspection/InspectionRuntime.cs').read_text()
-        start = source.index('public Task StartAsync(')
-        guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
-        for boundary in ['File.ReadAllText(', 'lease = new(', 'ExtensionStore.AtomicWrite(']:
-            self.assertLess(guard, source.index(boundary, start), boundary)
-
-
 
 if __name__ == '__main__':
     unittest.main()

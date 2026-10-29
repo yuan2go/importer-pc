@@ -11,6 +11,8 @@ static class ExtensionDraftVerification
         var device = new ExtensionInstance("camera-a", "reference.barcode", "barcode-source", "SIM-CAMERA", true, []);
         var draft = new DeploymentExtensions([], [device], [original, other], [new("requests", original.Id, target), new("diagnostics", other.Id, target)]);
         var before = Wire.Encode(draft);
+        Assert(new[] { draft, new DeploymentExtensions([], [device]) }.All(d => Wire.Encode(Wire.Decode<DeploymentExtensions>(Wire.Encode(d))) == Wire.Encode(d)),
+            "current deployment JSON preserves all device/service/port data and supports an explicitly device-only candidate");
         var renamed = original with { Id = "renamed", Parameters = new() { ["metadata.label"] = "new" } };
         var edited = ExtensionDraftEditing.SaveService(draft, original.Id, renamed, new("requests", renamed.Id, target));
         Assert(edited.Services!.Length == 2 && !edited.Services.Any(x => x.Id == original.Id) &&

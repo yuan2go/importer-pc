@@ -19,6 +19,7 @@ Directory.CreateDirectory(root);
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
 if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
 if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }
+if (args.Contains("--mvs-offline-activation")) { await SportmasterRcs.MvsOfflineActivation(workspace, root); return; }
 if (args.Contains("--sm-built-in-only")) { await SportmasterRcs.BuiltInOnly(workspace, root, args); return; }
 if (args.Contains("--station-single-camera")) { await SportmasterRcs.SingleCamera(workspace, root); return; }
 if (args.Contains("--hikrobot-sdk-editing")) { HikrobotSdkEditing.Run(workspace, root); return; }

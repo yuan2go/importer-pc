@@ -215,12 +215,12 @@ static partial class SportmasterRcs
         readonly ConcurrentQueue<(SoftwarePixels Pixels, uint Number)> waiting = new();
         public List<string> Calls = [];
         public int Released;
-        public bool FailConfigure, IgnoreConfigure;
+        public bool FailConfigure, IgnoreConfigure, Discovered = true;
         nint buffer;
         public bool HasFrame { get; private set; }
         public void Enqueue(SoftwarePixels pixels, uint number) => waiting.Enqueue((pixels, number));
         public void Initialize() => Calls.Add("initialize");
-        public MvsDevice[] Enumerate() => [new(binding.Parameters!["device.ip"], binding.Parameters["device.serial"], "SYNTHETIC", "SYNTHETIC", [])];
+        public MvsDevice[] Enumerate() => Discovered ? [new(binding.Parameters!["device.ip"], binding.Parameters["device.serial"], "SYNTHETIC", "SYNTHETIC", [])] : [];
         public void Create(MvsDevice d) => Calls.Add("create");
         public void Open() => Calls.Add("open");
         uint trigger = 1, acquisition;

@@ -27,6 +27,36 @@ internal static partial class MvsVerification
             api.Frames.Enqueue(Frame(1)); await Until(() => source.Frames == 1);
             Check(source.Epoch == "mvs-two" && source.Failure.Length == 0, "explicit restart resets capture accounting without creating a new parcel");
         }
+        var absentApi = new Fake { Discovered = false }; var absentLease = new Lease();
+        var absentHealth = new ConcurrentQueue<DeviceHealthConfirmation>();
+        await using (var source = Source(absentApi, absentLease))
+        {
+            try { await source.StartControlledAsync("absent", _ => true, absentHealth.Enqueue, default); throw new Exception("Missing camera started"); }
+            catch (ObservationConnectionException) { }
+            Check(source.Phase == "disconnected" && absentHealth.Last().Health == DeviceHealth.Disconnected &&
+                absentHealth.Last().ValidUntil is null && !absentApi.Calls.Contains("create") && absentApi.Calls.Last() == "finalize" && absentLease.Releases == 0,
+                "missing configured camera is offline only after cleanup; no native handle, physical lease or Ready is invented");
+            absentApi.Discovered = true;
+            await source.StartControlledAsync("returned", _ => true, absentHealth.Enqueue, default);
+            Check(source.Epoch == "returned" && source.Failure.Length == 0 && absentApi.Calls.Contains("start"), "explicit reconnect can discover and start the same configured camera after it returns");
+            await source.StopAsync(default);
+        }
+        var failedCleanupApi = new Fake { Discovered = false, FailStage = "finalize" };
+        var wrongIdentityApi = new Fake(); var wrongIdentityLease = new Lease();
+        await using (var source = Source(wrongIdentityApi, wrongIdentityLease, new()
+            { ["device.ip"] = wrongIdentityApi.Ip, ["device.serial"] = "SYNTH-OTHER" }))
+        {
+            try { await source.StartControlledAsync("wrong-identity", _ => true, _ => { }, default); throw new Exception("Wrong physical camera opened"); }
+            catch (ObservationConnectionException) { }
+            Check(source.Phase == "disconnected" && !wrongIdentityApi.Calls.Contains("create") && wrongIdentityLease.Releases == 0,
+                "a device at the configured IP with a different serial remains offline and is never opened as a fallback");
+        }
+        await using (var source = Source(failedCleanupApi, new Lease()))
+        {
+            try { await source.StartControlledAsync("failed-cleanup", _ => true, _ => { }, default); throw new Exception("Failed cleanup was accepted"); }
+            catch (AggregateException) { Check(true, "discovery failure with uncompleted native cleanup remains fatal and retains its owner"); }
+            failedCleanupApi.FailStage = ""; await source.StopAsync(default);
+        }
         var hostFailedApi = new Fake(); var hostFailedLease = new Lease();
         await using (var source = Source(hostFailedApi, hostFailedLease))
         {
@@ -125,7 +155,7 @@ internal static partial class MvsVerification
     internal sealed class Fake : IMvsApi
     {
         internal string Ip = "192.0.2.1", Serial = "SYNTH-LEFT", FailStage = "";
-        internal bool FailFree, Online = true;
+        internal bool FailFree, Online = true, Discovered = true;
         internal int Freed;
         internal Action? Acquiring;
         internal ConcurrentQueue<MvsFrame> Frames = new();
@@ -133,7 +163,7 @@ internal static partial class MvsVerification
         public bool HasFrame { get; private set; }
         void Call(string stage) { Calls.Enqueue(stage); if (FailStage == stage) throw new IOException("Synthetic MVS " + stage + " failure"); }
         public void Initialize() => Call("initialize");
-        public MvsDevice[] Enumerate() => [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])];
+        public MvsDevice[] Enumerate() => Discovered ? [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])] : [];
         public void Create(MvsDevice device) => Call("create");
         public void Open() => Call("open");
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? 2u : 0;

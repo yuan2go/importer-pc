@@ -88,7 +88,7 @@ static partial class SportmasterRcs
         }
         else
         {
-            var pixels = MakeSoftwareBarcode("SYNTH-READ-0001");
+            var pixels = args.Contains("--six-megapixel") ? SyntheticLatencyImages("SYNTH-READ-0001")[0] : MakeSoftwareBarcode("SYNTH-READ-0001");
             fake!.Enqueue(pixels, 1); fake.Enqueue(pixels, 2); fake.Enqueue(pixels, 5);
             Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
@@ -139,6 +139,9 @@ static partial class SportmasterRcs
             Console.WriteLine("MVS_SOFTWARE_FLOW_PASS synthetic pixels/native port, actual ZXingCpp/Application/SQLite/HTTP; field acceptance NOT_RUN");
         }
         await app.StopAsync(default);
+        ExtensionStore.AtomicWrite(Path.Combine(root, "mvs-timings.json"), new { Acquisition = factory.Source!.Timings.Snapshot(), Decoder = factory.Source.DecoderTimings,
+            Tier = live ? "Actual camera; isolated fixture; local simulated RCS" : "Synthetic SDK; actual decoder/Application/SQLite; local simulated RCS",
+            Boundary = "ObservedAt starts after SDK Acquire returns; excludes exposure/transport/SDK queue age. Durable handoff includes SQLite custody, excludes Application queue/business/RCS completion." });
         Console.WriteLine("EvidenceRoot=" + root);
     }
 
@@ -203,6 +206,7 @@ static partial class SportmasterRcs
     }
     sealed class ReleasedFrameDecoder(IMonoBarcodeDecoder inner, SoftwareFrameApi api) : IMonoBarcodeDecoder
     {
+        public MvsTimingSnapshot? TimingSnapshot => inner.TimingSnapshot;
         public void Prepare() => inner.Prepare();
         public string[] Decode(byte[] pixels, int length, int width, int height)
         {

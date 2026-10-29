@@ -14,6 +14,8 @@
 
 ## 依赖和交付
 
+2026-10-29性能续查见[时延调查](mvs-latency-01.md)：`skippedVideoFrames`是跳过帧数，新增`videoGapEvents`才是间隔次数。旧严格原始探针保留，`--mvs-throughput`另提供固定物理身份、仅观察的采样对照；坏帧/倒退/输入责任守卫不变。阶段计时及逐帧数字轨迹有界留存，不将SDK返回后的主机时钟当曝光时刻。当前未发现匹配设备，新真机吞吐和#152拔插/最坏时延仍待补。
+
 自身版本保持1.0.0，安装包通过SourceCommit区分。MVS原生依赖沿现有 `--mvs-runtime` 固定目录、ACL、哈希及进程生命周期加载策略；`vendor/zxing-cpp/ZXing.dll` 另按嵌入清单核验，NuGet托管/原生闭包和Apache-2.0声明随离线介质交付。当前SM介质只包含MVS和软件识码依赖，不再接受或要求 `--mvreader-runtime`。厂商文件、字体、真实图像/条码/序列号/本机账本不进入Git或公开Release。
 
 独立 `IpcContractPath` 冻结构建仍仅导出原MVS采集扩展，不含软件读码合同及ZXing依赖；软件识别属于当前内置组合。不能把独立采集模块当作新读码器使用。

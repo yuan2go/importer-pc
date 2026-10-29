@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-CONTRACT-CONVERGENCE-03",
+  "work_package": "WP-IPC-MVS-LATENCY-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "58c7e9356d96baf7eb2517c971331904935c90646d4915a172132fa12f542a64",
-      "size_bytes": 2858,
-      "git_blob": "e71814e3b6f0a33e5818afb1ed90f934f51ff5ee",
+      "sha256": "b76aae1acb7627d1cb066b07d0c02130c6790d2864bc6e34783db489fadc1260",
+      "size_bytes": 3027,
+      "git_blob": "3e9667a4264e92c56cdb7839d9cd1ea6ee314898",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -59139,9 +59139,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "25d0f792efb85777219cc0895137c96e05aff4e7eb56808da0bf427c4bd1672f",
-      "size_bytes": 28867,
-      "git_blob": "1d838dd01c7fffe774dd5771a87ea6db6300ace8",
+      "sha256": "d51ff93368757aa963226cf909d17ea6ae9b4d20acd5751f7e1cbaec6bf20427",
+      "size_bytes": 29040,
+      "git_blob": "98a1ffba3c35982367948738683d0dcc6eabb471",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59665,9 +59665,9 @@
       "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "9e75b5a0adbc76cbe55ccb6b66843d0c6efd3e5da06ca7ea87b52b4a5c0e0de6",
-      "size_bytes": 334,
-      "git_blob": "7cb2c8935b4b41d4602a5e31b2979c73b37a15fd"
+      "sha256": "5b5ee3d17d16424f79e1b76c69fe9f70f9a566a03d21947354e81240f3a81e0d",
+      "size_bytes": 430,
+      "git_blob": "ec6a1c316c56d27de2d64eb4e8747e716fb2115e"
     },
     {
       "path": "tests/Ipc.Drivers.Hikrobot.Probe/Verification.cs",
@@ -102364,9 +102364,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "6fb84104dbbc5220508ba650623f5368e0330aac0beff772c5b97f1b76e9ec38",
-      "size_bytes": 19695,
-      "git_blob": "7b1a4f010a88cfe96d0a5597281a697df1f72143",
+      "sha256": "a20933056d065f25603e81b4f9799995f9ad4a04770319e42fe94725586d15ce",
+      "size_bytes": 23699,
+      "git_blob": "2cc03283027d1ca44b882eea536cde2d7c706342",
       "storage_scope": "public_repository"
     },
     {
@@ -102375,9 +102375,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "cbcc620e28cc5a8280847ec3b4bb8cde4af9769605b4b7cd16d5ad7999a9bf8e",
-      "size_bytes": 11597,
-      "git_blob": "f209fcd062806893aa14eff744b0da838a532d4f",
+      "sha256": "5b82a95083bb675f34f534319e8575ea63fa3d20ebdc6fdde39291ab5d363d21",
+      "size_bytes": 11927,
+      "git_blob": "1842b1f36688510b68745c8c9d65baa7b9bfcbe1",
       "storage_scope": "public_repository"
     },
     {
@@ -102507,9 +102507,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "4ba5de32f7404c7c91f66f644eeeb45e29b7b0075643c0d2e7ba553024191356",
-      "size_bytes": 5886,
-      "git_blob": "397a1542137748a9f4923ac481cee1baba0110f4",
+      "sha256": "87ee3ba9216fb6f75de78f3e5d4a4e99eeacf55e5fb83c62b8bcdad040acb261",
+      "size_bytes": 7065,
+      "git_blob": "a4a1ef2fb364ee31eb916b2ea41e63299cd3a1c4",
       "storage_scope": "public_repository"
     },
     {
@@ -102518,9 +102518,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "a211b97f13ee792a7e3331221a8777a314639d520a6b36f5e59fd514acb711cf",
-      "size_bytes": 15615,
-      "git_blob": "f7e6a406a26e07f84b4f4172ccd49bd2acfb2942",
+      "sha256": "075b0dfcf4a0c27ff761890e452b4d2e2452a152c580b0633c5741cdf4db7fab",
+      "size_bytes": 15949,
+      "git_blob": "181a8f6a71b57d61f8d6ec0e45d399328219e631",
       "storage_scope": "public_repository"
     },
     {
@@ -105103,9 +105103,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "4567168f5785ccc166155fbee73dac9ff6e43661d9529eb3e90c0d9d79fa3ae6",
-      "size_bytes": 5948,
-      "git_blob": "4d6a0046228cfdad490d527f895b88e4594ecd44",
+      "sha256": "ef6bedd397d248ac3fe9ab82bd21b1a1c0c068652e40166647a2f884beea0ab5",
+      "size_bytes": 6420,
+      "git_blob": "286ce49db97a9273cc3a347cf54b4183252deb5a",
       "storage_scope": "public_repository"
     },
     {
@@ -105169,9 +105169,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "ce68d34f152f61c259327b8570d97d8ecb35d02dd4de32f6200c92622da9cf8f",
-      "size_bytes": 191,
-      "git_blob": "fcc2ffabe7be5af4f918df5898122e120518634c",
+      "sha256": "f7d504f513993d5325fa91d5ee10c80c67c01f956060d6f72555bbc36c81540a",
+      "size_bytes": 238,
+      "git_blob": "63baa8a9bb50c27a6553da7f657bcc60c93ab1c7",
       "storage_scope": "public_repository"
     },
     {
@@ -105180,9 +105180,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "9a86922bb3fd433838e3501994adb282c01b6e1cab6bc2e48aecc28aef2a9722",
-      "size_bytes": 3790,
-      "git_blob": "93ec8c9259ea62cd87b3b83e7f7c301a44b6caee",
+      "sha256": "9c0dae483fb09dfba09aaaea174b5840b6c7bb167b78b603b05f320b6b668836",
+      "size_bytes": 5353,
+      "git_blob": "13df1f302496c2090dd9f01b93228068a0f41b6f",
       "storage_scope": "public_repository"
     },
     {
@@ -105268,9 +105268,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "0e7b0a56ef3a3f577ad369bca12371f366867ac22a98ab8c73cbd017063b3e98",
-      "size_bytes": 19753,
-      "git_blob": "8d8be34927998f368839e499194987d12f30f0ff",
+      "sha256": "c2d6f264865a30fb89520154990a942b1dcdcbe120fecaf703fdcccde3a8dfaf",
+      "size_bytes": 20447,
+      "git_blob": "f6dc7bb8b8395f85b7a0829beb6c254af28e8803",
       "storage_scope": "public_repository"
     },
     {
@@ -106284,6 +106284,83 @@
       "size_bytes": 3539,
       "git_blob": "5f25e2c9b69e504a05c64c33d38893cfab5e79f5",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/mvs-latency-01/summary.json",
+      "version": "mvs-latency-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
+      "sha256": "6815ed409c5d0e84b8890acc7fe41201bba0ded0953a1242ff76ada0477418d3",
+      "size_bytes": 13437,
+      "git_blob": "ce440857ae343f273e6e0e90f462218b81fa9e17",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/mvs-latency-01.md",
+      "version": "mvs-latency-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
+      "sha256": "cf7ca2943769b4e6608dfb519353c5fdff9ab1a8dba170b9a2ca50765c7a73bb",
+      "size_bytes": 12092,
+      "git_blob": "5fdb85f2deba9c4a898c3651e16603b4b833c4c4",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-MVS-LATENCY-01.md",
+      "version": "mvs-latency-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
+      "sha256": "129e12f4aa9a1524ec0b4211c821c1623c39dfcc8dd996ee13302543ce7ea1d5",
+      "size_bytes": 1809,
+      "git_blob": "bbb2b452d686122411560c28d53b5f33c7732cbe",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "scripts/measure-mvs-latency.py",
+      "version": "mvs-latency-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
+      "sha256": "8c95c1513ba23177cb02dd5619183ba5cfbbff1e3f7d15e10711f4e89923bf2c",
+      "size_bytes": 3735,
+      "git_blob": "911f8ac9b125cd555645dbf1029de22104e73461",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsTimings.cs",
+      "version": "mvs-latency-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
+      "sha256": "d4498c00e73ec74efb8d4fd3db25e57a94831192841e6667012bb6c63260e61e",
+      "size_bytes": 3043,
+      "git_blob": "6435c54a2d2576a2c414fd00c14a458f3bbb4324",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/MvsLatency.cs",
+      "version": "mvs-latency-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
+      "sha256": "8a3661e1cc1993d6f37aec804b6b59491e50b98103aeed10b912b83a9bd66581",
+      "size_bytes": 8334,
+      "git_blob": "6617e3a30c278c936033c27d529f4fdf29d81e11",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/MvsVerification.Timings.cs",
+      "version": "mvs-latency-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
+      "sha256": "60d5084d9f9cdc86af58e97bf8eeb472270c639fa757f43957d8008528f4afbf",
+      "size_bytes": 5503,
+      "git_blob": "da27476c846d8faf9bd8cf401132b02d10552cbb",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -106363,7 +106440,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-CONTRACT-CONVERGENCE-03.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-MVS-LATENCY-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",

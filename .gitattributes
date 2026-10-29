@@ -175,3 +175,6 @@ docs/manifest.sha256 text eol=lf
 
 # Exact current-document originals before contract convergence.
 docs/archive/pre-contract-convergence-02/** -text whitespace=cr-at-eol
+
+# Preserve original guidance before the second uncertainty audit.
+docs/archive/pre-contract-convergence-03/** -text whitespace=cr-at-eol

@@ -24,6 +24,10 @@ if (args.FirstOrDefault() == "--runtime-identity")
     RuntimeIdentityVerification.Run();
     return;
 }
+if (args.FirstOrDefault() == "--extension-draft")
+{
+    ExtensionDraftVerification.Run(); return;
+}
 if (args.FirstOrDefault() == "--windows-runtime-setup")
 {
     RuntimeIdentityVerification.RunWindowsSetup();

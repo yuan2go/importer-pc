@@ -36,11 +36,7 @@ public sealed record ServicePortBinding(string Port, string InstanceId, Integrat
 [method: System.Text.Json.Serialization.JsonConstructor]
 public sealed record DeploymentExtensions(PackageReference[] Packages, ExtensionInstance[] Instances,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] ServiceInstance[]? Services = null,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] ServicePortBinding[]? Ports = null)
-{
-    public DeploymentExtensions(PackageReference[] packages, ExtensionInstance[] instances) : this(packages, instances, null, null) { }
-    public void Deconstruct(out PackageReference[] packages, out ExtensionInstance[] instances) { packages = Packages; instances = Instances; }
-}
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] ServicePortBinding[]? Ports = null);
 public sealed record ExtensionContext(string InstanceId, string DeviceId, IReadOnlyDictionary<string, string> Parameters);
 public interface IObservationExtension
 {

@@ -7,7 +7,7 @@
 | 目的 | 当前入口 |
 |---|---|
 | 项目规则及事实优先级 | [AGENTS](../AGENTS.md) |
-| 本轮代码/测试收敛 | [工作包](work-packages/WP-IPC-CONTRACT-CONVERGENCE-02.md)、[报告](runtime/contract-convergence-02.md) |
+| 本轮代码/测试收敛 | [03工作包](work-packages/WP-IPC-CONTRACT-CONVERGENCE-03.md)、[03报告](runtime/contract-convergence-03.md)；[02结果](runtime/contract-convergence-02.md) |
 | 架构职责 | [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
 | SM连接和配置启用 | [MVS](runtime/mvs-software-reader-01.md)、[内置装配](work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)、[自动连接与保存](work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md) |
 | 当前格式与原件保全 | [版本规则](runtime/version-compatibility-01.md)、[当前合同](runtime/current-contract-cleanup-01.md)、[从零安装](work-packages/WP-IPC-FRESH-BASELINE-01.md) |

@@ -2,6 +2,8 @@
 
 2026-10-29 首次管理密码维护进程异常及窗口截断修复见[工作包](work-packages/WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01.md)和[本机验证/CI停用](runtime/management-password-startup-01.md)。用户已要求关闭 GitHub CI，当前使用本机验证；原 CI 及历史 PASS 保持原身份。
 
+2026-10-29 [SM真机SDK→本机Python RCS续验](runtime/sm-sdk-python-validation-20261029.md)：main `7af0be61` 实采31笔逐笔对账通过，普通令牌启动与原生参数另有本机证据。隔离Simulation与正式部署/现场验收分别记证，未验证项目明确保留。
+
 本轮保障 **SM / Sportmaster 与必需共享基座**；其他业务开发暂停。WT024→WT048/WT054已通过#143/#144/#145合入main，SDK替代方案#134/#135/#136已关闭并保全，详见[整合执行与归宿](runtime/integration-20261028.md)。实际main曾有非SM称重夹具失败，保留失败及当前范围，不宣称全仓全绿。
 
 当前相机路线为 MVS SDK 采图＋进程内软件读码，见[MVS-SOFTWARE-READER-01](runtime/mvs-software-reader-01.md)及[相机参数工作包](work-packages/WP-IPC-CAMERA-CONFIG-STARTUP-02.md)。只保留SDK当前入口；相机空位置不连接，业务仍受准入守卫。此前MvCodeReader及其他路线的原验证保留各自来源。

@@ -1,0 +1,14 @@
+{
+  "SourceCommit": "4c65aebff7be80cb84bb8c93b923ce9628b2555d",
+  "BusinessVersion": "1.0.0",
+  "Installer": "CainiaoSupplyStation_SM_Setup_v1.0.0_win-x64.exe",
+  "InstallerSha256": "D8EA6DCC2B9493AE4D020174A0AC03B46DD46C6E66329876D1A86981FB5A940E",
+  "MediaSha256": "F2B651721C5AB44D7C31EDBEF96854F0DF46679978B39ACCD8C051FD2F1C3F56",
+  "NativeFrozenPasswordLayout": "PASS",
+  "SystemBroker": "PASS",
+  "InstallerPreparationAndCancel": "PASS",
+  "ActualInstalledProductReplacement": "NOT_RUN",
+  "ExistingStationCredentialsChanged": false,
+  "DevicesAndField": "NOT_RUN",
+  "CiPolicy": "DISABLED_MANUALLY_NO_NEW_RUNS"
+}

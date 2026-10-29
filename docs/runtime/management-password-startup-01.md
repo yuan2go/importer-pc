@@ -22,3 +22,11 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 ```
 
 已完成 Windows NORMALUSER→同用户管理员 helper 的实际进程及回执验证；原生 WPF 在实际120 DPI验证默认无滚动、Tab、长失败、400×360小窗口、动作可达和密码缓冲区清空。截图为合成控件内容，不是生产数据或真实设备验收。最终构建/同源包及受保护服务结果追加到本包证据，不扩张历史 PASS。真实 UAC 开启的批准/取消、目标 IPC、SDK/RCS、现场仍未验；本修复不要求用户修改 UAC。
+
+## 冻结交付结果
+
+源码 `4c65aebff7be80cb84bb8c93b923ce9628b2555d` 已生成本机离线修复候选，版本仍为1.0.0；安装器 SHA256 `d8ea6dcc2b9493ae4d020174a0ac03b46dd46c6e66329876d1a86981fb5a940e`，介质 ZIP SHA256 `f2b651721c5ab44d7c31edbef96854f0df46679978b39accd8c051fd2f1c3f56`。SDK只在本机D盘候选中，不上传二进制。实际安装器准备成功，识别原部署为“更新”，显示原D盘目录后取消，未提交安装或替换现有站点。
+
+同一冻结包的 WPF DLL及同源夹具再次执行本包原生用例通过，介质清单前后不变。沿既有冻结WPF工具生成引用项目，仅选择新增的 `--management-password-layout` 用例；原生安装/其他页面不转记PASS。隔离真实SCM/System服务的首设权限、实际密码、不可覆盖、锁定、撤权、服务故障等检查完整通过；10项文档/安装包测试通过。详见[交付身份](evidence/management-password-startup-01/delivery.json)、[冻结WPF](evidence/management-password-startup-01/frozen-wpf-result.json)及[真实受保护服务日志](evidence/management-password-startup-01/frozen-system-broker.log)。
+
+构建期间PR148合入main `6df6e4e7`，本分支已继承其相机/Python验证和当前文档，并保留CI停用决定。上述候选及测试仍固定原SourceCommit，不把合并后的树或正式站点安装登记改写为已验。PR149承接本包修改；当前已装程序需要关闭旧窗口后使用该同源安装器更新，再由用户设置自己的管理密码。

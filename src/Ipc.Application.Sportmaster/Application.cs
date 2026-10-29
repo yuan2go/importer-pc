@@ -7,6 +7,7 @@ public sealed class SportmasterFlow : FlowDefinition
 {
     public override string Id => "sportmaster";
     public override bool AutomaticConfigurationQuiescence => true;
+    public override bool ArchiveOriginalFrames => true;
     public override ParcelConfiguration InitialConfiguration()
     {
         DeviceBinding[] readers = [new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }, new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }];

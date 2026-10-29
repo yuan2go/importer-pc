@@ -55,7 +55,8 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     {
         validationRequested = true;
         if (!preserveScope) { validationScope = null; validationPaths = null; }
-        if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
+        if (message.Contains("BarcodeFilter.MultiCodeSeparator", StringComparison.Ordinal)) Issues.Add(new("业务模块", "MultiCodeSeparator", message));
+        else if (message.Contains("BarcodeFilter.ExclusionPattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodeExclusionPattern", message));
         else if (message.Contains("BarcodeFilter.Pattern", StringComparison.Ordinal)) Issues.Add(new("业务模块", "BarcodePattern", message));
         else if (message.Contains("DiagnosticLogDays", StringComparison.Ordinal)) Issues.Add(new("系统", "DiagnosticLogDays", message));
         else if (message.Contains("HistoryDays", StringComparison.Ordinal)) Issues.Add(new("系统", "HistoryDays", message));
@@ -164,11 +165,10 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public async Task<bool> ValidatePageAsync(IReadOnlySet<string> paths)
     {
         var valid = ValidateFields(paths: paths);
-        if (!paths.Contains("BarcodePattern") && !paths.Contains("BarcodeExclusionPattern")) return valid;
-        var pattern = Policy.BarcodePattern; var exclusion = Policy.BarcodeExclusionPattern;
-        if (string.IsNullOrWhiteSpace(pattern) && string.IsNullOrWhiteSpace(exclusion)) return valid;
-        var result = await Task.Run(() => Preview(new(pattern, exclusion.Length == 0 ? null : exclusion), ["__format_check__"]));
-        if (pattern != Policy.BarcodePattern || exclusion != Policy.BarcodeExclusionPattern) return false;
+        if (!paths.Contains("BarcodePattern") && !paths.Contains("BarcodeExclusionPattern") && !paths.Contains("RejectMultipleCodes") && !paths.Contains("MultiCodeSeparator")) return valid;
+        var policy = Policy.BuildBarcodePolicy();
+        var result = await Task.Run(() => Preview(policy, ["__format_check__"]));
+        if (policy != Policy.BuildBarcodePolicy()) return false;
         if (result.Outcome is "InvalidPattern" or "FilterTimeout") { Report(result.Detail, preserveScope: true); return false; }
         return valid;
     }

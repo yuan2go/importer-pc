@@ -1,0 +1,23 @@
+{
+  "Reason": "Original bytes before user-authorized same-frame image archive and optional multi-code joining; historical evidence unchanged",
+  "Files": [
+    {
+      "OriginalPath": "docs/runtime/mvs-software-reader-01.md",
+      "Snapshot": "docs__runtime__mvs-software-reader-01.md.txt",
+      "Sha256": "ef6bedd397d248ac3fe9ab82bd21b1a1c0c068652e40166647a2f884beea0ab5",
+      "SourceCommit": "0f820f92094a4d7ec1a0cc2c4dcb43d4ec78240b"
+    },
+    {
+      "OriginalPath": "docs/runtime/parameter-refactor-01.md",
+      "Snapshot": "docs__runtime__parameter-refactor-01.md.txt",
+      "Sha256": "b716bf0f04c20e115a6250ba347b0c83d7a9030312753ac1e1b1f0859d57d189",
+      "SourceCommit": "0f820f92094a4d7ec1a0cc2c4dcb43d4ec78240b"
+    },
+    {
+      "OriginalPath": "docs/design/parameter-refactor-01.md",
+      "Snapshot": "docs__design__parameter-refactor-01.md.txt",
+      "Sha256": "62f6f0f8c9f8ed77400b76d0706d7eff2bd9400514079d70972ca4ba04e5d7f7",
+      "SourceCommit": "0f820f92094a4d7ec1a0cc2c4dcb43d4ec78240b"
+    }
+  ]
+}

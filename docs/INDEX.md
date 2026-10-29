@@ -11,6 +11,7 @@
 | 架构职责 | [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
 | SM连接和配置启用 | [MVS](runtime/mvs-software-reader-01.md)、[内置装配](work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)、[自动连接与保存](work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md) |
 | MVS性能与诊断 | [时延调查及补采](runtime/mvs-latency-01.md)、[工作包](work-packages/WP-IPC-MVS-LATENCY-01.md)；旧真机记录保持原SourceCommit |
+| SM原图与多码 | [同帧后台留档与多码参数](runtime/sm-original-frame-01.md)、[工作包](work-packages/WP-IPC-SM-ORIGINAL-FRAME-01.md)；默认拒绝多码，显式关闭才拼接 |
 | 当前格式与原件保全 | [版本规则](runtime/version-compatibility-01.md)、[当前合同](runtime/current-contract-cleanup-01.md)、[从零安装](work-packages/WP-IPC-FRESH-BASELINE-01.md) |
 | 管理权限与首配 | [管理模式](runtime/management-mode-01.md)、[运行入门](runtime/getting-started.md)、[字段归属](work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) |
 | 参数与作业UI | [PARAM-UX-02](design/parameter-settings-experience-02.md)、[参数V3](ui/parameter-settings-v3-20261020/README.md)、[作业V2](ui/sportmaster-task-redesign-v2-20261020/README.md)、[字体](design/typography-01.md) |

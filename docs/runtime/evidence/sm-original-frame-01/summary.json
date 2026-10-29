@@ -1,0 +1,83 @@
+{
+  "SourceBaseCommit": "0f820f92094a4d7ec1a0cc2c4dcb43d4ec78240b",
+  "WorkingTreeDirty": true,
+  "Status": "CANDIDATE_VERIFIED; clean implementation commit regression to follow",
+  "Scope": "SM same-recognition-frame raw PNG archive and explicit multi-code joining",
+  "CandidateChecks": [
+    {
+      "Log": "original-distinct-frames",
+      "PassLines": 22,
+      "Sha256": "45912ea41e89c1cab84888025d79d60e25e1223b862a0d5e189cee903c09051d",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "actual-zxing-6mp-final",
+      "PassLines": 12,
+      "Sha256": "e4ac0ab33996e2c2c75d6dd6b3868df90d435e3d32f335f5ff220dcbe2508d60",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "mvs-offline-activation",
+      "PassLines": 12,
+      "Sha256": "03602ee92c93f4d62a7a38703b2ecddae30f9844d17cf4eb0692922994677a8d",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "sm-built-in-only",
+      "PassLines": 13,
+      "Sha256": "0a88c6f76e42d10daa33f9dbbadb8bc9a920a679127e3eae0dc0898c40062e53",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "rcs-timeout-errors",
+      "PassLines": 57,
+      "Sha256": "1f1f3c5879b8d95560cc7bd286efbf1bc2ef6418571c79482722ad0d3c5e7619",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "p0-unknown-restart",
+      "PassLines": 3,
+      "Sha256": "6f704c5f15f73021b8087d47b0834bd1c223e993d7b7b4af920a9edac5250283",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "rcs-heartbeat",
+      "PassLines": 29,
+      "Sha256": "187e28edfd4072327df8725a994cc477eefa98fbd3d21920e3cd16b4628354c5",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "probe-full",
+      "PassLines": 141,
+      "Sha256": "cffe35f6e21b4113f3c24d1a8b4e26ed75e2079acff0c61f70148692808150d4",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "native-parameter-refactor",
+      "PassLines": 47,
+      "Sha256": "7294e5dcb2ed525087305354714c19fe6b10ebaf56eaa7685597957208c8fba1",
+      "ExitCode": 0,
+      "Tier": "Windows native WPF; synthetic settings; independent native PNG decoder; not device/site"
+    }
+  ],
+  "RealCamera": "NOT_RUN",
+  "InstalledPackage": "NOT_RUN",
+  "FieldRcs": "NOT_RUN",
+  "LongRunAndNewPipelineLatency": "NOT_RUN",
+  "NoChangesToOriginalResponsibility": [
+    "Frozen HTTP body/ID/target/contract",
+    "Unknown and original attempt count",
+    "ObservedAt/input freshness",
+    "Device physical identity and SDK ABI/bytes"
+  ],
+  "Retention": "Same images backup inventory; deletion only after stopped maintenance full backup and committed retirement; live/Unknown files retained",
+  "CleanImplementationRegression": null
+}

@@ -43,6 +43,10 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string SessionLifetimeMs { get => Get<string>(); set => Set(value); }
     public string BarcodePattern { get => Get<string>(); set => Set(value); }
     public string BarcodeExclusionPattern { get => Get<string>(); set => Set(value); }
+    public bool RejectMultipleCodes { get => Get<bool>(); set => Set(value); }
+    public string MultiCodeSeparator { get => Get<string>(); set => Set(value); }
+    public BarcodeFilterPolicy BuildBarcodePolicy() => new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern,
+        RejectMultipleCodes ? null : false, MultiCodeSeparator == ";" ? null : MultiCodeSeparator);
     public string DiagnosticLogDays { get => Get<string>(); set => Set(value); }
     public string HistoryDays { get => Get<string>(); set => Set(value); }
     public bool WeightRangeEnabled { get => Get<bool>(); set => Set(value); }
@@ -64,7 +68,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
             HistoryDays = HistoryDays.Length == 0 ? null : Integer(HistoryDays, "系统/HistoryDays", 7, 30)
         };
         return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
-            BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) ? null : new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern),
+            BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) && RejectMultipleCodes && MultiCodeSeparator == ";" ? null : BuildBarcodePolicy(),
             WeightRange = BuildWeightRange(),
             QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096), TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
@@ -89,6 +93,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     {
         StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), SessionLifetimeMs = c.SessionLifetimeMs.ToString(CultureInfo.InvariantCulture), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
         BarcodeExclusionPattern = c.BarcodeFilter?.ExclusionPattern ?? "", DiagnosticLogDays = c.Retention?.DiagnosticLogDays?.ToString(CultureInfo.InvariantCulture) ?? "", HistoryDays = c.Retention?.HistoryDays?.ToString(CultureInfo.InvariantCulture) ?? "",
+        RejectMultipleCodes = c.BarcodeFilter?.RejectMultipleCodes ?? true, MultiCodeSeparator = c.BarcodeFilter?.MultiCodeSeparator ?? ";",
         WeightRangeEnabled = c.WeightRange is not null, MinimumWeight = c.WeightRange?.Minimum.ToString(CultureInfo.InvariantCulture) ?? "", MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture), TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture), MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
         ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),

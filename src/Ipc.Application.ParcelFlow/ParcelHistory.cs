@@ -251,7 +251,7 @@ public sealed partial class ParcelRepository
 
 public sealed partial class ParcelRuntime
 {
-    bool ArchiveEligible(ParcelOperation op) => IsSettled(op) && !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) &&
+    bool ArchiveEligible(ParcelOperation op) => op.OriginalFrame?.State != "Pending" && IsSettled(op) && !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) &&
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
     int? projectedCapacity;
     int UnresolvedCapacity => projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));

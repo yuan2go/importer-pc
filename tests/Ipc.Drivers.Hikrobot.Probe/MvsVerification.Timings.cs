@@ -6,6 +6,24 @@ internal static partial class MvsVerification
 {
     static async Task SamplingTimings()
     {
+        using (var originals = new MvsOriginalFrames())
+        {
+            originals.Enable(); var rawPixels = new byte[] { 30, 70, 140, 210 };
+            var identity = new AcquisitionIdentity("synthetic", "epoch-1", "frame-1", "admission-1", DateTimeOffset.UnixEpoch);
+            originals.Publish(identity, originals.Copy(rawPixels, 4, 2, 2));
+            using (var held = originals.Retain(identity))
+            {
+                Array.Clear(rawPixels); originals.Release(identity); originals.Release(identity);
+                Check(held.Pixels.Span.SequenceEqual(new byte[] { 30, 70, 140, 210 }) && originals.Count == 1,
+                    "independent raw-frame lease survives working-pixel mutation and repeated ingress release");
+                try { originals.Dispose(); throw new Exception("Writer pixels freed early"); }
+                catch (InvalidOperationException) { Check(held.Pixels.Length == 4, "source disposal retains an actual outstanding raw-frame writer"); }
+            }
+            Check(originals.Count == 0, "last raw-frame writer releases the pooled original exactly once");
+            for (var i = 0; i < 32; i++) originals.Publish(identity with { SourceEventId = "quota-" + i }, originals.Copy(rawPixels, 4, 2, 2));
+            try { _ = originals.Copy(rawPixels, 4, 2, 2); throw new Exception("Unbounded original frames"); }
+            catch (IOException) { Check(originals.Count == 32, "32-frame / pooled-byte budget rejects overload before recognition without discarding retained originals"); }
+        }
         var timings = new MvsTimings();
         for (var i = 0; i < 1025; i++) timings.Record("synthetic", i);
         var stats = timings.Snapshot().Stages["synthetic"];

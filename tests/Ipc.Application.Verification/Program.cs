@@ -21,6 +21,7 @@ Directory.CreateDirectory(root);
 if (args.Contains("--runtime-identity-boundary")) { await RuntimeIdentityBoundary.Run(root); return; }
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
 if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
+if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
 if (args.Contains("--mvs-contrast-checks")) { SportmasterRcs.MvsContrastChecks(); return; }
 if (args.Contains("--mvs-latency")) { SportmasterRcs.MvsLatency(args); return; }
 if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }

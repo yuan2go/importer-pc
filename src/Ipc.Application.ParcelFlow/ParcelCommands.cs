@@ -37,6 +37,8 @@ public sealed partial class ParcelRuntime
             if (storageCapacityEstimate is not null) auxiliaryReasons.Add(storageCapacityEstimate);
             if (Volatile.Read(ref walObservation) is { } wal) auxiliaryReasons.Add(wal);
             if (retentionWarning is not null) auxiliaryReasons.Add(retentionWarning);
+            auxiliaryReasons.AddRange(operations.Values.Where(o => o.OriginalFrame?.State is "Failed" or "Interrupted")
+                .Select(o => "OriginalFrame:" + o.Id + "; " + o.OriginalFrame!.State + "; " + o.OriginalFrame.Failure));
             auxiliaryReasons.Add("Workers:" + Wire.Encode(WorkerProgress()));
             if (configuration.Current.Confirmation?.Required == true) reasons.Add("ConfigurationConfirmationRequired: current resources must start successfully before admission");
             if (!CapacityAvailable) reasons.Add(storageCapacityFailure ?? "Unresolved operation capacity exhausted; original responsibilities cannot be archived");
@@ -228,6 +230,8 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
+            if (operations.Values.Any(o => o.OriginalFrame?.State == "Pending"))
+                return new("Rejected", "等待识码原图后台保存完成后再创建一致性备份；原任务和原请求保留。", repository?.Revision ?? 0);
             if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || backupInProgress)
                 return new("Rejected", "Pause and drain external work before consistent maintenance backup", repository?.Revision ?? 0);
             original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;

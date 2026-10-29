@@ -169,14 +169,18 @@ public sealed partial class ParameterSettingsControl
             Field(Form(login), "作业登录要求", enable, "启用后需在组件中选择已安装的登录服务并设置连接。", "OperatorLogin", login);
         }
         SessionLifetime(Form(login), login, m);
-        var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "从同一次观察的候选中选出唯一有效条码。左右相机共用此规则。" : "编辑当前业务策略。"); var form = Form(page);
+        var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "筛选同一帧中的有效条码，并设置多码处理方式。左右相机共用此规则。" : "编辑当前业务策略。"); var form = Form(page);
         if (m.ApplicationId == "sportmaster")
         {
-            Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "完整匹配；留空不筛选。同一次观察仍须得到唯一有效候选。", true);
+            Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "完整匹配；留空不筛选。多个有效候选按下方多码设置处理。", true);
             Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "完整匹配后排除；留空不排除。", true);
-            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。留空不筛选；仍须唯一有效码；不默认选首码，不去重制造唯一候选。");
+            var reject = new CheckBox { Content = "拒绝多个有效条码", MinHeight = 38 };
+            reject.SetBinding(CheckBox.IsCheckedProperty, new Binding("RejectMultipleCodes") { Source = m.Policy, Mode = BindingMode.TwoWay });
+            Field(form, "多码处理", reject, "默认拒绝；关闭后按原候选顺序拼接，不去重，形成一份上游请求。", "RejectMultipleCodes", page);
+            Input(form, "多条码分隔符", m.Policy, "MultiCodeSeparator", "MultiCodeSeparator", page, "不拒绝多码时使用；1～16个可见字符。拼接最多512字符，超出拒绝且不截断。");
+            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "整串匹配；单次25ms、总计100ms。留空不筛选；按多码设置拒绝或拼接；不默认选首码，不去重制造唯一候选。");
             Preview(page, m);
-            var rules = Page(1, "格口请求", "相机扫描一个包裹，取得一个有效条码后，软件将该条码发给RCS获取分拣信息。每包请求数量固定为1，无需配置。这里仅设置是否指定目标格口；最终分配结果以RCS回包为准。修改只用于新作业。"); form = Form(rules);
+            var rules = Page(1, "格口请求", "软件将本次识别选中或拼接的条码字符串发给RCS获取分拣信息。每次请求数量固定为1，无需配置。这里仅设置是否指定目标格口；最终分配结果以RCS回包为准。修改只用于新作业。"); form = Form(rules);
             foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
                 foreach (var p in rcs.Parameters.Where(p => ParameterOwnership.Category(rcs, p.Field.Key) == 1)) Parameter(form, rules, rcs, p);
         }
@@ -215,15 +219,15 @@ public sealed partial class ParameterSettingsControl
         bool tested = false;
         void Invalidate() { if (tested) result.Text = "输入已改变，原测试结果已过期；请重新测试。"; }
         sample.TextChanged += (_, _) => Invalidate();
-        PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName is "BarcodePattern" or "BarcodeExclusionPattern") Invalidate(); };
+        PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName is "BarcodePattern" or "BarcodeExclusionPattern" or "RejectMultipleCodes" or "MultiCodeSeparator") Invalidate(); };
         m.Policy.PropertyChanged += handler; unsubscribe.Add(() => m.Policy.PropertyChanged -= handler);
         test.Click += async (_, _) =>
         {
-            var pattern = m.Policy.BarcodePattern; var exclusion = m.Policy.BarcodeExclusionPattern; var raw = sample.Text; test.IsEnabled = false; result.Text = "正在执行有界本地测试…"; tested = true;
+            var policy = m.Policy.BuildBarcodePolicy(); var raw = sample.Text; test.IsEnabled = false; result.Text = "正在执行有界本地测试…"; tested = true;
             try
             {
-                var reply = await Task.Run(() => m.Preview(new(pattern, exclusion.Length == 0 ? null : exclusion), raw.Replace("\r", "").Split('\n')));
-                result.Text = m.Policy.BarcodePattern != pattern || m.Policy.BarcodeExclusionPattern != exclusion || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
+                var reply = await Task.Run(() => m.Preview(policy, raw.Replace("\r", "").Split('\n')));
+                result.Text = m.Policy.BuildBarcodePolicy() != policy || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
                     ChineseInterfaceText.Status(reply.Outcome) + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效候选：" + reply.Matches;
                 diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(reply.Detail + string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + c.Reason)));
             }

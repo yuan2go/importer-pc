@@ -17,6 +17,9 @@ public static class BarcodeFiltering
     public static string? Validate(BarcodeFilterPolicy? policy)
     {
         if (policy is null) return null; // current strict single-candidate policy, never match-all
+        if (policy.MultiCodeSeparator is { } separator && (separator.Length > 16 || separator.Any(char.IsControl)) ||
+            policy.RejectMultipleCodes == false && string.IsNullOrWhiteSpace(policy.MultiCodeSeparator ?? ";"))
+            return "BarcodeFilter.MultiCodeSeparator: 不拒绝多码时请填写1～16个可见字符的分隔符，不允许控制字符";
         try { if (!string.IsNullOrWhiteSpace(policy.Pattern) || policy.Pattern?.Length > MaximumPatternLength) _ = Compile(policy.Pattern!, TimeSpan.FromMilliseconds(25)); }
         catch (ArgumentException ex) { return "BarcodeFilter.Pattern: " + ex.Message; }
         try { if (policy.ExclusionPattern is not null) _ = Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25)); }
@@ -31,6 +34,15 @@ public static class BarcodeFiltering
             decisions.Count == 0 ? null : decisions.ToArray());
         if (issue is not null || candidates.Length > MaximumCandidates || candidates.Any(x => x is null || x.Length > MaximumRawLength))
             return Result("IncompleteCandidates", null, 0, issue ?? "候选超出完整性配额，禁止按截断集合准入");
+        // Remembering an inactive separator must not turn a previously null,
+        // strict no-filter policy into an implicit candidate filter.
+        if (policy is { MultiCodeSeparator: not null } && policy.RejectMultipleCodes != false &&
+            string.IsNullOrWhiteSpace(policy.Pattern) && policy.ExclusionPattern is null)
+        {
+            if (Validate(policy) is { } separatorError) return Result("InvalidPattern", null, 0, separatorError);
+            return candidates.Length != 1 ? Result(candidates.Length == 0 ? "NoCode" : "MultipleCodes", null, candidates.Length, "多码拒绝启用；未应用筛选规则") :
+                !ValidCode(candidates[0]) ? Result("InvalidCode", null, 0, "条码长度或控制字符不合法") : Result("StrictSingleCode", candidates[0], 1, "严格单码；分隔符仅保存待用");
+        }
         if (policy is null)
             return candidates.Length != 1 ? Result(candidates.Length == 0 ? "NoCode" : "MultipleCodes", null, candidates.Length, "未设置筛选规则：仅接受一个原始码") :
                 !ValidCode(candidates[0]) ? Result("InvalidCode", null, 0, "条码长度或控制字符不合法") : Result("StrictSingleCode", candidates[0], 1, "严格单码；未应用筛选规则");
@@ -59,6 +71,9 @@ public static class BarcodeFiltering
                 0 when decisions.Any(d => d.Outcome == "Excluded") => Result("ExcludedCodes", null, 0, "符合允许规则的有效条码均被排除；未创建请求"),
                 0 => Result("NoMatchingCode", null, 0, "没有符合整串规则的有效条码；逐项原因见候选结果"),
                 1 => Result("Selected", matches[0], 1, "唯一有效条码；继续执行原有准入守卫" + (exclude is null ? "" : $"；已排除{decisions.Count(d => d.Outcome == "Excluded")}项")),
+                _ when policy.RejectMultipleCodes == false => string.Join(policy.MultiCodeSeparator ?? ";", matches) is var joined && joined.Length <= 512
+                    ? Result("JoinedCodes", joined, matches.Count, "按原候选顺序拼接全部有效条码；保留重复项；作为一份新请求继续执行原准入守卫")
+                    : Result("JoinedCodeTooLong", null, matches.Count, "拼接结果超过上游512字符限制；未截断、未创建请求"),
                 _ => Result("AmbiguousCodes", null, matches.Count, "多个有效条码，存在歧义；拒绝准入")
             };
         }

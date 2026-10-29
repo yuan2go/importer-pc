@@ -108,6 +108,9 @@ static partial class SportmasterRcs
                 ExtensionStore.AtomicWrite(Path.Combine(root,"mvs-python-snapshot-private.json"),s);
             }
             await app.StopAsync(default);
+            Check((await app.SnapshotAsync()).Operations.All(o => o.OriginalFrame is { State: "Saved" } image &&
+                image.RawSha256 == Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels.Data))) && factory.Source!.RetainedOriginalFrames == 0,
+                "actual software-reader pipeline saves admitted original frames losslessly and drains raw-frame leases on stop");
             Check(fake.Calls.TakeLast(4).SequenceEqual(["stop", "close", "destroy", "finalize"]) && !fake.HasFrame,
                 "controlled shutdown actually returns buffers and stops/closes/destroys/finalizes in order");
             foreach (var throws in new[] { false, true })
@@ -175,7 +178,7 @@ static partial class SportmasterRcs
         var bytes = new byte[checked(image.Width * image.Height)]; Marshal.Copy(image.Data, bytes, 0, bytes.Length);
         return new(bytes, image.Width, image.Height);
     }
-    sealed class SoftwareFlowFactory(BusinessLaunch launch, ParcelConfiguration expected, SoftwareFrameApi? fake, bool bundled) : IParcelCapabilityFactory
+    sealed class SoftwareFlowFactory(BusinessLaunch launch, ParcelConfiguration expected, SoftwareFrameApi? fake, bool bundled, IMonoBarcodeDecoder? decoder = null) : IParcelCapabilityFactory
     {
         readonly ParcelCapabilityFactory inner = new(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
         public MvsAcquisition? Source;
@@ -197,7 +200,7 @@ static partial class SportmasterRcs
             readers[c.Reader.DeviceId].DisposeAsync().AsTask().GetAwaiter().GetResult();
             Source = new(new(c.Reader.DeviceId, c.Reader.DeviceId, c.Reader.Parameters!), fake is null ? new MvsApi() : fake,
                 serial => new ResourceLease(Path.Combine(launch.DataRoot, "simulation-leases"), ["device:hikrobot-gige:" + serial]),
-                decoder: fake is null ? new SoftwareDecoder("utf-8", PrepareZxingFixture) : new ReleasedFrameDecoder(new SoftwareDecoder("utf-8", PrepareZxingFixture), fake));
+                decoder: decoder ?? (fake is null ? new SoftwareDecoder("utf-8", PrepareZxingFixture) : new ReleasedFrameDecoder(new SoftwareDecoder("utf-8", PrepareZxingFixture), fake)));
             readers[c.Reader.DeviceId] = Source;
             var hashes = new Dictionary<string, string>(ports.ImplementationHashes) { [c.Reader.DeviceId] = Wire.FileHash(typeof(BundledMvs).Assembly.Location) };
             return ports with { Reader = Source, Readers = readers, ImplementationHashes = hashes };

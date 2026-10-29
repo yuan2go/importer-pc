@@ -52,4 +52,7 @@ internal sealed class MvsTimings
 internal sealed record MvsTimingSnapshot(double ElapsedMs, int PercentileWindow, Dictionary<string, MvsStageTiming> Stages, MvsFrameLatency[] RecentFrames);
 internal sealed record MvsStageTiming(long Count, double TotalMs, double MinimumMs, double MaximumMs, int WindowCount, double P50Ms, double P95Ms, double P99Ms);
 internal sealed record MvsFrameLatency(uint Number, DateTimeOffset DeliveredAt, ulong DeviceTimestampRaw, long HostTimestampRaw,
-    double CopyMs, double ReleaseMs, double DecodeMs, double ClearMs, double ObservedToReceiverMs, double HandoffMs, int Candidates, bool Delivered);
+    double CopyMs, double ReleaseMs, double DecodeMs, double ClearMs, double ObservedToReceiverMs, double HandoffMs, int Candidates, bool Delivered)
+{
+    public double OriginalCopyMs { get; init; }
+}

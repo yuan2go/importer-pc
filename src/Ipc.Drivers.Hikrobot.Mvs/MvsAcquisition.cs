@@ -15,12 +15,20 @@ public sealed class MvsAcquisitionModule : IObservationExtension
 
 // One acquisition/resource owner. Legacy acquisition has no decoder; the current
 // reader injects an actual in-process decoder and emits only decoded candidates.
-internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
+internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource
 {
     readonly ExtensionContext context;
     readonly IMvsApi api;
     readonly IMonoBarcodeDecoder? decoder;
     readonly bool diagnosticVideoSampling;
+    readonly MvsOriginalFrames originals = new();
+    public void EnableOriginalFrames()
+    {
+        lock (gate) { if (worker is not null || decoder is null) throw new InvalidOperationException("Bind original frames before software reader startup"); originals.Enable(); }
+    }
+    public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity) => originals.Retain(identity);
+    public void ReleaseOriginalFrame(AcquisitionIdentity identity) => originals.Release(identity);
+    internal int RetainedOriginalFrames => originals.Count;
     internal MvsTimings Timings { get; } = new();
     internal MvsTimingSnapshot? DecoderTimings => decoder?.TimingSnapshot;
     readonly string entityMode;
@@ -210,14 +218,21 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
                     }
                     if (pixels is not null)
                     {
+                        MvsOriginalFrames.Frame? original = null;
                         string[] codes;
-                        try { PhaseTo("decode"); using (Timings.Measure("decode")) codes = decoder!.Decode(pixels, length, checked((int)frame.Width), checked((int)frame.Height)); }
+                        try
+                        {
+                            using (Timings.Measure("image.original-copy")) original = originals.Copy(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
+                            PhaseTo("decode"); using (Timings.Measure("decode")) codes = decoder!.Decode(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
+                        }
+                        catch { original?.Dispose(); throw; }
                         finally { using (Timings.Measure("image.clear-return")) ArrayPool<byte>.Shared.Return(pixels, true); }
                         if (codes.Length == 0)
                         {
+                            original?.Dispose();
                             lock (gate) emptyFrames++;
                             Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
-                                Timings.LastMs("image.rent-copy"), Timings.LastMs("sdk.release"), Timings.LastMs("decode"), Timings.LastMs("image.clear-return"), 0, 0, 0, false));
+                                Timings.LastMs("image.rent-copy"), Timings.LastMs("sdk.release"), Timings.LastMs("decode"), Timings.LastMs("image.clear-return"), 0, 0, 0, false) { OriginalCopyMs = Timings.LastMs("image.original-copy") });
                         }
                         else
                         {
@@ -225,6 +240,8 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
                             var admission = "mvs.read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + source)[..40].ToLowerInvariant();
                             var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, ++sequence, admission,
                                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", codes, null, observedAt);
+                            try { originals.Publish(new(DeviceId, observation.Epoch, source, admission, observedAt), original); }
+                            catch { original?.Dispose(); throw; }
                             Undelivered = observation;
                             if (token.IsCancellationRequested)
                                 throw new IOException("Stop requested during decoding; original decoded observation retained; source fenced");
@@ -240,7 +257,7 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
                             {
                                 Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
                                     Timings.LastMs("image.rent-copy"), Timings.LastMs("sdk.release"), Timings.LastMs("decode"), Timings.LastMs("image.clear-return"),
-                                    Timings.LastMs("host.observed-to-receiver"), Timings.LastMs("application.durable-handoff"), codes.Length, delivered));
+                                    Timings.LastMs("host.observed-to-receiver"), Timings.LastMs("application.durable-handoff"), codes.Length, delivered) { OriginalCopyMs = Timings.LastMs("image.original-copy") });
                             }
                             Timings.Record("host.observed-to-handoff-complete", Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds);
                             Undelivered = null;
@@ -340,7 +357,7 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
                 disposal = Task.Run(async () =>
                 {
                     await lifecycle.WaitAsync().ConfigureAwait(false);
-                    try { await StopCore().ConfigureAwait(false); disposed = true; }
+                    try { await StopCore().ConfigureAwait(false); originals.Dispose(); disposed = true; }
                     catch (Exception ex) { lock (gate) failure = ex.GetType().Name + ": " + ex.Message; throw; }
                     finally { lifecycle.Release(); }
                 });

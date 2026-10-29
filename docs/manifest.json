@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-INTEGRATION-20261028",
+  "work_package": "WP-IPC-STABILITY-AUDIT-FIXES-02",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -54774,9 +54774,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
-      "sha256": "13b8b8e50cb84cf1a20fbba710a9d9d9d900f9c63ad996228eb262ab762d90be",
-      "size_bytes": 20408,
-      "git_blob": "f7e61e9d99fc79b3c6f163fd59ca408eaa22084c",
+      "sha256": "093358a547cdf4163cd6c1f34b2cc11913fa0453e5fb281b010988f4b3224192",
+      "size_bytes": 20382,
+      "git_blob": "33751a27d1ba6ee554a262c643d2c8f8f06c7ee5",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
@@ -54866,9 +54866,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "2eebd2477c1abbd3394a6005d33e9d7b4f636bad5f06e0d5149c8433959b5773",
-      "size_bytes": 7855,
-      "git_blob": "9ac1222166c8cc17b0b1f6b0f85ab1ffbfb25f31",
+      "sha256": "339b3cf494ae9197ea6a98b1f9b41ecf55fa85c061d67619b463ce6bd453d549",
+      "size_bytes": 8119,
+      "git_blob": "27f0c6c95cdeea8fb9a1d2ea73bbedde5e55cd65",
       "pre_deferred_heartbeat_01_identity": {
         "git_blob": "f932bdeeb12be2db9d05cab2eeb19dc5cc407e7f",
         "sha256": "4f8010ebeb1a1948167520e50a2b5a86d3cdb4abdca9d5dc24e12d49fd928b98",
@@ -55021,9 +55021,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
-      "sha256": "691fc878352ab04151fe675380435f7f77040cc69d6807b4173165dbb64c20b1",
-      "size_bytes": 38197,
-      "git_blob": "436006986f255e20f42988cfaf1199863182d115",
+      "sha256": "9fe110c4b539aa74b8dbdb4941a460f83e2a7098d9174c37ac5957c7eab2051f",
+      "size_bytes": 38918,
+      "git_blob": "2fe987bb5e1e61c5c528d365d320bfe21c11e7cd",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -59150,9 +59150,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "15c92e2e8969d7b26b80d560f5986c8003d673876b9b78b2c07c7c6ddaa73e49",
-      "size_bytes": 28413,
-      "git_blob": "70c79c88c8c6edce18a6a1d0a0ebe5fa8c6c1a44",
+      "sha256": "3584879115cd9bcf44e9e1a4eecd7b45e6d402748dc1cd97f318794b95bbefc2",
+      "size_bytes": 28708,
+      "git_blob": "5caa6025db244e663d86d84fe68ca09417e3f51a",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -100132,9 +100132,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "3e989015df7d479ca49726a10e05cd7d46d11f865d9c726867bd58a2cf058b86",
-      "size_bytes": 4213,
-      "git_blob": "0aa2596638426ee50e27a10bb02d2d83e8beb7ad"
+      "sha256": "a1cae99b604585f2f21109d2f40cf8b179a94965ddaecca627d272d3a29b9c9c",
+      "size_bytes": 4487,
+      "git_blob": "5c1b3c193aa1c6376be937d5f37a98ec8eee02c3"
     },
     {
       "path": "docs/runtime/stability-audit-integration-20261026.md",
@@ -100154,9 +100154,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "13cb6d462b543fdc8f205b9e3b410281953ae5b471d3bc9c7dde6dfba857c669",
-      "size_bytes": 1706,
-      "git_blob": "3f7c2d74e506f065c60c2c04965b17cc0b00a6b0"
+      "sha256": "f3d2d6a15eb6cfa9dd2098efea227603dc264bbea4c62dfb0966ce4ab879890e",
+      "size_bytes": 2881,
+      "git_blob": "71386ab0995fd53ebb618fab65ee08dd81161361"
     },
     {
       "path": "tests/Ipc.Application.Verification/StabilityAuditFixes.cs",
@@ -100165,9 +100165,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "31718bcf4c671a4e2688d26b123c2d1ff6c64e1add7ebc747e8389a3703392da",
-      "size_bytes": 10370,
-      "git_blob": "4ff03438df8b8253e808e3e22678882622137911"
+      "sha256": "bca36d26d936cf2a1f50df1649fea56350d9124bc0e5371914465436e04b73d0",
+      "size_bytes": 13423,
+      "git_blob": "e6b562acd3cb69b9b8fadb4fe867112f9e788245"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/StabilitySeedUpgrade.cs",
@@ -105525,6 +105525,61 @@
       "size_bytes": 14292,
       "git_blob": "e1a76e2fbda6d902b8592313528d5ff383d4da59",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/integration-20261028-history-open.md",
+      "version": "stability-audit-fixes-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-AUDIT-FIXES-02; original evidence retains its own SourceCommit",
+      "sha256": "19d4dcb33c1f6bb32efa80fdbf6cc005147b4d7f29c649acfd50e82651e591a4",
+      "size_bytes": 6367,
+      "git_blob": "b8862c042840d83239873ae966a358586b330ab6",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "scripts/compare-history-open.py",
+      "version": "stability-audit-fixes-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-AUDIT-FIXES-02; original evidence retains its own SourceCommit",
+      "sha256": "573ae9b7c88cffb6088c2761a8ae4c8e6b63b82c9ad533bf2f9775f4b91fd8b9",
+      "size_bytes": 7079,
+      "git_blob": "3cc9b6c95217307277307c7001de0a8140135a4f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/HistoryOpenBenchmark.cs",
+      "version": "stability-audit-fixes-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-AUDIT-FIXES-02; original evidence retains its own SourceCommit",
+      "sha256": "e75c6bdb7d3cb66302b84c82a94638d2a8d0ddded1b31971f8d4ce431812496e",
+      "size_bytes": 7413,
+      "git_blob": "3b39a13a776a7773699b28ae7819bc48d0798673",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/HistoryOpenSafety.cs",
+      "version": "stability-audit-fixes-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-AUDIT-FIXES-02; original evidence retains its own SourceCommit",
+      "sha256": "193168caba3ccaab21162c28f75b1295bd6eea8c6054e67d7e58697dcc2fc118",
+      "size_bytes": 6609,
+      "git_blob": "b153656a551b11cc34724bc25c86754e76451c5a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/integration-20261028-history-open-paired.json",
+      "version": "stability-audit-fixes-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-AUDIT-FIXES-02; original evidence retains its own SourceCommit",
+      "sha256": "60718dbfda069385fdc323051294fa9cfdb85f32ccbf4ba097153c926b323711",
+      "size_bytes": 20429,
+      "git_blob": "454ad6408501749561f28dee6e1e8cecdd809f37",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -105604,7 +105659,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-INTEGRATION-20261028.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-STABILITY-AUDIT-FIXES-02.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -108388,8 +108443,8 @@
   ],
   "integration_sources": [
     {
-      "commit": "99bc0673265bfef26fa48bc662d33a64657d9e52",
-      "manifest_sha256": "ec5d1f4a0ca3b400228c05e227fa4a1f9ac64a76205ed03ca34c0e1572e4c3ab",
+      "commit": "c6e353f318e986a12a775a026f4f3a3c89884e22",
+      "manifest_sha256": "6dc0966bdd7dea983cc0ffae11c5c60d6fe2199254d1c14fdb91aee0f4948e61",
       "work_package": "WP-IPC-INTEGRATION-20261028"
     }
   ],

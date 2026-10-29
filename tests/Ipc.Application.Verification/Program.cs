@@ -25,6 +25,8 @@ if (args.Contains("--time-storage-exit-child")) { await Task.Delay(400); Environ
 if (args.Contains("--time-storage-process-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Processes(workspace, root); return; }
 if (args.Contains("--time-storage-runtime-child")) { var i=Array.IndexOf(args,"--time-storage-runtime-child"); await TimeStorageProcessChecks.Child(workspace,args[i+1],args[i+2]); return; }
 if (args.Contains("--time-storage-supervisor-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Supervisor(root); await SupervisorContinuity.Run(Path.Combine(root,"continuity")); return; }
+if (args.Contains("--history-open-fixture")) { HistoryOpenBenchmark.CreateFixture(workspace,args[Array.IndexOf(args,"--history-open-fixture")+1]); return; }
+if (args.Contains("--history-open-worker")) { HistoryOpenBenchmark.Worker(args[Array.IndexOf(args,"--history-open-worker")+1]); return; }
 if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root); await AtomicStorageChecks.Run(root); return; }
 if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); await StartupStorageBoundaries.Run(workspace, Path.Combine(root,"startup-storage")); return; }
 Console.WriteLine("EvidenceRoot=" + root);

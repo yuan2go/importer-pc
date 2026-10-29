@@ -21,8 +21,8 @@ public sealed partial class ParcelRepository
         using var invalid=db.CreateCommand();
         invalid.CommandText="SELECT wire FROM ("+history+") WHERE wire IS NOT NULL GROUP BY wire HAVING typeof(wire)!='integer' OR wire<=0 OR count(DISTINCT id)>1 LIMIT 1";
         if(invalid.ExecuteScalar() is not null)throw new InvalidDataException("Ambiguous original numeric request ID; preserve original owners and investigate before admission");
-        using var maximum=db.CreateCommand();maximum.CommandText="SELECT coalesce(max(wire),0) FROM ("+history+")";
-        lastIntegrationRequestId=Convert.ToInt64(maximum.ExecuteScalar());
+        // The owner traversal below validates every original and computes the same
+        // maximum. Keep the independent ambiguity checks, without a third scan.
         using var requests = db.CreateCommand();
         requests.CommandText = "SELECT request FROM (SELECT id,json_extract(body,'$.Wcs.Request.Id') request FROM parcel_operations WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL" +
             (" UNION ALL SELECT id,json_extract(body,'$.Wcs.Request.Id') request FROM parcel_archives WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL") + ") GROUP BY request HAVING request IS NULL OR count(DISTINCT id)>1 LIMIT 1";

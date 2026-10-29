@@ -22,6 +22,7 @@ if (args.FirstOrDefault() is "--clean-storage-bootstrap" or "--clean-storage-boo
 if (args.FirstOrDefault() == "--runtime-identity")
 {
     RuntimeIdentityVerification.Run();
+    await RuntimeEntryBoundaryVerification.Run();
     return;
 }
 if (args.FirstOrDefault() == "--extension-draft")

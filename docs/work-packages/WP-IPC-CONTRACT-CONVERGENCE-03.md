@@ -8,7 +8,8 @@
 |---|---|---|
 | B1 | DeploymentExtensions双参数构造与双值Deconstruct；当前主契约已有四参数且Services/Ports可选。自有旧二进制不兼容，ExtensionContractCompatibility要求精确Platform哈希，生产配置使用完整部署记录 | 删除冗余二进制桥接，保留可选服务/端口及完整JSON；构建全部当前业务，验证扩展草稿隔离与往返 |
 | B2 | Python中Supply/Inspection源码顺序断言；现行不变量是身份拒绝先于配置读取、持久化和设备构造，并且独立维护有自己的权限入口 | 用实际StartAsync的拒绝/原件保全行为替代运行源码顺序检查；维护分支检查若不能证明等价则保留，不借机扩大权限 |
-| B3 | OperatorAdministration要求已授权SM保存仍因未暂停而拒绝；与SM自动有界等待合同冲突 | 删除这条被替代行为检查，现行未授权/撤权拒绝保留；保存行为由MvsOfflineActivation的真实SQLite/识别链检查守护，运行两组验证 |
+| B3 | OperatorAdministration要求已授权SM保存仍因未暂停而拒绝；还把全模拟配置切换为Production并期待旧认证层异常，实际先被当前相机合同拒绝 | 删除这两条已失去当前前提的检查，不改为捕获任意异常；现行未授权/撤权拒绝及Production旧配置拒绝保留。自动保存由MvsOfflineActivation的真实SQLite/识别链检查守护 |
+| B4 | 本轮Python全量暴露真实进程释放夹具以固定0.25秒延迟假定后代已运行；失败发生在建立测试前提时 | 用显式故障触发文件同步真实子进程就绪，保留取消/失败两条资源所有权行为及全部停止断言，不改生产build_process |
 
 ## 必须核定的保留项
 

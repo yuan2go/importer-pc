@@ -89,7 +89,9 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                     PhaseTo("enumerate");
                     var matches = api.Enumerate().Where(d => d.Ip == ip && (serial.Length == 0 || serial == d.Serial)).ToArray();
                     token.ThrowIfCancellationRequested();
-                    if (matches.Length != 1 || string.IsNullOrWhiteSpace(matches[0].Serial)) throw new InvalidDataException("Configured MVS IP/serial not uniquely discovered");
+                    if (matches.Length != 1 || string.IsNullOrWhiteSpace(matches[0].Serial))
+                        throw new ObservationConnectionException("配置的MVS相机未发现或设备身份不匹配；连接保持离线，原参数保留。",
+                            new InvalidDataException("Configured MVS IP/serial not uniquely discovered"));
                     if (physicalSerial.Length != 0 && physicalSerial != matches[0].Serial)
                         throw new InvalidDataException("Original MVS physical serial changed; revise the approved device binding before replacement");
                     PhaseTo("lease"); lease = acquireLease(matches[0].Serial); physicalSerial = matches[0].Serial;
@@ -123,6 +125,15 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                 lock (gate) failure = ex.GetType().Name + ": " + ex.Message;
                 try { await StopCore().ConfigureAwait(false); }
                 catch (Exception stop) { throw new AggregateException("MVS startup/cleanup failed; original owner retained", ex, stop); }
+                if (ex is ObservationConnectionException)
+                {
+                    // Only after successful native/decoder cleanup may this be a
+                    // recoverable position dependency. Configuration and other
+                    // capabilities remain active; no frame or Ready is invented.
+                    PhaseTo("disconnected");
+                    var now = DateTimeOffset.UtcNow;
+                    onHealth(new(DeviceId, registeredEpoch, DeviceHealth.Disconnected, now, null, ConfirmationSource));
+                }
                 throw;
             }
         }

@@ -1,5 +1,7 @@
 # 文档索引
 
+2026-10-29 用户要求当前SM全部内置、停用外置扩展；修复首次配置启用被外置目录/信任/资格错误阻断，见[工作包](work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)与[运行记录](runtime/sm-built-in-only-01.md)。本轮处理实际装配，不改页面；SDK、身份与业务守卫保持。
+
 2026-10-29 首次管理密码维护进程异常及窗口截断修复见[工作包](work-packages/WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01.md)和[本机验证/CI停用](runtime/management-password-startup-01.md)。用户已要求关闭 GitHub CI，当前使用本机验证；原 CI 及历史 PASS 保持原身份。
 
 2026-10-29 [SM真机SDK→本机Python RCS续验](runtime/sm-sdk-python-validation-20261029.md)：main `7af0be61` 实采31笔逐笔对账通过，普通令牌启动与原生参数另有本机证据。隔离Simulation与正式部署/现场验收分别记证，未验证项目明确保留。

@@ -1,3 +1,5 @@
+> 2026-10-29 用户最新纠偏：当前 SM 全部使用内置驱动和组件，停用外置扩展，不要求外置扩展目录、独立信任或按配置签署扩展部署资格；内置 MVS SDK 采图与软件识别、内置 RCS 沿当前安装发布完整性、受保护原生依赖、实际物理身份和业务守卫运行。配置完整并启用后应展示，相机未发现仅本位离线，不回滚整份配置或连带关闭RCS；离线位拒绝供包。只修复实际连接启用，不以页面改动代替。原外置包、签名及资格说明保留历史或其他业务范围，不能静默改写原配置或冻结请求。见 [SM-BUILT-IN-ONLY-01](docs/work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)。
+
 > 2026-10-29 用户纠偏：停用本仓库 GitHub CI，必要验证在本机执行；未经用户新授权，不重新启用或调度 Actions。具体见 [MANAGEMENT-PASSWORD-STARTUP-01](docs/work-packages/WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01.md)。历史CI记录保留原身份。
 
 > 2026-10-28 最新执行口径以 [MVS-SOFTWARE-READER-01](docs/work-packages/WP-IPC-MVS-SOFTWARE-READER-01.md) 为准：MVS采图＋同一ZXing-C++软件识别引擎进程内接入，逐次识别结果交RCS去重；本轮RCS按用户要求由本机Python模拟。此前MvCodeReader默认路径及通过记录保留原验证范围。

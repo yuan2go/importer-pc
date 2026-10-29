@@ -25,12 +25,25 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     ExtensionTrust? trustPolicy;
     string? trustFile;
     DeploymentQualification? qualification;
-    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+    string? builtInConfigurationHash = null;
+    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production &&
+        builtInConfigurationHash != Wire.Hash(Wire.Encode(c)) && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
             ? "Production NotReady: exact deployment qualification missing/expired" : null;
     public bool SimulationIdentity(CapabilityBinding b) => b.Package is null ? b.Implementation != "sportmaster-rcs" : Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
     public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
+    static bool SupportsExternalExtensions =>
+#if SPORTMASTER
+        false;
+#else
+        true;
+#endif
+    static void RequireExternalExtensions()
+    {
+        if (!SupportsExternalExtensions) throw new NotSupportedException("SM当前全部使用内置驱动和组件，外置扩展已停用。");
+    }
     ExtensionStore Store()
     {
+        RequireExternalExtensions();
         if (store is not null) return store;
         var settingsFile = Path.Combine(launch.ConfigurationDirectory, "extension-store.json");
         (string Root, string TrustFile) paths;
@@ -69,6 +82,20 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     public void ValidateStructure(ParcelConfiguration c) => _ = ValidateDeployment(c, false);
     DeploymentQualification? ValidateDeployment(ParcelConfiguration c, bool requireQualification = true)
     {
+        var builtInSportmaster = false;
+#if SPORTMASTER
+        // Current SM ships its drivers/components in the protected product release.
+        // External package trust and per-configuration extension qualifications do
+        // not apply to those built-in binaries. Never fall back from an external
+        // binding: the current product explicitly refuses it.
+        if (c.ApplicationId == "sportmaster")
+        {
+            if (c.Extensions is not null || ParcelBindings.Readers(c).Any(r => r.Driver.StartsWith("extension:", StringComparison.Ordinal)) ||
+                ParcelBindings.All(c).Any(b => b.Package is not null || b.Module is not null || b.Implementation.StartsWith("extension:", StringComparison.Ordinal)))
+                throw new InvalidDataException("SM当前仅使用随软件安装的内置驱动和组件，不支持外置扩展配置；原配置保留。");
+            builtInSportmaster = true;
+        }
+#endif
         var setupErrors = ParcelConnectionSetup.Validate(c);
         if (setupErrors.Length != 0) throw new InvalidDataException(string.Join("; ", setupErrors));
         // Acquisition-only built-in MVS owns no barcode/business output. Do not force
@@ -77,7 +104,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         var acquisitionOnly = c.ApplicationId == "sportmaster" &&
             ParcelBindings.Readers(c).All(r => ParcelConnectionSetup.IsDeferred(c, r.DeviceId) || r.Driver == "hikrobot-mvs" && r.Parameters?.GetValueOrDefault("entity.mode") == "observe-only") &&
             ParcelBindings.All(c).All(b => !b.Enabled || ParcelConnectionSetup.IsDeferred(c, b.InstanceId));
-        var requiresActiveQualification = requireQualification && ParcelConnectionSetup.HasActiveConnections(c) && !acquisitionOnly;
+        var requiresActiveQualification = requireQualification && ParcelConnectionSetup.HasActiveConnections(c) && !acquisitionOnly && !builtInSportmaster;
         var inventoryErrors = ParcelConfigurationRules.ValidateCapabilityInventory(c);
         if (inventoryErrors.Length != 0) throw new InvalidDataException(string.Join("; ", inventoryErrors));
         RegisterContracts();
@@ -191,7 +218,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             if (b.Package is null && b.Implementation == "sportmaster-rcs" && b.Version == RcsRequestPolicy.ComponentVersion && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
             {
                 _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(b);
-                if (requireQualification && c.Mode == RunMode.Production && candidateQualification is null) throw new InvalidDataException("RCS生产部署资格尚未完成");
+                if (requireQualification && c.Mode == RunMode.Production && candidateQualification is null && !builtInSportmaster) throw new InvalidDataException("RCS生产部署资格尚未完成");
                 continue;
             }
 #endif
@@ -316,6 +343,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     public CapabilityCatalog Catalog()
     {
         RegisterContracts();
+#if SPORTMASTER
+        return new(ReferenceProviders(), [], []);
+#else
         try { return InstalledCatalog(); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or System.Security.Cryptography.CryptographicException)
         {
@@ -323,6 +353,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             // exact bindings remain unresolved and Validate/Create still fail closed.
             return new(ReferenceProviders(), [], []) { InventoryDiagnostic = "扩展库存未配置或不可用：" + ex.Message + "。内置配置可读取；原扩展绑定仍须恢复同一可信包后才能保存或启动。" };
         }
+#endif
     }
     static CapabilityDescriptor[] ReferenceProviders()
     {
@@ -358,6 +389,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public async Task<BusinessReceipt> InstallAsync(string file, string sha256)
     {
+        RequireExternalExtensions();
         if (OperatingSystem.IsWindows())
         {
             var appRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "app"));
@@ -386,6 +418,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public async Task<BusinessReceipt> ManageAsync(string action, string identity)
     {
+        RequireExternalExtensions();
         if (action is not ("extension-recover" or "extension-uninstall")) throw new InvalidDataException("Unsupported controlled extension maintenance");
         if (OperatingSystem.IsWindows())
         {
@@ -422,6 +455,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public ParcelPorts Create(ParcelConfiguration c)
     {
+        builtInConfigurationHash = null;
         qualification = ValidateDeployment(c);
         if (qualification is { } decision)
             foreach (var evidence in decision.ApprovalEvidence.Concat(decision.Prerequisites.SelectMany(x => x.Files)).DistinctBy(x => x.Path))
@@ -503,6 +537,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         var camera = c.Images is null ? null : (IImageCamera)devicePorts[c.Images.Camera.InstanceId];
         var uploader = c.Images?.Uploader is { } u ? Own<IImageUploader>(u, () => new ReferenceImageUploader(u, u.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(u.Package!, m, "upload").Create(u)) : null;
         // Software administration has its own credential store and never falls back to this port.
+#if SPORTMASTER
+        // Admission is bound to the fully validated, constructed configuration;
+        // draft edits cannot inherit this built-in runtime's validation.
+        builtInConfigurationHash = c.ApplicationId == "sportmaster" ? Wire.Hash(Wire.Encode(c)) : null;
+#endif
         transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, readers, devicePorts);
     }
     static IImageCamera BindReader(IControlledObservationSource source, CapabilityBinding binding, string directory) => source is IReaderImageCapture provider

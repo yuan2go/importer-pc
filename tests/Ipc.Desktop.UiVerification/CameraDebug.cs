@@ -54,6 +54,9 @@ static partial class Program
         Click(window, "暂停画面"); var calls = probe.Reads; await Poll(); await Task.Delay(900);
         Check(probe.Reads == calls && image.Source is not null && vm.Left.CanAdmit, "pause freezes only image polling and leaves business admission running");
         Click(window, "继续画面"); await Poll();
+        // Isolate the held completion from a subsequent valid right-camera tick.
+        // Resume the real timer below so navigation still verifies actual polling.
+        var timer = (DispatcherTimer)control.GetType().GetField("timer", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!; timer.Stop();
         probe.Held = new(TaskCreationOptions.RunContinuationsAsynchronously);
         var pending = (Task)poll.Invoke(control, null)!;
         window.ShowPositionDebug(vm.Right); probe.Held.SetResult(); await pending; await Flush();
@@ -61,6 +64,7 @@ static partial class Program
         probe.Held = null; await Poll();
         var bitmap = (BitmapSource)image.Source!; var pixels = new byte[bitmap.PixelWidth * bitmap.PixelHeight]; bitmap.CopyPixels(pixels, bitmap.PixelWidth, 0);
         Check(pixels[0] == 180 && scans.Items.Count == 0, "camera switch clears sampled records and paints only the selected camera");
+        timer.Start();
         var filter = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "本地筛选测试（不外呼）")); filter.IsExpanded = true; await Flush();
         var sample = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "本地筛选测试候选"); sample.Text = "000123456";
         Click(window, "测试当前运行筛选规则"); await Until(() => Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("选中条码")));

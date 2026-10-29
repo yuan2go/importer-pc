@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-SM-MVS-ONLY-UI-01",
+  "work_package": "WP-IPC-SM-BUILT-IN-ONLY-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1886,9 +1886,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "b4770e4f0bafe8bd4c49cd09f2a688ec16cf68487db0d2d5763e8f9faad9b7da",
-      "size_bytes": 10707,
-      "git_blob": "5cb879bb7dccb93498be9a9faed82194ccb143c9",
+      "sha256": "c6218b5a7f4025ad9be924522c8105701fd226b9be7924f5fc3246251b3f50ba",
+      "size_bytes": 11292,
+      "git_blob": "f80636864f42a764d9e57224e573edc3403217d5",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "a48e85dd8f16bc7fd4008cb27df4d04a787fb0907ef7270a2e92f08721c5c3ef",
-      "size_bytes": 10506,
-      "git_blob": "507e5221f8aecba202fa65fc8318d040fded6c2d",
+      "sha256": "b66c25beda7cd9beb788d78d70d0b69b8c8c4b1116e336b2bef5fd7a086d1fd0",
+      "size_bytes": 10832,
+      "git_blob": "3f08a31aa9ae3c93dfca1d8117dd5dfe489518d9",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -56511,17 +56511,17 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
       "storage_scope": "public_repository",
-      "sha256": "62911f9ed99cbc4a33ea762b19ad1b0682ecc875c32aae5dd6487721e3112549",
-      "size_bytes": 47119,
-      "git_blob": "845dbaf501d9e8326e03fe60ac27751cca9a4c38",
+      "sha256": "6185e4ca4e0a4008134ad1c7fce8d23ab0fb5ee2f3af4733a8ded39cdae903f1",
+      "size_bytes": 49044,
+      "git_blob": "a854b44d324b941022a9eab3116baf6de4944f39",
       "previous_git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629",
       "pre_publication_no_test_git_blob": "e6986251a493096982aeb6f31f6dc885f7b33faf"
     },
     {
       "path": "src/Ipc.Assembly/ParcelCli.cs",
-      "sha256": "9fa5e1128a3e2faff5983b95cd9cec8e84869e80fbc9335ff13963d887673155",
-      "size_bytes": 14676,
-      "git_blob": "c5fc467da3105cef8a14ebfd110644517482145b",
+      "sha256": "474200be69af5d5ee890a1211a269760e8e188c3cf822bf5c3439a4ad99d68bd",
+      "size_bytes": 14896,
+      "git_blob": "92312e765541fd142ccdf73b91662302061a53d7",
       "version": "retention-ingress-full-retest-03",
       "status": "scoped_implementation_integration_or_separately_identified_synthetic_evidence",
       "purpose": "Rowid retention paging and whole-command cooperative budget; no full-scale or field qualification",
@@ -59150,9 +59150,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "3888b14483f4cf491f4e1b424dc188d281d1156142c5bdc96e3915e31ce3585b",
-      "size_bytes": 29089,
-      "git_blob": "f40958ad4d0840a5bffbb11773865f295131f309",
+      "sha256": "64e0742a28c1912a930c4dab9de6c2db0d4636d62fa1a2fe095d8ddf23efc433",
+      "size_bytes": 29199,
+      "git_blob": "fac274e1a35e1435955f3e9e0e69f51d8dcc85a8",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -105114,9 +105114,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "48b7e74aecc31c020265c7221927b89107217be756dcf8411a61d2d1049db529",
-      "size_bytes": 5495,
-      "git_blob": "dde2708ab9f4c0c3b2f0d9e86e1ba3b4fe20bdb5",
+      "sha256": "bb8b16e9f329e442546673c90d9c0f54e92c860c3e4ce6e6b201125b7cc7e8b5",
+      "size_bytes": 5822,
+      "git_blob": "eaf9b77b9c6d7ce507c62a1aa28774428e2496c0",
       "storage_scope": "public_repository"
     },
     {
@@ -105976,6 +105976,39 @@
       "size_bytes": 1374,
       "git_blob": "4884ce553054a21f40d21460b50fc300551a218d",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/sm-built-in-only-01.md",
+      "version": "sm-built-in-only-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-BUILT-IN-ONLY-01; original evidence retains its own SourceCommit",
+      "sha256": "99500f2ecb89351f6d86eb4c87eb0d3389b23dfb0077b7a74ca6347c376038e2",
+      "size_bytes": 2008,
+      "git_blob": "a1fb9a60d056617edb68403d4e63346e3d8fb8d1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md",
+      "version": "sm-built-in-only-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-BUILT-IN-ONLY-01; original evidence retains its own SourceCommit",
+      "sha256": "655aa4cc06f57354e610c2280911811a2eeeb1f25de68b4ea41b201e76da7237",
+      "size_bytes": 1935,
+      "git_blob": "31a0f0c48ce93292bd79184f2cde802b2d689351",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/BuiltInOnly.cs",
+      "version": "sm-built-in-only-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-BUILT-IN-ONLY-01; original evidence retains its own SourceCommit",
+      "sha256": "0300d41dfe4a4699c294aef6bd12364b09433e2dfb92766a4dbea4774c4af602",
+      "size_bytes": 4561,
+      "git_blob": "eca341e8c3d09174b835f2677bde12c4a1bea988",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -106055,7 +106088,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-MVS-ONLY-UI-01.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",

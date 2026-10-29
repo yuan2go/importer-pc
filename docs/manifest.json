@@ -1964,9 +1964,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "e0a47a5a802ffbdf7ef658bd4b5dfb107a0dd998d351899d5cef72a662b293af",
-      "size_bytes": 3058,
-      "git_blob": "44d052222279ffa8c4d062df474478c5336ee5e9",
+      "sha256": "93348f49c561b4385da91635efce41c8525ba906bf9f60c782698e5fd718e22b",
+      "size_bytes": 3354,
+      "git_blob": "03948e484b93b3d4968dbed42651f40c8eefded4",
       "version": "PARAM-UX-02-MAIN-HANDOFF-20261021",
       "status": "current_guidance_static_review_not_runtime_validation",
       "purpose": "Confirm the complete V3 design already in main and scope remaining native delivery; preserve historical source and validation identities",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "ffd89f96ffcb1be7c5d141ee4dbcaeef5ffb0b166a04442ab9ad230a6ff4dc0a",
-      "size_bytes": 9800,
-      "git_blob": "fcac24c4e9234b335f06b09988e78f5d5edd853a",
+      "sha256": "c436f46da6d03ac8d9e6c3980961260a952775f8b41fbb2a553aa427bb00033e",
+      "size_bytes": 10091,
+      "git_blob": "ce85639c1f3f8890da4a9e66b351e2499ba735ec",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -102254,9 +102254,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "b010428c602dc869c3911eda540285e0f915a4df8df554a25d185f8512c54ef8",
-      "size_bytes": 5307,
-      "git_blob": "002a2d47eccebce052d8d8746ef89d90475f3173",
+      "sha256": "5cc5ef6492ca226c75433130a854a94bcd5c27290576abe6518f60bc79226b59",
+      "size_bytes": 5900,
+      "git_blob": "40cd9166252a0b1a12bce406904cfdb9cff73bd1",
       "storage_scope": "public_repository"
     },
     {
@@ -104179,9 +104179,9 @@
       "status": "current_guidance_or_scoped_evidence",
       "purpose": "Reconciliation inventory; not a runtime validation claim",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
-      "sha256": "adeac2dd1a1b40cf0a07887280d020df2d35a6cfed931ba14eae3b76eecf3092",
-      "size_bytes": 11259,
-      "git_blob": "fe88b792ee31820bf76786ccb06ef11df118dd01",
+      "sha256": "8dca72e6fcc5638760143edb71b78acb95d37e669442b4e242a61a37c8129309",
+      "size_bytes": 12185,
+      "git_blob": "c368ed42091c12fff29a9c40d0706ff835603f15",
       "storage_scope": "public_repository"
     },
     {
@@ -105147,9 +105147,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "ccee85f3cb29ab3f5132ab775d197e512f008287f3d4e60c4c31f0843173323d",
-      "size_bytes": 3677,
-      "git_blob": "59583cb5afe9ec968e3f87f35d27eab63706d4d4",
+      "sha256": "d148cc4bc18dc347d42d62de1af793400581bf3f50dc21665085d6f171f5fd46",
+      "size_bytes": 4280,
+      "git_blob": "448fefda348143490b1d2bf345c544c5fd1338f8",
       "storage_scope": "public_repository"
     },
     {
@@ -105312,9 +105312,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "3dcc0fac3f5a61494288cf4ad10f670bb57c00850721f55b223c5389379b8e90",
-      "size_bytes": 18028,
-      "git_blob": "52d846d66c2ed776faeb2a39f6ca8a4b9f245b1f",
+      "sha256": "c13a55f9469869891f327869adf1aa86b73c83bae99f5a904194a03deda2c602",
+      "size_bytes": 19226,
+      "git_blob": "d36a23414047526554e6e81df799bedb2365e7b2",
       "storage_scope": "public_repository"
     },
     {
@@ -105601,6 +105601,50 @@
       "sha256": "801315e6737a378616bc48fab6480b690df3fff59ed3766b7251237315b9a64e",
       "size_bytes": 5745,
       "git_blob": "753fd8fa4e5d3c034113aa6dd06acf0cfe949264",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-sdk-camera-20261029/summary.json",
+      "version": "integration-20261028",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
+      "sha256": "19b50c01eb4437abf61e1f56596aa75056105c4cbb0468811c508f00843ea058",
+      "size_bytes": 4131,
+      "git_blob": "421a2beff3126201c3de0c356dfc263354146c6b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/sm-sdk-python-validation-20261029.md",
+      "version": "integration-20261028",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
+      "sha256": "617f18f6690a4656c25f5d48231423a8b0333b5365309cb9c540d1470900ab14",
+      "size_bytes": 8356,
+      "git_blob": "3e675540cd1bce7c4f5972673bc4a618b0eba1e6",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "scripts/verify-sm-sdk-python.py",
+      "version": "integration-20261028",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
+      "sha256": "a38a7295824ce9bad57dab3def163d74f499dd3b236bcca086c94448add5461e",
+      "size_bytes": 5200,
+      "git_blob": "4761eda820171617f5fb3800d8207ade284011db",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/MvsPythonLedger.cs",
+      "version": "integration-20261028",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
+      "sha256": "8e203f1b26574f43b2ed64acc109f32b456ae45eae746ac3deab6af1941322df",
+      "size_bytes": 6342,
+      "git_blob": "97a6a63c2b7b3711efdc4e4e20d19bda44dc1f74",
       "storage_scope": "public_repository"
     }
   ],

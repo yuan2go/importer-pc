@@ -1,5 +1,7 @@
 # importer-pc
 
+2026-10-29 [SM真机SDK→本机Python RCS续验](docs/runtime/sm-sdk-python-validation-20261029.md)：main `7af0be61` 实采31笔逐笔对账通过，普通令牌启动与原生参数另有本机证据。隔离Simulation与正式部署/现场验收分别记证，未验证项目明确保留。
+
 C#/.NET 10 Windows 工位客户端。Platform 提供机制，Application 拥有业务状态与命令守卫，驱动与集成实现端口；一个业务实例服务多个页面和窗口。
 
 当前阅读入口是[文档索引](docs/INDEX.md)。只支持当前版本从零安装、从零建库；非当前格式拒绝，请使用全新数据目录。本轮收口见[工作包](docs/work-packages/WP-IPC-FRESH-BASELINE-01.md)。本轮开发保障范围为 SM / Sportmaster 及其必需共享基座，其他业务模块开发暂停。2026-10-28/29 并行任务整合的范围、顺序、不变式和验证状态见[整合工作包](docs/work-packages/WP-IPC-INTEGRATION-20261028.md)。实际合并、归档与未完成边界见[整合执行记录](docs/runtime/integration-20261028.md)。源码合并不代表已发布新安装包或取得现场资格。

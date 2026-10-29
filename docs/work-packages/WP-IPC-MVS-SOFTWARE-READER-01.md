@@ -21,3 +21,7 @@ D-MVS-SOFTWARE-01：本轮用户批准MVS＋软件识别及RCS去重口径；不
 - RV-MVS-SOFTWARE-06：安装器和冻结介质生成、依赖核对及启动结果单独随实际SourceCommit交付；普通账号正式客户端和真实现场RCS仍不由本轮模拟验收替代。
 
 2026-10-28增量：CI无机级策略的合成夹具复用既有P0SimulationFactory，不再从合成测试创建正式机级租约；实际随包真机仍用默认工厂和原机器策略。补齐便携构建的全局锁文件及安装器完整Sportmaster闭包，保持RestoreLockedMode=true，不跳过或删除断言。
+
+## 2026-10-29 SM续验
+
+后续核对以[本轮SDK→Python及启动参数验证](../runtime/sm-sdk-python-validation-20261029.md)为准。仅SM，其他业务暂停；旧设备51/21笔记录保持原来源。起初SDK枚举0，用户接通后重新枚举1台；main `7af0be61` 实采20秒，31笔独立请求接受本机Python模拟格口，两端冻结报文及响应逐笔一致。隔离Simulation不代表正式部署或真实RCS验收。外部Python验证入口空引用已在候选修复，合成17条PASS及4种账本副本破坏拒绝验证通过；候选、main及后续CI身份分别记录。

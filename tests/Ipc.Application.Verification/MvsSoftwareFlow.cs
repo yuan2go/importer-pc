@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using System.Reflection;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
@@ -13,6 +14,7 @@ static partial class SportmasterRcs
 {
     public static async Task MvsSoftwareFlow(string workspace, string root, string[] args)
     {
+        Console.WriteLine("VerifierSource="+typeof(SportmasterRcs).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion);
         var live = args.Contains("--live-ip");
         var bundled = args.Contains("--bundled-native");
         if (bundled && !live) throw new InvalidOperationException("Bundled path requires actual camera and explicit private identity file");
@@ -30,6 +32,9 @@ static partial class SportmasterRcs
             return;
         }
         var endpoint = args.Contains("--rcs-endpoint") ? Value("--rcs-endpoint") : null;
+        var pythonLedger = args.Contains("--rcs-ledger") ? Value("--rcs-ledger") : null;
+        if (!live && endpoint is not null && (pythonLedger is null || !Path.IsPathFullyQualified(pythonLedger) || !File.Exists(pythonLedger)))
+            throw new ArgumentException("Synthetic external Python validation requires an explicit existing private --rcs-ledger path");
         await using var peer = endpoint is null ? new Peer() : null;
         endpoint ??= peer!.Endpoint;
         if (new Uri(endpoint).AbsolutePath == "/") endpoint = endpoint.TrimEnd('/') + "/rcs/sorter/api";
@@ -64,6 +69,8 @@ static partial class SportmasterRcs
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
         if (!bundled || args.Contains("--isolated-simulation-preflight")) app.RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); };
         await app.StartAsync(default);
+        // Full frozen HTTP custody is management-only, including in this isolated fixture.
+        if (pythonLedger is not null) await ManagementModeFixture.Authorize(app);
         await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
         Console.WriteLine("RuntimeIdentity=" + (bundled && !args.Contains("--isolated-simulation-preflight") ? "DEFAULT_GUARD" : "ISOLATED_SIMULATION_FIXTURE_NOT_PRODUCTION"));
         Console.WriteLine("MVS_SOFTWARE_READY " + (live ? "ACTUAL_CAMERA" : "SYNTHETIC_NATIVE") + "; RCS=LOCAL_SIMULATOR; no production acceptance implied");
@@ -85,7 +92,7 @@ static partial class SportmasterRcs
             fake!.Enqueue(pixels, 1); fake.Enqueue(pixels, 2); fake.Enqueue(pixels, 5);
             Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
-            Check(peer!.Requests.Count(r => r.Body.Contains("sorter.task.dest_request")) == 3 && s.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3,
+            Check((peer is null ? VerifyPythonLedger(pythonLedger!, s.Operations) : peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request")) == 3) && s.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3,
                 "actual software decoder -> MVS lifecycle -> Application/SQLite -> actual RCS adapter: three identical codes remain three independent requests");
             Check(fake.Released == 3 && !fake.HasFrame && factory.Source!.ConfirmationSource.Contains("skippedVideoFrames=2"),
                 "native loans are released; raw-video sampling gaps are explicit and do not pretend to lose recognized results");
@@ -94,6 +101,12 @@ static partial class SportmasterRcs
             for (var i = 0; i < 100 && !factory.Source!.ConfirmationSource.Contains("emptyFrames=1"); i++) await Task.Delay(20);
             s = await app.SnapshotAsync();
             Check(s.Operations.Length == 3 && s.Operations.All(o => frozen[o.Id] == Wire.Encode(o.Wcs!.Request)), "blank video creates no request and original request bytes remain unchanged");
+            if (peer is null)
+            {
+                Check(VerifyPythonLedger(pythonLedger!, s.Operations), "Python ledger has no blank-frame request, replay or changed original after the empty frame");
+                VerifyPythonLedgerRefusals(pythonLedger!, s.Operations, root);
+                ExtensionStore.AtomicWrite(Path.Combine(root,"mvs-python-snapshot-private.json"),s);
+            }
             await app.StopAsync(default);
             Check(fake.Calls.TakeLast(4).SequenceEqual(["stop", "close", "destroy", "finalize"]) && !fake.HasFrame,
                 "controlled shutdown actually returns buffers and stops/closes/destroys/finalizes in order");

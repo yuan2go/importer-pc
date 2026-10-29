@@ -1,0 +1,398 @@
+{
+  "Scope": "2000 synthetic originals; constructor only; empty restore set; no device/24h qualification",
+  "Timing": "one warmup each, AB x5 then BA x5; budget/hash/disposal outside timer",
+  "RuntimeEnvironment": {
+    "DOTNET_TieredCompilation": "runtime default",
+    "DOTNET_TieredPGO": "runtime default",
+    "DOTNET_ReadyToRun": "runtime default"
+  },
+  "Sources": {
+    "baseline": "c6e353f318e986a12a775a026f4f3a3c89884e22",
+    "candidate": "07b28f8e714555dd623003dbed2caee6839494c5"
+  },
+  "Closures": {
+    "baseline": {
+      "Ipc.Application.Contracts.dll": "606fc67d1ad8dd54bd4d7d94968f186e81e35ca39f9f8f8f3768357540f32745",
+      "Ipc.Application.DirectPlc.dll": "601b88a17f1ab210548e902e24543594249c34eb8ca76573e6a516a765b15947",
+      "Ipc.Application.ParcelFlow.dll": "91028743b36f95b8ea863b8fb1e922800a20662894993743bd4f40bf5242e0e5",
+      "Ipc.Application.Sportmaster.dll": "03fa801093337482e960791ca9222b712c01f3a71f2fdb32b07f119022de7415",
+      "Ipc.Application.Verification.dll": "63f679b6117c37133f6bbd9863b4c287921d9ab8d8508aefcaca98f6e04ea775",
+      "Ipc.Application.WcsToPlc.dll": "e38f49e6397d8f053fd8ce62abfd73e45fd947bb7bb698b4e5c50d3f36382536",
+      "Ipc.Components.dll": "47310e7f3fa4029fd725080a7e6f89c5412785b094ab8d8549120b690cb45aab",
+      "Ipc.Drivers.dll": "e0d2399043add41e4023217e1f725a65ba5ec2ee7fe3146f02303cfdbc6d3f9e",
+      "Ipc.Drivers.Hikrobot.dll": "e22064cb8202585641cc9510f0f232f9afd76b3f3acc7b595e81b9368f06cfe9",
+      "Ipc.Drivers.Hikrobot.Mvs.dll": "0f63da5a6cf7995e2f9858424e14cdd59824cbfad69d9f29b2589aa3b4a4152f",
+      "Ipc.Integrations.dll": "b2cf3bd4a7cd3566aa54d247e80ed053dcca6c65f2cd5e95353a613b9264cab9",
+      "Ipc.Integrations.SportmasterRcs.dll": "cb271424bd499842001531a3250d4b15b27b529337b6635045413c487b63710a",
+      "Ipc.Platform.dll": "be96a9caa5871a723bedf4e9d81a967573504ec7d115d910316deb0fbf60e78e",
+      "Ipc.Platform.Storage.dll": "2b933d44ed8b0ed38bf8cde3e79dc4fc00e369ec97bd4f52901e0d723ca4487f",
+      "Ipc.Reference.Protocol.dll": "72176471c20c91f2d98013e7223468c162392d26f6a54d7fdc80afd67cc0d8c6",
+      "Ipc.Supply.Contracts.dll": "7a95f8b5e2f8f54dce55b7db4a24deb1f600cc3a837ff4c87a36c57534d4d557",
+      "Ipc.Supply.dll": "de43b51668bc2f3d97fc4055bdd2ef6b4075c99963e2d79f851561afdf223710",
+      "Microsoft.Data.Sqlite.dll": "9f1fe804321767b6cc8db751ecedd56ab308e5f15492a7f40d7093bb61ab7638",
+      "Microsoft.Extensions.Configuration.Abstractions.dll": "a6e043abc339b7341bf7dabf6f101bc16fd5d10dcde67587ac6418f7fd6615f0",
+      "Microsoft.Extensions.Configuration.Binder.dll": "53dd1d292fe99d94c03d42a6783e3b3604c2847580c76f7b1f6e0eb1419049d0",
+      "Microsoft.Extensions.Configuration.CommandLine.dll": "757974ea4b65545c0e2c61dea5da765fb3ba63d149468b560bdc60b0ba81f6eb",
+      "Microsoft.Extensions.Configuration.dll": "2afbe810f4988debd8c0011053e2c5b751facecd211933f48ba0f4ffc12bb94b",
+      "Microsoft.Extensions.Configuration.EnvironmentVariables.dll": "1cbe9651c65f65ce3cc649f5920d00809d71093507d964eabf89c477bdd4b2a1",
+      "Microsoft.Extensions.Configuration.FileExtensions.dll": "8518caf1f3888ed33188a92495ed51905964ec66a916c09d346078ef9e8a0b04",
+      "Microsoft.Extensions.Configuration.Json.dll": "dfced8d327661c0a9edc1b3122d28c0a522d45d824d64821332dcb1232bd3ea7",
+      "Microsoft.Extensions.Configuration.UserSecrets.dll": "40866ddc26c6ff5d1fc54b33f6099fd8f0a149a640b97ee4767e5fcc7e6a9a10",
+      "Microsoft.Extensions.DependencyInjection.Abstractions.dll": "7d07e2588a256ae5983af6a2e64eac603cb81d8f224dbea5e65eda8d67258175",
+      "Microsoft.Extensions.DependencyInjection.dll": "ba7e45a53867bfcf4b12997c2d565ce7c0eaa9595d2b509c56605b46a28228b1",
+      "Microsoft.Extensions.Diagnostics.Abstractions.dll": "f8dc83f39fa7aa57833fe06c6af149b3c050325bfda9f2325557b84ae7fd95a5",
+      "Microsoft.Extensions.Diagnostics.dll": "dbf06d7f3d2937400ac706f2f0491549a9aa4a4f6ff9deca62ad92ec29ae6c2e",
+      "Microsoft.Extensions.FileProviders.Abstractions.dll": "23f3ab8c92b4687b53454395d3b09f0940c3692025b2020882775133d02d0cac",
+      "Microsoft.Extensions.FileProviders.Physical.dll": "a21fb353cf06856cdb8b643b927d82e588cd8fb3d0d442dc8b38cd92c1679441",
+      "Microsoft.Extensions.FileSystemGlobbing.dll": "262e242f9dd268422864a1282d9a43e55c5fdc49725e59d8a8f50f718bb8813d",
+      "Microsoft.Extensions.Hosting.Abstractions.dll": "c71749c0adafc6a77995429a7d777cf4eddc723b0b29fbba40ba2b91ce9b8e06",
+      "Microsoft.Extensions.Hosting.dll": "5b96db7650b3b2dd17f94995f0622a28759a63ed1560973cb1da22d38bc332a7",
+      "Microsoft.Extensions.Logging.Abstractions.dll": "d0a3cce0caf2bdda4af7d54135a321b45438015947fd902d7c2e6a0a30730c55",
+      "Microsoft.Extensions.Logging.Configuration.dll": "da412f47d1b3c7dbebc415c698a0455fba74d3b0b4aa2d264d56fd732a233e34",
+      "Microsoft.Extensions.Logging.Console.dll": "b34ad1019a6c57c12729905de3cf3d027db4b6ddb7d7ce206725481962a9577b",
+      "Microsoft.Extensions.Logging.Debug.dll": "072fe39ffd1f5adc9ecf4a842063e5cabd044bd017c5b512dc1a6bf50c2ea4d3",
+      "Microsoft.Extensions.Logging.dll": "16944de682f1db805b8aa4148e167d5c16a63a75ff8d3d753cb9a3a1dc6c63ff",
+      "Microsoft.Extensions.Logging.EventLog.dll": "d4352c3512b171ac7a933b5d7e6e915fafb9f4adad4c471c78f5cf6e8dd2302d",
+      "Microsoft.Extensions.Logging.EventSource.dll": "581615c5921eed60d72545abc08c4853e4354108ed67f9db725a4972c47c0483",
+      "Microsoft.Extensions.Options.ConfigurationExtensions.dll": "e4268aa2fffa635b28a4ab11aa2c75b7442278e12e98fcd72c677923c0ead52e",
+      "Microsoft.Extensions.Options.dll": "b99e0911eb18a1819923d812f6e5424b4a63b6959bfcde26d8f202bc8a9e807e",
+      "Microsoft.Extensions.Primitives.dll": "deb951c8de3092d81dd4459ac4e51b819883f30f6488abc4bfb915f1e33db183",
+      "runtimes\\win\\lib\\net10.0\\System.Diagnostics.EventLog.dll": "bf7bfb5f25ac87844c296605a5f0d91950e0b0f0f5e6ee00c2055ef2b7a20cdd",
+      "runtimes\\win\\lib\\net10.0\\System.Diagnostics.EventLog.Messages.dll": "8caf8d059ed75d232cdcc63c4d95164029b5dcf5f27cca7abad81f534db1648f",
+      "runtimes\\win-arm64\\native\\e_sqlite3.dll": "e3d17b136b58e9e3f768f97ddb406cff3595632126371ad97546be368603bff6",
+      "runtimes\\win-arm64\\native\\ZXing.dll": "0b130d38f0be05279505564dfdfdf0f2e0eda8f231ac4ee58b12a18bce447139",
+      "runtimes\\win-x64\\native\\e_sqlite3.dll": "b082e8a72ad4ce908234eac970b09b7d328d16157cec34a3ebccfd9dfe2221c6",
+      "runtimes\\win-x64\\native\\ZXing.dll": "1550c1ab6529c2f977bebac3f4bf218ca7f932c6cb5b1089121787fe16449c78",
+      "runtimes\\win-x86\\native\\e_sqlite3.dll": "329e6c6c5e7da09d0397a25073d556e9156e067dfc9279cdf4cc54da7d2566e0",
+      "SQLitePCLRaw.batteries_v2.dll": "29c9cf3060789066682ba5fbf81dea584563e6ab60b5d9861c73ba8b29ed1142",
+      "SQLitePCLRaw.core.dll": "e60e22452ba79c306a59ecc01a97c29bafe69d9fa612f40253852ed450ad27e8",
+      "SQLitePCLRaw.provider.e_sqlite3.dll": "82238d46bca0ca8b2d57c3ec6fd6f0bcbd7a2dc2f7343a5377e0469112dba474",
+      "System.Diagnostics.EventLog.dll": "ce377bd710852d96edb952e5e9d353825938854da77e9d3561548b3067ac1ce5",
+      "vendor\\zxing-cpp\\ZXing.dll": "1550c1ab6529c2f977bebac3f4bf218ca7f932c6cb5b1089121787fe16449c78",
+      "ZXingCpp.dll": "39522c91fb4f3567a83af971ae6dbb05326d3bc4335e801ff82b1116dc087797"
+    },
+    "candidate": {
+      "Ipc.Application.Contracts.dll": "4e4613f5f5315c997c1de89ff587b22cb88a8fcbe70cdd37e73baca098791eb0",
+      "Ipc.Application.DirectPlc.dll": "289c159d6c6c6dbac5cb76f8f07ffb277d88e221e554b3b380beed3f45ff116d",
+      "Ipc.Application.ParcelFlow.dll": "b8e9f2634f0e25412a176510db8918408eae05f424d7cdd1a9949713551fcede",
+      "Ipc.Application.Sportmaster.dll": "d6a0928e28f3f2d515d1f21e2e09bd725abab998f164e0136bf3fcca3766562e",
+      "Ipc.Application.Verification.dll": "63f679b6117c37133f6bbd9863b4c287921d9ab8d8508aefcaca98f6e04ea775",
+      "Ipc.Application.WcsToPlc.dll": "1b81c7a6826dd0ef09c34216bb7de2d72d989290a297e66dd8fdde2a94a21544",
+      "Ipc.Components.dll": "b48be7a48a759cfcefb423db1d97707b27983b3ceb903d9f15b1f0b73675b701",
+      "Ipc.Drivers.dll": "45e5c5018ce2d533f73864f278218891b117be9c2f58e48d8c95521f1eeac974",
+      "Ipc.Drivers.Hikrobot.dll": "95f8300ebec78955ac3d91efcfc86e94f24e0edf115a11f079c60c3e7a86da82",
+      "Ipc.Drivers.Hikrobot.Mvs.dll": "b1f0166d8e34f78a9309a8e10115730b79c38696abc8f693490ce7a6b85819e8",
+      "Ipc.Integrations.dll": "42e2d0e362e00e2d1ec0c83907cedb8741594b7d2cdafbf33cfe99863fa36c92",
+      "Ipc.Integrations.SportmasterRcs.dll": "e0e522bbfbf7c3464ba2abf33cdd19738d36c2c9d1d68d6772fa40428bf409ff",
+      "Ipc.Platform.dll": "569f743a31baff46eec8e841451a8c62b0be6a2ea8f0659dbed39e97dcc5dd62",
+      "Ipc.Platform.Storage.dll": "158b2002deea9d01b8d1b775f906b330410486967965bbf963c582ca2457c839",
+      "Ipc.Reference.Protocol.dll": "eea219f0d54f88b9dffde1f81426bc0707ff718f857b0752da1fa02e9b543173",
+      "Ipc.Supply.Contracts.dll": "39cb14383cf0eec442dfcf01f1e4c090367e5804d8cb11505b3a96a21fa8b7cb",
+      "Ipc.Supply.dll": "f5b663fc94cff8f924e0ebfc7860fd7cb86ecd0debe45aa21e3a70fc580330db",
+      "Microsoft.Data.Sqlite.dll": "9f1fe804321767b6cc8db751ecedd56ab308e5f15492a7f40d7093bb61ab7638",
+      "Microsoft.Extensions.Configuration.Abstractions.dll": "a6e043abc339b7341bf7dabf6f101bc16fd5d10dcde67587ac6418f7fd6615f0",
+      "Microsoft.Extensions.Configuration.Binder.dll": "53dd1d292fe99d94c03d42a6783e3b3604c2847580c76f7b1f6e0eb1419049d0",
+      "Microsoft.Extensions.Configuration.CommandLine.dll": "757974ea4b65545c0e2c61dea5da765fb3ba63d149468b560bdc60b0ba81f6eb",
+      "Microsoft.Extensions.Configuration.dll": "2afbe810f4988debd8c0011053e2c5b751facecd211933f48ba0f4ffc12bb94b",
+      "Microsoft.Extensions.Configuration.EnvironmentVariables.dll": "1cbe9651c65f65ce3cc649f5920d00809d71093507d964eabf89c477bdd4b2a1",
+      "Microsoft.Extensions.Configuration.FileExtensions.dll": "8518caf1f3888ed33188a92495ed51905964ec66a916c09d346078ef9e8a0b04",
+      "Microsoft.Extensions.Configuration.Json.dll": "dfced8d327661c0a9edc1b3122d28c0a522d45d824d64821332dcb1232bd3ea7",
+      "Microsoft.Extensions.Configuration.UserSecrets.dll": "40866ddc26c6ff5d1fc54b33f6099fd8f0a149a640b97ee4767e5fcc7e6a9a10",
+      "Microsoft.Extensions.DependencyInjection.Abstractions.dll": "7d07e2588a256ae5983af6a2e64eac603cb81d8f224dbea5e65eda8d67258175",
+      "Microsoft.Extensions.DependencyInjection.dll": "ba7e45a53867bfcf4b12997c2d565ce7c0eaa9595d2b509c56605b46a28228b1",
+      "Microsoft.Extensions.Diagnostics.Abstractions.dll": "f8dc83f39fa7aa57833fe06c6af149b3c050325bfda9f2325557b84ae7fd95a5",
+      "Microsoft.Extensions.Diagnostics.dll": "dbf06d7f3d2937400ac706f2f0491549a9aa4a4f6ff9deca62ad92ec29ae6c2e",
+      "Microsoft.Extensions.FileProviders.Abstractions.dll": "23f3ab8c92b4687b53454395d3b09f0940c3692025b2020882775133d02d0cac",
+      "Microsoft.Extensions.FileProviders.Physical.dll": "a21fb353cf06856cdb8b643b927d82e588cd8fb3d0d442dc8b38cd92c1679441",
+      "Microsoft.Extensions.FileSystemGlobbing.dll": "262e242f9dd268422864a1282d9a43e55c5fdc49725e59d8a8f50f718bb8813d",
+      "Microsoft.Extensions.Hosting.Abstractions.dll": "c71749c0adafc6a77995429a7d777cf4eddc723b0b29fbba40ba2b91ce9b8e06",
+      "Microsoft.Extensions.Hosting.dll": "5b96db7650b3b2dd17f94995f0622a28759a63ed1560973cb1da22d38bc332a7",
+      "Microsoft.Extensions.Logging.Abstractions.dll": "d0a3cce0caf2bdda4af7d54135a321b45438015947fd902d7c2e6a0a30730c55",
+      "Microsoft.Extensions.Logging.Configuration.dll": "da412f47d1b3c7dbebc415c698a0455fba74d3b0b4aa2d264d56fd732a233e34",
+      "Microsoft.Extensions.Logging.Console.dll": "b34ad1019a6c57c12729905de3cf3d027db4b6ddb7d7ce206725481962a9577b",
+      "Microsoft.Extensions.Logging.Debug.dll": "072fe39ffd1f5adc9ecf4a842063e5cabd044bd017c5b512dc1a6bf50c2ea4d3",
+      "Microsoft.Extensions.Logging.dll": "16944de682f1db805b8aa4148e167d5c16a63a75ff8d3d753cb9a3a1dc6c63ff",
+      "Microsoft.Extensions.Logging.EventLog.dll": "d4352c3512b171ac7a933b5d7e6e915fafb9f4adad4c471c78f5cf6e8dd2302d",
+      "Microsoft.Extensions.Logging.EventSource.dll": "581615c5921eed60d72545abc08c4853e4354108ed67f9db725a4972c47c0483",
+      "Microsoft.Extensions.Options.ConfigurationExtensions.dll": "e4268aa2fffa635b28a4ab11aa2c75b7442278e12e98fcd72c677923c0ead52e",
+      "Microsoft.Extensions.Options.dll": "b99e0911eb18a1819923d812f6e5424b4a63b6959bfcde26d8f202bc8a9e807e",
+      "Microsoft.Extensions.Primitives.dll": "deb951c8de3092d81dd4459ac4e51b819883f30f6488abc4bfb915f1e33db183",
+      "runtimes\\win\\lib\\net10.0\\System.Diagnostics.EventLog.dll": "bf7bfb5f25ac87844c296605a5f0d91950e0b0f0f5e6ee00c2055ef2b7a20cdd",
+      "runtimes\\win\\lib\\net10.0\\System.Diagnostics.EventLog.Messages.dll": "8caf8d059ed75d232cdcc63c4d95164029b5dcf5f27cca7abad81f534db1648f",
+      "runtimes\\win-arm64\\native\\e_sqlite3.dll": "e3d17b136b58e9e3f768f97ddb406cff3595632126371ad97546be368603bff6",
+      "runtimes\\win-arm64\\native\\ZXing.dll": "0b130d38f0be05279505564dfdfdf0f2e0eda8f231ac4ee58b12a18bce447139",
+      "runtimes\\win-x64\\native\\e_sqlite3.dll": "b082e8a72ad4ce908234eac970b09b7d328d16157cec34a3ebccfd9dfe2221c6",
+      "runtimes\\win-x64\\native\\ZXing.dll": "1550c1ab6529c2f977bebac3f4bf218ca7f932c6cb5b1089121787fe16449c78",
+      "runtimes\\win-x86\\native\\e_sqlite3.dll": "329e6c6c5e7da09d0397a25073d556e9156e067dfc9279cdf4cc54da7d2566e0",
+      "SQLitePCLRaw.batteries_v2.dll": "29c9cf3060789066682ba5fbf81dea584563e6ab60b5d9861c73ba8b29ed1142",
+      "SQLitePCLRaw.core.dll": "e60e22452ba79c306a59ecc01a97c29bafe69d9fa612f40253852ed450ad27e8",
+      "SQLitePCLRaw.provider.e_sqlite3.dll": "82238d46bca0ca8b2d57c3ec6fd6f0bcbd7a2dc2f7343a5377e0469112dba474",
+      "System.Diagnostics.EventLog.dll": "ce377bd710852d96edb952e5e9d353825938854da77e9d3561548b3067ac1ce5",
+      "vendor\\zxing-cpp\\ZXing.dll": "1550c1ab6529c2f977bebac3f4bf218ca7f932c6cb5b1089121787fe16449c78",
+      "ZXingCpp.dll": "39522c91fb4f3567a83af971ae6dbb05326d3bc4335e801ff82b1116dc087797"
+    }
+  },
+  "Ready": {
+    "baseline": {
+      "Kind": "ready",
+      "Process": 53996,
+      "RuntimeSha256": "91028743B36F95B8EA863B8FB1E922800A20662894993743BD4F40BF5242E0E5",
+      "HarnessSha256": "63F679B6117C37133F6BBD9863B4C287921D9AB8D8508AEFCACA98F6E04EA775",
+      "RuntimeVersion": "1.0.0+c6e353f318e986a12a775a026f4f3a3c89884e22",
+      "Framework": ".NET 10.0.13",
+      "OS": "Microsoft Windows 10.0.22631",
+      "Architecture": "X64",
+      "Processors": 8,
+      "Facts": {
+        "Resident": 1000,
+        "Archived": 1000,
+        "Owners": 2000,
+        "MaximumArchived": 2000,
+        "Floor": 2000,
+        "Restores": 0,
+        "OwnersSha256": "A191C4DA59D6C647907E089247CD396BEE350A935D5B594C1ADB4D18E233A316",
+        "RestoresSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "DatabaseSha256": "4D2F093238809E6F1C7686A54412404362E8849E8C11107C13F4D77938BA32EB"
+      }
+    },
+    "candidate": {
+      "Kind": "ready",
+      "Process": 47524,
+      "RuntimeSha256": "B8E9F2634F0E25412A176510DB8918408EAE05F424D7CDD1A9949713551FCEDE",
+      "HarnessSha256": "63F679B6117C37133F6BBD9863B4C287921D9AB8D8508AEFCACA98F6E04EA775",
+      "RuntimeVersion": "1.0.0+07b28f8e714555dd623003dbed2caee6839494c5",
+      "Framework": ".NET 10.0.13",
+      "OS": "Microsoft Windows 10.0.22631",
+      "Architecture": "X64",
+      "Processors": 8,
+      "Facts": {
+        "Resident": 1000,
+        "Archived": 1000,
+        "Owners": 2000,
+        "MaximumArchived": 2000,
+        "Floor": 2000,
+        "Restores": 0,
+        "OwnersSha256": "A191C4DA59D6C647907E089247CD396BEE350A935D5B594C1ADB4D18E233A316",
+        "RestoresSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "DatabaseSha256": "4D2F093238809E6F1C7686A54412404362E8849E8C11107C13F4D77938BA32EB"
+      }
+    }
+  },
+  "Warmups": {
+    "baseline": {
+      "Kind": "warmup",
+      "Milliseconds": 4504.5619,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    "candidate": {
+      "Kind": "warmup",
+      "Milliseconds": 3795.5031,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    }
+  },
+  "Samples": [
+    {
+      "Pair": 1,
+      "Order": "AB",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 2069.9354,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 1,
+      "Order": "AB",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1539.6632,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 2,
+      "Order": "AB",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1810.1004,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 2,
+      "Order": "AB",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1473.4763,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 3,
+      "Order": "AB",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1796.9028,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 3,
+      "Order": "AB",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1201.1405,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 4,
+      "Order": "AB",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1733.1379,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 4,
+      "Order": "AB",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1421.7366,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 5,
+      "Order": "AB",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 2150.4604,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 5,
+      "Order": "AB",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1947.527,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 6,
+      "Order": "BA",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1529.77,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 6,
+      "Order": "BA",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1480.0641,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 7,
+      "Order": "BA",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1036.2462,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 7,
+      "Order": "BA",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1328.8082,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 8,
+      "Order": "BA",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1128.0854,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 8,
+      "Order": "BA",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1304.3764,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 9,
+      "Order": "BA",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1055.9567,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 9,
+      "Order": "BA",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1737.422,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 10,
+      "Order": "BA",
+      "Runtime": "candidate",
+      "Kind": "sample",
+      "Milliseconds": 1127.8957,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    },
+    {
+      "Pair": 10,
+      "Order": "BA",
+      "Runtime": "baseline",
+      "Kind": "sample",
+      "Milliseconds": 1630.3291,
+      "OriginalsUnchanged": true,
+      "Floor": 2000
+    }
+  ],
+  "Statistics": {
+    "baseline": {
+      "Count": 10,
+      "MedianMs": 1735.27995,
+      "MinimumMs": 1304.3764,
+      "MaximumMs": 2150.4604
+    },
+    "candidate": {
+      "Count": 10,
+      "MedianMs": 1311.4385499999999,
+      "MinimumMs": 1036.2462,
+      "MaximumMs": 1947.527
+    }
+  },
+  "NetMedianReductionPercent": 24.424958059360986,
+  "Interpretation": "Observed net candidate difference, including added guard/observer cost; not a capacity or SLA claim",
+  "WorkerExitCodes": {
+    "baseline": 0,
+    "candidate": 0
+  },
+  "Complete": true
+}

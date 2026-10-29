@@ -105532,9 +105532,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-AUDIT-FIXES-02; original evidence retains its own SourceCommit",
-      "sha256": "9bb6c280d2e9f0fa71bdb2e80983190a1501fbacfb0603356228b9f8068ee459",
-      "size_bytes": 4293,
-      "git_blob": "99eacf2363f42b8078a722e573ca4598e80ba962",
+      "sha256": "19d4dcb33c1f6bb32efa80fdbf6cc005147b4d7f29c649acfd50e82651e591a4",
+      "size_bytes": 6367,
+      "git_blob": "b8862c042840d83239873ae966a358586b330ab6",
       "storage_scope": "public_repository"
     },
     {
@@ -105568,6 +105568,17 @@
       "sha256": "193168caba3ccaab21162c28f75b1295bd6eea8c6054e67d7e58697dcc2fc118",
       "size_bytes": 6609,
       "git_blob": "b153656a551b11cc34724bc25c86754e76451c5a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/integration-20261028-history-open-paired.json",
+      "version": "stability-audit-fixes-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-STABILITY-AUDIT-FIXES-02; original evidence retains its own SourceCommit",
+      "sha256": "60718dbfda069385fdc323051294fa9cfdb85f32ccbf4ba097153c926b323711",
+      "size_bytes": 20429,
+      "git_blob": "454ad6408501749561f28dee6e1e8cecdd809f37",
       "storage_scope": "public_repository"
     }
   ],

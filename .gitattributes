@@ -181,3 +181,6 @@ docs/archive/pre-contract-convergence-03/** -text whitespace=cr-at-eol
 
 # Preserve the original guidance before same-frame archiving and multi-code configuration.
 docs/archive/pre-sm-original-frame-01/** -text whitespace=cr-at-eol
+
+# SM filter review: preserve captured native/build log bytes, including CRLF.
+docs/runtime/evidence/sm-debug-filter-05/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

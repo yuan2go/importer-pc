@@ -1,0 +1,38 @@
+{
+  "workPackage": "SM-DEBUG-FILTER-05",
+  "sourceCommit": "691b6a42c7f60d094df794eec39f2d0eebc94f68",
+  "sourceParent": "6850b23bb48d0d984eeb7590600072700703c436",
+  "review": "https://github.com/yuan2go/importer-pc/pull/155#discussion_r4413911365",
+  "wpf": {
+    "cases": 22,
+    "passAssertions": 113,
+    "exit": 0,
+    "ports": "synthetic Simulation; real Windows WPF Dispatcher"
+  },
+  "mvs": {
+    "passAssertions": 73,
+    "exit": 0,
+    "ports": "synthetic native IMvsApi; no actual SDK/camera"
+  },
+  "builds": {
+    "wpf": "PASS 0 warnings/0 errors",
+    "applicationVerification": "PASS 0 warnings/0 errors",
+    "sportmasterDesktop": "PASS 0 warnings/0 errors",
+    "probeSerial": "PASS 0 warnings/0 errors"
+  },
+  "preservedFailures": [
+    "pre-fix false selection for ABC+LF",
+    "pre-existing integration compiler errors",
+    "initial internal-type test access compiler errors",
+    "default parallel Probe build MSBuild OutOfMemoryException"
+  ],
+  "notRun": [
+    "complete round/manual-send/Unknown recovery regression",
+    "actual SDK and dual cameras",
+    "customer RCS",
+    "installation and reconnect/unplug qualification",
+    "long-duration/field acceptance",
+    "historical backup suite rerun"
+  ],
+  "archiveNote": "First preservation-inventory script assumed every feature file exists in main. Corrected to distinguish feature-only MvsInspection from main files; no production/test changes."
+}

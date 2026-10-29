@@ -1,0 +1,90 @@
+{
+  "meaning": "Captured log bytes stored without Git text normalization; failures and passes retained.",
+  "files": [
+    {
+      "path": "application-build.log",
+      "bytes": 84,
+      "sha256": "f45612528cb15fd22bdf7970ef56a1c3ff5105a842c486770b30732274b237b9"
+    },
+    {
+      "path": "desktop-build.log",
+      "bytes": 84,
+      "sha256": "cd243119dd27d02ba4c4f30aab8e110b6be00702dcb19b871e759694993a2e6d"
+    },
+    {
+      "path": "green-build.log",
+      "bytes": 84,
+      "sha256": "bb54ada50c99f64df54dff587f12143b18c6ef83fb1c713c4e9cfb3c0d054334"
+    },
+    {
+      "path": "green-run.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "green-wpf.log",
+      "bytes": 13809,
+      "sha256": "b0d1e64ce92bc584a30a804955b1de43ef8cee477f1ce110a32fd4a19b9be092"
+    },
+    {
+      "path": "mvs-self-test.log",
+      "bytes": 6594,
+      "sha256": "21b75af87b5ea7b07813db1f850af73ea430512aae5aa704584bb1a716b0ed4b"
+    },
+    {
+      "path": "probe-build-serial.log",
+      "bytes": 84,
+      "sha256": "981e4714da50577833c88403c617ef933393608191c16373c603f9b61e61e615"
+    },
+    {
+      "path": "probe-build.log",
+      "bytes": 9791,
+      "sha256": "e80688ed02f6259ed20ee3035ce3d7b385c6bf8b68a28919afcf2ddf134db9bc"
+    },
+    {
+      "path": "red-build-03.log",
+      "bytes": 1913,
+      "sha256": "9425afeebc4b1dec60e8568a714293f90f829cff6889ae7f475afdd2a0840e4b"
+    },
+    {
+      "path": "red-build-04.log",
+      "bytes": 84,
+      "sha256": "0d54aa2ccb8ac970972dc2c918f23941e20f9dd7d9f128b4a1790dbc285eb264"
+    },
+    {
+      "path": "red-build-after-integration-fixes.log",
+      "bytes": 673,
+      "sha256": "cc5c2af2aa09bf8cb5c73f8ba1bb73c523690201d7e2b6cb985c8668ff4fc50b"
+    },
+    {
+      "path": "red-build-LF.log",
+      "bytes": 84,
+      "sha256": "2dcd0eb774f3199cb6fd7433908e583d1720bbd92ae33380a4a906af75b74346"
+    },
+    {
+      "path": "red-build.log",
+      "bytes": 2741,
+      "sha256": "edf3a037811aacf9c0d0a4a875d2b1b53892922c469641207f8d167d60027b7e"
+    },
+    {
+      "path": "red-run-LF.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "red-run.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "red-wpf-LF.log",
+      "bytes": 1233,
+      "sha256": "f09b26483bd304b05628df34bfe0614618d2e73d39928ae6197608b1da7f0140"
+    },
+    {
+      "path": "red-wpf-single.log",
+      "bytes": 1213,
+      "sha256": "80de65a7066b55ebfdc92ba65c1bacd08bf73e565d6ec9ea55ba614759839701"
+    }
+  ]
+}

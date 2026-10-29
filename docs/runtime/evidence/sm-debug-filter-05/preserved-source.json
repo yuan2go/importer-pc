@@ -1,0 +1,77 @@
+{
+  "sourceCommit": "691b6a42c7f60d094df794eec39f2d0eebc94f68",
+  "main": "9df3901ec20d73512d48920b4671b529ebc58a9e",
+  "integratedParent": "6850b23bb48d0d984eeb7590600072700703c436",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Sportmaster/Application.cs",
+      "gitSha256": "e68cb4a91d5dbbfd62e69f0d42306c0bfeb3c8c56197cb2c4e506d342256a5b0",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": true
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/BarcodeFiltering.cs",
+      "gitSha256": "bf49de5bf026d2d0430b72f51decbf587ba1243860b753c5d82cab9a5fa7d0ff",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": true
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOriginalFrames.cs",
+      "gitSha256": "d33f2689dda10d2bf10bf2a10e47f6dfff1854de9f562887a50b31a069619711",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": true
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "gitSha256": "034b9388011216ff8c6478a71e7e6e1dfd6bc668d89c007f53b6941682332b00",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": false
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsInspection.cs",
+      "gitSha256": "4831b071df6d89b31c5f6e1c4f6f8f350afd7e61a29731377e4987f025e3be9a",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": false,
+      "alsoByteIdenticalToMain": false
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsOriginalFrames.cs",
+      "gitSha256": "47fc882fc6945662e6f1da8f00e7f1abc67a1ce736a54b780b64d6985bcad923",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": true
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsTimings.cs",
+      "gitSha256": "ca216a0fec34b0dd95022e0211bd809c647aa4a2ce0b3d078d8b5018d137f286",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": true
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/SoftwareDecoder.cs",
+      "gitSha256": "ea5b2560c11b5198b01ad48df3d13885fb82d30d23885031f850597dfed6bf7e",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": false
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+      "gitSha256": "5defb98a4fbd62441cb4c0073eb885a33cb3662a788cc93e72b99c1edb64cd7c",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": false
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "gitSha256": "629e4ee22e20ff86e255083dc7925f86a8864ed134f2eceb29e5e6491f8809df",
+      "unchangedFromIntegratedParent": true,
+      "existsInMain": true,
+      "alsoByteIdenticalToMain": false
+    }
+  ]
+}

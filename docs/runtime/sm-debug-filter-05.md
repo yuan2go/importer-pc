@@ -1,6 +1,6 @@
 # 当前筛选规则预览修复 · SM-DEBUG-FILTER-05
 
-2026-10-30；[PR155审查](https://github.com/yuan2go/importer-pc/pull/155#discussion_r4413911365)。main为`9df3901e`，本次源码父提交为`6850b23b`；PR157已进入该父提交。原01/02历史Windows/MVS证据和04未验证边界不倒写。
+2026-10-30；[PR155审查](https://github.com/yuan2go/importer-pc/pull/155#discussion_r4413911365)。main为`9df3901e`，本次源码冻结提交为`691b6a42c7f60d094df794eec39f2d0eebc94f68`，父提交为`6850b23b`；PR157已进入该父提交。原01/02历史Windows/MVS证据和04未验证边界不倒写。
 
 ## 问题与修复
 
@@ -27,7 +27,7 @@
 
 早期构建失败、测试夹具直接访问内部类型的编译失败均保留。Probe首次默认并行构建发生MSBuild OutOfMemoryException；相同源码改为`-m:1 -nr:false`后构建/执行通过，不隐藏失败或修改测试。上述数字是断言数，不是现场验收数。
 
-源码及日志在[evidence/sm-debug-filter-05](evidence/sm-debug-filter-05)归档；以源码清单中的规范化Git字节和后续冻结提交标识对应。测试后没有修改生产源码。
+源码及日志在[evidence/sm-debug-filter-05](evidence/sm-debug-filter-05)归档；`summary.json`记录冻结提交，`source-files.json`分别记录构建时工作文件与规范化Git字节，已逐项确认与冻结源码一致。测试后没有修改生产源码。
 
 ## PR157和责任边界
 

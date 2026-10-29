@@ -3,6 +3,7 @@ import argparse
 from contextlib import redirect_stdout
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import runpy
@@ -94,7 +95,15 @@ class ExtensionBuildTests(unittest.TestCase):
 
     def test_source_and_payload_escape_links_rejected(self):
         with self.assertRaises(ValueError): builder.contained(self.repo, '../private.key')
-        (self.repo / 'linked').symlink_to(self.key)
+        if os.name == 'nt':
+            # A real Windows reparse point exercises escape rejection without requiring
+            # the machine-wide symbolic-link privilege or changing its security policy.
+            subprocess.run(['pwsh', '-NoProfile', '-Command',
+                            'New-Item -ItemType Junction -Path $env:IPC_TEST_LINK -Target $env:IPC_TEST_TARGET | Out-Null'],
+                           env=dict(os.environ, IPC_TEST_LINK=str(self.repo/'linked'), IPC_TEST_TARGET=str(self.key.parent)),
+                           check=True, capture_output=True)
+        else:
+            (self.repo / 'linked').symlink_to(self.key)
         with self.assertRaises(ValueError): builder.contained(self.repo, 'linked')
         for path in ['../x.dll', 'C:/x.dll', 'dir\\x.dll', 'con.txt', 'a./x.dll', 'manifest.json', 'dir//x.dll']:
             with self.subTest(path=path), self.assertRaises(ValueError): builder.validate_payload_path(path)

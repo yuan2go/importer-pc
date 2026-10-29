@@ -18,6 +18,12 @@ Python全量发现首次执行101项，13个失败、2个错误：旧启动脚�
 
 Application locked Release构建通过；`audit03-rcs`、`rcs-heartbeat`、`rcs-timeout-errors`、`mvs-software-flow`、`mvs-offline-activation`、`storage-schema-only` 全部退出0。三个同码独立识别/请求、Unknown不重发、配置离线启用、健康/恢复以及非当前格式原件保全继续通过。没有把signed成功断言改为允许外置成功，也没有把厂商SDK替身当真实SDK验收。
 
+## B3：启动与身份验证收敛
+
+旧Python夹具将带shebang的文本命名为EXE，无法在Windows执行，并断言旧Run/Install子进程序列。改用本机编译的无副作用原生子进程，按当前登记根、桌面直接启动、Console/Diagnose预检及独立安装/离线维护入口验证。合并为3组分派行为测试；供包与Inspection的原身份检查保留。Parcel源码字符串顺序测试删除，替换为三业务实际StartAsync拒绝：无配置解析/标准化/设备访问，无新数据库/租约，原输入及文件集合不变，并核对生产默认仍为原机级身份检查。
+
+Windows扩展构建边界改用真实目录junction验证越界链接拒绝，避免要求额外符号链接特权；POSIX仍使用符号链接。未跳过测试、未提升权限、未改机器安全策略。最终Python全量97项通过；Application locked构建和三个身份行为检查通过。首次失败日志继续保留，不倒记成通过。
+
 ## 计数与边界
 
 基线受跟踪 `src/tests/scripts` 的 `.cs/.xaml/.py/.ps1`：614文件、70,706行；C#验证检查调用点3,691（包含辅助方法声明/拒绝检查，**不是独立用例数**）；Python `test_` 方法104。配置JSON和项目文件单列差异，不混入代码行计数。最终统计、实际执行数量和提交记录在完成核查后追加。

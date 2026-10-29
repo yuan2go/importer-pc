@@ -32,3 +32,9 @@ dotnet publish src/Ipc.Assembly -c Release -p:Application=Sportmaster -p:NuGetLo
 脚本先检查真实管理员权限、全新 D 盘输出和 Platform 字节同源，不自动请求/绕过授权。也可提供同源自包含验证 EXE 的 `-VerificationExecutable`。普通构建与 RID 发布的编译条件可能不同，字节校验失败时不能强行放行，应使用同一发布闭包的验证程序。
 
 目标机可用 `scripts/diagnose-installation.ps1` 只读采集卷属性、ACL、服务-数据根锚点、原安装回执及系统事件，报告仅写 D 盘。不要手工改存储根、删凭据、移动活动数据库或清除未决请求。未来生产存图、缓存、备份的实际位置和容量需独立验证，本包图片样本仅证明文件访问。
+
+## 本机自包含验证工具
+
+冻结代码 `395be1dc2347b03b39c479dde79505dd3dc82568` 已构建服务宿主和自包含 x64 验证程序，两者 Platform DLL 字节一致；冻结工具重新执行 5 项行为检查通过。压缩包 CRC 与 508 个文件的 SHA256 清单核对通过。它是隔离验证工具，不是已通过验收的正式安装包，不包含海康 SDK 原生运行库。
+
+本机目录 `D:/deliveries/d-drive-install-395be1dc-validation/`，ZIP `D:/deliveries/d-drive-install-395be1dc-validation.zip`，99,977,026 字节；SHA256 `43abb1ce3182f5fd87fed385b84d9cdf1f5ceb2239e1df8d69616c07ec554619`。二进制只留本机 D 盘，不上传 Git。管理员 PowerShell 从完整解压目录运行 `Run-InstallationMatrix.ps1`；无需另装 .NET，结果写 `D:/Installer-Diagnostics/`。原授权失败仍保留，真实 C/D、D/D 仍 NOT_RUN，工具存在和行为检查不等于两组系统安装通过。

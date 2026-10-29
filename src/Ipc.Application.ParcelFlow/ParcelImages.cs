@@ -76,7 +76,7 @@ public sealed partial class ParcelRuntime
         if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)) != image.Sha256) throw new InvalidDataException("Original image bytes changed");
         return bytes;
     }
-    static void ValidateBackupImage(string directory, ParcelOperation op, ParcelImage image, CancellationToken token)
+    internal static void ValidateBackupImage(string directory, ParcelOperation op, ParcelImage image, CancellationToken token)
     {
         token.ThrowIfCancellationRequested(); var path = RequireOriginalImagePath(directory, op, image);
         if (Wire.FileHash(path, token) != image.Sha256 || new FileInfo(path).Length != image.Length) throw new InvalidDataException("Original image bytes changed");

@@ -18,11 +18,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     internal Func<string, DeploymentLocation?> CurrentInstallation { get; set; } = WindowsDeploymentSetup.Current;
     internal Func<DeploymentLocation, uint> LaunchDesktop { get; set; } = location => OrdinaryRuntimeProcess.LaunchForCurrentUser(
         Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"), ["--after-install"], location.ReleaseRoot);
-    internal Func<DeploymentMedia, string, string, string, string?, string[], bool, string?, WindowsDeploymentRequest> Review { get; set; } = ParcelStartupServices.Review;
-    internal Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
+    internal Func<DeploymentMedia,string,string,string,string?,string[],bool,string?,CancellationToken,WindowsDeploymentRequest> Review { get; set; } = ParcelStartupServices.Review;
+    internal Func<WindowsDeploymentRequest,IProgress<WindowsInstallationStage>,IProgress<MaintenanceProgress>,CancellationToken,Task<DeploymentLocation>> Install { get; set; } = ParcelStartupServices.InstallWithPreflightAsync;
     internal Func<WindowsDeploymentRequest, InstallationInspection> InspectInstallation { get; set; } = ParcelStartupServices.InspectInstallation;
-    internal Func<WindowsDeploymentRequest, Task> RepairRegistration { get; set; } = request =>
-        ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(request.ApplicationId)), request);
+    internal Func<WindowsDeploymentRequest,IProgress<MaintenanceProgress>,CancellationToken,Task> RepairRegistration { get; set; } = (request,progress,token) =>
+        ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(request.ApplicationId)),request,progress,token);
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
     CancellationTokenSource? preparing;
     readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 20, 0, 12), Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) };
@@ -58,18 +58,19 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
         next = Action("检查安装媒介", Next); StartupAppearance.Primary(next);
-        records = Action("打开安装记录目录", OpenRecordDirectory);
+        records = Action("打开安装记录目录", OpenRecordDirectory, readOnly:true);
         inspect = Action("只读核对本次安装", InspectOriginal, readOnly: true);
         repairCommitted = Action("修复原安装的系统入口…", async () =>
         {
             if (reviewed is null || originalInspection?.Status != "CommittedNeedsSystemRepair") return;
             var current = await Task.Run(() => InspectInstallation(reviewed));
             if (current.Status != "CommittedNeedsSystemRepair" || current.Location is null) throw new InvalidOperationException("原登记已变化，先只读核对");
-            await Task.Run(() => RepairRegistration(reviewed));
+            ResolveKnownMaintenanceOutcome(); // The read-back above resolved the original committed identity.
+            await RunMaintenance("修复已提交安装的系统入口\n原安装："+reviewed.OperationId+"\n保留原数据和配置。",(progress,token)=>RepairRegistration(reviewed,progress,token));
             installed = current.Location; outcomeUnknown = false; step = 3; Render();
         }, readOnly: true);
         resumeRemoval = Action("核对并继续原卸载清理…", () => { new ProductMaintenanceWindow(media!) { Owner = this }.ShowDialog(); Render(); return Task.CompletedTask; }, readOnly: true);
-        cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; });
+        cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; },readOnly:true);
         next.IsDefault = false; cancel.IsCancel = true;
         AutomationProperties.SetLiveSetting(recordFeedback, AutomationLiveSetting.Polite);
         cancel.Click += (_, _) =>
@@ -338,8 +339,17 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
             if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
             var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();
-            reviewed = await Task.Run(() => Review(media!, selectedAccount, enteredData!, configPath, null, selected, false, selectedProgram));
-            reviewed = reviewed with { Shortcuts = new(selectedStartMenu, selectedDesktop) }; components = await Task.Run(() => DeploymentComponentReviewing.Inspect(reviewed));
+            var preview=await RunMaintenance("只读审阅安装选项\n介质："+media!.Root+"\n程序："+selectedProgram+"\n数据："+enteredData+"\n取消将在当前文件或组件核验结束后停止。",(progress,token)=>
+            {
+                try
+                {
+                    progress.Report(new(MaintenanceStage.Verifying,null,null,true));
+                    var candidate=Review(media!,selectedAccount,enteredData!,configPath,null,selected,false,selectedProgram,token) with{Shortcuts=new(selectedStartMenu,selectedDesktop)};
+                    var review=DeploymentComponentReviewing.Inspect(candidate,token);token.ThrowIfCancellationRequested();return Task.FromResult((candidate,review));
+                }
+                catch(OperationCanceledException)when(token.IsCancellationRequested){throw new MaintenanceCancelledException("安装选项预检已停止；尚未进入机器变更，准备文件保留。");}
+            },readOnly:true);
+            reviewed=preview.candidate;components=preview.review;
             var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
             if (current is not null || File.Exists(Path.Combine(reviewed.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db"))) reviewed = reviewed with { BackupDestination = Path.Combine(reviewed.DataRoot, "backups", ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db") };
             step = 2; Render();
@@ -349,7 +359,9 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             optionsHeight = Height;
             installationRecordDirectory = Path.GetDirectoryName(WindowsDeploymentSetup.Registration(reviewed!.ApplicationId));
             installing = true; installationDetails.Clear(); installationStage.Text = "正在准备安装请求"; Render();
-            installed = await Task.Run(() => Install(reviewed!, new Progress<WindowsInstallationStage>(StageOnDispatcher)));
+            var stages=new Progress<WindowsInstallationStage>(StageOnDispatcher);
+            installed = await RunMaintenance("安装 / 升级 / 同源修复\n介质："+reviewed!.MediaRoot+"\n程序："+(reviewed.ProgramRoot??TrustedProgramRoots.Default)+"\n保留数据："+reviewed.DataRoot,
+                (progress,token)=>Install(reviewed,stages,progress,token));
             installing = false;
             try { var classification = await ParcelStartupServices.Maintenance(new(installed.ConfigurationDirectory, installed.DataRoot, null, null)).ClassifyAsync(); needsFirstConfiguration = classification.Readable ? !classification.ExistingConfiguration : null; if (!classification.Readable) configurationMessage = "配置状态暂时无法核对。打开后请按实际检查结果处理；设备尚未启动。"; }
             catch (Exception error) { configurationMessage = "配置状态暂时无法核对：" + error.Message + "。设备尚未启动。"; }
@@ -371,8 +383,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         var result = await Task.Run(() => InspectInstallation(reviewed));
         originalInspection = result;
         if (result.Status == "Completed" && result.Location is { } location)
-        { installed = location; outcomeUnknown = false; installing = false; step = 3; Render(); }
-        else if (result.Status is "Failed" or "NotCommitted") { failureMessage = result.Detail; failed = true; outcomeUnknown = false; Render(); }
+        { ResolveKnownMaintenanceOutcome(); installed = location; outcomeUnknown = false; installing = false; step = 3; Render(); }
+        else if (result.Status is "Failed" or "NotCommitted") { ResolveKnownMaintenanceOutcome(); failureMessage = result.Detail; failed = true; outcomeUnknown = false; Render(); }
         else { Render(); Message(result.Detail + "\n原操作：" + reviewed.OperationId); }
     }
     void StageOnDispatcher(WindowsInstallationStage value) => Dispatcher.BeginInvoke(() => Stage(value));

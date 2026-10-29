@@ -56,6 +56,8 @@ public static class Database
     // maintenance deadline also covers the database copy. Finish rolls back a partial
     // target; callers publish custody COMPLETED only after all hashes are verified.
     public static void Backup(SqliteConnection source, string destination, CancellationToken cancellationToken)
+        => Backup(source, destination, cancellationToken, null);
+    public static void Backup(SqliteConnection source, string destination, CancellationToken cancellationToken, Action<long, long>? progress)
     {
         cancellationToken.ThrowIfCancellationRequested();
         using (var reserve = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { }
@@ -63,6 +65,8 @@ public static class Database
         target.Open();
         using var copy = SQLitePCL.raw.sqlite3_backup_init(target.Handle, "main", source.Handle, "main");
         if (copy is null) throw new SqliteException("Cannot initialize complete maintenance backup", SQLitePCL.raw.sqlite3_errcode(target.Handle));
+        using var pageSizeCommand = source.CreateCommand(); pageSizeCommand.CommandText = "PRAGMA page_size";
+        var pageBytes = (long)pageSizeCommand.ExecuteScalar()!;
         int status;
         do
         {
@@ -73,11 +77,12 @@ public static class Database
             {
                 var after = SQLitePCL.raw.sqlite3_backup_remaining(copy);
                 var total = SQLitePCL.raw.sqlite3_backup_pagecount(copy);
-                using var size = source.CreateCommand(); size.CommandText = "PRAGMA page_size";
-                observe((remaining == 0 ? total - after : remaining - after) * (long)size.ExecuteScalar()!);
+                observe((remaining == 0 ? total - after : remaining - after) * pageBytes);
             }
             if (status is not (SQLitePCL.raw.SQLITE_OK or SQLitePCL.raw.SQLITE_DONE))
                 throw new SqliteException("Complete maintenance backup failed; incomplete target retained", status);
+            progress?.Invoke((SQLitePCL.raw.sqlite3_backup_pagecount(copy) - SQLitePCL.raw.sqlite3_backup_remaining(copy)) * pageBytes,
+                SQLitePCL.raw.sqlite3_backup_pagecount(copy) * pageBytes);
         } while (status != SQLitePCL.raw.SQLITE_DONE);
         cancellationToken.ThrowIfCancellationRequested();
     }

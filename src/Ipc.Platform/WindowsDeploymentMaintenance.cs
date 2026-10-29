@@ -40,8 +40,15 @@ public static partial class WindowsDeploymentSetup
     public static void RepairCommittedInstallation(WindowsDeploymentRequest original, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts)
         => RepairSystemRegistrationCore(original.ApplicationId, expectedHash, repairShortcuts, original);
     [SupportedOSPlatform("windows")]
-    static void RepairSystemRegistrationCore(string application, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts, WindowsDeploymentRequest? original)
+    public static void RepairSystemRegistration(string application,string expectedHash,Action<DeploymentLocation>? repairShortcuts,MaintenanceExecution? execution)
+        => RepairSystemRegistrationCore(application,expectedHash,(location,_)=>repairShortcuts?.Invoke(location),null,execution);
+    [SupportedOSPlatform("windows")]
+    public static void RepairCommittedInstallation(WindowsDeploymentRequest original,string expectedHash,Action<DeploymentLocation,DeploymentLocation?> repairShortcuts,MaintenanceExecution? execution)
+        => RepairSystemRegistrationCore(original.ApplicationId,expectedHash,repairShortcuts,original,execution);
+    [SupportedOSPlatform("windows")]
+    static void RepairSystemRegistrationCore(string application, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts, WindowsDeploymentRequest? original, MaintenanceExecution? execution = null)
     {
+        execution?.Checkpoint();execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("部署登记变化；重新检查维护计划");
@@ -70,6 +77,7 @@ public static partial class WindowsDeploymentSetup
             if (location.LifecycleState == "Installed") repairShortcuts(location, inspection?.Previous);
             ProjectInstalledApplication(location);
         }
+        execution?.BeginCommit(MaintenanceStage.RepairingSystem);
         if (location is { LifecycleState: "Installed", Recovery.Enabled: true }) DesktopRecoverySupervisor.RepairAndReset(location, RepairProjections);
         else RepairProjections();
         if (original is not null && inspection is { Status: "CommittedNeedsSystemRepair" })
@@ -81,6 +89,10 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static WindowsRemovalReceipt Remove(string application, string expectedHash, Action<DeploymentLocation> requireResponsibilitiesAndBackup,
         Action<DeploymentLocation> removeShortcuts, string[]? originalMediaFiles = null)
+        => Remove(application,expectedHash,requireResponsibilitiesAndBackup,removeShortcuts,originalMediaFiles,null);
+    [SupportedOSPlatform("windows")]
+    public static WindowsRemovalReceipt Remove(string application,string expectedHash,Action<DeploymentLocation> requireResponsibilitiesAndBackup,
+        Action<DeploymentLocation> removeShortcuts,string[]? originalMediaFiles,MaintenanceExecution? execution)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
@@ -107,11 +119,13 @@ public static partial class WindowsDeploymentSetup
             if (originalMediaFiles is null || !plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
                 throw new InvalidDataException("原卸载清单与同源完整介质不一致，拒绝清理；原件保留");
         }
+        execution?.Checkpoint(); execution?.BeginCommit(MaintenanceStage.RetiringDeployment);
         var retired = location with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = operation };
         if (Directory.Exists(location.ReleaseRoot)) WriteProtected(Path.Combine(location.ReleaseRoot, "deployment-retired.json"), retired, sid);
         WriteProtected(Registration(application), retired, sid); // one irreversible detach; reentry reads this state
         if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.RemoveIfUnused(location.DataRoot);
         ProjectInstalledApplication(retired); removeShortcuts(location);
+        execution?.Report(MaintenanceStage.RemovingProgram);
         var cleanup = CleanRemovalInventory(location.ReleaseRoot, plan.Files, path => MoveFileEx(path, null, 4));
         var status = cleanup.RestartRequired ? "RestartRequired" : cleanup.Remaining.Length == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
         WriteProtected(operation, plan with { Status = status, Remaining = cleanup.Remaining, RestartRequired = cleanup.RestartRequired }, sid);

@@ -18,11 +18,16 @@ public sealed record ParcelMaintenanceInspection(string Application, string Stat
 public sealed partial class ParcelRepository
 {
     public static ParcelMaintenanceInspection InspectMaintenance(string database, FlowDefinition flow)
+        => InspectMaintenance(database,flow,CancellationToken.None);
+    public static ParcelMaintenanceInspection InspectMaintenance(string database, FlowDefinition flow, CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
         database = Path.GetFullPath(database); RecoveryFiles.RequireOrdinaryAncestors(database);
         if (!File.Exists(database)) throw new FileNotFoundException("Original database is required; no empty runtime is created", database);
         using var owner = new ResourceLease(Path.GetDirectoryName(database)!, ["application-owner"]);
-        return InspectMaintenanceCore(database, flow);
+        try { return InspectMaintenanceCore(database, flow, token); }
+        catch(SqliteException error) when(error.SqliteErrorCode==9 && token.IsCancellationRequested)
+        { throw new OperationCanceledException("Maintenance inspection was cancelled",error,token); }
     }
     internal static ParcelMaintenanceInspection InspectMaintenanceCore(string database, FlowDefinition flow, CancellationToken token = default)
     {
@@ -59,7 +64,7 @@ public sealed partial class ParcelRepository
                 var terminated = flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected;
                 if (!terminated || op.RecoveryRequired || new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(x => x.State is not (StageState.Accepted or StageState.Rejected or StageState.Cancelled)) ||
                     op.FrozenConfiguration.Images is not null && !op.ImageReleased) unsettled++;
-                if (op.Image is { } image && !op.ImageReleased) _ = ParcelRuntime.ReadOriginalImage(directory, op, image);
+                if (op.Image is { } image && !op.ImageReleased) ParcelRuntime.ValidateBackupImage(directory, op, image, token);
             }
         }
         long invalidRaw = 0;
@@ -86,8 +91,8 @@ public sealed partial class ParcelRepository
         if (pending != 0) reasons.Add("Original receipt custody is unsettled; Query is not the missing original raw");
         if (conflicts != 0) reasons.Add("Persistent identity conflicts require authorized inspection");
         if (File.Exists(Path.Combine(directory, "overload.json"))) reasons.Add("Callback loss/overload requires original entity inspection");
-        var names = new[] { "configuration.json" }.Concat(RecoveryFiles.Enumerate(directory, "receipts")).Concat(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true)).ToArray();
-        RecoveryFiles.ValidateNames(directory, names);
+        var names = new[] { "configuration.json" }.Concat(RecoveryFiles.Enumerate(directory,"receipts",false,token)).Concat(RecoveryFiles.Enumerate(directory,"images",true,token)).ToArray();
+        RecoveryFiles.ValidateNames(directory,names,token);
         var inspection = new ParcelMaintenanceInspection(flow.Id, config.Effective.StationId, config.Effective.Mode, version,
             Scalar("SELECT revision FROM parcel_meta WHERE id=1"), Scalar("SELECT paused FROM parcel_meta WHERE id=1") != 0,
             resident, archived, unsettled, pending, conflicts, new FileInfo(database).Length + (File.Exists(wal) ? new FileInfo(wal).Length : 0),
@@ -97,7 +102,7 @@ public sealed partial class ParcelRepository
             ParcelBindings.Bound(config.Effective).Select(b => new ParcelMaintenanceProvider(b.InstanceId, b.Implementation, b.Version, b.Contract, Wire.Hash(b.Target), b.Package?.ManifestSha256)).ToArray());
         tx.Commit();
         tx.Dispose(); db.Close(); // Windows WAL handles must close before byte-preservation hashes.
-        if (Wire.FileHash(database) != hash || (File.Exists(wal) ? Wire.FileHash(wal) : null) != walHash) throw new IOException("Original database changed during offline inspection");
+        if (Wire.FileHash(database, token) != hash || (File.Exists(wal) ? Wire.FileHash(wal, token) : null) != walHash) throw new IOException("Original database changed during offline inspection");
         return inspection;
     }
     public static ParcelMaintenanceInspection BackupOffline(string database, string destination, FlowDefinition flow, Action<string, ParcelConfiguration> registerBackup)
@@ -132,7 +137,7 @@ public sealed partial class ParcelRepository
 public static partial class ParcelRecovery
 {
     internal static void CreateBackup(string directory, string destination, ParcelConfiguration effective, ParcelConfiguration? pending,
-        long databaseBytes, Action<string> backupDatabase, Action<string, ParcelConfiguration> registerBackup, Action? requireAuthority = null, CancellationToken cancellationToken = default)
+        long databaseBytes, Action<string> backupDatabase, Action<string, ParcelConfiguration> registerBackup, Action? requireAuthority = null, CancellationToken cancellationToken = default, MaintenanceExecution? execution = null, bool finalOperation = true)
     {
         requireAuthority?.Invoke();
         destination = Path.GetFullPath(destination); directory = Path.GetFullPath(directory);
@@ -144,26 +149,34 @@ public static partial class ParcelRecovery
         using var editor = new ResourceLease(Path.Combine(directory, "startup-maintenance"), ["configuration-editor"]);
         var names = new List<string> { "configuration.json" };
         if (File.Exists(Path.Combine(directory, ParcelMachineOrigin.FileName))) names.Add(ParcelMachineOrigin.FileName);
-        names.AddRange(RecoveryFiles.Enumerate(directory, "receipts")); names.AddRange(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true));
-        names.AddRange(RecoveryFiles.MaintenanceEvidence(directory));
+        names.AddRange(RecoveryFiles.Enumerate(directory,"receipts",false,cancellationToken)); names.AddRange(RecoveryFiles.Enumerate(directory,"images",true,cancellationToken));
+        names.AddRange(RecoveryFiles.MaintenanceEvidence(directory,cancellationToken));
         if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
-        RecoveryFiles.ValidateNames(directory, names);
+        RecoveryFiles.ValidateNames(directory,names,cancellationToken);
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n), cancellationToken), StringComparer.Ordinal);
         var bytes = checked(databaseBytes + names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length) + RecoveryFiles.MaximumManifestBytes);
         if (!ParcelStorageVolume.Plan(destination, bytes, effective.Retention?.MinimumFreeBytes ?? 67108864).Fits) throw new IOException("Backup requires database/custody capacity plus manifest and configured reserve");
         Directory.CreateDirectory(recovery); RecoveryFiles.RequireOrdinaryAncestors(recovery);
         registerBackup(destination, effective); if (pending is not null) registerBackup(destination, pending);
-        requireAuthority?.Invoke(); backupDatabase(destination);
+        requireAuthority?.Invoke(); execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase);
+        backupDatabase(destination);
+        long copiedBytes = 0; var totalBytes = names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory,n)).Length);
+        execution?.Report(MaintenanceStage.CopyingCustody, 0, totalBytes);
         foreach (var name in names)
         {
             requireAuthority?.Invoke();
             var target = RecoveryFiles.Resolve(recovery, name); Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-            RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name], cancellationToken);
+            RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name], cancellationToken,
+                count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingCustody, copiedBytes, totalBytes); });
         }
+        execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
         var manifest = new ParcelRecoveryManifest(effective.ApplicationId, Path.GetFileName(destination), Wire.FileHash(destination, cancellationToken), RecoveryFiles.Inventory(recovery, cancellationToken), DateTimeOffset.UtcNow,
             "Isolated original-deployment restore; reconcile external effects before admission; retire original numeric ranges");
         if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");
         requireAuthority?.Invoke();
+        cancellationToken.ThrowIfCancellationRequested(); execution?.Checkpoint();
+        if (finalOperation) execution?.BeginCommit(MaintenanceStage.PublishingBackup);
+        else execution?.Report(MaintenanceStage.PublishingBackup); // A completed backup does not retire the installation.
         ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), manifest);
     }
 }

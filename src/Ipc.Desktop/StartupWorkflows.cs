@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace Ipc.Desktop;
 
-public abstract class StartupWorkflowWindow : Window
+public abstract partial class StartupWorkflowWindow : Window
 {
     protected readonly StackPanel Body = new();
     protected readonly ContentControl WorkflowBody = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
@@ -55,7 +55,7 @@ public abstract class StartupWorkflowWindow : Window
             var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(245, 248, 252)), Child = rail }; layout.Children.Add(sidebar);
             var content = new Grid { Margin = new(28, 24, 28, 20) }; Grid.SetColumn(content, 1);
             content.RowDefinitions.Add(new() { Height = GridLength.Auto }); content.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); content.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            var header = new StackPanel(); header.Children.Add(InstallationHeading); header.Children.Add(VersionLabel); header.Children.Add(Status);
+            var header = new StackPanel(); header.Children.Add(InstallationHeading); header.Children.Add(VersionLabel); header.Children.Add(new ScrollViewer{Content=Status,MaxHeight=48,VerticalScrollBarVisibility=ScrollBarVisibility.Auto}); header.Children.Add(CreateMaintenancePanel(compact:true));
             var options = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(options, 1);
             Actions.HorizontalAlignment = HorizontalAlignment.Right; Grid.SetRow(Actions, 2);
             content.Children.Add(header); content.Children.Add(options); content.Children.Add(Actions); layout.Children.Add(content); Content = layout;
@@ -69,6 +69,7 @@ public abstract class StartupWorkflowWindow : Window
         heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 64, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
+        heading.Children.Add(CreateMaintenancePanel());
         // Full diagnostics remain selectable through the named tools menu.
         Status.ToolTip = diagnostic;
         WorkflowBody.Content = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
@@ -98,6 +99,7 @@ public abstract class StartupWorkflowWindow : Window
     protected virtual void OperationCompleted() { }
     protected virtual void OperationFailed(Exception error)
     {
+        if(error is MaintenanceCancelledException){Message(error.Message);return;}
         UnknownOutcome |= error is InstallationOutcomeUnknownException;
         Status.Text = UnknownOutcome ? "原维护操作结果待核对。请保留原输入和回执，禁止重复提交。\n" + ChineseInterfaceText.ParameterMessage(error.Message)
             : "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n已有数据与配置保留。请核对原因后再操作。";
@@ -245,7 +247,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             var picker = new SaveFileDialog { FileName = "complete-backup-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db", Filter = "完整恢复集数据库|*.db" };
             if (picker.ShowDialog(this) != true) return;
-            await Task.Run(() => maintenance.BackupAsync(picker.FileName)); backupCatalogRoot = Path.GetDirectoryName(picker.FileName)!;
+            await RunMaintenance("创建完整备份\n原数据："+(document?.RuntimeDirectory??launch.DataRoot)+"\n目标："+picker.FileName+" 及同名 .recovery 目录",
+                (progress,token)=>maintenance.BackupAsync(picker.FileName,progress,token)); backupCatalogRoot = Path.GetDirectoryName(picker.FileName)!;
             Message("完整备份已完成；数据库和同名.recovery目录必须一起保留。可在备份列表重新校验并预检恢复。");
         });
         Action("已结历史到期维护…", () =>
@@ -598,7 +601,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         var backupRows = new DataGrid { AutoGenerateColumns = false, IsReadOnly = true, CanUserAddRows = false, MinHeight = 100, MaxHeight = 260, RowHeight = 44 };
         foreach (var column in new[] { ("时间", "At"), ("完整性", "Status"), ("字节", "Bytes"), ("备份", "Path") }) backupRows.Columns.Add(new DataGridTextColumn { Header = column.Item1, Binding = new System.Windows.Data.Binding(column.Item2), Width = column.Item2 == "Path" ? new DataGridLength(1, DataGridLengthUnitType.Star) : DataGridLength.Auto });
         var listBackups = new Button { Content = "读取并校验备份列表", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        listBackups.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await Task.Run(() => maintenance.ListBackupsAsync(selected, CancellationToken.None)); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
+        listBackups.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await RunMaintenance("只读校验备份目录\n目录："+selected+"\n保留所有原文件。",(progress,token)=>maintenance.ListBackupsAsync(selected,progress,token),readOnly:true); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
         Body.Children.Add(listBackups); Body.Children.Add(backupRows);
         var backupBox = Field("完整备份数据库", backup, v => { backup = v; recovery = null; });
         backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.Status + " · " + item.Summary); } };
@@ -608,14 +611,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         destination.TextChanged += (_, _) => { restoreRoot = destination.Text; recovery = null; };
         var plan = new Button { Content = "检查恢复计划", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         var preview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80 };
-        plan.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); recovery = await Task.Run(() => maintenance.PlanRestoreAsync(backup, restoreRoot)); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("完整备份已校验；尚未恢复。检查目标后执行下方恢复。"); });
+        plan.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); recovery = await RunMaintenance("只读检查恢复计划\n源："+backup+"\n目标："+restoreRoot+"\n尚未复制或恢复文件。",(progress,token)=>maintenance.PlanRestoreAsync(backup,restoreRoot,progress,token),readOnly:true); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("完整备份已校验；尚未恢复。检查目标后执行下方恢复。"); });
         Body.Children.Add(plan); Body.Children.Add(preview);
         var restore = new Button { Content = "按计划恢复到新目录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         restore.Click += async (_, _) => await Run(async () =>
         {
             await RequireMaintenance(); if (!MayDiscard()) return;
             var selected = recovery ?? throw new InvalidOperationException("先检查恢复计划");
-            await Task.Run(() => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256));
+            await RunMaintenance("恢复原备份到隔离目录\n源："+backup+"\n目标："+selected.Destination+"\n文件恢复不代表可以生产。",
+                (progress,token)=>maintenance.RestoreAsync(backup,selected.Destination,selected.BackupSha256,progress,token));
             restoredPreview = selected; restoredBackup = backup;
             data.Text = selected.DataRoot; await Read(true);
             Message("完整备份已恢复并重新读取新目录。原目录保留；重试启动时隔离恢复责任仍由业务守卫处理。"); recovery = null;

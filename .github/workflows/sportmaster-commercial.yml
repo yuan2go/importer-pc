@@ -465,6 +465,17 @@ jobs:
           $receipt = Get-Content D:/scd/installer-build.log -Tail 1 | ConvertFrom-Json
           if ($receipt.SourceCommit -ne '${{ github.sha }}' -or $receipt.Payload.SourceCommit -ne '${{ github.sha }}') { throw 'Installer source differs from checked medium' }
           $receipt | ConvertTo-Json -Depth 8 | Set-Content D:/scd/installer/INSTALLER.json -Encoding utf8NoBOM
+      - name: Protected maintenance progress and cancellation on disposable Windows
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          $ErrorActionPreference = 'Stop'
+          $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
+          $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
+          if ($package.Count -ne 1) { throw 'Expected one verified Windows medium' }
+          $media = Join-Path D:/scd/release ([IO.Path]::GetFileNameWithoutExtension($package[0].File))
+          ./scripts/verify-maintenance-helper.ps1 -Media $media -Output D:/scd/maintenance-helper
+          if (-not $?) { throw 'Actual protected maintenance helper verification failed' }
       - name: Retain installable same-source delivery
         if: success()
         uses: actions/upload-artifact@v4
@@ -533,6 +544,10 @@ jobs:
             D:/scd/evidence/debug-log-live/*
             D:/scd/administrator-broker/RESULT.json
             D:/scd/administrator-broker/RUN.log
+            D:/scd/maintenance-helper/RESULT.json
+            D:/scd/maintenance-helper/RUN.log
+            D:/scd/maintenance-helper/synthetic/*-process.log
+            D:/scd/maintenance-helper/synthetic/REMOVAL-RECEIPT.json
             D:/scd/evidence/removal/RESULT.json
             D:/scd/evidence/removal/RUN.log
             D:/scd/release/*.json

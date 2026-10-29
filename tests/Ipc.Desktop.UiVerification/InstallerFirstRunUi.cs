@@ -66,9 +66,10 @@ static partial class Program
         var pending = new TaskCompletionSource<DeploymentLocation>();
         var progress = new List<WindowsInstallationStage>();
         IProgress<WindowsInstallationStage>? reporter = null;
+        IProgress<MaintenanceProgress>? maintenanceReporter = null;
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => null));
         WindowsDeploymentRequest? submitted = null; var installCalls = 0;
-        type.GetProperty("Install", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>>)((r, p) => { installCalls++; submitted = r; reporter = p; return pending.Task; }));
+        type.GetProperty("Install", flags)!.SetValue(window, (Func<WindowsDeploymentRequest,IProgress<WindowsInstallationStage>,IProgress<MaintenanceProgress>,CancellationToken,Task<DeploymentLocation>>)((r,p,maintenance,token) => { installCalls++; submitted = r; reporter = p; maintenanceReporter=maintenance; return pending.Task; }));
         window.Show(); await Idle(window);
         Set("step", 1); Render();
         Check(window.Width == 880 && window.Height == 560, "installation options use a compact default aspect with fixed reachable actions");
@@ -103,7 +104,7 @@ static partial class Program
         var reviewRelease = new TaskCompletionSource<WindowsDeploymentRequest>(TaskCreationOptions.RunContinuationsAsynchronously);
         (string Account, string Data, string Config, string? Program, bool Repair, int Packages) observedReview = default;
         type.GetProperty("Review", flags)!.SetValue(window,
-            (Func<DeploymentMedia, string, string, string, string?, string[], bool, string?, WindowsDeploymentRequest>)((m, account, d, c, trust, packages, repair, programRoot) =>
+            (Func<DeploymentMedia,string,string,string,string?,string[],bool,string?,CancellationToken,WindowsDeploymentRequest>)((m,account,d,c,trust,packages,repair,programRoot,token) =>
             {
                 observedReview = (account, d, c, programRoot, repair, packages.Length);
                 if (Interlocked.Increment(ref reviewCalls) == 1) throw new InvalidDataException("Synthetic retry token=SYNTHETIC_RETRY_SECRET");
@@ -128,21 +129,23 @@ static partial class Program
         {
             window.Width = width; window.Height = height; window.UpdateLayout();
             var next = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "下一步"));
-            var bounds = next.TransformToAncestor(window).TransformBounds(new Rect(next.RenderSize));
-            Check(bounds.Bottom <= window.ActualHeight && bounds.Left >= 0 && bounds.Right <= window.ActualWidth, "fixed primary action fits logical workspace " + label);
+            var bounds = next.TransformToAncestor((FrameworkElement)window.Content).TransformBounds(new Rect(next.RenderSize));
+            Check(bounds.Bottom <= ((FrameworkElement)window.Content).ActualHeight && bounds.Left >= 0 && bounds.Right <= ((FrameworkElement)window.Content).ActualWidth, "fixed primary action fits logical workspace " + label);
             Capture("installer-options-" + label, window);
         }
         window.Width = 880; window.Height = 680;
         Set("step", 2); Render(); Click(window, "安装");
         for (var i = 0; i < 100 && reporter is null; i++) await Task.Delay(20);
-        Check(reporter is not null, "install action calls the real service binding with a progress observer; synthetic transaction boundary injected");
+        Check(reporter is not null && maintenanceReporter is not null, "install action calls the real service binding with a progress observer; synthetic transaction boundary injected");
         Check((string?)type.GetField("installationRecordDirectory", flags)!.GetValue(window) == Path.GetDirectoryName(WindowsDeploymentSetup.Registration(request.ApplicationId)), "record directory is captured from the authoritative registration route for this installation attempt");
         Check(!(bool)type.GetProperty("CanCleanPreparation")!.GetValue(window)!, "in-progress transaction cannot release its preparation files");
         Check(submitted == request && submitted.RuntimeAccountSid == original.RuntimeAccountSid, "hidden scope does not rewrite the reviewed upgrade identity at installation submission");
         foreach (var stage in new[] { WindowsInstallationStage.WaitingForAuthorization, WindowsInstallationStage.CopyingFiles, WindowsInstallationStage.CommittingInstallation })
         {
+            var canCancel=stage==WindowsInstallationStage.WaitingForAuthorization;
+            maintenanceReporter!.Report(new(canCancel?MaintenanceStage.Checking:MaintenanceStage.InstallingMachine,null,null,canCancel));
             reporter!.Report(stage); progress.Add(stage); await Task.Delay(100); window.UpdateLayout();
-            Check(Descendants(window).OfType<ProgressBar>().Single().IsIndeterminate && Descendants(window).OfType<Button>().All(b => !b.IsVisible), "unmetered installation has no fake percent or unsafe navigation; " + stage);
+            Check(Descendants(window).OfType<ProgressBar>().Single().IsIndeterminate && Descendants(window).OfType<Button>().All(b => !b.IsVisible || AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel") && Descendants(window).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel").IsEnabled==canCancel, "unmetered installation has no fake percent or navigation; only pre-commit cancellation is enabled; " + stage);
             Check(Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible).Any(b => b.Text.Contains(stage == WindowsInstallationStage.WaitingForAuthorization ? "等待 Windows 授权" : stage == WindowsInstallationStage.CopyingFiles ? "正在复制" : "正在提交")), "stage changes only with observed service reports; " + stage);
             if (stage == WindowsInstallationStage.CopyingFiles) Check(Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible).All(b => !b.Text.Contains("授权窗口确认")), "UAC prompt disappears after helper begins work");
             Capture("installer-stage-" + stage, window);
@@ -184,7 +187,7 @@ static partial class Program
         foreach (var (width, height, label) in new[] { (800d, 560d, "125-equivalent"), (665d, 460d, "150-equivalent") })
         {
             window.Width = width; window.Height = height; window.UpdateLayout();
-            Check(Descendants(window).OfType<Button>().Where(b => b.IsVisible).All(b => { var bounds = b.TransformToAncestor(window).TransformBounds(new Rect(b.RenderSize)); return bounds.Bottom <= window.ActualHeight && bounds.Left >= 0 && bounds.Right <= window.ActualWidth; }), "unknown-result actions remain reachable in the small logical workspace " + label);
+            Check(Descendants(window).OfType<Button>().Where(b => b.IsVisible).All(b => { var bounds = b.TransformToAncestor((FrameworkElement)window.Content).TransformBounds(new Rect(b.RenderSize)); return bounds.Bottom <= ((FrameworkElement)window.Content).ActualHeight && bounds.Left >= 0 && bounds.Right <= ((FrameworkElement)window.Content).ActualWidth; }), "unknown-result actions remain reachable in the small logical workspace " + label);
             Capture("installer-unknown-" + label, window);
         }
         Set("installationRecordDirectory", Path.Combine(evidence, "records-not-created"));
@@ -196,7 +199,7 @@ static partial class Program
         var committed = new InstallationInspection("CommittedNeedsSystemRepair", "合成：原安装登记已提交，系统入口尚需修复。", original);
         var repairs = 0;
         type.GetProperty("InspectInstallation", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, InstallationInspection>)(r => r == request ? committed : throw new InvalidOperationException("Inspection changed original request")));
-        type.GetProperty("RepairRegistration", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, Task>)(r =>
+        type.GetProperty("RepairRegistration", flags)!.SetValue(window, (Func<WindowsDeploymentRequest,IProgress<MaintenanceProgress>,CancellationToken,Task>)((r,progress,token) =>
         { repairs++; if (r != request) throw new InvalidOperationException("Repair changed original request"); return Task.FromException(new FileNotFoundException("合成：原系统入口修复失败")); }));
         Click(window, "只读核对本次安装"); await Idle(window);
         Click(window, "修复原安装的系统入口…"); await Idle(window); window.UpdateLayout();

@@ -6,8 +6,10 @@ namespace Ipc.Assembly;
 public sealed record DeploymentComponentReview(string Package, string Version, string Sha256, string[] Capabilities, string[] Dependencies, string[] Prerequisites, long ExpandedBytes);
 public static class DeploymentComponentReviewing
 {
-    public static DeploymentComponentReview[] Inspect(WindowsDeploymentRequest request)
+    public static DeploymentComponentReview[] Inspect(WindowsDeploymentRequest request)=>Inspect(request,CancellationToken.None);
+    public static DeploymentComponentReview[] Inspect(WindowsDeploymentRequest request,CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
         if (request.Packages.Count == 0) return [];
         if (request.Packages.Count > 128) throw new InvalidDataException("组件选择超出128包预算");
         ParcelCapabilityFactory.RegisterContracts();
@@ -19,7 +21,7 @@ public static class DeploymentComponentReviewing
         foreach (var (path, hash) in request.Packages)
         {
             DeploymentPaths.RequireOrdinaryAncestors(path);
-            if (new FileInfo(path).Length > ExtensionPackages.MaximumExpandedBytes || Wire.FileHash(path) != hash) throw new InvalidDataException("审阅的组件文件已变化");
+            if (new FileInfo(path).Length > ExtensionPackages.MaximumExpandedBytes || Wire.FileHash(path,token) != hash) throw new InvalidDataException("审阅的组件文件已变化");
             using var zip = ZipFile.OpenRead(path); var entry = zip.GetEntry("manifest.json") ?? throw new InvalidDataException("组件缺少清单");
             if (entry.Length > ExtensionPackages.MaximumManifestBytes) throw new InvalidDataException("组件清单超出预算");
             using var reader = new StreamReader(entry.Open()); var text = reader.ReadToEnd(); var manifest = Wire.Decode<ExtensionManifest>(text);
@@ -33,6 +35,7 @@ public static class DeploymentComponentReviewing
         ExtensionStore? installed = null;
         (VerifiedExtension Package, string Directory) Resolve(PackageReference reference)
         {
+            token.ThrowIfCancellationRequested();
             if (verified.TryGetValue(reference, out var ready)) return ready;
             if (!visiting.Add(reference)) throw new InvalidDataException("组件依赖循环");
             try
@@ -52,6 +55,7 @@ public static class DeploymentComponentReviewing
                 var target = Path.Combine(scratch, package.ManifestSha256);
                 Directory.CreateDirectory(target);
                 ExtensionPackages.ExtractVerified(archive, target, trust, request.Mode, package.PackageSha256, Resolve);
+                token.ThrowIfCancellationRequested();
                 return verified[reference] = (package, target);
             }
             finally { visiting.Remove(reference); }
@@ -60,6 +64,7 @@ public static class DeploymentComponentReviewing
         {
             var selected = candidates.Keys.Select(Resolve).Select(x => x.Package).ToArray();
             if (selected.Sum(p => p.Manifest.Files.Sum(f => f.Length)) > 2L * 1024 * 1024 * 1024) throw new IOException("组件展开总量超出2GiB预算");
+            token.ThrowIfCancellationRequested();
             return selected.Select(p => new DeploymentComponentReview(p.Manifest.Id, p.Manifest.Version, p.ManifestSha256,
                 p.Manifest.Modules.Select(m => m.Kind + ":" + m.Id).ToArray(), p.Manifest.Dependencies.Select(d => d.Id + "@" + d.Version + "/" + d.ManifestSha256).ToArray(),
                 p.Manifest.Prerequisites.Select(d => d.Kind + ":" + d.Identity + "@" + d.Version + " · 需独立安装与真实资格证明").ToArray(), p.Manifest.Files.Sum(f => f.Length))).ToArray();

@@ -14,10 +14,15 @@ class BuildProcessTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='ipc-process-owner-') as temporary:
             root = Path(temporary)
             marker = root / 'descendant-writing'
+            fail = root / 'fail-compiler'
             child = root / 'child.py'
             child.write_text('import pathlib,time\np=pathlib.Path(' + repr(str(marker)) + ')\nwhile True:\n p.write_text(str(time.monotonic()))\n time.sleep(.01)\n')
             compiler = root / 'compiler.py'
-            compiler.write_text('import subprocess,sys,time\nsubprocess.Popen([sys.executable,' + repr(str(child)) + '])\ntime.sleep(' + ('60' if cancel else '.25') + ')\nsys.exit(2)\n')
+            compiler.write_text('import subprocess,sys,time,pathlib\nsubprocess.Popen([sys.executable,' + repr(str(child)) + '])\n'
+                                'fail=pathlib.Path(' + repr(str(fail)) + ')\ndeadline=time.monotonic()+15\n'
+                                'while not fail.exists():\n'
+                                ' if time.monotonic()>=deadline: raise TimeoutError("Failure trigger not received")\n'
+                                ' time.sleep(.01)\nsys.exit(2)\n')
             driver = root / 'driver.py'
             scripts = Path(__file__).resolve().parent
             driver.write_text('import sys,signal\nsys.path.insert(0,' + repr(str(scripts)) + ')\nfrom build_process import run\nsignal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))\nrun([sys.executable,' + repr(str(compiler)) + '])\n')
@@ -27,6 +32,7 @@ class BuildProcessTests(unittest.TestCase):
                 while not marker.exists() and time.monotonic() < deadline: time.sleep(.01)
                 self.assertTrue(marker.exists(), 'Real descendant must run before exercising cancellation')
                 if cancel: process.send_signal(signal.SIGTERM)
+                else: fail.touch()  # Fail only after the actual descendant has begun writing.
                 self.assertNotEqual(process.wait(timeout=8), 0)
                 before = marker.read_bytes()
                 time.sleep(.1)

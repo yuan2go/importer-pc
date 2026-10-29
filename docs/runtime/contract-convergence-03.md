@@ -20,6 +20,10 @@ Ipc.Verification locked Release构建、共享身份政策/两项实际入口检
 
 生产旧配置拒绝由sm-built-in-only保护，当前不暂停自动等待/保存/Pending/Effective由mvs-offline-activation保护。management-mode完整入口通过，包括撤权、过期、一次性授权、原密文保全、参数读取与保存权限、日志及异步授权代次。mvs-offline-activation、sm-built-in-only、runtime-identity-boundary均通过。原请求/Unknown及存储只读拒绝另外由audit03-rcs、storage-schema-only复验通过。
 
+## B4：真实进程退出测试按就绪事实同步
+
+第一次Python全量96项中95项通过，test_failure_stops_real_descendants在建立前提时失败：固定0.25秒到期后父进程退出并正确清理了尚未写标记的子进程，测试尚未观察到其运行。取消/失败两条测试仍分别验证不同退出原因下的资源责任；共用的真实子进程夹具改为显式触发失败文件，测试观察后代确实写入后才发信号/触发失败。所有后代停止后才允许owner返回的断言全部保留，生产build_process.py未改。两项定向行为检查通过。
+
 ## 待完成
 
-B4进程夹具、最终计数、验证边界和逐项保留定位在本轮后续批次补齐。厂商SDK、物理相机、客户RCS、原生WPF操作、系统安装及提权备份取消均未执行，NOT_RUN。
+最终计数、验证边界和逐项保留定位在本轮最后核查补齐。厂商SDK、物理相机、客户RCS、原生WPF操作、系统安装及提权备份取消均未执行，NOT_RUN。

@@ -1,28 +1,8 @@
 using Ipc.Platform;
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
-internal sealed partial class MvsAcquisition : IObservationInspectionSource, IParcelFrameSource
+internal sealed partial class MvsAcquisition : IObservationInspectionSource
 {
-    Func<InspectedFrame, bool>? parcelFrameReceiver;
-    string? parcelFrameFailure;
-    public string? ParcelFrameFailure => Volatile.Read(ref parcelFrameFailure);
-    public void SetParcelFrameReceiver(Func<InspectedFrame, bool> receiver)
-    {
-        if (worker is not null || disposeRequested) throw new InvalidOperationException("每日包裹留图接收者只能在原采集启动前安装。");
-        if (Interlocked.CompareExchange(ref parcelFrameReceiver, receiver, null) is not null)
-            throw new InvalidOperationException("每日包裹留图接收者已安装，禁止第二所有者。");
-    }
-    void PublishParcelFrame(Func<InspectedFrame, bool> receiver, InspectedFrame frame)
-    {
-        bool accepted;
-        try { accepted = receiver(frame); }
-        catch { accepted = false; } // Optional picture custody cannot invent/abort a business read.
-        if (!accepted)
-        {
-            Volatile.Write(ref parcelFrameFailure, "日常同帧留图接收失败，后续留图已停止；业务输入和原请求继续按原守卫处理。");
-            Interlocked.CompareExchange(ref parcelFrameReceiver, null, receiver);
-        }
-    }
     readonly object inspectionGate = new();
     InspectionRegistration? inspection;
     string? inspectionFailure;

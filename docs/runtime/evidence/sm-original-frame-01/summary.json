@@ -1,0 +1,232 @@
+{
+  "SourceBaseCommit": "0f820f92094a4d7ec1a0cc2c4dcb43d4ec78240b",
+  "WorkingTreeDirty": true,
+  "Status": "IMPLEMENTATION_AND_SCOPED_REGRESSIONS_PASS; broader backup suite has explicitly recorded failures",
+  "Scope": "SM same-recognition-frame raw PNG archive and explicit multi-code joining",
+  "CandidateChecks": [
+    {
+      "Log": "original-distinct-frames",
+      "PassLines": 22,
+      "Sha256": "45912ea41e89c1cab84888025d79d60e25e1223b862a0d5e189cee903c09051d",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "actual-zxing-6mp-final",
+      "PassLines": 12,
+      "Sha256": "e4ac0ab33996e2c2c75d6dd6b3868df90d435e3d32f335f5ff220dcbe2508d60",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "mvs-offline-activation",
+      "PassLines": 12,
+      "Sha256": "03602ee92c93f4d62a7a38703b2ecddae30f9844d17cf4eb0692922994677a8d",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "sm-built-in-only",
+      "PassLines": 13,
+      "Sha256": "0a88c6f76e42d10daa33f9dbbadb8bc9a920a679127e3eae0dc0898c40062e53",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "rcs-timeout-errors",
+      "PassLines": 57,
+      "Sha256": "1f1f3c5879b8d95560cc7bd286efbf1bc2ef6418571c79482722ad0d3c5e7619",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "p0-unknown-restart",
+      "PassLines": 3,
+      "Sha256": "6f704c5f15f73021b8087d47b0834bd1c223e993d7b7b4af920a9edac5250283",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "rcs-heartbeat",
+      "PassLines": 29,
+      "Sha256": "187e28edfd4072327df8725a994cc477eefa98fbd3d21920e3cd16b4628354c5",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "probe-full",
+      "PassLines": 141,
+      "Sha256": "cffe35f6e21b4113f3c24d1a8b4e26ed75e2079acff0c61f70148692808150d4",
+      "ExitCode": 0,
+      "Tier": "Local synthetic SDK; actual decoder/PNG/SQLite/HTTP where applicable; not hardware"
+    },
+    {
+      "Log": "native-parameter-refactor",
+      "PassLines": 47,
+      "Sha256": "7294e5dcb2ed525087305354714c19fe6b10ebaf56eaa7685597957208c8fba1",
+      "ExitCode": 0,
+      "Tier": "Windows native WPF; synthetic settings; independent native PNG decoder; not device/site"
+    }
+  ],
+  "RealCamera": "NOT_RUN",
+  "InstalledPackage": "NOT_RUN",
+  "FieldRcs": "NOT_RUN",
+  "LongRunAndNewPipelineLatency": "NOT_RUN",
+  "NoChangesToOriginalResponsibility": [
+    "Frozen HTTP body/ID/target/contract",
+    "Unknown and original attempt count",
+    "ObservedAt/input freshness",
+    "Device physical identity and SDK ABI/bytes"
+  ],
+  "Retention": "Same images backup inventory; deletion only after stopped maintenance full backup and committed retirement; live/Unknown files retained",
+  "CleanImplementationRegression": {
+    "ImplementationCommit": "7afd1e1113cdb93421795d9986dcad3d31159449",
+    "WorkingTreeDirty": false,
+    "Checks": [
+      {
+        "Log": "sm-original-frame",
+        "ExitCode": 0,
+        "PassLines": 22,
+        "Sha256": "a81dd73ccb156245acff2c437001182412dd82e021623aa47cafda3eae4cafe8"
+      },
+      {
+        "Log": "mvs-software-flow",
+        "ExitCode": 0,
+        "PassLines": 12,
+        "Sha256": "c7037592cb745f7d7a250be86b672a42bf0fd5fec96e3e0d70ad271ff0b993c8"
+      },
+      {
+        "Log": "mvs-offline-activation",
+        "ExitCode": 0,
+        "PassLines": 12,
+        "Sha256": "03602ee92c93f4d62a7a38703b2ecddae30f9844d17cf4eb0692922994677a8d"
+      },
+      {
+        "Log": "sm-built-in-only",
+        "ExitCode": 0,
+        "PassLines": 13,
+        "Sha256": "0a88c6f76e42d10daa33f9dbbadb8bc9a920a679127e3eae0dc0898c40062e53"
+      },
+      {
+        "Log": "rcs-timeout-errors",
+        "ExitCode": 0,
+        "PassLines": 57,
+        "Sha256": "21c3a70274cd738687522e0396dada08448374c57ee5bc8266b14986cdc26cad"
+      },
+      {
+        "Log": "p0-unknown-restart",
+        "ExitCode": 0,
+        "PassLines": 3,
+        "Sha256": "34da708a0746f855740703032df81a5aac7746bf56e6daea2429ee1846e949d4"
+      },
+      {
+        "Log": "rcs-heartbeat",
+        "ExitCode": 0,
+        "PassLines": 29,
+        "Sha256": "50e705e88c9cb806ef6015524eaf7ff2391bdbf92e39d5be19ae33af67d4fcf3"
+      },
+      {
+        "Log": "sportmaster-rcs",
+        "ExitCode": 0,
+        "PassLines": 156,
+        "Sha256": "fcc07da4fa043eaf84d11226d9d62de5e4460716c854a86a95671fb5dcadb316"
+      },
+      {
+        "Log": "retention-ingress",
+        "ExitCode": 0,
+        "PassLines": 61,
+        "Sha256": "bf8d4c0311cc63e95c6ef9980b725727cce7ce45121d0be8d1a6a54f37482915"
+      },
+      {
+        "Log": "probe-full",
+        "ExitCode": 0,
+        "PassLines": 141,
+        "Sha256": "cffe35f6e21b4113f3c24d1a8b4e26ed75e2079acff0c61f70148692808150d4"
+      },
+      {
+        "Log": "native-parameter-refactor",
+        "ExitCode": 0,
+        "PassLines": 47,
+        "Sha256": "7f72badb0446a445a13a8c5ab2276051a4394c346628be0c245f3cadbef8789b",
+        "Scope": "Actual WPF, first/daily candidate, preview and validation; Windows PNG decoder; target hardware/site NOT_RUN"
+      }
+    ],
+    "Builds": [
+      {
+        "Log": "build-app",
+        "ExitCode": 0,
+        "Warnings": 0,
+        "Errors": 0,
+        "Sha256": "247bd784e1e67ccca49f5b25ff9f15551a25240f59221a9400dac11956772796"
+      },
+      {
+        "Log": "build-probe",
+        "ExitCode": 0,
+        "Warnings": 0,
+        "Errors": 0,
+        "Sha256": "2e81faad5187e74ec52b7d65474006d642c19493776bb14ce78b9fe0fce6348b"
+      },
+      {
+        "Log": "build-desktop",
+        "ExitCode": 0,
+        "Warnings": 0,
+        "Errors": 0,
+        "Sha256": "b93b95910e37e29e838013db451f74c21a5c413ff0771d398593626fac7b143d"
+      },
+      {
+        "Log": "build-ui",
+        "ExitCode": 0,
+        "Warnings": 0,
+        "Errors": 0,
+        "Sha256": "14ba3645294cdacd24ace1bd04a2c31158a62104e68d25309bcc836036681b0c"
+      }
+    ],
+    "PythonLedger": {
+      "SourceCommit": "7afd1e1113cdb93421795d9986dcad3d31159449",
+      "WorkingTreeDirty": false,
+      "Status": "PASS",
+      "Tier": "Synthetic SDK port; actual software decoder, SM Application/SQLite, HTTP and Python; no real camera/Production qualification",
+      "VerifierSha256": "e18ee9b9750b92a9a0ceffa5d8e4be0ffe317bb6606f35c6786a5a4991feb6d6",
+      "ClientExitCode": 0,
+      "ClientLogSha256": "583217eec2bea5ead7537a3a38c1a2be0a568e9d31c4ce50614955ef0419355c",
+      "PassLines": 18,
+      "PythonTaskRequests": 3,
+      "DistinctRequestIds": 3,
+      "PythonAssignments": 1,
+      "OriginalCustodyAndNegativeChecks": true
+    },
+    "BinarySha256": {
+      "Ipc.Application.Verification.dll": "e18ee9b9750b92a9a0ceffa5d8e4be0ffe317bb6606f35c6786a5a4991feb6d6",
+      "Ipc.Drivers.Hikrobot.Mvs.dll": "76bf412d66dc3a2c62cf317183fab3ceaa5db1411aacec7139c619121428b8a9",
+      "Ipc.Desktop.dll": "52a261de9d97af8668c50d4a00121db08d6be339df205863a970d84ea8a0dba0"
+    },
+    "KnownFailedBroaderSuite": {
+      "Log": "backup-health-recovery",
+      "ExitCode": -532462766,
+      "Sha256": "e0aaffba56a8a70e80dfa5b21f6f8932eaf8d92e584b4c0a1b300c3fb2fdf82a",
+      "Cases": [
+        "backup-destination-ancestors: Windows symlink privilege unavailable",
+        "custody linked image: Windows symlink privilege unavailable",
+        "restored-mode-qualification: retired SM manual reader rejected by existing current factory"
+      ],
+      "BaselineComparison": {
+        "Status": "SAME_THREE_FAILURES_REPRODUCED_ON_MAIN_SAME_HOST",
+        "SourceCommit": "f870ffc00abcba78497b3d01d83251d786052ae3",
+        "Log": "baseline-bhr.log",
+        "Sha256": "0b09182467231977dca77c6a7f2f619e13678ce3a4d96dcfb666d7cf89ce50df",
+        "Build": "PASS; 0 warnings; 0 errors",
+        "FailureCases": [
+          "backup-destination-ancestors",
+          "restored-mode-qualification",
+          "custody"
+        ],
+        "SuiteStatus": "FAIL; no skipped or weakened assertions"
+      }
+    }
+  },
+  "NativeParameterScreenshot": {
+    "Path": "parameters-multicode.png",
+    "Sha256": "3cd3b7086615d3216acbd4b1c2c394d7d43b68d0cf816f04637238b1deb16d8f",
+    "Tier": "Native WPF; synthetic candidates B,A,A; no device/site acceptance"
+  }
+}

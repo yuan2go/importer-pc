@@ -21,10 +21,3 @@ public interface IObservationInspectionSource
     Task SetInspectionAsync(InspectionRegistration? registration, CancellationToken token);
     string? InspectionFailure { get; }
 }
-// Optional daily picture custody on the same acquisition owner. Installed once
-// before Start; independent from a temporary management inspection registration.
-public interface IParcelFrameSource
-{
-    void SetParcelFrameReceiver(Func<InspectedFrame, bool> receiver);
-    string? ParcelFrameFailure { get; }
-}

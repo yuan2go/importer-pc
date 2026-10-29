@@ -7,7 +7,12 @@ public sealed record SubmitParcelBarcode(string CommandId, Guid RuntimeId, long 
     string PositionId, string Barcode, ParcelBarcodeInputKind Kind, string? ExpectedObservationId, string? ExpectedOperationId);
 public sealed record ParcelBarcodeReceipt(string Status, string Detail, string? OperationId, string? ObservationId, long Revision);
 public sealed record ParcelPictureQuery(string? OperationId = null, string? ObservationId = null);
-public sealed record ParcelPictureResult(string Status, string Detail, string? OperationId, string? ObservationId, CameraOriginalImage? Image);
+public sealed record ParcelPictureResult(string Status, string Detail, string? OperationId, string? ObservationId, CameraOriginalImage? Image)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public ArchivedParcelPicture? Archived { get; init; }
+}
+public sealed record ArchivedParcelPicture(string OperationId, OriginalFrameArchive Metadata, byte[] Png);
 public interface IParcelWorkstation
 {
     Task<ParcelBarcodeReceipt> SubmitParcelBarcodeAsync(SubmitParcelBarcode command, CancellationToken token);

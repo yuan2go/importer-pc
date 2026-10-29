@@ -6,6 +6,7 @@ public abstract class FlowDefinition
 {
     public abstract string Id { get; }
     public virtual bool AutomaticConfigurationQuiescence => false;
+    public virtual bool ArchiveOriginalFrames => false;
     public virtual ParcelConfiguration InitialConfiguration() => throw new InvalidDataException("本Application未声明缺配引导模板；仍可选择原配置或完整备份");
     public virtual string[] PositionRoles => ["main"];
     public virtual BarcodeFilterResult SelectBarcode(ParcelConfiguration configuration, Observation observation) => BarcodeFiltering.Select(null, observation.Codes, observation.CandidateIssue);

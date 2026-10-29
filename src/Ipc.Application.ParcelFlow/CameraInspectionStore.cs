@@ -33,16 +33,10 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     public long Dropped => Interlocked.Read(ref dropped);
     readonly bool automatic;
     readonly Func<int>? retentionDays;
-    readonly Func<(Guid Runtime, long Revision, string Hash)>? automaticIdentity;
-    string? automaticSession;
-    int automaticCount;
-    DateTimeOffset automaticStarted;
-    public CameraInspectionStore(string directory, Func<long> businessReserve, bool automatic = false, Func<int>? retentionDays = null,
-        Func<(Guid Runtime, long Revision, string Hash)>? automaticIdentity = null)
+    public CameraInspectionStore(string directory, Func<long> businessReserve, bool automatic = false, Func<int>? retentionDays = null)
     {
         this.businessReserve = businessReserve;
         this.automatic = automatic; this.retentionDays = retentionDays;
-        this.automaticIdentity = automaticIdentity;
         root = Path.Combine(directory, automatic ? "parcel-pictures" : "camera-inspection"); images = Path.Combine(root, "images"); database = Path.Combine(root, "index.db");
         RecoveryFiles.RequireOrdinaryAncestors(root); Directory.CreateDirectory(images);
         var existing = File.Exists(database); db = Database.Open(database);
@@ -150,6 +144,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     }
     public bool Offer(string session, InspectedFrame frame)
     {
+        if (automatic) return false; // Legacy daily cache is read/retention only; main owns new business originals.
         var bytes = frame.OriginalGray8.LongLength;
         if (closing || Fault is not null || bytes is < 1 or > 33554432) { Interlocked.Increment(ref dropped); return false; }
         var total = Interlocked.Add(ref buffered, bytes);
@@ -160,45 +155,9 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         }
         return true;
     }
-    public bool OfferParcel(InspectedFrame frame) => automatic && frame.IsolatedSessionId is null &&
-        frame.ObservationId is not null && frame.SourceEventId is not null && Offer("", frame);
     public void ScheduleParcelRetention(int days)
     {
         if (!closing && automatic && Fault is null) queue.Writer.TryWrite(new RetentionWork(Math.Max(1, days)));
-    }
-    string AutomaticCollection()
-    {
-        var now = DateTimeOffset.UtcNow;
-        if (automaticSession is not null && automaticCount < 10000 && now - automaticStarted < TimeSpan.FromHours(1))
-        { automaticCount++; return automaticSession; }
-        if (automaticSession is not null) State(automaticSession, "Closed", "日常留图分段结束；业务原记录独立保留。", true);
-        PruneClosed(Math.Max(1, retentionDays?.Invoke() ?? 7), null);
-        // Hard metadata budget is independent of the age policy. Retire oldest
-        // closed collections before this optional index can consume business disk.
-        while (true)
-        {
-            using var count = db.CreateCommand(); count.CommandText = "SELECT count(*) FROM frames";
-            if ((long)count.ExecuteScalar()! < 200000 && UsedDatabaseBytes() < 384L * 1024 * 1024) break;
-            using var oldest = db.CreateCommand(); oldest.CommandText = "SELECT id FROM sessions WHERE closed IS NOT NULL AND state!='Purged' ORDER BY rowid LIMIT 1";
-            if (oldest.ExecuteScalar() is not string id) throw new IOException("日常留图索引达到硬预算，保留业务与原件，停止新增留图。");
-            Purge(id, "日常留图硬配额轮替；原业务作业/输入/请求保留。");
-        }
-        using (var tombstones = db.CreateCommand())
-        {
-            tombstones.CommandText = "DELETE FROM sessions WHERE state='Purged' AND rowid NOT IN (SELECT rowid FROM sessions ORDER BY rowid DESC LIMIT 2000)"; tombstones.ExecuteNonQuery();
-        }
-        var session = Wire.Id();
-        var identity = automaticIdentity?.Invoke() ?? throw new InvalidOperationException("日常留图缺少真实运行/配置身份。");
-        var command = new BeginCameraInspection(session, identity.Runtime, identity.Revision, CameraInspectionMode.ObserveProduction,
-            "Application自动日常留图，不授予管理权限，不创建业务请求", new(60, 2048, 500000));
-        var body = Wire.Encode(new StoredSession(command, null, now.AddHours(1), identity.Hash));
-        using (var insert = db.CreateCommand())
-        {
-            insert.CommandText = "INSERT INTO sessions(id,command,hash,body,body_hash,state,detail) VALUES($id,$id,$hash,$body,$bodyHash,'Active','日常相机同帧留图；与管理调试独立')";
-            insert.Parameters.AddWithValue("$id", session); insert.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(command)));
-            insert.Parameters.AddWithValue("$body", body); insert.Parameters.AddWithValue("$bodyHash", Wire.Hash(body)); insert.ExecuteNonQuery();
-        }
-        automaticStarted = now; automaticCount = 1; return automaticSession = session;
     }
     public async Task FlushAsync(CancellationToken token)
     {
@@ -222,9 +181,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
                 {
                     lock (sync)
                     {
-                        if (automaticSession is not null && DateTimeOffset.UtcNow - automaticStarted >= TimeSpan.FromHours(1))
-                        { State(automaticSession, "Closed", "空闲日常留图分段结束。", true); automaticSession = null; }
-                        PruneClosed(retention.Days, automaticSession);
+                        PruneClosed(retention.Days, null);
                     }
                 }
                 catch (Exception error) { Interlocked.CompareExchange(ref fault, "日常留图清理失败，保留原件：" + error.GetType().Name, null); }
@@ -245,7 +202,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
                 continue;
             }
             var item = (FrameWork)work;
-            try { lock (sync) { if (automatic) item = item with { Session = AutomaticCollection() }; Persist(item); } }
+            try { lock (sync) Persist(item); }
             catch (Exception error)
             {
                 Interlocked.Increment(ref dropped); Interlocked.CompareExchange(ref fault, "诊断原图/索引写入失败：" + error.GetType().Name + "。存在证据缺口，原业务责任不变。", null);
@@ -486,8 +443,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         lock (sync)
         {
             if (disposeCompleted) return;
-            try { if (automaticSession is not null && Fault is null) State(automaticSession, "Closed", "运行停止，日常留图写入已排空。", true); }
-            finally { db.Dispose(); disposeCompleted = true; }
+            db.Dispose(); disposeCompleted = true;
         }
     }
 }

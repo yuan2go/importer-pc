@@ -18,6 +18,9 @@ internal static class MvsNative
         [FieldOffset(2)] public ushort Height;
         [FieldOffset(4)] public uint PixelType;
         [FieldOffset(8)] public uint FrameNumber;
+        [FieldOffset(12)] public uint DeviceTimestampHigh;
+        [FieldOffset(16)] public uint DeviceTimestampLow;
+        [FieldOffset(24)] public long HostTimestamp;
         [FieldOffset(32)] public uint Length;
         [FieldOffset(76)] public uint TriggerIndex;
         [FieldOffset(96)] public uint LostPackets;
@@ -61,7 +64,8 @@ internal static class MvsNative
 }
 
 internal sealed record MvsDevice(string Ip, string Serial, string Model, string Firmware, byte[] Descriptor);
-internal sealed record MvsFrame(nint Data, uint Width, uint Height, uint PixelType, ulong Length, uint Number, uint Trigger, uint LostPackets, uint ExtraType = 0, uint SubImages = 0);
+internal sealed record MvsFrame(nint Data, uint Width, uint Height, uint PixelType, ulong Length, uint Number, uint Trigger, uint LostPackets, uint ExtraType = 0, uint SubImages = 0,
+    ulong DeviceTimestampRaw = 0, long HostTimestampRaw = 0);
 internal interface IMvsApi
 {
     void Initialize();
@@ -171,7 +175,8 @@ internal sealed class MvsApi : IMvsApi
         var info = Marshal.PtrToStructure<MvsNative.FrameInfo>(frameOut + 8);
         return new(Marshal.ReadIntPtr(frameOut), info.ExtendedWidth != 0 ? info.ExtendedWidth : info.Width,
             info.ExtendedHeight != 0 ? info.ExtendedHeight : info.Height, info.PixelType,
-            info.ExtendedLength != 0 ? info.ExtendedLength : info.Length, info.FrameNumber, info.TriggerIndex, info.LostPackets, info.ExtraType, info.SubImageCount);
+            info.ExtendedLength != 0 ? info.ExtendedLength : info.Length, info.FrameNumber, info.TriggerIndex, info.LostPackets, info.ExtraType, info.SubImageCount,
+            ((ulong)info.DeviceTimestampHigh << 32) | info.DeviceTimestampLow, info.HostTimestamp);
     }
     public void Release()
     {

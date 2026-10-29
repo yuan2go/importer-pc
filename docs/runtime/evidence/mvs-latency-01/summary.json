@@ -1,0 +1,942 @@
+{
+  "AnalysisBaseCommit": "f870ffc00abcba78497b3d01d83251d786052ae3",
+  "HistoricalCameraSource": "7af0be617963a3a88319cb83fdf44fffd9440044",
+  "CandidateMeasurement": {
+    "WorkingTreeDirty": true,
+    "Tier": "Offline existing private 6MP frames; actual ZXing; not live camera or production acceptance",
+    "Images": 30,
+    "Repeats": 3,
+    "CandidateCountComparison": "Identical per image/pass; 72 empty and 18 single-code calls",
+    "Before": {
+      "ElapsedMs": 29902.3411,
+      "PercentileWindow": 512,
+      "Stages": {
+        "contrast": {
+          "Count": 90,
+          "TotalMs": 2650.0630000000015,
+          "MinimumMs": 12.2185,
+          "MaximumMs": 58.1624,
+          "WindowCount": 90,
+          "P50Ms": 17.7002,
+          "P95Ms": 49.8744,
+          "P99Ms": 58.1624
+        },
+        "zxing.native": {
+          "Count": 90,
+          "TotalMs": 26531.326699999998,
+          "MinimumMs": 121.6065,
+          "MaximumMs": 870.2991,
+          "WindowCount": 90,
+          "P50Ms": 215.066,
+          "P95Ms": 559.2085,
+          "P99Ms": 870.2991
+        },
+        "candidates.extract": {
+          "Count": 90,
+          "TotalMs": 2.620099999999998,
+          "MinimumMs": 0.0047,
+          "MaximumMs": 1.477,
+          "WindowCount": 90,
+          "P50Ms": 0.0066,
+          "P95Ms": 0.0452,
+          "P99Ms": 1.477
+        },
+        "decode.total": {
+          "Count": 90,
+          "TotalMs": 29186.206000000002,
+          "MinimumMs": 148.5,
+          "MaximumMs": 924.8071,
+          "WindowCount": 90,
+          "P50Ms": 229.4515,
+          "P95Ms": 608.8252,
+          "P99Ms": 924.8071
+        }
+      }
+    },
+    "After": {
+      "ElapsedMs": 27080.1818,
+      "PercentileWindow": 512,
+      "Stages": {
+        "contrast": {
+          "Count": 90,
+          "TotalMs": 202.15679999999995,
+          "MinimumMs": 0.4026,
+          "MaximumMs": 7.1587,
+          "WindowCount": 90,
+          "P50Ms": 0.6376,
+          "P95Ms": 6.0853,
+          "P99Ms": 7.1587
+        },
+        "zxing.native": {
+          "Count": 90,
+          "TotalMs": 26145.32200000001,
+          "MinimumMs": 119.2266,
+          "MaximumMs": 724.408,
+          "WindowCount": 90,
+          "P50Ms": 199.8221,
+          "P95Ms": 571.3669,
+          "P99Ms": 724.408
+        },
+        "candidates.extract": {
+          "Count": 90,
+          "TotalMs": 3.0888000000000013,
+          "MinimumMs": 0.0039,
+          "MaximumMs": 1.4076,
+          "WindowCount": 90,
+          "P50Ms": 0.0059,
+          "P95Ms": 0.0745,
+          "P99Ms": 1.4076
+        },
+        "decode.total": {
+          "Count": 90,
+          "TotalMs": 26352.906799999997,
+          "MinimumMs": 122.6647,
+          "MaximumMs": 728.0349,
+          "WindowCount": 90,
+          "P50Ms": 200.361,
+          "P95Ms": 574.883,
+          "P99Ms": 728.0349
+        }
+      },
+      "RecentFrames": []
+    },
+    "OriginalScalarSourceBlob": "93ec8c9259ea62cd87b3b83e7f7c301a44b6caee",
+    "EarlierBaselineBinaryHash": "NOT_RECORDED; same-binary reference comparison to follow"
+  },
+  "Synthetic6Mp": {
+    "WorkingTreeDirty": true,
+    "Tier": "Three synthetic 6MP code frames plus small blank; actual decoder/Application/SQLite/HTTP; synthetic SDK",
+    "Acquisition": {
+      "ElapsedMs": 1408.4367,
+      "PercentileWindow": 512,
+      "Stages": {
+        "sdk.acquire": {
+          "Count": 36,
+          "TotalMs": 520.0402,
+          "MinimumMs": 0.0207,
+          "MaximumMs": 22.1372,
+          "WindowCount": 36,
+          "P50Ms": 15.3422,
+          "P95Ms": 19.0995,
+          "P99Ms": 22.1372
+        },
+        "sdk.acquire.no-data": {
+          "Count": 32,
+          "TotalMs": 512.1561000000002,
+          "MinimumMs": 10.9623,
+          "MaximumMs": 22.1372,
+          "WindowCount": 32,
+          "P50Ms": 15.497,
+          "P95Ms": 19.0995,
+          "P99Ms": 22.1372
+        },
+        "sdk.acquire.frame": {
+          "Count": 4,
+          "TotalMs": 7.8841,
+          "MinimumMs": 0.0207,
+          "MaximumMs": 3.2073,
+          "WindowCount": 4,
+          "P50Ms": 1.9602,
+          "P95Ms": 3.2073,
+          "P99Ms": 3.2073
+        },
+        "image.rent-copy": {
+          "Count": 4,
+          "TotalMs": 10.6773,
+          "MinimumMs": 0.0358,
+          "MaximumMs": 8.9617,
+          "WindowCount": 4,
+          "P50Ms": 0.8263,
+          "P95Ms": 8.9617,
+          "P99Ms": 8.9617
+        },
+        "sdk.release": {
+          "Count": 4,
+          "TotalMs": 1.4003,
+          "MinimumMs": 0.0036,
+          "MaximumMs": 0.5755,
+          "WindowCount": 4,
+          "P50Ms": 0.3701,
+          "P95Ms": 0.5755,
+          "P99Ms": 0.5755
+        },
+        "decode": {
+          "Count": 4,
+          "TotalMs": 425.3492,
+          "MinimumMs": 0.5455,
+          "MaximumMs": 152.6839,
+          "WindowCount": 4,
+          "P50Ms": 133.7265,
+          "P95Ms": 152.6839,
+          "P99Ms": 152.6839
+        },
+        "image.clear-return": {
+          "Count": 4,
+          "TotalMs": 7.887800000000001,
+          "MinimumMs": 0.0075,
+          "MaximumMs": 5.4587,
+          "WindowCount": 4,
+          "P50Ms": 1.1713,
+          "P95Ms": 5.4587,
+          "P99Ms": 5.4587
+        },
+        "host.observed-to-receiver": {
+          "Count": 3,
+          "TotalMs": 446.4701,
+          "MinimumMs": 136.418,
+          "MaximumMs": 169.1431,
+          "WindowCount": 3,
+          "P50Ms": 140.909,
+          "P95Ms": 169.1431,
+          "P99Ms": 169.1431
+        },
+        "application.durable-handoff": {
+          "Count": 3,
+          "TotalMs": 49.3365,
+          "MinimumMs": 3.154,
+          "MaximumMs": 28.9004,
+          "WindowCount": 3,
+          "P50Ms": 17.2821,
+          "P95Ms": 28.9004,
+          "P99Ms": 28.9004
+        },
+        "host.observed-to-handoff-complete": {
+          "Count": 3,
+          "TotalMs": 496.47110000000004,
+          "MinimumMs": 139.5781,
+          "MaximumMs": 198.6958,
+          "WindowCount": 3,
+          "P50Ms": 158.1972,
+          "P95Ms": 198.6958,
+          "P99Ms": 198.6958
+        },
+        "host.frame-work": {
+          "Count": 4,
+          "TotalMs": 497.1513,
+          "MinimumMs": 0.6623,
+          "MaximumMs": 198.7129,
+          "WindowCount": 4,
+          "P50Ms": 139.5784,
+          "P95Ms": 198.7129,
+          "P99Ms": 198.7129
+        },
+        "host.delivery-interval": {
+          "Count": 3,
+          "TotalMs": 676.8095,
+          "MinimumMs": 142.2807,
+          "MaximumMs": 333.8488,
+          "WindowCount": 3,
+          "P50Ms": 200.68,
+          "P95Ms": 333.8488,
+          "P99Ms": 333.8488
+        },
+        "health.connected": {
+          "Count": 1,
+          "TotalMs": 0.1977,
+          "MinimumMs": 0.1977,
+          "MaximumMs": 0.1977,
+          "WindowCount": 1,
+          "P50Ms": 0.1977,
+          "P95Ms": 0.1977,
+          "P99Ms": 0.1977
+        },
+        "health.enumerate": {
+          "Count": 1,
+          "TotalMs": 0.1738,
+          "MinimumMs": 0.1738,
+          "MaximumMs": 0.1738,
+          "WindowCount": 1,
+          "P50Ms": 0.1738,
+          "P95Ms": 0.1738,
+          "P99Ms": 0.1738
+        },
+        "health.trigger-readback": {
+          "Count": 1,
+          "TotalMs": 0.0024,
+          "MinimumMs": 0.0024,
+          "MaximumMs": 0.0024,
+          "WindowCount": 1,
+          "P50Ms": 0.0024,
+          "P95Ms": 0.0024,
+          "P99Ms": 0.0024
+        },
+        "health.total": {
+          "Count": 1,
+          "TotalMs": 0.4736,
+          "MinimumMs": 0.4736,
+          "MaximumMs": 0.4736,
+          "WindowCount": 1,
+          "P50Ms": 0.4736,
+          "P95Ms": 0.4736,
+          "P99Ms": 0.4736
+        }
+      },
+      "RecentFrames": [
+        {
+          "Number": 1,
+          "DeliveredAt": "2026-10-29T15:45:00.5789521+00:00",
+          "DeviceTimestampRaw": 0,
+          "HostTimestampRaw": 0,
+          "CopyMs": 8.9617,
+          "ReleaseMs": 0.5755,
+          "DecodeMs": 152.6839,
+          "ClearMs": 5.4587,
+          "ObservedToReceiverMs": 169.1431,
+          "HandoffMs": 28.9004,
+          "Candidates": 1,
+          "Delivered": true
+        },
+        {
+          "Number": 2,
+          "DeliveredAt": "2026-10-29T15:45:00.7796317+00:00",
+          "DeviceTimestampRaw": 0,
+          "HostTimestampRaw": 0,
+          "CopyMs": 0.8535,
+          "ReleaseMs": 0.4511,
+          "DecodeMs": 133.7265,
+          "ClearMs": 1.1713,
+          "ObservedToReceiverMs": 136.418,
+          "HandoffMs": 3.154,
+          "Candidates": 1,
+          "Delivered": true
+        },
+        {
+          "Number": 5,
+          "DeliveredAt": "2026-10-29T15:45:00.9219122+00:00",
+          "DeviceTimestampRaw": 0,
+          "HostTimestampRaw": 0,
+          "CopyMs": 0.8263,
+          "ReleaseMs": 0.3701,
+          "DecodeMs": 138.3933,
+          "ClearMs": 1.2503,
+          "ObservedToReceiverMs": 140.909,
+          "HandoffMs": 17.2821,
+          "Candidates": 1,
+          "Delivered": true
+        },
+        {
+          "Number": 6,
+          "DeliveredAt": "2026-10-29T15:45:01.2558141+00:00",
+          "DeviceTimestampRaw": 0,
+          "HostTimestampRaw": 0,
+          "CopyMs": 0.0358,
+          "ReleaseMs": 0.0036,
+          "DecodeMs": 0.5455,
+          "ClearMs": 0.0075,
+          "ObservedToReceiverMs": 0,
+          "HandoffMs": 0,
+          "Candidates": 0,
+          "Delivered": false
+        }
+      ]
+    },
+    "Decoder": {
+      "ElapsedMs": 1406.3767,
+      "PercentileWindow": 512,
+      "Stages": {
+        "contrast": {
+          "Count": 4,
+          "TotalMs": 15.1602,
+          "MinimumMs": 0.0016,
+          "MaximumMs": 6.4557,
+          "WindowCount": 4,
+          "P50Ms": 3.6912,
+          "P95Ms": 6.4557,
+          "P99Ms": 6.4557
+        },
+        "zxing.native": {
+          "Count": 4,
+          "TotalMs": 404.19770000000005,
+          "MinimumMs": 0.4859,
+          "MaximumMs": 140.4209,
+          "WindowCount": 4,
+          "P50Ms": 129.9362,
+          "P95Ms": 140.4209,
+          "P99Ms": 140.4209
+        },
+        "candidates.extract": {
+          "Count": 4,
+          "TotalMs": 1.2952,
+          "MinimumMs": 0.0098,
+          "MaximumMs": 1.2196,
+          "WindowCount": 4,
+          "P50Ms": 0.0171,
+          "P95Ms": 1.2196,
+          "P99Ms": 1.2196
+        },
+        "decode.total": {
+          "Count": 4,
+          "TotalMs": 420.9212,
+          "MinimumMs": 0.544,
+          "MaximumMs": 148.3255,
+          "WindowCount": 4,
+          "P50Ms": 133.6609,
+          "P95Ms": 148.3255,
+          "P99Ms": 148.3255
+        }
+      },
+      "RecentFrames": []
+    }
+  },
+  "CandidateChecks": [
+    {
+      "Log": "probe-code-final",
+      "PassLines": 52,
+      "LogSha256": "de274d413c0ae8bac46ee838eeeb358eb4ed08ea7e167134b7eede83752a02d1",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "probe-full",
+      "PassLines": 136,
+      "LogSha256": "8f17986983b0054e796788d20a40bf4af3d3ea8f55ba291a2bd7ed7c799e6138",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "contrast-code-final",
+      "PassLines": 14,
+      "LogSha256": "aa48535a037428ff914f46affd1136f3574599e8cd62e3d869e76c8dfae32d53",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "mvs-offline-activation",
+      "PassLines": 12,
+      "LogSha256": "03602ee92c93f4d62a7a38703b2ecddae30f9844d17cf4eb0692922994677a8d",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "sm-built-in-only",
+      "PassLines": 13,
+      "LogSha256": "0a88c6f76e42d10daa33f9dbbadb8bc9a920a679127e3eae0dc0898c40062e53",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "rcs-timeout-errors",
+      "PassLines": 57,
+      "LogSha256": "a8184c8f9b40427c5026bcb6591e4f7026f21291d93ec3d9821ac38e3e722e2e",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "p0-unknown-restart",
+      "PassLines": 3,
+      "LogSha256": "59605e20b6dcfb5f0957b964b6eb44d376c4c005d050f020cb44d1d8dc40d674",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "rcs-heartbeat",
+      "PassLines": 29,
+      "LogSha256": "08963319ce5e25b67cbb4ae094317685c34b0250212e32147f6d0fe8cff7b503",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    },
+    {
+      "Log": "flow-6mp",
+      "PassLines": 11,
+      "LogSha256": "123217ad65456dd0093c34a96e847094f18dccfe400ddf1b687611c3d91e08ad",
+      "Scope": "Local synthetic; actual decoder/SQLite/HTTP where applicable"
+    }
+  ],
+  "RealCameraAttempt": {
+    "WorkingTreeDirty": true,
+    "Command": "--mvs-throughput",
+    "RequestedSeconds": 15,
+    "ExitCode": 1,
+    "Frames": 0,
+    "SdkLoaded": true,
+    "MatchedConfiguredPhysicalDevice": false,
+    "CreateOpenStartReached": false,
+    "FinalizeCompleted": true,
+    "Verdict": "NO_MATCHED_DEVICE; no new throughput, reconnect or latency acceptance"
+  },
+  "CleanSourceRegression": {
+    "ImplementationSourceCommit": "14eead38b828af1e1b32b9be671f38015dbf78e6",
+    "SourceTreeCleanAtPairedMeasurements": true,
+    "BinaryIdentity": {
+      "VerifierSha256": "6e331d8429a1d54bba06192f0fef8ff1672fdbb6c04ad463c918abe5826a6049",
+      "DriverSha256": "3adcd0b3a5e11da96e25598c76673358cc8369e868563ba6236783bb21fa6a51"
+    },
+    "Builds": [
+      {
+        "Log": "build-app",
+        "ExitCode": 0,
+        "Warnings": 0,
+        "Errors": 0,
+        "LogSha256": "bfa45602aaf13287b44907f12679685ba265038317475809372e8608eb4c5f63"
+      },
+      {
+        "Log": "build-probe",
+        "ExitCode": 0,
+        "Warnings": 0,
+        "Errors": 0,
+        "LogSha256": "5f70b7ba824b50db1fa74ba4075e6d99bc9b253628bde7841f20e517645764f4"
+      },
+      {
+        "Log": "build-desktop",
+        "ExitCode": 0,
+        "Warnings": 0,
+        "Errors": 0,
+        "LogSha256": "02b9d7aa54e5ac668100fc25be5cff3cc295919cd0a31576949098666f07e1ff"
+      }
+    ],
+    "Checks": [
+      {
+        "Log": "mvs-contrast-checks",
+        "ExitCode": 0,
+        "PassLines": 14,
+        "LogSha256": "aa48535a037428ff914f46affd1136f3574599e8cd62e3d869e76c8dfae32d53"
+      },
+      {
+        "Log": "contrast-no-intrinsics",
+        "ExitCode": 0,
+        "PassLines": 14,
+        "LogSha256": "aa48535a037428ff914f46affd1136f3574599e8cd62e3d869e76c8dfae32d53"
+      },
+      {
+        "Log": "mvs-software-flow",
+        "ExitCode": 0,
+        "PassLines": 11,
+        "LogSha256": "e7402f7998987325557832e703b4e272350190c1d7b71f91be071e49bcc18a81"
+      },
+      {
+        "Log": "mvs-offline-activation",
+        "ExitCode": 0,
+        "PassLines": 12,
+        "LogSha256": "03602ee92c93f4d62a7a38703b2ecddae30f9844d17cf4eb0692922994677a8d"
+      },
+      {
+        "Log": "sm-built-in-only",
+        "ExitCode": 0,
+        "PassLines": 13,
+        "LogSha256": "0a88c6f76e42d10daa33f9dbbadb8bc9a920a679127e3eae0dc0898c40062e53"
+      },
+      {
+        "Log": "rcs-timeout-errors",
+        "ExitCode": 0,
+        "PassLines": 57,
+        "LogSha256": "7b54848dd9897b9bdfd7307a8a90acaaa52b356a68c8740af17e8814d616e725"
+      },
+      {
+        "Log": "p0-unknown-restart",
+        "ExitCode": 0,
+        "PassLines": 3,
+        "LogSha256": "bc6c4658f9aea98e891ebbbd23554b5e54629dd1ee8c4d673364d2d80ee398f3"
+      },
+      {
+        "Log": "rcs-heartbeat",
+        "ExitCode": 0,
+        "PassLines": 29,
+        "LogSha256": "70e9887de6d8eda35f13340d120b0bf36f34854ed58e30c811a3859dffd24b18"
+      },
+      {
+        "Log": "probe-full",
+        "ExitCode": 0,
+        "PassLines": 137,
+        "LogSha256": "1efca25eff32fe890e2577617cf002186f07179d306dbe05584b4cd7ed6bce67"
+      },
+      {
+        "Log": "ordinary-runtime-startup",
+        "ExitCode": 0,
+        "PassLines": 3,
+        "LogSha256": "06c4bea60ef05c49fcdcd4c2467e9a9d4c1aa3cab940ac2b977502e3e082266f"
+      }
+    ],
+    "MvsSpecificPassAssertions": 52,
+    "AllIntensityPairs": 32896,
+    "CpuFallbackAssertions": 14,
+    "PythonOriginalCustody": {
+      "SourceCommit": "14eead38b828af1e1b32b9be671f38015dbf78e6",
+      "WorkingTreeDirty": false,
+      "Status": "PASS",
+      "Tier": "Synthetic SDK port; actual software decoder, SM Application/SQLite, HTTP and Python; no real camera/Production qualification",
+      "VerifierSha256": "6e331d8429a1d54bba06192f0fef8ff1672fdbb6c04ad463c918abe5826a6049",
+      "ClientExitCode": 0,
+      "ClientLogSha256": "689b81fef7cccddc5b6aebd80a07aa3e581ab087a8ebc5a65b9289ef8b1d57bd",
+      "PassLines": 17,
+      "PythonTaskRequests": 3,
+      "DistinctRequestIds": 3,
+      "PythonAssignments": 1,
+      "OriginalCustodyAndNegativeChecks": true
+    },
+    "SameBinaryOfflineComparison": {
+      "Tier": "Offline private recorded Mono8; actual ZXing-C++; no live capture/RCS",
+      "Images": 30,
+      "RepeatsPerVariant": 3,
+      "ReferenceReceipt": {
+        "SourceCommit": "14eead38b828af1e1b32b9be671f38015dbf78e6",
+        "WorkingTreeDirty": false,
+        "Status": "MEASURED_NOT_ACCEPTANCE",
+        "Tier": "Offline actual ZXing; no live camera/Application/RCS/Production acceptance",
+        "VerifierSha256": "6e331d8429a1d54bba06192f0fef8ff1672fdbb6c04ad463c918abe5826a6049",
+        "DriverSha256": "3adcd0b3a5e11da96e25598c76673358cc8369e868563ba6236783bb21fa6a51",
+        "ExitCode": 0,
+        "Images": 30,
+        "Repeats": 3,
+        "Contrast": "OriginalScalarFormulaVerificationOnly",
+        "TimingSha256": "a1f0863f1ed338dedc287e807a308a8dac950098544fbbccca1e1c9d9c4d970a"
+      },
+      "OptimizedReceipt": {
+        "SourceCommit": "14eead38b828af1e1b32b9be671f38015dbf78e6",
+        "WorkingTreeDirty": false,
+        "Status": "MEASURED_NOT_ACCEPTANCE",
+        "Tier": "Offline actual ZXing; no live camera/Application/RCS/Production acceptance",
+        "VerifierSha256": "6e331d8429a1d54bba06192f0fef8ff1672fdbb6c04ad463c918abe5826a6049",
+        "DriverSha256": "3adcd0b3a5e11da96e25598c76673358cc8369e868563ba6236783bb21fa6a51",
+        "ExitCode": 0,
+        "Images": 30,
+        "Repeats": 3,
+        "Contrast": "ProductionSimdLookup",
+        "TimingSha256": "881e2237bdd7c0244e498d6406fe8fd2bd39474a48b769e103f6586811876a78"
+      },
+      "Reference": {
+        "ElapsedMs": 27940.8926,
+        "PercentileWindow": 512,
+        "Stages": {
+          "contrast": {
+            "Count": 90,
+            "TotalMs": 1881.1657000000002,
+            "MinimumMs": 3.4813,
+            "MaximumMs": 45.7236,
+            "WindowCount": 90,
+            "P50Ms": 7.9888,
+            "P95Ms": 41.7232,
+            "P99Ms": 45.7236
+          },
+          "zxing.native": {
+            "Count": 90,
+            "TotalMs": 25354.300499999994,
+            "MinimumMs": 123.1284,
+            "MaximumMs": 711.4333,
+            "WindowCount": 90,
+            "P50Ms": 205.7244,
+            "P95Ms": 508.4039,
+            "P99Ms": 711.4333
+          },
+          "candidates.extract": {
+            "Count": 90,
+            "TotalMs": 2.230099999999998,
+            "MinimumMs": 0.0038,
+            "MaximumMs": 1.1364,
+            "WindowCount": 90,
+            "P50Ms": 0.0067,
+            "P95Ms": 0.0359,
+            "P99Ms": 1.1364
+          },
+          "decode.total": {
+            "Count": 90,
+            "TotalMs": 27240.286099999994,
+            "MinimumMs": 127.1922,
+            "MaximumMs": 751.9754,
+            "WindowCount": 90,
+            "P50Ms": 215.7538,
+            "P95Ms": 543.9889,
+            "P99Ms": 751.9754
+          }
+        },
+        "RecentFrames": []
+      },
+      "Optimized": {
+        "ElapsedMs": 28763.1054,
+        "PercentileWindow": 512,
+        "Stages": {
+          "contrast": {
+            "Count": 90,
+            "TotalMs": 231.26049999999998,
+            "MinimumMs": 0.3964,
+            "MaximumMs": 12.3508,
+            "WindowCount": 90,
+            "P50Ms": 0.7999,
+            "P95Ms": 6.5984,
+            "P99Ms": 12.3508
+          },
+          "zxing.native": {
+            "Count": 90,
+            "TotalMs": 27766.063600000005,
+            "MinimumMs": 123.6338,
+            "MaximumMs": 1413.4432,
+            "WindowCount": 90,
+            "P50Ms": 184.482,
+            "P95Ms": 653.8416,
+            "P99Ms": 1413.4432
+          },
+          "candidates.extract": {
+            "Count": 90,
+            "TotalMs": 2.842199999999999,
+            "MinimumMs": 0.0039,
+            "MaximumMs": 1.7199,
+            "WindowCount": 90,
+            "P50Ms": 0.0063,
+            "P95Ms": 0.0427,
+            "P99Ms": 1.7199
+          },
+          "decode.total": {
+            "Count": 90,
+            "TotalMs": 28002.7152,
+            "MinimumMs": 127.2951,
+            "MaximumMs": 1417.484,
+            "WindowCount": 90,
+            "P50Ms": 186.5171,
+            "P95Ms": 660.172,
+            "P99Ms": 1417.484
+          }
+        },
+        "RecentFrames": []
+      },
+      "CandidateCountsIdentical": true,
+      "ContrastTotalReductionPercent": 87.70653217842532,
+      "OverallDecodeWallChangePercent": 2.7989026884706725,
+      "OptimizedLongestSample": {
+        "Pass": 1,
+        "Image": 12,
+        "Width": 3072,
+        "Height": 2048,
+        "CandidateCount": 0,
+        "DecodeMs": 1417.4857,
+        "CpuMs": 406.25,
+        "Gen2Collections": 0
+      },
+      "Verdict": "Local contrast improvement; overall wall time did not improve; no worst-case latency acceptance"
+    },
+    "Synthetic6Mp": {
+      "Acquisition": {
+        "ElapsedMs": 869.0412,
+        "PercentileWindow": 512,
+        "Stages": {
+          "sdk.acquire": {
+            "Count": 48,
+            "TotalMs": 704.0091,
+            "MinimumMs": 0.0292,
+            "MaximumMs": 18.4144,
+            "WindowCount": 48,
+            "P50Ms": 15.6247,
+            "P95Ms": 18.3784,
+            "P99Ms": 18.4144
+          },
+          "sdk.acquire.no-data": {
+            "Count": 44,
+            "TotalMs": 702.8068000000001,
+            "MinimumMs": 9.7933,
+            "MaximumMs": 18.4144,
+            "WindowCount": 44,
+            "P50Ms": 15.8321,
+            "P95Ms": 18.3784,
+            "P99Ms": 18.4144
+          },
+          "sdk.acquire.frame": {
+            "Count": 4,
+            "TotalMs": 1.2023,
+            "MinimumMs": 0.0292,
+            "MaximumMs": 0.6495,
+            "WindowCount": 4,
+            "P50Ms": 0.2148,
+            "P95Ms": 0.6495,
+            "P99Ms": 0.6495
+          },
+          "image.rent-copy": {
+            "Count": 4,
+            "TotalMs": 0.8876000000000001,
+            "MinimumMs": 0.0112,
+            "MaximumMs": 0.8456,
+            "WindowCount": 4,
+            "P50Ms": 0.0148,
+            "P95Ms": 0.8456,
+            "P99Ms": 0.8456
+          },
+          "sdk.release": {
+            "Count": 4,
+            "TotalMs": 0.3022000000000001,
+            "MinimumMs": 0.0018,
+            "MaximumMs": 0.2315,
+            "WindowCount": 4,
+            "P50Ms": 0.0044,
+            "P95Ms": 0.2315,
+            "P99Ms": 0.2315
+          },
+          "decode": {
+            "Count": 4,
+            "TotalMs": 44.608399999999996,
+            "MinimumMs": 0.8702,
+            "MaximumMs": 17.6437,
+            "WindowCount": 4,
+            "P50Ms": 8.4687,
+            "P95Ms": 17.6437,
+            "P99Ms": 17.6437
+          },
+          "image.clear-return": {
+            "Count": 4,
+            "TotalMs": 0.27719999999999995,
+            "MinimumMs": 0.0093,
+            "MaximumMs": 0.2072,
+            "WindowCount": 4,
+            "P50Ms": 0.0238,
+            "P95Ms": 0.2072,
+            "P99Ms": 0.2072
+          },
+          "host.observed-to-receiver": {
+            "Count": 3,
+            "TotalMs": 48.1787,
+            "MinimumMs": 8.5413,
+            "MaximumMs": 21.7326,
+            "WindowCount": 3,
+            "P50Ms": 17.9048,
+            "P95Ms": 21.7326,
+            "P99Ms": 21.7326
+          },
+          "application.durable-handoff": {
+            "Count": 3,
+            "TotalMs": 19.953599999999998,
+            "MinimumMs": 1.133,
+            "MaximumMs": 17.2701,
+            "WindowCount": 3,
+            "P50Ms": 1.5505,
+            "P95Ms": 17.2701,
+            "P99Ms": 17.2701
+          },
+          "host.observed-to-handoff-complete": {
+            "Count": 3,
+            "TotalMs": 68.8386,
+            "MinimumMs": 9.6796,
+            "MaximumMs": 39.6982,
+            "WindowCount": 3,
+            "P50Ms": 19.4608,
+            "P95Ms": 39.6982,
+            "P99Ms": 39.6982
+          },
+          "host.frame-work": {
+            "Count": 4,
+            "TotalMs": 69.806,
+            "MinimumMs": 0.9361,
+            "MaximumMs": 39.7288,
+            "WindowCount": 4,
+            "P50Ms": 9.68,
+            "P95Ms": 39.7288,
+            "P99Ms": 39.7288
+          },
+          "host.delivery-interval": {
+            "Count": 3,
+            "TotalMs": 450.6249,
+            "MinimumMs": 19.4921,
+            "MaximumMs": 391.0727,
+            "WindowCount": 3,
+            "P50Ms": 40.0601,
+            "P95Ms": 391.0727,
+            "P99Ms": 391.0727
+          }
+        },
+        "RecentFrames": [
+          {
+            "Number": 1,
+            "DeliveredAt": "2026-10-29T15:56:22.0170732+00:00",
+            "DeviceTimestampRaw": 0,
+            "HostTimestampRaw": 0,
+            "CopyMs": 0.8456,
+            "ReleaseMs": 0.2315,
+            "DecodeMs": 17.6258,
+            "ClearMs": 0.2072,
+            "ObservedToReceiverMs": 21.7326,
+            "HandoffMs": 17.2701,
+            "Candidates": 1,
+            "Delivered": true
+          },
+          {
+            "Number": 2,
+            "DeliveredAt": "2026-10-29T15:56:22.0571337+00:00",
+            "DeviceTimestampRaw": 0,
+            "HostTimestampRaw": 0,
+            "CopyMs": 0.016,
+            "ReleaseMs": 0.0645,
+            "DecodeMs": 17.6437,
+            "ClearMs": 0.0369,
+            "ObservedToReceiverMs": 17.9048,
+            "HandoffMs": 1.5505,
+            "Candidates": 1,
+            "Delivered": true
+          },
+          {
+            "Number": 5,
+            "DeliveredAt": "2026-10-29T15:56:22.0766259+00:00",
+            "DeviceTimestampRaw": 0,
+            "HostTimestampRaw": 0,
+            "CopyMs": 0.0148,
+            "ReleaseMs": 0.0018,
+            "DecodeMs": 8.4687,
+            "ClearMs": 0.0238,
+            "ObservedToReceiverMs": 8.5413,
+            "HandoffMs": 1.133,
+            "Candidates": 1,
+            "Delivered": true
+          },
+          {
+            "Number": 6,
+            "DeliveredAt": "2026-10-29T15:56:22.4676984+00:00",
+            "DeviceTimestampRaw": 0,
+            "HostTimestampRaw": 0,
+            "CopyMs": 0.0112,
+            "ReleaseMs": 0.0044,
+            "DecodeMs": 0.8702,
+            "ClearMs": 0.0093,
+            "ObservedToReceiverMs": 0,
+            "HandoffMs": 0,
+            "Candidates": 0,
+            "Delivered": false
+          }
+        ]
+      },
+      "Decoder": {
+        "ElapsedMs": 864.5623,
+        "PercentileWindow": 512,
+        "Stages": {
+          "contrast": {
+            "Count": 4,
+            "TotalMs": 1.4788000000000001,
+            "MinimumMs": 0.0015,
+            "MaximumMs": 1.4652,
+            "WindowCount": 4,
+            "P50Ms": 0.0043,
+            "P95Ms": 1.4652,
+            "P99Ms": 1.4652
+          },
+          "zxing.native": {
+            "Count": 4,
+            "TotalMs": 37.0342,
+            "MinimumMs": 0.7425,
+            "MaximumMs": 17.5769,
+            "WindowCount": 4,
+            "P50Ms": 8.4413,
+            "P95Ms": 17.5769,
+            "P99Ms": 17.5769
+          },
+          "candidates.extract": {
+            "Count": 4,
+            "TotalMs": 1.8658000000000001,
+            "MinimumMs": 0.0114,
+            "MaximumMs": 1.7241,
+            "WindowCount": 4,
+            "P50Ms": 0.0196,
+            "P95Ms": 1.7241,
+            "P99Ms": 1.7241
+          },
+          "decode.total": {
+            "Count": 4,
+            "TotalMs": 40.7462,
+            "MinimumMs": 0.8676,
+            "MaximumMs": 17.6179,
+            "WindowCount": 4,
+            "P50Ms": 8.466,
+            "P95Ms": 17.6179,
+            "P99Ms": 17.6179
+          }
+        },
+        "RecentFrames": []
+      },
+      "Tier": "Synthetic SDK; actual decoder/Application/SQLite; local simulated RCS",
+      "Boundary": "ObservedAt starts after SDK Acquire returns; excludes exposure/transport/SDK queue age. Durable handoff includes SQLite custody, excludes Application queue/business/RCS completion."
+    },
+    "Limits": "No new real-camera throughput, unplug/replug, protected installed-default factory or field qualification; report-only updates follow this implementation commit"
+  },
+  "UnchangedGuards": [
+    "Original ObservedAt boundary",
+    "1500ms fixture freshness",
+    "complete candidates and multi-code rejection",
+    "SDK bytes/ABI/physical identity",
+    "durable input custody and Undelivered fencing",
+    "original request and Unknown; no blind replay"
+  ]
+}

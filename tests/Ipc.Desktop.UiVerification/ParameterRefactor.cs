@@ -26,6 +26,8 @@ static partial class Program
             startupEditor.SelectCategory(0); first.UpdateLayout();
             Check(first.Title.Contains("首次配置") && Descendants(first).OfType<ParameterSettingsControl>().Single().Model!.Policy.StationCode == "station-01", "missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window");
             Check(!File.Exists(Path.Combine(missingLaunch.ConfigurationDirectory, "business.json")) && !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "opening first configuration neither saves parameters nor creates a runtime database/device owner");
+            Check(startupEditor.NavigateTo("RejectMultipleCodes") && startupEditor.Model!.Policy.RejectMultipleCodes && startupEditor.Model.Policy.MultiCodeSeparator == ";",
+                "first configuration exposes the same strict-default multi-code and separator candidate as daily parameters");
             first.Close();
         }
         var configPath = Path.Combine(evidence, "config"); Directory.CreateDirectory(configPath);
@@ -83,6 +85,29 @@ static partial class Program
         exclusion.Focus(); exclusion.Select(1, 3); await vm.RefreshAsync(); window.UpdateLayout();
         Check(exclusion.IsKeyboardFocused && exclusion.SelectionLength == 3 && exclusion.Text == "OK003", "new exclusion input retains native focus, selection and draft across snapshots");
         Capture("parameters-exclusion");
+        Check(control.NavigateTo("RejectMultipleCodes"), "multi-code policy is directly reachable in business settings"); window.UpdateLayout();
+        var rejectMultiple = Descendants(control).OfType<CheckBox>().Single(x => AutomationProperties.GetName(x) == "RejectMultipleCodes");
+        var separator = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "MultiCodeSeparator");
+        Check(rejectMultiple.IsChecked == true && separator.Text == ";", "native checkbox and delimiter retain strict defaults");
+        pattern.Text = ""; exclusion.Text = ""; rejectMultiple.IsChecked = false; separator.Text = "|"; sample.Text = "B\nA\nA";
+        test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        for (var i = 0; i < 100 && !Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：B|A|A")); i++) await Task.Delay(20);
+        Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：B|A|A")) && vm.StructuredPolicy!.BuildBarcodePolicy() is { RejectMultipleCodes: false, MultiCodeSeparator: "|" },
+            "native preview joins all eligible codes in order including duplicates using the actual edited policy");
+        Capture("parameters-multicode");
+        separator.Text = "";
+        Check(!await vm.ParameterEditor!.ValidatePageAsync(new HashSet<string> { "RejectMultipleCodes", "MultiCodeSeparator" }) &&
+            vm.ParameterEditor.Issues.Any(i => i.Path == "MultiCodeSeparator"), "empty separator is rejected at the actual field before save");
+        separator.Text = "|"; await vm.RefreshAsync(); window.UpdateLayout();
+        Check(rejectMultiple.IsChecked == false && separator.Text == "|", "multi-code candidate survives runtime refresh without changing Effective");
+        pattern.Text = "OK[0-9]+"; exclusion.Text = "OK003"; rejectMultiple.IsChecked = true; separator.Text = ";"; vm.ParameterEditor.ValidateFields();
+        if (Environment.GetEnvironmentVariable("IPC_ORIGINAL_FRAME_FIXTURE") is { } originalPng)
+        {
+            var decoder = new PngBitmapDecoder(new Uri(originalPng), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            var frame = new FormatConvertedBitmap(decoder.Frames.Single(), PixelFormats.Gray8, null, 0); var bytes = new byte[4]; frame.CopyPixels(bytes, 2, 0);
+            Check(frame.PixelWidth == 2 && frame.PixelHeight == 2 && bytes.SequenceEqual(new byte[] { 30, 70, 140, 210 }),
+                "Windows native PNG decoder independently verifies exact pre-contrast archived pixels");
+        }
         Check(control.NavigateTo("DiagnosticLogDays"), "diagnostic retention has its own system field distinct from resident history");
         var days = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "DiagnosticLogDays"); days.Text = "0";
         vm.ParameterEditor!.ValidateFields(); Check(control.FocusFirstIssue() && days.IsKeyboardFocused && days.Text == "0", "log retention error focuses the exact field and preserves invalid input");

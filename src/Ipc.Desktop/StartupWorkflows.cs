@@ -364,9 +364,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     async Task ValidateBarcodeRule()
     {
         if (parameterEditor?.ApplicationId != "sportmaster") return;
-        var pattern = parameterEditor.Policy.BarcodePattern; var exclusion = parameterEditor.Policy.BarcodeExclusionPattern;
-        if (string.IsNullOrWhiteSpace(pattern) && string.IsNullOrWhiteSpace(exclusion)) return;
-        var result = await Task.Run(() => parameterEditor.Preview(new(pattern, string.IsNullOrWhiteSpace(exclusion) ? null : exclusion), ["__format_check__"]));
+        var policy = parameterEditor.Policy.BuildBarcodePolicy();
+        var result = await Task.Run(() => parameterEditor.Preview(policy, ["__format_check__"]));
         if (result.Outcome is "InvalidPattern" or "FilterTimeout")
         {
             parameterEditor.Report(result.Detail); LocateFirstIssue();

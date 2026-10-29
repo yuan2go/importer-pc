@@ -101,7 +101,13 @@ public sealed class ParcelPictureWindow : Window
             var result = await vm.ServiceAsync(() => service.ReadParcelPictureAsync(query, cancellation.Token));
             if (closed || version != generation || cancellation.IsCancellationRequested) return;
             status.Text = result.Detail;
-            if (result.Image is not { } original) return;
+            var original = result.Image;
+            if (original is null && result.Archived is { } archived)
+            {
+                original = await vm.ServiceAsync(() => Task.FromResult(DecodeArchived(archived)));
+                if (closed || version != generation || cancellation.IsCancellationRequested) return;
+            }
+            if (original is null) return;
             frame = original.Metadata;
             var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, original.Gray8, frame.Width); bitmap.Freeze();
             image.Source = bitmap; image.Width = scene.Width = frame.Width; image.Height = scene.Height = frame.Height;
@@ -113,6 +119,25 @@ public sealed class ParcelPictureWindow : Window
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
         catch (Exception error) { if (!closed && version == generation) { ClearImage(); status.Text = "原图未能取得：" + error.Message; } }
         finally { if (ReferenceEquals(reading, cancellation)) reading = null; cancellation.Dispose(); }
+    }
+    static CameraOriginalImage DecodeArchived(ArchivedParcelPicture archived)
+    {
+        var data = archived.Png; var info = archived.Metadata;
+        if (data.Length < 33 || !data.AsSpan(0, 8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }) ||
+            System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(data.AsSpan(16, 4)) != info.Width ||
+            System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(data.AsSpan(20, 4)) != info.Height || (long)info.Width * info.Height > 33554432)
+            throw new InvalidDataException("留档PNG像素头与原帧尺寸不符。");
+        using var stream = new System.IO.MemoryStream(data, false);
+        var decoded = BitmapDecoder.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad).Frames.Single();
+        if (decoded.PixelWidth != info.Width || decoded.PixelHeight != info.Height) throw new InvalidDataException("解码PNG尺寸不符。");
+        BitmapSource gray = decoded.Format == PixelFormats.Gray8 ? decoded : new FormatConvertedBitmap(decoded, PixelFormats.Gray8, null, 0);
+        var pixels = new byte[checked(info.Width * info.Height)]; gray.CopyPixels(pixels, info.Width, 0);
+        if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)) != info.RawSha256) throw new InvalidDataException("留档原始像素SHA256不符。");
+        var source = info.Acquisition; var numberText = source.SourceEventId.StartsWith("mvs.frame.", StringComparison.Ordinal) ? source.SourceEventId[10..] : "";
+        _ = long.TryParse(numberText, out var number);
+        return new(new("business-original:" + archived.OperationId, "business-original", source.DeviceId, source.Epoch, number,
+            source.ObservedAt, info.Width, info.Height, [], 0, null, source.SourceEventId, null, info.RawSha256!, true,
+            "原业务PNG留档；未包含识别几何时不绘制示意框", OperationId: archived.OperationId), pixels);
     }
     void Fit()
     {

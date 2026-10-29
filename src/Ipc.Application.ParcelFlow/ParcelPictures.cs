@@ -10,11 +10,13 @@ public sealed partial class ParcelRuntime
     void InitializeParcelPictures()
     {
         if (Id != "sportmaster") return;
+        // Main's business OriginalFrame archive is the only producer for daily
+        // pictures. Open an existing 03 cache only for legacy read/retention.
+        if (!Directory.Exists(Path.Combine(directory!, "parcel-pictures"))) return;
         try
         {
             parcelPictures = new(directory!, () => Effective.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes,
-                automatic: true, retentionDays: () => Effective.Retention?.HistoryDays ?? 7,
-                automaticIdentity: () => (runtimeId, configuration!.Current.Revision, Wire.Hash(Wire.Encode(Effective))));
+                automatic: true, retentionDays: () => Effective.Retention?.HistoryDays ?? 7);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or Microsoft.Data.Sqlite.SqliteException)
         { parcelPictureFailure = "日常包裹留图不可用，原件保留：" + error.GetType().Name; }
@@ -32,6 +34,7 @@ public sealed partial class ParcelRuntime
         AcquisitionIdentity? acquisition = null; string? observationId = query.ObservationId; string? operationId = query.OperationId;
         string? operatorSession; string? expectedObservationHash = null; bool manual;
         CameraDebugRequestEvidence? debugPicture = null;
+        OriginalFrameArchive? archived = null;
         await gate.WaitAsync(owned).ConfigureAwait(false);
         try
         {
@@ -43,6 +46,9 @@ public sealed partial class ParcelRuntime
                 if (op is null) return new ParcelPictureResult("Missing", "原作业不存在或已按保留策略清理；不能以同码的其他作业补图。", operationId, null, null);
                 acquisition = op.Acquisition; expectedObservationHash = op.ObservationId; manual = op.OperatorInput is not null;
                 if (op.DebugRequest is { } debug) { Management.Require(); debugPicture = debug; }
+                archived = op.OriginalFrame;
+                if (archived is not null && (archived.Acquisition != op.Acquisition || archived.RelativeFile != "images/original-frames/" + op.Id + ".png"))
+                    throw new InvalidDataException("原业务留图身份/路径与原作业不符。");
             }
             else
             {
@@ -52,6 +58,13 @@ public sealed partial class ParcelRuntime
                 if (o.InspectionSessionId is not null) return new ParcelPictureResult("Isolated", "本次是隔离调试输入；请在获授权的调试会话查看原始证据。", null, observationId, null);
                 acquisition = manual ? null : new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt);
                 operationId = input.OperationId;
+                if (operationId is not null)
+                {
+                    var op = operations.GetValueOrDefault(operationId) ?? repository!.ReadOperation(operationId);
+                    archived = op?.OriginalFrame;
+                    if (archived is not null && (archived.Acquisition != acquisition || archived.RelativeFile != "images/original-frames/" + operationId + ".png"))
+                        throw new InvalidDataException("本次观察与原业务留图身份不符。");
+                }
             }
         }
         finally { gate.Release(); }
@@ -65,6 +78,28 @@ public sealed partial class ParcelRuntime
                 original.Metadata.SourceEventId != originalDebug.SourceEventId || original.Metadata.OriginalSha256 != originalDebug.OriginalSha256 ||
                 original.Metadata.IsolatedSessionId != originalDebug.SessionId)) throw new InvalidDataException("调试原图与原请求证据不一致，拒绝显示。");
             return new(original is null ? "Missing" : "Available", original is null ? "调试原图未保留或已清理；原测试请求和回执仍保留。" : "原隔离调试请求对应原帧；受当前管理授权保护。", operationId, original?.Metadata.ObservationId, original);
+        }
+        if (archived is not null && operationId is not null)
+        {
+            if (archived.State != "Saved") return new(archived.State, "原图留档状态：" + archived.State + "；" + (archived.Failure ?? "正在等待原帧后台保存，不重新拍照。"), operationId, observationId, null);
+            var file = archived;
+            var png = await Task.Run(() =>
+            {
+                if (file.Width <= 0 || file.Height <= 0 || (long)file.Width * file.Height > 33554432 || file.Length is not > 0 or > 41943040 ||
+                    !ExtensionSchema.IsHash(file.FileSha256 ?? "") || !ExtensionSchema.IsHash(file.RawSha256 ?? "") ||
+                    !ProductValidation.IsSafeRelativeFile(directory!, file.RelativeFile, out var path)) throw new InvalidDataException("原图留档格式/大小/哈希或路径无效。");
+                RecoveryFiles.RequireOrdinaryAncestors(path);
+                if (new FileInfo(path).Length != file.Length) throw new InvalidDataException("原图长度不符，保留原件。");
+                var bytes = File.ReadAllBytes(path);
+                if (bytes.LongLength != file.Length || Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)) != file.FileSha256)
+                    throw new InvalidDataException("原图文件完整性不符，拒绝展示。");
+                return bytes;
+            }, owned).ConfigureAwait(false);
+            await gate.WaitAsync(owned).ConfigureAwait(false);
+            try { if (!SessionValid || currentOperator?.SessionId != operatorSession || stopped) throw new InvalidOperationException("操作员会话已改变，图片未返回。"); }
+            finally { gate.Release(); }
+            return new ParcelPictureResult("Available", "原业务同帧PNG留档，文件身份与哈希已核对。", operationId, observationId, null)
+                { Archived = new(operationId, file, png) };
         }
         if (manual) return new("NoAcquisition", "此条码来自键盘或PDA键盘输入，没有同帧相机采集证据，不使用实时图或其他包裹图片补配。", operationId, observationId, null);
         if (acquisition is null) return new("Missing", "原记录未包含可核对的相机采集身份，无法取得对应原图。", operationId, observationId, null);

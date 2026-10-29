@@ -15,17 +15,29 @@ public sealed class MvsAcquisitionModule : IObservationExtension
 
 // One acquisition/resource owner. Legacy acquisition has no decoder; the current
 // reader injects an actual in-process decoder and emits only decoded candidates.
-internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IObservationPreviewSource
+internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource, IObservationPreviewSource
+
 {
     readonly MvsPreview preview = new();
     public ObservationPreview? ReadPreview() => disposeRequested ? null : preview.Read();
     readonly ExtensionContext context;
     readonly IMvsApi api;
     readonly IMonoBarcodeDecoder? decoder;
+    readonly bool diagnosticVideoSampling;
+    readonly MvsOriginalFrames originals = new();
+    public void EnableOriginalFrames()
+    {
+        lock (gate) { if (worker is not null || decoder is null) throw new InvalidOperationException("Bind original frames before software reader startup"); originals.Enable(); }
+    }
+    public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity) => originals.Retain(identity);
+    public void ReleaseOriginalFrame(AcquisitionIdentity identity) => originals.Release(identity);
+    internal int RetainedOriginalFrames => originals.Count;
+    internal MvsTimings Timings { get; } = new();
+    internal MvsTimingSnapshot? DecoderTimings => decoder?.TimingSnapshot;
     readonly string entityMode;
     Func<Observation, bool>? receiver;
     internal Observation? Undelivered { get; private set; }
-    long recognized, candidates, sequence, skippedVideoFrames, emptyFrames;
+    long recognized, candidates, sequence, skippedVideoFrames, videoGapEvents, emptyFrames;
     readonly Func<string, IDisposable> acquireLease;
     readonly Action<string>? phaseChanged;
     readonly SemaphoreSlim lifecycle = new(1, 1);
@@ -46,10 +58,12 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     public string Phase { get { lock (gate) return phase; } }
     public long Frames { get { lock (gate) return frames; } }
     public string Failure { get { lock (gate) return failure; } }
-    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; failure={failure}"; } }
-    internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null)
+    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; failure={failure}"; } }
+    internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null, bool diagnosticVideoSampling = false)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoder = decoder;
+        this.diagnosticVideoSampling = diagnosticVideoSampling;
+        if (diagnosticVideoSampling && decoder is not null) throw new ArgumentException("Raw throughput diagnostic must not contain a decoder");
         entityMode = context.Parameters.GetValueOrDefault("entity.mode", decoder is null ? "observe-only" : "read-result");
         this.acquireLease = acquireLease ?? (actualSerial => new ResourceLease(MachineRuntimePolicy.ResolveLeaseRoot(null), ["device:hikrobot-gige:" + actualSerial]));
         ip = context.Parameters.GetValueOrDefault("device.ip", ""); serial = context.Parameters.GetValueOrDefault("device.serial", "");
@@ -80,7 +94,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         {
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (initialized || created || worker is not null || lease is not null || Undelivered is not null) throw new InvalidOperationException("Original acquisition owner retained; stop before restart");
-            lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; }
+            Timings.Reset();
+            lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; }
             try
             {
                 preview.Clear();
@@ -148,6 +163,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     void Capture(CancellationToken token)
     {
         var poll = Stopwatch.StartNew();
+        long previousDelivery = 0;
         try
         {
             while (!token.IsCancellationRequested)
@@ -158,12 +174,27 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 {
                 PhaseTo("get-image-buffer");
                 MvsFrame? frame;
-                try { frame = api.Acquire(); }
+                DateTimeOffset observedAt;
+                long deliveredTicks;
+                var acquireStarted = Stopwatch.GetTimestamp();
+                try
+                {
+                    frame = api.Acquire();
+                    // Preserve the original clock boundary immediately after
+                    // SDK return, before recording any diagnostic samples.
+                    observedAt = DateTimeOffset.UtcNow;
+                    deliveredTicks = Stopwatch.GetTimestamp();
+                }
                 catch (IOException error) when (!api.Connected())
                 { throw new ObservationConnectionException("MVS相机连接已断开。", error); }
+                finally { Timings.Record("sdk.acquire", Stopwatch.GetElapsedTime(acquireStarted).TotalMilliseconds); }
+                Timings.Record(frame is null ? "sdk.acquire.no-data" : "sdk.acquire.frame", Timings.LastMs("sdk.acquire"));
                 if (frame is not null)
                 {
-                    byte[]? pixels = null; var length = 0; long skippedBefore = 0; var observedAt = DateTimeOffset.UtcNow;
+                    if (previousDelivery != 0) Timings.Record("host.delivery-interval", Stopwatch.GetElapsedTime(previousDelivery, deliveredTicks).TotalMilliseconds);
+                    previousDelivery = deliveredTicks;
+                    byte[]? pixels = null; var length = 0; long skippedBefore = 0;
+
                     try
                     {
                         ValidateFrame(frame, maximumPayload);
@@ -173,14 +204,17 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         {
                             if (priorFrame is { } prior)
                             {
-                                if (frame.Number <= prior || decoder is null && frame.Number - prior != 1)
+                                if (frame.Number <= prior || decoder is null && !diagnosticVideoSampling && frame.Number - prior != 1)
                                     throw new IOException("MVS frame sequence gap/reset; inspect original source before restart");
                                 skippedBefore = frame.Number - prior - 1; skippedVideoFrames += skippedBefore;
+                                if (skippedBefore > 0) videoGapEvents++;
+
                             }
                             priorFrame = frame.Number; frames++; bytes += checked((long)frame.Length);
                         }
                         if (decoder is not null && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false)
                         {
+                            using var copy = Timings.Measure("image.rent-copy");
                             length = checked((int)(frame.Width * frame.Height)); pixels = ArrayPool<byte>.Shared.Rent(length);
                             Marshal.Copy(frame.Data, pixels, 0, length);
                         }
@@ -189,35 +223,41 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     finally
                     {
                         PhaseTo("free-image-buffer");
-                        try { api.Release(); }
+                        try { using (Timings.Measure("sdk.release")) api.Release(); }
                         catch { if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; } throw; }
                     }
                     if (pixels is not null)
                     {
+                        MvsOriginalFrames.Frame? original = null;
                         string[] codes;
                         RecognitionSymbol[] symbols;
-                        byte[]? original = null;
-                        var parcelReceiver = inspected.Registration?.Isolated == true ? null : Volatile.Read(ref parcelFrameReceiver);
-                        double decodeMilliseconds = 0;
+                        byte[]? inspectionOriginal = null;
                         try
                         {
-                            original = inspected.Registration is { CaptureImages: true } || parcelReceiver is not null ? pixels.AsSpan(0, length).ToArray() : null;
+                            using (Timings.Measure("image.original-copy"))
+                                if (inspected.Registration?.Isolated != true) original = originals.Copy(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
+                            using (Timings.Measure("inspection.original-copy"))
+                                if (inspected.Registration is { CaptureImages: true }) inspectionOriginal = pixels.AsSpan(0, length).ToArray();
                             preview.Offer(pixels, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
-                            PhaseTo("decode"); var decodingStarted = Stopwatch.GetTimestamp();
-                            symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
-                            decodeMilliseconds = Stopwatch.GetElapsedTime(decodingStarted).TotalMilliseconds;
+                            PhaseTo("decode");
+                            using (Timings.Measure("decode")) symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
                             codes = symbols.Select(symbol => symbol.Text).ToArray();
                         }
-                        finally { ArrayPool<byte>.Shared.Return(pixels, true); }
+                        catch { original?.Dispose(); throw; }
+                        finally { using (Timings.Measure("image.clear-return")) ArrayPool<byte>.Shared.Return(pixels, true); }
                         var observationIdentity = codes.Length == 0 ? null : Wire.Id();
-                        if (codes.Length != 0 && parcelReceiver is not null && original is not null)
-                            PublishParcelFrame(parcelReceiver, new(DeviceId, Epoch, frame.Number, observedAt, checked((int)frame.Width), checked((int)frame.Height),
-                                original, symbols, decodeMilliseconds, observationIdentity, "mvs.frame." + frame.Number, null, skippedBefore, physicalSerial, ip));
-                        if (inspected.Registration is { } registration && original is not null)
+                        if (inspected.Registration is { } registration && inspectionOriginal is not null)
                             PublishInspection(registration, new(DeviceId, Epoch, frame.Number, observedAt, checked((int)frame.Width), checked((int)frame.Height),
-                                original, symbols, decodeMilliseconds, observationIdentity,
+                                inspectionOriginal, symbols, Timings.LastMs("decode"), observationIdentity,
                                 codes.Length == 0 ? null : "mvs.frame." + frame.Number, registration.Isolated ? registration.Id : null, skippedBefore, physicalSerial, ip));
-                        if (codes.Length == 0) { lock (gate) emptyFrames++; }
+                        if (codes.Length == 0)
+                        {
+                            original?.Dispose();
+                            lock (gate) emptyFrames++;
+                            Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
+                                Timings.LastMs("image.rent-copy"), Timings.LastMs("sdk.release"), Timings.LastMs("decode"), Timings.LastMs("image.clear-return"), 0, 0, 0, false) { OriginalCopyMs = Timings.LastMs("image.original-copy") });
+                        }
+
                         else
                         {
                             var source = "mvs.frame." + frame.Number;
@@ -228,21 +268,48 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 InspectionSessionId = inspected.Registration is { Isolated: true } isolated ? isolated.Id : null,
                                 CaptureSessionId = inspected.Registration is { CaptureImages: true } capture ? capture.Id : null
                             };
+                            try { originals.Publish(new(DeviceId, observation.Epoch, source, admission, observedAt), original); }
+                            catch { original?.Dispose(); throw; }
+
                             Undelivered = observation;
                             if (token.IsCancellationRequested)
                                 throw new IOException("Stop requested during decoding; original decoded observation retained; source fenced");
-                            if (receiver?.Invoke(observation) != true) throw new IOException("Application rejected decoded input; original decoded observation retained; source fenced");
+                            Timings.Record("host.observed-to-receiver", Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds);
+                            var delivered = false;
+                            try
+                            {
+                                using (Timings.Measure("application.durable-handoff"))
+                                    delivered = receiver?.Invoke(observation) == true;
+                                if (!delivered) throw new IOException("Application rejected decoded input; original decoded observation retained; source fenced");
+                            }
+                            finally
+                            {
+                                Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
+                                    Timings.LastMs("image.rent-copy"), Timings.LastMs("sdk.release"), Timings.LastMs("decode"), Timings.LastMs("image.clear-return"),
+                                    Timings.LastMs("host.observed-to-receiver"), Timings.LastMs("application.durable-handoff"), codes.Length, delivered) { OriginalCopyMs = Timings.LastMs("image.original-copy") });
+                            }
+                            Timings.Record("host.observed-to-handoff-complete", Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds);
                             Undelivered = null;
                             lock (gate) { recognized++; candidates += codes.Length; }
                         }
                     }
+                    else Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
+                        0, Timings.LastMs("sdk.release"), 0, 0, 0, 0, 0, false));
+                    Timings.Record("host.frame-work", Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds);
                 }
                 if (token.IsCancellationRequested) break;
                 if (poll.Elapsed >= TimeSpan.FromSeconds(1))
                 {
                     PhaseTo("connection-check");
-                    if (!api.Connected() || api.Enumerate().Count(d => d.Ip == ip && d.Serial == physicalSerial) != 1)
+                    using var check = Timings.Measure("health.total");
+                    bool connected;
+                    using (Timings.Measure("health.connected")) connected = api.Connected();
+                    var identityMatches = false;
+                    if (connected)
+                        using (Timings.Measure("health.enumerate")) identityMatches = api.Enumerate().Count(d => d.Ip == ip && d.Serial == physicalSerial) == 1;
+                    if (!connected || !identityMatches)
                         throw new ObservationConnectionException("MVS原相机断开或当前设备身份不匹配。", new IOException("Original camera unavailable"));
+                    using (Timings.Measure("health.trigger-readback"))
                     if (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0)
                         throw new IOException("MVS device trigger setting changed");
                     PhaseTo(decoder is null ? "acquiring-decoder-unavailable" : inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) == false ? "read-paused" : "reading"); Publish(decoder is null ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
@@ -324,7 +391,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 disposal = Task.Run(async () =>
                 {
                     await lifecycle.WaitAsync().ConfigureAwait(false);
-                    try { await StopCore().ConfigureAwait(false); disposed = true; }
+                    try { await StopCore().ConfigureAwait(false); originals.Dispose(); disposed = true; }
                     catch (Exception ex) { lock (gate) failure = ex.GetType().Name + ": " + ex.Message; throw; }
                     finally { lifecycle.Release(); }
                 });

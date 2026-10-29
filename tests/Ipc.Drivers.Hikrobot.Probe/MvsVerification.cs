@@ -13,6 +13,8 @@ internal static partial class MvsVerification
     {
         await VerifyPreview();
         Check(Marshal.SizeOf<MvsNative.FrameInfo>() == 256 && MvsNative.FrameOutBytes == 328 && Marshal.OffsetOf<MvsNative.FrameInfo>("TriggerIndex").ToInt32() == 76 &&
+            Marshal.OffsetOf<MvsNative.FrameInfo>("DeviceTimestampHigh").ToInt32() == 12 && Marshal.OffsetOf<MvsNative.FrameInfo>("DeviceTimestampLow").ToInt32() == 16 &&
+            Marshal.OffsetOf<MvsNative.FrameInfo>("HostTimestamp").ToInt32() == 24 &&
             Marshal.OffsetOf<MvsNative.FrameInfo>("ExtendedLength").ToInt32() == 120 && MvsNative.DescriptorBytes == 636, "x64 layouts match installed vendor header and official managed wrapper cross-check");
         var api = new Fake(); var lease = new Lease(); var health = new ConcurrentQueue<DeviceHealthConfirmation>(); int observations = 0;
         var stoppedApi = new Fake { StopResult = unchecked((int)0x80000003), CloseResult = unchecked((int)0x80000003), FailStage = "destroy" };
@@ -161,6 +163,7 @@ internal static partial class MvsVerification
             Check(invalid.Freed == 1 && source.Frames == 0, "invalid/incomplete frame is returned and never counted as a valid image or decoded barcode");
         }
         await SoftwareBoundaries();
+        await SamplingTimings();
         Console.WriteLine("MVS_SELF_TEST_PASS checks=" + checks + "; synthetic native ports; real target frames/barcodes NOT_RUN");
     }
     static async Task Reject(Func<Task> call)
@@ -173,13 +176,13 @@ internal static partial class MvsVerification
         internal bool FailFree, Online = true, Discovered = true;
         internal int StopResult, CloseResult;
         internal int Freed;
-        internal Action? Acquiring;
+        internal Action? Acquiring, Enumerating;
         internal ConcurrentQueue<MvsFrame> Frames = new();
         internal ConcurrentQueue<string> Calls = new();
         public bool HasFrame { get; private set; }
         void Call(string stage) { Calls.Enqueue(stage); if (FailStage == stage) throw new IOException("Synthetic MVS " + stage + " failure"); }
         public void Initialize() => Call("initialize");
-        public MvsDevice[] Enumerate() => Discovered ? [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])] : [];
+        public MvsDevice[] Enumerate() { Enumerating?.Invoke(); return Discovered ? [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])] : []; }
         public void Create(MvsDevice device) => Call("create");
         public void Open() => Call("open");
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? 2u : 0;

@@ -158,7 +158,7 @@ public sealed partial class ParcelRuntime
         try { return await Task.Run(() =>
         {
         var image = InspectionStore.Image(frameId) ?? throw new InvalidOperationException("此帧原图已不可用，不能导出替代图像。");
-        return CameraOriginalExport.Write(image, destination, t);
+        return CameraOriginalExport.Write(image, destination, Effective.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes, t);
         }, t).ConfigureAwait(false); }
         finally { inspectionExportControl.Release(); }
     }, token);

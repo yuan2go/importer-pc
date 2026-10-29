@@ -15,6 +15,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
 {
     const long BufferBudget = 128L * 1024 * 1024, DatabaseBudget = 512L * 1024 * 1024;
     readonly string root, images, database;
+    readonly Func<long> businessReserve;
     readonly SqliteConnection db;
     readonly object sync = new();
     readonly Channel<Work> queue = Channel.CreateBounded<Work>(new BoundedChannelOptions(128) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
@@ -29,8 +30,9 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     sealed record LinkWork(string Observation, string Device, string Epoch, string SourceEvent, long Sequence, string? Operation) : Work;
     public string? Fault => Volatile.Read(ref fault);
     public long Dropped => Interlocked.Read(ref dropped);
-    public CameraInspectionStore(string directory)
+    public CameraInspectionStore(string directory, Func<long> businessReserve)
     {
+        this.businessReserve = businessReserve;
         root = Path.Combine(directory, "camera-inspection"); images = Path.Combine(root, "images"); database = Path.Combine(root, "index.db");
         RecoveryFiles.RequireOrdinaryAncestors(root); Directory.CreateDirectory(images);
         var existing = File.Exists(database); db = Database.Open(database);
@@ -188,8 +190,8 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     }
     void Persist(FrameWork work)
     {
-        if (new DriveInfo(Path.GetPathRoot(root)!).AvailableFreeSpace < 512L * 1024 * 1024)
-            throw new IOException("诊断原图停止写入：磁盘可用空间不足512MiB，保留业务存储余量及隔离栅。");
+        if (new DriveInfo(Path.GetPathRoot(root)!).AvailableFreeSpace < Math.Max(512L * 1024 * 1024, businessReserve()))
+            throw new IOException("诊断原图停止写入：低于业务存储保留余量（至少512MiB），保留原件及隔离栅。");
         var s = Session(work.Session); var f = work.Frame;
         if (f.Width <= 0 || f.Height <= 0 || (long)f.Width * f.Height != f.OriginalGray8.LongLength || f.Symbols.Length > 64 || f.Symbols.Any(x => x.Corners.Length is not (0 or 4)))
             throw new InvalidDataException("关联帧不符合原始Mono8与位置契约。");
@@ -330,7 +332,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
                         if (page.Count == 0) break;
                         foreach (var row in page)
                         {
-                            if (new DriveInfo(Path.GetPathRoot(full)!).AvailableFreeSpace < 512L * 1024 * 1024) throw new IOException("导出空间不足，已停止并保留原诊断集合。");
+                            if (new DriveInfo(Path.GetPathRoot(full)!).AvailableFreeSpace < Math.Max(512L * 1024 * 1024, businessReserve())) throw new IOException("导出空间不足，已停止并保留业务存储余量和原诊断集合。");
                             token.ThrowIfCancellationRequested(); var image = Image(row.Metadata.Id); var metadata = row.Metadata with { ImageAvailable = image is not null };
                             await records.WriteLineAsync(Wire.Encode(metadata).AsMemory(), token).ConfigureAwait(false); count++; cursor = row.Sequence;
                             if (metadata.OperationId is { } operation && exportedOperations.Add(operation))

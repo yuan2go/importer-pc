@@ -7,12 +7,14 @@ namespace Ipc.Application.ParcelFlow;
 
 internal static class CameraOriginalExport
 {
-    internal static CameraInspectionExport Write(CameraOriginalImage image, string destination, CancellationToken token)
+    internal static CameraInspectionExport Write(CameraOriginalImage image, string destination, long reserve, CancellationToken token)
     {
         var full = Path.GetFullPath(destination);
         if (!full.StartsWith("D:\\", StringComparison.OrdinalIgnoreCase) || !full.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("原图导出必须为D盘PNG文件。");
         RecoveryFiles.RequireOrdinaryAncestors(full);
         RecoveryFiles.RequireOrdinaryAncestors(full + ".json");
+        if (new DriveInfo(Path.GetPathRoot(full)!).AvailableFreeSpace < Math.Max(512L * 1024 * 1024, reserve) + image.Gray8.LongLength * 2)
+            throw new IOException("原图导出空间不足；保留业务存储余量，不创建导出件。");
         if (File.Exists(full) || File.Exists(full + ".json")) throw new IOException("目标已存在，请选择新的文件名。");
         var temporary = full + "." + Wire.Id() + ".partial"; var metadata = full + ".json";
         try

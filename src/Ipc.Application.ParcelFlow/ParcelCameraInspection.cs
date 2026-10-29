@@ -28,7 +28,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
             // owns the durable production admission fence.
             repository.Commit(null, "CameraIsolationRecoveryFenced", "原实机调试未显式清场；不恢复生产、不回放隔离输入。", paused: true);
         }
-        try { inspectionStore = new(directory!); }
+        try { inspectionStore = new(directory!, () => Effective.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes); }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or Microsoft.Data.Sqlite.SqliteException)
         { inspectionStoreFailure = "原相机诊断集合不可用，保留原件：" + error.GetType().Name; }
     }

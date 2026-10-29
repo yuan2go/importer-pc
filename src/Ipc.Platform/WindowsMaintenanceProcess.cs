@@ -4,7 +4,6 @@ using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
-using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 
 namespace Ipc.Platform;
@@ -21,9 +20,12 @@ public static class WindowsMaintenanceProcess
         if (!start.UseShellExecute || start.Verb != "runas" || start.Arguments.Length != 0 || !Path.IsPathFullyQualified(start.FileName))
             throw new ArgumentException("Explicit Windows maintenance executable and runas required");
         using var caller = WindowsIdentity.GetCurrent();
-        using var policy = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
-        if (policy?.GetValue("EnableLUA") is not int enabled || enabled != 0 ||
-            new WindowsPrincipal(caller).IsInRole(WindowsBuiltInRole.Administrator))
+        // The registry's EnableLUA may have changed without a system restart.
+        // SAFER can disable the administrator group without adding restricting
+        // SIDs, so IsTokenRestricted/elevation type alone are insufficient too.
+        var administratorEnabled = new WindowsPrincipal(caller).IsInRole(WindowsBuiltInRole.Administrator);
+        var disabledAdministrator = !administratorEnabled && caller.Claims.Any(c => c.Value == "S-1-5-32-544");
+        if (!disabledAdministrator)
             return new Child(Process.Start(start) ?? throw new IOException("Windows did not start maintenance"));
 
         var started = DateTime.UtcNow;
@@ -68,7 +70,7 @@ public static class WindowsMaintenanceProcess
                 using (var handle = OpenProcess(0x1000, false, pid))
                 {
                     if (handle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
-                    RequireIdentity(explorer, handle, callerSid);
+                    RequireIdentity(explorer, handle, callerSid, requireAdministrator: false);
                     if (!string.Equals(ImagePath(handle), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"), StringComparison.OrdinalIgnoreCase))
                         throw new UnauthorizedAccessException("Windows 桌面程序身份不匹配，维护尚未启动。");
                 }
@@ -89,14 +91,14 @@ public static class WindowsMaintenanceProcess
         thread.SetApartmentState(ApartmentState.STA); thread.Start(); return completion.Task;
     }
 
-    static void RequireIdentity(Process process, SafeProcessHandle handle, string sid)
+    static void RequireIdentity(Process process, SafeProcessHandle handle, string sid, bool requireAdministrator = true)
     {
         using var current = Process.GetCurrentProcess();
         if (process.SessionId != current.SessionId) throw new UnauthorizedAccessException("维护进程不属于当前Windows桌面会话。");
         if (!OpenProcessToken(handle, 8, out var token)) throw new Win32Exception(Marshal.GetLastWin32Error());
         using (token)
         using (var identity = new WindowsIdentity(token.DangerousGetHandle()))
-                if (identity.User?.Value != sid || !identity.Claims.Any(c => c.Value == "S-1-5-32-544" && c.Type is System.Security.Claims.ClaimTypes.GroupSid or System.Security.Claims.ClaimTypes.PrimaryGroupSid))
+                if (identity.User?.Value != sid || requireAdministrator && !identity.Claims.Any(c => c.Value == "S-1-5-32-544" && c.Type is System.Security.Claims.ClaimTypes.GroupSid or System.Security.Claims.ClaimTypes.PrimaryGroupSid))
                     throw new UnauthorizedAccessException("Windows维护未取得当前用户的管理员权限；已有数据与凭据保留。");
     }
     static string ImagePath(SafeProcessHandle handle)

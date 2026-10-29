@@ -1,3 +1,5 @@
+> 2026-10-29 用户纠偏：停用本仓库 GitHub CI，必要验证在本机执行；未经用户新授权，不重新启用或调度 Actions。具体见 [MANAGEMENT-PASSWORD-STARTUP-01](docs/work-packages/WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01.md)。历史CI记录保留原身份。
+
 > 2026-10-28 最新执行口径以 [MVS-SOFTWARE-READER-01](docs/work-packages/WP-IPC-MVS-SOFTWARE-READER-01.md) 为准：MVS采图＋同一ZXing-C++软件识别引擎进程内接入，逐次识别结果交RCS去重；本轮RCS按用户要求由本机Python模拟。此前MvCodeReader默认路径及通过记录保留原验证范围。
 
 > 2026-10-28 用户确认同机旧客户端可读码，当前复用入口改为 [MVCODEREADER-RESTORE-01](docs/work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md)：沿现有 MvCodeReader SDK 条码回调接入新版 Application。用户后续纠正现场没有 PLC，电脑直接连接相机；默认连续采集，每个独立识别结果均上报 RCS，由 RCS 去重；不是 PCS。先前外部触发默认仅保留形成时范围。旧仅 MVS 采图约束保留历史范围；实际识码与现场验收分别记录。

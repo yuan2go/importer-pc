@@ -1886,9 +1886,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "b93f784a5e74b79bcaa25bc961fa708afc3f6484161cd18f5e67852029941d75",
-      "size_bytes": 10422,
-      "git_blob": "29e5d48bff8f442b7c9a32de1dad68116bbaf336",
+      "sha256": "b4770e4f0bafe8bd4c49cd09f2a688ec16cf68487db0d2d5763e8f9faad9b7da",
+      "size_bytes": 10707,
+      "git_blob": "5cb879bb7dccb93498be9a9faed82194ccb143c9",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -105653,9 +105653,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
-      "sha256": "ab2a93cc1a5467ed08139a273796fde724cc7e659c08cfd77a795d8695b77316",
-      "size_bytes": 1539,
-      "git_blob": "0e5830870dd8a1fcfe869de5aa13e71377c7b400",
+      "sha256": "31dc07a30ad6851a66b276274b5590f29a1ae039afa4673d512cec803210a353",
+      "size_bytes": 1892,
+      "git_blob": "de21470bfc8160bca4e9ca8d3fb517e6cfe67423",
       "storage_scope": "public_repository"
     },
     {
@@ -105785,9 +105785,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
-      "sha256": "f96ed790ccbb4c87cef4de1c4b50880be5bb3302fe197df1a49da9dbb850ec66",
-      "size_bytes": 4665,
-      "git_blob": "558abaac2662fdfa141cb477b6c50f64c9be7f03",
+      "sha256": "39d76e98694f3e4c91ec8014464f31e5fa029875de2362c0b2d76c0f37250abc",
+      "size_bytes": 5721,
+      "git_blob": "e196cc02673fa74566281e0dc710a26bf45f9bae",
       "storage_scope": "public_repository"
     },
     {
@@ -105807,9 +105807,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
-      "sha256": "f28931dce24ab13829cc4367d46e5f4e3f504f475957019aecdcb27ec389aa45",
-      "size_bytes": 9187,
-      "git_blob": "0eb728f4c8cefc559e72378bf4765856eb74f98b",
+      "sha256": "6acfec3ec1f539be7e3f4e23d58682d957b797d713ea3778d61e7e36b4d02a48",
+      "size_bytes": 9459,
+      "git_blob": "2e1a30b108b4d284d05781ecda816f83873a6c50",
       "storage_scope": "public_repository"
     },
     {
@@ -105832,6 +105832,28 @@
       "sha256": "5ed1f8eb146454a51c1af4e1e0a2073bc1338be2b40dc70d01597ab687bad5d8",
       "size_bytes": 4319,
       "git_blob": "424cd7e797cf1b51062519ab00e93593628086e9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/effective-token-authority.log",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "d90b42d578bf2238143f2fe71ff76525ad120bc25483232075761120ed244f3d",
+      "size_bytes": 326,
+      "git_blob": "a4591673f8f14f6acb5af5e30114cbcb0ae5bcaa",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/integrated-authority-fail.log",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "022a250a7d27662865979c1c83a420ec5b71a8eafd07e089e8e682fe1a2c9c4c",
+      "size_bytes": 878,
+      "git_blob": "b5ff25019c5622bb13a1d87b91121e9acc09a852",
       "storage_scope": "public_repository"
     }
   ],

@@ -1,0 +1,8 @@
+Unhandled exception. System.UnauthorizedAccessException: Maintenance probe lacks same-user authority
+   at MaintenanceAuthorizationStartup.OrdinaryChild(String[] args) in D:\w\ipc-password-fix-01\tests\Ipc.Application.Verification\MaintenanceAuthorizationStartup.cs:line 43
+   at Program.<Main>$(String[] args) in D:\w\ipc-password-fix-01\tests\Ipc.Application.Verification\Program.cs:line 13
+   at Program.<Main>(String[] args)
+Unhandled exception. System.Exception: Restricted runtime could not complete real maintenance authority round trip
+   at MaintenanceAuthorizationStartup.Run(String root, String workspace) in D:\w\ipc-password-fix-01\tests\Ipc.Application.Verification\MaintenanceAuthorizationStartup.cs:line 85
+   at Program.<Main>$(String[] args) in D:\w\ipc-password-fix-01\tests\Ipc.Application.Verification\Program.cs:line 20
+   at Program.<Main>(String[] args)

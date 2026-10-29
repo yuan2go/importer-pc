@@ -104839,9 +104839,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Ordinary runtime identity and scoped installation lifecycle verification",
       "source": "WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01; original evidence retains its own SourceCommit",
-      "sha256": "be285991a2b861dc6bda04f751e9120d7f83a8f948c72a8aba7d1416a919f4b2",
-      "size_bytes": 19385,
-      "git_blob": "18cc143a386518233e5c2bcae077c3860b46e528",
+      "sha256": "164154cc2d23888f8067efc1c1b9db76e7e062eaf8ca92240eac6dd1d5a987cf",
+      "size_bytes": 20355,
+      "git_blob": "04d06f0524ed888d8dac3c480302a1f8452c2147",
       "storage_scope": "public_repository"
     },
     {
@@ -105400,9 +105400,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
-      "sha256": "fa18404749633ff657101f9f9b95e6567ec8f2f1a2615dbb44c1463887acbf39",
-      "size_bytes": 3825,
-      "git_blob": "d238d5cc2355b2fc8d7330f30ba5964b6c2d391d",
+      "sha256": "672b91ee21517483dfbc226d1c94d2b456a9cc709e642645f247d3dd7d163a62",
+      "size_bytes": 4749,
+      "git_blob": "8ccfe4464af225ef8501c1501d53db469389ed1a",
       "storage_scope": "public_repository"
     },
     {
@@ -105411,9 +105411,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
-      "sha256": "c68fccf7bb0ced3649965764718d7341ab873759da91228245e850bb79feb11b",
-      "size_bytes": 6719,
-      "git_blob": "508363bb39cf6f2e7e50cea94a683a94c0cfaa78",
+      "sha256": "c4bfefa92a4d1d9313564f3787873d1ffea1b236891182903e43e64aafab9a2b",
+      "size_bytes": 6896,
+      "git_blob": "13b724dd0e5544e302d9283df00190259a9c88ea",
       "storage_scope": "public_repository"
     },
     {
@@ -105433,9 +105433,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
-      "sha256": "6eabf294f13ee6dd025f83271954eb23c1330a778bb76455f2166ecc14340f99",
-      "size_bytes": 11475,
-      "git_blob": "59095a66ee09ffa7f11b308470f0367400f5e91f",
+      "sha256": "baf491b503bb23b065512422e66ea94cf51fea9030d3e3ed2a8f6e86f657861b",
+      "size_bytes": 12013,
+      "git_blob": "87740eb1e0181ac86b05b50efd4891c9f7940770",
       "storage_scope": "public_repository"
     }
   ],

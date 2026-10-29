@@ -31,6 +31,8 @@ static class SupervisorContinuity
         Environment.ExitCode = await DesktopRecoverySupervisor.RunAsync(l, () => l, launch: _ =>
         {
             var prior = File.Exists(Path.Combine(root,"launches")); File.AppendAllText(Path.Combine(root,"launches"), "launch\n");
+            // The verification parent owns the fault process so waitpid/ExitCode remain observable on Unix after this supervisor dies.
+            if (!prior && File.Exists(Path.Combine(root,"observer-owned-child"))) return Process.GetProcessById(int.Parse(File.ReadAllText(Path.Combine(root,"observer-owned-child"))));
             return Start(root, prior ? "normal" : "fault");
         });
     }
@@ -114,13 +116,15 @@ static class SupervisorContinuity
     static async Task LostOwner(string root)
     {
         Directory.CreateDirectory(root); var l=Location(root);DesktopRecoverySupervisor.InitializeNewDeployment(l);
-        using var watcher=Start(root,"watcher");Process? child=null;
+        Process? watcher=null,child=null;
         try
         {
+            child=Start(root,"fault");File.WriteAllText(Path.Combine(root,"observer-owned-child"),child.Id.ToString());
+            watcher=Start(root,"watcher");
             var deadline=Stopwatch.StartNew();
             while(!File.Exists(Path.Combine(root,"child-ready")) || !File.ReadAllText(StatePath(l)).Contains("Running"))
             { if(watcher.HasExited||deadline.Elapsed>TimeSpan.FromSeconds(10))throw new Exception("Watcher did not acknowledge original child");await Task.Delay(20); }
-            child=Process.GetProcessById(int.Parse(File.ReadAllText(Path.Combine(root,"child-ready"))));_=child.Handle;
+            Check(child.Id==int.Parse(File.ReadAllText(Path.Combine(root,"child-ready"))),"independent observer retains the actual original process handle");
             watcher.Kill();await watcher.WaitForExitAsync();File.WriteAllText(Path.Combine(root,"exit-signal"),"synthetic permanent storage fault");
             await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));Check(child.ExitCode==78,"original child actually exits 78 after supervisor loss");child.Dispose();child=null;
             var before=JsonNode.Parse(File.ReadAllText(StatePath(l)))!;
@@ -130,6 +134,6 @@ static class SupervisorContinuity
             Check(new[]{"Launches","ChildPid","ChildStartedTicks","SourceCommit","ExecutableSha256"}.All(k=>JsonNode.DeepEquals(before[k],after[k])) && (bool?)after["LaunchUncertain"]==true &&
                 Refused(()=>DesktopRecoverySupervisor.ResetAfterAuthorizedRepair(l)),"lost exit retains original identity/count and cannot be reset as a known outcome");
         }
-        finally { if(!watcher.HasExited){watcher.Kill();await watcher.WaitForExitAsync();}if(child is not null){if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}child.Dispose();} }
+        finally { if(watcher is not null){if(!watcher.HasExited){watcher.Kill();await watcher.WaitForExitAsync();}watcher.Dispose();}if(child is not null){if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}child.Dispose();} }
     }
 }

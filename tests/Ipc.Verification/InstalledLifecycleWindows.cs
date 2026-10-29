@@ -144,6 +144,12 @@ static class InstalledLifecycleWindows
         using (var arp = hklm.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\ImporterPc." + appId))
             Check(arp is null, "retired deployment is removed from the real Windows installed-product projection");
         Check(WindowsDeploymentSetup.InspectRemoval(appId).RemainingFiles!.Contains("foreign-evidence.txt"), "post-uninstall inspection observes actual unlisted remnants without deleting them");
+        var retiredSource=WindowsDeploymentSetup.Current(appId)!;var retiredHash=Wire.FileHash(WindowsDeploymentSetup.Registration(appId));
+        var refusedTarget=Path.Combine(dataParent,appId+"-retired-migration");Directory.CreateDirectory(refusedTarget);
+        var originalLedgerHash=Wire.FileHash(Path.Combine(supervisionRoot,"state.json"));
+        try{using var rejectedMigration=WindowsDeploymentSetup.PrepareRecoveryMigration(retiredSource,refusedTarget,retiredHash);throw new Exception("Retired deployment entered migration");}
+        catch(InvalidOperationException){Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId))==retiredHash && Wire.FileHash(Path.Combine(supervisionRoot,"state.json"))==originalLedgerHash &&
+            !Directory.Exists(DesktopRecoverySupervisor.StateDirectory(retiredSource with {DataRoot=refusedTarget})),"retired registration is refused in preparation before business handoff or target supervision publication");}
         Directory.Move(supervisionRoot,supervisionRoot+".retired-retained");
         var reinstall = Install(Request(mediaB)); prior = reinstall;
         Check(!Directory.Exists(supervisionRoot),"disabled reinstall after real retirement preserves missing supervision instead of fabricating a new budget");

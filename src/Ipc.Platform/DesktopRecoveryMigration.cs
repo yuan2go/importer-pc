@@ -101,6 +101,7 @@ public static partial class WindowsDeploymentSetup
         {
             if(Wire.FileHash(file)!=expectedRegistrationHash || Wire.Encode(Current(source.ApplicationId))!=Wire.Encode(source))
                 throw new InvalidOperationException("Reviewed deployment changed before migration; no business fence written");
+            if(source.LifecycleState!="Installed") throw new InvalidOperationException("Only an installed deployment can begin data-root migration; no business fence written");
             var migration=DesktopRecoverySupervisor.HoldMigration(source,targetRoot);
             migration.HoldRegistration(owner,file,expectedRegistrationHash);return migration;
         }

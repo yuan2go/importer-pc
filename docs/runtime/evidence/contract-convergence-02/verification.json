@@ -1,0 +1,215 @@
+{
+  "work_package": "WP-IPC-CONTRACT-CONVERGENCE-02",
+  "baseline": "e165e49003ca2ba67992441ad91b818eec38c38f",
+  "validated_application_code_commit": "efafacc6f24fd0ff8b2501f7f7221bc3b8dc7993",
+  "environment": "Windows, ordinary token, .NET 10.0.402, D-drive caches, synthetic data, no machine installation or device connection",
+  "before": {
+    "source_commit": "e165e49003ca2ba67992441ad91b818eec38c38f",
+    "code_files": 614,
+    "code_lines": 70706,
+    "check_call_sites": 3691,
+    "python_test_methods": 104
+  },
+  "after": {
+    "code_files": 611,
+    "code_lines": 70359,
+    "check_call_sites": 3677,
+    "python_test_methods": 97
+  },
+  "successful_named_csharp_runs": 17,
+  "python_tests": 97,
+  "logs": [
+    {
+      "name": "b1-final-sm-built-in-only",
+      "result": "PASS",
+      "sha256": "0a88c6f76e42d10daa33f9dbbadb8bc9a920a679127e3eae0dc0898c40062e53",
+      "bytes": 1224,
+      "pass_output_lines": 13
+    },
+    {
+      "name": "b1-final-version-compatibility",
+      "result": "PASS",
+      "sha256": "bb39b399e3d8d31792212a0a6164dbc304d495e883b7b70085c4d3b20edf42ef",
+      "bytes": 5007,
+      "pass_output_lines": 64
+    },
+    {
+      "name": "b1-hikrobot-sdk-editing",
+      "result": "PASS",
+      "sha256": "b5c89e5d6e4244fbb67b1329c97ceb739cd641d4efb8a8cf33efe5f9e804729a",
+      "bytes": 880,
+      "pass_output_lines": 11
+    },
+    {
+      "name": "b1-station-single-camera",
+      "result": "PASS",
+      "sha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef",
+      "bytes": 3431,
+      "pass_output_lines": 52
+    },
+    {
+      "name": "b1-final-sportmaster-rcs",
+      "result": "PASS",
+      "sha256": "396679ed5590747c17048f5efdc17872e570d049354e6e5a405a78cdde60ad28",
+      "bytes": 14215,
+      "pass_output_lines": 156
+    },
+    {
+      "name": "b1-final-dual-camera-communication",
+      "result": "PASS",
+      "sha256": "8b903f8a1868e159bef1bf7944e5d233ba2ccf15df042e21b83715449c040cbb",
+      "bytes": 6199,
+      "pass_output_lines": 65
+    },
+    {
+      "name": "b2-audit03-rcs",
+      "result": "PASS",
+      "sha256": "dc2c811c6bf98e585fd0ba325314652ae03307dfe0f76a082a13e960f590f9d7",
+      "bytes": 3643,
+      "pass_output_lines": 33
+    },
+    {
+      "name": "b2-rcs-heartbeat",
+      "result": "PASS",
+      "sha256": "359a17c30a26310b16d4e9a1121cd1a5d5179a47652e607d7570c1b5f41fd0de",
+      "bytes": 2226,
+      "pass_output_lines": 29
+    },
+    {
+      "name": "b2-rcs-timeout-errors",
+      "result": "PASS",
+      "sha256": "d1a41e874703d5ef6760bce6f9b8ae918d6592672767c1d39aa62fced8869aba",
+      "bytes": 4730,
+      "pass_output_lines": 57
+    },
+    {
+      "name": "b2-mvs-software-flow",
+      "result": "PASS",
+      "sha256": "4c9efa4741e8a4b206a0b66951b6e63fb0b51605cd2e6b9165452fa5cb7a411c",
+      "bytes": 1607,
+      "pass_output_lines": 11
+    },
+    {
+      "name": "b2-mvs-offline-activation",
+      "result": "PASS",
+      "sha256": "03602ee92c93f4d62a7a38703b2ecddae30f9844d17cf4eb0692922994677a8d",
+      "bytes": 1376,
+      "pass_output_lines": 12
+    },
+    {
+      "name": "b2-storage-schema-only",
+      "result": "PASS",
+      "sha256": "94cf66e168037b44e98f513715f4e8f8ce0a6db6cc224dd613733cfe3bac371c",
+      "bytes": 1182,
+      "pass_output_lines": 16
+    },
+    {
+      "name": "b3-runtime-identity",
+      "result": "PASS",
+      "sha256": "7c89622984f7b2cb33c1c5444c02167976e8302b51184128b688247d1b812b3f",
+      "bytes": 340,
+      "pass_output_lines": 3
+    },
+    {
+      "name": "b4-history-session-contract",
+      "result": "PASS",
+      "sha256": "0aa2a73e79b16bbf1aa1d5ba42611a6683d79581a5630aa9e61f3e6543632bfa",
+      "bytes": 231,
+      "pass_output_lines": 1
+    },
+    {
+      "name": "b4-reliability-02",
+      "result": "PASS",
+      "sha256": "f2f4ad3b01f5888652a2189db5f7b2c0cf6a14d49ffd5b45c4f3bbc0e28fbcc0",
+      "bytes": 8101,
+      "pass_output_lines": 66
+    },
+    {
+      "name": "b4-stability-audit-history",
+      "result": "PASS",
+      "sha256": "8ef7f0daefcc0b03141948971180369c50be597f4e96aefde8f797a0044f160b",
+      "bytes": 6456,
+      "pass_output_lines": 75
+    },
+    {
+      "name": "b4-current-win11-stability",
+      "result": "PASS",
+      "sha256": "1132daceeec6dd06cc42de19ae0c76bf2a0bb572bc31df0200bf1ffb7f131b7c",
+      "bytes": 4151,
+      "pass_output_lines": 47
+    },
+    {
+      "name": "b3-all-python",
+      "result": "PASS",
+      "sha256": "bcaa5f8d90fb95a360cd5d72b23376fbf1eed5cd0846ce4bfba33035dfe9e201",
+      "bytes": 15770,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "b5-release-documents",
+      "result": "PASS",
+      "sha256": "a64c790004c5e0e5a21767ff426cfee06a8a3e6661eac07898d0cb9a7015b1ba",
+      "bytes": 106,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "b5-application-bundles",
+      "result": "PASS",
+      "sha256": "292fecee584f90dbed88c5182dcbc4e36721891a2994565f7e9e645cc9dbad01",
+      "bytes": 106,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "b4-desktop-build",
+      "result": "PASS",
+      "sha256": "b675f0d4db7b4398a0b90ab44e856aaf1e337cafd1bcef898bb5afe47edc6823",
+      "bytes": 3286,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "final-build-DirectPlc",
+      "result": "PASS",
+      "sha256": "f70edccf5ee7c2de68532b384e58bc5641fdbca4810488e6d12784fc70e9235c",
+      "bytes": 2107,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "final-build-WcsToPlc",
+      "result": "PASS",
+      "sha256": "89b9689a9f2d3c36a9b1c4dc4847ee50327a9de4e1ffd3e0c87fa4bd9d5b3260",
+      "bytes": 2258,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "final-publish",
+      "result": "PASS",
+      "sha256": "bd3509b0539f8c605db49f71150476bd13a7edb0e421fe2525c6852e022bbed0",
+      "bytes": 4122,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "final-publish-start",
+      "result": "PASS",
+      "sha256": "b48f7cffed3828ef33636deac1dd0799a3f4c8aee1fd612cbfa6f87dcd57602e",
+      "bytes": 1975,
+      "pass_output_lines": 0
+    },
+    {
+      "name": "b4-lifecycle-ux",
+      "result": "PARTIAL_ENVIRONMENT_BLOCKED",
+      "sha256": "82ae00f61533f9a507c37130360c5a5cf88313d8be712bf9dc643098ff00b84d",
+      "bytes": 17786,
+      "pass_output_lines": 225
+    }
+  ],
+  "lifecycle_ux_boundary": "LifecycleOptimization passed; subsequent MaintenanceProgressChecks backup copying was rejected by RequireExtensionInstallerAuthority under ordinary token. Combined command exited -532462766; remaining privileged backup checks NOT_RUN. Assertions and production permission gate preserved.",
+  "not_run": [
+    "elevated backup-cancellation completion",
+    "native WPF interaction",
+    "system installation/repair/uninstall",
+    "physical MVS camera/vendor SDK integration",
+    "customer RCS",
+    "field acceptance"
+  ],
+  "log_location": "Local ignored .artifacts/contract-convergence-02; hashes identify actual logs, not a claim that historical results certify the final tree."
+}

@@ -41,10 +41,8 @@ SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
     'docs/design/typography-01.md': 'TYPOGRAPHY.md',
     'docs/runtime/parameter-guidance-startup-01.md': 'PARAMETER-GUIDANCE-STARTUP.md',
     'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
-    'docs/runtime/dual-camera-communication-fix-01.md': 'CAMERA-COMMUNICATION.md',
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',
-    'docs/runtime/hikrobot-reader-01.md': 'HIKROBOT-READER.md',
     'docs/runtime/mvs-software-reader-01.md': 'MVS-SOFTWARE-READER.md',
     'docs/runtime/sportmaster-commercial-delivery-01-operations.md': 'SPORTMASTER-DELIVERY.md'}
 

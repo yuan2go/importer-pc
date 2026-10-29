@@ -172,3 +172,6 @@ docs/runtime/evidence/mvreader-restore-01/native-startup-per-result.log -text wh
 # The current canonical manifest checksum must survive Windows text checkout.
 docs/manifest.json text eol=lf
 docs/manifest.sha256 text eol=lf
+
+# Exact current-document originals before contract convergence.
+docs/archive/pre-contract-convergence-02/** -text whitespace=cr-at-eol

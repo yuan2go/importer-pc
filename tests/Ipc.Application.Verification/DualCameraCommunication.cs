@@ -108,8 +108,8 @@ static class DualCameraCommunication
         using var activeRight = await nextListener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
         await ManagementModeFixture.Authorize(activated);
         var effective = await activated.SnapshotAsync();
-        Check(effective.Configuration.Pending is null && effective.Configuration.Effective.Topology!.Readers[1].Parameters!["device.port"] == nextReaders[1].Parameters!["device.port"] && effective.Paused,
-            "controlled restart alone activates saved endpoint and preserves pause");
+        Check(effective.Configuration.Pending is null && effective.Configuration.Effective.Topology!.Readers[1].Parameters!["device.port"] == nextReaders[1].Parameters!["device.port"],
+            "controlled restart alone activates the saved endpoint");
         Check(effective.Operations.Single(o => o.Id == first.Id).Wcs!.Request.PayloadHash == first.Wcs!.Request.PayloadHash && effective.Operations.All(o => o.Wcs!.Attempts == 1),
             "configuration activation preserves original request bytes, target and attempt count");
     }

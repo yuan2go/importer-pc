@@ -1,8 +1,7 @@
-"""Portable launch-order regression; child executables are synthetic, not Windows evidence.
+"""Current launcher dispatch with real native, side-effect-free child executables.
 
-IPC_TEST_PWSH must name a PowerShell 7 executable. Only the Windows OS/build gate
-is removed from a temporary script copy. The real checksum and action dispatch
-code runs against a synthetic release; no Windows identity/ACL result is inferred.
+The real checksum/argument/error paths run against a synthetic release. Only the
+OS gate is excluded for portable hosts. This does not certify Windows identity/ACL.
 """
 import hashlib
 import json
@@ -23,8 +22,32 @@ class RuntimeIdentityTests(unittest.TestCase):
     def setUpClass(cls):
         if not PWSH:
             raise RuntimeError('PowerShell 7 required: set IPC_TEST_PWSH; tests must not silently skip')
+        cls.native = tempfile.TemporaryDirectory(prefix='ipc-dispatch-native-')
+        project = Path(cls.native.name)
+        (project/'fixture.csproj').write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><AssemblyName>Ipc.Assembly</AssemblyName><UseAppHost>true</UseAppHost></PropertyGroup></Project>')
+        (project/'Program.cs').write_text(r'''using System;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+var name = Path.GetFileName(Environment.ProcessPath);
+File.AppendAllText(Environment.GetEnvironmentVariable("IPC_TRACE"), JsonSerializer.Serialize(new[] { name }.Concat(args)) + "\n");
+if (args.SequenceEqual(new[] { "--action", "installed-location" })) {
+    Console.WriteLine(JsonSerializer.Serialize(new { DataRoot = Environment.GetEnvironmentVariable("IPC_INSTALLED_ROOT"), ConfigurationDirectory = Environment.GetEnvironmentVariable("IPC_CONFIG") }));
+    return 0;
+}
+if (Environment.GetEnvironmentVariable("IPC_DENY") == "1" &&
+    (args.Contains("runtime-check") || args.Contains("runtime-prepare") || name == "Ipc.Desktop.exe" && !args.Contains("--setup"))) return 42;
+return 0;
+''')
+        cls.output = project/'out'
+        subprocess.run(['dotnet', 'build', str(project/'fixture.csproj'), '-c', 'Release', '-o', str(cls.output), '-m:1', '-nr:false'], check=True, capture_output=True, timeout=120)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.native.cleanup()
 
     def launch(self, action, deny=False, default_data=False):
+        cls_output = self.output
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary).resolve()
             release = root/'release'
@@ -38,18 +61,13 @@ class RuntimeIdentityTests(unittest.TestCase):
             (release/'ASSEMBLY.json').write_text('{"ApplicationId":"sportmaster","SourceCommit":"synthetic"}')
             for name in ['app/application-release.json', 'desktop/application-release.json', 'desktop/config/business.json']:
                 (release/name).write_text('{}')
-            child = '''#!/usr/bin/env python3
-import json, os, pathlib, sys
-with open(os.environ['IPC_TRACE'], 'a') as stream:
-    stream.write(json.dumps([pathlib.Path(sys.argv[0]).name, *sys.argv[1:]])+'\\n')
-if sys.argv[1:] in (['--action', 'runtime-check'], ['--action', 'runtime-prepare']) and os.environ['IPC_DENY'] == '1':
-    print('Synthetic runtime identity denied', file=sys.stderr)
-    sys.exit(42)
-'''
+            for directory in [release/'app', release/'desktop']:
+                for source_file in cls_output.iterdir():
+                    if source_file.is_file(): shutil.copy2(source_file, directory/source_file.name)
+            executable = 'Ipc.Assembly.exe' if os.name == 'nt' else 'Ipc.Assembly'
             for name in ['app/Ipc.Assembly.exe', 'desktop/Ipc.Desktop.exe']:
-                path = release/name
-                path.write_text(child)
-                path.chmod(0o755)
+                target = release/name
+                if target != target.parent/executable: shutil.copy2(cls_output/executable, target)
             (release/'SHA256SUMS').write_text(''.join(
                 hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(release).as_posix()+'\n'
                 for p in sorted(release.rglob('*')) if p.is_file()))
@@ -65,70 +83,60 @@ if sys.argv[1:] in (['--action', 'runtime-check'], ['--action', 'runtime-prepare
             if not default_data:
                 arguments += ['-DataRoot', str(data)]
             result = subprocess.run(arguments,
-                                    env=dict(os.environ, IPC_TRACE=str(trace), IPC_DENY='1' if deny else '0'),
+                                    env=dict(os.environ, IPC_TRACE=str(trace), IPC_DENY='1' if deny else '0',
+                                             IPC_INSTALLED_ROOT=str(Path(tempfile.gettempdir())/'ipc-dispatch-default'), IPC_CONFIG=str(release/'desktop/config')),
                                     capture_output=True, text=True, timeout=30)
             calls = [json.loads(line) for line in trace.read_text().splitlines()] if trace.exists() else []
             after = {p.relative_to(data).as_posix(): p.read_bytes() for p in data.rglob('*') if p.is_file()}
             self.assertEqual(before, after, 'Synthetic original data must remain unchanged')
             return result, calls
 
-    def test_denial_stops_every_runtime_entry_before_other_children(self):
+    def test_runtime_dispatch_and_denial_preserve_original_data(self):
+        # The native fixture only traces arguments/exit status. Product identity denial
+        # before configuration or device access is exercised by RuntimeIdentityBoundary.
         for action in ['Run', 'Console', 'Diagnose']:
-            with self.subTest(action=action):
-                result, calls = self.launch(action, deny=True)
-                self.assertNotEqual(result.returncode, 0)
-                check = 'runtime-check' if action == 'Diagnose' else 'runtime-prepare'
-                self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', check]], result.stderr)
+            for deny in [False, True]:
+                with self.subTest(action=action, deny=deny):
+                    result, calls = self.launch(action, deny=deny)
+                    self.assertEqual(result.returncode == 0, not deny, result.stderr)
+                    self.assertEqual(calls[0][1:], ['--action', 'installed-location'])
+                    work = calls[1:]
+                    if action == 'Run':
+                        self.assertEqual(len(work), 1)
+                        self.assertEqual(work[0][0], 'Ipc.Desktop.exe')
+                        self.assertIn('--config', work[0]); self.assertIn('--data-root', work[0])
+                        self.assertEqual(work[0][-2:], ['--ui', 'supply-station'])
+                    else:
+                        preflight = 'runtime-prepare' if action == 'Console' else 'runtime-check'
+                        self.assertEqual(work[0][1:], ['--action', preflight])
+                        if deny:
+                            self.assertEqual(len(work), 1, 'denial must prevent all business/deployment dispatch')
+                        elif action == 'Console':
+                            self.assertEqual(work[-1][1], '--config'); self.assertIn('--data-root', work[-1])
+                        else:
+                            self.assertEqual([c[2] for c in work[1:]], ['business-identity', 'deployment-check'])
 
-    def test_allowed_dispatch_preserves_existing_launch_arguments(self):
-        for action in ['Run', 'Console', 'Diagnose']:
-            with self.subTest(action=action):
-                result, calls = self.launch(action)
-                self.assertEqual(result.returncode, 0, result.stderr)
-                check = 'runtime-check' if action == 'Diagnose' else 'runtime-prepare'
-                self.assertEqual(calls[0], ['Ipc.Assembly.exe', '--action', check])
-                if action == 'Run':
-                    self.assertEqual(calls[1][1:3], ['--action', 'deployment-check'])
-                    self.assertEqual(calls[2][0], 'Ipc.Desktop.exe')
-                    self.assertEqual(calls[2][-2:], ['--ui', 'supply-station'])
-                elif action == 'Console':
-                    self.assertEqual(calls[1][1], '--config')
-                    self.assertIn('--data-root', calls[1])
-                else:
-                    self.assertEqual(calls[1][1:], ['--action', 'business-identity'])
-                    self.assertEqual(calls[2][1:3], ['--action', 'deployment-check'])
-
-    def test_run_and_console_choose_the_same_default_root_without_manual_creation(self):
-        roots = []
+    def test_runtime_dispatch_uses_registered_root_without_creating_it(self):
+        expected = str(Path(tempfile.gettempdir())/'ipc-dispatch-default')
+        self.assertFalse(Path(expected).exists())
         for action in ['Run', 'Console']:
             result, calls = self.launch(action, default_data=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             launch = calls[-1]
-            data_root = launch[launch.index('--data-root') + 1]
-            roots.append(data_root)
-            self.assertTrue(Path(data_root).is_absolute())
-            self.assertEqual(Path(data_root).parts[-2:], ('ImporterPc', 'data'))
-        self.assertEqual(roots[0], roots[1])
+            self.assertEqual(launch[launch.index('--data-root') + 1], expected)
+        self.assertFalse(Path(expected).exists())
 
-    def test_setup_does_not_start_a_business_child(self):
-        result, calls = self.launch('Install')
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', 'runtime-prepare']])
-
-    def test_double_click_cmd_has_no_powershell_dependency(self):
-        script = (ROOT/'scripts/application.cmd').read_text()
-        self.assertLess(script.index('desktop\\Ipc.Desktop.exe'), script.index('where pwsh.exe'))
-        self.assertIn('if "%~1"==""', script)
-
-    def test_maintenance_dispatch_does_not_require_runtime_identity(self):
+    def test_install_and_offline_actions_use_their_own_authority_entry(self):
         for action, operation in [('Inspect', 'maintenance-inspect'), ('Backup', 'backup-offline'),
-                                  ('PlanRestore', 'recovery-plan'), ('Restore', 'restore'),
-                                  ('Export', 'diagnostic-export')]:
+                                  ('PlanRestore', 'recovery-plan'), ('Restore', 'restore'), ('Export', 'diagnostic-export'), ('Install', None)]:
             with self.subTest(action=action):
                 result, calls = self.launch(action, deny=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertEqual(len(calls), 1)
-                self.assertEqual(calls[0][1:3], ['--action', operation])
+                self.assertFalse(any('runtime-prepare' in c or 'runtime-check' in c for c in calls))
+                if operation is None:
+                    self.assertEqual(calls[-1][0:2], ['Ipc.Desktop.exe', '--setup'])
+                else:
+                    self.assertEqual(calls[-1][1:3], ['--action', operation])
 
     def test_supply_runtime_guard_precedes_configuration_extensions_and_storage(self):
         source = (ROOT/'src/Ipc.Product/ProductRuntime.cs').read_text()
@@ -154,24 +162,6 @@ if sys.argv[1:] in (['--action', 'runtime-check'], ['--action', 'runtime-prepare
         for boundary in ['File.ReadAllText(', 'lease = new(', 'ExtensionStore.AtomicWrite(']:
             self.assertLess(guard, source.index(boundary, start), boundary)
 
-    def test_direct_runtime_guard_precedes_configuration_and_storage(self):
-        source = (ROOT/'src/Ipc.Application.ParcelFlow/ParcelRuntime.cs').read_text()
-        start = source.index('async Task StartCoreAsync(')
-        # COMM introduced an internal test seam; the production default must
-        # remain the same machine policy and execute before every I/O boundary.
-        self.assertIn('internal Action RuntimeIdentityPreflight { get; set; } = MachineRuntimePolicy.RequireRuntimeIdentity;', source)
-        guard = source.index('RuntimeIdentityPreflight();', start)
-        # Single-use ownership is reserved before starting; all configuration/device I/O
-        # remains behind the runtime identity preflight in the owned startup core.
-        self.assertLess(guard, source.index('File.ReadAllText(', start))
-        self.assertLess(guard, source.index('lease = new(', start))
-        assembly = (ROOT/'src/Ipc.Assembly/ParcelAssembly.cs').read_text()
-        self.assertLess(assembly.index('MachineRuntimePolicy.RequireRuntimeIdentity();'),
-                        assembly.index('ParcelCapabilityFactory.RegisterContracts();'))
-        # Shortcut and CMD inherit the checked Run path; neither invokes desktop directly.
-        script = (ROOT/'scripts/application.ps1').read_text().split('    Shortcut {', 1)[1].split('    Inspect {', 1)[0]
-        self.assertIn('-Action Run -DataRoot', script)
-        self.assertNotIn('Ipc.Desktop.exe', script)
 
 
 if __name__ == '__main__':

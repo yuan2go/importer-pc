@@ -9,8 +9,6 @@ public sealed record ParcelExportReceipt(string Status, long Rows, long Bytes, s
 public interface IParcelHistoryApplication
 {
     Task<ParcelHistorySelection> SelectHistoryAsync(ParcelHistoryFilter filter);
-    Task<ParcelHistoryPage> QueryHistoryAsync(ParcelHistorySelection selection, long beforeSequence = long.MaxValue, int limit = 50);
-    Task<ParcelHistoryMetrics> HistoryMetricsAsync(ParcelHistorySelection selection);
     Task<ParcelExportReceipt> ExportHistoryAsync(ParcelHistorySelection selection, string destination, CancellationToken token);
 }
 public interface IParcelHistorySessionApplication : IParcelHistoryApplication

@@ -73,13 +73,13 @@ static partial class Program
             for (var i = 0; i < 20; i++)
             { var sw = Stopwatch.StartNew(); _ = await Task.Run(() => runtime.HistoryAsync(limit: 50)); historyMs.Add(sw.Elapsed.TotalMilliseconds); }
             var filteredMs = new List<double>(); var selectionMs = new List<double>();
-            var history = (IParcelHistoryApplication)runtime;
+            var history = (IParcelHistorySessionApplication)runtime;
             for (var i = 0; i < 20; i++)
             {
                 var sw = Stopwatch.StartNew();
                 var selection = await Task.Run(() => history.SelectHistoryAsync(new(Position: "left", State: ParcelState.SlotResolved, From: DateTimeOffset.UtcNow.AddHours(-1))));
                 selectionMs.Add(sw.Elapsed.TotalMilliseconds); sw.Restart();
-                _ = await Task.Run(() => history.QueryHistoryAsync(selection, limit: 50)); filteredMs.Add(sw.Elapsed.TotalMilliseconds);
+                _ = await Task.Run(() => history.ReadHistoryPageAsync(selection, long.MaxValue, 50, default)); filteredMs.Add(sw.Elapsed.TotalMilliseconds);
             }
             datasets.Add(new { Total = total, Resident = snapshot.Operations.Length, snapshot.Capacity, JsonBytes = Encoding.UTF8.GetByteCount(Wire.Encode(snapshot)),
                 Snapshot = Stats(snapshotMs), Clone = Stats(cloneMs), CapacityProjection = Stats(capacityMs), PendingReceiptQuery = Stats(pendingMs), HistoryPage50 = Stats(historyMs),

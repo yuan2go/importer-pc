@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Text.Json;
-using System.Runtime.Loader;
 using Ipc.Application.Contracts;
 using Ipc.Integrations.SportmasterRcs;
 using Ipc.Assembly;
@@ -136,44 +135,4 @@ static partial class SportmasterRcs
         return health.Ready && health.Detail.Contains("heartbeat HTTP", StringComparison.Ordinal);
     });
 
-    public static async Task HeartbeatSignedChecks(string workspace, string root, string packageFile, string trustFile)
-    {
-        await using var peer = new Peer();
-        ParcelCapabilityFactory.RegisterContracts();
-        var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(trustFile));
-        var verified = ExtensionPackages.Inspect(packageFile, trust, RunMode.Simulation);
-        var payload = Directory.CreateDirectory(Path.Combine(root, "heartbeat-signed-payload")).FullName;
-        ExtensionPackages.ExtractVerified(packageFile, payload, trust, RunMode.Simulation, verified.PackageSha256);
-        var module = verified.Manifest.Modules.Single(x => x.Id == "sportmaster-rcs-task");
-        Check(verified.Reference.Version == "1.2.1" && module.Requirements?.Query == false && module.Parameters.Single(p => p.Key == "heartbeat-interval-seconds").Default == "5",
-            "signed immutable RCS package declares heartbeat schema and still has no original-query capability");
-        var original = Binding(peer.Endpoint);
-        var binding = original with { Version = verified.Reference.Version, Package = verified.Reference, Module = module.Id,
-            Implementation = "extension:" + verified.Reference.Id + "/" + module.Id,
-            Parameters = new(original.Parameters) { ["heartbeat-interval-seconds"] = "1" } };
-        // Read-only signed-payload fixture. This does not install/register/activate a
-        // package or bypass the Windows elevated installer and machine trust policy.
-        var loading = new AssemblyLoadContext("synthetic-signed-rcs-heartbeat", isCollectible: true);
-        loading.Resolving += (_, name) => name.Name == typeof(IWcsPort).Assembly.GetName().Name ? typeof(IWcsPort).Assembly :
-            name.Name == typeof(ExtensionPackages).Assembly.GetName().Name ? typeof(ExtensionPackages).Assembly : null;
-        try
-        {
-            var type = loading.LoadFromAssemblyPath(Path.Combine(payload, module.Assembly)).GetType(module.EntryType, throwOnError: true)!;
-            var factory = (IWcsExtension)Activator.CreateInstance(type)!;
-            await using var port = factory.Create(binding);
-            Check(port is IWcsRuntimeConfiguration && ExtensionSchema.Validate(module.Parameters, binding.Parameters).Length == 0,
-                "verified signed payload shares exact public contracts and valid component parameters in a separate load context");
-            ((IWcsRuntimeConfiguration)port).ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
-            await port.StartAsync(default); await Until(() => peer.Requests.Count == 1);
-            using var json = JsonDocument.Parse(peer.Requests.Single().Body);
-            Check(json.RootElement.GetProperty("data").GetArrayLength() == 2 && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat",
-                "verified signed payload starts the actual two-reader heartbeat loop");
-            var request = Request(binding); request = request with { IntegrationRequest = ((IWcsRequestPreparer)port).PrepareRequest(request, 7) };
-            Check((await port.ResolveSlotAsync(request, default)).BusinessAccepted == true, "signed provider retains exact destination delivery alongside heartbeat");
-            await port.StopAsync(default); var count = peer.Requests.Count; await Task.Delay(1200);
-            Check(peer.Requests.Count == count, "signed component stops network work before package/load-context release");
-            Console.WriteLine("PASS SIGNED RCS HEARTBEAT COMPLETE");
-        }
-        finally { loading.Unload(); }
-    }
 }

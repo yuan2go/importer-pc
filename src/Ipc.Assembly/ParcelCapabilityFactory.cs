@@ -93,18 +93,15 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             if (c.Extensions is not null || ParcelBindings.Readers(c).Any(r => r.Driver.StartsWith("extension:", StringComparison.Ordinal)) ||
                 ParcelBindings.All(c).Any(b => b.Package is not null || b.Module is not null || b.Implementation.StartsWith("extension:", StringComparison.Ordinal)))
                 throw new InvalidDataException("SM当前仅使用随软件安装的内置驱动和组件，不支持外置扩展配置；原配置保留。");
+            foreach (var reader in ParcelBindings.Readers(c))
+                if (reader.Driver != "hikrobot-mvs-reader" && !(c.Mode == RunMode.Simulation && reader.Driver is "manual" or "tcp-line"))
+                    throw new InvalidDataException("SM当前只支持内置MVS采图与软件识别；不支持原相机配置，原件保留。");
             builtInSportmaster = true;
         }
 #endif
         var setupErrors = ParcelConnectionSetup.Validate(c);
         if (setupErrors.Length != 0) throw new InvalidDataException(string.Join("; ", setupErrors));
-        // Acquisition-only built-in MVS owns no barcode/business output. Do not force
-        // users through extension trust/qualification merely to collect pixels.
-        // Any active business component or external reader retains the original gate.
-        var acquisitionOnly = c.ApplicationId == "sportmaster" &&
-            ParcelBindings.Readers(c).All(r => ParcelConnectionSetup.IsDeferred(c, r.DeviceId) || r.Driver == "hikrobot-mvs" && r.Parameters?.GetValueOrDefault("entity.mode") == "observe-only") &&
-            ParcelBindings.All(c).All(b => !b.Enabled || ParcelConnectionSetup.IsDeferred(c, b.InstanceId));
-        var requiresActiveQualification = requireQualification && ParcelConnectionSetup.HasActiveConnections(c) && !acquisitionOnly && !builtInSportmaster;
+        var requiresActiveQualification = requireQualification && ParcelConnectionSetup.HasActiveConnections(c) && !builtInSportmaster;
         var inventoryErrors = ParcelConfigurationRules.ValidateCapabilityInventory(c);
         if (inventoryErrors.Length != 0) throw new InvalidDataException(string.Join("; ", inventoryErrors));
         RegisterContracts();
@@ -139,11 +136,10 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         foreach (var r in ParcelBindings.Readers(c))
             if (r.Driver is not ("manual" or "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader") && !r.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + r.Driver);
 #if SPORTMASTER
-        var sdkReaders = ParcelBindings.Readers(c).Where(r => r.Driver is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).ToArray();
+        var sdkReaders = ParcelBindings.Readers(c).Where(r => r.Driver == "hikrobot-mvs-reader" && !ParcelConnectionSetup.IsDeferred(c, r.DeviceId)).ToArray();
         foreach (var sdk in sdkReaders)
         {
-            if (sdk.Driver == "hikrobot-idmvs") Ipc.Drivers.Hikrobot.BundledHikrobot.ValidateBinding(sdk);
-            var issues = ExtensionSchema.Validate((sdk.Driver == "hikrobot-mvs-reader" ? Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor : sdk.Driver == "hikrobot-idmvs" ? Ipc.Drivers.Hikrobot.BundledHikrobot.Descriptor : Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor).Parameters, sdk.Parameters ?? []);
+            var issues = ExtensionSchema.Validate(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor.Parameters, sdk.Parameters ?? []);
             if (issues.Length != 0) throw new InvalidDataException("驱动/" + sdk.DeviceId + ": " + string.Join("; ", issues));
         }
 #endif
@@ -280,9 +276,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         foreach (var reader in ParcelBindings.Readers(c))
         {
 #if SPORTMASTER
-            if (reader.Driver == Ipc.Drivers.Hikrobot.BundledHikrobot.Implementation) { var descriptor = Ipc.Drivers.Hikrobot.BundledHikrobot.Descriptor; selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract)); continue; }
             if (reader.Driver == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderImplementation) { var descriptor = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor; selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract)); continue; }
-            if (reader.Driver == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Implementation) { var descriptor = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor; selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract)); continue; }
 #endif
             if (reader.Driver == "tcp-line") { var descriptor = TcpLineObservationSource.Descriptor; selected.Add(new(descriptor.Kind, descriptor.Implementation, descriptor.Version, descriptor.Contract)); continue; }
             if (reader.Driver == "manual") { selected.Add(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1")); continue; }
@@ -359,7 +353,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     {
         IEnumerable<CapabilityDescriptor> providers = ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Append(Ipc.Drivers.TcpLineObservationSource.Descriptor);
 #if SPORTMASTER
-        providers = providers.Append(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor).Append(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Descriptor).Append(Ipc.Drivers.Hikrobot.BundledHikrobot.Descriptor);
+        providers = providers.Where(p => p.Implementation != "tcp-line").Append(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor);
 #endif
 #if !DIRECTPLC
         using var stream = typeof(ParcelCapabilityFactory).Assembly.GetManifestResourceStream("Ipc.BuiltInRcs.Parameters.json") ?? throw new InvalidDataException("内置RCS参数描述缺失");
@@ -483,9 +477,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             IControlledObservationSource source;
             if (ParcelConnectionSetup.IsDeferred(c, binding.DeviceId)) source = new DeferredObservationSource(binding.DeviceId);
 #if SPORTMASTER
-            else if (binding.Driver == Ipc.Drivers.Hikrobot.BundledHikrobot.Implementation) source = Ipc.Drivers.Hikrobot.BundledHikrobot.Create(binding, launch.DataRoot);
             else if (binding.Driver == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderImplementation) source = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.CreateReader(binding);
-            else if (binding.Driver == Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Implementation) source = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.Create(binding);
 #endif
             else if (binding.Driver == "tcp-line") source = new Ipc.Drivers.TcpLineObservationSource(binding);
             else if (binding.Driver == "manual") source = new ManualObservationSource(binding.DeviceId);

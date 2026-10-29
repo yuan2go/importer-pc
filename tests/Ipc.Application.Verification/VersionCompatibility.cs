@@ -39,8 +39,9 @@ static class VersionCompatibility
             {
                 var rcsProject = global::System.Xml.Linq.XDocument.Load(Path.Combine(workspace, "src", "Ipc.Integrations.SportmasterRcs", "Ipc.Integrations.SportmasterRcs.csproj"));
                 var rcsVersion = rcsProject.Descendants("Version").Single().Value;
-                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration","extension:sportmaster.rcs-task/sportmaster-rcs-task",rcsVersion,"SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
-                Pass(policy.Require(rcs)=="sportmaster-rcs-builtin-reference","RCS and original optional capabilities match the same business declaration");
+                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration","sportmaster-rcs",rcsVersion,"SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
+                Pass(policy.Require(rcs)=="builtin-reference","built-in RCS and explicit simulation capabilities match the current business declaration");
+                Reject(()=>policy.Require(rcs.Select(p=>p.Kind=="integration"?p with{Implementation="extension:sportmaster.rcs-task/sportmaster-rcs-task"}:p)),"SM external RCS is not a current compatible provider");
                 Reject(()=>policy.Require(rcs.Select(p=>p.Kind=="integration"?p with{Version="1.0.2"}:p).ToArray()),"old immutable RCS version is not silently relabelled for new host");
             }
             int constructed = 0; factory.Boundary = _ => constructed++;

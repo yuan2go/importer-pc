@@ -80,6 +80,8 @@ SDK Probe按workflow使用IpcContractPath构建。早期DLL路径错误、缺该
 - 三帧各有两个内容相同的解码候选，当前合同按MultipleCodes拒绝。相同内容不证明同一个物理码；未擅自去重候选、挑第一个码或重定义实体。是否调整同帧候选语义须单独明确；不同图像中的独立识别继续分别上报。
 - 本次画面未进行受控的移码、遮挡、旋转、运动速度及多种码制样本测试；空帧计数不等于这些实物场景已验收。
 
+补做不经解码/RCS的15秒原始采集对照：当前main既有 `Ipc.Drivers.Hikrobot.Probe --mvs-connect` 实际退出1，取得14帧后报 `MVS frame sequence gap/reset`。这是原始诊断的严格连续帧门禁，不是上述三轮软件读码的运行结果；软件读码路线允许并显式统计原视频采样间隔。对照未取得有效吞吐基准，间隔原因未定位，不能判为相机硬件故障或接口全绿。未改守卫、SDK缓冲策略或采集参数。失败原件 `camera-focus-main7af/raw-acquisition-15s-private.log` 及 `RAW-ACQUISITION-RESULT.json` 保留Git外，公开仅附无身份的结果摘要。
+
 三轮摘要见[不含设备身份的真机汇总](evidence/sm-sdk-camera-20261029/summary.json)。私有原件在前述目录的camera-focus-main7af/，含RESULT.json、PERSISTED-CAMERA-RESULT.json、CAMERA-LATENCY-AUDIT.json和CAMERA-MULTI-CANDIDATE-AUDIT.json。短时进程采样不是资源无泄漏或24h/72h资格证据。
 
 ## 未验证

@@ -104179,9 +104179,9 @@
       "status": "current_guidance_or_scoped_evidence",
       "purpose": "Reconciliation inventory; not a runtime validation claim",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
-      "sha256": "8dca72e6fcc5638760143edb71b78acb95d37e669442b4e242a61a37c8129309",
-      "size_bytes": 12185,
-      "git_blob": "c368ed42091c12fff29a9c40d0706ff835603f15",
+      "sha256": "2992d0bb45ee36f44d79628e166b8aa32a1f9941a9d02120721d6ba48ae607be",
+      "size_bytes": 12436,
+      "git_blob": "efafb5fd252be57aa3c26b882ee13f47a7172703",
       "storage_scope": "public_repository"
     },
     {
@@ -105609,9 +105609,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
-      "sha256": "19b50c01eb4437abf61e1f56596aa75056105c4cbb0468811c508f00843ea058",
-      "size_bytes": 4131,
-      "git_blob": "421a2beff3126201c3de0c356dfc263354146c6b",
+      "sha256": "2123de17e1d6d1e2ed9cbe65faf7906e8682cb7b33ec32e3bcfefb24b53dce66",
+      "size_bytes": 4802,
+      "git_blob": "14aac9a859008e27b19d20ce8e78ed0565b70a4d",
       "storage_scope": "public_repository"
     },
     {
@@ -105620,9 +105620,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
-      "sha256": "617f18f6690a4656c25f5d48231423a8b0333b5365309cb9c540d1470900ab14",
-      "size_bytes": 8356,
-      "git_blob": "3e675540cd1bce7c4f5972673bc4a618b0eba1e6",
+      "sha256": "922c66112ff6d2bcc259a981d7f9cad3d48c6e521f9e6536ac5d880def02f9b0",
+      "size_bytes": 9004,
+      "git_blob": "56aee75f114b26c785b62593ffcbef0722ccd6b6",
       "storage_scope": "public_repository"
     },
     {

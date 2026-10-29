@@ -169,5 +169,22 @@
       ]
     }
   ],
-  "Verdict": "ACQUISITION_AND_REOPEN_VERIFIED; observed expiry and multiple-candidate rejections retained; not zero-rejection/latency/Production/field qualification"
+  "Verdict": "ACQUISITION_AND_REOPEN_VERIFIED; observed expiry and multiple-candidate rejections retained; not zero-rejection/latency/Production/field qualification",
+  "RawAcquisitionContrast": {
+    "SourceCommit": "7af0be617963a3a88319cb83fdf44fffd9440044",
+    "SecondsRequested": 15,
+    "ElapsedSeconds": 17.225,
+    "ExitCode": 1,
+    "Tier": "actual raw camera SDK acquisition only; decoder intentionally unavailable; no RCS or raw image persistence",
+    "Frames": 14,
+    "Failure": "IOException: MVS frame sequence gap/reset; inspect original source before restart",
+    "BarcodeStatus": "BLOCKED: recognition component not available",
+    "Codes": 0,
+    "Observations": 0,
+    "Operations": 0,
+    "ExternalRequests": 0,
+    "TriggerSettingsChanged": false,
+    "RawImagesPersisted": false,
+    "AcquisitionPass": false
+  }
 }

@@ -7,6 +7,8 @@ using Ipc.Assembly;
 using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
+if (args.Any(a => a is "--audit03-rcs-signed" or "--sportmaster-rcs-signed" or "--rcs-heartbeat-signed" or "--mvreader-flow"))
+    throw new ArgumentException("Unsupported retired SM verification path; use built-in MVS/RCS checks");
 if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");
 if (args.FirstOrDefault() == "--ordinary-start-child") { OrdinaryRuntimeStartup.Child(args); return; }
 if (args.FirstOrDefault() == "--maintenance-authority-probe") { await MaintenanceAuthorizationStartup.Probe(args); return; }
@@ -89,18 +91,14 @@ if (args.Contains("--resource-risks")) { await ResourceRisks.Run(workspace, root
 if (args.Contains("--audit03-maintenance")) { await Audit03.Maintenance(workspace, root); return; }
 if (args.Contains("--audit03-snapshots")) { await Audit03.Snapshots(workspace, root); return; }
 if (args.Contains("--commercial-quality")) { await CommercialQuality.Run(workspace, root, args); return; }
-if (args.Contains("--audit03-rcs-signed")) { var i=Array.IndexOf(args,"--audit03-rcs-signed"); await SportmasterRcs.Audit03Checks(workspace, root, Path.GetFullPath(args[i+1]), Path.GetFullPath(args[i+2])); return; }
 if (args.Contains("--audit03-rcs")) { await SportmasterRcs.Audit03Checks(workspace, root); return; }
 if (args.Contains("--audit03-input")) { await Audit03.Inputs(workspace, root); return; }
 if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }
 if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }
 if (args.Contains("--storage-format-guards")) { await ArchitectureQuality.StorageFormatChecks(workspace,root); return; }
 
-if (args.Contains("--sportmaster-rcs-signed")) { var i = Array.IndexOf(args, "--sportmaster-rcs-signed"); await SportmasterRcs.SignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
-if (args.Contains("--rcs-heartbeat-signed")) { var i = Array.IndexOf(args, "--rcs-heartbeat-signed"); await SportmasterRcs.HeartbeatSignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--rcs-timeout-errors")) { await SportmasterRcs.TimeoutErrorChecks(workspace, root); return; }
-if (args.Contains("--mvreader-flow")) { await SportmasterRcs.MvCodeReaderFlow(workspace, root); return; }
 if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
 
 if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }

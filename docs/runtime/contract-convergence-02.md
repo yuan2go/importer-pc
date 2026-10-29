@@ -12,6 +12,12 @@
 
 Python全量发现首次执行101项，13个失败、2个错误：旧启动脚本夹具假设已被替代的运行预检调用顺序、把POSIX文本伪装为Windows EXE，以及按源字符串定位已移动实现；另有普通令牌不能创建符号链接。原日志保留于D盘 `.artifacts/contract-convergence-02/b1-python.log`，不称全仓全绿；后续批次按合同处理启动夹具，符号链接权限保持原门禁。
 
+## B2：退休测试与重复分支
+
+删除 `MvCodeReaderFlow` 及其替身、SM signed RCS运行流程、固定旧版1.2.1 signed心跳流程和相应四个执行入口。旧命令明确拒绝，不能误落入默认验证。`Audit03.Rcs` 删除signed开关与设置分支，保留同一真实SQLite/HTTP路径的全部原编号、备份恢复、原件拒绝断言。验证工程不再依赖MvCodeReader工程；独立SDK验证仍保留。
+
+Application locked Release构建通过；`audit03-rcs`、`rcs-heartbeat`、`rcs-timeout-errors`、`mvs-software-flow`、`mvs-offline-activation`、`storage-schema-only` 全部退出0。三个同码独立识别/请求、Unknown不重发、配置离线启用、健康/恢复以及非当前格式原件保全继续通过。没有把signed成功断言改为允许外置成功，也没有把厂商SDK替身当真实SDK验收。
+
 ## 计数与边界
 
 基线受跟踪 `src/tests/scripts` 的 `.cs/.xaml/.py/.ps1`：614文件、70,706行；C#验证检查调用点3,691（包含辅助方法声明/拒绝检查，**不是独立用例数**）；Python `test_` 方法104。配置JSON和项目文件单列差异，不混入代码行计数。最终统计、实际执行数量和提交记录在完成核查后追加。

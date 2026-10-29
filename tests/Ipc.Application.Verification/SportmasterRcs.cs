@@ -271,57 +271,6 @@ static partial class SportmasterRcs
         using var parsed = JsonDocument.Parse(explicitService.PrepareRequest(explicitRequest, 1).Body); var parameters = parsed.RootElement.GetProperty("data")[0].GetProperty("params");
         Check(parameters.GetProperty("specifiedChute").GetBoolean() && parameters.GetProperty("chuteCode").GetString() == "SYNTH-EXPLICIT", "explicit configured chute preserves its documented boolean and code");
     }
-    public static async Task SignedChecks(string workspace, string root, string packageFile, string trustFile)
-    {
-        await using var peer = new Peer();
-        ParcelCapabilityFactory.RegisterContracts();
-        var store = new ExtensionStore(Path.Combine(root, "rcs-signed-store"), Wire.Decode<ExtensionTrust>(File.ReadAllText(trustFile)), RunMode.Simulation, Path.Combine(root, "rcs-signed-leases"));
-        var installed = store.Install(packageFile, Wire.FileHash(packageFile)); var verified = store.VerifyInstalled(installed.Package);
-        var module = verified.Manifest.Modules.Single(x => x.Id == "sportmaster-rcs-task");
-        Check(module.Kind == "integration" && module.ContractIdentity == SportmasterRcsTaskService.Contract && module.Requirements is { Query: false, BusinessAcceptance: true }, "signed package verifies exact integration contract and explicitly declares no original-query capability");
-        var binding = Binding(peer.Endpoint) with { Implementation = "extension:" + installed.Package.Id + "/" + module.Id, Version = installed.Package.Version, Package = installed.Package, Module = module.Id };
-        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Wcs = binding, Extensions = new([installed.Package], []), TimeoutMs = 1500 };
-        async Task<ParcelRuntime> Open(string run)
-        {
-            var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory);
-            ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
-            ExtensionStore.AtomicWrite(Path.Combine(directory, "extension-store.json"), new ParcelExtensionStoreConfiguration(store.Root, trustFile));
-            var launch = new BusinessLaunch(directory, Path.Combine(root, run, "data"), null, null);
-            var factory = new ParcelCapabilityFactory(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
-            Check(factory.Catalog().Providers.Single(x => x.Package == installed.Package && x.Module == module.Id).Requirements.Query == false, "installed exact signed module is discoverable with Query=false");
-            var app = SportmasterApplication.Create(launch, factory);
-            try { await app.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
-        }
-        peer.Mode = "by-position";
-        await using (var app = await Open("rcs-signed-dual"))
-        {
-            app.EmitReferenceAt("left", "signed-left", "SYNTH-0001", Wire.Id()); app.EmitReferenceAt("right", "signed-right", "SYNTH-0001", Wire.Id());
-            var s = await Wait(app, x => x.Operations.Length == 2 && x.Operations.Any(o => o.State == ParcelState.UnpackRequired) && x.Operations.Any(o => o.State == ParcelState.SlotResolved));
-            Check(s.Operations.All(o => o.Wcs is { Attempts: 1, Request.Binding.Package: not null, Request.IntegrationRequest: not null } && o.Wcs.Request.Binding.Package == installed.Package && o.Wcs.Replies.Single().HttpResponse is not null), "plain SportmasterApplication and ParcelCapabilityFactory load signed provider and execute both HTTP positions with durable original wire/response custody");
-            var assigned = s.Operations.Single(o => o.State == ParcelState.SlotResolved);
-            Check(assigned.Wcs!.Replies.Single().Destination is { TaskId: "SYNTH-TASK", SkuId: "SYNTH-SKU" } && s.Operations.Single(o => o.State == ParcelState.UnpackRequired).Wcs!.Replies.Single().Destination!.Unpack!.Chutes.Length == 1, "signed runtime exposes assigned task/SKU and original unpack details separately");
-        }
-        peer.Mode = "reject";
-        await using (var app = await Open("rcs-signed-rejection"))
-        {
-            app.EmitReferenceAt("left", "signed-rejected", "SYNTH-0001", Wire.Id()); var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.WcsRejected);
-            Check(s.Operations.Single().Wcs!.Replies.Single().Destination is { Outcome: WcsDestinationOutcome.Rejected, Code: "SYNTH_OTHER_ERROR" }, "actual signed extension path preserves ordinary RCS rejection");
-        }
-        peer.Mode = "timeout"; ParcelOperation original; var count = peer.Requests.Count;
-        await using (var app = await Open("rcs-signed-unknown"))
-        {
-            app.EmitReferenceAt("left", "signed-unknown", "SYNTH-0001", Wire.Id()); var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.WcsUnknown); original = s.Operations.Single();
-        }
-        peer.Mode = "assigned";
-        await using (var app = await Open("rcs-signed-unknown"))
-        {
-            var recovered = (await app.SnapshotAsync()).Operations.Single(); await app.ReconcileAsync(recovered.Id); await app.ReconnectAsync();
-            var current = (await app.SnapshotAsync()).Operations.Single();
-            Check(current.State == ParcelState.WcsUnknown && current.Wcs!.Attempts == 1 && Wire.Encode(current.Wcs.Request) == Wire.Encode(original.Wcs!.Request) && peer.Requests.Count == count + 1,
-                "signed provider restart, reconcile and reconnect retain exact original HTTP intention without a repeated POST");
-        }
-        Console.WriteLine("PASS RCS20 SIGNED COMPLETE: verified installed extension, plain factory application, dual positions, unpack/rejection and restart no resend; Simulation fixture only");
-    }
     static async Task RuntimeChecks(string workspace, string root, Peer peer)
     {
         var template = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));

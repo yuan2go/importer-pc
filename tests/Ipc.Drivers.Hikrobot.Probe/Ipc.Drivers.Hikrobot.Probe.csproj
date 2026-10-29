@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <PropertyGroup Condition="'$(IpcContractPath)' == ''"><NuGetLockFilePath>packages.builtin.lock.json</NuGetLockFilePath></PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>true</Private></Reference>
+    <Reference Include="Ipc.Platform" Condition="'$(IpcContractPath)' != ''"><HintPath>$(IpcContractPath)</HintPath><Private>true</Private></Reference>
     <ProjectReference Include="../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj"/>
     <ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/>
   </ItemGroup>

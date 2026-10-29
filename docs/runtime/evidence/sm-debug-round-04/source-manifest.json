@@ -1,0 +1,109 @@
+{
+  "workPackage": "SM-DEBUG-ROUND-04",
+  "date": "2026-10-30",
+  "sourceParent": "fe7df1e97b7cff050b897a878f5369aa8f65c38f",
+  "meaning": "Normalized staged Git source blob inventory only. No build, test, WPF run, SDK/RCS/device, installation or field validation executed.",
+  "validationStatus": "NOT_RUN",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Contracts/CameraInspection.cs",
+      "bytes": 4957,
+      "sha256": "0ae853f5a063565696ab47664c39f233364dd7fe837095b1ddced58e029789cd"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/CameraReadRound.cs",
+      "bytes": 1131,
+      "sha256": "1f9e63b055533cd14ec78e0902c47d9daf4e56511f70e6a5e27259114e55bf18"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelContracts.cs",
+      "bytes": 10421,
+      "sha256": "9dec6ca6d43ebd7be05eef4354ed2247e5eaf616491a632f626808ab21cabb6e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml",
+      "bytes": 15002,
+      "sha256": "34b743cca88d848ade1ab7ed13686ad05ae410197a46acb2dc79d27b2d56acb6"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs",
+      "bytes": 14040,
+      "sha256": "2de53efb549fab7fbda52e78d7513f2be2cf8cb8ebafb57424f0e9c153d98100"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraInspection.cs",
+      "bytes": 19998,
+      "sha256": "1ff386e0a24c3b7196b91154a9f1b95d9c58a717d2eac5fcc38a1d7a1845f051"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraReadRounds.cs",
+      "bytes": 22111,
+      "sha256": "fabe7070b032b6d22821ffab11dfbe0b47dd964dbc19818dca4370807209e6cc"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "bytes": 31517,
+      "sha256": "09857628458865d683f580246609b086d698be3d5c5ced6f4dd0fb25e41ea486"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "bytes": 9446,
+      "sha256": "629e4ee22e20ff86e255083dc7925f86a8864ed134f2eceb29e5e6491f8809df"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
+      "bytes": 12055,
+      "sha256": "2f62d0fb3b406b47c4d37cec17cab1532faf9d9bfc279ba0fea28da5ac60a640"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInputs.cs",
+      "bytes": 4579,
+      "sha256": "1d2a9f1ba95765f7754f0eb0e73eaf1013b65a1c74f86f159018fc89a6a9369e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelPictures.cs",
+      "bytes": 7313,
+      "sha256": "d31580a6e15acf54b96a1ca546b5d6b4e7f4388868fa899240117a441619c8a0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs",
+      "bytes": 2620,
+      "sha256": "87e9ae807b5c817eaf8df7153fe9cf85dd1c31eca773ed6eb6e4b6f813a1d0c1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "bytes": 48356,
+      "sha256": "f2b20c16aff3bbed5fab4d36ec3a17562b17ba1310bad13ff660db1fdcc1f7d4"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+      "bytes": 21084,
+      "sha256": "5defb98a4fbd62441cb4c0073eb885a33cb3662a788cc93e72b99c1edb64cd7c"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugControl.cs",
+      "bytes": 22033,
+      "sha256": "c7c4b58d5da256079342d62193f2062f4df0581f4d530b00cdf2d2d298a1ddff"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugEvidenceControl.cs",
+      "bytes": 41767,
+      "sha256": "c6c3b2619b62dd06eecef681f89565e6ef2687d3a53bed0678329c561c7c5f5d"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "bytes": 22739,
+      "sha256": "380ae379a9203c697a4ed83cf44fdc43d9f54287dd2b6be72a84f2bee8f7038a"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsInspection.cs",
+      "bytes": 6585,
+      "sha256": "62304876480c076286c9027472f9bb4e510a0539ee72de289f6cc90542a267e0"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationInspection.cs",
+      "bytes": 1629,
+      "sha256": "720f56c5ff2105df0f15ee5c9ebf1d2674da73dc7067342b8814ea2b71d73678"
+    }
+  ]
+}

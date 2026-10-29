@@ -130,6 +130,7 @@ public partial class ParcelViewModel
     public string StructuredDetails => structuredDetailsText;
     static string FormatStructuredDetails(ParcelOperation? op) => op is null ? "选择一条作业查看原作业、请求与回执。" :
         "作业 " + op.Id + "\n投递位 " + (op.PositionId ?? "main") + " · 包裹号 " + op.ParcelCode + "\n实体准入 " + op.AdmissionId +
+        (op.DebugRequest is { } debug ? "\n隔离调试手动请求 · 轮次 " + debug.RoundId + " · 原帧 " + debug.FrameId + "\n管理主体 " + debug.ManagementActor + "；原隔离观察未转为生产准入" : "") +
         "\n输入来源 " + (op.OperatorInput is { } manual ? (manual.Kind == "PdaKeyboard" ? "PDA键盘" : "手动键盘") + " · 提交主体 " + manual.Actor + " · 命令 " + manual.CommandId : "设备读码") +
         "\n观察时间 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n结果 " + ParcelPresentation.Operation(op, true).Text + "\n原因 " + (op.Reason ?? "无") +
         "\n\n" + string.Join("\n\n", new[] { ("WCS", op.Wcs), ("PLC", op.Plc), ("采集", op.Capture), ("上传", op.Upload) }.Where(x => x.Item2 is not null).Select(x => StageDetails(x.Item1, x.Item2!)));

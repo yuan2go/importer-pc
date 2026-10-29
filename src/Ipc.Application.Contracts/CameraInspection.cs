@@ -4,10 +4,18 @@ namespace Ipc.Application.Contracts;
 public enum CameraInspectionMode { ObserveProduction, Isolated }
 public sealed record CameraInspectionLimits(int DurationMinutes = 10, int ImageMiB = 1024, int Records = 200000);
 public sealed record BeginCameraInspection(string CommandId, Guid RuntimeId, long ExpectedConfigurationRevision, CameraInspectionMode Mode,
-    string Reason, CameraInspectionLimits Limits, bool PhysicalSceneConfirmed = false);
+    string Reason, CameraInspectionLimits Limits, bool PhysicalSceneConfirmed = false)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public bool SingleReadRounds { get; init; }
+}
 public sealed record EndCameraInspection(string CommandId, string SessionId, bool TestPiecesRemoved, bool ResumeProduction, string Reason);
 public sealed record CameraInspectionStatus(string? SessionId, CameraInspectionMode? Mode, string State, bool BusinessFenced,
-    DateTimeOffset? ExpiresAt, long Frames, long ImageBytes, long EvictedImages, long MissingFrames, string Detail, string ConfigurationHash);
+    DateTimeOffset? ExpiresAt, long Frames, long ImageBytes, long EvictedImages, long MissingFrames, string Detail, string ConfigurationHash)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public bool SingleReadRounds { get; init; }
+}
 public sealed record CameraFrameMetadata(string Id, string SessionId, string DeviceId, string Epoch, long FrameNumber,
     DateTimeOffset CapturedAt, int Width, int Height, RecognitionSymbol[] Symbols, double DecodeMilliseconds,
     string? ObservationId, string? SourceEventId, string? IsolatedSessionId, string OriginalSha256, bool ImageAvailable, string ImageState,

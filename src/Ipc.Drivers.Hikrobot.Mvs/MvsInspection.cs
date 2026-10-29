@@ -41,14 +41,15 @@ internal sealed partial class MvsAcquisition : IObservationInspectionSource, IPa
         var applyWithoutWorker = false;
         lock (inspectionGate)
         {
-            var clearCache = inspection?.Isolated == true && registration is null || inspection?.Isolated != true && registration?.Isolated == true;
+            var clearCache = inspection?.Isolated == true && registration is null || inspection?.Isolated != true && registration?.Isolated == true ||
+                registration?.CutoverKey is not null && inspection?.CutoverKey != registration.CutoverKey;
             if (clearCache || cacheCutover is not null)
             {
                 cacheCutover ??= new(TaskCreationOptions.RunContinuationsAsynchronously); afterCacheCutover = registration;
                 // Retain the isolation tag while the old cycle and SDK cache drain.
                 // No diagnostic original is allocated during this transient fence.
                 var transient = inspection?.Isolated == true ? inspection : registration;
-                inspection = transient is null ? null : transient with { CaptureImages = false };
+                inspection = transient is null ? null : transient with { CaptureImages = false, DecodeAllowed = _ => false };
                 barrier = cacheCutover.Task; applyWithoutWorker = worker is null || worker.IsCompleted;
             }
             else

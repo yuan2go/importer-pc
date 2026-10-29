@@ -42,6 +42,6 @@ public sealed partial class ParcelRuntime
     }
     Task DrainReadOperations(CancellationToken token)
     {
-        lock (readOwnership) return Task.WhenAll(readOperations.Concat(administrationOperations).Concat(managementStatusOperations).Concat(operatorInputOperations).ToArray()).WaitAsync(token);
+        lock (readOwnership) return Task.WhenAll(readOperations.Concat(administrationOperations).Concat(managementStatusOperations).Concat(operatorInputOperations).Concat(cameraRoundWorkers).ToArray()).WaitAsync(token);
     }
 }

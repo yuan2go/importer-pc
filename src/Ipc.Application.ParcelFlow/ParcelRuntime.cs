@@ -213,7 +213,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (reader.Source is IParcelFrameSource parcelFrames && parcelPictures is { } pictureStore)
                     parcelFrames.SetParcelFrameReceiver(pictureStore.OfferParcel);
                 if (Volatile.Read(ref inspectionFence) is { } recoveredFence && reader.Source is IObservationInspectionSource recoveredSource)
-                    await recoveredSource.SetInspectionAsync(new(recoveredFence.Id, true, _ => false, false), token).ConfigureAwait(false);
+                    await recoveredSource.SetInspectionAsync(new(recoveredFence.Id, true, _ => false, false) { DecodeAllowed = _ => false }, token).ConfigureAwait(false);
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
                 catch (ObservationConnectionException ex)
                 {

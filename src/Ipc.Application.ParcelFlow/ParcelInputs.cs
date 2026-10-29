@@ -54,6 +54,7 @@ public sealed partial class ParcelRuntime
     ParcelOperation? DisplayedOperation(string position)
     {
         var current = repository!.Latest(position);
+        if (current?.DebugRequest is not null) return null; // Test destinations never appear as a live production parcel.
         if (current is null || !MainTerminated(current)) return current;
         var originalReader = current.ReaderBinding ?? ParcelBindings.Readers(current.FrozenConfiguration).Single(r =>
             r.DeviceId == ParcelBindings.Positions(current.FrozenConfiguration).Single(p => p.Id == position).ReaderDeviceId);

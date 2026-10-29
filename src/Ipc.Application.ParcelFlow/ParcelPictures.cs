@@ -31,6 +31,7 @@ public sealed partial class ParcelRuntime
             throw new ArgumentException("必须提供一个准确原作业或当前观察身份，不能按条码猜配图像。");
         AcquisitionIdentity? acquisition = null; string? observationId = query.ObservationId; string? operationId = query.OperationId;
         string? operatorSession; string? expectedObservationHash = null; bool manual;
+        CameraDebugRequestEvidence? debugPicture = null;
         await gate.WaitAsync(owned).ConfigureAwait(false);
         try
         {
@@ -41,6 +42,7 @@ public sealed partial class ParcelRuntime
                 var op = operations.GetValueOrDefault(operationId) ?? repository!.ReadOperation(operationId);
                 if (op is null) return new ParcelPictureResult("Missing", "原作业不存在或已按保留策略清理；不能以同码的其他作业补图。", operationId, null, null);
                 acquisition = op.Acquisition; expectedObservationHash = op.ObservationId; manual = op.OperatorInput is not null;
+                if (op.DebugRequest is { } debug) { Management.Require(); debugPicture = debug; }
             }
             else
             {
@@ -53,6 +55,17 @@ public sealed partial class ParcelRuntime
             }
         }
         finally { gate.Release(); }
+        if (debugPicture is { } originalDebug)
+        {
+            var authority = Management.Require();
+            using var protectedRead = CancellationTokenSource.CreateLinkedTokenSource(owned, authority);
+            var original = await Task.Run(() => InspectionStore.Image(originalDebug.FrameId), protectedRead.Token).ConfigureAwait(false);
+            protectedRead.Token.ThrowIfCancellationRequested(); Management.Require();
+            if (original is not null && (original.Metadata.DeviceId != originalDebug.DeviceId || original.Metadata.Epoch != originalDebug.Epoch ||
+                original.Metadata.SourceEventId != originalDebug.SourceEventId || original.Metadata.OriginalSha256 != originalDebug.OriginalSha256 ||
+                original.Metadata.IsolatedSessionId != originalDebug.SessionId)) throw new InvalidDataException("调试原图与原请求证据不一致，拒绝显示。");
+            return new(original is null ? "Missing" : "Available", original is null ? "调试原图未保留或已清理；原测试请求和回执仍保留。" : "原隔离调试请求对应原帧；受当前管理授权保护。", operationId, original?.Metadata.ObservationId, original);
+        }
         if (manual) return new("NoAcquisition", "此条码来自键盘或PDA键盘输入，没有同帧相机采集证据，不使用实时图或其他包裹图片补配。", operationId, observationId, null);
         if (acquisition is null) return new("Missing", "原记录未包含可核对的相机采集身份，无法取得对应原图。", operationId, observationId, null);
         var identity = acquisition;

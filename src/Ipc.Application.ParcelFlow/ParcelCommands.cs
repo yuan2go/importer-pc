@@ -362,6 +362,7 @@ public sealed partial class ParcelRuntime
         await factory.DisposeAsync().ConfigureAwait(false);
         if (inspectionStore is { } inspection) await inspection.DisposeAsync().ConfigureAwait(false);
         if (parcelPictures is { } pictures) await pictures.DisposeAsync().ConfigureAwait(false);
+        readRound?.Cancel.Dispose();
         logReader?.Dispose();
         if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false);
         await gate.WaitAsync().ConfigureAwait(false);

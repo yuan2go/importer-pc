@@ -179,7 +179,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             }
                             priorFrame = frame.Number; frames++; bytes += checked((long)frame.Length);
                         }
-                        if (decoder is not null)
+                        if (decoder is not null && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false)
                         {
                             length = checked((int)(frame.Width * frame.Height)); pixels = ArrayPool<byte>.Shared.Rent(length);
                             Marshal.Copy(frame.Data, pixels, 0, length);
@@ -245,7 +245,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         throw new ObservationConnectionException("MVS原相机断开或当前设备身份不匹配。", new IOException("Original camera unavailable"));
                     if (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0)
                         throw new IOException("MVS device trigger setting changed");
-                    PhaseTo(decoder is null ? "acquiring-decoder-unavailable" : "reading"); Publish(decoder is null ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
+                    PhaseTo(decoder is null ? "acquiring-decoder-unavailable" : inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) == false ? "read-paused" : "reading"); Publish(decoder is null ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
                 }
                 }
                 finally { EndInspectedCycle(inspected.Generation); }

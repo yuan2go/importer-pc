@@ -15,6 +15,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
     CameraInspectionStore? inspectionStore;
     DateTimeOffset nextInspectionRetention;
     Task? inspectionRetention;
+    bool singleReadInspection;
     bool CameraBusinessFenced => Volatile.Read(ref inspectionFence) is not null;
     void InitializeCameraInspection()
     {
@@ -37,7 +38,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
         var fence = Volatile.Read(ref inspectionFence); var sessionId = Volatile.Read(ref collectingInspection)?.Id ?? fence?.Id ?? lastInspectionSession;
         if (inspectionStore is { } store)
         {
-            var value = store.Status(sessionId, fence is not null);
+            var value = store.Status(sessionId, fence is not null) with { SingleReadRounds = singleReadInspection };
             if (inspectionStoreFailure is { } failed) return value with { State = "Faulted", Detail = failed };
             if (Volatile.Read(ref collectingInspection) is null && value.State is "Active" or "Preparing")
                 return value with { State = inspectionControl.CurrentCount == 0 ? "Transitioning" : fence is null ? "Stopped" : "RecoveryFenced", Detail = "当前无活动采集；切换、停止或恢复尚待核对。隔离栅不自动解除。" };
@@ -71,6 +72,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
             {
                 authority.ThrowIfCancellationRequested(); Management.Require();
                 if (Id != "sportmaster" || command.RuntimeId != runtimeId || stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("运行实例已变化，请重新读取调试状态。");
+                if (command.SingleReadRounds && command.Mode != CameraInspectionMode.Isolated) throw new InvalidOperationException("按轮扫码必须先建立实机隔离。");
                 var hash = Wire.Hash(Wire.Encode(command));
                 if (inspectionFence is { } prior)
                 {
@@ -100,13 +102,15 @@ public sealed partial class ParcelRuntime : ICameraInspection
             }
             finally { gate.Release(); }
             if (command.Mode == CameraInspectionMode.Isolated) await WaitInspectionDrainAsync(t).ConfigureAwait(false);
+            singleReadInspection = command.SingleReadRounds;
             var registration = new InspectionRegistration(id!, command.Mode == CameraInspectionMode.Isolated, frame =>
             {
                 var current = Volatile.Read(ref collectingInspection);
                 if (current?.Id != id || current.Authority.IsCancellationRequested || current.Expires <= DateTimeOffset.UtcNow ||
                     System.Diagnostics.Stopwatch.GetElapsedTime(current.StartedTicks) >= current.Lifetime || stopping.IsCancellationRequested) return false;
-                return InspectionStore.Offer(id!, frame);
-            });
+                return command.SingleReadRounds ? ReceiveRoundFrame(id!, frame) : InspectionStore.Offer(id!, frame);
+            }) { DecodeAllowed = device =>
+                Volatile.Read(ref collectingInspection)?.Id == id && (!command.SingleReadRounds || RoundDecodeAllowed(id!, device)) };
             foreach (var source in sources) await source.SetInspectionAsync(registration, t).ConfigureAwait(false);
             authority.ThrowIfCancellationRequested(); Management.Require();
             InspectionStore.State(id!, "Active", command.Mode == CameraInspectionMode.Isolated
@@ -153,6 +157,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
                 throw new InvalidOperationException("不是当前待处理会话，不能解除其他隔离。");
             }
             if (fence is not null && (!command.TestPiecesRemoved || fence.Id != command.SessionId)) throw new InvalidOperationException("必须确认两位测试件已移除并核对原责任，才能结束实机隔离。");
+            await EndReadRoundAsync(t, command.SessionId).ConfigureAwait(false);
             Volatile.Write(ref collectingInspection, null);
             // Await the actual acquisition-cycle boundary, not a cancelled wrapper.
             foreach (var source in InspectionSources())
@@ -201,9 +206,10 @@ public sealed partial class ParcelRuntime : ICameraInspection
         {
             var current = Volatile.Read(ref collectingInspection);
             if (current?.Id != sessionId) throw new InvalidOperationException("原采集已结束或身份变化，请刷新状态。");
+            await EndReadRoundAsync(t, sessionId).ConfigureAwait(false);
             Volatile.Write(ref collectingInspection, null);
             var fence = Volatile.Read(ref inspectionFence);
-            foreach (var source in InspectionSources()) await source.SetInspectionAsync(fence is null ? null : new InspectionRegistration(fence.Id, true, _ => false, false), t).ConfigureAwait(false);
+            foreach (var source in InspectionSources()) await source.SetInspectionAsync(fence is null ? null : new InspectionRegistration(fence.Id, true, _ => false, false) { DecodeAllowed = _ => false }, t).ConfigureAwait(false);
             await InspectionStore.FlushAsync(t).ConfigureAwait(false); authority.ThrowIfCancellationRequested(); Management.Require();
             InspectionStore.State(sessionId, fence is null ? "Closed" : "Suspended", reason + (fence is null ? "；生产观察已结束。" : "；仅停止采集，实机隔离继续阻断，仍需确认清场。"), close: true);
             Diagnostic("相机调试", "关联采集已显式停止", detail: Wire.Encode(new { Session = sessionId, Reason = reason, Actor = ManagementEvidence }));
@@ -239,6 +245,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
         var expired = current.Authority.IsCancellationRequested || current.Expires <= DateTimeOffset.UtcNow || System.Diagnostics.Stopwatch.GetElapsedTime(current.StartedTicks) >= current.Lifetime;
         var fault = inspectionStore?.Fault;
         if (!expired && fault is null) return;
+        if (readRound?.Session == current.Id) readRound.Cancel.Cancel();
         Volatile.Write(ref collectingInspection, null);
         var detail = expired ? "管理授权或会话期限已结束；停止采集，原隔离继续阻断，需重新进入管理模式并确认清场。" : fault!;
         if (inspectionStore is { } store) auxiliary.Add(Task.Run(() =>

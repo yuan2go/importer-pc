@@ -9,7 +9,11 @@ public sealed record InspectedFrame(string DeviceId, string Epoch, long FrameNum
 
 // The acquisition owns this registration and its cutover barrier, not a UI page.
 // Receivers may retain OriginalGray8, which is a dedicated immutable capture copy.
-public sealed record InspectionRegistration(string Id, bool Isolated, Func<InspectedFrame, bool> Receive, bool CaptureImages = true);
+public sealed record InspectionRegistration(string Id, bool Isolated, Func<InspectedFrame, bool> Receive, bool CaptureImages = true)
+{
+    public Func<string, bool>? DecodeAllowed { get; init; }
+    public string? CutoverKey { get; init; }
+}
 public interface IObservationInspectionSource
 {
     // Isolated cutovers also wait for the verified SDK buffer clear on the

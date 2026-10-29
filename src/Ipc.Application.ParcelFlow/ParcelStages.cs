@@ -33,6 +33,7 @@ public sealed partial class ParcelRuntime
         if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
             !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
         if (stopping.IsCancellationRequested) return op;
+        var deliveryAuthority = query || op.DebugRequest is not null ? Management.Require() : CancellationToken.None;
         // Adapter dictionaries are mutable; never expose the owned original intent.
         var deliveryRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
         if (!query)
@@ -41,7 +42,7 @@ public sealed partial class ParcelRuntime
             stage = stage with { State = StageState.Dispatching, Attempts = 1 };
             op = SetStage(op, kind, stage); Save(op, "Dispatching", "T2: attempt persisted before external call");
         }
-        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, query ? Management.Require() : CancellationToken.None);
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, deliveryAuthority);
         budget.CancelAfter(definition.RequestTimeoutMs(op, kind));
         var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
         var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();

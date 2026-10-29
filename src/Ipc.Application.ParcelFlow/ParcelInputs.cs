@@ -37,6 +37,8 @@ public sealed partial class ParcelRuntime
     }
     void LogInput(ParcelInputSnapshot input)
     {
+        if (input.Observation.OperatorInput is null && input.Observation.InspectionSessionId is null)
+            parcelPictures?.LinkInput(input.Observation, repository!.LastInputAuditSequence(), input.OperationId);
         if (input.Observation.CaptureSessionId is not null && inspectionStore is { } inspection)
             inspection.LinkInput(input.Observation, repository!.LastInputAuditSequence(), input.OperationId);
         Diagnostic("扫码与准入", "输入处理完成", input.Outcome is ParcelInputOutcome.Blocked or ParcelInputOutcome.Rejected ? "警告" : "信息",

@@ -133,6 +133,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
             foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
             InitializeCameraInspection();
+            InitializeParcelPictures();
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException or System.Text.Json.JsonException)
         { StorageFailed(error, "RepositoryOpenOrRecovery", error is InvalidDataException or System.Text.Json.JsonException); throw; }
@@ -209,6 +210,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
             {
+                if (reader.Source is IParcelFrameSource parcelFrames && parcelPictures is { } pictureStore)
+                    parcelFrames.SetParcelFrameReceiver(pictureStore.OfferParcel);
                 if (Volatile.Read(ref inspectionFence) is { } recoveredFence && reader.Source is IObservationInspectionSource recoveredSource)
                     await recoveredSource.SetInspectionAsync(new(recoveredFence.Id, true, _ => false, false), token).ConfigureAwait(false);
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
@@ -401,10 +404,14 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         DebugDiagnostic("相机输入", "开始处理扫码消息", () => new { Position = position, Device = DiagnosticFragment(o.DeviceId, 256),
             Epoch = DiagnosticFragment(o.Epoch, 256), EventId = DiagnosticFragment(o.SourceEventId, 256), o.Sequence, o.ObservedAt, ReceivedAt = receivedAt,
             QueueAgeMs = (DateTimeOffset.UtcNow - receivedAt).TotalMilliseconds, CandidateCount = o.Codes.Length });
-        if (!readers.TryGetValue(o.DeviceId, out var reader) ||
+        if (o.OperatorInput is not null || !readers.TryGetValue(o.DeviceId, out var reader) ||
             string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
             o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
         { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/time; " + Wire.Encode(o)); return; }
+        await ProcessTrustedObservationAsync(position, o, admittedOperator, receivedAt, reader).ConfigureAwait(false);
+    }
+    async Task ProcessTrustedObservationAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt, ObservationSession reader)
+    {
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         if (o.InspectionSessionId is not null)
         {
@@ -458,8 +465,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
-            Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt),
-            PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection);
+            Operator: admittedOperator, Acquisition: o.OperatorInput is null ? new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt) : null,
+            PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection)
+            { OperatorInput = o.OperatorInput };
         admissionPositions.TryAdd(op.AdmissionId, position);
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
             ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);

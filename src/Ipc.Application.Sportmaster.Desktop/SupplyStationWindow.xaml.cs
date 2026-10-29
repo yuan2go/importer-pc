@@ -96,7 +96,10 @@ public partial class SupplyStationWindow : Window
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e)
-    { SetPage("maintenance"); pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
+    {
+        if (!ViewModel.IsManagementMode) { await OpenOperatorSettingsAsync(); return; }
+        SetPage("maintenance"); pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync();
+    }
     async Task LoadRequestedMaintenanceAsync()
     {
         if (!pendingMaintenanceLoad) return;

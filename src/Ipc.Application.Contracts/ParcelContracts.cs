@@ -76,7 +76,11 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PositionId = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool RecoveryRequired = false,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterResult? BarcodeSelection = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterResult? BarcodeSelection = null)
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OperatorInputEvidence? OperatorInput { get; init; }
+}
 public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long Revision, string State, bool Paused,
     string[] BlockingReasons, ParcelOperation[] Operations, CapabilityHealth[] Health,
     ConfigurationRevision<ParcelConfiguration> Configuration, OperatorIdentity? CurrentOperator = null, ParcelAvailability? Availability = null, PositionSnapshot[]? Positions = null, DeviceState[]? Devices = null, ParcelCapacity? Capacity = null, IdentityConflict[]? IdentityConflicts = null, string[]? AuxiliaryReasons = null,

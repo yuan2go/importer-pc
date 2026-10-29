@@ -28,7 +28,10 @@ public sealed record Observation(string Id, string DeviceId, string Epoch, strin
     public string? InspectionSessionId { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public string? CaptureSessionId { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public OperatorInputEvidence? OperatorInput { get; init; }
 }
+public sealed record OperatorInputEvidence(string CommandId, string Kind, string Actor, string? SessionId, DateTimeOffset SubmittedAt);
 // Runtime owns epoch registration; callbacks cannot replace the accepted epoch.
 public interface IControlledObservationSource : IAsyncDisposable
 {

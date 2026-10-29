@@ -63,6 +63,9 @@ public sealed partial class ParcelRuntime
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
             auxiliaryReasons.AddRange(repository.PendingCommands().Select(id => "CommandPending:" + id + "; inspect CommandAdmitted audit and original facts; this ID is never replayed"));
             if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
+            if ((parcelPictureFailure ?? parcelPictures?.Fault) is { } pictureFailure) auxiliaryReasons.Add("ParcelPictures:" + pictureFailure);
+            foreach (var pictureSource in readers.Values.Select(r => r.Source).OfType<IParcelFrameSource>())
+                if (pictureSource.ParcelFrameFailure is { } sourcePictureFailure) auxiliaryReasons.Add("ParcelPictures:" + sourcePictureFailure);
             if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
@@ -358,6 +361,7 @@ public sealed partial class ParcelRuntime
         }
         await factory.DisposeAsync().ConfigureAwait(false);
         if (inspectionStore is { } inspection) await inspection.DisposeAsync().ConfigureAwait(false);
+        if (parcelPictures is { } pictures) await pictures.DisposeAsync().ConfigureAwait(false);
         logReader?.Dispose();
         if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false);
         await gate.WaitAsync().ConfigureAwait(false);

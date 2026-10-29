@@ -78,7 +78,9 @@ public static class ParcelPresentation
                 ? "本次准入条件未满足。" : ChineseInterfaceText.Notice(input.Reason);
     public static ParcelStatusPresentation InputPresentation(ParcelInputSnapshot input) => IsInputFailure(input) ? Rejected(InputText(input)) : Neutral(InputText(input));
     public static string InputSummary(ParcelInputSnapshot? input) => input is null ? "尚无本位可信观察" :
-        "最新观察：" + InputText(input) + "\n原码：" + InputCode(input) + "\n观察来源：" + input.Observation.DeviceId + " · " + input.Observation.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
+        "最新观察：" + InputText(input) + "\n原码：" + InputCode(input) + "\n输入方式：" + (input.Observation.OperatorInput is { } manual ?
+            (manual.Kind == "PdaKeyboard" ? "PDA键盘" : "手动键盘") + " · 提交主体：" + manual.Actor : "设备读码") +
+        "\n观察来源：" + input.Observation.DeviceId + " · " + input.Observation.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
         "\n筛选：" + (input.BarcodeSelection is { } selected ? ChineseInterfaceText.Status(selected.Outcome) + " · 选中码：" + (selected.SelectedCode ?? "无") + " · 有效码 " + selected.Matches : "旧观察未记录筛选证据") + "\n关联原作业：" + (input.OperationId ?? "未创建") + " · 原因：" + ChineseInterfaceText.Notice(input.Reason);
     public static string InputCode(ParcelInputSnapshot input) => input.Observation.Codes.Length == 0 ? "未识别到包裹号" : string.Join("\n", input.Observation.Codes.Take(6).Select(c => c.Length > 256 ? c[..256] + "…" : c)) + (input.Observation.Codes.Length > 6 ? "\n其余候选见原始输入证据（共" + input.Observation.Codes.Length + "个）" : "");
     public static string Health(CapabilityHealth health, DateTimeOffset now)
@@ -128,6 +130,7 @@ public partial class ParcelViewModel
     public string StructuredDetails => structuredDetailsText;
     static string FormatStructuredDetails(ParcelOperation? op) => op is null ? "选择一条作业查看原作业、请求与回执。" :
         "作业 " + op.Id + "\n投递位 " + (op.PositionId ?? "main") + " · 包裹号 " + op.ParcelCode + "\n实体准入 " + op.AdmissionId +
+        "\n输入来源 " + (op.OperatorInput is { } manual ? (manual.Kind == "PdaKeyboard" ? "PDA键盘" : "手动键盘") + " · 提交主体 " + manual.Actor + " · 命令 " + manual.CommandId : "设备读码") +
         "\n观察时间 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n结果 " + ParcelPresentation.Operation(op, true).Text + "\n原因 " + (op.Reason ?? "无") +
         "\n\n" + string.Join("\n\n", new[] { ("WCS", op.Wcs), ("PLC", op.Plc), ("采集", op.Capture), ("上传", op.Upload) }.Where(x => x.Item2 is not null).Select(x => StageDetails(x.Item1, x.Item2!)));
     static string StageDetails(string name, StageFact stage) => name + " 请求 " + stage.Request.Id + "\n状态 " + ChineseInterfaceText.Status(stage.State.ToString()) + " · 发送尝试 " + stage.Attempts +

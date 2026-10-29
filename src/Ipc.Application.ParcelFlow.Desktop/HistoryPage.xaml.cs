@@ -17,6 +17,12 @@ public partial class HistoryPage : UserControl
         ((FrameworkElement)HistoryStatusLine.Parent).SizeChanged += (_, _) => FitQueryViewport();
         HistoryDetailExpander.SizeChanged += (_, _) => FitQueryViewport();
     }
+    void Picture_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm || Window.GetWindow(this) is not { } owner) return;
+        var op = sender is FrameworkElement { DataContext: Ipc.Application.Contracts.ParcelHistoryItem row } ? row.Operation : vm.Selected;
+        if (op is not null) ParcelPictureWindow.Open(owner, vm, new(OperationId: op.Id), op.ParcelCode);
+    }
     void UpdateDetailsVisibility()
     { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(IsLoaded && StructuredDetailsText.IsVisible, IsLoaded && RawDetailsText.IsVisible); }
     void FitQueryViewport()

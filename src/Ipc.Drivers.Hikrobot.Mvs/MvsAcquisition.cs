@@ -197,10 +197,11 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         string[] codes;
                         RecognitionSymbol[] symbols;
                         byte[]? original = null;
+                        var parcelReceiver = inspected.Registration?.Isolated == true ? null : Volatile.Read(ref parcelFrameReceiver);
                         double decodeMilliseconds = 0;
                         try
                         {
-                            original = inspected.Registration is { CaptureImages: true } ? pixels.AsSpan(0, length).ToArray() : null;
+                            original = inspected.Registration is { CaptureImages: true } || parcelReceiver is not null ? pixels.AsSpan(0, length).ToArray() : null;
                             preview.Offer(pixels, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
                             PhaseTo("decode"); var decodingStarted = Stopwatch.GetTimestamp();
                             symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
@@ -209,6 +210,9 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         }
                         finally { ArrayPool<byte>.Shared.Return(pixels, true); }
                         var observationIdentity = codes.Length == 0 ? null : Wire.Id();
+                        if (codes.Length != 0 && parcelReceiver is not null && original is not null)
+                            PublishParcelFrame(parcelReceiver, new(DeviceId, Epoch, frame.Number, observedAt, checked((int)frame.Width), checked((int)frame.Height),
+                                original, symbols, decodeMilliseconds, observationIdentity, "mvs.frame." + frame.Number, null, skippedBefore, physicalSerial, ip));
                         if (inspected.Registration is { } registration && original is not null)
                             PublishInspection(registration, new(DeviceId, Epoch, frame.Number, observedAt, checked((int)frame.Width), checked((int)frame.Height),
                                 original, symbols, decodeMilliseconds, observationIdentity,

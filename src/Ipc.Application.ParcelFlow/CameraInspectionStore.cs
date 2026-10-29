@@ -20,20 +20,30 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     readonly object sync = new();
     readonly Channel<Work> queue = Channel.CreateBounded<Work>(new BoundedChannelOptions(128) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     readonly Task writer;
-    long buffered, dropped;
+    long buffered, dropped, imageBytes, imageCount;
     string? fault;
-    bool closing;
+    bool closing, disposeCompleted;
     readonly HashSet<string> exports = [];
     abstract record Work;
     sealed record FrameWork(string Session, InspectedFrame Frame, long Bytes) : Work;
     sealed record Barrier(TaskCompletionSource Completion) : Work;
     sealed record LinkWork(string Observation, string Device, string Epoch, string SourceEvent, long Sequence, string? Operation) : Work;
+    sealed record RetentionWork(int Days) : Work;
     public string? Fault => Volatile.Read(ref fault);
     public long Dropped => Interlocked.Read(ref dropped);
-    public CameraInspectionStore(string directory, Func<long> businessReserve)
+    readonly bool automatic;
+    readonly Func<int>? retentionDays;
+    readonly Func<(Guid Runtime, long Revision, string Hash)>? automaticIdentity;
+    string? automaticSession;
+    int automaticCount;
+    DateTimeOffset automaticStarted;
+    public CameraInspectionStore(string directory, Func<long> businessReserve, bool automatic = false, Func<int>? retentionDays = null,
+        Func<(Guid Runtime, long Revision, string Hash)>? automaticIdentity = null)
     {
         this.businessReserve = businessReserve;
-        root = Path.Combine(directory, "camera-inspection"); images = Path.Combine(root, "images"); database = Path.Combine(root, "index.db");
+        this.automatic = automatic; this.retentionDays = retentionDays;
+        this.automaticIdentity = automaticIdentity;
+        root = Path.Combine(directory, automatic ? "parcel-pictures" : "camera-inspection"); images = Path.Combine(root, "images"); database = Path.Combine(root, "index.db");
         RecoveryFiles.RequireOrdinaryAncestors(root); Directory.CreateDirectory(images);
         var existing = File.Exists(database); db = Database.Open(database);
         try
@@ -57,6 +67,9 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             c.CommandText = "UPDATE sessions SET state='Interrupted',detail='上个进程未完成会话；已持久记录可查，尾部覆盖未知；业务隔离由原业务审计恢复',closed=$at WHERE closed IS NULL";
             c.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); c.ExecuteNonQuery(); c.Parameters.Clear();
         }
+        c.CommandText = "CREATE INDEX IF NOT EXISTS frames_acquisition ON frames(device,json_extract(body,'$.Epoch'),json_extract(body,'$.SourceEventId'))"; c.Parameters.Clear(); c.ExecuteNonQuery();
+        c.CommandText = "SELECT coalesce(sum(size),0) FROM frames"; imageBytes = (long)c.ExecuteScalar()!;
+        c.CommandText = "SELECT count(*) FROM frames WHERE image IS NOT NULL"; imageCount = (long)c.ExecuteScalar()!;
         // A process can die after atomic image publication and before index commit.
         // Such files are orphaned diagnostic bytes, not reconstructed scan evidence.
         foreach (var file in Directory.EnumerateFiles(images, "*.tmp"))
@@ -96,7 +109,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             var body = Wire.Encode(new StoredSession(command, actor, expires, configurationHash)); c.Parameters.AddWithValue("$body", body); c.Parameters.AddWithValue("$bodyHash", Wire.Hash(body)); c.ExecuteNonQuery();
         }
     }
-    internal sealed record StoredSession(BeginCameraInspection Command, ManagementModeEvidence Actor, DateTimeOffset ExpiresAt, string ConfigurationHash);
+    internal sealed record StoredSession(BeginCameraInspection Command, ManagementModeEvidence? Actor, DateTimeOffset ExpiresAt, string ConfigurationHash);
     StoredSession Session(string id)
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT body,body_hash FROM sessions WHERE id=$id"; c.Parameters.AddWithValue("$id", id);
@@ -147,6 +160,46 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         }
         return true;
     }
+    public bool OfferParcel(InspectedFrame frame) => automatic && frame.IsolatedSessionId is null &&
+        frame.ObservationId is not null && frame.SourceEventId is not null && Offer("", frame);
+    public void ScheduleParcelRetention(int days)
+    {
+        if (!closing && automatic && Fault is null) queue.Writer.TryWrite(new RetentionWork(Math.Max(1, days)));
+    }
+    string AutomaticCollection()
+    {
+        var now = DateTimeOffset.UtcNow;
+        if (automaticSession is not null && automaticCount < 10000 && now - automaticStarted < TimeSpan.FromHours(1))
+        { automaticCount++; return automaticSession; }
+        if (automaticSession is not null) State(automaticSession, "Closed", "日常留图分段结束；业务原记录独立保留。", true);
+        PruneClosed(Math.Max(1, retentionDays?.Invoke() ?? 7), null);
+        // Hard metadata budget is independent of the age policy. Retire oldest
+        // closed collections before this optional index can consume business disk.
+        while (true)
+        {
+            using var count = db.CreateCommand(); count.CommandText = "SELECT count(*) FROM frames";
+            if ((long)count.ExecuteScalar()! < 200000 && UsedDatabaseBytes() < 384L * 1024 * 1024) break;
+            using var oldest = db.CreateCommand(); oldest.CommandText = "SELECT id FROM sessions WHERE closed IS NOT NULL AND state!='Purged' ORDER BY rowid LIMIT 1";
+            if (oldest.ExecuteScalar() is not string id) throw new IOException("日常留图索引达到硬预算，保留业务与原件，停止新增留图。");
+            Purge(id, "日常留图硬配额轮替；原业务作业/输入/请求保留。");
+        }
+        using (var tombstones = db.CreateCommand())
+        {
+            tombstones.CommandText = "DELETE FROM sessions WHERE state='Purged' AND rowid NOT IN (SELECT rowid FROM sessions ORDER BY rowid DESC LIMIT 2000)"; tombstones.ExecuteNonQuery();
+        }
+        var session = Wire.Id();
+        var identity = automaticIdentity?.Invoke() ?? throw new InvalidOperationException("日常留图缺少真实运行/配置身份。");
+        var command = new BeginCameraInspection(session, identity.Runtime, identity.Revision, CameraInspectionMode.ObserveProduction,
+            "Application自动日常留图，不授予管理权限，不创建业务请求", new(60, 2048, 500000));
+        var body = Wire.Encode(new StoredSession(command, null, now.AddHours(1), identity.Hash));
+        using (var insert = db.CreateCommand())
+        {
+            insert.CommandText = "INSERT INTO sessions(id,command,hash,body,body_hash,state,detail) VALUES($id,$id,$hash,$body,$bodyHash,'Active','日常相机同帧留图；与管理调试独立')";
+            insert.Parameters.AddWithValue("$id", session); insert.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(command)));
+            insert.Parameters.AddWithValue("$body", body); insert.Parameters.AddWithValue("$bodyHash", Wire.Hash(body)); insert.ExecuteNonQuery();
+        }
+        automaticStarted = now; automaticCount = 1; return automaticSession = session;
+    }
     public async Task FlushAsync(CancellationToken token)
     {
         var barrier = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -163,6 +216,20 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         await foreach (var work in queue.Reader.ReadAllAsync().ConfigureAwait(false))
         {
             if (work is Barrier barrier) { barrier.Completion.TrySetResult(); continue; }
+            if (work is RetentionWork retention)
+            {
+                try
+                {
+                    lock (sync)
+                    {
+                        if (automaticSession is not null && DateTimeOffset.UtcNow - automaticStarted >= TimeSpan.FromHours(1))
+                        { State(automaticSession, "Closed", "空闲日常留图分段结束。", true); automaticSession = null; }
+                        PruneClosed(retention.Days, automaticSession);
+                    }
+                }
+                catch (Exception error) { Interlocked.CompareExchange(ref fault, "日常留图清理失败，保留原件：" + error.GetType().Name, null); }
+                continue;
+            }
             if (work is LinkWork link)
             {
                 try
@@ -178,7 +245,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
                 continue;
             }
             var item = (FrameWork)work;
-            try { lock (sync) Persist(item); }
+            try { lock (sync) { if (automatic) item = item with { Session = AutomaticCollection() }; Persist(item); } }
             catch (Exception error)
             {
                 Interlocked.Increment(ref dropped); Interlocked.CompareExchange(ref fault, "诊断原图/索引写入失败：" + error.GetType().Name + "。存在证据缺口，原业务责任不变。", null);
@@ -190,7 +257,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     }
     void Persist(FrameWork work)
     {
-        if (new DriveInfo(Path.GetPathRoot(root)!).AvailableFreeSpace < Math.Max(512L * 1024 * 1024, businessReserve()))
+        if (new DriveInfo(Path.GetPathRoot(root)!).AvailableFreeSpace < Math.Max(512L * 1024 * 1024, businessReserve()) + work.Bytes + 1024 * 1024)
             throw new IOException("诊断原图停止写入：低于业务存储保留余量（至少512MiB），保留原件及隔离栅。");
         var s = Session(work.Session); var f = work.Frame;
         if (f.Width <= 0 || f.Height <= 0 || (long)f.Width * f.Height != f.OriginalGray8.LongLength || f.Symbols.Length > 64 || f.Symbols.Any(x => x.Corners.Length is not (0 or 4)))
@@ -223,13 +290,14 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             c.Parameters.AddWithValue("$image", name); c.Parameters.AddWithValue("$imageHash", compressedHash); c.Parameters.AddWithValue("$size", size); c.ExecuteNonQuery();
         }
         tx.Commit();
+        imageBytes += size; imageCount++;
         EnforceImageBudget(Math.Min(2L * 1024 * 1024 * 1024, (long)s.Command.Limits.ImageMiB * 1024 * 1024));
     }
     void EnforceImageBudget(long budget)
     {
-        using var total = db.CreateCommand(); total.CommandText = "SELECT coalesce(sum(size),0) FROM frames"; var bytes = (long)total.ExecuteScalar()!;
-        using var files = db.CreateCommand(); files.CommandText = "SELECT count(*) FROM frames WHERE image IS NOT NULL"; var count = (long)files.ExecuteScalar()!;
-        while (bytes > budget || count > 10000)
+        // One writer owns these counters; avoid scanning the retained metadata
+        // on every production frame. Startup rebuilds them from durable indexes.
+        while (imageBytes > budget || imageCount > 10000)
         {
             string id, session, image; long size;
             using (var oldest = db.CreateCommand())
@@ -242,7 +310,8 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             using var tx = db.BeginTransaction(); using var c = db.CreateCommand(); c.Transaction = tx;
             c.CommandText = "UPDATE frames SET image=NULL,image_hash=NULL,size=0 WHERE id=$id; UPDATE sessions SET evicted=evicted+1 WHERE id=$session";
             c.Parameters.AddWithValue("$id", id); c.Parameters.AddWithValue("$session", session); c.ExecuteNonQuery(); tx.Commit();
-            var path = RecoveryFiles.Resolve(images, image); RecoveryFiles.RequireOrdinaryAncestors(path); File.Delete(path); bytes -= size; count--;
+            imageBytes -= size; imageCount--;
+            var path = RecoveryFiles.Resolve(images, image); RecoveryFiles.RequireOrdinaryAncestors(path); File.Delete(path);
         }
     }
     CameraFrameMetadata Decode(string body, string hash, bool available)
@@ -276,6 +345,17 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         {
             using var c = db.CreateCommand(); c.CommandText = "SELECT body,body_hash,image,input_seq,operation FROM frames WHERE observation=$observation ORDER BY seq DESC LIMIT 1";
             c.Parameters.AddWithValue("$observation", observation); using var r = c.ExecuteReader(); return r.Read() ? Decode(r.GetString(0), r.GetString(1), !r.IsDBNull(2)) with { BusinessSequence = r.GetInt64(3), OperationId = r.IsDBNull(4) ? null : r.GetString(4) } : null;
+        }
+    }
+    public CameraFrameMetadata? FindAcquisition(AcquisitionIdentity identity)
+    {
+        lock (sync)
+        {
+            using var c = db.CreateCommand();
+            c.CommandText = "SELECT body,body_hash,image,input_seq,operation FROM frames WHERE device=$device AND json_extract(body,'$.Epoch')=$epoch AND json_extract(body,'$.SourceEventId')=$event ORDER BY seq DESC LIMIT 1";
+            c.Parameters.AddWithValue("$device", identity.DeviceId); c.Parameters.AddWithValue("$epoch", identity.Epoch); c.Parameters.AddWithValue("$event", identity.SourceEventId);
+            using var r = c.ExecuteReader(); return r.Read() ? Decode(r.GetString(0), r.GetString(1), !r.IsDBNull(2)) with
+                { BusinessSequence = r.GetInt64(3), OperationId = r.IsDBNull(4) ? null : r.GetString(4) } : null;
         }
     }
     public CameraOriginalImage? Image(string id)
@@ -374,9 +454,12 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             if (check.ExecuteScalar() is not string) throw new InvalidOperationException("只能清理已结束诊断会话。");
             using var paths = db.CreateCommand(); paths.CommandText = "SELECT image FROM frames WHERE session=$id AND image IS NOT NULL"; paths.Parameters.AddWithValue("$id", session);
             List<string> files = []; using (var r = paths.ExecuteReader()) while (r.Read()) files.Add(r.GetString(0));
+            using var size = db.CreateCommand(); size.CommandText = "SELECT coalesce(sum(size),0) FROM frames WHERE session=$id"; size.Parameters.AddWithValue("$id", session);
+            var removedBytes = (long)size.ExecuteScalar()!;
             using var tx = db.BeginTransaction(); using var c = db.CreateCommand(); c.Transaction = tx;
             c.CommandText = "DELETE FROM frames WHERE session=$id; UPDATE sessions SET state='Purged',detail=$detail WHERE id=$id";
             c.Parameters.AddWithValue("$id", session); c.Parameters.AddWithValue("$detail", policy ?? "管理操作已清理本会话原图与诊断记录；会话身份、原始数量与业务账仍保留"); c.ExecuteNonQuery(); tx.Commit();
+            imageBytes -= removedBytes; imageCount -= files.Count;
             foreach (var name in files) { var path = RecoveryFiles.Resolve(images, name); RecoveryFiles.RequireOrdinaryAncestors(path); File.Delete(path); }
         }
     }
@@ -398,7 +481,13 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     }
     public async ValueTask DisposeAsync()
     {
+        if (disposeCompleted) return;
         closing = true; queue.Writer.TryComplete(); await writer.ConfigureAwait(false);
-        lock (sync) db.Dispose();
+        lock (sync)
+        {
+            if (disposeCompleted) return;
+            try { if (automaticSession is not null && Fault is null) State(automaticSession, "Closed", "运行停止，日常留图写入已排空。", true); }
+            finally { db.Dispose(); disposeCompleted = true; }
+        }
     }
 }

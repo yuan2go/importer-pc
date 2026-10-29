@@ -1,0 +1,208 @@
+{
+  "work_package": "WP-IPC-CONTRACT-CONVERGENCE-03",
+  "baseline": "c96cb382351eec167aadf30ceeee87cf057e7251",
+  "validated_code_commit": "6631c04bbf960c482b9af814bf1e3bd4dca06489",
+  "environment": "Windows ordinary token; D-drive worktree and caches; synthetic data; no installation, machine-policy or device changes",
+  "before": {
+    "source": "c96cb382351eec167aadf30ceeee87cf057e7251",
+    "code_files": 611,
+    "code_lines": 70359,
+    "check_call_sites": 3677,
+    "python_test_methods": 97
+  },
+  "after": {
+    "source": "6631c04bbf960c482b9af814bf1e3bd4dca06489",
+    "code_files": 613,
+    "code_lines": 70407,
+    "check_call_sites": 3677,
+    "python_test_methods": 96
+  },
+  "csharp_named_entries": 8,
+  "python_tests": 96,
+  "logs": [
+    {
+      "log": "b1-extension-draft.log",
+      "result": "PASS",
+      "sha256": "a115d54c85a4de4207571b7d5f320891f822b4de73637c9ae11393cefb68b978",
+      "bytes": 1151,
+      "pass_output_lines": 15
+    },
+    {
+      "log": "b2-runtime-identity.log",
+      "result": "PASS",
+      "sha256": "a4daab80a358b1e050662534dd6a8f4f81c6c2a18233ee922fd6a5e2b081298e",
+      "bytes": 2026,
+      "pass_output_lines": 28
+    },
+    {
+      "log": "b2-python-identity.log",
+      "result": "PASS",
+      "sha256": "8b292ad71e938e7984c50a53ebb77d1729eb700ac4461d79669bd2b214df1237",
+      "bytes": 108,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "b3-management-mode.log",
+      "result": "PASS",
+      "sha256": "284c923ebfbfca0c9dccf2da8c71d7d17e39324580a106e9fee67808459031a3",
+      "bytes": 6544,
+      "pass_output_lines": 79
+    },
+    {
+      "log": "b3-mvs-offline-activation.log",
+      "result": "PASS",
+      "sha256": "03602ee92c93f4d62a7a38703b2ecddae30f9844d17cf4eb0692922994677a8d",
+      "bytes": 1376,
+      "pass_output_lines": 12
+    },
+    {
+      "log": "b3-sm-built-in-only.log",
+      "result": "PASS",
+      "sha256": "0a88c6f76e42d10daa33f9dbbadb8bc9a920a679127e3eae0dc0898c40062e53",
+      "bytes": 1224,
+      "pass_output_lines": 13
+    },
+    {
+      "log": "b3-runtime-identity-boundary.log",
+      "result": "PASS",
+      "sha256": "7c89622984f7b2cb33c1c5444c02167976e8302b51184128b688247d1b812b3f",
+      "bytes": 340,
+      "pass_output_lines": 3
+    },
+    {
+      "log": "b4-process.log",
+      "result": "PASS",
+      "sha256": "33af64bd17ac2d75f04d851ab2ffa2e1ea3eb9b2657616d8439832213bafb2ff",
+      "bytes": 105,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "final-audit03-rcs.log",
+      "result": "PASS",
+      "sha256": "68cbcc616e8d4e22c99ffe7990eaeee3d04e674dfb0abcd85ec9bc50ae11ad55",
+      "bytes": 3643,
+      "pass_output_lines": 33
+    },
+    {
+      "log": "final-storage-schema-only.log",
+      "result": "PASS",
+      "sha256": "94cf66e168037b44e98f513715f4e8f8ce0a6db6cc224dd613733cfe3bac371c",
+      "bytes": 1182,
+      "pass_output_lines": 16
+    },
+    {
+      "log": "final-python-all.log",
+      "result": "PASS",
+      "sha256": "76bf7a166e4e86203aad7fcaadf2bcf9d4de2a80684731f7e9a6a9a25fd0548d",
+      "bytes": 252,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "b1-Supply.log",
+      "result": "PASS",
+      "sha256": "fcd6a945bd9e2837f4574fd9099020b36830f060e736181fe4d8f5e830ee7180",
+      "bytes": 3372,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "b1-Inspection.log",
+      "result": "PASS",
+      "sha256": "ecd8555a8ef452b818ed783cbe7dcd8b454c2318186b782a2812b8b08f7673a2",
+      "bytes": 980,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "b1-Sportmaster.log",
+      "result": "PASS",
+      "sha256": "eb42403026aba988bd46e3a342dff1fea5a7a2ebc60b5c723dd18d374ef76f38",
+      "bytes": 4111,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "b1-DirectPlc.log",
+      "result": "PASS",
+      "sha256": "8df1499bd6acb075da90c1856646137d48b036bb8bf3e5566f4e8fa83cfe7476",
+      "bytes": 3425,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "b1-WcsToPlc.log",
+      "result": "PASS",
+      "sha256": "7686a45a2a3814fe7a9a797a1432961ff09be750a5b9103ae2d539ee6a8195b3",
+      "bytes": 3733,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "final-Supply.log",
+      "result": "PASS",
+      "sha256": "2cb8cebd78d126542c9f2df742be7bff6ec9f44b44d6df7714a428be8f8f6292",
+      "bytes": 3405,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "final-Inspection.log",
+      "result": "PASS",
+      "sha256": "261f51afa7fcd10a242781910d61c652bb5bf9c6e9bf9a04f404011787313a54",
+      "bytes": 983,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "desktop-Supply-canonical-lock.log",
+      "result": "PASS",
+      "sha256": "e3d614f8a76bc76d9f6965e7adbae2ed624e7a51bf3e6b92a458b48351d3fd88",
+      "bytes": 3730,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "desktop-Sportmaster.log",
+      "result": "PASS",
+      "sha256": "834eef0c94b6cfd866cb13441f373d79284e95a8fee83a4616058aa31eec41c3",
+      "bytes": 5508,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "final-publish.log",
+      "result": "PASS",
+      "sha256": "9d32a16facf63849752a7c1214164993ff92e0adb29b8393c8096d7b902607e0",
+      "bytes": 4102,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "final-publish-identity.log",
+      "result": "PASS",
+      "sha256": "b48f7cffed3828ef33636deac1dd0799a3f4c8aee1fd612cbfa6f87dcd57602e",
+      "bytes": 1975,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "baseline-management.log",
+      "result": "FAILED_BEFORE_CORRECTION",
+      "sha256": "6e57ffcd537df9960c709a832eebb587c943e4d366abf6eddcfa4cd1792616fe",
+      "bytes": 5399,
+      "pass_output_lines": 43
+    },
+    {
+      "log": "b2-python-all.log",
+      "result": "FAILED_BEFORE_CORRECTION",
+      "sha256": "31b3b9d9a7be39e13d4ffe90945770a12d705c90f8653c753fe51698b52eaaf3",
+      "bytes": 1237,
+      "pass_output_lines": 0
+    },
+    {
+      "log": "final-Supply-identity.log",
+      "result": "INVOCATION_ERROR_UNSUPPORTED_OPTION",
+      "sha256": "e113642893d261ec90fdc0a2bd296117405d309bf49322e120678d3eda7b2ab9",
+      "bytes": 228,
+      "pass_output_lines": 0
+    }
+  ],
+  "not_run": [
+    "native WPF interaction",
+    "protected Windows offline maintenance and system install/repair/uninstall",
+    "elevated backup cancellation",
+    "vendor SDK/physical camera",
+    "customer RCS",
+    "field acceptance"
+  ],
+  "log_location": "Local ignored .artifacts/contract-convergence-03; counts of PASS output are not independent test counts"
+}

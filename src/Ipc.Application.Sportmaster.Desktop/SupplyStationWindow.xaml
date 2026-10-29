@@ -10,8 +10,6 @@
      <TextBlock x:Name="AccountIdentity" Text="{Binding AccountDisplay}" Focusable="True" FontSize="{x:Static type:UiTypography.Body}" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding AccountDisplay}" Margin="0,0,8,0"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="MaxWidth" Value="230"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="MaxWidth" Value="120"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
      <parameters:ManagementModeMenu Status="{Binding ManagementStatus}" ModeActionRequested="ManagementMode_Click"/>
      <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationButton}"/>
-     <Button Content="暂停供包" Click="Pause_Click" Visibility="{Binding PauseVisibility}" Style="{StaticResource StationButton}"/>
-     <Button Content="恢复供包" Click="Resume_Click" Visibility="{Binding ResumeVisibility}" IsEnabled="{Binding CanResumeInViewport}" Style="{StaticResource StationButton}"/>
     </StackPanel>
     <Button x:Name="ReturnToWork" DockPanel.Dock="Left" Content="返回作业" Click="Workstation_Click" Margin="0,0,16,0" MinHeight="44" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsInternalWorkspace}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0"><Image Source="pack://application:,,,/Ipc.Application.ParcelFlow.Desktop;component/Assets/cainiao.png" Width="24" Height="24" Stretch="Uniform" Margin="0,0,8,0" RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="菜鸟标志"/><TextBlock Text="菜鸟供包台" FontSize="{x:Static type:UiTypography.Body}" FontWeight="{x:Static type:UiTypography.Emphasis}" VerticalAlignment="Center" ToolTip="{Binding Station}"/></StackPanel>
@@ -53,10 +51,9 @@
   <Border x:Name="ViewportWarning" Grid.RowSpan="4" Grid.ColumnSpan="2" Background="{StaticResource StationBackground}" BorderBrush="{StaticResource Danger}" BorderThickness="2" Padding="24" Visibility="{Binding ViewportWarningVisibility}">
    <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
     <TextBlock Text="{Binding ViewportStatus}" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
-    <TextBlock Text="有效客户区至少需要 800 × 420 逻辑像素。当前窗口的新操作已禁用，已请求软件暂停；暂停结果以下方应用快照为准。" FontSize="{x:Static type:UiTypography.Body}" Margin="0,16"/>
+    <TextBlock Text="有效客户区至少需要 800 × 420 逻辑像素。请最大化窗口后操作；相机采集与当前任务继续运行。" FontSize="{x:Static type:UiTypography.Body}" Margin="0,16"/>
     <TextBlock Text="{Binding Status}"/><TextBlock Text="{Binding Message}"/><TextBlock Text="{Binding ReadStatus}" Margin="0,12"/>
-    <TextBlock Text="在途作业与原请求保持。空间恢复不会自动恢复入场；应用暂停且快照有效后，先确认视图，再核对现场并显式恢复。软件暂停不是安全急停。"/>
-    <WrapPanel Margin="0,16"><Button Content="最大化窗口" Click="Maximize_Click" Style="{StaticResource StationButton}"/><Button Content="重试软件暂停" Click="ViewportPause_Click" Style="{StaticResource StationButton}"/><Button Content="确认视图，保持暂停" Click="ViewportAcknowledge_Click" IsEnabled="{Binding CanAcknowledgeViewport}" Style="{StaticResource StationButton}"/></WrapPanel>
+    <WrapPanel Margin="0,16"><Button Content="最大化窗口" Click="Maximize_Click" Style="{StaticResource StationButton}"/></WrapPanel>
    </StackPanel></ScrollViewer>
   </Border>
  </Grid>

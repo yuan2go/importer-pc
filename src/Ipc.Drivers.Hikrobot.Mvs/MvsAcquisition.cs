@@ -15,7 +15,7 @@ public sealed class MvsAcquisitionModule : IObservationExtension
 
 // One acquisition/resource owner. Legacy acquisition has no decoder; the current
 // reader injects an actual in-process decoder and emits only decoded candidates.
-internal sealed class MvsAcquisition : IControlledObservationSource
+internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
 {
     readonly ExtensionContext context;
     readonly IMvsApi api;
@@ -96,7 +96,10 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                         throw new InvalidDataException("Original MVS physical serial changed; revise the approved device binding before replacement");
                     PhaseTo("lease"); lease = acquireLease(matches[0].Serial); physicalSerial = matches[0].Serial;
                     PhaseTo("create"); created = true; api.Create(matches[0]); token.ThrowIfCancellationRequested();
-                    PhaseTo("open-exclusive"); api.Open(); opened = true; token.ThrowIfCancellationRequested();
+                    PhaseTo("open-exclusive");
+                    try { api.Open(); }
+                    catch (IOException error) { throw new ObservationConnectionException("MVS相机暂时无法取得独占连接。", error); }
+                    opened = true; token.ThrowIfCancellationRequested();
                     PhaseTo("read-parameters");
                     if (decoder is not null)
                     {
@@ -147,7 +150,10 @@ internal sealed class MvsAcquisition : IControlledObservationSource
             while (!token.IsCancellationRequested)
             {
                 PhaseTo("get-image-buffer");
-                var frame = api.Acquire();
+                MvsFrame? frame;
+                try { frame = api.Acquire(); }
+                catch (IOException error) when (!api.Connected())
+                { throw new ObservationConnectionException("MVS相机连接已断开。", error); }
                 if (frame is not null)
                 {
                     byte[]? pixels = null; var length = 0; var observedAt = DateTimeOffset.UtcNow;
@@ -205,7 +211,7 @@ internal sealed class MvsAcquisition : IControlledObservationSource
                 {
                     PhaseTo("connection-check");
                     if (!api.Connected() || api.Enumerate().Count(d => d.Ip == ip && d.Serial == physicalSerial) != 1)
-                        throw new IOException("MVS original camera disconnected or identity changed");
+                        throw new ObservationConnectionException("MVS原相机断开或当前设备身份不匹配。", new IOException("Original camera unavailable"));
                     if (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0)
                         throw new IOException("MVS device trigger setting changed");
                     PhaseTo(decoder is null ? "acquiring-decoder-unavailable" : "reading"); Publish(decoder is null ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
@@ -215,7 +221,7 @@ internal sealed class MvsAcquisition : IControlledObservationSource
         catch (Exception ex)
         {
             lock (gate) failure = ex.GetType().Name + ": " + ex.Message;
-            try { Publish(DeviceHealth.Faulted); }
+            try { Publish(ex is ObservationConnectionException ? DeviceHealth.Disconnected : DeviceHealth.Faulted); }
             catch (Exception host) { lock (gate) failure += "; health receiver=" + host.GetType().Name; }
         }
     }

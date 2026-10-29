@@ -18,7 +18,6 @@ public partial class SupplyStationWindow : Window
     readonly SupplyStationWindow root;
     readonly HashSet<SupplyStationWindow> windows;
     Task pendingRefresh = Task.CompletedTask;
-    Task pendingViewportPause = Task.CompletedTask;
     bool compact, closing, closeReady, closed, pendingMaintenanceLoad;
     long closeGeneration;
     public SupplyStationViewModel ViewModel { get; }
@@ -116,21 +115,10 @@ public partial class SupplyStationWindow : Window
     {
         if (closing || closed || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
         ApplyLayout();
-        if (ViewModel.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight)) QueueViewportPause();
-    }
-    void QueueViewportPause()
-    {
-        if (!closing && !closed && pendingViewportPause.IsCompleted) pendingViewportPause = ViewModel.PauseAsync();
+        ViewModel.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight);
     }
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
-    void ViewportPause_Click(object sender, RoutedEventArgs e) => QueueViewportPause();
-    void ViewportAcknowledge_Click(object sender, RoutedEventArgs e) => ViewModel.AcknowledgeViewport();
     public async Task ShowDetailsAsync(ParcelOperation operation) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operation.Id), "读取原作业详情"); }
-    async void Pause_Click(object sender, RoutedEventArgs e) => await ViewModel.PauseAsync();
-    async void Resume_Click(object sender, RoutedEventArgs e)
-    {
-        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), "恢复新入场");
-    }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     public Func<string, bool>? ConfirmOwnerExit { get; set; }
     public Func<Task>? ReopenOwnerAsync { get; set; }
@@ -164,7 +152,7 @@ public partial class SupplyStationWindow : Window
         {
             // Close cannot re-enter a native WPF Closing event even when every drain task is already complete.
             await System.Windows.Threading.Dispatcher.Yield();
-            await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
+            await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
             if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(this, ViewModel.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }

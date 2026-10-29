@@ -14,6 +14,17 @@ internal static partial class MvsVerification
         Check(Marshal.SizeOf<MvsNative.FrameInfo>() == 256 && MvsNative.FrameOutBytes == 328 && Marshal.OffsetOf<MvsNative.FrameInfo>("TriggerIndex").ToInt32() == 76 &&
             Marshal.OffsetOf<MvsNative.FrameInfo>("ExtendedLength").ToInt32() == 120 && MvsNative.DescriptorBytes == 636, "x64 layouts match installed vendor header and official managed wrapper cross-check");
         var api = new Fake(); var lease = new Lease(); var health = new ConcurrentQueue<DeviceHealthConfirmation>(); int observations = 0;
+        var stoppedApi = new Fake { StopResult = unchecked((int)0x80000003), CloseResult = unchecked((int)0x80000003), FailStage = "destroy" };
+        var stoppedLease = new Lease();
+        await using (var source = Source(stoppedApi, stoppedLease))
+        {
+            await source.StartControlledAsync("already-stopped", _ => true, _ => { }, default);
+            try { await source.StopAsync(default); throw new Exception("Destroy failure lost"); }
+            catch (IOException) { Check(stoppedLease.Releases == 0 && !stoppedApi.Calls.Contains("finalize"), "call-order stop/close continues teardown but failed destroy retains the original lease and SDK owner"); }
+            stoppedApi.FailStage = "";
+            await source.StopAsync(default);
+            Check(source.Phase == "stopped" && stoppedLease.Releases == 1 && stoppedApi.Calls.Last() == "finalize", "retry completes real destroy/finalize after an already-stopped stream; application can exit");
+        }
         await using (var source = Source(api, lease))
         {
             await source.StartControlledAsync("mvs-one", _ => { observations++; return true; }, health.Enqueue, default);
@@ -128,12 +139,15 @@ internal static partial class MvsVerification
             Check(a.Failure.Contains("gap/reset") && b.Failure.Length == 0 && right.Freed == 2, "overload/frame gap faults one acquisition while the other camera remains isolated");
         }
         var noTrigger = new Fake();
+        var disconnectedHealth = new System.Collections.Concurrent.ConcurrentQueue<DeviceHealth>();
         await using (var source = Source(noTrigger, new()))
         {
-            await source.StartControlledAsync("no-trigger", _ => true, _ => { }, default); await Task.Delay(1100);
+            await source.StartControlledAsync("no-trigger", _ => true, h => disconnectedHealth.Enqueue(h.Health), default); await Task.Delay(1100);
             Check(source.Failure.Length == 0 && source.Frames == 0, "ordinary no-trigger/no-frame is not treated as a disconnection");
             noTrigger.Online = false; await Until(() => source.Failure.Length > 0);
-            Check(source.Failure.Contains("disconnected"), "actual connection failure fences acquisition without automatic reconnect");
+            await Until(() => disconnectedHealth.Contains(DeviceHealth.Disconnected));
+            Check(source.Failure.Contains(nameof(ObservationConnectionException)) && disconnectedHealth.Last() == DeviceHealth.Disconnected,
+                "actual connection failure fences acquisition and publishes transport disconnection for application-owned recovery");
         }
         bool rejected = false;
         try { _ = Source(new(), new(), new() { ["device.ip"] = "192.0.2.1", ["entity.mode"] = "trigger" }); } catch (InvalidDataException ex) when (ex.Message.Contains("DecoderUnavailable")) { rejected = true; }
@@ -156,6 +170,7 @@ internal static partial class MvsVerification
     {
         internal string Ip = "192.0.2.1", Serial = "SYNTH-LEFT", FailStage = "";
         internal bool FailFree, Online = true, Discovered = true;
+        internal int StopResult, CloseResult;
         internal int Freed;
         internal Action? Acquiring;
         internal ConcurrentQueue<MvsFrame> Frames = new();
@@ -173,8 +188,8 @@ internal static partial class MvsVerification
         public MvsFrame? Acquire() { Acquiring?.Invoke(); if (HasFrame) throw new InvalidOperationException("Loan still held"); if (Frames.TryDequeue(out var f)) { HasFrame = true; return f; } Thread.Sleep(5); return null; }
         public void Release() { if (FailFree) throw new IOException("Synthetic FreeImageBuffer failure"); if (HasFrame) { Freed++; HasFrame = false; } }
         public bool Connected() => Online;
-        public void Stop() => Call("stop");
-        public void Close() => Call("close");
+        public void Stop() { Call("stop"); MvsNative.CheckTeardownTransition(StopResult, "StopGrabbing"); }
+        public void Close() { Call("close"); MvsNative.CheckTeardownTransition(CloseResult, "CloseDevice"); }
         public void Destroy() => Call("destroy");
         public void Shutdown() => Call("finalize");
     }

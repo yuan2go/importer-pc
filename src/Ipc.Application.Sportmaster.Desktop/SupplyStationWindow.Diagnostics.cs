@@ -105,7 +105,7 @@ public partial class SupplyStationWindow
         reconnect.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanReconnectConfigured)));
         reconnect.Click += async (_, _) => await ViewModel.ReconnectConfiguredAsync(); body.Children.Add(reconnect);
         body.Children.Add(Text(nameof(ViewModel.ReconnectHint), UiTypography.Label));
-        body.Children.Add(new TextBlock { Text = "重连后仍保持暂停，使用当前运行配置；不重发结果未知的原请求。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
+        body.Children.Add(new TextBlock { Text = "相机断线后自动重连，使用当前运行配置；结果未知的原请求不会重发。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
         var tools = new WrapPanel { Margin = new(0, 8, 0, 0) };
         foreach (var (label, index) in new[] { ("核对配置生效情况", 2), ("核对备份恢复结果", 6), ("处理待核对作业", 8) })
         {

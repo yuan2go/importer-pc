@@ -1,3 +1,5 @@
+> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
+
 # 文档索引
 
 2026-10-29 用户要求当前SM全部内置、停用外置扩展；修复首次配置启用被外置目录/信任/资格错误阻断，见[工作包](work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)与[运行记录](runtime/sm-built-in-only-01.md)。本轮处理实际装配，不改页面；SDK、身份与业务守卫保持。

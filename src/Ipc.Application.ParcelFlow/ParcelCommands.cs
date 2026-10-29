@@ -102,7 +102,7 @@ public sealed partial class ParcelRuntime
                 case "ReceiptResponsibilities" when command.Owner is not null:
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
-                case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
+                case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); resumePriorPause = false; break;
                 case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
                 case "AcknowledgeOverload" when repository.Paused && overload != 0 && Volatile.Read(ref pendingOverloadWrites) == 0 && positionQueues.Values.All(q => q.Reader.Count == 0):
@@ -156,10 +156,24 @@ public sealed partial class ParcelRuntime
     {
         await gate.WaitAsync().ConfigureAwait(false);
         ConfigurationChangeAudit? audit = null;
+        var ownsQuiescence = false;
         try
         {
-            if (stopped || configuration is null || !CanConfigure) return new("Rejected", "Pause and authenticate maintenance before configuration", repository?.Revision ?? 0);
+            if (stopped || stopping.IsCancellationRequested || configuration is null || !CanSaveConfiguration) return new("Rejected", "Configuration maintenance is unavailable; enter management mode and wait for the current operation", repository?.Revision ?? 0);
             if (string.IsNullOrWhiteSpace(reason) || reason.Length > 1024) return new("Rejected", "A maintenance change reason of 1..1024 characters is required", repository!.Revision);
+            if (definition.AutomaticConfigurationQuiescence)
+            {
+                configurationSaving = ownsQuiescence = true;
+                var deadline = DateTimeOffset.UtcNow.AddSeconds(10);
+                while (externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0)
+                {
+                    if (DateTimeOffset.UtcNow >= deadline) return new("Rejected", "当前请求尚未完成，设置未保存；原配置及请求保持。", repository!.Revision);
+                    gate.Release();
+                    try { await Task.Delay(25, stopping.Token).ConfigureAwait(false); }
+                    finally { await gate.WaitAsync().ConfigureAwait(false); }
+                }
+                stopping.Token.ThrowIfCancellationRequested(); Management.Require();
+            }
             candidate = Wire.Decode<ParcelConfiguration>(Wire.Encode(candidate));
             audit = new(Wire.Id(), DateTimeOffset.UtcNow, currentOperator, reason, configuration.Current.Revision, configuration.Current.Revision,
                 Wire.Hash(Wire.Encode(Effective)), Wire.Hash(Wire.Encode(candidate)), "Prepared", BeforeEffective: Effective, BeforePending: configuration.Current.Pending, Candidate: candidate, Authorization: ManagementEvidence);
@@ -202,7 +216,7 @@ public sealed partial class ParcelRuntime
             }
             return new("Rejected", ex.Message, repository?.Revision ?? 0);
         }
-        finally { gate.Release(); }
+        finally { if (ownsQuiescence) configurationSaving = false; gate.Release(); }
     }
     public Task<BusinessReceipt> ReconnectAsync() => MaintainDevicesAsync(null);
     public Task<BusinessReceipt> ReconnectDeviceAsync(string deviceId) => MaintainDevicesAsync(deviceId);

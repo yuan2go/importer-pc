@@ -68,8 +68,8 @@ static partial class Program
         vm.MarkReadFailure("SYNTHETIC stale probe");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行状态未知") && !vm.ParameterRuntimeSummary(target).Contains("运行连接：已确认"), "stale snapshot cannot continue presenting a healthy connection");
         var staleReview = new ConfigurationSaveReviewWindow(window, vm); staleReview.Show(); staleReview.UpdateLayout();
-        Check(Descendants(staleReview).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
-            "stale saved pause state cannot hide the independent pause action in review");
+        Check(!Descendants(staleReview).OfType<Button>().Single(b => b.Name == "ReviewPause").IsVisible,
+            "SM stale review does not reintroduce the retired manual pause control");
         CaptureInternal(evidence, "v3-save-review", staleReview, lines);
         staleReview.Close();
         await Until(() => vm.Fresh);

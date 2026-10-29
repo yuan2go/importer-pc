@@ -13,9 +13,9 @@ public sealed partial class ParcelRuntime : IParcelConfigurationDraftApplication
         {
             Management.Require();
             if (!saving) return;
-            if (repository?.Paused != true) throw new UnauthorizedAccessException("先暂停新入场，再保存未完成设置；当前输入保留");
+            if (!definition.AutomaticConfigurationQuiescence && repository?.Paused != true) throw new UnauthorizedAccessException("先暂停新入场，再保存未完成设置；当前输入保留");
             if (!MaintenanceAuthorized) throw new UnauthorizedAccessException("维护认证缺失或已过期，重新认证后保存；当前输入保留");
-            if (externalWaits != 0) throw new InvalidOperationException("在途检查尚未排空，稍后重新保存未完成设置；当前输入保留，不重复发送业务请求");
+            if (!definition.AutomaticConfigurationQuiescence && externalWaits != 0) throw new InvalidOperationException("在途检查尚未排空，稍后重新保存未完成设置；当前输入保留，不重复发送业务请求");
         });
     public async Task<string> ConfigurationEditorHashAsync(long expectedRevision)
     {

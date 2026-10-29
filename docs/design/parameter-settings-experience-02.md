@@ -1,3 +1,5 @@
+> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
+
 > 最新用户纠偏：[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。SM首配与日常相机仅内置SDK，无TCP选择或独立安装入口；RCS source=BAR、locale=zh_CN固定，无编辑项。原分包安装/来源语言输入条款保留形成时范围。
 
 > 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。

@@ -5,7 +5,7 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
-        !stopping.IsCancellationRequested && !backupInProgress;
+        !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving;
     bool CanResume() => CapacityAvailable && SharedReady() && positions.Keys.Any(PositionReady);
     bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
@@ -24,7 +24,10 @@ public sealed partial class ParcelRuntime
         (op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 } || op.Wcs.State is StageState.Accepted or StageState.Rejected) &&
         (op.Plc is null || op.Plc is { State: StageState.Prepared, Attempts: 0 }) &&
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
-    bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress;
+    bool configurationSaving, resumePriorPause;
+    bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress && !configurationSaving;
+    bool CanSaveConfiguration => repository is not null && MaintenanceAuthorized && !backupInProgress && !configurationSaving &&
+        (definition.AutomaticConfigurationQuiescence || repository.Paused && externalWaits == 0);
     bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
         !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
     bool CanAdmit() => positions.Keys.Any(CanAdmit);
@@ -42,7 +45,7 @@ public sealed partial class ParcelRuntime
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, CanAdmit(p.Id), current?.Id, reasons.ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled));
     }).ToArray();
-    ParcelAvailability Availability() => new(CanAdmit(), CanResume(), CanConfigure,
+    ParcelAvailability Availability() => new(CanAdmit(), CanResume(), CanSaveConfiguration,
         operations.Values.Where(CanContinue).Select(x => x.Id).ToArray(), operations.Values.Where(CanContinueUpload).Select(x => x.Id).ToArray(), operations.Values.Where(CanAbandon).Select(x => x.Id).ToArray());
     async Task<T> ExternalAsync<T>(Func<Task<T>> action)
     {
@@ -80,6 +83,8 @@ public sealed partial class ParcelRuntime
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
                 try
                 {
+                    if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)
+                    { repository!.Commit(null, "AutomaticSupplyRestored", "Retired manual pause restored after startup readiness checks", paused: false); resumePriorPause = false; }
                     if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); }
                     RefreshStorageCapacity(); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
                 }

@@ -40,6 +40,10 @@ Saved只表示原图保存完成，不代表RCS接受或物理完成。Failed记
 
 Windows原生WPF覆盖首配/日常共模、默认开关、编辑/预览/校验/刷新保留、紧凑窗口滚动；Windows PNG解码器独立核对原始像素。构建、断言数、精确提交和边界见[摘要](evidence/sm-original-frame-01/summary.json)。计数是断言行，不是现场用例数。SDK/真实相机、现场RCS、新包安装/拔插、目标机长稳及新增留档后的性能验收均NOT_RUN。
 
+最终代码`7afd1e1113cdb93421795d9986dcad3d31159449`在干净工作区完成构建及回归：同帧留档22、6MP软件全链12、原生WPF47、Probe141、Sportmaster RCS156、保留维护61条PASS断言；Python独立账18条PASS。新增三个原始帧使用相同条码但不同像素，核对各自PNG与帧身份，避免用同码相同图片掩盖错配。[参数实物截图](evidence/sm-original-frame-01/parameters-multicode.png)使用合成候选。
+
+扩大运行`--backup-health-recovery`有三项失败，没有记为通过或跳过：两个用例需要当前Windows账户缺少的符号链接权限；`restored-mode-qualification`仍构造已被当前SM工厂拒绝的旧手动读码配置。在同机独立检出的main `f870ffc00abcba78497b3d01d83251d786052ae3`完整复现同样三项失败，构建通过。新增原图备份、恢复证据与退役清理专项已通过；日志哈希及基线来源见摘要。
+
 ```powershell
 . ./scripts/project-environment.ps1
 dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false

@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "09711411d67641ec589df1ceafa2c6ecdfccb066d98db0e85a314bbb5cff7345",
-      "size_bytes": 12145,
-      "git_blob": "fb44a75a31c43161f0b0b8b091505ef94e14b643",
+      "sha256": "f4b445b24ab26e17e3c594a52ba2aa3fd2daec61fae3178186246bb19962cdc6",
+      "size_bytes": 12305,
+      "git_blob": "1559218747b53fff8773643c815c8be64b4df489",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -106412,9 +106412,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-ORIGINAL-FRAME-01; original evidence retains its own SourceCommit",
-      "sha256": "cb44c217a7565df036d12bf376859b4ed9200413ea1f4d25bd77187a9e38a24e",
-      "size_bytes": 3321,
-      "git_blob": "fbfa217b1d545f7119bc98ec23b5d980a572a770",
+      "sha256": "b303272aadd8aab08fa9638bd4ad0959eec6e9ac9e3ccf7fef5f515dbc39105c",
+      "size_bytes": 8731,
+      "git_blob": "d4869e74b6d3eeecab5a97c30a46af17011f1dc0",
       "storage_scope": "public_repository"
     },
     {
@@ -106423,9 +106423,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-ORIGINAL-FRAME-01; original evidence retains its own SourceCommit",
-      "sha256": "02219fa1ef39d3a2e7d9432dca2af10be9772deed40fa1cf37eaf4d755c95ee7",
-      "size_bytes": 6522,
-      "git_blob": "1126bd2fe04afeb7589e257d6376085b59f3c772",
+      "sha256": "fccbb5f13f1a985071c74ed0a3576b4a8dcb21b6fe40e407fa256ed0f2d8c8bc",
+      "size_bytes": 7456,
+      "git_blob": "3b1932b33a3f5fa0157fa7bee1eeee8a10511633",
       "storage_scope": "public_repository"
     },
     {
@@ -106492,6 +106492,17 @@
       "sha256": "0ed7800cb46cd5e282556c3b1941e0fb569b75cd6fe44cf8a18e7d71bbc3618e",
       "size_bytes": 16758,
       "git_blob": "bacaea6c995a2a1fc1cb3d526e23e13d235c1600",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-original-frame-01/parameters-multicode.png",
+      "version": "sm-original-frame-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-ORIGINAL-FRAME-01; original evidence retains its own SourceCommit",
+      "sha256": "3cd3b7086615d3216acbd4b1c2c394d7d43b68d0cf816f04637238b1deb16d8f",
+      "size_bytes": 172202,
+      "git_blob": "0f6562f2e8c68e93ec82653e42175fabe1824462",
       "storage_scope": "public_repository"
     }
   ],

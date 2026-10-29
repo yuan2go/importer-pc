@@ -115,8 +115,17 @@ namespace Ipc.Application.ParcelFlow.Desktop
 namespace Ipc.Application.Sportmaster.Desktop
 {
     public class SupplyStationPosition { public object? DataContext { get; set; } }
+    // Cross-platform event harness only; the real control is exercised by
+    // Ipc.Desktop.UiVerification --camera-debug on Windows.
+    internal sealed class StationDebugControl : System.Windows.FrameworkElement
+    {
+        public StationDebugControl(SupplyStationViewModel vm, Func<string, Task> settings, Func<string, Task> details) { }
+        public void SelectPosition(string position) { }
+        public void Revoke() { }
+    }
     public partial class SupplyStationWindow
     {
+        Task OpenOperatorSettingsAsync(string? deviceId = null, string? instanceId = null) => Task.CompletedTask;
         readonly System.Windows.Controls.Grid workContent = new();
         void BuildOperatorWorkspace() { workContent.Children.Add(work); }
         readonly System.Windows.Controls.Grid ClientArea = new();

@@ -31,6 +31,9 @@ public abstract partial class StartupWorkflowWindow : Window
         {
             installationSteps[i].Foreground = i == step ? new SolidColorBrush(Color.FromRgb(8, 102, 232)) : new SolidColorBrush(Color.FromRgb(98, 107, 120));
             installationSteps[i].FontWeight = i == step ? UiTypography.Emphasis : FontWeights.Normal;
+            installationSteps[i].Background = i == step ? new SolidColorBrush(Color.FromRgb(232, 240, 254)) : Brushes.Transparent;
+            installationSteps[i].Padding = new(8, 12, 8, 12);
+            installationSteps[i].FontSize = UiTypography.Label;
         }
     }
     protected bool Busy;
@@ -47,7 +50,7 @@ public abstract partial class StartupWorkflowWindow : Window
         {
             Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
             var layout = new Grid(); layout.ColumnDefinitions.Add(new() { Width = new(176) }); layout.ColumnDefinitions.Add(new());
-            var rail = new StackPanel { Margin = new(24, 28, 24, 24) };
+            var rail = new StackPanel { Margin = new(16, 28, 16, 24) };
             rail.Children.Add(new Image { Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Ipc.Desktop;component/Assets/cainiao.png")), Width = 48, Height = 48, HorizontalAlignment = HorizontalAlignment.Left });
             rail.Children.Add(new TextBlock { Text = "菜鸟供包台", FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 16, 0, 16) });
             foreach (var (label, index) in new[] { ("1  安装选项", 0), ("2  确认并安装", 1), ("3  安装完成", 2) })

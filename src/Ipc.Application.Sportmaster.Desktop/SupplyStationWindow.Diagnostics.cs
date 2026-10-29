@@ -67,6 +67,13 @@ public partial class SupplyStationWindow
         feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.TaskFeedback))); header.Children.Add(feedback);
         DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var body = new StackPanel { Margin = new(24, 0, 24, 16) };
+        var connections = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Stretch };
+        body.Children.Add(connections);
+        connections.SizeChanged += (_, _) =>
+        {
+            var columns = connections.ActualWidth >= 1020 ? 3 : 1;
+            foreach (var card in connections.Children.OfType<Border>()) card.Width = Math.Max(240, connections.ActualWidth / columns - 12);
+        };
         TextBlock Text(string property, double size = UiTypography.Body)
         {
             var text = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = size, Margin = new(0, 4, 0, 4) };
@@ -74,23 +81,33 @@ public partial class SupplyStationWindow
         }
         void Connection(string label, string diagnosis, string time, Func<Task> configure, SupplyStationPositionViewModel? position = null)
         {
-            var row = new Grid { Margin = new(0, 0, 0, 16) };
-            row.ColumnDefinitions.Add(new() { Width = new(100) }); row.ColumnDefinitions.Add(new()); row.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            row.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Position, FontWeight = UiTypography.Emphasis, Margin = new(0, 8, 12, 0) });
-            var facts = new StackPanel { Margin = new(0, 0, 16, 0) };
+            var row = new StackPanel();
+            var heading = new DockPanel { Margin = new(0, 0, 0, 8) };
+            var badge = new TextBlock { FontSize = UiTypography.Label, VerticalAlignment = VerticalAlignment.Center, Margin = new(8, 0, 0, 0) };
+            badge.Padding = new(6, 3, 6, 3);
+            badge.SetBinding(TextBlock.ForegroundProperty, new Binding(position is null ? "RcsPresentation.Foreground" : "DevicePresentation.Foreground") { Source = position is null ? ViewModel : position });
+            badge.SetBinding(TextBlock.BackgroundProperty, new Binding(position is null ? "RcsPresentation.Background" : "DevicePresentation.Background") { Source = position is null ? ViewModel : position });
+            badge.SetBinding(TextBlock.TextProperty, new Binding(position is null ? nameof(ViewModel.RcsServiceStatus) : nameof(position.DeviceLabel)) { Source = position is null ? ViewModel : position });
+            DockPanel.SetDock(badge, Dock.Right); heading.Children.Add(badge);
+            heading.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Position, FontWeight = UiTypography.Emphasis }); row.Children.Add(heading);
+            var facts = new StackPanel();
             facts.Children.Add(Text(diagnosis)); facts.Children.Add(Text(time, UiTypography.Label));
-            Grid.SetColumn(facts, 1); row.Children.Add(facts);
-            var actions = new StackPanel();
+            row.Children.Add(facts);
+            var actions = new WrapPanel { Margin = new(0, 8, 0, 0) };
             var edit = new Button { Content = "设置" + label, MinHeight = 44, MinWidth = 112 };
             edit.Click += async (_, _) => await configure(); actions.Children.Add(edit);
             if (position is not null)
             {
+                var debugButton = new Button { Content = "调试" + label, MinHeight = 44, Margin = new(8, 0, 0, 0) };
+                debugButton.Click += (_, _) => ShowPositionDebug(position); actions.Children.Add(debugButton);
                 var original = new Button { Content = "查看包裹记录", MinHeight = 44, Margin = new(0, 4, 0, 0), DataContext = position };
                 original.SetBinding(IsEnabledProperty, new Binding(nameof(position.CanReconcile)));
                 original.SetBinding(VisibilityProperty, new Binding(nameof(position.CanReconcile)) { Converter = new BooleanToVisibilityConverter() });
                 original.Click += async (_, _) => { if (position.Operation is { } operation) await ShowDetailsAsync(operation); }; actions.Children.Add(original);
             }
-            Grid.SetColumn(actions, 2); row.Children.Add(actions); body.Children.Add(row);
+            row.Children.Add(actions);
+            connections.Children.Add(new Border { Child = row, BorderBrush = (System.Windows.Media.Brush)FindResource("StationLine"), BorderThickness = new(1),
+                CornerRadius = new(8), Padding = new(16), Margin = new(0, 0, 12, 12), Background = System.Windows.Media.Brushes.White });
             diagnosticObjects[position?.ReaderId ?? "shared"] = row;
         }
         Connection("左相机", nameof(ViewModel.LeftConnectionDiagnosis), nameof(ViewModel.LeftConnectionTime), () => OpenOperatorSettingsAsync(ViewModel.Left.ReaderId), ViewModel.Left);
@@ -103,8 +120,9 @@ public partial class SupplyStationWindow
         body.Children.Add(Text(nameof(ViewModel.DiagnosticCapacity)));
         var reconnect = new Button { Content = "重新连接设备与服务", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
         reconnect.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanReconnectConfigured)));
-        reconnect.Click += async (_, _) => await ViewModel.ReconnectConfiguredAsync(); body.Children.Add(reconnect);
-        body.Children.Add(Text(nameof(ViewModel.ReconnectHint), UiTypography.Label));
+        reconnect.Click += async (_, _) => await ViewModel.ReconnectConfiguredAsync();
+        var controlled = new StackPanel(); controlled.Children.Add(reconnect); controlled.Children.Add(Text(nameof(ViewModel.ReconnectHint), UiTypography.Label));
+        body.Children.Add(new Expander { Header = "连接仍未恢复？查看受控重连", Content = controlled, Margin = new(0, 8, 0, 8) });
         body.Children.Add(new TextBlock { Text = "相机断线后自动重连，使用当前运行配置；结果未知的原请求不会重发。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
         var tools = new WrapPanel { Margin = new(0, 8, 0, 0) };
         foreach (var (label, index) in new[] { ("核对配置生效情况", 2), ("核对备份恢复结果", 6), ("处理待核对作业", 8) })

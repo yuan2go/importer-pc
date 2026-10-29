@@ -25,7 +25,8 @@ public partial class SupplyStationWindow
         if (!ViewModel.IsManagementMode)
         {
             logs?.Revoke();
-            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
+            debug?.Revoke();
+            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
         }
     }
 }

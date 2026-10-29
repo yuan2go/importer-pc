@@ -29,6 +29,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly TextBlock preparationFile = new() { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label };
     readonly TextBlock installationStage = new() { FontSize = UiTypography.Body, TextWrapping = TextWrapping.Wrap, Margin = new(0, 24, 0, 14) };
     readonly List<string> installationDetails = [];
+    TextBox? installationDetailView;
     DeploymentMedia? media;
     WindowsDeploymentRequest? reviewed;
     DeploymentComponentReview[] components = [];
@@ -166,8 +167,10 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(440, MaxHeight);
             Message("请稍候，安装完成后将显示结果。");
-            Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 6, Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) });
-            Note("安装提交期间无法安全取消，请等待结果。"); return;
+            Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 10, Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)), Margin = new(0, 12, 0, 12) });
+            Body.Children.Add(new TextBlock { Text = "阶段由实际安装回执更新；当前没有可核验的总进度百分比。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
+            Details();
+            Note("已进入安装提交，不能取消或重复安装。若回执中断，请只读核对原操作；关闭窗口不代表回滚。"); return;
         }
         Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和安装设置，然后点击下一步。", 2 => "本次操作：" + installationKind + "。核对以下选项后开始。", _ => "菜鸟供包台已安装。" });
         if (step == 0)
@@ -187,6 +190,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu };
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon); Row("快捷方式", shortcuts);
+            if (ApplicationId == "sportmaster")
+                Note("相机与 RCS：内置 MVS 采图、软件识别和 RCS 随软件交付，不需要选装外置扩展。安装核验不代表相机或现场 RCS 已连接。程序与数据位置遵守本机 D 盘存储策略。");
             installationKind = current is null ? "安装" : current.LifecycleState != "Installed" ? "重新安装" : current.SourceCommit == media?.SourceCommit ? "修复安装" : "更新";
             if (current is not null) Message("本次操作：" + installationKind + "。原账户、数据和配置将保留。");
             if (current is not null) Note("本次" + installationKind + "保留原账户、数据目录和配置；先核对原责任并完成所需完整备份。" +
@@ -236,7 +241,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Body.Children.Add(new Expander { Header = "安装详情", Content = new Border { Background = new SolidColorBrush(Color.FromRgb(246, 248, 251)), CornerRadius = new(4), Padding = new(12), Margin = new(0, 8, 0, 0), Child = content }, IsExpanded = false });
             return;
         }
-        content.Children.Add(new TextBox { Text = original, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 0, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        installationDetailView = new TextBox { Text = original, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 0, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        content.Children.Add(installationDetailView);
         content.Children.Add(new TextBlock { Text = failureMessage, TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 0) });
         Body.Children.Add(new Expander { Header = "查看本次安装详情", Content = content, IsExpanded = true, Margin = new(0, 12, 0, 0) });
     }
@@ -275,6 +281,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         };
         AutomationProperties.SetLiveSetting(installationStage, AutomationLiveSetting.Polite);
         installationDetails.Add(installationStage.Text);
+        if (installationDetailView is not null) installationDetailView.Text = string.Join("\n", installationDetails);
     }
     protected override void OperationFailed(Exception error)
     {

@@ -17,8 +17,10 @@ public abstract partial class StartupWorkflowWindow
     CancellationTokenSource? maintenanceCancellation;
     long maintenanceGeneration;
     string? unknownMaintenanceContext;
+    bool maintenanceCompact;
     FrameworkElement CreateMaintenancePanel(bool compact=false)
     {
+        maintenanceCompact=compact;
         if(compact)maintenanceReadout.MaxHeight=90;
         AutomationProperties.SetAutomationId(maintenanceReadout,"Maintenance.Progress");
         AutomationProperties.SetName(maintenanceReadout,"维护对象、阶段和停止影响");
@@ -42,6 +44,7 @@ public abstract partial class StartupWorkflowWindow
         if(readOnly&&unknownMaintenanceContext is not null)context="原操作结果待核对：\n"+unknownMaintenanceContext+"\n本次只读检查：\n"+context;
         Message(UnknownOutcome?"原操作仍待核对；只读检查不会解除原提交阻断。":"维护正在执行，请查看当前阶段；原责任继续保留。");
         using var cancellation=new CancellationTokenSource();maintenanceCancellation=cancellation;var generation=++maintenanceGeneration;
+        if(maintenanceCompact){maintenanceReadout.MinHeight=54;maintenanceReadout.MaxHeight=90;maintenanceElapsed.Visibility=Visibility.Visible;}
         maintenancePanel.Visibility=Visibility.Visible;maintenanceCancel.Visibility=canRequestCancellation?Visibility.Visible:Visibility.Collapsed;maintenanceCancel.IsEnabled=canRequestCancellation;
         maintenanceReadout.Text=(canRequestCancellation?"等待授权与检查；提交前可以请求取消。":"正在核对并继续原操作；此项不提供取消。")+"\n"+context;maintenanceReadout.Focus();
         var elapsed=Stopwatch.StartNew();
@@ -84,7 +87,10 @@ public abstract partial class StartupWorkflowWindow
         catch
         {maintenanceReadout.Text="操作未完成；保留已生成文件并核对下方原因，不按取消或回滚处理。\n"+context;throw;}
         finally
-        {timer.Stop();elapsed.Stop();UpdateElapsed();maintenanceGeneration++;maintenanceCancellation=null;maintenanceCancel.IsEnabled=false;maintenanceCancel.Visibility=Visibility.Collapsed;}
+        {timer.Stop();elapsed.Stop();UpdateElapsed();maintenanceGeneration++;maintenanceCancellation=null;maintenanceCancel.IsEnabled=false;maintenanceCancel.Visibility=Visibility.Collapsed;
+            // Keep the complete read-only receipt scrollable, while returning space
+            // to installer options after a known result. Active/unknown stays expanded.
+            if(maintenanceCompact&&!UnknownOutcome){maintenanceReadout.MinHeight=42;maintenanceReadout.MaxHeight=42;maintenanceElapsed.Visibility=Visibility.Collapsed;}}
     }
     protected Task RunMaintenance(string context,Func<IProgress<MaintenanceProgress>,CancellationToken,Task> operation)
         => RunMaintenance(context,async(progress,token)=>{await operation(progress,token);return true;});

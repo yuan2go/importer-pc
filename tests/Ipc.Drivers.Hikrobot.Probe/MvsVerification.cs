@@ -11,6 +11,7 @@ internal static partial class MvsVerification
     static MvsAcquisition Source(Fake api, Lease lease, Dictionary<string, string>? parameters = null) => new(new("synthetic.mvs", api.Ip, parameters ?? new() { ["device.ip"] = api.Ip }), api, _ => lease);
     internal static async Task Run()
     {
+        await VerifyPreview();
         Check(Marshal.SizeOf<MvsNative.FrameInfo>() == 256 && MvsNative.FrameOutBytes == 328 && Marshal.OffsetOf<MvsNative.FrameInfo>("TriggerIndex").ToInt32() == 76 &&
             Marshal.OffsetOf<MvsNative.FrameInfo>("ExtendedLength").ToInt32() == 120 && MvsNative.DescriptorBytes == 636, "x64 layouts match installed vendor header and official managed wrapper cross-check");
         var api = new Fake(); var lease = new Lease(); var health = new ConcurrentQueue<DeviceHealthConfirmation>(); int observations = 0;

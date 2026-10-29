@@ -15,8 +15,10 @@ public sealed class MvsAcquisitionModule : IObservationExtension
 
 // One acquisition/resource owner. Legacy acquisition has no decoder; the current
 // reader injects an actual in-process decoder and emits only decoded candidates.
-internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
+internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource, IObservationPreviewSource
 {
+    readonly MvsPreview preview = new();
+    public ObservationPreview? ReadPreview() => disposeRequested ? null : preview.Read();
     readonly ExtensionContext context;
     readonly IMvsApi api;
     readonly IMonoBarcodeDecoder? decoder;
@@ -81,6 +83,7 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
             lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; }
             try
             {
+                preview.Clear();
                 Publish(DeviceHealth.Connecting);
                 await Task.Run(() =>
                 {
@@ -188,7 +191,11 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
                     if (pixels is not null)
                     {
                         string[] codes;
-                        try { PhaseTo("decode"); codes = decoder!.Decode(pixels, length, checked((int)frame.Width), checked((int)frame.Height)); }
+                        try
+                        {
+                            preview.Offer(pixels, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
+                            PhaseTo("decode"); codes = decoder!.Decode(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
+                        }
                         finally { ArrayPool<byte>.Shared.Return(pixels, true); }
                         if (codes.Length == 0) { lock (gate) emptyFrames++; }
                         else
@@ -220,6 +227,7 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
         }
         catch (Exception ex)
         {
+            preview.Clear();
             lock (gate) failure = ex.GetType().Name + ": " + ex.Message;
             try { Publish(ex is ObservationConnectionException ? DeviceHealth.Disconnected : DeviceHealth.Faulted); }
             catch (Exception host) { lock (gate) failure += "; health receiver=" + host.GetType().Name; }
@@ -253,10 +261,12 @@ internal sealed class MvsAcquisition : IAutomaticReconnectObservationSource
     }
     async Task StopCore()
     {
+        preview.Clear();
         cancel?.Cancel();
         PhaseTo("stop-requested");
         // Wait for the actual GetImageBuffer/health call, not a cancelled wrapper.
         if (worker is not null) await worker.ConfigureAwait(false);
+        preview.Clear();
         Exception? reportingFailure = null;
         void Report(DeviceHealth state)
         {

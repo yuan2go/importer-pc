@@ -30,8 +30,44 @@ Windows扩展构建边界改用真实目录junction验证越界链接拒绝，�
 
 长稳测试原先要求恢复后全局Paused，已被按位隔离及SM自动启动取代。改为断言有未清输入的left位不能准入，保留原请求Accepted/Attempts=1、两条Interrupted和检查后责任清偿/无新实体；随后显式进入维护暂停屏障进行原件检查，不绕过其授权。Application构建、history-session-contract、reliability-02、stability-audit-history及完整win11-stability通过。一次构建与验证进程争用输出DLL导致复制失败，待进程完成后串行重建通过；不计为产品测试通过。
 
+## B5：操作入口与文档收敛
+
+删除仅生成SM外置RCS配置的configure-sportmaster-rcs.py，其输出已被SM内置合同拒绝。AGENTS、INDEX、framework/F决策和关联操作指南整理为现状；旧说明按原字节归档并核对SHA256，原工作区AGENTS另存副本且未改原文件。F编号、D/RV、既有验证记录及archive不变。SM发行说明不再附带TCP和MvCodeReader当前操作指南。发布文档与组合检查各3项通过，当前文档内部链接和归档原字节检查通过。
+
+## 保留与不确定项
+
+| 单元 | 判断及依据 |
+|---|---|
+| 原请求/Unknown、原始回执与接收责任、SQLite拒绝保全 | 现行主流程必须；RCS审计、存储格式、历史/恢复与长稳实测保留 |
+| 唯一配置账、CAS、管理模式、运行身份及真实资源释放 | 生产守卫；本轮保留机制，测试直接走实际启动、真实SQLite/HTTP或受控故障边界 |
+| DirectPlc/WcsToPlc、Supply/Inspection、通用TCP和外置扩展 | 独立业务或共享生产机制，SM不用不构成删除依据；DirectPlc/WcsToPlc重新构建通过 |
+| 独立海康SDK工程、ABI/原生句柄检查 | 外部SDK合同；只移出SM交付闭包，不删除SDK协议实现与对应验证 |
+| retired身份/编号表、当前完整恢复及原根退役 | 保障原责任，名称含迁移/退役不等于旧格式兼容；保留 |
+| 共享扩展构造/解构重载、LegacyNamedCapabilities等名称 | 未能证明外部加载和其他业务入口已失效；保留，不按名字或无仓库引用删公开边界 |
+| Supply/Inspection源码顺序检查、跨模块资源/Unknown重复检查 | 尚未证明场景与故障阶段等价；保留。不能把所有相近断言合并为一个弱断言 |
+| 维护暂停屏障与历史测试中的Pause调用 | SM取消作业按钮和保存前置不等于删除共用维护守卫；本轮仅替换已证伪的全局暂停结果断言，其余保留 |
+
+本轮完成上述候选的合同追溯，不宣称已经逐行证明全仓70,359行或所有保留测试唯一且不可再简化。未证实等价/不可达部分按用户要求保留，外部协议和其他业务不纳入推测删除。
+
 ## 计数与边界
 
-基线受跟踪 `src/tests/scripts` 的 `.cs/.xaml/.py/.ps1`：614文件、70,706行；C#验证检查调用点3,691（包含辅助方法声明/拒绝检查，**不是独立用例数**）；Python `test_` 方法104。配置JSON和项目文件单列差异，不混入代码行计数。最终统计、实际执行数量和提交记录在完成核查后追加。
+计数范围为受Git跟踪的src/tests/scripts下.cs/.xaml/.py/.ps1，按物理行计，排除生成目录与历史证据；JSON/项目文件另计。C#工程没有统一用例登记，检查调用点包含辅助声明和循环，不能冒称独立测试数。
+
+| 指标 | 前 | 后 | 减少 |
+|---|---:|---:|---:|
+| 代码文件 | 614 | 611 | 3 |
+| 代码行 | 70,706 | 70,359 | 347 |
+| C#验证检查调用点 | 3,691 | 3,677 | 14 |
+| Python test_方法 | 104 | 97 | 7 |
+| SM兼容组合 | 24 | 1 | 23 |
+| SM兼容JSON行 | 1,710 | 59 | 1,651 |
+
+最终Python全量97项通过；各批累计17个不同命名C#验证入口成功，具体源码批次、输出条数及日志hash见[验证摘要](evidence/contract-convergence-02/verification.json)。Application及SM WPF、桌面验证工程、DirectPlc/WcsToPlc locked Release构建通过。新SM publish目录启动business-identity成功，实际业务为sportmaster，目录不含Ipc.Drivers.Hikrobot.dll；这是发布程序只读身份冒烟，不是完整安装包或真实SDK启动验收。
+
+扩展执行的lifecycle-ux中，LifecycleOptimization的历史、原请求及离线维护检查通过；随后MaintenanceProgressChecks进入实际备份复制时被RequireExtensionInstallerAuthority拒绝（普通Windows令牌），整个命令退出-532462766。该组结果为PARTIAL/环境受阻，剩余提权备份取消流程NOT_RUN；未删断言、未绕过门禁、未申请提权或改机器策略。其余成功项不能覆盖这个缺口。
+
+批次提交：B1 `cd6b7e76`，B2 `0f0ce42d`，B3 `9eaa2d58`，B4 `efafacc6`。B5包含本报告、当前指引、原字节归档及manifest；最终PR另附实际分支提交。
+
+复现先在Windows执行 `. ./scripts/project-environment.ps1`，再运行 `dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false`、`python -m unittest discover -s scripts -p 'test_*.py'`，C#按 `dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --<入口>` 执行。维护提权检查必须另在获授权的隔离安装环境完成。日志位于工作区忽略目录 `.artifacts/contract-convergence-02/`，摘要记录其实际hash，不包含SDK、生产数据或凭据。
 
 安装生命周期、目标工控机原生交互、真实SDK/设备、客户RCS及现场均 NOT_RUN。CI保持停用；不生成发布安装包、不操作已有安装或运行数据，不改D/RV。

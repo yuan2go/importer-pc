@@ -1,56 +1,54 @@
-> 2026-10-29 当前 SM 自动连接与保存流程以 [SM-AUTO-CONNECTION-WORKFLOW-01](docs/work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md) 为准：相机断线自动重连；取消作业暂停/恢复和保存前手动暂停；RCS 按地址与完整参数判断配置，不再显示稍后配置勾选框；SDK停止调用顺序错误继续完成真实资源销毁。原请求、身份及维护守卫保持。
+# 项目工作规则
 
-> 2026-10-29 用户最新纠偏：当前 SM 全部使用内置驱动和组件，停用外置扩展，不要求外置扩展目录、独立信任或按配置签署扩展部署资格；内置 MVS SDK 采图与软件识别、内置 RCS 沿当前安装发布完整性、受保护原生依赖、实际物理身份和业务守卫运行。配置完整并启用后应展示，相机未发现仅本位离线，不回滚整份配置或连带关闭RCS；离线位拒绝供包。只修复实际连接启用，不以页面改动代替。原外置包、签名及资格说明保留历史或其他业务范围，不能静默改写原配置或冻结请求。见 [SM-BUILT-IN-ONLY-01](docs/work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)。
+## 当前业务合同
 
-> 2026-10-29 用户纠偏：停用本仓库 GitHub CI，必要验证在本机执行；未经用户新授权，不重新启用或调度 Actions。具体见 [MANAGEMENT-PASSWORD-STARTUP-01](docs/work-packages/WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01.md)。历史CI记录保留原身份。
+当前保障SM（Sportmaster）与必需共享基座。SM使用内置海康MVS SDK采图、进程内ZXing-C++软件识别和内置RCS；默认连续采集，每次独立识别交RCS去重，无PLC。每台相机配置实际IP、物理序列号和唯一相机编码，取格口与心跳共用该编码。不使用TCP读码、TCP端口或MvCodeReader。
 
-> 2026-10-28 最新执行口径以 [MVS-SOFTWARE-READER-01](docs/work-packages/WP-IPC-MVS-SOFTWARE-READER-01.md) 为准：MVS采图＋同一ZXing-C++软件识别引擎进程内接入，逐次识别结果交RCS去重；本轮RCS按用户要求由本机Python模拟。此前MvCodeReader默认路径及通过记录保留原验证范围。
+SM停用外置扩展，不依赖外置目录、独立扩展信任或按配置签署的扩展资格。安装完整性、SDK字节/ABI/物理身份、独占租约、实际连接、管理权限和原请求守卫继续有效。完整配置应能启用，设备未发现只使本位离线并拒绝供包，不回滚整份配置或关闭独立RCS。修复实际连接与配置问题，不以页面修改替代修复。
 
-> 2026-10-28 用户确认同机旧客户端可读码，当前复用入口改为 [MVCODEREADER-RESTORE-01](docs/work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md)：沿现有 MvCodeReader SDK 条码回调接入新版 Application。用户后续纠正现场没有 PLC，电脑直接连接相机；默认连续采集，每个独立识别结果均上报 RCS，由 RCS 去重；不是 PCS。先前外部触发默认仅保留形成时范围。旧仅 MVS 采图约束保留历史范围；实际识码与现场验收分别记录。
+相机断线后自动重连，复用原设备锁并建立新epoch，旧回调不能进入新会话。清理失败及未交付输入不能当普通断线重试。停止须排空真实调用并销毁资源，不因取消/超时伪报释放。SM无作业暂停/恢复按钮，不要求保存前手动暂停；Application临时阻断新准入、有界等待在途，超时保留原配置。RCS空地址为待配置，有地址须完整校验，不提供“稍后配置”勾选框；未使用相机IP和序列号均留空，部分填写拒绝。缺必需能力拒绝业务，不静默回退成功。
 
-> 2026-10-27 单相机作业、显示整理及固定根密码恢复以[STATION-SINGLE-CAMERA-RECOVERY-01](docs/work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)为准：一台就绪相机可服务对应位置；恢复密码只用于重置，原管理授权随重置撤销。旧全连接阻断/G02未定政策保留历史范围；MVS与现场边界继承。
+合同入口：[MVS软件识别](docs/runtime/mvs-software-reader-01.md)、[内置装配](docs/work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)、[自动连接与保存](docs/work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。只有用户明确改变方案时才调整。
 
-> 2026-10-27 用户再次纠偏以[内置MVS安装与参数](docs/work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SM相机只使用内置SDK，首配与日常均显示SDK参数，安装软件即带运行依赖；下文独立驱动安装/TCP切换要求保留形成时范围，不再作为当前用户流程。真实识码和现场资格边界不变。
+## 事实来源与实施顺序
 
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](docs/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+1. 用户本轮要求及本文件现行规则优先，再读[INDEX当前规则](docs/INDEX.md)所指工作包、[框架](docs/design/framework.md)与[F决策](docs/design/framework-decisions.md)，之后核对代码。测试是合同派生物。
+2. 开工刷新main，核验工作区和并行PR，读取本任务工作包、相关代码、D/RV与公开范围，不覆盖他人修改。不能将单个文档/归档工作包的限制扩大为永久项目禁令。
+3. 继承既有获授权实现，不并行重建第二套框架。目标设计、当前实现、模拟验证、真实接口和现场验收分别记录。
+4. 清理前说明单元服务的主流程、合同和生产入口。删除被现行合同否定的行为及专属代码/测试；重复检查合并为最强行为测试，优先真实SQLite和真实边界。拿不准的保留并报告。
+5. 自有产品只支持当前格式，不维护旧版本运行兼容、转换或接管。旧输入在写入前拒绝并保全原件；当前备份、隔离恢复、原根退役与请求责任仍须保留。
 
-> 开发阶段版本规则（2026-10-27）：基座、SM业务模块、驱动和组件的自有产品版本统一固定为 `1.0.0`。开发期间的功能修改、问题修复、提交、构建和打包均不自动递增版本；只有用户明确要求调整版本时才变更。程序集、装配/提供者声明和安装包继续保持版本一致，不同开发构建使用 `SourceCommit` 和文件 `SHA256` 区分。第三方依赖/厂商SDK版本、外部协议及数据格式编号按实际合同保留；历史介质与证据不改标。
+## 架构与正确性
 
-> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](docs/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
+- 基座提供机制，业务拥有状态、数据和命令守卫，UI只调用应用契约，驱动/外部适配器实现端口。一个业务实例服务多个页面/布局，切页不重建连接、作业或发送器。
+- 区分观察、实体准入、作业、业务请求、发送尝试、接受事实和物理完成。同码不等于同实体；识别、保存、发送、接受不能互相代替。
+- Unknown固定原请求、原报文、合同、目标和实现身份，不盲重发、不假造Query、不借当前目标核对原请求。恢复只解除权限与证据允许解除的阻断。软件暂停不是安全急停。
+- 四类参数共用唯一完整候选和配置账，保留CAS、Pending/Effective、失败修复和受控回退。仓ID、生产线ID按当前字段归属；供包台编号由同一候选统一到取格口与心跳。新站日志/已结历史默认7天，本机窗口启动偏好独立于业务配置。
+- 管理能力是临时管理模式，不是管理员账号；操作员身份独立。授权在实际执行时复核，UI按钮状态不是权限边界。
+- 不引入无依据微服务、万能事件总线、PLC直控或传图平台。DirectPlc/WcsToPlc及通用扩展不因SM不用而删除。
+- SDK、合同、实体、数量或权限不足时完成不受影响工作；Production缺能力拒绝业务。未经授权不控制设备，不编造SDK方法、客户规则或批准人。
 
-> TYPOGRAPHY-01：现行字体与字号以 [字体规范](docs/design/typography-01.md) 为准。用户授权离线交付官方 OFL Noto Sans CJK SC Regular/Medium；只替代此前系统字体/不交付字体限制，其他受限资产不变。
+## 环境、验证与交付
 
-> 2026-10-22用户纠偏优先：管理能力改为[管理模式](docs/runtime/management-mode-01.md)，不是管理员账号；本轮见[MANAGEMENT-MODE-01](docs/work-packages/WP-IPC-MANAGEMENT-MODE-01.md)。旧账号说明及SM1.10.2证据保留历史适用范围。
+- 项目文件、安装、运行数据、临时文件和缓存使用D盘。Windows开发命令先执行 `. ./scripts/project-environment.ps1`，不改全机环境。受保护部署读取管理员配置的HKLM根，不以链接绕过权限。仓库外原稿、账号/现场数据只迁移，不加入Git。
+- GitHub CI保持停用；未经用户新授权，不启用或调度Actions。必要验证在本机执行。
+- 按风险执行构建、受影响模块、原请求/防重/恢复/资源验证及必要发布启动冒烟。禁止为变绿删现行不变量断言、跳过关键测试或吞异常；删除被合同否定的测试必须写依据。
+- Windows原生、真实SDK、客户RCS、系统安装和现场分别记证，未运行写NOT_RUN，不能借用其他提交或同版本的PASS。
+- 保留REQ/BR/CAPI/D/RV编号、原始要求、验证记录、哈希和证据身份，不倒写历史结论。“当前”文档修改前原字节归档，当前入口只写现状。
+- 业务修改分批在开发分支提交并创建main PR，遵守保护规则，不强推。同步配置、依赖、部署说明及manifest；报告实际commit/PR、运行方式、删除/合并/保留依据、前后计数、不确定项与验证边界。
 
-> SM1.10.2历史软件管理员、导航和日志实现见 [OPS-ADMIN-LOGS-01](docs/runtime/operator-administrator-logs-01.md)。本轮已删除帮助与支持，替代旧维护认证/导航描述；四类参数和原请求责任不变。历史介质与验收保持原身份。
+## UI实物基线
 
-本机用户要求全部项目文件、安装与运行数据使用D盘。Windows开发命令先执行 `. ./scripts/project-environment.ps1`，将临时文件、dotnet用户目录及NuGet缓存保持在D盘；不改全机环境。受保护部署使用管理员配置的HKLM存储根，不以链接绕过权限检查。仓库外原稿与账号/现场数据只迁移，不加入Git。
+参数使用[PARAM-UX-02](docs/design/parameter-settings-experience-02.md)和[参数V3](docs/ui/parameter-settings-v3-20261020/README.md)。修改前读[设计共模](docs/design/parameter-refactor-01.md)、[运行共模](docs/runtime/parameter-refactor-01.md)与[参数工作包](docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)，复用首配/日常共模、条码筛选、保存核对、会话修复和启动回退，不重复实现已有主体。
 
-# Codex / Agent 工作约束
+作业与首配使用[V2](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)。改页面前查看交互原型、全部界面、HANDOFF、当前字段映射及58项字段/状态、39项操作去向，再读[任务裁决](docs/design/sportmaster-task-redesign-01.md)和[工作包](docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。首次配置是独立五步流程，不进入日常导航；左右相机各固定相机、扫描、任务三组信息。原型示例值、版本号和模拟成功不能成为生产默认或验收证据。
 
-1. 从最新main读取 `docs/INDEX.md`、本任务工作包、`docs/design/framework.md` 与 `framework-decisions.md`，再读相关代码、D/RV及公开范围。先核验工作区和并行PR，不覆盖他人修改。
-2. 按任务范围执行：BASELINE-01仅归档、FRAMEWORK-01仅设计文档；收到RUNTIME-03实施任务后可以开发，不把旧“仅归档”限制扩大为永久项目禁令。编码前清理本包相关过期当前指引，已正确内容不重复重写；原始要求及历史证据保留。
-3. RUNTIME-03已新增F-02独立参考工程，当前实现与验证见docs/runtime/。优先核验并继承新取得的获授权既有C#实现，不并行重建第二套框架；不伪称旧现场迁移完成。目标设计、当前实现、模拟验证、真实接口和现场验收分开。
-4. 基座提供机制，业务拥有状态和命令守卫，UI只调用应用契约，驱动/外部适配器实现端口。一个业务实例可服务多个页面/布局；不因页面切换重建连接、作业或发送器。不引入无依据微服务、万能事件总线、PLC直控或传图平台。
-5. 分清观察、实体准入、作业、业务请求、发送尝试与接受事实。同码不等于同实体；识别、保存、发送、接受、物理完成不能互相代替。恢复只解除允许解除的阻断，不盲重发未知请求；旧请求固定原报文、合同及目标版本。软件暂停不是安全急停。
-6. 真实SDK/合同/实体/数量/权限不足时，完成不受影响代码及显式模拟验证；Production缺必需能力拒绝业务，不静默回退成功。未经授权不控制设备；不编造SDK方法、客户规则、批准人或已支持接口。
-7. 保留REQ/BR/CAPI/D/RV编号。D批准与RV状态按证据更新，历史issues和原验收记录不倒写。新实现的局部验证不能直接宣布旧HTML已修复或所有历史RV已关闭。
-8. 必要测试以本包风险为准：适当基线、受影响模块、关键恢复/防重/资源验证、必要构建与发布启动冒烟。实际修复相关失败，区分过期测试和环境限制；禁止删断言、跳过关键测试、吞异常换PASS。未做Windows/SDK/现场验证不得声称通过。
-9. 公开范围限制持续有效。不得上传未获许可客户原稿及衍生资产、私密访问链接、凭据、生产数据、SDK/字体文件；脱敏不自动等于许可。不自行改变仓库可见性。使用获授权新通用规格与合成数据，不从问题表补造完整客户要求。
-10. 同步真实实现路径、配置/依赖/部署说明、manifest及验证边界。业务修改在开发分支提交并创建main PR，遵守保护规则，不强推；文档任务按当次授权提交。报告明确已验证、待联调、受阻与未完成，附实际commit/PR及运行方式。
+字体/字号执行[TYPOGRAPHY-01](docs/design/typography-01.md)；只允许获授权官方OFL Noto Sans CJK SC Regular/Medium离线交付，其他受限资产不变。
 
-## UI实现必须读取的实物基线
+UI/UX工作可使用[ui-ux-pro-max](.agents/skills/ui-ux-pro-max/SKILL.md)，桌面查询用 `--stack wpf`。视觉优化同时使用[Impeccable](.agents/skills/impeccable/SKILL.md) Operate模式，先读[WPF适配](.agents/skills/impeccable/WPF.md)。通用建议服从实物基线；网页/CDP不代替WPF验收。
 
-参数页从2026-10-20本轮用户纠偏起采用 [PARAM-UX-02](docs/design/parameter-settings-experience-02.md) 和 [参数设置V3](docs/ui/parameter-settings-v3-20261020/README.md)。它们替代下述V2的参数布局、保存按钮组织及“维护与迁移”入口；四类归属、原业务合同、原型/原生/现场证据边界继续有效。先读本轮决定再改参数代码，不重复实现PR74已完成的响应字段或重写历史证据。
+## 公开范围
 
-Sportmaster 作业、首次启动和既有任务合同的实物基线为 `docs/ui/sportmaster-task-redesign-v2-20261020/README.md`。修改页面前实际查看 V2 交互原型、全部界面、HANDOFF、当前字段映射及原 58 项字段/状态和 39 项操作的迁移去向，再读 `docs/design/sportmaster-task-redesign-01.md` 与 `docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md`。V2 参数分为系统、业务模块、驱动、组件四类；首次配置是五步独立启动流程，不在日常导航中；左右相机框固定相机、扫描、任务三组信息。用户已确认的字段归属和新增 RCS 响应字段通过必要契约补齐；原型示例值、版本号和模拟成功不能成为生产默认或验收证据。
+遵守[PUBLICATION](docs/baseline/PUBLICATION.md)。不得上传未授权客户原稿及衍生资产、私密链接、凭据、生产数据、SDK或未授权字体；脱敏不自动等于许可。不改变仓库可见性，使用合成数据，不从问题表补造完整客户要求。
 
-旧 `docs/ui/sportmaster-task-redesign-20261020/`（V1）、`docs/ui/ss-ui-vis-001-v1.1/` 及历次视觉方案保留为历史参考，不再是本包并列页面主定义。编码前先清理相关过期当前指引及冲突字段归属，修正索引和替代关系；原件、编号、原哈希与历史证据保留，已正确内容不重复改写。四类页面仍编辑同一完整候选，复用唯一配置账、Application 守卫及原请求责任，采用工业级完整任务闭环，不选择最小演示实现。必要测试覆盖实际改动风险；Windows 实机、原型模拟与真实设备验收分别记录。
-
-2026-10-21核对main `42a047c3`：PR78参数V3及PR79启动回退已合并，当前续做以 [现有工作包的最新核查和Codex提示](docs/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md) 为准，不再将开发分支待合并当作现状。`bf61337`保留为V3形成时整合基线；PR69～77及历史发布各守原身份。本包收口PARAM-UX-02，不重复实现V2/V3主体，也不将历史验证扩张为V3验收。修改参数前读 `docs/design/parameter-refactor-01.md`、`docs/runtime/parameter-refactor-01.md` 及上述增量记录，复用参数/首配共模、条码筛选、保存核对、会话修复、启动回退、心跳和安装。用户本轮四类字段归属优先于快照临时摆放；取格口与心跳编码按真实用途保留，不静默互换。历史PASS和介质保留原SourceCommit，不扩张到最新合并树或V2。
-
-## 项目级 UI/UX skill
-
-UI/UX设计、实现与审查可使用 [ui-ux-pro-max](.agents/skills/ui-ux-pro-max/SKILL.md)，安装来源、版本与命令见 [skill说明](.agents/skills/README.md)。当前桌面实现查询使用 `--stack wpf`；通用建议须服从上述实物基线、业务边界和公开范围，不能替代Windows/真实接口/现场验收。
-
-本轮视觉优化同时使用项目级 [Impeccable](.agents/skills/impeccable/SKILL.md) 的 Operate 模式，先读 [WPF适配](.agents/skills/impeccable/WPF.md)；来源/固定提交见 skill说明。网页检测/CDP不用于原生WPF验收，独立 `--stack wpf` 查询不与 `--design-system`混同。
+[整理前原文及来源](docs/archive/pre-contract-convergence-02/README.md)用于追溯，不是当前工作指令。

@@ -89,11 +89,16 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static DeploymentLocation Install(WindowsDeploymentRequest request, Action<WindowsDeploymentRequest> validateConfiguration,
         Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress = null)
+        => Install(request,validateConfiguration,installPackages,createShortcuts,progress,null);
+    [SupportedOSPlatform("windows")]
+    public static DeploymentLocation Install(WindowsDeploymentRequest request, Action<WindowsDeploymentRequest> validateConfiguration,
+        Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress, MaintenanceExecution? execution)
     {
+        execution?.Checkpoint();execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         RequireCurrentInstallationRequest(request);
         request.Recovery?.Validate();
-        var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId);
+        var media = DeploymentMedia.Inspect(request.MediaRoot,request.ApplicationId,execution?.Token??CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
         validateConfiguration(request);
         var sourceFiles = ConfigurationFiles(request.ConfigurationSource);
@@ -113,6 +118,8 @@ public static partial class WindowsDeploymentSetup
             if (Wire.FileHash(trust) != request.TrustSha256) throw new InvalidDataException("Selected independent trust policy changed");
             _ = ReadTrust(trust, request.Mode);
         }
+        if(execution is {Committing:false}) execution.BeginCommit(MaintenanceStage.InstallingMachine);
+        else execution?.Report(MaintenanceStage.InstallingMachine);
         MachineRuntimeSetup.InstallForAccount(request.RuntimeAccountSid);
         TrustedProgramRoots.Approve(vendor, data, sid); ProtectedDirectory(Path.Combine(vendor, "releases"), sid);
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);

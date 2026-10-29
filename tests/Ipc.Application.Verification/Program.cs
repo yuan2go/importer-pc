@@ -31,7 +31,8 @@ Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--stability-audit-fixes")) { await StabilityAuditFixes.Run(workspace, root); return; }
 if (args.Contains("--stability-audit-history")) { StabilityAuditFixes.History(workspace, root); return; }
 if (args.Contains("--stability-audit-maintenance")) { await StabilityAuditFixes.Maintenance(root); return; }
-if (args.Contains("--lifecycle-ux")) { await LifecycleOptimization.Run(workspace, root); return; }
+if (args.Contains("--lifecycle-ux")) { await LifecycleOptimization.Run(workspace, root); await MaintenanceProgressChecks.Run(workspace,Path.Combine(root,"maintenance-progress")); return; }
+if (args.Contains("--maintenance-progress-checks")) { await MaintenanceProgressChecks.Run(workspace,root); return; }
 if (args.Contains("--latency-capacity-checks")) { await LatencyCapacityChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-projection-checks")) { await LatencyProjectionChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-details-checks")) { await LatencyDetailsChecks.Run(workspace, root); return; }

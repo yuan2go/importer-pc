@@ -40,12 +40,15 @@ internal static class RecoveryFiles
             stem.Equals("AUX", StringComparison.OrdinalIgnoreCase) || stem.Equals("NUL", StringComparison.OrdinalIgnoreCase) ||
             stem.Length == 4 && (stem.StartsWith("COM", StringComparison.OrdinalIgnoreCase) || stem.StartsWith("LPT", StringComparison.OrdinalIgnoreCase)) && "123456789¹²³".Contains(stem[3]);
     }
-    public static void ValidateNames(string root, IEnumerable<string> names)
+    public static void ValidateNames(string root,IEnumerable<string> names)=>ValidateNames(root,names,CancellationToken.None);
+    public static void ValidateNames(string root,IEnumerable<string> names,CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
         Dictionary<string, (string Original, bool Directory)> identities = new(StringComparer.OrdinalIgnoreCase);
         int count = 0;
         foreach (var name in names)
         {
+            token.ThrowIfCancellationRequested();
             if (++count > MaximumFiles) throw new InvalidDataException("Recovery file inventory quota exceeded");
             _ = Resolve(root, name);
             if (name is not ("configuration.json" or "overload.json" or ParcelMachineOrigin.FileName) && !name.StartsWith("receipts/", StringComparison.Ordinal) && !name.StartsWith("images/", StringComparison.Ordinal) && !IsMaintenanceEvidence(name))
@@ -63,16 +66,20 @@ internal static class RecoveryFiles
         }
     }
     // Walk one level at a time so a linked directory is rejected before recursion.
-    public static IEnumerable<string> Enumerate(string root, string? subtree = null, bool skipImageLeases = false)
+    public static IEnumerable<string> Enumerate(string root,string? subtree=null,bool skipImageLeases=false)=>Enumerate(root,subtree,skipImageLeases,CancellationToken.None);
+    public static IEnumerable<string> Enumerate(string root,string? subtree,bool skipImageLeases,CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
         var start = subtree is null ? root : Resolve(root, subtree);
         if (!Directory.Exists(start)) yield break;
         Stack<string> pending = new(); pending.Push(start); int count = 0;
         while (pending.TryPop(out var directory))
         {
+            token.ThrowIfCancellationRequested();
             if (File.GetAttributes(directory).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked recovery directory");
             foreach (var entry in Directory.EnumerateFileSystemEntries(directory))
             {
+                token.ThrowIfCancellationRequested();
                 if (++count > MaximumFiles * 2) throw new InvalidDataException("Recovery inventory quota exceeded");
                 var name = FromNative(root, entry); _ = Resolve(root, name);
                 var attributes = File.GetAttributes(entry);
@@ -83,6 +90,8 @@ internal static class RecoveryFiles
         }
     }
     public static void CopyVerified(string source, string destination, string expectedHash, CancellationToken cancellationToken = default)
+        => CopyVerified(source, destination, expectedHash, cancellationToken, null);
+    public static void CopyVerified(string source, string destination, string expectedHash, CancellationToken cancellationToken, Action<long>? copied)
     {
         // New file only. Flush original custody before a completion marker can be durable.
         using (var input = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -91,7 +100,7 @@ internal static class RecoveryFiles
             var buffer = new byte[65536]; int count;
             cancellationToken.ThrowIfCancellationRequested();
             while ((count = input.Read(buffer)) != 0)
-            { cancellationToken.ThrowIfCancellationRequested(); output.Write(buffer, 0, count); }
+            { cancellationToken.ThrowIfCancellationRequested(); output.Write(buffer, 0, count); copied?.Invoke(count); }
             cancellationToken.ThrowIfCancellationRequested(); output.Flush(flushToDisk: true);
         }
         if (Wire.FileHash(destination, cancellationToken) != expectedHash) throw new InvalidDataException("Recovery copy differs from verified custody; incomplete set retained");
@@ -103,9 +112,10 @@ internal static class RecoveryFiles
             p.Length == 2 && p[0] == "startup-maintenance" && (p[1] == "editor-draft.bin" || p[1].StartsWith("editor-draft.bin.", StringComparison.Ordinal) && p[1].EndsWith(".new", StringComparison.Ordinal)) ||
             p.Length == 3 && p[0] == "startup-maintenance" && p[1] == "editor-history" && (p[2].EndsWith(".bin", StringComparison.Ordinal) || p[2].EndsWith(".new", StringComparison.Ordinal));
     }
-    public static IEnumerable<string> MaintenanceEvidence(string root)
+    public static IEnumerable<string> MaintenanceEvidence(string root)=>MaintenanceEvidence(root,CancellationToken.None);
+    public static IEnumerable<string> MaintenanceEvidence(string root,CancellationToken token)
     {
-        foreach (var name in Enumerate(root, "startup-maintenance"))
+        foreach (var name in Enumerate(root,"startup-maintenance",false,token))
         {
             if (Path.GetExtension(name) == ".lease" && ExtensionSchema.IsHash(Path.GetFileNameWithoutExtension(name))) continue;
             if (!IsMaintenanceEvidence(name)) throw new InvalidDataException("Unrecognized private maintenance evidence; preserve and inspect: " + name);
@@ -114,8 +124,8 @@ internal static class RecoveryFiles
     }
     public static Dictionary<string, string> Inventory(string root, CancellationToken cancellationToken = default)
     {
-        var names = Enumerate(root).Where(x => x != "COMPLETED.json").ToArray();
-        ValidateNames(root, names);
+        var names = Enumerate(root,null,false,cancellationToken).Where(x => x != "COMPLETED.json").ToArray();
+        ValidateNames(root,names,cancellationToken);
         return names.ToDictionary(x => x, x => Wire.FileHash(Resolve(root, x), cancellationToken), StringComparer.Ordinal);
     }
 }

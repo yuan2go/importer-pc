@@ -1,3 +1,5 @@
+> 2026-10-29 WT048 增量：保全任务中的旧审查标签 LI-R03（离线维护响应与恢复结果）按[本轮记录](../runtime/integration-20261028-maintenance-progress.md)接续，不重占下文 LIA-03 历史查询包编号。新增进度、取消和 helper 终态证据单独计证；原冻结 PASS、G01/G02 与现场门槛保留。
+
 > 2026-10-26整合状态：本轮授权逐项合并PR108，继承P0/Unicode/时间存储/卡顿容量；统一版本SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。下文独立候选、冻结介质和PASS仅属其原来源。当前组合结果见[整合执行记录](../runtime/integration-20261026.md)。G01/G02及现场门槛保留。
 
 > 2026-10-26剩余整改：工程源63795eba的同源发布DLL、批量15项、维护P1/P2、实际只读CLI及CI40220858550均通过；原15分钟管理会话不延长，完整备份逐项核对。当前结论和报告头最新检查见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围；G01/G02继续BLOCKED_EXTERNAL，真实产品安装和现场门槛保留。

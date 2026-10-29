@@ -53,7 +53,7 @@ static partial class Program
         var completion = Make(installed); completion.Show(); await Idle(completion);
         Set(completion, "installed", installed); Set(completion, "step", 3); Set(completion, "needsFirstConfiguration", true); Render(completion);
         var installCalls = 0; var launchCalls = 0;
-        type.GetProperty("Install", flags)!.SetValue(completion, (Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, Task<DeploymentLocation>>)((_, _) => { installCalls++; throw new Exception("Completion must never reinstall"); }));
+        type.GetProperty("Install", flags)!.SetValue(completion, (Func<WindowsDeploymentRequest,IProgress<WindowsInstallationStage>,IProgress<MaintenanceProgress>,CancellationToken,Task<DeploymentLocation>>)((_,_,_,_) => { installCalls++; throw new Exception("Completion must never reinstall"); }));
         type.GetProperty("LaunchDesktop", flags)!.SetValue(completion, (Func<DeploymentLocation, uint>)(location =>
         { launchCalls++; Check(location == installed, "completion hands off the exact installed release"); if (launchCalls == 1) throw new IOException("合成：普通权限进程暂时无法创建"); return 123; }));
         Button(completion, "完成").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(completion);

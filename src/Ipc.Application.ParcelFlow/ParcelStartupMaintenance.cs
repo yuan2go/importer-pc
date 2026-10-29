@@ -163,24 +163,41 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         }
         finally { Directory.Delete(scratch, recursive: true); }
     }
-    public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination)
+    public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup,string destination)
+        => PlanRestoreAsync(backup,destination,null,CancellationToken.None);
+    public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup,string destination,IProgress<MaintenanceProgress>? progress,CancellationToken token)
+        => ObserveMaintenance(progress,token,e=>PlanRestoreAsync(backup,destination,e));
+    public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup,string destination,MaintenanceExecution execution)
     {
+        execution.Checkpoint();execution.Report(MaintenanceStage.Verifying);
         Authorize();
         var original = BackupConfiguration(backup);
         var target = Path.Combine(Path.GetFullPath(destination), original.Mode.ToString(), original.StationId, definition.Id);
-        var plan = ParcelRecovery.PlanRestore(backup, target);
-        return Task.FromResult(new StartupRecoveryPreview(BackupIdentity(backup), target, Wire.Encode(plan), Path.GetFullPath(destination)));
+        var plan = ParcelRecovery.PlanRestore(backup,target,Authorize,execution);
+        Authorize();execution.Checkpoint();
+        return Task.FromResult(new StartupRecoveryPreview(BackupIdentity(backup,execution.Token), target, Wire.Encode(plan), Path.GetFullPath(destination)));
     }
-    public Task RestoreAsync(string backup, string destination, string expectedBackupHash)
+    public Task RestoreAsync(string backup,string destination,string expectedBackupHash)
+        => RestoreAsync(backup,destination,expectedBackupHash,null,CancellationToken.None);
+    public async Task RestoreAsync(string backup,string destination,string expectedBackupHash,IProgress<MaintenanceProgress>? progress,CancellationToken token)
     {
+        using var execution = new MaintenanceExecution(progress,token);
+        try { await RestoreAsync(backup,destination,expectedBackupHash,execution); }
+        catch (OperationCanceledException) when (execution.CancellationRequested && !execution.Committing)
+        { throw new MaintenanceCancelledException("恢复已在隔离完成标记提交前取消；保留未完成目录，不能投入生产。"); }
+        finally { execution.Finish(); }
+    }
+    public Task RestoreAsync(string backup,string destination,string expectedBackupHash,MaintenanceExecution execution)
+    {
+        execution.Checkpoint(); execution.Report(MaintenanceStage.Checking);
         Authorize();
-        if (BackupIdentity(backup) != expectedBackupHash) throw new InvalidDataException("所选备份集已变化；重新读取恢复计划");
+        if (BackupIdentity(backup,execution.Token) != expectedBackupHash) throw new InvalidDataException("所选备份集已变化；重新读取恢复计划");
         Authorize();
         var original = BackupConfiguration(backup);
         var originalDirectory = Path.Combine(launch.DataRoot, original.Mode.ToString(), original.StationId, definition.Id);
         RecoveryFiles.RequireOrdinaryAncestors(originalDirectory);
         using var originalOwner = Directory.Exists(originalDirectory) ? new ResourceLease(originalDirectory, ["application-owner"]) : null;
-        _ = ParcelRecovery.PlanRestore(backup, destination);
+        _ = ParcelRecovery.PlanRestore(backup,destination,Authorize,execution);
         if (OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")))
         {
             var suffix = Path.Combine(original.Mode.ToString(), original.StationId, definition.Id);
@@ -188,10 +205,11 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             if (!full.EndsWith(Path.DirectorySeparatorChar + suffix, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("恢复目标须为已预览的模式/站/Application完整路径");
             WindowsDeploymentSetup.PrepareRestoreDataRoot(full[..^(suffix.Length + 1)]);
         }
-        ParcelRecovery.RestoreAuthorized(backup, destination, Authorize);
+        ParcelRecovery.RestoreAuthorized(backup,destination,Authorize,execution);
         return Task.CompletedTask;
     }
-    string BackupIdentity(string backup) => Wire.Hash(Wire.FileHash(backup) + Wire.FileHash(Path.Combine(backup + ".recovery", "COMPLETED.json")));
+    string BackupIdentity(string backup) => BackupIdentity(backup,CancellationToken.None);
+    string BackupIdentity(string backup,CancellationToken token) => Wire.Hash(Wire.FileHash(backup,token) + Wire.FileHash(Path.Combine(backup + ".recovery", "COMPLETED.json"),token));
     ParcelConfiguration BackupConfiguration(string backup)
     {
         var c = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(Text(ReadBytes(Path.Combine(backup + ".recovery", "configuration.json")))).Effective;

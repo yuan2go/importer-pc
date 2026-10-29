@@ -39,8 +39,20 @@ public interface IStartupMaintenance
     Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination);
     Task RestoreAsync(string backup, string destination, string expectedBackupHash);
     Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token);
+    Task<StartupBackupItem[]> ListBackupsAsync(string directory,IProgress<MaintenanceProgress>? progress,CancellationToken token)
+        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
     Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination);
     Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination);
+    Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
+    Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
+    Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
     Task BackupAsync(string destination);
+    Task BackupAsync(string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
+    Task RestoreAsync(string backup, string destination, string expectedBackupHash, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("此维护实现不支持真实进度与取消");
     Task AdoptRestoreAsync(string backup, string restoredDataRoot, string expectedBackupHash, string expectedRegistrationHash);
 }

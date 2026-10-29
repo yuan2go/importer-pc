@@ -16,7 +16,8 @@ public static class StartupConfigurationFiles
             rows.Add((reader.Role == "left" ? "左相机" : reader.Role == "right" ? "右相机" : "读码设备") + "：" + (reader.Parameters.FirstOrDefault(x => x.Field.Key == "device.ip") is { Value.Length: > 0 } ip ? ip.Value + (reader.Parameters.FirstOrDefault(x => x.Field.Key == "device.port") is { Value.Length: > 0 } port ? ":" + port.Value : "") : identity.Mode == RunMode.Simulation ? "本地模拟" : "尚未配置设备连接"));
         foreach (var component in draft.Capabilities.Where(x => x.Bound && x.Kind == "integration"))
             rows.Add("调度服务：" + Target(component.Target));
-        rows.Add("条码筛选：" + (string.IsNullOrWhiteSpace(draft.Policy.BarcodePattern) ? "不筛选（仍须唯一有效码）" : "使用已填写规则"));
+        rows.Add("条码筛选：" + (string.IsNullOrWhiteSpace(draft.Policy.BarcodePattern) ? "不筛选" : "使用已填写规则") +
+            (draft.Policy.RejectMultipleCodes ? "；拒绝多码" : "；多码按配置分隔符拼接"));
         return string.Join("\n", rows);
     }
     public static StartupConfigurationDraft Import(string json, ParcelConfiguration current, StartupConfigurationDraft draft, CapabilityCatalog catalog)

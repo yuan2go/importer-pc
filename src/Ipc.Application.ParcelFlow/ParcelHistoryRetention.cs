@@ -34,7 +34,7 @@ public sealed partial class ParcelRepository
         using var c = db.CreateCommand(); c.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_history_projection WHERE observed<julianday($cutoff))";
         c.Parameters.AddWithValue("$cutoff", now.AddDays(-days).ToString("O")); return (long)c.ExecuteScalar()! != 0;
     }
-    bool RetentionSettled(ParcelOperation op, FlowDefinition flow) => HasTerminalRecoveryBasis(op, flow.Id) &&
+    bool RetentionSettled(ParcelOperation op, FlowDefinition flow) => op.OriginalFrame?.State != "Pending" && HasTerminalRecoveryBasis(op, flow.Id) &&
         (flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) && !op.RecoveryRequired &&
         (op.FrozenConfiguration.Images is null || op.ImageReleased) &&
         new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().All(s => s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled) &&
@@ -229,9 +229,25 @@ public sealed partial class ParcelRepository
             Boundary?.Invoke("AfterRetentionInputCommit");
         }
         authority();
+        CleanupRetiredOriginalFrames(authority);
         using var finish = db.CreateCommand(); finish.CommandText = "UPDATE parcel_retention_runs SET summary=$summary WHERE id=$id";
         finish.Parameters.AddWithValue("$id", run); finish.Parameters.AddWithValue("$summary", Wire.Encode(new { Status = "Completed", Operations = removed, Inputs = inputs, Policy = "Permanent identity/reply/measurement/numeric ownership retained; no replay" })); finish.ExecuteNonQuery();
         finish.CommandText = "PRAGMA freelist_count"; var pages = (long)finish.ExecuteScalar()!; finish.CommandText = "PRAGMA page_size";
         return new(run, days, cutoff, removed, inputs, backupHash, pages * (long)finish.ExecuteScalar()!);
+    }
+    // Called only by stopped retention after complete backup and committed
+    // retirement tombstones. A failed deletion is retried by the next run.
+    internal void CleanupRetiredOriginalFrames(Action authority)
+    {
+        var directory = Path.GetDirectoryName(rawRoot)!;
+        foreach (var relative in RecoveryFiles.Enumerate(directory, "images/original-frames"))
+        {
+            authority();
+            var name = Path.GetFileName(relative); var dot = name.IndexOf('.');
+            if (dot < 0 || !Guid.TryParseExact(name[..dot], "N", out _) || name[dot..] is not (".png" or ".png.pending")) continue;
+            using var check = db.CreateCommand(); check.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_retired_operations WHERE id=$id)";
+            check.Parameters.AddWithValue("$id", name[..dot]);
+            if ((long)check.ExecuteScalar()! != 0) File.Delete(RecoveryFiles.Resolve(directory, relative));
+        }
     }
 }

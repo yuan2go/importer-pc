@@ -10,6 +10,7 @@ public static class ChineseInterfaceText
     public static string ParameterName(string key, string? label = null) => key switch
     {
         "BarcodePattern" or "BarcodeFilter.Pattern" => "条码筛选规则", "BarcodeExclusionPattern" or "BarcodeFilter.ExclusionPattern" => "条码排除规则",
+        "RejectMultipleCodes" or "BarcodeFilter.RejectMultipleCodes" => "拒绝多码", "MultiCodeSeparator" or "BarcodeFilter.MultiCodeSeparator" => "多条码分隔符",
         "decision" => "模拟业务结果", "reply-mode" => "模拟回执方式", "complete-on-query" => "查询时报告完成",
         "queue" or "QueueCapacity" => "扫码消息缓冲上限", "timeout" or "TimeoutMs" => "外部服务等待时间", "operations" or "MaximumOperations" => "待处理作业上限",
         "resident" or "ResidentHistory" => "常驻记录条数", "reserveMiB" or "MinimumFreeMiB" => "磁盘保留空间",
@@ -34,7 +35,7 @@ public static class ChineseInterfaceText
         if (text.Contains(": required", StringComparison.Ordinal) || text.Contains(": invalid value", StringComparison.Ordinal))
             return "有参数尚未设置或格式不正确，请修正标出的字段。";
         if (text.Contains("Invalid pattern", StringComparison.Ordinal)) return "条码规则格式不正确，请检查括号、符号和转义。";
-        foreach (var key in new[] { "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "HistoryDays", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-station-code", "right-station-code", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "source", "locale", "reply-mode", "decision" })
+        foreach (var key in new[] { "BarcodeFilter.MultiCodeSeparator", "BarcodeFilter.RejectMultipleCodes", "MultiCodeSeparator", "RejectMultipleCodes", "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "HistoryDays", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-station-code", "right-station-code", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "source", "locale", "reply-mode", "decision" })
             text = text.Replace(key, ParameterName(key), StringComparison.Ordinal);
         text = System.Text.RegularExpressions.Regex.Replace(text, @"^\w*Exception:\s*", "");
         // Raw property paths and exception types belong to diagnostic details.
@@ -44,6 +45,7 @@ public static class ChineseInterfaceText
     }
     public static string Status(string value) => value switch
     {
+        "JoinedCodes" => "多码已拼接", "JoinedCodeTooLong" => "拼接结果过长",
         "Authenticated" => "身份验证成功", "LoggedOut" => "操作员已退出", "Authorized" => "授权通过", "Unavailable" => "服务暂不可用",
         "Prepared" => "已准备", "Dispatching" => "发送中", "Unknown" => "结果待核对",
         "Rejected" => "已拒绝", "Accepted" => "已接受", "Conflict" => "存在冲突", "Cancelled" => "已取消",

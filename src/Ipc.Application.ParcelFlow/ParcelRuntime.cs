@@ -150,6 +150,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (op.PositionId is not null) admissionPositions.TryAdd(op.AdmissionId, op.PositionId);
         }
         repository.ValidateRawInventory();
+        RecoverOriginalFrameArchives();
         foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
         RecoverLocalFacts();
         RecoverImageCleanup();
@@ -208,6 +209,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
             {
+                if (definition.ArchiveOriginalFrames && Effective.Mode == RunMode.Production && !ParcelConnectionSetup.IsDeferred(Effective, reader.Source.DeviceId) && reader.Source is not IOriginalFrameSource)
+                    throw new InvalidDataException("Production SM reader must retain the exact original recognition frame; image fallback is forbidden");
+                if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
                 catch (ObservationConnectionException ex)
                 {
@@ -457,7 +461,19 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var admissionDetail = preceding is not null && ReleasedForNextAdmission(preceding)
             ? Wire.Encode(new { Policy = "New scan after retained original request; original is not replayed", PriorOperation = preceding.Id })
             : "One admitted parcel; code is not entity identity";
-        Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
+        IOriginalFrameLease? originalFrame = null;
+        try
+        {
+            if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalSource)
+            {
+                originalFrame = originalSource.RetainOriginalFrame(op.Acquisition!);
+                op = op with { OriginalFrame = new("Pending", op.Acquisition!, originalFrame.Width, originalFrame.Height,
+                    "images/original-frames/" + op.Id + ".png", DateTimeOffset.UtcNow) };
+            }
+            Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
+            if (originalFrame is not null) { ScheduleOriginalFrame(op, originalFrame); originalFrame = null; }
+        }
+        finally { originalFrame?.Dispose(); }
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await CaptureOriginalAsync(op).ConfigureAwait(false);

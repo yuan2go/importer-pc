@@ -88,7 +88,7 @@ static partial class SportmasterRcs
         }
         else
         {
-            var pixels = MakeSoftwareBarcode("SYNTH-READ-0001");
+            var pixels = args.Contains("--six-megapixel") ? SyntheticLatencyImages("SYNTH-READ-0001")[0] : MakeSoftwareBarcode("SYNTH-READ-0001");
             fake!.Enqueue(pixels, 1); fake.Enqueue(pixels, 2); fake.Enqueue(pixels, 5);
             Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
@@ -108,6 +108,9 @@ static partial class SportmasterRcs
                 ExtensionStore.AtomicWrite(Path.Combine(root,"mvs-python-snapshot-private.json"),s);
             }
             await app.StopAsync(default);
+            Check((await app.SnapshotAsync()).Operations.All(o => o.OriginalFrame is { State: "Saved" } image &&
+                image.RawSha256 == Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels.Data))) && factory.Source!.RetainedOriginalFrames == 0,
+                "actual software-reader pipeline saves admitted original frames losslessly and drains raw-frame leases on stop");
             Check(fake.Calls.TakeLast(4).SequenceEqual(["stop", "close", "destroy", "finalize"]) && !fake.HasFrame,
                 "controlled shutdown actually returns buffers and stops/closes/destroys/finalizes in order");
             foreach (var throws in new[] { false, true })
@@ -139,6 +142,9 @@ static partial class SportmasterRcs
             Console.WriteLine("MVS_SOFTWARE_FLOW_PASS synthetic pixels/native port, actual ZXingCpp/Application/SQLite/HTTP; field acceptance NOT_RUN");
         }
         await app.StopAsync(default);
+        ExtensionStore.AtomicWrite(Path.Combine(root, "mvs-timings.json"), new { Acquisition = factory.Source!.Timings.Snapshot(), Decoder = factory.Source.DecoderTimings,
+            Tier = live ? "Actual camera; isolated fixture; local simulated RCS" : "Synthetic SDK; actual decoder/Application/SQLite; local simulated RCS",
+            Boundary = "ObservedAt starts after SDK Acquire returns; excludes exposure/transport/SDK queue age. Durable handoff includes SQLite custody, excludes Application queue/business/RCS completion." });
         Console.WriteLine("EvidenceRoot=" + root);
     }
 
@@ -172,7 +178,7 @@ static partial class SportmasterRcs
         var bytes = new byte[checked(image.Width * image.Height)]; Marshal.Copy(image.Data, bytes, 0, bytes.Length);
         return new(bytes, image.Width, image.Height);
     }
-    sealed class SoftwareFlowFactory(BusinessLaunch launch, ParcelConfiguration expected, SoftwareFrameApi? fake, bool bundled) : IParcelCapabilityFactory
+    sealed class SoftwareFlowFactory(BusinessLaunch launch, ParcelConfiguration expected, SoftwareFrameApi? fake, bool bundled, IMonoBarcodeDecoder? decoder = null) : IParcelCapabilityFactory
     {
         readonly ParcelCapabilityFactory inner = new(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
         public MvsAcquisition? Source;
@@ -194,7 +200,7 @@ static partial class SportmasterRcs
             readers[c.Reader.DeviceId].DisposeAsync().AsTask().GetAwaiter().GetResult();
             Source = new(new(c.Reader.DeviceId, c.Reader.DeviceId, c.Reader.Parameters!), fake is null ? new MvsApi() : fake,
                 serial => new ResourceLease(Path.Combine(launch.DataRoot, "simulation-leases"), ["device:hikrobot-gige:" + serial]),
-                decoder: fake is null ? new SoftwareDecoder("utf-8", PrepareZxingFixture) : new ReleasedFrameDecoder(new SoftwareDecoder("utf-8", PrepareZxingFixture), fake));
+                decoder: decoder ?? (fake is null ? new SoftwareDecoder("utf-8", PrepareZxingFixture) : new ReleasedFrameDecoder(new SoftwareDecoder("utf-8", PrepareZxingFixture), fake)));
             readers[c.Reader.DeviceId] = Source;
             var hashes = new Dictionary<string, string>(ports.ImplementationHashes) { [c.Reader.DeviceId] = Wire.FileHash(typeof(BundledMvs).Assembly.Location) };
             return ports with { Reader = Source, Readers = readers, ImplementationHashes = hashes };
@@ -203,6 +209,7 @@ static partial class SportmasterRcs
     }
     sealed class ReleasedFrameDecoder(IMonoBarcodeDecoder inner, SoftwareFrameApi api) : IMonoBarcodeDecoder
     {
+        public MvsTimingSnapshot? TimingSnapshot => inner.TimingSnapshot;
         public void Prepare() => inner.Prepare();
         public string[] Decode(byte[] pixels, int length, int width, int height)
         {

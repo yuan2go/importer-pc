@@ -6,7 +6,19 @@ internal static class MvsDiagnostic
 {
     internal static async Task<int> Run(string[] args)
     {
-        var normalized = args.ToArray(); normalized[0] = args[0] == "--mvs-list" ? "--list" : "--connect";
+        var sampling = args[0] == "--mvs-throughput";
+        var arguments = args.ToList();
+        var serialIndex = arguments.IndexOf("--serial-file");
+        string? serial = null;
+        if (serialIndex >= 0)
+        {
+            if (serialIndex + 1 >= arguments.Count || !Path.IsPathFullyQualified(arguments[serialIndex + 1])) throw new ArgumentException("Absolute private serial file required");
+            serial = File.ReadAllText(arguments[serialIndex + 1]).Trim();
+            if (serial.Length == 0) throw new ArgumentException("Empty serial file");
+            arguments.RemoveRange(serialIndex, 2);
+        }
+        if (sampling && serial is null) throw new ArgumentException("--mvs-throughput requires --serial-file PRIVATE_ABSOLUTE_FILE");
+        var normalized = arguments.ToArray(); normalized[0] = args[0] == "--mvs-list" ? "--list" : "--connect";
         var options = Diagnostic.Options.Parse(normalized);
         if (!OperatingSystem.IsWindows() || RuntimeInformation.ProcessArchitecture != Architecture.X64) throw new PlatformNotSupportedException("Windows x64 required");
         var phase = "load-mvs"; MvsAcquisition? source = null;
@@ -62,8 +74,11 @@ internal static class MvsDiagnostic
                 return deadline.Expired ? 124 : 0;
             }
             var leases = Path.Combine(Path.GetTempPath(), "ipc-hikrobot-diagnostic-leases");
-            source = new(new("diagnostic.mvs", "diagnostic.mvs-reader", new Dictionary<string, string> { ["device.ip"] = options.Ip! }), api,
-                serial => new ResourceLease(leases, ["device:hikrobot-gige:" + serial]), p => { if (p is not ("get-image-buffer" or "free-image-buffer")) deadline.Stage(p); });
+            var parameters = new Dictionary<string, string> { ["device.ip"] = options.Ip! };
+            if (serial is not null) parameters["device.serial"] = serial;
+            source = new(new("diagnostic.mvs", "diagnostic.mvs-reader", parameters), api,
+                actualSerial => new ResourceLease(leases, ["device:hikrobot-gige:" + actualSerial]), p => { if (p is not ("get-image-buffer" or "free-image-buffer")) deadline.Stage(p); },
+                diagnosticVideoSampling: sampling);
             try
             {
                 await source.StartControlledAsync(Wire.Id(), _ => throw new InvalidOperationException("Acquisition must not invent barcode observations"),
@@ -72,7 +87,9 @@ internal static class MvsDiagnostic
             }
             finally { await Diagnostic.StopRetainingOwner(() => source.StopAsync(default), () => source.Phase).ConfigureAwait(false); }
             Console.WriteLine(Wire.Encode(new { source.Frames, source.Failure, BarcodeStatus = "BLOCKED: recognition component not available", Codes = 0,
-                Observations = 0, Operations = 0, ExternalRequests = 0, TriggerSettingsChanged = false, RawImagesPersisted = false }));
+                Observations = 0, Operations = 0, ExternalRequests = 0, TriggerSettingsChanged = false, RawImagesPersisted = false,
+                FrameSequencePolicy = sampling ? "VideoSamplingGapsCounted; reset/duplicate/incomplete still fault" : "StrictContiguousLegacy",
+                Counters = source.ConfirmationSource, Timings = source.Timings.Snapshot() }));
             return deadline.Expired ? 124 : source.Failure.Length > 0 ? 1 : 3; // 3=acquisition-only, barcode capability unavailable.
         }
         catch (OperationCanceledException) when (deadline.Expired) { return 124; }

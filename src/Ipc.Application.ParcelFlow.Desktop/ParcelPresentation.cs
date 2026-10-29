@@ -129,6 +129,9 @@ public partial class ParcelViewModel
     static string FormatStructuredDetails(ParcelOperation? op) => op is null ? "选择一条作业查看原作业、请求与回执。" :
         "作业 " + op.Id + "\n投递位 " + (op.PositionId ?? "main") + " · 包裹号 " + op.ParcelCode + "\n实体准入 " + op.AdmissionId +
         "\n观察时间 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n结果 " + ParcelPresentation.Operation(op, true).Text + "\n原因 " + (op.Reason ?? "无") +
+        (op.OriginalFrame is { } original ? "\n\n原识码帧 " + (original.State switch { "Pending" => "后台保存中", "Saved" => "已保存原始灰度PNG", "Failed" => "保存失败", _ => "保存中断，需检查原文件" }) +
+            "\n尺寸 " + original.Width + " × " + original.Height + " · 帧 " + original.Acquisition.SourceEventId +
+            "\n原图文件 " + original.RelativeFile + (original.Failure is null ? "" : "\n留档说明 " + original.Failure) : "") +
         "\n\n" + string.Join("\n\n", new[] { ("WCS", op.Wcs), ("PLC", op.Plc), ("采集", op.Capture), ("上传", op.Upload) }.Where(x => x.Item2 is not null).Select(x => StageDetails(x.Item1, x.Item2!)));
     static string StageDetails(string name, StageFact stage) => name + " 请求 " + stage.Request.Id + "\n状态 " + ChineseInterfaceText.Status(stage.State.ToString()) + " · 发送尝试 " + stage.Attempts +
         "\n准备时间 " + stage.Request.PreparedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n原目标 " + stage.Request.Binding.Target + "\n原合同 " + stage.Request.Binding.Contract +

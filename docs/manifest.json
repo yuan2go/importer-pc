@@ -106357,9 +106357,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
-      "sha256": "5c0d0fab4e50a59af375c2e7bccbdfa700cc8b1fb3d2e10a6846fe8ef404252a",
-      "size_bytes": 7055,
-      "git_blob": "8ce839b777fa62ae2512b620740bafc809e0f49c",
+      "sha256": "f0255d8165eb2fca9760a9ea2e1bb4b74c672eee86c055816255ec6e40b6b26e",
+      "size_bytes": 10749,
+      "git_blob": "1a9d756f424c437073f85afcb5647692c3b04156",
       "storage_scope": "public_repository"
     },
     {
@@ -106489,9 +106489,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-ORIGINAL-FRAME-01; original evidence retains its own SourceCommit",
-      "sha256": "0ed7800cb46cd5e282556c3b1941e0fb569b75cd6fe44cf8a18e7d71bbc3618e",
-      "size_bytes": 16758,
-      "git_blob": "bacaea6c995a2a1fc1cb3d526e23e13d235c1600",
+      "sha256": "31efb0603f559c16a250bdb73664b200b40947aa2426468fdc440499624c5f42",
+      "size_bytes": 18082,
+      "git_blob": "abd478d8a8fedd7ff18ea1c921b8378d80011a5b",
       "storage_scope": "public_repository"
     },
     {
@@ -106503,6 +106503,28 @@
       "sha256": "3cd3b7086615d3216acbd4b1c2c394d7d43b68d0cf816f04637238b1deb16d8f",
       "size_bytes": 172202,
       "git_blob": "0f6562f2e8c68e93ec82653e42175fabe1824462",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/reviews/pr157-original-frame-review-20261030/README.md",
+      "version": "sm-original-frame-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-ORIGINAL-FRAME-01; original evidence retains its own SourceCommit",
+      "sha256": "d9b3fe36e83993ffdc89797f88457a395b92a97dd9e1f4c24378c8d932be1e6e",
+      "size_bytes": 5269,
+      "git_blob": "321a1e7ee89a7c9a7414116f0f0648241d2826d5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/reviews/pr157-original-frame-review-20261030/summary.json",
+      "version": "sm-original-frame-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-ORIGINAL-FRAME-01; original evidence retains its own SourceCommit",
+      "sha256": "d68bf95af94f4cca71d3d17738223aa65e5582472dec990bcb34413ce9f3ceda",
+      "size_bytes": 3282,
+      "git_blob": "447635121121db1cd9438867fd185610565ef827",
       "storage_scope": "public_repository"
     }
   ],

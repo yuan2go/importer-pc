@@ -1,0 +1,107 @@
+{
+  "ReviewOutcome": "NO_BLOCKING_PRODUCTION_DEFECT_FOUND",
+  "ReviewedPr": 157,
+  "BaseMain": "f870ffc00abcba78497b3d01d83251d786052ae3",
+  "OriginalHead": "736e5b6c79fc5a8b3558b7bb9a1b3979b62b7b05",
+  "ExtendedTestCommit": "865dda64c66154331d02435cc8fed74cef50f426",
+  "ProductionCodeUnchangedFromOriginalHead": true,
+  "OriginalHeadChecks": [
+    {
+      "Log": "sm-original-frame.log",
+      "Sha256": "b05f84dd2fa7ed4844729de24567fd5998469e8a21d16cfea167f2de64f20540",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 22
+    },
+    {
+      "Log": "p0-unknown-restart.log",
+      "Sha256": "c2745929310522cb8ca4a8fc88910b5100747b07d3e7b6ccd5cdbf3ea6c07bc1",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 3
+    },
+    {
+      "Log": "rcs-timeout-errors.log",
+      "Sha256": "318b5e91bdfe7491332cdbb890f4a657b1e078f41081554494fc10d42984ad72",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 57
+    },
+    {
+      "Log": "retention-ingress.log",
+      "Sha256": "8e5f5fe4cb920fe6a13a9c2b0a834e6f94c1250fdffb9ad85f5bf9328fc78e58",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 61
+    },
+    {
+      "Log": "probe.log",
+      "Sha256": "cffe35f6e21b4113f3c24d1a8b4e26ed75e2079acff0c61f70148692808150d4",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 141
+    }
+  ],
+  "FinalChecks": [
+    {
+      "Log": "final/sm-original-frame.log",
+      "Sha256": "3f3e26a421eebd61c49647ace81d99fb6e62b1e57dc2f5f751540dc7a45a5d07",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 26
+    },
+    {
+      "Log": "final/mvs-6mp.log",
+      "Sha256": "831bde13cd1877c31b9d910f97af93a8148a42e35e9629c395419a88b2ec9209",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 12
+    },
+    {
+      "Log": "final/probe.log",
+      "Sha256": "c0b0587870ceebcc0bdaddb234984df427ac0abb7235e55c1ce63ad138300063",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "PassLines": 146
+    }
+  ],
+  "FinalBuilds": [
+    {
+      "Log": "final/build-app.log",
+      "Sha256": "1a3df910cde65a493d9a23a9b85d42ecb1cf03489e9c819ca5ad1220431a9334",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0
+    },
+    {
+      "Log": "final/build-probe.log",
+      "Sha256": "5e08f2633411a8a15a5b314f5ec8b95771691eb182a13f34f7392fb9badc3dac",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0
+    }
+  ],
+  "IntermediateFailures": [
+    {
+      "Log": "build-probe.log",
+      "Status": "FAIL",
+      "Cause": "Invocation omitted documented frozen IpcContractPath; NU1004",
+      "Sha256": "60af5928af51b95670f05311f4565fcf2d0e10680a93cdea6463b396004653e0"
+    },
+    {
+      "Log": "extended/build-probe.log",
+      "Status": "FAIL",
+      "SourceCommit": "4d54e2a63bcb96f87e668bdd35fac1b986032ec6",
+      "Cause": "New test local variable shadowing CS0136; corrected in final test commit",
+      "Sha256": "ef7e2e1af4d899c01770b2ce4cb8b802f87d3e150270a7ded5e34725001d94ab"
+    }
+  ],
+  "RealCamera": "NOT_RUN",
+  "FieldRcs": "NOT_RUN",
+  "InstalledPackage": "NOT_RUN",
+  "TargetLongRunAndLatency": "NOT_RUN",
+  "GitHubCi": "DISABLED",
+  "PriorBroaderBackupSuite": "3 baseline failures retained in runtime evidence; entire suite is not marked PASS"
+}

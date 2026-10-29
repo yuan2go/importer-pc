@@ -36,3 +36,7 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 随后在合并树 `2ee05729` 的回归中失败：本机此前读取的 `EnableLUA=0` 已变为1，但尚未重启的当前进程仍不支持原runas交接。未修改、恢复或要求用户修改UAC。原失败保存在[回归失败日志](evidence/management-password-startup-01/integrated-authority-fail.log)，首轮4c65aebf安装器标记停止交付，不能把先行PASS扩张到此状态。
 
 实现改为检查真实令牌：管理员组存在但未启用时沿桌面runas；桌面只要求真实Explorer、同用户和同会话，最终helper仍必须具有真实管理员权限。这样避免把注册表或仅有TokenElevationType/IsTokenRestricted当作生效事实。保持普通运行令牌和全部服务端守卫。该状态下重新构建、真实权限往返、生产helper等待确认及普通权限拒绝通过，见[补修日志](evidence/management-password-startup-01/effective-token-authority.log)。当前交付以随后冻结的令牌补修候选身份为准，原包与失败不覆盖。
+
+当前离线修复候选固定源码 `954815904d9c64dc37046ca94b4e09dcaff15054`，版本1.0.0；安装器 SHA256 `0cc818e7c0417ec45b37bdfaa4dec3ad179952a4ea76c6f1a0bda7840543f71d`，ZIP SHA256 `6e279cf2053075dd17437e987261ff9bc59813b21d44ef14b774da405a2e97d9`。同源冻结WPF再次通过，清单未变，见[当前WPF结果](evidence/management-password-startup-01/effective-token-frozen-wpf-result.json)。10项文档/安装包检查通过。
+
+本次新包System服务专项复验未执行：当前工具进程管理员组未启用，夹具在最初的安装维护资格检查即被拒绝，见[权限前置记录](evidence/management-password-startup-01/effective-token-system-broker-precondition.log)。未修改系统设置、未绕开检查；首轮4c65aebf的服务PASS保留原身份，不转记到95481590。实际UAC批准/取消、真实产品更新后的用户首设、目标机与现场仍分别待验。当前站点密码及数据未替换，用户关闭旧窗口后运行当前修复安装器更新，再设置自己的密码。

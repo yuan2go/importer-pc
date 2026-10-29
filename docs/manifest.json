@@ -105653,9 +105653,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
-      "sha256": "31dc07a30ad6851a66b276274b5590f29a1ae039afa4673d512cec803210a353",
-      "size_bytes": 1892,
-      "git_blob": "de21470bfc8160bca4e9ca8d3fb517e6cfe67423",
+      "sha256": "7b47ad847f53fb4fa07faed02d3f765df77257b03797946e230800822ca2a1fd",
+      "size_bytes": 2359,
+      "git_blob": "63889db50c54fff994b296d1a53bd81871dbbdae",
       "storage_scope": "public_repository"
     },
     {
@@ -105785,9 +105785,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
-      "sha256": "39d76e98694f3e4c91ec8014464f31e5fa029875de2362c0b2d76c0f37250abc",
-      "size_bytes": 5721,
-      "git_blob": "e196cc02673fa74566281e0dc710a26bf45f9bae",
+      "sha256": "26ed7c62dad0faef3c35c55b521870b74178d3a52b3f08a24eafdd23124eb39b",
+      "size_bytes": 6768,
+      "git_blob": "a9387702663ac1dc777b282ce7d81f0ed221e509",
       "storage_scope": "public_repository"
     },
     {
@@ -105854,6 +105854,72 @@
       "sha256": "022a250a7d27662865979c1c83a420ec5b71a8eafd07e089e8e682fe1a2c9c4c",
       "size_bytes": 878,
       "git_blob": "b5ff25019c5622bb13a1d87b91121e9acc09a852",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/effective-token-delivery.json",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "0a137ebb5b93c370d61b897483dbed2ed29650b464411d2786e50886bcbdc6b9",
+      "size_bytes": 873,
+      "git_blob": "b36a0cc73696469275b01614396605762792ce0a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/effective-token-frozen-wpf-result.json",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "7be0c0d645e6d6c6b236de83e7e83806e91a2616c6a299a66a9eed6aa70058cc",
+      "size_bytes": 3476,
+      "git_blob": "9f848af19c57da4a1f8cb7b26eafbc460db46484",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/effective-token-frozen-wpf.log",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "e14d3912f14e07eb7c0b5588ecab86211921d9ff8ca037790d159206e8ef29c7",
+      "size_bytes": 800,
+      "git_blob": "dba79534e78a482b330c38cbde6d918c6d0a18aa",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/effective-token-installer-startup-smoke.log",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "3f61f8699cc32b77c7cf31e7ef4a825a2392f2573b64fc987ffa93e0ca8c9443",
+      "size_bytes": 174,
+      "git_blob": "145d6042e6d986be09aba1c9e66be0c543a9facf",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/effective-token-python.log",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "072f5640c9965f234b822b77781a617e3789916994762961b44b482792113236",
+      "size_bytes": 109,
+      "git_blob": "2357a268e2bec2d89caa8b67d8d933b0cf084f54",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/management-password-startup-01/effective-token-system-broker-precondition.log",
+      "version": "management-password-startup-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01; original evidence retains its own SourceCommit",
+      "sha256": "07d77b47d3f7a75b99b2656870ee686475f3c64e30d1f8602a82db70ab9d607e",
+      "size_bytes": 705,
+      "git_blob": "5462304922a9029baa54552ae31c726ad51e566b",
       "storage_scope": "public_repository"
     }
   ],

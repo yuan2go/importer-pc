@@ -40,6 +40,13 @@ public static partial class ParcelStartupServices
             throw new UnauthorizedAccessException("维护发起进程身份不匹配");
         using var initiator=Process.GetProcessById(request.InitiatorProcessId);_=initiator.Handle;
         if(initiator.StartTime.ToUniversalTime().Ticks!=request.InitiatorStartedTicks)throw new UnauthorizedAccessException("维护发起进程已变化");
+        // Keep the launched helper alive and prohibit work until the caller has
+        // authenticated its PID/image/token (desktop ShellExecute returns no handle).
+        using (var handshake = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+        {
+            var accepted = new byte[1]; await pipe.ReadExactlyAsync(accepted, handshake.Token);
+            if (accepted[0] != 1) throw new UnauthorizedAccessException("维护进程身份尚未确认，未执行操作。");
+        }
         using var writer=new StreamWriter(pipe,new UTF8Encoding(false,true),1024,leaveOpen:true){AutoFlush=true};
         using var reader=new StreamReader(pipe,new UTF8Encoding(false,true),true,1024,leaveOpen:true);
         var writes=new object();Exception? protocolFailure=null;var observations=0;
@@ -85,6 +92,7 @@ public static partial class ParcelStartupServices
         Task? controls=null;string? result=null,errorText=null;var status="Completed";
         try
         {
+            MachineRuntimePolicy.RequireExtensionInstallerAuthority();
             if(RequiresManagementMode(request.Action))
             {
                 var authority=LocalManagementMode.ForRoot(request.Launch?.DataRoot??throw new InvalidDataException("Missing administrator root"));

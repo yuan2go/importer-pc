@@ -18,10 +18,10 @@ public sealed class ManagementModeWindow : Window
     ManagementModeWindow(Func<Task<ManagementModeStatus>> status, Func<string, Task> configure, Func<string, Task<bool>> enter,
         Func<Task> exit, Func<string, Task> change, Func<string, string, Task> reset)
     {
-        Title = "管理模式"; Width = 520; Height = 480; MinWidth = 360; MinHeight = 280;
+        Title = "管理模式"; Width = 520; Height = 540; MinWidth = 360; MinHeight = 320;
         StartupAppearance.Apply(this); WindowStartupLocation = WindowStartupLocation.CenterOwner;
         var layout = new Grid { Margin = new(24, 20, 24, 20) }; layout.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); layout.RowDefinitions.Add(new() { Height = GridLength.Auto }); layout.RowDefinitions.Add(new() { Height = GridLength.Auto }); Content = layout;
-        var body = new StackPanel(); layout.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        var body = new StackPanel(); layout.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Padding = new(0, 0, 8, 0) });
         var heading = new TextBlock { Text = "管理模式", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis }; body.Children.Add(heading);
         var state = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 12) }; body.Children.Add(state);
         var passwordFields = new StackPanel(); body.Children.Add(passwordFields);
@@ -38,7 +38,9 @@ public sealed class ManagementModeWindow : Window
         var nextConfirm = new PasswordBox { Name = "NewManagementPasswordConfirmation", MaxLength = 256, MinHeight = 44 }; changeBody.Children.Add(new Label { Content = "再次输入新密码", Target = nextConfirm, Padding = new(0), Margin = new(0, 8, 0, 0) }); changeBody.Children.Add(nextConfirm);
         changeBody.Children.Add(new TextBlock { Text = rules.Text + " 修改后退出管理模式，原授权立即撤销。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 12) });
         var save = new Button { Name = "ChangeManagementPassword", Content = "修改密码并退出管理模式", MinHeight = 44 }; changeBody.Children.Add(save);
-        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 12) }; AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); Grid.SetRow(feedback, 1); layout.Children.Add(feedback);
+        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 10) }; AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite);
+        var feedbackHost = new ScrollViewer { Content = feedback, MaxHeight = 80, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        Grid.SetRow(feedbackHost, 1); layout.Children.Add(feedbackHost);
         var feedbackStyle = new Style(typeof(TextBlock));
         var emptyFeedback = new Trigger { Property = TextBlock.TextProperty, Value = "" };
         emptyFeedback.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
@@ -74,7 +76,7 @@ public sealed class ManagementModeWindow : Window
             if (previous.Authorized && !current.Authorized || previous.Configured != current.Configured || !current.Available) ClearSecrets();
             Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.Configured ? "验证管理密码" : "设置管理密码";
             state.Text = current.HasUnsupportedCredentials ? "检测到不受支持或缺失的凭据。请保留原部署和凭据文件，由部署负责人处理；不能重新设置覆盖。" : !current.Available ? "管理模式服务不可用，请使用同版安装器修复。原输入保留。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n操作员账号和在途作业保持。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
-            var preferredHeight = current.Authorized ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 380 : 480;
+            var preferredHeight = current.Authorized ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 400 : 540;
             if (lastPreferredHeight != preferredHeight) { Height = Math.Min(preferredHeight, MaxHeight); lastPreferredHeight = preferredHeight; }
             body.IsEnabled = true; leave.IsEnabled = current.Available;
             passwordFields.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; passwordFields.IsEnabled = current.Available;

@@ -1,0 +1,2 @@
+PASS MAINTENANCE-START real NORMALUSER runtime -> desktop runas -> same-user administrator helper -> authenticated pipe acknowledgment; no deployment/password/device writes
+PASS MAINTENANCE-START real production helper waits for client authentication; unprivileged maintenance returns Failed/exit 2, without work or CLR crash

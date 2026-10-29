@@ -1,9 +1,7 @@
 name: Sportmaster commercial engineering
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main, codex/p0-stability-01]
+  # 2026-10-29: local verification requested; automatic GitHub CI is disabled.
+  workflow_dispatch:
 env:
   IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME: '1'
 permissions:

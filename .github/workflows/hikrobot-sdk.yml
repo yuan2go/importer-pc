@@ -1,9 +1,7 @@
 name: Hikrobot current SDK boundaries
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+  # 2026-10-29: local verification requested; automatic GitHub CI is disabled.
+  workflow_dispatch:
 env:
   IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME: '1'
 permissions:

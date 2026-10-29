@@ -1,0 +1,12 @@
+PASS PASSWORD first setup displays both fields, reveal option and submit without scrolling
+PASS PASSWORD native Tab moves directly from password to confirmation
+CAPTURE password-default: 520x540 DIP; actual DPI 120
+PASS PASSWORD long failure remains fully scrollable within a bounded feedback area
+PASS PASSWORD failed setup clears secrets and retains an actionable unconfigured state
+PASS PASSWORD submit remains visible after long failure at 520x540
+PASS PASSWORD reveal option can be reached at 520x540
+CAPTURE password-long-error: 520x540 DIP; actual DPI 120
+PASS PASSWORD submit remains visible after long failure at 400x360
+PASS PASSWORD reveal option can be reached at 400x360
+CAPTURE password-compact-error: 400x360 DIP; actual DPI 120
+PASS PASSWORD concealment clears plain password buffers

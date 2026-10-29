@@ -9,12 +9,15 @@ using Microsoft.Data.Sqlite;
 
 if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");
 if (args.FirstOrDefault() == "--ordinary-start-child") { OrdinaryRuntimeStartup.Child(args); return; }
+if (args.FirstOrDefault() == "--maintenance-authority-probe") { await MaintenanceAuthorizationStartup.Probe(args); return; }
+if (args.FirstOrDefault() == "--ordinary-maintenance-child") { await MaintenanceAuthorizationStartup.OrdinaryChild(args); return; }
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
+if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
 if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }
 if (args.Contains("--station-single-camera")) { await SportmasterRcs.SingleCamera(workspace, root); return; }
 if (args.Contains("--hikrobot-sdk-editing")) { HikrobotSdkEditing.Run(workspace, root); return; }

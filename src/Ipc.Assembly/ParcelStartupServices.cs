@@ -183,7 +183,6 @@ public static partial class ParcelStartupServices
         if (args.Length == 0 || args[0] != "--startup-command") return false;
         if (args.Length != 3 || !ExtensionSchema.IsHash(args[2])) throw new ArgumentException("Expected fixed maintenance request and SHA256");
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Privileged helper requires Windows");
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         DeploymentPaths.RequireOrdinaryAncestors(args[1]);
         using var stream = new FileStream(args[1], FileMode.Open, FileAccess.Read, FileShare.Read);
         if (stream.Length > 8 * 1024 * 1024) throw new InvalidDataException("Maintenance request quota exceeded");
@@ -445,7 +444,7 @@ public static partial class ParcelStartupServices
             _ = connection.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             if(cancellationToken.IsCancellationRequested)throw new MaintenanceCancelledException("维护尚未启动，已取消。");
             progress?.Report(WindowsInstallationStage.WaitingForAuthorization);
-            using var process = Process.Start(start) ?? throw new IOException("Windows did not start maintenance");
+            using var process = await WindowsMaintenanceProcess.StartAsync(start, server, connection, budget.Token);
             async Task<MaintenancePipeReply> ReadResponse()
             {
                 try
@@ -453,6 +452,7 @@ public static partial class ParcelStartupServices
                     await connection;
                     if(!GetNamedPipeClientProcessId(server.SafePipeHandle,out var client)||client!=(uint)process.Id)
                         throw new UnauthorizedAccessException("维护回执进程身份不匹配；重新核对持久操作记录");
+                    await server.WriteAsync(new byte[] { 1 }, budget.Token);
                     return await ExchangeMaintenanceResponse(server,requestSha,CancellableMaintenance(request.Action),
                         stage=>progress?.Report(stage),p=>maintenanceProgress?.Report(p),cancellationToken,budget.Token);
                 }

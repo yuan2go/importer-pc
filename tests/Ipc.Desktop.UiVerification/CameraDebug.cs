@@ -70,6 +70,8 @@ static partial class Program
         Check(probe.Reads == calls && image.Source is null, "leaving debug stops polling and clears the image");
         CaptureInternal(evidence, "camera-debug-diagnostics", client, lines);
         window.ShowPositionDebug(vm.Left); await Poll();
+        Click(window, "清空本页采样"); await Poll();
+        Check(scans.Items.Count == 0, "clearing samples does not resurrect the unchanged latest input on the next refresh");
         probe.Held = new(TaskCreationOptions.RunContinuationsAsynchronously); var lateAfterExit = (Task)poll.Invoke(control, null)!;
         await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync(); await Flush();
         probe.Held.SetResult(); await lateAfterExit; probe.Held = null; await Flush();

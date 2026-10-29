@@ -36,6 +36,7 @@ internal sealed class StationDebugControl : UserControl
     string position = "left";
     Guid? runtime;
     string? lastFrame;
+    string? clearedInput;
     SupplyStationPositionViewModel Position => position == "left" ? vm.Left : vm.Right;
     // Do not retain full operation/HTTP payload graphs for each sampled row.
     sealed record ScanRow(string InputId, string Label, string? OperationId, string Evidence);
@@ -82,7 +83,7 @@ internal sealed class StationDebugControl : UserControl
         AutomationProperties.SetName(scans, "本相机最近采样扫描，最多50条，不替代完整作业记录");
         resultColumn.Children.Add(Section("扫描与判定", Label("仅收集本页打开期间的快照采样，最多 50 条，最新在上；完整记录请查看作业记录。"), scans));
         var clear = new Button { Content = "清空本页采样", HorizontalAlignment = HorizontalAlignment.Left };
-        clear.Click += (_, _) => { rows.Clear(); ShowSelection(); }; resultColumn.Children.Add(clear);
+        clear.Click += (_, _) => { clearedInput = Position.Input?.Observation.Id; rows.Clear(); ShowSelection(); }; resultColumn.Children.Add(clear);
         openRecord.Click += async (_, _) => { if (vm.IsManagementMode && scans.SelectedItem is ScanRow { OperationId: { } id }) await details(id); };
         resultColumn.Children.Add(Section("原请求与回执", Label("HTTP 成功不代表业务接受。未知原请求不重发；新扫描是否准入由现行业务守卫决定。"), evidence, openRecord));
         var test = new Button { Content = "测试当前运行筛选规则", HorizontalAlignment = HorizontalAlignment.Left };
@@ -133,7 +134,7 @@ internal sealed class StationDebugControl : UserControl
     }
     public void SelectPosition(string value)
     {
-        position = value; generation++; rows.Clear(); image.Source = null; lastFrame = null; paused = false; pause.Content = "暂停画面";
+        position = value; generation++; rows.Clear(); clearedInput = null; image.Source = null; lastFrame = null; paused = false; pause.Content = "暂停画面";
         left.SetResourceReference(StyleProperty, position == "left" ? "ParameterPrimaryAction" : "ParameterAction");
         right.SetResourceReference(StyleProperty, position == "right" ? "ParameterPrimaryAction" : "ParameterAction"); ShowSelection();
     }
@@ -149,7 +150,7 @@ internal sealed class StationDebugControl : UserControl
         emit.IsEnabled = p.CanAdmit;
         if (!vm.Fresh) { image.Source = null; lastFrame = null; previewStatus.Text = "状态读取中断，图像不可用；列表保留为历史采样。"; return; }
         if (runtime != vm.Snapshot?.RuntimeId) { runtime = vm.Snapshot?.RuntimeId; rows.Clear(); image.Source = null; lastFrame = null; }
-        if (p.Input is { } input)
+        if (p.Input is { } input && input.Observation.Id != clearedInput)
         {
             var found = rows.FirstOrDefault(x => x.InputId == input.Observation.Id);
             var current = Row(input, p.Operation?.Id == input.OperationId ? p.Operation : null);

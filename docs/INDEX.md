@@ -1,5 +1,7 @@
 # 文档索引
 
+2026-10-29 D 盘预检与服务登记错误保全见 [D-DRIVE-INSTALL-01](runtime/d-drive-install-01.md) 和[工作包](work-packages/WP-IPC-D-DRIVE-INSTALL-01.md)。SYSTEM 权限漏检已复现并修复；C/D、D/D 真实 SCM 矩阵因 Windows 管理授权未取得仍 NOT_RUN，未宣称现场 1783 已修复。当前 C 盘数据未迁移。
+
 当前保障Sportmaster与必需共享基座。SM使用内置MVS采图＋进程内软件识别、内置RCS，每次独立识别交RCS去重，无PLC；停用外置扩展。GitHub CI停用，必要验证在本机执行。
 
 ## 当前规则

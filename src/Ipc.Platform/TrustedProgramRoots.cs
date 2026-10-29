@@ -24,12 +24,11 @@ public static class TrustedProgramRoots
     {
         root = Normalize(root, dataRoot);
         var parent = Directory.GetParent(root) ?? throw new InvalidDataException("程序根缺少父目录");
-        if (!parent.Exists && WindowsStoragePaths.IsManagedProgramPath(root))
+        if (!parent.Exists)
         {
             WindowsStoragePaths.RequireExistingProtectedAncestors(root);
             return; // The elevated installation creates the managed parent hierarchy.
         }
-        if (!parent.Exists) throw new InvalidDataException("先由维护管理员创建受保护父目录，再选择其中的程序根");
         RequireAncestors(Directory.Exists(root) ? root : parent.FullName);
     }
     [SupportedOSPlatform("windows")]
@@ -38,7 +37,7 @@ public static class TrustedProgramRoots
         MachineRuntimePolicy.RequireExtensionInstallerAuthority(); root = Normalize(root, dataRoot);
         using var rootRegistryLease = new FileInfo(Path.Combine(WindowsDeploymentSetup.MachineRoot, "trusted-program-roots.lease")).Create(FileMode.OpenOrCreate, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.None, MachineRuntimeSetup.FileAcl(sid));
         var parent = Directory.GetParent(root) ?? throw new InvalidDataException("程序目录缺少可信父目录");
-        if (!parent.Exists) throw new InvalidDataException("先由维护管理员创建受保护父目录，再选择其中的程序根");
+        if (!parent.Exists) WindowsStoragePaths.PrepareProtectedDirectory(parent.FullName, sid);
         RequireAncestors(parent.FullName);
         if (!Directory.Exists(root)) new DirectoryInfo(root).Create(MachineRuntimeSetup.DirectoryAcl(sid, FileSystemRights.ReadAndExecute));
         RequireAncestors(root);
@@ -79,7 +78,8 @@ public static class TrustedProgramRoots
         DeploymentPaths.RequireOrdinaryAncestors(path);
         var windowsAnchors = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) };
         for (var current = new DirectoryInfo(path); current.Parent is not null && !windowsAnchors.Contains(current.FullName, StringComparer.OrdinalIgnoreCase); current = current.Parent)
-            MachineRuntimePolicy.RequireProtectedAcl(current, null);
+            try { MachineRuntimePolicy.RequireProtectedAcl(current, null); }
+            catch (UnauthorizedAccessException error) { throw new UnauthorizedAccessException("程序安装路径的现有目录未受保护：" + current.FullName + "。保留原权限；由安装管理员核对，或选择受保护的新程序位置。" + error.Message, error); }
         if (windowsAnchors.Any(anchor => Contains(anchor, path))) return;
         // A volume may allow creating unrelated folders, but must not allow deleting
         // protected children. Directory ACLs alone cannot protect against DELETE_CHILD.

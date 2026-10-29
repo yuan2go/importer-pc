@@ -63,9 +63,6 @@ public static class WindowsStoragePaths
         TrustedProgramRoots.RequireAncestors(existing);
     }
     [SupportedOSPlatform("windows")]
-    internal static bool IsManagedProgramPath(string path) => ProtectedAnchor is { } root &&
-        TrustedProgramRoots.Contains(Path.Combine(root, "Programs"), path);
-    [SupportedOSPlatform("windows")]
     internal static void PrepareForInstallation(string runtimeSid)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();

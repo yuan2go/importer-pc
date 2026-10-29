@@ -1,0 +1,17 @@
+{
+  "WorkPackage": "D-DRIVE-INSTALL-01",
+  "Baseline": "f870ffc0",
+  "PreflightBefore": "FAIL_REPRODUCED_SYSTEM_DENIAL_WAS_ACCEPTED",
+  "PreflightAfter": "PASS_5_BEHAVIOR_CHECKS",
+  "InstallerOptions": "PASS",
+  "InstallerChangeGuards": "PASS_8",
+  "ReleaseDocuments": "PASS_3",
+  "DesktopBuild": "PASS",
+  "CProgramDData": "NOT_RUN_WINDOWS_ADMIN_AUTHORIZATION_UNAVAILABLE",
+  "DProgramDData": "NOT_RUN_WINDOWS_ADMIN_AUTHORIZATION_UNAVAILABLE",
+  "Authorization": "Desktop helper timeout; standard runas returned operation cancelled; administrator probe not executed",
+  "Target1783RootCause": "UNCONFIRMED_NO_TARGET_API_LOG",
+  "CurrentInstallation": "No production installation, service, credential or business data modified",
+  "GitHubCI": "NOT_RUN_DISABLED_BY_USER",
+  "DeviceAndField": "NOT_RUN"
+}

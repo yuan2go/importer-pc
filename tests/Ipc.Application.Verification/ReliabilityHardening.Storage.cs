@@ -44,7 +44,7 @@ static partial class ReliabilityHardening
         var left = Task.Run(() => app.EmitReferenceAt("left", "locked-left", "111", "locked-left-event"));
         var right = Task.Run(() => app.EmitReferenceAt("right", "locked-right", "222", "locked-right-event"));
         Check(entered.Wait(TimeSpan.FromSeconds(3)), "both positions reached SQLite while an independent real write transaction owns the lock");
-        var queryWatch = Stopwatch.StartNew(); var page = await app.QueryHistoryAsync(selection).WaitAsync(TimeSpan.FromSeconds(2));
+        var queryWatch = Stopwatch.StartNew(); var page = await app.ReadHistoryPageAsync(selection, long.MaxValue, 50, default).WaitAsync(TimeSpan.FromSeconds(2));
         Check(page.Items.Length == 0 && !left.IsCompleted && !right.IsCompleted, "WAL history reader completes while both durable handoffs await the shared writer");
         var queryMs = queryWatch.Elapsed.TotalMilliseconds;
         var outcomes = await Task.WhenAll(left, right).WaitAsync(TimeSpan.FromSeconds(12));

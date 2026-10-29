@@ -11,7 +11,8 @@
 | B2 | SM signed RCS 端到端测试与旧 MvCodeReader SM 流程 | SM 不再安装/启用独立扩展或用 MvCodeReader 识码；不能要求恢复这些入口来使测试通过 | 删除退休入口；现行 RCS 原请求/Unknown/心跳及 MVS SQLite 链保留并验证 |
 | B2 | 同一 RCS 审计中可选 signed 分支 | 现行内置路径已经覆盖其请求编号/原件与备份不变量 | 合并为内置行为验证，保留全部相关行为断言 |
 | B3 | `test_runtime_identity.py` 的逐次调用计数、旧 Run 预检、旧安装动作与 Parcel 源行顺序 | 当前脚本先只读查询安装登记；桌面入口自己负责身份；安装为原生向导；身份拒绝早于配置/设备/业务写入仍有效 | 改为原生无副作用子进程的分派行为检查；Parcel 的字符串顺序断言合并为三业务实际启动拒绝/原件不变行为测试 |
-| B4 | 当前文档叠加纠偏与 AGENTS | 最新工作包优先；历史适用范围仅属于证据，不是保留代码的要求 | 原字节归档，当前入口写现状；不修改既有历史证据、D/RV |
+| B4 | Parcel 不可取消的 QueryHistoryAsync/HistoryMetricsAsync 桥接方法 | CURRENT-CONTRACT K12要求可取消历史会话；生产UI已经只调用ReadHistoryPageAsync/ReadHistoryMetricsAsync，旧方法只有测试调用 | 删除两项契约及转发实现，原行为检查直接使用当前可取消边界；Supply同名业务方法仍生产可达，保留 |
+| B5 | SM独立扩展候选生成脚本、当前文档叠加纠偏与 AGENTS | 最新工作包优先；生成脚本只写已禁止的SM扩展配置；历史适用范围仅属于证据 | 删除生成器，文档原字节归档，当前入口写现状；不修改既有历史证据、D/RV |
 
 ## 保留与不确定范围
 

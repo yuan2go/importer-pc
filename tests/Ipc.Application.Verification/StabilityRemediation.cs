@@ -68,9 +68,10 @@ static partial class StabilityRemediation
         await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
         await recovered.StartAsync(default); await ManagementModeFixture.Authorize(recovered);
         var snapshot = await recovered.SnapshotAsync();
-        Check(snapshot.Paused && snapshot.Operations.Single().Wcs is { State: StageState.Accepted, Attempts: 1 } &&
+        Check(snapshot.Positions!.Single(p => p.Id == "left").Admit == false && snapshot.Operations.Single().Wcs is { State: StageState.Accepted, Attempts: 1 } &&
             Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Interrupted'") == 2,
-            "restart reconciles original raw locally, retains both input responsibilities, never resends or replays queued input");
+            "restart blocks the position with unresolved input, reconciles original raw locally and never resends or replays queued input");
+        await Command(recovered, "Pause"); // Inspection still requires its own maintenance barrier.
         var receipt = await Command(recovered, "IngressResponsibilities");
         using var json = JsonDocument.Parse(receipt.Reason);
         foreach (var row in json.RootElement.EnumerateArray())
@@ -155,9 +156,9 @@ static partial class StabilityRemediation
         int entered = 0;
         app.BeforeRead = async token => { Interlocked.Increment(ref entered); await Task.Delay(Timeout.Infinite, token); };
         var selection = await app.SelectHistoryAsync(new());
-        var reads = Enumerable.Range(0, 4).Select(_ => app.QueryHistoryAsync(selection)).ToArray();
+        var reads = Enumerable.Range(0, 4).Select(_ => app.ReadHistoryPageAsync(selection, long.MaxValue, 50, default)).ToArray();
         await Until(() => Volatile.Read(ref entered) == 4);
-        try { await app.QueryHistoryAsync(selection); throw new Exception("Unbounded fifth reader"); }
+        try { await app.ReadHistoryPageAsync(selection, long.MaxValue, 50, default); throw new Exception("Unbounded fifth reader"); }
         catch (InvalidOperationException ex) { Check(ex.Message.Contains("并发"), "fifth concurrent query rejected without queuing an unbounded task"); }
         await app.StopAsync(default).WaitAsync(TimeSpan.FromSeconds(5));
         foreach (var read in reads) { try { await read; throw new Exception("Stopped read completed unexpectedly"); } catch (OperationCanceledException) { } }

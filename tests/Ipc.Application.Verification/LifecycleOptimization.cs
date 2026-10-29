@@ -62,8 +62,9 @@ static class LifecycleOptimization
             Check(delayed.HistoryItems.All(x => x.Operation.PositionId == "right") && delayed.HistoryPositionChoices.Any(p => p.Id == "right" && p.Label == "右投递位"), "Chinese business label selection maps to the actual stable position ID without appending its internal English value");
             using var cancelled = new CancellationTokenSource(); cancelled.Cancel();
             var selection = await app.SelectHistoryAsync(new()); await Reject<OperationCanceledException>(() => app.ReadHistoryPageAsync(selection, long.MaxValue, 50, cancelled.Token), "cancelled real query does not retain SQLite resources");
-            oldest = (await app.QueryHistoryAsync(selection, long.MaxValue, 200)).Items.Last().Operation;
-            uncertain = (await app.QueryHistoryAsync(selection, long.MaxValue, 200)).Items[1].Operation;
+            var page = await app.ReadHistoryPageAsync(selection, long.MaxValue, 200, default);
+            oldest = page.Items.Last().Operation;
+            uncertain = page.Items[1].Operation;
             var handover = ParcelViewModel.Handover(oldest, true); var ordinary = ParcelViewModel.Handover(oldest, false); var sends = factory.Sends;
             Check(handover.Contains(oldest.Wcs!.Request.Id) && handover.Contains(oldest.AdmissionId) && ordinary.Contains("禁止重投") && !ordinary.Contains("原目标指纹") && !handover.Contains(oldest.Wcs.Request.Payload) && factory.Sends == sends, "handover names exact original entity/request while excluding payload and causing no external call");
             await Pause(app);

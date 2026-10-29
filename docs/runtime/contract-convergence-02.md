@@ -24,6 +24,12 @@ Application locked Release构建通过；`audit03-rcs`、`rcs-heartbeat`、`rcs-
 
 Windows扩展构建边界改用真实目录junction验证越界链接拒绝，避免要求额外符号链接特权；POSIX仍使用符号链接。未跳过测试、未提升权限、未改机器安全策略。最终Python全量97项通过；Application locked构建和三个身份行为检查通过。首次失败日志继续保留，不倒记成通过。
 
+## B4：历史查询只保留可取消会话
+
+删除Parcel公共契约和实现中的不可取消QueryHistoryAsync/HistoryMetricsAsync桥接，移除测试替身的对应转发。现行UI早已要求IParcelHistorySessionApplication，所有本轮测试直接调用可取消的ReadHistoryPageAsync；Lifecycle同一历史页重复读取合并一次，原断言保留。Supply同名方法仍有生产入口，不删除。公共契约仍按实际DLL字节检查，所有当前组合重编译，不改标或覆盖冻结包。
+
+长稳测试原先要求恢复后全局Paused，已被按位隔离及SM自动启动取代。改为断言有未清输入的left位不能准入，保留原请求Accepted/Attempts=1、两条Interrupted和检查后责任清偿/无新实体；随后显式进入维护暂停屏障进行原件检查，不绕过其授权。Application构建、history-session-contract、reliability-02、stability-audit-history及完整win11-stability通过。一次构建与验证进程争用输出DLL导致复制失败，待进程完成后串行重建通过；不计为产品测试通过。
+
 ## 计数与边界
 
 基线受跟踪 `src/tests/scripts` 的 `.cs/.xaml/.py/.ps1`：614文件、70,706行；C#验证检查调用点3,691（包含辅助方法声明/拒绝检查，**不是独立用例数**）；Python `test_` 方法104。配置JSON和项目文件单列差异，不混入代码行计数。最终统计、实际执行数量和提交记录在完成核查后追加。

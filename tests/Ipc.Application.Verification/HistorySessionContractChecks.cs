@@ -29,8 +29,6 @@ public interface ICurrentHistoryFixtureForwarder : IParcelHistorySessionApplicat
 {
     IParcelHistorySessionApplication HistoryService { get; }
     Task<ParcelHistorySelection> IParcelHistoryApplication.SelectHistoryAsync(ParcelHistoryFilter filter) => HistoryService.SelectHistoryAsync(filter);
-    Task<ParcelHistoryPage> IParcelHistoryApplication.QueryHistoryAsync(ParcelHistorySelection selection, long beforeSequence, int limit) => HistoryService.QueryHistoryAsync(selection, beforeSequence, limit);
-    Task<ParcelHistoryMetrics> IParcelHistoryApplication.HistoryMetricsAsync(ParcelHistorySelection selection) => HistoryService.HistoryMetricsAsync(selection);
     Task<ParcelExportReceipt> IParcelHistoryApplication.ExportHistoryAsync(ParcelHistorySelection selection, string destination, CancellationToken token) => HistoryService.ExportHistoryAsync(selection, destination, token);
     Task<ParcelHistoryPage> IParcelHistorySessionApplication.ReadHistoryPageAsync(ParcelHistorySelection selection, long beforeSequence, int limit, CancellationToken token) => HistoryService.ReadHistoryPageAsync(selection, beforeSequence, limit, token);
     Task<ParcelHistoryMetrics> IParcelHistorySessionApplication.ReadHistoryMetricsAsync(ParcelHistorySelection selection, CancellationToken token) => HistoryService.ReadHistoryMetricsAsync(selection, token);

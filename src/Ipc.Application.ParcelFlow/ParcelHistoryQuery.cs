@@ -140,12 +140,8 @@ public sealed partial class ParcelRuntime : IParcelHistorySessionApplication
     int historyExportInProgress;
     public async Task<ParcelHistorySelection> SelectHistoryAsync(ParcelHistoryFilter filter)
     { await gate.WaitAsync().ConfigureAwait(false); try { return repository!.SelectHistory(filter); } finally { gate.Release(); } }
-    public async Task<ParcelHistoryPage> QueryHistoryAsync(ParcelHistorySelection selection, long beforeSequence = long.MaxValue, int limit = 50)
-        => await ReadHistoryPageAsync(selection, beforeSequence, limit, default).ConfigureAwait(false);
     public async Task<ParcelHistoryPage> ReadHistoryPageAsync(ParcelHistorySelection selection, long beforeSequence, int limit, CancellationToken token)
         => OperatorHistory(await ReadHistoryAsync(reader => reader.Page(selection, beforeSequence, limit), token).ConfigureAwait(false));
-    public async Task<ParcelHistoryMetrics> HistoryMetricsAsync(ParcelHistorySelection selection)
-        => await ReadHistoryMetricsAsync(selection, default).ConfigureAwait(false);
     public Task<ParcelHistoryMetrics> ReadHistoryMetricsAsync(ParcelHistorySelection selection, CancellationToken token)
         => ReadHistoryAsync(reader => reader.Metrics(selection), token);
     public Task<string[]> HistoryPositionIdsAsync(ParcelHistorySelection selection, CancellationToken token)

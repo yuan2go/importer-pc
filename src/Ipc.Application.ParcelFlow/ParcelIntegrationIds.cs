@@ -98,12 +98,17 @@ public sealed partial class ParcelRepository
     void ValidateIntegrationRequestOwners()
     {
         long maximum = 0;
+        using var command = db.CreateCommand();
+        command.CommandText = "SELECT operation,request,request_hash FROM parcel_integration_id_owners WHERE id=$id";
+        var id = command.Parameters.Add("$id", SqliteType.Integer);
         foreach (var operation in OriginalOperations())
         {
             if (operation.Wcs?.Request.IntegrationRequest is not { } numeric) continue;
             var request = operation.Wcs.Request;
-            using var command = db.CreateCommand(); command.CommandText = "SELECT operation,request,request_hash FROM parcel_integration_id_owners WHERE id=$id";
-            command.Parameters.AddWithValue("$id", numeric.RequestId); using var row = command.ExecuteReader();
+            if (numeric.RequestId <= 0 || string.IsNullOrWhiteSpace(request.Id))
+                throw new InvalidDataException("Invalid original numeric request ID or request owner; retain original intent");
+            id.Value = numeric.RequestId;
+            using var row = command.ExecuteReader();
             if (!row.Read() || row.GetString(0) != operation.Id || row.GetString(1) != request.Id || row.GetString(2) != Wire.Hash(Wire.Encode(request)))
                 throw new InvalidDataException("Original numeric request ownership missing or changed; retain database without backfill");
             maximum = Math.Max(maximum, numeric.RequestId);

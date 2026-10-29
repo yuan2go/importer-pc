@@ -4,6 +4,8 @@ using Ipc.Platform.Storage;
 using Microsoft.Data.Sqlite;
 namespace Ipc.Application.ParcelFlow;
 
+internal enum RepositoryOpenPhase { OriginalRow, BeforeWritableOpen }
+
 // Application owns SQL, aggregate semantics and the T1/T2/T3 transaction boundaries.
 public sealed partial class ParcelRepository : IDisposable
 {
@@ -11,6 +13,7 @@ public sealed partial class ParcelRepository : IDisposable
     readonly SqliteConnection db;
     readonly string rawRoot;
     readonly CancellationToken maintenanceCancellation;
+    readonly Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver;
     public int StorageVersion { get; private set; }
     public const int CurrentStorageVersion = 10;
     const string Baseline = """
@@ -69,8 +72,12 @@ public sealed partial class ParcelRepository : IDisposable
     public ParcelRepository(string directory, string application, string[] positions)
         : this(directory, application, CancellationToken.None, positions) { }
     internal ParcelRepository(string directory, string application, CancellationToken maintenanceCancellation, string[]? positions = null)
+        : this(directory, application, maintenanceCancellation, positions, null) { }
+    internal ParcelRepository(string directory, string application, CancellationToken maintenanceCancellation, string[]? positions,
+        Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver)
     {
         this.maintenanceCancellation = maintenanceCancellation;
+        this.openObserver = openObserver;
         maintenanceCancellation.ThrowIfCancellationRequested();
         rawRoot = Path.Combine(directory, "receipts");
         var database = Path.Combine(directory, application + ".db");
@@ -94,6 +101,8 @@ public sealed partial class ParcelRepository : IDisposable
             }
             finally { db.Dispose(); }
         }
+        openObserver?.Invoke(RepositoryOpenPhase.BeforeWritableOpen, null, false);
+        maintenanceCancellation.ThrowIfCancellationRequested();
         Directory.CreateDirectory(directory); Directory.CreateDirectory(rawRoot);
         db = Database.Open(database, true, maintenanceCancellation);
         try
@@ -118,6 +127,7 @@ public sealed partial class ParcelRepository : IDisposable
         using var r = cmd.ExecuteReader();
         while (r.Read())
         {
+            openObserver?.Invoke(RepositoryOpenPhase.OriginalRow, db, !r.IsDBNull(1));
             maintenanceCancellation.ThrowIfCancellationRequested();
             var body = r.GetString(0);
             if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");

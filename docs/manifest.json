@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01",
+  "work_package": "WP-IPC-SM-MVS-ONLY-UI-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "2a50a1281c537028bdf6c8aa11fb94ee463d2dcdebd1b1f3d8cadf8913e13bc0",
-      "size_bytes": 10404,
-      "git_blob": "c64f4ff37fcbfdfbc3a8d155e0e4510735b3d167",
+      "sha256": "a48e85dd8f16bc7fd4008cb27df4d04a787fb0907ef7270a2e92f08721c5c3ef",
+      "size_bytes": 10506,
+      "git_blob": "507e5221f8aecba202fa65fc8318d040fded6c2d",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -7254,9 +7254,9 @@
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "bcf1bb786c0f8b85da1c59b5a2ce31aed26e3228501f91b83efccaf75251a091",
-      "size_bytes": 40457,
-      "git_blob": "65602fa2e00c2f4570ae7087d183b5a7d6269131",
+      "sha256": "5768c0792dd1e6102ff0fd663252474b7a9e5d2d10afc71e7fc0b989566ec04c",
+      "size_bytes": 40547,
+      "git_blob": "fbe2ded45ed195920d4a3bb16dc4a94c93838814",
       "version": "DUAL-CAMERA-COMMUNICATION-FIX-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
@@ -54182,9 +54182,9 @@
       "version": "camera-sdk-single-code-01",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "0af84a73a4b95df4fb7c58f1cdcafcf2a8bfa7ff594a9a05d8d81680138edb7d",
-      "size_bytes": 26383,
-      "git_blob": "e7af9825077d24566eb823be1cd2b4b55a2a3b72",
+      "sha256": "70f9ff25f816d0450470cd06d69d55c01de79692d7a15a994639c78823409d6a",
+      "size_bytes": 25803,
+      "git_blob": "41b10915c3cfe184b764ae7985e0d30d71541185",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "7442b4e736d6af76378538748f8735bec69fd8e9",
         "sha256": "a1c0f55348fabf4353067066b38bcf1a3e95538151b52fdfdf44cee6d69be269",
@@ -102496,9 +102496,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "0c6a67e5f67d8aa34394f5dbf0d033312a2b42c68ff358567c6d1b57f013779e",
-      "size_bytes": 7354,
-      "git_blob": "3ef44d9a5f052b526b353a7d4c3fca093d6ccd63",
+      "sha256": "4e773a9da950847ff79aa7b5f99d1dbf5f53acc7d937fb960faf4b6e055bbee2",
+      "size_bytes": 7984,
+      "git_blob": "82597e3b950aa72ef36afdbb7a6d31719e01f59d",
       "storage_scope": "public_repository"
     },
     {
@@ -105114,9 +105114,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "f99ebe6f233b3e4f47b123b79c65ee8eff3399abfcf927cd12f4e032c0aa5813",
-      "size_bytes": 5291,
-      "git_blob": "8ccbe0b7655617546595219ddb91b0c610ebb998",
+      "sha256": "48b7e74aecc31c020265c7221927b89107217be756dcf8411a61d2d1049db529",
+      "size_bytes": 5495,
+      "git_blob": "dde2708ab9f4c0c3b2f0d9e86e1ba3b4fe20bdb5",
       "storage_scope": "public_repository"
     },
     {
@@ -105921,6 +105921,61 @@
       "size_bytes": 705,
       "git_blob": "5462304922a9029baa54552ae31c726ad51e566b",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-mvs-only-ui-01/WINDOWS-WPF.log",
+      "version": "sm-mvs-only-ui-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-MVS-ONLY-UI-01; original evidence retains its own SourceCommit",
+      "sha256": "c2dc408f3d85a5b5e999cdbac2d08d66b22c37c5a4c2c54d6b3ac558a733ce5d",
+      "size_bytes": 2828,
+      "git_blob": "55e77586121d88e04ab273dba2a8584b2c43866c",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-mvs-only-ui-01/bundled-sdk-daily-left.png",
+      "version": "sm-mvs-only-ui-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-MVS-ONLY-UI-01; original evidence retains its own SourceCommit",
+      "sha256": "9929b13fa603dd86294d99a592a8def85b13f23b930b8d41285ff3a1a7552cb9",
+      "size_bytes": 147676,
+      "git_blob": "de471dbb867ae23e712fbb163783473bd28e6d18",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-mvs-only-ui-01/bundled-sdk-first-compact.png",
+      "version": "sm-mvs-only-ui-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-MVS-ONLY-UI-01; original evidence retains its own SourceCommit",
+      "sha256": "772377c850b480734c24b285f7699cb6ac53bd7ecd9a8763dc809427f1686eb0",
+      "size_bytes": 105218,
+      "git_blob": "51b787a8fae71376d2629e02bd8f8dfe1093d466",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/sm-mvs-only-ui-01.md",
+      "version": "sm-mvs-only-ui-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-MVS-ONLY-UI-01; original evidence retains its own SourceCommit",
+      "sha256": "9b1c921452eaf728fe0656baf538dd5b58dd7137b6496fcfefbfdf5124db3095",
+      "size_bytes": 2090,
+      "git_blob": "7306be06edc1cf97c01689dbf4d049446cad1cc1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-SM-MVS-ONLY-UI-01.md",
+      "version": "sm-mvs-only-ui-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-MVS-ONLY-UI-01; original evidence retains its own SourceCommit",
+      "sha256": "4ee244ce74183288c6a3aad9a31520176c92da6b9240c1c486a64879141244ed",
+      "size_bytes": 1374,
+      "git_blob": "4884ce553054a21f40d21460b50fc300551a218d",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -106000,7 +106055,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-MANAGEMENT-PASSWORD-STARTUP-01.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-MVS-ONLY-UI-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",

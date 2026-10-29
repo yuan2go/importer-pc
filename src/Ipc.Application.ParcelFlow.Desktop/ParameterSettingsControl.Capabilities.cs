@@ -69,14 +69,14 @@ public sealed partial class ParameterSettingsControl
         if (Model?.ApplicationId == "sportmaster" && draft.Kind == "observation")
         {
             var sdkSelected = draft.Provider?.Implementation == "hikrobot-mvs-reader";
-            var identity = new TextBox { Text = sdkSelected ? "海康 MVS＋软件识别（随软件安装）" : draft.Provider?.Implementation == "tcp-line" ? "当前保存的是旧版 TCP 收码连接" : "当前保存的是原有相机连接", IsReadOnly = true, MinHeight = 40 };
-            Field(Form(page), "相机连接", identity, null, draft.InstanceId + "/Provider", page);
+            var identity = new TextBox { Text = sdkSelected ? "海康 MVS SDK 采图＋软件识别（随软件安装）" : "原相机设置不适用于当前 MVS SDK", IsReadOnly = true, MinHeight = 40 };
+            Field(Form(page), "相机驱动", identity, null, draft.InstanceId + "/Provider", page);
             locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
             if (!sdkSelected)
             {
-                page.Body.Children.Add(Text("这台相机需要通过海康 SDK 连接。请先切换连接方式，再填写相机 IP 和序列号；无需填写 TCP 端口。切换只重置本相机的连接参数，相机编码及另一台相机的设置保留。"));
+                page.Body.Children.Add(Text("当前相机通过海康 MVS SDK 采图并由软件识别。请重新配置本相机，再填写实际 IP 和物理序列号；重置只影响本相机连接参数，相机编码及另一台相机的设置保留。"));
                 var sdk = draft.Providers.SingleOrDefault(p => p.Implementation == "hikrobot-mvs-reader");
-                var useSdk = new Button { Content = "使用海康 SDK 并重置本相机连接参数", MinHeight = 44, IsEnabled = sdk is not null, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
+                var useSdk = new Button { Content = "按 MVS SDK 重新配置本相机", MinHeight = 44, IsEnabled = sdk is not null, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
                 AutomationProperties.SetAutomationId(useSdk, draft.InstanceId + "/ApplyProviderChange");
                 useSdk.Click += (_, _) => { draft.ProposeProvider(sdk!); draft.ApplyProviderChange(); };
                 page.Body.Children.Add(useSdk);
@@ -84,7 +84,7 @@ public sealed partial class ParameterSettingsControl
                 CameraCode(page, draft);
                 return; // Never mix old TCP fields with a proposed SDK connection.
             }
-            page.Body.Children.Add(Text("IP 地址用于在网卡上找到这台 GigE 相机；序列号用于核对设备身份。SDK 自行处理设备通信，无需配置 TCP 端口。"));
+            page.Body.Children.Add(Text("IP 地址用于找到这台 GigE 相机；物理序列号用于核对设备身份。相机通信由 MVS SDK 管理。"));
             page.Body.Children.Add(Text("填写 IP 和序列号，保存重启后连接。此位置不使用相机时，两项留空。软件自动采用连续采集，每次识别结果都上报 RCS。"));
         }
         if (draft.Role == "default-scale")
@@ -159,7 +159,6 @@ public sealed partial class ParameterSettingsControl
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
-            if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "tcp-line" && p.Field.Key == "entity.mode") continue;
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") continue;
             else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes")) advanced.Add(p);
@@ -167,8 +166,6 @@ public sealed partial class ParameterSettingsControl
         }
         if (draft.Kind == "observation")
         {
-            if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "tcp-line")
-                page.Body.Children.Add(Text("正常作业时，相机扫描一个包裹输出一条完整报文，软件据此向RCS获取分拣信息。请先确认报文与实体包裹一一对应。"));
             CameraCode(page, draft);
         }
         if (advanced.Count > 0) { var advancedForm = AdvancedForm(page, isRcs ? "请求编号区间" : draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "采集缓冲" : draft.Kind == "observation" ? "识别与缓冲" : "模拟调试选项"); foreach (var p in advanced) Parameter(advancedForm, page, draft, p); }

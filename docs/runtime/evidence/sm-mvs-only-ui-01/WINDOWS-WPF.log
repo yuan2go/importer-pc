@@ -1,0 +1,35 @@
+PASS BUNDLED SDK NATIVE fresh first setup uses built-in MVS software reader without inventory
+PASS BUNDLED SDK NATIVE fixed source/locale have no editor
+PASS BUNDLED SDK NATIVE actual SDK IP and serial fields available
+PASS BUNDLED SDK NATIVE camera page has no trigger/result policy or configuration-state block
+PASS BUNDLED SDK NATIVE camera page has no TCP copy, fields or separate driver installation
+PASS BUNDLED SDK NATIVE camera driver identifies the fixed MVS SDK
+PASS BUNDLED SDK NATIVE no separate driver-install action
+PASS BUNDLED SDK NATIVE one shared camera code editor isolates left/right
+CAPTURE bundled-sdk-daily-left: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+PASS BUNDLED SDK NATIVE actual SDK IP and serial fields available
+PASS BUNDLED SDK NATIVE camera page has no trigger/result policy or configuration-state block
+PASS BUNDLED SDK NATIVE camera page has no TCP copy, fields or separate driver installation
+PASS BUNDLED SDK NATIVE camera driver identifies the fixed MVS SDK
+PASS BUNDLED SDK NATIVE no separate driver-install action
+PASS BUNDLED SDK NATIVE full candidate saves both SDK dictionaries
+PASS BUNDLED SDK NATIVE actual SDK IP and serial fields available
+PASS BUNDLED SDK NATIVE camera page has no trigger/result policy or configuration-state block
+PASS BUNDLED SDK NATIVE camera page has no TCP copy, fields or separate driver installation
+PASS BUNDLED SDK NATIVE camera driver identifies the fixed MVS SDK
+PASS BUNDLED SDK NATIVE no separate driver-install action
+CAPTURE bundled-sdk-first-left: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+CAPTURE bundled-sdk-first-compact: 785.6x382.4 DIP, Windows DPI 1.25/1.25
+PASS BUNDLED SDK NATIVE compact first setup retains same full candidate
+PASS BUNDLED SDK NATIVE legacy TCP candidate shows one explicit SDK transition, never a blank selector or TCP port mixed with the SDK
+PASS BUNDLED SDK NATIVE merely opening the page never rewrites legacy configuration
+PASS BUNDLED SDK NATIVE unsupported old settings request MVS SDK reconfiguration without presenting TCP as a connection option
+PASS BUNDLED SDK NATIVE legacy transition still exposes exactly one shared camera-code editor
+PASS BUNDLED SDK NATIVE actual SDK IP and serial fields available
+PASS BUNDLED SDK NATIVE camera page has no trigger/result policy or configuration-state block
+PASS BUNDLED SDK NATIVE camera page has no TCP copy, fields or separate driver installation
+PASS BUNDLED SDK NATIVE camera driver identifies the fixed MVS SDK
+PASS BUNDLED SDK NATIVE no separate driver-install action
+PASS BUNDLED SDK NATIVE explicit transition activates SDK parameter editors while preserving camera code and other camera
+CAPTURE bundled-sdk-legacy-transition: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+BOUNDARY real WPF and built-in descriptors; synthetic values, no device/barcode/site acceptance

@@ -132,6 +132,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
             foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
+            InitializeCameraInspection();
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException or System.Text.Json.JsonException)
         { StorageFailed(error, "RepositoryOpenOrRecovery", error is InvalidDataException or System.Text.Json.JsonException); throw; }
@@ -208,6 +209,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
             {
+                if (Volatile.Read(ref inspectionFence) is { } recoveredFence && reader.Source is IObservationInspectionSource recoveredSource)
+                    await recoveredSource.SetInspectionAsync(new(recoveredFence.Id, true, _ => false, false), token).ConfigureAwait(false);
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
                 catch (ObservationConnectionException ex)
                 {
@@ -276,6 +279,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     {
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
+        if (observation is not null && Volatile.Read(ref inspectionFence) is { } debugFence)
+            observation = observation with { InspectionSessionId = observation.InspectionSessionId ?? debugFence.Id };
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
@@ -401,6 +406,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
         { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/time; " + Wire.Encode(o)); return; }
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
+        if (o.InspectionSessionId is not null)
+        {
+            RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
+            return;
+        }
         if (repository!.RetiredIdentity(o.AdmissionId, observationId) is { } retired)
         {
             if (retired.Admission != o.AdmissionId || retired.Observation != observationId || retired.Position != position)

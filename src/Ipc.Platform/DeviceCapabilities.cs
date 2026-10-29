@@ -21,7 +21,14 @@ public sealed record DeviceHealthConfirmation(string DeviceId, string Epoch, Dev
     DateTimeOffset ConfirmedAt, DateTimeOffset? ValidUntil, string Source);
 public sealed record Observation(string Id, string DeviceId, string Epoch, string SourceEventId, long Sequence,
     string AdmissionId, string Kind, string[] Codes, int? PackageQuantity, DateTimeOffset ObservedAt,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? CandidateIssue = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? CandidateIssue = null)
+{
+    // Optional evidence fields retain the existing constructor/deconstruction ABI.
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? InspectionSessionId { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? CaptureSessionId { get; init; }
+}
 // Runtime owns epoch registration; callbacks cannot replace the accepted epoch.
 public interface IControlledObservationSource : IAsyncDisposable
 {

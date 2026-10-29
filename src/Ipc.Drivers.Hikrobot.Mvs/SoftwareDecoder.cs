@@ -22,6 +22,8 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
             TryInvert = true, TryDownscale = true, ReturnErrors = false, MaxNumberOfSymbols = CandidateLimit };
     }
     public string[] Decode(byte[] pixels, int length, int width, int height)
+        => DecodeDetailed(pixels, length, width, height).Select(symbol => symbol.Text).ToArray();
+    public RecognitionSymbol[] DecodeDetailed(byte[] pixels, int length, int width, int height)
     {
         if (reader is null || width <= 0 || height <= 0 || length != checked(width * height) || length > pixels.Length)
             throw new InvalidDataException("Decoder not prepared or incomplete Mono8 image");
@@ -38,7 +40,10 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
             if (results.Length >= CandidateLimit) throw new InvalidDataException("Recognition candidate limit reached; complete result cannot be guaranteed");
             return results.Select(result => {
                 if (!result.IsValid || result.Bytes.Length > CodeByteLimit) throw new InvalidDataException("Invalid/oversized recognition result");
-                return encoding.GetString(result.Bytes);
+                var p = result.Position;
+                return new RecognitionSymbol(encoding.GetString(result.Bytes), result.Format.ToString(),
+                    [new(p.TopLeft.X, p.TopLeft.Y), new(p.TopRight.X, p.TopRight.Y),
+                     new(p.BottomRight.X, p.BottomRight.Y), new(p.BottomLeft.X, p.BottomLeft.Y)], result.Orientation);
             }).ToArray();
         }
         finally { if (results is not null) foreach (var result in results) result.Dispose(); pin.Free(); }

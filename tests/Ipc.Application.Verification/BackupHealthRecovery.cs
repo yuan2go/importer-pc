@@ -100,16 +100,29 @@ static class BackupHealthRecovery
             var config = Path.Combine(root, "production-config"); Directory.CreateDirectory(config);
             ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), production.Effective);
             var restoredLaunch = launch with { ConfigurationDirectory = config, DataRoot = Path.Combine(root, "production-restored") };
-            await using var restored = SportmasterApplication.Create(restoredLaunch, new ParcelCapabilityFactory(restoredLaunch));
-            try { await restored.StartAsync(CancellationToken.None); throw new Exception("Unqualified restored Production started"); }
-            catch (InvalidDataException e) { Check(e.Message.Contains("Production NotReady", StringComparison.Ordinal), "restored Production still refuses missing real reader/qualification; no simulation fallback"); }
+            // Inspect the actual admission guard without claiming device qualification:
+            // this uninstalled Production root must first fail protected authority.
+            await using var factory = new ParcelCapabilityFactory(restoredLaunch);
+            Check(factory.AdmissionFailure(production.Effective)?.Contains("Production NotReady",StringComparison.Ordinal)==true,
+                "restored Production without qualification retains explicit NotReady admission; no simulation fallback");
+            var before = Wire.FileHash(Path.Combine(target, "configuration.json"));
+            try
+            {
+                await using var restored = SportmasterApplication.Create(restoredLaunch, new ParcelCapabilityFactory(restoredLaunch));
+                await restored.StartAsync(CancellationToken.None); throw new Exception("Unqualified restored Production started");
+            }
+            catch (InvalidOperationException e) when(e.Message.Contains("生产模式缺少受保护的管理模式授权服务", StringComparison.Ordinal))
+            { Check(Wire.FileHash(Path.Combine(target,"configuration.json"))==before, "public Production composition rejects missing protected authority before runtime; isolated configuration remains unchanged"); }
         });
 
         await Case("custody", async () =>
         {
-            var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/fixtures/sportmaster-schema2-optional.json")));
-            c = c with { Login = null, Weight = new(WeightSource.Disabled, WeightUnit.Kg, 3), Scale = null,
-                Images = c.Images! with { Uploader = c.Images.Uploader! with { Parameters = new() { ["reply-mode"] = "lose-after-commit" } } } };
+            var c = Config() with {TimeoutMs=1500};
+            var left = new CapabilityBinding("camera", "reference-camera", "1.0.0", "bhr.camera.left", c.Topology!.Readers[0].DeviceId, "PARCEL-REFERENCE-v1", []);
+            var right = left with { InstanceId="bhr.camera.right", Target=c.Topology.Readers[1].DeviceId };
+            var upload = new CapabilityBinding("upload", "reference-upload", "1.0.0", "bhr.upload", "reference://upload/bhr", "PARCEL-REFERENCE-v1", new(){["reply-mode"]="lose-after-commit"});
+            c = c with { Images=new(left,upload,Strategy:UploadStrategy.Attached), CapabilityInstances=[c.Wcs!,left,right,upload],
+                Topology=c.Topology with {Positions=[c.Topology.Positions[0] with {CameraInstanceId=left.InstanceId},c.Topology.Positions[1] with {CameraInstanceId=right.InstanceId}]} };
             var (app, launch) = Create(c, "custody"); await using var owned = app; await app.StartAsync(CancellationToken.None);
             Check(app.EmitReference("original-parcel", "00001", "original-event"), "original image observation admitted");
             var s = await Wait(app, x => x.Operations.SingleOrDefault()?.Upload?.State == StageState.Unknown); var op = s.Operations.Single();
@@ -132,6 +145,7 @@ static class BackupHealthRecovery
             Check(s.Paused && s.CurrentOperator is null && Wire.Encode(recovered.Upload!.Request) == Wire.Encode(op.Upload!.Request) && recovered.Upload.Attempts == 1 &&
                 recovered.Upload.State == StageState.Unknown && Wire.FileHash(originalImage) == originalHash,
                 "isolated restore retains original unknown upload identity/attempt, no login or automatic resend, source unchanged");
+            Check((await ManagementModeFixture.Authorize(restored)).Status=="Authorized", "restored custody query obtains an explicit current management grant");
             await restored.ReconcileAsync(op.Id); s = await restored.SnapshotAsync();
             var ledger = Path.Combine(op.Upload!.Request.Binding.Parameters["peer-root"], Wire.Hash(op.Upload.Request.Binding.Target), op.Upload.Request.Id + ".json");
             Check(s.Operations.Single().Upload?.State == StageState.Accepted && Wire.Decode<ReferencePeer.PeerEntry>(File.ReadAllText(ledger)).Executions == 1,
@@ -140,7 +154,7 @@ static class BackupHealthRecovery
             void Reject(string name, ParcelRecoveryManifest altered)
             {
                 ExtensionStore.AtomicWrite(completed, altered);
-                var target = Path.Combine(root, "reject-" + name, c.ApplicationId);
+                var target = Path.Combine(root, "reject-" + name, c.Mode.ToString(), c.StationId, c.ApplicationId);
                 try { ParcelRecovery.Restore(backup, target); throw new Exception("Unsafe restore accepted: " + name); }
                 catch (InvalidDataException) { Check(!Directory.Exists(target) && Wire.FileHash(originalImage) == originalHash, name + " rejected before target creation; original custody preserved"); }
                 finally { ExtensionStore.AtomicWrite(completed, manifest); }
@@ -161,7 +175,7 @@ static class BackupHealthRecovery
             File.WriteAllText(completed, duplicated);
             try
             {
-                var target = Path.Combine(root, "duplicate-json", c.ApplicationId);
+                var target = Path.Combine(root, "duplicate-json", c.Mode.ToString(), c.StationId, c.ApplicationId);
                 try { ParcelRecovery.Restore(backup, target); throw new Exception("Duplicate JSON key accepted"); }
                 catch (InvalidDataException) { Check(!Directory.Exists(target), "raw duplicate JSON keys rejected before deserialization can collapse them"); }
             }
@@ -253,6 +267,7 @@ static class BackupHealthRecovery
             var recovered = (await restored.SnapshotAsync()).Operations.Single();
             Check(Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request) && recovered.Wcs.Attempts == 1 && recovered.Wcs.State == StageState.Unknown,
                 "restart after delivery cancellation preserves frozen request, no resend");
+            Check((await ManagementModeFixture.Authorize(restored)).Status=="Authorized", "original delivery query obtains a new grant after restart");
             await restored.ReconcileAsync(original.Id); var final = (await restored.SnapshotAsync()).Operations.Single();
             var ledger = Path.Combine(original.Wcs!.Request.Binding.Parameters["peer-root"], Wire.Hash(original.Wcs.Request.Binding.Target), original.Wcs.Request.Id + ".json");
             Check(final.Wcs?.State == StageState.Accepted && final.Wcs.Attempts == 1 && Wire.Decode<ReferencePeer.PeerEntry>(File.ReadAllText(ledger)).Executions == 1,
@@ -288,7 +303,11 @@ static class BackupHealthRecovery
             await using var app = Ipc.Application.DirectPlc.DirectPlcApplication.Create(launch, factory); await app.StartAsync(CancellationToken.None);
             app.EmitReference("accepted-original", "00005", "accepted-original");
             var original = (await Wait(app, x => x.Operations.SingleOrDefault()?.State == ParcelState.PlcAccepted)).Operations.Single();
-            var query = app.ReconcileAsync(original.Id); await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+            Check((await ManagementModeFixture.Authorize(app)).Status=="Authorized", "accepted PLC query obtains explicit management authority");
+            var query = app.ReconcileAsync(original.Id);
+            if(await Task.WhenAny(factory.Entered.Task,query).WaitAsync(TimeSpan.FromSeconds(2))==query)
+            {await query;throw new InvalidOperationException("Original query completed before entering the cancellation fixture");}
+            await factory.Entered.Task;
             await app.StopAsync(CancellationToken.None); await query;
             var final = (await app.SnapshotAsync()).Operations.Single();
             Check(final.State == ParcelState.PlcAccepted && final.Plc is { State: StageState.Accepted, Attempts: 1 } &&

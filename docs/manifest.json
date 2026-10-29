@@ -1827,9 +1827,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "3d3a6ddf13ae375144e025d5fb9930c3686a85d51defe003376b5698f77d3390",
-      "size_bytes": 30937,
-      "git_blob": "234ea4aba70b66fb04c991389f0985232ea98766",
+      "sha256": "3aae3fc3de8a6138245054106d8a84cc5f58300f3e58ad31d1b4f256f1e1521d",
+      "size_bytes": 30960,
+      "git_blob": "2e00ea2279f44175c64638aca5ac2c0895103f2a",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -105444,9 +105444,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
-      "sha256": "47790a3a6dfa2576d297c3feed89ec594658db778584d677e812d6669c8ffa49",
-      "size_bytes": 6160,
-      "git_blob": "77a450faab31205d6453133d9d31d3ce77b2b5fb",
+      "sha256": "1d9caa8715a9678b07288972378d9b0674026c8b512b0c3b51d0177a594e696d",
+      "size_bytes": 6877,
+      "git_blob": "869fe0475f5f6b664b210ccf53ae51fdecabad65",
       "storage_scope": "public_repository"
     },
     {
@@ -108388,8 +108388,8 @@
   ],
   "integration_sources": [
     {
-      "commit": "3a25d6ba3bea686b6bb7caaef919bb1dec2d4b12",
-      "manifest_sha256": "72f008a8b4876fd721674eee1dc0145db6c33d0f0845768548a1260ee0c5e91a",
+      "commit": "9596ba9f4fe0021a2fabff5f3a9e7452da110336",
+      "manifest_sha256": "24f0260dcac0a927ebe65820b72e034466cbdac339099761f518faebb50d775b",
       "work_package": "WP-IPC-INTEGRATION-20261028"
     }
   ],

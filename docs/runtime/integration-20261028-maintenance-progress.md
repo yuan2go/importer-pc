@@ -35,3 +35,9 @@
 原生证据另保留了首次夹具拒绝类型不匹配、旧“全部隐藏”断言、长路径/小窗口布局和未知结果只读入口的问题及修正轮；原取消/防重/退出码断言未删除。最后布局按实际客户区复核，阶段和未知结果先于长路径展示。
 
 本机 `--parcel-recovery-p2` 被日常运行禁止提权守卫阻止，保留失败输出，未修改机器策略；`--backup-health-recovery` 本机未运行。两者以本提交的新 CI 结果另行记证。此处本机通过不转记为受保护 helper、最终 main、交互 UAC 或现场通过。
+
+### 首轮 CI 与覆盖补充
+
+首轮候选 `9596ba9f4fe0021a2fabff5f3a9e7452da110336` 的九个 CI 作业通过，实际测试合并树 `a58981d76ad8b1e68bc2021c40db49089bfb6a5d`：[商业工程运行](https://github.com/yuan2go/importer-pc/actions/runs/40808915078)、[SDK 边界运行](https://github.com/yuan2go/importer-pc/actions/runs/40808915058)。其中新增 hosted Windows 真实 helper 测试步骤通过，交互 UAC 等排除项保持上述边界。
+
+复核发现既有 CI 没有调用 `--backup-health-recovery`。本次后续提交将其接入当前契约套件，与 `--parcel-recovery-p2` 分别留存日志；该后续提交须重新取得当前源完整 CI，不能以首轮九项通过替代。

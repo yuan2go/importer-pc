@@ -64389,9 +64389,9 @@
     },
     {
       "path": "src/Ipc.Platform/WindowsStoragePaths.cs",
-      "sha256": "d1beddf624e6ab6ddff91ffa45e8ebbf4f10b412f5a3013f8c849f9f9fc858c9",
-      "size_bytes": 10263,
-      "git_blob": "a3f473a05b539be9cfa51ef5fe7317627a697185",
+      "sha256": "489d00275de4d596f02b3be6d6816e89ccac14eae1c2a1d05c6f58e08582d238",
+      "size_bytes": 10418,
+      "git_blob": "1b1f36e5bca369df5318e0ec001948f24d7dd912",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -65353,9 +65353,9 @@
     },
     {
       "path": "src/Ipc.Platform/ManagementModeBroker.Installation.cs",
-      "sha256": "a4fe91487e813a338787f5cd3626c0502bb1d2c447368478470533899b737744",
-      "size_bytes": 14305,
-      "git_blob": "b16a093c2470dd18e7e599fbccfc4ef30d2ee72d",
+      "sha256": "07a95101870cb34fb30323ffca57fd47d8097000411575da0eb7d09766326379",
+      "size_bytes": 14618,
+      "git_blob": "149d525bda7e699053b75cfb3a23b46f191f996a",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -106324,9 +106324,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-D-DRIVE-INSTALL-01; original evidence retains its own SourceCommit",
-      "sha256": "6d33abf3a67bd7047b14612f805d83134501bb376701ce44bc4e7858867047fc",
-      "size_bytes": 5088,
-      "git_blob": "2c5bc80bc938fd86f243eaa79d3e9e4b082725aa",
+      "sha256": "f1f7e460ef08b77e68f0a527cf14815316b6615b10148ed68cf32675649c2990",
+      "size_bytes": 5258,
+      "git_blob": "d0118a4057ae7ace660eb3477c65ccb412f2b9cb",
       "storage_scope": "public_repository"
     },
     {
@@ -106456,9 +106456,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-D-DRIVE-INSTALL-01; original evidence retains its own SourceCommit",
-      "sha256": "64cf9cd9fc7afbe480e51adec382cdb6a5affb1b5d93351274ac3c43398170e9",
-      "size_bytes": 3544,
-      "git_blob": "0218524b1523ba736b2904b2ab572134ba6358a8",
+      "sha256": "25dec303652475a898aa9c6e67716b403244dc8d6e4c3624997b0a9bb4ee577a",
+      "size_bytes": 3650,
+      "git_blob": "34258a9fac699b4beca794c7f183e04fbf98ac16",
       "storage_scope": "public_repository"
     },
     {

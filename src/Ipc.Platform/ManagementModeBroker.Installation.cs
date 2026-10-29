@@ -52,8 +52,13 @@ public static partial class ManagementModeBroker
     [SupportedOSPlatform("windows")]
     public static void Install(string dataRoot, string sourceApp, Action<ManagementServiceInstallationDiagnostic>? observer)
     {
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority(); dataRoot = CanonicalRoot(dataRoot); sourceApp = Path.GetFullPath(sourceApp);
-        var trace = new InstallationTrace(ServiceName(dataRoot), dataRoot, observer, sourceApp);
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var trace = new InstallationTrace("尚未解析服务身份", dataRoot, observer, sourceApp);
+        var requestedDataRoot = dataRoot;
+        dataRoot = trace.Run("ResolveDataRoot", "GetFinalPathNameByHandleW", () => CanonicalRoot(requestedDataRoot));
+        var serviceName = trace.Run("ResolveServiceIdentity", "GetFinalPathNameByHandleW", () => ServiceName(dataRoot));
+        trace.Identify(serviceName, dataRoot);
+        sourceApp = trace.Run("ResolveSourcePath", "Path.GetFullPath", () => Path.GetFullPath(sourceApp));
         if (dataRoot.Contains('"')) throw new InvalidDataException("认证服务数据目录无效。");
         var executable = trace.Run("PrepareVerifiedHost", "VerifyAndCopyHostFiles", () =>
         {
@@ -77,7 +82,7 @@ public static partial class ManagementModeBroker
             if (!File.Exists(anchor))
             {
                 using var output = new FileInfo(anchor).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.Read, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-32-545")));
-                output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { Protocol = 1, DataRoot = CanonicalRoot(dataRoot), Service = ServiceName(dataRoot) }))); output.Flush(true);
+                output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { Protocol = 1, DataRoot = dataRoot, Service = serviceName }))); output.Flush(true);
             }
             MachineRuntimePolicy.RequireProtectedEvidence(anchor);
             var targetExecutable = Path.Combine(host, "Ipc.Assembly.exe"); if (!File.Exists(targetExecutable)) throw new InvalidDataException("认证服务宿主缺失。");
@@ -89,7 +94,7 @@ public static partial class ManagementModeBroker
         { var handle = OpenSCManager(null, null, 1 | 2); if (handle.IsInvalid) throw NativeFailure("OpenSCManagerW"); return handle; });
         using var existing = trace.Run("InspectExistingService", "OpenServiceW", () =>
         {
-            var handle = OpenService(manager, ServiceName(dataRoot), 0xF01FF);
+            var handle = OpenService(manager, serviceName, 0xF01FF);
             if (handle.IsInvalid)
             {
                 var code = Marshal.GetLastWin32Error();
@@ -98,10 +103,10 @@ public static partial class ManagementModeBroker
             return handle;
         });
         var previous = existing.IsInvalid ? null : trace.Run("ReadPreviousRegistration", "QueryServiceConfigW", () => ReadCommand(existing));
-        var displayName = "供包台管理模式授权 " + Key(dataRoot)[..8];
+        var displayName = "供包台管理模式授权 " + serviceName[^24..][..8];
         using var service = trace.Run("OpenOrCreateService", existing.IsInvalid ? "CreateServiceW" : "OpenServiceW", () =>
         {
-            var handle = existing.IsInvalid ? CreateService(manager, ServiceName(dataRoot), displayName, 0xF01FF, 0x10, 2, 1, command, null, IntPtr.Zero, null, null, null) : OpenService(manager, ServiceName(dataRoot), 0xF01FF);
+            var handle = existing.IsInvalid ? CreateService(manager, serviceName, displayName, 0xF01FF, 0x10, 2, 1, command, null, IntPtr.Zero, null, null, null) : OpenService(manager, serviceName, 0xF01FF);
             if (handle.IsInvalid) throw NativeFailure(existing.IsInvalid ? "CreateServiceW" : "OpenServiceW"); return handle;
         });
         try

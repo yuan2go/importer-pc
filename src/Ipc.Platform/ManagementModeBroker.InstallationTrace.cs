@@ -9,6 +9,7 @@ public static partial class ManagementModeBroker
     {
         Exception? pendingDiagnostic;
         public string? Executable { get; set; }
+        public void Identify(string name, string canonicalRoot) { service = name; root = canonicalRoot; }
         public T Run<T>(string stage, string api, Func<T> action)
         {
             try

@@ -83,3 +83,9 @@ Windows先执行 `. ./scripts/project-environment.ps1`。SM构建沿既有Action
 | stability-audit-fixes | 83 |
 
 当前入口README/INDEX/工作包/执行报告及三项增量报告的本地链接使用仓库既有release_documents.render检查；逐对象清单覆盖119/59/17原对象，无空归宿。最终文档PR后，再对干净main确认SM构建及相关回归，将真实SHA、范围和未验证项保存在仓库外终态回执，不以本检查点替代后续实际执行。
+
+## Windows清单检出修正
+
+在文档合并main `769d9cd894ff4d135264a5c2033a90e3641c0a35` 的新干净Windows工作树中，canonical校验实际退出1：`Manifest checksum differs`。Git对象中的JSON仍是LF且与已提交SHA一致；本机普通检出把JSON转换为108484个CRLF，造成工作副本的字节校验失败。没有篡改或重标历史证据。
+
+当前`.gitattributes`对`docs/manifest.json`与`docs/manifest.sha256`精确指定`text eol=lf`，让普通Windows检出保持生成器的规范字节。仅限当前两个清单路径，归档/冻结回执各守原字节规则。使用原生成器重算当前清单；在修正后的普通检出再次运行原`--check`，不能只在手工归一化后的工作副本声称通过。业务源码、测试、配置与CI入口不因本修正改变。

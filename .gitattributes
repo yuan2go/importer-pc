@@ -168,3 +168,7 @@ docs/runtime/evidence/hikrobot-boundary-regressions-01/app-parameter-refactor.tx
 # Keep PR137's original native receipts and their empty diagnostic fields intact.
 docs/runtime/evidence/mvreader-restore-01/native-startup-final.log -text whitespace=cr-at-eol,-blank-at-eol
 docs/runtime/evidence/mvreader-restore-01/native-startup-per-result.log -text whitespace=cr-at-eol,-blank-at-eol
+
+# The current canonical manifest checksum must survive Windows text checkout.
+docs/manifest.json text eol=lf
+docs/manifest.sha256 text eol=lf

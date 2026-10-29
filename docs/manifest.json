@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "ecc06baf56d9151bb5124733660c7bdf3da26ff6a25cb75536a515a99638e908",
-      "size_bytes": 11728,
-      "git_blob": "e04131782efe7e8a48dfb9f2e6e3782e5c80c1d7",
+      "sha256": "19cfa60c8126c2ccd2a50f3e059f2660aa4dbfa2c3c20e8bf924e8a637d0fb37",
+      "size_bytes": 11871,
+      "git_blob": "91ee741b74372e38a7d3fc93b09efb291173dbe2",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -104179,9 +104179,9 @@
       "status": "current_guidance_or_scoped_evidence",
       "purpose": "Reconciliation inventory; not a runtime validation claim",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
-      "sha256": "45e777a64bbe6d6f9fcf87e50cdff031a4dfa5de12f0153d056bb72cae1572ee",
-      "size_bytes": 10438,
-      "git_blob": "28dd2211fb3377986df7ba722ff9000c0d252d5b",
+      "sha256": "adeac2dd1a1b40cf0a07887280d020df2d35a6cfed931ba14eae3b76eecf3092",
+      "size_bytes": 11259,
+      "git_blob": "fe88b792ee31820bf76786ccb06ef11df118dd01",
       "storage_scope": "public_repository"
     },
     {

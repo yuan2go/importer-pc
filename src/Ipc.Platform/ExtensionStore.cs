@@ -28,13 +28,14 @@ public sealed partial class ExtensionStore(string root, ExtensionTrust trust, Ru
         if (!ExtensionSchema.IsId(p.Id) || !ExtensionSchema.IsVersion(p.Version) || !ExtensionSchema.IsHash(p.ManifestSha256) || p.ManifestSha256 != p.ManifestSha256.ToUpperInvariant())
             throw new InvalidDataException("Invalid exact package reference");
     }
-    public static void AtomicWrite<T>(string file, T value)
+    public static void AtomicWrite<T>(string file, T value) => AtomicWrite(file, value, createDirectory: true);
+    internal static void AtomicWrite<T>(string file, T value, bool createDirectory, bool overwrite = true)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+        if (createDirectory) Directory.CreateDirectory(Path.GetDirectoryName(file)!);
         var temporary = file + "." + Wire.Id() + ".new";
         using (var output = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 8192, FileOptions.WriteThrough))
         { output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(value))); output.Flush(true); }
-        File.Move(temporary, file, true);
+        File.Move(temporary, file, overwrite);
     }
     public ExtensionInstallation[] Inventory()
     {

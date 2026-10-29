@@ -7,6 +7,12 @@ public sealed partial class ParcelRuntime : IRuntimeFatalSource
 {
     readonly TaskCompletionSource<RuntimeFatalFailure> fatalStorage = new(TaskCreationOptions.RunContinuationsAsynchronously);
     public Task<RuntimeFatalFailure> FatalFailure => fatalStorage.Task;
+    T StartupStorage<T>(Func<T> operation, string phase)
+    {
+        try { return operation(); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        { StorageFailed(error, phase); throw; }
+    }
     static bool IsStorageError(Exception error) => error is StorageWriteFailure or SqliteException or IOException or UnauthorizedAccessException;
     void StorageFailed(Exception error, string phase, bool knownIntegrityFailure = false)
     {

@@ -26,9 +26,14 @@ static class P0Supervisor
     {
         Check(!new DesktopRecoveryOptions().Enabled,
             "new installations preserve manual startup until recovery is explicitly enabled");
-        DeploymentLocation Location(string name, DesktopRecoveryOptions? options = null) => new("sportmaster", new string('a', 40),
+        DeploymentLocation Location(string name, DesktopRecoveryOptions? options = null)
+        {
+            var prepared = new DeploymentLocation("sportmaster", new string('a', 40),
             Path.Combine(root, name, "release"), Path.Combine(root, name, "config"), Path.Combine(root, name, "data"), "S-1-5-21-123-456-789-1001")
             { Recovery = options ?? new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
+            if (prepared.Recovery.Enabled) DesktopRecoverySupervisor.InitializeNewDeployment(prepared);
+            return prepared;
+        }
         var disabled = Location("disabled", new());
         var disabledResult = await DesktopRecoverySupervisor.RunAsync(disabled, () => disabled,
             launch: _ => throw new Exception("Disabled supervision must never create a client"));

@@ -43,6 +43,26 @@ static class AtomicStorageChecks
             catch (StorageWriteFailure error) { full = error; }
             Check(full?.Kind == StorageFailureKind.Unrecoverable && writes == 1 && Count("full") == 0, "SQLITE_FULL is permanent, not a retry loop");
             Hook(null);
+            foreach (var code in new[] { 3, 8, 23, 14 })
+            foreach (var phase in new[] { "BeforeCommit", "AfterCommit" })
+            {
+                var id = "classified-" + code + "-" + phase; var callbacks = 0;
+                Hook(p => { if (p == phase) throw new SqliteException("Synthetic precise SQLite category", code); });
+                StorageWriteFailure? fault = null;
+                try { AtomicStorageWrite.Execute(db, tx => { callbacks++; Write(tx, id); }); }
+                catch (StorageWriteFailure e) { fault = e; }
+                Check(fault?.Kind == (code == 14 ? StorageFailureKind.DurableOutcomeUncertain : StorageFailureKind.Unrecoverable) && callbacks == 1 && Count(id) == (phase == "AfterCommit" ? 1 : 0),
+                    "SQLite " + code + " " + phase + " retains real commit outcome and never repeats callback");
+            }
+            Hook(null);
+            using (var readOnly = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource=file,Mode=SqliteOpenMode.ReadOnly,Pooling=false }.ToString()))
+            {
+                readOnly.Open(); StorageWriteFailure? failure = null;
+                try { AtomicStorageWrite.Execute(readOnly, tx => Database.Execute(readOnly, tx, "INSERT INTO atomic_fixture VALUES('readonly','forbidden')")); }
+                catch (StorageWriteFailure e) { failure=e; }
+                Check(failure is { Kind:StorageFailureKind.Unrecoverable, Attempts:1, InnerException:SqliteException { SqliteErrorCode:8 } } && Count("readonly")==0,
+                    "native SQLite readonly connection is permanent and preserves existing data");
+            }
             using (var quota = db.CreateCommand())
             {
                 quota.CommandText = "PRAGMA max_page_count"; var originalMaximum = Convert.ToInt64(quota.ExecuteScalar());

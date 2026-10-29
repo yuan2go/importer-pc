@@ -91,9 +91,13 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
             catch (Exception ex) { Report("Diagnostic journal worker failure: " + ex.GetType().Name); queue.Writer.TryComplete(ex); }
         });
     }
-    public static void AppendMetadata(string directory, object metadata)
+    public static void AppendMetadata(string directory, object metadata) => AppendMetadata(directory, metadata, createDirectory: true);
+    internal static void AppendMetadata(string directory, object metadata, bool createDirectory)
     {
-        DeploymentPaths.RequireOrdinaryAncestors(directory); Directory.CreateDirectory(directory); MaintainFiles(directory, null);
+        DeploymentPaths.RequireOrdinaryAncestors(directory);
+        if (createDirectory) Directory.CreateDirectory(directory);
+        else if ((File.GetAttributes(directory) & FileAttributes.Directory) == 0) throw new IOException("Diagnostic directory unavailable");
+        MaintainFiles(directory, null);
         var bytes = System.Text.Encoding.UTF8.GetBytes(DiagnosticText.Protect(System.Text.Json.JsonSerializer.Serialize(metadata)) + "\n");
         using var stream = new FileStream(Path.Combine(directory, "runtime.jsonl"), FileMode.Append, FileAccess.Write, FileShare.ReadWrite | FileShare.Delete);
         stream.Write(bytes); stream.Flush(true);

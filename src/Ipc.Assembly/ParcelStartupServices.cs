@@ -233,6 +233,7 @@ public static class ParcelStartupServices
             case "PrepareChange": return Wire.Encode(await Core(request.Launch!, installer: true).PrepareChangeAsync(request.ExpectedHash!, request.Reason!, request.Destination!));
             case "Backup": await Core(request.Launch!, installer: true).BackupAsync(request.Destination!); break;
             case "AdoptRestore":
+            {
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var originalDeployment = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少原机部署登记，换机恢复保持隔离");
                 if (Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) != request.ChangePlanIdentity) throw new InvalidOperationException("原机登记变化，重新读取");
@@ -248,9 +249,11 @@ public static class ParcelStartupServices
                         throw new InvalidDataException("登记已指向新根但交接身份不符；保留隔离，不重复迁移");
                     break; // Previous commit succeeded; receipt loss must not create a second handoff.
                 }
+                using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!);
                 await Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true).AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>
-                { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); WindowsDeploymentSetup.SwitchDataRoot(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof))); return Task.CompletedTask; });
+                { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); WindowsDeploymentSetup.SwitchDataRoot(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), recoveryMigration); return Task.CompletedTask; });
                 break;
+            }
             case "RepairSystem":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 if (request.Deployment is { } originalInstall)

@@ -16,16 +16,27 @@ public sealed class ConfigurationRevisions<T> where T : class
     readonly string path;
     readonly Func<T, string[]> validate;
     public ConfigurationRevision<T> Current { get; private set; }
-    public ConfigurationRevisions(string path, T seed, Func<T, string[]> validate)
+    readonly Action<Exception>? persistenceFailure;
+    public ConfigurationRevisions(string path, T seed, Func<T, string[]> validate) : this(path, seed, validate, null) { }
+    public ConfigurationRevisions(string path, T seed, Func<T, string[]> validate, Action<Exception>? persistenceFailure)
     {
+        this.persistenceFailure = persistenceFailure;
         this.path = path; this.validate = validate;
-        var loadedEnvelope = File.Exists(path) ? File.ReadAllBytes(path) : null;
+        var loadedEnvelope = File.Exists(path) ? Persistence(() => File.ReadAllBytes(path)) : null;
         Current = loadedEnvelope is not null ? ReadCurrentEnvelope(loadedEnvelope) : new(0, seed, null, "ConfirmationRequired", null,
             Confirmation: new("Seed", Wire.Hash(Wire.Encode(seed)), true, "Required", []));
         RequireValid(Current.Effective);
         PrepareEffectiveConfirmation();
-        if (!File.Exists(path)) ExtensionStore.AtomicWrite(path, Current);
+        if (!File.Exists(path)) Save(Current);
     }
+    // Notify only at actual persistence calls, never around application/SDK callbacks.
+    TResult Persistence<TResult>(Func<TResult> action)
+    {
+        try { return action(); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        { persistenceFailure?.Invoke(error); throw; }
+    }
+    void Save(ConfigurationRevision<T> next) => Persistence(() => { ExtensionStore.AtomicWrite(path, next); return true; });
     static ConfigurationRevision<T> ReadCurrentEnvelope(byte[] bytes)
     {
         try { return ReadCurrentEnvelope(DecodeEnvelope(bytes)); }
@@ -52,7 +63,7 @@ public sealed class ConfigurationRevisions<T> where T : class
     {
         if (expectedRevision != Current.Revision) throw new InvalidOperationException("Configuration revision conflict");
         RequireValid(candidate); var next = Current with { Revision = Current.Revision + 1, Pending = candidate, Status = "PendingRestart", Failure = null, Activation = null, InitialRepair = null };
-        ExtensionStore.AtomicWrite(path, next); return Current = next;
+        Save(next); return Current = next;
     }
     public ConfigurationRevision<T> StageInitialRepair(long expectedRevision, T candidate, string actor, string reason)
     {
@@ -61,12 +72,12 @@ public sealed class ConfigurationRevisions<T> where T : class
         if (string.IsNullOrWhiteSpace(actor) || string.IsNullOrWhiteSpace(reason) || reason.Length > 1024)
             throw new InvalidDataException("Explicit maintenance identity and repair reason required");
         RequireValid(candidate);
-        var original = File.ReadAllBytes(path);
+        var original = Persistence(() => File.ReadAllBytes(path));
         var repair = new ConfigurationInitialRepair(Wire.Id(), Convert.ToBase64String(original), Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(original)),
             Wire.Hash(Wire.Encode(Current.Effective)), Wire.Hash(Wire.Encode(candidate)), actor, reason, DateTimeOffset.UtcNow);
         var next = Current with { Revision = Current.Revision + 1, Pending = candidate, Status = "PendingRestart", Failure = null, Activation = null, InitialRepair = repair };
         if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(next)) > 4 * 1024 * 1024) throw new IOException("Preserved repair history exceeds envelope budget; retain originals and escalate maintenance, never truncate evidence");
-        ExtensionStore.AtomicWrite(path, next); return Current = next;
+        Save(next); return Current = next;
     }
     public void RequireInitialRepairIdentity()
     {
@@ -80,7 +91,7 @@ public sealed class ConfigurationRevisions<T> where T : class
     {
         var failed = new ConfigurationRevision<T>(Current.Revision + 1, priorEffective, candidate, "ActivationFailed", failure.GetType().Name + ": " + failure.Message,
             Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Failed", Failure = failure.GetType().Name + ": " + failure.Message } : null, Current.Confirmation, Current.InitialRepair);
-        ExtensionStore.AtomicWrite(path, failed); Current = failed;
+        Save(failed); Current = failed;
     }
     // Applications that construct external resources confirm only after successful startup.
     // Effective stays the last confirmed version throughout the attempt.
@@ -92,12 +103,12 @@ public sealed class ConfigurationRevisions<T> where T : class
             attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Interrupted", Failure = "Process ended before resource startup confirmation" };
             var recovered = Current with { Revision = Current.Revision + 1, Status = Current.Pending is null ? "ConfirmationRequired" : Current.Status,
                 Failure = "Effective startup interrupted; successful resource startup remains required", Confirmation = confirmation with { State = "Required", Attempts = attempts } };
-            ExtensionStore.AtomicWrite(path, recovered); Current = recovered;
+            Save(recovered); Current = recovered;
         }
         if (Current.Status != "ActivationInProgress") return;
         var next = Current with { Revision = Current.Revision + 1, Status = "ActivationFailed", Failure = "Activation interrupted; prior confirmed Effective retained; explicit restaging required",
             Activation = Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Interrupted" } : null };
-        ExtensionStore.AtomicWrite(path, next); Current = next;
+        Save(next); Current = next;
     }
     public T? BeginActivation(Func<T, bool> applicationBarrier, Action<T> preflight)
     {
@@ -109,12 +120,12 @@ public sealed class ConfigurationRevisions<T> where T : class
             preflight(candidate);
             var next = Current with { Revision = Current.Revision + 1, Status = "ActivationInProgress", Failure = null,
                 Activation = new(Wire.Id(), DateTimeOffset.UtcNow) };
-            ExtensionStore.AtomicWrite(path, next); Current = next; return candidate;
+            Save(next); Current = next; return candidate;
         }
         catch (Exception ex)
         {
             var failed = Current with { Status = "ActivationFailed", Failure = ex.GetType().Name + ": " + ex.Message };
-            ExtensionStore.AtomicWrite(path, failed); Current = failed; throw;
+            Save(failed); Current = failed; throw;
         }
     }
     public void ConfirmActivation(string attemptId)
@@ -124,7 +135,7 @@ public sealed class ConfigurationRevisions<T> where T : class
         var next = new ConfigurationRevision<T>(Current.Revision + 1, candidate, null, "Effective", null,
             Current.Activation with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Activated" },
             Current.Confirmation is { } confirmation ? confirmation with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = "Confirmed", ConfirmedBy = "resource-startup", ConfirmedAt = DateTimeOffset.UtcNow } : null, Current.InitialRepair);
-        ExtensionStore.AtomicWrite(path, next); Current = next;
+        Save(next); Current = next;
     }
     // Validation only. Missing evidence on an existing envelope cannot acquire invented startup authority.
     public void PrepareEffectiveConfirmation() => ValidateEffectiveConfirmation(Current);
@@ -147,7 +158,7 @@ public sealed class ConfigurationRevisions<T> where T : class
         if (Current.Confirmation is not { Required: true } confirmation) return;
         var next = Current with { Revision = Current.Revision + 1,
             Confirmation = confirmation with { State = "InProgress", Attempts = [.. confirmation.Attempts, new(Wire.Id(), DateTimeOffset.UtcNow)] } };
-        ExtensionStore.AtomicWrite(path, next); Current = next;
+        Save(next); Current = next;
     }
     public void CompleteEffectiveStartup(Exception? failure = null)
     {
@@ -160,7 +171,7 @@ public sealed class ConfigurationRevisions<T> where T : class
             Failure = failure is null ? Current.Pending is null ? null : Current.Failure : attempts[^1].Failure,
             Confirmation = confirmation with { Attempts = attempts, Required = !confirmed, State = confirmed ? "Confirmed" : "Required",
                 ConfirmedBy = confirmed ? "initial-resource-startup" : null, ConfirmedAt = confirmed ? DateTimeOffset.UtcNow : null } };
-        ExtensionStore.AtomicWrite(path, next); Current = next;
+        Save(next); Current = next;
     }
     public void Activate(Func<T, bool> applicationBarrier, Action<T> preflight)
     {
@@ -173,12 +184,12 @@ public sealed class ConfigurationRevisions<T> where T : class
             var next = Current with { Revision = Current.Revision + 1, Effective = candidate, Pending = null, Status = "Effective", Failure = null,
                 Confirmation = Current.Confirmation! with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = "Confirmed",
                     ConfirmedBy = "application-preflight", ConfirmedAt = DateTimeOffset.UtcNow } };
-            ExtensionStore.AtomicWrite(path, next); Current = next;
+            Save(next); Current = next;
         }
         catch (Exception ex)
         {
             var failed = Current with { Status = "ActivationFailed", Failure = ex.GetType().Name + ": " + ex.Message };
-            ExtensionStore.AtomicWrite(path, failed); Current = failed;
+            Save(failed); Current = failed;
             throw;
         }
     }

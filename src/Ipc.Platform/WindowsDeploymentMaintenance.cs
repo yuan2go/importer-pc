@@ -65,9 +65,13 @@ public static partial class WindowsDeploymentSetup
             }
         }
         if (location.LifecycleState == "Installed") _ = DeploymentMedia.Inspect(location.ReleaseRoot, application);
-        if (location.LifecycleState == "Installed") repairShortcuts(location, inspection?.Previous);
-        ProjectInstalledApplication(location);
-        if (location is { LifecycleState: "Installed", Recovery.Enabled: true }) DesktopRecoverySupervisor.ResetAfterAuthorizedRepair(location);
+        void RepairProjections()
+        {
+            if (location.LifecycleState == "Installed") repairShortcuts(location, inspection?.Previous);
+            ProjectInstalledApplication(location);
+        }
+        if (location is { LifecycleState: "Installed", Recovery.Enabled: true }) DesktopRecoverySupervisor.RepairAndReset(location, RepairProjections);
+        else RepairProjections();
         if (original is not null && inspection is { Status: "CommittedNeedsSystemRepair" })
             WriteProtected(operation!, new { Status = "Completed", RequestIdentity = InstallationRequestIdentity(original), inspection.ChangePlanIdentity,
                 Location = location, inspection.Previous, BusinessStarted = false, RepairedFromStatus = inspection.Status, SystemRepairArchive = archive }, new SecurityIdentifier(location.RuntimeAccountSid));
@@ -165,17 +169,26 @@ public static partial class WindowsDeploymentSetup
     public static void SwitchDataRoot(string application, string expectedRegistrationHash, string newDataRoot, string handoffHash)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var original = Current(application) ?? throw new InvalidDataException("Missing original deployment");
+        using var recovery = PrepareRecoveryMigration(original, newDataRoot, expectedRegistrationHash);
+        SwitchDataRoot(application, expectedRegistrationHash, newDataRoot, handoffHash, recovery);
+    }
+    [SupportedOSPlatform("windows")]
+    public static void SwitchDataRoot(string application, string expectedRegistrationHash, string newDataRoot, string handoffHash, DesktopRecoveryMigration recovery)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         if (!ExtensionSchema.IsHash(handoffHash)) throw new InvalidDataException("Missing restore handoff identity");
         DeploymentPaths.RequireOrdinaryAncestors(newDataRoot);
-        using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        recovery.RequireRegistration(Registration(application), expectedRegistrationHash);
         if (Wire.FileHash(Registration(application)) != expectedRegistrationHash) throw new InvalidOperationException("原部署在接管前变化；原根围栏保留，重新核对后继续");
         var current = Current(application) ?? throw new InvalidDataException("原机部署登记缺失");
         if (current.LifecycleState != "Installed") throw new InvalidOperationException("只有已安装原机部署可接管恢复根");
+        recovery.Require(current, newDataRoot);
         PreviewDataAccess(newDataRoot, current.RuntimeAccountSid);
         var sid = new SecurityIdentifier(current.RuntimeAccountSid);
         var operation = Path.Combine(MachineRoot, "deployments", application + ".migration-" + Wire.Id() + ".json");
         var next = current with { DataRoot = Path.GetFullPath(newDataRoot), MaintenanceOperation = operation, RestoreHandoffHash = handoffHash };
-        WriteProtected(operation, new { Status = "Prepared", Previous = current, Next = next, HandoffSha256 = handoffHash }, sid);
+        WriteProtected(operation, new { Status = "Prepared", Previous = current, Next = next, HandoffSha256 = handoffHash, SupervisionLedgerSha256 = recovery.LedgerSha256 }, sid);
         if (application is "sportmaster" or "direct-plc" or "wcs-to-plc")
         {
             ManagementModeBroker.CopyCredentialsForMigration(current.DataRoot, newDataRoot);
@@ -185,6 +198,6 @@ public static partial class WindowsDeploymentSetup
         WriteProtected(Registration(application), next, sid);
         ProjectInstalledApplication(next);
         if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.RemoveIfUnused(current.DataRoot);
-        WriteProtected(operation, new { Status = "CompletedIsolated", Previous = current, Next = next, HandoffSha256 = handoffHash }, sid);
+        WriteProtected(operation, new { Status = "CompletedIsolated", Previous = current, Next = next, HandoffSha256 = handoffHash, SupervisionLedgerSha256 = recovery.LedgerSha256 }, sid);
     }
 }

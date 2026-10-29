@@ -1,5 +1,7 @@
 # 文档索引
 
+本轮保障 **SM / Sportmaster 与必需共享基座**；其他业务开发暂停。WT024→WT048/WT054已通过#143/#144/#145合入main，SDK替代方案#134/#135/#136已关闭并保全，详见[整合执行与归宿](runtime/integration-20261028.md)。实际main曾有非SM称重夹具失败，保留失败及当前范围，不宣称全仓全绿。
+
 当前相机路线为 MVS SDK 采图＋进程内软件读码，见[MVS-SOFTWARE-READER-01](runtime/mvs-software-reader-01.md)及[相机参数工作包](work-packages/WP-IPC-CAMERA-CONFIG-STARTUP-02.md)。只保留SDK当前入口；相机空位置不连接，业务仍受准入守卫。此前MvCodeReader及其他路线的原验证保留各自来源。
 
 2026-10-28 再次安装后的普通启动及生命周期整改见 [INSTALL-UPDATE-UNINSTALL-IDENTITY-01](work-packages/WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01.md) 和[运行与验证](runtime/install-update-uninstall-identity-01.md)。同用户普通令牌交接不替代原身份和维护权限检查。
@@ -39,7 +41,7 @@
 
 ## 当前增量入口
 
-- 相机：[内置MVS](work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)、[SDK与统一编码](work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)、[单相机与密码恢复](work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)、[原生边界硬化](work-packages/WP-IPC-HIKROBOT-HARDENING-01.md)。开放PR中的替代方案尚不表示已合入main，见本轮台账。
+- 相机：[内置MVS](work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)、[SDK与统一编码](work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)、[单相机与密码恢复](work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)、[原生边界硬化](work-packages/WP-IPC-HIKROBOT-HARDENING-01.md)。原触发/TCP/服务替代方案已按SDK-only决定归档关闭，见本轮台账。
 - 作业、查询与日志：[供包员/诊断分层](runtime/operator-workstation-01.md)、[查询](runtime/query-filter-ux-01.md)、[调试日志](runtime/debug-log-live-01.md)、[作业状态](work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md)。
 - RCS：[超时及响应错误](runtime/rcs-timeout-errors-01.md)。超时后允许新扫码不等于重发原Unknown。
 
@@ -56,7 +58,7 @@
 
 P0基座已合入main：[运行说明](runtime/p0-stability-01.md)、[历史问题卡](runtime/validation/p0-stability-01.md)、[Unicode续修](runtime/validation/pr110-unicode-shortcuts-01.md)。原问题卡不作为本轮合并验证。
 
-- [2026-10-26整合执行记录](runtime/integration-20261026.md)：本轮真实执行与输入哈希，持续更新。
+- [2026-10-26整合执行记录](runtime/integration-20261026.md)：保留该轮执行与输入哈希；本轮使用10/28–29整合记录。
 
 - [Unicode快捷方式生命周期](runtime/unicode-shortcut-compatibility-01.md)：继承PR110组件身份/监督预算修复，补齐一次释放及路径冲突；[原独立证据](runtime/validation/unicode-shortcut-compatibility-01.md)保持原源。
 

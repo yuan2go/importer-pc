@@ -1,0 +1,1544 @@
+{
+  "CheckpointMain": "035a125f42445463f835be8d966598353573435e",
+  "Scope": "SM and required shared foundation; other business development PAUSED_BY_USER",
+  "Snapshot": "Before final documentation commit; original audit objects remain immutable; final main identity recorded separately",
+  "Counts": {
+    "OriginalBranches": 119,
+    "OriginalWorktrees": 59,
+    "OriginalDirtyWorktrees": 11,
+    "OriginalStash": 0,
+    "OriginalOrphans": 17,
+    "AdditionalOwnedBranches": 20
+  },
+  "Branches": [
+    {
+      "branch": "codex/architecture-quality-remediation-01",
+      "original_head": "6442b9a78b22d39b0b71390f998da5ff8eeaf7e6",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/architecture-quality-remediation-01"
+    },
+    {
+      "branch": "codex/barcode-reader-service-01",
+      "original_head": "4608f71ca3f35b1568c071e5ece8b1024fa0791d",
+      "disposition": "ARCHIVED_SUPERSEDED",
+      "evidence": "Audit02 task contract/tree review; retained ref and bundle",
+      "backup_tag": "backup/20261028/codex/barcode-reader-service-01"
+    },
+    {
+      "branch": "codex/build-test-followup",
+      "original_head": "36c55a586a8c9180d7c937d53f438a5f0babee41",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/build-test-followup"
+    },
+    {
+      "branch": "codex/bundled-mvs-camera-01",
+      "original_head": "e890582389b88ff48564fe721217031ab4eb91f3",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/bundled-mvs-camera-01"
+    },
+    {
+      "branch": "codex/cainiao-product-brand",
+      "original_head": "36dc715cb007e0bab24f15c39e5eeafdb6d91c32",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/cainiao-product-brand"
+    },
+    {
+      "branch": "codex/camera-sdk-single-code-01",
+      "original_head": "d4984f59d661769c6a2cc541ff24f3cf277ffa94",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/camera-sdk-single-code-01"
+    },
+    {
+      "branch": "codex/chinese-interface-copy",
+      "original_head": "58abdbca13b4d9f3cd41360446920aad26427051",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/chinese-interface-copy"
+    },
+    {
+      "branch": "codex/code-reliability-hardening-02",
+      "original_head": "f64986b4cd76851ac83e9006826e4f679c39d0a4",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/code-reliability-hardening-02"
+    },
+    {
+      "branch": "codex/commercial-productization-01",
+      "original_head": "a7291256cad9f2da106ed688525490050e9902c9",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/commercial-productization-01"
+    },
+    {
+      "branch": "codex/current-contract-cleanup-01",
+      "original_head": "001ad6716c18e2cec81dc4e885faf64f016d1069",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/current-contract-cleanup-01"
+    },
+    {
+      "branch": "codex/deferred-heartbeat-validation-01",
+      "original_head": "75ae34177cfc22a23754f36af70733d7b502e96f",
+      "disposition": "DUPLICATE_TREE",
+      "evidence": "PR109/a8cd4314 or PR107/3a5b1d13 exact tree equality, Audit02",
+      "backup_tag": "backup/20261028/codex/deferred-heartbeat-validation-01"
+    },
+    {
+      "branch": "codex/dual-camera-communication-fix-01",
+      "original_head": "b6e9350f2664bd2ff3c6f2b52970f9ef24300a00",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/dual-camera-communication-fix-01"
+    },
+    {
+      "branch": "codex/dual-camera-first-config-ci-fix",
+      "original_head": "034342f7ce64cb5cb702f488c6c243c10af433d3",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/dual-camera-first-config-ci-fix"
+    },
+    {
+      "branch": "codex/fix-login-session-lifetime",
+      "original_head": "280f76883c32d1c68cc7f029b6918d5eb1a65bb2",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/fix-login-session-lifetime"
+    },
+    {
+      "branch": "codex/fresh-baseline-b1",
+      "original_head": "4e3748159af2599878e57329f887098b1c6be927",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/fresh-baseline-b1"
+    },
+    {
+      "branch": "codex/fresh-baseline-b2",
+      "original_head": "c4c5caf8249bd21d33d923e889cc7087c165082d",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/fresh-baseline-b2"
+    },
+    {
+      "branch": "codex/fresh-baseline-b3",
+      "original_head": "45004c4db17cc2dfbc54d046136a943862048740",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/fresh-baseline-b3"
+    },
+    {
+      "branch": "codex/fresh-baseline-current-messages",
+      "original_head": "52c7e58d87a5bfe452e77f22b543e1ee0cb124dd",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/fresh-baseline-current-messages"
+    },
+    {
+      "branch": "codex/fresh-baseline-final-validation",
+      "original_head": "89a107fb65ee2a5bf9557cd7b9a9220c44740072",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/fresh-baseline-final-validation"
+    },
+    {
+      "branch": "codex/hikrobot-audit-hardening-01",
+      "original_head": "f87eaaa466ae84e74a2306370a146f2b44017799",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/hikrobot-audit-hardening-01"
+    },
+    {
+      "branch": "codex/hikrobot-boundary-regressions-01",
+      "original_head": "370ccb00b8978758764b727914d82b49a8eb2a13",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/hikrobot-boundary-regressions-01"
+    },
+    {
+      "branch": "codex/hikrobot-decoder-research-01",
+      "original_head": "0a5074b13ffb3977abb066c4734ceba775b07f67",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/hikrobot-decoder-research-01"
+    },
+    {
+      "branch": "codex/hikrobot-reader-01",
+      "original_head": "646e8b4b256d71243639f7bcfef5cf2b57479cfd",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/hikrobot-reader-01"
+    },
+    {
+      "branch": "codex/hikrobot-sdk-barcode-02",
+      "original_head": "e15631fe52ca77e551978b17f3b1da58b9a27fa8",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/hikrobot-sdk-barcode-02"
+    },
+    {
+      "branch": "codex/hikrobot-vm-decoder-01",
+      "original_head": "d506f77c7ae385d3808f55d15087a9c652f14730",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/hikrobot-vm-decoder-01"
+    },
+    {
+      "branch": "codex/install-update-uninstall-identity-01",
+      "original_head": "e011da261bcae1578976b681153bf92a3b93a26c",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/install-update-uninstall-identity-01"
+    },
+    {
+      "branch": "codex/installer-first-run-ui-02",
+      "original_head": "24b0f5c2526bde4d19035589b204cb8899069e1d",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/installer-first-run-ui-02"
+    },
+    {
+      "branch": "codex/installer-registration-file-not-found-01",
+      "original_head": "43e8fcfb43bfefebbc8786de2a2545d382a5de76",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/installer-registration-file-not-found-01"
+    },
+    {
+      "branch": "codex/internal-pages-ui-refine-01",
+      "original_head": "9900cbe9e9dd573d46c6b8b2dbb1d52dc46b7bc1",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/internal-pages-ui-refine-01"
+    },
+    {
+      "branch": "codex/latency-capacity-01",
+      "original_head": "4da6bf6e94e3e981838d30c481f4550031ea8459",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/latency-capacity-01"
+    },
+    {
+      "branch": "codex/lifecycle-interaction-audit-01",
+      "original_head": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/lifecycle-interaction-audit-01"
+    },
+    {
+      "branch": "codex/lifecycle-ux-optimization-01",
+      "original_head": "665f43a95e670deac7ab3fe42057ed22a7c95a8f",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/lifecycle-ux-optimization-01"
+    },
+    {
+      "branch": "codex/main-pr131-package",
+      "original_head": "0a5074b13ffb3977abb066c4734ceba775b07f67",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/main-pr131-package"
+    },
+    {
+      "branch": "codex/management-mode",
+      "original_head": "793d092851052c63663f19b5de8d2b7703392d8d",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/management-mode"
+    },
+    {
+      "branch": "codex/mvreader-restore-01",
+      "original_head": "76dd6078faecbc2e120e6ca8dde222e7fcfc1398",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/mvreader-restore-01"
+    },
+    {
+      "branch": "codex/mvs-decoding-framework-01",
+      "original_head": "36a98016ddfbc61a1b893b79e8db224e7e2f0f30",
+      "disposition": "ARCHIVED_SUPERSEDED",
+      "evidence": "Audit02 task contract/tree review; retained ref and bundle",
+      "backup_tag": "backup/20261028/codex/mvs-decoding-framework-01"
+    },
+    {
+      "branch": "codex/operator-admin-logs",
+      "original_head": "3b27c9b2d37f8d6ccb8b8e145d4acbfca23b8582",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/operator-admin-logs"
+    },
+    {
+      "branch": "codex/operator-workstation-01",
+      "original_head": "3c56c98b1da894fc9433466423d9cdea9e6996d6",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/operator-workstation-01"
+    },
+    {
+      "branch": "codex/p0-stability-01",
+      "original_head": "963165d71aec1e037525fd7f17bc3ed81b560c1a",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/p0-stability-01"
+    },
+    {
+      "branch": "codex/parallel-task-integration-01",
+      "original_head": "ff95d3a384a9440b35d8a3a23aa89d1428b292db",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parallel-task-integration-01"
+    },
+    {
+      "branch": "codex/parallel-task-reconciliation-20261020",
+      "original_head": "99a8d62a09083a7bccad647302fa04405e5f5fb6",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parallel-task-reconciliation-20261020"
+    },
+    {
+      "branch": "codex/parallel-task-reconciliation-20261020-02",
+      "original_head": "0704a17a671b185536abee4a3189185e785b5343",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parallel-task-reconciliation-20261020-02"
+    },
+    {
+      "branch": "codex/parameter-guidance-startup-01",
+      "original_head": "0fa4c69c48c72b74a07dd87ca3e394447afffe1c",
+      "disposition": "DUPLICATE_TREE",
+      "evidence": "PR109/a8cd4314 or PR107/3a5b1d13 exact tree equality, Audit02",
+      "backup_tag": "backup/20261028/codex/parameter-guidance-startup-01"
+    },
+    {
+      "branch": "codex/parameter-inheritance-02",
+      "original_head": "7a7daf32cd7b05a30a193ff8e8746d2353ec6350",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parameter-inheritance-02"
+    },
+    {
+      "branch": "codex/parameter-inheritance-delivery",
+      "original_head": "0fea1b506b84437e519c62d9aa5d740043dfbad8",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parameter-inheritance-delivery"
+    },
+    {
+      "branch": "codex/parameter-shell-polish-02",
+      "original_head": "163aa01916b001762e324dec20974adca565062c",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parameter-shell-polish-02"
+    },
+    {
+      "branch": "codex/parameter-ui-refine-01",
+      "original_head": "d0d775e3cc3319791ba5fc557fcbdd23e7a42a9d",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parameter-ui-refine-01"
+    },
+    {
+      "branch": "codex/parameter-v3-experience-audit",
+      "original_head": "c524ab98668a05b30e9176c3ea8587250f81e09d",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parameter-v3-experience-audit"
+    },
+    {
+      "branch": "codex/parameter-v3-native-delivery",
+      "original_head": "d245b12eb5683c3dfd93bb6a847d8ca90dd01de2",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/parameter-v3-native-delivery"
+    },
+    {
+      "branch": "codex/pr110-unicode-shortcuts-01",
+      "original_head": "bbbc3747357ad79d619601f6fcca896de15df4d1",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/pr110-unicode-shortcuts-01"
+    },
+    {
+      "branch": "codex/pr116-release-fixes-20261026",
+      "original_head": "d485fd7a548cdc944d4e2dad2e47b66ea985e40d",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/pr116-release-fixes-20261026"
+    },
+    {
+      "branch": "codex/pr138-main-installer",
+      "original_head": "629364832e6193628e3d9b74d7d80f8e4b2e86e3",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/pr138-main-installer"
+    },
+    {
+      "branch": "codex/pr73-startup-recovery",
+      "original_head": "26fea6f7e6ea1a61e03f44f59252af814b17c998",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/pr73-startup-recovery"
+    },
+    {
+      "branch": "codex/pr92-merged-source-audit",
+      "original_head": "165c2ffe353c59e69729ede4c92fcfd827344c9f",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/pr92-merged-source-audit"
+    },
+    {
+      "branch": "codex/publication-installer-integration-20261020",
+      "original_head": "7531bc1c5b6415aeb2a69bc74a286fbc5aea2d04",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-installer-integration-20261020"
+    },
+    {
+      "branch": "codex/publication-merge-20261020",
+      "original_head": "30b8124ad178e98ae847fa9d41fe6dcdb724a78b",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-merge-20261020"
+    },
+    {
+      "branch": "codex/publication-ops-1102-20261022",
+      "original_head": "4199ecfb41ea12feb02d41bd50bf718f4bcb209e",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-ops-1102-20261022"
+    },
+    {
+      "branch": "codex/publication-parameter-integration-20261020",
+      "original_head": "8df2213c13b8aa9478a2739576f365a549fb2e6a",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-parameter-integration-20261020"
+    },
+    {
+      "branch": "codex/publication-parameter-snapshot-20261020-092825",
+      "original_head": "5abe82071471d525686352c094dbb79dc7fea3ce",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-parameter-snapshot-20261020-092825"
+    },
+    {
+      "branch": "codex/publication-parameter-ui-20261023",
+      "original_head": "b7d6be54dd96ba4153794be5db718f684687ed9a",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-parameter-ui-20261023"
+    },
+    {
+      "branch": "codex/publication-pr118-20261027",
+      "original_head": "4326b9a1d6aaa7d3c98802b359fbd2835e6b13af",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-pr118-20261027"
+    },
+    {
+      "branch": "codex/publication-pr67-artifacts-20261020",
+      "original_head": "4052029002ac39393b646f0ae235024112f1d8f7",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-pr67-artifacts-20261020"
+    },
+    {
+      "branch": "codex/publication-pr69-pr71-receipts-20261020",
+      "original_head": "b5b943ba4a99b90c6bcd4016598aacbe906c4b73",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-pr69-pr71-receipts-20261020"
+    },
+    {
+      "branch": "codex/publication-pr73-integration-20261020",
+      "original_head": "ad3705d5a5f5ec79aeb9435ce68dcb8ccc6334cd",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-pr73-integration-20261020"
+    },
+    {
+      "branch": "codex/publication-pr78-pr79-20261021",
+      "original_head": "2cb40536898f4ac677d45edce4ef11c70037c174",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-pr78-pr79-20261021"
+    },
+    {
+      "branch": "codex/publication-pr95-20261024",
+      "original_head": "5b7709840cf5b0071dfb6e3767ce5e0bd59dc5c2",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publication-pr95-20261024"
+    },
+    {
+      "branch": "codex/publish-login-session",
+      "original_head": "991167d6a7fb37c82186f45ce54eae9bee57a221",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publish-login-session"
+    },
+    {
+      "branch": "codex/publish-pr74",
+      "original_head": "1260de7d28d10bdbeaa8294dbdbc9deeeeb72a8b",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/publish-pr74"
+    },
+    {
+      "branch": "codex/rcs-station-heartbeat",
+      "original_head": "20bd90f7488f6d0af4cc161baf45fd960ba54fc7",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/rcs-station-heartbeat"
+    },
+    {
+      "branch": "codex/rcs-timeout-errors-01",
+      "original_head": "d8079bd747a6dda737997722f38b30489ad38c86",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/rcs-timeout-errors-01"
+    },
+    {
+      "branch": "codex/rcs-timeout-response-20261026",
+      "original_head": "e5013bccb6e04e2c15385bbc01d496e442b37220",
+      "disposition": "ARCHIVED_SUPERSEDED",
+      "evidence": "Audit02 task contract/tree review; retained ref and bundle",
+      "backup_tag": "backup/20261028/codex/rcs-timeout-response-20261026"
+    },
+    {
+      "branch": "codex/retention-full-scale-qualification-01",
+      "original_head": "0cb5d2f7073fd06f1c2e61f6a674e63f6a641800",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/retention-full-scale-qualification-01"
+    },
+    {
+      "branch": "codex/retention-ingress-pagination-02",
+      "original_head": "10ad5d264b7e3f1b581dcf3fd044163fda02dcef",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/retention-ingress-pagination-02"
+    },
+    {
+      "branch": "codex/retention-input-range-fix-01",
+      "original_head": "2a24584d55a8ce90ef7a0f94ef919c3193432aca",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/retention-input-range-fix-01"
+    },
+    {
+      "branch": "codex/retention-performance-verification-01",
+      "original_head": "5f0258f51303d21a091b47eadcdebb152a49d6be",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/retention-performance-verification-01"
+    },
+    {
+      "branch": "codex/retention-query-final-recheck-02",
+      "original_head": "9535f1359252202599337ab218e007e7f3aee83a",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/retention-query-final-recheck-02"
+    },
+    {
+      "branch": "codex/simplify-installation-docs",
+      "original_head": "37a46cee9a66838aac099f7fcad3c9dc9a24ed40",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/simplify-installation-docs"
+    },
+    {
+      "branch": "codex/sportmaster-audit-remediation-01",
+      "original_head": "4efb278baa45dbc99e607d26131ec2081e89be44",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-audit-remediation-01"
+    },
+    {
+      "branch": "codex/sportmaster-clear-workstation",
+      "original_head": "a39370df05557cc2627b88a876415225922e652b",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-clear-workstation"
+    },
+    {
+      "branch": "codex/sportmaster-commercial-delivery-01",
+      "original_head": "28b16555da44898640776e23c0145a83d1793349",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-commercial-delivery-01"
+    },
+    {
+      "branch": "codex/sportmaster-parameter-refactor",
+      "original_head": "5fca596f552a1cd53fdc23ed2853b075869a2383",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-parameter-refactor"
+    },
+    {
+      "branch": "codex/sportmaster-ui-baseline-02",
+      "original_head": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-ui-baseline-02"
+    },
+    {
+      "branch": "codex/sportmaster-v2-ui",
+      "original_head": "15241b2a200904ee1c55202d28348fc5b7df2782",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-v2-ui"
+    },
+    {
+      "branch": "codex/sportmaster-visual-closure-01",
+      "original_head": "744544718503114dcdc45af42d85ce05ea0dcdab",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-visual-closure-01"
+    },
+    {
+      "branch": "codex/sportmaster-visual-productization-01",
+      "original_head": "4e23f01405f0c3c5a443711bb663bad76bce5f37",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/sportmaster-visual-productization-01"
+    },
+    {
+      "branch": "codex/st08-recovery-pause-01",
+      "original_head": "4f8eb8e78d7df99d61982a62c1dc06d269f481d0",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/st08-recovery-pause-01"
+    },
+    {
+      "branch": "codex/st08-st14-closure-review-01",
+      "original_head": "42f59579ca5845b07c5ae6b80f7718da33d0e620",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/st08-st14-closure-review-01"
+    },
+    {
+      "branch": "codex/stability-audit-fixes-02",
+      "original_head": "42e0205a770dffe665d7d130f1232f6b5561e307",
+      "disposition": "REIMPLEMENTED_CURRENT_CONTRACT",
+      "evidence": "PR145 / 035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/stability-audit-fixes-02"
+    },
+    {
+      "branch": "codex/stability-audit-integration-20261026",
+      "original_head": "62ee3b0225091bf589e5dfe611fe42c93ffda312",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/stability-audit-integration-20261026"
+    },
+    {
+      "branch": "codex/stability-integration-02",
+      "original_head": "0b0231cc229d76571bb33760e9327cad654efa0a",
+      "disposition": "ARCHIVED_SUPERSEDED",
+      "evidence": "Audit02 task contract/tree review; retained ref and bundle",
+      "backup_tag": "backup/20261028/codex/stability-integration-02"
+    },
+    {
+      "branch": "codex/startup-experience",
+      "original_head": "d52ade7758d78ca7ad8b6adbd34d1a92fcdf4710",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/startup-experience"
+    },
+    {
+      "branch": "codex/station-single-camera-recovery-01",
+      "original_head": "bdd518d940ea0f853fba2318465bb8ccad52f188",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/station-single-camera-recovery-01"
+    },
+    {
+      "branch": "codex/task-content-hierarchy-01",
+      "original_head": "8517dec3912e8064c785b655c961f4d682c78e59",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/task-content-hierarchy-01"
+    },
+    {
+      "branch": "codex/task-content-hierarchy-02",
+      "original_head": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/task-content-hierarchy-02"
+    },
+    {
+      "branch": "codex/task-context-ci-fix",
+      "original_head": "758905d2e79fe31302f7d920e31fc08cc643e0fd",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/task-context-ci-fix"
+    },
+    {
+      "branch": "codex/tcp-producer-contract-01",
+      "original_head": "07b352f6eee397dc0c9e479676f15123a39f7993",
+      "disposition": "ARCHIVED_SUPERSEDED",
+      "evidence": "Audit02 task contract/tree review; retained ref and bundle",
+      "backup_tag": "backup/20261028/codex/tcp-producer-contract-01"
+    },
+    {
+      "branch": "codex/time-storage-fault-01",
+      "original_head": "43382c59dd9ce1a9ed4895e3eaa4fe06770b2d3c",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/time-storage-fault-01"
+    },
+    {
+      "branch": "codex/typography-01",
+      "original_head": "2badc3c7bb340a5bc3085d0421e7736fa8a5ac55",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/typography-01"
+    },
+    {
+      "branch": "codex/unicode-shortcut-lifecycle-01",
+      "original_head": "c8ed93d70038f63d2c522109795e203636af7d48",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/unicode-shortcut-lifecycle-01"
+    },
+    {
+      "branch": "codex/unified-release-final-55025ce",
+      "original_head": "fd13f30242138020bd3810970cc372ae6a6a393b",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/unified-release-final-55025ce"
+    },
+    {
+      "branch": "codex/unified-release-media-20261020",
+      "original_head": "c32f33bf8d6d8ead3e68d5a1d185e8040f371cc2",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/unified-release-media-20261020"
+    },
+    {
+      "branch": "codex/unified-version-1-0-0",
+      "original_head": "484bc433b5f36a08c3f951bd0174e4be7e1b986b",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/unified-version-1-0-0"
+    },
+    {
+      "branch": "codex/unified-windows-release",
+      "original_head": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/unified-windows-release"
+    },
+    {
+      "branch": "codex/uninstall-result-buttons",
+      "original_head": "175a05762cae9681249c8cc9ae88d7fb9666324b",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/uninstall-result-buttons"
+    },
+    {
+      "branch": "codex/upload-commercial-20261019-170849",
+      "original_head": "730ef019bf4da665b4fa5569eabb4064e7129931",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/upload-commercial-20261019-170849"
+    },
+    {
+      "branch": "codex/upload-unified-release-20261019-170849",
+      "original_head": "cfeb7840aa9eea637db0a27d76e5f9bfa5d68877",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/upload-unified-release-20261019-170849"
+    },
+    {
+      "branch": "codex/win11-24x7-stability-remediation-01",
+      "original_head": "5074660fd10e7a91d81923edac782891e377a519",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/win11-24x7-stability-remediation-01"
+    },
+    {
+      "branch": "codex/windows-no-test-release-939462b",
+      "original_head": "e0ca803796bfa5acd2d8bfc30b82dc2a8b9ffbf7",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/windows-no-test-release-939462b"
+    },
+    {
+      "branch": "codex/workstation-information",
+      "original_head": "587fbe8dd0d7ca3561dbdfafd385182f6c1a7ae8",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/workstation-information"
+    },
+    {
+      "branch": "codex/workstation-status-logs-01",
+      "original_head": "7f161d367bf2389cd6f1405d3f4bddf38007d300",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/codex/workstation-status-logs-01"
+    },
+    {
+      "branch": "integration/20261026",
+      "original_head": "dea3adac843877f01b23b86a0dd7a7aebc52fee9",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/integration/20261026"
+    },
+    {
+      "branch": "integration/20261028",
+      "original_head": "6243554fbd34b52b8c413a24dc122b4063bb55b7",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/integration/20261028"
+    },
+    {
+      "branch": "integration/pr108-20261026",
+      "original_head": "b089e43b08335f1a0f19883c46d5429fea431c2b",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/integration/pr108-20261026"
+    },
+    {
+      "branch": "integration/pr110-20261026",
+      "original_head": "c8dd514458bfcf4820ea587d97da7be64b7dca16",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/integration/pr110-20261026"
+    },
+    {
+      "branch": "integration/pr111-20261026",
+      "original_head": "735391a52c47dbef134981bad26868e92390ff33",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/integration/pr111-20261026"
+    },
+    {
+      "branch": "integration/pr112-20261026",
+      "original_head": "000fb3117043c65d9a840da83ea63a4365fcec13",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/integration/pr112-20261026"
+    },
+    {
+      "branch": "integration/pr113-20261026",
+      "original_head": "209f31b2212b984ca2339a0a8c7ecf17427dc359",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/integration/pr113-20261026"
+    },
+    {
+      "branch": "main",
+      "original_head": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
+      "disposition": "ABSORBED_ANCESTOR",
+      "evidence": "035a125f42445463f835be8d966598353573435e",
+      "backup_tag": "backup/20261028/main"
+    },
+    {
+      "branch": "wip/rcs-timeout-response-20261026",
+      "original_head": "8067a0e9eb028866f4b20d394d9bcc84e8b9e1f2",
+      "disposition": "ARCHIVED_SUPERSEDED",
+      "evidence": "Audit02 task contract/tree review; retained ref and bundle",
+      "backup_tag": "backup/20261028/wip/rcs-timeout-response-20261026"
+    }
+  ],
+  "AdditionalBranches": [
+    {
+      "branch": "codex/integration-baseline-validation-20261028",
+      "head_at_snapshot": "1f1dbfa268716fd932dbf65394f0f4126694e24a",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-baseline-validation-20261028"
+    },
+    {
+      "branch": "codex/integration-final-ledger-20261029",
+      "head_at_snapshot": "035a125f42445463f835be8d966598353573435e",
+      "disposition": "CURRENT_DOCUMENTATION_BRANCH",
+      "backup_tag": "backup/20261028/codex/integration-final-ledger-20261029"
+    },
+    {
+      "branch": "codex/integration-history-open-20261028",
+      "head_at_snapshot": "71f0bb5845b19c3e36c4180a57da7b709dfbe68d",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-history-open-20261028"
+    },
+    {
+      "branch": "codex/integration-maintenance-progress-20261028",
+      "head_at_snapshot": "e13f426659a6cac66dfe9457f73a89345533097e",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-maintenance-progress-20261028"
+    },
+    {
+      "branch": "codex/integration-pr133-20261028",
+      "head_at_snapshot": "b565d4cc02a339c2e03a93acbf533d7c11f27d6a",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-pr133-20261028"
+    },
+    {
+      "branch": "codex/integration-pr137-20261028",
+      "head_at_snapshot": "d3c9c407d8233d18fd2ac3bde79c80059836b86a",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-pr137-20261028"
+    },
+    {
+      "branch": "codex/integration-pr139-20261028",
+      "head_at_snapshot": "ff7af7ca0db8259d975acdd0668a993afdad8494",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-pr139-20261028"
+    },
+    {
+      "branch": "codex/integration-supervisor-storage-20261028",
+      "head_at_snapshot": "816bdd9049071dbc4ac6bd0142ec9a0b61eb0892",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-supervisor-storage-20261028"
+    },
+    {
+      "branch": "codex/integration-supply-receipt-preflight-20261028",
+      "head_at_snapshot": "d40a5435e8339e337b15b8af414b8c9d3d761cf3",
+      "disposition": "INTEGRATION_SOURCE_RETAINED",
+      "backup_tag": "backup/20261028/codex/integration-supply-receipt-preflight-20261028"
+    },
+    {
+      "branch": "sim/20261028-audit-main",
+      "head_at_snapshot": "9e5cd3bc37045554252b03ce1bb5a986e51dd82d",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-main"
+    },
+    {
+      "branch": "sim/20261028-audit-pr133",
+      "head_at_snapshot": "370ccb00b8978758764b727914d82b49a8eb2a13",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr133"
+    },
+    {
+      "branch": "sim/20261028-audit-pr134",
+      "head_at_snapshot": "36a98016ddfbc61a1b893b79e8db224e7e2f0f30",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr134"
+    },
+    {
+      "branch": "sim/20261028-audit-pr134-main",
+      "head_at_snapshot": "6c7c5826641861a419b77ab7bb45596513321bd3",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr134-main"
+    },
+    {
+      "branch": "sim/20261028-audit-pr135",
+      "head_at_snapshot": "07b352f6eee397dc0c9e479676f15123a39f7993",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr135"
+    },
+    {
+      "branch": "sim/20261028-audit-pr135-main",
+      "head_at_snapshot": "ba1faed938e97235f8b8a0c794cec4d4c027b5f8",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr135-main"
+    },
+    {
+      "branch": "sim/20261028-audit-pr136",
+      "head_at_snapshot": "4608f71ca3f35b1568c071e5ece8b1024fa0791d",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr136"
+    },
+    {
+      "branch": "sim/20261028-audit-pr136-main",
+      "head_at_snapshot": "b51f716261e5b720d4096c9dcb07b383d9738ddf",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr136-main"
+    },
+    {
+      "branch": "sim/20261028-audit-pr137",
+      "head_at_snapshot": "76dd6078faecbc2e120e6ca8dde222e7fcfc1398",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr137"
+    },
+    {
+      "branch": "sim/20261028-audit-pr139",
+      "head_at_snapshot": "e011da261bcae1578976b681153bf92a3b93a26c",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-pr139"
+    },
+    {
+      "branch": "sim/20261028-audit-sequence",
+      "head_at_snapshot": "024c9de883ab626e5f04cf21112ffc6f4c51dd8f",
+      "disposition": "ARCHIVED_SIMULATION",
+      "backup_tag": "backup/20261028/sim/20261028-audit-sequence"
+    }
+  ],
+  "Worktrees": [
+    {
+      "id": "WT001",
+      "original_head": "001ad6716c18e2cec81dc4e885faf64f016d1069",
+      "dirty": true,
+      "backed_up_working_files": 6,
+      "disposition": "Supply preflight carried by PR142 (shared foundation audit); two generic reports retained; four restricted attachments D-only"
+    },
+    {
+      "id": "WT002",
+      "original_head": "d0a063137da19ba9e5dbfeaaec7a0bee326628e8",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT003",
+      "original_head": "37a46cee9a66838aac099f7fcad3c9dc9a24ed40",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT004",
+      "original_head": "60c0f2eebd3a7276f337ed5989934fd24b150fe4",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT005",
+      "original_head": "646e8b4b256d71243639f7bcfef5cf2b57479cfd",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT006",
+      "original_head": "4326b9a1d6aaa7d3c98802b359fbd2835e6b13af",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT007",
+      "original_head": "fd13f30242138020bd3810970cc372ae6a6a393b",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT008",
+      "original_head": "0704a17a671b185536abee4a3189185e785b5343",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT009",
+      "original_head": "99a8d62a09083a7bccad647302fa04405e5f5fb6",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT010",
+      "original_head": "4efb278baa45dbc99e607d26131ec2081e89be44",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT011",
+      "original_head": "a39370df05557cc2627b88a876415225922e652b",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT012",
+      "original_head": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+      "dirty": true,
+      "backed_up_working_files": 4,
+      "disposition": "Historical V1 UI copies exact archived99a8d62a; replaced by V2/V3; retained"
+    },
+    {
+      "id": "WT013",
+      "original_head": "744544718503114dcdc45af42d85ce05ea0dcdab",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT014",
+      "original_head": "5bb032d7354ef619064a015484a5001204edfff5",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT015",
+      "original_head": "6442b9a78b22d39b0b71390f998da5ff8eeaf7e6",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT016",
+      "original_head": "36c55a586a8c9180d7c937d53f438a5f0babee41",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT017",
+      "original_head": "034342f7ce64cb5cb702f488c6c243c10af433d3",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT018",
+      "original_head": "52c7e58d87a5bfe452e77f22b543e1ee0cb124dd",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT019",
+      "original_head": "ff95d3a384a9440b35d8a3a23aa89d1428b292db",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT020",
+      "original_head": "0fea1b506b84437e519c62d9aa5d740043dfbad8",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT021",
+      "original_head": "165c2ffe353c59e69729ede4c92fcfd827344c9f",
+      "dirty": true,
+      "backed_up_working_files": 1,
+      "disposition": "PR92 review retained;165c2ffe and4edee109 same tree; distinct build identities; historical medium not revalidated"
+    },
+    {
+      "id": "WT022",
+      "original_head": "9535f1359252202599337ab218e007e7f3aee83a",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT023",
+      "original_head": "2a24584d55a8ce90ef7a0f94ef919c3193432aca",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT024",
+      "original_head": "42f59579ca5845b07c5ae6b80f7718da33d0e620",
+      "dirty": true,
+      "backed_up_working_files": 16,
+      "disposition": "PR143 /3a25d6ba: effective supervisor/storage gaps repaired; external hardware/volume gaps NOT_RUN"
+    },
+    {
+      "id": "WT025",
+      "original_head": "5074660fd10e7a91d81923edac782891e377a519",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT026",
+      "original_head": "d52ade7758d78ca7ad8b6adbd34d1a92fcdf4710",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT027",
+      "original_head": "2badc3c7bb340a5bc3085d0421e7736fa8a5ac55",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT028",
+      "original_head": "e011da261bcae1578976b681153bf92a3b93a26c",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT029",
+      "original_head": "991167d6a7fb37c82186f45ce54eae9bee57a221",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT030",
+      "original_head": "016976c65a4ba3c9119f4cc0a131bae82283aae5",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT031",
+      "original_head": "4608f71ca3f35b1568c071e5ece8b1024fa0791d",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT032",
+      "original_head": "370ccb00b8978758764b727914d82b49a8eb2a13",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT033",
+      "original_head": "d506f77c7ae385d3808f55d15087a9c652f14730",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT034",
+      "original_head": "36a98016ddfbc61a1b893b79e8db224e7e2f0f30",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT035",
+      "original_head": "3c56c98b1da894fc9433466423d9cdea9e6996d6",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT036",
+      "original_head": "bdd518d940ea0f853fba2318465bb8ccad52f188",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT037",
+      "original_head": "07b352f6eee397dc0c9e479676f15123a39f7993",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT038",
+      "original_head": "d8079bd747a6dda737997722f38b30489ad38c86",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT039",
+      "original_head": "43e8fcfb43bfefebbc8786de2a2545d382a5de76",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT040",
+      "original_head": "75ae34177cfc22a23754f36af70733d7b502e96f",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT041",
+      "original_head": "77d2db61f19375dbb3143bd3d174455e60ce4656",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT042",
+      "original_head": "f87eaaa466ae84e74a2306370a146f2b44017799",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT043",
+      "original_head": "e15631fe52ca77e551978b17f3b1da58b9a27fa8",
+      "dirty": true,
+      "backed_up_working_files": 7,
+      "disposition": "Four source/project files already absorbed; two lock files line-end-only; optional installed ABI script ARCHIVED_UNVERIFIED, no authorized SDK run"
+    },
+    {
+      "id": "WT044",
+      "original_head": "0a5074b13ffb3977abb066c4734ceba775b07f67",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT045",
+      "original_head": "8067a0e9eb028866f4b20d394d9bcc84e8b9e1f2",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT046",
+      "original_head": "6243554fbd34b52b8c413a24dc122b4063bb55b7",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT047",
+      "original_head": "4da6bf6e94e3e981838d30c481f4550031ea8459",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT048",
+      "original_head": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+      "dirty": true,
+      "backed_up_working_files": 45,
+      "disposition": "PR144 /c6e353f3: maintenance stages/cancellation/helper; historical review original retained"
+    },
+    {
+      "id": "WT049",
+      "original_head": "76dd6078faecbc2e120e6ca8dde222e7fcfc1398",
+      "dirty": true,
+      "backed_up_working_files": 5,
+      "disposition": "Four code/test corrections in PR137 /1720c44c; additional real-device assertions not independently verified"
+    },
+    {
+      "id": "WT050",
+      "original_head": "963165d71aec1e037525fd7f17bc3ed81b560c1a",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT051",
+      "original_head": "4f8eb8e78d7df99d61982a62c1dc06d269f481d0",
+      "dirty": true,
+      "backed_up_working_files": 1,
+      "disposition": "Historical980a1383 shortcut receipt retained; referenced raw logs not located; not current installation PASS"
+    },
+    {
+      "id": "WT052",
+      "original_head": "f64986b4cd76851ac83e9006826e4f679c39d0a4",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT053",
+      "original_head": "10ad5d264b7e3f1b581dcf3fd044163fda02dcef",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT054",
+      "original_head": "42e0205a770dffe665d7d130f1232f6b5561e307",
+      "dirty": true,
+      "backed_up_working_files": 844,
+      "disposition": "F01/F02 absorbed; F03 continued in PR145 /035a125f; original844-file interrupted merge retained, not reapplied"
+    },
+    {
+      "id": "WT055",
+      "original_head": "0b0231cc229d76571bb33760e9327cad654efa0a",
+      "dirty": true,
+      "backed_up_working_files": 66,
+      "disposition": "Superseded integration merges; sources absorbed;53 old locks and13 docs retained, not reapplied"
+    },
+    {
+      "id": "WT056",
+      "original_head": "43382c59dd9ce1a9ed4895e3eaa4fe06770b2d3c",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT057",
+      "original_head": "c8ed93d70038f63d2c522109795e203636af7d48",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT058",
+      "original_head": "484bc433b5f36a08c3f951bd0174e4be7e1b986b",
+      "dirty": false,
+      "backed_up_working_files": 0,
+      "disposition": "Retain original clean worktree; follows branch/source disposition"
+    },
+    {
+      "id": "WT059",
+      "original_head": "3a5b1d13ec5969213db35ed43d72a5aecd437777",
+      "dirty": true,
+      "backed_up_working_files": 18,
+      "disposition": "18 review files exact main4c42f567; duplicate; original retained"
+    }
+  ],
+  "Orphans": [
+    {
+      "id": "O01",
+      "original_sha": "c3275d4f1385a50e2ff79cc309cfb777e87be4db",
+      "later_candidates": [
+        "2059479d09b3eddbfc9d4f31a52232143366cf31"
+      ],
+      "disposition": "Archived with superseded PR134"
+    },
+    {
+      "id": "O02",
+      "original_sha": "64f52a9c525997b49601acd6c0ac45fa66bdaa6a",
+      "later_candidates": [
+        "2059479d09b3eddbfc9d4f31a52232143366cf31"
+      ],
+      "disposition": "Archived with superseded PR134"
+    },
+    {
+      "id": "O03",
+      "original_sha": "a7e044774429d8577a818f1708de54521a338670",
+      "later_candidates": [
+        "2059479d09b3eddbfc9d4f31a52232143366cf31"
+      ],
+      "disposition": "Archived with superseded PR134"
+    },
+    {
+      "id": "O04",
+      "original_sha": "2be4d09a9167f59c482d9b20632047765a11e1d2",
+      "later_candidates": [
+        "bdd518d940ea0f853fba2318465bb8ccad52f188"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O05",
+      "original_sha": "ce84a05d13218a96701fe286bffd5329ed4ec719",
+      "later_candidates": [
+        "9061fcd3fee436e55da489334e227c689565f510"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O06",
+      "original_sha": "d8faf66450e2d4b281f013ec82bf098fa1de4bcb",
+      "later_candidates": [
+        "69df6bef3dc9babbf764bbd4cad3263ea4b60716",
+        "d39f399ffd766c21b16bca31b854eeb2bb1022e9",
+        "85e78a4ac8c828320635ee4172b6b17130e538c4"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O07",
+      "original_sha": "989e66e93e145c17d284894e1da248fa28f89942",
+      "later_candidates": [
+        "9414011596851a6e1a6b749265b2cc792d7f96b7",
+        "b9ae91d38c369d8b07242e9f74fdd219237f1357",
+        "10eb35b98067c71bfee022f369f3469861ee7fb7"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O08",
+      "original_sha": "8c2ffd1e45287d65aa82cd429893b04affc388b2",
+      "later_candidates": [
+        "05772205ef2e870b254e80b9af612c289284a9f3",
+        "559e8d30f9de6c2abb7f63ec32ee4775f6367bdc",
+        "df255631858f32b6ecd9dc960baaf71f65e321dc"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O09",
+      "original_sha": "2ce775b2ef8b915b9d16d6a4abdcb0a784073587",
+      "later_candidates": [
+        "cbf46bf4edf13be1dfad6339001a5065ca9f85bd",
+        "2453b3682aa683b0bb0b8cb346f826849f5e2e60",
+        "8c5de18837709cec6c62d6067948490e41df99a6"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O10",
+      "original_sha": "be7f647350e0c17bb5ca616200f582688ec0df5d",
+      "later_candidates": [
+        "69df6bef3dc9babbf764bbd4cad3263ea4b60716",
+        "d39f399ffd766c21b16bca31b854eeb2bb1022e9",
+        "85e78a4ac8c828320635ee4172b6b17130e538c4"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O11",
+      "original_sha": "62bcec51216e40c5b9058a211f77b53febcba008",
+      "later_candidates": [
+        "cbf46bf4edf13be1dfad6339001a5065ca9f85bd",
+        "2453b3682aa683b0bb0b8cb346f826849f5e2e60",
+        "8c5de18837709cec6c62d6067948490e41df99a6"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O12",
+      "original_sha": "9b4450580fed1b6dc47c8b5f846dd80fd44392e4",
+      "later_candidates": [
+        "cbf46bf4edf13be1dfad6339001a5065ca9f85bd",
+        "2453b3682aa683b0bb0b8cb346f826849f5e2e60",
+        "8c5de18837709cec6c62d6067948490e41df99a6"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O13",
+      "original_sha": "f653a7fe4ef5fe01b5e02ca09f086cd3221c7e27",
+      "later_candidates": [
+        "7d7487a571353f57aeaf01f14425760a737330b0"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O14",
+      "original_sha": "5b7213a7da70053e8ec3494dad254690c7db9473",
+      "later_candidates": [
+        "8071b2e0ef978f5ccddb651ba61c33fe78a9042c"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O15",
+      "original_sha": "9999b4d58933aac8d1db453bf0ad60b6ffcfef01",
+      "later_candidates": [
+        "9e6c6280665a16114f5bca6aad59d4599b7e3c6d"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O16",
+      "original_sha": "e1bc848ab1673c34abbd55d4d3bfeae47e292303",
+      "later_candidates": [
+        "7024f1e0128a4d8cf6af5ec6b51d6100a22c5d62"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    },
+    {
+      "id": "O17",
+      "original_sha": "6fac5d7883d3a1ad63ce2a4871ae0483bdb594bf",
+      "later_candidates": [
+        "9900cbe9e9dd573d46c6b8b2dbb1d52dc46b7bc1"
+      ],
+      "disposition": "Later task/source absorbed; exact original retained in reflog bundle"
+    }
+  ],
+  "ExcludedConcurrentTask": {
+    "title": "导出完整UI为HTML操作页",
+    "state": "IN_PROGRESS_SEPARATE",
+    "excluded_by_explicit_user_instruction": true,
+    "integration_owner_does_not_modify": true
+  },
+  "Preservation": "Original branches/worktrees/stash not deleted; backups outside repository; private filenames/assets/hashes omitted"
+}

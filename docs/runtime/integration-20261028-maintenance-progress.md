@@ -57,3 +57,7 @@
 上一候选还错误地要求实际失败启动后目标配置字节不变。现行 `ConfigurationRevisions.BeginEffectiveStartup/CompleteEffectiveStartup` 必须保留这次失败尝试，已有配置确认套件明确验证该合同。本次改为检查构造阶段不写配置；实际启动失败后，原 Effective/Pending/Activation/InitialRepair、先前尝试完整保留，仅追加一条完成的失败尝试、保持 Required 且无生产确认；备份源数据库/配置/清单及隔离标记仍逐字不变。不为测试静默跳过启动失败记账，也不放宽管理授权或操作员信息保护。以上修正需以本次当前源 CI 重新验收。
 
 本次修正后的 Windows 普通令牌实际运行 `--backup-health-recovery`：57 条 PASS、2 条 FAIL，整组退出非零；两处失败均为创建符号链接缺少特权，不能记全套通过。Production 失败确认、原件/一次外部执行、查询取消完整请求与回复比较已实际通过；其余链接用例由新 CI 核验。没有修改本机权限或机器策略。首轮“本机未运行”仅适用于该历史提交前时点。
+
+## 10/29整合归宿
+
+上述各轮待验/失败保留形成时含义。末候选`e13f426659a6cac66dfe9457f73a89345533097e`已取得9项CI通过：[商业工程](https://github.com/yuan2go/importer-pc/actions/runs/40813685948)、[SDK](https://github.com/yuan2go/importer-pc/actions/runs/40813686079)，实际测试树`5d1fa8e4ec4441353a42c1a1aefea617921f58e8`。BHR68、恢复91、生命周期255、真实受保护helper48、隔离安装44、普通子进程4条PASS，各守各自日志范围；本机57/2失败不改写。已通过[PR144](https://github.com/yuan2go/importer-pc/pull/144)合入main`c6e353f318e986a12a775a026f4f3a3c89884e22`。后续身份与SM范围、非SM暂停项见[整合终态](integration-20261028.md)，不扩张交互UAC/设备/现场资格。

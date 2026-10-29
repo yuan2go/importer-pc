@@ -1,23 +1,25 @@
 # INTEGRATION-20261028 · 并行任务收口
 
-起点 main `629364832e6193628e3d9b74d7d80f8e4b2e86e3`；远端备份标签 `pre-integration-20261028`。独立 D 盘 worktree，分支 `integration/20261028`。原 58 个 worktree 的状态、11 个脏工作区的暂存/未暂存补丁、未跟踪文件、冲突工作副本和 index 已备份至仓库外 `D:/integration-backups/20261028`；原目录不改、不清理。受限附件仅本地保管。
+初轮文档起点 main `629364832e6193628e3d9b74d7d80f8e4b2e86e3`，#140已合入后独立审计基线为`9e5cd3bc37045554252b03ce1bb5a986e51dd82d`。代码整合检查点为`035a125f42445463f835be8d966598353573435e`；各项实际合并身份及来源见[执行与归宿](../runtime/integration-20261028.md)。初轮58个工作树及当时新增整合树共同构成本次59个原盘点对象，11个脏工作区均在D盘仓库外保全，原目录不改不清理，受限附件仅本地保存。
 
-本包记录本次实际执行；旧测试、冻结介质、原回执不转记新 main。当前阶段为任务建模和先行文档清理，运行验证尚未执行。执行及最终状态见[本轮报告](../runtime/integration-20261028.md)。
+用户最终范围收敛为 **SM / Sportmaster 及必需共享基座**，其他业务模块开发暂停。独立HTML导出会话登记为在办、排除本次冻结。WT024/048/054已增量合入，#134/135/136按SDK-only取代关系关闭并保留全部原件。main重跑的非SM DirectPlc称重夹具失败仍保留，不把PR绿色转记main全绿。最终SM验证与文档收口分别记源、命令及结果。
 
 ## 范围与顺序
 
 覆盖 2026-10-22 起 main 第一父历史、全部开放 PR、相关本地分支及未提交产物，并定点追溯快照 PR50/71。继承 ST01–ST14、LIA01–07、F01–03 的风险台账。F1–F5 原提示词编号与全文未能从仓库证实完整映射，不能猜造；已有任务按实际规格及 ST 编号核对。
 
-| 顺序 | 任务 | 基线/原因 |
+| 顺序 | 任务 | 当前归宿 |
 |---|---|---|
-| 0 | 本轮文档清理 | 先撤销 INDEX 过期的 PR108 待合并状态和旧本轮入口；历史证据不改 |
-| 1 | PR133，370ccb00 | 基线 d506f77c，早于 PR138；SDK ABI诊断及打包/编码边界先行 |
-| 2 | PR139，e011da26 | 基线62936483；普通令牌、安装登记及原操作恢复先行，明确继承PR137的共用启动器 |
-| 3 | PR137，76dd6078及未提交补修 | 基线d506f77c；在PR139后合并，保留安装扩展和PR138卸载按钮，修复实际失败的UI/目录回归 |
-| 单列 | PR134，36a98016 | 同基线；触发实体/内置无解码默认与PR137连续逐次上报冲突，不能整块选边；保留开放，P2池预算兼容问题仍需处理 |
-| 单列 | PR135，07b352f6 | 同基线；TCP生产者默认与后续SDK-only用户流程相冲突；不改已定义线上合同猜测兼容，保留开放 |
-| 单列 | PR136，4608f71c | 依赖PR135；服务租约归属/心跳合同未裁决且VM SDK未取得，仍为未完草稿，保留开放 |
-| 最后 | 干净最终main | 完整构建、关键套件、全台账检查；不生成发布介质、不宣称验收 |
+| 0 | 文档清理#140、基线修复#141 | 已合并，旧入口原字节保留 |
+| 1 | #133 ABI/编码边界 | 已合并be02baf8 |
+| 2 | #139普通启动/安装闭环 | 已合并2bcde8bb |
+| 3 | #137 SDK/WT049增量 | 已合并1720c44c，补齐三SDK边界 |
+| 4 | WT001共享预检#142 | 已合并e6d3d050，后续非SM开发暂停 |
+| 5 | WT024监督/存储#143 | 已合并3a25d6ba，外部设备/卷验证另列 |
+| 6 | WT048维护#144 | 已合并c6e353f3，真实helper/取消/未知结果边界 |
+| 7 | WT054历史打开#145 | 已合并035a125f，原件守卫/取消/配对测量 |
+| 归档 | #134/#135/#136 | 关闭SUPERSEDED；原触发/TCP/服务未完成部分不记DONE |
+| 最后 | 文档收口与SM最终main核验 | 单独文档提交；按实际执行记证，不发布介质 |
 
 顺序依语义依赖、共用启动符号、相机方案取代关系和风险确定。2026-10-28已读原任务中用户对连续采集、每次识别上报、删除触发/读码处理/配置状态选项的明确纠偏；旧同码不等于同实体、原请求/Unknown责任仍保留。不能以此批准TCP/触发协议变更。当前产品版本固定1.0.0，外部SDK/协议与数据格式保持原编号；已合并DB10/当前格式属于保护线，不回退DB9，不改冻结字节。
 
@@ -66,8 +68,8 @@
 | PR119–125 | 当前精确合同/格式、完整候选和保全拒绝；Supply与Application默认构建入口有效 | CurrentContract、Database、Configuration、Solution | current-contract、fresh-baseline、默认入口及完整构建；不修改DB结构 |
 | PR126/128/130/131/133 | 内置MVS、精确ABI、每相机统一编码、物理身份、原生所有权与日志隐私 | MvsAcquisition、MvsNative、BundledMvs、HikrobotReader | Probe、hikrobot-hardening、hikrobot-sdk-editing、test_mvs_runtime |
 | PR127 | 自有版本固定1.0.0，SourceCommit区分构建 | 项目与compositions/manifest | test_application_compatibility、版本静态核对 |
-| PR137 | SDK连续采集/读回、每次识别独立请求、空白无作业、无客户端同码去重；空相机不连接、部分输入拒绝 | MvsSoftwareReader、ParcelCapabilityFactory、CapabilityEditing、共享参数页 | mvs-software-flow、camera-config-startup、原生startup/parameter-v3，旧TCP转换保留共用编码 |
-| PR134/135/136 | 原独立任务的解码保有/触发、连续TCP、服务就绪与资源互斥 | Decoding、BarcodeProducer、ReaderService | 仅核对分支和原证据；未合并不记main成立，冲突及缺SDK阻塞 |
+| PR137 | SDK连续采集/读回、每次识别独立请求、空白无作业、无客户端同码去重；空相机不连接、部分输入拒绝 | MvsSoftwareReader、ParcelCapabilityFactory、CapabilityEditing、共享参数页 | mvs-software-flow、原生startup-experience/parameter-v3，旧TCP转换保留共用编码 |
+| PR134/135/136 | 原独立任务的解码保有/触发、连续TCP、服务就绪与资源互斥 | Decoding、BarcodeProducer、ReaderService | 已关闭为取代；仅适用片段由#137承接；其余原件归档，服务缺SDK/协议及未完成项不记DONE |
 
 ## 检测与验证规则
 

@@ -1,0 +1,188 @@
+{
+  "SourceCommit": "035a125f42445463f835be8d966598353573435e",
+  "Scope": "Sportmaster and required shared foundation only; same production source with documentation reconciliation in progress",
+  "Platform": "Local Windows; runtime selectors under ordinary restricted token; synthetic interfaces, no devices",
+  "Results": [
+    {
+      "Name": "sm-main035-full-build",
+      "Command": [
+        "dotnet",
+        "build",
+        "ImporterPc.slnx",
+        "-c",
+        "Release",
+        "-p:Application=Sportmaster",
+        "-p:BusinessModule=Sportmaster",
+        "-p:SelfContained=false",
+        "-p:RestoreLockedMode=true",
+        "-m:1",
+        "-nr:false"
+      ],
+      "ExitCode": 0,
+      "PassLines": 0,
+      "FailLines": 0,
+      "Seconds": 38.78,
+      "LogSha256": "d122c6bb534135da540806207b42c7dbff178e4824e401f7e3ba192a448e6099"
+    },
+    {
+      "Name": "sm-main035-core-build",
+      "Command": [
+        "dotnet",
+        "build",
+        "tests/Ipc.Application.Verification",
+        "-c",
+        "Release",
+        "-p:RestoreLockedMode=true",
+        "-m:1",
+        "-nr:false"
+      ],
+      "ExitCode": 0,
+      "PassLines": 0,
+      "FailLines": 0,
+      "Seconds": 13.98,
+      "LogSha256": "67899e363f70078b1bf39aca972183fd448e30de3b84bd0b091248e248ce1993"
+    },
+    {
+      "Name": "sm-main035-mvs-software-flow",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--mvs-software-flow"
+      ],
+      "ExitCode": 0,
+      "PassLines": 11,
+      "FailLines": 0,
+      "Seconds": 5.26,
+      "LogSha256": "34d95712bc699a19e23e129e5d7816467d2162ec2b516a905387c40af71398c7"
+    },
+    {
+      "Name": "sm-main035-mvreader-flow",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--mvreader-flow"
+      ],
+      "ExitCode": 0,
+      "PassLines": 6,
+      "FailLines": 0,
+      "Seconds": 5.12,
+      "LogSha256": "d54f3d3ff13ff557f876cd26e874b2dd1eba5dbcf563cafe65162ddbddc207cf"
+    },
+    {
+      "Name": "sm-main035-sportmaster-rcs",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--sportmaster-rcs"
+      ],
+      "ExitCode": 0,
+      "PassLines": 156,
+      "FailLines": 0,
+      "Seconds": 18.31,
+      "LogSha256": "6aaf963181003df594ff7137be5abc74b4e344e282739d4cb768bf99dada75a1"
+    },
+    {
+      "Name": "sm-main035-rcs-timeout-errors",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--rcs-timeout-errors"
+      ],
+      "ExitCode": 0,
+      "PassLines": 57,
+      "FailLines": 0,
+      "Seconds": 37.02,
+      "LogSha256": "25f0891539ad7cc9b9baa60d2383471dd2fd112727e978a85a9eecc45a69c309"
+    },
+    {
+      "Name": "sm-main035-station-single-camera",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--station-single-camera"
+      ],
+      "ExitCode": 0,
+      "PassLines": 52,
+      "FailLines": 0,
+      "Seconds": 9.05,
+      "LogSha256": "5a123bcf03fae81d7a56c1b8e397e317a4e8009c27c7a190062133c32529b2ef"
+    },
+    {
+      "Name": "sm-main035-deferred-connections",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--deferred-connections"
+      ],
+      "ExitCode": 0,
+      "PassLines": 130,
+      "FailLines": 0,
+      "Seconds": 27.69,
+      "LogSha256": "9792379f23e92cdcd7c350e5fa0c511b5b5012aabbc20122f02f72dda9d02bdb"
+    },
+    {
+      "Name": "sm-main035-p0-deferred",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--p0-deferred"
+      ],
+      "ExitCode": 0,
+      "PassLines": 58,
+      "FailLines": 0,
+      "Seconds": 14.18,
+      "LogSha256": "efb0308348c92031e897d71b3e1ed1c2dcffd1d20b94bb14a6970666861d60bc"
+    },
+    {
+      "Name": "sm-main035-management-mode",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--management-mode"
+      ],
+      "ExitCode": 0,
+      "PassLines": 81,
+      "FailLines": 0,
+      "Seconds": 26.42,
+      "LogSha256": "6f4436ba0f22ba62814f6ca550d2d6091f48530c782fad485a31f5da42e41d9b"
+    },
+    {
+      "Name": "sm-main035-parameter-guidance-startup",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--parameter-guidance-startup"
+      ],
+      "ExitCode": 0,
+      "PassLines": 23,
+      "FailLines": 0,
+      "Seconds": 4.89,
+      "LogSha256": "dc6a7747168c7cded4146de8c5666df9c91210787b7512b748b2c161e12179b2"
+    },
+    {
+      "Name": "sm-main035-stability-audit-fixes",
+      "Command": [
+        "dotnet",
+        "tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll",
+        ".",
+        "--stability-audit-fixes"
+      ],
+      "ExitCode": 0,
+      "PassLines": 83,
+      "FailLines": 0,
+      "Seconds": 19.54,
+      "LogSha256": "f8ae6e4e146e0f3f87b9170c727f5c4a530c0690c89eee5234b1024d58700eae"
+    }
+  ],
+  "OtherBusiness": "PAUSED_BY_USER; main035 DirectPlc AC19 failure retained; no claim of whole-repository green",
+  "HTMLExport": "Separate ongoing task, excluded by explicit user instruction"
+}

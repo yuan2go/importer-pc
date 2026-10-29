@@ -1,0 +1,74 @@
+PASS MVS: preview allocates no image until explicitly requested
+PASS MVS: preview is aspect-preserving and bounded to 640x480 with original acquisition identity
+PASS MVS: published image owns its bytes and each reader receives an isolated copy
+PASS MVS: fast acquisition cannot publish more than two thumbnails per second
+PASS MVS: closing page expires image demand and releases the cached thumbnail
+PASS MVS: stop or reconnect clears the previous session image
+PASS MVS: x64 layouts match installed vendor header and official managed wrapper cross-check
+PASS MVS: call-order stop/close continues teardown but failed destroy retains the original lease and SDK owner
+PASS MVS: retry completes real destroy/finalize after an already-stopped stream; application can exit
+PASS MVS: actual acquisition contract cannot manufacture a barcode, observation or business Ready when component is absent
+PASS MVS: native loans are returned before stop/close/destroy/finalize and lease release
+PASS MVS: explicit restart resets capture accounting without creating a new parcel
+PASS MVS: missing configured camera is offline only after cleanup; no native handle, physical lease or Ready is invented
+PASS MVS: explicit reconnect can discover and start the same configured camera after it returns
+PASS MVS: a device at the configured IP with a different serial remains offline and is never opened as a fallback
+PASS MVS: discovery failure with uncompleted native cleanup remains fatal and retains its owner
+PASS MVS: host health exception is explicit but cannot prevent successful native teardown
+PASS MVS: retry after host reporting failure never releases the original native owner twice
+PASS MVS: FreeImageBuffer failure retains original loan, handle and physical owner
+PASS MVS: explicit retry returns original frame once then frees original owner
+PASS MVS: native acquisition surrogate entered
+PASS MVS: cancelled stop wait retains blocked native acquisition owner
+PASS MVS: repeat stop joins the actual outstanding acquisition task
+PASS MVS: actual native return permits one teardown
+PASS MVS: native Start failure cleans returned resources without declaring acquisition success
+PASS MVS: stop failure retains physical ownership
+PASS MVS: stop retry completes original teardown
+PASS MVS: close failure retains physical ownership
+PASS MVS: close retry completes original teardown
+PASS MVS: destroy failure retains physical ownership
+PASS MVS: destroy retry completes original teardown
+PASS MVS: finalize failure retains physical ownership
+PASS MVS: finalize retry completes original teardown
+PASS MVS: overload/frame gap faults one acquisition while the other camera remains isolated
+PASS MVS: ordinary no-trigger/no-frame is not treated as a disconnection
+PASS MVS: actual connection failure fences acquisition and publishes transport disconnection for application-owned recovery
+PASS MVS: formal parcel mode is refused without a real recognition component
+PASS MVS: invalid/incomplete frame is returned and never counted as a valid image or decoded barcode
+PASS MVS: preview begins empty on the existing acquisition owner
+PASS MVS: real acquisition path produces a copied preview without opening or polling another SDK session
+PASS MVS: stopped source cannot expose its old frame
+PASS MVS: software reader with omitted entity.mode defaults to an admitted Read candidate
+PASS MVS: tight Mono8 frame is handed off once after returning the native loan and releases its owner
+PASS MVS: preview begins empty on the existing acquisition owner
+PASS MVS: real acquisition path produces a copied preview without opening or polling another SDK session
+PASS MVS: stopped source cannot expose its old frame
+PASS MVS: explicit observe-only remains an uncorrelated observation with a decoder
+PASS MVS: tight Mono8 frame is handed off once after returning the native loan and releases its owner
+PASS MVS: software decoder entered with a copied frame after native loan return
+PASS MVS: stop requested during decode still waits for the actual decoder while retaining the source owner
+PASS MVS: decoded result arriving after stop is retained in full and faulted, never silently lost or handed off after cancellation
+PASS MVS: unresolved decoded observation fences restart without replacement, resend or duplicate native release
+PASS MVS: unverified padded Mono8 layout is refused before decoding/counting and the native frame is returned once
+PASS MVS: acquisition-only omitted mode keeps its existing payload contract without manufacturing barcode readiness
+PASS MVS: independent raw-frame lease survives working-pixel mutation and repeated ingress release
+PASS MVS: source disposal retains an actual outstanding raw-frame writer
+PASS MVS: last raw-frame writer releases the pooled original exactly once
+PASS MVS: 32-frame / pooled-byte budget rejects overload before recognition without discarding retained originals
+PASS MVS: native stop returns the SDK loan but retains the old epoch's outstanding original-image writer
+PASS MVS: reused frame number and same barcode across epochs retain separate exact originals without latest-frame substitution
+PASS MVS: wrong acquisition epoch refuses lookup without releasing either writer
+PASS MVS: source disposal fences new sessions and preserves both outstanding writer leases after native teardown
+PASS MVS: releasing both epoch writers permits disposal retry without double-returning pixels or native handles
+PASS MVS: timing retention is bounded; session totals/extrema and recent-window percentiles have explicit different scopes
+PASS MVS: numeric frame traces retain only the last 512 frames
+PASS MVS: new timing session clears old samples
+PASS MVS: raw throughput diagnostic counts skipped video frames and gap events separately without barcode readiness or business input
+PASS MVS: sampled diagnostic still faults duplicate/reset and returns that loan
+PASS MVS: sampled diagnostic refuses real incomplete frames; restart timing/counters exclude the old epoch
+PASS MVS: timed decoder/handoff run after actual SDK loan return
+PASS MVS: injected acquisition/decode/durable-handoff delays are attributed separately with original observation time and one delivery
+PASS MVS: per-frame numeric trace correlates timing with the unchanged original observation and complete delivery
+PASS MVS: blocking identity enumeration is visible as health time outside the observed-to-queue clock; identity checks remain active
+MVS_SELF_TEST_PASS checks=73; synthetic native ports; real target frames/barcodes NOT_RUN

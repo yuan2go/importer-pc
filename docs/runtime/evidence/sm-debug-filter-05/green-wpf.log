@@ -1,0 +1,135 @@
+PASS CAMERA-FILTER absent preview requires management authority
+PASS CAMERA-FILTER absent/trailing-LF preserves explicit production expectation
+PASS CAMERA-FILTER absent/trailing-LF runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/trailing-LF startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/trailing-LF actual WPF current-rule button matches production for exact raw candidates; actual=未设置筛选规则：仅接受一个原始码
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER absent/single preserves explicit production expectation
+PASS CAMERA-FILTER absent/single runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/single startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/single actual WPF current-rule button matches production for exact raw candidates; actual=严格单码；未应用筛选规则
+选中条码：ABC · 命中 1
+PASS CAMERA-FILTER absent/trailing-CRLF preserves explicit production expectation
+PASS CAMERA-FILTER absent/trailing-CRLF runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/trailing-CRLF startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/trailing-CRLF actual WPF current-rule button matches production for exact raw candidates; actual=未设置筛选规则：仅接受一个原始码
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER absent/leading-empty preserves explicit production expectation
+PASS CAMERA-FILTER absent/leading-empty runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/leading-empty startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/leading-empty actual WPF current-rule button matches production for exact raw candidates; actual=未设置筛选规则：仅接受一个原始码
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER absent/multiple preserves explicit production expectation
+PASS CAMERA-FILTER absent/multiple runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/multiple startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/multiple actual WPF current-rule button matches production for exact raw candidates; actual=未设置筛选规则：仅接受一个原始码
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER absent/repeated preserves explicit production expectation
+PASS CAMERA-FILTER absent/repeated runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/repeated startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/repeated actual WPF current-rule button matches production for exact raw candidates; actual=未设置筛选规则：仅接受一个原始码
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER absent/empty preserves explicit production expectation
+PASS CAMERA-FILTER absent/empty runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/empty startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/empty actual WPF current-rule button matches production for exact raw candidates; actual=条码长度或控制字符不合法
+选中条码：无 · 命中 0
+PASS CAMERA-FILTER absent/bare-CR-separator preserves explicit production expectation
+PASS CAMERA-FILTER absent/bare-CR-separator runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/bare-CR-separator startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/bare-CR-separator actual WPF current-rule button matches production for exact raw candidates; actual=未设置筛选规则：仅接受一个原始码
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER absent/trailing-CR preserves explicit production expectation
+PASS CAMERA-FILTER absent/trailing-CR runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/trailing-CR startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/trailing-CR actual WPF current-rule button matches production for exact raw candidates; actual=未设置筛选规则：仅接受一个原始码
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER absent/embedded-tab preserves explicit production expectation
+PASS CAMERA-FILTER absent/embedded-tab runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/embedded-tab startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER absent/embedded-tab actual WPF current-rule button matches production for exact raw candidates; actual=条码长度或控制字符不合法
+选中条码：无 · 命中 0
+PASS CAMERA-FILTER absent zero candidates never accepted
+PASS CAMERA-FILTER absent local tests do not send, create jobs/inputs or mutate configuration
+PASS CAMERA-FILTER absent revoked authority blocks preview
+PASS CAMERA-FILTER absent revoke clears local candidate/result
+PASS CAMERA-FILTER explicit-empty preview requires management authority
+PASS CAMERA-FILTER explicit-empty/single preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/single runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/single startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/single actual WPF current-rule button matches production for exact raw candidates; actual=唯一有效条码；继续执行原有准入守卫
+选中条码：ABC · 命中 1
+PASS CAMERA-FILTER explicit-empty/trailing-LF preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/trailing-LF runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/trailing-LF startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/trailing-LF actual WPF current-rule button matches production for exact raw candidates; actual=唯一有效条码；继续执行原有准入守卫
+选中条码：ABC · 命中 1
+PASS CAMERA-FILTER explicit-empty/trailing-CRLF preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/trailing-CRLF runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/trailing-CRLF startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/trailing-CRLF actual WPF current-rule button matches production for exact raw candidates; actual=唯一有效条码；继续执行原有准入守卫
+选中条码：ABC · 命中 1
+PASS CAMERA-FILTER explicit-empty/multiple preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/multiple runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/multiple startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/multiple actual WPF current-rule button matches production for exact raw candidates; actual=多个有效条码，存在歧义；拒绝准入
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER explicit-empty/repeated preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/repeated runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/repeated startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/repeated actual WPF current-rule button matches production for exact raw candidates; actual=多个有效条码，存在歧义；拒绝准入
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER explicit-empty/empty-lines preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/empty-lines runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/empty-lines startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/empty-lines actual WPF current-rule button matches production for exact raw candidates; actual=没有符合整串规则的有效条码；逐项原因见候选结果
+选中条码：无 · 命中 0
+PASS CAMERA-FILTER explicit-empty/bare-CR-separator preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/bare-CR-separator runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/bare-CR-separator startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/bare-CR-separator actual WPF current-rule button matches production for exact raw candidates; actual=多个有效条码，存在歧义；拒绝准入
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER explicit-empty/trailing-CR preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/trailing-CR runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/trailing-CR startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/trailing-CR actual WPF current-rule button matches production for exact raw candidates; actual=唯一有效条码；继续执行原有准入守卫
+选中条码：ABC · 命中 1
+PASS CAMERA-FILTER explicit-empty/embedded-tab preserves explicit production expectation
+PASS CAMERA-FILTER explicit-empty/embedded-tab runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-empty/embedded-tab startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-empty/embedded-tab actual WPF current-rule button matches production for exact raw candidates; actual=没有符合整串规则的有效条码；逐项原因见候选结果
+选中条码：无 · 命中 0
+PASS CAMERA-FILTER explicit-empty zero candidates never accepted
+PASS CAMERA-FILTER explicit-empty local tests do not send, create jobs/inputs or mutate configuration
+PASS CAMERA-FILTER explicit-empty revoked authority blocks preview
+PASS CAMERA-FILTER explicit-empty revoke clears local candidate/result
+PASS CAMERA-FILTER allow-rule preview requires management authority
+PASS CAMERA-FILTER allow-rule/filtered-multiple preserves explicit production expectation
+PASS CAMERA-FILTER allow-rule/filtered-multiple runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER allow-rule/filtered-multiple startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER allow-rule/filtered-multiple actual WPF current-rule button matches production for exact raw candidates; actual=唯一有效条码；继续执行原有准入守卫
+选中条码：ABC · 命中 1
+PASS CAMERA-FILTER allow-rule zero candidates never accepted
+PASS CAMERA-FILTER allow-rule local tests do not send, create jobs/inputs or mutate configuration
+PASS CAMERA-FILTER allow-rule revoked authority blocks preview
+PASS CAMERA-FILTER allow-rule revoke clears local candidate/result
+PASS CAMERA-FILTER explicit-join preview requires management authority
+PASS CAMERA-FILTER explicit-join/ordered-repeats preserves explicit production expectation
+PASS CAMERA-FILTER explicit-join/ordered-repeats runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER explicit-join/ordered-repeats startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER explicit-join/ordered-repeats actual WPF current-rule button matches production for exact raw candidates; actual=按原候选顺序拼接全部有效条码；保留重复项；作为一份新请求继续执行原准入守卫
+选中条码：B|A|A · 命中 3
+PASS CAMERA-FILTER explicit-join zero candidates never accepted
+PASS CAMERA-FILTER explicit-join local tests do not send, create jobs/inputs or mutate configuration
+PASS CAMERA-FILTER explicit-join revoked authority blocks preview
+PASS CAMERA-FILTER explicit-join revoke clears local candidate/result
+PASS CAMERA-FILTER inactive-separator preview requires management authority
+PASS CAMERA-FILTER inactive-separator/strict-still-rejects preserves explicit production expectation
+PASS CAMERA-FILTER inactive-separator/strict-still-rejects runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER inactive-separator/strict-still-rejects startup preview shares nullable production semantics without ports
+PASS CAMERA-FILTER inactive-separator/strict-still-rejects actual WPF current-rule button matches production for exact raw candidates; actual=多码拒绝启用；未应用筛选规则
+选中条码：无 · 命中 2
+PASS CAMERA-FILTER inactive-separator zero candidates never accepted
+PASS CAMERA-FILTER inactive-separator local tests do not send, create jobs/inputs or mutate configuration
+PASS CAMERA-FILTER inactive-separator revoked authority blocks preview
+PASS CAMERA-FILTER inactive-separator revoke clears local candidate/result

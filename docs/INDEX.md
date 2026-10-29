@@ -17,6 +17,7 @@
 | 参数与作业UI | [PARAM-UX-02](design/parameter-settings-experience-02.md)、[参数V3](ui/parameter-settings-v3-20261020/README.md)、[作业V2](ui/sportmaster-task-redesign-v2-20261020/README.md)、[字体](design/typography-01.md) |
 | 首页条码与包裹图片 | [SM-WORKSTATION-03](work-packages/WP-IPC-SM-WORKSTATION-03.md)、[当前实现与待验证项目](runtime/sm-workstation-03.md)；键盘/PDA键盘输入、同帧日常留图、图片弹窗和四项导航 |
 | 当前调试按轮流程 | [SM-DEBUG-ROUND-04工作包](work-packages/WP-IPC-SM-DEBUG-ROUND-04.md)、[实现与待验证](runtime/sm-debug-round-04.md)；触发→同帧锁图/绿框→填请求→手动发送→再次扫码 |
+| 调试筛选一致性修复 | [SM-DEBUG-FILTER-05](work-packages/WP-IPC-SM-DEBUG-FILTER-05.md)、[定向原生验证](runtime/sm-debug-filter-05.md)；null/显式空规则原义保留，04其他待验边界不变 |
 | 管理界面与相机调试增量 | [SM-UI-DEBUG-02工作包](work-packages/WP-IPC-SM-UI-DEBUG-02.md)、[当前实现：待验证](runtime/sm-ui-debug-02.md)、[后续验证计划](runtime/sm-ui-debug-02-verification-plan.md)；[01历史实现与证据](runtime/sm-ui-debug-01.md)保留原来源 |
 | RCS | [内置RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md)、[超时](runtime/rcs-timeout-errors-01.md) |
 | 可靠性与维护 | [可靠性](runtime/code-reliability-hardening-02.md)、[长稳机制](runtime/win11-24x7-stability-remediation-01.md)、[历史维护](runtime/retention-ingress-02.md) |

@@ -28,7 +28,7 @@ public interface IStartupRetentionMaintenance
 public interface IStartupMaintenance
 {
     Task<StartupClassification> ClassifyAsync() => throw new NotSupportedException("Startup routing metadata unavailable");
-    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
+    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<StartupMaintenanceDocument> ReadAsync();
     Task<BusinessReceipt> ValidateAsync(ParcelConfiguration candidate);
     Task<StartupCheckReport> CheckAsync(ParcelConfiguration candidate);

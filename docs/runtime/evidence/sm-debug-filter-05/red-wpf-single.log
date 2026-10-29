@@ -1,0 +1,10 @@
+PASS CAMERA-FILTER absent preview requires management authority
+PASS CAMERA-FILTER absent/single preserves explicit production expectation
+PASS CAMERA-FILTER absent/single runtime contract matches full production result including rule hash and candidate decisions
+PASS CAMERA-FILTER absent/single startup preview shares nullable production semantics without ports
+FAIL System.InvalidOperationException: absent/single actual WPF current-rule button matches production for exact raw candidates; actual=唯一有效条码；继续执行原有准入守卫
+选中条码：ABC · 命中 1
+   at Program.<VerifyCameraFilterPreview>g__Check|3_0(Boolean ok, String detail, <>c__DisplayClass3_0&) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs:line 17
+   at Program.VerifyCameraFilterPreview(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs:line 87
+   at Program.VerifyCameraFilterPreview(String root, String evidence, List`1 lines)
+   at Program.<>c__DisplayClass37_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Program.cs:line 57

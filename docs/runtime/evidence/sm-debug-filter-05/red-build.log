@@ -1,0 +1,15 @@
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelCameraInspection.cs(92,139): error CS8602: 解引用可能出现空引用。 [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\ParcelPictureWindow.cs(129,23): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_x4k5maj5_wpftmp.csproj]
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\ParcelPictureWindow.cs(132,95): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_x4k5maj5_wpftmp.csproj]
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\ParcelPictureWindow.cs(135,116): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_x4k5maj5_wpftmp.csproj]
+
+生成失败。
+
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelCameraInspection.cs(92,139): error CS8602: 解引用可能出现空引用。 [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\ParcelPictureWindow.cs(129,23): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_x4k5maj5_wpftmp.csproj]
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\ParcelPictureWindow.cs(132,95): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_x4k5maj5_wpftmp.csproj]
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\ParcelPictureWindow.cs(135,116): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_x4k5maj5_wpftmp.csproj]
+    0 个警告
+    4 个错误
+
+已用时间 00:00:44.93

@@ -1,0 +1,9 @@
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.Sportmaster.Desktop\StationDebugEvidenceControl.cs(92,81): error CS8602: 解引用可能出现空引用。 [D:\projects\importer-pc-ui-debug\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop_qftpqe5v_wpftmp.csproj]
+
+生成失败。
+
+D:\projects\importer-pc-ui-debug\src\Ipc.Application.Sportmaster.Desktop\StationDebugEvidenceControl.cs(92,81): error CS8602: 解引用可能出现空引用。 [D:\projects\importer-pc-ui-debug\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop_qftpqe5v_wpftmp.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:24.14

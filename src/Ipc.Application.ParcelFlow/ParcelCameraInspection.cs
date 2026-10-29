@@ -71,7 +71,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
             try
             {
                 authority.ThrowIfCancellationRequested(); Management.Require();
-                if (Id != "sportmaster" || command.RuntimeId != runtimeId || stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("运行实例已变化，请重新读取调试状态。");
+                if (Id != "sportmaster" || command.RuntimeId != runtimeId || stopped || stopping.IsCancellationRequested || repository is null || configuration is null) throw new InvalidOperationException("运行实例已变化，请重新读取调试状态。");
                 if (command.SingleReadRounds && command.Mode != CameraInspectionMode.Isolated) throw new InvalidOperationException("按轮扫码必须先建立实机隔离。");
                 var hash = Wire.Hash(Wire.Encode(command));
                 if (inspectionFence is { } prior)

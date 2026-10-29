@@ -87,16 +87,16 @@ internal sealed class StationDebugEvidenceControl : UserControl
         left.Click += (_, _) => SelectPosition("left"); right.Click += (_, _) => SelectPosition("right");
         observe.Click += async (_, _) => await Begin(CameraInspectionMode.ObserveProduction); isolate.Click += async (_, _) => await Begin(CameraInspectionMode.Isolated);
         stop.Click += async (_, _) => await Run(async t => { if (status?.SessionId is { } id) { var value = await Api.StopCameraInspectionCaptureAsync(id, Reason(), t); if (PublishCommand) status = value; } });
-        resume.Click += async (_, _) => await Run(async t =>
-        {
-            if (status?.SessionId is not { } id || cleared.IsChecked != true) { setup.IsExpanded = true; cleared.Focus(); cleared.BringIntoView(); throw new InvalidOperationException("请先确认两位测试件已移除并核对原包裹责任。"); }
-            var value = await Api.EndCameraInspectionAsync(new(Wire.Id(), id, true, true, Reason()), t); if (PublishCommand) { status = value; cleared.IsChecked = false; }
-        });
         var body = new StackPanel { Margin = new(24, 0, 24, 16) }; var options = new StackPanel();
         options.Children.Add(Label("操作原因（至少5字，保留本机审计）")); options.Children.Add(reason); AutomationProperties.SetName(reason, "调试操作原因");
         options.Children.Add(Wrap(Field("期限 / 分钟", duration), Field("原图配额 / MiB", imageBudget), Field("记录上限", recordBudget))); options.Children.Add(cleared);
         options.Children.Add(Label("隔离作用于两位新供包；只有明确显示“隔离已生效”后才可放入测试件。已有请求先排空，原责任保留。停止采集、切页、撤权及重启均不自动恢复供包。软件隔离不是安全急停。"));
         setup = new() { Header = "调试原因、资源限额与清场确认", Content = options, IsExpanded = true, Margin = new(0, 0, 0, 8) }; body.Children.Add(setup);
+        resume.Click += async (_, _) => await Run(async t =>
+        {
+            if (status?.SessionId is not { } id || cleared.IsChecked != true) { setup.IsExpanded = true; cleared.Focus(); cleared.BringIntoView(); throw new InvalidOperationException("请先确认两位测试件已移除并核对原包裹责任。"); }
+            var value = await Api.EndCameraInspectionAsync(new(Wire.Id(), id, true, true, Reason()), t); if (PublishCommand) { status = value; cleared.IsChecked = false; }
+        });
         var parameter = Button("本相机参数"); parameter.Click += async (_, _) => await Run(_ => settings(Position.ReaderId)); body.Children.Add(Wrap(parameter, identity));
         var workspace = new WrapPanel(); var visual = new StackPanel { Margin = new(0, 0, 20, 0) }; var records = new StackPanel(); workspace.Children.Add(visual); workspace.Children.Add(records);
         workspace.SizeChanged += (_, _) => { var split = workspace.ActualWidth >= 760; visual.Width = Math.Max(240, split ? workspace.ActualWidth * .48 - 20 : workspace.ActualWidth - 20); records.Width = Math.Max(240, split ? workspace.ActualWidth * .52 : workspace.ActualWidth); };
@@ -141,7 +141,10 @@ internal sealed class StationDebugEvidenceControl : UserControl
         test.Click += async (_, _) => await Run(async t =>
         {
             if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("等待当前运行规则读取成功后再测试。"); var text = sample.Text; var policy = snapshot.Configuration.Effective.BarcodeFilter;
-            var value = await Task.Run(() => vm.Application.TestBarcodeFilterAsync(policy ?? new(""), text.Replace("\r", "").Split('\n')), t);
+            // Null is the production strict raw-candidate policy, not an empty filter.
+            // Preserve empty lines/repeats; consume only line delimiters, never trim code content.
+            var candidates = text.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
+            var value = await Task.Run(() => vm.Application.TestBarcodeFilterAsync(policy, candidates), t);
             if (PublishCommand && sample.Text == text && vm.Snapshot?.Configuration.Effective.BarcodeFilter == policy) sampleResult.Text = value.Detail + "\n选中条码：" + (value.SelectedCode ?? "无") + " · 命中 " + value.Matches;
         });
         body.Children.Add(new Expander { Header = "本地筛选测试（不外呼）", Content = local });

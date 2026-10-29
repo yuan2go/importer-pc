@@ -94,7 +94,7 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication
 {
-    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
+    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid runtimeId, long expectedRevision, ParcelConfiguration candidate) => throw new NotSupportedException("Configuration submission inspection unavailable");
     Task<ParcelSnapshot> SnapshotAsync();
     Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50);

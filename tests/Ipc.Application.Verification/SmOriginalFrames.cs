@@ -132,19 +132,20 @@ static partial class SportmasterRcs
             Check(!File.Exists(Path.Combine(images, retired + ".png")) && !File.Exists(Path.Combine(images, retired + ".png.pending")) && File.Exists(Path.Combine(images, retained + ".png")),
                 "stopped retention cleanup deletes only committed retired identities; live/unknown frame files remain untouched");
         }
-        foreach (var reject in new[] { true, false })
+        foreach (var archiveCase in new[] { "rejected", "failed", "saved" })
         {
+            var reject = archiveCase == "rejected";
             peer.Mode = "assigned";
             var c = config with { BarcodeFilter = reject ? null : config.BarcodeFilter,
-                Wcs = config.Wcs! with { Parameters = new(config.Wcs.Parameters) { ["request-timeout-ms"] = "150" } } };
-            var folder = Path.Combine(root, reject ? "rejected" : "failed-archive-unknown"); var cfg = Path.Combine(folder, "config"); Directory.CreateDirectory(cfg);
+                Wcs = config.Wcs! with { Parameters = new(config.Wcs.Parameters) { ["request-timeout-ms"] = archiveCase == "saved" ? "1500" : "150" } } };
+            var folder = Path.Combine(root, archiveCase + "-archive-unknown"); var cfg = Path.Combine(folder, "config"); Directory.CreateDirectory(cfg);
             ExtensionStore.AtomicWrite(Path.Combine(cfg, "business.json"), c);
             var run = new BusinessLaunch(cfg, Path.Combine(folder, "data"), null, null);
             var api = new SoftwareFrameApi(readers[0]); var dec = new OriginalDecoder(); var f = new SoftwareFlowFactory(run, c, api, false, dec);
             ParcelOperation? unknown = null;
             await using (var app = new ParcelRuntime(run, new SportmasterFlow(), f) { RuntimeIdentityPreflight = () => { } })
             {
-                if (!reject) app.Boundary = point => { if (point == "BeforeOriginalFrameWrite") throw new IOException("Synthetic archive IO failure"); };
+                if (archiveCase == "failed") app.Boundary = point => { if (point == "BeforeOriginalFrameWrite") throw new IOException("Synthetic archive IO failure"); };
                 await app.StartAsync(default); await ManagementModeFixture.Authorize(app); await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
                 var sent = peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
                 if (!reject) peer.Mode = "timeout";
@@ -159,9 +160,21 @@ static partial class SportmasterRcs
                 }
                 else
                 {
-                    unknown = (await Wait(app, s => s.Operations.SingleOrDefault() is { State: ParcelState.WcsUnknown, OriginalFrame.State: "Failed" })).Operations.Single();
+                    ParcelOperation? archivedDuringRequest = null;
+                    if (archiveCase == "saved")
+                    {
+                        archivedDuringRequest = (await Wait(app, s => s.Operations.SingleOrDefault() is { Wcs.State: StageState.Dispatching, OriginalFrame.State: "Saved" })).Operations.Single();
+                        Check(archivedDuringRequest.Wcs!.Attempts == 1 && archivedDuringRequest.OriginalFrame!.Acquisition == archivedDuringRequest.Acquisition,
+                            "original archive can finish while the actual frozen HTTP request remains in flight");
+                    }
+                    var expectedArchive = archiveCase == "saved" ? "Saved" : "Failed";
+                    unknown = (await Wait(app, s => s.Operations.SingleOrDefault() is { State: ParcelState.WcsUnknown } op && op.OriginalFrame?.State == expectedArchive)).Operations.Single();
                     Check(unknown.Wcs is { Attempts: 1, State: StageState.Unknown } && unknown.Wcs.Request.IntegrationRequest!.Body.Contains("A|B") && f.Source!.RetainedOriginalFrames == 0,
-                        "background image failure stays explicit and cannot clear Unknown, replace original body or add an attempt");
+                        "background image " + expectedArchive + " cannot clear Unknown, replace original body or add an attempt");
+                    if (archivedDuringRequest is not null)
+                        Check(Wire.Encode(unknown.OriginalFrame) == Wire.Encode(archivedDuringRequest.OriginalFrame) &&
+                            Wire.Encode(unknown.Wcs!.Request) == Wire.Encode(archivedDuringRequest.Wcs!.Request),
+                            "later RCS timeout retains the earlier successful archive and exact frozen request instead of restoring Pending");
                 }
                 await app.StopAsync(default);
             }
@@ -171,9 +184,9 @@ static partial class SportmasterRcs
                 await using var app = new ParcelRuntime(run, new SportmasterFlow(), new SoftwareFlowFactory(run, c, new SoftwareFrameApi(readers[0]), false, new OriginalDecoder())) { RuntimeIdentityPreflight = () => { } };
                 await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
                 var restored = (await app.SnapshotAsync()).Operations.Single();
-                Check(restored.State == ParcelState.WcsUnknown && Wire.Encode(restored.Wcs) == Wire.Encode(unknown.Wcs) && restored.OriginalFrame?.State == "Failed" &&
+                Check(restored.State == ParcelState.WcsUnknown && Wire.Encode(restored.Wcs) == Wire.Encode(unknown.Wcs) && Wire.Encode(restored.OriginalFrame) == Wire.Encode(unknown.OriginalFrame) &&
                     peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == count,
-                    "restart retains failed-image and original Unknown independently without automatic replay");
+                    "restart retains " + archiveCase + " image and original Unknown independently without automatic replay");
                 await app.StopAsync(default);
             }
         }

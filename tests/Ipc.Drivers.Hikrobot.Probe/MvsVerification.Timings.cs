@@ -24,6 +24,44 @@ internal static partial class MvsVerification
             try { _ = originals.Copy(rawPixels, 4, 2, 2); throw new Exception("Unbounded original frames"); }
             catch (IOException) { Check(originals.Count == 32, "32-frame / pooled-byte budget rejects overload before recognition without discarding retained originals"); }
         }
+        using (var nativePixels = new PixelLoan(4))
+        {
+            var api = new Fake(); var received = new ConcurrentQueue<Observation>();
+            await using var source = new MvsAcquisition(new("synthetic.mvs", api.Ip, new Dictionary<string, string> { ["device.ip"] = api.Ip }),
+                api, _ => new Lease(), decoder: new ControlledDecoder());
+            source.EnableOriginalFrames();
+            await source.StartControlledAsync("original-epoch-1", o => { received.Enqueue(o); return true; }, _ => { }, default);
+            api.Frames.Enqueue(nativePixels.Frame);
+            await Until(() => source.ConfirmationSource.Contains("readResults=1;"));
+            var first = received.Last();
+            var firstIdentity = new AcquisitionIdentity(first.DeviceId, first.Epoch, first.SourceEventId, first.AdmissionId, first.ObservedAt);
+            using var oldWriter = source.RetainOriginalFrame(firstIdentity);
+            source.ReleaseOriginalFrame(firstIdentity);
+            await source.StopAsync(default);
+            Check(source.RetainedOriginalFrames == 1 && oldWriter.Pixels.Span.SequenceEqual(new byte[] { 0, 20, 40, 60 }) && api.Freed == 1,
+                "native stop returns the SDK loan but retains the old epoch's outstanding original-image writer");
+
+            System.Runtime.InteropServices.Marshal.Copy(new byte[] { 7, 27, 47, 67 }, 0, nativePixels.Frame.Data, 4);
+            await source.StartControlledAsync("original-epoch-2", o => { received.Enqueue(o); return true; }, _ => { }, default);
+            api.Frames.Enqueue(nativePixels.Frame); // frame number 1 reused by the new session
+            await Until(() => source.ConfirmationSource.Contains("readResults=1;"));
+            var second = received.Last();
+            var secondIdentity = new AcquisitionIdentity(second.DeviceId, second.Epoch, second.SourceEventId, second.AdmissionId, second.ObservedAt);
+            using var newWriter = source.RetainOriginalFrame(secondIdentity);
+            source.ReleaseOriginalFrame(secondIdentity); source.ReleaseOriginalFrame(firstIdentity);
+            Check(first.SourceEventId == second.SourceEventId && first.Epoch != second.Epoch && first.AdmissionId != second.AdmissionId &&
+                oldWriter.Pixels.Span.SequenceEqual(new byte[] { 0, 20, 40, 60 }) && newWriter.Pixels.Span.SequenceEqual(new byte[] { 7, 27, 47, 67 }),
+                "reused frame number and same barcode across epochs retain separate exact originals without latest-frame substitution");
+            try { using var invalid = source.RetainOriginalFrame(secondIdentity with { Epoch = "unregistered-epoch" }); throw new Exception("Wrong epoch matched a frame"); }
+            catch (IOException) { Check(source.RetainedOriginalFrames == 2, "wrong acquisition epoch refuses lookup without releasing either writer"); }
+            try { await source.DisposeAsync(); throw new Exception("Disposed outstanding image writers"); }
+            catch (InvalidOperationException) { Check(source.RetainedOriginalFrames == 2 && oldWriter.Pixels.Length == 4 && newWriter.Pixels.Length == 4,
+                "source disposal fences new sessions and preserves both outstanding writer leases after native teardown"); }
+            oldWriter.Dispose(); newWriter.Dispose(); oldWriter.Dispose(); newWriter.Dispose();
+            await source.DisposeAsync();
+            Check(source.RetainedOriginalFrames == 0 && api.Freed == 2 && api.Calls.Count(c => c == "destroy") == 2,
+                "releasing both epoch writers permits disposal retry without double-returning pixels or native handles");
+        }
         var timings = new MvsTimings();
         for (var i = 0; i < 1025; i++) timings.Record("synthetic", i);
         var stats = timings.Snapshot().Stages["synthetic"];

@@ -181,3 +181,6 @@ docs/archive/pre-contract-convergence-03/** -text whitespace=cr-at-eol
 
 # Preserve the original guidance before same-frame archiving and multi-code configuration.
 docs/archive/pre-sm-original-frame-01/** -text whitespace=cr-at-eol
+
+# Preserve exact parent blobs recovered for PR157's document archive finding.
+docs/archive/pre-mvs-latency-01/** -text whitespace=cr-at-eol

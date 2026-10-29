@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-SM-ORIGINAL-FRAME-01",
+  "work_package": "WP-IPC-MVS-LATENCY-ARCHIVE-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "f4b445b24ab26e17e3c594a52ba2aa3fd2daec61fae3178186246bb19962cdc6",
-      "size_bytes": 12305,
-      "git_blob": "1559218747b53fff8773643c815c8be64b4df489",
+      "sha256": "866dca6588fff92d991f44f7552782eda23175973c5bd781f2458c3fecd9af63",
+      "size_bytes": 12446,
+      "git_blob": "886f85763545a71efd53024c94b43f1f9dd6e41b",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -106526,6 +106526,61 @@
       "size_bytes": 3282,
       "git_blob": "447635121121db1cd9438867fd185610565ef827",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-mvs-latency-01/README.md",
+      "version": "mvs-latency-archive-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-ARCHIVE-01; original evidence retains its own SourceCommit",
+      "sha256": "17aee5eaee991bf76de7650a31a37fd282d7939377b5351a90219b191648ae0f",
+      "size_bytes": 1963,
+      "git_blob": "2c16d922d56502e3f8b82108a713f85940718ced",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-mvs-latency-01/docs__INDEX.md.txt",
+      "version": "mvs-latency-archive-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-ARCHIVE-01; original evidence retains its own SourceCommit",
+      "sha256": "58c7e9356d96baf7eb2517c971331904935c90646d4915a172132fa12f542a64",
+      "size_bytes": 2858,
+      "git_blob": "e71814e3b6f0a33e5818afb1ed90f934f51ff5ee",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-mvs-latency-01/docs__runtime__mvs-software-reader-01.md.txt",
+      "version": "mvs-latency-archive-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-ARCHIVE-01; original evidence retains its own SourceCommit",
+      "sha256": "4567168f5785ccc166155fbee73dac9ff6e43661d9529eb3e90c0d9d79fa3ae6",
+      "size_bytes": 5948,
+      "git_blob": "4d6a0046228cfdad490d527f895b88e4594ecd44",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-mvs-latency-01/manifest.json",
+      "version": "mvs-latency-archive-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-ARCHIVE-01; original evidence retains its own SourceCommit",
+      "sha256": "e52c53ee6f4ed2240baf8b8cac0a4ddadfaf235ee2e00e5f48f58f5847c78232",
+      "size_bytes": 1289,
+      "git_blob": "cb327f887af286798e916b5717ea7988c4341778",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-MVS-LATENCY-ARCHIVE-01.md",
+      "version": "mvs-latency-archive-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-MVS-LATENCY-ARCHIVE-01; original evidence retains its own SourceCommit",
+      "sha256": "f28e8f5efb20c4c4b110ed75a9316374f8967c831eb048dfebec18a2da7f3c8a",
+      "size_bytes": 926,
+      "git_blob": "a1e457bc6bf22b8b535180eaacafa873503b8ba6",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -106605,7 +106660,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-ORIGINAL-FRAME-01.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-MVS-LATENCY-ARCHIVE-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",

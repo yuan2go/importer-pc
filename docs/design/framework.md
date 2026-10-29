@@ -1,4 +1,4 @@
-> 双相机TCP当前生命周期与故障分类见[DUAL-CAMERA-COMMUNICATION-FIX-01](../runtime/dual-camera-communication-fix-01.md)：启动有界接收与业务准入分开，明确连接失败按位隔离；原资源/SDK启动失败、配置、实体和原请求守卫保持。历史版本/协议/验收不倒写。
+> SM 当前相机采用 MVS SDK 采图＋进程内软件识别，见 [MVS-SOFTWARE-READER-01](../runtime/mvs-software-reader-01.md)。首配与日常参数固定此驱动，填写实际 IP、物理序列号及唯一相机编码。原[双相机 TCP 生命周期记录](../runtime/dual-camera-communication-fix-01.md)仅保留历史适用范围；原请求、资源、业务准入与历史验收责任不变。
 
 > 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
 

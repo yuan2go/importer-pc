@@ -31,7 +31,9 @@ static partial class Program
             var names=Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetName).ToArray();
             Check(names.Contains(reader.InstanceId+"/device.ip")&&names.Contains(reader.InstanceId+"/device.serial"),"actual SDK IP and serial fields available");
             Check(!names.Any(n=>n==reader.InstanceId+"/acquisition.trigger"||n==reader.InstanceId+"/entity.mode"||n==reader.InstanceId+"/ConfigureLater") && !Descendants(control).OfType<FrameworkElement>().Any(e=>AutomationProperties.GetAutomationId(e)==reader.InstanceId+"/RuntimeSummary"),"camera page has no trigger/result policy or configuration-state block");
-            Check(!names.Contains(reader.InstanceId+"/device.port")&&!Descendants(control).OfType<TextBlock>().Any(t=>t.Text.Contains("独立驱动包")||t.Text.Contains("TCP空闲")),"no TCP fields or separate driver installation");
+            Check(!names.Contains(reader.InstanceId+"/device.port")&&!Descendants(control).OfType<TextBlock>().Any(t=>t.Text.Contains("独立驱动包")||t.Text.Contains("TCP")) &&
+                !Descendants(control).OfType<TextBox>().Any(t=>t.Text.Contains("TCP")),"camera page has no TCP copy, fields or separate driver installation");
+            Check(Descendants(control).OfType<TextBox>().Any(t=>AutomationProperties.GetAutomationId(t)==reader.InstanceId+"/Provider" && t.IsReadOnly && t.Text.Contains("MVS SDK")),"camera driver identifies the fixed MVS SDK");
             Check(!Descendants(control).OfType<Button>().Any(b=>AutomationProperties.GetAutomationId(b).EndsWith("/OpenPackageInstallation")),"no separate driver-install action");
         }
         try {
@@ -56,6 +58,8 @@ static partial class Program
                 !Descendants(oldControl).OfType<ComboBox>().Any(t=>AutomationProperties.GetAutomationId(t)==oldDraft.Readers[0].InstanceId+"/Provider"),
                 "legacy TCP candidate shows one explicit SDK transition, never a blank selector or TCP port mixed with the SDK");
             Check(oldDraft.Readers[0].Provider!.Implementation=="tcp-line","merely opening the page never rewrites legacy configuration");
+            Check(!Descendants(oldControl).OfType<TextBlock>().Any(t=>t.Text.Contains("TCP")) && !Descendants(oldControl).OfType<TextBox>().Any(t=>t.Text.Contains("TCP")),
+                "unsupported old settings request MVS SDK reconfiguration without presenting TCP as a connection option");
             Check(Descendants(oldControl).OfType<TextBox>().Count(t=>AutomationProperties.GetAutomationId(t)=="sportmaster.integration/left-bcr-code")==1,"legacy transition still exposes exactly one shared camera-code editor");
             Descendants(oldControl).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)==oldDraft.Readers[0].InstanceId+"/ApplyProviderChange").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);window.UpdateLayout();Fields(oldControl,oldDraft.Readers[0]);

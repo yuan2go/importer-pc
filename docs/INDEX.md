@@ -6,7 +6,7 @@
 
 本轮保障 **SM / Sportmaster 与必需共享基座**；其他业务开发暂停。WT024→WT048/WT054已通过#143/#144/#145合入main，SDK替代方案#134/#135/#136已关闭并保全，详见[整合执行与归宿](runtime/integration-20261028.md)。实际main曾有非SM称重夹具失败，保留失败及当前范围，不宣称全仓全绿。
 
-当前相机路线为 MVS SDK 采图＋进程内软件读码，见[MVS-SOFTWARE-READER-01](runtime/mvs-software-reader-01.md)及[相机参数工作包](work-packages/WP-IPC-CAMERA-CONFIG-STARTUP-02.md)。只保留SDK当前入口；相机空位置不连接，业务仍受准入守卫。此前MvCodeReader及其他路线的原验证保留各自来源。
+当前相机路线为 MVS SDK 采图＋进程内软件读码，见[MVS-SOFTWARE-READER-01](runtime/mvs-software-reader-01.md)及[相机参数工作包](work-packages/WP-IPC-CAMERA-CONFIG-STARTUP-02.md)。[相机页文案收口](runtime/sm-mvs-only-ui-01.md)清理残留 TCP 提示，固定说明 MVS SDK。只保留SDK当前入口；相机空位置不连接，业务仍受准入守卫。此前MvCodeReader及其他路线的原验证保留各自来源。
 
 2026-10-28 再次安装后的普通启动及生命周期整改见 [INSTALL-UPDATE-UNINSTALL-IDENTITY-01](work-packages/WP-IPC-INSTALL-UPDATE-UNINSTALL-IDENTITY-01.md) 和[运行与验证](runtime/install-update-uninstall-identity-01.md)。同用户普通令牌交接不替代原身份和维护权限检查。
 

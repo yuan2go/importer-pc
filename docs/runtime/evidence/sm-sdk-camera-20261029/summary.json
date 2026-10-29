@@ -1,0 +1,190 @@
+{
+  "SourceCommit": "7af0be617963a3a88319cb83fdf44fffd9440044",
+  "Tier": "actual camera, actual MvsApi/ZXing; isolated Simulation; local Python endpoint only",
+  "Runs": [
+    {
+      "Run": "continuous-120s",
+      "SecondsRequested": 120,
+      "StartedUtc": "2026-10-29T06:09:09.121128+00:00",
+      "ExitCode": 0,
+      "Operations": 119,
+      "Resolved": 118,
+      "Unknown": 0,
+      "Inputs": 1,
+      "SdkCounters": {
+        "frames": 161,
+        "bytes": 1012924416,
+        "readResults": 122,
+        "candidates": 124,
+        "emptyFrames": 39,
+        "skippedVideoFrames": 1624
+      },
+      "SdkFailure": "",
+      "ActualCameraReady": true,
+      "FinishedUtc": "2026-10-29T06:11:16.463386+00:00"
+    },
+    {
+      "Run": "restart-1",
+      "SecondsRequested": 10,
+      "StartedUtc": "2026-10-29T06:11:18.629493+00:00",
+      "ExitCode": 0,
+      "Operations": 11,
+      "Resolved": 11,
+      "Unknown": 0,
+      "Inputs": 1,
+      "SdkCounters": {
+        "frames": 17,
+        "bytes": 106954752,
+        "readResults": 11,
+        "candidates": 11,
+        "emptyFrames": 6,
+        "skippedVideoFrames": 125
+      },
+      "SdkFailure": "",
+      "ActualCameraReady": true,
+      "FinishedUtc": "2026-10-29T06:11:34.933373+00:00"
+    },
+    {
+      "Run": "restart-2",
+      "SecondsRequested": 10,
+      "StartedUtc": "2026-10-29T06:11:37.131742+00:00",
+      "ExitCode": 0,
+      "Operations": 13,
+      "Resolved": 13,
+      "Unknown": 0,
+      "Inputs": 1,
+      "SdkCounters": {
+        "frames": 17,
+        "bytes": 106954752,
+        "readResults": 14,
+        "candidates": 15,
+        "emptyFrames": 3,
+        "skippedVideoFrames": 117
+      },
+      "SdkFailure": "",
+      "ActualCameraReady": true,
+      "FinishedUtc": "2026-10-29T06:11:52.387708+00:00"
+    }
+  ],
+  "Persisted": [
+    {
+      "Run": "continuous-120s",
+      "PersistedOperationCount": 119,
+      "PersistedStates": {
+        "SlotResolved": 119
+      },
+      "PersistedIngressStates": {
+        "Processed": 122
+      }
+    },
+    {
+      "Run": "restart-1",
+      "PersistedOperationCount": 11,
+      "PersistedStates": {
+        "SlotResolved": 11
+      },
+      "PersistedIngressStates": {
+        "Processed": 11
+      }
+    },
+    {
+      "Run": "restart-2",
+      "PersistedOperationCount": 13,
+      "PersistedStates": {
+        "SlotResolved": 13
+      },
+      "PersistedIngressStates": {
+        "Processed": 14
+      }
+    }
+  ],
+  "Latency": [
+    {
+      "Run": "continuous-120s",
+      "FixtureTimeoutMs": 1500,
+      "CaptureToIngressMs": {
+        "Min": 282.255,
+        "Median": 465.011,
+        "Max": 1569.32
+      },
+      "OverLifetime": [
+        {
+          "Sequence": 35,
+          "CaptureToIngressMs": 1569.32
+        }
+      ],
+      "RejectionReasons": {
+        "Untrusted source/epoch/sequence/event/time": 1,
+        "MultipleCodes": 2
+      }
+    },
+    {
+      "Run": "restart-1",
+      "FixtureTimeoutMs": 1500,
+      "CaptureToIngressMs": {
+        "Min": 327.462,
+        "Median": 439.437,
+        "Max": 610.424
+      },
+      "OverLifetime": [],
+      "RejectionReasons": {
+        "Untrusted source/epoch/sequence/event/time": 0,
+        "MultipleCodes": 0
+      }
+    },
+    {
+      "Run": "restart-2",
+      "FixtureTimeoutMs": 1500,
+      "CaptureToIngressMs": {
+        "Min": 326.852,
+        "Median": 410.812,
+        "Max": 657.432
+      },
+      "OverLifetime": [],
+      "RejectionReasons": {
+        "Untrusted source/epoch/sequence/event/time": 0,
+        "MultipleCodes": 1
+      }
+    }
+  ],
+  "MultiCandidate": [
+    {
+      "Run": "continuous-120s",
+      "MultiCandidateFrames": 2,
+      "CandidateDistinctCounts": [
+        1,
+        1
+      ]
+    },
+    {
+      "Run": "restart-1",
+      "MultiCandidateFrames": 0,
+      "CandidateDistinctCounts": []
+    },
+    {
+      "Run": "restart-2",
+      "MultiCandidateFrames": 1,
+      "CandidateDistinctCounts": [
+        1
+      ]
+    }
+  ],
+  "Verdict": "ACQUISITION_AND_REOPEN_VERIFIED; observed expiry and multiple-candidate rejections retained; not zero-rejection/latency/Production/field qualification",
+  "RawAcquisitionContrast": {
+    "SourceCommit": "7af0be617963a3a88319cb83fdf44fffd9440044",
+    "SecondsRequested": 15,
+    "ElapsedSeconds": 17.225,
+    "ExitCode": 1,
+    "Tier": "actual raw camera SDK acquisition only; decoder intentionally unavailable; no RCS or raw image persistence",
+    "Frames": 14,
+    "Failure": "IOException: MVS frame sequence gap/reset; inspect original source before restart",
+    "BarcodeStatus": "BLOCKED: recognition component not available",
+    "Codes": 0,
+    "Observations": 0,
+    "Operations": 0,
+    "ExternalRequests": 0,
+    "TriggerSettingsChanged": false,
+    "RawImagesPersisted": false,
+    "AcquisitionPass": false
+  }
+}

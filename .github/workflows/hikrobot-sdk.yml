@@ -66,6 +66,19 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_application_compatibility.py
           exit $LASTEXITCODE
+      - name: Verify synthetic SDK frames through actual Python RCS and original custody
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python scripts/verify-sm-sdk-python.py --data-root D:/sm-sdk-python-${{ github.run_id }}
+          exit $LASTEXITCODE
+      - name: Retain Python RCS original-custody verification including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sm-sdk-python-${{ github.sha }}
+          path: D:/sm-sdk-python-${{ github.run_id }}
+          if-no-files-found: ignore
   native-parameter-editor:
     runs-on: windows-2025
     timeout-minutes: 10

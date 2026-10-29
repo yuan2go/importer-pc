@@ -24,21 +24,21 @@ public sealed partial class SupplyStationViewModel
     public string SetupHeading => $"还差 {MissingConnections.Length} 项连接配置";
     public string SetupItems => string.Join("、", MissingConnections);
     public string SetupInstruction => "至少配置并启用一台相机，以及 RCS 服务。保存并重启后，可使用已就绪相机对应的投递位。";
-    public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停供包" :
+    public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "等待维护完成" :
         Snapshot?.Positions is { } positions && positions.Any(p => p.Admit)
             ? positions.All(p => p.Admit) ? "可以供包" : string.Join("、", positions.Where(p => p.Admit).Select(p => p.Id == "left" ? "左投递位" : p.Id == "right" ? "右投递位" : p.Id)) + "可以供包" : "暂不能供包";
     public string OperatorNotice => !Fresh ? "等待状态恢复，请勿依据旧格口投递。" :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :
-        Snapshot?.Paused == true ? "检查现场条件后，点击恢复供包。" :
+        Snapshot?.Paused == true ? "维护处理中，等待当前操作完成。" :
         Snapshot?.Positions?.Any(p => !p.Admit) == true ? "请按对应位置的提示处理。" : "";
     bool HasConfiguredWorkConnection => Snapshot is { } s &&
         (ParcelBindings.Readers(s.Configuration.Effective).Any(r => !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, r.DeviceId)) ||
          s.Configuration.Effective.Wcs is { } w && !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId));
     public string ReconnectHint => !IsManagementMode ? "请先进入管理模式。" : !Fresh ? "等待状态读取恢复后再重连。" :
         !HasConfiguredWorkConnection ? "尚无已配置的相机或 RCS；请先完成配置、保存并重启。" :
-        Busy ? "正在处理其他操作，请稍候。" : Snapshot?.Paused != true ? "请先暂停供包，再重连已配置的设备和服务。" :
-        Snapshot.Operations.Any(o => o.State == ParcelState.ResolvingWcs) ? "仍有任务等待回应，请稍后重连。" : "";
+        Busy ? "正在处理其他操作，请稍候。" :
+        Snapshot?.Operations.Any(o => o.State == ParcelState.ResolvingWcs) == true ? "仍有任务等待回应，请稍后重连。" : "";
     public bool CanReconnectConfigured => ReconnectHint.Length == 0;
     public async Task ReconnectConfiguredAsync()
     {
@@ -66,8 +66,9 @@ public sealed partial class SupplyStationViewModel
         return device.Health switch
         {
             DeviceHealth.Connecting or DeviceHealth.Reconnecting => "正在建立相机连接。请等待；持续未连接时检查地址、供电和网络。",
-            DeviceHealth.Stopped or DeviceHealth.Stopping => "相机连接已停止。检查参数后，可在暂停供包时重连。",
-            DeviceHealth.Disconnected or DeviceHealth.Faulted => "相机连接中断。请检查供电、网线和连接参数；具体故障见日志。",
+            DeviceHealth.Stopped or DeviceHealth.Stopping => "相机连接正在停止或已停止；请等待当前维护操作完成。",
+            DeviceHealth.Disconnected => "相机离线，软件会自动重连。请检查供电、网线和连接参数。",
+            DeviceHealth.Faulted => "相机出现故障，请在连接诊断中查看具体原因。",
             DeviceHealth.Ready => "相机连接确认已过期或无效。请检查驱动和网络，等待新的有效确认。",
             _ => "尚未确认相机连接，原因未确认。请核对驱动参数并查看日志。"
         };
@@ -111,7 +112,7 @@ public sealed partial class SupplyStationViewModel
             if (!Fresh || Snapshot is not { } s) return "状态读取中断，请先恢复状态读取。";
             var reasons = new List<string>();
             if (MissingConnections.Length > 0) reasons.Add("连接参数未完成，请处理上方待配置项。");
-            if (s.Paused) reasons.Add("供包已暂停；检查完成后再恢复供包。");
+            if (s.Paused) reasons.Add("维护处理中，等待当前操作完成。");
             if (s.BlockingReasons.Any(x => x.Contains("qualification", StringComparison.OrdinalIgnoreCase))) reasons.Add("部署检查尚未完成或已过期，请维护人员核对部署条件。");
             if (s.Capacity?.Available == false) reasons.Add("待处理作业或存储空间已达到限制，请处理积压并检查本机空间。");
             if (s.Operations.Any(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict)) reasons.Add("有包裹结果待核对，请查看包裹记录；连接恢复不会确认该包裹结果。");

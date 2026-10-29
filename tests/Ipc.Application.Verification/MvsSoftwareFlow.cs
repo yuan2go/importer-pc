@@ -177,6 +177,7 @@ static partial class SportmasterRcs
         readonly ParcelCapabilityFactory inner = new(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
         public MvsAcquisition? Source;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
+        public void ValidateStructure(ParcelConfiguration c) => inner.ValidateStructure(c);
         public void Validate(ParcelConfiguration c)
         {
             if (c.Mode != RunMode.Simulation || Wire.Encode(c) != Wire.Encode(inner.Normalize(expected))) throw new InvalidOperationException("Exact isolated Simulation fixture only");
@@ -215,14 +216,17 @@ static partial class SportmasterRcs
         readonly ConcurrentQueue<(SoftwarePixels Pixels, uint Number)> waiting = new();
         public List<string> Calls = [];
         public int Released;
-        public bool FailConfigure, IgnoreConfigure, Discovered = true;
+        public int OpenAttempts, OpenFailures, StopAttempts;
+        public bool FailConfigure, IgnoreConfigure;
+        public volatile bool Discovered = true;
+        public volatile bool FailStop;
         nint buffer;
         public bool HasFrame { get; private set; }
         public void Enqueue(SoftwarePixels pixels, uint number) => waiting.Enqueue((pixels, number));
         public void Initialize() => Calls.Add("initialize");
         public MvsDevice[] Enumerate() => Discovered ? [new(binding.Parameters!["device.ip"], binding.Parameters["device.serial"], "SYNTHETIC", "SYNTHETIC", [])] : [];
         public void Create(MvsDevice d) => Calls.Add("create");
-        public void Open() => Calls.Add("open");
+        public void Open() { Calls.Add("open"); Interlocked.Increment(ref OpenAttempts); if (Interlocked.Decrement(ref OpenFailures) >= 0) throw new IOException("Synthetic camera busy"); }
         uint trigger = 1, acquisition;
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? acquisition : trigger;
         public void SetEnumValue(string key, uint value) { Calls.Add("set:"+key+"="+value); if(FailConfigure)throw new IOException("Synthetic camera write failure");if(IgnoreConfigure)return; if (key=="TriggerMode") trigger=value; else if (key=="AcquisitionMode") acquisition=value; else throw new Exception("Unexpected camera write"); }
@@ -237,8 +241,8 @@ static partial class SportmasterRcs
             return new(buffer, (uint)next.Pixels.Width, (uint)next.Pixels.Height, MvsNative.Mono8, (ulong)next.Pixels.Data.Length, next.Number, 0, 0);
         }
         public void Release() { if (!HasFrame) throw new Exception("Double native release"); Marshal.FreeHGlobal(buffer); HasFrame = false; Interlocked.Increment(ref Released); }
-        public bool Connected() => true;
-        public void Stop() => Calls.Add("stop");
+        public bool Connected() => Discovered;
+        public void Stop() { Calls.Add("stop"); Interlocked.Increment(ref StopAttempts); if (FailStop) throw new IOException("Synthetic native stop ownership retained"); }
         public void Close() => Calls.Add("close");
         public void Destroy() => Calls.Add("destroy");
         public void Shutdown() => Calls.Add("finalize");

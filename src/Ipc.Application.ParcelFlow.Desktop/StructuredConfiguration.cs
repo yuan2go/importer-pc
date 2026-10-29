@@ -175,8 +175,8 @@ public partial class ParcelViewModel
         (!Fresh ? "  ·  状态已失效" : Snapshot?.Configuration.Failure is { } failure ? "  ·  应用失败：" + failure :
             Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  运行配置待核对" : "");
     public string ConfigurationSaveGuidance => !Fresh ? "状态已失效。恢复状态读取后再校验和保存；当前输入保留。" :
-        Busy ? "正在执行当前操作，请等待结果。暂停新入场仍可单独执行。" :
-        !CanConfigure ? "保存前需暂停新入场、进入管理模式，并等待当前外呼完成。历史原件按原责任保留。" :
+        Busy ? "正在执行当前操作，请等待结果。" :
+        !CanConfigure ? Snapshot?.ApplicationId == "sportmaster" ? "进入管理模式后即可保存；程序自动等待当前请求完成。" : "保存前需暂停新入场、进入管理模式，并等待当前外呼完成。历史原件按原责任保留。" :
         "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查，保存后待受控重启。";
     public string ConfigurationEditorState
     {

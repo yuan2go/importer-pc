@@ -231,9 +231,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
             ingressStartup.TrySetResult(true);
+            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused;
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
             backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));
+            foreach (var reader in readers.Values.Where(r => r.Source is IAutomaticReconnectObservationSource &&
+                !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId)))
+                backgroundTasks.TryAdd("reader-reconnect:" + reader.Source.DeviceId, Task.Run(() => ReconnectReaderAutomaticallyAsync(reader), CancellationToken.None));
             maintenanceWorker = Task.WhenAll(backgroundTasks.Values);
             StartSupervision();
         }

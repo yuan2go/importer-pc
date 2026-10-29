@@ -42,7 +42,7 @@ public sealed partial class ParcelRuntime
         string[] resources = [];
         try
         {
-            if (stopped || stopping.IsCancellationRequested || ports is null || repository?.Paused != true || !MaintenanceAuthorized ||
+            if (stopped || stopping.IsCancellationRequested || ports is null || repository is null || !definition.AutomaticConfigurationQuiescence && !repository.Paused || !MaintenanceAuthorized ||
                 maintenanceOperations.Contains("*") || maintenanceOperations.Contains(key) || key == "*" && maintenanceOperations.Count > 0)
                 return new("Rejected", "Pause, maintenance authorization and exclusive device maintenance are required", repository?.Revision ?? 0);
             var selectedReaders = readers.Values.Where(r => deviceId is null || r.Source.DeviceId == deviceId).ToArray();

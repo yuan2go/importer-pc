@@ -87,7 +87,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     bool enabled, bound, configureLater;
     bool simpleCamera;
     internal bool IsSimpleCamera => simpleCamera && Provider?.Implementation == "hikrobot-mvs-reader";
-    public bool ConfigureLater { get => IsSimpleCamera ? !Parameters.Any(p => p.Field.Key is "device.ip" or "device.serial" && !string.IsNullOrWhiteSpace(p.Value)) : configureLater; set { configureLater = value; Notify(); } }
+    public bool ConfigureLater { get => IsSimpleCamera ? !Parameters.Any(p => p.Field.Key is "device.ip" or "device.serial" && !string.IsNullOrWhiteSpace(p.Value)) : Provider?.Implementation == "sportmaster-rcs" ? string.IsNullOrWhiteSpace(Target) : configureLater; set { configureLater = value; Notify(); } }
     internal void UseSimpleCameraConfiguration() { simpleCamera = true; CameraDefaults(); }
     void CameraDefaults()
     {

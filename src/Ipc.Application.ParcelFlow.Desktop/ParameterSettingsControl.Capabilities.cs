@@ -59,12 +59,6 @@ public sealed partial class ParameterSettingsControl
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
     void Capability(ObjectPage page, CapabilityDraft draft)
     {
-        if (Model?.ApplicationId == "sportmaster" && ParameterOwnership.IsRcs(draft))
-        {
-            var deferred = new CheckBox { Content = "稍后配置此连接", MinHeight = 40 };
-            deferred.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(CapabilityDraft.ConfigureLater)) { Source = draft, Mode = BindingMode.TwoWay });
-            Field(Form(page), "配置状态", deferred, "勾选后可先进入软件；此连接不启动，相关作业保持阻断。填写完成后取消勾选，保存并重启以启用连接。", draft.InstanceId + "/ConfigureLater", page);
-        }
         if (Model?.ApplicationId != "sportmaster" || draft.Kind != "observation") RuntimeSummary(page, draft);
         if (Model?.ApplicationId == "sportmaster" && draft.Kind == "observation")
         {

@@ -43,6 +43,16 @@ static partial class Program
             CaptureInternal(evidence,"bundled-sdk-daily-left",editor,lines);
             editor.ShowPage(2,"右相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); Fields(editor,right);
             var saved=draft.Build(); Check(saved.Topology!.Readers[0].Parameters!["device.ip"]=="192.0.2.10"&&saved.Topology.Readers[1].Parameters!["device.ip"]=="192.0.2.11","full candidate saves both SDK dictionaries");
+            editor.ShowPage(3,"RCS 服务"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            Check(!Descendants(editor).OfType<CheckBox>().Any(b=>b.Content?.ToString()?.Contains("稍后配置")==true),"RCS page removes the configure-later checkbox");
+            rcs.ConfigureLater=true; rcs.Target="http://127.0.0.1:18848/rcs/sorter/api";
+            var invalidRejected=false; try { draft.Build(); } catch (InvalidOperationException) { invalidRejected=true; }
+            Check(invalidRejected,"filled RCS address still validates every required parameter");
+            foreach(var pair in new Dictionary<string,string> { ["zone-id"]="71", ["project-id"]="83", ["request-id-base"]="1", ["request-id-count"]="1000", ["specified-chute"]="false" })
+                rcs.Parameters.Single(p=>p.Field.Key==pair.Key).Value=pair.Value;
+            Check(!rcs.ConfigureLater && !draft.Build().DeferredConnections!.Contains(rcs.InstanceId),"filled RCS address clears the obsolete deferred marker in the saved candidate");
+            CaptureInternal(evidence,"rcs-without-deferred-checkbox",editor,lines);
+            rcs.Target=""; Check(rcs.ConfigureLater,"blank RCS remains explicitly unconfigured");
             var startup=new ParameterSettingsControl { FirstConfiguration=true,Model=model }; window.Content=startup;
             startup.ShowPage(2,"左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); Fields(startup,left);
             CaptureInternal(evidence,"bundled-sdk-first-left",startup,lines);

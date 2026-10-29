@@ -116,8 +116,9 @@ public sealed class ConfigurationSaveReviewWindow : Window
     }
     void UpdateState()
     {
-        pauseState.Text = !vm.Fresh ? "状态已失效；请等待有效快照，暂停命令仍可独立执行。" : vm.Snapshot?.Paused == true ? "已暂停新入场。软件暂停不是安全急停。" : "当前尚未暂停。保存前请暂停新入场。软件暂停不是安全急停。";
-        pause.Visibility = vm.Fresh && vm.Snapshot?.Paused == true ? Visibility.Collapsed : Visibility.Visible;
+        var automatic = vm.Snapshot?.ApplicationId == "sportmaster";
+        pauseState.Text = automatic ? "确认保存后，程序自动等待当前请求完成并保存设置。" : !vm.Fresh ? "状态已失效；请等待有效快照，暂停命令仍可独立执行。" : vm.Snapshot?.Paused == true ? "已暂停新入场。软件暂停不是安全急停。" : "当前尚未暂停。保存前请暂停新入场。软件暂停不是安全急停。";
+        pause.Visibility = automatic || vm.Fresh && vm.Snapshot?.Paused == true ? Visibility.Collapsed : Visibility.Visible;
         var qualified = vm.Fresh && vm.Snapshot?.Availability?.Configure == true;
         authentication.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;
         guidance.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;

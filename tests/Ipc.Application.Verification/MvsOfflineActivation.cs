@@ -29,6 +29,11 @@ static partial class SportmasterRcs
         var revisions = new ConfigurationRevisions<ParcelConfiguration>(Path.Combine(directory, "configuration.json"), prior, new SportmasterFlow().Validate);
         revisions.Stage(revisions.Current.Revision, candidate);
         var original = Wire.Encode(candidate);
+        string SavedEffective()
+        {
+            using var saved = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(directory, "configuration.json")));
+            return Wire.Encode(Wire.Decode<ParcelConfiguration>(saved.RootElement.GetProperty("Effective").GetRawText()));
+        }
         async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> ready)
         {
             for (var i = 0; i < 250; i++) { var snapshot = await app.SnapshotAsync(); if (ready(snapshot)) return snapshot; await Task.Delay(20); }
@@ -53,7 +58,7 @@ static partial class SportmasterRcs
             await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
             await app.StopAsync(default);
         }
-        var returned = new SoftwareFrameApi(readers[0]) { Discovered = false };
+        var returned = new SoftwareFrameApi(readers[0]) { Discovered = false, OpenFailures = 1 };
         await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new SoftwareFlowFactory(launch, candidate, returned, false)) { RuntimeIdentityPreflight = () => { } })
         {
             await app.StartAsync(default);
@@ -62,15 +67,48 @@ static partial class SportmasterRcs
             Check(s.Configuration.Pending is null && Wire.Encode(s.Configuration.Effective) == original && s.Paused,
                 "restart retains the configured offline camera and RCS with software pause; parameters need no re-entry");
             returned.Discovered = true;
-            var reconnect = await app.ReconnectDeviceAsync(readers[0].DeviceId);
-            Check(reconnect.Status == "Reconnected", "existing authorized single-device reconnect starts the returning camera");
-            s = await Wait(app, s => s.Availability!.Resume);
-            await app.CommandAsync(new(Wire.Id(), s.Revision, "Resume"));
+            await app.ExitManagementModeAsync();
+            s = await Wait(app, s => !s.Paused && s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Health == DeviceHealth.Ready);
+            Check(SavedEffective() == original && returned.OpenAttempts == 2,
+                "returning camera reconnects without management authorization; retired manual pause clears only after startup readiness");
+            s = await Wait(app, s => s.Availability!.Admit);
             returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);
             s = await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved));
-            Check(s.Operations.Single().Wcs!.Attempts == 1 && Wire.Encode(s.Configuration.Effective) == original,
+            Check(s.Operations.Single().Wcs!.Attempts == 1 && SavedEffective() == original,
                 "returning camera decodes and completes one actual loopback RCS request using the retained configuration");
+            var priorEpoch = s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Epoch;
+            returned.Discovered = false;
+            await Wait(app, s => s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Health == DeviceHealth.Disconnected);
+            returned.Discovered = true;
+            s = await Wait(app, s => s.Availability!.Admit && s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
+            Check(!s.Paused && s.Operations.Single().Wcs!.Attempts == 1,
+                "runtime unplug/replug automatically gets a new epoch without pausing software or replaying the original RCS request");
+            returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);
+            s = await Wait(app, s => s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
+            Check(s.Operations.All(o => o.Wcs!.Attempts == 1), "frame counter restart in new epoch creates one new read, not a replay of the old read");
+            await ManagementModeFixture.Authorize(app);
+            s = await app.SnapshotAsync();
+            Check(!s.Paused && s.Availability!.Configure, "running SM exposes parameter save without a manual pause");
+            var saved = await app.StageConfigurationAsync(s.Configuration.Revision, candidate with { TimeoutMs = candidate.TimeoutMs + 1 }, "Synthetic automatic parameter save");
+            s = await app.SnapshotAsync();
+            Check(saved.Status == "PendingRestart" && !s.Paused && SavedEffective() == original && s.Configuration.Pending is not null,
+                "unpaused parameter save automatically quiesces, keeps effective settings and restores normal admission after staging");
+            var stops = returned.StopAttempts;
+            var opens = returned.OpenAttempts;
+            returned.FailStop = true; returned.Discovered = false;
+            try
+            {
+                await Wait(app, _ => returned.StopAttempts > stops);
+                returned.Discovered = true;
+                await Task.Delay(2200);
+                s = await app.SnapshotAsync();
+                Check(returned.OpenAttempts == opens && !s.Availability!.Admit && s.Operations.All(o => o.Wcs!.Attempts == 1),
+                    "failed native cleanup blocks automatic reopen and admission while retaining original requests and ownership");
+            }
+            finally { returned.FailStop = false; }
             await app.StopAsync(default);
+            await Task.Delay(1200);
+            Check(returned.OpenAttempts == opens, "completed application stop cancels recovery and never opens the camera again");
         }
     }
 }

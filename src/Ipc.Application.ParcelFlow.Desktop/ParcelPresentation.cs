@@ -105,7 +105,8 @@ public partial class ParcelViewModel
     {
         var fits = double.IsFinite(width) && double.IsFinite(height) && width >= 800 && height >= 420;
         var entered = viewportFits && !fits; viewportFits = fits;
-        if (!fits) viewportRecoveryRequired = true;
+        if (Snapshot?.ApplicationId == "sportmaster") viewportRecoveryRequired = false;
+        else if (!fits) viewportRecoveryRequired = true;
         RefreshFreshness(); return entered;
     }
     public void AcknowledgeViewport()

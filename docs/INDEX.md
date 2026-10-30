@@ -1,5 +1,7 @@
 # 文档索引
 
+2026-10-30 SM 新站默认程序 `D:\CainiaoSupplyStation`、数据 `D:\ProgramData\ImporterPc\data`，既有部署保留原路径；见 [D-DRIVE-DEFAULTS-02](runtime/d-drive-defaults-02.md)及[工作包](work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md)。系统安装验证按该报告单独记证。
+
 2026-10-30 调试实时视频及逐相机取帧/解码诊断见 [SM-CAMERA-STREAM-11](work-packages/WP-IPC-SM-CAMERA-STREAM-11.md)及[验证记录](runtime/sm-camera-stream-11.md)。实时预览独立于单轮解码暂停和锁定照片；连接在线不代替成功取帧，ReadOperations不是识码计数。
 
 2026-10-30 当前人工供包与调试流程以 [SM-MANUAL-DEBUG-FLOW-10](work-packages/WP-IPC-SM-MANUAL-DEBUG-FLOW-10.md) 为准：人工输入独立于相机在线/配置，保留RCS及原责任守卫；调试沿五步按轮锁图和手动发送。

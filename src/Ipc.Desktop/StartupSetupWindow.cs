@@ -184,8 +184,10 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Height = Math.Min(optionsHeight, MaxHeight);
             var current = CurrentInstallation(ApplicationId);
             Section("安装位置");
-            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation") : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
-            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"));
+            // New SM stations use independent D-drive locations. Existing deployments
+            // and explicitly reviewed/user-entered paths retain their original authority.
+            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? (ApplicationId == "sportmaster" ? @"D:\CainiaoSupplyStation" : WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation")) : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
+            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (ApplicationId == "sportmaster" ? @"D:\ProgramData\ImporterPc\data" : Path.Combine(WindowsDeploymentSetup.MachineRoot, "data")));
             Section("安装设置");
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu };
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };

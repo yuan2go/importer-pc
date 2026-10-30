@@ -214,7 +214,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => "RCS请求超时",
         ParcelState.WcsUnknown => "结果待核对",
         ParcelState.WcsRejected => "业务拒绝",
-        _ => Operation is null && IdleReason.Length > 0 ? "暂不能供包" : Presentation.Text
+        _ => Operation is null ? IdleReason.Length > 0 ? "暂不能供包" : "等待扫码或输入条码" : Presentation.Text
     };
     public string OriginalResultSummary => InputUnadmitted && Operation is { } op ? "原件保留 · " +
         (!owner.Fresh ? "状态已失效" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "结果待核对" : ParcelPresentation.Operation(op, true).Text) : "";
@@ -231,7 +231,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelPresentation.RcsTimedOut(Operation) ? "RCS请求超时，请重新扫描。" :
         HasUncertainOriginal ? "请勿重复放货，请联系维护人员核对。" :
         Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
-        BlockingReasons.Length > 0 ? "请维护人员查看本位诊断。" : "读码后自动获取任务，无需逐包确认。";
+        BlockingReasons.Length > 0 ? "请维护人员查看本位诊断。" : "可由相机扫码，或输入完整条码后回车提交。";
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
     public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? "未取得";

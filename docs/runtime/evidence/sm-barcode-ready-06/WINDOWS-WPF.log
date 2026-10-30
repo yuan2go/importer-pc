@@ -1,0 +1,19 @@
+SYNTHETIC Simulation sources/peer, actual Windows WPF; real cameras/PDA/customer RCS NOT_RUN
+PASS BARCODE-READY left ready status explains both acquisition and manual input
+PASS BARCODE-READY left ready input is immediately editable without a failed scan
+PASS BARCODE-READY left empty result does not push down ready input; submit remains reachable
+PASS BARCODE-READY right ready status explains both acquisition and manual input
+PASS BARCODE-READY right ready input is immediately editable without a failed scan
+PASS BARCODE-READY right empty result does not push down ready input; submit remains reachable
+PASS BARCODE-READY ready snapshots preserve draft, selection and focus and do not auto-submit
+CAPTURE ready-entry-standard: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY keyboard submit from ready goes through real Application once and preserves leading zeroes
+PASS BARCODE-READY accepted result retains picture entry and the next manual input remains visible
+PASS BARCODE-READY PDA Enter from ready uses its own position/source and repeat Enter does not duplicate the request
+PASS BARCODE-READY camera update during a draft preserves it and rejects stale manual basis without another request
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 1024
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 1024
+CAPTURE ready-entry-1024: 1024x768 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 800
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 800
+CAPTURE ready-entry-800: 800x420 DIP, Windows DPI 1.25/1.25

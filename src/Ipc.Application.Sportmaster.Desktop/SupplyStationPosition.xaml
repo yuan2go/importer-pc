@@ -17,17 +17,9 @@
   </StackPanel>
   <ScrollViewer x:Name="PositionBody" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
    <StackPanel Margin="12,0,12,8">
-    <Grid x:Name="ScanInformation">
-     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-     <TextBlock Text="扫描信息"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource CurrentBarcodeLabel}"><Setter Property="Grid.ColumnSpan" Value="2"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Grid.ColumnSpan" Value="1"/><Setter Property="Margin" Value="0,0,8,0"/><Setter Property="VerticalAlignment" Value="Center"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
-     <Button x:Name="CurrentBarcode" Click="Picture_Click" IsEnabled="{Binding HasCurrentInput}" HorizontalContentAlignment="Stretch" MinHeight="44" Margin="0" ToolTip="点击查看本包裹原图；支持键盘Enter或空格打开" AutomationProperties.Name="本次条码，打开包裹图片">
-      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Grid.Row" Value="1"/><Setter Property="Grid.ColumnSpan" Value="2"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Grid.Row" Value="0"/><Setter Property="Grid.Column" Value="1"/><Setter Property="Grid.ColumnSpan" Value="1"/></DataTrigger></Style.Triggers></Style></Button.Style>
-      <TextBlock Text="{Binding Barcode}" FontFamily="{x:Static type:UiTypography.Code}" TextWrapping="Wrap"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.BarcodeCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
-     </Button>
-     <TextBlock x:Name="ScanSummary" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding ScanSummary}" FontSize="{x:Static type:UiTypography.Diagnostic}" Foreground="{StaticResource StationMuted}" Margin="0,4,0,8"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
-    </Grid>
     <StackPanel x:Name="OperatorBarcodeInput" Margin="0,4,0,8">
-     <TextBlock Text="条码输入 · 键盘 / PDA" Style="{StaticResource StationLabel}"/>
+     <TextBlock Text="扫描信息 · 扫码 / 输入条码" Style="{StaticResource StationLabel}"/>
+     <TextBlock Text="相机就绪时也可直接输入；键盘或PDA输入后按回车提交。" TextWrapping="Wrap" Foreground="{StaticResource StationMuted}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,0,0,6"/>
      <TextBox x:Name="BarcodeEntry" MinHeight="44" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本位完整条码输入，回车提交" ToolTip="保留前导零；PDA使用键盘模拟输入，建议以Enter结束；提交后可能创建真实RCS请求。"/>
      <WrapPanel Margin="0,6,0,0">
       <ComboBox x:Name="InputKind" SelectedIndex="0" MinHeight="44" Width="140" Margin="0,0,8,0" AutomationProperties.Name="人工条码输入来源"><ComboBoxItem Content="手动键盘"/><ComboBoxItem Content="PDA键盘"/></ComboBox>
@@ -37,6 +29,16 @@
      </WrapPanel>
      <TextBlock x:Name="InputFeedback" Text="仅提交当前位的真实包裹；PDA以回车结束。" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Label}" Margin="0,4,0,0" AutomationProperties.LiveSetting="Polite"/>
     </StackPanel>
+    <Grid x:Name="ScanInformation">
+     <Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding HasCurrentInput}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>
+     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <TextBlock Text="本次条码 · 查看图片"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource CurrentBarcodeLabel}"><Setter Property="Grid.ColumnSpan" Value="2"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Grid.ColumnSpan" Value="1"/><Setter Property="Margin" Value="0,0,8,0"/><Setter Property="VerticalAlignment" Value="Center"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+     <Button x:Name="CurrentBarcode" Click="Picture_Click" IsEnabled="{Binding HasCurrentInput}" HorizontalContentAlignment="Stretch" MinHeight="44" Margin="0" ToolTip="点击查看本包裹原图；支持键盘Enter或空格打开" AutomationProperties.Name="本次条码，打开包裹图片">
+      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Grid.Row" Value="1"/><Setter Property="Grid.ColumnSpan" Value="2"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Grid.Row" Value="0"/><Setter Property="Grid.Column" Value="1"/><Setter Property="Grid.ColumnSpan" Value="1"/></DataTrigger></Style.Triggers></Style></Button.Style>
+      <TextBlock Text="{Binding Barcode}" FontFamily="{x:Static type:UiTypography.Code}" TextWrapping="Wrap"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.BarcodeCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+     </Button>
+     <TextBlock x:Name="ScanSummary" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding ScanSummary}" FontSize="{x:Static type:UiTypography.Diagnostic}" Foreground="{StaticResource StationMuted}" Margin="0,4,0,8"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+    </Grid>
     <TextBlock Text="任务信息" FontWeight="{x:Static type:UiTypography.Emphasis}" FontSize="{x:Static type:UiTypography.Group}"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Margin" Value="0,12,0,6"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,4,0,4"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
     <Border Background="{Binding Presentation.Background}" BorderBrush="{Binding Presentation.Border}" BorderThickness="1" Style="{StaticResource CurrentResultPanel}">
      <StackPanel>

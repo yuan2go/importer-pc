@@ -1,0 +1,58 @@
+{
+  "workPackage": "SM-BARCODE-READY-06",
+  "sourceParent": "c6fc8f41558c6aeccb187e43c515d88caa244027",
+  "passAssertions": 15,
+  "exit": 0,
+  "native": "Windows WPF at125%DPI; synthetic ports",
+  "builds": "WPF verification and Sportmaster Desktop PASS 0 warnings/0 errors",
+  "sourceFiles": [
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
+      "workingSha256": "4d8375f604a246d1dd6ea2de017a78693463c009b434e5d3330769a52b99485e",
+      "bytes": 13633
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "workingSha256": "4eb12a3eee6ed519428113d336f7ba882b1bc6bc8d62eca186c58142952c29e3",
+      "bytes": 30599
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "workingSha256": "67763baea3cbdac33db793dd35325501bf6f37c49e3446e5680cfb69e07e1815",
+      "bytes": 24406
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/WorkstationBarcodeReady.cs",
+      "workingSha256": "6e1447eec40f146f3e9b94c0eee7ce776c29fbdb2a779e839afea30d5ffe385f",
+      "bytes": 6808
+    }
+  ],
+  "preserved": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOperatorInput.cs",
+      "unchangedFromParent": true,
+      "normalizedSha256": "7ae4e56078ba0e19d715966c2587a25a4a4bc98493f9e67bbbf24191a9c6a6fb"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
+      "unchangedFromParent": true,
+      "normalizedSha256": "c75b67c70fc1e2833d1079a1a077570f7c3c6f5706d8a188244eb296ddf0dbcc"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/BarcodeFiltering.cs",
+      "unchangedFromParent": true,
+      "normalizedSha256": "bf49de5bf026d2d0430b72f51decbf587ba1243860b753c5d82cab9a5fa7d0ff"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "unchangedFromParent": true,
+      "normalizedSha256": "034b9388011216ff8c6478a71e7e6e1dfd6bc668d89c007f53b6941682332b00"
+    }
+  ],
+  "notRun": [
+    "actual camera/PDA/customer RCS",
+    "installation",
+    "full 04 round-send regression",
+    "field acceptance"
+  ]
+}

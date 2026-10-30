@@ -52987,9 +52987,9 @@
       "purpose": "Authorized dual-camera lifecycle, diagnostics and isolated verification; historical evidence retains source identity",
       "source": "WP-IPC-DUAL-CAMERA-COMMUNICATION-FIX-01",
       "storage_scope": "public_repository",
-      "sha256": "79f7a8766ace994a31d96a905fb09f900d29ea54fc051f8f13dc970cdf9cfc2f",
-      "size_bytes": 11897,
-      "git_blob": "a3982982d09699bcef87384e219e7a8211100825",
+      "sha256": "87ba8231c475666bd32c6b580aa690571770dfd6a64da05755d30c37c71e7fb8",
+      "size_bytes": 11993,
+      "git_blob": "275f9057ab15bbf89f9e0334fcadd6ad2c6e0831",
       "previous_git_blob": "2f977bb4f4e39de546bc2d1ac801fc2fa1ede05d",
       "pre_publication_merge_git_blob": "fdd2a35cbbcab3633cf87864e3790bda54235e1b"
     },

@@ -6,6 +6,7 @@ using Ipc.Platform;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Ipc.Drivers.Hikrobot.Probe")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Ipc.Application.Verification")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Ipc.Desktop.UiVerification")]
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
 public sealed class MvsAcquisitionModule : IObservationExtension
@@ -246,10 +247,13 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         catch { original?.Dispose(); throw; }
                         finally { using (Timings.Measure("image.clear-return")) ArrayPool<byte>.Shared.Return(pixels, true); }
                         var observationIdentity = codes.Length == 0 ? null : Wire.Id();
+                        var sourceEvent = codes.Length == 0 ? null : "mvs.frame." + frame.Number;
+                        var admissionIdentity = sourceEvent is null ? null : "mvs.read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + sourceEvent)[..40].ToLowerInvariant();
+                        var acquisitionIdentity = sourceEvent is null ? null : new AcquisitionIdentity(DeviceId, Epoch, sourceEvent, admissionIdentity!, observedAt);
                         if (inspected.Registration is { } registration && inspectionOriginal is not null)
                             PublishInspection(registration, new(DeviceId, Epoch, frame.Number, observedAt, checked((int)frame.Width), checked((int)frame.Height),
                                 inspectionOriginal, symbols, Timings.LastMs("decode"), observationIdentity,
-                                codes.Length == 0 ? null : "mvs.frame." + frame.Number, registration.Isolated ? registration.Id : null, skippedBefore, physicalSerial, ip));
+                                sourceEvent, registration.Isolated ? registration.Id : null, skippedBefore, physicalSerial, ip) { Acquisition = acquisitionIdentity });
                         if (codes.Length == 0)
                         {
                             original?.Dispose();
@@ -260,15 +264,15 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
 
                         else
                         {
-                            var source = "mvs.frame." + frame.Number;
-                            var admission = "mvs.read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + source)[..40].ToLowerInvariant();
+                            var source = sourceEvent!;
+                            var admission = admissionIdentity!;
                             var observation = new Observation(observationIdentity!, DeviceId, Epoch, source, ++sequence, admission,
                                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", codes, null, observedAt)
                             {
                                 InspectionSessionId = inspected.Registration is { Isolated: true } isolated ? isolated.Id : null,
                                 CaptureSessionId = inspected.Registration is { CaptureImages: true } capture ? capture.Id : null
                             };
-                            try { originals.Publish(new(DeviceId, observation.Epoch, source, admission, observedAt), original); }
+                            try { originals.Publish(acquisitionIdentity!, original); }
                             catch { original?.Dispose(); throw; }
 
                             Undelivered = observation;

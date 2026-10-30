@@ -1,0 +1,187 @@
+PASS ROUND-UI lost begin receipt is recovered as the same durable isolated scope
+PASS ROUND-UI trigger enters a clean reading round without a photo/request or HTTP call
+PASS ROUND-UI native photo pixels/full code and again-scan label belong to the locked original
+PASS ROUND-UI green native rectangle uses actual same-frame recognition coordinates
+PASS ROUND-UI native JSON auto-fill is frozen and explicit send is the only enabled delivery action
+CAPTURE round-locked-native: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS ROUND-UI failed authoritative polling cannot re-enable send from a cached projection
+PASS ROUND-UI cancelled authoritative read also keeps cached send disabled
+PASS ROUND-UI successful authoritative read plus fresh host snapshot restores eligible send
+PASS ROUND-UI click-send and check-result never create a second HTTP request
+PASS ROUND-UI another window can own the next round while this window retains its prior photo/code and cannot send it
+PASS ROUND-UI again-scan clears old display while the command is still waiting
+PASS ROUND-UI explicit retry after a known stale CAS rejection uses the newly observed round instead of trapping the old command
+PASS ROUND-UI retry recovers the intended camera and next frame
+PASS ROUND-UI late original-image completion cannot repaint after changing camera/selection generation
+PASS ROUND-UI native 1:1 maps image pixels to device pixels at the actual monitor DPI
+CAPTURE round-1024-native: 1024x768 DIP, Windows DPI 1.25/1.25
+CAPTURE round-800-native: 800x420 DIP, Windows DPI 1.25/1.25
+PASS ROUND-UI window close does not stop or recreate the shared acquisition owner
+DIAG final-send ui=False; fresh=True; authoritative=True; application=False; feedback=Exception has been thrown by the target of an invocation.
+DIAG final-round {
+  "Id": "494ff769f257460884d7e5b17267dff9",
+  "SessionId": "e7a5373136504733bf7537268d4fdd75",
+  "DeviceId": "sportmaster.camera.left",
+  "State": "Locked",
+  "Detail": "\u672C\u8F6E\u8BFB\u7801\u5B8C\u6210\uFF0C\u5DF2\u81EA\u52A8\u6682\u505C\uFF1B\u7167\u7247\u548C\u6761\u7801\u4FDD\u6301\uFF0C\u7B49\u5F85\u624B\u52A8\u53D1\u9001\u6216\u518D\u6B21\u626B\u7801\u3002",
+  "Frame": {
+    "Id": "96da0d5c565e2893aaf916dfa983ca28f9d75fa6d221e0e2cd39dd3c6ba88629",
+    "SessionId": "e7a5373136504733bf7537268d4fdd75",
+    "DeviceId": "sportmaster.camera.left",
+    "Epoch": "1fcfd139b45c48768bb4b7c717f3dbf2",
+    "FrameNumber": 4,
+    "CapturedAt": "2026-10-30T02:14:00.4016654+00:00",
+    "Width": 495,
+    "Height": 150,
+    "Symbols": [
+      {
+        "Text": "UI-ROUND-E",
+        "Format": "Code 128",
+        "Corners": [
+          {
+            "X": 30,
+            "Y": 0
+          },
+          {
+            "X": 464,
+            "Y": 0
+          },
+          {
+            "X": 464,
+            "Y": 149
+          },
+          {
+            "X": 30,
+            "Y": 149
+          }
+        ],
+        "Orientation": 0
+      }
+    ],
+    "DecodeMilliseconds": 4.1074,
+    "ObservationId": "9d29a9f2448d45edb6d10e7e62f86366",
+    "SourceEventId": "mvs.frame.4",
+    "IsolatedSessionId": "e7a5373136504733bf7537268d4fdd75",
+    "OriginalSha256": "A5BD31E57C163E23C22C4BD42471DE7C8B98F4597B43084FD60B3412E2D44538",
+    "ImageAvailable": true,
+    "ImageState": "\u539F\u59CBMono8\uFF1B\u65E0\u635F\u538B\u7F29\uFF0C\u8BC6\u522B\u589E\u5F3A\u4E0D\u6539\u53D8\u6B64\u539F\u4EF6",
+    "Sequence": 0,
+    "BusinessSequence": 41,
+    "OperationId": null,
+    "VideoFramesSkippedBefore": 0,
+    "PhysicalSerial": "SYNTH-ROUND-0",
+    "DeviceAddress": "192.0.2.11"
+  },
+  "Barcode": "UI-ROUND-E",
+  "OperationId": "9638e0a199944366a0a7bab98d3fc879",
+  "RequestId": "820000005",
+  "RequestBody": "{\u0022source\u0022:\u0022BAR\u0022,\u0022version\u0022:1,\u0022requestId\u0022:820000005,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022UI-ROUND-E\u0022,\u0022stationCode\u0022:\u0022TEST-LEFT\u0022,\u0022bcrCode\u0022:\u0022TEST-LEFT-READER\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+  "RequestHash": "353E90BE286BCEE9E44CA67AC12E52C16A17DC9B68B9162FC88ED8CFE837C160",
+  "Target": "http://127.0.0.1:52585/rcs/sorter/api",
+  "Result": "\u72B6\u6001\uFF1APrepared \u00B7 \u53D1\u9001\u5C1D\u8BD5\uFF1A0\nnull",
+  "CanSend": false,
+  "Revision": 39
+}
+DIAG final-dependencies {
+  "State": "Blocked",
+  "BlockingReasons": [
+    "\u5B9E\u673A\u8C03\u8BD5\u9694\u79BB\uFF1A\u65B0\u8F93\u5165\u4E0D\u4EA7\u751FRCS\u4E1A\u52A1\u8BF7\u6C42\uFF1B\u6D4B\u8BD5\u4EF6\u79FB\u9664\u5E76\u5728\u8C03\u8BD5\u9875\u663E\u5F0F\u786E\u8BA4\u524D\u4FDD\u6301\u963B\u65AD\uFF0C\u8F6F\u4EF6\u9694\u79BB\u4E0D\u662F\u5B89\u5168\u6025\u505C\u3002",
+    "Software admission paused; this is not an emergency stop",
+    "Original stage outcome or receipt responsibility is unresolved"
+  ],
+  "Devices": [
+    {
+      "DeviceId": "sportmaster.camera.left",
+      "Epoch": "1fcfd139b45c48768bb4b7c717f3dbf2",
+      "Sequence": 4,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-30T02:14:01.2832718+00:00",
+      "ConfirmedAt": "2026-10-30T02:14:01.2832718+00:00",
+      "ValidUntil": "2026-10-30T02:14:04.2832718+00:00",
+      "Source": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=4; bytes=297000; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=4; candidates=4; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure=",
+      "Invalidity": null
+    },
+    {
+      "DeviceId": "sportmaster.camera.right",
+      "Epoch": "c32b5d97604a4526823c2a6c1c716444",
+      "Sequence": 1,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-30T02:14:01.2832705+00:00",
+      "ConfirmedAt": "2026-10-30T02:14:01.2832705+00:00",
+      "ValidUntil": "2026-10-30T02:14:04.2832705+00:00",
+      "Source": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=1; bytes=74250; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=1; candidates=1; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure=",
+      "Invalidity": null
+    }
+  ],
+  "Health": [
+    {
+      "InstanceId": "sportmaster.integration",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-30T02:14:01.5704694+00:00",
+      "ValidUntil": "2026-10-30T02:14:04.5704694+00:00",
+      "Detail": "RCS client local lifecycle/configuration readiness only; Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed"
+    },
+    {
+      "InstanceId": "sportmaster.camera.left",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-30T02:14:01.2832718+00:00",
+      "ValidUntil": "2026-10-30T02:14:04.2832718+00:00",
+      "Detail": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=4; bytes=297000; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=4; candidates=4; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure="
+    },
+    {
+      "InstanceId": "sportmaster.camera.right",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-30T02:14:01.2832705+00:00",
+      "ValidUntil": "2026-10-30T02:14:04.2832705+00:00",
+      "Detail": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=1; bytes=74250; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=1; candidates=1; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure="
+    }
+  ],
+  "Operations": [
+    {
+      "Id": "9638e0a199944366a0a7bab98d3fc879",
+      "PositionId": "left",
+      "State": "ResolvingWcs",
+      "Stage": "Prepared",
+      "Attempts": 0,
+      "RecoveryRequired": false
+    },
+    {
+      "Id": "d490a14adbf64d2fab594f2179936ea4",
+      "PositionId": "left",
+      "State": "Abandoned",
+      "Stage": "Cancelled",
+      "Attempts": 0,
+      "RecoveryRequired": false
+    },
+    {
+      "Id": "1e31620315a64f48a6663bc580d73c2d",
+      "PositionId": "right",
+      "State": "Abandoned",
+      "Stage": "Cancelled",
+      "Attempts": 0,
+      "RecoveryRequired": false
+    },
+    {
+      "Id": "5e7c28211e62480d8695377e319ee7f8",
+      "PositionId": "left",
+      "State": "Abandoned",
+      "Stage": "Cancelled",
+      "Attempts": 0,
+      "RecoveryRequired": false
+    },
+    {
+      "Id": "5e84815e3a674926ad57fbceb9a651d0",
+      "PositionId": "left",
+      "State": "WcsUnknown",
+      "Stage": "Unknown",
+      "Attempts": 1,
+      "RecoveryRequired": false
+    }
+  ]
+}
+FAIL System.TimeoutException: Round native UI did not converge
+   at Program.<>c__DisplayClass4_1.<<VerifyCameraRoundUi>g__Until|2>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 28
+--- End of stack trace from previous location ---
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 114
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 126
+   at Program.<>c__DisplayClass38_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Program.cs:line 57

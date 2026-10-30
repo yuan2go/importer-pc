@@ -73,8 +73,8 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                     inspectionFence?.Id != command.SessionId || collectingInspection?.Id != command.SessionId ||
                     !singleReadInspection || !SessionValid || configuration.Current.Pending is not null || backupInProgress || configurationSaving || maintenanceOperations.Count != 0)
                     throw new InvalidOperationException("需要当前生效配置、有效操作员和已生效的按轮实机隔离；请先核对原会话。");
-                if (readRound?.Id != command.ExpectedRoundId || readRound?.State is "Preparing" or "Reading" or "Sealing" or "Sending")
-                    throw new InvalidOperationException("轮次已变化或正在处理，请刷新并等待当前轮次结束。");
+                if (readRound?.Id != command.ExpectedRoundId || readRound?.State is "Preparing" or "Reading" or "Sealing" or "Sending" || readRound?.Worker is { IsCompleted: false })
+                    throw new CameraReadRoundConflictException("轮次已变化或正在处理，本次触发未接纳；请刷新并明确重新触发。");
                 if (!readers.TryGetValue(command.DeviceId, out var reader) || reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
                     throw new InvalidOperationException("所选相机没有有效连接确认，不能触发扫码。");
                 authority.ThrowIfCancellationRequested(); Management.Require();
@@ -132,6 +132,11 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                     Wire.Hash(Wire.Encode(Effective)) != Wire.Hash(Wire.Encode(round.Configuration))) throw new InvalidOperationException("本轮配置或隔离已变化，不能准备请求。");
                 round.Frame = metadata; round.State = "Locked"; round.Detail = "本轮读码完成，已自动暂停；照片和条码保持，等待手动发送或再次扫码。";
                 repository!.Commit(null, "CameraReadRoundLocked", Wire.Encode(new { Round = round.Id, Frame = metadata, round.Barcode, Actor = ManagementEvidence }));
+                if (frame.Acquisition is not { } acquisition || acquisition.DeviceId != round.Device || acquisition.Epoch != round.Epoch ||
+                    acquisition.SourceEventId != frame.SourceEventId || acquisition.ObservedAt != frame.CapturedAt || string.IsNullOrWhiteSpace(acquisition.AdmissionId) ||
+                    metadata.DeviceId != frame.DeviceId || metadata.Epoch != frame.Epoch || metadata.FrameNumber != frame.FrameNumber || metadata.CapturedAt != frame.CapturedAt ||
+                    metadata.SourceEventId != frame.SourceEventId || metadata.IsolatedSessionId != round.Session || metadata.SessionId != round.Session)
+                { round.Detail += " 原帧采集身份缺失或不一致，拒绝准备请求；不生成替代采集身份。"; return true; }
                 if (Effective.Wcs is null || ports?.Wcs is not IWcsRequestPreparer || ParcelConnectionSetup.IsDeferred(Effective, Effective.Wcs.InstanceId) || Effective.Images is not null || Effective.Weight.Source == WeightSource.Measured)
                 { round.Detail += " 当前RCS或必需图像/测量条件不支持独立测试请求，请结束隔离后完成配置。"; return true; }
                 if (!CapacityAvailable || factory.AdmissionFailure(Effective) is { } || !RestoreConfirmed)
@@ -139,7 +144,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                 var op = new ParcelOperation(Wire.Id(), "debug." + round.Id, round.Barcode!, Wire.Hash("manual-debug:" + round.Id), frame.CapturedAt,
                     Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes), Effective.Weight,
                     WeightRules.Configured(Effective.Weight), ParcelState.Prepared, null, null, null, "隔离中的独立手动测试意图；未发送",
-                    Operator: currentOperator, PositionId: positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id, ReaderBinding: ReaderBinding(positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id))
+                    Operator: currentOperator, Acquisition: acquisition, PositionId: positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id, ReaderBinding: ReaderBinding(positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id))
                     { DebugRequest = new(round.Session, round.Id, metadata.Id, round.Device, frame.Epoch, frame.SourceEventId!, metadata.OriginalSha256, ManagementEvidence!.AuditActor) };
                 Save(op, "CameraDebugIntentCreated", "独立测试意图，隔离观察未准入/未回放；仅明确发送命令可执行。"); round.Operation = op.Id;
                 op = ((IParcelExecution)this).PrepareWcs(op);

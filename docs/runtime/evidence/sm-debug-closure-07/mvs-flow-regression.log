@@ -1,0 +1,20 @@
+VerifierSource=1.0.0+838e9acddcced110c3d4f61b190aff9a62e46be1
+RuntimeIdentity=ISOLATED_SIMULATION_FIXTURE_NOT_PRODUCTION
+MVS_SOFTWARE_READY SYNTHETIC_NATIVE; RCS=LOCAL_SIMULATOR; no production acceptance implied
+PASS RCS20: management preview request starts empty without adding an acquisition owner
+PASS RCS20: software reader configures and verifies continuous acquisition before starting, without a customer trigger setting
+PASS RCS20: actual software decoder -> MVS lifecycle -> Application/SQLite -> actual RCS adapter: three identical codes remain three independent requests
+PASS RCS20: native loans are released; raw-video sampling gaps are explicit and do not pretend to lose recognized results
+PASS RCS20: Application exposes only the current existing acquisition epoch and bounded pixels to management
+PASS RCS20: blank video creates no request and original request bytes remain unchanged
+PASS RCS20: Application refuses stale images even when a source retains its last frame
+PASS RCS20: actual software-reader pipeline saves admitted original frames losslessly and drains raw-frame leases on stop
+PASS RCS20: controlled shutdown actually returns buffers and stops/closes/destroys/finalizes in order
+PASS RCS20: rejected/thrown durable ingress retains the original decoded result and fences source after returning native loan
+PASS RCS20: retained input prevents blind SDK restart/redelivery
+PASS RCS20: rejected/thrown durable ingress retains the original decoded result and fences source after returning native loan
+PASS RCS20: retained input prevents blind SDK restart/redelivery
+PASS RCS20: rejected or ineffective device settings refuse acquisition and release native owner
+PASS RCS20: rejected or ineffective device settings refuse acquisition and release native owner
+MVS_SOFTWARE_FLOW_PASS synthetic pixels/native port, actual ZXingCpp/Application/SQLite/HTTP; field acceptance NOT_RUN
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-dd777928ab184fe29f21f2b2bf0d3436

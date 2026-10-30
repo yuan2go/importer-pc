@@ -42,7 +42,7 @@ internal sealed class StationDebugControl : UserControl
     ArmCameraRead? armCommand;
     SendCameraRound? sendCommand;
     string position = "left", loadedFrame = "";
-    bool active, busy, polling, fit = true, wasFenced;
+    bool active, busy, polling, fit = true, wasFenced, authoritative;
     long generation;
     double zoom = 1;
     Point? pan;
@@ -56,9 +56,10 @@ internal sealed class StationDebugControl : UserControl
         evidence = new(vm, settings, details);
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; Background = Brushes.White; Foreground = Brush("#202833");
-        var body = new DockPanel { Margin = new(20, 12, 20, 16) };
-        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = body }); tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
-        var header = new StackPanel(); DockPanel.SetDock(header, Dock.Top); body.Children.Add(header);
+        var body = new StackPanel { Margin = new(20, 12, 20, 16) };
+        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled } });
+        tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
+        var header = new StackPanel(); body.Children.Add(header);
         header.Children.Add(new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis });
         header.Children.Add(state); header.Children.Add(feedback); header.Children.Add(Flow(left, right, camera));
         var safety = new StackPanel(); safety.Children.Add(Text("调试说明（至少5字）")); safety.Children.Add(reason); safety.Children.Add(scene);
@@ -67,7 +68,7 @@ internal sealed class StationDebugControl : UserControl
         columns.ColumnDefinitions.Add(new() { Width = new(4, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(6, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         columns.Children.Add(reading); columns.Children.Add(visual); Grid.SetColumn(visual, 1); visual.Margin = new(20, 0, 0, 0);
-        body.Children.Add(new ScrollViewer { Content = columns, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled });
+        body.Children.Add(columns);
         reading.Children.Add(Heading("本轮扫码")); reading.Children.Add(trigger); reading.Children.Add(Text("完整条码"));
         barcode.FontFamily = UiTypography.Code; barcode.FontSize = UiTypography.Barcode; barcode.MinHeight = 56; barcode.MaxHeight = 120; reading.Children.Add(barcode);
         reading.Children.Add(Heading("请求")); reading.Children.Add(Text("请求条码")); requestBarcode.FontFamily = UiTypography.Code; reading.Children.Add(requestBarcode);
@@ -118,26 +119,29 @@ internal sealed class StationDebugControl : UserControl
             scope = confirmed;
         }
         if (scope?.SessionId is not { } session) throw new InvalidOperationException("未取得当前实机隔离身份。");
+        beginCommand = null; // An authoritative active scope settles a lost begin receipt.
         armCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, session, Position.ReaderId, observed?.Id ?? current?.Id);
-        var value = await vm.ServiceAsync(() => Rounds.ArmCameraReadAsync(armCommand, token));
+        CameraReadRound value;
+        try { value = await vm.ServiceAsync(() => Rounds.ArmCameraReadAsync(armCommand, token)); }
+        catch (CameraReadRoundConflictException) { armCommand = null; throw; }
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
-        armCommand = null; sendCommand = null; observed = current = value; setup.IsExpanded = false; feedback.Text = ""; await PublishRoundAsync(value, token);
+        armCommand = null; sendCommand = null; observed = current = value; authoritative = true; setup.IsExpanded = false; feedback.Text = ""; await PublishRoundAsync(value, token);
     }
     async Task SendAsync(CancellationToken token)
     {
-        if (current is not { Id: { } id, RequestHash: { } hash } value || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("本轮尚无可发送的冻结请求。");
+        if (!authoritative || !vm.Fresh || current is not { Id: { } id, RequestHash: { } hash } value || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复权威轮次读取，再核对本轮冻结请求。");
         if (sendCommand is null && (!value.CanSend || loadedFrame != value.Frame?.Id)) throw new InvalidOperationException("先取得本轮对应原图和可发送请求；守卫关闭时不可发送。");
         sendCommand ??= new(Wire.Id(), snapshot.RuntimeId, id, hash);
         var returned = await vm.ServiceAsync(() => Rounds.SendCameraRoundAsync(sendCommand, token));
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
-        current = returned; await PublishRoundAsync(current, token);
+        current = returned; authoritative = true; await PublishRoundAsync(current, token);
     }
     async Task Run(Func<CancellationToken, Task> action)
     {
         if (!active || busy) return; busy = true; var ownership = lifetime; Buttons();
         try { await vm.RequireManagementModeAsync(); await action(lifetime!.Token); }
-        catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) feedback.Text = "等待已取消；请核对本轮和原隔离，不能推断请求未发出或已恢复生产。"; }
-        catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) feedback.Text = error.Message; }
+        catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = "等待已取消；请核对本轮和原隔离，不能推断请求未发出或已恢复生产。"; } }
+        catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = error.Message; } }
         finally { busy = false; if (active) { Buttons(); await PollAsync(); } }
     }
     public async Task PollAsync()
@@ -149,13 +153,13 @@ internal sealed class StationDebugControl : UserControl
             var isolation = await vm.ServiceAsync(() => Inspection.CameraInspectionStatusAsync(token));
             var value = await vm.ServiceAsync(() => Rounds.ReadCameraReadRoundAsync(token));
             if (!active || busy || version != generation || !vm.IsManagementMode) return;
-            scope = isolation; observed = value;
+            scope = isolation; observed = value; authoritative = true;
             if (current?.Frame is not null && current.Id is not null && value.Id != current.Id)
             { state.Text = "其他窗口已开始另一轮；本窗保留原轮次照片和请求。点击再次扫码明确开始本窗新一轮。"; Buttons(); return; }
             current = value; await PublishRoundAsync(value, token);
         }
-        catch (OperationCanceledException) { }
-        catch (Exception error) { if (active && version == generation) { state.Text = "调试状态读取失败；原隔离和原请求保留。"; feedback.Text = error.Message; send.IsEnabled = false; } }
+        catch (OperationCanceledException) { if (active && version == generation) authoritative = false; }
+        catch (Exception error) { if (active && version == generation) { authoritative = false; state.Text = "调试状态读取失败；原隔离和原请求保留。"; feedback.Text = error.Message; send.IsEnabled = false; } }
         finally { polling = false; if (active && version == generation) Buttons(); }
     }
     async Task PublishRoundAsync(CameraReadRound value, CancellationToken token)
@@ -194,7 +198,7 @@ internal sealed class StationDebugControl : UserControl
         trigger.Content = armCommand is not null || beginCommand is not null ? "核对触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null ? "触发扫码" : "再次扫码";
         trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode;
         send.Content = sendCommand is null ? "发送请求" : "核对发送结果";
-        send.IsEnabled = active && !busy && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
+        send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
             (sendCommand is not null || current is { CanSend: true, Frame: { } frame } && loadedFrame == frame.Id);
         end.IsEnabled = active && !busy && scope?.BusinessFenced == true && observed?.State != "Sending";
         left.IsEnabled = right.IsEnabled = !busy; left.Background = position == "left" ? Brush("#E8F1FF") : Brushes.White; right.Background = position == "right" ? Brush("#E8F1FF") : Brushes.White;
@@ -222,9 +226,9 @@ internal sealed class StationDebugControl : UserControl
             Canvas.SetLeft(box, x); Canvas.SetTop(box, y); marks.Children.Add(box);
         }
     }
-    public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; ClearRoundDisplay(); camera.Text = Position.Heading + " · " + Position.ReaderId; evidence.SelectPosition(position); Buttons(); }
+    public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); camera.Text = Position.Heading + " · " + Position.ReaderId; evidence.SelectPosition(position); Buttons(); }
     public void Revoke() { Deactivate(); evidence.Revoke(); reason.Clear(); scene.IsChecked = false; current = observed = null; scope = null; beginCommand = null; armCommand = null; sendCommand = null; }
-    void Deactivate() { active = false; generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay(); }
+    void Deactivate() { active = false; authoritative = false; generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay(); }
     static SolidColorBrush Brush(string color) => new((Color)ColorConverter.ConvertFromString(color));
     static TextBlock Text(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 4, 0, 6) };
     static TextBlock Heading(string text) => new() { Text = text, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 12, 0, 8) };

@@ -1,0 +1,31 @@
+Real MVS driver/ZXing/SQLite/built-in RCS, synthetic native APIs and loopback HTTP; real hardware/customer RCS NOT_RUN
+PASS ROUND round evidence requires management authority
+PASS ROUND isolated one-shot scope is authoritative before scanning
+PASS ROUND scope starts decode-closed while the single native owner still returns SDK loans
+PASS ROUND arm opens a clean round without a request or old photo
+PASS ROUND NoRead continues the same round without a fabricated result
+PASS ROUND real ZXing multi-candidate frame is not silently reduced to the first code
+PASS ROUND unique winner locks its exact frame and prepares an eligible manual request: 本轮读码完成，已自动暂停；照片和条码保持，等待手动发送或再次扫码。
+PASS ROUND persisted original equals pre-contrast bytes for the selected frame
+PASS ROUND image geometry equals actual ZXing coordinates from that one frame
+PASS ROUND later parcels and the unselected camera cannot decode/overwrite the frozen winner
+PASS ROUND request JSON auto-fill is the actual frozen T1 with zero HTTP attempts
+PASS ROUND tampered request hash cannot send
+PASS ROUND explicit send posts exactly the frozen JSON once and records its actual response
+PASS ROUND fresh command cannot resend an attempted request
+PASS ROUND same-command lookup and new-command rejection preserve one attempt
+PASS ROUND again-scan clears all round evidence and results before the next frame
+PASS ROUND same barcode on another round retains another frame and never auto-sends
+PASS ROUND stale multi-window round CAS cannot replace the current round
+PASS ROUND next round cancels only the old never-attempted request
+PASS ROUND sending round cannot be replaced while HTTP is in flight
+PASS ROUND scene clearance cannot erase an in-flight request
+PASS ROUND revoked management interrupts the wait without claiming no external effect
+PASS ROUND authority cancellation retains Unknown and one attempted request without exposing privileged JSON
+PASS ROUND reauthorized custody exposes the unchanged original JSON
+PASS ROUND reauthorization/query never replays Unknown
+PASS ROUND restart preserves original Unknown and the persistent isolation fence
+PASS ROUND recovered isolation starts decode-closed and does not replay an old round
+PASS ROUND explicit clearance keeps unresolved original responsibility
+PASS ROUND cancelling SDK cutover does not certify native completion
+PASS ROUND cancelled native cutover retains one owner and isolation without an HTTP request

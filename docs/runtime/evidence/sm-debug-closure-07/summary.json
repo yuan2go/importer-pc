@@ -1,0 +1,16 @@
+{
+  "workPackage": "SM-DEBUG-CLOSURE-07",
+  "sourceParent": "838e9acddcced110c3d4f61b190aff9a62e46be1",
+  "main": "9df3901ec20d73512d48920b4671b529ebc58a9e",
+  "finalLogs": {
+    "app-run-accepted.log": 36,
+    "ui-native-final.log": 19,
+    "original-frame-regression.log": 26,
+    "mvs-flow-regression.log": 15,
+    "mvs-self-test.log": 73
+  },
+  "builds": "Application/WPF verification/Probe/Sportmaster Desktop: 0 warnings, 0 errors",
+  "notProductionAcceptance": true,
+  "dependencies": "Synthetic IMvsApi and loopback HTTP; actual MVS driver, ZXing, SQLite, built-in RCS and native WPF",
+  "remaining": "Actual camera/PDA/customer RCS, installation, field and long-duration qualifications NOT_RUN"
+}

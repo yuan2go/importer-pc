@@ -1,0 +1,26 @@
+PASS ROUND-UI lost begin receipt is recovered as the same durable isolated scope
+PASS ROUND-UI trigger enters a clean reading round without a photo/request or HTTP call
+PASS ROUND-UI native photo pixels/full code and again-scan label belong to the locked original
+PASS ROUND-UI green native rectangle uses actual same-frame recognition coordinates
+PASS ROUND-UI native JSON auto-fill is frozen and explicit send is the only enabled delivery action
+CAPTURE round-locked-native: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS ROUND-UI failed authoritative polling cannot re-enable send from a cached projection
+PASS ROUND-UI cancelled authoritative read also keeps cached send disabled
+PASS ROUND-UI successful authoritative read plus fresh host snapshot restores eligible send
+PASS ROUND-UI click-send and check-result never create a second HTTP request
+PASS ROUND-UI another window can own the next round while this window retains its prior photo/code and cannot send it
+PASS ROUND-UI again-scan clears old display while the command is still waiting
+PASS ROUND-UI explicit retry after a known stale CAS rejection uses the newly observed round instead of trapping the old command
+PASS ROUND-UI retry recovers the intended camera and next frame
+FAIL System.InvalidOperationException: 后台操作并发已达上限，请等待当前操作结束
+   at Ipc.Application.ParcelFlow.ParcelRuntime.OwnedOperation[T](Func`2 read, HashSet`1 owners, Int32 capacity, CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelReadOperations.cs:line 23
+   at Ipc.Application.ParcelFlow.ParcelRuntime.OwnedRead[T](Func`2 read, CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelReadOperations.cs:line 13
+   at Ipc.Application.ParcelFlow.ParcelRuntime.InspectionRead[T](Func`2 read, CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelInspectionQueries.cs:line 67
+   at Ipc.Application.ParcelFlow.ParcelRuntime.ReadCameraReadRoundAsync(CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelCameraReadRounds.cs:line 222
+   at CameraRoundHarness.<>c__DisplayClass23_0.<<LockedAsync>b__0>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs:line 77
+--- End of stack trace from previous location ---
+   at CameraRoundHarness.Until(Func`1 done) in D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs:line 87
+   at CameraRoundHarness.LockedAsync() in D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs:line 77
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 94
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 126
+   at Program.<>c__DisplayClass38_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Program.cs:line 57

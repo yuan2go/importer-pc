@@ -1,0 +1,11 @@
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs(18,58): error CS0104: “Path”是“System.Windows.Shapes.Path”和“System.IO.Path”之间的不明确的引用 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs(183,38): error CS0649: 从未对字段“CameraRoundHarness.RoundPeer.Hold”赋值，字段将一直保持其默认值 null [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+
+生成失败。
+
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs(18,58): error CS0104: “Path”是“System.Windows.Shapes.Path”和“System.IO.Path”之间的不明确的引用 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs(183,38): error CS0649: 从未对字段“CameraRoundHarness.RoundPeer.Hold”赋值，字段将一直保持其默认值 null [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+    0 个警告
+    2 个错误
+
+已用时间 00:00:17.02

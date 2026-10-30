@@ -1,5 +1,9 @@
 namespace Ipc.Application.Contracts;
 
+// A definitive pre-admission rejection. UI may retire this unsent arm command;
+// transport/native-cutover failures remain uncertain and must retain their ID.
+public sealed class CameraReadRoundConflictException(string message) : InvalidOperationException(message);
+
 public sealed record ArmCameraRead(string CommandId, Guid RuntimeId, long ConfigurationRevision, string SessionId,
     string DeviceId, string? ExpectedRoundId);
 public sealed record SendCameraRound(string CommandId, Guid RuntimeId, string RoundId, string RequestHash);

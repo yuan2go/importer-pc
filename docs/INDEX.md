@@ -18,6 +18,7 @@
 | 首页条码与包裹图片 | [SM-WORKSTATION-03](work-packages/WP-IPC-SM-WORKSTATION-03.md)、[当前实现与待验证项目](runtime/sm-workstation-03.md)；键盘/PDA键盘输入、同帧日常留图、图片弹窗和四项导航 |
 | 就绪时输入条码 | [SM-BARCODE-READY-06](work-packages/WP-IPC-SM-BARCODE-READY-06.md)、[原生定向验证](runtime/sm-barcode-ready-06.md)；就绪输入置顶，空态兼顾扫码/键盘/PDA |
 | 当前调试按轮流程 | [SM-DEBUG-ROUND-04工作包](work-packages/WP-IPC-SM-DEBUG-ROUND-04.md)、[实现与待验证](runtime/sm-debug-round-04.md)；触发→同帧锁图/绿框→填请求→手动发送→再次扫码 |
+| 扫码调试闭环验证 | [SM-DEBUG-CLOSURE-07](work-packages/WP-IPC-SM-DEBUG-CLOSURE-07.md)、[审查/定向验证/剩余边界](runtime/sm-debug-closure-07.md)；实际软件链路，真实设备/现场待验 |
 | 调试筛选一致性修复 | [SM-DEBUG-FILTER-05](work-packages/WP-IPC-SM-DEBUG-FILTER-05.md)、[定向原生验证](runtime/sm-debug-filter-05.md)；null/显式空规则原义保留，04其他待验边界不变 |
 | 管理界面与相机调试增量 | [SM-UI-DEBUG-02工作包](work-packages/WP-IPC-SM-UI-DEBUG-02.md)、[当前实现：待验证](runtime/sm-ui-debug-02.md)、[后续验证计划](runtime/sm-ui-debug-02-verification-plan.md)；[01历史实现与证据](runtime/sm-ui-debug-01.md)保留原来源 |
 | RCS | [内置RCS](runtime/sportmaster-rcs-task.md)、[心跳](runtime/rcs-heartbeat-01.md)、[超时](runtime/rcs-timeout-errors-01.md) |

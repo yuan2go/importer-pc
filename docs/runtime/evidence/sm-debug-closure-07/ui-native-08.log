@@ -1,0 +1,6 @@
+FAIL System.InvalidOperationException: 无法将 Owner 属性设置为之前未显示的 Window。
+   at System.Windows.Window.set_Owner(Window value)
+   at Ipc.Application.Sportmaster.Desktop.SupplyStationWindow..ctor(IParcelApplication application, String view, String layout, Func`1 stopOwner, SupplyStationWindow owner) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.Sportmaster.Desktop\SupplyStationWindow.xaml.cs:line 46
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 21
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 121
+   at Program.<>c__DisplayClass38_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Program.cs:line 57

@@ -5,7 +5,13 @@ public sealed record RecognitionSymbol(string Text, string Format, ImagePoint[] 
 public sealed record InspectedFrame(string DeviceId, string Epoch, long FrameNumber, DateTimeOffset CapturedAt,
     int Width, int Height, byte[] OriginalGray8, RecognitionSymbol[] Symbols, double DecodeMilliseconds,
     string? ObservationId, string? SourceEventId, string? IsolatedSessionId, long VideoFramesSkippedBefore = 0,
-    string? PhysicalSerial = null, string? DeviceAddress = null);
+    string? PhysicalSerial = null, string? DeviceAddress = null)
+{
+    // The acquisition owner supplies the same identity as its observation. A
+    // consumer must never invent an admission identity to satisfy an adapter.
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public AcquisitionIdentity? Acquisition { get; init; }
+}
 
 // The acquisition owns this registration and its cutover barrier, not a UI page.
 // Receivers may retain OriginalGray8, which is a dedicated immutable capture copy.

@@ -187,3 +187,6 @@ docs/runtime/evidence/sm-debug-filter-05/*.log -text whitespace=cr-at-eol,-blank
 
 # Ready barcode native evidence keeps original log bytes.
 docs/runtime/evidence/sm-barcode-ready-06/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# One-shot closure review retains exact captured log bytes.
+docs/runtime/evidence/sm-debug-closure-07/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

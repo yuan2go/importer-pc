@@ -54,6 +54,7 @@ static partial class Program
                 else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);
                 else if (args.Contains("--query-filters")) await VerifyQueryFilters(root, evidence, lines);
                 else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
+                else if (args.Contains("--camera-round-ui")) await VerifyCameraRoundUi(root, evidence, lines);
                 else if (args.Contains("--workstation-barcode-ready")) await VerifyWorkstationBarcodeReady(root, evidence, lines);
                 else if (args.Contains("--camera-filter-preview")) await VerifyCameraFilterPreview(root, evidence, lines);
                 else if (args.Contains("--camera-debug")) await VerifyCameraDebug(root, evidence, lines);

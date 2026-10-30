@@ -1,0 +1,14 @@
+PASS ROUND-UI trigger enters a clean reading round without a photo/request or HTTP call
+PASS ROUND-UI native photo pixels/full code and again-scan label belong to the locked original
+PASS ROUND-UI green native rectangle uses actual same-frame recognition coordinates
+PASS ROUND-UI native JSON auto-fill is frozen and explicit send is the only enabled delivery action
+CAPTURE round-locked-native: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS ROUND-UI failed authoritative polling cannot re-enable send from a cached projection
+PASS ROUND-UI click-send and check-result never create a second HTTP request
+PASS ROUND-UI another window can own the next round while this window retains its prior photo/code and cannot send it
+PASS ROUND-UI again-scan clears old display while the command is still waiting
+FAIL System.InvalidOperationException: explicit retry after a known stale CAS rejection uses the newly observed round instead of trapping the old command
+   at Program.<VerifyCameraRoundUi>g__Check|4_0(Boolean ok, String message, <>c__DisplayClass4_0&) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 17
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 79
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 90
+   at Program.<>c__DisplayClass38_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Program.cs:line 57

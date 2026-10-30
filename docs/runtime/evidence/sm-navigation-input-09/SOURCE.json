@@ -1,0 +1,43 @@
+{
+  "baseline": "9b1384d5",
+  "branch": "codex/navigation-input-fix-01",
+  "sourceIdentity": "SHA256 of exact final source bytes; not historical commit/test identity",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
+      "sha256": "e1868b72aeda8a5c14e939e4aec979c6c7b8f84c9f2d8969cc11cf1ff12a4eb4"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
+      "sha256": "ecd2b7b5e813c3d89df09f999a7eea01a817075e5a3dcce2ba7091f031123c7a"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
+      "sha256": "186eb90d7dd0fcb78bec68ee20e66716622bfba6123ef77f01bd80c546597e5b"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.OperatorWorkspace.cs",
+      "sha256": "04645ffd2be5e9ab099d4b40f3436ba8b343ddc949e2d9a432a0b369173c2838"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "sha256": "8e0f2ea4569ff345bdaa4ed7fca571ee88a59cb3a8f04f122aede4e0f9fe5fd8"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/WorkstationBarcodeReady.cs",
+      "sha256": "bfda4ebef7739aaa2b8540466e164e05a3f5ed7a7b38615ce0bddd0636d0ce79"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorWorkspace.cs",
+      "sha256": "9ab751460ec8ebc4c2a92398cfdfbe518132c81abdefd023af5752d2fdad8246"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "sha256": "6ee969ce65c895f76654294f1bb7ea6a1e2682fb1a285f80b83083a726be1b97"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
+      "sha256": "f6ed0fde807d97104f1237d517cb5c4a76983cfee712ec8d3d0b82f7d45544d7"
+    }
+  ]
+}

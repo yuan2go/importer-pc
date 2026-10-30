@@ -1,0 +1,68 @@
+SYNTHETIC Simulation sources/peer, actual Windows WPF; real cameras/PDA/customer RCS NOT_RUN
+PASS BARCODE-READY 设置 navigation respects management mode in sidebar and compact menu at 1366
+PASS BARCODE-READY 日志 navigation respects management mode in sidebar and compact menu at 1366
+PASS BARCODE-READY 调试 navigation respects management mode in sidebar and compact menu at 1366
+PASS BARCODE-READY 设置 navigation respects management mode in sidebar and compact menu at 800
+PASS BARCODE-READY 日志 navigation respects management mode in sidebar and compact menu at 800
+PASS BARCODE-READY 调试 navigation respects management mode in sidebar and compact menu at 800
+PASS BARCODE-READY 设置 navigation respects management mode in sidebar and compact menu at 1366
+PASS BARCODE-READY 日志 navigation respects management mode in sidebar and compact menu at 1366
+PASS BARCODE-READY 调试 navigation respects management mode in sidebar and compact menu at 1366
+PASS BARCODE-READY 设置 navigation respects management mode in sidebar and compact menu at 800
+PASS BARCODE-READY 日志 navigation respects management mode in sidebar and compact menu at 800
+PASS BARCODE-READY 调试 navigation respects management mode in sidebar and compact menu at 800
+PASS BARCODE-READY management debug navigation opens the existing round control directly
+CAPTURE management-debug-direct: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY revoking management leaves debug and returns to work
+PASS BARCODE-READY left ready status explains both acquisition and manual input
+PASS BARCODE-READY left ready input is immediately editable without a failed scan
+PASS BARCODE-READY left empty result retains the single barcode area and bottom submit
+PASS BARCODE-READY right ready status explains both acquisition and manual input
+PASS BARCODE-READY right ready input is immediately editable without a failed scan
+PASS BARCODE-READY right empty result retains the single barcode area and bottom submit
+PASS BARCODE-READY ready snapshots preserve draft, selection and focus and do not auto-submit
+CAPTURE ready-entry-standard: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY keyboard submit from ready goes through real Application once and preserves leading zeroes
+PASS BARCODE-READY accepted result retains picture entry and the next manual input remains visible
+PASS BARCODE-READY submitting an unedited camera/result display never creates another request
+PASS BARCODE-READY PDA Enter from ready uses its own position/source and repeat Enter does not duplicate the request
+PASS BARCODE-READY draft notice follows the actual task identity when a new camera result arrives
+PASS BARCODE-READY camera update during a draft preserves it and rejects stale manual basis without another request
+PASS BARCODE-READY current destination stays in the body viewport without scrolling at 1024 slot=194.40000000000003/48 body=469.6
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 1024
+PASS BARCODE-READY current destination stays in the body viewport without scrolling at 1024 slot=194.40000000000003/48 body=469.6
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 1024
+CAPTURE ready-entry-1024: 1024x768 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY current destination stays in the body viewport without scrolling at 800 slot=107.20000000000005/48 body=158.4
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 800
+PASS BARCODE-READY current destination stays in the body viewport without scrolling at 800 slot=107.20000000000005/48 body=158.4
+PASS BARCODE-READY ready/manual input remains on the vertical route without horizontal overflow at 800
+CAPTURE ready-entry-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 1366 deferred=False
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 1366 deferred=False
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 1366 deferred=False
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 1366 deferred=False
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+CAPTURE offline-single-entry-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 800 deferred=False
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 800 deferred=False
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 800 deferred=False
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 800 deferred=False
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+CAPTURE offline-single-entry-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 1366 deferred=True
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 1366 deferred=True
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 1366 deferred=True
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 1366 deferred=True
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+CAPTURE deferred-single-entry-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 800 deferred=True
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 800 deferred=True
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+PASS BARCODE-READY offline/deferred keeps editable barcode and draft at 800 deferred=True
+PASS BARCODE-READY offline/deferred task heading and bottom submit remain reachable at 800 deferred=True
+PASS BARCODE-READY projected device status remains explicit without claiming readiness
+CAPTURE deferred-single-entry-800: 800x420 DIP, Windows DPI 1.25/1.25

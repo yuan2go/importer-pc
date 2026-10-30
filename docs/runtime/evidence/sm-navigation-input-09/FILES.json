@@ -1,0 +1,62 @@
+[
+  {
+    "path": "deferred-single-entry-1366.png",
+    "bytes": 85395,
+    "sha256": "cfae0c96008c49007aaa1a466924ba8988f9c2ee8e775a00124bc8369005aa95"
+  },
+  {
+    "path": "deferred-single-entry-800.png",
+    "bytes": 66252,
+    "sha256": "faeaa886b4adfbd293c1c9f50e975e353e5544e88cad2b3b7b73b73babb7707e"
+  },
+  {
+    "path": "management-debug-direct.png",
+    "bytes": 97912,
+    "sha256": "05be574bac8bb286006e23b51a4df9522f70addf10ba7fda6af8d093a93e7b40"
+  },
+  {
+    "path": "offline-single-entry-1366.png",
+    "bytes": 110453,
+    "sha256": "e4b4ceacb8234d0beabc566fddf0f1ee796482c5e03f5ba5ec5f3cb51b9e54e5"
+  },
+  {
+    "path": "offline-single-entry-800.png",
+    "bytes": 62703,
+    "sha256": "3d8111d3c473ec13ccacff25ffa6882107ccaf1368619cadd04d2779e707e02f"
+  },
+  {
+    "path": "OPERATOR-WORKSPACE.log",
+    "bytes": 3156,
+    "sha256": "412b748aed36128e0d5cd41f58c5773ea2fb5605ac7b3cda4ba5565db3aaeab5"
+  },
+  {
+    "path": "README.md",
+    "bytes": 1476,
+    "sha256": "be353bd43259a1a70fd328725d595721c46720b861aca0482b59357e97acc443"
+  },
+  {
+    "path": "ready-entry-1024.png",
+    "bytes": 112786,
+    "sha256": "fd247c0172ac7a478d54126d79b6ad84f9658cb84e25cbd8b7b4cad05e6788dc"
+  },
+  {
+    "path": "ready-entry-800.png",
+    "bytes": 71896,
+    "sha256": "b3010705f2ea60b72c135d26749e24952e7b1474d96f3972ad5e5646fa8993e7"
+  },
+  {
+    "path": "ready-entry-standard.png",
+    "bytes": 78929,
+    "sha256": "b3c8091cb5c172e4e528653e17114f120a60d85e6c62b3742cb2e2a99214f917"
+  },
+  {
+    "path": "SOURCE.json",
+    "bytes": 1820,
+    "sha256": "79da74b75b85f5d4df3af27c7cc70f1a4faebd564152b2ea8f500919653c8eaf"
+  },
+  {
+    "path": "WINDOWS-WPF.log",
+    "bytes": 6472,
+    "sha256": "5a99461c44b94210bb5eb10bfd87c285c4c33a410d1819d80432bf694af2ed21"
+  }
+]

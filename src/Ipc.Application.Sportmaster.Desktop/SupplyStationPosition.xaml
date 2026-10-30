@@ -6,9 +6,9 @@
  </ResourceDictionary></UserControl.Resources>
  <Border Style="{StaticResource StationCard}" Margin="4" Padding="0">
  <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-  <StackPanel Margin="12,8">
+  <StackPanel><StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Margin" Value="12,8"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="12,4"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
    <DockPanel LastChildFill="True">
-    <Border x:Name="CameraConnection" DockPanel.Dock="Right" Background="{Binding DevicePresentation.Background}" BorderBrush="{Binding DevicePresentation.Border}" BorderThickness="1" Padding="10,6" Margin="8,0,0,0">
+    <Border x:Name="CameraConnection" DockPanel.Dock="Right" Background="{Binding DevicePresentation.Background}" BorderBrush="{Binding DevicePresentation.Border}" BorderThickness="1" Margin="8,0,0,0"><Border.Style><Style TargetType="Border"><Setter Property="Padding" Value="10,6"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="10,2"/></DataTrigger></Style.Triggers></Style></Border.Style>
      <TextBlock Text="{Binding DevicePresentation.Text}" Foreground="{Binding DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Body}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
     </Border>
     <TextBlock Text="{Binding Heading}" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="相机位置"/>
@@ -17,26 +17,18 @@
   </StackPanel>
   <ScrollViewer x:Name="PositionBody" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
    <StackPanel Margin="12,0,12,8">
-    <StackPanel x:Name="OperatorBarcodeInput" Margin="0,4,0,8">
-     <TextBlock Text="扫描信息 · 扫码 / 输入条码" Style="{StaticResource StationLabel}"/>
-     <TextBlock Text="相机就绪时也可直接输入；键盘或PDA输入后按回车提交。" TextWrapping="Wrap" Foreground="{StaticResource StationMuted}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,0,0,6"/>
-     <TextBox x:Name="BarcodeEntry" MinHeight="44" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本位完整条码输入，回车提交" ToolTip="保留前导零；PDA使用键盘模拟输入，建议以Enter结束；提交后可能创建真实RCS请求。"/>
-     <WrapPanel Margin="0,6,0,0">
-      <ComboBox x:Name="InputKind" SelectedIndex="0" MinHeight="44" Width="140" Margin="0,0,8,0" AutomationProperties.Name="人工条码输入来源"><ComboBoxItem Content="手动键盘"/><ComboBoxItem Content="PDA键盘"/></ComboBox>
-      <Button x:Name="SubmitBarcode" Content="提交" Click="SubmitBarcode_Click" Style="{StaticResource StationButton}"/>
-      <Button x:Name="RebaseInput" Content="核对当前位" Click="RebaseInput_Click" Style="{StaticResource StationButton}" ToolTip="本位输入或任务发生变化时，先检查包裹再更新输入基准。"/>
-      <Button Content="清空输入" Click="ClearInput_Click" Style="{StaticResource StationButton}" ToolTip="仅清空本窗尚未提交的条码，不改变当前作业或原请求。"/>
-     </WrapPanel>
-     <TextBlock x:Name="InputFeedback" Text="仅提交当前位的真实包裹；PDA以回车结束。" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Label}" Margin="0,4,0,0" AutomationProperties.LiveSetting="Polite"/>
-    </StackPanel>
     <Grid x:Name="ScanInformation">
-     <Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding HasCurrentInput}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>
-     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-     <TextBlock Text="本次条码 · 查看图片"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource CurrentBarcodeLabel}"><Setter Property="Grid.ColumnSpan" Value="2"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Grid.ColumnSpan" Value="1"/><Setter Property="Margin" Value="0,0,8,0"/><Setter Property="VerticalAlignment" Value="Center"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
-     <Button x:Name="CurrentBarcode" Click="Picture_Click" IsEnabled="{Binding HasCurrentInput}" HorizontalContentAlignment="Stretch" MinHeight="44" Margin="0" ToolTip="点击查看本包裹原图；支持键盘Enter或空格打开" AutomationProperties.Name="本次条码，打开包裹图片">
-      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Grid.Row" Value="1"/><Setter Property="Grid.ColumnSpan" Value="2"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Grid.Row" Value="0"/><Setter Property="Grid.Column" Value="1"/><Setter Property="Grid.ColumnSpan" Value="1"/></DataTrigger></Style.Triggers></Style></Button.Style>
-      <TextBlock Text="{Binding Barcode}" FontFamily="{x:Static type:UiTypography.Code}" TextWrapping="Wrap"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.BarcodeCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
-     </Button>
+     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <TextBlock Text="本次条码"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource CurrentBarcodeLabel}"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+     <Button x:Name="CurrentBarcode" Grid.Column="1" Click="Picture_Click" Content="查看图片" IsEnabled="{Binding HasCurrentInput}" MinHeight="44" Margin="8,0,0,4" Padding="8,4" Style="{StaticResource StationButton}" AutomationProperties.Name="查看当前包裹图片"/>
+     <TextBox x:Name="BarcodeEntry" MinHeight="44" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="输入完整条码后回车或点击底部提交；保留前导零。右键可清空输入或选择键盘/PDA来源。">
+      <TextBox.Style><Style TargetType="TextBox"><Setter Property="Grid.Row" Value="1"/><Setter Property="Grid.ColumnSpan" Value="2"/><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.BarcodeCompact}"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Grid.Row" Value="0"/><Setter Property="Grid.ColumnSpan" Value="1"/></DataTrigger></Style.Triggers></Style></TextBox.Style>
+      <TextBox.ContextMenu><ContextMenu>
+       <MenuItem Header="剪切" Command="ApplicationCommands.Cut"/><MenuItem Header="复制" Command="ApplicationCommands.Copy"/><MenuItem Header="粘贴" Command="ApplicationCommands.Paste"/><MenuItem Header="全选" Command="ApplicationCommands.SelectAll"/><Separator/>
+       <MenuItem Header="手动键盘" x:Name="KeyboardSource" IsCheckable="True" IsChecked="True" Click="KeyboardSource_Click"/><MenuItem Header="PDA键盘" x:Name="PdaSource" IsCheckable="True" Click="PdaSource_Click"/><Separator/>
+       <MenuItem Header="清空输入" Click="ClearInput_Click"/>
+      </ContextMenu></TextBox.ContextMenu>
+     </TextBox>
      <TextBlock x:Name="ScanSummary" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding ScanSummary}" FontSize="{x:Static type:UiTypography.Diagnostic}" Foreground="{StaticResource StationMuted}" Margin="0,4,0,8"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
     </Grid>
     <TextBlock Text="任务信息" FontWeight="{x:Static type:UiTypography.Emphasis}" FontSize="{x:Static type:UiTypography.Group}"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Margin" Value="0,12,0,6"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,4,0,4"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
@@ -57,14 +49,17 @@
      <StackPanel Margin="0,0,12,0"><TextBlock Text="波次" Style="{StaticResource StationLabel}"/><TextBox Text="{Binding WaveNo,Mode=OneWay}" Style="{StaticResource TaskField}" AutomationProperties.Name="本次任务波次"/><TextBlock Text="商品编码" Style="{StaticResource StationLabel}"/><TextBox Text="{Binding SkuId,Mode=OneWay}" Style="{StaticResource TaskField}" AutomationProperties.Name="本次任务商品编码"/></StackPanel>
      <StackPanel Grid.Column="1"><TextBlock Text="任务号" Style="{StaticResource StationLabel}"/><TextBox Text="{Binding TaskId,Mode=OneWay}" Style="{StaticResource TaskField}" AutomationProperties.Name="本次调度任务号"/><TextBlock Text="返回数量" Style="{StaticResource StationLabel}"/><TextBox FontFamily="{x:Static type:UiTypography.Interface}" Text="{Binding ResponseQuantity,Mode=OneWay}" Style="{StaticResource TaskField}" AutomationProperties.Name="本次调度返回数量"/></StackPanel>
     </Grid>
+    <TextBlock x:Name="InputFeedback" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Label}" Margin="0,4,0,0" AutomationProperties.LiveSetting="Polite"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
    </StackPanel>
   </ScrollViewer>
   <Border IsEnabled="{Binding CanStartOperation}" x:Name="FixedActions" Grid.Row="2" BorderBrush="{StaticResource StationLine}" BorderThickness="0,1,0,0" Background="#FBFCFD" Padding="12,8">
    <StackPanel>
-      <TextBlock x:Name="NextStep" Text="{Binding NextStep}" Foreground="{Binding Presentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" TextWrapping="Wrap" Margin="0,0,0,6"/>
+      <TextBlock x:Name="NextStep" Text="{Binding NextStep}" Foreground="{Binding Presentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" TextWrapping="Wrap"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Margin" Value="0,0,0,6"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,0,0,2"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
    <StackPanel><StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasContinuation}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style><TextBlock Text="继续前的包裹检查说明"/><TextBox Text="{Binding InspectionReason,UpdateSourceTrigger=PropertyChanged}" MinHeight="44" AutomationProperties.Name="本位原实体检查说明"/></StackPanel>
    <DockPanel LastChildFill="True">
     <WrapPanel DockPanel.Dock="Right">
+     <Button x:Name="SubmitBarcode" Content="提交" Click="SubmitBarcode_Click" Style="{StaticResource StationButton}"/>
+     <Button x:Name="RebaseInput" Content="核对当前位" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationButton}" ToolTip="本位输入或任务发生变化，请检查包裹后更新输入基准。"/>
      <Button Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanReconcile}" Style="{StaticResource StationButton}" ToolTip="查看当前保留包裹的任务和处理记录"/>
      <Button x:Name="PositionDiagnostics" Visibility="{Binding DataContext.ManagementModeVisibility,RelativeSource={RelativeSource AncestorType=Window}}" Content="本位诊断" Click="Diagnostics_Click" Style="{StaticResource StationButton}"/>
 

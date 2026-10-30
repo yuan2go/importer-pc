@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,6 +12,12 @@ public partial class SupplyStationPosition : UserControl
     public SupplyStationPosition()
     {
         InitializeComponent();
+        DataContextChanged += (_, e) =>
+        {
+            if (e.OldValue is INotifyPropertyChanged old) old.PropertyChanged -= PositionChanged;
+            if (e.NewValue is INotifyPropertyChanged current) current.PropertyChanged += PositionChanged;
+            RefreshBarcodeDisplay();
+        };
         DataObject.AddPastingHandler(BarcodeEntry, (_, e) =>
         {
             var value = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
@@ -22,27 +29,58 @@ public partial class SupplyStationPosition : UserControl
     sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation);
     InputBasis? inputBasis;
     SubmitParcelBarcode? submitted;
-    bool submitting, overflow;
+    bool submitting, overflow, editing, updatingDisplay;
+    ParcelBarcodeInputKind inputKind = ParcelBarcodeInputKind.Keyboard;
+    void PositionChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(SupplyStationPositionViewModel.Barcode) or nameof(SupplyStationPositionViewModel.HasCurrentInput))
+        {
+            RefreshBarcodeDisplay();
+            if (editing && InputFeedback.Text.StartsWith("输入尚未提交", StringComparison.Ordinal)) InputFeedback.Text = DraftNotice;
+        }
+    }
+    void RefreshBarcodeDisplay()
+    {
+        if (editing || submitting || submitted is not null) return;
+        var value = DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p ? p.Barcode : "";
+        if (BarcodeEntry.Text == value) return;
+        updatingDisplay = true;
+        try { BarcodeEntry.Text = value; }
+        finally { updatingDisplay = false; }
+    }
+    void KeyboardSource_Click(object sender, RoutedEventArgs e) => SetInputKind(ParcelBarcodeInputKind.Keyboard);
+    void PdaSource_Click(object sender, RoutedEventArgs e) => SetInputKind(ParcelBarcodeInputKind.PdaKeyboard);
+    void SetInputKind(ParcelBarcodeInputKind value)
+    {
+        if (submitting || submitted is not null) return;
+        inputKind = value;
+        KeyboardSource.IsChecked = value == ParcelBarcodeInputKind.Keyboard;
+        PdaSource.IsChecked = value == ParcelBarcodeInputKind.PdaKeyboard;
+    }
     void CaptureInputBasis()
     {
         if (Host?.ViewModel is not { Fresh: true, Snapshot: { } snapshot } || DataContext is not SupplyStationPositionViewModel p) return;
         inputBasis = new(snapshot.RuntimeId, snapshot.Configuration.Revision, p.Input?.Observation.Id, p.Operation?.Id);
     }
+    string DraftNotice => DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p
+        ? "输入尚未提交；下方任务对应已读取条码：" + p.Barcode : "输入尚未提交。";
     void InputChanged(object sender, TextChangedEventArgs e)
     {
-        if (BarcodeEntry is null || submitting || submitted is not null) return;
+        if (BarcodeEntry is null || updatingDisplay || submitting || submitted is not null) return;
+        editing = true;
+        InputFeedback.Text = DraftNotice;
         if (BarcodeEntry.Text.Length == 0) { inputBasis = null; overflow = false; }
         else if (inputBasis is null) CaptureInputBasis();
     }
     void RebaseInput_Click(object sender, RoutedEventArgs e)
     {
         if (submitting || submitted is not null) { InputFeedback.Text = "先核对本次提交结果，不可创建第二命令。"; return; }
-        CaptureInputBasis(); InputFeedback.Text = "已更新输入基准，请确认条码属于当前位正在处理的包裹。"; BarcodeEntry.Focus();
+        CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = "已更新输入基准，请确认条码属于当前位正在处理的包裹。"; BarcodeEntry.Focus();
     }
     void ClearInput_Click(object sender, RoutedEventArgs e)
     {
         if (submitting || submitted is not null) { InputFeedback.Text = "先核对本次提交结果，不能通过清空输入解除原责任。"; return; }
-        BarcodeEntry.Clear(); overflow = false; inputBasis = null; InputFeedback.Text = "已清空本窗输入，当前作业保持。"; BarcodeEntry.Focus();
+        editing = true; BarcodeEntry.Clear(); overflow = false; inputBasis = null; InputFeedback.Text = "已清空本窗输入，当前作业保持。"; BarcodeEntry.Focus();
     }
     async void BarcodeEntry_KeyDown(object sender, KeyEventArgs e)
     {
@@ -65,14 +103,15 @@ public partial class SupplyStationPosition : UserControl
         { InputFeedback.Text = "当前作业输入不可用，请先恢复有效状态。"; return; }
         if (submitted is null)
         {
+            if (!editing) { InputFeedback.Text = "当前显示的是已读取条码；输入本次包裹条码后再提交。"; return; }
             if (overflow) { InputFeedback.Text = "输入不完整，请清空后重扫或重新输入。"; return; }
             if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = "请输入完整条码，或将PDA设为键盘输入并以回车结束。"; return; }
             if (inputBasis is null) CaptureInputBasis();
             if (inputBasis is not { } basis) { InputFeedback.Text = "输入基准未取得，请先核对当前位。"; return; }
             submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text,
-                InputKind.SelectedIndex == 1 ? ParcelBarcodeInputKind.PdaKeyboard : ParcelBarcodeInputKind.Keyboard, basis.Observation, basis.Operation);
+                inputKind, basis.Observation, basis.Operation);
         }
-        var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true; InputKind.IsEnabled = false;
+        var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true; KeyboardSource.IsEnabled = PdaSource.IsEnabled = false;
         SubmitBarcode.IsEnabled = false; RebaseInput.IsEnabled = false;
         InputFeedback.Text = "正在提交本次条码；请等待结果，不要重复扫描。";
         await vm.RunAsync(async () =>
@@ -87,7 +126,8 @@ public partial class SupplyStationPosition : UserControl
                 if (receipt.Status != "Pending")
                 {
                     submitted = null;
-                    if (receipt.Status == "Admitted") { BarcodeEntry.Clear(); inputBasis = null; }
+                    if (receipt.Status == "Conflict") RebaseInput.Visibility = Visibility.Visible;
+                    if (receipt.Status == "Admitted") { editing = false; inputBasis = null; InputFeedback.Text = ""; }
                 }
             }
             catch (ArgumentException error) { submitted = null; InputFeedback.Text = error.Message; }
@@ -97,9 +137,9 @@ public partial class SupplyStationPosition : UserControl
                 throw;
             }
         }, "提交或核对本位人工条码");
-        submitting = false; BarcodeEntry.IsReadOnly = submitted is not null; InputKind.IsEnabled = submitted is null;
+        submitting = false; BarcodeEntry.IsReadOnly = submitted is not null; KeyboardSource.IsEnabled = PdaSource.IsEnabled = submitted is null;
         SubmitBarcode.Content = submitted is null ? "提交" : "核对本次提交";
-        SubmitBarcode.IsEnabled = true; RebaseInput.IsEnabled = submitted is null;
+        SubmitBarcode.IsEnabled = true; RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay();
     }
     void Picture_Click(object sender, RoutedEventArgs e)
     {

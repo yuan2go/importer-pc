@@ -1,5 +1,7 @@
 # 文档索引
 
+2026-10-30 当前作业导航及条码输入以 [SM-NAVIGATION-INPUT-09](work-packages/WP-IPC-SM-NAVIGATION-INPUT-09.md) 为准：普通模式只显示作业/记录，管理模式增加设置/日志/调试；单一条码输入和任务区在离线/待配置时保留，底部提交。替代03四项入口常显、06置顶独立输入及全屏配置提示，历史证据保留。
+
 2026-10-30 PR156、PR158 顺序整合进 PR155 的来源、审查、定向验证及待验边界见 [08 报告](runtime/pr155-integration-08.md)与[工作包](work-packages/WP-IPC-PR155-INTEGRATION-08.md)。合入 main 不代表真实安装或现场验收通过。
 
 2026-10-29 D 盘预检与服务登记错误保全见 [D-DRIVE-INSTALL-01](runtime/d-drive-install-01.md) 和[工作包](work-packages/WP-IPC-D-DRIVE-INSTALL-01.md)。SYSTEM 权限漏检已复现并修复；C/D、D/D 真实 SCM 矩阵因 Windows 管理授权未取得仍 NOT_RUN，未宣称现场 1783 已修复。当前 C 盘数据未迁移。

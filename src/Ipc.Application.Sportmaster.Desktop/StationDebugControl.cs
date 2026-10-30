@@ -222,7 +222,7 @@ internal sealed class StationDebugControl : UserControl
         if (value.Frame is null) ClearPhoto(); Buttons();
     }
     void ClearPhoto() { photo.Source = null; imageHint.Visibility = Visibility.Visible; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
-    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); requestBarcode.Clear(); requestBody.Clear(); responseBody.Clear(); result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
+    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); requestBarcode.Clear(); requestBody.Clear(); responseBody.Clear(); result.ToolTip = send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
         if (photo.Source is null && current?.DeviceId == Position.ReaderId)

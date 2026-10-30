@@ -7,7 +7,7 @@ PASS STREAM-UI design layout places live video left and locked result right, wit
 PASS STREAM-UI all five existing sidebar destinations render vector icons while keeping their text and management guards
 CAPTURE camera-video-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
 CAPTURE camera-design-1600: 1600x1000 DIP, Windows DPI 1.25/1.25
-PASS STREAM-UI switching to the right camera immediately clears the left camera image
+PASS STREAM-UI switching to the right camera immediately clears the left camera image and original request tooltips
 PASS STREAM-UI right video uses its own stream while its unarmed decoder remains paused
 CAPTURE camera-video-1024: 1024x768 DIP, Windows DPI 1.25/1.25
 PASS STREAM-UI an online stream with no fresh frames clears stale video and reports stalled acquisition

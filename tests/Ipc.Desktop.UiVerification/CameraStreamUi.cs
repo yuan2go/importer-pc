@@ -60,7 +60,8 @@ static partial class Program
             await SetClient(window, 1600, 1000); await Flush();
             CaptureInternal(evidence, "camera-design-1600", (Grid)window.FindName("ClientArea"), lines);
             control.GetType().GetMethod("SelectPosition")!.Invoke(control, ["right"]); await Flush();
-            Check(image.Source is null, "switching to the right camera immediately clears the left camera image");
+            Check(image.Source is null && Field<TextBlock>(control, "result").ToolTip is null && Field<Button>(control, "send").ToolTip is null,
+                "switching to the right camera immediately clears the left camera image and original request tooltips");
             await Poll(live); h.Api(h.Right).Enqueue(blank, 1);
             await CameraRoundHarness.Until(async () => { await Poll(live); return image.Source is not null; });
             Check(h.Factory.Decoders[h.Right].Count == 0 && h.Factory.Sources[h.Right].ReadDiagnostics().Frames == 1, "right video uses its own stream while its unarmed decoder remains paused");

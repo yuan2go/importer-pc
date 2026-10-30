@@ -25,18 +25,18 @@ CAPTURE round-800-native: 800x420 DIP, Windows DPI 1.25/1.25
 PASS ROUND-UI window close does not stop or recreate the shared acquisition owner
 DIAG final-send ui=True; fresh=True; authoritative=True; application=True; feedback=
 DIAG final-round {
-  "Id": "07c0be0b3899424481a99014730273ea",
-  "SessionId": "ebaee5c5f7ad47f39f48d54ab6ff5e51",
+  "Id": "71d0fc77bf574e438384462c3ef01c75",
+  "SessionId": "1d0e9657572d473e98204d66ccc97f40",
   "DeviceId": "sportmaster.camera.left",
   "State": "Locked",
   "Detail": "\u672C\u8F6E\u8BFB\u7801\u5B8C\u6210\uFF0C\u5DF2\u81EA\u52A8\u6682\u505C\uFF1B\u7167\u7247\u548C\u6761\u7801\u4FDD\u6301\uFF0C\u7B49\u5F85\u624B\u52A8\u53D1\u9001\u6216\u518D\u6B21\u626B\u7801\u3002",
   "Frame": {
-    "Id": "865abf0aaa8d9630e1bc9c22d6f7e3092c5a0887f33dd90f409f33e74e9871ef",
-    "SessionId": "ebaee5c5f7ad47f39f48d54ab6ff5e51",
+    "Id": "2d3a6b63466285b43c7e5e7a293206cb2435829d7a294a076604af74920675d0",
+    "SessionId": "1d0e9657572d473e98204d66ccc97f40",
     "DeviceId": "sportmaster.camera.left",
-    "Epoch": "9bce2dc3a967414d951aad8576c82e15",
+    "Epoch": "f0fd820073984d40852cb32eec52d109",
     "FrameNumber": 5,
-    "CapturedAt": "2026-10-30T08:09:35.476947+00:00",
+    "CapturedAt": "2026-10-30T08:14:59.3487681+00:00",
     "Width": 495,
     "Height": 150,
     "Symbols": [
@@ -64,10 +64,10 @@ DIAG final-round {
         "Orientation": 0
       }
     ],
-    "DecodeMilliseconds": 5.8352,
-    "ObservationId": "bf0efc420b6b41789f05b68c76267281",
+    "DecodeMilliseconds": 5.634,
+    "ObservationId": "3c3c9578706c44e09e49a6e1665196b2",
     "SourceEventId": "mvs.frame.5",
-    "IsolatedSessionId": "ebaee5c5f7ad47f39f48d54ab6ff5e51",
+    "IsolatedSessionId": "1d0e9657572d473e98204d66ccc97f40",
     "OriginalSha256": "A5BD31E57C163E23C22C4BD42471DE7C8B98F4597B43084FD60B3412E2D44538",
     "ImageAvailable": true,
     "ImageState": "\u539F\u59CBMono8\uFF1B\u65E0\u635F\u538B\u7F29\uFF0C\u8BC6\u522B\u589E\u5F3A\u4E0D\u6539\u53D8\u6B64\u539F\u4EF6",
@@ -79,11 +79,11 @@ DIAG final-round {
     "DeviceAddress": "192.0.2.11"
   },
   "Barcode": "UI-ROUND-E",
-  "OperationId": "30a0cbeaa5a949088b276934043a60f7",
+  "OperationId": "04262fbc8621415a9470eea3ca2fc237",
   "RequestId": "820000005",
   "RequestBody": "{\u0022source\u0022:\u0022BAR\u0022,\u0022version\u0022:1,\u0022requestId\u0022:820000005,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022UI-ROUND-E\u0022,\u0022stationCode\u0022:\u0022TEST-LEFT\u0022,\u0022bcrCode\u0022:\u0022TEST-LEFT-READER\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
-  "RequestHash": "E2953CA41B9210936A4D44077471813AF0A05EC61F57BC0B5105C14D00B038CB",
-  "Target": "http://127.0.0.1:64899/rcs/sorter/api",
+  "RequestHash": "AF35C090E9A376421E1427D22C04A3D4E3206EBBA098A829C82C975C37AB1F3A",
+  "Target": "http://127.0.0.1:60752/rcs/sorter/api",
   "Result": "\u72B6\u6001\uFF1APrepared \u00B7 \u53D1\u9001\u5C1D\u8BD5\uFF1A0\nnull",
   "CanSend": true,
   "Revision": 39
@@ -97,23 +97,23 @@ DIAG final-dependencies {
   "Devices": [
     {
       "DeviceId": "sportmaster.camera.left",
-      "Epoch": "9bce2dc3a967414d951aad8576c82e15",
+      "Epoch": "f0fd820073984d40852cb32eec52d109",
       "Sequence": 4,
       "Health": "Ready",
-      "UpdatedAt": "2026-10-30T08:09:36.5226901+00:00",
-      "ConfirmedAt": "2026-10-30T08:09:36.5226901+00:00",
-      "ValidUntil": "2026-10-30T08:09:39.5226901+00:00",
+      "UpdatedAt": "2026-10-30T08:15:00.4810523+00:00",
+      "ConfirmedAt": "2026-10-30T08:15:00.4810523+00:00",
+      "ValidUntil": "2026-10-30T08:15:03.4810523+00:00",
       "Source": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=5; bytes=425700; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=4; candidates=4; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure=",
       "Invalidity": null
     },
     {
       "DeviceId": "sportmaster.camera.right",
-      "Epoch": "bad3212ee75745039028728348912897",
+      "Epoch": "50f070de15584e49962f1f5e83f2c099",
       "Sequence": 1,
       "Health": "Ready",
-      "UpdatedAt": "2026-10-30T08:09:36.5226809+00:00",
-      "ConfirmedAt": "2026-10-30T08:09:36.5226809+00:00",
-      "ValidUntil": "2026-10-30T08:09:39.5226809+00:00",
+      "UpdatedAt": "2026-10-30T08:15:00.4810523+00:00",
+      "ConfirmedAt": "2026-10-30T08:15:00.4810523+00:00",
+      "ValidUntil": "2026-10-30T08:15:03.4810523+00:00",
       "Source": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=1; bytes=74250; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=1; candidates=1; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure=",
       "Invalidity": null
     }
@@ -122,28 +122,28 @@ DIAG final-dependencies {
     {
       "InstanceId": "sportmaster.integration",
       "Ready": true,
-      "ConfirmedAt": "2026-10-30T08:09:36.5717301+00:00",
-      "ValidUntil": "2026-10-30T08:09:39.5717301+00:00",
+      "ConfirmedAt": "2026-10-30T08:15:00.8660548+00:00",
+      "ValidUntil": "2026-10-30T08:15:03.8660548+00:00",
       "Detail": "RCS client local lifecycle/configuration readiness only; Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed"
     },
     {
       "InstanceId": "sportmaster.camera.left",
       "Ready": true,
-      "ConfirmedAt": "2026-10-30T08:09:36.5226901+00:00",
-      "ValidUntil": "2026-10-30T08:09:39.5226901+00:00",
+      "ConfirmedAt": "2026-10-30T08:15:00.4810523+00:00",
+      "ValidUntil": "2026-10-30T08:15:03.4810523+00:00",
       "Detail": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=5; bytes=425700; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=4; candidates=4; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure="
     },
     {
       "InstanceId": "sportmaster.camera.right",
       "Ready": true,
-      "ConfirmedAt": "2026-10-30T08:09:36.5226809+00:00",
-      "ValidUntil": "2026-10-30T08:09:39.5226809+00:00",
+      "ConfirmedAt": "2026-10-30T08:15:00.4810523+00:00",
+      "ValidUntil": "2026-10-30T08:15:03.4810523+00:00",
       "Detail": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=1; bytes=74250; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=1; candidates=1; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure="
     }
   ],
   "Operations": [
     {
-      "Id": "30a0cbeaa5a949088b276934043a60f7",
+      "Id": "04262fbc8621415a9470eea3ca2fc237",
       "PositionId": "left",
       "State": "ResolvingWcs",
       "Stage": "Prepared",
@@ -151,7 +151,7 @@ DIAG final-dependencies {
       "RecoveryRequired": false
     },
     {
-      "Id": "aee1cafba7374320b52aa72be5f179f6",
+      "Id": "bbd362bd5bb44837b6f1cd40e390caae",
       "PositionId": "left",
       "State": "Abandoned",
       "Stage": "Cancelled",
@@ -159,7 +159,7 @@ DIAG final-dependencies {
       "RecoveryRequired": false
     },
     {
-      "Id": "c2d12b60571449829bc1b2d172e4f075",
+      "Id": "c3889a905ac445119a51c1920f28ab01",
       "PositionId": "right",
       "State": "Abandoned",
       "Stage": "Cancelled",
@@ -167,7 +167,7 @@ DIAG final-dependencies {
       "RecoveryRequired": false
     },
     {
-      "Id": "9fceb77c1b70409184c8cc81d0ba2b3d",
+      "Id": "313d572cf2fb415bb0436713c7378ff7",
       "PositionId": "left",
       "State": "Abandoned",
       "Stage": "Cancelled",
@@ -175,7 +175,7 @@ DIAG final-dependencies {
       "RecoveryRequired": false
     },
     {
-      "Id": "e5226694a51b4196867d6274f5000d32",
+      "Id": "97abbad8b53d4de79a41bb3c4fdf4b55",
       "PositionId": "left",
       "State": "SlotResolved",
       "Stage": "Accepted",

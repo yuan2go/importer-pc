@@ -1,0 +1,27 @@
+PASS RCS20: default new options preserve original frozen policy bytes and hash
+PASS RCS20: default strict multi-code refusal remains unchanged
+PASS RCS20: editing an inactive separator alone cannot relax the original strict no-filter guard
+PASS RCS20: explicit join preserves SDK order and duplicate multiplicity
+PASS RCS20: allow/exclusion filters run on each candidate before joining
+PASS RCS20: invalid delimiter, overlong joined payload and incomplete candidates refuse without truncation
+PASS RCS20: background writer enters with owned raw pixels
+PASS RCS20: blocked image IO does not block SDK acquisition or the three original RCS requests
+PASS RCS20: one joined string reaches actual HTTP RCS in each frozen original, without replay
+PASS RCS20: orderly shutdown waits for actual background original-image IO
+PASS RCS20: cancelled stop wait retains the actual pending raw-frame writers and their original memory
+PASS RCS20: archive completion releases all raw leases without changing original requests, attempts or replies
+PASS RCS20: lossless PNG contains the exact pre-contrast frame tied to this operation, not a later/normalized frame
+PASS RCS20: lossless PNG contains the exact pre-contrast frame tied to this operation, not a later/normalized frame
+PASS RCS20: lossless PNG contains the exact pre-contrast frame tied to this operation, not a later/normalized frame
+PASS RCS20: complete backup automatically includes every saved original-frame file with its exact custody hash
+PASS RCS20: restart marks unfinished archive Interrupted without photographing again or replaying the frozen request
+PASS RCS20: changed original image is reported explicitly without replacing evidence hashes or altering the accepted request
+PASS RCS20: stopped retention cleanup deletes only committed retired identities; live/unknown frame files remain untouched
+PASS RCS20: strictly rejected multi-code frame releases original pixels and produces no task, image or HTTP request
+PASS RCS20: background image Failed cannot clear Unknown, replace original body or add an attempt
+PASS RCS20: restart retains failed image and original Unknown independently without automatic replay
+PASS RCS20: original archive can finish while the actual frozen HTTP request remains in flight
+PASS RCS20: background image Saved cannot clear Unknown, replace original body or add an attempt
+PASS RCS20: later RCS timeout retains the earlier successful archive and exact frozen request instead of restoring Pending
+PASS RCS20: restart retains saved image and original Unknown independently without automatic replay
+SM_ORIGINAL_FRAME_PASS; synthetic SDK/decoder; actual PNG/SQLite/HTTP; hardware NOT_RUN; root=D:\DevCache\importer-pc\temp\ipc17-verification-8097d71986984e4aaea63890eb93b977

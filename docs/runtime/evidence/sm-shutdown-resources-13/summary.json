@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "work_package": "WP-IPC-SM-SHUTDOWN-RESOURCES-13",
+  "date": "2026-10-30",
+  "base_source_commit": "67ab87c1a1b146611504342c6ab080ed045231ec",
+  "branch": "codex/sm-shutdown-resource-13",
+  "passed_logs": [
+    "final-shutdown-resources.log",
+    "probe-fixed.log",
+    "resource-risks.log",
+    "sm-original-frame.log",
+    "final-mvs-offline-activation.log",
+    "final-camera-rounds.log",
+    "final-audit03-input.log",
+    "final-sportmaster-window-lifecycle.log",
+    "final-manual-supply.log",
+    "final-manual-rcs-debug.log",
+    "wpf-camera-round.log"
+  ],
+  "expected_pre_fix_failures": [
+    "probe-baseline.log",
+    "application-baseline.log"
+  ],
+  "inherited_failures_confirmed_on_main": [
+    "offline-main-baseline.log",
+    "acquisition-main-baseline.log"
+  ],
+  "not_passed": [
+    "final-acquisition-lifecycle.log"
+  ],
+  "corrected_retired_fixture_failures": [
+    "retired-viewport-field-failure.log",
+    "retired-viewport-second-reference.log"
+  ],
+  "discarded_incremental_binary_result": "post-baseline-stale-incremental.log",
+  "builds_zero_warnings_zero_errors": [
+    "application-rebuild-final.log",
+    "probe-build-fixed.log",
+    "desktop-build.log",
+    "wpf-build.log"
+  ],
+  "not_run": [
+    "physical MVS disconnect/close",
+    "real site RCS",
+    "system installation",
+    "published media startup",
+    "target-machine endurance"
+  ],
+  "count_basis": "PASS output lines, not field acceptance cases; window suite includes its completion marker. Probe reports checks=87.",
+  "tested_source_files": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "working_bytes_sha256": "40782f08999693d5fc10900b98be7357ff38e2ea52958e0625d3ac6ed8dc6a9d",
+      "canonical_git_blob": "3ddc0e135b462ccc796458fa5ab8639e4920d46c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "working_bytes_sha256": "2561b1483ed6df66ef7fe0f87fb60d124a6505110f1264ffe4db498d673699d4",
+      "canonical_git_blob": "5de20bbc2cfbccef2f8bcc7290b1e968d3d57055"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsInspection.cs",
+      "working_bytes_sha256": "55cd9e7fa7ff10e5803a52f10623d12496cd7e2eeaf75ca2121bdc799829195c",
+      "canonical_git_blob": "8530a44330c7342cd79757837959feb7e6a90c4b"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ShutdownResources.cs",
+      "working_bytes_sha256": "a169c3e96b9e435cc69ab60cf6124fc5d0451dea51eb7cc0a99ff446569f03d2",
+      "canonical_git_blob": "f8462b8568be5113d545b901f982da3f7e5c408c"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/MvsVerification.Shutdown.cs",
+      "working_bytes_sha256": "edbd526ca7638be32472753cdf9a8b04860366bba40c90aaf8d1a7d838fe7ba3",
+      "canonical_git_blob": "bad1a1bfd80243869b2faf1d4db03ea37cedb803"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/MvsOfflineActivation.cs",
+      "working_bytes_sha256": "066c680bda587f837f9344cf235b84133c571d7cd2d3359f09133c918205b068",
+      "canonical_git_blob": "9ffd4f7709a3364aa5c4b5bb1fca5fb8bbcad9bd"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterWindowLifetime.cs",
+      "working_bytes_sha256": "84999cf2b812f586917dcfd06a2cf5781d56adc376ab06e6672e7dbd291dd6aa",
+      "canonical_git_blob": "64d01017ec31eb95b992f88477e92c0957e5ed84"
+    }
+  ],
+  "logs": [
+    {
+      "path": "acquisition-main-baseline.log",
+      "sha256": "c33d7972c8a1637c034f76a41f75b7a8f4f5c53e6e73a431d8ef12e61df5fcaa",
+      "size_bytes": 53058,
+      "pass_lines": 23
+    },
+    {
+      "path": "acquisition-main-build.log",
+      "sha256": "0f283f21e8b489648bd2298d778d18ad016fd8fe49ab56b509857032a2b4a37e",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "application-baseline.log",
+      "sha256": "550728d9c5a7f388a19e1fd7cfd9c82bce21cad828f1b6b18b23d73eaa9e8796",
+      "size_bytes": 2691,
+      "pass_lines": 2
+    },
+    {
+      "path": "application-build-baseline.log",
+      "sha256": "a0b6f64e78b075a02f82fa34e038c21fcd01f6c844a5b5344bf27481cf845375",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "application-build-final.log",
+      "sha256": "d07e1486104c2696c6f4f01f5577a1b9a1b885b5617234b788667f10eac6f40e",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "application-build-fixed.log",
+      "sha256": "f0c4e9965831cd15237d671f4da88239a5b0bf5997bca6af0dfdba30111bcbbe",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "application-fixed.log",
+      "sha256": "977f10e0a49a80b5f3173f1927b707017d3913ad31daf780d7c95c994df19c8c",
+      "size_bytes": 1376,
+      "pass_lines": 14
+    },
+    {
+      "path": "application-rebuild-final.log",
+      "sha256": "1b48d8c62685f94e0ccaf8f782444266819900f2e44273cdef0a02cd5df752f0",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "desktop-build.log",
+      "sha256": "e0c2313c0df178eecc315e0f3b2aa69ee55c6742efdaac5069c538d838c1fbcb",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "final-acquisition-lifecycle.log",
+      "sha256": "4a84d1f58c5624a7c121de2b1b43acd8f73d5e353e9e87b895a929974d98e453",
+      "size_bytes": 53074,
+      "pass_lines": 23
+    },
+    {
+      "path": "final-audit03-input.log",
+      "sha256": "1aa070e960adc51af4f7249764d0e462755ec3d46c8e63d40b1db2af2cba4369",
+      "size_bytes": 1686,
+      "pass_lines": 21
+    },
+    {
+      "path": "final-camera-rounds.log",
+      "sha256": "255b011cb2bece75c31f224b89932c8b617f02fb0f193c1896dba6d88e36e484",
+      "size_bytes": 29765,
+      "pass_lines": 41
+    },
+    {
+      "path": "final-manual-rcs-debug.log",
+      "sha256": "6acb0502fe8b70f977ddb4c6f0668f48c42f19f925bafc0ba451c8a7f520e604",
+      "size_bytes": 1040,
+      "pass_lines": 11
+    },
+    {
+      "path": "final-manual-supply.log",
+      "sha256": "9fe6928ca7805b7ad9c6d08a043e21e4833e1d0761367a40d8f7a0b22dd2794a",
+      "size_bytes": 2214,
+      "pass_lines": 24
+    },
+    {
+      "path": "final-mvs-offline-activation.log",
+      "sha256": "a759f6aec4c7e94d149787371915b3858379a670a39078fb1df83be6c56c4bae",
+      "size_bytes": 1380,
+      "pass_lines": 12
+    },
+    {
+      "path": "final-shutdown-resources.log",
+      "sha256": "977f10e0a49a80b5f3173f1927b707017d3913ad31daf780d7c95c994df19c8c",
+      "size_bytes": 1376,
+      "pass_lines": 14
+    },
+    {
+      "path": "final-sportmaster-window-lifecycle.log",
+      "sha256": "bbb13ae8cc945b66a7bc5c6c6bc9e31ca5dfd4f149bf3ec7408584273fb9c406",
+      "size_bytes": 3376,
+      "pass_lines": 38
+    },
+    {
+      "path": "mvs-offline-activation.log",
+      "sha256": "acc17bee94058a06bc861ff365c31607eb858919af62ad12a7afb7e9ea9b86b4",
+      "size_bytes": 1081,
+      "pass_lines": 1
+    },
+    {
+      "path": "offline-main-baseline.log",
+      "sha256": "acc17bee94058a06bc861ff365c31607eb858919af62ad12a7afb7e9ea9b86b4",
+      "size_bytes": 1081,
+      "pass_lines": 1
+    },
+    {
+      "path": "offline-main-build.log",
+      "sha256": "309005d03241cdfa509bc12bf8a43c4bc52bd0134fc06a7f6ae593161115f36f",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "post-baseline-stale-incremental.log",
+      "sha256": "550728d9c5a7f388a19e1fd7cfd9c82bce21cad828f1b6b18b23d73eaa9e8796",
+      "size_bytes": 2691,
+      "pass_lines": 2
+    },
+    {
+      "path": "probe-baseline.log",
+      "sha256": "455af6954d08e2f14550651870ce64d31744ab339df092a81da532c54160e1f1",
+      "size_bytes": 811,
+      "pass_lines": 2
+    },
+    {
+      "path": "probe-build-baseline.log",
+      "sha256": "d513bba73dc64bc1ab1ca7cbda830df311d2c07e33778eac1d640178f63d5391",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "probe-build-fixed.log",
+      "sha256": "17d273e30c2d11dc5c6e9f1be69b490139714a5176752d5e8862fba0e5475e18",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "probe-fixed.log",
+      "sha256": "06228aed51579c932d5719fd03eb783fbd3bfb2be4306b1f9e8f8316b0d2c2b2",
+      "size_bytes": 7999,
+      "pass_lines": 87
+    },
+    {
+      "path": "resource-risks.log",
+      "sha256": "90fbe3f8d2a29ed8d64f3e60ae1395272ee3ebdde70b2d0f5986509fc3e18989",
+      "size_bytes": 1405,
+      "pass_lines": 13
+    },
+    {
+      "path": "retired-viewport-field-failure.log",
+      "sha256": "810762566622231c2bf35a9b932b46c1467dd8f64dd540a780e995bb9a0bfed8",
+      "size_bytes": 2891,
+      "pass_lines": 25
+    },
+    {
+      "path": "retired-viewport-second-reference.log",
+      "sha256": "f5aa63bd518578e83ec57c09912ba2ac616887bbc42d12c0bd3f86bad0097dd5",
+      "size_bytes": 3366,
+      "pass_lines": 31
+    },
+    {
+      "path": "sm-original-frame.log",
+      "sha256": "083efa126551a86234a1486f5397e3614b282fd9fb5970905120c59dd39c17db",
+      "size_bytes": 2786,
+      "pass_lines": 26
+    },
+    {
+      "path": "wpf-build.log",
+      "sha256": "d296cc5aa07b8ca805ab9cfbfdfa42ef12c1ce176f9c2dbd27edbb097a26cd62",
+      "size_bytes": 84,
+      "pass_lines": 0
+    },
+    {
+      "path": "wpf-camera-round.log",
+      "sha256": "17cf577ad0c7809e5bbc362cffd0f32529b5dbebd39da9cf8b31bb3585293498",
+      "size_bytes": 9259,
+      "pass_lines": 25
+    }
+  ],
+  "inherited_manifest_reconciliation": {
+    "stale_blob_rows": 50,
+    "missing_rows": 56,
+    "original_manifest_sha256": "8184539bce85e68482507f872829e5e2ed62a751838b92df053228ef4fed6796"
+  },
+  "parcel_flow_binary_sha256": "7d8f280985636f0ccf19715fdef114381a59bcdb081f15a338bac4fef1cff9bb",
+  "matching_binary_roles": [
+    "Application.Verification",
+    "Ipc.Desktop Sportmaster",
+    "ParcelFlow project output"
+  ]
+}

@@ -1,0 +1,26 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-cf37376855154498be3202a5c807a251
+Production configuration, explicit synthetic disconnected/deferred camera ports, real SQLite and built-in RCS over loopback; real SDK/site NOT_RUN.
+PASS MANUAL manual input without a camera/source code reaches RCS with an explicit null code and no fabricated acquisition
+PASS MANUAL manual availability is independent of both cameras; deferred=True
+PASS MANUAL manual input reaches the actual RCS adapter and accepted stage with no camera; deferred=True
+PASS MANUAL frozen original has real operator evidence/leading zeroes and no fabricated camera acquisition
+PASS MANUAL same command returns original without HTTP replay
+PASS MANUAL PDA source independently submits at the other position
+PASS MANUAL RCS offline has a precise rejection and no request
+PASS MANUAL software pause still blocks manual input
+PASS MANUAL manual availability allows resume without either camera
+PASS MANUAL invalid RCS response retains original Unknown after one attempt
+PASS MANUAL unresolved original blocks the same position without another HTTP request
+PASS MANUAL restart preserves original frozen bytes/Unknown and does not replay any manual request
+PASS MANUAL manual availability is independent of both cameras; deferred=False
+PASS MANUAL manual input reaches the actual RCS adapter and accepted stage with no camera; deferred=False
+PASS MANUAL frozen original has real operator evidence/leading zeroes and no fabricated camera acquisition
+PASS MANUAL same command returns original without HTTP replay
+PASS MANUAL PDA source independently submits at the other position
+PASS MANUAL RCS offline has a precise rejection and no request
+PASS MANUAL software pause still blocks manual input
+PASS MANUAL manual availability allows resume without either camera
+PASS MANUAL camera observation still requires a healthy camera; manual guard cannot admit it
+PASS MANUAL invalid RCS response retains original Unknown after one attempt
+PASS MANUAL unresolved original blocks the same position without another HTTP request
+PASS MANUAL restart preserves original frozen bytes/Unknown and does not replay any manual request

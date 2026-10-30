@@ -1,0 +1,595 @@
+Real MVS driver/ZXing/SQLite/built-in RCS, synthetic native APIs and loopback HTTP; real hardware/customer RCS NOT_RUN
+PASS ROUND explicit one-shot trigger establishes its software fence without a physical checklist or user explanation
+FROZEN-OFFLINE-DIAG {
+  "State": "Locked",
+  "CanSend": true,
+  "SendBlockedReason": null,
+  "Detail": "\u672C\u8F6E\u8BFB\u7801\u5B8C\u6210\uFF0C\u5DF2\u81EA\u52A8\u6682\u505C\uFF1B\u7167\u7247\u548C\u6761\u7801\u4FDD\u6301\uFF0C\u7B49\u5F85\u624B\u52A8\u53D1\u9001\u6216\u518D\u6B21\u626B\u7801\u3002",
+  "SameBody": true,
+  "Snapshot": {
+    "RuntimeId": "7e34d3db-17d6-4d4f-a1a5-32440890f67d",
+    "ApplicationId": "sportmaster",
+    "Revision": 8,
+    "State": "Blocked",
+    "Paused": true,
+    "BlockingReasons": [
+      "\u626B\u7801\u8C03\u8BD5\u6B63\u5728\u6309\u8F6E\u8FD0\u884C\uFF1B\u65B0\u76F8\u673A\u8F93\u5165\u4E0D\u4EA7\u751FRCS\u4E1A\u52A1\u8BF7\u6C42\uFF0C\u539F\u8BF7\u6C42\u53CAUnknown\u8D23\u4EFB\u4FDD\u6301\u3002",
+      "Software admission paused; this is not an emergency stop"
+    ],
+    "Operations": [
+      {
+        "Id": "8dc00d25fda040ad84505d5400a5befc",
+        "AdmissionId": "debug.54ed3ff34b214591bce7e98f16e0224f",
+        "ParcelCode": "FROZEN-OFFLINE",
+        "ObservationId": "DF368F0002C5F2FD603F869578AF409EDCF846622E233691024EA57E235FB89A",
+        "ObservedAt": "2026-10-30T10:19:56.0056891+00:00",
+        "ConfigurationHash": "74C8DFF5DA0939788D0E023875C8B16AB7466B414353C79569AB842FEA1FA1CF",
+        "FrozenConfiguration": {
+          "SchemaVersion": 3,
+          "ApplicationId": "sportmaster",
+          "StationId": "reference-17",
+          "Mode": "Simulation",
+          "Weight": {
+            "Source": "Disabled",
+            "Unit": "Kg",
+            "Precision": 3,
+            "ConfiguredValue": null,
+            "MaximumAgeMs": 3000,
+            "WaitTimeoutMs": 15000
+          },
+          "Reader": {
+            "Role": "parcel-reader",
+            "Driver": "hikrobot-mvs-reader",
+            "DeviceId": "sportmaster.camera.left",
+            "Revision": "1",
+            "ReplayFile": null,
+            "Parameters": {
+              "device.ip": "192.0.2.11",
+              "device.serial": "SYNTH-ROUND-0",
+              "entity.mode": "read-result",
+              "acquisition.trigger": "off",
+              "code.encoding": "utf-8"
+            }
+          },
+          "Scale": null,
+          "Wcs": {
+            "Kind": "integration",
+            "Implementation": "sportmaster-rcs",
+            "Version": "1.0.0",
+            "InstanceId": "sportmaster.integration",
+            "Target": "http://127.0.0.1:64604/rcs/sorter/api",
+            "Contract": "SPORTMASTER-RCS-SORTER-v1",
+            "Parameters": {
+              "zone-id": "71",
+              "project-id": "83",
+              "specified-chute": "false",
+              "request-id-base": "820000000",
+              "request-id-count": "100000",
+              "heartbeat-interval-seconds": "3600",
+              "left-station-code": "TEST-LEFT",
+              "left-bcr-code": "TEST-LEFT-READER",
+              "right-station-code": "TEST-RIGHT",
+              "right-bcr-code": "TEST-RIGHT-READER"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "Plc": null,
+          "Extensions": null,
+          "QueueCapacity": 64,
+          "TimeoutMs": 1500,
+          "MaximumOperations": 10000,
+          "SessionLifetimeMs": 28800000,
+          "WeightValidity": "UntilDispatch",
+          "Topology": {
+            "Readers": [
+              {
+                "Role": "parcel-reader",
+                "Driver": "hikrobot-mvs-reader",
+                "DeviceId": "sportmaster.camera.left",
+                "Revision": "1",
+                "ReplayFile": null,
+                "Parameters": {
+                  "device.ip": "192.0.2.11",
+                  "device.serial": "SYNTH-ROUND-0",
+                  "entity.mode": "read-result",
+                  "acquisition.trigger": "off",
+                  "code.encoding": "utf-8"
+                }
+              },
+              {
+                "Role": "parcel-reader",
+                "Driver": "hikrobot-mvs-reader",
+                "DeviceId": "sportmaster.camera.right",
+                "Revision": "1",
+                "ReplayFile": null,
+                "Parameters": {
+                  "device.ip": "192.0.2.12",
+                  "device.serial": "SYNTH-ROUND-1",
+                  "entity.mode": "read-result",
+                  "acquisition.trigger": "off",
+                  "code.encoding": "utf-8"
+                }
+              }
+            ],
+            "Positions": [
+              {
+                "Id": "left",
+                "ReaderDeviceId": "sportmaster.camera.left",
+                "CameraInstanceId": null,
+                "ScaleInstanceId": null
+              },
+              {
+                "Id": "right",
+                "ReaderDeviceId": "sportmaster.camera.right",
+                "CameraInstanceId": null,
+                "ScaleInstanceId": null
+              }
+            ]
+          },
+          "Retention": {
+            "ResidentHistory": 200,
+            "MinimumFreeBytes": 67108864
+          },
+          "StationCode": "SYNTHETIC-STATION",
+          "DeferredConnections": []
+        },
+        "ImplementationHashes": {
+          "sportmaster.integration": "synthetic-round-rcs-implementation"
+        },
+        "WeightPolicy": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Weight": null,
+        "State": "ResolvingWcs",
+        "Slot": null,
+        "Wcs": {
+          "Request": {
+            "Id": "ecb46a19eecb40ada0e368fc7298b961",
+            "ApplicationId": "sportmaster",
+            "OperationId": "8dc00d25fda040ad84505d5400a5befc",
+            "AdmissionId": "debug.54ed3ff34b214591bce7e98f16e0224f",
+            "Stage": "wcs-slot",
+            "Binding": {
+              "Kind": "integration",
+              "Implementation": "sportmaster-rcs",
+              "Version": "1.0.0",
+              "InstanceId": "sportmaster.integration",
+              "Target": "http://127.0.0.1:64604/rcs/sorter/api",
+              "Contract": "SPORTMASTER-RCS-SORTER-v1",
+              "Parameters": {
+                "zone-id": "71",
+                "project-id": "83",
+                "specified-chute": "false",
+                "request-id-base": "820000000",
+                "request-id-count": "100000",
+                "heartbeat-interval-seconds": "3600",
+                "left-station-code": "TEST-LEFT",
+                "left-bcr-code": "TEST-LEFT-READER",
+                "right-station-code": "TEST-RIGHT",
+                "right-bcr-code": "TEST-RIGHT-READER"
+              },
+              "Package": null,
+              "Module": null,
+              "Enabled": true
+            },
+            "ImplementationHash": "synthetic-round-rcs-implementation",
+            "ConfigurationHash": "74C8DFF5DA0939788D0E023875C8B16AB7466B414353C79569AB842FEA1FA1CF",
+            "Payload": "{\r\n  \u0022ParcelCode\u0022: \u0022FROZEN-OFFLINE\u0022,\r\n  \u0022AdmissionId\u0022: \u0022debug.54ed3ff34b214591bce7e98f16e0224f\u0022,\r\n  \u0022Weight\u0022: null,\r\n  \u0022Slot\u0022: null,\r\n  \u0022WcsRequestId\u0022: null,\r\n  \u0022Acquisition\u0022: {\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\r\n    \u0022Epoch\u0022: \u0022f3d1bbd46536474c9d3db3c31d26cd8d\u0022,\r\n    \u0022SourceEventId\u0022: \u0022mvs.frame.1\u0022,\r\n    \u0022AdmissionId\u0022: \u0022mvs.read.83417c9e2338d549f9d19a509a9f571c4f82234c\u0022,\r\n    \u0022ObservedAt\u0022: \u00222026-10-30T10:19:56.0056891\u002B00:00\u0022\r\n  },\r\n  \u0022PositionId\u0022: \u0022left\u0022,\r\n  \u0022ReaderBinding\u0022: {\r\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\r\n    \u0022Driver\u0022: \u0022hikrobot-mvs-reader\u0022,\r\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\r\n    \u0022Revision\u0022: \u00221\u0022,\r\n    \u0022ReplayFile\u0022: null,\r\n    \u0022Parameters\u0022: {\r\n      \u0022device.ip\u0022: \u0022192.0.2.11\u0022,\r\n      \u0022device.serial\u0022: \u0022SYNTH-ROUND-0\u0022,\r\n      \u0022entity.mode\u0022: \u0022read-result\u0022,\r\n      \u0022acquisition.trigger\u0022: \u0022off\u0022,\r\n      \u0022code.encoding\u0022: \u0022utf-8\u0022\r\n    }\r\n  }\r\n}",
+            "PayloadHash": "24215C399E9E54EBB8594DA12CA94AECF04DD94029CCD6F621CF0282DE5302F8",
+            "PreparedAt": "2026-10-30T10:19:56.1367622+00:00",
+            "IntegrationRequest": {
+              "RequestId": 820000001,
+              "ContentType": "application/json",
+              "Body": "{\u0022source\u0022:\u0022BAR\u0022,\u0022version\u0022:1,\u0022requestId\u0022:820000001,\u0022locale\u0022:\u0022zh_CN\u0022,\u0022data\u0022:[{\u0022index\u0022:1,\u0022command\u0022:\u0022sorter.task.dest_request\u0022,\u0022params\u0022:{\u0022zoneId\u0022:71,\u0022projectId\u0022:83,\u0022loadCode\u0022:\u0022FROZEN-OFFLINE\u0022,\u0022stationCode\u0022:\u0022TEST-LEFT\u0022,\u0022bcrCode\u0022:\u0022TEST-LEFT-READER\u0022,\u0022specifiedChute\u0022:false,\u0022chuteCode\u0022:null,\u0022quantity\u0022:1}}]}",
+              "BodyHash": "B01EA66E02AFAD552255D31A502DA76C1D9D0CCA67A62FD10C9012D38BE900F7"
+            }
+          },
+          "State": "Prepared",
+          "Attempts": 0,
+          "Replies": [],
+          "Failure": null
+        },
+        "Plc": null,
+        "Reason": "\u9694\u79BB\u4E2D\u7684\u72EC\u7ACB\u624B\u52A8\u6D4B\u8BD5\u610F\u56FE\uFF1B\u672A\u53D1\u9001",
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "f3d1bbd46536474c9d3db3c31d26cd8d",
+          "SourceEventId": "mvs.frame.1",
+          "AdmissionId": "mvs.read.83417c9e2338d549f9d19a509a9f571c4f82234c",
+          "ObservedAt": "2026-10-30T10:19:56.0056891+00:00"
+        },
+        "PositionId": "left",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "hikrobot-mvs-reader",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null,
+          "Parameters": {
+            "device.ip": "192.0.2.11",
+            "device.serial": "SYNTH-ROUND-0",
+            "entity.mode": "read-result",
+            "acquisition.trigger": "off",
+            "code.encoding": "utf-8"
+          }
+        },
+        "DebugRequest": {
+          "SessionId": "603c54f222614ce597cc97a5802e8d9b",
+          "RoundId": "54ed3ff34b214591bce7e98f16e0224f",
+          "FrameId": "1c06b9c1a41f36b08c59b14f907eb3ed1e029100402dd453b0ca08b237943719",
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "f3d1bbd46536474c9d3db3c31d26cd8d",
+          "SourceEventId": "mvs.frame.1",
+          "OriginalSha256": "3CB41C787BE75CE2E2F7FA1872AC4E61AC7833778CA2A6724206A38F6B1714E0",
+          "ManagementActor": "management-mode.a7752607e581488e8e0bca22ca313ec4"
+        }
+      }
+    ],
+    "Health": [
+      {
+        "InstanceId": "sportmaster.integration",
+        "Ready": true,
+        "ConfirmedAt": "2026-10-30T10:19:57.2242569+00:00",
+        "ValidUntil": "2026-10-30T10:20:00.2242569+00:00",
+        "Detail": "RCS client local lifecycle/configuration readiness only; Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed"
+      },
+      {
+        "InstanceId": "sportmaster.camera.left",
+        "Ready": false,
+        "ConfirmedAt": "2026-10-30T10:19:57.2229388+00:00",
+        "ValidUntil": "2026-10-30T10:19:57.2229388+00:00",
+        "Detail": "Health:Disconnected"
+      },
+      {
+        "InstanceId": "sportmaster.camera.right",
+        "Ready": true,
+        "ConfirmedAt": "2026-10-30T10:19:57.1464889+00:00",
+        "ValidUntil": "2026-10-30T10:20:00.1464889+00:00",
+        "Detail": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=0; bytes=0; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=0; candidates=0; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure="
+      }
+    ],
+    "Configuration": {
+      "Revision": 2,
+      "Effective": {
+        "SchemaVersion": 3,
+        "ApplicationId": "sportmaster",
+        "StationId": "reference-17",
+        "Mode": "Simulation",
+        "Weight": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Reader": {
+          "Role": "parcel-reader",
+          "Driver": "hikrobot-mvs-reader",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null,
+          "Parameters": {
+            "device.ip": "192.0.2.11",
+            "device.serial": "SYNTH-ROUND-0",
+            "entity.mode": "read-result",
+            "acquisition.trigger": "off",
+            "code.encoding": "utf-8"
+          }
+        },
+        "Scale": null,
+        "Wcs": {
+          "Kind": "integration",
+          "Implementation": "sportmaster-rcs",
+          "Version": "1.0.0",
+          "InstanceId": "sportmaster.integration",
+          "Target": "http://127.0.0.1:64604/rcs/sorter/api",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1",
+          "Parameters": {
+            "zone-id": "71",
+            "project-id": "83",
+            "specified-chute": "false",
+            "request-id-base": "820000000",
+            "request-id-count": "100000",
+            "heartbeat-interval-seconds": "3600",
+            "left-station-code": "TEST-LEFT",
+            "left-bcr-code": "TEST-LEFT-READER",
+            "right-station-code": "TEST-RIGHT",
+            "right-bcr-code": "TEST-RIGHT-READER"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Plc": null,
+        "Extensions": null,
+        "QueueCapacity": 64,
+        "TimeoutMs": 1500,
+        "MaximumOperations": 10000,
+        "SessionLifetimeMs": 28800000,
+        "WeightValidity": "UntilDispatch",
+        "Topology": {
+          "Readers": [
+            {
+              "Role": "parcel-reader",
+              "Driver": "hikrobot-mvs-reader",
+              "DeviceId": "sportmaster.camera.left",
+              "Revision": "1",
+              "ReplayFile": null,
+              "Parameters": {
+                "device.ip": "192.0.2.11",
+                "device.serial": "SYNTH-ROUND-0",
+                "entity.mode": "read-result",
+                "acquisition.trigger": "off",
+                "code.encoding": "utf-8"
+              }
+            },
+            {
+              "Role": "parcel-reader",
+              "Driver": "hikrobot-mvs-reader",
+              "DeviceId": "sportmaster.camera.right",
+              "Revision": "1",
+              "ReplayFile": null,
+              "Parameters": {
+                "device.ip": "192.0.2.12",
+                "device.serial": "SYNTH-ROUND-1",
+                "entity.mode": "read-result",
+                "acquisition.trigger": "off",
+                "code.encoding": "utf-8"
+              }
+            }
+          ],
+          "Positions": [
+            {
+              "Id": "left",
+              "ReaderDeviceId": "sportmaster.camera.left",
+              "CameraInstanceId": null,
+              "ScaleInstanceId": null
+            },
+            {
+              "Id": "right",
+              "ReaderDeviceId": "sportmaster.camera.right",
+              "CameraInstanceId": null,
+              "ScaleInstanceId": null
+            }
+          ]
+        },
+        "Retention": {
+          "ResidentHistory": 200,
+          "MinimumFreeBytes": 67108864
+        },
+        "StationCode": "SYNTHETIC-STATION",
+        "DeferredConnections": []
+      },
+      "Pending": null,
+      "Status": "Effective",
+      "Failure": null,
+      "Activation": null,
+      "Confirmation": {
+        "Source": "Seed",
+        "EffectiveHash": "74C8DFF5DA0939788D0E023875C8B16AB7466B414353C79569AB842FEA1FA1CF",
+        "Required": false,
+        "State": "Confirmed",
+        "Attempts": [
+          {
+            "Id": "523df3b10a0e4abab7495edb65fb60ba",
+            "StartedAt": "2026-10-30T10:19:54.9758748+00:00",
+            "FinishedAt": "2026-10-30T10:19:55.1367384+00:00",
+            "Outcome": "ResourcesStarted",
+            "Failure": null
+          }
+        ],
+        "ConfirmedBy": "initial-resource-startup",
+        "ConfirmedAt": "2026-10-30T10:19:55.1372183+00:00"
+      },
+      "InitialRepair": null
+    },
+    "CurrentOperator": null,
+    "Availability": {
+      "Admit": false,
+      "Resume": false,
+      "Configure": false,
+      "ContinuePrepared": [],
+      "ContinueUpload": [],
+      "AbandonUnsubmitted": [
+        "8dc00d25fda040ad84505d5400a5befc"
+      ]
+    },
+    "Positions": [
+      {
+        "Id": "left",
+        "ReaderDeviceId": "sportmaster.camera.left",
+        "Admit": false,
+        "CurrentOperation": null,
+        "BlockingReasons": [
+          "\u4F9B\u5305\u5DF2\u6682\u505C\uFF0C\u8BF7\u6062\u590D\u63A5\u6536\u540E\u63D0\u4EA4\u3002",
+          "\u8C03\u8BD5\u9694\u79BB\u5C1A\u672A\u7ED3\u675F\uFF0C\u8BF7\u5148\u79FB\u9664\u6D4B\u8BD5\u4EF6\u5E76\u786E\u8BA4\u6E05\u573A\u3002",
+          "\u672C\u4F4D\u539F\u4F5C\u4E1A\u5C1A\u672A\u7ED3\u675F\u6216\u539F\u8BF7\u6C42\u7ED3\u679C\u5F85\u6838\u5BF9\uFF0C\u8BF7\u5148\u5904\u7406\u539F\u8D23\u4EFB\u3002",
+          "Global software pause"
+        ],
+        "MainResultComplete": true,
+        "BackgroundComplete": false,
+        "BarcodeInput": {
+          "Camera": false,
+          "Manual": false,
+          "ManualBlockingReasons": [
+            "\u4F9B\u5305\u5DF2\u6682\u505C\uFF0C\u8BF7\u6062\u590D\u63A5\u6536\u540E\u63D0\u4EA4\u3002",
+            "\u8C03\u8BD5\u9694\u79BB\u5C1A\u672A\u7ED3\u675F\uFF0C\u8BF7\u5148\u79FB\u9664\u6D4B\u8BD5\u4EF6\u5E76\u786E\u8BA4\u6E05\u573A\u3002",
+            "\u672C\u4F4D\u539F\u4F5C\u4E1A\u5C1A\u672A\u7ED3\u675F\u6216\u539F\u8BF7\u6C42\u7ED3\u679C\u5F85\u6838\u5BF9\uFF0C\u8BF7\u5148\u5904\u7406\u539F\u8D23\u4EFB\u3002"
+          ]
+        }
+      },
+      {
+        "Id": "right",
+        "ReaderDeviceId": "sportmaster.camera.right",
+        "Admit": false,
+        "CurrentOperation": null,
+        "BlockingReasons": [
+          "\u4F9B\u5305\u5DF2\u6682\u505C\uFF0C\u8BF7\u6062\u590D\u63A5\u6536\u540E\u63D0\u4EA4\u3002",
+          "\u8C03\u8BD5\u9694\u79BB\u5C1A\u672A\u7ED3\u675F\uFF0C\u8BF7\u5148\u79FB\u9664\u6D4B\u8BD5\u4EF6\u5E76\u786E\u8BA4\u6E05\u573A\u3002",
+          "Global software pause"
+        ],
+        "MainResultComplete": true,
+        "BackgroundComplete": true,
+        "BarcodeInput": {
+          "Camera": false,
+          "Manual": false,
+          "ManualBlockingReasons": [
+            "\u4F9B\u5305\u5DF2\u6682\u505C\uFF0C\u8BF7\u6062\u590D\u63A5\u6536\u540E\u63D0\u4EA4\u3002",
+            "\u8C03\u8BD5\u9694\u79BB\u5C1A\u672A\u7ED3\u675F\uFF0C\u8BF7\u5148\u79FB\u9664\u6D4B\u8BD5\u4EF6\u5E76\u786E\u8BA4\u6E05\u573A\u3002"
+          ]
+        }
+      }
+    ],
+    "Devices": [
+      {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "026c4fb1dc464014a94048f4e97fe4cf",
+        "Sequence": 0,
+        "Health": "Disconnected",
+        "UpdatedAt": "2026-10-30T10:19:57.2229388+00:00",
+        "ConfirmedAt": "2026-10-30T10:19:57.2229388+00:00",
+        "ValidUntil": null,
+        "Source": "SDK:hikrobot-mvs-reader; phase=disconnected; frames=0; bytes=0; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=0; candidates=0; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure=ObservationConnectionException: \u914D\u7F6E\u7684MVS\u76F8\u673A\u672A\u53D1\u73B0\u6216\u8BBE\u5907\u8EAB\u4EFD\u4E0D\u5339\u914D\uFF1B\u8FDE\u63A5\u4FDD\u6301\u79BB\u7EBF\uFF0C\u539F\u53C2\u6570\u4FDD\u7559\u3002",
+        "Invalidity": null
+      },
+      {
+        "DeviceId": "sportmaster.camera.right",
+        "Epoch": "12a9d887e491485e8ff422f2f2e4a1e8",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-30T10:19:57.1464889+00:00",
+        "ConfirmedAt": "2026-10-30T10:19:57.1464889+00:00",
+        "ValidUntil": "2026-10-30T10:20:00.1464889+00:00",
+        "Source": "SDK:hikrobot-mvs-reader; phase=read-paused; frames=0; bytes=0; decoder=ZXingCpp-3.1.1; businessReady=ApplicationGuardsRequired; readResults=0; candidates=0; emptyFrames=0; skippedVideoFrames=0; videoGapEvents=0; failure=",
+        "Invalidity": null
+      }
+    ],
+    "Capacity": {
+      "Unresolved": 1,
+      "Resident": 1,
+      "Archived": 0,
+      "MaximumUnresolved": 10000,
+      "Available": true,
+      "Policy": "Archive retains originals; configured expiry requires stopped authorized maintenance and a complete backup; unresolved responsibility and permanent identity/numeric fences remain",
+      "FreeStorageBytes": 7493799936,
+      "MinimumFreeBytes": 67108864
+    },
+    "IdentityConflicts": [],
+    "AuxiliaryReasons": [
+      "Diagnostics:{\r\n  \u0022State\u0022: \u0022Running\u0022,\r\n  \u0022QueueDepth\u0022: 2,\r\n  \u0022Dropped\u0022: 0,\r\n  \u0022DebugDropped\u0022: 0,\r\n  \u0022Written\u0022: 17,\r\n  \u0022LastFailure\u0022: null,\r\n  \u0022CurrentFailure\u0022: null,\r\n  \u0022LastProgressUtcTicks\u0022: 639289523972309152\r\n}",
+      "IntegrationIdBudget:{\r\n  \u0022First\u0022: 820000001,\r\n  \u0022Last\u0022: 820100000,\r\n  \u0022PermanentHighWater\u0022: 820000001,\r\n  \u0022Remaining\u0022: 99999,\r\n  \u0022State\u0022: \u0022Available\u0022\r\n}",
+      "StorageForecast:{\r\n  \u0022Result\u0022: \u0022InsufficientSamples\u0022,\r\n  \u0022Jobs\u0022: 0,\r\n  \u0022SampleSeconds\u0022: 0,\r\n  \u0022DatabaseGrowthBytes\u0022: 0,\r\n  \u0022BytesPerJob\u0022: null,\r\n  \u0022RemainingDays\u0022: null,\r\n  \u0022Basis\u0022: \u0022Recent physical SQLite page growth and admission sequence; exclude backups/images/logs; no deletion or site guarantee\u0022\r\n}",
+      "WalCheckpoint:{\r\n  \u0022At\u0022: \u00222026-10-30T10:19:55.1650965\u002B00:00\u0022,\r\n  \u0022BytesBefore\u0022: 341992,\r\n  \u0022BytesAfter\u0022: 341992,\r\n  \u0022HighWaterBytes\u0022: 341992,\r\n  \u0022Busy\u0022: 0,\r\n  \u0022LogFrames\u0022: 83,\r\n  \u0022CheckpointedFrames\u0022: 83,\r\n  \u0022BacklogFrames\u0022: 0,\r\n  \u0022LogicalReclaimed\u0022: false,\r\n  \u0022Warning\u0022: false,\r\n  \u0022Policy\u0022: \u0022PASSIVE only; checkpointed WAL can be reused without physical truncation; never delete active WAL\u0022\r\n}",
+      "HistoryRetentionNotConfigured: select 7..30 days in system settings; no expiry deletion",
+      "Workers:[\r\n  {\r\n    \u0022Position\u0022: \u0022left\u0022,\r\n    \u0022State\u0022: \u0022Waiting\u0022,\r\n    \u0022Received\u0022: 1,\r\n    \u0022Processed\u0022: 1,\r\n    \u0022Interrupted\u0022: 0,\r\n    \u0022QueueDepth\u0022: 0,\r\n    \u0022OldestWaiting\u0022: null,\r\n    \u0022LastProgress\u0022: \u00222026-10-30T10:19:56.0867984\u002B00:00\u0022,\r\n    \u0022Failure\u0022: null,\r\n    \u0022ProcessingSince\u0022: null\r\n  },\r\n  {\r\n    \u0022Position\u0022: \u0022right\u0022,\r\n    \u0022State\u0022: \u0022Waiting\u0022,\r\n    \u0022Received\u0022: 0,\r\n    \u0022Processed\u0022: 0,\r\n    \u0022Interrupted\u0022: 0,\r\n    \u0022QueueDepth\u0022: 0,\r\n    \u0022OldestWaiting\u0022: null,\r\n    \u0022LastProgress\u0022: null,\r\n    \u0022Failure\u0022: null,\r\n    \u0022ProcessingSince\u0022: null\r\n  }\r\n]",
+      "Reader confirmation missing/expired",
+      "Capability unavailable: sportmaster.camera.left"
+    ],
+    "Inputs": [
+      {
+        "PositionId": "left",
+        "Observation": {
+          "Id": "1c932e1daf4c4a538f42221ac4d51d5f",
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "f3d1bbd46536474c9d3db3c31d26cd8d",
+          "SourceEventId": "mvs.frame.1",
+          "Sequence": 1,
+          "AdmissionId": "mvs.read.83417c9e2338d549f9d19a509a9f571c4f82234c",
+          "Kind": "Read",
+          "Codes": [
+            "FROZEN-OFFLINE"
+          ],
+          "PackageQuantity": null,
+          "ObservedAt": "2026-10-30T10:19:56.0056891+00:00",
+          "InspectionSessionId": "603c54f222614ce597cc97a5802e8d9b",
+          "CaptureSessionId": "603c54f222614ce597cc97a5802e8d9b"
+        },
+        "Outcome": "Blocked",
+        "Reason": "CameraInspectionIsolated:603c54f222614ce597cc97a5802e8d9b; \u5B9E\u673A\u8C03\u8BD5\u8F93\u5165\uFF0C\u4EC5\u7559\u8BC1\uFF0C\u4E0D\u521B\u5EFA\u4F5C\u4E1A\u6216\u8BF7\u6C42\uFF0C\u7ED3\u675F\u540E\u4E0D\u56DE\u653E",
+        "OperationId": null,
+        "RecordedAt": "2026-10-30T10:19:56.0671552+00:00",
+        "ReaderBinding": {
+          "Role": "parcel-reader",
+          "Driver": "hikrobot-mvs-reader",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null,
+          "Parameters": {
+            "device.ip": "192.0.2.11",
+            "device.serial": "SYNTH-ROUND-0",
+            "entity.mode": "read-result",
+            "acquisition.trigger": "off",
+            "code.encoding": "utf-8"
+          }
+        },
+        "BarcodeSelection": {
+          "Outcome": "StrictSingleCode",
+          "SelectedCode": "FROZEN-OFFLINE",
+          "Matches": 1,
+          "RuleHash": null,
+          "Detail": "\u4E25\u683C\u5355\u7801\uFF1B\u672A\u5E94\u7528\u7B5B\u9009\u89C4\u5219"
+        }
+      }
+    ],
+    "BackupScheduleStatus": {
+      "Enabled": false,
+      "Outcome": "Disabled",
+      "Detail": null,
+      "CheckedAt": null,
+      "NextDue": null,
+      "LastSuccessfulAt": null,
+      "LastSuccessfulBackup": null,
+      "MaximumSets": null,
+      "Directory": null
+    },
+    "HasPendingConfiguration": false
+  }
+}
+PASS ROUND a verified frozen frame/request remains sendable when its optional camera disconnects; no epoch rebinding or payload rewrite
+PASS ROUND explicit send after camera loss posts the exact original request once
+PASS ROUND stale page cleanup cannot close another current round
+PASS ROUND one-shot lifecycle cleanup needs no physical checklist and never replays an HTTP request
+PASS ROUND round evidence requires management authority
+PASS ROUND isolated one-shot scope is authoritative before scanning
+PASS ROUND scope starts decode-closed while the single native owner still returns SDK loans
+PASS ROUND arm opens a clean round without a request or old photo
+PASS ROUND NoRead continues the same round without a fabricated result
+PASS ROUND real ZXing multi-candidate frame is not silently reduced to the first code
+PASS ROUND unique winner locks its exact frame and prepares an eligible manual request: 本轮读码完成，已自动暂停；照片和条码保持，等待手动发送或再次扫码。
+PASS ROUND persisted original equals pre-contrast bytes for the selected frame
+PASS ROUND image geometry equals actual ZXing coordinates from that one frame
+PASS ROUND later parcels and the unselected camera cannot decode/overwrite the frozen winner
+PASS ROUND independent debug intent carries the genuine source acquisition while the original observation remains blocked
+PASS ROUND request JSON auto-fill is the actual frozen T1 with zero HTTP attempts
+PASS ROUND tampered request hash cannot send
+PASS ROUND explicit send posts exactly the frozen JSON once and records a genuinely Accepted stage
+PASS ROUND fresh command cannot resend an attempted request
+PASS ROUND same-command lookup and new-command rejection preserve one attempt
+PASS ROUND again-scan clears all round evidence and results before the next frame
+PASS ROUND same barcode on another round retains another frame and never auto-sends
+PASS ROUND stale multi-window round CAS cannot replace the current round
+PASS ROUND next round cancels only the old never-attempted request
+PASS ROUND sending round cannot be replaced while HTTP is in flight
+PASS ROUND scene clearance cannot erase an in-flight request
+PASS ROUND revoked management interrupts the wait without claiming no external effect
+PASS ROUND authority cancellation retains Unknown and one attempted request without exposing privileged JSON
+PASS ROUND reauthorized custody exposes the unchanged original JSON
+PASS ROUND reauthorization/query never replays Unknown
+PASS ROUND restart preserves original Unknown and the persistent isolation fence
+PASS ROUND recovered isolation starts decode-closed and does not replay an old round
+PASS ROUND explicit clearance keeps unresolved original responsibility
+PASS ROUND cancelling SDK cutover does not certify native completion
+PASS ROUND cancelled native cutover retains one owner and isolation without an HTTP request
+PASS ROUND SDK cache-clear failure is not reported as a completed scan trigger
+PASS ROUND failed SDK cutover preserves isolation and has no request/photo substitution
+PASS ROUND RCS business rejection retains its actual response and single attempt
+PASS ROUND rejection lookup and explicit clearance do not resubmit
+PASS ROUND missing acquisition proof keeps diagnostic pixels but cannot invent a sendable request or business intent

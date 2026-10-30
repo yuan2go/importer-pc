@@ -1,0 +1,13 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-c75ff9dbb41d4c2fa008d41bda5121ca
+Synthetic camera ports; real SQLite and built-in RCS HTTP. No real hardware/site acceptance.
+PASS prepare with no cameras/camera codes freezes a manual request without image or HTTP effect
+PASS same prepare command retains the same original request
+PASS changed-content prepare cannot reuse command identity
+PASS manual debug keeps operator evidence separate from physical camera evidence
+PASS no camera code is invented in manual debug HTTP payload
+PASS explicit manual send reaches the actual RCS adapter exactly once
+PASS repeat send does not replay; test destination is not projected as a production parcel
+PASS unknown manual debug result retains one original attempt
+PASS new manual debug request cannot bypass unresolved original
+PASS restart preserves manual debug frozen bytes/Unknown and never replays
+PASS leaving a manual debug page cancels only its unsent intent, restores ordinary manual admission and never sends HTTP

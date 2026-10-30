@@ -165,7 +165,9 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
             (HasUncertainOriginal ? "原作业结果待核对。" : BlockingReasons) : "") :
         Operation is { } op && !CurrentTaskAvailable ? ParcelPresentation.RcsException(op) ?? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : Operation is null ? IdleReason : BlockingReasons;
     string IdleReason => owner.Snapshot is not { } s ? "等待状态读取。" :
-        ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, ReaderId) ? "相机尚未配置，请维护人员完成相机设置。" :
+        s.Positions?.SingleOrDefault(p => p.Id == PositionId) is { Admit: true } ? "" :
+        s.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput is { ManualBlockingReasons.Length: > 0 } input ? string.Join("；", input.ManualBlockingReasons) :
+        ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, ReaderId) ? "相机尚未配置，可输入条码；请核对RCS和本位业务编码。" :
         s.Configuration.Effective.Wcs is { } w && ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId) ? "RCS 尚未配置，请维护人员完成服务设置。" :
         s.Paused ? "供包已暂停。" : s.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Admit == true ? "" :
         "本位尚未满足供包条件，请维护人员查看诊断。";
@@ -185,7 +187,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string SelectedCode => Input?.BarcodeSelection?.SelectedCode ??
         (Input is { Outcome: ParcelInputOutcome.Admitted } && Operation is { } op && Input.OperationId == op.Id ? op.ParcelCode : "未选中");
     public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
-    public string ScanSummary => Input is null ? "等待本位相机读码" : (Input.Observation.OperatorInput is { } entry ? (entry.Kind == "PdaKeyboard" ? "PDA键盘输入 " : "手动键盘输入 ") : "相机读取 ") + ScanTime + " · 候选 " + Input.Observation.Codes.Length + " 项";
+    public string ScanSummary => Input is null ? "等待相机扫码或输入条码" : (Input.Observation.OperatorInput is { } entry ? (entry.Kind == "PdaKeyboard" ? "PDA键盘输入 " : "手动键盘输入 ") : "相机读取 ") + ScanTime + " · 候选 " + Input.Observation.Codes.Length + " 项";
     public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
     public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.SlotSize(Operation!.Slot!, IsCompact);
     public bool NeedsAttention => !owner.Fresh || InputUnadmitted || HasUncertainOriginal || Presentation.Foreground is "#B52F38" or "#895509";

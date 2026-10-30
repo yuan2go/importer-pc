@@ -13,7 +13,6 @@ public sealed partial class SupplyStationViewModel
         {
             if (Snapshot is not { } s) return [];
             var missing = new List<string>(); var c = s.Configuration.Effective;
-            if (!ParcelBindings.Readers(c).Any(r => !ParcelConnectionSetup.IsDeferred(c, r.DeviceId))) missing.Add("左相机或右相机（配置一台即可）");
             if (c.Wcs is null || ParcelConnectionSetup.IsDeferred(c, c.Wcs.InstanceId)) missing.Add("RCS");
             return missing.ToArray();
         }
@@ -23,7 +22,7 @@ public sealed partial class SupplyStationViewModel
         Snapshot?.Operations.Any(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) != true;
     public string SetupHeading => $"还差 {MissingConnections.Length} 项连接配置";
     public string SetupItems => string.Join("、", MissingConnections);
-    public string SetupInstruction => "至少配置并启用一台相机，以及 RCS 服务。保存并重启后，可使用已就绪相机对应的投递位。";
+    public string SetupInstruction => "配置并启用 RCS 和本位条码来源编码后，可手动输入供包；相机可稍后配置。";
     public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "等待维护完成" :
         Snapshot?.Positions is { } positions && positions.Any(p => p.Admit)
             ? positions.All(p => p.Admit) ? "可以供包" : string.Join("、", positions.Where(p => p.Admit).Select(p => p.Id == "left" ? "左投递位" : p.Id == "right" ? "右投递位" : p.Id)) + "可以供包" : "暂不能供包";
@@ -51,7 +50,7 @@ public sealed partial class SupplyStationViewModel
     {
         if (!Fresh || Snapshot is not { } s) return "状态读取已中断。先恢复状态读取，再检查相机连接。";
         if (ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, position.ReaderId))
-            return "此相机暂未启用；可使用另一台已就绪相机。需要启用时填写连接参数，保存并重启。";
+            return "此相机暂未启用；可手动输入条码供包。需要扫码时填写连接参数，保存并重启。";
         var device = s.Devices?.SingleOrDefault(d => d.DeviceId == position.ReaderId);
         if (device is null) return "尚未收到相机状态，原因未确认。请核对驱动参数并查看日志。";
         if (device.Health == DeviceHealth.Unknown && device.Source.Contains("decoder=Unavailable", StringComparison.Ordinal))

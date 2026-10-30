@@ -29,6 +29,9 @@ internal sealed class StationDebugControl : UserControl
     readonly Grid imageLayer = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, ClipToBounds = true };
     readonly ScrollViewer viewport = new() { MinHeight = 280, Height = 420, Background = Brush("#252B33"), HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly CheckBox overlay = new() { Content = "绿色框显示条码位置", IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
+    readonly TextBlock imageHint = new() { Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。", Foreground = Brush("#E0E5EB"),
+        TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center, MaxWidth = 320, Margin = new(24),
+        HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, IsHitTestVisible = false };
     readonly Grid columns = new();
     readonly TabControl tabs = new();
     readonly StackPanel reading = new(), visual = new();
@@ -61,7 +64,7 @@ internal sealed class StationDebugControl : UserControl
         tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
         var header = new StackPanel(); body.Children.Add(header);
         header.Children.Add(new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis });
-        header.Children.Add(state); header.Children.Add(feedback); header.Children.Add(Flow(left, right, camera));
+        header.Children.Add(Flow(left, right, trigger, camera)); header.Children.Add(state); header.Children.Add(feedback);
         var safety = new StackPanel(); safety.Children.Add(Text("调试说明（至少5字）")); safety.Children.Add(reason); safety.Children.Add(scene);
         safety.Children.Add(Text("本轮读取期间隔离两位自动供包。扫码只填写请求，点击发送才调用已配置RCS；软件隔离不是安全急停。")); safety.Children.Add(end);
         setup = new() { Header = "隔离、操作说明与清场", IsExpanded = true, Content = safety, Margin = new(0, 8, 0, 12) }; reading.Children.Add(setup);
@@ -69,13 +72,14 @@ internal sealed class StationDebugControl : UserControl
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         columns.Children.Add(reading); columns.Children.Add(visual); Grid.SetColumn(visual, 1); visual.Margin = new(20, 0, 0, 0);
         body.Children.Add(columns);
-        reading.Children.Add(Heading("本轮扫码")); reading.Children.Add(trigger); reading.Children.Add(Text("完整条码"));
-        barcode.FontFamily = UiTypography.Code; barcode.FontSize = UiTypography.Barcode; barcode.MinHeight = 56; barcode.MaxHeight = 120; reading.Children.Add(barcode);
+        visual.Children.Add(Heading("本轮完整条码"));
+        barcode.FontFamily = UiTypography.Code; barcode.FontSize = UiTypography.Barcode; barcode.MinHeight = 56; barcode.MaxHeight = 120; visual.Children.Add(barcode);
         reading.Children.Add(Heading("请求")); reading.Children.Add(Text("请求条码")); requestBarcode.FontFamily = UiTypography.Code; reading.Children.Add(requestBarcode);
         reading.Children.Add(Text("请求内容 · 与实际发送的冻结报文一致")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 210; requestBody.MaxHeight = 280; reading.Children.Add(requestBody);
         reading.Children.Add(Text("此按钮将发送本轮测试请求到当前配置的RCS。发送后的原请求和未知结果保留，不自动重发。")); reading.Children.Add(send);
         reading.Children.Add(Heading("请求结果")); reading.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; reading.Children.Add(responseBody);
-        visual.Children.Add(Heading("本轮读码照片")); imageLayer.Children.Add(photo); imageLayer.Children.Add(marks); viewport.Content = imageLayer; visual.Children.Add(viewport); visual.Children.Add(photoCaption);
+        visual.Children.Add(Heading("本轮读码照片")); imageLayer.Children.Add(photo); imageLayer.Children.Add(marks); viewport.Content = imageLayer;
+        var photoArea = new Grid(); photoArea.Children.Add(viewport); photoArea.Children.Add(imageHint); visual.Children.Add(photoArea); visual.Children.Add(photoCaption);
         var adapt = Action("适应窗口"); var actual = Action("1:1"); var more = Action("放大"); var less = Action("缩小");
         visual.Children.Add(Flow(adapt, actual, more, less, overlay));
         adapt.Click += (_, _) => { fit = true; ApplyZoom(); }; actual.Click += (_, _) => { fit = false; zoom = 1 / VisualTreeHelper.GetDpi(viewport).DpiScaleX; ApplyZoom(); };
@@ -107,7 +111,7 @@ internal sealed class StationDebugControl : UserControl
         if (scope is not { BusinessFenced: true, State: "Active", SingleReadRounds: true })
         {
             if (scope?.BusinessFenced == true) throw new InvalidOperationException("已有其他或中断的隔离会话，请核对并确认清场结束后再开始按轮扫码。");
-            if (scene.IsChecked != true) throw new InvalidOperationException("请先确认停止真实投放并核对两位实体；只有隔离生效后才能放入测试件。");
+            if (scene.IsChecked != true) { setup.IsExpanded = true; setup.BringIntoView(); throw new InvalidOperationException("请先确认停止真实投放并核对两位实体；只有隔离生效后才能放入测试件。"); }
             beginCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.Isolated, Reason(), new(), true) { SingleReadRounds = true };
             var entered = await vm.ServiceAsync(() => Inspection.BeginCameraInspectionAsync(beginCommand, token));
             if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
@@ -180,16 +184,19 @@ internal sealed class StationDebugControl : UserControl
             if (raw.Metadata.Id != frame.Id || raw.Metadata.ObservationId != frame.ObservationId || raw.Gray8.LongLength != (long)frame.Width * frame.Height)
                 throw new InvalidDataException("原图与本轮身份不一致，拒绝显示。");
             displayedFrame = raw.Metadata; loadedFrame = frame.Id;
-            var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, raw.Gray8, frame.Width); bitmap.Freeze(); photo.Source = bitmap;
+            var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, raw.Gray8, frame.Width); bitmap.Freeze(); photo.Source = bitmap; imageHint.Visibility = Visibility.Collapsed;
             photo.Width = imageLayer.Width = marks.Width = frame.Width; photo.Height = imageLayer.Height = marks.Height = frame.Height;
             fit = true; ApplyZoom(); DrawMarks(); photoCaption.Text = "已锁定本轮照片 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff") + "\n下一件不会覆盖。";
         }
         if (value.Frame is null) ClearPhoto(); Buttons();
     }
-    void ClearPhoto() { photo.Source = null; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
-    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); requestBarcode.Clear(); requestBody.Clear(); responseBody.Clear(); result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; }
+    void ClearPhoto() { photo.Source = null; imageHint.Visibility = Visibility.Visible; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
+    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); requestBarcode.Clear(); requestBody.Clear(); responseBody.Clear(); result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
+        if (photo.Source is null && current?.DeviceId == Position.ReaderId)
+            imageHint.Text = current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
+                current.Frame is not null ? "本轮照片不可用\n请核对原图留存状态。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
         var fenced = scope?.BusinessFenced == true;
         if (fenced && !wasFenced) scene.IsChecked = false;
         wasFenced = fenced;

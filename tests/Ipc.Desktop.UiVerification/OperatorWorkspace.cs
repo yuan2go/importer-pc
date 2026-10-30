@@ -38,7 +38,7 @@ static partial class Program
             Positions = s.Positions!.Select(p => p with { Admit = false, BlockingReasons = ["连接待配置"] }).ToArray(),
             BlockingReasons = ["连接待配置：左相机、右相机、RCS。"] };
         probe.Project = Deferred; await Until(() => vm.ShowSetupGuidance);
-        Check(vm.SetupItems == "左相机或右相机（配置一台即可）、RCS" && vm.SetupHeading.Contains("2"), "unconfigured guide lists the exact missing connection count");
+        Check(vm.SetupItems == "RCS" && vm.SetupHeading.Contains("1"), "unconfigured guide lists the exact missing connection count");
         foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
         {
             await SetClient(window, size.Item1, size.Item2); await Flush();
@@ -102,7 +102,7 @@ static partial class Program
             Check(!vm.Left.SlotAvailable && vm.Right.SlotAvailable && !vm.ShowSetupGuidance, scenario + " hides the current left destination and retains the healthy right result");
             CaptureInternal(evidence, "operator-" + scenario, client, lines);
         }
-        probe.Project = s => Deferred(s); await Until(() => vm.MissingConnections.Length == 2);
+        probe.Project = s => Deferred(s); await Until(() => vm.MissingConnections.Length == 1);
         Check(!vm.ShowSetupGuidance, "configuration guide never covers an existing current parcel");
         probe.FailSnapshots = true; vm.MarkReadFailure("Synthetic read failure"); await Flush();
         Check(!vm.ShowSetupGuidance && !vm.CanReconnectConfigured && !vm.Left.SlotAvailable, "stale state revokes guide, reconnect and destination claims");

@@ -1,0 +1,10 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-d2341bb07b5942569d4be0c911dc9c5a
+WINDOWS: isolated loopback port composition; protected machine lease/installed runtime acceptance is not asserted. Production preflight uses the real factory.
+Unhandled exception. System.Exception: FAIL RCS20: deferred mask 1: editor accepts independently deferred fields
+   at SportmasterRcs.Check(Boolean value, String message) in D:\w\ipc-debug-round-layout-10\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 19
+   at SportmasterRcs.DeferredCombination(String root, Int32 mask) in D:\w\ipc-debug-round-layout-10\tests\Ipc.Application.Verification\DeferredConnections.cs:line 63
+   at SportmasterRcs.DeferredCombination(String root, Int32 mask) in D:\w\ipc-debug-round-layout-10\tests\Ipc.Application.Verification\DeferredConnections.cs:line 75
+   at SportmasterRcs.DeferredCombination(String root, Int32 mask) in D:\w\ipc-debug-round-layout-10\tests\Ipc.Application.Verification\DeferredConnections.cs:line 165
+   at SportmasterRcs.DeferredConnectionChecks(String workspace, String root) in D:\w\ipc-debug-round-layout-10\tests\Ipc.Application.Verification\DeferredConnections.cs:line 22
+   at Program.<Main>$(String[] args) in D:\w\ipc-debug-round-layout-10\tests\Ipc.Application.Verification\Program.cs:line 84
+   at Program.<Main>(String[] args)

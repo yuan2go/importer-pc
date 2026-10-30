@@ -57,10 +57,14 @@ internal sealed class RcsTaskOptions
     }
     internal (string Station, string Bcr) Position(ParcelPayload payload)
     {
-        if (payload.PositionId is not ("left" or "right") || payload.ReaderBinding is null || payload.Acquisition is null ||
-            payload.Acquisition.DeviceId != payload.ReaderBinding.DeviceId || string.IsNullOrWhiteSpace(payload.ParcelCode) ||
+        var manual = payload.OperatorInput is { } input && Guid.TryParseExact(input.CommandId, "N", out _) &&
+            input.Kind is "Keyboard" or "PdaKeyboard" && !string.IsNullOrWhiteSpace(input.Actor) &&
+            payload.AdmissionId == "manual." + input.CommandId && payload.Acquisition is null;
+        var camera = payload.OperatorInput is null && payload.Acquisition is { } acquisition && payload.ReaderBinding is { } reader &&
+            acquisition.DeviceId == reader.DeviceId;
+        if (payload.PositionId is not ("left" or "right") || payload.ReaderBinding is null || (!manual && !camera) || string.IsNullOrWhiteSpace(payload.ParcelCode) ||
             payload.ParcelCode.Length > 512 || payload.ParcelCode.Any(char.IsControl))
-            throw new InvalidDataException("RCS requires an original reader/acquisition and explicit left/right position");
+            throw new InvalidDataException("RCS requires an original camera acquisition or explicit operator submission and left/right position");
         return (Text(payload.PositionId + "-station-code", 256), Text(payload.PositionId + "-bcr-code", 256));
     }
 }

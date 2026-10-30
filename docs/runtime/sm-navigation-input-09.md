@@ -1,3 +1,5 @@
+> 2026-10-30追加纠偏以[人工供包与调试10](sm-manual-debug-flow-10.md)为准：键盘/PDA供包不要求相机在线或已配置；真实本位业务编码、RCS、暂停/隔离及原请求守卫保留。本文形成时的相机依赖条件和验证只保留历史范围，不改写原证据。
+
 # 作业导航与条码输入 · SM-NAVIGATION-INPUT-09
 
 2026-10-30，基准main `9b1384d5`，独立分支`codex/navigation-input-fix-01`。工作包见[09](../work-packages/WP-IPC-SM-NAVIGATION-INPUT-09.md)。

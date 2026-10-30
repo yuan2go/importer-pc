@@ -415,6 +415,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task ProcessTrustedObservationAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt, ObservationSession reader)
     {
+        var manual = o.OperatorInput is { } entry && Id == "sportmaster" && activeOperatorCommands.Contains(entry.CommandId) &&
+            o.AdmissionId == "manual." + entry.CommandId && o.Epoch == "operator." + runtimeId.ToString("N") && o.DeviceId == positions[position].ReaderDeviceId;
+        if (o.OperatorInput is not null && !manual) throw new InvalidDataException("人工来源必须由本次持久人工命令建立。");
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         if (o.InspectionSessionId is not null)
         {
@@ -452,11 +455,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // Existing identities above retain their original responsibility and policy.
         if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))
         { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationRejected"); return; }
-        if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
+        if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ReaderConfirmationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationBlocked"); return; }
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
-        if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
+        if ((manual ? !CanManuallyAdmit(position) : !CanAdmit(position)) || Effective.Login is not null && admittedOperator is null)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Position=" + position + "; paused/faulted/unresolved responsibility or operator not authorized", selection: selection), "ObservationBlocked"); return; }
         ArchiveSettled();
         if (!CapacityAvailable)
@@ -572,7 +575,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         (op.FrozenConfiguration.Images is null || op.ImageReleased) && repository?.PendingReceipts().Any(x=>x.Operation==op.Id) != true;
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
-        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding));
+        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding) { OperatorInput = op.OperatorInput });
         return new(Wire.Id(), Id, op.Id, op.AdmissionId, stage, binding, op.ImplementationHashes[binding.InstanceId],
             op.ConfigurationHash, payload, Wire.Hash(payload), ReceiptTimeForVerification.GetUtcNow());
     }

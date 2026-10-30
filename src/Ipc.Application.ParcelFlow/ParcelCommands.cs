@@ -49,7 +49,7 @@ public sealed partial class ParcelRuntime
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
             if (!RestoreConfirmed) reasons.Add("RestoreHandoffRequired: keep isolated; verify same-machine source retirement and authenticate maintenance; cross-machine evidence still required");
             reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
-            if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) reasons.Add("Reader confirmation missing/expired");
+            if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) (Id == "sportmaster" ? auxiliaryReasons : reasons).Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
             if (operations.Values.Any(x => NeedsReconciliation(x) && !ReleasedForNextAdmission(x))) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
             var retainedTimeouts = operations.Values.Count(ReleasedForNextAdmission);
@@ -60,7 +60,7 @@ public sealed partial class ParcelRuntime
                 h with { Ready = h.Ready && h.ConfirmedAt <= now && h.ValidUntil > now && h.ValidUntil > h.ConfirmedAt })];
             foreach (var reader in readers.Values.Select(r => r.Health).OfType<DeviceState>()) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
             foreach (var h in health.Where(x => !x.Ready && !ParcelConnectionSetup.IsDeferred(Effective, x.InstanceId)))
-                (Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
+                (Id == "sportmaster" && readers.ContainsKey(h.InstanceId) || Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
             auxiliaryReasons.AddRange(repository.PendingReceipts().Select(x=>x.Operation+": original receipt custody "+x.Id+"; stage="+x.Stage+"; raw="+(x.Reply is null?"missing":"durable pending T3")+"; outcome="+(repository.HasReceiptOutcomeBasis(x.Id)?"known by separate Query":"unresolved")));
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
             auxiliaryReasons.AddRange(repository.PendingCommands().Select(id => "CommandPending:" + id + "; inspect CommandAdmitted audit and original facts; this ID is never replayed"));

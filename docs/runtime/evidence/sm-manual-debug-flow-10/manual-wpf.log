@@ -1,0 +1,10 @@
+PASS MANUAL-UI ordinary mode permits manual supply while preserving camera facts; deferred=True
+PASS MANUAL-UI bottom submit sends the complete keyboard barcode through Application and real built-in RCS
+PASS MANUAL-UI PDA Enter independently supplies the other position without any camera acquisition
+CAPTURE manual-deferred-native: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS MANUAL-UI compact layout retains editable barcode and reachable bottom submit
+PASS MANUAL-UI ordinary mode permits manual supply while preserving camera facts; deferred=False
+PASS MANUAL-UI bottom submit sends the complete keyboard barcode through Application and real built-in RCS
+PASS MANUAL-UI PDA Enter independently supplies the other position without any camera acquisition
+CAPTURE manual-offline-native: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS MANUAL-UI compact layout retains editable barcode and reachable bottom submit

@@ -43,6 +43,10 @@ static partial class Program
             ((DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(second)!).Stop();
             await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Task.Delay(60);
             Field<TextBox>(control, "reason").Text = "Synthetic operator round closure verification"; Field<CheckBox>(control, "scene").IsChecked = true;
+            Check(Field<TextBlock>(control, "imageHint").IsVisible && Field<TextBlock>(control, "imageHint").Text.Contains("等待"), "empty photo explains how to begin without showing a fictitious frame");
+            var visual = Field<StackPanel>(control, "visual"); var fullCode = Field<TextBox>(control, "barcode");
+            Check(visual.Children.Contains(fullCode) && fullCode.TranslatePoint(new Point(), visual).Y < Field<ScrollViewer>(control, "viewport").TranslatePoint(new Point(), visual).Y,
+                "complete selectable barcode is above its photo in the right-hand visual column");
             probe.LoseBeginReply = true;
             ClickField(control, "trigger");
             await Until(() => !Field<bool>(control, "busy") && (Field<CameraInspectionStatus>(control, "scope")?.BusinessFenced ?? false));
@@ -51,6 +55,11 @@ static partial class Program
             await Until(() => Equals(Field<Button>(control, "trigger").Content, "扫码中…"));
             Check(Field<Image>(control, "photo").Source is null && Field<TextBox>(control, "barcode").Text.Length == 0 && h.Peer.Requests.IsEmpty,
                 "trigger enters a clean reading round without a photo/request or HTTP call");
+            var isolated = await h.App.SnapshotAsync();
+            var denied = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), isolated.RuntimeId, isolated.Configuration.Revision, "left", "ISOLATED-MANUAL",
+                ParcelBarcodeInputKind.Keyboard, null, null), default);
+            Check(denied.Status == "Rejected" && denied.Detail.Contains("调试隔离") && h.Peer.Requests.IsEmpty, "active debug isolation still blocks ordinary manual supply without sending");
+            Check(Field<TextBlock>(control, "imageHint").Text.Contains("正在读取"), "reading placeholder describes the current round");
             var pixels = CameraRoundHarness.Barcode("UI-ROUND-A"); h.Api(h.Left).Enqueue(pixels, 1); await h.LockedAsync(); await Poll(control); await Poll(other); await Flush();
             var a = Field<CameraReadRound>(control, "current");
             var bitmap = (BitmapSource)Field<Image>(control, "photo").Source!; var bytes = new byte[bitmap.PixelWidth * bitmap.PixelHeight]; bitmap.CopyPixels(bytes, bitmap.PixelWidth, 0);
@@ -62,6 +71,10 @@ static partial class Program
                 "green native rectangle uses actual same-frame recognition coordinates");
             Check(Field<TextBox>(control, "requestBarcode").Text == "UI-ROUND-A" && Field<TextBox>(control, "requestBody").Text == a.RequestBody &&
                 Field<TextBox>(control, "requestBody").IsReadOnly && h.Peer.Requests.IsEmpty && Field<Button>(control, "send").IsEnabled, "native JSON auto-fill is frozen and explicit send is the only enabled delivery action");
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-MUST-NOT-REPLACE"), 2); await Task.Delay(120); await Poll(control);
+            Check(Field<Image>(control, "photo").Source == bitmap && Field<TextBox>(control, "barcode").Text == "UI-ROUND-A" &&
+                Field<TextBox>(control, "requestBody").Text == a.RequestBody && !Field<TextBlock>(control, "imageHint").IsVisible && h.Peer.Requests.IsEmpty,
+                "next parcel cannot replace the locked photo/barcode/request and no automatic send occurs");
             CaptureInternal(evidence, "round-locked-native", (Grid)window.FindName("ClientArea"), lines);
             probe.FailRoundRead = true; await Poll(control);
             Check(!Field<Button>(control, "send").IsEnabled, "failed authoritative polling cannot re-enable send from a cached projection");
@@ -75,7 +88,7 @@ static partial class Program
             Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == a.RequestBody, "click-send and check-result never create a second HTTP request");
             await Poll(other); ClickField(other, "trigger");
             await Until(() => Equals(Field<Button>(other, "trigger").Content, "扫码中…"));
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-B"), 2); await h.LockedAsync(); await Poll(other); await Poll(control);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-B"), 3); await h.LockedAsync(); await Poll(other); await Poll(control);
             Check(Field<TextBox>(control, "barcode").Text == "UI-ROUND-A" && Field<TextBox>(other, "barcode").Text == "UI-ROUND-B" && !Field<Button>(control, "send").IsEnabled,
                 "another window can own the next round while this window retains its prior photo/code and cannot send it");
             // Force a real multi-window CAS rejection after the first window captured its baseline.
@@ -87,11 +100,11 @@ static partial class Program
             ClickField(control, "trigger"); await Until(() => !Field<bool>(control, "busy"));
             var retry = await h.App.ReadCameraReadRoundAsync(default);
             Check(retry.State == "Reading" && retry.DeviceId == h.Left, "explicit retry after a known stale CAS rejection uses the newly observed round instead of trapping the old command");
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-D"), 3); await h.LockedAsync(); await Poll(control);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-D"), 4); await h.LockedAsync(); await Poll(control);
             Check(Field<TextBox>(control, "barcode").Text == "UI-ROUND-D", "retry recovers the intended camera and next frame");
             heldImage = new(TaskCreationOptions.RunContinuationsAsynchronously); probe.HoldImage = heldImage; probe.ImageEntered = new(TaskCreationOptions.RunContinuationsAsynchronously);
             ClickField(control, "trigger"); await Until(() => Equals(Field<Button>(control, "trigger").Content, "扫码中…"));
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-E"), 4); var e = await h.LockedAsync();
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-E"), 5); var e = await h.LockedAsync();
             var late = Poll(control); await probe.ImageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5)); ClickField(control, "right");
             heldImage.TrySetResult(); await late; await Flush();
             Check(Field<Image>(control, "photo").Source is null && Field<TextBox>(control, "barcode").Text.Length == 0,

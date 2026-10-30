@@ -213,7 +213,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 var reply = JsonSerializer.Serialize(new { requestId = id, result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
                     message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = "SYNTH-CHUTE", length = (decimal?)null,
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU" } } } });
-                var bytes = Encoding.UTF8.GetBytes(reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
+                var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stopped.Token);
             }
             catch (OperationCanceledException) when (stopped.IsCancellationRequested) { }

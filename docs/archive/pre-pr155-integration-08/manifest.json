@@ -1,0 +1,29 @@
+{
+  "Reason": "Exact guidance before PR155 integration and the integration index entry; historical evidence keeps its own source identity",
+  "Files": [
+    {
+      "SourceCommit": "9df3901ec20d73512d48920b4671b529ebc58a9e",
+      "OriginalPath": "docs/INDEX.md",
+      "Snapshot": "main__docs__INDEX.md.txt",
+      "GitBlob": "c5ca64c5787a67647aacc0af62e83e2c7f9e8c0d",
+      "SizeBytes": 3225,
+      "Sha256": "dc0aec72c5b5b46479ba8f027990ddb7053b810be4e3163ff218d26650b906a4"
+    },
+    {
+      "SourceCommit": "9eb90018f5683b3b7e63abf7b00b275169ec6c61",
+      "OriginalPath": "docs/INDEX.md",
+      "Snapshot": "pr155__docs__INDEX.md.txt",
+      "GitBlob": "760de86179dc1992092bcf10d56b0bf4c3d9291c",
+      "SizeBytes": 4628,
+      "Sha256": "2074b2cb4cca95e0b428da0a0508f2104aa8b844680855d1ff6cad00f235cc06"
+    },
+    {
+      "SourceCommit": "fba708de80438dd5d264b01d111395989de50bff",
+      "OriginalPath": "docs/INDEX.md",
+      "Snapshot": "combined__docs__INDEX.md.txt",
+      "GitBlob": "4361357d371612456cbf490787f0ab77d3c8e0d0",
+      "SizeBytes": 4973,
+      "Sha256": "cb80e97f7e92605d2c083714904c7be60cc56856d9739f353866932d9b8d9893"
+    }
+  ]
+}

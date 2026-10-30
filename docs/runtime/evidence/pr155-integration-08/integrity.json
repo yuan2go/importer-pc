@@ -1,0 +1,334 @@
+{
+  "SourceCommit": "fba708de80438dd5d264b01d111395989de50bff",
+  "parents": {
+    "155": "9eb90018f5683b3b7e63abf7b00b275169ec6c61",
+    "156": "219fd5dfff4a5c23578abe52f407e08cc6fec05e",
+    "158": "0ce83993ede9d96735690126b7ffc70430e1985c"
+  },
+  "preserved_production_files": [
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Contracts/CameraDiagnostics.cs",
+      "git_blob": "520e6698d15b762cf1666ca26dd9b8908d288bc7"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Contracts/CameraInspection.cs",
+      "git_blob": "23a5ac777d85a7913b5c0de9879c2f25d0c2e3a5"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Contracts/CameraReadRound.cs",
+      "git_blob": "068448eab4732ef0af8ce75dfbdaa5fbe46d6743"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Contracts/ParcelContracts.cs",
+      "git_blob": "737d7135f50009dce329792c8d5a6094515326f4"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Contracts/ParcelWorkstation.cs",
+      "git_blob": "2ffa19c9e038f45a395e91c08d7dd5cae88dd780"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Contracts/StartupMaintenance.cs",
+      "git_blob": "2d73ae94953007567d9c1def3c3bcfcc0d58e616"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml",
+      "git_blob": "a6b3319f57a88dcc23fa8871c2729ef6861eaf61"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml.cs",
+      "git_blob": "699b54650bbe1522daea270a5f2ba16a3e1134dc"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
+      "git_blob": "9f4d2d62553b115685719a7978ebdedb252baa0b"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsTheme.xaml",
+      "git_blob": "5f4515da2fb7543a5e90468eb41a0053c59125e0"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPictureWindow.cs",
+      "git_blob": "59852689acd1839c55de74a52e1fd86f4bf63c30"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs",
+      "git_blob": "da27c8472703a44232c11ec400cc2175f5e17f98"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/CameraInspectionStore.cs",
+      "git_blob": "79937e0f492ab52adb6788309759601bbb87eb12"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/CameraOriginalExport.cs",
+      "git_blob": "df01f7f83a29296814d98dd87f881909c2f650a4"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ConfigurationSubmission.cs",
+      "git_blob": "fb176df00ed3d6e8e5f563ba53929bb7c8e7d24a"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraDiagnostics.cs",
+      "git_blob": "ee1c7a871566bcf56b0a773d3dcc62cb78e28c2d"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraInspection.cs",
+      "git_blob": "364eb4c68f763c6645d3554556f8359e25d51769"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraReadRounds.cs",
+      "git_blob": "8ef3c675e1d8fe245dc7fb0e3d746dc64b7382cf"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "git_blob": "04d05d211549fb14833ede04dcaca0c974df093b"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "git_blob": "80cace372e51cea6098d0026165efbea137c9f01"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
+      "git_blob": "890a38929bb93ad2d5e448714d5a0fedc10a21c6"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInitialConfiguration.cs",
+      "git_blob": "d8025fb1afba5979e1c2e9553d8a2571ba093104"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInputs.cs",
+      "git_blob": "17cbe6e885a0ae90759809c2129c619b60bfe092"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInspectionQueries.cs",
+      "git_blob": "59a3d70ff3675462f5ee202fb8d393653c88ad70"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOperatorInput.cs",
+      "git_blob": "a3901942480bf700a5cf059816d8c2c9fba288d3"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelPictures.cs",
+      "git_blob": "9d5052f7b9e2fef5ecf978466ab6bb7736f4d803"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs",
+      "git_blob": "91ab38298ccb35858b7da6e59ec4254d669638c2"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptCustody.cs",
+      "git_blob": "2c06cf375236b77a5429c18c2b71bddc571e3290"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "git_blob": "44cdb5d3f8cd620cb550e60107bb8b4bf30f93a2"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+      "git_blob": "f3c4624adef046df5257683584c23bd1749e175a"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugControl.cs",
+      "git_blob": "709738f894a04a04969ec78ddfd516b0ba318eae"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugEvidenceControl.cs",
+      "git_blob": "f27572b4dffb174ea7191c7750e8ba489a60e292"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
+      "git_blob": "9d0622a772feaab9d9b8322dd799f96106f62008"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
+      "git_blob": "0572a8f9e66400d0ab3b93d0d7d3d474e18ee44a"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
+      "git_blob": "25143f7efd0b108752150291855a4d3350da20a5"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "git_blob": "f2f080a1d24f03a86ef09c5d0f4c7d58fb0085b1"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Administration.cs",
+      "git_blob": "f11f212f724ca8d2b63a4fd9e07b1ac58723a2c5"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs",
+      "git_blob": "5ed98717434c5c00a51f32aa9624277217c3103c"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
+      "git_blob": "6b3cfeef62255ed829972b45f53f8f3a50b4ac0d"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+      "git_blob": "638bbdbb3da9b51ca681d4cf7711869af36bc94a"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
+      "git_blob": "f14a92950bbc0efd677fd2ae3b09208ac0c8e32a"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
+      "git_blob": "6c875062b0f03037dcd14669e0a3526cc0c7101b"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Desktop/StartupWorkflowWindow.Maintenance.cs",
+      "git_blob": "5cee76ccd0d7ab98567864b6f0534a47398a057e"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Desktop/StartupWorkflows.cs",
+      "git_blob": "bb8055f8714afad28893fe27376feba5851c986d"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/IMonoBarcodeDecoder.cs",
+      "git_blob": "20d6732d5c30ff7925bc5db84809b3f69022fc2a"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "git_blob": "c82ea9f2e954eb3361eefddb25a8d5dc61436e99"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsInspection.cs",
+      "git_blob": "b3ca6abefa04e3cf6341fdaf3e9713336a660f3e"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsNative.cs",
+      "git_blob": "a1fdd06e3a83e23677ef76032f03bf702c582b16"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsPreview.cs",
+      "git_blob": "c884860750d6944779fe8a006e782cbdb0e3547d"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/SoftwareDecoder.cs",
+      "git_blob": "0a90d63303033a13261ee3ff08196155fa67cd54"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+      "git_blob": "eac8006ef1c2a1ce2254968d3cd448bd6548aaa2"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Platform/ObservationInspection.cs",
+      "git_blob": "9520d67c2d302b3f4eba4b7e238f61073dd9ad4c"
+    },
+    {
+      "pr": 155,
+      "path": "src/Ipc.Platform/ObservationPreview.cs",
+      "git_blob": "29d991e71f2ce89062a4fa2f2bb924333fd51964"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/ManagementModeBroker.Installation.cs",
+      "git_blob": "149d525bda7e699053b75cfb3a23b46f191f996a"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/ManagementModeBroker.InstallationTrace.cs",
+      "git_blob": "34258a9fac699b4beca794c7f183e04fbf98ac16"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/ManagementModeBroker.Recovery.cs",
+      "git_blob": "b92aa14a1859d7dab5e7f2ab6d790a6832448280"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/TrustedProgramRoots.cs",
+      "git_blob": "d1d4b03bc801b78dd743c584502a5d43bb75f1a0"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/WindowsDeploymentSetup.Storage.cs",
+      "git_blob": "5f8d6682d12e64c00daa811934501be175a20312"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/WindowsDeploymentSetup.cs",
+      "git_blob": "5aafffcf5dba97a17788eb73b7c6715b5a4dcd90"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/WindowsInstallationError.cs",
+      "git_blob": "69def4ee511a0f1bc1e0bdf903bab4922a93db09"
+    },
+    {
+      "pr": 156,
+      "path": "src/Ipc.Platform/WindowsStoragePaths.cs",
+      "git_blob": "1b1f36e5bca369df5318e0ec001948f24d7dd912"
+    }
+  ],
+  "archives": [
+    {
+      "OriginalPath": "docs/INDEX.md",
+      "Snapshot": "docs__INDEX.md.txt",
+      "SourceCommit": "f870ffc00abcba78497b3d01d83251d786052ae3",
+      "GitBlob": "e71814e3b6f0a33e5818afb1ed90f934f51ff5ee",
+      "SizeBytes": 2858,
+      "Sha256": "58c7e9356d96baf7eb2517c971331904935c90646d4915a172132fa12f542a64"
+    },
+    {
+      "OriginalPath": "docs/runtime/mvs-software-reader-01.md",
+      "Snapshot": "docs__runtime__mvs-software-reader-01.md.txt",
+      "SourceCommit": "f870ffc00abcba78497b3d01d83251d786052ae3",
+      "GitBlob": "4d6a0046228cfdad490d527f895b88e4594ecd44",
+      "SizeBytes": 5948,
+      "Sha256": "4567168f5785ccc166155fbee73dac9ff6e43661d9529eb3e90c0d9d79fa3ae6"
+    }
+  ],
+  "closure07_evidence_files": 64
+}

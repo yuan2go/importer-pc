@@ -1,0 +1,5 @@
+PASS exact production blobs preserved: 61
+PASS two original archives: parent relation, Git blobs, bytes, SHA256, length, independent autocrlf=true checkout
+PASS current MVS guidance and latency report unchanged
+PASS closure07 evidence exact hashes: 64
+PASS merged test dispatch retains both feature suites

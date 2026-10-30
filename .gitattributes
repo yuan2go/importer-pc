@@ -190,3 +190,6 @@ docs/runtime/evidence/sm-barcode-ready-06/*.log -text whitespace=cr-at-eol,-blan
 
 # One-shot closure review retains exact captured log bytes.
 docs/runtime/evidence/sm-debug-closure-07/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+# Preserve canonical pre-install guidance and this package's original text evidence.
+docs/archive/pre-d-drive-install-01/** -text whitespace=cr-at-eol
+docs/runtime/evidence/d-drive-install-01/** -text whitespace=cr-at-eol,-blank-at-eol

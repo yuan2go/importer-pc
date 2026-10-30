@@ -48,53 +48,86 @@ public static partial class ManagementModeBroker
     }
     [SupportedOSPlatform("windows")]
     public static void Install(string dataRoot, string sourceApp)
+        => Install(dataRoot, sourceApp, null);
+    [SupportedOSPlatform("windows")]
+    public static void Install(string dataRoot, string sourceApp, Action<ManagementServiceInstallationDiagnostic>? observer)
     {
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority(); dataRoot = CanonicalRoot(dataRoot); sourceApp = Path.GetFullPath(sourceApp);
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var trace = new InstallationTrace("尚未解析服务身份", dataRoot, observer, sourceApp);
+        var requestedDataRoot = dataRoot;
+        dataRoot = trace.Run("ResolveDataRoot", "GetFinalPathNameByHandleW", () => CanonicalRoot(requestedDataRoot));
+        var serviceName = trace.Run("ResolveServiceIdentity", "GetFinalPathNameByHandleW", () => ServiceName(dataRoot));
+        trace.Identify(serviceName, dataRoot);
+        sourceApp = trace.Run("ResolveSourcePath", "Path.GetFullPath", () => Path.GetFullPath(sourceApp));
         if (dataRoot.Contains('"')) throw new InvalidDataException("认证服务数据目录无效。");
-        var declarationPath = Path.Combine(sourceApp, "application-release.json"); MachineRuntimePolicy.RequireProtectedEvidence(declarationPath);
-        var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(declarationPath));
-        var hostParent = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator");
-        ProtectedDirectory(hostParent); ProtectedDirectory(Path.Combine(hostParent, "hosts"));
-        var host = Path.Combine(hostParent, "hosts", release.SourceCommit + "-" + Wire.Id()); ProtectedDirectory(host);
-        foreach (var file in release.Files.Append(new KeyValuePair<string, string>("application-release.json", Wire.FileHash(declarationPath))))
+        var executable = trace.Run("PrepareVerifiedHost", "VerifyAndCopyHostFiles", () =>
         {
-            if (file.Key.Contains(':') || Path.IsPathRooted(file.Key) || file.Key.Split('/', '\\').Any(p => p is "" or "." or "..")) throw new InvalidDataException("认证宿主文件范围无效。");
-            var source = Path.Combine(sourceApp, file.Key); var target = Path.Combine(host, file.Key); MachineRuntimePolicy.RequireProtectedEvidence(source);
-            if (Wire.FileHash(source) != file.Value) throw new InvalidDataException("认证宿主源文件变化。");
-            ProtectedDirectory(Path.GetDirectoryName(target)!);
-            using (var output = new FileInfo(target).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18"))))
-            { using var input = File.OpenRead(source); input.CopyTo(output); output.Flush(true); }
-            if (Wire.FileHash(target) != file.Value) throw new IOException("认证宿主复制不完整，原版本保留。");
-        }
-        ProtectedDirectory(Path.GetDirectoryName(ProtectedRoot(dataRoot))!, true); ProtectedDirectory(ProtectedRoot(dataRoot), true);
-        var anchor = Path.Combine(ProtectedRoot(dataRoot), "AUTHORITY.json");
-        if (!File.Exists(anchor))
-        {
-            using var output = new FileInfo(anchor).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.Read, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-32-545")));
-            output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { Protocol = 1, DataRoot = CanonicalRoot(dataRoot), Service = ServiceName(dataRoot) }))); output.Flush(true);
-        }
-        MachineRuntimePolicy.RequireProtectedEvidence(anchor);
-        var executable = Path.Combine(host, "Ipc.Assembly.exe"); if (!File.Exists(executable)) throw new InvalidDataException("认证服务宿主缺失。");
+            var declarationPath = Path.Combine(sourceApp, "application-release.json"); MachineRuntimePolicy.RequireProtectedEvidence(declarationPath);
+            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(declarationPath));
+            var hostParent = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator");
+            ProtectedDirectory(hostParent); ProtectedDirectory(Path.Combine(hostParent, "hosts"));
+            var host = Path.Combine(hostParent, "hosts", release.SourceCommit + "-" + Wire.Id()); ProtectedDirectory(host);
+            foreach (var file in release.Files.Append(new KeyValuePair<string, string>("application-release.json", Wire.FileHash(declarationPath))))
+            {
+                if (file.Key.Contains(':') || Path.IsPathRooted(file.Key) || file.Key.Split('/', '\\').Any(p => p is "" or "." or "..")) throw new InvalidDataException("认证宿主文件范围无效。");
+                var source = Path.Combine(sourceApp, file.Key); var target = Path.Combine(host, file.Key); MachineRuntimePolicy.RequireProtectedEvidence(source);
+                if (Wire.FileHash(source) != file.Value) throw new InvalidDataException("认证宿主源文件变化。");
+                ProtectedDirectory(Path.GetDirectoryName(target)!);
+                using (var output = new FileInfo(target).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18"))))
+                { using var input = File.OpenRead(source); input.CopyTo(output); output.Flush(true); }
+                if (Wire.FileHash(target) != file.Value) throw new IOException("认证宿主复制不完整，原版本保留。");
+            }
+            ProtectedDirectory(Path.GetDirectoryName(ProtectedRoot(dataRoot))!, true); ProtectedDirectory(ProtectedRoot(dataRoot), true);
+            var anchor = Path.Combine(ProtectedRoot(dataRoot), "AUTHORITY.json");
+            if (!File.Exists(anchor))
+            {
+                using var output = new FileInfo(anchor).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.Read, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-32-545")));
+                output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { Protocol = 1, DataRoot = dataRoot, Service = serviceName }))); output.Flush(true);
+            }
+            MachineRuntimePolicy.RequireProtectedEvidence(anchor);
+            var targetExecutable = Path.Combine(host, "Ipc.Assembly.exe"); if (!File.Exists(targetExecutable)) throw new InvalidDataException("认证服务宿主缺失。");
+            return targetExecutable;
+        });
+        trace.Executable = executable;
         var command = "\"" + executable + "\" --administrator-service \"" + dataRoot + "\"";
-        using var manager = OpenSCManager(null, null, 1 | 2); if (manager.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
-        using var existing = OpenService(manager, ServiceName(dataRoot), 0xF01FF);
-        var previous = existing.IsInvalid ? null : ReadCommand(existing);
-        var displayName = "供包台管理模式授权 " + Key(dataRoot)[..8];
-        using var service = existing.IsInvalid ? CreateService(manager, ServiceName(dataRoot), displayName, 0xF01FF, 0x10, 2, 1, command, null, IntPtr.Zero, null, null, null) : OpenService(manager, ServiceName(dataRoot), 0xF01FF);
-        if (service.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+        using var manager = trace.Run("OpenServiceManager", "OpenSCManagerW", () =>
+        { var handle = OpenSCManager(null, null, 1 | 2); if (handle.IsInvalid) throw NativeFailure("OpenSCManagerW"); return handle; });
+        using var existing = trace.Run("InspectExistingService", "OpenServiceW", () =>
+        {
+            var handle = OpenService(manager, serviceName, 0xF01FF);
+            if (handle.IsInvalid)
+            {
+                var code = Marshal.GetLastWin32Error();
+                if (code != 1060) { handle.Dispose(); throw NativeFailure("OpenServiceW", code); }
+            }
+            return handle;
+        });
+        var previous = existing.IsInvalid ? null : trace.Run("ReadPreviousRegistration", "QueryServiceConfigW", () => ReadCommand(existing));
+        var displayName = "供包台管理模式授权 " + serviceName[^24..][..8];
+        using var service = trace.Run("OpenOrCreateService", existing.IsInvalid ? "CreateServiceW" : "OpenServiceW", () =>
+        {
+            var handle = existing.IsInvalid ? CreateService(manager, serviceName, displayName, 0xF01FF, 0x10, 2, 1, command, null, IntPtr.Zero, null, null, null) : OpenService(manager, serviceName, 0xF01FF);
+            if (handle.IsInvalid) throw NativeFailure(existing.IsInvalid ? "CreateServiceW" : "OpenServiceW"); return handle;
+        });
         try
         {
-            Stop(service);
-            if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, command, null, IntPtr.Zero, null, null, null, displayName)) throw new Win32Exception(Marshal.GetLastWin32Error());
-            ConfigureRecovery(service);
-            Start(service); _ = Call<ManagementModeStatus>(dataRoot, new("Status"));
+            trace.Run("StopPreviousService", "ControlService/QueryServiceStatusEx", () => Stop(service));
+            trace.Run("ConfigureService", "ChangeServiceConfigW", () =>
+            { if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, command, null, IntPtr.Zero, null, null, null, displayName)) throw NativeFailure("ChangeServiceConfigW"); });
+            trace.Run("ConfigureRecovery", "ChangeServiceConfig2W", () => ConfigureRecovery(service));
+            trace.Run("StartService", "StartServiceW/QueryServiceStatusEx", () => Start(service));
+            trace.Run("VerifyServiceChannel", "ManagementMode.Status", () => Call<ManagementModeStatus>(dataRoot, new("Status")));
+            trace.RequireDiagnostics();
         }
-        catch
+        catch (ManagementServiceInstallationException original)
         {
             // Preserve the original credential authority and executable on upgrade failure.
-            if (previous is not null)
-            { Stop(service); if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, previous, null, IntPtr.Zero, null, null, null, null)) throw new Win32Exception(Marshal.GetLastWin32Error()); Start(service); }
-            else { Stop(service); if (!DeleteService(service)) throw new Win32Exception(Marshal.GetLastWin32Error()); }
+            trace.Recover(() =>
+            {
+                if (previous is not null)
+                { Stop(service); if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, previous, null, IntPtr.Zero, null, null, null, null)) throw NativeFailure("ChangeServiceConfigW(restore)"); Start(service); }
+                else { Stop(service); if (!DeleteService(service)) throw NativeFailure("DeleteService"); }
+            }, original);
             throw;
         }
     }
@@ -111,15 +144,15 @@ public static partial class ManagementModeBroker
     [SupportedOSPlatform("windows")]
     static void Stop(ServiceHandle service)
     {
-        if (!QueryServiceStatusEx(service, 0, out var status, Marshal.SizeOf<ServiceProcessStatus>(), out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
+        if (!QueryServiceStatusEx(service, 0, out var status, Marshal.SizeOf<ServiceProcessStatus>(), out _)) throw NativeFailure("QueryServiceStatusEx(stop)");
         if (status.CurrentState == 1) return;
-        if (status.CurrentState != 3 && !ControlService(service, 1, out _) && Marshal.GetLastWin32Error() != 1062) throw new Win32Exception(Marshal.GetLastWin32Error());
+        if (status.CurrentState != 3 && !ControlService(service, 1, out _) && Marshal.GetLastWin32Error() != 1062) throw NativeFailure("ControlService(stop)");
         Wait(service, 1);
     }
     [SupportedOSPlatform("windows")]
     static void Start(ServiceHandle service)
     {
-        if (!StartService(service, 0, IntPtr.Zero) && Marshal.GetLastWin32Error() != 1056) throw new Win32Exception(Marshal.GetLastWin32Error()); Wait(service, 4);
+        if (!StartService(service, 0, IntPtr.Zero) && Marshal.GetLastWin32Error() != 1056) throw NativeFailure("StartServiceW"); Wait(service, 4);
     }
     [SupportedOSPlatform("windows")]
     static void Wait(ServiceHandle service, uint state)
@@ -127,9 +160,10 @@ public static partial class ManagementModeBroker
         var started = System.Diagnostics.Stopwatch.GetTimestamp();
         while (System.Diagnostics.Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(15))
         {
-            if (!QueryServiceStatusEx(service, 0, out var status, Marshal.SizeOf<ServiceProcessStatus>(), out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (!QueryServiceStatusEx(service, 0, out var status, Marshal.SizeOf<ServiceProcessStatus>(), out _)) throw NativeFailure("QueryServiceStatusEx(wait)");
             if (status.CurrentState == state) return;
-            if (state == 4 && status.CurrentState == 1) throw new IOException("管理模式授权服务未能启动；原凭据和部署保留。");
+            if (state == 4 && status.CurrentState == 1) throw new IOException("管理模式授权服务未能启动；服务退出代码=" + status.Win32ExitCode +
+                "；服务特定退出代码=" + status.ServiceSpecificExitCode + "。原凭据和部署保留。");
             Thread.Sleep(25);
         }
         throw new TimeoutException("管理模式授权服务未在期限内完成状态切换；原凭据保留。");
@@ -137,9 +171,12 @@ public static partial class ManagementModeBroker
     [SupportedOSPlatform("windows")]
     static string ReadCommand(ServiceHandle service)
     {
-        QueryServiceConfig(service, IntPtr.Zero, 0, out var needed); if (needed is < 1 or > 65536) throw new InvalidDataException("认证服务登记超出限制。");
+        var queried = QueryServiceConfig(service, IntPtr.Zero, 0, out var needed);
+        var code = Marshal.GetLastWin32Error();
+        if (!queried && code != 122) throw NativeFailure("QueryServiceConfigW(size)", code);
+        if (needed is < 1 or > 65536) throw new InvalidDataException("认证服务登记超出限制。");
         var buffer = Marshal.AllocHGlobal((int)needed);
-        try { if (!QueryServiceConfig(service, buffer, needed, out _)) throw new Win32Exception(Marshal.GetLastWin32Error()); return Marshal.PtrToStringUni(Marshal.PtrToStructure<ServiceConfig>(buffer).BinaryPath) ?? throw new InvalidDataException("认证服务登记缺失。"); }
+        try { if (!QueryServiceConfig(service, buffer, needed, out _)) throw NativeFailure("QueryServiceConfigW"); return Marshal.PtrToStringUni(Marshal.PtrToStructure<ServiceConfig>(buffer).BinaryPath) ?? throw new InvalidDataException("认证服务登记缺失。"); }
         finally { Marshal.FreeHGlobal(buffer); }
     }
     [StructLayout(LayoutKind.Sequential)] struct ServiceConfig { public uint Type, Start, Error; public IntPtr BinaryPath, Group; public uint Tag; public IntPtr Dependencies, Account, DisplayName; }

@@ -20,9 +20,9 @@ public static partial class ManagementModeBroker
             for (var i = 0; i < RecoveryActions.Length; i++) Marshal.StructureToPtr(new RecoveryAction { Type = RecoveryActions[i].Type, Delay = RecoveryActions[i].Delay },
                 IntPtr.Add(actions, i * Marshal.SizeOf<RecoveryAction>()), false);
             Marshal.StructureToPtr(new RecoverySettings { ResetPeriod = RecoveryResetSeconds, Count = (uint)RecoveryActions.Length, Actions = actions }, settings, false);
-            if (!ChangeServiceConfig2(service, 2, settings)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (!ChangeServiceConfig2(service, 2, settings)) throw NativeFailure("ChangeServiceConfig2W(SERVICE_CONFIG_FAILURE_ACTIONS=2)");
             Marshal.WriteInt32(nonCrash, 1);
-            if (!ChangeServiceConfig2(service, 4, nonCrash)) throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (!ChangeServiceConfig2(service, 4, nonCrash)) throw NativeFailure("ChangeServiceConfig2W(SERVICE_CONFIG_FAILURE_ACTIONS_FLAG=4)");
         }
         finally { Marshal.FreeHGlobal(nonCrash); Marshal.FreeHGlobal(settings); Marshal.FreeHGlobal(actions); }
     }

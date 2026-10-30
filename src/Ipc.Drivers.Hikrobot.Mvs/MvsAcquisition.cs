@@ -96,7 +96,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (initialized || created || worker is not null || lease is not null || Undelivered is not null) throw new InvalidOperationException("Original acquisition owner retained; stop before restart");
             Timings.Reset();
-            lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; }
+            lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; ResetDiagnostics(); }
             try
             {
                 preview.Clear();
@@ -180,6 +180,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 var acquireStarted = Stopwatch.GetTimestamp();
                 try
                 {
+                    lock (gate) acquireCalls++;
                     frame = api.Acquire();
                     // Preserve the original clock boundary immediately after
                     // SDK return, before recording any diagnostic samples.
@@ -190,6 +191,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 { throw new ObservationConnectionException("MVS相机连接已断开。", error); }
                 finally { Timings.Record("sdk.acquire", Stopwatch.GetElapsedTime(acquireStarted).TotalMilliseconds); }
                 Timings.Record(frame is null ? "sdk.acquire.no-data" : "sdk.acquire.frame", Timings.LastMs("sdk.acquire"));
+                if (frame is null) { lock (gate) noData++; }
                 if (frame is not null)
                 {
                     if (previousDelivery != 0) Timings.Record("host.delivery-interval", Stopwatch.GetElapsedTime(previousDelivery, deliveredTicks).TotalMilliseconds);
@@ -199,6 +201,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     try
                     {
                         ValidateFrame(frame, maximumPayload);
+                        var allowDecode = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
+                        lock (gate) decodePaused = !allowDecode;
                         if (decoder is not null && (ulong)frame.Width * frame.Height != frame.Length)
                             throw new InvalidDataException("MVS software decoding requires a verified tight Mono8 stride");
                         lock (gate)
@@ -212,8 +216,12 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
 
                             }
                             priorFrame = frame.Number; frames++; bytes += checked((long)frame.Length);
+                            lastFrameAt = observedAt; lastFrameTicks = deliveredTicks;
                         }
-                        if (decoder is not null && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false)
+                        // Preview samples the same validated native loan, independently of
+                        // one-shot decoding. It never creates an observation or retains the loan.
+                        preview.Offer(frame.Data, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
+                        if (decoder is not null && allowDecode)
                         {
                             using var copy = Timings.Measure("image.rent-copy");
                             length = checked((int)(frame.Width * frame.Height)); pixels = ArrayPool<byte>.Shared.Rent(length);
@@ -239,10 +247,11 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 if (inspected.Registration?.Isolated != true) original = originals.Copy(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
                             using (Timings.Measure("inspection.original-copy"))
                                 if (inspected.Registration is { CaptureImages: true }) inspectionOriginal = pixels.AsSpan(0, length).ToArray();
-                            preview.Offer(pixels, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
                             PhaseTo("decode");
+                            lock (gate) decodeStarted++;
                             using (Timings.Measure("decode")) symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
                             codes = symbols.Select(symbol => symbol.Text).ToArray();
+                            lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; lastDecodeAt = DateTimeOffset.UtcNow; }
                         }
                         catch { original?.Dispose(); throw; }
                         finally { using (Timings.Measure("image.clear-return")) ArrayPool<byte>.Shared.Return(pixels, true); }
@@ -288,6 +297,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             }
                             finally
                             {
+                                if (!delivered) { lock (gate) rejected++; }
                                 Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
                                     Timings.LastMs("image.rent-copy"), Timings.LastMs("sdk.release"), Timings.LastMs("decode"), Timings.LastMs("image.clear-return"),
                                     Timings.LastMs("host.observed-to-receiver"), Timings.LastMs("application.durable-handoff"), codes.Length, delivered) { OriginalCopyMs = Timings.LastMs("image.original-copy") });

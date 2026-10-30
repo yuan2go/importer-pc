@@ -3,7 +3,12 @@ namespace Ipc.Application.Contracts;
 
 public sealed record DeliveryPosition(string Id, string ReaderDeviceId, string? CameraInstanceId = null, string? ScaleInstanceId = null);
 public sealed record ParcelTopology(DeviceBinding[] Readers, DeliveryPosition[] Positions);
-public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Admit, string? CurrentOperation, string[] BlockingReasons, bool MainResultComplete, bool BackgroundComplete);
+public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Admit, string? CurrentOperation, string[] BlockingReasons, bool MainResultComplete, bool BackgroundComplete)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public ParcelBarcodeAvailability? BarcodeInput { get; init; }
+}
+public sealed record ParcelBarcodeAvailability(bool Camera, bool Manual, string[] ManualBlockingReasons);
 // A reader may expose a capture facade over its OWN acquisition session. The facade
 // must not open another connection and must resolve the exact AcquisitionIdentity.
 public interface IReaderImageCapture

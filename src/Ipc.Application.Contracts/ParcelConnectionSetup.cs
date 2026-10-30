@@ -10,7 +10,7 @@ public static class ParcelConnectionSetup
     {
         if (c.DeferredConnections is not { Length: > 0 }) return false;
         if (c.ApplicationId != "sportmaster") return true;
-        return c.Wcs is null || IsDeferred(c, c.Wcs.InstanceId) || !ParcelBindings.Readers(c).Any(r => !IsDeferred(c, r.DeviceId));
+        return c.Wcs is null || IsDeferred(c, c.Wcs.InstanceId);
     }
     public static bool HasActiveConnections(ParcelConfiguration c) => ParcelBindings.Readers(c).Any(r => !IsDeferred(c, r.DeviceId)) ||
         ParcelBindings.Bound(c).Any(b => !IsDeferred(c, b.InstanceId));

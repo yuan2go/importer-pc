@@ -46,7 +46,8 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     {
         int reads, administration, managementStatus; lock (readOwnership) { reads = readOperations.Count; administration = administrationOperations.Count; managementStatus = managementStatusOperations.Count; }
         return new { At = DateTimeOffset.UtcNow, ProcessId = Environment.ProcessId, RuntimeId = runtimeId, Stopping = stopping.IsCancellationRequested,
-            Connections = readers.Values.Select(r => new { r.Source.DeviceId, r.Epoch, Health = r.Health?.Health.ToString() }).ToArray(),
+            Connections = readers.Values.Select(r => new { r.Source.DeviceId, r.Epoch, Health = r.Health?.Health.ToString(),
+                Acquisition = (r.Source as IObservationDiagnosticsSource)?.ReadDiagnostics() }).ToArray(),
             Workers = WorkerProgress(), Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new { Name = p.Key, State = p.Value.Status.ToString(),
                 LastProgress = backgroundProgress.TryGetValue(p.Key, out var seen) ? (DateTimeOffset?)seen.At : null,
@@ -58,6 +59,7 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     {
         using var process = Process.GetCurrentProcess();
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        var cameraSample = Stopwatch.StartNew();
         try
         {
             do
@@ -70,6 +72,13 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
                         Threads = process.Threads.Count, ManagedBytes = GC.GetTotalMemory(false), DatabaseBytes = Bytes(Id + ".db"), WalBytes = Bytes(Id + ".db-wal") },
                         Policy = "Observation only; no restart/replay/GC; an absent/stale file requires external investigation" };
                     ExtensionStore.AtomicWrite(Path.Combine(directory!, "runtime-progress.json"), sample);
+                    if (cameraSample.Elapsed >= TimeSpan.FromSeconds(5))
+                    {
+                        cameraSample.Restart();
+                        foreach (var reader in readers.Values)
+                            if (reader.Source is IObservationDiagnosticsSource source)
+                                DebugDiagnostic("相机通信", "相机取帧与解码采样", () => source.ReadDiagnostics());
+                    }
                     Volatile.Write(ref supervisionFailure, null);
                 }
                 catch (Exception ex) { Volatile.Write(ref supervisionFailure, ex.GetType().Name + "; external collector required; ownership retained"); }

@@ -1,5 +1,9 @@
 # 文档索引
 
+2026-10-30 调试实时视频及逐相机取帧/解码诊断见 [SM-CAMERA-STREAM-11](work-packages/WP-IPC-SM-CAMERA-STREAM-11.md)及[验证记录](runtime/sm-camera-stream-11.md)。实时预览独立于单轮解码暂停和锁定照片；连接在线不代替成功取帧，ReadOperations不是识码计数。
+
+2026-10-30 当前人工供包与调试流程以 [SM-MANUAL-DEBUG-FLOW-10](work-packages/WP-IPC-SM-MANUAL-DEBUG-FLOW-10.md) 为准：人工输入独立于相机在线/配置，保留RCS及原责任守卫；调试沿五步按轮锁图和手动发送。
+
 2026-10-30 当前作业导航及条码输入以 [SM-NAVIGATION-INPUT-09](work-packages/WP-IPC-SM-NAVIGATION-INPUT-09.md) 为准：普通模式只显示作业/记录，管理模式增加设置/日志/调试；单一条码输入和任务区在离线/待配置时保留，底部提交。替代03四项入口常显、06置顶独立输入及全屏配置提示，历史证据保留。
 
 2026-10-30 PR156、PR158 顺序整合进 PR155 的来源、审查、定向验证及待验边界见 [08 报告](runtime/pr155-integration-08.md)与[工作包](work-packages/WP-IPC-PR155-INTEGRATION-08.md)。合入 main 不代表真实安装或现场验收通过。

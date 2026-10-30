@@ -11,7 +11,11 @@ public sealed record ParcelPayload(string ParcelCode, string AdmissionId, Parcel
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] AcquisitionIdentity? Acquisition = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PositionId = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null)
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OperatorInputEvidence? OperatorInput { get; init; }
+}
 // Facts deliberately independent: delivery != protocol acknowledgement != business acceptance
 // != physical completion. Null is unknown, never a successful fallback.
 public sealed record StageReply(string Id, string RequestId, string PayloadHash, bool TransportSucceeded,

@@ -25,10 +25,11 @@ internal static class RcsConfigurationValidation
             // request. Driver selection/parameters cannot supply a second code.
             return ValidCode(code) ? code! : throw new InvalidDataException("RCS requires the shared camera code: " + key);
         }
-        // Keep topology identity checks above even for deferred readers. Only an
-        // explicitly configured reader participates in the heartbeat contract;
-        // neither a missing code nor a stale draft code advertises a deferred one.
-        var mapping = readers.Where(r => !ParcelConnectionSetup.IsDeferred(configuration, r.DeviceId))
+        // A configured logical barcode source also serves operator input. Its
+        // business code remains valid while the optional physical camera is deferred.
+        var mapping = readers.Where(r => !ParcelConnectionSetup.IsDeferred(configuration, r.DeviceId) ||
+                ParcelBindings.Positions(configuration).Single(p => p.ReaderDeviceId == r.DeviceId) is { } p &&
+                ValidCode(configuration.Wcs?.Parameters.GetValueOrDefault(p.Id + "-bcr-code")))
             // A disabled selected extension cannot assert a live reader identity.
             .Where(r => configuration.Extensions?.Instances.SingleOrDefault(i => "extension:" + i.Id == r.Driver && i.DeviceId == r.DeviceId)?.Enabled != false)
             .Select(r => (Station: station!, Bcr: BcrCode(r))).ToArray();

@@ -1,0 +1,95 @@
+{
+  "baseCommit": "fa39f6bc39634a06d531cd59e38f052c609562b2",
+  "branch": "codex/sm-manual-debug-flow-10",
+  "identity": "Exact changed code bytes; each verification retains its stated scope, historical fixture failures are not PASS",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelConnectionSetup.cs",
+      "sha256": "8331ea55e59ae41bac0b3f253149ddd6895b7018d932e53f912e7cd6028b9667"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelContracts.cs",
+      "sha256": "cfd6d8dffdb0956e9d4f06ce4e386b7dce98c141cb6becfd6fc435a920be2a0e"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelTopology.cs",
+      "sha256": "991f4cb6bb9487309b5ffe070673e4c0276956f9a3e796c2b7f0a4752ffdb52b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "sha256": "f6b3e2ac9bcfed80286589f6e1145a46d2c76d6d12cba21500d7632ff8c31c1a"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "sha256": "2ccd941be78d6249dce55f9b1d59aeda03aaa0d3d4266eb2ac6c4096f32ceb77"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
+      "sha256": "c5dae380d2f4cb1e29c3226bd72763a9c9f9128c3a9022381fa7eaf4c111eae1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelManualInputReadiness.cs",
+      "sha256": "ab4338b85f9e182e38050574d9c5380a25cd58cc25442d506aa1e853ece7706b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOperatorInput.cs",
+      "sha256": "d7999895b90bc66b2c6c4d5240c9b6da797405a47632eedae0ce56efec2036d8"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "sha256": "ddfbcc209b5e77310093aabacd5b5f5f0af2833ac4e11109e3e660dfc7333d23"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/OperatorWorkspacePresentation.cs",
+      "sha256": "146bc2bf399b0c7fb8219316f99ce2ac1c40e833f72735ff37c4191a6355eef4"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugControl.cs",
+      "sha256": "f3380d2b84100fa6a5399d2c0b4f453ac15144e8806c93d828410468a44002a9"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "sha256": "3906836eb4539f1fab882ed93cf4a159110d1adcb5ff58ba9d62f2faad4b1b7f"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs",
+      "sha256": "59b07153fbeaac7f523d78275d99e48580ab9995c4572d77dc0f6f8c7feb79b7"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs",
+      "sha256": "a997ff3745a1e5d8c5cbd2481ab89e75c0310ce428cb38d92b10982027d7ecea"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CameraRoundHarness.cs",
+      "sha256": "26933dd16b86baa72760398757707649ee36e76260ef92f7fa36576ea9957c9d"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ManualSupplyChecks.cs",
+      "sha256": "5aa610a13fadcdecd47489f180d9fb3e875c118b34250c5f05fdec3408fdeee8"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Program.cs",
+      "sha256": "68c5a2c506415dde0fa11fd9dc53335feef4409be3befe94bee17fc99b221194"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CameraRoundUi.cs",
+      "sha256": "5afa83dc6f1ebb99cc46b38eebfb5bd9db1f9dd12098a72c1d97ac44d3102760"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
+      "sha256": "9430133b2a84159de146ec0480eb344e2aa0c1b8a165f32c95de4a6bee25ddd5"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ManualSupplyUi.cs",
+      "sha256": "077bf186fd857014e05b8a541f019e9251b87ded37c59c2b2d26740573d8a2d5"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorWorkspace.cs",
+      "sha256": "7991e40b49552b00d1e78c1fe8fd4e831c3ea95c22ee3cde39707e9fb330205a"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "sha256": "3d029a0ff8db3e91229105a0b5526c91993a202d96ac3d8d7754ac15bbde1852"
+    }
+  ]
+}

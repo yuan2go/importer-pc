@@ -19,6 +19,10 @@ internal sealed class StationDebugControl : UserControl
     readonly ICameraInspection? inspection;
     readonly ICameraReadRounds? rounds;
     readonly StationDebugEvidenceControl evidence;
+    readonly StationCameraPreviewControl livePreview;
+    readonly Grid jsonColumns = new();
+    readonly Border liveCard, resultCard;
+    readonly TextBlock readStatus = Text("尚未开始扫码"), photoState = Text("等待扫码"), fillStatus = Text("");
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Button left = Action("左相机"), right = Action("右相机"), trigger = Action("触发扫码"), send = Action("发送请求"), end = Action("确认清场并结束调试");
     readonly TextBlock state = Text("点击触发扫码开始本轮读取"), feedback = Text(""), photoCaption = Text("本轮读码照片"), result = Text("本轮尚未发送请求。"), camera = Text("左相机");
@@ -27,8 +31,11 @@ internal sealed class StationDebugControl : UserControl
     readonly Image photo = new() { Stretch = Stretch.Fill, IsHitTestVisible = false };
     readonly Canvas marks = new() { IsHitTestVisible = false, ClipToBounds = true };
     readonly Grid imageLayer = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, ClipToBounds = true };
-    readonly ScrollViewer viewport = new() { MinHeight = 280, Height = 420, Background = Brush("#252B33"), HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+    readonly ScrollViewer viewport = new() { MinHeight = 180, Height = 206, Background = Brush("#252B33"), HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly CheckBox overlay = new() { Content = "绿色框显示条码位置", IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
+    readonly TextBlock imageHint = new() { Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。", Foreground = Brush("#E0E5EB"),
+        TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center, MaxWidth = 320, Margin = new(24),
+        HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, IsHitTestVisible = false };
     readonly Grid columns = new();
     readonly TabControl tabs = new();
     readonly StackPanel reading = new(), visual = new();
@@ -54,30 +61,54 @@ internal sealed class StationDebugControl : UserControl
     {
         this.vm = vm; inspection = vm.Application as ICameraInspection; rounds = vm.Application as ICameraReadRounds;
         evidence = new(vm, settings, details);
+        livePreview = new(vm); livePreview.SelectDevice(Position.ReaderId);
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
-        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; Background = Brushes.White; Foreground = Brush("#202833");
-        var body = new StackPanel { Margin = new(20, 12, 20, 16) };
-        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled } });
+        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = UiTypography.Regular;
+        Background = Brush("#F3F5F8"); Foreground = Brush("#18283D");
+        var body = new StackPanel { Margin = new(20, 16, 20, 16) };
+        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = new ScrollViewer { Content = body, Background = Background,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled } });
         tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
-        var header = new StackPanel(); body.Children.Add(header);
-        header.Children.Add(new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis });
-        header.Children.Add(state); header.Children.Add(feedback); header.Children.Add(Flow(left, right, camera));
+        var header = new DockPanel { LastChildFill = true };
+        trigger.Background = Brush("#245FD3"); trigger.Foreground = Brushes.White; trigger.BorderBrush = trigger.Background;
+        readStatus.Foreground = Brush("#9A6511"); readStatus.VerticalAlignment = VerticalAlignment.Center;
+        var scanActions = Flow(readStatus, trigger); DockPanel.SetDock(scanActions, Dock.Right); header.Children.Add(scanActions);
+        var title = new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis,
+            VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 20, 6) };
+        header.Children.Add(Flow(title, left, right)); body.Children.Add(header);
+        camera.Foreground = Brush("#68788E"); state.Foreground = Brush("#68788E");
+        body.Children.Add(camera); body.Children.Add(state); body.Children.Add(feedback);
         var safety = new StackPanel(); safety.Children.Add(Text("调试说明（至少5字）")); safety.Children.Add(reason); safety.Children.Add(scene);
         safety.Children.Add(Text("本轮读取期间隔离两位自动供包。扫码只填写请求，点击发送才调用已配置RCS；软件隔离不是安全急停。")); safety.Children.Add(end);
-        setup = new() { Header = "隔离、操作说明与清场", IsExpanded = true, Content = safety, Margin = new(0, 8, 0, 12) }; reading.Children.Add(setup);
-        columns.ColumnDefinitions.Add(new() { Width = new(4, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(6, GridUnitType.Star) });
+        setup = new() { Header = "隔离确认与结束调试", IsExpanded = false, Content = safety, Margin = new(0, 4, 0, 12) }; body.Children.Add(setup);
+        columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        columns.Children.Add(reading); columns.Children.Add(visual); Grid.SetColumn(visual, 1); visual.Margin = new(20, 0, 0, 0);
-        body.Children.Add(columns);
-        reading.Children.Add(Heading("本轮扫码")); reading.Children.Add(trigger); reading.Children.Add(Text("完整条码"));
-        barcode.FontFamily = UiTypography.Code; barcode.FontSize = UiTypography.Barcode; barcode.MinHeight = 56; barcode.MaxHeight = 120; reading.Children.Add(barcode);
-        reading.Children.Add(Heading("请求")); reading.Children.Add(Text("请求条码")); requestBarcode.FontFamily = UiTypography.Code; reading.Children.Add(requestBarcode);
-        reading.Children.Add(Text("请求内容 · 与实际发送的冻结报文一致")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 210; requestBody.MaxHeight = 280; reading.Children.Add(requestBody);
-        reading.Children.Add(Text("此按钮将发送本轮测试请求到当前配置的RCS。发送后的原请求和未知结果保留，不自动重发。")); reading.Children.Add(send);
-        reading.Children.Add(Heading("请求结果")); reading.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; reading.Children.Add(responseBody);
-        visual.Children.Add(Heading("本轮读码照片")); imageLayer.Children.Add(photo); imageLayer.Children.Add(marks); viewport.Content = imageLayer; visual.Children.Add(viewport); visual.Children.Add(photoCaption);
+        liveCard = Panel(reading); resultCard = Panel(visual); resultCard.Margin = new(14, 0, 0, 0);
+        columns.Children.Add(liveCard); columns.Children.Add(resultCard); Grid.SetColumn(resultCard, 1); body.Children.Add(columns);
+        reading.Children.Add(Heading("实时画面")); reading.Children.Add(livePreview);
+        var resultHeading = new DockPanel(); DockPanel.SetDock(photoState, Dock.Right); resultHeading.Children.Add(photoState); resultHeading.Children.Add(Heading("本次读码")); visual.Children.Add(resultHeading);
+        barcode.FontFamily = UiTypography.Code; barcode.FontSize = UiTypography.Barcode; barcode.MinHeight = 48; barcode.MaxHeight = 96;
+        barcode.Background = Brush("#F3FBF7"); barcode.BorderBrush = Brush("#C7E4D8"); barcode.Margin = new(0, 0, 0, 8);
+        barcode.ToolTip = "本轮完整条码，可选择复制"; visual.Children.Add(barcode);
+        imageLayer.Children.Add(photo); imageLayer.Children.Add(marks); viewport.Content = imageLayer;
+        var photoArea = new Grid(); photoArea.Children.Add(viewport); photoArea.Children.Add(imageHint); visual.Children.Add(photoArea); visual.Children.Add(photoCaption);
         var adapt = Action("适应窗口"); var actual = Action("1:1"); var more = Action("放大"); var less = Action("缩小");
-        visual.Children.Add(Flow(adapt, actual, more, less, overlay));
+        visual.Children.Add(new Expander { Header = "照片缩放与条码标注", Content = Flow(adapt, actual, more, less, overlay), Margin = new(0, 4, 0, 0) });
+        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 14, 0, 0); body.Children.Add(requestCard);
+        var requestHeader = new DockPanel();
+        requestBarcode.FontFamily = UiTypography.Code; requestBarcode.Width = 220; requestBarcode.MaxHeight = 64; requestBarcode.Margin = new(8, 0, 10, 6);
+        requestBarcode.ToolTip = "来自本轮扫码，与下方冻结请求一致";
+        send.Foreground = Brush("#245FD3"); send.BorderBrush = Brush("#BFCFED");
+        var entry = Flow(Text("请求条码"), requestBarcode, send); DockPanel.SetDock(entry, Dock.Right); requestHeader.Children.Add(entry); requestHeader.Children.Add(Heading("请求调试")); requestPanel.Children.Add(requestHeader);
+        fillStatus.Foreground = Brush("#17805C"); requestPanel.Children.Add(fillStatus);
+        requestPanel.Children.Add(Text("读码后自动填入，点击发送才调用当前RCS。原请求及未知结果保留，不自动重发。"));
+        jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
+        jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto }); jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto });
+        var requestJson = new StackPanel(); var responseJson = new StackPanel { Margin = new(14, 0, 0, 0) };
+        requestJson.Children.Add(Text("请求 · 实际发送的冻结报文")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 150; requestBody.Background = Brush("#F7F9FC"); requestJson.Children.Add(requestBody);
+        responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; responseBody.Background = Brush("#F7F9FC"); responseJson.Children.Add(responseBody);
+        jsonColumns.Children.Add(requestJson); jsonColumns.Children.Add(responseJson); Grid.SetColumn(responseJson, 1); requestPanel.Children.Add(jsonColumns);
+        body.Children.Add(Text("调试会话 · 单次扫码 · 实时预览与本轮结果独立"));
         adapt.Click += (_, _) => { fit = true; ApplyZoom(); }; actual.Click += (_, _) => { fit = false; zoom = 1 / VisualTreeHelper.GetDpi(viewport).DpiScaleX; ApplyZoom(); };
         more.Click += (_, _) => Scale(1.25); less.Click += (_, _) => Scale(.8); overlay.Checked += (_, _) => DrawMarks(); overlay.Unchecked += (_, _) => DrawMarks();
         viewport.SizeChanged += (_, _) => { if (fit) ApplyZoom(); };
@@ -107,7 +138,7 @@ internal sealed class StationDebugControl : UserControl
         if (scope is not { BusinessFenced: true, State: "Active", SingleReadRounds: true })
         {
             if (scope?.BusinessFenced == true) throw new InvalidOperationException("已有其他或中断的隔离会话，请核对并确认清场结束后再开始按轮扫码。");
-            if (scene.IsChecked != true) throw new InvalidOperationException("请先确认停止真实投放并核对两位实体；只有隔离生效后才能放入测试件。");
+            if (scene.IsChecked != true) { setup.IsExpanded = true; setup.BringIntoView(); throw new InvalidOperationException("请先确认停止真实投放并核对两位实体；只有隔离生效后才能放入测试件。"); }
             beginCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.Isolated, Reason(), new(), true) { SingleReadRounds = true };
             var entered = await vm.ServiceAsync(() => Inspection.BeginCameraInspectionAsync(beginCommand, token));
             if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
@@ -165,13 +196,17 @@ internal sealed class StationDebugControl : UserControl
     async Task PublishRoundAsync(CameraReadRound value, CancellationToken token)
     {
         if (!active || !vm.IsManagementMode || token.IsCancellationRequested) return;
-        camera.Text = Position.Heading + " · " + Position.ReaderId;
+        camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus;
         var sameCamera = value.DeviceId == Position.ReaderId;
-        state.Text = scope?.BusinessFenced == true ? (scope.State == "Active" ? "实机隔离已生效 · " : "隔离保持 · ") + value.Detail : "点击触发扫码开始本轮读取；不会自动发送请求。";
+        state.ToolTip = value.Detail;
+        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : value.Detail;
+        state.Text = scope?.BusinessFenced == true ? (scope.State == "Active" ? "实机隔离已生效 · " : "隔离保持 · ") + detail : "点击触发扫码开始本轮读取；不会自动发送请求。";
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
         SetText(barcode, value.Barcode ?? ""); SetText(requestBarcode, value.Frame is null ? "" : value.Barcode ?? "");
         SetText(requestBody, value.RequestBody ?? ""); SetText(responseBody, value.Result ?? "");
-        result.Text = value.OperationId is null ? "本轮尚未准备可发送请求。" : "原作业：" + value.OperationId + "\n请求编号：" + value.RequestId + "\n目标：" + value.Target;
+        result.Text = value.OperationId is null ? "响应 · 尚未准备请求" : value.State == "Sending" ? "响应 · 正在发送" : value.CanSend ? "响应 · 等待手动发送" : "响应 · 原请求结果";
+        result.ToolTip = value.OperationId is null ? null : "原作业：" + value.OperationId + "\n请求编号：" + value.RequestId + "\n目标：" + value.Target;
+        send.ToolTip = value.Target is null ? "等待本轮请求准备完成" : "发送到当前RCS：" + value.Target;
         if (value.Frame is { ImageAvailable: true } frame && loadedFrame != frame.Id)
         {
             var version = generation; var raw = await vm.ServiceAsync(() => Inspection.ReadCameraOriginalAsync(frame.Id, token));
@@ -180,16 +215,24 @@ internal sealed class StationDebugControl : UserControl
             if (raw.Metadata.Id != frame.Id || raw.Metadata.ObservationId != frame.ObservationId || raw.Gray8.LongLength != (long)frame.Width * frame.Height)
                 throw new InvalidDataException("原图与本轮身份不一致，拒绝显示。");
             displayedFrame = raw.Metadata; loadedFrame = frame.Id;
-            var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, raw.Gray8, frame.Width); bitmap.Freeze(); photo.Source = bitmap;
+            var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, raw.Gray8, frame.Width); bitmap.Freeze(); photo.Source = bitmap; imageHint.Visibility = Visibility.Collapsed;
             photo.Width = imageLayer.Width = marks.Width = frame.Width; photo.Height = imageLayer.Height = marks.Height = frame.Height;
             fit = true; ApplyZoom(); DrawMarks(); photoCaption.Text = "已锁定本轮照片 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff") + "\n下一件不会覆盖。";
         }
         if (value.Frame is null) ClearPhoto(); Buttons();
     }
-    void ClearPhoto() { photo.Source = null; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
-    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); requestBarcode.Clear(); requestBody.Clear(); responseBody.Clear(); result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; }
+    void ClearPhoto() { photo.Source = null; imageHint.Visibility = Visibility.Visible; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
+    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); requestBarcode.Clear(); requestBody.Clear(); responseBody.Clear(); result.ToolTip = send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
+        if (photo.Source is null && current?.DeviceId == Position.ReaderId)
+            imageHint.Text = current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
+                current.Frame is not null ? "本轮照片不可用\n请核对原图留存状态。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
+        readStatus.Text = current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.State switch
+        { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已暂停", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
+        photoState.Text = displayedFrame is null ? "等待扫码" : "结果已锁定";
+        fillStatus.Text = current?.DeviceId == Position.ReaderId && current.RequestBody is not null ? "来自本轮扫码 · " + Position.Heading + " · 已填入请求" : "等待本轮扫码结果";
+        feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
         var fenced = scope?.BusinessFenced == true;
         if (fenced && !wasFenced) scene.IsChecked = false;
         wasFenced = fenced;
@@ -205,9 +248,13 @@ internal sealed class StationDebugControl : UserControl
     }
     void LayoutColumns()
     {
-        var narrow = ActualWidth < 1000; columns.ColumnDefinitions[0].Width = narrow ? new(1, GridUnitType.Star) : new(4, GridUnitType.Star);
-        columns.ColumnDefinitions[1].Width = narrow ? new(0) : new(6, GridUnitType.Star); Grid.SetColumn(visual, narrow ? 0 : 1); Grid.SetRow(visual, narrow ? 1 : 0); visual.Margin = narrow ? new(0, 20, 0, 0) : new(20, 0, 0, 0);
-        viewport.Height = narrow ? 320 : 420;
+        var narrow = ActualWidth < 720;
+        columns.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
+        Grid.SetColumn(resultCard, narrow ? 0 : 1); Grid.SetRow(resultCard, narrow ? 1 : 0); resultCard.Margin = narrow ? new(0, 14, 0, 0) : new(14, 0, 0, 0);
+        jsonColumns.ColumnDefinitions[1].Width = narrow ? new(0) : new(1, GridUnitType.Star);
+        var response = (FrameworkElement)jsonColumns.Children[1]; Grid.SetColumn(response, narrow ? 0 : 1); Grid.SetRow(response, narrow ? 1 : 0);
+        response.Margin = narrow ? new(0, 10, 0, 0) : new(14, 0, 0, 0);
+        viewport.Height = narrow ? 240 : 206;
     }
     void Scale(double factor) { fit = false; zoom = Math.Clamp(zoom * factor, .02, 16); ApplyZoom(); }
     void ApplyZoom()
@@ -226,12 +273,13 @@ internal sealed class StationDebugControl : UserControl
             Canvas.SetLeft(box, x); Canvas.SetTop(box, y); marks.Children.Add(box);
         }
     }
-    public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); camera.Text = Position.Heading + " · " + Position.ReaderId; evidence.SelectPosition(position); Buttons(); }
+    public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons(); }
     public void Revoke() { Deactivate(); evidence.Revoke(); reason.Clear(); scene.IsChecked = false; current = observed = null; scope = null; beginCommand = null; armCommand = null; sendCommand = null; }
-    void Deactivate() { active = false; authoritative = false; generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay(); }
+    void Deactivate() { active = false; authoritative = false; generation++; timer.Stop(); livePreview.Revoke(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay(); }
+    static Border Panel(UIElement child) => new() { Child = child, Background = Brushes.White, BorderBrush = Brush("#DFE5ED"), BorderThickness = new(1), CornerRadius = new(7), Padding = new(12, 8, 12, 10) };
     static SolidColorBrush Brush(string color) => new((Color)ColorConverter.ConvertFromString(color));
     static TextBlock Text(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 4, 0, 6) };
-    static TextBlock Heading(string text) => new() { Text = text, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 12, 0, 8) };
+    static TextBlock Heading(string text) => new() { Text = text, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 4, 0, 8) };
     static TextBox Value() => new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 44, Margin = new(0, 0, 0, 8), Padding = new(8) };
     static void SetText(TextBox box, string value) { if (box.Text != value) box.Text = value; }
     static Button Action(string text) => new() { Content = text, MinHeight = 44, Padding = new(12, 6, 12, 6), Margin = new(0, 0, 8, 6), HorizontalAlignment = HorizontalAlignment.Left };

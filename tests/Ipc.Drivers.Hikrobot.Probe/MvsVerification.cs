@@ -12,6 +12,7 @@ internal static partial class MvsVerification
     internal static async Task Run()
     {
         await VerifyPreview();
+        await VerifyAcquisitionDiagnostics();
         Check(Marshal.SizeOf<MvsNative.FrameInfo>() == 256 && MvsNative.FrameOutBytes == 328 && Marshal.OffsetOf<MvsNative.FrameInfo>("TriggerIndex").ToInt32() == 76 &&
             Marshal.OffsetOf<MvsNative.FrameInfo>("DeviceTimestampHigh").ToInt32() == 12 && Marshal.OffsetOf<MvsNative.FrameInfo>("DeviceTimestampLow").ToInt32() == 16 &&
             Marshal.OffsetOf<MvsNative.FrameInfo>("HostTimestamp").ToInt32() == 24 &&
@@ -189,6 +190,7 @@ internal static partial class MvsVerification
         public long PayloadSize() => 6291456;
         public void ConfigureBuffers(uint nodes) => Call("buffers");
         public void Start() => Call("start");
+        public void ClearBuffers() { if (HasFrame) throw new InvalidOperationException("Cannot clear a borrowed frame"); Frames.Clear(); Call("clear"); }
         public MvsFrame? Acquire() { Acquiring?.Invoke(); if (HasFrame) throw new InvalidOperationException("Loan still held"); if (Frames.TryDequeue(out var f)) { HasFrame = true; return f; } Thread.Sleep(5); return null; }
         public void Release() { if (FailFree) throw new IOException("Synthetic FreeImageBuffer failure"); if (HasFrame) { Freed++; HasFrame = false; } }
         public bool Connected() => Online;

@@ -41,9 +41,10 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                 if (latestInputs.GetValueOrDefault(request.PositionId)?.Observation.Id != request.ExpectedObservationId ||
                     DisplayedOperation(request.PositionId)?.Id != request.ExpectedOperationId)
                     return new("Conflict", "输入期间本位包裹已变化；核对当前包裹及输入内容后，再明确更新输入基准。", null, null, repository.Revision);
-                if (!positions.TryGetValue(request.PositionId, out var position) || !CanAdmit(request.PositionId) ||
-                    Effective.Images is not null || CameraBusinessFenced || maintenanceOperations.Count != 0)
-                    return new("Rejected", "本位准入守卫关闭；隔离、暂停、原件责任、连接或图像业务要求未满足。输入保留，不发请求。", null, null, repository.Revision);
+                var blocking = ManualInputReasons(request.PositionId);
+                if (blocking.Length != 0)
+                    return new("Rejected", string.Join("；", blocking) + " 输入保留，未创建作业或发送请求。", null, null, repository.Revision);
+                var position = positions[request.PositionId];
                 owned.ThrowIfCancellationRequested();
                 var at = DateTimeOffset.UtcNow;
                 var evidence = new OperatorInputEvidence(request.CommandId, request.Kind.ToString(),

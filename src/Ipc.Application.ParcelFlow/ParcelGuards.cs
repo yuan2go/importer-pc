@@ -6,7 +6,7 @@ public sealed partial class ParcelRuntime
 {
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving && !CameraBusinessFenced;
-    bool CanResume() => CapacityAvailable && SharedReady() && positions.Keys.Any(PositionReady);
+    bool CanResume() => CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
     bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
@@ -30,20 +30,25 @@ public sealed partial class ParcelRuntime
         (definition.AutomaticConfigurationQuiescence || repository.Paused && externalWaits == 0);
     bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && !CameraBusinessFenced && PositionReady(position) && ImageCapacityAvailable() &&
         !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
-    bool CanAdmit() => positions.Keys.Any(CanAdmit);
+    bool CanAdmit() => positions.Keys.Any(p => CanAdmit(p) || CanManuallyAdmit(p));
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
     {
         var current = DisplayedOperation(p.Id);
+        var manual = Id == "sportmaster" ? ManualInputReasons(p.Id) : null;
+        var camera = CanAdmit(p.Id);
+        var manualReady = manual is { Length: 0 };
         var reasons = new List<string>();
-        if (!PositionReady(p.Id)) reasons.Add("Position dependency/health or original responsibility blocked");
+        if (manual is not null && !manualReady && !camera) reasons.AddRange(manual);
+        else if (manual is null && !PositionReady(p.Id)) reasons.Add("Position dependency/health or original responsibility blocked");
         foreach (var conflict in identityConflicts.Values.Where(x => x.Positions.Contains(p.Id)))
             reasons.Add("IdentityConflict:" + conflict.Id + "; original=" + conflict.OriginalOperation + "; pause and authenticate maintenance before inspecting this entity; " + conflict.Detail);
-        if (!PositionMaintenanceClear(p.Id)) reasons.Add("Position resource maintenance in progress; original intent retained");
+        if (!PositionMaintenanceClear(p.Id) && !manualReady) reasons.Add("Position resource maintenance in progress; original intent retained");
         if (current is not null && !MainTerminated(current) && !ReleasedForNextAdmission(current)) reasons.Add("Current entity main result is incomplete");
         if (!CapacityAvailable) reasons.Add("Unresolved capacity exhausted");
         if (repository!.Paused) reasons.Add("Global software pause");
-        return new PositionSnapshot(p.Id, p.ReaderDeviceId, CanAdmit(p.Id), current?.Id, reasons.ToArray(), current is null || MainTerminated(current),
-            operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled));
+        return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
+            operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
+            { BarcodeInput = manual is null ? null : new(camera, manualReady, manual) };
     }).ToArray();
     ParcelAvailability Availability() => new(CanAdmit(), CanResume(), CanSaveConfiguration,
         operations.Values.Where(CanContinue).Select(x => x.Id).ToArray(), operations.Values.Where(CanContinueUpload).Select(x => x.Id).ToArray(), operations.Values.Where(CanAbandon).Select(x => x.Id).ToArray());

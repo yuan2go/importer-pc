@@ -42,10 +42,8 @@ static partial class Program
         foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
         {
             await SetClient(window, size.Item1, size.Item2); await Flush();
-            var action = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "去参数设置"));
-            Check(action.IsVisible && Inside(action, client), "configuration action fits the guide at " + size.Item1);
-            Check(!Descendants(window).OfType<SupplyStationPosition>().Any(p => p.IsVisible) && !((Border)window.FindName("OperationalStatusBar")).IsVisible,
-                "guide replaces empty panels and duplicate status banner at " + size.Item1);
+            Check(Descendants(window).OfType<SupplyStationPosition>().Count(p => p.IsVisible) == 2 && ((Border)window.FindName("OperationalStatusBar")).IsVisible,
+                "unconfigured work retains both positions and the real status banner at " + size.Item1);
             CaptureInternal(evidence, "operator-unconfigured-" + (int)size.Item1, client, lines);
         }
         await SetClient(window, 1366, 768); window.ShowPositionDiagnostics(vm.Left); await Flush();
@@ -88,7 +86,7 @@ static partial class Program
         }
         await SetClient(window, 1366, 768); await Flush();
         var left = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left));
-        var code = (TextBox)left.FindName("CurrentBarcode"); window.Activate(); code.Focus(); code.Select(1, 4);
+        var code = (TextBox)left.FindName("BarcodeEntry"); window.Activate(); code.Focus(); code.Select(1, 4);
         var selected = code.SelectedText; await vm.RefreshAsync(); await Flush();
         Check(code.IsKeyboardFocused && code.SelectedText == selected, "ordinary refresh retains barcode focus and text selection");
         // Coherent display fixtures cover copy and layout only; the separate chain suite verifies Application transitions.

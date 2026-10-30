@@ -47,7 +47,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string WorkNotice => BlockingReasons;
     const string PauseNotice = "Software admission paused; this is not an emergency stop";
     public bool IsInternalWorkspace => SelectedPage != "workstation";
-    public bool IsSettingsNavigation => SelectedPage is "maintenance" or "diagnostics" or "debug";
+    public bool IsSettingsNavigation => SelectedPage is "maintenance" or "diagnostics";
     public bool IsSettingsWorkspace => SelectedPage is "maintenance" or "logs";
     public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
     { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";

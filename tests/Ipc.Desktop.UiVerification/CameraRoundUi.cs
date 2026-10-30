@@ -44,7 +44,8 @@ static partial class Program
             ((DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(window)!).Stop();
             ((DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(second)!).Stop();
             await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Task.Delay(60);
-            Field<TextBox>(control, "reason").Text = "Synthetic operator round closure verification"; Field<CheckBox>(control, "scene").IsChecked = true;
+            Check(!Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("调试说明")), "camera debug does not require a free-text reason");
+            Field<CheckBox>(control, "scene").IsChecked = true;
             Check(Field<TextBlock>(control, "imageHint").IsVisible && Field<TextBlock>(control, "imageHint").Text.Contains("等待"), "empty photo explains how to begin without showing a fictitious frame");
             var visual = Field<StackPanel>(control, "visual"); var fullCode = Field<TextBox>(control, "barcode");
             Check(visual.Children.Contains(fullCode) && fullCode.TranslatePoint(new Point(), visual).Y < Field<ScrollViewer>(control, "viewport").TranslatePoint(new Point(), visual).Y,

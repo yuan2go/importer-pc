@@ -344,7 +344,9 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     {
         if (frame.Data == 0 || frame.Width == 0 || frame.Height == 0 || frame.PixelType != MvsNative.Mono8 || frame.Length == 0 || frame.Length > (ulong)limit ||
             (ulong)frame.Width * frame.Height > frame.Length || frame.LostPackets != 0 || frame.ExtraType != 0 || frame.SubImages != 0)
-            throw new InvalidDataException("MVS image missing/oversized/incomplete or incompatible with current Mono8 single-image acquisition");
+            throw new InvalidDataException($"MVS image missing/oversized/incomplete or incompatible with current Mono8 single-image acquisition: " +
+                $"buffer={(frame.Data == 0 ? "null" : "present")}; width={frame.Width}; height={frame.Height}; pixel=0x{frame.PixelType:X8}; " +
+                $"length={frame.Length}; limit={limit}; lostPackets={frame.LostPackets}; extraType={frame.ExtraType}; subImages={frame.SubImages}");
     }
     public Task StopAsync(CancellationToken token)
     {

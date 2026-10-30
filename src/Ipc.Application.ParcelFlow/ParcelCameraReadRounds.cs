@@ -16,6 +16,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         public string State = "Preparing", Detail = "正在清理旧轮次与SDK缓存；尚未开始读取。";
         public string? Barcode, Operation;
         public CameraFrameMetadata? Frame;
+        public bool Manual;
     }
     ReadRound? readRound;
     readonly HashSet<Task> cameraRoundWorkers = [];
@@ -214,7 +215,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             ClipRound(Wire.Encode(stage.Replies.LastOrDefault()), 65536) + (stage.Failure is null ? "" : "\n" + stage.Failure) : null;
         var value = new CameraReadRound(round.Id, round.Session, round.Device, round.State, round.Detail, round.Frame, round.Barcode, round.Operation,
             request?.IntegrationRequest?.RequestId.ToString() ?? request?.Id, request?.IntegrationRequest?.Body, request is null ? null : RoundRequestHash(request),
-            request?.Binding.Target, response, op is not null && round.State == "Locked" && DebugRequestReady(op), repository!.Revision);
+            request?.Binding.Target, response, op is not null && round.State == "Locked" && DebugRequestReady(op), repository!.Revision) { ManualRequest = round.Manual };
         return Wire.Decode<CameraReadRound>(Wire.Encode(value));
     }
     static string ClipRound(string text, int maximum) => text.Length <= maximum ? text : text[..maximum] + "\n[显示已截断，原回执仍保留]";
@@ -225,6 +226,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
     }, token);
     bool DebugRequestReady(ParcelOperation op)
     {
+        if (op.OperatorDebugRequest is not null) return OperatorDebugRequestReady(op);
         if (op.DebugRequest is not { } evidence || readRound is not { } round || round.Operation != op.Id || round.Id != evidence.RoundId ||
             inspectionFence?.Id != evidence.SessionId || collectingInspection?.Id != evidence.SessionId || !singleReadInspection ||
             round.Authority.IsCancellationRequested || round.Cancel.IsCancellationRequested || !MaintenanceAuthorized || !SessionValid ||
@@ -263,6 +265,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             var round = currentRound; round.State = "Sending"; explicitDebugSends.Add(op.Id);
             try { await ExecuteStageAsync(op, ParcelStage.Wcs, false).ConfigureAwait(false); }
             finally { explicitDebugSends.Remove(op.Id); round.State = "Locked"; }
+            if (round.Manual) round.Detail = "人工请求发送已返回；请核对原响应，不自动重发。";
             repository.CompleteCommand(receipt, new("DebugSendReturned", "原发送调用已返回，结果以原阶段及回执为准，不等于物理完成。", repository.Revision));
             authority.ThrowIfCancellationRequested(); Management.Require();
             return RoundProjection();

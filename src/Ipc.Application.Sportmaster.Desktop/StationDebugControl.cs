@@ -24,9 +24,9 @@ internal sealed class StationDebugControl : UserControl
     readonly Border liveCard, resultCard;
     readonly TextBlock readStatus = Text("尚未开始扫码"), photoState = Text("等待扫码"), fillStatus = Text("");
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
-    readonly Button left = Action("左相机"), right = Action("右相机"), trigger = Action("触发扫码"), send = Action("发送请求"), end = Action("确认清场并结束调试");
+    readonly Button left = Action("左相机"), right = Action("右相机"), trigger = Action("触发扫码"), prepare = Action("准备请求"), send = Action("发送请求"), end = Action("确认清场并结束调试");
     readonly TextBlock state = Text("点击触发扫码开始本轮读取"), feedback = Text(""), photoCaption = Text("本轮读码照片"), result = Text("本轮尚未发送请求。"), camera = Text("左相机");
-    readonly TextBox barcode = Value(), requestBarcode = Value(), requestBody = Value(), responseBody = Value(), reason = new() { MaxLength = 1024, MinHeight = 44 };
+    readonly TextBox barcode = Value(), requestBarcode = Value(), requestBody = Value(), responseBody = Value();
     readonly CheckBox scene = new() { Content = "已停止真实投放，并核对两位当前包裹", Margin = new(0, 8, 0, 8) };
     readonly Image photo = new() { Stretch = Stretch.Fill, IsHitTestVisible = false };
     readonly Canvas marks = new() { IsHitTestVisible = false, ClipToBounds = true };
@@ -48,6 +48,9 @@ internal sealed class StationDebugControl : UserControl
     BeginCameraInspection? beginCommand;
     ArmCameraRead? armCommand;
     SendCameraRound? sendCommand;
+    PrepareManualRcsRequest? prepareCommand;
+    readonly Dictionary<string, string> manualDrafts = [];
+    bool updatingRequest, requestDirty;
     string position = "left", loadedFrame = "";
     bool active, busy, polling, fit = true, wasFenced, authoritative;
     long generation;
@@ -78,7 +81,7 @@ internal sealed class StationDebugControl : UserControl
         header.Children.Add(Flow(title, left, right)); body.Children.Add(header);
         camera.Foreground = Brush("#68788E"); state.Foreground = Brush("#68788E");
         body.Children.Add(camera); body.Children.Add(state); body.Children.Add(feedback);
-        var safety = new StackPanel(); safety.Children.Add(Text("调试说明（至少5字）")); safety.Children.Add(reason); safety.Children.Add(scene);
+        var safety = new StackPanel(); safety.Children.Add(scene);
         safety.Children.Add(Text("本轮读取期间隔离两位自动供包。扫码只填写请求，点击发送才调用已配置RCS；软件隔离不是安全急停。")); safety.Children.Add(end);
         setup = new() { Header = "隔离确认与结束调试", IsExpanded = false, Content = safety, Margin = new(0, 4, 0, 12) }; body.Children.Add(setup);
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
@@ -97,11 +100,12 @@ internal sealed class StationDebugControl : UserControl
         var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 14, 0, 0); body.Children.Add(requestCard);
         var requestHeader = new DockPanel();
         requestBarcode.FontFamily = UiTypography.Code; requestBarcode.Width = 220; requestBarcode.MaxHeight = 64; requestBarcode.Margin = new(8, 0, 10, 6);
-        requestBarcode.ToolTip = "来自本轮扫码，与下方冻结请求一致";
+        requestBarcode.IsReadOnly = false; requestBarcode.MaxLength = 4096;
+        requestBarcode.ToolTip = "可手工输入完整条码；准备请求不要求配置或连接相机。";
         send.Foreground = Brush("#245FD3"); send.BorderBrush = Brush("#BFCFED");
-        var entry = Flow(Text("请求条码"), requestBarcode, send); DockPanel.SetDock(entry, Dock.Right); requestHeader.Children.Add(entry); requestHeader.Children.Add(Heading("请求调试")); requestPanel.Children.Add(requestHeader);
+        var entry = Flow(Text("请求条码"), requestBarcode, prepare, send); DockPanel.SetDock(entry, Dock.Right); requestHeader.Children.Add(entry); requestHeader.Children.Add(Heading("请求调试")); requestPanel.Children.Add(requestHeader);
         fillStatus.Foreground = Brush("#17805C"); requestPanel.Children.Add(fillStatus);
-        requestPanel.Children.Add(Text("读码后自动填入，点击发送才调用当前RCS。原请求及未知结果保留，不自动重发。"));
+        requestPanel.Children.Add(Text("扫码自动填入，或手工输入条码后准备请求；不要求配置或连接相机。点击发送才调用RCS。"));
         jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto }); jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var requestJson = new StackPanel(); var responseJson = new StackPanel { Margin = new(14, 0, 0, 0) };
@@ -119,10 +123,16 @@ internal sealed class StationDebugControl : UserControl
         SizeChanged += (_, _) => LayoutColumns();
         left.Click += (_, _) => SelectPosition("left"); right.Click += (_, _) => SelectPosition("right");
         trigger.Click += async (_, _) => await Run(TriggerAsync); send.Click += async (_, _) => await Run(SendAsync);
+        prepare.Click += async (_, _) => await Run(PrepareManualAsync);
+        requestBarcode.TextChanged += (_, _) =>
+        {
+            if (updatingRequest) return;
+            requestDirty = true; manualDrafts[position] = requestBarcode.Text; Buttons();
+        };
         end.Click += async (_, _) => await Run(async t =>
         {
             if (scene.IsChecked != true || scope?.SessionId is not { } id) throw new InvalidOperationException("请确认测试件已移除并核对两位原责任后结束隔离。");
-            await vm.ServiceAsync(() => Inspection.EndCameraInspectionAsync(new(Wire.Id(), id, true, true, Reason()), t)); scene.IsChecked = false; beginCommand = null;
+            await vm.ServiceAsync(() => Inspection.EndCameraInspectionAsync(new(Wire.Id(), id, true, true, "确认清场并结束调试"), t)); scene.IsChecked = false; beginCommand = null;
         });
         AutomationProperties.SetName(barcode, "本轮完整条码，可选择复制"); AutomationProperties.SetName(requestBody, "本轮冻结请求内容"); AutomationProperties.SetName(viewport, "同帧读码照片，绿色条码定位框");
         AutomationProperties.SetLiveSetting(state, AutomationLiveSetting.Polite); AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Assertive);
@@ -130,7 +140,21 @@ internal sealed class StationDebugControl : UserControl
         Loaded += async (_, _) => { active = true; lifetime = new(); timer.Start(); LayoutColumns(); await PollAsync(); };
         Unloaded += (_, _) => Deactivate();
     }
-    string Reason() => reason.Text.Trim().Length >= 5 ? reason.Text : throw new InvalidOperationException("请填写至少5字的调试说明，并确认已停止真实投放。");
+    async Task PrepareManualAsync(CancellationToken token)
+    {
+        if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
+        prepareCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, position, requestBarcode.Text, observed?.Id);
+        CameraReadRound value;
+        try { value = await vm.ServiceAsync(() => Rounds.PrepareManualRcsRequestAsync(prepareCommand, token)); }
+        catch (CameraReadRoundConflictException) { prepareCommand = null; throw; }
+        catch (ArgumentException) { prepareCommand = null; throw; }
+        if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
+        if (value.Id != prepareCommand.CommandId || !value.ManualRequest) throw new InvalidOperationException("原准备结果尚未确认，请核对原轮次；不重复创建请求。");
+        requestDirty = requestBarcode.Text != prepareCommand.Barcode;
+        if (!requestDirty) manualDrafts.Remove(position);
+        prepareCommand = null; sendCommand = null;
+        current = observed = value; authoritative = true; feedback.Text = ""; await PublishRoundAsync(value, token);
+    }
     async Task TriggerAsync(CancellationToken token)
     {
         if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
@@ -139,7 +163,7 @@ internal sealed class StationDebugControl : UserControl
         {
             if (scope?.BusinessFenced == true) throw new InvalidOperationException("已有其他或中断的隔离会话，请核对并确认清场结束后再开始按轮扫码。");
             if (scene.IsChecked != true) { setup.IsExpanded = true; setup.BringIntoView(); throw new InvalidOperationException("请先确认停止真实投放并核对两位实体；只有隔离生效后才能放入测试件。"); }
-            beginCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.Isolated, Reason(), new(), true) { SingleReadRounds = true };
+            beginCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.Isolated, "单次扫码调试", new(), true) { SingleReadRounds = true };
             var entered = await vm.ServiceAsync(() => Inspection.BeginCameraInspectionAsync(beginCommand, token));
             if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
             scope = entered;
@@ -156,12 +180,12 @@ internal sealed class StationDebugControl : UserControl
         try { value = await vm.ServiceAsync(() => Rounds.ArmCameraReadAsync(armCommand, token)); }
         catch (CameraReadRoundConflictException) { armCommand = null; throw; }
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
-        armCommand = null; sendCommand = null; observed = current = value; authoritative = true; setup.IsExpanded = false; feedback.Text = ""; await PublishRoundAsync(value, token);
+        armCommand = null; sendCommand = null; requestDirty = false; manualDrafts.Remove(position); observed = current = value; authoritative = true; setup.IsExpanded = false; feedback.Text = ""; await PublishRoundAsync(value, token);
     }
     async Task SendAsync(CancellationToken token)
     {
         if (!authoritative || !vm.Fresh || current is not { Id: { } id, RequestHash: { } hash } value || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复权威轮次读取，再核对本轮冻结请求。");
-        if (sendCommand is null && (!value.CanSend || loadedFrame != value.Frame?.Id)) throw new InvalidOperationException("先取得本轮对应原图和可发送请求；守卫关闭时不可发送。");
+        if (sendCommand is null && (!value.CanSend || requestDirty || !value.ManualRequest && loadedFrame != value.Frame?.Id)) throw new InvalidOperationException("请先准备当前条码的请求；扫码请求还须核对本轮原图。");
         sendCommand ??= new(Wire.Id(), snapshot.RuntimeId, id, hash);
         var returned = await vm.ServiceAsync(() => Rounds.SendCameraRoundAsync(sendCommand, token));
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
@@ -200,9 +224,10 @@ internal sealed class StationDebugControl : UserControl
         var sameCamera = value.DeviceId == Position.ReaderId;
         state.ToolTip = value.Detail;
         var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : value.Detail;
-        state.Text = scope?.BusinessFenced == true ? (scope.State == "Active" ? "实机隔离已生效 · " : "隔离保持 · ") + detail : "点击触发扫码开始本轮读取；不会自动发送请求。";
+        state.Text = value.ManualRequest ? value.Detail : scope?.BusinessFenced == true ? (scope.State == "Active" ? "实机隔离已生效 · " : "隔离保持 · ") + detail : "点击触发扫码开始本轮读取；不会自动发送请求。";
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
-        SetText(barcode, value.Barcode ?? ""); SetText(requestBarcode, value.Frame is null ? "" : value.Barcode ?? "");
+        SetText(barcode, value.Barcode ?? "");
+        if (!requestDirty) { updatingRequest = true; try { SetText(requestBarcode, value.Barcode ?? ""); } finally { updatingRequest = false; } }
         SetText(requestBody, value.RequestBody ?? ""); SetText(responseBody, value.Result ?? "");
         result.Text = value.OperationId is null ? "响应 · 尚未准备请求" : value.State == "Sending" ? "响应 · 正在发送" : value.CanSend ? "响应 · 等待手动发送" : "响应 · 原请求结果";
         result.ToolTip = value.OperationId is null ? null : "原作业：" + value.OperationId + "\n请求编号：" + value.RequestId + "\n目标：" + value.Target;
@@ -222,27 +247,31 @@ internal sealed class StationDebugControl : UserControl
         if (value.Frame is null) ClearPhoto(); Buttons();
     }
     void ClearPhoto() { photo.Source = null; imageHint.Visibility = Visibility.Visible; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
-    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); requestBarcode.Clear(); requestBody.Clear(); responseBody.Clear(); result.ToolTip = send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
+    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); result.ToolTip = send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
         if (photo.Source is null && current?.DeviceId == Position.ReaderId)
-            imageHint.Text = current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
+            imageHint.Text = current.ManualRequest ? "本次为手工输入请求，无扫码照片。" : current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
                 current.Frame is not null ? "本轮照片不可用\n请核对原图留存状态。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
-        readStatus.Text = current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.State switch
+        readStatus.Text = current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
         { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已暂停", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
-        photoState.Text = displayedFrame is null ? "等待扫码" : "结果已锁定";
-        fillStatus.Text = current?.DeviceId == Position.ReaderId && current.RequestBody is not null ? "来自本轮扫码 · " + Position.Heading + " · 已填入请求" : "等待本轮扫码结果";
+        photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : displayedFrame is null ? "等待扫码" : "结果已锁定";
+        if (current?.ManualRequest == true) photoCaption.Text = "本次为手工输入请求。";
+        fillStatus.Text = requestDirty ? "输入已更改，请准备当前条码的请求。" : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
+            (current.ManualRequest ? "来自手工输入 · " : "来自本轮扫码 · ") + Position.Heading + " · 已填入请求" : "可扫码或手工输入条码。";
         feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
         var fenced = scope?.BusinessFenced == true;
         if (fenced && !wasFenced) scene.IsChecked = false;
         wasFenced = fenced;
         scene.Content = fenced ? "已移除两位测试件，并核对原实体与原请求责任" : "已停止真实投放，并核对两位当前包裹";
         var waiting = observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
-        trigger.Content = armCommand is not null || beginCommand is not null ? "核对触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null ? "触发扫码" : "再次扫码";
+        trigger.Content = armCommand is not null || beginCommand is not null ? "核对触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
         trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode;
+        prepare.Content = prepareCommand is null ? "准备请求" : "核对准备结果";
+        prepare.IsEnabled = active && !busy && !waiting && vm.Fresh && vm.IsManagementMode && !string.IsNullOrWhiteSpace(requestBarcode.Text);
         send.Content = sendCommand is null ? "发送请求" : "核对发送结果";
         send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
-            (sendCommand is not null || current is { CanSend: true, Frame: { } frame } && loadedFrame == frame.Id);
+            (sendCommand is not null || !requestDirty && current is { CanSend: true } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
         end.IsEnabled = active && !busy && scope?.BusinessFenced == true && observed?.State != "Sending";
         left.IsEnabled = right.IsEnabled = !busy; left.Background = position == "left" ? Brush("#E8F1FF") : Brushes.White; right.Background = position == "right" ? Brush("#E8F1FF") : Brushes.White;
     }
@@ -274,7 +303,7 @@ internal sealed class StationDebugControl : UserControl
         }
     }
     public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons(); }
-    public void Revoke() { Deactivate(); evidence.Revoke(); reason.Clear(); scene.IsChecked = false; current = observed = null; scope = null; beginCommand = null; armCommand = null; sendCommand = null; }
+    public void Revoke() { Deactivate(); evidence.Revoke(); manualDrafts.Clear(); prepareCommand = null; scene.IsChecked = false; current = observed = null; scope = null; beginCommand = null; armCommand = null; sendCommand = null; }
     void Deactivate() { active = false; authoritative = false; generation++; timer.Stop(); livePreview.Revoke(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay(); }
     static Border Panel(UIElement child) => new() { Child = child, Background = Brushes.White, BorderBrush = Brush("#DFE5ED"), BorderThickness = new(1), CornerRadius = new(7), Padding = new(12, 8, 12, 10) };
     static SolidColorBrush Brush(string color) => new((Color)ColorConverter.ConvertFromString(color));

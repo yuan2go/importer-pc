@@ -48,5 +48,14 @@ internal static class ManualRcsDebugChecks
         Check(restarted.Operations.Single(o => o.Id == unknownId).Wcs is { State: StageState.Unknown, Attempts: 1 } &&
             (await h.App.ReadCameraOperationDetailAsync(original.Id, default))!.Original.Wcs!.Request.IntegrationRequest!.Body == bytes && h.Peer.Requests.Count == 2,
             "restart preserves manual debug frozen bytes/Unknown and never replays");
+        await using var leaving = new ManualSupplyHarness(workspace, Path.Combine(root, "leaving"), deferred: true, rightCode: false, leftCode: false);
+        await leaving.StartAsync(); await ManagementModeFixture.Authorize(leaving.App); var state = await leaving.App.SnapshotAsync();
+        var unsent = await leaving.App.PrepareManualRcsRequestAsync(new(Wire.Id(), state.RuntimeId, state.Configuration.Revision, "left", "UNSENT", null), default);
+        var close = new CloseUnsentDebugRound(Wire.Id(), state.RuntimeId, unsent.Id!);
+        await leaving.App.CloseUnsentDebugRoundAsync(close, default); await leaving.App.CloseUnsentDebugRoundAsync(close, default);
+        var cleaned = await leaving.App.SnapshotAsync();
+        Check(cleaned.Operations.Single(o => o.Id == unsent.OperationId).Wcs is { State: StageState.Cancelled, Attempts: 0 } &&
+            cleaned.Positions!.All(p => p.BarcodeInput?.Manual == true) && leaving.Peer.Requests.IsEmpty,
+            "leaving a manual debug page cancels only its unsent intent, restores ordinary manual admission and never sends HTTP");
     }
 }

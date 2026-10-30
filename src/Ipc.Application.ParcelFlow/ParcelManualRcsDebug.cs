@@ -4,6 +4,35 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
+    public Task<CameraReadRound> CloseUnsentDebugRoundAsync(CloseUnsentDebugRound command, CancellationToken token) => OwnedAdministration(async owned =>
+    {
+        var authority = Management.Require();
+        if (!Guid.TryParseExact(command.CommandId, "N", out _) || !Guid.TryParseExact(command.RoundId, "N", out _)) throw new ArgumentException("调试清理命令身份无效。");
+        await gate.WaitAsync(owned).ConfigureAwait(false);
+        try
+        {
+            authority.ThrowIfCancellationRequested(); Management.Require();
+            token.ThrowIfCancellationRequested();
+            if (repository is null || stopped) throw new InvalidOperationException("Application未运行或已停止。");
+            var receipt = new BusinessCommand(command.CommandId, 0, "CloseUnsentDebugRound", command.RoundId, Wire.Encode(command));
+            if (repository!.PriorCommand(receipt) is { } prior)
+            {
+                if (prior.Status == "Rejected") throw new InvalidOperationException(prior.Reason);
+                return RoundProjection();
+            }
+            if (command.RuntimeId != runtimeId || readRound is not { Manual: true } round || round.Id != command.RoundId)
+                throw new CameraReadRoundConflictException("本窗原轮次已变化，不能清理其他轮次。");
+            if (round.Operation is not { } id || !operations.TryGetValue(id, out var op) || op.Wcs is not { State: StageState.Prepared, Attempts: 0 })
+                throw new InvalidOperationException("原请求已尝试或未处于未发送状态，保留原结果与责任。");
+            repository.AdmitCommand(receipt);
+            CloseUnsentRound("离开调试页，取消本窗从未发送的人工测试意图；原记录保留。"); round.State = "Closed";
+            repository.CompleteCommand(receipt, new("RoundClosed", "未发送人工测试意图已取消，未外呼。", repository.Revision + 1));
+            return RoundProjection();
+        }
+        catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "CloseUnsentDebugRound"); throw; }
+        finally { gate.Release(); }
+    });
+
     // Uses the existing frozen request/one-shot send owner. Preparing operator
     // input never touches the SDK, invents a frame or sends an HTTP request.
     public Task<CameraReadRound> PrepareManualRcsRequestAsync(PrepareManualRcsRequest command, CancellationToken token) => OwnedAdministration(async owned =>

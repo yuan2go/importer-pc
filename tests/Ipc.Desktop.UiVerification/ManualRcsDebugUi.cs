@@ -45,10 +45,16 @@ static partial class Program
             await Until(() => !Field<bool>(control, "busy"));
             Check(h.Peer.Requests.Count == 1, "native original-result lookup does not send a second HTTP request");
             CaptureInternal(evidence, "manual-debug-no-camera", (Grid)window.FindName("ClientArea"), lines);
-            send.BringIntoView(); await Flush();
+            Field<TextBox>(control, "responseBody").BringIntoView(); await Flush();
             CaptureInternal(evidence, "manual-debug-request-response", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); prepare.BringIntoView(); await Flush();
             Check(Inside(prepare, (Grid)window.FindName("ClientArea")), "manual preparation remains reachable in compact layout");
+            entry.Text = "UNSENT-ON-EXIT"; prepare.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => send.IsEnabled && Field<TextBox>(control, "requestBody").Text.Contains("UNSENT-ON-EXIT"));
+            typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
+            await Until(() => vm.Right.CanAdmit);
+            Check((await h.App.SnapshotAsync()).Operations.Single(o => o.ParcelCode == "UNSENT-ON-EXIT").Wcs is { State: Ipc.Application.Contracts.StageState.Cancelled, Attempts: 0 } && h.Peer.Requests.Count == 1,
+                "leaving native debug cancels only its unsent test request and restores ordinary manual supply without an end panel");
         }
         finally { window.Close(); }
     }

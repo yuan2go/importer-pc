@@ -107600,9 +107600,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-CLOSURE-07; original evidence retains its own SourceCommit",
-      "sha256": "d65dc42ad2d0d7c66ce3964cb6a130ac1d54f128ccedd40d464eab8090f4a33c",
-      "size_bytes": 706,
-      "git_blob": "f548ecaca33f029e78109f889896befc97c6b4e9",
+      "sha256": "aaffd6284e0cced27beceb7b55f3114c6a927243372114160e74b8e4e20a1049",
+      "size_bytes": 768,
+      "git_blob": "412e93ef4086a3492a31e8be758518d3c73ea2bb",
       "storage_scope": "public_repository"
     },
     {
@@ -108018,9 +108018,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-CLOSURE-07; original evidence retains its own SourceCommit",
-      "sha256": "08b01c585f7584b48fa3f653d8c4c84047b937195cc312cfc53ae02c39421b20",
-      "size_bytes": 7641,
-      "git_blob": "cabfad1d2f139663571080ba67bbb3ba1890a2df",
+      "sha256": "a775909cf3a1e2dc8b38031d59630a442dd441f409c3c193d7eb8de5a63b2e26",
+      "size_bytes": 7812,
+      "git_blob": "0c45dcfe0c76959b5e16794b6ac3f69570d9ee1f",
       "storage_scope": "public_repository"
     },
     {
@@ -108065,6 +108065,17 @@
       "sha256": "f0e382172c805afe66dcc84e19ef65ef0e34cc49cd83a2676de2872a91ccf86d",
       "size_bytes": 15845,
       "git_blob": "7c6265722443ec01c48c0ea4197c4757b49003e3",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-debug-closure-07/preserved-source.json",
+      "version": "sm-debug-closure-07",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-DEBUG-CLOSURE-07; original evidence retains its own SourceCommit",
+      "sha256": "9ec2e31eab9714f337b160fac89c6267b7d1230c74a9241cf34f7e5938206cb0",
+      "size_bytes": 1883,
+      "git_blob": "725a5127e88e021bf8fa4ab8b446713ad9525227",
       "storage_scope": "public_repository"
     }
   ],
@@ -110929,9 +110940,9 @@
   ],
   "integration_sources": [
     {
-      "commit": "838e9acddcced110c3d4f61b190aff9a62e46be1",
-      "manifest_sha256": "f71ddb715482e46fcc9a2d879ef213391ba5a2e59958c987f7f633dc4a023f6c",
-      "work_package": "WP-IPC-SM-BARCODE-READY-06"
+      "commit": "36d969ddf86598e0ae311cd19f7a75193f7af55d",
+      "manifest_sha256": "7190eb8499e383cda3c599d417cdf0b42ba3c746bc403aefcdc4a4eb01ae3c5e",
+      "work_package": "WP-IPC-SM-DEBUG-CLOSURE-07"
     },
     {
       "commit": "9df3901ec20d73512d48920b4671b529ebc58a9e",
@@ -110986,6 +110997,7 @@
     "builds": "Application/WPF verification/Probe/Sportmaster Desktop: 0 warnings, 0 errors",
     "notProductionAcceptance": true,
     "dependencies": "Synthetic IMvsApi and loopback HTTP; actual MVS driver, ZXing, SQLite, built-in RCS and native WPF",
-    "remaining": "Actual camera/PDA/customer RCS, installation, field and long-duration qualifications NOT_RUN"
+    "remaining": "Actual camera/PDA/customer RCS, installation, field and long-duration qualifications NOT_RUN",
+    "sourceCommit": "36d969ddf86598e0ae311cd19f7a75193f7af55d"
   }
 }

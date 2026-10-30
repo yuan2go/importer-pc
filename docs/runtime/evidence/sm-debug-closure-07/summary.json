@@ -12,5 +12,6 @@
   "builds": "Application/WPF verification/Probe/Sportmaster Desktop: 0 warnings, 0 errors",
   "notProductionAcceptance": true,
   "dependencies": "Synthetic IMvsApi and loopback HTTP; actual MVS driver, ZXing, SQLite, built-in RCS and native WPF",
-  "remaining": "Actual camera/PDA/customer RCS, installation, field and long-duration qualifications NOT_RUN"
+  "remaining": "Actual camera/PDA/customer RCS, installation, field and long-duration qualifications NOT_RUN",
+  "sourceCommit": "36d969ddf86598e0ae311cd19f7a75193f7af55d"
 }

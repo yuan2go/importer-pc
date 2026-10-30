@@ -193,3 +193,5 @@ docs/runtime/evidence/sm-debug-closure-07/*.log -text whitespace=cr-at-eol,-blan
 # Preserve canonical pre-install guidance and this package's original text evidence.
 docs/archive/pre-d-drive-install-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/d-drive-install-01/** -text whitespace=cr-at-eol,-blank-at-eol
+# Preserve exact parent blobs recovered for PR157's document archive finding.
+docs/archive/pre-mvs-latency-01/** -text whitespace=cr-at-eol

@@ -1,0 +1,26 @@
+{
+  "Reason": "Backfill exact pre-change current-document bytes required by PR157 discussion_r4414737632; existing historical archives retain their own provenance",
+  "RepairBaseCommit": "9df3901ec20d73512d48920b4671b529ebc58a9e",
+  "ReviewedCommit": "0f820f92094a4d7ec1a0cc2c4dcb43d4ec78240b",
+  "FirstChangingCommit": "14eead38b828af1e1b32b9be671f38015dbf78e6",
+  "SourceRelation": "SourceCommit is the first parent of FirstChangingCommit",
+  "RecoveryMethod": "git cat-file blob -> binary write; no text decoding or newline conversion",
+  "Files": [
+    {
+      "OriginalPath": "docs/INDEX.md",
+      "Snapshot": "docs__INDEX.md.txt",
+      "SourceCommit": "f870ffc00abcba78497b3d01d83251d786052ae3",
+      "GitBlob": "e71814e3b6f0a33e5818afb1ed90f934f51ff5ee",
+      "SizeBytes": 2858,
+      "Sha256": "58c7e9356d96baf7eb2517c971331904935c90646d4915a172132fa12f542a64"
+    },
+    {
+      "OriginalPath": "docs/runtime/mvs-software-reader-01.md",
+      "Snapshot": "docs__runtime__mvs-software-reader-01.md.txt",
+      "SourceCommit": "f870ffc00abcba78497b3d01d83251d786052ae3",
+      "GitBlob": "4d6a0046228cfdad490d527f895b88e4594ecd44",
+      "SizeBytes": 5948,
+      "Sha256": "4567168f5785ccc166155fbee73dac9ff6e43661d9529eb3e90c0d9d79fa3ae6"
+    }
+  ]
+}

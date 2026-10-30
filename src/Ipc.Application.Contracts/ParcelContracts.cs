@@ -87,6 +87,8 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     public OperatorInputEvidence? OperatorInput { get; init; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public CameraDebugRequestEvidence? DebugRequest { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OperatorDebugRequestEvidence? OperatorDebugRequest { get; init; }
 }
 
 public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long Revision, string State, bool Paused,

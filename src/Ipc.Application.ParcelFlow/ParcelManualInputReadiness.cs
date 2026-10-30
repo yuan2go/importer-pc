@@ -17,7 +17,7 @@ public sealed partial class ParcelRuntime
 
     // This is the Application's readiness for an explicit operator command. It
     // deliberately does not consult the acquisition device's connection/epoch.
-    string[] ManualInputReasons(string position, bool includePause = true)
+    string[] ManualInputReasons(string position, bool includePause = true, string? exceptOperation = null, bool debugRequest = false)
     {
         if (Id != "sportmaster") return ["当前业务不提供人工供包。"];
         if (!positions.ContainsKey(position)) return ["投递位不存在，请重新读取运行配置。"];
@@ -29,7 +29,7 @@ public sealed partial class ParcelRuntime
         if (!SessionValid) reasons.Add("操作员会话已失效，请重新登录。");
         if (failure is not null) reasons.Add("运行故障：" + failure);
         if (includePause && repository!.Paused) reasons.Add("供包已暂停，请恢复接收后提交。");
-        if (CameraBusinessFenced) reasons.Add("调试隔离尚未结束，请先移除测试件并确认清场。");
+        if (CameraBusinessFenced && !debugRequest) reasons.Add("调试隔离尚未结束，请先移除测试件并确认清场。");
         if (backupInProgress || configurationSaving || !ManualPositionMaintenanceClear(position))
             reasons.Add("配置或维护操作正在进行，请等待完成。");
         if (Effective.Images is not null) reasons.Add("当前业务要求同件采图，人工输入不能代替必需图像。");
@@ -40,7 +40,6 @@ public sealed partial class ParcelRuntime
             static bool Code(string? value) => !string.IsNullOrWhiteSpace(value) && value.Length <= 256 && !value.Any(char.IsControl);
             var label = position == "left" ? "左投递位" : "右投递位";
             if (!Code(wcs.Parameters.GetValueOrDefault(position + "-station-code"))) reasons.Add(label + "供包台编号未配置。");
-            if (!Code(wcs.Parameters.GetValueOrDefault(position + "-bcr-code"))) reasons.Add(label + "条码来源编码未配置；人工输入也需要真实业务编码。");
         }
         var now = DateTimeOffset.UtcNow;
         foreach (var binding in ManualBindings(position))
@@ -56,7 +55,7 @@ public sealed partial class ParcelRuntime
         if (overloadedPositions.ContainsKey(position) || overload != 0 && overloadedPositions.IsEmpty) reasons.Add("本位输入过载责任尚未核对。");
         if (!CapacityAvailable) reasons.Add("未结作业容量或存储余量不足。");
         if (!ImageCapacityAvailable()) reasons.Add("图像处理容量不足，原件仍保留。");
-        if (operations.Values.Where(o => (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o)).Any(o =>
+        if (operations.Values.Where(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o)).Any(o =>
             NeedsReconciliation(o) || !MainTerminated(o) || WeightExpired(o)))
             reasons.Add("本位原作业尚未结束或原请求结果待核对，请先处理原责任。");
         return reasons.Distinct(StringComparer.Ordinal).ToArray();

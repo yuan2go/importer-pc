@@ -22,7 +22,7 @@ public sealed partial class SupplyStationViewModel
         Snapshot?.Operations.Any(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) != true;
     public string SetupHeading => $"还差 {MissingConnections.Length} 项连接配置";
     public string SetupItems => string.Join("、", MissingConnections);
-    public string SetupInstruction => "配置并启用 RCS 和本位条码来源编码后，可手动输入供包；相机可稍后配置。";
+    public string SetupInstruction => "配置并启用 RCS 后，可手动输入条码取格口；不要求配置或连接相机。";
     public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "等待维护完成" :
         Snapshot?.Positions is { } positions && positions.Any(p => p.Admit)
             ? positions.All(p => p.Admit) ? "可以供包" : string.Join("、", positions.Where(p => p.Admit).Select(p => p.Id == "left" ? "左投递位" : p.Id == "right" ? "右投递位" : p.Id)) + "可以供包" : "暂不能供包";

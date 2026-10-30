@@ -202,3 +202,6 @@ docs/runtime/evidence/pr155-integration-08/** -text whitespace=cr-at-eol,-blank-
 
 # Preserve pre-default-path guidance byte identity.
 docs/archive/pre-d-drive-defaults-02/** -text whitespace=cr-at-eol
+
+# Raw synthetic verification output.
+docs/runtime/evidence/d-drive-defaults-02/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

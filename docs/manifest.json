@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "ccc6de24a5f7b81c3433e6e4e4eac348882a19042fba695d822409b24c8b319b",
-      "size_bytes": 13564,
-      "git_blob": "b33fc70e2f3293db3beef83d2b14c4f74d8d4e48",
+      "sha256": "04fc9b615f97fc7b11fee7f44a7a20f6703531bd3b1e734ab45fc13e81ba1e5c",
+      "size_bytes": 13705,
+      "git_blob": "12f35199ba608263d4147ee62a145dfef08eee24",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -59139,9 +59139,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "affc78a7eaae880143e2ed5a76dc0b4db88113b52b58c156364dac625e5ab06c",
-      "size_bytes": 30266,
-      "git_blob": "afc201b996e71f808e04830cb6982e93818ce5b5",
+      "sha256": "3b7950d5e30cb1c3ab1e8512a5120af18bd21e5e6fbf2b3834290c3880f0b383",
+      "size_bytes": 30299,
+      "git_blob": "243a498cdd69170ed9952159e58e2c4688f21250",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -108238,9 +108238,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-D-DRIVE-INSTALL-01; original evidence retains its own SourceCommit",
-      "sha256": "1213da7baa2c0012d6533a198754a058aa62c819d497b9dcc9f87515d211de39",
-      "size_bytes": 2346,
-      "git_blob": "1c0d5e7f296b69c09bb839229657fbdc41bd2d27",
+      "sha256": "768aaf7a7b56878b83cdd1b0e37e51afc7416f45f67bda34d7c037321ed67ae3",
+      "size_bytes": 2469,
+      "git_blob": "9fd1df1af966b815c55dae05b2775a63444f5875",
       "storage_scope": "public_repository"
     },
     {
@@ -108293,9 +108293,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-D-DRIVE-INSTALL-01; original evidence retains its own SourceCommit",
-      "sha256": "9911c673287a2ddeae1de081362f299a74a8e012870b9c1f711c005fb1e06f71",
-      "size_bytes": 20548,
-      "git_blob": "008d048e3eade601195818a2229fc8b90da50a8e",
+      "sha256": "6a0ec725b5def96eedd619ba5accc4cffd836d3cda098b6420b3b2084938f57a",
+      "size_bytes": 22586,
+      "git_blob": "45ab5f0fe236ecbf6244c359dee6339872764e7b",
       "storage_scope": "public_repository"
     },
     {
@@ -108711,9 +108711,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
-      "sha256": "63980cdccca3d083fac6b5b831d1d243cfa13a1966ed5655d49434612166b201",
-      "size_bytes": 1220,
-      "git_blob": "cd7fceea88420b52b5ec072ca12d469b3f415e79",
+      "sha256": "aac1cd09329ee5b1f331fa5e7a5618a0b0f26e22d4fa0cf8f34f480c01257ac9",
+      "size_bytes": 4270,
+      "git_blob": "6b7c9db4261aad1f6a67e6919e92bd79bdbde5c0",
       "storage_scope": "public_repository"
     },
     {
@@ -109286,6 +109286,72 @@
       "sha256": "5399827eb17e629aa1458e2b9a36c72c3068cc0061c6282ef3912f772508f529",
       "size_bytes": 3324,
       "git_blob": "b000d0353b580c495234c148a76cd39a5907b4e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/d-drive-defaults-02/README.md",
+      "version": "d-drive-defaults-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
+      "sha256": "ae84e9e01b6f30800c3f00f2b73d1837fedf280ac2df94f2031494a8c79928b3",
+      "size_bytes": 571,
+      "git_blob": "c042486753176d0647f432176a13488da277ef5e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/d-drive-defaults-02/installation-guards.log",
+      "version": "d-drive-defaults-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
+      "sha256": "470bd26511a1f4e72dea69a9ad1732cfad432c80a8a10b3b2d09c4312ba1b341",
+      "size_bytes": 806,
+      "git_blob": "e68b4f2aebdfaa2163a9d128e2253a38075d2e72",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/d-drive-defaults-02/native-ui.log",
+      "version": "d-drive-defaults-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
+      "sha256": "17cb0c0ff659e9eb774816d653ebb9c6686cca53e363f5a8b7e16ba35202df16",
+      "size_bytes": 17482,
+      "git_blob": "5fa0656b02de75f15048aa4787eec7637e3d2f67",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/d-drive-defaults-02/ps51-arguments.log",
+      "version": "d-drive-defaults-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
+      "sha256": "9ffc62ba55aaf399cf39d86817845b00dddcd0757c477fa789999abb6bca8bbb",
+      "size_bytes": 91,
+      "git_blob": "e4ab3dee6b1c7d15a22affd3a41271ddd98c23aa",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/d-drive-defaults-02/release-doc-tests.log",
+      "version": "d-drive-defaults-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
+      "sha256": "ba7b936b77a2bf7d3bb2072f1e8115163fa3b398be908658b0ec513b88bad93b",
+      "size_bytes": 106,
+      "git_blob": "ca59eca50afe679acdf64db09d091ee29fa1b9b2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/d-drive-defaults-02/storage-checks.log",
+      "version": "d-drive-defaults-02",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
+      "sha256": "ee54e6cb3d0ccc38515f0013ab0f375034114c143f6a17f480378f79cd538c61",
+      "size_bytes": 553,
+      "git_blob": "2d8f9c1dd79a0f46f0910df4c0543d2218034b76",
       "storage_scope": "public_repository"
     }
   ],

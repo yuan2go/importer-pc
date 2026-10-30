@@ -29,7 +29,7 @@ if (args.Contains("--installer-storage-matrix"))
 }
 if (args.Contains("--installer-storage-matrix-direct"))
 {
-    try { var i = Array.IndexOf(args, "--installer-storage-matrix-direct"); InstallerStorageMatrix.Run(args[i + 1], args[i + 2]); }
+    try { var i = Array.IndexOf(args, "--installer-storage-matrix-direct"); InstallerStorageMatrix.Run(args[i + 1], args[i + 2], args.Contains("--fresh-d-only")); }
     catch (Exception error) { Console.Error.WriteLine(error); Environment.ExitCode = 2; }
     return;
 }

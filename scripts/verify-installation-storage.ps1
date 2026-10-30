@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory)][string]$SourceApp,
     [Parameter(Mandatory)][string]$Output,
     [string]$VerificationExecutable,
-    [string]$Dotnet = 'dotnet'
+    [string]$Dotnet = 'dotnet',
+    [switch]$FreshDOnly
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'project-environment.ps1')
@@ -31,7 +32,8 @@ if ((Get-FileHash -LiteralPath $verificationPlatform).Hash -ne (Get-FileHash -Li
 }
 $log = $Output + '.log'
 if (Test-Path -LiteralPath $log) { throw 'A previous evidence log exists; choose another output.' }
-& $entry @prefix --installer-storage-matrix-direct $SourceApp $Output *> $log
+[string[]]$scopeArguments = if ($FreshDOnly) { @('--fresh-d-only') } else { @() }
+& $entry @prefix --installer-storage-matrix-direct $SourceApp $Output @scopeArguments *> $log
 $matrixExit = $LASTEXITCODE
 Get-Content -LiteralPath $log -Tail 25
 if ($matrixExit -ne 0) { throw "Matrix failed (exit $matrixExit). Evidence retained: $log" }

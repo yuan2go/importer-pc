@@ -74,10 +74,14 @@ static partial class Program
         Set("step", 1); Render();
         Check(window.Width == 880 && window.Height == 560, "installation options use a compact default aspect with fixed reachable actions");
         Capture("installer-options-default", window);
-        Check(!Descendants(window).OfType<RadioButton>().Any() && !Text(window).Contains("使用范围") && Box("数据目录").Text == Path.Combine(WindowsDeploymentSetup.MachineRoot, "data"), "new installation hides scope while retaining the shared default data root");
+        Check(!Descendants(window).OfType<RadioButton>().Any() && !Text(window).Contains("使用范围") && Box("程序目录").Text == @"D:\CainiaoSupplyStation" && Box("数据目录").Text == @"D:\ProgramData\ImporterPc\data", "new SM installation defaults to independent D program and data locations");
         var original = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(evidence, "existing", "releases", "original"), launch.ConfigurationDirectory, launch.DataRoot, "S-1-5-21-1-2-3-1001");
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => original)); Render();
-        Check(Box("数据目录").Text == original.DataRoot && !Text(window).Contains("使用范围"), "existing per-user deployment retains its original data root with scope hidden");
+        Check(Box("程序目录").Text == Path.Combine(evidence, "existing") && Box("数据目录").Text == original.DataRoot && !Text(window).Contains("使用范围"), "existing deployment retains both registered program and data roots instead of new-station defaults");
+        var existingC = original with { ReleaseRoot = @"C:\Program Files\CainiaoSupplyStation\releases\original", DataRoot = @"C:\ProgramData\ImporterPc\data" };
+        type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => existingC)); Render();
+        Check(Box("程序目录").Text == @"C:\Program Files\CainiaoSupplyStation" && Box("数据目录").Text == existingC.DataRoot, "existing C-drive deployment is not silently redirected or migrated by D-drive defaults");
+        type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => original)); Render();
         var longProgram = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的程序目录-for-path-review", 8));
         var longData = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的数据目录-for-path-review", 8));
         Box("程序目录").Text = longProgram; Box("数据目录").Text = longData;

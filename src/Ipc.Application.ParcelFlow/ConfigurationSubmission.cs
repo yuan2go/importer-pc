@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates)
+    public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates)
     {
         Management.Require();
         // Offline, bounded, no configuration write or external/device operation.

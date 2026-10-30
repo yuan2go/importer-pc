@@ -45,6 +45,8 @@ internal static class MvsNative
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_SetGrabStrategy(nint handle, uint strategy);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_GetImageBuffer(nint handle, nint frame, uint timeoutMs);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_FreeImageBuffer(nint handle, nint frame);
+    // MVS 4.8 MvCameraControl.h: streaming SDK-cache clear, __stdcall int(void*).
+    [DllImport(Library, ExactSpelling = true)] internal static extern int MV_CC_ClearImageBuffer(nint handle);
     [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MV_CC_GetIntValueEx(nint handle, string key, nint value);
     [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MV_CC_GetEnumValue(nint handle, string key, nint value);
     [DllImport(Library, ExactSpelling = true)]
@@ -78,6 +80,7 @@ internal interface IMvsApi
     MvsFrame? Acquire();
     bool HasFrame { get; }
     void Release();
+    void ClearBuffers() => throw new NotSupportedException("The port cannot certify an SDK buffer cutover");
     bool Connected();
     void Stop();
     void Close();
@@ -181,6 +184,11 @@ internal sealed class MvsApi : IMvsApi
         MvsNative.Check(MvsNative.MV_CC_FreeImageBuffer(handle, frameOut), "FreeImageBuffer"); HasFrame = false;
     }
     public bool Connected() => MvsNative.MV_CC_IsDeviceConnected(handle);
+    public void ClearBuffers()
+    {
+        if (HasFrame) throw new InvalidOperationException("Return the original frame before clearing SDK buffers");
+        MvsNative.Check(MvsNative.MV_CC_ClearImageBuffer(handle), "ClearImageBuffer inspection cutover");
+    }
     public void Stop() => MvsNative.CheckTeardownTransition(MvsNative.MV_CC_StopGrabbing(handle), "StopGrabbing");
     public void Close() => MvsNative.CheckTeardownTransition(MvsNative.MV_CC_CloseDevice(handle), "CloseDevice");
     public void Destroy()

@@ -237,7 +237,7 @@ static partial class Program
     sealed class StartupMaintenanceProbe(StartupMaintenanceDocument document) : IStartupMaintenance
     {
         public int Saves; public string CheckStatus = "PASS"; public bool SaveFailure, Uncertain, LoseReceipt;
-        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy p, string[] c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c));
+        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? p, string[] c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c));
         public Task<StartupMaintenanceDocument> ReadAsync() => Task.FromResult(document);
         public Task<StartupCheckReport> CheckAsync(ParcelConfiguration c) => Task.FromResult(new StartupCheckReport(Wire.Hash(Wire.Encode(c)), DateTimeOffset.UtcNow, [new("结构与业务字段", CheckStatus, "合成检查")]));
         public Task<StartupMaintenanceDocument> RepairInitialAsync(string hash, ParcelConfiguration c, string reason)

@@ -1,0 +1,352 @@
+{
+  "workPackage": "SM-DEBUG-ROUND-04",
+  "date": "2026-10-30",
+  "parents": [
+    "a8ee4f3cbafce21aa4df87782621e5ade2177341",
+    "9df3901ec20d73512d48920b4671b529ebc58a9e"
+  ],
+  "meaning": "Normalized staged Git source inventory of main/feature integration; not a build or runtime verification.",
+  "validationStatus": "NOT_RUN",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Contracts/BarcodeFiltering.cs",
+      "bytes": 1012,
+      "sha256": "ef09517713b513346f1494e0f878963adbf9d7dfc6ba0a39675cd5f280e45e7f"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/CameraDiagnostics.cs",
+      "bytes": 278,
+      "sha256": "5cf0313c5672b35da2f2a5e43f6842f3e69356ab123eff7185aadf686ed1f280"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/CameraInspection.cs",
+      "bytes": 4957,
+      "sha256": "0ae853f5a063565696ab47664c39f233364dd7fe837095b1ddced58e029789cd"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/CameraReadRound.cs",
+      "bytes": 1131,
+      "sha256": "1f9e63b055533cd14ec78e0902c47d9daf4e56511f70e6a5e27259114e55bf18"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/OriginalFrameArchive.cs",
+      "bytes": 470,
+      "sha256": "37b37406b3f28845552e7a08995af50d86b21050eeeadab5ddfef5c09d92302a"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelContracts.cs",
+      "bytes": 10542,
+      "sha256": "b78911edd9333a9f24469c84c27d5f6698f19c258c0e616f71672d689a0f2570"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelWorkstation.cs",
+      "bytes": 1355,
+      "sha256": "24709e62012314660ceb4569c34d9701a658ace3244d860ab8d41a54d0f18b3e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs",
+      "bytes": 14439,
+      "sha256": "a7c533491677c5e0c20f08718d0c68107bd01a377de88fa0a59547e688e6ea3b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs",
+      "bytes": 15919,
+      "sha256": "a1a02fd7e23c35f26c2fccda2faf03c1c013b6819ef8a62846aec177f8673d2c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml",
+      "bytes": 15002,
+      "sha256": "34b743cca88d848ade1ab7ed13686ad05ae410197a46acb2dc79d27b2d56acb6"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml.cs",
+      "bytes": 7224,
+      "sha256": "7b3ccb2ef42ef4d3afd49f490d499d82c58f6295cc6e401ded414f190ed78332"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs",
+      "bytes": 15935,
+      "sha256": "12a29f5fb9697e427c05f491a4657eb775e940b36d3540ed8e44a2ec9c5c86b9"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
+      "bytes": 23299,
+      "sha256": "8632931566c5d8602c4e90995730a402970debdc608d68e4dcfe5a54f3d6282e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
+      "bytes": 30077,
+      "sha256": "716de7c34a47ee9073dd8626566566bddf951e9035c4ea3cbf4ef64def080448"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsTheme.xaml",
+      "bytes": 8690,
+      "sha256": "bd8c41cbc2be8f0886f1da202202a32a07c68622a4cabba971df6b995578a0f6"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelDetailsProjection.cs",
+      "bytes": 6308,
+      "sha256": "e84f3793d04cb357e9a41c2fb2d10056ce0e404e9a1955c715e98e408ea8f3a2"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPictureWindow.cs",
+      "bytes": 12149,
+      "sha256": "f792a067b6a916814e02c86e7dc897bd8af61b1bb5b1bf2ac516120ba4351d8c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs",
+      "bytes": 14531,
+      "sha256": "f5d1e4162d8d8a1539570f6bb03eafc10b6d21ba66f8c983f01ad3dde21453aa"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationFiles.cs",
+      "bytes": 6806,
+      "sha256": "b33625f4c373e4eb4e8a7a6fd4479e613efd80b6c7a2a73ac6bd683a1fb29b4e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "bytes": 40669,
+      "sha256": "530e21b07295fd1fba48142c003f9e2689ec94a92acdb33707f9d094b0f42b66"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/BarcodeFiltering.cs",
+      "bytes": 6937,
+      "sha256": "bf49de5bf026d2d0430b72f51decbf587ba1243860b753c5d82cab9a5fa7d0ff"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/CameraInspectionStore.cs",
+      "bytes": 34737,
+      "sha256": "f329479e8b3bd7f886f1bee5fb993ce169a0b1c1ad91d876c2b444b1f64bc963"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/CameraOriginalExport.cs",
+      "bytes": 3978,
+      "sha256": "0565b7d82fb1b0e273857a7d9338673857713f2985c2eb468590caa9c31467f3"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/FlowDefinition.cs",
+      "bytes": 5423,
+      "sha256": "fe86d882f21d6c3550df7c3137ca2b9a0a9cefad8669445cd76c022433932b9c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelAcquisitions.cs",
+      "bytes": 902,
+      "sha256": "73d0ae00698b4557e5446d28e1620a3014c2383782c23edee852ecd9111bbc17"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraDiagnostics.cs",
+      "bytes": 1919,
+      "sha256": "9b8ad4e46f7d5f21bfec3d547ef10edfe9254d82c282df48b3c5d1745b1373d1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraInspection.cs",
+      "bytes": 19998,
+      "sha256": "1ff386e0a24c3b7196b91154a9f1b95d9c58a717d2eac5fcc38a1d7a1845f051"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraReadRounds.cs",
+      "bytes": 22111,
+      "sha256": "fabe7070b032b6d22821ffab11dfbe0b47dd964dbc19818dca4370807209e6cc"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "bytes": 31751,
+      "sha256": "f12c0f69aafcfc5c18468fee63587b51bfdc45d4a96fd169c6c5983f7528a42c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "bytes": 9446,
+      "sha256": "629e4ee22e20ff86e255083dc7925f86a8864ed134f2eceb29e5e6491f8809df"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
+      "bytes": 20422,
+      "sha256": "65ab83a3bdb767977728063166dc6502f78069eafcaec9dd5eba47119a7ba39b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryRetention.cs",
+      "bytes": 20375,
+      "sha256": "7079241325448d90222859c3dd2d574185b8d90476f20a6d65ec895a09e31f59"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
+      "bytes": 12055,
+      "sha256": "2f62d0fb3b406b47c4d37cec17cab1532faf9d9bfc279ba0fea28da5ac60a640"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInputs.cs",
+      "bytes": 4362,
+      "sha256": "c662fbf0075d90752d7c9d6ef7f1bf42802a3cd5eb709b539e1dc5eba9423964"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInspectionQueries.cs",
+      "bytes": 14721,
+      "sha256": "c9b04ca5fdd4ad3b5b2df0177332298416c230b36e1e9a3409af6ea6701b3907"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOperatorInput.cs",
+      "bytes": 6596,
+      "sha256": "7ae4e56078ba0e19d715966c2587a25a4a4bc98493f9e67bbbf24191a9c6a6fb"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOriginalFrames.cs",
+      "bytes": 7165,
+      "sha256": "d33f2689dda10d2bf10bf2a10e47f6dfff1854de9f562887a50b31a069619711"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelPictures.cs",
+      "bytes": 10234,
+      "sha256": "35d9c296e221dfea65d5ca7289ab2780eae0cafa3a1267304a61bdc44f8fc2a8"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs",
+      "bytes": 2620,
+      "sha256": "87e9ae807b5c817eaf8df7153fe9cf85dd1c31eca773ed6eb6e4b6f813a1d0c1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptCustody.cs",
+      "bytes": 5947,
+      "sha256": "5c93210ba6ab608159a543fd141597a906c30d165aacee01a2c375ecefffb288"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "bytes": 49422,
+      "sha256": "dba995d9c08cf6e3aa3bf7c8dff93e910870858682b50d3d6a60dfe8611ea8a7"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+      "bytes": 21084,
+      "sha256": "5defb98a4fbd62441cb4c0073eb885a33cb3662a788cc93e72b99c1edb64cd7c"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugControl.cs",
+      "bytes": 22033,
+      "sha256": "c7c4b58d5da256079342d62193f2062f4df0581f4d530b00cdf2d2d298a1ddff"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugEvidenceControl.cs",
+      "bytes": 41767,
+      "sha256": "c6c3b2619b62dd06eecef681f89565e6ef2687d3a53bed0678329c561c7c5f5d"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
+      "bytes": 13080,
+      "sha256": "2112b2da33f0e4bf5c789a23933baa7a35462012442f86afd03c63f5db930a22"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
+      "bytes": 8094,
+      "sha256": "c75b67c70fc1e2833d1079a1a077570f7c3c6f5706d8a188244eb296ddf0dbcc"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
+      "bytes": 2757,
+      "sha256": "2f1caed00edbb34bfdfdce4f809ec94ce0da51f7f13f8c100f2eef5c3ac1d8da"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "bytes": 30222,
+      "sha256": "b392b5e12180fb782ee06ad748275f5e22ab8de5358fef28d619eceb996921ea"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Administration.cs",
+      "bytes": 2025,
+      "sha256": "69d891c90bdd84611c54bcfe02fbc416ef7af3d7360ef0e02378885372853266"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs",
+      "bytes": 14844,
+      "sha256": "917c0c2051c6be30dcce4e15d737c4e0f160379f234a8dc13e54dbd9ba3f4618"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
+      "bytes": 16887,
+      "sha256": "8c4a830b86354b82c559fe43df0927f1a355a466e1aa6900fc48b62b86633605"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+      "bytes": 12994,
+      "sha256": "c800d9da2b3caa508f88bc790c3d16f7cf7ab11baeba14ce17019331fe5a5509"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/Application.cs",
+      "bytes": 5730,
+      "sha256": "e68cb4a91d5dbbfd62e69f0d42306c0bfeb3c8c56197cb2c4e506d342256a5b0"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupSetupWindow.cs",
+      "bytes": 32372,
+      "sha256": "3f8c1003f7a387143ec4428f4f87bf0600a11730f462c7d9c5ff041e038ac285"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupWorkflowWindow.Maintenance.cs",
+      "bytes": 7916,
+      "sha256": "7dee7b3e52b1bfc8c0d8d58400ee723c07ce7d6930b43944d49bc99b66acd69e"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupWorkflows.cs",
+      "bytes": 59842,
+      "sha256": "31135ee0e3c2dce671a5cd6de3106d261fca0242795434dac8212cfe5610259e"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/IMonoBarcodeDecoder.cs",
+      "bytes": 479,
+      "sha256": "121ecae7ac9879905ce40900a3c5d2868f1e95fea6c74afeb187cd2c2fc35b3e"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "bytes": 27395,
+      "sha256": "034b9388011216ff8c6478a71e7e6e1dfd6bc668d89c007f53b6941682332b00"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsInspection.cs",
+      "bytes": 5390,
+      "sha256": "4831b071df6d89b31c5f6e1c4f6f8f350afd7e61a29731377e4987f025e3be9a"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsNative.cs",
+      "bytes": 12495,
+      "sha256": "afe3adbadae0b253dc0d2fb380af2b6d764552d52a0d48a3ccc7f30e2bb23d21"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsOriginalFrames.cs",
+      "bytes": 3930,
+      "sha256": "47fc882fc6945662e6f1da8f00e7f1abc67a1ce736a54b780b64d6985bcad923"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsPreview.cs",
+      "bytes": 1643,
+      "sha256": "65c712ba91c309b6acce8d3b40333a0a22f982707babf69948a21c9a2b17b1ac"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsTimings.cs",
+      "bytes": 3094,
+      "sha256": "ca216a0fec34b0dd95022e0211bd809c647aa4a2ce0b3d078d8b5018d137f286"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/SoftwareDecoder.cs",
+      "bytes": 5840,
+      "sha256": "ea5b2560c11b5198b01ad48df3d13885fb82d30d23885031f850597dfed6bf7e"
+    },
+    {
+      "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+      "bytes": 3673,
+      "sha256": "e29c65f4a3b5b53fef0e869eef1eadca440e05f940960edbba31eb4cff672c3c"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationInspection.cs",
+      "bytes": 1317,
+      "sha256": "7a40704116b1bb2ede0568b677ee079b46ece8fe48ea93c087e10369a29d78bb"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationPreview.cs",
+      "bytes": 349,
+      "sha256": "654686e6fe64273c0e3ff938c628e5156afe37446b0e3722596c6157df1921f0"
+    },
+    {
+      "path": "src/Ipc.Platform/OriginalFrames.cs",
+      "bytes": 535,
+      "sha256": "fc8e5eff6684537f5350704b60c3d6af3357d90e460c406e158420c8967d4ad1"
+    }
+  ]
+}

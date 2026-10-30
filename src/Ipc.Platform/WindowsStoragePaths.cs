@@ -16,9 +16,9 @@ public static class WindowsStoragePaths
         var full = Path.GetFullPath(path);
         if (!OperatingSystem.IsWindows() || !Directory.Exists(full)) return full;
         using var directory = CreateFile(full, 0, 7, IntPtr.Zero, 3, 0x02000000, IntPtr.Zero);
-        if (directory.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+        if (directory.IsInvalid) { var error = new Win32Exception(Marshal.GetLastWin32Error()); error.Data["WindowsApi"] = "CreateFileW(directory)"; throw error; }
         var name = new System.Text.StringBuilder(32768); var size = GetFinalPathNameByHandle(directory, name, name.Capacity, 0);
-        if (size == 0 || size >= name.Capacity) throw new Win32Exception(Marshal.GetLastWin32Error());
+        if (size == 0 || size >= name.Capacity) { var error = new Win32Exception(Marshal.GetLastWin32Error()); error.Data["WindowsApi"] = "GetFinalPathNameByHandleW"; throw error; }
         var value = name.ToString(); return value.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase) ? @"\\" + value[8..] : value.StartsWith(@"\\?\", StringComparison.Ordinal) ? value[4..] : value;
     }
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern SafeFileHandle CreateFile(string path, uint access, uint share, IntPtr security, uint creation, uint flags, IntPtr template);
@@ -62,9 +62,6 @@ public static class WindowsStoragePaths
         }
         TrustedProgramRoots.RequireAncestors(existing);
     }
-    [SupportedOSPlatform("windows")]
-    internal static bool IsManagedProgramPath(string path) => ProtectedAnchor is { } root &&
-        TrustedProgramRoots.Contains(Path.Combine(root, "Programs"), path);
     [SupportedOSPlatform("windows")]
     internal static void PrepareForInstallation(string runtimeSid)
     {

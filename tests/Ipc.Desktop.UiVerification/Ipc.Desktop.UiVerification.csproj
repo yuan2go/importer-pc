@@ -11,4 +11,5 @@
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs" Link="BuiltInRcs/RcsDestinationProtocol.cs"/>
  <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsHeartbeat.cs" Link="BuiltInRcs/RcsHeartbeat.cs"/>
  <EmbeddedResource Include="../../src/Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>
-</ItemGroup><ItemGroup><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj"/></ItemGroup></Project>
+</ItemGroup><ItemGroup><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"/><ProjectReference Include="../../src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj"/></ItemGroup>
+<ItemGroup><Compile Include="../Ipc.Application.Verification/CameraRoundHarness.cs" Link="CameraRoundHarness.cs"/></ItemGroup></Project>

@@ -88,7 +88,10 @@ static partial class SportmasterRcs
         }
         else
         {
+            await ManagementModeFixture.Authorize(app);
+            Check((await app.ReadCameraPreviewAsync(reader.DeviceId, default)).Frame is null, "management preview request starts empty without adding an acquisition owner");
             var pixels = args.Contains("--six-megapixel") ? SyntheticLatencyImages("SYNTH-READ-0001")[0] : MakeSoftwareBarcode("SYNTH-READ-0001");
+
             fake!.Enqueue(pixels, 1); fake.Enqueue(pixels, 2); fake.Enqueue(pixels, 5);
             Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
@@ -96,11 +99,16 @@ static partial class SportmasterRcs
                 "actual software decoder -> MVS lifecycle -> Application/SQLite -> actual RCS adapter: three identical codes remain three independent requests");
             Check(fake.Released == 3 && !fake.HasFrame && factory.Source!.ConfirmationSource.Contains("skippedVideoFrames=2"),
                 "native loans are released; raw-video sampling gaps are explicit and do not pretend to lose recognized results");
+            var preview = await app.ReadCameraPreviewAsync(reader.DeviceId, default);
+            Check(preview.Frame is { Width: <= 640, Height: <= 480 } frame && frame.DeviceId == reader.DeviceId && frame.Epoch == factory.Source!.Epoch,
+                "Application exposes only the current existing acquisition epoch and bounded pixels to management");
             var frozen = s.Operations.ToDictionary(o => o.Id, o => Wire.Encode(o.Wcs!.Request));
             fake.Enqueue(new(new byte[200 * 100], 200, 100), 6);
             for (var i = 0; i < 100 && !factory.Source!.ConfirmationSource.Contains("emptyFrames=1"); i++) await Task.Delay(20);
             s = await app.SnapshotAsync();
             Check(s.Operations.Length == 3 && s.Operations.All(o => frozen[o.Id] == Wire.Encode(o.Wcs!.Request)), "blank video creates no request and original request bytes remain unchanged");
+            await Task.Delay(3100);
+            Check((await app.ReadCameraPreviewAsync(reader.DeviceId, default)).Frame is null, "Application refuses stale images even when a source retains its last frame");
             if (peer is null)
             {
                 Check(VerifyPythonLedger(pythonLedger!, s.Operations), "Python ledger has no blank-frame request, replay or changed original after the empty frame");

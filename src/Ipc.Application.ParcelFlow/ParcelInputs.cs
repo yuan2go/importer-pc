@@ -37,6 +37,8 @@ public sealed partial class ParcelRuntime
     }
     void LogInput(ParcelInputSnapshot input)
     {
+        if (input.Observation.CaptureSessionId is not null && inspectionStore is { } inspection)
+            inspection.LinkInput(input.Observation, repository!.LastInputAuditSequence(), input.OperationId);
         Diagnostic("扫码与准入", "输入处理完成", input.Outcome is ParcelInputOutcome.Blocked or ParcelInputOutcome.Rejected ? "警告" : "信息",
             Wire.Encode(new { input.PositionId, input.Outcome, input.OperationId, input.Observation.AdmissionId, input.Observation.SourceEventId, input.Reason }));
         DebugDiagnostic("扫码与准入", "扫码原始候选与筛选结果", () => new { input.PositionId, input.Outcome, input.OperationId,
@@ -50,6 +52,7 @@ public sealed partial class ParcelRuntime
     ParcelOperation? DisplayedOperation(string position)
     {
         var current = repository!.Latest(position);
+        if (current?.DebugRequest is not null) return null; // Test destinations never appear as a live production parcel.
         if (current is null || !MainTerminated(current)) return current;
         var originalReader = current.ReaderBinding ?? ParcelBindings.Readers(current.FrozenConfiguration).Single(r =>
             r.DeviceId == ParcelBindings.Positions(current.FrozenConfiguration).Single(p => p.Id == position).ReaderDeviceId);

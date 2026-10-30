@@ -1,0 +1,47 @@
+{
+  "sourceCommit": "36d969ddf86598e0ae311cd19f7a75193f7af55d",
+  "parent": "838e9acddcced110c3d4f61b190aff9a62e46be1",
+  "meaning": "MVS acquisition plumbing intentionally changed; these policy/native ABI/PNG/receipt cores remain byte-identical to integrated parent.",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Sportmaster/Application.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "e68cb4a91d5dbbfd62e69f0d42306c0bfeb3c8c56197cb2c4e506d342256a5b0"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/BarcodeFiltering.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "bf49de5bf026d2d0430b72f51decbf587ba1243860b753c5d82cab9a5fa7d0ff"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOriginalFrames.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "d33f2689dda10d2bf10bf2a10e47f6dfff1854de9f562887a50b31a069619711"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsOriginalFrames.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "47fc882fc6945662e6f1da8f00e7f1abc67a1ce736a54b780b64d6985bcad923"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/SoftwareDecoder.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "ea5b2560c11b5198b01ad48df3d13885fb82d30d23885031f850597dfed6bf7e"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsNative.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "afe3adbadae0b253dc0d2fb380af2b6d764552d52a0d48a3ccc7f30e2bb23d21"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "5defb98a4fbd62441cb4c0073eb885a33cb3662a788cc93e72b99c1edb64cd7c"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "unchangedFromParent": true,
+      "gitSha256": "629e4ee22e20ff86e255083dc7925f86a8864ed134f2eceb29e5e6491f8809df"
+    }
+  ]
+}

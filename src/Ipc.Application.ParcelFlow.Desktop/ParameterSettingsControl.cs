@@ -178,7 +178,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var field = new Grid { Margin = new(0, 0, 0, focusedPage ? 12 : 18) };
         field.ColumnDefinitions.Add(new() { Width = new(148) }); field.ColumnDefinitions.Add(new());
         field.RowDefinitions.Add(new() { Height = GridLength.Auto }); field.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var caption = Text(label); caption.VerticalAlignment = VerticalAlignment.Top; caption.Foreground = Brush("#202833"); caption.Margin = new(0, 8, 12, 0);
+        var caption = Text(label); caption.VerticalAlignment = VerticalAlignment.Top; caption.Foreground = Brush("#202833"); caption.FontWeight = UiTypography.Emphasis; caption.Margin = new(0, 8, 12, 0);
         var value = new StackPanel(); Grid.SetColumn(value, 1); field.Children.Add(caption); field.Children.Add(value);
         var line = new DockPanel { LastChildFill = true };
         var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
@@ -205,7 +205,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             var hint = Text(help); hint.FontSize = UiTypography.Label; hint.Margin = new(0, 4, 0, 0);
             // Identity/connection explanations are on demand. Entity admission and
             // required constraints remain inline; errors always stay next to the field.
-            if (focusedPage && path.Split('/').Last() is "device.ip" or "device.serial" or "left-bcr-code" or "right-bcr-code" or "left-station-code" or "right-station-code" or "StationCode")
+            if (focusedPage && path.Split('/').Last() is "left-station-code" or "right-station-code" or "StationCode")
             {
                 control.ToolTip = help;
                 page.Technical.Children.Add(Text(label.TrimEnd(' ', '*') + "：" + help));

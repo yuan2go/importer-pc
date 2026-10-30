@@ -1,0 +1,60 @@
+{
+  "sourceParent": "838e9acddcced110c3d4f61b190aff9a62e46be1",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Contracts/CameraReadRound.cs",
+      "gitSha256": "d6b2a74ded8f3e733cd1ed38bb7a3a29e8917acd899f0fc12b2ce16395303269",
+      "workingSha256": "d6b2a74ded8f3e733cd1ed38bb7a3a29e8917acd899f0fc12b2ce16395303269"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraReadRounds.cs",
+      "gitSha256": "e8cc6148cdc4ec72b60b0c10d83b69333b460b5e6ef203fa852ce5df4b6953ad",
+      "workingSha256": "2e5120d776c6314a8ff71d8f4532941b0c039bcc5f451f3a82547af8fee7bf9a"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugControl.cs",
+      "gitSha256": "e4f088bec3275e05765284a7f1f401f3ed9abac83487901377254eafc14dbb6c",
+      "workingSha256": "e4f088bec3275e05765284a7f1f401f3ed9abac83487901377254eafc14dbb6c"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "gitSha256": "aa710dcdecce9eecf6e177bd1e7994187f779b90e5b7c26acfa5efe2788ef9b4",
+      "workingSha256": "f91f934584074702e51cdd0c260604d175975ac10bd982356677141b6b15cf3b"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationInspection.cs",
+      "gitSha256": "d9f40fb862ab2a29727521a1cd66bb1b468e6d40df3b761b3131834b73556bd3",
+      "workingSha256": "307e2cb936351aa9a9db2347bdd15413e5283fe237491bef3c15155c53647390"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CameraRoundChecks.cs",
+      "gitSha256": "6af3b5c56d1432b3e9563de87eeb6ddf56e00a2037a04582bdc2b330bb71abf6",
+      "workingSha256": "6af3b5c56d1432b3e9563de87eeb6ddf56e00a2037a04582bdc2b330bb71abf6"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CameraRoundHarness.cs",
+      "gitSha256": "01478017f419f19f00ca9a6264ccee4d3a7120a5d0885c6213f5e27af32901d5",
+      "workingSha256": "01478017f419f19f00ca9a6264ccee4d3a7120a5d0885c6213f5e27af32901d5"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Program.cs",
+      "gitSha256": "728b17d7bcb2ea177d3fe55fc6980b7ccfac1affffab4e3890586c3e2ea6b504",
+      "workingSha256": "ac6d2fee5da3b4da96191cd6ad3eac9c3d3b13dd2bf87da4d432a624d031a1f0"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CameraRoundUi.cs",
+      "gitSha256": "f0e382172c805afe66dcc84e19ef65ef0e34cc49cd83a2676de2872a91ccf86d",
+      "workingSha256": "f0e382172c805afe66dcc84e19ef65ef0e34cc49cd83a2676de2872a91ccf86d"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
+      "gitSha256": "2542b4088b7afafbfb3e336e70042463724aab28bae24754af5be6fcf8960d24",
+      "workingSha256": "f6ed0fde807d97104f1237d517cb5c4a76983cfee712ec8d3d0b82f7d45544d7"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "gitSha256": "737ca19fe7d2da8f99b158d348c1286b8daad498b016009e9fe9cc436a7ab357",
+      "workingSha256": "6ee969ce65c895f76654294f1bb7ea6a1e2682fb1a285f80b83083a726be1b97"
+    }
+  ]
+}

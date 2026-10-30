@@ -25,6 +25,7 @@ public sealed partial class ParcelRuntime
             projectedCapacity = operations.Values.Count(x => !ArchiveEligible(x));
             RefreshIntegrationBudget();
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
+            if (CameraBusinessFenced) reasons.Add("实机调试隔离：新输入不产生RCS业务请求；测试件移除并在调试页显式确认前保持阻断，软件隔离不是安全急停。");
             if (ParcelConnectionSetup.BlocksWork(Effective) && Effective.DeferredConnections is { Length: > 0 } deferred)
                 reasons.Add("连接待配置：" + string.Join("、", deferred.Select(id => Effective.Wcs?.InstanceId == id ? "RCS" : ParcelBindings.Positions(Effective).Single(p => p.ReaderDeviceId == id).Id == "left" ? "左相机" : "右相机")) + "。可进入参数设置；完成连接后保存并受控重启，当前不接收新包裹。");
             if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
@@ -64,6 +65,7 @@ public sealed partial class ParcelRuntime
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
             auxiliaryReasons.AddRange(repository.PendingCommands().Select(id => "CommandPending:" + id + "; inspect CommandAdmitted audit and original facts; this ID is never replayed"));
             if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
+            if ((parcelPictureFailure ?? parcelPictures?.Fault) is { } pictureFailure) auxiliaryReasons.Add("ParcelPictures:" + pictureFailure);
             if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
@@ -360,6 +362,9 @@ public sealed partial class ParcelRuntime
             if (disposalFailures.Count != 0) throw new AggregateException("Capability disposal failures; shared factory/package/database leases retained", disposalFailures);
         }
         await factory.DisposeAsync().ConfigureAwait(false);
+        if (inspectionStore is { } inspection) await inspection.DisposeAsync().ConfigureAwait(false);
+        if (parcelPictures is { } pictures) await pictures.DisposeAsync().ConfigureAwait(false);
+        readRound?.Cancel.Dispose();
         logReader?.Dispose();
         if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false);
         await gate.WaitAsync().ConfigureAwait(false);

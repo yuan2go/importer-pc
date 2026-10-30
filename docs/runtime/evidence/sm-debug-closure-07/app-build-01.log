@@ -1,0 +1,11 @@
+D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs(127,69): error CS0144: 无法创建抽象类型或接口“IReadOnlyDictionary<string, string>”的实例 [D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs(127,77): error CS0200: 无法为属性或索引器“IReadOnlyDictionary<string, string>.this[string]”赋值 - 它是只读的 [D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj]
+
+生成失败。
+
+D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs(127,69): error CS0144: 无法创建抽象类型或接口“IReadOnlyDictionary<string, string>”的实例 [D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\CameraRoundHarness.cs(127,77): error CS0200: 无法为属性或索引器“IReadOnlyDictionary<string, string>.this[string]”赋值 - 它是只读的 [D:\projects\importer-pc-ui-debug\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj]
+    0 个警告
+    2 个错误
+
+已用时间 00:00:18.19

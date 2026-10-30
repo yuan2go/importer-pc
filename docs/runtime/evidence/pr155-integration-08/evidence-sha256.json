@@ -1,0 +1,105 @@
+{
+  "SourceCommit": "fba708de80438dd5d264b01d111395989de50bff",
+  "files": [
+    {
+      "path": "app-build.log",
+      "bytes": 84,
+      "sha256": "33823d527f7a24858c4a4e910bfe3606bb8f8dadfb84a1a6d47a6c40eae39d2b"
+    },
+    {
+      "path": "camera-round-ui-retry.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "camera-round-ui-retry.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "camera-round-ui.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "camera-rounds.log",
+      "bytes": 3102,
+      "sha256": "bb624101ddcfb0fb6407f21e87644a6c89c40bb81a61f8f7f753b4c7a61d6f6e"
+    },
+    {
+      "path": "desktop-build.log",
+      "bytes": 84,
+      "sha256": "9fe9c2e37c4a948d6f99099021c13f7e03d0cfa871c4e18a35562c4fdcedb8a9"
+    },
+    {
+      "path": "installer-change-guards.log",
+      "bytes": 806,
+      "sha256": "604368bbbdfc5090f355bfec00e299493952de19855e80e27abc627180fbbb88"
+    },
+    {
+      "path": "installer-options.log",
+      "bytes": 2659,
+      "sha256": "79b62897f972773b171b3d120a99b052e1807314cc13f4f82b3cb020d452e56b"
+    },
+    {
+      "path": "installer-storage-checks.log",
+      "bytes": 553,
+      "sha256": "ee54e6cb3d0ccc38515f0013ab0f375034114c143f6a17f480378f79cd538c61"
+    },
+    {
+      "path": "integrity.json",
+      "bytes": 11236,
+      "sha256": "78a96ef0cefd9915508ad6854532403b6658e0e8d5473b498975dcae370b33b0"
+    },
+    {
+      "path": "integrity.log",
+      "bytes": 311,
+      "sha256": "219ed7319ba5f9f042d1752d024b305375bdc064c58fea60f3a371cbd5d862c2"
+    },
+    {
+      "path": "release-documents.log",
+      "bytes": 106,
+      "sha256": "92ff553c21ee816ba0d026c4745b7bc853e8632ba9007f7b43b6c96a5971d777"
+    },
+    {
+      "path": "round-1024-native.png",
+      "bytes": 97697,
+      "sha256": "3b3c10a8745389257b56eac4e8effa53607f2cedb7b88c94b204c8221e39d187"
+    },
+    {
+      "path": "round-800-native.png",
+      "bytes": 68124,
+      "sha256": "2bafeb7eb615076d24d219de1540fa897eb154164e1eef5c75f192caf11fb695"
+    },
+    {
+      "path": "round-locked-native.png",
+      "bytes": 109659,
+      "sha256": "54c478cd5d1041c1051c439d99a7f33b6615ca1d49e31ae20aee6b651d37e3ad"
+    },
+    {
+      "path": "ui-build.log",
+      "bytes": 84,
+      "sha256": "2b6ad14eaa1effc6248f5cd0811aae8f96e755812d44575453000a6ce058ae55"
+    },
+    {
+      "path": "ui-first-host-failure.txt",
+      "bytes": 317,
+      "sha256": "7d8cb25339e5f8e033af61013950f36611fd5d66fc0017bf80d382626eb31c9f"
+    },
+    {
+      "path": "ui-native-accepted.log",
+      "bytes": 8793,
+      "sha256": "6438c1bcbca212bf072c520c9c8ba544e953c544754e704a4cd6211d4eab7c20"
+    },
+    {
+      "path": "ui-retry.exit",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "verify_integrity.py",
+      "bytes": 3542,
+      "sha256": "f82c8e57c50102b87cfe08680193de48ce51e8f1ed18e915bfe6bc6321c56b70"
+    }
+  ]
+}

@@ -16,8 +16,13 @@ internal static partial class MvsVerification
             if (mode is not null) parameters["entity.mode"] = mode;
             await using var source = new MvsAcquisition(new("synthetic.mvs", api.Ip, parameters), api, _ => lease, decoder: decoder);
             await source.StartControlledAsync("software-default", o => { received.Enqueue(o); return true; }, _ => { }, default);
+            Check(source.ReadPreview() is null, "preview begins empty on the existing acquisition owner");
             api.Frames.Enqueue(pixels.Frame); await Until(() => received.Count == 1);
+            var preview = source.ReadPreview(); var calls = api.Calls.Count;
+            Check(preview is { Epoch: "software-default", Width: 2, Height: 2 } && source.ReadPreview() is not null && api.Calls.Count == calls,
+                "real acquisition path produces a copied preview without opening or polling another SDK session");
             await source.StopAsync(default);
+            Check(source.ReadPreview() is null, "stopped source cannot expose its old frame");
             Check(received.Single().Kind == (mode is null ? "Read" : "UncorrelatedRead"),
                 mode is null ? "software reader with omitted entity.mode defaults to an admitted Read candidate" : "explicit observe-only remains an uncorrelated observation with a decoder");
             Check(decoder.Calls == 1 && api.Freed == 1 && lease.Releases == 1 && source.Undelivered is null,

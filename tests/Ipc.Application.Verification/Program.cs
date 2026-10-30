@@ -11,6 +11,8 @@ if (args.Any(a => a is "--audit03-rcs-signed" or "--sportmaster-rcs-signed" or "
     throw new ArgumentException("Unsupported retired SM verification path; use built-in MVS/RCS checks");
 if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");
 if (args.FirstOrDefault() == "--ordinary-start-child") { OrdinaryRuntimeStartup.Child(args); return; }
+if (args.FirstOrDefault() == "--installation-storage-helper") { await InstallerStorageMatrix.Helper(args); return; }
+if (args.FirstOrDefault() == "--installation-storage-ordinary-child") { InstallerStorageMatrix.OrdinaryChild(args); return; }
 if (args.FirstOrDefault() == "--maintenance-authority-probe") { await MaintenanceAuthorizationStartup.Probe(args); return; }
 if (args.FirstOrDefault() == "--ordinary-maintenance-child") { await MaintenanceAuthorizationStartup.OrdinaryChild(args); return; }
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
@@ -18,9 +20,23 @@ var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifa
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--installer-storage-checks")) { InstallerStorageChecks.Run(root); return; }
+if (args.Contains("--installer-storage-matrix"))
+{
+    try { var i = Array.IndexOf(args, "--installer-storage-matrix"); await InstallerStorageMatrix.Start(args[i + 1], args[i + 2]); }
+    catch (Exception error) { Console.Error.WriteLine(error); Environment.ExitCode = 2; }
+    return;
+}
+if (args.Contains("--installer-storage-matrix-direct"))
+{
+    try { var i = Array.IndexOf(args, "--installer-storage-matrix-direct"); InstallerStorageMatrix.Run(args[i + 1], args[i + 2]); }
+    catch (Exception error) { Console.Error.WriteLine(error); Environment.ExitCode = 2; }
+    return;
+}
 if (args.Contains("--runtime-identity-boundary")) { await RuntimeIdentityBoundary.Run(root); return; }
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
 if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
+if (args.Contains("--camera-rounds")) { await CameraRoundChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
 if (args.Contains("--mvs-contrast-checks")) { SportmasterRcs.MvsContrastChecks(); return; }
 if (args.Contains("--mvs-latency")) { SportmasterRcs.MvsLatency(args); return; }

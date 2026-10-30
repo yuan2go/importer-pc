@@ -15,7 +15,13 @@ public partial class SupplyStationWindow
     }
     async void Logs_Click(object sender, RoutedEventArgs e)
     {
-        try { await ViewModel.RequireManagementModeAsync(); SetPage("logs"); }
+        try
+        {
+            await ViewModel.RefreshManagementModeAsync();
+            if (!ViewModel.IsManagementMode && ViewModel.Application is IWorkstationAdministration service)
+            { new ManagementModeWindow(service) { Owner = this }.ShowDialog(); await ViewModel.RefreshManagementModeAsync(); }
+            await ViewModel.RequireManagementModeAsync(); restrictedReturn = null; SetPage("logs");
+        }
         catch (Exception error) { ViewModel.Message = error.Message; }
     }
     void EnforceManagementModeView()
@@ -25,7 +31,8 @@ public partial class SupplyStationWindow
         if (!ViewModel.IsManagementMode)
         {
             logs?.Revoke();
-            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
+            debug?.Revoke();
+            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
         }
     }
 }

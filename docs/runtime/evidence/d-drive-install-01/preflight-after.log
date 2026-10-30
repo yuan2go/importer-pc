@@ -1,0 +1,5 @@
+PASS INSTALL-STORAGE: actual SYSTEM-denied data rejected read-only before service changes
+PASS INSTALL-STORAGE: actual valid ACL and absent future data path accepted without creating files
+PASS INSTALL-STORAGE: actual unprotected D program parent rejected with its exact path; ACL unchanged
+PASS INSTALL-STORAGE: injected native 1783 remains primary across recovery failure 5; API and structured diagnostics retained, secret redacted
+PASS INSTALL-STORAGE: unavailable diagnostic storage cannot suppress actual recovery or replace the primary error

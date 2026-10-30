@@ -1,0 +1,4 @@
+First native UI invocation: PowerShell host exited -532462766 and reported:
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Out of memory.
+Its redirected camera-round-ui.log was empty. No UI assertion pass is credited to that invocation.

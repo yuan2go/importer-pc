@@ -53,9 +53,8 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static void PreviewDataAccess(string dataRoot, string runtimeSid)
     {
-        var data = Path.GetFullPath(dataRoot); DeploymentPaths.RequireOrdinaryAncestors(data);
-        if (!Path.IsPathFullyQualified(dataRoot) || data.StartsWith(@"\\", StringComparison.Ordinal) || new DriveInfo(Path.GetPathRoot(data)!).DriveType != DriveType.Fixed)
-            throw new InvalidDataException("业务数据须位于本地固定卷，SQLite数据根不能使用网络共享");
+        RequireDataStorage(dataRoot);
+        var data = Path.GetFullPath(dataRoot);
         if (!Directory.Exists(data)) return; // Creation uses an explicit runtime-Modify ACL.
         var acl = new DirectoryInfo(data).GetAccessControl(); var granted = false;
         foreach (FileSystemAccessRule rule in acl.GetAccessRules(true, true, typeof(SecurityIdentifier)))
@@ -66,7 +65,19 @@ public static partial class WindowsDeploymentSetup
                 throw new UnauthorizedAccessException("原数据目录含指定账户/公共主体的拒绝规则；保留原ACL，由现场维护核对实际令牌");
             if (rule.AccessControlType == AccessControlType.Allow && sid == runtimeSid && (rule.FileSystemRights & FileSystemRights.Modify) == FileSystemRights.Modify) granted = true;
         }
-        if (!granted) throw new UnauthorizedAccessException("不能静态证明指定非提权账户可修改原数据目录；保留原数据/ACL，先核对账户权限或使用完整恢复迁移");
+        if (!granted) throw new UnauthorizedAccessException("不能静态证明指定非提权账户可修改原数据目录；保留原数据/ACL，先核对账户权限或使用完整恢复迁移：" + data);
+        var systemRights = (FileSystemRights)0;
+        foreach (FileSystemAccessRule rule in acl.GetAccessRules(true, true, typeof(SecurityIdentifier)))
+        {
+            if ((rule.PropagationFlags & PropagationFlags.InheritOnly) != 0) continue;
+            var subject = ((SecurityIdentifier)rule.IdentityReference).Value;
+            if (subject is not ("S-1-5-18" or "S-1-5-32-544" or "S-1-1-0" or "S-1-5-11")) continue;
+            if (rule.AccessControlType == AccessControlType.Deny && (rule.FileSystemRights & FileSystemRights.Modify) != 0)
+                throw new UnauthorizedAccessException("数据目录拒绝 SYSTEM 服务所需访问；保留原 ACL，核对该拒绝规则后再安装：" + data);
+            if (rule.AccessControlType == AccessControlType.Allow) systemRights |= rule.FileSystemRights;
+        }
+        if ((systemRights & FileSystemRights.Modify) != FileSystemRights.Modify)
+            throw new UnauthorizedAccessException("不能静态证明 SYSTEM 授权服务可访问数据目录；保留原 ACL，先核对服务权限：" + data);
     }
     [SupportedOSPlatform("windows")]
     public static void PrepareRestoreDataRoot(string dataRoot)
@@ -171,7 +182,8 @@ public static partial class WindowsDeploymentSetup
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);
-            if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.Install(data, Path.Combine(releaseRoot, "app"));
+            if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.Install(data, Path.Combine(releaseRoot, "app"),
+                entry => AppendServiceDiagnostic(operation + ".service.jsonl", entry, sid));
             WriteProtected(operation, new { Status = "ReadyToCommit", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, Location = location, Previous = before, BusinessStarted = false }, sid);
             progress?.Invoke(WindowsInstallationStage.CommittingInstallation);
             WriteProtected(Registration(request.ApplicationId), location, sid); // Sole authoritative deployment commit.
@@ -189,10 +201,26 @@ public static partial class WindowsDeploymentSetup
         catch (Exception error)
         {
             var committed = Current(request.ApplicationId)?.ReleaseRoot == releaseRoot;
-            WriteProtected(operation, new { Status = committed ? "CommittedNeedsSystemRepair" : "Failed", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, ErrorCode = error.GetType().Name, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data,
-                Retained = "Previous deployment, seed, database and leases retained; retry creates another side-by-side release" }, sid);
+            try { WriteProtected(operation, new { Status = committed ? "CommittedNeedsSystemRepair" : "Failed", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, ErrorCode = error.GetType().Name,
+                Error = WindowsInstallationError.Capture(error), ServiceDiagnosticFile = operation + ".service.jsonl", Previous = before, ReleaseRoot = releaseRoot, DataRoot = data,
+                Retained = "Previous deployment, seed, database and leases retained; retry creates another side-by-side release" }, sid); }
+            catch (Exception receiptFailure)
+            {
+                throw new InstallationOutcomeUnknownException("安装失败且原失败回执未能保存；保留原操作，先只读核对。原错误：" + WindowsInstallationError.Safe(error.Message) +
+                    "；回执错误：" + WindowsInstallationError.Safe(receiptFailure.Message), new AggregateException(error, receiptFailure));
+            }
             throw;
         }
+    }
+    [SupportedOSPlatform("windows")]
+    static void AppendServiceDiagnostic(string path, ManagementServiceInstallationDiagnostic entry, SecurityIdentifier sid)
+    {
+        DeploymentPaths.RequireOrdinaryAncestors(path);
+        if (File.Exists(path)) MachineRuntimePolicy.RequireProtectedEvidence(path);
+        using var output = new FileInfo(path).Create(FileMode.Append, FileSystemRights.AppendData, FileShare.Read, 4096,
+            FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(sid, FileSystemRights.ReadAndExecute));
+        if (output.Length > 1024 * 1024) throw new IOException("本次服务安装诊断超过1MiB预算：" + path);
+        output.Write(System.Text.Encoding.UTF8.GetBytes(DiagnosticText.Protect(Wire.Encode(entry)) + "\n")); output.Flush(true);
     }
     [SupportedOSPlatform("windows")]
     static void WriteProtected<T>(string path, T value, SecurityIdentifier sid)

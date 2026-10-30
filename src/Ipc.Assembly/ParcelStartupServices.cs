@@ -593,7 +593,7 @@ public static partial class ParcelStartupServices
             return await core.ReadAsync();
         }
         public Task<BusinessReceipt> ValidateAsync(ParcelConfiguration candidate) => core.ValidateAsync(candidate);
-        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => core.TestBarcodeFilterAsync(policy, candidates);
+        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => core.TestBarcodeFilterAsync(policy, candidates);
         public Task<StartupCheckReport> CheckAsync(ParcelConfiguration candidate) => core.CheckAsync(candidate);
         public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination) => core.PlanRestoreAsync(backup, destination);
         public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup,string destination,IProgress<MaintenanceProgress>? progress,CancellationToken token)=>core.PlanRestoreAsync(backup,destination,progress,token);

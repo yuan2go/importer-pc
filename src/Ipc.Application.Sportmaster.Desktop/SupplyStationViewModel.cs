@@ -47,6 +47,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string WorkNotice => BlockingReasons;
     const string PauseNotice = "Software admission paused; this is not an emergency stop";
     public bool IsInternalWorkspace => SelectedPage != "workstation";
+    public bool IsSettingsNavigation => SelectedPage is "maintenance" or "diagnostics" or "debug";
     public bool IsSettingsWorkspace => SelectedPage is "maintenance" or "logs";
     public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
     { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
@@ -61,9 +62,9 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
     }
-    public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "参数设置", "diagnostics" => "诊断与恢复", "logs" => "日志查询", _ => "作业" };
+    public string PageTitle => SelectedPage switch { "history" => "记录", "maintenance" => "设置", "diagnostics" => "诊断与恢复", "debug" => "调试", "logs" => "日志", _ => "作业" };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
@@ -184,7 +185,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string SelectedCode => Input?.BarcodeSelection?.SelectedCode ??
         (Input is { Outcome: ParcelInputOutcome.Admitted } && Operation is { } op && Input.OperationId == op.Id ? op.ParcelCode : "未选中");
     public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
-    public string ScanSummary => Input is null ? "等待本位相机读码" : "读取 " + ScanTime + " · 候选 " + Input.Observation.Codes.Length + " 项";
+    public string ScanSummary => Input is null ? "等待本位相机读码" : (Input.Observation.OperatorInput is { } entry ? (entry.Kind == "PdaKeyboard" ? "PDA键盘输入 " : "手动键盘输入 ") : "相机读取 ") + ScanTime + " · 候选 " + Input.Observation.Codes.Length + " 项";
     public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
     public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.SlotSize(Operation!.Slot!, IsCompact);
     public bool NeedsAttention => !owner.Fresh || InputUnadmitted || HasUncertainOriginal || Presentation.Foreground is "#B52F38" or "#895509";
@@ -213,7 +214,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => "RCS请求超时",
         ParcelState.WcsUnknown => "结果待核对",
         ParcelState.WcsRejected => "业务拒绝",
-        _ => Operation is null && IdleReason.Length > 0 ? "暂不能供包" : Presentation.Text
+        _ => Operation is null ? IdleReason.Length > 0 ? "暂不能供包" : "等待扫码或输入条码" : Presentation.Text
     };
     public string OriginalResultSummary => InputUnadmitted && Operation is { } op ? "原件保留 · " +
         (!owner.Fresh ? "状态已失效" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "结果待核对" : ParcelPresentation.Operation(op, true).Text) : "";
@@ -230,7 +231,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelPresentation.RcsTimedOut(Operation) ? "RCS请求超时，请重新扫描。" :
         HasUncertainOriginal ? "请勿重复放货，请联系维护人员核对。" :
         Operation?.State == ParcelState.WcsRejected ? "查看详情，核对拒绝原因。" :
-        BlockingReasons.Length > 0 ? "请维护人员查看本位诊断。" : "读码后自动获取任务，无需逐包确认。";
+        BlockingReasons.Length > 0 ? "请维护人员查看本位诊断。" : "可由相机扫码，或输入完整条码后回车提交。";
     public string BlockingReasons { get; private set; } = "等待有效快照";
     public string OperationId => Operation?.Id ?? "未取得";
     public string Admission => InputUnadmitted ? Input!.Observation.AdmissionId : Operation?.AdmissionId ?? "未取得";

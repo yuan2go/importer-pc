@@ -11,6 +11,7 @@ internal static partial class MvsVerification
     static MvsAcquisition Source(Fake api, Lease lease, Dictionary<string, string>? parameters = null) => new(new("synthetic.mvs", api.Ip, parameters ?? new() { ["device.ip"] = api.Ip }), api, _ => lease);
     internal static async Task Run()
     {
+        await VerifyPreview();
         Check(Marshal.SizeOf<MvsNative.FrameInfo>() == 256 && MvsNative.FrameOutBytes == 328 && Marshal.OffsetOf<MvsNative.FrameInfo>("TriggerIndex").ToInt32() == 76 &&
             Marshal.OffsetOf<MvsNative.FrameInfo>("DeviceTimestampHigh").ToInt32() == 12 && Marshal.OffsetOf<MvsNative.FrameInfo>("DeviceTimestampLow").ToInt32() == 16 &&
             Marshal.OffsetOf<MvsNative.FrameInfo>("HostTimestamp").ToInt32() == 24 &&

@@ -14,6 +14,7 @@ public partial class SupplyStationWindow : Window
     readonly HistoryPage history = new();
     readonly MaintenancePage maintenance = new();
     FrameworkElement? diagnostics;
+    StationDebugControl? debug;
     readonly Func<Task>? stopOwner;
     readonly SupplyStationWindow root;
     readonly HashSet<SupplyStationWindow> windows;
@@ -80,16 +81,25 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
-        if (page is "maintenance" or "diagnostics" or "logs" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
+        if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => workContent };
+        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => workContent };
+    }
+    void Debug_Click(object sender, RoutedEventArgs e) => SetPage("debug");
+    public void ShowPositionDebug(SupplyStationPositionViewModel position)
+    {
+        SetPage("debug");
+        if (ViewModel.SelectedPage == "debug") debug!.SelectPosition(position == ViewModel.Left ? "left" : "right");
     }
     void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => ViewModel.DismissGlobalOperationFeedback();
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e)
-    { SetPage("maintenance"); pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
+    {
+        if (!ViewModel.IsManagementMode) { await OpenOperatorSettingsAsync(); return; }
+        SetPage("maintenance"); pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync();
+    }
     async Task LoadRequestedMaintenanceAsync()
     {
         if (!pendingMaintenanceLoad) return;
@@ -118,7 +128,8 @@ public partial class SupplyStationWindow : Window
         ViewModel.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight);
     }
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
-    public async Task ShowDetailsAsync(ParcelOperation operation) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operation.Id), "读取原作业详情"); }
+    public Task ShowDetailsAsync(ParcelOperation operation) => ShowDetailsAsync(operation.Id);
+    public async Task ShowDetailsAsync(string operationId) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取原作业详情"); }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     public Func<string, bool>? ConfirmOwnerExit { get; set; }
     public Func<Task>? ReopenOwnerAsync { get; set; }

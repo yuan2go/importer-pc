@@ -77,7 +77,14 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool RecoveryRequired = false,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] BarcodeFilterResult? BarcodeSelection = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] OriginalFrameArchive? OriginalFrame = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] OriginalFrameArchive? OriginalFrame = null)
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public OperatorInputEvidence? OperatorInput { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public CameraDebugRequestEvidence? DebugRequest { get; init; }
+}
+
 public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long Revision, string State, bool Paused,
     string[] BlockingReasons, ParcelOperation[] Operations, CapabilityHealth[] Health,
     ConfigurationRevision<ParcelConfiguration> Configuration, OperatorIdentity? CurrentOperator = null, ParcelAvailability? Availability = null, PositionSnapshot[]? Positions = null, DeviceState[]? Devices = null, ParcelCapacity? Capacity = null, IdentityConflict[]? IdentityConflicts = null, string[]? AuxiliaryReasons = null,
@@ -87,7 +94,7 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication
 {
-    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
+    Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid runtimeId, long expectedRevision, ParcelConfiguration candidate) => throw new NotSupportedException("Configuration submission inspection unavailable");
     Task<ParcelSnapshot> SnapshotAsync();
     Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50);

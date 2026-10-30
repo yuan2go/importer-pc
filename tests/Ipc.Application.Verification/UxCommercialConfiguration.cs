@@ -209,7 +209,7 @@ static partial class ArchitectureQuality
         public TaskCompletionSource StageEntered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource StageRelease { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid owner, long revision, ParcelConfiguration candidate) => inner.InspectConfigurationSubmissionAsync(owner, revision, candidate);
-        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] samples) => inner.TestBarcodeFilterAsync(policy, samples);
+        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] samples) => inner.TestBarcodeFilterAsync(policy, samples);
         public Task<ParcelSnapshot> SnapshotAsync() => inner.SnapshotAsync();
         public Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50) => inner.HistoryAsync(beforeSequence, limit);
         public Task<ParcelOperation?> OperationAsync(string id) => inner.OperationAsync(id);

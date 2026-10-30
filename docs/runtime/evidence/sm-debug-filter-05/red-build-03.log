@@ -1,0 +1,13 @@
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs(58,31): error CS0122: “StationDebugEvidenceControl”不可访问，因为它具有一定的保护级别 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs(94,25): error CS0122: “StationDebugEvidenceControl.Revoke()”不可访问，因为它具有一定的保护级别 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs(96,31): error CS0122: “StationDebugEvidenceControl.Revoke()”不可访问，因为它具有一定的保护级别 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+
+生成失败。
+
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs(58,31): error CS0122: “StationDebugEvidenceControl”不可访问，因为它具有一定的保护级别 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs(94,25): error CS0122: “StationDebugEvidenceControl.Revoke()”不可访问，因为它具有一定的保护级别 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraFilterPreview.cs(96,31): error CS0122: “StationDebugEvidenceControl.Revoke()”不可访问，因为它具有一定的保护级别 [D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+    0 个警告
+    3 个错误
+
+已用时间 00:00:14.15

@@ -1,0 +1,9 @@
+PASS ROUND-UI trigger enters a clean reading round without a photo/request or HTTP call
+FAIL System.InvalidOperationException: 后台操作并发已达上限，请等待当前操作结束
+   at Ipc.Application.ParcelFlow.ParcelRuntime.OwnedOperation[T](Func`2 read, HashSet`1 owners, Int32 capacity, CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelReadOperations.cs:line 23
+   at Ipc.Application.ParcelFlow.ParcelRuntime.OwnedRead[T](Func`2 read, CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelReadOperations.cs:line 13
+   at Ipc.Application.ParcelFlow.ParcelRuntime.InspectionRead[T](Func`2 read, CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelInspectionQueries.cs:line 67
+   at Ipc.Application.ParcelFlow.ParcelRuntime.ReadCameraReadRoundAsync(CancellationToken token) in D:\projects\importer-pc-ui-debug\src\Ipc.Application.ParcelFlow\ParcelCameraReadRounds.cs:line 222
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 44
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 85
+   at Program.<>c__DisplayClass38_0.<<Main>b__1>d.MoveNext() in D:\projects\importer-pc-ui-debug\tests\Ipc.Desktop.UiVerification\Program.cs:line 57

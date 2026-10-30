@@ -132,6 +132,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
             foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
+            InitializeCameraInspection();
+            InitializeParcelPictures();
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException or System.Text.Json.JsonException)
         { StorageFailed(error, "RepositoryOpenOrRecovery", error is InvalidDataException or System.Text.Json.JsonException); throw; }
@@ -212,6 +214,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (definition.ArchiveOriginalFrames && Effective.Mode == RunMode.Production && !ParcelConnectionSetup.IsDeferred(Effective, reader.Source.DeviceId) && reader.Source is not IOriginalFrameSource)
                     throw new InvalidDataException("Production SM reader must retain the exact original recognition frame; image fallback is forbidden");
                 if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
+                if (Volatile.Read(ref inspectionFence) is { } recoveredFence && reader.Source is IObservationInspectionSource recoveredSource)
+                    await recoveredSource.SetInspectionAsync(new(recoveredFence.Id, true, _ => false, false) { DecodeAllowed = _ => false }, token).ConfigureAwait(false);
+
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
                 catch (ObservationConnectionException ex)
                 {
@@ -280,6 +285,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     {
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
+        if (observation is not null && Volatile.Read(ref inspectionFence) is { } debugFence)
+            observation = observation with { InspectionSessionId = observation.InspectionSessionId ?? debugFence.Id };
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
@@ -400,11 +407,20 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         DebugDiagnostic("相机输入", "开始处理扫码消息", () => new { Position = position, Device = DiagnosticFragment(o.DeviceId, 256),
             Epoch = DiagnosticFragment(o.Epoch, 256), EventId = DiagnosticFragment(o.SourceEventId, 256), o.Sequence, o.ObservedAt, ReceivedAt = receivedAt,
             QueueAgeMs = (DateTimeOffset.UtcNow - receivedAt).TotalMilliseconds, CandidateCount = o.Codes.Length });
-        if (!readers.TryGetValue(o.DeviceId, out var reader) ||
+        if (o.OperatorInput is not null || !readers.TryGetValue(o.DeviceId, out var reader) ||
             string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
             o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
         { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/time; " + Wire.Encode(o)); return; }
+        await ProcessTrustedObservationAsync(position, o, admittedOperator, receivedAt, reader).ConfigureAwait(false);
+    }
+    async Task ProcessTrustedObservationAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt, ObservationSession reader)
+    {
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
+        if (o.InspectionSessionId is not null)
+        {
+            RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
+            return;
+        }
         if (repository!.RetiredIdentity(o.AdmissionId, observationId) is { } retired)
         {
             if (retired.Admission != o.AdmissionId || retired.Observation != observationId || retired.Position != position)
@@ -452,8 +468,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
-            Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt),
-            PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection);
+            Operator: admittedOperator, Acquisition: o.OperatorInput is null ? new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt) : null,
+            PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection)
+            { OperatorInput = o.OperatorInput };
         admissionPositions.TryAdd(op.AdmissionId, position);
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
             ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
@@ -464,7 +481,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         IOriginalFrameLease? originalFrame = null;
         try
         {
-            if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalSource)
+            if (definition.ArchiveOriginalFrames && o.OperatorInput is null && reader.Source is IOriginalFrameSource originalSource)
             {
                 originalFrame = originalSource.RetainOriginalFrame(op.Acquisition!);
                 op = op with { OriginalFrame = new("Pending", op.Acquisition!, originalFrame.Width, originalFrame.Height,

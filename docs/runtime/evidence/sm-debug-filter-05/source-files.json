@@ -1,0 +1,78 @@
+{
+  "sourceParent": "6850b23bb48d0d984eeb7590600072700703c436",
+  "meaning": "Targeted tests used these working source bytes. Git canonical blobs normalize text line endings; exact frozen source commit recorded in follow-up evidence.",
+  "files": [
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelContracts.cs",
+      "gitBytes": 10543,
+      "gitSha256": "ff4c588bda7971f8023445ce0fe0a7b629493a71bc135b5b54fefa9174602eca",
+      "workingBytesSha256": "9033385359ee333bb76be407f459d9bdd52341930c5518940d002c5b76a4d020"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/StartupMaintenance.cs",
+      "gitBytes": 5407,
+      "gitSha256": "d4fecbf9b8c33e3ce783361893f20e32b3524f1848ba01baad5a5e0aa424a103",
+      "workingBytesSha256": "c785676081d114fda9d333cb9be0a67feaefa4ec1136062db2c5d349a244c5de"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelPictureWindow.cs",
+      "gitBytes": 12166,
+      "gitSha256": "72cc2b88768987be5b26bec46aac939e9a66c79258bef0f03e67c5ba938ee85a",
+      "workingBytesSha256": "72cc2b88768987be5b26bec46aac939e9a66c79258bef0f03e67c5ba938ee85a"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ConfigurationSubmission.cs",
+      "gitBytes": 2807,
+      "gitSha256": "ac5d140164c91b1130080b1abe6a4e99736bf4ab6ac33ad718271e2698c41f27",
+      "workingBytesSha256": "4c357eefc3c6de65892ff8e22543f006efb37c7d9c50f58bd6bb09ad98c9a651"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraInspection.cs",
+      "gitBytes": 20045,
+      "gitSha256": "833832820aa82b65234220adf1f8226887ae3ed3c9d45c3994c724b98c5fd4d7",
+      "workingBytesSha256": "368314c05ffa751e31daed6ecadf6a4dbc7f657e2857714f35f7eef04a24bfe1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelInitialConfiguration.cs",
+      "gitBytes": 8286,
+      "gitSha256": "7ab9d0b48486e70a03c4075e7c4024def4cfd052ca6a30698160b97732a9e0a8",
+      "workingBytesSha256": "96ddfb7bd51740f480858a00aefb7af63b1b5450b74577297e14d6fc501566e4"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugEvidenceControl.cs",
+      "gitBytes": 42016,
+      "gitSha256": "71b31ebd4cb4263971cae2283c586c3c5bdda1544b90606c5406ed1eeecc975b",
+      "workingBytesSha256": "64667c8b93ea1918474ad77e277b45fed8c90358cb3ef4e6ab6f4b13686db5bc"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
+      "gitBytes": 58835,
+      "gitSha256": "1192b80d8e7dc40c46875e78afb35777f3ccc8f7b68ae29d4fd2d823f81064cb",
+      "workingBytesSha256": "1de697d7c0ba6c09a8a7f7b67cc5ed8e3fe1db1fb09e5dbfac21c1f3c317c562"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/UxCommercialConfiguration.cs",
+      "gitBytes": 23590,
+      "gitSha256": "e07d40d6abe246e9518d0db529595baf86e7b5be91f6844ed3fd2e04d074ed65",
+      "workingBytesSha256": "691497f5c09f7dc252e6971ca9b3e0a8e25479d8ed228421b6dc7b994f7d1f60"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CameraFilterPreview.cs",
+      "gitBytes": 8654,
+      "gitSha256": "c4435c49e459211af28ed319f0d3750494856b7e2c3dc5bca92ff395ce31a66b",
+      "workingBytesSha256": "d9b0d2f698dab4f09a2c49e2fde1d7069f634d1a4aedb16e45f9c9ec63e332bb"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "gitBytes": 23978,
+      "gitSha256": "12f61d8d61cef4c38626ef90977300c78256a717460c7fb927d6d3630f359256",
+      "workingBytesSha256": "e42822998de28f6f2a4eba0d29acb1847b9d7cf99f798dea9b3c74d162502de3"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/StartupExperience.cs",
+      "gitBytes": 30039,
+      "gitSha256": "6079c3d15d3849ad4d1277f7a11587a78579cc3279462c950e9c7c6ba73d9850",
+      "workingBytesSha256": "f33d34ca0230d0c9cfa65fcc12a0167e6afd429554ba62d21f600d85054fedb1"
+    }
+  ]
+}

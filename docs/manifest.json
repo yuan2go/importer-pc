@@ -108711,9 +108711,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
-      "sha256": "aac1cd09329ee5b1f331fa5e7a5618a0b0f26e22d4fa0cf8f34f480c01257ac9",
-      "size_bytes": 4270,
-      "git_blob": "6b7c9db4261aad1f6a67e6919e92bd79bdbde5c0",
+      "sha256": "8efdcbaaac0c38c484ae0d18795449cc3f595fe0ebc3bc4305fe1efcd5f24a6b",
+      "size_bytes": 4318,
+      "git_blob": "4fa411ef3c4e91229fa4a53186c7d2c448039685",
       "storage_scope": "public_repository"
     },
     {
@@ -109294,9 +109294,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-D-DRIVE-DEFAULTS-02; original evidence retains its own SourceCommit",
-      "sha256": "ae84e9e01b6f30800c3f00f2b73d1837fedf280ac2df94f2031494a8c79928b3",
-      "size_bytes": 571,
-      "git_blob": "c042486753176d0647f432176a13488da277ef5e",
+      "sha256": "79b2ad0d71a875712de84e046f8a718dbef2ac7b431332047bdf2f0c22082f33",
+      "size_bytes": 617,
+      "git_blob": "41dc46e3b4e6040d71e7409b17c9f2c7c9048bcd",
       "storage_scope": "public_repository"
     },
     {

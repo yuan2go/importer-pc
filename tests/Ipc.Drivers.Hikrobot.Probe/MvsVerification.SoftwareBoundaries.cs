@@ -95,12 +95,13 @@ internal static partial class MvsVerification
         bool prepared;
         int calls;
         internal Action? DuringDecode;
+        internal string[] Codes = ["SYNTH-CODE"];
         internal int Calls => Volatile.Read(ref calls);
         public void Prepare() => prepared = true;
         public string[] Decode(byte[] pixels, int length, int width, int height)
         {
             if (!prepared || length != width * height || length > pixels.Length) throw new InvalidDataException("Invalid synthetic decoder input");
-            Interlocked.Increment(ref calls); DuringDecode?.Invoke(); return ["SYNTH-CODE"];
+            Interlocked.Increment(ref calls); DuringDecode?.Invoke(); return Codes;
         }
         public void Release() => prepared = false;
     }

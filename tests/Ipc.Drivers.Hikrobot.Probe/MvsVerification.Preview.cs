@@ -12,7 +12,7 @@ internal static partial class MvsVerification
         first.Gray8[0] = 0; pixels[0] = 0;
         Check(cache.Read()!.Gray8[0] == 91, "published image owns its bytes and each reader receives an isolated copy");
         cache.Offer(pixels, 1280, 1024, "camera", "epoch-1", 3, DateTimeOffset.UtcNow);
-        Check(cache.Read()!.FrameNumber == 2, "fast acquisition cannot publish more than two thumbnails per second");
+        Check(cache.Read()!.FrameNumber == 2, "fast acquisition cannot publish more than five thumbnails per second");
         await Task.Delay(2100);
         cache.Offer(pixels, 1280, 1024, "camera", "epoch-1", 4, DateTimeOffset.UtcNow);
         Check(cache.Read() is null, "closing page expires image demand and releases the cached thumbnail");

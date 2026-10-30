@@ -37,6 +37,8 @@ static partial class Program
             var control = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var other = Descendants(second).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             Field<DispatcherTimer>(control, "timer").Stop(); Field<DispatcherTimer>(other, "timer").Stop();
+            Field<DispatcherTimer>(Field<UserControl>(control, "livePreview"), "timer").Stop();
+            Field<DispatcherTimer>(Field<UserControl>(other, "livePreview"), "timer").Stop();
             // Drive deterministic native snapshots explicitly; an extra harness
             // reader must not contend with two independent 500ms host timers.
             ((DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(window)!).Stop();
@@ -110,6 +112,7 @@ static partial class Program
             Check(Field<Image>(control, "photo").Source is null && Field<TextBox>(control, "barcode").Text.Length == 0,
                 "late original-image completion cannot repaint after changing camera/selection generation");
             ClickField(control, "left"); await Poll(control); await Flush();
+            Descendants(control).OfType<Expander>().Single(x => Equals(x.Header, "照片缩放与条码标注")).IsExpanded = true; await Flush();
             Descendants(control).OfType<Button>().Single(b => Equals(b.Content, "1:1")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
             Check(Math.Abs(Field<double>(control, "zoom") - 1 / VisualTreeHelper.GetDpi(control).DpiScaleX) < .0001,
                 "native 1:1 maps image pixels to device pixels at the actual monitor DPI");

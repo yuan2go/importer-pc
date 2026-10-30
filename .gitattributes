@@ -199,3 +199,6 @@ docs/archive/pre-mvs-latency-01/** -text whitespace=cr-at-eol
 # Integration originals and captured verification bytes retain their source identity.
 docs/archive/pre-pr155-integration-08/** -text whitespace=cr-at-eol
 docs/runtime/evidence/pr155-integration-08/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Preserve the exact current index before the continuous PDA input addendum.
+docs/archive/pre-sm-continuous-pda-input-01/** -text whitespace=cr-at-eol

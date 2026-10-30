@@ -20,6 +20,7 @@ public partial class SupplyStationPosition : UserControl
         };
         DataObject.AddPastingHandler(BarcodeEntry, (_, e) =>
         {
+            PrepareResultReplacement();
             var value = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
             if (submitting || submitted is not null || value is null || value.Any(char.IsControl) ||
                 BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + value.Length > 4096)
@@ -43,11 +44,22 @@ public partial class SupplyStationPosition : UserControl
     {
         if (editing || submitting || submitted is not null) return;
         var value = DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p ? p.Barcode : "";
-        if (BarcodeEntry.Text == value) return;
-        updatingDisplay = true;
-        try { BarcodeEntry.Text = value; }
-        finally { updatingDisplay = false; }
+        if (BarcodeEntry.Text != value)
+        {
+            updatingDisplay = true;
+            try { BarcodeEntry.Text = value; }
+            finally { updatingDisplay = false; }
+        }
+        PrepareResultReplacement();
     }
+    // A displayed result is not a draft. The first character/paste starts a new
+    // parcel even if the caret was moved after admission. Once editing begins,
+    // ordinary selection, corrections and snapshot refreshes keep the draft.
+    void PrepareResultReplacement()
+    {
+        if (!editing && !submitting && submitted is null) BarcodeEntry.SelectAll();
+    }
+    void Entry_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) => PrepareResultReplacement();
     void KeyboardSource_Click(object sender, RoutedEventArgs e) => SetInputKind(ParcelBarcodeInputKind.Keyboard);
     void PdaSource_Click(object sender, RoutedEventArgs e) => SetInputKind(ParcelBarcodeInputKind.PdaKeyboard);
     void SetInputKind(ParcelBarcodeInputKind value)
@@ -91,6 +103,7 @@ public partial class SupplyStationPosition : UserControl
     {
         if (submitting || submitted is not null)
         { e.Handled = true; InputFeedback.Text = "正在提交或核对原输入；后续扫码未接纳，请取得结果后重扫。"; return; }
+        PrepareResultReplacement();
         if (BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + e.Text.Length > 4096 || e.Text.Any(char.IsControl))
         { e.Handled = true; overflow = true; InputFeedback.Text = "输入超过预算或含控制字符，不能提交截断码；请清空后重新输入完整单条码。"; }
     }

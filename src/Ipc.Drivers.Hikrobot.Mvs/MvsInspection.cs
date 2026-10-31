@@ -54,10 +54,34 @@ internal sealed partial class MvsAcquisition : IObservationInspectionSource
             try { await Task.Run(ApplyInspectionCacheCutover, CancellationToken.None).ConfigureAwait(false); }
             catch { await barrier.ConfigureAwait(false); throw; }
         }
+        else if (worker is { } capture)
+        {
+            // A pending cache boundary has no executor once Capture exits. Observe
+            // the actual task as well as the barrier, including the race where it
+            // exits just after the IsCompleted check above. Keep isolation on failure.
+            var completed = await Task.WhenAny(barrier, capture).WaitAsync(token).ConfigureAwait(false);
+            if (completed == capture && !barrier.IsCompleted) RejectInspectionAfterCaptureExit(barrier);
+        }
         // Cancellation only cancels waiting; it never claims that a native call drained.
         await barrier.WaitAsync(token).ConfigureAwait(false);
         }
         finally { lifecycle.Release(); }
+    }
+    void RejectInspectionAfterCaptureExit(Task barrier)
+    {
+        var error = new IOException("MVS acquisition ended before inspection cutover; isolation retained: " + Failure);
+        lock (inspectionGate)
+        {
+            if (barrier.IsCompleted) return;
+            inspectionFailure = error.Message;
+            if (cacheCutover?.Task == barrier)
+            {
+                var completion = cacheCutover; cacheCutover = null; afterCacheCutover = null;
+                completion.TrySetException(error);
+            }
+            foreach (var item in inspectionBarriers.Where(x => x.Completion.Task == barrier).ToArray())
+            { inspectionBarriers.Remove(item); item.Completion.TrySetException(error); }
+        }
     }
     void ApplyInspectionCacheCutover()
     {

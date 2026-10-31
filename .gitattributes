@@ -199,3 +199,10 @@ docs/archive/pre-mvs-latency-01/** -text whitespace=cr-at-eol
 # Integration originals and captured verification bytes retain their source identity.
 docs/archive/pre-pr155-integration-08/** -text whitespace=cr-at-eol
 docs/runtime/evidence/pr155-integration-08/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Shutdown13 keeps original guidance and captured positive/negative verification bytes.
+docs/archive/pre-sm-shutdown-resources-13/** -text whitespace=cr-at-eol
+docs/runtime/evidence/sm-shutdown-resources-13/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Independent shutdown review keeps raw Linux stdout and inherited timeout evidence.
+docs/runtime/evidence/sm-shutdown-resources-13-review/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

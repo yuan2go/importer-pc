@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-31",
+  "work_package": "WP-IPC-SM-SHUTDOWN-RESOURCES-13",
+  "reviewed_head": "1413668d9d6b9c5f5321f05d921d8ce50c59cdf4",
+  "main_baseline": "67ab87c1a1b146611504342c6ab080ed045231ec",
+  "environment": {
+    "os": "Linux-6.18.57-x86_64-with-glibc2.39",
+    "sdk": "10.0.402",
+    "native_camera": "NOT_RUN",
+    "rcs": "loopback synthetic peer"
+  },
+  "original_evidence_integrity": {
+    "log_files": 31,
+    "tested_source_blobs": 7,
+    "mismatches": []
+  },
+  "logs": [
+    {
+      "path": "gap-before.log",
+      "status": "EXPECTED_FAILURE_original_PR_loses_pruned_error",
+      "sha256": "64f25d15ebef93c7f8965e43cb96d8e2c104e3474ba2220f5c47b3475037cc90",
+      "size_bytes": 2116,
+      "pass_lines": 15
+    },
+    {
+      "path": "gap-build.log",
+      "status": "PASS_negative_fixture_build",
+      "sha256": "bbfd8a2fc5357b2110d745cdb9dcb1018724be6eb21d0ba2fd81f98bbe80cf49",
+      "size_bytes": 2411,
+      "pass_lines": 0
+    },
+    {
+      "path": "final-build.log",
+      "status": "PASS",
+      "sha256": "3e3c1958dadcddfb72aa4a792a923cd0acf3efb4846fc5f76e12ccec010210f1",
+      "size_bytes": 2411,
+      "pass_lines": 0
+    },
+    {
+      "path": "probe-build.log",
+      "status": "PASS",
+      "sha256": "84a8c3b49cf03393ea5f1110833369324adbe698258dbeb9554c9d0d35c477e8",
+      "size_bytes": 983,
+      "pass_lines": 0
+    },
+    {
+      "path": "probe-pr163.log",
+      "status": "PASS",
+      "sha256": "ba94d721a68f81bb611d3b3c77e0574ed293d2b09c55f3298de2f7210cfbc706",
+      "size_bytes": 7911,
+      "pass_lines": 87
+    },
+    {
+      "path": "main-build.log",
+      "status": "PASS",
+      "sha256": "1e5190b3287a99f16fa409dda9a399f5c96cd1d71b78ade1a7e89c5233c9e894",
+      "size_bytes": 4518,
+      "pass_lines": 0
+    },
+    {
+      "path": "acquisition-main.log",
+      "status": "FAIL_inherited_timeout_after_23_assertions",
+      "sha256": "9db8b94b9e19bffb61e000f9fbc360b1cea416d09bfe48c9f727b529fec3ee2c",
+      "size_bytes": 51340,
+      "pass_lines": 23
+    },
+    {
+      "path": "acquisition-pr163.log",
+      "status": "FAIL_same_timeout_after_23_assertions",
+      "sha256": "ce894d92830651347188a2ae9524418061d9dfb335e87d011a639beee903c20a",
+      "size_bytes": 51327,
+      "pass_lines": 23
+    },
+    {
+      "path": "final-shutdown-resources.log",
+      "status": "PASS",
+      "sha256": "3c1953ab48f297f7adc4462fb75861b4189b7a49f0628a83811d2f76a681613a",
+      "size_bytes": 1990,
+      "pass_lines": 21
+    },
+    {
+      "path": "final-resource-risks.log",
+      "status": "PASS",
+      "sha256": "02ef64847b6bc9fd077c2680d4591fb7cf663fba9637acb0e50c4a3cdf26f564",
+      "size_bytes": 1363,
+      "pass_lines": 13
+    },
+    {
+      "path": "final-sm-original-frame.log",
+      "status": "PASS",
+      "sha256": "0a83fbc407b9843345a86fca6e4d3ef80ac625659e60ceccd9e7e2ae6193430a",
+      "size_bytes": 2735,
+      "pass_lines": 26
+    },
+    {
+      "path": "final-audit03-input.log",
+      "status": "PASS",
+      "sha256": "d0108418135eaf5ec4b5096b8e6f093630700dedf0a0dad34c0eb36f1d150a75",
+      "size_bytes": 1640,
+      "pass_lines": 21
+    },
+    {
+      "path": "final-mvs-offline-activation.log",
+      "status": "ENV_BLOCKED_missing_explicit_cache",
+      "sha256": "87c165098363a8c3406bf4133f8bb64c91693fe3f7544905f107ccd4438476ae",
+      "size_bytes": 607,
+      "pass_lines": 0
+    },
+    {
+      "path": "final-camera-rounds.log",
+      "status": "ENV_BLOCKED_missing_cache_Windows_native_fixture",
+      "sha256": "092e60cfe2a1a690158fd53effd1831b83d5e1d38d96ef3a1f9e8ecf4d7ed30c",
+      "size_bytes": 726,
+      "pass_lines": 0
+    },
+    {
+      "path": "final-manual-supply.log",
+      "status": "ENV_BLOCKED_Windows_protected_Production",
+      "sha256": "192450a2e74909c71fa58b16f5f0117c9255f3d91fa196d4008336e5a4e3e361",
+      "size_bytes": 1813,
+      "pass_lines": 0
+    },
+    {
+      "path": "final-manual-rcs-debug.log",
+      "status": "ENV_BLOCKED_Windows_protected_Production",
+      "sha256": "71db7ef0dfbe3ed5d1b613ec2b2bb115c12f861fd6228cd971610f32bb23d736",
+      "size_bytes": 1764,
+      "pass_lines": 0
+    },
+    {
+      "path": "final-offline-configured-cache.log",
+      "status": "FAIL_wait_fixture_Single_on_transient_absence",
+      "sha256": "ea952a4adc13da5080d3fe9103056d6f3913c4f5f8a40af3ce3c4d38066f1880",
+      "size_bytes": 1758,
+      "pass_lines": 4
+    },
+    {
+      "path": "offline-fixture-build.log",
+      "status": "PASS",
+      "sha256": "7d9c923469bf0d3f6e2837ee73ba9740890b8b5145a476e1ccde230f397d8ffe",
+      "size_bytes": 2411,
+      "pass_lines": 0
+    },
+    {
+      "path": "final-offline-fixed-wait.log",
+      "status": "PASS",
+      "sha256": "ebadb6237b61f2d64fc3e62e337365ef4707c5fa63a8a5f5e18077857e5a5dcb",
+      "size_bytes": 1368,
+      "pass_lines": 12
+    }
+  ],
+  "tested_source_files": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "git_blob": "3ddc0e135b462ccc796458fa5ab8639e4920d46c",
+      "sha256": "13890f71f05ba05d9a99f1fe8795d70cabf5513754a34f88229585ddae131a05"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "git_blob": "9a673999e7fd452a921f3a01579b50b2a7d99ac7",
+      "sha256": "8fb0c989ebcdaf1caa4188a0bff2ac75d192147541e33d1c4991074c45a3e95b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "git_blob": "f2be0d368dbec6cd2e628cf6f20289bfb99c65fd",
+      "sha256": "cafb00d1129af30c7a2c6f98045fc41bb6f8e7f88d48e6b2cef273b8174dc49b"
+    },
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsInspection.cs",
+      "git_blob": "8530a44330c7342cd79757837959feb7e6a90c4b",
+      "sha256": "8200a30526e265880419eb31253e02a5c83519ec5121e5494fa57f5e835cf6bf"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ShutdownResources.cs",
+      "git_blob": "454ceb524f45b313d71af5cf7c5a407ded861226",
+      "sha256": "2ea65a5a0eb63d7545d829701b4778646daf8dd8059f43a7de5937a3215cc6e2"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/MvsOfflineActivation.cs",
+      "git_blob": "d7f1557eb7cb0358df482007a48ba97e977f53e5",
+      "sha256": "33e8fcbad45b60e528cca8e49d247a960bbc6cff1ed04e35a56c5a269140d1ee"
+    }
+  ],
+  "not_run": [
+    "Windows native WPF on amended source",
+    "physical MVS camera/disconnect/exit",
+    "customer RCS",
+    "system installation",
+    "published package startup",
+    "target machine 24/72h endurance"
+  ],
+  "qualification": "Synthetic boundaries only; neither acquisition-lifecycle run passed; previous Windows evidence keeps its original source identity",
+  "regression_fixture_note": "Negative regression preceded the stronger repeat-Dispose native-call equality check and comment clarification; product source was exact original PR. Positive shutdown run uses the strengthened final ShutdownResources.cs.",
+  "commands": [
+    "dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false",
+    "dotnet build tests/Ipc.Drivers.Hikrobot.Probe -c Release -p:RestoreLockedMode=true -m:1 -nr:false",
+    "dotnet tests/Ipc.Drivers.Hikrobot.Probe/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Probe.dll --mvs-self-test",
+    "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --shutdown-resources",
+    "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --resource-risks",
+    "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --sm-original-frame",
+    "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --audit03-input",
+    "NUGET_PACKAGES=<actual restored cache> dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --mvs-offline-activation",
+    "dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --acquisition-lifecycle (separate clean main and original PR products)"
+  ]
+}

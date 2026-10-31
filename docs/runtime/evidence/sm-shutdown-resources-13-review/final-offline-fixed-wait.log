@@ -1,0 +1,12 @@
+PASS RCS20: saved MVS/RCS candidate becomes Effective unchanged while the physical camera is absent; no rollback to blank configuration
+PASS RCS20: configured offline camera cannot admit camera input, jobs or Ready; independent manual supply remains available
+PASS RCS20: ordinary operator projection retains configured camera/RCS status and does not turn offline into unconfigured
+PASS RCS20: restart retains offline camera/RCS configuration and clears retired pause for independent manual supply
+PASS RCS20: returning camera reconnects without management authorization or changes to the retained configuration
+PASS RCS20: returning camera decodes and completes one actual loopback RCS request using the retained configuration
+PASS RCS20: runtime unplug/replug automatically gets a new epoch without pausing software or replaying the original RCS request
+PASS RCS20: frame counter restart in new epoch creates one new read, not a replay of the old read
+PASS RCS20: running SM exposes parameter save without a manual pause
+PASS RCS20: unpaused parameter save automatically quiesces, keeps effective settings and restores normal admission after staging
+PASS RCS20: failed native cleanup blocks automatic reopen and camera admission while retaining original requests and ownership
+PASS RCS20: completed application stop cancels recovery and never opens the camera again

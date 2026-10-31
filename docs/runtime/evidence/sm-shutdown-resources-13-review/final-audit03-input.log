@@ -1,0 +1,22 @@
+EvidenceRoot=/tmp/ipc17-verification-fbc03a5d5a0e468590c85f6cbf6f8e25
+PASS A03: direct-plc duplicate and premature new entity preserve one original
+PASS A03: direct-plc WaitingWeight identity contradiction persists and all unsent WCS/PLC attempts remain zero
+PASS A03: direct-plc restart retains identity and independent recovery responsibilities
+PASS A03: identity acknowledgement requires maintenance authority
+PASS A03: authorized identity acknowledgement recorded
+PASS A03: clearing identity never resumes or clears recovery/sends
+PASS A03: wcs-to-plc duplicate and premature new entity preserve one original
+PASS A03: wcs-to-plc WaitingWeight identity contradiction persists and all unsent WCS/PLC attempts remain zero
+PASS A03: wcs-to-plc restart retains identity and independent recovery responsibilities
+PASS A03: identity acknowledgement requires maintenance authority
+PASS A03: authorized identity acknowledgement recorded
+PASS A03: clearing identity never resumes or clears recovery/sends
+PASS A03: byte-identical measurement duplicate is idempotent
+PASS A03: single-scale identity conflict isolates only left while independent right completes once
+PASS A03: original measurement value never overwritten
+PASS A03: all reader/scale/store/position resources released
+PASS A03: measurement contradiction evidence and original survive restart
+PASS A03: shared storage failure still stops receipt and rolls back measurement/intent before any PLC send
+PASS A03: shared failure cleanup reports original fault while releasing resources
+PASS A03: failed database transaction leaves no partial measurement identity
+PASS A03 INPUT COMPLETE

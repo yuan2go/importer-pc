@@ -1,0 +1,8 @@
+PASS RCS20: saved MVS/RCS candidate becomes Effective unchanged while the physical camera is absent; no rollback to blank configuration
+Unhandled exception. System.Exception: FAIL RCS20: configured offline camera is visible as Disconnected and cannot fabricate admission, jobs or Ready
+   at SportmasterRcs.Check(Boolean value, String message) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 19
+   at SportmasterRcs.MvsOfflineActivation(String workspace, String root) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\MvsOfflineActivation.cs:line 50
+   at SportmasterRcs.MvsOfflineActivation(String workspace, String root) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\MvsOfflineActivation.cs:line 59
+   at SportmasterRcs.MvsOfflineActivation(String workspace, String root) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\MvsOfflineActivation.cs:line 112
+   at Program.<Main>$(String[] args) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\Program.cs:line 47
+   at Program.<Main>(String[] args)

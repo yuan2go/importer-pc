@@ -93,7 +93,18 @@ public sealed partial class ParcelRuntime
                     if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)
                     { repository!.Commit(null, "AutomaticSupplyRestored", "Retired manual pause restored after startup readiness checks", paused: false); resumePriorPause = false; }
                     if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); }
-                    RefreshStorageCapacity(); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
+                    RefreshStorageCapacity();
+                    auxiliary.RemoveAll(task =>
+                    {
+                        if (!task.IsCompleted) return false;
+                        // Pruning an ended task must not erase its original error
+                        // before shutdown observes it. Shutdown can drain other owners
+                        // concurrently, so both paths use the same task-keyed ledger.
+                        if (task.IsFaulted || task.IsCanceled)
+                            terminalWorkerFailures.TryAdd(task, (Exception?)task.Exception ?? new TaskCanceledException(task));
+                        return true;
+                    });
+                    backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
                 }
                 finally { gate.Release(); }
             }

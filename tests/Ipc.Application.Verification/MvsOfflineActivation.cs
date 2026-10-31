@@ -48,8 +48,8 @@ static partial class SportmasterRcs
             Check(s.Configuration.Status == "Effective" && s.Configuration.Pending is null && Wire.Encode(s.Configuration.Effective) == original,
                 "saved MVS/RCS candidate becomes Effective unchanged while the physical camera is absent; no rollback to blank configuration");
             Check(s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Health == DeviceHealth.Disconnected &&
-                !s.Availability!.Admit && !s.Availability.Resume && s.Operations.Length == 0,
-                "configured offline camera is visible as Disconnected and cannot fabricate admission, jobs or Ready");
+                s.Positions!.Single(p => p.Id == "left").BarcodeInput is { Camera: false, Manual: true } && s.Operations.Length == 0,
+                "configured offline camera cannot admit camera input, jobs or Ready; independent manual supply remains available");
             await app.ExitManagementModeAsync();
             s = await app.SnapshotAsync();
             Check(!ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, readers[0].DeviceId) &&
@@ -63,14 +63,17 @@ static partial class SportmasterRcs
         {
             await app.StartAsync(default);
             await ManagementModeFixture.Authorize(app);
-            var s = await Wait(app, s => s.Health.Any(h => h.InstanceId == rcs.InstanceId && h.Ready));
-            Check(s.Configuration.Pending is null && Wire.Encode(s.Configuration.Effective) == original && s.Paused,
-                "restart retains the configured offline camera and RCS with software pause; parameters need no re-entry");
+            var s = await Wait(app, s => s.Health.Any(h => h.InstanceId == rcs.InstanceId && h.Ready) && !s.Paused);
+            Check(s.Configuration.Pending is null && Wire.Encode(s.Configuration.Effective) == original &&
+                s.Positions!.Single(p => p.Id == "left").BarcodeInput is { Camera: false, Manual: true },
+                "restart retains offline camera/RCS configuration and clears retired pause for independent manual supply");
             returned.Discovered = true;
             await app.ExitManagementModeAsync();
-            s = await Wait(app, s => !s.Paused && s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Health == DeviceHealth.Ready);
+            // Reconnect retires the old health entry before the new epoch reports.
+            // Absence means keep waiting; duplicate device identities still fail.
+            s = await Wait(app, s => !s.Paused && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId)?.Health == DeviceHealth.Ready);
             Check(SavedEffective() == original && returned.OpenAttempts == 2,
-                "returning camera reconnects without management authorization; retired manual pause clears only after startup readiness");
+                "returning camera reconnects without management authorization or changes to the retained configuration");
             s = await Wait(app, s => s.Availability!.Admit);
             returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);
             s = await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved));
@@ -78,9 +81,9 @@ static partial class SportmasterRcs
                 "returning camera decodes and completes one actual loopback RCS request using the retained configuration");
             var priorEpoch = s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Epoch;
             returned.Discovered = false;
-            await Wait(app, s => s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Health == DeviceHealth.Disconnected);
+            await Wait(app, s => s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId)?.Health == DeviceHealth.Disconnected);
             returned.Discovered = true;
-            s = await Wait(app, s => s.Availability!.Admit && s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
+            s = await Wait(app, s => s.Availability!.Admit && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
             Check(!s.Paused && s.Operations.Single().Wcs!.Attempts == 1,
                 "runtime unplug/replug automatically gets a new epoch without pausing software or replaying the original RCS request");
             returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);
@@ -102,8 +105,8 @@ static partial class SportmasterRcs
                 returned.Discovered = true;
                 await Task.Delay(2200);
                 s = await app.SnapshotAsync();
-                Check(returned.OpenAttempts == opens && !s.Availability!.Admit && s.Operations.All(o => o.Wcs!.Attempts == 1),
-                    "failed native cleanup blocks automatic reopen and admission while retaining original requests and ownership");
+                Check(returned.OpenAttempts == opens && s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == false && s.Operations.All(o => o.Wcs!.Attempts == 1),
+                    "failed native cleanup blocks automatic reopen and camera admission while retaining original requests and ownership");
             }
             finally { returned.FailStop = false; }
             await app.StopAsync(default);

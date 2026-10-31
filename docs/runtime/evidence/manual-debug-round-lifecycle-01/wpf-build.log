@@ -1,0 +1,26 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Drivers.Hikrobot/Ipc.Drivers.Hikrobot.csproj (in 818 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Presentation.Wpf/Ipc.Presentation.Wpf.csproj (in 8.51 sec).
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj : error NU1102: Unable to find package System.Diagnostics.EventLog with version (>= 10.0.13) [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj : error NU1102:   - Found 134 version(s) in nuget.org [ Nearest version: 10.0.13 ] [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj : error NU1102: Unable to find package System.Diagnostics.EventLog with version (>= 10.0.13) [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj : error NU1102:   - Found 134 version(s) in nuget.org [ Nearest version: 10.0.13 ] [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj : error NU1102: Unable to find package System.Diagnostics.EventLog with version (>= 10.0.13)
+/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj : error NU1102:   - Found 134 version(s) in nuget.org [ Nearest version: 10.0.13 ]
+  Failed to restore /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (in 8.62 sec).
+  Failed to restore /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (in 8.56 sec).
+  Failed to restore /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj (in 8.62 sec).
+  12 of 17 projects are up-to-date for restore.
+
+Build FAILED.
+
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj : error NU1102: Unable to find package System.Diagnostics.EventLog with version (>= 10.0.13) [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj : error NU1102:   - Found 134 version(s) in nuget.org [ Nearest version: 10.0.13 ] [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj : error NU1102: Unable to find package System.Diagnostics.EventLog with version (>= 10.0.13) [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj : error NU1102:   - Found 134 version(s) in nuget.org [ Nearest version: 10.0.13 ] [/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj]
+/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj : error NU1102: Unable to find package System.Diagnostics.EventLog with version (>= 10.0.13)
+/workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj : error NU1102:   - Found 134 version(s) in nuget.org [ Nearest version: 10.0.13 ]
+    0 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:13.06

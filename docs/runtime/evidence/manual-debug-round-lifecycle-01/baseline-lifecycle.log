@@ -1,0 +1,45 @@
+FAIL MANUAL-DEBUG-LIFECYCLE System.Exception: last reserved slot can send while new ordinary admissions remain blocked
+   at ManualRcsDebugChecks.Check(Boolean ok, String text) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugChecks.cs:line 6
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 21
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 35
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10
+PASS real numeric ID exhaustion persists a blocked intent without WCS or HTTP attempt
+PASS repeated failed preparation retains the same operation
+FAIL MANUAL-DEBUG-LIFECYCLE System.InvalidOperationException: 原请求已尝试或未处于未发送状态，保留原结果与责任。
+   at Ipc.Application.ParcelFlow.ParcelRuntime.<>c__DisplayClass228_0.<<CloseUnsentDebugRoundAsync>b__0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelManualRcsDebug.cs:line 26
+--- End of stack trace from previous location ---
+   at Ipc.Application.ParcelFlow.ParcelRuntime.<>c__DisplayClass287_0`1.<<OwnedOperation>b__0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs:line 34
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 53
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 63
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10
+PASS T3 failure remains observable
+PASS pending original receipt cannot be cancelled by page exit
+PASS pending original bytes, attempt and receipt responsibility survive cleanup rejection
+Unhandled exception. System.AggregateException: One or more errors occurred. (last reserved slot can send while new ordinary admissions remain blocked) (原请求已尝试或未处于未发送状态，保留原结果与责任。)
+ ---> System.Exception: last reserved slot can send while new ordinary admissions remain blocked
+   at ManualRcsDebugChecks.Check(Boolean ok, String text) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugChecks.cs:line 6
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 21
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 35
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10
+   --- End of inner exception stack trace ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 12
+   at Program.<Main>$(String[] args) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 40
+   at Program.<Main>(String[] args)
+ ---> (Inner Exception #1) System.InvalidOperationException: 原请求已尝试或未处于未发送状态，保留原结果与责任。
+   at Ipc.Application.ParcelFlow.ParcelRuntime.<>c__DisplayClass228_0.<<CloseUnsentDebugRoundAsync>b__0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelManualRcsDebug.cs:line 26
+--- End of stack trace from previous location ---
+   at Ipc.Application.ParcelFlow.ParcelRuntime.<>c__DisplayClass287_0`1.<<OwnedOperation>b__0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs:line 34
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 53
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 63
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10<---
+

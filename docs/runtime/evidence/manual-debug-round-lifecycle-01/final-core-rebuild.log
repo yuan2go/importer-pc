@@ -1,0 +1,36 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (in 415 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj (in 483 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (in 415 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (in 483 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (in 483 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (in 483 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (in 483 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (in 483 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (in 179 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (in 180 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (in 13 ms).
+  Restored /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Components/Ipc.Components.csproj (in 18 ms).
+  4 of 16 projects are up-to-date for restore.
+  Ipc.Platform -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Contracts/bin/Release/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform.Storage/bin/Release/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Sportmaster/bin/Release/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.DirectPlc/bin/Release/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.WcsToPlc/bin/Release/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Reference.Protocol/bin/Release/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Components/bin/Release/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Drivers/bin/Release/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Integrations/bin/Release/net10.0/Ipc.Integrations.dll
+  Ipc.Application.Supply -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Integrations.SportmasterRcs/bin/Release/net10.0/Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Drivers.Hikrobot.Mvs -> /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Drivers.Hikrobot.Mvs/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Mvs.dll
+  Ipc.Application.Verification -> /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:01:03.88

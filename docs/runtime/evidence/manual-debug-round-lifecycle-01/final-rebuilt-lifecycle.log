@@ -1,0 +1,20 @@
+EvidenceRoot=/tmp/ipc17-verification-e8608158096847e498bb70f1d5c60eab
+Explicit Simulation fixture; real SQLite and built-in loopback RCS. Production/Windows/site qualification is separate.
+PASS last reserved slot can send while new ordinary admissions remain blocked
+PASS ordinary other-position admission cannot consume a full capacity slot
+PASS replacing this unsent intent releases its reservation before admitting the replacement
+PASS old-window cleanup cannot close the new round
+PASS newer round survives stale cleanup
+PASS capacity-one request sends once; repeated send only reads original facts
+PASS accepted original cannot be cancelled by page exit
+PASS Unknown original cannot be cancelled by page exit
+PASS Unknown keeps the original request bytes and attempt after rejected cleanup
+PASS real numeric ID exhaustion persists a blocked intent without WCS or HTTP attempt
+PASS repeated failed preparation retains the same operation
+PASS failed preparation can be audited and closed idempotently without losing evidence or blocking manual admission
+PASS another explicit prepare safely replaces a never-sent intent whose preparation failed
+PASS replaying an already completed cleanup receipt cannot affect a newer round
+PASS T3 failure remains observable
+PASS raw receipt remains durably pending before cleanup
+PASS pending original receipt cannot be cancelled by page exit
+PASS pending original bytes, attempt and receipt responsibility survive cleanup rejection

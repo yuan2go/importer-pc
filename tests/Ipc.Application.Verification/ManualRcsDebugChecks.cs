@@ -1,12 +1,13 @@
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 
-internal static class ManualRcsDebugChecks
+internal static partial class ManualRcsDebugChecks
 {
     static void Check(bool ok, string text) { if (!ok) throw new Exception(text); Console.WriteLine("PASS " + text); }
     public static async Task Run(string workspace, string root)
     {
         Console.WriteLine("EvidenceRoot=" + root);
+        await Lifecycle(workspace, Path.Combine(root, "lifecycle"));
         Console.WriteLine("Synthetic camera ports; real SQLite and built-in RCS HTTP. No real hardware/site acceptance.");
         await using var h = new ManualSupplyHarness(workspace, root, deferred: true, rightCode: false, leftCode: false);
         await h.StartAsync();

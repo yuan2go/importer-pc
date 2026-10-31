@@ -1,3 +1,7 @@
+# 人工调试轮次清理修复（2026-10-31）
+
+[工作包](work-packages/WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01.md)与[实施及验证边界](runtime/manual-debug-round-lifecycle-01.md)：未发送意图清理、离页迟到结果和已保留操作发送资格。旧索引[原字节归档](archive/pre-manual-debug-round-lifecycle-01/README.md)。
+
 # 文档索引
 
 2026-10-30 人工取格口与相机配置解耦、调试说明删除及本机首帧故障排查见 [SM-MANUAL-CAMERA-INDEPENDENT-12](work-packages/WP-IPC-SM-MANUAL-CAMERA-INDEPENDENT-12.md)。它替代10中人工输入仍需相机来源编码的要求；实际修复与验证边界单独记录。

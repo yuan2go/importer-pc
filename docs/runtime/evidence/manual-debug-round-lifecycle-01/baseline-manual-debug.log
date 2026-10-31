@@ -1,0 +1,75 @@
+EvidenceRoot=/tmp/ipc17-verification-2d2bc9b495ff4b4b9d751edf1020329e
+FAIL MANUAL-DEBUG-LIFECYCLE System.InvalidOperationException: Protected Production drafts require Windows
+   at Ipc.Platform.ProtectedDraftPayload.Write(String path, String value, Boolean portableSynthetic, String runtimeSid) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/ProtectedDraftPayload.cs:line 40
+   at Ipc.Application.ParcelFlow.ParcelMachineOrigin.EnsureNew(String directory, ParcelConfiguration c) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs:line 25
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 112
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+   at ManualSupplyHarness.StartAsync(Boolean ready) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualSupplyChecks.cs:line 33
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 17
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 35
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10
+FAIL MANUAL-DEBUG-LIFECYCLE System.InvalidOperationException: Protected Production drafts require Windows
+   at Ipc.Platform.ProtectedDraftPayload.Write(String path, String value, Boolean portableSynthetic, String runtimeSid) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/ProtectedDraftPayload.cs:line 40
+   at Ipc.Application.ParcelFlow.ParcelMachineOrigin.EnsureNew(String directory, ParcelConfiguration c) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs:line 25
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 112
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+   at ManualSupplyHarness.StartAsync(Boolean ready) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualSupplyChecks.cs:line 33
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 40
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 63
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10
+FAIL MANUAL-DEBUG-LIFECYCLE System.InvalidOperationException: Protected Production drafts require Windows
+   at Ipc.Platform.ProtectedDraftPayload.Write(String path, String value, Boolean portableSynthetic, String runtimeSid) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/ProtectedDraftPayload.cs:line 40
+   at Ipc.Application.ParcelFlow.ParcelMachineOrigin.EnsureNew(String directory, ParcelConfiguration c) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs:line 25
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 112
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+   at ManualSupplyHarness.StartAsync(Boolean ready) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualSupplyChecks.cs:line 33
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PendingReceipt|2>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 68
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PendingReceipt|2>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 76
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10
+Unhandled exception. System.AggregateException: One or more errors occurred. (Protected Production drafts require Windows) (Protected Production drafts require Windows) (Protected Production drafts require Windows)
+ ---> System.InvalidOperationException: Protected Production drafts require Windows
+   at Ipc.Platform.ProtectedDraftPayload.Write(String path, String value, Boolean portableSynthetic, String runtimeSid) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/ProtectedDraftPayload.cs:line 40
+   at Ipc.Application.ParcelFlow.ParcelMachineOrigin.EnsureNew(String directory, ParcelConfiguration c) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs:line 25
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 112
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+   at ManualSupplyHarness.StartAsync(Boolean ready) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualSupplyChecks.cs:line 33
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 17
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__Capacity|0>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 35
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10
+   --- End of inner exception stack trace ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 12
+   at ManualRcsDebugChecks.Run(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugChecks.cs:line 10
+   at Program.<Main>$(String[] args) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 40
+   at Program.<Main>(String[] args)
+ ---> (Inner Exception #1) System.InvalidOperationException: Protected Production drafts require Windows
+   at Ipc.Platform.ProtectedDraftPayload.Write(String path, String value, Boolean portableSynthetic, String runtimeSid) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/ProtectedDraftPayload.cs:line 40
+   at Ipc.Application.ParcelFlow.ParcelMachineOrigin.EnsureNew(String directory, ParcelConfiguration c) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs:line 25
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 112
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+   at ManualSupplyHarness.StartAsync(Boolean ready) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualSupplyChecks.cs:line 33
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 40
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PreparationFailure|1>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 63
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10<---
+
+ ---> (Inner Exception #2) System.InvalidOperationException: Protected Production drafts require Windows
+   at Ipc.Platform.ProtectedDraftPayload.Write(String path, String value, Boolean portableSynthetic, String runtimeSid) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Platform/ProtectedDraftPayload.cs:line 40
+   at Ipc.Application.ParcelFlow.ParcelMachineOrigin.EnsureNew(String directory, ParcelConfiguration c) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs:line 25
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 112
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /workspace/scratch/4eba9edb4ed6/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 81
+   at ManualSupplyHarness.StartAsync(Boolean ready) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualSupplyChecks.cs:line 33
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PendingReceipt|2>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 68
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.<>c__DisplayClass2_0.<<Lifecycle>g__PendingReceipt|2>d.MoveNext() in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 76
+--- End of stack trace from previous location ---
+   at ManualRcsDebugChecks.Lifecycle(String workspace, String root) in /workspace/scratch/4eba9edb4ed6/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs:line 10<---
+

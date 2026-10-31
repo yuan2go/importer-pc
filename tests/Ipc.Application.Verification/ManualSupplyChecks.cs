@@ -11,16 +11,16 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public readonly ParcelConfiguration Config;
     public ManualFactory Factory = null!;
     public ParcelRuntime App = null!;
-    public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true)
+    public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true, int? maximumOperations = null, long requestIdCount = 100000, RunMode mode = RunMode.Production)
     {
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var readers = seed.Topology!.Readers.Select((r, i) => r with { Driver = "hikrobot-mvs-reader", Parameters = deferred ? new() : new()
             { ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-OFFLINE-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" } }).ToArray();
         var wcs = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
-        { ["zone-id"] = "71", ["project-id"] = "83", ["specified-chute"] = "false", ["request-id-base"] = "830000000", ["request-id-count"] = "100000",
+        { ["zone-id"] = "71", ["project-id"] = "83", ["specified-chute"] = "false", ["request-id-base"] = "830000000", ["request-id-count"] = requestIdCount.ToString(System.Globalization.CultureInfo.InvariantCulture),
           ["heartbeat-interval-seconds"] = "3600", ["left-station-code"] = "MANUAL-STATION", ["right-station-code"] = "MANUAL-STATION",
           ["left-bcr-code"] = leftCode ? "MANUAL-LEFT" : "", ["right-bcr-code"] = rightCode ? "MANUAL-RIGHT" : "" });
-        Config = seed with { Mode = RunMode.Production, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = wcs,
+        Config = seed with { MaximumOperations = maximumOperations ?? seed.MaximumOperations, Mode = mode, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = wcs,
             Login = null, DeferredConnections = deferred ? readers.Select(r => r.DeviceId).ToArray() : [] };
         var config = Path.Combine(folder, "config"); Directory.CreateDirectory(config);
         ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), Config);

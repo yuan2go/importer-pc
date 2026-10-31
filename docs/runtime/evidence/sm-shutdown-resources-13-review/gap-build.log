@@ -1,0 +1,22 @@
+  Ipc.Platform -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.Contracts/bin/Release/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Platform.Storage/bin/Release/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.ParcelFlow/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.Sportmaster/bin/Release/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.DirectPlc/bin/Release/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.WcsToPlc/bin/Release/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Reference.Protocol/bin/Release/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Components/bin/Release/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Drivers/bin/Release/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Integrations/bin/Release/net10.0/Ipc.Integrations.dll
+  Ipc.Application.Supply -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Integrations.SportmasterRcs/bin/Release/net10.0/Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Drivers.Hikrobot.Mvs -> /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Drivers.Hikrobot.Mvs/bin/Release/net10.0/Ipc.Drivers.Hikrobot.Mvs.dll
+  Ipc.Application.Verification -> /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:21.44

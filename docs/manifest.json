@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "d3b5beb270281d4a1bd79ae4940fc4299e06e6ab111ad52afcd027ca1d4f59b2",
-      "size_bytes": 13713,
-      "git_blob": "72d72cf4aef7001366a612f1f0e434c80b8c699e",
+      "sha256": "3227e1f9cbb824c31002d15aef3b06eda6aa27c5c9de060f8a90cf5a5e9a9c60",
+      "size_bytes": 13914,
+      "git_blob": "9a4d961eefebc6014cfa8e770a618b8023009a3f",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -54744,9 +54744,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "3aa0d2938e841939da67824efd6fb4b696bfb88e83b917031f712ca6683d1bcc",
-      "size_bytes": 9933,
-      "git_blob": "07817b98673b36c7b00fbec36a9109b6d1239a9d",
+      "sha256": "cafb00d1129af30c7a2c6f98045fc41bb6f8e7f88d48e6b2cef273b8174dc49b",
+      "size_bytes": 10553,
+      "git_blob": "f2be0d368dbec6cd2e628cf6f20289bfb99c65fd",
       "previous_git_blob": "8f05b8626e457867c9fffe0fd098d1871172f112"
     },
     {
@@ -55051,9 +55051,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "sha256": "ce6dbd2efb0a32d7ace32eee1d7a5836c4797fc459f6e55abfbc8ca38467244c",
-      "size_bytes": 50175,
-      "git_blob": "5de20bbc2cfbccef2f8bcc7290b1e968d3d57055",
+      "sha256": "8fb0c989ebcdaf1caa4188a0bff2ac75d192147541e33d1c4991074c45a3e95b",
+      "size_bytes": 50215,
+      "git_blob": "9a673999e7fd452a921f3a01579b50b2a7d99ac7",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -105972,9 +105972,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-BUILT-IN-ONLY-01; original evidence retains its own SourceCommit",
-      "sha256": "dbda03cfb29c8fa0a98ab83cd41cbd2fbf42fc50f51ee51654898d39ebc8b033",
-      "size_bytes": 9149,
-      "git_blob": "9ffd4f7709a3364aa5c4b5bb1fca5fb8bbcad9bd",
+      "sha256": "33e8fcbad45b60e528cca8e49d247a960bbc6cff1ed04e35a56c5a269140d1ee",
+      "size_bytes": 9345,
+      "git_blob": "d7f1557eb7cb0358df482007a48ba97e977f53e5",
       "storage_scope": "public_repository"
     },
     {
@@ -109657,9 +109657,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
-      "sha256": "a169c3e96b9e435cc69ab60cf6124fc5d0451dea51eb7cc0a99ff446569f03d2",
-      "size_bytes": 5812,
-      "git_blob": "f8462b8568be5113d545b901f982da3f7e5c408c",
+      "sha256": "2ea65a5a0eb63d7545d829701b4778646daf8dd8059f43a7de5937a3215cc6e2",
+      "size_bytes": 7043,
+      "git_blob": "454ceb524f45b313d71af5cf7c5a407ded861226",
       "storage_scope": "public_repository"
     },
     {
@@ -109715,6 +109715,237 @@
       "sha256": "edbd526ca7638be32472753cdf9a8b04860366bba40c90aaf8d1a7d838fe7ba3",
       "size_bytes": 3536,
       "git_blob": "bad1a1bfd80243869b2faf1d4db03ea37cedb803",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/acquisition-main.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "9db8b94b9e19bffb61e000f9fbc360b1cea416d09bfe48c9f727b529fec3ee2c",
+      "size_bytes": 51340,
+      "git_blob": "ae938a19114004818f48eed7c5f1d32b46a3767d",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/acquisition-pr163.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "ce894d92830651347188a2ae9524418061d9dfb335e87d011a639beee903c20a",
+      "size_bytes": 51327,
+      "git_blob": "94c5c6bf4ce85d4fc755845364b41c9afb4944ba",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-audit03-input.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "d0108418135eaf5ec4b5096b8e6f093630700dedf0a0dad34c0eb36f1d150a75",
+      "size_bytes": 1640,
+      "git_blob": "98a88e1741152fa214a75f344c36b107c7553a5a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-build.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "3e3c1958dadcddfb72aa4a792a923cd0acf3efb4846fc5f76e12ccec010210f1",
+      "size_bytes": 2411,
+      "git_blob": "ba72be724fdb4ae16620463ebd92ac97c7a9f5b5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-camera-rounds.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "092e60cfe2a1a690158fd53effd1831b83d5e1d38d96ef3a1f9e8ecf4d7ed30c",
+      "size_bytes": 726,
+      "git_blob": "4e16f11860a7b01d113e63a95d4177b3c6fd3942",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-manual-rcs-debug.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "71db7ef0dfbe3ed5d1b613ec2b2bb115c12f861fd6228cd971610f32bb23d736",
+      "size_bytes": 1764,
+      "git_blob": "f0a4807cbf879930e9361f3b0f33de6a159b64a4",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-manual-supply.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "192450a2e74909c71fa58b16f5f0117c9255f3d91fa196d4008336e5a4e3e361",
+      "size_bytes": 1813,
+      "git_blob": "6bdf4deb1b9538d7fa80fa4dca7ebbb6a7594f30",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-mvs-offline-activation.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "87c165098363a8c3406bf4133f8bb64c91693fe3f7544905f107ccd4438476ae",
+      "size_bytes": 607,
+      "git_blob": "000b4f4a62cf42cc78d1fedb78c662f735de5cc9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-offline-configured-cache.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "ea952a4adc13da5080d3fe9103056d6f3913c4f5f8a40af3ce3c4d38066f1880",
+      "size_bytes": 1758,
+      "git_blob": "84e10d4788c9acaae55060c799dac2b6d04e58a9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-offline-fixed-wait.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "ebadb6237b61f2d64fc3e62e337365ef4707c5fa63a8a5f5e18077857e5a5dcb",
+      "size_bytes": 1368,
+      "git_blob": "e36f54433d032660b75f7f6d9f09508122503dbf",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-resource-risks.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "02ef64847b6bc9fd077c2680d4591fb7cf663fba9637acb0e50c4a3cdf26f564",
+      "size_bytes": 1363,
+      "git_blob": "cbc18a4a11315de725ad53cb9d6799824524d83f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-shutdown-resources.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "3c1953ab48f297f7adc4462fb75861b4189b7a49f0628a83811d2f76a681613a",
+      "size_bytes": 1990,
+      "git_blob": "0985533ed57566dd9170f68805f53ce655760a81",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/final-sm-original-frame.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "0a83fbc407b9843345a86fca6e4d3ef80ac625659e60ceccd9e7e2ae6193430a",
+      "size_bytes": 2735,
+      "git_blob": "cd69f70d78a76e114c7b4a0d9d1e5cc14828da36",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/gap-before.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "64f25d15ebef93c7f8965e43cb96d8e2c104e3474ba2220f5c47b3475037cc90",
+      "size_bytes": 2116,
+      "git_blob": "eba6b977daa3533fb8d2e6fdda79cb470cbb72a3",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/gap-build.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "bbfd8a2fc5357b2110d745cdb9dcb1018724be6eb21d0ba2fd81f98bbe80cf49",
+      "size_bytes": 2411,
+      "git_blob": "7b347aef24770a87b10be11eb0aa32b831f92668",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/main-build.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "1e5190b3287a99f16fa409dda9a399f5c96cd1d71b78ade1a7e89c5233c9e894",
+      "size_bytes": 4518,
+      "git_blob": "61326450d22578dc1873d4948f0def6c80658d0e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/offline-fixture-build.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "7d9c923469bf0d3f6e2837ee73ba9740890b8b5145a476e1ccde230f397d8ffe",
+      "size_bytes": 2411,
+      "git_blob": "e7113c051fc63aaecc69c9b51b0bb6a660f774d3",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/probe-build.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "84a8c3b49cf03393ea5f1110833369324adbe698258dbeb9554c9d0d35c477e8",
+      "size_bytes": 983,
+      "git_blob": "38cd6ddd004278460525fffcedfb5383802dc56a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/probe-pr163.log",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "ba94d721a68f81bb611d3b3c77e0574ed293d2b09c55f3298de2f7210cfbc706",
+      "size_bytes": 7911,
+      "git_blob": "bc61e2f0b11685dfd8e0d406247aa56bd3542c55",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-shutdown-resources-13-review/summary.json",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "3e0a7836b657e4ba7248b5a31a1d22c9983360b77d743d863c531103d6196ff9",
+      "size_bytes": 8022,
+      "git_blob": "2332ad635e24afcdfec8cba6ff582ea594a1af38",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/sm-shutdown-resources-13-independent-review.md",
+      "version": "sm-shutdown-resources-13",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
+      "sha256": "a479e5207792058bbbd1d6bb4007bcb90551b4c4208cfe739be025b4945f8eb7",
+      "size_bytes": 5343,
+      "git_blob": "0afb887e1bda401ee959d21e4a8388be9972b3e0",
       "storage_scope": "public_repository"
     }
   ],
@@ -112579,19 +112810,9 @@
   ],
   "integration_sources": [
     {
-      "commit": "9eb90018f5683b3b7e63abf7b00b275169ec6c61",
-      "manifest_sha256": "4e495b928d6eabafb80bf333413f18504e4555357f2e3d68bed37de528588863",
-      "work_package": "WP-IPC-SM-DEBUG-CLOSURE-07"
-    },
-    {
-      "commit": "219fd5dfff4a5c23578abe52f407e08cc6fec05e",
-      "manifest_sha256": "537ec24727438681508885344da571b84ac969e2f8e1a80821fb306d3a0c0ed8",
-      "work_package": "WP-IPC-D-DRIVE-INSTALL-01"
-    },
-    {
-      "commit": "0ce83993ede9d96735690126b7ffc70430e1985c",
-      "manifest_sha256": "73eede23f75681a9f2c7b07a87f230c740ab4f766ff2f8b2487a124fe5565793",
-      "work_package": "WP-IPC-MVS-LATENCY-ARCHIVE-01"
+      "commit": "1413668d9d6b9c5f5321f05d921d8ce50c59cdf4",
+      "manifest_sha256": "79f655db520a10ad59a709c5b9c72e8756258c269c716bb778ecfea517201107",
+      "work_package": "WP-IPC-SM-SHUTDOWN-RESOURCES-13"
     }
   ],
   "install_update_uninstall_identity_01": {

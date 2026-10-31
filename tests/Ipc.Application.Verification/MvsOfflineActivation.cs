@@ -69,7 +69,9 @@ static partial class SportmasterRcs
                 "restart retains offline camera/RCS configuration and clears retired pause for independent manual supply");
             returned.Discovered = true;
             await app.ExitManagementModeAsync();
-            s = await Wait(app, s => !s.Paused && s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Health == DeviceHealth.Ready);
+            // Reconnect retires the old health entry before the new epoch reports.
+            // Absence means keep waiting; duplicate device identities still fail.
+            s = await Wait(app, s => !s.Paused && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId)?.Health == DeviceHealth.Ready);
             Check(SavedEffective() == original && returned.OpenAttempts == 2,
                 "returning camera reconnects without management authorization or changes to the retained configuration");
             s = await Wait(app, s => s.Availability!.Admit);
@@ -79,9 +81,9 @@ static partial class SportmasterRcs
                 "returning camera decodes and completes one actual loopback RCS request using the retained configuration");
             var priorEpoch = s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Epoch;
             returned.Discovered = false;
-            await Wait(app, s => s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId).Health == DeviceHealth.Disconnected);
+            await Wait(app, s => s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId)?.Health == DeviceHealth.Disconnected);
             returned.Discovered = true;
-            s = await Wait(app, s => s.Availability!.Admit && s.Devices!.Single(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
+            s = await Wait(app, s => s.Availability!.Admit && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
             Check(!s.Paused && s.Operations.Single().Wcs!.Attempts == 1,
                 "runtime unplug/replug automatically gets a new epoch without pausing software or replaying the original RCS request");
             returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);

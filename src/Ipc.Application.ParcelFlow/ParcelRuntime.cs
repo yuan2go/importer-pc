@@ -53,7 +53,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     // No executable/configuration exposes this internal dependency.
     internal Action RuntimeIdentityPreflight { get; set; } = MachineRuntimePolicy.RequireRuntimeIdentity;
     internal Func<string, CancellationToken, Task>? BeforeMonitorProbe { get; set; }
-    readonly Dictionary<Task, Exception> terminalWorkerFailures = [];
+    readonly System.Collections.Concurrent.ConcurrentDictionary<Task, Exception> terminalWorkerFailures = [];
     Exception? terminalWorkerFailure => terminalWorkerFailures.Count == 0 ? null :
         new AggregateException("Background work terminated with failures", terminalWorkerFailures.Values).Flatten();
     public string Id => definition.Id;

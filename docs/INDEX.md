@@ -1,3 +1,7 @@
+# 文档索引
+
+2026-11-01 PR165 人工调试轮次修复已通过 Windows 全量构建、原生离页/重进/其他窗口新轮次及容量/原请求责任回归；见[补证](runtime/pr165-windows-verification-20261101.md)和[工作包](work-packages/WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01.md)。真实 SDK/客户 RCS/现场仍待验。
+
 # 人工调试轮次清理修复（2026-10-31）
 
 [工作包](work-packages/WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01.md)与[实施及验证边界](runtime/manual-debug-round-lifecycle-01.md)：未发送意图清理、离页迟到结果和已保留操作发送资格。旧索引[原字节归档](archive/pre-manual-debug-round-lifecycle-01/README.md)。

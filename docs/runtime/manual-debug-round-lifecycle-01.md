@@ -1,3 +1,5 @@
+> 2026-11-01 更新：已完成 Windows 原生负向复现、全量构建、离页竞态及必要责任回归，见[补证](pr165-windows-verification-20261101.md)。下文是原 Linux 轮次记录，保留其当时阻断和 NOT_RUN。
+
 # 人工调试轮次清理与容量修复
 
 2026-10-31，基线 main `67ab87c1a1b146611504342c6ab080ed045231ec`，产品及回归源码提交 `fca2038021989aa283a667472aeafae19bed49e1`，完整代码树 `10e020fdce6b57ed187b482d89991c1a15225bf3`。源文件及原始合成日志的 SHA256/长度见[证据清单](evidence/manual-debug-round-lifecycle-01/manifest.json)。本轮只处理 PR162 的三个审查问题，不包含 PR161/163/164 的并行变更。

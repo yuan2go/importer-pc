@@ -23,3 +23,13 @@ RV-SM-PERCEPTION-15-04：实际WPF定时器与DWM合成、延迟RCS回包下的�
 RV-SM-PERCEPTION-15-05：历史同一批30张6MP私有图像，完整ZXing与测试专用快速参数逐图候选多重集合对比，耗时和召回并列记录；不因更快便缩减生产搜索。纯常量图像可作数学确定的空结果，另与真实完整引擎核对全部256灰度值。
 
 历史 SDK、原图、配置和回执仅保留本机，不上传。相关当前指南修改前原字节见[归档](../archive/pre-sm-perception-latency-15/manifest.json)。本机、合成、离线实图、真机、客户RCS、安装及现场分别记录，不倒写旧D/RV。CI继续停用。
+
+## 本轮收口状态
+
+最终产品SourceCommit `05a4b9abb049f876ad23b895350878d2e3a1de32`；完整结果和精确源码/证据散列见[实施报告](../runtime/sm-perception-latency-15.md)及[summary.json](../runtime/evidence/sm-perception-latency-15/summary.json)。
+
+- RV-SM-PERCEPTION-15-01：本机原生WPF PASS；现场保留待验。
+- RV-SM-PERCEPTION-15-02：合成SDK压力、87条生命周期守卫及Application原图/原请求回归 PASS；真实相机长稳/停留时间待验。
+- RV-SM-PERCEPTION-15-03：本机身份/无帧回退与资源回归 PASS；实际SDK版本/导出核验成功，但未发现匹配设备、0帧，真实吞吐/571ms枚举成本/帧龄 NOT_VERIFIED，不关闭现场责任。
+- RV-SM-PERCEPTION-15-04：实际WPF定时器与DWM fence、故意延迟的本机模拟RCS PASS；客户RCS及物理屏幕/扬声器待验。
+- RV-SM-PERCEPTION-15-05：历史30图90次对比完成，候选多重集合比较发现快速参数15次不一致，不采用；生产完整搜索重复一致性60条断言及256纯灰度数学快退核对 PASS。离线数据不构成现场召回资格。

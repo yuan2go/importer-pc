@@ -1,0 +1,20 @@
+using Ipc.Drivers.Hikrobot.Mvs;
+internal static partial class MvsVerification
+{
+    internal static async Task BaselineCapture()
+    {
+        using var pixels = new PixelLoan(4); using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
+        var api = new Fake(); var lease = new Lease();
+        await using var source = new MvsAcquisition(new("baseline", "baseline", new Dictionary<string,string>{["device.ip"]=api.Ip}), api, _=>lease,
+            decoder:new ControlledDecoder{DuringDecode=()=>{entered.Set();release.Wait();}});
+        try
+        {
+            await source.StartControlledAsync("baseline-epoch", _=>true, _=>{},default);
+            source.ReadPreview(); api.Frames.Enqueue(pixels.Frame); await Until(()=>entered.IsSet);
+            api.Frames.Enqueue(pixels.Frame with {Number=2});
+            for(var i=0;i<100 && source.Frames<2;i++) await Task.Delay(10);
+            Check(source.Frames>=2,"capture must continue to a second frame while the first frame decoder is blocked");
+        }
+        finally {release.Set();}
+    }
+}

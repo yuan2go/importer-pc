@@ -1,0 +1,21 @@
+diff --git a/tests/Ipc.Desktop.UiVerification/Program.cs b/tests/Ipc.Desktop.UiVerification/Program.cs
+index ccad7183..e0dadd24 100644
+--- a/tests/Ipc.Desktop.UiVerification/Program.cs
++++ b/tests/Ipc.Desktop.UiVerification/Program.cs
+@@ -59,6 +59,7 @@ static partial class Program
+                 else if (args.Contains("--manual-rcs-debug-ui")) await VerifyManualRcsDebugUi(root, evidence, lines);
+                 else if (args.Contains("--camera-round-ui")) await VerifyCameraRoundUi(root, evidence, lines);
+                 else if (args.Contains("--camera-stream-ui")) await VerifyCameraStreamUi(root, evidence, lines);
++                else if (args.Contains("--baseline-slot")) await VerifyBaselineSlot(root, evidence, lines);
+                 else if (args.Contains("--camera-preview-lifecycle")) await VerifyCameraPreviewLifecycle(root, evidence, lines);
+                 else if (args.Contains("--workstation-barcode-ready")) await VerifyWorkstationBarcodeReady(root, evidence, lines);
+                 else if (args.Contains("--camera-filter-preview")) await VerifyCameraFilterPreview(root, evidence, lines);
+diff --git a/tests/Ipc.Drivers.Hikrobot.Probe/Program.cs b/tests/Ipc.Drivers.Hikrobot.Probe/Program.cs
+index a651f0e0..bcee5ac7 100644
+--- a/tests/Ipc.Drivers.Hikrobot.Probe/Program.cs
++++ b/tests/Ipc.Drivers.Hikrobot.Probe/Program.cs
+@@ -1,3 +1,4 @@
++if (args is ["--baseline-capture"]) { await MvsVerification.BaselineCapture(); return; }
+ if (args is ["--mvs-preview-scheduling"]) { MvsVerification.VerifyPreviewScheduling(); return; }
+ if (args is ["--mvs-shutdown"]) { await MvsVerification.VerifyInspectionShutdown(); return; }
+ if (args is ["--bundled-list"]) { await BundledNativeVerification.Run(); return; }

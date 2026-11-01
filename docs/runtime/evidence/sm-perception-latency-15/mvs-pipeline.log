@@ -1,0 +1,8 @@
+PASS MVS: blocked decoder never blocks capture/preview; only the newest undecoded frame is retained and all 18 replacements are counted
+PASS MVS: same-code decoded frames retain two independent original observations; intermediate undecoded video creates no fake inputs
+PASS MVS: bounded numeric traces separate host decode queue age from SDK-return time and record skipped video without calling it network loss
+PASS MVS: software reader requests reviewed LatestImagesOnly strategy, not OneByOne backlog
+PASS MVS: capture and decode both drain before buffers, SDK and physical lease are released
+PASS MVS: continuous verified frames avoid repeated global enumeration while exclusive startup identity verification remains required
+PASS MVS: idle stream falls back to measured full identity check without parallel SDK calls or relaxing bad-frame validation
+PASS MVS: idle transport loss still faults explicitly for controlled automatic recovery

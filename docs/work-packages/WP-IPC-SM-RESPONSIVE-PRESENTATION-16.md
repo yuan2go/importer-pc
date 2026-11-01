@@ -18,7 +18,7 @@ RV-SM-RESPONSIVE-16-05：构建、原生界面、持久责任、停止、原图�
 
 ## 本轮实现与验证
 
-最终验证SourceCommit `1f663d69f4debb6e001343fcfca65886fa6b6408`；代码/边界、精确指纹及原始日志见[实施报告](../runtime/sm-responsive-presentation-16.md)与[summary.json](../runtime/evidence/sm-responsive-presentation-16/summary.json)。四个Release构建0警告/错误，19套件456条定向断言PASS。
+完整回归SourceCommit `1f663d69f4debb6e001343fcfca65886fa6b6408`；当前呈现源`31f69966`只进一步修正灰占位文字对比度，并追加两个构建及56条受影响原生断言PASS。代码/边界、精确指纹及原始日志见[实施报告](../runtime/sm-responsive-presentation-16.md)、[summary.json](../runtime/evidence/sm-responsive-presentation-16/summary.json)与[追加证据](../runtime/evidence/sm-responsive-presentation-16/contrast/summary.json)。完整回归四个Release构建0警告/错误，19套件456条定向断言PASS，追加重跑不累加案例数。
 
 - RV-SM-RESPONSIVE-16-01/02：本机原生WPF、真实预持久入口挂起、类型化订阅有界/取消、去抖/独立原请求、焦点/草稿回归PASS；没有测目标工控机真实fsync。
 - RV-SM-RESPONSIVE-16-03：合成驱动已确认失联的通知越过业务快照门锁、按位清退及另一位独立PASS；物理断线检测时延/真实双相机待验。

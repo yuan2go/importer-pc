@@ -1,0 +1,80 @@
+{
+  "qualified_ui_source_commit": "31f69966c12d8334b0fcf4c40e74fe86a25d683a",
+  "full_regression_source": "1f663d69f4debb6e001343fcfca65886fa6b6408",
+  "scope": "Only processing-placeholder foreground changed from #68788E to existing neutral #536577. No business/acquisition/decoder/SQLite/request/lifecycle source changed; exact blob comparison verifies this. The existing color assertion was updated to the approved neutral value.",
+  "verification": [
+    {
+      "log": "desktop-build.log",
+      "type": "Release build",
+      "warnings": 0,
+      "errors": 0,
+      "status": "PASS"
+    },
+    {
+      "log": "operator-workspace.log",
+      "type": "Native WPF",
+      "assertions": 30,
+      "status": "PASS"
+    },
+    {
+      "log": "station-latency-ui.log",
+      "type": "Native WPF",
+      "assertions": 13,
+      "status": "PASS"
+    },
+    {
+      "log": "station-responsive-ui.log",
+      "type": "Native WPF",
+      "assertions": 13,
+      "status": "PASS"
+    },
+    {
+      "log": "ui-build.log",
+      "type": "Release build",
+      "warnings": 0,
+      "errors": 0,
+      "status": "PASS"
+    }
+  ],
+  "native_assertions": 56,
+  "verifier_version": "1.0.0+31f69966c12d8334b0fcf4c40e74fe86a25d683a",
+  "contrast": {
+    "foreground": "#536577",
+    "background": "#F6F8FA",
+    "ratio": 5.642993307233255,
+    "boundary": "sRGB relative luminance mathematical check; same 18-DIP placeholder and unchanged layout"
+  },
+  "source_file": {
+    "path": "src/Ipc.Application.Sportmaster.Desktop/StationSlotContinuity.cs",
+    "git_blob": "40ceda4490a549239a6e221e4aed19b45a15bc4e",
+    "sha256": "eecf8cb6c6b6861954bdb352aaf1a7f16b51cfafb818e12d91305fc557dc1470"
+  },
+  "boundary": "Complements the 456-assertion exact-source full regression; these 56 are reruns, not additional unique cases. No new physical-equipment, installation or field claim.",
+  "evidence_files": [
+    {
+      "path": "desktop-build.log",
+      "sha256": "e66675cda232af467c35732979c691604df256627df63d0b2bf89d754c299700",
+      "size_bytes": 84
+    },
+    {
+      "path": "operator-workspace.log",
+      "sha256": "412b748aed36128e0d5cd41f58c5773ea2fb5605ac7b3cda4ba5565db3aaeab5",
+      "size_bytes": 3156
+    },
+    {
+      "path": "station-latency-ui.log",
+      "sha256": "57eb91208a37a65662a8fcdc63258c3541b1214135d01e6e1917c2fc85949715",
+      "size_bytes": 4060
+    },
+    {
+      "path": "station-responsive-ui.log",
+      "sha256": "59b3e05a6470e76e925ee97609637a4ba1cb495e8ba190fd201b99a5da0d440d",
+      "size_bytes": 1890
+    },
+    {
+      "path": "ui-build.log",
+      "sha256": "7e75a1c583ef3db870ba901c9fd37732a2dc2ba6b0b97d3d478bae859328d1ec",
+      "size_bytes": 84
+    }
+  ]
+}

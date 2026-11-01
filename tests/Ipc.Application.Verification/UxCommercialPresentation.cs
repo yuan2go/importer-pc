@@ -50,12 +50,12 @@ static class UxCommercialPresentation
         var noRead = new ParcelInputSnapshot("left", observed with { Id = "presentation-NoRead", Kind = "NoRead", Codes = [], ObservedAt = DateTimeOffset.UtcNow }, ParcelInputOutcome.Rejected, "Synthetic NoRead", null, DateTimeOffset.UtcNow);
         presented = baseline with { Inputs = [noRead], Positions = baseline.Positions!.Select(p => p.Id == "left" ? p with { CurrentOperation = null } : p).ToArray() };
         await ui.RefreshAsync(); await classic.RefreshAsync();
-        Check(ui.Left.Operation is null && ui.Left.Status.Contains("识别失败") && ui.Left.Barcode.Contains("未识别") && ui.Left.Slot.Contains("未取得"), "NoRead displays latest failed observation with no previous successful slot");
-        Check(classic.CurrentStage.Contains("识别失败") && classic.PositionRows.Single(x => x.Id == "left").Slot.Contains("未取得"), "classic and alternate use the same rejected input fact");
+        Check(ui.Left.Operation is null && ui.Left.Status.Contains("未读到条码") && ui.Left.Barcode.Contains("未识别") && ui.Left.Slot.Contains("未取得"), "NoRead displays latest failed observation with no previous successful slot");
+        Check(classic.CurrentStage.Contains("未读到条码") && classic.PositionRows.Single(x => x.Id == "left").Slot.Contains("未取得"), "classic and alternate use the same rejected input fact");
         var unknown = b with { State = ParcelState.WcsUnknown, Wcs = b.Wcs! with { State = StageState.Unknown, Replies = [] } };
         presented = presented with { Operations = baseline.Operations.Select(op => op.Id == b.Id ? unknown : op).ToArray(), Positions = baseline.Positions };
         await ui.RefreshAsync();
-        Check(ui.Left.Operation?.Id == b.Id && ui.Left.OriginalResponsibility.Contains(b.Id) && ui.Left.Status.Contains("识别失败") && ui.Left.Slot.Contains("未取得"), "rejected new input preserves original unresolved command target without borrowing its result");
+        Check(ui.Left.Operation?.Id == b.Id && ui.Left.OriginalResponsibility.Contains(b.Id) && ui.Left.Status.Contains("未读到条码") && ui.Left.Slot.Contains("未取得"), "rejected new input preserves original unresolved command target without borrowing its result");
         var duplicate = noRead with { Observation = observed with { Id = "duplicate-A", Codes = [a.ParcelCode], ObservedAt = DateTimeOffset.UtcNow }, Outcome = ParcelInputOutcome.Duplicate, Reason = "Original entity already admitted", OperationId = a.Id };
         presented = baseline with { Inputs = [duplicate] }; await ui.RefreshAsync(); await classic.RefreshAsync();
         Check(ui.Left.Operation?.Id == b.Id && ui.Left.Barcode == a.ParcelCode && ui.Left.Status.Contains("重复") && ui.Left.LatestInputSummary.Contains(a.Id) && ui.Left.Slot.Contains("未取得"), "A duplicate while B is current names original A and does not relabel B green with A time");

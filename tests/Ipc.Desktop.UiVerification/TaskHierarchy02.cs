@@ -97,7 +97,7 @@ static partial class Program
         Check(!((Grid)right.FindName("TaskFields")).IsVisible && ((Grid)right.FindName("ScanInformation")).IsVisible &&
             ((TextBox)right.FindName("CurrentBarcode")) is { IsVisible: true, Text: "等待包裹" },
             "WSL01 idle position retains the fixed scan group with an honest placeholder and no empty task matrix");
-        Check(((Grid)left.FindName("TaskFields")).IsVisible && station.Left.WaveNo == "回执未包含", "valid receipt shows missing optional fields explicitly");
+        Check(((Grid)left.FindName("TaskFields")).IsVisible && station.Left.WaveNo == "未返回", "valid receipt shows missing optional fields explicitly");
         var original = station.Left.Operation!;
         probe.Project = s => s with
         {
@@ -105,7 +105,7 @@ static partial class Program
             Positions = s.Positions!.Select(p => p.Id == "left" ? p with { Admit = false, MainResultComplete = false, BackgroundComplete = false, BlockingReasons = ["Current entity main result is incomplete"] } : p).ToArray()
         };
         await RefreshUntil(() => station.Left.Operation?.State == ParcelState.ResolvingWcs);
-        Check(station.Left.Status == "正在取格口" && !((Grid)left.FindName("TaskFields")).IsVisible && station.Left.NextStep.Contains("等待") && station.Right.CanAdmit, "pending request has one waiting result, no empty fields, and leaves right availability intact");
+        Check(station.Left.Status == "正在获取格口" && !((Grid)left.FindName("TaskFields")).IsVisible && station.Left.NextStep.Contains("等待") && station.Right.CanAdmit, "pending request has one waiting result, no empty fields, and leaves right availability intact");
         CaptureInternal(evidence, "supply-station-pending-800", client, lines);
         probe.Project = null; await vm.RefreshAsync();
         var longCode = new string('0', 96) + "123456789";
@@ -130,7 +130,7 @@ static partial class Program
         var readFailed = false;
         try { await vm.RefreshAsync(); } catch (System.IO.IOException error) when (error.Message == "合成状态读取失败") { readFailed = true; }
         await Flush(); Check(readFailed && !vm.Fresh, "snapshot read fault reaches the real freshness path");
-        Check(!slot.IsVisible && !station.Left.CanAdmit && !station.Left.CanContinue && station.Left.Status == "状态已失效", "stale snapshot hides actionable destination and preserves command guards");
+        Check(!slot.IsVisible && !station.Left.CanAdmit && !station.Left.CanContinue && station.Left.Status == "状态中断", "stale snapshot hides actionable destination and preserves command guards");
         CaptureInternal(evidence, "supply-station-stale-1366", client, lines);
         probe.FailSnapshots = false; await RefreshUntil(() => vm.Fresh);
         navigate("日志查询"); await Until(() => host.Content is SoftwareLogControl); await Flush();

@@ -82,7 +82,7 @@ static partial class Program
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("RESPONSIVE-0001"), 3);
             await Until(() => entered.IsSet && p.IsProcessing && p.ReadCueLabel.EndsWith("0001", StringComparison.Ordinal), "read cue before durable input");
             Check(!p.ShowConfirmedTask && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && !fields.IsVisible &&
-                p.Operation?.Id == original && h.Peer.Requests.Count == calls && p.DisplayAttentionReason.Contains("尚未确认持久接收"),
+                p.Operation?.Id == original && h.Peer.Requests.Count == calls && p.DisplayAttentionReason.Contains("尚未确认接收"),
                 "before FULL commit completes, a new same-code observation clears the old destination and fields without inventing custody/admission or sending RCS");
             var feedback = (await ((IParcelPresentationDiagnostics)h.App).ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left");
             await Until(() =>

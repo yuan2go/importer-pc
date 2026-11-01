@@ -14,7 +14,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public IParcelApplication Application => application;
     public string Title => title;
     public Visibility SimulationVisibility => Snapshot?.Configuration.Effective.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
-    public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode == RunMode.Production ? "生产模式 · 软件暂停不是安全急停 · 资格不代替现场安全联锁" : "模拟模式 · 软件暂停不是安全急停 · 不操作真实设备";
+    public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode == RunMode.Production ? "生产模式 · 软件暂停不是安全急停，紧急情况请按现场急停按钮" : "模拟模式 · 软件暂停不是安全急停 · 不操作真实设备";
     public string Flow => flow;
     public string PresentationId => presentationId;
     ParcelSnapshot? snapshot;
@@ -35,7 +35,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string Health => !Fresh ? "设备旧状态已失效 · " + ReadStatus : string.Join("\n", Snapshot?.Health.Select(x => ParcelPresentation.Health(x, DateTimeOffset.UtcNow)) ?? []);
     public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
     public string OperatorSubject { get; set; } = "";
-    public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + (user.Simulation ? " · 模拟身份" : " · " + user.Authority) : "等待操作员认证";
+    public string Session => Snapshot?.Configuration.Effective.Login is null ? "本站未启用操作员登录，无需登录即可作业" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + (user.Simulation ? " · 模拟身份" : " · " + user.Authority) : "等待操作员认证";
     public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
     public bool CanAdmit => !Busy && Fresh && Snapshot?.Availability?.Admit == true;
     public bool CanResume => !Busy && Fresh && Snapshot?.Availability?.Resume == true;
@@ -106,11 +106,11 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string Feedback => Busy ? OperationStatus : ChineseInterfaceText.Message(Message);
     public string OperatorFeedback => (Busy ? OperationStatus : Message).Split(" · ", 2)[0] switch
     {
-        "Persisted" => "操作已提交；请核对当前应用状态。",
-        "PendingRestart" => "配置已保存；等待受控重启生效。",
-        "Conflict" => "状态已变化；保留原对象，重新核对后再操作。",
-        "Rejected" => "操作未被接受；通过来源诊断查看完整回执。",
-        "NotReady" => "当前条件不允许操作；请核对阻断原因。",
+        "Persisted" => "操作已提交。",
+        "PendingRestart" => "设置已保存，重启软件后生效。",
+        "Conflict" => "状态已变化，请刷新后重新操作。",
+        "Rejected" => "操作未执行，请在诊断中查看原因。",
+        "NotReady" => "当前条件不允许该操作，请查看提示原因。",
         _ => Feedback
     };
 

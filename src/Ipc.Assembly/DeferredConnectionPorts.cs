@@ -28,7 +28,7 @@ sealed class DeferredWcsPort(string instanceId) : IWcsPort
         token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
         return Task.FromResult(new CapabilityHealth(InstanceId, false, now, now.AddSeconds(2), "RCS待配置：请在参数设置完成连接后保存并重启。"));
     }
-    public Task ReconnectAsync(CancellationToken token) => throw new InvalidOperationException("RCS尚未配置；请完成参数并受控重启，重连不能启用待配置连接。");
+    public Task ReconnectAsync(CancellationToken token) => throw new InvalidOperationException("RCS 未配置；请填写参数并保存，重启软件后生效。“重连”不能启用未配置的连接。");
     public Task<StageReply> ResolveSlotAsync(FrozenRequest request, CancellationToken token) => throw new InvalidOperationException("RCS待配置，拒绝发送格口请求。");
     public Task<StageReply?> QueryAsync(FrozenRequest original, CancellationToken token) => throw new InvalidOperationException("RCS待配置，不能核对原请求；请恢复匹配原请求的实现和目标。");
     public Task StopAsync(CancellationToken token) => Task.CompletedTask;

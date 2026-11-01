@@ -24,19 +24,19 @@ public sealed partial class SupplyStationPositionViewModel
     public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing;
     public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : "";
     public string DisplaySlotForeground => IsProcessing ? "#536577" : Presentation.Foreground;
-    public ParcelStatusPresentation DisplayPresentation => ReaderUnavailableForDisplay ? ParcelPresentation.Rejected("相机：离线或恢复待确认") :
+    public ParcelStatusPresentation DisplayPresentation => ReaderUnavailableForDisplay ? ParcelPresentation.Rejected("相机：离线或恢复中") :
         IsProcessing ? ParcelPresentation.Neutral("处理中") : Presentation;
     public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
     public string ContinuityNotice => "";
-    public string DisplayStatus => ReaderUnavailableForDisplay ? "相机不可用 · 本位停止供包" : HasUncertainOriginal ? Status :
+    public string DisplayStatus => ReaderUnavailableForDisplay ? "相机离线 · 本位暂停供包" : HasUncertainOriginal ? Status :
         IsProcessing ? "本次处理中" : Status;
-    public string DisplayAttentionReason => ReaderUnavailableForDisplay ? "等待本位相机连接及新状态确认；另一位独立运行。" :
-        unreadFeedback && !HasUncertainOriginal ? "已读到，正在保存本次识别；尚未确认持久接收。" : AttentionReason;
-    public string DisplayNextStep => ReaderUnavailableForDisplay ? "本位相机不可用，请检查连接。" :
-        !HasUncertainOriginal && IsProcessing ? "等待本次结果；请勿依据上一件格口投递。" : NextStep;
+    public string DisplayAttentionReason => ReaderUnavailableForDisplay ? "相机恢复连接后自动继续；另一投递位不受影响。" :
+        unreadFeedback && !HasUncertainOriginal ? "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
+    public string DisplayNextStep => ReaderUnavailableForDisplay ? "本位暂停供包，请通知维护人员检查相机。" :
+        !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" : NextStep;
     public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
     public string CameraReadFeedback => readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
-        ? "已读到；识别反馈不代表持久接收或准入成功。" : "";
+        ? "已读到条码，等待处理结果。" : "";
     public string ReadCueLabel => CameraReadFeedback.Length == 0 ? "" : "已读到" +
         (readFeedback?.SingleCode is { Length: > 0 } code && !code.Any(char.IsControl) ? " · …" + code[^Math.Min(4, code.Length)..] : "");
     public string? ReadFeedbackIdentity => readFeedback?.ObservationId;

@@ -1,0 +1,16 @@
+PASS RCS20: shutdown writer owns the original copied pixels
+PASS RCS20: shutdown drains actual image work before releasing the application owner
+Unhandled exception. System.IO.IOException: Synthetic one-shot original status commit failure
+   at SportmasterRcs.<>c__DisplayClass46_0.<ShutdownResources>b__1(String point) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\ShutdownResources.cs:line 32
+   at Ipc.Application.ParcelFlow.ParcelRuntime.<StartCoreAsync>b__385_9(String point) in D:\w\ipc-shutdown-13\src\Ipc.Application.ParcelFlow\ParcelRuntime.cs:line 130
+   at Ipc.Application.ParcelFlow.ParcelRepository.Commit(ParcelOperation operation, String eventName, String detail, Nullable`1 paused, String occurrence, BusinessCommand command, WeightMeasurement measurement, String acknowledgedOverload, IdentityConflict identityConflict, String clearConflict, ConfigurationChangeAudit configurationAudit, String reconciledOccurrence, String outcomeQuery, String priorConflictBody, ParcelInputSnapshot input, BusinessReceipt commandResult, String interruptedCommand, String inspectedIngress, String ingressIdentity) in D:\w\ipc-shutdown-13\src\Ipc.Application.ParcelFlow\ParcelRepository.cs:line 281
+   at Ipc.Application.ParcelFlow.ParcelRuntime.Save(ParcelOperation op, String eventName, String detail, String occurrence, ParcelInputSnapshot input, WeightMeasurement measurement, BusinessCommand command) in D:\w\ipc-shutdown-13\src\Ipc.Application.ParcelFlow\ParcelRuntime.cs:line 557
+   at Ipc.Application.ParcelFlow.ParcelRuntime.<>c__DisplayClass252_0.<<ScheduleOriginalFrame>b__0>d.MoveNext() in D:\w\ipc-shutdown-13\src\Ipc.Application.ParcelFlow\ParcelOriginalFrames.cs:line 65
+--- End of stack trace from previous location ---
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StopCoreAsync(CancellationToken token) in D:\w\ipc-shutdown-13\src\Ipc.Application.ParcelFlow\ParcelCommands.cs:line 324
+   at Ipc.Application.ParcelFlow.ParcelRuntime.DisposeCoreAsync() in D:\w\ipc-shutdown-13\src\Ipc.Application.ParcelFlow\ParcelCommands.cs:line 355
+   at Ipc.Application.ParcelFlow.ParcelRuntime.DisposeAsync() in D:\w\ipc-shutdown-13\src\Ipc.Application.ParcelFlow\ParcelCommands.cs:line 348
+   at SportmasterRcs.ShutdownResources(String workspace, String root) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\ShutdownResources.cs:line 70
+   at SportmasterRcs.ShutdownResources(String workspace, String root) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\ShutdownResources.cs:line 72
+   at Program.<Main>$(String[] args) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\Program.cs:line 43
+   at Program.<Main>(String[] args)

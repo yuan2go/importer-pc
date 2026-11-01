@@ -1,0 +1,31 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-4f55a95caac245bcb0f431552d8551dd
+PASS WINDOW-CONTROL: owner close defaults to retaining an auxiliary unsaved draft before stopping the Application
+PASS WINDOW-CONTROL: cancelling owner close resumes all surviving windows
+PASS WINDOW-CONTROL: auxiliary close can cancel without changing owner lifetime
+PASS WINDOW-CONTROL: overlapping auxiliary close hands its dirty draft to the still-draining root without an independent decision
+PASS WINDOW-CONTROL: owner decision includes the auxiliary draft exactly once
+PASS WINDOW-CONTROL: owner cancellation retains every overlapping draft
+PASS WINDOW-CONTROL: explicit owner discard closes the entire group and stops once
+PASS WINDOW-CONTROL: failed stop after explicit discard still retains the draft for retry
+PASS WINDOW-CONTROL: a later close retries the original stop and asks again for the retained draft
+PASS WINDOW-CONTROL: close waits for the complete save workflow before deciding draft status
+PASS WINDOW-CONTROL: completed save is evaluated after drain and needs no obsolete discard decision
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 0
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 1
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 2
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 3
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 4
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 5
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 6
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 7
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 8
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 9
+PASS WINDOW-CONTROL: pendingRefresh drains before owner stop
+PASS WINDOW-CONTROL: pendingRefresh owner failure retains overlapping child and its live timer
+PASS WINDOW-CONTROL: pendingRefresh independently closed child cannot poll or restart
+PASS WINDOW-CONTROL: pendingRefresh successful retry leaves no orphan timer
+Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.
+   at SportmasterWindowLifetime.Set(SupplyStationWindow window, String name, Task task) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\SportmasterWindowLifetime.cs:line 9
+   at SportmasterWindowLifetime.Run() in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\SportmasterWindowLifetime.cs:line 84
+   at Program.<Main>$(String[] args) in D:\w\ipc-shutdown-13\tests\Ipc.Application.Verification\Program.cs:line 119
+   at Program.<Main>(String[] args)

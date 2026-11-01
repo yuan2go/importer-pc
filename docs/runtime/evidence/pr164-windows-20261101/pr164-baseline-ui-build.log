@@ -1,0 +1,9 @@
+D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs(41,105): error CS0119: “Key(ushort)”是一个 方法，这在给定的上下文中无效 [D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+
+生成失败。
+
+D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs(41,105): error CS0119: “Key(ushort)”是一个 方法，这在给定的上下文中无效 [D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:46.22

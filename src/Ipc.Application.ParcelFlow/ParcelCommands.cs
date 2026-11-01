@@ -312,16 +312,12 @@ public sealed partial class ParcelRuntime
         });
         await ingressDrain.WaitAsync(token).ConfigureAwait(false);
         overloadWrites.Writer.TryComplete();
-        if (overloadWorker is not null) await overloadWorker.WaitAsync(token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(overloadWorker, token).ConfigureAwait(false);
         await DrainReadOperations(token).ConfigureAwait(false);
-        if (worker is not null)
-        {
-            try { await worker.WaitAsync(token).ConfigureAwait(false); }
-            catch (Exception ex) when (worker.IsCompleted) { terminalWorkerFailure = ex; }
-        }
-        if (maintenanceWorker is not null) await maintenanceWorker.WaitAsync(token).ConfigureAwait(false);
-        if (supervisor is not null) await supervisor.WaitAsync(token).ConfigureAwait(false);
-        await Task.WhenAll(auxiliary.ToArray()).WaitAsync(token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(worker, token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(maintenanceWorker, token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(supervisor, token).ConfigureAwait(false);
+        foreach (var task in auxiliary.ToArray()) await DrainTerminalWorkerAsync(task, token).ConfigureAwait(false);
         Task drain;
         await gate.WaitAsync(token).ConfigureAwait(false);
         try { drain = externalDrained?.Task ?? Task.CompletedTask; } finally { gate.Release(); }
@@ -341,6 +337,18 @@ public sealed partial class ParcelRuntime
             if (terminalWorkerFailure is not null) throw new InvalidOperationException("Terminal worker failed; sources and ports are stopped, disposal is still required", terminalWorkerFailure);
         }
         finally { gate.Release(); }
+    }
+    async Task DrainTerminalWorkerAsync(Task? task, CancellationToken token)
+    {
+        if (task is null) return;
+        try { await task.WaitAsync(token).ConfigureAwait(false); }
+        catch (Exception error) when (task.IsFaulted || task.IsCanceled)
+        {
+            // Actual termination permits cleanup, not a successful work result.
+            // Keep every failure for the final lifecycle receipt, once per owner.
+            // A cancelled wait on unfinished work still escapes and retains resources.
+            terminalWorkerFailures.TryAdd(task, (Exception?)task.Exception ?? error);
+        }
     }
     public async ValueTask DisposeAsync()
     {

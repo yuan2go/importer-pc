@@ -102364,9 +102364,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "c2232e2e195e4795c1eef1091c1041fe494ca45d90a064c3f2891ca0c786007d",
-      "size_bytes": 24717,
-      "git_blob": "b336118c87643c63cb5aaaaf0bcb35a7801edd43",
+      "sha256": "eb0689bca1c012e5af024fee0894f39794337211b7aad5945289fcee6bcfdcdd",
+      "size_bytes": 24862,
+      "git_blob": "7a6ff3cf01e33d499405de9857683034cdfbc218",
       "storage_scope": "public_repository"
     },
     {

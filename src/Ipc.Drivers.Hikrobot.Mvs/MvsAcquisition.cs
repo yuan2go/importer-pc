@@ -317,10 +317,11 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
             catch (Exception error) { terminatedFailures.Add(error); }
         }
         preview.Clear();
+        var healthReportFailed = false;
         void Report(DeviceHealth state)
         {
             try { Publish(state); }
-            catch (Exception ex) { terminatedFailures.Add(ex); }
+            catch (Exception ex) { healthReportFailed = true; terminatedFailures.Add(ex); }
         }
         // A failed host notification must not prevent native teardown. Native
         // errors still retain the original owner and stop at the failed step.
@@ -334,7 +335,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         lease?.Dispose(); lease = null; worker = null; decodeWorker = null; cancel?.Dispose(); cancel = null;
         PhaseTo("stopped"); Report(DeviceHealth.Stopped); health = null;
         if (terminatedFailures.Count != 0)
-            throw new IOException("MVS native teardown completed; original worker/health errors retained", new AggregateException(terminatedFailures));
+            throw new IOException("MVS native teardown completed; " + (healthReportFailed ? "health receiver failed; " : "") +
+                "original worker/health errors retained", new AggregateException(terminatedFailures));
     }
     public ValueTask DisposeAsync()
     {

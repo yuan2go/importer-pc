@@ -196,7 +196,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public TaskCompletionSource? Hold { get; set; }
         public string Mode = "assigned";
         public string ReplySlot = "SYNTH-CHUTE";
-        public string? ReplyWaveNo, ReplyQuantity;
+        public string? ReplyWaveNo { get; set; }
+        public string? ReplyQuantity { get; set; }
         public string Endpoint { get; }
         public RoundPeer()
         {

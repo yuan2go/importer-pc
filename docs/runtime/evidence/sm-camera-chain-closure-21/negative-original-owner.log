@@ -1,0 +1,13 @@
+Actual ZXing/SQLite/RCS adapter, synthetic native camera API and loopback peer. Physical devices/customer RCS NOT_RUN.
+PASS CLOSURE21 right decoded observation owns a full-lane wait while its first real HTTP request is held
+PASS CLOSURE21 terminal left ingress failure wakes the full right lane before its HTTP completes; both undelivered observations remain owned and no new POST occurs
+PASS CLOSURE21 capacity/terminal race does not wrap source shutdown as Task.Wait aggregate cancellation
+PASS CLOSURE21 global fence drains both real acquisition owners without borrowed SDK buffers or a blocked handoff lock
+PASS CLOSURE21 64 cancellation/register/wait races complete without lost wake-up, excess reservation or resource growth
+PASS CLOSURE21 releasing capacity wakes exactly the next bounded reservation
+PASS CLOSURE21 cancelled and resumed reservations release all original pixel ownership
+Unhandled exception. System.Exception: Impossible frame reservation accepted
+   at CameraChainClosure.OriginalOwnership() in D:\w\ipc-closure-6185-baseline\tests\Ipc.Application.Verification\CameraChainClosure.cs:line 70
+   at CameraChainClosure.Run(String workspace, String root) in D:\w\ipc-closure-6185-baseline\tests\Ipc.Application.Verification\CameraChainClosure.cs:line 14
+   at Program.<Main>$(String[] args) in D:\w\ipc-closure-6185-baseline\tests\Ipc.Application.Verification\Program.cs:line 44
+   at Program.<Main>(String[] args)

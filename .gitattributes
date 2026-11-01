@@ -263,3 +263,5 @@ docs/runtime/evidence/sm-work-fields-20/** -text whitespace=cr-at-eol,-blank-at-
 # PC21 original guides and native/synthetic verification retain exact bytes.
 docs/archive/pre-sm-product-closure-21/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/runtime/evidence/sm-product-closure-21/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/archive/pre-sm-camera-chain-closure-21/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/sm-camera-chain-closure-21/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

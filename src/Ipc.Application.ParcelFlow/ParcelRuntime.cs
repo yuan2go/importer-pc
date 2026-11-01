@@ -258,7 +258,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         catch (Exception ex)
         {
-            Interlocked.Exchange(ref accepting, 0);
+            FenceIngress();
             // The terminal startup writer and ingress consumers share one connection.
             // Publish the failed outcome only after its configuration/audit writes end;
             // also serialize against an already-started Stop or snapshot reader.
@@ -308,12 +308,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 // Stop before the durable write when a normal bounded lane is full.
                 // The source retains this decoded observation while waiting. No business
                 // gate is held; a failed consumer/stop must break the wait, not deadlock Sync.
-                var ready = positionQueues[positionId].Writer.WaitToWriteAsync(stopping.Token).AsTask();
                 try
                 {
-                    while (!ready.Wait(100, stopping.Token))
-                        if (Volatile.Read(ref accepting) == 0 || Volatile.Read(ref lane.Failure) is not null) return false;
-                    if (!ready.GetAwaiter().GetResult() || Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
+                    var capacity = positionQueues[positionId].Writer.WaitToWriteAsync(stopping.Token);
+                    bool available;
+                    if (capacity.IsCompletedSuccessfully) available = capacity.Result;
+                    else
+                    {
+                        var ready = capacity.AsTask();
+                        if (Task.WhenAny(ready, ingressFenced.Task).GetAwaiter().GetResult() != ready) return false;
+                        available = ready.GetAwaiter().GetResult();
+                    }
+                    if (!available || Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
                 }
                 catch (OperationCanceledException) when (stopping.IsCancellationRequested) { return false; }
             }
@@ -344,7 +350,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             catch (Exception ex)
             {
                 Volatile.Write(ref failure, "Input custody persistence failed: " + ex.GetType().Name);
-                Volatile.Write(ref lane.Failure, failure); Interlocked.Exchange(ref accepting, 0);
+                Volatile.Write(ref lane.Failure, failure); FenceIngress();
                 InvalidatePresentation();
                 if (IsStorageError(ex)) StorageFailed(ex, "IngressCustody");
                 // A possibly committed Pending is intentionally kept for recovery.
@@ -404,7 +410,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         catch (Exception ex)
         {
             failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message;
-            Interlocked.Exchange(ref accepting, 0); Volatile.Write(ref lane.Failure, failure); Volatile.Write(ref lane.State, "Faulted");
+            FenceIngress(); Volatile.Write(ref lane.Failure, failure); Volatile.Write(ref lane.State, "Faulted");
             if (IsStorageError(ex)) StorageFailed(ex, "IngressWorker");
             // Close after the last position handoff; no producer can enqueue behind the drain.
             lock (lane.Sync) positionQueues[position].Writer.TryComplete();

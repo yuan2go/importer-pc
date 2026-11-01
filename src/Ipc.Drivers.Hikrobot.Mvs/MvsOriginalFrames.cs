@@ -5,6 +5,8 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 
 internal sealed class MvsOriginalFrames : IDisposable
 {
+    const int MaximumFrames = 32;
+    const long MaximumBytes = 268435456;
     readonly object gate = new();
     readonly Dictionary<AcquisitionIdentity, Frame> frames = new();
     bool enabled, disposed;
@@ -14,24 +16,40 @@ internal sealed class MvsOriginalFrames : IDisposable
     internal void Enable() { lock (gate) { ObjectDisposedException.ThrowIf(disposed, this); enabled = true; } }
     internal Frame? Reserve(int length, int width, int height, CancellationToken token)
     {
-        lock (gate)
+        if (length <= 0 || length > MaximumBytes || width <= 0 || height <= 0 || (long)width * height != length)
+            throw new ArgumentOutOfRangeException(nameof(length), "Original frame reservation requires a complete, bounded Mono8 image");
+        CancellationTokenRegistration wake = default;
+        var registered = false;
+        try
         {
-            if (!enabled) return null;
-            while (true)
+            lock (gate)
             {
-                token.ThrowIfCancellationRequested(); ObjectDisposedException.ThrowIf(disposed, this);
-                if (count < 32 && bytes + length <= 268435456)
+                ObjectDisposedException.ThrowIf(disposed, this);
+                if (!enabled) return null;
+                while (true)
                 {
-                    var buffer = ArrayPool<byte>.Shared.Rent(length);
-                    if (bytes + buffer.Length <= 268435456)
-                    { count++; bytes += buffer.Length; return new Frame(this, buffer, length, width, height); }
-                    ArrayPool<byte>.Shared.Return(buffer, true);
+                    token.ThrowIfCancellationRequested(); ObjectDisposedException.ThrowIf(disposed, this);
+                    if (count < MaximumFrames && bytes + length <= MaximumBytes)
+                    {
+                        var buffer = ArrayPool<byte>.Shared.Rent(length);
+                        if (bytes + buffer.Length <= MaximumBytes)
+                        { count++; bytes += buffer.Length; return new Frame(this, buffer, length, width, height) { WaitedForCapacity = registered }; }
+                        ArrayPool<byte>.Shared.Return(buffer, true);
+                    }
+                    if (!registered)
+                    {
+                        wake = token.Register(() => { lock (gate) Monitor.PulseAll(gate); });
+                        registered = true;
+                        // Register runs synchronously if cancellation already happened.
+                        // Check again before sleeping so that pulse cannot be lost.
+                        token.ThrowIfCancellationRequested();
+                    }
+                    Monitor.Wait(gate);
                 }
-                // Wait before recognition, when replacing pending video is still legal.
-                // Release and shutdown wake this owner; no decoded observation is dropped.
-                Monitor.Wait(gate, 100);
             }
         }
+        // A cancellation callback may be waiting for gate; never drain it inside gate.
+        finally { wake.Dispose(); }
     }
     internal Frame? Copy(byte[] pixels, int length, int width, int height)
     {
@@ -39,12 +57,12 @@ internal sealed class MvsOriginalFrames : IDisposable
         {
             if (!enabled) return null;
             ObjectDisposedException.ThrowIf(disposed, this);
-            if (count >= 32 || bytes + length > 268435456) throw new IOException("Original frame memory quota exhausted; source fenced before decoding");
+            if (count >= MaximumFrames || bytes + length > MaximumBytes) throw new IOException("Original frame memory quota exhausted; source fenced before decoding");
             byte[]? copy = null;
             try
             {
                 copy = ArrayPool<byte>.Shared.Rent(length);
-                if (bytes + copy.Length > 268435456) throw new IOException("Original frame pool-byte quota exhausted; source fenced before decoding");
+                if (bytes + copy.Length > MaximumBytes) throw new IOException("Original frame pool-byte quota exhausted; source fenced before decoding");
                 pixels.AsSpan(0, length).CopyTo(copy); var frame = new Frame(this, copy, length, width, height); count++; bytes += copy.Length; return frame;
             }
             catch { if (copy is not null) ArrayPool<byte>.Shared.Return(copy, true); throw; }
@@ -55,6 +73,7 @@ internal sealed class MvsOriginalFrames : IDisposable
         internal byte[] Pixels = pixels;
         internal readonly int Length = length, Width = width, Height = height;
         internal int References = 1;
+        internal bool WaitedForCapacity { get; init; }
         internal int Leases;
         internal bool ProvisionalOwned = true;
         internal AcquisitionIdentity? Identity;
@@ -63,7 +82,7 @@ internal sealed class MvsOriginalFrames : IDisposable
     internal void Publish(AcquisitionIdentity identity, Frame? frame)
     {
         if (frame is null) return;
-        lock (gate) { frames.Add(identity, frame); frame.Identity = identity; }
+        lock (gate) { ObjectDisposedException.ThrowIf(disposed, this); frames.Add(identity, frame); frame.Identity = identity; }
     }
     internal IOriginalFrameLease Retain(AcquisitionIdentity identity)
     {
@@ -99,7 +118,7 @@ internal sealed class MvsOriginalFrames : IDisposable
     {
         lock (gate)
         {
-            if (frames.Values.Any(f => f.Leases != 0)) throw new InvalidOperationException("Original frame writer still owns pixels; disposal must wait");
+            if (count != frames.Count || frames.Values.Any(f => f.Leases != 0)) throw new InvalidOperationException("Original frame acquisition/writer still owns pixels; disposal must wait");
             foreach (var frame in frames.Values.ToArray()) Release(frame);
             disposed = true;
             Monitor.PulseAll(gate);

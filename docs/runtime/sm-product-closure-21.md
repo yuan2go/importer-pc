@@ -1,6 +1,6 @@
 # SM产品闭环21
 
-基线 main f2055ace，继承PR171 6185d0f6。用户于2026-11-02授权实施、验证与PR合入main；随后取消集中看板，确认可配置班次/自然日默认/站点时区和软件事实统计口径。工作包见[PC21](../work-packages/WP-IPC-SM-PRODUCT-CLOSURE-21.md)。
+基线 main f2055ace，先继承PR171 6185d0f6；本轮期间PR171最终f3076ba3合入main ecec9640，随后本包完整整合并重新冻结验证。用户于2026-11-02授权实施、验证与PR合入main；随后取消集中看板，确认可配置班次/自然日默认/站点时区和软件事实统计口径。工作包见[PC21](../work-packages/WP-IPC-SM-PRODUCT-CLOSURE-21.md)。
 
 ## 操作及实现
 

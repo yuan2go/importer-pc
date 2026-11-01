@@ -58,6 +58,32 @@ static partial class Program
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 3);
                 await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.3" && vm.Left.ShowConfirmedTask);
                 Check(entry.Text == "SYNTH-SAME" && h.Peer.Requests.Count == 3, "clear action releases edit ownership and all three independent same-code frames still reach RCS");
+                uint frameNumber = 3;
+                foreach (var size in new[] { (1366, 768), (800, 420) })
+                {
+                    await SetClient(window, size.Item1, size.Item2); await Until(() => vm.Left.ShowConfirmedTask);
+                    var fields = (Grid)control.FindName("TaskFields"); var result = (Border)control.FindName("ResultPanel");
+                    var shortFieldHeight = fields.ActualHeight;
+                    h.Peer.ReplyWaveNo = size.Item1 == 1366 ? new string('W', 64) : null;
+                    var preparation = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), preparation);
+                    await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + preparation);
+                    window.UpdateLayout(); var fieldHeight = fields.ActualHeight; var resultHeight = result.ActualHeight;
+                    if (size.Item1 == 1366) Check(fieldHeight > shortFieldHeight + 1, "long confirmed wave wraps into a taller measured task row before the stability check");
+                    var sends = h.Peer.Requests.Count; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+                    try
+                    {
+                        var nextFrame = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), nextFrame);
+                        await Until(() => h.Peer.Requests.Count == sends + 1 && vm.Left.IsProcessing); window.UpdateLayout();
+                        Check(fields.Visibility == Visibility.Hidden && !fields.IsVisible && Math.Abs(fields.ActualHeight - fieldHeight) < 1 && Math.Abs(result.ActualHeight - resultHeight) < 1,
+                            $"{size.Item1} same-code independent request keeps task/result geometry stable without rendering the old task");
+                        Check(!vm.Left.ShowConfirmedTask && vm.Left.WaveNo == "—" && ((TextBox)control.FindName("CurrentSlot")).Text == "处理中…",
+                            $"{size.Item1} stable layout never borrows the old task or assigned chute while the next request is pending");
+                        h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
+                        await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + nextFrame);
+                        Check(fields.IsVisible && h.Peer.Requests.Count == sends + 1, $"{size.Item1} completion restores the matching task with exactly one new HTTP request");
+                    }
+                    finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
+                }
                 var soundCount = typeof(SupplyStationPosition).GetProperty("PlayedSuccessSounds", BindingFlags.Instance | BindingFlags.NonPublic)!;
                 var right = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
                 h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT"), 1);

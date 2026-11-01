@@ -26,7 +26,7 @@ function Run-Check([string]$Name,[string[]]$Arguments,[bool]$Native=$false) {
 if($Phase -in @('all','application')) {
  Run-Check 'build-application' @('build','tests/Ipc.Application.Verification','-c','Release','-p:RestoreLockedMode=true','-m:1','-nr:false','--verbosity','quiet')
  if($taskReports[-1].exit -eq 0){
-  foreach($taskFlag in @('--product-closure-21','--storage-schema-only','--retention-ingress','--camera-chain-reliability','--manual-supply','--rcs-timeout-errors','--mvs-offline-activation','--shutdown-resources','--ux-commercial-configuration','--parameter-guidance-startup','--sportmaster-rcs','--mvs-software-flow','--sm-original-frame')) {
+  foreach($taskFlag in @('--product-closure-21','--storage-schema-only','--retention-ingress','--camera-chain-reliability','--camera-chain-closure','--manual-supply','--rcs-timeout-errors','--mvs-offline-activation','--shutdown-resources','--ux-commercial-configuration','--parameter-guidance-startup','--sportmaster-rcs','--mvs-software-flow','--sm-original-frame')) {
    Run-Check ('app'+$taskFlag) @('tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll','.', $taskFlag)
   }
  }

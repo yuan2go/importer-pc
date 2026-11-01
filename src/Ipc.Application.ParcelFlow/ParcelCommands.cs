@@ -274,7 +274,7 @@ public sealed partial class ParcelRuntime
     public Task StopAsync(CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        lock (startupOwnership) { stopRequested = true; Interlocked.Exchange(ref accepting, 0); }
+        lock (startupOwnership) { stopRequested = true; FenceIngress(); }
         lock (stopOwnership)
         {
             // Even the synchronous prefix of an adapter Stop may block. One real
@@ -294,7 +294,7 @@ public sealed partial class ParcelRuntime
         if (stopped) return;
         Task startup;
         lock (startupOwnership) { stopRequested = true; startup = started ? startupEnded.Task : Task.CompletedTask; }
-        Interlocked.Exchange(ref accepting, 0); stopping.Cancel();
+        FenceIngress(); stopping.Cancel();
         // Cancellation ends this caller's wait only. Startup may still be inside
         // an uncancellable adapter call or writing its terminal audit.
         await startup.WaitAsync(token).ConfigureAwait(false);

@@ -66,7 +66,7 @@ public sealed partial class ParcelRuntime
                 if (!stopping.IsCancellationRequested && !repository!.Paused && !CameraBusinessFenced && latest.Upload is { State: StageState.Prepared, Attempts: 0 })
                     await ExecuteStageAsync(latest, ParcelStage.Upload, false).ConfigureAwait(false);
             }
-            catch (Exception ex) { failure = "Attached upload persistence failure: " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
+            catch (Exception ex) { failure = "Attached upload persistence failure: " + ex.Message; FenceIngress(); }
             finally { attachedRunning.Remove(op.Id); gate.Release(); }
         }));
     }

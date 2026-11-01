@@ -110,6 +110,6 @@ public sealed partial class ParcelRuntime
             }
         }
         catch (OperationCanceledException) when (stopping.IsCancellationRequested) { }
-        catch (Exception ex) { backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "Faulted:" + ex.GetType().Name); failure = "Maintenance worker failed: " + ex.Message; Interlocked.Exchange(ref accepting, 0); if (IsStorageError(ex) || ex is InvalidDataException) StorageFailed(ex, "Maintenance"); }
+        catch (Exception ex) { backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "Faulted:" + ex.GetType().Name); failure = "Maintenance worker failed: " + ex.Message; FenceIngress(); if (IsStorageError(ex) || ex is InvalidDataException) StorageFailed(ex, "Maintenance"); }
     }
 }

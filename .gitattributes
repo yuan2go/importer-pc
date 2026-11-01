@@ -238,3 +238,6 @@ docs/runtime/evidence/sm-server-preview-14/*.log -text whitespace=cr-at-eol,-bla
 
 docs/archive/pre-sm-perception-latency-15/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sm-perception-latency-15/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+docs/archive/pre-sm-responsive-presentation-16/** -text whitespace=cr-at-eol
+docs/runtime/evidence/sm-responsive-presentation-16/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

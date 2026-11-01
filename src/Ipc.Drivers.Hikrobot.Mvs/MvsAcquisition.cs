@@ -16,11 +16,12 @@ public sealed class MvsAcquisitionModule : IObservationExtension
 
 // One acquisition/resource owner. Legacy acquisition has no decoder; the current
 // reader injects an actual in-process decoder and emits only decoded candidates.
-internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource, IObservationPreviewSource
+internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource, IObservationPreviewSource, IObservationPreviewLeaseSource
 
 {
     readonly MvsPreview preview = new();
     public ObservationPreview? ReadPreview() => disposeRequested ? null : preview.Read();
+    public ObservationPreviewLease? ReadPreviewLease() => disposeRequested ? null : preview.ReadLease();
     readonly ExtensionContext context;
     readonly IMvsApi api;
     readonly IMonoBarcodeDecoder? decoder;

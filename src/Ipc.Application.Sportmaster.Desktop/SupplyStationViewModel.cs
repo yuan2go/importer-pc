@@ -279,7 +279,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         if (!recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)).SequenceEqual(Recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)))) Recent = recent;
         if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
-        DevicePresentation = !fresh ? ParcelPresentation.Unknown("相机：状态已失效") :
+        DevicePresentation = FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复待确认") : !fresh ? ParcelPresentation.Unknown("相机：状态已失效") :
             snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? ParcelPresentation.Unknown("相机：待配置") :
             device is null ? ParcelPresentation.Unknown("相机：状态待确认") :
             device.IsValid(now) ? snapshot?.Configuration.Effective.Mode == RunMode.Simulation
@@ -288,7 +288,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
                 ? ParcelPresentation.Rejected("相机：离线") : ParcelPresentation.Unknown("相机：连接状态待确认");
         DeviceStatus = DevicePresentation.Text + (device?.ConfirmedAt is { } confirmed ? " · 最后确认 " + confirmed.ToLocalTime().ToString("HH:mm:ss") : "");
         var identityMissing = position?.CurrentOperation is not null && Operation is null;
-        CanAdmit = !owner.Busy && fresh && viewportReady && binding is not null && !identityMissing && position?.Admit == true;
+        CanAdmit = !FastReaderBlocked && !owner.Busy && fresh && viewportReady && binding is not null && !identityMissing && position?.Admit == true;
         CanReconcile = !owner.Busy && fresh && viewportReady && Operation is not null;
         CanContinue = !owner.Busy && fresh && viewportReady && Operation is { } op && snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
         BlockingReasons = !fresh ? "快照失效；等待状态读取恢复" : !viewportReady ? "视图空间保护；恢复客户区并人工确认" : binding is null ? "当前配置未启用该投递位" :

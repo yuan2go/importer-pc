@@ -9,28 +9,142 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
 {
-    readonly DispatcherTimer feedbackTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
-    bool feedbackReading;
+    readonly object presentationUiGate = new();
+    IParcelPresentationSubscription? presentationSubscription;
+    readonly CancellationTokenSource presentationLifetime = new();
+    ParcelPresentationUpdate? pendingPresentation;
+    bool presentationDispatchQueued;
+    volatile bool presentationEnded;
+    long appliedPresentationTicks;
+    Task presentationSnapshotApply = Task.CompletedTask;
+    Task presentationPump = Task.CompletedTask;
+    internal string? PresentationStreamFailure { get; private set; }
+    ParcelPresentationUpdate? snapshotWaiting;
     partial void InitializePresentationFeedback()
     {
-        feedbackTimer.Tick += async (_, _) =>
+        Loaded += (_, _) =>
         {
-            if (feedbackReading || closing || closed || !IsVisible || ViewModel.SelectedPage != "workstation" ||
-                ViewModel.Application is not IParcelPresentationDiagnostics source) return;
-            feedbackReading = true;
+            if (presentationSubscription is not null || ViewModel.Application is not IParcelPresentationSource source) return;
             try
             {
-                var values = await ViewModel.ServiceAsync(() => source.ReadPresentationFeedbackAsync(CancellationToken.None));
-                if (closing || closed || ViewModel.SelectedPage != "workstation") return;
-                foreach (var read in values) (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
+                var subscription = source.SubscribePresentation(); presentationSubscription = subscription;
+                var token = presentationLifetime.Token;
+                presentationPump = Task.Run(() => PumpPresentationAsync(subscription, token));
             }
-            catch (OperationCanceledException) { }
-            catch (InvalidOperationException) when (closing || closed) { }
-            finally { feedbackReading = false; }
+            catch (Exception error) { ViewModel.MarkReadFailure("实时状态订阅失败：" + error.Message); }
         };
-        Loaded += (_, _) => feedbackTimer.Start();
-        Closed += (_, _) => feedbackTimer.Stop();
+        Closed += async (_, _) =>
+        {
+            presentationLifetime.Cancel(); presentationSubscription?.Dispose();
+            try { await presentationPump; }
+            catch (Exception error) { PresentationStreamFailure = error.GetType().Name + ": " + error.Message; }
+            finally { presentationLifetime.Dispose(); }
+        };
     }
+    async Task PumpPresentationAsync(IParcelPresentationSubscription subscription, CancellationToken token)
+    {
+        try
+        {
+            while (true)
+            {
+                var value = await subscription.ReadAsync(token).ConfigureAwait(false);
+                lock (presentationUiGate)
+                {
+                    if (pendingPresentation is null || value.Version > pendingPresentation.Version)
+                        pendingPresentation = value with { Snapshot = value.Snapshot ?? pendingPresentation?.Snapshot };
+                    QueuePresentationDispatch();
+                }
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
+        catch (ObjectDisposedException) when (token.IsCancellationRequested) { }
+        catch (System.Threading.Channels.ChannelClosedException)
+        {
+            presentationEnded = true;
+            if (!token.IsCancellationRequested && !Dispatcher.HasShutdownStarted)
+                await Dispatcher.InvokeAsync(() => ViewModel.MarkReadFailure("实时状态来源已结束；旧结果不可用于投递。"));
+        }
+        catch (Exception error)
+        {
+            presentationEnded = true;
+            PresentationStreamFailure = error.GetType().Name + ": " + error.Message;
+            if (!token.IsCancellationRequested && !Dispatcher.HasShutdownStarted)
+                await Dispatcher.InvokeAsync(() => ViewModel.MarkReadFailure("实时状态订阅中断：" + error.GetType().Name));
+        }
+    }
+    // One pending render callback, regardless of producer rate. The subscription and
+    // this slot both keep latest state; neither is a queue of business observations.
+    void QueuePresentationDispatch()
+    {
+        if (presentationDispatchQueued || presentationLifetime.IsCancellationRequested) return;
+        presentationDispatchQueued = true;
+        Dispatcher.BeginInvoke(new Action(ApplyPresentationQueue), DispatcherPriority.Render);
+    }
+    void ApplyPresentationQueue()
+    {
+        try
+        {
+            ParcelPresentationUpdate? value;
+            lock (presentationUiGate) { value = pendingPresentation; pendingPresentation = null; }
+            if (closing || closed || value is null) return;
+            void FastFeedback()
+            {
+                foreach (var state in value.Readers)
+                {
+                    ViewModel.Left.ApplyReaderFeedback(value.RuntimeId, state);
+                    ViewModel.Right.ApplyReaderFeedback(value.RuntimeId, state);
+                }
+                foreach (var read in value.Reads)
+                    (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
+            }
+            FastFeedback();
+            if (value.Snapshot is { } snapshot && snapshot.PublishedTicks > appliedPresentationTicks)
+            {
+                if (presentationSnapshotApply.IsCompleted)
+                {
+                    presentationSnapshotApply = ApplyPublishedSnapshotAsync(value);
+                    pendingRefresh = Task.WhenAll(pendingRefresh, presentationSnapshotApply);
+                }
+                else snapshotWaiting = value;
+            }
+            if (value.Failure is { } failure) ViewModel.MarkReadFailure(failure);
+        }
+        catch (Exception error) { if (!closing && !closed) ViewModel.MarkReadFailure("实时状态应用失败：" + error.Message); }
+        finally
+        {
+            lock (presentationUiGate)
+            {
+                presentationDispatchQueued = false;
+                if (pendingPresentation is not null && !closing && !closed) QueuePresentationDispatch();
+            }
+        }
+    }
+    async Task ApplyPublishedSnapshotAsync(ParcelPresentationUpdate value)
+    {
+        try
+        {
+            await ViewModel.AcceptPublishedSnapshotAsync(value.Snapshot!);
+            if (closing || closed) return;
+            if (presentationEnded) { ViewModel.MarkReadFailure("实时状态订阅已结束；旧结果不可用于投递。"); return; }
+            appliedPresentationTicks = value.Snapshot!.PublishedTicks;
+            EnforceManagementModeView();
+            foreach (var state in value.Readers) { ViewModel.Left.ApplyReaderFeedback(value.RuntimeId, state); ViewModel.Right.ApplyReaderFeedback(value.RuntimeId, state); }
+            foreach (var read in value.Reads) (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
+        }
+        catch (Exception error) { if (!closing && !closed) ViewModel.MarkReadFailure("实时快照应用失败：" + error.Message); }
+        finally
+        {
+            lock (presentationUiGate)
+            {
+                if (snapshotWaiting is { } waiting && !closing && !closed)
+                {
+                    if (pendingPresentation is null || waiting.Version > pendingPresentation.Version) pendingPresentation = waiting;
+                    snapshotWaiting = null; QueuePresentationDispatch();
+                }
+            }
+        }
+    }
+
 }
 
 public partial class SupplyStationPosition
@@ -38,7 +152,14 @@ public partial class SupplyStationPosition
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("dwmapi.dll", ExactSpelling = true)] static extern int DwmFlush();
     static readonly SemaphoreSlim compositorFence = new(1, 1);
-    static long lastSound;
+    static readonly object soundGate = new();
+    static readonly HashSet<string> sounded = [];
+    static readonly Queue<string> soundHistory = [];
+    static long lastSound, lastRejectionSound;
+    long lastPulse;
+    string? rejectionShown;
+    internal int ReadCueCount { get; private set; }
+    internal int RejectionCueCount { get; private set; }
     string? feedbackShown, slotMeasured;
     bool measuring;
     EventHandler? compositionWaiter;
@@ -58,15 +179,18 @@ public partial class SupplyStationPosition
             vm.Application is not IParcelPresentationDiagnostics source || vm.Snapshot is not { } snapshot ||
             Window.GetWindow(this) is not { WindowState: not WindowState.Minimized }) return;
         string? id = null; string? stage = null;
-        if (p.ReadFeedbackIdentity is { } read && feedbackShown != read && p.CameraReadFeedback.Length != 0)
+        var rejected = false;
+        if (p.RejectionIdentity is { } rejection && rejectionShown != rejection)
         {
-            feedbackShown = id = read; stage = "ReadFeedbackComposed";
-            originalOutline ??= PositionOutline.BorderBrush;
-            if (SystemParameters.ClientAreaAnimation && !SystemParameters.HighContrast)
-            { PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, new SolidColorBrush(Color.FromRgb(36, 95, 211))); cueTimer.Stop(); cueTimer.Start(); }
-            var now = Stopwatch.GetTimestamp(); var previous = Interlocked.Read(ref lastSound);
-            if ((previous == 0 || Stopwatch.GetElapsedTime(previous, now) > TimeSpan.FromSeconds(1)) && Interlocked.CompareExchange(ref lastSound, now, previous) == previous)
-                System.Media.SystemSounds.Beep.Play();
+            rejectionShown = rejection; RejectionCueCount++; rejected = true;
+            Pulse(Color.FromRgb(181, 47, 56), true);
+            if (ClaimSound("Rejected/" + rejection, true)) System.Media.SystemSounds.Hand.Play();
+        }
+        if (p.ReadFeedbackIdentity is { } read && feedbackShown != p.ReadFeedbackKey && p.CameraReadFeedback.Length != 0)
+        {
+            feedbackShown = p.ReadFeedbackKey; id = read; stage = "ReadFeedbackComposed"; ReadCueCount++;
+            if (!rejected) Pulse(Color.FromRgb(36, 95, 211), false);
+            if (!rejected && ClaimSound("Read/" + p.ReadFeedbackKey, false)) System.Media.SystemSounds.Beep.Play();
         }
         if (id is null && p.CurrentTaskAvailable && p.ShowConfirmedTask && p.Input is { } input && slotMeasured != input.Observation.Id)
         { id = input.Observation.Id; stage = "SlotComposed"; }
@@ -97,5 +221,28 @@ public partial class SupplyStationPosition
         };
         compositionWaiter = rendered; CompositionTarget.Rendering += rendered;
         InvalidateVisual();
+    }
+    void Pulse(Color color, bool rejection)
+    {
+        var now = Stopwatch.GetTimestamp();
+        if (!SystemParameters.ClientAreaAnimation || SystemParameters.HighContrast ||
+            !rejection && lastPulse != 0 && Stopwatch.GetElapsedTime(lastPulse, now) < TimeSpan.FromSeconds(1)) return;
+        lastPulse = now; originalOutline ??= PositionOutline.BorderBrush;
+        PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, new SolidColorBrush(color));
+        cueTimer.Stop(); cueTimer.Start();
+    }
+    static bool ClaimSound(string key, bool rejection)
+    {
+        lock (soundGate)
+        {
+            if (!sounded.Add(key)) return false;
+            if (soundHistory.Count == 512) sounded.Remove(soundHistory.Dequeue());
+            soundHistory.Enqueue(key);
+            var now = Stopwatch.GetTimestamp();
+            var previous = rejection ? lastRejectionSound : lastSound;
+            if (previous != 0 && Stopwatch.GetElapsedTime(previous, now) < TimeSpan.FromMilliseconds(rejection ? 500 : 1000)) return false;
+            if (rejection) lastRejectionSound = now; else lastSound = now;
+            return true;
+        }
     }
 }

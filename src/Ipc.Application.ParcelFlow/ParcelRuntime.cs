@@ -129,7 +129,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // configuration confirmation or recovery can write to the current store.
         try
         {
-            repository = new(directory, Id, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray()) { Boundary = point => Boundary?.Invoke(point) };
+            repository = new(directory, Id, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray())
+                { Boundary = point => Boundary?.Invoke(point), ProjectionChanged = InvalidatePresentation };
             if (launch.RequireRecoveryReview)
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
@@ -250,6 +251,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId)))
                 backgroundTasks.TryAdd("reader-reconnect:" + reader.Source.DeviceId, Task.Run(() => ReconnectReaderAutomaticallyAsync(reader), CancellationToken.None));
             maintenanceWorker = Task.WhenAll(backgroundTasks.Values);
+            Volatile.Write(ref previewReaders, readers.ToDictionary(r => r.Key,
+                r => new PreviewReader(r.Value, ParcelConnectionSetup.IsDeferred(Effective, r.Key))));
+            StartPresentationPublisher();
             StartSupervision();
         }
         catch (Exception ex)
@@ -327,6 +331,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             {
                 Volatile.Write(ref failure, "Input custody persistence failed: " + ex.GetType().Name);
                 Volatile.Write(ref lane.Failure, failure); Interlocked.Exchange(ref accepting, 0);
+                InvalidatePresentation();
                 if (IsStorageError(ex)) StorageFailed(ex, "IngressCustody");
                 // A possibly committed Pending is intentionally kept for recovery.
             }

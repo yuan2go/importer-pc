@@ -1,77 +1,78 @@
 using Ipc.Application.ParcelFlow.Desktop;
 using System.Diagnostics;
 using Ipc.Application.Contracts;
+using Ipc.Platform;
 
 namespace Ipc.Application.Sportmaster.Desktop;
 
 public sealed partial class SupplyStationPositionViewModel
 {
-    sealed record PriorSlot(Guid Runtime, long Configuration, string Reader, string Epoch, string Code, string Slot, string Operation, long At);
-    PriorSlot? priorSlot;
-    string? lastRememberedOperation;
     ParcelReadFeedback? readFeedback;
-    public bool SlotProvisional { get; private set; }
-    bool unreadFeedback => readFeedback is { } read && owner.Snapshot?.RuntimeId == read.RuntimeId && read.ObservationId != Input?.Observation.Id && (Input is null || Input.Observation.ObservedAt <= read.ObservedAt);
-    public bool DisplaySlotVisible => SlotProvisional || CurrentTaskAvailable && !unreadFeedback;
-    public string DisplaySlot => SlotProvisional ? priorSlot!.Slot : Slot;
-    public string DisplaySlotForeground => SlotProvisional ? "#68788E" : Presentation.Foreground;
-    public ParcelStatusPresentation DisplayPresentation => !HasUncertainOriginal && (SlotProvisional || unreadFeedback) ? ParcelPresentation.Pending(DisplayStatus) : Presentation;
-    public string DisplaySlotLabel => SlotProvisional ? "上次格口，正在确认本次请求，不能据此投递" : "本次有效格口，可选择复制";
-    public string ContinuityNotice => SlotProvisional ? "上次格口 · 确认中；请等待本次回应后投递。" : "";
-    public string DisplayStatus => HasUncertainOriginal ? Status : SlotProvisional ? "本次格口确认中" : unreadFeedback ? "已读到 · 等待本次处理" : Status;
-    public string DisplayNextStep => !HasUncertainOriginal && (SlotProvisional || unreadFeedback) ? "已读到条码，等待本次处理；上次格口不能作为本次投递依据。" : NextStep;
-    public bool ShowConfirmedTask => CurrentTaskAvailable && !unreadFeedback;
-    public double DisplaySlotFontSize => SlotProvisional ? UiTypography.SlotSize(priorSlot!.Slot, IsCompact) : SlotFontSize;
+    DeviceState? fastReaderState;
+    bool unreadFeedback => readFeedback is { } read && owner.Snapshot?.RuntimeId == read.RuntimeId &&
+        read.ObservationId != Input?.Observation.Id && (Input is null || Input.Observation.ObservedAt <= read.ObservedAt);
+    bool FastReaderBlocked => fastReaderState is { } state && (
+        owner.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId) is not { } published ||
+        published.Epoch != state.Epoch || published.UpdatedAt < state.UpdatedAt);
+    bool ReaderUnavailableForDisplay => owner.Fresh && Input?.Observation.OperatorInput is null && !(unreadFeedback && readFeedback?.OperatorInput == true) &&
+        (FastReaderBlocked || owner.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId)?.IsValid(DateTimeOffset.UtcNow) != true);
+    // Retained property names are display contracts only; no previous destination is cached.
+    public bool SlotProvisional => false;
+    public bool IsProcessing => owner.Fresh && !ReaderUnavailableForDisplay && !HasUncertainOriginal &&
+        (unreadFeedback || !InputUnadmitted && Operation?.State == ParcelState.ResolvingWcs);
+    public bool ShowConfirmedTask => CurrentTaskAvailable && !unreadFeedback && !ReaderUnavailableForDisplay;
+    public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing;
+    public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : "";
+    public string DisplaySlotForeground => IsProcessing ? "#68788E" : Presentation.Foreground;
+    public ParcelStatusPresentation DisplayPresentation => ReaderUnavailableForDisplay ? ParcelPresentation.Rejected("相机：离线或恢复待确认") :
+        IsProcessing ? ParcelPresentation.Neutral("处理中") : Presentation;
+    public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
+    public string ContinuityNotice => "";
+    public string DisplayStatus => ReaderUnavailableForDisplay ? "相机不可用 · 本位停止供包" : HasUncertainOriginal ? Status :
+        IsProcessing ? "本次处理中" : Status;
+    public string DisplayAttentionReason => ReaderUnavailableForDisplay ? "等待本位相机连接及新状态确认；另一位独立运行。" :
+        unreadFeedback && !HasUncertainOriginal ? "已读到，正在保存本次识别；尚未确认持久接收。" : AttentionReason;
+    public string DisplayNextStep => ReaderUnavailableForDisplay ? "本位相机不可用，请检查连接。" :
+        !HasUncertainOriginal && IsProcessing ? "等待本次结果；请勿依据上一件格口投递。" : NextStep;
+    public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
     public string CameraReadFeedback => readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
-        ? "已读到 · " + (CurrentTaskAvailable && !unreadFeedback ? "本次格口已取得" : "等待本次处理") : "";
-    public string ReadCueLabel => CameraReadFeedback.Length == 0 ? "" : "已读到";
+        ? "已读到；识别反馈不代表持久接收或准入成功。" : "";
+    public string ReadCueLabel => CameraReadFeedback.Length == 0 ? "" : "已读到" +
+        (readFeedback?.SingleCode is { Length: > 0 } code && !code.Any(char.IsControl) ? " · …" + code[^Math.Min(4, code.Length)..] : "");
     public string? ReadFeedbackIdentity => readFeedback?.ObservationId;
+    public string? ReadFeedbackKey => readFeedback is { } read ? $"{read.RuntimeId}/{read.DeviceId}/{read.Epoch}/{read.ObservationId}" : null;
+    public string? RejectionIdentity => !unreadFeedback && (InputFailed || Operation?.State == ParcelState.WcsRejected)
+        ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Input?.Observation.Epoch}/{Input?.Observation.Id ?? Operation?.Id}" : null;
     internal void ApplyReadFeedback(ParcelReadFeedback value)
     {
         if (value.RuntimeId != owner.Snapshot?.RuntimeId || value.DeviceId != ReaderId || value.PositionId != PositionId ||
-            value.DetectedTicks > Stopwatch.GetTimestamp() || Stopwatch.GetElapsedTime(value.DetectedTicks) > TimeSpan.FromSeconds(3)) return;
-        if (readFeedback?.ObservationId == value.ObservationId) { UpdateSlotMemory(owner.Snapshot, DateTimeOffset.UtcNow, owner.Fresh, owner.ViewportReady); NotifySlotDisplay(); return; }
+            value.DetectedTicks > Stopwatch.GetTimestamp() || Stopwatch.GetElapsedTime(value.DetectedTicks) > TimeSpan.FromSeconds(3) ||
+            readFeedback is { } old && value.DetectedTicks < old.DetectedTicks) return;
         readFeedback = value;
-        UpdateSlotMemory(owner.Snapshot, DateTimeOffset.UtcNow, owner.Fresh, owner.ViewportReady);
         NotifySlotDisplay();
+    }
+    internal void ApplyReaderFeedback(Guid runtime, DeviceState value)
+    {
+        if (runtime != owner.Snapshot?.RuntimeId || value.DeviceId != ReaderId ||
+            fastReaderState is { } old && old.UpdatedAt > value.UpdatedAt) return;
+        fastReaderState = value;
+        Update(owner.Snapshot, DateTimeOffset.UtcNow, owner.Fresh, owner.ViewportReady);
     }
     void UpdateSlotMemory(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
-        SlotProvisional = false;
         if (readFeedback?.RuntimeId != snapshot?.RuntimeId || readFeedback?.DeviceId != ReaderId) readFeedback = null;
-        var epoch = unreadFeedback ? readFeedback!.Epoch : Input?.Observation.Epoch ?? Operation?.Acquisition?.Epoch;
-        var code = unreadFeedback ? readFeedback!.SingleCode : Input?.BarcodeSelection?.SelectedCode ?? Operation?.ParcelCode;
-        var usable = fresh && viewportReady && snapshot is { Paused: false } &&
-            snapshot.Devices?.Any(d => d.DeviceId == ReaderId && d.IsValid(now)) == true &&
-            snapshot.Health.Any(h => h.InstanceId == snapshot.Configuration.Effective.Wcs?.InstanceId && h.Ready);
-        if (!usable || priorSlot is { } old && (snapshot!.RuntimeId != old.Runtime || snapshot.Configuration.Revision != old.Configuration ||
-            ReaderId != old.Reader || epoch != old.Epoch || code != old.Code)) priorSlot = null;
-        if (CurrentTaskAvailable && !string.IsNullOrWhiteSpace(Operation!.Slot))
-        {
-            // A faster read cue may already refer to the next same-code observation
-            // while this consistent snapshot publishes the previous accepted reply.
-            // It remains a valid *prior* result, never a confirmed value for that cue.
-            if (usable && Operation.Acquisition is { } acquisition && acquisition.Epoch == epoch && code == Operation.ParcelCode && lastRememberedOperation != Operation.Id)
-            {
-                priorSlot = new(snapshot!.RuntimeId, snapshot.Configuration.Revision, ReaderId, epoch ?? "", Operation.ParcelCode, Operation.Slot!, Operation.Id, Stopwatch.GetTimestamp());
-                lastRememberedOperation = Operation.Id;
-            }
-            if (!unreadFeedback) return;
-        }
-        // Only a pending new intent may borrow a visibly unconfirmed value. Rejection,
-        // Unknown, blocked input and stale status always discard it, without changing business facts.
-        var pending = unreadFeedback || !InputUnadmitted && Operation?.State == ParcelState.ResolvingWcs;
-        if (!pending || !usable || priorSlot is null || Stopwatch.GetElapsedTime(priorSlot.At) >= TimeSpan.FromMilliseconds(1500))
-        { priorSlot = null; return; }
-        SlotProvisional = true;
+        if (fastReaderState?.DeviceId != ReaderId) fastReaderState = null;
+        if (fastReaderState is { } state && snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId) is { } acknowledged &&
+            acknowledged.Epoch == state.Epoch && acknowledged.UpdatedAt >= state.UpdatedAt) fastReaderState = null;
     }
     void NotifySlotDisplay()
     {
         foreach (var (name, value) in new (string, object?)[] {
-            (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
+            (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(DisplaySlotForeground), DisplaySlotForeground), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
-            (nameof(DisplayStatus), DisplayStatus), (nameof(DisplayNextStep), DisplayNextStep), (nameof(ShowConfirmedTask), ShowConfirmedTask),
-            (nameof(DisplaySlotFontSize), DisplaySlotFontSize), (nameof(CameraReadFeedback), CameraReadFeedback), (nameof(ReadCueLabel), ReadCueLabel), (nameof(ReadFeedbackIdentity), ReadFeedbackIdentity) })
+            (nameof(DisplayStatus), DisplayStatus), (nameof(DisplayAttentionReason), DisplayAttentionReason), (nameof(DisplayNextStep), DisplayNextStep), (nameof(ShowConfirmedTask), ShowConfirmedTask),
+            (nameof(DisplaySlotFontSize), DisplaySlotFontSize), (nameof(CameraReadFeedback), CameraReadFeedback), (nameof(ReadCueLabel), ReadCueLabel), (nameof(ReadFeedbackIdentity), ReadFeedbackIdentity),
+            (nameof(ReadFeedbackKey), ReadFeedbackKey), (nameof(RejectionIdentity), RejectionIdentity) })
         {
             if (published.TryGetValue(name, out var prior) && Equals(prior, value)) continue;
             published[name] = value; PropertyChanged?.Invoke(this, new(name));

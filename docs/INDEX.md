@@ -1,3 +1,5 @@
+> 2026-11-01 当前感知呈现规则见 [SM-RESPONSIVE-PRESENTATION-16](runtime/sm-responsive-presentation-16.md)：读到反馈先于持久交付，新观察清退旧格口，主动推送只合并显示，原业务持久责任不变。它替代15的短暂保留旧格口策略；15验证保持原源。
+
 # 文档索引
 
 2026-11-01 同码格口确认态、最新帧采集/解码解耦、按有效帧健康检查及读码到屏幕合成指标以 [SM-PERCEPTION-LATENCY-15](work-packages/WP-IPC-SM-PERCEPTION-LATENCY-15.md) 为准；[实施与验证](runtime/sm-perception-latency-15.md)区分合成端口、原生WPF、历史30张私有图重放及未取得的真实设备/客户RCS数据。

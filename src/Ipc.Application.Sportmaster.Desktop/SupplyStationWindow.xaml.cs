@@ -59,7 +59,7 @@ public partial class SupplyStationWindow : Window
         timer.Tick += (_, _) =>
         {
             ViewModel.RefreshFreshness();
-            if (pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
+            if (ViewModel.Application is not IParcelPresentationSource && pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
         };
         Loaded += async (_, _) =>
         {

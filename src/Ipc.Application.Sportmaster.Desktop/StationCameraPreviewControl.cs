@@ -13,7 +13,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 internal sealed class StationCameraPreviewControl : UserControl
 {
     readonly SupplyStationViewModel vm;
-    readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(250) };
+    readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1d / 15) };
     readonly Image image = new() { Stretch = Stretch.Uniform, IsHitTestVisible = false };
     readonly TextBlock hint = new() { Text = "等待相机实时画面", Foreground = Brushes.White, TextWrapping = TextWrapping.Wrap,
         HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Margin = new(24) };
@@ -23,6 +23,7 @@ internal sealed class StationCameraPreviewControl : UserControl
     DateTimeOffset? capturedAt;
     long generation;
     bool polling;
+    WriteableBitmap? bitmap;
     public StationCameraPreviewControl(SupplyStationViewModel vm)
     {
         this.vm = vm;
@@ -46,18 +47,23 @@ internal sealed class StationCameraPreviewControl : UserControl
         var version = generation; var selected = device; var token = lifetime.Token; polling = true;
         try
         {
-            var value = await vm.ServiceAsync(() => api.ReadCameraPreviewAsync(selected, token));
+            using var borrowed = api is ICameraPreviewLeaseDiagnostics pooled
+                ? await vm.ServiceAsync(() => pooled.ReadCameraPreviewLeaseAsync(selected, token)) : null;
+            var value = borrowed is null ? await vm.ServiceAsync(() => api.ReadCameraPreviewAsync(selected, token)) :
+                new CameraPreviewResult(borrowed.Status, borrowed.Frame) { Diagnostics = borrowed.Diagnostics };
             if (token.IsCancellationRequested || version != generation || !IsVisible || !vm.IsManagementMode) return;
             status.Text = value.Status; counters.Text = Describe(value.Diagnostics);
             if (value.Frame is not { } frame) { Clear(value.Status); return; }
             if (frame.DeviceId != selected || frame.Width <= 0 || frame.Height <= 0 || frame.Width > 640 || frame.Height > 480 ||
-                frame.Gray8.LongLength != (long)frame.Width * frame.Height || frame.CapturedAt > DateTimeOffset.UtcNow ||
+                frame.Gray8.LongLength < (long)frame.Width * frame.Height || frame.CapturedAt > DateTimeOffset.UtcNow ||
                 DateTimeOffset.UtcNow - frame.CapturedAt > TimeSpan.FromSeconds(3)) { Clear("画面身份或时间无效，等待当前连接的新帧"); return; }
             var key = frame.Epoch + ":" + frame.FrameNumber;
             if (shown != key)
             {
-                var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, frame.Gray8, frame.Width);
-                bitmap.Freeze(); image.Source = bitmap; shown = key; capturedAt = frame.CapturedAt;
+                if (bitmap is null || bitmap.PixelWidth != frame.Width || bitmap.PixelHeight != frame.Height)
+                    bitmap = new WriteableBitmap(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null);
+                bitmap.WritePixels(new Int32Rect(0, 0, frame.Width, frame.Height), frame.Gray8, frame.Width, 0, 0);
+                image.Source = bitmap; shown = key; capturedAt = frame.CapturedAt;
             }
             hint.Visibility = Visibility.Collapsed;
             status.Text = "实时视频 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff");
@@ -80,7 +86,7 @@ internal sealed class StationCameraPreviewControl : UserControl
             " · 空结果 " + d.EmptyFrames + "\n候选 " + d.Candidates + " · 上报 " + d.Delivered + " · 拒收 " + d.Rejected +
             (d.Failure is null ? "" : "\n" + d.Failure);
     }
-    void Clear(string message) { image.Source = null; shown = ""; capturedAt = null; hint.Text = message; hint.Visibility = Visibility.Visible; status.Text = message; }
+    void Clear(string message) { image.Source = null; bitmap = null; shown = ""; capturedAt = null; hint.Text = message; hint.Visibility = Visibility.Visible; status.Text = message; }
     public void Revoke() { generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; Clear("预览已停止"); counters.Text = ""; }
     static TextBlock Label() => new() { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 5, 0, 0) };
 }

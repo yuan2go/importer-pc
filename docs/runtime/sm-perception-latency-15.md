@@ -1,3 +1,5 @@
+> 2026-11-01 用户后续纠偏：新观察立即清退旧格口，废止本页1500ms同码保留显示；主动推送、分阶段反馈、按观察身份合成与预览缓冲优化见 [SM-RESPONSIVE-PRESENTATION-16](sm-responsive-presentation-16.md)。本页代码/验证保留形成时SourceCommit，不倒写历史结果。
+
 # SM感知时延与显示稳定性15
 
 2026-11-01。范围及本轮决定见[工作包](../work-packages/WP-IPC-SM-PERCEPTION-LATENCY-15.md)。继承 PR167 / `5ae7bd59`，修改前当前指南见[原字节归档](../archive/pre-sm-perception-latency-15/manifest.json)。旧真机数据、原30张图、SDK、配置、账本和历史D/RV不改写。

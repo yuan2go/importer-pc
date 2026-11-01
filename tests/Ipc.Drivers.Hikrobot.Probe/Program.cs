@@ -1,3 +1,4 @@
+if (args is ["--mvs-preview-pool"]) { MvsVerification.VerifyPreviewPool(); return; }
 if (args is ["--mvs-pipeline"]) { await MvsVerification.VerifyPipeline(); return; }
 if (args is ["--mvs-preview-scheduling"]) { MvsVerification.VerifyPreviewScheduling(); return; }
 if (args is ["--mvs-shutdown"]) { await MvsVerification.VerifyInspectionShutdown(); return; }

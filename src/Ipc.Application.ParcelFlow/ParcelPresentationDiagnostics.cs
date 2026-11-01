@@ -14,12 +14,16 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
     {
         if (observation.DecodedTicks <= 0 || observation.DecodedTicks > Stopwatch.GetTimestamp()) return;
         var feedback = new ParcelReadFeedback(runtimeId, position, observation.Id, observation.DeviceId, observation.Epoch,
-            observation.Codes is { Length: 1 } codes ? codes[0] : null, observation.DecodedTicks, observation.ObservedAt);
+            observation.Codes is { Length: 1 } codes && codes[0]?.Length <= 4096 ? codes[0] : null, observation.DecodedTicks, observation.ObservedAt)
+            { OperatorInput = observation.OperatorInput is not null };
         lock (presentationGate)
         {
-            presentationFeedback[position] = feedback;
+            if (presentationReads.Any(r => r.ObservationId == feedback.ObservationId && r.DeviceId == feedback.DeviceId && r.Epoch == feedback.Epoch)) return;
+            var latest = !presentationFeedback.TryGetValue(position, out var previous) || previous.DetectedTicks <= feedback.DetectedTicks;
+            if (latest) presentationFeedback[position] = feedback;
             if (presentationReads.Count == 512) presentationReads.Dequeue();
             presentationReads.Enqueue(feedback);
+            if (latest) OfferPresentation();
         }
     }
     public Task<ParcelReadFeedback[]> ReadPresentationFeedbackAsync(CancellationToken token)
@@ -48,6 +52,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
     object PresentationProgress()
     {
         lock (presentationGate) return new { Availability = presentationMetrics.Count == 0 ? "NotMeasured" : "SamplesRecorded", Boundary = "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
-            Recent = presentationMetrics.ToArray(), Window = 512 };
+            Recent = presentationMetrics.ToArray(), Window = 512, Subscribers = presentationSubscribers.Count,
+            Publisher = presentationPublisher?.Status.ToString() ?? "NotStarted", Failure = presentationFailure };
     }
 }

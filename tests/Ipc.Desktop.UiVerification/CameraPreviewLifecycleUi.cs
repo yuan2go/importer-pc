@@ -39,9 +39,9 @@ static partial class Program
             await Until(() => image.Source is not null, "online acquisition never reached native preview: " + Field<TextBlock>(live, "status").Text);
             Check((await h.App.CameraInspectionStatusAsync(default)).BusinessFenced == false && h.Peer.Requests.IsEmpty,
                 "native timers display continuous video before scan without creating isolation or RCS requests");
-            var first = Field<string>(live, "shown");
+            var first = Field<string>(live, "shown"); var firstBitmap = image.Source;
             await Until(() => Field<string>(live, "shown") != first && image.Source is not null, "live frame did not advance");
-            Check(true, "video advances through the actual 250ms timer while window and round refresh timers run");
+            Check(image.Source is WriteableBitmap && ReferenceEquals(firstBitmap, image.Source), "15fps-capped native preview advances by writing pixels into the same WriteableBitmap while window/round timers run");
             var tabs = Field<TabControl>(control, "tabs"); tabs.SelectedIndex = 1;
             await Until(() => !live.IsVisible && image.Source is null, "history did not clear preview");
             tabs.SelectedIndex = 0;

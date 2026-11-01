@@ -7,6 +7,9 @@ public interface IParcelPresentationDiagnostics
     Task ReportPresentationAsync(Guid runtime, string observation, string stage, long composedTicks, long snapshotTicks, CancellationToken token);
 }
 public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, string ObservationId, string DeviceId, string Epoch,
-    string? SingleCode, long DetectedTicks, DateTimeOffset ObservedAt);
+    string? SingleCode, long DetectedTicks, DateTimeOffset ObservedAt)
+{
+    public bool OperatorInput { get; init; }
+}
 public sealed record ParcelPresentationMetric(string ObservationId, string PositionId, string Stage, double ReadToCompositionMs,
     double? SnapshotToCompositionMs, DateTimeOffset At);

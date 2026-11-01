@@ -143,6 +143,23 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         var generation = Interlocked.Increment(ref refreshGeneration);
         var (readId, next) = await ReadSnapshotWithIdAsync();
         if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId)) return;
+        await ApplySnapshotAsync(next, readId, generation);
+    }
+    public async Task AcceptPublishedSnapshotAsync(ParcelSnapshot next)
+    {
+        // Push invalidates any older in-flight pull, but never changes local selection/drafts.
+        if (Snapshot is { } prior && prior.RuntimeId == next.RuntimeId && prior.PublishedTicks > next.PublishedTicks) return;
+        await RefreshManagementModeAsync();
+        var generation = Interlocked.Increment(ref refreshGeneration);
+        var readId = Interlocked.Increment(ref snapshotReadId);
+        await ApplySnapshotAsync(next, readId, generation);
+    }
+    async Task ApplySnapshotAsync(ParcelSnapshot next, long readId, long generation)
+    {
+        if (Snapshot is { } newer && next.RuntimeId == newer.RuntimeId && next.PublishedTicks > 0 && newer.PublishedTicks > next.PublishedTicks) return;
+        if (next.PublishedTicks > 0 && (next.PublishedTicks > System.Diagnostics.Stopwatch.GetTimestamp() ||
+            System.Diagnostics.Stopwatch.GetElapsedTime(next.PublishedTicks) >= TimeSpan.FromSeconds(3)))
+        { MarkReadFailure("送达的快照已过期；等待当前状态，旧结果不可用于投递。"); return; }
         if (retiredRuntimeIds.Contains(next.RuntimeId) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision)
         { MarkReadFailure("运行实例已退役或快照修订倒退；旧事实失效，请重新读取并核对当前运行实例"); return; }
         if (Snapshot is { } original && original.RuntimeId != next.RuntimeId)

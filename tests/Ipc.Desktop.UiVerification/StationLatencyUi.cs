@@ -27,11 +27,11 @@ static partial class Program
             h.Api(h.Left).Enqueue(barcode, 1); await Until(() => p.SlotAvailable, "first accepted slot");
             var old = p.Slot; var original = p.Operation!.Id;
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Api(h.Left).Enqueue(barcode, 2);
-            await Until(() => p.SlotProvisional && p.Operation?.Id != original, "same-code provisional slot");
-            Check(p.Slot == "未取得" && p.DisplaySlot == old && slot.Text == old && slot.IsVisible && !fields.IsVisible && !p.CurrentTaskAvailable,
-                "same-code pending request retains only a visibly provisional slot; authoritative slot and all old task fields remain unavailable");
-            Check(p.DisplayStatus.Contains("确认") && p.DisplaySlotLabel.Contains("不能据此投递") && p.DisplaySlotForeground == "#68788E",
-                "provisional state has explicit text, automation label and muted color instead of looking confirmed");
+            await Until(() => p.IsProcessing && p.Operation?.Id != original, "same-code processing placeholder");
+            Check(p.Slot == "未取得" && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && slot.IsVisible && !fields.IsVisible && !p.CurrentTaskAvailable,
+                "same-code pending request immediately clears the prior destination; gray processing placeholder has no authoritative slot or old task fields");
+            Check(p.DisplayStatus.Contains("处理中") && p.DisplaySlotLabel.Contains("尚未取得") && p.DisplaySlotForeground == "#68788E",
+                "processing state has explicit text, automation label and muted color without a previous destination");
             await Until(() => Metrics(h).EnumerateArray().Any(m => m.GetProperty("Stage").GetString() == "ReadFeedbackComposed" && m.GetProperty("ObservationId").GetString() == p.Input?.Observation.Id), "read cue composition metric while RCS is held");
             Check(p.Operation?.State == ParcelState.ResolvingWcs && p.CameraReadFeedback.Contains("已读到"),
                 "read feedback reaches actual DWM composition before the delayed RCS response without claiming business acceptance");
@@ -42,16 +42,17 @@ static partial class Program
                 "second decoded read creates its own request and replaces the provisional display only on its own confirmed result");
             original = p.Operation!.Id;
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Api(h.Left).Enqueue(barcode, 3);
-            await Until(() => p.SlotProvisional && p.Operation?.Id != original, "third pending read");
-            await Until(() => !p.SlotProvisional && p.Operation?.State == ParcelState.ResolvingWcs, "provisional display deadline");
-            Check(!p.DisplaySlotVisible && !slot.IsVisible, "provisional value expires even while the RCS request remains pending; repeated refresh cannot extend it");
+            await Until(() => p.IsProcessing && p.Operation?.Id != original, "third pending read");
+            await Task.Delay(1700);
+            await Until(() => p.Operation?.State == ParcelState.ResolvingWcs, "pending request after former hold deadline");
+            Check(p.IsProcessing && p.DisplaySlot == "处理中…" && slot.Text != old && !fields.IsVisible, "processing placeholder never resurrects the old slot after the former display hold deadline");
             h.Peer.ReplySlot = "SYNTH-OTHER"; h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
             await Until(() => p.SlotAvailable && p.Slot == "SYNTH-OTHER", "different slot response");
             Check(p.DisplaySlot == "SYNTH-OTHER" && !p.SlotProvisional, "a different returned slot replaces the old value immediately and atomically");
             original = p.Operation!.Id; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DIFFERENT-0002"), 4);
             await Until(() => p.Operation?.Id != original && p.Operation?.State == ParcelState.ResolvingWcs, "different barcode pending");
-            Check(!p.SlotProvisional && !p.DisplaySlotVisible && !fields.IsVisible, "a different barcode never borrows the previous parcel's slot or task fields");
+            Check(!p.SlotProvisional && p.IsProcessing && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && !p.ShowConfirmedTask && !fields.IsVisible, "a different barcode uses only a processing placeholder and never borrows the previous parcel's slot or task fields");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; await Until(() => p.SlotAvailable, "different barcode accepted");
             await Until(() => Metrics(h).EnumerateArray().Any(m => m.GetProperty("Stage").GetString() == "SlotComposed" && m.GetProperty("ObservationId").GetString() == p.Input?.Observation.Id), "slot composition metric");
             Check(Metrics(h).EnumerateArray().Where(m => m.GetProperty("Stage").GetString() == "SlotComposed").All(m => m.GetProperty("SnapshotToCompositionMs").GetDouble() >= 0),

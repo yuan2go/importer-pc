@@ -172,13 +172,16 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         }
         finally { round.Capture = null; }
     }
+    bool CanCloseUnsentDebugIntent(ParcelOperation op) => IsDebugRequest(op) && !MainTerminated(op) &&
+        new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.All(s => s is null or { State: StageState.Prepared, Attempts: 0 }) &&
+        !activeStages.Any(k => k.StartsWith(op.Id + ":", StringComparison.Ordinal)) &&
+        !repository!.PendingReceipts().Any(x => x.Operation == op.Id);
     void CloseUnsentRound(string reason)
     {
         if (readRound is not { } round) return;
         if (round.State == "Sending" || round.Worker is { IsCompleted: false }) throw new InvalidOperationException("当前轮次尚未结束，请等待实际处理完成。");
         round.Cancel.Cancel();
-        if (round.Operation is { } id && operations.TryGetValue(id, out var op) && op.Wcs?.Attempts is null or 0 &&
-            op.Wcs?.State is null or StageState.Prepared && !MainTerminated(op))
+        if (round.Operation is { } id && operations.TryGetValue(id, out var op) && CanCloseUnsentDebugIntent(op))
             Save(op with { State = ParcelState.Abandoned, Wcs = CancelUnsent(op.Wcs), Reason = reason }, "CameraDebugIntentCancelled", reason);
     }
     async Task EndReadRoundAsync(CancellationToken token, string session)
@@ -258,7 +261,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         if (!MaintenanceAuthorized || !SessionValid) return "管理模式或操作员会话已失效，请重新授权后核对原请求。";
         if (op.OperatorDebugRequest is not null)
         {
-            var reasons = ManualInputReasons(op.PositionId!, exceptOperation: op.Id, debugRequest: true);
+            var reasons = ManualInputReasons(op.PositionId!, exceptOperation: op.Id, debugRequest: true, requireAdmissionCapacity: false);
             return reasons.Length != 0 ? string.Join("；", reasons) : "人工请求的轮次或配置已变化，请核对原请求。";
         }
         if (readRound is not { } round || op.DebugRequest is not { } evidence || round.Id != evidence.RoundId || round.Operation != op.Id)

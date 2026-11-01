@@ -1,0 +1,112 @@
+{
+  "base_commit": "67ab87c1a1b146611504342c6ab080ed045231ec",
+  "product_commit": "fca2038021989aa283a667472aeafae19bed49e1",
+  "product_tree": "10e020fdce6b57ed187b482d89991c1a15225bf3",
+  "code_and_tests": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraReadRounds.cs",
+      "sha256": "8ac79cf5110b888f8bbf98d8104f52940e9889ae10d5139867dbfd79d52c8a51",
+      "bytes": 26608
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelManualInputReadiness.cs",
+      "sha256": "354b79ed9a9434a1c0fca677ac9cde7485f6e163b3cb6bb2256f34de7b0bc537",
+      "bytes": 5497
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelManualRcsDebug.cs",
+      "sha256": "8b83c0a12fb0cbb463a4e815ba80e5eb9654b11e3039245ada67378ed54d7209",
+      "bytes": 9078
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationDebugControl.cs",
+      "sha256": "b79ac1902f8d7533bd83875a51e55c97f289122c7eefceac9dcf846f3d53825f",
+      "bytes": 33040
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ManualRcsDebugChecks.cs",
+      "sha256": "869e321e4c8707cbdbb7babaa3e8ce211477f060c1f12c4971b1d72c8cdcc1ec",
+      "bytes": 5912
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ManualRcsDebugLifecycleChecks.cs",
+      "sha256": "e75e39a2622d94ef5c34e759621c05b02b16854feff978fe2ec96de1c29446f4",
+      "bytes": 8895
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ManualSupplyChecks.cs",
+      "sha256": "68fedd1f7f2ba4fd0d742138555ed11825b25e112fb349c773a8217d507509d7",
+      "bytes": 14721
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Program.cs",
+      "sha256": "cf54c1c22ceaed79e53e0294448109dcd52ecb814db6b416fce21349afe85626",
+      "bytes": 30486
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ManualRcsDebugUi.cs",
+      "sha256": "adc337d3dac35bc9e81cb6cc707ca2ef319e1f68d4eda03b2a34ba1df2491712",
+      "bytes": 9510
+    }
+  ],
+  "logs": [
+    {
+      "path": "baseline-build-lifecycle.log",
+      "sha256": "d605062f957081e90d34062ce9fd2e352404270fc237f1b39c9c903e42663bac",
+      "bytes": 2411
+    },
+    {
+      "path": "baseline-lifecycle.log",
+      "sha256": "99b63697a05516a172456416a9b331fbe37c4bdd964d8f9085b369602e87c1b2",
+      "bytes": 5785
+    },
+    {
+      "path": "baseline-manual-debug.log",
+      "sha256": "30ca7bdc997a590c1227a5d3498991915ed96045487e6bc4f934413a5495996b",
+      "bytes": 11680
+    },
+    {
+      "path": "final-core-rebuild.log",
+      "sha256": "d4ba3a63c73526898331f19fb6bf1efdab4e510b4e23055c875a8802e1ea24cb",
+      "bytes": 3967
+    },
+    {
+      "path": "final-rebuilt-lifecycle.log",
+      "sha256": "b32e2eb57f9956468a0403af1406eb7f8e5dcb4ae36dadc2693c00df18e6e9a9",
+      "bytes": 1472
+    },
+    {
+      "path": "wpf-build.log",
+      "sha256": "beec48e4dbedc02762b74da8b19efedbf842250976dbd214fd7c228af24de5cf",
+      "bytes": 4283
+    },
+    {
+      "path": "wpf-build-pruning-off.log",
+      "sha256": "b527768525112ae3a4e173d693bc033fccca90e63a80687389283f6c57167c43",
+      "bytes": 11230
+    },
+    {
+      "path": "wpf-local-cache-build.log",
+      "sha256": "d91627cab10000afeef2ed3492d2daabd24aeb3b58a145114d720ba54ad8285d",
+      "bytes": 7362
+    },
+    {
+      "path": "wpf-local-cache-pruning-off.log",
+      "sha256": "ad9f68b266aaf22ab968422f65d98505d323de1cfccd34ca6596b93051f3a9a1",
+      "bytes": 15652
+    },
+    {
+      "path": "syntax-check.log",
+      "sha256": "aa93b27f2c4e93f932e9dd6c81e76c93807560873ad7569c7a1ee0127bf5e057",
+      "bytes": 80
+    }
+  ],
+  "result": {
+    "core_rebuild": "PASS (0 warnings/0 errors)",
+    "simulation_lifecycle": "PASS (18 assertions)",
+    "wpf_cross_build": "BLOCKED (NU1102 during restore)",
+    "native_wpf_race": "NOT_RUN",
+    "production_windows_full_suites": "NOT_RUN (Linux DPAPI guard intact)",
+    "real_sdk_rcs_site": "NOT_RUN"
+  }
+}

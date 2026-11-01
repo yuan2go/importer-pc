@@ -51,6 +51,7 @@ internal sealed class StationDebugControl : UserControl
     bool updatingRequest, requestDirty;
     string position = "left", loadedFrame = "";
     string? ownedScanSession, ownedScanRound, ownedManualRound;
+    Guid? ownedManualRuntime;
     bool active, busy, polling, fit = true, authoritative;
     long generation;
     double zoom = 1;
@@ -134,17 +135,28 @@ internal sealed class StationDebugControl : UserControl
     async Task PrepareManualAsync(CancellationToken token)
     {
         if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
-        prepareCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, position, requestBarcode.Text, observed?.Id);
+        var command = prepareCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, position, requestBarcode.Text, observed?.Id);
+        var owner = lifetime; var version = generation; var scanSession = ownedScanSession;
         CameraReadRound value;
-        try { value = await vm.ServiceAsync(() => Rounds.PrepareManualRcsRequestAsync(prepareCommand, token)); }
-        catch (CameraReadRoundConflictException) { prepareCommand = null; throw; }
-        catch (ArgumentException) { prepareCommand = null; throw; }
-        if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
-        if (value.Id != prepareCommand.CommandId || !value.ManualRequest) throw new InvalidOperationException("原准备结果尚未确认，请核对原轮次；不重复创建请求。");
-        requestDirty = requestBarcode.Text != prepareCommand.Barcode;
+        try { value = await vm.ServiceAsync(() => Rounds.PrepareManualRcsRequestAsync(command, token)); }
+        catch (CameraReadRoundConflictException) { if (ReferenceEquals(prepareCommand, command)) prepareCommand = null; throw; }
+        catch (ArgumentException) { if (ReferenceEquals(prepareCommand, command)) prepareCommand = null; throw; }
+        if (!active || token.IsCancellationRequested || !vm.IsManagementMode || !ReferenceEquals(owner, lifetime) || version != generation)
+        {
+            // UI publication and durable cleanup have different lifetimes. Even
+            // if this response projects a newer round, only our command is ours.
+            await CloseOwnedManualAsync(command.CommandId, command.RuntimeId);
+            if (scanSession is not null && value.SessionId == scanSession)
+                await CloseOwnedScanAsync(scanSession, command.CommandId);
+            if (ReferenceEquals(prepareCommand, command)) prepareCommand = null;
+            return;
+        }
+        if (value.Id != command.CommandId || !value.ManualRequest) throw new InvalidOperationException("原准备结果尚未确认，请核对原轮次；不重复创建请求。");
+        requestDirty = requestBarcode.Text != command.Barcode;
         if (!requestDirty) manualDrafts.Remove(position);
         prepareCommand = null; sendCommand = null;
         ownedManualRound = value.Id;
+        ownedManualRuntime = command.RuntimeId;
         if (scope is { BusinessFenced: true, SingleReadRounds: true } && value.SessionId == scope.SessionId)
         { ownedScanSession = value.SessionId; ownedScanRound = value.Id; }
         current = observed = value; authoritative = true; feedback.Text = ""; await PublishRoundAsync(value, token);
@@ -194,7 +206,7 @@ internal sealed class StationDebugControl : UserControl
             feedback.Text = "请求尚未发出：" + (returned.SendBlockedReason ?? "尚未进入HTTP发送，请核对原请求状态。");
             return;
         }
-        if (returned.ManualRequest) ownedManualRound = null;
+        if (returned.ManualRequest) { ownedManualRound = null; ownedManualRuntime = null; }
         if (scope is { BusinessFenced: true, SingleReadRounds: true } && returned.SessionId is { Length: > 0 } session && returned.Id is { } round)
             await CloseScanScopeAsync(session, round);
     }
@@ -329,8 +341,9 @@ internal sealed class StationDebugControl : UserControl
     }
     void Deactivate()
     {
-        var session = ownedScanSession; var round = ownedScanRound; var manual = ownedManualRound; var runtime = vm.Snapshot?.RuntimeId;
+        var session = ownedScanSession; var round = ownedScanRound; var manual = ownedManualRound; var runtime = ownedManualRuntime;
         ownedScanSession = ownedScanRound = ownedManualRound = null;
+        ownedManualRuntime = null;
         active = false; authoritative = false; generation++; timer.Stop(); livePreview.Revoke(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay();
         if (session is not null) _ = CloseOwnedScanAsync(session, round);
         else if (manual is not null && runtime is { } id) _ = CloseOwnedManualAsync(manual, id);

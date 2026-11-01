@@ -17,7 +17,7 @@ public sealed partial class ParcelRuntime
 
     // This is the Application's readiness for an explicit operator command. It
     // deliberately does not consult the acquisition device's connection/epoch.
-    string[] ManualInputReasons(string position, bool includePause = true, string? exceptOperation = null, bool debugRequest = false)
+    string[] ManualInputReasons(string position, bool includePause = true, string? exceptOperation = null, bool debugRequest = false, bool requireAdmissionCapacity = true)
     {
         if (Id != "sportmaster") return ["当前业务不提供人工供包。"];
         if (!positions.ContainsKey(position)) return ["投递位不存在，请重新读取运行配置。"];
@@ -53,7 +53,12 @@ public sealed partial class ParcelRuntime
         if (HasIdentityConflict(position)) reasons.Add("本位存在身份冲突，需先核对原包裹。");
         if (interruptedPositions.ContainsKey(position)) reasons.Add("本位存在未核对的中断输入责任。");
         if (overloadedPositions.ContainsKey(position) || overload != 0 && overloadedPositions.IsEmpty) reasons.Add("本位输入过载责任尚未核对。");
-        if (!CapacityAvailable) reasons.Add("未结作业容量或存储余量不足。");
+        // Sending consumes the existing reservation; replacement retires exactly
+        // one audited unsent intent. Both still require the storage reserve.
+        var releasingSlot = exceptOperation is { } id && operations.TryGetValue(id, out var reserved) &&
+            CanCloseUnsentDebugIntent(reserved) && !ArchiveEligible(reserved) ? 1 : 0;
+        if (storageCapacityFailure is not null || requireAdmissionCapacity && UnresolvedCapacity - releasingSlot >= Effective.MaximumOperations)
+            reasons.Add("未结作业容量或存储余量不足。");
         if (!ImageCapacityAvailable()) reasons.Add("图像处理容量不足，原件仍保留。");
         if (operations.Values.Where(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o)).Any(o =>
             NeedsReconciliation(o) || !MainTerminated(o) || WeightExpired(o)))

@@ -1,5 +1,12 @@
 # 文档索引
 
+2026-11-01 PR165 人工调试轮次修复已通过 Windows 全量构建、原生离页/重进/其他窗口新轮次及容量/原请求责任回归；见[补证](runtime/pr165-windows-verification-20261101.md)和[工作包](work-packages/WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01.md)。真实 SDK/客户 RCS/现场仍待验。
+
+2026-10-31 人工调试轮次清理修复：
+
+[工作包](work-packages/WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01.md)与[实施及验证边界](runtime/manual-debug-round-lifecycle-01.md)：未发送意图清理、离页迟到结果和已保留操作发送资格。旧索引[原字节归档](archive/pre-manual-debug-round-lifecycle-01/README.md)。
+
+
 2026-11-01 连续 PDA 键盘扫码拼接修复已完成 Windows 原生负向复现、构建及19项逐键回归，既有条码就绪回归通过；见[工作包](work-packages/WP-IPC-SM-CONTINUOUS-PDA-INPUT-01.md)、[原实现](runtime/sm-continuous-pda-input-01.md)和[本轮补证](runtime/pr164-windows-verification-20261101.md)。真实 PDA/SDK/客户 RCS/现场仍待验。
 2026-10-30 两项关闭阻断修复见 [SM-SHUTDOWN-RESOURCES-13](work-packages/WP-IPC-SM-SHUTDOWN-RESOURCES-13.md)及[实施与验证](runtime/sm-shutdown-resources-13.md)：已终结后台任务的错误保留上报并继续真实清理；调试缓存切换观察采集任务退出，失败保留隔离并解除无执行者的等待。真实SDK/现场退出仍单独验收。
 

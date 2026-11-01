@@ -22,7 +22,8 @@ public sealed partial class ParcelRuntime
             }
             if (command.RuntimeId != runtimeId || readRound is not { Manual: true } round || round.Id != command.RoundId)
                 throw new CameraReadRoundConflictException("本窗原轮次已变化，不能清理其他轮次。");
-            if (round.Operation is not { } id || !operations.TryGetValue(id, out var op) || op.Wcs is not { State: StageState.Prepared, Attempts: 0 })
+            if (round.Operation is not { } id || !operations.TryGetValue(id, out var op) ||
+                op.OperatorDebugRequest?.RoundId != round.Id || !CanCloseUnsentDebugIntent(op))
                 throw new InvalidOperationException("原请求已尝试或未处于未发送状态，保留原结果与责任。");
             repository.AdmitCommand(receipt);
             CloseUnsentRound("离开调试页，取消本窗从未发送的人工测试意图；原记录保留。"); round.State = "Closed";
@@ -62,7 +63,7 @@ public sealed partial class ParcelRuntime
                 if (readRound?.Id != command.ExpectedRoundId || readRound?.State is "Preparing" or "Reading" or "Sealing" or "Sending" || readRound?.Worker is { IsCompleted: false })
                     throw new CameraReadRoundConflictException("当前轮次已变化或仍在读取/发送；核对原轮次后再准备请求。");
                 var replaceable = readRound?.Operation is { } priorId && operations.TryGetValue(priorId, out var prior) &&
-                    prior.Wcs is { State: StageState.Prepared, Attempts: 0 } ? priorId : null;
+                    CanCloseUnsentDebugIntent(prior) ? priorId : null;
                 var reasons = ManualInputReasons(command.PositionId, exceptOperation: replaceable, debugRequest: true);
                 if (reasons.Length != 0) throw new CameraReadRoundConflictException(string.Join("；", reasons));
                 if (ports?.Wcs is not IWcsRequestPreparer) throw new CameraReadRoundConflictException("当前RCS不支持冻结请求。");
@@ -102,7 +103,7 @@ public sealed partial class ParcelRuntime
         MaintenanceAuthorized && !op.RecoveryRequired && IsManualParcel(op) &&
         op.Wcs is { State: StageState.Prepared, Attempts: 0, Request.IntegrationRequest: not null } &&
         configuration?.Current.Pending is null && Wire.Hash(Wire.Encode(Effective)) == op.ConfigurationHash &&
-        ManualInputReasons(op.PositionId!, exceptOperation: op.Id, debugRequest: true).Length == 0 && WeightReady(op) &&
+        ManualInputReasons(op.PositionId!, exceptOperation: op.Id, debugRequest: true, requireAdmissionCapacity: false).Length == 0 && WeightReady(op) &&
         (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject) &&
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id);
 }

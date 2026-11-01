@@ -18,4 +18,8 @@ SM软件读码的丢包、非法显式编码、候选触及64条限额，拒收�
 
 现场配置入口为参数设置→驱动→左相机/右相机→“需要识别的条码种类”，可多选Code128、QRCode、DataMatrix等已声明码制；“全部码制”与具体项互斥，至少一种、不得重复或导入未知名称。默认仍全部，`code.try-invert`默认true，现场可关闭反色搜索。`code.encoding`支持严格utf-8/ascii/gb18030，后者覆盖相应GBK兼容字节；不自动猜测或替换非法字节。首配、日常编辑和应用验证复用同一配置账；保存不连接设备，受控启用后生效，旧请求固定原配置。少选码制可能漏读未勾选标签，需用现场标签验证；没有预设只用某种码制或自动关闭TryHarder/Rotate/Downscale。
 
-本轮构建/回归补证进行中；最终产品源、逐套结果和边界将记录在[原始证据](evidence/sm-camera-chain-reliability-20/README.md)。原main`039ccdee`已在相同新单帧测试下实际失败，证据保留；Windows合成API/真实ZXing/SQLite/回环RCS与物理MVS、客户RCS、物理PDA、服务器安装及现场长稳分开，后者NOT_RUN。
+最终产品/测试源为`d8984c60b3c1d3db8f2bd31d7322801256fe075f`。三个Release构建0警告0错误；24套件758项PASS（Application 11套451项、原生WPF 13套307项），含新增链路37项、原生终态/清空/分位提示12项、原生相机参数38项、扫码闭环27项、相机主框21项及通用配置49项。旧Unknown/原请求、逐次同码、原帧、关闭和PDA逐键守卫全部重跑。原main`039ccdee`在相同新单帧测试下实际失败，原始失败与中间失败均保留；没有删除断言、放松前台或权限守卫换PASS。
+
+同源framework-dependent发布及真实EXE的`--environment-report`启动退出0，程序集信息版本带完整d8984c60来源。发布使用已验证Release输出的`--no-build`，不等同于安装、SDK加载或业务连接通过。原生SendInput曾因真实前台不匹配退出；保留失败后用Computer Use激活唯一返回的合成测试窗口，同一未改构建重跑通过，不改HWND/焦点/修饰键守卫。
+
+原始日志、逐套命令/退出码、程序集指纹、截图与复验脚本见[证据](evidence/sm-camera-chain-reliability-20/README.md)。复验先执行`. ./scripts/project-environment.ps1`，再运行该目录`verify.ps1 -Workspace <D盘工作树绝对路径>`；只读查验manifest用`python scripts/refresh-integration-manifest.py --check`。Windows合成SDK API、实际ZXing/SQLite和回环RCS与物理MVS、客户RCS、物理PDA/扬声器、服务器安装及现场长稳分开，后者NOT_RUN。未改现场配置、未制作或安装新现场介质、未启用CI、未合并PR。

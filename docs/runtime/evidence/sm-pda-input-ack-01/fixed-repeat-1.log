@@ -1,0 +1,16 @@
+Windows SendInput -> HWND -> WPF text/key events; real Application/SQLite/built-in RCS with synthetic loopback peer. Physical PDA/customer RCS/site NOT_RUN.
+PASS PDA-NATIVE consecutive PDA bursts submit exactly A then B as distinct commands/operations, never A+B
+PASS PDA-NATIVE A remains displayed and selected after PDA Enter without moving focus
+PASS PDA-NATIVE B leaves A's frozen request and accepted responsibility intact
+PASS PDA-NATIVE both scans traverse real WPF PreviewTextInput and Enter events character by character
+PASS PDA-NATIVE extra Enter on a retained result creates no new command
+PASS PDA-NATIVE first manual character replaces the retained result while its task remains displayed; typing alone never submits
+PASS PDA-NATIVE manual corrections, focus return and snapshot refresh preserve the draft and caret
+PASS PDA-NATIVE native Backspace edits the active draft normally
+PASS PDA-NATIVE acknowledged native insertion/Backspace preserves draft/caret without submission; round=0; offset=0
+PASS PDA-NATIVE acknowledged native insertion/Backspace preserves draft/caret without submission; round=1; offset=1
+FAIL System.InvalidOperationException: Native barcode input requires the foreground test HWND, barcode focus and no held modifiers
+   at BarcodeNativeKeyboard.SendAsync(Window window, TextBox entry, UInt16[] keys) in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 191
+   at Program.VerifyContinuousPdaInput(String root, String evidence, List`1 lines) in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 85
+   at Program.VerifyContinuousPdaInput(String root, String evidence, List`1 lines) in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 147
+   at Program.<>c__DisplayClass42_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\Program.cs:line 58

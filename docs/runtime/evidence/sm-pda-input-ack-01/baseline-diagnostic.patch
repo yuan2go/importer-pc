@@ -1,0 +1,41 @@
+diff --git a/tests/Ipc.Desktop.UiVerification/ContinuousPdaInput.cs b/tests/Ipc.Desktop.UiVerification/ContinuousPdaInput.cs
+index a011547e..50a46834 100644
+--- a/tests/Ipc.Desktop.UiVerification/ContinuousPdaInput.cs
++++ b/tests/Ipc.Desktop.UiVerification/ContinuousPdaInput.cs
+@@ -36,6 +36,16 @@ static partial class Program
+             var entry = (TextBox)position.FindName("BarcodeEntry"); var feedback = (TextBlock)position.FindName("InputFeedback");
+             var other = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Right));
+             var otherEntry = (TextBox)other.FindName("BarcodeEntry");
++            var trace = new List<string>(); var clock = System.Diagnostics.Stopwatch.StartNew();
++            void Trace(string stage) { if (trace.Count < 300) trace.Add($"TRACE {clock.Elapsed.TotalMilliseconds:F3} {stage} text={entry.Text} caret={entry.SelectionStart}/{entry.SelectionLength} focus={entry.IsKeyboardFocused}"); }
++            entry.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => Trace("PreviewKeyDown:" + e.Key)), true);
++            entry.AddHandler(Keyboard.KeyUpEvent, new KeyEventHandler((_, e) => Trace("KeyUp:" + e.Key)), true);
++            entry.TextChanged += (_, _) => Trace("TextChanged");
++            entry.GotKeyboardFocus += (_, _) => Trace("GotFocus"); entry.LostKeyboardFocus += (_, _) => Trace("LostFocus");
++            var nativeSource = (HwndSource)PresentationSource.FromVisual(window);
++            IntPtr TraceMessage(IntPtr hwnd, int msg, IntPtr key, IntPtr lparam, ref bool handled)
++            { if (msg is 0x100 or 0x101 or 0x102) Trace($"Native:{msg:X}/{key.ToInt64():X}"); return IntPtr.Zero; }
++            nativeSource.AddHook(TraceMessage);
+             var textEvents = 0; var enterEvents = 0;
+             entry.PreviewTextInput += (_, _) => textEvents++;
+             entry.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == System.Windows.Input.Key.Enter) enterEvents++; }), true);
+@@ -68,13 +78,16 @@ static partial class Program
+             Text("000123"); await Flush();
+             Check(entry.Text == "000123" && vm.Left.Barcode == b && vm.Left.SlotAvailable && transport.Commands.Count == 2,
+                 "first manual character replaces the retained result while its task remains displayed; typing alone never submits");
+-            Key(0x25); Text("9"); await Flush(); // Left arrow + insertion inside the active draft.
++            Trace("BeforeLeft9"); Key(0x25); Text("9"); await Flush(); Trace("AfterLeft9Flush"); // Left arrow + insertion inside the active draft.
+             var start = entry.SelectionStart; otherEntry.Focus(); await Flush(); entry.Focus(); await Flush();
+             for (var i = 0; i < 3; i++) { await vm.RefreshAsync(); await Flush(); }
+             Check(entry.Text == "0001293" && entry.SelectionStart == start && entry.SelectionLength == 0 && entry.IsKeyboardFocused,
+                 "manual corrections, focus return and snapshot refresh preserve the draft and caret");
+-            Key(0x08); await Flush();
+-            Check(entry.Text == "000123", "native Backspace edits the active draft normally");
++            Trace("BeforeBackspace"); Key(0x08); await Flush(); Trace("AfterBackspaceFlush");
++            var immediateBackspace = entry.Text == "000123";
++            for (var diagnostic = 0; diagnostic < 10; diagnostic++) { await Task.Delay(25); await Flush(); }
++            Trace("AfterBackspaceDiagnosticDrain"); lines.AddRange(trace); nativeSource.RemoveHook(TraceMessage);
++            Check(immediateBackspace, "native Backspace edits the active draft normally; observed-after-drain=" + entry.Text);
+             ((Button)position.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Accepted("000123");
+             Check(transport.Commands.Last().Kind == ParcelBarcodeInputKind.Keyboard && h.Peer.Requests.Count == 3,
+                 "manual bottom submit uses the same guarded path and preserves the declared source");

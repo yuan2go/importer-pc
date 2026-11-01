@@ -41,16 +41,16 @@ static partial class Program
             entry.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == System.Windows.Input.Key.Enter) enterEvents++; }), true);
             ((MenuItem)position.FindName("PdaSource")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             window.Activate(); entry.Focus(); await Flush();
-            void Text(string value, bool enter = false) => BarcodeNativeKeyboard.Send(window, entry, value.Select(c => (ushort)c).Concat(enter ? new ushort[] { 0x0D } : []).ToArray());
-            void Key(ushort key) => BarcodeNativeKeyboard.Send(window, entry, [key]);
+            Task Text(string value, bool enter = false) => BarcodeNativeKeyboard.SendAsync(window, entry, value.Select(c => (ushort)c).Concat(enter ? new ushort[] { 0x0D } : []).ToArray());
+            Task Key(ushort key) => BarcodeNativeKeyboard.SendAsync(window, entry, [key]);
             async Task Accepted(string code) => await Until(() => !entry.IsReadOnly && !vm.Busy && vm.Left.Barcode == code && vm.Left.SlotAvailable);
 
             const string a = "000123450001", b = "000123450002";
-            Text(a, enter: true); await Accepted(a);
+            await Text(a, enter: true); await Accepted(a);
             var first = vm.Left.Operation!; var frozen = Wire.Encode(first.Wcs!.Request);
             var prepared = entry.IsKeyboardFocused && entry.Text == a && entry.SelectionLength == a.Length;
             // No Text assignment, clear, refocus or selection adjustment between A and B.
-            Text(b, enter: true); await Accepted(b);
+            await Text(b, enter: true); await Accepted(b);
             Check(transport.Commands.Select(c => c.Barcode).SequenceEqual(new[] { a, b }) && h.Peer.Requests.Count == 2 &&
                 vm.Left.Operation!.Id != first.Id && transport.Commands.All(c => c.Kind == ParcelBarcodeInputKind.PdaKeyboard),
                 "consecutive PDA bursts submit exactly A then B as distinct commands/operations, never A+B");
@@ -60,21 +60,35 @@ static partial class Program
                 "B leaves A's frozen request and accepted responsibility intact");
             Check(textEvents == a.Length + b.Length && enterEvents == 2,
                 "both scans traverse real WPF PreviewTextInput and Enter events character by character");
-            Key(0x0D); await Flush();
+            await Key(0x0D); await Flush();
             Check(transport.Commands.Count == 2 && h.Peer.Requests.Count == 2, "extra Enter on a retained result creates no new command");
 
             ((MenuItem)position.FindName("KeyboardSource")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             entry.Select(entry.Text.Length, 0); // Simulate a click moving the caret on the retained result.
-            Text("000123"); await Flush();
+            await Text("000123"); await Flush();
             Check(entry.Text == "000123" && vm.Left.Barcode == b && vm.Left.SlotAvailable && transport.Commands.Count == 2,
                 "first manual character replaces the retained result while its task remains displayed; typing alone never submits");
-            Key(0x25); Text("9"); await Flush(); // Left arrow + insertion inside the active draft.
+            await Key(0x25); await Text("9"); await Flush(); // Left arrow + insertion inside the active draft.
             var start = entry.SelectionStart; otherEntry.Focus(); await Flush(); entry.Focus(); await Flush();
             for (var i = 0; i < 3; i++) { await vm.RefreshAsync(); await Flush(); }
             Check(entry.Text == "0001293" && entry.SelectionStart == start && entry.SelectionLength == 0 && entry.IsKeyboardFocused,
                 "manual corrections, focus return and snapshot refresh preserve the draft and caret");
-            Key(0x08); await Flush();
+            await Key(0x08); await Flush();
             Check(entry.Text == "000123", "native Backspace edits the active draft normally");
+            // Exercise insertion/deletion at every caret offset after real key-up acknowledgement.
+            // Neither Text nor selection is assigned to make these outcomes pass.
+            for (var round = 0; round < 16; round++)
+            {
+                var offset = round % 7;
+                await Key(0x24); // Home
+                for (var move = 0; move < offset; move++) await Key(0x27); // Right
+                await Text("9");
+                if (round % 2 == 0)
+                { otherEntry.Focus(); await Flush(); entry.Focus(); await vm.RefreshAsync(); await Flush(); }
+                await Key(0x08);
+                Check(entry.Text == "000123" && entry.SelectionStart == offset && entry.SelectionLength == 0 && transport.Commands.Count == 2 && h.Peer.Requests.Count == 2,
+                    "acknowledged native insertion/Backspace preserves draft/caret without submission; round=" + round + "; offset=" + offset);
+            }
             ((Button)position.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Accepted("000123");
             Check(transport.Commands.Last().Kind == ParcelBarcodeInputKind.Keyboard && h.Peer.Requests.Count == 3,
                 "manual bottom submit uses the same guarded path and preserves the declared source");
@@ -85,13 +99,13 @@ static partial class Program
             {
                 entry.Focus(); await Flush(); transport.NextReply = reply;
                 var code = reply == "Pending" ? "000123450004" : "000123450005";
-                Text(code, enter: true);
+                await Text(code, enter: true);
                 await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains(reply == "Pending" ? "结果待核对" : "提交结果未确认"));
                 var command = transport.Commands.Last(); var sends = h.Peer.Requests.Count; var calls = transport.Commands.Count;
-                Text("999"); await Flush();
+                await Text("999"); await Flush();
                 Check(entry.Text == code && entry.IsReadOnly && transport.Commands.Count == calls && h.Peer.Requests.Count == sends,
                     reply + " reply locks the original input and rejects subsequent scanner text");
-                Key(0x0D); await Accepted(code);
+                await Key(0x0D); await Accepted(code);
                 Check(transport.Commands.Count == calls + 1 && transport.Commands.Last() == command && h.Peer.Requests.Count == sends,
                     reply + " recheck retains the exact command and recovers its receipt without another RCS request");
             }
@@ -100,21 +114,21 @@ static partial class Program
             h.Peer.Hold = hold;
             try
             {
-                Text("000123450008", enter: true);
+                await Text("000123450008", enter: true);
                 for (var i = 0; i < 150 && h.Peer.Requests.Count != 6; i++) { await Flush(); await Task.Delay(25); }
                 Check(h.Peer.Requests.Count == 6 && vm.Busy && entry.IsReadOnly, "in-flight RCS request retains its original locked input");
                 var calls = transport.Commands.Count;
-                Text("999", enter: true); await Flush();
+                await Text("999", enter: true); await Flush();
                 Check(entry.Text == "000123450008" && transport.Commands.Count == calls && h.Peer.Requests.Count == 6,
                     "scanner text and Enter during submission cannot create a second command");
             }
             finally { hold.TrySetResult(); h.Peer.Hold = null; }
             await Accepted("000123450008");
 
-            h.Peer.Mode = "malformed"; entry.Focus(); await Flush(); Text("000123450006", enter: true);
+            h.Peer.Mode = "malformed"; entry.Focus(); await Flush(); await Text("000123450006", enter: true);
             await Until(() => !entry.IsReadOnly && !vm.Busy && vm.Left.Operation?.Wcs?.State == StageState.Unknown);
             var unknown = vm.Left.Operation!; var unknownSends = h.Peer.Requests.Count;
-            Text("000123450007", enter: true);
+            await Text("000123450007", enter: true);
             await Until(() => !entry.IsReadOnly && !vm.Busy && feedback.Text.StartsWith("未准入"));
             Check(entry.Text == "000123450007" && vm.Left.Operation!.Id == unknown.Id &&
                 vm.Left.Operation.Wcs is { State: StageState.Unknown, Attempts: 1 } && h.Peer.Requests.Count == unknownSends,
@@ -168,16 +182,41 @@ static class BarcodeNativeKeyboard
     [DllImport("user32.dll", SetLastError = true)] static extern uint SendInput(uint count, Input[] inputs, int size);
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] static extern short GetAsyncKeyState(int key);
-    public static void Send(Window window, TextBox entry, ushort[] keys)
+    public static async Task SendAsync(Window window, TextBox entry, ushort[] keys)
     {
-        if (!window.IsActive || GetForegroundWindow() != new WindowInteropHelper(window).Handle || !entry.IsKeyboardFocused ||
-            new[] { 0x10, 0x11, 0x12, 0x5B, 0x5C }.Any(k => (GetAsyncKeyState(k) & 0x8000) != 0))
-            throw new InvalidOperationException("Native barcode input requires the foreground test HWND, barcode focus and no held modifiers");
+        window.Dispatcher.VerifyAccess();
+        if (keys.Length == 0) throw new ArgumentException("At least one native key is required", nameof(keys));
+        var foreground = GetForegroundWindow(); var expectedWindow = new WindowInteropHelper(window).Handle;
+        var modifiers = new[] { 0x10, 0x11, 0x12, 0x5B, 0x5C }.Where(k => (GetAsyncKeyState(k) & 0x8000) != 0).ToArray();
+        if (!window.IsActive || foreground != expectedWindow || !entry.IsKeyboardFocused || modifiers.Length != 0)
+            throw new InvalidOperationException($"Native barcode input requires the foreground test HWND, barcode focus and no held modifiers; active={window.IsActive}; foreground={foreground}; expected={expectedWindow}; focus={entry.IsKeyboardFocused}; held={string.Join(",", modifiers)}");
         var inputs = keys.SelectMany(key => new[] {
             new Input { Type = 1, Data = new InputUnion { Keyboard = new KeyboardInput { Key = key } } },
             new Input { Type = 1, Data = new InputUnion { Keyboard = new KeyboardInput { Key = key, Flags = 2 } } }
         }).ToArray();
-        if (SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<Input>()) != inputs.Length)
-            throw new Win32Exception(Marshal.GetLastWin32Error(), "Native barcode SendInput was incomplete");
+        // SendInput only queues OS input. Dispatcher idle can run before Windows
+        // delivers it. Subscribe before injection and wait for each actual WPF
+        // key-up, including handled/read-only paths, before assertions or focus moves.
+        var processed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var received = 0;
+        KeyEventHandler acknowledged = (_, e) =>
+        {
+            if (received >= keys.Length) return;
+            var expected = KeyInterop.KeyFromVirtualKey(keys[received]);
+            if (e.Key != expected)
+            { processed.TrySetException(new InvalidOperationException($"Unexpected native key-up {e.Key}; expected {expected} at {received}")); return; }
+            if (++received == keys.Length) processed.TrySetResult();
+        };
+        entry.AddHandler(Keyboard.KeyUpEvent, acknowledged, true);
+        try
+        {
+            if (SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<Input>()) != inputs.Length)
+                throw new Win32Exception(Marshal.GetLastWin32Error(), "Native barcode SendInput was incomplete");
+            try { await processed.Task.WaitAsync(TimeSpan.FromSeconds(5)); }
+            catch (TimeoutException error)
+            { throw new TimeoutException($"Native input acknowledgement timed out: {received}/{keys.Length}; text={entry.Text}; caret={entry.SelectionStart}/{entry.SelectionLength}; focus={entry.IsKeyboardFocused}", error); }
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        }
+        finally { entry.RemoveHandler(Keyboard.KeyUpEvent, acknowledged); }
     }
 }

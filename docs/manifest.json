@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-D-DRIVE-DEFAULTS-02",
+  "work_package": "WP-IPC-SM-PDA-INPUT-ACK-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "34560e032bbeb80940c5304d0c7370432cdc3b4f0ef4b6b329bc6f3706f453da",
-      "size_bytes": 15259,
-      "git_blob": "154a688116aca3885885193d727f43d370120bfe",
+      "sha256": "29ab3528c251a15bf184cdb09e29c8845f56ceddde5bdfc7f5fa15feaaf5081d",
+      "size_bytes": 15510,
+      "git_blob": "41e86c5f2c72725e5bb43a2ae5d2624c6f1b8c53",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "72153c76ea5902f7cc346bd9fd5551f6ac0753e70bbc7f62aa17f293c131a6d6",
-      "size_bytes": 8340,
-      "git_blob": "79beeafa657ba01ec287305090b4a3a0b87dde50",
+      "sha256": "577581e618ab925cb93e17ba660e1ca5b621df6195d258cf89e862997400e84c",
+      "size_bytes": 8632,
+      "git_blob": "9236bc2d1e18248d593529153b725f017f7b175e",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -110141,9 +110141,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CONTINUOUS-PDA-INPUT-01; original evidence retains its own SourceCommit",
-      "sha256": "3d9cf238f386bfbba9d944d11c438abf46d7dd7594e5d601f1e1c8469fa21515",
-      "size_bytes": 13782,
-      "git_blob": "a011547e92cd8ba541f3764482123b0771b0cd51",
+      "sha256": "13f0915a1649d486959b4fa27fb36543bd3f579c36d8dd5d9f97c8422912175b",
+      "size_bytes": 16697,
+      "git_blob": "02bfcad604235df42507c31f48cbb237741bc974",
       "storage_scope": "public_repository"
     },
     {
@@ -110860,6 +110860,248 @@
       "size_bytes": 3482,
       "git_blob": "a45b3f990700a1de76ca575d393ab823b76e9b88",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-SM-PDA-INPUT-ACK-01.md",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "bbe1cd019347a45c87c28a0f834bc46aa9de156bd4f31bd4d6574179e1bd6b27",
+      "size_bytes": 1449,
+      "git_blob": "591453cfa70943cc88bf0d6371ced71dca5b5d5e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-pda-input-ack-01/INDEX.md.txt",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "72153c76ea5902f7cc346bd9fd5551f6ac0753e70bbc7f62aa17f293c131a6d6",
+      "size_bytes": 8340,
+      "git_blob": "79beeafa657ba01ec287305090b4a3a0b87dde50",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-pda-input-ack-01/manifest.json",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "2b855a34e5fa6df5b70cb2391969b31ffed9d79d0921665b628a80b097b6ba7a",
+      "size_bytes": 338,
+      "git_blob": "4f69472791b4c8de08a2ecbe0def6f42415bbd26",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/baseline-diagnostic.patch",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "082a838b1e85dfc75bbf889f3ae338fab47688402ee770358975f54dea47ac60",
+      "size_bytes": 4096,
+      "git_blob": "88fb5d08c9f64a0dedc3163df7a29be939947dff",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/diagnostic-1.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1648278ac8ee14aed694e0ce4c9254ca34c46b45a33e125dc8767d15c5a3f43a",
+      "size_bytes": 13054,
+      "git_blob": "3466890e90fac84285a60e8ccf8883441ae8c2d9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/diagnostic-build.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "46710a00011c48eeb7aef5cdde91f4f7e268086d87e40403db9f36f38df279af",
+      "size_bytes": 84,
+      "git_blob": "87e2fd4bb0653c66420abbb1a706f2c016565e99",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-build.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "8576e21571da4ac838848223e6a7baec30a8e68cd4370d3e5ce7ae8aaf2b5095",
+      "size_bytes": 84,
+      "git_blob": "405913d0ed125612248854e9503a8bf875a3e372",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-1.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-2.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-3.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-4.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-5.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-6.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-7.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/final-repeat-8.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/fixed-build.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "0a1a730a2fb0b1c3b88d25393b9fb64b19d02e1ae4e10d89405e6a0c1d9ec5ae",
+      "size_bytes": 84,
+      "git_blob": "2f16d4df2b7d8745239508021ace21d2224e5847",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/fixed-first.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "1f94f73d1b67c69f0672411ece3df342fc88c3e6bb1402cca9f77f52420e7ca0",
+      "size_bytes": 3929,
+      "git_blob": "18ed9fd23b4ec42f60bbbbc423be0787d891e43a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/fixed-repeat-1.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "2a263c4113e432700e58a4800a2e8aa43f729ec1ed5cb223040678b1f132daaf",
+      "size_bytes": 1999,
+      "git_blob": "40c30900aa665972b9f6ab7f00142dff841436f5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/ready-regression.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "5a99461c44b94210bb5eb10bfd87c285c4c33a410d1819d80432bf694af2ed21",
+      "size_bytes": 6472,
+      "git_blob": "818decb1c3df019d1553a8849ba76fb9ed1186e8",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/release-first-failure.log",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "3853962bcdc455a2fedcaa3ebde3547b1b952e5dbff1a91fdb7d9bf0e9e0d075",
+      "size_bytes": 1544,
+      "git_blob": "a5b2d6bece563e5742b4f28bae4df31a9fd3ae06",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-pda-input-ack-01/summary.json",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "8567a595f6d0fd94d8f3673a5abb68cd705d4ecd849b50f5d61b9bd79327a132",
+      "size_bytes": 4594,
+      "git_blob": "afb41d94997f3a812d641090b97c3482a6a0c432",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/sm-pda-input-ack-01.md",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "c216d11534aa147295727775135665ab2bc4a3208480edef06262743002c47d8",
+      "size_bytes": 2866,
+      "git_blob": "0741931a941556fdcd5edae7c228476b7cd75969",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -110939,7 +111181,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-PDA-INPUT-ACK-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -113723,13 +113965,8 @@
   ],
   "integration_sources": [
     {
-      "commit": "ae3a380fa58c4b6c43a44a384a42666bad7f2510",
-      "manifest_sha256": "975d5ce7cf0ed4e843d7e319ee3036bd9b21ab986748588884bb52bae9c1cf7f",
-      "work_package": "WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01"
-    },
-    {
-      "commit": "1600ab6a3abe1195cfb4f6ef13df22c687f44fb2",
-      "manifest_sha256": "5a4235e655005fb261eb6bf052de4c32ca7629df50ba9879b69f222e4b297998",
+      "commit": "3ef78950a40da0aebd8656b4ebd98287cd060633",
+      "manifest_sha256": "67795463627736626b20cedee59b649bd1485e54578c99573ec13c0bbc25b47c",
       "work_package": "WP-IPC-D-DRIVE-DEFAULTS-02"
     }
   ],

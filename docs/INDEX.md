@@ -1,3 +1,5 @@
+> 2026-11-02 主条码随最新相机观察立即替换、多码候选不堆入主框、图片/格口身份对应见 [SM-CAMERA-BARCODE-CURRENT-19](work-packages/WP-IPC-SM-CAMERA-BARCODE-CURRENT-19.md)及[实施验证](runtime/sm-camera-barcode-current-19.md)。本轮替代16中仅码尾先行而主条码仍等业务处理的呈现；原请求及人工草稿守卫不变。
+
 > 2026-11-01 作业卡恢复波次、任务号、商品编码、返回数量常驻见 [SM-TASK-FIELDS-01](work-packages/WP-IPC-SM-TASK-FIELDS-01.md)，替代 UX-18 中“任务字段进详情”的条款；显示条件与确认格口一致。旧索引[原字节归档](archive/pre-sm-task-fields-01/manifest.json)。Windows 验证 NOT_RUN。
 
 > 2026-11-01 当前 SM 操作体验增量见 [SM-OPERATOR-UX-18](work-packages/WP-IPC-SM-OPERATOR-UX-18.md)：格口优先、实际输入目标、暂停语义与类型化呈现。用户暂不增加件数统计。最终源44b41c93的Windows三构建与21套件574PASS见[验证记录](runtime/sm-operator-ux-18.md)，已整合PR168；历史16/17证据保持原SourceCommit。

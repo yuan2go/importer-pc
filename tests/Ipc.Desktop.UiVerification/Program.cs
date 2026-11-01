@@ -61,6 +61,7 @@ static partial class Program
                 else if (args.Contains("--camera-round-ui")) await VerifyCameraRoundUi(root, evidence, lines);
                 else if (args.Contains("--camera-stream-ui")) await VerifyCameraStreamUi(root, evidence, lines);
                 else if (args.Contains("--presentation-ordering-ui")) await VerifyPresentationOrderingUi(root, evidence, lines);
+                else if (args.Contains("--camera-barcode-current")) await VerifyCameraBarcodeCurrent(root, evidence, lines);
                 else if (args.Contains("--station-responsive-ui")) await VerifyStationResponsiveUi(root, evidence, lines);
                 else if (args.Contains("--station-latency-ui")) await VerifyStationLatencyUi(root, evidence, lines);
                 else if (args.Contains("--camera-preview-lifecycle")) await VerifyCameraPreviewLifecycle(root, evidence, lines);

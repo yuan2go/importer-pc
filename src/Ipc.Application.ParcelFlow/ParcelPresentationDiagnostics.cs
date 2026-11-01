@@ -14,8 +14,9 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
     {
         if (observation.DecodedTicks <= 0 || observation.DecodedTicks > Stopwatch.GetTimestamp()) return;
         var feedback = new ParcelReadFeedback(runtimeId, position, observation.Id, observation.DeviceId, observation.Epoch,
-            observation.Codes is { Length: 1 } codes && codes[0]?.Length <= 4096 ? codes[0] : null, observation.DecodedTicks, observation.ObservedAt)
-            { OperatorInput = observation.OperatorInput is not null };
+            observation.Codes is { Length: 1 } codes && codes[0] is { Length: > 0 and <= 4096 } single && !single.Any(char.IsControl) ? single : null,
+            observation.DecodedTicks, observation.ObservedAt)
+            { OperatorInput = observation.OperatorInput is not null, CandidateCount = observation.Codes?.Length ?? 0, SourceSequence = observation.Sequence };
         lock (presentationGate)
         {
             if (presentationReads.Any(r => r.ObservationId == feedback.ObservationId && r.DeviceId == feedback.DeviceId && r.Epoch == feedback.Epoch)) return;

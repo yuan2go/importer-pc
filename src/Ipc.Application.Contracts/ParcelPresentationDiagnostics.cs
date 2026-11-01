@@ -10,6 +10,9 @@ public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, strin
     string? SingleCode, long DetectedTicks, DateTimeOffset ObservedAt)
 {
     public bool OperatorInput { get; init; }
+    // Bounded display metadata only; neither selection nor admission authority.
+    public int CandidateCount { get; init; } = SingleCode is null ? 0 : 1;
+    public long SourceSequence { get; init; }
 }
 public sealed record ParcelPresentationMetric(string ObservationId, string PositionId, string Stage, double ReadToCompositionMs,
     double? SnapshotToCompositionMs, DateTimeOffset At);

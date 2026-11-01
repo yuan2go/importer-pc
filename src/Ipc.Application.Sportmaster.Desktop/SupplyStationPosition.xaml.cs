@@ -38,6 +38,7 @@ public partial class SupplyStationPosition : UserControl
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanSubmitBarcode)) RefreshSubmitAvailability();
+        if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanViewCurrentPicture)) RefreshPictureAvailability();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.SuccessIdentity) or nameof(SupplyStationPositionViewModel.ReadFeedbackKey) or nameof(SupplyStationPositionViewModel.RejectionIdentity) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) ObservePresentation();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.Barcode) or nameof(SupplyStationPositionViewModel.HasCurrentInput))
         {
@@ -56,6 +57,7 @@ public partial class SupplyStationPosition : UserControl
             finally { updatingDisplay = false; }
         }
         PrepareResultReplacement();
+        RefreshPictureAvailability();
     }
     // A displayed result is not a draft. The first character/paste starts a new
     // parcel even if the caret was moved after admission. Once editing begins,
@@ -86,6 +88,12 @@ public partial class SupplyStationPosition : UserControl
         if (submitted is not null) available = Host?.ViewModel is { CanUseWorkspace: true, CanStartOperation: true };
         SubmitBarcode.IsEnabled = !submitting && available && (submitted is not null || editing && !overflow && BarcodeEntry.Text.Length > 0);
         if (VisibleInputSource is not null) VisibleInputSource.IsEnabled = !submitting && submitted is null;
+        RefreshPictureAvailability();
+    }
+    void RefreshPictureAvailability()
+    {
+        if (CurrentBarcode is not null) CurrentBarcode.IsEnabled = !editing && !submitting && submitted is null &&
+            DataContext is SupplyStationPositionViewModel { CanViewCurrentPicture: true };
     }
     void KeyboardSource_Click(object sender, RoutedEventArgs e) => SetInputKind(ParcelBarcodeInputKind.Keyboard);
     void PdaSource_Click(object sender, RoutedEventArgs e) => SetInputKind(ParcelBarcodeInputKind.PdaKeyboard);
@@ -104,7 +112,8 @@ public partial class SupplyStationPosition : UserControl
         inputBasis = new(snapshot.RuntimeId, snapshot.Configuration.Revision, p.Input?.Observation.Id, p.Operation?.Id);
     }
     string DraftNotice => DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p
-        ? "输入未提交；下方格口仍属于上一件 " + p.Barcode + "。" : "输入未提交。";
+        ? p.ShowConfirmedTask ? "输入未提交；下方格口属于 " + p.Barcode + "。" : "输入未提交；本位当前读码：" + (p.Barcode.Length == 0 ? "多个或无效条码" : p.Barcode) + "。"
+        : "输入未提交。";
     void InputChanged(object sender, TextChangedEventArgs e)
     {
         if (BarcodeEntry is null || updatingDisplay || submitting || submitted is not null) return;
@@ -190,10 +199,9 @@ public partial class SupplyStationPosition : UserControl
     }
     void Picture_Click(object sender, RoutedEventArgs e)
     {
-        if (Host is not { } host || DataContext is not SupplyStationPositionViewModel p) return;
-        var query = p.Input is { } input ? new ParcelPictureQuery(ObservationId: input.Observation.Id) :
-            p.Operation is { } op ? new ParcelPictureQuery(OperationId: op.Id) : null;
-        if (query is not null) Ipc.Application.ParcelFlow.Desktop.ParcelPictureWindow.Open(host, host.ViewModel, query, p.Barcode);
+        if (editing || submitting || submitted is not null || Host is not { } host ||
+            DataContext is not SupplyStationPositionViewModel { CurrentPictureQuery: { } query } p) return;
+        Ipc.Application.ParcelFlow.Desktop.ParcelPictureWindow.Open(host, host.ViewModel, query, p.Barcode);
     }
     SupplyStationWindow? Host => Window.GetWindow(this) as SupplyStationWindow;
     void New_Click(object sender, RoutedEventArgs e) { if (DataContext is SupplyStationPositionViewModel p) p.NewParcel(); }

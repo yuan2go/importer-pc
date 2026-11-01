@@ -183,7 +183,15 @@ public partial class SupplyStationPosition
     static readonly object soundGate = new();
     static readonly HashSet<string> sounded = [];
     static readonly Queue<string> soundHistory = [];
-    static long lastSound, lastRejectionSound, lastSuccessSound;
+    static readonly Dictionary<string, long> soundChannels = [];
+    static readonly Queue<string> soundChannelHistory = [];
+    enum StationSound { Read, Success, Rejected }
+    sealed record PendingSound(string Key, string Channel, StationSound Kind);
+    PendingSound? pendingSound;
+    readonly DispatcherTimer soundRetry = new();
+    internal int PlayedReadSounds { get; private set; }
+    internal int PlayedSuccessSounds { get; private set; }
+    internal int PlayedRejectionSounds { get; private set; }
     long lastPulse;
     string? rejectionShown, successShown;
     internal int SuccessCueCount { get; private set; }
@@ -198,9 +206,10 @@ public partial class SupplyStationPosition
     Brush? originalOutline;
     void InitializeCompositionFeedback()
     {
+        soundRetry.Tick += (_, _) => TryPlayPendingSound();
         cueTimer.Tick += (_, _) => { cueTimer.Stop(); if (originalOutline is not null) PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, originalOutline); };
         Loaded += (_, _) => ObservePresentation();
-        Unloaded += (_, _) => { presentationGeneration++; if (compositionWaiter is not null) { CompositionTarget.Rendering -= compositionWaiter; compositionWaiter = null; measuring = false; } cueTimer.Stop(); if (originalOutline is not null) PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, originalOutline); };
+        Unloaded += (_, _) => { presentationGeneration++; pendingSound = null; soundRetry.Stop(); if (compositionWaiter is not null) { CompositionTarget.Rendering -= compositionWaiter; compositionWaiter = null; measuring = false; } cueTimer.Stop(); if (originalOutline is not null) PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, originalOutline); };
     }
     void ObservePresentation()
     {
@@ -208,24 +217,25 @@ public partial class SupplyStationPosition
             vm.Snapshot is not { } snapshot ||
             Window.GetWindow(this) is not { WindowState: not WindowState.Minimized }) return;
         string? id = null; string? stage = null;
+        var soundChannel = $"{snapshot.RuntimeId}/{p.PositionId}";
         var rejected = false;
         if (p.RejectionIdentity is { } rejection && rejectionShown != rejection)
         {
             rejectionShown = rejection; RejectionCueCount++; rejected = true;
             Pulse(OperatorBrushes.Danger.Color, true);
-            if (ClaimSound("Rejected/" + rejection, true)) System.Media.SystemSounds.Hand.Play();
+            OfferSound("Rejected/" + rejection, soundChannel, StationSound.Rejected);
         }
         if (p.SuccessIdentity is { } success && successShown != success)
         {
             successShown = success; SuccessCueCount++;
-            if (ClaimSound("Success/" + success, false, true)) System.Media.SystemSounds.Asterisk.Play();
+            OfferSound("Success/" + success, soundChannel, StationSound.Success);
         }
         if (p.ReadFeedbackIdentity is { } read && feedbackShown != p.ReadFeedbackKey && p.CameraReadFeedback.Length != 0)
         {
             feedbackShown = p.ReadFeedbackKey; ReadCueCount++;
             if (!rejected) Pulse(OperatorBrushes.Accent.Color, false);
             // A terminal result owns the sound if read and result coalesce into one render.
-            if (!rejected && p.SuccessIdentity is null && p.RejectionIdentity is null && ClaimSound("Read/" + p.ReadFeedbackKey, false)) System.Media.SystemSounds.Beep.Play();
+            if (!rejected && p.SuccessIdentity is null && p.RejectionIdentity is null) OfferSound("Read/" + p.ReadFeedbackKey, soundChannel, StationSound.Read);
         }
         if (vm.Application is not IParcelPresentationDiagnostics source) return;
         var readKey = p.ReadFeedbackKey;
@@ -278,18 +288,55 @@ public partial class SupplyStationPosition
         PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, new SolidColorBrush(color));
         cueTimer.Stop(); cueTimer.Start();
     }
-    static bool ClaimSound(string key, bool rejection, bool success = false)
+    void OfferSound(string key, string channel, StationSound kind)
+    {
+        pendingSound = new(key, channel, kind); TryPlayPendingSound();
+    }
+    void TryPlayPendingSound()
+    {
+        soundRetry.Stop();
+        if (pendingSound is not { } sound) return;
+        var current = IsLoaded && IsVisible && Host?.ViewModel.Fresh == true && DataContext is SupplyStationPositionViewModel p &&
+            sound.Key == (sound.Kind switch
+            {
+                StationSound.Success when p.SuccessIdentity is { } identity => "Success/" + identity,
+                StationSound.Rejected when p.RejectionIdentity is { } identity => "Rejected/" + identity,
+                StationSound.Read when p.CameraReadFeedback.Length > 0 && p.SuccessIdentity is null && p.RejectionIdentity is null => "Read/" + p.ReadFeedbackKey,
+                _ => null
+            });
+        if (!current) { pendingSound = null; return; }
+        var wait = ClaimSound(sound);
+        if (wait > 0) { soundRetry.Interval = TimeSpan.FromMilliseconds(Math.Max(10, wait)); soundRetry.Start(); return; }
+        pendingSound = null;
+        if (wait < 0) return;
+        switch (sound.Kind)
+        {
+            case StationSound.Read: PlayedReadSounds++; System.Media.SystemSounds.Beep.Play(); break;
+            case StationSound.Success: PlayedSuccessSounds++; System.Media.SystemSounds.Asterisk.Play(); break;
+            case StationSound.Rejected: PlayedRejectionSounds++; System.Media.SystemSounds.Hand.Play(); break;
+        }
+    }
+    static double ClaimSound(PendingSound sound)
     {
         lock (soundGate)
         {
-            if (!sounded.Add(key)) return false;
-            if (soundHistory.Count == 512) sounded.Remove(soundHistory.Dequeue());
-            soundHistory.Enqueue(key);
+            if (sounded.Contains(sound.Key)) return -1;
             var now = Stopwatch.GetTimestamp();
-            var previous = rejection ? lastRejectionSound : success ? lastSuccessSound : lastSound;
-            if (previous != 0 && Stopwatch.GetElapsedTime(previous, now) < TimeSpan.FromMilliseconds(rejection ? 500 : 1000)) return false;
-            if (rejection) lastRejectionSound = now; else if (success) lastSuccessSound = now; else lastSound = now;
-            return true;
+            var group = sound.Channel + "/" + sound.Kind;
+            if (soundChannels.TryGetValue(group, out var previous))
+            {
+                var remaining = (sound.Kind == StationSound.Rejected ? 500 : 1000) - Stopwatch.GetElapsedTime(previous, now).TotalMilliseconds;
+                if (remaining > 0) return remaining;
+            }
+            else
+            {
+                if (soundChannelHistory.Count == 128) soundChannels.Remove(soundChannelHistory.Dequeue());
+                soundChannelHistory.Enqueue(group);
+            }
+            soundChannels[group] = now;
+            if (soundHistory.Count == 512) sounded.Remove(soundHistory.Dequeue());
+            sounded.Add(sound.Key); soundHistory.Enqueue(sound.Key);
+            return 0;
         }
     }
 }

@@ -38,6 +38,22 @@ static partial class Program
         }
         try {
             editor.ShowPage(2,"左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); Fields(editor,left);
+            var formats = left.Parameters.Single(p => p.Field.Key == "code.formats");
+            var formatSection = Descendants(editor).OfType<Expander>().Single(e => AutomationProperties.GetName(e) == left.InstanceId + "/code.formats");
+            formatSection.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            var formatChecks = Descendants(formatSection).OfType<CheckBox>().ToArray();
+            Check(formatChecks.Length == formats.Field.Choices!.Length && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == true,
+                "native format selector exposes all declared formats with compatible All default");
+            formatChecks.Single(c => Equals(c.Tag, "Code128")).IsChecked = true;
+            formatChecks.Single(c => Equals(c.Tag, "QRCode")).IsChecked = true;
+            Check(Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "Code128", "QRCode" }) && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == false,
+                "native multi-selection clears All and writes both selected formats to the shared candidate");
+            Check(draft.Build().Topology!.Readers[0].Parameters!["code.formats"] == formats.Value && right.Parameters.Single(p => p.Field.Key == "code.formats").Value == "[\"All\"]",
+                "saved full candidate isolates left format selection from right defaults");
+            CaptureInternal(evidence,"bundled-sdk-format-selection",editor,lines);
+            formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked = true;
+            Check(formatChecks.Count(c => c.IsChecked == true) == 1 && formats.Value == "[\"All\"]", "choosing All clears explicit native choices");
+            formatSection.IsExpanded = false;
             Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetName(t)==rcs.InstanceId+"/left-bcr-code").Text="SYNTH-LEFT-EDITED";
             Check(rcs.Parameters.Single(p=>p.Field.Key=="left-bcr-code").Value=="SYNTH-LEFT-EDITED"&&rcs.Parameters.Single(p=>p.Field.Key=="right-bcr-code").Value=="SYNTH-RIGHT","one shared camera code editor isolates left/right");
             CaptureInternal(evidence,"bundled-sdk-daily-left",editor,lines);

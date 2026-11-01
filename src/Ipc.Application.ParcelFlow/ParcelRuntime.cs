@@ -296,13 +296,27 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
-        if (observation is not null) RecordPresentationRead(positionId, observation);
         // One position owns this synchronous durable handoff. No shared callback lock,
         // business gate or native callback is held while SQLite commits.
         lock (lane.Sync)
         {
             if (Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
             var at = DateTimeOffset.UtcNow;
+            if (observation is not null) RecordPresentationRead(positionId, observation);
+            if (Id == "sportmaster" && observation is not null)
+            {
+                // Stop before the durable write when a normal bounded lane is full.
+                // The source retains this decoded observation while waiting. No business
+                // gate is held; a failed consumer/stop must break the wait, not deadlock Sync.
+                var ready = positionQueues[positionId].Writer.WaitToWriteAsync(stopping.Token).AsTask();
+                try
+                {
+                    while (!ready.Wait(100, stopping.Token))
+                        if (Volatile.Read(ref accepting) == 0 || Volatile.Read(ref lane.Failure) is not null) return false;
+                    if (!ready.GetAwaiter().GetResult() || Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
+                }
+                catch (OperationCanceledException) when (stopping.IsCancellationRequested) { return false; }
+            }
             if (observation is not null)
             {
                 var identity = SessionValid ? currentOperator : null;
@@ -461,7 +475,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // This is a new event from the current registration, not an old callback.
         // Queue age/health must close this input's display as well as admission.
         // Existing identities above retain their original responsibility and policy.
-        if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))
+        if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
         { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationRejected"); return; }
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ReaderConfirmationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationBlocked"); return; }

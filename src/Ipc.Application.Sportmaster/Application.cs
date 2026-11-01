@@ -34,13 +34,19 @@ public sealed class SportmasterFlow : FlowDefinition
         op.Wcs is { State: StageState.Unknown, Attempts: 1, Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
         stage.Replies.All(r => r.BusinessAccepted is null) &&
         (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||
-         stage.Replies.LastOrDefault()?.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal) == true);
+         stage.Replies.LastOrDefault()?.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal) == true ||
+         stage.Replies.LastOrDefault() is { SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false,
+             ProtocolAcknowledged: null, BusinessAccepted: null, PhysicalCompleted: null, HttpResponse: null } notDelivered &&
+             notDelivered.RequestId == stage.Request.Id && notDelivered.PayloadHash == stage.Request.PayloadHash &&
+             notDelivered.Evidence.StartsWith("RCS_NOT_DELIVERED:", StringComparison.Ordinal));
     public override int RequestTimeoutMs(ParcelOperation op, ParcelStage stage)
     {
         if (stage != ParcelStage.Wcs || op.Wcs?.Request.Binding is not { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding)
             return base.RequestTimeoutMs(op, stage);
         return RcsRequestPolicy.TimeoutMs(binding);
     }
+    public override int QueuedObservationTimeoutMs(ParcelConfiguration configuration) => Math.Max(configuration.TimeoutMs,
+        configuration.Wcs is { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding ? RcsRequestPolicy.TimeoutMs(binding) : configuration.TimeoutMs);
     public override ParcelOperation RestoreMainProjection(ParcelOperation op)
     {
         if (op.Wcs is not { State: StageState.Accepted or StageState.Rejected } wcs) return op;

@@ -12,6 +12,27 @@ internal sealed class MvsOriginalFrames : IDisposable
     long bytes;
     internal int Count { get { lock (gate) return count; } }
     internal void Enable() { lock (gate) { ObjectDisposedException.ThrowIf(disposed, this); enabled = true; } }
+    internal Frame? Reserve(int length, int width, int height, CancellationToken token)
+    {
+        lock (gate)
+        {
+            if (!enabled) return null;
+            while (true)
+            {
+                token.ThrowIfCancellationRequested(); ObjectDisposedException.ThrowIf(disposed, this);
+                if (count < 32 && bytes + length <= 268435456)
+                {
+                    var buffer = ArrayPool<byte>.Shared.Rent(length);
+                    if (bytes + buffer.Length <= 268435456)
+                    { count++; bytes += buffer.Length; return new Frame(this, buffer, length, width, height); }
+                    ArrayPool<byte>.Shared.Return(buffer, true);
+                }
+                // Wait before recognition, when replacing pending video is still legal.
+                // Release and shutdown wake this owner; no decoded observation is dropped.
+                Monitor.Wait(gate, 100);
+            }
+        }
+    }
     internal Frame? Copy(byte[] pixels, int length, int width, int height)
     {
         lock (gate)
@@ -63,7 +84,7 @@ internal sealed class MvsOriginalFrames : IDisposable
             if (frame.References <= 0) return;
             if (--frame.References != 0) return;
             if (frame.Identity is { } identity) frames.Remove(identity);
-            bytes -= frame.Pixels.Length; ArrayPool<byte>.Shared.Return(frame.Pixels, true); frame.Pixels = []; count--;
+            bytes -= frame.Pixels.Length; ArrayPool<byte>.Shared.Return(frame.Pixels, true); frame.Pixels = []; count--; Monitor.PulseAll(gate);
         }
     }
     sealed class Lease(MvsOriginalFrames owner, Frame frame) : IOriginalFrameLease
@@ -81,6 +102,7 @@ internal sealed class MvsOriginalFrames : IDisposable
             if (frames.Values.Any(f => f.Leases != 0)) throw new InvalidOperationException("Original frame writer still owns pixels; disposal must wait");
             foreach (var frame in frames.Values.ToArray()) Release(frame);
             disposed = true;
+            Monitor.PulseAll(gate);
         }
     }
 }

@@ -57,6 +57,7 @@ static partial class Program
                 else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
                 else if (args.Contains("--manual-supply-ui")) await VerifyManualSupplyUi(root, evidence, lines);
                 else if (args.Contains("--continuous-pda-input")) await VerifyContinuousPdaInput(root, evidence, lines);
+                else if (args.Contains("--camera-chain-reliability-ui")) await VerifyCameraChainReliabilityUi(root, evidence, lines);
                 else if (args.Contains("--manual-rcs-debug-ui")) await VerifyManualRcsDebugUi(root, evidence, lines);
                 else if (args.Contains("--camera-round-ui")) await VerifyCameraRoundUi(root, evidence, lines);
                 else if (args.Contains("--camera-stream-ui")) await VerifyCameraStreamUi(root, evidence, lines);

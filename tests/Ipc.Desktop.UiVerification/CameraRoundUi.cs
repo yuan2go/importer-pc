@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Rectangle = System.Windows.Shapes.Rectangle;
+using Polygon = System.Windows.Shapes.Polygon;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.Sportmaster.Desktop;
@@ -70,10 +70,20 @@ static partial class Program
             var bitmap = (BitmapSource)Field<Image>(control, "photo").Source!; var bytes = new byte[bitmap.PixelWidth * bitmap.PixelHeight]; bitmap.CopyPixels(bytes, bitmap.PixelWidth, 0);
             Check(bytes.SequenceEqual(pixels.Data) && Field<TextBox>(control, "barcode").Text == "UI-ROUND-A" && Equals(Field<Button>(control, "trigger").Content, "再次扫码"),
                 "native photo pixels/full code and again-scan label belong to the locked original");
-            var symbol = a.Frame!.Symbols.Single(); var box = Field<Canvas>(control, "marks").Children.OfType<Rectangle>().Single();
-            Check(Canvas.GetLeft(box) == symbol.Corners.Min(p => p.X) && Canvas.GetTop(box) == symbol.Corners.Min(p => p.Y) &&
-                box.Width == symbol.Corners.Max(p => p.X) - symbol.Corners.Min(p => p.X) && ((SolidColorBrush)box.Stroke).Color == (Color)ColorConverter.ConvertFromString("#28D76F"),
-                "green native rectangle uses actual same-frame recognition coordinates");
+            var symbol = a.Frame!.Symbols.Single(); var box = Field<Canvas>(control, "marks").Children.OfType<Polygon>().Single();
+            Check(box.Points.SequenceEqual(symbol.Corners.Select(p => new Point(p.X, p.Y))) && ((SolidColorBrush)box.Stroke).Color == (Color)ColorConverter.ConvertFromString("#28D76F"),
+                "green native polygon uses all four actual same-frame recognition corners");
+            // Explicit read-only geometry projection, never a changed acquired frame or business input.
+            var frameField = control.GetType().GetField("displayedFrame", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var draw = control.GetType().GetMethod("DrawMarks", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var rotated = symbol with { Corners = [new(30, 10), new(90, 40), new(70, 80), new(10, 50)] };
+            frameField.SetValue(control, a.Frame with { Symbols = [rotated] }); draw.Invoke(control, null);
+            Check(Field<Canvas>(control, "marks").Children.OfType<Polygon>().Single().Points.SequenceEqual(rotated.Corners.Select(p => new Point(p.X, p.Y))),
+                "rotated display projection keeps exact quadrilateral instead of expanding an axis-aligned rectangle");
+            frameField.SetValue(control, a.Frame with { Symbols = [symbol with { Corners = [new(10, 20), new(90, 20), new(90, 20), new(10, 20)] }] }); draw.Invoke(control, null);
+            Check(Field<Canvas>(control, "marks").Children.OfType<Polygon>().Single().StrokeThickness > 0 && bytes.SequenceEqual(pixels.Data),
+                "degenerate 1D corners retain a visible line marker while original photo pixels remain intact");
+            frameField.SetValue(control, a.Frame); draw.Invoke(control, null);
             Check(Field<TextBox>(control, "requestBarcode").Text == "UI-ROUND-A" && Field<TextBox>(control, "requestBody").Text == a.RequestBody &&
                 Field<TextBox>(control, "requestBody").IsReadOnly && h.Peer.Requests.IsEmpty && Field<Button>(control, "send").IsEnabled, "native JSON auto-fill is frozen and explicit send is the only enabled delivery action");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-MUST-NOT-REPLACE"), 2); await Task.Delay(120); await Poll(control);

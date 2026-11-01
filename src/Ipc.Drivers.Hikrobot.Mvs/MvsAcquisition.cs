@@ -60,7 +60,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     public string Phase { get { lock (gate) return phase; } }
     public long Frames { get { lock (gate) return frames; } }
     public string Failure { get { lock (gate) return failure; } }
-    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; failure={failure}"; } }
+    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; failure={failure}"; } }
     internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null, bool diagnosticVideoSampling = false)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoder = decoder;
@@ -203,6 +203,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         previousDelivery = deliveredTicks;
                         try
                         {
+                            if (decoder is not null && frame.LostPackets != 0)
+                                throw new MvsFrameRejection("LostPackets", "Incomplete GigE frame discarded; SDK buffer will be returned");
                             ValidateFrame(frame, maximumPayload);
                             if (decoder is not null && (ulong)frame.Width * frame.Height != frame.Length)
                                 throw new InvalidDataException("MVS software decoding requires a verified tight Mono8 stride");
@@ -210,6 +212,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             {
                                 if (priorFrame is { } prior)
                                 {
+                                    if (decoder is not null && frame.Number <= prior)
+                                        throw new ObservationConnectionException("MVS帧号回退；须清理原采集并建立新周期。", new IOException("MVS frame sequence reset"));
                                     if (frame.Number <= prior || decoder is null && !diagnosticVideoSampling && frame.Number - prior != 1)
                                         throw new IOException("MVS frame sequence gap/reset; inspect original source before restart");
                                     skippedBefore = frame.Number - prior - 1; skippedVideoFrames += skippedBefore;
@@ -228,6 +232,11 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 Marshal.Copy(frame.Data, pixels, 0, length);
                                 copyMs = Stopwatch.GetElapsedTime(copyStarted).TotalMilliseconds; Timings.Record("image.rent-copy", copyMs);
                             }
+                        }
+                        catch (MvsFrameRejection error)
+                        {
+                            if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; }
+                            RejectFrame(frame.Number, error, false);
                         }
                         catch { if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; } throw; }
                         finally

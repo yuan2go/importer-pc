@@ -29,6 +29,9 @@ public static class BundledMvs
     static bool resolverSet;
     public static IControlledObservationSource Create(DeviceBinding binding) => CreateCore(binding, false);
     public static IControlledObservationSource CreateReader(DeviceBinding binding) => CreateCore(binding, true);
+#if !MVS_ACQUISITION_EXTENSION
+    public static void ValidateReaderParameters(IReadOnlyDictionary<string, string> parameters) => _ = ReaderSettings.Read(parameters);
+#endif
     static IControlledObservationSource CreateCore(DeviceBinding binding, bool recognize)
     {
         lock (resolverGate)
@@ -46,7 +49,8 @@ public static class BundledMvs
         if (recognize) throw new NotSupportedException("Software reader belongs to the built-in composition, not the acquisition-only extension");
         IMonoBarcodeDecoder? decoder = null;
 #else
-        IMonoBarcodeDecoder? decoder = recognize ? new SoftwareDecoder(binding.Parameters?.GetValueOrDefault("code.encoding", "utf-8") ?? "utf-8") : null;
+        IMonoBarcodeDecoder? decoder = recognize ? new SoftwareDecoder(binding.Parameters?.GetValueOrDefault("code.encoding", "utf-8") ?? "utf-8",
+            settings: ReaderSettings.Read(binding.Parameters ?? new Dictionary<string, string>())) : null;
 #endif
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.
         return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi(), decoder: decoder);

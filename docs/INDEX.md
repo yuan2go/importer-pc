@@ -1,3 +1,5 @@
+> 2026-11-02 相机→展示→RCS全链路审查续修见 [SM-CAMERA-CHAIN-RELIABILITY-20](work-packages/WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20.md)。用户再次确认逐次识别仍交RCS去重，并授权现场配置码制；单帧拒收、资源背压、编辑终态、分位声音、旋转框及未送达证据按本包核验，19原验证保持原源。
+
 > 2026-11-02 主条码随最新相机观察立即替换、多码候选不堆入主框、图片/格口身份对应见 [SM-CAMERA-BARCODE-CURRENT-19](work-packages/WP-IPC-SM-CAMERA-BARCODE-CURRENT-19.md)及[实施验证](runtime/sm-camera-barcode-current-19.md)。本轮替代16中仅码尾先行而主条码仍等业务处理的呈现；原请求及人工草稿守卫不变。
 
 > 2026-11-01 作业卡恢复波次、任务号、商品编码、返回数量常驻见 [SM-TASK-FIELDS-01](work-packages/WP-IPC-SM-TASK-FIELDS-01.md)，替代 UX-18 中“任务字段进详情”的条款；显示条件与确认格口一致。旧索引[原字节归档](archive/pre-sm-task-fields-01/manifest.json)。Windows 验证 NOT_RUN。

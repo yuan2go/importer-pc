@@ -138,6 +138,11 @@ public sealed partial class ParcelRuntime
             (destination.Outcome == WcsDestinationOutcome.Assigned) != (reply.BusinessAccepted == true) ||
             destination.Outcome == WcsDestinationOutcome.UnpackRequired && (reply.BusinessAccepted != false || destination.Unpack is null));
         var terminal = stage.Replies.LastOrDefault(x => x.BusinessAccepted is not null);
+        inconsistent |= !Enum.IsDefined(reply.SenderDelivery) || reply.SenderDelivery != SenderDeliveryEvidence.Unknown &&
+            (!wcs || stage.Request.Binding.Contract != "SPORTMASTER-RCS-SORTER-v1" || reply.TransportSucceeded ||
+                reply.ProtocolAcknowledged is not null || reply.BusinessAccepted is not null || reply.PhysicalCompleted is not null ||
+                reply.HttpResponse is not null || reply.Destination is not null || reply.Image is not null ||
+                !reply.Evidence.StartsWith("RCS_NOT_DELIVERED:", StringComparison.Ordinal));
         inconsistent |= terminal is not null && reply.BusinessAccepted is not null &&
             (terminal.BusinessAccepted != reply.BusinessAccepted || terminal.Slot != reply.Slot || Wire.Encode(terminal.Image) != Wire.Encode(reply.Image) ||
              Wire.Encode(terminal.Destination) != Wire.Encode(reply.Destination) || stage.Replies.Any(x => x.PhysicalCompleted == true) && reply.PhysicalCompleted == false);

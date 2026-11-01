@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -101,16 +102,23 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         {
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
             deadline.CancelAfter(options.RequestTimeoutMs);
+            using var content = new TrackedRequestContent(Encoding.UTF8.GetBytes(frozen.Body));
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {
                 Version = HttpVersion.Version11, VersionPolicy = HttpVersionPolicy.RequestVersionExact,
-                Content = new ByteArrayContent(Encoding.UTF8.GetBytes(frozen.Body))
+                Content = content
             };
             message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage response;
             try { response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, deadline.Token).ConfigureAwait(false); }
             catch (OperationCanceledException e) when (!token.IsCancellationRequested)
             { throw new TimeoutException("RCS请求超时，请重新扫描。", e); }
+            catch (HttpRequestException e) when (e.HttpRequestError == HttpRequestError.ConnectionError && !content.BodyStarted && ConnectionRefused(e))
+            {
+                return new StageReply(Wire.Id(), request.Id, request.PayloadHash, false, null, null, null, null,
+                    "RCS_NOT_DELIVERED: connection refused before any serialization of the frozen nonempty request body; sender evidence only",
+                    ReceiptTimeForVerification.GetUtcNow()) { SenderDelivery = SenderDeliveryEvidence.ConnectionRefusedBeforeBody };
+            }
             catch (HttpRequestException e) { throw new IOException("RCS HTTP delivery/outcome is unknown", e); }
             using (response)
             {
@@ -134,6 +142,25 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             }
         }
         finally { lock (lifecycle) if (--active == 0) drained!.TrySetResult(); }
+    }
+    static bool ConnectionRefused(Exception error)
+    {
+        for (Exception? current = error; current is not null; current = current.InnerException)
+            if (current is SocketException socket && socket.SocketErrorCode == SocketError.ConnectionRefused) return true;
+        return false;
+    }
+    sealed class TrackedRequestContent(byte[] bytes) : HttpContent
+    {
+        int started;
+        internal bool BodyStarted => Volatile.Read(ref started) != 0;
+        protected override bool TryComputeLength(out long length) { length = bytes.Length; return true; }
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) => SerializeToStreamAsync(stream, context, CancellationToken.None);
+        protected override async Task SerializeToStreamAsync(Stream stream, TransportContext? context, CancellationToken token)
+        {
+            // Cumulative across any internal retries of this same content.
+            Interlocked.Exchange(ref started, 1);
+            await stream.WriteAsync(bytes, token).ConfigureAwait(false);
+        }
     }
     static async Task<(byte[] Bytes, bool Complete)> ReadBoundedAsync(HttpContent content, CancellationToken token)
     {

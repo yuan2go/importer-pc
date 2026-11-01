@@ -26,6 +26,9 @@ public sealed partial class SupplyStationPositionViewModel
                 input.Observation.AdmissionId == current.Acquisition.AdmissionId) ? new(ObservationId: input.Observation.Id) :
         Input is null && Operation is { } operation ? new(OperationId: operation.Id) : null;
     public bool CanViewCurrentPicture => CurrentPictureQuery is not null;
+    public string? BarcodeObservationKey => unreadFeedback ? ReadFeedbackKey : Input is { } input
+        ? $"{owner.Snapshot?.RuntimeId}/{input.Observation.DeviceId}/{input.Observation.Epoch}/{input.Observation.Id}"
+        : Operation is { } operation ? $"{owner.Snapshot?.RuntimeId}/{operation.Id}" : null;
     bool FastReaderBlocked => fastReaderState is { } state && (
         owner.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId) is not { } published ||
         published.Epoch != state.Epoch || published.UpdatedAt < state.UpdatedAt);
@@ -98,6 +101,7 @@ public sealed partial class SupplyStationPositionViewModel
     {
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(Barcode), Barcode), (nameof(HasCurrentInput), HasCurrentInput), (nameof(BarcodePlaceholder), BarcodePlaceholder),
+            (nameof(BarcodeObservationKey), BarcodeObservationKey),
             (nameof(CanViewCurrentPicture), CanViewCurrentPicture), (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(SlotAvailable), SlotAvailable), (nameof(Slot), Slot),
             (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId), (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity),
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),

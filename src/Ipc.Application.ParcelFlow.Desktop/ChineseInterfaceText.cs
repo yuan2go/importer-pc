@@ -21,7 +21,7 @@ public static class ChineseInterfaceText
         "ImageBytes" => "单件图像容量", "TotalBytes" => "图像缓存容量", "MaximumPending" => "图像待处理数量",
         "WeightSource" => "重量来源", "ConfiguredWeight" => "配置重量", "Unit" => "重量单位", "Validity" => "重量有效期",
         "BackupEnabled" => "自动备份", "BackupDirectory" => "备份目录", "BackupIntervalMinutes" => "备份间隔", "BackupMaximumSets" => "备份保留份数",
-        "device.ip" => "相机网络地址", "device.serial" => "相机序列号", "code.encoding" => "条码字符编码", "entity.mode" => "实体关联方式", "queue.capacity" => "驱动队列容量",
+        "device.ip" => "相机网络地址", "device.serial" => "相机序列号", "code.encoding" => "条码字符编码", "code.formats" => "需要识别的条码种类", "code.try-invert" => "识别反色条码", "entity.mode" => "实体关联方式", "queue.capacity" => "驱动队列容量",
         "quantity" => "请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码", "request-timeout-ms" => "取格口请求超时",
         "zone-id" => "仓ID", "project-id" => "生产线ID", "request-id-base" => "请求编号起点", "request-id-count" => "请求编号数量",
         "left-station-code" or "right-station-code" => "供包台编号", "left-bcr-code" or "right-bcr-code" => "相机编码",

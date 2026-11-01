@@ -34,13 +34,15 @@ public partial class SupplyStationPosition : UserControl
     InputBasis? inputBasis;
     SubmitParcelBarcode? submitted;
     bool submitting, overflow, editing, updatingDisplay, showingDraftNotice;
+    bool terminalTextRetained;
+    string? terminalObservationKey;
     ParcelBarcodeInputKind inputKind = ParcelBarcodeInputKind.Keyboard;
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanSubmitBarcode)) RefreshSubmitAvailability();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanViewCurrentPicture)) RefreshPictureAvailability();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.SuccessIdentity) or nameof(SupplyStationPositionViewModel.ReadFeedbackKey) or nameof(SupplyStationPositionViewModel.RejectionIdentity) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) ObservePresentation();
-        if (e.PropertyName is nameof(SupplyStationPositionViewModel.Barcode) or nameof(SupplyStationPositionViewModel.HasCurrentInput))
+        if (e.PropertyName is nameof(SupplyStationPositionViewModel.Barcode) or nameof(SupplyStationPositionViewModel.HasCurrentInput) or nameof(SupplyStationPositionViewModel.BarcodeObservationKey))
         {
             RefreshBarcodeDisplay();
             if (editing && showingDraftNotice) InputFeedback.Text = DraftNotice;
@@ -49,6 +51,11 @@ public partial class SupplyStationPosition : UserControl
     void RefreshBarcodeDisplay()
     {
         if (editing || submitting || submitted is not null) return;
+        if (terminalTextRetained)
+        {
+            if (DataContext is SupplyStationPositionViewModel current && current.BarcodeObservationKey == terminalObservationKey) return;
+            terminalTextRetained = false; RebaseInput.Visibility = Visibility.Collapsed;
+        }
         var value = DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p ? p.Barcode : "";
         if (BarcodeEntry.Text != value)
         {
@@ -92,7 +99,7 @@ public partial class SupplyStationPosition : UserControl
     }
     void RefreshPictureAvailability()
     {
-        if (CurrentBarcode is not null) CurrentBarcode.IsEnabled = !editing && !submitting && submitted is null &&
+        if (CurrentBarcode is not null) CurrentBarcode.IsEnabled = !editing && !terminalTextRetained && !submitting && submitted is null &&
             DataContext is SupplyStationPositionViewModel { CanViewCurrentPicture: true };
     }
     void KeyboardSource_Click(object sender, RoutedEventArgs e) => SetInputKind(ParcelBarcodeInputKind.Keyboard);
@@ -117,9 +124,10 @@ public partial class SupplyStationPosition : UserControl
     void InputChanged(object sender, TextChangedEventArgs e)
     {
         if (BarcodeEntry is null || updatingDisplay || submitting || submitted is not null) return;
-        editing = true;
-        showingDraftNotice = true; InputFeedback.Text = DraftNotice;
-        if (BarcodeEntry.Text.Length == 0) { inputBasis = null; overflow = false; }
+        terminalTextRetained = false; RebaseInput.Visibility = Visibility.Collapsed;
+        editing = BarcodeEntry.Text.Length > 0;
+        showingDraftNotice = editing; InputFeedback.Text = editing ? DraftNotice : "输入已清空，相机读码将自动更新。";
+        if (!editing) { inputBasis = null; overflow = false; }
         else if (inputBasis is null) CaptureInputBasis();
         RefreshSubmitAvailability();
     }
@@ -127,13 +135,15 @@ public partial class SupplyStationPosition : UserControl
     {
         showingDraftNotice = false;
         if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，请先点“查看提交结果”。"; return; }
-        CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = "已确认本位包裹，请重新提交条码。"; BarcodeEntry.Focus();
+        terminalTextRetained = false; editing = BarcodeEntry.Text.Length > 0;
+        CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = "已确认本位包裹，请重新提交条码。"; BarcodeEntry.Focus(); RefreshSubmitAvailability();
     }
     void ClearInput_Click(object sender, RoutedEventArgs e)
     {
         showingDraftNotice = false;
         if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，暂不能清空；请先点“查看提交结果”。"; return; }
-        editing = true; BarcodeEntry.Clear(); overflow = false; inputBasis = null; InputFeedback.Text = "已清空输入，本位当前包裹不受影响。"; BarcodeEntry.Focus();
+        terminalTextRetained = false; editing = false; BarcodeEntry.Clear(); overflow = false; inputBasis = null;
+        InputFeedback.Text = "输入已清空，相机读码将自动更新。"; BarcodeEntry.Focus(); RefreshSubmitAvailability();
     }
     async void BarcodeEntry_KeyDown(object sender, KeyEventArgs e)
     {
@@ -182,6 +192,10 @@ public partial class SupplyStationPosition : UserControl
                 if (receipt.Status != "Pending")
                 {
                     submitted = null;
+                    editing = false; inputBasis = null;
+                    terminalTextRetained = receipt.Status != "Admitted";
+                    terminalObservationKey = p.BarcodeObservationKey;
+                    PrepareResultReplacement();
                     if (receipt.Status == "Conflict") RebaseInput.Visibility = Visibility.Visible;
                     if (receipt.Status == "Admitted") { editing = false; inputBasis = null; InputFeedback.Text = ""; }
                 }
@@ -195,11 +209,11 @@ public partial class SupplyStationPosition : UserControl
         }, "提交或核对本位人工条码");
         submitting = false; BarcodeEntry.IsReadOnly = submitted is not null; KeyboardSource.IsEnabled = PdaSource.IsEnabled = submitted is null;
         SubmitBarcode.Content = submitted is null ? "提交" : "查看提交结果";
-        RefreshSubmitAvailability(); RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay();
+        RefreshSubmitAvailability(); RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay(); PrepareResultReplacement();
     }
     void Picture_Click(object sender, RoutedEventArgs e)
     {
-        if (editing || submitting || submitted is not null || Host is not { } host ||
+        if (editing || terminalTextRetained || submitting || submitted is not null || Host is not { } host ||
             DataContext is not SupplyStationPositionViewModel { CurrentPictureQuery: { } query } p) return;
         Ipc.Application.ParcelFlow.Desktop.ParcelPictureWindow.Open(host, host.ViewModel, query, p.Barcode);
     }

@@ -255,3 +255,5 @@ docs/archive/pre-sm-task-fields-01/** -text whitespace=cr-at-eol
 # Preserve the camera-barcode investigation, original index and native receipts.
 docs/archive/pre-sm-camera-barcode-current-19/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sm-camera-barcode-current-19/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/archive/pre-sm-camera-chain-reliability-20/** -text whitespace=cr-at-eol
+docs/runtime/evidence/sm-camera-chain-reliability-20/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

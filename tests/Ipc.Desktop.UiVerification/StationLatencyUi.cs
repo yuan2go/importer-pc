@@ -28,7 +28,7 @@ static partial class Program
             var old = p.Slot; var original = p.Operation!.Id;
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Api(h.Left).Enqueue(barcode, 2);
             await Until(() => p.IsProcessing && p.Operation?.Id != original, "same-code processing placeholder");
-            Check(p.Slot == "未取得" && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && slot.IsVisible && control.FindName("TaskFields") is null && !p.CurrentTaskAvailable,
+            Check(p.Slot == "未取得" && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && slot.IsVisible && !((Grid)control.FindName("TaskFields")).IsVisible && !p.CurrentTaskAvailable,
                 "same-code pending request immediately clears the prior destination; gray processing placeholder has no authoritative slot or old task fields");
             Check(p.DisplayStatus.Contains("处理中") && p.DisplaySlotLabel.Contains("尚未取得") && p.DisplayPresentation.Tone == Ipc.Application.ParcelFlow.Desktop.ParcelPresentationTone.Pending,
                 "processing state has explicit text, automation label and muted color without a previous destination");
@@ -45,14 +45,14 @@ static partial class Program
             await Until(() => p.IsProcessing && p.Operation?.Id != original, "third pending read");
             await Task.Delay(1700);
             await Until(() => p.Operation?.State == ParcelState.ResolvingWcs, "pending request after former hold deadline");
-            Check(p.IsProcessing && p.DisplaySlot == "处理中…" && slot.Text != old && control.FindName("TaskFields") is null, "processing placeholder never resurrects the old slot after the former display hold deadline");
+            Check(p.IsProcessing && p.DisplaySlot == "处理中…" && slot.Text != old && !((Grid)control.FindName("TaskFields")).IsVisible, "processing placeholder never resurrects the old slot after the former display hold deadline");
             h.Peer.ReplySlot = "SYNTH-OTHER"; h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
             await Until(() => p.SlotAvailable && p.Slot == "SYNTH-OTHER", "different slot response");
             Check(p.DisplaySlot == "SYNTH-OTHER" && !p.SlotProvisional, "a different returned slot replaces the old value immediately and atomically");
             original = p.Operation!.Id; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DIFFERENT-0002"), 4);
             await Until(() => p.Operation?.Id != original && p.Operation?.State == ParcelState.ResolvingWcs, "different barcode pending");
-            Check(!p.SlotProvisional && p.IsProcessing && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && !p.ShowConfirmedTask && control.FindName("TaskFields") is null, "a different barcode uses only a processing placeholder and never borrows the previous parcel's slot or task fields");
+            Check(!p.SlotProvisional && p.IsProcessing && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && !p.ShowConfirmedTask && !((Grid)control.FindName("TaskFields")).IsVisible, "a different barcode uses only a processing placeholder and never borrows the previous parcel's slot or task fields");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; await Until(() => p.SlotAvailable, "different barcode accepted");
             await Until(() => Metrics(h).EnumerateArray().Any(m => m.GetProperty("Stage").GetString() == "SlotComposed" && m.GetProperty("ObservationId").GetString() == p.Input?.Observation.Id), "slot composition metric");
             Check(Metrics(h).EnumerateArray().Where(m => m.GetProperty("Stage").GetString() == "SlotComposed").All(m => m.GetProperty("SnapshotToCompositionMs").GetDouble() >= 0),
@@ -65,7 +65,7 @@ static partial class Program
                 "an older camera cue cannot hide a newer confirmed keyboard request or borrow its slot for another source");
             original = p.Operation!.Id; h.Peer.Mode = "reject"; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DIFFERENT-0002"), 5);
             await Until(() => p.Operation?.Id != original && p.Operation?.State == ParcelState.WcsRejected, "explicit reject");
-            Check(!p.DisplaySlotVisible && !p.SlotProvisional && control.FindName("TaskFields") is null, "explicit rejection clears every provisional and confirmed slot from the current display");
+            Check(!p.DisplaySlotVisible && !p.SlotProvisional && !((Grid)control.FindName("TaskFields")).IsVisible, "explicit rejection clears every provisional and confirmed slot from the current display");
             window.ViewModel.MarkReadFailure("Synthetic stale projection");
             Check(!p.DisplaySlotVisible && !p.SlotProvisional, "stale projection cannot preserve a provisional slot");
         }

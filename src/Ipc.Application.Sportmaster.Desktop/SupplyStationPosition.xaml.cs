@@ -12,6 +12,14 @@ public partial class SupplyStationPosition : UserControl
     public SupplyStationPosition()
     {
         InitializeComponent(); InitializeCompositionFeedback();
+        TaskFields.IsVisibleChanged += (_, _) =>
+        {
+            // Retain only geometry while facts are hidden, including wrapped values.
+            // Current confirmed facts resume natural measurement on this viewport.
+            if (TaskFields.IsVisible) TaskFields.Height = double.NaN;
+            else if (IsLoaded && DataContext is SupplyStationPositionViewModel { ShowConfirmedTask: false } && TaskFields.ActualHeight > 0)
+                TaskFields.Height = TaskFields.ActualHeight;
+        };
         DataContextChanged += (_, e) =>
         {
             presentationGeneration++; feedbackShown = readMeasured = slotMeasured = rejectionShown = successShown = null;

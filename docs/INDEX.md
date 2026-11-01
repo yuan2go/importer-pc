@@ -1,3 +1,5 @@
+> 2026-11-02 合并前全量闭环与工业工程补强见 [SM-CAMERA-CHAIN-CLOSURE-21](work-packages/WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21.md)。覆盖原审查逐项结论、跨位故障/取消唤醒、稳定任务区及编码/反色验证；用户授权完成验证后合并PR171到main，历史证据保持原SourceCommit。
+
 > 2026-11-02 相机→展示→RCS全链路审查续修见 [SM-CAMERA-CHAIN-RELIABILITY-20](work-packages/WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20.md)。用户再次确认逐次识别仍交RCS去重，并授权现场配置码制；单帧拒收、资源背压、编辑终态、分位声音、旋转框及未送达证据按本包核验，19原验证保持原源。
 
 > 2026-11-02 主条码随最新相机观察立即替换、多码候选不堆入主框、图片/格口身份对应见 [SM-CAMERA-BARCODE-CURRENT-19](work-packages/WP-IPC-SM-CAMERA-BARCODE-CURRENT-19.md)及[实施验证](runtime/sm-camera-barcode-current-19.md)。本轮替代16中仅码尾先行而主条码仍等业务处理的呈现；原请求及人工草稿守卫不变。

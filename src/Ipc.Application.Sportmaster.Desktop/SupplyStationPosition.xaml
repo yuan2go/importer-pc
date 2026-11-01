@@ -97,13 +97,14 @@
     </Border>
     <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
          They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
+         Hidden retains measured space during processing; no old values are rendered or exposed for input.
          Two rows keep labels and values readable; values are selectable and wrap without ellipsis. -->
     <Grid Grid.Row="3" x:Name="TaskFields" Margin="0,4,0,0">
      <Grid.Style>
       <Style TargetType="Grid">
        <Style.Triggers>
         <DataTrigger Binding="{Binding ShowConfirmedTask}" Value="False">
-         <Setter Property="Visibility" Value="Collapsed"/>
+         <Setter Property="Visibility" Value="Hidden"/>
         </DataTrigger>
        </Style.Triggers>
       </Style>

@@ -102,6 +102,16 @@ static class StationProductClosure
 
         var maintenanceNow = DateTimeOffset.UtcNow.AddDays(9);
         h.App.CleanupClockForVerification = new FixedClock(maintenanceNow);
+        var releaseReads = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        h.App.BeforeRead = cancellation => releaseReads.Task.WaitAsync(cancellation);
+        var occupied = Enumerable.Range(0, 4).Select(_ => api.ReadStatisticsAsync(from, Minute(DateTimeOffset.UtcNow).AddMinutes(1), default)).ToArray();
+        try
+        {
+            await h.App.CheckAutomaticCleanupAsync(maintenanceNow);
+            Check((await api.ReadCleanupStatusAsync()).State == "等待后台读取完成", "full read capacity defers automatic maintenance instead of failing the business worker");
+        }
+        finally { releaseReads.TrySetResult(); h.App.BeforeRead = null; await Task.WhenAll(occupied); }
+        maintenanceNow = maintenanceNow.AddMinutes(2); h.App.CleanupClockForVerification = new FixedClock(maintenanceNow);
         await h.App.CheckAutomaticCleanupAsync(maintenanceNow);
         var cleaned = await api.ReadCleanupStatusAsync();
         Check(cleaned.State == "本轮完成", "automatic maintenance completes its full backup and bounded retention pass: " + cleaned.State + " " + cleaned.Detail);
@@ -111,6 +121,14 @@ static class StationProductClosure
         await h.App.CheckAutomaticCleanupAsync(maintenanceNow.AddDays(1));
         Check((await api.ReadCleanupStatusAsync()).State == "时钟待核对", "unexpected wall-clock jump fences automatic deletion without replay or rollback");
         Retention(root, Directory.EnumerateFiles(Path.Combine(h.Launch.DataRoot, "maintenance-backups"), "*.db", SearchOption.AllDirectories).Single(), original.FrozenConfiguration);
+        await h.App.DisposeAsync();
+        var stateFile = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster", "automatic-cleanup.json");
+        File.WriteAllText(stateFile, "synthetic invalid maintenance state"); var stateHash = Wire.FileHash(stateFile);
+        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App); api = h.App;
+        var retryNow = DateTimeOffset.UtcNow.AddDays(10); h.App.CleanupClockForVerification = new FixedClock(retryNow);
+        await h.App.CheckAutomaticCleanupAsync(retryNow);
+        Check((await api.ReadCleanupStatusAsync()).State == "维护状态待核对" && Wire.FileHash(stateFile) == stateHash && (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true),
+            "corrupt optional maintenance state disables deletion, preserves exact bytes and keeps eligible manual business available");
         Console.WriteLine("PC21 ROOT=" + root);
     }
     sealed class FixedClock(DateTimeOffset now) : TimeProvider { public override DateTimeOffset GetUtcNow() => now; }

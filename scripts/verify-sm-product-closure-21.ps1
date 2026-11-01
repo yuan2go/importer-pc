@@ -9,6 +9,7 @@ $taskLogRoot=Join-Path (Get-Location) ('.artifacts/sm-product-closure-21/'+$task
 $taskScope='SQLite/built-in loopback RCS/ZXing, Windows native WPF; physical MVS/customer RCS/target IPC/field/24x7 NOT_RUN'
 New-Item -ItemType Directory -Path $taskLogRoot -Force | Out-Null
 function Run-Check([string]$Name,[string[]]$Arguments,[bool]$Native=$false) {
+ if ((& git status --porcelain -- src tests scripts)) { throw 'Frozen product/test/tool sources changed during verification; retain intermediate evidence and rerun from a clean commit' }
  $taskLog=Join-Path $taskLogRoot ($Name+'.log')
  & dotnet @Arguments *> $taskLog
  $taskCode=$LASTEXITCODE

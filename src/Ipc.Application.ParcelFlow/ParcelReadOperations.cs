@@ -1,5 +1,7 @@
 namespace Ipc.Application.ParcelFlow;
 
+internal sealed class ReadOperationCapacityException() : InvalidOperationException("后台操作并发已达上限，请等待当前操作结束") { }
+
 public sealed partial class ParcelRuntime
 {
     readonly object readOwnership = new();
@@ -20,7 +22,7 @@ public sealed partial class ParcelRuntime
         lock (readOwnership)
         {
             if (stopping.IsCancellationRequested || disposed) throw new InvalidOperationException("运行正在停止，不能开始读取");
-            if (owners.Count >= capacity) throw new InvalidOperationException("后台操作并发已达上限，请等待当前操作结束");
+            if (owners.Count >= capacity) throw new ReadOperationCapacityException();
             owners.Add(drained.Task);
         }
         return Task.Run(async () =>

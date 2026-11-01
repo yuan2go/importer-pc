@@ -27,6 +27,8 @@ public sealed partial class ParcelRuntime
                 Configuration = new { snapshot.Configuration.Revision, snapshot.Configuration.Status, RequiresRestart = snapshot.Configuration.Pending is not null },
                 Health = snapshot.Health.Select(h => new { h.InstanceId, h.Ready, h.ConfirmedAt, h.ValidUntil }),
                 Capacity = snapshot.Capacity,
+                Cleanup = new { Enabled = snapshot.Configuration.Effective.OperationsPolicy?.AutomaticHistoryCleanup == true,
+                    State = automaticCleanup?.State, LastCompleted = automaticCleanup?.LastCompleted, NextCheck = automaticCleanup?.NextCheck },
                 Operations = snapshot.Operations.OrderByDescending(o => o.ObservedAt).Take(100).Select(o => new {
                     o.Id, o.PositionId, o.ObservedAt, o.State, RequestId = o.Wcs?.Request.Id, RequestHash = o.Wcs?.Request.PayloadHash,
                     Result = o.Wcs?.State, o.RecoveryRequired }),

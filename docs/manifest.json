@@ -75736,9 +75736,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "87e9ae807b5c817eaf8df7153fe9cf85dd1c31eca773ed6eb6e4b6f813a1d0c1",
-      "size_bytes": 2620,
-      "git_blob": "91ab38298ccb35858b7da6e59ec4254d669638c2"
+      "sha256": "98d2539a526bdef0a5715614e20a01281946258db1f6e79e6d4a3bd00ab902af",
+      "size_bytes": 2715,
+      "git_blob": "1a1c7150df66e241fc59e7ccf3419e7a09c68767"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelSupervision.cs",
@@ -114981,9 +114981,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "8955c5396e5f123fef3745fbeea8ed38a284b8da737a2c128317bdd7a659c63c",
-      "size_bytes": 6366,
-      "git_blob": "4b0fe76bb371ff0f4508ea02fb132ff61d70056c",
+      "sha256": "839e34a33b1948c865214474203e8115aa261dcce9afe58bfce8dfe92107a1e3",
+      "size_bytes": 6552,
+      "git_blob": "99ee6bf75152a417dca0968dcb1c0393121e6343",
       "storage_scope": "public_repository"
     },
     {
@@ -115025,9 +115025,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "80445d9f19cf70cf46242d8b4805f65446dcee4f0cef05707047ab8f28579579",
-      "size_bytes": 9689,
-      "git_blob": "bdf13cac2f934bd09aa2d1f479ee9f6222af2dfd",
+      "sha256": "c87a5d7ed50782fb1c563212607269d5a9b2e83f639fae0d592fcb17b57bd757",
+      "size_bytes": 11648,
+      "git_blob": "9b4a0e73f925a91e101557a59905f791ff85c55c",
       "storage_scope": "public_repository"
     },
     {
@@ -115036,9 +115036,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "c3a982fdb91a005ff36fd91be97d6f7f94029a49edf151f6ad6a0a1842e0ab19",
-      "size_bytes": 5930,
-      "git_blob": "e264aa7cb188b0ad8aabf2e28a3519b5aaa6a7a5",
+      "sha256": "0afa0f002d416329100b131e07c9dfba50ed9951788a72d9a578d79e6e630299",
+      "size_bytes": 6201,
+      "git_blob": "d1bc0c670605438d047c7aa9a36442aff0a6fea4",
       "storage_scope": "public_repository"
     },
     {
@@ -115091,9 +115091,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "162c15b480d01c5b9439ffd6058a0d6da7f9803b8164f2711e0f15507a90d9b2",
-      "size_bytes": 13663,
-      "git_blob": "7bfaf87bd34861352c4030b25223d6991d8e8f39",
+      "sha256": "bc6b8c659e0e4c5c07c7778f9f2c97eb91beacd9aee79cf567ccd6800179410c",
+      "size_bytes": 15432,
+      "git_blob": "d87b4fa976fbdcbcff614ca7c1669283342e8c3c",
       "storage_scope": "public_repository"
     },
     {
@@ -115113,9 +115113,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "d20d180a1dd8b66270d90ff1b1f4d6997105683de66e03cd02ea25cc9c946c2a",
-      "size_bytes": 3396,
-      "git_blob": "3402addc47497026f93859ce52c8254c903e2785",
+      "sha256": "721a043fbf11c8f2d00540aba5c0086e0458c1b099b80d4fcd303782206eb489",
+      "size_bytes": 3583,
+      "git_blob": "9f000cb06fca70a7a2bf1544b13017529161b769",
       "storage_scope": "public_repository"
     }
   ],
@@ -117980,8 +117980,8 @@
   ],
   "integration_sources": [
     {
-      "commit": "504efab5c6fde30f481438168407928335af85c2",
-      "manifest_sha256": "9185d6c724480a4c2f024a23717c877194cbf5a144cb4fd618851417fe30141f",
+      "commit": "4e7a5bcf5e94c35fe3d9c70207780c3d5070bf7c",
+      "manifest_sha256": "8e5b770251eb8d0cf0ef21168d7c243b3dcb9216c49fa98195379a9a7ba5afeb",
       "work_package": "WP-IPC-SM-PRODUCT-CLOSURE-21"
     }
   ],

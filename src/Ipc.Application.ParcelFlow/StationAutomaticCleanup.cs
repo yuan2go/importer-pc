@@ -13,8 +13,21 @@ public sealed partial class ParcelRuntime
     DateTimeOffset? cleanupUtc;
     long cleanupTicks;
     bool cleanupClockFault;
+    bool cleanupStateFault;
     internal TimeProvider CleanupClockForVerification { set { cleanupClock = value; cleanupUtc = null; cleanupClockFault = false; } }
     string AutomaticCleanupFile => Path.Combine(directory!, "automatic-cleanup.json");
+    bool PersistAutomaticCleanup()
+    {
+        try { ExtensionStore.AtomicWrite(AutomaticCleanupFile, automaticCleanup!); return true; }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            cleanupStateFault = true;
+            automaticCleanup = new("维护记录待核对", automaticCleanup?.LastCompleted, cleanupClock.GetUtcNow().AddMinutes(15),
+                "自动清理已停止，保留原状态文件和已提交业务事实；请核对维护记录。" + DiagnosticText.Protect(error.Message));
+            Diagnostic("维护", "自动清理状态记录失败", "警告", DiagnosticText.Protect(error.Message));
+            return false;
+        }
+    }
     internal async Task CheckAutomaticCleanupAsync(DateTimeOffset now)
     {
         Task? work;
@@ -36,22 +49,34 @@ public sealed partial class ParcelRuntime
     }
     void TryAutomaticCleanup(DateTimeOffset now)
     {
-        if (Id != "sportmaster" || Effective.OperationsPolicy is not { AutomaticHistoryCleanup: true } policy) return;
+        if (Id != "sportmaster" || Effective.OperationsPolicy is not { AutomaticHistoryCleanup: true } policy || cleanupStateFault) return;
         var ticks = cleanupClock.GetTimestamp();
         if (cleanupUtc is { } prior && Math.Abs((now - prior - cleanupClock.GetElapsedTime(cleanupTicks, ticks)).TotalSeconds) > 5)
         {
             cleanupClockFault = true;
             automaticCleanup = new("时钟待核对", automaticCleanup?.LastCompleted, now.AddMinutes(15), "检测到系统时间跳变，自动清理已停止。请核对系统时间后重启软件；原件保留。");
-            ExtensionStore.AtomicWrite(AutomaticCleanupFile, automaticCleanup);
+            if (!PersistAutomaticCleanup()) return;
         }
         cleanupUtc = now; cleanupTicks = ticks;
         if (cleanupClockFault || now < cleanupWarmup ||
             automaticCleanupWork is { IsCompleted: false } || stopping.IsCancellationRequested) return;
         if (automaticCleanup is null && File.Exists(AutomaticCleanupFile))
         {
-            RecoveryFiles.RequireOrdinaryAncestors(AutomaticCleanupFile);
-            if (new FileInfo(AutomaticCleanupFile).Length > 65536) throw new InvalidDataException("自动清理状态超出预算，保留原件");
-            automaticCleanup = Wire.Decode<AutomaticCleanupState>(File.ReadAllText(AutomaticCleanupFile));
+            try
+            {
+                RecoveryFiles.RequireOrdinaryAncestors(AutomaticCleanupFile);
+                if (new FileInfo(AutomaticCleanupFile).Length > 65536) throw new InvalidDataException("自动清理状态超出预算，保留原件");
+                automaticCleanup = Wire.Decode<AutomaticCleanupState>(File.ReadAllText(AutomaticCleanupFile));
+                if (automaticCleanup is null || string.IsNullOrWhiteSpace(automaticCleanup.State) || automaticCleanup.NextCheck == default)
+                    throw new InvalidDataException("自动清理状态缺少必要字段，保留原件");
+            }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
+            {
+                cleanupStateFault = true;
+                automaticCleanup = new("维护状态待核对", null, now.AddMinutes(15), "自动清理已停止，原状态文件保留。" + DiagnosticText.Protect(error.Message));
+                Diagnostic("维护", "自动清理状态无法读取", "警告", DiagnosticText.Protect(error.Message));
+                return;
+            }
         }
         if (automaticCleanup is not null && now < automaticCleanup.NextCheck) return;
         var local = TimeZoneInfo.ConvertTime(now, TimeZoneInfo.FindSystemTimeZoneById(policy.TimeZoneId));
@@ -64,9 +89,18 @@ public sealed partial class ParcelRuntime
         var captured = Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective));
         if (!repository!.RetentionDue(captured.Retention!.HistoryDays!.Value, now)) { cleanupWarmup = now.AddHours(1); return; }
         automaticCleanup = new("运行中", automaticCleanup?.LastCompleted, now.AddMinutes(15), "空闲窗口内先完整备份，再执行有界清理；原请求与未决责任保留。");
-        ExtensionStore.AtomicWrite(AutomaticCleanupFile, automaticCleanup);
-        automaticCleanupWork = OwnedRead(t => RunAutomaticCleanup(captured, now, t));
-        auxiliary.Add(automaticCleanupWork);
+        if (!PersistAutomaticCleanup()) return;
+        try
+        {
+            automaticCleanupWork = OwnedRead(t => RunAutomaticCleanup(captured, now, t));
+            auxiliary.Add(automaticCleanupWork);
+        }
+        catch (ReadOperationCapacityException)
+        {
+            automaticCleanup = new("等待后台读取完成", automaticCleanup.LastCompleted, now.AddMinutes(1), "后台读取容量已满，本轮清理延后，不阻断供包。");
+            _ = PersistAutomaticCleanup();
+        }
+        catch (InvalidOperationException) when (stopping.IsCancellationRequested) { }
     }
     async Task<bool> RunAutomaticCleanup(ParcelConfiguration captured, DateTimeOffset now, CancellationToken token)
     {
@@ -113,7 +147,7 @@ public sealed partial class ParcelRuntime
         }
         catch (Exception error) when (error is IOException or InvalidOperationException or UnauthorizedAccessException or OperationCanceledException or Microsoft.Data.Sqlite.SqliteException)
         {
-            if (error is Microsoft.Data.Sqlite.SqliteException or Ipc.Platform.Storage.StorageWriteFailure) StorageFailed(error, "AutomaticRetention");
+            if (error is Microsoft.Data.Sqlite.SqliteException or Ipc.Platform.Storage.StorageWriteFailure or InvalidDataException) StorageFailed(error, "AutomaticRetention");
             automaticCleanup = new("本轮未完成", previous, now.AddMinutes(15), "原件和已提交清理事实保留；请在维护中心查看详情。" + DiagnosticText.Protect(error.Message), backup);
             Diagnostic("维护", "自动历史清理未完成", "警告", DiagnosticText.Protect(error.Message));
         }
@@ -123,7 +157,7 @@ public sealed partial class ParcelRuntime
             try
             {
                 if (ownsFence) { configurationSaving = false; backupInProgress = false; }
-                if (automaticCleanup is not null) ExtensionStore.AtomicWrite(AutomaticCleanupFile, automaticCleanup);
+                if (automaticCleanup is not null) _ = PersistAutomaticCleanup();
             }
             finally { gate.Release(); }
         }

@@ -45,7 +45,7 @@ static partial class Program
             Check(((Border)window.FindName("RcsConnection")).IsVisible, "shared RCS status stays visible at " + size.Item1);
             foreach (var position in Descendants(window).OfType<SupplyStationPosition>())
             {
-                var badge = (Border)position.FindName("CameraConnection"); var scan = (Grid)position.FindName("ScanInformation");
+                var badge = (TextBlock)position.FindName("CameraConnection"); var scan = (Grid)position.FindName("ScanInformation");
                 Check(badge.IsVisible && Inside(badge, client) && scan.IsVisible, "camera badge and empty scan group remain available at " + size.Item1);
             }
             CaptureInternal(evidence, "work-empty-" + (int)size.Item1, client, lines);
@@ -58,7 +58,7 @@ static partial class Program
             effective = effective with { Mode = RunMode.Production, Wcs = effective.Wcs! with { Contract = "SPORTMASTER-RCS-SORTER-v1" }, DeferredConnections = state == "deferred" ? [effective.Wcs!.InstanceId, .. s.Positions!.Select(p => p.ReaderDeviceId)] : null };
             return s with { Configuration = s.Configuration with { Effective = effective },
                 Devices = s.Devices!.Select((d, i) => d with { Health = state == "offline" && i == 0 ? DeviceHealth.Disconnected : DeviceHealth.Ready, ConfirmedAt = now.AddSeconds(-1), ValidUntil = state == "expired" ? now.AddMilliseconds(-1) : now.AddMinutes(1), Source = "TCP:client-LF:synthetic", Invalidity = null }).ToArray(),
-                Health = [new(effective.Wcs!.InstanceId, state != "offline", now.AddSeconds(-1), now.AddMinutes(1), state == "local" ? "local lifecycle only" : "RCS heartbeat HTTP 200")] };
+                Health = [new(effective.Wcs!.InstanceId, state != "offline", now.AddSeconds(-1), now.AddMinutes(1), state == "local" ? "local lifecycle only" : "Synthetic wording changed; typed response evidence owns state") { RemoteConfirmation = state is "local" or "offline" ? RemoteConnectionConfirmation.Unconfirmed : RemoteConnectionConfirmation.ResponseReceived }] };
         }
         foreach (var state in new[] { "online", "offline", "expired", "deferred", "local" })
         {
@@ -114,9 +114,9 @@ static partial class Program
         await SetClient(window, 800, 420); await Flush(window);
         foreach (var position in Descendants(window).OfType<SupplyStationPosition>())
         {
-            var slot = (TextBox)position.FindName("CurrentSlot"); var body = (ScrollViewer)position.FindName("PositionBody");
-            Check(slot.IsVisible && slot.TranslatePoint(new Point(), body).Y + slot.ActualHeight <= body.ActualHeight + 1,
-                "current destination remains in the compact scroll viewport without scrolling");
+            var slot = (TextBox)position.FindName("CurrentSlot"); var body = (Border)position.FindName("ResultPanel");
+            Check(slot.IsVisible && slot.TransformToAncestor(body).TransformBounds(new Rect(slot.RenderSize)).Bottom <= body.ActualHeight + 1,
+                "current destination remains in the compact fixed result panel without scrolling");
         }
         CaptureInternal(evidence, "work-results-800", client, lines);
         window.Close(); await Task.Delay(250);

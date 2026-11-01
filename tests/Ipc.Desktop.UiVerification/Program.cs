@@ -53,6 +53,7 @@ static partial class Program
                         (ok, text) => { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS SEED-GUARDS " + text); });
                 else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);
                 else if (args.Contains("--query-filters")) await VerifyQueryFilters(root, evidence, lines);
+                else if (args.Contains("--operator-ux-18")) await VerifyOperatorUx18(root, evidence, lines);
                 else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
                 else if (args.Contains("--manual-supply-ui")) await VerifyManualSupplyUi(root, evidence, lines);
                 else if (args.Contains("--continuous-pda-input")) await VerifyContinuousPdaInput(root, evidence, lines);
@@ -223,9 +224,9 @@ static partial class Program
         if (root is SupplyStationWindow station)
         {
             if (name is "诊断与恢复" or "站位与设备诊断") { station.ShowPositionDiagnostics(station.ViewModel.Left); return; }
-            name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", _ => name };
+            name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", "作业记录" => "记录", "日志查询" => "日志", _ => name };
             if (name == "参数设置" && station.ViewModel.SelectedPage == "maintenance") return;
-            if (name == "作业" && station.ViewModel.SelectedPage == "maintenance") name = "返回作业";
+            if (name == "返回作业") name = "作业";
         }
         var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));
         if (button is not null) button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

@@ -15,6 +15,7 @@ public sealed partial class SportmasterRcsTaskService
     CancellationTokenSource? heartbeatStop;
     Task? heartbeatTask;
     string? heartbeatFailure;
+    bool heartbeatResponseReceived;
     string heartbeatEvidence = "RCS client stopped; upstream acceptance unconfirmed";
     static long lastHeartbeatId;
 
@@ -70,7 +71,7 @@ public sealed partial class SportmasterRcsTaskService
                     if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
                     lock (lifecycle)
                     {
-                        heartbeatFailure = null;
+                        heartbeatFailure = null; heartbeatResponseReceived = true;
                         heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; application acknowledgement unconfirmed";
                     }
                 }

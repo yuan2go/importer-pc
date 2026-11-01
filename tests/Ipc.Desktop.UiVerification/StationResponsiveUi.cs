@@ -74,14 +74,14 @@ static partial class Program
             await SetClient(window, 1366, 768); await Until(() => window.ViewModel.Fresh && window.ViewModel.Left.ShowConfirmedTask, "initial pushed snapshot");
             var p = window.ViewModel.Left; var other = window.ViewModel.Right;
             var control = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, p));
-            var slot = (TextBox)control.FindName("CurrentSlot"); var fields = (Grid)control.FindName("TaskFields");
+            var slot = (TextBox)control.FindName("CurrentSlot");
             var rightControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, other));
             var entry = (TextBox)rightControl.FindName("BarcodeEntry"); entry.Focus(); entry.Text = "UNSUBMITTED-DRAFT"; entry.Select(3, 4);
             h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref hold, 0) == 1) { entered.Set(); release.Wait(); } };
             hold = 1; var original = p.Operation!.Id; var calls = h.Peer.Requests.Count; var clock = Stopwatch.StartNew();
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("RESPONSIVE-0001"), 3);
             await Until(() => entered.IsSet && p.IsProcessing && p.ReadCueLabel.EndsWith("0001", StringComparison.Ordinal), "read cue before durable input");
-            Check(!p.ShowConfirmedTask && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && !fields.IsVisible &&
+            Check(!p.ShowConfirmedTask && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && control.FindName("TaskFields") is null &&
                 p.Operation?.Id == original && h.Peer.Requests.Count == calls && p.DisplayAttentionReason.Contains("尚未确认接收"),
                 "before FULL commit completes, a new same-code observation clears the old destination and fields without inventing custody/admission or sending RCS");
             var feedback = (await ((IParcelPresentationDiagnostics)h.App).ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left");

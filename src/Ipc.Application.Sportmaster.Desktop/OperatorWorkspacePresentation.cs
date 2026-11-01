@@ -25,13 +25,13 @@ public sealed partial class SupplyStationViewModel
     public string SetupInstruction => "配置并启用 RCS 后，可手动输入条码取格口；不要求配置或连接相机。";
     // Lead with the position that needs attention; a positive phrase never sits on a warning band.
     // PositionName is the shared ParcelViewModel display mapping.
-    public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "维护中 · 暂停接收新包裹" :
-        Snapshot?.Positions is { } positions && positions.Any(p => p.Admit)
-            ? positions.All(p => p.Admit) ? "可以供包" : string.Join("、", positions.Where(p => !p.Admit).Select(p => PositionName(p.Id))) + "暂不能供包" : "暂不能供包";
+    public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "供包已暂停" :
+        Snapshot?.Positions is { } positions && positions.Any(p => p.Admit || p.BarcodeInput?.Manual == true)
+            ? positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包" : "暂不能供包";
     public string OperatorNotice => !Fresh ? OperatorCopy.StaleStep :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :
-        Snapshot?.Paused == true ? "已取得格口的包裹可继续投递；新包裹等维护人员恢复后再扫。" :
+        Snapshot?.Paused == true ? "本件暂勿投递，等待恢复供包。" :
         Snapshot?.Positions is { } shown && shown.Any(p => p.Admit) && shown.Any(p => !p.Admit)
             ? string.Join("、", shown.Where(p => p.Admit).Select(p => PositionName(p.Id))) + "照常作业；其余投递位按卡片提示处理。" :
         Snapshot?.Positions?.Any(p => !p.Admit) == true ? "请按各投递位卡片上的提示处理。" : "";
@@ -94,7 +94,7 @@ public sealed partial class SupplyStationViewModel
             if (health.ConfirmedAt > now || health.ValidUntil <= now || health.ValidUntil <= health.ConfirmedAt)
                 return "RCS 状态确认已过期或无效。请检查服务和网络，等待新的有效确认。";
             if (!health.Ready) return "RCS 连接未就绪。请检查服务地址、服务运行情况和网络；具体故障见日志。";
-            return health.Detail.Contains("RCS heartbeat HTTP ", StringComparison.Ordinal)
+            return health.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived
                 ? "最近心跳已收到 HTTP 回应；本次包裹仍以取格口回应为准。"
                 : "本机客户端已启动，尚未确认远端连接。请等待心跳或查看日志。";
         }

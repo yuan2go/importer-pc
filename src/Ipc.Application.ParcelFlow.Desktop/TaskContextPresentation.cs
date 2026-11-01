@@ -21,6 +21,7 @@ public partial class ParcelViewModel
         Changed(nameof(TaskFeedback));
     }
     public string GlobalOperationFeedback { get; private set; } = "";
+    public bool GlobalReceiptCommitted => globalReceiptCommitted;
     public bool HasGlobalOperationFeedback => GlobalOperationFeedback.Length > 0;
     long BeginGlobalOperation(string label)
     {
@@ -32,7 +33,7 @@ public partial class ParcelViewModel
     void SetGlobalFeedback(string value)
     {
         GlobalOperationFeedback = value;
-        Changed(nameof(GlobalOperationFeedback)); Changed(nameof(HasGlobalOperationFeedback));
+        Changed(nameof(GlobalOperationFeedback)); Changed(nameof(HasGlobalOperationFeedback)); Changed(nameof(GlobalReceiptCommitted));
     }
     void CompleteGlobalOperation(long generation, string label, string result, bool committed = false)
     {
@@ -54,9 +55,5 @@ public partial class ParcelViewModel
     // These idle/read-success descriptions duplicate the workstation and parameter save bar.
     // Keep the original Feedback in diagnostics; never suppress a rejection or pending result.
     public string TaskFeedback => (Busy ? runningFeedbackScope : messageScope) != feedbackScope ? "" :
-        !Busy && messageRevision == globalMessageRevision ? "" : !Busy && Message is ("等待相机读码；模拟工程不操作真实设备。" or
-        "模拟观察已排队；状态由应用服务更新。" or
-        "作业记录已完成；已读取最新状态。" or "读取作业记录已完成；已读取最新状态。" or
-        "读取最新50条已完成；已读取最新状态。" or "下一页已完成；已读取最新状态。" or
-        OperatorCopy.ConfigurationLoaded) ? "" : OperatorFeedback;
+        !Busy && messageRevision == globalMessageRevision ? "" : !Busy && MessageKind is (PresentationFeedbackKind.Idle or PresentationFeedbackKind.ConfigurationRead or PresentationFeedbackKind.ReadCompleted or PresentationFeedbackKind.ObservationQueued or PresentationFeedbackKind.ResultMirrored) ? "" : OperatorFeedback;
 }

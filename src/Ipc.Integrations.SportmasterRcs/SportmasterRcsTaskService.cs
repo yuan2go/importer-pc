@@ -50,7 +50,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             if (active != 0 || heartbeatTask is { IsCompleted: false }) throw new InvalidOperationException("RCS stop is still draining");
             if (heartbeatStations is null) throw new InvalidDataException("RCS requires the effective station/reader configuration before start");
             heartbeatStop?.Dispose(); heartbeatStop = new();
-            heartbeatFailure = null;
+            heartbeatFailure = null; heartbeatResponseReceived = false;
             heartbeatEvidence = heartbeatStations.Length == 0
                 ? "Camera heartbeat suspended: no configured camera codes; manual request client ready; upstream acceptance unconfirmed"
                 : "Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed";
@@ -65,7 +65,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     {
         token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
         lock (lifecycle) return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed && heartbeatStations is not null && heartbeatFailure is null, now, now.AddSeconds(3),
-            "RCS client local lifecycle/configuration readiness only; " + (heartbeatFailure ?? heartbeatEvidence)));
+            "RCS client local lifecycle/configuration readiness only; " + (heartbeatFailure ?? heartbeatEvidence))
+            { RemoteConfirmation = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null ? RemoteConnectionConfirmation.ResponseReceived : RemoteConnectionConfirmation.Unconfirmed });
     }
     public async Task ReconnectAsync(CancellationToken token)
     { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }

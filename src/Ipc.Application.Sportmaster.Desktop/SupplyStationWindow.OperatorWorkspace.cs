@@ -11,6 +11,12 @@ public partial class SupplyStationWindow
     void BuildOperatorWorkspace()
     {
         workContent.Children.Add(work);
+        Deactivated += (_, _) => ViewModel.SetInputTarget("");
+        Activated += (_, _) =>
+        {
+            foreach (var control in work.Children.OfType<SupplyStationPosition>())
+                if (control.FindName("BarcodeEntry") is TextBox { IsKeyboardFocused: true } && control.DataContext is SupplyStationPositionViewModel p) p.SetInputFocused(true);
+        };
     }
     async Task OpenOperatorSettingsAsync(string? deviceId = null, string? instanceId = null)
     {

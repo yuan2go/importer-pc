@@ -32,6 +32,7 @@ static partial class Program
         Click(window, "作业记录"); await Until(() => vm.HistoryLoaded && !vm.HistoryLoading && !vm.Busy);
         var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
         Check(vm.HistoryItems.Length == 1 && vm.CanExportHistory, "history still reads its real fixed selection and export boundary");
+        ((Expander)history.FindName("AllHistoryFilters")).IsExpanded = true; ((Expander)history.FindName("HistoryFilters")).IsExpanded = true; await Flush();
         var inputs = Descendants(history).OfType<DateTimeInput>().ToArray(); Check(inputs.Length == 2, "history has exactly two shared time controls");
         var input = inputs[0]; var calendar = Descendants(input).OfType<DatePicker>().Single(); var clock = Descendants(input).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
         const string original = "2026-10-19T23:59:59.1234567+05:30"; input.Timestamp = original; await Flush();

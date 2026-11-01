@@ -30,7 +30,7 @@ public partial class ParcelViewModel
             failed ? "本次观察未创建新作业" : p.MainResultComplete ? "主结果已确认" : "主结果未完成", p.BackgroundComplete ? "后台责任已清偿" : "后台责任待清偿 · " + op?.Upload?.State + " · " + op?.Upload?.Failure,
             style.Foreground, style.Background, style.Border, style.Icon, ParcelPresentation.InputSummary(input), failed && op is not null ? "原件仍保留 · " + ParcelPresentation.Operation(op, Fresh).Text  : "")
         { CurrentSlotAvailable = currentResult && !string.IsNullOrWhiteSpace(op?.Slot),
-          HasCurrentInput = op is not null || input is not null, NeedsAttention = !Fresh || failed || style.Foreground is "#B52F38" or "#895509" };
+          HasCurrentInput = op is not null || input is not null, NeedsAttention = !Fresh || failed || style.NeedsAttention };
     }).ToArray() ?? [];
     public string CurrentCommandTarget => "当前位命令目标：" + SelectedPositionId + " · " + (Current?.ParcelCode ?? "无作业") + " · " + (Current?.Id ?? "—");
     public string HistoryCommandTarget => "记录命令目标：" + (Selected?.PositionId ?? "—") + " · " + (Selected?.ParcelCode ?? "未选择") + " · " + (Selected?.Id ?? "—");

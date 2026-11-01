@@ -1,3 +1,5 @@
+> PR168原过程与当时NOT_RUN记录保留。当前暂停呈现、类型化反馈及整合后的Windows补证以 [SM-OPERATOR-UX-18](WP-IPC-SM-OPERATOR-UX-18.md) 为准；该包“已取得格口可继续投递”的暂停文案已被18明确替代。[PR168原字节](../archive/pre-sm-operator-ux-18/pr168-OPERATOR-COPY-01.md)。
+
 # OPERATOR-COPY-01 · 供包员界面文案工业化
 
 2026-11-01。用户要求从工业现场角度修复供包台界面文案问题并更新到 main。基线 main `02b0891`（含 PR167 实时呈现；其新增连续性提示一并按本规则调整），分支 `codex/operator-copy-industrial-01`。

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;

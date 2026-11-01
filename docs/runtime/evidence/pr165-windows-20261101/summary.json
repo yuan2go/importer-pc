@@ -1,0 +1,81 @@
+{
+  "source_commit": "3e79ec7a04f6acc818efc687589898cf0ad792b7",
+  "base_main": "aebd476d9a6fe3f34f629ea229ac3b5487dd32ef",
+  "baseline_native": "FAIL on unchanged pre-165 product: durable preparation arriving after departure was not retired",
+  "full_rebuild": {
+    "core": "PASS 0 warnings/errors",
+    "wpf": "PASS 0 warnings/errors"
+  },
+  "native": "PASS all original assertions plus three late-result paths; actual HWND/Dispatcher, real SQLite and built-in loopback RCS",
+  "lifecycle": "PASS 18 checks explicit Simulation; capacity, preparation exhaustion, Pending T3",
+  "production_config": "PASS manual-supply/manual-rcs-debug using synthetic camera ports; camera-rounds PASS",
+  "shutdown_regression": "PASS",
+  "not_run": [
+    "real SDK",
+    "customer RCS",
+    "installation",
+    "site"
+  ],
+  "logs": [
+    {
+      "path": "pr165-baseline-ui-build.log",
+      "sha256": "0773d7504ce82bb3b3316d71228789ce13d56799d789a54d792c8a813bfa0847",
+      "bytes": 84,
+      "pass_assertions": 0
+    },
+    {
+      "path": "pr165-baseline-native.log",
+      "sha256": "a591417ccc1cc539312390ed0712707b0b7fa3715bcbd2573a768517823e75e4",
+      "bytes": 2019,
+      "pass_assertions": 7
+    },
+    {
+      "path": "pr165-core-build.log",
+      "sha256": "3eb320578da3c7ed57a7393964d169578e1ccd9ec7ee5943575b707526de639c",
+      "bytes": 84,
+      "pass_assertions": 0
+    },
+    {
+      "path": "pr165-ui-build.log",
+      "sha256": "2efe6ae8e60c13e0c7196b005158d5f16b9a4bcab4a9dc986800ccb4f2d49850",
+      "bytes": 84,
+      "pass_assertions": 0
+    },
+    {
+      "path": "pr165-fixed-native.log",
+      "sha256": "79b9ba2cb9d6ae03c6a866bb8eeadcd1d7939e09a6d19bd76e2e8640629bb2e3",
+      "bytes": 1500,
+      "pass_assertions": 13
+    },
+    {
+      "path": "pr165-manual-rcs-debug-lifecycle.log",
+      "sha256": "da7c20208ab5418cd2b4206a21b8d13a1b6cf6b183fcbcb577efb9508cb5d590",
+      "bytes": 1516,
+      "pass_assertions": 18
+    },
+    {
+      "path": "pr165-manual-supply.log",
+      "sha256": "dec1f95f811d25b3392a31adaf88ca49551217c4457100a7da83ad326ee3fb70",
+      "bytes": 2214,
+      "pass_assertions": 24
+    },
+    {
+      "path": "pr165-manual-rcs-debug.log",
+      "sha256": "d093e6b3c9d8983fbba64eca4391d65eeffc7e43f6ca9a3c9fd594ef8e163a79",
+      "bytes": 2566,
+      "pass_assertions": 29
+    },
+    {
+      "path": "pr165-camera-rounds.log",
+      "sha256": "fe1e525386e0adf22a1c6acece94449e9b193eb4b48d752a704886d2a6cb9303",
+      "bytes": 29689,
+      "pass_assertions": 41
+    },
+    {
+      "path": "pr165-shutdown-resources.log",
+      "sha256": "9fcc500262c42b63d3ba9449f6b58c5b22e203a89992ef64cb37a046dded1d9f",
+      "bytes": 2012,
+      "pass_assertions": 21
+    }
+  ]
+}

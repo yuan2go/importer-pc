@@ -33,7 +33,7 @@ public sealed partial class ParcelRuntime
         if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
             !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
         if (stopping.IsCancellationRequested) return op;
-        var deliveryAuthority = query || op.DebugRequest is not null ? Management.Require() : CancellationToken.None;
+        var deliveryAuthority = query || IsDebugRequest(op) ? Management.Require() : CancellationToken.None;
         // Adapter dictionaries are mutable; never expose the owned original intent.
         var deliveryRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
         if (!query)

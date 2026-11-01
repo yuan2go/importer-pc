@@ -37,8 +37,11 @@ if (args.Contains("--runtime-identity-boundary")) { await RuntimeIdentityBoundar
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
 if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
 if (args.Contains("--manual-supply")) { await ManualSupplyChecks.Run(workspace, root); return; }
+if (args.Contains("--manual-rcs-debug-lifecycle")) { await ManualRcsDebugChecks.Lifecycle(workspace, root); return; }
+if (args.Contains("--manual-rcs-debug")) { await ManualRcsDebugChecks.Run(workspace, root); return; }
 if (args.Contains("--camera-rounds")) { await CameraRoundChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
+if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResources(workspace, root); return; }
 if (args.Contains("--mvs-contrast-checks")) { SportmasterRcs.MvsContrastChecks(); return; }
 if (args.Contains("--mvs-latency")) { SportmasterRcs.MvsLatency(args); return; }
 if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }

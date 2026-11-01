@@ -1,0 +1,21 @@
+PASS RCS20: shutdown writer owns the original copied pixels
+PASS RCS20: shutdown drains actual image work before releasing the application owner
+PASS RCS20: completed background failure remains visible to the lifecycle caller
+PASS RCS20: stopped faulted work retains the application until real disposal
+PASS RCS20: disposal preserves the prior stop failure after completing cleanup
+PASS RCS20: a failed completed task cannot strand native resources or database leases
+PASS RCS20: repeated disposal succeeds without replaying the completed task or double releasing resources
+PASS RCS20: released database reopens with original request and uncertain image status intact, without resend or fabricated archive success
+PASS RCS20: shutdown writer owns the original copied pixels
+PASS RCS20: shutdown drains actual image work before releasing the application owner
+PASS RCS20: completed background failure remains visible to the lifecycle caller
+PASS RCS20: a failed completed task cannot strand native resources or database leases
+PASS RCS20: repeated disposal succeeds without replaying the completed task or double releasing resources
+PASS RCS20: released database reopens with original request and uncertain image status intact, without resend or fabricated archive success
+PASS RCS20: shutdown writer owns the original copied pixels
+Unhandled exception. System.Exception: Background failure was lost
+   at SportmasterRcs.ShutdownResources(String workspace, String root) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/ShutdownResources.cs:line 65
+   at SportmasterRcs.ShutdownResources(String workspace, String root) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/ShutdownResources.cs:line 86
+   at SportmasterRcs.ShutdownResources(String workspace, String root) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/ShutdownResources.cs:line 88
+   at Program.<Main>$(String[] args) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 43
+   at Program.<Main>(String[] args)

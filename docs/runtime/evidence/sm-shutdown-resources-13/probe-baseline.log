@@ -1,0 +1,8 @@
+PASS MVS: cutover fixture owns an actual outstanding acquisition call
+PASS MVS: inspection waits for the existing acquisition without releasing its owner
+Unhandled exception. System.TimeoutException: The operation has timed out.
+   at MvsVerification.VerifyInspectionShutdown() in D:\w\ipc-shutdown-13\tests\Ipc.Drivers.Hikrobot.Probe\MvsVerification.Shutdown.cs:line 20
+   at MvsVerification.VerifyInspectionShutdown() in D:\w\ipc-shutdown-13\tests\Ipc.Drivers.Hikrobot.Probe\MvsVerification.Shutdown.cs:line 33
+   at MvsVerification.VerifyInspectionShutdown() in D:\w\ipc-shutdown-13\tests\Ipc.Drivers.Hikrobot.Probe\MvsVerification.Shutdown.cs:line 55
+   at Program.<Main>$(String[] args) in D:\w\ipc-shutdown-13\tests\Ipc.Drivers.Hikrobot.Probe\Program.cs:line 1
+   at Program.<Main>(String[] args)

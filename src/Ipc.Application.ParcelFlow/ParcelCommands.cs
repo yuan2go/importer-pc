@@ -25,7 +25,9 @@ public sealed partial class ParcelRuntime
             projectedCapacity = operations.Values.Count(x => !ArchiveEligible(x));
             RefreshIntegrationBudget();
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
-            if (CameraBusinessFenced) reasons.Add("实机调试隔离：新输入不产生RCS业务请求；测试件移除并在调试页显式确认前保持阻断，软件隔离不是安全急停。");
+            if (CameraBusinessFenced) reasons.Add(singleReadInspection || inspectionFence?.SingleReadRounds == true
+                ? "扫码调试正在按轮运行；新相机输入不产生RCS业务请求，原请求及Unknown责任保持。"
+                : "实机调试隔离：新输入不产生RCS业务请求；测试件移除并在调试页显式确认前保持阻断，软件隔离不是安全急停。");
             if (ParcelConnectionSetup.BlocksWork(Effective) && Effective.DeferredConnections is { Length: > 0 } deferred)
                 reasons.Add("连接待配置：" + string.Join("、", deferred.Select(id => Effective.Wcs?.InstanceId == id ? "RCS" : ParcelBindings.Positions(Effective).Single(p => p.ReaderDeviceId == id).Id == "left" ? "左相机" : "右相机")) + "。可进入参数设置；完成连接后保存并受控重启，当前不接收新包裹。");
             if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
@@ -310,16 +312,12 @@ public sealed partial class ParcelRuntime
         });
         await ingressDrain.WaitAsync(token).ConfigureAwait(false);
         overloadWrites.Writer.TryComplete();
-        if (overloadWorker is not null) await overloadWorker.WaitAsync(token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(overloadWorker, token).ConfigureAwait(false);
         await DrainReadOperations(token).ConfigureAwait(false);
-        if (worker is not null)
-        {
-            try { await worker.WaitAsync(token).ConfigureAwait(false); }
-            catch (Exception ex) when (worker.IsCompleted) { terminalWorkerFailure = ex; }
-        }
-        if (maintenanceWorker is not null) await maintenanceWorker.WaitAsync(token).ConfigureAwait(false);
-        if (supervisor is not null) await supervisor.WaitAsync(token).ConfigureAwait(false);
-        await Task.WhenAll(auxiliary.ToArray()).WaitAsync(token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(worker, token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(maintenanceWorker, token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(supervisor, token).ConfigureAwait(false);
+        foreach (var task in auxiliary.ToArray()) await DrainTerminalWorkerAsync(task, token).ConfigureAwait(false);
         Task drain;
         await gate.WaitAsync(token).ConfigureAwait(false);
         try { drain = externalDrained?.Task ?? Task.CompletedTask; } finally { gate.Release(); }
@@ -339,6 +337,18 @@ public sealed partial class ParcelRuntime
             if (terminalWorkerFailure is not null) throw new InvalidOperationException("Terminal worker failed; sources and ports are stopped, disposal is still required", terminalWorkerFailure);
         }
         finally { gate.Release(); }
+    }
+    async Task DrainTerminalWorkerAsync(Task? task, CancellationToken token)
+    {
+        if (task is null) return;
+        try { await task.WaitAsync(token).ConfigureAwait(false); }
+        catch (Exception error) when (task.IsFaulted || task.IsCanceled)
+        {
+            // Actual termination permits cleanup, not a successful work result.
+            // Keep every failure for the final lifecycle receipt, once per owner.
+            // A cancelled wait on unfinished work still escapes and retains resources.
+            terminalWorkerFailures.TryAdd(task, (Exception?)task.Exception ?? error);
+        }
     }
     public async ValueTask DisposeAsync()
     {

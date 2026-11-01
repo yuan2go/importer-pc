@@ -55,7 +55,7 @@ internal sealed class RcsTaskOptions
             Wire.Hash(request.Payload) != request.PayloadHash)
             throw new InvalidDataException("RCS request must retain its original Sportmaster binding and payload");
     }
-    internal (string Station, string Bcr) Position(ParcelPayload payload)
+    internal (string Station, string? Bcr) Position(ParcelPayload payload)
     {
         var manual = payload.OperatorInput is { } input && Guid.TryParseExact(input.CommandId, "N", out _) &&
             input.Kind is "Keyboard" or "PdaKeyboard" && !string.IsNullOrWhiteSpace(input.Actor) &&
@@ -65,6 +65,10 @@ internal sealed class RcsTaskOptions
         if (payload.PositionId is not ("left" or "right") || payload.ReaderBinding is null || (!manual && !camera) || string.IsNullOrWhiteSpace(payload.ParcelCode) ||
             payload.ParcelCode.Length > 512 || payload.ParcelCode.Any(char.IsControl))
             throw new InvalidDataException("RCS requires an original camera acquisition or explicit operator submission and left/right position");
-        return (Text(payload.PositionId + "-station-code", 256), Text(payload.PositionId + "-bcr-code", 256));
+        var key = payload.PositionId + "-bcr-code";
+        // An operator submission has no physical camera identity. Preserve a
+        // configured code; otherwise send null and let RCS decide its outcome.
+        var bcr = manual && string.IsNullOrWhiteSpace(Binding.Parameters.GetValueOrDefault(key)) ? null : Text(key, 256);
+        return (Text(payload.PositionId + "-station-code", 256), bcr);
     }
 }

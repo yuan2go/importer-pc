@@ -13,7 +13,7 @@ public sealed partial class ParcelRuntime
         !(overload != 0 && overloadedPositions.IsEmpty) &&
         readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
         !operations.Values.Where(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x)).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
-    bool CanContinue(ParcelOperation op) => op.DebugRequest is null && CanDispatch(op with { RecoveryRequired = false }) && !MainTerminated(op) && (op.RecoveryRequired && WeightPending(op) || WeightReady(op) || op.Capture is { State: StageState.Prepared, Attempts: 0 }) &&
+    bool CanContinue(ParcelOperation op) => !IsDebugRequest(op) && CanDispatch(op with { RecoveryRequired = false }) && !MainTerminated(op) && (op.RecoveryRequired && WeightPending(op) || WeightReady(op) || op.Capture is { State: StageState.Prepared, Attempts: 0 }) &&
         (op.RecoveryRequired || op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null || Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 }));
     bool CanContinueUpload(ParcelOperation op) => op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached &&
         CanSendUpload(op) && op.Upload is { State: StageState.Prepared, Attempts: 0 } &&
@@ -93,7 +93,18 @@ public sealed partial class ParcelRuntime
                     if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)
                     { repository!.Commit(null, "AutomaticSupplyRestored", "Retired manual pause restored after startup readiness checks", paused: false); resumePriorPause = false; }
                     if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); }
-                    RefreshStorageCapacity(); auxiliary.RemoveAll(x => x.IsCompleted); backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
+                    RefreshStorageCapacity();
+                    auxiliary.RemoveAll(task =>
+                    {
+                        if (!task.IsCompleted) return false;
+                        // Pruning an ended task must not erase its original error
+                        // before shutdown observes it. Shutdown can drain other owners
+                        // concurrently, so both paths use the same task-keyed ledger.
+                        if (task.IsFaulted || task.IsCanceled)
+                            terminalWorkerFailures.TryAdd(task, (Exception?)task.Exception ?? new TaskCanceledException(task));
+                        return true;
+                    });
+                    backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
                 }
                 finally { gate.Release(); }
             }

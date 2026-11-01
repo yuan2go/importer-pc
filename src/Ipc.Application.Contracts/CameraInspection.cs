@@ -9,7 +9,13 @@ public sealed record BeginCameraInspection(string CommandId, Guid RuntimeId, lon
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
     public bool SingleReadRounds { get; init; }
 }
-public sealed record EndCameraInspection(string CommandId, string SessionId, bool TestPiecesRemoved, bool ResumeProduction, string Reason);
+public sealed record EndCameraInspection(string CommandId, string SessionId, bool TestPiecesRemoved, bool ResumeProduction, string Reason)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public bool CloseReadRounds { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? ExpectedRoundId { get; init; }
+}
 public sealed record CameraInspectionStatus(string? SessionId, CameraInspectionMode? Mode, string State, bool BusinessFenced,
     DateTimeOffset? ExpiresAt, long Frames, long ImageBytes, long EvictedImages, long MissingFrames, string Detail, string ConfigurationHash)
 {

@@ -1,0 +1,18 @@
+[
+  {
+    "path": "docs/INDEX.md",
+    "archive": "docs/archive/pre-pr161-windows-20261101/docs__INDEX.md.txt",
+    "source_commit": "ff065a2ed634ca9f2409d71de8a543e33b027fac",
+    "git_blob": "fc295f1ea273799dda8aa4e4c3eb8cca55268ff7",
+    "sha256": "ff57f6a11d994066658eec825732a1c278fd7db7fad1b437fe7c3027a683a4d7",
+    "size_bytes": 8209
+  },
+  {
+    "path": "docs/runtime/d-drive-defaults-02.md",
+    "archive": "docs/archive/pre-pr161-windows-20261101/docs__runtime__d-drive-defaults-02.md.txt",
+    "source_commit": "ff065a2ed634ca9f2409d71de8a543e33b027fac",
+    "git_blob": "4fa411ef3c4e91229fa4a53186c7d2c448039685",
+    "sha256": "8efdcbaaac0c38c484ae0d18795449cc3f595fe0ebc3bc4305fe1efcd5f24a6b",
+    "size_bytes": 4318
+  }
+]

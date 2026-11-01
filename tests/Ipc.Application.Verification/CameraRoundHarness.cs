@@ -27,7 +27,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
     public RoundApi Api(string device) => Factory.Apis[device];
-    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null)
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null)
     {
         if (!nativeLoaded)
         {
@@ -42,7 +42,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         { ["zone-id"] = "71", ["project-id"] = "83", ["specified-chute"] = "false", ["request-id-base"] = "820000000", ["request-id-count"] = "100000",
           ["heartbeat-interval-seconds"] = "3600", ["left-station-code"] = "TEST-LEFT", ["left-bcr-code"] = "TEST-LEFT-READER", ["right-station-code"] = "TEST-RIGHT", ["right-bcr-code"] = "TEST-RIGHT-READER" });
-        Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [] };
+        Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [] };
         var configuration = Path.Combine(folder, "config"); Directory.CreateDirectory(configuration);
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);
@@ -127,7 +127,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             Validate(c); var readers = new Dictionary<string, IControlledObservationSource>();
             foreach (var binding in c.Topology!.Readers)
             {
-                var api = new RoundApi(binding); Apis.Add(binding.DeviceId, api); var decoder = new RoundDecoder(api); Decoders.Add(binding.DeviceId, decoder);
+                var api = new RoundApi(binding); Apis.Add(binding.DeviceId, api); var decoder = new RoundDecoder(api, binding.Parameters!); Decoders.Add(binding.DeviceId, decoder);
                 var source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), api,
                     serial => new ResourceLease(Path.Combine(launch.DataRoot, "synthetic-device-leases"), [serial]), decoder: decoder);
                 readers.Add(binding.DeviceId, source); Sources.Add(binding.DeviceId, source);
@@ -137,9 +137,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         }
         public ValueTask DisposeAsync() => validator.DisposeAsync();
     }
-    internal sealed class RoundDecoder(RoundApi api) : IMonoBarcodeDecoder
+    internal sealed class RoundDecoder(RoundApi api, IReadOnlyDictionary<string, string> parameters) : IMonoBarcodeDecoder
     {
-        readonly SoftwareDecoder inner = new("utf-8", () => { });
+        readonly SoftwareDecoder inner = new(parameters.GetValueOrDefault("code.encoding", "utf-8"), () => { }, settings: ReaderSettings.Read(parameters));
+        public bool PreservesInput => true;
         public int Count;
         public RecognitionSymbol[] Last = [];
         public MvsTimingSnapshot? TimingSnapshot => inner.TimingSnapshot;
@@ -154,6 +155,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         readonly ConcurrentQueue<(RoundPixels Pixels, uint Number)> queue = new();
         public int Releases, Acquires, Clears, Opens, Starts, Stops;
         public bool FailNextClear;
+        public int NextLostPackets;
         public readonly ManualResetEventSlim ClearGate = new(true);
         public volatile bool Discovered = true;
         nint buffer; uint trigger = 1, acquisition;
@@ -178,7 +180,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             borrowedPixels = frame.Pixels.Data;
             buffer = Marshal.AllocHGlobal(frame.Pixels.Data.Length); Marshal.Copy(frame.Pixels.Data, 0, buffer, frame.Pixels.Data.Length); HasFrame = true;
             Interlocked.Increment(ref Acquires);
-            return new(buffer, (uint)frame.Pixels.Width, (uint)frame.Pixels.Height, MvsNative.Mono8, (ulong)frame.Pixels.Data.Length, frame.Number, 0, 0);
+            return new(buffer, (uint)frame.Pixels.Width, (uint)frame.Pixels.Height, MvsNative.Mono8, (ulong)frame.Pixels.Data.Length, frame.Number,
+                Trigger: 0, LostPackets: (uint)Interlocked.Exchange(ref NextLostPackets, 0));
         }
         public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; Interlocked.Increment(ref Releases); }
         public void ClearBuffers() { Interlocked.Increment(ref Clears); ClearGate.Wait(); if (FailNextClear) { FailNextClear = false; throw new IOException("Synthetic SDK cache clear failed"); } while (queue.TryDequeue(out _)) { } }
@@ -199,9 +202,9 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public string? ReplyWaveNo { get; set; }
         public string? ReplyQuantity { get; set; }
         public string Endpoint { get; }
-        public RoundPeer()
+        public RoundPeer(int? selectedPort = null)
         {
-            var reserve = new TcpListener(IPAddress.Loopback, 0); reserve.Start(); var port = ((IPEndPoint)reserve.LocalEndpoint).Port; reserve.Stop();
+            var reserve = new TcpListener(IPAddress.Loopback, selectedPort ?? 0); reserve.Start(); var port = ((IPEndPoint)reserve.LocalEndpoint).Port; reserve.Stop();
             Endpoint = "http://127.0.0.1:" + port + "/rcs/sorter/api"; listener.Prefixes.Add("http://127.0.0.1:" + port + "/"); listener.Start(); loop = Loop();
         }
         async Task Loop()

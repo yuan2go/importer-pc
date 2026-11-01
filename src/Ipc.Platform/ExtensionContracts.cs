@@ -70,9 +70,9 @@ public static class ExtensionSchema
                 f.ApplyLevel != "Restart" || f.EditRole != "Maintenance" || f.Unit?.Length > 32 || f.MaximumItems is < 1 or > 128 ||
                 f.RequiredWhenKey is not null && (!fields.Any(x => x.Key == f.RequiredWhenKey && x.Key != f.Key) || f.RequiredWhenEquals is null) ||
                 f.Sensitive != (f.Type == "secret-reference") ||
-                f.Type == "choice" && (f.Choices is null || f.Choices.Length is < 1 or > 100 ||
+                (f.Type == "choice" || f.Type == "string-list" && f.Choices is not null) && (f.Choices is null || f.Choices.Length is < 1 or > 100 ||
                     f.Choices.Any(x => string.IsNullOrWhiteSpace(x) || x.Length > f.MaximumLength) || f.Choices.Distinct().Count() != f.Choices.Length) ||
-                f.Type != "choice" && f.Choices is not null || f.Sensitive && f.Default is not null)
+                f.Type is not ("choice" or "string-list") && f.Choices is not null || f.Sensitive && f.Default is not null)
                 errors.Add("Invalid parameter definition: " + f.Key);
             if (f.Default is not null) errors.AddRange(ValidateValue(f, f.Default));
         }
@@ -117,7 +117,8 @@ public static class ExtensionSchema
         try
         {
             var items = Wire.Decode<string[]>(value);
-            return items.Length <= field.MaximumItems && items.All(x => x is not null && x.Length <= field.MaximumLength && !x.Any(char.IsControl));
+            return items.Length <= field.MaximumItems && items.All(x => x is not null && x.Length <= field.MaximumLength && !x.Any(char.IsControl)) &&
+                (field.Choices is null || items.All(x => field.Choices.Contains(x, StringComparer.Ordinal)) && items.Distinct(StringComparer.Ordinal).Count() == items.Length);
         }
         catch (System.Text.Json.JsonException) { return false; }
     }

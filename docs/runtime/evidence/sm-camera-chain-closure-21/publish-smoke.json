@@ -1,0 +1,8 @@
+{
+  "source_commit": "9628b1fbde3a242f2fffaaa4a9cc6a0be163e486",
+  "publish_exit_code": 0,
+  "launch_exit_code": 0,
+  "scope": "Same verified Sportmaster Release output, framework-dependent no-build publish, real EXE environment-report entry; installation/SDK/business connections NOT_RUN",
+  "assembly_sha256": "62F815DC75FAB18C9B36FAD3CAF08224561B200145796885D9905C89A4142DE6",
+  "assembly_version": "1.0.0+9628b1fbde3a242f2fffaaa4a9cc6a0be163e486"
+}

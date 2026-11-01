@@ -79,11 +79,13 @@ internal sealed class StationCameraPreviewControl : UserControl
         {
             "WaitingForFrame" => "尚未取得完整图像", "FrameStale" => "取帧已停滞", "Decoding" => "正在解码",
             "DecodePaused" => "本轮解码已暂停，实时预览继续", "NoBarcode" => "已解码，尚未发现条码",
+            "WaitingForOriginalCapacity" => "正在等待前序原帧处理，采集预览继续",
             "Reading" => "解码链路运行中", "Faulted" => "采集异常", "Stopped" => "采集已停止",
             "DecoderUnavailable" => "解码器不可用", _ => "正在取帧"
         };
         return state + "\n取帧 " + d.Frames + " · 无数据 " + d.NoData + " · 解码完成 " + d.DecodeCompleted + "/" + d.DecodeStarted +
-            " · 空结果 " + d.EmptyFrames + "\n候选 " + d.Candidates + " · 上报 " + d.Delivered + " · 拒收 " + d.Rejected +
+            " · 空结果 " + d.EmptyFrames + "\n候选 " + d.Candidates + " · 上报 " + d.Delivered + " · 拒收 " + d.Rejected + " · 丢弃异常帧 " + d.RejectedFrames +
+            (d.LastFrameRejection is null ? "" : "\n最近异常帧：" + d.LastFrameRejection) +
             (d.Failure is null ? "" : "\n" + d.Failure);
     }
     void Clear(string message) { image.Source = null; bitmap = null; shown = ""; capturedAt = null; hint.Text = message; hint.Visibility = Visibility.Visible; status.Text = message; }

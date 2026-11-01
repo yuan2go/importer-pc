@@ -158,6 +158,10 @@ public class BarcodeTransportProbe : ProjectionProbe
     async Task<ParcelBarcodeReceipt> Submit(SubmitParcelBarcode command, CancellationToken token)
     {
         Commands.Add(command); var reply = NextReply; NextReply = null;
+        // Explicit UI-only terminal receipt projection: no business request is
+        // fabricated or passed to the real Application for these status cases.
+        if (reply?.StartsWith("Terminal/", StringComparison.Ordinal) == true)
+            return new(reply[9..], "Synthetic UI-only terminal receipt", null, null, 0);
         var receipt = await ((IParcelWorkstation)Inner).SubmitParcelBarcodeAsync(command, token);
         if (reply == "Lost") throw new IOException("Synthetic lost UI reply after real durable admission");
         return reply == "Pending" ? receipt with { Status = "Pending", Detail = "Synthetic indeterminate UI reply" } : receipt;

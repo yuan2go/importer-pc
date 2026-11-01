@@ -13,8 +13,8 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
     public bool IsList => Field.Type == "string-list";
     public bool IsSensitive => Field.Sensitive || Field.Type == "secret-reference";
     public int EditorMaximumLength => IsList ? checked(Field.MaximumLength * Field.MaximumItems + 8 * Field.MaximumItems) : Field.MaximumLength;
-    public string EditorLabel => IsList ? Field.Label.Replace("（每行一项）", "") + "（结构化数组）" : Field.Label;
-    public string EditorHelp => IsList ? "结构化字符串数组，例如 [\"标签1\",\"标签2\"]；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" :
+    public string EditorLabel => IsList && Field.Choices is null ? Field.Label.Replace("（每行一项）", "") + "（结构化数组）" : Field.Label;
+    public string EditorHelp => IsList && Field.Choices is not null ? Field.Description ?? "勾选需要启用的项目，统一审阅保存。" : IsList ? "结构化字符串数组，例如 [\"标签1\",\"标签2\"]；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" :
         Field.Description ?? (Field.Type switch
         {
             "integer" => "整数" + (Field.Minimum is { } min ? "，最小 " + min : "") + (Field.Maximum is { } max ? "，最大 " + max : ""),

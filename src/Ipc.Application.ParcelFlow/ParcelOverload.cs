@@ -24,7 +24,7 @@ public sealed partial class ParcelRuntime
             {
                 Interlocked.Decrement(ref pendingOverloadWrites);
                 Volatile.Write(ref failure, "Overload persistence owner unavailable; original input custody remains in SQLite");
-                Interlocked.Exchange(ref accepting, 0);
+                FenceIngress();
             }
         }
     }
@@ -55,7 +55,7 @@ public sealed partial class ParcelRuntime
             }
             catch (Exception ex)
             {
-                Volatile.Write(ref failure, "Overload custody write failed: " + ex.GetType().Name); Interlocked.Exchange(ref accepting, 0);
+                Volatile.Write(ref failure, "Overload custody write failed: " + ex.GetType().Name); FenceIngress();
                 write.Completion?.TrySetException(ex);
             }
             finally { if (write.Body is not null) Interlocked.Decrement(ref pendingOverloadWrites); }

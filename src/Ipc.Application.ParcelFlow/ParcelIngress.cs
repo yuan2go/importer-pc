@@ -11,6 +11,14 @@ public sealed record ParcelWorkerProgress(string Position, string State, long Re
 
 public sealed partial class ParcelRuntime
 {
+    // Runtime reception is single-use. Every terminal producer/consumer/monitor
+    // path joins this fence so another position cannot stay asleep on capacity.
+    readonly TaskCompletionSource ingressFenced = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    void FenceIngress()
+    {
+        Interlocked.Exchange(ref accepting, 0);
+        ingressFenced.TrySetResult();
+    }
     sealed record IngressItem(string Id, object Value, DateTimeOffset At, long ReceivedTicks);
     sealed class IngressLane(string database) : IDisposable
     {

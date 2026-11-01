@@ -18,6 +18,7 @@ public sealed record ParcelPayload(string ParcelCode, string AdmissionId, Parcel
 }
 // Facts deliberately independent: delivery != protocol acknowledgement != business acceptance
 // != physical completion. Null is unknown, never a successful fallback.
+public enum SenderDeliveryEvidence { Unknown, ConnectionRefusedBeforeBody }
 public sealed record StageReply(string Id, string RequestId, string PayloadHash, bool TransportSucceeded,
     bool? ProtocolAcknowledged, bool? BusinessAccepted, bool? PhysicalCompleted, string? Slot, string Evidence, DateTimeOffset At,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null,
@@ -28,6 +29,9 @@ public sealed record StageReply(string Id, string RequestId, string PayloadHash,
     // Null omission preserves all pre-existing serialized replies byte-for-byte.
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ReceiptClockEvidence? LocalClockEvidence { get; init; }
+    // Local sender evidence, never a remote business reply.
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public SenderDeliveryEvidence SenderDelivery { get; init; }
 }
 public sealed record ReceiptClockEvidence(int Schema, Guid RuntimeId, string RequestId, DateTimeOffset PreparedAt,
     DateTimeOffset StartedAt, DateTimeOffset CompletedAt, long ElapsedTicks, int BudgetMilliseconds, string ReplySha256);

@@ -1,0 +1,8 @@
+Native SendInput/WPF with explicitly labelled UI-only terminal receipts; camera leg uses actual ZXing/Application/SQLite and synthetic MVS/loopback RCS. Physical devices NOT_RUN.
+FAIL System.InvalidOperationException: Native barcode input requires the foreground test HWND, barcode focus and no held modifiers; active=True; foreground=2034150; expected=34736068; focus=True; held=
+   at BarcodeNativeKeyboard.SendAsync(Window window, TextBox entry, UInt16[] keys) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 193
+   at Program.<>c__DisplayClass2_2.<<VerifyCameraChainReliabilityUi>g__Send|2>d.MoveNext() in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraChainReliabilityUi.cs:line 27
+--- End of stack trace from previous location ---
+   at Program.VerifyCameraChainReliabilityUi(String root, String evidence, List`1 lines) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraChainReliabilityUi.cs:line 30
+   at Program.VerifyCameraChainReliabilityUi(String root, String evidence, List`1 lines) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraChainReliabilityUi.cs:line 41
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\Program.cs:line 60

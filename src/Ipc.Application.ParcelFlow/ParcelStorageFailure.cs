@@ -18,7 +18,7 @@ public sealed partial class ParcelRuntime : IRuntimeFatalSource
     {
         // InvalidData is included only at known storage boundaries. Never
         // classify a rejected operator command as corrupt storage.
-        Interlocked.Exchange(ref accepting, 0);
+        FenceIngress();
         var kind = knownIntegrityFailure ? StorageFailureKind.Unrecoverable : error is StorageWriteFailure write ? write.Kind :
             AtomicStorageWrite.IsUnrecoverable(error) ? StorageFailureKind.Unrecoverable : StorageFailureKind.DurableOutcomeUncertain;
         var fatalState = "Fatal storage failure: " + phase + "; " + kind + "; " + error.GetType().Name;

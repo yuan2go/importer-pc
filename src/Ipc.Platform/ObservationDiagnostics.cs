@@ -11,4 +11,8 @@ public sealed record ObservationDiagnostics(string DeviceId, string Epoch, strin
     DateTimeOffset? LastFrameAt, double? LastFrameAgeMs, DateTimeOffset? LastDecodeAt, string? Failure)
 {
     public long SupersededDecodeFrames { get; init; }
+    public long RejectedFrames { get; init; }
+    public string? LastFrameRejection { get; init; }
+    public long OriginalFrameCopies { get; init; }
+    public bool WaitingForOriginalCapacity { get; init; }
 }

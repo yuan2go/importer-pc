@@ -23,10 +23,14 @@ public static class ParcelPresentation
         op.Wcs is { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
         (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||
          stage.Replies.LastOrDefault()?.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal) == true);
+    public static bool RcsNotDelivered(ParcelOperation? op) => op?.State == ParcelState.WcsUnknown &&
+        op.Wcs is { State: StageState.Unknown, Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
+        stage.Replies.LastOrDefault() is { SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false };
     public static string? RcsException(ParcelOperation? op)
     {
         if (op?.Wcs is not { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage || stage.State == StageState.Conflict) return null;
         if (RcsTimedOut(op)) return "RCS请求超时，请重新扫描。";
+        if (RcsNotDelivered(op)) return "RCS未连接，本次请求未送达；连接恢复后请重新扫描。";
         if (op.State == ParcelState.UnpackRequired) return "需要拆包，请查看拆包明细。";
         var reply = stage.Replies.LastOrDefault();
         if (op.State == ParcelState.WcsRejected && reply?.Destination is { } destination)
@@ -41,6 +45,7 @@ public static class ParcelPresentation
         if (!fresh) return Stale();
         if (op is null) return Neutral("等待包裹");
         if (RcsTimedOut(op)) return Unknown("RCS请求超时，请重新扫描。");
+        if (RcsNotDelivered(op)) return Unknown("RCS未连接 · 本次请求未送达");
         if (op.State == ParcelState.WcsRejected && RcsException(op) is { } message) return Rejected(message);
         return op.State switch
         {

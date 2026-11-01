@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "48864C53785E5C0DA66F2B34258568CFB530A9396F4BA1455669AE86B601C290",
+    "Path": "D:\\w\\ipc-camera-barcode-current-19\\src\\Ipc.Application.Sportmaster.Desktop\\SupplyStationPosition.xaml.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "57C53F7F4FC7C03927148AC1054B83DC262798CFFD2CB3619FC48B56CCED686C",
+    "Path": "D:\\w\\ipc-camera-barcode-current-19\\src\\Ipc.Application.Sportmaster.Desktop\\SupplyStationViewModel.cs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "3CBCE1892BDAF8CEFBAF273612CEE7E6BC99CCCBA25A7E554849103C52A83D82",
+    "Path": "D:\\w\\ipc-camera-barcode-current-19\\src\\Ipc.Application.Sportmaster.Desktop\\StationSlotContinuity.cs"
+  }
+]

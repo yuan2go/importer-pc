@@ -313,9 +313,13 @@ internal sealed class StationDebugControl : UserControl
         marks.Children.Clear(); if (overlay.IsChecked != true || displayedFrame is null) return;
         foreach (var symbol in displayedFrame.Symbols.Where(s => s.Text == current?.Barcode && s.Corners.Length == 4))
         {
-            var x = symbol.Corners.Min(p => p.X); var y = symbol.Corners.Min(p => p.Y);
-            var box = new Rectangle { Width = Math.Max(1, symbol.Corners.Max(p => p.X) - x), Height = Math.Max(1, symbol.Corners.Max(p => p.Y) - y), Stroke = Brush("#28D76F"), StrokeThickness = 2 / zoom };
-            Canvas.SetLeft(box, x); Canvas.SetTop(box, y); marks.Children.Add(box);
+            var polygon = new Polygon { Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))),
+                Stroke = Brush("#28D76F"), StrokeThickness = Math.Max(2 / zoom, 1), Fill = Brushes.Transparent };
+            marks.Children.Add(polygon);
+            // Some 1D engines return collinear corners. Mark the measured line
+            // visibly without inventing an axis-aligned bounding rectangle.
+            var area = symbol.Corners.Select((p, i) => p.X * symbol.Corners[(i + 1) % 4].Y - p.Y * symbol.Corners[(i + 1) % 4].X).Sum();
+            if (Math.Abs(area) < 1) polygon.StrokeThickness = 4 / zoom;
         }
     }
     public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons(); }

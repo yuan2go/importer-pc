@@ -1,0 +1,18 @@
+FIRST_BEFORE_DURABLE {
+  "Main": "",
+  "Model": "\u7B49\u5F85\u5305\u88F9",
+  "Read": "\u5DF2\u8BFB\u5230 \u00B7 \u20260001",
+  "Decoder": [
+    "SYNTH-FIRST-0001"
+  ],
+  "Input": null,
+  "Operation": null,
+  "ShowConfirmedTask": false,
+  "PictureEnabled": false,
+  "Editing": false
+}
+FAIL System.InvalidOperationException: first decoded code reaches main entry before persistence without creating draft, picture, task or RCS request
+   at Program.<VerifyCameraBarcodeCurrent>g__Check|1_0(Boolean ok, String text, <>c__DisplayClass1_0&) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraBarcodeCurrent.cs:line 14
+   at Program.VerifyCameraBarcodeCurrent(String root, String evidence, List`1 lines) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraBarcodeCurrent.cs:line 50
+   at Program.VerifyCameraBarcodeCurrent(String root, String evidence, List`1 lines) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraBarcodeCurrent.cs:line 129
+   at Program.<>c__DisplayClass46_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\Program.cs:line 64

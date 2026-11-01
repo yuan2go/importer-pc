@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Rectangle = System.Windows.Shapes.Rectangle;
+using Polygon = System.Windows.Shapes.Polygon;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.Sportmaster.Desktop;
@@ -28,6 +28,15 @@ static partial class Program
         { for (var i = 0; i < 150; i++) { await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Flush(); if (done()) return; await Task.Delay(35); } throw new TimeoutException("Round native UI did not converge"); }
         T Field<T>(UserControl c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
         Task Poll(UserControl c) => (Task)c.GetType().GetMethod("PollAsync")!.Invoke(c, null)!;
+        async Task<CameraReadRound> ReadRound()
+        {
+            for (var attempt = 0; ; attempt++)
+            {
+                try { return await h.App.ReadCameraReadRoundAsync(default); }
+                catch (InvalidOperationException error) when (attempt < 100 && error.Message == "后台操作并发已达上限，请等待当前操作结束")
+                { lines.Add("READ_BACKPRESSURE bounded fixture retries a read-only round query; no command replay"); await Task.Delay(25); }
+            }
+        }
         void ClickField(UserControl c, string name) => Field<Button>(c, name).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         try
         {
@@ -70,10 +79,20 @@ static partial class Program
             var bitmap = (BitmapSource)Field<Image>(control, "photo").Source!; var bytes = new byte[bitmap.PixelWidth * bitmap.PixelHeight]; bitmap.CopyPixels(bytes, bitmap.PixelWidth, 0);
             Check(bytes.SequenceEqual(pixels.Data) && Field<TextBox>(control, "barcode").Text == "UI-ROUND-A" && Equals(Field<Button>(control, "trigger").Content, "再次扫码"),
                 "native photo pixels/full code and again-scan label belong to the locked original");
-            var symbol = a.Frame!.Symbols.Single(); var box = Field<Canvas>(control, "marks").Children.OfType<Rectangle>().Single();
-            Check(Canvas.GetLeft(box) == symbol.Corners.Min(p => p.X) && Canvas.GetTop(box) == symbol.Corners.Min(p => p.Y) &&
-                box.Width == symbol.Corners.Max(p => p.X) - symbol.Corners.Min(p => p.X) && ((SolidColorBrush)box.Stroke).Color == (Color)ColorConverter.ConvertFromString("#28D76F"),
-                "green native rectangle uses actual same-frame recognition coordinates");
+            var symbol = a.Frame!.Symbols.Single(); var box = Field<Canvas>(control, "marks").Children.OfType<Polygon>().Single();
+            Check(box.Points.SequenceEqual(symbol.Corners.Select(p => new Point(p.X, p.Y))) && ((SolidColorBrush)box.Stroke).Color == (Color)ColorConverter.ConvertFromString("#28D76F"),
+                "green native polygon uses all four actual same-frame recognition corners");
+            // Explicit read-only geometry projection, never a changed acquired frame or business input.
+            var frameField = control.GetType().GetField("displayedFrame", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var draw = control.GetType().GetMethod("DrawMarks", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var rotated = symbol with { Corners = [new(30, 10), new(90, 40), new(70, 80), new(10, 50)] };
+            frameField.SetValue(control, a.Frame with { Symbols = [rotated] }); draw.Invoke(control, null);
+            Check(Field<Canvas>(control, "marks").Children.OfType<Polygon>().Single().Points.SequenceEqual(rotated.Corners.Select(p => new Point(p.X, p.Y))),
+                "rotated display projection keeps exact quadrilateral instead of expanding an axis-aligned rectangle");
+            frameField.SetValue(control, a.Frame with { Symbols = [symbol with { Corners = [new(10, 20), new(90, 20), new(90, 20), new(10, 20)] }] }); draw.Invoke(control, null);
+            Check(Field<Canvas>(control, "marks").Children.OfType<Polygon>().Single().StrokeThickness > 0 && bytes.SequenceEqual(pixels.Data),
+                "degenerate 1D corners retain a visible line marker while original photo pixels remain intact");
+            frameField.SetValue(control, a.Frame); draw.Invoke(control, null);
             Check(Field<TextBox>(control, "requestBarcode").Text == "UI-ROUND-A" && Field<TextBox>(control, "requestBody").Text == a.RequestBody &&
                 Field<TextBox>(control, "requestBody").IsReadOnly && h.Peer.Requests.IsEmpty && Field<Button>(control, "send").IsEnabled, "native JSON auto-fill is frozen and explicit send is the only enabled delivery action");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-MUST-NOT-REPLACE"), 2); await Task.Delay(120); await Poll(control);
@@ -103,7 +122,7 @@ static partial class Program
             await h.ArmAsync(h.Right); h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-C"), 1); await h.LockedAsync();
             heldArm.TrySetResult(); await Until(() => !Field<bool>(control, "busy")); await Poll(control);
             ClickField(control, "trigger"); await Until(() => !Field<bool>(control, "busy"));
-            var retry = await h.App.ReadCameraReadRoundAsync(default);
+            var retry = await ReadRound();
             Check(retry.State == "Reading" && retry.DeviceId == h.Left, "explicit retry after a known stale CAS rejection uses the newly observed round instead of trapping the old command");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-D"), 4); await h.LockedAsync(); await Poll(control);
             Check(Field<TextBox>(control, "barcode").Text == "UI-ROUND-D", "retry recovers the intended camera and next frame");
@@ -128,8 +147,8 @@ static partial class Program
             Check(h.Factory.Apis.Values.Sum(x => x.Opens) == opens && h.Factory.Apis.Values.All(x => x.Starts == 1 && x.Stops == 0), "window close does not stop or recreate the shared acquisition owner");
             await vm.RefreshAsync(); await Poll(control);
             lines.Add("DIAG final-send ui=" + Field<Button>(control, "send").IsEnabled + "; fresh=" + vm.Fresh + "; authoritative=" + Field<bool>(control, "authoritative") +
-                "; application=" + (await h.App.ReadCameraReadRoundAsync(default)).CanSend + "; feedback=" + Field<TextBlock>(control, "feedback").Text);
-            lines.Add("DIAG final-round " + Wire.Encode(await h.App.ReadCameraReadRoundAsync(default)));
+                "; application=" + (await ReadRound()).CanSend + "; feedback=" + Field<TextBlock>(control, "feedback").Text);
+            lines.Add("DIAG final-round " + Wire.Encode(await ReadRound()));
             var diagnostic = await h.App.SnapshotAsync();
             lines.Add("DIAG final-dependencies " + Wire.Encode(new { diagnostic.State, diagnostic.BlockingReasons, diagnostic.Devices, diagnostic.Health,
                 Operations = diagnostic.Operations.Select(o => new { o.Id, o.PositionId, o.State, Stage = o.Wcs?.State, Attempts = o.Wcs?.Attempts, o.RecoveryRequired }) }));

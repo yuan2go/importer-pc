@@ -258,7 +258,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         catch (Exception ex)
         {
-            Interlocked.Exchange(ref accepting, 0);
+            FenceIngress();
             // The terminal startup writer and ingress consumers share one connection.
             // Publish the failed outcome only after its configuration/audit writes end;
             // also serialize against an already-started Stop or snapshot reader.
@@ -296,13 +296,33 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
-        if (observation is not null) RecordPresentationRead(positionId, observation);
         // One position owns this synchronous durable handoff. No shared callback lock,
         // business gate or native callback is held while SQLite commits.
         lock (lane.Sync)
         {
             if (Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
             var at = DateTimeOffset.UtcNow;
+            if (observation is not null) RecordPresentationRead(positionId, observation);
+            if (Id == "sportmaster" && observation is not null)
+            {
+                // Stop before the durable write when a normal bounded lane is full.
+                // The source retains this decoded observation while waiting. No business
+                // gate is held; a failed consumer/stop must break the wait, not deadlock Sync.
+                try
+                {
+                    var capacity = positionQueues[positionId].Writer.WaitToWriteAsync(stopping.Token);
+                    bool available;
+                    if (capacity.IsCompletedSuccessfully) available = capacity.Result;
+                    else
+                    {
+                        var ready = capacity.AsTask();
+                        if (Task.WhenAny(ready, ingressFenced.Task).GetAwaiter().GetResult() != ready) return false;
+                        available = ready.GetAwaiter().GetResult();
+                    }
+                    if (!available || Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
+                }
+                catch (OperationCanceledException) when (stopping.IsCancellationRequested) { return false; }
+            }
             if (observation is not null)
             {
                 var identity = SessionValid ? currentOperator : null;
@@ -330,7 +350,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             catch (Exception ex)
             {
                 Volatile.Write(ref failure, "Input custody persistence failed: " + ex.GetType().Name);
-                Volatile.Write(ref lane.Failure, failure); Interlocked.Exchange(ref accepting, 0);
+                Volatile.Write(ref lane.Failure, failure); FenceIngress();
                 InvalidatePresentation();
                 if (IsStorageError(ex)) StorageFailed(ex, "IngressCustody");
                 // A possibly committed Pending is intentionally kept for recovery.
@@ -390,7 +410,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         catch (Exception ex)
         {
             failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message;
-            Interlocked.Exchange(ref accepting, 0); Volatile.Write(ref lane.Failure, failure); Volatile.Write(ref lane.State, "Faulted");
+            FenceIngress(); Volatile.Write(ref lane.Failure, failure); Volatile.Write(ref lane.State, "Faulted");
             if (IsStorageError(ex)) StorageFailed(ex, "IngressWorker");
             // Close after the last position handoff; no producer can enqueue behind the drain.
             lock (lane.Sync) positionQueues[position].Writer.TryComplete();
@@ -461,7 +481,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // This is a new event from the current registration, not an old callback.
         // Queue age/health must close this input's display as well as admission.
         // Existing identities above retain their original responsibility and policy.
-        if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))
+        if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
         { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationRejected"); return; }
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ReaderConfirmationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationBlocked"); return; }

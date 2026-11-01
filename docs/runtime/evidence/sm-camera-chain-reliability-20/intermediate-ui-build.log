@@ -1,0 +1,9 @@
+D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow.Desktop\ParameterSettingsControl.ChoiceList.cs(12,91): error CS0246: 未能找到类型或命名空间名“PageSpec”(是否缺少 using 指令或程序集引用?) [D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_1wv1bly4_wpftmp.csproj]
+
+生成失败。
+
+D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow.Desktop\ParameterSettingsControl.ChoiceList.cs(12,91): error CS0246: 未能找到类型或命名空间名“PageSpec”(是否缺少 using 指令或程序集引用?) [D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop_1wv1bly4_wpftmp.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:11.91

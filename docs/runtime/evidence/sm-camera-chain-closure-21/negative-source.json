@@ -1,0 +1,7 @@
+{
+  "exit_code": -532462766,
+  "product_source": "6185d0f6aa87765cedbe033d750c8156b26b51d0",
+  "test_sha256": "ED6B3EFD0E6E4131153F734A940D404B083F5DD7314F8CEADA0AAA2A57E0A11F",
+  "scope": "Original production source unchanged; only verification Program dispatch and archived synthetic test added",
+  "driver_sha256": "08D57CAF827AE092EA551B4F4781C778FA6BCE29B0D781142727BFED5446B8D0"
+}

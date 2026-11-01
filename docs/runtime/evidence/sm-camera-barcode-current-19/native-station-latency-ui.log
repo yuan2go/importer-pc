@@ -1,0 +1,81 @@
+PASS STATION-LATENCY same-code pending request immediately clears the prior destination; gray processing placeholder has no authoritative slot or old task fields
+PASS STATION-LATENCY processing state has explicit text, automation label and muted color without a previous destination
+PASS STATION-LATENCY read feedback reaches actual DWM composition before the delayed RCS response without claiming business acceptance
+CAPTURE slot-confirming: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS STATION-LATENCY second decoded read creates its own request and replaces the provisional display only on its own confirmed result
+PASS STATION-LATENCY processing placeholder never resurrects the old slot after the former display hold deadline
+PASS STATION-LATENCY a different returned slot replaces the old value immediately and atomically
+PASS STATION-LATENCY a different barcode uses only a processing placeholder and never borrows the previous parcel's slot or task fields
+PASS STATION-LATENCY accepted slot telemetry records both decode-to-composition and snapshot-to-composition with the matching observation identity
+METRICS LOOPBACK_SYNTHETIC [
+      {
+        "ObservationId": "fa4fa59b0ac24befb68d3ee3d008501f",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 44.8688,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T16:19:44.940962+00:00"
+      },
+      {
+        "ObservationId": "fa4fa59b0ac24befb68d3ee3d008501f",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 378.2851,
+        "SnapshotToCompositionMs": 31.561,
+        "At": "2026-11-01T16:19:45.2734598+00:00"
+      },
+      {
+        "ObservationId": "f5f86d7a542f4f608119129ed4b580ce",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 20.1327,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T16:19:45.3063644+00:00"
+      },
+      {
+        "ObservationId": "f5f86d7a542f4f608119129ed4b580ce",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 336.218,
+        "SnapshotToCompositionMs": 22.2749,
+        "At": "2026-11-01T16:19:45.6224453+00:00"
+      },
+      {
+        "ObservationId": "87b2023dbcce48b89b49a5a69a2b0ccb",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 21.2361,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T16:19:45.6561999+00:00"
+      },
+      {
+        "ObservationId": "87b2023dbcce48b89b49a5a69a2b0ccb",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 1904.3685,
+        "SnapshotToCompositionMs": 46.6517,
+        "At": "2026-11-01T16:19:47.53938+00:00"
+      },
+      {
+        "ObservationId": "20a965edd6f74c7a87456ddbd2e004ff",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 36.1581,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T16:19:47.6063085+00:00"
+      },
+      {
+        "ObservationId": "20a965edd6f74c7a87456ddbd2e004ff",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 151.9472,
+        "SnapshotToCompositionMs": 30.0879,
+        "At": "2026-11-01T16:19:47.7220967+00:00"
+      }
+    ]
+PASS STATION-LATENCY an older camera cue cannot hide a newer confirmed keyboard request or borrow its slot for another source
+PASS STATION-LATENCY explicit rejection clears every provisional and confirmed slot from the current display
+PASS STATION-LATENCY stale projection cannot preserve a provisional slot
+PASS STATION-LATENCY Unknown removes the old display and has a distinct exception cue without clearing original request responsibility or resending
+PASS STATION-LATENCY a new read-only cue preserves the original Unknown instruction and cannot authorize an old destination
+CAPTURE slot-unknown-compact: 1024x768 DIP, Windows DPI 1.25/1.25

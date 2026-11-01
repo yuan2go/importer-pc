@@ -1,0 +1,28 @@
+PASS ROUND-UI entire isolation confirmation panel and prerequisite sentence are absent; trigger needs no checklist
+PASS ROUND-UI empty photo explains how to begin without showing a fictitious frame
+PASS ROUND-UI complete selectable barcode is above its photo in the right-hand visual column
+PASS ROUND-UI lost begin receipt is recovered as the same durable isolated scope
+PASS ROUND-UI trigger enters a clean reading round without a photo/request or HTTP call
+PASS ROUND-UI active debug isolation still blocks ordinary manual supply without sending
+PASS ROUND-UI reading placeholder describes the current round
+PASS ROUND-UI native photo pixels/full code and again-scan label belong to the locked original
+PASS ROUND-UI green native polygon uses all four actual same-frame recognition corners
+PASS ROUND-UI rotated display projection keeps exact quadrilateral instead of expanding an axis-aligned rectangle
+PASS ROUND-UI degenerate 1D corners retain a visible line marker while original photo pixels remain intact
+PASS ROUND-UI native JSON auto-fill is frozen and explicit send is the only enabled delivery action
+PASS ROUND-UI next parcel cannot replace the locked photo/barcode/request and no automatic send occurs
+CAPTURE round-locked-native: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS ROUND-UI failed authoritative polling cannot re-enable send from a cached projection
+PASS ROUND-UI cancelled authoritative read also keeps cached send disabled
+PASS ROUND-UI successful authoritative read plus fresh host snapshot restores eligible send
+PASS ROUND-UI click-send and check-result never create a second HTTP request
+PASS ROUND-UI another window can own the next round while this window retains its prior photo/code and cannot send it
+PASS ROUND-UI again-scan clears old display while the command is still waiting
+FAIL System.InvalidOperationException: 后台操作并发已达上限，请等待当前操作结束
+   at Ipc.Application.ParcelFlow.ParcelRuntime.OwnedOperation[T](Func`2 read, HashSet`1 owners, Int32 capacity, CancellationToken token) in D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow\ParcelReadOperations.cs:line 23
+   at Ipc.Application.ParcelFlow.ParcelRuntime.OwnedRead[T](Func`2 read, CancellationToken token) in D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow\ParcelReadOperations.cs:line 13
+   at Ipc.Application.ParcelFlow.ParcelRuntime.InspectionRead[T](Func`2 read, CancellationToken token) in D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow\ParcelInspectionQueries.cs:line 67
+   at Ipc.Application.ParcelFlow.ParcelRuntime.ReadCameraReadRoundAsync(CancellationToken token) in D:\w\ipc-camera-barcode-current-19\src\Ipc.Application.ParcelFlow\ParcelCameraReadRounds.cs:line 228
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 116
+   at Program.VerifyCameraRoundUi(String root, String evidence, List`1 lines) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\CameraRoundUi.cs:line 158
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\Program.cs:line 62

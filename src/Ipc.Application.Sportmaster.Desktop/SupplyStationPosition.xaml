@@ -39,7 +39,17 @@
        </ContextMenu>
       </TextBox.ContextMenu>
      </TextBox>
-     <Button x:Name="CurrentBarcode" Grid.Column="1" Content="图片" Click="Picture_Click" IsEnabled="{Binding HasCurrentInput}" Style="{StaticResource StationButton}" MinWidth="64" Margin="8,0,0,0" AutomationProperties.Name="查看当前包裹图片"/>
+     <TextBlock x:Name="BarcodePlaceholder" Text="{Binding BarcodePlaceholder}" IsHitTestVisible="False" Margin="12,0" VerticalAlignment="Center" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Body}" TextTrimming="CharacterEllipsis" ToolTip="{Binding BarcodePlaceholder}">
+      <TextBlock.Style>
+       <Style TargetType="TextBlock">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+         <DataTrigger Binding="{Binding Text.Length,ElementName=BarcodeEntry}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+        </Style.Triggers>
+       </Style>
+      </TextBlock.Style>
+     </TextBlock>
+     <Button x:Name="CurrentBarcode" Grid.Column="1" Content="图片" Click="Picture_Click" IsEnabled="{Binding CanViewCurrentPicture}" Style="{StaticResource StationButton}" MinWidth="64" Margin="8,0,0,0" AutomationProperties.Name="查看当前包裹图片"/>
     </Grid>
     <!-- The result owns the remaining height. Auxiliary metadata never scrolls it away. -->
     <Border x:Name="ResultPanel" Grid.Row="2" Background="{Binding ResultBackground}" Style="{StaticResource StationResultPanel}">
@@ -87,13 +97,18 @@
     </Border>
     <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
          They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
+         Hidden retains measured space only during processing; errors reclaim it for actionable reasons.
          Two rows keep labels and values readable; values are selectable and wrap without ellipsis. -->
     <Grid Grid.Row="3" x:Name="TaskFields" Margin="0,4,0,0">
      <Grid.Style>
       <Style TargetType="Grid">
+       <Setter Property="Visibility" Value="Collapsed"/>
        <Style.Triggers>
-        <DataTrigger Binding="{Binding ShowConfirmedTask}" Value="False">
-         <Setter Property="Visibility" Value="Collapsed"/>
+        <DataTrigger Binding="{Binding IsProcessing}" Value="True">
+         <Setter Property="Visibility" Value="Hidden"/>
+        </DataTrigger>
+        <DataTrigger Binding="{Binding ShowConfirmedTask}" Value="True">
+         <Setter Property="Visibility" Value="Visible"/>
         </DataTrigger>
        </Style.Triggers>
       </Style>

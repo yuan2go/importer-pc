@@ -3,6 +3,7 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 internal interface IMonoBarcodeDecoder
 {
     MvsTimingSnapshot? TimingSnapshot => null;
+    bool PreservesInput => false;
     void Prepare();
     string[] Decode(byte[] pixels, int length, int width, int height);
     Ipc.Platform.RecognitionSymbol[] DecodeDetailed(byte[] pixels, int length, int width, int height) =>

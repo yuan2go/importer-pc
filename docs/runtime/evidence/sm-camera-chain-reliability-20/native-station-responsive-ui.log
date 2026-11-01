@@ -1,0 +1,16 @@
+PASS RESPONSIVE ninth subscription is rejected instead of building unbounded consumers
+PASS RESPONSIVE unread subscriber receives latest committed snapshot directly while same-code observations still create independent original requests
+PASS RESPONSIVE subscribers never share mutable snapshot arrays or authoritative business objects
+PASS RESPONSIVE one in-flight read per subscriber prevents unbounded waiters and cancellation releases the actual pending read
+PASS RESPONSIVE disposing a subscriber revokes its mailbox and immediately releases subscriber capacity
+PASS RESPONSIVE before FULL commit completes, a new same-code observation clears the old destination and fields without inventing custody/admission or sending RCS
+PASS RESPONSIVE read cue reaches actual DWM composition while the real pre-durability boundary is still blocked
+MEASURE synthetic pre-commit hold; read cue observed by 110.336ms; not low-end disk or customer RCS qualification
+PASS RESPONSIVE 100 repeats of the same observation identity do not repeat the cue; no barcode-string deduplication is used
+PASS RESPONSIVE read/processing push preserves the other position's draft, caret selection and keyboard focus
+CAPTURE responsive-before-durable: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS RESPONSIVE after durable handoff, the independent original request is sent once and its own confirmed result replaces the placeholder
+PASS RESPONSIVE left disconnection clears its destination and disables admission before any new snapshot; right remains independent while business gate is held
+PASS RESPONSIVE explicit rejection removes the destination, displays red reason and produces a distinct identity-scoped rejection cue
+CAPTURE responsive-offline-rejection: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS RESPONSIVE a delayed first push cannot renew freshness from an already expired immutable snapshot

@@ -1,0 +1,152 @@
+{
+  "source_commit": "1740ab47eb36ebefbac35db4a488ddf89f66d60b",
+  "baseline_main": "039ccdee",
+  "builds": [
+    {
+      "exit_code": 0,
+      "log": "build-Ipc.Desktop.UiVerification.log",
+      "project": "tests/Ipc.Desktop.UiVerification"
+    },
+    {
+      "exit_code": 0,
+      "log": "build-Ipc.Application.Verification.log",
+      "project": "tests/Ipc.Application.Verification"
+    },
+    {
+      "exit_code": 0,
+      "log": "build-Ipc.Desktop.log",
+      "project": "src/Ipc.Desktop"
+    }
+  ],
+  "suites": [
+    {
+      "flag": "--manual-supply",
+      "exit_code": 0,
+      "log": "application-manual-supply.log",
+      "pass_count": 24,
+      "kind": "Application"
+    },
+    {
+      "flag": "--rcs-timeout-errors",
+      "exit_code": 0,
+      "log": "application-rcs-timeout-errors.log",
+      "pass_count": 57,
+      "kind": "Application"
+    },
+    {
+      "flag": "--sm-original-frame",
+      "exit_code": 0,
+      "log": "application-sm-original-frame.log",
+      "pass_count": 26,
+      "kind": "Application"
+    },
+    {
+      "flag": "--mvs-software-flow",
+      "exit_code": 0,
+      "log": "application-mvs-software-flow.log",
+      "pass_count": 15,
+      "kind": "Application"
+    },
+    {
+      "flag": "--shutdown-resources",
+      "exit_code": 0,
+      "log": "application-shutdown-resources.log",
+      "pass_count": 21,
+      "kind": "Application"
+    },
+    {
+      "flag": "--sportmaster-rcs",
+      "exit_code": 0,
+      "log": "application-sportmaster-rcs.log",
+      "pass_count": 156,
+      "kind": "Application"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-9795593ee0944cf3bd827a204b82bc8d",
+      "flag": "--camera-barcode-current",
+      "pass_count": 21,
+      "log": "native-camera-barcode-current.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-c169f1a95fb04855bfd5d2c6c74a809a",
+      "flag": "--operator-ux-18",
+      "pass_count": 26,
+      "log": "native-operator-ux-18.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-e846d2e669374c678995caacc9830c75",
+      "flag": "--station-responsive-ui",
+      "pass_count": 13,
+      "log": "native-station-responsive-ui.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-ddde15ad9f6e4ae187cac96aa03c5558",
+      "flag": "--station-latency-ui",
+      "pass_count": 13,
+      "log": "native-station-latency-ui.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-a7844f79b2194f8bb736d7ba3de2d38a",
+      "flag": "--presentation-ordering-ui",
+      "pass_count": 8,
+      "log": "native-presentation-ordering-ui.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-646bda3bf3d642c592375c2e57725c1f",
+      "flag": "--workstation-barcode-ready",
+      "pass_count": 59,
+      "log": "native-workstation-barcode-ready.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-82e9d03b6e0a4a8cab8821e740308f50",
+      "flag": "--manual-supply-ui",
+      "pass_count": 8,
+      "log": "native-manual-supply-ui.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-30152b9095e74450bd1f000c82157134",
+      "flag": "--continuous-pda-input",
+      "pass_count": 35,
+      "log": "native-continuous-pda-input.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-7e6dc57559ff46dbb7b1034dd3b9cbc6",
+      "flag": "--operator-workspace",
+      "pass_count": 30,
+      "log": "native-operator-workspace.log"
+    },
+    {
+      "exit_code": 0,
+      "kind": "WindowsNativeWpf",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-a56f0bf0768f4d70b7ac610367272cef",
+      "flag": "--camera-preview-lifecycle",
+      "pass_count": 7,
+      "log": "native-camera-preview-lifecycle.log"
+    }
+  ],
+  "scope": "Windows native WPF, actual ZXing/Application/SQLite and loopback built-in RCS; physical MVS/customer RCS/PDA/field installation NOT_RUN",
+  "assertion_total": 519.0,
+  "source_tree": "f9f3ca84380f7067e142c43b3ceda2741bf26db0",
+  "tests_tree": "21217b1176bd150c19405d12f074fd3b5b24a0d7",
+  "publish_smoke": "publish-smoke.json",
+  "negative_baseline": "039ccdeeeebf10ddc267ae7f2a0103a6b5be52ba",
+  "negative_scope": "Original main product plus new first-read diagnostic assertion fails; original main OperatorUx18 fails at 39 DIP. Neither failure is counted in final PASS total."
+}

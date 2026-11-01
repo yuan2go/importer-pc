@@ -234,6 +234,7 @@ public sealed partial class ParameterSettingsControl
             choice.SetBinding(ComboBox.SelectedValueProperty, new Binding("Value") { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
             Field(form, label, choice, help, path, page);
         }
+        else if (p.Field.Type == "string-list" && p.Field.Choices is { Length: > 0 }) ChoiceList(form, label, p, path, page, help);
         else if (p.Field.Type == "choice") Choice(form, label, p, "Value", p.Field.Choices!, path, page, help);
         else
         {

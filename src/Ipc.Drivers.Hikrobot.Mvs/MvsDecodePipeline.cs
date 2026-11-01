@@ -10,6 +10,7 @@ internal sealed partial class MvsAcquisition
         double CopyMs, double ReleaseMs, long SkippedBefore, InspectionRegistration? Registration)
     {
         internal MvsFrameLatency? Trace { get; set; }
+        internal bool SupersededBeforeDecode { get; set; }
     }
     readonly object decodeGate = new();
     readonly AutoResetEvent decodeWake = new(false);
@@ -76,13 +77,20 @@ internal sealed partial class MvsAcquisition
                 try
                 {
                     if (token.IsCancellationRequested || work.Registration?.DecodeAllowed?.Invoke(DeviceId) == false)
-                    { Interlocked.Increment(ref supersededDecodeFrames); continue; }
+                    { work.SupersededBeforeDecode = true; continue; }
                     Timings.Record("host.decode-queue-wait", Stopwatch.GetElapsedTime(work.DeliveredTicks).TotalMilliseconds);
                     ProcessDecode(work, token);
                 }
-                finally { ReturnWork(work, false); decodeIdle.Set(); }
+                catch (MvsFrameRejection error)
+                {
+                    RejectFrame(work.Frame.Number, error, true);
+                    work.Trace = new(work.Frame.Number, work.ObservedAt, work.Frame.DeviceTimestampRaw, work.Frame.HostTimestampRaw,
+                        work.CopyMs, work.ReleaseMs, Timings.LastMs("decode"), 0, 0, 0, 0, false);
+                }
+                finally { ReturnWork(work, work.SupersededBeforeDecode); decodeIdle.Set(); }
             }
         }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
         catch (Exception error) { CaptureFailed(error); }
         finally
         {
@@ -105,8 +113,36 @@ internal sealed partial class MvsAcquisition
         byte[]? inspectionOriginal = null;
         try
         {
-            using (Timings.Measure("image.original-copy"))
-                if (inspected.Registration?.Isolated != true) original = originals.Copy(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
+            if (inspected.Registration?.Isolated != true)
+            {
+                lock (gate) waitingOriginalCapacity = true;
+                try
+                {
+                    using (Timings.Measure("image.original-capacity-wait"))
+                        original = originals.Reserve(length, checked((int)frame.Width), checked((int)frame.Height), token);
+                }
+                finally { lock (gate) waitingOriginalCapacity = false; }
+            }
+            if (original?.WaitedForCapacity == true)
+            {
+                bool newer;
+                lock (decodeGate) newer = pendingDecode is { } latest && latest.Frame.Number > frame.Number &&
+                    ReferenceEquals(latest.Registration, work.Registration);
+                if (newer)
+                {
+                    // This frame has not entered recognition/custody. After a
+                    // capacity stall prefer the latest video of the same scope;
+                    // recognized observations are never replaced or coalesced.
+                    original.Dispose(); original = null; work.SupersededBeforeDecode = true; return;
+                }
+            }
+            void CopyOriginal()
+            {
+                if (original is null) return;
+                using (Timings.Measure("image.original-copy")) pixels.AsSpan(0, length).CopyTo(original.Pixels);
+                lock (gate) originalFrameCopies++;
+            }
+            if (!decoder!.PreservesInput) CopyOriginal();
             using (Timings.Measure("inspection.original-copy"))
                 if (inspected.Registration is { CaptureImages: true }) inspectionOriginal = pixels.AsSpan(0, length).ToArray();
             PhaseTo("decode");
@@ -114,6 +150,7 @@ internal sealed partial class MvsAcquisition
             using (Timings.Measure("decode")) symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
             decodedTicks = Stopwatch.GetTimestamp();
             codes = symbols.Select(symbol => symbol.Text).ToArray();
+            if (decoder.PreservesInput && codes.Length > 0) CopyOriginal();
             lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; lastDecodeAt = DateTimeOffset.UtcNow; }
         }
         catch { original?.Dispose(); throw; }

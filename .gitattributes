@@ -200,6 +200,11 @@ docs/archive/pre-mvs-latency-01/** -text whitespace=cr-at-eol
 docs/archive/pre-pr155-integration-08/** -text whitespace=cr-at-eol
 docs/runtime/evidence/pr155-integration-08/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 
+# Preserve pre-default-path guidance byte identity.
+docs/archive/pre-d-drive-defaults-02/** -text whitespace=cr-at-eol
+
+# Raw synthetic verification output.
+docs/runtime/evidence/d-drive-defaults-02/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 # Preserve the exact current index before the continuous PDA input addendum.
 docs/archive/pre-sm-continuous-pda-input-01/** -text whitespace=cr-at-eol
 # Shutdown13 keeps original guidance and captured positive/negative verification bytes.
@@ -218,3 +223,7 @@ docs/archive/pre-manual-debug-round-lifecycle-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/manual-debug-round-lifecycle-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/archive/pre-pr165-windows-20261101/** -text whitespace=cr-at-eol
 docs/runtime/evidence/pr165-windows-20261101/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Preserve pre-PR161 Windows guidance and raw synthetic assertion output.
+docs/archive/pre-pr161-windows-20261101/** -text whitespace=cr-at-eol
+docs/runtime/evidence/pr161-windows-20261101/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

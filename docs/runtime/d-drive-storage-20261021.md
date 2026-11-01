@@ -1,5 +1,7 @@
 # D盘开发与新站存储
 
+SM 新站默认程序 `D:\CainiaoSupplyStation`、数据 `D:\ProgramData\ImporterPc\data`；既有部署继续使用原登记路径，不因默认值调整迁移数据。默认目录不取代原权限预检，详见 [D-DRIVE-DEFAULTS-02](d-drive-defaults-02.md)。
+
 D 盘安装预检和服务登记日志补修见 [D-DRIVE-INSTALL-01](d-drive-install-01.md)。受保护祖先下的缺失程序父目录可在授权后逐级创建；已有不受保护目录拒绝并指出位置，不自动放宽 ACL。数据预检包括 SYSTEM 服务访问条件。两组真实安装矩阵尚待 Windows 管理授权，不能据此宣布目标机安装通过；当前数据不自动迁移。
 
 项目文件、开发缓存、安装程序和运行数据使用D盘。当前只从零安装、从零建库，不提供C盘旧模拟目录接管。原迁移过程和验证结果完整保存在[指南原件](../archive/pre-fresh-baseline-01/README.md)及原证据中；不作为当前安装步骤。

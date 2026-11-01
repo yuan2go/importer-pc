@@ -1,3 +1,5 @@
+> 2026-11-01 [15实现](sm-perception-latency-15.md)将SDK取帧和软件解码分开；单个最新待解码帧可替换，已识别原观察、同帧原图、原请求和Unknown责任不变。下文三份请求验证指三次完整识别，不要求尚未识别的视频帧全部进入业务。
+
 # SM同帧原图留档与多码配置
 
 2026-10-30，工作包 [SM-ORIGINAL-FRAME-01](../work-packages/WP-IPC-SM-ORIGINAL-FRAME-01.md)。本次实现不沿用旧MVID供包台的同步UI/HTTP/Bitmap共享缓冲。复用当前MVS独占采集、Application输入/作业账与RCS原请求链；当前SM仍为MVS采图＋进程内ZXing、连续识别、独立请求交RCS去重，无PLC。

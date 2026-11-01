@@ -75,7 +75,7 @@ internal interface IMvsApi
     uint EnumValue(string key);
     void SetEnumValue(string key, uint value) => throw new NotSupportedException("This port cannot configure continuous acquisition");
     long PayloadSize();
-    void ConfigureBuffers(uint nodes);
+    void ConfigureBuffers(uint nodes, uint strategy = 0);
     void Start();
     MvsFrame? Acquire();
     bool HasFrame { get; }
@@ -159,10 +159,10 @@ internal sealed class MvsApi : IMvsApi
     }
     public uint EnumValue(string key) => checked((uint)ReadValue(key, 280, false));
     public long PayloadSize() => ReadValue("PayloadSize", 96, true);
-    public void ConfigureBuffers(uint nodes)
+    public void ConfigureBuffers(uint nodes, uint strategy = 0)
     {
         MvsNative.Check(MvsNative.MV_CC_SetImageNodeNum(handle, nodes), "SetImageNodeNum");
-        MvsNative.Check(MvsNative.MV_CC_SetGrabStrategy(handle, 0), "SetGrabStrategy OneByOne");
+        MvsNative.Check(MvsNative.MV_CC_SetGrabStrategy(handle, strategy), "SetGrabStrategy OneByOne");
     }
     public void Start() => MvsNative.Check(MvsNative.MV_CC_StartGrabbing(handle), "StartGrabbing");
     public MvsFrame? Acquire()

@@ -48,7 +48,7 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
         return new { At = DateTimeOffset.UtcNow, ProcessId = Environment.ProcessId, RuntimeId = runtimeId, Stopping = stopping.IsCancellationRequested,
             Connections = readers.Values.Select(r => new { r.Source.DeviceId, r.Epoch, Health = r.Health?.Health.ToString(),
                 Acquisition = (r.Source as IObservationDiagnosticsSource)?.ReadDiagnostics() }).ToArray(),
-            Workers = WorkerProgress(), Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
+            Presentation = PresentationProgress(), Workers = WorkerProgress(), Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new { Name = p.Key, State = p.Value.Status.ToString(),
                 LastProgress = backgroundProgress.TryGetValue(p.Key, out var seen) ? (DateTimeOffset?)seen.At : null,
                 Detail = backgroundProgress.TryGetValue(p.Key, out var detail) ? detail.Detail : "NotStarted" }).ToArray(),

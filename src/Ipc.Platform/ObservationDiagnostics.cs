@@ -8,4 +8,7 @@ public interface IObservationDiagnosticsSource
 public sealed record ObservationDiagnostics(string DeviceId, string Epoch, string Phase, string State,
     long AcquireCalls, long NoData, long Frames, long DecodeStarted, long DecodeCompleted,
     long EmptyFrames, long Candidates, long Delivered, long Rejected, bool DecodePaused,
-    DateTimeOffset? LastFrameAt, double? LastFrameAgeMs, DateTimeOffset? LastDecodeAt, string? Failure);
+    DateTimeOffset? LastFrameAt, double? LastFrameAgeMs, DateTimeOffset? LastDecodeAt, string? Failure)
+{
+    public long SupersededDecodeFrames { get; init; }
+}

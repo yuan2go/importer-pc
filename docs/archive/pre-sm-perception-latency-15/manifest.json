@@ -1,0 +1,26 @@
+{
+  "source_commit": "5ae7bd59fef37e92b9cfaa46ff1bc352c069fa67",
+  "representation": "pre-edit Windows working-tree bytes",
+  "files": [
+    {
+      "source": "docs/INDEX.md",
+      "archived": "docs__INDEX.md.txt",
+      "sha256": "9b08ef81c7c8afca38449142afad6d05b936f174d61f0b6aef14fe1a1310815b"
+    },
+    {
+      "source": "docs/runtime/mvs-software-reader-01.md",
+      "archived": "docs__runtime__mvs-software-reader-01.md.txt",
+      "sha256": "2b99168dd86aeb82a44854fa524b9fe1d84fcdb151bb29f14ac876b5dac98d16"
+    },
+    {
+      "source": "docs/runtime/mvs-latency-01.md",
+      "archived": "docs__runtime__mvs-latency-01.md.txt",
+      "sha256": "cb0222a4789b1da736e4928724a81212384efc703b66fdd1fcc1a477e66951f8"
+    },
+    {
+      "source": "docs/runtime/sm-original-frame-01.md",
+      "archived": "docs__runtime__sm-original-frame-01.md.txt",
+      "sha256": "8932a78216196abcbbd16c16710afb4f7fe01b6c75e65dc04f273fe3b306ac50"
+    }
+  ]
+}

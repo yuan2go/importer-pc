@@ -1,0 +1,81 @@
+PASS STATION-LATENCY same-code pending request immediately clears the prior destination; gray processing placeholder has no authoritative slot or old task fields
+PASS STATION-LATENCY processing state has explicit text, automation label and muted color without a previous destination
+PASS STATION-LATENCY read feedback reaches actual DWM composition before the delayed RCS response without claiming business acceptance
+CAPTURE slot-confirming: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS STATION-LATENCY second decoded read creates its own request and replaces the provisional display only on its own confirmed result
+PASS STATION-LATENCY processing placeholder never resurrects the old slot after the former display hold deadline
+PASS STATION-LATENCY a different returned slot replaces the old value immediately and atomically
+PASS STATION-LATENCY a different barcode uses only a processing placeholder and never borrows the previous parcel's slot or task fields
+PASS STATION-LATENCY accepted slot telemetry records both decode-to-composition and snapshot-to-composition with the matching observation identity
+METRICS LOOPBACK_SYNTHETIC [
+      {
+        "ObservationId": "e0db4b586a304f88966214ea134378cd",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 44.0213,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T14:07:34.05971+00:00"
+      },
+      {
+        "ObservationId": "e0db4b586a304f88966214ea134378cd",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 395.5591,
+        "SnapshotToCompositionMs": 42.9311,
+        "At": "2026-11-01T14:07:34.410461+00:00"
+      },
+      {
+        "ObservationId": "0fd31001fec1405da24945ee9aa9c929",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 9.8024,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T14:07:34.4250203+00:00"
+      },
+      {
+        "ObservationId": "0fd31001fec1405da24945ee9aa9c929",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 358.7403,
+        "SnapshotToCompositionMs": 28.5619,
+        "At": "2026-11-01T14:07:34.7739581+00:00"
+      },
+      {
+        "ObservationId": "41706a48d831469fbac6300e0fb35e50",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 23.3753,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T14:07:34.8423141+00:00"
+      },
+      {
+        "ObservationId": "41706a48d831469fbac6300e0fb35e50",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 1838.0534,
+        "SnapshotToCompositionMs": 27.0683,
+        "At": "2026-11-01T14:07:36.6570336+00:00"
+      },
+      {
+        "ObservationId": "ba5b4b8b4542437284d2e57ae4315d7a",
+        "PositionId": "left",
+        "Stage": "ReadFeedbackComposed",
+        "ReadToCompositionMs": 29.4768,
+        "SnapshotToCompositionMs": null,
+        "At": "2026-11-01T14:07:36.6936865+00:00"
+      },
+      {
+        "ObservationId": "ba5b4b8b4542437284d2e57ae4315d7a",
+        "PositionId": "left",
+        "Stage": "SlotComposed",
+        "ReadToCompositionMs": 176.1199,
+        "SnapshotToCompositionMs": 32.2392,
+        "At": "2026-11-01T14:07:36.8403324+00:00"
+      }
+    ]
+PASS STATION-LATENCY an older camera cue cannot hide a newer confirmed keyboard request or borrow its slot for another source
+PASS STATION-LATENCY explicit rejection clears every provisional and confirmed slot from the current display
+PASS STATION-LATENCY stale projection cannot preserve a provisional slot
+PASS STATION-LATENCY Unknown removes the old display without clearing original request responsibility or resending
+PASS STATION-LATENCY a new read-only cue preserves the original Unknown instruction and cannot authorize an old destination
+CAPTURE slot-unknown-compact: 1024x768 DIP, Windows DPI 1.25/1.25

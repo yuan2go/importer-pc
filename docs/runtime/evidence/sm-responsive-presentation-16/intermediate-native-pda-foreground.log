@@ -1,0 +1,6 @@
+Windows SendInput -> HWND -> WPF text/key events; real Application/SQLite/built-in RCS with synthetic loopback peer. Physical PDA/customer RCS/site NOT_RUN.
+FAIL System.InvalidOperationException: Native barcode input requires the foreground test HWND, barcode focus and no held modifiers; active=True; foreground=132736; expected=591764; focus=True; held=
+   at BarcodeNativeKeyboard.SendAsync(Window window, TextBox entry, UInt16[] keys) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 192
+   at Program.VerifyContinuousPdaInput(String root, String evidence, List`1 lines) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 49
+   at Program.VerifyContinuousPdaInput(String root, String evidence, List`1 lines) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 147
+   at Program.<>c__DisplayClass43_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\Program.cs:line 58

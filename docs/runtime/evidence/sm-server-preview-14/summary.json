@@ -1,0 +1,142 @@
+{
+  "work_package": "WP-IPC-SM-SERVER-PREVIEW-14",
+  "date": "2026-11-01",
+  "baseline_main": "3d7e03090090ca06db7dced242586798c10e0706",
+  "negative": {
+    "log": "scheduling-before.log",
+    "product": "unchanged baseline MvsAcquisition",
+    "baseline_blob": "9b67b7ffa0152a06a3685701e56e9ccae3fe077d",
+    "result": "FAIL at preview scheduling after both Ready/valid-frame check passed",
+    "scope": "Isolated process with 2 shared workers; two synthetic native calls in flight"
+  },
+  "fixed": {
+    "status": "PASS",
+    "assertions": {
+      "scheduling-after.log": 4,
+      "mvs.log": 87,
+      "native-lifecycle.log": 7,
+      "native-stream.log": 16,
+      "native-round.log": 25,
+      "application-rounds.log": 41,
+      "shutdown.log": 21,
+      "offline-activation.log": 12
+    },
+    "total_assertions": 213.0,
+    "builds": "Probe, WPF verification, Application verification, Sportmaster Desktop Release: 0 warnings and 0 errors"
+  },
+  "native_baseline": "native-baseline.log: unchanged baseline product already passes the normal-capacity native timer/navigation checks",
+  "implementation": "One lifetime-owned dedicated background capture thread per camera; original worker Task and native drain guards retained",
+  "files": [
+    {
+      "path": "src/Ipc.Drivers.Hikrobot.Mvs/MvsAcquisition.cs",
+      "sha256": "422013985215d07a9476de577239165ae7b6b10185e3228b4be4889b28cc7fd2",
+      "git_blob": "2125f158343fe12ae5ebe54c55a0c0731ea00233"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/MvsVerification.PreviewScheduling.cs",
+      "sha256": "d889b9293893408f55569e6599a9f5696af70c67a67cc0bdf7858ac2784cc1e2",
+      "git_blob": "851722a8363b0f210fb624dcc083039af4158f87"
+    },
+    {
+      "path": "tests/Ipc.Drivers.Hikrobot.Probe/Program.cs",
+      "sha256": "c48e2f05076af69fa6887fef7de0d85592887f953bfe46b998947420a5966162",
+      "git_blob": "a651f0e050d38e57b35f99680117573ec21fc21b"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CameraPreviewLifecycleUi.cs",
+      "sha256": "a9dd295dcd35d445f91f3cfcb7b56a867616ee87ab4bb053abc6d292a654acea",
+      "git_blob": "dfe79993f93a6b8f64915c9c73cf52739b876218"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CameraStreamUi.cs",
+      "sha256": "0737525cae4e8f17a080c85cb35439496b565a7ec2d669685f3b3961dc3bf3f2",
+      "git_blob": "3a97a4e9f975d69ec4de085eae32a8bd557aa6c7"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "sha256": "7448f35262a6070ad8de4ba4b267efc5745dd651e4c97f299c895e5efe75afc5",
+      "git_blob": "ccad7183e558fef103e43483b9666e9efb8f042e"
+    }
+  ],
+  "logs": [
+    {
+      "path": "application-build.log",
+      "sha256": "2be2c437be3f7f7d897d4fda8a7fc0fd6784adb510d36da743caf0644a31bf9c",
+      "size_bytes": 84
+    },
+    {
+      "path": "application-rounds.log",
+      "sha256": "791cd66275a4257c535688e90478189e10237c800e9561bdff35b62e921f2c39",
+      "size_bytes": 29690
+    },
+    {
+      "path": "desktop-build.log",
+      "sha256": "fa877252edf8b4d8302304ea41fd5d7690b63d983c625deb22f035c41bcc162a",
+      "size_bytes": 84
+    },
+    {
+      "path": "mvs.log",
+      "sha256": "06228aed51579c932d5719fd03eb783fbd3bfb2be4306b1f9e8f8316b0d2c2b2",
+      "size_bytes": 7999
+    },
+    {
+      "path": "native-baseline.log",
+      "sha256": "924feba029255626e82106140dcee5d4c41877fe38fcfa0e08a8d7974fd04c4d",
+      "size_bytes": 728
+    },
+    {
+      "path": "native-lifecycle.log",
+      "sha256": "924feba029255626e82106140dcee5d4c41877fe38fcfa0e08a8d7974fd04c4d",
+      "size_bytes": 728
+    },
+    {
+      "path": "native-round.log",
+      "sha256": "710f2a2247a56ad459a00cdcd52ba9d0f2539c6802db72e1d5a802b542bb8a8c",
+      "size_bytes": 9262
+    },
+    {
+      "path": "native-stream.log",
+      "sha256": "c3f6889d570bd718d405584e0b1b08d5cfb1233be1080552ffe1338eaf9082b7",
+      "size_bytes": 1921
+    },
+    {
+      "path": "offline-activation.log",
+      "sha256": "a759f6aec4c7e94d149787371915b3858379a670a39078fb1df83be6c56c4bae",
+      "size_bytes": 1380
+    },
+    {
+      "path": "probe-build.log",
+      "sha256": "9c7d305eb5ee7a39d3bcd4e19b11406dfad267f68cce22632e1c4d2d72e08b40",
+      "size_bytes": 84
+    },
+    {
+      "path": "scheduling-after.log",
+      "sha256": "9a7e7e3f603453e7f167d71056d152bf12766f97e701f7a363d80e0302ce594f",
+      "size_bytes": 380
+    },
+    {
+      "path": "scheduling-before.log",
+      "sha256": "6679a6fa2d979f46e888625d5241ee1e0c3d82ff03135e374f03fc870427f1aa",
+      "size_bytes": 717
+    },
+    {
+      "path": "shutdown.log",
+      "sha256": "9fcc500262c42b63d3ba9449f6b58c5b22e203a89992ef64cb37a046dded1d9f",
+      "size_bytes": 2012
+    },
+    {
+      "path": "ui-build.log",
+      "sha256": "7c6daa65fe7d46490a313586f6a7dedcd969d4fa133c360c621aac0f6a8c96e3",
+      "size_bytes": 84
+    }
+  ],
+  "not_run": [
+    "Real target SDK/cameras",
+    "Target server scheduling and acquisition logs",
+    "Customer RCS",
+    "Published installation medium and system installation",
+    "Field acceptance"
+  ],
+  "server_root_cause": "Specific server cause is not proven without its telemetry; controlled reproduction establishes a real shared-worker scheduling defect, not a unique explanation of the original screenshot",
+  "ci": "disabled"
+}

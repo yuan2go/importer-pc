@@ -10,6 +10,7 @@ internal enum RepositoryOpenPhase { OriginalRow, BeforeWritableOpen }
 public sealed partial class ParcelRepository : IDisposable
 {
     internal Action<string>? Boundary { get; set; }
+    internal Action? ProjectionChanged { get; set; }
     readonly SqliteConnection db;
     readonly string rawRoot;
     readonly CancellationToken maintenanceCancellation;
@@ -283,6 +284,7 @@ public sealed partial class ParcelRepository : IDisposable
         Boundary?.Invoke("AfterBusinessCommit:" + eventName);
         if(operation?.Wcs?.Request.IntegrationRequest is {} allocated)lastIntegrationRequestId=Math.Max(lastIntegrationRequestId,allocated.RequestId);
         Revision++; if (paused is not null) Paused = paused.Value;
+        ProjectionChanged?.Invoke();
     }
     public string BeginReceipt(ParcelOperation op, StageFact stage, string source)
     {

@@ -8,7 +8,8 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 
 // The same 3.1.1 engine used in the real-camera diagnostic, directly in .NET.
 // No image files, subprocess, Python runtime, barcode deduplication or RCS work.
-internal sealed class SoftwareDecoder(string charset, Action? prepareNative = null, Action<byte[], int>? contrastForVerification = null) : IMonoBarcodeDecoder
+internal sealed class SoftwareDecoder(string charset, Action? prepareNative = null, Action<byte[], int>? contrastForVerification = null,
+    Action<BarcodeReader>? searchOptionsForVerification = null) : IMonoBarcodeDecoder
 {
     const int CandidateLimit = 64, CodeByteLimit = 4096;
     BarcodeReader? reader;
@@ -24,6 +25,7 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
         (prepareNative ?? DecoderRuntime.Prepare)();
         reader ??= new BarcodeReader { Formats = BarcodeFormat.All, TryHarder = true, TryRotate = true,
             TryInvert = true, TryDownscale = true, ReturnErrors = false, MaxNumberOfSymbols = CandidateLimit };
+        searchOptionsForVerification?.Invoke(reader);
     }
     public string[] Decode(byte[] pixels, int length, int width, int height)
         => DecodeDetailed(pixels, length, width, height).Select(symbol => symbol.Text).ToArray();
@@ -33,7 +35,7 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
             throw new InvalidDataException("Decoder not prepared or incomplete Mono8 image");
         using var total = timings.Measure("decode.total");
         using (timings.Measure("contrast"))
-            if (contrastForVerification is null) ExpandContrast(pixels.AsSpan(0, length));
+            if (contrastForVerification is null) { if (!ExpandContrast(pixels.AsSpan(0, length))) return []; }
             else contrastForVerification(pixels, length);
         var pin = GCHandle.Alloc(pixels, GCHandleType.Pinned);
         Barcode[]? results = null;
@@ -53,7 +55,7 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
         }
         finally { if (results is not null) foreach (var result in results) result.Dispose(); pin.Free(); }
     }
-    internal static void ExpandContrast(Span<byte> pixels)
+    internal static bool ExpandContrast(Span<byte> pixels)
     {
         // Same integer mapping as before, including floor rounding and constant
         // images. Scan with SIMD and divide only for the <=256 possible levels.
@@ -70,10 +72,12 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
             for (var lane = 0; lane < Vector<byte>.Count; lane++) { lo = Math.Min(lo, minimum[lane]); hi = Math.Max(hi, maximum[lane]); }
         }
         for (; index < pixels.Length; index++) { lo = Math.Min(lo, pixels[index]); hi = Math.Max(hi, pixels[index]); }
-        if (hi <= lo || lo == 0 && hi == 255) return;
+        if (hi <= lo) return false;
+        if (lo == 0 && hi == 255) return true;
         Span<byte> levels = stackalloc byte[256];
         for (var value = (int)lo; value <= hi; value++) levels[value] = (byte)((value - lo) * 255 / (hi - lo));
         for (index = 0; index < pixels.Length; index++) pixels[index] = levels[pixels[index]];
+        return true;
     }
     public void Release() { reader?.Dispose(); reader = null; }
 }

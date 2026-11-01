@@ -2,8 +2,35 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-public sealed partial class ParcelRuntime : ICameraDiagnostics
+public sealed partial class ParcelRuntime : ICameraDiagnostics, ICameraPreviewLeaseDiagnostics
 {
+    sealed record PreviewReader(ObservationSession Session, bool Deferred);
+    IReadOnlyDictionary<string, PreviewReader> previewReaders = new Dictionary<string, PreviewReader>();
+    public Task<CameraPreviewLeaseResult> ReadCameraPreviewLeaseAsync(string deviceId, CancellationToken token) => OwnedRead(t =>
+    {
+        var authority = Management.Require(); t.ThrowIfCancellationRequested();
+        if (!Volatile.Read(ref previewReaders).TryGetValue(deviceId, out var binding)) throw new InvalidOperationException("当前运行配置中没有该相机。");
+        var reader = binding.Session;
+        if (binding.Deferred) return Task.FromResult(new CameraPreviewLeaseResult("相机待配置，请填写 IP 和物理序列号后保存并应用。", null));
+        if (reader.Source is not IObservationPreviewLeaseSource source) return Task.FromResult(new CameraPreviewLeaseResult("当前来源不支持有界借帧预览。", null));
+        ObservationPreviewLease? lease = null;
+        try
+        {
+            var diagnostic = (reader.Source as IObservationDiagnosticsSource)?.ReadDiagnostics();
+            CameraPreviewLeaseResult Result(string status, ObservationPreviewLease? frame = null) => new(status, frame)
+                { Diagnostics = diagnostic?.Epoch == reader.Epoch ? diagnostic : null };
+            if (reader.Health?.Health is DeviceHealth.Disconnected or DeviceHealth.Faulted or DeviceHealth.Stopping or DeviceHealth.Stopped)
+                return Task.FromResult(Result("相机采集不可用；旧画面已清除。"));
+            lease = source.ReadPreviewLease();
+            authority.ThrowIfCancellationRequested(); Management.Require(); t.ThrowIfCancellationRequested();
+            if (lease is null) return Task.FromResult(Result("尚未取得实时画面；请核对下方取帧状态及相机连接。"));
+            var frame = lease.Frame;
+            if (frame.DeviceId != deviceId || frame.Epoch != reader.Epoch || frame.CapturedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - frame.CapturedAt > TimeSpan.FromSeconds(3))
+            { lease.Dispose(); lease = null; return Task.FromResult(Result("图像已过期，等待当前连接的新图像。")); }
+            return Task.FromResult(Result("实时画面 · 仅预览，不触发扫码或发送请求", lease));
+        }
+        catch { lease?.Dispose(); throw; }
+    }, token);
     public Task<CameraPreviewResult> ReadCameraPreviewAsync(string deviceId, CancellationToken token) => OwnedRead(async t =>
     {
         var authority = Management.Require();

@@ -1,0 +1,15 @@
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: short/vector-boundary contrast preserves exact scalar pixels
+PASS RCS20: all 32896 low/high intensity pairs preserve exact original pixels and pooled-buffer tail
+PASS RCS20: all 256 uniform Mono8 intensities match actual full ZXing empty results without invoking native search in production

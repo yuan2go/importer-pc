@@ -81,7 +81,7 @@ public sealed partial class ParcelRuntime
             finally { gate.Release(); }
         }
         // Deserialize the detached UI copy after releasing the business gate.
-        return Wire.Decode<ParcelSnapshot>(encoded);
+        return Wire.Decode<ParcelSnapshot>(encoded) with { PublishedTicks = System.Diagnostics.Stopwatch.GetTimestamp() };
     }
     public async Task<BusinessProjection> QueryAsync()
     {
@@ -313,6 +313,7 @@ public sealed partial class ParcelRuntime
         await ingressDrain.WaitAsync(token).ConfigureAwait(false);
         overloadWrites.Writer.TryComplete();
         await DrainTerminalWorkerAsync(overloadWorker, token).ConfigureAwait(false);
+        await DrainTerminalWorkerAsync(presentationPublisher, token).ConfigureAwait(false);
         await DrainReadOperations(token).ConfigureAwait(false);
         await DrainTerminalWorkerAsync(worker, token).ConfigureAwait(false);
         await DrainTerminalWorkerAsync(maintenanceWorker, token).ConfigureAwait(false);

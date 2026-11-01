@@ -48,7 +48,9 @@ static partial class Program
             Check(retained.Id == locked.Id && retained.Frame!.Id == locked.Frame!.Id && retained.RequestBody == locked.RequestBody && retained.Barcode == locked.Barcode && h.Factory.Decoders[h.Left].Count == 2 && h.Peer.Requests.Count == 0,
                 "live video advances after lock without redecoding, replacing the locked result, changing frozen JSON or sending requests");
             Check(Field<TextBlock>(live, "counters").Text.Contains("本轮解码已暂停"), "video explains that decoding is paused separately from acquisition");
-            Field<Expander>(control, "setup").IsExpanded = false; image.BringIntoView(); await Flush();
+            Check(!Descendants(control).OfType<Expander>().Any(e => Equals(e.Header, "隔离确认与结束调试")),
+                "the removed isolation confirmation panel is not restored by live video");
+            image.BringIntoView(); await Flush();
             var liveCard = Field<Border>(control, "liveCard"); var resultCard = Field<Border>(control, "resultCard");
             var livePoint = liveCard.TranslatePoint(new Point(), control); var photoPoint = resultCard.TranslatePoint(new Point(), control);
             Check(livePoint.X < photoPoint.X && Math.Abs(livePoint.Y - photoPoint.Y) < 2 && Field<TextBox>(control, "requestBody").TranslatePoint(new Point(), control).Y > livePoint.Y + liveCard.ActualHeight,

@@ -171,7 +171,7 @@ sealed class MvsPort : IMvsApi
     public void Open() { }
     public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : 0;
     public long PayloadSize() => 6291456;
-    public void ConfigureBuffers(uint nodes) { if (nodes != 3) throw new Exception("test expects default node budget"); }
+    public void ConfigureBuffers(uint nodes, uint strategy = 0) { if (nodes != 3) throw new Exception("test expects default node budget"); }
     public void Start() => Starts++;
     public MvsFrame? Acquire()
     {

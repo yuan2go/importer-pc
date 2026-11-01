@@ -49,10 +49,15 @@ internal sealed class MvsTimings
             }), frames.ToArray());
     }
 }
-internal sealed record MvsTimingSnapshot(double ElapsedMs, int PercentileWindow, Dictionary<string, MvsStageTiming> Stages, MvsFrameLatency[] RecentFrames);
+internal sealed record MvsTimingSnapshot(double ElapsedMs, int PercentileWindow, Dictionary<string, MvsStageTiming> Stages, MvsFrameLatency[] RecentFrames)
+{
+    public string ExposureFrameAge => "Unavailable: device/SDK timestamp unit and host-clock mapping must be calibrated on target hardware";
+}
 internal sealed record MvsStageTiming(long Count, double TotalMs, double MinimumMs, double MaximumMs, int WindowCount, double P50Ms, double P95Ms, double P99Ms);
 internal sealed record MvsFrameLatency(uint Number, DateTimeOffset DeliveredAt, ulong DeviceTimestampRaw, long HostTimestampRaw,
     double CopyMs, double ReleaseMs, double DecodeMs, double ClearMs, double ObservedToReceiverMs, double HandoffMs, int Candidates, bool Delivered)
 {
     public double OriginalCopyMs { get; init; }
+    public double DecodeQueueMs { get; init; }
+    public bool SkippedBeforeDecode { get; init; }
 }

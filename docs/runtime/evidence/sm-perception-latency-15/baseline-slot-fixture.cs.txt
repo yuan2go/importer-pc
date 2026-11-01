@@ -1,0 +1,26 @@
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
+using Ipc.Application.Sportmaster.Desktop;
+static partial class Program
+{
+    static async Task VerifyBaselineSlot(string root,string evidence,List<string> lines)
+    {
+        await using var h=new CameraRoundHarness(root,Path.Combine(evidence,"baseline-slot"));await h.StartAsync();
+        var window=new SupplyStationWindow(h.App,null,"standard");window.Show();
+        async Task Until(Func<bool> done){for(var i=0;i<200;i++){await Dispatcher.Yield();if(done())return;await Task.Delay(30);}throw new TimeoutException("Baseline slot fixture");}
+        try
+        {
+            await SetClient(window,1366,768);await Until(()=>window.ViewModel.Fresh);
+            var p=window.ViewModel.Left;var pixels=CameraRoundHarness.Barcode("BASELINE-SAME-CODE");
+            h.Api(h.Left).Enqueue(pixels,1);await Until(()=>p.SlotAvailable);var id=p.Operation!.Id;var prior=p.Slot;
+            h.Peer.Hold=new(TaskCreationOptions.RunContinuationsAsynchronously);h.Api(h.Left).Enqueue(pixels,2);
+            await Until(()=>p.Operation?.Id!=id && p.Operation?.State==Ipc.Application.Contracts.ParcelState.ResolvingWcs);
+            var control=Descendants(window).OfType<SupplyStationPosition>().Single(c=>ReferenceEquals(c.DataContext,p));
+            var slot=(TextBox)control.FindName("CurrentSlot");
+            lines.Add("BASELINE same-code pending: slotVisible="+slot.IsVisible+"; oldSlotPreserved="+(slot.Text==prior));
+            if(!slot.IsVisible || slot.Text!=prior)throw new InvalidOperationException("same-code pending request clears the displayed slot instead of a distinctly provisional hold");
+        }
+        finally{h.Peer.Hold?.TrySetResult();window.Close();}
+    }
+}

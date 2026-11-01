@@ -27,5 +27,7 @@ public sealed partial class ParcelRuntime : IRuntimeFatalSource
         Interlocked.CompareExchange(ref failure, fatalState, null);
         fatalStorage.TrySetResult(new("Storage." + phase + "." + kind, kind == StorageFailureKind.Unrecoverable,
             error, runtimeId.ToString(), string.Join(",", readers.Select(x => x.Key + ":" + x.Value.Epoch).Concat(scaleEpochs.Select(x => x.Key + ":" + x.Value))), fatalState + "; original=" + failure));
+        lock (presentationGate) { presentationFailure = fatalState; OfferPresentation(); }
+        InvalidatePresentation();
     }
 }

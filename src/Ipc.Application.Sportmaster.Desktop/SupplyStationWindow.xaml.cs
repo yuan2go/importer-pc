@@ -9,6 +9,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow : Window
 {
+    partial void InitializePresentationFeedback();
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Grid work = new();
     readonly HistoryPage history = new();
@@ -26,7 +27,7 @@ public partial class SupplyStationWindow : Window
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
-        ViewModel = new(application); DataContext = ViewModel; this.stopOwner = stopOwner;
+        ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
         ViewModel.RequestActivationAsync = RequestActivation;
         ViewModel.RequestRetentionAsync = RequestRetention;
         WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
@@ -58,7 +59,7 @@ public partial class SupplyStationWindow : Window
         timer.Tick += (_, _) =>
         {
             ViewModel.RefreshFreshness();
-            if (pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
+            if (ViewModel.Application is not IParcelPresentationSource && pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
         };
         Loaded += async (_, _) =>
         {

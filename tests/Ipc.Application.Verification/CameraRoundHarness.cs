@@ -27,7 +27,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
     public RoundApi Api(string device) => Factory.Apis[device];
-    public CameraRoundHarness(string workspace, string folder)
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null)
     {
         if (!nativeLoaded)
         {
@@ -42,7 +42,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         { ["zone-id"] = "71", ["project-id"] = "83", ["specified-chute"] = "false", ["request-id-base"] = "820000000", ["request-id-count"] = "100000",
           ["heartbeat-interval-seconds"] = "3600", ["left-station-code"] = "TEST-LEFT", ["left-bcr-code"] = "TEST-LEFT-READER", ["right-station-code"] = "TEST-RIGHT", ["right-bcr-code"] = "TEST-RIGHT-READER" });
-        Config = seed with { Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [] };
+        Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [] };
         var configuration = Path.Combine(folder, "config"); Directory.CreateDirectory(configuration);
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);
@@ -146,7 +146,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public void Prepare() => inner.Prepare();
         public string[] Decode(byte[] p, int length, int width, int height) => DecodeDetailed(p, length, width, height).Select(s => s.Text).ToArray();
         public RecognitionSymbol[] DecodeDetailed(byte[] p, int length, int width, int height)
-        { if (api.HasFrame) throw new InvalidOperationException("Recognition must follow SDK loan return"); Last = inner.DecodeDetailed(p, length, width, height); Interlocked.Increment(ref Count); return Last; }
+        { if (!api.WasReturned(p.AsSpan(0, length))) throw new InvalidOperationException("Recognition must follow its own SDK loan return"); Last = inner.DecodeDetailed(p, length, width, height); Interlocked.Increment(ref Count); return Last; }
         public void Release() => inner.Release();
     }
     internal sealed class RoundApi(DeviceBinding binding) : IMvsApi
@@ -157,6 +157,9 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public readonly ManualResetEventSlim ClearGate = new(true);
         public volatile bool Discovered = true;
         nint buffer; uint trigger = 1, acquisition;
+        byte[]? borrowedPixels;
+        readonly ConcurrentDictionary<string, byte> returnedPixels = new();
+        internal bool WasReturned(ReadOnlySpan<byte> pixels) => returnedPixels.ContainsKey(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)));
         public bool HasFrame { get; private set; }
         public void Enqueue(RoundPixels p, uint number) => queue.Enqueue((p, number));
         public void Initialize() { }
@@ -166,17 +169,18 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? acquisition : trigger;
         public void SetEnumValue(string key, uint value) { if (key == "TriggerMode") trigger = value; else if (key == "AcquisitionMode") acquisition = value; else throw new InvalidOperationException(key); }
         public long PayloadSize() => 8388608;
-        public void ConfigureBuffers(uint count) { }
+        public void ConfigureBuffers(uint count, uint strategy = 0) { }
         public void Start() => Interlocked.Increment(ref Starts);
         public MvsFrame? Acquire()
         {
             if (!queue.TryDequeue(out var frame)) { Thread.Sleep(4); return null; }
             if (HasFrame) throw new InvalidOperationException("Synthetic SDK loan leaked");
+            borrowedPixels = frame.Pixels.Data;
             buffer = Marshal.AllocHGlobal(frame.Pixels.Data.Length); Marshal.Copy(frame.Pixels.Data, 0, buffer, frame.Pixels.Data.Length); HasFrame = true;
             Interlocked.Increment(ref Acquires);
             return new(buffer, (uint)frame.Pixels.Width, (uint)frame.Pixels.Height, MvsNative.Mono8, (ulong)frame.Pixels.Data.Length, frame.Number, 0, 0);
         }
-        public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; Interlocked.Increment(ref Releases); }
+        public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; Interlocked.Increment(ref Releases); }
         public void ClearBuffers() { Interlocked.Increment(ref Clears); ClearGate.Wait(); if (FailNextClear) { FailNextClear = false; throw new IOException("Synthetic SDK cache clear failed"); } while (queue.TryDequeue(out _)) { } }
         public bool Connected() => Discovered;
         public void Stop() => Interlocked.Increment(ref Stops);
@@ -191,6 +195,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public readonly ConcurrentQueue<string> Requests = new();
         public TaskCompletionSource? Hold { get; set; }
         public string Mode = "assigned";
+        public string ReplySlot = "SYNTH-CHUTE";
         public string Endpoint { get; }
         public RoundPeer()
         {
@@ -211,7 +216,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 var hold = Hold; if (hold is not null) await hold.Task.WaitAsync(stopped.Token);
                 using var json = JsonDocument.Parse(body); var id = json.RootElement.GetProperty("requestId").GetInt64();
                 var reply = JsonSerializer.Serialize(new { requestId = id, result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
-                    message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = "SYNTH-CHUTE", length = (decimal?)null,
+                    message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU" } } } });
                 var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stopped.Token);

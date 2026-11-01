@@ -1,0 +1,8 @@
+PASS PRESENTATION-ORDER newer read notification is pending while the older full snapshot application finishes
+PASS PRESENTATION-ORDER latest full result survives a newer read-only update without waiting for a watchdog publication
+FAIL System.InvalidOperationException: an older in-flight success cannot clear a newer failure or resurrect its destination
+   at Program.<VerifyPresentationOrderingUi>g__Check|42_0(Boolean value, String text, <>c__DisplayClass42_0&) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\PresentationOrderingUi.cs:line 13
+   at Program.VerifyPresentationOrderingUi(String root, String evidence, List`1 lines) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\PresentationOrderingUi.cs:line 60
+   at Program.VerifyPresentationOrderingUi(String root, String evidence, List`1 lines) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\PresentationOrderingUi.cs:line 68
+   at Program.VerifyPresentationOrderingUi(String root, String evidence, List`1 lines) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\PresentationOrderingUi.cs:line 68
+   at Program.<>c__DisplayClass44_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\Program.cs:line 62

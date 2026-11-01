@@ -7,7 +7,7 @@
   </ResourceDictionary>
  </UserControl.Resources>
  <Border x:Name="InputTargetOutline" BorderBrush="{Binding InputTargetBrush}" BorderThickness="3" Margin="2" CornerRadius="4">
-  <Border x:Name="PositionOutline" Style="{StaticResource StationCard}" Padding="8">
+  <Border x:Name="PositionOutline" Style="{StaticResource StationPositionCard}">
    <Grid>
     <Grid.RowDefinitions>
      <RowDefinition Height="Auto"/>
@@ -16,31 +16,24 @@
      <RowDefinition Height="Auto"/>
      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <DockPanel Margin="0,0,0,8">
-     <ComboBox x:Name="VisibleInputSource" DockPanel.Dock="Right" MinHeight="44" MinWidth="96" Margin="8,0,0,0" SelectionChanged="InputSource_SelectionChanged" SelectedIndex="0" AutomationProperties.Name="本位条码输入来源" ToolTip="键盘和PDA键盘均输入到当前焦点；不代表硬件设备绑定。">
-      <ComboBoxItem Content="键盘"/>
-      <ComboBoxItem Content="PDA键盘"/>
-     </ComboBox>
-     <StackPanel>
-      <TextBlock Text="{Binding Heading}" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
-      <TextBlock x:Name="CameraConnection" Text="{Binding DevicePresentation.Text}" Foreground="{Binding DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
-     </StackPanel>
+    <DockPanel Style="{StaticResource StationPositionSection}">
+     <DockPanel>
+      <TextBlock Text="{Binding Heading}" DockPanel.Dock="Left" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
+      <TextBlock x:Name="CameraConnection" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding DevicePresentation.Text}" Foreground="{Binding DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
+     </DockPanel>
     </DockPanel>
-    <Grid Grid.Row="1" x:Name="ScanInformation" Margin="0,0,0,8">
+    <Grid Grid.Row="1" x:Name="ScanInformation" Style="{StaticResource StationPositionSection}">
      <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
      </Grid.ColumnDefinitions>
-     <TextBox x:Name="BarcodeEntry" MinHeight="48" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" LostKeyboardFocus="Entry_LostKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。PDA设为键盘输入并以回车结束。">
+     <TextBox x:Name="BarcodeEntry" MinHeight="48" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" LostKeyboardFocus="Entry_LostKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
       <TextBox.ContextMenu>
        <ContextMenu>
         <MenuItem Header="剪切" Command="ApplicationCommands.Cut"/>
         <MenuItem Header="复制" Command="ApplicationCommands.Copy"/>
         <MenuItem Header="粘贴" Command="ApplicationCommands.Paste"/>
         <MenuItem Header="全选" Command="ApplicationCommands.SelectAll"/>
-        <Separator/>
-        <MenuItem Header="手动键盘" x:Name="KeyboardSource" IsCheckable="True" IsChecked="True" Click="KeyboardSource_Click"/>
-        <MenuItem Header="PDA键盘" x:Name="PdaSource" IsCheckable="True" Click="PdaSource_Click"/>
         <Separator/>
         <MenuItem Header="清空输入" Click="ClearInput_Click"/>
        </ContextMenu>
@@ -94,7 +87,7 @@
     </Border>
     <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
          They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
-         One inline row keeps the 800x420 chute legible; the full value is in the tooltip and copyable. -->
+         Two rows keep labels and values readable; values are selectable and wrap without ellipsis. -->
     <Grid Grid.Row="3" x:Name="TaskFields" Margin="0,4,0,0">
      <Grid.Style>
       <Style TargetType="Grid">
@@ -105,30 +98,26 @@
        </Style.Triggers>
       </Style>
      </Grid.Style>
-     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
-     </Grid.ColumnDefinitions>
-     <DockPanel Grid.Column="0" Margin="0,0,8,0">
-      <TextBlock Text="波次" Style="{StaticResource StationTaskLabel}"/>
-      <TextBox Text="{Binding WaveNo,Mode=OneWay}" ToolTip="{Binding WaveNo}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务波次"/>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+     <DockPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,4">
+      <TextBlock Text="波次号" Style="{StaticResource StationTaskLabel}"/>
+      <TextBox x:Name="WaveValue" Text="{Binding WaveNo,Mode=OneWay}" ToolTip="{Binding WaveNo}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务波次号"/>
      </DockPanel>
-     <DockPanel Grid.Column="1" Margin="0,0,8,0">
+     <DockPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,4">
       <TextBlock Text="任务号" Style="{StaticResource StationTaskLabel}"/>
-      <TextBox Text="{Binding TaskId,Mode=OneWay}" ToolTip="{Binding TaskId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次调度任务号"/>
+      <TextBox x:Name="TaskValue" Text="{Binding TaskId,Mode=OneWay}" ToolTip="{Binding TaskId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次调度任务号"/>
      </DockPanel>
-     <DockPanel Grid.Column="2" Margin="0,0,8,0">
+     <DockPanel Grid.Row="1" Grid.Column="0" Margin="0,0,12,0">
       <TextBlock Text="商品编码" Style="{StaticResource StationTaskLabel}"/>
-      <TextBox Text="{Binding SkuId,Mode=OneWay}" ToolTip="{Binding SkuId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务商品编码"/>
+      <TextBox x:Name="SkuValue" Text="{Binding SkuId,Mode=OneWay}" ToolTip="{Binding SkuId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务商品编码"/>
      </DockPanel>
-     <DockPanel Grid.Column="3">
+     <DockPanel Grid.Row="1" Grid.Column="1">
       <TextBlock Text="返回数量" Style="{StaticResource StationTaskLabel}"/>
-      <TextBox Text="{Binding ResponseQuantity,Mode=OneWay}" ToolTip="{Binding ResponseQuantity}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="本次调度返回数量"/>
+      <TextBox x:Name="QuantityValue" Text="{Binding ResponseQuantity,Mode=OneWay}" ToolTip="{Binding ResponseQuantity}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="本次调度返回数量"/>
      </DockPanel>
     </Grid>
-    <StackPanel Grid.Row="4" x:Name="FixedActions" Margin="0,8,0,0">
+    <StackPanel Grid.Row="4" x:Name="FixedActions" Style="{StaticResource StationPositionActions}">
      <TextBlock x:Name="InputFeedback" TextWrapping="Wrap" MaxHeight="40" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationNotice}" AutomationProperties.LiveSetting="Polite"/>
      <Grid>
       <Grid.ColumnDefinitions>

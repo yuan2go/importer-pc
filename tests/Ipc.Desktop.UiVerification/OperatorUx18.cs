@@ -16,7 +16,7 @@ static partial class Program
     {
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS OPERATOR18 " + text); }
         await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "operator18"), deferred: true);
-        await h.StartAsync(); h.Peer.ReplySlot = "L-07";
+        await h.StartAsync(); h.Peer.ReplySlot = "L-07"; h.Peer.ReplyWaveNo = "WAVE-01"; h.Peer.ReplyQuantity = "00012";
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show(); var vm = window.ViewModel;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> ready)
@@ -28,22 +28,21 @@ static partial class Program
             var right = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
             var entry = (TextBox)left.FindName("BarcodeEntry"); var otherEntry = (TextBox)right.FindName("BarcodeEntry");
             var submit = (Button)left.FindName("SubmitBarcode"); var slot = (TextBox)left.FindName("CurrentSlot");
-            var source = (ComboBox)left.FindName("VisibleInputSource");
-            Check(source.IsVisible && !submit.IsEnabled, "input source is visible; empty draft cannot submit");
+            Check(left.FindName("VisibleInputSource") is null && left.FindName("KeyboardSource") is null && left.FindName("PdaSource") is null && !submit.IsEnabled, "operator has one barcode entry without source selectors; empty draft cannot submit");
             window.Activate(); entry.Focus(); await Flush();
             Check(vm.InputTargetPosition == "left" && vm.InputTargetLabel.Contains("左位") && vm.Left.InputTargetActive && !vm.Right.InputTargetActive, "real left keyboard focus is the sole highlighted target");
             otherEntry.Focus(); await Flush();
             Check(vm.InputTargetPosition == "right" && vm.InputTargetLabel.Contains("右位") && !vm.Left.InputTargetActive && vm.Right.InputTargetActive, "focus transfer moves target and outline together");
-            source.Focus(); await Flush();
+            ((TextBlock)window.FindName("AccountIdentity")).Focus(); await Flush();
             Check(vm.InputTargetPosition == "" && !vm.Left.InputTargetActive && !vm.Right.InputTargetActive, "non-barcode focus advertises no selected input target");
-            source.SelectedIndex = 1; await Flush();
-            Check(entry.IsKeyboardFocused && ((MenuItem)left.FindName("PdaSource")).IsChecked, "visible PDA selection sets source and returns real focus to this input");
+            entry.Focus(); await Flush();
+            Check(entry.IsKeyboardFocused && vm.InputTargetLabel.Contains("左相机"), "returning focus identifies the left camera position without asking for input device type");
             entry.Text = "000UX180001"; await Flush(); Check(submit.IsEnabled, "complete new draft has an enabled primary action");
             submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
-            Check(vm.Left.Operation?.OperatorInput?.Kind == "PdaKeyboard" && h.Peer.Requests.Count == 1, "visible source selection reaches the guarded independent command");
+            Check(vm.Left.Operation?.OperatorInput?.Kind == "Keyboard" && h.Peer.Requests.Count == 1, "unified keyboard character input reaches the guarded command without fabricating a camera acquisition");
             Check(vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Accepted && vm.Left.ResultBackground == OperatorTokens.Success && vm.Left.ResultForeground == OperatorTokens.Surface && slot.Text == "L-07", "current accepted identity maps to solid green with white full destination");
-            Check(((Grid)left.FindName("TaskFields")).IsVisible && vm.Left.WaveNo == OperatorCopy.NotReturned && vm.Left.TaskId != "—", "site-required task fields stay on the work surface with the confirmed chute; missing optional values remain honest");
+            Check(((Grid)left.FindName("TaskFields")).IsVisible && vm.Left.WaveNo == "WAVE-01" && vm.Left.TaskId == "SYNTH-TASK" && vm.Left.SkuId == "SYNTH-SKU" && vm.Left.ResponseQuantity == "00012", "site-required task fields stay on the work surface with the confirmed chute; returned values retain their exact strings");
             var cues = typeof(SupplyStationPosition).GetProperty("SuccessCueCount", BindingFlags.Instance | BindingFlags.NonPublic)!;
             await Until(() => (int)cues.GetValue(left)! == 1);
             for (var i = 0; i < 5; i++) await vm.RefreshAsync(); await Flush();
@@ -60,6 +59,9 @@ static partial class Program
                 var scale = (transform.Transform(new Point(0, 1)) - transform.Transform(new Point())).Length;
                 CaptureInternal(evidence, "operator18-geometry-" + (int)size.Item1, (Grid)window.FindName("ClientArea"), lines);
                 lines.Add("GEOMETRY tight=" + vm.IsTight + " compact=" + vm.IsCompact + " panel=" + panel.ActualHeight + " slot=" + slot.ActualHeight + " scale=" + scale + " guidance=" + vm.Left.DisplayNextStep + " actions=" + ((StackPanel)left.FindName("FixedActions")).ActualHeight);
+                Check(slot.FontSize == (vm.IsCompact ? UiTypography.SlotCompact : UiTypography.Slot), "chute uses the original64/44 DIP scale at " + size.Item1);
+                foreach (var name in new[] { "WaveValue", "TaskValue", "SkuValue", "QuantityValue" })
+                { var value = (TextBox)left.FindName(name); Check(value.IsVisible && value.ActualWidth > 50 && Inside(value, (Grid)window.FindName("ClientArea")), "task field stays visible and readable: " + name + " at " + size.Item1); }
                 Check(slot.FontSize * scale >= 44, "actually drawn short chute font is at least 44 DIP at " + size.Item1 + "; measured=" + (slot.FontSize * scale).ToString("F1"));
                 Check(submit.ActualHeight >= OperatorTokens.TouchHeight && Inside(submit, (Grid)window.FindName("ClientArea")), "primary touch action remains 64 DIP and on screen at " + size.Item1);
                 CaptureInternal(evidence, "operator18-success-" + (int)size.Item1, (Grid)window.FindName("ClientArea"), lines);

@@ -196,6 +196,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public TaskCompletionSource? Hold { get; set; }
         public string Mode = "assigned";
         public string ReplySlot = "SYNTH-CHUTE";
+        public string? ReplyWaveNo { get; set; }
+        public string? ReplyQuantity { get; set; }
         public string Endpoint { get; }
         public RoundPeer()
         {
@@ -217,7 +219,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 using var json = JsonDocument.Parse(body); var id = json.RootElement.GetProperty("requestId").GetInt64();
                 var reply = JsonSerializer.Serialize(new { requestId = id, result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
                     message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
-                        width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU" } } } });
+                        width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } } });
                 var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stopped.Token);
             }

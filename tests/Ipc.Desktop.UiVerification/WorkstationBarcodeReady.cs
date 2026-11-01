@@ -78,11 +78,11 @@ static partial class Program
             var sentBefore = factory.Sends;
             Part<Button>(left, "SubmitBarcode").RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
             Check(factory.Sends == sentBefore && Part<TextBlock>(left, "InputFeedback").Text.Contains("上一件的条码"), "submitting an unedited camera/result display never creates another request");
-            var rightEntry = Part<TextBox>(right, "BarcodeEntry"); ((MenuItem)right.FindName("PdaSource")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            var rightEntry = Part<TextBox>(right, "BarcodeEntry");
             rightEntry.Focus(); rightEntry.Text = "000123450002";
             void Enter() => rightEntry.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(rightEntry), Environment.TickCount, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
             Enter(); Enter();
-            await Until(() => vm.Right.Operation?.OperatorInput?.Kind == "PdaKeyboard" && vm.Right.SlotAvailable);
+            await Until(() => vm.Right.Operation?.OperatorInput?.Kind == "Keyboard" && vm.Right.SlotAvailable);
             Check(vm.Right.Operation!.ParcelCode == "000123450002" && factory.Sends == 2, "PDA Enter from ready uses its own position/source and repeat Enter does not duplicate the request");
             leftEntry.Focus(); leftEntry.Text = "000123450003";
             runtime.EmitReferenceAt("left", "synthetic-camera-next", "000123450004", "synthetic-camera-next");

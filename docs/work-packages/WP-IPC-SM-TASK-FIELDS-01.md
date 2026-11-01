@@ -1,3 +1,5 @@
+> 2026-11-02 当前四字段布局、恢复格口字号与取消来源选择以 [SM-WORK-FIELDS-20](WP-IPC-SM-WORK-FIELDS-20.md) 为准。本包原实现和验证保持原SourceCommit，不转记为20验收。
+
 # SM-TASK-FIELDS-01 · 作业卡恢复任务字段常驻
 
 2026-11-01。用户要求：波次、任务号、商品编码、返回数量是现场需要的信息，必须在作业卡上常驻显示。基线 main `55e3def`（含 PR169），分支 `codex/operator-copy-industrial-02`。

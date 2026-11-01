@@ -224,7 +224,8 @@ public partial class SupplyStationPosition
         {
             feedbackShown = p.ReadFeedbackKey; ReadCueCount++;
             if (!rejected) Pulse(OperatorBrushes.Accent.Color, false);
-            if (!rejected && ClaimSound("Read/" + p.ReadFeedbackKey, false)) System.Media.SystemSounds.Beep.Play();
+            // A terminal result owns the sound if read and result coalesce into one render.
+            if (!rejected && p.SuccessIdentity is null && p.RejectionIdentity is null && ClaimSound("Read/" + p.ReadFeedbackKey, false)) System.Media.SystemSounds.Beep.Play();
         }
         if (vm.Application is not IParcelPresentationDiagnostics source) return;
         var readKey = p.ReadFeedbackKey;

@@ -48,7 +48,7 @@
      <Button x:Name="CurrentBarcode" Grid.Column="1" Content="图片" Click="Picture_Click" IsEnabled="{Binding HasCurrentInput}" Style="{StaticResource StationButton}" MinWidth="64" Margin="8,0,0,0" AutomationProperties.Name="查看当前包裹图片"/>
     </Grid>
     <!-- The result owns the remaining height. Auxiliary metadata never scrolls it away. -->
-    <Border x:Name="ResultPanel" Grid.Row="2" Background="{Binding ResultBackground}" Padding="12,8" CornerRadius="4">
+    <Border x:Name="ResultPanel" Grid.Row="2" Background="{Binding ResultBackground}" Style="{StaticResource StationResultPanel}">
      <Grid>
       <Grid.RowDefinitions>
        <RowDefinition Height="Auto"/>
@@ -73,7 +73,7 @@
         </TextBox.Style>
        </TextBox>
       </Viewbox>
-      <ScrollViewer Grid.Row="1" x:Name="PositionBody" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,4">
+      <ScrollViewer Grid.Row="1" x:Name="PositionBody" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
        <ScrollViewer.Style>
         <Style TargetType="ScrollViewer">
          <Style.Triggers>

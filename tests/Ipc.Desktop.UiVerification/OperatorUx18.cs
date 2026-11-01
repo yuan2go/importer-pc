@@ -80,6 +80,12 @@ static partial class Program
             entry.Clear(); entry.Text = "000UX180003"; submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.Operation?.State == ParcelState.WcsRejected && !vm.Busy);
             Check(vm.Left.ResultBackground == OperatorTokens.Danger && !vm.Left.DisplaySlotVisible && vm.Left.DisplayNextStep == OperatorCopy.RejectedStep && vm.Left.DisplayPresentation.Icon == "!", "rejection uses red, a symbol and explicit package handling without retaining old chute");
+            await Flush();
+            var reasonViewport = (ScrollViewer)left.FindName("PositionBody"); var reason = (TextBox)left.FindName("AttentionReason");
+            var firstLine = reason.GetRectFromCharacterIndex(0);
+            lines.Add("EXCEPTION_GEOMETRY viewport=" + reasonViewport.ViewportHeight + " firstLine=" + firstLine.Height);
+            CaptureInternal(evidence, "operator18-reason-geometry-800", (Grid)window.FindName("ClientArea"), lines);
+            Check(reasonViewport.ViewportHeight >= firstLine.Height && firstLine.Height > 0, "compact exception leaves one full rendered reason line beneath its status");
             CaptureInternal(evidence, "operator18-rejected-800", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); Click(window, "记录"); await Until(() => vm.SelectedPage == "history" && !vm.HistoryLoading);
             await Flush(); var history = Descendants(window).OfType<HistoryPage>().Single();

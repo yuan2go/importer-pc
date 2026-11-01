@@ -90,4 +90,8 @@
    </Trigger>
   </Style.Triggers>
  </Style>
+ <Style x:Key="StationResultPanel" TargetType="Border">
+  <Setter Property="Padding" Value="12,8"/><Setter Property="CornerRadius" Value="4"/>
+  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="12,4"/></DataTrigger></Style.Triggers>
+ </Style>
 </ResourceDictionary>

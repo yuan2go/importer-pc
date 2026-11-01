@@ -1,3 +1,5 @@
+> 2026-11-01 供包员界面文案工业化见 [OPERATOR-COPY-01](work-packages/WP-IPC-OPERATOR-COPY-01.md)：状态/下一步/原因分层，合同术语移出作业页，异常提示写明包裹处置；业务守卫不变。旧索引[原字节归档](archive/pre-operator-copy-01/manifest.json)。Windows 构建与 UI 验证 NOT_RUN，合入后本机补证。
+
 > 2026-11-01 整个会话合并前复核以 [SM-SESSION-REVIEW-17](runtime/sm-session-review-17.md) 为准：涵盖最初实时视频、采集/解码/健康、全部反馈与推送要求，补齐迟到快照不能复活较新故障及真实呈现身份核对。历史14/15/16证据保持原SourceCommit。
 
 > 2026-11-01 当前感知呈现规则见 [SM-RESPONSIVE-PRESENTATION-16](runtime/sm-responsive-presentation-16.md)：读到反馈先于持久交付，新观察清退旧格口，主动推送只合并显示，原业务持久责任不变。它替代15的短暂保留旧格口策略；15验证保持原源。

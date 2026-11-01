@@ -28,13 +28,13 @@ public sealed partial class ParcelRuntime
         if (factory.AdmissionFailure(Effective) is { } installation) reasons.Add(installation);
         if (!SessionValid) reasons.Add("操作员会话已失效，请重新登录。");
         if (failure is not null) reasons.Add("运行故障：" + failure);
-        if (includePause && repository!.Paused) reasons.Add("供包已暂停，请恢复接收后提交。");
+        if (includePause && repository!.Paused) reasons.Add("供包已暂停，新包裹等维护人员恢复后再扫。");
         if (CameraBusinessFenced && !debugRequest) reasons.Add("调试隔离尚未结束，请先移除测试件并确认清场。");
         if (backupInProgress || configurationSaving || !ManualPositionMaintenanceClear(position))
             reasons.Add("配置或维护操作正在进行，请等待完成。");
         if (Effective.Images is not null) reasons.Add("当前业务要求同件采图，人工输入不能代替必需图像。");
         if (Effective.Wcs is not { } wcs || ParcelConnectionSetup.IsDeferred(Effective, wcs.InstanceId))
-            reasons.Add("RCS 尚未配置，请完成服务设置。");
+            reasons.Add("RCS 未配置，请联系维护人员。");
         else if (wcs.Contract == "SPORTMASTER-RCS-SORTER-v1")
         {
             static bool Code(string? value) => !string.IsNullOrWhiteSpace(value) && value.Length <= 256 && !value.Any(char.IsControl);
@@ -45,7 +45,8 @@ public sealed partial class ParcelRuntime
         foreach (var binding in ManualBindings(position))
         {
             var label = binding.InstanceId == Effective.Wcs?.InstanceId ? "RCS 服务" : "必需业务能力 " + binding.InstanceId;
-            if (ParcelConnectionSetup.IsDeferred(Effective, binding.InstanceId)) reasons.Add(label + "尚未配置。");
+            // A deferred RCS is already reported above; report each missing connection once.
+            if (ParcelConnectionSetup.IsDeferred(Effective, binding.InstanceId)) { if (binding.InstanceId != Effective.Wcs?.InstanceId) reasons.Add(label + "尚未配置。"); }
             else if (!capabilityHealth.TryGetValue(binding.InstanceId, out var health)) reasons.Add(label + "状态尚未确认。");
             else if (!health.Ready) reasons.Add(label + "离线，请恢复连接后提交。");
             else if (health.ConfirmedAt > now || health.ValidUntil <= now) reasons.Add(label + "状态已过期，请等待重新确认。");

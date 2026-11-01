@@ -29,7 +29,7 @@ static partial class Program
         var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
         await vm.PauseAsync();
         for (var i = 0; i < 150 && vm.Snapshot?.Paused != true; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
-        Check(vm.EnvironmentStatus.StartsWith("模拟模式") && vm.BlockingReasons.Contains("软件已暂停新入场") &&
+        Check(vm.EnvironmentStatus.StartsWith("模拟模式") && vm.BlockingReasons.Contains("软件已暂停接收新包裹") &&
             vm.Snapshot!.BlockingReasons.Contains("Software admission paused; this is not an emergency stop"),
             "Chinese pause/mode presentation preserves original application facts");
         await SetClient(window, 1366, 768); Click(window, "参数配置");

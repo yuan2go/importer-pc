@@ -15,7 +15,7 @@ static class SportmasterRcsPresentation
         view.SetDetailsVisibility(true, true); // Model the expanded, authorized HistoryPage consumer.
         await view.RefreshAsync();
         view.SelectedPositionId = "left";
-        Check(view.CurrentStage == "需拆包 · 本位等待检查处置", "unpack has an explicit Chinese operator state without implying counting or submission");
+        Check(view.CurrentStage == "需拆包检查", "unpack has an explicit Chinese operator state without implying counting or submission");
         view.Selected = unpack;
         await view.DrainAsync();
         Check(view.Details.Contains("拆包条码 SYNTH-0001 · 商品编码 SYNTH-SKU · 扫描数量 1", StringComparison.Ordinal) &&
@@ -28,7 +28,7 @@ static class SportmasterRcsPresentation
             view.Details.EndsWith(Wire.Encode(assigned), StringComparison.Ordinal), "assigned task, SKU and unknown measurements stay distinct from fabricated zero values");
         var alternate = new SupplyStationViewModel(app);
         await alternate.RefreshAsync();
-        Check(alternate.Left.Status=="需拆包 · 本位等待检查处置" && alternate.Left.ResultReason.Contains("剩余 0 · 阶段 ASSIGNED",StringComparison.Ordinal) && alternate.Left.Slot=="未取得",
+        Check(alternate.Left.Status=="需拆包检查" && alternate.Left.ResultReason.Contains("剩余 0 · 阶段 ASSIGNED",StringComparison.Ordinal) && alternate.Left.Slot=="未取得",
             "alternate UI keeps NEED_UNPACK explicit with zero remaining and no fabricated destination");
         Check(alternate.Right.ResultReason.Contains("任务 SYNTH-TASK · 商品编码 SYNTH-SKU · 格口 SYNTH-CHUTE",StringComparison.Ordinal) && alternate.Right.ResultReason.Contains("重量 未取得",StringComparison.Ordinal) && alternate.Left.RequestId!=alternate.Right.RequestId,
             "alternate UI reuses complete original RCS projection while keeping both position/request identities separate");

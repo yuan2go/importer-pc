@@ -58,5 +58,5 @@ public partial class ParcelViewModel
         "模拟观察已排队；状态由应用服务更新。" or
         "作业记录已完成；已读取最新状态。" or "读取作业记录已完成；已读取最新状态。" or
         "读取最新50条已完成；已读取最新状态。" or "下一页已完成；已读取最新状态。" or
-        "已读取完整拓扑与能力库存；表单为当前编辑来源。保存后待受控重启生效。") ? "" : OperatorFeedback;
+        OperatorCopy.ConfigurationLoaded) ? "" : OperatorFeedback;
 }

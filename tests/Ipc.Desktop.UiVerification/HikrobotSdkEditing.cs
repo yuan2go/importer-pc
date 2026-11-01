@@ -42,7 +42,8 @@ static partial class Program
             var formatSection = Descendants(editor).OfType<Expander>().Single(e => AutomationProperties.GetName(e) == left.InstanceId + "/code.formats");
             formatSection.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             var formatChecks = Descendants(formatSection).OfType<CheckBox>().ToArray();
-            Check(formatChecks.Length == formats.Field.Choices!.Length && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == true,
+            Check(formatChecks.Length == formats.Field.Choices!.Length && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == true &&
+                Equals(formatSection.Header, "当前：全部码制") && Descendants(formatSection).OfType<TextBlock>().Any(t => t.Text == "当前：全部码制"),
                 "native format selector exposes all declared formats with compatible All default");
             formatChecks.Single(c => Equals(c.Tag, "Code128")).IsChecked = true;
             formatChecks.Single(c => Equals(c.Tag, "QRCode")).IsChecked = true;
@@ -83,7 +84,8 @@ static partial class Program
             Check(!Descendants(oldControl).OfType<TextBox>().Any(t=>AutomationProperties.GetName(t).EndsWith("/device.port")) &&
                 !Descendants(oldControl).OfType<ComboBox>().Any(t=>AutomationProperties.GetAutomationId(t)==oldDraft.Readers[0].InstanceId+"/Provider"),
                 "legacy TCP candidate shows one explicit SDK transition, never a blank selector or TCP port mixed with the SDK");
-            Check(oldDraft.Readers[0].Provider!.Implementation=="tcp-line","merely opening the page never rewrites legacy configuration");
+            Check(oldDraft.Readers[0].CaptureRaw().Original?.Implementation=="tcp-line" && oldDraft.Readers[0].Provider?.Implementation!="hikrobot-mvs-reader",
+                "merely opening the page preserves the unsupported legacy binding without selecting the SDK provider");
             Check(!Descendants(oldControl).OfType<TextBlock>().Any(t=>t.Text.Contains("TCP")) && !Descendants(oldControl).OfType<TextBox>().Any(t=>t.Text.Contains("TCP")),
                 "unsupported old settings request MVS SDK reconfiguration without presenting TCP as a connection option");
             Check(Descendants(oldControl).OfType<TextBox>().Count(t=>AutomationProperties.GetAutomationId(t)=="sportmaster.integration/left-bcr-code")==1,"legacy transition still exposes exactly one shared camera-code editor");

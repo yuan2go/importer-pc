@@ -16,8 +16,7 @@ public partial class ParameterSettingsControl
         var checks = choices.Select(value => new CheckBox { Content = value == "All" && parameter.Field.Key == "code.formats" ? "全部码制" : value,
             Tag = value, MinWidth = 148, MinHeight = 44, Margin = new(0, 0, 8, 0), VerticalContentAlignment = VerticalAlignment.Center }).ToArray();
         foreach (var check in checks) { AutomationProperties.SetName(check, label + "：" + check.Content); wrap.Children.Add(check); }
-        var summary = new TextBlock { TextWrapping = TextWrapping.Wrap };
-        var section = new Expander { Header = summary, Content = wrap, IsExpanded = false, MinHeight = 44 };
+        var section = new Expander { Content = wrap, IsExpanded = false, MinHeight = 44 };
         var updating = false;
         void Refresh()
         {
@@ -28,7 +27,7 @@ public partial class ParameterSettingsControl
                 try { selected = Wire.Decode<string[]>(parameter.Value); }
                 catch (JsonException) { selected = []; }
                 foreach (var check in checks) check.IsChecked = selected.Contains((string)check.Tag, StringComparer.Ordinal);
-                summary.Text = selected.Length == 1 && selected[0] == "All" ? "当前：全部码制" : selected.Length == 0 ? "请选择需要识别的码制" : "当前：" + string.Join("、", selected);
+                section.Header = selected.Length == 1 && selected[0] == "All" ? "当前：全部码制" : selected.Length == 0 ? "请选择需要识别的码制" : "当前：" + string.Join("、", selected);
             }
             finally { updating = false; }
         }

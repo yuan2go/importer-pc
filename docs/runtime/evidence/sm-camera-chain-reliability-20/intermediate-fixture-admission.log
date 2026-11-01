@@ -1,0 +1,287 @@
+Synthetic native API/loopback peer, actual ZXing/Application/SQLite. Physical camera/customer RCS NOT_RUN.
+PASS FRAME-RECOVERY incomplete frame returned without business request or camera fence
+PASS FRAME-RECOVERY next valid frame resolves through real ZXing/Application/SQLite/RCS on original camera owner
+PASS CHAIN20 omitted settings retain all formats and inversion
+PASS CHAIN20 invalid configured format selection rejected: []
+PASS CHAIN20 invalid configured format selection rejected: ["All","QRCode"]
+PASS CHAIN20 invalid configured format selection rejected: ["QR"]
+PASS CHAIN20 invalid configured format selection rejected: ["Code128","Code128"]
+PASS CHAIN20 format choices use the shared validated parameter schema
+PASS CHAIN20 actual ZXing excludes QR when only Code128 is configured
+PASS CHAIN20 configured QR decoding expands contrast on scratch pixels and preserves caller raw frame bytes
+PASS CHAIN20 invalid QR encoding is a typed single-frame rejection
+PASS CHAIN20 valid frame decodes after invalid bytes without recreating the decoder
+PASS CHAIN20 driver rejects invalid encoding without POST, raw copy or camera fence
+PASS CHAIN20 blank frame makes no archival full-frame copy
+PASS CHAIN20 next valid frame resolves on same camera and copies its original exactly once
+PASS CHAIN20 bounded original frame pool waits without overload fence or duplicate send
+PASS CHAIN20 decoded observation retains delivery ownership while its lane is full
+PASS CHAIN20 all 33 independent same-code reads each send once after drain, with distinct frozen request IDs
+PASS CHAIN20 bounded ingress lane waits without overload fence or duplicate send
+PASS CHAIN20 decoded observation retains delivery ownership while its lane is full
+PASS CHAIN20 all 3 independent same-code reads each send once after drain, with distinct frozen request IDs
+PASS RCS20: real loopback connection refusal produces only typed sender no-body evidence, no fabricated HTTP/business reply
+Unhandled exception. System.Exception: RCS application timeout: {
+  "RuntimeId": "a449c193-4570-46d7-bdf6-abe36c485a94",
+  "ApplicationId": "sportmaster",
+  "Revision": 1,
+  "State": "Ready",
+  "Paused": false,
+  "BlockingReasons": [],
+  "Operations": [],
+  "Health": [
+    {
+      "InstanceId": "sportmaster.integration",
+      "Ready": true,
+      "ConfirmedAt": "2026-11-01T16:58:40.6917713+00:00",
+      "ValidUntil": "2026-11-01T16:58:43.6917713+00:00",
+      "Detail": "RCS client local lifecycle/configuration readiness only; Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed",
+      "RemoteConfirmation": "Unconfirmed"
+    },
+    {
+      "InstanceId": "sportmaster.camera.left",
+      "Ready": true,
+      "ConfirmedAt": "2026-11-01T16:58:40.5566202+00:00",
+      "ValidUntil": "2026-11-01T16:58:45.5566202+00:00",
+      "Detail": "SIMULATION:manual",
+      "RemoteConfirmation": "Unconfirmed"
+    },
+    {
+      "InstanceId": "sportmaster.camera.right",
+      "Ready": true,
+      "ConfirmedAt": "2026-11-01T16:58:40.556688+00:00",
+      "ValidUntil": "2026-11-01T16:58:45.556688+00:00",
+      "Detail": "SIMULATION:manual",
+      "RemoteConfirmation": "Unconfirmed"
+    }
+  ],
+  "Configuration": {
+    "Revision": 2,
+    "Effective": {
+      "SchemaVersion": 3,
+      "ApplicationId": "sportmaster",
+      "StationId": "reference-17",
+      "Mode": "Simulation",
+      "Weight": {
+        "Source": "Disabled",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 15000
+      },
+      "Reader": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.left",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      "Scale": null,
+      "Wcs": {
+        "Kind": "integration",
+        "Implementation": "sportmaster-rcs",
+        "Version": "1.0.0",
+        "InstanceId": "sportmaster.integration",
+        "Target": "",
+        "Contract": "SPORTMASTER-RCS-SORTER-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Plc": null,
+      "Extensions": null,
+      "QueueCapacity": 64,
+      "TimeoutMs": 1500,
+      "MaximumOperations": 10000,
+      "SessionLifetimeMs": 28800000,
+      "WeightValidity": "UntilDispatch",
+      "Topology": {
+        "Readers": [
+          {
+            "Role": "parcel-reader",
+            "Driver": "manual",
+            "DeviceId": "sportmaster.camera.left",
+            "Revision": "1",
+            "ReplayFile": null
+          },
+          {
+            "Role": "parcel-reader",
+            "Driver": "manual",
+            "DeviceId": "sportmaster.camera.right",
+            "Revision": "1",
+            "ReplayFile": null
+          }
+        ],
+        "Positions": [
+          {
+            "Id": "left",
+            "ReaderDeviceId": "sportmaster.camera.left",
+            "CameraInstanceId": null,
+            "ScaleInstanceId": null
+          },
+          {
+            "Id": "right",
+            "ReaderDeviceId": "sportmaster.camera.right",
+            "CameraInstanceId": null,
+            "ScaleInstanceId": null
+          }
+        ]
+      },
+      "Retention": {
+        "ResidentHistory": 200,
+        "MinimumFreeBytes": 67108864
+      },
+      "StationCode": "SYNTH-STATION"
+    },
+    "Pending": null,
+    "Status": "Effective",
+    "Failure": null,
+    "Activation": null,
+    "Confirmation": {
+      "Source": "Seed",
+      "EffectiveHash": "3DC9B81BF7403ED5D786AC98FC79AD256E527F43EBD520238ACFFFFB752F612F",
+      "Required": false,
+      "State": "Confirmed",
+      "Attempts": [
+        {
+          "Id": "d65e89c30af645efa21b2bb4cf29a84f",
+          "StartedAt": "2026-11-01T16:58:32.5287834+00:00",
+          "FinishedAt": "2026-11-01T16:58:32.5473291+00:00",
+          "Outcome": "ResourcesStarted",
+          "Failure": null
+        }
+      ],
+      "ConfirmedBy": "initial-resource-startup",
+      "ConfirmedAt": "2026-11-01T16:58:32.5473315+00:00"
+    },
+    "InitialRepair": null
+  },
+  "CurrentOperator": null,
+  "Availability": {
+    "Admit": true,
+    "Resume": true,
+    "Configure": false,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": []
+  },
+  "Positions": [
+    {
+      "Id": "left",
+      "ReaderDeviceId": "sportmaster.camera.left",
+      "Admit": true,
+      "CurrentOperation": null,
+      "BlockingReasons": [],
+      "MainResultComplete": true,
+      "BackgroundComplete": true,
+      "BarcodeInput": {
+        "Camera": true,
+        "Manual": true,
+        "ManualBlockingReasons": []
+      }
+    },
+    {
+      "Id": "right",
+      "ReaderDeviceId": "sportmaster.camera.right",
+      "Admit": true,
+      "CurrentOperation": null,
+      "BlockingReasons": [],
+      "MainResultComplete": true,
+      "BackgroundComplete": true,
+      "BarcodeInput": {
+        "Camera": true,
+        "Manual": true,
+        "ManualBlockingReasons": []
+      }
+    }
+  ],
+  "Devices": [
+    {
+      "DeviceId": "sportmaster.camera.left",
+      "Epoch": "488ec0e4ba934cc0adeb51d43fc40e8b",
+      "Sequence": 1,
+      "Health": "Ready",
+      "UpdatedAt": "2026-11-01T16:58:40.5566202+00:00",
+      "ConfirmedAt": "2026-11-01T16:58:40.5566202+00:00",
+      "ValidUntil": "2026-11-01T16:58:45.5566202+00:00",
+      "Source": "SIMULATION:manual",
+      "Invalidity": null
+    },
+    {
+      "DeviceId": "sportmaster.camera.right",
+      "Epoch": "269bab1e6c15477a9b22481764c49324",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-11-01T16:58:40.556688+00:00",
+      "ConfirmedAt": "2026-11-01T16:58:40.556688+00:00",
+      "ValidUntil": "2026-11-01T16:58:45.556688+00:00",
+      "Source": "SIMULATION:manual",
+      "Invalidity": null
+    }
+  ],
+  "Capacity": {
+    "Unresolved": 0,
+    "Resident": 0,
+    "Archived": 0,
+    "MaximumUnresolved": 10000,
+    "Available": true,
+    "Policy": "Archive retains originals; configured expiry requires stopped authorized maintenance and a complete backup; unresolved responsibility and permanent identity/numeric fences remain",
+    "FreeStorageBytes": 9894559744,
+    "MinimumFreeBytes": 67108864
+  },
+  "IdentityConflicts": [],
+  "AuxiliaryReasons": [
+    "Diagnostics:{\r\n  \u0022State\u0022: \u0022Running\u0022,\r\n  \u0022QueueDepth\u0022: 0,\r\n  \u0022Dropped\u0022: 0,\r\n  \u0022DebugDropped\u0022: 0,\r\n  \u0022Written\u0022: 7,\r\n  \u0022LastFailure\u0022: null,\r\n  \u0022CurrentFailure\u0022: null,\r\n  \u0022LastProgressUtcTicks\u0022: 639291491125847728\r\n}",
+    "IntegrationIdBudget:{\r\n  \u0022First\u0022: 810000001,\r\n  \u0022Last\u0022: 810100000,\r\n  \u0022PermanentHighWater\u0022: 0,\r\n  \u0022Remaining\u0022: 100000,\r\n  \u0022State\u0022: \u0022Available\u0022\r\n}",
+    "StorageForecast:{\r\n  \u0022Result\u0022: \u0022InsufficientSamples\u0022,\r\n  \u0022Jobs\u0022: 0,\r\n  \u0022SampleSeconds\u0022: 0,\r\n  \u0022DatabaseGrowthBytes\u0022: 0,\r\n  \u0022BytesPerJob\u0022: null,\r\n  \u0022RemainingDays\u0022: null,\r\n  \u0022Basis\u0022: \u0022Recent physical SQLite page growth and admission sequence; exclude backups/images/logs; no deletion or site guarantee\u0022\r\n}",
+    "WalCheckpoint:{\r\n  \u0022At\u0022: \u00222026-11-01T16:58:32.5600924\u002B00:00\u0022,\r\n  \u0022BytesBefore\u0022: 341992,\r\n  \u0022BytesAfter\u0022: 391432,\r\n  \u0022HighWaterBytes\u0022: 391432,\r\n  \u0022Busy\u0022: 0,\r\n  \u0022LogFrames\u0022: 83,\r\n  \u0022CheckpointedFrames\u0022: 83,\r\n  \u0022BacklogFrames\u0022: 0,\r\n  \u0022LogicalReclaimed\u0022: false,\r\n  \u0022Warning\u0022: false,\r\n  \u0022Policy\u0022: \u0022PASSIVE only; checkpointed WAL can be reused without physical truncation; never delete active WAL\u0022\r\n}",
+    "HistoryRetentionNotConfigured: select 7..30 days in system settings; no expiry deletion",
+    "Workers:[\r\n  {\r\n    \u0022Position\u0022: \u0022left\u0022,\r\n    \u0022State\u0022: \u0022Waiting\u0022,\r\n    \u0022Received\u0022: 1,\r\n    \u0022Processed\u0022: 1,\r\n    \u0022Interrupted\u0022: 0,\r\n    \u0022QueueDepth\u0022: 0,\r\n    \u0022OldestWaiting\u0022: null,\r\n    \u0022LastProgress\u0022: \u00222026-11-01T16:58:32.5617587\u002B00:00\u0022,\r\n    \u0022Failure\u0022: null,\r\n    \u0022ProcessingSince\u0022: null\r\n  },\r\n  {\r\n    \u0022Position\u0022: \u0022right\u0022,\r\n    \u0022State\u0022: \u0022Waiting\u0022,\r\n    \u0022Received\u0022: 0,\r\n    \u0022Processed\u0022: 0,\r\n    \u0022Interrupted\u0022: 0,\r\n    \u0022QueueDepth\u0022: 0,\r\n    \u0022OldestWaiting\u0022: null,\r\n    \u0022LastProgress\u0022: null,\r\n    \u0022Failure\u0022: null,\r\n    \u0022ProcessingSince\u0022: null\r\n  }\r\n]"
+  ],
+  "Inputs": [
+    {
+      "PositionId": "left",
+      "Observation": {
+        "Id": "78c4881d4a7e4155b4eb8035b0612218",
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "488ec0e4ba934cc0adeb51d43fc40e8b",
+        "SourceEventId": "9f31c53810994bce80ae9ba36904be5f",
+        "Sequence": 1,
+        "AdmissionId": "SYNTH-REFUSED-1",
+        "Kind": "Read",
+        "Codes": [
+          "SYNTH-0001"
+        ],
+        "PackageQuantity": null,
+        "ObservedAt": "2026-11-01T16:58:32.5545503+00:00"
+      },
+      "Outcome": "Rejected",
+      "Reason": "InvalidAdmissionId; no operation or external intent created",
+      "OperationId": null,
+      "RecordedAt": "2026-11-01T16:58:32.5578788+00:00",
+      "ReaderBinding": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.left",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      "BarcodeSelection": {
+        "Outcome": "StrictSingleCode",
+        "SelectedCode": "SYNTH-0001",
+        "Matches": 1,
+        "RuleHash": null,
+        "Detail": "\u4E25\u683C\u5355\u7801\uFF1B\u672A\u5E94\u7528\u7B5B\u9009\u89C4\u5219"
+      }
+    }
+  ],
+  "HasPendingConfiguration": false
+}
+   at SportmasterRcs.Wait(ParcelRuntime app, Func`2 ready) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Application.Verification\SportmasterRcs.cs:line 372
+   at SportmasterRcs.ConnectionEvidenceChecks(String workspace, String root) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Application.Verification\RcsConnectionEvidence.cs:line 37
+   at SportmasterRcs.ConnectionEvidenceChecks(String workspace, String root) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Application.Verification\RcsConnectionEvidence.cs:line 39
+   at CameraChainReliability.Run(String workspace, String root) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Application.Verification\CameraChainReliability.cs:line 63
+   at Program.<Main>$(String[] args) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Application.Verification\Program.cs:line 44
+   at Program.<Main>(String[] args)

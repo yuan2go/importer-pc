@@ -67,6 +67,27 @@ internal static class CameraChainReliability
         }
         await Backpressure(workspace, Path.Combine(root, "capacity"), 64);
         await Backpressure(workspace, Path.Combine(root, "queue"), 1);
+        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "full-lane-stop"), 30000, 1))
+        {
+            h.Config.Wcs!.Parameters!["request-timeout-ms"] = "30000";
+            ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
+            await h.StartAsync(); h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            try
+            {
+                var source = h.Factory.Sources[h.Left];
+                for (uint n = 1; n <= 3; n++)
+                {
+                    h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-STOP-FULL-LANE"), n);
+                    await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().DecodeCompleted >= n));
+                    if (n < 3) await CameraRoundHarness.Until(() => Task.FromResult(source.Undelivered is null));
+                }
+                Check(source.Undelivered is not null && source.Failure.Length == 0, "full-lane source owns the third decoded observation before shutdown");
+                await h.App.StopAsync(default).WaitAsync(TimeSpan.FromSeconds(6));
+                Check(source.Undelivered is not null && h.Peer.Requests.Count == 1 && h.Api(h.Left).Stops == 1 && !h.Api(h.Left).HasFrame,
+                    "shutdown cancels full-lane wait without deadlock, returns SDK loan and retains undelivered responsibility without another POST");
+            }
+            finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
+        }
         using (var pool = new MvsOriginalFrames())
         {
             pool.Enable(); var held = Enumerable.Range(0, 32).Select(_ => pool.Reserve(4096, 64, 64, default)!).ToArray();

@@ -102485,9 +102485,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "6a3cdc7c4c79895fb5c3d1ebca4b7f679f5614cfcc31d3850135872489920dbb",
-      "size_bytes": 11034,
-      "git_blob": "e77c362c04918458ffc8f650ab6293760cec48f9",
+      "sha256": "06ebfe2863a8a4b92d939b5eab8248ef09334d3b7d384289eb297ede0f92f779",
+      "size_bytes": 11342,
+      "git_blob": "9781a79dba48f74ac9bc9b262b0ed84ea0a731a3",
       "storage_scope": "public_repository"
     },
     {
@@ -105103,9 +105103,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "2b629456f5bdd55e8b27a78cb20e1a5c1b43be8b033783e0919ab79fb8231656",
-      "size_bytes": 7711,
-      "git_blob": "b2999e4aab2183b6cc7fa87c1bfd60d0a7537b21",
+      "sha256": "68adb136631db1808e993d085d4791d2bb086952597296ed9ef12fa6066329d4",
+      "size_bytes": 8401,
+      "git_blob": "9e14a9457cd30339175b816844c48c86f14819f0",
       "storage_scope": "public_repository"
     },
     {
@@ -106423,9 +106423,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-ORIGINAL-FRAME-01; original evidence retains its own SourceCommit",
-      "sha256": "b899dcfa76a36de665488983b7f6d78c1afe3e91e6d5637be6dadcfcaa874331",
-      "size_bytes": 7754,
-      "git_blob": "44e09ce761589f036d805e0a763942b2af4ececd",
+      "sha256": "45a2c2b786619d3bd924f68357214efb49a9828d3b0168d685254feb9932aa5a",
+      "size_bytes": 8248,
+      "git_blob": "9441fa4110de0eb38f6f3ed6aa7bba13756b5693",
       "storage_scope": "public_repository"
     },
     {
@@ -114167,9 +114167,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
-      "sha256": "e627da4a838f07a76c338d0a281f0ca4bb89030cc5d72065e688e05c57823035",
-      "size_bytes": 268,
-      "git_blob": "76b31f876bd2449d99b36b4c920bc7f9acec5e76",
+      "sha256": "1cb03d03e4910591c635ca58baacad0ef8693a51027a2ead80ccf2b0bbd51621",
+      "size_bytes": 5389,
+      "git_blob": "1b78d686c50488633300f1bc378e350a9eb0103e",
       "storage_scope": "public_repository"
     },
     {
@@ -114189,9 +114189,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
-      "sha256": "1ed7a0645f812718c592062ad893060fff6860d534f6b5337ad3622bfe1a09df",
-      "size_bytes": 3229,
-      "git_blob": "51de749723d99228bbf0178373641d40cf6bcbf8",
+      "sha256": "75761fc75bf326bc473668599b90d040aeb3d3357c26779ee6d2a2dd2e167d97",
+      "size_bytes": 3498,
+      "git_blob": "35aec84649d7bd43941c8c52ce5e493394130230",
       "storage_scope": "public_repository"
     },
     {
@@ -114200,9 +114200,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
-      "sha256": "185e69dccc11a7385bf731201ee9bcab82ba1edd8467a963293ec70cc75f7494",
-      "size_bytes": 2868,
-      "git_blob": "9bca23c981229f3ff3c87af0d8e4761f01cdd3ed",
+      "sha256": "825edbedfb5c9b0ee20ae159483054fa69c54965a1bfe39aa2b7f9b354148049",
+      "size_bytes": 2778,
+      "git_blob": "e7ff5d0d0ec72923f2211a7adf37e8611976897b",
       "storage_scope": "public_repository"
     },
     {
@@ -114233,9 +114233,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
-      "sha256": "606f3cf9a4cbee3cd7e8738e2bfe0d0d90bff39c0bdbb146a1a164e5d392cb30",
-      "size_bytes": 11405,
-      "git_blob": "0f741f7a59fb80ddf74b881af4fed993682a96be",
+      "sha256": "a041c1b7caaf644f697fd3ea64651e04a49ad37e94a22ca39b6ffddfb6f61395",
+      "size_bytes": 12945,
+      "git_blob": "ffb45e36f4c5a8b68d7af37dbf6921e4ae1f2230",
       "storage_scope": "public_repository"
     },
     {
@@ -114280,6 +114280,149 @@
       "sha256": "aeaf0ab3c58200fe8c09f7cf4735132994f95f6b10ddd3a4db574050ebbb8dfc",
       "size_bytes": 6379,
       "git_blob": "d1fcc115528c26e9494235c13d16f476b8a7fc39",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/README.md",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "e7f8441126eb96ababee49576a385d1ee5dd59c8957730e9db90ed1a6c5f8ed4",
+      "size_bytes": 1537,
+      "git_blob": "6c660ec15a49a1a1b33b9ed38efb3697c3e5723e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-fixture-admission.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "1810d4051f84be0ec4628aa3ecf2bbe7678e39f3a8ad643ad63434c2d76bfe67",
+      "size_bytes": 13070,
+      "git_blob": "64004596d9557d36e6360661b42cb057a7c9901e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-fixture-packet-index.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "4c91e9a3dbddad9186831b5bbc7650dfe19b54808324c806dd3897ca6a53c4e8",
+      "size_bytes": 1434,
+      "git_blob": "6fe640fc1d8f4e89e57163c95a1295e12b528316",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-format-assertion.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "1bb4d1c8113d8493d1b6f5c93ca946aa803bb2121b825a67305f41bcbe6eb554",
+      "size_bytes": 1558,
+      "git_blob": "ed95090ff3e2c1173a8bda01c583c7308cba44f3",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-format-header.png",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "d9e909e206e7de36ea1d47f0ec47bb7e784c3a18c828c61e957e05e7891a086d",
+      "size_bytes": 181563,
+      "git_blob": "267d2a557884e6729c66986b1142756dc9d6a4ee",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-legacy-provider-assertion.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "b5051aa1a7cec511fc0de5d2e7986b5b863f41a845e4541cb2596e6fde93d169",
+      "size_bytes": 3174,
+      "git_blob": "097d3f934214789c12a3fae8b593e33bc64bf8d1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-picture-guard.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "998893ea6b5e12535984ffcd40ba58b8923048b84f8457b668cceb77a01195af",
+      "size_bytes": 2391,
+      "git_blob": "1f6625e1b341ce9a6d7d7fbbdcf6a77f82039118",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-read-capacity.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "c476b9b00cc0b03fcc337fc51a6344642a5b9d3a6fc7fef87a729194529c74b5",
+      "size_bytes": 3289,
+      "git_blob": "4caace520fc5d40c1f5cf1b4e1b058a9470c2e22",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/intermediate-ui-build.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "c66d48c8cebb455718d000daf4f89bf0378181384715fbabae68920b84de5f75",
+      "size_bytes": 817,
+      "git_blob": "fcb2a494caa892c6833a0d113086e0764472c9b9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/negative-main-build.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "f023049fcf963f10c4205a9ede8dd6dc19bbabaeaf192b43e8424288c13041a4",
+      "size_bytes": 84,
+      "git_blob": "e95776c4144bc316fb6a01d0b5f9b68a6a3e4a79",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/negative-main-single-frame.log",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "530e1f1228c0a7578147923d85d425bd6e3828bf00a49793b4485dc6fa102ba7",
+      "size_bytes": 911,
+      "git_blob": "ed3f79a939a6056dbfd8a52b13695dab3d7b63b2",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/negative-single-frame.cs.txt",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "93bb0081ccccfd24096c5a8c425f9b3cb5cfe9ed06b012606be4d05bd9a67561",
+      "size_bytes": 2005,
+      "git_blob": "41823d92bc31d695a83fdd073caa3b191cd8d0cd",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-reliability-20/negative-source.json",
+      "version": "sm-camera-chain-reliability-20",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
+      "sha256": "75585de08dfe568e8f1a1f695202b36129367848982c3e0304f8ef77c5ed7cef",
+      "size_bytes": 417,
+      "git_blob": "f4869d199394a503a7d16ca43e285f01182efc40",
       "storage_scope": "public_repository"
     }
   ],

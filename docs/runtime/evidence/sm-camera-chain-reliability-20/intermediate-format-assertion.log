@@ -1,0 +1,15 @@
+PASS BUNDLED SDK NATIVE fresh first setup uses built-in MVS software reader without inventory
+PASS BUNDLED SDK NATIVE fixed source/locale have no editor
+PASS BUNDLED SDK NATIVE actual SDK IP and serial fields available
+PASS BUNDLED SDK NATIVE camera page has no trigger/result policy or configuration-state block
+PASS BUNDLED SDK NATIVE camera page has no TCP copy, fields or separate driver installation
+PASS BUNDLED SDK NATIVE camera driver identifies the fixed MVS SDK
+PASS BUNDLED SDK NATIVE no separate driver-install action
+PASS BUNDLED SDK NATIVE native format selector exposes all declared formats with compatible All default
+PASS BUNDLED SDK NATIVE native multi-selection clears All and writes both selected formats to the shared candidate
+PASS BUNDLED SDK NATIVE saved full candidate isolates left format selection from right defaults
+CAPTURE bundled-sdk-format-selection: 1105.6x722.4 DIP, Windows DPI 1.25/1.25
+FAIL System.InvalidOperationException: choosing All clears explicit native choices
+   at Program.<>c__DisplayClass17_0.<VerifyHikrobotSdkEditing>g__Check|0(Boolean ok, String reason) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\HikrobotSdkEditing.cs:line 13
+   at Program.VerifyHikrobotSdkEditing(String root, String evidence, List`1 lines) in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\HikrobotSdkEditing.cs:line 55
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-camera-barcode-current-19\tests\Ipc.Desktop.UiVerification\Program.cs:line 100

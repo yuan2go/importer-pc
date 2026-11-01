@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-D-DRIVE-DEFAULTS-02",
+  "work_package": "WP-IPC-SM-PDA-INPUT-ACK-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -110141,9 +110141,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CONTINUOUS-PDA-INPUT-01; original evidence retains its own SourceCommit",
-      "sha256": "3d9cf238f386bfbba9d944d11c438abf46d7dd7594e5d601f1e1c8469fa21515",
-      "size_bytes": 13782,
-      "git_blob": "a011547e92cd8ba541f3764482123b0771b0cd51",
+      "sha256": "13f0915a1649d486959b4fa27fb36543bd3f579c36d8dd5d9f97c8422912175b",
+      "size_bytes": 16697,
+      "git_blob": "02bfcad604235df42507c31f48cbb237741bc974",
       "storage_scope": "public_repository"
     },
     {
@@ -110860,6 +110860,17 @@
       "size_bytes": 3482,
       "git_blob": "a45b3f990700a1de76ca575d393ab823b76e9b88",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-SM-PDA-INPUT-ACK-01.md",
+      "version": "sm-pda-input-ack-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PDA-INPUT-ACK-01; original evidence retains its own SourceCommit",
+      "sha256": "bbe1cd019347a45c87c28a0f834bc46aa9de156bd4f31bd4d6574179e1bd6b27",
+      "size_bytes": 1449,
+      "git_blob": "591453cfa70943cc88bf0d6371ced71dca5b5d5e",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -110939,7 +110950,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-PDA-INPUT-ACK-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -113723,13 +113734,8 @@
   ],
   "integration_sources": [
     {
-      "commit": "ae3a380fa58c4b6c43a44a384a42666bad7f2510",
-      "manifest_sha256": "975d5ce7cf0ed4e843d7e319ee3036bd9b21ab986748588884bb52bae9c1cf7f",
-      "work_package": "WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01"
-    },
-    {
-      "commit": "1600ab6a3abe1195cfb4f6ef13df22c687f44fb2",
-      "manifest_sha256": "5a4235e655005fb261eb6bf052de4c32ca7629df50ba9879b69f222e4b297998",
+      "commit": "3ef78950a40da0aebd8656b4ebd98287cd060633",
+      "manifest_sha256": "67795463627736626b20cedee59b649bd1485e54578c99573ec13c0bbc25b47c",
       "work_package": "WP-IPC-D-DRIVE-DEFAULTS-02"
     }
   ],

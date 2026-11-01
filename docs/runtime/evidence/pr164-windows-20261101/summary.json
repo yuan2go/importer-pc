@@ -1,0 +1,70 @@
+{
+  "source_commit": "04d0af59741dcc7d285185f2d156bd640ac0f846",
+  "base_main": "b154512ac6869fc09a7c45bad63ed1a5f1f6fd36",
+  "platform": "Windows x64 .NET 10.0.402 actual HWND/WPF SendInput; synthetic SQLite/loopback RCS",
+  "baseline": "FAIL reproduced A+B using unchanged pre-164 product controls; only new test and enum qualification added",
+  "compile_fix": "CS0119 Key method/type collision; explicitly qualify System.Windows.Input.Key.Enter",
+  "build": "PASS 0 warnings/errors full Rebuild",
+  "native_pda": {
+    "status": "PASS",
+    "checks": 19,
+    "log": "pr164-native-retry.log"
+  },
+  "existing_barcode_ready": {
+    "status": "PASS",
+    "log": "pr164-ready-native.log"
+  },
+  "nonqualifying_runs": {
+    "pr164-fixed-native.log": "Baseline binary launched while Rebuild still pending; contains A+B; not fixed-source evidence",
+    "pr164-fixed-rebuilt-native.log": "Foreground/focus/modifier precondition rejected before first scan; unchanged rerun passed"
+  },
+  "not_run": [
+    "physical PDA",
+    "real SDK",
+    "customer RCS",
+    "installation",
+    "site"
+  ],
+  "logs": [
+    {
+      "path": "pr164-baseline-ui-build.log",
+      "sha256": "4b8f04b2da10987ff1302f88bfb3fb3687a60b70570f7bb341b4eb7f707f448a",
+      "bytes": 679
+    },
+    {
+      "path": "pr164-baseline-ui-build-fixed.log",
+      "sha256": "505ad3a1815d87579d0f241d8ab6ad73f4145e35c3c326a8a984c66e726c7457",
+      "bytes": 84
+    },
+    {
+      "path": "pr164-baseline-native.log",
+      "sha256": "9db1b3acf77c61006538004bd525d58d79284a8e797b8a49a6c8037b13453a68",
+      "bytes": 1305
+    },
+    {
+      "path": "pr164-fixed-ui-build.log",
+      "sha256": "4ebcb1b98437bee5a9018488adccabb7635ad7b8a98c2b5ac235c95bf17cf442",
+      "bytes": 84
+    },
+    {
+      "path": "pr164-fixed-native.log",
+      "sha256": "9db1b3acf77c61006538004bd525d58d79284a8e797b8a49a6c8037b13453a68",
+      "bytes": 1305
+    },
+    {
+      "path": "pr164-fixed-rebuilt-native.log",
+      "sha256": "34f572c9421bf50f9c70a0ae3c46ebb3732029b2c3e7ef72af4d14378d79fd0c",
+      "bytes": 1222
+    },
+    {
+      "path": "pr164-native-retry.log",
+      "sha256": "047cfde4c4f165c16dc206423616d2261836226b0b83f2112b43ea312c5e8864",
+      "bytes": 2051
+    },
+    {
+      "path": "pr164-ready-native.log",
+      "sha256": "5a99461c44b94210bb5eb10bfd87c285c4c33a410d1819d80432bf694af2ed21",
+      "bytes": 6472
+    }
+  ]
+}

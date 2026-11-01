@@ -208,3 +208,7 @@ docs/runtime/evidence/sm-shutdown-resources-13/*.log -text whitespace=cr-at-eol,
 
 # Independent shutdown review keeps raw Linux stdout and inherited timeout evidence.
 docs/runtime/evidence/sm-shutdown-resources-13-review/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Preserve PR164 Windows baseline and captured verification bytes.
+docs/archive/pre-pr164-windows-20261101/** -text whitespace=cr-at-eol
+docs/runtime/evidence/pr164-windows-20261101/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

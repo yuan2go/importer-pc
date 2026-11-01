@@ -12,7 +12,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     string selectedPage = "workstation";
     string inputTargetPosition = "";
     public string InputTargetPosition => inputTargetPosition;
-    public string InputTargetLabel => inputTargetPosition switch { "left" => "扫码将进入：左位", "right" => "扫码将进入：右位", _ => "扫码前请点击左位或右位条码框" };
+    public string InputTargetLabel => inputTargetPosition switch { "left" => "条码输入目标：左位（左相机）", "right" => "条码输入目标：右位（右相机）", _ => "请点击左位或右位相机对应的条码框" };
     internal void SetInputTarget(string value)
     {
         if (inputTargetPosition == value) return;

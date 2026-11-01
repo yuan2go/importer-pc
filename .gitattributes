@@ -251,3 +251,6 @@ docs/archive/pre-operator-copy-01/** -text whitespace=cr-at-eol
 
 # Preserve the pre-SM-TASK-FIELDS-01 index bytes.
 docs/archive/pre-sm-task-fields-01/** -text whitespace=cr-at-eol
+
+docs/archive/pre-sm-work-fields-20/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/sm-work-fields-20/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

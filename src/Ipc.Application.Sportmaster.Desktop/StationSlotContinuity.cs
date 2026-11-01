@@ -45,7 +45,7 @@ public sealed partial class SupplyStationPositionViewModel
         unreadFeedback && !HasUncertainOriginal ? "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
     public string DisplayNextStep => DisplayPaused ? "本件暂勿投递，等待恢复供包。" : ShowConfirmedTask ? IsTight ? "" : "按本次格口投递" : ReaderUnavailableForDisplay ? "本位暂停供包，请通知维护人员检查相机。" :
         !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" : NextStep;
-    public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : IsCompact ? OperatorTokens.SlotCompactSize : OperatorTokens.SlotSize;
+    public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
     public string CameraReadFeedback => readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
         ? "已读到条码，等待处理结果。" : "";
     public string ReadCueLabel => CameraReadFeedback.Length == 0 ? "" : "已读到" +

@@ -257,3 +257,5 @@ docs/archive/pre-sm-camera-barcode-current-19/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sm-camera-barcode-current-19/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/archive/pre-sm-camera-chain-reliability-20/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sm-camera-chain-reliability-20/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/archive/pre-sm-work-fields-20/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/sm-work-fields-20/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

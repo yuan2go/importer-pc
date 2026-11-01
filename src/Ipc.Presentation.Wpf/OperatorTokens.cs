@@ -29,7 +29,5 @@ public static class OperatorTokens
     public static string Neutral => Color("neutral");
     public static double TouchHeight => values.GetProperty("touchHeight").GetDouble();
     public static double TouchGap => values.GetProperty("touchGap").GetDouble();
-    public static double SlotSize => values.GetProperty("slotSize").GetDouble();
-    public static double SlotCompactSize => values.GetProperty("slotCompactSize").GetDouble();
     public static double InstructionSize => values.GetProperty("instructionSize").GetDouble();
 }

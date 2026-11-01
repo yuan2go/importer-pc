@@ -17,18 +17,6 @@
   <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
   <Setter Property="Margin" Value="0,0,0,6"/>
  </Style>
- <Style x:Key="StationScanGroup" TargetType="FrameworkElement">
-  <Setter Property="Margin" Value="0,0,0,8"/>
-  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,0,0,4"/></DataTrigger></Style.Triggers>
- </Style>
- <Style x:Key="StationBarcodeInput" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-  <Setter Property="MinHeight" Value="48"/>
-  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MinHeight" Value="44"/></DataTrigger></Style.Triggers>
- </Style>
- <Style x:Key="StationInputActions" TargetType="StackPanel">
-  <Setter Property="Margin" Value="0,8,0,0"/>
-  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger></Style.Triggers>
- </Style>
  <Style x:Key="StationValue" TargetType="TextBox" BasedOn="{StaticResource ReadonlyValue}">
   <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
   <Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/>
@@ -38,16 +26,17 @@
  </Style>
  <Style x:Key="StationTaskLabel" TargetType="TextBlock">
   <Setter Property="Foreground" Value="{StaticResource StationMuted}"/>
-  <Setter Property="FontSize" Value="{x:Static type:UiTypography.Diagnostic}"/>
+  <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
   <Setter Property="VerticalAlignment" Value="Center"/>
-  <Setter Property="Margin" Value="0,0,4,0"/>
+  <Setter Property="Margin" Value="0,0,8,0"/>
  </Style>
  <Style x:Key="StationTaskValue" TargetType="TextBox" BasedOn="{StaticResource ReadonlyValue}">
   <Setter Property="FontFamily" Value="{x:Static type:UiTypography.Code}"/>
-  <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
-  <Setter Property="TextWrapping" Value="NoWrap"/>
+  <Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/>
+  <Setter Property="MaxHeight" Value="48"/>
+  <Setter Property="TextWrapping" Value="Wrap"/>
   <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
-  <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+  <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
   <Setter Property="Margin" Value="0"/>
   <Setter Property="Padding" Value="0"/>
   <Setter Property="VerticalAlignment" Value="Center"/>
@@ -122,5 +111,17 @@
  <Style x:Key="StationResultPanel" TargetType="Border">
   <Setter Property="Padding" Value="12,8"/><Setter Property="CornerRadius" Value="4"/>
   <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="12,4"/></DataTrigger></Style.Triggers>
+ </Style>
+ <Style x:Key="StationPositionCard" TargetType="Border" BasedOn="{StaticResource StationCard}">
+  <Setter Property="Padding" Value="8"/>
+  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="8,4"/></DataTrigger></Style.Triggers>
+ </Style>
+ <Style x:Key="StationPositionSection" TargetType="FrameworkElement">
+  <Setter Property="Margin" Value="0,0,0,8"/>
+  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,0,0,4"/></DataTrigger></Style.Triggers>
+ </Style>
+ <Style x:Key="StationPositionActions" TargetType="StackPanel">
+  <Setter Property="Margin" Value="0,8,0,0"/>
+  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger></Style.Triggers>
  </Style>
 </ResourceDictionary>

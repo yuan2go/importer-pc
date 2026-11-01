@@ -1,3 +1,5 @@
+> 2026-11-02 当前四字段布局、恢复格口字号与取消来源选择以 [SM-WORK-FIELDS-20](../work-packages/WP-IPC-SM-WORK-FIELDS-20.md) 为准。本包原实现和验证保持原SourceCommit，不转记为20验收。
+
 # SM-OPERATOR-UX-18 实施与边界
 
 基线 main 02b0891b，工作包 [WP-IPC-SM-OPERATOR-UX-18](../work-packages/WP-IPC-SM-OPERATOR-UX-18.md)。用户要求先修体验，明确暂不增加统计。

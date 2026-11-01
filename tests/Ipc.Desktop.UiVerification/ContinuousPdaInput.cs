@@ -39,7 +39,6 @@ static partial class Program
             var textEvents = 0; var enterEvents = 0;
             entry.PreviewTextInput += (_, _) => textEvents++;
             entry.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == System.Windows.Input.Key.Enter) enterEvents++; }), true);
-            ((MenuItem)position.FindName("PdaSource")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             window.Activate(); entry.Focus(); await Flush();
             Task Text(string value, bool enter = false) => BarcodeNativeKeyboard.SendAsync(window, entry, value.Select(c => (ushort)c).Concat(enter ? new ushort[] { 0x0D } : []).ToArray());
             Task Key(ushort key) => BarcodeNativeKeyboard.SendAsync(window, entry, [key]);
@@ -52,7 +51,7 @@ static partial class Program
             // No Text assignment, clear, refocus or selection adjustment between A and B.
             await Text(b, enter: true); await Accepted(b);
             Check(transport.Commands.Select(c => c.Barcode).SequenceEqual(new[] { a, b }) && h.Peer.Requests.Count == 2 &&
-                vm.Left.Operation!.Id != first.Id && transport.Commands.All(c => c.Kind == ParcelBarcodeInputKind.PdaKeyboard),
+                vm.Left.Operation!.Id != first.Id && transport.Commands.All(c => c.Kind == ParcelBarcodeInputKind.Keyboard),
                 "consecutive PDA bursts submit exactly A then B as distinct commands/operations, never A+B");
             Check(prepared, "A remains displayed and selected after PDA Enter without moving focus");
             var firstAfter = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == first.Id);
@@ -62,8 +61,6 @@ static partial class Program
                 "both scans traverse real WPF PreviewTextInput and Enter events character by character");
             await Key(0x0D); await Flush();
             Check(transport.Commands.Count == 2 && h.Peer.Requests.Count == 2, "extra Enter on a retained result creates no new command");
-
-            ((MenuItem)position.FindName("KeyboardSource")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             entry.Select(entry.Text.Length, 0); // Simulate a click moving the caret on the retained result.
             await Text("000123"); await Flush();
             Check(entry.Text == "000123" && vm.Left.Barcode == b && vm.Left.SlotAvailable && transport.Commands.Count == 2,
@@ -91,7 +88,7 @@ static partial class Program
             }
             ((Button)position.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Accepted("000123");
             Check(transport.Commands.Last().Kind == ParcelBarcodeInputKind.Keyboard && h.Peer.Requests.Count == 3,
-                "manual bottom submit uses the same guarded path and preserves the declared source");
+                "manual bottom submit uses the same guarded path and preserves the unified character-input channel");
 
             // Simulate lost/indeterminate UI replies after the real Application committed.
             // Rechecking must forward the identical command, never authorize a second request.

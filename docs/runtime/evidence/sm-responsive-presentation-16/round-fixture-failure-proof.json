@@ -1,0 +1,13 @@
+{
+  "source": "81a778b6d409310cfa5f80f29935b0b9b6f8e3cf",
+  "input": "Synthetic fixture only; private local DB read-only, not published",
+  "observed": [
+    {
+      "source_event": "mvs.frame.5",
+      "state": "ResolvingWcs",
+      "debug_frame_frozen": true,
+      "original_numeric_request_present": true
+    }
+  ],
+  "boundary": "CanSend Boolean was not captured in the failed first assertion. Final controlled test retains and passes the original CanSend assertion."
+}

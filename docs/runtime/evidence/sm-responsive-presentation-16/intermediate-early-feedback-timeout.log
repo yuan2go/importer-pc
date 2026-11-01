@@ -1,0 +1,9 @@
+PASS RESPONSIVE ninth subscription is rejected instead of building unbounded consumers
+PASS RESPONSIVE unread subscriber receives latest committed snapshot directly while same-code observations still create independent original requests
+PASS RESPONSIVE subscribers never share mutable snapshot arrays or authoritative business objects
+PASS RESPONSIVE disposing a subscriber revokes its mailbox and immediately releases subscriber capacity
+FAIL System.TimeoutException: read cue before durable input
+   at Program.<VerifyStationResponsiveUi>g__Until|56_1(Func`1 ready, String step) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\StationResponsiveUi.cs:line 17
+   at Program.VerifyStationResponsiveUi(String root, String evidence, List`1 lines) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\StationResponsiveUi.cs:line 64
+   at Program.VerifyStationResponsiveUi(String root, String evidence, List`1 lines) in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\StationResponsiveUi.cs:line 112
+   at Program.<>c__DisplayClass43_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-server-preview-14\tests\Ipc.Desktop.UiVerification\Program.cs:line 62

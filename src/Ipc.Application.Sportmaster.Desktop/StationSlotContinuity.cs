@@ -23,7 +23,7 @@ public sealed partial class SupplyStationPositionViewModel
     public bool ShowConfirmedTask => CurrentTaskAvailable && !unreadFeedback && !ReaderUnavailableForDisplay;
     public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing;
     public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : "";
-    public string DisplaySlotForeground => IsProcessing ? "#68788E" : Presentation.Foreground;
+    public string DisplaySlotForeground => IsProcessing ? "#536577" : Presentation.Foreground;
     public ParcelStatusPresentation DisplayPresentation => ReaderUnavailableForDisplay ? ParcelPresentation.Rejected("相机：离线或恢复待确认") :
         IsProcessing ? ParcelPresentation.Neutral("处理中") : Presentation;
     public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";

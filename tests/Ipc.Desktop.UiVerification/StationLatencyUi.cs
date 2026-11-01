@@ -30,7 +30,7 @@ static partial class Program
             await Until(() => p.IsProcessing && p.Operation?.Id != original, "same-code processing placeholder");
             Check(p.Slot == "未取得" && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && slot.IsVisible && !fields.IsVisible && !p.CurrentTaskAvailable,
                 "same-code pending request immediately clears the prior destination; gray processing placeholder has no authoritative slot or old task fields");
-            Check(p.DisplayStatus.Contains("处理中") && p.DisplaySlotLabel.Contains("尚未取得") && p.DisplaySlotForeground == "#68788E",
+            Check(p.DisplayStatus.Contains("处理中") && p.DisplaySlotLabel.Contains("尚未取得") && p.DisplaySlotForeground == "#536577",
                 "processing state has explicit text, automation label and muted color without a previous destination");
             await Until(() => Metrics(h).EnumerateArray().Any(m => m.GetProperty("Stage").GetString() == "ReadFeedbackComposed" && m.GetProperty("ObservationId").GetString() == p.Input?.Observation.Id), "read cue composition metric while RCS is held");
             Check(p.Operation?.State == ParcelState.ResolvingWcs && p.CameraReadFeedback.Contains("已读到"),

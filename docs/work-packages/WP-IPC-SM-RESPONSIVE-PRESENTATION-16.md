@@ -15,3 +15,12 @@ RV-SM-RESPONSIVE-16-03：左右失联独立、无需业务门锁或下一轮询�
 RV-SM-RESPONSIVE-16-04：已有实时视频采用有界最新缩略帧、15fps上限、池化借帧和WriteableBitmap复用；换源、卸载、取消与异常归还，不将全分辨率帧交UI。原始锁图保持独立。
 
 RV-SM-RESPONSIVE-16-05：构建、原生界面、持久责任、停止、原图、Unknown及离页重进回归。现场相机、低端工控机磁盘、真实RCS和物理声音/屏幕另行验证；不继承历史PASS或启用CI。
+
+## 本轮实现与验证
+
+最终验证SourceCommit `1f663d69f4debb6e001343fcfca65886fa6b6408`；代码/边界、精确指纹及原始日志见[实施报告](../runtime/sm-responsive-presentation-16.md)与[summary.json](../runtime/evidence/sm-responsive-presentation-16/summary.json)。四个Release构建0警告/错误，19套件456条定向断言PASS。
+
+- RV-SM-RESPONSIVE-16-01/02：本机原生WPF、真实预持久入口挂起、类型化订阅有界/取消、去抖/独立原请求、焦点/草稿回归PASS；没有测目标工控机真实fsync。
+- RV-SM-RESPONSIVE-16-03：合成驱动已确认失联的通知越过业务快照门锁、按位清退及另一位独立PASS；物理断线检测时延/真实双相机待验。
+- RV-SM-RESPONSIVE-16-04：池化所有权/预算/分配、实际WPF同位图复用/换源/离页/权限恢复PASS；15fps为调度上限，现场最低帧率/长稳待验。
+- RV-SM-RESPONSIVE-16-05：本机指定回归PASS；保留初次PDA失焦FAIL并记录原样重跑，轮次夹具修正保持全部原断言。客户RCS、物理PDA/扬声器/屏幕、安装升级及24h/72h现场不转记PASS。

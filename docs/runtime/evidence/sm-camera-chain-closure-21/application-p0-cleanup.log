@@ -1,0 +1,410 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-62809b9f1b4a4082aea3322f0e1cf007
+PASS ST02 first durable input accepted
+PASS ST02 independent SQL confirms committed archive before injection
+PASS ST02 temporary locked redundant spool does not fence inputs or terminate maintenance
+PASS ST02 input continues during cleanup lock
+PASS ST02 pending cleanup is visible through existing snapshot
+PASS ST02 cleanup retries after unlock without another business command
+ST02 locked {
+  "AcceptingAfterInjection": 1,
+  "Progress": {
+    "At": "2026-11-01T17:56:58.2775269\u002B00:00",
+    "ProcessId": 12600,
+    "RuntimeId": "b6889c06-a3ea-43e0-ab0e-afcd703bfc6d",
+    "Stopping": false,
+    "Connections": [
+      {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "398a4dd1c94545cb9e89afae5d1bd9f5",
+        "Health": "Ready",
+        "Acquisition": null
+      },
+      {
+        "DeviceId": "sportmaster.camera.right",
+        "Epoch": "35fa1da605164025aa6baeb4aeeff7f5",
+        "Health": "Ready",
+        "Acquisition": null
+      }
+    ],
+    "Presentation": {
+      "Availability": "NotMeasured",
+      "Boundary": "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
+      "Recent": [],
+      "Window": 512,
+      "Subscribers": 0,
+      "Publisher": "WaitingForActivation",
+      "Failure": null
+    },
+    "Workers": [
+      {
+        "Position": "left",
+        "State": "Waiting",
+        "Received": 1,
+        "Processed": 1,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": "2026-11-01T17:56:57.9080656\u002B00:00",
+        "Failure": null,
+        "ProcessingSince": null
+      },
+      {
+        "Position": "right",
+        "State": "Waiting",
+        "Received": 0,
+        "Processed": 0,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": null,
+        "Failure": null,
+        "ProcessingSince": null
+      }
+    ],
+    "Ui": [],
+    "Background": [
+      {
+        "Name": "maintenance",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:56:58.1771015\u002B00:00",
+        "Detail": "CompletedCycle"
+      },
+      {
+        "Name": "wal-checkpoint",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:56:57.5335886\u002B00:00",
+        "Detail": "Observed"
+      },
+      {
+        "Name": "capability:sportmaster.integration",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:56:58.1772686\u002B00:00",
+        "Detail": "Ready"
+      }
+    ],
+    "ReadOperations": 0,
+    "AdministrationOperations": 0,
+    "ManagementStatusOperations": 0,
+    "OverloadWrites": 0,
+    "Diagnostics": {
+      "State": "Running",
+      "QueueDepth": 0,
+      "Dropped": 0,
+      "DebugDropped": 0,
+      "Written": 11,
+      "LastFailure": null,
+      "CurrentFailure": null,
+      "LastProgressUtcTicks": 639291526179067014
+    },
+    "Failure": null,
+    "SupervisionFailure": null
+  },
+  "Result": "PASS"
+}
+PASS ST02 first durable input accepted
+PASS ST02 independent SQL confirms committed archive before injection
+PASS ST02 integrity damage stops maintenance and fences inputs
+PASS ST02 unverified spool is never deleted
+ST02 spool-corrupt {
+  "AcceptingAfterInjection": 0,
+  "Progress": {
+    "At": "2026-11-01T17:57:00.3650986\u002B00:00",
+    "ProcessId": 12600,
+    "RuntimeId": "f4469e29-3700-455a-84a8-86319768eb3d",
+    "Stopping": false,
+    "Connections": [
+      {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "50c9a7b9e4a24221b011312038503cbc",
+        "Health": "Ready",
+        "Acquisition": null
+      },
+      {
+        "DeviceId": "sportmaster.camera.right",
+        "Epoch": "53d38698885b46c69493a17b66535cf0",
+        "Health": "Ready",
+        "Acquisition": null
+      }
+    ],
+    "Presentation": {
+      "Availability": "NotMeasured",
+      "Boundary": "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
+      "Recent": [],
+      "Window": 512,
+      "Subscribers": 0,
+      "Publisher": "WaitingForActivation",
+      "Failure": "Fatal storage failure: Maintenance; Unrecoverable; InvalidDataException"
+    },
+    "Workers": [
+      {
+        "Position": "left",
+        "State": "Waiting",
+        "Received": 1,
+        "Processed": 1,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": "2026-11-01T17:56:59.9750737\u002B00:00",
+        "Failure": null,
+        "ProcessingSince": null
+      },
+      {
+        "Position": "right",
+        "State": "Waiting",
+        "Received": 0,
+        "Processed": 0,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": null,
+        "Failure": null,
+        "ProcessingSince": null
+      }
+    ],
+    "Ui": [],
+    "Background": [
+      {
+        "Name": "maintenance",
+        "State": "RanToCompletion",
+        "LastProgress": "2026-11-01T17:57:00.0635898\u002B00:00",
+        "Detail": "Faulted:InvalidDataException"
+      },
+      {
+        "Name": "wal-checkpoint",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:56:59.946518\u002B00:00",
+        "Detail": "Observed"
+      },
+      {
+        "Name": "capability:sportmaster.integration",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:57:00.2878253\u002B00:00",
+        "Detail": "Ready"
+      }
+    ],
+    "ReadOperations": 0,
+    "AdministrationOperations": 0,
+    "ManagementStatusOperations": 0,
+    "OverloadWrites": 0,
+    "Diagnostics": {
+      "State": "Running",
+      "QueueDepth": 0,
+      "Dropped": 0,
+      "DebugDropped": 0,
+      "Written": 11,
+      "LastFailure": null,
+      "CurrentFailure": null,
+      "LastProgressUtcTicks": 639291526200160311
+    },
+    "Failure": "Maintenance worker failed: Redundant original raw receipt hash differs: ea98ffb31cf84850a7fb8658167e9cc8",
+    "SupervisionFailure": null
+  },
+  "Result": "PASS"
+}
+PASS ST02 first durable input accepted
+PASS ST02 independent SQL confirms committed archive before injection
+PASS ST02 integrity damage stops maintenance and fences inputs
+PASS ST02 unverified spool is never deleted
+ST02 archive-missing {
+  "AcceptingAfterInjection": 0,
+  "Progress": {
+    "At": "2026-11-01T17:57:01.0076832\u002B00:00",
+    "ProcessId": 12600,
+    "RuntimeId": "a18592d2-abf8-472b-a184-959679dfa83b",
+    "Stopping": false,
+    "Connections": [
+      {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "9c087773141f46da8fd20a798887b155",
+        "Health": "Ready",
+        "Acquisition": null
+      },
+      {
+        "DeviceId": "sportmaster.camera.right",
+        "Epoch": "7fe7e668b23540f58f3c2e43c7b5322e",
+        "Health": "Ready",
+        "Acquisition": null
+      }
+    ],
+    "Presentation": {
+      "Availability": "NotMeasured",
+      "Boundary": "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
+      "Recent": [],
+      "Window": 512,
+      "Subscribers": 0,
+      "Publisher": "WaitingForActivation",
+      "Failure": "Fatal storage failure: Maintenance; Unrecoverable; InvalidDataException"
+    },
+    "Workers": [
+      {
+        "Position": "left",
+        "State": "Waiting",
+        "Received": 1,
+        "Processed": 1,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": "2026-11-01T17:57:00.6282576\u002B00:00",
+        "Failure": null,
+        "ProcessingSince": null
+      },
+      {
+        "Position": "right",
+        "State": "Waiting",
+        "Received": 0,
+        "Processed": 0,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": null,
+        "Failure": null,
+        "ProcessingSince": null
+      }
+    ],
+    "Ui": [],
+    "Background": [
+      {
+        "Name": "maintenance",
+        "State": "RanToCompletion",
+        "LastProgress": "2026-11-01T17:57:00.6978437\u002B00:00",
+        "Detail": "Faulted:InvalidDataException"
+      },
+      {
+        "Name": "wal-checkpoint",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:57:00.5809768\u002B00:00",
+        "Detail": "Observed"
+      },
+      {
+        "Name": "capability:sportmaster.integration",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:57:00.9141119\u002B00:00",
+        "Detail": "Ready"
+      }
+    ],
+    "ReadOperations": 0,
+    "AdministrationOperations": 0,
+    "ManagementStatusOperations": 0,
+    "OverloadWrites": 0,
+    "Diagnostics": {
+      "State": "Running",
+      "QueueDepth": 0,
+      "Dropped": 0,
+      "DebugDropped": 0,
+      "Written": 11,
+      "LastFailure": null,
+      "CurrentFailure": null,
+      "LastProgressUtcTicks": 639291526206644501
+    },
+    "Failure": "Maintenance worker failed: Archived original raw receipt is missing or corrupt: 36cf84c0ace64ec3a4d7f99d15502068",
+    "SupervisionFailure": null
+  },
+  "Result": "PASS"
+}
+PASS ST02 first durable input accepted
+PASS ST02 independent SQL confirms committed archive before injection
+PASS ST02 integrity damage stops maintenance and fences inputs
+PASS ST02 unverified spool is never deleted
+ST02 archive-corrupt {
+  "AcceptingAfterInjection": 0,
+  "Progress": {
+    "At": "2026-11-01T17:57:01.6011731\u002B00:00",
+    "ProcessId": 12600,
+    "RuntimeId": "76ab845f-cb5b-474e-8759-02580efd3cfa",
+    "Stopping": false,
+    "Connections": [
+      {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "b425c6f34cdd45ef97f2e453492fe714",
+        "Health": "Ready",
+        "Acquisition": null
+      },
+      {
+        "DeviceId": "sportmaster.camera.right",
+        "Epoch": "65eeda4597b849d3a28212e3f104c8f0",
+        "Health": "Ready",
+        "Acquisition": null
+      }
+    ],
+    "Presentation": {
+      "Availability": "NotMeasured",
+      "Boundary": "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
+      "Recent": [],
+      "Window": 512,
+      "Subscribers": 0,
+      "Publisher": "WaitingForActivation",
+      "Failure": "Fatal storage failure: Maintenance; Unrecoverable; InvalidDataException"
+    },
+    "Workers": [
+      {
+        "Position": "left",
+        "State": "Waiting",
+        "Received": 1,
+        "Processed": 1,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": "2026-11-01T17:57:01.1978118\u002B00:00",
+        "Failure": null,
+        "ProcessingSince": null
+      },
+      {
+        "Position": "right",
+        "State": "Waiting",
+        "Received": 0,
+        "Processed": 0,
+        "Interrupted": 0,
+        "QueueDepth": 0,
+        "OldestWaiting": null,
+        "LastProgress": null,
+        "Failure": null,
+        "ProcessingSince": null
+      }
+    ],
+    "Ui": [],
+    "Background": [
+      {
+        "Name": "maintenance",
+        "State": "RanToCompletion",
+        "LastProgress": "2026-11-01T17:57:01.2915999\u002B00:00",
+        "Detail": "Faulted:InvalidDataException"
+      },
+      {
+        "Name": "wal-checkpoint",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:57:01.1681154\u002B00:00",
+        "Detail": "Observed"
+      },
+      {
+        "Name": "capability:sportmaster.integration",
+        "State": "WaitingForActivation",
+        "LastProgress": "2026-11-01T17:57:01.5069948\u002B00:00",
+        "Detail": "Ready"
+      }
+    ],
+    "ReadOperations": 0,
+    "AdministrationOperations": 0,
+    "ManagementStatusOperations": 0,
+    "OverloadWrites": 0,
+    "Diagnostics": {
+      "State": "Running",
+      "QueueDepth": 0,
+      "Dropped": 0,
+      "DebugDropped": 0,
+      "Written": 11,
+      "LastFailure": null,
+      "CurrentFailure": null,
+      "LastProgressUtcTicks": 639291526212352822
+    },
+    "Failure": "Maintenance worker failed: Archived original raw receipt is missing or corrupt: d99ed2c52681479a8463cb01e9e13288",
+    "SupervisionFailure": null
+  },
+  "Result": "PASS"
+}
+PASS ST02 all cleanup cases: 
+PASS ST02 backoff uses an actual archived receipt
+PASS ST02 startup tolerates only verified redundant lock with initial 500ms delay
+PASS ST02 wall-clock rollback neither bypasses nor freezes monotonic backoff
+PASS ST02 retry occurs exactly at elapsed deadline
+PASS ST02 counter and exponential delay capped; persistent lock produces visible warning
+PASS ST02 successful hash-verified cleanup resets warning/backoff

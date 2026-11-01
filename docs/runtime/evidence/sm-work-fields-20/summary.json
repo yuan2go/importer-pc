@@ -1,0 +1,211 @@
+{
+  "assertion_total": 388.0,
+  "suites": [
+    {
+      "exit_code": 0,
+      "pass_count": 24,
+      "log": "application-manual-supply.log",
+      "flag": "--manual-supply",
+      "kind": "Application"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 51,
+      "log": "application-ux-commercial-presentation.log",
+      "flag": "--ux-commercial-presentation",
+      "kind": "Application"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 57,
+      "log": "application-rcs-timeout-errors.log",
+      "flag": "--rcs-timeout-errors",
+      "kind": "Application"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 36,
+      "kind": "WindowsNativeWpf",
+      "log": "native-operator-ux-18.log",
+      "flag": "--operator-ux-18"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 30,
+      "kind": "WindowsNativeWpf",
+      "log": "native-operator-workspace.log",
+      "flag": "--operator-workspace"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 8,
+      "kind": "WindowsNativeWpf",
+      "log": "native-manual-supply-ui.log",
+      "flag": "--manual-supply-ui"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 59,
+      "kind": "WindowsNativeWpf",
+      "log": "native-workstation-barcode-ready.log",
+      "flag": "--workstation-barcode-ready"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 38,
+      "kind": "WindowsNativeWpf",
+      "log": "native-workstation-status-logs.log",
+      "flag": "--workstation-status-logs"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 13,
+      "kind": "WindowsNativeWpf",
+      "log": "native-station-responsive-ui.log",
+      "flag": "--station-responsive-ui"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 13,
+      "kind": "WindowsNativeWpf",
+      "log": "native-station-latency-ui.log",
+      "flag": "--station-latency-ui"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 8,
+      "kind": "WindowsNativeWpf",
+      "log": "native-presentation-ordering-ui.log",
+      "flag": "--presentation-ordering-ui"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 16,
+      "kind": "WindowsNativeWpf",
+      "log": "native-camera-stream-ui.log",
+      "flag": "--camera-stream-ui"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 35,
+      "kind": "WindowsNativeWpf",
+      "log": "native-continuous-pda-input.log",
+      "flag": "--continuous-pda-input"
+    }
+  ],
+  "baseline_main": "039ccdeeeebf10ddc267ae7f2a0103a6b5be52ba",
+  "scope": "Three user-requested SM work-card corrections only; preserves PR170 task identity guards. PR171 latest-camera observation fix remains separate.",
+  "source_commit": "0be38fbe39e5d30759460f6c3adfb40297048f1d",
+  "builds": [
+    {
+      "exit_code": 0,
+      "project": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
+      "log": "build-Ipc.Application.Verification.log",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "exit_code": 0,
+      "project": "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
+      "log": "build-Ipc.Desktop.UiVerification.log",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "exit_code": 0,
+      "project": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "log": "build-Ipc.Desktop.log",
+      "warnings": 0,
+      "errors": 0
+    }
+  ],
+  "source_boundary": "Clean source0be38fbe built and tested without product/test changes; subsequent commit is documentation/evidence only.",
+  "counts": {
+    "Application": 132,
+    "WindowsNativeWpf": 256
+  },
+  "geometry": {
+    "standard_short_chute_actual_font_dip": 64,
+    "compact_short_chute_actual_font_dip": 44,
+    "fields": "wave/task/SKU/returned quantity in two columns and two rows; actual synthetic RCS strings shown",
+    "primary_action_height_dip": 64
+  },
+  "publish_smoke": {
+    "exit_code": 0,
+    "mode": "framework-dependent same-build EXE --environment-report; ProcessStartInfo redirects stdout and waits for actual exit; no business/SDK connections",
+    "report": "desktop-environment-report.json"
+  },
+  "source_hashes": [
+    {
+      "path": "docs/ui/tokens/tokens.json",
+      "sha256_git_bytes": "785f58f976010fd4fc2b96c1caff8f11c4f7d9f6e1c4d9668a08f6c0ab864d9b"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/StationSlotContinuity.cs",
+      "sha256_git_bytes": "e19c7820ebfac5e14dd6cc30265ceee59165daf2b10a3a8a4f8ab06f5534d2fa"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
+      "sha256_git_bytes": "e901cb2bd333da05b52a901a07350de38a1cee0b856c1c7f4f3486abcc7b2331"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
+      "sha256_git_bytes": "de19e78ad8483044830d05c2e52d457037ed9b41d19587529236d3a9a1408632"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
+      "sha256_git_bytes": "60526b9f076e538ff143c9c8a70a014530848a4b0e34c36836572ff4959e7db2"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "sha256_git_bytes": "3611dde994e045ee3976d057b48651bc458760e9581b5d8e5560dd25fa8fe3b5"
+    },
+    {
+      "path": "src/Ipc.Presentation.Wpf/OperatorTokens.cs",
+      "sha256_git_bytes": "7c76fe5956edfa08e9ac3d5d2d14905df2b7d291096453fc3d3b967eed3aa488"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/CameraRoundHarness.cs",
+      "sha256_git_bytes": "5442100df4180402fe6196e4421284a789194c960dee4098d960554c31be5d0e"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ContinuousPdaInput.cs",
+      "sha256_git_bytes": "502683ad3dbf82166418ed891165f197eaabf43d8abc4cb160ea0bc10c8b6183"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ManualSupplyUi.cs",
+      "sha256_git_bytes": "c6db7ba6584398fc455ceb13054e6f8c8b10cb7d7cbfde63a13be0e0b6270f19"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorUx18.cs",
+      "sha256_git_bytes": "c74175fb4b6c20e856b707e2c42291f0f2a6a9004e8e0fb49e14deec09124f6a"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/WorkstationBarcodeReady.cs",
+      "sha256_git_bytes": "4bc3c323ca7bd1df6119d30ac998c0428421a21a91b59c167e6e0d2986bd0f9b"
+    }
+  ],
+  "binary_hashes": [
+    {
+      "path": "src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll",
+      "sha256": "07e42690be1a868444eb84227e355e1038b65ad374baaae6ebb9920f68165ac4"
+    },
+    {
+      "path": ".artifacts/sm-work-fields-20-publish-0be38fbe/Ipc.Desktop.dll",
+      "sha256": "07e42690be1a868444eb84227e355e1038b65ad374baaae6ebb9920f68165ac4"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll",
+      "sha256": "4f9a29585c587b8c5725f4e21111344bb1451bb621bbba81459ec6e749d46cea"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Application.Sportmaster.Desktop.dll",
+      "sha256": "e27941f3556a522ab962faa9bd8d21cf3ecb3bc262149e6f36eaf48f80e0777d"
+    }
+  ],
+  "not_run": [
+    "Physical PDA identity binding",
+    "Server MVS SDK/camera and customer RCS",
+    "Physical display/gloves/speaker/site acceptance"
+  ]
+}

@@ -1,4 +1,4 @@
-> 2026-11-02 当前作业卡字段、恢复字号与统一条码输入见 [SM-WORK-FIELDS-20](work-packages/WP-IPC-SM-WORK-FIELDS-20.md)：覆盖18的112/72字号与来源选择，沿用170的字段及失效守卫。
+> 2026-11-02 当前作业卡字段、恢复字号与统一条码输入见 [SM-WORK-FIELDS-20](work-packages/WP-IPC-SM-WORK-FIELDS-20.md)：覆盖18的112/72字号与来源选择，沿用170的字段及失效守卫。[Windows补证](runtime/sm-work-fields-20.md)：Source0be38fbe、13套件388PASS，旧验收不转记。
 
 > 2026-11-01 作业卡恢复波次、任务号、商品编码、返回数量常驻见 [SM-TASK-FIELDS-01](work-packages/WP-IPC-SM-TASK-FIELDS-01.md)，替代 UX-18 中“任务字段进详情”的条款；显示条件与确认格口一致。旧索引[原字节归档](archive/pre-sm-task-fields-01/manifest.json)。Windows 验证 NOT_RUN。
 

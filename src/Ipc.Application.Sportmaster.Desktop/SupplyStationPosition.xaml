@@ -16,7 +16,7 @@
      <RowDefinition Height="Auto"/>
      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <DockPanel Margin="0,0,0,8">
+    <DockPanel Style="{StaticResource StationScanGroup}">
      <ComboBox x:Name="VisibleInputSource" DockPanel.Dock="Right" MinHeight="44" MinWidth="96" Margin="8,0,0,0" SelectionChanged="InputSource_SelectionChanged" SelectedIndex="0" AutomationProperties.Name="本位条码输入来源" ToolTip="键盘和PDA键盘均输入到当前焦点；不代表硬件设备绑定。">
       <ComboBoxItem Content="键盘"/>
       <ComboBoxItem Content="PDA键盘"/>
@@ -26,12 +26,12 @@
       <TextBlock x:Name="CameraConnection" Text="{Binding DevicePresentation.Text}" Foreground="{Binding DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
      </StackPanel>
     </DockPanel>
-    <Grid Grid.Row="1" x:Name="ScanInformation" Margin="0,0,0,8">
+    <Grid Grid.Row="1" x:Name="ScanInformation" Style="{StaticResource StationScanGroup}">
      <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
      </Grid.ColumnDefinitions>
-     <TextBox x:Name="BarcodeEntry" MinHeight="48" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" LostKeyboardFocus="Entry_LostKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。PDA设为键盘输入并以回车结束。">
+     <TextBox x:Name="BarcodeEntry" Style="{StaticResource StationBarcodeInput}" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" LostKeyboardFocus="Entry_LostKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。PDA设为键盘输入并以回车结束。">
       <TextBox.ContextMenu>
        <ContextMenu>
         <MenuItem Header="剪切" Command="ApplicationCommands.Cut"/>
@@ -138,7 +138,7 @@
       <TextBox Text="{Binding ResponseQuantity,Mode=OneWay}" ToolTip="{Binding ResponseQuantity}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="本次调度返回数量"/>
      </DockPanel>
     </Grid>
-    <StackPanel Grid.Row="4" x:Name="FixedActions" Margin="0,8,0,0">
+    <StackPanel Grid.Row="4" x:Name="FixedActions" Style="{StaticResource StationInputActions}">
      <TextBlock x:Name="InputFeedback" TextWrapping="Wrap" MaxHeight="40" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationNotice}" AutomationProperties.LiveSetting="Polite"/>
      <Grid>
       <Grid.ColumnDefinitions>

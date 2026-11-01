@@ -1,4 +1,4 @@
-> 2026-11-01 当前 SM 操作体验增量见 [SM-OPERATOR-UX-18](work-packages/WP-IPC-SM-OPERATOR-UX-18.md)：格口优先、实际输入目标、暂停语义与类型化呈现。用户暂不增加件数统计。历史16/17证据保持原SourceCommit。
+> 2026-11-01 当前 SM 操作体验增量见 [SM-OPERATOR-UX-18](work-packages/WP-IPC-SM-OPERATOR-UX-18.md)：格口优先、实际输入目标、暂停语义与类型化呈现。用户暂不增加件数统计。最终源44b41c93的Windows三构建与21套件574PASS见[验证记录](runtime/sm-operator-ux-18.md)，已整合PR168；历史16/17证据保持原SourceCommit。
 > 2026-11-01 供包员界面文案工业化见 [OPERATOR-COPY-01](work-packages/WP-IPC-OPERATOR-COPY-01.md)：状态/下一步/原因分层，合同术语移出作业页，异常提示写明包裹处置；业务守卫不变。旧索引[原字节归档](archive/pre-operator-copy-01/manifest.json)。该包当时的 Windows NOT_RUN 记录保留；本轮18整合后的本机补证单独记录。
 
 > 2026-11-01 整个会话合并前复核以 [SM-SESSION-REVIEW-17](runtime/sm-session-review-17.md) 为准：涵盖最初实时视频、采集/解码/健康、全部反馈与推送要求，补齐迟到快照不能复活较新故障及真实呈现身份核对。历史14/15/16证据保持原SourceCommit。

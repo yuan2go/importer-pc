@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
@@ -26,7 +26,7 @@ public partial class ParcelViewModel
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
     public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果待核对" : HasUnsavedConfiguration ? "有未保存的更改" : "没有未保存的更改";
     public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请核对上次保存结果后继续" :
-        Snapshot?.Configuration.Pending is not null ? "已保存 · 待受控重启" : "保存后通过受控重启应用";
+        Snapshot?.Configuration.Pending is not null ? "已保存 · 待重启" : "保存后通过重启应用";
     string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature());
     ParcelConfiguration CurrentReviewCandidate() => configurationAuthority switch
     {

@@ -54,9 +54,8 @@ static partial class Program
             "current camera settings omit the removed configuration-status and connection-diagnostics block");
         Click(window, "返回作业"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
         var leftPosition = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left));
-        var diagnostics = (Button)leftPosition.FindName("PositionDiagnostics");
-        Check(diagnostics.IsVisible && diagnostics.IsEnabled, "current left-position diagnostics action remains visible and enabled");
-        diagnostics.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); window.UpdateLayout();
+        Check(leftPosition.FindName("PositionDiagnostics") is null && vm.IsManagementMode, "daily card reserves touch space for submit and details; diagnosis remains management navigation");
+        window.ShowPositionDiagnostics(vm.Left); window.UpdateLayout();
         Check(vm.SelectedPage == "diagnostics" && Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "左相机"), "selected camera opens its native diagnostics with visible object context");
         Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "设置左相机")), "camera diagnostics provides a direct action for the matching connection");
         Capture("v3-object-diagnostics");

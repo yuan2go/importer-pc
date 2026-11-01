@@ -12,6 +12,7 @@ public partial class HistoryPage : UserControl
         StructuredDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         RawDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         SizeChanged += (_, _) => FitQueryViewport();
+        AllHistoryFilters.SizeChanged += (_, _) => FitQueryViewport();
         HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
         HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
         ((FrameworkElement)HistoryStatusLine.Parent).SizeChanged += (_, _) => FitQueryViewport();
@@ -34,7 +35,7 @@ public partial class HistoryPage : UserControl
         var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom + (HistoryHeading.IsVisible ? HistoryHeading.ActualHeight + HistoryHeading.Margin.Bottom : 0) +
-            HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom +
+            HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom + 32 +
             ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight +
             (HistoryDetailExpander.IsVisible && Grid.GetRow(HistoryDetailExpander) == 1
                 ? HistoryDetailExpander.ActualHeight + HistoryDetailExpander.Margin.Top + HistoryDetailExpander.Margin.Bottom : 0);
@@ -44,7 +45,7 @@ public partial class HistoryPage : UserControl
         var resultHeight = Math.Ceiling((header + row + HistoryRows.BorderThickness.Top + HistoryRows.BorderThickness.Bottom) * dpi) / dpi;
         // Header/cell borders snap independently at fractional DPI; reserve six pixels.
         var filterBudget = Math.Max(0, ActualHeight - fixedHeight - resultHeight - 6 / dpi);
-        HistoryFilterScroll.MaxHeight = Math.Min(shortPage ? 104 : Math.Min(380, ActualHeight * .60), filterBudget);
+        HistoryFilterScroll.MaxHeight = Math.Min(shortPage ? 96 : 160, filterBudget);
     }
     void ClearFilters_Click(object sender, RoutedEventArgs e)
     {

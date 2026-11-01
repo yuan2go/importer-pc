@@ -183,9 +183,10 @@ public partial class SupplyStationPosition
     static readonly object soundGate = new();
     static readonly HashSet<string> sounded = [];
     static readonly Queue<string> soundHistory = [];
-    static long lastSound, lastRejectionSound;
+    static long lastSound, lastRejectionSound, lastSuccessSound;
     long lastPulse;
-    string? rejectionShown;
+    string? rejectionShown, successShown;
+    internal int SuccessCueCount { get; private set; }
     internal int ReadCueCount { get; private set; }
     internal int RejectionCueCount { get; private set; }
     string? feedbackShown, readMeasured, slotMeasured;
@@ -204,22 +205,28 @@ public partial class SupplyStationPosition
     void ObservePresentation()
     {
         if (!IsLoaded || !IsVisible || DataContext is not SupplyStationPositionViewModel p || Host?.ViewModel is not { Fresh: true } vm ||
-            vm.Application is not IParcelPresentationDiagnostics source || vm.Snapshot is not { } snapshot ||
+            vm.Snapshot is not { } snapshot ||
             Window.GetWindow(this) is not { WindowState: not WindowState.Minimized }) return;
         string? id = null; string? stage = null;
         var rejected = false;
         if (p.RejectionIdentity is { } rejection && rejectionShown != rejection)
         {
             rejectionShown = rejection; RejectionCueCount++; rejected = true;
-            Pulse(Color.FromRgb(181, 47, 56), true);
+            Pulse(OperatorBrushes.Danger.Color, true);
             if (ClaimSound("Rejected/" + rejection, true)) System.Media.SystemSounds.Hand.Play();
+        }
+        if (p.SuccessIdentity is { } success && successShown != success)
+        {
+            successShown = success; SuccessCueCount++;
+            if (ClaimSound("Success/" + success, false, true)) System.Media.SystemSounds.Asterisk.Play();
         }
         if (p.ReadFeedbackIdentity is { } read && feedbackShown != p.ReadFeedbackKey && p.CameraReadFeedback.Length != 0)
         {
             feedbackShown = p.ReadFeedbackKey; ReadCueCount++;
-            if (!rejected) Pulse(Color.FromRgb(36, 95, 211), false);
+            if (!rejected) Pulse(OperatorBrushes.Accent.Color, false);
             if (!rejected && ClaimSound("Read/" + p.ReadFeedbackKey, false)) System.Media.SystemSounds.Beep.Play();
         }
+        if (vm.Application is not IParcelPresentationDiagnostics source) return;
         var readKey = p.ReadFeedbackKey;
         if (p.ReadFeedbackIdentity is { } current && readKey != readMeasured && p.CameraReadFeedback.Length != 0)
         { id = current; stage = "ReadFeedbackComposed"; }
@@ -270,7 +277,7 @@ public partial class SupplyStationPosition
         PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, new SolidColorBrush(color));
         cueTimer.Stop(); cueTimer.Start();
     }
-    static bool ClaimSound(string key, bool rejection)
+    static bool ClaimSound(string key, bool rejection, bool success = false)
     {
         lock (soundGate)
         {
@@ -278,9 +285,9 @@ public partial class SupplyStationPosition
             if (soundHistory.Count == 512) sounded.Remove(soundHistory.Dequeue());
             soundHistory.Enqueue(key);
             var now = Stopwatch.GetTimestamp();
-            var previous = rejection ? lastRejectionSound : lastSound;
+            var previous = rejection ? lastRejectionSound : success ? lastSuccessSound : lastSound;
             if (previous != 0 && Stopwatch.GetElapsedTime(previous, now) < TimeSpan.FromMilliseconds(rejection ? 500 : 1000)) return false;
-            if (rejection) lastRejectionSound = now; else lastSound = now;
+            if (rejection) lastRejectionSound = now; else if (success) lastSuccessSound = now; else lastSound = now;
             return true;
         }
     }

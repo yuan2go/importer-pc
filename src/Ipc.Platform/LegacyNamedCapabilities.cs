@@ -12,7 +12,11 @@ public sealed record WeightMeasurement(string Id, string AdmissionId, string Dev
 [method: System.Text.Json.Serialization.JsonConstructor]
 public sealed record CapabilityBinding(string Kind, string Implementation, string Version, string InstanceId, string Target,
     string Contract, Dictionary<string, string> Parameters, PackageReference? Package = null, string? Module = null, bool Enabled = true);
-public sealed record CapabilityHealth(string InstanceId, bool Ready, DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string Detail);
+public enum RemoteConnectionConfirmation { Unconfirmed, ResponseReceived }
+public sealed record CapabilityHealth(string InstanceId, bool Ready, DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string Detail)
+{
+    public RemoteConnectionConfirmation RemoteConfirmation { get; init; }
+}
 public interface ICapabilityPort : IAsyncDisposable
 {
     string InstanceId { get; }

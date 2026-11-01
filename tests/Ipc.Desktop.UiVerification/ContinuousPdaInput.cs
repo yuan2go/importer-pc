@@ -129,10 +129,10 @@ static partial class Program
             await Until(() => !entry.IsReadOnly && !vm.Busy && vm.Left.Operation?.Wcs?.State == StageState.Unknown);
             var unknown = vm.Left.Operation!; var unknownSends = h.Peer.Requests.Count;
             await Text("000123450007", enter: true);
-            await Until(() => !entry.IsReadOnly && !vm.Busy && feedback.Text.StartsWith("未准入"));
+            await Until(() => !entry.IsReadOnly && !vm.Busy && feedback.Text.StartsWith("本位暂不能接收新条码"));
             Check(entry.Text == "000123450007" && vm.Left.Operation!.Id == unknown.Id &&
                 vm.Left.Operation.Wcs is { State: StageState.Unknown, Attempts: 1 } && h.Peer.Requests.Count == unknownSends,
-                "a new barcode replaces the displayed Unknown result but original responsibility rejects admission, preserves the draft and prevents HTTP replay");
+                "a new barcode replaces the displayed input; the UI availability guard refuses submission while Unknown responsibility preserves the draft and prevents HTTP replay");
             var draft = entry.Text; entry.Select(3, 2); await vm.RefreshAsync(); await Flush();
             Check(entry.Text == draft && entry.SelectionStart == 3 && entry.SelectionLength == 2,
                 "rejected manual input is not selected over or erased by refresh");

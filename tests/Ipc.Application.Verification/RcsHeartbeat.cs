@@ -25,6 +25,7 @@ static partial class SportmasterRcs
             await Task.WhenAll(Enumerable.Range(0, 8).Select(_ => service.StartAsync(default)));
             await Task.Delay(300);
             Check(peer.Requests.IsEmpty, "repeated start owns one timer and default heartbeat waits for its interval");
+            Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "local lifecycle cannot fabricate a typed remote connection confirmation");
             await Until(() => peer.Requests.Count == 1);
             Check(clock.Elapsed >= TimeSpan.FromSeconds(4.7), "omitted component interval defaults to five seconds");
             var exchange = peer.Requests.Single();
@@ -42,6 +43,7 @@ static partial class SportmasterRcs
             Check(Math.Abs(timestamp - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) < 2000 &&
                 data.All(i => i.GetProperty("params").GetProperty("timestamp").GetInt64() == timestamp), "batch timestamp is numeric UTC Unix milliseconds");
             await Healthy(service);
+            Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived, "actual successful heartbeat sets typed response evidence independently of display wording");
             Check((await service.HealthAsync(default)).Detail.Contains("unconfirmed", StringComparison.Ordinal), "HTTP delivery never fabricates an application acknowledgement");
             try { service.ConfigureRuntime(config); throw new Exception("Reconfigured running timer"); }
             catch (InvalidOperationException) { Check(true, "running component rejects context replacement"); }
@@ -59,6 +61,7 @@ static partial class SportmasterRcs
             service.ConfigureRuntime(config); peer.Mode = "http-error";
             var count = peer.Requests.Count; await service.StartAsync(default);
             await Until(async () => peer.Requests.Count > count && !(await service.HealthAsync(default)).Ready);
+            Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "failed HTTP heartbeat cannot retain typed online evidence");
             Check((await service.HealthAsync(default)).Detail.Contains("503", StringComparison.Ordinal), "configured one-second schedule exposes HTTP failures");
             peer.Mode = "assigned"; await Healthy(service);
             var first = peer.Requests.Last().Body;
@@ -66,7 +69,9 @@ static partial class SportmasterRcs
             Check((await service.HealthAsync(default)).Detail.Contains("302", StringComparison.Ordinal), "heartbeat does not follow redirects");
             peer.Mode = "timeout"; await Until(async () => (await service.HealthAsync(default)).Detail.Contains("timeout", StringComparison.Ordinal));
             Check(true, "stalled heartbeat times out and leaves destination outcomes untouched");
-            peer.Mode = "assigned"; await service.ReconnectAsync(default); await Healthy(service);
+            peer.Mode = "assigned"; await service.ReconnectAsync(default);
+            Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "reconnect clears the old response confirmation before a new heartbeat");
+            await Healthy(service);
             var last = peer.Requests.Last().Body;
             using var before = JsonDocument.Parse(first); using var after = JsonDocument.Parse(last);
             Check(after.RootElement.GetProperty("requestId").GetInt64() > before.RootElement.GetProperty("requestId").GetInt64(), "reconnect restarts a single loop with fresh increasing heartbeat IDs");

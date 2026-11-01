@@ -86,7 +86,7 @@ static partial class Program
             Check(vm.Right.Operation!.ParcelCode == "000123450002" && factory.Sends == 2, "PDA Enter from ready uses its own position/source and repeat Enter does not duplicate the request");
             leftEntry.Focus(); leftEntry.Text = "000123450003";
             runtime.EmitReferenceAt("left", "synthetic-camera-next", "000123450004", "synthetic-camera-next");
-            await Until(() => vm.Left.Operation?.ParcelCode == "000123450004");
+            await Until(() => vm.Left.Operation?.ParcelCode == "000123450004" && vm.Left.SlotAvailable && vm.Left.CanSubmitBarcode);
             Check(Part<TextBlock>(left, "InputFeedback").Text.Contains("000123450004"), "draft notice follows the actual task identity when a new camera result arrives");
             var sends = factory.Sends; Part<Button>(left, "SubmitBarcode").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => Part<TextBlock>(left, "InputFeedback").Text.StartsWith("需重新核对"));
@@ -97,12 +97,12 @@ static partial class Program
                 await SetClient(window, size.Item1, size.Item2); await Flush();
                 foreach (var p in new[] { left, right })
                 {
-                    var scroll = Part<ScrollViewer>(p, "PositionBody"); scroll.ScrollToTop(); await Flush();
+                    var panel = Part<Border>(p, "ResultPanel"); await Flush();
                     var entry = Part<TextBox>(p, "BarcodeEntry");
                     var slot = Part<TextBox>(p, "CurrentSlot");
-                    Check(slot.IsVisible && slot.TranslatePoint(new Point(), scroll).Y + slot.ActualHeight <= scroll.ActualHeight + 1,
-                        "current destination stays in the body viewport without scrolling at " + size.Item1 + " slot=" + slot.TranslatePoint(new Point(), scroll).Y + "/" + slot.ActualHeight + " body=" + scroll.ActualHeight);
-                    Check(entry.IsVisible && entry.ActualHeight >= 44 && scroll.ScrollableWidth == 0,
+                    Check(slot.IsVisible && slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize)).Bottom <= panel.ActualHeight + 1,
+                        "current destination stays in the body viewport without scrolling at " + size.Item1 + " slot=" + slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize)).Bottom + " panel=" + panel.ActualHeight);
+                    Check(entry.IsVisible && entry.ActualHeight >= 44 && Inside(entry, (Grid)window.FindName("ClientArea")),
                         "ready/manual input remains on the vertical route without horizontal overflow at " + size.Item1);
                 }
                 CaptureInternal(evidence, "ready-entry-" + (int)size.Item1, (Grid)window.FindName("ClientArea"), lines);
@@ -134,8 +134,8 @@ static partial class Program
                         await offline.ViewModel.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); offline.UpdateLayout();
                         Check(p.IsVisible && entry.IsVisible && entry.IsEnabled && !entry.IsReadOnly && entry.Text == "0000009" && entry.SelectionLength == 2,
                             "offline/deferred keeps editable barcode and draft at " + size.Item1 + " deferred=" + missing);
-                        Check(Descendants(p).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "任务信息") && Inside(Part<Button>(p, "SubmitBarcode"), client),
-                            "offline/deferred task heading and bottom submit remain reachable at " + size.Item1 + " deferred=" + missing);
+                        Check(Part<Border>(p, "ResultPanel").IsVisible && Inside(Part<Button>(p, "SubmitBarcode"), client),
+                            "offline/deferred fixed result panel and bottom submit remain reachable at " + size.Item1 + " deferred=" + missing);
                         Check(((SupplyStationPositionViewModel)p.DataContext).DevicePresentation.Text.Contains(missing ? "待配置" : "离线"), "projected device status remains explicit without claiming readiness");
                     }
                     CaptureInternal(evidence, (missing ? "deferred" : "offline") + "-single-entry-" + (int)size.Item1, client, lines);

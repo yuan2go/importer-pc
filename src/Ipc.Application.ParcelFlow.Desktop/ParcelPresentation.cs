@@ -3,16 +3,20 @@ using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-public sealed record ParcelStatusPresentation(string Text, string Icon, string Foreground, string Background, string Border);
+public enum ParcelPresentationTone { Neutral, Pending, Accepted, Rejected, Unknown, Stale }
+public sealed record ParcelStatusPresentation(string Text, string Icon, string Foreground, string Background, string Border)
+{
+    public ParcelPresentationTone Tone { get; init; }
+}
 
 public static class ParcelPresentation
 {
-    public static ParcelStatusPresentation Neutral(string text) => new(text, "○", "#536577", "#F6F8FA", "#D8E0E7");
-    public static ParcelStatusPresentation Pending(string text) => new(text, "◷", "#205FCE", "#EEF4FF", "#BDD2F3");
-    public static ParcelStatusPresentation Accepted(string text) => new(text, "✓", "#147450", "#EDF7F1", "#A7D6BD");
-    public static ParcelStatusPresentation Rejected(string text) => new(text, "!", "#B52F38", "#FDF0F0", "#E7B0B4");
-    public static ParcelStatusPresentation Unknown(string text) => new(text, "?", "#895509", "#FFF5DF", "#E6C889");
-    public static ParcelStatusPresentation Stale() => new("旧状态已失效 · 等待有效快照", "⌛", "#536577", "#EDF0F3", "#9CAAB8");
+    public static ParcelStatusPresentation Neutral(string text) => new(text, "○", "#536577", "#F6F8FA", "#D8E0E7") { Tone = ParcelPresentationTone.Neutral };
+    public static ParcelStatusPresentation Pending(string text) => new(text, "◷", "#205FCE", "#EEF4FF", "#BDD2F3") { Tone = ParcelPresentationTone.Pending };
+    public static ParcelStatusPresentation Accepted(string text) => new(text, "✓", "#147450", "#EDF7F1", "#A7D6BD") { Tone = ParcelPresentationTone.Accepted };
+    public static ParcelStatusPresentation Rejected(string text) => new(text, "!", "#B52F38", "#FDF0F0", "#E7B0B4") { Tone = ParcelPresentationTone.Rejected };
+    public static ParcelStatusPresentation Unknown(string text) => new(text, "?", "#895509", "#FFF5DF", "#E6C889") { Tone = ParcelPresentationTone.Unknown };
+    public static ParcelStatusPresentation Stale() => new("旧状态已失效 · 等待有效快照", "⌛", "#536577", "#EDF0F3", "#9CAAB8") { Tone = ParcelPresentationTone.Stale };
     public static bool RcsTimedOut(ParcelOperation? op) => op?.State == ParcelState.WcsUnknown &&
         op.Wcs is { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
         (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||

@@ -11,4 +11,4 @@
     <Content Include="Fonts/OFL.txt" Link="licenses/NotoSansCJKSC-OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="Fonts/NOTICE.json" Link="licenses/NotoSansCJKSC-NOTICE.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
-</Project>
+<ItemGroup><EmbeddedResource Include="../../docs/ui/tokens/tokens.json" LogicalName="Ipc.OperatorTokens.json"/></ItemGroup></Project>

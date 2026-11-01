@@ -102,12 +102,16 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         return string.Join("\n", lines);
     }
     long messageRevision;
-    public string Message { get => message; set { message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
+    protected enum PresentationFeedbackKind { General, Idle, ConfigurationRead, ReadCompleted, ObservationQueued, ResultMirrored }
+    protected PresentationFeedbackKind MessageKind { get; private set; } = PresentationFeedbackKind.Idle;
+    protected void SetPresentationMessage(string value, PresentationFeedbackKind kind)
+    { Message = value; MessageKind = kind; Changed(nameof(Feedback)); }
+    public string Message { get => message; set { MessageKind = PresentationFeedbackKind.General; message = value; messageScope = runningFeedbackScope ?? feedbackScope; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
     public string Feedback => Busy ? OperationStatus : ChineseInterfaceText.Message(Message);
     public string OperatorFeedback => (Busy ? OperationStatus : Message).Split(" · ", 2)[0] switch
     {
         "Persisted" => "操作已提交；请核对当前应用状态。",
-        "PendingRestart" => "配置已保存；等待受控重启生效。",
+        "PendingRestart" => "配置已保存；等待重启生效。",
         "Conflict" => "状态已变化；保留原对象，重新核对后再操作。",
         "Rejected" => "操作未被接受；通过来源诊断查看完整回执。",
         "NotReady" => "当前条件不允许操作；请核对阻断原因。",
@@ -235,7 +239,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             // A new receipt with identical text still owns its message revision.
             if (messageRevision == priorMessageRevision || ownsReadFailure && Fresh && Message.Length == 0)
             {
-                Message = operation + "已完成；已读取最新状态。";
+                SetPresentationMessage(operation + "已完成；已读取最新状态。", PresentationFeedbackKind.ReadCompleted);
                 OperationStatus = Message;
             }
         }

@@ -67,7 +67,7 @@ static partial class Program
         Click(window, "设置右相机"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy && vm.SelectedPage == "maintenance"); await Flush();
         var editor = Descendants(window).OfType<ParameterSettingsControl>().Single();
         Check(editor.CurrentPageTitle == "右相机", "diagnostic action opens the exact right camera in the existing editor");
-        Click(window, "返回作业"); probe.Project = null; await Until(() => !vm.ShowSetupGuidance && vm.Left.CanAdmit);
+        Click(window, "作业"); probe.Project = null; await Until(() => !vm.ShowSetupGuidance && vm.Left.CanAdmit);
         runtime.EmitReferenceAt("left", "operator-left", "000123456", "operator-event-left");
         runtime.EmitReferenceAt("right", "operator-right", "000987654", "operator-event-right");
         await Until(() => vm.Left.SlotAvailable && vm.Right.SlotAvailable);
@@ -79,8 +79,8 @@ static partial class Program
             foreach (var position in Descendants(window).OfType<SupplyStationPosition>())
             {
                 Check(!Descendants(position).OfType<Expander>().Any(), "daily position has no technical or nested recovery accordion");
-                var slot = (TextBox)position.FindName("CurrentSlot"); var body = (ScrollViewer)position.FindName("PositionBody");
-                Check(slot.IsVisible && slot.TranslatePoint(new Point(), body).Y + slot.ActualHeight <= body.ActualHeight + 1, "valid destination fits without scrolling at " + size.Item1);
+                var slot = (TextBox)position.FindName("CurrentSlot"); var body = (Border)position.FindName("ResultPanel");
+                Check(slot.IsVisible && slot.TransformToAncestor(body).TransformBounds(new Rect(slot.RenderSize)).Bottom <= body.ActualHeight + 1, "valid destination fits without scrolling at " + size.Item1);
             }
             CaptureInternal(evidence, "operator-normal-" + (int)size.Item1, client, lines);
         }

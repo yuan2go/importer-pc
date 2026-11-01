@@ -1,6 +1,6 @@
 # 文档索引
 
-2026-10-30 SM 新站默认程序 `D:\CainiaoSupplyStation`、数据 `D:\ProgramData\ImporterPc\data`，既有部署保留原路径；见 [D-DRIVE-DEFAULTS-02](runtime/d-drive-defaults-02.md)及[工作包](work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md)。系统安装验证按该报告单独记证。
+2026-11-01 SM 新站默认程序 `D:\CainiaoSupplyStation`、数据 `D:\ProgramData\ImporterPc\data`，既有部署保留原路径；[D-DRIVE-DEFAULTS-02](runtime/d-drive-defaults-02.md)、[工作包](work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md)及[本轮补证](runtime/pr161-windows-verification-20261101.md)。原生安装流程及真实D/D隔离新装通过，完整C/D/重装矩阵、最终EXE全新机和现场仍待验。
 2026-11-01 PR165 人工调试轮次修复已通过 Windows 全量构建、原生离页/重进/其他窗口新轮次及容量/原请求责任回归；见[补证](runtime/pr165-windows-verification-20261101.md)和[工作包](work-packages/WP-IPC-MANUAL-DEBUG-ROUND-LIFECYCLE-01.md)。真实 SDK/客户 RCS/现场仍待验。
 
 2026-10-31 人工调试轮次清理修复：

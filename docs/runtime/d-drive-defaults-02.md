@@ -1,3 +1,5 @@
+> 2026-11-01 更新：已在整合 PR163/164/165 后完成原生安装回归和真实 D/D 隔离新装（SCM/System 服务、普通用户权限），见[补证](pr161-windows-verification-20261101.md)。完整 C/D/重装矩阵和最终 EXE 全新机安装仍待验；下文保留原轮次失败和交付身份。
+
 # SM 新站 D 盘默认安装位置
 
 2026-10-30，[工作包](../work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md)，基线 main `d899eeac`。

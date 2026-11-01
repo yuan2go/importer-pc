@@ -223,3 +223,7 @@ docs/archive/pre-manual-debug-round-lifecycle-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/manual-debug-round-lifecycle-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/archive/pre-pr165-windows-20261101/** -text whitespace=cr-at-eol
 docs/runtime/evidence/pr165-windows-20261101/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Preserve pre-PR161 Windows guidance and raw synthetic assertion output.
+docs/archive/pre-pr161-windows-20261101/** -text whitespace=cr-at-eol
+docs/runtime/evidence/pr161-windows-20261101/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

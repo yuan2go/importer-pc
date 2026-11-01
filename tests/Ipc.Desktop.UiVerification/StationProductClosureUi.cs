@@ -52,6 +52,7 @@ static partial class Program
             Check(HasText("恢复备份、换机、修复或卸载") && HasText("创建完整备份"), "maintenance center exposes online tasks and explicit offline handoff");
             Click("打开诊断"); await Until(() => HasText("格口未确认")); Click("刷新体检");
             await Until(() => HasText("只读体检复用现有采集"));
+            Check(!HasText("RCS：当前可用") && (HasText("远端未确认") || HasText("业务结果另行核对") || HasText("组件未就绪")), "RCS health summary distinguishes local readiness, remote HTTP confirmation and business acceptance");
             Check(HasText("存储剩余"), "diagnostic health reads actual current storage and confirms passive probe semantics");
             CaptureInternal(evidence, "pc21-diagnostics-1366", (Grid)window.FindName("ClientArea"), lines);
             Click("日志");

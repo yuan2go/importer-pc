@@ -138,7 +138,11 @@ public partial class SupplyStationWindow
             if (!string.IsNullOrEmpty(d?.Failure)) text.AppendLine("最近错误：" + DiagnosticText.Protect(d.Failure));
         }
         foreach (var health in snapshot.Health.Where(h => h.InstanceId == snapshot.Configuration.Effective.Wcs?.InstanceId))
-            text.AppendLine($"RCS：{(health.Ready ? "当前可用" : "未确认可用")} · 最近确认{health.ConfirmedAt.ToLocalTime():HH:mm:ss} · 有效至{health.ValidUntil.ToLocalTime():HH:mm:ss}");
+        {
+            var confirmation = !health.Ready ? "组件未就绪" : health.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived
+                ? "心跳收到HTTP回应，业务结果另行核对" : "客户端已启动，远端未确认";
+            text.AppendLine($"RCS：{confirmation} · 健康确认{health.ConfirmedAt.ToLocalTime():HH:mm:ss} · 有效至{health.ValidUntil.ToLocalTime():HH:mm:ss}");
+        }
         text.AppendLine($"存储剩余：{snapshot.Capacity?.FreeStorageBytes / 1048576}MiB · 备份：{(snapshot.BackupScheduleStatus?.Enabled != true ? "未启用" : snapshot.BackupScheduleStatus.Outcome == "BackupCreated" ? "最近完成" : "待核对")}");
         text.AppendLine("只读体检复用现有采集与心跳事实，不发送测试业务请求；连接在线不代表识码或取格口成功。");
         return text.ToString();

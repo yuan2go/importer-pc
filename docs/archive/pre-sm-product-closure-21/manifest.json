@@ -20,5 +20,6 @@
       "sha256": "d3260a62de28680b24f40368cd0cec60e006ebbaa112ab281a901bfd5b946323",
       "bytes": 2633
     }
-  ]
+  ],
+  "representation": "Exact Windows checkout bytes before PC21 edits; no normalization of captured originals"
 }

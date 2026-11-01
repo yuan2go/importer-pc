@@ -145,11 +145,13 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId)) return;
         await ApplySnapshotAsync(next, readId, generation);
     }
-    public async Task AcceptPublishedSnapshotAsync(ParcelSnapshot next)
+    public async Task AcceptPublishedSnapshotAsync(ParcelSnapshot next, CancellationToken cancellation = default)
     {
+        cancellation.ThrowIfCancellationRequested();
         // Push invalidates any older in-flight pull, but never changes local selection/drafts.
         if (Snapshot is { } prior && prior.RuntimeId == next.RuntimeId && prior.PublishedTicks > next.PublishedTicks) return;
         await RefreshManagementModeAsync();
+        cancellation.ThrowIfCancellationRequested();
         var generation = Interlocked.Increment(ref refreshGeneration);
         var readId = Interlocked.Increment(ref snapshotReadId);
         await ApplySnapshotAsync(next, readId, generation);

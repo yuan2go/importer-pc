@@ -14,7 +14,7 @@ public partial class SupplyStationPosition : UserControl
         InitializeComponent(); InitializeCompositionFeedback();
         DataContextChanged += (_, e) =>
         {
-            presentationGeneration++; feedbackShown = slotMeasured = rejectionShown = null;
+            presentationGeneration++; feedbackShown = readMeasured = slotMeasured = rejectionShown = null;
             if (e.OldValue is INotifyPropertyChanged old) old.PropertyChanged -= PositionChanged;
             if (e.NewValue is INotifyPropertyChanged current) current.PropertyChanged += PositionChanged;
             RefreshBarcodeDisplay();

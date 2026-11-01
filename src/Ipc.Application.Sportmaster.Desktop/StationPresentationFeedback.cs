@@ -13,6 +13,8 @@ public partial class SupplyStationWindow
     IParcelPresentationSubscription? presentationSubscription;
     readonly CancellationTokenSource presentationLifetime = new();
     ParcelPresentationUpdate? pendingPresentation;
+    ParcelPresentationUpdate? latestPresentation;
+    CancellationTokenSource? presentationSnapshotCancellation;
     bool presentationDispatchQueued;
     volatile bool presentationEnded;
     long appliedPresentationTicks;
@@ -50,8 +52,9 @@ public partial class SupplyStationWindow
                 var value = await subscription.ReadAsync(token).ConfigureAwait(false);
                 lock (presentationUiGate)
                 {
-                    if (pendingPresentation is null || value.Version > pendingPresentation.Version)
-                        pendingPresentation = value with { Snapshot = value.Snapshot ?? pendingPresentation?.Snapshot };
+                    latestPresentation = CombinePresentation(latestPresentation, value);
+                    pendingPresentation = CombinePresentation(pendingPresentation, latestPresentation);
+                    if (latestPresentation.Failure is not null) presentationSnapshotCancellation?.Cancel();
                     QueuePresentationDispatch();
                 }
             }
@@ -72,6 +75,14 @@ public partial class SupplyStationWindow
                 await Dispatcher.InvokeAsync(() => ViewModel.MarkReadFailure("实时状态订阅中断：" + error.GetType().Name));
         }
     }
+    static ParcelPresentationUpdate CombinePresentation(ParcelPresentationUpdate? prior, ParcelPresentationUpdate next)
+    {
+        if (prior is null || prior.RuntimeId != next.RuntimeId) return next;
+        var envelope = next.Version >= prior.Version ? next : prior;
+        var snapshot = prior.Snapshot is null || next.Snapshot is { } candidate && candidate.PublishedTicks >= prior.Snapshot.PublishedTicks
+            ? next.Snapshot : prior.Snapshot;
+        return envelope with { Snapshot = snapshot };
+    }
     // One pending render callback, regardless of producer rate. The subscription and
     // this slot both keep latest state; neither is a queue of business observations.
     void QueuePresentationDispatch()
@@ -85,7 +96,11 @@ public partial class SupplyStationWindow
         try
         {
             ParcelPresentationUpdate? value;
-            lock (presentationUiGate) { value = pendingPresentation; pendingPresentation = null; }
+            lock (presentationUiGate)
+            {
+                value = pendingPresentation is null ? null : CombinePresentation(pendingPresentation, latestPresentation!);
+                pendingPresentation = null;
+            }
             if (closing || closed || value is null) return;
             void FastFeedback()
             {
@@ -98,16 +113,24 @@ public partial class SupplyStationWindow
                     (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
             }
             FastFeedback();
+            if (value.Failure is { } failure)
+            { ViewModel.MarkReadFailure(failure); return; }
             if (value.Snapshot is { } snapshot && snapshot.PublishedTicks > appliedPresentationTicks)
             {
                 if (presentationSnapshotApply.IsCompleted)
                 {
-                    presentationSnapshotApply = ApplyPublishedSnapshotAsync(value);
+                    CancellationTokenSource cancellation;
+                    lock (presentationUiGate)
+                    {
+                        cancellation = CancellationTokenSource.CreateLinkedTokenSource(presentationLifetime.Token);
+                        presentationSnapshotCancellation = cancellation;
+                        if (latestPresentation?.Failure is not null) cancellation.Cancel();
+                    }
+                    presentationSnapshotApply = ApplyPublishedSnapshotAsync(value, cancellation);
                     pendingRefresh = Task.WhenAll(pendingRefresh, presentationSnapshotApply);
                 }
                 else snapshotWaiting = value;
             }
-            if (value.Failure is { } failure) ViewModel.MarkReadFailure(failure);
         }
         catch (Exception error) { if (!closing && !closed) ViewModel.MarkReadFailure("实时状态应用失败：" + error.Message); }
         finally
@@ -119,26 +142,31 @@ public partial class SupplyStationWindow
             }
         }
     }
-    async Task ApplyPublishedSnapshotAsync(ParcelPresentationUpdate value)
+    async Task ApplyPublishedSnapshotAsync(ParcelPresentationUpdate value, CancellationTokenSource cancellation)
     {
         try
         {
-            await ViewModel.AcceptPublishedSnapshotAsync(value.Snapshot!);
+            await ViewModel.AcceptPublishedSnapshotAsync(value.Snapshot!, cancellation.Token);
             if (closing || closed) return;
             if (presentationEnded) { ViewModel.MarkReadFailure("实时状态订阅已结束；旧结果不可用于投递。"); return; }
+            string? failure; lock (presentationUiGate) failure = latestPresentation?.Failure;
+            if (failure is not null) { ViewModel.MarkReadFailure(failure); return; }
             appliedPresentationTicks = value.Snapshot!.PublishedTicks;
             EnforceManagementModeView();
             foreach (var state in value.Readers) { ViewModel.Left.ApplyReaderFeedback(value.RuntimeId, state); ViewModel.Right.ApplyReaderFeedback(value.RuntimeId, state); }
             foreach (var read in value.Reads) (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
         }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
         catch (Exception error) { if (!closing && !closed) ViewModel.MarkReadFailure("实时快照应用失败：" + error.Message); }
         finally
         {
             lock (presentationUiGate)
             {
+                if (ReferenceEquals(presentationSnapshotCancellation, cancellation)) presentationSnapshotCancellation = null;
+                cancellation.Dispose();
                 if (snapshotWaiting is { } waiting && !closing && !closed)
                 {
-                    if (pendingPresentation is null || waiting.Version > pendingPresentation.Version) pendingPresentation = waiting;
+                    pendingPresentation = CombinePresentation(pendingPresentation, CombinePresentation(waiting, latestPresentation!));
                     snapshotWaiting = null; QueuePresentationDispatch();
                 }
             }
@@ -160,7 +188,7 @@ public partial class SupplyStationPosition
     string? rejectionShown;
     internal int ReadCueCount { get; private set; }
     internal int RejectionCueCount { get; private set; }
-    string? feedbackShown, slotMeasured;
+    string? feedbackShown, readMeasured, slotMeasured;
     bool measuring;
     EventHandler? compositionWaiter;
     internal string? CompositionFailure { get; private set; }
@@ -188,10 +216,13 @@ public partial class SupplyStationPosition
         }
         if (p.ReadFeedbackIdentity is { } read && feedbackShown != p.ReadFeedbackKey && p.CameraReadFeedback.Length != 0)
         {
-            feedbackShown = p.ReadFeedbackKey; id = read; stage = "ReadFeedbackComposed"; ReadCueCount++;
+            feedbackShown = p.ReadFeedbackKey; ReadCueCount++;
             if (!rejected) Pulse(Color.FromRgb(36, 95, 211), false);
             if (!rejected && ClaimSound("Read/" + p.ReadFeedbackKey, false)) System.Media.SystemSounds.Beep.Play();
         }
+        var readKey = p.ReadFeedbackKey;
+        if (p.ReadFeedbackIdentity is { } current && readKey != readMeasured && p.CameraReadFeedback.Length != 0)
+        { id = current; stage = "ReadFeedbackComposed"; }
         if (id is null && p.CurrentTaskAvailable && p.ShowConfirmedTask && p.Input is { } input && slotMeasured != input.Observation.Id)
         { id = input.Observation.Id; stage = "SlotComposed"; }
         if (id is null || measuring) return;
@@ -212,12 +243,20 @@ public partial class SupplyStationPosition
                 var result = await Task.Run(() => { try { return DwmFlush(); } finally { compositorFence.Release(); } });
                 if (result != 0) { CompositionFailure = "DwmFlush:0x" + result.ToString("X8"); return; }
                 if (generation != presentationGeneration || !IsLoaded || !IsVisible || Window.GetWindow(this)?.WindowState == WindowState.Minimized || vm.Snapshot?.RuntimeId != snapshot.RuntimeId) return;
+                if (stage == "ReadFeedbackComposed" && (p.ReadFeedbackKey != readKey || p.CameraReadFeedback.Length == 0)) return;
                 if (stage == "SlotComposed" && (p.Input?.Observation.Id != id || !p.ShowConfirmedTask)) return;
                 await source.ReportPresentationAsync(snapshot.RuntimeId, id, stage!, Stopwatch.GetTimestamp(), stage == "SlotComposed" ? snapshot.PublishedTicks : 0, CancellationToken.None);
                 if (stage == "SlotComposed") slotMeasured = id;
+                else readMeasured = readKey;
             }
             catch (Exception error) { CompositionFailure = error.GetType().Name + ": " + error.Message; }
-            finally { measuring = false; }
+            finally
+            {
+                measuring = false;
+                // A newer read may replace this one before composition. Measure that
+                // current identity once; showing its cue again is independently deduped.
+                if (generation == presentationGeneration && readKey != p.ReadFeedbackKey) ObservePresentation();
+            }
         };
         compositionWaiter = rendered; CompositionTarget.Rendering += rendered;
         InvalidateVisual();

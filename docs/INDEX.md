@@ -1,6 +1,7 @@
 # 文档索引
 
 2026-10-30 连续 PDA 键盘扫码拼接修复见 [工作包](work-packages/WP-IPC-SM-CONTINUOUS-PDA-INPUT-01.md)和[实现/待验证记录](runtime/sm-continuous-pda-input-01.md)。已提供逐键 Windows SendInput 定向入口；本轮环境为 Linux，Windows 原生复现、构建及验证均 NOT_RUN，不能据源码关闭 PR159 的 P1。
+2026-10-30 两项关闭阻断修复见 [SM-SHUTDOWN-RESOURCES-13](work-packages/WP-IPC-SM-SHUTDOWN-RESOURCES-13.md)及[实施与验证](runtime/sm-shutdown-resources-13.md)：已终结后台任务的错误保留上报并继续真实清理；调试缓存切换观察采集任务退出，失败保留隔离并解除无执行者的等待。真实SDK/现场退出仍单独验收。
 
 2026-10-30 人工取格口与相机配置解耦、调试说明删除及本机首帧故障排查见 [SM-MANUAL-CAMERA-INDEPENDENT-12](work-packages/WP-IPC-SM-MANUAL-CAMERA-INDEPENDENT-12.md)。它替代10中人工输入仍需相机来源编码的要求；实际修复与验证边界单独记录。
 

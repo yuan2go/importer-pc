@@ -1,0 +1,12 @@
+EvidenceRoot=/tmp/ipc17-verification-2ec3c0484765409790004bdc5d167aaa
+Synthetic camera ports; real SQLite and built-in RCS HTTP. No real hardware/site acceptance.
+Unhandled exception. System.InvalidOperationException: Protected Production drafts require Windows
+   at Ipc.Platform.ProtectedDraftPayload.Write(String path, String value, Boolean portableSynthetic, String runtimeSid) in /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Platform/ProtectedDraftPayload.cs:line 40
+   at Ipc.Application.ParcelFlow.ParcelMachineOrigin.EnsureNew(String directory, ParcelConfiguration c) in /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs:line 25
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartCoreAsync(CancellationToken token) in /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 114
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartOwnedAsync(CancellationToken token) in /workspace/scratch/eccd0d2da7df/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 83
+   at ManualSupplyHarness.StartAsync(Boolean ready) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/ManualSupplyChecks.cs:line 33
+   at ManualRcsDebugChecks.Run(String workspace, String root) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugChecks.cs:line 12
+   at ManualRcsDebugChecks.Run(String workspace, String root) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/ManualRcsDebugChecks.cs:line 57
+   at Program.<Main>$(String[] args) in /workspace/scratch/eccd0d2da7df/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 40
+   at Program.<Main>(String[] args)

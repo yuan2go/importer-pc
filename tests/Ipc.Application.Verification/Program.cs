@@ -40,6 +40,7 @@ if (args.Contains("--manual-supply")) { await ManualSupplyChecks.Run(workspace, 
 if (args.Contains("--manual-rcs-debug")) { await ManualRcsDebugChecks.Run(workspace, root); return; }
 if (args.Contains("--camera-rounds")) { await CameraRoundChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
+if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResources(workspace, root); return; }
 if (args.Contains("--mvs-contrast-checks")) { SportmasterRcs.MvsContrastChecks(); return; }
 if (args.Contains("--mvs-latency")) { SportmasterRcs.MvsLatency(args); return; }
 if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }

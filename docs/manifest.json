@@ -55295,9 +55295,9 @@
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
       "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained",
       "storage_scope": "public_repository",
-      "sha256": "033f673b874503beea5c75aa466c98aa362a3cb69a4014590dd09732faddf3be",
-      "size_bytes": 11211,
-      "git_blob": "b2ff94b18fba608a76ba345942214e968d52271b",
+      "sha256": "3618d9eaab6354e857600af7198ee411c7061ea5eaeeda4653076ae3f10dce22",
+      "size_bytes": 11413,
+      "git_blob": "3261d7a8507cf60b33e611c350b92e9c5e590a8e",
       "previous_git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e"
     },
     {
@@ -55307,9 +55307,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ddf49bd15737638efd7c7a8d29925dccaa1454f738fbe28f15088b6fe307ee58",
-      "size_bytes": 14354,
-      "git_blob": "31648392a079f85c119ad3e0119527af5a532552"
+      "sha256": "c1dfa849187575111215ea409a70240f10a47800e6ace9516d0f5f2e14a04dcc",
+      "size_bytes": 14531,
+      "git_blob": "a940f226244c02e0b132bfc251af54c5016f0129"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
@@ -115025,9 +115025,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "ce65c1c6afc108d4f12ea1151352f6517da1ed569fb9538c50d88bfd3ab82680",
-      "size_bytes": 2668,
-      "git_blob": "5b698dd478ead2ad5010f9bb2486273b5b3b3e58",
+      "sha256": "944fa6c8e9f29776d9cb9fa0d26f18df451bab3343d2af8344f258ede8aebb7d",
+      "size_bytes": 2905,
+      "git_blob": "d992656d0745740d51429339cb64baad3ccdac4b",
       "storage_scope": "public_repository"
     },
     {
@@ -115039,6 +115039,39 @@
       "sha256": "cb5f03ddc51250df7ab90b2885071442dbc641199b88ab45d24d6f4f3e990ac7",
       "size_bytes": 11666,
       "git_blob": "bac3de4f352c937e303e95ef9aee41802189d3ad",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-closure-21/intermediate-compact-error-space.log",
+      "version": "sm-camera-chain-closure-21",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21; original evidence retains its own SourceCommit",
+      "sha256": "ad7007532e0a07fbaa8607a5cc57116f66351338862913c578e409b9d5f873ad",
+      "size_bytes": 4132,
+      "git_blob": "5936ef0bb6d3c945fb388f87b8d84a26b8167422",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-closure-21/intermediate-compact-error-space.png",
+      "version": "sm-camera-chain-closure-21",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21; original evidence retains its own SourceCommit",
+      "sha256": "c79168aefaccb4eacb1d5cb12b70b969fafeb22e5df8996e487971a595d5cca5",
+      "size_bytes": 74527,
+      "git_blob": "45ca52e70e6ad9fc159d7c08bc415ba4ce6aa5c7",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-camera-chain-closure-21/intermediate-shared-lease-conflict.log",
+      "version": "sm-camera-chain-closure-21",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21; original evidence retains its own SourceCommit",
+      "sha256": "21616968a0fa7abc06586baa817c8eb135fad6f00bb8c9719c3bd35f657c806d",
+      "size_bytes": 2900,
+      "git_blob": "d4dfe0c500a077c88d80b139a3383ec3fe541d0c",
       "storage_scope": "public_repository"
     }
   ],

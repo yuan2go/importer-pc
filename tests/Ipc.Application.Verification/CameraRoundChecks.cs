@@ -51,8 +51,11 @@ internal static class CameraRoundChecks
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 2));
             Check(h.Factory.Decoders[h.Left].Last.Length == 2 && (await h.App.ReadCameraReadRoundAsync(default)).State == "Reading", "real ZXing multi-candidate frame is not silently reduced to the first code");
             h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("WRONG-CAMERA"), 1);
-            h.Api(h.Left).Enqueue(pixels, 4); h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-PARCEL"), 5);
+            h.Api(h.Left).Enqueue(pixels, 4);
             var locked = await h.LockedAsync();
+            // Latest-pending video may be superseded before decoding. This check
+            // owns the *locked* winner, so introduce the next parcel after that boundary.
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-PARCEL"), 5);
             Check(locked.Barcode == "ROUND-0001" && locked.Frame is { FrameNumber: 4 } && locked.CanSend, "unique winner locks its exact frame and prepares an eligible manual request: " + locked.Detail);
             var original = await h.App.ReadCameraOriginalAsync(locked.Frame!.Id, default) ?? throw new InvalidDataException("Locked image missing");
             Check(original.Gray8.SequenceEqual(pixels.Data) && original.Metadata.OriginalSha256 == Convert.ToHexString(SHA256.HashData(pixels.Data)), "persisted original equals pre-contrast bytes for the selected frame");

@@ -139,7 +139,12 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     token.ThrowIfCancellationRequested(); PhaseTo("configure-sdk-buffers"); api.ConfigureBuffers((uint)nodes);
                     token.ThrowIfCancellationRequested(); PhaseTo("start-grabbing"); grabbing = true; api.Start(); token.ThrowIfCancellationRequested();
                     cancel = new(); PhaseTo(decoder is null ? "acquiring-decoder-unavailable" : "reading"); Publish(decoder is null ? DeviceHealth.Unknown : DeviceHealth.Ready);
-                    worker = Task.Run(() => Capture(cancel.Token));
+                    // GetImageBuffer and decoding form a synchronous, lifetime-long
+                    // loop. Keep it off the shared pool used by Application/UI
+                    // preview reads, continuations and shutdown coordination.
+                    var captureToken = cancel.Token;
+                    worker = Task.Factory.StartNew(() => Capture(captureToken), CancellationToken.None,
+                        TaskCreationOptions.LongRunning, TaskScheduler.Default);
                 }, token).ConfigureAwait(false);
             }
             catch (Exception ex)

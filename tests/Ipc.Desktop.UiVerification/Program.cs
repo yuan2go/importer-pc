@@ -59,6 +59,7 @@ static partial class Program
                 else if (args.Contains("--manual-rcs-debug-ui")) await VerifyManualRcsDebugUi(root, evidence, lines);
                 else if (args.Contains("--camera-round-ui")) await VerifyCameraRoundUi(root, evidence, lines);
                 else if (args.Contains("--camera-stream-ui")) await VerifyCameraStreamUi(root, evidence, lines);
+                else if (args.Contains("--camera-preview-lifecycle")) await VerifyCameraPreviewLifecycle(root, evidence, lines);
                 else if (args.Contains("--workstation-barcode-ready")) await VerifyWorkstationBarcodeReady(root, evidence, lines);
                 else if (args.Contains("--camera-filter-preview")) await VerifyCameraFilterPreview(root, evidence, lines);
                 else if (args.Contains("--camera-debug")) await VerifyCameraDebug(root, evidence, lines);

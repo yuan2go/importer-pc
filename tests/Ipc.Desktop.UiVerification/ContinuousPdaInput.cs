@@ -38,7 +38,7 @@ static partial class Program
             var otherEntry = (TextBox)other.FindName("BarcodeEntry");
             var textEvents = 0; var enterEvents = 0;
             entry.PreviewTextInput += (_, _) => textEvents++;
-            entry.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == Key.Enter) enterEvents++; }), true);
+            entry.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == System.Windows.Input.Key.Enter) enterEvents++; }), true);
             ((MenuItem)position.FindName("PdaSource")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             window.Activate(); entry.Focus(); await Flush();
             void Text(string value, bool enter = false) => BarcodeNativeKeyboard.Send(window, entry, value.Select(c => (ushort)c).Concat(enter ? new ushort[] { 0x0D } : []).ToArray());

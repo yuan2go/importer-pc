@@ -1,0 +1,108 @@
+{
+  "scope": "Owned assemblies from the verified framework-dependent Sportmaster publish",
+  "files": [
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "889A6E04BE54C77F48C5A67C73183432E424E6DE62126EBFCCBD03E5282C0B4F",
+      "bytes": 298496,
+      "file": "Ipc.Application.Contracts.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "45E28D52A451E0234E1BA97E75AE6B5555CB819CBFA98CC0585B4F9CEB822229",
+      "bytes": 1862656,
+      "file": "Ipc.Application.ParcelFlow.Desktop.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "4B4398ABA6408712AD0A24CF32D71CE0FD0B70F259CCBC1442F5F21FDD4CF7F0",
+      "bytes": 1000448,
+      "file": "Ipc.Application.ParcelFlow.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "8DCA1704D1CF8E04B56260D098DAD7383AF003B1DFC8B10B28AAFF62C3BA906E",
+      "bytes": 318464,
+      "file": "Ipc.Application.Sportmaster.Desktop.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "8394DFBC6FEA25501F848291FCD88ABBF235E4FE7801A6E3B0C6F47432D3A43E",
+      "bytes": 15360,
+      "file": "Ipc.Application.Sportmaster.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "DE721BB2971BBD1D894D24FECAB93EEE0335FD4CEF462B02DD5F12A53CD92297",
+      "bytes": 272896,
+      "file": "Ipc.Assembly.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "4CEB833729EC596DE837B6D8BFB53ABC1179344A4B37321AD94E41FFD6ABF75F",
+      "bytes": 11264,
+      "file": "Ipc.Components.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "EA72C58E7D8B6BC81895F7B09456DBCD155F8706AB63C9FD3E1D6FC9F6F0BC2E",
+      "bytes": 1435648,
+      "file": "Ipc.Desktop.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "A55BD033902B222CE182BBB5BC3B0F27FAAD536BD05C62CC62EA218BFC425D5D",
+      "bytes": 45568,
+      "file": "Ipc.Drivers.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "19A68B32160295547E78DBDF3403F8C3EF8FC5322E0F1B12B05AC65655B7ED81",
+      "bytes": 115712,
+      "file": "Ipc.Drivers.Hikrobot.Mvs.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "9723B40CF92BC53BB3E1058A6BA0A122D16181BBB3B10D60831B2E31C7ECED38",
+      "bytes": 21504,
+      "file": "Ipc.Integrations.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "7260B1CE0CB629D772865723A72396E7D3539D2D4D56C6EF03F035B2F47CB3C0",
+      "bytes": 607232,
+      "file": "Ipc.Platform.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "D3D5A3A31386B14822EBE6A90DB5E6A8EBEF3D68156AD44297AD3DCF44C3B383",
+      "bytes": 12288,
+      "file": "Ipc.Platform.Storage.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "309D9604C2C48BFD3BD0F8FAE4A402CB80A20E9610779D0464B7B3B43438A68A",
+      "bytes": 32978944,
+      "file": "Ipc.Presentation.Wpf.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "36D8C6F9A38A5535266E7ADECF1F93C26AFFCB939D507AB6962F70E41A85F11D",
+      "bytes": 32768,
+      "file": "Ipc.Reference.Protocol.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "AEE55BA85CAD3BEA9351991FDA7429F0F6F3326227EC182AAE16766F1F646059",
+      "bytes": 130560,
+      "file": "Ipc.Supply.Contracts.dll"
+    },
+    {
+      "informational_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
+      "sha256": "312E09DCD743D9042BE3BE87F248D9076C37B678090786355BB714B36F0292AE",
+      "bytes": 182784,
+      "file": "Ipc.Supply.dll"
+    }
+  ],
+  "source_commit": "4119f23ac50f2d22539496c09eb1513a702b11e6"
+}

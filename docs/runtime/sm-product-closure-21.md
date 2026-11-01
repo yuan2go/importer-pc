@@ -35,3 +35,5 @@
 ## 验证边界
 
 验证记录及精确SourceCommit在本包证据目录更新。原生WPF、SQLite/内置RCS环回、真实ZXing软件引擎与合成设备分别计证；物理MVS拔插/目标服务器/客户RCS/现场及24×7长稳没有运行就不记PASS。本轮不安装到现场、不改真实配置、不启用CI，不上传生产数据或厂商资产。历史D/RV与原验收不改写。
+
+最终产品/测试/复验脚本冻结于 `4119f23ac50f2d22539496c09eb1513a702b11e6`，含main `ecec9640`。三项Release构建、23套851项断言（应用559、原生WPF292）及同源framework-dependent发布/真实EXE环境报告启动均通过。PC21-01～08的实现、直接证据和未运行边界见[证据及闭环表](evidence/sm-product-closure-21/README.md)；[原始汇总](evidence/sm-product-closure-21/summary.json)保留逐套退出码，[发布身份](evidence/sm-product-closure-21/publish-smoke.json)及程序集哈希固定真实发布源。后续文档提交不得扩张产品验证身份。

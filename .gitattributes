@@ -227,3 +227,7 @@ docs/runtime/evidence/pr165-windows-20261101/*.log -text whitespace=cr-at-eol,-b
 # Preserve pre-PR161 Windows guidance and raw synthetic assertion output.
 docs/archive/pre-pr161-windows-20261101/** -text whitespace=cr-at-eol
 docs/runtime/evidence/pr161-windows-20261101/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Preserve input timing diagnosis, original index and captured synthetic evidence.
+docs/archive/pre-sm-pda-input-ack-01/** -text whitespace=cr-at-eol
+docs/runtime/evidence/sm-pda-input-ack-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

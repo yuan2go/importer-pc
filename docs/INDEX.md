@@ -1,5 +1,7 @@
 # 文档索引
 
+2026-10-30 两项关闭阻断修复见 [SM-SHUTDOWN-RESOURCES-13](work-packages/WP-IPC-SM-SHUTDOWN-RESOURCES-13.md)及[实施与验证](runtime/sm-shutdown-resources-13.md)：已终结后台任务的错误保留上报并继续真实清理；调试缓存切换观察采集任务退出，失败保留隔离并解除无执行者的等待。真实SDK/现场退出仍单独验收。
+
 2026-10-30 人工取格口与相机配置解耦、调试说明删除及本机首帧故障排查见 [SM-MANUAL-CAMERA-INDEPENDENT-12](work-packages/WP-IPC-SM-MANUAL-CAMERA-INDEPENDENT-12.md)。它替代10中人工输入仍需相机来源编码的要求；实际修复与验证边界单独记录。
 
 2026-10-30 调试实时视频及逐相机取帧/解码诊断见 [SM-CAMERA-STREAM-11](work-packages/WP-IPC-SM-CAMERA-STREAM-11.md)及[验证记录](runtime/sm-camera-stream-11.md)。实时预览独立于单轮解码暂停和锁定照片；连接在线不代替成功取帧，ReadOperations不是识码计数。

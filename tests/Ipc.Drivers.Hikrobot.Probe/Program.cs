@@ -1,3 +1,4 @@
+if (args is ["--mvs-shutdown"]) { await MvsVerification.VerifyInspectionShutdown(); return; }
 if (args is ["--bundled-list"]) { await BundledNativeVerification.Run(); return; }
 if (args is ["--self-test"]) { await Verification.Run(); return; }
 if (args is ["--mvs-self-test"]) { await MvsVerification.Run(); return; }

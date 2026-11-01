@@ -76,12 +76,16 @@ static class SportmasterWindowLifetime
                 "root cancellation invalidates a late adopted child close, race " + iteration);
             root.ConfirmDiscardDrafts = _ => true; root.Close(); await Until(() => !root.IsVisible);
         }
-        foreach (var field in new[] { "pendingRefresh", "pendingViewportPause" })
+        foreach (var field in new[] { "pendingRefresh", "pendingServiceCall" })
         {
             var stops = 0;
             var root = new SupplyStationWindow(app, null, null, () => ++stops == 1 ? Task.FromException(new IOException("SYNTHETIC stop failure")) : Task.CompletedTask);
             var child = new SupplyStationWindow(app, null, null, owner: root); Show(root); Show(child);
-            var pending = new TaskCompletionSource(); Set(child, field, pending.Task);
+            var pending = new TaskCompletionSource();
+            // Viewport-triggered pausing was removed in SM-AUTO-CONNECTION-WORKFLOW-01.
+            // Cover the actual current command owner rather than reflecting a retired field.
+            if (field == "pendingRefresh") Set(child, field, pending.Task);
+            else _ = child.ViewModel.ServiceAsync(() => pending.Task);
             child.Close(); root.Close();
             Check(stops == 0 && !root.IsEnabled && !child.IsEnabled, field + " drains before owner stop");
             pending.SetResult(); await Until(() => stops == 1 && root.IsEnabled);
@@ -102,15 +106,15 @@ static class SportmasterWindowLifetime
         {
             var stops = 0; var root = new SupplyStationWindow(app, null, null, () => { stops++; return Task.CompletedTask; });
             var child = new SupplyStationWindow(app, null, null, owner: root); Show(root); Show(child);
-            var rootRead = new TaskCompletionSource(); var childPause = new TaskCompletionSource();
-            Set(root, "pendingRefresh", rootRead.Task); Set(child, "pendingViewportPause", childPause.Task);
+            var rootRead = new TaskCompletionSource(); var childRead = new TaskCompletionSource();
+            Set(root, "pendingRefresh", rootRead.Task); Set(child, "pendingRefresh", childRead.Task);
             child.Close(); root.Close(); root.Close();
-            childPause.SetException(new IOException("SYNTHETIC child pause failure"));
+            childRead.SetException(new IOException("SYNTHETIC child read failure"));
             await Until(() => child.ViewModel.Message.Contains("SYNTHETIC"));
             Check(!child.IsEnabled && !Timer(child).IsEnabled && stops == 0, "child failure cannot unfreeze a root close still draining");
             rootRead.SetResult(); await Until(() => root.IsEnabled);
             Check(root.IsVisible && child.IsVisible && stops == 0, "failed drain retains both windows and prevents premature owner stop");
-            Set(child, "pendingViewportPause", Task.CompletedTask); root.Close(); await Until(() => !root.IsVisible);
+            Set(child, "pendingRefresh", Task.CompletedTask); root.Close(); await Until(() => !root.IsVisible);
             Check(stops == 1 && !child.IsVisible && !Timer(child).IsEnabled, "retained windows can retry after original failure is resolved");
         }
         {

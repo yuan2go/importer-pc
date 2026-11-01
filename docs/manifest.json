@@ -115106,6 +115106,17 @@
       "size_bytes": 7768,
       "git_blob": "ef3ea26c7a21b7de37e63dea2ba68b1dcb0068af",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "scripts/verify-sm-product-closure-21.ps1",
+      "version": "sm-product-closure-21",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
+      "sha256": "d20d180a1dd8b66270d90ff1b1f4d6997105683de66e03cd02ea25cc9c946c2a",
+      "size_bytes": 3396,
+      "git_blob": "3402addc47497026f93859ce52c8254c903e2785",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -117969,9 +117980,9 @@
   ],
   "integration_sources": [
     {
-      "commit": "6185d0f6aa87765cedbe033d750c8156b26b51d0",
-      "manifest_sha256": "d4fa4cb99f88029d608c1f2511dc022bd883f26fea4fba9d17097ba20b36bc81",
-      "work_package": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20"
+      "commit": "504efab5c6fde30f481438168407928335af85c2",
+      "manifest_sha256": "9185d6c724480a4c2f024a23717c877194cbf5a144cb4fd618851417fe30141f",
+      "work_package": "WP-IPC-SM-PRODUCT-CLOSURE-21"
     }
   ],
   "install_update_uninstall_identity_01": {

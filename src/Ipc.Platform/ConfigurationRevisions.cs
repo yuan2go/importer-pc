@@ -59,6 +59,20 @@ public sealed class ConfigurationRevisions<T> where T : class
     }
     void RequireValid(T value)
     { var errors = validate(value); if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors)); }
+    // The application owns classification and quiescence. This mechanism commits
+    // only an already validated resource-independent change, with the same CAS
+    // and atomic envelope publication as restart-bound changes.
+    public ConfigurationRevision<T> ApplyLive(long expectedRevision, T candidate)
+    {
+        if (expectedRevision != Current.Revision) throw new InvalidOperationException("Configuration revision conflict");
+        if (Current.Pending is not null || Current.Confirmation is not { Required: false } || Current.Status != "Effective")
+            throw new InvalidOperationException("Confirm the current configuration and resolve pending changes before live activation");
+        RequireValid(candidate);
+        var next = Current with { Revision = Current.Revision + 1, Effective = candidate, Status = "Effective", Failure = null,
+            Activation = null, InitialRepair = null, Confirmation = Current.Confirmation with {
+                EffectiveHash = Wire.Hash(Wire.Encode(candidate)), ConfirmedBy = "application-live-rule-barrier", ConfirmedAt = DateTimeOffset.UtcNow } };
+        Save(next); return Current = next;
+    }
     public ConfigurationRevision<T> Stage(long expectedRevision, T candidate)
     {
         if (expectedRevision != Current.Revision) throw new InvalidOperationException("Configuration revision conflict");

@@ -10,6 +10,12 @@ public static partial class ParcelConfigurationRules
         if (c.SchemaVersion != 3 || c.Topology is null) return ["仅支持第三版完整拓扑配置；请保留原配置并使用当前模板。"];
         if (c.MaintenanceLogin is not null) return ["旧维护认证配置不再支持；管理密码由管理模式保护，原配置不得自动转换。"];
         List<string> e = [];
+        if (c.OperationsPolicy is { } operations)
+        {
+            if (application != "sportmaster") e.Add("班次与自动维护策略仅用于SM");
+            e.AddRange(StationShiftSchedule.Validate(operations));
+            if (operations.AutomaticHistoryCleanup && c.Retention?.HistoryDays is not (>= 7 and <= 30)) e.Add("启用自动清理前须配置7～30天历史保留期");
+        }
         if (c.Reader is null || c.Weight is null || c.CapabilityInstances?.Any(x => x is null) == true || c.Images is { Camera: null })
             return ["Malformed configuration: missing reader/weight/camera or null capability inventory"];
         if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");

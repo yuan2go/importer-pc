@@ -75,7 +75,7 @@ static partial class Program
         var mode = Descendants(control).OfType<ComboBox>().Single(c => AutomationProperties.GetName(c) == "日志显示方式");
         var terminal = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "TerminalLogView");
         var pause = Descendants(control).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "PauseLogDisplay");
-        await Until(() => Task.FromResult(debug.IsEnabled && debug.IsChecked == true));
+        await Until(() => Task.FromResult(debug.IsEnabled && debug.IsChecked == true && follow.IsEnabled));
         Check(debug.IsChecked == true, "log-page parameter reads the shared actual runtime setting");
         mode.SelectedIndex = 1; follow.IsChecked = true;
         await Until(() => Task.FromResult(terminal.Text.Contains("原请求响应详情")));

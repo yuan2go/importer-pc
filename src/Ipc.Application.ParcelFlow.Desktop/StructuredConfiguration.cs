@@ -182,7 +182,7 @@ public partial class ParcelViewModel
     public string ConfigurationSaveGuidance => !Fresh ? "状态已失效。恢复状态读取后再校验和保存；当前输入保留。" :
         Busy ? "正在执行当前操作，请等待结果。" :
         !CanConfigure ? Snapshot?.ApplicationId == "sportmaster" ? "进入管理模式后即可保存；程序自动等待当前请求完成。" : "保存前需暂停新入场、进入管理模式，并等待当前外呼完成。历史原件按原责任保留。" :
-        "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查，保存后需重启软件生效。";
+        "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查。" + ConfigurationActivationGuidance;
     public string ConfigurationEditorState
     {
         get
@@ -192,7 +192,7 @@ public partial class ParcelViewModel
             else if (configurationAuthority == "结构化表单")
                 try { state = Wire.Encode(BuildStructuredConfiguration()) == savedCandidate ? "已加载/已保存" : "已修改未保存"; }
                 catch (InvalidOperationException) { state = "已修改，局部字段未通过"; }
-            return "编辑来源：" + configurationAuthority + " · " + state + " · " + validationState + "\n" + DraftRevisionState + "\n当前应用：" + (Snapshot?.Configuration.Status ?? "未读取") + " · Effective修订与Pending内容见运行输入页；保存不代表生效。";
+            return "编辑来源：" + configurationAuthority + " · " + state + " · " + validationState + "\n" + DraftRevisionState + "\n当前应用：" + (Snapshot?.Configuration.Status ?? "未读取") + " · 运行中与待重启内容见运行输入页；生效结果以当前配置状态为准。";
         }
     }
     void EditorChanged() { validationState = "修改后需重新校验"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Changed(nameof(HasUnsavedConfiguration)); }
@@ -367,7 +367,7 @@ public partial class ParcelViewModel
         if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature();
         var result = await SubmitConfigurationAsync(expected, candidate);
-        if (result.Status == "PendingRestart") { savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; }
+        if (result.Status is "PendingRestart" or "Effective") { savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; }
     }
     public async Task LoadStructuredFromJsonAsync()
     {
@@ -398,7 +398,7 @@ public partial class ParcelViewModel
         RequireAdvancedConfigurationAuthority(); RequireFreshSnapshot(); var expected = RequireDraftRevision();
         var submittedJson = ConfigurationDraft; var candidate = Wire.Decode<ParcelConfiguration>(submittedJson); var reason = ConfigurationReason;
         var receipt = await SubmitConfigurationAsync(expected, candidate);
-        if (receipt.Status == "PendingRestart") savedCandidate = submittedJson;
+        if (receipt.Status is "PendingRestart" or "Effective") savedCandidate = submittedJson;
     }
     void RequireFormConfigurationAuthority()
     { if (!CanEditFormConfiguration) throw new InvalidOperationException("表单当前不是编辑来源；请显式加载JSON到表单，或重新读取当前配置"); }

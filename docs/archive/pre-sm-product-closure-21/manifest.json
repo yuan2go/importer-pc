@@ -1,0 +1,24 @@
+{
+  "source_commit": "6185d0f6aa87765cedbe033d750c8156b26b51d0",
+  "scope": "Original current guides before PC21; historical evidence identities remain unchanged",
+  "files": [
+    {
+      "source": "docs/INDEX.md",
+      "archive": "docs/archive/pre-sm-product-closure-21/docs__INDEX.md.txt",
+      "sha256": "5673ec4dad8f4fed4533d2aa590e0dfb0617ad531a14096554f3df697a054cb8",
+      "bytes": 12219
+    },
+    {
+      "source": "docs/runtime/version-compatibility-01.md",
+      "archive": "docs/archive/pre-sm-product-closure-21/docs__runtime__version-compatibility-01.md.txt",
+      "sha256": "5676f993bbc9567894cd81662b2dc0dd7fb82ab7ffb9802236f6c013fe2096bf",
+      "bytes": 3188
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "archive": "docs/archive/pre-sm-product-closure-21/docs__design__framework-decisions.md.txt",
+      "sha256": "d3260a62de28680b24f40368cd0cec60e006ebbaa112ab281a901bfd5b946323",
+      "bytes": 2633
+    }
+  ]
+}

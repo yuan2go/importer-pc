@@ -75,9 +75,9 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions" or "maintenance-center")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
     }
-    public string PageTitle => SelectedPage switch { "history" => "记录", "maintenance" => "设置", "diagnostics" => "诊断与恢复", "debug" => "调试", "logs" => "日志", _ => "作业" };
+    public string PageTitle => SelectedPage switch { "statistics" => "统计与班次", "exceptions" => "异常处理", "maintenance-center" => "维护中心", "history" => "记录", "maintenance" => "设置", "diagnostics" => "诊断与恢复", "debug" => "调试", "logs" => "日志", _ => "作业" };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
@@ -214,7 +214,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         Operation?.State switch
         {
             ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请重新扫描。",
-            ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => "RCS请求超时，请重新扫描。",
+            ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => OperatorCopy.TimeoutUnconfirmed,
             ParcelState.WcsUnknown => OperatorCopy.UnconfirmedStep,
             ParcelState.WcsRejected => ParcelPresentation.RcsException(Operation) ?? OperatorCopy.RejectedStep,
             ParcelState.UnpackRequired => "勿重复上件：按拆包明细检查包裹，处理完再继续。",
@@ -251,7 +251,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         CurrentTaskAvailable ? "RCS 未返回格口：包裹暂放一旁，通知维护人员。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待格口返回，勿重复扫描。" :
         ParcelPresentation.RcsNotDelivered(Operation) ? "RCS未连接，本次请求未送达；连接恢复后请重新扫描。" :
-        ParcelPresentation.RcsTimedOut(Operation) ? "RCS请求超时，请重新扫描。" :
+        ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
         HasUncertainOriginal ? OperatorCopy.UnconfirmedStep :
         Operation?.State == ParcelState.WcsRejected ? OperatorCopy.RejectedStep :
         BlockingReasons.Length > 0 ? "暂不能供包，请通知维护人员。" : "放上包裹由相机扫码，或输入完整条码后按回车。";

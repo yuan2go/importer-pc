@@ -27,6 +27,8 @@ public sealed partial class ParcelRuntime
                 return new("Unknown", "磁盘账与运行所有者状态不同；保留原稿，进入受控启动核对", actual.Revision, hash);
             if (actual.Revision >= expectedRevision && actual.Pending is not null && Wire.Hash(Wire.Encode(actual.Pending)) == hash)
                 return new("PendingRestart", "权威配置账已确认保存该候选；未应用，不重复提交", actual.Revision, hash);
+            if (actual.Revision == expectedRevision + 1 && actual.Pending is null && actual.Status == "Effective" && Wire.Hash(Wire.Encode(actual.Effective)) == hash)
+                return new("Effective", "权威配置账已确认规则生效；不重复提交", actual.Revision, hash);
             if (actual.Revision == expectedRevision && actual.Pending is null && Wire.Hash(Wire.Encode(actual.Effective)) == hash)
                 return new("Unchanged", "候选与当前运行配置一致；没有创建待重启修订", actual.Revision, hash);
             return actual.Revision == expectedRevision

@@ -116,7 +116,7 @@ static class CommercialQuality
             using(var db5=new ParcelRepository(fixture,"direct-plc"))
             {db5.Commit(legacy,"Abandoned","Original inspected cancellation with historical stale flag"); if(archived)db5.Archive([legacy.Id],"Synthetic historical archive");}
             using(var db6=new ParcelRepository(fixture,"direct-plc"))
-                Check(db6.StorageVersion==10 && db6.ReadOperation(legacy.Id) is{RecoveryRequired:false,State:ParcelState.Abandoned} && db6.ArchivedCount==(archived?1:0),"current DB10 resident/archive terminal recovery flag repairs without reactivating history");
+                Check(db6.StorageVersion== ParcelRepository.CurrentStorageVersion && db6.ReadOperation(legacy.Id) is{RecoveryRequired:false,State:ParcelState.Abandoned} && db6.ArchivedCount==(archived?1:0),"current DB10 resident/archive terminal recovery flag repairs without reactivating history");
         }
         var sportDirectory=Path.Combine(root,"sport-restarted-unknown");
         await using(var app=await Open(config("sportmaster"),sportDirectory,true))
@@ -179,7 +179,7 @@ static class CommercialQuality
             };
             using(var db=new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId))Seed(db,op,variant!="missing-raw");
             using var reopened = new ParcelRepository(directory,op.FrozenConfiguration.ApplicationId);
-            Check(Wire.Encode(reopened.ReadOperation(op.Id)) == Wire.Encode(op) && reopened.StorageVersion == 10,
+            Check(Wire.Encode(reopened.ReadOperation(op.Id)) == Wire.Encode(op) && reopened.StorageVersion == ParcelRepository.CurrentStorageVersion,
                 variant+" current DB10 retains unresolved original and recovery flag without inventing terminal proof or migrating storage");
         }
         static void Seed(ParcelRepository db,ParcelOperation op,bool raw)

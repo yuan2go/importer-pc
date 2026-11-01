@@ -32,7 +32,7 @@ public partial class SupplyStationWindow
         {
             logs?.Revoke();
             debug?.Revoke();
-            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
+            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug" or "maintenance-center") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
         }
     }
 }

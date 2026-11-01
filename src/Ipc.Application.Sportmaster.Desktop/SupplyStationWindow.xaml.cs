@@ -82,10 +82,10 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
-        if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
+        if (page is "maintenance" or "diagnostics" or "logs" or "debug" or "maintenance-center" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => workContent };
+        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "maintenance-center" => maintenanceCenter ??= CreateMaintenanceCenter(), "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => workContent };
     }
     void Debug_Click(object sender, RoutedEventArgs e) => SetPage("debug");
     public void ShowPositionDebug(SupplyStationPositionViewModel position)
@@ -168,6 +168,9 @@ public partial class SupplyStationWindow : Window
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
             if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(this, ViewModel.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }
+            if (affected.Any(x => x.statistics?.HasUnsavedChanges == true) && !(ConfirmDiscardDrafts?.Invoke(1) ??
+                ConfigurationCloseGuard.ConfirmExit(this, "班次或自动维护设置尚未保存。继续关闭将放弃这些修改。")))
+            { RestoreAfterClose(); return; }
             var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance)).ToArray();
             var dirty = dirtyWindows.Length;
             if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(this, dirty,
@@ -176,10 +179,11 @@ public partial class SupplyStationWindow : Window
                 ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
                 RestoreAfterClose(); return;
             }
-            if (activationRequested || retentionRequested) await ViewModel.RequireManagementModeAsync();
+            if (activationRequested || retentionRequested || offlineMaintenanceRequested) await ViewModel.RequireManagementModeAsync();
             if (stopOwner is not null) await stopOwner();
             if (activationRequested && ReopenOwnerAsync is not null) await ReopenOwnerAsync();
             if (retentionRequested && OpenRetentionOwnerAsync is not null) await OpenRetentionOwnerAsync();
+            if (offlineMaintenanceRequested && OpenMaintenanceOwnerAsync is not null) await OpenMaintenanceOwnerAsync();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
             Close();
@@ -196,6 +200,7 @@ public partial class SupplyStationWindow : Window
         {
             activationRequested = false;
             retentionRequested = false;
+            offlineMaintenanceRequested = false;
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
             { window.closing = false; window.IsEnabled = true; window.timer.Start(); }

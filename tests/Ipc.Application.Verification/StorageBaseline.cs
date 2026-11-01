@@ -40,13 +40,14 @@ static class StorageBaseline
             using var c = db.CreateCommand(); c.CommandText = "SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name";
             List<SchemaObject> actual = [];
             using (var r = c.ExecuteReader()) while (r.Read()) actual.Add(new(r.GetString(0), r.GetString(1), r.GetString(2), r.IsDBNull(3) ? null : Regex.Replace(r.GetString(3), @"\s+", " ").Trim()));
-            Check(expected.SequenceEqual(actual), name + " tables/indexes/triggers/views equal old final schema except four retired format-identity tables");
-            c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations WHERE version=10" : "SELECT count(*) FROM schema_history WHERE id=6";
+            Check(expected.SequenceEqual(actual.Where(x => !x.Name.StartsWith("station_", StringComparison.Ordinal))), name + " tables/indexes/triggers/views equal old final schema except four retired format-identity tables");
+            if (name == "parcel") Check(actual.Where(x => x.Name.StartsWith("station_", StringComparison.Ordinal)).Select(x => x.Name).Order().SequenceEqual(new[] { "station_archive_time", "station_metric_buckets", "station_operation_time", "station_recognition_time" }), "DB11 adds only its transactional statistics table and bounded query indexes");
+            c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations WHERE version=11" : "SELECT count(*) FROM schema_history WHERE id=6";
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " has exactly one current baseline identity");
             c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations" : "SELECT count(*) FROM schema_history";
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");
         }
-        Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == 10 && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel10/Supply6");
+        Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel11/Supply6");
         foreach (var parcel in new[] { true, false })
         {
             var directory = Path.Combine(root, parcel ? "malformed-parcel-identity" : "malformed-supply-identity"); Directory.CreateDirectory(directory);

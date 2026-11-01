@@ -122,7 +122,7 @@ static partial class Program
                     await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 }
                 var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
-                rcs.Target = "http://127.0.0.1:24999/rcs/sorter/api";
+                rcs.Target = (mask & 4) != 0 ? "" : "http://127.0.0.1:24999/rcs/sorter/api";
                 foreach (var p in rcs.Parameters)
                     p.Value = p.Field.Key switch
                     {
@@ -133,14 +133,15 @@ static partial class Program
                     };
                 Check(editor.ShowPage(3, "RCS 服务"), "RCS page is reachable");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-                Descendants(editor).OfType<CheckBox>().Single(t => AutomationProperties.GetAutomationId(t) == rcs.InstanceId + "/ConfigureLater").IsChecked = (mask & 4) != 0;
+                Check(!Descendants(editor).OfType<CheckBox>().Any(t => AutomationProperties.GetAutomationId(t) == rcs.InstanceId + "/ConfigureLater"), "RCS deferral is represented by an empty address, without the retired checkbox");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-                Check(model.ValidateFields(), "mask " + mask + " native checkbox changes pass shared field validation: " + string.Join("; ", model.Issues.Select(i => i.Path + " " + i.Message)));
+                Check(model.ValidateFields(), "mask " + mask + " native explicit connection values pass shared field validation: " + string.Join("; ", model.Issues.Select(i => i.Path + " " + i.Message)));
                 var report = await offline.CheckAsync(draft.Build());
                 Check(report.Checks.All(c => c.Status != "FAIL"), "mask " + mask + " native candidate passes actual offline preflight with independent deferrals");
                 if (mask == 1) CaptureInternal(evidence, "deferred-left-active-rcs", editor, lines);
             }
             var activeRcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
+            activeRcs.Target = "http://127.0.0.1:24999/rcs/sorter/api";
             activeRcs.ConfigureLater = false;
             activeRcs.Parameters.Single(p => p.Field.Key == "zone-id").Value = "71";
             draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.ip").Value="192.0.2.10";

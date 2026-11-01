@@ -67,6 +67,8 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelWeightRange? WeightRange = null)
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public StationOperationsPolicy? OperationsPolicy { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string[]? DeferredConnections { get; init; }
 }
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned, UnpackRequired }

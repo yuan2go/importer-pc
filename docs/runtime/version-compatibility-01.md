@@ -1,3 +1,5 @@
+> 2026-11-02 PC21：Parcel格式11新增 `station_metric_buckets` 和三个有界统计查询索引。清理明细与累积汇总在同一事务；备份/恢复/发布manifest和长稳分析统一读取11。DB10及更早仅只读拒绝并保全原件，不自动升级。本轮操作见[PC21](sm-product-closure-21.md)；原说明见[归档](../archive/pre-sm-product-closure-21/manifest.json)。
+
 # 当前格式与精确版本规则
 
 2026-10-27 自有产品/公共契约/驱动/组件统一为1.0.0，见[首次交付版本说明](unified-version-1-0-0.md)。数据库格式、配置schema和外部SDK/协议版本保持各自身份；历史版本及冻结包不改标。
@@ -9,7 +11,7 @@
 | 对象 | 唯一当前输入 |
 |---|---|
 | Parcel配置 | schema3，显式拓扑、重量有效期和当前管理模式 |
-| Parcel数据库 | 当前格式10，空目录一次建基线；只读门禁后才能再次打开 |
+| Parcel数据库 | 当前格式11，空目录一次建基线；只读门禁后才能再次打开 |
 | Supply数据库 | 当前格式6，空目录一次建基线；只读门禁后才能再次打开 |
 | 正式Application发布 | application-release.json schema2，实际BusinessAssembly、BusinessVersion、CompatibilitySha256 |
 | 当前组合验证 | schema3记录，实际CombinationInput、进程事件、候选及配置字节身份 |
@@ -25,4 +27,4 @@ python scripts/application_compatibility.py --record D:/evidence/current-run.jso
 
 源码开发允许无发布manifest；正式发布验证必须携带实际业务程序集。哈希证明内容一致，可信渠道、签名、运行测试和现场批准各自独立。新源码不能借用历史PASS。新增能力须同源发布、完整候选/CAS、受控重启及实际组合验证；原请求始终冻结原实现和报文。
 
-基线等价证据见[SQLite结构比对](../verification/fresh-baseline-01/README.md)。Parcel保留47个当前结构对象；Supply保留26个。历史格式标识表和多步执行器删除；platform_migrations/schema_history只存一条当前身份，不执行升级。
+基线等价证据见[SQLite结构比对](../verification/fresh-baseline-01/README.md)。PC21新增事务统计汇总及3个查询索引后，Parcel当前51个结构对象；原基线对照中的47个对象保持历史身份。Supply仍保留26个结构对象。历史格式标识表和多步执行器删除；platform_migrations/schema_history只存一条当前身份，不执行升级。

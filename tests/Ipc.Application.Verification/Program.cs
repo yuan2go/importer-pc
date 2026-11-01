@@ -36,6 +36,7 @@ if (args.Contains("--installer-storage-matrix-direct"))
 if (args.Contains("--runtime-identity-boundary")) { await RuntimeIdentityBoundary.Run(root); return; }
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
 if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
+if (args.Contains("--product-closure-21")) { await StationProductClosure.Run(workspace, root); return; }
 if (args.Contains("--manual-supply")) { await ManualSupplyChecks.Run(workspace, root); return; }
 if (args.Contains("--manual-rcs-debug-lifecycle")) { await ManualRcsDebugChecks.Lifecycle(workspace, root); return; }
 if (args.Contains("--manual-rcs-debug")) { await ManualRcsDebugChecks.Run(workspace, root); return; }

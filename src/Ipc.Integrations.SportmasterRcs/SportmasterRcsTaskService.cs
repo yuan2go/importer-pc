@@ -112,7 +112,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             HttpResponseMessage response;
             try { response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, deadline.Token).ConfigureAwait(false); }
             catch (OperationCanceledException e) when (!token.IsCancellationRequested)
-            { throw new TimeoutException("RCS请求超时，请重新扫描。", e); }
+            { throw new TimeoutException("RCS请求超时，原请求结果未确认；请核对原请求。", e); }
             catch (HttpRequestException e) when (e.HttpRequestError == HttpRequestError.ConnectionError && !content.BodyStarted && ConnectionRefused(e))
             {
                 return new StageReply(Wire.Id(), request.Id, request.PayloadHash, false, null, null, null, null,
@@ -126,7 +126,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                 var original = new IntegrationHttpResponse((int)response.StatusCode, Convert.ToBase64String(bytes), Convert.ToHexString(SHA256.HashData(bytes)), complete);
                 StageReply Unknown(string detail) => new(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, detail,
                     ReceiptTimeForVerification.GetUtcNow(), HttpResponse: original);
-                if (deadline.IsCancellationRequested && !token.IsCancellationRequested) return Unknown("RCS_REQUEST_TIMEOUT: RCS请求超时，请重新扫描。");
+                if (deadline.IsCancellationRequested && !token.IsCancellationRequested) return Unknown("RCS_REQUEST_TIMEOUT: RCS请求超时，原请求结果未确认；请核对原请求。");
                 if (!complete) return Unknown("RCS response incomplete or exceeds quota; retained bytes are a prefix, outcome unknown");
                 if (!response.IsSuccessStatusCode) return Unknown("RCS HTTP " + (int)response.StatusCode + "; no authoritative business outcome");
                 try

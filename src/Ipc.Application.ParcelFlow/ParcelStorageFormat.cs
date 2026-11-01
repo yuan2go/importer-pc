@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
-    const string UnsupportedStorage = "仅支持当前Parcel 10数据库；原文件保留，请使用全新数据目录。";
+    const string UnsupportedStorage = "仅支持当前Parcel 11数据库；原文件保留，请使用全新数据目录。";
     public static int ReadStorageVersion(string database, string application)
     {
         using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();

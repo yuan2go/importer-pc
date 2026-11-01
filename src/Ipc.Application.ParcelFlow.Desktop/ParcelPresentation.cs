@@ -29,7 +29,7 @@ public static class ParcelPresentation
     public static string? RcsException(ParcelOperation? op)
     {
         if (op?.Wcs is not { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage || stage.State == StageState.Conflict) return null;
-        if (RcsTimedOut(op)) return "RCS请求超时，请重新扫描。";
+        if (RcsTimedOut(op)) return OperatorCopy.TimeoutUnconfirmed;
         if (RcsNotDelivered(op)) return "RCS未连接，本次请求未送达；连接恢复后请重新扫描。";
         if (op.State == ParcelState.UnpackRequired) return "需要拆包，请查看拆包明细。";
         var reply = stage.Replies.LastOrDefault();
@@ -44,7 +44,7 @@ public static class ParcelPresentation
     {
         if (!fresh) return Stale();
         if (op is null) return Neutral("等待包裹");
-        if (RcsTimedOut(op)) return Unknown("RCS请求超时，请重新扫描。");
+        if (RcsTimedOut(op)) return Unknown(OperatorCopy.TimeoutUnconfirmed);
         if (RcsNotDelivered(op)) return Unknown("RCS未连接 · 本次请求未送达");
         if (op.State == ParcelState.WcsRejected && RcsException(op) is { } message) return Rejected(message);
         return op.State switch

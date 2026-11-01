@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
+public enum MaintenanceTool { Bindings, Candidate, Running, Modules, Inventory, RestoreHandoff, Installation, Recovery, Backup, Display }
 public partial class MaintenancePage : UserControl
 {
     async void ManagementMode_Click(object sender, RoutedEventArgs e)
@@ -115,6 +116,7 @@ public partial class MaintenancePage : UserControl
         BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "更改保留在当前草稿中"; UpdateParameterNavigation();
     }
     public void ShowTechnicalMaintenance() => ShowTechnicalTool(0);
+    public void ShowTechnicalTool(MaintenanceTool tool) => ShowTechnicalTool((int)tool);
     public void ShowTechnicalTool(int index)
     {
         if (index < 0 || index >= TechnicalTabs.Items.Count) throw new ArgumentOutOfRangeException(nameof(index));

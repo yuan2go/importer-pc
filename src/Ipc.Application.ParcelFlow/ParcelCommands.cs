@@ -205,6 +205,19 @@ public sealed partial class ParcelRuntime
                 return new("PendingRestart", "Identical candidate already saved; Effective unchanged", repository.Revision);
             }
             Management.Require();
+            if (Id == "sportmaster" && configuration.Current.Pending is null &&
+                Wire.Encode(candidate with { BarcodeFilter = Effective.BarcodeFilter }) == Wire.Encode(Effective))
+            {
+                // No queued observation may silently acquire a new interpretation.
+                // Existing operations retain their complete FrozenConfiguration.
+                if (Volatile.Read(ref pendingObservations) != 0 || positionQueues.Values.Any(q => q.Reader.CanCount && q.Reader.Count != 0))
+                    throw new InvalidOperationException("仍有待处理扫描，规则未保存；请等待处理完成后再保存。");
+                configuration.ApplyLive(expectedRevision, candidate);
+                audit = audit with { AfterRevision = configuration.Current.Revision, Status = "Effective", Result = "Live rules confirmed; prior operations retain frozen rules" };
+                repository.Commit(null, "ConfigurationLiveApplied", Wire.Encode(audit), configurationAudit: audit);
+                Diagnostic("参数", "条码规则已生效", detail: "Revision=" + configuration.Current.Revision);
+                return new("Effective", "条码规则已保存并生效；已受理作业及原请求保持原规则。", repository.Revision);
+            }
             configuration.Stage(expectedRevision, candidate);
             Diagnostic("参数", "配置已保存待重启", detail: "Revision=" + configuration.Current.Revision);
             Boundary?.Invoke("AfterConfigurationStaged");

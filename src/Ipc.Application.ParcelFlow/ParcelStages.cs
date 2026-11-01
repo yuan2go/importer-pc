@@ -80,7 +80,7 @@ public sealed partial class ParcelRuntime
                 Failure = timedOut ? "TimeoutException: Request deadline expired" : ex.GetType().Name + ": " + ex.Message };
             op = SetStage(op, kind, stage) with { State = attached || knownOutcome ? op.State : UnknownState(kind),
                 Reason = attached || knownOutcome ? op.Reason : "Delivery/outcome unknown; original request must be reconciled, never resent" };
-            Save(op, "OutcomeUnknown", stage.Failure!); return op;
+            Save(op, "OutcomeUnknown", stage.Failure!); LogRcsResult(op, kind, receiptStartedTicks); return op;
         }
         DebugDiagnostic("外部通信", "原请求响应详情", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
             Request = stage.Request.Id, ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
@@ -115,9 +115,22 @@ public sealed partial class ParcelRuntime
         }
         else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
             Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
+        LogRcsResult(op, kind, receiptStartedTicks);
         return op;
         }
         finally { activeStages.Remove(key); }
+    }
+    void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks)
+    {
+        if (Id != "sportmaster" || kind != ParcelStage.Wcs || operation.Wcs is not { } stage) return;
+        // Ordinary operational summary. Credentials, target URLs and raw bodies stay out.
+        Diagnostic("RCS结果", "取格口结果", detail: Wire.Encode(new {
+            OperationId = operation.Id, operation.ParcelCode, operation.PositionId,
+            RequestId = stage.Request.Id, Result = stage.State.ToString(), operation.Slot,
+            ElapsedMs = Math.Round(ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds, 1),
+            NextAction = stage.State is StageState.Unknown or StageState.Conflict
+                ? "勿重复上件；核对本件原请求结果" : stage.State == StageState.Rejected
+                ? "本件未分配格口；按拒绝原因处理" : "结果已记录；投放以作业页当前有效格口为准" }));
     }
     internal TimeProvider ReceiptTimeForVerification { get; set; } = TimeProvider.System;
     ParcelOperation ApplyReply(ParcelOperation op, ParcelStage kind, StageReply reply)

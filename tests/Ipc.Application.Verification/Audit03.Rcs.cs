@@ -139,20 +139,20 @@ static partial class SportmasterRcs
         string[] before;
         using (var current = new ParcelRepository(valid, "sportmaster")) before = current.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().ToArray();
         using (var reopened = new ParcelRepository(valid, "sportmaster"))
-            Check(reopened.StorageVersion == 10 && reopened.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
+            Check(reopened.StorageVersion == ParcelRepository.CurrentStorageVersion && reopened.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
                 "A03 current resident/archive restart preserves every original numeric ID and frozen request");
         foreach (var (name, mutation, version) in new[]
         {
             ("old-six", "UPDATE platform_migrations SET version=6", 6),
-            ("missing-current-owner", "DELETE FROM parcel_integration_id_owners", 10),
-            ("changed-current-owner", "UPDATE parcel_integration_id_owners SET request_hash='SYNTHETIC-CHANGED'", 10)
+            ("missing-current-owner", "DELETE FROM parcel_integration_id_owners", ParcelRepository.CurrentStorageVersion),
+            ("changed-current-owner", "UPDATE parcel_integration_id_owners SET request_hash='SYNTHETIC-CHANGED'", ParcelRepository.CurrentStorageVersion)
         })
         {
             var target = Path.Combine(root, name); Clone(target, mutation); var database = Path.Combine(target, "sportmaster.db"); var hash = Wire.FileHash(database);
             var rawHashes = Directory.EnumerateFiles(Path.Combine(target, "receipts"), "*.json").ToDictionary(p => p, Wire.FileHash);
             var refused = false;
             try { using var denied = new ParcelRepository(target, "sportmaster"); }
-            catch (InvalidDataException ex) when (version != 10 || ex.Message.Contains("Original numeric request ownership missing or changed", StringComparison.Ordinal)) { refused = true; }
+            catch (InvalidDataException ex) when (version != ParcelRepository.CurrentStorageVersion || ex.Message.Contains("Original numeric request ownership missing or changed", StringComparison.Ordinal)) { refused = true; }
             Check(refused && Wire.FileHash(database) == hash && NonCurrentStorageFixture.Version(database) == version && rawHashes.All(p => Wire.FileHash(p.Key) == p.Value),
                 "A03 " + name + " refuses without database/raw writes, owner backfill or format conversion");
         }

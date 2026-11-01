@@ -57,7 +57,13 @@ static partial class SportmasterRcs
             {
                 await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
                 await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
-                for (uint n = 1; n <= 3; n++) { decoder.Results.Enqueue(["B", "A", "A"]); fake.Enqueue(new(rawByFrame[n], 2, 2), n); }
+                for (uint n = 1; n <= 3; n++)
+                {
+                    decoder.Results.Enqueue(["B", "A", "A"]); fake.Enqueue(new(rawByFrame[n], 2, 2), n);
+                    // Hold image IO, not the recognition boundary: all three completed
+                    // recognitions must survive, while unrecognized video may be superseded.
+                    await Wait(app, s => s.Operations.Length == n && s.Operations.All(o => o.State == ParcelState.SlotResolved));
+                }
                 Check(entered.Wait(5000), "background writer enters with owned raw pixels");
                 var pending = await Wait(app, s => s.Operations.Length == 3 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
                 Check(fake.Released == 3 && factory.Source!.Frames == 3 && pending.Operations.All(o => o.OriginalFrame?.State == "Pending"),

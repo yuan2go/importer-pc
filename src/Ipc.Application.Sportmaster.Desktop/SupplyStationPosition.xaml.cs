@@ -11,9 +11,10 @@ public partial class SupplyStationPosition : UserControl
 {
     public SupplyStationPosition()
     {
-        InitializeComponent();
+        InitializeComponent(); InitializeCompositionFeedback();
         DataContextChanged += (_, e) =>
         {
+            presentationGeneration++; feedbackShown = slotMeasured = null;
             if (e.OldValue is INotifyPropertyChanged old) old.PropertyChanged -= PositionChanged;
             if (e.NewValue is INotifyPropertyChanged current) current.PropertyChanged += PositionChanged;
             RefreshBarcodeDisplay();
@@ -34,6 +35,7 @@ public partial class SupplyStationPosition : UserControl
     ParcelBarcodeInputKind inputKind = ParcelBarcodeInputKind.Keyboard;
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName is nameof(SupplyStationPositionViewModel.ReadFeedbackIdentity) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) ObservePresentation();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.Barcode) or nameof(SupplyStationPositionViewModel.HasCurrentInput))
         {
             RefreshBarcodeDisplay();

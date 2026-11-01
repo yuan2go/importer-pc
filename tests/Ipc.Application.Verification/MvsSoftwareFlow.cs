@@ -88,11 +88,18 @@ static partial class SportmasterRcs
         }
         else
         {
+            if (fake is null) throw new InvalidOperationException("Synthetic MVS port missing");
             await ManagementModeFixture.Authorize(app);
             Check((await app.ReadCameraPreviewAsync(reader.DeviceId, default)).Frame is null, "management preview request starts empty without adding an acquisition owner");
             var pixels = args.Contains("--six-megapixel") ? SyntheticLatencyImages("SYNTH-READ-0001")[0] : MakeSoftwareBarcode("SYNTH-READ-0001");
 
-            fake!.Enqueue(pixels, 1); fake.Enqueue(pixels, 2); fake.Enqueue(pixels, 5);
+            // Three decoded results must remain independent. The newest-video policy may
+            // intentionally supersede *undecoded* frames, so await each recognition boundary.
+            foreach (var number in new uint[] { 1, 2, 5 })
+            {
+                fake!.Enqueue(pixels, number);
+                await Wait(app, state => state.Operations.Length == (number == 1 ? 1 : number == 2 ? 2 : 3) && state.Operations.All(o => o.State == ParcelState.SlotResolved));
+            }
             Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             Check((peer is null ? VerifyPythonLedger(pythonLedger!, s.Operations) : peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request")) == 3) && s.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3,
@@ -246,7 +253,7 @@ static partial class SportmasterRcs
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? acquisition : trigger;
         public void SetEnumValue(string key, uint value) { Calls.Add("set:"+key+"="+value); if(FailConfigure)throw new IOException("Synthetic camera write failure");if(IgnoreConfigure)return; if (key=="TriggerMode") trigger=value; else if (key=="AcquisitionMode") acquisition=value; else throw new Exception("Unexpected camera write"); }
         public long PayloadSize() => 8388608;
-        public void ConfigureBuffers(uint count) { }
+        public void ConfigureBuffers(uint count, uint strategy = 0) { }
         public void Start() => Calls.Add("start");
         public MvsFrame? Acquire()
         {

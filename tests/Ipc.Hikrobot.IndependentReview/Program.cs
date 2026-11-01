@@ -230,7 +230,7 @@ sealed class MvsFake : IMvsApi
     public void Open() { if (FailOpen) throw new IOException("Synthetic exclusive-open failure; not a measured vendor occupancy error"); }
     public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : 0;
     public long PayloadSize() => 6291456;
-    public void ConfigureBuffers(uint nodes) { }
+    public void ConfigureBuffers(uint nodes, uint strategy = 0) { }
     public void Start() => Starts++;
     public MvsFrame? Acquire() { Acquiring?.Invoke(); if (Frames.TryDequeue(out var frame)) { HasFrame = true; return frame; } Thread.Sleep(5); return null; }
     public void Release() { if (HasFrame) { HasFrame = false; Freed++; } }

@@ -178,6 +178,7 @@ internal static partial class MvsVerification
         internal bool FailFree, Online = true, Discovered = true;
         internal int StopResult, CloseResult;
         internal int Freed;
+        internal uint LastStrategy;
         internal Action? Acquiring, Enumerating;
         internal ConcurrentQueue<MvsFrame> Frames = new();
         internal ConcurrentQueue<string> Calls = new();
@@ -189,7 +190,7 @@ internal static partial class MvsVerification
         public void Open() => Call("open");
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? 2u : 0;
         public long PayloadSize() => 6291456;
-        public void ConfigureBuffers(uint nodes) => Call("buffers");
+        public void ConfigureBuffers(uint nodes, uint strategy = 0) { LastStrategy = strategy; Call("buffers"); }
         public void Start() => Call("start");
         public void ClearBuffers() { if (HasFrame) throw new InvalidOperationException("Cannot clear a borrowed frame"); Frames.Clear(); Call("clear"); }
         public MvsFrame? Acquire() { Acquiring?.Invoke(); if (HasFrame) throw new InvalidOperationException("Loan still held"); if (Frames.TryDequeue(out var f)) { HasFrame = true; return f; } Thread.Sleep(5); return null; }

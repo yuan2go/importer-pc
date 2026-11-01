@@ -292,6 +292,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
+        if (observation is not null) RecordPresentationRead(positionId, observation);
         // One position owns this synchronous durable handoff. No shared callback lock,
         // business gate or native callback is held while SQLite commits.
         lock (lane.Sync)

@@ -81,7 +81,7 @@ public sealed partial class ParcelRuntime
             finally { gate.Release(); }
         }
         // Deserialize the detached UI copy after releasing the business gate.
-        return Wire.Decode<ParcelSnapshot>(encoded);
+        return Wire.Decode<ParcelSnapshot>(encoded) with { PublishedTicks = System.Diagnostics.Stopwatch.GetTimestamp() };
     }
     public async Task<BusinessProjection> QueryAsync()
     {

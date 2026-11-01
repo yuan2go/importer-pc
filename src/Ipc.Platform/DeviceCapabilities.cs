@@ -23,6 +23,8 @@ public sealed record Observation(string Id, string DeviceId, string Epoch, strin
     string AdmissionId, string Kind, string[] Codes, int? PackageQuantity, DateTimeOffset ObservedAt,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? CandidateIssue = null)
 {
+    [System.Text.Json.Serialization.JsonIgnore]
+    public long DecodedTicks { get; init; }
     // Optional evidence fields retain the existing constructor/deconstruction ABI.
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public string? InspectionSessionId { get; init; }

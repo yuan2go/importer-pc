@@ -12,6 +12,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
         // Called with gate held, before starting the acquisition worker for a new epoch.
         acquireCalls = noData = decodeStarted = decodeCompleted = decodedCandidates = rejected = lastFrameTicks = 0;
         lastFrameAt = lastDecodeAt = null; decodePaused = false;
+        Interlocked.Exchange(ref supersededDecodeFrames, 0);
     }
     public ObservationDiagnostics ReadDiagnostics()
     {
@@ -24,7 +25,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
                 decodedCandidates == 0 ? "NoBarcode" : "Reading";
             return new(DeviceId, epoch, phase, state, acquireCalls, noData, frames, decodeStarted, decodeCompleted,
                 emptyFrames, decodedCandidates, recognized, rejected, decodePaused, lastFrameAt, age, lastDecodeAt,
-                failure.Length == 0 ? null : failure);
+                failure.Length == 0 ? null : failure) { SupersededDecodeFrames = Interlocked.Read(ref supersededDecodeFrames) };
         }
     }
 }

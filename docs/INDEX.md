@@ -1,5 +1,7 @@
 # 文档索引
 
+2026-11-01 同码格口确认态、最新帧采集/解码解耦、按有效帧健康检查及读码到屏幕合成指标以 [SM-PERCEPTION-LATENCY-15](work-packages/WP-IPC-SM-PERCEPTION-LATENCY-15.md) 为准；[实施与验证](runtime/sm-perception-latency-15.md)区分合成端口、原生WPF、历史30张私有图重放及未取得的真实设备/客户RCS数据。
+
 2026-11-01 在线相机实时视频调度修复见 [SM-SERVER-PREVIEW-14](work-packages/WP-IPC-SM-SERVER-PREVIEW-14.md)及[复现/验证](runtime/sm-server-preview-14.md)：持续 MVS 循环不再占用 Application 预览共用的线程池；受限线程池负向复现和本机原生视频回归单独记证，目标服务器实际验收仍待运行。
 
 2026-11-01 PDA Backspace首轮失败已定位为Windows输入未处理前的测试断言；见[工作包](work-packages/WP-IPC-SM-PDA-INPUT-ACK-01.md)、[实测顺序与修复](runtime/sm-pda-input-ack-01.md)。最终重复/回归结果按新证据单独记录，不改写旧发布失败。

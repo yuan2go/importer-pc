@@ -134,7 +134,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
 }
 
 // Stable objects retain each window's drafts and selection when snapshots are refreshed.
-public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
+public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChanged
 {
     readonly string requestedPosition;
     readonly SupplyStationViewModel owner;
@@ -296,6 +296,8 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         Presentation = !fresh ? ParcelPresentation.Stale() : binding is null ? ParcelPresentation.Neutral("未启用") :
             InputUnadmitted ? ParcelPresentation.InputPresentation(Input!) :
             position?.CurrentOperation is not null && Operation is null ? ParcelPresentation.Unknown("当前作业身份未匹配 · 等待新快照") : ParcelPresentation.Operation(Operation, true);
+        UpdateSlotMemory(snapshot, now, fresh, viewportReady);
+        NotifySlotDisplay();
         // A wildcard invalidation reassigns every TextBox/ItemsSource on every poll,
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {

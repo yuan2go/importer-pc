@@ -235,3 +235,6 @@ docs/runtime/evidence/sm-pda-input-ack-01/** -text whitespace=cr-at-eol,-blank-a
 # Keep the original index and native/synthetic preview validation bytes.
 docs/archive/pre-sm-server-preview-14/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sm-server-preview-14/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+docs/archive/pre-sm-perception-latency-15/** -text whitespace=cr-at-eol
+docs/runtime/evidence/sm-perception-latency-15/*.log -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

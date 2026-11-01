@@ -20,6 +20,11 @@ static partial class SportmasterRcs
         var reference = args.Contains("--reference-contrast");
         var decoder = new SoftwareDecoder("utf-8", PrepareZxingFixture, reference ? OriginalScalarContrast : null); decoder.Prepare();
         var samples = new List<object>();
+        var compareSearch = args.Contains("--compare-fast-search");
+        var searchComparisons = new List<object>();
+        var searchMatches = true;
+        var fast = compareSearch ? new SoftwareDecoder("utf-8", PrepareZxingFixture, searchOptionsForVerification: r => r.TryHarder = false) : null;
+        fast?.Prepare();
         var counts = new Dictionary<int, string[]>();
         using var process = Process.GetCurrentProcess();
         var cpu = process.TotalProcessorTime;
@@ -38,6 +43,17 @@ static partial class SportmasterRcs
                 var decodeMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
                 var cpuMs = (process.TotalProcessorTime - sampleCpu).TotalMilliseconds;
                 var collections = GC.CollectionCount(2) - gen2;
+                if (fast is not null)
+                {
+                    var alternate = image.Data.ToArray();
+                    var fastStarted = Stopwatch.GetTimestamp();
+                    var fastCodes = fast.Decode(alternate, alternate.Length, image.Width, image.Height);
+                    var fastMs = Stopwatch.GetElapsedTime(fastStarted).TotalMilliseconds;
+                    var match = codes.Order(StringComparer.Ordinal).SequenceEqual(fastCodes.Order(StringComparer.Ordinal));
+                    searchMatches &= match;
+                    searchComparisons.Add(new { Pass = pass, Image = index, BaselineMs = decodeMs, CandidateMs = fastMs,
+                        BaselineCount = codes.Length, CandidateCount = fastCodes.Length, ExactCandidateMultisetMatch = match });
+                }
                 if (counts.TryGetValue(index, out var expected))
                     Check(codes.Order().SequenceEqual(expected.Order()), "offline repeated image preserves every candidate including multiplicity");
                 else counts.Add(index, codes);
@@ -46,6 +62,7 @@ static partial class SportmasterRcs
             }
             var result = new { VerifierSource = typeof(SportmasterRcs).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion,
                 Tier = directory is null ? "Synthetic Mono8; actual ZXing-C++; no camera/RCS" : "Offline private recorded Mono8; actual ZXing-C++; no live capture/RCS",
+                SearchComparison = compareSearch ? new { Profile = "TryHarder=false; verification only; production retains full search", ExactRecallPreserved = searchMatches, Samples = searchComparisons } : null,
                 Contrast = reference ? "OriginalScalarFormulaVerificationOnly" : "ProductionSimdLookup", images.Length, Repeats = repeats, ElapsedMs = clock.Elapsed.TotalMilliseconds,
                 CpuMs = (process.TotalProcessorTime - cpu).TotalMilliseconds,
                 AllocatedBytes = GC.GetTotalAllocatedBytes() - allocated, Timings = decoder.TimingSnapshot, Samples = samples,
@@ -54,7 +71,7 @@ static partial class SportmasterRcs
             Console.WriteLine("MVS_LATENCY_MEASURED images=" + images.Length + "; repeats=" + repeats + "; no live camera/production acceptance");
             Console.WriteLine("TimingOutput=" + output);
         }
-        finally { decoder.Release(); }
+        finally { decoder.Release(); fast?.Release(); }
     }
     static void OriginalScalarContrast(byte[] pixels, int length)
     {
@@ -109,6 +126,23 @@ static partial class SportmasterRcs
             Check(original.SequenceEqual(expected), "short/vector-boundary contrast preserves exact scalar pixels");
         }
         Check(cases == 32896, "all 32896 low/high intensity pairs preserve exact original pixels and pooled-buffer tail");
+        PrepareZxingFixture();
+        var production = new SoftwareDecoder("utf-8", PrepareZxingFixture);
+        var reference = new SoftwareDecoder("utf-8", PrepareZxingFixture, OriginalScalarContrast);
+        production.Prepare(); reference.Prepare();
+        try
+        {
+            for (var value = 0; value <= 255; value++)
+            {
+                var constant = Enumerable.Repeat((byte)value, 64 * 64).ToArray();
+                if (production.Decode(constant.ToArray(), constant.Length, 64, 64).Length != 0 ||
+                    reference.Decode(constant.ToArray(), constant.Length, 64, 64).Length != 0)
+                    throw new InvalidDataException("Uniform-image fast exit changed actual-engine candidates");
+            }
+            Check(!production.TimingSnapshot.Stages.ContainsKey("zxing.native") && reference.TimingSnapshot.Stages["zxing.native"].Count == 256,
+                "all 256 uniform Mono8 intensities match actual full ZXing empty results without invoking native search in production");
+        }
+        finally { production.Release(); reference.Release(); }
     }
     static SoftwarePixels ReadLatencyPgm(string path)
     {

@@ -14,6 +14,7 @@
      <RowDefinition Height="Auto"/>
      <RowDefinition Height="*"/>
      <RowDefinition Height="Auto"/>
+     <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
     <DockPanel Margin="0,0,0,8">
      <ComboBox x:Name="VisibleInputSource" DockPanel.Dock="Right" MinHeight="44" MinWidth="96" Margin="8,0,0,0" SelectionChanged="InputSource_SelectionChanged" SelectedIndex="0" AutomationProperties.Name="本位条码输入来源" ToolTip="键盘和PDA键盘均输入到当前焦点；不代表硬件设备绑定。">
@@ -91,7 +92,43 @@
       <TextBlock x:Name="NextStep" Grid.Row="2" Text="{Binding DisplayNextStep}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:OperatorTokens.InstructionSize}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" Style="{StaticResource StationInstruction}"/>
      </Grid>
     </Border>
-    <StackPanel Grid.Row="3" x:Name="FixedActions" Margin="0,8,0,0">
+    <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
+         They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
+         One inline row keeps the 800x420 chute legible; the full value is in the tooltip and copyable. -->
+    <Grid Grid.Row="3" x:Name="TaskFields" Margin="0,4,0,0">
+     <Grid.Style>
+      <Style TargetType="Grid">
+       <Style.Triggers>
+        <DataTrigger Binding="{Binding ShowConfirmedTask}" Value="False">
+         <Setter Property="Visibility" Value="Collapsed"/>
+        </DataTrigger>
+       </Style.Triggers>
+      </Style>
+     </Grid.Style>
+     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="*"/>
+     </Grid.ColumnDefinitions>
+     <DockPanel Grid.Column="0" Margin="0,0,8,0">
+      <TextBlock Text="波次" Style="{StaticResource StationTaskLabel}"/>
+      <TextBox Text="{Binding WaveNo,Mode=OneWay}" ToolTip="{Binding WaveNo}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务波次"/>
+     </DockPanel>
+     <DockPanel Grid.Column="1" Margin="0,0,8,0">
+      <TextBlock Text="任务号" Style="{StaticResource StationTaskLabel}"/>
+      <TextBox Text="{Binding TaskId,Mode=OneWay}" ToolTip="{Binding TaskId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次调度任务号"/>
+     </DockPanel>
+     <DockPanel Grid.Column="2" Margin="0,0,8,0">
+      <TextBlock Text="商品编码" Style="{StaticResource StationTaskLabel}"/>
+      <TextBox Text="{Binding SkuId,Mode=OneWay}" ToolTip="{Binding SkuId}" Style="{StaticResource StationTaskValue}" AutomationProperties.Name="本次任务商品编码"/>
+     </DockPanel>
+     <DockPanel Grid.Column="3">
+      <TextBlock Text="返回数量" Style="{StaticResource StationTaskLabel}"/>
+      <TextBox Text="{Binding ResponseQuantity,Mode=OneWay}" ToolTip="{Binding ResponseQuantity}" Style="{StaticResource StationTaskValue}" FontFamily="{x:Static type:UiTypography.Interface}" AutomationProperties.Name="本次调度返回数量"/>
+     </DockPanel>
+    </Grid>
+    <StackPanel Grid.Row="4" x:Name="FixedActions" Margin="0,8,0,0">
      <TextBlock x:Name="InputFeedback" TextWrapping="Wrap" MaxHeight="40" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationNotice}" AutomationProperties.LiveSetting="Polite"/>
      <Grid>
       <Grid.ColumnDefinitions>

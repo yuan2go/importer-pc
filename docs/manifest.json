@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-SM-OPERATOR-UX-18",
+  "work_package": "WP-IPC-SM-TASK-FIELDS-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "75203066ae60acf58f62a72699c66ea43fc0484d243762770831b713be68ac48",
-      "size_bytes": 16596,
-      "git_blob": "e014a46886a65dad8fd5042f8769f905733a4bdc",
+      "sha256": "4145a94e2b37205712f565b1f2541872f1aac6f24ccd5dceb9fc87762e1e3f3b",
+      "size_bytes": 16712,
+      "git_blob": "fe7a118fc13958361ee1d61df1129a13f13393c5",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "478d53a528c81a3f47ddb6f1548515f2d8662c2401099817f0247a7e0274aadf",
-      "size_bytes": 10741,
-      "git_blob": "72773bfa4b22bd261d6facb33304ff7c2fb8d53a",
+      "sha256": "95458fcafc76e17171344b52fc36064fb1169716bf0a0858b30660758dff89a4",
+      "size_bytes": 11084,
+      "git_blob": "1011874785a52476e276f1fbcaf31f8677709286",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -55295,9 +55295,9 @@
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
       "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained",
       "storage_scope": "public_repository",
-      "sha256": "0dde7267f35315e9ce1dd162b2c99474b719b3c10b501186e8ffd4f74771f2a2",
-      "size_bytes": 8477,
-      "git_blob": "b7f8c61bf325f674a229a90001890dee21cefdfa",
+      "sha256": "f5efb0431a9533dac64fe9cb535c81283d5c56126c8995f1172f0032799d2cf2",
+      "size_bytes": 10749,
+      "git_blob": "2e3cc5c654e76c5e8ab0e49b0b5e925f6b69eae0",
       "previous_git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e"
     },
     {
@@ -55318,9 +55318,9 @@
       "purpose": "Authorized offline WPF typography, compact layout, font license/provenance or bounded native evidence",
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
-      "sha256": "10bd7403cd7dfeb284dd2cb70c21e791ddbd48ccb02ba36adac4c13136937813",
-      "size_bytes": 5597,
-      "git_blob": "113ba37025968e80ba3d93e298f69d7072caf2bc"
+      "sha256": "d8ba96900bbe607c109d56e10b21ae8b37094ad555cb5569df3990fc667aeb13",
+      "size_bytes": 6545,
+      "git_blob": "6b99006a0fab11e71cc40351c13218efda212c45"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
@@ -111472,9 +111472,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PERCEPTION-LATENCY-15; original evidence retains its own SourceCommit",
-      "sha256": "a2f1d2e3df293dba1688d8d36a847f527a0bd9c196a8e55457d429066857a58c",
-      "size_bytes": 9529,
-      "git_blob": "b39950e56260fd1244d280a001f7d142ea56612e",
+      "sha256": "87ffa05f3dc17a7a02e87058d509bc192c42286577b8becd25ed4da6d1a3cae0",
+      "size_bytes": 9573,
+      "git_blob": "fec4c9810e87caf9615847911a4eb5126902c31c",
       "storage_scope": "public_repository"
     },
     {
@@ -111978,9 +111978,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-RESPONSIVE-PRESENTATION-16; original evidence retains its own SourceCommit",
-      "sha256": "b9b73003947fe26bd8a33a3a59b6dd224108cb2cbb9b6ece430b69d6f050e018",
-      "size_bytes": 12305,
-      "git_blob": "9c6870f69acf7547a1dabc2abba6f9dd3b7e17b8",
+      "sha256": "fd79e2bc540d77acff4769b92c315925eaee9a5d9fbeadda35c71ba26b2879ac",
+      "size_bytes": 12316,
+      "git_blob": "9fe4853328c636b0f798c8e6374c1c3df940fa3e",
       "storage_scope": "public_repository"
     },
     {
@@ -112913,9 +112913,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-OPERATOR-UX-18; original evidence retains its own SourceCommit",
-      "sha256": "25c7d166c83c64dcafcb16755ad0638c5cb5f0e6be7a4d98828502527907fe3f",
-      "size_bytes": 10515,
-      "git_blob": "7261e57680ccc0c1a8dbf9acf9cf3a1201b89641",
+      "sha256": "87e59ad578ff8f73ae8a80b5d7ed33570fcc3ce880e003c5bc37de171fd51e20",
+      "size_bytes": 10588,
+      "git_blob": "5d46f762ca54ebc7e7935f4c976408d8f4f7268f",
       "storage_scope": "public_repository"
     },
     {
@@ -113291,6 +113291,39 @@
       "size_bytes": 4423,
       "git_blob": "128f5f8dc9ac07c7b17e72c2950ea4e22d5c4578",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-task-fields-01/INDEX.md.txt",
+      "version": "sm-task-fields-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-TASK-FIELDS-01; original evidence retains its own SourceCommit",
+      "sha256": "478d53a528c81a3f47ddb6f1548515f2d8662c2401099817f0247a7e0274aadf",
+      "size_bytes": 10741,
+      "git_blob": "72773bfa4b22bd261d6facb33304ff7c2fb8d53a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-task-fields-01/manifest.json",
+      "version": "sm-task-fields-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-TASK-FIELDS-01; original evidence retains its own SourceCommit",
+      "sha256": "daf5d287bda4d2d849329a2fb540273e55102548cd1ab6d3214e1c0ef54bd9ac",
+      "size_bytes": 327,
+      "git_blob": "aa3fcc493664d5782a32bafae28c1c8957732ce5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-SM-TASK-FIELDS-01.md",
+      "version": "sm-task-fields-01",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-TASK-FIELDS-01; original evidence retains its own SourceCommit",
+      "sha256": "325dd009fa5aef60c2400071b387edf801796e6811901fe1b7c5fafdb12b84aa",
+      "size_bytes": 1820,
+      "git_blob": "4fa7568009e82caf95aa034457f528de70dde9c0",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -113370,7 +113403,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-OPERATOR-UX-18.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-TASK-FIELDS-01.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",

@@ -24,6 +24,23 @@
   <Setter Property="IsTabStop" Value="True"/>
   <Setter Property="AutomationProperties.Name" Value="只读作业标识，可选择复制"/>
  </Style>
+ <Style x:Key="StationTaskLabel" TargetType="TextBlock">
+  <Setter Property="Foreground" Value="{StaticResource StationMuted}"/>
+  <Setter Property="FontSize" Value="{x:Static type:UiTypography.Diagnostic}"/>
+  <Setter Property="VerticalAlignment" Value="Center"/>
+  <Setter Property="Margin" Value="0,0,4,0"/>
+ </Style>
+ <Style x:Key="StationTaskValue" TargetType="TextBox" BasedOn="{StaticResource ReadonlyValue}">
+  <Setter Property="FontFamily" Value="{x:Static type:UiTypography.Code}"/>
+  <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
+  <Setter Property="TextWrapping" Value="NoWrap"/>
+  <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
+  <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+  <Setter Property="Margin" Value="0"/>
+  <Setter Property="Padding" Value="0"/>
+  <Setter Property="VerticalAlignment" Value="Center"/>
+  <Setter Property="IsTabStop" Value="True"/>
+ </Style>
  <Style x:Key="StationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
   <Setter Property="FontWeight" Value="Normal"/>
   <Setter Property="BorderBrush" Value="{StaticResource StationLine}"/>

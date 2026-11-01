@@ -248,3 +248,6 @@ docs/archive/pre-sm-operator-ux-18/** -text whitespace=cr-at-eol,-blank-at-eol,-
 docs/runtime/evidence/sm-operator-ux-18/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 # Preserve the pre-OPERATOR-COPY-01 index bytes.
 docs/archive/pre-operator-copy-01/** -text whitespace=cr-at-eol
+
+# Preserve the pre-SM-TASK-FIELDS-01 index bytes.
+docs/archive/pre-sm-task-fields-01/** -text whitespace=cr-at-eol

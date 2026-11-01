@@ -43,7 +43,7 @@ static partial class Program
             await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
             Check(vm.Left.Operation?.OperatorInput?.Kind == "PdaKeyboard" && h.Peer.Requests.Count == 1, "visible source selection reaches the guarded independent command");
             Check(vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Accepted && vm.Left.ResultBackground == OperatorTokens.Success && vm.Left.ResultForeground == OperatorTokens.Surface && slot.Text == "L-07", "current accepted identity maps to solid green with white full destination");
-            Check(left.FindName("TaskFields") is null && vm.Left.WaveNo == OperatorCopy.NotReturned, "auxiliary fields leave the work surface; missing optional values remain honest");
+            Check(((Grid)left.FindName("TaskFields")).IsVisible && vm.Left.WaveNo == OperatorCopy.NotReturned && vm.Left.TaskId != "—", "site-required task fields stay on the work surface with the confirmed chute; missing optional values remain honest");
             var cues = typeof(SupplyStationPosition).GetProperty("SuccessCueCount", BindingFlags.Instance | BindingFlags.NonPublic)!;
             await Until(() => (int)cues.GetValue(left)! == 1);
             for (var i = 0; i < 5; i++) await vm.RefreshAsync(); await Flush();

@@ -52,7 +52,7 @@ static partial class Program
                 "saved full candidate isolates left format selection from right defaults");
             CaptureInternal(evidence,"bundled-sdk-format-selection",editor,lines);
             formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked = true;
-            Check(formatChecks.Count(c => c.IsChecked == true) == 1 && formats.Value == "[\"All\"]", "choosing All clears explicit native choices");
+            Check(formatChecks.Count(c => c.IsChecked == true) == 1 && Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "All" }), "choosing All clears explicit native choices");
             formatSection.IsExpanded = false;
             Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetName(t)==rcs.InstanceId+"/left-bcr-code").Text="SYNTH-LEFT-EDITED";
             Check(rcs.Parameters.Single(p=>p.Field.Key=="left-bcr-code").Value=="SYNTH-LEFT-EDITED"&&rcs.Parameters.Single(p=>p.Field.Key=="right-bcr-code").Value=="SYNTH-RIGHT","one shared camera code editor isolates left/right");

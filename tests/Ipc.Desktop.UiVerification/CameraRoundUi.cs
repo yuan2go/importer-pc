@@ -28,6 +28,15 @@ static partial class Program
         { for (var i = 0; i < 150; i++) { await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Flush(); if (done()) return; await Task.Delay(35); } throw new TimeoutException("Round native UI did not converge"); }
         T Field<T>(UserControl c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
         Task Poll(UserControl c) => (Task)c.GetType().GetMethod("PollAsync")!.Invoke(c, null)!;
+        async Task<CameraReadRound> ReadRound()
+        {
+            for (var attempt = 0; ; attempt++)
+            {
+                try { return await h.App.ReadCameraReadRoundAsync(default); }
+                catch (InvalidOperationException error) when (attempt < 100 && error.Message == "后台操作并发已达上限，请等待当前操作结束")
+                { lines.Add("READ_BACKPRESSURE bounded fixture retries a read-only round query; no command replay"); await Task.Delay(25); }
+            }
+        }
         void ClickField(UserControl c, string name) => Field<Button>(c, name).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         try
         {
@@ -113,7 +122,7 @@ static partial class Program
             await h.ArmAsync(h.Right); h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-C"), 1); await h.LockedAsync();
             heldArm.TrySetResult(); await Until(() => !Field<bool>(control, "busy")); await Poll(control);
             ClickField(control, "trigger"); await Until(() => !Field<bool>(control, "busy"));
-            var retry = await h.App.ReadCameraReadRoundAsync(default);
+            var retry = await ReadRound();
             Check(retry.State == "Reading" && retry.DeviceId == h.Left, "explicit retry after a known stale CAS rejection uses the newly observed round instead of trapping the old command");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-D"), 4); await h.LockedAsync(); await Poll(control);
             Check(Field<TextBox>(control, "barcode").Text == "UI-ROUND-D", "retry recovers the intended camera and next frame");
@@ -138,8 +147,8 @@ static partial class Program
             Check(h.Factory.Apis.Values.Sum(x => x.Opens) == opens && h.Factory.Apis.Values.All(x => x.Starts == 1 && x.Stops == 0), "window close does not stop or recreate the shared acquisition owner");
             await vm.RefreshAsync(); await Poll(control);
             lines.Add("DIAG final-send ui=" + Field<Button>(control, "send").IsEnabled + "; fresh=" + vm.Fresh + "; authoritative=" + Field<bool>(control, "authoritative") +
-                "; application=" + (await h.App.ReadCameraReadRoundAsync(default)).CanSend + "; feedback=" + Field<TextBlock>(control, "feedback").Text);
-            lines.Add("DIAG final-round " + Wire.Encode(await h.App.ReadCameraReadRoundAsync(default)));
+                "; application=" + (await ReadRound()).CanSend + "; feedback=" + Field<TextBlock>(control, "feedback").Text);
+            lines.Add("DIAG final-round " + Wire.Encode(await ReadRound()));
             var diagnostic = await h.App.SnapshotAsync();
             lines.Add("DIAG final-dependencies " + Wire.Encode(new { diagnostic.State, diagnostic.BlockingReasons, diagnostic.Devices, diagnostic.Health,
                 Operations = diagnostic.Operations.Select(o => new { o.Id, o.PositionId, o.State, Stage = o.Wcs?.State, Attempts = o.Wcs?.Attempts, o.RecoveryRequired }) }));

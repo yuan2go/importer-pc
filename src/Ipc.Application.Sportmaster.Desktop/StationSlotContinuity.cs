@@ -19,7 +19,7 @@ public sealed partial class SupplyStationPositionViewModel
         : Operation?.ParcelCode ?? "等待包裹";
     public string BarcodePlaceholder => (unreadFeedback ? readFeedback!.CandidateCount : Input?.Observation.Codes.Length ?? 0) > 1
         ? "本帧读到多个条码，请检查包裹" : HasCurrentInput ? "本次条码无效，请检查包裹" : "等待相机扫码或输入条码";
-    public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || unreadFeedback || InputUnadmitted ? null :
+    public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || unreadFeedback || InputUnadmitted || IsProcessing ? null :
         Input is { } input && Operation is { } current && input.OperationId == current.Id &&
             (current.Acquisition is null || input.Observation.DeviceId == current.Acquisition.DeviceId &&
                 input.Observation.Epoch == current.Acquisition.Epoch && input.Observation.SourceEventId == current.Acquisition.SourceEventId &&

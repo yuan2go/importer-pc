@@ -190,7 +190,7 @@ static partial class ArchitectureQuality
         var release = Path.GetDirectoryName(typeof(ArchitectureQuality).Assembly.Location)!;
         var first = await ParcelOfflineReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-first.backup.db"), occurrence, release,
             "Synthetic current-schema offline query; retain original missing raw", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
-        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 10 && Wire.Encode(first).Contains("\"DatabaseVersion\": 10", StringComparison.Ordinal),
+        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == ParcelRepository.CurrentStorageVersion && Wire.Encode(first).Contains("\"DatabaseVersion\": " + ParcelRepository.CurrentStorageVersion, StringComparison.Ordinal),
             "current DB10 offline receipt recovery performs one original Query and returns DB10 without a post-query downgrade failure");
         await ParcelOfflineReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-second.backup.db"), occurrence, release,
             "Synthetic repeat must reuse its committed original Query basis", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));

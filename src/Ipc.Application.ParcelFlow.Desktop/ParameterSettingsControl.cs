@@ -15,6 +15,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
     public bool FirstConfiguration { get; set; }
+    readonly ComboBox firstSteps = new() { ItemsSource = new[] { "1 本站信息", "2 业务规则", "3 左右相机", "4 RCS连接", "5 检查与完成" }, MinHeight = 44, Margin = new(0, 0, 0, 12), Visibility = Visibility.Collapsed };
     readonly ListBox directory = new() { Name = "ParameterDirectory", BorderThickness = new(0), Background = Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     readonly ContentControl pageHost = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
     readonly StackPanel errors = new();
@@ -41,7 +42,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         public TextBlock Summary { get; } = new() { Foreground = Brush("#B42318"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed };
         public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
         public string GroupTitle => Category == 4 ? "检查" : ParameterOwnership.CategoryName(Category);
-        public int Order => Category == 4 ? 4 : Category == 1 ? 0 : Category == 0 ? 1 : Category;
+        public int Order => Category;
         public override string ToString() => Title;
     }
     sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help, Func<bool>? Applicable = null, FrameworkElement? Row = null);
@@ -56,6 +57,14 @@ public sealed partial class ParameterSettingsControl : UserControl
         var root = new Grid { Background = Brushes.White };
         root.ColumnDefinitions.Add(new() { Width = new(224) }); root.ColumnDefinitions.Add(new());
         var rail = new DockPanel { LastChildFill = true, Margin = new(12, 16, 12, 12) };
+        DockPanel.SetDock(firstSteps, Dock.Top); rail.Children.Add(firstSteps);
+        AutomationProperties.SetName(firstSteps, "首次配置五步导航");
+        firstSteps.SelectionChanged += async (_, _) => {
+            if (selectingPage || !FirstConfiguration || firstSteps.SelectedIndex < 0) return;
+            var destination = OrderedPages().FirstOrDefault(p => p.Category == firstSteps.SelectedIndex);
+            if (destination is not null) await RequestPageAsync(destination);
+            selectingPage = true; try { firstSteps.SelectedIndex = currentPage?.Category ?? 0; } finally { selectingPage = false; }
+        };
         var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); rail.Children.Add(searchBar);
         var lists = new Grid(); lists.Children.Add(directory); lists.Children.Add(searchResults); rail.Children.Add(lists);
         root.Children.Add(new Border { Background = Brush("#F5F6F8"), BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 0, 1, 0), Child = rail });
@@ -289,6 +298,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         reviewPage = null;
         if (reviewContent?.Parent is Panel reviewParent) reviewParent.Children.Remove(reviewContent);
         if (Model is not { } m) { pageHost.Content = Text("正在读取设置与已安装模块…"); return; }
+        firstSteps.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
         foreach (var page in pages)
         {

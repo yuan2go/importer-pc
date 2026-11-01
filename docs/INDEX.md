@@ -1,3 +1,4 @@
+> 2026-11-02 当前产品闭环见 [SM-PRODUCT-CLOSURE-21](work-packages/WP-IPC-SM-PRODUCT-CLOSURE-21.md)、[实现与运行](runtime/sm-product-closure-21.md)。用户现已授权本机统计/班次，替代18的暂不增加统计；集中看板明确延期。Parcel当前数据库格式11；非当前输入保留原件并拒绝。条码规则可在Application屏障后热生效，设备/目标/班次/维护策略仍需重启。原指南与证据各守原SourceCommit，完整原字节见[归档](archive/pre-sm-product-closure-21/manifest.json)。
 > 2026-11-02 合并前全量闭环与工业工程补强见 [SM-CAMERA-CHAIN-CLOSURE-21](work-packages/WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21.md)。覆盖原审查逐项结论、跨位故障/取消唤醒、稳定任务区及编码/反色验证；用户授权完成验证后合并PR171到main，历史证据保持原SourceCommit。
 
 > 2026-11-02 相机→展示→RCS全链路审查续修见 [SM-CAMERA-CHAIN-RELIABILITY-20](work-packages/WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20.md)。用户再次确认逐次识别仍交RCS去重，并授权现场配置码制；单帧拒收、资源背压、编辑终态、分位声音、旋转框及未送达证据按本包核验，19原验证保持原源。

@@ -92,7 +92,7 @@ public sealed partial class ParcelRuntime
                     MaintainParcelPictures();
                     if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)
                     { repository!.Commit(null, "AutomaticSupplyRestored", "Retired manual pause restored after startup readiness checks", paused: false); resumePriorPause = false; }
-                    if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); }
+                    if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); TryAutomaticCleanup(cleanupClock.GetUtcNow()); }
                     RefreshStorageCapacity();
                     auxiliary.RemoveAll(task =>
                     {

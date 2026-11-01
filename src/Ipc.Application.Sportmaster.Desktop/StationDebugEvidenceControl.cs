@@ -27,10 +27,10 @@ internal sealed class StationDebugEvidenceControl : UserControl
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(750) };
     readonly TextBlock state = Label("正在读取调试状态"), feedback = Label(""), coverage = Label(""), caption = Label("请选择记录查看对应原图。"), result = Label(""), identity = Label("");
     readonly Border banner = new() { Padding = new(12, 8, 12, 8), CornerRadius = new(6) };
-    readonly Button left = Button("左相机"), right = Button("右相机"), observe = Button("开始生产观察"), isolate = Button("进入实机隔离"), stop = Button("停止关联采集"), resume = Button("确认清场并结束隔离");
+    readonly Button left = Button("左相机"), right = Button("右相机");
     readonly Button older = Button("前一页"), newer = Button("后一页"), latest = Button("回到最新"), record = Button("查看原作业"), saveImage = Button("导出本帧原图 PNG"), saveSession = Button("导出会话证据"), purge = Button("清理已结束会话");
-    readonly TextBox reason = new() { MaxLength = 1024, MinWidth = 200 }, duration = Number("10"), imageBudget = Number("1024"), recordBudget = Number("200000"), sessionId = new() { MaxLength = 64, MinWidth = 220 };
-    readonly CheckBox cleared = new() { Content = "已停止真实投放、移除两位测试件并核对当前实体与原责任", Margin = new(0, 8, 0, 8) }, overlay = new() { Content = "显示识别位置", IsChecked = true }, follow = new() { Content = "跟随最新记录", IsChecked = true };
+    readonly TextBox sessionId = new() { MaxLength = 64, MinWidth = 220 };
+    readonly CheckBox overlay = new() { Content = "显示识别位置", IsChecked = true }, follow = new() { Content = "跟随最新记录", IsChecked = true };
     readonly ComboBox sessions = new() { MinWidth = 220, MaxWidth = 520, DisplayMemberPath = nameof(CameraInspectionSession.Label) }, symbols = new() { MinWidth = 160, DisplayMemberPath = nameof(RecognitionSymbol.Text) };
     readonly ObservableCollection<Row> businessRows = [], frameRows = [];
     readonly ListBox business = List(), frames = List();
@@ -45,7 +45,6 @@ internal sealed class StationDebugEvidenceControl : UserControl
     readonly Grid imageLayer = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, ClipToBounds = true };
     readonly ScrollViewer viewport = new() { Height = 270, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Background = ColorBrush("#18212D") };
     readonly TextBlock zoomText = Label("适应窗口");
-    readonly Expander setup;
     CancellationTokenSource? lifetime, selectionCancellation;
     CameraInspectionStatus? status;
     CameraOriginalImage? original;
@@ -83,20 +82,9 @@ internal sealed class StationDebugEvidenceControl : UserControl
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; Foreground = ColorBrush("#18212D"); Background = Brushes.White;
         var root = new DockPanel(); var header = new StackPanel { Margin = new(24, 14, 24, 8) };
         header.Children.Add(new TextBlock { Text = "相机与业务调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis }); banner.Child = state; header.Children.Add(banner);
-        var actions = Wrap(left, right, observe, isolate, stop, resume); header.Children.Add(actions); header.Children.Add(new ScrollViewer { Content = feedback, MaxHeight = 76, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
+        var actions = Wrap(left, right); header.Children.Add(actions); header.Children.Add(new ScrollViewer { Content = feedback, MaxHeight = 76, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         left.Click += (_, _) => SelectPosition("left"); right.Click += (_, _) => SelectPosition("right");
-        observe.Click += async (_, _) => await Begin(CameraInspectionMode.ObserveProduction); isolate.Click += async (_, _) => await Begin(CameraInspectionMode.Isolated);
-        stop.Click += async (_, _) => await Run(async t => { if (status?.SessionId is { } id) { var value = await Api.StopCameraInspectionCaptureAsync(id, Reason(), t); if (PublishCommand) status = value; } });
-        var body = new StackPanel { Margin = new(24, 0, 24, 16) }; var options = new StackPanel();
-        options.Children.Add(Label("操作原因（至少5字，保留本机审计）")); options.Children.Add(reason); AutomationProperties.SetName(reason, "调试操作原因");
-        options.Children.Add(Wrap(Field("期限 / 分钟", duration), Field("原图配额 / MiB", imageBudget), Field("记录上限", recordBudget))); options.Children.Add(cleared);
-        options.Children.Add(Label("隔离作用于两位新供包；只有明确显示“隔离已生效”后才可放入测试件。已有请求先排空，原责任保留。停止采集、切页、撤权及重启均不自动恢复供包。软件隔离不是安全急停。"));
-        setup = new() { Header = "调试原因、资源限额与清场确认", Content = options, IsExpanded = true, Margin = new(0, 0, 0, 8) }; body.Children.Add(setup);
-        resume.Click += async (_, _) => await Run(async t =>
-        {
-            if (status?.SessionId is not { } id || cleared.IsChecked != true) { setup.IsExpanded = true; cleared.Focus(); cleared.BringIntoView(); throw new InvalidOperationException("请先确认两位测试件已移除并核对原包裹责任。"); }
-            var value = await Api.EndCameraInspectionAsync(new(Wire.Id(), id, true, true, Reason()), t); if (PublishCommand) { status = value; cleared.IsChecked = false; }
-        });
+        var body = new StackPanel { Margin = new(24, 0, 24, 16) };
         var parameter = Button("本相机参数"); parameter.Click += async (_, _) => await Run(_ => settings(Position.ReaderId)); body.Children.Add(Wrap(parameter, identity));
         var workspace = new WrapPanel(); var visual = new StackPanel { Margin = new(0, 0, 20, 0) }; var records = new StackPanel(); workspace.Children.Add(visual); workspace.Children.Add(records);
         workspace.SizeChanged += (_, _) => { var split = workspace.ActualWidth >= 760; visual.Width = Math.Max(240, split ? workspace.ActualWidth * .48 - 20 : workspace.ActualWidth - 20); records.Width = Math.Max(240, split ? workspace.ActualWidth * .52 : workspace.ActualWidth); };
@@ -134,7 +122,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
         {
             if (viewedSession.Length == 0) throw new InvalidOperationException("请先选择已结束会话。");
             if (MessageBox.Show(Window.GetWindow(this), "将清理该已结束会话的诊断原图与帧记录，保留会话审计和业务原件。请先导出需要保留的证据。", "清理诊断会话", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
-            await Api.PurgeCameraInspectionAsync(viewedSession, Reason(), t); if (PublishCommand) { frameRows.Clear(); framesInitialized = false; ClearImage(); Say("诊断集合已清理，业务原件与责任保留。"); }
+            await Api.PurgeCameraInspectionAsync(viewedSession, HistoryMaintenanceReason, t); if (PublishCommand) { frameRows.Clear(); framesInitialized = false; ClearImage(); Say("诊断集合已清理，业务原件与责任保留。"); }
         });
         var test = Button("测试当前运行筛选规则"); var local = new StackPanel(); local.Children.Add(sample); local.Children.Add(test); local.Children.Add(sampleResult);
         sample.TextChanged += (_, _) => sampleResult.Text = "候选已变化，请重新测试。此操作不产生业务请求。";
@@ -158,23 +146,9 @@ internal sealed class StationDebugEvidenceControl : UserControl
         timer.Tick += async (_, _) => await PollAsync(); Loaded += async (_, _) => { active = true; lifetime = new(); timer.Start(); await PollAsync(); }; Unloaded += (_, _) => Deactivate(false); SelectPosition("left");
     }
     ICameraInspection Api => api ?? throw new InvalidOperationException("当前组合未提供完整关联调试契约，请使用同源内置SM装配。");
-    string Reason()
-    {
-        if (reason.Text.Trim().Length >= 5) return reason.Text.Trim();
-        setup.IsExpanded = true; reason.Focus(); reason.BringIntoView(); throw new InvalidOperationException("请填写至少5字的调试操作原因。");
-    }
+    const string HistoryMaintenanceReason = "管理模式下清理已结束的调试记录，业务原件与责任保持";
     bool PublishCommand => active && vm.IsManagementMode && generation == commandGeneration;
     void Say(string text) { if (PublishCommand) feedback.Text = text; }
-    async Task Begin(CameraInspectionMode mode) => await Run(async t =>
-    {
-        var why = Reason(); if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先等待最新业务状态。");
-        if (mode == CameraInspectionMode.Isolated && cleared.IsChecked != true) { setup.IsExpanded = true; cleared.Focus(); cleared.BringIntoView(); throw new InvalidOperationException("进入实机隔离前，请确认已停止真实投放并核对两位当前实体。"); }
-        if (!int.TryParse(duration.Text, out var minutes) || !int.TryParse(imageBudget.Text, out var mib) || !int.TryParse(recordBudget.Text, out var count)) throw new InvalidOperationException("资源限额必须为整数。");
-        var warning = mode == CameraInspectionMode.Isolated ? "将阻断两位新供包，等待原在途请求排空。只有显示“实机隔离已生效”后才可放入测试件。结束前须清除测试件并显式确认。" : "生产观察保持正常业务。放入测试码可能产生真实RCS请求，仅用于正常生产观察。";
-        if (MessageBox.Show(Window.GetWindow(this), warning, "开始关联采集", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
-        var value = await Api.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, mode, why, new(minutes, mib, count), cleared.IsChecked == true), t);
-        if (!PublishCommand) return; status = value; ChangeSession(value.SessionId ?? ""); commandGeneration = generation; cleared.IsChecked = false; setup.IsExpanded = false; tabs.SelectedIndex = 1;
-    });
     async Task Run(Func<CancellationToken, Task> action)
     {
         if (!active || busy) return; busy = true; commandGeneration = generation; SetButtons();
@@ -188,7 +162,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     {
         active = false; generation++; selectionGeneration++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; selectionCancellation?.Cancel(); selectionCancellation?.Dispose(); selectionCancellation = null;
         ClearImage(); inputEvidence.Clear(); requestEvidence.Clear();
-        if (clear) { selection = null; status = null; lastSessionState = ""; businessInitialized = framesInitialized = false; historical = false; businessCursor = frameCursor = 0; businessRows.Clear(); frameRows.Clear(); sample.Clear(); simulationCode.Clear(); reason.Clear(); cleared.IsChecked = false; sessionId.Clear(); viewedSession = ""; sessions.ItemsSource = null; state.Text = "管理模式已结束；隔离由Application继续保持。"; feedback.Text = result.Text = sampleResult.Text = identity.Text = ""; }
+        if (clear) { selection = null; status = null; lastSessionState = ""; businessInitialized = framesInitialized = false; historical = false; businessCursor = frameCursor = 0; businessRows.Clear(); frameRows.Clear(); sample.Clear(); simulationCode.Clear(); sessionId.Clear(); viewedSession = ""; sessions.ItemsSource = null; state.Text = "管理模式已结束；隔离由Application继续保持。"; feedback.Text = result.Text = sampleResult.Text = identity.Text = ""; }
     }
     public void SelectPosition(string value)
     {
@@ -205,7 +179,6 @@ internal sealed class StationDebugEvidenceControl : UserControl
     {
         var ready = active && vm.IsManagementMode && api is not null && !busy;
         emit.IsEnabled = ready && vm.Fresh && Position.CanAdmit && vm.Snapshot?.Configuration.Effective.Mode == RunMode.Simulation;
-        observe.IsEnabled = isolate.IsEnabled = ready && status?.BusinessFenced != true && status?.State is not ("Active" or "Preparing"); stop.IsEnabled = ready && status?.State == "Active"; resume.IsEnabled = ready && status?.BusinessFenced == true;
         saveImage.IsEnabled = ready && selectedFrame?.ImageAvailable == true; saveSession.IsEnabled = ready && (viewedSession.Length != 0 || status?.SessionId is not null); purge.IsEnabled = ready && viewedSession.Length != 0; record.IsEnabled = ready && selection?.OperationId is not null;
     }
     bool Current(long version) => active && generation == version && vm.IsManagementMode;

@@ -123,8 +123,17 @@ namespace Ipc.Application.Sportmaster.Desktop
         public void SelectPosition(string position) { }
         public void Revoke() { }
     }
+    // Event-owner harness placeholder only. Product operations are exercised by
+    // the native --product-closure-21 suite, not by this cross-platform shim.
+    internal sealed class StationStatisticsControl(SupplyStationViewModel vm) : System.Windows.FrameworkElement { public SupplyStationViewModel ViewModel { get; } = vm; public bool HasUnsavedChanges => false; }
     public partial class SupplyStationWindow
     {
+        StationStatisticsControl? statistics;
+        System.Windows.FrameworkElement? exceptions, maintenanceCenter;
+        bool offlineMaintenanceRequested;
+        public Func<Task>? OpenMaintenanceOwnerAsync { get; set; }
+        System.Windows.FrameworkElement CreateExceptions() => new();
+        System.Windows.FrameworkElement CreateMaintenanceCenter() => new();
         Task OpenOperatorSettingsAsync(string? deviceId = null, string? instanceId = null) => Task.CompletedTask;
         readonly System.Windows.Controls.Grid workContent = new();
         void BuildOperatorWorkspace() { workContent.Children.Add(work); }

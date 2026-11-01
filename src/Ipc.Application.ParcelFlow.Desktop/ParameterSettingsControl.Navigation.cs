@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using Ipc.Application.Contracts;
 
@@ -11,7 +11,7 @@ public sealed partial class ParameterSettingsControl
     long navigationGeneration, editRevision;
     ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
     public string CurrentPageTitle => currentPage?.Title ?? "";
-    public string PageProgress => currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
+    public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {currentPage.Category + 1} / 5 步 · {currentPage.GroupTitle} · {currentPage.Title}" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
     public bool HasPreviousPage => currentPage is not null && Array.IndexOf(OrderedPages(), currentPage) > 0;
     public string? NextPageTitle
@@ -24,7 +24,7 @@ public sealed partial class ParameterSettingsControl
     {
         if (page is null || !page.Available) return;
         selectingPage = true;
-        try { directory.SelectedItem = page; currentPage = page; lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
+        try { if (FirstConfiguration) { categoryScope = page.Category; directoryView?.Refresh(); firstSteps.SelectedIndex = page.Category; } directory.SelectedItem = page; currentPage = page; lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
         finally { selectingPage = false; }
         SelectedPageChanged?.Invoke(this, EventArgs.Empty);
     }

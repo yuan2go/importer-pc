@@ -1,0 +1,29 @@
+PASS PC21 three adjacent shifts cover a full day including overnight
+PASS PC21 overnight shift belongs to its original start date
+PASS PC21 exact shift boundary belongs only to following shift
+PASS PC21 overlap cannot silently double count
+PASS PC21 gap is rejected rather than losing a production interval
+PASS PC21 invalid station timezone rejected
+PASS PC21 DST calendar shifts retain 23/25 real hours
+PASS PC21 independent same-code input admitted 0
+PASS PC21 independent same-code input admitted 1
+PASS PC21 read-only production statistics count two requests without fabricating camera recognition or unique physical parcels
+PASS PC21 statistics range budget is enforced before executing query
+PASS PC21 diagnostic package requires management authority before file creation
+PASS PC21 resource-independent barcode rules activate through the live barrier
+PASS PC21 save outcome inspection confirms live activation without a restart candidate
+PASS PC21 previous accepted operation keeps frozen configuration and exact original request bytes
+PASS PC21 stale live rule CAS is rejected
+PASS PC21 new inputs use newly activated rules before any RCS call
+PASS PC21 diagnostic package publishes its bounded entries and integrity manifest
+PASS PC21 diagnostic allowlist excludes raw barcode and RCS endpoint: station.json
+PASS PC21 diagnostic allowlist excludes raw barcode and RCS endpoint: event-index.json
+PASS PC21 diagnostic allowlist excludes raw barcode and RCS endpoint: manifest.json
+PASS PC21 existing diagnostic package cannot be overwritten
+PASS PC21 cancelled export publishes no completed file and releases temporary output
+Unhandled exception. System.IO.InvalidDataException: shift and maintenance policy uses complete-candidate restart activation
+   at StationProductClosure.Check(Boolean value, String message) in D:\w\ipc-product-closure-21\tests\Ipc.Application.Verification\StationProductClosure.cs:line 12
+   at StationProductClosure.Run(String workspace, String root) in D:\w\ipc-product-closure-21\tests\Ipc.Application.Verification\StationProductClosure.cs:line 80
+   at StationProductClosure.Run(String workspace, String root) in D:\w\ipc-product-closure-21\tests\Ipc.Application.Verification\StationProductClosure.cs:line 88
+   at Program.<Main>$(String[] args) in D:\w\ipc-product-closure-21\tests\Ipc.Application.Verification\Program.cs:line 39
+   at Program.<Main>(String[] args)

@@ -377,7 +377,7 @@ static partial class SportmasterRcs
         using (var db = new SqliteConnection("Data Source=" + file))
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)command.ExecuteScalar()! == 10, "actual ParcelRuntime startup retains numeric ownership with current DB10 input custody semantics");
+            Check((long)command.ExecuteScalar()! == ParcelRepository.CurrentStorageVersion, "actual ParcelRuntime startup retains numeric ownership with current DB10 input custody semantics");
         }
 
     }
@@ -398,11 +398,11 @@ static partial class SportmasterRcs
         }
         var raw=File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json"));
         using(var reopened=new ParcelRepository(current,"sportmaster"))
-            Check(reopened.StorageVersion==10 && Wire.Encode(reopened.Load().Single())==Wire.Encode(operation) &&
+            Check(reopened.StorageVersion== ParcelRepository.CurrentStorageVersion && Wire.Encode(reopened.Load().Single())==Wire.Encode(operation) &&
                 reopened.PendingReceipts().Length==2 && reopened.ReceiptById(durable) is {State:"RawDurable"} &&
                 reopened.ReceiptById(awaiting) is {State:"Awaiting",RawHash:null} && File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json")).SequenceEqual(raw),
                 "current DB10 restart retains frozen Unknown, independent custody, raw bytes and one send");
-        foreach(var version in Enumerable.Range(1,9).Append(11))
+        foreach(var version in Enumerable.Range(1,10).Append(12))
         {
             var directory=Path.Combine(root,"unsupported-format"+version);
             var file=NonCurrentStorageFixture.Create(directory,"sportmaster",version,operation);
@@ -419,9 +419,9 @@ static partial class SportmasterRcs
             using(var db=new SqliteConnection("Data Source="+file+";Pooling=False"))
             {
                 db.Open();using var command=db.CreateCommand();command.CommandText=damage switch{
-                    "future"=>"INSERT INTO platform_migrations VALUES('sportmaster',11,'future')",
+                    "future"=>"INSERT INTO platform_migrations VALUES('sportmaster',12,'future')",
                     "foreign"=>"UPDATE platform_migrations SET application='another-business'",
-                    _=>"UPDATE platform_migrations SET sha='changed' WHERE version=10"};command.ExecuteNonQuery();
+                    _=>"UPDATE platform_migrations SET sha='changed' WHERE version=11"};command.ExecuteNonQuery();
             }
             var hash=Wire.FileHash(file);
             try { using var denied=new ParcelRepository(directory,"sportmaster");throw new Exception("Damaged identity accepted"); }

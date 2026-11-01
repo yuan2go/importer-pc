@@ -10,7 +10,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class SoftwareLogControl : UserControl
 {
     readonly IWorkstationAdministration service;
-    readonly TextBox from = Input(DateTimeInput.SecondNow().AddDays(-1).ToString("O")), to = Input(DateTimeInput.SecondNow().AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
+    readonly TextBox from = Input(DateTimeInput.SecondNow().AddHours(-1).ToString("O")), to = Input(DateTimeInput.SecondNow().AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
     readonly CheckBox regex = new() { Content = "使用正则表达式（有执行时限）", MinHeight = 44 };
     readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "调试", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
     readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Single, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
@@ -38,13 +38,14 @@ public sealed partial class SoftwareLogControl : UserControl
     public SoftwareLogControl(IWorkstationAdministration service)
     {
         this.service = service;
+        Loaded += async (_, _) => { if (query is null && !busy) await Run(Search); };
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/QueryWorkspaceTheme.xaml", UriKind.Relative) });
         Background = System.Windows.Media.Brushes.White; FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal;
         var root = new DockPanel { Margin = new(20, 16, 20, 12) }; Content = root;
         var header = new DockPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var heading = new StackPanel(); DockPanel.SetDock(heading, Dock.Top); header.Children.Add(heading);
         var title = new TextBlock { Text = "日志查询", Style = (Style)FindResource("QueryHeading") }; heading.Children.Add(title);
-        var hint = new TextBlock { Text = "默认最近24小时，每页200条；选择记录查看原文；超出呈现预算可完整导出。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 10) }; title.ToolTip = hint.Text;
+        var hint = new TextBlock { Text = "默认最近1小时，每页200条；选择记录查看原文；超出呈现预算可完整导出。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 10) }; title.ToolTip = hint.Text;
         var actions = new WrapPanel { Margin = new(0, 6, 0, 4) }; DockPanel.SetDock(actions, Dock.Bottom); header.Children.Add(actions);
         Button Action(string label, Func<Task> action)
         {

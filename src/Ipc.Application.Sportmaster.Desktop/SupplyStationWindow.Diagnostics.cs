@@ -1,3 +1,4 @@
+using Ipc.Application.Contracts;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -68,6 +69,17 @@ public partial class SupplyStationWindow
         feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.TaskFeedback))); header.Children.Add(feedback);
         DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var body = new StackPanel { Margin = new(24, 0, 24, 16) };
+        var pending = ProductText("");
+        void PendingState() { var count = ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0; pending.Text = $"格口未确认 {count} 件作业 · {(ViewModel.Snapshot?.Configuration.Pending is null ? "没有待重启设置" : "设置已保存，重启后生效")}"; }
+        PendingState(); body.Children.Add(pending);
+        var checkActions = new WrapPanel { Margin = new(0, 4, 0, 8) }; body.Children.Add(checkActions);
+        checkActions.Children.Add(ProductButton("处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; }));
+        var healthSummary = ProductText("点击刷新体检，读取现有采集、RCS确认及存储事实。"); healthSummary.FontSize = UiTypography.Label;
+        checkActions.Children.Add(ProductButton("刷新体检", async () => { healthSummary.Text = await ReadProductHealth(); PendingState(); }));
+        checkActions.Children.Add(ProductButton("导出诊断包…", ExportProductDiagnostics));
+        var cancelDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Margin = new(0, 6, 0, 6), Padding = new(12, 4, 12, 4) };
+        cancelDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); checkActions.Children.Add(cancelDiagnostic);
+        body.Children.Add(healthSummary);
         var connections = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Stretch };
         body.Children.Add(connections);
         connections.SizeChanged += (_, _) =>
@@ -126,7 +138,7 @@ public partial class SupplyStationWindow
         body.Children.Add(new Expander { Header = "连接仍未恢复？查看受控重连", Content = controlled, Margin = new(0, 8, 0, 8) });
         body.Children.Add(new TextBlock { Text = "相机断线后自动重连，使用当前运行配置；结果未知的原请求不会重发。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
         var tools = new WrapPanel { Margin = new(0, 8, 0, 0) };
-        foreach (var (label, index) in new[] { ("核对配置生效情况", 2), ("核对备份恢复结果", 6), ("处理待核对作业", 8) })
+        foreach (var (label, index) in new[] { ("核对配置生效情况", MaintenanceTool.Running), ("核对备份恢复结果", MaintenanceTool.RestoreHandoff), ("处理待核对作业", MaintenanceTool.Recovery) })
         {
             var button = new Button { Content = label, MinHeight = 44, Margin = new(0, 0, 8, 8) };
             button.Click += async (_, _) => { await OpenOperatorSettingsAsync(); if (ViewModel.IsManagementMode && ViewModel.SelectedPage == "maintenance" && ViewModel.HasLoadedConfiguration) maintenance.ShowTechnicalTool(index); };

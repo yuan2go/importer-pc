@@ -198,7 +198,7 @@ public partial class ParcelViewModel
         CapabilityDrafts.Clear();
         LoadStructuredConfiguration(c, catalog);
         editorConfigurationHash = baseline.Hash; availableEditorDraft = baseline.Draft; savedEditorHash = baseline.Draft?.DraftHash;
-        SetPresentationMessage(OperatorCopy.ConfigurationLoaded, PresentationFeedbackKind.ConfigurationRead);
+        SetPresentationMessage(Snapshot?.ApplicationId == "sportmaster" ? OperatorCopy.SmConfigurationLoaded : OperatorCopy.ConfigurationLoaded, PresentationFeedbackKind.ConfigurationRead);
     }
     public async Task SaveCapabilitiesAsync()
     {

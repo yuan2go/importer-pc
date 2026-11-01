@@ -70,9 +70,12 @@ static partial class Program
         var logs = (SoftwareLogControl)((ContentControl)window.FindName("PageHost")).Content;
         var ranges = Descendants(logs).OfType<DateTimeInput>().ToArray(); Check(ranges.Length == 2, "log page reuses the same two local time controls");
         var applied = (TextBox)typeof(SoftwareLogControl).GetField("effectiveRange", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(logs)!;
-        Check(applied.Text.Contains("待查询") && !applied.Text.Contains("T") && !applied.Text.Contains("+08:00"), "pending log range is readable and does not claim a completed query");
-        Click(logs, "今天"); Click(logs, "查询");
         var queryButton = Descendants(logs).OfType<Button>().Single(b => Equals(b.Content, "查询"));
+        await Until(() => queryButton.IsEnabled && applied.Text.Contains("已应用范围"));
+        Check(!applied.Text.Contains("T") && !applied.Text.Contains("+08:00"), "automatic initial log range uses readable local time");
+        Click(logs, "今天"); await Flush();
+        Check(applied.Text.Contains("待查询"), "editing the default range does not claim that the new filter is applied");
+        Click(logs, "查询");
         for (var i=0; i<200 && !queryButton.IsEnabled; i++) await Task.Delay(25); await Flush();
         var query = (SoftwareLogQuery)typeof(SoftwareLogControl).GetField("query", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(logs)!;
         Check(query.From.EqualsExact(DateTimeOffset.Parse(ranges[0].Timestamp)) && query.ToExclusive.EqualsExact(DateTimeOffset.Parse(ranges[1].Timestamp)), "log query retains the exact canonical endpoints behind local input");

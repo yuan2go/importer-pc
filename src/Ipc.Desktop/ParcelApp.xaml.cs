@@ -153,7 +153,7 @@ public partial class App : System.Windows.Application
 #endif
             if (window is Ipc.Application.ParcelFlow.Desktop.ShellWindow shell) { shell.ReopenOwnerAsync = ReopenStopped; shell.OpenRetentionOwnerAsync = OpenRetentionStopped; }
 #if SPORTMASTER
-            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) { station.ReopenOwnerAsync = ReopenStopped; station.OpenRetentionOwnerAsync = OpenRetentionStopped; }
+            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) { station.ReopenOwnerAsync = ReopenStopped; station.OpenRetentionOwnerAsync = OpenRetentionStopped; station.OpenMaintenanceOwnerAsync = OpenMaintenanceStopped; }
 #endif
             MainWindow = window; window.Show(); startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
@@ -204,6 +204,20 @@ public partial class App : System.Windows.Application
         if (runtime is not null) throw new InvalidOperationException("原实例尚未释放，不能重开");
         ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
         Dispatcher.BeginInvoke(new Action(async () => await StartSelected()));
+        return Task.CompletedTask;
+    }
+    Task OpenMaintenanceStopped()
+    {
+        if (runtime is not null) throw new InvalidOperationException("原实例尚未释放，不能进入离线维护");
+        ShutdownMode = ShutdownMode.OnExplicitShutdown; startup = new ParcelStartupWindow(); MainWindow = startup;
+        Dispatcher.BeginInvoke(new Action(async () =>
+        {
+            var center = new MaintenanceCenterWindow(selected!.Business); MainWindow = center; center.ShowDialog();
+            selected = selected with { Business = center.SelectedLaunch };
+            MainWindow = startup;
+            if (center.RetryRequested) await StartSelected();
+            else { startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show(); }
+        }));
         return Task.CompletedTask;
     }
     Task OpenRetentionStopped()

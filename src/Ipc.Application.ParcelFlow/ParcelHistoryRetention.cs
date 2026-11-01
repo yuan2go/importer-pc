@@ -107,7 +107,7 @@ public sealed partial class ParcelRepository
         var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(directory, "configuration.json")));
         if (envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
-        if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Use the current DB10 format; use a fresh data directory");
+        if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Use the current DB11 format; use a fresh data directory");
         phase("InitializeRepository");
         using var repository = new ParcelRepository(directory, flow.Id, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");
@@ -142,9 +142,9 @@ public sealed partial class ParcelRepository
         authority();
         return result;
     }
-    internal ParcelRetentionResult ExpireHistoryCore(FlowDefinition flow, int days, DateTimeOffset now, string backupHash, Action authority)
+    internal ParcelRetentionResult ExpireHistoryCore(FlowDefinition flow, int days, DateTimeOffset now, string backupHash, Action authority, bool onlineOwned = false, int maximumOperations = int.MaxValue, int maximumInputs = int.MaxValue)
     {
-        if (days is < 7 or > 30 || !Paused || StorageVersion != ParcelRepository.CurrentStorageVersion) throw new InvalidOperationException("Invalid retention maintenance state");
+        if (days is < 7 or > 30 || (!Paused && !onlineOwned) || StorageVersion != ParcelRepository.CurrentStorageVersion) throw new InvalidOperationException("Invalid retention maintenance state");
         var cutoff = now.AddDays(-days); var run = Wire.Id(); long removed = 0, inputs = 0, cursor = 0;
         PrepareRetentionCommandOwners();
         using (var start = db.CreateCommand())
@@ -162,9 +162,10 @@ public sealed partial class ParcelRepository
                 c.Parameters.AddWithValue("$after", cursor); c.Parameters.AddWithValue("$cutoff", cutoff.ToString("O"));
                 using var r = c.ExecuteReader(); while (r.Read()) candidates.Add((r.GetInt64(0), r.GetString(1)));
             }
-            if (candidates.Count == 0) break;
+            if (candidates.Count == 0 || removed >= maximumOperations) break;
             foreach (var candidate in candidates)
             {
+                if (removed >= maximumOperations) break;
                 cursor = candidate.Sequence; var op = ReadOperation(candidate.Id)!;
                 if (!RetentionSettled(op, flow) || !RetentionClear(op.Id, cutoff)) continue;
                 // Archive must have removed all redundant spool files before deleting
@@ -178,6 +179,7 @@ public sealed partial class ParcelRepository
                 authority(); using var tx = db.BeginTransaction();
                 using var c = db.CreateCommand(); c.Transaction = tx;
                 c.Parameters.AddWithValue("$id", op.Id); c.Parameters.AddWithValue("$run", run); c.Parameters.AddWithValue("$at", now.ToString("O")); c.Parameters.AddWithValue("$admission", op.AdmissionId);
+                RetainOperationStatistics(op, tx);
                 c.CommandText = "INSERT INTO parcel_retired_operations SELECT id,body_hash,$at,$run FROM parcel_archives WHERE id=$id"; c.ExecuteNonQuery();
                 c.CommandText = "SELECT id,body FROM parcel_measurements WHERE admission=$admission";
                 List<(string Id, string Hash)> measurements = []; using (var r = c.ExecuteReader()) while (r.Read()) measurements.Add((r.GetString(0), Wire.Hash(r.GetString(1))));
@@ -213,7 +215,7 @@ public sealed partial class ParcelRepository
                 select.Parameters.AddWithValue("$cursor", inputCursor); select.Parameters.AddWithValue("$cutoff", cutoff.ToString("O"));
                 using var r = select.ExecuteReader(); while (r.Read()) expired.Add((r.GetInt64(0), r.GetString(1)));
             }
-            if (expired.Count == 0) break;
+            if (expired.Count == 0 || inputs >= maximumInputs) break;
             using var tx = db.BeginTransaction();
             using var delete = db.CreateCommand(); delete.Transaction = tx;
             delete.CommandText = "INSERT INTO parcel_retired_inputs SELECT id,body_hash,state,$at FROM parcel_ingress WHERE id=$id; DELETE FROM parcel_audit WHERE seq IN (SELECT seq FROM parcel_ingress_audits WHERE input=$id); DELETE FROM parcel_ingress_audits WHERE input=$id; DELETE FROM parcel_ingress WHERE id=$id";
@@ -221,7 +223,7 @@ public sealed partial class ParcelRepository
             delete.Prepare();
             foreach (var input in expired)
             {
-                authority(); idParameter.Value = input.Id; delete.ExecuteNonQuery();
+                authority(); RetainInputStatistics(input.Id, tx); idParameter.Value = input.Id; delete.ExecuteNonQuery();
                 Boundary?.Invoke("AfterRetentionInputDelete");
             }
             Boundary?.Invoke("BeforeRetentionInputCommit"); authority(); tx.Commit();

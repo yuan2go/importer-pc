@@ -165,6 +165,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string reason = "", backup = "", restoreRoot = "", backupCatalogRoot = "";
     public BusinessLaunch SelectedLaunch { get; private set; }
     IManagementMode ManagementMode => ParcelStartupServices.ManagementMode(SelectedLaunch);
+    public bool OpenRecoveryScenario { get; set; }
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
     public bool ConfigurationSaved { get; private set; }
@@ -668,7 +669,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     if (selectedTask == 4) refreshReview?.Invoke(); UpdateActions();
                 };
                 sharedEditor.MaintenanceRequested += (_, _) => sharedEditor.ShowReview();
-                sharedEditor.SelectCategory(new[] { 1, 0, 2, 3, 4 }[Math.Clamp(selectedTask, 0, 4)]);
+                sharedEditor.SelectCategory(new[] { 0, 1, 2, 3, 4 }[Math.Clamp(selectedTask, 0, 4)]);
                 refreshReview();
             }
         }
@@ -679,6 +680,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Section("3 参数说明", "系统、业务模块、驱动、组件的参数统一在设备与参数页编辑；保存与启动分开。", fields.Skip(policyStart).Take(deviceStart - policyStart));
         Section("4 检查与启动", "检查当前输入，再保存待生效修订并重试启动。未确认配置失败可在恢复维护中受控修复；原失败与原请求保留。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
         Section("恢复与维护", "完整备份、隔离恢复、原机接管和程序维护是独立任务；不会因切换本页执行。原机迁移仍需原根退役和外部责任核对。", fields.Skip(recoveryStart));
+        if (OpenRecoveryScenario) { selectedTask = 4; OpenRecoveryScenario = false; }
         tasks!.SelectedIndex = selectedTask;
         }
         if (!initialConfiguration && tasks is not null) {

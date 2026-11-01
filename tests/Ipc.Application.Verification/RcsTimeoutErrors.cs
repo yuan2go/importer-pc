@@ -73,8 +73,8 @@ static partial class SportmasterRcs
                 new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != genericRuntimeBudget,
                 "omitted component timeout uses the displayed default independently of the generic service budget");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
-            Check(view.Left.AttentionReason == "RCS请求超时，请重新扫描。" && view.Left.OperatorInstruction.Contains("重新扫描", StringComparison.Ordinal) &&
-                view.Left.NextStep.Contains("重新扫描", StringComparison.Ordinal) && view.Left.Slot == "未取得" && !view.Left.SlotAvailable,
+            Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && view.Left.OperatorInstruction.Contains("勿重复上件", StringComparison.Ordinal) &&
+                view.Left.NextStep.Contains("勿重复上件", StringComparison.Ordinal) && view.Left.Slot == "未取得" && !view.Left.SlotAvailable,
                 "timeout guidance is visible in the work area with no stale chute");
             await Task.Delay(2600);
             var afterLateResponse = (await app.SnapshotAsync()).Operations.Single();
@@ -125,7 +125,7 @@ static partial class SportmasterRcs
             using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(root, "body-timeout-presentation", "data", "Simulation", template.StationId, "sportmaster", "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
             db.Open(); using var query = db.CreateCommand(); query.CommandText = "SELECT body FROM parcel_operations WHERE id=$id"; query.Parameters.AddWithValue("$id", op.Id);
             var persisted = Wire.Decode<ParcelOperation>((string)query.ExecuteScalar()!);
-            Check(view.Left.AttentionReason == "RCS请求超时，请重新扫描。" && persisted.Wcs!.Replies.Single().HttpResponse is { Complete: false } &&
+            Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && persisted.Wcs!.Replies.Single().HttpResponse is { Complete: false } &&
                 Encoding.UTF8.GetString(Convert.FromBase64String(persisted.Wcs.Replies.Single().HttpResponse!.BodyBase64)) == "{\"requestId\":" &&
                 op.Wcs!.Replies.Single().HttpResponse is null,
                 "application/component deadline race preserves the response prefix and still shows rescan guidance");

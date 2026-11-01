@@ -49,7 +49,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
         body.Children.Add(Heading(Title, UiTypography.PageTitle, 0));
-        body.Children.Add(Note(authorizationOnly ? "授权用于当前维护操作，业务服务仍会核验资格。" : "保存后需重启软件生效；重启前继续使用当前设置。"));
+        body.Children.Add(Note(authorizationOnly ? "授权用于当前维护操作，业务服务仍会核验资格。" : vm.ConfigurationActivationGuidance));
         body.Children.Add(outcome); AutomationProperties.SetLiveSetting(outcome, AutomationLiveSetting.Polite);
         if (!authorizationOnly)
         {
@@ -129,6 +129,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         activate.IsEnabled = vm.CanRequestActivation;
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
+            "Effective" => "条码规则已保存并生效，无需重启。已受理作业继续使用原规则。",
             "PendingRestart" => "更改已保存，尚未生效。点“重启软件使设置生效…”后才使用新设置。",
             "Unchanged" => "设置与当前运行配置一致，没有创建待重启修订。",
             "Unknown" => "暂时无法确认保存结果。请核对上次保存，禁止重复提交。",

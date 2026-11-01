@@ -43,7 +43,7 @@ static partial class Program
             await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
             Check(vm.Left.Operation?.OperatorInput?.Kind == "PdaKeyboard" && h.Peer.Requests.Count == 1, "visible source selection reaches the guarded independent command");
             Check(vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Accepted && vm.Left.ResultBackground == OperatorTokens.Success && vm.Left.ResultForeground == OperatorTokens.Surface && slot.Text == "L-07", "current accepted identity maps to solid green with white full destination");
-            Check(left.FindName("TaskFields") is null && vm.Left.WaveNo == "未提供", "auxiliary fields leave the work surface; missing optional values remain honest");
+            Check(left.FindName("TaskFields") is null && vm.Left.WaveNo == OperatorCopy.NotReturned, "auxiliary fields leave the work surface; missing optional values remain honest");
             var cues = typeof(SupplyStationPosition).GetProperty("SuccessCueCount", BindingFlags.Instance | BindingFlags.NonPublic)!;
             await Until(() => (int)cues.GetValue(left)! == 1);
             for (var i = 0; i < 5; i++) await vm.RefreshAsync(); await Flush();
@@ -79,7 +79,7 @@ static partial class Program
             h.Peer.Mode = "reject";
             entry.Clear(); entry.Text = "000UX180003"; submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.Operation?.State == ParcelState.WcsRejected && !vm.Busy);
-            Check(vm.Left.ResultBackground == OperatorTokens.Danger && !vm.Left.DisplaySlotVisible && vm.Left.DisplayNextStep.Contains("暂勿投递") && vm.Left.DisplayPresentation.Icon == "!", "rejection uses red, a symbol and explicit package handling without retaining old chute");
+            Check(vm.Left.ResultBackground == OperatorTokens.Danger && !vm.Left.DisplaySlotVisible && vm.Left.DisplayNextStep == OperatorCopy.RejectedStep && vm.Left.DisplayPresentation.Icon == "!", "rejection uses red, a symbol and explicit package handling without retaining old chute");
             CaptureInternal(evidence, "operator18-rejected-800", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); Click(window, "记录"); await Until(() => vm.SelectedPage == "history" && !vm.HistoryLoading);
             await Flush(); var history = Descendants(window).OfType<HistoryPage>().Single();

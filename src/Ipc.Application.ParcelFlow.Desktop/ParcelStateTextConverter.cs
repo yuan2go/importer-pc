@@ -13,10 +13,10 @@ public sealed class ParcelStateTextConverter : IValueConverter
         if (!Enum.TryParse<ParcelState>(value?.ToString(), out var state)) return value ?? "未取得";
         return state switch
         {
-            ParcelState.Prepared => "原阶段待执行", ParcelState.ResolvingWcs => "正在请求格口",
-            ParcelState.SlotResolved => "格口已取得", ParcelState.WcsUnknown => "上游结果待核对",
-            ParcelState.WcsRejected => "上游明确拒绝", ParcelState.Blocked => "作业阻断",
-            ParcelState.UnpackRequired => "需拆包检查", ParcelState.Abandoned => "未发送意图已处置",
+            ParcelState.Prepared => "待处理", ParcelState.ResolvingWcs => "正在获取格口",
+            ParcelState.SlotResolved => "格口已取得", ParcelState.WcsUnknown => "格口未确认",
+            ParcelState.WcsRejected => "未分配格口", ParcelState.Blocked => "已阻断",
+            ParcelState.UnpackRequired => "需拆包检查", ParcelState.Abandoned => "未发送 · 已撤销",
             ParcelState.WaitingWeight => "等待有效重量", ParcelState.WeightTimedOut => "称重超时",
             ParcelState.CapturingImage => "正在采集图像", ParcelState.UploadingImage => "正在上传原图",
             ParcelState.ImageUnknown => "图像阶段待核对", ParcelState.ImageRejected => "图像阶段拒绝",

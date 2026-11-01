@@ -151,8 +151,8 @@ static partial class Program
                 if (vm is SupplyStationViewModel station)
                 {
                     var left = station.Left; var right = station.Right;
-                    Check(left.Status.Contains(state == StageState.Rejected ? "拒绝" : "核对") && left.Presentation.Foreground == (state == StageState.Rejected ? "#B52F38" : "#895509"), state + " result text and semantic color agree with operation facts");
-                    Check(left.AttentionReason.Contains("合成") && left.NextStep.Contains(state == StageState.Rejected ? "拒绝" : "请勿重复") && !left.CanContinue, state + " explains reason and next step without permitting resend");
+                    Check(left.Status.Contains(state == StageState.Rejected ? "未分配格口" : "格口未确认") && left.Presentation.Foreground == (state == StageState.Rejected ? "#B52F38" : "#895509"), state + " result text and semantic color agree with operation facts");
+                    Check(left.AttentionReason.Contains("合成") && left.NextStep.Contains(state == StageState.Rejected ? "按原因处理" : "勿重复上件") && !left.CanContinue, state + " explains reason and next step without permitting resend");
                     Check(!station.Snapshot!.Paused && right.CanAdmit && !right.HasUncertainOriginal && !right.CurrentTaskAvailable, state + " remains local to left; right idle position remains ready");
                     Check(left.CanAdmit == (state == StageState.Rejected), state + " admission follows application position availability");
                 }

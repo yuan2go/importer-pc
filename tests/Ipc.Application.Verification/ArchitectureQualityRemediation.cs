@@ -90,7 +90,7 @@ static partial class ArchitectureQualityRemediation
                 s.Operations.All(o => o.AdmissionId != "expired") && s.Positions!.Single(p => p.Id == "left").CurrentOperation is null,
                 "queue-expired current input is durable rejection without an operation/request or borrowed prior slot");
             var vm = new SupplyStationViewModel(app); await vm.RefreshAsync();
-            Check(vm.Left.Barcode == "333" && !vm.Left.SlotAvailable && !vm.Left.NextStep.Contains("按本次格口投递") && vm.Right.SlotAvailable,
+            Check(vm.Left.Barcode == "333" && !vm.Left.SlotAvailable && !vm.Left.NextStep.Contains("按格口投递") && vm.Right.SlotAvailable,
                 "actual shared UI projection suppresses left delivery instruction while right stays independent");
             var reader = factory.Readers![c.Reader.DeviceId]; var revision = s.Revision;
             reader.Raw(input.Observation with { Id = Wire.Id(), SourceEventId = "old-sequence", Codes = ["OLD"] });

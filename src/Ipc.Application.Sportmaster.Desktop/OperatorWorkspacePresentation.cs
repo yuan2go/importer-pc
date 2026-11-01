@@ -23,14 +23,18 @@ public sealed partial class SupplyStationViewModel
     public string SetupHeading => $"还差 {MissingConnections.Length} 项连接配置";
     public string SetupItems => string.Join("、", MissingConnections);
     public string SetupInstruction => "配置并启用 RCS 后，可手动输入条码取格口；不要求配置或连接相机。";
+    // Lead with the position that needs attention; a positive phrase never sits on a warning band.
+    // PositionName is the shared ParcelViewModel display mapping.
     public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "供包已暂停" :
         Snapshot?.Positions is { } positions && positions.Any(p => p.Admit || p.BarcodeInput?.Manual == true)
-            ? positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => p.Admit || p.BarcodeInput?.Manual == true).Select(p => p.Id == "left" ? "左投递位" : p.Id == "right" ? "右投递位" : p.Id)) + "可以供包" : "暂不能供包";
-    public string OperatorNotice => !Fresh ? "等待状态恢复，请勿依据旧格口投递。" :
+            ? positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包" : "暂不能供包";
+    public string OperatorNotice => !Fresh ? OperatorCopy.StaleStep :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :
         Snapshot?.Paused == true ? "本件暂勿投递，等待恢复供包。" :
-        Snapshot?.Positions?.Any(p => !p.Admit) == true ? "请按对应位置的提示处理。" : "";
+        Snapshot?.Positions is { } shown && shown.Any(p => p.Admit) && shown.Any(p => !p.Admit)
+            ? string.Join("、", shown.Where(p => p.Admit).Select(p => PositionName(p.Id))) + "照常作业；其余投递位按卡片提示处理。" :
+        Snapshot?.Positions?.Any(p => !p.Admit) == true ? "请按各投递位卡片上的提示处理。" : "";
     bool HasConfiguredWorkConnection => Snapshot is { } s &&
         (ParcelBindings.Readers(s.Configuration.Effective).Any(r => !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, r.DeviceId)) ||
          s.Configuration.Effective.Wcs is { } w && !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId));

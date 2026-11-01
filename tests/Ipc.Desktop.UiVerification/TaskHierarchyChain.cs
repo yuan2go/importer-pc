@@ -115,27 +115,27 @@ static partial class Program
         await Record("same-code-normal-1366"); await SetClient(window, 800, 420);
         var posts = peer.Exchanges.Count;
         await Observe("left", "entity-l-invalid", "INVALID");
-        await NativeResult("invalid-after-slot-800", "条码筛选拒绝 · 没有匹配码", "INVALID", false);
+        await NativeResult("invalid-after-slot-800", "条码不符合规则", "INVALID", false);
         Check(vm.Left.Input!.OperationId is null && vm.Left.Operation is null && vm.Left.InputFailed && !vm.Left.CurrentTaskAvailable &&
             peer.Exchanges.Count == posts && vm.Right.OperationId == rightOriginal.Id && vm.Right.Slot == "R-09", "invalid new entity creates no operation/POST, cannot borrow old destination, right remains unchanged");
         Check(Wire.Encode((await runtime.SnapshotAsync()).Operations.Single(o => o.Id == original.Id).Wcs!.Request) == Wire.Encode(original.Wcs!.Request) && !vm.Left.CanReconcile,
             "completed original request remains in history, not in the rejected new input's disabled detail action");
-        Check(vm.Left.NextStep.Contains("作业记录") && !vm.Left.NextStep.Contains("请查看详情") && !vm.Left.AttentionReason.Contains("NoMatchingCode"),
+        Check(vm.Left.NextStep.Contains("重新扫描") && !vm.Left.NextStep.Contains("请查看详情") && !vm.Left.AttentionReason.Contains("NoMatchingCode"),
             "rejected input directs the operator to reachable history and explains filtering in Chinese");
 
         await Observe("left", "entity-l2", "000124"); await Until(() => vm.Left.Slot == "L-08");
-        Check(vm.Left.WaveNo == "回执未包含" && vm.Left.TaskId == "TASK-L2" && vm.Left.SkuId == "SKU-L2" && vm.Left.ResponseQuantity == "回执未包含", "missing optional wave/quantity never inherit L1 or request quantity; required task/SKU remain current");
+        Check(vm.Left.WaveNo == "未返回" && vm.Left.TaskId == "TASK-L2" && vm.Left.SkuId == "SKU-L2" && vm.Left.ResponseQuantity == "未返回", "missing optional wave/quantity never inherit L1 or request quantity; required task/SKU remain current");
         await Record("missing-fields-800");
         await Observe("left", "entity-l3", "000125"); await peer.PendingEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
         await Observe("right", "entity-r2", "000124"); await Until(() => vm.Right.Slot == "R-10");
-        await NativeResult("pending-left-right-success-800", "正在取格口", "000125", false);
+        await NativeResult("pending-left-right-success-800", "正在获取格口", "000125", false);
         Check(!vm.Left.CanAdmit && !vm.Left.CanContinue && vm.Right.CanAdmit && vm.Right.Slot == "R-10", "pending left does not block right and exposes no resend/continuation");
         peer.ReleasePending.TrySetResult(); await Until(() => vm.Left.Slot == "L-09");
         await Observe("left", "entity-l4", "000126"); await Until(() => vm.Left.Operation?.State == ParcelState.WcsRejected);
-        await NativeResult("rejected-800", "业务拒绝", "000126", false);
+        await NativeResult("rejected-800", "未分配格口", "000126", false);
         Check(vm.Left.AttentionReason == "合成格口关闭" && vm.Left.Operation!.Wcs!.Replies.Last().Destination?.Code == "SYNTH_CHUTE_CLOSED" && vm.Right.Slot == "R-10", "explicit business rejection displays the original message, retains its code and preserves the healthy right result");
         await Observe("left", "entity-l5", "000127"); await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown);
-        await NativeResult("unknown-800", "结果待核对", "000127", false);
+        await NativeResult("unknown-800", "格口未确认", "000127", false);
         var unknown = vm.Left.Operation!; posts = peer.Exchanges.Count;
         Check(vm.Left.AttentionReason == "RCS未返回有效格口，请核对异常信息。", "unknown explains the invalid RCS destination in the primary result");
         Check(unknown.Wcs!.State == StageState.Unknown && !vm.Left.CanAdmit && !vm.Left.CanContinue && vm.Right.CanAdmit, "response missing required taskId leaves unknown custody on left, not a usable partial result or global pause");
@@ -143,15 +143,15 @@ static partial class Program
         await runtime.ReconcileAsync(unknown.Id); await vm.RefreshAsync();
         Check(peer.Exchanges.Count == posts && vm.Left.Operation!.Wcs!.Attempts == 1 && vm.Left.Operation.Wcs.State == StageState.Unknown, "unsupported RCS reconciliation cannot resend or clear unknown");
         await Observe("left", "entity-l6-blocked", "000128");
-        await NativeResult("blocked-after-unknown-800", "本次输入未准入", "000128", false);
+        await NativeResult("blocked-after-unknown-800", "本次扫描未受理", "000128", false);
         Check(vm.Left.OperationId == unknown.Id && vm.Left.Input!.OperationId is null && peer.Exchanges.Count == posts, "valid new barcode blocked by unknown retains original request owner");
-        Check(vm.Left.AttentionReason.Contains("当前：原作业结果待核对"), "blocked new input separates its admission outcome from current unresolved custody");
+        Check(vm.Left.AttentionReason.Contains("原因：上一件格口未确认"), "blocked new input separates its admission outcome from current unresolved custody");
 
         // Invalid receipt identity is injected at the capability boundary, not in a snapshot.
         // This explicitly synthetic port case is NOT a claim about an RCS query capability.
         await Observe("right", "entity-r-conflict", "000129"); await Until(() => vm.Right.Operation?.Wcs?.State == StageState.Conflict);
-        Check(vm.Right.Operation!.State == ParcelState.Blocked && vm.Right.Status == "回执冲突 · 待核对" && !vm.Right.CurrentTaskAvailable && !vm.Right.CanAdmit && !vm.Right.CanContinue, "real Application rejects invalid original-stage identity as Conflict, with no destination or repeat permission");
-        Check(vm.Right.AttentionReason.Contains("身份不符或存在矛盾"), "conflict explains incompatible receipt evidence, distinct from missing acceptance");
+        Check(vm.Right.Operation!.State == ParcelState.Blocked && vm.Right.Status == "格口结果矛盾" && !vm.Right.CurrentTaskAvailable && !vm.Right.CanAdmit && !vm.Right.CanContinue, "real Application rejects invalid original-stage identity as Conflict, with no destination or repeat permission");
+        Check(vm.Right.AttentionReason.Contains("互相矛盾"), "conflict explains incompatible receipt evidence, distinct from missing acceptance");
         await Record("conflict-right-800");
 
         // A normal, fresh operation snapshot cannot prove that a global command succeeded.

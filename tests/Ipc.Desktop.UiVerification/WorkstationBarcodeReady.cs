@@ -77,7 +77,7 @@ static partial class Program
                 "accepted result retains picture entry and the next manual input remains visible");
             var sentBefore = factory.Sends;
             Part<Button>(left, "SubmitBarcode").RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
-            Check(factory.Sends == sentBefore && Part<TextBlock>(left, "InputFeedback").Text.Contains("已读取条码"), "submitting an unedited camera/result display never creates another request");
+            Check(factory.Sends == sentBefore && Part<TextBlock>(left, "InputFeedback").Text.Contains("上一件的条码"), "submitting an unedited camera/result display never creates another request");
             var rightEntry = Part<TextBox>(right, "BarcodeEntry"); ((MenuItem)right.FindName("PdaSource")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             rightEntry.Focus(); rightEntry.Text = "000123450002";
             void Enter() => rightEntry.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(rightEntry), Environment.TickCount, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
@@ -89,7 +89,7 @@ static partial class Program
             await Until(() => vm.Left.Operation?.ParcelCode == "000123450004" && vm.Left.SlotAvailable && vm.Left.CanSubmitBarcode);
             Check(Part<TextBlock>(left, "InputFeedback").Text.Contains("000123450004"), "draft notice follows the actual task identity when a new camera result arrives");
             var sends = factory.Sends; Part<Button>(left, "SubmitBarcode").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => Part<TextBlock>(left, "InputFeedback").Text.StartsWith("需重新核对"));
+            await Until(() => Part<TextBlock>(left, "InputFeedback").Text.StartsWith("本位状态已变化"));
             Check(factory.Sends == sends && leftEntry.Text == "000123450003" && vm.Left.Operation!.ParcelCode == "000123450004",
                 "camera update during a draft preserves it and rejects stale manual basis without another request");
             foreach (var size in new[] { (1024d, 768d), (800d, 420d) })

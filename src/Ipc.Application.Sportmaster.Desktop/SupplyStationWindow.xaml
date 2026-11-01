@@ -252,7 +252,7 @@
       </Style>
      </Border.Style>
      <DockPanel>
-      <Button Content="收起回执" Click="DismissGlobalFeedback_Click" DockPanel.Dock="Right" MinHeight="44" Padding="8,4" FontSize="{x:Static type:UiTypography.Body}" Margin="8,0,0,0"/>
+      <Button Content="关闭提示" Click="DismissGlobalFeedback_Click" DockPanel.Dock="Right" MinHeight="44" Padding="8,4" FontSize="{x:Static type:UiTypography.Body}" Margin="8,0,0,0"/>
       <TextBox x:Name="GlobalOperationFeedback" MinHeight="0" Padding="0" VerticalAlignment="Center" Text="{Binding GlobalOperationFeedback,Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#25384B" TextWrapping="Wrap" MaxHeight="44" VerticalScrollBarVisibility="Auto" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="当前全局操作回执，可选择复制" AutomationProperties.LiveSetting="Assertive"/>
      </DockPanel>
     </Border>
@@ -443,7 +443,7 @@
    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <StackPanel>
      <TextBlock Text="{Binding ViewportStatus}" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}"/>
-     <TextBlock Text="有效客户区至少需要 800 × 420 逻辑像素。请最大化窗口后操作；相机采集与当前任务继续运行。" FontSize="{x:Static type:UiTypography.Body}" Margin="0,16"/>
+     <TextBlock Text="窗口太小，无法完整显示作业信息（至少需要 800 × 420）。请最大化窗口；相机和当前任务不受影响。" FontSize="{x:Static type:UiTypography.Body}" Margin="0,16"/>
      <TextBlock Text="{Binding Status}"/>
      <TextBlock Text="{Binding Message}"/>
      <TextBlock Text="{Binding ReadStatus}" Margin="0,12"/>

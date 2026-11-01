@@ -7,16 +7,18 @@ public enum ParcelPresentationTone { Neutral, Pending, Accepted, Rejected, Unkno
 public sealed record ParcelStatusPresentation(string Text, string Icon, string Foreground, string Background, string Border)
 {
     public ParcelPresentationTone Tone { get; init; }
+    public bool NeedsAttention => Tone is ParcelPresentationTone.Rejected or ParcelPresentationTone.Unknown;
 }
 
 public static class ParcelPresentation
 {
+    public const string RejectedInk = "#B52F38", UnknownInk = "#895509";
     public static ParcelStatusPresentation Neutral(string text) => new(text, "○", "#536577", "#F6F8FA", "#D8E0E7") { Tone = ParcelPresentationTone.Neutral };
     public static ParcelStatusPresentation Pending(string text) => new(text, "◷", "#205FCE", "#EEF4FF", "#BDD2F3") { Tone = ParcelPresentationTone.Pending };
     public static ParcelStatusPresentation Accepted(string text) => new(text, "✓", "#147450", "#EDF7F1", "#A7D6BD") { Tone = ParcelPresentationTone.Accepted };
-    public static ParcelStatusPresentation Rejected(string text) => new(text, "!", "#B52F38", "#FDF0F0", "#E7B0B4") { Tone = ParcelPresentationTone.Rejected };
-    public static ParcelStatusPresentation Unknown(string text) => new(text, "?", "#895509", "#FFF5DF", "#E6C889") { Tone = ParcelPresentationTone.Unknown };
-    public static ParcelStatusPresentation Stale() => new("旧状态已失效 · 等待有效快照", "⌛", "#536577", "#EDF0F3", "#9CAAB8") { Tone = ParcelPresentationTone.Stale };
+    public static ParcelStatusPresentation Rejected(string text) => new(text, "!", RejectedInk, "#FDF0F0", "#E7B0B4") { Tone = ParcelPresentationTone.Rejected };
+    public static ParcelStatusPresentation Unknown(string text) => new(text, "?", UnknownInk, "#FFF5DF", "#E6C889") { Tone = ParcelPresentationTone.Unknown };
+    public static ParcelStatusPresentation Stale() => new("状态中断 · 旧格口已失效", "⌛", "#536577", "#EDF0F3", "#9CAAB8") { Tone = ParcelPresentationTone.Stale };
     public static bool RcsTimedOut(ParcelOperation? op) => op?.State == ParcelState.WcsUnknown &&
         op.Wcs is { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
         (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||
@@ -37,23 +39,23 @@ public static class ParcelPresentation
     public static ParcelStatusPresentation Operation(ParcelOperation? op, bool fresh)
     {
         if (!fresh) return Stale();
-        if (op is null) return Neutral("等待包裹入场");
+        if (op is null) return Neutral("等待包裹");
         if (RcsTimedOut(op)) return Unknown("RCS请求超时，请重新扫描。");
         if (op.State == ParcelState.WcsRejected && RcsException(op) is { } message) return Rejected(message);
         return op.State switch
         {
-            ParcelState.SlotResolved => Accepted("上游格口已取得"),
+            ParcelState.SlotResolved => Accepted("格口已取得"),
             ParcelState.PlcAccepted => Accepted("控制器业务已接受 · 物理完成待核对"),
             ParcelState.PhysicalCompleted => Accepted("组件报告物理完成 · 见原回执"),
-            ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.ImageUnknown => Unknown("结果待核对 · 请勿重复放货"),
-            ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.ImageRejected => Rejected("业务明确拒绝 · 查看原始原因"),
-            ParcelState.Blocked => Rejected("作业阻断 · 保留现场包裹"),
+            ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.ImageUnknown => Unknown("格口未确认 · 勿重复上件"),
+            ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.ImageRejected => Rejected("未分配格口 · 查看原因"),
+            ParcelState.Blocked => Rejected("已阻断 · 包裹暂放一旁"),
             ParcelState.WeightTimedOut => Rejected("本件称重超时"),
-            ParcelState.UnpackRequired => Unknown("需拆包 · 本位等待检查处置"),
-            ParcelState.Abandoned => Neutral("未发送意图已处置 · 原事实保留"),
+            ParcelState.UnpackRequired => Unknown("需拆包检查"),
+            ParcelState.Abandoned => Neutral("未发送 · 已撤销"),
             ParcelState.WaitingWeight => Pending("等待本件有效重量"),
-            ParcelState.Prepared => Pending("原阶段待执行"),
-            ParcelState.ResolvingWcs => Pending("上游格口处理中"),
+            ParcelState.Prepared => Pending("待处理"),
+            ParcelState.ResolvingWcs => Pending("正在获取格口"),
             ParcelState.SubmittingPlc => Pending("控制器请求处理中"),
             ParcelState.CapturingImage => Pending("正在采集本件图像"),
             ParcelState.UploadingImage => Pending("正在上传原图"),
@@ -65,21 +67,21 @@ public static class ParcelPresentation
     {
         ParcelInputOutcome.Rejected => input.BarcodeSelection?.Outcome switch
         {
-            "NoMatchingCode" => "条码筛选拒绝 · 没有匹配码", "ExcludedCodes" => "条码筛选拒绝 · 命中排除规则", "AmbiguousCodes" => "条码筛选拒绝 · 多码歧义",
-            "IncompleteCandidates" => "候选不完整 · 拒绝准入", "FilterTimeout" => "条码筛选超时 · 拒绝准入", "InvalidPattern" => "筛选规则无效 · 拒绝准入",
-            _ => input.Observation.Kind == "NoRead" || input.Observation.Codes.Length == 0 ? "本次识别失败 · 未取得包裹号" : input.Observation.Codes.Length > 1 ? "本次识别失败 · 多个候选码" : "本次识别未通过校验"
+            "NoMatchingCode" => "条码不符合规则", "ExcludedCodes" => "条码被排除规则拦截", "AmbiguousCodes" => "读到多个符合规则的条码",
+            "IncompleteCandidates" => "条码读取不完整", "FilterTimeout" => "条码判断超时", "InvalidPattern" => "条码规则配置错误",
+            _ => input.Observation.Kind == "NoRead" || input.Observation.Codes.Length == 0 ? "未读到条码" : input.Observation.Codes.Length > 1 ? "读到多个条码" : "条码校验未通过"
         },
-        ParcelInputOutcome.Blocked => "本次输入未准入 · 请核对阻断原因",
-        ParcelInputOutcome.Duplicate => "重复输入 · 未创建新作业",
-        _ => "本次输入已准入"
+        ParcelInputOutcome.Blocked => "本次扫描未受理",
+        ParcelInputOutcome.Duplicate => "重复扫描 · 已忽略",
+        _ => "本次扫描已受理"
     };
     public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted;
     public static string InputReason(ParcelInputSnapshot input) =>
         input.Outcome == ParcelInputOutcome.Rejected && input.BarcodeSelection is { } selection &&
         input.Reason == selection.Outcome + "; no operation or external intent created"
-            ? ChineseInterfaceText.Status(selection.Outcome) + "；本次未创建作业或请求。"
+            ? ChineseInterfaceText.Status(selection.Outcome) + "；本件未发送。"
             : input.Reason == "Position=" + input.PositionId + "; paused/faulted/unresolved responsibility or operator not authorized"
-                ? "本次准入条件未满足。" : ChineseInterfaceText.Notice(input.Reason);
+                ? "本位当前不能受理新包裹。" : ChineseInterfaceText.Notice(input.Reason);
     public static ParcelStatusPresentation InputPresentation(ParcelInputSnapshot input) => IsInputFailure(input) ? Rejected(InputText(input)) : Neutral(InputText(input));
     public static string InputSummary(ParcelInputSnapshot? input) => input is null ? "尚无本位可信观察" :
         "最新观察：" + InputText(input) + "\n原码：" + InputCode(input) + "\n输入方式：" + (input.Observation.OperatorInput is { } manual ?
@@ -128,9 +130,9 @@ public partial class ParcelViewModel
     public string CurrentInputSummary => ParcelPresentation.InputSummary(CurrentInput);
     public string CurrentBarcode => CurrentInputUnadmitted ? ParcelPresentation.InputCode(CurrentInput!) : Current?.ParcelCode ?? "等待包裹";
     public string CurrentInputReason => CurrentInputUnadmitted ? CurrentInput!.Reason : "";
-    public string CurrentResponsibility => CurrentInputUnadmitted && Current is { } op ? "当前保留原作业：" + op.ParcelCode + " · " + op.Id + " · " + ParcelPresentation.Operation(op, Fresh).Text + "；原观察 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "；其结果不属于本次观察。" : "";
+    public string CurrentResponsibility => CurrentInputUnadmitted && Current is { } op ? "上一件仍待处理：" + op.ParcelCode + " · " + ParcelPresentation.Operation(op, Fresh).Text + "（作业 " + op.Id + "，扫描于 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "）；该结果不属于本次扫描。" : "";
     public ParcelStatusPresentation CurrentPresentation => !Fresh ? ParcelPresentation.Stale() : CurrentInputUnadmitted ? ParcelPresentation.InputPresentation(CurrentInput!) : ParcelPresentation.Operation(Current, true);
-    public ParcelStatusPresentation StatusPresentation => !Fresh ? ParcelPresentation.Stale() : Snapshot?.Operations.Any(o => new[] { o.Wcs, o.Plc, o.Capture, o.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict)) == true ? ParcelPresentation.Unknown("有原请求待核对 · 其他投递位按各自守卫作业") : Snapshot?.BlockingReasons.Length > 0 ? ParcelPresentation.Unknown(Status) : Snapshot?.Paused == true ? ParcelPresentation.Neutral("软件已暂停新入场") : ParcelPresentation.Neutral(Status);
+    public ParcelStatusPresentation StatusPresentation => !Fresh ? ParcelPresentation.Stale() : Snapshot?.Operations.Any(o => new[] { o.Wcs, o.Plc, o.Capture, o.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict)) == true ? ParcelPresentation.Unknown("有包裹格口未确认 · 其他投递位照常作业") : Snapshot?.BlockingReasons.Length > 0 ? ParcelPresentation.Unknown(Status) : Snapshot?.Paused == true ? ParcelPresentation.Neutral("维护中 · 暂停接收新包裹") : ParcelPresentation.Neutral(Status);
     public string StructuredDetails => structuredDetailsText;
     static string FormatStructuredDetails(ParcelOperation? op) => op is null ? "选择一条作业查看原作业、请求与回执。" :
         "作业 " + op.Id + "\n投递位 " + (op.PositionId ?? "main") + " · 包裹号 " + op.ParcelCode + "\n实体准入 " + op.AdmissionId +

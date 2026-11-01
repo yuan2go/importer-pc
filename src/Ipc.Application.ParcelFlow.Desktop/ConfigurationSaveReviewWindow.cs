@@ -22,7 +22,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     readonly Expander authentication = new() { Header = "需要时认证维护权限", Margin = new(0, 0, 0, 12) };
     readonly Button save = new() { Name = "ConfirmSaveChanges", Content = "确认保存", MinWidth = 112 };
     readonly Button inspect = new() { Content = "核对保存结果", MinWidth = 112 };
-    readonly Button activate = new() { Content = "检查并停止、重新打开…", MinHeight = 44 };
+    readonly Button activate = new() { Content = "重启软件使设置生效…", MinHeight = 44 };
     readonly TextBox reason = new() { Name = "ChangeReason", AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 72, MaxLength = 1024, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly TextBlock reasonError = new() { Foreground = Brushes.Firebrick, TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed };
     string? localFailure;
@@ -49,7 +49,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
         body.Children.Add(Heading(Title, UiTypography.PageTitle, 0));
-        body.Children.Add(Note(authorizationOnly ? "授权用于当前维护操作，业务服务仍会核验资格。" : "保存后待重启生效，当前作业继续使用运行配置。"));
+        body.Children.Add(Note(authorizationOnly ? "授权用于当前维护操作，业务服务仍会核验资格。" : "保存后需重启软件生效；重启前继续使用当前设置。"));
         body.Children.Add(outcome); AutomationProperties.SetLiveSetting(outcome, AutomationLiveSetting.Polite);
         if (!authorizationOnly)
         {
@@ -129,7 +129,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         activate.IsEnabled = vm.CanRequestActivation;
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
-            "PendingRestart" => "更改已保存，等待重启。保存成功不表示新设置正在运行。",
+            "PendingRestart" => "更改已保存，尚未生效。点“重启软件使设置生效…”后才使用新设置。",
             "Unchanged" => "设置与当前运行配置一致，没有创建待重启修订。",
             "Unknown" => "暂时无法确认保存结果。请核对上次保存，禁止重复提交。",
             "NotSaved" => "本次未保存，已确认原配置修订未改变。检查回执中的原因后再保存。",

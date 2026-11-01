@@ -27,7 +27,7 @@ public partial class SupplyStationPosition : UserControl
             var value = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
             if (submitting || submitted is not null || value is null || value.Any(char.IsControl) ||
                 BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + value.Length > 4096)
-            { e.CancelCommand(); overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "未接纳粘贴：只允许完整单条码，最多4096字符，不能含换行、Tab或控制字符。请清空后重新输入。"; }
+            { e.CancelCommand(); overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "粘贴无效：只能粘贴一个完整条码（不含换行或Tab，最多4096字符）。请清空后重新输入。"; }
         });
     }
     sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation);
@@ -104,7 +104,7 @@ public partial class SupplyStationPosition : UserControl
         inputBasis = new(snapshot.RuntimeId, snapshot.Configuration.Revision, p.Input?.Observation.Id, p.Operation?.Id);
     }
     string DraftNotice => DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p
-        ? "输入尚未提交；下方任务对应已读取条码：" + p.Barcode : "输入尚未提交。";
+        ? "输入未提交；下方格口仍属于上一件 " + p.Barcode + "。" : "输入未提交。";
     void InputChanged(object sender, TextChangedEventArgs e)
     {
         if (BarcodeEntry is null || updatingDisplay || submitting || submitted is not null) return;
@@ -117,14 +117,14 @@ public partial class SupplyStationPosition : UserControl
     void RebaseInput_Click(object sender, RoutedEventArgs e)
     {
         showingDraftNotice = false;
-        if (submitting || submitted is not null) { InputFeedback.Text = "先核对本次提交结果，不可创建第二命令。"; return; }
-        CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = "已更新输入基准，请确认条码属于当前位正在处理的包裹。"; BarcodeEntry.Focus();
+        if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，请先点“查看提交结果”。"; return; }
+        CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = "已确认本位包裹，请重新提交条码。"; BarcodeEntry.Focus();
     }
     void ClearInput_Click(object sender, RoutedEventArgs e)
     {
         showingDraftNotice = false;
-        if (submitting || submitted is not null) { InputFeedback.Text = "先核对本次提交结果，不能通过清空输入解除原责任。"; return; }
-        editing = true; BarcodeEntry.Clear(); overflow = false; inputBasis = null; InputFeedback.Text = "已清空本窗输入，当前作业保持。"; BarcodeEntry.Focus();
+        if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，暂不能清空；请先点“查看提交结果”。"; return; }
+        editing = true; BarcodeEntry.Clear(); overflow = false; inputBasis = null; InputFeedback.Text = "已清空输入，本位当前包裹不受影响。"; BarcodeEntry.Focus();
     }
     async void BarcodeEntry_KeyDown(object sender, KeyEventArgs e)
     {
@@ -134,10 +134,10 @@ public partial class SupplyStationPosition : UserControl
     void Entry_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
         if (submitting || submitted is not null)
-        { e.Handled = true; InputFeedback.Text = "正在提交或核对原输入；后续扫码未接纳，请取得结果后重扫。"; return; }
+        { e.Handled = true; InputFeedback.Text = "上一次提交还在处理，本次扫描未接收；结果出来后请重扫。"; return; }
         PrepareResultReplacement();
         if (BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + e.Text.Length > 4096 || e.Text.Any(char.IsControl))
-        { e.Handled = true; overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "输入超过预算或含控制字符，不能提交截断码；请清空后重新输入完整单条码。"; }
+        { e.Handled = true; overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "条码过长或含无效字符，已停止接收。请清空后重新输入完整条码。"; }
     }
     async void SubmitBarcode_Click(object sender, RoutedEventArgs e) => await SubmitBarcodeAsync();
     async Task SubmitBarcodeAsync()
@@ -146,28 +146,28 @@ public partial class SupplyStationPosition : UserControl
         if (submitting || Host is not { } host || DataContext is not SupplyStationPositionViewModel p) return;
         var vm = host.ViewModel;
         if (!vm.CanStartOperation || !vm.Fresh || vm.Application is not IParcelWorkstation service)
-        { InputFeedback.Text = "当前作业输入不可用，请先恢复有效状态。"; return; }
+        { InputFeedback.Text = "当前不能提交，请等待状态恢复。"; return; }
         if (submitted is null)
         {
             if (!p.CanSubmitBarcode) { InputFeedback.Text = "本位暂不能接收新条码；请按当前提示处理。"; RefreshSubmitAvailability(); return; }
-            if (!editing) { InputFeedback.Text = "当前显示的是已读取条码；输入本次包裹条码后再提交。"; return; }
-            if (overflow) { InputFeedback.Text = "输入不完整，请清空后重扫或重新输入。"; return; }
-            if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = "请输入完整条码，或将PDA设为键盘输入并以回车结束。"; return; }
+            if (!editing) { InputFeedback.Text = "框内是上一件的条码；请输入本件条码后再提交。"; return; }
+            if (overflow) { InputFeedback.Text = "条码不完整，请清空后重扫或重新输入。"; return; }
+            if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = "请输入完整条码；PDA 需设为键盘输入并以回车结束。"; return; }
             if (inputBasis is null) CaptureInputBasis();
-            if (inputBasis is not { } basis) { InputFeedback.Text = "输入基准未取得，请先核对当前位。"; return; }
+            if (inputBasis is not { } basis) { InputFeedback.Text = "本位状态未读取，请稍后再提交。"; return; }
             submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text,
                 inputKind, basis.Observation, basis.Operation);
         }
         var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true; KeyboardSource.IsEnabled = PdaSource.IsEnabled = false;
         SubmitBarcode.IsEnabled = false; RebaseInput.IsEnabled = false;
-        InputFeedback.Text = "正在提交本次条码；请等待结果，不要重复扫描。";
+        InputFeedback.Text = "正在提交，请等待结果，勿重复扫描。";
         await vm.RunAsync(async () =>
         {
             try
             {
                 var receipt = await vm.ServiceAsync(() => service.SubmitParcelBarcodeAsync(request, CancellationToken.None));
-                var label = receipt.Status switch { "Admitted" => "已准入", "Rejected" => "未准入", "Blocked" => "已阻断", "Conflict" => "需重新核对", "Duplicate" => "重复输入", "Pending" => "结果待核对", _ => receipt.Status };
-                InputFeedback.Text = label + " · " + receipt.Detail + (receipt.OperationId is null ? "" : "\n原作业：" + receipt.OperationId) +
+                var label = receipt.Status switch { "Admitted" => "已受理", "Rejected" => "未受理", "Blocked" => "暂不能受理", "Conflict" => "本位状态已变化，请确认后重交", "Duplicate" => "重复扫描", "Pending" => "结果待核对", _ => receipt.Status };
+                InputFeedback.Text = label + " · " + Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.Notice(receipt.Detail) + (receipt.OperationId is null ? "" : "\n作业：" + receipt.OperationId) +
                     (receipt.Status == "Pending" ? "\n命令：" + request.CommandId : "");
                 vm.ReportBarcodeFeedback(receipt, InputFeedback.Text);
                 if (receipt.Status != "Pending")
@@ -180,12 +180,12 @@ public partial class SupplyStationPosition : UserControl
             catch (ArgumentException error) { submitted = null; InputFeedback.Text = error.Message; }
             catch (Exception error)
             {
-                InputFeedback.Text = "提交结果未确认，请核对本次提交或从记录检查原作业，不自动重发。命令：" + request.CommandId + "\n" + error.Message;
+                InputFeedback.Text = "提交结果未确认，系统不会自动重发。请点“查看提交结果”，或在记录中查找本件。命令：" + request.CommandId + "\n" + error.Message;
                 throw;
             }
         }, "提交或核对本位人工条码");
         submitting = false; BarcodeEntry.IsReadOnly = submitted is not null; KeyboardSource.IsEnabled = PdaSource.IsEnabled = submitted is null;
-        SubmitBarcode.Content = submitted is null ? "提交" : "核对本次提交";
+        SubmitBarcode.Content = submitted is null ? "提交" : "查看提交结果";
         RefreshSubmitAvailability(); RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay();
     }
     void Picture_Click(object sender, RoutedEventArgs e)

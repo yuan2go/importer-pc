@@ -138,7 +138,7 @@ static class SportmasterUi
             ui.Left.NewParcel(); await ui.EmitPositionAsync(ui.Left);
             var unknown = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Any(o => o.PositionId == "left" && o.State == ParcelState.WcsUnknown));
             await ui.RefreshDisplayAsync(); var current = ui.Left.Operation!;
-            Check(current.Id != old.Id && current.State == ParcelState.WcsUnknown && ui.Left.Slot == "未取得" && ui.Left.Status.Contains("待核对") && !ui.Left.CanAdmit &&
+            Check(current.Id != old.Id && current.State == ParcelState.WcsUnknown && ui.Left.Slot == "未取得" && ui.Left.Status.Contains("格口未确认") && !ui.Left.CanAdmit &&
                 ui.Left.Recent.Any(o => o.Id == old.Id && o.Slot == old.Slot) && ui.Right.Operation!.Id == right.Id && ui.Right.Slot == right.Slot && ui.Right.CanAdmit,
                 "latest left Unknown clears displayed old slot, retains historical acceptance and leaves right position independent");
             Check(ui.Left.InspectionReason == "" && ui.Right.InspectionReason == "SYNTHETIC separate right entity inspection",
@@ -156,7 +156,7 @@ static class SportmasterUi
         {
             var ui = new SupplyStationViewModel(app); await ui.RefreshDisplayAsync(); await ui.EmitPositionAsync(ui.Left);
             await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.WcsRejected); await ui.RefreshDisplayAsync();
-            Check(ui.Left.Slot == "未取得" && ui.Left.Status.Contains("明确拒绝") && ui.Left.Operation!.Wcs!.State == StageState.Rejected && ui.Right.Operation is null,
+            Check(ui.Left.Slot == "未取得" && ui.Left.Status.Contains("未分配格口") && ui.Left.Operation!.Wcs!.State == StageState.Rejected && ui.Right.Operation is null,
                 "real WCS rejection remains distinct from Unknown or slot acceptance");
         }
         var unsupported = configuration with { SchemaVersion = 2, Topology = null };
@@ -305,7 +305,7 @@ static class SportmasterUi
         var latestLeftInput = newer.Inputs!.Single(x => x.PositionId == "left");
         Check(ui.Left.Operation is null && ui.Left.Slot == "未取得" && !ui.Left.CanReconcile && !ui.Left.CanContinue && !ui.Left.CanAdmit &&
             ui.Left.BlockingReasons.Contains("missing-original") && ui.Left.Input?.Observation.Id == latestLeftInput.Observation.Id &&
-            (ui.Left.InputUnadmitted ? ui.Left.Barcode == ParcelPresentation.InputCode(latestLeftInput) && ui.Left.Status.Contains("重复") : ui.Left.Status.Contains("身份未匹配")) && ui.Right.Operation is not null,
+            (ui.Left.InputUnadmitted ? ui.Left.Barcode == ParcelPresentation.InputCode(latestLeftInput) && ui.Left.Status.Contains("重复") : ui.Left.Status.Contains("作业信息不一致")) && ui.Right.Operation is not null,
             "unmatched current identity blocks commands and never borrows historical slot; independent duplicate observation remains explicit");
         probe.Read = null;
         var paused = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), paused.Revision, "Resume")); await original.RefreshDisplayAsync();

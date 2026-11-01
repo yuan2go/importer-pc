@@ -111,7 +111,7 @@
         </Style>
        </Button.Style>
       </Button>
-      <Button x:Name="RebaseInput" Content="核对当前位" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}" ToolTip="确认当前包裹后更新输入基准。"/>
+      <Button x:Name="RebaseInput" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}" ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
       <Button Grid.Column="2" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanReconcile}" Style="{StaticResource StationTouch}"/>
      </Grid>
     </StackPanel>

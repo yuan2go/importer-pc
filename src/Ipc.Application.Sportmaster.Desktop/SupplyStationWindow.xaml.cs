@@ -179,7 +179,7 @@ public partial class SupplyStationWindow : Window
             if (generation != closeGeneration || this != root && root.closing) return;
             if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(this, ViewModel.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }
             if (affected.Any(x => x.statistics?.HasUnsavedChanges == true) && !(ConfirmDiscardDrafts?.Invoke(1) ??
-                ConfigurationCloseGuard.ConfirmExit(this, "班次或自动维护设置尚未保存。继续关闭将放弃这些修改。")))
+                ConfigurationCloseGuard.ConfirmExit(this, "时区、自动维护设置或本机目标尚未保存。继续关闭将放弃这些修改。")))
             { RestoreAfterClose(); return; }
             var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance)).ToArray();
             var dirty = dirtyWindows.Length;

@@ -16,8 +16,8 @@ public sealed partial class ParcelRepository : IDisposable
     readonly CancellationToken maintenanceCancellation;
     readonly Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver;
     public int StorageVersion { get; private set; }
-    public const int CurrentStorageVersion = 11;
-    const string Baseline = """
+    public const int CurrentStorageVersion = 12;
+    const string Baseline11 = """
         CREATE TABLE parcel_archive_versions(operation TEXT NOT NULL,body_hash TEXT NOT NULL,body TEXT NOT NULL,recorded_at TEXT NOT NULL,PRIMARY KEY(operation,body_hash));
         CREATE TABLE parcel_archived_receipts(id TEXT PRIMARY KEY,body BLOB NOT NULL,raw_hash TEXT NOT NULL);
         CREATE TABLE parcel_archives(id TEXT PRIMARY KEY,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,body TEXT NOT NULL,body_hash TEXT NOT NULL,archived_at TEXT NOT NULL);
@@ -70,6 +70,7 @@ public sealed partial class ParcelRepository : IDisposable
         CREATE INDEX station_recognition_time ON parcel_audit(julianday(json_extract(detail,'$.Observation.ObservedAt'))) WHERE event='InputObserved' AND json_valid(detail);
         INSERT INTO parcel_meta VALUES(1,0,0);
         """;
+    static readonly string Baseline = Baseline11.Replace(Metric11Sql, Metric12Sql, StringComparison.Ordinal) + "\n" + StationSessionSchema;
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
     public ParcelRepository(string directory, string application)
@@ -231,6 +232,7 @@ public sealed partial class ParcelRepository : IDisposable
             save.CommandText = "INSERT INTO parcel_operations VALUES($id,$admission,$observation,$body) ON CONFLICT(id) DO UPDATE SET body=excluded.body";
             save.Parameters.AddWithValue("$id", operation.Id); save.Parameters.AddWithValue("$admission", operation.AdmissionId);
             save.Parameters.AddWithValue("$observation", operation.ObservationId); save.Parameters.AddWithValue("$body", Wire.Encode(operation)); save.ExecuteNonQuery();
+            ProjectStationRequest(operation, tx);
         }
         using (var meta = db.CreateCommand())
         {
@@ -250,12 +252,14 @@ public sealed partial class ParcelRepository : IDisposable
             audit.Parameters.AddWithValue("$at", input.RecordedAt.ToString("O"));
             audit.Parameters.AddWithValue("$owner", input.OperationId ?? input.PositionId);
             audit.Parameters.AddWithValue("$detail", Wire.Encode(input)); audit.ExecuteNonQuery();
+            var inputSequence = StationScalar(tx, "SELECT last_insert_rowid()");
             if (ingressIdentity is not null)
             {
                 using var association = db.CreateCommand(); association.Transaction = tx;
-                association.CommandText = "INSERT INTO parcel_ingress_audits VALUES($input,last_insert_rowid())";
-                association.Parameters.AddWithValue("$input", ingressIdentity); association.ExecuteNonQuery();
+                association.CommandText = "INSERT INTO parcel_ingress_audits VALUES($input,$seq)";
+                association.Parameters.AddWithValue("$input", ingressIdentity); association.Parameters.AddWithValue("$seq", inputSequence); association.ExecuteNonQuery();
             }
+            ProjectStationObservation(input, inputSequence, tx);
             Boundary?.Invoke("AfterInputObservedInsert");
         }
         if (occurrence is not null)
@@ -283,6 +287,7 @@ public sealed partial class ParcelRepository : IDisposable
         {
             WriteCommand(tx, command, commandResult ?? new("Persisted", "Application command committed", Revision + 1));
         }
+        TouchStationShift(tx);
         Boundary?.Invoke("BeforeBusinessCommit:" + eventName);
         tx.Commit();
         Boundary?.Invoke("AfterBusinessCommit:" + eventName);

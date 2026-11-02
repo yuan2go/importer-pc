@@ -18,7 +18,7 @@ public sealed partial class ParcelStartupMaintenance
         if (ReadState().Hash != state.Hash) throw new InvalidOperationException("配置在取得所有权时变化");
         using var copy = CopyForMaintenance(state.Directory, execution);
         _ = ParcelRepository.ReadMaintenanceStorageVersion(copy.Database, definition.Id);
-        _ = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution.Token, allowStorage10: true);
+        _ = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution.Token, allowPreviousStorage: true);
         ParcelOperation original;
         using (var source = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = copy.Database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
         {
@@ -31,7 +31,7 @@ public sealed partial class ParcelStartupMaintenance
         var beforeHash = copy.OriginalHashes[definition.Id + ".db"];
         var walHash = copy.OriginalHashes.GetValueOrDefault(definition.Id + ".db-wal");
         await BackupCopy(state.Directory, backup, state, copy, execution, finalOperation: false);
-        var manifest = ParcelRecovery.VerifyBackup(backup, Authorize, token, allowStorage10: true);
+        var manifest = ParcelRecovery.VerifyBackup(backup, Authorize, token, allowPreviousStorage: true);
         Authorize(); execution.Checkpoint();
         if (ReadState().Hash != state.Hash) throw new InvalidOperationException("备份期间配置变化；保留备份，重新核对");
         var database = Path.Combine(state.Directory, definition.Id + ".db");

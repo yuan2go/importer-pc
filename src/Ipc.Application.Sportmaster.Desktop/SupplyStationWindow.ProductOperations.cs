@@ -20,54 +20,12 @@ public partial class SupplyStationWindow
     void Statistics_Click(object sender, RoutedEventArgs e) => SetPage("statistics");
     void Exceptions_Click(object sender, RoutedEventArgs e) => SetPage("exceptions");
     void MaintenanceCenter_Click(object sender, RoutedEventArgs e) => SetPage("maintenance-center");
-    sealed record ExceptionRow(ParcelOperation Original)
+    FrameworkElement CreateExceptions() => new StationExceptionsControl(ViewModel, ShowDetailsAsync, async id =>
     {
-        public string Id => Original.Id;
-        public string PositionId => Original.PositionId == "left" ? "左位" : Original.PositionId == "right" ? "右位" : Original.PositionId ?? "未确认";
-        public string ParcelCode => Original.ParcelCode;
-        public string State => Original.Wcs?.State is StageState.Unknown or StageState.Conflict ? "格口未确认" : Original.Wcs?.State == StageState.Rejected ? "已拒绝" : "需核对作业";
-        public string Reason => Original.Wcs?.State is StageState.Unknown or StageState.Conflict
-            ? ParcelPresentation.RcsNotDelivered(Original) ? "已确认请求未送达 RCS。连接恢复后可重新扫描本件；原请求不会重发。" : "格口未确认。勿重复上件，请查询本件结果。"
-            : ParcelPresentation.RcsException(Original) ?? "本件未分配格口，请查看详情并按原因处理。";
-    }
-    FrameworkElement CreateExceptions()
-    {
-        var root = new DockPanel { Margin = new(24, 20, 24, 16) }; var header = new StackPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
-        header.Children.Add(ProductText("异常处理", title: true));
-        header.Children.Add(ProductText("格口未确认的包裹勿重复上件，先查询本件结果；解除限制不会重新发送。被拒绝的包裹按原因和现场流程处理。"));
-        var grid = new DataGrid { AutoGenerateColumns = false, IsReadOnly = true, EnableRowVirtualization = true, CanUserAddRows = false };
-        foreach (var (label, field) in new[] { ("作业号", "Id"), ("投递位", "PositionId"), ("条码", "ParcelCode"), ("状态", "State"), ("原因", "Reason") })
-            grid.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(field), Width = DataGridLength.Auto });
-        var feedback = ProductText(""); header.Children.Add(feedback);
-        var updateTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-        var active = false; var refreshing = false; long viewGeneration = 0;
-        async Task Refresh()
-        {
-            if (refreshing || !active) return; refreshing = true; var version = viewGeneration;
-            try
-            {
-                var selected = (grid.SelectedItem as ExceptionRow)?.Id;
-                var snapshot = await ViewModel.Application.SnapshotAsync();
-                var recent = await ViewModel.Application.HistoryAsync(limit: 50);
-                if (!active || version != viewGeneration) return;
-                var rows = snapshot.Operations.Concat(recent.Items.Select(i => i.Operation)).DistinctBy(o => o.Id)
-                    .Where(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict or StageState.Rejected || o.RecoveryRequired)
-                    .OrderByDescending(o => o.ObservedAt).Select(o => new ExceptionRow(o)).ToArray();
-                grid.ItemsSource = rows; grid.SelectedItem = rows.FirstOrDefault(r => r.Id == selected);
-                feedback.Text = $"更新于{DateTime.Now:HH:mm:ss}。显示全部格口未确认的作业，以及最近 50 件中被拒绝的作业。选中一件查看详情和可执行的操作。";
-            }
-            finally { refreshing = false; }
-        }
-        var actions = new WrapPanel(); header.Children.Add(actions);
-        actions.Children.Add(ProductButton("刷新异常", Refresh));
-        actions.Children.Add(ProductButton("查看详情与核对…", async () => { if (grid.SelectedItem is not ExceptionRow row) throw new InvalidOperationException("请先选择一件作业"); await ShowDetailsAsync(row.Original); }));
-        actions.Children.Add(ProductButton("打开恢复操作…", () => OpenProductTool(MaintenanceTool.Recovery)));
-        root.Children.Add(grid);
-        root.Loaded += async (_, _) => { active = true; viewGeneration++; updateTimer.Start(); await ViewModel.RunAsync(Refresh, "读取异常作业"); };
-        root.Unloaded += (_, _) => { active = false; viewGeneration++; updateTimer.Stop(); };
-        updateTimer.Tick += async (_, _) => { try { await Refresh(); } catch (Exception error) { if (active) feedback.Text = "异常列表读取中断，请点击“刷新异常”；作业状态不受影响。" + DiagnosticText.Protect(error.Message); } };
-        return root;
-    }
+        await ShowDetailsAsync(id);
+        if (ViewModel.Selected?.Id != id) throw new InvalidOperationException("原作业读取未确认，请重新选择");
+        await OpenProductTool(MaintenanceTool.Recovery);
+    });
     async Task OpenProductTool(MaintenanceTool index)
     { await OpenOperatorSettingsAsync(); if (ViewModel.IsManagementMode && ViewModel.HasLoadedConfiguration) maintenance.ShowTechnicalTool(index); }
     FrameworkElement CreateMaintenanceCenter()

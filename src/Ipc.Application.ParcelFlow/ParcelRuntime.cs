@@ -79,9 +79,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     {
         try
         {
+            stationOpeningTicks = StationTime.GetTimestamp(); stationOpeningAt = StationTime.GetUtcNow();
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token);
             linked.Token.ThrowIfCancellationRequested();
             await StartCoreAsync(linked.Token).ConfigureAwait(false);
+            stationStartupCompleted = true;
         }
         catch (Exception error) when (error is Ipc.Platform.Storage.StorageWriteFailure or Microsoft.Data.Sqlite.SqliteException)
         { StorageFailed(error, "Startup"); throw; }
@@ -243,6 +245,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // Reconnect and Pending edits cannot change retention.
             journal.ConfigureRetention(Effective.Retention?.DiagnosticLogDays);
             token.ThrowIfCancellationRequested();
+            if (Id == "sportmaster")
+            {
+                await gate.WaitAsync(token).ConfigureAwait(false);
+                try { repository.ValidateStationProjection(); repository.OpenStationShift(runtimeId, StationTime, stationOpeningAt, stationOpeningTicks); }
+                finally { gate.Release(); }
+            }
             if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
             ingressStartup.TrySetResult(true);
             resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && !storageUpgradeReviewRequired && !launch.RequireRecoveryReview;

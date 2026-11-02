@@ -34,20 +34,20 @@ static partial class Program
         bool HasText(string value) => Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains(value));
         try
         {
-            await SetClient(window, 1366, 768); await ClickReady("统计与班次"); await Until(() => HasText("识别 0 次"));
+            await SetClient(window, 1366, 768); await ClickReady("统计与班次"); await Until(() => HasText("识别次数") && HasText("运行中"));
             Check(Descendants(window).OfType<DataGrid>().Any(g => g.IsVisible && g.Columns.Count == 8), "statistics uses actual bounded WPF data grid and explicit fact labels");
             Check(!HasText("本班件数"), "statistics never labels request facts as physical parcel count");
             CaptureInternal(evidence, "pc21-statistics-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); await Flush();
             CaptureInternal(evidence, "pc21-statistics-800", (Grid)window.FindName("ClientArea"), lines);
-            var settings = Descendants(window).OfType<Expander>().Single(x => Equals(x.Header, "班次与自动维护设置（管理模式）"));
+            var settings = Descendants(window).OfType<Expander>().Single(x => Equals(x.Header, "目标与自动维护设置（管理模式）"));
             settings.IsExpanded = true; await Flush();
-            Check(settings.IsEnabled, "management mode permits editing station shifts");
-            var shiftGrid = Descendants(settings).OfType<DataGrid>().Single(g => !g.IsReadOnly);
-            var shift = shiftGrid.Items[0]; var name = shift.GetType().GetProperty("Name")!; var originalName = name.GetValue(shift);
-            name.SetValue(shift, "未保存班次"); window.ConfirmDiscardDrafts = _ => false; window.Close(); await Task.Delay(150); await Flush();
-            Check(window.IsVisible && Equals(name.GetValue(shift), "未保存班次"), "closing can be cancelled without losing an unsaved shift draft");
-            name.SetValue(shift, originalName); window.ConfirmDiscardDrafts = null;
+            Check(settings.IsEnabled, "management mode permits editing timezone, cleanup and local target");
+            var target = Descendants(settings).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "目标取得格口次数每小时");
+            var originalTarget = target.Text;
+            target.Text = "1234"; window.ConfirmDiscardDrafts = _ => false; window.Close(); await Task.Delay(150); await Flush();
+            Check(window.IsVisible && target.Text == "1234", "closing can be cancelled without losing an unsaved local target draft");
+            target.Text = originalTarget; window.ConfirmDiscardDrafts = null;
 
             await h.App.ExitManagementModeAsync(); await window.ViewModel.RefreshManagementModeAsync(); await Flush();
             Check(!settings.IsExpanded && !settings.IsEnabled, "authority revocation immediately collapses and disables policy editing");

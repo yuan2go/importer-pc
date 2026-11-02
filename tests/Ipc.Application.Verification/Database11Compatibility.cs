@@ -59,7 +59,7 @@ static class Database11Compatibility
     static string Facts(string file)
     {
         using var db = Open(file, true); using var names = db.CreateCommand();
-        names.CommandText = "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT IN ('platform_migrations','parcel_audit','parcel_meta','station_metric_buckets','sqlite_sequence') ORDER BY name";
+        names.CommandText = "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT IN ('platform_migrations','parcel_audit','parcel_meta','station_metric_buckets','station_run_shifts','station_shift_totals','station_metric_facts','station_reason_buckets','sqlite_sequence') ORDER BY name";
         var tables = new List<string>(); using (var r = names.ExecuteReader()) while (r.Read()) tables.Add(r.GetString(0));
         var facts = new List<object>();
         foreach (var table in tables)
@@ -85,7 +85,7 @@ static class Database11Compatibility
         Check(Database.BaselineHash(ParcelRepository.Storage10Baseline) == LegacyHash, "approved predecessor specification equals the frozen DB10 hash");
         var originalHash = Wire.FileHash(initial.Database);
         Check(ParcelRepository.ReadMaintenanceStorageVersion(initial.Database, "sportmaster") == 10, "explicit offline inspection recognizes exact predecessor");
-        await Reject<InvalidDataException>(() => Task.Run(() => ParcelRepository.ReadStorageVersion(initial.Database, "sportmaster")), "normal runtime cannot silently write or open DB10 as DB11");
+        await Reject<InvalidDataException>(() => Task.Run(() => ParcelRepository.ReadStorageVersion(initial.Database, "sportmaster")), "normal runtime cannot silently write or open DB10 as current");
         Check(Wire.FileHash(initial.Database) == originalHash, "format refusal preserves original database bytes");
         Change(initial.Database, "ANALYZE;");
         Check(ParcelRepository.ReadMaintenanceStorageVersion(initial.Database, "sportmaster") == 10, "SQLite-owned optimizer statistics do not masquerade as an unsupported application schema");
@@ -98,7 +98,7 @@ static class Database11Compatibility
         var lookalikeHash = Wire.FileHash(lookalike.Database);
         await Reject<InvalidDataException>(() => Task.Run(() => ParcelRepository.ReadMaintenanceStorageVersion(lookalike.Database, "sportmaster")), "a user object resembling the SQLite prefix cannot hide from exact schema validation");
         Check(Wire.FileHash(lookalike.Database) == lookalikeHash, "lookalike schema refusal preserves the original bytes");
-        foreach (var version in new[] { 9, 12 })
+        foreach (var version in new[] { 9, ParcelRepository.CurrentStorageVersion + 1 })
         {
             var unknown = new Fixture(Path.Combine(root, "unsupported-" + version)); Change(unknown.Database, "UPDATE platform_migrations SET version=" + version);
             var hash = Wire.FileHash(unknown.Database);
@@ -110,21 +110,21 @@ static class Database11Compatibility
         var backup = successful.Backup("complete-original"); var configHash = Wire.FileHash(Path.Combine(successful.Directory, "configuration.json"));
         var seedHash = Wire.FileHash(Path.Combine(successful.Launch.ConfigurationDirectory, "business.json")); var facts = Facts(successful.Database);
         var plan = await successful.Service.PlanChangeAsync("Upgrade", backup);
-        Check(plan.Allowed && plan.Summary.Contains("事务升级至11"), "installer review explicitly plans full backup and additive format transition");
+        Check(plan.Allowed && plan.Summary.Contains("事务升级至" + ParcelRepository.CurrentStorageVersion), "installer review explicitly plans full backup and additive format transition");
         Check(!File.Exists(backup) && ParcelRepository.ReadMaintenanceStorageVersion(successful.Database, "sportmaster") == 10, "planning neither publishes a backup nor upgrades the original");
         var deploymentCalls = 0;
         await successful.Service.ExecuteChangeAsync(plan.Identity, "Upgrade", backup, () =>
         {
-            Check(ParcelRepository.ReadStorageVersion(successful.Database, "sportmaster") == 11, "schema commit precedes deployment pointer switch");
+            Check(ParcelRepository.ReadStorageVersion(successful.Database, "sportmaster") == ParcelRepository.CurrentStorageVersion, "schema commit precedes deployment pointer switch");
             Check(File.Exists(backup + ".recovery/COMPLETED.json"), "deployment cannot precede a complete original recovery set");
             deploymentCalls++; return Task.CompletedTask;
         });
-        Check(deploymentCalls == 1 && ParcelRepository.ReadMaintenanceStorageVersion(backup, "sportmaster") == 10, "old recovery set stays DB10 while the live original becomes DB11");
+        Check(deploymentCalls == 1 && ParcelRepository.ReadMaintenanceStorageVersion(backup, "sportmaster") == 10, "old recovery set stays DB10 while the live original becomes the current format");
         Check(Facts(successful.Database) == facts && Wire.FileHash(Path.Combine(successful.Directory, "configuration.json")) == configHash &&
             Wire.FileHash(Path.Combine(successful.Launch.ConfigurationDirectory, "business.json")) == seedHash, "all existing fact tables, effective configuration and seed bytes survive transition");
         Check(Count(successful.Database, "SELECT count(*) FROM parcel_audit WHERE event='StorageFormatUpgraded'") == 1 && Count(successful.Database, "SELECT paused FROM parcel_meta WHERE id=1") == 1,
             "one durable upgrade audit is atomic with format identity and software pause");
-        using (var current = new ParcelRepository(successful.Directory, "sportmaster")) Check(current.StorageVersion == 11, "upgraded database opens through the unmodified current runtime gate");
+        using (var current = new ParcelRepository(successful.Directory, "sportmaster")) Check(current.StorageVersion == ParcelRepository.CurrentStorageVersion, "upgraded database opens through the unmodified current runtime gate");
         var after = Facts(successful.Database);
         await Reject<InvalidDataException>(() => Task.Run(() => Upgrade(successful, backup)), "duplicate format transition refuses rather than recopying history");
         Check(Facts(successful.Database) == after, "duplicate transition preserves original facts");
@@ -135,7 +135,7 @@ static class Database11Compatibility
             Count(interrupted.Database, "SELECT count(*) FROM sqlite_schema WHERE name='station_metric_buckets'") == 0 && Count(interrupted.Database, "SELECT count(*) FROM parcel_audit WHERE event='StorageFormatUpgraded'") == 0,
             "failed transaction leaves the complete old identity without partial analytics or a false audit");
         Upgrade(interrupted, rollback);
-        Check(ParcelRepository.ReadStorageVersion(interrupted.Database, "sportmaster") == 11, "same verified backup supports explicit retry after transaction failure");
+        Check(ParcelRepository.ReadStorageVersion(interrupted.Database, "sportmaster") == ParcelRepository.CurrentStorageVersion, "same verified backup supports explicit retry after transaction failure");
         var cancelled = new Fixture(Path.Combine(root, "cancelled")); var cancelBackup = cancelled.Backup("cancel-original"); await cancelled.Service.BackupAsync(cancelBackup);
         var cancelHash = Wire.FileHash(cancelled.Database); using var stop = new CancellationTokenSource(); using var execution = new MaintenanceExecution(token: stop.Token);
         stop.Cancel();
@@ -169,12 +169,12 @@ static class Database11Compatibility
         var before = Facts(interrupted.Database); var first = await interrupted.Service.PlanChangeAsync("Upgrade", original);
         await Reject<IOException>(() => interrupted.Service.ExecuteChangeAsync(first.Identity, "Upgrade", original, () => throw new IOException("Synthetic deployment pointer failure")),
             "deployment failure after storage commit is reported instead of silently rolling back business data");
-        Check(ParcelRepository.ReadStorageVersion(interrupted.Database, "sportmaster") == 11 && Facts(interrupted.Database) == before && File.Exists(original + ".recovery/COMPLETED.json"),
+        Check(ParcelRepository.ReadStorageVersion(interrupted.Database, "sportmaster") == ParcelRepository.CurrentStorageVersion && Facts(interrupted.Database) == before && File.Exists(original + ".recovery/COMPLETED.json"),
             "failed deployment retains current schema, original fact tables and the complete old recovery set");
         var retryBackup = interrupted.Backup("before-retry"); var retry = await interrupted.Service.PlanChangeAsync("Upgrade", retryBackup); var commits = 0;
         await interrupted.Service.ExecuteChangeAsync(retry.Identity, "Upgrade", retryBackup, () => { commits++; return Task.CompletedTask; });
         Check(commits == 1 && Count(interrupted.Database, "SELECT count(*) FROM parcel_audit WHERE event='StorageFormatUpgraded'") == 1,
-            "deployment retry advances from committed DB11 without reapplying a schema transition");
+            "deployment retry advances from committed current format without reapplying a schema transition");
         var stale = new Fixture(Path.Combine(root, "changed-plan")); var staleBackup = stale.Backup("never"); var stalePlan = await stale.Service.PlanChangeAsync("Upgrade", staleBackup);
         Change(stale.Database, "INSERT INTO parcel_audit(at,event,owner,detail) VALUES('2026-11-02','ConcurrentMaintenance','station','new fact after review')");
         var latest = Wire.FileHash(stale.Database);
@@ -216,7 +216,7 @@ static class Database11Compatibility
         await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(admitted.OperationId!))?.Wcs?.State == StageState.Accepted);
         await h.App.StopAsync(default); await h.App.DisposeAsync(); h.App = null!;
         var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster"); var database = Path.Combine(directory, "sportmaster.db");
-        Change(database, "DROP TABLE station_metric_buckets; DROP INDEX station_operation_time; DROP INDEX station_archive_time; DROP INDEX station_recognition_time; UPDATE platform_migrations SET version=10,sha='" + LegacyHash + "'; UPDATE parcel_meta SET paused=1;");
+        Change(database, "DROP TABLE station_metric_facts; DROP TABLE station_shift_totals; DROP TABLE station_reason_buckets; DROP TABLE station_run_shifts; DROP TABLE station_metric_buckets; DROP INDEX station_operation_time; DROP INDEX station_archive_time; DROP INDEX station_recognition_time; UPDATE platform_migrations SET version=10,sha='" + LegacyHash + "'; UPDATE parcel_meta SET paused=1;");
         var before = Facts(database); var posts = h.Peer.Requests.Count;
         var service = new ParcelStartupMaintenance(h.Launch, new SportmasterFlow(), () => new ManualSupplyHarness.ManualFactory(h.Launch), () => { })
         { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "loopback-scratch-" + Wire.Id())).FullName };
@@ -227,7 +227,7 @@ static class Database11Compatibility
         using (var reopened = new ParcelRepository(directory, "sportmaster"))
         {
             reopened.ValidateRawInventory();
-            Check(reopened.Load().Length == 1 && reopened.StorageVersion == 11, "migrated actual RCS custody passes current original-history and raw-inventory validation");
+            Check(reopened.Load().Length == 1 && reopened.StorageVersion == ParcelRepository.CurrentStorageVersion, "migrated actual RCS custody passes current original-history and raw-inventory validation");
         }
         await h.StartAsync(ready: false);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Health.Any(x => x.InstanceId == h.Config.Wcs!.InstanceId && x.Ready));

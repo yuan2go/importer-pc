@@ -1,0 +1,27 @@
+PASS UI24 rules-only full candidate predicts live activation
+PASS UI24 existing Pending forbids live rule prediction
+PASS UI24 mixed rules and connection budget predict whole-candidate restart
+PASS UI24 other applications cannot acquire SM hot activation
+PASS UI24 frame-based numerator counts a frame once independently of its barcode candidate count
+PASS UI24 new connection window starts empty and cannot retain old connection rates
+PASS UI24 renewal rejects before password authentication
+PASS UI24 synthetic management authority authenticates
+PASS UI24 renewal preserves session ownership and reschedules its original authority token
+PASS UI24 renewal never extends an already-issued delegation deadline
+PASS UI24 renewal preserves the original authentication timestamp in audit evidence
+PASS UI24 expired authority cannot be revived by renewal
+PASS UI24 operation jump identity comes from structured original fields
+PASS UI24 multi-level/source and original operation filters combine without broadening identity
+PASS UI24 free-text GUIDs never become operation jump authority
+PASS UI24 executing Application confirms the same rules-only activation mode
+PASS UI24 mixed save leaves both original live rules and timeout intact until restart
+PASS UI24 debug enable returns authoritative automatic expiry
+PASS UI24 runtime closes detailed logging without any UI page or timer
+PASS UI24 detailed logging still requires execution-time management authorization
+PASS UI24 diagnostics, renewal and configuration never create a business request
+PASS UI24 same short SQLite read transaction returns the page and its aggregate without another RCS request
+PASS UI24 continuous trial isolates both production positions through the existing durable Application fence
+PASS UI24 real ZXing and inspection store retain twenty independent frames including ten empty frames
+PASS UI24 driver rolling diagnostics use decoded frame counts rather than candidate or physical parcel counts
+PASS UI24 continuous isolated recognition creates no production operation or RCS request
+PASS UI24 explicit clearing releases only this trial fence and does not silently resume production

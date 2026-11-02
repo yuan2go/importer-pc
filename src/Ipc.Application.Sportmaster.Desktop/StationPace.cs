@@ -9,7 +9,7 @@ internal sealed class StationPace
 {
     static readonly ConditionalWeakTable<IParcelApplication, StationPace> owners = new();
     readonly object gate = new(); Task<Value>? pending; long requested;
-    internal sealed record Value(long At, long Total, long Left, long Right, double PerMinute);
+    internal sealed record Value(long At, long Total, long Left, long Right, double? PerMinute);
     public static Task<Value> Read(IParcelApplication application)
     {
         var owner = owners.GetValue(application, _ => new());
@@ -21,18 +21,10 @@ internal sealed class StationPace
     }
     async Task<Value> Load(IParcelApplication application)
     {
-        if (application is not IStationOperations api) throw new NotSupportedException("当前业务没有统计能力");
+        if (application is not IStationSessionStatistics api) throw new NotSupportedException("当前业务没有统计能力");
         using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-        var now = DateTimeOffset.UtcNow;
-        var policy = await api.ReadOperationsPolicyAsync().WaitAsync(budget.Token);
-        var shift = StationShiftSchedule.Current(policy, now);
-        var to = new DateTimeOffset(now.UtcDateTime.AddTicks(-(now.UtcTicks % TimeSpan.TicksPerMinute)), TimeSpan.Zero).AddMinutes(1);
-        var from = shift.From < to.AddMinutes(-10) ? shift.From : to.AddMinutes(-10);
-        var result = await api.ReadStatisticsAsync(from, to, budget.Token);
-        if (Ipc.Platform.Wire.Encode(result.Policy) != Ipc.Platform.Wire.Encode(policy)) throw new InvalidOperationException("统计策略已变化，请重新读取");
-        var current = result.Buckets.Where(b => b.Minute >= shift.From).ToArray();
-        var recent = result.Buckets.Where(b => b.Minute >= to.AddMinutes(-10)).Sum(b => b.Assigned);
-        return new(Stopwatch.GetTimestamp(), current.Sum(b => b.Assigned), current.Where(b => b.Position == "left").Sum(b => b.Assigned), current.Where(b => b.Position == "right").Sum(b => b.Assigned), recent / 10d);
+        var result = await api.ReadSessionStatisticsAsync(new(StationReportRange.CurrentShift, false), budget.Token);
+        return new(Stopwatch.GetTimestamp(), result.Totals.Sum(b => b.Assigned), result.Totals.Where(b => b.Position == "left").Sum(b => b.Assigned), result.Totals.Where(b => b.Position == "right").Sum(b => b.Assigned), result.RecentAssignedPerMinute);
     }
 }
 
@@ -48,7 +40,7 @@ public sealed partial class SupplyStationViewModel
     internal void SetPace(StationPace.Value? value)
     {
         var valid = Fresh && value is not null && Stopwatch.GetElapsedTime(value.At) < TimeSpan.FromSeconds(6);
-        paceText = valid ? $"本班取得格口 {value!.Total:N0} 次 · 近10分钟 {value.PerMinute:F1} 次/分" : "本班取得格口 — · 近10分钟 —";
+        paceText = valid ? $"本班取得格口 {value!.Total:N0} 次 · 近10分钟 {(value.PerMinute is { } speed ? speed.ToString("F1") + " 次/分" : "—")}" : "本班取得格口 — · 近10分钟 —";
         paceCompact = valid ? $"本班 {value!.Total:N0} 次" : "本班 —";
         leftPace = valid ? $"本位本班取得格口 {value!.Left:N0} 次" : "本位本班取得格口 —";
         rightPace = valid ? $"本位本班取得格口 {value!.Right:N0} 次" : "本位本班取得格口 —";

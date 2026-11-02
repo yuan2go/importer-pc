@@ -41,7 +41,9 @@ public static class ReleaseVersionPolicy
     {
         var order = Compare(candidate.BusinessVersion ?? "", installed.BusinessVersion ?? "");
         if (order < 0) throw new InvalidDataException("禁止安装较旧版本；受控回退须另外检查数据与安全兼容。");
-        if (order == 0 && candidate.SourceCommit != installed.SourceCommit)
+        if (order == 0 && (candidate.SourceCommit != installed.SourceCommit || candidate.BusinessVersion != installed.BusinessVersion ||
+            candidate.Files.Count != installed.Files.Count || candidate.Files.Any(f =>
+                !installed.Files.TryGetValue(f.Key, out var previous) || !f.Value.Equals(previous, StringComparison.OrdinalIgnoreCase))))
             throw new InvalidDataException("同一版本号对应不同程序，禁止覆盖；请发布新的修订版本。");
     }
 }

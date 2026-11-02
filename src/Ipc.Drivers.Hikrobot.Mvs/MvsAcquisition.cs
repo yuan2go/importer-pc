@@ -16,10 +16,23 @@ public sealed class MvsAcquisitionModule : IObservationExtension
 
 // One acquisition/resource owner. Legacy acquisition has no decoder; the current
 // reader injects an actual in-process decoder and emits only decoded candidates.
-internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource, IObservationPreviewSource, IObservationPreviewLeaseSource
+internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource, IObservationPreviewSource, IObservationPreviewLeaseSource, IObservationReadWindowSource
 
 {
     readonly MvsPreview preview = new();
+    Func<long, bool>? businessReadWindow;
+    public void BindReadWindow(Func<long, bool> canRead)
+    {
+        ArgumentNullException.ThrowIfNull(canRead);
+        lock (gate)
+        {
+            if (worker is not null || businessReadWindow is not null || disposeRequested) throw new InvalidOperationException("Bind the business read window once, before acquisition startup");
+            businessReadWindow = canRead;
+        }
+    }
+    bool DecodeWindowAllows(InspectionRegistration? registration, long capturedTicks) =>
+        registration?.DecodeAllowed?.Invoke(DeviceId) != false &&
+        (registration?.Isolated == true || Volatile.Read(ref businessReadWindow)?.Invoke(capturedTicks) != false);
     public ObservationPreview? ReadPreview() => disposeRequested ? null : preview.Read();
     public ObservationPreviewLease? ReadPreviewLease() => disposeRequested ? null : preview.ReadLease();
     readonly ExtensionContext context;
@@ -223,7 +236,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 lastFrameAt = observedAt; lastFrameTicks = deliveredTicks;
                             }
                             preview.Offer(frame.Data, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
-                            var allowDecode = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
+                            var allowDecode = DecodeWindowAllows(inspected.Registration, deliveredTicks);
                             lock (gate) decodePaused = !allowDecode;
                             if (decoder is not null && allowDecode)
                             {

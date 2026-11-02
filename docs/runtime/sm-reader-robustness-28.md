@@ -1,3 +1,5 @@
+> 2026-11-02 用户纠偏以 [OP29](../work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md) 为准：SM每位等本次RCS结果后再接受下一次读码，等待期间视频继续；超时/未知保留原责任并阻断本位后续读码，不回放忙碌期帧。旧持续解码、超时自动继续及新帧清退当前处理中包裹的冲突条款仅保留历史适用范围。采集诊断与预览缩略图分开。原文及哈希见 [归档](../archive/pre-sm-operator-corrections-29/manifest.json)。
+
 # SM斜放、模糊及快照身份修复28
 
 2026-11-02，[工作包](../work-packages/WP-IPC-SM-READER-ROBUSTNESS-28.md)。基线main `0c018f15`，沿用内置MVS、进程内ZXingCpp 0.5.3/内核3.1.1及内置RCS。27包及PR181的回调顺序修复继续有效；旧文档[原字节归档](../archive/pre-sm-reader-robustness-28/manifest.json)，历史RV及验收不转记。

@@ -69,7 +69,7 @@ internal sealed class StationCameraPreviewControl : UserControl
             status.Text = "实时视频 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff");
         }
         catch (OperationCanceledException) { if (version == generation) Clear("预览已停止"); }
-        catch (Exception error) { if (version == generation) { Clear("预览读取失败：" + error.Message); counters.Text = ""; } }
+        catch (Exception) { if (version == generation) { Clear("实时预览暂不可用，请刷新体检并检查相机状态。"); counters.Text = ""; } }
         finally { polling = false; }
     }
     static string Describe(ObservationDiagnostics? d)
@@ -85,8 +85,8 @@ internal sealed class StationCameraPreviewControl : UserControl
         };
         return state + "\n取帧 " + d.Frames + " · 无数据 " + d.NoData + " · 解码完成 " + d.DecodeCompleted + "/" + d.DecodeStarted +
             " · 空结果 " + d.EmptyFrames + "\n识别到条码 " + d.Candidates + " · 上报 " + d.Delivered + " · 拒收 " + d.Rejected + " · 丢弃异常帧 " + d.RejectedFrames +
-            (d.LastFrameRejection is null ? "" : "\n最近异常帧：" + d.LastFrameRejection) +
-            (d.Failure is null ? "" : "\n" + d.Failure);
+            (d.LastFrameRejection is null ? "" : "\n本次连接记录过异常图像；累计次数属于历史，不代表当前没有画面。") +
+            (d.Failure is null ? "" : "\n采集故障，请导出诊断记录并联系维护人员。");
     }
     void Clear(string message) { image.Source = null; bitmap = null; shown = ""; capturedAt = null; hint.Text = message; hint.Visibility = Visibility.Visible; status.Text = message; }
     public void Revoke() { generation++; timer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; Clear("预览已停止"); counters.Text = ""; }

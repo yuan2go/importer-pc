@@ -17,14 +17,16 @@ public sealed partial class SupplyStationPositionViewModel
         !(readFeedback is { OperatorInput: true } manual && manual.DetectedTicks > camera.Frame.CompletedTicks) &&
         !(Input is { } input && input.Observation.OperatorInput is null && input.Observation.DeviceId == camera.Frame.DeviceId &&
             input.Observation.Epoch == camera.Frame.Epoch && input.Observation.SourceEventId == camera.Frame.SourceEventId);
-    bool CameraAwaitingRead => !unreadFeedback && Input?.Observation.OperatorInput is null &&
+    bool CameraRequestOutstanding => Operation is { Acquisition: not null, OperatorInput: null,
+        Wcs.State: StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict } operation && Input?.OperationId == operation.Id;
+    bool CameraAwaitingRead => !CameraRequestOutstanding && !unreadFeedback && Input?.Observation.OperatorInput is null &&
         Operation?.Acquisition is { } acquired && CurrentReaderState is { } current &&
         (acquired.DeviceId != current.DeviceId || acquired.Epoch != current.Epoch);
     // No-code is a frame fact, not a declaration that a parcel exists or has left.
     // Manual input has its own source and remains usable while the camera sees no code.
-    bool CameraNoCode => CameraAwaitingRead || cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
+    bool CameraNoCode => !CameraRequestOutstanding && (CameraAwaitingRead || cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
         camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome != ObservationReadOutcome.Codes &&
-        !(unreadFeedback ? readFeedback?.OperatorInput == true : Input?.Observation.OperatorInput is not null);
+        !(unreadFeedback ? readFeedback?.OperatorInput == true : Input?.Observation.OperatorInput is not null));
     DeviceState? fastReaderState;
     DeviceState? CurrentReaderState
     {

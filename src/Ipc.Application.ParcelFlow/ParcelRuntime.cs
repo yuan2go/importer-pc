@@ -204,6 +204,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
+            BindCameraReadWindows();
             lock (startupOwnership)
             {
                 token.ThrowIfCancellationRequested();
@@ -343,7 +344,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue };
                 item = new ParcelObservation(observation, identity, at);
             }
-            var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp());
+            var readWindow = observation is { InspectionSessionId: null } ? cameraReadWindows.GetValueOrDefault(positionId) : null;
+            readWindow?.HoldInput();
+            var handedOff = false;
+            var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp()) { ReadWindow = readWindow };
             try
             {
                 WriteIngress(lane.Db, received.Id, positionId, item, at, runtimeId.ToString("N"), () => Boundary?.Invoke("BeforeIngressDurable"));
@@ -351,7 +355,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 Interlocked.Increment(ref lane.Received);
                 lane.Waiting.TryAdd(received.Id, at);
                 if (observation is not null) Interlocked.Increment(ref pendingObservations);
-                if (positionQueues[positionId].Writer.TryWrite(received)) return true;
+                if (positionQueues[positionId].Writer.TryWrite(received)) { handedOff = true; return true; }
                 lane.Waiting.TryRemove(received.Id, out _);
                 if (observation is not null) Interlocked.Decrement(ref pendingObservations);
                 SignalOverload(positionId);
@@ -366,6 +370,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (IsStorageError(ex)) StorageFailed(ex, "IngressCustody");
                 // A possibly committed Pending is intentionally kept for recovery.
             }
+            finally { if (!handedOff) readWindow?.ReleaseInput(); }
             return false;
         }
     }
@@ -413,7 +418,16 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     // Original Pending exists even when the store cannot accept a failure disposition.
                     throw;
                 }
-                finally { try { ReleaseIngressItem(item.Value); } finally { activeIngress.Value = null; Interlocked.Exchange(ref lane.ProcessingTicks, 0); gate.Release(); } }
+                finally
+                {
+                    try { ReleaseIngressItem(item.Value); }
+                    finally
+                    {
+                        item.ReadWindow?.ReleaseInput();
+                        activeIngress.Value = null; Interlocked.Exchange(ref lane.ProcessingTicks, 0);
+                        try { PublishCameraReadWindows(); } finally { gate.Release(); }
+                    }
+                }
                 Volatile.Write(ref lane.State, "Waiting");
             }
             Volatile.Write(ref lane.State, "Stopped");

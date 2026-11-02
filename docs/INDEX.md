@@ -1,3 +1,5 @@
+> 2026-11-02 用户追加以 [SM-OPERATOR-CORRECTIONS-29](work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md) 为准：操作中文、按位等待RCS后再读码、明确错误字段动作、恢复视频优先调试及真实采集诊断；继承保留数据重装复验28，旧连续解码/超时可继续扫码的冲突指引由本轮替代，原证据保持SourceCommit。
+
 > 2026-11-02 当前斜放、模糊和完整多码搜索，以及快照先到的观察身份守卫，以 [SM-READER-ROBUSTNESS-28](runtime/sm-reader-robustness-28.md) 为准；替代27包的“首搜索零结果才补搜索”及两线策略。27原实现/验证保留历史身份，旧文档完整字节见归档。
 
 > 2026-11-02 现场弱标签补充识别、无码/坏帧及重连清退旧格口见 [SM-UNREAD-PACKAGE-27](work-packages/WP-IPC-SM-UNREAD-PACKAGE-27.md) 与[运行和验证](runtime/sm-unread-package-27.md)。源码保持内置 MVS、逐次识别交 RCS 去重；无码是图像事实，不推定实体。私有照片重放与真实过机验收分开，历史证据保持原 SourceCommit。

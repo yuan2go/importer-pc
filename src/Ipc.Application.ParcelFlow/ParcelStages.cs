@@ -119,7 +119,7 @@ public sealed partial class ParcelRuntime
         LogRcsResult(op, kind, receiptStartedTicks);
         return op;
         }
-        finally { activeStages.Remove(key); }
+        finally { activeStages.Remove(key); PublishCameraReadWindows(); }
     }
     void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks)
     {
@@ -248,15 +248,19 @@ public sealed partial class ParcelRuntime
             // Main dependencies first. An independent upload's missing raw never blocks a PLC/WCS query.
             var stages = new[] { ParcelStage.Capture }.Where(k => op.Capture?.State == StageState.Unknown)
                 .Concat(definition.ReconciliationStages(op)).Concat(op.Upload?.State == StageState.Unknown ? new[] { ParcelStage.Upload } : []).Distinct().ToArray();
-            var maintenanceBlocked = false;
+            var maintenanceBlocked = false; var queryUnsupported = false;
             foreach (var kind in stages.Where(k => requested is null || requested == k))
             {
                 var original = GetStage(op, kind)!;
+                // An absent query contract is not a new failure of the original request.
+                // Keep its timeout/receipt facts intact and report the unavailable action.
+                if (!factory.Requirements(original.Request.Binding).Query) { queryUnsupported = true; continue; }
                 if (!PortMaintenanceClear(PortFor(op, kind))) { maintenanceBlocked = true; continue; }
                 if (repository!.PendingReceipts().Any(x => x.Operation == operationId && x.Stage == original.Request.Stage)) continue;
                 op = await ExecuteStageAsync(op, kind, true).ConfigureAwait(false);
             }
             if (maintenanceBlocked) return new("MaintenanceInProgress", "Original stage retained; selected capability is under maintenance", repository!.Revision);
+            if (queryUnsupported) return new("QueryUnsupported", "原接口不提供结果查询；原请求和回包事实保留，不会重发。", repository!.Revision);
             return new(op.State.ToString(), requested is { } selected ? GetStage(op, selected)?.Failure ?? "Original stage inspected" : op.Reason ?? "Original main facts retained; attached responsibility is independent", repository!.Revision);
         }
         finally { gate.Release(); }

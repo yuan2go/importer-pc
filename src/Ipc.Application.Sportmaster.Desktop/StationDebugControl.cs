@@ -15,6 +15,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 // A projection of the Application's one-shot round, never a local camera/sender.
 internal sealed partial class StationDebugControl : UserControl
 {
+    const string DebugFailure = "本轮调试未完成，请查看采集诊断并核对原轮次；请求结果未确认时不要重复发送。";
     readonly SupplyStationViewModel vm;
     readonly ICameraInspection? inspection;
     readonly ICameraReadRounds? rounds;
@@ -68,19 +69,31 @@ internal sealed partial class StationDebugControl : UserControl
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = UiTypography.Regular;
         Background = Brush("#F3F5F8"); Foreground = Brush("#18283D");
-        var body = new StackPanel { Margin = new(20, 16, 20, 16) };
-        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = new ScrollViewer { Content = body, Background = Background,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled } });
+        var body = new StackPanel { Margin = new(20, 8, 20, 16) };
+        var toolbar = new StackPanel { Margin = new(20, 12, 20, 0) };
+        var scanSurface = new DockPanel(); DockPanel.SetDock(toolbar, Dock.Top); scanSurface.Children.Add(toolbar);
+        scanSurface.Children.Add(new ScrollViewer { Content = body, Background = Background,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled });
+        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = scanSurface });
         tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
         var header = new DockPanel { LastChildFill = true };
-        trigger.Background = Brush("#245FD3"); trigger.Foreground = Brushes.White; trigger.BorderBrush = trigger.Background;
+        var triggerStyle = new Style(typeof(Button), TryFindResource(typeof(Button)) as Style);
+        triggerStyle.Setters.Add(new Setter(BackgroundProperty, Brush("#245FD3")));
+        triggerStyle.Setters.Add(new Setter(ForegroundProperty, Brushes.White));
+        triggerStyle.Setters.Add(new Setter(BorderBrushProperty, Brush("#245FD3")));
+        var disabledTrigger = new Trigger { Property = IsEnabledProperty, Value = false };
+        disabledTrigger.Setters.Add(new Setter(BackgroundProperty, Brush("#E9EEF4")));
+        disabledTrigger.Setters.Add(new Setter(ForegroundProperty, Brush("#52647A")));
+        disabledTrigger.Setters.Add(new Setter(BorderBrushProperty, Brush("#BCC7D6")));
+        triggerStyle.Triggers.Add(disabledTrigger); trigger.Style = triggerStyle;
         readStatus.Foreground = Brush("#9A6511"); readStatus.VerticalAlignment = VerticalAlignment.Center;
         var scanActions = Flow(readStatus, trigger); DockPanel.SetDock(scanActions, Dock.Right); header.Children.Add(scanActions);
         var title = new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis,
             VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 20, 6) };
-        header.Children.Add(Flow(title, left, right)); body.Children.Add(header);
+        header.Children.Add(Flow(title, left, right)); toolbar.Children.Add(header);
         camera.Foreground = Brush("#68788E"); state.Foreground = Brush("#68788E");
-        body.Children.Add(camera); body.Children.Add(Text("触发扫码将隔离两位生产受理；只读实时预览不暂停生产。结束调试后需核对状态并恢复。")); body.Children.Add(state); body.Children.Add(feedback);
+        toolbar.Children.Add(camera); toolbar.Children.Add(Text("扫码调试时，两位自动供包暂停；读到后锁图，发送请求需单独点击。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
+        trigger.ToolTip = "读码不要求 RCS 在线；扫码调试暂停两位自动供包，实时视频继续。";
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         liveCard = Panel(reading); resultCard = Panel(visual); resultCard.Margin = new(14, 0, 0, 0);
@@ -94,7 +107,7 @@ internal sealed partial class StationDebugControl : UserControl
         var photoArea = new Grid(); photoArea.Children.Add(viewport); photoArea.Children.Add(imageHint); visual.Children.Add(photoArea); visual.Children.Add(photoCaption);
         var adapt = Action("适应窗口"); var actual = Action("1:1"); var more = Action("放大"); var less = Action("缩小");
         visual.Children.Add(new Expander { Header = "照片缩放与条码标注", Content = Flow(adapt, actual, more, less, overlay), Margin = new(0, 4, 0, 0) });
-        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 0, 0, 14); body.Children.Insert(body.Children.IndexOf(columns), requestCard);
+        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 14, 0, 0); body.Children.Add(requestCard);
         var requestHeader = new DockPanel();
         requestBarcode.FontFamily = UiTypography.Code; requestBarcode.Width = 220; requestBarcode.MaxHeight = 64; requestBarcode.Margin = new(8, 0, 10, 6);
         requestBarcode.IsReadOnly = false; requestBarcode.MaxLength = 4096;
@@ -216,7 +229,7 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || busy) return; busy = true; var ownership = lifetime; Buttons();
         try { await vm.RequireManagementModeAsync(); await action(lifetime!.Token); }
         catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = "已停止等待。请求可能已发出，调试状态未变；请查看本轮结果。"; } }
-        catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = error.Message; } }
+        catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); } }
         finally { busy = false; if (active) { Buttons(); await PollAsync(); } }
     }
     public async Task PollAsync()
@@ -234,7 +247,7 @@ internal sealed partial class StationDebugControl : UserControl
             current = value; await PublishRoundAsync(value, token);
         }
         catch (OperationCanceledException) { if (active && version == generation) authoritative = false; }
-        catch (Exception error) { if (active && version == generation) { authoritative = false; state.Text = "调试状态读取失败；调试状态和请求保持不变。"; feedback.Text = error.Message; send.IsEnabled = false; } }
+        catch (Exception error) { if (active && version == generation) { authoritative = false; state.Text = "调试状态读取失败；调试状态和请求保持不变。"; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); send.IsEnabled = false; } }
         finally { polling = false; if (active && version == generation) Buttons(); }
     }
     async Task PublishRoundAsync(CameraReadRound value, CancellationToken token)
@@ -242,9 +255,10 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || !vm.IsManagementMode || token.IsCancellationRequested) return;
         camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus;
         var sameCamera = value.DeviceId == Position.ReaderId;
-        state.ToolTip = value.Detail;
-        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : value.Detail;
-        state.Text = value.ManualRequest ? value.Detail : scope?.BusinessFenced == true ? (scope.State == "Active" ? "实机调试已生效 · " : "调试中 · ") + detail : "点击触发扫码开始本轮读取；不会自动发送请求。";
+        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，生产隔离保持。请查看采集诊断，处理后再触发扫码。" :
+            value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(value.Detail, DebugFailure);
+        state.ToolTip = detail;
+        state.Text = value.ManualRequest ? detail : scope?.BusinessFenced == true ? (scope.State == "Active" ? "实机调试已生效 · " : "调试中 · ") + detail : "点击触发扫码开始本轮读取；不会自动发送请求。";
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
         SetText(barcode, value.Barcode ?? "");
         if (!requestDirty) { updatingRequest = true; try { SetText(requestBarcode, value.Barcode ?? ""); } finally { updatingRequest = false; } }

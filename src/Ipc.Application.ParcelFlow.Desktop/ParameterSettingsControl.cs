@@ -370,7 +370,8 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (page.Category != 4 && count > 0)
             {
                 var first = (Model?.Issues ?? []).First(i => locations.TryGetValue(i.Path, out var entry) && ReferenceEquals(entry.Page, page));
-                var locate = new Hyperlink(new Run("定位首项")); locate.Click += (_, _) => NavigateTo(first.Path);
+                var label = locations[first.Path].Label.TrimEnd(' ', '*');
+                var locate = new Hyperlink(new Run("前往修改：" + label)); locate.Click += (_, _) => NavigateTo(first.Path);
                 page.Summary.Inlines.Add(new Run("    ")); page.Summary.Inlines.Add(locate);
             }
         }

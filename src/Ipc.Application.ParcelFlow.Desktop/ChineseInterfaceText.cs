@@ -28,7 +28,8 @@ public static class ChineseInterfaceText
         "source" => "协议来源", "locale" => "协议语言", "endpoint" => "服务地址", "subjects" => "允许登录的账号", "roles" => "账号权限",
         _ => label is not null && label.Any(c => c >= '\u4e00' && c <= '\u9fff') ? label : "其他设置"
     };
-    public static string ParameterMessage(string text)
+    public static string ParameterMessage(string text) => ParameterMessage(text, "参数检查未通过，请查看诊断详情并修正输入。");
+    public static string ParameterMessage(string text, string fallback)
     {
         if (string.IsNullOrWhiteSpace(text)) return "";
         text = Notice(text);
@@ -40,8 +41,8 @@ public static class ChineseInterfaceText
         text = System.Text.RegularExpressions.Regex.Replace(text, @"^\w*Exception:\s*", "");
         // Raw property paths and exception types belong to diagnostic details.
         if (System.Text.RegularExpressions.Regex.IsMatch(text, @"\b[A-Z][a-z]+(?:[A-Z][A-Za-z0-9]+)+\b|\b[a-z]+(?:\.[a-zA-Z_][a-zA-Z0-9_-]*)+\b"))
-            return "参数检查未通过，请查看诊断详情并修正输入。";
-        return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? Notice(text) : "参数检查未通过，请查看诊断详情并修正输入。";
+            return fallback;
+        return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? Notice(text) : fallback;
     }
     public static string Status(string value) => value switch
     {
@@ -51,6 +52,7 @@ public static class ChineseInterfaceText
         "Rejected" => "已拒绝", "Accepted" => "已接受", "Conflict" => "存在冲突", "Cancelled" => "已取消",
         "Effective" => "运行中", "PendingRestart" => "待生效（重启后）", "ActivationFailed" => "启动未确认",
         "Persisted" => "已提交", "Validated" => "检查通过", "NotReady" => "尚未就绪",
+        "QueryUnsupported" => "当前接口不支持结果查询",
         "NotSaved" => "未保存", "Selected" => "已选中唯一条码", "NoMatchingCode" => "没有匹配条码",
         "AmbiguousCodes" => "多个条码匹配", "IncompleteCandidates" => "条码不完整", "FilterTimeout" => "筛选超时",
         "InvalidPattern" => "筛选规则无效", "NoCode" => "未识别条码", "MultipleCodes" => "存在多个条码",

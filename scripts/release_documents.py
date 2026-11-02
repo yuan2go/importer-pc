@@ -38,6 +38,7 @@ GUIDES = {
 # Current operation guides and real interface prerequisites only. Historical UI,
 # old account and support-page evidence remains in Git with its original identity.
 SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
+    'docs/runtime/sm-operator-corrections-29.md': 'SM-SCAN-AND-DEBUG.md',
     'docs/runtime/sm-session-shift-exceptions-25.md': 'SM-SESSION-SHIFTS.md',
     'docs/runtime/workstation-status-logs-01.md': 'WORKSTATION-AND-LOGS.md',
     'docs/runtime/debug-log-live-01.md': 'DEBUG-LOG-LIVE.md',

@@ -1,3 +1,5 @@
+> 2026-11-02 用户纠偏以 [OP29](../work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md) 为准：SM每位等本次RCS结果后再接受下一次读码，等待期间视频继续；超时/未知保留原责任并阻断本位后续读码，不回放忙碌期帧。旧持续解码、超时自动继续及新帧清退当前处理中包裹的冲突条款仅保留历史适用范围。采集诊断与预览缩略图分开。原文及哈希见 [归档](../archive/pre-sm-operator-corrections-29/manifest.json)。
+
 > 2026-11-02 当前斜放、模糊和完整多码搜索，以及快照先到的观察身份守卫，以 [SM-READER-ROBUSTNESS-28](sm-reader-robustness-28.md) 为准；替代27包的“首搜索零结果才补搜索”及两线策略。27原实现/验证保留历史身份，旧文档完整字节见归档。
 
 > 2026-11-02 [SM-UNREAD-PACKAGE-27](sm-unread-package-27.md) 补充默认识别无候选时的受限固定阈值搜索，以及无码/坏帧和重连的当前呈现失效水位。原像素、完整候选、多码拒绝、源时效与原请求责任不变。下文相应旧说明保持形成时范围；[原字节归档](../archive/pre-sm-unread-package-27/manifest.json)。

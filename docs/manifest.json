@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-SM-READER-ROBUSTNESS-28",
+  "work_package": "WP-IPC-SM-OPERATOR-CORRECTIONS-29",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "63af0a7f4732a0e1bc7d390a4c0437d3b870c0f8efbea71642f4666f055ef464",
-      "size_bytes": 19774,
-      "git_blob": "26ca3f5362a8ba6b91df39dd788571592f4bd765",
+      "sha256": "dab5ba337cab27a77cc2c04dadecdfd258c8ac82deee3583377adec61587195a",
+      "size_bytes": 20068,
+      "git_blob": "d15eaf5a664909fc6cf43b0e5d4290065ad1c80a",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -1886,9 +1886,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "96f4ddfdfd7fe20c707c664d622089fedb1485e65ea33d82ddd43061ea363585",
-      "size_bytes": 9297,
-      "git_blob": "f0f28cadc625b6eb7cd571c8a3d561ebf43e8b85",
+      "sha256": "51a8a2273bae9366599fa39be1b64e7c0384b363c1459c4e398203d9a8b6e772",
+      "size_bytes": 10221,
+      "git_blob": "6ef8cf71ec0c55a9c8868420635f83cae8bd8f30",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "37d6085f499a216f91456e9fe438b6795d984543b46ef4a9de351e1a16ba070f",
-      "size_bytes": 16313,
-      "git_blob": "737c2d33776e0a6ba74d8633af6de42c4a606dec",
+      "sha256": "1119903061076b20fe6d77bbb56d4b68cd7a3ffb10e3215e056c5cc3cec53243",
+      "size_bytes": 16689,
+      "git_blob": "eeb3b7f6d17df4ccfcfee03fc0d4d39cbda8f10a",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -53114,9 +53114,9 @@
     },
     {
       "path": "scripts/release_documents.py",
-      "sha256": "26d1615ec5986aa969834c31c28a44869e6f7083d305ed1a6a9b51982fa98815",
-      "size_bytes": 5418,
-      "git_blob": "f8427ced0cd4eeb6150af93db8c4d81dc7b264c9",
+      "sha256": "8d258d7076b208465974d759dd30fe1d9381485303050bb6e4516390e4f67b71",
+      "size_bytes": 5492,
+      "git_blob": "be64ae1799447806d4e352bd5823c0a5449400cb",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -53291,9 +53291,9 @@
       "purpose": "Authorized generic code, synthetic evidence, current operations or original-byte custody",
       "source": "WP-IPC-UI-MAINTAINABILITY-16 user authorization; historical source metadata retained where unchanged",
       "storage_scope": "public_repository",
-      "sha256": "93c533e39e43d1d5c3b9026a25fc8fbfb5b1df3516a6315217ba1ae1556c3aa9",
-      "size_bytes": 4048,
-      "git_blob": "8461ba85c223c7790a743be7f570e5b4d8ea16e3"
+      "sha256": "ca40a425dae40f49141134bb0d93b3028414cf516cba468af822f2d6409cf690",
+      "size_bytes": 4606,
+      "git_blob": "b7cf9253fef2173c8886985b2be47d9bb0eb9a19"
     },
     {
       "path": "scripts/test_release_provenance.py",
@@ -53997,9 +53997,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs",
-      "sha256": "4f57fd034fd8ff6514d94c050e374a7775b0d9096676c1dfd101d3d2ec039182",
-      "size_bytes": 1981,
-      "git_blob": "c2a6ae84d69349d42231590fe46d83e8569c4400",
+      "sha256": "a1f1cb5171c9d46784fd525753a3abb73098aaef344c98ce736d8aa9173b7050",
+      "size_bytes": 2257,
+      "git_blob": "458e58c37cd5b90d8590101810e74dbf971832b4",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -54259,9 +54259,9 @@
       "version": "camera-sdk-single-code-01",
       "status": "current_source_or_synthetic_evidence",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
-      "sha256": "86634be6606259a67fa034381639662ecea4f824c2a0dc1e4b446a66e572ea2c",
-      "size_bytes": 32659,
-      "git_blob": "7da2135143548f0242baae29cc6cd74abdc4e627",
+      "sha256": "305e66229a797412816880105fec325812cfa2e59344dba9108256ae09caa1ad",
+      "size_bytes": 32745,
+      "git_blob": "b13655d0bf0ac7ff035ad7150b1a67ef4dfdea58",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "096cd3d9494e16db4223afe8d77f5bde30703c35",
         "sha256": "5f435ac1d85e78418ae13338dab4fd31c2b18535f9a1187e20d07ff83b939a74",
@@ -54649,9 +54649,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
-      "sha256": "c1d6b71a7f69720f2f89cb50571af650593cfab6d3976d77b77e2a4156917a0f",
-      "size_bytes": 33877,
-      "git_blob": "ae1be3f8be3f921f1a98eff666730db668881c01",
+      "sha256": "7d71a8222e9944458320246cf262fa997bb550ed38ffae1ed82f96fa45424bfe",
+      "size_bytes": 33965,
+      "git_blob": "9502d17220f1df0396f202c3d678c8c8ff5b4711",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -54744,9 +54744,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "743edc4f40a8fcd8d1cb52ec08b20b917721aaf48e33302ae6f8c0e254b6f00f",
-      "size_bytes": 10742,
-      "git_blob": "db07131bfac893ff6998bf7f7755a166605ad021",
+      "sha256": "499f408a5303d985ac05e41cd82d69228f0a8547e7151eda57549beddc2d744f",
+      "size_bytes": 10790,
+      "git_blob": "9ba3fd5d904bb3b44493e1b446424a55d55ae84d",
       "previous_git_blob": "8f05b8626e457867c9fffe0fd098d1871172f112"
     },
     {
@@ -55051,9 +55051,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "sha256": "20544b2b38914642b22bc3d482f41615a10088c6bf69d332b6b71233cd6e0866",
-      "size_bytes": 52904,
-      "git_blob": "7896a221b4adb6a79a323ebdd4ef995dc555be1b",
+      "sha256": "40e743f7498fa0a6b5be9cb7a88a28009c42fb1ce835a04dd7fb4e9bc8223086",
+      "size_bytes": 53528,
+      "git_blob": "e3eed0ccd7ac89dfa7fb08347d6d3e68ccac25f3",
       "version": "code-reliability-hardening-02",
       "status": "scoped_implementation_or_evidence",
       "purpose": "Application ownership, crash custody, bounded log reads/presentation, SQLite contention and monotonic recovery",
@@ -55078,9 +55078,9 @@
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
       "storage_scope": "public_repository",
-      "sha256": "2494e361bbe0cc7dde71cdd5611abd6ef045c9623bd0d0ca6d555d99982144f1",
-      "size_bytes": 22994,
-      "git_blob": "bafa4a9965d09350543ac350082c42c64f6526f1",
+      "sha256": "008319e53e5524cf638bc7d52f78260bae757c2b022c6ca2e2cd0dca4a2d8043",
+      "size_bytes": 23521,
+      "git_blob": "8ab3eb5b75fa2bff864478c9c7fc307877a8ef5c",
       "previous_git_blob": "d8ade6e508099c41703c9d3ab8595c78bc08e868"
     },
     {
@@ -55447,9 +55447,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "82f1bfbb3c31dee8d043ed0998f15f49705f44dc81c01371201e76682cb26d42",
-      "size_bytes": 6477,
-      "git_blob": "d1f4fefee2653637022a74ee96eb87f743007952",
+      "sha256": "ba63bffc58bc86d14039bfff64c91f7019991c7a371397cc583a340dd8de6cec",
+      "size_bytes": 6263,
+      "git_blob": "b7bc30f59055ccbc267fee82b82401dae9a97033",
       "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4",
       "pre_publication_no_test_git_blob": "8e93f798d4c4e3966a5b95d5ac0831026864fe3e"
     },
@@ -59139,9 +59139,9 @@
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
       "source": "User-authorized PR107 follow-up 2026-10-26; original source and evidence identities retained",
       "storage_scope": "public_repository",
-      "sha256": "5ab1a7cf82624951714ad9db493269c9e1f5a553a7ead702a368fb6674d5e716",
-      "size_bytes": 31951,
-      "git_blob": "df6d3355f7d24a0782c548395eb292700ed227dd",
+      "sha256": "ecb997f26dc390d385fc1f8e42f96c493dede4214acae2f886c8f4f3e5febe67",
+      "size_bytes": 32061,
+      "git_blob": "4221d6f28076f31a0845664cf2114f42ec2ba216",
       "previous_git_blob": "77609e76ba5ead326e7347757e464bc134527f2c",
       "pre_publication_no_test_git_blob": "af25eda28603d79bc87375a4ffcfb58a77d5911b",
       "pre_retention_maintenance_qualification_01_identity": {
@@ -59567,9 +59567,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "sha256": "b4f6fca1eaa5bff1dee7c633e2f24a866803d84c47066bdfd05a0b6539d62b73",
-      "size_bytes": 26369,
-      "git_blob": "11c9cc88b92652e72fdad6c2ce8ac6dd002dca66",
+      "sha256": "dbef42802215dcb959f2cede17e70526252cbfbcd41effea079003cc989174de",
+      "size_bytes": 26499,
+      "git_blob": "b56d7493013ca3d9b8b3ce7241e67ce6c8591e16",
       "version": "hikrobot-sdk-barcode-02",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -60628,9 +60628,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-CAMERA-SDK-SINGLE-CODE-01; original evidence retains its own scope",
       "storage_scope": "public_repository",
-      "sha256": "0da33b192c8acd26b968c39bd14dc871c0ff2b2ae65370acf6939587c4995ec1",
-      "size_bytes": 15872,
-      "git_blob": "39b06146126de13a62cb7f8f4038228adba31e77"
+      "sha256": "c52be3f1e4aa15d93897a7d5740baa4b2d2f768dc7507fd5e1d7a361db45ffd4",
+      "size_bytes": 15991,
+      "git_blob": "c46b88e6f3e13f1a855710ccd823508e2f03082c"
     },
     {
       "path": "docs/runtime/evidence/chinese-interface-copy-01/integrated/WINDOWS-WPF.log",
@@ -69528,9 +69528,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Navigation.cs",
-      "sha256": "f16a35218c06357e6d0864713f7ea5432de1938fea713b08d47f7dbcec79131d",
-      "size_bytes": 8739,
-      "git_blob": "c3d7d0116c60b037e9713e59a0f6feba90652b67",
+      "sha256": "481750a2b93f9953ac7b7701eddf5886bf0eceb4a8c7a02eddcfc4502d48cf66",
+      "size_bytes": 8976,
+      "git_blob": "cd59878c7d6af9bcac442930885640ed7f61a421",
       "version": "internal-pages-ui-refine-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Native WPF internal-page refinement, per-page validation, synthetic verification or preserved prior guidance; see task scope and evidence boundaries",
@@ -75725,9 +75725,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01; original identities preserved",
       "storage_scope": "public_repository",
-      "sha256": "61b1f54d6d13a78a0f319e2101decf20757afcf82488599a41681728436573e7",
-      "size_bytes": 9883,
-      "git_blob": "d1c9ff129865e9686fd454a310239aa6fbbc8f20"
+      "sha256": "404a3f99f53fb1ab560e62a0f0e2268bd6e4504e64dbd776ef53ee5ea857173c",
+      "size_bytes": 9953,
+      "git_blob": "0f1d978c0c1a3277ac01b507a14254ed9e431810"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReadOperations.cs",
@@ -89587,9 +89587,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/ParameterGuidanceStartup.cs",
-      "sha256": "f8f834310ac2f9878943d516639c2a72dc76211b4d19eb2614297d32d762676d",
-      "size_bytes": 13357,
-      "git_blob": "901e65fe09799eb1574187bc788b449fc7a280d1",
+      "sha256": "a37e560d65ca08eadb7c7fe3d356e457279295ab7e3c4a3341503af1965e70af",
+      "size_bytes": 16044,
+      "git_blob": "5a0430a5aacb2d2d3e42f0cad13b9ee31a07ef1f",
       "version": "camera-sdk-single-code-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -100868,9 +100868,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "8a1bd9c4693535950f0d6c29196c813a03045029fc841afd27a2d94085083307",
-      "size_bytes": 15531,
-      "git_blob": "e23a9ac51865d5e3e6d3f9b9cdc93478cf6baa21",
+      "sha256": "93e5a216454eba6669e3b6f73368f6b9483e7d60275e606b702b2ad5df91f2d0",
+      "size_bytes": 15532,
+      "git_blob": "59a0596f003d6b7c7d546c96fe84bcd5d48589dd",
       "storage_scope": "public_repository"
     },
     {
@@ -100879,9 +100879,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-STABILITY-INTEGRATION-02; original evidence retains its own SourceCommit",
-      "sha256": "8f262c9d3194ff9564736575d84427902d321406f892ba19da450469a7f631e8",
-      "size_bytes": 8913,
-      "git_blob": "13886a185e09ea73185a2b7a64630fdc710aa38a",
+      "sha256": "64335f3363aec71ed80d707af2fff5212515934ca1da8984b6f73b87273b991b",
+      "size_bytes": 10077,
+      "git_blob": "4409ce91a0b16476293fbc14eb70f13330805652",
       "storage_scope": "public_repository"
     },
     {
@@ -102364,9 +102364,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-HIKROBOT-SDK-BARCODE-02; historical evidence retains original identity",
-      "sha256": "66c9030ee6097a1e09b6f61cf1e2e2464f3c0efac06c499be5e05c28efec6293",
-      "size_bytes": 25881,
-      "git_blob": "4ab6efbebf11c10b3cabbd62c3b58886a0030ac1",
+      "sha256": "97bf7f4606fee268c1cd58ca8bc05a5f24167c0fb017787825d0c7cbafaf3161",
+      "size_bytes": 26613,
+      "git_blob": "41dde1ae2930a7776822f545fab4973fe46bb4f4",
       "storage_scope": "public_repository"
     },
     {
@@ -105103,9 +105103,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "ae27898ec7ef774a54621c467a9eb6fcc69884067fcace41b6632958e9810104",
-      "size_bytes": 9085,
-      "git_blob": "60b8cc97cfc890f2a07ff26488d2b19678b64569",
+      "sha256": "947c00e248c3fdb3814fb2e4d0daab1f7cc839583c99d34407ca809c79b9517a",
+      "size_bytes": 9595,
+      "git_blob": "c89d29d3c2947fef605d241a09aa4e4159fd89e9",
       "storage_scope": "public_repository"
     },
     {
@@ -106665,9 +106665,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-ROUND-04; original evidence retains its own SourceCommit",
-      "sha256": "4e14053c4284a08e9981b4f61780f3d69f9713422c5edbc16225261cb98ae1d2",
-      "size_bytes": 775,
-      "git_blob": "15168f16e70e286ed97b79fbb07c83f1ffea3bc8",
+      "sha256": "3ca8be46f5f348b73218f244a48d0a86ff3c4d6bd0a1e10ff4805993825f7369",
+      "size_bytes": 1183,
+      "git_blob": "e8b5feed124d4408bd8fe3b137869e4188f32bae",
       "storage_scope": "public_repository"
     },
     {
@@ -106742,9 +106742,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-ROUND-04; original evidence retains its own SourceCommit",
-      "sha256": "2a8e467899e2974c9f46e9892b9a2dfcdc0f0a5ff13e8bba5989b1216f07a68f",
-      "size_bytes": 4832,
-      "git_blob": "c4ccca0d3bfe36a2b58cc560bd7c2f82303d0104",
+      "sha256": "3abab76655d6986e8b3d979af6b5c1e633fbe6d9fb905e33ec04c01cd4ad3b6e",
+      "size_bytes": 5897,
+      "git_blob": "13832650cd331675b4e90854e70c13753ef42e48",
       "storage_scope": "public_repository"
     },
     {
@@ -106808,9 +106808,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-ROUND-04; original evidence retains its own SourceCommit",
-      "sha256": "8d3c36119a5602e687dec7df7a9acf38e04b39f4dbcfe731c93cd58392b3d114",
-      "size_bytes": 33503,
-      "git_blob": "3308d7f0aa73ef4868267d2a92667fc44f063e5d",
+      "sha256": "14586bc0ff30b81cdddc543a284596889521e4fe4f5e2e62b2f98f72a707fe6c",
+      "size_bytes": 35002,
+      "git_blob": "7afbd9e048ebf3c228270faae43a240c40ad6814",
       "storage_scope": "public_repository"
     },
     {
@@ -108051,9 +108051,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-CLOSURE-07; original evidence retains its own SourceCommit",
-      "sha256": "5a8e892469180f476cc11ca190779c860ba1f04df4b05231607955ecfa14c8a6",
-      "size_bytes": 17166,
-      "git_blob": "352155d0a90e373e07262e065e1476ba88087372",
+      "sha256": "b86bed4cedc5531985300ca915085a81dc532c653a70a0c0b82abd71cca39632",
+      "size_bytes": 17402,
+      "git_blob": "7a45e11fcbec4e2a1c57249b016fa1e7a702efe5",
       "storage_scope": "public_repository"
     },
     {
@@ -109602,9 +109602,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
-      "sha256": "0149ca564c0bd617c18cbb82900aa11029bb3b8ee69306c768f2c3134b4dee04",
-      "size_bytes": 6862,
-      "git_blob": "cfcfbd9b7a3f266e12709ebb9cbf35d9535658fa",
+      "sha256": "eaf4affaaddf924d822441944c694ac1706e5ace4f1b8be3dc6be010fe5b434a",
+      "size_bytes": 6985,
+      "git_blob": "f3da330c6ed8b289f02926f9c1252a83e5937d78",
       "storage_scope": "public_repository"
     },
     {
@@ -111450,9 +111450,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PERCEPTION-LATENCY-15; original evidence retains its own SourceCommit",
-      "sha256": "bb1b111f581bec6019715f979f7de01fd1b83b05b0309d302d478596f58f92b9",
-      "size_bytes": 16688,
-      "git_blob": "a22daf4f1295071f5ecaea7f7c880a1a1ae2349a",
+      "sha256": "e7835597e6c6b1a9678f690ff24757b67ddf2146375446e0eccf5a89d48d8cfc",
+      "size_bytes": 17005,
+      "git_blob": "0c7cd4421852e33d0489a4875bb61dc3d9aaa3e3",
       "storage_scope": "public_repository"
     },
     {
@@ -111461,9 +111461,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PERCEPTION-LATENCY-15; original evidence retains its own SourceCommit",
-      "sha256": "a3156e9f3d42600398fcd77f51804b23795d06c308c098a83be483b7970ef7ac",
+      "sha256": "f2a902820fc291df8a82ddd61ac99d66fafe86c6da4256b6b740102206e319f6",
       "size_bytes": 11106,
-      "git_blob": "45322b077655c3922ec9e75b4796e2fc92b91cab",
+      "git_blob": "dacf380e684dc6687a9a17ef1f2baa74db71cd89",
       "storage_scope": "public_repository"
     },
     {
@@ -111934,9 +111934,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-RESPONSIVE-PRESENTATION-16; original evidence retains its own SourceCommit",
-      "sha256": "71a0f9b942ffffed54d451ae4b4a56df68c61aa9dacb94240087889a86b34ef4",
-      "size_bytes": 10607,
-      "git_blob": "b0e1243fd33f09177ff443b3ed79821c826e27d8",
+      "sha256": "869a44876e07b3bdfc3f2ab488f8aa28013c550f239f1684d9286e24373384f5",
+      "size_bytes": 11117,
+      "git_blob": "7766f899a159f549fcc772a696604aed0eff66c3",
       "storage_scope": "public_repository"
     },
     {
@@ -112814,9 +112814,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-OPERATOR-COPY-01; original evidence retains its own SourceCommit",
-      "sha256": "d5ac013b8cfcb559a8e180bc60008a1910f041a1026624b07fefdf5e2e5b2e01",
-      "size_bytes": 2481,
-      "git_blob": "85e57158e29e92cc0d636b137979abdde09b5fd3",
+      "sha256": "1502f3387af79b3d8db5e117ccd467189cf61baa5c7bfd6415b75d404a90bf04",
+      "size_bytes": 2493,
+      "git_blob": "96ddf8099b9ff5a383fcf75fb298a08a751cb80b",
       "storage_scope": "public_repository"
     },
     {
@@ -115069,9 +115069,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "017b979a13bcbf9ecdf6bf95f30a411a14cf00f8cffe986bb4992af2374d493a",
-      "size_bytes": 12029,
-      "git_blob": "dc11455b469f72ec8483d6c180d92aef7a1306ba",
+      "sha256": "0ee1dc6dc863362a3dc9366dc2bb75784c2d85025132c8162b6dbe6a0107bbd6",
+      "size_bytes": 11705,
+      "git_blob": "1242b40f07c2a86e2a091c316c5f107354a0c405",
       "storage_scope": "public_repository"
     },
     {
@@ -118149,9 +118149,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-FEEDBACK-22; original evidence retains its own SourceCommit",
-      "sha256": "2222db5d49890599702cceb3eab498d35a2573d024161d92142f263ff98a793b",
-      "size_bytes": 7540,
-      "git_blob": "092123dfff5faaf2940c5a535c0f75c80d0149a4",
+      "sha256": "deb01e40b2ddfab469e72704e9b19093d9a25e43b96c2685ccfa1e284ec78043",
+      "size_bytes": 8038,
+      "git_blob": "4304517ff6717da40d0fe6e9d4b3b0068193be1d",
       "storage_scope": "public_repository"
     },
     {
@@ -118655,9 +118655,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-UI-SPEC-CLOSURE-24; original evidence retains its own SourceCommit",
-      "sha256": "475f6b27d23620d9a61bef58eced2c1696501557ddbc617ecc182be9e7a6306d",
-      "size_bytes": 7198,
-      "git_blob": "adaa885778312431d0cd0c6ec4aa724579b88ef7",
+      "sha256": "732990a4c811ad604ee24d78bde1ae1010d18c0bdcb40613af38524df00db039",
+      "size_bytes": 6470,
+      "git_blob": "b11119aafb54a1a38716d4d17d3b5418484a822c",
       "storage_scope": "public_repository"
     },
     {
@@ -120129,9 +120129,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-UNREAD-PACKAGE-27; original evidence retains its own SourceCommit",
-      "sha256": "6fd6ba06150c3776031d4833488b4b794cfd8e74d115f00fa1c25709bc7996a6",
-      "size_bytes": 4021,
-      "git_blob": "07a0cd276d56ecd2acac83b6f655c785d7c23511",
+      "sha256": "a8942c10a95aff91bbc2f8167cce361cd8785cfb5a472f4f09d842c097264dbc",
+      "size_bytes": 4349,
+      "git_blob": "7ff44ba243846fa5e18643a7fdb5ccaa69756084",
       "storage_scope": "public_repository"
     },
     {
@@ -121075,9 +121075,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-ROBUSTNESS-28; original evidence retains its own SourceCommit",
-      "sha256": "8646f36f886b6a679f3a2b1b620291cd1a2f7adef0f1b556edfe0d7bf4cace9d",
-      "size_bytes": 4430,
-      "git_blob": "fa8b66b36b92b58a361c13def6d013432c73bc69",
+      "sha256": "ff01ebba29b1b79d8e82e0bce4172fad792e1a7e1f5af4c62b543b41eb831565",
+      "size_bytes": 4940,
+      "git_blob": "50c3fce9d1f5c4a9f1bbfdc58ef806808b5bcd6c",
       "storage_scope": "public_repository"
     },
     {
@@ -121651,6 +121651,171 @@
       "size_bytes": 4619,
       "git_blob": "c280bb43dc941e624eb95d90142b3b958746c838",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-operator-corrections-29/AGENTS.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "96f4ddfdfd7fe20c707c664d622089fedb1485e65ea33d82ddd43061ea363585",
+      "size_bytes": 9297,
+      "git_blob": "f0f28cadc625b6eb7cd571c8a3d561ebf43e8b85",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-operator-corrections-29/docs/INDEX.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "37d6085f499a216f91456e9fe438b6795d984543b46ef4a9de351e1a16ba070f",
+      "size_bytes": 16313,
+      "git_blob": "737c2d33776e0a6ba74d8633af6de42c4a606dec",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-operator-corrections-29/docs/runtime/mvs-software-reader-01.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "ae27898ec7ef774a54621c467a9eb6fcc69884067fcace41b6632958e9810104",
+      "size_bytes": 9085,
+      "git_blob": "60b8cc97cfc890f2a07ff26488d2b19678b64569",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-operator-corrections-29/docs/runtime/sm-reader-feedback-22.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "2222db5d49890599702cceb3eab498d35a2573d024161d92142f263ff98a793b",
+      "size_bytes": 7540,
+      "git_blob": "092123dfff5faaf2940c5a535c0f75c80d0149a4",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-operator-corrections-29/docs/runtime/sm-reader-robustness-28.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "8646f36f886b6a679f3a2b1b620291cd1a2f7adef0f1b556edfe0d7bf4cace9d",
+      "size_bytes": 4430,
+      "git_blob": "fa8b66b36b92b58a361c13def6d013432c73bc69",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-operator-corrections-29/docs/runtime/sm-responsive-presentation-16.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "71a0f9b942ffffed54d451ae4b4a56df68c61aa9dacb94240087889a86b34ef4",
+      "size_bytes": 10607,
+      "git_blob": "b0e1243fd33f09177ff443b3ed79821c826e27d8",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-sm-operator-corrections-29/manifest.json",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "eb506648ddac1d3f7c9891fd35b40d3401973bb48ba9dfe22d5b7cb91a6645fd",
+      "size_bytes": 1345,
+      "git_blob": "18d98fc616963cf79979f4e52aa81b74d22d8656",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/sm-operator-corrections-29.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "5b76847f693b6c79c8f52c2df24b0d30832a45a912d5d5a70b064548b740c99d",
+      "size_bytes": 3734,
+      "git_blob": "06c6fe4cc0f32f886642811134521318b9402810",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "86d855e2813b898ad96be668e3f13ba98ed51dabc4d6bd4d5c03794a3011bf83",
+      "size_bytes": 1592,
+      "git_blob": "f254b5d2952e2d605dbb61e6d2c5eef8542e38b1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-SM-REINSTALL-RETEST-28.md",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "a6621735b2aa6b6efaa04f1dd9a0cbe989d7f0f87707e2346c96309a6057207e",
+      "size_bytes": 1767,
+      "git_blob": "0115cd6c766b6a57f4cdece2b18682693f0b07a6",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCameraReadWindow.cs",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "c6200aedec2abb6a763a4717295ff13dd802225ef30ccf40ded517b39cbc5788",
+      "size_bytes": 2206,
+      "git_blob": "2e1b0f94fa2cd0d9ac77fc064c9d857930684fe6",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/CameraAcquisitionPresentation.cs",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "2893936e63626a6c8ca6954d5a9dd27730a14e8c76d5b1cbfca0584394547363",
+      "size_bytes": 2555,
+      "git_blob": "59cbb595d19f2203cf74143d118ca38aa0a609e1",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationReadWindow.cs",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "e10a7c78eb839d1b8ebd57ebfe0718308a03da14ad9a5c8861a0e5264a86d4d2",
+      "size_bytes": 465,
+      "git_blob": "afcb5aed5db08d8cd8b5d7d558913b35e1b86f0b",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/OperatorCorrections29.cs",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "af74485f12b1c3200bbbfc133b3af9a0ffaaf7503d8739d7f83d0dcc729f5396",
+      "size_bytes": 6075,
+      "git_blob": "a2da34c6a112583db0f90a2fbfc3d421018a6678",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/OperatorCorrections29Ui.cs",
+      "version": "sm-operator-corrections-29",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-CORRECTIONS-29; original evidence retains its own SourceCommit",
+      "sha256": "40674d775b0c86471be0b3ac8924b2729425dc31ce94249de72f9b162e811d37",
+      "size_bytes": 7819,
+      "git_blob": "be3b8e1dc831da97a786dbb6061d88926eb506df",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -121730,7 +121895,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-READER-ROBUSTNESS-28.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",

@@ -107,12 +107,10 @@ public partial class SupplyStationWindow
         await ViewModel.RequireManagementModeAsync(); await ViewModel.RefreshAsync(); var snapshot = ViewModel.Snapshot ?? throw new InvalidOperationException("当前状态不可读"); var text = new StringBuilder();
         foreach (var reader in snapshot.Configuration.Effective.Topology?.Readers ?? [snapshot.Configuration.Effective.Reader])
         {
-            if (ViewModel.Application is not ICameraPreviewLeaseDiagnostics api) continue;
-            using var sample = await api.ReadCameraPreviewLeaseAsync(reader.DeviceId, CancellationToken.None);
-            var d = sample.Diagnostics;
+            if (ViewModel.Application is not ICameraAcquisitionDiagnostics api) continue;
+            var sample = await api.ReadCameraAcquisitionAsync(reader.DeviceId, CancellationToken.None);
             var name = reader.DeviceId == ViewModel.Left.ReaderId ? "左相机" : reader.DeviceId == ViewModel.Right.ReaderId ? "右相机" : reader.DeviceId;
-            text.AppendLine(d is null ? name + "：" + sample.Status : $"{name}：有效帧 {d.Frames} · 已解码 {d.DecodeCompleted} · 识别到条码 {d.Candidates} · 最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {d.State}");
-            if (!string.IsNullOrEmpty(d?.Failure)) text.AppendLine("最近错误：" + DiagnosticText.Protect(d.Failure));
+            text.AppendLine(name + "：" + CameraAcquisitionPresentation.Describe(sample));
         }
         foreach (var health in snapshot.Health.Where(h => h.InstanceId == snapshot.Configuration.Effective.Wcs?.InstanceId))
         {

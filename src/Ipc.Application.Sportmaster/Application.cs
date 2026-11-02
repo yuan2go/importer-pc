@@ -33,9 +33,7 @@ public sealed class SportmasterFlow : FlowDefinition
         (op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached || op.Upload is null or { State: StageState.Accepted or StageState.Rejected or StageState.Cancelled }) &&
         op.Wcs is { State: StageState.Unknown, Attempts: 1, Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
         stage.Replies.All(r => r.BusinessAccepted is null) &&
-        (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||
-         stage.Replies.LastOrDefault()?.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal) == true ||
-         stage.Replies.LastOrDefault() is { SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false,
+        (stage.Replies.LastOrDefault() is { SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false,
              ProtocolAcknowledged: null, BusinessAccepted: null, PhysicalCompleted: null, HttpResponse: null } notDelivered &&
              notDelivered.RequestId == stage.Request.Id && notDelivered.PayloadHash == stage.Request.PayloadHash &&
              notDelivered.Evidence.StartsWith("RCS_NOT_DELIVERED:", StringComparison.Ordinal));

@@ -1,4 +1,6 @@
 > 2026-11-02 读码反馈与操作可靠性见 [READER-FEEDBACK-22](work-packages/WP-IPC-SM-READER-FEEDBACK-22.md)、[运行说明](runtime/sm-reader-feedback-22.md)：补齐信任拒收终态、反馈周期/时效、全码制映射、输入焦点和独立音频/音量；替代旧超时处置文案，保留逐次上报、原请求责任及现场待验边界。
+> 2026-11-02 DB22本机实际更新发现的私有WAL句柄及原件身份补修见 [DB11-WAL-HANDLE-23](work-packages/WP-IPC-DB11-WAL-HANDLE-23.md)。原数据首次写入前失败，保全原件；本轮补齐WAL模式关闭和升级回归后重新出包。既有验证保持原来源。
+
 > 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
 
 > 2026-11-02 全软件文案工业化第二轮见 [OPERATOR-COPY-02](work-packages/WP-IPC-OPERATOR-COPY-02.md)：参数、保存、日志、记录、诊断、异常、统计、维护中心、调试、首配/启动修复、安装/卸载及历史清理统一用现场用语；只改展示文案，业务守卫不变。

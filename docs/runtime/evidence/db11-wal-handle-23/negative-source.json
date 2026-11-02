@@ -1,0 +1,5 @@
+{
+  "product_source": "9ccb91abb37bb93df9a89bcee6956820eee8a285",
+  "test_state": "Working tree adds closed-WAL mode to the existing unsent closure fixture; production code unchanged",
+  "test_sha256": "27471272ae20837cbab7075add616779e9d9ff48156efcac5f4132a17c36ebd5"
+}

@@ -19,12 +19,17 @@ public sealed partial class ParcelStartupMaintenance
         using var copy = CopyForMaintenance(state.Directory, execution);
         _ = ParcelRepository.ReadMaintenanceStorageVersion(copy.Database, definition.Id);
         _ = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution.Token, allowStorage10: true);
-        using var source = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = copy.Database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
-        source.Open();
-        var original = ParcelRepository.ReadNeverAttempted(source, operation, expectedBodyHash);
+        ParcelOperation original;
+        using (var source = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = copy.Database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
+        {
+            source.Open();
+            original = ParcelRepository.ReadNeverAttempted(source, operation, expectedBodyHash);
+        }
         var changed = ParcelUnsubmittedIntent.Abandon(original, reason);
-        var beforeHash = Wire.FileHash(copy.Database); var walHash = File.Exists(copy.Database + "-wal") ? Wire.FileHash(copy.Database + "-wal") : null;
-        source.Close();
+        // SQLite can create transient sidecars in its private copy. The original
+        // identity is the immutable inventory captured before any SQLite open.
+        var beforeHash = copy.OriginalHashes[definition.Id + ".db"];
+        var walHash = copy.OriginalHashes.GetValueOrDefault(definition.Id + ".db-wal");
         await BackupCopy(state.Directory, backup, state, copy, execution, finalOperation: false);
         var manifest = ParcelRecovery.VerifyBackup(backup, Authorize, token, allowStorage10: true);
         Authorize(); execution.Checkpoint();

@@ -65,5 +65,6 @@ internal static class OperatorCorrections29
                 "all acquired SDK frame loans are returned while waiting and after reopening");
         }
         finally { hold.TrySetResult(); h.Peer.Hold = null; }
+        await ArchitectureQualityRemediation.VerifyUnsupportedReceiptQuery29(workspace, Path.Combine(root, "unsupported-receipt-query"));
     }
 }

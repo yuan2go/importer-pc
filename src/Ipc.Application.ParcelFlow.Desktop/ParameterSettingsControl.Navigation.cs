@@ -24,9 +24,9 @@ public sealed partial class ParameterSettingsControl
     void SelectPageCore(ObjectPage? page)
     {
         if (page is null || !page.Available) return;
-        selectingPage = true;
+        var priorSelecting = selectingPage; selectingPage = true;
         try { if (FirstConfiguration) { categoryScope = page.Category; directoryView?.Refresh(); } directory.SelectedItem = page; currentPage = page; RefreshStepBar(); lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
-        finally { selectingPage = false; }
+        finally { selectingPage = priorSelecting; }
         SelectedPageChanged?.Invoke(this, EventArgs.Empty);
     }
     void RefreshStepBar()
@@ -52,9 +52,9 @@ public sealed partial class ParameterSettingsControl
         // Role reassignment can expose a formerly maintenance-only component.
         // Keep its editor and drafts, while excluding it from every navigation
         // path again when its last actual business role is removed.
-        selectingPage = true;
+        var priorSelecting = selectingPage; selectingPage = true;
         try { directoryView?.Refresh(); if (currentPage?.Available == true) directory.SelectedItem = currentPage; }
-        finally { selectingPage = false; }
+        finally { selectingPage = priorSelecting; }
         if (currentPage?.Available != true)
         {
             var destination = OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope);

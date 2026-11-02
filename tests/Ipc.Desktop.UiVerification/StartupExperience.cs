@@ -149,7 +149,7 @@ static partial class Program
         }
         var pendingType = assembly.GetType("Ipc.Desktop.ParcelStartupWindow", true)!;
         var pending = (Window)Activator.CreateInstance(pendingType)!;
-        pendingType.GetMethod("ConfigurationPaused")!.Invoke(pending, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => Task.CompletedTask)]);
+        pendingType.GetMethod("ConfigurationPaused")!.Invoke(pending, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => Task.CompletedTask), null]);
         pending.Show(); pending.UpdateLayout();
         Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "继续配置", "退出" }), "incomplete configuration shows a direct continuation instead of generic failure actions");
         Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible), "incomplete setup has no large empty diagnostic box");
@@ -187,6 +187,7 @@ static partial class Program
             var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), ["D:/synthetic-retained-data"], restart, [], "D:/synthetic-release");
             var removal = (Window)Activator.CreateInstance(removalType, BindingFlags.Instance | BindingFlags.NonPublic, null, [receipt, "D:/synthetic-retained-data"], null)!;
             removal.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); removal.UpdateLayout();
+            Descendants(removal).OfType<Expander>().Single(e => Equals(e.Header, "卸载记录与剩余文件详情")).IsExpanded = true; removal.UpdateLayout();
             Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "查看上次卸载结果", "关闭" }) &&
                 Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("程序目录")), "retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry");
             Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && (restart ? t.Text.Contains("软件已卸载") && t.Text.Contains("重启电脑") : t.Text.Contains("程序文件已清理") && t.Text.Contains("业务数据已保留"))) &&

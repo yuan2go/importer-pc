@@ -57,12 +57,15 @@ static partial class Program
         Box("BarcodePattern").Text = ""; await Flush();
         Check(await editor.MoveNextAsync() && editor.CurrentPageTitle == "格口请求", "corrected optional rule advances only one leaf, not the entire category");
         model.Policy.BarcodePattern = model.Policy.BarcodeExclusionPattern = " ";
-        Check(await model.ValidatePageAsync(new HashSet<string> { "BarcodePattern", "BarcodeExclusionPattern" }), "whitespace-only optional rules retain the existing absent-filter semantics");
+        await Flush();
+        var whitespaceValid = await model.ValidatePageAsync(new HashSet<string> { "BarcodePattern", "BarcodeExclusionPattern" });
+        if (!whitespaceValid) lines.Add("LEAF WHITESPACE " + string.Join(" | ", model.Issues.Select(i => i.Path + ":" + i.Message)) + " :: " + Wire.Encode(model.Policy.BuildBarcodePolicy()));
+        Check(whitespaceValid, "whitespace-only optional rules retain the existing absent-filter semantics");
         model.Policy.BarcodePattern = model.Policy.BarcodeExclusionPattern = "";
         var rcs = model.Components.Single(ParameterOwnership.IsRcs);
         var specified = rcs.Parameters.Single(p => p.Field.Key == "specified-chute"); var originalSpecified = specified.Value;
         specified.Value = ""; await Flush();
-        directory.SelectedItem = directory.Items.Cast<object>().Single(p => p.ToString() == "RCS 服务"); await Settled();
+        directory.SelectedItem = directory.Items.Cast<object>().Single(p => p.ToString() == "接收与等待限制"); await Settled();
         Check(editor.CurrentPageTitle == "格口请求" && model.Issues.Any(i => i.Path == rcs.InstanceId + "/specified-chute"), "forward directory jump cannot skip a missing value on the current leaf");
         specified.Value = originalSpecified;
         var chute = rcs.Parameters.Single(p => p.Field.Key == "chute-code");
@@ -75,14 +78,17 @@ static partial class Program
         Check(!Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("QueueCapacity")), "numeric error uses a Chinese name");
         editor.MovePrevious(); await Flush();
         Check(editor.CurrentPageTitle == "格口请求" && model.Policy.QueueCapacity == "bad", $"backward navigation retains invalid process-only input: page={editor.CurrentPageTitle}; value={model.Policy.QueueCapacity}");
-        directory.SelectedItem = directory.Items.Cast<object>().Single(p => p.ToString() == "RCS 服务"); await Settled();
+        if (editor.FirstConfiguration)
+            Descendants(editor).OfType<Button>().Single(b => Equals(b.Content, "4 RCS 连接")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        else directory.SelectedItem = directory.Items.Cast<object>().Single(p => p.ToString() == "RCS 服务");
+        await Settled();
         Check(editor.CurrentPageTitle == "接收与等待限制", "forward multi-page jump stops at the first invalid intermediate leaf");
         var search = Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "搜索参数");
         search.Text = "服务地址"; await Flush();
         search.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(search), 0, Key.Enter) { RoutedEvent = Keyboard.KeyDownEvent }); await Settled();
         Check(editor.CurrentPageTitle == "接收与等待限制", "keyboard search cannot bypass current-page validation");
         Box("QueueCapacity").Text = oldQueue; await Flush();
-        Check(await editor.MoveNextAsync() && editor.CurrentPageTitle == "供包台标识" && model.Issues.All(i => i.Path != "QueueCapacity"), "editing bound input clears obsolete field errors and advances to the real next page");
+        Check(await editor.MoveNextAsync() && editor.CurrentPageTitle == (editor.FirstConfiguration ? "左右相机" : "供包台标识") && model.Issues.All(i => i.Path != "QueueCapacity"), "editing bound input clears obsolete field errors and advances to the real next page");
         specified.Value = oldSpecified; chute.Value = oldChute;
         // A slow format check cannot advance after the user changes the input.
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

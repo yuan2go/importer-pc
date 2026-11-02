@@ -18,7 +18,11 @@ public sealed partial class ParcelRuntime
             ports!.ImplementationHashes.GetValueOrDefault(binding.InstanceId) != stage.Request.ImplementationHash)
         { op = StageFailure(op, kind, stage, "OriginalCapabilityUnavailable: preserve original request, package, target and implementation"); Save(op, "OriginalCapabilityBlocked", GetStage(op, kind)!.Failure!); return op; }
         if (query && !factory.Requirements(stage.Request.Binding).Query)
-        { op = StageFailure(op, kind, stage, "Provider declares no authoritative query capability; preserve unknown and original responsibility"); Save(op, "QueryUnsupported", GetStage(op, kind)!.Failure!); return op; }
+        {
+            repository!.Commit(null, "QueryUnsupported", Wire.Encode(new { Operation = op.Id, OriginalRequest = stage.Request.Id,
+                Policy = "Provider declares no authoritative query capability; original stage and receipt responsibility remain unchanged" }));
+            return op;
+        }
         var port = PortFor(op, kind);
         if (!PortMaintenanceClear(port)) return op;
         CapabilityHealth health;

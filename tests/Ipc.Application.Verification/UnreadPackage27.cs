@@ -65,7 +65,9 @@ internal static class UnreadPackage27
                     matched.CameraReads.Single(f => f.PositionId == "left").Frame.CompletedTicks,
                 "Codes becomes visible only together with its exact epoch and decode-clock observation cue");
             h.Api(h.Left).Enqueue(blank, 4);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 4));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Releases >= 4));
+            Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.FrameNumber == 3 && h.Peer.Requests.Count == 3,
+                "OP29: busy video frame is acquired and returned without replacing the pending read or adding a request");
         }
         finally
         {
@@ -74,9 +76,13 @@ internal static class UnreadPackage27
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
         }
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
-        Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.Outcome == ObservationReadOutcome.NoCode,
-            "late RCS acceptance preserves its original fact without restoring a superseded camera frame");
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 5);
+        Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.FrameNumber == 3,
+            "OP29: matching RCS acceptance preserves the read that waited for it without replaying a busy frame");
+        h.Api(h.Left).Enqueue(blank, 5);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 5 && f.Frame.Outcome == ObservationReadOutcome.NoCode));
+        Check((await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3,
+            "a post-result no-code frame supersedes camera presentation without changing accepted original operations");
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 6);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 4);
         var requests = h.Peer.Requests.Select(s => JsonDocument.Parse(s)).ToArray();
         try

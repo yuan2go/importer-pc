@@ -45,7 +45,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string BarcodeExclusionPattern { get => Get<string>(); set => Set(value); }
     public bool RejectMultipleCodes { get => Get<bool>(); set => Set(value); }
     public string MultiCodeSeparator { get => Get<string>(); set => Set(value); }
-    public BarcodeFilterPolicy BuildBarcodePolicy() => new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern,
+    public BarcodeFilterPolicy BuildBarcodePolicy() => new(BarcodePattern, string.IsNullOrWhiteSpace(BarcodeExclusionPattern) ? null : BarcodeExclusionPattern,
         RejectMultipleCodes ? null : false, MultiCodeSeparator == ";" ? null : MultiCodeSeparator);
     public string DiagnosticLogDays { get => Get<string>(); set => Set(value); }
     public string HistoryDays { get => Get<string>(); set => Set(value); }

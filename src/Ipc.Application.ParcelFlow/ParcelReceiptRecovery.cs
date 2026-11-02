@@ -69,6 +69,8 @@ public sealed partial class ParcelRuntime
         var kind = ParseStage(pending.Stage); var stage = GetStage(op, kind);
         if (stage is null || stage.Request.Id != pending.Request || stage.State == StageState.Conflict || activeStages.Contains(op.Id + ":" + kind))
             return new("Rejected", "Original stage unavailable, conflicting or in use", repository.Revision);
+        if (!factory.Requirements(stage.Request.Binding).Query)
+            return new("QueryUnsupported", "原接口不提供结果查询；原请求及缺失回执责任保留，不会重发。", repository.Revision);
         var auditReason = Wire.Encode(new { OriginalOccurrence = pending.Id, OriginalSource = repository.ReceiptById(pending.Id)!.Source,
             Actor = ManagementEvidence, Reason = command.Value, MissingRaw = true, Policy = "Authoritative original-query outcome only; absent old raw remains absent and original occurrence retained" });
         repository.AdmitCommand(command);

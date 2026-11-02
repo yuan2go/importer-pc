@@ -71,7 +71,10 @@ static class SessionShift25
         Check(timeout.Reasons.Any(x=>x.Code=="RcsTimeout"&&x.Count==1)&&timeout.Totals.Sum(x=>x.Unknown)==1,"actual expired request budget produces a typed timeout without parsing failure text");
         var unknownPage=await exceptions.ReadExceptionsAsync(new(StationExceptionKind.Unconfirmed),default);
         Check(unknownPage.UnconfirmedCount==1&&unknownPage.Items is [{ReasonCode:"RcsTimeout"}]&&unknownPage.Items[0].OperationId==uncertain.OperationId,"typed timeout reaches exceptions with the exact original ID and full unresolved count");
-        var before=h.Peer.Requests.Count; await h.App.DisposeAsync(); await h.StartAsync(); api=h.App;
+        var before=h.Peer.Requests.Count; await h.App.DisposeAsync(); await h.StartAsync(ready:false); api=h.App;
+        await CameraRoundHarness.Until(async()=> (await h.App.SnapshotAsync()).Positions!.Single(p=>p.Id=="left").BarcodeInput?.Manual==true);
+        Check((await h.App.SnapshotAsync()).Positions!.Single(p=>p.Id=="right").BarcodeInput?.Manual==false,
+            "OP29: opening another shift does not release the position with the original timeout");
         var current=await api.ReadSessionStatisticsAsync(Detail(),default);var previous=await api.ReadSessionStatisticsAsync(Detail(StationReportRange.PreviousShift),default);
         Check(current.Shift!.Id!=id && current.Totals.Sum(x=>x.Requests)==0,"a real dispose/reopen starts a new shift with zero requests");
         Check(previous.Shift is { Status:"Closed",ClosedAt:not null,ElapsedReliable:true } && previous.Shift.Id==id && previous.Totals.Sum(x=>x.Requests)==3 && previous.Totals.Sum(x=>x.Unknown)==1,"previous shift retains its original totals and unresolved responsibility after normal shutdown");

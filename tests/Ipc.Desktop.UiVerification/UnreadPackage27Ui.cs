@@ -49,19 +49,25 @@ static partial class Program
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-LATE-27"), 3);
                 await Until(() => vm.Left.IsProcessing);
                 h.Api(h.Left).Enqueue(blank, 4);
-                await Until(() => vm.Left.DisplayStatus == "未读到条码");
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Releases >= 4));
+                await vm.RefreshAsync();
+                Check(vm.Left.IsProcessing && vm.Left.Barcode == "SYNTH-LATE-27" && !vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 3,
+                    "OP29: busy video continues without replacing the waiting barcode with a rescan prompt");
             }
             finally { h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; }
             await Until(() => vm.Left.Operation?.State == ParcelState.SlotResolved);
-            Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture, "a late matching RCS response updates its original operation without reviving the unread frame's slot");
+            Check(vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-LATE-27", "OP29: the matching RCS response resolves exactly the read that waited for it");
+            h.Api(h.Left).Enqueue(blank, 5);
+            await Until(() => vm.Left.DisplayStatus == "未读到条码");
+            Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture, "a new post-result unread frame withdraws the prior slot without altering its accepted operation");
             var snapshot = await h.App.SnapshotAsync(); var input = snapshot.Inputs!.Single(i => i.PositionId == "left");
             var receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "left", "SYNTH-MANUAL-27", ParcelBarcodeInputKind.Keyboard,
                 input.Observation.Id, snapshot.Positions!.Single(p => p.Id == "left").CurrentOperation), default);
             await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-MANUAL-27");
-            h.Api(h.Left).Enqueue(blank, 5);
-            await Until(() => vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 5));
+            h.Api(h.Left).Enqueue(blank, 6);
+            await Until(() => vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 6));
             Check(receipt.Status == "Admitted" && vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-MANUAL-27", "camera no-code does not invalidate an independent manual barcode and its accepted RCS result");
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEW-27"), 6);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEW-27"), 7);
             await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-NEW-27");
             Check(h.Peer.Requests.Count == 5, "next successful camera observation replaces the manual display with one distinct new request; empty frames add none");
             var oldEpoch = h.Factory.Sources[h.Left].Epoch;

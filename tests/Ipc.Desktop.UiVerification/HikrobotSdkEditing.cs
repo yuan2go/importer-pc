@@ -28,7 +28,7 @@ static partial class Program
         var editor=new ParameterSettingsControl { Model=model };
         var window=new Window { Title="内置SDK参数验证", Content=editor, Width=1120, Height=760 }; window.Show();
         void Fields(ParameterSettingsControl control,CapabilityDraft reader) {
-            var names=Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetName).ToArray();
+            var names=Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetAutomationId).ToArray();
             Check(names.Contains(reader.InstanceId+"/device.ip")&&names.Contains(reader.InstanceId+"/device.serial"),"actual SDK IP and serial fields available");
             Check(!names.Any(n=>n==reader.InstanceId+"/acquisition.trigger"||n==reader.InstanceId+"/entity.mode"||n==reader.InstanceId+"/ConfigureLater") && !Descendants(control).OfType<FrameworkElement>().Any(e=>AutomationProperties.GetAutomationId(e)==reader.InstanceId+"/RuntimeSummary"),"camera page has no trigger/result policy or configuration-state block");
             Check(!names.Contains(reader.InstanceId+"/device.port")&&!Descendants(control).OfType<TextBlock>().Any(t=>t.Text.Contains("独立驱动包")||t.Text.Contains("TCP")) &&

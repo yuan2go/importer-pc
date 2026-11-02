@@ -79,7 +79,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public async Task<CameraInspectionStatus> BeginAsync()
     {
         var snapshot = await App.SnapshotAsync();
-        await App.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.Isolated, "Synthetic isolated round verification", new(), true) { SingleReadRounds = true }, default);
+        await App.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.ObserveProduction, "Synthetic passive round verification", new(), true) { SingleReadRounds = true }, default);
         return await App.CameraInspectionStatusAsync(default);
     }
     public async Task<CameraReadRound> ArmAsync(string device)

@@ -1,3 +1,5 @@
+> 当前SM调试隔离条款已被[SM-DEBUG-NO-ISOLATION-31](../work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)替代：调试不暂停整站、不阻止保存或启动，不恢复旧隔离。保留真实RCS调试及原请求守卫。修订前完整字节见`docs/archive/pre-sm-debug-no-isolation-31/manifest.json`；下文冲突的旧隔离描述仅保留历史范围。
+
 > 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](../work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
 
 # 当前框架与职责边界

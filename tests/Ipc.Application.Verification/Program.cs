@@ -20,6 +20,7 @@ var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifa
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--debug-no-isolation-31")) { await DebugNoIsolation31.Run(workspace, root); return; }
 if (args.Contains("--installer-storage-checks")) { InstallerStorageChecks.Run(root); return; }
 if (args.Contains("--installer-storage-matrix"))
 {

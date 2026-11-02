@@ -76,7 +76,7 @@ public sealed partial class ParcelRuntime
                 repository.AdmitCommand(receipt);
                 CloseUnsentRound("明确准备新的手工请求，取消从未发送的旧预备请求；已发原责任保持。");
                 var retired = readRound;
-                var round = new ReadRound(command.CommandId, inspectionFence?.Id ?? "", observation.DeviceId, "",
+                var round = new ReadRound(command.CommandId, collectingInspection?.Id ?? "", observation.DeviceId, "",
                     Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), authority)
                 { Manual = true, Capture = null, Barcode = code, State = "Locked", Detail = "人工请求已准备；点击发送才调用RCS。" };
                 var op = new ParcelOperation(Wire.Id(), observation.AdmissionId, code, Wire.Hash("operator-debug:" + round.Id), at,

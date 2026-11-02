@@ -15,7 +15,8 @@ static partial class Program
     static async Task VerifyCameraRoundUi(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS ROUND-UI " + message); }
-        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "rounds")); await h.StartAsync();
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "rounds")); await h.StartAsync(); var explicitPause = await h.App.SnapshotAsync();
+        if ((await h.App.CommandAsync(new(Wire.Id(), explicitPause.Revision, "Pause"))).Status != "Persisted") throw new InvalidOperationException("Explicit debug POST accounting fixture pause failed");
         var app = DispatchProxy.Create<ICameraRoundUiFixture, CameraRoundUiProbe>(); var probe = (CameraRoundUiProbe)(object)app; probe.Inner = h.App;
         var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "扫码闭环 · 合成端口" };
         window.Show(); // WPF requires a visible owner before creating its auxiliary window.
@@ -63,7 +64,7 @@ static partial class Program
                 "complete selectable barcode is above its photo in the right-hand visual column");
             probe.LoseBeginReply = true;
             ClickField(control, "trigger");
-            await Until(() => !Field<bool>(control, "busy") && (Field<CameraInspectionStatus>(control, "scope")?.BusinessFenced ?? false));
+            await Until(() => !Field<bool>(control, "busy") && Field<CameraInspectionStatus>(control, "scope") is { State: "Active", BusinessFenced: false });
             Check((await h.App.ListCameraInspectionSessionsAsync(default)).Length == 1 && h.Peer.Requests.IsEmpty, "lost begin receipt is recovered as the same durable isolated scope");
             ClickField(control, "trigger");
             await Until(() => Equals(Field<Button>(control, "trigger").Content, "扫码中…"));
@@ -72,7 +73,7 @@ static partial class Program
             var isolated = await h.App.SnapshotAsync();
             var denied = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), isolated.RuntimeId, isolated.Configuration.Revision, "left", "ISOLATED-MANUAL",
                 ParcelBarcodeInputKind.Keyboard, null, null), default);
-            Check(denied.Status == "Rejected" && denied.Detail.Contains("调试隔离") && h.Peer.Requests.IsEmpty, "active debug isolation still blocks ordinary manual supply without sending");
+            Check(denied.Status == "Rejected" && denied.Detail.Contains("暂停") && h.Peer.Requests.IsEmpty, "explicit fixture pause blocks ordinary supply without sending; debugging itself creates no station fence");
             Check(Field<TextBlock>(control, "imageHint").Text.Contains("正在读取"), "reading placeholder describes the current round");
             var pixels = CameraRoundHarness.Barcode("UI-ROUND-A"); h.Api(h.Left).Enqueue(pixels, 1); await h.LockedAsync(); await Poll(control); await Poll(other); await Flush();
             var a = Field<CameraReadRound>(control, "current");
@@ -157,7 +158,7 @@ static partial class Program
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
             await h.App.ExitManagementModeAsync(); await vm.RefreshAsync(); await Flush();
             Check(Field<Image>(control, "photo").Source is null && Field<TextBox>(control, "barcode").Text.Length == 0 &&
-                (await h.App.SnapshotAsync()).Paused, "management revoke clears sensitive local evidence and retains the business fence");
+                (await h.App.SnapshotAsync()).Paused, "management revoke clears local evidence and preserves the caller explicit pause");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == e.OperationId && o.Wcs?.State == StageState.Unknown));
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; await h.AuthorizeAsync();
             Check((await h.App.SnapshotAsync()).Operations.Single(o => o.Id == e.OperationId).Wcs is { State: StageState.Unknown, Attempts: 1 } pending &&

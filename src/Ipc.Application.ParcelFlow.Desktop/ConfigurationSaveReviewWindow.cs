@@ -128,7 +128,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         pauseState.Text = automatic ? "确认保存后，程序自动等待当前请求完成并保存设置。" : !vm.Fresh ? "状态读取中断，请稍候；暂停供包仍可操作。" : vm.Snapshot?.Paused == true ? "已暂停供包。软件暂停不是安全急停。" : "尚未暂停。保存前请先暂停供包。软件暂停不是安全急停。";
         pause.Visibility = automatic || vm.Fresh && vm.Snapshot?.Paused == true ? Visibility.Collapsed : Visibility.Visible;
         var qualified = vm.Fresh && vm.Snapshot?.Availability?.Configure == true;
-        authentication.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;
+        authentication.Visibility = vm.IsManagementMode ? Visibility.Collapsed : Visibility.Visible;
         guidance.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;
         inspect.Visibility = !authorizationOnly && vm.HasUnconfirmedConfigurationSubmission ? Visibility.Visible : Visibility.Collapsed; inspect.IsEnabled = !vm.Busy;
         save.Visibility = authorizationOnly || vm.HasUnconfirmedConfigurationSubmission || vm.ConfigurationSubmissionOutcome is "PendingRestart" or "Conflict" ? Visibility.Collapsed : Visibility.Visible;
@@ -165,7 +165,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         table.Columns.Add(new DataGridTextColumn { Header = "原值", Binding = new Binding(nameof(ConfigurationChangeItem.Before)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "更改后", Binding = new Binding(nameof(ConfigurationChangeItem.After)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "生效方式", Binding = new Binding(nameof(ConfigurationChangeItem.Activation)), Width = new(1.4, DataGridLengthUnitType.Star), ElementStyle = textStyle });
-        var rowStyle = new Style(typeof(DataGridRow)); rowStyle.Setters.Add(new Setter(ToolTipProperty, new Binding(nameof(ConfigurationChangeItem.TechnicalPath)))); table.RowStyle = rowStyle;
+        var rowStyle = new Style(typeof(DataGridRow)); rowStyle.Setters.Add(new Setter(ToolTipProperty, new Binding(nameof(ConfigurationChangeItem.Label)))); rowStyle.Setters.Add(new Setter(AutomationProperties.NameProperty, new Binding(nameof(ConfigurationChangeItem.Label)))); table.RowStyle = rowStyle;
         AutomationProperties.SetName(table, "本次设置更改"); return table;
     }
     public static void ShowChanges(Window? owner, ConfigurationChangeItem[] changes, string revision)

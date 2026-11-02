@@ -144,7 +144,7 @@ internal sealed partial class MvsAcquisition
             }
             if (!decoder!.PreservesInput) CopyOriginal();
             using (Timings.Measure("inspection.original-copy"))
-                if (inspected.Registration is { CaptureImages: true }) inspectionOriginal = pixels.AsSpan(0, length).ToArray();
+                if (inspected.Registration is { CaptureImages: true } demand && demand.CaptureAllowed?.Invoke(DeviceId) != false) inspectionOriginal = pixels.AsSpan(0, length).ToArray();
             PhaseTo("decode");
             lock (gate) decodeStarted++;
             using (Timings.Measure("decode")) symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));

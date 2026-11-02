@@ -1,3 +1,5 @@
+> 2026-11-03 用户明确删除SM调试隔离，保留调试页面及实际RCS调用，以[SM-DEBUG-NO-ISOLATION-31](work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)为准：不再建立、恢复或依赖全站调试隔离，不要求清场或因调试改写暂停状态；旧隔离记录仅作历史证据，启动时退役其阻断效力，不删除业务记录、不重发原请求。扫码/照片/手动RCS请求及管理权限、SDK资源和原请求守卫保留。
+
 > 当前整合与收口工作包为 [SM-OPERATOR-INTEGRATION-30](work-packages/WP-IPC-SM-OPERATOR-INTEGRATION-30.md)，以main操作工放置流程为准，继续中文参数/调试/诊断修复和保留数据重装复验。
 
 > 2026-11-02 当前整合：承接main的 [SM-SAME-PLACEMENT-29](work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md) 操作工流程，保留 [SM-OPERATOR-CORRECTIONS-29](work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md) 的中文参数/纠错、调试和真实采集诊断修复。主流程持续识别以观察空托盘，一次放置一次请求；此前OP29的冻结解码、同码每次新请求及超时后永久阻断指引被本次整合替代，历史证据保持原SourceCommit。

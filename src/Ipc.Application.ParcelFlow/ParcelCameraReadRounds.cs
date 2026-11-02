@@ -35,7 +35,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         if (round.Epoch != frame.Epoch)
         { round.Capture?.TrySetException(new InvalidOperationException("相机连接周期已改变，请明确重新触发扫码。")); return true; }
         var accepted = InspectionStore.Offer(session, frame);
-        if (!accepted) { round.Capture?.TrySetException(new IOException("原帧留存未接纳，本轮停止；隔离保持。")); return false; }
+        if (!accepted) { round.Capture?.TrySetException(new IOException("原帧留存未接纳，本轮停止；正常供包状态未改变。")); return false; }
         var observation = new Observation(frame.ObservationId ?? Wire.Id(), frame.DeviceId, frame.Epoch, frame.SourceEventId ?? "no-read", 1,
             "debug." + round.Id, "Read", frame.Symbols.Select(s => s.Text).ToArray(), null, frame.CapturedAt);
         var selection = definition.SelectBarcode(round.Configuration, observation);
@@ -71,9 +71,9 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                     return RoundProjection(); // Current facts, never replay a persisted arming command.
                 }
                 if (command.RuntimeId != runtimeId || command.ConfigurationRevision != configuration!.Current.Revision ||
-                    inspectionFence?.Id != command.SessionId || collectingInspection?.Id != command.SessionId ||
+                    collectingInspection?.Id != command.SessionId ||
                     !singleReadInspection || !SessionValid || configuration.Current.Pending is not null || backupInProgress || configurationSaving || maintenanceOperations.Count != 0)
-                    throw new InvalidOperationException("需要当前生效配置、有效操作员和已生效的按轮实机隔离；请先核对原会话。");
+                    throw new InvalidOperationException("需要当前生效配置、有效操作员和当前扫码调试会话；请先核对原会话。");
                 if (readRound?.Id != command.ExpectedRoundId || readRound?.State is "Preparing" or "Reading" or "Sealing" or "Sending" || readRound?.Worker is { IsCompleted: false })
                     throw new CameraReadRoundConflictException("轮次已变化或正在处理，本次触发未接纳；请刷新并明确重新触发。");
                 if (!readers.TryGetValue(command.DeviceId, out var reader) || reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
@@ -81,26 +81,26 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                 authority.ThrowIfCancellationRequested(); Management.Require();
                 var scope = collectingInspection!;
                 if (scope.Authority.IsCancellationRequested || scope.Expires <= DateTimeOffset.UtcNow || System.Diagnostics.Stopwatch.GetElapsedTime(scope.StartedTicks) >= scope.Lifetime)
-                    throw new InvalidOperationException("原隔离采集期限已结束，请先清场并结束原会话。");
+                    throw new InvalidOperationException("本轮调试采集期限已结束，请重新触发扫码。");
                 CloseUnsentRound("明确开始下一轮，旧预备请求未发送并已取消；原结果保留。");
                 var retired = readRound;
                 round = new(command.CommandId, command.SessionId, command.DeviceId, reader.Epoch,
                     Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), authority);
                 repository.Commit(null, "CameraReadRoundPreparing", Wire.Encode(new { Command = command, Actor = ManagementEvidence }), command: receiptCommand,
                     commandResult: new("Pending", "已登记轮次，SDK边界尚待确认；不自动重开。", repository.Revision + 1));
-                Volatile.Write(ref readRound, round); retired?.Cancel.Dispose(); sources = InspectionSources();
+                Volatile.Write(ref readRound, round); retired?.Cancel.Dispose(); sources = [reader.Source as IObservationInspectionSource ?? throw new InvalidOperationException("当前相机不支持原帧关联。")];
             }
             finally { gate.Release(); }
             try
             {
-                var registration = new InspectionRegistration(round.Session, true, f => ReceiveRoundFrame(round.Session, f))
-                    { DecodeAllowed = device => RoundDecodeAllowed(round.Session, device), CutoverKey = round.Id };
+                var registration = new InspectionRegistration(round.Session, false, f => ReceiveRoundFrame(round.Session, f))
+                    { CaptureAllowed = device => RoundDecodeAllowed(round.Session, device), CutoverKey = round.Id };
                 foreach (var source in sources) await source.SetInspectionAsync(registration, t).ConfigureAwait(false);
                 await gate.WaitAsync(t).ConfigureAwait(false);
                 try
                 {
                     authority.ThrowIfCancellationRequested(); Management.Require();
-                    if (collectingInspection?.Id != round.Session || inspectionFence?.Id != round.Session) throw new InvalidOperationException("隔离采集已结束，未开始读取。");
+                    if (collectingInspection?.Id != round.Session) throw new InvalidOperationException("调试采集已结束，未开始读取。");
                     round.Worker = OwnedOperation(ct => CompleteReadRoundAsync(round, ct), cameraRoundWorkers, 1, default);
                     round.Detail = "正在读取本轮条码…"; Volatile.Write(ref round.State, "Reading");
                     repository.CompleteCommand(receiptCommand, new("RoundArmed", "SDK缓存与采集循环边界完成，本轮开始读取；不发送请求。", repository.Revision));
@@ -111,7 +111,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             }
             catch
             {
-                round.Cancel.Cancel(); Volatile.Write(ref round.State, "Interrupted"); round.Detail = "触发未完成，隔离保持；请核对原轮次，不自动开始。"; throw;
+                round.Cancel.Cancel(); Volatile.Write(ref round.State, "Interrupted"); round.Detail = "触发未完成，请核对原轮次后重新触发。"; throw;
             }
         }
         finally { inspectionControl.Release(); }
@@ -129,25 +129,25 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             try
             {
                 waiting.Token.ThrowIfCancellationRequested(); Management.Require();
-                if (readRound != round || inspectionFence?.Id != round.Session || collectingInspection?.Id != round.Session ||
-                    Wire.Hash(Wire.Encode(Effective)) != Wire.Hash(Wire.Encode(round.Configuration))) throw new InvalidOperationException("本轮配置或隔离已变化，不能准备请求。");
-                round.Frame = metadata; round.State = "Locked"; round.Detail = "本轮读码完成，已自动暂停；照片和条码保持，等待手动发送或再次扫码。";
+                if (readRound != round || collectingInspection?.Id != round.Session ||
+                    Wire.Hash(Wire.Encode(Effective)) != Wire.Hash(Wire.Encode(round.Configuration))) throw new InvalidOperationException("本轮配置或调试会话已变化，不能准备请求。");
+                round.Frame = metadata; round.State = "Locked"; round.Detail = "本轮读码完成；照片和条码保持，等待手动发送或再次扫码。";
                 repository!.Commit(null, "CameraReadRoundLocked", Wire.Encode(new { Round = round.Id, Frame = metadata, round.Barcode, Actor = ManagementEvidence }));
                 if (frame.Acquisition is not { } acquisition || acquisition.DeviceId != round.Device || acquisition.Epoch != round.Epoch ||
                     acquisition.SourceEventId != frame.SourceEventId || acquisition.ObservedAt != frame.CapturedAt || string.IsNullOrWhiteSpace(acquisition.AdmissionId) ||
                     metadata.DeviceId != frame.DeviceId || metadata.Epoch != frame.Epoch || metadata.FrameNumber != frame.FrameNumber || metadata.CapturedAt != frame.CapturedAt ||
-                    metadata.SourceEventId != frame.SourceEventId || metadata.IsolatedSessionId != round.Session || metadata.SessionId != round.Session)
+                    metadata.SourceEventId != frame.SourceEventId || metadata.SessionId != round.Session)
                 { round.Detail += " 原帧采集身份缺失或不一致，拒绝准备请求；不生成替代采集身份。"; return true; }
                 if (Effective.Wcs is null || ports?.Wcs is not IWcsRequestPreparer || ParcelConnectionSetup.IsDeferred(Effective, Effective.Wcs.InstanceId) || Effective.Images is not null || Effective.Weight.Source == WeightSource.Measured)
-                { round.Detail += " 当前RCS或必需图像/测量条件不支持独立测试请求，请结束隔离后完成配置。"; return true; }
+                { round.Detail += " 当前RCS或必需图像/测量条件不支持独立测试请求，请完成配置后重新触发。"; return true; }
                 if (!CapacityAvailable || factory.AdmissionFailure(Effective) is { } || !RestoreConfirmed)
                 { round.Detail += " 原业务资格或容量未满足，请保留原责任。"; return true; }
                 var op = new ParcelOperation(Wire.Id(), "debug." + round.Id, round.Barcode!, Wire.Hash("manual-debug:" + round.Id), frame.CapturedAt,
                     Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes), Effective.Weight,
-                    WeightRules.Configured(Effective.Weight), ParcelState.Prepared, null, null, null, "隔离中的独立手动测试意图；未发送",
+                    WeightRules.Configured(Effective.Weight), ParcelState.Prepared, null, null, null, "独立手动调试请求；未发送",
                     Operator: currentOperator, Acquisition: acquisition, PositionId: positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id, ReaderBinding: ReaderBinding(positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id))
                     { DebugRequest = new(round.Session, round.Id, metadata.Id, round.Device, frame.Epoch, frame.SourceEventId!, metadata.OriginalSha256, ManagementEvidence!.AuditActor) };
-                Save(op, "CameraDebugIntentCreated", "独立测试意图，隔离观察未准入/未回放；仅明确发送命令可执行。"); round.Operation = op.Id;
+                Save(op, "CameraDebugIntentCreated", "独立调试请求；仅明确发送命令可执行，正常供包继续。"); round.Operation = op.Id;
                 op = ((IParcelExecution)this).PrepareWcs(op);
                 Save(op, "CameraDebugRequestPrepared", "冻结本轮原请求，仅供查看，未执行外呼。");
                 if (op.Wcs is null) round.Detail += " 请求准备失败，请查看原意图与原因。";
@@ -163,7 +163,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                 if (readRound == round)
                 {
                     round.State = error is OperationCanceledException ? "Stopped" : "Faulted";
-                    round.Detail = error is OperationCanceledException ? "本轮等待已结束或授权失效，未自动重开；可重新触发，隔离保持。" : "本轮处理失败，隔离保持：" + error.Message;
+                    round.Detail = error is OperationCanceledException ? "本轮等待已结束或授权失效，未自动重开；请重新触发。" : "本轮处理失败：" + error.Message;
                     if (IsStorageError(error)) StorageFailed(error, "CameraReadRound");
                 }
             }
@@ -190,7 +190,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            if (readRound?.State == "Sending") throw new InvalidOperationException("本轮原请求正在发送，请等待实际返回后再确认清场。");
+            if (readRound?.State == "Sending") throw new InvalidOperationException("本轮原请求正在发送，请等待实际返回后再结束本轮。");
             readRound?.Cancel.Cancel(); worker = readRound?.Worker;
         }
         finally { gate.Release(); }
@@ -203,7 +203,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             // process. Sent/Unknown originals remain under their original guards.
             foreach (var op in operations.Values.Where(o => o.DebugRequest?.SessionId == session && !MainTerminated(o)).ToArray())
                 if ((op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 }) && !activeStages.Any(k => k.StartsWith(op.Id + ":", StringComparison.Ordinal)))
-                    Save(op with { State = ParcelState.Abandoned, Wcs = CancelUnsent(op.Wcs), Reason = "明确停止本轮，取消未发送测试意图。" }, "CameraDebugIntentCancelled", "明确停止或结束本轮，只取消从未尝试的测试意图，原隔离与已发责任保持。");
+                    Save(op with { State = ParcelState.Abandoned, Wcs = CancelUnsent(op.Wcs), Reason = "明确停止本轮，取消未发送测试意图。" }, "CameraDebugIntentCancelled", "明确停止或结束本轮，只取消从未尝试的测试意图，已发送请求责任保持。");
             if (readRound is { } round) round.State = "Closed";
         }
         finally { gate.Release(); }
@@ -211,7 +211,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
     CameraReadRound RoundProjection()
     {
         var round = readRound;
-        if (round is null) return new(null, inspectionFence?.Id, null, "Idle", "点击触发扫码开始一轮读取；不会自动发送请求。", null, null, null, null, null, null, null, null, false, repository?.Revision ?? 0);
+        if (round is null) return new(null, collectingInspection?.Id, null, "Idle", "点击触发扫码开始一轮读取；不会自动发送请求。", null, null, null, null, null, null, null, null, false, repository?.Revision ?? 0);
         var op = round.Operation is { } id ? operations.GetValueOrDefault(id) ?? repository!.ReadOperation(id) : null;
         var request = op?.Wcs?.Request;
         var response = op?.Wcs is { } stage ? "状态：" + stage.State + " · 发送尝试：" + stage.Attempts + "\n" +
@@ -233,7 +233,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
     {
         if (op.OperatorDebugRequest is not null) return OperatorDebugRequestReady(op);
         if (op.DebugRequest is not { } evidence || readRound is not { } round || round.Operation != op.Id || round.Id != evidence.RoundId ||
-            inspectionFence?.Id != evidence.SessionId || collectingInspection?.Id != evidence.SessionId || !singleReadInspection ||
+            collectingInspection?.Id != evidence.SessionId || !singleReadInspection ||
             round.Authority.IsCancellationRequested || round.Cancel.IsCancellationRequested || !MaintenanceAuthorized || !SessionValid ||
             op.RecoveryRequired || op.Wcs is not { State: StageState.Prepared, Attempts: 0, Request.IntegrationRequest: not null } || round.State is not ("Locked" or "Sending")) return false;
         var now = DateTimeOffset.UtcNow;

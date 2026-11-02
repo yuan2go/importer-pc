@@ -106,7 +106,6 @@ public sealed partial class ParcelRuntime
                         return true;
                     });
                     backgroundProgress["maintenance"] = (DateTimeOffset.UtcNow, "CompletedCycle");
-                    PublishCameraReadWindows();
                 }
                 finally { gate.Release(); }
             }

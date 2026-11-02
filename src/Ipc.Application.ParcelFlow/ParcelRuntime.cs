@@ -204,7 +204,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
-            BindCameraReadWindows();
             lock (startupOwnership)
             {
                 token.ThrowIfCancellationRequested();
@@ -344,10 +343,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue };
                 item = new ParcelObservation(observation, identity, at);
             }
-            var readWindow = observation is { InspectionSessionId: null } ? cameraReadWindows.GetValueOrDefault(positionId) : null;
-            readWindow?.HoldInput();
-            var handedOff = false;
-            var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp()) { ReadWindow = readWindow };
+            var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp());
             try
             {
                 WriteIngress(lane.Db, received.Id, positionId, item, at, runtimeId.ToString("N"), () => Boundary?.Invoke("BeforeIngressDurable"));
@@ -355,7 +351,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 Interlocked.Increment(ref lane.Received);
                 lane.Waiting.TryAdd(received.Id, at);
                 if (observation is not null) Interlocked.Increment(ref pendingObservations);
-                if (positionQueues[positionId].Writer.TryWrite(received)) { handedOff = true; return true; }
+                if (positionQueues[positionId].Writer.TryWrite(received)) return true;
                 lane.Waiting.TryRemove(received.Id, out _);
                 if (observation is not null) Interlocked.Decrement(ref pendingObservations);
                 SignalOverload(positionId);
@@ -370,7 +366,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (IsStorageError(ex)) StorageFailed(ex, "IngressCustody");
                 // A possibly committed Pending is intentionally kept for recovery.
             }
-            finally { if (!handedOff) readWindow?.ReleaseInput(); }
             return false;
         }
     }
@@ -418,16 +413,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     // Original Pending exists even when the store cannot accept a failure disposition.
                     throw;
                 }
-                finally
-                {
-                    try { ReleaseIngressItem(item.Value); }
-                    finally
-                    {
-                        item.ReadWindow?.ReleaseInput();
-                        activeIngress.Value = null; Interlocked.Exchange(ref lane.ProcessingTicks, 0);
-                        try { PublishCameraReadWindows(); } finally { gate.Release(); }
-                    }
-                }
+                finally { try { ReleaseIngressItem(item.Value); } finally { activeIngress.Value = null; Interlocked.Exchange(ref lane.ProcessingTicks, 0); gate.Release(); } }
                 Volatile.Write(ref lane.State, "Waiting");
             }
             Volatile.Write(ref lane.State, "Stopped");
@@ -509,6 +495,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id, selection), "ObservationIdentityObserved");
             return;
         }
+        // A parcel resting on the tray is read in every frame; only its first admitted
+        // read is a request. Lift and re-place (or a different code) starts a new placement.
+        if (!manual && SamePlacementOwner(position, code!, o.ObservedAt) is { } placementOwner)
+        {
+            RecordInput(Input(position, o, ParcelInputOutcome.Duplicate, ParcelInputReasons.SamePlacement + "; 同一包裹仍在本位托盘上，已由原作业处理；未创建作业或请求。取下并重新放置后才再次请求格口", placementOwner, selection), "SamePlacementObserved");
+            return;
+        }
         // This is a new event from the current registration, not an old callback.
         // Queue age/health must close this input's display as well as admission.
         // Existing identities above retain their original responsibility and policy.
@@ -550,6 +543,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     "images/original-frames/" + op.Id + ".png", DateTimeOffset.UtcNow) };
             }
             Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
+            ClaimPlacement(position, code!, o.ObservedAt, op.Id, camera: o.OperatorInput is null);
             if (originalFrame is not null) { ScheduleOriginalFrame(op, originalFrame); originalFrame = null; }
         }
         finally { originalFrame?.Dispose(); }

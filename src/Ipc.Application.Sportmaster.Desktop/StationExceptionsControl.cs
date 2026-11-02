@@ -19,7 +19,7 @@ internal sealed class StationExceptionsControl : UserControl
         public string Reason => StationExceptionText.Label(Fact.ReasonCode);
         public string Suggestion => Fact.ReasonCode switch {
             "RcsUnknown" or "RcsTimeout" or "RcsConflict" => "凭原请求交接核对",
-            "RcsNotDelivered" => "连接恢复后重新扫描",
+            "RcsNotDelivered" => "连接恢复后取下包裹重新放上",
             "RcsRejected" => "按原始原因处理",
             "BarcodeRule" or "MultipleCodes" => "核对条码与筛选规则",
             _ => "核对本次观察原因" };

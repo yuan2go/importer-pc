@@ -24,13 +24,27 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public readonly ParcelConfiguration Config;
     public ParcelRuntime App { get; private set; } = null!;
     public RoundFactory Factory { get; private set; } = null!;
-    readonly bool verifyUnpacedTransport;
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
     public RoundApi Api(string device) => Factory.Apis[device];
-    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 3600, bool verifyUnpacedTransport = false)
+    // Fallback window for non-frame sources; camera positions end a placement only on an empty tray.
+    public int PlacementReleaseMs { get; init; } = 300;
+    public static readonly RoundPixels EmptyTray = new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);
+    // Lift and re-place: the camera decodes enough empty-tray frames to end the placement.
+    // Returns the next frame number for the caller's own sequence.
+    public async Task<uint> ReplaceParcelAsync(string device, uint next)
     {
-        this.verifyUnpacedTransport = verifyUnpacedTransport;
+        for (var i = 0; i < SportmasterFlow.DefaultSamePlacementEmptyFrames; i++)
+        {
+            var decoded = Factory.Decoders[device].Count;
+            Api(device).Enqueue(EmptyTray, next++);
+            await Until(() => Task.FromResult(Factory.Decoders[device].Count > decoded));
+            await Task.Delay(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs / 2);
+        }
+        return next;
+    }
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 3600)
+    {
         if (!nativeLoaded)
         {
             var cache = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? throw new InvalidOperationException("D-drive restored cache required");
@@ -51,8 +65,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     }
     public async Task StartAsync()
     {
-        Factory = new(Launch, Config, verifyUnpacedTransport);
-        App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        Factory = new(Launch, Config);
+        App = new(Launch, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
         await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         await AuthorizeAsync();
@@ -113,7 +127,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     }
     public async ValueTask DisposeAsync() { if (App is not null) await App.DisposeAsync(); await Peer.DisposeAsync(); }
     internal sealed record RoundPixels(byte[] Data, int Width, int Height);
-    internal sealed class RoundFactory(BusinessLaunch launch, ParcelConfiguration expected, bool verifyUnpacedTransport) : IParcelCapabilityFactory
+    internal sealed class RoundFactory(BusinessLaunch launch, ParcelConfiguration expected) : IParcelCapabilityFactory
     {
         readonly ParcelCapabilityFactory validator = new(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
         public readonly Dictionary<string, RoundApi> Apis = [];
@@ -132,15 +146,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 var api = new RoundApi(binding); Apis.Add(binding.DeviceId, api); var decoder = new RoundDecoder(api, binding.Parameters!); Decoders.Add(binding.DeviceId, decoder);
                 var source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), api,
                     serial => new ResourceLease(Path.Combine(launch.DataRoot, "synthetic-device-leases"), [serial]), decoder: decoder);
-                // Explicit driver/ingress resource tests exercise an optional-port consumer
-                // without business pacing. All normal SM/Application/UI tests bind it.
-                IControlledObservationSource exposed = source;
-                if (verifyUnpacedTransport)
-                {
-                    var transport = System.Reflection.DispatchProxy.Create<IUnpacedTransportFixture, UnpacedTransportFixtureProxy>();
-                    ((UnpacedTransportFixtureProxy)(object)transport).Inner = source; exposed = transport;
-                }
-                readers.Add(binding.DeviceId, exposed); Sources.Add(binding.DeviceId, source);
+                readers.Add(binding.DeviceId, source); Sources.Add(binding.DeviceId, source);
             }
             var wcs = new SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
             return new(readers[c.Reader.DeviceId], null, wcs, null, new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" }, Readers: readers);

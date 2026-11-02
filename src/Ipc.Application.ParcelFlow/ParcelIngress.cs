@@ -19,10 +19,7 @@ public sealed partial class ParcelRuntime
         Interlocked.Exchange(ref accepting, 0);
         ingressFenced.TrySetResult();
     }
-    sealed record IngressItem(string Id, object Value, DateTimeOffset At, long ReceivedTicks)
-    {
-        public CameraReadWindow? ReadWindow { get; init; }
-    }
+    sealed record IngressItem(string Id, object Value, DateTimeOffset At, long ReceivedTicks);
     sealed class IngressLane(string database) : IDisposable
     {
         public readonly object Sync = new();

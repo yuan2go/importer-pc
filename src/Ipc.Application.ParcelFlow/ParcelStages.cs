@@ -123,7 +123,7 @@ public sealed partial class ParcelRuntime
         LogRcsResult(op, kind, receiptStartedTicks);
         return op;
         }
-        finally { activeStages.Remove(key); PublishCameraReadWindows(); }
+        finally { activeStages.Remove(key); }
     }
     void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks)
     {

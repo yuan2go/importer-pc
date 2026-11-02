@@ -73,10 +73,10 @@ static partial class SportmasterRcs
                 new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != genericRuntimeBudget,
                 "omitted component timeout uses the displayed default independently of the generic service budget");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
-            Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && view.Left.OperatorInstruction.Contains("暂停后续读码", StringComparison.Ordinal) &&
+            Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && view.Left.OperatorInstruction.Contains("新请求", StringComparison.Ordinal) &&
                 view.Left.NextStep.Contains("暂勿投递", StringComparison.Ordinal) && view.Left.NextStep.Contains("原请求结果未确认", StringComparison.Ordinal) &&
                 view.Left.Slot == "未取得" && !view.Left.SlotAvailable,
-                "timeout guidance stops subsequent reads and protects the unconfirmed original without a stale chute");
+                "timeout guidance explains independent automatic reads and protects the unconfirmed original without a stale chute");
             await Task.Delay(2600);
             var afterLateResponse = (await app.SnapshotAsync()).Operations.Single();
             Check(peer.Requests.Count == before + 1 && afterLateResponse.State == ParcelState.WcsUnknown && afterLateResponse.Slot is null && afterLateResponse.Wcs!.Attempts == 1,
@@ -97,7 +97,7 @@ static partial class SportmasterRcs
             {
                 Check(view.Left.SlotAvailable && view.Left.Slot == "SYNTH-CHUTE", "valid assignment still displays its exact chute");
                 peer.Mode = "reject";
-                app.EmitReferenceAt("left", "rejected-after-assigned", "SYNTH-0001", Wire.Id());
+                app.EmitReferenceAt("left", "rejected-after-assigned", "SYNTH-0002", Wire.Id());
                 await Wait(app, x => x.Operations.Length == 2 && x.Operations.Any(o => o.State == ParcelState.WcsRejected));
                 await view.RefreshAsync();
                 Check(!view.Left.SlotAvailable && view.Left.Slot == "未取得" && view.Left.AttentionReason == "SYNTH_OTHER_ERROR",
@@ -129,7 +129,7 @@ static partial class SportmasterRcs
             Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && persisted.Wcs!.Replies.Single().HttpResponse is { Complete: false } &&
                 Encoding.UTF8.GetString(Convert.FromBase64String(persisted.Wcs.Replies.Single().HttpResponse!.BodyBase64)) == "{\"requestId\":" &&
                 op.Wcs!.Replies.Single().HttpResponse is null,
-                "application/component deadline race preserves the response prefix and keeps unresolved-request guidance");
+                "application/component deadline race preserves the response prefix and still shows rescan guidance");
         }
         await TimeoutRescanChecks(workspace, root);
         Console.WriteLine("PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE");

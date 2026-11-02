@@ -50,7 +50,7 @@ static partial class SportmasterRcs
         ParcelOperation[] saved;
         var raw = new byte[] { 30, 70, 140, 210 };
         var rawByFrame = Enumerable.Range(1, 3).ToDictionary(n => (uint)n, n => raw.Select(b => (byte)(b + n - 1)).ToArray());
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } })
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow { PlacementReleaseMs = 0 } /* archive custody only; placement covered by --same-placement-29 */, factory) { RuntimeIdentityPreflight = () => { } })
         {
             app.Boundary = point => { if (point == "BeforeOriginalFrameWrite") { entered.Set(); release.Wait(); } };
             try

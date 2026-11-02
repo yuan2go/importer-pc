@@ -24,7 +24,7 @@ static partial class SportmasterRcs
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
         var database = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId, "sportmaster.db");
-        ParcelRuntime Open() => new(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+        ParcelRuntime Open() => new(launch, new SportmasterFlow { PlacementReleaseMs = 300 }, new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         SqliteConnection ReadDatabase()
         { var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open(); return db; }
         ParcelOperation Persisted(string id)
@@ -45,35 +45,34 @@ static partial class SportmasterRcs
             var timed = await Wait(app, s => s.Operations.Length == 2 && s.Operations.Any(o => o.State == ParcelState.WcsUnknown) && s.Operations.Any(o => o.State == ParcelState.SlotResolved));
             var original = timed.Operations.Single(o => o.PositionId == "left"); originalId = original.Id;
             var stored = Persisted(originalId); originalStage = Wire.Encode(stored.Wcs); originalBody = stored.Wcs!.Request.IntegrationRequest!.Body; originalWireId = stored.Wcs.Request.IntegrationRequest.RequestId;
-            Check(!timed.Positions!.Single(p => p.Id == "left").Admit && timed.Positions!.Single(p => p.Id == "right").Admit && !new SportmasterFlow().MainSettled(original) && stored.Wcs is { Attempts: 1, State: StageState.Unknown },
-                "OP29: a local timeout closes the affected position without declaring the old request settled or blocking the other position");
+            Check(timed.Positions!.Single(p => p.Id == "left").Admit && !new SportmasterFlow().MainSettled(original) && stored.Wcs is { Attempts: 1, State: StageState.Unknown },
+                "a confirmed timeout releases admission without declaring the old request successful or settled");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
-            Check(!view.Left.CanAdmit && view.Left.AttentionReason.Contains("暂勿投递", StringComparison.Ordinal) && view.Left.AttentionReason.Contains("暂停后续读码", StringComparison.Ordinal) &&
+            Check(view.Left.CanAdmit && view.Left.AttentionReason.Contains("暂勿投递", StringComparison.Ordinal) && view.Left.AttentionReason.Contains("新请求", StringComparison.Ordinal) &&
                 !view.Left.AttentionReason.Contains("重新扫描", StringComparison.Ordinal) && !view.Left.SlotAvailable,
-                "OP29: the unresolved position has no chute and explicitly stops subsequent scanning");
+                "independent input remains available while the timed-out original requires reconciliation and has no chute");
             Check(!new SportmasterFlow().AllowsNextAdmissionAfter(original with { Wcs = original.Wcs! with { State = StageState.Conflict } }) &&
-                !new Ipc.Application.DirectPlc.DirectPlcFlow().AllowsNextAdmissionAfter(original), "receipt conflicts and other applications do not bypass the original-result guard");
+                !new Ipc.Application.DirectPlc.DirectPlcFlow().AllowsNextAdmissionAfter(original), "receipt conflicts and other applications do not inherit the RCS timeout exception");
+            await Task.Delay(400); // Operator lifts the timed-out parcel and places it again.
             peer.Mode = "assigned"; await Scan(camera);
-            var blocked = await Wait(app, s => s.Inputs!.Any(i => i.PositionId == "left" && i.Outcome == ParcelInputOutcome.Blocked));
-            Check(blocked.Operations.Length == 2 && peer.Requests.Count == 2, "OP29: a subsequent input cannot send a new left request while the original is unknown");
-            Check(app.EmitReferenceAt("right", "right-after-left-timeout", original.ParcelCode, Wire.Id()), "other position accepts another independent same-barcode scan");
-            var rescanned = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Count(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved) == 2);
-            var next = rescanned.Operations.Where(o => o.PositionId == "right").OrderByDescending(o => o.ObservedAt).First(); var nextStored = Persisted(next.Id); secondWireId = nextStored.Wcs!.Request.IntegrationRequest!.RequestId;
+            var rescanned = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 1);
+            var next = rescanned.Operations.Single(o => o.PositionId == "left" && o.Id != originalId); var nextStored = Persisted(next.Id); secondWireId = nextStored.Wcs!.Request.IntegrationRequest!.RequestId;
             Check(next.ParcelCode == original.ParcelCode && next.AdmissionId != original.AdmissionId && next.Wcs!.Request.Id != original.Wcs!.Request.Id && secondWireId > originalWireId &&
                 peer.Requests.Count == 3 && peer.Requests.Count(r => r.Body == originalBody) == 1 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,
-                "same barcode on the other position creates a fresh identity/request ID and leaves the unknown original untouched");
+                "same-barcode rescan creates a fresh durable identity and request ID, leaving the old request and one send untouched");
             using (var db = ReadDatabase())
             using (var query = db.CreateCommand())
             {
-                query.CommandText = "SELECT count(*) FROM parcel_audit WHERE event='InputObserved' AND json_extract(detail,'$.PositionId')='left'";
-                Check((long)query.ExecuteScalar()! >= 2, "blocked left input retains its audit evidence without preparing another external intention");
+                query.CommandText = "SELECT count(*) FROM parcel_audit WHERE owner=$id AND event='ParcelObserved' AND json_extract(detail,'$.PriorOperation')=$prior";
+                query.Parameters.AddWithValue("$id", next.Id); query.Parameters.AddWithValue("$prior", originalId);
+                Check((long)query.ExecuteScalar()! == 1, "new-scan audit links the retained timed-out operation without rewriting its original request");
             }
             await Task.Delay(2700); await view.RefreshAsync();
-            Check(!view.Left.SlotAvailable && view.Right.OperationId == next.Id && view.Right.SlotAvailable && view.Right.Slot == "SYNTH-CHUTE" && Wire.Encode(Persisted(originalId).Wcs) == originalStage && peer.Requests.Count == 3,
-                "late original response neither restores a left chute nor overwrites the other position's result");
+            Check(view.Left.OperationId == next.Id && view.Left.SlotAvailable && view.Left.Slot == "SYNTH-CHUTE" && Wire.Encode(Persisted(originalId).Wcs) == originalStage && peer.Requests.Count == 3,
+                "late first response cannot overwrite the new scan's chute or update its retained timeout record");
             var history = await app.HistoryAsync();
             Check(history.Items.Any(h => h.Operation.Id == originalId && h.Operation.State == ParcelState.WcsUnknown) && history.Items.Any(h => h.Operation.Id == next.Id && h.Operation.State == ParcelState.SlotResolved),
-                "history retains the left timeout and right success as separate requests");
+                "history retains the timeout and subsequent success as separate requests");
         }
         await using (var app = Open())
         {
@@ -82,24 +81,19 @@ static partial class SportmasterRcs
             await Wait(app, s => s.Devices!.Any(d => d.DeviceId == readers[0].DeviceId && d.IsValid(DateTimeOffset.UtcNow)));
             var recovered = await app.SnapshotAsync();
             Check(recovered.Paused && peer.Requests.Count == 3 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,
-                "restart retains all requests and normal startup pause without replaying the timeout");
-            await ManagementModeFixture.Authorize(app); var reconciliation = await app.ReconcileAsync(originalId);
-            Check(reconciliation.Status == "QueryUnsupported" && Wire.Encode(Persisted(originalId).Wcs) == originalStage && peer.Requests.Count == 3,
-                "unsupported query is refused without changing the original timeout/receipts or invoking an external endpoint");
+                "restart retains both requests and normal startup pause without replaying the timeout");
+            await ManagementModeFixture.Authorize(app); await app.ReconcileAsync(originalId);
             for (var i = 0; i < 20; i++)
             {
                 var snapshot = await app.SnapshotAsync(); var receipt = await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
-                if (receipt.Status != "Conflict") { Check(receipt.Status == "Persisted", "explicit resume can restore the healthy position without clearing the retained timeout"); break; }
+                if (receipt.Status != "Conflict") { Check(receipt.Status == "Persisted", "explicit resume accepts the retained timeout without clearing it"); break; }
             }
-            await Wait(app, s => !s.Paused && !s.Positions!.Single(p => p.Id == "left").Admit && s.Positions!.Single(p => p.Id == "right").Admit);
+            await Wait(app, s => !s.Paused && s.Positions!.Single(p => p.Id == "left").Admit);
             await Scan(camera);
-            await Wait(app, s => s.Inputs!.Any(i => i.PositionId == "left" && i.Outcome == ParcelInputOutcome.Blocked));
-            Check(peer.Requests.Count == 3, "OP29: restart/resume cannot authorize the blocked position to scan around the original unknown request");
-            Check(app.EmitReferenceAt("right", "right-after-restart", "SYNTH-0001", Wire.Id()), "the healthy position can continue after restart");
-            var final = await Wait(app, s => s.Operations.Length == 4 && s.Operations.Count(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved) == 3);
-            var last = final.Operations.Where(o => o.PositionId == "right").OrderByDescending(o => o.ObservedAt).First();
+            var final = await Wait(app, s => s.Operations.Length == 4 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 2);
+            var last = final.Operations.Single(o => o.PositionId == "left" && o.Wcs?.Request.Id != recovered.Operations.Single(x => x.PositionId == "left" && x.Id != originalId).Wcs!.Request.Id && o.Id != originalId);
             Check(Persisted(last.Id).Wcs!.Request.IntegrationRequest!.RequestId > secondWireId && peer.Requests.Count == 4 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,
-                "new healthy-position scans advance the durable request ID while the original timeout remains unchanged");
+                "new scans after restart advance the durable request ID while the original timeout remains unchanged");
         }
     }
 }

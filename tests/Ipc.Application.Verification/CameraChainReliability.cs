@@ -67,7 +67,7 @@ internal static class CameraChainReliability
         }
         await Backpressure(workspace, Path.Combine(root, "capacity"), 64);
         await Backpressure(workspace, Path.Combine(root, "queue"), 1);
-        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "full-lane-stop"), 30000, 1, verifyUnpacedTransport: true))
+        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "full-lane-stop"), 30000, 1))
         {
             h.Config.Wcs!.Parameters!["request-timeout-ms"] = "30000";
             ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
@@ -96,7 +96,7 @@ internal static class CameraChainReliability
             catch (OperationCanceledException) { Check(pool.Count == 32, "full original pool wait cancels without allocating an extra frame or leaking ownership"); }
             foreach (var frame in held) frame.Dispose(); Check(pool.Count == 0, "all reserved frame owners release cleanly after cancellation");
         }
-        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "queue-age"), 1500, verifyUnpacedTransport: true))
+        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "queue-age"), 1500))
         {
             await h.StartAsync();
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-WARMUP"), 1);
@@ -128,13 +128,12 @@ internal static class CameraChainReliability
     }
     static async Task Backpressure(string workspace, string folder, int capacity)
     {
-        await using var h = new CameraRoundHarness(workspace, folder, 30000, capacity, verifyUnpacedTransport: true);
+        await using var h = new CameraRoundHarness(workspace, folder, 30000, capacity);
         h.Config.Wcs!.Parameters!["request-timeout-ms"] = "30000";
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
         await h.StartAsync(); var source = h.Factory.Sources[h.Left]; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
         try
         {
-            // Unpaced driver transport fixture, not current SM business cadence.
             // A frame at a time: await the prior handoff before offering another,
             // until the bounded original pool or lane applies backpressure.
             var admitted = capacity == 1 ? 3 : 32;
@@ -155,10 +154,11 @@ internal static class CameraChainReliability
             Check(capacity != 1 || source.Undelivered is not null, "decoded observation retains delivery ownership while its lane is full");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
             var expected = capacity == 1 ? 3 : 33;
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == expected);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed == expected));
             var operations = (await h.App.SnapshotAsync()).Operations;
-            Check(source.Failure.Length == 0 && h.Peer.Requests.Count == expected && operations.Select(o => o.Wcs!.Request.IntegrationRequest!.RequestId).Distinct().Count() == expected && operations.All(o => o.Wcs!.Attempts == 1),
-                $"all {expected} independent same-code reads each send once after drain, with distinct frozen request IDs");
+            Check(source.Failure.Length == 0 && h.Peer.Requests.Count == 1 && operations.Length == 1 && operations.Single() is { State: ParcelState.SlotResolved, Wcs.Attempts: 1 } &&
+                (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left") is { Outcome: ParcelInputOutcome.Duplicate } latest && latest.OperationId == operations.Single().Id,
+                $"all {expected} reads of one resting parcel drain without loss and send exactly once; later reads point at the original request");
         }
         finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
     }

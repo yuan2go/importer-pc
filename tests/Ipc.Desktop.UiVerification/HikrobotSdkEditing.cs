@@ -13,6 +13,12 @@ static partial class Program
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS BUNDLED SDK NATIVE " + reason); }
         var config = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root,"config/sportmaster"),evidence,null,null)).Catalog();
+        var existingReaders = config.Topology!.Readers.Select(reader => reader with { Parameters = reader.Parameters!.Where(pair => pair.Key != "code.formats").ToDictionary(pair => pair.Key, pair => pair.Value) }).ToArray();
+        var existing = config with { Reader = existingReaders[0], Topology = config.Topology with { Readers = existingReaders } };
+        var existingBefore = Wire.Encode(existing);
+        var existingDraft = new StartupConfigurationDraft(existing, catalog);
+        Check(existingDraft.Readers.All(reader => Wire.Decode<string[]>(reader.Parameters.Single(p => p.Field.Key == "code.formats").Value).SequenceEqual(new[] { "All" })) && Wire.Encode(existing) == existingBefore,
+            "opening an existing station without symbology settings retains its All fallback and does not mutate the original configuration");
         var draft = new StartupConfigurationDraft(config,catalog);
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         rcs.Parameters.Single(p=>p.Field.Key=="left-bcr-code").Value="SYNTH-LEFT";
@@ -42,14 +48,18 @@ static partial class Program
             var formatSection = Descendants(editor).OfType<Expander>().Single(e => AutomationProperties.GetAutomationId(e) == left.InstanceId + "/code.formats");
             formatSection.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             var formatChecks = Descendants(formatSection).OfType<CheckBox>().ToArray();
-            Check(formatChecks.Length == formats.Field.Choices!.Length && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == true &&
-                Equals(formatSection.Header, "当前：全部码制") && Descendants(formatSection).OfType<TextBlock>().Any(t => t.Text == "当前：全部码制"),
-                "native format selector exposes all declared formats with compatible All default");
+            var initialFormats = new HashSet<string>(new[] { "Code128", "Code39", "EAN13" }, StringComparer.Ordinal);
+            Check(formatChecks.Length == formats.Field.Choices!.Length &&
+                initialFormats.SetEquals(formatChecks.Where(c => c.IsChecked == true).Select(c => (string)c.Tag)) &&
+                formatSection.Header is string header && header.StartsWith("当前：", StringComparison.Ordinal) && !header.Contains("全部码制") && Descendants(formatSection).OfType<TextBlock>().Any(t => t.Text == header),
+                "new-site native selector exposes every declared format and selects only Code128, Code39 and EAN13");
+            var rightFormats = right.Parameters.Single(p => p.Field.Key == "code.formats").Value;
+            foreach (var extra in new[] { "Code39", "EAN13" }) formatChecks.Single(c => Equals(c.Tag, extra)).IsChecked = false;
             formatChecks.Single(c => Equals(c.Tag, "Code128")).IsChecked = true;
             formatChecks.Single(c => Equals(c.Tag, "QRCode")).IsChecked = true;
             Check(Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "Code128", "QRCode" }) && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == false,
                 "native multi-selection clears All and writes both selected formats to the shared candidate");
-            Check(draft.Build().Topology!.Readers[0].Parameters!["code.formats"] == formats.Value && right.Parameters.Single(p => p.Field.Key == "code.formats").Value == "[\"All\"]",
+            Check(draft.Build().Topology!.Readers[0].Parameters!["code.formats"] == formats.Value && right.Parameters.Single(p => p.Field.Key == "code.formats").Value == rightFormats,
                 "saved full candidate isolates left format selection from right defaults");
             CaptureInternal(evidence,"bundled-sdk-format-selection",editor,lines);
             formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked = true;

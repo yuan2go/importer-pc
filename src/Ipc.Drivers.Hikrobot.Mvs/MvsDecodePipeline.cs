@@ -76,7 +76,7 @@ internal sealed partial class MvsAcquisition
                 if (work is null) { decodeWake.WaitOne(); continue; }
                 try
                 {
-                    if (token.IsCancellationRequested || !DecodeWindowAllows(work.Registration, work.DeliveredTicks))
+                    if (token.IsCancellationRequested || work.Registration?.DecodeAllowed?.Invoke(DeviceId) == false)
                     { work.SupersededBeforeDecode = true; continue; }
                     Timings.Record("host.decode-queue-wait", Stopwatch.GetElapsedTime(work.DeliveredTicks).TotalMilliseconds);
                     ProcessDecode(work, token);

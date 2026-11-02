@@ -173,7 +173,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool CanStartOperation => owner.CanStartOperation;
     public string Barcode => ObservedBarcode;
     public bool CurrentTaskAvailable => !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
-        (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null ||
+        (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null || ParcelInputReasons.IsSamePlacement(Input) ||
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
     public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? OperatorCopy.NotReturned : Operation.Slot : "未取得";
@@ -213,7 +213,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         InputUnadmitted ? (InputFailed ? ChineseInterfaceText.Notice(Input!.Reason) + "；" + OperatorCopy.RescanStep : OperatorCopy.PreviousPendingStep) :
         Operation?.State switch
         {
-            ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请重新扫描。",
+            ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。",
             ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => OperatorCopy.TimeoutUnconfirmed,
             ParcelState.WcsUnknown => OperatorCopy.UnconfirmedStep,
             ParcelState.WcsRejected => ParcelPresentation.RcsException(Operation) ?? OperatorCopy.RejectedStep,
@@ -250,7 +250,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         SlotAvailable ? "按格口投递；扫描下一件后自动更新。" :
         CurrentTaskAvailable ? "RCS 未返回格口：包裹暂放一旁，通知维护人员。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待格口返回，勿重复扫描。" :
-        ParcelPresentation.RcsNotDelivered(Operation) ? "RCS未连接，本次请求未送达；连接恢复后请重新扫描。" :
+        ParcelPresentation.RcsNotDelivered(Operation) ? "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。" :
         ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
         HasUncertainOriginal ? OperatorCopy.UnconfirmedStep :
         Operation?.State == ParcelState.WcsRejected ? OperatorCopy.RejectedStep :

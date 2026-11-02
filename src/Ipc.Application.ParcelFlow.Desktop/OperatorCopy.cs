@@ -8,7 +8,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // never branch business logic on them.
 public static class OperatorCopy
 {
-    public const string TimeoutUnconfirmed = "RCS 请求超时，原请求结果未确认。本件暂勿投递，本位暂停后续读码；请通知维护人员核对，不要重复扫描或重发。";
+    public const string TimeoutUnconfirmed = "RCS 请求超时，原请求结果未确认。本件暂勿投递；请取下包裹再重新放上，系统会发起新请求，以本次有效格口为准。";
     public const string NotReturned = "未返回";
     public const string Paused = "维护中，暂停接收新包裹。";
     public const string PreviousUnconfirmed = "上一件格口未确认，需先处理。";
@@ -16,7 +16,7 @@ public static class OperatorCopy
     public const string RescanStep = "请重新扫描，或输入正确条码。";
     public const string PreviousPendingStep = "上一件仍待处理，请先查看详情。";
     public const string UnconfirmedStep = "勿重复上件：包裹暂放一旁，通知维护人员核对。";
-    public const string RejectedStep = "包裹暂放一旁，按原因处理或通知维护人员。";
+    public const string RejectedStep = "未取得格口：取下包裹，可换下一件，或重新放上本件再试；多次失败请放一旁并通知维护人员。";
     public const string SmConfigurationLoaded = "已读取当前设置。仅修改条码规则可直接生效；连接等设置保存后需重启。";
     public const string ConfigurationLoaded = "已读取当前设置。修改保存后，需重启软件才会生效。";
     public const string RestartToApply = "保存后需重启软件生效";

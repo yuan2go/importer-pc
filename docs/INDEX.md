@@ -1,4 +1,8 @@
-> 2026-11-02 用户追加以 [SM-OPERATOR-CORRECTIONS-29](work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md) 为准：操作中文、按位等待RCS后再读码、明确错误字段动作、恢复视频优先调试及真实采集诊断；继承保留数据重装复验28，旧连续解码/超时可继续扫码的冲突指引由本轮替代，原证据保持SourceCommit。
+> 当前整合与收口工作包为 [SM-OPERATOR-INTEGRATION-30](work-packages/WP-IPC-SM-OPERATOR-INTEGRATION-30.md)，以main操作工放置流程为准，继续中文参数/调试/诊断修复和保留数据重装复验。
+
+> 2026-11-02 当前整合：承接main的 [SM-SAME-PLACEMENT-29](work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md) 操作工流程，保留 [SM-OPERATOR-CORRECTIONS-29](work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md) 的中文参数/纠错、调试和真实采集诊断修复。主流程持续识别以观察空托盘，一次放置一次请求；此前OP29的冻结解码、同码每次新请求及超时后永久阻断指引被本次整合替代，历史证据保持原SourceCommit。
+
+> 2026-11-02 现场反馈“包裹放上去后一直扫码、一直发RCS”，用户要求按现场托盘流程修正，以 [SM-SAME-PLACEMENT-29](work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md) 为准：一次放上托盘为一次RCS请求；同工位同码持续可读视为同一放置，只留观察不再请求；相机连续3帧无码且跨度至少800毫秒后结束放置，再放回同码或换码按新放置处理；无逐帧事实的来源沿用兜底窗口。替代此前“各独立有效观察交RCS去重”的条款，其他原请求/Unknown守卫不变。
 
 > 2026-11-02 当前斜放、模糊和完整多码搜索，以及快照先到的观察身份守卫，以 [SM-READER-ROBUSTNESS-28](runtime/sm-reader-robustness-28.md) 为准；替代27包的“首搜索零结果才补搜索”及两线策略。27原实现/验证保留历史身份，旧文档完整字节见归档。
 

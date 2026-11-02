@@ -65,9 +65,7 @@ internal static class UnreadPackage27
                     matched.CameraReads.Single(f => f.PositionId == "left").Frame.CompletedTicks,
                 "Codes becomes visible only together with its exact epoch and decode-clock observation cue");
             h.Api(h.Left).Enqueue(blank, 4);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Releases >= 4));
-            Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.FrameNumber == 3 && h.Peer.Requests.Count == 3,
-                "OP29: busy video frame is acquired and returned without replacing the pending read or adding a request");
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 4));
         }
         finally
         {
@@ -76,13 +74,10 @@ internal static class UnreadPackage27
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
         }
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
-        Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.FrameNumber == 3,
-            "OP29: matching RCS acceptance preserves the read that waited for it without replaying a busy frame");
-        h.Api(h.Left).Enqueue(blank, 5);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 5 && f.Frame.Outcome == ObservationReadOutcome.NoCode));
-        Check((await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3,
-            "a post-result no-code frame supersedes camera presentation without changing accepted original operations");
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 6);
+        Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.Outcome == ObservationReadOutcome.NoCode,
+            "late RCS acceptance preserves its original fact without restoring a superseded camera frame");
+        var again = await h.ReplaceParcelAsync(h.Left, 5); // Empty tray, then the same label placed again.
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), again);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 4);
         var requests = h.Peer.Requests.Select(s => JsonDocument.Parse(s)).ToArray();
         try
@@ -90,7 +85,7 @@ internal static class UnreadPackage27
             Check(requests.Select(j => j.RootElement.GetProperty("requestId").GetInt64()).Distinct().Count() == 4 &&
                 requests.All(j => j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1) &&
                 requests.Count(j => j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString() == "SYNTH-DELAYED-27") == 2,
-                "same-code independent reads retain distinct original requests, original loadCode and quantity=1 for RCS handling");
+                "same-code re-placements retain distinct original requests, original loadCode and quantity=1 for RCS handling");
         }
         finally { foreach (var j in requests) j.Dispose(); }
         h.Api(h.Right).NextLostPackets = 1; h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-REJECT-27"), 2);

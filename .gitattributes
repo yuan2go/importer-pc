@@ -298,3 +298,6 @@ docs/runtime/evidence/sm-reader-robustness-28/** -text whitespace=cr-at-eol,-bla
 # OP29 retains original guidance snapshots and native/synthetic verification bytes.
 docs/archive/pre-sm-operator-corrections-29/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/runtime/evidence/sm-operator-corrections-29/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+docs/archive/pre-sm-placement-integration-30/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/sm-operator-integration-30/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

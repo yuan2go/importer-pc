@@ -20,7 +20,6 @@ public sealed partial class ParcelRuntime
             Boundary?.Invoke("SnapshotGateAcquired");
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
             ObjectDisposedException.ThrowIf(disposed, this);
-            PublishCameraReadWindows();
             // Single consistent read per projection; this scope never releases the business gate.
             repository.BeginReceiptProjection();
             projectedCapacity = operations.Values.Count(x => !ArchiveEligible(x));
@@ -155,7 +154,7 @@ public sealed partial class ParcelRuntime
             return repository.PriorCommand(command) ?? throw new InvalidDataException("Accepted command lacks a durable receipt");
         }
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "CommandCommit"); throw; }
-        finally { try { PublishCameraReadWindows(); } finally { gate.Release(); } }
+        finally { gate.Release(); }
     }
     static StageFact? CancelUnsent(StageFact? stage) => ParcelUnsubmittedIntent.Cancel(stage);
     public async Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate, string? reason = null)

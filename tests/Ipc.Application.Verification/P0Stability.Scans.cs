@@ -23,13 +23,14 @@ static partial class SportmasterRcs
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } };
         Directory.CreateDirectory(root); ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), c);
         var launch = new BusinessLaunch(root, Path.Combine(root, "data"), null, null);
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } })
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow { PlacementReleaseMs = 300 }, new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
             await app.StartAsync(default);
             using var camera = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
             await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
             foreach (var code in new[] { "000123", "000123", "000456" })
             {
+                await Task.Delay(400); // Each scan is a separate placement on the tray.
                 var count = peer.Requests.Count;
                 await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes(code[..3])); await Task.Delay(30);
                 Check(peer.Requests.Count == count, "partial frame never sends RCS");

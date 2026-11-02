@@ -66,7 +66,7 @@ static partial class SportmasterRcs
         var fake = live ? null : new SoftwareFrameApi(reader);
         var factory = new SoftwareFlowFactory(launch, c, fake, bundled);
         // Isolated Simulation fixture seam only. No production identity guard changes.
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow { PlacementReleaseMs = live ? SportmasterFlow.DefaultSamePlacementReleaseMs : 0 }, factory);
         if (!bundled || args.Contains("--isolated-simulation-preflight")) app.RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); };
         await app.StartAsync(default);
         // Full frozen HTTP custody is management-only, including in this isolated fixture.
@@ -95,6 +95,7 @@ static partial class SportmasterRcs
 
             // Three decoded results must remain independent. The newest-video policy may
             // intentionally supersede *undecoded* frames, so await each recognition boundary.
+            // Pipeline custody only (placement judgement off; covered by --same-placement-29).
             foreach (var number in new uint[] { 1, 2, 5 })
             {
                 fake!.Enqueue(pixels, number);

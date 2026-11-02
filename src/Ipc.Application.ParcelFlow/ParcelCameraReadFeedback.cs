@@ -21,9 +21,7 @@ public sealed partial class ParcelRuntime
                 frame.Outcome == ObservationReadOutcome.Codes != (frame.CandidateCount > 0) || !Enum.IsDefined(frame.Outcome)) return;
             var position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == frame.DeviceId)?.Id;
             if (position is null) return;
-            // Acquisition errors/no-code during the current RCS wait belong to diagnostics,
-            // not a replacement parcel. The original read and result stay correlated.
-            if (frame.Outcome != ObservationReadOutcome.Codes && cameraReadWindows.TryGetValue(position, out var window) && !window.IsOpen) return;
+            NotePlacementFrame(position, frame);
             lock (presentationGate)
             {
                 cameraReadFeedback.TryGetValue(position, out var old);
@@ -46,6 +44,7 @@ public sealed partial class ParcelRuntime
                 if (changed) OfferPresentation();
             }
         };
+        foreach (var fed in positions.Values.Where(p => p.ReaderDeviceId == session.Source.DeviceId)) RegisterPlacementFrames(fed.Id);
         source.ReadFeedback += handler;
         cameraReadSubscriptions.Add((source, handler));
     }

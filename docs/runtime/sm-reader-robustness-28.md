@@ -1,4 +1,4 @@
-> 2026-11-02 用户纠偏以 [OP29](../work-packages/WP-IPC-SM-OPERATOR-CORRECTIONS-29.md) 为准：SM每位等本次RCS结果后再接受下一次读码，等待期间视频继续；超时/未知保留原责任并阻断本位后续读码，不回放忙碌期帧。旧持续解码、超时自动继续及新帧清退当前处理中包裹的冲突条款仅保留历史适用范围。采集诊断与预览缩略图分开。原文及哈希见 [归档](../archive/pre-sm-operator-corrections-29/manifest.json)。
+> 当前操作工扫码流程已继承main `38cb7dc0` 的[SM-SAME-PLACEMENT-29](../work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)：持续识别，一次放置一次请求，空托盘确认后释放；此前OP29冻结解码及同码逐帧新请求说明已被替代，原字节见[归档](../archive/pre-sm-placement-integration-30/manifest.json)。中文参数、调试与真实采集诊断修复继续保留。
 
 # SM斜放、模糊及快照身份修复28
 

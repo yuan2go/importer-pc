@@ -1,0 +1,125 @@
+{
+  "source_commit": "24fbbc0da2aa3fcc107103305864d42f6d727c85",
+  "builds": [
+    {
+      "exit_code": 0,
+      "project": "tests/Ipc.Application.Verification",
+      "log": "build-Ipc.Application.Verification.log"
+    },
+    {
+      "exit_code": 0,
+      "project": "tests/Ipc.Desktop.UiVerification",
+      "log": "build-Ipc.Desktop.UiVerification.log"
+    },
+    {
+      "exit_code": 0,
+      "project": "src/Ipc.Desktop",
+      "log": "build-Ipc.Desktop.log"
+    }
+  ],
+  "suites": [
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "unread-package-27",
+      "pass_count": 14,
+      "log": "app-unread-package-27.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "camera-chain-reliability",
+      "pass_count": 37,
+      "log": "app-camera-chain-reliability.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "camera-chain-closure",
+      "pass_count": 20,
+      "log": "app-camera-chain-closure.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "reader-feedback-22",
+      "pass_count": 70,
+      "log": "app-reader-feedback-22.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "reader-ingress-terminal-22",
+      "pass_count": 1,
+      "log": "app-reader-ingress-terminal-22.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "mvs-software-flow",
+      "pass_count": 15,
+      "log": "app-mvs-software-flow.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "sm-original-frame",
+      "pass_count": 26,
+      "log": "app-sm-original-frame.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "shutdown-resources",
+      "pass_count": 21,
+      "log": "app-shutdown-resources.log"
+    },
+    {
+      "kind": "Application",
+      "exit_code": 0,
+      "flag": "camera-rounds",
+      "pass_count": 41,
+      "log": "app-camera-rounds.log"
+    },
+    {
+      "pass_count": 9,
+      "exit_code": 0,
+      "log": "native-unread-package-27-ui.log",
+      "kind": "WindowsNativeWpf",
+      "flag": "unread-package-27-ui"
+    },
+    {
+      "pass_count": 19,
+      "exit_code": 0,
+      "log": "native-camera-chain-reliability-ui.log",
+      "kind": "WindowsNativeWpf",
+      "flag": "camera-chain-reliability-ui"
+    },
+    {
+      "pass_count": 21,
+      "exit_code": 0,
+      "log": "native-camera-barcode-current.log",
+      "kind": "WindowsNativeWpf",
+      "flag": "camera-barcode-current"
+    },
+    {
+      "pass_count": 13,
+      "exit_code": 0,
+      "log": "native-station-responsive-ui.log",
+      "kind": "WindowsNativeWpf",
+      "flag": "station-responsive-ui"
+    },
+    {
+      "pass_count": 20,
+      "exit_code": 0,
+      "log": "native-reader-feedback-22-ui.log",
+      "kind": "WindowsNativeWpf",
+      "flag": "reader-feedback-22-ui"
+    }
+  ],
+  "scope": "Windows WPF, actual ZXing/SQLite and built-in loopback RCS, synthetic SDK frames; physical MVS/customer RCS/field NOT_RUN",
+  "publish_exit_code": 0,
+  "smoke_exit_code": 0,
+  "product_version": "1.0.0+24fbbc0da2aa3fcc107103305864d42f6d727c85",
+  "assertions": 327.0
+}

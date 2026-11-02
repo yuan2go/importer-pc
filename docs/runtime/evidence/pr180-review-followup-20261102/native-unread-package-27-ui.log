@@ -1,0 +1,11 @@
+PASS UNREAD27-NATIVE no-code clears left barcode, slot, task and picture authority while preserving the right current task
+PASS UNREAD27-NATIVE an older business snapshot cannot revive a superseded confirmed slot
+PASS UNREAD27-NATIVE 1366 exposes a readable no-code reason and rescan/manual recovery
+CAPTURE unread27-no-code-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS UNREAD27-NATIVE 800 exposes a readable no-code reason and rescan/manual recovery
+CAPTURE unread27-no-code-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS UNREAD27-NATIVE a late matching RCS response updates its original operation without reviving the unread frame's slot
+PASS UNREAD27-NATIVE camera no-code does not invalidate an independent manual barcode and its accepted RCS result
+PASS UNREAD27-NATIVE next successful camera observation replaces the manual display with one distinct new request; empty frames add none
+PASS UNREAD27-NATIVE healthy reconnect without a new read cannot revive the prior connection's accepted slot
+PASS UNREAD27-NATIVE verified first read in a new epoch restores its own task with exactly one new request

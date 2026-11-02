@@ -1,0 +1,72 @@
+PASS READER22 age synthetic source is durably handed off, not treated as admission
+PASS READER22 age has an explicit terminal rejection without trusting capture IDs or creating any operation/POST
+PASS READER22 epoch synthetic source is durably handed off, not treated as admission
+PASS READER22 epoch has an explicit terminal rejection without trusting capture IDs or creating any operation/POST
+PASS READER22 future synthetic source is durably handed off, not treated as admission
+PASS READER22 future has an explicit terminal rejection without trusting capture IDs or creating any operation/POST
+PASS READER22 sequence synthetic source is durably handed off, not treated as admission
+PASS READER22 sequence has an explicit terminal rejection without trusting capture IDs or creating any operation/POST
+PASS READER22 operator synthetic source is durably handed off, not treated as admission
+PASS READER22 operator has an explicit terminal rejection without trusting capture IDs or creating any operation/POST
+PASS READER22 camera-supplied operator metadata cannot claim the manual-command presentation channel
+PASS READER22 rejected untrusted observations do not advance trusted sequence or replay the original request
+PASS READER22 old queued camera epoch remains a durable input to be explicitly disposed after reconnect
+PASS READER22 actual reconnect's retired epoch has a matching terminal rejection, not orphan processing or request replay
+PASS READER22 first verified frame in the new epoch creates exactly one independent request
+PASS READER22 feedback older than the snapshot watermark cannot replace its accepted current observation
+PASS READER22 a newer orphan cue first withdraws the prior accepted destination
+PASS READER22 orphan feedback exceeds its monotonic display deadline without reviving an old chute/picture
+PASS READER22 unacknowledged feedback from a previous connection epoch is explicitly invalidated
+PASS READER22 fresh current-epoch observation resumes processing without a cached destination
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: All
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Codabar
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Code39
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Code39Std
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Code39Ext
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Code32
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: PZN
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Code93
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Code128
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: ITF
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: ITF14
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataBar
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataBarOmni
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataBarStk
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataBarStkOmni
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataBarLtd
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataBarExp
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataBarExpStk
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: EANUPC
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: EAN13
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: EAN8
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: EAN5
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: EAN2
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: ISBN
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: UPCA
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: UPCE
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Telepen
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: TelepenAlpha
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: TelepenNumeric
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DXFilmEdge
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: PDF417
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: CompactPDF417
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: MicroPDF417
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: Aztec
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: AztecCode
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: AztecRune
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: QRCode
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: QRCodeModel1
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: QRCodeModel2
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: MicroQRCode
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: RMQRCode
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: DataMatrix
+PASS READER22 declared barcode option maps through installed ZXingCpp 0.5.3: MaxiCode
+PASS READER22 unsupported mapping reports the exact configuration key/name instead of NullReferenceException
+PASS READER22 first-use cue volume has an explicit local default
+PASS READER22 volume survives a preference read: 0
+PASS READER22 volume survives a preference read: 30
+PASS READER22 volume survives a preference read: 100
+PASS READER22 invalid volume preserves the last saved preference
+PASS READER22 unsupported preference preserves its original bytes
+PASS READER22 external trigger configuration tampering stays Faulted for maintenance instead of unsafe automatic restart
+PASS READER22 configuration Faulted on one camera preserves the other verified camera owner

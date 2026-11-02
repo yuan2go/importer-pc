@@ -1,0 +1,9 @@
+PASS READER22-NATIVE startup restores a visible explicit left input target after viewport readiness
+PASS READER22-NATIVE deactivation clears the visible target without taking text from another window
+PASS READER22-NATIVE dialog return restores this window's recent right input and preserves the real draft
+PASS READER22-NATIVE explicit keyboard focus on a workspace action remains available
+FAIL System.InvalidOperationException: Native barcode input requires the foreground test HWND, barcode focus and no held modifiers; active=True; foreground=1376890; expected=15338034; focus=False; held=
+   at BarcodeNativeKeyboard.SendAsync(Window window, TextBox entry, UInt16[] keys, FrameworkElement initialFocus) in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 193
+   at Program.VerifyReaderFeedback22Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\ReaderFeedback22Ui.cs:line 48
+   at Program.VerifyReaderFeedback22Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\ReaderFeedback22Ui.cs:line 117
+   at Program.<>c__DisplayClass48_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\Program.cs:line 64

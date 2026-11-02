@@ -1,0 +1,9 @@
+D:\w\ipc-reader-robustness-28\src\Ipc.Drivers.Hikrobot.Mvs\SoftwareDecoder.cs(105,13): error CS1674: 'ImageView': using 语句中使用的类型必须实现 'System.IDisposable'。 [D:\w\ipc-reader-robustness-28\src\Ipc.Drivers.Hikrobot.Mvs\Ipc.Drivers.Hikrobot.Mvs.csproj]
+
+生成失败。
+
+D:\w\ipc-reader-robustness-28\src\Ipc.Drivers.Hikrobot.Mvs\SoftwareDecoder.cs(105,13): error CS1674: 'ImageView': using 语句中使用的类型必须实现 'System.IDisposable'。 [D:\w\ipc-reader-robustness-28\src\Ipc.Drivers.Hikrobot.Mvs\Ipc.Drivers.Hikrobot.Mvs.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:05.65

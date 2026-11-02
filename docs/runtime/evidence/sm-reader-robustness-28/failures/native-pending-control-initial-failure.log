@@ -1,0 +1,7 @@
+PASS READER28-NATIVE snapshot-first native path shows the new pending barcode and never the old chute/picture while its stream render is delayed
+PASS READER28-NATIVE the assertion runs before the new input is durable or any new HTTP request exists
+FAIL System.InvalidOperationException: 1366 preserves a readable pending reason with no retired destination
+   at Program.<VerifyReaderRobustness28Ui>g__Check|56_0(Boolean ok, String text, <>c__DisplayClass56_0&) in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\ReaderRobustness28Ui.cs:line 12
+   at Program.VerifyReaderRobustness28Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\ReaderRobustness28Ui.cs:line 50
+   at Program.VerifyReaderRobustness28Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\ReaderRobustness28Ui.cs:line 69
+   at Program.<>c__DisplayClass48_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-reader-robustness-28\tests\Ipc.Desktop.UiVerification\Program.cs:line 66

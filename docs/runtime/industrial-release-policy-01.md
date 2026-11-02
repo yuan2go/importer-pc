@@ -36,5 +36,5 @@
 
 - PowerShell解析检查通过；`python -m unittest discover -s scripts -p test_commercial_delivery.py`5项通过，覆盖缺证书、缺最终EXE及证据边界。
 - `scripts/test-signature-policy.ps1`14项策略边界通过：内存临时CMS的SHA256/未批准者/SHA1/嵌套深度/损坏结构、微软RFC3161属性/TSTInfo消息摘要与TSA签名摘要分别核验，以及基于实际已构建PE布局的证书表/类型/越界检查。临时密钥不导入证书库、磁盘或Git；合成CMS不是可信产品签名，不进入正式交付证据。
-- 同一策略单测已接入无发布secret的PR CI；本次修改的远端结果待记录。
+- 同一策略单测已接入无发布secret的PR CI。[CI41513895922](https://github.com/yuan2go/importer-pc/actions/runs/41513895922)在`5ff10416ace8437dd1c4f3a6a4cdee174b997b0c`通过14项策略及5项Python测试，同时8组核心回归、三套构建/格式/文档门禁通过；仍只证明对应工程边界。
 - 实际正式签名、SignTool全链/时间戳、证书轮换、离线吊销、最终下载及SmartScreen矩阵均NOT_RUN。缺条件不改成模拟PASS。

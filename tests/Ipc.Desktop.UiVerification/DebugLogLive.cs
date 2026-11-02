@@ -45,7 +45,7 @@ static partial class Program
             await Until(async () => (await runtime.SnapshotAsync()).Operations.Any(o => o.AdmissionId == admission && o.State == expected));
             return (await runtime.SnapshotAsync()).Operations.Single(o => o.AdmissionId == admission);
         }
-        await Scan("left", "debug-off", "000123");
+        await Scan("left", "debug-off", "000124");
         var before = await runtime.SnapshotAsync();
         var initial = await runtime.ReadDiagnosticTailAsync(null, null, default);
         Check(!initial.Entries.Any(e => e.Text.Contains("\"Level\":\"调试\"")) && initial.Entries.Any(e => e.Text.Contains("输入处理完成")),
@@ -54,6 +54,8 @@ static partial class Program
         Check(hot.DebugEnabled && hot.Revision == 1 && (await runtime.SnapshotAsync()).RuntimeId == before.RuntimeId &&
             (await runtime.SnapshotAsync()).Configuration.Revision == before.Configuration.Revision, "debug switch takes effect without restart or a pending configuration revision");
         Check((await runtime.SetDebugLoggingAsync(true)).Revision == hot.Revision, "reapplying the same hot setting creates no extra revision");
+        // A different parcel starts a new placement under SM-SAME-PLACEMENT-29;
+        // toggling diagnostics must not implicitly release the previous parcel.
         var original = await Scan("left", "debug-on", "000123");
         await Until(async () => (await runtime.ReadDiagnosticTailAsync(null, null, default)).Entries.Any(e => e.Text.Contains("原请求响应详情") && e.Text.Contains(original.Wcs!.Request.Id)));
         var captured = await runtime.ReadDiagnosticTailAsync(null, null, default); var joined = string.Join("\n", captured.Entries.Select(e => e.Text));

@@ -100978,9 +100978,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Hot runtime diagnostic setting, bounded live terminal and synthetic verification",
       "source": "WP-IPC-DEBUG-LOG-LIVE-01; original evidence retains its own SourceCommit",
-      "sha256": "b749850fc4137d5140c10fd6239bca673bbe574dab3169b4b7b733322d0439f7",
-      "size_bytes": 16685,
-      "git_blob": "7b44678b862e4e2a2e4758be5e450a72a1d8c135",
+      "sha256": "1cc00088499c477e77a2a47e4ed60c4bd9f128ba5d4e4cbd97fe4b2a0e3c8bb2",
+      "size_bytes": 16847,
+      "git_blob": "fe6321306d6094040da9d633e5fc66a7883ce5bb",
       "storage_scope": "public_repository"
     },
     {
@@ -111978,9 +111978,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-RESPONSIVE-PRESENTATION-16; original evidence retains its own SourceCommit",
-      "sha256": "fd79e2bc540d77acff4769b92c315925eaee9a5d9fbeadda35c71ba26b2879ac",
-      "size_bytes": 12316,
-      "git_blob": "9fe4853328c636b0f798c8e6374c1c3df940fa3e",
+      "sha256": "e5ecb77d44716567450bd7abe539496f0f55d8accffe26c4d75dd473521bfe24",
+      "size_bytes": 12978,
+      "git_blob": "c3c507d390bc1d5190b3bc48fca69edfa26ace8b",
       "storage_scope": "public_repository"
     },
     {
@@ -121911,9 +121911,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
-      "sha256": "522d4fa2e84f7ceaea7f300241c9051c22e9634cf67c1923f53494a990267db9",
-      "size_bytes": 3835,
-      "git_blob": "0306e4ce9e55fb9259f764cdb253c2f50bb363de",
+      "sha256": "6565d2e9e737466ff5de759e6ea8ea93d43314fe264c8342acea27a6d525b807",
+      "size_bytes": 4534,
+      "git_blob": "07261f4e87dbc40d29cb5a35d743e59767a7af58",
       "storage_scope": "public_repository"
     },
     {

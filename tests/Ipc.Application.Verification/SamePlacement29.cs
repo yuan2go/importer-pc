@@ -9,7 +9,8 @@ internal static class SamePlacement29
     static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS PLACE29 " + text); }
     internal static async Task Run(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-29"));
+        // A window wide enough that loaded CI frame gaps never look like a lift.
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-29")) { PlacementReleaseMs = 1500 };
         await h.StartAsync();
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         uint frame = 0;

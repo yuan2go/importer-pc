@@ -59041,9 +59041,9 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/CommercialProductization.cs",
-      "sha256": "f49f57662a43a8ce0a401e7785bcd662667564ed41c6c558b702091d6f87bdd0",
-      "size_bytes": 39872,
-      "git_blob": "a9deac71559aae5986af9d71121e9307d9ed2b99",
+      "sha256": "9953775178babaf0f79de7e2464a07c252b1ff562c674fccd1e59a181afbe96d",
+      "size_bytes": 40423,
+      "git_blob": "67b4f49bd53f7c80f932a9fd3a5fb0708d8b041e",
       "version": "MANAGEMENT-MODE-01",
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
@@ -105466,9 +105466,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence retains its own SourceCommit",
-      "sha256": "b49b142823fbf8e8838df77860f186015812831ca832fb9f527b216cc2f03538",
-      "size_bytes": 14548,
-      "git_blob": "a5e5556df215b9cc3d7769918ed42b18887f55f8",
+      "sha256": "0aa71d10e6345749c8f18b21046edff96380b4c7cf8f8645964eb2f0e37d1ad2",
+      "size_bytes": 14661,
+      "git_blob": "c672ca5302a57af408cf8402f7ffb02849512d2d",
       "storage_scope": "public_repository"
     },
     {
@@ -119300,14 +119300,9 @@
   ],
   "integration_sources": [
     {
-      "commit": "30b962b6d6e3f7a49a067c1fb316f557c0d5b28a",
-      "manifest_sha256": "f5064918adff8740b8dfb43d281d5ca9241f77eef1b7253b06925a8e6f6b0030",
+      "commit": "a19ae6633d82fb9fe11e1c43a74a20e019b91773",
+      "manifest_sha256": "103a5aa2a18d3414a7a4cb761ef450b3a35014c51369fdb4a7aa9af4127b8796",
       "work_package": "WP-IPC-DB11-COMPATIBLE-UPDATE-22"
-    },
-    {
-      "commit": "978005982dc17d81a2b682fdf2187a305fa68ca9",
-      "manifest_sha256": "9e6ef67a5f73c9504ae45df4f7a8e347204803edca0130e03b4bdbd401032af1",
-      "work_package": "WP-IPC-OPERATOR-COPY-02"
     }
   ],
   "install_update_uninstall_identity_01": {

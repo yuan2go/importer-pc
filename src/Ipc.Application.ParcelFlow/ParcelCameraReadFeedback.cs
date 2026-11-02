@@ -21,6 +21,7 @@ public sealed partial class ParcelRuntime
                 frame.Outcome == ObservationReadOutcome.Codes != (frame.CandidateCount > 0) || !Enum.IsDefined(frame.Outcome)) return;
             var position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == frame.DeviceId)?.Id;
             if (position is null) return;
+            NotePlacementFrame(position, frame);
             lock (presentationGate)
             {
                 cameraReadFeedback.TryGetValue(position, out var old);

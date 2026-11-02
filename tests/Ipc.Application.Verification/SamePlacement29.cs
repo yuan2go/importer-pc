@@ -21,6 +21,17 @@ internal static class SamePlacement29
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(code), ++frame);
             await CameraRoundHarness.Until(() => Task.FromResult(Processed() > before));
         }
+        var blank = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);
+        async Task Empty(int frames)
+        {
+            for (var i = 0; i < frames; i++)
+            {
+                var decoded = h.Factory.Decoders[h.Left].Count;
+                h.Api(h.Left).Enqueue(blank, ++frame);
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count > decoded));
+                await Task.Delay(150);
+            }
+        }
         async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
 
         // 1. Placed parcel: first read requests a chute.
@@ -66,15 +77,33 @@ internal static class SamePlacement29
         Check(h.Peer.Requests.Count == 4 && (await h.App.SnapshotAsync()).Operations.Count(o => o.ParcelCode == "SYNTH-PLACE-C") == 2,
             "re-placing the same parcel after the release window requests a new chute exactly once");
 
-        // 6. Statistics count requests, not every frame of a resting parcel.
+        // 6. Glare: one or two frames without a code while the parcel rests do not end the placement.
+        await Empty(2);
+        await Read("SYNTH-PLACE-C");
+        Check(h.Peer.Requests.Count == 4 && ParcelInputReasons.IsSamePlacement(await Latest()),
+            "two no-code frames on a resting parcel (glare) do not trigger another request");
+
+        // 7. Empty tray, then the same code again well inside the time window: the operator
+        // lifted and quickly re-placed it, or the next vehicle brings an identical code.
+        var lastRead = System.Diagnostics.Stopwatch.StartNew();
+        await Empty(3);
+        await Read("SYNTH-PLACE-C");
+        var gap = lastRead.ElapsedMilliseconds;
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.ParcelCode == "SYNTH-PLACE-C" && o.State == ParcelState.SlotResolved) == 2);
+        Check(h.Peer.Requests.Count == 5 && gap < h.PlacementReleaseMs,
+            $"three no-code frames (empty tray) end the placement, so the same code {gap} ms later requests a new chute");
+        for (var i = 0; i < 3; i++) await Read("SYNTH-PLACE-C");
+        Check(h.Peer.Requests.Count == 5, "the re-placed parcel resting on the tray again requests only once");
+
+        // 8. Statistics count requests, not every frame of a resting parcel.
         var now = DateTimeOffset.UtcNow; var minute = new DateTimeOffset(now.UtcDateTime.AddTicks(-(now.UtcTicks % TimeSpan.TicksPerMinute)), TimeSpan.Zero);
         var stats = await ((IStationOperations)h.App).ReadStatisticsAsync(minute.AddMinutes(-2), minute.AddMinutes(2), default);
-        Check(stats.Buckets.Sum(b => b.Requests) == 4, "station statistics record four requests for four placements");
+        Check(stats.Buckets.Sum(b => b.Requests) == 5, "station statistics record five requests for five placements");
 
-        // 7. The right position is independent.
+        // 9. The right position is independent.
         h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-PLACE-C"), 1);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
-        Check(h.Peer.Requests.Count == 5, "the same code on the other position is its own placement");
+        Check(h.Peer.Requests.Count == 6, "the same code on the other position is its own placement");
         await h.App.StopAsync(default);
         Check(h.Api(h.Left).Acquires == h.Api(h.Left).Releases && h.Api(h.Right).Acquires == h.Api(h.Right).Releases, "every SDK frame loan is returned");
     }

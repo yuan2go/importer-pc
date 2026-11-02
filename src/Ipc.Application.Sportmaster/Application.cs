@@ -28,6 +28,13 @@ public sealed class SportmasterFlow : FlowDefinition
     public const int DefaultSamePlacementReleaseMs = 2000;
     public int PlacementReleaseMs { get; init; } = DefaultSamePlacementReleaseMs;
     public override int SamePlacementReleaseMs => PlacementReleaseMs;
+    // Empty tray: lift-and-replace or the next vehicle. Decoding runs at roughly
+    // 4-7 frames/s on 6 MP, so three frames is about half a second.
+    public const int DefaultSamePlacementEmptyFrames = 3, DefaultSamePlacementEmptyMinimumMs = 300;
+    public int PlacementEmptyFrames { get; init; } = DefaultSamePlacementEmptyFrames;
+    public int PlacementEmptyMinimumMs { get; init; } = DefaultSamePlacementEmptyMinimumMs;
+    public override int SamePlacementEmptyFrames => PlacementEmptyFrames;
+    public override int SamePlacementEmptyMinimumMs => PlacementEmptyMinimumMs;
     public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter, o.Codes, o.CandidateIssue);
     public override string[] ValidateBusiness(ParcelConfiguration c) => [.. c.Wcs is null || c.Plc is not null ? new[] { "Sportmaster capability dependencies do not match its flow" } : [], .. BarcodeFiltering.Validate(c.BarcodeFilter) is { } error ? new[] { error } : []];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs;

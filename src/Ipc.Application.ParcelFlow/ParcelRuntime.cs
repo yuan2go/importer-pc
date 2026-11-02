@@ -543,7 +543,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     "images/original-frames/" + op.Id + ".png", DateTimeOffset.UtcNow) };
             }
             Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
-            ClaimPlacement(position, code!, o.ObservedAt, op.Id);
+            ClaimPlacement(position, code!, o.ObservedAt, op.Id, camera: o.OperatorInput is null);
             if (originalFrame is not null) { ScheduleOriginalFrame(op, originalFrame); originalFrame = null; }
         }
         finally { originalFrame?.Dispose(); }

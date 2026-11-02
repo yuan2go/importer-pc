@@ -20,6 +20,10 @@ public abstract class FlowDefinition
     // Window in which a code that stays readable at one position is the same physical
     // placement; zero keeps every distinct observation independently admissible.
     public virtual int SamePlacementReleaseMs => 0;
+    // Consecutive decoded no-code frames (spanning at least the minimum time) that end
+    // a camera-read placement: the tray was seen empty. Zero disables this signal.
+    public virtual int SamePlacementEmptyFrames => 0;
+    public virtual int SamePlacementEmptyMinimumMs => 0;
     public virtual int RequestTimeoutMs(ParcelOperation operation, ParcelStage stage) => operation.FrozenConfiguration.TimeoutMs;
     public virtual int QueuedObservationTimeoutMs(ParcelConfiguration configuration) => configuration.TimeoutMs;
     public virtual ParcelOperation RestoreMainProjection(ParcelOperation operation) => operation;

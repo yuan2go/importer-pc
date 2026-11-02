@@ -9,7 +9,7 @@ public sealed class CoreRegression
     [TestMethod]
     [TestCategory("Core")]
     [DataRow("--industrial-recovery", 22)]
-    [DataRow("--industrial-lifecycle", 21)]
+    [DataRow("--industrial-lifecycle", 27)]
     [DataRow("--industrial-diagnostics", 34)]
     [DataRow("--station-single-camera", 30)]
     [DataRow("--same-placement-29", 17)]

@@ -43,6 +43,8 @@ public static partial class WindowsDeploymentSetup
             location.InventoryFile != Path.Combine(root, "installed-inventory.json") || !ExtensionSchema.IsHash(location.InventorySha256 ?? ""))
             throw new InvalidDataException("维护缓存身份或范围无效。");
         MachineRuntimePolicy.RequireProtectedEvidence(location.InventoryFile);
+        if (new FileInfo(location.InventoryFile).Length > 4 * 1024 * 1024)
+            throw new InvalidDataException("原安装库存超过读取预算。");
         if (Wire.FileHash(location.InventoryFile) != location.InventorySha256) throw new InvalidDataException("原安装库存不一致。");
         return root;
     }
@@ -50,11 +52,22 @@ public static partial class WindowsDeploymentSetup
     static string[] InstalledInventory(DeploymentLocation location)
     {
         RequireMaintenanceCache(location);
-        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllBytes(location.InventoryFile!));
+        return ValidateInstalledInventory(location, File.ReadAllText(location.InventoryFile!));
+    }
+
+    internal static string[] ValidateInstalledInventory(DeploymentLocation location, string json)
+    {
+        if (System.Text.Encoding.UTF8.GetByteCount(json) > 4 * 1024 * 1024) throw new InvalidDataException("原安装库存超过读取预算。");
+        using var document = System.Text.Json.JsonDocument.Parse(json);
         var value = document.RootElement;
         if (value.GetProperty("ApplicationId").GetString() != location.ApplicationId ||
             value.GetProperty("SourceCommit").GetString() != location.SourceCommit || value.GetProperty("ReleaseRoot").GetString() != location.ReleaseRoot)
             throw new InvalidDataException("原安装库存不属于本部署。");
-        return value.GetProperty("Files").EnumerateObject().Select(p => p.Name).ToArray();
+        var files = value.GetProperty("Files").EnumerateObject().Take(16385).ToArray();
+        if (files.Length is 0 or > 16384 || files.Any(p => !ProductValidation.IsSafeRelativeFile(location.ReleaseRoot, p.Name, out _) ||
+                p.Value.ValueKind != System.Text.Json.JsonValueKind.String || !ExtensionSchema.IsHash(p.Value.GetString()!)) ||
+            files.Select(p => p.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
+            throw new InvalidDataException("原安装库存路径、字节身份或数量无效。");
+        return files.Select(p => p.Name).ToArray();
     }
 }

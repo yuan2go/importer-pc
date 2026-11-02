@@ -47,6 +47,24 @@ static class IndustrialLifecycle
             var blocked = WindowsDeploymentSetup.CleanRemovalInventory(files, ["locked.txt"], _ => false);
             Check(!blocked.RestartRequired && blocked.Remaining.Length > 0, "unscheduled lock is leftovers, not false reboot");
         }
+        var installed = new DeploymentLocation("sportmaster", new string('a', 40), files, Path.Combine(root, "config"), Path.Combine(root, "data"), "synthetic");
+        var originalFiles = new Dictionary<string, string> { ["damaged.exe"] = new string('b', 64) };
+        string Inventory(DeploymentLocation identity, Dictionary<string, string> names) => Wire.Encode(new {
+            identity.ApplicationId, identity.SourceCommit, identity.ReleaseRoot, Files = names });
+        var recorded = WindowsDeploymentSetup.ValidateInstalledInventory(installed, Inventory(installed, originalFiles));
+        Check(recorded.SequenceEqual(new[] { "damaged.exe" }), "retained installation inventory supplies exact program-only removal scope");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateInstalledInventory(installed,
+            Inventory(installed with { SourceCommit = new string('c', 40) }, originalFiles)), "inventory from different release rejected");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateInstalledInventory(installed,
+            Inventory(installed, new() { ["../outside.exe"] = new string('b', 64) })), "inventory traversal rejected before cleanup");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateInstalledInventory(installed,
+            Inventory(installed, new() { ["damaged.exe"] = "invalid" })), "inventory with invalid byte identity rejected");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateInstalledInventory(installed,
+            Inventory(installed, new() { ["damaged.exe"] = new string('b', 64), ["DAMAGED.exe"] = new string('b', 64) })), "case-aliased inventory entries rejected");
+        File.WriteAllText(Path.Combine(files, "damaged.exe"), "corrupted installed program bytes");
+        var removedDamaged = WindowsDeploymentSetup.CleanRemovalInventory(files, recorded, _ => false);
+        Check(!File.Exists(Path.Combine(files, "damaged.exe")) && !removedDamaged.RestartRequired && File.Exists(Path.Combine(files, "extra.txt")),
+            "damaged owned program can be removed while uninventoried files remain");
         Console.WriteLine("IE01-LIFECYCLE checks=" + count + "; file/command/version boundaries; UAC/SCM/VM NOT_RUN");
     }
 }

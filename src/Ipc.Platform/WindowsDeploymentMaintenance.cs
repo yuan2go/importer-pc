@@ -106,9 +106,12 @@ public static partial class WindowsDeploymentSetup
         RemovalState plan;
         if (location.LifecycleState == "Installed")
         {
-            var media = DeploymentMedia.Inspect(location.ReleaseRoot, application);
+            // Removal uses the protected installation inventory. A missing or
+            // damaged product executable must not prevent program-only removal.
+            var files = location.MaintenanceRoot is not null ? InstalledInventory(location) :
+                DeploymentMedia.Inspect(location.ReleaseRoot, application).Files.Keys.ToArray();
             requireResponsibilitiesAndBackup(location); // Caller holds application-owner until return.
-            plan = new("Prepared", location, media.Files.Keys.Append("deployment-location.json").Append("deployment-retired.json").ToArray())
+            plan = new("Prepared", location, files.Append("deployment-location.json").Append("deployment-retired.json").ToArray())
                 { SystemEntries = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).SystemEntries : null };
             WriteProtected(operation, plan, sid);
         }

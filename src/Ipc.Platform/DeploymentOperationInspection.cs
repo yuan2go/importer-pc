@@ -35,7 +35,7 @@ public static partial class WindowsDeploymentSetup
             return ProjectInstallation(request, File.ReadAllText(file), Current(request.ApplicationId));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or JsonException)
-        { return new("Unknown", "尚未取得可核验的原操作终态。安装可能仍在执行；请稍后再次核对，禁止重复提交。" + error.GetType().Name); }
+        { return new("Unknown", "尚未取得可核验的原操作终态。安装记录缺失或暂时无法读取；请稍后再次核对，禁止重复提交。"); }
     }
     internal static InstallationInspection ProjectInstallation(WindowsDeploymentRequest request, string journal, DeploymentLocation? current)
     {

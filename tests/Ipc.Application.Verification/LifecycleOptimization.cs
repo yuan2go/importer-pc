@@ -32,8 +32,15 @@ static class LifecycleOptimization
             var due = (await app.SnapshotAsync()).BackupScheduleStatus?.NextDue ?? throw new InvalidOperationException("Backup schedule was not initialized");
             for (var i = 0; i < 153; i++)
             {
-                Check(app.EmitReferenceAt(i % 2 == 0 ? "left" : "right", "lia-entity-" + i, "00001234", "lia-event-" + i), "actual ingress admitted distinct same-code entity " + i);
-                await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "lia-entity-" + i && o.State == ParcelState.SlotResolved));
+                // These are deliberate independent submissions, not consecutive
+                // camera observations of one resting parcel (SM-SAME-PLACEMENT-29).
+                var position = i % 2 == 0 ? "left" : "right"; var before = await app.SnapshotAsync();
+                var submitted = await app.SubmitParcelBarcodeAsync(new(Wire.Id(), before.RuntimeId, before.Configuration.Revision,
+                    position, "00001234", ParcelBarcodeInputKind.Keyboard,
+                    before.Inputs?.SingleOrDefault(p => p.PositionId == position)?.Observation.Id,
+                    before.Positions!.Single(p => p.Id == position).CurrentOperation), default);
+                Check(submitted.Status == "Admitted" && submitted.OperationId is not null, "actual explicit manual input admitted distinct same-code entity " + i + "; status=" + submitted.Status);
+                await Wait(app, s => s.Operations.Any(o => o.Id == submitted.OperationId && o.State == ParcelState.SlotResolved));
             }
             var vm = new ParcelViewModel(app, "LIA", "synthetic", "sportmaster"); await vm.RefreshAsync(); await vm.LoadHistoryAsync();
             var first = vm.HistoryItems.Select(x => x.Operation.Id).ToArray(); vm.SelectedHistory = vm.HistoryItems[0]; var selected = vm.Selected!.Id;
@@ -43,9 +50,12 @@ static class LifecycleOptimization
             await vm.LoadHistoryAsync(true); var second = vm.HistoryItems.Select(x => x.Operation.Id).ToArray();
             await vm.LoadHistoryAsync(true); var third = vm.HistoryItems.Select(x => x.Operation.Id).ToArray();
             await vm.LoadHistoryAsync(true); var last = vm.HistoryItems.Select(x => x.Operation.Id).ToArray();
-            Check(first.Concat(second).Concat(third).Concat(last).Distinct().Count() == 153 && last.Length == 3 && !vm.HasNextHistory, "four pages share the original 153-entity boundary despite newer admitted input");
+            Check(first.Length == 50 && second.Length == 100 && third.Length == 150 && last.Length == 153 &&
+                last.Distinct().Count() == 153 && !vm.HasNextHistory && !vm.UsesHistoryPaging && !vm.HasPreviousHistory,
+                "SM appends four fixed-selection batches without duplicate rows or newer input and exposes no legacy paging controls");
+            Check(vm.Selected!.Id == selected && first.All(last.Contains), "append loading retains the selected original entity and all earlier rows");
+            await vm.PreviousHistoryAsync(); Check(vm.HistoryItems.Select(x => x.Operation.Id).SequenceEqual(third.Skip(100)), "underlying previous-page contract reuses its original cursor without renewing the selection");
             Check(vm.Selected!.Id == selected && vm.HistorySelectionState.Contains("当前页以外"), "cross-page detail and command owner remain the originally selected entity");
-            await vm.PreviousHistoryAsync(); Check(vm.HistoryItems.Select(x => x.Operation.Id).SequenceEqual(third), "previous page reuses its original cursor");
             await vm.FirstHistoryAsync(); Check(vm.HistoryItems.Select(x => x.Operation.Id).SequenceEqual(first), "first screen reuses the same selection instead of including newer records");
             vm.HistoryBarcode = "00001234";
             Check(vm.HistoryFiltersChanged && vm.HistoryStatus.Contains("尚未应用") && !vm.HasNextHistory && vm.AppliedHistoryRange.Contains("条码 全部"), "editing immediately marks old results and disables pagination without changing applied range");

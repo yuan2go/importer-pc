@@ -1,5 +1,7 @@
 # SM操作工流程整合30验证
 
+本页记录9ce54bab首轮冻结验证，保持原SourceCommit。随后实际升级出现授权交接未启动，用户未见管理员提示；该介质尚未实际安装。后续维护启动边界修复见[当前工作包](../../../work-packages/WP-IPC-SM-OPERATOR-INTEGRATION-30.md)，不能将本页PASS扩张到补修源或实际安装后的流程。
+
 产品和发布介质源为`9ce54bab1f243fa2c4b0641f46336847fced8e23`，整合main `38cb7dc0e8e15f009ee88c5a35f1db53c27d5205`（PR183）。后续测试适配提交`dc81df9d`只修订日志/响应性夹具与说明；`git diff --exit-code 9ce54bab dc81df9d -- src config scripts`通过，产品、配置与出包脚本相同。
 
 [RESULT.json](RESULT.json)记录23套应用711项、24套Windows原生WPF 1018项，共47套1729项PASS；另有17项发布兼容性和5项交付指南测试通过。三个Release构建零警告零错误。原始合成成功日志与SHA256在[logs](logs/)；原生截图留本机，只记录名称和哈希。夹具使用合成相机身份、条码、SDK及环回RCS，不包含用户截图、现场数据或客户原稿。

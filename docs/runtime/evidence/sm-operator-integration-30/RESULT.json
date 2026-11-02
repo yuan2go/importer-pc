@@ -1278,5 +1278,13 @@
   "published_exe_environment_exit": 0,
   "actual_installation": "WAITING_FOR_USER_UAC",
   "installed_end_to_end": "PENDING",
-  "physical_mvs_customer_rcs_site": "NOT_RUN"
+  "physical_mvs_customer_rcs_site": "NOT_RUN",
+  "actual_installation_followup": {
+    "initial_checkpoint": "WAITING_FOR_USER_UAC",
+    "observed": "DESKTOP_HANDOFF_DID_NOT_RETURN_ACKNOWLEDGED_HELPER",
+    "user_saw_uac": false,
+    "installed_source_unchanged": true,
+    "protected_operation_journal_present": false,
+    "new_source_installed": false
+  }
 }

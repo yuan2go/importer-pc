@@ -130,7 +130,7 @@ public partial class SupplyStationWindow : Window
     }
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     public Task ShowDetailsAsync(ParcelOperation operation) => ShowDetailsAsync(operation.Id);
-    public async Task ShowDetailsAsync(string operationId) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取原作业详情"); }
+    public async Task ShowDetailsAsync(string operationId) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取作业详情"); }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     public Func<string, bool>? ConfirmOwnerExit { get; set; }
     public Func<Task>? ReopenOwnerAsync { get; set; }
@@ -146,7 +146,7 @@ public partial class SupplyStationWindow : Window
     {
         try
         {
-            if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("此宿主没有受控重开入口；可稍后从原合法入口打开。");
+            if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("无法从这里重新打开，请稍后从桌面图标重新打开软件。");
             await ViewModel.CheckActivationAsync(); root.activationRequested = true; root.Close();
         }
         catch (Exception error) { ViewModel.Message = "尚未进入配置生效流程：" + error.Message; }

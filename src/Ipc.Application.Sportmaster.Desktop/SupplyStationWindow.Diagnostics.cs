@@ -59,7 +59,7 @@ public partial class SupplyStationWindow
         header.Children.Add(new TextBlock { Text = "诊断与恢复", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis });
         selectedDiagnostic = new TextBlock { Margin = new(0, 4, 0, 0), TextWrapping = TextWrapping.Wrap };
         header.Children.Add(selectedDiagnostic);
-        backToDiagnosticSettings = new Button { Content = "返回当前对象设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left,
+        backToDiagnosticSettings = new Button { Content = "返回该设备设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left,
             Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible, Margin = new(0, 8, 0, 0) };
         backToDiagnosticSettings.Click += async (_, _) => await OpenOperatorSettingsAsync(diagnosticTarget?.DeviceId, diagnosticTarget?.InstanceId);
         header.Children.Add(backToDiagnosticSettings);
@@ -127,18 +127,18 @@ public partial class SupplyStationWindow
         Connection("右相机", nameof(ViewModel.RightConnectionDiagnosis), nameof(ViewModel.RightConnectionTime), () => OpenOperatorSettingsAsync(ViewModel.Right.ReaderId), ViewModel.Right);
         Connection("RCS", nameof(ViewModel.RcsConnectionDiagnosis), nameof(ViewModel.RcsConnectionTime), () => OpenOperatorSettingsAsync(instanceId: ViewModel.Snapshot?.Configuration.Effective.Wcs?.InstanceId));
         body.Children.Add(new Separator { Margin = new(0, 0, 0, 12) });
-        body.Children.Add(new TextBlock { Text = "供包条件", FontWeight = UiTypography.Emphasis });
+        body.Children.Add(new TextBlock { Text = "供包状态", FontWeight = UiTypography.Emphasis });
         body.Children.Add(Text(nameof(ViewModel.DiagnosticBlockers)));
         body.Children.Add(Text(nameof(ViewModel.DiagnosticConfiguration)));
         body.Children.Add(Text(nameof(ViewModel.DiagnosticCapacity)));
-        var reconnect = new Button { Content = "重新连接设备与服务", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
+        var reconnect = new Button { Content = "重新连接相机和 RCS", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
         reconnect.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanReconnectConfigured)));
         reconnect.Click += async (_, _) => await ViewModel.ReconnectConfiguredAsync();
         var controlled = new StackPanel(); controlled.Children.Add(reconnect); controlled.Children.Add(Text(nameof(ViewModel.ReconnectHint), UiTypography.Label));
-        body.Children.Add(new Expander { Header = "连接仍未恢复？查看受控重连", Content = controlled, Margin = new(0, 8, 0, 8) });
-        body.Children.Add(new TextBlock { Text = "相机断线后自动重连，使用当前运行配置；结果未知的原请求不会重发。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
+        body.Children.Add(new Expander { Header = "连接没有恢复？手动重连", Content = controlled, Margin = new(0, 8, 0, 8) });
+        body.Children.Add(new TextBlock { Text = "相机断线后会自动重连。格口未确认的包裹不会被重发。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
         var tools = new WrapPanel { Margin = new(0, 8, 0, 0) };
-        foreach (var (label, index) in new[] { ("核对配置生效情况", MaintenanceTool.Running), ("核对备份恢复结果", MaintenanceTool.RestoreHandoff), ("处理待核对作业", MaintenanceTool.Recovery) })
+        foreach (var (label, index) in new[] { ("查看设置是否生效", MaintenanceTool.Running), ("查看备份恢复结果", MaintenanceTool.RestoreHandoff), ("处理格口未确认的包裹", MaintenanceTool.Recovery) })
         {
             var button = new Button { Content = label, MinHeight = 44, Margin = new(0, 0, 8, 8) };
             button.Click += async (_, _) => { await OpenOperatorSettingsAsync(); if (ViewModel.IsManagementMode && ViewModel.SelectedPage == "maintenance" && ViewModel.HasLoadedConfiguration) maintenance.ShowTechnicalTool(index); };
@@ -152,16 +152,16 @@ public partial class SupplyStationWindow
             details.Children.Add(new TextBlock { Text = position.Heading, FontWeight = UiTypography.Emphasis });
             details.Children.Add(Text(nameof(position.CameraAddress)));
             details.Children.Add(Text(nameof(position.ScanTime)));
-            details.Children.Add(new TextBlock { Text = "相机读取的全部条码" });
+            details.Children.Add(new TextBlock { Text = "相机读到的全部条码" });
             details.Children.Add(Text(nameof(position.RawCandidates)));
-            details.Children.Add(new TextBlock { Text = "用于申请任务的条码" });
+            details.Children.Add(new TextBlock { Text = "发给 RCS 的条码" });
             details.Children.Add(Text(nameof(position.SelectedCode)));
             var simulation = new StackPanel();
             simulation.SetBinding(VisibilityProperty, new Binding(nameof(ViewModel.SimulationVisibility)) { Source = ViewModel });
             simulation.Children.Add(new TextBlock { Text = "模拟输入（仅模拟模式）", Margin = new(0, 12, 0, 4) });
             var code = new TextBox { MinHeight = 44 }; code.SetBinding(TextBox.TextProperty, new Binding(nameof(position.ParcelCode)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); simulation.Children.Add(code);
             var simulateActions = new WrapPanel();
-            var next = new Button { Content = "新包裹身份", MinHeight = 44 }; next.Click += (_, _) => position.NewParcel(); simulateActions.Children.Add(next);
+            var next = new Button { Content = "模拟新包裹", MinHeight = 44 }; next.Click += (_, _) => position.NewParcel(); simulateActions.Children.Add(next);
             var emit = new Button { Content = "模拟本位读码", MinHeight = 44 }; emit.SetBinding(IsEnabledProperty, new Binding(nameof(position.CanAdmit)));
             emit.Click += async (_, _) => await ViewModel.EmitPositionAsync(position); simulateActions.Children.Add(emit); simulation.Children.Add(simulateActions);
             details.Children.Add(simulation); scans.Children.Add(details);
@@ -172,7 +172,7 @@ public partial class SupplyStationWindow
         copy.Click += (_, _) =>
         {
             if (!ViewModel.IsManagementMode) return;
-            try { Clipboard.SetText(ViewModel.DiagnosticTechnicalSummary); copied.Text = "已复制当前状态与技术标识，可交给维护支持人员。"; }
+            try { Clipboard.SetText(ViewModel.DiagnosticTechnicalSummary); copied.Text = "已复制诊断信息，可发给维护支持人员。"; }
             catch (System.Runtime.InteropServices.ExternalException) { copied.Text = "剪贴板正被占用，请稍后再复制。"; }
         };
         body.Children.Add(copy); body.Children.Add(copied);

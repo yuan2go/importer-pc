@@ -157,7 +157,7 @@ static partial class Program
         Click(window, "查询"); await Task.Delay(50); window.UpdateLayout();
         Check(!Button("查询").IsEnabled && Button("取消当前任务").IsVisible, "only a real pending task exposes an enabled cancellation action");
         CaptureInternal(evidence, "logs-pending", window, lines); Click(window, "取消当前任务"); await Settled();
-        Check(!Button("取消当前任务").IsVisible && Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("任务已取消")), "cancel completes without a fabricated result or commit claim");
+        Check(!Button("取消当前任务").IsVisible && Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("操作已取消")), "cancel completes without a fabricated result or commit claim");
         probe.Query = (_, _, _) => Task.FromException<SoftwareLogPage>(new IOException("SYNTHETIC InternalField.Name unavailable"));
         Click(window, "查询"); await Settled();
         var diagnostic = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "诊断详情"));
@@ -175,20 +175,20 @@ static partial class Program
         };
         Click(window, "查询"); await Settled(); Click(window, "下一页"); await Settled(); Click(window, "下一页"); await Settled();
         Check(offsets.SequenceEqual(new[] { 0, 200, 200 }) && Button("上一页").IsEnabled && !Button("下一页").IsEnabled, "failed paging does not commit or skip the requested offset on retry");
-        var grid = Descendants(control).OfType<DataGrid>().Single(); grid.SelectedIndex = 0; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "完整日志与上下文")).IsExpanded = true; window.UpdateLayout();
+        var grid = Descendants(control).OfType<DataGrid>().Single(); grid.SelectedIndex = 0; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "日志原文")).IsExpanded = true; window.UpdateLayout();
         // Original formatting now completes in the background; retain the exact
         // content assertion after a bounded wait for that actual presentation.
         for (var i = 0; i < 250 && !Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text); i++) await Task.Delay(20);
         Check(Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text), "selected row detail preserves the exact original record");
         Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词").Text = "changed"; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出")).IsExpanded = true; window.UpdateLayout();
-        Check(grid.Items.Count == 0 && !Button("导出全部匹配…").IsEnabled && !Button("下一页").IsEnabled, "changed input invalidates the prior snapshot before export or paging");
+        Check(grid.Items.Count == 0 && !Button("导出筛选结果…").IsEnabled && !Button("下一页").IsEnabled, "changed input invalidates the prior snapshot before export or paging");
         window.Width = 800 + window.ActualWidth - control.ActualWidth;
         window.Height = 420 + window.ActualHeight - control.ActualHeight;
         await Flush();
         Check(Math.Abs(control.ActualWidth - 800) < 1 && Math.Abs(control.ActualHeight - 420) < 1, "log regression uses the actual 800x420 DIP client");
         var keyword = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词");
         var level = Descendants(control).OfType<ComboBox>().Single(c => AutomationProperties.GetName(c) == "日志级别");
-        var details = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "完整日志与上下文"));
+        var details = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "日志原文"));
         async Task ExpandDetail()
         {
             grid.SelectedIndex = 0; details.IsExpanded = true; await Flush();
@@ -208,7 +208,7 @@ static partial class Program
         Check(grid.Items.Count == 0 && !Button("下一页").IsEnabled, "restored filters retain snapshot invalidation");
         Click(window, "查询"); await Settled(); await ExpandDetail();
         window.Content = null; await Flush(); window.Content = control; await Flush(); CheckFilters("unload and return");
-        Check(grid.Items.Count == 0 && !Button("导出全部匹配…").IsEnabled, "return requires a fresh query before export");
+        Check(grid.Items.Count == 0 && !Button("导出筛选结果…").IsEnabled, "return requires a fresh query before export");
         window.Close();
     }
 }

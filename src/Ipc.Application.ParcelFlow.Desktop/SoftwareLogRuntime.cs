@@ -11,11 +11,11 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class SoftwareLogControl
 {
     readonly CheckBox debugMode = new() { Content = "调试模式", MinHeight = 44, Margin = new(4, 0, 8, 4), IsEnabled = false,
-        ToolTip = "立即生效，输出详细扫码、准入、请求、响应和耗时日志；重启后关闭。" };
+        ToolTip = "开启后立即记录详细的扫码、请求、响应和耗时；重启软件后自动关闭。" };
     readonly CheckBox liveFollow = new() { Content = "实时跟随", MinHeight = 44, Margin = new(0, 0, 8, 4), Visibility = Visibility.Collapsed,
-        ToolTip = "显示当前运行实例已写入的新日志，按关键词、级别和来源筛选；历史时间范围用于查询和导出。" };
+        ToolTip = "实时显示新写入的日志（按当前关键词、级别、来源筛选）。" };
     readonly Button pauseDisplay = new() { Content = "暂停显示", MinHeight = 44, Margin = new(0, 0, 8, 4), Visibility = Visibility.Collapsed,
-        ToolTip = "只暂停终端画面；软件继续运行，后台日志继续写入。" };
+        ToolTip = "只暂停画面滚动，日志仍在记录。" };
     readonly DispatcherTimer diagnosticTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     CancellationTokenSource? liveCancellation;
     bool liveActive, displayPaused, liveReading, settingApplying, settingReading, updatingDebugControl, updatingFollowControl, diagnosticsClosed;
@@ -31,7 +31,7 @@ public sealed partial class SoftwareLogControl
     {
         debugMode.Visibility = RuntimeDiagnostics is null ? Visibility.Collapsed : Visibility.Visible;
         actions.Children.Add(debugMode); actions.Children.Add(liveFollow); actions.Children.Add(pauseDisplay);
-        AutomationProperties.SetName(debugMode, "调试模式，立即生效"); AutomationProperties.SetAutomationId(debugMode, "DebugLoggingMode");
+        AutomationProperties.SetName(debugMode, "调试模式（立即生效）"); AutomationProperties.SetAutomationId(debugMode, "DebugLoggingMode");
         AutomationProperties.SetName(liveFollow, "实时跟随日志"); AutomationProperties.SetAutomationId(pauseDisplay, "PauseLogDisplay");
         debugMode.Checked += async (_, _) => { if (!updatingDebugControl) await SetDebugMode(true); };
         debugMode.Unchecked += async (_, _) => { if (!updatingDebugControl) await SetDebugMode(false); };
@@ -41,7 +41,7 @@ public sealed partial class SoftwareLogControl
         {
             if (!liveActive) return;
             displayPaused = !displayPaused;
-            if (displayPaused) { liveVersion++; liveCancellation?.Cancel(); status.Text = "显示已暂停；可选中复制，后台日志继续写入，继续显示后补读。"; }
+            if (displayPaused) { liveVersion++; liveCancellation?.Cancel(); status.Text = "画面已暂停，可选中复制；日志仍在记录，继续显示后会补上。"; }
             UpdateActions();
             if (!displayPaused) await PollLive();
         };
@@ -74,7 +74,7 @@ public sealed partial class SoftwareLogControl
         catch (Exception error)
         {
             if (version == diagnosticVersion && !diagnosticsClosed)
-            { settingsRevision = -1; status.Text = "运行日志设置暂未取得，请稍后重试。"; diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible; }
+            { settingsRevision = -1; status.Text = "暂时无法读取日志设置，请稍后重试。"; diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible; }
         }
         finally { settingReading = false; UpdateRuntimeDiagnosticActions(); }
     }
@@ -87,13 +87,13 @@ public sealed partial class SoftwareLogControl
             var settings = await control.SetDebugLoggingAsync(enabled);
             if (version != diagnosticVersion || diagnosticsClosed) return;
             settingApplying = false; ApplyDiagnosticSettings(settings);
-            status.Text = settings.DebugEnabled ? "调试模式已开启，详细日志立即生效。" : "调试模式已关闭，常规日志继续记录。";
+            status.Text = settings.DebugEnabled ? "调试模式已开启，开始记录详细日志。" : "调试模式已关闭，常规日志继续记录。";
         }
         catch (UnauthorizedAccessException) { if (version == diagnosticVersion) Revoke(); }
         catch (Exception error)
         {
             if (version == diagnosticVersion && !diagnosticsClosed)
-            { status.Text = "调试模式更改未确认，正在重新读取实际状态。"; diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible; }
+            { status.Text = "调试模式切换结果未确认，正在重新读取。"; diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible; }
         }
         finally
         {
@@ -116,7 +116,7 @@ public sealed partial class SoftwareLogControl
         if (!liveActive) return;
         previousButton.IsEnabled = nextButton.IsEnabled = contextButton.IsEnabled = exportButton.IsEnabled = rangeButton.IsEnabled = false;
         effectiveRange.Text = "实时终端 · " + (displayPaused ? "已暂停显示，后台继续写入" : "跟随当前运行日志") +
-            " · 当前关键词、级别、来源筛选 · 历史时间范围用于查询；退出实时跟随后可查询和导出";
+            " · 按当前筛选显示 · 关闭实时跟随后可查询和导出";
     }
     async Task StartLive()
     {
@@ -186,20 +186,20 @@ public sealed partial class SoftwareLogControl
                 {
                     var start = terminal.Text.Length - 64500;
                     if (char.IsLowSurrogate(terminal.Text[start])) start++;
-                    terminal.Text = "【实时显示仅保留末尾内容；完整原文请按时间范围查询并导出。】\n" + terminal.Text[start..];
+                    terminal.Text = "【实时画面只保留最新内容，完整日志请查询或导出。】\n" + terminal.Text[start..];
                 }
                 terminal.ScrollToEnd();
             }
-            if (batch.Missed > 0) liveNotice = "暂停期间实时缓冲已轮转，" + batch.Missed + "条旧记录请到历史查询查看；";
+            if (batch.Missed > 0) liveNotice = "暂停期间画面缓冲已满，" + batch.Missed + "条请通过查询查看；";
             status.Text = (displayPaused ? "显示已暂停；" : "实时跟随；") + liveNotice + (batch.HasMore ? "正在补读缓冲日志；" : "") +
-                (batch.DebugDropped > 0 ? "详细日志写入繁忙，已丢弃调试记录" + batch.DebugDropped + "条；" : "") + "后台日志继续记录，最多显示65536字符。";
+                (batch.DebugDropped > 0 ? "详细日志过多，部分调试记录未写入" + batch.DebugDropped + "条；" : "") + "画面最多显示 65536 字符，日志仍完整记录。";
         }
         catch (OperationCanceledException) when (version != liveVersion || diagnosticsClosed) { }
         catch (UnauthorizedAccessException) { if (version == liveVersion) Revoke(); }
         catch (Exception error)
         {
             if (version == liveVersion && !diagnosticsClosed)
-            { displayPaused = true; status.Text = "实时读取未完成，显示已暂停；可继续显示重试，后台日志仍在记录。"; diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible; }
+            { displayPaused = true; status.Text = "实时读取中断，画面已暂停；点击“继续显示”重试。日志仍在记录。"; diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString()); diagnostics.Visibility = Visibility.Visible; }
         }
         finally { if (ReferenceEquals(liveCancellation, owner)) liveCancellation = null; liveReading = false; UpdateActions(); }
     }

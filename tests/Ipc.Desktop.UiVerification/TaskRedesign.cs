@@ -112,7 +112,7 @@ static partial class Program
         Check(scans.IsExpanded && Descendants(diagnostics).OfType<Button>().Any(b => Equals(b.Content, "复制诊断信息")), "opened scan details and technical evidence persist across diagnostic navigation");
         scans.IsExpanded = false; window.UpdateLayout();
         Check(Descendants(diagnostics).OfType<TextBox>().Where(t => t.IsVisible).All(t => t.IsReadOnly) &&
-            Descendants(diagnostics).OfType<TextBlock>().Any(t => t.Text.Contains("不重发")) && vm.DiagnosticTechnicalSummary.Contains(vm.Left.ReaderId), "diagnostics preserves original-request guidance and full technical identity without exposing it by default");
+            Descendants(diagnostics).OfType<TextBlock>().Any(t => t.Text.Contains("不会被重发")) && vm.DiagnosticTechnicalSummary.Contains(vm.Left.ReaderId), "diagnostics preserves original-request guidance and full technical identity without exposing it by default");
         Capture("diagnostics", client);
         await Until(() => !vm.Busy);
         var firstLoadRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -155,10 +155,10 @@ static partial class Program
         var returnedStation = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
         Check(ReferenceEquals(station, returnedStation) && station.Text == "SYNTHETIC-UNSAVED", $"search and category navigation retain exact unsaved controls and input (same={ReferenceEquals(station, returnedStation)}, before={station.Text}, after={returnedStation.Text})");
         search.Text = "没有这种字段"; window.UpdateLayout();
-        Check(results.Items.Count == 0 && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("没有匹配项")), "empty search explains how to return without changing the draft");
+        Check(results.Items.Count == 0 && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("没有找到")), "empty search explains how to return without changing the draft");
         search.Clear();
         window.ShowPositionDiagnostics(vm.Left); window.UpdateLayout(); Capture("work-position-diagnostics", client);
-        Click(window, "返回当前对象设置"); await Until(() => vm.SelectedPage == "maintenance" && !vm.Busy); window.UpdateLayout();
+        Click(window, "返回该设备设置"); await Until(() => vm.SelectedPage == "maintenance" && !vm.Busy); window.UpdateLayout();
         var directory = Descendants(editor).OfType<ListBox>().Single(x => AutomationProperties.GetName(x) == "设置目录");
         await Until(() => directory.SelectedItem?.ToString() == "左相机");
         Check(directory.SelectedItem?.ToString() == "左相机" && ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) && station.Text == "SYNTHETIC-UNSAVED",

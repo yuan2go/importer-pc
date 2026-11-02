@@ -58,7 +58,7 @@ static partial class Program
             await RefreshUntil(() => vm.Snapshot?.Paused == true && !vm.Busy);
             Check(vm.OperatorFeedback.Contains("操作已提交") && vm.Message.StartsWith("Persisted · ") && vm.Snapshot!.Paused,
                 $"operator feedback is Chinese while original command receipt and authoritative pause fact remain available; paused={vm.Snapshot?.Paused}, busy={vm.Busy}, receipt={vm.Message}, feedback={vm.OperatorFeedback}");
-            await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场");
+            await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复供包");
         }
         if (!baseline && Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
@@ -287,7 +287,7 @@ static partial class Program
             await VerifyClientGeometry(window, vm, probe, evidence, "supply-station", Check);
             probe.Project = null;
             await RefreshUntil(() => !vm.Left.InputUnadmitted);
-            await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场");
+            await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复供包");
         }
         await Fit(1366, 768);
         if (interactive)

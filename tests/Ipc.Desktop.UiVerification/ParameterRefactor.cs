@@ -67,7 +67,7 @@ static partial class Program
         var preview = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "测试条码"));
         preview.IsExpanded = true; window.UpdateLayout();
         var sample = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "条码筛选样例"); sample.Text = "noise\nother\nOK003";
-        var test = Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "测试候选筛选"));
+        var test = Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "测试规则"));
         test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         for (var i = 0; i < 100 && !Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：OK003")); i++) await Task.Delay(20);
         Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：OK003")) && runtime.HasActiveWork, "native sample test evaluates the third candidate without stopping runtime or saving configuration");
@@ -75,7 +75,7 @@ static partial class Program
         var exclusion = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodeExclusionPattern");
         exclusion.Text = "OK003";
         Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("结果已过期")), "editing exclusion invalidates the existing local preview without discarding candidate input");
-        var previewDetails = Descendants(preview).OfType<Expander>().Single(e => Equals(e.Header, "测试诊断详情"));
+        var previewDetails = Descendants(preview).OfType<Expander>().Single(e => Equals(e.Header, "测试详情"));
         previewDetails.IsExpanded = true; window.UpdateLayout();
         var previewDiagnostic = Descendants(previewDetails).OfType<TextBox>().Single();
         test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

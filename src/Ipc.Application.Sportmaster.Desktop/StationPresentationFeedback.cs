@@ -157,7 +157,7 @@ public partial class SupplyStationWindow
             foreach (var read in value.Reads) (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
-        catch (Exception error) { if (!closing && !closed) ViewModel.MarkReadFailure("实时快照应用失败：" + error.Message); }
+        catch (Exception error) { if (!closing && !closed) ViewModel.MarkReadFailure("实时状态更新失败：" + error.Message); }
         finally
         {
             lock (presentationUiGate)

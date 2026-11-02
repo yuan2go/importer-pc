@@ -97,7 +97,7 @@ static partial class Program
                 entry.Focus(); await Flush(); transport.NextReply = reply;
                 var code = reply == "Pending" ? "000123450004" : "000123450005";
                 await Text(code, enter: true);
-                await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains(reply == "Pending" ? "结果待核对" : "提交结果未确认"));
+                await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains(reply == "Pending" ? "受理结果未确认" : "提交结果未确认"));
                 var command = transport.Commands.Last(); var sends = h.Peer.Requests.Count; var calls = transport.Commands.Count;
                 await Text("999"); await Flush();
                 Check(entry.Text == code && entry.IsReadOnly && transport.Commands.Count == calls && h.Peer.Requests.Count == sends,

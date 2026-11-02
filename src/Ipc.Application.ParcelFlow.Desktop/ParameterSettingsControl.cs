@@ -102,7 +102,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     void EnsureReviewPage()
     {
         if (reviewPage is not null) return;
-        reviewPage = Page(4, FirstConfiguration ? "检查与完成" : "检查结果", "检查当前完整候选；保存与运行状态分别核对。");
+        reviewPage = Page(4, FirstConfiguration ? "检查与完成" : "检查结果", "检查全部设置。保存后需重启软件才会生效。");
         if (errors.Parent is Panel old) old.Children.Remove(errors);
         reviewPage.Body.Children.Add(errors);
         reviewPage.Technical.Children.Add(reviewPage.Diagnostic);
@@ -207,7 +207,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
         // Routine schema hints remain available to assistive technology and in
         // technical information, without adding a repeated line to every field.
-        var routine = help is not null && (help == "选择已声明的可用值" || help.StartsWith("最多 ", StringComparison.Ordinal) && help.EndsWith(" 个字符", StringComparison.Ordinal));
+        var routine = help is not null && (help == "从列表中选择" || help.StartsWith("最多 ", StringComparison.Ordinal) && help.EndsWith(" 个字符", StringComparison.Ordinal));
         if (routine) control.ToolTip = help;
         else if (!string.IsNullOrEmpty(help))
         {
@@ -297,13 +297,13 @@ public sealed partial class ParameterSettingsControl : UserControl
         directory.ItemsSource = null; pageHost.Content = null; locations.Clear(); errors.Children.Clear(); pages.Clear();
         reviewPage = null;
         if (reviewContent?.Parent is Panel reviewParent) reviewParent.Children.Remove(reviewContent);
-        if (Model is not { } m) { pageHost.Content = Text("正在读取设置与已安装模块…"); return; }
+        if (Model is not { } m) { pageHost.Content = Text("正在读取设置…"); return; }
         firstSteps.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
         foreach (var page in pages)
         {
             page.Technical.Children.Add(page.Diagnostic);
-            page.Details = new Expander { Header = "参数说明与诊断详情", Content = page.Technical, Margin = new(0, 16, 0, 0), Padding = new(0, 8, 0, 0) };
+            page.Details = new Expander { Header = "参数说明", Content = page.Technical, Margin = new(0, 16, 0, 0), Padding = new(0, 8, 0, 0) };
             page.Body.Children.Add(page.Details);
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
         }
@@ -346,7 +346,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         {
             if (page.Details is not null) page.Details.Visibility = page.Technical.Children.Count > 1 || page.Diagnostic.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
             var count = (Model?.Issues ?? []).Count(i => locations.TryGetValue(i.Path, out var entry) && ReferenceEquals(entry.Page, page));
-            page.Summary.Text = page.Category == 4 ? errors.Children.Count == 0 ? "当前没有字段错误；正式保存仍需核对完整配置。" : "有 " + errors.Children.Count + " 项需要修改" : "有 " + count + " 项需要修改";
+            page.Summary.Text = page.Category == 4 ? errors.Children.Count == 0 ? "当前页没有错误。" : "有 " + errors.Children.Count + " 项需要修改" : "有 " + count + " 项需要修改";
             page.Summary.Visibility = count > 0 || page.Category == 4 && errors.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             if (page.Category != 4 && count > 0)
             {
@@ -374,7 +374,7 @@ public sealed partial class ParameterSettingsControl : UserControl
                 if (original.StartsWith(draft.Role + " · ", StringComparison.Ordinal)) original = original[(draft.Role.Length + 3)..];
         }
         var text = ChineseInterfaceText.ParameterMessage(original);
-        return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? text : "配置检查未通过，请展开诊断详情核对原因。";
+        return text.Any(c => c is >= '\u4e00' and <= '\u9fff') ? text : "设置检查未通过，请按标出的字段修正。";
     }
 }
 

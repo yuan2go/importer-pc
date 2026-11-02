@@ -39,7 +39,7 @@ static partial class Program
             Check(Descendants(first).OfType<Button>().Where(x => x.IsVisible && Footer(first).Contains(x.Content as string ?? "")).All(x => x.TransformToAncestor(first).TransformBounds(new Rect(x.RenderSize)).Bottom <= first.ActualHeight), "footer stays inside the native window on step " + (i + 1));
             Capture("startup-step-" + (i + 1), first);
         }
-        Check(Footer(first).Contains("保存配置") && !Footer(first).Contains("分层检查与变更预览"), "final step offers real save without automatic startup; internal operations have no separate setup entry");
+        Check(Footer(first).Contains("保存配置") && !Footer(first).Contains("检查并预览更改"), "final step offers real save without automatic startup; internal operations have no separate setup entry");
         Check(!Descendants(first).OfType<Button>().Any(x => (x.Content as string) == "配置工具…"), "configuration tools are removed from first setup rather than hidden in a menu");
         Check(!Footer(first).Contains("导入配置") && Footer(first).Contains("保存草稿并退出") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content,"导入配置")), "import is in the fixed header and encrypted draft persistence remains in the footer");
         first.Width = 800; first.Height = 600; first.UpdateLayout();
@@ -187,9 +187,9 @@ static partial class Program
             var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), ["D:/synthetic-retained-data"], restart, [], "D:/synthetic-release");
             var removal = (Window)Activator.CreateInstance(removalType, BindingFlags.Instance | BindingFlags.NonPublic, null, [receipt, "D:/synthetic-retained-data"], null)!;
             removal.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); removal.UpdateLayout();
-            Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "只读核对原卸载结果", "关闭" }) &&
-                Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("原程序目录")), "retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry");
-            Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && (restart ? t.Text.Contains("原安装已退役") && t.Text.Contains("重新启动 Windows") : t.Text.Contains("程序清单已清理") && t.Text.Contains("原数据正常保留"))) &&
+            Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "查看上次卸载结果", "关闭" }) &&
+                Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("程序目录")), "retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry");
+            Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && (restart ? t.Text.Contains("软件已卸载") && t.Text.Contains("重启电脑") : t.Text.Contains("程序文件已清理") && t.Text.Contains("业务数据已保留"))) &&
                 !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(), "completed removal never opens an unavailable management dialog and explains its actual restart state");
             Capture(restart ? "uninstall-result-restart" : "uninstall-result-complete", removal); removal.Close();
         }

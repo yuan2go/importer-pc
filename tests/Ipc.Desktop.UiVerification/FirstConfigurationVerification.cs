@@ -34,7 +34,7 @@ static partial class Program
     {
         editor.ShowReview(); window.UpdateLayout();
         check(editor.IsReviewPage && Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "保存配置")) &&
-            !Descendants(window).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "保存并启动") || Equals(b.Content, "保存首配待生效…") || Equals(b.Content, "完成"))),
+            !Descendants(window).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "保存并启动") || Equals(b.Content, "保存首次配置…") || Equals(b.Content, "完成"))),
             "completion review offers guarded save; completion requires confirmed persistence and startup remains separate");
     }
 }

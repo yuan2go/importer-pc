@@ -84,7 +84,7 @@ internal sealed class StationCameraPreviewControl : UserControl
             "DecoderUnavailable" => "解码器不可用", _ => "正在取帧"
         };
         return state + "\n取帧 " + d.Frames + " · 无数据 " + d.NoData + " · 解码完成 " + d.DecodeCompleted + "/" + d.DecodeStarted +
-            " · 空结果 " + d.EmptyFrames + "\n候选 " + d.Candidates + " · 上报 " + d.Delivered + " · 拒收 " + d.Rejected + " · 丢弃异常帧 " + d.RejectedFrames +
+            " · 空结果 " + d.EmptyFrames + "\n识别到条码 " + d.Candidates + " · 上报 " + d.Delivered + " · 拒收 " + d.Rejected + " · 丢弃异常帧 " + d.RejectedFrames +
             (d.LastFrameRejection is null ? "" : "\n最近异常帧：" + d.LastFrameRejection) +
             (d.Failure is null ? "" : "\n" + d.Failure);
     }

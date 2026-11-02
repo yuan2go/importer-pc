@@ -63,13 +63,13 @@ public partial class HistoryPage : UserControl
     async void Copy_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;
-        try { await vm.RequireManagementModeAsync(); Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制完整原作业、请求及回执JSON。"; }
+        try { await vm.RequireManagementModeAsync(); Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制作业、请求与 RCS 返回的完整数据。"; }
         catch (Exception error) { vm.Message = "复制失败，可选择详情文本复制：" + error.Message; }
     }
     void CopyHandover_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm || vm.Selected is null) return;
-        try { Clipboard.SetText(vm.RequestHandover); vm.Message = "已复制所选原作业的必要交接信息；未发出查询或重发。"; }
+        try { Clipboard.SetText(vm.RequestHandover); vm.Message = "已复制交接信息。"; }
         catch (Exception error) { vm.Message = "复制未完成，可选择交接文本复制：" + error.Message; }
     }
     async void Refresh_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(), "读取最新50条"); }
@@ -79,11 +79,11 @@ public partial class HistoryPage : UserControl
     async void Export_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;
-        var picker = new Microsoft.Win32.SaveFileDialog { FileName = "operation-history.csv", Filter = "受控文本CSV|*.csv" };
+        var picker = new Microsoft.Win32.SaveFileDialog { FileName = "operation-history.csv", Filter = "CSV 表格|*.csv" };
         if (picker.ShowDialog(Window.GetWindow(this)) == true) await vm.RunAsync(() => vm.ExportHistoryAsync(picker.FileName), "导出当前筛选");
     }
     void CancelExport_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.CancelHistoryExport(); }
     void CancelQuery_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.CancelHistoryRead(); }
-    async void Query_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.QuerySelectedAsync, "核对所选原请求"); }
-    async void Continue_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueSelectedAsync, "继续所选未尝试阶段"); }
+    async void Query_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.QuerySelectedAsync, "查询所选作业的结果"); }
+    async void Continue_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueSelectedAsync, "继续处理所选作业"); }
 }

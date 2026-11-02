@@ -15,8 +15,8 @@ public partial class ParcelViewModel
     public string ParameterRuntimeSummary(ParameterDiagnosticTarget target) => ParameterConnection(target).Summary;
     public ParameterConnectionPresentation ParameterConnection(ParameterDiagnosticTarget target)
     {
-        if (Snapshot is not { } snapshot) return new("尚未取得运行快照", "", "", "编辑值不表示已连接。", "neutral");
-        if (!Fresh) return new("运行状态未知", "", ReadStatus, "编辑值不表示已连接；恢复状态读取后核对。", "warning");
+        if (Snapshot is not { } snapshot) return new("尚未读取运行状态", "", "", "编辑值不表示已连接。", "neutral");
+        if (!Fresh) return new("运行状态未知", "", ReadStatus, "填写的值不代表已连接；状态读取恢复后再确认。", "warning");
         var current = snapshot.Configuration;
         var effective = current.Effective;
         if (ParcelConnectionSetup.IsDeferred(effective, target.DeviceId ?? target.InstanceId))
@@ -26,7 +26,7 @@ public partial class ParcelViewModel
         if (target.DeviceId is { } device)
         {
             var reader = ParcelBindings.Readers(effective).SingleOrDefault(r => r.DeviceId == device);
-            if (reader is null) return new("相机未在运行拓扑中", "", "", "请核对原实例；编辑值不表示已连接。", "warning");
+            if (reader is null) return new("相机未在运行配置中", "", "", "请检查相机配置；填写的值不代表已连接。", "warning");
             var extension = effective.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id);
             var package = effective.Extensions?.Packages.SingleOrDefault(x => x.Id == extension?.PackageId);
             identity = package is null ? reader.Driver : package.Id + " @ " + package.Version;
@@ -36,19 +36,19 @@ public partial class ParcelViewModel
             status = ready ? reader.Driver == "tcp-line" ? "TCP 已连接" : "设备已确认" : "未就绪";
             if (!ready) notice = health?.ValidityReason(now) ?? "尚无设备确认";
             if (reader.Driver == "tcp-line")
-                notice += (notice.Length == 0 ? "" : "\n") + "连接确认只表示本地 TCP 状态；未提供应用层心跳，静默断网可能延后发现。业务准入与 RCS 结果分别核对。";
+                notice += (notice.Length == 0 ? "" : "\n") + "连接状态只反映本地 TCP 连接，没有心跳检测，网络静默断开可能稍后才发现。";
             if (reader.Driver is "hikrobot-idmvs" or "hikrobot-mvs-reader" || extension?.PackageId == "hikrobot.idmvs-reader")
             {
                 status = ready ? "SDK 连接已确认" : status;
                 notice += (notice.Length == 0 ? "" : "\n") + ((reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", "observe-only") == "observe-only"
-                    ? "仅观察，不创建供包作业。连接确认不代表已经读到条码；请核对读码观察和设备适用性。"
+                    ? "仅观察，不创建供包作业。已连接不代表能读到条码。"
                     : (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode") == "read-result" ? "逐次识别结果上报已选择，相同条码也会交给 RCS 去重。读码请求不代表物理包裹完成。"
-                    : "触发关联已选择；连接确认不证明包裹边界可信。读码、业务准入和本件RCS格口需分别核对。");
+                    : "已选择触发关联方式。已连接不代表包裹分割准确。");
             }
             if (reader.Driver == "hikrobot-mvs" || extension?.PackageId == "hikrobot.mvs-acquisition")
             {
                 status = health?.Health == DeviceHealth.Faulted ? "采集故障；缺少条码识别组件" : "仅采图；缺少条码识别组件";
-                notice = "采集连接及帧计数在诊断中核对；尚未获得真实条码，不创建供包作业。取得适用识别组件并完成实际接入前，正式供包保持阻断。";
+                notice = "相机连接和帧数可在诊断中查看。尚未读到条码，不创建供包作业；识别组件接入前不能正式供包。";
             }
             if (IsManagementMode && health is not null)
                 evidence = "\n设备确认：" + health.ConfirmedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") +
@@ -65,13 +65,13 @@ public partial class ParcelViewModel
             ready = health is { Ready: true } && health.ConfirmedAt <= now && health.ValidUntil > now && health.ValidUntil > health.ConfirmedAt;
             status = ready ? "本地就绪" : "未就绪";
             evidence = "\n运行证据：" + (health?.Detail ?? "尚无运行确认");
-            notice = "本地就绪不表示远端接受；心跳与业务结果请在诊断中分别核对。";
+            notice = "本地已就绪不代表 RCS 已接受；心跳和返回结果请在诊断中查看。";
             if (!ready) notice = (health?.Detail ?? "尚无运行确认") + "\n" + notice;
         }
         // The envelope revision is not an Effective version. Use the actual
         // Effective fingerprint, never the edited candidate or Pending identity.
         var fingerprint = Wire.Hash(Wire.Encode(effective))[..12];
-        var confirmation = current.Status == "ActivationFailed" || current.Confirmation is not { Required: false } ? " · 启动证据需核对" : "";
+        var confirmation = current.Status == "ActivationFailed" || current.Confirmation is not { Required: false } ? " · 启动检查未完成" : "";
         if (current.Pending is not null) notice += (notice.Length == 0 ? "" : "\n") + "另有已保存设置待重启；当前连接仍使用以上运行配置。";
         return new($"运行连接：{status}{confirmation}", address, $"运行版本：{identity} · 配置标识 {fingerprint}" + evidence,
             notice, !ready || confirmation.Length > 0 ? "warning" : "ready");

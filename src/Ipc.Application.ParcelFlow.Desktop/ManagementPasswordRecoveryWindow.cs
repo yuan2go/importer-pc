@@ -19,7 +19,7 @@ public sealed class ManagementPasswordRecoveryWindow : Window
         layout.RowDefinitions.Add(new() { Height = GridLength.Auto }); Content = layout;
         var body = new StackPanel(); layout.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         body.Children.Add(new TextBlock { Text = "重置管理密码", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis });
-        body.Children.Add(new TextBlock { Text = "输入根密码和新的管理密码。重置后需要用新密码进入管理模式。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 12) });
+        body.Children.Add(new TextBlock { Text = "输入根密码和新的管理密码。根密码由供应商或项目负责人提供。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 12) });
         PasswordBox Field(string name, string label)
         {
             var input = new PasswordBox { Name = name, MaxLength = 256, MinHeight = 44 };

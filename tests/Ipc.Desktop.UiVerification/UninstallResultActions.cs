@@ -39,10 +39,10 @@ static partial class Program
         }
         var mismatch = Make(new string('b', 40), () => pending, _ => Task.FromResult(clean));
         mismatch.Show(); await Idle(mismatch);
-        Check(!Button(mismatch, "继续原清单清理…").IsEnabled && continueCalls == 0 && Descendants(mismatch).OfType<TextBlock>().Any(t => t.Text.Contains("原安装源码：" + source) && t.Text.Contains("当前安装包源码：") && t.Text.Contains("打开原版完整安装包")), "source mismatch is visible before a destructive action and cannot submit cleanup");
+        Check(!Button(mismatch, "继续清理…").IsEnabled && continueCalls == 0 && Descendants(mismatch).OfType<TextBlock>().Any(t => t.Text.Contains("原安装版本：" + source) && t.Text.Contains("当前安装包版本：") && t.Text.Contains("打开原版完整安装包")), "source mismatch is visible before a destructive action and cannot submit cleanup");
         CaptureInternal(evidence, "uninstall-source-mismatch", mismatch, lines);
-        var before = inspectCalls; Click(mismatch, "只读核对原卸载结果"); await Idle(mismatch);
-        Check(inspectCalls == before + 1 && Status(mismatch).Contains("核对完成") && continueCalls == 0 && !Button(mismatch, "继续原清单清理…").IsEnabled, "read-only button performs a new inspection and shows completion even when remaining files are unchanged");
+        var before = inspectCalls; Click(mismatch, "查看上次卸载结果"); await Idle(mismatch);
+        Check(inspectCalls == before + 1 && Status(mismatch).Contains("检查完成") && continueCalls == 0 && !Button(mismatch, "继续清理…").IsEnabled, "read-only button performs a new inspection and shows completion even when remaining files are unchanged");
         // Even a queued/forced event must preserve the source guard behind the disabled control.
         var rejected = false;
         try { await (Task)type.GetMethod("ResumeOriginal", flags)!.Invoke(mismatch, null)!; }
@@ -55,28 +55,28 @@ static partial class Program
         var matching = Make(source, () => inspectionFails ? throw new IOException("synthetic inspection unavailable") : currentReceipt,
             _ => cleanupUnknown ? throw new InstallationOutcomeUnknownException("synthetic cleanup receipt lost", new IOException()) : Task.FromResult(clean));
         matching.Show(); await Idle(matching);
-        inspectionFails = true; Click(matching, "只读核对原卸载结果"); await Idle(matching);
+        inspectionFails = true; Click(matching, "查看上次卸载结果"); await Idle(matching);
         Check(Status(matching).Contains("synthetic inspection unavailable") && Descendants(matching).OfType<TextBox>().Any(t => t.Text.Contains("locked.dll")) && Button(matching, "关闭").IsEnabled, "failed inspection preserves the original evidence and restores close instead of freezing the window; status=" + Status(matching) + "; retained=" + Descendants(matching).OfType<TextBox>().Any(t => t.Text.Contains("locked.dll")) + "; close=" + Button(matching, "关闭").IsEnabled);
-        inspectionFails = false; currentReceipt = clean; Click(matching, "只读核对原卸载结果"); await Idle(matching);
-        Check(Status(matching).Contains("核对完成") && Status(matching).Contains("程序清单已清理") && !Descendants(matching).OfType<Button>().Any(b => Equals(b.Content, "继续原清单清理…")) && Descendants(matching).OfType<TextBox>().All(t => !t.Text.Contains("locked.dll")), "successful refresh removes stale residuals and no longer offers cleanup for a clean result");
+        inspectionFails = false; currentReceipt = clean; Click(matching, "查看上次卸载结果"); await Idle(matching);
+        Check(Status(matching).Contains("检查完成") && Status(matching).Contains("程序文件已清理") && !Descendants(matching).OfType<Button>().Any(b => Equals(b.Content, "继续清理…")) && Descendants(matching).OfType<TextBox>().All(t => !t.Text.Contains("locked.dll")), "successful refresh removes stale residuals and no longer offers cleanup for a clean result");
         matching.Width = 680; matching.Height = 500; matching.UpdateLayout(); CaptureInternal(evidence, "uninstall-rechecked-compact", matching, lines);
         Click(matching, "关闭"); Check(!matching.IsVisible, "close also exits after inspection recovery");
 
         currentReceipt = pending; var same = Make(source, () => currentReceipt,
             _ => cleanupUnknown ? throw new InstallationOutcomeUnknownException("synthetic cleanup receipt lost", new IOException()) : Task.FromResult(clean));
         same.Show(); await Idle(same); cleanupUnknown = true; before = continueCalls;
-        Click(same, "继续原清单清理…"); await Idle(same);
-        Check(continueCalls == before + 1 && Status(same).Contains("结果待核对"), "uncertain cleanup reports the original unknown result");
-        Click(same, "继续原清单清理…"); await Idle(same);
+        Click(same, "继续清理…"); await Idle(same);
+        Check(continueCalls == before + 1 && Status(same).Contains("结果未确认"), "uncertain cleanup reports the original unknown result");
+        Click(same, "继续清理…"); await Idle(same);
         Check(continueCalls == before + 1, "unknown cleanup cannot be resubmitted through the same button");
-        Click(same, "只读核对原卸载结果"); await Idle(same); cleanupUnknown = false;
-        Click(same, "继续原清单清理…"); await Idle(same);
-        Check(continueCalls == before + 2 && Status(same).Contains("程序清单已清理") && !Descendants(same).OfType<Button>().Any(b => Equals(b.Content, "继续原清单清理…")), "same-source cleanup proceeds only after inspection and ends without a duplicate submission action");
+        Click(same, "查看上次卸载结果"); await Idle(same); cleanupUnknown = false;
+        Click(same, "继续清理…"); await Idle(same);
+        Check(continueCalls == before + 2 && Status(same).Contains("程序文件已清理") && !Descendants(same).OfType<Button>().Any(b => Equals(b.Content, "继续清理…")), "same-source cleanup proceeds only after inspection and ends without a duplicate submission action");
         Click(same, "关闭");
 
         var completion = new TaskCompletionSource<WindowsRemovalReceipt>(TaskCreationOptions.RunContinuationsAsynchronously);
         var busy = Make(source, () => pending, _ => completion.Task);
-        busy.Show(); await Idle(busy); Click(busy, "继续原清单清理…");
+        busy.Show(); await Idle(busy); Click(busy, "继续清理…");
         await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
         Check(Busy(busy) && !Button(busy, "关闭").IsEnabled, "cleanup in progress prevents reentry and disables close");
         busy.Close(); Check(busy.IsVisible, "title-bar close cannot abandon an in-flight cleanup");

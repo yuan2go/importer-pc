@@ -21,12 +21,12 @@ public partial class ParcelViewModel
     public string ConfigurationSubmissionDetail => configurationSubmissionDetail;
     public bool ConfigurationReviewIsCurrent => reviewedConfigurationSignature is not null && reviewedConfigurationSignature == CurrentReviewSignature();
     public bool CanReviewConfiguration => !Busy && (HasUnconfirmedConfigurationSubmission || HasUnsavedConfiguration);
-    public string ConfigurationSaveActionText => HasUnconfirmedConfigurationSubmission ? "核对保存结果…" : "保存更改…";
+    public string ConfigurationSaveActionText => HasUnconfirmedConfigurationSubmission ? "查看保存结果…" : "保存设置…";
     public bool CanSubmitReviewedConfiguration => CanConfigure && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission;
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
-    public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果待核对" : HasUnsavedConfiguration ? "有未保存的更改" : "没有未保存的更改";
+    public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration ? "有未保存的更改" : "没有未保存的更改";
     public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "仅修改条码规则时可直接生效；连接等其他设置需重启，以保存结果为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
-    public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请核对上次保存结果后继续" :
+    public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" :
         Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "条码规则已保存并生效" : ConfigurationActivationGuidance;
     string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature());
     ParcelConfiguration CurrentReviewCandidate() => configurationAuthority switch
@@ -38,7 +38,7 @@ public partial class ParcelViewModel
     public async Task<bool> PrepareConfigurationReviewAsync()
     {
         reviewedConfigurationSignature = null; NotifyConfigurationReview();
-        if (HasUnconfirmedConfigurationSubmission) { Message = "上次保存结果尚未确认。请先核对保存结果，当前输入保留。"; return false; }
+        if (HasUnconfirmedConfigurationSubmission) { Message = "上次保存结果未确认，请先查看保存结果。已填写的内容会保留。"; return false; }
         if (configurationAuthority == "结构化表单" && ParameterEditor?.ValidateFields() == false)
         { validationState = "有设置需要修正"; NotifyConfigurationEditorState(); Message = "请修正标出的设置后再保存；全部输入已保留。"; return false; }
         ParcelConfiguration candidate;
@@ -60,10 +60,10 @@ public partial class ParcelViewModel
         if (reviewedConfigurationChanges.Length == 0)
         {
             validationState = "没有配置差异";
-            NotifyConfigurationEditorState(); NotifyConfigurationReview(); Message = "没有需要保存的配置更改；不会创建待重启修订。"; return false;
+            NotifyConfigurationEditorState(); NotifyConfigurationReview(); Message = "没有需要保存的修改。"; return false;
         }
         reviewedConfigurationSignature = signature; configurationSubmissionOutcome = "";
-        NotifyConfigurationEditorState(); NotifyConfigurationReview(); Message = "设置检查通过；请核对更改、保存条件和变更原因。"; return true;
+        NotifyConfigurationEditorState(); NotifyConfigurationReview(); Message = "检查通过，请核对修改并填写原因。"; return true;
     }
     public ConfigurationChangeItem[] GetConfigurationChangeItems()
     {
@@ -89,7 +89,7 @@ public partial class ParcelViewModel
         static string Read(JsonElement value) => value.ValueKind switch { JsonValueKind.Undefined => "未设置", JsonValueKind.Null => "未设置", JsonValueKind.String => value.GetString() ?? "", _ => value.GetRawText() };
         void Add(JsonElement left, JsonElement right, string path, string? instance, string? parameter)
         {
-            var category = "高级设置"; var owner = "完整候选"; var label = path; var fieldPath = ""; var showValues = false;
+            var category = "高级设置"; var owner = "全部设置"; var label = path; var fieldPath = ""; var showValues = false;
             if (instance is not null && drafts.TryGetValue(instance, out var draft))
             {
                 owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 服务" : ParameterEditor?.ComponentLabel(draft) ?? draft.InstanceId;
@@ -115,7 +115,7 @@ public partial class ParcelViewModel
                     "Login" => ("业务模块", "作业登录", "操作员登录绑定", "OperatorLogin"),
                     "Retention.DiagnosticLogDays" => ("系统", "数据与记录", "诊断日志保留天数", "DiagnosticLogDays"),
                     "Retention.HistoryDays" => ("系统", "数据与记录", "已结数据保留天数", "HistoryDays"),
-                    "Retention.ResidentHistory" => ("系统", "数据与记录", "常驻历史条数", "ResidentHistory"),
+                    "Retention.ResidentHistory" => ("系统", "数据与记录", "常驻记录条数", "ResidentHistory"),
                     "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘保留空间（字节）", "MinimumFreeMiB"),
                     "BarcodeFilter.Pattern" => ("业务模块", "条码筛选", "条码筛选规则", "BarcodePattern"),
                     "BarcodeFilter" => ("业务模块", "条码筛选", "条码处理规则", "BarcodePattern"),

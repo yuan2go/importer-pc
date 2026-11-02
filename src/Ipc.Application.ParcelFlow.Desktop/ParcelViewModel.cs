@@ -26,9 +26,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public ParcelOperation? CurrentAt(string position) => Snapshot?.Positions?.SingleOrDefault(p => p.Id == position)?.CurrentOperation is { } id
         ? Snapshot.Operations.SingleOrDefault(x => x.Id == id && (x.PositionId ?? "main") == position) : null;
     public string BlockingReasons => !Fresh ? ReadStatus : string.Join("\n", (Snapshot?.BlockingReasons ?? []).Select(ChineseInterfaceText.Notice));
-    public string Status => !Fresh ? "快照已失效 · 旧状态仅供参考" : Snapshot?.State switch
+    public string Status => !Fresh ? "状态已过期 · 仅供参考" : Snapshot?.State switch
     {
-        "Ready" => "作业就绪", "PartiallyReady" => "部分投递位可作业", "Blocked" => "暂不可作业", "Paused" => "已暂停新入场", "NotReady" => "暂不可作业",
+        "Ready" => "作业就绪", "PartiallyReady" => "部分投递位可作业", "Blocked" => "暂不可作业", "Paused" => "已暂停供包", "NotReady" => "暂不可作业",
         "Starting" => "正在启动", "Stopping" => "正在停止", "Stopped" => "已停止",
         null => "正在初始化", var state => state
     };
@@ -36,7 +36,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
     public string OperatorSubject { get; set; } = "";
     public string Session => Snapshot?.Configuration.Effective.Login is null ? "本站未启用操作员登录，无需登录即可作业" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + (user.Simulation ? " · 模拟身份" : " · " + user.Authority) : "等待操作员认证";
-    public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
+    public string OperationOperator => Current?.Operator is { } user ? "作业操作员：" + user.DisplayName + " · " + user.SessionId : "作业未记录操作员";
     public bool CanAdmit => !Busy && Fresh && Snapshot?.Availability?.Admit == true;
     public bool CanResume => !Busy && Fresh && Snapshot?.Availability?.Resume == true;
     public bool CanConfigure => !Busy && Fresh && Snapshot?.Availability?.Configure == true;
@@ -45,7 +45,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public bool CanAbandon => !Busy && Fresh && Snapshot?.Availability?.AbandonUnsubmitted.Contains(Selected?.Id ?? "") == true;
     public string CaptureState => "采集：" + (Current?.Capture?.State.ToString() ?? "未准备") + " · " + Current?.Capture?.Failure;
     public string UploadState => Current?.Upload is { } upload ? "附加/前置上传：" + upload.State + " · 尝试 " + upload.Attempts + " · " + upload.Failure : "上传未准备";
-    public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri + (Current.ImageReleased ? " · 临时原件已释放" : "")) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
+    public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri + (Current.ImageReleased ? " · 本地临时图片已清理" : "")) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
     public async Task LoginAsync(string proof) { RequireFreshSnapshot(); var subject = OperatorSubject; var r = await ServiceAsync(() => application.LoginAsync(subject, proof)); Message = r.Status + " · " + r.Reason; }
     public async Task LogoutAsync() { RequireFreshSnapshot(); var r = await ServiceAsync(application.LogoutAsync); Message = r.Status + " · " + r.Reason; }
     public string CurrentSlot => CurrentInputUnadmitted ? "未取得" : !Fresh ? "旧格口已失效 · " + (Current?.Slot ?? "未取得") : Current?.Wcs is { State: not StageState.Accepted } ? "未取得" : Current?.Slot ?? "未取得";
@@ -85,9 +85,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         };
         var lines = new List<string>
         {
-            "原调度回执 · " + outcome + "（作业状态以原快照为准）",
+            "RCS 返回 · " + outcome + "（作业状态以最新状态为准）",
             "任务 " + Known(result.TaskId) + " · 商品编码 " + Known(result.SkuId) + " · 格口 " + Known(reply.Slot),
-            "波次 " + (result.WaveNo ?? "原回执未包含") + " · 返回数量 " + (result.Quantity ?? "原回执未包含") + "（原字符串；不等于请求数量）",
+            "波次 " + (result.WaveNo ?? "未返回") + " · 返回数量 " + (result.Quantity ?? "未返回") + "（原字符串；不等于请求数量）",
             "长度 " + Measure(result.Length) + " · 宽度 " + Measure(result.Width) + " · 高度 " + Measure(result.Height) + " · 重量 " + Measure(result.Weight) + "（接口未提供单位）"
         };
         if (result.Code is not null || result.Message is not null) lines.Add("业务码 " + Known(result.Code) + " · 原因 " + Known(result.Message));
@@ -97,7 +97,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             if (unpack.Chutes.Length == 0) lines.Add("上游未返回拆包格口明细");
             foreach (var chute in unpack.Chutes)
                 lines.Add("格口 " + chute.ChuteNo + " · 订单 " + chute.OrderNo + " · 剩余 " + chute.Remaining.ToString(CultureInfo.InvariantCulture) + " · 阶段 " + chute.Phase);
-            lines.Add("本接口未提供拆包提交；暂停并检查移除原实体后，使用已有受守卫的本地处置。");
+            lines.Add("当前接口不支持拆包提交。请暂停供包，移除该包裹后在本地处理。");
         }
         return string.Join("\n", lines);
     }
@@ -165,9 +165,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         if (Snapshot is { } newer && next.RuntimeId == newer.RuntimeId && next.PublishedTicks > 0 && newer.PublishedTicks > next.PublishedTicks) return;
         if (next.PublishedTicks > 0 && (next.PublishedTicks > System.Diagnostics.Stopwatch.GetTimestamp() ||
             System.Diagnostics.Stopwatch.GetElapsedTime(next.PublishedTicks) >= TimeSpan.FromSeconds(3)))
-        { MarkReadFailure("送达的快照已过期；等待当前状态，旧结果不可用于投递。"); return; }
+        { MarkReadFailure("收到的状态已过期，请等待更新，勿按旧结果投递。"); return; }
         if (retiredRuntimeIds.Contains(next.RuntimeId) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision)
-        { MarkReadFailure("运行实例已退役或快照修订倒退；旧事实失效，请重新读取并核对当前运行实例"); return; }
+        { MarkReadFailure("软件实例已变更，旧状态已失效，请重新读取"); return; }
         if (Snapshot is { } original && original.RuntimeId != next.RuntimeId)
         {
             globalOperationGeneration++; SetGlobalFeedback("");
@@ -246,7 +246,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         catch (Exception ex)
         {
             if (!ReferenceEquals(ex, globalOperationError)) ReportCommandFailure(ex, ex.GetType().Name + ": ");
-            OperationStatus = operation + "未完成 · " + ex.Message + "；保留原对象与草稿，核对原因后重试。";
+            OperationStatus = operation + "未完成 · " + ex.Message + "；修改内容已保留，请按原因处理后重试。";
         }
         finally { SetBusy(false); runningFeedbackScope = null; }
     }
@@ -264,12 +264,12 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
                 if (r.Status == "Conflict") continue;
                 CompleteGlobalOperation(generation, "暂停供包", r.Status + " · " + r.Reason, r.Status == "Persisted");
                 try { await RefreshAsync().WaitAsync(TimeSpan.FromSeconds(2)); }
-                catch (Exception ex) { MarkReadFailure(ex.Message); CompleteGlobalOperation(generation, "暂停供包", "软件暂停命令回执：" + r.Status + " · " + r.Reason + "；快照读取未恢复，请核对状态。"); }
+                catch (Exception ex) { MarkReadFailure(ex.Message); CompleteGlobalOperation(generation, "暂停供包", "暂停结果：" + r.Status + " · " + r.Reason + "；状态读取未恢复，请稍后刷新。"); }
                 return;
             }
-            CompleteGlobalOperation(generation, "暂停供包", "暂停遇到连续修订冲突，请重新读取并核对；状态仍由应用服务确认。");
+            CompleteGlobalOperation(generation, "暂停供包", "暂停时状态多次变化，请刷新后确认是否已暂停。");
         }
-        catch (Exception ex) { CompleteGlobalOperation(generation, "暂停供包", "暂停结果待核对：" + ex.Message + "；请读取最新状态，勿将通信失败当作未执行。"); }
+        catch (Exception ex) { CompleteGlobalOperation(generation, "暂停供包", "暂停结果未确认：" + ex.Message + "；请刷新状态确认，通信失败不代表未执行。"); }
     }
     public async Task CommandAsync(string kind, string? owner = null)
     {
@@ -284,7 +284,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         }
         catch (Exception ex)
         {
-            if (global) { globalOperationError = ex; CompleteGlobalOperation(generation, "恢复供包", "操作未确认：" + ex.Message + "；请读取最新状态并核对。"); }
+            if (global) { globalOperationError = ex; CompleteGlobalOperation(generation, "恢复供包", "操作未确认：" + ex.Message + "；请刷新后确认。"); }
             throw;
         }
     }
@@ -303,7 +303,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         if (!decimal.TryParse(MeasurementValue, NumberStyles.Number, CultureInfo.InvariantCulture, out var value)) throw new InvalidDataException("重量数值无效");
         var scale = ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId) ?? throw new InvalidOperationException("当前业务未启用实测重量");
         Message = application.EmitReferenceWeight(new(Wire.Id(), op.AdmissionId, scale.Target, value, op.WeightPolicy.Unit, op.WeightPolicy.Precision, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow))
-            ? "模拟测量已排队，等待应用关联和校验。" : "测量未接纳；原作业仍保留。";
+            ? "模拟测量已排队，等待应用关联和校验。" : "测量未受理，作业保留。";
     }
     public async Task SaveConfigurationAsync()
     { RequireFreshSnapshot(); var expected = RequireDraftRevision(); var candidate = Wire.Decode<ParcelConfiguration>(ConfigurationDraft); _ = await SubmitConfigurationAsync(expected, candidate); }

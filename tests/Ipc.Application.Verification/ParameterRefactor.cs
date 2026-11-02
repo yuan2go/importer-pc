@@ -109,7 +109,7 @@ static class ParameterRefactor
         var proxy = DispatchProxy.Create<IManagementParcelFixture, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
         var pendingVm = new ParcelViewModel(proxy, "待核对", "合成验证"); await pendingVm.RefreshAsync(); await pendingVm.LoadCapabilitiesAsync(); pendingVm.ConfigurationReason = "Synthetic uncertain result"; pendingVm.StructuredPolicy!.TimeoutMs = "1700";
         await pendingVm.SaveStructuredConfigurationAsync();
-        Check(pendingVm.Message.Contains("禁止重复提交") && pendingVm.HasUnsavedConfiguration, "unavailable authority inspection retains raw input and an explicit uncertain-save state");
+        Check(pendingVm.Message.Contains("重复提交") && pendingVm.HasUnsavedConfiguration, "unavailable authority inspection retains raw input and an explicit uncertain-save state");
         var blocked = false; try { await pendingVm.SaveStructuredConfigurationAsync(); } catch (InvalidOperationException) { blocked = true; }
         Check(blocked && probe.StageCalls == 1, "uncertain result prevents a second stage submission");
         probe.FailInspection = false; await pendingVm.InspectLastSaveAsync();

@@ -172,16 +172,16 @@ public partial class ParcelViewModel
     public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
     public string ParameterConfigurationSummary => (HasUnsavedConfiguration ? "有未保存修改" : "未修改") + " · " + validationState + " · " +
-        (Snapshot?.Configuration.Pending is not null ? "已保存待生效" : "无待生效修订") + " · " +
-        (!Fresh || Snapshot?.Configuration.Confirmation is not { Required: false } || Snapshot?.Configuration.Status == "ActivationFailed" ? "运行状态需核对" : "最后启动配置已确认；当前准入见作业状态") +
+        (Snapshot?.Configuration.Pending is not null ? "已保存，重启后生效" : "没有待生效的修改") + " · " +
+        (!Fresh || Snapshot?.Configuration.Confirmation is not { Required: false } || Snapshot?.Configuration.Status == "ActivationFailed" ? "运行状态待确认" : "当前设置已生效") +
         (Snapshot?.Configuration.Failure is { } failure ? " · 应用失败：" + failure : "");
     public string ParameterEditStatus => (HasUnsavedConfiguration ? "未保存修改" : "当前草稿未修改") + "  ·  " + validationState +
-        (Snapshot?.Configuration.Pending is not null ? "  ·  已保存修订待重启" : "") +
-        (!Fresh ? "  ·  状态已失效" : Snapshot?.Configuration.Failure is { } failure ? "  ·  应用失败：" + failure :
-            Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  运行配置待核对" : "");
-    public string ConfigurationSaveGuidance => !Fresh ? "状态已失效。恢复状态读取后再校验和保存；当前输入保留。" :
+        (Snapshot?.Configuration.Pending is not null ? "  ·  已保存，重启后生效" : "") +
+        (!Fresh ? "  ·  状态读取中断" : Snapshot?.Configuration.Failure is { } failure ? "  ·  应用失败：" + failure :
+            Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  当前设置待确认" : "");
+    public string ConfigurationSaveGuidance => !Fresh ? "状态读取中断，恢复后才能检查和保存；已填写的内容会保留。" :
         Busy ? "正在执行当前操作，请等待结果。" :
-        !CanConfigure ? Snapshot?.ApplicationId == "sportmaster" ? "进入管理模式后即可保存；程序自动等待当前请求完成。" : "保存前需暂停新入场、进入管理模式，并等待当前外呼完成。历史原件按原责任保留。" :
+        !CanConfigure ? Snapshot?.ApplicationId == "sportmaster" ? "进入管理模式后即可保存；程序自动等待当前请求完成。" : "保存前需要暂停供包、进入管理模式，并等待当前请求完成。" :
         "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查。" + ConfigurationActivationGuidance;
     public string ConfigurationEditorState
     {
@@ -250,7 +250,7 @@ public partial class ParcelViewModel
         if (c.StationCode is null || scanPolicyChanged)
         {
             savedEditorSignature = "";
-            validationState = scanPolicyChanged ? "已准备每次扫码一个包裹的候选，请核对并保存；原配置和旧请求保留" : "系统缺省值已补入候选，待明确保存；原账未修改";
+            validationState = scanPolicyChanged ? "已按“每次扫码一个包裹”准备好设置，请核对后保存" : "已填入默认值，保存后才会生效";
         }
         RebuildParameterEditor(); NotifyConfigurationEditorState();
     }
@@ -282,7 +282,7 @@ public partial class ParcelViewModel
     }
     public ParcelConfiguration BuildStructuredConfiguration()
     {
-        var c = structuredBase ?? throw new InvalidOperationException("先读取schema3完整拓扑");
+        var c = structuredBase ?? throw new InvalidOperationException("请先读取当前配置");
         if (configurationAuthority != "结构化表单") throw new InvalidOperationException("高级JSON为当前编辑来源；显式加载JSON到表单后再保存表单");
         var bindings = CapabilityDrafts.Select(x => x.Build()).ToArray();
         if (bindings.Select(x => x.InstanceId).Distinct().Count() != bindings.Length) throw new InvalidOperationException("能力实例身份不能重复");
@@ -291,7 +291,7 @@ public partial class ParcelViewModel
         var readers = ReaderDrafts.Select((x, i) =>
         {
             var b = readerBindings[i];
-            if (b.Target != x.Original.DeviceId || !b.Enabled) throw new InvalidOperationException("读码稳定DeviceId只读且必须启用；设备迁移需独立受控部署");
+            if (b.Target != x.Original.DeviceId || !b.Enabled) throw new InvalidOperationException("相机设备标识（DeviceId）不可修改且必须启用；更换相机需按换机流程处理");
             return x.Original with { Driver = b.Package is null ? b.Implementation : "extension:" + b.InstanceId, Parameters = b.Implementation is "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" ? b.Parameters : null };
         }).ToArray();
         var oldReaderIds = ReaderDrafts.Select(x => x.Original.Driver).Where(x => x.StartsWith("extension:", StringComparison.Ordinal)).Select(x => x[10..]).ToHashSet();
@@ -335,7 +335,7 @@ public partial class ParcelViewModel
     {
         if (configurationAuthority != "结构化表单" || draft is null) throw new InvalidOperationException("选择结构化库存中的实例");
         if (ConfigurationRoles.Any(x => x.Selection.Capability == draft) || PositionDrafts.Any(x => x.Scale.Capability == draft || x.Camera.Capability == draft)) throw new InvalidOperationException("先解除角色和本位绑定；不能直接移除仍被引用的实例");
-        CapabilityDrafts.Remove(draft); RebuildConfigurationSelections(); RebuildParameterEditor(); EditorChanged(); Message = "已从候选库存移除未绑定实例；已安装原包和Effective不变。"; return Task.CompletedTask;
+        CapabilityDrafts.Remove(draft); RebuildConfigurationSelections(); RebuildParameterEditor(); EditorChanged(); Message = "已从待保存的设置中移除未分配的组件；已安装组件和当前设置不变。"; return Task.CompletedTask;
     }
     void RebuildConfigurationSelections()
     {
@@ -359,7 +359,7 @@ public partial class ParcelViewModel
         if (ConfigurationEditSignature() != signature) { validationState = "输入已改变，原校验结果过期；请重新检查"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         validationState = receipt.Status + " · " + receipt.Reason;
         if (receipt.Status != "Validated") ParameterEditor?.Report(receipt.Reason);
-        Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = "完整候选校验：" + validationState + "；未保存。";
+        Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = "配置检查：" + validationState + "；未保存。";
     }
     public async Task SaveStructuredConfigurationAsync()
     {
@@ -373,7 +373,7 @@ public partial class ParcelViewModel
     {
         if (configurationAuthority != "高级JSON") throw new InvalidOperationException("先切换到高级JSON编辑来源");
         RequireDraftRevision(); var sourceJson = ConfigurationDraft; var c = Wire.Decode<ParcelConfiguration>(sourceJson);
-        if (c.SchemaVersion != 3 || c.Topology is null) throw new InvalidOperationException("仅支持当前schema3完整拓扑；请使用全新数据目录");
+        if (c.SchemaVersion != 3 || c.Topology is null) throw new InvalidOperationException("只支持当前版本的配置格式（schema3），请使用全新数据目录");
         var catalog = installedCatalog ?? throw new InvalidOperationException("先读取安装清单");
         var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(c));
         if (validation.Status != "Validated") { Message = "JSON未切换到表单：" + validation.Status + " · " + validation.Reason; return; }

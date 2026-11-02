@@ -38,7 +38,7 @@ public static class ParcelPresentation
         const string prefix = "RCS_RESPONSE_ERROR: ";
         if (op.State == ParcelState.WcsUnknown && reply?.Evidence.StartsWith(prefix, StringComparison.Ordinal) == true)
             return reply.Evidence[prefix.Length..];
-        return op.State == ParcelState.WcsUnknown ? "RCS未返回有效格口，请核对异常信息。" : null;
+        return op.State == ParcelState.WcsUnknown ? "RCS 未返回有效格口，请查看异常信息。" : null;
     }
     public static ParcelStatusPresentation Operation(ParcelOperation? op, bool fresh)
     {
@@ -50,11 +50,11 @@ public static class ParcelPresentation
         return op.State switch
         {
             ParcelState.SlotResolved => Accepted("格口已取得"),
-            ParcelState.PlcAccepted => Accepted("控制器业务已接受 · 物理完成待核对"),
-            ParcelState.PhysicalCompleted => Accepted("组件报告物理完成 · 见原回执"),
+            ParcelState.PlcAccepted => Accepted("控制器已接受 · 落格未确认"),
+            ParcelState.PhysicalCompleted => Accepted("组件报告已落格"),
             ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.ImageUnknown => Unknown("格口未确认 · 勿重复上件"),
             ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.ImageRejected => Rejected("未分配格口 · 查看原因"),
-            ParcelState.Blocked => Rejected("已阻断 · 包裹暂放一旁"),
+            ParcelState.Blocked => Rejected("已受阻 · 包裹暂放一旁"),
             ParcelState.WeightTimedOut => Rejected("本件称重超时"),
             ParcelState.UnpackRequired => Unknown("需拆包检查"),
             ParcelState.Abandoned => Neutral("未发送 · 已撤销"),
@@ -92,8 +92,8 @@ public static class ParcelPresentation
         "最新观察：" + InputText(input) + "\n原码：" + InputCode(input) + "\n输入方式：" + (input.Observation.OperatorInput is { } manual ?
             (manual.Kind == "PdaKeyboard" ? "PDA键盘" : "手动键盘") + " · 提交主体：" + manual.Actor : "设备读码") +
         "\n观察来源：" + input.Observation.DeviceId + " · " + input.Observation.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
-        "\n筛选：" + (input.BarcodeSelection is { } selected ? ChineseInterfaceText.Status(selected.Outcome) + " · 选中码：" + (selected.SelectedCode ?? "无") + " · 有效码 " + selected.Matches : "旧观察未记录筛选证据") + "\n关联原作业：" + (input.OperationId ?? "未创建") + " · 原因：" + ChineseInterfaceText.Notice(input.Reason);
-    public static string InputCode(ParcelInputSnapshot input) => input.Observation.Codes.Length == 0 ? "未识别到包裹号" : string.Join("\n", input.Observation.Codes.Take(6).Select(c => c.Length > 256 ? c[..256] + "…" : c)) + (input.Observation.Codes.Length > 6 ? "\n其余候选见原始输入证据（共" + input.Observation.Codes.Length + "个）" : "");
+        "\n筛选：" + (input.BarcodeSelection is { } selected ? ChineseInterfaceText.Status(selected.Outcome) + " · 选中码：" + (selected.SelectedCode ?? "无") + " · 有效码 " + selected.Matches : "旧观察未记录筛选证据") + "\n关联作业：" + (input.OperationId ?? "未创建") + " · 原因：" + ChineseInterfaceText.Notice(input.Reason);
+    public static string InputCode(ParcelInputSnapshot input) => input.Observation.Codes.Length == 0 ? "未识别到包裹号" : string.Join("\n", input.Observation.Codes.Take(6).Select(c => c.Length > 256 ? c[..256] + "…" : c)) + (input.Observation.Codes.Length > 6 ? "\n其余条码见原始扫描记录（共" + input.Observation.Codes.Length + "个）" : "");
     public static string Health(CapabilityHealth health, DateTimeOffset now)
     {
         var localOnly = health.Detail.Contains("local lifecycle", StringComparison.OrdinalIgnoreCase);
@@ -113,7 +113,7 @@ public partial class ParcelViewModel
     public bool CanResumeInViewport => CanUseWorkspace && CanResume;
     public bool CanAcknowledgeViewport => Fresh && viewportFits && Snapshot?.Paused == true;
     public System.Windows.Visibility ViewportWarningVisibility => ViewportReady ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
-    public string ViewportStatus => !viewportFits ? "窗口空间不足 · 请最大化或调整显示设置" : "空间已恢复 · 请核对状态并确认视图";
+    public string ViewportStatus => !viewportFits ? "窗口空间不足 · 请最大化或调整显示设置" : "窗口已恢复 · 请确认状态";
     public bool SetViewport(double width, double height)
     {
         var fits = double.IsFinite(width) && double.IsFinite(height) && width >= 800 && height >= 420;
@@ -126,7 +126,7 @@ public partial class ParcelViewModel
     {
         if (!CanAcknowledgeViewport) { Message = "先恢复有效客户区并确认应用已暂停；读取失败时不能解除视图保护。"; return; }
         viewportRecoveryRequired = false; RefreshFreshness();
-        Message = "视图已确认；业务保持暂停，请核对现场后显式恢复新入场。";
+        Message = "已确认当前状态。供包仍处于暂停，确认现场无误后点击“恢复供包”。";
     }
     public ParcelInputSnapshot? InputAt(string position) => Snapshot?.Inputs?.SingleOrDefault(x => x.PositionId == position);
     public ParcelInputSnapshot? CurrentInput => InputAt(SelectedPositionId);
@@ -139,9 +139,9 @@ public partial class ParcelViewModel
     public ParcelStatusPresentation CurrentPresentation => !Fresh ? ParcelPresentation.Stale() : CurrentInputUnadmitted ? ParcelPresentation.InputPresentation(CurrentInput!) : ParcelPresentation.Operation(Current, true);
     public ParcelStatusPresentation StatusPresentation => !Fresh ? ParcelPresentation.Stale() : Snapshot?.Operations.Any(o => new[] { o.Wcs, o.Plc, o.Capture, o.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict)) == true ? ParcelPresentation.Unknown("有包裹格口未确认 · 其他投递位照常作业") : Snapshot?.BlockingReasons.Length > 0 ? ParcelPresentation.Unknown(Status) : Snapshot?.Paused == true ? ParcelPresentation.Neutral("维护中 · 暂停接收新包裹") : ParcelPresentation.Neutral(Status);
     public string StructuredDetails => structuredDetailsText;
-    static string FormatStructuredDetails(ParcelOperation? op) => op is null ? "选择一条作业查看原作业、请求与回执。" :
-        "作业 " + op.Id + "\n投递位 " + (op.PositionId ?? "main") + " · 包裹号 " + op.ParcelCode + "\n实体准入 " + op.AdmissionId +
-        (op.DebugRequest is { } debug ? "\n隔离调试手动请求 · 轮次 " + debug.RoundId + " · 原帧 " + debug.FrameId + "\n管理主体 " + debug.ManagementActor + "；原隔离观察未转为生产准入" : "") +
+    static string FormatStructuredDetails(ParcelOperation? op) => op is null ? "选择一条作业，查看作业、请求与 RCS 返回。" :
+        "作业 " + op.Id + "\n投递位 " + (op.PositionId ?? "main") + " · 包裹号 " + op.ParcelCode + "\n受理 " + op.AdmissionId +
+        (op.DebugRequest is { } debug ? "\n调试手动请求 · 轮次 " + debug.RoundId + " · 原帧 " + debug.FrameId + "\n管理主体 " + debug.ManagementActor + "；调试扫描不进入生产" : "") +
         "\n输入来源 " + (op.OperatorInput is { } manual ? (manual.Kind == "PdaKeyboard" ? "PDA键盘" : "手动键盘") + " · 提交主体 " + manual.Actor + " · 命令 " + manual.CommandId : "设备读码") +
         "\n观察时间 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n结果 " + ParcelPresentation.Operation(op, true).Text + "\n原因 " + (op.Reason ?? "无") +
         (op.OriginalFrame is { } original ? "\n\n原识码帧 " + (original.State switch { "Pending" => "后台保存中", "Saved" => "已保存原始灰度PNG", "Failed" => "保存失败", _ => "保存中断，需检查原文件" }) +
@@ -150,8 +150,8 @@ public partial class ParcelViewModel
         "\n\n" + string.Join("\n\n", new[] { ("WCS", op.Wcs), ("PLC", op.Plc), ("采集", op.Capture), ("上传", op.Upload) }.Where(x => x.Item2 is not null).Select(x => StageDetails(x.Item1, x.Item2!)));
     static string StageDetails(string name, StageFact stage) => name + " 请求 " + stage.Request.Id + "\n状态 " + ChineseInterfaceText.Status(stage.State.ToString()) + " · 发送尝试 " + stage.Attempts +
         "\n准备时间 " + stage.Request.PreparedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n原目标 " + stage.Request.Binding.Target + "\n原合同 " + stage.Request.Binding.Contract +
-        "\n报文SHA256 " + stage.Request.PayloadHash + "\n" + (stage.Failure is { } failure ? "失败 / 待核对原因 " + failure + "\n" : "") +
-        (stage.Replies.Length == 0 ? "尚无回执；发送不等于接受" : string.Join("\n", stage.Replies.Select(reply => "回执 " + reply.Id + " · " + reply.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
+        "\n报文SHA256 " + stage.Request.PayloadHash + "\n" + (stage.Failure is { } failure ? "失败 / 未确认原因 " + failure + "\n" : "") +
+        (stage.Replies.Length == 0 ? "尚无返回；已发送不代表已接受" : string.Join("\n", stage.Replies.Select(reply => "返回 " + reply.Id + " · " + reply.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
             "\n传输 " + Known(reply.TransportSucceeded) + " · 协议确认 " + Known(reply.ProtocolAcknowledged) + " · 业务接受 " + Known(reply.BusinessAccepted) + " · 物理完成 " + Known(reply.PhysicalCompleted) + "\n证据 " + reply.Evidence)));
     static string Known(bool? value) => value is null ? "未知" : value.Value ? "是" : "否";
 }

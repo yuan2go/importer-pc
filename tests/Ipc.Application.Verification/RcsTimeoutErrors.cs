@@ -110,7 +110,7 @@ static partial class SportmasterRcs
                     "unpack" => view.Left.AttentionReason.Contains("需要拆包", StringComparison.Ordinal) && op.State == ParcelState.UnpackRequired,
                     "reject" => view.Left.AttentionReason == "请检查当前商品状态" && op.State == ParcelState.WcsRejected,
                     "missing-chute" or "blank-chute" => view.Left.AttentionReason == "请检查当前商品状态" && op.State == ParcelState.WcsUnknown,
-                    _ => view.Left.AttentionReason == "RCS未返回有效格口，请核对异常信息。" && op.State == ParcelState.WcsUnknown
+                    _ => view.Left.AttentionReason == "RCS 未返回有效格口，请查看异常信息。" && op.State == ParcelState.WcsUnknown
                 }, mode + " shows the matched exception/message with safe fallback for invalid or unmatched replies");
                 if (mode != "reject") Check(!s.Positions!.Single(p => p.Id == "left").Admit, mode + " does not use the timeout-only rescan exception");
             }

@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 import release_documents as docs
+from application_compatibility import read_storage_format
 
 
 class ReleaseDocumentTests(unittest.TestCase):
@@ -30,8 +31,7 @@ class ReleaseDocumentTests(unittest.TestCase):
         self.assertIn('PARCEL12-OPERATIONS.md', docs.PARCEL_GUIDES.values())
         self.assertIn('SM-SESSION-SHIFTS.md', docs.SPORTMASTER_GUIDES.values())
         guide = docs.render(root, 'docs/runtime/parcel12-operations-26.md', 'a' * 40)
-        repository = (root / 'src/Ipc.Application.ParcelFlow/ParcelRepository.cs').read_text(encoding='utf-8-sig')
-        current = re.search(r'public const int CurrentStorageVersion = (\d+);', repository).group(1)
+        current = str(read_storage_format(root))
         self.assertIn('PARCEL' + current + '-OPERATIONS.md', docs.SPORTMASTER_GUIDES.values())
         self.assertIn('新库直接创建格式 **' + current + '**', guide)
         for fact in ['新库直接创建格式 **12**', '已知格式10/11', 'COMPLETED.json', '旧程序不能直接读取12', '原请求', '不得只改版本号']:

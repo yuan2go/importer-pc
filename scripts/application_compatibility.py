@@ -20,6 +20,15 @@ def object_sha(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest().upper()
 
 
+def read_storage_format(root):
+    """Read the one format authority from the frozen product source, never a fallback."""
+    source = (Path(root) / 'src/Ipc.Application.ParcelFlow/ParcelRepository.cs').read_text(encoding='utf-8-sig')
+    matches = re.findall(r'^\s*public const int CurrentStorageVersion\s*=\s*([0-9]+);\s*$', source, re.MULTILINE)
+    if len(matches) != 1 or not 1 <= int(matches[0]) <= 2147483647:
+        raise ValueError('One positive current Parcel storage format declaration is required')
+    return int(matches[0])
+
+
 def read_business(root, application, selection):
     module = APPLICATIONS[application]
     project = ET.parse(root / f'src/Ipc.Application.{module}/Ipc.Application.{module}.csproj')

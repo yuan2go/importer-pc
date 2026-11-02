@@ -118270,9 +118270,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-FEEDBACK-22; original evidence retains its own SourceCommit",
-      "sha256": "23a710232e8fd65c0622d4be5354f368def5e5c29194d2d14febefe179da2177",
-      "size_bytes": 9558,
-      "git_blob": "9ceefb2ae481dd6933029ead8f8742b509785b00",
+      "sha256": "575a3b21201f452e4fce6e9b3b8082faad702fe9ff44f47659202c9e00756d53",
+      "size_bytes": 9967,
+      "git_blob": "466f832781685a0af505b31a3f0bd844bc19ce54",
       "storage_scope": "public_repository"
     },
     {

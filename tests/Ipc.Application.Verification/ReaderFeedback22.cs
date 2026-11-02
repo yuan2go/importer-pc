@@ -57,6 +57,10 @@ internal static class ReaderFeedback22
         ParcelReadFeedback Read(long ticks, string epoch) => new(vm.Snapshot.RuntimeId, "left", Wire.Id(), h.Left, epoch, "SYNTH-LATEST", ticks, DateTimeOffset.UtcNow)
             { SourceSequence = 100, PendingDisplayBudgetMs = 1000 };
         vm.Left.ApplyReadFeedback(Read(Stopwatch.GetTimestamp() - 2 * Stopwatch.Frequency, state.Epoch));
+        Check(vm.Left.ShowConfirmedTask && !vm.Left.IsProcessing, "feedback older than the snapshot watermark cannot replace its accepted current observation");
+        vm.Left.ApplyReadFeedback(Read(Stopwatch.GetTimestamp(), state.Epoch));
+        Check(vm.Left.IsProcessing && !vm.Left.ShowConfirmedTask, "a newer orphan cue first withdraws the prior accepted destination");
+        await Task.Delay(1100);
         Check(!vm.Left.IsProcessing && !vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture && vm.Left.DisplayStatus.Contains("失效"),
             "orphan feedback exceeds its monotonic display deadline without reviving an old chute/picture");
         vm.Left.ApplyReadFeedback(Read(Stopwatch.GetTimestamp(), "old-epoch"));

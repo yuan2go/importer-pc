@@ -151,6 +151,7 @@ static partial class Program
             reporter!.Report(stage); progress.Add(stage); await Task.Delay(100); window.UpdateLayout();
             Check(Descendants(window).OfType<ProgressBar>().Single().IsIndeterminate && Descendants(window).OfType<Button>().All(b => !b.IsVisible || AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel") && Descendants(window).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel").IsEnabled==canCancel, "unmetered installation has no fake percent or navigation; only pre-commit cancellation is enabled; " + stage);
             Check(Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible).Any(b => b.Text.Contains(stage == WindowsInstallationStage.WaitingForAuthorization ? "等待 Windows 授权" : stage == WindowsInstallationStage.CopyingFiles ? "正在复制" : "正在提交")), "stage changes only with observed service reports; " + stage);
+            Check(!Text(window).Contains("正在写入安装，不能取消") && Text(window).Contains("取消是否可用以当前步骤和取消按钮为准"), "installation body shares observed maintenance cancellation authority; " + stage);
             if (stage == WindowsInstallationStage.CopyingFiles) Check(Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible).All(b => !b.Text.Contains("授权窗口确认")), "UAC prompt disappears after helper begins work");
             Capture("installer-stage-" + stage, window);
         }

@@ -4,7 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
-    'docs/runtime/db11-compatible-update-22.md': 'DB11-UPGRADE.md',
+    'docs/runtime/parcel12-operations-26.md': 'PARCEL12-OPERATIONS.md',
     'docs/runtime/d-drive-storage-20261021.md': 'D-DRIVE-STORAGE.md',
     'docs/runtime/d-drive-install-01.md': 'D-DRIVE-INSTALL.md',
     'docs/runtime/current-contract-cleanup-01.md': 'CURRENT-CONTRACTS.md',
@@ -38,6 +38,7 @@ GUIDES = {
 # Current operation guides and real interface prerequisites only. Historical UI,
 # old account and support-page evidence remains in Git with its original identity.
 SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
+    'docs/runtime/sm-session-shift-exceptions-25.md': 'SM-SESSION-SHIFTS.md',
     'docs/runtime/workstation-status-logs-01.md': 'WORKSTATION-AND-LOGS.md',
     'docs/runtime/debug-log-live-01.md': 'DEBUG-LOG-LIVE.md',
     'docs/design/typography-01.md': 'TYPOGRAPHY.md',

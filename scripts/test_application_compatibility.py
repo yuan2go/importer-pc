@@ -5,11 +5,25 @@ from pathlib import Path
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
-from application_compatibility import CombinationRun, object_sha, read_business, require_combination, selected_providers, sha, verify_record
+from application_compatibility import CombinationRun, object_sha, read_business, require_combination, read_storage_format, selected_providers, sha, verify_record
 from composition import resolve
 
 
 class CompatibilityTests(unittest.TestCase):
+    def test_storage_format_comes_from_the_supplied_frozen_source(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / 'src/Ipc.Application.ParcelFlow/ParcelRepository.cs'
+            source.parent.mkdir(parents=True)
+            source.write_text('public const int CurrentStorageVersion = 17;\n', encoding='utf-8')
+            self.assertEqual(read_storage_format(root), 17)
+            for invalid in ['', 'public const int CurrentStorageVersion = 0;',
+                            'public const int CurrentStorageVersion = 2147483648;',
+                            'public const int CurrentStorageVersion = 12;\npublic const int CurrentStorageVersion = 13;']:
+                source.write_text(invalid, encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    read_storage_format(root)
+
     def test_first_release_versions_cover_all_owned_modules(self):
         root = Path(__file__).resolve().parent.parent
         default = ET.parse(root/'Directory.Build.props').findtext('.//Version')

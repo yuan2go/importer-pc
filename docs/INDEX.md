@@ -1,4 +1,5 @@
 > 2026-11-02 现场弱标签补充识别、无码/坏帧及重连清退旧格口见 [SM-UNREAD-PACKAGE-27](work-packages/WP-IPC-SM-UNREAD-PACKAGE-27.md) 与[运行和验证](runtime/sm-unread-package-27.md)。源码保持内置 MVS、逐次识别交 RCS 去重；无码是图像事实，不推定实体。私有照片重放与真实过机验收分开，历史证据保持原 SourceCommit。
+> 2026-11-02 七项审查修复以 [SM-AUDIT-FIXES-26](work-packages/WP-IPC-SM-AUDIT-FIXES-26.md)、[实现与验证](runtime/sm-audit-fixes-26.md)为准。当前交付操作入口为 [Parcel12](runtime/parcel12-operations-26.md)，旧格式11指南保留历史身份，原始索引见 [归档](archive/pre-sm-audit-fixes-26/manifest.json)。
 
 > 2026-11-02 用户追加以 [SM-SESSION-SHIFT-EXCEPTIONS-25](work-packages/WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25.md) 为准：P07/P08现在实施；SM每次成功打开至完成关闭为一个持久班次，不按固定时刻切班，异常退出与原请求跨班责任分开。替代24包延期及旧排班对本班的定义，其他守卫/历史证据不变。
 

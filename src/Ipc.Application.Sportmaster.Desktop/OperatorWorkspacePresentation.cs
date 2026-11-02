@@ -101,10 +101,11 @@ public sealed partial class SupplyStationViewModel
     }
     public string RcsConnectionTime => Snapshot?.Health.SingleOrDefault(h => h.InstanceId == Snapshot.Configuration.Effective.Wcs?.InstanceId) is { } h
         ? "状态更新：" + h.ConfirmedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "尚无状态更新时间";
-    public string DiagnosticConfiguration => Snapshot is null ? "尚未读取配置" :
-        Snapshot.Configuration.Confirmation?.Required == true ? "设置生效情况未确认，请在“其他维护操作”中查看。" :
-        Snapshot.HasPendingConfiguration == true ? "有已保存的修改，重启软件后生效；当前仍使用原设置。" :
-        Snapshot.Configuration.Failure is not null ? "设置应用失败，请在“其他维护操作”中查看。" : "设置已生效。";
+    public bool HasConfigurationActivationFailure => Snapshot?.Configuration is { } c && (c.Failure is not null || c.Status == "ActivationFailed");
+    public string ConfigurationActivationActionText => HasConfigurationActivationFailure ? "查看生效问题…" : "重启软件使设置生效…";
+    public string ConfigurationActivationCompactText => HasConfigurationActivationFailure ? "设置未生效…" : "设置待重启…";
+    public bool CanOpenConfigurationActivation => HasConfigurationActivationFailure ? CanStartOperation : CanRequestActivation;
+    public string DiagnosticConfiguration => ConfigurationActivationOutcome;
     public string DiagnosticCapacity => Snapshot?.Capacity is { } c
         ? $"待处理作业 {c.Unresolved} / {c.MaximumUnresolved}；本机保留近期记录 {c.Resident} 条、归档记录 {c.Archived} 条。"
         : "尚未取得容量信息";
@@ -135,6 +136,6 @@ public sealed partial class SupplyStationViewModel
         foreach (var name in new[] { nameof(ShowSetupGuidance), nameof(SetupHeading), nameof(SetupItems), nameof(SetupInstruction),
             nameof(OperatorStatus), nameof(OperatorNotice), nameof(CanReconnectConfigured), nameof(ReconnectHint),
             nameof(LeftConnectionDiagnosis), nameof(RightConnectionDiagnosis), nameof(RcsConnectionDiagnosis),
-            nameof(LeftConnectionTime), nameof(RightConnectionTime), nameof(RcsConnectionTime), nameof(DiagnosticConfiguration), nameof(DiagnosticCapacity), nameof(DiagnosticBlockers) }) Changed(name);
+            nameof(LeftConnectionTime), nameof(RightConnectionTime), nameof(RcsConnectionTime), nameof(HasConfigurationActivationFailure), nameof(ConfigurationActivationActionText), nameof(ConfigurationActivationCompactText), nameof(CanOpenConfigurationActivation), nameof(DiagnosticConfiguration), nameof(DiagnosticCapacity), nameof(DiagnosticBlockers) }) Changed(name);
     }
 }

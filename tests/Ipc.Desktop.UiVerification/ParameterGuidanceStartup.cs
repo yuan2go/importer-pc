@@ -35,6 +35,19 @@ static partial class Program
         try
         {
             window.Show(); await Flush();
+            var summaryRcs = model.Components.Single(ParameterOwnership.IsRcs);
+            var originalTarget = summaryRcs.Target;
+            summaryRcs.Target = "http://127.0.0.1:49828/rcs/sorter/api";
+            editor.ShowPage(0, "供包台标识"); await Flush();
+            var zoneInput = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "sportmaster.integration/zone-id");
+            var originalZone = zoneInput.Text;
+            zoneInput.Text = "bad"; await Flush();
+            Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/zone-id") && i.Message.Contains("invalid value")), "actual invalid warehouse input retains its original validation issue");
+            var summary = (TextBlock)typeof(ParameterSettingsControl).GetField("remainingSteps", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(editor)!;
+            Check(summary.Text.Contains("仓ID") && summary.Text.Contains("整数") && !summary.Text.Contains("invalid value") && !summary.Text.Contains("integration") && !summary.Text.Contains("zone-id"), "first-run rail summary uses the same field label and Chinese correction as the inline error");
+            CaptureInternal(evidence, "retest28-first-run-invalid-warehouse", client, lines);
+            summaryRcs.Target = originalTarget; zoneInput.Text = originalZone; await Flush();
+            Check(model.ValidateFields() && !summary.Text.Contains("当前发现"), "correcting the field clears the stale first-run summary without losing the draft");
             for (var count = 0; !editor.IsReviewPage && count < 25; count++)
                 Check(await editor.MoveNextAsync(), "first-run page can advance with explicitly deferred camera/RCS fields: " + editor.CurrentPageTitle);
             Check(editor.IsReviewPage, "incomplete connections do not block the first-run completion page");

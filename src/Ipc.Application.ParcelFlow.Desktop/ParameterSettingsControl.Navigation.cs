@@ -40,7 +40,12 @@ public sealed partial class ParameterSettingsControl
             button.ToolTip = currentPage?.Category == index ? "当前步骤" : "前进时检查前置页面，返回保留输入";
         }
         var issues = Model?.Issues ?? [];
-        remainingSteps.Text = issues.Count == 0 ? "尚未发现字段错误。请逐步检查；相机和 RCS 可留待以后配置。" : "当前发现 " + issues.Count + " 项需要修改：\n" + string.Join("\n", issues.Take(6).Select(i => i.Category + "：" + i.Message));
+        remainingSteps.Text = issues.Count == 0 ? "尚未发现字段错误。请逐步检查；相机和 RCS 可留待以后配置。" : "当前发现 " + issues.Count + " 项需要修改：\n" + string.Join("\n", issues.Take(6).Select(issue =>
+        {
+            locations.TryGetValue(issue.Path, out var location);
+            var context = issue.Category + (location is null ? "" : " / " + location.Label.TrimEnd(' ', '*'));
+            return context + "：" + IssueMessage(issue, location);
+        }));
     }
     void RefreshAvailablePages()
     {

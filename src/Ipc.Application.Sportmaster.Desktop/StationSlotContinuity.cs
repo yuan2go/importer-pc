@@ -60,7 +60,7 @@ public sealed partial class SupplyStationPositionViewModel
     public string DisplayStatus => ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused ? "供包已暂停" : ReaderUnavailableForDisplay ? "相机离线 · 本位暂停供包" : HasUncertainOriginal ? Status :
         IsProcessing ? "本次处理中" : Status;
     public string DisplayAttentionReason => DisplayPaused ? "" : ReaderUnavailableForDisplay ? "相机恢复连接后自动继续；另一投递位不受影响。" :
-        unreadFeedback ? HasUncertainOriginal ? "本次条码已读到；上一件 " + Operation?.ParcelCode + " 的结果仍待核对。" :
+        unreadFeedback ? HasUncertainOriginal ? "本次条码已读到；上一件 " + Operation?.ParcelCode + " 的格口仍未确认。" :
             "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
     public string DisplayNextStep => DisplayPaused ? "本件暂勿投递，等待恢复供包。" : ShowConfirmedTask ? IsTight ? "" : "按本次格口投递" : ReaderUnavailableForDisplay ? "本位暂停供包，请通知维护人员检查相机。" :
         !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" : NextStep;

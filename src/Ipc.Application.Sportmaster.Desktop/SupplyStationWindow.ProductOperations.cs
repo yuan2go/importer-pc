@@ -25,16 +25,16 @@ public partial class SupplyStationWindow
         public string Id => Original.Id;
         public string PositionId => Original.PositionId == "left" ? "左位" : Original.PositionId == "right" ? "右位" : Original.PositionId ?? "未确认";
         public string ParcelCode => Original.ParcelCode;
-        public string State => Original.Wcs?.State is StageState.Unknown or StageState.Conflict ? "格口未确认" : Original.Wcs?.State == StageState.Rejected ? "已拒绝" : "需核对原作业";
+        public string State => Original.Wcs?.State is StageState.Unknown or StageState.Conflict ? "格口未确认" : Original.Wcs?.State == StageState.Rejected ? "已拒绝" : "需核对作业";
         public string Reason => Original.Wcs?.State is StageState.Unknown or StageState.Conflict
-            ? ParcelPresentation.RcsNotDelivered(Original) ? "已证实本次正文未送达；连接恢复后可独立重新扫描，原请求不重发。" : "原请求结果未确认。勿重复上件，请核对本件原请求。"
-            : ParcelPresentation.RcsException(Original) ?? "本件未取得可用格口，请查看本件详情并按原因处理。";
+            ? ParcelPresentation.RcsNotDelivered(Original) ? "已确认请求未送达 RCS。连接恢复后可重新扫描本件；原请求不会重发。" : "格口未确认。勿重复上件，请查询本件结果。"
+            : ParcelPresentation.RcsException(Original) ?? "本件未分配格口，请查看详情并按原因处理。";
     }
     FrameworkElement CreateExceptions()
     {
         var root = new DockPanel { Margin = new(24, 20, 24, 16) }; var header = new StackPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         header.Children.Add(ProductText("异常处理", title: true));
-        header.Children.Add(ProductText("结果未确认时勿重复上件。先核对本件原请求；解除阻断不代表重新发送。拒绝记录保留原因，按现场确认的处置流程处理。"));
+        header.Children.Add(ProductText("格口未确认的包裹勿重复上件，先查询本件结果；解除限制不会重新发送。被拒绝的包裹按原因和现场流程处理。"));
         var grid = new DataGrid { AutoGenerateColumns = false, IsReadOnly = true, EnableRowVirtualization = true, CanUserAddRows = false };
         foreach (var (label, field) in new[] { ("作业号", "Id"), ("投递位", "PositionId"), ("条码", "ParcelCode"), ("状态", "State"), ("原因", "Reason") })
             grid.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(field), Width = DataGridLength.Auto });
@@ -54,18 +54,18 @@ public partial class SupplyStationWindow
                     .Where(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict or StageState.Rejected || o.RecoveryRequired)
                     .OrderByDescending(o => o.ObservedAt).Select(o => new ExceptionRow(o)).ToArray();
                 grid.ItemsSource = rows; grid.SelectedItem = rows.FirstOrDefault(r => r.Id == selected);
-                feedback.Text = $"更新于{DateTime.Now:HH:mm:ss}。未确认责任来自当前业务账；拒绝记录显示最近50件中的异常。选择一件查看证据与允许动作。";
+                feedback.Text = $"更新于{DateTime.Now:HH:mm:ss}。显示全部格口未确认的作业，以及最近 50 件中被拒绝的作业。选中一件查看详情和可执行的操作。";
             }
             finally { refreshing = false; }
         }
         var actions = new WrapPanel(); header.Children.Add(actions);
         actions.Children.Add(ProductButton("刷新异常", Refresh));
-        actions.Children.Add(ProductButton("查看本件与核对…", async () => { if (grid.SelectedItem is not ExceptionRow row) throw new InvalidOperationException("请先选择一件作业"); await ShowDetailsAsync(row.Original); }));
+        actions.Children.Add(ProductButton("查看详情与核对…", async () => { if (grid.SelectedItem is not ExceptionRow row) throw new InvalidOperationException("请先选择一件作业"); await ShowDetailsAsync(row.Original); }));
         actions.Children.Add(ProductButton("打开恢复操作…", () => OpenProductTool(MaintenanceTool.Recovery)));
         root.Children.Add(grid);
         root.Loaded += async (_, _) => { active = true; viewGeneration++; updateTimer.Start(); await ViewModel.RunAsync(Refresh, "读取异常作业"); };
         root.Unloaded += (_, _) => { active = false; viewGeneration++; updateTimer.Stop(); };
-        updateTimer.Tick += async (_, _) => { try { await Refresh(); } catch (Exception error) { if (active) feedback.Text = "异常状态读取中断，请刷新核对；原请求保持。" + DiagnosticText.Protect(error.Message); } };
+        updateTimer.Tick += async (_, _) => { try { await Refresh(); } catch (Exception error) { if (active) feedback.Text = "异常列表读取中断，请点击“刷新异常”；作业状态不受影响。" + DiagnosticText.Protect(error.Message); } };
         return root;
     }
     async Task OpenProductTool(MaintenanceTool index)
@@ -73,20 +73,20 @@ public partial class SupplyStationWindow
     FrameworkElement CreateMaintenanceCenter()
     {
         var body = new StackPanel { Margin = new(24, 20, 24, 16) }; body.Children.Add(ProductText("维护中心", title: true));
-        body.Children.Add(ProductText("先选择要完成的任务。运行维护沿用当前业务实例；恢复备份、迁移与程序维护须先完整停止原实例。软件暂停不是安全急停。"));
+        body.Children.Add(ProductText("请选择要做的维护。前五项在软件运行中完成；恢复备份、换机和修复/卸载需先完全停止软件。软件暂停不是安全急停。"));
         void TaskRow(string name, string description, string action, Func<Task> run)
         {
             var row = new DockPanel { Margin = new(0, 12, 0, 8) }; var button = ProductButton(action, run); DockPanel.SetDock(button, Dock.Right); row.Children.Add(button);
             var text = new StackPanel(); text.Children.Add(new TextBlock { Text = name, FontWeight = UiTypography.Emphasis }); text.Children.Add(ProductText(description)); row.Children.Add(text); body.Children.Add(row);
         }
         TaskRow("连接或供包异常", "查看两台相机、RCS、存储与备份的实际状态，再按对象处理。", "打开诊断", () => { SetPage("diagnostics"); return Task.CompletedTask; });
-        TaskRow("待核对包裹", "按原作业查看拒绝与未确认结果，保持原请求身份，不盲重发。", "处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; });
-        TaskRow("配置已保存但未生效", "只有已保存的配置可申请重启；失败保留原账并显示实际结果。", "核对并重启…", async () => { await ViewModel.RequireManagementModeAsync(); if (ViewModel.Snapshot?.Configuration.Pending is null) throw new InvalidOperationException("没有待重启设置"); await RequestActivation(); });
-        TaskRow("创建完整备份", "暂停新供包并排空在途请求；原始回包和配置与数据库一起备份。完成后核对再恢复。", "备份…", CreateProductBackup);
-        TaskRow("备份后的供包恢复", "重新检查实际连接、暂停状态、容量及原请求责任；不重发未知请求。", "检查并恢复", async () => { await ViewModel.RequireManagementModeAsync(); var s = await ViewModel.Application.SnapshotAsync(); var r = await ViewModel.Application.CommandAsync(new(Wire.Id(), s.Revision, "Resume")); ViewModel.Message = r.Status + " · " + r.Reason; });
-        TaskRow("自动历史清理与班次", "设置保留策略、清理时刻和备份份数上限；清理后保留统计汇总。", "打开设置", () => { SetPage("statistics"); return Task.CompletedTask; });
-        TaskRow("远程支持", "导出有界白名单诊断包，包含状态、近期请求索引及完整性清单；文件保留在本机。", "导出诊断包…", ExportProductDiagnostics);
-        TaskRow("恢复备份、换机、修复或卸载", "完整停止原实例后进入独立维护。恢复目标隔离，原根退役、权限和请求责任仍须核对。", "进入离线维护…", RequestOfflineMaintenance);
+        TaskRow("待核对包裹", "逐件查看被拒绝和格口未确认的包裹；不会自动重发。", "处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; });
+        TaskRow("配置已保存但未生效", "重启软件使已保存的设置生效；重启失败时继续使用原设置，并显示原因。", "检查并重启…", async () => { await ViewModel.RequireManagementModeAsync(); if (ViewModel.Snapshot?.Configuration.Pending is null) throw new InvalidOperationException("没有待重启设置"); await RequestActivation(); });
+        TaskRow("创建完整备份", "先暂停新供包，等进行中的请求处理完，再备份数据库、配置和 RCS 返回记录。完成后点击“检查并恢复”。", "备份…", CreateProductBackup);
+        TaskRow("备份后恢复供包", "重新检查连接、暂停状态、存储容量和未确认作业，通过后恢复供包；不会重发格口未确认的请求。", "检查并恢复", async () => { await ViewModel.RequireManagementModeAsync(); var s = await ViewModel.Application.SnapshotAsync(); var r = await ViewModel.Application.CommandAsync(new(Wire.Id(), s.Revision, "Resume")); ViewModel.Message = r.Status + " · " + r.Reason; });
+        TaskRow("自动清理与班次", "设置保留策略、清理时刻和备份份数上限；清理后保留统计汇总。", "打开设置", () => { SetPage("statistics"); return Task.CompletedTask; });
+        TaskRow("远程支持", "导出诊断包：设备状态、近期请求索引和校验清单，不含条码、图片和密码；文件只保存在本机。", "导出诊断包…", ExportProductDiagnostics);
+        TaskRow("恢复备份、换机、修复或卸载", "先完全停止软件，再进入离线维护。备份恢复到新目录，不覆盖原数据。", "进入离线维护…", RequestOfflineMaintenance);
         var cancelExport = new Button { Content = "取消诊断导出", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         cancelExport.Click += (_, _) => productDiagnosticCancellation?.Cancel(); body.Children.Add(cancelExport);
         var cleanup = ProductText(""); body.Children.Add(cleanup);
@@ -115,10 +115,10 @@ public partial class SupplyStationWindow
     async Task RequestOfflineMaintenance()
     {
         await ViewModel.RequireManagementModeAsync();
-        if (root.OpenMaintenanceOwnerAsync is null) throw new InvalidOperationException("当前宿主未提供离线维护入口");
-        if (MessageBox.Show(this, "将停止整个业务实例并关闭辅助窗口，随后进入维护中心。原请求及业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        if (root.OpenMaintenanceOwnerAsync is null) throw new InvalidOperationException("当前版本不支持离线维护");
+        if (MessageBox.Show(this, "将完全停止软件并关闭所有窗口，然后打开离线维护中心。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
         await ViewModel.PauseAsync(); await ViewModel.RefreshAsync();
-        if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停结果尚未确认，保留当前实例");
+        if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停结果未确认，软件未停止");
         root.offlineMaintenanceRequested = true; root.Close();
     }
     bool offlineMaintenanceRequested;
@@ -134,17 +134,17 @@ public partial class SupplyStationWindow
             using var sample = await api.ReadCameraPreviewLeaseAsync(reader.DeviceId, CancellationToken.None);
             var d = sample.Diagnostics;
             var name = reader.DeviceId == ViewModel.Left.ReaderId ? "左相机" : reader.DeviceId == ViewModel.Right.ReaderId ? "右相机" : reader.DeviceId;
-            text.AppendLine(d is null ? name + "：" + sample.Status : $"{name}：有效帧{d.Frames} · 解码完成{d.DecodeCompleted} · 含码候选{d.Candidates} · 最近有效帧{d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {d.State}");
+            text.AppendLine(d is null ? name + "：" + sample.Status : $"{name}：有效帧 {d.Frames} · 已解码 {d.DecodeCompleted} · 识别到条码 {d.Candidates} · 最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {d.State}");
             if (!string.IsNullOrEmpty(d?.Failure)) text.AppendLine("最近错误：" + DiagnosticText.Protect(d.Failure));
         }
         foreach (var health in snapshot.Health.Where(h => h.InstanceId == snapshot.Configuration.Effective.Wcs?.InstanceId))
         {
             var confirmation = !health.Ready ? "组件未就绪" : health.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived
-                ? "心跳收到HTTP回应，业务结果另行核对" : "客户端已启动，远端未确认";
-            text.AppendLine($"RCS：{confirmation} · 健康确认{health.ConfirmedAt.ToLocalTime():HH:mm:ss} · 有效至{health.ValidUntil.ToLocalTime():HH:mm:ss}");
+                ? "心跳正常（只表示 RCS 可连接）" : "等待 RCS 确认";
+            text.AppendLine($"RCS：{confirmation} · 确认于 {health.ConfirmedAt.ToLocalTime():HH:mm:ss} · 有效至 {health.ValidUntil.ToLocalTime():HH:mm:ss}");
         }
-        text.AppendLine($"存储剩余：{snapshot.Capacity?.FreeStorageBytes / 1048576}MiB · 备份：{(snapshot.BackupScheduleStatus?.Enabled != true ? "未启用" : snapshot.BackupScheduleStatus.Outcome == "BackupCreated" ? "最近完成" : "待核对")}");
-        text.AppendLine("只读体检复用现有采集与心跳事实，不发送测试业务请求；连接在线不代表识码或取格口成功。");
+        text.AppendLine($"存储剩余：{snapshot.Capacity?.FreeStorageBytes / 1048576}MiB · 备份：{(snapshot.BackupScheduleStatus?.Enabled != true ? "未启用" : snapshot.BackupScheduleStatus.Outcome == "BackupCreated" ? "最近一次已完成" : "未完成或结果未确认")}");
+        text.AppendLine("体检只读取现有相机和心跳数据，不会发送测试请求；在线不代表能识别条码或取得格口。");
         return text.ToString();
     }
 }

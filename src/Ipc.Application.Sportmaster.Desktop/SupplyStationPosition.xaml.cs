@@ -176,7 +176,7 @@ public partial class SupplyStationPosition : UserControl
             try
             {
                 var receipt = await vm.ServiceAsync(() => service.SubmitParcelBarcodeAsync(request, CancellationToken.None));
-                var label = receipt.Status switch { "Admitted" => "已受理", "Rejected" => "未受理", "Blocked" => "暂不能受理", "Conflict" => "本位状态已变化，请确认后重交", "Duplicate" => "重复扫描", "Pending" => "结果待核对", _ => receipt.Status };
+                var label = receipt.Status switch { "Admitted" => "已受理", "Rejected" => "未受理", "Blocked" => "暂不能受理", "Conflict" => "本位状态已变化，请确认后重交", "Duplicate" => "重复扫描", "Pending" => "受理结果未确认", _ => receipt.Status };
                 InputFeedback.Text = label + " · " + Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.Notice(receipt.Detail) + (receipt.OperationId is null ? "" : "\n作业：" + receipt.OperationId) +
                     (receipt.Status == "Pending" ? "\n命令：" + request.CommandId : "");
                 vm.ReportBarcodeFeedback(receipt, InputFeedback.Text);

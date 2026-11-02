@@ -116,8 +116,8 @@ static partial class Program
                 var result = (Window)type.GetConstructor(flags, null, [typeof(WindowsRemovalReceipt), typeof(string)], null)!.Invoke([receipt, "D:\\Synthetic\\retained-data"]);
                 result.Show(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); result.UpdateLayout();
                 var text = string.Join("\n", Descendants(result).OfType<TextBlock>().Select(t => t.Text).Concat(Descendants(result).OfType<TextBox>().Select(t => t.Text)));
-                Check(text.Contains("原安装已退役") && text.Contains("locked.dll") && text.Contains("retained-data") && !text.Contains("菜鸟供包台已卸载。卸载操作已完成"), "native removal receipt distinguishes " + status + " from clean removal while retaining original inventory evidence");
-                Check(Descendants(result).OfType<Button>().Where(b => b.IsVisible).All(b => b.Content is "只读核对原卸载结果" or "关闭"), "retired result offers inspection/close without removed-service authentication or duplicate uninstall");
+                Check(text.Contains("软件已卸载") && text.Contains("locked.dll") && text.Contains("retained-data") && !text.Contains("菜鸟供包台已卸载。卸载操作已完成"), "native removal receipt distinguishes " + status + " from clean removal while retaining original inventory evidence");
+                Check(Descendants(result).OfType<Button>().Where(b => b.IsVisible).All(b => b.Content is "查看上次卸载结果" or "关闭"), "retired result offers inspection/close without removed-service authentication or duplicate uninstall");
                 CaptureInternal(evidence, "lia-removal-" + status, result, lines); result.Close();
             }
         }

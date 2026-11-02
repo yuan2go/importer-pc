@@ -17,14 +17,13 @@ public sealed partial class ParameterSettingsControl
         }
         if (m.Readers.Length == 0)
         {
-            var missing = Page(2, "缺少读码实例", "当前候选没有读码实例。请核对原拓扑和已安装驱动。");
+            var missing = Page(2, "缺少读码实例", "没有找到这台相机的配置，请用原安装包修复软件。");
             if (MaintenanceRequested is not null) { var open = new Button { Content = "查看实例与角色绑定…", HorizontalAlignment = HorizontalAlignment.Left }; open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); missing.Body.Children.Add(open); }
         }
         foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound) && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
         {
             var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) ? "左右相机共用此连接，保存后待受控应用。" :
-                ParameterOwnership.IsDriver(component) ? "按已安装硬件驱动的实际描述编辑。实例与用途由当前业务决定，保存后需重启软件生效。" : "按已安装组件的实际描述编辑，保存后需重启软件生效。");
+                ParameterOwnership.IsRcs(component) ? "左右投递位共用此连接，保存并重启软件后生效。" : "保存并重启软件后生效。");
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
                 {
@@ -53,7 +52,7 @@ public sealed partial class ParameterSettingsControl
                 var item = new StackPanel(); item.Children.Add(Text((camera is null ? "" : camera + " · ") + ParameterLabel(p))); item.Children.Add(value); row.Children.Add(item); references.Children.Add(row);
             }
             page.Body.Children.Add(new Expander { Header = "其他页面的相关设置", Content = references, Margin = new(0, 20, 24, 0) });
-            Technical(page, "连接与业务结果", component.Contract, "心跳网络交付不表示上游应用确认。当前协议无权威结果查询；未知原请求不自动重发。重连继续使用当前运行配置，不应用待重启修订。");
+            Technical(page, "连接与业务结果", component.Contract, "心跳正常只说明 RCS 可连接。格口未确认的包裹不会自动重发。重连使用当前设置，已保存但未重启的修改不会生效。");
         }
     }
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
@@ -68,7 +67,7 @@ public sealed partial class ParameterSettingsControl
             locations[draft.InstanceId] = locations[draft.InstanceId + "/Provider"];
             if (!sdkSelected)
             {
-                page.Body.Children.Add(Text("当前相机通过海康 MVS SDK 采图并由软件识别。请重新配置本相机，再填写实际 IP 和物理序列号；重置只影响本相机连接参数，相机编码及另一台相机的设置保留。"));
+                page.Body.Children.Add(Text("这台相机的设置来自旧版本。请点击下方按钮重新配置，再填写 IP 和序列号；相机编码和另一台相机不受影响。"));
                 var sdk = draft.Providers.SingleOrDefault(p => p.Implementation == "hikrobot-mvs-reader");
                 var useSdk = new Button { Content = "按 MVS SDK 重新配置本相机", MinHeight = 44, IsEnabled = sdk is not null, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
                 AutomationProperties.SetAutomationId(useSdk, draft.InstanceId + "/ApplyProviderChange");
@@ -78,8 +77,8 @@ public sealed partial class ParameterSettingsControl
                 CameraCode(page, draft);
                 return; // Never mix old TCP fields with a proposed SDK connection.
             }
-            page.Body.Children.Add(Text("IP 地址用于找到这台 GigE 相机；物理序列号用于核对设备身份。相机通信由 MVS SDK 管理。"));
-            page.Body.Children.Add(Text("填写 IP 和序列号，保存重启后连接。此位置不使用相机时，两项留空。软件自动采用连续采集，每次识别结果都上报 RCS。"));
+            page.Body.Children.Add(Text("通过 IP 地址找到相机，通过序列号确认是这一台。"));
+            page.Body.Children.Add(Text("填写 IP 和序列号，保存并重启软件后连接。不使用这台相机时，两项都留空。"));
         }
         if (draft.Role == "default-scale")
         {
@@ -94,8 +93,8 @@ public sealed partial class ParameterSettingsControl
             Field(providerForm, draft.Kind == "observation" ? "相机连接方式" : draft.Kind == "integration" ? "服务连接方式" : "选择已安装组件", providers, null, draft.InstanceId + "/Provider", page);
             var change = new StackPanel { Margin = new(0, 4, 0, 16) };
             var consequence = draft.Kind == "observation"
-                ? "尚未切换，下方仍是当前方式的参数。确认后将清空本相机的连接参数，并采用新方式的默认值；请重新填写所选方式适用的参数；SDK正式启用须填写预期物理序列号。相机编码和另一相机的参数保留。"
-                : "尚未切换，下方仍是当前方式的参数。确认后将清空本组件的参数，并采用新方式的默认值；服务地址保留，请核对地址并重新填写协议参数。";
+                ? "还未切换。确认后会清空这台相机的连接参数并改用新方式的默认值，需要重新填写；相机编码和另一台相机不受影响。"
+                : "还未切换。确认后会清空这项连接的参数（服务地址保留），需要重新填写。";
             var proposal = Text(""); change.Children.Add(proposal);
             var actions = new WrapPanel { Margin = new(0, 8, 0, 0) };
             var apply = new Button { Content = "切换并重置参数", MinHeight = 40 };
@@ -127,20 +126,20 @@ public sealed partial class ParameterSettingsControl
         }
         if (draft.Provider is null)
         {
-            var issue = Text("缺少对应驱动或组件，请安装匹配的程序包。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); return;
+            var issue = Text("缺少对应的组件，请用原安装包修复软件。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); return;
         }
         if (FirstConfiguration && (draft.Kind == "observation" && draft.Provider.Implementation == "manual" || draft.Kind == "integration" && draft.Provider.Implementation == "reference-integration"))
         {
             var missing = Text(draft.Kind == "observation"
-                ? "请选择已安装且适用于当前设备的连接方式，并填写实际参数。"
-                : "当前为本地模拟连接。可在上方选择 RCS 服务，再填写实际服务地址与参数。");
+                ? "请选择连接方式并填写参数。"
+                : "当前是本地模拟。正式使用请在上方选择“RCS 服务”并填写地址。");
             missing.Foreground = Brush("#915300"); page.Body.Children.Add(missing); return;
         }
         var isRcs = ParameterOwnership.IsRcs(draft);
         if (draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition")
-            page.Body.Children.Add(Text("海康 SDK 随供包台软件安装，通过 IP 和预期序列号连接相机；实际连接与帧请在诊断中核对。尚缺适用的条码识别组件，不会生成条码或供包作业，正式供包不可用。"));
+            page.Body.Children.Add(Text("这种方式只采图、不识别条码，不能用于正式供包。"));
         if (draft.Provider.Implementation is "hikrobot-mvs-reader" or "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader")
-            page.Body.Children.Add(Text("电脑通过海康 SDK 连续读码。每次有效识别结果均提交 RCS，包含重复条码，由 RCS 负责去重；无需 PLC 或外部触发。启用前请关闭占用相机的旧客户端或设备工具。实际读码与 RCS 结果可在作业和诊断中核对。"));
+            page.Body.Children.Add(Text("相机连续读码，每次读到的条码都发给 RCS（重复条码由 RCS 去重）。启用前请关闭其他占用相机的软件，例如 MVS 客户端。"));
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
         if (isRcs)
@@ -166,7 +165,7 @@ public sealed partial class ParameterSettingsControl
 
         if (draft.Kind == "observation" && draft.Provider.Implementation == "manual")
         {
-            var missing = Text("请选择已安装且适用于当前设备的连接方式，并填写实际参数。");
+            var missing = Text("请选择连接方式并填写参数。");
             missing.Foreground = Brush("#915300"); page.Body.Children.Insert(0, missing);
         }
         // Type/version/instance/contract are support metadata, not connection inputs.
@@ -182,29 +181,29 @@ public sealed partial class ParameterSettingsControl
     {
         "zone-id" => "仓ID", "project-id" => "生产线ID", "device.ip" => "IP 地址", "device.port" or "port" => "端口", "specified-chute" => "指定格口", "chute-code" => "格口编号",
         "left-bcr-code" or "right-bcr-code" => "相机编码", "heartbeat-interval-seconds" => "心跳间隔",
-        "request-id-base" => "编号起点（不含）", "request-id-count" => "编号数量", "source" => "协议来源", "locale" => "协议语言",
-        "reply-mode" => "模拟回执方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
+        "request-id-base" => "起始编号（不含）", "request-id-count" => "编号数量", "source" => "协议来源", "locale" => "协议语言",
+        "reply-mode" => "模拟返回方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
     };
     static string ParameterHint(CapabilityParameter p) => p.Field.Key switch
     {
         "subjects" => "模拟认证允许的账号；不会创建 Windows 账号。现场使用实际安装的认证服务。",
         "decision" or "reply-mode" or "complete-on-query" => "仅用于模拟服务调试，不代表真实业务结果。",
-        "zone-id" => "填写RCS分配给当前仓库的ID，用于确定格口请求所属仓库。",
-        "project-id" => "填写RCS分配给当前生产线的ID，用于确定格口请求所属生产线。",
-        "left-bcr-code" or "right-bcr-code" => "本相机取格口请求与心跳共用这一编码，左右相机不得重复。更换连接方式不会清空此编码。",
-        "device.ip" => "按网络地址连接当前相机，不修改设备地址。", "device.serial" => "正式启用必填，按预期物理序列号核对本位相机；模拟或独立诊断可留空。",
+        "zone-id" => "RCS 分配的仓库编号。",
+        "project-id" => "RCS 分配的产线编号。",
+        "left-bcr-code" or "right-bcr-code" => "RCS 用来区分左右相机的编码，两台不能相同。",
+        "device.ip" => "相机的 IP 地址（软件不会修改相机设置）。", "device.serial" => "相机机身上的序列号，正式使用必填。",
         "code.encoding" => "与相机输出条码报文的字符编码一致；编码不匹配会导致条码无法正确解码。",
-        "entity.mode" => "仅观察不创建作业。触发关联要求设备已开启触发，并已确认一触发一个包裹、同触发多帧及重连后的原包裹处置；本选项不会修改相机触发设置。", "queue.capacity" => "条码观察的条数上限；同时受字节预算限制。溢出后停止接收，须检查并显式重连。",
-        "queue.maximum-code-bytes" => "排队及正在处理的条码缓冲预算；默认16777216字节（16MiB），范围1～64MiB，不是原图缓存。超限后故障阻断，须检查并受控恢复。",
+        "entity.mode" => "仅观察不创建作业。触发关联要求设备已开启触发，并已确认一触发一个包裹、同触发多帧及重连后的原包裹处置；本选项不会修改相机触发设置。", "queue.capacity" => "排队等待处理的条码最多多少条。排满后停止接收，需要检查后手动重连。",
+        "queue.maximum-code-bytes" => "条码排队占用的内存上限，默认 16 MiB，可填 1–64 MiB。超出后本位停止供包，需要检查后恢复。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
-        "heartbeat-interval-seconds" => "向RCS报告供包台及相机在线状态的间隔；范围1～3600秒，保存并重启后生效。",
-        "request-timeout-ms" => "单次取格口请求的总时限，包含连接和响应读取；默认5000毫秒，范围100～30000毫秒，保存并重启后生效。超时后提示重新扫描。",
-        "specified-chute" => "不指定时由RCS分配格口；只有现场业务要求固定格口时才选择指定，并填写格口编号。",
-        "chute-code" => "请求RCS使用的目标格口编号；仅选择指定格口时发送，最终结果仍以RCS回包为准。",
-        "source" => "RCS约定的请求来源标记；用于识别调用方，不是服务地址或供包台编号。",
-        "locale" => "RCS协议约定的语言标记；填写接口合同要求的值，不改变本软件界面语言。",
-        "request-id-base" => "RCS分配给本供包台的请求编号起点（不含）；新请求从下一编号开始，不能与其他供包台区间重叠。",
-        "request-id-count" => "本供包台可使用的请求编号数量；用尽后阻止新请求，须分配新区间，不能重置旧编号重复使用。",
+        "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，1–3600 秒。",
+        "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后提示重新扫描。",
+        "specified-chute" => "一般选“不指定”，由 RCS 分配格口。只有现场要求包裹去固定格口时才选“指定”。",
+        "chute-code" => "选择“指定”时要求 RCS 使用的格口编号，最终仍以 RCS 返回为准。",
+        "source" => "RCS 接口约定的来源标记，按接口文档填写。",
+        "locale" => "RCS 接口约定的语言标记，按接口文档填写（不影响本软件界面语言）。",
+        "request-id-base" => "RCS 分配给本供包台的请求编号段起点（不含此编号），不能与其他供包台重叠。",
+        "request-id-count" => "编号段的大小。用完后无法再发请求，需要向 RCS 申请新的编号段。",
         _ => p.EditorHelp.Length > 100 ? "完整规则见下方参数说明。" : p.EditorHelp
     };
     sealed record BooleanChoice(string Value, string Label);
@@ -225,7 +224,7 @@ public sealed partial class ParameterSettingsControl
             box.PasswordChanged += (_, _) => { if (p.Value != box.Password) p.Value = box.Password; };
             PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName == nameof(p.Value) && box.Password != p.Value) box.Password = p.Value; };
             p.PropertyChanged += changed; unsubscribe.Add(() => p.PropertyChanged -= changed);
-            Field(form, label, box, "敏感引用已隐藏；修改后统一审阅保存。" + (p.Field.ReadOnly ? "此字段只读。" : ""), path, page);
+            Field(form, label, box, "敏感内容已隐藏。" + (p.Field.ReadOnly ? "此字段只读。" : ""), path, page);
         }
         else if (p.Field.Type == "boolean" || p.Field.Key == "specified-chute")
         {
@@ -241,11 +240,11 @@ public sealed partial class ParameterSettingsControl
             var box = Input(form, label, p, "Value", path, page, help, p.IsList); box.MaxLength = p.EditorMaximumLength; box.IsReadOnly = p.Field.ReadOnly; if (p.Field.Type == "integer") box.MaxWidth = 240;
         }
         locations[path] = locations[path] with { Help = p.EditorHelp + " " + help };
-        var accessibleHelp = help == p.EditorHelp ? help : help + "\n填写限制：" + p.EditorHelp;
+        var accessibleHelp = help == p.EditorHelp ? help : help + "\n填写要求：" + p.EditorHelp;
         AutomationProperties.SetHelpText(locations[path].Control, accessibleHelp);
         locations[path].Control.ToolTip = accessibleHelp;
         locations[path].Control.IsEnabled = !p.Field.ReadOnly && ParameterOwnership.Applicable(draft, p.Field.Key);
-        Technical(page, ParameterLabel(p), path, help + "\n填写限制：" + p.EditorHelp);
+        Technical(page, ParameterLabel(p), path, help + "\n填写要求：" + p.EditorHelp);
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code")
         {
             var field = locations[path].Control;

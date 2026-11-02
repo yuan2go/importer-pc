@@ -158,7 +158,7 @@ static partial class Program
         var huge = rows[0] with { Text = new string('长', 100000) };
         probe.Query = (_, _, _) => Task.FromResult(new SoftwareLogPage("bounded", [huge], false, []));
         Click(window, "查询"); await Settle();
-        Check(terminal.Text.Length <= 65536 && terminal.Text.Contains("呈现预算") && huge.Text.Length == 100000,
+        Check(terminal.Text.Length <= 65536 && terminal.Text.Contains("内容过长") && huge.Text.Length == 100000,
             "terminal bounds rendering and discloses full export while preserving the complete source record");
         var delayed = new TaskCompletionSource<SoftwareLogPage>(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Query = (_, _, _) => delayed.Task; Click(window, "查询"); await Task.Delay(20); control.Revoke();

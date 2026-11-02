@@ -49,7 +49,7 @@ static partial class Program
             probe.Command = _ => { calls++; return outcome == "Throw" ? Task.FromException<BusinessReceipt>(new System.IO.IOException("合成通信中断")) : Task.FromResult(new BusinessReceipt(outcome, "合成命令回执", vm.Snapshot!.Revision)); };
             await vm.PauseAsync(); await Flush();
             var receipt = (TextBox)window.FindName("GlobalOperationFeedback");
-            Check(receipt.IsVisible && receipt.Text.Contains(outcome == "Conflict" ? "连续修订冲突" : outcome == "Throw" ? "待核对" : "合成命令回执"), ui + " log page exposes " + outcome + " pause result");
+            Check(receipt.IsVisible && receipt.Text.Contains(outcome == "Conflict" ? "状态多次变化" : outcome == "Throw" ? "未确认" : "合成命令回执"), ui + " log page exposes " + outcome + " pause result");
             Check(calls == (outcome == "Conflict" ? 3 : 1), "pause uses existing bounded conflict policy");
             var currentReceipt = receipt.Text;
             await vm.RunAsync(() => Task.CompletedTask, "读取最新50条"); await Flush();
@@ -146,7 +146,7 @@ static partial class Program
         var advanced = Descendants(host).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出"));
         var actualQuery = (SoftwareLogQuery)typeof(SoftwareLogControl).GetField("query", flags)!.GetValue(logs)!;
         Check(actualQuery.From.EqualsExact(expectedFrom) && actualQuery.ToExclusive.EqualsExact(expectedTo) &&
-            range.IsVisible && range.Text.StartsWith("已应用范围") && range.Text.Contains(expectedFrom.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && range.Text.Contains(expectedTo.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && Inside(range, client),
+            range.IsVisible && range.Text.StartsWith("查询范围") && range.Text.Contains(expectedFrom.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && range.Text.Contains(expectedTo.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) && Inside(range, client),
             "minimum query view displays local range while retaining both original query instants and explicit offsets");
         advanced.BringIntoView(); await Flush();
         Check(!advanced.IsExpanded && Inside(advanced, client) && Inside(range, client) && Inside(queryButton, client),

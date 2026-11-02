@@ -11,43 +11,43 @@ sealed class HistoryRetentionWindow : StartupWorkflowWindow
     StartupRetentionPlan? plan;
     readonly System.Windows.Controls.TextBox destination;
     CancellationTokenSource? planning;
-    public HistoryRetentionWindow(IStartupRetentionMaintenance service, IManagementMode management) : base("已结历史到期维护")
+    public HistoryRetentionWindow(IStartupRetentionMaintenance service, IManagementMode management) : base("清理过期记录")
     {
         this.service = service;
-        Note("保存保留天数不执行清理。请先暂停并完全退出作业窗口，进入管理模式后预检。先完整备份，再按原内核删除到期已结明细；未决责任和永久身份保留，不自动压缩磁盘。预检期间可按Esc或关闭窗口取消读取；提交后等待原回执。");
-        Action("进入 / 核对管理模式…", async () =>
+        Note("设置保留天数后，先预检再清理。清理前请暂停供包并完全退出作业窗口，进入管理模式；系统会先完整备份，再删除超过保留天数且已完成的记录。未处理完的作业不会删除。预检时可按 Esc 取消。");
+        Action("进入管理模式…", async () =>
         {
             if (!(await management.ManagementModeStatusAsync()).Authorized) new ManagementModeWindow(management) { Owner = this }.ShowDialog();
-            Message((await management.ManagementModeStatusAsync()).Authorized ? "管理模式有效；请继续核对原计划。" : "尚未授权；原计划及输入保留。通过现有管理密码进入后再继续。");
+            Message((await management.ManagementModeStatusAsync()).Authorized ? "已进入管理模式，可以继续。" : "尚未进入管理模式。请输入管理密码后继续。");
         }, readOnly: true);
-        destination = Field("新的完整备份文件（数据库与同名恢复目录）", "", _ => { plan = null; });
+        destination = Field("清理前的完整备份位置（数据库及同名 .recovery 目录）", "", _ => { plan = null; });
         Action("选择完整备份文件…", () =>
         {
             var picker = new Microsoft.Win32.SaveFileDialog { Filter = "完整恢复集数据库|*.db", FileName = "pre-retention-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db" };
             if (picker.ShowDialog(this) == true) destination.Text = picker.FileName;
             return Task.CompletedTask;
         });
-        Action("预检原账与完整备份计划", async () =>
+        Action("预检", async () =>
         {
             plan = null; var value = destination.Text;
             using var cancellation = new CancellationTokenSource(); planning = cancellation;
             try { plan = await Task.Run(() => service.PlanRetentionAsync(value, cancellation.Token)); }
             finally { planning = null; }
-            Message("预检完成，尚未执行。保留 " + plan.Days + " 天。\n目标：" + plan.BackupDestination + "\n" + plan.Summary);
+            Message("预检完成，尚未清理。保留 " + plan.Days + " 天。\n目标：" + plan.BackupDestination + "\n" + plan.Summary);
         });
-        Action("完整备份并清理到期已结历史…", async () =>
+        Action("备份并清理过期记录…", async () =>
         {
             var original = plan ?? throw new InvalidOperationException("先预检当前计划");
             if (destination.Text != original.BackupDestination) throw new InvalidOperationException("备份目标已改变，重新预检");
-            if (MessageBox.Show(this, "将执行当前已审阅的固定计划，保留 " + original.Days + " 天。\n完整备份：" + original.BackupDestination + "\n未决及永久责任继续保留；不自动恢复作业。", "确认已结历史到期维护", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
+            if (MessageBox.Show(this, "将按预检结果清理，保留 " + original.Days + " 天。\n完整备份：" + original.BackupDestination + "\n未处理完的作业不会删除。", "确认清理过期记录", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
             // Until a trusted terminal arrives, only inspection may be used, even on a known helper failure.
             UnknownOutcome = true;
             var result = await Task.Run(() => service.ExecuteRetentionAsync(original));
             UnknownOutcome = false; Message(result.Detail); plan = null;
         });
-        Action("只读核对原维护回执", async () =>
+        Action("查看上次清理结果", async () =>
         {
-            var original = plan ?? throw new InvalidOperationException("本窗没有待核对原计划；保留原数据及维护记录");
+            var original = plan ?? throw new InvalidOperationException("没有需要查看的清理记录");
             var result = await Task.Run(() => service.InspectRetentionAsync(original));
             Message(result.Detail);
             if (result.Status is "Completed" or "Interrupted") { UnknownOutcome = false; plan = null; }

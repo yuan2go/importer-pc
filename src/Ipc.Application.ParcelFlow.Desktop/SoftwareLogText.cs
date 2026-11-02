@@ -9,7 +9,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 static class SoftwareLogText
 {
     internal const int MaximumCharacters = 65536;
-    const string BudgetNotice = "\n\n【已到本次呈现预算，后续内容未显示。请使用“导出全部匹配”或“导出时间范围”，并设置所需上下文，取得完整脱敏原记录。】";
+    const string BudgetNotice = "\n\n【内容过长，后面未显示。请用“导出筛选结果”或“导出该时段全部日志”查看完整内容。】";
     public static string Format(IEnumerable<SoftwareLogEntry> entries, CancellationToken token)
     {
         var text = new StringBuilder(); var remaining = MaximumCharacters - 2 * BudgetNotice.Length;

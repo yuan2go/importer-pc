@@ -119,7 +119,7 @@ public partial class App : System.Windows.Application
                 }
             }
             startup.BeginAttempt();
-            startup.Phase("读取配置与本地记录", "检查所选 Application、配置身份和本地恢复责任；尚未开放业务。", "启动配置入口已判定");
+            startup.Phase("读取配置与本地记录", "正在检查配置和上次未处理完的作业，尚未开始供包。", "启动配置入口已判定");
             var starting = await Task.Run(() => ParcelAssembly.Create(launch)); runtime = starting;
             if (starting is IRuntimeFatalSource fatalSource)
             {
@@ -129,9 +129,9 @@ public partial class App : System.Windows.Application
                     TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             }
             if (launch.View is not null && !starting.Presentation.Views.Contains(launch.View) || launch.Layout is not null && !starting.Presentation.Layouts.Contains(launch.Layout)) throw new InvalidDataException("页面或布局不属于本次选定业务");
-            startup.Phase("启动所选能力并恢复原请求", "正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定。", "配置和页面选择已读取");
+            startup.Phase("正在启动设备并恢复未完成的作业", "正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定。", "配置和页面选择已读取");
             await Task.Run(() => starting.StartAsync(CancellationToken.None));
-            startup.Phase("读取当前运行状态", "启动调用已返回，正在读取应用快照。", "启动流程已返回");
+            startup.Phase("读取当前运行状态", "启动完成，正在读取状态。", "启动流程已返回");
             var application = (IParcelApplication)starting.Application;
             // Setup/repair can authorize the same local authority in this process.
             // Every new runtime entry returns to ordinary mode, including a controlled reopen.
@@ -330,7 +330,7 @@ sealed class ParcelStartupWindow : Window
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {
         actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
-        title.Text = "客户端已打开 · 业务尚未就绪"; detail.Text = "可修改参数、查看诊断；未进入作业。若停止失败，窗口继续持有资源责任，可重试停止。";
+        title.Text = "客户端已打开 · 业务尚未就绪"; detail.Text = "可修改参数、查看诊断，尚未开始作业。如果停止失败，可再次点击停止。";
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
         var copy = new Button { Content = "复制诊断", MinHeight = 44 };
         copy.Click += (_, _) => { try { Clipboard.SetText(diagnostic.Text); } catch (Exception error) { detail.Text = "复制失败，可选择诊断文本复制：" + error.Message; } };

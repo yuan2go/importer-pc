@@ -60,17 +60,17 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
         next = Action("检查安装媒介", Next); StartupAppearance.Primary(next);
         records = Action("打开安装记录目录", OpenRecordDirectory, readOnly:true);
-        inspect = Action("只读核对本次安装", InspectOriginal, readOnly: true);
-        repairCommitted = Action("修复原安装的系统入口…", async () =>
+        inspect = Action("查看本次安装结果", InspectOriginal, readOnly: true);
+        repairCommitted = Action("修复开始菜单和程序入口…", async () =>
         {
             if (reviewed is null || originalInspection?.Status != "CommittedNeedsSystemRepair") return;
             var current = await Task.Run(() => InspectInstallation(reviewed));
-            if (current.Status != "CommittedNeedsSystemRepair" || current.Location is null) throw new InvalidOperationException("原登记已变化，先只读核对");
+            if (current.Status != "CommittedNeedsSystemRepair" || current.Location is null) throw new InvalidOperationException("安装登记已变化，请先查看安装结果");
             ResolveKnownMaintenanceOutcome(); // The read-back above resolved the original committed identity.
-            await RunMaintenance("修复已提交安装的系统入口\n原安装："+reviewed.OperationId+"\n保留原数据和配置。",(progress,token)=>RepairRegistration(reviewed,progress,token));
+            await RunMaintenance("修复开始菜单和程序入口\n安装位置："+reviewed.OperationId+"\n数据和配置不变。",(progress,token)=>RepairRegistration(reviewed,progress,token));
             installed = current.Location; outcomeUnknown = false; step = 3; Render();
         }, readOnly: true);
-        resumeRemoval = Action("核对并继续原卸载清理…", () => { new ProductMaintenanceWindow(media!) { Owner = this }.ShowDialog(); Render(); return Task.CompletedTask; }, readOnly: true);
+        resumeRemoval = Action("继续上次未完成的卸载清理…", () => { new ProductMaintenanceWindow(media!) { Owner = this }.ShowDialog(); Render(); return Task.CompletedTask; }, readOnly: true);
         cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; },readOnly:true);
         next.IsDefault = false; cancel.IsCancel = true;
         AutomationProperties.SetLiveSetting(recordFeedback, AutomationLiveSetting.Polite);
@@ -145,14 +145,14 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(520, MaxHeight);
             Message(originalInspection?.Status == "CommittedNeedsSystemRepair"
-                ? "原安装已提交，系统入口修复结果待确认。请先核对原操作。"
+                ? "安装已完成，但开始菜单和程序入口的修复结果未确认。请先查看安装结果。"
                 : "未能确认本次安装的最终结果。");
-            Note("先只读核对本次固定操作。核对不会重新安装；记录不可读或仍在执行时继续保留原身份。");
+            Note("请点击“查看本次安装结果”确认，查看不会重新安装。");
             var caution = new TextBlock { Text = "确认前，请勿重复安装。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(121, 85, 27)) };
             AutomationProperties.SetLiveSetting(caution, AutomationLiveSetting.Assertive);
             Body.Children.Add(new Border { Background = new SolidColorBrush(Color.FromRgb(255, 248, 231)), CornerRadius = new(4), Padding = new(14, 11, 14, 11), Margin = new(0, 16, 0, 18), Child = caution });
             Details(historical: true);
-            Body.Children.Add(new TextBlock { Text = "关闭不会取消可能仍在执行的安装；准备文件将保留。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), Margin = new(0, 16, 0, 0) });
+            Body.Children.Add(new TextBlock { Text = "关闭窗口不会停止仍在进行的安装。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), Margin = new(0, 16, 0, 0) });
             Body.Children.Add(recordFeedback);
             return;
         }
@@ -160,7 +160,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(optionsHeight, MaxHeight);
             Message(ChineseInterfaceText.ParameterMessage(failureMessage)); Status.Foreground = Brushes.Firebrick;
-            Note("请查看失败详情和安装记录。安装登记可能已提交，系统入口可能仍需修复；返回后将重新核对原部署。未自动回滚。");
+            Note("请查看失败详情和安装记录。安装可能已部分完成，开始菜单和程序入口可能需要修复；返回后会重新检查。安装不会自动回滚。");
             Details(); next.Content = "返回安装选项"; Body.Children.Add(recordFeedback); return;
         }
         if (installing)
@@ -168,11 +168,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Height = Math.Min(440, MaxHeight);
             Message("请稍候，安装完成后将显示结果。");
             Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 10, Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)), Margin = new(0, 12, 0, 12) });
-            Body.Children.Add(new TextBlock { Text = "阶段由实际安装回执更新；当前没有可核验的总进度百分比。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
+            Body.Children.Add(new TextBlock { Text = "按实际安装步骤显示进度。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
             Details();
-            Note("已进入安装提交，不能取消或重复安装。若回执中断，请只读核对原操作；关闭窗口不代表回滚。"); return;
+            Note("正在写入安装，不能取消或重复安装。如果中途中断，请点击“查看本次安装结果”确认；关闭窗口不会回滚安装。"); return;
         }
-        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和安装设置，然后点击下一步。", 2 => "本次操作：" + installationKind + "。核对以下选项后开始。", _ => "菜鸟供包台已安装。" });
+        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和安装设置，然后点击下一步。", 2 => "本次操作：" + installationKind + "。确认以下选项后开始。", _ => "菜鸟供包台已安装。" });
         if (step == 0)
         {
             preparationProgress.IsIndeterminate = prepareMedia is null;
@@ -193,11 +193,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon); Row("快捷方式", shortcuts);
             if (ApplicationId == "sportmaster")
-                Note("相机与 RCS：内置 MVS 采图、软件识别和 RCS 随软件交付，不需要选装外置扩展。安装核验不代表相机或现场 RCS 已连接。程序与数据位置遵守本机 D 盘存储策略。");
+                Note("相机采图、条码识别和 RCS 接口已随软件安装，无需另装组件。安装完成不代表相机或 RCS 已连接。程序和数据按本机存储规则放在 D 盘。");
             installationKind = current is null ? "安装" : current.LifecycleState != "Installed" ? "重新安装" : current.SourceCommit == media?.SourceCommit ? "修复安装" : "更新";
-            if (current is not null) Message("本次操作：" + installationKind + "。原账户、数据和配置将保留。");
-            if (current is not null) Note("本次" + installationKind + "保留原账户、数据目录和配置；先核对原责任并完成所需完整备份。" +
-                (current.LifecycleState != "Installed" ? "重新安装不会代替原卸载清理，也不会清除原业务记录。" : ""));
+            if (current is not null) Message("本次操作：" + installationKind + "。账户、数据和配置将保留。");
+            if (current is not null) Note("本次" + installationKind + "将保留账户、数据目录和配置；执行前会检查未处理完的作业并完整备份。" +
+                (current.LifecycleState != "Installed" ? "重新安装不会清除已有业务记录。" : ""));
             if (preflightError.Length != 0)
             {
                 var detail = new TextBox { Text = preflightError, IsReadOnly = true, TextWrapping = TextWrapping.Wrap,
@@ -213,16 +213,16 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section("安装位置"); Summary("程序目录", r.ProgramRoot!); Summary("数据目录", r.DataRoot);
             Section("安装设置");
             Summary("开始菜单", r.Shortcuts!.StartMenu ? "创建快捷方式" : "不创建快捷方式"); Summary("桌面", r.Shortcuts.Desktop ? "创建快捷方式" : "不创建快捷方式");
-            if (r.BackupDestination is not null) { Section("原责任与备份"); Note("执行前检查原责任并完成备份。有阻断时停止；失败结果以实际安装记录为准。"); Summary("备份位置", r.BackupDestination); }
+            if (r.BackupDestination is not null) { Section("作业检查与备份"); Note("安装前会检查未处理完的作业并完整备份；检查不通过时停止安装。"); Summary("备份位置", r.BackupDestination); }
             foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
-            Note("安装需要 Windows 授权。应用管理密码与 Windows 授权分别验证。"); next.Content = "安装";
+            Note("安装需要 Windows 管理员授权（与软件管理密码无关）。"); next.Content = "安装";
         }
         else
         {
             Height = Math.Min(440, MaxHeight);
             if (needsFirstConfiguration == true)
-            { Section("首次使用"); Note(ApplicationId == "sportmaster" ? "首次打开后先设置供包台。相机和RCS可稍后配置；待配置时可进入软件，相关业务保持阻断。" : "首次打开后，请完成设备与服务配置，再按检查结果启动。"); }
-            else Note(needsFirstConfiguration == false ? "已有配置已识别。打开后仍需主动启动，启动时检查设备与服务条件。" : configurationMessage.Length > 0 ? configurationMessage : "打开后将核对配置状态；安装完成不代表设备已可运行。");
+            { Section("首次使用"); Note(ApplicationId == "sportmaster" ? "首次打开后先设置供包台。相机和 RCS 可稍后配置，配置完成前不能供包。" : "首次打开后，请完成设备与服务配置，再按检查结果启动。"); }
+            else Note(needsFirstConfiguration == false ? "已有配置已识别。打开后仍需主动启动，启动时检查设备与服务条件。" : configurationMessage.Length > 0 ? configurationMessage : "打开后会检查配置；安装完成不代表设备已可运行。");
             var canRun = ParcelStartupServices.IsRuntimeAccount(installed!);
             runAfter = new CheckBox { Content = "完成后打开供包台", IsChecked = canRun, IsEnabled = canRun, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 16, 12, 0) };
             Actions.Children.Insert(0, runAfter); if (!canRun) Note("请使用原供包台的 Windows 账户打开程序。"); next.Content = "完成";
@@ -236,7 +236,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             content.Children.Add(new TextBlock { Text = "历史消息", FontSize = UiTypography.Label, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 6) });
             content.Children.Add(new TextBlock { Text = original.Replace("等待 Windows 授权，请在授权窗口确认", "等待 Windows 授权。", StringComparison.Ordinal), FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap });
-            content.Children.Add(new TextBlock { Text = "历史消息仅供核对，不代表当前仍在等待授权。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) });
+            content.Children.Add(new TextBlock { Text = "以下为历史消息，不代表当前仍在等待授权。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) });
             content.Children.Add(new TextBlock { Text = "诊断结果", FontSize = UiTypography.Label, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 6) });
             content.Children.Add(new TextBox { Text = failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, MinHeight = 0, MaxHeight = 100, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
             content.Children.Add(new Expander { Header = "原始消息文本", FontSize = UiTypography.Label, Margin = new(0, 12, 0, 0), Content = new TextBox { Text = original + "\n" + failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, MinHeight = 0, MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
@@ -260,7 +260,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             recordFeedback.ToolTip = error.Message;
             recordFeedback.Text = (error is DirectoryNotFoundException ? "安装记录目录尚未生成或当前无法访问。" : "无法打开安装记录目录：" + ChineseInterfaceText.ParameterMessage(error.Message))
-                + (outcomeUnknown ? " 最终结果仍待确认，请勿重复安装。" : " 请核对本次失败详情。");
+                + (outcomeUnknown ? " 最终结果仍待确认，请勿重复安装。" : " 请查看本次失败详情。");
         }
         return Task.CompletedTask;
     }
@@ -270,8 +270,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         installationStage.Text = value switch
         {
             WindowsInstallationStage.WaitingForAuthorization => "等待 Windows 授权，请在授权窗口确认",
-            WindowsInstallationStage.CheckingResponsibilities => "正在核对安装条件与原有责任",
-            WindowsInstallationStage.PreparingBackup => "正在检查原部署并创建完整备份",
+            WindowsInstallationStage.CheckingResponsibilities => "正在检查安装条件",
+            WindowsInstallationStage.PreparingBackup => "正在检查已安装版本并创建完整备份",
             WindowsInstallationStage.CopyingFiles => "正在复制并校验程序文件",
             WindowsInstallationStage.PreparingConfiguration => "正在准备配置与数据目录",
             WindowsInstallationStage.InstallingComponents => "正在安装已核验组件",
@@ -279,7 +279,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             WindowsInstallationStage.CommittingInstallation => "正在提交安装登记",
             WindowsInstallationStage.CreatingShortcuts => "正在创建所选快捷方式",
             WindowsInstallationStage.RegisteringApplication => "正在登记 Windows 程序入口",
-            _ => "正在核对安装结果"
+            _ => "正在确认安装结果"
         };
         AutomationProperties.SetLiveSetting(installationStage, AutomationLiveSetting.Polite);
         installationDetails.Add(installationStage.Text);
@@ -291,7 +291,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             string details;
             try { details = DiagnosticText.Protect(error.Message); }
-            catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { details = "启动诊断无法安全显示，请核对启动记录。"; }
+            catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { details = "启动诊断无法显示，请查看启动记录。"; }
             Message("安装已完成，但打开供包台未成功。可点击完成重试打开，或取消勾选后关闭。\n" + details);
             Status.Foreground = Brushes.Firebrick;
             return;
@@ -309,7 +309,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             {
                 CaptureInputs();
                 try { preflightError = DiagnosticText.Protect(error.Message); }
-                catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { preflightError = "预检诊断无法安全显示；请核对路径与配置后重新检查。"; }
+                catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { preflightError = "预检诊断无法显示，请检查路径与配置后重试。"; }
                 Render(); Message("安装预检未通过，请查看本次预检详情。"); Status.Foreground = Brushes.Firebrick;
                 return;
             }
@@ -348,7 +348,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
             if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
             var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();
-            var preview=await RunMaintenance("只读审阅安装选项\n介质："+media!.Root+"\n程序："+selectedProgram+"\n数据："+enteredData+"\n取消将在当前文件或组件核验结束后停止。",(progress,token)=>
+            var preview=await RunMaintenance("检查安装选项\n安装包："+media!.Root+"\n程序："+selectedProgram+"\n数据："+enteredData+"\n取消将在当前文件或组件核验结束后停止。",(progress,token)=>
             {
                 try
                 {
@@ -356,7 +356,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                     var candidate=Review(media!,selectedAccount,enteredData!,configPath,null,selected,false,selectedProgram,token) with{Shortcuts=new(selectedStartMenu,selectedDesktop)};
                     var review=DeploymentComponentReviewing.Inspect(candidate,token);token.ThrowIfCancellationRequested();return Task.FromResult((candidate,review));
                 }
-                catch(OperationCanceledException)when(token.IsCancellationRequested){throw new MaintenanceCancelledException("安装选项预检已停止；尚未进入机器变更，准备文件保留。");}
+                catch(OperationCanceledException)when(token.IsCancellationRequested){throw new MaintenanceCancelledException("已停止检查，电脑上未做任何更改。");}
             },readOnly:true);
             reviewed=preview.candidate;components=preview.review;
             var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
@@ -369,11 +369,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             installationRecordDirectory = Path.GetDirectoryName(WindowsDeploymentSetup.Registration(reviewed!.ApplicationId));
             installing = true; installationDetails.Clear(); installationStage.Text = "正在准备安装请求"; Render();
             var stages=new Progress<WindowsInstallationStage>(StageOnDispatcher);
-            installed = await RunMaintenance("安装 / 升级 / 同源修复\n介质："+reviewed!.MediaRoot+"\n程序："+(reviewed.ProgramRoot??TrustedProgramRoots.Default)+"\n保留数据："+reviewed.DataRoot,
+            installed = await RunMaintenance("安装 / 升级 / 修复\n安装包："+reviewed!.MediaRoot+"\n程序："+(reviewed.ProgramRoot??TrustedProgramRoots.Default)+"\n保留数据："+reviewed.DataRoot,
                 (progress,token)=>Install(reviewed,stages,progress,token));
             installing = false;
-            try { var classification = await ParcelStartupServices.Maintenance(new(installed.ConfigurationDirectory, installed.DataRoot, null, null)).ClassifyAsync(); needsFirstConfiguration = classification.Readable ? !classification.ExistingConfiguration : null; if (!classification.Readable) configurationMessage = "配置状态暂时无法核对。打开后请按实际检查结果处理；设备尚未启动。"; }
-            catch (Exception error) { configurationMessage = "配置状态暂时无法核对：" + error.Message + "。设备尚未启动。"; }
+            try { var classification = await ParcelStartupServices.Maintenance(new(installed.ConfigurationDirectory, installed.DataRoot, null, null)).ClassifyAsync(); needsFirstConfiguration = classification.Readable ? !classification.ExistingConfiguration : null; if (!classification.Readable) configurationMessage = "暂时无法检查配置状态。打开软件后按检查结果处理；设备尚未启动。"; }
+            catch (Exception error) { configurationMessage = "暂时无法检查配置状态：" + error.Message + "。设备尚未启动。"; }
             step = 3; Render();
         }
         else
@@ -394,7 +394,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (result.Status == "Completed" && result.Location is { } location)
         { ResolveKnownMaintenanceOutcome(); installed = location; outcomeUnknown = false; installing = false; step = 3; Render(); }
         else if (result.Status is "Failed" or "NotCommitted") { ResolveKnownMaintenanceOutcome(); failureMessage = result.Detail; failed = true; outcomeUnknown = false; Render(); }
-        else { Render(); Message(result.Detail + "\n原操作：" + reviewed.OperationId); }
+        else { Render(); Message(result.Detail + "\n上次操作：" + reviewed.OperationId); }
     }
     void StageOnDispatcher(WindowsInstallationStage value) => Dispatcher.BeginInvoke(() => Stage(value));
 }

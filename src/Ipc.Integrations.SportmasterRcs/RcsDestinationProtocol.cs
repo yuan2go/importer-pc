@@ -66,7 +66,7 @@ internal static class RcsDestinationProtocol
             return (false, null, new(WcsDestinationOutcome.Rejected, code, message, args, null, null, null, null, null, null, null));
         }
         catch (Exception e) when (e is InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
-        { throw new RcsResponseException(message ?? "RCS未返回有效格口，请核对异常信息。", e); }
+        { throw new RcsResponseException(message ?? "RCS 未返回有效格口，请查看异常信息。", e); }
     }
     static int Nonnegative(JsonElement e, string name) => e.GetProperty(name).GetInt32() is var n && n >= 0 ? n : throw new InvalidDataException("RCS negative quantity");
     static decimal? Measurement(JsonElement e, string name)

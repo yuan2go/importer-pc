@@ -62,7 +62,7 @@ public sealed class ParcelPictureWindow : Window
         close.Click += (_, _) => Close(); DockPanel.SetDock(close, Dock.Right); bottom.Children.Add(close);
         var detail = new Expander { Header = "图片来源与完整性", Content = provenance }; bottom.Children.Add(detail);
         viewport.Content = scene; scene.Children.Add(image); body.Children.Add(viewport); Content = body;
-        System.Windows.Automation.AutomationProperties.SetName(viewport, "包裹原图，Ctrl加滚轮缩放，左键拖动平移");
+        System.Windows.Automation.AutomationProperties.SetName(viewport, "包裹原图：Ctrl + 滚轮缩放，按住左键拖动");
         viewport.SizeChanged += (_, _) => { if (fit) Fit(); };
         viewport.ScrollChanged += (_, e) => { if (fit && (e.ViewportWidthChange != 0 || e.ViewportHeightChange != 0)) Fit(); };
         viewport.PreviewMouseWheel += (_, e) => { if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return; e.Handled = true; Scale(zoom * (e.Delta > 0 ? 1.25 : .8)); };
@@ -81,7 +81,7 @@ public sealed class ParcelPictureWindow : Window
     void SessionChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(vm.Snapshot) || vm.Snapshot?.CurrentOperator?.SessionId == operatorSession) return;
-        generation++; reading?.Cancel(); ClearImage(); status.Text = "操作员会话已改变，请关闭后从当前授权会话重新打开。";
+        generation++; reading?.Cancel(); ClearImage(); status.Text = "操作员已变更，请关闭后重新打开。";
     }
     void Add(Panel panel, string label, Action action)
     {
@@ -112,7 +112,7 @@ public sealed class ParcelPictureWindow : Window
             frame = original.Metadata;
             var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, original.Gray8, frame.Width); bitmap.Freeze();
             image.Source = bitmap; image.Width = scene.Width = frame.Width; image.Height = scene.Height = frame.Height;
-            provenance.Text = "作业：" + (result.OperationId ?? "本次未准入观察") + "\n观察：" + result.ObservationId + "\n相机：" + frame.DeviceId +
+            provenance.Text = "作业：" + (result.OperationId ?? "本次扫描未受理") + "\n观察：" + result.ObservationId + "\n相机：" + frame.DeviceId +
                 " · 周期：" + frame.Epoch + " · 帧：" + frame.FrameNumber + "\n采集：" + frame.CapturedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
                 "\n像素：" + frame.Width + " × " + frame.Height + " · SHA256：" + frame.OriginalSha256;
             DrawAnnotations(); fit = true; Fit();
@@ -127,18 +127,18 @@ public sealed class ParcelPictureWindow : Window
         if (data.Length < 33 || !data.AsSpan(0, 8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }) ||
             System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(data.AsSpan(16, 4)) != info.Width ||
             System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(data.AsSpan(20, 4)) != info.Height || (long)info.Width * info.Height > 33554432)
-            throw new InvalidDataException("留档PNG像素头与原帧尺寸不符。");
+            throw new InvalidDataException("图片文件与原始尺寸不符。");
         using var stream = new System.IO.MemoryStream(data, false);
         var decoded = BitmapDecoder.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad).Frames.Single();
-        if (decoded.PixelWidth != info.Width || decoded.PixelHeight != info.Height) throw new InvalidDataException("解码PNG尺寸不符。");
+        if (decoded.PixelWidth != info.Width || decoded.PixelHeight != info.Height) throw new InvalidDataException("图片尺寸不符。");
         BitmapSource gray = decoded.Format == PixelFormats.Gray8 ? decoded : new FormatConvertedBitmap(decoded, PixelFormats.Gray8, null, 0);
         var pixels = new byte[checked(info.Width * info.Height)]; gray.CopyPixels(pixels, info.Width, 0);
-        if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)) != info.RawSha256) throw new InvalidDataException("留档原始像素SHA256不符。");
+        if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)) != info.RawSha256) throw new InvalidDataException("图片校验未通过，可能已损坏。");
         var source = info.Acquisition; var numberText = source.SourceEventId.StartsWith("mvs.frame.", StringComparison.Ordinal) ? source.SourceEventId[10..] : "";
         _ = long.TryParse(numberText, out var number);
         return new(new("business-original:" + archived.OperationId, "business-original", source.DeviceId, source.Epoch, number,
             source.ObservedAt, info.Width, info.Height, [], 0, null, source.SourceEventId, null, info.RawSha256!, true,
-            "原业务PNG留档；未包含识别几何时不绘制示意框", OperationId: archived.OperationId), pixels);
+            "原始图片；没有识别位置信息时不画框", OperationId: archived.OperationId), pixels);
     }
     void Fit()
     {

@@ -29,7 +29,7 @@ static partial class Program
             check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("正在原生慢维护读取") &&
                 scope.IsEnabled && ((ParameterSettingsControl)page.FindName("MainParameterEditor")).IsEnabled && !save.IsEnabled,
                 "native feedback is immediate; navigation and draft editing stay available while guarded save is disabled");
-            check(Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停新入场") || Equals(x.Content, "暂停供包"))).IsEnabled,
+            check(Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停供包"))).IsEnabled,
                 "native Pause remains enabled outside the busy maintenance scope");
             await vm.PauseAsync();
             for (var i = 0; i < 100 && vm.Snapshot?.Paused != true; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
@@ -53,7 +53,7 @@ static partial class Program
             "native stable instance identity cannot be edited through the legacy inventory");
         check(vm.ReaderDrafts.Select(x => x.Original.DeviceId).SequenceEqual(vm.Snapshot!.Configuration.Effective.Topology!.Readers.Select(x => x.DeviceId)), "native controls retain all stable reader bindings and original configuration");
         var tools = (TabControl)page.FindName("TechnicalTabs");
-        var tab = tools.Items.OfType<TabItem>().Single(x => Equals(x.Header, "能力库存与参数"));
+        var tab = tools.Items.OfType<TabItem>().Single(x => Equals(x.Header, "已安装组件与参数"));
         page.ShowTechnicalTool(tools.Items.IndexOf(tab)); page.UpdateLayout();
         var instances = (DataGrid)page.FindName("Instances");
         check(!instances.IsReadOnly && instances.Columns[0].IsReadOnly, "native capability inventory is editable while kind remains read-only");
@@ -213,7 +213,7 @@ static partial class Program
             for (var i = 0; i < 100 && vm.Busy; i++) await Task.Delay(20);
             check(vm.Snapshot!.CurrentOperator?.Subject == "alice" && proof.Password.Length == 0,
                 "native classic login reaches the real Application and clears the entered proof");
-            var pause = Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停新入场") || Equals(x.Content, "暂停供包")));
+            var pause = Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停供包")));
             check(pause.IsEnabled && Inside(pause, client), "expanding classic diagnostics retains independent fixed Pause");
         }
         finally { diagnostics.ClearValue(Expander.IsExpandedProperty); window.UpdateLayout(); }
@@ -331,12 +331,12 @@ static partial class Program
             }
             var summaries = Descendants(host).OfType<TextBlock>().Where(x => x.Name == "RetainedResponsibility" || Equals(x.Tag, "RetainedResponsibility")).ToArray();
             check(summaries.Length == 2 && summaries.All(x => x.IsVisible && Inside(x, client) && x.Text.Contains("待核对")), "both retained Unknown responsibilities remain visible alongside the new input rejection");
-            foreach (var button in Descendants(host).OfType<Button>().Where(x => Equals(x.Content, "核对原请求") || Equals(x.Content, "选择此位为命令目标")))
+            foreach (var button in Descendants(host).OfType<Button>().Where(x => Equals(x.Content, "查询作业结果") || Equals(x.Content, "选择此位为命令目标")))
             {
                 var bounds = button.TransformToAncestor(client).TransformBounds(new Rect(button.RenderSize));
                 check(button.ActualHeight >= 44 && bounds.Bottom <= client.ActualHeight && bounds.Top >= 0, $"{ui} {target} fixed operation remains visible");
             }
-            var pause = Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停新入场") || Equals(x.Content, "暂停供包")));
+            var pause = Descendants(window).OfType<Button>().Single(x => (Equals(x.Content, "暂停供包")));
             check(pause.IsEnabled && pause.ActualHeight >= 44, "independent Pause remains enabled and reachable");
             var dpi = VisualTreeHelper.GetDpi(window);
             File.AppendAllText(Path.Combine(evidence, "CLIENT-MATRIX.log"), $"{ui} target={target} client={client.ActualWidth}x{client.ActualHeight} dpi={dpi.DpiScaleX}/{dpi.DpiScaleY} os={Environment.OSVersion} account={Environment.UserName}\n");

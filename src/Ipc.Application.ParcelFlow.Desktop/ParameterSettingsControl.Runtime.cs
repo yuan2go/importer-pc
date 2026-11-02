@@ -40,7 +40,7 @@ public sealed partial class ParameterSettingsControl
         page.Technical.Children.Add(details);
         void Update()
         {
-            var state = RuntimeContext?.ParameterConnection(target) ?? new ParameterConnectionPresentation("尚未启动", "", "", "这里只编辑候选设置，连接状态需启动后核对。", "neutral");
+            var state = RuntimeContext?.ParameterConnection(target) ?? new ParameterConnectionPresentation("尚未启动", "", "", "这里修改的是待保存的设置；连接状态在软件启动后查看。", "neutral");
             summary.Text = state.Status;
             summary.Foreground = Brush(state.Tone switch { "ready" => "#16704A", "warning" => "#915300", _ => "#5A6878" });
             address.Text = state.Address.Length == 0 ? "" : "运行地址：" + state.Address;
@@ -49,7 +49,7 @@ public sealed partial class ParameterSettingsControl
             notice.Foreground = Brush(state.Tone == "warning" ? "#915300" : "#5A6878");
             details.Text = "运行版本与证据\n" + state.Details; details.Visibility = state.Details.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             diagnostic.IsEnabled = RuntimeContext is not null && DiagnosticsRequested is not null;
-            diagnostic.ToolTip = diagnostic.IsEnabled ? "查看该对象的运行证据；不会检查编辑地址或发送业务请求。" : "启动前没有运行诊断；完成配置并启动后核对。";
+            diagnostic.ToolTip = diagnostic.IsEnabled ? "查看当前运行中的连接状态，不会发送业务请求。" : "软件启动后才能查看连接状态。";
             ToolTipService.SetShowOnDisabled(diagnostic, true);
         }
         runtimeUpdates.Add(Update); Update(); page.Body.Children.Add(new Border { Child = row, BorderBrush = Brush("#D8E1EB"), BorderThickness = new(0, 0, 0, 1), Padding = new(0, 0, 0, 12), Margin = new(0, 0, 0, 8) });

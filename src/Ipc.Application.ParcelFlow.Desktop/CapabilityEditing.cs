@@ -20,7 +20,7 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
             "integer" => "整数" + (Field.Minimum is { } min ? "，最小 " + min : "") + (Field.Maximum is { } max ? "，最大 " + max : ""),
             "ipv4" => "网络地址（四段数字）",
             "boolean" => "选择启用或关闭",
-            "choice" => "选择已声明的可用值",
+            "choice" => "从列表中选择",
             _ => "最多 " + Field.MaximumLength + " 个字符"
         });
     public string Value { get => current; set { current = value; PropertyChanged?.Invoke(this, new(nameof(Value))); } }
@@ -100,10 +100,10 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public bool Bound { get => bound; set { bound = value; Notify(); } }
     public string InstanceId { get => instanceId; set { instanceId = value; Notify(); } }
     public bool IsTargetReadOnly => Kind == "observation";
-    public string TargetBoundary => IsTargetReadOnly ? "稳定读码设备标识只读；更换须清偿原件并受控迁移部署" : ParameterOwnership.IsDriver(this) ? "驱动拥有的硬件协议目标；保存后需重启软件生效" : "组件拥有的外部服务目标；保存后需重启软件生效";
+    public string TargetBoundary => IsTargetReadOnly ? "相机设备标识不可修改；更换相机需按换机流程处理" : ParameterOwnership.IsDriver(this) ? "驱动拥有的硬件协议目标；保存后需重启软件生效" : "组件拥有的外部服务目标；保存后需重启软件生效";
     public string Target { get => target; set { target = value; Notify(); } }
     public string Contract { get => contract; set { contract = value; Notify(); } }
-    public string ProviderIdentity => Provider is { } p ? p.Implementation + " @ " + p.Version + " · " + (p.Package?.ManifestSha256 ?? "内置参考") + " · " + p.Module : "原提供者未安装或精确身份不匹配；保存被阻断：" + OriginalProviderIdentity;
+    public string ProviderIdentity => Provider is { } p ? p.Implementation + " @ " + p.Version + " · " + (p.Package?.ManifestSha256 ?? "内置参考") + " · " + p.Module : "所选组件未安装或版本不匹配，不能保存：" + OriginalProviderIdentity;
     readonly Dictionary<string, string> originalParameters = [];
     bool preserveOmittedDefaults;
     public string OriginalProviderIdentity { get; private set; } = "新增实例";
@@ -192,7 +192,7 @@ public partial class ParcelViewModel
         var currentAuthority = await ServiceAsync(administration.ManagementModeStatusAsync);
         if (!currentAuthority.Authorized || currentAuthority != authority) throw new UnauthorizedAccessException("管理授权已变化，请重新读取参数；现有输入保留。");
         if (c.SchemaVersion != 3 || c.Topology is null || c.MaintenanceLogin is not null)
-            throw new InvalidOperationException("配置格式不受支持，保留原件；请使用当前完整拓扑配置。");
+            throw new InvalidOperationException("配置格式不受支持，原文件已保留。请使用当前版本的配置。");
         SetConfigurationDraft(c, loaded.Configuration.Revision, loaded.RuntimeId);
         ApplyInstalledCatalog(catalog);
         CapabilityDrafts.Clear();
@@ -216,10 +216,10 @@ public partial class ParcelViewModel
         ApplyInstalledCatalog(await ServiceAsync(() => application.CapabilitiesAsync()));
         Message = r.Status + " · " + r.Reason + "；安装清单已刷新，当前草稿保留。需要新提供者时显式重新读取配置。";
     }
-    public async Task ContinueUploadAsync() { var op = Selected ?? throw new InvalidOperationException("选择原作业"); await CommandAsync("ContinueUpload", op.Id); }
+    public async Task ContinueUploadAsync() { var op = Selected ?? throw new InvalidOperationException("选择作业"); await CommandAsync("ContinueUpload", op.Id); }
     public async Task AbandonAsync()
     { RequireFreshSnapshot();
-        var op = Selected ?? throw new InvalidOperationException("选择原作业"); var s = Snapshot ?? throw new InvalidOperationException("刷新后选择原作业");
+        var op = Selected ?? throw new InvalidOperationException("选择作业"); var s = Snapshot ?? throw new InvalidOperationException("刷新后选择作业");
         var command = new BusinessCommand(Wire.Id(), s.Revision, "AbandonUnsubmitted", op.Id, InspectionReason);
         var r = await ServiceAsync(() => application.CommandAsync(command)); Message = r.Status + " · " + r.Reason;
     }

@@ -44,7 +44,7 @@ static class LifecycleOptimization
             await vm.LoadHistoryAsync(true); var third = vm.HistoryItems.Select(x => x.Operation.Id).ToArray();
             await vm.LoadHistoryAsync(true); var last = vm.HistoryItems.Select(x => x.Operation.Id).ToArray();
             Check(first.Concat(second).Concat(third).Concat(last).Distinct().Count() == 153 && last.Length == 3 && !vm.HasNextHistory, "four pages share the original 153-entity boundary despite newer admitted input");
-            Check(vm.Selected!.Id == selected && vm.HistorySelectionState.Contains("当前页外"), "cross-page detail and command owner remain the originally selected entity");
+            Check(vm.Selected!.Id == selected && vm.HistorySelectionState.Contains("当前页以外"), "cross-page detail and command owner remain the originally selected entity");
             await vm.PreviousHistoryAsync(); Check(vm.HistoryItems.Select(x => x.Operation.Id).SequenceEqual(third), "previous page reuses its original cursor");
             await vm.FirstHistoryAsync(); Check(vm.HistoryItems.Select(x => x.Operation.Id).SequenceEqual(first), "first screen reuses the same selection instead of including newer records");
             vm.HistoryBarcode = "00001234";
@@ -66,7 +66,7 @@ static class LifecycleOptimization
             oldest = page.Items.Last().Operation;
             uncertain = page.Items[1].Operation;
             var handover = ParcelViewModel.Handover(oldest, true); var ordinary = ParcelViewModel.Handover(oldest, false); var sends = factory.Sends;
-            Check(handover.Contains(oldest.Wcs!.Request.Id) && handover.Contains(oldest.AdmissionId) && ordinary.Contains("禁止重投") && !ordinary.Contains("原目标指纹") && !handover.Contains(oldest.Wcs.Request.Payload) && factory.Sends == sends, "handover names exact original entity/request while excluding payload and causing no external call");
+            Check(handover.Contains(oldest.Wcs!.Request.Id) && handover.Contains(oldest.AdmissionId) && ordinary.Contains("请勿重新上件") && !ordinary.Contains("原目标指纹") && !handover.Contains(oldest.Wcs.Request.Payload) && factory.Sends == sends, "handover names exact original entity/request while excluding payload and causing no external call");
             await Pause(app);
             await AfterMonitorDrain(app, async () => { await app.CheckScheduledBackupAsync(due.AddMinutes(1)); return true; });
             var success = (await app.SnapshotAsync()).BackupScheduleStatus!;

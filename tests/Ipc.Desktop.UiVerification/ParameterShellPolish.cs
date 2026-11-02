@@ -51,10 +51,10 @@ static partial class Program
         await vm.RefreshAsync();
         if (!baseline)
         {
-            Click(window, "暂停新入场"); for (var i = 0; i < 100 && vm.Snapshot?.Paused != true; i++) { await Task.Delay(20); await vm.RefreshAsync(); } window.UpdateLayout();
-            Check(vm.Snapshot!.Paused && Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "恢复新入场")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "暂停新入场")).IsVisible, "header shows the actual paused state and its available resume action");
+            Click(window, "暂停供包"); for (var i = 0; i < 100 && vm.Snapshot?.Paused != true; i++) { await Task.Delay(20); await vm.RefreshAsync(); } window.UpdateLayout();
+            Check(vm.Snapshot!.Paused && Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "恢复供包")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "暂停供包")).IsVisible, "header shows the actual paused state and its available resume action");
             Capture("paused-1366", client);
-            Click(window, "恢复新入场"); for (var i = 0; i < 100 && vm.Snapshot?.Paused != false; i++) { await Task.Delay(20); await vm.RefreshAsync(); }
+            Click(window, "恢复供包"); for (var i = 0; i < 100 && vm.Snapshot?.Paused != false; i++) { await Task.Delay(20); await vm.RefreshAsync(); }
             Check(!vm.Snapshot!.Paused && vm.Snapshot.Operations.Length == 0 && vm.Snapshot.CurrentOperator!.SessionId == operatorSession, "existing resume command preserves operator identity and creates no synthetic job");
         }
         Click(window, "参数设置");
@@ -79,7 +79,7 @@ static partial class Program
             Check(header.TranslatePoint(new Point(), client).Y + header.ActualHeight <= navigation.TranslatePoint(new Point(), client).Y + 1, "identity and navigation occupy separate rows at " + size.Item1);
             var identityBounds = identity.TransformToAncestor(client).TransformBounds(new Rect(identity.RenderSize)); var modeBounds = menu.TransformToAncestor(client).TransformBounds(new Rect(menu.RenderSize));
             Check(identityBounds.Right <= modeBounds.Left && modeBounds.Right <= client.ActualWidth, "long operator and management entry do not overlap or leave the viewport at " + size.Item1);
-            var save = Descendants(maintenance).OfType<Button>().Single(b => Equals(b.Content, "保存更改…")); var saveBounds = save.TransformToAncestor(client).TransformBounds(new Rect(save.RenderSize));
+            var save = Descendants(maintenance).OfType<Button>().Single(b => Equals(b.Content, "保存设置…")); var saveBounds = save.TransformToAncestor(client).TransformBounds(new Rect(save.RenderSize));
             Check(save.IsVisible && saveBounds.Bottom <= client.ActualHeight && saveBounds.Top > navigation.TranslatePoint(new Point(), client).Y, "actual fixed save action stays in the viewport at " + size.Item1);
         }
         if (!baseline)
@@ -94,7 +94,7 @@ static partial class Program
         {
             editor.ShowPage(0, "数据与记录"); window.UpdateLayout();
             Check(Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "MiB") && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "天"), "storage and retention retain separate accurate units");
-            var diagnostic = Descendants(editor).OfType<Expander>().Single(e => Equals(e.Header, "参数说明与诊断详情")); diagnostic.IsExpanded = true; window.UpdateLayout();
+            var diagnostic = Descendants(editor).OfType<Expander>().Single(e => Equals(e.Header, "参数说明")); diagnostic.IsExpanded = true; window.UpdateLayout();
             Check(Descendants(diagnostic).OfType<TextBox>().Any(t => t.Text.Contains("1048576")), "compact hints keep the full numeric range available in keyboard-expandable details");
             diagnostic.Focus(); Check(diagnostic.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)), "expanded technical details permit keyboard traversal");
             vm.StructuredPolicy!.TimeoutMs = "28000"; var draft = vm.StructuredPolicy;

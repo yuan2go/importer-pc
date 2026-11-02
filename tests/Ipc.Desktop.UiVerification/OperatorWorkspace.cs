@@ -57,8 +57,8 @@ static partial class Program
         await Until(() => vm.LeftConnectionDiagnosis.Contains("12帧"));
         Check(vm.LeftConnectionDiagnosis.Contains("尚未接入条码识别") && !vm.LeftConnectionDiagnosis.Contains("连接已确认"), "received MVS images are distinguished from a usable barcode decoder");
         probe.Project = s => s with { Devices = s.Devices!.Select(d => d.DeviceId == vm.Left.ReaderId ? d with { Health = DeviceHealth.Unknown, Source = "SDK:hikrobot-mvs; phase=acquiring-decoder-unavailable; frames=0; decoder=Unavailable; businessReady=false" } : d).ToArray() };
-        await Until(() => vm.LeftConnectionDiagnosis.Contains("尚未收到帧"));
-        Check(vm.LeftConnectionDiagnosis.Contains("核对触发"), "zero-image MVS state identifies the trigger/acquisition check");
+        await Until(() => vm.LeftConnectionDiagnosis.Contains("还没有收到图像"));
+        Check(vm.LeftConnectionDiagnosis.Contains("检查相机设置"), "zero-image MVS state identifies the trigger/acquisition check");
         probe.Project = Deferred; await Until(() => vm.ShowSetupGuidance);
         vm.Message = "合成重连失败，请检查网络"; await Flush();
         Check(Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("合成重连失败")), "diagnostics exposes scoped action failures when its redundant global status banner is hidden");

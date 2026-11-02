@@ -59,7 +59,7 @@ static partial class Program
         Check(vm.SelectedPage == "diagnostics" && Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "左相机"), "selected camera opens its native diagnostics with visible object context");
         Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "设置左相机")), "camera diagnostics provides a direct action for the matching connection");
         Capture("v3-object-diagnostics");
-        Click(window, "返回当前对象设置");
+        Click(window, "返回该设备设置");
         for (var wait = 0; wait < 100 && (vm.SelectedPage != "maintenance" || vm.Busy); wait++) await Task.Delay(20);
         Check(vm.SelectedPage == "maintenance" && !vm.Busy, "object settings return completes its authority and load checks");
         window.UpdateLayout(); editor.NavigateTo("StationCode");
@@ -89,7 +89,7 @@ static partial class Program
         await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT");
         Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTHETIC-EDIT" && vm.Snapshot.Configuration.Effective.StationCode == "SYNTHETIC-STATION" && !vm.HasUnsavedConfiguration,
             "native save confirms Pending while Effective stays unchanged");
-        Check(!((Button)page.FindName("SaveChanges")).IsEnabled && vm.ParameterRuntimeSummary(target).Contains("待重启"), "confirmed Pending disables repeat save and labels the running configuration separately");
+        Check(!((Button)page.FindName("SaveChanges")).IsEnabled && vm.ParameterRuntimeSummary(target).Contains("重启"), "confirmed Pending disables repeat save and labels the running configuration separately");
         Capture("v3-saved-pending");
         runtime.BeforeMonitorProbe = null; probesRelease.TrySetResult();
 
@@ -105,13 +105,13 @@ static partial class Program
         window.Content = rcsControl; rcsControl.NavigateTo(rcsBinding.InstanceId + "/Target"); window.UpdateLayout();
         rcsDraft.Target = "http://192.0.2.11/rcs/sorter/api";
         var rcsSummary = vm.ParameterRuntimeSummary(new(rcsBinding.InstanceId, null, "RCS 连接"));
-        Check(rcsSummary.Contains("192.0.2.10") && !rcsSummary.Contains("192.0.2.11") && rcsSummary.Contains("upstream acceptance unconfirmed") && rcsSummary.Contains("不表示远端接受"), "RCS summary preserves local health evidence and Effective address without claiming remote acceptance");
+        Check(rcsSummary.Contains("192.0.2.10") && !rcsSummary.Contains("192.0.2.11") && rcsSummary.Contains("upstream acceptance unconfirmed") && rcsSummary.Contains("不代表 RCS 已接受"), "RCS summary preserves local health evidence and Effective address without claiming remote acceptance");
         Descendants(rcsControl).OfType<Button>().Single(b => Equals(b.Content, "连接诊断")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         Check(requested?.InstanceId == rcsBinding.InstanceId && requested.DeviceId is null, "shared RCS diagnostics preserves its exact instance identity");
         Capture("v3-rcs-running");
         probe.Project = null; await Until(() => vm.Snapshot?.Configuration.Effective.Wcs?.Implementation == config.Wcs!.Implementation); window.Content = client;
 
-        var choiceFields = new[] { new ParameterField("entity.mode", "synthetic", "实体关联方式", "choice", Choices: ["observe-only", "trigger"]) };
+        var choiceFields = new[] { new ParameterField("entity.mode", "synthetic", "包裹关联方式", "choice", Choices: ["observe-only", "trigger"]) };
         var choiceBinding = config.Wcs! with { Parameters = new() { ["entity.mode"] = "observe-only" } };
         var choiceDescriptor = new CapabilityDescriptor(choiceBinding.Kind, choiceBinding.Implementation, choiceBinding.Version, choiceBinding.Contract, choiceFields, new());
         var choiceDraft = new CapabilityDraft(choiceBinding.Kind, [choiceDescriptor], choiceBinding, true, "synthetic");

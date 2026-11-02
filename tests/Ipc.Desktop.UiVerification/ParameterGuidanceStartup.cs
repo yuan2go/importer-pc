@@ -48,7 +48,7 @@ static partial class Program
                     if (title == "格口请求")
                     {
                         Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/quantity")), "no configurable quantity editor remains");
-                        var help = Descendants(editor).OfType<Expander>().First(e => Equals(e.Header, "参数说明与诊断详情")); help.IsExpanded = true; await Flush();
+                        var help = Descendants(editor).OfType<Expander>().First(e => Equals(e.Header, "参数说明")); help.IsExpanded = true; await Flush();
                         Check(!Descendants(help).OfType<TextBox>().Any(t => t.Text.Contains("sportmaster.integration/quantity")), "parameter help describes purpose without an internal configuration path");
                     }
                     CaptureInternal(evidence, "pgs-" + title + "-" + (int)size.Item1, client, lines);

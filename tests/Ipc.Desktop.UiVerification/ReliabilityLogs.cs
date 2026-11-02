@@ -55,10 +55,10 @@ static partial class Program
             Click(window, "查询"); await Settle();
             var applied = (TextBox)typeof(SoftwareLogControl).GetField("effectiveRange", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
             var actualQuery = (SoftwareLogQuery)typeof(SoftwareLogControl).GetField("query", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
-            if (!applied.Text.Contains("已应用范围") || !applied.Text.Contains(start.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) || !actualQuery.From.EqualsExact(start) || !actualQuery.ToExclusive.EqualsExact(end)) throw new InvalidOperationException("Readable local range must retain both exact query instants and offsets");
+            if (!applied.Text.Contains("查询范围") || !applied.Text.Contains(start.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) || !actualQuery.From.EqualsExact(start) || !actualQuery.ToExclusive.EqualsExact(end)) throw new InvalidOperationException("Readable local range must retain both exact query instants and offsets");
             Descendants(dates[0]).OfType<DatePicker>().Single().SelectedDate = DateTime.Today.AddDays(-2);
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            if (Button("导出全部匹配…").IsEnabled || Button("导出时间范围…").IsEnabled || !applied.Text.Contains("待查询")) throw new InvalidOperationException("Native date edit must invalidate fixed export selection");
+            if (Button("导出筛选结果…").IsEnabled || Button("导出该时段全部日志…").IsEnabled || !applied.Text.Contains("待查询")) throw new InvalidOperationException("Native date edit must invalidate fixed export selection");
             Click(window, "最近24小时"); advanced.IsExpanded = false;
             lines.Add("PASS LIA-LOG native calendars, quick ranges and offset bind to actual query; editing date invalidates both fixed export actions");
             Click(window, "查询"); await Settle();
@@ -66,16 +66,16 @@ static partial class Program
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出")).IsExpanded = true;
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-            var watch = Stopwatch.StartNew(); Click(window, "查看原始上下文"); await Settle();
+            var watch = Stopwatch.StartNew(); Click(window, "查看前后日志"); await Settle();
             var detail = Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn);
             stop.Cancel(); await monitor;
             lines.Add($"MEASURE H02 native context_records={entries.Length}; original_chars={entries.Sum(e => e.Text.Length)}; presented_chars={detail.Text.Length}; elapsed_ms={watch.Elapsed.TotalMilliseconds:F2}; dispatcher_max_ms={waits.DefaultIfEmpty().Max():F2}");
             if (detail.Text.Length > 65536) throw new InvalidOperationException("H02 context presentation exceeded the 65536-character total budget");
-            if (!detail.Text.Contains("导出") || !detail.Text.Contains("呈现预算")) throw new InvalidOperationException("Budgeted detail must disclose omitted presentation and the complete original export path");
+            if (!detail.Text.Contains("导出") || !detail.Text.Contains("内容过长")) throw new InvalidOperationException("Budgeted detail must disclose omitted presentation and the complete original export path");
             CaptureInternal(evidence, "logs-bounded-context", window, lines);
             // A slow old context cannot republish after unload/revocation.
             var late = new TaskCompletionSource<SoftwareLogContext>(TaskCreationOptions.RunContinuationsAsynchronously); probe.Context = () => late.Task;
-            Click(window, "查看原始上下文"); await Task.Delay(20); control.Revoke(); late.SetResult(new([entries[0]], [])); await Settle();
+            Click(window, "查看前后日志"); await Task.Delay(20); control.Revoke(); late.SetResult(new([entries[0]], [])); await Settle();
             if (detail.Text.Length != 0) throw new InvalidOperationException("Old context returned after revocation");
             lines.Add("PASS H02 native bounded background context, explicit full-export notice, late result revoked; layout/font unchanged");
         }

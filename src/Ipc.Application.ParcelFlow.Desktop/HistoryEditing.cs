@@ -46,10 +46,10 @@ public partial class ParcelViewModel
         HistoryBarcode = HistoryPosition = HistoryState = HistoryRequest = "";
         HistoryFrom = HistoryToExclusive = "";
         foreach (var name in new[] { nameof(HistoryBarcode), nameof(HistoryPosition), nameof(HistoryState), nameof(HistoryRequest) }) Changed(name);
-        Message = "筛选已清除。请重新查询，当前记录仍属于上次查询范围。";
+        Message = "筛选已清除，点击“查询”刷新列表。";
     }
     public string[] HistoryStates => ["", .. Enum.GetNames<ParcelState>()];
-    public string HistoryMetricsSummary { get; private set; } = "指标口径：实体作业 / WCS请求 / WCS接受 / 待核对 / 实体完成 / 发送尝试，均不合并同码实体。";
+    public string HistoryMetricsSummary { get; private set; } = "统计口径：每件包裹单独计数，相同条码不合并。";
     ParcelHistorySelection? historySelection;
     string? appliedHistorySignature;
     string HistoryFilterSignature() => Ipc.Platform.Wire.Encode(new[] { HistoryBarcode, HistoryPosition, HistoryState, HistoryFrom, HistoryToExclusive, HistoryRequest });
@@ -60,7 +60,7 @@ public partial class ParcelViewModel
         {
             if (string.IsNullOrWhiteSpace(s)) return null;
             if (s.Length > 64 || !Regex.IsMatch(s, @"(Z|[+-]\d{2}:\d{2})$") || !DateTimeOffset.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out var value))
-                throw new InvalidOperationException("时间无效，请重新选择日期和时间；精确输入需包含时区。");
+                throw new InvalidOperationException("时间无效，请重新选择日期和时间。");
             return value;
         }
         return new(Optional(HistoryBarcode), Optional(HistoryPosition), HistoryState.Length == 0 ? null : Enum.Parse<ParcelState>(HistoryState), Time(HistoryFrom), Time(HistoryToExclusive), Optional(HistoryRequest));
@@ -73,7 +73,7 @@ public partial class ParcelViewModel
     public async Task ExportHistoryAsync(string destination)
     {
         if (application is not IParcelHistoryApplication query || historySelection is not { } selection || appliedHistorySignature != HistoryFilterSignature())
-            throw new InvalidOperationException("先查询并固定当前筛选，再导出同一边界的记录");
+            throw new InvalidOperationException("请先查询，再导出");
         if (historyExportCancellation is not null) throw new InvalidOperationException("已有导出正在执行");
         using var cancellation = new CancellationTokenSource(); historyExportCancellation = cancellation; Changed(nameof(HistoryExportRunning));
         try
@@ -81,7 +81,7 @@ public partial class ParcelViewModel
             var receipt = await ServiceAsync(() => query.ExportHistoryAsync(selection, destination, cancellation.Token));
             Message = $"导出{receipt.Status} · {receipt.Rows}条 · {receipt.Bytes}字节 · SHA256 {receipt.Sha256}。条码文本带显式文本标记，精确UTF-8另存base64列。";
         }
-        catch (OperationCanceledException) { Message = "导出已取消；未发布部分CSV，结果回执保留。"; }
+        catch (OperationCanceledException) { Message = "导出已取消，未生成文件。"; }
         finally { historyExportCancellation = null; Changed(nameof(HistoryExportRunning)); }
     }
 }

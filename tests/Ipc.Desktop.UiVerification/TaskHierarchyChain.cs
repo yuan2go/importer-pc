@@ -137,7 +137,7 @@ static partial class Program
         await Observe("left", "entity-l5", "000127"); await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown);
         await NativeResult("unknown-800", "格口未确认", "000127", false);
         var unknown = vm.Left.Operation!; posts = peer.Exchanges.Count;
-        Check(vm.Left.AttentionReason == "RCS未返回有效格口，请核对异常信息。", "unknown explains the invalid RCS destination in the primary result");
+        Check(vm.Left.AttentionReason == "RCS 未返回有效格口，请查看异常信息。", "unknown explains the invalid RCS destination in the primary result");
         Check(unknown.Wcs!.State == StageState.Unknown && !vm.Left.CanAdmit && !vm.Left.CanContinue && vm.Right.CanAdmit, "response missing required taskId leaves unknown custody on left, not a usable partial result or global pause");
         // Reconciliation uses the existing Application guard. Query=false must not POST.
         await runtime.ReconcileAsync(unknown.Id); await vm.RefreshAsync();

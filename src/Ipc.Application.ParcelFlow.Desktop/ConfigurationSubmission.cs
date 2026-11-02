@@ -9,7 +9,7 @@ public partial class ParcelViewModel
     async Task<ConfigurationSubmissionResult> SubmitConfigurationAsync(long expected, ParcelConfiguration candidate)
     {
         if (submittingConfiguration || unconfirmedSubmission is not null)
-            throw new InvalidOperationException("上次保存尚未确认；先核对权威修订，当前输入保留，禁止重复提交");
+            throw new InvalidOperationException("上次保存结果未确认，请先重新读取设置；已填写的内容保留，请勿重复提交");
         var capturedSignature = ConfigurationEditSignature();
         var capturedDocument = configurationAuthority == "高级JSON" ? ConfigurationDraft : Ipc.Platform.Wire.Encode(candidate);
         var capturedReason = ConfigurationReason;
@@ -24,7 +24,7 @@ public partial class ParcelViewModel
             }
             var owner = draftRuntimeId ?? throw new InvalidOperationException("先读取原运行实例");
             submissionEditorSignature = capturedSignature; submissionEditorDocument = capturedDocument;
-            unconfirmedSubmission = (owner, expected, candidate); NotifyConfigurationReview(); validationState = "正在保存完整候选"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary));
+            unconfirmedSubmission = (owner, expected, candidate); NotifyConfigurationReview(); validationState = "正在保存设置"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary));
             string? delivery;
             try { var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, capturedReason)); delivery = receipt.Status + " · " + receipt.Reason; }
             catch (Exception ex) { delivery = ex.GetType().Name + " · " + ex.Message; }
@@ -34,7 +34,7 @@ public partial class ParcelViewModel
     }
     async Task<ConfigurationSubmissionResult> InspectSubmissionAsync(string? delivery = null)
     {
-        var submitted = unconfirmedSubmission ?? throw new InvalidOperationException("本窗没有待核对的保存；当前输入保留");
+        var submitted = unconfirmedSubmission ?? throw new InvalidOperationException("没有需要确认的保存记录");
         ConfigurationSubmissionResult result;
         try { result = await ServiceAsync(() => application.InspectConfigurationSubmissionAsync(submitted.Owner, submitted.Revision, submitted.Candidate)); }
         catch (Exception ex) { result = new("Unknown", "核对暂不可用：" + ex.Message, submitted.Revision, ""); }
@@ -50,8 +50,8 @@ public partial class ParcelViewModel
                 try { editorConfigurationHash = await ServiceAsync(() => access.ConfigurationEditorHashAsync(result.Revision)); }
                 catch (Exception ex) { editorConfigurationHash = null; delivery = (delivery ?? "") + "；草稿基线暂不可读：" + ex.Message; }
         }
-        validationState = (result.Status == "Unknown" ? "保存结果待核对；禁止重复提交" : result.Status) + " · " + result.Reason;
-        NotifyConfigurationReview(); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState + (delivery is null ? "" : "\n原保存回执：" + delivery); return result;
+        validationState = (result.Status == "Unknown" ? "保存结果未确认，请勿重复提交" : result.Status) + " · " + result.Reason;
+        NotifyConfigurationReview(); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState + (delivery is null ? "" : "\n保存结果：" + delivery); return result;
     }
     public async Task InspectLastSaveAsync() { _ = await InspectSubmissionAsync(); }
 }

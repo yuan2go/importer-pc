@@ -71,7 +71,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             // An unqualified shared field name cannot identify the left or right
             // instance. Keep it in full-candidate diagnostics rather than falsely
             // attaching the same failure to every camera.
-            if (matching.Length != 1) Issues.Add(new("完整候选", "", message));
+            if (matching.Length != 1) Issues.Add(new("全部设置", "", message));
             else foreach (var item in matching) Issues.Add(new(ParameterOwnership.CategoryName(ParameterOwnership.Category(item.Draft, item.Field.Key)), item.Draft.InstanceId + "/" + item.Field.Key, message));
         }
         Deduplicate();

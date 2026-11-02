@@ -10,7 +10,9 @@ public sealed class SportmasterFlow : FlowDefinition
     public override bool ArchiveOriginalFrames => true;
     public override ParcelConfiguration InitialConfiguration()
     {
-        DeviceBinding[] readers = [new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }, new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }];
+        // New sites start with common 1D symbologies (about 10x faster than all formats on
+        // 6 MP frames). Written explicitly so sites that never set it keep the "All" fallback.
+        DeviceBinding[] readers = [new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.formats"] = NewSiteCodeFormats } }, new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.formats"] = NewSiteCodeFormats } }];
         // A draft in Production with unavailable real dependencies cannot silently run a simulation.
         return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
             new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,
@@ -21,6 +23,7 @@ public sealed class SportmasterFlow : FlowDefinition
             Retention: new(DiagnosticLogDays: SystemParameterDefaults.DiagnosticLogDays, HistoryDays: SystemParameterDefaults.HistoryDays))
             { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
     }
+    public static readonly string NewSiteCodeFormats = Wire.Encode(new[] { "Code128", "Code39", "EAN13" });
     public override string[] PositionRoles => ["left", "right"];
     // Continuous acquisition reads a tray parcel in every frame. One placement is one
     // RCS request: the code must leave this position's reads for this long (operator
@@ -28,9 +31,10 @@ public sealed class SportmasterFlow : FlowDefinition
     public const int DefaultSamePlacementReleaseMs = 2000;
     public int PlacementReleaseMs { get; init; } = DefaultSamePlacementReleaseMs;
     public override int SamePlacementReleaseMs => PlacementReleaseMs;
-    // Empty tray: lift-and-replace or the next vehicle. Decoding runs at roughly
-    // 4-7 frames/s on 6 MP, so three frames is about half a second.
-    public const int DefaultSamePlacementEmptyFrames = 3, DefaultSamePlacementEmptyMinimumMs = 300;
+    // Empty tray: lift-and-replace or the next vehicle. With 1D symbologies decoding runs
+    // at roughly 7-9 frames/s; glare on glossy bags can hide a resting label for a few
+    // frames, so the empty run must also last 800 ms (a lift or vehicle swap takes longer).
+    public const int DefaultSamePlacementEmptyFrames = 3, DefaultSamePlacementEmptyMinimumMs = 800;
     public int PlacementEmptyFrames { get; init; } = DefaultSamePlacementEmptyFrames;
     public int PlacementEmptyMinimumMs { get; init; } = DefaultSamePlacementEmptyMinimumMs;
     public override int SamePlacementEmptyFrames => PlacementEmptyFrames;

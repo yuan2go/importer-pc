@@ -1,5 +1,6 @@
 using Ipc.Application.Contracts;
 using Ipc.Application.Sportmaster.Desktop;
+using Ipc.Application.Sportmaster;
 using Ipc.Platform;
 
 // SM-SAME-PLACEMENT-29: one placement on the supply tray is one RCS request.
@@ -10,7 +11,22 @@ internal static class SamePlacement29
     internal static async Task Run(string workspace, string root)
     {
         // A window wide enough that loaded CI frame gaps never look like a lift.
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-29")) { PlacementReleaseMs = 1500 };
+        // New sites start with common 1D symbologies; the schema and the decoder accept them.
+        var initial = new SportmasterFlow().InitialConfiguration();
+        Check(initial.Topology!.Readers.All(r => Wire.Decode<string[]>(r.Parameters!["code.formats"]).SequenceEqual(new[] { "Code128", "Code39", "EAN13" }) &&
+                !ExtensionSchema.Validate(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor.Parameters, r.Parameters).Any(e => e.Contains("code.formats", StringComparison.Ordinal))) &&
+            Ipc.Drivers.Hikrobot.Mvs.ReaderSettings.Read(initial.Topology.Readers[0].Parameters!).Formats.SequenceEqual(new[] { "Code128", "Code39", "EAN13" }),
+            "new-site template selects Code128, Code39 and EAN13 explicitly and passes the reader schema");
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-29")) { PlacementReleaseMs = 5000 };
+        var siteDecoder = new Ipc.Drivers.Hikrobot.Mvs.SoftwareDecoder("utf-8", () => { }, settings: Ipc.Drivers.Hikrobot.Mvs.ReaderSettings.Read(initial.Topology.Readers[0].Parameters!));
+        siteDecoder.Prepare();
+        try
+        {
+            var siteLabel = CameraRoundHarness.Barcode("JYMW02263");
+            Check(siteDecoder.Decode(siteLabel.Data, siteLabel.Data.Length, siteLabel.Width, siteLabel.Height).SequenceEqual(new[] { "JYMW02263" }),
+                "the new-site symbology set decodes a site-style Code128 label");
+        }
+        finally { siteDecoder.Release(); }
         await h.StartAsync();
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         uint frame = 0;
@@ -29,7 +45,7 @@ internal static class SamePlacement29
                 var decoded = h.Factory.Decoders[h.Left].Count;
                 h.Api(h.Left).Enqueue(blank, ++frame);
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count > decoded));
-                await Task.Delay(150);
+                await Task.Delay(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs / 2);
             }
         }
         async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
@@ -88,6 +104,17 @@ internal static class SamePlacement29
         await Read("SYNTH-PLACE-C");
         Check(h.Peer.Requests.Count == 4 && ParcelInputReasons.IsSamePlacement(await Latest()),
             "two no-code frames on a resting parcel (glare) do not trigger another request");
+
+        // 6b. Glare flicker: three quick no-code frames shorter than the minimum empty time.
+        for (var i = 0; i < 3; i++)
+        {
+            var decoded = h.Factory.Decoders[h.Left].Count;
+            h.Api(h.Left).Enqueue(blank, ++frame);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count > decoded));
+        }
+        await Read("SYNTH-PLACE-C");
+        Check(h.Peer.Requests.Count == 4 && ParcelInputReasons.IsSamePlacement(await Latest()),
+            "three no-code frames within the minimum empty time (glare while handling) do not trigger another request");
 
         // 7. Empty tray, then the same code again well inside the time window: the operator
         // lifted and quickly re-placed it, or the next vehicle brings an identical code.

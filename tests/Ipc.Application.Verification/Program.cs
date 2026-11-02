@@ -7,6 +7,7 @@ using Ipc.Assembly;
 using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
+Console.OutputEncoding = new System.Text.UTF8Encoding(false);
 if (args.Any(a => a is "--audit03-rcs-signed" or "--sportmaster-rcs-signed" or "--rcs-heartbeat-signed" or "--mvreader-flow"))
     throw new ArgumentException("Unsupported retired SM verification path; use built-in MVS/RCS checks");
 if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");

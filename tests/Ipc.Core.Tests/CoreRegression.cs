@@ -24,7 +24,8 @@ public sealed class CoreRegression
         var start = new ProcessStartInfo("dotnet")
         {
             WorkingDirectory = root, UseShellExecute = false, CreateNoWindow = true,
-            RedirectStandardOutput = true, RedirectStandardError = true
+            RedirectStandardOutput = true, RedirectStandardError = true,
+            StandardOutputEncoding = System.Text.Encoding.UTF8, StandardErrorEncoding = System.Text.Encoding.UTF8
         };
         start.ArgumentList.Add(executable); start.ArgumentList.Add(root); start.ArgumentList.Add(selector);
         var temporary = @"D:\DevCache\importer-pc\temp";

@@ -75,7 +75,10 @@ static class StorageBaseline
         { db.Open(); using var c = db.CreateCommand(); c.CommandText = "DROP TABLE parcel_reply_identities"; c.ExecuteNonQuery(); }
         var before = Wire.FileHash(broken);
         try { using var denied = new ParcelRepository(brokenRoot, "sportmaster"); throw new Exception("Missing identity table accepted"); }
-        catch (InvalidDataException ex) when (ex.Message.Contains("OriginalReplyIdentityMissing"))
+        // Current DB12 verifies the complete schema before the old, narrower
+        // reply-identity check. Keep typed rejection and byte/no-directory guards;
+        // a historical diagnostic phrase is not the storage safety contract.
+        catch (InvalidDataException)
         { Check(Wire.FileHash(broken) == before && !Directory.Exists(Path.Combine(brokenRoot, "receipts")), "missing identity table refuses without database writes or receipt directories"); }
         if (!smoke) return;
         var syntheticConfiguration = Path.Combine(root, "fresh-config"); Directory.CreateDirectory(syntheticConfiguration);

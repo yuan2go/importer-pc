@@ -280,3 +280,7 @@ docs/runtime/evidence/sm-reader-feedback-22-wal/** -text whitespace=cr-at-eol,-b
 
 # UI24 receipts retain captured bytes, including terminal whitespace.
 docs/runtime/evidence/sm-ui-spec-closure-24/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# SS25 archive and receipts preserve the exact original bytes.
+docs/archive/pre-sm-session-shift-25/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/sm-session-shift-exceptions-25/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

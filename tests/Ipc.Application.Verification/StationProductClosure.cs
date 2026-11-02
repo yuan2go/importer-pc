@@ -93,10 +93,10 @@ static class StationProductClosure
         Check(!File.Exists(revokedPath) && !Directory.EnumerateFiles(root, "*.partial-*").Any(), "revocation immediately before publication removes the partial file and releases log custody");
         await ManagementModeFixture.Authorize(h.App);
         var snapshot = await h.App.SnapshotAsync();
-        var saved = await api.SaveOperationsPolicyAsync(snapshot.Configuration.Revision, policy with { AutomaticHistoryCleanup = true, CleanupHour = 0 });
-        Check(saved.Status == "PendingRestart", "shift and maintenance policy uses complete-candidate restart activation: " + saved.Status + " " + saved.Reason);
+        var saved = await api.SaveOperationsPolicyAsync(snapshot.Configuration.Revision, policy with { Shifts = (await api.ReadOperationsPolicyAsync()).Shifts, AutomaticHistoryCleanup = true, CleanupHour = 0 });
+        Check(saved.Status == "PendingRestart", "timezone and maintenance policy uses complete-candidate restart activation: " + saved.Status + " " + saved.Reason);
         await h.App.DisposeAsync(); await h.StartAsync(); api = h.App;
-        Check((await api.ReadOperationsPolicyAsync()).TimeZoneId == policy.TimeZoneId && (await api.ReadCleanupStatusAsync()).Enabled, "configured timezone, shifts and automatic cleanup survive confirmed restart");
+        Check((await api.ReadOperationsPolicyAsync()).TimeZoneId == policy.TimeZoneId && (await api.ReadCleanupStatusAsync()).Enabled, "configured timezone and automatic cleanup survive confirmed restart; legacy schedule fields remain compatible");
         stats = await api.ReadStatisticsAsync(from, Minute(DateTimeOffset.UtcNow).AddMinutes(1), default);
         Check(stats.Buckets.Sum(x => x.Requests) == 2, "restart does not recount or lose original request statistics");
 

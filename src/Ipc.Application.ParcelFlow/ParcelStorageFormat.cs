@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
-    const string UnsupportedStorage = "运行要求Parcel 11数据库；已核验的格式10须经安装程序完整备份后升级。其他格式原文件保留，请使用全新数据目录。";
+    const string UnsupportedStorage = "运行要求Parcel 12数据库；已核验的格式10/11须经安装程序完整备份后升级。其他格式原文件保留，请使用全新数据目录。";
     public static int ReadStorageVersion(string database, string application)
     {
         using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
@@ -21,6 +21,7 @@ public sealed partial class ParcelRepository
         {
             if (application is not ("sportmaster" or "direct-plc" or "wcs-to-plc")) throw new InvalidDataException(UnsupportedStorage);
             if (IsStorage10(db, application)) return 10;
+            if (IsStorage11(db, application)) return 11;
             RequireCurrentStorage(db, application);
             return CurrentStorageVersion;
         }
@@ -41,6 +42,7 @@ public sealed partial class ParcelRepository
             if (actual is not ("sportmaster" or "direct-plc" or "wcs-to-plc") || application is not null && actual != application ||
                 r.GetInt64(1) != CurrentStorageVersion || r.GetString(2) != Database.BaselineHash(Baseline) || r.Read())
                 throw new InvalidDataException(UnsupportedStorage);
+            r.Close(); RequireSchema(db, actual, CurrentStorageVersion, tx);
             return actual;
         }
         catch (Exception ex) when (ex is SqliteException or InvalidCastException or InvalidOperationException or FormatException)

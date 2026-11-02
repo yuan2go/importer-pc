@@ -393,6 +393,8 @@ public sealed partial class ParcelRuntime
         try
         {
             foreach (var lane in ingressLanes.Values) lane.Dispose();
+            ReleaseStationReports();
+            repository?.CloseStationShift(stationStartupCompleted && stopFailure is null);
             repository?.Dispose(); lease?.Dispose(); stopping.Dispose(); disposed = true;
         }
         finally { gate.Release(); }

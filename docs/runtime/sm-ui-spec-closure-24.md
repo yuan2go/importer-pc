@@ -1,3 +1,5 @@
+> 2026-11-02 后续实施：[SM-SESSION-SHIFT-EXCEPTIONS-25](sm-session-shift-exceptions-25.md) 已接续 P07/P08、打开/关闭业务运行班次及 Parcel12。本文保留原交付与 SourceCommit 身份；固定时刻班次、格式11和延期描述仅适用于原包。
+
 # SM 页面规格实施24
 
 2026-11-02，基线 main `9284a32e5633df8c1ff0208c7a94e253328fe7a8`，[工作包](../work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)。用户授权完整工程实现、必要验证后经 PR 合入 main；P07/P08 页面改造延期，原页面与合同保留。外部页面稿是分析输入，其示例数值、管理员账号、网络测试与其他待确认内容不能覆盖现有合同。未提交原稿、图片、真实现场配置或受限依赖。

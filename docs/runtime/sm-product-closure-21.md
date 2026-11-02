@@ -1,3 +1,5 @@
+> 2026-11-02 后续实施：[SM-SESSION-SHIFT-EXCEPTIONS-25](sm-session-shift-exceptions-25.md) 已接续 P07/P08、打开/关闭业务运行班次及 Parcel12。本文保留原交付与 SourceCommit 身份；固定时刻班次、格式11和延期描述仅适用于原包。
+
 # SM产品闭环21
 
 基线 main f2055ace，先继承PR171 6185d0f6；本轮期间PR171最终f3076ba3合入main ecec9640，随后本包完整整合并重新冻结验证。用户于2026-11-02授权实施、验证与PR合入main；随后取消集中看板，确认可配置班次/自然日默认/站点时区和软件事实统计口径。工作包见[PC21](../work-packages/WP-IPC-SM-PRODUCT-CLOSURE-21.md)。

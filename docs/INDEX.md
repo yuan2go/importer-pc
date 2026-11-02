@@ -70,6 +70,7 @@
 | 目的 | 当前入口 |
 |---|---|
 | 项目规则及事实优先级 | [AGENTS](../AGENTS.md) |
+| 工业化交付与使用：目标设计（未实施） | [IE01总设计](design/industrial-engineering-01.md)、[安全恢复](design/industrial-security-recovery-01.md)、[生命周期](design/industrial-lifecycle-01.md)、[操作与质量](design/industrial-operations-quality-01.md)、[工作包/验收](work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)、[核查及边界](reviews/industrial-engineering-design-01.md)；新增导航前索引原字节见[归档清单](archive/pre-industrial-engineering-design-01/manifest.json) |
 | 本轮代码/测试收敛 | [03工作包](work-packages/WP-IPC-CONTRACT-CONVERGENCE-03.md)、[03报告](runtime/contract-convergence-03.md)；[02结果](runtime/contract-convergence-02.md) |
 | 架构职责 | [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[独立Application](design/application-architecture-22.md) |
 | SM连接和配置启用 | [MVS](runtime/mvs-software-reader-01.md)、[内置装配](work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)、[自动连接与保存](work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md) |

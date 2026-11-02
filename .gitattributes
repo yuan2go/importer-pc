@@ -294,3 +294,6 @@ docs/runtime/evidence/sm-audit-fixes-26/** -text whitespace=cr-at-eol,-blank-at-
 # READER28 original guidance and Windows receipts retain exact bytes.
 docs/archive/pre-sm-reader-robustness-28/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/runtime/evidence/sm-reader-robustness-28/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# IE01 preserves the pre-navigation index bytes across Windows checkouts.
+docs/archive/pre-industrial-engineering-design-01/** -text

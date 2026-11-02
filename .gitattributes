@@ -284,3 +284,7 @@ docs/runtime/evidence/sm-ui-spec-closure-24/** -text whitespace=cr-at-eol,-blank
 # SS25 archive and receipts preserve the exact original bytes.
 docs/archive/pre-sm-session-shift-25/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/runtime/evidence/sm-session-shift-exceptions-25/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# UNREAD27 keeps original source snapshots and native verification receipts.
+docs/archive/pre-sm-unread-package-27/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/sm-unread-package-27/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

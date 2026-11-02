@@ -59,14 +59,14 @@ static partial class Program
                 await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementPasswordRecoveryWindow>().Any());
                 var recovery = System.Windows.Application.Current.Windows.OfType<ManagementPasswordRecoveryWindow>().Single();
                 PasswordBox Field(string name) => Descendants(recovery).OfType<PasswordBox>().Single(p => p.Name == name);
-                Field("RecoveryRootPassword").Password = "wrong-root"; Field("RecoveryNewPassword").Password = Field("RecoveryConfirmation").Password = "Native-Recovered-123";
+                Check(!Descendants(recovery).OfType<PasswordBox>().Any(p => p.Name == "RecoveryRootPassword"), "native recovery exposes no shared password input");
+                Field("RecoveryNewPassword").Password = "Synthetic-Replacement";
+                Field("RecoveryConfirmation").Password = "different";
                 Click(recovery, "重置管理密码");
-                await Until(() => Descendants(recovery).OfType<TextBlock>().Any(t => t.Text.Contains("根密码不正确")));
-                Check(recovery.IsVisible && Descendants(recovery).OfType<PasswordBox>().All(p => p.Password.Length == 0), "wrong recovery proof keeps the dialog open and clears every secret field");
-                Field("RecoveryRootPassword").Password = "Cainiao123"; Field("RecoveryNewPassword").Password = Field("RecoveryConfirmation").Password = "Native-Recovered-123";
-                CaptureInternal(evidence, "station-root-recovery", recovery, lines);
-                Click(recovery, "重置管理密码"); await Until(() => !recovery.IsVisible);
-                Check(!(await runtime.ManagementModeStatusAsync()).Authorized && await runtime.EnterManagementModeAsync("Native-Recovered-123"), "native root recovery sets the password and requires a fresh real management login");
+                await Until(() => Descendants(recovery).OfType<TextBlock>().Any(t => t.Text.Contains("两次新管理密码不一致")));
+                Check(recovery.IsVisible && Descendants(recovery).OfType<PasswordBox>().All(p => p.Password.Length == 0), "mismatched confirmation keeps the dialog and clears secrets");
+                CaptureInternal(evidence, "station-windows-recovery", recovery, lines);
+                Click(recovery, "取消");
                 recoveryDone.SetResult();
             }
             catch (Exception error) { recoveryDone.SetException(error); foreach (var child in System.Windows.Application.Current.Windows.OfType<ManagementPasswordRecoveryWindow>().ToArray()) child.Close(); }

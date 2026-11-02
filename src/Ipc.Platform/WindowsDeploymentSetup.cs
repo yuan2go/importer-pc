@@ -111,6 +111,7 @@ public static partial class WindowsDeploymentSetup
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot,request.ApplicationId,execution?.Token??CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
+        RecoverySecurityPolicy.RequireRelease(Path.Combine(media.Root, "app"));
         validateConfiguration(request);
         var sourceFiles = ConfigurationFiles(request.ConfigurationSource);
         if (request.ConfigurationHashes is null || !sourceFiles.Select(Path.GetFileName).Order().SequenceEqual(request.ConfigurationHashes.Keys.Order()) ||

@@ -14,6 +14,7 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     WindowsDeploymentRequest? Deployment = null, string? Pipe = null, StartupEditorState? Editor = null, string? DraftHash = null, string? ChangePlanIdentity = null, ManagementModeDelegation? ManagementGrant = null,
     string? ManagementPassword = null, StartupRetentionPlan? RetentionPlan = null)
 {
+    public ManagementPasswordRecoveryChallenge? RecoveryChallenge { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
 }
@@ -22,7 +23,8 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
 public static partial class ParcelStartupServices
 {
     public static IManagementMode ManagementMode(BusinessLaunch launch) => new ParcelManagementMode(launch.DataRoot,
-        async password => { _ = await ElevateAsync(new("ConfigureManagementPassword", Launch: launch, ManagementPassword: password)); });
+        async password => { _ = await ElevateAsync(new("ConfigureManagementPassword", Launch: launch, ManagementPassword: password)); },
+        password => ResetManagementPassword(launch, password), () => InspectManagementPasswordRecovery(launch));
     static readonly AsyncLocal<Action?> delegatedAuthority = new();
     static readonly AsyncLocal<string?> delegatedPrincipal = new();
     static bool RequiresManagementMode(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore" or "ExpireHistory";
@@ -199,6 +201,14 @@ public static partial class ParcelStartupServices
         switch (request.Action)
         {
             case "ExpireHistory": return Wire.Encode(await Core(request.Launch!, installer: true).ExecuteRetentionAsync(request.RetentionPlan ?? throw new InvalidDataException("缺少固定原维护计划")));
+            case "InspectManagementPasswordRecovery":
+                MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+                return Wire.Encode(LocalManagementMode.ForRoot(request.Launch!.DataRoot).InspectPasswordRecovery(
+                    request.RecoveryChallenge?.Id ?? throw new UnauthorizedAccessException("缺少原重置操作。")));
+            case "ResetManagementPassword":
+                WindowsManagementRecovery.RequireConfirmation(request.Launch?.DataRoot ?? throw new InvalidDataException("恢复数据根缺失。"));
+                return Wire.Encode(LocalManagementMode.ForRoot(request.Launch!.DataRoot).CompletePasswordRecovery(
+                    request.RecoveryChallenge ?? throw new UnauthorizedAccessException("缺少本站恢复确认。"), request.ManagementPassword ?? ""));
             case "ConfigureManagementPassword":
                 LocalManagementMode.ForRoot(request.Launch?.DataRoot ?? throw new InvalidDataException("管理模式数据目录缺失。")).ConfigurePassword(request.ManagementPassword ?? "");
                 break;

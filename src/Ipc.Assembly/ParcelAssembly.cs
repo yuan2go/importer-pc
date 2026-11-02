@@ -30,6 +30,8 @@ public static class ParcelAssembly
 #error A registered Application must be selected at build time.
 #endif
         runtime.ManagementPasswordSetupApproval = password => ParcelStartupServices.ManagementMode(launch).ConfigureManagementPasswordAsync(password);
+        runtime.ManagementPasswordResetApproval = password => ParcelStartupServices.ManagementMode(launch).ResetManagementPasswordAsync(password);
+        runtime.ManagementPasswordRecoveryInspection = () => ParcelStartupServices.ManagementMode(launch).InspectManagementPasswordRecoveryAsync();
         ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, runtime.Id, runtime.Presentation, businessAssembly);
         return runtime;
     }

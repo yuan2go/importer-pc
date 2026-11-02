@@ -9,6 +9,10 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
     SoftwareLogReader Logs { get { Management.Require(); if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("软件正在停止，请重新启动后查询。"); return logReader ?? throw new InvalidOperationException("软件尚未启动"); } }
     void Diagnostic(string source, string action, string level = "信息", string? detail = null) => journal?.Write(new { At = DateTimeOffset.UtcNow, Source = source, Event = action, Level = level, Detail = detail });
     public Func<string, Task>? ManagementPasswordSetupApproval { get; set; }
+    public Func<string, Task>? ManagementPasswordResetApproval { get; set; }
+    public Func<Task<ManagementPasswordRecoveryReceipt?>>? ManagementPasswordRecoveryInspection { get; set; }
+    public Task<ManagementPasswordRecoveryReceipt?> InspectManagementPasswordRecoveryAsync() =>
+        ManagementPasswordRecoveryInspection?.Invoke() ?? Task.FromResult<ManagementPasswordRecoveryReceipt?>(null);
     Task<ManagementModeStatus>? managementStatusRead;
     public Task<ManagementModeStatus> ManagementModeStatusAsync()
     {
@@ -50,7 +54,14 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
         finally { gate.Release(); }
         InvalidatePresentation(); Diagnostic("管理模式", "管理模式已续期十五分钟"); return status;
     });
-    public Task ResetManagementPasswordAsync(string rootPassword, string newPassword) => OwnedAdministration(_ => { Management.ResetPassword(rootPassword, newPassword); InvalidatePresentation(); Diagnostic("管理模式", "管理密码已恢复，原授权已撤销"); return Task.FromResult(true); });
+    public Task ResetManagementPasswordAsync(string newPassword) => OwnedAdministration(async _ =>
+    {
+        await new ParcelManagementMode(launch.DataRoot, recoveryApproval: ManagementPasswordResetApproval)
+            .ResetManagementPasswordAsync(newPassword).ConfigureAwait(false);
+        InvalidatePresentation(); Diagnostic("管理模式", "Windows管理员已重置密码，原授权已撤销"); return true;
+    });
+    public Task ResetManagementPasswordAsync(string retiredPassword, string newPassword) =>
+        Task.FromException(new UnauthorizedAccessException("共享恢复口令已停用。"));
     public Task ChangeManagementPasswordAsync(string password) => OwnedAdministration(_ => { Management.ChangePassword(password); InvalidatePresentation(); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); return Task.FromResult(true); });
     public Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token)
         => OwnedRead(t => Logs.QueryAsync(query, selection, offset, t), token);

@@ -1,3 +1,5 @@
+> 2026-11-03 实施授权：用户要求按本设计从P0开始分阶段完成全部实现、必要验证、文档和main PR；本轮允许实施目标CI。下文设计交付时的NOT_STARTED/不启用Actions保留历史语境，当前进度以 `docs/runtime/industrial-engineering-01.md` 为准。原字节见实施前归档。
+
 # WP-IPC-INDUSTRIAL-ENGINEERING-01
 
 2026-11-03。本轮授权为完善全方案设计；状态：**DESIGNED，产品实施NOT_STARTED，产品验证NOT_RUN**。基线main `38cb7dc0e8e15f009ee88c5a35f1db53c27d5205`，开工时GitHub连接器返回open PR为0。源工作区有他人未提交内容，本轮使用独立D盘worktree，不纳入这些文件。

@@ -7,16 +7,31 @@ namespace Ipc.Platform;
 // authoritative business requests and receipt custody bytes must never be rewritten.
 public static class DiagnosticText
 {
-    static readonly Regex sensitiveKey = new("password|passwd|proof|token|secret|authorization|api[-_]?key|credential|private[-_]?key", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
+    static readonly Regex sensitiveKey = new("password|passwd|proof|token|secret|authorization|api[-_]?key|credential|private[-_]?key", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
     // Only disposable diagnostic copies are transformed. Never call this on
     // authoritative observations, frozen request bodies or original receipts.
-    static readonly Regex barcodeKey = new("^(?:parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code|codes|candidates)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
+    static readonly Regex barcodeKey = new("^(?:parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code|codes|candidates)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
     static readonly Regex sensitiveValue = new(
-        """(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential|parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code)["']?\s*[:=]\s*)(?:"(?:\\.|[^"\\])*(?:"|$)|'(?:\\.|[^'\\])*(?:'|$)|[^\s,;}]+)|(?:Bearer|Basic)\s+[A-Za-z0-9+/=._-]+|(?<=://)[^/@\s]+:[^/@\s]+@""",
-        RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
-    static readonly Regex partialCandidates = new("[\"']?(?:codes|candidates)[\"']?\\s*[:=]\\s*\\[", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(50));
-    static string Text(string value) => partialCandidates.IsMatch(value) ? "[含条码候选的诊断片段已隐藏]" :
-        sensitiveValue.Replace(value, m => m.Groups[1].Success ? m.Groups[1].Value + "[已隐藏]" : "[已隐藏]");
+        """(?i)((?:password|passwd|proof|token|secret|authorization|api[-_]?key|credential|parcel[-_]?code|bar[-_]?code|load[-_]?code|selected[-_]?code)["']?\s*[:=]\s*)(?:"(?:\\.|[^"\\])*(?:"|$)|'(?:\\.|[^'\\])*(?:'|$)|[^\s,;}]+)|(?:Bearer|Basic)\s+[A-Za-z0-9+/=._-]+""",
+        RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
+    static readonly Regex partialCandidates = new("[\"']?(?:codes|candidates)[\"']?\\s*[:=]\\s*\\[", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
+    static readonly Regex userInfo = new(@"([A-Za-z][A-Za-z0-9+.-]*://)[^/@\s]+:[^/@\s]+@",
+        RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds(50));
+    static string Text(string value)
+    {
+        try
+        {
+            if (partialCandidates.IsMatch(value)) return "[含条码候选的诊断片段已隐藏]";
+            var result = sensitiveValue.Replace(value, m => m.Groups[1].Success ? m.Groups[1].Value + "[已隐藏]" : "[已隐藏]");
+            return userInfo.Replace(result, "$1[已隐藏]@");
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            // Fail closed at this privacy boundary. The visible replacement
+            // explicitly reports data omitted due to the redaction budget.
+            return "[脱敏预算已超限，诊断片段已隐藏]";
+        }
+    }
     static JsonNode? Clean(JsonNode? node, int depth = 0)
     {
         if (node is JsonObject obj)

@@ -8,7 +8,9 @@ public interface IManagementMode
     Task<bool> EnterManagementModeAsync(string password);
     Task ExitManagementModeAsync();
     Task ChangeManagementPasswordAsync(string password);
-    Task ResetManagementPasswordAsync(string rootPassword, string newPassword) => throw new NotSupportedException("当前管理服务不支持密码恢复，请使用同版软件。");
+    Task<ManagementPasswordRecoveryReceipt?> InspectManagementPasswordRecoveryAsync() => Task.FromResult<ManagementPasswordRecoveryReceipt?>(null);
+    Task ResetManagementPasswordAsync(string newPassword) => throw new NotSupportedException("当前管理服务不支持Windows管理员密码恢复，请使用同版软件。");
+    Task ResetManagementPasswordAsync(string retiredPassword, string newPassword) => throw new UnauthorizedAccessException("共享恢复口令已停用，请使用Windows管理员恢复入口。");
 }
 public interface IWorkstationAdministration
 {
@@ -18,7 +20,9 @@ public interface IWorkstationAdministration
     Task<bool> EnterManagementModeAsync(string password);
     Task ExitManagementModeAsync();
     Task ChangeManagementPasswordAsync(string password);
-    Task ResetManagementPasswordAsync(string rootPassword, string newPassword) => throw new NotSupportedException("当前管理服务不支持密码恢复，请使用同版软件。");
+    Task<ManagementPasswordRecoveryReceipt?> InspectManagementPasswordRecoveryAsync() => Task.FromResult<ManagementPasswordRecoveryReceipt?>(null);
+    Task ResetManagementPasswordAsync(string newPassword) => throw new NotSupportedException("当前管理服务不支持Windows管理员密码恢复，请使用同版软件。");
+    Task ResetManagementPasswordAsync(string retiredPassword, string newPassword) => throw new UnauthorizedAccessException("共享恢复口令已停用，请使用Windows管理员恢复入口。");
     Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token);
     Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token);
     Task<long> ExportLogsAsync(string selection, string destination, bool allInRange, int context, CancellationToken token);

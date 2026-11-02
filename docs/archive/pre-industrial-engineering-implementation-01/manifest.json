@@ -1,0 +1,25 @@
+{
+  "SourceCommit": "8d3f6616ab4ed1db35aee05a8fcb8cb17dd37d2d",
+  "Files": [
+    {
+      "OriginalPath": "docs/runtime/management-mode-01.md",
+      "ArchivePath": "docs__runtime__management-mode-01.md",
+      "Sha256": "fe43e054d067a25787852258c8fb3d4733dafa40ef7b3ed7b8d67044c3c9fb14"
+    },
+    {
+      "OriginalPath": "docs/runtime/station-single-camera-recovery-01.md",
+      "ArchivePath": "docs__runtime__station-single-camera-recovery-01.md",
+      "Sha256": "9b9b1936d3935207fa9f139ebe73ed0e67cc6f7136ee2bf7ea3d29a2bfbd0a3f"
+    },
+    {
+      "OriginalPath": "docs/work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md",
+      "ArchivePath": "docs__work-packages__WP-IPC-INDUSTRIAL-ENGINEERING-01.md",
+      "Sha256": "870004945955025156136d83e301dfad35b1e6e1cb1530063f2be4b820ee20b2"
+    },
+    {
+      "OriginalPath": "AGENTS.md",
+      "ArchivePath": "AGENTS.md",
+      "Sha256": "c388aab4b3762ec091f2eb6f36821d9455acb179335ee59e69d1cec26f8da060"
+    }
+  ]
+}

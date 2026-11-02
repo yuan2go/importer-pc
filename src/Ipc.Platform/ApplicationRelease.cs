@@ -2,7 +2,7 @@ namespace Ipc.Platform;
 
 public sealed record ApplicationRelease(int SchemaVersion, string ApplicationId, string SourceCommit,
     string[] Views, string[] Layouts, Dictionary<string, string> Files,
-    string? BusinessVersion = null, string? BusinessAssembly = null, string? CompatibilitySha256 = null);
+    string? BusinessVersion = null, string? BusinessAssembly = null, string? CompatibilitySha256 = null, int RecoverySecurityEpoch = RecoverySecurityPolicy.CurrentEpoch);
 public static class ApplicationReleaseValidation
 {
     // Hashes establish installed-byte integrity, not publisher trust or field qualification.

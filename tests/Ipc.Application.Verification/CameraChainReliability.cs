@@ -115,7 +115,11 @@ internal static class CameraChainReliability
             finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
             var epoch = h.Factory.Sources[h.Left].Epoch;
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-ROLLBACK-DISCARDED"), 1);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Epoch != epoch && h.Api(h.Left).Starts == 2));
+            // SDK Start is earlier than Application accepting the new session's
+            // health/identity. Offer the single synthetic frame only once that
+            // real boundary is ready; a continuous camera supplies later frames.
+            await CameraRoundHarness.Until(async () => h.Factory.Sources[h.Left].Epoch != epoch && h.Api(h.Left).Starts == 2 &&
+                (await h.App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == h.Left && d.Epoch == h.Factory.Sources[h.Left].Epoch && d.IsValid(DateTimeOffset.UtcNow)));
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEW-EPOCH"), 1);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NEW-EPOCH" && o.State == ParcelState.SlotResolved));
             Check(h.Peer.Requests.Count == 4 && h.Api(h.Left).Opens == 2, "frame-number rollback rebinds a fresh camera epoch without sending the rollback frame or replaying old requests");

@@ -114233,9 +114233,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20; original evidence retains its own SourceCommit",
-      "sha256": "a041c1b7caaf644f697fd3ea64651e04a49ad37e94a22ca39b6ffddfb6f61395",
-      "size_bytes": 12945,
-      "git_blob": "ffb45e36f4c5a8b68d7af37dbf6921e4ae1f2230",
+      "sha256": "ee93611df141ae1ad7e970a7268806cd0c956dac2a459fc4160c3bc611860ceb",
+      "size_bytes": 13348,
+      "git_blob": "869a39a5bf2246a185ea32d2a854606956ae4412",
       "storage_scope": "public_repository"
     },
     {

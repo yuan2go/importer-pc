@@ -27,6 +27,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
     public RoundApi Api(string device) => Factory.Apis[device];
+    // SM-PLACEMENT-PRESENCE-29: empty-view interval that ends one tray placement.
+    public int PlacementClearMs { get; init; } = SportmasterFlow.DefaultPlacementClearMs;
     public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null)
     {
         if (!nativeLoaded)
@@ -50,7 +52,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public async Task StartAsync()
     {
         Factory = new(Launch, Config);
-        App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        App = new(Launch, new SportmasterFlow { PlacementClearMilliseconds = PlacementClearMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
         await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         await AuthorizeAsync();
@@ -82,6 +84,17 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     {
         var s = await App.CameraInspectionStatusAsync(default);
         await App.EndCameraInspectionAsync(new(Wire.Id(), s.SessionId!, true, true, "Synthetic scene cleared and original responsibility checked"), default);
+    }
+    // The operator lifts the parcel off / the cart carries the tray away: the camera
+    // reports frames without a code for longer than the placement clear interval.
+    public async Task ClearPlacementAsync(string device, uint firstFrame)
+    {
+        var blank = new RoundPixels(new byte[100 * 80], 100, 80);
+        Api(device).Enqueue(blank, firstFrame);
+        await Task.Delay(PlacementClearMs + 150);
+        Api(device).Enqueue(blank, firstFrame + 1);
+        var position = Config.Topology!.Positions.Single(p => p.ReaderDeviceId == device).Id;
+        await Until(() => Task.FromResult(App.PlacementPresences().All(p => p.PositionId != position || p.Cleared)));
     }
     public static async Task Until(Func<Task<bool>> done)
     {

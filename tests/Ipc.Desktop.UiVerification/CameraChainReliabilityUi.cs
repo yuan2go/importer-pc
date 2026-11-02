@@ -49,15 +49,17 @@ static partial class Program
                 await Until(() => vm.Fresh);
                 var control = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Left));
                 var entry = (TextBox)control.FindName("BarcodeEntry");
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 1); await Until(() => vm.Left.ShowConfirmedTask);
+                // Each frame is the next parcel: one placement of a code is one request (SM-PLACEMENT-PRESENCE-29).
+                static string Parcel(uint frame) => "SYNTH-NEXT-" + frame;
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(Parcel(1)), 1); await Until(() => vm.Left.ShowConfirmedTask);
                 entry.Text = "DRAFT"; entry.Clear();
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 2);
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(Parcel(2)), 2);
                 await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.ShowConfirmedTask);
-                Check(entry.Text == "SYNTH-SAME", "deleting a draft to empty resumes camera projection even when the next independent frame has the same code");
+                Check(entry.Text == Parcel(2), "deleting a draft to empty resumes camera projection for the next independent parcel");
                 entry.ContextMenu.Items.OfType<MenuItem>().Single(m => Equals(m.Header, "清空输入")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 3);
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(Parcel(3)), 3);
                 await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.3" && vm.Left.ShowConfirmedTask);
-                Check(entry.Text == "SYNTH-SAME" && h.Peer.Requests.Count == 3, "clear action releases edit ownership and all three independent same-code frames still reach RCS");
+                Check(entry.Text == Parcel(3) && h.Peer.Requests.Count == 3, "clear action releases edit ownership and all three independent parcels still reach RCS");
                 uint frameNumber = 3;
                 foreach (var size in new[] { (1366, 768), (800, 420) })
                 {
@@ -65,17 +67,17 @@ static partial class Program
                     var fields = (Grid)control.FindName("TaskFields"); var result = (Border)control.FindName("ResultPanel");
                     var shortFieldHeight = fields.ActualHeight;
                     h.Peer.ReplyWaveNo = size.Item1 == 1366 ? new string('W', 64) : null;
-                    var preparation = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), preparation);
+                    var preparation = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(Parcel(preparation)), preparation);
                     await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + preparation);
                     window.UpdateLayout(); var fieldHeight = fields.ActualHeight; var resultHeight = result.ActualHeight;
                     if (size.Item1 == 1366) Check(fieldHeight > shortFieldHeight + 1, "long confirmed wave wraps into a taller measured task row before the stability check");
                     var sends = h.Peer.Requests.Count; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
                     try
                     {
-                        var nextFrame = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), nextFrame);
+                        var nextFrame = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(Parcel(nextFrame)), nextFrame);
                         await Until(() => h.Peer.Requests.Count == sends + 1 && vm.Left.IsProcessing); window.UpdateLayout();
                         Check(fields.Visibility == Visibility.Hidden && !fields.IsVisible && Math.Abs(fields.ActualHeight - fieldHeight) < 1 && Math.Abs(result.ActualHeight - resultHeight) < 1,
-                            $"{size.Item1} same-code independent request keeps task/result geometry stable without rendering the old task");
+                            $"{size.Item1} next-parcel request keeps task/result geometry stable without rendering the old task");
                         Check(!vm.Left.ShowConfirmedTask && vm.Left.WaveNo == "—" && ((TextBox)control.FindName("CurrentSlot")).Text == "处理中…",
                             $"{size.Item1} stable layout never borrows the old task or assigned chute while the next request is pending");
                         h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;

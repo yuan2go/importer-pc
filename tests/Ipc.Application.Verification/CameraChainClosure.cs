@@ -104,7 +104,8 @@ internal static class CameraChainClosure
         {
             for (uint n = 1; n <= 32; n++)
             {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-CUSTODIED"), n);
+                // Distinct parcels: one placement of the same code is one request (SM-PLACEMENT-PRESENCE-29).
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-CUSTODIED-" + n), n);
                 await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().Delivered >= n));
             }
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-STALE-UNDECODED"), 33);
@@ -116,9 +117,10 @@ internal static class CameraChainClosure
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == Ipc.Application.Contracts.ParcelState.SlotResolved) == 33);
             var operations = (await h.App.SnapshotAsync()).Operations;
-            Check(operations.Count(o => o.ParcelCode == "SYNTH-CUSTODIED") == 32 && operations.Single(o => o.ParcelCode != "SYNTH-CUSTODIED").Acquisition?.SourceEventId == "mvs.frame.38" &&
+            Check(operations.Count(o => o.ParcelCode.StartsWith("SYNTH-CUSTODIED-", StringComparison.Ordinal)) == 32 &&
+                operations.Single(o => !o.ParcelCode.StartsWith("SYNTH-CUSTODIED-", StringComparison.Ordinal)).Acquisition?.SourceEventId == "mvs.frame.38" &&
                 h.Peer.Requests.Count == 33 && source.ReadDiagnostics().DecodeCompleted == 33,
-                "all 32 recognized same-code observations send independently; recovery decodes only latest frame 38, never stale pre-decode frame 33");
+                "all 32 recognized parcels send independently; recovery decodes only latest frame 38, never stale pre-decode frame 33");
             Check(source.ReadDiagnostics().SupersededDecodeFrames >= 5 && h.Api(h.Left).Acquires == h.Api(h.Left).Releases && !h.Api(h.Left).HasFrame,
                 "superseded undecoded video remains counted and every SDK loan is returned without a camera fence");
         }

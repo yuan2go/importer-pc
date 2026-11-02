@@ -15,6 +15,9 @@ public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, strin
     public long SourceSequence { get; init; }
     // Same-process display deadline only. Expiry grants no business/retry authority.
     public int PendingDisplayBudgetMs { get; init; } = 10000;
+    // Display hint: this camera read repeats the parcel still under the lens whose
+    // request already exists. No new cue/sound; admission is decided by the Application.
+    public bool SamePlacement { get; init; }
 }
 public sealed record ParcelPresentationMetric(string ObservationId, string PositionId, string Stage, double ReadToCompositionMs,
     double? SnapshotToCompositionMs, DateTimeOffset At);

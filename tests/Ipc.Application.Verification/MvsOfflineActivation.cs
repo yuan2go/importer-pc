@@ -86,7 +86,9 @@ static partial class SportmasterRcs
             s = await Wait(app, s => s.Availability!.Admit && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
             Check(!s.Paused && s.Operations.Single().Wcs!.Attempts == 1,
                 "runtime unplug/replug automatically gets a new epoch without pausing software or replaying the original RCS request");
-            returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);
+            // The next parcel: a placement survives a reconnect until the tray is seen empty
+            // (SM-PLACEMENT-PRESENCE-29), so the same code here would stay with the first one.
+            returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-NEXT"), 1);
             s = await Wait(app, s => s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
             Check(s.Operations.All(o => o.Wcs!.Attempts == 1), "frame counter restart in new epoch creates one new read, not a replay of the old read");
             await ManagementModeFixture.Authorize(app);

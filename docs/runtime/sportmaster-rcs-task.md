@@ -1,3 +1,5 @@
+> 2026-11-02 取格口请求时机以 [SM-PLACEMENT-PRESENCE-29](sm-placement-presence-29.md) 为准：一次托盘放置一次请求，包裹留在读码区不再逐帧发送，读码区空置或换码后才是新请求。本文“每次独立识别交RCS去重/相机继续识别会发新请求”表述保留形成时范围。
+
 # Sportmaster内置RCS
 
 SM装配内置RCS与MVS软件读码，不安装独立扩展，不要求扩展信任或按候选签署资格。内置实现仍检查配置、目标、原请求、机器身份、管理权限和安装完整性。[框架](../design/framework.md)规定所有权，[MVS](mvs-software-reader-01.md)规定采集来源。

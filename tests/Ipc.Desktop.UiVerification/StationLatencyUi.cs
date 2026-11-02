@@ -26,10 +26,11 @@ static partial class Program
             var barcode = CameraRoundHarness.Barcode("CONTINUITY-0001");
             h.Api(h.Left).Enqueue(barcode, 1); await Until(() => p.SlotAvailable, "first accepted slot");
             var old = p.Slot; var original = p.Operation!.Id;
-            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Api(h.Left).Enqueue(barcode, 2);
-            await Until(() => p.IsProcessing && p.Operation?.Id != original, "same-code processing placeholder");
+            // Next parcels use their own codes: one placement of a code is one request (SM-PLACEMENT-PRESENCE-29).
+            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("CONTINUITY-0002"), 2);
+            await Until(() => p.IsProcessing && p.Operation?.Id != original, "next-parcel processing placeholder");
             Check(p.Slot == "未取得" && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && slot.IsVisible && !((Grid)control.FindName("TaskFields")).IsVisible && !p.CurrentTaskAvailable,
-                "same-code pending request immediately clears the prior destination; gray processing placeholder has no authoritative slot or old task fields");
+                "next-parcel pending request immediately clears the prior destination; gray processing placeholder has no authoritative slot or old task fields");
             Check(p.DisplayStatus.Contains("处理中") && p.DisplaySlotLabel.Contains("尚未取得") && p.DisplayPresentation.Tone == Ipc.Application.ParcelFlow.Desktop.ParcelPresentationTone.Pending,
                 "processing state has explicit text, automation label and muted color without a previous destination");
             await Until(() => Metrics(h).EnumerateArray().Any(m => m.GetProperty("Stage").GetString() == "ReadFeedbackComposed" && m.GetProperty("ObservationId").GetString() == p.Input?.Observation.Id), "read cue composition metric while RCS is held");
@@ -37,11 +38,11 @@ static partial class Program
                 "read feedback reaches actual DWM composition before the delayed RCS response without claiming business acceptance");
             CaptureInternal(evidence, "slot-confirming", (Grid)window.FindName("ClientArea"), lines);
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-            await Until(() => p.SlotAvailable && p.Operation?.Id != original, "same-code second response");
+            await Until(() => p.SlotAvailable && p.Operation?.Id != original, "next-parcel second response");
             Check(!p.SlotProvisional && p.DisplaySlot == old && p.ShowConfirmedTask && h.Peer.Requests.Count == 2,
                 "second decoded read creates its own request and replaces the provisional display only on its own confirmed result");
             original = p.Operation!.Id;
-            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Api(h.Left).Enqueue(barcode, 3);
+            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("CONTINUITY-0003"), 3);
             await Until(() => p.IsProcessing && p.Operation?.Id != original, "third pending read");
             await Task.Delay(1700);
             await Until(() => p.Operation?.State == ParcelState.ResolvingWcs, "pending request after former hold deadline");
@@ -78,14 +79,14 @@ static partial class Program
             await SetClient(other, 1024, 768); await Until(() => other.ViewModel.Fresh, "unknown fixture snapshot");
             var p = other.ViewModel.Left; var code = CameraRoundHarness.Barcode("UNKNOWN-0001"); unknown.Api(unknown.Left).Enqueue(code, 1);
             await Until(() => p.SlotAvailable, "unknown fixture accepted basis"); var original = p.Operation!.Id;
-            unknown.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); unknown.Api(unknown.Left).Enqueue(code, 2);
+            unknown.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); unknown.Api(unknown.Left).Enqueue(CameraRoundHarness.Barcode("UNKNOWN-0002"), 2);
             await Until(() => p.Operation?.Id != original && p.Operation?.State == ParcelState.WcsUnknown, "unknown original response");
             Check(!p.SlotProvisional && !p.DisplaySlotVisible && p.RejectionIdentity is not null && p.Operation?.Wcs?.State == StageState.Unknown,
                 "Unknown removes the old display and has a distinct exception cue without clearing original request responsibility or resending");
             // Explicit read-only projection fixture: a late cue is not permission
             // to replace the existing Unknown instruction with a pending promise.
             var cue = new ParcelReadFeedback(other.ViewModel.Snapshot!.RuntimeId, p.PositionId, Wire.Id(), p.ReaderId,
-                p.Input!.Observation.Epoch, "UNKNOWN-0001", System.Diagnostics.Stopwatch.GetTimestamp(), DateTimeOffset.UtcNow);
+                p.Input!.Observation.Epoch, "UNKNOWN-0002", System.Diagnostics.Stopwatch.GetTimestamp(), DateTimeOffset.UtcNow);
             p.GetType().GetMethod("ApplyReadFeedback", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(p, [cue]);
             Check(p.DisplayStatus == p.Status && p.DisplayNextStep == p.NextStep && !p.DisplaySlotVisible,
                 "a new read-only cue preserves the original Unknown instruction and cannot authorize an old destination");

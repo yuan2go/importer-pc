@@ -12,6 +12,7 @@ public sealed partial class ParcelRuntime
     void RegisterCameraReadFeedback(ObservationSession session)
     {
         if (Id != "sportmaster" || session.Source is not IObservationReadFeedbackSource source) return;
+        TrackPresenceDevice(session.Source.DeviceId);
         Action<ObservationReadFeedback> handler = frame =>
         {
             // The registered source owns this callback. Old epochs/ticks cannot
@@ -21,6 +22,7 @@ public sealed partial class ParcelRuntime
                 frame.Outcome == ObservationReadOutcome.Codes != (frame.CandidateCount > 0) || !Enum.IsDefined(frame.Outcome)) return;
             var position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == frame.DeviceId)?.Id;
             if (position is null) return;
+            ObservePresenceFrame(position, frame);
             lock (presentationGate)
             {
                 cameraReadFeedback.TryGetValue(position, out var old);

@@ -139,13 +139,14 @@ internal static class CameraChainReliability
             var admitted = capacity == 1 ? 3 : 32;
             for (uint n = 1; n <= admitted; n++)
             {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-REPEATED"), n);
+                // Distinct parcels: one placement of the same code is one request (SM-PLACEMENT-PRESENCE-29).
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-QUEUED-" + n), n);
                 await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().DecodeCompleted >= n));
                 if (n < admitted) await CameraRoundHarness.Until(() => Task.FromResult(source.Undelivered is null));
             }
             if (capacity != 1)
             {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-REPEATED"), 33);
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-QUEUED-33"), 33);
                 await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().WaitingForOriginalCapacity));
             }
             await Task.Delay(150);
@@ -157,7 +158,7 @@ internal static class CameraChainReliability
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == expected);
             var operations = (await h.App.SnapshotAsync()).Operations;
             Check(source.Failure.Length == 0 && h.Peer.Requests.Count == expected && operations.Select(o => o.Wcs!.Request.IntegrationRequest!.RequestId).Distinct().Count() == expected && operations.All(o => o.Wcs!.Attempts == 1),
-                $"all {expected} independent same-code reads each send once after drain, with distinct frozen request IDs");
+                $"all {expected} queued parcels each send once after drain, with distinct frozen request IDs");
         }
         finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
     }

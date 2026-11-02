@@ -76,7 +76,9 @@ internal static class UnreadPackage27
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
         Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.Outcome == ObservationReadOutcome.NoCode,
             "late RCS acceptance preserves its original fact without restoring a superseded camera frame");
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 5);
+        // SM-PLACEMENT-PRESENCE-29: the same code is a new placement only after the tray emptied.
+        await h.ClearPlacementAsync(h.Left, 5);
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 7);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 4);
         var requests = h.Peer.Requests.Select(s => JsonDocument.Parse(s)).ToArray();
         try
@@ -84,7 +86,7 @@ internal static class UnreadPackage27
             Check(requests.Select(j => j.RootElement.GetProperty("requestId").GetInt64()).Distinct().Count() == 4 &&
                 requests.All(j => j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1) &&
                 requests.Count(j => j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString() == "SYNTH-DELAYED-27") == 2,
-                "same-code independent reads retain distinct original requests, original loadCode and quantity=1 for RCS handling");
+                "same code placed again after the tray emptied keeps distinct original requests, original loadCode and quantity=1 for RCS handling");
         }
         finally { foreach (var j in requests) j.Dispose(); }
         h.Api(h.Right).NextLostPackets = 1; h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-REJECT-27"), 2);

@@ -59,7 +59,8 @@ static partial class SportmasterRcs
                 await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
                 for (uint n = 1; n <= 3; n++)
                 {
-                    decoder.Results.Enqueue(["B", "A", "A"]); fake.Enqueue(new(rawByFrame[n], 2, 2), n);
+                    // Three parcels (distinct leading code): one placement = one request (SM-PLACEMENT-PRESENCE-29).
+                    decoder.Results.Enqueue(["B" + n, "A", "A"]); fake.Enqueue(new(rawByFrame[n], 2, 2), n);
                     // Hold image IO, not the recognition boundary: all three completed
                     // recognitions must survive, while unrecognized video may be superseded.
                     await Wait(app, s => s.Operations.Length == n && s.Operations.All(o => o.State == ParcelState.SlotResolved));
@@ -68,8 +69,8 @@ static partial class SportmasterRcs
                 var pending = await Wait(app, s => s.Operations.Length == 3 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
                 Check(fake.Released == 3 && factory.Source!.Frames == 3 && pending.Operations.All(o => o.OriginalFrame?.State == "Pending"),
                     "blocked image IO does not block SDK acquisition or the three original RCS requests");
-                Check(pending.Operations.All(o => o.ParcelCode == "B|A|A" && o.Wcs!.Attempts == 1 &&
-                    o.Wcs.Request.IntegrationRequest!.Body.Contains("\"loadCode\":\"B|A|A\"", StringComparison.Ordinal)),
+                Check(pending.Operations.Select(o => o.ParcelCode).Order().SequenceEqual(["B1|A|A", "B2|A|A", "B3|A|A"]) && pending.Operations.All(o => o.Wcs!.Attempts == 1 &&
+                    o.Wcs.Request.IntegrationRequest!.Body.Contains("\"loadCode\":\"" + o.ParcelCode + "\"", StringComparison.Ordinal)),
                     "one joined string reaches actual HTTP RCS in each frozen original, without replay");
                 var originals = pending.Operations.ToDictionary(o => o.Id, o => Wire.Encode(o.Wcs));
                 var stopping = app.StopAsync(default);

@@ -19,6 +19,9 @@ public abstract class FlowDefinition
     public virtual bool AllowsNextAdmissionAfter(ParcelOperation operation) => false;
     public virtual int RequestTimeoutMs(ParcelOperation operation, ParcelStage stage) => operation.FrozenConfiguration.TimeoutMs;
     public virtual int QueuedObservationTimeoutMs(ParcelConfiguration configuration) => configuration.TimeoutMs;
+    // Continuous cameras only: how long the reading area must show no code before the
+    // next decoded code counts as a new placement. Null keeps one request per read event.
+    public virtual int? PlacementClearMs => null;
     public virtual ParcelOperation RestoreMainProjection(ParcelOperation operation) => operation;
     public abstract string[] ValidateBusiness(ParcelConfiguration config);
     public string[] Validate(ParcelConfiguration c) => [.. ParcelConfigurationRules.Validate(c, Id, PositionRoles), .. ValidateBusiness(c)];

@@ -91,12 +91,13 @@ static partial class Program
             Check(picture.IsEnabled && tasks.IsVisible, "latest matching committed observation restores only its own picture and task fields");
             var priorId = p.Operation!.Id;
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            await Read(6, "SYNTH-LATEST-0005");
-            await Until(() => h.Peer.Requests.Count == 6, "same-code independent request");
-            Check(entry.Text == "SYNTH-LATEST-0005" && !picture.IsEnabled && !tasks.IsVisible && !(bool)edits.GetValue(control)!,
-                "same-code new observation still retires old picture/task authority without creating a manual draft");
+            // Next parcel: one placement of a code is one request (SM-PLACEMENT-PRESENCE-29).
+            await Read(6, "SYNTH-NEXT-0006");
+            await Until(() => h.Peer.Requests.Count == 6, "next-parcel independent request");
+            Check(entry.Text == "SYNTH-NEXT-0006" && !picture.IsEnabled && !tasks.IsVisible && !(bool)edits.GetValue(control)!,
+                "a new parcel observation retires old picture/task authority without creating a manual draft");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-            await Until(() => p.ShowConfirmedTask && p.Operation!.Id != priorId, "same-code latest confirmed result");
+            await Until(() => p.ShowConfirmedTask && p.Operation!.Id != priorId, "next-parcel latest confirmed result");
 
             h.Api(h.Left).Enqueue(CameraRoundHarness.Multiple("SYNTH-MULTI-A", "SYNTH-MULTI-B"), 7);
             await Until(() => p.Input?.Observation.SourceEventId == "mvs.frame.7", "multiple input rejected");

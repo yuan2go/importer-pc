@@ -91,19 +91,23 @@ static partial class SportmasterRcs
             if (fake is null) throw new InvalidOperationException("Synthetic MVS port missing");
             await ManagementModeFixture.Authorize(app);
             Check((await app.ReadCameraPreviewAsync(reader.DeviceId, default)).Frame is null, "management preview request starts empty without adding an acquisition owner");
-            var pixels = args.Contains("--six-megapixel") ? SyntheticLatencyImages("SYNTH-READ-0001")[0] : MakeSoftwareBarcode("SYNTH-READ-0001");
+            // Three parcels, one tray placement each: one request per placement
+            // (SM-PLACEMENT-PRESENCE-29). Distinct codes keep each frame a new parcel.
+            var framePixels = new uint[] { 1, 2, 5 }.ToDictionary(n => "SYNTH-READ-000" + n,
+                n => args.Contains("--six-megapixel") ? SyntheticLatencyImages("SYNTH-READ-000" + n)[0] : MakeSoftwareBarcode("SYNTH-READ-000" + n));
+            var pixels = framePixels["SYNTH-READ-0001"];
 
             // Three decoded results must remain independent. The newest-video policy may
             // intentionally supersede *undecoded* frames, so await each recognition boundary.
             foreach (var number in new uint[] { 1, 2, 5 })
             {
-                fake!.Enqueue(pixels, number);
+                fake!.Enqueue(framePixels["SYNTH-READ-000" + number], number);
                 await Wait(app, state => state.Operations.Length == (number == 1 ? 1 : number == 2 ? 2 : 3) && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             }
             Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             Check((peer is null ? VerifyPythonLedger(pythonLedger!, s.Operations) : peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request")) == 3) && s.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3,
-                "actual software decoder -> MVS lifecycle -> Application/SQLite -> actual RCS adapter: three identical codes remain three independent requests");
+                "actual software decoder -> MVS lifecycle -> Application/SQLite -> actual RCS adapter: three parcels remain three independent requests");
             Check(fake.Released == 3 && !fake.HasFrame && factory.Source!.ConfirmationSource.Contains("skippedVideoFrames=2"),
                 "native loans are released; raw-video sampling gaps are explicit and do not pretend to lose recognized results");
             var preview = await app.ReadCameraPreviewAsync(reader.DeviceId, default);
@@ -124,7 +128,7 @@ static partial class SportmasterRcs
             }
             await app.StopAsync(default);
             Check((await app.SnapshotAsync()).Operations.All(o => o.OriginalFrame is { State: "Saved" } image &&
-                image.RawSha256 == Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels.Data))) && factory.Source!.RetainedOriginalFrames == 0,
+                image.RawSha256 == Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(framePixels[o.ParcelCode].Data))) && factory.Source!.RetainedOriginalFrames == 0,
                 "actual software-reader pipeline saves admitted original frames losslessly and drains raw-frame leases on stop");
             Check(fake.Calls.TakeLast(4).SequenceEqual(["stop", "close", "destroy", "finalize"]) && !fake.HasFrame,
                 "controlled shutdown actually returns buffers and stops/closes/destroys/finalizes in order");

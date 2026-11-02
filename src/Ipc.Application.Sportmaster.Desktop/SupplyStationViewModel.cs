@@ -213,7 +213,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         InputUnadmitted ? (InputFailed ? ChineseInterfaceText.Notice(Input!.Reason) + "；" + OperatorCopy.RescanStep : OperatorCopy.PreviousPendingStep) :
         Operation?.State switch
         {
-            ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请重新扫描。",
+            ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => OperatorCopy.NotDeliveredStep,
             ParcelState.WcsUnknown when ParcelPresentation.RcsTimedOut(Operation) => OperatorCopy.TimeoutUnconfirmed,
             ParcelState.WcsUnknown => OperatorCopy.UnconfirmedStep,
             ParcelState.WcsRejected => ParcelPresentation.RcsException(Operation) ?? OperatorCopy.RejectedStep,
@@ -250,7 +250,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         SlotAvailable ? "按格口投递；扫描下一件后自动更新。" :
         CurrentTaskAvailable ? "RCS 未返回格口：包裹暂放一旁，通知维护人员。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待格口返回，勿重复扫描。" :
-        ParcelPresentation.RcsNotDelivered(Operation) ? "RCS未连接，本次请求未送达；连接恢复后请重新扫描。" :
+        ParcelPresentation.RcsNotDelivered(Operation) ? OperatorCopy.NotDeliveredStep :
         ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
         HasUncertainOriginal ? OperatorCopy.UnconfirmedStep :
         Operation?.State == ParcelState.WcsRejected ? OperatorCopy.RejectedStep :

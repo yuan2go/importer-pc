@@ -8,6 +8,12 @@ public sealed class SportmasterFlow : FlowDefinition
     public override string Id => "sportmaster";
     public override bool AutomaticConfigurationQuiescence => true;
     public override bool ArchiveOriginalFrames => true;
+    // One tray placement = one RCS request. The parcel stays under the lens while RCS
+    // answers and while the cart leaves; it is sent again only after the camera has seen
+    // no code for this interval (lifted off / tray gone) or a different code appears.
+    public const int DefaultPlacementClearMs = 1000;
+    public int PlacementClearMilliseconds { get; init; } = DefaultPlacementClearMs;
+    public override int? PlacementClearMs => PlacementClearMilliseconds;
     public override ParcelConfiguration InitialConfiguration()
     {
         DeviceBinding[] readers = [new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }, new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }];

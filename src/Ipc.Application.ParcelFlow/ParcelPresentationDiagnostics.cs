@@ -17,6 +17,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
             observation.Codes is { Length: 1 } codes && codes[0] is { Length: > 0 and <= 4096 } single && !single.Any(char.IsControl) ? single : null,
             observation.DecodedTicks, observation.ObservedAt)
             { OperatorInput = operatorInput, CandidateCount = observation.Codes?.Length ?? 0, SourceSequence = observation.Sequence,
+                SamePlacement = !operatorInput && PlacementCueHeld(position, observation),
                 PendingDisplayBudgetMs = (int)Math.Clamp(2L * definition.QueuedObservationTimeoutMs(Effective), 1000, 120000) };
         lock (presentationGate)
         {

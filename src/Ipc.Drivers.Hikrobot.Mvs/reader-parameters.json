@@ -40,7 +40,7 @@
       "observe-only"
     ],
     "ReadOnly": false,
-    "Description": "逐次识别结果上报RCS，相同条码也上报，由RCS去重；识别身份不证明物理数量或完成。仅观察不创建作业。"
+    "Description": "逐次识别结果上报Application；包裹仍在读码区时同码不重复请求RCS，读码区空置后再识别为新一次放置。识别身份不证明物理数量或完成。仅观察不创建作业。"
   },
   {
     "Key": "image.nodes",

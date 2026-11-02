@@ -1,3 +1,5 @@
+> 2026-11-02 取格口请求时机以 [SM-PLACEMENT-PRESENCE-29](sm-placement-presence-29.md) 为准：一次托盘放置一次请求，包裹留在读码区不再逐帧发送，读码区空置或换码后才是新请求。本文“每次独立识别交RCS去重/相机继续识别会发新请求”表述保留形成时范围。
+
 # 相机—展示—RCS全链路续修20
 
 2026-11-02，承接PR171，续修起点`e656c6e8`；实施期间正常合入main的PR172/`f2055ace`，保留其两列两行任务字段、64/44DIP格口及统一Keyboard输入入口。[工作包](../work-packages/WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20.md)登记用户决定，19及WORK-FIELDS-20原验证身份各自保留。

@@ -1,0 +1,35 @@
+{
+  "source_commit": "b16d3f939eb53c168d79aba87029723c4babdf19",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "archive": "docs/archive/pre-sm-placement-presence-29/AGENTS.md",
+      "sha256": "96f4ddfdfd7fe20c707c664d622089fedb1485e65ea33d82ddd43061ea363585",
+      "size_bytes": 9297
+    },
+    {
+      "path": "docs/INDEX.md",
+      "archive": "docs/archive/pre-sm-placement-presence-29/docs/INDEX.md",
+      "sha256": "37d6085f499a216f91456e9fe438b6795d984543b46ef4a9de351e1a16ba070f",
+      "size_bytes": 16313
+    },
+    {
+      "path": "docs/runtime/sportmaster-rcs-task.md",
+      "archive": "docs/archive/pre-sm-placement-presence-29/docs/runtime/sportmaster-rcs-task.md",
+      "sha256": "6a176657d11cca93ca0fe02cc52bca9ac5a2cd68f486c0010e64358b02c4f14a",
+      "size_bytes": 1748
+    },
+    {
+      "path": "docs/runtime/sm-camera-chain-reliability-20.md",
+      "archive": "docs/archive/pre-sm-placement-presence-29/docs/runtime/sm-camera-chain-reliability-20.md",
+      "sha256": "46930a50d6dcee0bd3104381777ff5d58bcadcf3547fef5c3897b175853cb7ca",
+      "size_bytes": 6616
+    },
+    {
+      "path": "docs/runtime/sm-reader-feedback-22.md",
+      "archive": "docs/archive/pre-sm-placement-presence-29/docs/runtime/sm-reader-feedback-22.md",
+      "sha256": "2222db5d49890599702cceb3eab498d35a2573d024161d92142f263ff98a793b",
+      "size_bytes": 7540
+    }
+  ]
+}

@@ -8,7 +8,10 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // never branch business logic on them.
 public static class OperatorCopy
 {
-    public const string TimeoutUnconfirmed = "RCS 请求超时，原请求结果未确认。本件暂勿投递；相机继续识别时会发起新请求，请以本次有效格口为准。";
+    // SM-PLACEMENT-PRESENCE-29: one tray placement = one request. A parcel left under
+    // the lens is not sent again; lifting it off and placing it back starts a new request.
+    public const string TimeoutUnconfirmed = "RCS 请求超时，原请求结果未确认。本件暂勿投递；取下包裹再重新放上，相机识别后会发起新请求，请以新的有效格口为准。";
+    public const string NotDeliveredStep = "RCS未连接，本次请求未送达；连接恢复后取下包裹再重新放上，或输入条码。";
     public const string NotReturned = "未返回";
     public const string Paused = "维护中，暂停接收新包裹。";
     public const string PreviousUnconfirmed = "上一件格口未确认，需先处理。";

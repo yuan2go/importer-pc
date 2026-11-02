@@ -12,8 +12,10 @@ public sealed partial class SupplyStationPositionViewModel
     Guid cameraReadRuntime;
     bool MatchedCameraCue => cameraRead is { } frame && readFeedback is { OperatorInput: false } read &&
         read.RuntimeId == cameraReadRuntime && read.DeviceId == frame.Frame.DeviceId && read.Epoch == frame.Frame.Epoch && read.DetectedTicks == frame.Frame.CompletedTicks;
+    // A repeated read of the parcel still under the lens is not a new pending parcel.
     bool CameraObservationUnmatched => cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
         camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome == ObservationReadOutcome.Codes &&
+        !(MatchedCameraCue && readFeedback is { SamePlacement: true }) &&
         !(readFeedback is { OperatorInput: true } manual && manual.DetectedTicks > camera.Frame.CompletedTicks) &&
         !(Input is { } input && input.Observation.OperatorInput is null && input.Observation.DeviceId == camera.Frame.DeviceId &&
             input.Observation.Epoch == camera.Frame.Epoch && input.Observation.SourceEventId == camera.Frame.SourceEventId);
@@ -34,7 +36,7 @@ public sealed partial class SupplyStationPositionViewModel
             return fastReaderState is { } fast && (published is null || fast.UpdatedAt >= published.UpdatedAt) ? fast : published;
         }
     }
-    bool unreadFeedback => readFeedback is { } read && owner.Snapshot?.RuntimeId == read.RuntimeId &&
+    bool unreadFeedback => readFeedback is { SamePlacement: false } read && owner.Snapshot?.RuntimeId == read.RuntimeId &&
         read.ObservationId != Input?.Observation.Id && (Input is null ||
             (Input.Observation.Epoch == read.Epoch && read.SourceSequence > 0 && Input.Observation.Sequence > 0
                 ? read.SourceSequence > Input.Observation.Sequence : Input.Observation.ObservedAt <= read.ObservedAt));
@@ -61,7 +63,7 @@ public sealed partial class SupplyStationPositionViewModel
             (current.Acquisition is null || input.Observation.DeviceId == current.Acquisition.DeviceId &&
                 input.Observation.Epoch == current.Acquisition.Epoch && input.Observation.SourceEventId == current.Acquisition.SourceEventId &&
                 input.Observation.AdmissionId == current.Acquisition.AdmissionId) ? new(ObservationId: input.Observation.Id) :
-        Input is null && Operation is { } operation ? new(OperationId: operation.Id) : null;
+        (Input is null || Input.SamePlacement && Input.OperationId == Operation?.Id) && Operation is { } operation ? new(OperationId: operation.Id) : null;
     public bool CanViewCurrentPicture => CurrentPictureQuery is not null;
     public string? BarcodeObservationKey => unreadFeedback ? ReadFeedbackKey : Input is { } input
         ? $"{owner.Snapshot?.RuntimeId}/{input.Observation.DeviceId}/{input.Observation.Epoch}/{input.Observation.Id}"
@@ -77,7 +79,9 @@ public sealed partial class SupplyStationPositionViewModel
         !CameraNoCode && !invalidReadFeedback && (CameraObservationUnmatched || unreadFeedback || !InputUnadmitted && Operation?.State == ParcelState.ResolvingWcs);
     bool DisplayPaused => owner.Snapshot?.Paused == true;
     public bool ShowConfirmedTask => CurrentTaskAvailable && SlotAvailable && !unreadFeedback && !ReaderUnavailableForDisplay && !DisplayPaused && owner.ViewportReady;
-    public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Input?.Observation.Id ?? Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
+    // Inputs of the same operation (its admission and same-placement repeats) share one cue.
+    string? CueSubject => Input is { } input && input.OperationId != Operation?.Id ? input.Observation.Id : Operation?.Id ?? Input?.Observation.Id;
+    public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{CueSubject}/{Operation?.Wcs?.Request.Id}" : null;
     public string ResultBackground => DisplayPresentation.Tone switch
     {
         ParcelPresentationTone.Accepted => OperatorTokens.Success,
@@ -105,14 +109,14 @@ public sealed partial class SupplyStationPositionViewModel
     public string DisplayNextStep => DisplayPaused ? "本件暂勿投递，等待恢复供包。" : ShowConfirmedTask ? IsTight ? "" : "按本次格口投递" : ReaderUnavailableForDisplay ? "本位暂停供包，请通知维护人员检查相机。" :
         CameraNoCode ? HasUncertainOriginal ? NextStep : "请调整标签后重扫，或用扫码枪/键盘补录；取得本件格口后再投递。" : invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" : NextStep;
     public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
-    public string CameraReadFeedback => !CameraNoCode && (!CameraObservationUnmatched || MatchedCameraCue) && !invalidReadFeedback && readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
+    public string CameraReadFeedback => !CameraNoCode && (!CameraObservationUnmatched || MatchedCameraCue) && !invalidReadFeedback && readFeedback is { SamePlacement: false } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
         ? "已读到条码，等待处理结果。" : "";
     public string ReadCueLabel => CameraReadFeedback.Length == 0 ? "" : "已读到" +
         (readFeedback?.SingleCode is { Length: > 0 } code && !code.Any(char.IsControl) ? " · …" + code[^Math.Min(4, code.Length)..] : "");
     public string? ReadFeedbackIdentity => readFeedback?.ObservationId;
     public string? ReadFeedbackKey => readFeedback is { } read ? $"{read.RuntimeId}/{read.DeviceId}/{read.Epoch}/{read.ObservationId}" : null;
     public string? RejectionIdentity => (!CameraNoCode || HasUncertainOriginal) && !unreadFeedback && (InputFailed || Operation?.State is ParcelState.WcsRejected or ParcelState.WcsUnknown or ParcelState.UnpackRequired || Operation?.Wcs?.State == StageState.Conflict)
-        ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Input?.Observation.Epoch}/{Input?.Observation.Id ?? Operation?.Id}" : null;
+        ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{CueSubject}" : null;
     internal void ApplyReadFeedback(ParcelReadFeedback value)
     {
         if (value.RuntimeId != owner.Snapshot?.RuntimeId || value.DeviceId != ReaderId || value.PositionId != PositionId ||

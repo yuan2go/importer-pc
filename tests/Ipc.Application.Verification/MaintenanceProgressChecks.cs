@@ -59,7 +59,8 @@ static class MaintenanceProgressChecks
         ExtensionStore.AtomicWrite(Path.Combine(config,"business.json"),seed);
         var launch=new BusinessLaunch(config,Path.Combine(root,"data"),null,null);var deviceConstructions=0;
         IParcelCapabilityFactory Factory()=>new ParcelCapabilityFactory(launch){Boundary=_=>{deviceConstructions++;throw new Exception("Offline maintenance constructed a device");}};
-        var service=new ParcelStartupMaintenance(launch,new SportmasterFlow(),Factory,()=>{});
+        var service=new ParcelStartupMaintenance(launch,new SportmasterFlow(),Factory,()=>{})
+        { MaintenanceWorkspace=()=>Directory.CreateDirectory(Path.Combine(root,"scratch-"+Wire.Id())).FullName };
         var read=await service.ReadAsync();var staged=await service.StageAsync(read.ConfigurationHash,read.Candidate! with{TimeoutMs=read.Candidate!.TimeoutMs+1},"synthetic maintenance fixture");
         var directory=staged.RuntimeDirectory!;using(var repository=new ParcelRepository(directory,seed.ApplicationId)){}
         var original=Path.Combine(directory,"receipts","large.synthetic");Directory.CreateDirectory(Path.GetDirectoryName(original)!);

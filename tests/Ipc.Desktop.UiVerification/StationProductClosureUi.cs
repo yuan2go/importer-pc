@@ -22,16 +22,19 @@ static partial class Program
         await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "pc21"), deferred: true);
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show(); await Until(() => window.ViewModel.Fresh);
-        void Click(string label)
+        async Task ClickReady(string label)
         {
+            // RunAsync retains ownership through its final snapshot refresh. A page can
+            // already be visible while that operation is still correctly fenced.
+            await Until(() => window.ViewModel.CanStartOperation);
             var button = Descendants(window).OfType<Button>().First(b => b.IsVisible && Equals(b.Content, label));
-            if (!button.IsEnabled) throw new InvalidOperationException("Product action not enabled: " + label);
+            if (!button.IsEnabled) throw new InvalidOperationException("Action is disabled: " + label);
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
         bool HasText(string value) => Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains(value));
         try
         {
-            await SetClient(window, 1366, 768); Click("统计与班次"); await Until(() => HasText("识别 0 次"));
+            await SetClient(window, 1366, 768); await ClickReady("统计与班次"); await Until(() => HasText("识别 0 次"));
             Check(Descendants(window).OfType<DataGrid>().Any(g => g.IsVisible && g.Columns.Count == 8), "statistics uses actual bounded WPF data grid and explicit fact labels");
             Check(!HasText("本班件数"), "statistics never labels request facts as physical parcel count");
             CaptureInternal(evidence, "pc21-statistics-1366", (Grid)window.FindName("ClientArea"), lines);
@@ -48,25 +51,25 @@ static partial class Program
 
             await h.App.ExitManagementModeAsync(); await window.ViewModel.RefreshManagementModeAsync(); await Flush();
             Check(!settings.IsExpanded && !settings.IsEnabled, "authority revocation immediately collapses and disables policy editing");
-            await SetClient(window, 1366, 768); Click("异常处理"); await Until(() => HasText("格口未确认的包裹勿重复上件"));
+            await SetClient(window, 1366, 768); await ClickReady("异常处理"); await Until(() => HasText("格口未确认的包裹勿重复上件"));
             Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "查看详情与核对…")), "exceptions retain operation-specific evidence and guarded recovery entry");
             CaptureInternal(evidence, "pc21-exceptions-1366", (Grid)window.FindName("ClientArea"), lines);
-            await ManagementModeFixture.Authorize(h.App); await window.ViewModel.RefreshManagementModeAsync(); Click("维护中心");
-            await Until(() => HasText("自动清理：") && window.ViewModel.CanStartOperation);
+            await ManagementModeFixture.Authorize(h.App); await window.ViewModel.RefreshManagementModeAsync(); await ClickReady("维护中心");
+            await Until(() => HasText("自动清理："));
             Check(HasText("恢复备份、换机、修复或卸载") && HasText("创建完整备份"), "maintenance center exposes online tasks and explicit offline handoff");
-            Click("打开诊断"); await Until(() => window.ViewModel.SelectedPage == "diagnostics" && window.ViewModel.CanStartOperation &&
-                Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "刷新体检"))); Click("刷新体检");
+            await ClickReady("打开诊断"); await Until(() => window.ViewModel.SelectedPage == "diagnostics" && window.ViewModel.CanStartOperation &&
+                Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "刷新体检"))); await ClickReady("刷新体检");
             await Until(() => HasText("体检只读取现有相机和心跳数据"));
             Check(!HasText("RCS：当前可用") && (HasText("等待 RCS 确认") || HasText("只表示 RCS 可连接") || HasText("组件未就绪")), "RCS health summary distinguishes local readiness, remote HTTP confirmation and business acceptance");
             Check(HasText("存储剩余"), "diagnostic health reads actual current storage and confirms passive probe semantics");
             CaptureInternal(evidence, "pc21-diagnostics-1366", (Grid)window.FindName("ClientArea"), lines);
-            Click("日志");
+            await ClickReady("日志");
             await Until(() => Descendants(window).OfType<SoftwareLogControl>().Any());
             var log = Descendants(window).OfType<SoftwareLogControl>().Single();
             var selectionField = typeof(SoftwareLogControl).GetField("selection", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
             await Until(() => selectionField.GetValue(log) is string);
             Check(Descendants(log).OfType<DataGrid>().Any(g => g.ItemsSource is not null), "log page executes its initial bounded query without a manual search action");
-            Click("作业"); await Flush();
+            await ClickReady("作业"); await Flush();
             // Historical evidence is reachable from the debug screen; its removed
             // isolation module must not survive in another tab.
             var method = typeof(SupplyStationWindow).GetMethod("Debug_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;

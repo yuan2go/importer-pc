@@ -9,7 +9,7 @@ $evidenceRoot=Join-Path $verificationRoot ('.artifacts/reader22-final-'+$sourceC
 New-Item -ItemType Directory -Force $evidenceRoot | Out-Null
 $summaryFile=Join-Path $evidenceRoot ($Section.ToLowerInvariant()+'-summary.json')
 if (Test-Path -LiteralPath $summaryFile) {throw 'Archive the prior attempt explicitly before a controlled rerun'}
-$report=[ordered]@{source_commit=$sourceCommit;baseline_main='97800598';section=$Section;builds=@();suites=@();scope='Actual software/SQLite/ZXing/loopback RCS/native WPF; physical camera, customer RCS, PDA/audio hardware, installation and field endurance NOT_RUN'}
+$report=[ordered]@{source_commit=$sourceCommit;baseline_main='9ccb91abb37bb93df9a89bcee6956820eee8a285';section=$Section;builds=@();suites=@();scope='Actual software/SQLite/ZXing/loopback RCS/native WPF with integrated PR175 storage upgrade guards; physical camera, customer RCS, PDA/audio hardware, installation and field endurance NOT_RUN'}
 function Save-Report { $report | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $summaryFile -Encoding utf8 }
 if ($Section -eq 'Core') {
  foreach ($project in @('tests/Ipc.Application.Verification','tests/Ipc.Desktop.UiVerification','src/Ipc.Desktop')) {
@@ -23,7 +23,7 @@ if ($Section -eq 'Core') {
   if ($buildExit) {Get-Content $buildLog -Tail 15;throw 'Release build failed'}
  }
  $testAssembly=Join-Path $verificationRoot 'tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll'
- $suiteFlags=@('--reader-ingress-terminal-22','--reader-feedback-22','--camera-chain-closure','--camera-chain-reliability','--manual-supply','--rcs-timeout-errors','--sm-original-frame','--shutdown-resources','--product-closure-21')
+ $suiteFlags=@('--reader-ingress-terminal-22','--reader-feedback-22','--camera-chain-closure','--camera-chain-reliability','--manual-supply','--rcs-timeout-errors','--sm-original-frame','--shutdown-resources','--product-closure-21','--db11-compatible-update')
 } else {
  $coreSummary=Get-Content (Join-Path $evidenceRoot 'core-summary.json') -Raw | ConvertFrom-Json
  if ($coreSummary.source_commit -ne $sourceCommit -or @($coreSummary.builds).Count -ne 3 -or @($coreSummary.builds | Where-Object exit_code -ne 0).Count) {throw 'Same-source Release builds required'}

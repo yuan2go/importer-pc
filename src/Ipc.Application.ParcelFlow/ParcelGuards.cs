@@ -6,7 +6,8 @@ public sealed partial class ParcelRuntime
 {
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving && !CameraBusinessFenced;
-    bool CanResume() => CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
+    bool CanResume(bool acknowledgeStorageUpgrade = false) => (!storageUpgradeReviewRequired || acknowledgeStorageUpgrade && MaintenanceAuthorized) &&
+        CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
     bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
@@ -50,7 +51,7 @@ public sealed partial class ParcelRuntime
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
             { BarcodeInput = manual is null ? null : new(camera, manualReady, manual) };
     }).ToArray();
-    ParcelAvailability Availability() => new(CanAdmit(), CanResume(), CanSaveConfiguration,
+    ParcelAvailability Availability() => new(CanAdmit(), CanResume(acknowledgeStorageUpgrade: true), CanSaveConfiguration,
         operations.Values.Where(CanContinue).Select(x => x.Id).ToArray(), operations.Values.Where(CanContinueUpload).Select(x => x.Id).ToArray(), operations.Values.Where(CanAbandon).Select(x => x.Id).ToArray());
     async Task<T> ExternalAsync<T>(Func<Task<T>> action)
     {

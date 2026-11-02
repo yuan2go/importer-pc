@@ -49,6 +49,7 @@ public sealed partial class ParcelRuntime
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
+            if (storageUpgradeReviewRequired) reasons.Add("数据库已升级；请进入管理模式核对历史后，明确继续供包。原请求不会自动重发。");
             if (!RestoreConfirmed) reasons.Add("RestoreHandoffRequired: keep isolated; verify same-machine source retirement and authenticate maintenance; cross-machine evidence still required");
             reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
             if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) (Id == "sportmaster" ? auxiliaryReasons : reasons).Add("Reader confirmation missing/expired");
@@ -109,8 +110,11 @@ public sealed partial class ParcelRuntime
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); resumePriorPause = false; break;
-                case "Resume" when CanResume():
-                    repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
+                case "Resume" when CanResume(acknowledgeStorageUpgrade: true):
+                    repository.Commit(null, storageUpgradeReviewRequired ? "StorageUpgradeReviewed" : "AdmissionResumed",
+                        storageUpgradeReviewRequired ? Wire.Encode(new { Actor = ManagementEvidence, Policy = "Explicit authorized resume after additive storage upgrade; original request guards remain independent; no replay" }) : "Other stage guards remain independent",
+                        paused: false, command: command);
+                    storageUpgradeReviewRequired = false; resumePriorPause = false; break;
                 case "AcknowledgeOverload" when repository.Paused && overload != 0 && Volatile.Read(ref pendingOverloadWrites) == 0 && positionQueues.Values.All(q => q.Reader.Count == 0):
                     var originalOverload = OverloadIdentity();
                     repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged; original=" + originalOverload, command: command, acknowledgedOverload: originalOverload);
@@ -141,11 +145,7 @@ public sealed partial class ParcelRuntime
                     Boundary?.Invoke("AfterContinuationAdmitted"); ScheduleAttached(imageOp); break;
                 case "AbandonUnsubmitted" when command.Owner is not null && operations.TryGetValue(command.Owner, out var abandoned) && CanAbandon(abandoned) &&
                     !string.IsNullOrWhiteSpace(command.Value):
-                    Save(abandoned with { State = ParcelState.Abandoned, RecoveryRequired = false,
-                        Wcs = CancelUnsent(abandoned.Wcs), Plc = CancelUnsent(abandoned.Plc),
-                        Upload = abandoned.Upload is { State: StageState.Prepared, Attempts: 0 } u ? u with { State = StageState.Cancelled, Failure = "Local cancellation before any external upload attempt" } : abandoned.Upload,
-                        Capture = abandoned.Capture is { State: StageState.Prepared, Attempts: 0 } c ? c with { State = StageState.Cancelled, Failure = "Local cancellation before acquisition" } : abandoned.Capture,
-                        Reason = "Unsubmitted parcel inspected and removed: " + command.Value }, "Abandoned", "Unsent intentions cancelled locally; original accepted WCS/slot and all request identities retained; no physical completion asserted", command: command);
+                    Save(ParcelUnsubmittedIntent.Abandon(abandoned, command.Value), "Abandoned", "Unsent intentions cancelled locally; original accepted WCS/slot and all request identities retained; no physical completion asserted", command: command);
                     Boundary?.Invoke("AfterAbandonedDurable"); ReleaseCompletedImages(); break;
                 case "InspectRestore": return new("RestoreHandoff", Wire.Encode(ReadRestoreHandoff()), repository.Revision);
                 case "ConfirmRestore": ConfirmRestore(command); break;
@@ -156,8 +156,7 @@ public sealed partial class ParcelRuntime
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "CommandCommit"); throw; }
         finally { gate.Release(); }
     }
-    static StageFact? CancelUnsent(StageFact? stage) => stage is { State: StageState.Prepared, Attempts: 0 }
-        ? stage with { State = StageState.Cancelled, Failure = "Inspected local cancellation before any external attempt" } : stage;
+    static StageFact? CancelUnsent(StageFact? stage) => ParcelUnsubmittedIntent.Cancel(stage);
     public async Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate, string? reason = null)
     {
         await gate.WaitAsync().ConfigureAwait(false);

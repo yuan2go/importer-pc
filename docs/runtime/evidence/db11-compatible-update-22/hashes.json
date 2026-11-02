@@ -1,0 +1,299 @@
+{
+  "files": [
+    {
+      "file": "app--audit03-maintenance.log",
+      "bytes": 824,
+      "sha256": "7e64baa5379cd33cec0e1ea9a301daece10cdc4168273ab186cd3de954b39bed"
+    },
+    {
+      "file": "app--camera-chain-closure.log",
+      "bytes": 2157,
+      "sha256": "57abaa57e74f54f2a70c9a9723de4152239b8e10636499c6dbe3944db19c7511"
+    },
+    {
+      "file": "app--camera-chain-reliability.log",
+      "bytes": 3454,
+      "sha256": "15302a36966193c6b66ff076fa93dd5cb5f2f3a87e02a0a8c9e311eb8ce39247"
+    },
+    {
+      "file": "app--commercial-productization-elevated.log",
+      "bytes": 6045,
+      "sha256": "910cacc9ff8e72ce0679c8fe0b68b2b7e310623283d488bec01e4f58210b8770"
+    },
+    {
+      "file": "app--db11-compatible-update-final.log",
+      "bytes": 4472,
+      "sha256": "8824785dc3be171bba4241ec4a98d68fc2776d5ca3df215fdb8772b9bfb47a6a"
+    },
+    {
+      "file": "app--db11-compatible-update.log",
+      "bytes": 4312,
+      "sha256": "6004df30aaa1ed07ee1eae9e42b2275e6a709319c28424c05baea1730cd1cae0"
+    },
+    {
+      "file": "app--maintenance-progress-checks.log",
+      "bytes": 3703,
+      "sha256": "c61ec5a2ded455512a992ddefc985ec84d78ed843b00c4c4984d41a06767ff94"
+    },
+    {
+      "file": "app--manual-rcs-debug-lifecycle.log",
+      "bytes": 1516,
+      "sha256": "3f71ae238b8f354658cf8fcab88a8a671cba59b56da76d333dcfccf421604695"
+    },
+    {
+      "file": "app--manual-supply.log",
+      "bytes": 2214,
+      "sha256": "95027d0fceef828722dc1005f0039878cbc79e757a8eb4c3aabcbdeee0cf15f7"
+    },
+    {
+      "file": "app--mvs-offline-activation.log",
+      "bytes": 1380,
+      "sha256": "a759f6aec4c7e94d149787371915b3858379a670a39078fb1df83be6c56c4bae"
+    },
+    {
+      "file": "app--mvs-software-flow.log",
+      "bytes": 2017,
+      "sha256": "2c5a93be8f641075ec94342633f6e41ff88cec237f6601b92660e4064ac3aec3"
+    },
+    {
+      "file": "app--parameter-guidance-startup.log",
+      "bytes": 2419,
+      "sha256": "fe22c67bde6af69ae82c7995bcc4db800c1081d3d01944df6741f37206ecf549"
+    },
+    {
+      "file": "app--product-closure-21.log",
+      "bytes": 3400,
+      "sha256": "8979a5760136d72b65fc9f4517dfa42b196d11bb4e0be865f8ee24916aab67a7"
+    },
+    {
+      "file": "app--rcs-timeout-errors.log",
+      "bytes": 4758,
+      "sha256": "fc109f5961ffd8ab9bbeb65e15fb575b3045804944964cc107e7bb205c154245"
+    },
+    {
+      "file": "app--retention-ingress.log",
+      "bytes": 6769,
+      "sha256": "c4d12e3545c86da8d9cc1493dd08ceb2ce315a8ad2b5af849d0a5c3bdb68d28a"
+    },
+    {
+      "file": "app--shutdown-resources.log",
+      "bytes": 2012,
+      "sha256": "9fcc500262c42b63d3ba9449f6b58c5b22e203a89992ef64cb37a046dded1d9f"
+    },
+    {
+      "file": "app--sm-original-frame.log",
+      "bytes": 2786,
+      "sha256": "e6258d6ad65502234dd5f509baa1c2a4dbf113e9c6a01a00c15e4886b2e534f4"
+    },
+    {
+      "file": "app--sportmaster-rcs.log",
+      "bytes": 14315,
+      "sha256": "7c380b25f8f1e0758540355ed4319ddc72ae4d8a0e88e52886ba9acc6597e945"
+    },
+    {
+      "file": "app--stability-audit-maintenance.log",
+      "bytes": 881,
+      "sha256": "70ebe4e34baabf90b4fc991a625540c203041704ce1ac595984f55ed95ba024b"
+    },
+    {
+      "file": "app--storage-baseline.log",
+      "bytes": 1418,
+      "sha256": "ae68dd4da94af45af6d32f703ffda785f663345951cc546037d1c8a50771ca51"
+    },
+    {
+      "file": "app--storage-schema-only.log",
+      "bytes": 1273,
+      "sha256": "5c20a3ec105102343d02ee3cbe7b31f267ffa20ef6a4130a0415b835073ad43e"
+    },
+    {
+      "file": "app--ux-commercial-configuration.log",
+      "bytes": 4926,
+      "sha256": "8872b88dcc3d880d636d2297313781aa0c1a70227d54fe345d406a56c0b1a3a5"
+    },
+    {
+      "file": "build-application.log",
+      "bytes": 84,
+      "sha256": "d5cbc5fa4a8800909f5143b546ed1c30896767848cbf320e2c7fb66ed9a418f2"
+    },
+    {
+      "file": "build-desktop-sm.log",
+      "bytes": 84,
+      "sha256": "944037b49a11d28070fcc06b063e06a45000c4c7f1400e4cb86c2688d60a3ba3"
+    },
+    {
+      "file": "build-final-maintenance.log",
+      "bytes": 84,
+      "sha256": "b65e4d21692c3704e1ff4e17bf4830f612309f0d7fb0f7050e71d51f61842f96"
+    },
+    {
+      "file": "build-native.log",
+      "bytes": 84,
+      "sha256": "2188d3aba795c36213ea55313e96feb90ac9670841cfffc29fa44527c81b8729"
+    },
+    {
+      "file": "build-schema-guard.log",
+      "bytes": 84,
+      "sha256": "ec87155aecf7441380ddc773ba824d3c21dabdfe7ee6281c734ca62d232802bb"
+    },
+    {
+      "file": "core-summary.json",
+      "bytes": 3684,
+      "sha256": "1bcb37fc213eafdb997842f7b3770a6022b7220b06e9f230cb2df819bd0b3ba3"
+    },
+    {
+      "file": "elevated-commercial-summary.json",
+      "bytes": 294,
+      "sha256": "a4935502bbe7137a444b1e49d74c2e8d7b8166ed8c5a0b88e9c35d05fda61a6e"
+    },
+    {
+      "file": "final-production-delta.json",
+      "bytes": 439,
+      "sha256": "deb39d4e617e9c7eb5e3e4b2cbcb574ee402331620ecbf15399b014b72708609"
+    },
+    {
+      "file": "final-schema-guard-summary.json",
+      "bytes": 230,
+      "sha256": "e3e65ceee7af12557d49a13524fa3b0eec7a7e38832b90b69609664d34713409"
+    },
+    {
+      "file": "final-schema-guard.diff",
+      "bytes": 1452,
+      "sha256": "07cd981d694fb8baaf2634e28e165e8e9e29e89196f8e6f05d2ef03ef2922f6b"
+    },
+    {
+      "file": "installer-package.log",
+      "bytes": 110,
+      "sha256": "df952fb9ca62cf6fb8395db251ddf22efe57ff7c0783ad2ffd6269b0db6a785e"
+    },
+    {
+      "file": "intermediate-compile.log",
+      "bytes": 1585,
+      "sha256": "49191b955404109756fb8a9c0b98527b35a74adf64f0458e578a27845736a71e"
+    },
+    {
+      "file": "intermediate-maintenance-workspace.log",
+      "bytes": 2675,
+      "sha256": "96fd9e22759ef266976eb9eec81949cd9aec8d278ecceed5f19fe91397e49f5d"
+    },
+    {
+      "file": "intermediate-native-owned-lane.log",
+      "bytes": 1485,
+      "sha256": "b0a8dfd25287a8bbb972a2cd0b37f7b7dbbf2d121be4430b9976afdbc2408e28"
+    },
+    {
+      "file": "intermediate-ordinary-commercial.log",
+      "bytes": 4802,
+      "sha256": "9800cfc0eedc2764474d11a1c58b90af786b4986435758c001da4649649e8cb5"
+    },
+    {
+      "file": "intermediate-stale-draft-guard.log",
+      "bytes": 3392,
+      "sha256": "3fa34bb51c10f452fc16a2d1b1bc1371d746683e269be2c748ab160967de8be5"
+    },
+    {
+      "file": "maintenance-summary.json",
+      "bytes": 2169,
+      "sha256": "1e24dbe17e86afeeeee5da31d49e63683dc2a9bcbf65ebd9ea6804acc6d05552"
+    },
+    {
+      "file": "native--camera-chain-reliability-ui.log",
+      "bytes": 2893,
+      "sha256": "135dff01be5828fa200c6818026294eca54f211d36c000f3ab161c250c1593e1"
+    },
+    {
+      "file": "native--camera-preview-lifecycle.log",
+      "bytes": 755,
+      "sha256": "c2d5f9e8270c71370983a33707fba5a0c24f1d349904d12aa96c7c75863597f0"
+    },
+    {
+      "file": "native--camera-round-ui.log",
+      "bytes": 9762,
+      "sha256": "cabb45f6b3798955b6daa29c3a93882957a125b21ace145bb2bab739eb6d69eb"
+    },
+    {
+      "file": "native--debug-log-live.log",
+      "bytes": 3655,
+      "sha256": "8a9e16c43e9f3b1b6ed51ea0c3911e0e8e58ebb1900b4e248ab245f19888d25e"
+    },
+    {
+      "file": "native--operator-ux-18.log",
+      "bytes": 4022,
+      "sha256": "a676d99cac6177aee356847ea1a4020ac43a9128e3d293f8cb8c0a2e2aa438bb"
+    },
+    {
+      "file": "native--parameter-guidance-startup.log",
+      "bytes": 8784,
+      "sha256": "35623d59f37a04e7c300f79d567012cef39c941427a880712cd72c68cc420908"
+    },
+    {
+      "file": "native--parameter-v3-only.log",
+      "bytes": 3376,
+      "sha256": "ecdeb0e9ca89a1e6493b2891d54c5eabbd6636815ca453ef7d58482c2d0d974a"
+    },
+    {
+      "file": "native--product-closure-21.log",
+      "bytes": 1486,
+      "sha256": "de4ab22f20b7b074ae2f4f1a49cf8d11a561e39a315aa2ffcbb8be243db05fb1"
+    },
+    {
+      "file": "native--query-filters.log",
+      "bytes": 2379,
+      "sha256": "f5036e3f9b58ee62312be3005073b7843aca6cb5b8f489305e629f9b235957ac"
+    },
+    {
+      "file": "negative-sqlite-prefix-source.json",
+      "bytes": 319,
+      "sha256": "e60e13788ddbaedc2d5e79401ea612639f52715dd55520ba604b0b7b31cdc2ee"
+    },
+    {
+      "file": "negative-sqlite-prefix.log",
+      "bytes": 1145,
+      "sha256": "3523375cb0b7c211dcd8360596a81eb163f67a7cf2caec5ad25db5d70b31e634"
+    },
+    {
+      "file": "ordinary-maintenance-summary.json",
+      "bytes": 1020,
+      "sha256": "17d9d4c590161d0b1f4a80598298eafee6cee53c1b67286fb6f5d191c85290a1"
+    },
+    {
+      "file": "pc21-diagnostics-1366.png",
+      "bytes": 176933,
+      "sha256": "76a72c0f775e247f29ae7610591aacf3eb0ffb1247b0a7ca365874dab1fd7b43"
+    },
+    {
+      "file": "pc21-exceptions-1366.png",
+      "bytes": 95522,
+      "sha256": "43df654aa85bc6830c883da80a6f85693b27c6826c86d5de58b8079995af8fc3"
+    },
+    {
+      "file": "pc21-first-configuration-1100.png",
+      "bytes": 77485,
+      "sha256": "f69221f48b1dbaa7459bef4926651495cd66ea397b1698aa4be376b27a47ec2e"
+    },
+    {
+      "file": "pc21-statistics-1366.png",
+      "bytes": 119152,
+      "sha256": "d69a6d7f149f119c42877477f05f97a4c6e807b3d49b0ee511c41f3de4297567"
+    },
+    {
+      "file": "pc21-statistics-800.png",
+      "bytes": 66819,
+      "sha256": "903d567dd9fc8660e298b0da03ddc1154945a37761077c97e1a172946d482976"
+    },
+    {
+      "file": "README.md",
+      "bytes": 5930,
+      "sha256": "bd9ea7dc22791eb0b702368e9c3bd626e3dc007ecc4de3a5bf0ac94ac0d5e648"
+    },
+    {
+      "file": "release-documents.log",
+      "bytes": 106,
+      "sha256": "1e199c4bc4be661e2673099712ab2bb334ceddc2fd8b69041a0e00387b9a32ec"
+    },
+    {
+      "file": "source-equivalence.json",
+      "bytes": 608,
+      "sha256": "33849706d089e4aa712d7d711373333d8d7ff29ba31cff3dad39b00ef2956d5f"
+    }
+  ]
+}

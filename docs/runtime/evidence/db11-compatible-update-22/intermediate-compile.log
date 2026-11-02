@@ -1,0 +1,13 @@
+D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelOfflineUnsubmitted.cs(34,48): error CS0117: “MaintenanceStage”未包含“Reconciling”的定义 [D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelCameraReadRounds.cs(185,65): error CS0103: 当前上下文中不存在名称“CancelUnsent” [D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelCameraReadRounds.cs(206,73): error CS0103: 当前上下文中不存在名称“CancelUnsent” [D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+
+生成失败。
+
+D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelOfflineUnsubmitted.cs(34,48): error CS0117: “MaintenanceStage”未包含“Reconciling”的定义 [D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelCameraReadRounds.cs(185,65): error CS0103: 当前上下文中不存在名称“CancelUnsent” [D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelCameraReadRounds.cs(206,73): error CS0103: 当前上下文中不存在名称“CancelUnsent” [D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj]
+    0 个警告
+    3 个错误
+
+已用时间 00:00:11.20

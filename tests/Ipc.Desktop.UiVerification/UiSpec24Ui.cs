@@ -27,6 +27,8 @@ static partial class Program
                 await SetClient(window, width, height); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
                 var badge = (TextBlock)window.FindName("PaceBadge");
                 Check(badge.IsVisible && badge.ActualHeight > 0, "pace remains a visible read-only software fact at " + width);
+                Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && (b.Content?.ToString() is "异常处理" or "统计与班次")),
+                    "this release hides both navigation entrances at " + width);
                 var cards = Descendants(window).OfType<SupplyStationPosition>().ToArray();
                 foreach (var card in cards)
                 {
@@ -36,28 +38,14 @@ static partial class Program
                 }
                 CaptureInternal(evidence, "ui24-work-" + width, (Grid)window.FindName("ClientArea"), lines);
             }
-            var paceLink = (Button)window.FindName("PaceNavigation");
-            Check(paceLink.IsVisible && paceLink.Focusable && paceLink.IsEnabled, "compact pace has a keyboard-focusable native navigation button");
-            ((System.Windows.Automation.Provider.IInvokeProvider)new System.Windows.Automation.Peers.ButtonAutomationPeer(paceLink).GetPattern(System.Windows.Automation.Peers.PatternInterface.Invoke)!).Invoke();
-            await Until(() => window.ViewModel.SelectedPage == "statistics");
-            Check(window.ViewModel.SelectedPage == "statistics", "pace Invoke opens the existing read-only statistics page");
-            await SetClient(window, 1366, 768);
-            Descendants(window).OfType<Button>().Single(b => b.IsVisible && Equals(b.Content, "作业")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => window.ViewModel.SelectedPage == "workstation");
-            await SetClient(window, 800, 420); await Task.Delay(100);
-            window.Activate(); System.Windows.Input.Keyboard.Focus(paceLink);
-            await Until(() => paceLink.IsKeyboardFocused);
-            var barcodeEntry = Descendants(window).OfType<SupplyStationPosition>().First().FindName("BarcodeEntry") as TextBox;
-            await BarcodeNativeKeyboard.SendAsync(window, barcodeEntry!, [0x0D], paceLink);
-            await Until(() => window.ViewModel.SelectedPage == "statistics");
-            Check(window.ViewModel.SelectedPage == "statistics", "compact pace opens statistics through actual Windows Enter input");
-            await SetClient(window, 1366, 768);
-            Descendants(window).OfType<Button>().Single(b => b.IsVisible && Equals(b.Content, "作业")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => window.ViewModel.SelectedPage == "workstation");
+            var paceSummary = (Border)window.FindName("PaceSummary");
+            var peer = System.Windows.Automation.Peers.UIElementAutomationPeer.CreatePeerForElement(paceSummary);
+            Check(paceSummary.IsVisible && !paceSummary.Focusable && peer?.GetPattern(System.Windows.Automation.Peers.PatternInterface.Invoke) is null &&
+                !Descendants(paceSummary).OfType<Button>().Any(), "pace is a read-only fact with no mouse, keyboard or accessible statistics action");
             await SetClient(window, 1366, 768);
             await Until(() => ((TextBlock)window.FindName("PaceBadge")).Text.Contains("本班取得格口 1 次"));
             Check(h.Peer.Requests.Count == 1, "persisted pace reads the one accepted request without sending another");
-            Check(new System.Windows.Automation.Peers.ButtonAutomationPeer(paceLink).GetName().Contains("本班取得格口 1 次"), "pace navigation accessible name includes the current persisted count");
+            Check(new System.Windows.Automation.Peers.TextBlockAutomationPeer((TextBlock)window.FindName("PaceBadge")).GetName().Contains("本班取得格口 1 次"), "read-only pace accessible name includes the current persisted count");
             var menu = Descendants(window).OfType<ManagementModeMenu>().Single();
             Check(Descendants(menu).OfType<TextBlock>().Any(t => t.Text.StartsWith("管理 · 剩")), "management countdown projects server expiry");
             await window.ViewModel.EnsureMaintenanceLoadedAsync();

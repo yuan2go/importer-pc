@@ -72,6 +72,9 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string WorkspaceStatusForeground => OperatorTokens.Ink;
     internal void ReportBarcodeFeedback(ParcelBarcodeReceipt receipt, string value) => SetPresentationMessage(value, receipt.Status == "Admitted" ? PresentationFeedbackKind.ResultMirrored : PresentationFeedbackKind.General);
     public string WorkFeedback => SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(TaskFeedback) : TaskFeedback;
+    // This release hides page entrances only; the business ledger and retained pages remain.
+    public bool ShowExceptionAndStatisticsEntries => false;
+    public Visibility ExceptionAndStatisticsEntryVisibility => ShowExceptionAndStatisticsEntries ? Visibility.Visible : Visibility.Collapsed;
     public string SelectedPage
     {
         get => selectedPage;

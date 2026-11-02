@@ -11,7 +11,7 @@ public partial class ParcelViewModel
             if (!Fresh) return "状态已过期 · 当前允许动作须重新读取。软件暂停入口仍可提交；不要依据旧绿灯继续放货。";
             if (Snapshot is not { } s) return "等待启动检查和当前状态。";
             if (s.Operations.Any(op => new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)))
-                return s.ApplicationId == "sportmaster" ? "原请求结果未确认，不会自动重发。请按本位状态处理：允许重新放件时先取下包裹再重新放上；仍不能供包时，到异常处理查看原作业并通知维护人员核对。" :
+                return s.ApplicationId == "sportmaster" ? "原请求结果未确认，不会自动重发。请按本位状态处理：允许重新放件时先取下包裹再重新放上；仍不能供包时，到“记录”查看原作业并通知维护人员核对。" :
                     "包裹格口未确认。包裹暂放一旁，在“记录”中选中该作业查询结果；不会重发，也不会换格口。";
             if (s.Configuration.Confirmation?.Required == true) return "当前设置尚未确认。请进入管理模式，查看诊断并完成启动检查；无法启动时使用独立启动修复。";
             if (s.BlockingReasons.Any(r => r.StartsWith("RestoreHandoffRequired"))) return "数据已从备份恢复，尚未完成换机交接。请先完成换机接管并核对交接内容，完成前不能供包。";

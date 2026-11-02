@@ -6,6 +6,12 @@ using Ipc.Application.Contracts;
 using Ipc.Application.Sportmaster.Desktop;
 static partial class Program
 {
+    // Exercise retained pages directly: this release deliberately has no user navigation to them.
+    static void OpenRetainedStationPageForVerification(SupplyStationWindow window, string page)
+    {
+        if (page is not ("statistics" or "exceptions")) throw new ArgumentException("Retained page fixture only");
+        typeof(SupplyStationWindow).GetMethod("SetPage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(window, [page]);
+    }
     static async Task VerifySessionShift25(string root, string evidence, List<string> lines)
     {
         void Check(bool ok,string why) { if(!ok)throw new InvalidDataException(why);lines.Add("PASS SS25-WPF "+why); }
@@ -22,7 +28,7 @@ static partial class Program
         async Task Click(string text) { await Until(()=>window.ViewModel.CanStartOperation);var b=Descendants(window).OfType<Button>().Single(b=>b.IsVisible&&Equals(b.Content,text));Check(b.IsEnabled,"action enabled: "+text);b.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));await Flush(); }
         try
         {
-            await SetClient(window,1366,768);await Click("统计与班次");await Until(()=>Has("运行中")&&Has("读取于"));
+            await SetClient(window,1366,768);OpenRetainedStationPageForVerification(window,"statistics");await Flush();await Until(()=>Has("运行中")&&Has("读取于"));
             var cards=Descendants(window).OfType<TextBlock>().Where(t=>AutomationProperties.GetLabeledBy(t) is TextBlock).ToDictionary(t=>((TextBlock)AutomationProperties.GetLabeledBy(t)).Text,t=>t.Text);
             Check(cards.Count==7&&cards["请求次数"]=="2"&&cards["取得格口"]=="1"&&cards["拒绝次数"]=="1"&&cards["识别次数"]=="0","seven cards bind actual original request facts without inventing recognition or physical completion");
             var requestedValue = Descendants(window).OfType<TextBlock>().Single(t => AutomationProperties.GetLabeledBy(t) is TextBlock label && label.Text == "请求次数");
@@ -35,7 +41,7 @@ static partial class Program
             Check(Has("还没有上一班"),"previous shift has an explicit empty state on the first business run");
             range.SelectedIndex=0;await Until(()=>Has("运行中"));
             Check(new System.Windows.Automation.Peers.TextBlockAutomationPeer(requestedValue).GetName() == "请求次数：2", "accessible count returns to the current shift value without stale labels");
-            await Click("异常处理");await Until(()=>Has("当前 0 条"));
+            OpenRetainedStationPageForVerification(window,"exceptions");await Flush();await Until(()=>Has("当前 0 条"));
             var category=Descendants(window).OfType<ComboBox>().Single(c=>AutomationProperties.GetName(c)=="异常类别");category.SelectedIndex=1;await Until(()=>Has("当前 1 条"));
             var grid=Descendants(window).OfType<DataGrid>().Single(g=>g.IsVisible);grid.SelectedIndex=0;await Flush();
             Check(grid.Columns.Any(c=>Equals(c.Header,"建议操作"))&&grid.Items[0].GetType().GetProperty("Suggestion")!.GetValue(grid.Items[0])?.ToString()=="按原始原因处理","per-row suggestion is derived from the typed original reason code");

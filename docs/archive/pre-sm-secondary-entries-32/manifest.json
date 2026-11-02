@@ -1,0 +1,56 @@
+{
+  "source_commit": "3f8ddbeb2d08523e4c5e2f57b375991f6d7b0953",
+  "superseded_by": "SM-SECONDARY-ENTRIES-32",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11255,
+      "sha256": "cf72e6e4441ba1f3f9faa0ff41fc9666d4e1e2117f59386edf680b16189cd039"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "bytes": 18074,
+      "sha256": "16722677c248e2f0b5d5c4fc42db96445e13db31888b6291b1da3beb287a48f4"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/UiSpec24Ui.cs",
+      "bytes": 15659,
+      "sha256": "1ceadf86e4dd6247309f4d858c4f95b32543344bade5d982a30cd01ba1d02048"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/SessionShiftUi25.cs",
+      "bytes": 6817,
+      "sha256": "d2e93775a349f27140d574a4c81384308effa106eedd7691f0781b60c48e1cfa"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/StationProductClosureUi.cs",
+      "bytes": 8861,
+      "sha256": "cb7306608298c6e0dc852678aa971501725d4fb06f787d7d4133180ed1faf3d4"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/AuditFixes26.cs",
+      "bytes": 6166,
+      "sha256": "34cc3b05dc2f82b0e1496a9c5a3b0b8f5f5d2087de4bbd64575ffb974c09ff7e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs",
+      "bytes": 2358,
+      "sha256": "9af39254de5fd972a84decff0b6cc965ab4142cff12ac5b60c62961b8d488468"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivationPresentation.cs",
+      "bytes": 2404,
+      "sha256": "39aea2a2cffa8f8b7ec267babb24a13b3fc3874970c5108adf746d7f7a128254"
+    },
+    {
+      "path": "docs/runtime/parcel12-operations-26.md",
+      "bytes": 2564,
+      "sha256": "de49cc41696c2279d103f21ac3661431cfb6d33d5cbbf26c18eaa0619c03ac4a"
+    },
+    {
+      "path": "docs/runtime/sm-session-shift-exceptions-25.md",
+      "bytes": 7195,
+      "sha256": "b01d1385990d1c42c28708ed4cbbbc84a02df54c821ef20dccd97b60e947c7c6"
+    }
+  ]
+}

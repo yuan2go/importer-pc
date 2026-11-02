@@ -1,3 +1,5 @@
+> 2026-11-03 用户要求本版本先隐藏“异常处理”和“统计与班次”的入口，以[SM-SECONDARY-ENTRIES-32](work-packages/WP-IPC-SM-SECONDARY-ENTRIES-32.md)为准：侧栏、维护中心、诊断页及效率数字跳转共同隐藏；效率数字保留为只读显示。保留页面实现、业务记录、班次开闭与原请求守卫，不把入口隐藏解释为删除功能或数据。
+
 > 2026-11-03 用户明确删除SM调试隔离，保留调试页面及实际RCS调用，以[SM-DEBUG-NO-ISOLATION-31](work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)为准：不再建立、恢复或依赖全站调试隔离，不要求清场或因调试改写暂停状态；旧隔离记录仅作历史证据，启动时退役其阻断效力，不删除业务记录、不重发原请求。扫码/照片/手动RCS请求及管理权限、SDK资源和原请求守卫保留。
 
 > 当前整合与收口工作包为 [SM-OPERATOR-INTEGRATION-30](work-packages/WP-IPC-SM-OPERATOR-INTEGRATION-30.md)，以main操作工放置流程为准，继续中文参数/调试/诊断修复和保留数据重装复验。

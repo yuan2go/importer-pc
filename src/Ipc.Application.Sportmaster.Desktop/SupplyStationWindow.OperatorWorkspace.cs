@@ -53,7 +53,7 @@ public partial class SupplyStationWindow
             reading = true; var token = lifetime.Token;
             try { var value = await StationPace.Read(ViewModel.Application).WaitAsync(token); if (!token.IsCancellationRequested) { last = value; ViewModel.SetPace(value); } }
             catch (OperationCanceledException) { }
-            catch (Exception error) { last = null; ViewModel.SetPace(null); PaceBadge.ToolTip = ChineseInterfaceText.ParameterMessage(error.Message, "统计读取中断；请重新打开统计页核对，持续失败时导出诊断记录。"); }
+            catch (Exception error) { last = null; ViewModel.SetPace(null); PaceBadge.ToolTip = ChineseInterfaceText.ParameterMessage(error.Message, "作业效率读取中断；持续失败时请在诊断页导出诊断记录。"); }
             finally { reading = false; }
         }
         paceTimer.Tick += async (_, _) => await Read();

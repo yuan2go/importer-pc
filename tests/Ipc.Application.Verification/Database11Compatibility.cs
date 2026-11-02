@@ -106,6 +106,7 @@ static class Database11Compatibility
             Check(hash == Wire.FileHash(unknown.Database), "unsupported format retains bytes " + version);
         }
         var successful = new Fixture(Path.Combine(root, "upgrade"));
+        Change(successful.Database, "PRAGMA journal_mode=WAL;");
         var backup = successful.Backup("complete-original"); var configHash = Wire.FileHash(Path.Combine(successful.Directory, "configuration.json"));
         var seedHash = Wire.FileHash(Path.Combine(successful.Launch.ConfigurationDirectory, "business.json")); var facts = Facts(successful.Database);
         var plan = await successful.Service.PlanChangeAsync("Upgrade", backup);
@@ -183,7 +184,9 @@ static class Database11Compatibility
     }
     static async Task Closure(string root)
     {
-        var f = new Fixture(Path.Combine(root, "closure")); var op = f.Prepared("00000000000000000000000000000001"); var hash = Wire.Hash(Wire.Encode(op)); var backup = f.Backup("before-close");
+        var f = new Fixture(Path.Combine(root, "closure"));
+        Change(f.Database, "PRAGMA journal_mode=WAL;");
+        var op = f.Prepared("00000000000000000000000000000001"); var hash = Wire.Hash(Wire.Encode(op)); var backup = f.Backup("before-close");
         var blocked = await f.Service.PlanChangeAsync("Upgrade", f.Backup("upgrade"));
         Check(!blocked.Allowed, "unsent original still blocks installation until explicit entity inspection; compatibility never weakens the guard");
         await Reject<InvalidOperationException>(() => f.Service.CloseNeverAttemptedAsync(op.Id, new string('A', 64), "synthetic inspected test remnant", backup), "stale original body hash cannot close another version");

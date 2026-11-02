@@ -1,6 +1,6 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-DB11-COMPATIBLE-UPDATE-22",
+  "work_package": "WP-IPC-DB11-WAL-HANDLE-23",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
@@ -1692,9 +1692,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "05d47a458ac411da513a5e6c1d36e936d0159a327eabf4b1606e07fbcc09ba63",
-      "size_bytes": 18166,
-      "git_blob": "7fdecb750b9539cd4a8943e44990bda81ed37e3b",
+      "sha256": "1375eee4a2bc3b3259f39f64b8ce8d7d873d03d1d87b88e23dfec901cfe6b785",
+      "size_bytes": 18266,
+      "git_blob": "fb4b3602f75cbced59012f6d5f16eacd9b2e8d9c",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -2211,9 +2211,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "1dbe7401ad2b2575701a936e8c77f1ca74dfe899b48970b111585445dded223f",
-      "size_bytes": 13709,
-      "git_blob": "6bf59244d9931bfb932ab52f46830033aa00a899",
+      "sha256": "b330883dd22eb8f5f900965ac2fabbd0feae039404bfd0addc0800306bd58994",
+      "size_bytes": 14000,
+      "git_blob": "ca2db83071407bc16d49434f76bb23be6f658179",
       "version": "deferred-heartbeat-01",
       "status": "scoped_implementation_or_separately_identified_evidence",
       "purpose": "Independent deferred camera/RCS validation, lifecycle and original request custody regression",
@@ -54933,9 +54933,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelProductMaintenance.cs",
-      "sha256": "15dafc34538af3d99ad37867d22b18f0869cc5a3a4a7407388817a6b9f3e5e95",
-      "size_bytes": 15385,
-      "git_blob": "40dc4931d068ea3f510f7d3be6dcd87eccf7ab2c",
+      "sha256": "18f6a131246cdd00584b9049e5de275bb3ed99918d41fe2bbcc8da2f7e65e75f",
+      "size_bytes": 15441,
+      "git_blob": "37c993e50aecbd70fa9829fb390093cbf5e3a318",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -116367,9 +116367,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-DB11-COMPATIBLE-UPDATE-22; original evidence retains its own SourceCommit",
-      "sha256": "6a9e2d4ff53c243819452d17a148740498eae9a25a70d24998a067f3ce6a38de",
-      "size_bytes": 6668,
-      "git_blob": "5049f68c2e78902162df6f4a18e3555f218394b4",
+      "sha256": "60f961af1c23e2a8f6e93518200c09f09dc8fcd1a143a3a4f977859dc3da8827",
+      "size_bytes": 6869,
+      "git_blob": "0925d27725f2c9af2a205c1951a19b48bfcc6876",
       "storage_scope": "public_repository"
     },
     {
@@ -116400,9 +116400,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-DB11-COMPATIBLE-UPDATE-22; original evidence retains its own SourceCommit",
-      "sha256": "a51c664cd2a68a1e6d325da941d0a607c397bd6a6fbc412133063d739123430b",
-      "size_bytes": 24689,
-      "git_blob": "3d1dce8f0b3bc4cc3f398c734bca01071dfdba87",
+      "sha256": "2baa68be769e97bb0bacc0eb97ac233338141b51fc27de72b81dd08a9eb3cfcf",
+      "size_bytes": 24818,
+      "git_blob": "d7ee9981a2d9d106d8be358900b8c9c6d6030fd4",
       "storage_scope": "public_repository"
     },
     {
@@ -117097,6 +117097,17 @@
       "size_bytes": 608,
       "git_blob": "e2f73414481f3f4429bc7735fee0aec600bec2a8",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-DB11-WAL-HANDLE-23.md",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "f3c887c70488d169e467b08366f69b86efc1ab02557ba1707c8a5595cf49343c",
+      "size_bytes": 994,
+      "git_blob": "74dc9cf7027d46363c9e57e064e3164a04220020",
+      "storage_scope": "public_repository"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -117176,7 +117187,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "docs/work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md",
+  "current_implementation_work_package": "docs/work-packages/WP-IPC-DB11-WAL-HANDLE-23.md",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -119960,8 +119971,8 @@
   ],
   "integration_sources": [
     {
-      "commit": "9860301f09991a7a2875444595c2315f96f5bfa6",
-      "manifest_sha256": "20bd53d1b70b7b8afac83ff0b30c760b1189b07d14af4dabb7cbf5379311d398",
+      "commit": "9ccb91abb37bb93df9a89bcee6956820eee8a285",
+      "manifest_sha256": "f977cd16518438ce86a2c142bb9b12c5f0a5d40e67e26db9f79a482bb4f6eb7c",
       "work_package": "WP-IPC-DB11-COMPATIBLE-UPDATE-22"
     }
   ],

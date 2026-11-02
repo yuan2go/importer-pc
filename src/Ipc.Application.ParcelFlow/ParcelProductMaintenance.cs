@@ -7,7 +7,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelStartupMaintenance
 {
-    sealed record Snapshot(string Directory, string Database, string SourceIdentity) : IDisposable
+    sealed record Snapshot(string Directory, string Database, string SourceIdentity, IReadOnlyDictionary<string, string> OriginalHashes) : IDisposable
     { public void Dispose() => System.IO.Directory.Delete(Directory, true); }
     Snapshot CopyForMaintenance(string directory, MaintenanceExecution? execution = null)
     {
@@ -34,7 +34,7 @@ public sealed partial class ParcelStartupMaintenance
                     count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingSnapshot,copiedBytes,bytes); });
             }
             if (hashes.Any(h => Wire.FileHash(RecoveryFiles.Resolve(directory, h.Key), token) != h.Value)) throw new IOException("原文件在取得所有权后变化；拒绝使用不一致副本");
-            return new(scratch, Path.Combine(scratch, definition.Id + ".db"), Wire.Hash(Wire.Encode(hashes)));
+            return new(scratch, Path.Combine(scratch, definition.Id + ".db"), Wire.Hash(Wire.Encode(hashes)), hashes);
         }
         catch { Directory.Delete(scratch, true); throw; }
     }
@@ -105,7 +105,7 @@ public sealed partial class ParcelStartupMaintenance
             // The original owner remains held across backup, schema commit and deployment.
             // Re-observe DB/WAL before its first write; no original is opened by SQLite during planning.
             ParcelRepository.UpgradeStorage10(original, definition.Id, backupDestination, backup.DatabaseHash,
-                Wire.FileHash(copy.Database), File.Exists(copy.Database + "-wal") ? Wire.FileHash(copy.Database + "-wal") : null,
+                copy.OriginalHashes[definition.Id + ".db"], copy.OriginalHashes.GetValueOrDefault(definition.Id + ".db-wal"),
                 Actor, Authorize, execution);
         }
         if (change is not null) await change(); // Same application owner spans backup and deployment commit.

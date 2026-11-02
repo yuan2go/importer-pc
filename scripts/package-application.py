@@ -13,7 +13,7 @@ import tarfile
 import zipfile
 from release_build import frozen_export, build_properties, cleanup, archive_package
 from composition import resolve
-from application_compatibility import read_business
+from application_compatibility import read_business, read_storage_format
 from application_bundles import read_packages, publish_packages
 from release_documents import SOURCE_PATHS, publish as publish_guides
 from release_dependencies import publish as publish_dependencies
@@ -59,6 +59,7 @@ bundles = read_packages(a.extension_package, selection)
 if bundles and a.extension_trust is None:
     raise ValueError('Selected offline packages require independent trust for target-host acceptance')
 business, compatibility_source = read_business(build_source, a.application, selection)
+database_format = read_storage_format(build_source)
 provenance['BusinessVersion'] = business['BusinessVersion']
 frozen_properties = build_properties(source, build_source, artifacts)
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
@@ -108,7 +109,7 @@ for directory in [output / 'app', output / 'desktop']:
     release = dict(SchemaVersion=2, ApplicationId=a.application, SourceCommit=source, **business,
                    Views=selection['product']['views'], Layouts=selection['product']['layouts'], Files=files)
     (directory / 'application-release.json').write_text(json.dumps(release, indent=2) + '\n')
-selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.target, ApplicationContractVersion=next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts'), DatabaseFormat=11, EntryPoint='app/Ipc.Assembly.dll',
+selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.target, ApplicationContractVersion=next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts'), DatabaseFormat=database_format, EntryPoint='app/Ipc.Assembly.dll',
                  DesktopEntryPoint='desktop/Ipc.Desktop.exe' if a.target == 'win-x64' else None,
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
                  Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest()

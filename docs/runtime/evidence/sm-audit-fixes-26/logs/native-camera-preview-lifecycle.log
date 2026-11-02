@@ -1,0 +1,8 @@
+PASS PREVIEW-LIFECYCLE native timers display continuous video before scan without creating isolation or RCS requests
+PASS PREVIEW-LIFECYCLE 15fps-capped native preview advances by writing pixels into the same WriteableBitmap while window/round timers run
+PASS PREVIEW-LIFECYCLE history tab unload and reload restore live video
+PASS PREVIEW-LIFECYCLE cached debug page resumes its own timer after leaving and reopening
+PASS PREVIEW-LIFECYCLE camera switch clears the old image synchronously
+PASS PREVIEW-LIFECYCLE right camera image comes from the selected acquisition
+PASS PREVIEW-LIFECYCLE navigation and management reentry preserve the original SDK owners and never send requests
+CAPTURE preview-lifecycle: 1365.6x768 DIP, Windows DPI 1.25/1.25

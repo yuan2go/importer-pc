@@ -284,3 +284,6 @@ docs/runtime/evidence/sm-ui-spec-closure-24/** -text whitespace=cr-at-eol,-blank
 # SS25 archive and receipts preserve the exact original bytes.
 docs/archive/pre-sm-session-shift-25/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/runtime/evidence/sm-session-shift-exceptions-25/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# AUD26 original verification receipts retain captured Windows bytes for SHA256 verification.
+docs/runtime/evidence/sm-audit-fixes-26/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

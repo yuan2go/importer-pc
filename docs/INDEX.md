@@ -1,3 +1,5 @@
+> 2026-11-02 七项审查修复以 [SM-AUDIT-FIXES-26](work-packages/WP-IPC-SM-AUDIT-FIXES-26.md)、[实现与验证](runtime/sm-audit-fixes-26.md)为准。当前交付操作入口为 [Parcel12](runtime/parcel12-operations-26.md)，旧格式11指南保留历史身份，原始索引见 [归档](archive/pre-sm-audit-fixes-26/manifest.json)。
+
 > 2026-11-02 用户追加以 [SM-SESSION-SHIFT-EXCEPTIONS-25](work-packages/WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25.md) 为准：P07/P08现在实施；SM每次成功打开至完成关闭为一个持久班次，不按固定时刻切班，异常退出与原请求跨班责任分开。替代24包延期及旧排班对本班的定义，其他守卫/历史证据不变。
 
 > 2026-11-02 24包交付记录以 [SM-UI-SPEC-CLOSURE-24](work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08已由后续25包接续实施；原24包交付当时保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。

@@ -1,0 +1,24 @@
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE confirmation shows the actual 安装 operation above the scroll area without treating version 1.0.0 as source equality
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE options identify 修复安装 from source and retirement state while preserving the retained data purpose
+PASS INSTALLER-LIFECYCLE confirmation shows the actual 修复安装 operation above the scroll area without treating version 1.0.0 as source equality
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE options identify 更新 from source and retirement state while preserving the retained data purpose
+PASS INSTALLER-LIFECYCLE confirmation shows the actual 更新 operation above the scroll area without treating version 1.0.0 as source equality
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE options identify 重新安装 from source and retirement state while preserving the retained data purpose
+PASS INSTALLER-LIFECYCLE confirmation shows the actual 重新安装 operation above the scroll area without treating version 1.0.0 as source equality
+CAPTURE installer-reinstall-confirmation: 680x500 DIP, Windows DPI 1.25/1.25
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE completion hands off the exact installed release
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE launch failure keeps the completed receipt and retry-open action instead of suggesting another install
+CAPTURE installer-complete-launch-failed: 880x440 DIP, Windows DPI 1.25/1.25
+PASS INSTALLER-LIFECYCLE completion hands off the exact installed release
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE retry opens only the installed release once and exits the completed wizard
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE native operation completed without leaving the footer disabled
+PASS INSTALLER-LIFECYCLE unchecked completion closes without launching or reinstalling
+BOUNDARY actual WPF HWND/Dispatcher; synthetic installation and launch callbacks. Real token and protected lifecycle are separate Windows checks; no device/UAC dialog was automated.

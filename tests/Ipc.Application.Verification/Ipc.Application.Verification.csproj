@@ -40,6 +40,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationTemplates.cs" Link="Client/ConfigurationTemplates.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs" Link="Client/ConfigurationSubmission.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs" Link="Client/ConfigurationReviewPresentation.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivationPresentation.cs" Link="Client/ConfigurationActivationPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs" Link="Client/ParameterRuntimePresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StationDisplayPreferences.cs" Link="Client/StationDisplayPreferences.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs" Link="Client/ChineseInterfaceText.cs"/>

@@ -16,7 +16,13 @@ public partial class SupplyStationWindow
     StationStatisticsControl? statistics;
     FrameworkElement? exceptions, maintenanceCenter;
     public Func<Task>? OpenMaintenanceOwnerAsync { get; set; }
-    async void ProductRestart_Click(object sender, RoutedEventArgs e) => await RequestActivation();
+    async void ProductRestart_Click(object sender, RoutedEventArgs e) => await InspectOrActivateConfiguration();
+    async Task InspectOrActivateConfiguration()
+    {
+        if (!ViewModel.HasConfigurationActivationFailure) { await RequestActivation(); return; }
+        await OpenOperatorSettingsAsync();
+        if (ViewModel.IsManagementMode) SetPage("diagnostics");
+    }
     void Statistics_Click(object sender, RoutedEventArgs e) => SetPage("statistics");
     void Exceptions_Click(object sender, RoutedEventArgs e) => SetPage("exceptions");
     void MaintenanceCenter_Click(object sender, RoutedEventArgs e) => SetPage("maintenance-center");
@@ -33,19 +39,19 @@ public partial class SupplyStationWindow
         var body = new StackPanel { Margin = new(24, 20, 24, 16) }; body.Children.Add(ProductText("维护中心", title: true));
         var tasks = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Stretch };
         var attention = ProductText(""); body.Children.Add(attention);
-        void Attention() => attention.Text = "待核对包裹 " + (ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0) + " · " + (ViewModel.Snapshot?.Configuration.Pending is null ? "没有待重启设置" : "配置已保存待重启");
+        void Attention() => attention.Text = "待核对包裹 " + (ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0) + " · " + ViewModel.ConfigurationActivationOutcome;
         System.ComponentModel.PropertyChangedEventHandler attentionChanged = (_, args) => { if (args.PropertyName is nameof(ViewModel.Snapshot) or nameof(ViewModel.Fresh)) Attention(); };
         body.Loaded += (_, _) => { ViewModel.PropertyChanged += attentionChanged; Attention(); };
         body.Unloaded += (_, _) => ViewModel.PropertyChanged -= attentionChanged;
         body.Children.Add(ProductText("请选择要做的维护。前五项在软件运行中完成；恢复备份、换机和修复/卸载需先完全停止软件。软件暂停不是安全急停。"));
         void TaskRow(string name, string description, string action, Func<Task> run)
         {
-            var row = new DockPanel { Margin = new(0, 12, 0, 8) }; var button = ProductButton(action, run); DockPanel.SetDock(button, Dock.Right); row.Children.Add(button);
+            var row = new DockPanel { Margin = new(0, 12, 0, 8) }; var button = ProductButton(action, run); if (name == "配置已保存但未生效") button.SetBinding(Button.ContentProperty, new Binding(nameof(ViewModel.ConfigurationActivationActionText)) { Source = ViewModel }); DockPanel.SetDock(button, Dock.Right); row.Children.Add(button);
             var text = new StackPanel(); text.Children.Add(new TextBlock { Text = name, FontWeight = UiTypography.Emphasis }); text.Children.Add(ProductText(description)); row.Children.Add(text); tasks.Children.Add(row);
         }
         TaskRow("连接或供包异常", "查看两台相机、RCS、存储与备份的实际状态，再按对象处理。", "打开诊断", () => { SetPage("diagnostics"); return Task.CompletedTask; });
         TaskRow("待核对包裹", "逐件查看被拒绝和格口未确认的包裹；不会自动重发。", "处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; });
-        TaskRow("配置已保存但未生效", "重启软件使已保存的设置生效；重启失败时继续使用原设置，并显示原因。", "检查并重启…", async () => { await ViewModel.RequireManagementModeAsync(); if (ViewModel.Snapshot?.Configuration.Pending is null) throw new InvalidOperationException("没有待重启设置"); await RequestActivation(); });
+        TaskRow("配置已保存但未生效", "重启软件使已保存的设置生效；重启失败时继续使用原设置，并显示原因。", "检查并重启…", async () => { await ViewModel.RequireManagementModeAsync(); if (ViewModel.Snapshot?.Configuration.Pending is null) throw new InvalidOperationException("没有待重启设置"); await InspectOrActivateConfiguration(); });
         TaskRow("创建完整备份", "先暂停新供包，等进行中的请求处理完，再备份数据库、配置和 RCS 返回记录。完成后点击“检查并恢复”。", "备份…", CreateProductBackup);
         TaskRow("备份后恢复供包", "重新检查连接、暂停状态、存储容量和未确认作业，通过后恢复供包；不会重发格口未确认的请求。", "检查并恢复", async () => { await ViewModel.RequireManagementModeAsync(); var s = await ViewModel.Application.SnapshotAsync(); var r = await ViewModel.Application.CommandAsync(new(Wire.Id(), s.Revision, "Resume")); ViewModel.Message = r.Status + " · " + r.Reason; });
         TaskRow("自动清理与班次", "设置保留策略、清理时刻和备份份数上限；清理后保留统计汇总。", "打开设置", () => { SetPage("statistics"); return Task.CompletedTask; });

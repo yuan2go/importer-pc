@@ -23,14 +23,18 @@ static partial class Program
         try
         {
             await SetClient(window,1366,768);await Click("统计与班次");await Until(()=>Has("运行中")&&Has("读取于"));
-            var cards=Descendants(window).OfType<TextBlock>().Where(t=>new[]{"识别次数","请求次数","取得格口","拒绝次数","格口未确认","取得格口比例","平均取得格口/小时"}.Contains(AutomationProperties.GetName(t))).ToDictionary(t=>AutomationProperties.GetName(t),t=>t.Text);
+            var cards=Descendants(window).OfType<TextBlock>().Where(t=>AutomationProperties.GetLabeledBy(t) is TextBlock).ToDictionary(t=>((TextBlock)AutomationProperties.GetLabeledBy(t)).Text,t=>t.Text);
             Check(cards.Count==7&&cards["请求次数"]=="2"&&cards["取得格口"]=="1"&&cards["拒绝次数"]=="1"&&cards["识别次数"]=="0","seven cards bind actual original request facts without inventing recognition or physical completion");
+            var requestedValue = Descendants(window).OfType<TextBlock>().Single(t => AutomationProperties.GetLabeledBy(t) is TextBlock label && label.Text == "请求次数");
+            Check(new System.Windows.Automation.Peers.TextBlockAutomationPeer(requestedValue).GetName() == "请求次数：2", "numeric accessible name remains the actual value and is associated with its label");
             Check(Has("RCS请求")&&Has("RCS拒绝"),"reason groups retain typed RCS rejection separately from observations");
             Check(Descendants(window).OfType<DataGrid>().Single(g=>g.IsVisible).Items.Count==2,"hour chart has a keyboard-readable data table for both positions");
             foreach(var size in new[]{(1366,768),(1092,614),(800,420)}) {await SetClient(window,size.Item1,size.Item2);await Flush();CaptureInternal(evidence,"ss25-statistics-"+size.Item1,(Grid)window.FindName("ClientArea"),lines);}
             await SetClient(window,1366,768);var range=Descendants(window).OfType<ComboBox>().Single(c=>AutomationProperties.GetName(c)=="统计时间范围");range.SelectedIndex=1;await Until(()=>Has("尚无上一班记录"));
+            Check(new System.Windows.Automation.Peers.TextBlockAutomationPeer(requestedValue).GetName() == "请求次数：0", "accessible count updates with the actual empty previous-shift result");
             Check(Has("还没有上一班"),"previous shift has an explicit empty state on the first business run");
             range.SelectedIndex=0;await Until(()=>Has("运行中"));
+            Check(new System.Windows.Automation.Peers.TextBlockAutomationPeer(requestedValue).GetName() == "请求次数：2", "accessible count returns to the current shift value without stale labels");
             await Click("异常处理");await Until(()=>Has("当前 0 条"));
             var category=Descendants(window).OfType<ComboBox>().Single(c=>AutomationProperties.GetName(c)=="异常类别");category.SelectedIndex=1;await Until(()=>Has("当前 1 条"));
             var grid=Descendants(window).OfType<DataGrid>().Single(g=>g.IsVisible);grid.SelectedIndex=0;await Flush();

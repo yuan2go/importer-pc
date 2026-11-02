@@ -27,7 +27,7 @@ public partial class ParcelViewModel
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
     public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration ? "有未保存的更改" : "没有未保存的更改";
     public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "仅修改条码规则时可直接生效；连接等其他设置需重启，以保存结果为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
-    public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" :
+    public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" : Snapshot?.Configuration.Failure is not null ? ConfigurationActivationOutcome :
         Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "条码规则已保存并生效" : ConfigurationActivationGuidance;
     string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature());
     ParcelConfiguration CurrentReviewCandidate() => configurationAuthority switch

@@ -50,8 +50,9 @@ internal sealed class StationStatisticsControl : UserControl
         var labels = new[] { "识别次数", "请求次数", "取得格口", "拒绝次数", "格口未确认", "取得格口比例", "平均取得格口/小时" };
         for (var i = 0; i < values.Length; i++)
         {
-            var box = new StackPanel { MinWidth = 128, MinHeight = 100, Margin = new(0, 8, 12, 12) }; box.Children.Add(Text(labels[i])); values[i].FontSize = 24; values[i].FontWeight = UiTypography.Emphasis; box.Children.Add(values[i]); metrics.Children.Add(box);
-            AutomationProperties.SetName(values[i], labels[i]);
+            var box = new StackPanel { MinWidth = 128, MinHeight = 100, Margin = new(0, 8, 12, 12) }; var label = Text(labels[i]); box.Children.Add(label); values[i].FontSize = 24; values[i].FontWeight = UiTypography.Emphasis; box.Children.Add(values[i]); metrics.Children.Add(box);
+            AutomationProperties.SetLabeledBy(values[i], label);
+            values[i].SetBinding(AutomationProperties.NameProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = values[i], StringFormat = labels[i] + "：{0}" });
         }
         metrics.SizeChanged += (_, _) => { var columns = metrics.ActualWidth >= 980 ? 7 : metrics.ActualWidth >= 600 ? 4 : 2; foreach (FrameworkElement child in metrics.Children) child.Width = Math.Max(128, metrics.ActualWidth / columns - 12); };
         body.Children.Add(Text("每小时取得格口 · 左位蓝色 / 右位绿色 · 虚线为本机目标（次/小时），按两位合计参考"));

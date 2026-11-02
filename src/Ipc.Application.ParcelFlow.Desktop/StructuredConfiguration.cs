@@ -182,7 +182,7 @@ public partial class ParcelViewModel
     public string ConfigurationSaveGuidance => !Fresh ? "状态读取中断，恢复后才能检查和保存；已填写的内容会保留。" :
         Busy ? "正在执行当前操作，请等待结果。" :
         !CanConfigure ? Snapshot?.ApplicationId == "sportmaster" ? "进入管理模式后即可保存；程序自动等待当前请求完成。" : "保存前需要暂停供包、进入管理模式，并等待当前请求完成。" :
-        "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查。" + ConfigurationActivationGuidance;
+        "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查。" + ConfigurationActivationOutcome;
     public string ConfigurationEditorState
     {
         get
@@ -206,7 +206,7 @@ public partial class ParcelViewModel
         Changed(nameof(InstalledPackageReferences)); Changed(nameof(SelectedInstalledPackage)); Changed(nameof(NewCapabilityKinds));
     }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
+    { Changed(nameof(HasConfigurationActivationNotice)); Changed(nameof(ConfigurationActivationOutcome)); Changed(nameof(ConfigurationActivationBannerText)); Changed(nameof(ConfigurationSavedStatusText)); Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing

@@ -187,8 +187,8 @@
    </Grid.RowDefinitions>
    <StackPanel>
     <Border x:Name="PendingConfigurationBanner" Padding="16,6" Background="{StaticResource AccentBackground}">
-     <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Snapshot.HasPendingConfiguration}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
-     <DockPanel><Button Content="重启软件使设置生效…" Click="ProductRestart_Click" IsEnabled="{Binding CanRequestActivation}" DockPanel.Dock="Right" MinHeight="44"/><TextBlock Text="设置已保存，重启后生效。当前作业仍使用原配置。" TextWrapping="Wrap" VerticalAlignment="Center"/></DockPanel>
+     <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasConfigurationActivationNotice}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding SelectedPage}" Value="workstation"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></Border.Style>
+     <DockPanel><Button x:Name="ActivationOutcomeAction" Content="{Binding ConfigurationActivationActionText}" Click="ProductRestart_Click" IsEnabled="{Binding CanOpenConfigurationActivation}" DockPanel.Dock="Right" MinHeight="44"/><TextBlock Text="{Binding ConfigurationActivationBannerText}" ToolTip="{Binding ConfigurationActivationOutcome}" TextWrapping="Wrap" VerticalAlignment="Center"/></DockPanel>
     </Border>
     <WrapPanel x:Name="SettingsToolNavigation" Margin="16,4">
      <WrapPanel.Style>
@@ -313,7 +313,10 @@
       </Border>
       <StackPanel>
        <DockPanel LastChildFill="True">
-       <TextBlock x:Name="PaceBadge" Visibility="{Binding PaceVisibility}" FontSize="{x:Static type:UiTypography.Label}" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="12,0,0,0" ToolTip="按原请求准备时间统计取得格口次数；读取持久事实，不代表实物落格件数。管理模式可右键隐藏。"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{Binding PaceText}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Text" Value="{Binding PaceCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+       <Button x:Name="CompactActivationAction" Content="{Binding ConfigurationActivationCompactText}" Click="ProductRestart_Click" IsEnabled="{Binding CanOpenConfigurationActivation}" DockPanel.Dock="Right" HorizontalAlignment="Right" MinHeight="44" Margin="8,0,0,0" ToolTip="{Binding ConfigurationActivationOutcome}">
+        <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding HasConfigurationActivationNotice}" Value="True"/><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding SelectedPage}" Value="workstation"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></Button.Style>
+       </Button>
+       <Button x:Name="PaceNavigation" Click="Statistics_Click" Visibility="{Binding PaceVisibility}" DockPanel.Dock="Right" HorizontalAlignment="Right" MinHeight="44" Padding="0" Margin="12,0,0,0" Background="Transparent" BorderThickness="0" AutomationProperties.Name="查看本班统计" ToolTip="打开统计与班次（只读）"><TextBlock x:Name="PaceBadge" Visibility="{Binding PaceVisibility}" FontSize="{x:Static type:UiTypography.Label}" VerticalAlignment="Center" ToolTip="按原请求准备时间统计取得格口次数；读取持久事实，不代表实物落格件数。管理模式可右键隐藏。"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{Binding PaceText}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Text" Value="{Binding PaceCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Button>
        <TextBlock x:Name="InputTarget" Text="{Binding InputTargetLabel}" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{x:Static type:OperatorBrushes.Accent}" AutomationProperties.LiveSetting="Polite">
         <TextBlock.Style>
          <Style TargetType="TextBlock">

@@ -148,7 +148,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             if (parameterEditor is null) return "尚未完成本站、业务规则、相机及 RCS 的配置检查。继续配置后可查看具体缺项。";
             parameterEditor.ValidateFields();
-            return parameterEditor.Issues.Count == 0 ? "当前字段检查未发现错误；尚未保存正式配置。继续配置，在“检查与完成”中保存。" : "当前还需修改 " + parameterEditor.Issues.Count + " 项：\n" + string.Join("\n", parameterEditor.Issues.Take(8).Select(i => "• " + i.Category + "：" + i.Message));
+            return parameterEditor.Issues.Count == 0 ? "当前字段检查未发现错误；尚未保存正式配置。继续配置，在“检查与完成”中保存。" : "当前还需修改 " + parameterEditor.Issues.Count + " 项：\n" + string.Join("\n", parameterEditor.Issues.Take(8).Select(i => "• " + ChineseInterfaceText.ParameterMessage(i.Message)));
         }
     }
     bool startupSaveUncertain;
@@ -395,7 +395,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             foreach (var check in report.Checks.Where(c => c.Status == "FAIL")) parameterEditor?.Report(check.Reason);
             LocateFirstIssue();
-            throw new InvalidOperationException("配置检查未通过：" + string.Join("；", report.Checks.Where(c => c.Status == "FAIL").Select(c => c.Layer + "：" + c.Reason)));
+            throw new InvalidOperationException("配置检查未通过：" + string.Join("；", report.Checks.Where(c => c.Status == "FAIL").Select(c => ChineseInterfaceText.ParameterMessage(c.Reason))));
         }
         checkedInput = Input(); checkedCandidateHash = report.CandidateHash;
         if (initialConfiguration) saveState.Text = lastSaveConfirmed && savedInput == Input() ? "已保存，启动时检查" : report.Checks.Any(c => c.Status == "BLOCKED") ? "部署条件未满足" : "检查通过 · 未保存";

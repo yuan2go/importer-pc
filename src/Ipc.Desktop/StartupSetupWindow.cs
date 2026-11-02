@@ -170,7 +170,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 10, Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)), Margin = new(0, 12, 0, 12) });
             Body.Children.Add(new TextBlock { Text = "按实际安装步骤显示进度。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
             Details();
-            Note("正在写入安装，不能取消或重复安装。如果中途中断，请点击“查看本次安装结果”确认；关闭窗口不会回滚安装。"); return;
+            Note("取消是否可用以当前步骤和取消按钮为准。请求取消后仍须等待本次结果；关闭窗口不会回滚安装。"); return;
         }
         Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和安装设置，然后点击下一步。", 2 => "本次操作：" + installationKind + "。确认以下选项后开始。", _ => "菜鸟供包台已安装。" });
         if (step == 0)

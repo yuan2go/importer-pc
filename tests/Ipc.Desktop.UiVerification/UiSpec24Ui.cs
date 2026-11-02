@@ -36,6 +36,24 @@ static partial class Program
                 }
                 CaptureInternal(evidence, "ui24-work-" + width, (Grid)window.FindName("ClientArea"), lines);
             }
+            var paceLink = (Button)window.FindName("PaceNavigation");
+            Check(paceLink.IsVisible && paceLink.Focusable && paceLink.IsEnabled, "compact pace has a keyboard-focusable native navigation button");
+            ((System.Windows.Automation.Provider.IInvokeProvider)new System.Windows.Automation.Peers.ButtonAutomationPeer(paceLink).GetPattern(System.Windows.Automation.Peers.PatternInterface.Invoke)!).Invoke();
+            await Until(() => window.ViewModel.SelectedPage == "statistics");
+            Check(window.ViewModel.SelectedPage == "statistics", "pace Invoke opens the existing read-only statistics page");
+            await SetClient(window, 1366, 768);
+            Descendants(window).OfType<Button>().Single(b => b.IsVisible && Equals(b.Content, "作业")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => window.ViewModel.SelectedPage == "workstation");
+            await SetClient(window, 800, 420); await Task.Delay(100);
+            window.Activate(); System.Windows.Input.Keyboard.Focus(paceLink);
+            await Until(() => paceLink.IsKeyboardFocused);
+            var barcodeEntry = Descendants(window).OfType<SupplyStationPosition>().First().FindName("BarcodeEntry") as TextBox;
+            await BarcodeNativeKeyboard.SendAsync(window, barcodeEntry!, [0x0D], paceLink);
+            await Until(() => window.ViewModel.SelectedPage == "statistics");
+            Check(window.ViewModel.SelectedPage == "statistics", "compact pace opens statistics through actual Windows Enter input");
+            await SetClient(window, 1366, 768);
+            Descendants(window).OfType<Button>().Single(b => b.IsVisible && Equals(b.Content, "作业")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => window.ViewModel.SelectedPage == "workstation");
             await SetClient(window, 1366, 768);
             await Until(() => ((TextBlock)window.FindName("PaceBadge")).Text.Contains("本班取得格口 1 次"));
             Check(h.Peer.Requests.Count == 1, "persisted pace reads the one accepted request without sending another");
@@ -84,6 +102,7 @@ static partial class Program
             await Until(() => Descendants(window).OfType<DataGrid>().Any(g => g.Items.OfType<SoftwareLogEntry>().Any(e => e.OperationId == admitted.OperationId)));
             Check(Descendants(window).OfType<DataGrid>().SelectMany(g => g.Items.OfType<SoftwareLogEntry>()).All(e => e.OperationId == admitted.OperationId), "record-to-log jump pins the structured original operation rather than a barcode search");
             Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "导出…")), "log export uses one explicit selection entry");
+            Check(Descendants(window).OfType<TextBox>().Any(t => t.ToolTip is string hint && hint.Contains("日志中的条码已隐藏") && hint.Contains("记录页")), "log keyword guidance preserves redaction and points barcode lookup through original records");
             CaptureInternal(evidence, "ui24-logs-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); CaptureInternal(evidence, "ui24-logs-800", (Grid)window.FindName("ClientArea"), lines);
             Check(!Descendants(window).OfType<CheckBox>().Any(b => b.IsVisible && AutomationProperties.GetAutomationId(b) == "DebugLoggingMode"), "SM detailed-log switch belongs to diagnostics rather than logs");

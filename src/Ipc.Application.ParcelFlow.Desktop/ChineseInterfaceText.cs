@@ -64,6 +64,16 @@ public static class ChineseInterfaceText
     };
     public static string Notice(string value)
     {
+        // Match only our complete local receipts; never translate remote identifiers.
+        const string noIntent = "; no operation or external intent created";
+        foreach (var outcome in new[] { "NoMatchingCode", "ExcludedCodes", "AmbiguousCodes", "IncompleteCandidates", "FilterTimeout", "InvalidPattern", "NoCode", "MultipleCodes", "InvalidCode", "JoinedCodeTooLong" })
+            if (value == outcome + noIntent) return Status(outcome) + "；本件未发送，请检查条码或筛选规则后重新扫描。";
+        if (value == "Admitted; external result pending") return "条码已受理，正在等待本件结果。";
+        if (value is "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set" or
+            "BackupCreated · Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set" or
+            "BackupCreated: Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set")
+            return "完整备份已完成，请将数据库和同名恢复目录一起保管；核对状态后再检查并恢复供包。";
+        if (value == "BackupCreated") return "完整备份已完成";
         if (value.StartsWith("Authentication unavailable:", StringComparison.Ordinal)) return "操作员认证服务暂不可用，请稍后重试或查看诊断。";
         // Translate known application explanations without changing source facts
         // or replacing identifiers supplied by an adapter or remote service.

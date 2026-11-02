@@ -121966,9 +121966,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
-      "sha256": "736f67937d099e366c14eed0505939819dd1f3f3cbd74643a869970fa75d2621",
-      "size_bytes": 3669,
-      "git_blob": "da4764f6a046076c1c106689f6cd1dedd6158e93",
+      "sha256": "6c18cbbe78d0b6a3b59ef8b5f015e5d64f1cff8bc91da130061ecdfc2f270296",
+      "size_bytes": 4354,
+      "git_blob": "669606177b80f6c56bbbc25cb0ce51f918fe83d8",
       "storage_scope": "public_repository"
     },
     {
@@ -122530,6 +122530,116 @@
       "sha256": "782551be29f4efaa9b7439898815c0f4aa4f879f92a737d4d89845a101cefacb",
       "size_bytes": 5204,
       "git_blob": "e1f6e50e0b8f5b34cac3603865a4a990dcd72842",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/RESULT.json",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "e591469b4d092d7f85d4c5dfe413cbbcbead976bb16029ecf936338f57bc8dfc",
+      "size_bytes": 2912,
+      "git_blob": "86e450aa108fc417ae9c58a720b30255399afa3f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/core-lifecycle-ux.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "91b2c96e9175461c7f4dcf858f853c44291646df9da758fdd391f7ba55cd7888",
+      "size_bytes": 23584,
+      "git_blob": "eb047f1d258931ec5ff0a8844b44c8498ff27dd0",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/core-maintenance-launch-fence.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "86ef9e9a6c76303aa9ff02acd03d716f3c9d187f15c0e400d2cec59ef43f4b6f",
+      "size_bytes": 1599,
+      "git_blob": "616908b0e6c99f7127803d35705ec49c031017a0",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/core-maintenance-progress-checks.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "9a52cefc91bacbd4de14d74be8c77e335f8ffafd923fd974432ab4738994d505",
+      "size_bytes": 3703,
+      "git_blob": "e0e6f0b5febffd1191189d91b90a87d492b5db97",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/core-operator-corrections-29.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "cd6389ba6c6aa73adc1a76faf5decaec96e5e1c6e99fff27efd37e36901ac867",
+      "size_bytes": 1180,
+      "git_blob": "b8648876e0c2699e55321d9e5fee67bf9f50c47f",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/core-receipt-custody.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "239dca7d56b70f08f59af82ba4c7a894189f409ffc774869d3382d0bdf0f180c",
+      "size_bytes": 2163,
+      "git_blob": "a81aab0c764f4f88c4d080d6ab775dc39b052fcb",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/core-same-placement-29.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "529d40d6b69c119446425cfc1102a7f7feb4a6805da708bf87f22acd54c00f3e",
+      "size_bytes": 1570,
+      "git_blob": "15c0f014a7bb524728ca865991b8cc7af72a7981",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/native-audit-fixes-26.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "cd09f71e0b9fed6e03fea71806c78e8ddca16c23f040459e394638d1cad94cab",
+      "size_bytes": 2363,
+      "git_blob": "5213ad3fdcbc1e0a64085287ec82cb89fcf6aae9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/native-installer-first-run-ui.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "8b8650b2bbab7358b8f03335ae7fa3195b4ad3316be6038759392274988200d9",
+      "size_bytes": 18261,
+      "git_blob": "0a76a6deade1ab395212615bcf4b8946f6cbd706",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sm-operator-integration-30/launch-boundary-8a4a7b53/native-operator-corrections-29-ui.log",
+      "version": "sm-operator-integration-30",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
+      "sha256": "de519a2c661557f691bba9242f9f1f017c77ba8954c64893b50e490be46109a2",
+      "size_bytes": 1697,
+      "git_blob": "12940eb0ce984b7a44b2224025dc0078ea99dffb",
       "storage_scope": "public_repository"
     }
   ],

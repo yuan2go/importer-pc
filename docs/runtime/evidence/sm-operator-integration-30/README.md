@@ -2,6 +2,8 @@
 
 本页记录9ce54bab首轮冻结验证，保持原SourceCommit。随后实际升级出现授权交接未启动，用户未见管理员提示；该介质尚未实际安装。后续维护启动边界修复见[当前工作包](../../../work-packages/WP-IPC-SM-OPERATOR-INTEGRATION-30.md)，不能将本页PASS扩张到补修源或实际安装后的流程。
 
+补修源`8a4a7b537f5818dda50433c1d90ab531c5b82ff0`完成3个零警告/零错误Release构建，6套应用及3套原生补充回归共541项PASS，另有22项发布兼容性/指南检查通过，见[补充RESULT及成功日志](launch-boundary-8a4a7b53/RESULT.json)。其中12项使用实际Windows命名管道核验启动失败、身份失败、取消和迟到连接清退；原生检查继续保留开始后丢失回执时的Unknown及禁止重放合同。旧生命周期测试采用显式人工提交构造独立同码包裹，SM查询验证当前追加加载和固定范围，底层前页/首页游标及原实体选择断言仍保留。上述均不代替安装后业务流程。
+
 产品和发布介质源为`9ce54bab1f243fa2c4b0641f46336847fced8e23`，整合main `38cb7dc0e8e15f009ee88c5a35f1db53c27d5205`（PR183）。后续测试适配提交`dc81df9d`只修订日志/响应性夹具与说明；`git diff --exit-code 9ce54bab dc81df9d -- src config scripts`通过，产品、配置与出包脚本相同。
 
 [RESULT.json](RESULT.json)记录23套应用711项、24套Windows原生WPF 1018项，共47套1729项PASS；另有17项发布兼容性和5项交付指南测试通过。三个Release构建零警告零错误。原始合成成功日志与SHA256在[logs](logs/)；原生截图留本机，只记录名称和哈希。夹具使用合成相机身份、条码、SDK及环回RCS，不包含用户截图、现场数据或客户原稿。

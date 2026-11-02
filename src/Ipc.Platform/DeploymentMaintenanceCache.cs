@@ -27,6 +27,7 @@ public static partial class WindowsDeploymentSetup
             if (Wire.FileHash(source) != file.Value) throw new InvalidDataException("维护缓存源文件已变化。");
             ProtectedDirectory(Path.GetDirectoryName(target)!, runtimeSid);
             WriteProtectedBytes(target, File.ReadAllBytes(source), runtimeSid, overwrite: false);
+            new FileInfo(target).SetAccessControl(MachineRuntimeSetup.FileAcl(runtimeSid, FileSystemRights.ReadAndExecute));
             if (Wire.FileHash(target) != file.Value) throw new IOException("维护缓存复制不完整。");
         }
         var inventory = Path.Combine(root, "installed-inventory.json");

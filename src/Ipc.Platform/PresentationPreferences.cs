@@ -8,6 +8,26 @@ public static class PresentationPreferences
     // Isolated native verification only; no command line/configuration exposes this.
     internal static Func<string>? UserRootForVerification = null;
     public enum WindowOpeningMode { Window, FullScreen }
+    sealed record AudioPreference(int Schema, int Volume);
+    public static event Action<string, int>? CueVolumeChanged;
+    public static int ReadCueVolume(string application)
+    {
+        var file = FileFor(application, "audio");
+        if (!File.Exists(file)) return 70;
+        if (new FileInfo(file).Length > 4096) throw new InvalidDataException("提示音偏好超出预算；保留原文件");
+        var value = Wire.Decode<AudioPreference>(File.ReadAllText(file));
+        if (value.Schema != 1 || value.Volume is < 0 or > 100) throw new InvalidDataException("提示音音量无效；保留原文件");
+        return value.Volume;
+    }
+    public static void SaveCueVolume(string application, int volume)
+    {
+        if (volume is < 0 or > 100) throw new InvalidDataException("提示音音量须为0～100");
+        _ = ReadCueVolume(application);
+        var file = FileFor(application, "audio");
+        Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+        ExtensionStore.AtomicWrite(file, new AudioPreference(1, volume));
+        CueVolumeChanged?.Invoke(application, volume);
+    }
     sealed record WindowPreference(int Schema, WindowOpeningMode Mode);
     public static WindowOpeningMode ReadWindowMode(string application)
     {

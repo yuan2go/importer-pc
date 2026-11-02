@@ -28,6 +28,7 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
+        InitializeAudio();
         ViewModel.RequestActivationAsync = RequestActivation;
         ViewModel.RequestRetentionAsync = RequestRetention;
         WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
@@ -67,6 +68,7 @@ public partial class SupplyStationWindow : Window
             pendingRefresh = RefreshAsync(); await pendingRefresh;
             if (closing || closed) return;
             UpdateViewport();
+            RestoreBarcodeFocus();
             timer.Start();
             if (initialPage == "maintenance") { pendingMaintenanceLoad = true; await LoadRequestedMaintenanceAsync(); }
             if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "读取作业记录");

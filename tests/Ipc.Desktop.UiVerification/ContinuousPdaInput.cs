@@ -183,13 +183,13 @@ static class BarcodeNativeKeyboard
     [DllImport("user32.dll", SetLastError = true)] static extern uint SendInput(uint count, Input[] inputs, int size);
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] static extern short GetAsyncKeyState(int key);
-    public static async Task SendAsync(Window window, TextBox entry, ushort[] keys)
+    public static async Task SendAsync(Window window, TextBox entry, ushort[] keys, FrameworkElement? initialFocus = null)
     {
         window.Dispatcher.VerifyAccess();
         if (keys.Length == 0) throw new ArgumentException("At least one native key is required", nameof(keys));
         var foreground = GetForegroundWindow(); var expectedWindow = new WindowInteropHelper(window).Handle;
         var modifiers = new[] { 0x10, 0x11, 0x12, 0x5B, 0x5C }.Where(k => (GetAsyncKeyState(k) & 0x8000) != 0).ToArray();
-        if (!window.IsActive || foreground != expectedWindow || !entry.IsKeyboardFocused || modifiers.Length != 0)
+        if (!window.IsActive || foreground != expectedWindow || !(initialFocus ?? entry).IsKeyboardFocused || modifiers.Length != 0)
             throw new InvalidOperationException($"Native barcode input requires the foreground test HWND, barcode focus and no held modifiers; active={window.IsActive}; foreground={foreground}; expected={expectedWindow}; focus={entry.IsKeyboardFocused}; held={string.Join(",", modifiers)}");
         var inputs = keys.SelectMany(key => new[] {
             new Input { Type = 1, Data = new InputUnion { Keyboard = new KeyboardInput { Key = key } } },
@@ -208,7 +208,8 @@ static class BarcodeNativeKeyboard
             { processed.TrySetException(new InvalidOperationException($"Unexpected native key-up {e.Key}; expected {expected} at {received}")); return; }
             if (++received == keys.Length) processed.TrySetResult();
         };
-        entry.AddHandler(Keyboard.KeyUpEvent, acknowledged, true);
+        var acknowledgementOwner = initialFocus is null ? (UIElement)entry : window;
+        acknowledgementOwner.AddHandler(Keyboard.KeyUpEvent, acknowledged, true);
         try
         {
             if (SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<Input>()) != inputs.Length)
@@ -218,6 +219,6 @@ static class BarcodeNativeKeyboard
             { throw new TimeoutException($"Native input acknowledgement timed out: {received}/{keys.Length}; text={entry.Text}; caret={entry.SelectionStart}/{entry.SelectionLength}; focus={entry.IsKeyboardFocused}", error); }
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
         }
-        finally { entry.RemoveHandler(Keyboard.KeyUpEvent, acknowledged); }
+        finally { acknowledgementOwner.RemoveHandler(Keyboard.KeyUpEvent, acknowledged); }
     }
 }

@@ -1,5 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 
@@ -8,15 +11,42 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public partial class SupplyStationWindow
 {
     readonly Grid workContent = new();
+    string recentInputPosition = "left";
+    bool focusRestoreQueued;
     void BuildOperatorWorkspace()
     {
         workContent.Children.Add(work);
         Deactivated += (_, _) => ViewModel.SetInputTarget("");
-        Activated += (_, _) =>
+        Activated += (_, _) => RestoreBarcodeFocus();
+        Loaded += (_, _) => RestoreBarcodeFocus();
+        ViewModel.PropertyChanged += (_, args) =>
         {
-            foreach (var control in work.Children.OfType<SupplyStationPosition>())
-                if (control.FindName("BarcodeEntry") is TextBox { IsKeyboardFocused: true } && control.DataContext is SupplyStationPositionViewModel p) p.SetInputFocused(true);
+            if (args.PropertyName == nameof(ViewModel.InputTargetPosition) && ViewModel.InputTargetPosition is "left" or "right")
+                recentInputPosition = ViewModel.InputTargetPosition;
+            if (args.PropertyName == nameof(ViewModel.SelectedPage) && ViewModel.SelectedPage == "workstation") RestoreBarcodeFocus();
         };
+        PreviewTextInput += (_, args) =>
+        {
+            // Route scanner text away from workspace actions before its Enter.
+            // Explicit Tab/Enter navigation and other editors remain native.
+            if (!CanRestoreBarcodeFocus || Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ||
+                args.Text.Length == 0 || args.Text.Any(char.IsControl) || Keyboard.FocusedElement is not ButtonBase) return;
+            if (RecentPosition() is { } position) { args.Handled = true; position.ReceiveScannerText(args.Text); }
+        };
+    }
+    bool CanRestoreBarcodeFocus => IsLoaded && IsActive && IsEnabled && !closing && !closed &&
+        ViewModel.SelectedPage == "workstation" && ViewModel.ViewportReady && !OwnedWindows.OfType<Window>().Any(w => w.IsVisible && w.IsActive);
+    SupplyStationPosition? RecentPosition() => work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c =>
+        c.DataContext is SupplyStationPositionViewModel p && p.PositionId == recentInputPosition);
+    void RestoreBarcodeFocus()
+    {
+        if (focusRestoreQueued) return;
+        focusRestoreQueued = true;
+        Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+        {
+            focusRestoreQueued = false;
+            if (CanRestoreBarcodeFocus) RecentPosition()?.FocusBarcodeInput();
+        }));
     }
     async Task OpenOperatorSettingsAsync(string? deviceId = null, string? instanceId = null)
     {

@@ -52,7 +52,7 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                 var observation = new Observation(Wire.Id(), position.ReaderDeviceId, "operator." + runtimeId.ToString("N"),
                     "operator." + request.CommandId, 1, "manual." + request.CommandId, "Read", [request.Barcode], null, at)
                     { OperatorInput = evidence, DecodedTicks = System.Diagnostics.Stopwatch.GetTimestamp() };
-                RecordPresentationRead(request.PositionId, observation);
+                RecordPresentationRead(request.PositionId, observation, operatorInput: true);
                 // Durable intent comes before any work or external effect. A crash/Pending
                 // command is inspectable but is never replayed as a fresh camera event.
                 repository.Commit(null, "OperatorBarcodeSubmitted", Wire.Encode(new { Command = request, Evidence = evidence, Observation = observation }),

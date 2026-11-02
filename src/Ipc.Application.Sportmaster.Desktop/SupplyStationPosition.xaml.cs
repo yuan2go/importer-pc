@@ -82,6 +82,21 @@ public partial class SupplyStationPosition : UserControl
     {
         if (!editing && !submitting && submitted is null) BarcodeEntry.SelectAll();
     }
+    internal void FocusBarcodeInput()
+    {
+        if (!IsVisible || !IsEnabled) return;
+        BarcodeEntry.Focus(); PrepareResultReplacement();
+    }
+    internal void ReceiveScannerText(string text)
+    {
+        FocusBarcodeInput();
+        if (submitting || submitted is not null || BarcodeEntry.IsReadOnly) return;
+        if (BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + text.Length > 4096)
+        { overflow = true; InputFeedback.Text = "条码超长，请清空后重扫。"; RefreshSubmitAvailability(); return; }
+        var caret = BarcodeEntry.SelectionStart + text.Length;
+        BarcodeEntry.SelectedText = text;
+        BarcodeEntry.Select(caret, 0);
+    }
     void Entry_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
     {
         PrepareResultReplacement();

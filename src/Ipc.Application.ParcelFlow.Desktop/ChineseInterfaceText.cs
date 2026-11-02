@@ -54,6 +54,7 @@ public static class ChineseInterfaceText
         "NotSaved" => "未保存", "Selected" => "已选中唯一条码", "NoMatchingCode" => "没有匹配条码",
         "AmbiguousCodes" => "多个条码匹配", "IncompleteCandidates" => "条码不完整", "FilterTimeout" => "筛选超时",
         "InvalidPattern" => "筛选规则无效", "NoCode" => "未识别条码", "MultipleCodes" => "存在多个条码",
+        "UntrustedObservation" => "本次读码来源、连接周期或时效无效，请重新扫描",
         "ExcludedCodes" => "命中排除规则", "InvalidCode" => "条码无效", "StrictSingleCode" => "严格单码校验",
         "WaitingWeight" => "等待有效重量", "ResolvingWcs" => "正在获取格口", "WcsUnknown" => "格口未确认", "WcsRejected" => "未分配格口", "SlotResolved" => "格口已取得",
         "SubmittingPlc" => "控制器请求处理中", "PlcUnknown" => "控制器结果未确认", "PlcRejected" => "控制器明确拒绝", "PlcAccepted" => "控制器已接受", "PhysicalCompleted" => "已报告物理完成",
@@ -71,6 +72,7 @@ public static class ChineseInterfaceText
     }
     static readonly (string Source, string Text)[] Notices =
     [
+        ("UntrustedObservation", "本次读码未受理，请重新扫描"),
         ("Global software pause", "供包已暂停"),
         ("SIMULATION identity; frozen only when a parcel is admitted", "模拟身份已验证，受理时记入本件作业"),
         ("Authenticated provider identity; frozen only at admission", "身份已验证，受理时记入本件作业"),

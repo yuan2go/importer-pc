@@ -54,6 +54,11 @@ jobs:
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
             if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required suite missing or incomplete: $suite" }
           }
+      - name: Incremental code format
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          ./scripts/verify-industrial-format.ps1
       - name: Release policy unit boundaries (no publisher qualification)
         shell: pwsh
         run: |

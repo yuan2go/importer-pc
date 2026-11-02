@@ -1,0 +1,13 @@
+src/Ipc.Platform/DeploymentMaintenanceCache.cs
+src/Ipc.Platform/InstallerCommandLine.cs
+src/Ipc.Platform/ReleaseVersionPolicy.cs
+src/Ipc.Platform/RecoverySecurityPolicy.cs
+src/Ipc.Platform/WindowsManagementRecovery.cs
+src/Ipc.Platform/LocalManagementMode.PasswordRecovery.cs
+src/Ipc.Application.Contracts/DiagnosticPackage.cs
+src/Ipc.Application.ParcelFlow/StationDiagnosticPackage.cs
+src/Ipc.Application.ParcelFlow/StationDiagnosticProjection.cs
+tests/Ipc.Application.Verification/IndustrialDiagnostics.cs
+tests/Ipc.Application.Verification/IndustrialLifecycle.cs
+tests/Ipc.Application.Verification/IndustrialRecovery.cs
+tests/Ipc.Core.Tests/CoreRegression.cs

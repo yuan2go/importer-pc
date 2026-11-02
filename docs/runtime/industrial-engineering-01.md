@@ -77,3 +77,7 @@ P02同期修正首次卸载：已有独立维护库存时，不再要求运行�
 [CI41510679875](https://github.com/yuan2go/importer-pc/actions/runs/41510679875)，SourceCommit `6b1ed40b225ad5836fc2857e5f80fd61ddf6935b`：8组标准核心回归全通过，包含诊断34项与生命周期27项；三个业务桌面构建及文档门禁通过。TRX同时核对8个必需selector各出现一次且Passed，不以仅有总数替代身份核验。以上待CI描述是提交时状态，现以本条结果更新，未扩大为原生/系统/现场PASS。
 
 P06签名门禁的当前实现、运行方式、9项合成策略与5项Python证据测试，以及未取得的正式签名/载荷/吊销/SmartScreen资格，见[发布策略](industrial-release-policy-01.md)。
+
+P05增量格式：新增`industrial-format-files.txt`显式列出13个IE01安全/诊断/验证文件；`verify-industrial-format.ps1`先核验清单非空、路径存在及范围，再用当前锁定SDK的`dotnet format whitespace --folder --verify-no-changes`检查。Folder模式不加载/构建/restore项目，不能与`--no-restore`合用；首轮不兼容参数失败后已修正，未绕过检查。当前13项本地整理及复核通过，纯格式与行为提交分离；该门禁不覆盖全仓、不替代静态分析/测试，也不宣称超长单行治理已完成。框架决策中的旧“CI停用”当前指引同步纠正并保存原字节。
+
+CI41511846303（`9dc7e2b5`）三装配构建通过，核心7/8：单相机功能用例在默认立即回包的回环peer上遇到原测试专用300ms期限，真实结果按守卫成为DeadlineExpired/Unknown；没有把Unknown当成功或重试。修正用例时限的目的区分：功能成功使用既有RCS默认5000ms并验证其被冻结；Unknown用peer显式扣留回包至fixture关闭，验证真实期限到期、唯一发送、冻结字节和恢复不重发。20秒单调时钟只限制观察等待，不改变生产超时、不吞异常、不跳过断言。下一轮必须重新执行全部核心与签名策略；该失败轮的签名策略步骤未运行。

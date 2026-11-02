@@ -71,6 +71,19 @@ static partial class Program
                 Check(reason.IsVisible && reason.ActualHeight >= reason.FontSize * 1.2 && reason.Text.Contains("没有本次有效格口"),
                     width + " expired feedback exposes at least a complete actionable reason line");
             }
+            typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(window, ["diagnostics"]);
+            await Until(() => vm.CanStartOperation);
+            var healthAction = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "刷新体检"));
+            var releaseAction = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var action = vm.RunAsync(() => releaseAction.Task, "Synthetic held action");
+            try
+            {
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                Check(!healthAction.IsEnabled, "a busy action is visibly disabled instead of silently ignoring an enabled click");
+            }
+            finally { releaseAction.TrySetResult(); }
+            await action; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            Check(healthAction.IsEnabled, "completion restores the same guarded action without rebuilding the workspace");
             // Settings are the existing shared first-setup/daily model, not a new config authority.
             var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), evidence, null, null)).Catalog();
             var draft = new StartupConfigurationDraft(new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration(), catalog);

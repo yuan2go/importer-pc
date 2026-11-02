@@ -94,7 +94,7 @@ static partial class Program
                 {
                     // Ephemeral presentation-only observations; no admission, persistence
                     // or original RCS request is invented by this synthetic render fixture.
-                    record.Invoke(h.App, ["left", read]);
+                    record.Invoke(h.App, ["left", read, false]);
                     apply.Invoke(p, [new ParcelReadFeedback(measured.ViewModel.Snapshot!.RuntimeId, "left", read.Id, read.DeviceId,
                         read.Epoch, read.Codes[0], read.DecodedTicks, read.ObservedAt)]);
                 }

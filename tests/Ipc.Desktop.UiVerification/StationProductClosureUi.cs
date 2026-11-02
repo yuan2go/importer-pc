@@ -23,7 +23,11 @@ static partial class Program
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show(); await Until(() => window.ViewModel.Fresh);
         void Click(string label)
-        { var button = Descendants(window).OfType<Button>().First(b => b.IsVisible && Equals(b.Content, label)); button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }
+        {
+            var button = Descendants(window).OfType<Button>().First(b => b.IsVisible && Equals(b.Content, label));
+            if (!button.IsEnabled) throw new InvalidOperationException("Product action not enabled: " + label);
+            button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        }
         bool HasText(string value) => Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains(value));
         try
         {
@@ -48,9 +52,10 @@ static partial class Program
             Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "查看详情与核对…")), "exceptions retain operation-specific evidence and guarded recovery entry");
             CaptureInternal(evidence, "pc21-exceptions-1366", (Grid)window.FindName("ClientArea"), lines);
             await ManagementModeFixture.Authorize(h.App); await window.ViewModel.RefreshManagementModeAsync(); Click("维护中心");
-            await Until(() => HasText("自动清理："));
+            await Until(() => HasText("自动清理：") && window.ViewModel.CanStartOperation);
             Check(HasText("恢复备份、换机、修复或卸载") && HasText("创建完整备份"), "maintenance center exposes online tasks and explicit offline handoff");
-            Click("打开诊断"); await Until(() => HasText("格口未确认")); Click("刷新体检");
+            Click("打开诊断"); await Until(() => window.ViewModel.SelectedPage == "diagnostics" && window.ViewModel.CanStartOperation &&
+                Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "刷新体检"))); Click("刷新体检");
             await Until(() => HasText("体检只读取现有相机和心跳数据"));
             Check(!HasText("RCS：当前可用") && (HasText("等待 RCS 确认") || HasText("只表示 RCS 可连接") || HasText("组件未就绪")), "RCS health summary distinguishes local readiness, remote HTTP confirmation and business acceptance");
             Check(HasText("存储剩余"), "diagnostic health reads actual current storage and confirms passive probe semantics");

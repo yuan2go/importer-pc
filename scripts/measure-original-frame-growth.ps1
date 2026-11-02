@@ -1,7 +1,6 @@
 param(
  [Parameter(Mandatory)][string]$OriginalFramesDirectory,
  [ValidateRange(0.01,120)][double]$DurationMinutes=30,
- [ValidateRange(1,60)][int]$SampleSeconds=5,
  [ValidateRange(1,30)][int]$RetentionDays=7
 )
 $ErrorActionPreference='Stop'
@@ -29,23 +28,23 @@ function Read-FrameInventory {
 }
 $previous=Read-FrameInventory
 $initialBytes=($previous.Values | Measure-Object -Sum).Sum
-$observedWrittenBytes=0L;$newFiles=0L;$samples=0
+$observedWrittenBytes=0L;$newFiles=0L
 $measurementClock=[Diagnostics.Stopwatch]::StartNew()
 while ($measurementClock.Elapsed.TotalMinutes -lt $DurationMinutes) {
- Start-Sleep -Milliseconds ([int][Math]::Max(1,[Math]::Min($SampleSeconds*1000,($DurationMinutes*60-$measurementClock.Elapsed.TotalSeconds)*1000)))
- $next=Read-FrameInventory
- foreach ($pair in $next.GetEnumerator()) {
-  if (!$previous.ContainsKey($pair.Key)) {$newFiles++;$observedWrittenBytes+=$pair.Value}
-  elseif ($pair.Value -gt $previous[$pair.Key]) {$observedWrittenBytes+=($pair.Value-$previous[$pair.Key])}
- }
- $previous=$next;$samples++
+ Start-Sleep -Milliseconds ([int][Math]::Max(1,[Math]::Min(1000,($DurationMinutes*60-$measurementClock.Elapsed.TotalSeconds)*1000)))
+}
+# Two metadata snapshots avoid repeatedly walking a live production image tree.
+$next=Read-FrameInventory
+foreach ($pair in $next.GetEnumerator()) {
+ if (!$previous.ContainsKey($pair.Key)) {$newFiles++;$observedWrittenBytes+=$pair.Value}
+ elseif ($pair.Value -gt $previous[$pair.Key]) {$observedWrittenBytes+=($pair.Value-$previous[$pair.Key])}
 }
 $seconds=$measurementClock.Elapsed.TotalSeconds
 [ordered]@{
  Scope='ReadOnlySampledOriginalPngGrowth; not parcel count, disk endurance or field acceptance'
- SampleSeconds=[Math]::Round($seconds,3);Samples=$samples;InitialBytes=$initialBytes
- FinalBytes=($previous.Values | Measure-Object -Sum).Sum;ObservedNewFiles=$newFiles
+ SampleSeconds=[Math]::Round($seconds,3);Samples=2;InitialBytes=$initialBytes
+ FinalBytes=($next.Values | Measure-Object -Sum).Sum;ObservedNewFiles=$newFiles
  ObservedWrittenBytes=$observedWrittenBytes;ObservedBytesPerHour=[Math]::Round($observedWrittenBytes/$seconds*3600)
  RetentionDays=$RetentionDays;ProjectedOriginalBytes=[Math]::Round($observedWrittenBytes/$seconds*86400*$RetentionDays)
- Limit='Sampled lower bound: files created and removed between polls can be missed. Excludes database, backups, logs and disk reserve. No files deleted.'
+ Limit='Two-snapshot lower bound: files created and removed during the window can be missed. Excludes database, backups, logs and disk reserve. No files deleted.'
 } | ConvertTo-Json

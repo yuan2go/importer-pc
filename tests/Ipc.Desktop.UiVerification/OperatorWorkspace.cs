@@ -54,7 +54,7 @@ static partial class Program
         Check(!diagnosticText.Contains("sportmaster.reader") && !diagnosticText.Contains("Health:") && !diagnosticText.Contains("原配置账") && !diagnosticText.Contains("工作集"), "default diagnostics use human labels; original identifiers remain available for support copy");
         Check(vm.DiagnosticTechnicalSummary.Contains(vm.Left.ReaderId), "support copy preserves exact diagnostic identity");
         probe.Project = s => s with { Devices = s.Devices!.Select(d => d.DeviceId == vm.Left.ReaderId ? d with { Health = DeviceHealth.Unknown, Source = "SDK:hikrobot-mvs; phase=acquiring-decoder-unavailable; frames=12; bytes=75497472; decoder=Unavailable; businessReady=false" } : d).ToArray() };
-        await Until(() => vm.LeftConnectionDiagnosis.Contains("12帧"));
+        await Until(() => System.Text.RegularExpressions.Regex.IsMatch(vm.LeftConnectionDiagnosis, @"12\s*帧"));
         Check(vm.LeftConnectionDiagnosis.Contains("尚未接入条码识别") && !vm.LeftConnectionDiagnosis.Contains("连接已确认"), "received MVS images are distinguished from a usable barcode decoder");
         probe.Project = s => s with { Devices = s.Devices!.Select(d => d.DeviceId == vm.Left.ReaderId ? d with { Health = DeviceHealth.Unknown, Source = "SDK:hikrobot-mvs; phase=acquiring-decoder-unavailable; frames=0; decoder=Unavailable; businessReady=false" } : d).ToArray() };
         await Until(() => vm.LeftConnectionDiagnosis.Contains("还没有收到图像"));

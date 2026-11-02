@@ -110,6 +110,7 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] bool? HasPendingConfiguration = null)
 {
     [JsonIgnore] public long PublishedTicks { get; init; }
+    public ParcelCameraReadFeedback[] CameraReads { get; init; } = [];
 }
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication

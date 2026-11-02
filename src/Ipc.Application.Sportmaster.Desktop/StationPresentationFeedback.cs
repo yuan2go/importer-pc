@@ -104,6 +104,8 @@ public partial class SupplyStationWindow
             if (closing || closed || value is null) return;
             void FastFeedback()
             {
+                foreach (var frame in value.CameraReads)
+                    (frame.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyCameraReadFeedback(value.RuntimeId, frame);
                 foreach (var state in value.Readers)
                 {
                     ViewModel.Left.ApplyReaderFeedback(value.RuntimeId, state);
@@ -153,6 +155,8 @@ public partial class SupplyStationWindow
             if (failure is not null) { ViewModel.MarkReadFailure(failure); return; }
             appliedPresentationTicks = value.Snapshot!.PublishedTicks;
             EnforceManagementModeView();
+            foreach (var frame in value.CameraReads)
+                (frame.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyCameraReadFeedback(value.RuntimeId, frame);
             foreach (var state in value.Readers) { ViewModel.Left.ApplyReaderFeedback(value.RuntimeId, state); ViewModel.Right.ApplyReaderFeedback(value.RuntimeId, state); }
             foreach (var read in value.Reads) (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
         }

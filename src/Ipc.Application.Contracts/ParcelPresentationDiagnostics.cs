@@ -18,3 +18,5 @@ public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, strin
 }
 public sealed record ParcelPresentationMetric(string ObservationId, string PositionId, string Stage, double ReadToCompositionMs,
     double? SnapshotToCompositionMs, DateTimeOffset At);
+
+public sealed record ParcelCameraReadFeedback(string PositionId, Ipc.Platform.ObservationReadFeedback Frame);

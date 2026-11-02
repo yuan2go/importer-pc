@@ -1,0 +1,130 @@
+{
+  "source_commit": "c8dff2e7d92e381220167ca7002cc142cb331b8c",
+  "builds": [
+    {
+      "project": "tests/Ipc.Application.Verification",
+      "exit_code": 0,
+      "log": "build-Ipc.Application.Verification.log"
+    },
+    {
+      "project": "tests/Ipc.Desktop.UiVerification",
+      "exit_code": 0,
+      "log": "build-Ipc.Desktop.UiVerification.log"
+    },
+    {
+      "project": "src/Ipc.Desktop",
+      "exit_code": 0,
+      "log": "build-Ipc.Desktop.log"
+    }
+  ],
+  "suites": [
+    {
+      "kind": "Application",
+      "log": "app-unread-package-27.log",
+      "exit_code": 0,
+      "flag": "unread-package-27",
+      "pass_count": 12
+    },
+    {
+      "kind": "Application",
+      "log": "app-camera-chain-reliability.log",
+      "exit_code": 0,
+      "flag": "camera-chain-reliability",
+      "pass_count": 37
+    },
+    {
+      "kind": "Application",
+      "log": "app-camera-chain-closure.log",
+      "exit_code": 0,
+      "flag": "camera-chain-closure",
+      "pass_count": 20
+    },
+    {
+      "kind": "Application",
+      "log": "app-reader-feedback-22.log",
+      "exit_code": 0,
+      "flag": "reader-feedback-22",
+      "pass_count": 70
+    },
+    {
+      "kind": "Application",
+      "log": "app-reader-ingress-terminal-22.log",
+      "exit_code": 0,
+      "flag": "reader-ingress-terminal-22",
+      "pass_count": 1
+    },
+    {
+      "kind": "Application",
+      "log": "app-mvs-software-flow.log",
+      "exit_code": 0,
+      "flag": "mvs-software-flow",
+      "pass_count": 15
+    },
+    {
+      "kind": "Application",
+      "log": "app-sm-original-frame.log",
+      "exit_code": 0,
+      "flag": "sm-original-frame",
+      "pass_count": 26
+    },
+    {
+      "kind": "Application",
+      "log": "app-shutdown-resources.log",
+      "exit_code": 0,
+      "flag": "shutdown-resources",
+      "pass_count": 21
+    },
+    {
+      "kind": "Application",
+      "log": "app-camera-rounds.log",
+      "exit_code": 0,
+      "flag": "camera-rounds",
+      "pass_count": 41
+    },
+    {
+      "kind": "WindowsNativeWpf",
+      "log": "native-unread-package-27-ui.log",
+      "exit_code": 0,
+      "pass_count": 9,
+      "flag": "unread-package-27-ui",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-61a2b599550d4925bf896a1faf231e99"
+    },
+    {
+      "kind": "WindowsNativeWpf",
+      "log": "native-camera-chain-reliability-ui.log",
+      "exit_code": 0,
+      "pass_count": 19,
+      "flag": "camera-chain-reliability-ui",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-d9faa5d71bf847a79537e1c7e51e9d1f"
+    },
+    {
+      "kind": "WindowsNativeWpf",
+      "log": "native-camera-barcode-current.log",
+      "exit_code": 0,
+      "pass_count": 21,
+      "flag": "camera-barcode-current",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-bec2524e6b6f4ef6b39846cbadb00366"
+    },
+    {
+      "kind": "WindowsNativeWpf",
+      "log": "native-station-responsive-ui.log",
+      "exit_code": 0,
+      "pass_count": 13,
+      "flag": "station-responsive-ui",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-1f435ec6b40b41078a8da479a82f5793"
+    },
+    {
+      "kind": "WindowsNativeWpf",
+      "log": "native-reader-feedback-22-ui.log",
+      "exit_code": 0,
+      "pass_count": 20,
+      "flag": "reader-feedback-22-ui",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-8d95e4dac442451ca0b438e2cd792ee4"
+    }
+  ],
+  "scope": "Windows WPF, actual ZXing/SQLite and built-in loopback RCS, synthetic SDK frames; physical MVS/customer RCS/field NOT_RUN",
+  "publish_exit_code": 0,
+  "smoke_exit_code": 0,
+  "product_version": "1.0.0+c8dff2e7d92e381220167ca7002cc142cb331b8c",
+  "assertions": 325.0
+}

@@ -1,0 +1,130 @@
+{
+  "source_commit": "c8dff2e7d92e381220167ca7002cc142cb331b8c",
+  "files": [
+    {
+      "path": "app-camera-chain-closure.log",
+      "bytes": 2157,
+      "sha256": "57abaa57e74f54f2a70c9a9723de4152239b8e10636499c6dbe3944db19c7511"
+    },
+    {
+      "path": "app-camera-chain-reliability.log",
+      "bytes": 3454,
+      "sha256": "15302a36966193c6b66ff076fa93dd5cb5f2f3a87e02a0a8c9e311eb8ce39247"
+    },
+    {
+      "path": "app-camera-rounds.log",
+      "bytes": 30451,
+      "sha256": "a06becc0590223e3470406dd9f63c492df8f87e7423fd47161bb9972323b53da"
+    },
+    {
+      "path": "app-mvs-software-flow.log",
+      "bytes": 2017,
+      "sha256": "3357485c71c5fc5b15fdd9fcb82b7572e8abc94fac2dea9310e68c47f4a6b6de"
+    },
+    {
+      "path": "app-reader-feedback-22.log",
+      "bytes": 6271,
+      "sha256": "a1b5a765823a07c89e394dbeb216fe96ef20cff12359b0cea7b01b6f150455b9"
+    },
+    {
+      "path": "app-reader-ingress-terminal-22.log",
+      "bytes": 101,
+      "sha256": "227f31d28cb90c69afc1ac54e1108a885f55f3bd7df1aa090e4fe2b185d3d702"
+    },
+    {
+      "path": "app-shutdown-resources.log",
+      "bytes": 2012,
+      "sha256": "9fcc500262c42b63d3ba9449f6b58c5b22e203a89992ef64cb37a046dded1d9f"
+    },
+    {
+      "path": "app-sm-original-frame.log",
+      "bytes": 2786,
+      "sha256": "5b6950fa31c92d556da549442723e5198da5088ec05e2fe0993566ba8bdc1ca5"
+    },
+    {
+      "path": "app-unread-package-27.log",
+      "bytes": 1229,
+      "sha256": "1cbe35ce30ea5ded97e98597e99d48dd4a67af6c6366bf0bb0b67bad82a74d84"
+    },
+    {
+      "path": "build-Ipc.Application.Verification.log",
+      "bytes": 4256,
+      "sha256": "a495a0ffed4bc0e45fddf8216ea78a58861c4c274264a01d195ce912bf937d54"
+    },
+    {
+      "path": "build-Ipc.Desktop.log",
+      "bytes": 2638,
+      "sha256": "064ecf2c0af2c7b0944c50ea99adf85afafefae414985c5ba401b78fcf1bd2c8"
+    },
+    {
+      "path": "build-Ipc.Desktop.UiVerification.log",
+      "bytes": 3175,
+      "sha256": "9a07aeb3aa337d26bd779557dc1803630692f381d32fe3ce3868d8275e1124ab"
+    },
+    {
+      "path": "environment-report.json",
+      "bytes": 731,
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0"
+    },
+    {
+      "path": "initial-fixture-build-failure.log",
+      "bytes": 3113,
+      "sha256": "6f27a3fd3196545bf971478191970506affc823c22762472a72c7292b2b743c8"
+    },
+    {
+      "path": "native-camera-barcode-current.log",
+      "bytes": 2909,
+      "sha256": "b5252dc3fb397c279be45920f0256f7082dafd28dbb78c5a67cd37c0ea278e7c"
+    },
+    {
+      "path": "native-camera-chain-reliability-ui.log",
+      "bytes": 2893,
+      "sha256": "135dff01be5828fa200c6818026294eca54f211d36c000f3ab161c250c1593e1"
+    },
+    {
+      "path": "native-reader-feedback-22-ui.log",
+      "bytes": 2321,
+      "sha256": "7c58b9056a58704c08c49a4a150fcb083b9ec7c441384062a62105dc410ad376"
+    },
+    {
+      "path": "native-station-responsive-ui.log",
+      "bytes": 1890,
+      "sha256": "c79ebd9c41909dceae9d879612670222c14915ee45761e95f0e769f3e07e310f"
+    },
+    {
+      "path": "native-unread-package-27-ui.log",
+      "bytes": 1120,
+      "sha256": "7e004ab9c9a0efcc31a7351ca33694fd56f8ca505361a048827a435af202b848"
+    },
+    {
+      "path": "publish.log",
+      "bytes": 85,
+      "sha256": "abd4faca67edddaa16ad7736108bfc0e5deec91b776fbccf4cd7f9a83d806e50"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3449,
+      "sha256": "bdee9c51dd666aae02dfbae0858be9aaeaafa0aa70f942e1fc1d5a895e8260e4"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 3884,
+      "sha256": "544b4d7c0059c42166e29e20371985846646cdb90da5b4983058b6285c8e972e"
+    },
+    {
+      "path": "unread27-no-code-1366.png",
+      "bytes": 138033,
+      "sha256": "dff0ce518bbd0c6d31a86e67b6b83a812fc3cf894544158e0e02c497ef52a9b6"
+    },
+    {
+      "path": "unread27-no-code-800.png",
+      "bytes": 90691,
+      "sha256": "1b2d1ff942e76116b40f84bb5236472c0c387d654b2dc11f84ad46cb988e0abe"
+    },
+    {
+      "path": "verify.ps1",
+      "bytes": 4510,
+      "sha256": "1e8200b0230d74a9efc94b944b2432ae7c2dc768e54b8aed1c2afc246a021969"
+    }
+  ]
+}

@@ -76,7 +76,9 @@ public partial class SupplyStationWindow
         var tasks = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Stretch };
         var attention = ProductText(""); body.Children.Add(attention);
         void Attention() => attention.Text = "待核对包裹 " + (ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0) + " · " + (ViewModel.Snapshot?.Configuration.Pending is null ? "没有待重启设置" : "配置已保存待重启");
-        body.Loaded += (_, _) => Attention();
+        System.ComponentModel.PropertyChangedEventHandler attentionChanged = (_, args) => { if (args.PropertyName is nameof(ViewModel.Snapshot) or nameof(ViewModel.Fresh)) Attention(); };
+        body.Loaded += (_, _) => { ViewModel.PropertyChanged += attentionChanged; Attention(); };
+        body.Unloaded += (_, _) => ViewModel.PropertyChanged -= attentionChanged;
         body.Children.Add(ProductText("请选择要做的维护。前五项在软件运行中完成；恢复备份、换机和修复/卸载需先完全停止软件。软件暂停不是安全急停。"));
         void TaskRow(string name, string description, string action, Func<Task> run)
         {
@@ -150,7 +152,7 @@ public partial class SupplyStationWindow
         }
         foreach (var health in snapshot.Health.Where(h => h.InstanceId == snapshot.Configuration.Effective.Wcs?.InstanceId))
         {
-            var confirmation = !health.Ready ? "组件未就绪" : health.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived
+            var confirmation = !health.Ready ? "组件未就绪" : health.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived && health.ValidUntil > DateTimeOffset.UtcNow && health.ConfirmedAt <= DateTimeOffset.UtcNow
                 ? "心跳正常（只表示 RCS 可连接）" : "等待 RCS 确认";
             text.AppendLine($"RCS：{confirmation} · 确认于 {health.ConfirmedAt.ToLocalTime():HH:mm:ss} · 有效至 {health.ValidUntil.ToLocalTime():HH:mm:ss}");
         }

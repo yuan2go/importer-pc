@@ -42,7 +42,7 @@ static partial class Program
             var w = Make(current); w.Show(); await Idle(w);
             Set(w, "media", new DeploymentMedia("D:/synthetic/media", "sportmaster", source, [])); Set(w, "step", 1); Render(w);
             var text = string.Join("\n", Descendants(w).OfType<TextBlock>().Select(t => t.Text));
-            if (current is not null) Check(text.Contains("本次" + purpose + "保留原账户、数据目录和配置"), "options identify " + purpose + " from source and retirement state while preserving the retained data purpose");
+            if (current is not null) Check(text.Contains("本次" + purpose + "将保留账户、数据目录和配置"), "options identify " + purpose + " from source and retirement state while preserving the retained data purpose");
             Set(w, "reviewed", new WindowsDeploymentRequest("D:/synthetic/media", "sportmaster", source, identity.User.Value, current?.DataRoot ?? launch.DataRoot,
                 launch.ConfigurationDirectory, RunMode.Simulation, null, null, [], ProgramRoot: "D:/synthetic/program", Shortcuts: new(true, true), OperationId: Wire.Id()));
             Set(w, "step", 2); Render(w);

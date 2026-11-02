@@ -1,5 +1,6 @@
 > 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
 
+> 2026-11-02 全软件文案工业化第二轮见 [OPERATOR-COPY-02](work-packages/WP-IPC-OPERATOR-COPY-02.md)：参数、保存、日志、记录、诊断、异常、统计、维护中心、调试、首配/启动修复、安装/卸载及历史清理统一用现场用语；只改展示文案，业务守卫不变。
 > 2026-11-02 当前产品闭环见 [SM-PRODUCT-CLOSURE-21](work-packages/WP-IPC-SM-PRODUCT-CLOSURE-21.md)、[实现与运行](runtime/sm-product-closure-21.md)。用户现已授权本机统计/班次，替代18的暂不增加统计；集中看板明确延期。Parcel当前数据库格式11；非当前输入保留原件并拒绝。条码规则可在Application屏障后热生效，设备/目标/班次/维护策略仍需重启。原指南与证据各守原SourceCommit，完整原字节见[归档](archive/pre-sm-product-closure-21/manifest.json)。
 > 2026-11-02 合并前全量闭环与工业工程补强见 [SM-CAMERA-CHAIN-CLOSURE-21](work-packages/WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21.md)。覆盖原审查逐项结论、跨位故障/取消唤醒、稳定任务区及编码/反色验证；用户授权完成验证后合并PR171到main，历史证据保持原SourceCommit。
 

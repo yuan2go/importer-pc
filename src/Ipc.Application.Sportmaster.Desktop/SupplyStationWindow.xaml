@@ -264,7 +264,7 @@
      </Border.Style>
      <DockPanel>
       <Button Content="关闭提示" Click="DismissGlobalFeedback_Click" DockPanel.Dock="Right" MinHeight="44" Padding="8,4" FontSize="{x:Static type:UiTypography.Body}" Margin="8,0,0,0"/>
-      <TextBox x:Name="GlobalOperationFeedback" MinHeight="0" Padding="0" VerticalAlignment="Center" Text="{Binding GlobalOperationFeedback,Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#25384B" TextWrapping="Wrap" MaxHeight="44" VerticalScrollBarVisibility="Auto" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="当前全局操作回执，可选择复制" AutomationProperties.LiveSetting="Assertive"/>
+      <TextBox x:Name="GlobalOperationFeedback" MinHeight="0" Padding="0" VerticalAlignment="Center" Text="{Binding GlobalOperationFeedback,Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#25384B" TextWrapping="Wrap" MaxHeight="44" VerticalScrollBarVisibility="Auto" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="最近一次操作结果，可选择复制" AutomationProperties.LiveSetting="Assertive"/>
      </DockPanel>
     </Border>
     <Border x:Name="OperationalStatusBar" Background="{Binding WorkspaceStatusBackground}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1">
@@ -309,7 +309,7 @@
          </Style.Triggers>
         </Style>
        </Border.Style>
-       <TextBlock Text="{Binding RcsPresentation.Text}" Foreground="{Binding RcsPresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="共享调度服务连接状态" AutomationProperties.LiveSetting="Polite" ToolTip="连接状态来自当前确认；心跳在线不等于本次取格口成功。"/>
+       <TextBlock Text="{Binding RcsPresentation.Text}" Foreground="{Binding RcsPresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="RCS 连接状态" AutomationProperties.LiveSetting="Polite" ToolTip="RCS 在线只表示服务可连接；每件包裹以本件返回的格口为准。"/>
       </Border>
       <StackPanel>
        <TextBlock x:Name="InputTarget" Text="{Binding InputTargetLabel}" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{x:Static type:OperatorBrushes.Accent}" AutomationProperties.LiveSetting="Polite">
@@ -374,7 +374,7 @@
            </Style>
           </TextBlock.Style>
          </TextBlock>
-         <TextBlock x:Name="ActiveBlockingReasons" Text="{Binding OperatorNotice}" Foreground="{Binding WorkspaceStatusForeground}" AutomationProperties.Name="当前作业阻断原因">
+         <TextBlock x:Name="ActiveBlockingReasons" Text="{Binding OperatorNotice}" Foreground="{Binding WorkspaceStatusForeground}" AutomationProperties.Name="暂不能供包的原因">
           <TextBlock.Style>
            <Style TargetType="TextBlock" BasedOn="{StaticResource StationNotice}">
             <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>

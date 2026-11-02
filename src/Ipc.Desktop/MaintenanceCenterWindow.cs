@@ -17,22 +17,22 @@ public sealed class MaintenanceCenterWindow : Window
         FontSize = Ipc.Presentation.Wpf.UiTypography.Body;
         var body = new StackPanel { Margin = new(28) }; Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         body.Children.Add(new TextBlock { Text = "选择维护任务", FontSize = 24, Margin = new(0, 0, 0, 16) });
-        body.Children.Add(new TextBlock { Text = "原业务实例已停止。下面每个任务仍核验管理权限、安装归属、完整备份及原请求责任；取消或失败不表示操作未发生，请核对原结果。", TextWrapping = TextWrapping.Wrap });
+        body.Children.Add(new TextBlock { Text = "软件已停止。每项任务执行前都会检查管理权限和备份；任务取消或失败时，请先查看结果，不要直接重做。", TextWrapping = TextWrapping.Wrap });
         var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 0) }; body.Children.Add(feedback);
         Add("软件打不开：检查配置与启动", () => Repair(false));
         Add("恢复备份／迁移到新电脑", () => Repair(true));
-        Add("清理到期已结历史", () =>
+        Add("清理过期记录", () =>
         {
             var service = (Ipc.Application.Contracts.IStartupRetentionMaintenance)Ipc.Assembly.ParcelStartupServices.Maintenance(SelectedLaunch);
             new HistoryRetentionWindow(service, Ipc.Assembly.ParcelStartupServices.ManagementMode(SelectedLaunch)) { Owner = this }.ShowDialog();
         });
         Add("修复安装／卸载程序", () => new ProductMaintenanceWindow { Owner = this }.ShowDialog());
-        Add("核对后启动软件", () => { RetryRequested = true; Close(); });
+        Add("检查后启动软件", () => { RetryRequested = true; Close(); });
         Add("关闭", Close);
         void Add(string caption, Action action)
         {
             var button = new Button { Content = caption, MinHeight = 48, Margin = new(0, 12, 0, 0), HorizontalContentAlignment = HorizontalAlignment.Left, Padding = new(16, 4, 16, 4) };
-            button.Click += (_, _) => { try { action(); } catch (Exception error) { feedback.Text = "维护入口未完成：" + error.Message + "。请保留当前数据并核对原操作结果。"; } }; body.Children.Add(button);
+            button.Click += (_, _) => { try { action(); } catch (Exception error) { feedback.Text = "维护入口未完成：" + error.Message + "。数据未删除，请先查看上次操作结果。"; } }; body.Children.Add(button);
         }
     }
     void Repair(bool recovery)

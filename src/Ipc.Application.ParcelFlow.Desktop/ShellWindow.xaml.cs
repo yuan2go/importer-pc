@@ -51,7 +51,7 @@ public partial class ShellWindow : Window
     bool activationRequested;
     async Task RequestActivation()
     {
-        try { if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("此宿主没有受控重开入口；可稍后从原合法入口打开。"); await vm.CheckActivationAsync(); root.activationRequested = true; root.Close(); }
+        try { if (root.ReopenOwnerAsync is null) throw new InvalidOperationException("无法从这里重新打开，请稍后从桌面图标重新打开软件。"); await vm.CheckActivationAsync(); root.activationRequested = true; root.Close(); }
         catch (Exception error) { vm.Message = "尚未进入配置生效流程：" + error.Message; }
     }
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
@@ -125,11 +125,11 @@ public partial class ShellWindow : Window
     }
     void ApplyLayout() { vm.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680; FontSize = UiTypography.Body; }
     async void Pause_Click(object s, RoutedEventArgs e) => await vm.PauseAsync();
-    async void Resume_Click(object s, RoutedEventArgs e) { if (vm.CanResumeInViewport) await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场"); }
-    async void Reconcile_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ReconcileAsync, "核对原请求"); }
+    async void Resume_Click(object s, RoutedEventArgs e) { if (vm.CanResumeInViewport) await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复供包"); }
+    async void Reconcile_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ReconcileAsync, "查询作业结果"); }
     async void Login_Click(object s, RoutedEventArgs e) { var proof = LoginProof.Password; LoginProof.Clear(); await vm.RunAsync(() => vm.LoginAsync(proof), "验证身份"); }
     async void Logout_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.LogoutAsync, "登出");
-    async void Continue_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ContinueAsync, "继续未尝试原阶段"); }
+    async void Continue_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ContinueAsync, "继续处理"); }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     async void ClosingOwner(object? sender, CancelEventArgs e)
     {

@@ -75,7 +75,7 @@ public sealed class ManagementModeWindow : Window
             var previous = current; current = await status();
             if (previous.Authorized && !current.Authorized || previous.Configured != current.Configured || !current.Available) ClearSecrets();
             Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.Configured ? "验证管理密码" : "设置管理密码";
-            state.Text = current.HasUnsupportedCredentials ? "检测到不受支持或缺失的凭据。请保留原部署和凭据文件，由部署负责人处理；不能重新设置覆盖。" : !current.Available ? "管理模式服务不可用，请使用同版安装器修复。原输入保留。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n操作员账号和在途作业保持。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
+            state.Text = current.HasUnsupportedCredentials ? "管理密码文件缺失或无法识别，请联系部署负责人处理。" : !current.Available ? "管理模式服务不可用，请用原安装包修复软件。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n进入或退出管理模式不影响正在进行的作业。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
             var preferredHeight = current.Authorized ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 400 : 540;
             if (lastPreferredHeight != preferredHeight) { Height = Math.Min(preferredHeight, MaxHeight); lastPreferredHeight = preferredHeight; }
             body.IsEnabled = true; leave.IsEnabled = current.Available;

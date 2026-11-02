@@ -44,7 +44,7 @@ static partial class Program
             await Until(() => send.IsEnabled && Field<TextBox>(control, "requestBody").Text.Contains("0000022222"));
             send.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => !Field<bool>(control, "busy") && h.Peer.Requests.Count == 1 && Field<TextBox>(control, "responseBody").Text.Contains("Accepted"));
-            Check(send.Content?.ToString() == "核对发送结果", "explicit native send displays the actual adapter response and changes to original-result lookup");
+            Check(send.Content?.ToString() == "查看发送结果", "explicit native send displays the actual adapter response and changes to original-result lookup");
             send.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => !Field<bool>(control, "busy"));
             Check(h.Peer.Requests.Count == 1, "native original-result lookup does not send a second HTTP request");

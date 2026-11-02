@@ -90,12 +90,12 @@ static partial class Program
                         Check(Inside(host, client) && host.ActualHeight >= (size.Item1 == 800 ? 200 : size.Item2 * .60), key + " preserves usable task content");
                         if (window is ShellWindow)
                         {
-                            var admissionActions = Descendants(window).OfType<Button>().Where(b => b.IsVisible && b.Content is "暂停新入场" or "恢复新入场").ToArray();
+                            var admissionActions = Descendants(window).OfType<Button>().Where(b => b.IsVisible && b.Content is "暂停供包" or "恢复供包").ToArray();
                             Check(admissionActions.Length > 0 && admissionActions.All(b => b.ActualHeight >= 44), key + " retains full 44-DIP admission controls while preserving task space");
                         }
                         if (page != "工作台" && window is ShellWindow)
-                            Check(!((PasswordBox)window.FindName("LoginProof")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "核对原请求")).IsVisible, key + " does not expose unrelated login or current-position recovery");
-                        if (page == "参数设置") Check(Inside(Descendants(host).OfType<Button>().Single(b => Equals(b.Content, "保存更改…")), client), key + " keeps the actual save action visible");
+                            Check(!((PasswordBox)window.FindName("LoginProof")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "查询作业结果")).IsVisible, key + " does not expose unrelated login or current-position recovery");
+                        if (page == "参数设置") Check(Inside(Descendants(host).OfType<Button>().Single(b => Equals(b.Content, "保存设置…")), client), key + " keeps the actual save action visible");
                     }
                 }
             }
@@ -123,7 +123,7 @@ static partial class Program
                 CaptureInternal(evidence, "classic-diagnostics-800", client, lines); diagnostics.IsExpanded = false;
                 Navigate("工作台");
                 window.UpdateLayout();
-                var recovery = Descendants(classic).OfType<Button>().Single(b => Equals(b.Content, "核对原请求"));
+                var recovery = Descendants(classic).OfType<Button>().Single(b => Equals(b.Content, "查询作业结果"));
                 var recoveryY = recovery.TranslatePoint(new Point(), client).Y;
                 var gate = new TaskCompletionSource(); var pending = vm.RunAsync(() => gate.Task, "合成等待"); window.UpdateLayout();
                 Check(recovery.IsVisible && !recovery.IsEnabled && recovery.TranslatePoint(new Point(), client).Y == recoveryY, "busy operation disables recovery without hiding or moving its fixed command row");

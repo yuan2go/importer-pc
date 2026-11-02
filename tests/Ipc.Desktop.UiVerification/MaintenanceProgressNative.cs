@@ -51,7 +51,7 @@ static partial class Program
             Check((bool)busy.GetValue(window)!&&!cancel.IsEnabled&&readout.Text.Contains("等待"),"requesting cancellation does not claim completion or release the busy owner");
             window.Close();Check(window.IsVisible,"real close guard rejects closing before operation cleanup completes");
             release.SetResult();await running;
-            Check(!(bool)busy.GetValue(window)!&&body.IsEnabled&&readout.Text.Contains("提交前取消")&&!readout.Text.Contains("回滚成功"),"only the typed terminal cancellation releases the native operation and retains original context");
+            Check(!(bool)busy.GetValue(window)!&&body.IsEnabled&&readout.Text.Contains("已取消，未做更改")&&!readout.Text.Contains("回滚成功"),"only the typed terminal cancellation releases the native operation and retains original context");
             var terminal=readout.Text;late!.Report(new(MaintenanceStage.CopyingCustody,16384,16384,true));await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Check(readout.Text==terminal&&!cancel.IsVisible,"late queued progress cannot overwrite the verified terminal result or reenable cancellation");
             var committed=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var finish=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -59,7 +59,7 @@ static partial class Program
             Check(!cancel.IsEnabled&&(bool)busy.GetValue(window)!,"commit-stage observations disable cancellation while the real completion remains pending");finish.SetResult();await running;
             await Run((p,t)=>{calls++;throw new InstallationOutcomeUnknownException("合成回执中断");});var before=calls;
             await Run((p,t)=>{calls++;return Task.CompletedTask;});
-            Check((bool)parent.GetField("UnknownOutcome",flags)!.GetValue(window)!&&calls==before&&readout.Text.Contains("结果待核对"),"the shared maintenance entry rejects a second submission after unknown outcome, including paths that bypass Action");
+            Check((bool)parent.GetField("UnknownOutcome",flags)!.GetValue(window)!&&calls==before&&readout.Text.Contains("结果未确认"),"the shared maintenance entry rejects a second submission after unknown outcome, including paths that bypass Action");
             CaptureInternal(evidence,"maintenance-unknown",window,lines);
         }
         finally{release.TrySetResult();window.Close();}

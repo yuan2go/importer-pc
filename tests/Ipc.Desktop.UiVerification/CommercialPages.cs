@@ -80,13 +80,13 @@ static partial class Program
                 first.UpdateLayout();
             }
             await SelectTask(0);
-            var dataRoot = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t).StartsWith("原数据根"));
+            var dataRoot = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t).StartsWith("数据目录"));
             var originalRoot = dataRoot.Text; var unreadRoot = Path.Combine(evidence, "unread-root"); dataRoot.Text = unreadRoot;
-            Click(first, "保存未完成草稿");
+            Click(first, "保存草稿");
             for (var i = 0; i < 100 && (bool)busyField.GetValue(first)!; i++) await Task.Delay(20);
-            Check(!Directory.Exists(unreadRoot) && Wire.FileHash(draftFile) == draftHash && Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("路径已更改")), "unread directory selection cannot write through the previous maintenance instance or change the protected draft");
+            Check(!Directory.Exists(unreadRoot) && Wire.FileHash(draftFile) == draftHash && Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("目录已更改")), "unread directory selection cannot write through the previous maintenance instance or change the protected draft");
             dataRoot.Text = originalRoot;
-            await SelectTask(3); Click(first, "分层检查与变更预览");
+            await SelectTask(3); Click(first, "检查并预览更改");
             var checkedField = type.GetField("checkedInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
             for (var i = 0; i < 100 && (checkedField.GetValue(first) is null || (bool)busyField.GetValue(first)!); i++) await Task.Delay(20);
             Check(checkedField.GetValue(first) is string && !(bool)busyField.GetValue(first)!, "actual candidate check completes and records the exact current editor input");
@@ -130,13 +130,13 @@ static partial class Program
         Check(!parameterVm.Busy && parameterVm.HasLoadedConfiguration, "native parameter loading completes before automatic candidate review: " + parameterVm.Message);
         var maintenance = (MaintenancePage)page.Content;
         var tools = Descendants(maintenance).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>())
-            .Single(m => m.Items.OfType<MenuItem>().Any(i => Equals(i.Header, "加密保存未完成设置")));
+            .Single(m => m.Items.OfType<MenuItem>().Any(i => Equals(i.Header, "暂存未完成的设置")));
         try
         {
             tools.IsSubmenuOpen = true; primary.UpdateLayout(); await System.Windows.Threading.Dispatcher.Yield();
             var actions = tools.Items.OfType<MenuItem>().ToArray();
-            Check(actions.Any(i => i.IsVisible && Equals(i.Header, "加密保存未完成设置")) &&
-                actions.Any(i => i.IsVisible && Equals(i.Header, "继续未完成设置")),
+            Check(actions.Any(i => i.IsVisible && Equals(i.Header, "暂存未完成的设置")) &&
+                actions.Any(i => i.IsVisible && Equals(i.Header, "继续编辑暂存的设置")),
                 "native settings tools keep both persistent draft actions reachable outside the save review");
         }
         finally { tools.IsSubmenuOpen = false; }

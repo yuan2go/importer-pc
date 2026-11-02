@@ -55,7 +55,7 @@ static partial class Program
             await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Task.Delay(60);
             Check(!Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("调试说明") || t.Text.Contains("请先确认停止真实投放")) &&
                 !Descendants(control).OfType<Expander>().Any(e => Equals(e.Header, "隔离确认与结束调试")) &&
-                !Descendants(control).OfType<CheckBox>().Any(c => c.Content?.ToString()?.Contains("已停止真实投放") == true),
+                !Descendants(control).OfType<CheckBox>().Any(c => c.Content?.ToString()?.Contains("已停止投放") == true),
                 "entire isolation confirmation panel and prerequisite sentence are absent; trigger needs no checklist");
             Check(Field<TextBlock>(control, "imageHint").IsVisible && Field<TextBlock>(control, "imageHint").Text.Contains("等待"), "empty photo explains how to begin without showing a fictitious frame");
             var visual = Field<StackPanel>(control, "visual"); var fullCode = Field<TextBox>(control, "barcode");
@@ -108,7 +108,7 @@ static partial class Program
             Check(Field<Button>(control, "send").IsEnabled, "successful authoritative read plus fresh host snapshot restores eligible send");
             ClickField(control, "send");
             await Until(() => Field<TextBox>(control, "responseBody").Text.StartsWith("状态：Accepted"));
-            ClickField(control, "send"); await Until(() => Equals(Field<Button>(control, "send").Content, "核对发送结果"));
+            ClickField(control, "send"); await Until(() => Equals(Field<Button>(control, "send").Content, "查看发送结果"));
             Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == a.RequestBody, "click-send and check-result never create a second HTTP request");
             await Poll(other); ClickField(other, "trigger");
             await Until(() => Equals(Field<Button>(other, "trigger").Content, "扫码中…"));

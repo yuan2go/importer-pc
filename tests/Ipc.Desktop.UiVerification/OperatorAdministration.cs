@@ -83,13 +83,13 @@ static partial class Program
         Click(window, "查询"); await AwaitLogTask("log query"); window.UpdateLayout(); Capture("management-logs-1366", client);
         var grid = Descendants(window).OfType<DataGrid>().Single(); Check(grid.Items.Count > 0, "native log query displays actual runtime/authentication journal entries");
         var advanced = Descendants(window).OfType<Expander>().Single(x => Equals(x.Header, "更多筛选与导出")); advanced.IsExpanded = true; window.UpdateLayout();
-        grid.SelectedIndex = 0; Click(window, "查看原始上下文"); await AwaitLogTask("original context read"); window.UpdateLayout();
+        grid.SelectedIndex = 0; Click(window, "查看前后日志"); await AwaitLogTask("original context read"); window.UpdateLayout();
         Check(Descendants(window).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(((SoftwareLogEntry)grid.SelectedItem).Text), "native context retains the selected original log record");
         Capture("management-log-context", client); advanced.IsExpanded = false;
         await SetClient(window, 800, 420); Capture("management-logs-800", client);
         Check(grid.IsVisible && grid.ActualHeight >= 72 && grid.TranslatePoint(new Point(0, 0), client).Y + grid.ActualHeight <= client.ActualHeight + 1, "compact log results remain inside the native viewport");
         Check(Descendants(window).OfType<Button>().Where(b => b.Content is string s && s is "查询" or "上一页" or "下一页").All(b => b.IsVisible && b.TranslatePoint(new Point(0, 0), client).Y + b.ActualHeight < grid.TranslatePoint(new Point(0, 0), client).Y + 1), "default compact query and paging actions are visible above results");
-        var compactContext = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "完整日志与上下文"));
+        var compactContext = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "日志原文"));
         compactContext.IsExpanded = true; window.UpdateLayout();
         Check(grid.ActualHeight >= grid.ColumnHeaderHeight + grid.RowHeight + 2 && grid.TranslatePoint(new Point(), client).Y + grid.ActualHeight <= client.ActualHeight,
             "expanded compact log context preserves a complete result row and column header");

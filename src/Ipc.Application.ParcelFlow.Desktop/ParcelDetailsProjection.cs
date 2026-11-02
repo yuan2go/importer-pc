@@ -6,7 +6,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class ParcelViewModel
 {
     const int DetailPreviewLimit = 65536;
-    const string DetailPrompt = "选择一条作业查看原阶段、目标、报文和回执。";
+    const string DetailPrompt = "选择一条作业，查看阶段、格口、报文和 RCS 返回。";
     string detailsText = DetailPrompt, structuredDetailsText = DetailPrompt;
     bool structuredDetailsVisible, rawDetailsVisible, detailsWorker, detailsAuthorityPending;
     internal Func<Task>? BeforeDetailsFormatForVerification { get; set; }
@@ -42,7 +42,7 @@ public partial class ParcelViewModel
             Changed(nameof(Details)); Changed(nameof(StructuredDetails));
         }
         if (!IsManagementMode && rawPublished is not null)
-        { rawPublished = null; detailsText = "诊断详情需要当前管理模式；原始责任数据保持。"; Changed(nameof(Details)); }
+        { rawPublished = null; detailsText = "查看详细信息需要进入管理模式。"; Changed(nameof(Details)); }
         if (!detailsAuthorityPending && !detailsWorker && Selected is not null &&
             (structuredDetailsVisible && !Equals(structuredPublished, key) || rawDetailsVisible && IsManagementMode && !Equals(rawPublished, key)))
             Own(BuildDetailsAsync());
@@ -65,11 +65,11 @@ public partial class ParcelViewModel
                     {
                         if (value.Length <= DetailPreviewLimit) return value;
                         var length = char.IsHighSurrogate(value[DetailPreviewLimit - 1]) ? DetailPreviewLimit - 1 : DetailPreviewLimit;
-                        return value[..length] + "\n[显示预览已截断；复制完整快照可取得原文]";
+                        return value[..length] + "\n[内容过长已截断；点击“复制完整数据”获取全部]";
                     }
                     var summary = raw ? DestinationSummary(operation) : "";
                     return (Structured: structured ? Clip(FormatStructuredDetails(operation)) : null,
-                        Raw: raw ? Clip((summary.Length == 0 ? "" : summary + "\n\n原作业、请求与回执完整快照：\n") + Wire.Encode(operation)) : null);
+                        Raw: raw ? Clip((summary.Length == 0 ? "" : summary + "\n\n作业、请求与 RCS 返回完整数据：\n") + Wire.Encode(operation)) : null);
                 });
                 if (generation != detailsGeneration || !Equals(key, detailsRevision)) continue;
                 if (!Equals(key, DetailsRevision(Selected))) { InvalidateDetailsAuthority(); continue; }
@@ -81,15 +81,15 @@ public partial class ParcelViewModel
             }
         }
         catch (Exception error)
-        { detailsText = structuredDetailsText = "详情生成未完成：" + error.GetType().Name + "；原件保持，可重新选择后读取。"; Changed(nameof(Details)); Changed(nameof(StructuredDetails)); }
+        { detailsText = structuredDetailsText = "详情生成未完成：" + error.GetType().Name + "；可重新选择后再读取。"; Changed(nameof(Details)); Changed(nameof(StructuredDetails)); }
         finally { detailsWorker = false; }
     }
     public async Task<string> FullDetailsAsync()
     {
-        var owner = Selected?.Id ?? throw new InvalidOperationException("先选择原作业"); var generation = selectionGeneration;
+        var owner = Selected?.Id ?? throw new InvalidOperationException("请先选择作业"); var generation = selectionGeneration;
         await RequireManagementModeAsync(); var authority = ManagementStatus;
         // Local custody is re-read through current authority; no upstream Query.
-        var operation = await ServiceAsync(() => application.OperationAsync(owner)) ?? throw new InvalidOperationException("原作业未读取，保留选择后重试");
+        var operation = await ServiceAsync(() => application.OperationAsync(owner)) ?? throw new InvalidOperationException("作业详情未读取，请重试");
         var full = await ServiceAsync(() => Task.FromResult(Wire.Encode(operation)));
         await RequireManagementModeAsync();
         if (generation != selectionGeneration || Selected?.Id != owner || ManagementStatus != authority) throw new InvalidOperationException("选择或管理授权已变化；未复制旧详情");

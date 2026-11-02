@@ -97,7 +97,7 @@ static partial class SportmasterRcs
             {
                 Check(view.Left.SlotAvailable && view.Left.Slot == "SYNTH-CHUTE", "valid assignment still displays its exact chute");
                 peer.Mode = "reject";
-                app.EmitReferenceAt("left", "rejected-after-assigned", "SYNTH-0001", Wire.Id());
+                app.EmitReferenceAt("left", "rejected-after-assigned", "SYNTH-0002", Wire.Id());
                 await Wait(app, x => x.Operations.Length == 2 && x.Operations.Any(o => o.State == ParcelState.WcsRejected));
                 await view.RefreshAsync();
                 Check(!view.Left.SlotAvailable && view.Left.Slot == "未取得" && view.Left.AttentionReason == "SYNTH_OTHER_ERROR",

@@ -66,7 +66,7 @@ static partial class SportmasterRcs
         var fake = live ? null : new SoftwareFrameApi(reader);
         var factory = new SoftwareFlowFactory(launch, c, fake, bundled);
         // Isolated Simulation fixture seam only. No production identity guard changes.
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow { PlacementReleaseMs = live ? SportmasterFlow.DefaultSamePlacementReleaseMs : 300 }, factory);
         if (!bundled || args.Contains("--isolated-simulation-preflight")) app.RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); };
         await app.StartAsync(default);
         // Full frozen HTTP custody is management-only, including in this isolated fixture.
@@ -97,6 +97,7 @@ static partial class SportmasterRcs
             // intentionally supersede *undecoded* frames, so await each recognition boundary.
             foreach (var number in new uint[] { 1, 2, 5 })
             {
+                await Task.Delay(400); // Each frame is a separate placement of a parcel with this label.
                 fake!.Enqueue(pixels, number);
                 await Wait(app, state => state.Operations.Length == (number == 1 ? 1 : number == 2 ? 2 : 3) && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             }

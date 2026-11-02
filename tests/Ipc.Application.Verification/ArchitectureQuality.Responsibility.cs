@@ -17,7 +17,7 @@ static partial class ArchitectureQuality
             for (var i = 0; i < 12; i++)
             {
                 var position = i % 2 == 0 ? "left" : "right";
-                app.EmitReferenceAt(position, "archive-" + i, "00001", "archive-source-" + i);
+                app.EmitReferenceAt(position, "archive-" + i, "A" + i.ToString("D4"), "archive-source-" + i);
                 await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "archive-" + i && o.State == ParcelState.SlotResolved));
             }
             var page = await app.HistoryAsync(long.MaxValue, 3); var seen = new List<ParcelHistoryItem>(page.Items);
@@ -29,7 +29,7 @@ static partial class ArchitectureQuality
         }
         await using (var app = await Open(sport, "archive-cycle"))
         {
-            await Command(app, "Resume"); app.EmitReferenceAt("left", "archive-0", "00001", "archive-source-0"); await Task.Delay(100);
+            await Command(app, "Resume"); app.EmitReferenceAt("left", "archive-0", "A0000", "archive-source-0"); await Task.Delay(100);
             Check((await app.HistoryAsync(long.MaxValue, 50)).Items.Length == 12 && Wire.Encode(await app.OperationAsync(firstId)) == firstBody, "restart deduplicates permanent archived admission and retains original JSON/request bytes");
         }
         ParcelRecovery.Restore(Path.Combine(root, "archive-cycle.backup.db"), DirectoryFor("archive-restored", sport));

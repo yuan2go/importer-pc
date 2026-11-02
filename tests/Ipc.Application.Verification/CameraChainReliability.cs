@@ -154,10 +154,11 @@ internal static class CameraChainReliability
             Check(capacity != 1 || source.Undelivered is not null, "decoded observation retains delivery ownership while its lane is full");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
             var expected = capacity == 1 ? 3 : 33;
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == expected);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed == expected));
             var operations = (await h.App.SnapshotAsync()).Operations;
-            Check(source.Failure.Length == 0 && h.Peer.Requests.Count == expected && operations.Select(o => o.Wcs!.Request.IntegrationRequest!.RequestId).Distinct().Count() == expected && operations.All(o => o.Wcs!.Attempts == 1),
-                $"all {expected} independent same-code reads each send once after drain, with distinct frozen request IDs");
+            Check(source.Failure.Length == 0 && h.Peer.Requests.Count == 1 && operations.Length == 1 && operations.Single() is { State: ParcelState.SlotResolved, Wcs.Attempts: 1 } &&
+                (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left") is { Outcome: ParcelInputOutcome.Duplicate } latest && latest.OperationId == operations.Single().Id,
+                $"all {expected} reads of one resting parcel drain without loss and send exactly once; later reads point at the original request");
         }
         finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
     }

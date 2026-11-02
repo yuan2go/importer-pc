@@ -495,6 +495,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id, selection), "ObservationIdentityObserved");
             return;
         }
+        // A parcel resting on the tray is read in every frame; only its first admitted
+        // read is a request. Lift and re-place (or a different code) starts a new placement.
+        if (!manual && SamePlacementOwner(position, code!, o.ObservedAt) is { } placementOwner)
+        {
+            RecordInput(Input(position, o, ParcelInputOutcome.Duplicate, ParcelInputReasons.SamePlacement + "; 同一包裹仍在本位托盘上，已由原作业处理；未创建作业或请求。取下并重新放置后才再次请求格口", placementOwner, selection), "SamePlacementObserved");
+            return;
+        }
         // This is a new event from the current registration, not an old callback.
         // Queue age/health must close this input's display as well as admission.
         // Existing identities above retain their original responsibility and policy.
@@ -536,6 +543,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     "images/original-frames/" + op.Id + ".png", DateTimeOffset.UtcNow) };
             }
             Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
+            ClaimPlacement(position, code!, o.ObservedAt, op.Id);
             if (originalFrame is not null) { ScheduleOriginalFrame(op, originalFrame); originalFrame = null; }
         }
         finally { originalFrame?.Dispose(); }

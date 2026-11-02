@@ -51,6 +51,7 @@ if (args.Contains("--camera-chain-closure")) { await CameraChainClosure.Run(work
 if (args.Contains("--reader-feedback-22")) { await ReaderFeedback22.Run(workspace, root); return; }
 if (args.Contains("--unread-package-27")) { await UnreadPackage27.Run(workspace, root); return; }
 if (args.Contains("--reader-robustness-28")) { await ReaderRobustness28.Run(workspace, root); return; }
+if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
 if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResources(workspace, root); return; }
@@ -163,7 +164,7 @@ if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspa
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
 ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
-FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow(), "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
+FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow { PlacementReleaseMs = 300 }, "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
 async Task<ParcelRuntime> Open(ParcelConfiguration config, string run)
 {
     var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
@@ -201,6 +202,7 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
         await app.ReconcileAsync(op.Id); var completed = (await app.SnapshotAsync()).Operations.Single(x => x.Id == op.Id);
         Pass(completed.State == ParcelState.PhysicalCompleted && completed.Plc!.Attempts == 1, id + " physical completion comes only from explicit original peer query");
     }
+    await Task.Delay(400); // Sportmaster: the operator lifts the parcel; a re-placement is a new entity.
     Pass(app.EmitReference("parcel-two", "000000123", "reader-event-two"), id + " same code different admitted entity queued");
     await Wait(app, x => x.Operations.Length == 2 && x.Operations.Single(o => o.Id == op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PhysicalCompleted) &&
         x.Operations.Single(o => o.Id != op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));

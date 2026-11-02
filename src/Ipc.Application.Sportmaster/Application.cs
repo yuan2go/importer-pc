@@ -22,6 +22,12 @@ public sealed class SportmasterFlow : FlowDefinition
             { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
     }
     public override string[] PositionRoles => ["left", "right"];
+    // Continuous acquisition reads a tray parcel in every frame. One placement is one
+    // RCS request: the code must leave this position's reads for this long (operator
+    // lifts it after a failure, or the vehicle carries it away) before it is requested again.
+    public const int DefaultSamePlacementReleaseMs = 2000;
+    public int PlacementReleaseMs { get; init; } = DefaultSamePlacementReleaseMs;
+    public override int SamePlacementReleaseMs => PlacementReleaseMs;
     public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter, o.Codes, o.CandidateIssue);
     public override string[] ValidateBusiness(ParcelConfiguration c) => [.. c.Wcs is null || c.Plc is not null ? new[] { "Sportmaster capability dependencies do not match its flow" } : [], .. BarcodeFiltering.Validate(c.BarcodeFilter) is { } error ? new[] { error } : []];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs;

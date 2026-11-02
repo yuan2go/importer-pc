@@ -138,13 +138,15 @@ static partial class SportmasterRcs
         var directory = Path.Combine(root, "confirmed-camera-flow"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
+        const int release = 400;
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow { PlacementReleaseMs = release }, new Factory(new ParcelCapabilityFactory(launch)));
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         using var camera = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
         await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
         var before = peer.Requests.Count;
         foreach (var barcode in new[] { "000123", "000123", "000456" })
         {
+            await Task.Delay(release + 200); // Operator lifts the parcel and places one (again).
             var count = (await app.SnapshotAsync()).Operations.Length;
             await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes(barcode[..3]));
             await Task.Delay(20);
@@ -157,6 +159,18 @@ static partial class SportmasterRcs
             posts.Select(x => JsonDocument.Parse(x.Body).RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString()).SequenceEqual(new[] { "000123", "000123", "000456" }) &&
             posts.All(x => JsonDocument.Parse(x.Body).RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1),
             "three completed camera scans create exactly three RCS requests with their original barcodes, fixed quantity 1, and no merge by barcode");
+        // The last parcel stays on the tray: continuous reads of the same placement never resend.
+        var resting = peer.Requests.Count;
+        for (var i = 0; i < 5; i++) { await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000456\n")); await Task.Delay(release / 4); }
+        await Task.Delay(200);
+        snapshot = await Wait(app, s => s.Inputs!.SingleOrDefault(x => x.PositionId == "left") is { Outcome: ParcelInputOutcome.Duplicate } latest && latest.Reason.StartsWith("SamePlacement", StringComparison.Ordinal));
+        Check(peer.Requests.Count == resting && snapshot.Operations.Length == 3 &&
+            snapshot.Inputs!.Single(x => x.PositionId == "left").OperationId == snapshot.Operations.Single(o => o.ParcelCode == "000456").Id,
+            "a parcel resting on the tray is read every frame but requests RCS once; repeated reads point at the original operation");
+        await Task.Delay(release + 200);
+        await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000456\n"));
+        snapshot = await Wait(app, s => s.Operations.Length == 4 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
+        Check(peer.Requests.Count == resting + 1, "lifting and re-placing the same parcel after the release window requests a new chute once");
     }
     static async Task NumericIdentityHistoryChecks(string workspace,string root,Peer peer)
     {

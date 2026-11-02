@@ -80,7 +80,7 @@ public static class ParcelPresentation
         ParcelInputOutcome.Duplicate => "重复扫描 · 已忽略",
         _ => "本次扫描已受理"
     };
-    public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted;
+    public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted && !ParcelInputReasons.IsSamePlacement(input);
     public static string InputReason(ParcelInputSnapshot input) =>
         input.Outcome == ParcelInputOutcome.Rejected && input.BarcodeSelection is { } selection &&
         input.Reason == selection.Outcome + "; no operation or external intent created"

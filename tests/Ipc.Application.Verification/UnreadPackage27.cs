@@ -76,6 +76,7 @@ internal static class UnreadPackage27
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
         Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.Outcome == ObservationReadOutcome.NoCode,
             "late RCS acceptance preserves its original fact without restoring a superseded camera frame");
+        await h.ReplaceParcelAsync(); // Same label placed again: a new placement, not the resting parcel.
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 5);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 4);
         var requests = h.Peer.Requests.Select(s => JsonDocument.Parse(s)).ToArray();
@@ -84,7 +85,7 @@ internal static class UnreadPackage27
             Check(requests.Select(j => j.RootElement.GetProperty("requestId").GetInt64()).Distinct().Count() == 4 &&
                 requests.All(j => j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1) &&
                 requests.Count(j => j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString() == "SYNTH-DELAYED-27") == 2,
-                "same-code independent reads retain distinct original requests, original loadCode and quantity=1 for RCS handling");
+                "same-code re-placements retain distinct original requests, original loadCode and quantity=1 for RCS handling");
         }
         finally { foreach (var j in requests) j.Dispose(); }
         h.Api(h.Right).NextLostPackets = 1; h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-REJECT-27"), 2);

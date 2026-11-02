@@ -27,6 +27,9 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
     public RoundApi Api(string device) => Factory.Apis[device];
+    // Short same-placement window for synthetic frames; a suite models lift/re-place by waiting past it.
+    public int PlacementReleaseMs { get; init; } = 300;
+    public Task ReplaceParcelAsync() => Task.Delay(PlacementReleaseMs + 200);
     public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null)
     {
         if (!nativeLoaded)
@@ -50,7 +53,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public async Task StartAsync()
     {
         Factory = new(Launch, Config);
-        App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        App = new(Launch, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
         await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         await AuthorizeAsync();

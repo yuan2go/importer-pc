@@ -24,7 +24,7 @@ static partial class SportmasterRcs
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
         var database = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId, "sportmaster.db");
-        ParcelRuntime Open() => new(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+        ParcelRuntime Open() => new(launch, new SportmasterFlow { PlacementReleaseMs = 300 }, new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         SqliteConnection ReadDatabase()
         { var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open(); return db; }
         ParcelOperation Persisted(string id)
@@ -53,6 +53,7 @@ static partial class SportmasterRcs
                 "independent input remains available while the timed-out original requires reconciliation and has no chute");
             Check(!new SportmasterFlow().AllowsNextAdmissionAfter(original with { Wcs = original.Wcs! with { State = StageState.Conflict } }) &&
                 !new Ipc.Application.DirectPlc.DirectPlcFlow().AllowsNextAdmissionAfter(original), "receipt conflicts and other applications do not inherit the RCS timeout exception");
+            await Task.Delay(400); // Operator lifts the timed-out parcel and places it again.
             peer.Mode = "assigned"; await Scan(camera);
             var rescanned = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 1);
             var next = rescanned.Operations.Single(o => o.PositionId == "left" && o.Id != originalId); var nextStored = Persisted(next.Id); secondWireId = nextStored.Wcs!.Request.IntegrationRequest!.RequestId;

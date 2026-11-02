@@ -57,6 +57,7 @@ public sealed partial class SupplyStationPositionViewModel
     public string BarcodePlaceholder => CameraAwaitingRead ? "相机已重连，请重新扫码" : CameraNoCode ? "未读到条码，请调整标签或补扫" : CameraObservationUnmatched && !MatchedCameraCue ? "正在核对本次条码" : (unreadFeedback ? readFeedback!.CandidateCount : Input?.Observation.Codes.Length ?? 0) > 1
         ? "本帧读到多个条码，请检查包裹" : HasCurrentInput ? "本次条码无效，请检查包裹" : "等待相机扫码或输入条码";
     public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || CameraNoCode || CameraObservationUnmatched || unreadFeedback || InputUnadmitted || IsProcessing ? null :
+        Input is { } resting && Operation is { } placed && ParcelInputReasons.IsSamePlacement(resting) && resting.OperationId == placed.Id ? new(OperationId: placed.Id) :
         Input is { } input && Operation is { } current && input.OperationId == current.Id &&
             (current.Acquisition is null || input.Observation.DeviceId == current.Acquisition.DeviceId &&
                 input.Observation.Epoch == current.Acquisition.Epoch && input.Observation.SourceEventId == current.Acquisition.SourceEventId &&

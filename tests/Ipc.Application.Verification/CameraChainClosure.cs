@@ -114,11 +114,11 @@ internal static class CameraChainClosure
             Check(source.ReadDiagnostics().DecodeCompleted == 32 && source.Failure.Length == 0,
                 "capture continues to the latest video while a pre-decode frame waits for bounded original capacity");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == Ipc.Application.Contracts.ParcelState.SlotResolved) == 33);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == Ipc.Application.Contracts.ParcelState.SlotResolved) == 2);
             var operations = (await h.App.SnapshotAsync()).Operations;
-            Check(operations.Count(o => o.ParcelCode == "SYNTH-CUSTODIED") == 32 && operations.Single(o => o.ParcelCode != "SYNTH-CUSTODIED").Acquisition?.SourceEventId == "mvs.frame.38" &&
-                h.Peer.Requests.Count == 33 && source.ReadDiagnostics().DecodeCompleted == 33,
-                "all 32 recognized same-code observations send independently; recovery decodes only latest frame 38, never stale pre-decode frame 33");
+            Check(operations.Count(o => o.ParcelCode == "SYNTH-CUSTODIED") == 1 && operations.Single(o => o.ParcelCode != "SYNTH-CUSTODIED").Acquisition?.SourceEventId == "mvs.frame.38" &&
+                h.Peer.Requests.Count == 2 && source.ReadDiagnostics().DecodeCompleted == 33 && h.App.WorkerProgress().Single(p => p.Position == "left").Processed == 33,
+                "all 32 recognized frames of one resting parcel are processed but request once; recovery decodes only latest frame 38, never stale pre-decode frame 33");
             Check(source.ReadDiagnostics().SupersededDecodeFrames >= 5 && h.Api(h.Left).Acquires == h.Api(h.Left).Releases && !h.Api(h.Left).HasFrame,
                 "superseded undecoded video remains counted and every SDK loan is returned without a camera fence");
         }

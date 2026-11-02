@@ -173,7 +173,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool CanStartOperation => owner.CanStartOperation;
     public string Barcode => ObservedBarcode;
     public bool CurrentTaskAvailable => !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
-        (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null ||
+        (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null || ParcelInputReasons.IsSamePlacement(Input) ||
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
     public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? OperatorCopy.NotReturned : Operation.Slot : "未取得";

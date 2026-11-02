@@ -73,9 +73,10 @@ static partial class SportmasterRcs
                 new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != genericRuntimeBudget,
                 "omitted component timeout uses the displayed default independently of the generic service budget");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
-            Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && view.Left.OperatorInstruction.Contains("勿重复上件", StringComparison.Ordinal) &&
-                view.Left.NextStep.Contains("勿重复上件", StringComparison.Ordinal) && view.Left.Slot == "未取得" && !view.Left.SlotAvailable,
-                "timeout guidance is visible in the work area with no stale chute");
+            Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && view.Left.OperatorInstruction.Contains("新请求", StringComparison.Ordinal) &&
+                view.Left.NextStep.Contains("暂勿投递", StringComparison.Ordinal) && view.Left.NextStep.Contains("原请求结果未确认", StringComparison.Ordinal) &&
+                view.Left.Slot == "未取得" && !view.Left.SlotAvailable,
+                "timeout guidance explains independent automatic reads and protects the unconfirmed original without a stale chute");
             await Task.Delay(2600);
             var afterLateResponse = (await app.SnapshotAsync()).Operations.Single();
             Check(peer.Requests.Count == before + 1 && afterLateResponse.State == ParcelState.WcsUnknown && afterLateResponse.Slot is null && afterLateResponse.Wcs!.Attempts == 1,

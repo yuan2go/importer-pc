@@ -116334,9 +116334,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-DB11-COMPATIBLE-UPDATE-22; original evidence retains its own SourceCommit",
-      "sha256": "d9a958cb9f43c0c751e9189c31df4ae3ab8a0a361fd726a4ece1379fe0022c37",
-      "size_bytes": 6127,
-      "git_blob": "fb6f77fa5b3b1fb2e9e809547421ffcdbef1ecc6",
+      "sha256": "d4e927d7590f83b0918f65c7f294723f29d53d38e48793d256df3bae9dd63fcb",
+      "size_bytes": 6481,
+      "git_blob": "a15d1d1fc7fda2db4bc662f9dc54654cdbc6948a",
       "storage_scope": "public_repository"
     },
     {
@@ -117104,9 +117104,141 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
-      "sha256": "f3c887c70488d169e467b08366f69b86efc1ab02557ba1707c8a5595cf49343c",
-      "size_bytes": 994,
-      "git_blob": "74dc9cf7027d46363c9e57e064e3164a04220020",
+      "sha256": "e7c41dc094c4dbf61b18cf83c587deaebc6e8961f8d46de29c4e94d537713a97",
+      "size_bytes": 1351,
+      "git_blob": "85f2a9ad0bdeb24606f4d41d96042e51420944f0",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/README.md",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "71144aebe8d9aa03a6d838216249b01849b85a62dce15e677e030a4277f3579b",
+      "size_bytes": 2305,
+      "git_blob": "185e55516aa9b21768ca141cc57a7674423e47d9",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/app--audit03-maintenance.log",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "1990ac276053ee23ab3efbc9b9486c07bd1c21f2a235572d7bac834a1efaac70",
+      "size_bytes": 824,
+      "git_blob": "f4a508c908eb08ecfc10650c3fef6c321a7d055e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/app--db11-compatible-update.log",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "2c41e3961e8597ebf9d0f7838b4c04c2237c8c197aaabe9a939a88ea74b64620",
+      "size_bytes": 4472,
+      "git_blob": "296860376369be2efcf186b8886786151cf73a8e",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/app--maintenance-progress-checks.log",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "7627e4d767a66f3ea58bc1291eecbd79f797ff75f9851cd1ee79a0cb3ef8468f",
+      "size_bytes": 3703,
+      "git_blob": "4927e70f62535faa42d8789c755b5d1aaf554c03",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/app--stability-audit-maintenance.log",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "d2ae9d72de7ed2fc3e9d63b38e7da1d507c41b2a715eeba5cd517f67ea8f46c9",
+      "size_bytes": 881,
+      "git_blob": "e9777c2283b28ed98d0470e4605eaa228a107e48",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/build.log",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "74870b66d1d154f39acdc5adc0429d9c964b34ff3036de9fee22b697ffbf10d9",
+      "size_bytes": 84,
+      "git_blob": "88c183521588eb7c419b53f7b62ea09cc708f54c",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/hashes.json",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "0d3cdcf4332ca45b43b3c8d4eba7d1a1eda0e4a84689d3bfdc4ced4b0ac22d06",
+      "size_bytes": 1830,
+      "git_blob": "fa1bb8817f5f91717c3ddbecda641ee61b6abf98",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/negative-closed-wal.log",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "dabcfd18c89be35a775ac80f0a2fe82185d589c1c4fd87cd2d36a3e4994bdaed",
+      "size_bytes": 4951,
+      "git_blob": "16c3801bcb5862856bc6ed4f1a72b32874e7a012",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/negative-source.json",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "676420c59429fd636d53ca23a04843ac651aa909fd1e405a47912ebc916179e8",
+      "size_bytes": 276,
+      "git_blob": "8dda6ba64cb94d5674c8954eb3c75cc1c5f239ce",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/summary.json",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "a20ebca1ff463728971eada69df0e1976143bc152a31cf0eb9b4163fabbebe1c",
+      "size_bytes": 639,
+      "git_blob": "b4b4414f1f78470afcf89a30bcafa5a61a0e215a",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/windows-authorized-restore-summary.json",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "9043059ab696779bedc718a8a89d326a7018de49b42213d5142b75d568a15bea",
+      "size_bytes": 294,
+      "git_blob": "63c5a0357403fc3717b494cb59a27fffcd4086cf",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/db11-wal-handle-23/windows-authorized-restore.log",
+      "version": "db11-wal-handle-23",
+      "status": "current_source_or_synthetic_evidence",
+      "purpose": "Integrated source and bounded verification",
+      "source": "WP-IPC-DB11-WAL-HANDLE-23; original evidence retains its own SourceCommit",
+      "sha256": "84934f218bbf3ced89b1690d038a9bccd5126f5564b60f643188603a52814945",
+      "size_bytes": 6045,
+      "git_blob": "7f8f7c12fe44e75dd6529a2b68491dbd29226b90",
       "storage_scope": "public_repository"
     }
   ],
@@ -119971,9 +120103,9 @@
   ],
   "integration_sources": [
     {
-      "commit": "9ccb91abb37bb93df9a89bcee6956820eee8a285",
-      "manifest_sha256": "f977cd16518438ce86a2c142bb9b12c5f0a5d40e67e26db9f79a482bb4f6eb7c",
-      "work_package": "WP-IPC-DB11-COMPATIBLE-UPDATE-22"
+      "commit": "5ce8c1f9472f0d8652cac483aeff9c0ac200e59e",
+      "manifest_sha256": "c056666b24b82d574581317ef9b83aa97e9240c9f48f18b9aacc7625e6c2c4ad",
+      "work_package": "WP-IPC-DB11-WAL-HANDLE-23"
     }
   ],
   "install_update_uninstall_identity_01": {

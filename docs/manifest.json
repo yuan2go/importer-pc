@@ -105180,9 +105180,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "6d6e41af1c4bea6f6113ae45e3245a89fc124aedbf9feb4a924678a1e4375bf9",
-      "size_bytes": 11047,
-      "git_blob": "568631c453a7a79b4634c3cc412b26d0e9f12654",
+      "sha256": "3645d32603395487c710897e13a00725cfda9b66e664434f4e5727c3aacb11c9",
+      "size_bytes": 11146,
+      "git_blob": "d9a712a1dd7da1516600660c877f77fae02772bb",
       "storage_scope": "public_repository"
     },
     {
@@ -121075,9 +121075,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-ROBUSTNESS-28; original evidence retains its own SourceCommit",
-      "sha256": "4d6b959d95f6684e47db2b789c6855d3f66d8cb5202934aaef3a34fdac1019a6",
-      "size_bytes": 3943,
-      "git_blob": "c72359a861bf982c0960d1a79b0049a4efc59f4d",
+      "sha256": "21a1bfe7bcea51413c9d548b91bf6f8c81f15955685b1e2a0c4f02f6c8630c0f",
+      "size_bytes": 3973,
+      "git_blob": "aa6aff479b3e90efec876bf5f38c816b7db272c6",
       "storage_scope": "public_repository"
     },
     {
@@ -121097,9 +121097,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-ROBUSTNESS-28; original evidence retains its own SourceCommit",
-      "sha256": "0071a035f8299541f7370c69b2060c50673d8c1322e53160e131521ed7f132e6",
-      "size_bytes": 13109,
-      "git_blob": "c2106658da21a87e114d2a294c84371848153b0d",
+      "sha256": "16ca5f4bd22fdce5242eb959783c18269233f74f8796fbe8d1d009db70ca5e31",
+      "size_bytes": 13191,
+      "git_blob": "fad52afe316340e9706db55cdf94bd0c73e35d2a",
       "storage_scope": "public_repository"
     },
     {

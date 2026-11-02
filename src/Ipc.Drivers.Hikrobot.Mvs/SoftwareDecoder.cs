@@ -33,7 +33,7 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
         timings.Reset();
         (prepareNative ?? DecoderRuntime.Prepare)();
         reader ??= new BarcodeReader { Formats = BarcodeFormat.All, TryHarder = true, TryRotate = true,
-            TryInvert = true, TryDownscale = true, ReturnErrors = false, MinLineCount = 4, MaxNumberOfSymbols = CandidateLimit };
+            TryInvert = true, TryDownscale = true, ReturnErrors = false, MinLineCount = 2, MaxNumberOfSymbols = CandidateLimit };
         if (settings is not null) { reader.Formats = settings.NativeFormats(); reader.TryInvert = settings.TryInvert; }
         searchOptionsForVerification?.Invoke(reader);
         thresholdReader ??= new BarcodeReader();
@@ -43,7 +43,7 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
         thresholdReader.TryHarder = reader.TryHarder; thresholdReader.TryRotate = reader.TryRotate;
         thresholdReader.TryInvert = reader.TryInvert; thresholdReader.TryDownscale = reader.TryDownscale;
         thresholdReader.ReturnErrors = reader.ReturnErrors; thresholdReader.MaxNumberOfSymbols = CandidateLimit;
-        thresholdReader.MinLineCount = Math.Max(4, reader.MinLineCount);
+        thresholdReader.MinLineCount = Math.Max(2, reader.MinLineCount);
         thresholdReader.ValidateOptionalChecksum = reader.ValidateOptionalChecksum;
         thresholdReader.Binarizer = Binarizer.FixedThreshold;
     }
@@ -105,6 +105,7 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
             foreach (var code in found)
             {
                 if (!code.IsValid || code.Bytes.Length > CodeByteLimit) throw new MvsFrameRejection("InvalidCandidate", "Invalid/oversized recognition candidate; complete frame rejected");
+                if (RequiresSourceSupport(code.Format.ToString()) && code.LineCount < 4) continue;
                 var p = code.Position;
                 ImagePoint Point(int x, int y) => map?.Invoke(x, y) ?? new(x, y);
                 ImagePoint[] corners = [Point(p.TopLeft.X, p.TopLeft.Y), Point(p.TopRight.X, p.TopRight.Y), Point(p.BottomRight.X, p.BottomRight.Y), Point(p.BottomLeft.X, p.BottomLeft.Y)];

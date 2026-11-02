@@ -6,11 +6,12 @@ internal sealed partial class SoftwareDecoder
 {
     static bool IsLinear(string format) => format.Replace(" ", "").Replace("-", "") is
         "Code128" or "Code39" or "Code93" or "ITF" or "Codabar" or "EAN8" or "EAN13" or "UPCA" or "UPCE";
+    static bool RequiresSourceSupport(string format) => format.Replace(" ", "") is "ITF" or "Code39" or "Codabar";
     bool HasOriginalLineSupport(string format, ImagePoint[] p, byte[] pixels, int width, int height)
     {
         // These symbologies do not require a payload checksum. Strong-checksum
         // formats retain native validation, including blurred Code128 patterns.
-        if (format.Replace(" ", "") is not ("ITF" or "Code39" or "Codabar")) return true;
+        if (!RequiresSourceSupport(format)) return true;
         var x0 = (p[0].X + p[3].X) / 2d; var y0 = (p[0].Y + p[3].Y) / 2d;
         var dx = (p[1].X + p[2].X) / 2d - x0; var dy = (p[1].Y + p[2].Y) / 2d - y0;
         var length = Math.Sqrt(dx * dx + dy * dy);

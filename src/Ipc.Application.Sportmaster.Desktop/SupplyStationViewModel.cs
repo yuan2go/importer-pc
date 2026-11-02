@@ -172,7 +172,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool IsTight => owner.IsTight;
     public bool CanStartOperation => owner.CanStartOperation;
     public string Barcode => ObservedBarcode;
-    public bool CurrentTaskAvailable => !CameraNoCode && !unreadFeedback && !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
+    public bool CurrentTaskAvailable => !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
         (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null ||
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));

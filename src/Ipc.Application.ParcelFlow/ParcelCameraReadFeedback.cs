@@ -59,8 +59,10 @@ public sealed partial class ParcelRuntime
         foreach (var (source, handler) in cameraReadSubscriptions) source.ReadFeedback -= handler;
         cameraReadSubscriptions.Clear();
     }
-    ParcelCameraReadFeedback[] CameraReadFeedbackSnapshot()
+    ParcelSnapshot WithReadFeedbackSnapshot(ParcelSnapshot snapshot)
     {
-        lock (presentationGate) return cameraReadFeedback.Values.ToArray();
+        // A snapshot can reach a window before its stream notification. Publish
+        // frame and observation watermarks from the same short critical section.
+        lock (presentationGate) return snapshot with { CameraReads = cameraReadFeedback.Values.ToArray(), ReadFeedbacks = presentationFeedback.Values.ToArray() };
     }
 }

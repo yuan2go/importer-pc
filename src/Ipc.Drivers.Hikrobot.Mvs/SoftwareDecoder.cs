@@ -9,10 +9,11 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 
 // The same 3.1.1 engine used in the real-camera diagnostic, directly in .NET.
 // No image files, subprocess, Python runtime, barcode deduplication or RCS work.
-internal sealed class SoftwareDecoder(string charset, Action? prepareNative = null, Action<byte[], int>? contrastForVerification = null,
+internal sealed partial class SoftwareDecoder(string charset, Action? prepareNative = null, Action<byte[], int>? contrastForVerification = null,
     Action<BarcodeReader>? searchOptionsForVerification = null, ReaderSettings? settings = null) : IMonoBarcodeDecoder
 {
     const int CandidateLimit = 64, CodeByteLimit = 4096;
+    int patternSamples;
     BarcodeReader? reader, thresholdReader;
     readonly MvsTimings timings = new();
     public MvsTimingSnapshot TimingSnapshot => timings.Snapshot();
@@ -32,7 +33,7 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
         timings.Reset();
         (prepareNative ?? DecoderRuntime.Prepare)();
         reader ??= new BarcodeReader { Formats = BarcodeFormat.All, TryHarder = true, TryRotate = true,
-            TryInvert = true, TryDownscale = true, ReturnErrors = false, MaxNumberOfSymbols = CandidateLimit };
+            TryInvert = true, TryDownscale = true, ReturnErrors = false, MinLineCount = 4, MaxNumberOfSymbols = CandidateLimit };
         if (settings is not null) { reader.Formats = settings.NativeFormats(); reader.TryInvert = settings.TryInvert; }
         searchOptionsForVerification?.Invoke(reader);
         thresholdReader ??= new BarcodeReader();
@@ -42,7 +43,7 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
         thresholdReader.TryHarder = reader.TryHarder; thresholdReader.TryRotate = reader.TryRotate;
         thresholdReader.TryInvert = reader.TryInvert; thresholdReader.TryDownscale = reader.TryDownscale;
         thresholdReader.ReturnErrors = reader.ReturnErrors; thresholdReader.MaxNumberOfSymbols = CandidateLimit;
-        thresholdReader.MinLineCount = Math.Max(2, reader.MinLineCount);
+        thresholdReader.MinLineCount = Math.Max(4, reader.MinLineCount);
         thresholdReader.ValidateOptionalChecksum = reader.ValidateOptionalChecksum;
         thresholdReader.Binarizer = Binarizer.FixedThreshold;
     }
@@ -53,9 +54,8 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
         if (reader is null || width <= 0 || height <= 0 || length != checked(width * height) || length > pixels.Length)
             throw new InvalidDataException("Decoder not prepared or incomplete Mono8 image");
         using var total = timings.Measure("decode.total");
+        patternSamples = 0;
         byte[]? contrast = null;
-        var pin = default(GCHandle);
-        Barcode[]? results = null;
         try
         {
             using (timings.Measure("contrast"))
@@ -76,30 +76,58 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
                     }
                 }
             }
-            pin = GCHandle.Alloc(contrast ?? pixels, GCHandleType.Pinned);
+            var input = contrast ?? pixels;
+            List<RecognitionSymbol> symbols = [];
             using (timings.Measure("zxing.native"))
-                results = reader.From(new ImageView(pin.AddrOfPinnedObject(), width, height, ImageFormat.Lum));
-            if (results.Length == 0)
-            {
-                using (timings.Measure("zxing.threshold-fallback"))
-                    results = thresholdReader!.From(new ImageView(pin.AddrOfPinnedObject(), width, height, ImageFormat.Lum));
-            }
-            using var extraction = timings.Measure("candidates.extract");
-            if (results.Length >= CandidateLimit) throw new MvsFrameRejection("CandidateLimit", "Recognition candidate limit reached; frame rejected without partial results");
-            return results.Select(result => {
-                if (!result.IsValid || result.Bytes.Length > CodeByteLimit) throw new MvsFrameRejection("InvalidCandidate", "Invalid/oversized recognition result; complete frame rejected");
-                var p = result.Position;
-                return new RecognitionSymbol(encoding.GetString(result.Bytes), result.Format.ToString(),
-                    [new(p.TopLeft.X, p.TopLeft.Y), new(p.TopRight.X, p.TopRight.Y),
-                     new(p.BottomRight.X, p.BottomRight.Y), new(p.BottomLeft.X, p.BottomLeft.Y)], result.Orientation);
-            }).ToArray();
+                ReadPass(reader, input, width, height, symbols, input, width, height);
+            // A readable secondary code must not suppress a harder target code.
+            using (timings.Measure("zxing.threshold"))
+                ReadPass(thresholdReader!, input, width, height, symbols, input, width, height);
+            using (timings.Measure("zxing.regions"))
+                SearchRegions(input, width, height, symbols);
+            return symbols.ToArray();
         }
         catch (DecoderFallbackException error) { throw new MvsFrameRejection("InvalidEncoding", "Frame contains bytes invalid for the configured barcode encoding", error); }
         finally
         {
-            try { if (results is not null) foreach (var result in results) result.Dispose(); }
-            finally { if (pin.IsAllocated) pin.Free(); if (contrast is not null) ArrayPool<byte>.Shared.Return(contrast, true); }
+            if (contrast is not null) ArrayPool<byte>.Shared.Return(contrast, true);
         }
+    }
+    void ReadPass(BarcodeReader engine, byte[] pixels, int width, int height, List<RecognitionSymbol> collected,
+        byte[] original, int originalWidth, int originalHeight, Func<int, int, ImagePoint>? map = null)
+    {
+        var pin = GCHandle.Alloc(pixels, GCHandleType.Pinned);
+        Barcode[]? found = null;
+        try
+        {
+            found = engine.From(new ImageView(pin.AddrOfPinnedObject(), width, height, ImageFormat.Lum));
+            if (found.Length >= CandidateLimit) throw new MvsFrameRejection("CandidateLimit", "Recognition candidate limit reached; complete frame rejected");
+            foreach (var code in found)
+            {
+                if (!code.IsValid || code.Bytes.Length > CodeByteLimit) throw new MvsFrameRejection("InvalidCandidate", "Invalid/oversized recognition candidate; complete frame rejected");
+                var p = code.Position;
+                ImagePoint Point(int x, int y) => map?.Invoke(x, y) ?? new(x, y);
+                ImagePoint[] corners = [Point(p.TopLeft.X, p.TopLeft.Y), Point(p.TopRight.X, p.TopRight.Y), Point(p.BottomRight.X, p.BottomRight.Y), Point(p.BottomLeft.X, p.BottomLeft.Y)];
+                if (map is not null)
+                {
+                    // Deskewed scan-band boxes can extend past an image edge even
+                    // when the complete code baseline is present. Clip annotation
+                    // corners only; both baseline ends must still be original pixels.
+                    bool Inside(double x, double y) => x >= -.5 && x <= originalWidth - .5 && y >= -.5 && y <= originalHeight - .5;
+                    if (!Inside((corners[0].X + corners[3].X) / 2d, (corners[0].Y + corners[3].Y) / 2d) ||
+                        !Inside((corners[1].X + corners[2].X) / 2d, (corners[1].Y + corners[2].Y) / 2d))
+                        throw new MvsFrameRejection("InvalidGeometry", "Candidate baseline outside original pixels; complete frame rejected");
+                    corners = corners.Select(c => new ImagePoint(Math.Clamp(c.X, 0, originalWidth - 1), Math.Clamp(c.Y, 0, originalHeight - 1))).ToArray();
+                }
+                if (corners.Any(c => c.X < 0 || c.X >= originalWidth || c.Y < 0 || c.Y >= originalHeight))
+                    throw new MvsFrameRejection("InvalidGeometry", "Candidate is outside original frame; complete frame rejected");
+                var orientation = map is null ? code.Orientation : (int)Math.Round(Math.Atan2(corners[1].Y - corners[0].Y, corners[1].X - corners[0].X) * 180 / Math.PI);
+                if (!HasOriginalLineSupport(code.Format.ToString(), corners, original, originalWidth, originalHeight)) continue;
+                foreach (var symbol in PrintedBands(new(encoding.GetString(code.Bytes), code.Format.ToString(), corners, orientation), original, originalWidth, originalHeight))
+                    MergeCandidate(collected, symbol, original, originalWidth, originalHeight);
+            }
+        }
+        finally { try { if (found is not null) foreach (var code in found) code.Dispose(); } finally { pin.Free(); } }
     }
     internal static bool ExpandContrast(Span<byte> pixels)
     {

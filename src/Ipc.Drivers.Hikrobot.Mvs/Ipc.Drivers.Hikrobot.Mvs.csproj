@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup Condition="'$(IpcContractPath)' != ''">
     <Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference>
-    <Compile Remove="SoftwareDecoder.cs"/>
+    <Compile Remove="SoftwareDecoder*.cs"/>
     <Compile Remove="ReaderSettings.cs"/>
   </ItemGroup>
   <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences">

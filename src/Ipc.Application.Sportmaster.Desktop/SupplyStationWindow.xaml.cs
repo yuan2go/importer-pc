@@ -54,7 +54,7 @@ public partial class SupplyStationWindow : Window
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);
         BuildOperatorWorkspace();
         try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
-        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好读取失败，原文件保留：" + error.GetType().Name; }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"; }
         ApplyLayout();
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "workstation";
         if (initialPage == "maintenance" && !ViewModel.IsManagementMode) initialPage = "workstation";
@@ -123,7 +123,7 @@ public partial class SupplyStationWindow : Window
     {
         compact = !compact; ApplyLayout();
         try { Ipc.Platform.PresentationPreferences.Save("sportmaster", "supply-station", compact); }
-        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "本窗口布局已切换；展示偏好未保存：" + error.GetType().Name; }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "本窗口布局已切换；展示偏好未保存，请检查本机设置文件与访问权限。"; }
     }
     void ApplyLayout()
     {

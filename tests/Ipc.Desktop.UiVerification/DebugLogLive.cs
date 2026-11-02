@@ -77,8 +77,11 @@ static partial class Program
         var pause = Descendants(control).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "PauseLogDisplay");
         await Until(() => Task.FromResult(debug.IsEnabled && debug.IsChecked == true && follow.IsEnabled));
         Check(debug.IsChecked == true, "log-page parameter reads the shared actual runtime setting");
+        var export = Descendants(control).OfType<Button>().Single(b => Equals(b.Content, "导出…"));
+        Click(window, "查询"); await Until(() => Task.FromResult(export.IsEnabled));
         mode.SelectedIndex = 1; follow.IsChecked = true;
         await Until(() => Task.FromResult(terminal.Text.Contains("原请求响应详情")));
+        Check(!export.IsEnabled, "live follow disables the visible export menu even when a prior fixed query was exportable");
         Check(captured.Entries.Any(e =>
         {
             using var json = JsonDocument.Parse(e.Text);

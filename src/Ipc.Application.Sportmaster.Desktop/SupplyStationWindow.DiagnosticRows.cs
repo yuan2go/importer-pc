@@ -62,7 +62,7 @@ public partial class SupplyStationWindow
             if (setting || lifetime is null || ViewModel.Application is not IRuntimeDiagnosticsControl api) return;
             setting = true; toggle.IsEnabled = false;
             try { await ViewModel.RequireManagementModeAsync(); await api.SetDebugLoggingAsync(current?.DebugEnabled != true); }
-            catch (Exception error) { logState.Text = "日志设置结果未确认：" + DiagnosticText.Protect(error.Message); }
+            catch (Exception error) { logState.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "日志设置结果未确认，请刷新体检；持续失败时导出诊断记录。"); }
             finally { setting = false; await Read(); }
         };
         var poll = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) }; poll.Tick += async (_, _) => await Read();

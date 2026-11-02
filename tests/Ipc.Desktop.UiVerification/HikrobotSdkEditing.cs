@@ -39,7 +39,7 @@ static partial class Program
         try {
             editor.ShowPage(2,"左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); Fields(editor,left);
             var formats = left.Parameters.Single(p => p.Field.Key == "code.formats");
-            var formatSection = Descendants(editor).OfType<Expander>().Single(e => AutomationProperties.GetName(e) == left.InstanceId + "/code.formats");
+            var formatSection = Descendants(editor).OfType<Expander>().Single(e => AutomationProperties.GetAutomationId(e) == left.InstanceId + "/code.formats");
             formatSection.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             var formatChecks = Descendants(formatSection).OfType<CheckBox>().ToArray();
             Check(formatChecks.Length == formats.Field.Choices!.Length && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == true &&
@@ -56,7 +56,7 @@ static partial class Program
             Check(formatChecks.Count(c => c.IsChecked == true) == 1 && Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "All" }), "choosing All clears explicit native choices");
             formatSection.IsExpanded = false;
             Check(editor.NavigateTo(rcs.InstanceId+"/left-bcr-code"), "shared camera code is reached in the station task page");
-            Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetName(t)==rcs.InstanceId+"/left-bcr-code").Text="SYNTH-LEFT-EDITED";
+            Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetAutomationId(t)==rcs.InstanceId+"/left-bcr-code").Text="SYNTH-LEFT-EDITED";
             Check(rcs.Parameters.Single(p=>p.Field.Key=="left-bcr-code").Value=="SYNTH-LEFT-EDITED"&&rcs.Parameters.Single(p=>p.Field.Key=="right-bcr-code").Value=="SYNTH-RIGHT","one shared camera code editor isolates left/right");
             CaptureInternal(evidence,"bundled-sdk-daily-left",editor,lines);
             editor.ShowPage(2,"右相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); Fields(editor,right);
@@ -82,7 +82,7 @@ static partial class Program
             var oldCode = oldDraft.Capabilities.Single(ParameterOwnership.IsRcs).Parameters.Single(p=>p.Field.Key=="left-bcr-code"); oldCode.Value="SYNTH-MIGRATION";
             var oldControl = new ParameterSettingsControl { Model=oldDraft.CreateParameterEditor((p,c)=>Task.FromResult(BarcodeFiltering.Select(p,c))) };
             window.Width=1120;window.Height=760;window.Content=oldControl;oldControl.ShowPage(2,"左相机");await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            Check(!Descendants(oldControl).OfType<TextBox>().Any(t=>AutomationProperties.GetName(t).EndsWith("/device.port")) &&
+            Check(!Descendants(oldControl).OfType<TextBox>().Any(t=>AutomationProperties.GetAutomationId(t).EndsWith("/device.port")) &&
                 !Descendants(oldControl).OfType<ComboBox>().Any(t=>AutomationProperties.GetAutomationId(t)==oldDraft.Readers[0].InstanceId+"/Provider"),
                 "legacy TCP candidate shows one explicit SDK transition, never a blank selector or TCP port mixed with the SDK");
             Check(oldDraft.Readers[0].CaptureRaw().Original?.Implementation=="tcp-line" && oldDraft.Readers[0].Provider?.Implementation!="hikrobot-mvs-reader",

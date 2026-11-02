@@ -36,8 +36,6 @@ public sealed partial class ParameterSettingsControl
         AutomationProperties.SetName(address, "当前运行地址");
         var notice = Text(""); notice.FontSize = UiTypography.Label; notice.Margin = new(0, 8, 0, 0);
         var main = new StackPanel(); main.Children.Add(summary); main.Children.Add(address); main.Children.Add(notice); row.Children.Add(main);
-        var details = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, Padding = new(0), FontSize = UiTypography.Label };
-        page.Technical.Children.Add(details);
         void Update()
         {
             var state = RuntimeContext?.ParameterConnection(target) ?? new ParameterConnectionPresentation("尚未启动", "", "", "这里修改的是待保存的设置；连接状态在软件启动后查看。", "neutral");
@@ -47,7 +45,6 @@ public sealed partial class ParameterSettingsControl
             address.Visibility = state.Address.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             notice.Text = state.Notice; notice.Visibility = state.Notice.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             notice.Foreground = Brush(state.Tone == "warning" ? "#915300" : "#5A6878");
-            details.Text = "运行版本与证据\n" + state.Details; details.Visibility = state.Details.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             diagnostic.IsEnabled = RuntimeContext is not null && DiagnosticsRequested is not null;
             diagnostic.ToolTip = diagnostic.IsEnabled ? "查看当前运行中的连接状态，不会发送业务请求。" : "软件启动后才能查看连接状态。";
             ToolTipService.SetShowOnDisabled(diagnostic, true);

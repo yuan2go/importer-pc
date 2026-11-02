@@ -35,7 +35,7 @@ internal sealed partial class StationDebugControl
             finally
             {
                 try { await Inspection.StopCameraInspectionCaptureAsync(batchSession, "连续试扫结束，保持隔离等待清场", CancellationToken.None); }
-                catch (Exception error) { vm.Message = "试扫停止结果未确认，隔离保留：" + DiagnosticText.Protect(error.Message); }
+                catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "试扫停止结果未确认，隔离保留；请核对原调试状态。"); }
             }
             summary.Text += frames.Count == 0 ? "\n没有可计算的有效样本。" : $"\n样本 {frames.Count} 帧 · 有码 {frames.Count(f => f.Symbols.Length > 0)} 帧 · 有码帧占比 {100d * frames.Count(f => f.Symbols.Length > 0) / frames.Count:F1}% · 平均解码 {frames.Average(f => f.DecodeMilliseconds):F1} ms。未恢复供包，请确认清场。";
         });

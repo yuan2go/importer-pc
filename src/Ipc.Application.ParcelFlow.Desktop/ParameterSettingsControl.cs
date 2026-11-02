@@ -216,7 +216,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (control is ComboBox) control.MaxWidth = 400;
         }
         // Preserve stable automation paths used by support and native verification.
-        AutomationProperties.SetName(control, path); AutomationProperties.SetAutomationId(control, path);
+        AutomationProperties.SetName(control, label.TrimEnd(' ', '*')); AutomationProperties.SetAutomationId(control, path);
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
         // Routine schema hints remain available to assistive technology and in
         // technical information, without adding a repeated line to every field.
@@ -298,7 +298,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         {
             var error = Text(""); error.Visibility = Visibility.Collapsed; page.Technical.Children.Add(error);
             locations[path] = new(page, text, error, label, detail ?? "");
-            AutomationProperties.SetName(text, path);
+            AutomationProperties.SetName(text, label); AutomationProperties.SetAutomationId(text, path);
         }
     }
     void Render()
@@ -353,10 +353,10 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (found)
             {
                 location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B42318")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + message; location.Error.Visibility = Visibility.Visible;
-                location.Page.Diagnostic.Text += issue.Path + " · " + Ipc.Platform.DiagnosticText.Protect(issue.Message) + "\n";
+                location.Page.Diagnostic.Text += location.Label.TrimEnd(' ', '*') + "：" + message + "\n";
                 button.Click += (_, _) => NavigateTo(issue.Path);
             }
-            else if (reviewPage is not null) reviewPage.Diagnostic.Text += Ipc.Platform.DiagnosticText.Protect(issue.Message) + "\n";
+            else if (reviewPage is not null) reviewPage.Diagnostic.Text += message + "\n";
             errors.Children.Add(found ? button : Text(context + "\n" + message));
         }
         RefreshStepBar();

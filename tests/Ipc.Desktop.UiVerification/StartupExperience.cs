@@ -54,7 +54,7 @@ static partial class Program
         var legacyControl = new ParameterSettingsControl { FirstConfiguration = true, Model = legacyEditor.CreateParameterEditor((p, c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c))) };
         var legacyWindow = new Window { Content = legacyControl, Width = 960, Height = 680 }; legacyWindow.Show(); legacyControl.ShowCategory(3); legacyWindow.UpdateLayout();
         var legacyService = legacyControl.Model.Components.Single(c => c.Kind == "integration");
-        var selector = Descendants(legacyControl).OfType<ComboBox>().Single(c => AutomationProperties.GetName(c) == legacyService.InstanceId + "/Provider");
+        var selector = Descendants(legacyControl).OfType<ComboBox>().Single(c => AutomationProperties.GetAutomationId(c) == legacyService.InstanceId + "/Provider");
         // The catalog retains frozen legacy bindings alongside the current version.
         // Select one exact descriptor, rather than assuming display labels are identities.
         var currentRcs = catalog.Providers.Where(p => p.Implementation == "sportmaster-rcs").MaxBy(p => Version.Parse(p.Version))!;
@@ -63,7 +63,7 @@ static partial class Program
         legacyWindow.UpdateLayout();
         Check(legacyService.ProviderChangePending && legacyService.Provider != currentRcs, "selecting another service requires an explicit parameter reset decision");
         Descendants(legacyControl).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == legacyService.InstanceId + "/ApplyProviderChange").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        Check(legacyControl.Model.Components.Single(c => c.Kind == "integration").Provider == currentRcs && Descendants(legacyControl).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == legacyService.InstanceId + "/Target" && x.IsVisible), "current service selection applies after explicit reset while station identity is preserved");
+        Check(legacyControl.Model.Components.Single(c => c.Kind == "integration").Provider == currentRcs && Descendants(legacyControl).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == legacyService.InstanceId + "/Target" && x.IsVisible), "current service selection applies after explicit reset while station identity is preserved");
         legacyWindow.Close();
         var original = new StartupConfigurationDraft(reference, catalog);
         var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", QueueCapacity = 71 }), reference, original, catalog);
@@ -79,13 +79,13 @@ static partial class Program
         first.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         editor.Model!.Policy.QueueCapacity = "bad"; Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
-        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused); i++) await Task.Delay(10);
-        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
+        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused); i++) await Task.Delay(10);
+        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
         editor.Model!.Policy.QueueCapacity = "64"; editor.Model!.Policy.BarcodePattern = "["; editor.ShowReview();
         first.Activate(); Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
-        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
-        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + editor.SelectedCategory + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetName(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
+        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
+        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "BarcodePattern" && x.IsKeyboardFocused && x.Text == "["), "full candidate regex failure also returns to its field without erasing input; step=" + editor.SelectedCategory + "; active=" + first.IsActive + "; state=" + Status(first) + "; issues=" + string.Join("|", editor.Model.Issues.Select(x => x.Path)) + "; input=" + string.Join("|", Descendants(first).OfType<TextBox>().Where(x => AutomationProperties.GetAutomationId(x) == "BarcodePattern").Select(x => x.Text + "/focus=" + x.IsKeyboardFocused)));
         editor.Model!.Policy.BarcodePattern = ""; editor.ShowReview();
         var preservedPolicy = editor.Model!.Policy; var reauthenticationPassword = "Reauthentication-" + Guid.NewGuid().ToString("N");
         LocalManagementMode.ForRoot(launch.DataRoot).ChangePassword(reauthenticationPassword);

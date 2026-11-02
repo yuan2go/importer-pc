@@ -110,7 +110,7 @@ static partial class Program
             var editor = Descendants(host).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(1, "接收与等待限制");
             window.UpdateLayout();
             vm.StructuredPolicy!.TimeoutMs = "28000"; var draft = vm.StructuredPolicy;
-            var input = Descendants(editor).OfType<TextBox>().Single(b => System.Windows.Automation.AutomationProperties.GetName(b) == "TimeoutMs");
+            var input = Descendants(editor).OfType<TextBox>().Single(b => System.Windows.Automation.AutomationProperties.GetAutomationId(b) == "TimeoutMs");
             input.BringIntoView(); input.Focus(); input.SelectAll(); await vm.RefreshAsync();
             Check(input.IsKeyboardFocused && input.SelectedText == input.Text, ui + " polling preserves field focus and selection");
             Check(input.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)), ui + " native keyboard traversal remains available");

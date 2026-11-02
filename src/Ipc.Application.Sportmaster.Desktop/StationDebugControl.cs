@@ -350,13 +350,13 @@ internal sealed partial class StationDebugControl : UserControl
     {
         try { await CloseScanScopeAsync(session, round); }
         catch (CameraReadRoundConflictException) { /* Another window owns a newer round; leave it intact. */ }
-        catch (Exception error) { vm.Message = "上次调试尚未结束，请求保留：" + error.Message; }
+        catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "上次调试尚未结束，请求与隔离保留；请核对原调试状态。"); }
     }
     async Task CloseOwnedManualAsync(string round, Guid runtime)
     {
         try { await vm.ServiceAsync(() => Rounds.CloseUnsentDebugRoundAsync(new(Wire.Id(), runtime, round), CancellationToken.None)); }
         catch (CameraReadRoundConflictException) { /* A newer round belongs to another explicit command. */ }
-        catch (Exception error) { vm.Message = "原人工调试请求保留：" + error.Message; }
+        catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "人工调试退出未完成，原请求保留；请核对原调试状态。"); }
     }
     void Deactivate()
     {

@@ -105,7 +105,7 @@ static partial class Program
         {
             reader.Provider = readerProvider with { Parameters = [field] };
             page.NavigateToParameter(reader.InstanceId + "/input.labels"); page.UpdateLayout(); await Dispatcher.Yield();
-            var editor = Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetName(t) == reader.InstanceId + "/input.labels");
+            var editor = Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/input.labels");
             var json = Wire.Encode(new[] { new string('a', 256), new string('b', 150), "", "quote\"slash\\" });
             editor.Text = json; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
             check(editor.AcceptsReturn && editor.MaxLength >= json.Length && reader.Parameters.Single().Value == json,
@@ -114,11 +114,11 @@ static partial class Program
             page.NavigateToParameter(inventory.InstanceId + "/synthetic.inventory"); page.UpdateLayout(); await Dispatcher.Yield();
             check(reader.Parameters.Single().Value == json && inventory.Parameters.Single().Field.Key == "synthetic.inventory", "reader and inventory objects retain independent parameter values");
             page.NavigateToParameter(reader.InstanceId + "/input.labels"); page.UpdateLayout(); await Dispatcher.Yield();
-            check(Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetName(t) == reader.InstanceId + "/input.labels").Text == json,
+            check(Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/input.labels").Text == json,
                 "native object return and another provider change preserve the reader list value");
             reader.Provider = readerProvider with { Parameters = [field with { ReadOnly = true }] };
             page.NavigateToParameter(reader.InstanceId + "/input.labels"); page.UpdateLayout(); await Dispatcher.Yield();
-            var readOnly = Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetName(t) == reader.InstanceId + "/input.labels");
+            var readOnly = Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/input.labels");
             check(readOnly.IsReadOnly && !readOnly.IsEnabled && readOnly.Text == "[]", "native list defaults and schema read-only protection survive provider rerender");
         }
         finally

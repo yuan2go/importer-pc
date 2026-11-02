@@ -131,9 +131,9 @@ public sealed partial class ParameterSettingsControl
                 model.Report(Ipc.Platform.DiagnosticText.Protect(error.Message));
                 if (currentPage is { } page)
                 {
-                    page.Summary.Text = error is OperationCanceledException ? "检查已取消，输入保留。" : "当前页检查未完成，请查看诊断详情后重试。";
+                    page.Summary.Text = error is OperationCanceledException ? "检查已取消，输入保留。" : "当前页检查未完成，输入保留；请修正标出的字段后重试，仍失败时导出诊断记录。";
                     page.Summary.Visibility = Visibility.Visible;
-                    page.Diagnostic.Text += "\n" + Ipc.Platform.DiagnosticText.Protect(error.ToString());
+                    page.Diagnostic.Text += "\n" + ChineseInterfaceText.ParameterMessage(error.Message);
                 }
                 PageValidationFailed?.Invoke(this, EventArgs.Empty);
             }

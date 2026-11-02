@@ -48,7 +48,7 @@ static partial class Program
         var model = editor.Model!;
         Check(ChineseInterfaceText.ParameterMessage("") == "", "empty feedback cannot become a fabricated parameter error");
         Check(!ChineseInterfaceText.ParameterMessage("rcs.one · quantity: required").Contains("quantity") && !ChineseInterfaceText.ParameterMessage("request-id-count 参数超出范围").Contains("request-id-count"), "parameter failure banners suppress raw schema keys as well as field-level errors");
-        TextBox Box(string path) { window.UpdateLayout(); return Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == path); }
+        TextBox Box(string path) { window.UpdateLayout(); return Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == path); }
         var directory = Descendants(editor).OfType<ListBox>().Single(l => AutomationProperties.GetName(l) == "设置目录");
         editor.ShowPage(1, "条码筛选"); await Flush(); Box("BarcodePattern").Text = "["; await Flush();
         Check(!await editor.MoveNextAsync() && editor.CurrentPageTitle == "条码筛选" && model.Issues.Any(i => i.Path == "BarcodePattern"), "invalid actual regex blocks this leaf page");
@@ -92,7 +92,7 @@ static partial class Program
         var slow = new ParameterSettingsControl { FirstConfiguration = true, Model = slowModel };
         var child = new Window { Owner = window, Content = slow, Width = 800, Height = 600 }; child.Show(); slow.ShowPage(1, "条码筛选"); child.UpdateLayout();
         var pending = slow.MoveNextAsync(); await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Descendants(slow).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "BarcodePattern").Text = "^123$";
+        Descendants(slow).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "BarcodePattern").Text = "^123$";
         release.SetResult(BarcodeFiltering.Select(new("", null), ["__format_check__"]));
         Check(!await pending && slow.CurrentPageTitle == "条码筛选", "a stale async regex result cannot advance after input changes");
         child.Close(); model.Policy.BarcodePattern = ""; model.ValidateFields(); editor.ShowPage(1, "条码筛选"); await Flush();
@@ -126,10 +126,13 @@ static partial class Program
         Check(rows.ActualHeight >= 72 && rows.TranslatePoint(new Point(), client).Y + rows.ActualHeight <= client.ActualHeight + 1, $"compact history result stays inside the native client: height={rows.ActualHeight}, top={rows.TranslatePoint(new Point(), client).Y}, client={client.ActualHeight}");
         var firstRow = Descendants(rows).OfType<DataGridRow>().OrderBy(r => r.GetIndex()).First();
         Check(firstRow.ActualHeight >= 32 && firstRow.TranslatePoint(new Point(), rows).Y + firstRow.ActualHeight <= rows.ActualHeight, "compact history keeps a complete header and at least one full result row");
+        ((Expander)history.FindName("AllHistoryFilters")).IsExpanded = true;
         ((Expander)history.FindName("HistoryFilters")).IsExpanded = true; window.UpdateLayout(); CaptureInternal(evidence, "history-filters-800", client, lines);
         Check(((ScrollViewer)history.FindName("HistoryFilterScroll")).ScrollableHeight > 0 && rows.ActualHeight >= 72, "long filters scroll locally while retaining query actions and results");
-        await SetClient(window, 1366, 768); window.ShowPositionDiagnostics(vm.Right); window.UpdateLayout(); CaptureInternal(evidence, "diagnostics-1366", client, lines);
-        Check(Descendants(window).OfType<TextBlock>().Any(t => t.Text == "右相机") && Descendants(window).OfType<TextBlock>().Any(t => t.Text == vm.RightConnectionDiagnosis), "diagnostics labels the selected camera and binds its actual human-readable state");
+        await SetClient(window, 1366, 768); window.ShowPositionDiagnostics(vm.Right);
+        for (var i = 0; i < 100 && !Descendants(window).OfType<TextBlock>().Any(t => t.Text == "当前相机来源未提供采集诊断。"); i++) await Task.Delay(20);
+        window.UpdateLayout(); CaptureInternal(evidence, "diagnostics-1366", client, lines);
+        Check(Descendants(window).OfType<TextBlock>().Any(t => t.Text == "右相机") && Descendants(window).OfType<TextBlock>().Any(t => t.Text == "当前相机来源未提供采集诊断。"), "diagnostics labels the selected camera and explicitly reports this fixture's unsupported acquisition diagnostics rather than inventing frame health");
         await SetClient(window, 800, 420); CaptureInternal(evidence, "diagnostics-800", client, lines);
         Click(window, "返回作业"); await vm.RefreshAsync();
         Check(ids == (vm.Left.Operation!.Id, vm.Right.Operation!.Id) && calls == (factory.Resolves, factory.Queries), "query and diagnostic navigation retain both original operation identities and issue no new business calls");
@@ -180,8 +183,8 @@ static partial class Program
         // content assertion after a bounded wait for that actual presentation.
         for (var i = 0; i < 250 && !Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text); i++) await Task.Delay(20);
         Check(Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn).Text.Contains(entry.Text), "selected row detail preserves the exact original record");
-        Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词").Text = "changed"; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出")).IsExpanded = true; window.UpdateLayout();
-        Check(grid.Items.Count == 0 && !Button("导出筛选结果…").IsEnabled && !Button("下一页").IsEnabled, "changed input invalidates the prior snapshot before export or paging");
+        Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "日志关键词").Text = "changed"; Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选")).IsExpanded = true; window.UpdateLayout();
+        Check(grid.Items.Count == 0 && !Button("导出…").IsEnabled && !Button("下一页").IsEnabled, "changed input invalidates the prior snapshot before export or paging");
         window.Width = 800 + window.ActualWidth - control.ActualWidth;
         window.Height = 420 + window.ActualHeight - control.ActualHeight;
         await Flush();
@@ -196,8 +199,11 @@ static partial class Program
         }
         void CheckFilters(string transition)
         {
-            Check(keyword.IsVisible && level.IsVisible && !details.IsExpanded && !details.IsVisible && keyword.Text == "changed",
-                transition + " restores keyword/level controls and draft after clearing detail");
+            var advanced = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选"));
+            Check(keyword.IsVisible && advanced.IsVisible && !details.IsExpanded && !details.IsVisible && keyword.Text == "changed",
+                transition + " restores keyword, more-filter access and draft after clearing detail");
+            advanced.IsExpanded = true; window.UpdateLayout();
+            Check(level.IsVisible, transition + " keeps the existing level field reachable through the current more-filter disclosure");
         }
         Click(window, "查询"); await Settled(); await ExpandDetail();
         CaptureInternal(evidence, "logs-compact-detail-before-query", control, lines);
@@ -208,7 +214,7 @@ static partial class Program
         Check(grid.Items.Count == 0 && !Button("下一页").IsEnabled, "restored filters retain snapshot invalidation");
         Click(window, "查询"); await Settled(); await ExpandDetail();
         window.Content = null; await Flush(); window.Content = control; await Flush(); CheckFilters("unload and return");
-        Check(grid.Items.Count == 0 && !Button("导出筛选结果…").IsEnabled, "return requires a fresh query before export");
+        Check(grid.Items.Count == 0 && !Button("导出…").IsEnabled, "return requires a fresh query before export");
         window.Close();
     }
 }

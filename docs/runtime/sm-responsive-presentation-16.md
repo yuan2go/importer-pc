@@ -4,7 +4,7 @@
 
 # SM即时反馈与主动呈现16
 
-2026-11-01，承接PR167及产品/证据源 `5aa8c890`，按[工作包](../work-packages/WP-IPC-SM-RESPONSIVE-PRESENTATION-16.md)实施。用户最新要求明确废止15的同码1500ms旧格口保留策略；15原始指南字节见[归档](../archive/pre-sm-responsive-presentation-16/manifest.json)，形成时结果不改写。当前产品仍为内置MVS＋进程内软件识别和内置RCS，无PLC。
+2026-11-01，承接PR167及产品/证据源 `5aa8c890`，按[工作包](../archive/work-packages/WP-IPC-SM-RESPONSIVE-PRESENTATION-16.md)实施。用户最新要求明确废止15的同码1500ms旧格口保留策略；15原始指南字节见[归档](../archive/pre-sm-responsive-presentation-16/manifest.json)，形成时结果不改写。当前产品仍为内置MVS＋进程内软件识别和内置RCS，无PLC。
 
 ## 当前行为与责任
 

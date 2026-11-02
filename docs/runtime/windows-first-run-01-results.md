@@ -9,7 +9,7 @@
 - 原未提权进程在安装退出后完整读回策略，再进入既有数据锁/配置/SQLite流程，自动创建默认`%LOCALAPPDATA%\ImporterPc\data`。显式旧根不替换；已有策略不重写、不自动换账户。坏策略/不安全ACL/丢策略但有租约或扩展材料均保留并拒绝。
 - UAC deny-only管理员成员允许日常启动；启用管理员权限、服务账户或不匹配SID仍拒绝。只读`runtime-check`/Diagnose及直接StartAsync门禁保留，Run/Console复用`runtime-prepare`。取消UAC后可重启重试；安装并发由保护目录内保留的独占锁串行化，临时文件落盘后无覆盖发布。
 
-实现：[MachineRuntimeSetup](../../src/Ipc.Platform/MachineRuntimeSetup.cs)、[ParcelRuntimeSetup](../../src/Ipc.Assembly/ParcelRuntimeSetup.cs)、[启动脚本](../../scripts/application.ps1)。当前操作见[Windows指南](windows-application-delivery.md#首次启动与自动配置)，设计授权与替代关系见[工作包](../work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)。未修改WPF页面/布局/原HTML。
+实现：[MachineRuntimeSetup](../../src/Ipc.Platform/MachineRuntimeSetup.cs)、[ParcelRuntimeSetup](../../src/Ipc.Assembly/ParcelRuntimeSetup.cs)、[启动脚本](../../scripts/application.ps1)。当前操作见[Windows指南](windows-application-delivery.md#首次启动与自动配置)，设计授权与替代关系见[工作包](../archive/work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)。未修改WPF页面/布局/原HTML。
 
 ## 验证事实
 

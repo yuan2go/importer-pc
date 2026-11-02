@@ -6,7 +6,7 @@
 
 **参考工程整改及定向验证PASS；原始PDF归档BLOCKED；Windows实际NOT_RUN；真实SDK/协议/现场BLOCKED。** 不是旧现场迁移、客户批准或工业现场放行。独立审查原REPORT.md/FINDINGS.json身份见[输入登记](../reviews/architecture-quality-audit-01/input-identity.json)；未取得PDF，未转换Markdown冒充原件，也未直接将业务变更写入main。
 
-[现行运行/维护/兼容](architecture-quality-closure-01.md) · [编码前设计](../design/architecture-quality-closure-01.md) · [工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md) · [定向证据](evidence/architecture-quality-closure-01/README.md)。
+[现行运行/维护/兼容](architecture-quality-closure-01.md) · [编码前设计](../design/architecture-quality-closure-01.md) · [工作包](../archive/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md) · [定向证据](evidence/architecture-quality-closure-01/README.md)。
 
 ## 整改及固定源码证据
 

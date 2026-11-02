@@ -1,4 +1,4 @@
-> 2026-10-27 供包员主页与维护诊断分层按 [OPERATOR-WORKSTATION-01](../work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md) 纠偏；本页冲突呈现要求保留历史范围，业务守卫与原验证身份不变。
+> 2026-10-27 供包员主页与维护诊断分层按 [OPERATOR-WORKSTATION-01](../archive/work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md) 纠偏；本页冲突呈现要求保留历史范围，业务守卫与原验证身份不变。
 
 # 作业状态、管理入口与日志双视图
 

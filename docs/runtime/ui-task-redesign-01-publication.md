@@ -6,7 +6,7 @@
 
 - [完整设计入口](../ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)：45个命名界面状态，48张独立PNG、可点击原型、图集、完整交接、58项字段/状态与39项操作迁移、源码及原模拟QA。
 - [最新代码分析与实施裁决](../design/sportmaster-task-redesign-01.md)：真实参数、对象/生命周期、保存与确认、诊断能力和已实现基座的具体继承关系。
-- [UIR-00～06工作包](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)与[精简Codex提示](../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)：要求工业级完整实现、先读文档和清理过期指引、仅做必要验证。
+- [UIR-00～06工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)与[精简Codex提示](../archive/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)：要求工业级完整实现、先读文档和清理过期指引、仅做必要验证。
 - README、INDEX、AGENTS和UI STATUS改为单一当前UI目标；旧v1.1入口标明历史。清理前6份入口[原字节及哈希](../archive/pre-ui-task-redesign-20261020/inventory.json)保留，原设计/REQ/BR/CAPI/D/RV、旧失败和发行物不倒写。
 
 **95是原交付目录总文件数，不是95份独立设计。** 它含48张图、9个主文件/说明、11个源码/字体/许可、13个迁移/来源材料、12个QA记录、1个图像索引、1个重复ZIP。仓库增补的索引、分析和归档包装不增加设计数量。

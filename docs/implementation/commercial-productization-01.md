@@ -3,7 +3,7 @@
 > 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../runtime/commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。
 状态：**待实施设计**。静态核对基线为 `b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5`（2026-10-19）。本文没有修改业务代码，没有将代码审阅、历史测试或设计要求写成当前运行 PASS。执行时先更新到实际最新 main，再复核本文差额。
 
-范围和交付项以 [COMMERCIAL-PRODUCTIZATION-01 工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)为准，用户流程和产品规则见[设计说明](../design/commercial-productization-01.md)，必要测试与环境边界见[验收计划](../runtime/validation/commercial-productization-01.md)。本文负责说明如何复用现有实现、在哪一层改动、如何持久化与恢复，以及什么事实才能推进下一阶段；类型名和项目拆分由实施者按现有工程合理确定。
+范围和交付项以 [COMMERCIAL-PRODUCTIZATION-01 工作包](../archive/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)为准，用户流程和产品规则见[设计说明](../design/commercial-productization-01.md)，必要测试与环境边界见[验收计划](../runtime/validation/commercial-productization-01.md)。本文负责说明如何复用现有实现、在哪一层改动、如何持久化与恢复，以及什么事实才能推进下一阶段；类型名和项目拆分由实施者按现有工程合理确定。
 
 > 2026-10-20 安装交付范围已收敛为普通人工安装包和必要说明，详见[范围收敛与检查结论](../runtime/installation-delivery-scope-01.md)。本次范围修订优先于下文旧计划中相应的批量安装要求；历史实现和验证记录保持原身份。
 

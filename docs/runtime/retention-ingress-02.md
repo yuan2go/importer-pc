@@ -2,7 +2,7 @@
 
 2026-10-25整合PR104/main及获授权完整重验见[续验记录](validation/retention-ingress-full-retest-03.md)。原分支介质、组件和模拟验证各守原身份，最终受保护结果与CI不能借用旧提交。
 
-对应 [RETENTION-INGRESS-02](../work-packages/WP-IPC-RETENTION-INGRESS-02.md)，继承 PR103/main `c425435`。原完整规模失败和 PR102 查询修复仍各守原身份。
+对应 [RETENTION-INGRESS-02](../archive/work-packages/WP-IPC-RETENTION-INGRESS-02.md)，继承 PR103/main `c425435`。原完整规模失败和 PR102 查询修复仍各守原身份。
 
 `ParcelHistoryRetention.ExpiredInputPageSql` 对外层 `parcel_ingress` 明确 `NOT INDEXED`，保留 SQLite rowid B-tree 寻址，避免 `(state,position,received_at)` 索引导致逐页筛选并临时排序。所有 state、completed_at、Observation/Measurement coalesce、保留 owner/永久退役子查询及顺序/LIMIT 原样继承。子查询继续使用唯一索引。游标只存在于本次独占维护连接，提交后推进；无并发输入/VACUUM，恢复时重新扫描，永久退役身份防复活。未命中保护行的顺序扫描最多经过一次；没有 OFFSET，也不缓存可变安全决定。
 

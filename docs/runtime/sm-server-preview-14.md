@@ -1,6 +1,6 @@
 # 在线相机实时预览调度修复14
 
-2026-11-01，基线 main `3d7e0309`。[工作包](../work-packages/WP-IPC-SM-SERVER-PREVIEW-14.md)限定范围；修改前索引原字节见 [归档](../archive/pre-sm-server-preview-14/manifest.json)。历史11/12/13、D/RV和原安装包继续保持原身份。
+2026-11-01，基线 main `3d7e0309`。[工作包](../archive/work-packages/WP-IPC-SM-SERVER-PREVIEW-14.md)限定范围；修改前索引原字节见 [归档](../archive/pre-sm-server-preview-14/manifest.json)。历史11/12/13、D/RV和原安装包继续保持原身份。
 
 ## 发现与修复
 

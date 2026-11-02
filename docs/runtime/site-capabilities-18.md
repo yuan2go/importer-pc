@@ -1,6 +1,6 @@
 # 三场地实际能力与可选功能 · 18
 
-基线 main **d3a757d6314a2d690bcfc4e7763cfd4849b97319**，PR17已合并。用户开场“仅supply/inspection、称重/PLC仅预留”的描述对应较旧版本，不能用于当前能力判断。[工作包](../work-packages/WP-IPC-SITE-CAPABILITIES-18.md)与[原字节](../archive/pre-site-capabilities-18/README.md)。最终源SHA、执行日志及状态见[18结果](site-capabilities-18-results.md)。
+基线 main **d3a757d6314a2d690bcfc4e7763cfd4849b97319**，PR17已合并。用户开场“仅supply/inspection、称重/PLC仅预留”的描述对应较旧版本，不能用于当前能力判断。[工作包](../archive/work-packages/WP-IPC-SITE-CAPABILITIES-18.md)与[原字节](../archive/pre-site-capabilities-18/README.md)。最终源SHA、执行日志及状态见[18结果](site-capabilities-18-results.md)。
 
 ## 源码能力矩阵
 

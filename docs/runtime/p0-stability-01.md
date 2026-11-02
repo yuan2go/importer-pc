@@ -4,7 +4,7 @@
 
 # P0稳定性修复运行说明
 
-交付基线为 main `a8cd431456f73e83040f75a0c5e3cc1423440d1b`（PR109后）；F0原基线3a5b1d13的失败/通过记录各守原身份。范围见[工作包](../work-packages/WP-IPC-P0-STABILITY-01.md)，本次结果见[问题卡](validation/p0-stability-01.md)。
+交付基线为 main `a8cd431456f73e83040f75a0c5e3cc1423440d1b`（PR109后）；F0原基线3a5b1d13的失败/通过记录各守原身份。范围见[工作包](../archive/work-packages/WP-IPC-P0-STABILITY-01.md)，本次结果见[问题卡](validation/p0-stability-01.md)。
 
 ## ST01 连接分别延后
 

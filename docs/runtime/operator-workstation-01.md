@@ -1,6 +1,6 @@
 # 供包员主页与维护诊断 OPERATOR-WORKSTATION-01
 
-2026-10-27。范围与替代关系见[工作包](../work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md)。基于 main `d0a063137da19ba9e5dbfeaaec7a0bee326628e8`；不修改并行统一版本工作，不代表新安装包、真实设备或现场验收。用户原截图不入库。
+2026-10-27。范围与替代关系见[工作包](../archive/work-packages/WP-IPC-OPERATOR-WORKSTATION-01.md)。基于 main `d0a063137da19ba9e5dbfeaaec7a0bee326628e8`；不修改并行统一版本工作，不代表新安装包、真实设备或现场验收。用户原截图不入库。
 
 ## 当前行为
 

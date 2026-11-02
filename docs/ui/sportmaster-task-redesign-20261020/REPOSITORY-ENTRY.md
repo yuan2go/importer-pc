@@ -4,7 +4,7 @@
 
 设计交付 V1 · 2026-10-20 · C#/WPF 目标。**当前设计已更新为 [V2](../sportmaster-task-redesign-v2-20261020/README.md)：四类参数配置、五步独立首配、每位相机/扫描/任务三组信息。请从 V2 实施，不再照搬本目录的侧栏“首次配置”、旧设置分类或演示字段。**
 
-本目录保留 V1 原型、高清图、交接、源码、原 README、MANIFEST、ZIP 分片及历史 QA 的原字节与哈希；本文件是仓库后来新增的阅读入口，不属于原95文件的原始载荷。V1与V2原件均为设计交付；最新main另有[PARAM-01当前实施与历史快照](../../runtime/parameter-refactor-01.md)、心跳及单窗口安装，已有代码应复用，但不据此宣布完整V2 WPF或真实设备验收通过。下文第3节仅记录V1形成时事实，不能覆盖最新驱动/心跳能力。当前源码差距及下一步见 [实施裁决](../../design/sportmaster-task-redesign-01.md)、[UIR-00～06](../../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)和 [精简 Codex 提示](../../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。
+本目录保留 V1 原型、高清图、交接、源码、原 README、MANIFEST、ZIP 分片及历史 QA 的原字节与哈希；本文件是仓库后来新增的阅读入口，不属于原95文件的原始载荷。V1与V2原件均为设计交付；最新main另有[PARAM-01当前实施与历史快照](../../runtime/parameter-refactor-01.md)、心跳及单窗口安装，已有代码应复用，但不据此宣布完整V2 WPF或真实设备验收通过。下文第3节仅记录V1形成时事实，不能覆盖最新驱动/心跳能力。当前源码差距及下一步见 [实施裁决](../../design/sportmaster-task-redesign-01.md)、[UIR-00～06](../../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)和 [精简 Codex 提示](../../archive/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。
 
 ## 1. 查看V1历史产物
 

@@ -4,7 +4,7 @@
 
 **本轮授权的核心工程完成，Mac参考验证PASS，WPF交叉构建PASS；Windows实际验收统一延期，WINDOWS_NOT_RUN；真实SDK/WCS/现场资格BLOCKED。** 不以PR状态、交叉构建或HTML图关闭Windows/历史RV。
 
-基线及冻结复核main均为`feed6e9ce79449e48c667c17e2671939a86fb588`，相对分析基准无增量，开工/冻结均无并行开放PR。隔离worktree、分支`codex/arch-extension-closure-13`；原main工作区的未跟踪用户交付物与受限客户资料原样保留，没有进入本分支。用户原始执行要求[逐字保存](../work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)，[工作包及AC映射](../work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)明确未收到额外独立附件，不冒称读取未取得文件。
+基线及冻结复核main均为`feed6e9ce79449e48c667c17e2671939a86fb588`，相对分析基准无增量，开工/冻结均无并行开放PR。隔离worktree、分支`codex/arch-extension-closure-13`；原main工作区的未跟踪用户交付物与受限客户资料原样保留，没有进入本分支。用户原始执行要求[逐字保存](../archive/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)，[工作包及AC映射](../archive/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)明确未收到额外独立附件，不冒称读取未取得文件。
 
 前置提交`2c04d69`在业务修改前保存[原当前指引/manifest原字节](../archive/pre-arch-extension-closure-13/README.md)，更新职责和Windows延期范围；12工作包/报告/checks/原始证据、D/RV、原UI/HTML/tokens均未倒写。P2原审查见[PR11原始回读](evidence/arch-extension-closure-13/pr11-review.json)。Windows延期来自用户决定，本轮没有寻找VM/runner、开通环境或扩大OAuth权限。
 

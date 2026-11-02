@@ -143,9 +143,9 @@ Production保持NotReady是当前正确限制，不应为“做完下一阶段�
 
 ## 6. 下一阶段工作包及顺序
 
-1. **先执行 [WP-IPC-ENGINEERING-CLOSURE-07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)**：E-01～10按五个增量切片整改；不依赖完整SDK/WCS即可完成大部分代码。取得旧工程先核验继承，不重建第二套框架。
-2. **[WP-IPC-WINDOWS-VALIDATION-06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)**：独立维护W-01～06；环境可准备，最终UI验收依赖07相应整改及固定新包。此包已有编号，现补正式正文。
-3. **[WP-IPC-INTEGRATION-BOUNDARY-05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)**：B-01～06按能力接收/审批；可与工程整改同时准备资料，真实实现/联调依赖对应输入与授权。此包已有编号，现补正式正文。
+1. **先执行 [WP-IPC-ENGINEERING-CLOSURE-07](../archive/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)**：E-01～10按五个增量切片整改；不依赖完整SDK/WCS即可完成大部分代码。取得旧工程先核验继承，不重建第二套框架。
+2. **[WP-IPC-WINDOWS-VALIDATION-06](../archive/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)**：独立维护W-01～06；环境可准备，最终UI验收依赖07相应整改及固定新包。此包已有编号，现补正式正文。
+3. **[WP-IPC-INTEGRATION-BOUNDARY-05](../archive/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)**：B-01～06按能力接收/审批；可与工程整改同时准备资料，真实实现/联调依赖对应输入与授权。此包已有编号，现补正式正文。
 
 三个包不互相代替：工程整改不能关Windows格；Windows模拟运行不能解真实合同阻塞；D批准不能直接关闭RV。最先处理E-01/E-03/E-04/E-05，避免只做外观后把逻辑缺口送到Windows验收。
 

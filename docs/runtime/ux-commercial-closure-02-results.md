@@ -2,9 +2,9 @@
 
 # UX审查01 · WP-01～07工程交付
 
-**复审更正：工程尚有可修复差额，未完成商用放行。** 固定f1a655c参考发行已交付；PR39在1a34a1e复审发现紧凑登录/诊断不可达、完成反馈恢复旧消息及原生验证器错误对象断言，续修见[工作包](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md#2026-10-19-复审差额及续修设计)。下表已有证据按原源码读取，不能据其宣称WP-03/05全部闭合。本分支显式依赖PR37固定head，未合并PR37或PR38到main。缺商业组合、Windows环境、真实SDK/正式权威Unknown合同的工作仍明确受阻/待验；可选建议不算既定缺陷。
+**复审更正：工程尚有可修复差额，未完成商用放行。** 固定f1a655c参考发行已交付；PR39在1a34a1e复审发现紧凑登录/诊断不可达、完成反馈恢复旧消息及原生验证器错误对象断言，续修见[工作包](../archive/work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md#2026-10-19-复审差额及续修设计)。下表已有证据按原源码读取，不能据其宣称WP-03/05全部闭合。本分支显式依赖PR37固定head，未合并PR37或PR38到main。缺商业组合、Windows环境、真实SDK/正式权威Unknown合同的工作仍明确受阻/待验；可选建议不算既定缺陷。
 
-[工作包及UX/UXC映射](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md) · [固定证据](evidence/ux-commercial-closure-02/README.md) · [参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c) · [产物hash](evidence/ux-commercial-closure-02/ARTIFACTS.json) · [商业输入账](ux-commercial-combination-02.json)。
+[工作包及UX/UXC映射](../archive/work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md) · [固定证据](evidence/ux-commercial-closure-02/README.md) · [参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c) · [产物hash](evidence/ux-commercial-closure-02/ARTIFACTS.json) · [商业输入账](ux-commercial-combination-02.json)。
 
 ## 身份和继承
 

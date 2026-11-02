@@ -1,6 +1,6 @@
 # 代码可靠性02 · 验证记录
 
-[工作包](../../work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md) · [运行与升级](../code-reliability-hardening-02.md) · [原始证据](../evidence/code-reliability-hardening-02/README.md)。起始/复核main为`1dfb676a2970f80e80d635303d84dcec75676cf5`；未吸收并行草案PR103、未修改原工作树附件。先提交文档替代/归档`c23997e`，实现`a9bd038`，组合版本同步后固定源码 **`51ad8500753c005e3bf98d5baf5c9699297d184c`**。
+[工作包](../../archive/work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md) · [运行与升级](../code-reliability-hardening-02.md) · [原始证据](../evidence/code-reliability-hardening-02/README.md)。起始/复核main为`1dfb676a2970f80e80d635303d84dcec75676cf5`；未吸收并行草案PR103、未修改原工作树附件。先提交文档替代/归档`c23997e`，实现`a9bd038`，组合版本同步后固定源码 **`51ad8500753c005e3bf98d5baf5c9699297d184c`**。
 
 ## 逐项处置
 

@@ -1,6 +1,6 @@
 # 现行合同收敛03
 
-基线 `c96cb382`，按[工作包](../work-packages/WP-IPC-CONTRACT-CONVERGENCE-03.md)继续核查02保留项。历史02报告、D/RV和验证记录不改写；CI停用，原工作区保留。
+基线 `c96cb382`，按[工作包](../archive/work-packages/WP-IPC-CONTRACT-CONVERGENCE-03.md)继续核查02保留项。历史02报告、D/RV和验证记录不改写；CI停用，原工作区保留。
 
 ## B1：部署记录兼容重载
 

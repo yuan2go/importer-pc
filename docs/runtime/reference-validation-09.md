@@ -2,7 +2,7 @@
 
 # REFERENCE-VALIDATION-09：纠偏实施与同版参考交付
 
-2026-10-16（Asia/Shanghai）；执行包[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。起点main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`；分支`codex/wp-ipc-audit-reconciliation-01`。**最终运行源码 SourceCommit：`a08082563bc13b2f146e71c4be9136f0469af9db`**；后续仅文档、manifest和PR回执，不把文档HEAD冒称二进制来源。
+2026-10-16（Asia/Shanghai）；执行包[AUDIT-RECONCILIATION-01](../archive/work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。起点main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`；分支`codex/wp-ipc-audit-reconciliation-01`。**最终运行源码 SourceCommit：`a08082563bc13b2f146e71c4be9136f0469af9db`**；后续仅文档、manifest和PR回执，不把文档HEAD冒称二进制来源。
 
 结果：08工程与09合成参考运行 **PASS**；10逐页源码落实与交叉构建 **STATIC_PATH_CLOSED / BUILD_PASS**；[Windows06](windows-06.md)环境 **BLOCKED**、W-01～06实际操作 **NOT_RUN**；[真实集成05](integration-05.md) B-01～06 **BLOCKED**。没有Windows客户端截图，未作现场/生产准入，D批准及历史RV-01～17不变。
 

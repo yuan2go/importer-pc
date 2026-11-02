@@ -1,6 +1,6 @@
 # 并行任务整合记录
 
-工作包：[WP-IPC-PARALLEL-TASK-INTEGRATION-01](../work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md)。2026-10-24，起始origin/main `016976c65a4ba3c9119f4cc0a131bae82283aae5`。本表为代码整合前固定范围，最终验证及远端回执另列。源分支保留，不改写共享历史。
+工作包：[WP-IPC-PARALLEL-TASK-INTEGRATION-01](../archive/work-packages/WP-IPC-PARALLEL-TASK-INTEGRATION-01.md)。2026-10-24，起始origin/main `016976c65a4ba3c9119f4cc0a131bae82283aae5`。本表为代码整合前固定范围，最终验证及远端回执另列。源分支保留，不改写共享历史。
 
 ## 任务清单与来源
 

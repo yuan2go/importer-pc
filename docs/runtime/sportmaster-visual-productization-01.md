@@ -1,4 +1,4 @@
-> 2026-10-27 查询布局与本地日期时间呈现以 [QUERY-FILTER-UX-01](../work-packages/WP-IPC-QUERY-FILTER-UX-01.md) 为准；旧默认 UTC 输入和长时间摘要保留历史范围，查询合同不变。
+> 2026-10-27 查询布局与本地日期时间呈现以 [QUERY-FILTER-UX-01](../archive/work-packages/WP-IPC-QUERY-FILTER-UX-01.md) 为准；旧默认 UTC 输入和长时间摘要保留历史范围，查询合同不变。
 
 # Sportmaster 原生视觉产品化
 

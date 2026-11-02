@@ -1,6 +1,6 @@
 # 代码可靠性02 · 当前增量设计
 
-适用于[工作包](../work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)，继承稳定性01/PR100及DB9。以下为现行增量约束；[实施](../runtime/code-reliability-hardening-02.md)和验证结果独立记录。
+适用于[工作包](../archive/work-packages/WP-IPC-CODE-RELIABILITY-HARDENING-02.md)，继承稳定性01/PR100及DB9。以下为现行增量约束；[实施](../runtime/code-reliability-hardening-02.md)和验证结果独立记录。
 
 1. 崩溃验证只在隔离Simulation目录用真实Application和SQLite。外部控制器掌握进程句柄，在明确屏障收到后终止整个被测进程；没有finally/Dispose清理。来源日志与模拟服务端接收账由控制器独立保留。恢复只核对/应用已有原件，不放开Unknown或新造请求。测试进程不是生产服务。
 2. 启动与停止共享所有权边界；停止先围栏并取消启动，等待实际启动终止，才关闭已构造资源。超时/取消不等于结束，不提前销毁连接、句柄、CTS或租约。重连及旧回调仍沿原Epoch/资源串行门；不增加业务状态权威。

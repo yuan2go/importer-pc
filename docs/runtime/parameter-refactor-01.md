@@ -1,16 +1,16 @@
 > 2026-11-02 当前任务导航、双相机/统一RCS、完整候选生效和查询边界见[SM-UI-SPEC-CLOSURE-24](../runtime/sm-ui-spec-closure-24.md)。旧页面摆放保留形成时范围；系统/业务/驱动/组件字段所有权、原请求及历史证据不变。
 
-> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
+> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../archive/work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
 
-> 当前SDK安装和RCS常量以[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SDK随SM安装，首配/日常共模直接编辑SDK；source和locale不再属于可编辑参数。
+> 当前SDK安装和RCS常量以[BUNDLED-MVS-CAMERA-01](../archive/work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SDK随SM安装，首配/日常共模直接编辑SDK；source和locale不再属于可编辑参数。
 
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../archive/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
 
-> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)。
+> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../archive/work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)。
 
-> 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](../work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
+> 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](../archive/work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
 
-> 历史实施记录：下文操作和字段表保留 PR73 时语境。当前增量入口为[参数继承裁决](../design/parameter-inheritance-02.md)与[现有工作包](../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)；原现场与发行身份不扩张。
+> 历史实施记录：下文操作和字段表保留 PR73 时语境。当前增量入口为[参数继承裁决](../design/parameter-inheritance-02.md)与[现有工作包](../archive/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)；原现场与发行身份不扩张。
 
 > 2026-10-21 当前执行入口：PARAM-UX-02 / WP-IPC-PARAMETER-SETTINGS-02，参数采用 V3，复用已合并 PR78/79。下文“当前、待实施、不测试”均保留原阶段语境；不再定义当前布局或禁止本轮原生验证。
 
@@ -18,7 +18,7 @@
 
 # PARAM-01 参数正式重构：实现与验证
 
-2026-10-20。参数及必要联动实现完成，受影响构建和下列定向验证已通过；真实设备、RCS 和现场验收仍待执行。本页是现行参数操作入口，原型和旧发行证据保留各自身份。设计边界见 [现行裁决](../design/parameter-refactor-01.md)，完整 UI 余项见 [工作包](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
+2026-10-20。参数及必要联动实现完成，受影响构建和下列定向验证已通过；真实设备、RCS 和现场验收仍待执行。本页是现行参数操作入口，原型和旧发行证据保留各自身份。设计边界见 [现行裁决](../design/parameter-refactor-01.md)，完整 UI 余项见 [工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
 
 ## 来源与并行保护
 

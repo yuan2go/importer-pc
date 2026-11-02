@@ -1,6 +1,6 @@
 # SM-CAMERA-STREAM-11 实现与验证
 
-2026-10-30，基准 main fa39f6bc，继承 PR160 的 103e30d6。范围和设计源哈希见[工作包](../work-packages/WP-IPC-SM-CAMERA-STREAM-11.md)。用户原 HTML、现场截图、相机身份及 SDK 文件不进入仓库。
+2026-10-30，基准 main fa39f6bc，继承 PR160 的 103e30d6。范围和设计源哈希见[工作包](../archive/work-packages/WP-IPC-SM-CAMERA-STREAM-11.md)。用户原 HTML、现场截图、相机身份及 SDK 文件不进入仓库。
 
 ## 问题判断与修复
 

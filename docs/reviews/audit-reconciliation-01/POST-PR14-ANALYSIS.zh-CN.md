@@ -5,7 +5,7 @@
 **任务：WP-IPC-AUDIT-RECONCILIATION-01｜2026-10-17 PDF发布及增量复核**  
 **核查 main：0096f3435cc5066a1b50836ef534ec24221a7e6f**  
 **FIX14 冻结实现：68cdc36f7821825c1ee9e53d866015be5ecf3044**  
-**采用 UI：SS-UI-VIS-001 v1.1；下一实施包：[OPERATION-CLOSURE-15](../../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)**
+**采用 UI：SS-UI-VIS-001 v1.1；下一实施包：[OPERATION-CLOSURE-15](../../archive/work-packages/WP-IPC-OPERATION-CLOSURE-15.md)**
 
 ## 1. 直接结论
 
@@ -138,7 +138,7 @@ R01已补输入版本保护，不能删掉来强行清空忙态AB。需要定义
 
 ## 7. 下一工作包与完成口径
 
-[15完整工作包](../../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)承接原PDF建议的UI补充范围和本轮新证据。它不是重复实施14，也不修改14的原AC要求。建议顺序：先当前基线/过期入口 → 接收责任与重启 → 同一事实模型的箱结果/恢复反馈 → 输入/维护与历史交互 → 必要升级旅程和同版客户端验收；按文件边界可并行。
+[15完整工作包](../../archive/work-packages/WP-IPC-OPERATION-CLOSURE-15.md)承接原PDF建议的UI补充范围和本轮新证据。它不是重复实施14，也不修改14的原AC要求。建议顺序：先当前基线/过期入口 → 接收责任与重启 → 同一事实模型的箱结果/恢复反馈 → 输入/维护与历史交互 → 必要升级旅程和同版客户端验收；按文件边界可并行。
 
 允许自主决定内部类名、文件拆分、WPF布局实现、投影/持久化组织、测试入口和实现顺序；需要外部确认的是真实WCS矛盾处置与查询语义、设备/HID行为、实体/数量/身份规则、现场旧库盘点/升级停机策略和最终WPF使用条件。缺某一外部能力只隔离对应阻塞。
 

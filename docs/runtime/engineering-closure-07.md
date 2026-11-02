@@ -2,7 +2,7 @@
 
 当前独立复核：[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`（PR #6/#7已合并）。8项指定整改路径静态补齐，E-06/E-10仍有工程缺口；全部运行NOT_RUN，Windows06/真实集成05分别保持NOT_RUN/BLOCKED。后续见工程增量08、参考验证09；下文07/更早记录保留形成时范围。
 
-2026-10-16。执行包：[WP-IPC-ENGINEERING-CLOSURE-07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)。PR #5已按用户要求合并；执行基准main `6d4063ec54e8167c8710e46befbe66f8b688ef08`。开发分支 `codex/wp-ipc-engineering-closure-07`；代码源提交 `493416f99970d95bb4a4076130de5c28ee33502d`。
+2026-10-16。执行包：[WP-IPC-ENGINEERING-CLOSURE-07](../archive/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)。PR #5已按用户要求合并；执行基准main `6d4063ec54e8167c8710e46befbe66f8b688ef08`。开发分支 `codex/wp-ipc-engineering-closure-07`；代码源提交 `493416f99970d95bb4a4076130de5c28ee33502d`。
 
 **10项工程整改均已实现，运行验证均NOT_RUN。** 用户明确要求不测试，因此没有运行测试、资料验证器、构建/还原/编译、应用/夹具、发布/冒烟或Windows/SDK/WCS操作。源码阅读与静态交叉复查不能证明编译通过、显示适配通过或真实接口可用。实际分项记录见 [checks](engineering-closure-07-checks.json)。
 
@@ -52,8 +52,8 @@ pwsh ./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'
 
 - 本包所有运行检查：**NOT_RUN（用户明确要求）**。静态复查已修正交叉衔接问题，但没有编译/解析器结果，不报PASS。
 - 现有测试源码/断言未删除、未执行、未改成宽松通过。已识别的过期预期包括`AlignmentDataVerification.LegacyMigration`的构造时隐式迁移，以及`HardeningVerification`的两条迁移/2:2格式断言；恢复验证授权后应按显式迁移/三条历史记录/3:3及原checksum重新对齐，不能拿旧预期失败解释为环境缺Windows，也不能直接去掉历史兼容断言。模拟旧健康辅助调用现在有明确有限期限，后续长时场景须提供真实合成确认事件。
-- W-01～06均NOT_RUN，沿用 [Windows06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)，最终必须用07实际新包绑定SourceCommit/SHA重新留证，不能复用旧包截图。
-- B-01～06继续BLOCKED，见 [集成边界05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)。没有取得真实SDK/合同、生产数量/实体/权限批准或旧现场工程，Production继续NotReady，未控制设备。
+- W-01～06均NOT_RUN，沿用 [Windows06](../archive/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)，最终必须用07实际新包绑定SourceCommit/SHA重新留证，不能复用旧包截图。
+- B-01～06继续BLOCKED，见 [集成边界05](../archive/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)。没有取得真实SDK/合同、生产数量/实体/权限批准或旧现场工程，Production继续NotReady，未控制设备。
 - 历史RV-01～17仍OPEN；D批准、历史issues及ALIGNMENT/H04验收记录不倒写。此次“工程已实现”不等于旧HTML修复、现场迁移或生产验收。
 
 交付是开发分支源码及main PR，不创建新发布资产、不自行合并本次实施PR。已创建 [main PR #6](https://github.com/yuan2go/importer-pc/pull/6)，创建时HEAD为`5e27df93aca167d09d6ab7735299713795248a05`；本次实施PR保持OPEN，后续文档回执提交仍在同一分支。代码源提交仍为`493416f`；当前最终HEAD以GitHub PR和最终答复核验，不把本文件自引用为自身提交。

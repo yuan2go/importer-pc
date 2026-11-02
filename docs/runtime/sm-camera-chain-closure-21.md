@@ -1,6 +1,6 @@
 # SM读码问题闭环21
 
-2026-11-02，依据[工作包](../work-packages/WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21.md)。本轮在PR171/6185d0f6上复核原审查全部问题，完成容量/生命周期与稳定呈现补强，保留main f2055ace/PR172的四字段、64/44DIP字号和统一Keyboard入口。用户明确授权完成后合并main；合并事实以[PR171](https://github.com/yuan2go/importer-pc/pull/171)的实际记录为准。19/20的历史验证保持原SourceCommit。
+2026-11-02，依据[工作包](../archive/work-packages/WP-IPC-SM-CAMERA-CHAIN-CLOSURE-21.md)。本轮在PR171/6185d0f6上复核原审查全部问题，完成容量/生命周期与稳定呈现补强，保留main f2055ace/PR172的四字段、64/44DIP字号和统一Keyboard入口。用户明确授权完成后合并main；合并事实以[PR171](https://github.com/yuan2go/importer-pc/pull/171)的实际记录为准。19/20的历史验证保持原SourceCommit。
 
 | 原审查问题 | 最终实现与边界 | 行为证据 |
 |---|---|---|

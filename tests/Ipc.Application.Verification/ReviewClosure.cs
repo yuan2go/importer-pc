@@ -67,7 +67,7 @@ static partial class ArchitectureQuality
         await using(var app=await Open(c,"review-archived-identities"))
         {
             app.EmitReferenceAt("left","review-archive-first","001","review-archive-first-source");original=(await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.SlotResolved)).Operations.Single();
-            for(int i=0;i<3;i++){app.EmitReferenceAt("left","review-archive-"+i,"002","review-archive-source-"+i);await Wait(app,s=>s.Operations.Any(o=>o.AdmissionId=="review-archive-"+i&&o.State==ParcelState.SlotResolved));}
+            for(int i=0;i<3;i++){app.EmitReferenceAt("left","review-archive-"+i,"002"+i,"review-archive-source-"+i);await Wait(app,s=>s.Operations.Any(o=>o.AdmissionId=="review-archive-"+i&&o.State==ParcelState.SlotResolved));}
             await Wait(app,s=>s.Capacity!.Archived>0);
         }
         var directory=DirectoryFor("review-archived-identities",c);var file=Path.Combine(directory,c.ApplicationId+".db");

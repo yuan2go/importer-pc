@@ -1,3 +1,5 @@
+> 2026-11-02 现场反馈“包裹放上去后一直扫码、一直发RCS”，用户要求按现场托盘流程修正，以 [SM-SAME-PLACEMENT-29](work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md) 为准：一次放上托盘为一次RCS请求；同工位同码持续可读视为同一放置，只留观察不再请求；取下超过释放窗口再放回或换码才是新请求。替代此前“各独立有效观察交RCS去重”的条款，其他原请求/Unknown守卫不变。
+
 > 2026-11-02 当前斜放、模糊和完整多码搜索，以及快照先到的观察身份守卫，以 [SM-READER-ROBUSTNESS-28](runtime/sm-reader-robustness-28.md) 为准；替代27包的“首搜索零结果才补搜索”及两线策略。27原实现/验证保留历史身份，旧文档完整字节见归档。
 
 > 2026-11-02 现场弱标签补充识别、无码/坏帧及重连清退旧格口见 [SM-UNREAD-PACKAGE-27](work-packages/WP-IPC-SM-UNREAD-PACKAGE-27.md) 与[运行和验证](runtime/sm-unread-package-27.md)。源码保持内置 MVS、逐次识别交 RCS 去重；无码是图像事实，不推定实体。私有照片重放与真实过机验收分开，历史证据保持原 SourceCommit。

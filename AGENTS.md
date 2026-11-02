@@ -1,3 +1,5 @@
+> 2026-11-02 现场反馈“包裹放上去后一直扫码、一直发RCS”，用户要求按现场托盘流程修正，以 [SM-SAME-PLACEMENT-29](docs/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md) 为准：一次放上托盘为一次RCS请求；同工位同码持续可读视为同一放置，只留观察不再请求；取下超过释放窗口再放回或换码才是新请求。替代此前“各独立有效观察交RCS去重”的条款，其他原请求/Unknown守卫不变。
+
 > 2026-11-02 用户追加以 [SM-SESSION-SHIFT-EXCEPTIONS-25](docs/work-packages/WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25.md) 为准：P07/P08现在实施；SM每次成功打开至完成关闭为一个持久班次，不按固定时刻切班，异常退出与原请求跨班责任分开。替代24包延期及旧排班对本班的定义，其他守卫/历史证据不变。
 
 > 2026-11-02 24包交付记录以 [SM-UI-SPEC-CLOSURE-24](docs/work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](docs/runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08已由后续25包接续实施；原24包交付当时保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。
@@ -8,7 +10,7 @@
 
 ## 当前业务合同
 
-当前保障SM（Sportmaster）与必需共享基座。SM使用内置海康MVS SDK采图、进程内ZXing-C++软件识别和内置RCS；默认连续采集，每次独立识别交RCS去重，无PLC。每台相机配置实际IP、物理序列号和唯一相机编码，取格口与心跳共用该编码。不使用TCP读码、TCP端口或MvCodeReader。
+当前保障SM（Sportmaster）与必需共享基座。SM使用内置海康MVS SDK采图、进程内ZXing-C++软件识别和内置RCS；默认连续采集，每帧独立识别并留证；同一工位同一次托盘放置只向RCS请求一次（见SM-SAME-PLACEMENT-29），无PLC。每台相机配置实际IP、物理序列号和唯一相机编码，取格口与心跳共用该编码。不使用TCP读码、TCP端口或MvCodeReader。
 
 SM停用外置扩展，不依赖外置目录、独立扩展信任或按配置签署的扩展资格。安装完整性、SDK字节/ABI/物理身份、独占租约、实际连接、管理权限和原请求守卫继续有效。完整配置应能启用，设备未发现只使本位离线并拒绝供包，不回滚整份配置或关闭独立RCS。修复实际连接与配置问题，不以页面修改替代修复。
 

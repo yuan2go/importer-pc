@@ -27,6 +27,22 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
     public RoundApi Api(string device) => Factory.Apis[device];
+    // Fallback window for non-frame sources; camera positions end a placement only on an empty tray.
+    public int PlacementReleaseMs { get; init; } = 300;
+    public static readonly RoundPixels EmptyTray = new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);
+    // Lift and re-place: the camera decodes enough empty-tray frames to end the placement.
+    // Returns the next frame number for the caller's own sequence.
+    public async Task<uint> ReplaceParcelAsync(string device, uint next)
+    {
+        for (var i = 0; i < SportmasterFlow.DefaultSamePlacementEmptyFrames; i++)
+        {
+            var decoded = Factory.Decoders[device].Count;
+            Api(device).Enqueue(EmptyTray, next++);
+            await Until(() => Task.FromResult(Factory.Decoders[device].Count > decoded));
+            await Task.Delay(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs / 2);
+        }
+        return next;
+    }
     public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null)
     {
         if (!nativeLoaded)
@@ -50,7 +66,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public async Task StartAsync()
     {
         Factory = new(Launch, Config);
-        App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        App = new(Launch, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
         await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         await AuthorizeAsync();

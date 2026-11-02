@@ -30,7 +30,7 @@ public static class ParcelPresentation
     {
         if (op?.Wcs is not { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage || stage.State == StageState.Conflict) return null;
         if (RcsTimedOut(op)) return OperatorCopy.TimeoutUnconfirmed;
-        if (RcsNotDelivered(op)) return "RCS未连接，本次请求未送达；连接恢复后请重新扫描。";
+        if (RcsNotDelivered(op)) return "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。";
         if (op.State == ParcelState.UnpackRequired) return "需要拆包，请查看拆包明细。";
         var reply = stage.Replies.LastOrDefault();
         if (op.State == ParcelState.WcsRejected && reply?.Destination is { } destination)
@@ -80,7 +80,7 @@ public static class ParcelPresentation
         ParcelInputOutcome.Duplicate => "重复扫描 · 已忽略",
         _ => "本次扫描已受理"
     };
-    public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted;
+    public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted && !ParcelInputReasons.IsSamePlacement(input);
     public static string InputReason(ParcelInputSnapshot input) =>
         input.Outcome == ParcelInputOutcome.Rejected && input.BarcodeSelection is { } selection &&
         input.Reason == selection.Outcome + "; no operation or external intent created"

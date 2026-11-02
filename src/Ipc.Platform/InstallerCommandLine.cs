@@ -2,7 +2,8 @@ namespace Ipc.Platform;
 
 public sealed record InstallerCommandLine(string Action, string? DataRoot, string? Log, string OperationId)
 {
-    public static bool IsQuiet(string[] args) => args.Any(a => a.Equals("/quiet", StringComparison.OrdinalIgnoreCase));
+    public static bool IsQuiet(string[] args) => args.Any(a => a.Equals("/quiet", StringComparison.OrdinalIgnoreCase) ||
+        a.StartsWith("/quiet=", StringComparison.OrdinalIgnoreCase));
     public static InstallerCommandLine Parse(string[] args)
     {
         if (!IsQuiet(args)) throw new ArgumentException("静默调用必须指定/quiet。");
@@ -27,7 +28,11 @@ public sealed record InstallerCommandLine(string Action, string? DataRoot, strin
                 default: throw new ArgumentException("未知安装参数：" + name);
             }
         }
-        if (operation is not null && !Guid.TryParseExact(operation, "N", out _)) throw new ArgumentException("OperationId须为32位GUID。");
+        if (operation is not null)
+        {
+            if (!Guid.TryParseExact(operation, "N", out var parsed) || parsed == Guid.Empty) throw new ArgumentException("OperationId须为非空32位GUID。");
+            operation = parsed.ToString("N");
+        }
         foreach (var path in new[] { data, log }.OfType<string>())
             if (!Path.IsPathFullyQualified(path) || path.StartsWith(@"\\", StringComparison.Ordinal)) throw new ArgumentException("安装路径须为本机绝对路径。");
         return new(action, data, log, operation ?? Guid.NewGuid().ToString("N"));

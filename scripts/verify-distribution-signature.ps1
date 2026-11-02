@@ -21,16 +21,31 @@ function Assert-CmsPolicy([byte[]]$Encoded, [Collections.Generic.HashSet[string]
     $cms = [Security.Cryptography.Pkcs.SignedCms]::new()
     $cms.Decode($Encoded)
     if ($cms.SignerInfos.Count -lt 1 -or $cms.SignerInfos.Count -gt 16) { throw 'Invalid signature count' }
+    $strongDigests = @('2.16.840.1.101.3.4.2.1', '2.16.840.1.101.3.4.2.2', '2.16.840.1.101.3.4.2.3')
+    if ($Timestamp) {
+        if ($cms.ContentInfo.ContentType.Value -ne '1.2.840.113549.1.9.16.1.4') { throw 'Timestamp content must be RFC3161 TSTInfo' }
+        $info = $null; $consumed = 0
+        if (-not [Security.Cryptography.Pkcs.Rfc3161TimestampTokenInfo]::TryDecode([ReadOnlyMemory[byte]]::new($cms.ContentInfo.Content), [ref]$info, [ref]$consumed) -or
+            $consumed -ne $cms.ContentInfo.Content.Length -or $info.HashAlgorithmId.Value -notin $strongDigests) { throw 'Timestamp message imprint must use SHA256 or stronger' }
+        $expectedHashBytes = switch ($info.HashAlgorithmId.Value) {
+            '2.16.840.1.101.3.4.2.1' { 32 }
+            '2.16.840.1.101.3.4.2.2' { 48 }
+            '2.16.840.1.101.3.4.2.3' { 64 }
+        }
+        if ($info.GetMessageHash().Length -ne $expectedHashBytes) { throw 'Invalid timestamp message imprint size' }
+    }
     foreach ($signer in $cms.SignerInfos) {
-        if ($signer.DigestAlgorithm.Value -ne '2.16.840.1.101.3.4.2.1') { throw 'Product/timestamp signature must use SHA256' }
+        if (($Timestamp -and $signer.DigestAlgorithm.Value -notin $strongDigests) -or
+            ((-not $Timestamp) -and $signer.DigestAlgorithm.Value -ne '2.16.840.1.101.3.4.2.1')) { throw 'Product signature must use SHA256; timestamp signer digest must use SHA256 or stronger' }
         if (-not $Timestamp -and ($null -eq $signer.Certificate -or -not $Approved.Contains($signer.Certificate.GetCertHashString([Security.Cryptography.HashAlgorithmName]::SHA256)))) { throw 'Embedded signature has an unapproved signer' }
         foreach ($counter in $signer.CounterSignerInfos) {
-            if ($counter.DigestAlgorithm.Value -ne '2.16.840.1.101.3.4.2.1') { throw 'Legacy timestamp does not meet SHA256 policy' }
+            if ($counter.DigestAlgorithm.Value -notin $strongDigests) { throw 'Legacy timestamp does not meet minimum SHA256 policy' }
         }
         foreach ($attribute in $signer.UnsignedAttributes) {
-            if ($attribute.Oid.Value -in '1.3.6.1.4.1.311.2.4.1', '1.2.840.113549.1.9.16.2.14') {
+            $timestampAttribute = $attribute.Oid.Value -in '1.2.840.113549.1.9.16.2.14', '1.3.6.1.4.1.311.3.3.1'
+            if ($attribute.Oid.Value -eq '1.3.6.1.4.1.311.2.4.1' -or $timestampAttribute) {
                 foreach ($value in $attribute.Values) {
-                    Assert-CmsPolicy $value.RawData $Approved ($Depth + 1) ($Timestamp -or $attribute.Oid.Value -eq '1.2.840.113549.1.9.16.2.14')
+                    Assert-CmsPolicy $value.RawData $Approved ($Depth + 1) ($Timestamp -or $timestampAttribute)
                 }
             }
         }
@@ -121,7 +136,7 @@ try {
                 File = if ($file.FullName -eq $outer.FullName) { 'FINAL-INSTALLER/' + $file.Name } else { [IO.Path]::GetRelativePath($root, $file.FullName).Replace('\', '/') }
                 Bytes = $locked.Length; Sha256 = $hash; SignerCertificateSha256 = $signer
                 TimestampCertificateSha256 = $signature.TimeStamperCertificate.GetCertHashString([Security.Cryptography.HashAlgorithmName]::SHA256)
-                Status = 'Valid'; DigestPolicy = 'SHA256'; AllSignatures = 'SignTool /pa /all /tw exit 0'
+                Status = 'Valid'; DigestPolicy = 'SHA256'; TimestampDigestPolicy = 'SHA256/384/512 signer and message imprint'; AllSignatures = 'SignTool /pa /all /tw exit 0'
             }
         } finally { $locked.Dispose() }
     })

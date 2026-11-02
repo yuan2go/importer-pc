@@ -34,10 +34,13 @@ try {
     $certificate = $request.CreateSelfSigned([DateTimeOffset]::UtcNow.AddMinutes(-1), [DateTimeOffset]::UtcNow.AddMinutes(10))
     $approved = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     [void]$approved.Add($certificate.GetCertHashString([Security.Cryptography.HashAlgorithmName]::SHA256))
-    function Cms([string]$Digest) {
+    function Cms([string]$Digest, [byte[]]$TimestampToken = $null) {
         $cms = [Security.Cryptography.Pkcs.SignedCms]::new([Security.Cryptography.Pkcs.ContentInfo]::new([byte[]](1, 2, 3)), $false)
         $signer = [Security.Cryptography.Pkcs.CmsSigner]::new($certificate)
         $signer.DigestAlgorithm = [Security.Cryptography.Oid]::new($Digest)
+        if ($null -ne $TimestampToken) {
+            [void]$signer.UnsignedAttributes.Add([Security.Cryptography.AsnEncodedData]::new([Security.Cryptography.Oid]::new('1.3.6.1.4.1.311.3.3.1'), $TimestampToken))
+        }
         $cms.ComputeSignature($signer)
         return ,$cms.Encode()
     }
@@ -51,6 +54,29 @@ try {
     Reject { Assert-CmsPolicy $sha1 $approved } 'SHA1 CMS refused despite matching approved identity'
     Reject { Assert-CmsPolicy $sha256 $approved 5 } 'excessive nested signature depth refused'
     Reject { Assert-CmsPolicy ([byte[]](1, 2, 3)) $approved } 'malformed CMS refused'
+    function TimestampCms([string]$Imprint, [string]$Digest) {
+        $size = if ($Imprint -eq '1.3.14.3.2.26') { 20 } else { 32 }
+        $info = [Security.Cryptography.Pkcs.Rfc3161TimestampTokenInfo]::new([Security.Cryptography.Oid]::new('1.2.3.4'),
+            [Security.Cryptography.Oid]::new($Imprint), [ReadOnlyMemory[byte]]::new([byte[]]::new($size)),
+            [ReadOnlyMemory[byte]]::new([byte[]](1)), [DateTimeOffset]::UtcNow, $null, $false, $null, $null, $null)
+        $content = [Security.Cryptography.Pkcs.ContentInfo]::new([Security.Cryptography.Oid]::new('1.2.840.113549.1.9.16.1.4'), $info.Encode())
+        $cms = [Security.Cryptography.Pkcs.SignedCms]::new($content, $false)
+        $signer = [Security.Cryptography.Pkcs.CmsSigner]::new($certificate)
+        $signer.DigestAlgorithm = [Security.Cryptography.Oid]::new($Digest)
+        $cms.ComputeSignature($signer)
+        return ,$cms.Encode()
+    }
+    $strongTimestamp = TimestampCms '2.16.840.1.101.3.4.2.1' '2.16.840.1.101.3.4.2.2'
+    Assert-CmsPolicy $strongTimestamp $approved 0 $true
+    Check $true 'SHA256 message imprint permits stronger SHA384 TSA signer digest'
+    $weakTimestamp = TimestampCms '1.3.14.3.2.26' '2.16.840.1.101.3.4.2.1'
+    Reject { Assert-CmsPolicy $weakTimestamp $approved 0 $true } 'strong TSA signer cannot conceal a SHA1 message imprint'
+    Reject { Assert-CmsPolicy $sha256 $approved 0 $true } 'non-TSTInfo content cannot impersonate a timestamp'
+    $withWeakTimestamp = Cms '2.16.840.1.101.3.4.2.1' $weakTimestamp
+    Reject { Assert-CmsPolicy $withWeakTimestamp $approved } 'Microsoft RFC3161 unsigned attribute is inspected'
+    $withStrongTimestamp = Cms '2.16.840.1.101.3.4.2.1' $strongTimestamp
+    Assert-CmsPolicy $withStrongTimestamp $approved
+    Check $true 'nested Microsoft RFC3161 strong-imprint policy applied'
     # No malformed/unsigned PE may be treated as a verified product file.
     $memory = [IO.MemoryStream]::new([byte[]](77, 90, 0, 0))
     try { Reject { Assert-PeSignatureDigests $memory $approved } 'malformed PE header refused' }
@@ -86,7 +112,7 @@ try {
             Reject { Assert-PeSignatureDigests $image $approved } 'certificate table outside file refused'
         } finally { $writer.Dispose() }
     } finally { $image.Dispose() }
-    Check ($checks -eq 9) 'all nine mandatory negative/positive boundaries executed'
+    Check ($checks -eq 14) 'all fourteen mandatory negative/positive boundaries executed'
     Write-Output 'SIGNATURE-POLICY: ephemeral CMS/metadata only; actual publisher, SignTool, timestamp trust, revocation and SmartScreen NOT_RUN'
 } finally {
     if ($null -ne $certificate) { $certificate.Dispose() }

@@ -6,9 +6,9 @@
 
 `scripts/verify-distribution-signature.ps1`现在递归枚举完整介质中的所有`Ipc.*.exe/dll`，明确包含helper/服务及嵌套目录，并要求提供最终单EXE；拒绝重解析路径、缺少入口、不完整介质、未签名/未批准签名者及缺时间戳。批准者来自外部公有`.cer`，以证书SHA256身份核对，不在仓库硬编码公司或证书，不接收私钥。
 
-每个实际文件保持只读共享句柄，验证期间禁止替换/写入。PE证书表有边界、数量、对齐和嵌套深度预算；CMS主签名/嵌套签名及时间戳摘要须SHA256，自有签名者须属于批准集合。Windows Authenticode与SDK SignTool随后负责密码学/信任策略验证，使用`verify /pa /all /v /tw`，非零退出（含警告）均阻断。最后对同一实际文件对象计算SHA256与大小，输出逐文件清单。
+每个实际文件保持只读共享句柄，验证期间禁止替换/写入。PE证书表有边界、数量、对齐和嵌套深度预算；CMS主签名/嵌套自有签名须SHA256，自有签名者须属于批准集合。RFC3161的消息摘要和TSA签名摘要均要求SHA256或更强（SHA384/512），直接解析TSTInfo，不能用较强的TSA签名掩盖SHA1消息摘要。Windows Authenticode与SDK SignTool随后负责密码学/信任策略验证，使用`verify /pa /all /v /tw`，非零退出（含警告）均阻断。最后对同一实际文件对象计算SHA256与大小，输出逐文件清单。
 
-依据：[Microsoft SignTool参数与退出码](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool)、[Windows PE证书表](https://learn.microsoft.com/en-us/windows/win32/debug/pe-format)、[.NET PEHeader](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.portableexecutable.peheader)、[PowerShell Authenticode](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature)。自有脚本的元数据策略不替代Windows签名验证。
+依据：[Microsoft SignTool参数与退出码](https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool)、[Windows PE证书表](https://learn.microsoft.com/en-us/windows/win32/debug/pe-format)、[.NET PEHeader](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.portableexecutable.peheader)、[PowerShell Authenticode](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature)。覆盖[微软RFC3161计数签名OID](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-crypt_algorithm_identifier)与标准CMS时间戳属性；TSTInfo通过[.NET解析器](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.pkcs.rfc3161timestamptokeninfo)读取。自有脚本的元数据策略不替代Windows签名验证。
 
 ## 独立资格
 
@@ -35,6 +35,6 @@
 ## 本轮验证
 
 - PowerShell解析检查通过；`python -m unittest discover -s scripts -p test_commercial_delivery.py`5项通过，覆盖缺证书、缺最终EXE及证据边界。
-- `scripts/test-signature-policy.ps1`9项策略边界通过：内存临时CMS的SHA256/未批准者/SHA1/嵌套深度/损坏结构，以及基于实际已构建PE布局的证书表/类型/越界检查。临时密钥不进入证书库、磁盘或Git；合成CMS不是可信产品签名，不进入正式交付证据。
+- `scripts/test-signature-policy.ps1`14项策略边界通过：内存临时CMS的SHA256/未批准者/SHA1/嵌套深度/损坏结构、微软RFC3161属性/TSTInfo消息摘要与TSA签名摘要分别核验，以及基于实际已构建PE布局的证书表/类型/越界检查。临时密钥不导入证书库、磁盘或Git；合成CMS不是可信产品签名，不进入正式交付证据。
 - 同一策略单测已接入无发布secret的PR CI；本次修改的远端结果待记录。
 - 实际正式签名、SignTool全链/时间戳、证书轮换、离线吊销、最终下载及SmartScreen矩阵均NOT_RUN。缺条件不改成模拟PASS。

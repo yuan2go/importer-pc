@@ -34,6 +34,12 @@ static class IndustrialLifecycle
         Reject<ArgumentException>(() => InstallerCommandLine.Parse(["/quiet", "/password=secret"]), "no password command-line switch");
         Reject<ArgumentException>(() => InstallerCommandLine.Parse(["/quiet", "/dataRoot=relative"]), "relative root rejected");
         Reject<ArgumentException>(() => InstallerCommandLine.Parse(["/quiet", "/operationId=invalid"]), "invalid operation identity rejected");
+        Check(InstallerCommandLine.IsQuiet(["/QUIET=false"]), "malformed quiet value still routes to noninteractive validation");
+        Reject<ArgumentException>(() => InstallerCommandLine.Parse(["/quiet=false"]), "quiet flag with value fails without opening UI");
+        Reject<ArgumentException>(() => InstallerCommandLine.Parse(["/quiet", "/operationId=" + Guid.Empty.ToString("N")]), "empty operation identity rejected before deployment");
+        var canonical = Guid.NewGuid().ToString("N");
+        Check(InstallerCommandLine.Parse(["/quiet", "/operationId=" + canonical.ToUpperInvariant()]).OperationId == canonical,
+            "operation identity canonicalized for protected journal lookup");
         var files = Path.Combine(root, "inventory-cleanup"); Directory.CreateDirectory(files);
         File.WriteAllText(Path.Combine(files, "owned.txt"), "owned");
         File.WriteAllText(Path.Combine(files, "extra.txt"), "retain");

@@ -98,7 +98,7 @@ def distribution_signature(medium, approved_signer, installer=None):
     shell = shutil.which('pwsh')
     if os.name != 'nt' or not shell:
         return dict(Status='BLOCKED', Reason='Actual Windows Authenticode verification requires Windows PowerShell 7')
-    result = subprocess.run([shell, '-NoProfile', '-File', str(Path(__file__).with_name('verify-distribution-signature.ps1')),
+    result = subprocess.run([shell, '-NoProfile', '-NonInteractive', '-File', str(Path(__file__).with_name('verify-distribution-signature.ps1')),
                              '-Media', str(medium), '-ApprovedSigner', str(approved_signer), '-Installer', str(installer)], capture_output=True, text=True, encoding='utf-8')
     if result.returncode != 0:
         return dict(Status='BLOCKED', Reason='Windows rejected distribution signatures or approved certificate', Detail=result.stdout.strip())

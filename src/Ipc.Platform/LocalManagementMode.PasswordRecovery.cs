@@ -85,9 +85,18 @@ public sealed partial class LocalManagementMode
             var revision = checked(store.CredentialRevision + 1);
             Save(store with
             {
-                Credential = credential, CredentialRevision = revision, LastRecoveryOperation = challenge.Id, LastRecoveryRevision = revision,
-                RecoveryChallenges = [], Failures = 0, LockedUntil = default,
-                SessionHash = null, SessionId = null, SessionExpires = null, SessionEnteredAt = null, Delegations = []
+                Credential = credential,
+                CredentialRevision = revision,
+                LastRecoveryOperation = challenge.Id,
+                LastRecoveryRevision = revision,
+                RecoveryChallenges = [],
+                Failures = 0,
+                LockedUntil = default,
+                SessionHash = null,
+                SessionId = null,
+                SessionExpires = null,
+                SessionEnteredAt = null,
+                Delegations = []
             }, "ManagementPasswordResetByWindowsAdministrator", "Operation=" + challenge.Id);
             Revoke();
             return new(challenge.Id, revision, true);

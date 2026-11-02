@@ -20,24 +20,49 @@ internal sealed class StationDiagnosticProjection
         return alias;
     }
 
-    public object Station(ParcelSnapshot snapshot) => new {
-        Schema = 2, snapshot.RuntimeId, snapshot.Revision, snapshot.Paused,
-        Configuration = new { snapshot.Configuration.Revision, RequiresRestart = snapshot.Configuration.Pending is not null,
-            Mode = snapshot.Configuration.Effective.Mode.ToString(), snapshot.Configuration.Effective.QueueCapacity,
-            snapshot.Configuration.Effective.TimeoutMs, snapshot.Configuration.Effective.MaximumOperations,
-            HistoryDays = snapshot.Configuration.Effective.Retention?.HistoryDays, DiagnosticLogDays = snapshot.Configuration.Effective.Retention?.DiagnosticLogDays },
+    public object Station(ParcelSnapshot snapshot) => new
+    {
+        Schema = 2,
+        snapshot.RuntimeId,
+        snapshot.Revision,
+        snapshot.Paused,
+        Configuration = new
+        {
+            snapshot.Configuration.Revision,
+            RequiresRestart = snapshot.Configuration.Pending is not null,
+            Mode = snapshot.Configuration.Effective.Mode.ToString(),
+            snapshot.Configuration.Effective.QueueCapacity,
+            snapshot.Configuration.Effective.TimeoutMs,
+            snapshot.Configuration.Effective.MaximumOperations,
+            HistoryDays = snapshot.Configuration.Effective.Retention?.HistoryDays,
+            DiagnosticLogDays = snapshot.Configuration.Effective.Retention?.DiagnosticLogDays
+        },
         Health = snapshot.Health.Select(h => new { Capability = Alias("capability", h.InstanceId), h.Ready, h.ConfirmedAt, h.ValidUntil }).ToArray(),
-        Capacity = new { Unresolved = snapshot.Capacity?.Unresolved, Resident = snapshot.Capacity?.Resident, Archived = snapshot.Capacity?.Archived,
-            MaximumUnresolved = snapshot.Capacity?.MaximumUnresolved, Available = snapshot.Capacity?.Available,
-            FreeStorageBytes = snapshot.Capacity?.FreeStorageBytes, MinimumFreeBytes = snapshot.Capacity?.MinimumFreeBytes },
+        Capacity = new
+        {
+            Unresolved = snapshot.Capacity?.Unresolved,
+            Resident = snapshot.Capacity?.Resident,
+            Archived = snapshot.Capacity?.Archived,
+            MaximumUnresolved = snapshot.Capacity?.MaximumUnresolved,
+            Available = snapshot.Capacity?.Available,
+            FreeStorageBytes = snapshot.Capacity?.FreeStorageBytes,
+            MinimumFreeBytes = snapshot.Capacity?.MinimumFreeBytes
+        },
         OperationsTotal = snapshot.Operations.Length,
         OperationsOmitted = Math.Max(0, snapshot.Operations.Length - 100),
-        Operations = snapshot.Operations.OrderByDescending(o => o.ObservedAt).Take(100).Select(o => new {
-            Operation = Alias("operation", o.Id), Position = Alias("position", o.PositionId), o.ObservedAt,
-            State = o.State.ToString(), Result = o.Wcs?.State.ToString(), o.RecoveryRequired }).ToArray()
+        Operations = snapshot.Operations.OrderByDescending(o => o.ObservedAt).Take(100).Select(o => new
+        {
+            Operation = Alias("operation", o.Id),
+            Position = Alias("position", o.PositionId),
+            o.ObservedAt,
+            State = o.State.ToString(),
+            Result = o.Wcs?.State.ToString(),
+            o.RecoveryRequired
+        }).ToArray()
     };
 
-    public object Event(SoftwareLogEntry entry) => new {
+    public object Event(SoftwareLogEntry entry) => new
+    {
         entry.At,
         Source = entry.Source is "RCS结果" or "相机通信" or "参数" or "管理模式" or "存储" or "业务控制" or "进程" or "日志" ? entry.Source : "其他",
         Level = entry.Level is "信息" or "警告" or "错误" or "致命" or "调试" or "跟踪" ? entry.Level : "未知",
@@ -82,9 +107,17 @@ internal sealed class StationDiagnosticProjection
                 .Select(g => (object)new { g.Key.Kind, g.Key.Status, Count = g.Count() }).ToArray();
         }
         catch (NetworkInformationException) { networkStatus = "Unavailable"; }
-        return new { CapturedAt = DateTimeOffset.UtcNow, OSVersion = Environment.OSVersion.Version.ToString(),
-            Architecture = RuntimeInformation.OSArchitecture.ToString(), FreeBytes = free, TotalBytes = total,
-            DiskStatus = free is null ? "Unavailable" : "Collected", NetworkStatus = networkStatus, Networks = networks };
+        return new
+        {
+            CapturedAt = DateTimeOffset.UtcNow,
+            OSVersion = Environment.OSVersion.Version.ToString(),
+            Architecture = RuntimeInformation.OSArchitecture.ToString(),
+            FreeBytes = free,
+            TotalBytes = total,
+            DiskStatus = free is null ? "Unavailable" : "Collected",
+            NetworkStatus = networkStatus,
+            Networks = networks
+        };
     }
 
     public static object Installation(string application)
@@ -94,9 +127,14 @@ internal sealed class StationDiagnosticProjection
         {
             var current = WindowsDeploymentSetup.Current(application);
             if (current is null) return new { Status = "Unavailable", Reason = "NoProtectedRegistration" };
-            return new { Status = "RegistrationOnly", State = current.LifecycleState is "Installed" or "Retired" ? current.LifecycleState : "Unknown",
+            return new
+            {
+                Status = "RegistrationOnly",
+                State = current.LifecycleState is "Installed" or "Retired" ? current.LifecycleState : "Unknown",
                 SourceCommit = current.SourceCommit is { Length: 40 } && current.SourceCommit.All(char.IsAsciiHexDigit) ? current.SourceCommit : null,
-                HasMaintenanceCache = current.MaintenanceRoot is not null, TransactionReceipt = "NotCollected" };
+                HasMaintenanceCache = current.MaintenanceRoot is not null,
+                TransactionReceipt = "NotCollected"
+            };
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException)
         { return new { Status = "Unavailable", Reason = "ProtectedRegistrationUnreadable" }; }

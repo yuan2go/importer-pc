@@ -49,8 +49,13 @@ static class IndustrialLifecycle
         }
         var installed = new DeploymentLocation("sportmaster", new string('a', 40), files, Path.Combine(root, "config"), Path.Combine(root, "data"), "synthetic");
         var originalFiles = new Dictionary<string, string> { ["damaged.exe"] = new string('b', 64) };
-        string Inventory(DeploymentLocation identity, Dictionary<string, string> names) => Wire.Encode(new {
-            identity.ApplicationId, identity.SourceCommit, identity.ReleaseRoot, Files = names });
+        string Inventory(DeploymentLocation identity, Dictionary<string, string> names) => Wire.Encode(new
+        {
+            identity.ApplicationId,
+            identity.SourceCommit,
+            identity.ReleaseRoot,
+            Files = names
+        });
         var recorded = WindowsDeploymentSetup.ValidateInstalledInventory(installed, Inventory(installed, originalFiles));
         Check(recorded.SequenceEqual(new[] { "damaged.exe" }), "retained installation inventory supplies exact program-only removal scope");
         Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateInstalledInventory(installed,

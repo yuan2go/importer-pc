@@ -45,8 +45,15 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
                 if (bytes.Length > DiagnosticByteLimit || files.Values.Sum(b => (long)b.Length) + bytes.Length > DiagnosticByteLimit)
                     throw new IOException("诊断内容超过8MiB预算，未发布文件。");
                 files.Add(name, bytes);
-                entries.Add(new { Name = name, Source = source, Status = status, CapturedAt = DateTimeOffset.UtcNow,
-                    Bytes = bytes.Length, Sha256 = Convert.ToHexString(SHA256.HashData(bytes)) });
+                entries.Add(new
+                {
+                    Name = name,
+                    Source = source,
+                    Status = status,
+                    CapturedAt = DateTimeOffset.UtcNow,
+                    Bytes = bytes.Length,
+                    Sha256 = Convert.ToHexString(SHA256.HashData(bytes))
+                });
             }
             Add("station.json", "RuntimeSnapshot", "Collected", projection.Station(snapshot));
             if (snapshot.Operations.Length > 100) notices.Add("作业索引仅收集最近100条；完整业务记录未进入诊断包。");
@@ -67,20 +74,37 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
                 if (!result.HasMore) break;
             }
             if (truncated) notices.Add("日志摘要达到2000条上限，后续记录未收集。");
-            Add("event-index.json", "PinnedRetainedLogs", "Partial", new { From = from, Cutoff = cutoff, Truncated = truncated,
-                MaximumEntries = DiagnosticEventLimit, Coverage = "RetainedWindowOnly", Events = events });
+            Add("event-index.json", "PinnedRetainedLogs", "Partial", new
+            {
+                From = from,
+                Cutoff = cutoff,
+                Truncated = truncated,
+                MaximumEntries = DiagnosticEventLimit,
+                Coverage = "RetainedWindowOnly",
+                Events = events
+            });
             Add("environment.json", "LocalEnvironment", "Collected", StationDiagnosticProjection.EnvironmentSummary(launch.DataRoot));
             var release = StationDiagnosticProjection.Release(definition.GetType().Assembly, Id);
             Add("release.json", "RunningRelease", release.Published ? "Collected" : "Unavailable", release);
             Add("installation.json", "ProtectedRegistration", "Partial", StationDiagnosticProjection.Installation(Id));
             notices.Add("安装项仅为受保护登记摘要；未收集完整安装事务回执。多个来源有各自采集时间，不是一致性备份。");
             var hashes = files.ToDictionary(p => p.Key, p => Convert.ToHexString(SHA256.HashData(p.Value)), StringComparer.Ordinal);
-            files.Add("manifest.json", Encoding.UTF8.GetBytes(Wire.Encode(new {
-                Schema = 2, Privacy = "allowlist-v2", Authority = "ManagementMode", GeneratorVersion = 2,
+            files.Add("manifest.json", Encoding.UTF8.GetBytes(Wire.Encode(new
+            {
+                Schema = 2,
+                Privacy = "allowlist-v2",
+                Authority = "ManagementMode",
+                GeneratorVersion = 2,
                 ProductAssemblySha256 = Wire.FileHash(typeof(ParcelRuntime).Assembly.Location),
-                StartedAt = started, CompletedAt = DateTimeOffset.UtcNow, From = from, Cutoff = cutoff,
+                StartedAt = started,
+                CompletedAt = DateTimeOffset.UtcNow,
+                From = from,
+                Cutoff = cutoff,
                 UtcOffsetMinutes = TimeZoneInfo.Local.GetUtcOffset(cutoff).TotalMinutes,
-                Status = DiagnosticPackageStatus.Partial.ToString(), Files = hashes, Entries = entries, Notices = notices,
+                Status = DiagnosticPackageStatus.Partial.ToString(),
+                Files = hashes,
+                Entries = entries,
+                Notices = notices,
                 Limits = new { Bytes = DiagnosticByteLimit, Events = DiagnosticEventLimit, Seconds = 60 }
             })));
             if (files.Values.Sum(b => (long)b.Length) > DiagnosticByteLimit) throw new IOException("诊断清单超过预算，未发布文件。");

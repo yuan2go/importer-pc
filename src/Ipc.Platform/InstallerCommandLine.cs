@@ -14,9 +14,11 @@ public sealed record InstallerCommandLine(string Action, string? DataRoot, strin
             if (!seen.Add(name)) throw new ArgumentException("重复的安装参数：" + name);
             switch (name.ToLowerInvariant())
             {
-                case "/quiet": case "/norestart":
+                case "/quiet":
+                case "/norestart":
                     if (pair.Length != 1) throw new ArgumentException("开关不能带值。"); break;
-                case "/repair": case "/uninstall":
+                case "/repair":
+                case "/uninstall":
                     if (pair.Length != 1 || action != "Install") throw new ArgumentException("安装、修复和卸载互斥。");
                     action = name.Equals("/repair", StringComparison.OrdinalIgnoreCase) ? "Repair" : "Uninstall"; break;
                 case "/dataroot": data = Value(pair); break;

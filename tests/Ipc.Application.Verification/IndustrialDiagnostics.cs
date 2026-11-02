@@ -30,26 +30,48 @@ static class IndustrialDiagnostics
         await ManagementModeFixture.Authorize(h.App);
         var snapshot = await h.App.SnapshotAsync();
         var canary = "CANARY-" + Guid.NewGuid().ToString("N");
-        var hostile = snapshot with { ApplicationId = canary, State = canary, BlockingReasons = [canary],
+        var hostile = snapshot with
+        {
+            ApplicationId = canary,
+            State = canary,
+            BlockingReasons = [canary],
             Health = [new(canary, true, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMinutes(1), canary)],
             Capacity = snapshot.Capacity! with { Policy = canary },
-            Configuration = snapshot.Configuration with { Status = canary, Failure = canary,
-                Effective = snapshot.Configuration.Effective with { StationId = canary, StationCode = canary } } };
+            Configuration = snapshot.Configuration with
+            {
+                Status = canary,
+                Failure = canary,
+                Effective = snapshot.Configuration.Effective with { StationId = canary, StationCode = canary }
+            }
+        };
         var projection = new StationDiagnosticProjection();
         Check(!Wire.Encode(projection.Station(hostile)).Contains(canary), "health/configuration/free-text values cannot bypass allowlist");
         var hostileEntry = new SoftwareLogEntry(new(canary, 1, canary, canary), canary, DateTimeOffset.UtcNow, canary,
             Wire.Encode(new { PaSsWoRd = canary, Detail = new { RequestId = canary, Result = new { Secret = canary } } }))
-            { OperationId = canary, EventCode = canary };
+        { OperationId = canary, EventCode = canary };
         var projected = Wire.Encode(projection.Event(hostileEntry));
         Check(!projected.Contains(canary) && projected.Contains("operation-"), "nested/unknown fields excluded and arbitrary identity aliased");
         Check(Wire.Encode(projection.Event(hostileEntry)) == projected, "references remain consistent inside one package");
 
         var logs = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId, "diagnostics");
         for (var i = 0; i < 2005; i++)
-            RuntimeJournal.AppendMetadata(logs, new { At = DateTimeOffset.UtcNow.AddSeconds(-1), Source = "RCS结果", Level = "信息",
-                Event = canary, Detail = Wire.Encode(new { OperationId = Wire.Id(), RequestId = canary, PositionId = canary,
-                    Result = new { password = canary }, NextAction = canary, Authorization = "Bearer " + canary,
-                    Url = "https://example.invalid/?token=" + canary }) });
+            RuntimeJournal.AppendMetadata(logs, new
+            {
+                At = DateTimeOffset.UtcNow.AddSeconds(-1),
+                Source = "RCS结果",
+                Level = "信息",
+                Event = canary,
+                Detail = Wire.Encode(new
+                {
+                    OperationId = Wire.Id(),
+                    RequestId = canary,
+                    PositionId = canary,
+                    Result = new { password = canary },
+                    NextAction = canary,
+                    Authorization = "Bearer " + canary,
+                    Url = "https://example.invalid/?token=" + canary
+                })
+            });
         var requests = h.Peer.Requests.Count;
         var target = Path.Combine(root, "diagnostics.ZIP");
         var receipt = await api.ExportDiagnosticPackageReportAsync(target, default);

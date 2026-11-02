@@ -104,6 +104,13 @@ static partial class Program
                 await Until(() => Descendants(scene).OfType<TabControl>().Any(t => t.Name == "StartupTasks")); scene.UpdateLayout();
                 var tabs = Descendants(scene).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
                 Check(tabs.Items.OfType<TabItem>().Count(t => t.IsEnabled) == (recovery ? 1 : 2) && !Descendants(tabs).OfType<System.Windows.Controls.Primitives.TabPanel>().Any(), "offline scene exposes only its authorized route without the five expert tab headers: recovery=" + recovery);
+                var footer = (Panel)repairType.BaseType!.GetField("Actions", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.GetValue(scene)!;
+                Check(footer.Children.OfType<Button>().Count(b => b.IsVisible) <= 1 && !footer.Children.OfType<Button>().Any(b => b.IsVisible && b.Content is string label && label is "保存草稿" or "继续已保存草稿" or "下一步" or "维护操作"), "scene footer cannot re-enter hidden expert tabs or draft operations");
+                if (!recovery)
+                {
+                    Descendants(scene).OfType<Button>().Single(b => Equals(b.Content, "检查并启动")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); scene.UpdateLayout();
+                    Check(tabs.SelectedIndex == 3 && footer.Children.OfType<Button>().Count(b => b.IsVisible) == 2 && !footer.Children.OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "保存并启动")), "check/start scene exposes only original inspection and reviewed start, without implicit save");
+                }
                 CaptureInternal(evidence, recovery ? "ui24-offline-recovery" : "ui24-offline-check", (FrameworkElement)scene.Content, lines);
             }
             finally { scene.Close(); }

@@ -56930,9 +56930,9 @@
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
-      "sha256": "d3c100844b45cab929d5c8467aa17022ba2347f7b3f5005c3a7ccb55e9a3e285",
-      "size_bytes": 61689,
-      "git_blob": "1ec642068f57b14434562f4922cf230f8630c8c8",
+      "sha256": "23606c59a9475dbd5e17473e76f6bc76346300597d21de51fe08f1ed80fae771",
+      "size_bytes": 62195,
+      "git_blob": "339439dd74f3852c292be204fcdb35513531ee41",
       "previous_git_blob": "8cb0f8c09996835bfe2136e25d4e944397aaf26d",
       "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01",
       "pre_publication_no_test_git_blob": "65470c322ace93ebb62e2d522a25823d4a481bc6"
@@ -118688,9 +118688,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-UI-SPEC-CLOSURE-24; original evidence retains its own SourceCommit",
-      "sha256": "5fdb4b3fa97e1f2764eaf4d78f1cf131a6eecf77683b6bd0149a388d7b8788ce",
-      "size_bytes": 12274,
-      "git_blob": "ae0f93a829f887de28ec340a491a5619acc2e7fe",
+      "sha256": "551277a87ed9c169b3d4a628a678889bde3701fa92ef4b8052bf1eb8274f642f",
+      "size_bytes": 13345,
+      "git_blob": "7af15b43b4a4596c1aa39369cc3397cb8058ee7a",
       "storage_scope": "public_repository"
     }
   ],

@@ -1,0 +1,26 @@
+PASS READER28 a valid easy primary code does not suppress a second real threshold-only candidate
+PASS READER28 default strict policy rejects the complete mixed set instead of selecting its easy secondary code
+PASS READER28 an explicitly supplied business rule selects from the complete candidate set
+PASS READER28 all search profiles preserve every original input pixel
+PASS READER28 repeated searches of one printed pattern produce exactly one candidate
+PASS READER28 equal barcode text at two separate positions remains two candidates
+PASS READER28 a quiet gap between identical stacked codes prevents search-result merging
+PASS READER28 15 degree synthetic label decodes once with corners in unchanged original-image coordinates
+PASS READER28 30 degree synthetic label decodes once with corners in unchanged original-image coordinates
+PASS READER28 45 degree synthetic label decodes once with corners in unchanged original-image coordinates
+PASS READER28 70 degree synthetic label decodes once with corners in unchanged original-image coordinates
+PASS READER28 oblique label with independent Gaussian blur radius 1 decodes once without changing source pixels
+PASS READER28 oblique label with independent Gaussian blur radius 2 decodes once without changing source pixels
+PASS READER28 genuine short ITF remains readable: source-line guard does not impose payload length or business rules
+PASS READER28 oblique blurred linear label plus QR stays a complete ambiguous set, never an automatic easy-code selection
+PASS READER28 uniform frames remain empty after all bounded search profiles
+PASS READER28 a frame reaching the 64-candidate limit is rejected in full rather than selecting a truncated subset
+PASS READER28 candidate-limit rejection releases native results and leaves the next frame usable
+PASS READER28 32 consecutive pooled-frame decodes survive concurrent GC/finalizers with exact payload, in-bounds corners and unchanged source pixels
+PASS READER28 directional and threshold searches preserve the explicit QR-only format restriction
+PASS READER28 snapshot before its UI stream cue cannot restore retired barcode, slot or picture; right position remains current
+PASS READER28 one snapshot carries matching frame/read watermarks even while the new durable input is not yet written
+PASS READER28 a new window renders the pending new barcode without borrowing the retired result
+PASS READER28 a snapshot lacking the companion cue fails closed using the exact latest frame identity
+PASS READER28 late prior snapshot cannot revive an already superseded camera result
+PASS READER28 only the matched new observation and its original RCS response restore a confirmed task

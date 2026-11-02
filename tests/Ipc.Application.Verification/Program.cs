@@ -50,6 +50,7 @@ if (args.Contains("--camera-chain-reliability")) { await CameraChainReliability.
 if (args.Contains("--camera-chain-closure")) { await CameraChainClosure.Run(workspace, root); return; }
 if (args.Contains("--reader-feedback-22")) { await ReaderFeedback22.Run(workspace, root); return; }
 if (args.Contains("--unread-package-27")) { await UnreadPackage27.Run(workspace, root); return; }
+if (args.Contains("--reader-robustness-28")) { await ReaderRobustness28.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
 if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResources(workspace, root); return; }

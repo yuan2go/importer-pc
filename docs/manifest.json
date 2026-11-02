@@ -115102,9 +115102,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "49538a725a52cc65a384cf846101522b24d7639cc3c2e503c071052a31b38c2a",
-      "size_bytes": 8022,
-      "git_blob": "f0514a7c94331200bb7decbe3181c4df5545c909",
+      "sha256": "b00c7149a8c6d8231d3ec124c98333ead7dd0edb30a29e2f0f19dcaa1dc6b101",
+      "size_bytes": 8484,
+      "git_blob": "c80b534641d59b1486de1d45f569ae119361fa79",
       "storage_scope": "public_repository"
     },
     {
@@ -119267,9 +119267,9 @@
   ],
   "integration_sources": [
     {
-      "commit": "56bf77f41765ecaebe2e62122981dadbdc9ce591",
-      "manifest_sha256": "e5e7f1f8c67ce465e704365909e5b44ca46e9281c7c9427b73deb85f5c22dfb1",
-      "work_package": "WP-IPC-SM-PRODUCT-CLOSURE-21"
+      "commit": "ce9cffbe339c632dbf44362ec39989bc0424ac94",
+      "manifest_sha256": "e16cf3695609cb3eb19bb1e5cfbe21a375f1e8fc404b41aa78effa4cb0c8f315",
+      "work_package": "WP-IPC-DB11-COMPATIBLE-UPDATE-22"
     }
   ],
   "install_update_uninstall_identity_01": {

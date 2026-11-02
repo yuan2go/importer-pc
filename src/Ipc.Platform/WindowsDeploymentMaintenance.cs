@@ -22,10 +22,12 @@ public static partial class WindowsDeploymentSetup
         using var machine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
         if (location.LifecycleState != "Installed") { machine.DeleteSubKeyTree(SystemKey(location.ApplicationId), false); return; }
         using var key = machine.CreateSubKey(SystemKey(location.ApplicationId), true);
-        var executable = Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
+        var executable = Path.Combine(location.MaintenanceRoot ?? location.ReleaseRoot, "desktop", "Ipc.Desktop.exe");
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(location.ReleaseRoot, "app", "application-release.json")));
         key.SetValue("DisplayName", "菜鸟供包台 · " + location.ApplicationId);
-        key.SetValue("DisplayVersion", (release.BusinessVersion ?? "reference") + " · " + location.SourceCommit[..12]);
+        key.SetValue("DisplayVersion", release.BusinessVersion ?? "reference");
+        key.SetValue("QuietUninstallString", "\"" + executable + "\" /quiet /uninstall /norestart");
+        key.SetValue("EstimatedSize", (int)Math.Min(int.MaxValue, new DirectoryInfo(location.ReleaseRoot).EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length) / 1024), RegistryValueKind.DWord);
         key.SetValue("Publisher", "Importer PC reference project"); key.SetValue("InstallLocation", location.ReleaseRoot);
         key.SetValue("DisplayIcon", executable); key.SetValue("UninstallString", "\"" + executable + "\" --product-maintenance");
         key.SetValue("ModifyPath", "\"" + executable + "\" --product-maintenance");
@@ -116,7 +118,8 @@ public static partial class WindowsDeploymentSetup
             if (!TrustedProgramRoots.Contains(Path.Combine(MachineRoot, "deployments"), operation) || new FileInfo(operation).Length > 4 * 1024 * 1024) throw new InvalidDataException("Unsafe removal journal");
             plan = Wire.Decode<RemovalState>(File.ReadAllText(operation));
             ValidateRemovalState(plan, location);
-            if (originalMediaFiles is null || !plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
+            originalMediaFiles ??= InstalledInventory(location);
+            if (!plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
                 throw new InvalidDataException("原卸载清单与同源完整介质不一致，拒绝清理；原件保留");
         }
         execution?.Checkpoint(); execution?.BeginCommit(MaintenanceStage.RetiringDeployment);
@@ -158,8 +161,9 @@ public static partial class WindowsDeploymentSetup
             try { File.Delete(path); }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException)
             {
-                if (!scheduleDelete(path)) throw new Win32Exception(Marshal.GetLastWin32Error(), "卸载文件被占用且无法登记重启删除；保留操作回执");
-                restart = true; remaining.Add(Path.GetRelativePath(root, path));
+                var sharingViolation = error is IOException && (error.HResult & 0xFFFF) is 32 or 33;
+                if (sharingViolation && scheduleDelete(path)) restart = true;
+                remaining.Add(Path.GetRelativePath(root, path));
             }
         }
         // Only empty, inventoried directories; no recursive delete, no shared drivers,

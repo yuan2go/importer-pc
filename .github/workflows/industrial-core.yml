@@ -1,0 +1,73 @@
+name: Industrial core
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: industrial-core-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME: '1'
+jobs:
+  core-regression:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
+            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          global-json-file: global.json
+      - name: Locked restore and discovered core tests
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true --logger "trx;LogFileName=core.trx" --results-directory .artifacts/core
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
+          $testCounters = $testResult.TestRun.ResultSummary.Counters
+          if ([int]$testCounters.executed -lt 7 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
+      - name: Keep actual results including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: core-results-${{ github.sha }}
+          path: .artifacts/core
+          if-no-files-found: error
+          retention-days: 14
+  windows-build:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        business: [Sportmaster, DirectPlc, WcsToPlc]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
+            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          global-json-file: global.json
+      - name: Build the actual desktop composition
+        shell: pwsh
+        env:
+          IPC_BUSINESS: ${{ matrix.business }}
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet build src/Ipc.Desktop -c Release "-p:BusinessModule=$env:IPC_BUSINESS" -p:RestoreLockedMode=true -m:1
+          exit $LASTEXITCODE

@@ -58864,9 +58864,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "a4b86b09047be5ce595ab3c833a356485b54b924ca1dac8ac9661b9e0a7f0cec",
-      "size_bytes": 11621,
-      "git_blob": "5fa2cf0ba3ee8e75d1452e59d04ccf708450879c",
+      "sha256": "1299e68f80422076dbe48667c3b6c4baee457b91be29877d3ae867d4b5e5e1a4",
+      "size_bytes": 11828,
+      "git_blob": "a7bba60c1ec2de5572298d01e71dcb9fca497e1e",
       "previous_git_blob": "f27e7779cacb1b2dc39d4e86895bab4837bd9b0d"
     },
     {
@@ -94636,9 +94636,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "2030ea0d3ae2ad0edb9d83b52b62ed67711ae99234dbd1c8287b49ea58889182",
-      "size_bytes": 15422,
-      "git_blob": "7aed60ec7c3c6d9d767840b5137eeb5d5063f010"
+      "sha256": "3dd7b566c990f8c7ec55006eb07b620c3dcb92ca4a512660238e65aa18edc1f6",
+      "size_bytes": 16076,
+      "git_blob": "e9aaf61377da77cad1f37d299b352ead190e3896"
     },
     {
       "path": "tests/Ipc.Application.Verification/ArchitectureQualityRemediation.cs",
@@ -94647,9 +94647,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "82acb4f96046f59553b621ad3ad3be84f4c4231936ab963c77e1e91f0edeb3d3",
-      "size_bytes": 25476,
-      "git_blob": "c0e99f8fd40d6d87fe98e7a2b3cbf75ab7197d27"
+      "sha256": "6ddb01989e153c6dd3b721e138416b0861bb714712916982cfb9d31ef70961b8",
+      "size_bytes": 26490,
+      "git_blob": "f6895c7b4cdbd88e8466dd0659356214276f86ce"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/FirstConfigurationVerification.cs",
@@ -121911,9 +121911,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-OPERATOR-INTEGRATION-30; original evidence retains its own SourceCommit",
-      "sha256": "f7967da344bcb155026ef0e1804a1f0ac025e6088fa255f068f78ce9ed208fe3",
-      "size_bytes": 3083,
-      "git_blob": "12a4bfb1bd69a5e5288272f774cf2494c1045700",
+      "sha256": "522d4fa2e84f7ceaea7f300241c9051c22e9634cf67c1923f53494a990267db9",
+      "size_bytes": 3835,
+      "git_blob": "0306e4ce9e55fb9259f764cdb253c2f50bb363de",
       "storage_scope": "public_repository"
     },
     {

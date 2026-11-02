@@ -62,8 +62,10 @@ static partial class ArchitectureQuality
                 var held=await a.SnapshotAsync();var rejected=await a.CommandAsync(new(Wire.Id(),held.Revision,"ReconcileReceipt",occurrence,"Controlled monitor contention; no Query authorized"));
                 Console.WriteLine("Custody monitor held: "+Wire.Encode(new{Observed=ready.Availability,Held=held.Availability,Receipt=rejected}));
                 using var repo=new ParcelRepository(directory,c.ApplicationId);
-                Check(held.Availability?.Configure==false&&rejected.Status=="Rejected"&&rejected.Revision==ready.Revision&&repo.Revision==ready.Revision,
-                    "actual Monitor reservation after Configure=true safely refuses maintenance without revision change");
+                // Configure advertises SM's automatically quiesced configuration save,
+                // not permission to query an original receipt through an in-flight port.
+                Check(held.Availability?.Configure==true&&rejected.Status=="Rejected"&&rejected.Revision==ready.Revision&&repo.Revision==ready.Revision,
+                    "automatic configuration save stays advertised while actual Monitor contention fences receipt maintenance without revision change");
                 Check(Wire.Encode(repo.ReceiptResponsibilities(original.Id))==Wire.Encode(beforeRows)&&Wire.Encode(repo.ReadOperation(original.Id))==beforeOperation,
                     "held Monitor rejection creates no Query and preserves original Awaiting, owner, image and frozen requests");
             }

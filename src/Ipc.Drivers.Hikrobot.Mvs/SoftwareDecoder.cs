@@ -8,7 +8,7 @@ using ZXingCpp;
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
 // The same 3.1.1 engine used in the real-camera diagnostic, directly in .NET.
-// No image files, subprocess, Python runtime, barcode deduplication or RCS work.
+// No image files, subprocess, Python runtime, text/entity deduplication or RCS work.
 internal sealed partial class SoftwareDecoder(string charset, Action? prepareNative = null, Action<byte[], int>? contrastForVerification = null,
     Action<BarcodeReader>? searchOptionsForVerification = null, ReaderSettings? settings = null) : IMonoBarcodeDecoder
 {
@@ -98,9 +98,13 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
     {
         var pin = GCHandle.Alloc(pixels, GCHandleType.Pinned);
         Barcode[]? found = null;
+        ImageView? view = null;
         try
         {
-            found = engine.From(new ImageView(pin.AddrOfPinnedObject(), width, height, ImageFormat.Lum));
+            // This wrapper passes raw native handles. A temporary ImageView can
+            // be finalized during the unmanaged read under GC pressure.
+            view = new ImageView(pin.AddrOfPinnedObject(), width, height, ImageFormat.Lum);
+            found = engine.From(view);
             if (found.Length >= CandidateLimit) throw new MvsFrameRejection("CandidateLimit", "Recognition candidate limit reached; complete frame rejected");
             foreach (var code in found)
             {
@@ -117,7 +121,7 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
                     bool Inside(double x, double y) => x >= -.5 && x <= originalWidth - .5 && y >= -.5 && y <= originalHeight - .5;
                     if (!Inside((corners[0].X + corners[3].X) / 2d, (corners[0].Y + corners[3].Y) / 2d) ||
                         !Inside((corners[1].X + corners[2].X) / 2d, (corners[1].Y + corners[2].Y) / 2d))
-                        throw new MvsFrameRejection("InvalidGeometry", "Candidate baseline outside original pixels; complete frame rejected");
+                        throw new MvsFrameRejection("InvalidGeometry", "Candidate baseline outside original pixels; complete frame rejected: " + code.Format + "; " + string.Join("/", corners.Select(c => c.X + "," + c.Y)) + "; source=" + originalWidth + "x" + originalHeight);
                     corners = corners.Select(c => new ImagePoint(Math.Clamp(c.X, 0, originalWidth - 1), Math.Clamp(c.Y, 0, originalHeight - 1))).ToArray();
                 }
                 if (corners.Any(c => c.X < 0 || c.X >= originalWidth || c.Y < 0 || c.Y >= originalHeight))
@@ -128,7 +132,7 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
                     MergeCandidate(collected, symbol, original, originalWidth, originalHeight);
             }
         }
-        finally { try { if (found is not null) foreach (var code in found) code.Dispose(); } finally { pin.Free(); } }
+        finally { GC.KeepAlive(view); GC.KeepAlive(engine); try { if (found is not null) foreach (var code in found) code.Dispose(); } finally { pin.Free(); } }
     }
     internal static bool ExpandContrast(Span<byte> pixels)
     {

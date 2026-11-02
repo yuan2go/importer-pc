@@ -90,6 +90,27 @@ internal static class ReaderRobustness28
             catch (MvsFrameRejection error) when (error.Message.Contains("candidate limit", StringComparison.OrdinalIgnoreCase)) { capacityRejected = true; }
             Check(capacityRejected, "a frame reaching the 64-candidate limit is rejected in full rather than selecting a truncated subset");
             Check(ordinary.Decode(a.Data, a.Data.Length, a.Width, a.Height).SequenceEqual(new[] { "SYNTH-SAME-28" }), "candidate-limit rejection releases native results and leaves the next frame usable");
+            using var gcStop = new CancellationTokenSource(); using var gcStarted = new ManualResetEventSlim(); var collections = 0;
+            var collector = Task.Run(() => { gcStarted.Set(); while (!gcStop.IsCancellationRequested) { GC.Collect(); GC.WaitForPendingFinalizers(); Interlocked.Increment(ref collections); Thread.Sleep(1); } });
+            var completed = 0;
+            try
+            {
+                if (!gcStarted.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException("GC stress owner did not start");
+                for (var frame = 0; frame < 32; frame++)
+                {
+                    var pooled = System.Buffers.ArrayPool<byte>.Shared.Rent(a.Data.Length);
+                    try
+                    {
+                        a.Data.CopyTo(pooled, 0); var result = ordinary.DecodeDetailed(pooled, a.Data.Length, a.Width, a.Height);
+                        if (result is not [{ Text: "SYNTH-SAME-28" }] || result[0].Corners.Any(p => p.X < 0 || p.X >= a.Width || p.Y < 0 || p.Y >= a.Height) || !pooled.AsSpan(0, a.Data.Length).SequenceEqual(a.Data))
+                            throw new InvalidOperationException("Native view ownership failed under concurrent GC");
+                        completed++;
+                    }
+                    finally { System.Buffers.ArrayPool<byte>.Shared.Return(pooled, true); }
+                }
+            }
+            finally { gcStop.Cancel(); collector.GetAwaiter().GetResult(); }
+            Check(completed == 32 && collections > 0, "32 consecutive pooled-frame decodes survive concurrent GC/finalizers with exact payload, in-bounds corners and unchanged source pixels");
         }
         finally { ordinary.Release(); }
         var qrOnly = new SoftwareDecoder("utf-8", () => { }, settings: new(["QRCode"], false)); qrOnly.Prepare();

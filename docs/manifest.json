@@ -105180,9 +105180,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "MVS software recognition and bounded local RCS validation",
       "source": "MVS-SOFTWARE-READER-01; production and historical evidence retain their own scope",
-      "sha256": "3645d32603395487c710897e13a00725cfda9b66e664434f4e5727c3aacb11c9",
-      "size_bytes": 11146,
-      "git_blob": "d9a712a1dd7da1516600660c877f77fae02772bb",
+      "sha256": "19a270fe5d9106d69388221917209ffd9d9a3d84b5354ea11073154c73d0e5c2",
+      "size_bytes": 11536,
+      "git_blob": "f51c950a6c688beccee4dd18c5cec36b49c467a3",
       "storage_scope": "public_repository"
     },
     {
@@ -121075,9 +121075,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-ROBUSTNESS-28; original evidence retains its own SourceCommit",
-      "sha256": "21a1bfe7bcea51413c9d548b91bf6f8c81f15955685b1e2a0c4f02f6c8630c0f",
-      "size_bytes": 3973,
-      "git_blob": "aa6aff479b3e90efec876bf5f38c816b7db272c6",
+      "sha256": "8646f36f886b6a679f3a2b1b620291cd1a2f7adef0f1b556edfe0d7bf4cace9d",
+      "size_bytes": 4430,
+      "git_blob": "fa8b66b36b92b58a361c13def6d013432c73bc69",
       "storage_scope": "public_repository"
     },
     {
@@ -121086,9 +121086,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-ROBUSTNESS-28; original evidence retains its own SourceCommit",
-      "sha256": "c6fc2b0290b6fa5a5cf2bbccc951f9ae9e1a1fad184782934a3aa8890619a494",
-      "size_bytes": 2272,
-      "git_blob": "ce6432a960d952041e570ff2d7084b2324e19212",
+      "sha256": "4ff94b0749e26603cc772383013f0b33954eba38e161305677f4b8702631458a",
+      "size_bytes": 2713,
+      "git_blob": "3ba3be0788bd4790f0c2f60701fd744a35960492",
       "storage_scope": "public_repository"
     },
     {
@@ -121119,9 +121119,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-READER-ROBUSTNESS-28; original evidence retains its own SourceCommit",
-      "sha256": "ee717fef53fa3200af6d83ef0e0e5b7e9a7035fba3909c5d068410d9081f930d",
-      "size_bytes": 13628,
-      "git_blob": "cf10407836db2c3b349ba785aea0f5d93ce6152c",
+      "sha256": "c7c950097299dc4bc9cf0e1108679c9f840fec2c4064459ed4fb55737e6fd4f9",
+      "size_bytes": 15286,
+      "git_blob": "5fa25db29c414aa90b37fe6f29595a9848e71536",
       "storage_scope": "public_repository"
     },
     {

@@ -57,6 +57,7 @@ static partial class Program
             await SetClient(window, 1366, 768);
             await Until(() => ((TextBlock)window.FindName("PaceBadge")).Text.Contains("本班取得格口 1 次"));
             Check(h.Peer.Requests.Count == 1, "persisted pace reads the one accepted request without sending another");
+            Check(new System.Windows.Automation.Peers.ButtonAutomationPeer(paceLink).GetName().Contains("本班取得格口 1 次"), "pace navigation accessible name includes the current persisted count");
             var menu = Descendants(window).OfType<ManagementModeMenu>().Single();
             Check(Descendants(menu).OfType<TextBlock>().Any(t => t.Text.StartsWith("管理 · 剩")), "management countdown projects server expiry");
             await window.ViewModel.EnsureMaintenanceLoadedAsync();

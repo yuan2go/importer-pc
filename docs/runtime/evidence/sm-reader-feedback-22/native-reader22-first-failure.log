@@ -1,0 +1,12 @@
+PASS READER22-NATIVE startup restores a visible explicit left input target after viewport readiness
+PASS READER22-NATIVE deactivation clears the visible target without taking text from another window
+PASS READER22-NATIVE dialog return restores this window's recent right input and preserves the real draft
+PASS READER22-NATIVE explicit keyboard focus on a workspace action remains available
+PASS READER22-NATIVE native scanner text moves from picture button to the recent entry before Enter; submits one complete new barcode without opening a picture
+PASS READER22-NATIVE history navigation does not steal focus into a detached workstation entry
+PASS READER22-NATIVE return to workstation restores the most recently used position
+FAIL System.InvalidOperationException: native expired-feedback surface ends processing and hides all previous task/picture authority
+   at Program.<VerifyReaderFeedback22Ui>g__Check|54_0(Boolean ok, String text, <>c__DisplayClass54_0&) in D:\w\ipc-reader-feedback-22\tests\Ipc.Desktop.UiVerification\ReaderFeedback22Ui.cs:line 17
+   at Program.VerifyReaderFeedback22Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-feedback-22\tests\Ipc.Desktop.UiVerification\ReaderFeedback22Ui.cs:line 63
+   at Program.VerifyReaderFeedback22Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-feedback-22\tests\Ipc.Desktop.UiVerification\ReaderFeedback22Ui.cs:line 103
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-reader-feedback-22\tests\Ipc.Desktop.UiVerification\Program.cs:line 62

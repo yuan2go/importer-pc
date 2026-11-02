@@ -1,0 +1,104 @@
+[
+  {
+    "file": "Ipc.Application.Contracts.dll",
+    "bytes": 299008,
+    "sha256": "1C87877086FF1A9E2A18BF15F5A0C304B728800D1BC897B3062B2642E1A1DDF6",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Application.ParcelFlow.Desktop.dll",
+    "bytes": 1862144,
+    "sha256": "3557C342A5EDFBABDA969BEFCBE1A428E37C10CABDD7F1059392C75A3BF956F9",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Application.ParcelFlow.dll",
+    "bytes": 1000448,
+    "sha256": "6FD832EB6A5CA3816A21B942BB7C248F9E26BE9C86A47876ABC692C0A175897D",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Application.Sportmaster.Desktop.dll",
+    "bytes": 322048,
+    "sha256": "1346764735205E19397B35EA51C9E156816FA750186FC4470603072643E6C3FD",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Application.Sportmaster.dll",
+    "bytes": 15360,
+    "sha256": "E93A4A5D6958EC96F7FEAE844EDB43EBF97114E8B8B9BAEC641473043FFF64C3",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Assembly.dll",
+    "bytes": 272896,
+    "sha256": "353C3B0151B3B4A439F43807B26B4AE9004B23F179BFA44BB5E6D388CA05F3F6",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Components.dll",
+    "bytes": 11264,
+    "sha256": "208EE7DF6A01522BDAFC4BB361CF52C2213892E242D6FC9C4917B98A83FD9D28",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Desktop.dll",
+    "bytes": 1434112,
+    "sha256": "A52670106B518D3A2DEA8817A969F0FCC1F216D4891C80D9122345E5F10C261D",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Drivers.dll",
+    "bytes": 45568,
+    "sha256": "7B95899B31EA662E082C5E2495409C7BCBA549A8CFEEE920282159ED05FDED16",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Drivers.Hikrobot.Mvs.dll",
+    "bytes": 115712,
+    "sha256": "5CC6B4854AB517E02E59DB4B4F89A35B31966AC9EBD0A73215C85FA1A92971BF",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Integrations.dll",
+    "bytes": 21504,
+    "sha256": "AC551CF8421D06C88236424FAF16E950A5FEFE2579CDCDDBF5F94C32DE8053AC",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Platform.dll",
+    "bytes": 609792,
+    "sha256": "96517545C3255D4D99EBAD8A4B5BAEBE4DBB4F0D2EB7B77AFDC18F98F2A9122C",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Platform.Storage.dll",
+    "bytes": 12288,
+    "sha256": "89917583E6249AB9D3B83FEECCA4351ACE9660EEF416650A86F511D75C6E2975",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Presentation.Wpf.dll",
+    "bytes": 32982016,
+    "sha256": "8C197CA0F308F038B712CC3FFF5737A69A0EA2F15F0B25D05D7657D9949AF510",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Reference.Protocol.dll",
+    "bytes": 32768,
+    "sha256": "803633E6F470BE4C737D9E210F22DDE768A9B137CC1C33D06B82787E68D03338",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Supply.Contracts.dll",
+    "bytes": 130560,
+    "sha256": "3B34F664F2986D667CA73E7623E7A9C2BD6600EC6424F7838F4784C9EA790ACC",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  },
+  {
+    "file": "Ipc.Supply.dll",
+    "bytes": 182784,
+    "sha256": "570F207CFF68E7A4D9AACED195366BFE507EE361D7E2628F1C443C80F0471EC4",
+    "version": "1.0.0+da26848a755a5fcba13e26564e0ad0789367f122"
+  }
+]

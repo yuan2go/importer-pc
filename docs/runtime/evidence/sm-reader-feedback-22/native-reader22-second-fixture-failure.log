@@ -1,0 +1,18 @@
+PASS READER22-NATIVE startup restores a visible explicit left input target after viewport readiness
+PASS READER22-NATIVE deactivation clears the visible target without taking text from another window
+PASS READER22-NATIVE dialog return restores this window's recent right input and preserves the real draft
+PASS READER22-NATIVE explicit keyboard focus on a workspace action remains available
+PASS READER22-NATIVE native scanner text moves from picture button to the recent entry before Enter; submits one complete new barcode without opening a picture
+PASS READER22-NATIVE history navigation does not steal focus into a detached workstation entry
+PASS READER22-NATIVE return to workstation restores the most recently used position
+PASS READER22-NATIVE native expired-feedback surface ends processing and hides all previous task/picture authority
+CAPTURE reader22-expired-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS READER22-NATIVE 1366 expired feedback exposes at least a complete actionable reason line
+CAPTURE reader22-expired-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS READER22-NATIVE 800 expired feedback exposes at least a complete actionable reason line
+FAIL System.InvalidOperationException: Sequence contains no matching element
+   at System.Linq.ThrowHelper.ThrowNoMatchException()
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source, Func`2 predicate)
+   at Program.VerifyReaderFeedback22Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-feedback-22\tests\Ipc.Desktop.UiVerification\ReaderFeedback22Ui.cs:line 80
+   at Program.VerifyReaderFeedback22Ui(String root, String evidence, List`1 lines) in D:\w\ipc-reader-feedback-22\tests\Ipc.Desktop.UiVerification\ReaderFeedback22Ui.cs:line 104
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-reader-feedback-22\tests\Ipc.Desktop.UiVerification\Program.cs:line 62

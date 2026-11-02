@@ -1,0 +1,7 @@
+{
+  "script_bytes_equal_to_commit": "da26848a755a5fcba13e26564e0ad0789367f122",
+  "script_sha256": "699FB714066DFDB9A9A4759FBEE7A4B87B711F8D1A2F7523BC0BD553446F031D",
+  "command": "./scripts/measure-original-frame-growth.ps1 -OriginalFramesDirectory <synthetic-D-drive-fixture> -DurationMinutes 0.1",
+  "fixture": "growth-final-positive-fixture.json",
+  "execution_scope": "Same local candidate bytes subsequently frozen in da26848a; two snapshots, no deletion; not field throughput"
+}

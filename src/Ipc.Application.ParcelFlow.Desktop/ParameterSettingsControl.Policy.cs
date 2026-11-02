@@ -38,14 +38,14 @@ public sealed partial class ParameterSettingsControl
         Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "剩余空间低于此值时暂停接收新包裹。");
         Input(form, "日志保留天数", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "默认 7 天。只清理诊断日志，不删除作业记录；留空则按容量自动轮换。");
         Input(form, "已结数据保留天数", m.Policy, "HistoryDays", "HistoryDays", data, "默认 7 天，可填 7–30 天。到期后清理已完成的作业明细，未处理完的作业始终保留；留空则不清理。");
-        data.Body.Children.Add(Text("保留天数保存并重启后生效。软件运行期间不会批量删除记录。"));
+        data.Body.Children.Add(Text("保留天数保存并重启后生效。只有明确启用自动清理并满足空闲、备份和责任保护条件时，才会后台清理。"));
         if (RuntimeContext is { } retentionContext)
         {
             var maintain = new Button { Content = "停止软件并清理到期记录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             maintain.Click += async (_, _) => { if (retentionContext.RequestRetentionAsync is { } request) await request(); else retentionContext.Message = "请先暂停并退出软件，再从开始菜单的“配置工具”清理到期记录。"; };
             data.Body.Children.Add(maintain);
         }
-        Technical(data, "到期记录清理", "HistoryDays", "保存并重启后生效。清理时需先暂停并退出软件，系统会先备份，再删除到期的已完成记录；未处理完的作业不会被删除。");
+        Technical(data, "到期记录清理", "HistoryDays", "保存并重启后生效。手动清理需先暂停并退出软件；自动清理由已生效策略在空闲窗口执行。两者都先完整备份，未处理完的作业不会被删除。");
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "未取得配置目录。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
@@ -75,6 +75,17 @@ public sealed partial class ParameterSettingsControl
         }
         Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "完整备份由数据库文件和同名恢复文件夹组成，恢复时两者都需要。关闭自动备份不会删除已有备份。");
         var display = Page(0, "显示偏好", m.ApplicationId == "sportmaster" ? "设置本机窗口的打开方式和布局。" : "仅影响本机显示。");
+        if (m.ApplicationId == "sportmaster")
+        {
+            var pace = new CheckBox { Content = "作业页显示本班取得格口次数与近十分钟速度", MinHeight = 44 };
+            bool readable = true;
+            try { pace.IsChecked = Ipc.Platform.PresentationPreferences.Read("sportmaster", "pace") ?? true; }
+            catch (Exception error) { readable = false; display.Body.Children.Add(Text("效率偏好读取失败，原文件保留：" + error.Message)); }
+            pace.IsEnabled = readable; display.Body.Children.Add(pace);
+            var savePace = new Button { Content = "应用效率显示", MinHeight = 44, IsEnabled = readable, HorizontalAlignment = HorizontalAlignment.Left };
+            savePace.Click += async (_, _) => { try { if (RuntimeContext is { } context) await context.RequireManagementModeAsync(); Ipc.Platform.PresentationPreferences.Save("sportmaster", "pace", pace.IsChecked == true); } catch (Exception error) { if (RuntimeContext is { } context) context.Message = "效率偏好未保存：" + error.Message; } };
+            display.Body.Children.Add(savePace);
+        }
         if (m.ApplicationId != "sportmaster" && RuntimeContext is { } runtime)
         {
             form = Form(display);

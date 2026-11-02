@@ -145,7 +145,8 @@ public sealed partial class ParameterSettingsControl
         if (isRcs)
         {
             var numbers = Form(page, "请求编号区间");
-            foreach (var p in draft.Parameters.Where(p => p.Field.Key is "request-id-base" or "request-id-count")) Parameter(numbers, page, draft, p);
+            if (Model!.ApplicationId == "sportmaster") RequestRange(numbers, page, draft);
+            else foreach (var p in draft.Parameters.Where(p => p.Field.Key is "request-id-base" or "request-id-count")) Parameter(numbers, page, draft, p);
         }
         var form = Form(page, draft.Kind == "observation" ? "连接" : isRcs ? "协议与心跳" : null);
         var advanced = new List<CapabilityParameter>();

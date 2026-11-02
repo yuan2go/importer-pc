@@ -204,8 +204,7 @@ public sealed partial class ParcelRuntime
                 return new("PendingRestart", "Identical candidate already saved; Effective unchanged", repository.Revision);
             }
             Management.Require();
-            if (Id == "sportmaster" && configuration.Current.Pending is null &&
-                Wire.Encode(candidate with { BarcodeFilter = Effective.BarcodeFilter }) == Wire.Encode(Effective))
+            if (ConfigurationActivation.RulesOnly(Id, Effective, configuration.Current.Pending, candidate))
             {
                 // No queued observation may silently acquire a new interpretation.
                 // Existing operations retain their complete FrozenConfiguration.
@@ -293,7 +292,7 @@ public sealed partial class ParcelRuntime
         if (stopped) return;
         Task startup;
         lock (startupOwnership) { stopRequested = true; startup = started ? startupEnded.Task : Task.CompletedTask; }
-        FenceIngress(); stopping.Cancel();
+        FenceIngress(); stopping.Cancel(); StopDebugLogging();
         // Cancellation ends this caller's wait only. Startup may still be inside
         // an uncancellable adapter call or writing its terminal audit.
         await startup.WaitAsync(token).ConfigureAwait(false);

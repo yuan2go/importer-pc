@@ -1,3 +1,5 @@
+> 2026-11-02 当前页面增量以 [SM-UI-SPEC-CLOSURE-24](work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08 页面改造延期，保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。
+
 > 2026-11-02 读码反馈与操作可靠性见 [READER-FEEDBACK-22](work-packages/WP-IPC-SM-READER-FEEDBACK-22.md)、[运行说明](runtime/sm-reader-feedback-22.md)：补齐信任拒收终态、反馈周期/时效、全码制映射、输入焦点和独立音频/音量；替代旧超时处置文案，保留逐次上报、原请求责任及现场待验边界。
 > 2026-11-02 DB22本机实际更新发现的私有WAL句柄及原件身份补修见 [DB11-WAL-HANDLE-23](work-packages/WP-IPC-DB11-WAL-HANDLE-23.md)。原数据首次写入前失败，保全原件；本轮补齐WAL模式关闭和升级回归后重新出包。既有验证保持原来源。
 

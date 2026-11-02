@@ -15,6 +15,7 @@ public partial class SupplyStationWindow
     bool focusRestoreQueued;
     void BuildOperatorWorkspace()
     {
+        InitializePace();
         workContent.Children.Add(work);
         Deactivated += (_, _) => ViewModel.SetInputTarget("");
         Activated += (_, _) => RestoreBarcodeFocus();
@@ -23,6 +24,8 @@ public partial class SupplyStationWindow
         {
             if (args.PropertyName == nameof(ViewModel.InputTargetPosition) && ViewModel.InputTargetPosition is "left" or "right")
                 recentInputPosition = ViewModel.InputTargetPosition;
+            if (args.PropertyName == nameof(ViewModel.SelectedPage)) ViewModel.NotifyPaceVisibility();
+            if (args.PropertyName == nameof(ViewModel.Fresh) && !ViewModel.Fresh) ViewModel.SetPace(null);
             if (args.PropertyName == nameof(ViewModel.SelectedPage) && ViewModel.SelectedPage == "workstation") RestoreBarcodeFocus();
         };
         PreviewTextInput += (_, args) =>
@@ -33,6 +36,31 @@ public partial class SupplyStationWindow
                 args.Text.Length == 0 || args.Text.Any(char.IsControl) || Keyboard.FocusedElement is not ButtonBase) return;
             if (RecentPosition() is { } position) { args.Handled = true; position.ReceiveScannerText(args.Text); }
         };
+    }
+    void InitializePace()
+    {
+        try { ViewModel.SetPaceVisibility(Ipc.Platform.PresentationPreferences.Read("sportmaster", "pace") ?? true); }
+        catch (Exception error) { ViewModel.Message = "效率显示偏好读取失败，原文件保留：" + error.Message; }
+        void Preference(string app, string surface, bool visible) { if (app == "sportmaster" && surface == "pace") Dispatcher.InvokeAsync(() => ViewModel.SetPaceVisibility(visible)); }
+        Ipc.Platform.PresentationPreferences.DisplayChanged += Preference;
+        Closed += (_, _) => Ipc.Platform.PresentationPreferences.DisplayChanged -= Preference;
+        var paceTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        CancellationTokenSource? lifetime = null; bool reading = false; StationPace.Value? last = null;
+        async Task Read()
+        {
+            ViewModel.SetPace(last);
+            if (reading || lifetime is null || ViewModel.SelectedPage != "workstation" || !ViewModel.Fresh) return;
+            reading = true; var token = lifetime.Token;
+            try { var value = await StationPace.Read(ViewModel.Application).WaitAsync(token); if (!token.IsCancellationRequested) { last = value; ViewModel.SetPace(value); } }
+            catch (OperationCanceledException) { }
+            catch (Exception error) { last = null; ViewModel.SetPace(null); PaceBadge.ToolTip = "统计读取中断：" + Ipc.Platform.DiagnosticText.Protect(error.Message); }
+            finally { reading = false; }
+        }
+        paceTimer.Tick += async (_, _) => await Read();
+        Loaded += async (_, _) => { lifetime = new(); paceTimer.Start(); await Read(); };
+        Closed += (_, _) => { paceTimer.Stop(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; };
+        var menu = new ContextMenu(); var hide = new MenuItem { Header = "隐藏作业效率", ToolTip = "只改变当前 Windows 用户的显示偏好" };
+        hide.Click += async (_, _) => { try { await ViewModel.RequireManagementModeAsync(); Ipc.Platform.PresentationPreferences.Save("sportmaster", "pace", false); ViewModel.SetPaceVisibility(false); } catch (Exception error) { ViewModel.Message = error.Message; } }; menu.Items.Add(hide); PaceBadge.ContextMenu = menu;
     }
     bool CanRestoreBarcodeFocus => IsLoaded && IsActive && IsEnabled && !closing && !closed &&
         ViewModel.SelectedPage == "workstation" && ViewModel.ViewportReady && !OwnedWindows.OfType<Window>().Any(w => w.IsVisible && w.IsActive);

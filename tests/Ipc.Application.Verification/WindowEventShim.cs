@@ -101,11 +101,12 @@ namespace Ipc.Application.ParcelFlow.Desktop
         public static bool ConfirmDiscard(System.Windows.Window window, int count) => false;
         public static Task<bool> ReviewUnsavedAsync(System.Windows.Window window, int count, Func<Task>? save, string action) => Task.FromResult(false);
     }
-    public class SoftwareLogControl(Ipc.Application.Contracts.IWorkstationAdministration service) : System.Windows.FrameworkElement { public Ipc.Application.Contracts.IWorkstationAdministration Service { get; } = service; }
-    public class HistoryPage { public object? DataContext { get; set; } }
+    public class SoftwareLogControl(Ipc.Application.Contracts.IWorkstationAdministration service) : System.Windows.FrameworkElement { public Ipc.Application.Contracts.IWorkstationAdministration Service { get; } = service; public event EventHandler<string>? OperationRequested { add { } remove { } } public Task ShowOperationAsync(string id) => Task.CompletedTask; }
+    public class HistoryPage { public object? DataContext { get; set; } public event EventHandler<string>? LogsRequested { add { } remove { } } }
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
     public class MaintenancePage
     {
+        public Func<string, System.Windows.FrameworkElement>? CameraPreviewFactory { get; set; }
         public bool IsEnabled { get; set; }
         public object? DataContext { get; set; }
         public event EventHandler? DisplayPreferencesRequested { add { } remove { } }
@@ -114,6 +115,7 @@ namespace Ipc.Application.ParcelFlow.Desktop
 }
 namespace Ipc.Application.Sportmaster.Desktop
 {
+    internal sealed class StationCameraPreviewControl(SupplyStationViewModel vm, double previewHeight = 286, bool showDiagnostics = true) : System.Windows.FrameworkElement { public void SelectDevice(string device) { } public SupplyStationViewModel Model => vm; public double HeightBudget => previewHeight; public bool ShowsDiagnostics => showDiagnostics; }
     public class SupplyStationPosition { public object? DataContext { get; set; } }
     // Cross-platform event harness only; the real control is exercised by
     // Ipc.Desktop.UiVerification --camera-debug on Windows.

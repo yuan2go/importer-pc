@@ -11,7 +11,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class SoftwareLogControl
 {
     readonly CheckBox debugMode = new() { Content = "调试模式", MinHeight = 44, Margin = new(4, 0, 8, 4), IsEnabled = false,
-        ToolTip = "开启后立即记录详细的扫码、请求、响应和耗时；重启软件后自动关闭。" };
+        ToolTip = "开启后记录详细日志，三十分钟后由运行时自动关闭；重启后关闭。" };
     readonly CheckBox liveFollow = new() { Content = "实时跟随", MinHeight = 44, Margin = new(0, 0, 8, 4), Visibility = Visibility.Collapsed,
         ToolTip = "实时显示新写入的日志（按当前关键词、级别、来源筛选）。" };
     readonly Button pauseDisplay = new() { Content = "暂停显示", MinHeight = 44, Margin = new(0, 0, 8, 4), Visibility = Visibility.Collapsed,
@@ -30,7 +30,9 @@ public sealed partial class SoftwareLogControl
     void InitializeRuntimeDiagnostics(WrapPanel actions)
     {
         debugMode.Visibility = RuntimeDiagnostics is null ? Visibility.Collapsed : Visibility.Visible;
-        actions.Children.Add(debugMode); actions.Children.Add(liveFollow); actions.Children.Add(pauseDisplay);
+        // SM owns this setting on the diagnostics page; other applications retain their existing control.
+        if (service is not IStationOperations) actions.Children.Add(debugMode);
+        actions.Children.Add(liveFollow); actions.Children.Add(pauseDisplay);
         AutomationProperties.SetName(debugMode, "调试模式（立即生效）"); AutomationProperties.SetAutomationId(debugMode, "DebugLoggingMode");
         AutomationProperties.SetName(liveFollow, "实时跟随日志"); AutomationProperties.SetAutomationId(pauseDisplay, "PauseLogDisplay");
         debugMode.Checked += async (_, _) => { if (!updatingDebugControl) await SetDebugMode(true); };
@@ -155,7 +157,7 @@ public sealed partial class SoftwareLogControl
             if (json.RootElement.TryGetProperty("At", out var time) && time.ValueKind == JsonValueKind.String && time.TryGetDateTimeOffset(out var original)) at = original;
         }
         catch (JsonException) { }
-        return new(new("live", entry.Sequence, "", "当前运行日志"), source, at, level, entry.Text);
+        return SoftwareLogFacts.Enrich(new(new("live", entry.Sequence, "", "当前运行日志"), source, at, level, entry.Text));
     }
     async Task PollLive()
     {
@@ -169,8 +171,7 @@ public sealed partial class SoftwareLogControl
             var text = await Task.Run(() =>
             {
                 var regex = filter.Regex ? new Regex(filter.Keyword, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(25)) : null;
-                var entries = batch.Entries.Select(RuntimeEntry).Where(e => (filter.Level.Length == 0 || filter.Level == e.Level) &&
-                    (filter.Source.Length == 0 || e.Source.Contains(filter.Source, StringComparison.OrdinalIgnoreCase)) &&
+                var entries = batch.Entries.Select(RuntimeEntry).Where(e => SoftwareLogFacts.Matches(e, filter) &&
                     (regex?.IsMatch(e.Text) ?? e.Text.Contains(filter.Keyword, StringComparison.OrdinalIgnoreCase)));
                 return SoftwareLogText.Format(entries, token);
             }, token);

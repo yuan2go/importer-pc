@@ -49,7 +49,7 @@ public partial class ParcelViewModel
         Message = "筛选已清除，点击“查询”刷新列表。";
     }
     public string[] HistoryStates => ["", .. Enum.GetNames<ParcelState>()];
-    public string HistoryMetricsSummary { get; private set; } = "统计口径：每件包裹单独计数，相同条码不合并。";
+    public string HistoryMetricsSummary { get; private set; } = "统计口径：按作业与请求事实统计，相同条码的独立观察分别记录；不代表实物落格件数。";
     ParcelHistorySelection? historySelection;
     string? appliedHistorySignature;
     string HistoryFilterSignature() => Ipc.Platform.Wire.Encode(new[] { HistoryBarcode, HistoryPosition, HistoryState, HistoryFrom, HistoryToExclusive, HistoryRequest });

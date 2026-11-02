@@ -55,6 +55,13 @@ static class SoftwareLogText
         try
         {
             using var json = JsonDocument.Parse(text);
+            if (json.RootElement.ValueKind == JsonValueKind.Object && json.RootElement.TryGetProperty("Source", out var origin) && origin.ValueKind == JsonValueKind.String && origin.GetString() == "RCS结果" && json.RootElement.TryGetProperty("Detail", out var payload) && payload.ValueKind == JsonValueKind.String)
+            {
+                using var result = JsonDocument.Parse(payload.GetString()!); var r = result.RootElement;
+                string Field(string key) => r.TryGetProperty(key, out var v) ? v.ValueKind == JsonValueKind.String ? v.GetString() ?? "—" : v.ToString() : "—";
+                var state = Field("Result") switch { "Accepted" => "取得格口", "Rejected" => "未分配格口", "Unknown" or "Conflict" => "格口未确认", var other => other };
+                return OneLine(Field("PositionId") + " · " + Field("ParcelCode") + " · " + Field("RequestId") + " · " + state + " · 格口 " + Field("Slot") + " · " + Field("ElapsedMs") + " ms");
+            }
             if (json.RootElement.ValueKind == JsonValueKind.Object)
                 foreach (var name in new[] { "message", "Message", "detail", "Detail", "event", "Event" })
                     if (json.RootElement.TryGetProperty(name, out var item) && item.ValueKind == JsonValueKind.String) return OneLine(item.GetString() ?? text);

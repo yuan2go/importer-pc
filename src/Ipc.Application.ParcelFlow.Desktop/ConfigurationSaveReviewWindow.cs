@@ -79,6 +79,14 @@ public sealed class ConfigurationSaveReviewWindow : Window
             authentication.Header = "管理模式"; authentication.Content = login; authentication.IsExpanded = !vm.IsManagementMode; body.Children.Add(authentication);
         }
         body.Children.Add(Heading(authorizationOnly ? "操作说明" : "变更原因 *", UiTypography.Group, 12));
+        var reasons = new WrapPanel();
+        foreach (var preset in new[] { "RCS 地址变更", "更换相机", "调整条码规则", "现场调试" })
+        {
+            var choose = new Button { Content = preset, MinHeight = 44, Margin = new(0, 0, 8, 8) };
+            choose.Click += (_, _) => { reason.Text = preset; reason.Focus(); reason.CaretIndex = reason.Text.Length; };
+            reasons.Children.Add(choose);
+        }
+        body.Children.Add(reasons);
         reason.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.ConfigurationReason)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         reason.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); AutomationProperties.SetName(reason, "维护变更原因");
         reason.TextChanged += (_, _) => reasonError.Visibility = Visibility.Collapsed; body.Children.Add(reason); body.Children.Add(reasonError);
@@ -156,6 +164,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         table.Columns.Add(new DataGridTextColumn { Header = "所在页面", Binding = new Binding(nameof(ConfigurationChangeItem.Location)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "原值", Binding = new Binding(nameof(ConfigurationChangeItem.Before)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "更改后", Binding = new Binding(nameof(ConfigurationChangeItem.After)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });
+        table.Columns.Add(new DataGridTextColumn { Header = "生效方式", Binding = new Binding(nameof(ConfigurationChangeItem.Activation)), Width = new(1.4, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         var rowStyle = new Style(typeof(DataGridRow)); rowStyle.Setters.Add(new Setter(ToolTipProperty, new Binding(nameof(ConfigurationChangeItem.TechnicalPath)))); table.RowStyle = rowStyle;
         AutomationProperties.SetName(table, "本次设置更改"); return table;
     }

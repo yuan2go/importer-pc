@@ -34,9 +34,11 @@ public partial class SupplyStationWindow : Window
         WindowOpeningPreference.Attach(this, "sportmaster", message => ViewModel.Message = message);
         // Cached pages retain their binding source while detached from PageHost.
         // Inherited DataContext would transiently clear/rebuild the draft controls.
+        maintenance.CameraPreviewFactory = instance => { var preview = new StationCameraPreviewControl(ViewModel, 110, false); preview.SelectDevice(ViewModel.ReaderDrafts.FirstOrDefault(r => r.Capability.InstanceId == instance)?.Original.DeviceId ?? instance); return preview; };
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         maintenance.DiagnosticsRequested += (_, target) => ShowObjectDiagnostics(target);
+        history.LogsRequested += async (_, id) => { SetPage("logs"); if (ViewModel.SelectedPage == "logs") await ViewModel.RunAsync(() => logs!.ShowOperationAsync(id), "读取所选作业日志"); };
         ViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(ViewModel.IsManagementMode)) EnforceManagementModeView();
@@ -87,7 +89,13 @@ public partial class SupplyStationWindow : Window
         if (page is "maintenance" or "diagnostics" or "logs" or "debug" or "maintenance-center" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "maintenance-center" => maintenanceCenter ??= CreateMaintenanceCenter(), "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application), _ => workContent };
+        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "maintenance-center" => maintenanceCenter ??= CreateMaintenanceCenter(), "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= CreateOperationLogs(), _ => workContent };
+    }
+    SoftwareLogControl CreateOperationLogs()
+    {
+        var control = new SoftwareLogControl((IWorkstationAdministration)ViewModel.Application);
+        control.OperationRequested += async (_, id) => await ShowDetailsAsync(id);
+        return control;
     }
     void Debug_Click(object sender, RoutedEventArgs e) => SetPage("debug");
     public void ShowPositionDebug(SupplyStationPositionViewModel position)

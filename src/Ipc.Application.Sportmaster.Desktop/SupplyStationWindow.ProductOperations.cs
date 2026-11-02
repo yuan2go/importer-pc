@@ -73,11 +73,15 @@ public partial class SupplyStationWindow
     FrameworkElement CreateMaintenanceCenter()
     {
         var body = new StackPanel { Margin = new(24, 20, 24, 16) }; body.Children.Add(ProductText("维护中心", title: true));
+        var tasks = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Stretch };
+        var attention = ProductText(""); body.Children.Add(attention);
+        void Attention() => attention.Text = "待核对包裹 " + (ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0) + " · " + (ViewModel.Snapshot?.Configuration.Pending is null ? "没有待重启设置" : "配置已保存待重启");
+        body.Loaded += (_, _) => Attention();
         body.Children.Add(ProductText("请选择要做的维护。前五项在软件运行中完成；恢复备份、换机和修复/卸载需先完全停止软件。软件暂停不是安全急停。"));
         void TaskRow(string name, string description, string action, Func<Task> run)
         {
             var row = new DockPanel { Margin = new(0, 12, 0, 8) }; var button = ProductButton(action, run); DockPanel.SetDock(button, Dock.Right); row.Children.Add(button);
-            var text = new StackPanel(); text.Children.Add(new TextBlock { Text = name, FontWeight = UiTypography.Emphasis }); text.Children.Add(ProductText(description)); row.Children.Add(text); body.Children.Add(row);
+            var text = new StackPanel(); text.Children.Add(new TextBlock { Text = name, FontWeight = UiTypography.Emphasis }); text.Children.Add(ProductText(description)); row.Children.Add(text); tasks.Children.Add(row);
         }
         TaskRow("连接或供包异常", "查看两台相机、RCS、存储与备份的实际状态，再按对象处理。", "打开诊断", () => { SetPage("diagnostics"); return Task.CompletedTask; });
         TaskRow("待核对包裹", "逐件查看被拒绝和格口未确认的包裹；不会自动重发。", "处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; });
@@ -87,6 +91,8 @@ public partial class SupplyStationWindow
         TaskRow("自动清理与班次", "设置保留策略、清理时刻和备份份数上限；清理后保留统计汇总。", "打开设置", () => { SetPage("statistics"); return Task.CompletedTask; });
         TaskRow("远程支持", "导出诊断包：设备状态、近期请求索引和校验清单，不含条码、图片和密码；文件只保存在本机。", "导出诊断包…", ExportProductDiagnostics);
         TaskRow("恢复备份、换机、修复或卸载", "先完全停止软件，再进入离线维护。备份恢复到新目录，不覆盖原数据。", "进入离线维护…", RequestOfflineMaintenance);
+        tasks.SizeChanged += (_, _) => { var two = tasks.ActualWidth >= 900; foreach (var item in tasks.Children.OfType<FrameworkElement>()) item.Width = Math.Max(220, tasks.ActualWidth / (two ? 2 : 1) - 24); };
+        body.Children.Add(tasks);
         var cancelExport = new Button { Content = "取消诊断导出", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         cancelExport.Click += (_, _) => productDiagnosticCancellation?.Cancel(); body.Children.Add(cancelExport);
         var cleanup = ProductText(""); body.Children.Add(cleanup);

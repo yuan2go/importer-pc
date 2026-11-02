@@ -28,16 +28,19 @@ public sealed class MaintenanceCenterWindow : Window
         });
         Add("修复安装／卸载程序", () => new ProductMaintenanceWindow { Owner = this }.ShowDialog());
         Add("检查后启动软件", () => { RetryRequested = true; Close(); });
-        Add("关闭", Close);
+        var expert = new Expander { Header = "专家模式（供应商指导）", Margin = new(0, 16, 0, 0) };
+        var advanced = new Button { Content = "打开启动修复全部操作…", MinHeight = 48 };
+        advanced.Click += (_, _) => { try { Repair(false, true); } catch (Exception error) { feedback.Text = "启动修复未打开：" + error.Message; } };
+        expert.Content = advanced; body.Children.Add(expert);
         void Add(string caption, Action action)
         {
             var button = new Button { Content = caption, MinHeight = 48, Margin = new(0, 12, 0, 0), HorizontalContentAlignment = HorizontalAlignment.Left, Padding = new(16, 4, 16, 4) };
             button.Click += (_, _) => { try { action(); } catch (Exception error) { feedback.Text = "维护入口未完成：" + error.Message + "。数据未删除，请先查看上次操作结果。"; } }; body.Children.Add(button);
         }
     }
-    void Repair(bool recovery)
+    void Repair(bool recovery, bool expert = false)
     {
-        var window = new StartupRepairWindow(SelectedLaunch) { Owner = this, OpenRecoveryScenario = recovery };
+        var window = new StartupRepairWindow(SelectedLaunch) { Owner = this, OpenRecoveryScenario = recovery, SceneOnly = !expert };
         window.ShowDialog(); SelectedLaunch = window.SelectedLaunch;
         if (window.RetryRequested) { RetryRequested = true; Close(); }
     }

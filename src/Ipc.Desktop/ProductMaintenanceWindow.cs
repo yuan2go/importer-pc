@@ -36,7 +36,8 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         Note("此窗口不会启动供包或设备。修复程序需要使用完整的原安装包；开始菜单和快捷方式可直接修复。卸载不会删除共享驱动和业务数据。");
         Action("读取安装信息", Read, readOnly: true);
         Action("查看上次卸载结果", InspectOriginal, readOnly: true);
-        Action("用原安装包继续清理…", ResumeOriginal, readOnly: true);
+        var resume = Action("用原安装包继续清理…", ResumeOriginal, readOnly: true);
+        resume.Visibility = CurrentDeployment()?.LifecycleState is { } lifecycle && lifecycle != "Installed" ? Visibility.Visible : Visibility.Collapsed;
         Action("修复开始菜单与快捷方式…", async () =>
         {
             if (removalCompleted) return;
@@ -115,7 +116,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         };
         Message(message);
         var details = new TextBox { Text = "正常保留：" + string.Join("；", receipt.Retained) + "\n卸载结果：" + receipt.OperationFile + "\n程序目录：" + receipt.ReleaseRoot + "\n剩余文件/目录：\n" + string.Join("\n", receipt.RemainingFiles ?? []), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 220 };
-        Body.Children.Add(details);
+        Body.Children.Add(new Expander { Header = "卸载记录与剩余文件详情", Content = details });
         Note("请勿手动删除程序目录。业务数据、设备身份和共享驱动会保留。如需继续清理，请使用原安装包。");
         Action("查看上次卸载结果", InspectOriginal, readOnly: true);
         if (cleanupMedia is not null && receipt.Status != "RemovedDataRetained")

@@ -41,7 +41,7 @@
  <Style TargetType="Expander"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="FontWeight" Value="Normal"/><Setter Property="Foreground" Value="{StaticResource ParameterInk}"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/>
   <Setter Property="HeaderTemplate"><Setter.Value><DataTemplate><Grid MinHeight="44"><TextBlock Text="{Binding}" VerticalAlignment="Center" TextWrapping="Wrap" FontWeight="{x:Static type:UiTypography.Emphasis}"/></Grid></DataTemplate></Setter.Value></Setter>
  </Style>
- <DataTemplate x:Key="ParameterObjectTemplate"><TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Body}"/></DataTemplate>
+ <DataTemplate x:Key="ParameterObjectTemplate"><TextBlock Text="{Binding DisplayTitle}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Body}"/></DataTemplate>
  <DataTemplate x:Key="ParameterSearchTemplate"><StackPanel><TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Body}"/><TextBlock Text="{Binding Context}" TextWrapping="Wrap" FontSize="{x:Static type:UiTypography.Label}" Foreground="{StaticResource ParameterMuted}" Margin="0,4,0,0"/></StackPanel></DataTemplate>
  <GroupStyle x:Key="ParameterDirectoryGroup"><GroupStyle.HeaderTemplate><DataTemplate><TextBlock Text="{Binding Name}" Foreground="{StaticResource ParameterMuted}" FontSize="{x:Static type:UiTypography.Label}" Margin="10,16,8,6"/></DataTemplate></GroupStyle.HeaderTemplate></GroupStyle>
  <Style TargetType="ListBoxItem">

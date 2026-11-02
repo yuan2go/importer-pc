@@ -10,6 +10,7 @@ public static class PresentationPreferences
     public enum WindowOpeningMode { Window, FullScreen }
     sealed record AudioPreference(int Schema, int Volume);
     public static event Action<string, int>? CueVolumeChanged;
+    public static event Action<string, string, bool>? DisplayChanged;
     public static int ReadCueVolume(string application)
     {
         var file = FileFor(application, "audio");
@@ -72,7 +73,7 @@ public static class PresentationPreferences
     public static void Save(string application, string surface, bool compact)
     {
         var file = FileFor(application, surface); _ = Read(application, surface);
-        Directory.CreateDirectory(Path.GetDirectoryName(file)!); ExtensionStore.AtomicWrite(file, new Preference(1, compact));
+        Directory.CreateDirectory(Path.GetDirectoryName(file)!); ExtensionStore.AtomicWrite(file, new Preference(1, compact)); DisplayChanged?.Invoke(application, surface, compact);
     }
     static string StationSurface(string station) => "station-" + Wire.Hash(station)[..24].ToLowerInvariant();
     public static StationDisplay ReadStation(string application, string station)

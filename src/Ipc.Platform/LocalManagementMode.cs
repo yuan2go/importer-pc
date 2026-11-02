@@ -28,7 +28,7 @@ public sealed partial class LocalManagementMode
     string? callerWindowsSid;
     string? credentialHash;
     string sessionId = "", sessionSecret = "";
-    DateTimeOffset expires;
+    DateTimeOffset expires, enteredAt;
     CancellationTokenSource revoked = new();
     internal Func<DateTimeOffset> Clock { get; set; } = () => DateTimeOffset.UtcNow;
     DateTimeOffset Now => Clock();
@@ -39,7 +39,7 @@ public sealed partial class LocalManagementMode
     sealed record Delegation(string Id, string TokenHash, string RequestHash, string SessionId, DateTimeOffset ExpiresAt, string SessionHash, bool Consumed = false,
         DateTimeOffset? OperationUntil = null);
     sealed record Store(int SchemaVersion, Credential? Credential, int Failures, DateTimeOffset LockedUntil, Audit[] Audit,
-        string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null, int RecoveryFailures = 0, DateTimeOffset RecoveryLockedUntil = default);
+        string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null, int RecoveryFailures = 0, DateTimeOffset RecoveryLockedUntil = default, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DateTimeOffset? SessionEnteredAt = null);
     static string ProofHash(string token) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
     public LocalManagementMode(string root) : this(root, false) { }
     internal LocalManagementMode(string root, bool serviceAuthority)
@@ -119,7 +119,7 @@ public sealed partial class LocalManagementMode
         }
     }
     public ManagementModeStatus InspectStatus() => Remote ? RemoteStatus() : Status();
-    public ManagementModeEvidence? Evidence { get { var s = Status(); return s.Authorized ? new(sessionId, expires.AddMinutes(-15), expires) : null; } }
+    public ManagementModeEvidence? Evidence { get { var s = Status(); return s.Authorized ? new(sessionId, enteredAt, expires) : null; } }
     bool ValidSession(Store s) => active && !revoked.IsCancellationRequested && Now < expires && s.SessionHash == ProofHash(sessionSecret) && s.Credential?.Hash == credentialHash;
     void Revoke() { active = false; sessionSecret = ""; credentialHash = null; revoked.Cancel(); }
     public CancellationToken Require()
@@ -161,8 +161,8 @@ public sealed partial class LocalManagementMode
             using var held = LockStore(); var s = Read(); var now = Now; CheckLock(s, now);
             if (!verified || s.Credential != credential) { Failed(s, "ManagementModeEnterFailed"); return false; }
             var secret = Convert.ToHexString(RandomNumberGenerator.GetBytes(32)); var id = Guid.NewGuid().ToString("N");
-            Save(s with { Failures = 0, LockedUntil = default, SessionHash = ProofHash(secret), SessionId = id, SessionExpires = now.AddMinutes(15), Delegations = [] }, "ManagementModeEntered");
-            Revoke(); revoked = new(); active = true; credentialHash = credential.Hash; sessionId = id; sessionSecret = secret; expires = now.AddMinutes(15); revoked.CancelAfter(TimeSpan.FromMinutes(15)); return true;
+            Save(s with { Failures = 0, LockedUntil = default, SessionHash = ProofHash(secret), SessionId = id, SessionExpires = now.AddMinutes(15), SessionEnteredAt = now, Delegations = [] }, "ManagementModeEntered");
+            Revoke(); revoked = new(); active = true; credentialHash = credential.Hash; sessionId = id; sessionSecret = secret; enteredAt = now; expires = now.AddMinutes(15); revoked.CancelAfter(TimeSpan.FromMinutes(15)); return true;
         }
     }
     public void Exit()
@@ -174,6 +174,32 @@ public sealed partial class LocalManagementMode
             ManagementModeBroker.Call<bool>(dataRoot, request); return;
         }
         lock (sync) { try { using var held = LockStore(); var s = Read(); if (s.Credential is not null) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementModeExited"); } finally { Revoke(); } }
+    }
+    public ManagementModeStatus Renew()
+    {
+        if (Remote)
+        {
+            var grant = Rpc<ManagementModeSessionGrant>(new("Renew"));
+            lock (sync)
+            {
+                // A late renewal reply must never revive an expired/replaced local session.
+                if (!active || revoked.IsCancellationRequested || Now >= expires || grant.SessionId != sessionId || grant.Token != sessionSecret || grant.ExpiresAt <= Now || grant.ExpiresAt > Now.AddMinutes(16))
+                    throw new UnauthorizedAccessException("原管理会话已到期或已更换，请重新验证管理密码。");
+                expires = grant.ExpiresAt; revoked.CancelAfter(expires - Now);
+            }
+            return InspectStatus();
+        }
+        lock (sync)
+        {
+            using var held = LockStore(); var s = Read();
+            if (!ValidSession(s) || s.SessionId != sessionId || s.SessionExpires <= Now)
+                throw new UnauthorizedAccessException("原管理会话已到期或已撤销，请重新验证管理密码。");
+            if (expires - Now > TimeSpan.FromMinutes(2)) throw new InvalidOperationException("管理模式剩余时间超过两分钟，暂不需要续期。");
+            var until = Now.AddMinutes(15);
+            Save(s with { SessionExpires = until }, "ManagementModeRenewed");
+            expires = until; revoked.CancelAfter(TimeSpan.FromMinutes(15));
+            return new(true, true, until) { SessionId = sessionId };
+        }
     }
     public void ChangePassword(string password)
     {

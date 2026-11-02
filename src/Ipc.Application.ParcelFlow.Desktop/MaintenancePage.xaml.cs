@@ -20,6 +20,7 @@ public partial class MaintenancePage : UserControl
     bool lastCanEditForm;
     public event EventHandler? DisplayPreferencesRequested;
     public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested;
+    public Func<string, FrameworkElement>? CameraPreviewFactory { get => MainParameterEditor.CameraPreviewFactory; set => MainParameterEditor.CameraPreviewFactory = value; }
     public MaintenancePage()
     {
         InitializeComponent();

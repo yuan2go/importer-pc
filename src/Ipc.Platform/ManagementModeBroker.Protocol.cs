@@ -86,7 +86,7 @@ public sealed partial class LocalManagementMode
         if (grant is null) return false;
         lock (sync)
         {
-            Revoke(); revoked = new(); active = true; sessionSecret = grant.Token; expires = grant.ExpiresAt;
+            Revoke(); revoked = new(); active = true; sessionSecret = grant.Token; enteredAt = grant.ExpiresAt.AddMinutes(-15); expires = grant.ExpiresAt;
             if (expires > Now) revoked.CancelAfter(expires - Now);
             sessionId = grant.SessionId; knownConfigured = true; knownLegacy = false; knownAvailable = true;
         }
@@ -106,7 +106,7 @@ public sealed partial class LocalManagementMode
                 return false;
             }
             if (s.Credential is null || s.SessionId is null || s.SessionExpires is not { } until || until <= Now || s.SessionHash != ProofHash(token)) return false;
-            active = true; sessionId = s.SessionId; credentialHash = s.Credential.Hash; sessionSecret = token; expires = until; return true;
+            active = true; sessionId = s.SessionId; credentialHash = s.Credential.Hash; sessionSecret = token; enteredAt = s.SessionEnteredAt ?? until.AddMinutes(-15); expires = until; return true;
         }
     }
     internal object? HandleBrokerRequest(ManagementModeRpcRequest request, bool installer, string? windowsSid = null)
@@ -132,6 +132,7 @@ public sealed partial class LocalManagementMode
         if (!authenticated) throw new UnauthorizedAccessException("请先进入管理模式；原授权已撤销或到期。");
         switch (request.Action)
         {
+            case "Renew": Renew(); return new ManagementModeSessionGrant(sessionId, sessionSecret, expires);
             case "ChangePassword": ChangePassword(request.Password ?? ""); return true;
             case "Delegate": return Delegate(request.RequestHash ?? "");
             case "DelegateOperation": return DelegateOperation(request.RequestHash ?? "", TimeSpan.FromSeconds(request.OperationSeconds ?? 0));

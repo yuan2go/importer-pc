@@ -71,6 +71,7 @@ static partial class Program
                 else if (args.Contains("--workstation-barcode-ready")) await VerifyWorkstationBarcodeReady(root, evidence, lines);
                 else if (args.Contains("--camera-filter-preview")) await VerifyCameraFilterPreview(root, evidence, lines);
                 else if (args.Contains("--camera-debug")) await VerifyCameraDebug(root, evidence, lines);
+                else if (args.Contains("--ui-spec-24")) await VerifyUiSpec24(root, evidence, lines);
                 else if (args.Contains("--debug-log-live")) await VerifyDebugLogLive(root, evidence, lines);
                 else if (args.Contains("--workstation-status-logs")) await VerifyWorkstationStatusLogs(root, evidence, lines);
                 else if (args.Contains("--management-password-layout")) await VerifyManagementPasswordLayout(evidence, lines);

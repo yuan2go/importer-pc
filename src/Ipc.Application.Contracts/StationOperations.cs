@@ -6,6 +6,8 @@ public sealed record StationOperationsPolicy(string TimeZoneId, StationShift[] S
     int CleanupHour = 3, int MaximumBackupSets = 7);
 public sealed record StationShiftWindow(string Name, DateTimeOffset From, DateTimeOffset ToExclusive);
 // These are software facts. They never assert a physical parcel count.
+// Recognition buckets use observation time; request/result buckets retain the
+// original PreparedAt. Unknown is a current unresolved result, not an extra request.
 public sealed record StationMetricBucket(DateTimeOffset Minute, string Position, long Recognitions, long Requests,
     long Assigned, long Rejected, long Unknown, long ManualRequests);
 public sealed record StationStatistics(DateTimeOffset From, DateTimeOffset ToExclusive, string TimeZoneId,

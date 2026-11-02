@@ -1,0 +1,12 @@
+{
+  "product_verification_source": "a19ae6633d82fb9fe11e1c43a74a20e019b91773",
+  "final_fixture_source": "bc80d9457c430ed0f005ce4a4d193366fdb5e530",
+  "identical_git_objects": {
+    "src": "491f05ebfbde6f2be51210e7bd0644d55305bdb5",
+    "scripts": "a6e9eee6e680f32d6c3d3a2ffdec6f2663c6e6f2",
+    "config": "6255aa1ea4cccce81ebe9d5f4439d33e2b359170",
+    "Directory.Build.props": "9b75929c03fb8aefc936acd49008a72fd9d1ee3b",
+    "global.json": "98fe74ec314e54eb8678787d3d58fc83abdad96c"
+  },
+  "scope": "Only legacy test fixtures and evidence metadata changed after the complete core/native run"
+}

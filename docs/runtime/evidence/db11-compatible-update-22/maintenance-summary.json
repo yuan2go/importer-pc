@@ -1,0 +1,60 @@
+{
+  "results": [
+    {
+      "passes": 53,
+      "exit": 0,
+      "name": "app--db11-compatible-update",
+      "log": "app--db11-compatible-update-final.log",
+      "source_commit": "9860301f09991a7a2875444595c2315f96f5bfa6"
+    },
+    {
+      "passes": 19,
+      "exit": 0,
+      "name": "app--storage-baseline",
+      "log": "app--storage-baseline.log",
+      "source_commit": "bc80d9457c430ed0f005ce4a4d193366fdb5e530"
+    },
+    {
+      "passes": 8,
+      "exit": 0,
+      "name": "app--stability-audit-maintenance",
+      "log": "app--stability-audit-maintenance.log",
+      "source_commit": "bc80d9457c430ed0f005ce4a4d193366fdb5e530"
+    },
+    {
+      "passes": 42,
+      "exit": 0,
+      "name": "app--maintenance-progress-checks",
+      "log": "app--maintenance-progress-checks.log",
+      "source_commit": "bc80d9457c430ed0f005ce4a4d193366fdb5e530"
+    },
+    {
+      "passes": 67,
+      "exit": 0,
+      "name": "app--commercial-productization",
+      "context": "Windows administrator token; isolated test roots",
+      "log": "app--commercial-productization-elevated.log",
+      "source_commit": "bc80d9457c430ed0f005ce4a4d193366fdb5e530"
+    },
+    {
+      "passes": 9,
+      "exit": 0,
+      "name": "app--audit03-maintenance",
+      "log": "app--audit03-maintenance.log",
+      "source_commit": "bc80d9457c430ed0f005ce4a4d193366fdb5e530"
+    },
+    {
+      "passes": 18,
+      "exit": 0,
+      "name": "app--manual-rcs-debug-lifecycle",
+      "log": "app--manual-rcs-debug-lifecycle.log",
+      "source_commit": "bc80d9457c430ed0f005ce4a4d193366fdb5e530"
+    }
+  ],
+  "product_source_identical_to": "a19ae6633d82fb9fe11e1c43a74a20e019b91773",
+  "scope": "Only failed legacy test fixtures changed; production/src, config and scripts unchanged; all seven maintenance suites revalidated",
+  "assertions": 216,
+  "note": "Ordinary-token commercial restore attempt retained separately; successful context is explicit, never overwritten as an ordinary PASS.",
+  "base_source_commit": "bc80d9457c430ed0f005ce4a4d193366fdb5e530",
+  "final_product_source": "9860301f09991a7a2875444595c2315f96f5bfa6"
+}

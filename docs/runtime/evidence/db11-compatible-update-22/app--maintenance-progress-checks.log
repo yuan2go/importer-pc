@@ -1,0 +1,43 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-fe10dc08bd7945e4b58d58d547da038a
+PASS WT048 cancel wins the decision lock before CTS signalling
+PASS WT048 commit cannot overtake accepted cancellation even before its token is signalled
+PASS WT048 accepted cancellation completes its signal before disposal
+PASS WT048 commit winner rejects cancellation without interrupting durable work
+PASS WT048 terminal operation rejects late cancellation
+PASS WT048 one hundred thousand copy observations remain bounded before any UI/pipe queue
+PASS WT048 a repeated preparation phase publishes its own real progress instead of retaining the earlier verification stage
+PASS WT048 adversarial stage oscillation remains below the pipe budget and preserves the commit observation
+PASS WT048 real recovery inventory exposes its first ordinary file
+PASS WT048 cancellation interrupts the real inventory between entries without dropping validation
+PASS WT048 pre-cancelled backup creates no destination
+PASS WT048 pre-cancellation never publishes a recovery set
+PASS WT048 actual bounded snapshot copy observes cancellation
+PASS WT048 snapshot cancellation cannot advertise a completed backup
+PASS WT048 completed cancellation/failure releases actual original application ownership
+PASS WT048 original database, custody and configuration bytes remain unchanged
+PASS WT048 real SQLite copy step observes the same operation cancellation
+PASS WT048 cancelled database copy retains an incomplete target without publishing success
+PASS WT048 completed cancellation/failure releases actual original application ownership
+PASS WT048 original database, custody and configuration bytes remain unchanged
+PASS WT048 slow real snapshot copy exposes a live preparation phase
+PASS WT048 second maintenance cannot enter while original operation owns the source
+PASS WT048 slow cancellation waits until actual copy work and ownership finish
+PASS WT048 completed cancellation/failure releases actual original application ownership
+PASS WT048 authority revocation before publication remains refusal rather than completion or user cancellation
+PASS WT048 completed cancellation/failure releases actual original application ownership
+PASS WT048 original database, custody and configuration bytes remain unchanged
+PASS WT048 long original-responsibility preflight shares cancellation before entering the original scan
+PASS WT048 completed cancellation/failure releases actual original application ownership
+PASS WT048 original database, custody and configuration bytes remain unchanged
+PASS WT048 standalone preparation completes once its backup publication commits without pretending to cancel the completed result
+PASS WT048 cancellation after backup commit begins returns real completion, never false cancellation
+PASS WT048 completed backup is independently verified through the real recovery verifier
+PASS WT048 real completion-file obstruction remains failure with no success marker
+PASS WT048 completed cancellation/failure releases actual original application ownership
+PASS WT048 original database, custody and configuration bytes remain unchanged
+PASS WT048 cancelled restore retains incomplete isolation and cannot become production-ready
+PASS WT048 restore commit winner completes isolated files without authorizing production handoff
+PASS WT048 uninstall cancellation may retain a complete backup but cannot retire the deployment
+PASS WT048 completed cancellation/failure releases actual original application ownership
+PASS WT048 original database, custody and configuration bytes remain unchanged
+PASS WT048 offline progress and cancellation never construct device sessions

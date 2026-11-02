@@ -17,7 +17,7 @@ public static partial class ParcelRecovery
         => RestoreCore(backup,target,true,authority,execution.Token,execution);
     // One custody verifier for restore and original-maintenance inspection.
     // Read-only: no target directory or cleanup intent is created here.
-    internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default)
+    internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default, bool allowStorage10 = false)
     {
         token.ThrowIfCancellationRequested(); source = Path.GetFullPath(source); authority?.Invoke();
         if (File.GetAttributes(source).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked database backup is unsafe");
@@ -35,7 +35,8 @@ public static partial class ParcelRecovery
         if (!ExtensionSchema.IsId(manifest.Application) || manifest.Database != Path.GetFileName(source) || Wire.FileHash(source,token) != manifest.DatabaseHash ||
             manifest.Files is null || !manifest.Files.ContainsKey("configuration.json") || manifest.Files.Count > RecoveryFiles.MaximumFiles || !ExtensionSchema.IsHash(manifest.DatabaseHash))
             throw new InvalidDataException("Incomplete or changed backup custody manifest");
-        if (ParcelRepository.ReadStorageVersion(source, manifest.Application) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("恢复只支持当前第10版数据库；原备份保持不变。");
+        if (allowStorage10) _ = ParcelRepository.ReadMaintenanceStorageVersion(source, manifest.Application);
+        else _ = ParcelRepository.ReadStorageVersion(source, manifest.Application);
         foreach (var file in manifest.Files)
         {
             authority?.Invoke();

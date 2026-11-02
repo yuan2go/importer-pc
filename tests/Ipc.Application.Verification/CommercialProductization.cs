@@ -127,17 +127,26 @@ static class CommercialProductization
             vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
             repairedFactory.HoldHealth = true; monitorPermit.Release();
             await repairedFactory.HealthEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
-            var draftBeforeBusy = Wire.FileHash(Path.Combine(directory, "startup-maintenance/editor-draft.bin"));
+            var configurationBeforeBusy = Wire.FileHash(Path.Combine(directory, "configuration.json"));
             try
             {
-                Check(!(await repaired.SnapshotAsync()).Availability!.Configure, "actual in-flight health reservation blocks maintenance even after authentication");
-                await Reject<InvalidOperationException>(vm.SaveIncompleteEditorAsync, "live in-flight maintenance guard rejects draft persistence without bypassing authorization");
-                Check(Wire.FileHash(Path.Combine(directory, "startup-maintenance/editor-draft.bin")) == draftBeforeBusy && vm.StructuredPolicy.Precision == "unfinished-precision",
-                    "in-flight refusal preserves both encrypted draft bytes and current invalid editor input");
+                Check((await repaired.SnapshotAsync()).Availability!.Configure, "current SM contract permits draft editing while a health reservation is in flight");
+                await vm.SaveIncompleteEditorAsync();
+                Check(Wire.FileHash(Path.Combine(directory, "configuration.json")) == configurationBeforeBusy && vm.StructuredPolicy.Precision == "unfinished-precision" && repairedFactory.Sends == 0,
+                    "saving an invalid encrypted draft cannot activate configuration or dispatch work through the in-flight reservation");
+                var blockedBackup = Path.Combine(root, "inflight-blocked.db");
+                var blockedResult = await repaired.BackupAsync(blockedBackup);
+                Check(blockedResult.Status == "Rejected" && !File.Exists(blockedBackup), "actual in-flight health reservation still blocks consistent backup even after authentication");
             }
             finally { repairedFactory.HoldHealth = false; repairedFactory.ReleaseHealth.TrySetResult(); }
-            for (var i = 0; i < 100 && !(await repaired.SnapshotAsync()).Availability!.Configure; i++) await Task.Delay(20);
-            Check((await repaired.SnapshotAsync()).Availability!.Configure, "maintenance becomes available only after the actual external reservation drains");
+            var releasedBackup = Path.Combine(root, "inflight-released.db"); BusinessReceipt? releasedResult = null;
+            for (var i = 0; i < 100; i++)
+            {
+                releasedResult = await repaired.BackupAsync(releasedBackup);
+                if (releasedResult.Status != "Rejected") break;
+                await Task.Delay(20);
+            }
+            Check(releasedResult?.Status == "BackupCreated" && File.Exists(releasedBackup + ".recovery/COMPLETED.json"), "consistent maintenance becomes available only after the actual external reservation drains");
             await vm.SaveIncompleteEditorAsync();
             var resumedVm = new ParcelViewModel(repaired, "synthetic", "sportmaster"); await resumedVm.RefreshAsync(); await resumedVm.LoadCapabilitiesAsync(); await resumedVm.ContinueIncompleteEditorAsync();
             Check(resumedVm.StructuredPolicy!.Precision == "unfinished-precision" && resumedVm.CapabilityDrafts.Any(c => c.InstanceId == extraInstance) && (await repaired.SnapshotAsync()).Configuration.Effective.TimeoutMs == 2000,

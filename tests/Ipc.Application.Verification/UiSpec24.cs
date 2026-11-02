@@ -61,6 +61,11 @@ static class UiSpec24
         Check(true, "detailed logging still requires execution-time management authorization");
         var stats = await ((IStationOperations)h.App).ReadStatisticsAsync(Minute(DateTimeOffset.UtcNow).AddMinutes(-1), Minute(DateTimeOffset.UtcNow).AddMinutes(1), default);
         Check(stats.Buckets.Sum(x => x.Requests) == 0, "diagnostics, renewal and configuration never create a business request");
+        var production = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-HISTORY-BATCH"), default);
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(production.OperationId!))?.Wcs?.State == StageState.Accepted);
+        var selection = await ((IParcelHistorySessionApplication)h.App).SelectHistoryAsync(new());
+        var batch = await ((IParcelHistoryBatchApplication)h.App).ReadHistoryBatchAsync(selection, long.MaxValue, 50, default);
+        Check(batch.Page.Items.Length == 1 && batch.Metrics.Operations == 1 && batch.Metrics.WcsAccepted == 1 && batch.Page.Items[0].Operation.Wcs?.State == StageState.Accepted && h.Peer.Requests.Count == 1, "same short SQLite read transaction returns the page and its aggregate without another RCS request");
         await using var camera = new CameraRoundHarness(workspace, Path.Combine(root, "continuous-trial")); await camera.StartAsync();
         var cameraSnapshot = await camera.App.SnapshotAsync();
         var scope = await camera.App.BeginCameraInspectionAsync(new(Wire.Id(), cameraSnapshot.RuntimeId, cameraSnapshot.Configuration.Revision, CameraInspectionMode.Isolated, "合成连续二十帧试扫验证", new(1, 64, 1000), true), default);

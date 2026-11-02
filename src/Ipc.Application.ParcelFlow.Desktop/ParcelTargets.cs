@@ -98,9 +98,18 @@ public partial class ParcelViewModel
                 var selection = newSelection ? null : historySelection;
                 selection ??= await ServiceAsync(() => query.SelectHistoryAsync(HistoryFilter()));
                 if (!newSelection && appliedHistorySignature != signature) throw new InvalidOperationException("筛选已改变，先重新查询；不能续读旧筛选");
-                page = await ServiceAsync(() => query.ReadHistoryPageAsync(selection, before, 50, cancellation.Token));
-                var metrics = await ServiceAsync(() => query.ReadHistoryMetricsAsync(selection, cancellation.Token));
-                var positionIds = await ServiceAsync(() => query.HistoryPositionIdsAsync(selection, cancellation.Token));
+                ParcelHistoryMetrics metrics; string[] positionIds;
+                if (application is IParcelHistoryBatchApplication batchQuery)
+                {
+                    var batch = await ServiceAsync(() => batchQuery.ReadHistoryBatchAsync(selection, before, 50, cancellation.Token));
+                    page = batch.Page; metrics = batch.Metrics; positionIds = batch.Positions;
+                }
+                else
+                {
+                    page = await ServiceAsync(() => query.ReadHistoryPageAsync(selection, before, 50, cancellation.Token));
+                    metrics = await ServiceAsync(() => query.ReadHistoryMetricsAsync(selection, cancellation.Token));
+                    positionIds = await ServiceAsync(() => query.HistoryPositionIdsAsync(selection, cancellation.Token));
+                }
                 cancellation.Token.ThrowIfCancellationRequested();
                 if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
                 HistoryMetricsSummary = $"序号 ≤ {selection.UpperSequence} · 作业 {metrics.Operations} · 请求 {metrics.WcsRequests} · 已接受 {metrics.WcsAccepted} · 格口未确认 {metrics.Unknown} · 记录物理完成 {metrics.PhysicalCompleted} · 发送次数 {metrics.SendAttempts}（取得格口不代表已落格）";

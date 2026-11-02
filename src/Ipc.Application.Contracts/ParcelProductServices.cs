@@ -17,6 +17,12 @@ public interface IParcelHistorySessionApplication : IParcelHistoryApplication
     Task<ParcelHistoryMetrics> ReadHistoryMetricsAsync(ParcelHistorySelection selection, CancellationToken token);
     Task<string[]> HistoryPositionIdsAsync(ParcelHistorySelection selection, CancellationToken token);
 }
+// Page and metrics share one short read transaction; no long-lived WAL snapshot is held across UI pages.
+public sealed record ParcelHistoryBatch(ParcelHistoryPage Page, ParcelHistoryMetrics Metrics, string[] Positions, DateTimeOffset ReadAt);
+public interface IParcelHistoryBatchApplication
+{
+    Task<ParcelHistoryBatch> ReadHistoryBatchAsync(ParcelHistorySelection selection, long beforeSequence, int limit, CancellationToken token);
+}
 public interface IParcelConfigurationDraftApplication
 {
     Task<string> ConfigurationEditorHashAsync(long expectedRevision);

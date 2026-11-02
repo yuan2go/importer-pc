@@ -53501,9 +53501,9 @@
     },
     {
       "path": "src/Ipc.Application.Contracts/ParcelProductServices.cs",
-      "sha256": "3460f9f1bf0c81ec6e82f9bb10207e6993648bb0bae318e21dda0dac6ef0436f",
-      "size_bytes": 1738,
-      "git_blob": "da55e7c079909bb23a11bd407d9ff45983ef2f8a",
+      "sha256": "9a6d42d26ceab91e2e2b6b4e27112e679621b5619d80a124dd90690a858a01a9",
+      "size_bytes": 2177,
+      "git_blob": "dae26e078d8ced892f21de390e8ddb4abdb41f96",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -54008,9 +54008,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs",
-      "sha256": "cce55a5a68bc7c243bade49ab1abab5d2a207162f71c0da8f5b2476d15e64e7c",
-      "size_bytes": 7038,
-      "git_blob": "91992eeee45522eee4fbd11f41dffdddee350554",
+      "sha256": "680b83a4dc6054cb18287839055cfe36dc09c65b09133860c2b40202b7d03ed5",
+      "size_bytes": 7131,
+      "git_blob": "81167e200caf6866e48ad3d6ad2dcb3df52c0bae",
       "version": "internal-pages-ui-refine-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Native WPF internal-page refinement, per-page validation, synthetic verification or preserved prior guidance; see task scope and evidence boundaries",
@@ -54339,9 +54339,9 @@
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs",
-      "sha256": "73e5629b1fd6604bc2ac6179a306f99d4bf3640aaa5a043efd188e71d0250e1f",
-      "size_bytes": 20457,
-      "git_blob": "22f9f2220d06a2b31f66f2d904b0460ea26c04bb",
+      "sha256": "72b7f70cfaf0220f3024d4f3b7c6034194a77d6904f679136124c4c5c61ce5da",
+      "size_bytes": 20930,
+      "git_blob": "db5cc267deadd3c5f6ade2cb1c0b98280e5d6c80",
       "previous_git_blob": "abe7799d4557985e2e012f7869fa1a370de3e0e3"
     },
     {
@@ -54792,9 +54792,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs",
-      "sha256": "3b8d1cfcc72c1a62ed7659c25e7ba9c441138e4cad04d85d317742d5547207a1",
-      "size_bytes": 12504,
-      "git_blob": "40fbd92f056629f2beaf19f69da97dc50439030f",
+      "sha256": "7113146358fd7de9060adc76e397cbf44eabad8eb663810f22272d64a26271bd",
+      "size_bytes": 13029,
+      "git_blob": "151e22347d057e8e73752bda3d1a614a80866c09",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -118523,9 +118523,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-UI-SPEC-CLOSURE-24; original evidence retains its own SourceCommit",
-      "sha256": "81e0a724d84828f4569d06a7cced7bcf5e770e0b8c7c3cd1d43580df0432c5e4",
-      "size_bytes": 6777,
-      "git_blob": "b0e79b849c853f9d2bdb8f76e272998c3fff6cdd",
+      "sha256": "b714c8aa8abe0d5657eca58c4d85852ad4dcde92287eb7d20556992b8d92e2a1",
+      "size_bytes": 7310,
+      "git_blob": "d8dd59da4e83780826a1b6429f262e84a5c184b8",
       "storage_scope": "public_repository"
     },
     {
@@ -118677,9 +118677,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-UI-SPEC-CLOSURE-24; original evidence retains its own SourceCommit",
-      "sha256": "03257e94f64fcd9fa7294b24d6e6c8ee7df3124888007f61b324b7f260203a77",
-      "size_bytes": 9654,
-      "git_blob": "78369e20fea2627076d917eb89696b8bc4dc469a",
+      "sha256": "a29e2bdfe75019d02cb9513db754d10a26afb5b89624f582588f71af68b05965",
+      "size_bytes": 10453,
+      "git_blob": "4be3098c541ec0c7a63f14aba9611b0fd8adc142",
       "storage_scope": "public_repository"
     },
     {

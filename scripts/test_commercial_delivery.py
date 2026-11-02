@@ -25,7 +25,7 @@ class DeliveryGate(unittest.TestCase):
     def test_engineering_never_promotes_missing_field_acceptance(self):
         self.assertEqual('PASS', self.check()['Status'])
         self.assertEqual('NOT_GRANTED_BY_THIS_TOOL', self.check()['ProductionApproval'])
-        self.assertEqual(6, len(self.check(level='production')['Outstanding']))
+        self.assertEqual(7, len(self.check(level='production')['Outstanding']))
 
     def test_fail_not_run_blocked_stop_required_scope(self):
         for status in ('FAIL', 'NOT_RUN', 'BLOCKED'):
@@ -55,6 +55,7 @@ class DeliveryGate(unittest.TestCase):
         # No certificate was provided. Even manually completed cases cannot grant
         # Authenticode status or fabricate an approved publisher.
         self.assertEqual('BLOCKED', distribution_signature(self.root, None)['Status'])
+        self.assertEqual('BLOCKED', distribution_signature(self.root, self.root / 'public.cer')['Status'])
 
 
 if __name__ == '__main__': unittest.main()

@@ -54,6 +54,13 @@ jobs:
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
             if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required suite missing or incomplete: $suite" }
           }
+      - name: Release policy unit boundaries (no publisher qualification)
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python -m unittest discover -s scripts -p test_commercial_delivery.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          ./scripts/test-signature-policy.ps1
       - name: Keep actual results including failures
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

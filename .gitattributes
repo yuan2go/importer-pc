@@ -300,3 +300,6 @@ docs/archive/pre-industrial-engineering-design-01/** -text
 
 # IE01 pre-implementation guidance remains exact original bytes.
 docs/archive/pre-industrial-engineering-implementation-01/** -text whitespace=cr-at-eol
+
+# IE01 original user/developer entry pages retain their exact bytes.
+docs/archive/pre-industrial-user-docs-01/** -text whitespace=cr-at-eol

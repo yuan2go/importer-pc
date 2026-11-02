@@ -1,24 +1,32 @@
-# importer-pc
+# 菜鸟供包台 · importer-pc
 
-2026-10-29 [SM真机SDK→本机Python RCS续验](docs/runtime/sm-sdk-python-validation-20261029.md)：main `7af0be61` 实采31笔逐笔对账通过，普通令牌启动与原生参数另有本机证据。隔离Simulation与正式部署/现场验收分别记证，未验证项目明确保留。
+面向供包工位的Windows客户端。SM（Sportmaster）使用内置海康MVS采图、进程内条码识别和内置RCS；一个业务实例服务全部页面。
 
-C#/.NET 10 Windows 工位客户端。Platform 提供机制，Application 拥有业务状态与命令守卫，驱动与集成实现端口；一个业务实例服务多个页面和窗口。
+## 安装与交付
 
-当前阅读入口是[文档索引](docs/INDEX.md)。只支持当前版本从零安装、从零建库；非当前格式拒绝，请使用全新数据目录。本轮收口见[工作包](docs/work-packages/WP-IPC-FRESH-BASELINE-01.md)。本轮开发保障范围为 SM / Sportmaster 及其必需共享基座，其他业务模块开发暂停。2026-10-28/29 并行任务整合的范围、顺序、不变式和验证状态见[整合工作包](docs/work-packages/WP-IPC-INTEGRATION-20261028.md)。实际合并、归档与未完成边界见[整合执行记录](docs/runtime/integration-20261028.md)。源码合并不代表已发布新安装包或取得现场资格。
+安装介质由实施人员从可信渠道提供，并核对版本、源身份、哈希及实际验收范围。[GitHub Releases](https://github.com/yuan2go/importer-pc/releases)保留历史介质；历史资产不自动包含本轮安全修复，也不等于当前main已正式发布。
 
-| 任务 | 入口 |
-|---|---|
-| 开发、构建与运行 | [运行入门](docs/runtime/getting-started.md)、[D盘环境](docs/runtime/d-drive-storage-20261021.md) |
-| 管理模式与独立操作员 | [管理模式](docs/runtime/management-mode-01.md) |
-| 首配、参数与延后连接 | [参数用途与启动](docs/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[独立延后修复](docs/runtime/validation/deferred-heartbeat-01.md) |
-| 安装、卸载与生命周期 | [当前操作指南](docs/runtime/lifecycle-ux-current-guidance-01.md)、[七包实现](docs/runtime/lifecycle-ux-implementation-01.md) |
-| 历史维护与恢复 | [维护运行](docs/runtime/retention-ingress-02.md)、[完整维护证据](docs/runtime/validation/retention-ingress-full-retest-03.md) |
-| 架构与扩展 | [框架](docs/design/framework.md)、[决策](docs/design/framework-decisions.md)、[扩展开发](docs/extensions/developer-guide.md) |
-| 供包员主页与维护诊断 | [本轮实现与验证边界](docs/runtime/operator-workstation-01.md) |
-| 界面基线 | [参数V3](docs/ui/parameter-settings-v3-20261020/README.md)、[作业与首配V2](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)、[字体规范](docs/design/typography-01.md) |
+IE01正在[PR #184](https://github.com/yuan2go/importer-pc/pull/184)分阶段实施。当前SM源码版本1.0.1，正式公司发布者/证书、系统生命周期及真实设备/接口验收仍有未完成项，见[实施进度](docs/runtime/industrial-engineering-01.md)。
 
-Sportmaster、DirectPlc、WcsToPlc 是独立主流程。Sportmaster 保持左右读码、每次已准入扫码一次原条码 RCS 请求，无 PLC 下发或新增包裹预览。配置使用唯一 CAS/Pending/Effective 账，保存后受控重启，重连只使用 Effective。待配置能力拒绝业务，Unknown 保留原请求与原责任，不盲重发。软件暂停不是安全急停。
+## 使用与维护
 
-Windows 开发命令先运行 `. ./scripts/project-environment.ps1`，项目、缓存与运行数据使用 D 盘。真实 SDK、RCS 合同、目标工控机、24h/72h 和现场验收分别计证。
+- [供包员作业卡](docs/operator/quick-guide.md)
+- [实施人员部署卡](docs/operator/deployment-card.md)
+- [实施与维护手册](docs/operator/implementation-guide.md)
+- [故障目录](docs/operator/fault-codes.md)
 
-历史发布与设计见[历史入口原件](docs/archive/pre-integration-20261026/README.md)及[文档索引](docs/INDEX.md)。旧安装包、原型、截图、PASS/FAIL 各守原 SourceCommit，不能当作当前 main 的验证。遵守[公开范围](docs/baseline/PUBLICATION.md)，不提交受限原稿、生产数据、凭据或 SDK。
+相机自动来源与人工键盘/PDA分别判断可用性；同一次托盘放置只请求一次RCS。结果不明时保留包裹与原记录，不盲重发。程序、业务数据和开发缓存使用D盘，受保护根遵从管理员配置。
+
+## 开发入口
+
+[文档目录](docs/INDEX.md) · [架构与职责](docs/design/framework.md) · [决策](docs/design/framework-decisions.md) · [工作包目录](docs/work-packages/README.md) · [历史记录](CHANGELOG.md)
+
+C#/.NET10/WPF/SQLite，Windows x64。先加载项目环境，再构建或运行标准核心回归：
+
+```powershell
+. ./scripts/project-environment.ps1
+dotnet build src/Ipc.Desktop -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true -m:1
+dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true
+```
+
+PR/main自动CI与本机、原生Windows、系统安装、真实SDK/RCS和现场验证分别记证。遵守[项目规则](AGENTS.md)及[公开范围](docs/baseline/PUBLICATION.md)，SDK、凭据、生产数据和未授权资产不进入Git。

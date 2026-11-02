@@ -33,6 +33,12 @@ jobs:
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           global-json-file: global.json
+      - name: Verify current offline guide links and fault coverage
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python scripts/verify-industrial-docs.py
+          exit $LASTEXITCODE
       - name: Locked restore and discovered core tests
         shell: pwsh
         run: |

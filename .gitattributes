@@ -268,3 +268,6 @@ docs/runtime/evidence/sm-camera-chain-closure-21/** -text whitespace=cr-at-eol,-
 
 # Preserve the pre-OPERATOR-COPY-02 index bytes.
 docs/archive/pre-operator-copy-02/** -text whitespace=cr-at-eol
+
+# Preserve raw Windows READER22 receipts and their recorded hashes.
+docs/runtime/evidence/sm-reader-feedback-22/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

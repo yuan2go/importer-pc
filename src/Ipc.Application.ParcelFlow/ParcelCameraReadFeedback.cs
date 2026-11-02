@@ -7,6 +7,7 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     readonly Dictionary<string, ParcelCameraReadFeedback> cameraReadFeedback = [];
+    readonly Dictionary<string, ObservationReadFeedback> pendingCameraCodes = [];
     readonly List<(IObservationReadFeedbackSource Source, Action<ObservationReadFeedback> Handler)> cameraReadSubscriptions = [];
     void RegisterCameraReadFeedback(ObservationSession session)
     {
@@ -22,8 +23,21 @@ public sealed partial class ParcelRuntime
             if (position is null) return;
             lock (presentationGate)
             {
-                if (cameraReadFeedback.TryGetValue(position, out var old) &&
-                    (old.Frame.CompletedTicks >= frame.CompletedTicks || old.Frame.Epoch == frame.Epoch && old.Frame.FrameNumber >= frame.FrameNumber)) return;
+                cameraReadFeedback.TryGetValue(position, out var old);
+                var latest = pendingCameraCodes.GetValueOrDefault(position) ?? old?.Frame;
+                if (latest is not null && (latest.CompletedTicks >= frame.CompletedTicks ||
+                    latest.Epoch == frame.Epoch && latest.FrameNumber >= frame.FrameNumber)) return;
+                // Codes arrives before the synchronous observation receiver. Retain
+                // the previous no-code watermark until the matching observation cue
+                // can be published in the same presentation envelope.
+                if (frame.Outcome == ObservationReadOutcome.Codes &&
+                    (!presentationFeedback.TryGetValue(position, out var read) || read.OperatorInput ||
+                     read.DeviceId != frame.DeviceId || read.Epoch != frame.Epoch || read.DetectedTicks != frame.CompletedTicks))
+                {
+                    pendingCameraCodes[position] = frame;
+                    return;
+                }
+                pendingCameraCodes.Remove(position);
                 var changed = old is null || old.Frame.Epoch != frame.Epoch || old.Frame.Outcome != frame.Outcome || frame.Outcome == ObservationReadOutcome.Codes;
                 cameraReadFeedback[position] = new(position, frame);
                 if (changed) OfferPresentation();
@@ -31,6 +45,14 @@ public sealed partial class ParcelRuntime
         };
         source.ReadFeedback += handler;
         cameraReadSubscriptions.Add((source, handler));
+    }
+    void MatchPendingCameraCodes(string position, ParcelReadFeedback read)
+    {
+        if (read.OperatorInput || !pendingCameraCodes.TryGetValue(position, out var frame) ||
+            read.DeviceId != frame.DeviceId || read.Epoch != frame.Epoch || read.DetectedTicks != frame.CompletedTicks ||
+            read.CandidateCount != frame.CandidateCount) return;
+        cameraReadFeedback[position] = new(position, frame);
+        pendingCameraCodes.Remove(position);
     }
     void ReleaseCameraReadFeedback()
     {

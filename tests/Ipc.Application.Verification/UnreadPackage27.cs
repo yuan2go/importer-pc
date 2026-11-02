@@ -37,14 +37,42 @@ internal static class UnreadPackage27
         Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame == prior,
             "older frame, retired epoch, future clock and inconsistent candidate metadata cannot replace the watermark");
         h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var codesReached = new ManualResetEventSlim();
+        using var releaseCodes = new ManualResetEventSlim();
+        Action<ObservationReadFeedback> pauseBeforeObservation = frame =>
+        {
+            if (frame.FrameNumber != 3 || frame.Outcome != ObservationReadOutcome.Codes) return;
+            codesReached.Set();
+            if (!releaseCodes.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Codes/observation regression gate timed out");
+        };
+        ((IObservationReadFeedbackSource)source).ReadFeedback += pauseBeforeObservation;
         try
         {
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 3);
+            await CameraRoundHarness.Until(() => Task.FromResult(codesReached.IsSet));
+            using (var betweenCallbacks = h.App.SubscribePresentation())
+            {
+                var intermediate = await betweenCallbacks.ReadAsync(default);
+                Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame == prior &&
+                    intermediate.CameraReads.Single(f => f.PositionId == "left").Frame == prior,
+                    "new Codes before its observation preserves the retired-result watermark for snapshots and new subscribers");
+            }
+            releaseCodes.Set();
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 3));
+            var matched = await h.App.SnapshotAsync();
+            Check(matched.CameraReads.Single(f => f.PositionId == "left").Frame.FrameNumber == 3 &&
+                (await h.App.ReadPresentationFeedbackAsync(default)).Single(f => f.PositionId == "left").DetectedTicks ==
+                    matched.CameraReads.Single(f => f.PositionId == "left").Frame.CompletedTicks,
+                "Codes becomes visible only together with its exact epoch and decode-clock observation cue");
             h.Api(h.Left).Enqueue(blank, 4);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 4));
         }
-        finally { h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; }
+        finally
+        {
+            releaseCodes.Set();
+            ((IObservationReadFeedbackSource)source).ReadFeedback -= pauseBeforeObservation;
+            h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
+        }
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
         Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.Outcome == ObservationReadOutcome.NoCode,
             "late RCS acceptance preserves its original fact without restoring a superseded camera frame");

@@ -93,6 +93,11 @@ static class Database11Compatibility
         var changed = Wire.FileHash(initial.Database);
         await Reject<InvalidDataException>(() => Task.Run(() => ParcelRepository.ReadMaintenanceStorageVersion(initial.Database, "sportmaster")), "matching marker cannot hide an unexpected actual schema");
         Check(Wire.FileHash(initial.Database) == changed, "schema refusal does not rewrite the unknown database");
+        var lookalike = new Fixture(Path.Combine(root, "sqlite-prefix-lookalike"));
+        Change(lookalike.Database, "CREATE TABLE sqliteX_payload(id TEXT);");
+        var lookalikeHash = Wire.FileHash(lookalike.Database);
+        await Reject<InvalidDataException>(() => Task.Run(() => ParcelRepository.ReadMaintenanceStorageVersion(lookalike.Database, "sportmaster")), "a user object resembling the SQLite prefix cannot hide from exact schema validation");
+        Check(Wire.FileHash(lookalike.Database) == lookalikeHash, "lookalike schema refusal preserves the original bytes");
         foreach (var version in new[] { 9, 12 })
         {
             var unknown = new Fixture(Path.Combine(root, "unsupported-" + version)); Change(unknown.Database, "UPDATE platform_migrations SET version=" + version);

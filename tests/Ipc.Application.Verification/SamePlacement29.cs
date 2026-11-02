@@ -57,7 +57,7 @@ internal static class SamePlacement29
 
         // 4. RCS rejects; the parcel stays on the tray: no retry storm.
         h.Peer.Mode = "reject";
-        await h.ReplaceParcelAsync();
+        await Empty(3);
         await Read("SYNTH-PLACE-C");
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-PLACE-C" && o.State == ParcelState.WcsRejected));
         var rejected = (await h.App.SnapshotAsync()).Operations.Single(o => o.ParcelCode == "SYNTH-PLACE-C");
@@ -70,12 +70,18 @@ internal static class SamePlacement29
 
         // 5. Operator lifts the parcel and places it again: one new request.
         h.Peer.Mode = "assigned";
-        await h.ReplaceParcelAsync();
+        // Site decode runs about 1.5 s per frame: a long gap without decoded frames is
+        // no evidence the parcel left, even beyond the fallback window.
+        await Task.Delay(h.PlacementReleaseMs + 1000);
+        await Read("SYNTH-PLACE-C");
+        Check(h.Peer.Requests.Count == 3 && ParcelInputReasons.IsSamePlacement(await Latest()),
+            "a slow decode gap longer than the fallback window does not re-request the resting parcel");
+        await Empty(3);
         await Read("SYNTH-PLACE-C");
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-PLACE-C" && o.State == ParcelState.SlotResolved));
         for (var i = 0; i < 3; i++) await Read("SYNTH-PLACE-C");
         Check(h.Peer.Requests.Count == 4 && (await h.App.SnapshotAsync()).Operations.Count(o => o.ParcelCode == "SYNTH-PLACE-C") == 2,
-            "re-placing the same parcel after the release window requests a new chute exactly once");
+            "lifting the parcel (empty tray seen) and placing it again requests a new chute exactly once");
 
         // 6. Glare: one or two frames without a code while the parcel rests do not end the placement.
         await Empty(2);

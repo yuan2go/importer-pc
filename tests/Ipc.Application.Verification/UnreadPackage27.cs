@@ -76,8 +76,8 @@ internal static class UnreadPackage27
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
         Check((await h.App.SnapshotAsync()).CameraReads.Single(f => f.PositionId == "left").Frame.Outcome == ObservationReadOutcome.NoCode,
             "late RCS acceptance preserves its original fact without restoring a superseded camera frame");
-        await h.ReplaceParcelAsync(); // Same label placed again: a new placement, not the resting parcel.
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), 5);
+        var again = await h.ReplaceParcelAsync(h.Left, 5); // Empty tray, then the same label placed again.
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DELAYED-27"), again);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 4);
         var requests = h.Peer.Requests.Select(s => JsonDocument.Parse(s)).ToArray();
         try

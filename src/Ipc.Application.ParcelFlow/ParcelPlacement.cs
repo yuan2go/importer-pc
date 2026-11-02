@@ -9,7 +9,10 @@ namespace Ipc.Application.ParcelFlow;
 //   * the camera decodes consecutive no-code frames (empty tray: the vehicle carried
 //     the parcel away or the operator lifted it) - reads captured after that moment
 //     are a new placement, reads captured before it still belong to the old one; or
-//   * as a fallback, its code has not been read at the position for the release window.
+//   * only where the position has no per-frame decode facts (manual entry, line readers),
+//     its code has not been read at the position for the release window. A camera that
+//     reports every decoded frame must show the empty tray: decode can be slower than the
+//     window (about 1.5 s per frame on site), so elapsed time alone is no evidence.
 // A different code at the position is always a new placement.
 public sealed partial class ParcelRuntime
 {
@@ -26,6 +29,9 @@ public sealed partial class ParcelRuntime
     }
     // Written by the ingress worker (under gate) and by decode callbacks.
     readonly Dictionary<string, Placement> placements = [];
+    // Positions whose camera publishes every decoded frame (codes, no-code, rejected).
+    readonly HashSet<string> frameFedPositions = [];
+    void RegisterPlacementFrames(string position) { lock (placements) frameFedPositions.Add(position); }
 
     // Returns the operation that already owns this placement, or null when the
     // read may proceed to the normal admission guards. Always records presence.
@@ -37,7 +43,7 @@ public sealed partial class ParcelRuntime
         {
             if (!placements.TryGetValue(position, out var placement) || placement.Code != code ||
                 placement.EndedAt is { } ended && observedAt > ended ||
-                observedAt - placement.LastSeen > TimeSpan.FromMilliseconds(release))
+                !(placement.CameraSeen && frameFedPositions.Contains(position)) && observedAt - placement.LastSeen > TimeSpan.FromMilliseconds(release))
             {
                 placements[position] = new(code, observedAt, cameraSeen: true);
                 return null;

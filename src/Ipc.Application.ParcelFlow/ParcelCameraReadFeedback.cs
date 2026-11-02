@@ -44,6 +44,7 @@ public sealed partial class ParcelRuntime
                 if (changed) OfferPresentation();
             }
         };
+        foreach (var fed in positions.Values.Where(p => p.ReaderDeviceId == session.Source.DeviceId)) RegisterPlacementFrames(fed.Id);
         source.ReadFeedback += handler;
         cameraReadSubscriptions.Add((source, handler));
     }

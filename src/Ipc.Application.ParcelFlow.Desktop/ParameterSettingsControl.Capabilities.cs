@@ -126,14 +126,14 @@ public sealed partial class ParameterSettingsControl
         }
         if (draft.Provider is null)
         {
-            var issue = Text("缺少对应的组件，请用原安装包修复软件。"); issue.Foreground = Brush("#B02D35"); page.Body.Children.Add(issue); return;
+            var issue = Text("缺少对应的组件，请用原安装包修复软件。"); issue.SetResourceReference(TextBlock.ForegroundProperty, "Danger"); page.Body.Children.Add(issue); return;
         }
         if (FirstConfiguration && (draft.Kind == "observation" && draft.Provider.Implementation == "manual" || draft.Kind == "integration" && draft.Provider.Implementation == "reference-integration"))
         {
             var missing = Text(draft.Kind == "observation"
                 ? "请选择连接方式并填写参数。"
                 : "当前是本地模拟。正式使用请在上方选择“RCS 服务”并填写地址。");
-            missing.Foreground = Brush("#915300"); page.Body.Children.Add(missing); return;
+            missing.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); page.Body.Children.Add(missing); return;
         }
         var isRcs = ParameterOwnership.IsRcs(draft);
         if (draft.Provider.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition")
@@ -167,7 +167,7 @@ public sealed partial class ParameterSettingsControl
         if (draft.Kind == "observation" && draft.Provider.Implementation == "manual")
         {
             var missing = Text("请选择连接方式并填写参数。");
-            missing.Foreground = Brush("#915300"); page.Body.Children.Insert(0, missing);
+            missing.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); page.Body.Children.Insert(0, missing);
         }
         // Type/version/instance/contract are support metadata, not connection inputs.
     }
@@ -181,7 +181,7 @@ public sealed partial class ParameterSettingsControl
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
         "zone-id" => "仓ID", "project-id" => "生产线ID", "device.ip" => "IP 地址", "device.port" or "port" => "端口", "specified-chute" => "指定格口", "chute-code" => "格口编号",
-        "left-bcr-code" or "right-bcr-code" => "相机编码", "heartbeat-interval-seconds" => "心跳间隔",
+        "left-bcr-code" => "左相机编码", "right-bcr-code" => "右相机编码", "heartbeat-interval-seconds" => "心跳间隔",
         "request-id-base" => "起始编号（不含）", "request-id-count" => "编号数量", "source" => "协议来源", "locale" => "协议语言",
         "reply-mode" => "模拟返回方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
     };

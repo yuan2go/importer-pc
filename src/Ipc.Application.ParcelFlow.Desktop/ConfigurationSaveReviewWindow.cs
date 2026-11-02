@@ -78,7 +78,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
             login.Click += async (_, _) => { new ManagementModeWindow(administrator) { Owner = this }.ShowDialog(); await vm.RefreshManagementModeAsync(); };
             authentication.Header = "管理模式"; authentication.Content = login; authentication.IsExpanded = !vm.IsManagementMode; body.Children.Add(authentication);
         }
-        body.Children.Add(Heading(authorizationOnly ? "操作说明" : "变更原因 *", UiTypography.Group, 12));
+        body.Children.Add(Heading(authorizationOnly ? "操作说明" : "备注（选填）", UiTypography.Group, 12));
         var reasons = new WrapPanel();
         foreach (var preset in new[] { "RCS 地址变更", "更换相机", "调整条码规则", "现场调试" })
         {
@@ -90,7 +90,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         reason.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.ConfigurationReason)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         reason.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); AutomationProperties.SetName(reason, "维护变更原因");
         reason.TextChanged += (_, _) => reasonError.Visibility = Visibility.Collapsed; body.Children.Add(reason); body.Children.Add(reasonError);
-        body.Children.Add(Note("最多 1024 字，会记入修改记录。"));
+        body.Children.Add(Note(authorizationOnly ? "最多 1024 字，会记入修改记录。" : "最多 1024 字，会记入修改记录。不填时自动记录本次修改了哪些设置。"));
         var feedback = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 64, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         feedback.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.Feedback)) { Mode = BindingMode.OneWay });
         var detail = new StackPanel(); detail.Children.Add(feedback);
@@ -100,14 +100,16 @@ public sealed class ConfigurationSaveReviewWindow : Window
         root.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled }); Content = root;
         vm.PropertyChanged += ModelChanged; Closed += (_, _) => { proof.Clear(); vm.PropertyChanged -= ModelChanged; };
         Closing += (_, e) => { if (vm.Busy) e.Cancel = true; };
-        Loaded += (_, _) => { if (vm.CanConfigure) reason.Focus(); else if (authorizationOnly) proof.Focus(); else pause.Focus(); };
+        Loaded += (_, _) => { if (vm.CanConfigure) save.Focus(); else if (authorizationOnly) proof.Focus(); else pause.Focus(); };
         UpdateState();
     }
     async void SaveAsync(object sender, RoutedEventArgs e)
     {
         if (!vm.CanSubmitReviewedConfiguration) { UpdateState(); return; }
-        if (string.IsNullOrWhiteSpace(vm.ConfigurationReason) || vm.ConfigurationReason.Length > 1024)
-        { reasonError.Text = "请填写 1～1024 字符的变更原因。"; reasonError.Visibility = Visibility.Visible; reason.Focus(); return; }
+        // The change record still carries a reason; an empty note records what changed instead.
+        if (string.IsNullOrWhiteSpace(vm.ConfigurationReason)) vm.ConfigurationReason = AutomaticReason(vm.ReviewedConfigurationChanges);
+        if (vm.ConfigurationReason.Length > 1024)
+        { reasonError.Text = "备注最多 1024 字。"; reasonError.Visibility = Visibility.Visible; reason.Focus(); return; }
         localFailure = null; bool completed = false;
         await vm.RunAsync(async () =>
         {
@@ -116,6 +118,12 @@ public sealed class ConfigurationSaveReviewWindow : Window
         }, "保存并查看结果");
         if (!completed) localFailure = "保存未完成。" + vm.Message;
         UpdateState();
+    }
+    static string AutomaticReason(IReadOnlyCollection<ConfigurationChangeItem> changes)
+    {
+        var names = changes.Select(c => c.Label).Where(l => l.Length > 0).Distinct().ToArray();
+        var text = names.Length == 0 ? "设置页保存" : "设置页修改：" + string.Join("、", names.Take(6)) + (names.Length > 6 ? " 等 " + names.Length + " 项" : "");
+        return text.Length <= 1024 ? text : text[..1024];
     }
     void ModelChanged(object? sender, PropertyChangedEventArgs e)
     {

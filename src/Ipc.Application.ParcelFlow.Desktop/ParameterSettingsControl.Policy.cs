@@ -23,7 +23,7 @@ public sealed partial class ParameterSettingsControl
                 if (ParameterOwnership.StationConflict(rcs) || left.Value != m.Policy.StationCode)
                 {
                     var conflict = Text("请确认统一供包台编号。" + pair.OriginalValues + "。在下方填写后，会同时用于新取格口请求和心跳；旧请求保留原编号。");
-                    conflict.Foreground = Brush("#915300"); station.Body.Children.Add(conflict);
+                    conflict.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); station.Body.Children.Add(conflict);
                 }
                 Input(Form(station), "供包台编号 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "RCS 分配给本供包台的编号，左右投递位共用。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];

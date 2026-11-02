@@ -1,50 +1,49 @@
 <UserControl x:Class="Ipc.Application.ParcelFlow.Desktop.MaintenancePage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:local="clr-namespace:Ipc.Application.ParcelFlow.Desktop" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal" Background="White">
  <UserControl.Resources><ResourceDictionary><ResourceDictionary.MergedDictionaries><ResourceDictionary Source="/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml"/></ResourceDictionary.MergedDictionaries></ResourceDictionary></UserControl.Resources>
  <Grid x:Name="MaintenanceScope"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-  <DockPanel Background="#F5F6F8" LastChildFill="True" Visibility="{Binding Visibility, ElementName=BackToSettings}">
+  <DockPanel Background="{DynamicResource Soft}" LastChildFill="True" Visibility="{Binding Visibility, ElementName=BackToSettings}">
 
    <Button x:Name="BackToSettings" DockPanel.Dock="Left" Content="返回设置" Click="BackToSettings_Click" Style="{StaticResource ParameterQuietAction}" Margin="12,0,8,0" Visibility="Collapsed"/>
-   <TextBlock x:Name="ToolTitle" Text="未保存的修改会保留" FontSize="{x:Static type:UiTypography.Label}" Foreground="#5A6878" VerticalAlignment="Center" Margin="24,0,8,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
+   <TextBlock x:Name="ToolTitle" Text="未保存的修改会保留" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="24,0,8,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
   </DockPanel>
   <local:ParameterSettingsControl x:Name="MainParameterEditor" RuntimeContext="{Binding}" Grid.Row="1" Model="{Binding ParameterEditor}" IsEnabled="{Binding CanEditFormConfiguration}"/>
-  <Border Grid.Row="2" Background="White" BorderBrush="#E1E5EB" BorderThickness="0,1,0,0" Padding="20,10">
+  <!-- Save bar: draft status on the left; tools, review and the one save action on the right. -->
+  <Border Grid.Row="2" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="24,10">
    <DockPanel LastChildFill="True">
-   <Menu DockPanel.Dock="Left" Background="Transparent" Margin="0,0,16,0" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal">
-    <MenuItem x:Name="AdvancedToggle" Header="更多工具" MinHeight="44" Padding="12,8">
-     <MenuItem Header="管理模式与密码…" Click="ManagementMode_Click"/>
-     <MenuItem Header="导入设置模板…" Click="ImportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
-     <MenuItem Header="导出设置模板…" Click="ExportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
-     <Separator/>
-     <MenuItem Header="暂存未完成的设置" Click="SaveEditor_Click" IsEnabled="{Binding CanConfigure}"/>
-     <MenuItem Header="继续编辑暂存的设置" Click="ContinueEditor_Click" IsEnabled="{Binding CanStartOperation}"/>
-     <MenuItem Header="重新读取设置…" Click="Load_Click" IsEnabled="{Binding CanStartOperation}"/>
-     <Separator/>
-     <MenuItem Header="高级工具">
-      <MenuItem Header="对比当前与待生效设置…" Tag="2" Click="TechnicalTool_Click"/>
-      <MenuItem Header="已安装模块描述…" Tag="3" Click="TechnicalTool_Click"/>
-      <MenuItem Header="已安装组件…" Tag="4" Click="TechnicalTool_Click"/>
-      <MenuItem Header="安装与卸载组件…" Tag="6" Click="TechnicalTool_Click"/>
-      <MenuItem Header="实例与角色绑定…" Tag="0" Click="TechnicalTool_Click"/>
-      <MenuItem Header="高级数据编辑…" Tag="1" Click="TechnicalTool_Click"/>
-      <Separator/>
-      <MenuItem Header="查看配置记录…" Tag="2" Click="TechnicalTool_Click"/>
-      <MenuItem Header="恢复备份后核对…" Tag="5" Click="TechnicalTool_Click"/>
-      <MenuItem Header="异常作业处理…" Tag="7" Click="TechnicalTool_Click"/>
-     </MenuItem>
-     <MenuItem Header="管理模式与操作条件…" Click="AuthorizeTool_Click"/>
-     <MenuItem Header="查看上次保存结果" Click="InspectSave_Click" IsEnabled="{Binding HasUnconfirmedConfigurationSubmission}"/>
-     <MenuItem Header="重新连接设备" Click="Reconnect_Click" IsEnabled="{Binding CanStartFreshOperation}"/>
-    </MenuItem>
-   </Menu>
-    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-     <Button x:Name="PreviousParameterPage" Content="上一页" Click="PreviousParameterPage_Click" Style="{StaticResource ParameterQuietAction}" Margin="0,0,4,0" Visibility="Collapsed"/>
-     <Button x:Name="NextParameterPage" Content="下一页" Click="NextParameterPage_Click" Style="{StaticResource ParameterQuietAction}" Margin="0,0,8,0" Visibility="Collapsed"/>
-     <Button x:Name="ViewChanges" Content="查看修改" Click="ReviewChanges_Click" Style="{StaticResource ParameterQuietAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
+    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+     <Menu Background="Transparent" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Body}" FontWeight="Normal">
+      <MenuItem x:Name="AdvancedToggle" Header="更多工具" MinHeight="44" Padding="12,8" Foreground="{DynamicResource Ink}" SubmenuOpened="AdvancedToggle_SubmenuOpened">
+       <MenuItem Header="管理模式与密码…" Click="ManagementMode_Click"/>
+       <MenuItem Header="导入设置模板…" Click="ImportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
+       <MenuItem Header="导出设置模板…" Click="ExportTemplate_Click" IsEnabled="{Binding CanStartOperation}"/>
+       <Separator/>
+       <MenuItem x:Name="StashDraftTool" Header="暂存未完成的设置" Click="SaveEditor_Click" IsEnabled="{Binding CanConfigure}"/>
+       <MenuItem x:Name="ResumeDraftTool" Header="继续编辑暂存的设置" Click="ContinueEditor_Click" IsEnabled="{Binding CanStartOperation}"/>
+       <MenuItem Header="重新读取设置…" Click="Load_Click" IsEnabled="{Binding CanStartOperation}"/>
+       <Separator/>
+       <MenuItem Header="高级工具">
+        <MenuItem x:Name="CompareTool" Header="对比当前与待生效设置…" Tag="2" Click="TechnicalTool_Click"/>
+        <MenuItem x:Name="ModulesTool" Header="已安装模块描述…" Tag="3" Click="TechnicalTool_Click"/>
+        <MenuItem x:Name="InventoryTool" Header="已安装组件…" Tag="4" Click="TechnicalTool_Click"/>
+        <MenuItem x:Name="InstallationTool" Header="安装与卸载组件…" Tag="6" Click="TechnicalTool_Click"/>
+        <MenuItem x:Name="BindingsTool" Header="实例与角色绑定…" Tag="0" Click="TechnicalTool_Click"/>
+        <MenuItem x:Name="JsonTool" Header="高级数据编辑…" Tag="1" Click="TechnicalTool_Click"/>
+        <Separator x:Name="AdvancedSeparator"/>
+        <MenuItem Header="查看配置记录…" Tag="2" Click="TechnicalTool_Click"/>
+        <MenuItem Header="恢复备份后核对…" Tag="5" Click="TechnicalTool_Click"/>
+        <MenuItem Header="异常作业处理…" Tag="7" Click="TechnicalTool_Click"/>
+       </MenuItem>
+       <MenuItem x:Name="ConditionsTool" Header="管理模式与操作条件…" Click="AuthorizeTool_Click"/>
+       <MenuItem Header="查看上次保存结果" Click="InspectSave_Click" IsEnabled="{Binding HasUnconfirmedConfigurationSubmission}"/>
+       <MenuItem Header="重新连接设备" Click="Reconnect_Click" IsEnabled="{Binding CanStartFreshOperation}"/>
+      </MenuItem>
+     </Menu>
+     <Button x:Name="ViewChanges" Content="查看修改" Click="ReviewChanges_Click" Style="{StaticResource ParameterAction}" IsEnabled="{Binding CanStartOperation}" Margin="0,0,8,0"/>
      <Button x:Name="SaveChanges" Content="{Binding ConfigurationSaveActionText}" Click="SaveChanges_Click" Style="{StaticResource ParameterPrimaryAction}" IsEnabled="{Binding CanReviewConfiguration}" ToolTip="{Binding ConfigurationDraftStatusText}" ToolTipService.ShowOnDisabled="True" MinWidth="120"/>
     </StackPanel>
     <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-     <TextBlock Text="{Binding ConfigurationDraftStatusText}" Foreground="#25384B" TextTrimming="CharacterEllipsis"/>
-     <TextBlock Text="{Binding ConfigurationSavedStatusText}" Foreground="#5A6878" FontSize="{x:Static type:UiTypography.Diagnostic}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
+     <TextBlock Text="{Binding ConfigurationDraftStatusText}" Foreground="{DynamicResource Ink}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextTrimming="CharacterEllipsis"/>
+     <TextBlock Text="{Binding ConfigurationSavedStatusText}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding ParameterConfigurationSummary}"/>
     </StackPanel>
    </DockPanel>
   </Border>

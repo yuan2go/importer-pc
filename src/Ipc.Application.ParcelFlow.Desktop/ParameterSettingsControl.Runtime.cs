@@ -42,16 +42,16 @@ public sealed partial class ParameterSettingsControl
         {
             var state = RuntimeContext?.ParameterConnection(target) ?? new ParameterConnectionPresentation("尚未启动", "", "", "这里修改的是待保存的设置；连接状态在软件启动后查看。", "neutral");
             summary.Text = state.Status;
-            summary.Foreground = Brush(state.Tone switch { "ready" => "#16704A", "warning" => "#915300", _ => "#5A6878" });
+            summary.SetResourceReference(TextBlock.ForegroundProperty, state.Tone switch { "ready" => "Success", "warning" => "Warning", _ => "Muted" });
             address.Text = state.Address.Length == 0 ? "" : "运行地址：" + state.Address;
             address.Visibility = state.Address.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             notice.Text = state.Notice; notice.Visibility = state.Notice.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-            notice.Foreground = Brush(state.Tone == "warning" ? "#915300" : "#5A6878");
+            notice.SetResourceReference(TextBlock.ForegroundProperty, state.Tone == "warning" ? "Warning" : "Muted");
             details.Text = "运行版本与证据\n" + state.Details; details.Visibility = state.Details.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             diagnostic.IsEnabled = RuntimeContext is not null && DiagnosticsRequested is not null;
             diagnostic.ToolTip = diagnostic.IsEnabled ? "查看当前运行中的连接状态，不会发送业务请求。" : "软件启动后才能查看连接状态。";
             ToolTipService.SetShowOnDisabled(diagnostic, true);
         }
-        runtimeUpdates.Add(Update); Update(); page.Body.Children.Add(new Border { Child = row, BorderBrush = Brush("#D8E1EB"), BorderThickness = new(0, 0, 0, 1), Padding = new(0, 0, 0, 12), Margin = new(0, 0, 0, 8) });
+        runtimeUpdates.Add(Update); Update(); var status = Card(row); status.Margin = new(0, 8, 0, 4); page.Body.Children.Add(status);
     }
 }

@@ -235,6 +235,9 @@ static partial class Program
             if (name is "诊断与恢复" or "站位与设备诊断") { station.ShowPositionDiagnostics(station.ViewModel.Left); return; }
             name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", "作业记录" => "记录", "日志查询" => "日志", _ => name };
             if (name == "参数设置" && station.ViewModel.SelectedPage == "maintenance") return;
+            // The settings tab row was removed; the left navigation "设置" opens the same page.
+            if (name == "参数设置") name = "设置";
+            if (name == "相机调试") name = "调试";
             if (name == "返回作业") name = "作业";
         }
         var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));

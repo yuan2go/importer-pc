@@ -7,11 +7,14 @@ public sealed partial class ParcelRuntime : IRuntimeDiagnosticsControl
 {
     readonly object diagnosticSettingsSync = new();
     RuntimeDiagnosticSettings diagnosticSettings = new(false, 0, DateTimeOffset.UtcNow);
+    Timer? debugExpiry;
+    long debugStarted;
+    internal TimeSpan DebugLoggingLifetime = TimeSpan.FromMinutes(30);
     RuntimeJournal DiagnosticJournal => journal is { } current && !stopped && !stopping.IsCancellationRequested
         ? current : throw new InvalidOperationException("软件正在启动或停止，暂不能使用运行日志。");
     public Task<RuntimeDiagnosticSettings> DiagnosticSettingsAsync() => OwnedAdministration(token =>
     {
-        Management.Require(); token.ThrowIfCancellationRequested(); _ = DiagnosticJournal;
+        Management.Require(); token.ThrowIfCancellationRequested(); _ = DiagnosticJournal; ExpireDebugIfDue();
         return Task.FromResult(Volatile.Read(ref diagnosticSettings));
     });
     public Task<RuntimeDiagnosticSettings> SetDebugLoggingAsync(bool enabled) => OwnedAdministration(token =>
@@ -22,12 +25,36 @@ public sealed partial class ParcelRuntime : IRuntimeDiagnosticsControl
             {
                 var prior = diagnosticSettings;
                 if (prior.DebugEnabled == enabled) return prior;
-                var next = new RuntimeDiagnosticSettings(enabled, checked(prior.Revision + 1), DateTimeOffset.UtcNow);
+                var next = new RuntimeDiagnosticSettings(enabled, checked(prior.Revision + 1), DateTimeOffset.UtcNow)
+                    { ExpiresAt = enabled ? DateTimeOffset.UtcNow + DebugLoggingLifetime : null };
                 Volatile.Write(ref diagnosticSettings, next);
+                debugExpiry?.Dispose(); debugExpiry = null;
+                debugStarted = System.Diagnostics.Stopwatch.GetTimestamp();
+                if (enabled) debugExpiry = new Timer(_ => ExpireDebugLogging(next.Revision), null, DebugLoggingLifetime, Timeout.InfiniteTimeSpan);
                 Diagnostic("诊断日志", enabled ? "调试模式已开启" : "调试模式已关闭", detail: "立即生效；仅当前运行实例，重启后关闭。修订=" + next.Revision);
                 return next;
             }
         })));
+    void ExpireDebugIfDue()
+    {
+        var value = Volatile.Read(ref diagnosticSettings);
+        if (value.DebugEnabled && System.Diagnostics.Stopwatch.GetElapsedTime(Volatile.Read(ref debugStarted)) >= DebugLoggingLifetime) ExpireDebugLogging(value.Revision);
+    }
+    void ExpireDebugLogging(long revision)
+    {
+        lock (diagnosticSettingsSync)
+        {
+            var prior = diagnosticSettings;
+            if (!prior.DebugEnabled || prior.Revision != revision || stopping.IsCancellationRequested) return;
+            Volatile.Write(ref diagnosticSettings, new(false, checked(prior.Revision + 1), DateTimeOffset.UtcNow));
+            debugExpiry?.Dispose(); debugExpiry = null;
+            Diagnostic("诊断日志", "详细日志已到期自动关闭；常规日志继续记录");
+        }
+    }
+    void StopDebugLogging()
+    {
+        lock (diagnosticSettingsSync) { debugExpiry?.Dispose(); debugExpiry = null; }
+    }
     public Task<RuntimeDiagnosticBatch> ReadDiagnosticTailAsync(Guid? stream, long? afterSequence, CancellationToken token)
         => OwnedRead(t =>
         {
@@ -39,6 +66,7 @@ public sealed partial class ParcelRuntime : IRuntimeDiagnosticsControl
         }, token);
     void DebugDiagnostic(string source, string action, Func<object> detail)
     {
+        ExpireDebugIfDue();
         if (!Volatile.Read(ref diagnosticSettings).DebugEnabled || journal is not { } current) return;
         current.WriteDebug(new { At = DateTimeOffset.UtcNow, Application = Id, Source = source, Level = "调试", Event = action, Detail = detail() });
     }

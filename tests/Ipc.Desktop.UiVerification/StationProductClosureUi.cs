@@ -59,7 +59,7 @@ static partial class Program
             Check(HasText("恢复备份、换机、修复或卸载") && HasText("创建完整备份"), "maintenance center exposes online tasks and explicit offline handoff");
             await ClickReady("打开诊断"); await Until(() => window.ViewModel.SelectedPage == "diagnostics" && window.ViewModel.CanStartOperation &&
                 Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "刷新体检"))); await ClickReady("刷新体检");
-            await Until(() => HasText("体检只读取现有相机和心跳数据"));
+            await Until(() => HasText("体检只读取现有相机和心跳数据") && HasText("存储剩余") && (HasText("等待 RCS 确认") || HasText("只表示 RCS 可连接") || HasText("组件未就绪")));
             Check(!HasText("RCS：当前可用") && (HasText("等待 RCS 确认") || HasText("只表示 RCS 可连接") || HasText("组件未就绪")), "RCS health summary distinguishes local readiness, remote HTTP confirmation and business acceptance");
             Check(HasText("存储剩余"), "diagnostic health reads actual current storage and confirms passive probe semantics");
             CaptureInternal(evidence, "pc21-diagnostics-1366", (Grid)window.FindName("ClientArea"), lines);
@@ -90,11 +90,11 @@ static partial class Program
         var first = new Window { Content = client, Width = 1100, Height = 740 }; first.Show(); await Flush();
         try
         {
-            var steps = Descendants(first).OfType<ComboBox>().Single(c => AutomationProperties.GetName(c) == "首次配置五步导航");
-            Check(steps.IsVisible && steps.Items.Count == 5 && editor.PageProgress.StartsWith("第 1 / 5 步"), "first configuration has five independent stages and starts with station information");
+            var steps = Descendants(first).OfType<Button>().Where(c => AutomationProperties.GetName(c).StartsWith("首次配置第", StringComparison.Ordinal)).ToArray();
+            Check(steps.Length == 5 && steps.All(s => s.IsVisible) && editor.PageProgress.StartsWith("第 1 / 5 步"), "first configuration has five visible stage buttons and starts with station information");
             draft.Policy.StationCode = ""; await Flush();
-            steps.SelectedIndex = 4; await Until(() => !editor.IsNavigating);
-            Check(steps.SelectedIndex < 4 && model.Issues.Count > 0, "jumping to completion cannot bypass invalid earlier stage fields");
+            steps[4].RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => !editor.IsNavigating);
+            Check(!editor.IsReviewPage && model.Issues.Count > 0, "jumping to completion cannot bypass invalid earlier stage fields");
             CaptureInternal(evidence, "pc21-first-configuration-1100", client, lines);
         }
         finally { first.Close(); }

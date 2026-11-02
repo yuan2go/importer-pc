@@ -1,0 +1,280 @@
+{
+  "source_commit": "c1a50a3976b5dbb4089306b74f4effb78722d46a",
+  "files": [
+    {
+      "path": "assembly-hashes.json",
+      "sha256": "88d4cdf5679ffbe5d565e3bf54e6e82acf8aa03ca559d1fbfd7ffeec9e11885f",
+      "bytes": 684
+    },
+    {
+      "path": "build-Ipc.Application.Verification.log",
+      "sha256": "6525a25124a9ccd704584811c1c9d122647dd79dd61ef1462bfc9d4adf2c7a49",
+      "bytes": 84
+    },
+    {
+      "path": "build-Ipc.Desktop.log",
+      "sha256": "1f0928695c027cd5c4451dec8fa53c5b33abf4cf89094cf819aaef5c8beadc30",
+      "bytes": 84
+    },
+    {
+      "path": "build-Ipc.Desktop.UiVerification.log",
+      "sha256": "3d0774f812a8928899226138a73d8a215af8ece71d3ef299039894f92a9c99b8",
+      "bytes": 84
+    },
+    {
+      "path": "core-camera-chain-closure.log",
+      "sha256": "57abaa57e74f54f2a70c9a9723de4152239b8e10636499c6dbe3944db19c7511",
+      "bytes": 2157
+    },
+    {
+      "path": "core-camera-rounds.log",
+      "sha256": "49897676baf2eea8ee8ad17bccf1a885eee7937de3fb0a32adece9a7605b3ac0",
+      "bytes": 30130
+    },
+    {
+      "path": "core-db11-compatible-update.log",
+      "sha256": "1a447a6ab159220565b188c91c37e5b7625c8251d1e72ece9f7b45f704d30c26",
+      "bytes": 4472
+    },
+    {
+      "path": "core-management-mode.log",
+      "sha256": "2cb6f0c718347c8546cf1ebde8e35fd0b0bddd5116b3e35f0061f1de26e2b909",
+      "bytes": 6522
+    },
+    {
+      "path": "core-manual-supply.log",
+      "sha256": "8ed6064c5dd648112c5386523f028ded8b0b24837be6f9f8785e94464d39188d",
+      "bytes": 2214
+    },
+    {
+      "path": "core-parameter-guidance-startup.log",
+      "sha256": "6a7cc0c9c70fa6a20a05e1eacce8c1d727292bfaaa61484d60a8a639ba652fba",
+      "bytes": 2419
+    },
+    {
+      "path": "core-product-closure-21.log",
+      "sha256": "d95d2658bc92d140eab2674252e85098294533cd704cc520183d43e46264b9bb",
+      "bytes": 3400
+    },
+    {
+      "path": "core-rcs-timeout-errors.log",
+      "sha256": "dd9c9418f6e0a9d5b9b2e62a46342e9c434eee179b121db374967e4b9e4b3671",
+      "bytes": 4807
+    },
+    {
+      "path": "core-reader-feedback-22.log",
+      "sha256": "a1b5a765823a07c89e394dbeb216fe96ef20cff12359b0cea7b01b6f150455b9",
+      "bytes": 6271
+    },
+    {
+      "path": "core-reliability-02.log",
+      "sha256": "2135eb9a6d5ce2f25276cb90e0fb84bacfbbe0171c693bac02bf62b76c87d411",
+      "bytes": 8101
+    },
+    {
+      "path": "core-shutdown-resources.log",
+      "sha256": "9fcc500262c42b63d3ba9449f6b58c5b22e203a89992ef64cb37a046dded1d9f",
+      "bytes": 2012
+    },
+    {
+      "path": "core-summary.json",
+      "sha256": "1af167ce65451d6903761fb81c16ef4837bd7629fdfe582e2ebfee1b304febc6",
+      "bytes": 5631
+    },
+    {
+      "path": "core-ui-spec-24.log",
+      "sha256": "007363e8f76f48fee82409961ce1d4af498e3bfc91eab36b6e6a9bb2fb78014c",
+      "bytes": 2185
+    },
+    {
+      "path": "environment-error.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "environment.json",
+      "sha256": "3525257fa5b313bddb33e4a95522af54a7bfa24a92faf69d6d561e64455d06b0",
+      "bytes": 731
+    },
+    {
+      "path": "historical-camera-debug-interface-mismatch.log",
+      "sha256": "287bf62e601e41a41ed5ac2173398b421ce78d634e90683db8467a46ff1b27b9",
+      "bytes": 924
+    },
+    {
+      "path": "intermediate-70488950-chute-failure.log",
+      "sha256": "70107a5e37e35e0fcaf966c525cddcf09f7d926fe72285318a5867fe25fcad58",
+      "bytes": 3136
+    },
+    {
+      "path": "intermediate-uncommitted-history-reserve-failure.log",
+      "sha256": "f5e8dea7a85d27b040f48bf19fe5015914820133acd1d483152081c67bff5623",
+      "bytes": 4239
+    },
+    {
+      "path": "native-camera-preview-lifecycle.log",
+      "sha256": "c2d5f9e8270c71370983a33707fba5a0c24f1d349904d12aa96c7c75863597f0",
+      "bytes": 755
+    },
+    {
+      "path": "native-camera-round-ui.log",
+      "sha256": "8df55f72f4c01d21cd260a0536e30e47cfa0b82c6aec0597f2ea65ca90c98409",
+      "bytes": 9763
+    },
+    {
+      "path": "native-debug-log-live.log",
+      "sha256": "8a9e16c43e9f3b1b6ed51ea0c3911e0e8e58ebb1900b4e248ab245f19888d25e",
+      "bytes": 3655
+    },
+    {
+      "path": "native-hikrobot-sdk-editing.log",
+      "sha256": "e64704ce02aa0471a93a961a76636c80f7d7e9e5baefaedfea0a2d16b75c2d41",
+      "bytes": 3939
+    },
+    {
+      "path": "native-installer-first-run-ui.log",
+      "sha256": "4f9a6f75813847a993fcc417bbd38d364a1ab8c3762d1108e56a80dc41fc346e",
+      "bytes": 17495
+    },
+    {
+      "path": "native-operator-ux-18.log",
+      "sha256": "0407342318f26225d184903ab826c379f9374c9bb24ac15248aa52056801de10",
+      "bytes": 4074
+    },
+    {
+      "path": "native-parameter-guidance-startup.log",
+      "sha256": "3afc1cb649498e4bf752b40db9f6986cd7e1a7e7d63b2c234ebf1eddccc9f93b",
+      "bytes": 8690
+    },
+    {
+      "path": "native-parameter-v3-only.log",
+      "sha256": "ecdeb0e9ca89a1e6493b2891d54c5eabbd6636815ca453ef7d58482c2d0d974a",
+      "bytes": 3376
+    },
+    {
+      "path": "native-product-closure-21.log",
+      "sha256": "ad65c49e048be08d1c55deb2cf9e7add25dcf3119bb7d9d4410dddac66c111af",
+      "bytes": 1489
+    },
+    {
+      "path": "native-query-filters.log",
+      "sha256": "7e632fc8308821457667dba176dcbff99c880d96ced8d45d3794ad6b9c39977c",
+      "bytes": 2458
+    },
+    {
+      "path": "native-reader-feedback-22-ui.log",
+      "sha256": "7c58b9056a58704c08c49a4a150fcb083b9ec7c441384062a62105dc410ad376",
+      "bytes": 2321
+    },
+    {
+      "path": "native-summary.json",
+      "sha256": "0bf6cf66d75fdea5e35bcd05373f3ed15b3017e29e4099865859ae1911a0a769",
+      "bytes": 6338
+    },
+    {
+      "path": "native-ui-spec-24.log",
+      "sha256": "d93d0ca67ba071cfec9f0505cab822bc2c4534262df53d35d4f9b7613680875a",
+      "bytes": 3518
+    },
+    {
+      "path": "native-uninstall-result-actions.log",
+      "sha256": "6ec1ff2331d15efc3887a3c51d8b3315fd8d5c1a6e996abf93efa541614933a7",
+      "bytes": 4112
+    },
+    {
+      "path": "operator18-history-800.png",
+      "sha256": "532054191924e3075b947f07b73a52fdb967a3ef051daa3b86ced0ef95deccc2",
+      "bytes": 73601
+    },
+    {
+      "path": "operator18-success-800.png",
+      "sha256": "d055326964eb54d9d426f61a6585eab9c717378dcb210a9a6fb9fc7171ea0244",
+      "bytes": 76695
+    },
+    {
+      "path": "publish-summary.json",
+      "sha256": "4cf9657ce05eeb30a0ed2a61d3a6f237d5452a525ab6a8b00de0765a0ce6e5ef",
+      "bytes": 862
+    },
+    {
+      "path": "publish.log",
+      "sha256": "3b560514925ba997abc29bcdf4839d02a26e421651d82aee80c6827324e39f8c",
+      "bytes": 78
+    },
+    {
+      "path": "README.md",
+      "sha256": "61cb2aaa263a9f802cf6db47d6a89def9ac67b07c92aa4829dc5fd26d854de97",
+      "bytes": 2630
+    },
+    {
+      "path": "summary.json",
+      "sha256": "f18d80c993ad042c09c00040f8e567b73e2777e4fdec68329cdde72716f07fff",
+      "bytes": 506
+    },
+    {
+      "path": "ui24-cameras-1366.png",
+      "sha256": "790764e3f956b7d1518e9db1c5f7be7012204399208674fd9f4189655dbeb71a",
+      "bytes": 167473
+    },
+    {
+      "path": "ui24-cameras-800.png",
+      "sha256": "0727353fad9b7d4991883e9abb1ce5a53cd17768035fc6d895d053bc7f91ce04",
+      "bytes": 80189
+    },
+    {
+      "path": "ui24-first-run-review.png",
+      "sha256": "4c704d64156111ba64a5c04f7b655b02e33e0aa3cf65e7803d9cef88355fa6d0",
+      "bytes": 115894
+    },
+    {
+      "path": "ui24-history-1366.png",
+      "sha256": "d44f884361be52ae9aed839836c882292d5bfb6295ada1409122542ecf38a05a",
+      "bytes": 171815
+    },
+    {
+      "path": "ui24-history-800.png",
+      "sha256": "f15e243e01822f51a92c8764752d504b0bf17bda1e8ae82f419232b7396e7cf5",
+      "bytes": 65513
+    },
+    {
+      "path": "ui24-logs-1366.png",
+      "sha256": "33ecbfcff96d097e352cc9db2ff623560bcad34760d0cf770c79753d8a563352",
+      "bytes": 151290
+    },
+    {
+      "path": "ui24-logs-800.png",
+      "sha256": "d2519a0fea3bac2cf2667a04fae9c56bdf0a403ef82c02565f688ccfe7292d46",
+      "bytes": 81942
+    },
+    {
+      "path": "ui24-offline-check.png",
+      "sha256": "00ec6d1949c1b64fcad408a641ecb1d6ec76135f4b74b94b6ebaca362fb911a6",
+      "bytes": 32761
+    },
+    {
+      "path": "ui24-offline-recovery.png",
+      "sha256": "d76afc81f7e71467ef3316b765ec7d87a5729cb3c86f9624d9a510771c335fd1",
+      "bytes": 53724
+    },
+    {
+      "path": "ui24-save-review.png",
+      "sha256": "857fff2166c5d229f068bd8800289bcba23ec668a270a118ee7122319a7bafcd",
+      "bytes": 118475
+    },
+    {
+      "path": "ui24-work-1092.png",
+      "sha256": "ac3f7a3149d997414fe2865aa093ab26ec0e360924a5e656b513f24d8f9e6552",
+      "bytes": 94514
+    },
+    {
+      "path": "ui24-work-1366.png",
+      "sha256": "bbfbb082fea7112671a8301b47e8fab37e30879ccfaba945e054b99d49e5c4d6",
+      "bytes": 125085
+    },
+    {
+      "path": "ui24-work-800.png",
+      "sha256": "a34e61187707194581676749f751f31741d1311d77724d1bfc2b5af2c640cef6",
+      "bytes": 76254
+    }
+  ]
+}

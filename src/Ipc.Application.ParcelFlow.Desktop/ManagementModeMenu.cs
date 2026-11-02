@@ -14,6 +14,9 @@ public sealed class ManagementModeMenu : Button
     string unauthorizedLabel = "普通模式";
     public string UnauthorizedLabel { get => unauthorizedLabel; set { unauthorizedLabel = value; Refresh(); } }
     public event RoutedEventHandler? ModeActionRequested;
+    public event RoutedEventHandler? RenewalRequested;
+    readonly System.Windows.Threading.DispatcherTimer countdown = new() { Interval = TimeSpan.FromSeconds(1) };
+    readonly MenuItem renew = new() { Header = "续用 15 分钟" };
     readonly TextBlock label = new();
     readonly MenuItem expires = new() { IsEnabled = false };
     readonly MenuItem action = new();
@@ -27,7 +30,11 @@ public sealed class ManagementModeMenu : Button
         content.Children.Add(label);
         content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M0,0 L4,4 L8,0"), Width = 8, Height = 4, Stroke = Foreground, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
         Content = content;
-        menu.Items.Add(expires); menu.Items.Add(action);
+        menu.Items.Add(expires); menu.Items.Add(renew); menu.Items.Add(action);
+        renew.Click += (_, _) => RenewalRequested?.Invoke(this, new RoutedEventArgs());
+        countdown.Tick += (_, _) => Refresh();
+        Loaded += (_, _) => { countdown.Start(); Refresh(); };
+        Unloaded += (_, _) => { countdown.Stop(); menu.IsOpen = false; };
         action.Click += (_, _) => ModeActionRequested?.Invoke(this, new RoutedEventArgs());
         ContextMenu = menu; Refresh();
         System.Windows.Automation.AutomationProperties.SetName(this, "管理模式菜单");
@@ -40,7 +47,10 @@ public sealed class ManagementModeMenu : Button
     {
         if (label is null) return;
         var current = Status;
-        label.Text = !current.Available ? "管理不可用" : current.Authorized ? "管理模式" : UnauthorizedLabel;
+        var remaining = current.ExpiresAt - DateTimeOffset.UtcNow;
+        label.Text = !current.Available ? "管理不可用" : current.Authorized ? (remaining <= TimeSpan.FromMinutes(2) ? "即将退出 · 剩 " : "管理 · 剩 ") + remaining?.ToString(@"mm\:ss") : UnauthorizedLabel;
+        ToolTip = current.Authorized && remaining <= TimeSpan.FromMinutes(2) ? "管理模式将在两分钟内退出；未保存输入保留。可在菜单中延长十五分钟。" : "管理模式菜单";
+        renew.Visibility = current.Authorized && remaining <= TimeSpan.FromMinutes(2) && RenewalRequested is not null ? Visibility.Visible : Visibility.Collapsed;
         expires.Visibility = current.Authorized ? Visibility.Visible : Visibility.Collapsed;
         expires.Header = current.ExpiresAt is { } end ? "将于 " + end.ToLocalTime().ToString("HH:mm") + " 自动退出" : "";
         action.Header = current.Authorized ? "退出管理模式" : current.Configured || current.HasUnsupportedCredentials ? "进入管理模式" : "设置管理密码";

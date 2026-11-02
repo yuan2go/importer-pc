@@ -1,3 +1,5 @@
+> 2026-11-02 当前任务导航、双相机/统一RCS、完整候选生效和查询边界见[SM-UI-SPEC-CLOSURE-24](../runtime/sm-ui-spec-closure-24.md)。旧页面摆放保留形成时范围；系统/业务/驱动/组件字段所有权、原请求及历史证据不变。
+
 # SM读码反馈与操作可靠性22
 
 2026-11-02，基线 main 97800598（包含 PR171～174），[工作包](../work-packages/WP-IPC-SM-READER-FEEDBACK-22.md)。继承内置 MVS＋进程内识别＋内置 RCS、DB11、统计/班次、规则热生效、四字段及原格口字号。历史验证各守原 SourceCommit。

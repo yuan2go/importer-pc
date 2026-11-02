@@ -97,7 +97,7 @@ static partial class Program
             Check(chute.Width.IsSizeToCells && chute.MinWidth >= 100, "history chute column sizes to complete values rather than fixed 80-DIP ellipsis");
             CaptureInternal(evidence, "operator18-history-800", (Grid)window.FindName("ClientArea"), lines);
             vm.MarkReadFailure("Synthetic interruption"); Check(!vm.Left.DisplaySlotVisible && vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Stale, "lost snapshot cannot keep a live green result");
-            lines.Add("Native Windows WPF, synthetic SQLite/built-in RCS loopback. Cue invocation and rendered geometry verified; physical audio, gloves, hardware PDA/MVS/customer RCS/site NOT_RUN. Counters omitted at user request.");
+            lines.Add("Native Windows WPF, synthetic SQLite/built-in RCS loopback. Cue invocation and rendered geometry verified; physical audio, gloves, hardware PDA/MVS/customer RCS/site NOT_RUN. Efficiency counts are read-only software facts and do not represent physical parcels.");
         }
         finally { window.Close(); }
     }

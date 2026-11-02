@@ -7,7 +7,7 @@ public partial class ParcelViewModel
 {
     // Only a projection of the selected original. Reading/copying never issues a command.
     public string RequestHandover => Selected is not { } op ? "选择作业后查看交接信息。" : Handover(op, IsManagementMode);
-    public bool SelectedRcsQueryUnavailable => Selected?.Wcs is { State: StageState.Unknown, Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } &&
+    public bool SelectedRcsQueryUnavailable => Selected?.Wcs is { State: StageState.Unknown or StageState.Conflict, Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } &&
         !new[] { Selected.Plc, Selected.Capture, Selected.Upload }.OfType<StageFact>().Any(s => s.State == StageState.Unknown);
     public string HistoryQueryGuidance => SelectedRcsQueryUnavailable ? "当前 RCS 接口不支持查询结果，该作业不会被重发。请复制交接信息，交给维护人员处理。" : "“查询”和“继续”只针对选中的作业。";
     public static string Handover(ParcelOperation op, bool management)

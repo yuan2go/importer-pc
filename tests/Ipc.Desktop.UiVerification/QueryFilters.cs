@@ -68,6 +68,10 @@ static partial class Program
         }
         await SetClient(window, 1366, 768); Click(window, "日志查询"); await Until(() => vm.SelectedPage == "logs");
         var logs = (SoftwareLogControl)((ContentControl)window.FindName("PageHost")).Content;
+        var advanced = Descendants(logs).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选"));
+        Check(!advanced.IsExpanded, "log precise filters begin collapsed behind their explicit action");
+        advanced.IsExpanded = true; await Flush();
+        Descendants(logs).OfType<Expander>().Single(e => Equals(e.Header, "时间范围")).IsExpanded = true; await Flush();
         var ranges = Descendants(logs).OfType<DateTimeInput>().ToArray(); Check(ranges.Length == 2, "log page reuses the same two local time controls");
         var applied = (TextBox)typeof(SoftwareLogControl).GetField("effectiveRange", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(logs)!;
         var queryButton = Descendants(logs).OfType<Button>().Single(b => Equals(b.Content, "查询"));

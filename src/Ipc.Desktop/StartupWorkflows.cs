@@ -142,6 +142,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string? savedInput, checkedInput;
     ParameterEditorModel? parameterEditor;
     ParameterSettingsControl? parameterControl;
+    public string IncompleteSummary
+    {
+        get
+        {
+            if (parameterEditor is null) return "尚未完成本站、业务规则、相机及 RCS 的配置检查。继续配置后可查看具体缺项。";
+            parameterEditor.ValidateFields();
+            return parameterEditor.Issues.Count == 0 ? "当前字段检查未发现错误；尚未保存正式配置。继续配置，在“检查与完成”中保存。" : "当前还需修改 " + parameterEditor.Issues.Count + " 项：\n" + string.Join("\n", parameterEditor.Issues.Take(8).Select(i => "• " + i.Category + "：" + i.Message));
+        }
+    }
     bool startupSaveUncertain;
     bool lastSaveConfirmed;
     bool savingCandidate;
@@ -166,6 +175,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     public BusinessLaunch SelectedLaunch { get; private set; }
     IManagementMode ManagementMode => ParcelStartupServices.ManagementMode(SelectedLaunch);
     public bool OpenRecoveryScenario { get; set; }
+    public bool SceneOnly { get; set; }
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
     public bool ConfigurationSaved { get; private set; }
@@ -649,12 +659,20 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 var state = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16) };
                 var summary = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0) };
                 var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent };
-                review.Children.Add(state); review.Children.Add(summary);
+                review.Children.Add(state);
+                var sections = new StackPanel(); review.Children.Add(sections);
+                review.Children.Add(new Expander { Header = "本次更改与配置详情", Content = summary });
                 review.Children.Add(new Expander { Header = "配置检查诊断详情", Content = diagnostic, Margin = new(0, 16, 0, 0) });
                 refreshReview = () =>
                 {
                     state.Text = startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : lastSaveConfirmed && savedInput == Input() ? "配置已保存，尚未连接设备。完成后可明确选择启动供包台。" : "检查填写内容并保存配置；不会启动设备。";
                     diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails);
+                    sections.Children.Clear();
+                    foreach (var section in StartupConfigurationFiles.ReviewSections(draft!))
+                    {
+                        var back = new Button { Content = new TextBlock { Text = section.Title + "\n" + section.Summary, TextWrapping = TextWrapping.Wrap }, MinHeight = 44, Margin = new(0, 0, 0, 6), HorizontalContentAlignment = HorizontalAlignment.Left };
+                        back.Click += (_, _) => sharedEditor.SelectCategory(section.Category); sections.Children.Add(back);
+                    }
                     try { summary.Text = StartupConfigurationFiles.Summary(draft!, document!.Candidate!) + "\n\n本次更改\n" + StartupConfigurationFiles.Describe(new StartupConfigurationDraft(document.Candidate!, document.Catalog), draft!); }
                     catch (Exception error) when (error is InvalidOperationException or ArgumentException or System.Text.Json.JsonException)
                     { summary.Text = "还有参数需要修改，请按检查结果逐项修正。"; diagnostic.Text += "\n" + Ipc.Platform.DiagnosticText.Protect(error.Message); }
@@ -682,6 +700,21 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Section("恢复与维护", "备份、恢复、换机接管和程序修复都需单独确认后执行，切换到本页不会自动执行。", fields.Skip(recoveryStart));
         if (OpenRecoveryScenario) { selectedTask = 4; OpenRecoveryScenario = false; }
         tasks!.SelectedIndex = selectedTask;
+        if (SceneOnly)
+        {
+            var selectedContent = new FrameworkElementFactory(typeof(ContentPresenter));
+            selectedContent.SetBinding(ContentPresenter.ContentProperty, new System.Windows.Data.Binding("SelectedContent") { RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.TemplatedParent) });
+            tasks.Template = new ControlTemplate(typeof(TabControl)) { VisualTree = selectedContent };
+            var recoveryScene = selectedTask == 4;
+            for (var tabIndex = 0; tabIndex < tasks.Items.Count; tabIndex++) ((TabItem)tasks.Items[tabIndex]).IsEnabled = recoveryScene ? tabIndex == 4 : tabIndex is 0 or 3;
+            var routes = new WrapPanel { Margin = new(0, 0, 0, 8) };
+            foreach (var route in recoveryScene ? new[] { ("恢复备份与换机", 4) } : new[] { ("检查目录与配置", 0), ("检查并启动", 3) })
+            {
+                var button = new Button { Content = route.Item1, MinHeight = 44, Margin = new(0, 0, 8, 0) };
+                button.Click += (_, _) => { tasks.SelectedIndex = route.Item2; selectedTask = route.Item2; UpdateActions(); }; routes.Children.Add(button);
+            }
+            Body.Children.Insert(0, routes);
+        }
         }
         if (!initialConfiguration && tasks is not null) {
             tasks.SelectionChanged += (_, e) => { if (e.OriginalSource == tasks) { selectedTask = tasks.SelectedIndex; UpdateActions(); } };
@@ -702,6 +735,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 var confirmed = lastSaveConfirmed && !startupSaveUncertain && savedInput == Input();
                 button.Visibility = next && parameterControl?.NextPageTitle is not null && !startupSaveUncertain || label == "上一步" && parameterControl?.HasPreviousPage == true || label == "保存配置" && selectedTask == 4 && !confirmed && !startupSaveUncertain || label == "完成" && selectedTask == 4 && confirmed || label == "重新读取配置…" && startupSaveUncertain ? Visibility.Visible : Visibility.Collapsed;
                 if (label is "保存配置" or "完成" or "重新读取配置…") StartupAppearance.Primary(button);
+            }
+            return;
+        }
+        if (SceneOnly)
+        {
+            foreach (var button in Actions.Children.OfType<Button>())
+            {
+                var label = button.Content as string;
+                button.Visibility = selectedTask == 0 && label == "读取所选配置" || selectedTask == 3 && label is "检查并预览更改" or "重试正常启动" || selectedTask == 4 && label == "换机：接管已恢复的数据目录…" ? Visibility.Visible : Visibility.Collapsed;
             }
             return;
         }

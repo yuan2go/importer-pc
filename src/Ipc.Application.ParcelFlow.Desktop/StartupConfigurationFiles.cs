@@ -8,6 +8,20 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // Import is an edit to the existing candidate, never a deployment or a database restore.
 public static class StartupConfigurationFiles
 {
+    public sealed record ReviewSection(int Category, string Title, string Summary);
+    public static ReviewSection[] ReviewSections(StartupConfigurationDraft draft)
+    {
+        static string Value(CapabilityDraft? owner, string key) => owner?.Parameters.FirstOrDefault(p => p.Field.Key == key)?.Value is { Length: > 0 } value ? value : "未填写";
+        var rcs = draft.Capabilities.FirstOrDefault(ParameterOwnership.IsRcs);
+        var cameras = draft.Readers.Select(r => (r.Role == "left" ? "左相机" : "右相机") + "：" +
+            (Value(r, "device.ip") == "未填写" && Value(r, "device.serial") == "未填写" ? "未配置（仍可人工输入）" : Value(r, "device.ip") + " · 序列号 " + Value(r, "device.serial")) + " · 编码 " + Value(rcs, r.Role + "-bcr-code"));
+        var range = "编号尚未完整填写";
+        if (long.TryParse(Value(rcs, "request-id-base"), out var b) && long.TryParse(Value(rcs, "request-id-count"), out var n) && b >= 0 && n > 0 && b <= long.MaxValue - n) range = $"编号 {b + 1}～{b + n}（含两端）";
+        return [new(0, "本站信息 · 返回修改", "仓ID " + Value(rcs, "zone-id") + " · 生产线ID " + Value(rcs, "project-id") + " · 供包台 " + draft.Policy.StationCode),
+            new(1, "业务规则 · 返回修改", "条码规则 " + (draft.Policy.BarcodePattern.Length == 0 ? "不筛选" : draft.Policy.BarcodePattern) + (draft.Policy.RejectMultipleCodes ? " · 拒绝多码" : " · 按配置处理多码")),
+            new(2, "左右相机 · 返回修改", string.Join("\n", cameras)),
+            new(3, "RCS 连接 · 返回修改", (rcs?.Target is { Length: > 0 } target ? target : "未配置") + " · " + range + "\n只核对草稿；实际试读在启动后的隔离调试中进行，不发送额外测试心跳。")];
+    }
     public static string Summary(StartupConfigurationDraft draft, ParcelConfiguration identity)
     {
         static string Target(string value) => value.StartsWith("reference:", StringComparison.Ordinal) ? "本地模拟" : string.IsNullOrWhiteSpace(value) ? "未填写" : value;

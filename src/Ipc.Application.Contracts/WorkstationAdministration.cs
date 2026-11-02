@@ -12,6 +12,7 @@ public interface IManagementMode
 }
 public interface IWorkstationAdministration
 {
+    Task<ManagementModeStatus> RenewManagementModeAsync() => throw new NotSupportedException("当前管理服务不支持续期，请重新验证管理密码。");
     Task<ManagementModeStatus> ManagementModeStatusAsync();
     Task ConfigureManagementPasswordAsync(string password);
     Task<bool> EnterManagementModeAsync(string password);
@@ -27,8 +28,18 @@ public interface ISoftwareLogSelectionLifetime
 {
     void ReleaseLogSelection(string selection);
 }
-public sealed record SoftwareLogQuery(DateTimeOffset From, DateTimeOffset ToExclusive, string Keyword = "", bool Regex = false, string Level = "", string Source = "");
+public sealed record SoftwareLogQuery(DateTimeOffset From, DateTimeOffset ToExclusive, string Keyword = "", bool Regex = false, string Level = "", string Source = "")
+{
+    public string[] Levels { get; init; } = [];
+    public string[] Sources { get; init; } = [];
+    public bool KeyEvents { get; init; }
+    public string? OperationId { get; init; }
+}
 public sealed record SoftwareLogLocation(string FileId, long Line, string Hash, string File = "");
-public sealed record SoftwareLogEntry(SoftwareLogLocation Location, string Source, DateTimeOffset? At, string Level, string Text);
+public sealed record SoftwareLogEntry(SoftwareLogLocation Location, string Source, DateTimeOffset? At, string Level, string Text)
+{
+    public string? OperationId { get; init; }
+    public string? EventCode { get; init; }
+}
 public sealed record SoftwareLogPage(string Selection, SoftwareLogEntry[] Entries, bool HasMore, string[] Notices);
 public sealed record SoftwareLogContext(SoftwareLogEntry[] Entries, string[] Notices);

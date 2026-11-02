@@ -219,7 +219,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                     skippedBefore = frame.Number - prior - 1; skippedVideoFrames += skippedBefore;
                                     if (skippedBefore > 0) videoGapEvents++;
                                 }
-                                priorFrame = frame.Number; frames++; bytes += checked((long)frame.Length);
+                                priorFrame = frame.Number; frames++; decodeWindow.Frame(); bytes += checked((long)frame.Length);
                                 lastFrameAt = observedAt; lastFrameTicks = deliveredTicks;
                             }
                             preview.Offer(frame.Data, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);

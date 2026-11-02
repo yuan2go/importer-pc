@@ -3,10 +3,14 @@ using System.Windows.Controls;
 namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class HistoryPage : UserControl
 {
+    public event EventHandler<string>? LogsRequested;
+    void Logs_Click(object sender, RoutedEventArgs e) { if (DataContext is ParcelViewModel { IsManagementMode: true, Selected: { } op }) LogsRequested?.Invoke(this, op.Id); }
+    async void BarcodeQuery_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    { if (e.Key == System.Windows.Input.Key.Enter && DataContext is ParcelViewModel vm && !vm.Busy) { e.Handled = true; await vm.RunAsync(() => vm.LoadHistoryAsync(), "查询完整条码"); } }
     public HistoryPage()
     {
         InitializeComponent();
-        Loaded += (_, _) => UpdateDetailsVisibility();
+        Loaded += (_, _) => { ArrangeTaskFilters(); UpdateDetailsVisibility(); };
         Unloaded += (_, _) => { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(false, false); };
         DataContextChanged += (_, e) => { if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
         StructuredDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
@@ -35,7 +39,7 @@ public partial class HistoryPage : UserControl
         var header = double.IsFinite(HistoryRows.ColumnHeaderHeight) ? HistoryRows.ColumnHeaderHeight : 36;
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom + (HistoryHeading.IsVisible ? HistoryHeading.ActualHeight + HistoryHeading.Margin.Bottom : 0) +
-            HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom + 32 +
+            HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom + (AllHistoryFilters.IsVisible ? 32 : 0) +
             ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight +
             (HistoryDetailExpander.IsVisible && Grid.GetRow(HistoryDetailExpander) == 1
                 ? HistoryDetailExpander.ActualHeight + HistoryDetailExpander.Margin.Top + HistoryDetailExpander.Margin.Bottom : 0);

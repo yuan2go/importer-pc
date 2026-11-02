@@ -15,7 +15,8 @@ public sealed partial class ParameterSettingsControl : UserControl
     public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(nameof(Model), typeof(ParameterEditorModel), typeof(ParameterSettingsControl), new PropertyMetadata(null, ModelChanged));
     public ParameterEditorModel? Model { get => (ParameterEditorModel?)GetValue(ModelProperty); set => SetValue(ModelProperty, value); }
     public bool FirstConfiguration { get; set; }
-    readonly ComboBox firstSteps = new() { ItemsSource = new[] { "1 本站信息", "2 业务规则", "3 左右相机", "4 RCS连接", "5 检查与完成" }, MinHeight = 44, Margin = new(0, 0, 0, 12), Visibility = Visibility.Collapsed };
+    readonly WrapPanel firstStepBar = new() { Margin = new(12, 8, 12, 8), Visibility = Visibility.Collapsed };
+    readonly TextBlock remainingSteps = new() { TextWrapping = TextWrapping.Wrap, Margin = new(4, 12, 4, 8), FontSize = UiTypography.Label };
     readonly ListBox directory = new() { Name = "ParameterDirectory", BorderThickness = new(0), Background = Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     readonly ContentControl pageHost = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
     readonly StackPanel errors = new();
@@ -41,8 +42,13 @@ public sealed partial class ParameterSettingsControl : UserControl
         public Expander? Details { get; set; }
         public TextBlock Summary { get; } = new() { Foreground = Brush("#B42318"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed };
         public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
-        public string GroupTitle => Category == 4 ? "检查" : ParameterOwnership.CategoryName(Category);
+        public string? TaskGroup { get; set; }
+        public string GroupTitle => TaskGroup ?? (Category == 4 ? "检查" : ParameterOwnership.CategoryName(Category));
         public int Order => Category;
+        public int TaskOrder => TaskGroup switch { "本站接入" => 0, "相机" => 1, "分拣规则" => 2, "系统维护" => 3, _ => 4 };
+        int issueCount;
+        public string DisplayTitle => Title + (issueCount == 0 ? "" : "（" + issueCount + "）");
+        public void SetIssueCount(int count) { if (issueCount == count) return; issueCount = count; PropertyChanged?.Invoke(this, new(nameof(DisplayTitle))); }
         public override string ToString() => Title;
     }
     sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help, Func<bool>? Applicable = null, FrameworkElement? Row = null);
@@ -57,17 +63,22 @@ public sealed partial class ParameterSettingsControl : UserControl
         var root = new Grid { Background = Brushes.White };
         root.ColumnDefinitions.Add(new() { Width = new(224) }); root.ColumnDefinitions.Add(new());
         var rail = new DockPanel { LastChildFill = true, Margin = new(12, 16, 12, 12) };
-        DockPanel.SetDock(firstSteps, Dock.Top); rail.Children.Add(firstSteps);
-        AutomationProperties.SetName(firstSteps, "首次配置五步导航");
-        firstSteps.SelectionChanged += async (_, _) => {
-            if (selectingPage || !FirstConfiguration || firstSteps.SelectedIndex < 0) return;
-            var destination = OrderedPages().FirstOrDefault(p => p.Category == firstSteps.SelectedIndex);
-            if (destination is not null) await RequestPageAsync(destination);
-            selectingPage = true; try { firstSteps.SelectedIndex = currentPage?.Category ?? 0; } finally { selectingPage = false; }
-        };
+        root.RowDefinitions.Add(new() { Height = GridLength.Auto }); root.RowDefinitions.Add(new());
+        Grid.SetColumnSpan(firstStepBar, 2); root.Children.Add(firstStepBar);
+        Grid.SetRow(pageHost, 1);
+        var names = new[] { "本站信息", "业务规则", "左右相机", "RCS 连接", "检查与完成" };
+        for (var step = 0; step < names.Length; step++)
+        {
+            var index = step;
+            var button = new Button { Content = (step + 1) + " " + names[step], Tag = names[step], MinHeight = 44, Margin = new(0, 0, 8, 4) };
+            AutomationProperties.SetName(button, "首次配置第" + (step + 1) + "步：" + names[step]);
+            button.Click += async (_, _) => { var target = OrderedPages().FirstOrDefault(p => p.Category == index); if (target is not null) await RequestPageAsync(target); };
+            firstStepBar.Children.Add(button);
+        }
+        DockPanel.SetDock(remainingSteps, Dock.Bottom); rail.Children.Add(remainingSteps);
         var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); rail.Children.Add(searchBar);
         var lists = new Grid(); lists.Children.Add(directory); lists.Children.Add(searchResults); rail.Children.Add(lists);
-        root.Children.Add(new Border { Background = Brush("#F5F6F8"), BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 0, 1, 0), Child = rail });
+        var railBorder = new Border { Background = Brush("#F5F6F8"), BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 0, 1, 0), Child = rail }; Grid.SetRow(railBorder, 1); root.Children.Add(railBorder);
         Grid.SetColumn(pageHost, 1); root.Children.Add(pageHost);
         directory.ItemTemplate = (DataTemplate)Resources["ParameterObjectTemplate"];
         directory.GroupStyle.Add((GroupStyle)Resources["ParameterDirectoryGroup"]);
@@ -124,9 +135,11 @@ public sealed partial class ParameterSettingsControl : UserControl
     public bool ShowPage(int category, string title)
     {
         var page = pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == title);
+        if (page is null && Model?.ApplicationId == "sportmaster")
+            page = pages.FirstOrDefault(p => p.Available && (title is "左相机" or "右相机" && p.Title == "左右相机" || title is "供包台标识" or "RCS 服务" && p.Title == "站点编号与 RCS"));
         if (page is null) return false;
         search.Clear();
-        if (categoryScope is not null && categoryScope != category) ShowCategory(category);
+        if (categoryScope is not null && categoryScope != page.Category) ShowCategory(page.Category);
         SelectPageCore(page); return true;
     }
     public bool FocusFirstIssue()
@@ -235,7 +248,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         }
         field.SizeChanged += (_, _) =>
         {
-            var compact = field.ActualWidth < 500;
+            var compact = field.ActualWidth < 380;
             field.ColumnDefinitions[0].Width = compact ? new(0) : new(148);
             Grid.SetColumn(caption, compact ? 1 : 0); Grid.SetRow(value, compact ? 1 : 0);
             caption.Margin = compact ? new(0, 0, 0, 6) : new(0, 8, 12, 0);
@@ -244,10 +257,11 @@ public sealed partial class ParameterSettingsControl : UserControl
         // Do not reflow the form while typing or treat this as authority validation.
         void Edited()
         {
-            editRevision++;
+            editRevision++; checkedPages.Clear(); RefreshStepBar();
             var model = Model;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.DataBind, new Action(() => { if (ReferenceEquals(Model, model)) model?.RevalidateAfterEdit(); }));
         }
+        control.LostKeyboardFocus += (_, _) => { if (Model is { } editor && !navigating) editor.ValidateFields(); };
         if (control is TextBox text) text.TextChanged += (_, _) => Edited();
         else if (control is PasswordBox password) password.PasswordChanged += (_, _) => Edited();
         else if (control is ComboBox choice) choice.SelectionChanged += (_, _) => Edited();
@@ -298,8 +312,10 @@ public sealed partial class ParameterSettingsControl : UserControl
         reviewPage = null;
         if (reviewContent?.Parent is Panel reviewParent) reviewParent.Children.Remove(reviewContent);
         if (Model is not { } m) { pageHost.Content = Text("正在读取设置…"); return; }
-        firstSteps.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
+        firstStepBar.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
+        remainingSteps.Visibility = FirstConfiguration ? Visibility.Visible : Visibility.Collapsed;
         BuildSystem(m); BuildBusiness(m); BuildCapabilities(m);
+        if (m.ApplicationId == "sportmaster") ArrangeSportmasterPages();
         foreach (var page in pages)
         {
             page.Technical.Children.Add(page.Diagnostic);
@@ -315,6 +331,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (FirstConfiguration || m.Issues.Count > 0) { EnsureReviewPage(); if (reviewContent is not null) reviewPage!.Body.Children.Add(reviewContent); }
         directoryView = new ListCollectionView(pages);
         if (FirstConfiguration) directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.Order), ListSortDirection.Ascending));
+        else if (m.ApplicationId == "sportmaster") directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.TaskOrder), ListSortDirection.Ascending));
         directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
         directoryView.Filter = value => value is ObjectPage p && p.Available && (categoryScope is null || p.Category == categoryScope);
         directory.ItemsSource = directoryView;
@@ -342,10 +359,12 @@ public sealed partial class ParameterSettingsControl : UserControl
             else if (reviewPage is not null) reviewPage.Diagnostic.Text += Ipc.Platform.DiagnosticText.Protect(issue.Message) + "\n";
             errors.Children.Add(found ? button : Text(context + "\n" + message));
         }
+        RefreshStepBar();
         foreach (var page in pages)
         {
             if (page.Details is not null) page.Details.Visibility = page.Technical.Children.Count > 1 || page.Diagnostic.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
             var count = (Model?.Issues ?? []).Count(i => locations.TryGetValue(i.Path, out var entry) && ReferenceEquals(entry.Page, page));
+            page.SetIssueCount(count);
             page.Summary.Text = page.Category == 4 ? errors.Children.Count == 0 ? "当前页没有错误。" : "有 " + errors.Children.Count + " 项需要修改" : "有 " + count + " 项需要修改";
             page.Summary.Visibility = count > 0 || page.Category == 4 && errors.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             if (page.Category != 4 && count > 0)

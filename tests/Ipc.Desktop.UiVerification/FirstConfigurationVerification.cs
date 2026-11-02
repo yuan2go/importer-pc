@@ -19,14 +19,14 @@ static partial class Program
             "first configuration finishes asynchronous loading with one visible, enabled shared editor");
         var editor = editors.Single();
         var directory = Descendants(editor).OfType<ListBox>().Single(l => AutomationProperties.GetName(l) == "设置目录");
-        check(window.Title.StartsWith("首次配置", StringComparison.Ordinal) && editor.FirstConfiguration && editor.SelectedCategory == 1 &&
+        check(window.Title.StartsWith("首次配置", StringComparison.Ordinal) && editor.FirstConfiguration && editor.SelectedCategory == 0 &&
             directory.Items.Count > 0 && editor.CurrentPageTitle == directory.Items[0].ToString(),
-            "first configuration starts at the first business page; actual=" + editor.CurrentPageTitle);
+            "first configuration starts at station information; actual=" + editor.CurrentPageTitle);
         check(!Descendants(window).OfType<TabControl>().Any(t => t.Name == "StartupTasks"),
             "first configuration uses the shared directory without duplicate outer task tabs");
-        check(directory.IsVisible && directory.Items.Groups is { } groups && groups.Cast<CollectionViewGroup>().Select(g => g.Name?.ToString())
-            .SequenceEqual(new[] { "业务模块", "系统", "驱动", "组件", "检查" }) && directory.Items.Cast<object>().Count(p => p.ToString() == "检查与完成") == 1,
-            "one directory exposes business, system, drivers, components and the completion review in order");
+        var steps = Descendants(editor).OfType<Button>().Where(b => AutomationProperties.GetName(b).StartsWith("首次配置第", StringComparison.Ordinal)).ToArray();
+        check(directory.IsVisible && steps.Length == 5 && steps.All(b => b.IsVisible) && editor.PageProgress.StartsWith("第 1 / 5 步"),
+            "five visible stage buttons accompany the current stage directory without exposing a second configuration owner");
         return editor;
     }
 

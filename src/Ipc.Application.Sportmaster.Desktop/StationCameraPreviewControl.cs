@@ -24,12 +24,12 @@ internal sealed class StationCameraPreviewControl : UserControl
     long generation;
     bool polling;
     WriteableBitmap? bitmap;
-    public StationCameraPreviewControl(SupplyStationViewModel vm)
+    public StationCameraPreviewControl(SupplyStationViewModel vm, double previewHeight = 286, bool showDiagnostics = true)
     {
         this.vm = vm;
-        var body = new StackPanel(); var screen = new Grid { Height = 286, Background = new SolidColorBrush(Color.FromRgb(37, 43, 51)) };
+        var body = new StackPanel(); var screen = new Grid { Height = previewHeight, Background = new SolidColorBrush(Color.FromRgb(37, 43, 51)) };
         screen.Children.Add(image); screen.Children.Add(hint); body.Children.Add(screen); body.Children.Add(status);
-        body.Children.Add(new Expander { Header = "取帧与解码诊断", Content = counters, Margin = new(0, 4, 0, 0) });
+        if (showDiagnostics) body.Children.Add(new Expander { Header = "取帧与解码诊断", Content = counters, Margin = new(0, 4, 0, 0) });
         screen.ToolTip = "实时预览持续显示；不改变现有作业状态或本轮锁定结果。";
         Content = body; AutomationProperties.SetName(screen, "所选相机实时视频，与本轮锁定照片独立");
         timer.Tick += async (_, _) => await PollAsync();

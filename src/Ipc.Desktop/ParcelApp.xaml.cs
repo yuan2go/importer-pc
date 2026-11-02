@@ -186,7 +186,7 @@ public partial class App : System.Windows.Application
                 selected = selected with { Business = repair.SelectedLaunch };
                 startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected(firstConfigurationReviewed: true));
             }
-            else startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true));
+            else startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true), repair.IncompleteSummary);
         }
         else { startup.Show(); MainWindow = startup; startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
             () => StartSelected(), () => Repair(), ShowSetup); }
@@ -290,11 +290,11 @@ sealed class ParcelStartupWindow : Window
         diagnostic.Text = string.Join("\n", completed);
     }
     public void BeginAttempt() { actions.Children.Clear(); completed.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520; }
-    public void ConfigurationPaused(Func<Task> close, Func<Task> resume)
+    public void ConfigurationPaused(Func<Task> close, Func<Task> resume, string? incomplete = null)
     {
         title.Text = "供包台尚未完成配置";
-        detail.Text = "完成配置后即可尝试启动。已保存的内容会保留；未连接设备。";
-        diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = 280; MinHeight = 260;
+        detail.Text = "完成配置后即可尝试启动。已保存的内容会保留；未连接设备。\n\n" + incomplete;
+        diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = incomplete is null ? 280 : 460; MinHeight = 260;
         Add("继续配置", resume); Add("退出", close);
         void Add(string label, Func<Task> run)
         {

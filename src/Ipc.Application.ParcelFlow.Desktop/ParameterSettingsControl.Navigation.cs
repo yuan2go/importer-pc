@@ -9,7 +9,8 @@ public sealed partial class ParameterSettingsControl
     ObjectPage? currentPage;
     bool selectingPage, navigating;
     long navigationGeneration, editRevision;
-    ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
+    readonly HashSet<ObjectPage> checkedPages = [];
+    ObjectPage[] OrderedPages() => (FirstConfiguration ? pages.OrderBy(p => p.Order) : Model?.ApplicationId == "sportmaster" ? pages.OrderBy(p => p.TaskOrder) : pages.AsEnumerable()).Where(p => p.Available).ToArray();
     public string CurrentPageTitle => currentPage?.Title ?? "";
     public string PageProgress => FirstConfiguration && currentPage is not null ? $"第 {currentPage.Category + 1} / 5 步 · {currentPage.GroupTitle} · {currentPage.Title}" : currentPage is null ? "尚未选择配置页" : "第 " + (Array.IndexOf(OrderedPages(), currentPage) + 1) + " / " + OrderedPages().Length + " 页 · " + currentPage.GroupTitle + " · " + currentPage.Title;
     public bool IsReviewPage => currentPage?.Category == 4;
@@ -24,9 +25,22 @@ public sealed partial class ParameterSettingsControl
     {
         if (page is null || !page.Available) return;
         selectingPage = true;
-        try { if (FirstConfiguration) { categoryScope = page.Category; directoryView?.Refresh(); firstSteps.SelectedIndex = page.Category; } directory.SelectedItem = page; currentPage = page; lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
+        try { if (FirstConfiguration) { categoryScope = page.Category; directoryView?.Refresh(); } directory.SelectedItem = page; currentPage = page; RefreshStepBar(); lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
         finally { selectingPage = false; }
         SelectedPageChanged?.Invoke(this, EventArgs.Empty);
+    }
+    void RefreshStepBar()
+    {
+        foreach (var (button, index) in firstStepBar.Children.OfType<Button>().Select((b, i) => (b, i)))
+        {
+            var categoryPages = OrderedPages().Where(p => p.Category == index).ToArray();
+            var complete = categoryPages.Length > 0 && categoryPages.All(checkedPages.Contains);
+            button.Content = (complete ? "✓ " : (index + 1) + " ") + button.Tag;
+            button.FontWeight = currentPage?.Category == index ? UiTypography.Emphasis : FontWeights.Normal;
+            button.ToolTip = currentPage?.Category == index ? "当前步骤" : "前进时检查前置页面，返回保留输入";
+        }
+        var issues = Model?.Issues ?? [];
+        remainingSteps.Text = issues.Count == 0 ? "尚未发现字段错误。请逐步检查；相机和 RCS 可留待以后配置。" : "当前发现 " + issues.Count + " 项需要修改：\n" + string.Join("\n", issues.Take(6).Select(i => i.Category + "：" + i.Message));
     }
     void RefreshAvailablePages()
     {
@@ -95,6 +109,7 @@ public sealed partial class ParameterSettingsControl
                     catch (Exception error) when (error is InvalidOperationException or System.IO.InvalidDataException)
                     { model.ReportField("系统", path, error.Message); valid = false; }
                 }
+                if (valid) checkedPages.Add(page);
                 if (!valid)
                 {
                     PageValidationFailed?.Invoke(this, EventArgs.Empty);

@@ -13,7 +13,7 @@ using Ipc.Platform;
 namespace Ipc.Application.Sportmaster.Desktop;
 
 // A projection of the Application's one-shot round, never a local camera/sender.
-internal sealed class StationDebugControl : UserControl
+internal sealed partial class StationDebugControl : UserControl
 {
     readonly SupplyStationViewModel vm;
     readonly ICameraInspection? inspection;
@@ -80,7 +80,7 @@ internal sealed class StationDebugControl : UserControl
             VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 20, 6) };
         header.Children.Add(Flow(title, left, right)); body.Children.Add(header);
         camera.Foreground = Brush("#68788E"); state.Foreground = Brush("#68788E");
-        body.Children.Add(camera); body.Children.Add(state); body.Children.Add(feedback);
+        body.Children.Add(camera); body.Children.Add(Text("触发扫码将隔离两位生产受理；只读实时预览不暂停生产。结束调试后需核对状态并恢复。")); body.Children.Add(state); body.Children.Add(feedback);
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         liveCard = Panel(reading); resultCard = Panel(visual); resultCard.Margin = new(14, 0, 0, 0);
@@ -94,7 +94,7 @@ internal sealed class StationDebugControl : UserControl
         var photoArea = new Grid(); photoArea.Children.Add(viewport); photoArea.Children.Add(imageHint); visual.Children.Add(photoArea); visual.Children.Add(photoCaption);
         var adapt = Action("适应窗口"); var actual = Action("1:1"); var more = Action("放大"); var less = Action("缩小");
         visual.Children.Add(new Expander { Header = "照片缩放与条码标注", Content = Flow(adapt, actual, more, less, overlay), Margin = new(0, 4, 0, 0) });
-        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 14, 0, 0); body.Children.Add(requestCard);
+        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 0, 0, 14); body.Children.Insert(body.Children.IndexOf(columns), requestCard);
         var requestHeader = new DockPanel();
         requestBarcode.FontFamily = UiTypography.Code; requestBarcode.Width = 220; requestBarcode.MaxHeight = 64; requestBarcode.Margin = new(8, 0, 10, 6);
         requestBarcode.IsReadOnly = false; requestBarcode.MaxLength = 4096;
@@ -109,7 +109,8 @@ internal sealed class StationDebugControl : UserControl
         requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 150; requestBody.Background = Brush("#F7F9FC"); requestJson.Children.Add(requestBody);
         responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; responseBody.Background = Brush("#F7F9FC"); responseJson.Children.Add(responseBody);
         jsonColumns.Children.Add(requestJson); jsonColumns.Children.Add(responseJson); Grid.SetColumn(responseJson, 1); requestPanel.Children.Add(jsonColumns);
-        body.Children.Add(Text("调试会话 · 单次扫码 · 实时预览与本轮结果独立"));
+        body.Children.Add(Text("调试会话 · 两位生产已隔离时不产生自动请求 · 实时预览与本轮结果独立"));
+        InitializeBatch(body);
         adapt.Click += (_, _) => { fit = true; ApplyZoom(); }; actual.Click += (_, _) => { fit = false; zoom = 1 / VisualTreeHelper.GetDpi(viewport).DpiScaleX; ApplyZoom(); };
         more.Click += (_, _) => Scale(1.25); less.Click += (_, _) => Scale(.8); overlay.Checked += (_, _) => DrawMarks(); overlay.Unchecked += (_, _) => DrawMarks();
         viewport.SizeChanged += (_, _) => { if (fit) ApplyZoom(); };

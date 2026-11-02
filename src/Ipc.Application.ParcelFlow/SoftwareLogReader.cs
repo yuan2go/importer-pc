@@ -78,6 +78,8 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
     string Select(SoftwareLogQuery q)
     {
         var authority = management.Require();
+        q = Ipc.Platform.Wire.Decode<SoftwareLogQuery>(Ipc.Platform.Wire.Encode(q));
+        if (q.Levels is null || q.Sources is null || q.Levels.Length > 6 || q.Sources.Length > 32 || q.Levels.Any(x => x is null || x.Length > 32) || q.Sources.Any(x => x is null || x.Length > 128) || q.OperationId is not null && !Guid.TryParseExact(q.OperationId, "N", out _)) throw new InvalidDataException("日志筛选超出预算或作业身份无效");
         if (q.From >= q.ToExclusive || q.ToExclusive - q.From > TimeSpan.FromDays(3660) || q.Keyword.Length > 2048 || q.Level.Length > 32 || q.Source.Length > 128) throw new InvalidDataException("请检查时间范围和检索条件长度。");
         _ = Matcher(q);
         List<Source> sources = []; Selection? created = null;
@@ -123,9 +125,7 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
         return regex.IsMatch;
     }
     static bool InRange(SoftwareLogEntry entry, SoftwareLogQuery q) => entry.At >= q.From && entry.At < q.ToExclusive;
-    static bool Match(SoftwareLogEntry e, SoftwareLogQuery q, Func<string, bool> match) => InRange(e, q) &&
-        (q.Level.Length == 0 || q.Level.Equals(e.Level, StringComparison.OrdinalIgnoreCase)) &&
-        (q.Source.Length == 0 || e.Source.Contains(q.Source, StringComparison.OrdinalIgnoreCase)) && match(e.Text);
+    static bool Match(SoftwareLogEntry e, SoftwareLogQuery q, Func<string, bool> match) => InRange(e, q) && SoftwareLogFacts.Matches(e, q) && match(e.Text);
     static string[] Notices(Selection s) => ["现存日志记录时间：" + (s.Earliest?.ToString("O") ?? "未取得") + " ～ " + (s.Latest?.ToString("O") ?? "未取得") + "。早于首条/晚于末条的请求范围无法证明完整；无记录不等于无异常。", "仅查询开始时已保留的日志；历史已清理部分不可补回。轮转文件按原文件对象固定，查询10分钟有效。", "不完整的末行不进入本次快照；无有效时间的记录仅能通过相邻上下文查看。敏感凭据已隐藏。", .. (s.Index?.Streaming == true ? new[] { "记录量超过定位缓存预算，本次采用有界流式读取；翻页需重新扫描，原记录和完整导出均保留。" } : Array.Empty<string>()), .. (s.Sources.Length == 0 ? new[] { "所选软件尚无保留日志。" } : Array.Empty<string>())];
     public async Task<SoftwareLogPage> QueryAsync(SoftwareLogQuery q, string? selection, int skip, CancellationToken token)
     {

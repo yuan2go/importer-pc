@@ -135,8 +135,15 @@ public sealed class ParcelHistoryReader : IDisposable
     public void Dispose() { tx.Dispose(); SQLitePCL.raw.sqlite3_progress_handler(db.Handle, 0, null, null); db.Dispose(); }
 }
 
-public sealed partial class ParcelRuntime : IParcelHistorySessionApplication
+public sealed partial class ParcelRuntime : IParcelHistorySessionApplication, IParcelHistoryBatchApplication
 {
+    public Task<ParcelHistoryBatch> ReadHistoryBatchAsync(ParcelHistorySelection selection, long beforeSequence, int limit, CancellationToken token)
+        => ReadHistoryAsync(reader =>
+        {
+            var page = OperatorHistory(reader.Page(selection, beforeSequence, limit));
+            var metrics = reader.Metrics(selection); var positions = reader.Positions(selection);
+            return new ParcelHistoryBatch(page, metrics, positions, DateTimeOffset.UtcNow);
+        }, token);
     int historyExportInProgress;
     public async Task<ParcelHistorySelection> SelectHistoryAsync(ParcelHistoryFilter filter)
     { await gate.WaitAsync().ConfigureAwait(false); try { return repository!.SelectHistory(filter); } finally { gate.Release(); } }

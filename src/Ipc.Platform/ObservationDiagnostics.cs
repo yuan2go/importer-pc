@@ -10,6 +10,7 @@ public sealed record ObservationDiagnostics(string DeviceId, string Epoch, strin
     long EmptyFrames, long Candidates, long Delivered, long Rejected, bool DecodePaused,
     DateTimeOffset? LastFrameAt, double? LastFrameAgeMs, DateTimeOffset? LastDecodeAt, string? Failure)
 {
+    public DecodeWindowSnapshot? Window { get; init; }
     public long SupersededDecodeFrames { get; init; }
     public long RejectedFrames { get; init; }
     public string? LastFrameRejection { get; init; }

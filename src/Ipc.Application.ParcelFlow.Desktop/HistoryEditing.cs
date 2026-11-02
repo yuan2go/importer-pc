@@ -20,7 +20,7 @@ public partial class ParcelViewModel
     public bool HistoryFiltersChanged => appliedHistorySignature is not null && appliedHistorySignature != HistoryFilterSignature();
     public bool CanExportHistory => !historyLoading && !HistoryExportRunning && historySelection is not null && !HistoryFiltersChanged;
     public string AppliedHistoryRange => historySelection is not { } s ? "尚无固定查询范围" :
-        $"已应用：条码 {s.Filter.Barcode ?? "全部"} · 投递位 {PositionName(s.Filter.Position)} · 状态 {(s.Filter.State is { } state ? ChineseInterfaceText.Status(state.ToString()) : "全部")} · 原请求 {s.Filter.RequestId ?? "全部"} · 开始（含）{s.Filter.From?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 结束（不含）{s.Filter.ToExclusive?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 固定序号 ≤ {s.UpperSequence} · 第 {historyPageIndex + 1} 页";
+        $"已应用：条码 {s.Filter.Barcode ?? "全部"} · 投递位 {PositionName(s.Filter.Position)} · 状态 {(s.Filter.State is { } state ? ChineseInterfaceText.Status(state.ToString()) : "全部")} · 原请求 {s.Filter.RequestId ?? "全部"} · 开始（含）{s.Filter.From?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 结束（不含）{s.Filter.ToExclusive?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "不限"} · 固定序号 ≤ {s.UpperSequence} · 第 {historyPageIndex + 1} 页。上界排除新作业；状态按每次读取时为准，导出会重新读取同边界。";
     public string HistoryRangeSummary
     {
         get
@@ -49,7 +49,7 @@ public partial class ParcelViewModel
         Message = "筛选已清除，点击“查询”刷新列表。";
     }
     public string[] HistoryStates => ["", .. Enum.GetNames<ParcelState>()];
-    public string HistoryMetricsSummary { get; private set; } = "统计口径：每件包裹单独计数，相同条码不合并。";
+    public string HistoryMetricsSummary { get; private set; } = "统计口径：按作业与请求事实统计，相同条码的独立观察分别记录；不代表实物落格件数。";
     ParcelHistorySelection? historySelection;
     string? appliedHistorySignature;
     string HistoryFilterSignature() => Ipc.Platform.Wire.Encode(new[] { HistoryBarcode, HistoryPosition, HistoryState, HistoryFrom, HistoryToExclusive, HistoryRequest });

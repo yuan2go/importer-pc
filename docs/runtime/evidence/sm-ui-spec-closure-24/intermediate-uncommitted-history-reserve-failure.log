@@ -1,0 +1,48 @@
+PASS OPERATOR18 operator has one barcode entry without source selectors; empty draft cannot submit
+PASS OPERATOR18 real left keyboard focus is the sole highlighted target
+PASS OPERATOR18 focus transfer moves target and outline together
+PASS OPERATOR18 non-barcode focus advertises no selected input target
+PASS OPERATOR18 returning focus identifies the left camera position without asking for input device type
+PASS OPERATOR18 complete new draft has an enabled primary action
+PASS OPERATOR18 unified keyboard character input reaches the guarded command without fabricating a camera acquisition
+PASS OPERATOR18 current accepted identity maps to solid green with white full destination
+PASS OPERATOR18 site-required task fields stay on the work surface with the confirmed chute; returned values retain their exact strings
+PASS OPERATOR18 repeated snapshots of one original result do not repeat its success cue
+PASS OPERATOR18 full current destination stays inside fixed result panel at 1366
+CAPTURE operator18-geometry-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+GEOMETRY tight=False compact=False panel=323.2 slot=75.2 scale=1 guidance=按本次格口投递 actions=88
+PASS OPERATOR18 chute uses the original64/44 DIP scale at 1366
+PASS OPERATOR18 task field stays visible and readable: WaveValue at 1366
+PASS OPERATOR18 task field stays visible and readable: TaskValue at 1366
+PASS OPERATOR18 task field stays visible and readable: SkuValue at 1366
+PASS OPERATOR18 task field stays visible and readable: QuantityValue at 1366
+PASS OPERATOR18 actually drawn short chute font is at least 44 DIP at 1366; measured=64.0
+PASS OPERATOR18 primary touch action remains 64 DIP and on screen at 1366
+CAPTURE operator18-success-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR18 full current destination stays inside fixed result panel at 800
+CAPTURE operator18-geometry-800: 800x420 DIP, Windows DPI 1.25/1.25
+GEOMETRY tight=True compact=True panel=103.2 slot=51.2 scale=1 guidance= actions=64
+PASS OPERATOR18 chute uses the original64/44 DIP scale at 800
+PASS OPERATOR18 task field stays visible and readable: WaveValue at 800
+PASS OPERATOR18 task field stays visible and readable: TaskValue at 800
+PASS OPERATOR18 task field stays visible and readable: SkuValue at 800
+PASS OPERATOR18 task field stays visible and readable: QuantityValue at 800
+PASS OPERATOR18 actually drawn short chute font is at least 44 DIP at 800; measured=44.0
+PASS OPERATOR18 primary touch action remains 64 DIP and on screen at 800
+CAPTURE operator18-success-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR18 pause immediately removes green chute affordance while preserving original facts
+PASS OPERATOR18 paused position disables new submit
+PASS OPERATOR18 Enter shares the availability guard and cannot bypass disabled submit
+PASS OPERATOR18 pause and draft handling preserve the frozen original request
+PASS OPERATOR18 pause package instruction is fully visible inside the compact result panel
+CAPTURE operator18-paused-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR18 rejection uses red, a symbol and explicit package handling without retaining old chute
+EXCEPTION_GEOMETRY viewport=65.6 firstLine=23.166666666666668
+CAPTURE operator18-reason-geometry-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS OPERATOR18 compact exception leaves one full rendered reason line beneath its status
+CAPTURE operator18-rejected-800: 800x420 DIP, Windows DPI 1.25/1.25
+FAIL System.InvalidOperationException: default compact history keeps filters collapsed and room for at least three rows
+   at Program.<VerifyOperatorUx18>g__Check|36_0(Boolean ok, String text, <>c__DisplayClass36_0&) in D:\w\ipc-ui-spec-24\tests\Ipc.Desktop.UiVerification\OperatorUx18.cs:line 17
+   at Program.VerifyOperatorUx18(String root, String evidence, List`1 lines) in D:\w\ipc-ui-spec-24\tests\Ipc.Desktop.UiVerification\OperatorUx18.cs:line 95
+   at Program.VerifyOperatorUx18(String root, String evidence, List`1 lines) in D:\w\ipc-ui-spec-24\tests\Ipc.Desktop.UiVerification\OperatorUx18.cs:line 102
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-ui-spec-24\tests\Ipc.Desktop.UiVerification\Program.cs:line 57

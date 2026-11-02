@@ -277,3 +277,6 @@ docs/runtime/evidence/sm-reader-feedback-22/** -text whitespace=cr-at-eol,-blank
 
 docs/runtime/evidence/sm-reader-feedback-22-integration/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
 docs/runtime/evidence/sm-reader-feedback-22-wal/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# UI24 receipts retain captured bytes, including terminal whitespace.
+docs/runtime/evidence/sm-ui-spec-closure-24/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

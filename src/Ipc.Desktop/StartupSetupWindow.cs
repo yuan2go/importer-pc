@@ -160,7 +160,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(optionsHeight, MaxHeight);
             Message(ChineseInterfaceText.ParameterMessage(failureMessage)); Status.Foreground = Brushes.Firebrick;
-            Note("请查看失败详情和安装记录。安装可能已部分完成，开始菜单和程序入口可能需要修复；返回后会重新检查。安装不会自动回滚。");
+            Note("失败阶段：" + installationStage.Text + "。请先查看本次安装详情和记录。安装可能已部分完成，不能据报错认定数据未改动；返回安装选项后将重新预检，结果未确认时先核对原次安装。安装不会自动回滚。");
             Details(); next.Content = "返回安装选项"; Body.Children.Add(recordFeedback); return;
         }
         if (installing)
@@ -282,6 +282,14 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             _ => "正在确认安装结果"
         };
         AutomationProperties.SetLiveSetting(installationStage, AutomationLiveSetting.Polite);
+        var group = value switch
+        {
+            WindowsInstallationStage.CheckingResponsibilities => 1, WindowsInstallationStage.PreparingBackup => 2,
+            WindowsInstallationStage.CopyingFiles => 3, WindowsInstallationStage.PreparingConfiguration => 4,
+            WindowsInstallationStage.InstallingComponents or WindowsInstallationStage.RegisteringManagementService => 5,
+            WindowsInstallationStage.CommittingInstallation or WindowsInstallationStage.CreatingShortcuts or WindowsInstallationStage.RegisteringApplication => 6, _ => 0
+        };
+        if (group > 0) installationStage.Text = "第 " + group + " / 6 步 · " + installationStage.Text;
         installationDetails.Add(installationStage.Text);
         if (installationDetailView is not null) installationDetailView.Text = string.Join("\n", installationDetails);
     }

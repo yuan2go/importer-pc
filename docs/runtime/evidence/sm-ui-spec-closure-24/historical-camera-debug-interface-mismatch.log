@@ -1,0 +1,9 @@
+PASS CAMERA-DEBUG Application rejects image access outside management mode
+PASS CAMERA-DEBUG manual source reports preview unavailable without fabricated camera success
+FAIL System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.ThrowHelper.ThrowMoreThanOneElementException()
+   at System.Linq.Enumerable.TryGetSingle[TSource](IEnumerable`1 source, Boolean& found)
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at Program.VerifyCameraDebug(String root, String evidence, List`1 lines) in D:\w\ipc-ui-spec-24\tests\Ipc.Desktop.UiVerification\CameraDebug.cs:line 42
+   at Program.VerifyCameraDebug(String root, String evidence, List`1 lines) in D:\w\ipc-ui-spec-24\tests\Ipc.Desktop.UiVerification\CameraDebug.cs:line 85
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-ui-spec-24\tests\Ipc.Desktop.UiVerification\Program.cs:line 73

@@ -140,7 +140,7 @@ public sealed partial class SoftwareLogControl : UserControl
             results.RowHeight = 40; results.ColumnHeaderHeight = 36;
             title.FontSize = UiTypography.Group;
             UpdateDetailLayout();
-            headerScroll.MaxHeight = compact ? 92 : Math.Min(380, ActualHeight * .60);
+            headerScroll.MaxHeight = compact ? 92 : Math.Min(156, ActualHeight * .30);
             footer.Margin = compact ? new(0) : new(0, 6, 0, 0);
             detailPanel.Margin = compact ? new(0, 4, 0, 0) : new(0, 8, 0, 0);
             detail.MaxHeight = compact ? 60 : ActualHeight * .30; status.MaxHeight = compact ? 24 : 48;
@@ -163,6 +163,7 @@ public sealed partial class SoftwareLogControl : UserControl
         foreach (var box in new[] { from, to, keyword, source }) box.TextChanged += (_, _) => InvalidateSelection();
         regex.Checked += (_, _) => InvalidateSelection(); regex.Unchecked += (_, _) => InvalidateSelection(); level.SelectionChanged += (_, _) => InvalidateSelection();
         InitializeRuntimeDiagnostics(actions);
+        InitializeTaskFilters(search, actions, timeFilters, extraActions);
         Unloaded += (_, _) => Revoke(); status.Text = "尚未查询。"; UpdateActions();
     }
     void UpdateActions()
@@ -171,11 +172,13 @@ public sealed partial class SoftwareLogControl : UserControl
         effectiveRange.Text = selection is not null && query is not null
             ? "查询范围 " + query.From.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + " 至 " + query.ToExclusive.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "（本机时间）" +
                 " · " + (string.IsNullOrEmpty(query.Level) ? "全部级别" : query.Level) + " · " + (string.IsNullOrEmpty(query.Source) ? "全部来源" : query.Source) +
-                (string.IsNullOrEmpty(query.Keyword) ? "" : " · " + (query.Regex ? "正则：" : "关键词：") + query.Keyword)
+                (string.IsNullOrEmpty(query.Keyword) ? "" : " · " + (query.Regex ? "正则：" : "关键词：") + query.Keyword) +
+                (query.OperationId is null ? "" : " · 作业 " + query.OperationId) + (query.KeyEvents ? " · 关键事件" : "") +
+                (query.Levels.Length == 0 ? "" : " · 级别 " + string.Join("/", query.Levels)) + (query.Sources.Length == 0 ? "" : " · 来源 " + string.Join("/", query.Sources))
             : "待查询：" + DateTimeInput.Display(from.Text, "请选择开始时间") + " 至 " + DateTimeInput.Display(to.Text, "请选择结束时间") + "（本机时间）";
         previousButton.IsEnabled = !busy && selection is not null && offset > 0; nextButton.IsEnabled = !busy && selection is not null && more;
         contextButton.IsEnabled = !busy && selection is not null && results.SelectedItem is SoftwareLogEntry;
-        exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
+        exportMenu.IsEnabled = exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
         locateExport.IsEnabled = !busy && exportedFile is not null;
         cancel.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
         UpdateRuntimeDiagnosticActions();
@@ -219,7 +222,7 @@ public sealed partial class SoftwareLogControl : UserControl
     {
         static bool Parse(string value, out DateTimeOffset at) => DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out at) && System.Text.RegularExpressions.Regex.IsMatch(value, @"(Z|[+-]\d{2}:\d{2})$");
         if (!Parse(from.Text, out var start) || !Parse(to.Text, out var end) || start >= end) throw new InvalidOperationException("请修正开始和结束时间，结束时间必须晚于开始时间。");
-        return new(start, end, keyword.Text, regex.IsChecked == true, level.SelectedIndex == 0 ? "" : level.Text, source.Text);
+        return new(start, end, keyword.Text, regex.IsChecked == true, level.SelectedIndex == 0 ? "" : level.Text, source.Text) { Levels = selectedLevels.ToArray(), Sources = selectedSources.ToArray(), KeyEvents = keyEvents.IsChecked == true, OperationId = operationFilter };
     }
     int ContextSize() => int.TryParse(context.Text, out var value) && value is >= 0 and <= 200 ? value : throw new InvalidOperationException("上下文条数须为0～200。");
     async Task Run(Func<Task> action)

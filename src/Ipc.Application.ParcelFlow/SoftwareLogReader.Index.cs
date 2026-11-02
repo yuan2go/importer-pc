@@ -36,7 +36,7 @@ public sealed partial class SoftwareLogReader
             else level = "无法解析";
         }
         catch (JsonException) { level = "无法解析"; }
-        return new(new(source.Id, number, Convert.ToHexString(SHA256.HashData(bytes)), source.Name), origin, at, level, Redact(raw));
+        return SoftwareLogFacts.Enrich(new(new(source.Id, number, Convert.ToHexString(SHA256.HashData(bytes)), source.Name), origin, at, level, Redact(raw)));
     }
     async Task<LogIndex> IndexAsync(Selection s, CancellationToken token)
     {

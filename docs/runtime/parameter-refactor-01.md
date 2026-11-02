@@ -1,3 +1,5 @@
+> 2026-11-02 当前任务导航、双相机/统一RCS、完整候选生效和查询边界见[SM-UI-SPEC-CLOSURE-24](../runtime/sm-ui-spec-closure-24.md)。旧页面摆放保留形成时范围；系统/业务/驱动/组件字段所有权、原请求及历史证据不变。
+
 > 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
 
 > 当前SDK安装和RCS常量以[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)为准：SDK随SM安装，首配/日常共模直接编辑SDK；source和locale不再属于可编辑参数。

@@ -7,6 +7,11 @@ public partial class SupplyStationWindow
 {
     SoftwareLogControl? logs;
     string? restrictedReturn;
+    async void ManagementRenew_Click(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel.Application is not IWorkstationAdministration service) return;
+        await ViewModel.RunAsync(async () => { await service.RenewManagementModeAsync(); await ViewModel.RefreshManagementModeAsync(); ViewModel.Message = "管理模式可继续使用十五分钟；已有调试轮次和维护票据仍遵守原期限。"; }, "延长管理模式");
+    }
     async void ManagementMode_Click(object sender, RoutedEventArgs e)
     {
         if (ViewModel.Application is not IWorkstationAdministration service) { ViewModel.Message = "此组合尚未提供管理模式。"; return; }

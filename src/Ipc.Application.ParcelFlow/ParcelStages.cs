@@ -123,6 +123,7 @@ public sealed partial class ParcelRuntime
     void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks)
     {
         if (Id != "sportmaster" || kind != ParcelStage.Wcs || operation.Wcs is not { } stage) return;
+        RecordRequestLatency(operation, ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds);
         // Ordinary operational summary. Credentials, target URLs and raw bodies stay out.
         Diagnostic("RCS结果", "取格口结果", detail: Wire.Encode(new {
             OperationId = operation.Id, operation.ParcelCode, operation.PositionId,

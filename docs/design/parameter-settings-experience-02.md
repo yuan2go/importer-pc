@@ -1,3 +1,5 @@
+> 2026-11-02 当前页面增量以 [SM-UI-SPEC-CLOSURE-24](../work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](../runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08 页面改造延期，保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。
+
 > 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
 
 > 最新用户纠偏：[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。SM首配与日常相机仅内置SDK，无TCP选择或独立安装入口；RCS source=BAR、locale=zh_CN固定，无编辑项。原分包安装/来源语言输入条款保留形成时范围。

@@ -7,6 +7,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
     long acquireCalls, noData, decodeStarted, decodeCompleted, decodedCandidates, rejected, lastFrameTicks;
     DateTimeOffset? lastFrameAt, lastDecodeAt;
     bool decodePaused;
+    DecodeWindow decodeWindow = new();
     long rejectedFrames, rejectedDecodes, originalFrameCopies;
     bool waitingOriginalCapacity;
     string? lastFrameRejection;
@@ -20,6 +21,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
     }
     void ResetDiagnostics()
     {
+        decodeWindow = new();
         // Called with gate held, before starting the acquisition worker for a new epoch.
         acquireCalls = noData = decodeStarted = decodeCompleted = decodedCandidates = rejected = lastFrameTicks = 0;
         lastFrameAt = lastDecodeAt = null; decodePaused = false;
@@ -37,7 +39,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
                 decodedCandidates == 0 ? "NoBarcode" : "Reading";
             return new(DeviceId, epoch, phase, state, acquireCalls, noData, frames, decodeStarted, decodeCompleted,
                 emptyFrames, decodedCandidates, recognized, rejected, decodePaused, lastFrameAt, age, lastDecodeAt,
-                failure.Length == 0 ? null : failure) { SupersededDecodeFrames = Interlocked.Read(ref supersededDecodeFrames)
+                failure.Length == 0 ? null : failure) { Window = decodeWindow.Read(), SupersededDecodeFrames = Interlocked.Read(ref supersededDecodeFrames)
 #if !MVS_ACQUISITION_EXTENSION
                 , RejectedFrames = rejectedFrames, LastFrameRejection = lastFrameRejection, OriginalFrameCopies = originalFrameCopies,
                 WaitingForOriginalCapacity = waitingOriginalCapacity

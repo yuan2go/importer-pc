@@ -151,7 +151,7 @@ internal sealed partial class MvsAcquisition
             decodedTicks = Stopwatch.GetTimestamp();
             codes = symbols.Select(symbol => symbol.Text).ToArray();
             if (decoder.PreservesInput && codes.Length > 0) CopyOriginal();
-            lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; lastDecodeAt = DateTimeOffset.UtcNow; }
+            lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; decodeWindow.Decoded(codes.Length > 0); lastDecodeAt = DateTimeOffset.UtcNow; }
         }
         catch { original?.Dispose(); throw; }
         var observationIdentity = codes.Length == 0 ? null : Wire.Id();

@@ -6,6 +6,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed record ConfigurationChangeItem(string Category, string Object, string Label, string Before, string After, string Path, string TechnicalPath)
 {
     public string Location => Category + " / " + Object;
+    public string Activation { get; init; } = "重启后生效";
 }
 
 // A review projection only. It neither persists a second draft nor replaces
@@ -56,7 +57,9 @@ public partial class ParcelViewModel
         validationState = validation.Status + " · " + validation.Reason;
         if (validation.Status != "Validated")
         { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过，请查看参数错误与诊断详情；输入已保留。"; return false; }
-        reviewedConfigurationChanges = BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate);
+        var live = Snapshot is { } snapshot && ConfigurationActivation.RulesOnly(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate);
+        reviewedConfigurationChanges = BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate)
+            .Select(c => c with { Activation = live ? "保存后立即生效" : "重启后生效" }).ToArray();
         if (reviewedConfigurationChanges.Length == 0)
         {
             validationState = "没有配置差异";

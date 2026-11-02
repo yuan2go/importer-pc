@@ -56,6 +56,9 @@ static partial class Program
             _ => cleanupUnknown ? throw new InstallationOutcomeUnknownException("synthetic cleanup receipt lost", new IOException()) : Task.FromResult(clean));
         matching.Show(); await Idle(matching);
         inspectionFails = true; Click(matching, "查看上次卸载结果"); await Idle(matching);
+        var retainedDetails = Descendants(matching).OfType<Expander>().Single(e => Equals(e.Header, "卸载记录与剩余文件详情"));
+        Check(!retainedDetails.IsExpanded, "residual evidence is initially collapsed behind an explicit details action");
+        retainedDetails.IsExpanded = true; matching.UpdateLayout();
         Check(Status(matching).Contains("synthetic inspection unavailable") && Descendants(matching).OfType<TextBox>().Any(t => t.Text.Contains("locked.dll")) && Button(matching, "关闭").IsEnabled, "failed inspection preserves the original evidence and restores close instead of freezing the window; status=" + Status(matching) + "; retained=" + Descendants(matching).OfType<TextBox>().Any(t => t.Text.Contains("locked.dll")) + "; close=" + Button(matching, "关闭").IsEnabled);
         inspectionFails = false; currentReceipt = clean; Click(matching, "查看上次卸载结果"); await Idle(matching);
         Check(Status(matching).Contains("检查完成") && Status(matching).Contains("程序文件已清理") && !Descendants(matching).OfType<Button>().Any(b => Equals(b.Content, "继续清理…")) && Descendants(matching).OfType<TextBox>().All(t => !t.Text.Contains("locked.dll")), "successful refresh removes stale residuals and no longer offers cleanup for a clean result");

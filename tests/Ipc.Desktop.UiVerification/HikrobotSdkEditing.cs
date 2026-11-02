@@ -55,6 +55,7 @@ static partial class Program
             formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked = true;
             Check(formatChecks.Count(c => c.IsChecked == true) == 1 && Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "All" }), "choosing All clears explicit native choices");
             formatSection.IsExpanded = false;
+            Check(editor.NavigateTo(rcs.InstanceId+"/left-bcr-code"), "shared camera code is reached in the station task page");
             Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetName(t)==rcs.InstanceId+"/left-bcr-code").Text="SYNTH-LEFT-EDITED";
             Check(rcs.Parameters.Single(p=>p.Field.Key=="left-bcr-code").Value=="SYNTH-LEFT-EDITED"&&rcs.Parameters.Single(p=>p.Field.Key=="right-bcr-code").Value=="SYNTH-RIGHT","one shared camera code editor isolates left/right");
             CaptureInternal(evidence,"bundled-sdk-daily-left",editor,lines);
@@ -88,7 +89,9 @@ static partial class Program
                 "merely opening the page preserves the unsupported legacy binding without selecting the SDK provider");
             Check(!Descendants(oldControl).OfType<TextBlock>().Any(t=>t.Text.Contains("TCP")) && !Descendants(oldControl).OfType<TextBox>().Any(t=>t.Text.Contains("TCP")),
                 "unsupported old settings request MVS SDK reconfiguration without presenting TCP as a connection option");
+            Check(oldControl.NavigateTo("sportmaster.integration/left-bcr-code"), "legacy camera code remains addressable in the station task");
             Check(Descendants(oldControl).OfType<TextBox>().Count(t=>AutomationProperties.GetAutomationId(t)=="sportmaster.integration/left-bcr-code")==1,"legacy transition still exposes exactly one shared camera-code editor");
+            oldControl.ShowPage(2,"左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Descendants(oldControl).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)==oldDraft.Readers[0].InstanceId+"/ApplyProviderChange").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);window.UpdateLayout();Fields(oldControl,oldDraft.Readers[0]);
             Check(oldDraft.Readers[0].Provider!.Implementation=="hikrobot-mvs-reader" && oldCode.Value=="SYNTH-MIGRATION" && oldDraft.Readers[1].Provider!.Implementation=="hikrobot-mvs-reader",

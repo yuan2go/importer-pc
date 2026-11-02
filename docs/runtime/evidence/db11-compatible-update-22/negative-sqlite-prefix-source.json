@@ -1,0 +1,6 @@
+{
+  "product_source": "bc80d9457c430ed0f005ce4a4d193366fdb5e530",
+  "test_state": "working tree adds only the sqliteX lookalike regression; product source unchanged for the negative run",
+  "test_file_sha256": "a51c664cd2a68a1e6d325da941d0a607c397bd6a6fbc412133063d739123430b",
+  "log": "prefix-before-fix.log"
+}

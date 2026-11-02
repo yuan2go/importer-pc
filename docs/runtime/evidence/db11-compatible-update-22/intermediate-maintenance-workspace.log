@@ -1,0 +1,23 @@
+EvidenceRoot=D:\DevCache\importer-pc\temp\ipc17-verification-aaa6bc7a47e9484d89e02ec84d98391f
+PASS WT048 cancel wins the decision lock before CTS signalling
+PASS WT048 commit cannot overtake accepted cancellation even before its token is signalled
+PASS WT048 accepted cancellation completes its signal before disposal
+PASS WT048 commit winner rejects cancellation without interrupting durable work
+PASS WT048 terminal operation rejects late cancellation
+PASS WT048 one hundred thousand copy observations remain bounded before any UI/pipe queue
+PASS WT048 a repeated preparation phase publishes its own real progress instead of retaining the earlier verification stage
+PASS WT048 adversarial stage oscillation remains below the pipe budget and preserves the commit observation
+PASS WT048 real recovery inventory exposes its first ordinary file
+PASS WT048 cancellation interrupts the real inventory between entries without dropping validation
+PASS WT048 pre-cancelled backup creates no destination
+PASS WT048 pre-cancellation never publishes a recovery set
+Unhandled exception. System.UnauthorizedAccessException: Extension writes require a separate elevated installer; ordinary runtime is read-only
+   at Ipc.Platform.MachineRuntimePolicy.RequireExtensionInstallerAuthority() in D:\w\ipc-db11-update-22\src\Ipc.Platform\MachineRuntimePolicy.cs:line 40
+   at Ipc.Platform.MachineRuntimeSetup.CreateMaintenanceWorkspace() in D:\w\ipc-db11-update-22\src\Ipc.Platform\MachineRuntimeSetup.cs:line 55
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.CopyForMaintenance(String directory, MaintenanceExecution execution) in D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelProductMaintenance.cs:line 23
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.BackupAsync(String destination, MaintenanceExecution execution) in D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelProductMaintenance.cs:line 142
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.BackupAsync(String destination, IProgress`1 progress, CancellationToken token) in D:\w\ipc-db11-update-22\src\Ipc.Application.ParcelFlow\ParcelProductMaintenance.cs:line 132
+   at MaintenanceProgressChecks.Cancelled(Func`1 run, String reason) in D:\w\ipc-db11-update-22\tests\Ipc.Application.Verification\MaintenanceProgressChecks.cs:line 12
+   at MaintenanceProgressChecks.Run(String workspace, String root) in D:\w\ipc-db11-update-22\tests\Ipc.Application.Verification\MaintenanceProgressChecks.cs:line 77
+   at Program.<Main>$(String[] args) in D:\w\ipc-db11-update-22\tests\Ipc.Application.Verification\Program.cs:line 73
+   at Program.<Main>(String[] args)

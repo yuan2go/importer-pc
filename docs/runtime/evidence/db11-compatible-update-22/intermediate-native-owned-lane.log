@@ -1,0 +1,15 @@
+PASS PC21-WPF statistics uses actual bounded WPF data grid and explicit fact labels
+PASS PC21-WPF statistics never labels request facts as physical parcel count
+CAPTURE pc21-statistics-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+CAPTURE pc21-statistics-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS PC21-WPF management mode permits editing station shifts
+PASS PC21-WPF closing can be cancelled without losing an unsaved shift draft
+PASS PC21-WPF authority revocation immediately collapses and disables policy editing
+PASS PC21-WPF exceptions retain operation-specific evidence and guarded recovery entry
+CAPTURE pc21-exceptions-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS PC21-WPF maintenance center exposes online tasks and explicit offline handoff
+FAIL System.TimeoutException: PC21 native state
+   at Program.<VerifyStationProductClosure>g__Until|60_2(Func`1 ready) in D:\w\ipc-db11-update-22\tests\Ipc.Desktop.UiVerification\StationProductClosureUi.cs:line 21
+   at Program.VerifyStationProductClosure(String root, String evidence, List`1 lines) in D:\w\ipc-db11-update-22\tests\Ipc.Desktop.UiVerification\StationProductClosureUi.cs:line 53
+   at Program.VerifyStationProductClosure(String root, String evidence, List`1 lines) in D:\w\ipc-db11-update-22\tests\Ipc.Desktop.UiVerification\StationProductClosureUi.cs:line 92
+   at Program.<>c__DisplayClass47_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-db11-update-22\tests\Ipc.Desktop.UiVerification\Program.cs:line 56

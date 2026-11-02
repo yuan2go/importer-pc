@@ -1,0 +1,12 @@
+PASS DB22 approved predecessor specification equals the frozen DB10 hash
+PASS DB22 explicit offline inspection recognizes exact predecessor
+PASS DB22 normal runtime cannot silently write or open DB10 as DB11
+PASS DB22 format refusal preserves original database bytes
+PASS DB22 SQLite-owned optimizer statistics do not masquerade as an unsupported application schema
+PASS DB22 matching marker cannot hide an unexpected actual schema
+PASS DB22 schema refusal does not rewrite the unknown database
+Unhandled exception. System.IO.InvalidDataException: Expected refusal: a user object resembling the SQLite prefix cannot hide from exact schema validation
+   at Database11Compatibility.Reject[T](Func`1 action, String reason) in D:\w\ipc-db11-update-22\tests\Ipc.Application.Verification\Database11Compatibility.cs:line 77
+   at Database11Compatibility.Run(String workspace, String root) in D:\w\ipc-db11-update-22\tests\Ipc.Application.Verification\Database11Compatibility.cs:line 99
+   at Program.<Main>$(String[] args) in D:\w\ipc-db11-update-22\tests\Ipc.Application.Verification\Program.cs:line 40
+   at Program.<Main>(String[] args)

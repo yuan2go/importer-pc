@@ -61,4 +61,4 @@ dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:RestoreLockedMode=tr
 - CI41506901684三个装配构建与文档门禁通过，核心仍为6/7：补齐20个DB12统计/班次对象后，旧“缺reply身份表”用例的特定错误短语过滤失败。当前DB12更早执行完整schema验证并已拒绝损坏库；测试改为验证InvalidDataException、原db字节完全不变且不创建receipts目录，保留拒绝/原件保护的实质断言，不要求必须走较弱的旧晚期分支。同时显式UTF8输出以保留中文失败原因。
 
 - [CI41507490063](https://github.com/yuan2go/importer-pc/actions/runs/41507490063)，SourceCommit `2c8d3644ff19afc959948e2cf0b2baa7d1c03e46`：7组标准核心回归全部通过，Sportmaster/DirectPlc/WcsToPlc三套Windows桌面构建和文档检查通过。这是GitHub Windows运行器的工程证据，不包含UAC/SCM、真实SDK、最终安装包生命周期或现场验收。
-- 随后维护缓存复查发现：通用受保护写入默认只授予运行用户读取权限，缓存EXE也需执行权限。已使缓存介质文件与正常发布文件一致，授予运行用户ReadAndExecute，保持无写权限；原安装库存仍只读。此改动需后续CI构建，普通用户实际调用缓存EXE/ARP仍待隔离Windows系统验证。
+- 随后维护缓存复查发现：通用受保护写入默认只授予运行用户读取权限，缓存EXE也需执行权限。已使缓存介质文件与正常发布文件一致，授予运行用户ReadAndExecute，保持无写权限；原安装库存仍只读。[CI41508739259](https://github.com/yuan2go/importer-pc/actions/runs/41508739259)，SourceCommit `f8f4a964acba2b70bf793ba4ceefdb11b7045808`：7组核心回归、三装配构建及文档检查全部通过。普通用户实际调用缓存EXE/ARP仍待隔离Windows系统验证。

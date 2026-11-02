@@ -31,8 +31,9 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
     void OfferPresentation()
     {
         var reads = presentationFeedback.Values.ToArray(); var devices = presentationReaderStates.Values.ToArray();
+        var camera = cameraReadFeedback.Values.ToArray();
         foreach (var subscriber in presentationSubscribers)
-            subscriber.Offer(++presentationVersion, presentationSnapshotJson, presentationSnapshotTicks, reads, devices, presentationFailure);
+            subscriber.Offer(++presentationVersion, presentationSnapshotJson, presentationSnapshotTicks, reads, devices, presentationFailure, camera);
     }
     void RecordPresentationHealth(DeviceHealthConfirmation value)
     {
@@ -93,12 +94,14 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
         string? encoded, failure;
         ParcelReadFeedback[] reads = [];
         DeviceState[] readers = [];
-        public void Offer(long next, string? snapshot, long published, ParcelReadFeedback[] feedback, DeviceState[] devices, string? error)
+        ParcelCameraReadFeedback[] cameraReads = [];
+        public void Offer(long next, string? snapshot, long published, ParcelReadFeedback[] feedback, DeviceState[] devices, string? error, ParcelCameraReadFeedback[] camera)
         {
             lock (sync)
             {
                 if (closed) return;
                 version = next; encoded = snapshot; ticks = published; reads = feedback; readers = devices; failure = error;
+                cameraReads = camera;
                 ready.Writer.TryWrite(0);
             }
         }
@@ -108,18 +111,19 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
             try
             {
             await ready.Reader.ReadAsync(token).ConfigureAwait(false);
-            string? json, error; long id, published; ParcelReadFeedback[] feedback; DeviceState[] devices;
+            string? json, error; long id, published; ParcelReadFeedback[] feedback; DeviceState[] devices; ParcelCameraReadFeedback[] camera;
             lock (sync)
             {
                 ObjectDisposedException.ThrowIf(closed, this);
                 json = ticks != deliveredTicks ? encoded : null; deliveredTicks = ticks;
                 error = failure; id = version; published = ticks;
                 feedback = (ParcelReadFeedback[])reads.Clone(); devices = (DeviceState[])readers.Clone();
+                camera = (ParcelCameraReadFeedback[])cameraReads.Clone();
             }
             // Each subscriber receives a detached mutable-array graph. The only shared
             // business projection is an immutable string; deserialization never holds a gate.
             var snapshot = json is null ? null : Wire.Decode<ParcelSnapshot>(json) with { PublishedTicks = published };
-            return new(owner.runtimeId, id, snapshot, feedback, devices, error);
+            return new(owner.runtimeId, id, snapshot, feedback, devices, error) { CameraReads = camera };
             }
             finally { Volatile.Write(ref reading, 0); }
         }
@@ -127,7 +131,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
         {
             lock (owner.presentationGate)
             {
-                lock (sync) { if (closed) return; closed = true; encoded = null; reads = []; readers = []; ready.Writer.TryComplete(); }
+                lock (sync) { if (closed) return; closed = true; encoded = null; reads = []; readers = []; cameraReads = []; ready.Writer.TryComplete(); }
                 owner.presentationSubscribers.Remove(this);
             }
         }

@@ -1,0 +1,148 @@
+{
+  "source_commit": "be5d4b9027d6bb2d5cc67b658480424e8a235544",
+  "builds": [
+    {
+      "log": "build-Ipc.Application.Verification.log",
+      "project": "tests/Ipc.Application.Verification",
+      "exit_code": 0
+    },
+    {
+      "log": "build-Ipc.Desktop.UiVerification.log",
+      "project": "tests/Ipc.Desktop.UiVerification",
+      "exit_code": 0
+    },
+    {
+      "log": "build-Ipc.Desktop.log",
+      "project": "src/Ipc.Desktop",
+      "exit_code": 0
+    }
+  ],
+  "suites": [
+    {
+      "kind": "Application",
+      "pass_count": 26,
+      "log": "app-reader-robustness-28.log",
+      "flag": "reader-robustness-28",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 15,
+      "log": "app-mvs-contrast-checks.log",
+      "flag": "mvs-contrast-checks",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 14,
+      "log": "app-unread-package-27.log",
+      "flag": "unread-package-27",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 37,
+      "log": "app-camera-chain-reliability.log",
+      "flag": "camera-chain-reliability",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 20,
+      "log": "app-camera-chain-closure.log",
+      "flag": "camera-chain-closure",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 72,
+      "log": "app-reader-feedback-22.log",
+      "flag": "reader-feedback-22",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 1,
+      "log": "app-reader-ingress-terminal-22.log",
+      "flag": "reader-ingress-terminal-22",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 15,
+      "log": "app-mvs-software-flow.log",
+      "flag": "mvs-software-flow",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 26,
+      "log": "app-sm-original-frame.log",
+      "flag": "sm-original-frame",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 21,
+      "log": "app-shutdown-resources.log",
+      "flag": "shutdown-resources",
+      "exit_code": 0
+    },
+    {
+      "kind": "Application",
+      "pass_count": 41,
+      "log": "app-camera-rounds.log",
+      "flag": "camera-rounds",
+      "exit_code": 0
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 8,
+      "flag": "reader-robustness-28-ui",
+      "kind": "WindowsNativeWpf",
+      "log": "native-reader-robustness-28-ui.log",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-4021c229fced4135aa1513a06fc67570"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 9,
+      "flag": "unread-package-27-ui",
+      "kind": "WindowsNativeWpf",
+      "log": "native-unread-package-27-ui.log",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-85c3c7604f6a41f09d3a81724788b7b1"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 19,
+      "flag": "camera-chain-reliability-ui",
+      "kind": "WindowsNativeWpf",
+      "log": "native-camera-chain-reliability-ui.log",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-cd4a54fbeb0d418f8e41e72befe80927"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 21,
+      "flag": "camera-barcode-current",
+      "kind": "WindowsNativeWpf",
+      "log": "native-camera-barcode-current.log",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-2227f48ba4f54b0d9e85601d9099f972"
+    },
+    {
+      "exit_code": 0,
+      "pass_count": 13,
+      "flag": "station-responsive-ui",
+      "kind": "WindowsNativeWpf",
+      "log": "native-station-responsive-ui.log",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-a93a48f6e0ce4af0a1d18b2395ce9966"
+    },
+    {
+      "exit_code": 1,
+      "pass_count": 4,
+      "flag": "reader-feedback-22-ui",
+      "kind": "WindowsNativeWpf",
+      "log": "native-reader-feedback-22-ui.log",
+      "native_folder": "D:\\DevCache\\importer-pc\\temp\\ipc-sportmaster-wpf-48c36caabfa7481e889e2780baf3e5d9"
+    }
+  ],
+  "scope": "Windows WPF, actual ZXing/SQLite and built-in loopback RCS, synthetic SDK frames; physical MVS/customer RCS/field NOT_RUN"
+}

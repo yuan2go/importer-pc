@@ -22,7 +22,11 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
         {
             if (presentationReads.Any(r => r.ObservationId == feedback.ObservationId && r.DeviceId == feedback.DeviceId && r.Epoch == feedback.Epoch)) return;
             var latest = !presentationFeedback.TryGetValue(position, out var previous) || previous.DetectedTicks <= feedback.DetectedTicks;
-            if (latest) presentationFeedback[position] = feedback;
+            if (latest)
+            {
+                presentationFeedback[position] = feedback;
+                MatchPendingCameraCodes(position, feedback);
+            }
             if (presentationReads.Count == 512) presentationReads.Dequeue();
             presentationReads.Enqueue(feedback);
             if (latest) OfferPresentation();

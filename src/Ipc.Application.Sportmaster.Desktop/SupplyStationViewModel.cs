@@ -167,12 +167,12 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
     public string LatestInputSummary => ParcelPresentation.InputSummary(Input);
     public bool InputFailed => ParcelPresentation.IsInputFailure(Input);
-    public bool HasCurrentInput => unreadFeedback || Operation is not null || Input is not null;
+    public bool HasCurrentInput => !CameraNoCode && (unreadFeedback || Operation is not null || Input is not null);
     public bool IsCompact => owner.IsCompact;
     public bool IsTight => owner.IsTight;
     public bool CanStartOperation => owner.CanStartOperation;
     public string Barcode => ObservedBarcode;
-    public bool CurrentTaskAvailable => !unreadFeedback && !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
+    public bool CurrentTaskAvailable => !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
         (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null ||
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));

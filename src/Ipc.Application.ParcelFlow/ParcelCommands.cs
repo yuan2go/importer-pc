@@ -73,7 +73,7 @@ public sealed partial class ParcelRuntime
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), latestInputs.Values.ToArray(), BackupStatus(), configuration.Current.Pending is not null);
-            encoded = EncodeSnapshot(projection);
+            encoded = EncodeSnapshot(WithReadFeedbackSnapshot(projection));
         }
         finally
         {
@@ -296,6 +296,7 @@ public sealed partial class ParcelRuntime
         // Cancellation ends this caller's wait only. Startup may still be inside
         // an uncancellable adapter call or writing its terminal audit.
         await startup.WaitAsync(token).ConfigureAwait(false);
+        ReleaseCameraReadFeedback();
         ingressStartup.TrySetResult(false);
         // A timeout leaves every downstream resource owned; a subsequent Stop waits again.
         if (ports is not null)

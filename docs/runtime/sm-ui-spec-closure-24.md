@@ -42,3 +42,11 @@
 开发期发现并修复对象定位落入折叠区、RCS诊断随旧页面隐藏、小窗口筛选/相机占高和旧测试导航假设。历史`--camera-debug`引用已淘汰的单Image/ListBox界面，原测试不删改、不记通过；当前按轮与预览生命周期套件覆盖现行实现。卸载详情断言增加先展开再检查，原版本、未知结果和关闭守卫断言保留。
 
 真实海康设备/SDK实际连接、客户RCS、受保护安装/UAC/重启卸载、目标IPC/物理触摸/现场长稳：NOT_RUN，不能由合成WPF、回环HTTP或20帧软件识别替代。
+
+## 最终验证
+
+最终代码源 `c1a50a3976b5dbb4089306b74f4effb78722d46a`（继承main 9284a32e）；3项Release零警告/零错误，Application12套521 PASS、原生WPF13套551 PASS，合计25套1072 PASS。发布EXE `--environment-report` 实际退出0、版本标记与SourceCommit一致。精确命令、原始日志、程序集/截图哈希和验证边界见[最终证据](evidence/sm-ui-spec-closure-24/README.md)及[汇总](evidence/sm-ui-spec-closure-24/summary.json)。之后仅文档/证据/manifest提交；代码差异单独核对。
+
+紧凑布局在真实回归中发现并修复了新增效率条对格口缩放和记录行数的挤压：效率与输入目标同一行，44DIP格口和64DIP主按钮保持，记录采用简明汇总/可展开筛选，至少三行结果。原断言未放宽；中间失败与最终通过分开保留。全部UI24-01～12的软件范围已实施并由上述检查覆盖；确认项按显式能力保持不可用，P07/P08页面延期及现场NOT_RUN仍是边界。
+
+本机发布检查：`. ./scripts/project-environment.ps1` 后执行 `.artifacts/ui24-final-c1a50a39/publish/Ipc.Desktop.exe --environment-report`。这是发布进程/运行环境冒烟，不是受保护安装或现场正常启动验收。

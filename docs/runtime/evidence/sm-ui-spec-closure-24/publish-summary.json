@@ -1,0 +1,15 @@
+{
+  "source_commit": "c1a50a3976b5dbb4089306b74f4effb78722d46a",
+  "baseline_main": "9284a32e5633df8c1ff0208c7a94e253328fe7a8",
+  "section": "Publish",
+  "builds": [],
+  "suites": [],
+  "scope": "Actual software/SQLite/ZXing/loopback RCS/native WPF. Synthetic deployment callbacks. Physical MVS/customer RCS/protected installation/field endurance NOT_RUN. CI disabled.",
+  "publish": {
+    "exit_code": 0,
+    "launch_exit": 0,
+    "desktop_sha256": "1A6A73CAA2608A4B152B3987FD45DD4F41D0EFBB8BB48035CDF2DF3994BAFA98",
+    "informational_version": "1.0.0+c1a50a3976b5dbb4089306b74f4effb78722d46a",
+    "command": "dotnet publish src/Ipc.Desktop -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true -m:1 -nr:false --no-build --no-restore --self-contained false -o D:\\w\\ipc-ui-spec-24\\.artifacts\\ui24-final-c1a50a39\\publish"
+  }
+}

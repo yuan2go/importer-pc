@@ -1,0 +1,125 @@
+{
+  "source_commit": "c1a50a3976b5dbb4089306b74f4effb78722d46a",
+  "baseline_main": "9284a32e5633df8c1ff0208c7a94e253328fe7a8",
+  "section": "Core",
+  "builds": [
+    {
+      "exit_code": 0,
+      "project": "tests/Ipc.Application.Verification",
+      "log": "build-Ipc.Application.Verification.log",
+      "command": "dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true -m:1 -nr:false --nologo --verbosity quiet"
+    },
+    {
+      "exit_code": 0,
+      "project": "tests/Ipc.Desktop.UiVerification",
+      "log": "build-Ipc.Desktop.UiVerification.log",
+      "command": "dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:RestoreLockedMode=true -m:1 -nr:false --nologo --verbosity quiet"
+    },
+    {
+      "exit_code": 0,
+      "project": "src/Ipc.Desktop",
+      "log": "build-Ipc.Desktop.log",
+      "command": "dotnet build src/Ipc.Desktop -c Release -p:RestoreLockedMode=true -m:1 -nr:false --nologo --verbosity quiet -p:BusinessModule=Sportmaster"
+    }
+  ],
+  "suites": [
+    {
+      "flag": "--ui-spec-24",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --ui-spec-24",
+      "log": "core-ui-spec-24.log",
+      "native_directory": null,
+      "pass_count": 27,
+      "exit_code": 0
+    },
+    {
+      "flag": "--product-closure-21",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --product-closure-21",
+      "log": "core-product-closure-21.log",
+      "native_directory": null,
+      "pass_count": 40,
+      "exit_code": 0
+    },
+    {
+      "flag": "--camera-rounds",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --camera-rounds",
+      "log": "core-camera-rounds.log",
+      "native_directory": null,
+      "pass_count": 41,
+      "exit_code": 0
+    },
+    {
+      "flag": "--camera-chain-closure",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --camera-chain-closure",
+      "log": "core-camera-chain-closure.log",
+      "native_directory": null,
+      "pass_count": 20,
+      "exit_code": 0
+    },
+    {
+      "flag": "--management-mode",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --management-mode",
+      "log": "core-management-mode.log",
+      "native_directory": null,
+      "pass_count": 79,
+      "exit_code": 0
+    },
+    {
+      "flag": "--manual-supply",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --manual-supply",
+      "log": "core-manual-supply.log",
+      "native_directory": null,
+      "pass_count": 24,
+      "exit_code": 0
+    },
+    {
+      "flag": "--rcs-timeout-errors",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --rcs-timeout-errors",
+      "log": "core-rcs-timeout-errors.log",
+      "native_directory": null,
+      "pass_count": 57,
+      "exit_code": 0
+    },
+    {
+      "flag": "--reader-feedback-22",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --reader-feedback-22",
+      "log": "core-reader-feedback-22.log",
+      "native_directory": null,
+      "pass_count": 70,
+      "exit_code": 0
+    },
+    {
+      "flag": "--parameter-guidance-startup",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --parameter-guidance-startup",
+      "log": "core-parameter-guidance-startup.log",
+      "native_directory": null,
+      "pass_count": 23,
+      "exit_code": 0
+    },
+    {
+      "flag": "--db11-compatible-update",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --db11-compatible-update",
+      "log": "core-db11-compatible-update.log",
+      "native_directory": null,
+      "pass_count": 53,
+      "exit_code": 0
+    },
+    {
+      "flag": "--reliability-02",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --reliability-02",
+      "log": "core-reliability-02.log",
+      "native_directory": null,
+      "pass_count": 66,
+      "exit_code": 0
+    },
+    {
+      "flag": "--shutdown-resources",
+      "command": "dotnet D:\\w\\ipc-ui-spec-24\\tests\\Ipc.Application.Verification\\bin\\Release\\net10.0\\Ipc.Application.Verification.dll D:\\w\\ipc-ui-spec-24 --shutdown-resources",
+      "log": "core-shutdown-resources.log",
+      "native_directory": null,
+      "pass_count": 21,
+      "exit_code": 0
+    }
+  ],
+  "scope": "Actual software/SQLite/ZXing/loopback RCS/native WPF. Synthetic deployment callbacks. Physical MVS/customer RCS/protected installation/field endurance NOT_RUN. CI disabled.",
+  "assertion_total": 521.0
+}

@@ -40,7 +40,7 @@ public partial class SupplyStationWindow
                     if (token.IsCancellationRequested || version != generation || !ViewModel.IsManagementMode) return;
                     var d = value.Diagnostics;
                     var window = d?.Window;
-                    var rates = window is null ? "窗口指标尚不可用" : $"当前连接窗口 {window.Coverage.TotalMinutes:F1} 分钟（最多60分钟） · 有码解码帧 {window.FramesWithCodes}/{window.DecodedFrames} · 有码帧占比 {(window.DecodedFrames == 0 ? "—" : (100d * window.FramesWithCodes / window.DecodedFrames).ToString("F1") + "%")} · 解码覆盖 {(window.Frames == 0 ? "—" : (100d * window.DecodedFrames / window.Frames).ToString("F1") + "%")}";
+                    var rates = window is null ? "窗口指标尚不可用" : $"当前连接窗口 {window.Coverage.TotalMinutes:F1} 分钟（最多60分钟） · 有码解码帧 {window.FramesWithCodes}/{window.DecodedFrames} · 有码帧占比 {(window.DecodedFrames == 0 ? "—" : (100d * window.FramesWithCodes / window.DecodedFrames).ToString("F1") + "%")} · 窗口采集 {window.Frames} 帧";
                     entry.Value.Text = d is null ? value.Status : $"{value.Status} · 有效帧 {d.Frames} · 解码完成 {d.DecodeCompleted} · 条码候选 {d.Candidates}\n{rates}\n最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · 最近错误：{DiagnosticText.Protect(d.Failure ?? d.LastFrameRejection ?? "无")}";
                 }
                 var snapshot = await ViewModel.Application.SnapshotAsync(); token.ThrowIfCancellationRequested();

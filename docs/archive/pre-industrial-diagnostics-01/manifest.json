@@ -1,0 +1,20 @@
+[
+  {
+    "OriginalPath": "docs/runtime/industrial-engineering-01.md",
+    "SourceCommit": "2369ef26e17818e057d6e236c40af23f2910449c",
+    "Sha256": "D82BD2E56AF70371D628375A6B7B0A5ED65E071EF15C47504D6D8D64FFA1180D",
+    "Bytes": 9445
+  },
+  {
+    "OriginalPath": "docs/operator/implementation-guide.md",
+    "SourceCommit": "2369ef26e17818e057d6e236c40af23f2910449c",
+    "Sha256": "D6CF61BEF05458EA0416392587AD84C1D80FB630F810FB5206206C6320F58915",
+    "Bytes": 7038
+  },
+  {
+    "OriginalPath": "docs/operator/quick-guide.md",
+    "SourceCommit": "2369ef26e17818e057d6e236c40af23f2910449c",
+    "Sha256": "1402891DC2BE2656991DEFC155E18BD01758B28D491B6E640822D0937C778054",
+    "Bytes": 1639
+  }
+]

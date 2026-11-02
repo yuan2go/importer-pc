@@ -303,3 +303,4 @@ docs/archive/pre-industrial-engineering-implementation-01/** -text whitespace=cr
 
 # IE01 original user/developer entry pages retain their exact bytes.
 docs/archive/pre-industrial-user-docs-01/** -text whitespace=cr-at-eol
+docs/archive/pre-industrial-diagnostics-01/** -text whitespace=cr-at-eol

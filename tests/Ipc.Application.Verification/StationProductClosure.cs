@@ -65,7 +65,7 @@ static class StationProductClosure
         var zip = Path.Combine(root, "diagnostics.zip"); await api.ExportDiagnosticPackageAsync(zip, default);
         using (var archive = ZipFile.OpenRead(zip))
         {
-            Check(archive.Entries.Count == 3 && archive.GetEntry("manifest.json") is not null, "diagnostic package publishes its bounded entries and integrity manifest");
+            Check(archive.Entries.Count == 6 && archive.GetEntry("manifest.json") is not null, "diagnostic package publishes its bounded entries and integrity manifest");
             using (var manifest = System.Text.Json.JsonDocument.Parse(archive.GetEntry("manifest.json")!.Open()))
                 foreach (var file in manifest.RootElement.GetProperty("Files").EnumerateObject())
                 { using var bytes = archive.GetEntry(file.Name)!.Open(); Check(Convert.ToHexString(SHA256.HashData(bytes)) == file.Value.GetString(), "diagnostic manifest matches actual ZIP bytes: " + file.Name); }

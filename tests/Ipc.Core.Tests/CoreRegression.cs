@@ -6,12 +6,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [DoNotParallelize]
 public sealed class CoreRegression
 {
+    public TestContext TestContext { get; set; } = null!;
     [TestMethod]
     [TestCategory("Core")]
     [DataRow("--industrial-recovery", 22)]
     [DataRow("--industrial-lifecycle", 27)]
     [DataRow("--industrial-diagnostics", 34)]
-    [DataRow("--station-single-camera", 30)]
+    [DataRow("--station-single-camera", 65)]
     [DataRow("--same-placement-29", 17)]
     [DataRow("--management-mode", 40)]
     [DataRow("--installer-storage-checks", 1)]
@@ -52,6 +53,7 @@ public sealed class CoreRegression
         var assertions = text.Split('\n').Count(line => line.StartsWith("PASS ", StringComparison.Ordinal));
         Assert.IsTrue(assertions >= minimumAssertions, $"{selector}: only {assertions} assertions; expected at least {minimumAssertions}.\n{text}");
         Assert.IsFalse(text.Split('\n').Any(line => line.StartsWith("FAIL ", StringComparison.Ordinal)), text);
+        TestContext.WriteLine($"Suite={selector}; ActualAssertions={assertions}; RequiredMinimum={minimumAssertions}; child exit=0");
         // Child-process behavior coverage is reported separately. This adapter
         // deliberately does not claim its own coverage as product coverage.
     }

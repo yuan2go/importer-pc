@@ -115058,9 +115058,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PRODUCT-CLOSURE-21; original evidence retains its own SourceCommit",
-      "sha256": "f34cf74ab0d7ba1a265b24c9b44eb859cc4ef2bd2e3d63bc4f9e1877561a2b13",
-      "size_bytes": 14674,
-      "git_blob": "d98a42f95c171c011b71e42188fb003411763acc",
+      "sha256": "4f332ff89ebd9e1854c717ad666c3cd25052402e98acd864dd174f10636a40f6",
+      "size_bytes": 14829,
+      "git_blob": "0fd085d84f90fccbe602c4547488abdd299c3e60",
       "storage_scope": "public_repository"
     },
     {
@@ -119502,9 +119502,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25; original evidence retains its own SourceCommit",
-      "sha256": "f58b771438eea7e18be72ed32c9527aa2b748edf25d0f2bb6ace73c72dbc1349",
-      "size_bytes": 9970,
-      "git_blob": "e03fd86d6184d1f8d4de904f285bdfd580569da5",
+      "sha256": "8db17885ffdb93db14eb5c2cef0bd973cf7d9ea33c9d08b5b7daa3d7685b936f",
+      "size_bytes": 10405,
+      "git_blob": "0051cc038883bd0b4caff85fe942fe206ba36745",
       "storage_scope": "public_repository"
     },
     {
@@ -119524,9 +119524,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25; original evidence retains its own SourceCommit",
-      "sha256": "57734fa21c2f47414f1198dd00a6c2d02a8bc4568fdbe40da7b4eecaad2a834a",
-      "size_bytes": 19622,
-      "git_blob": "b96d4bfc146090ad93cdca4853389d84e1b68764",
+      "sha256": "c953a902fcab750a188753c5275ed21a1bcb97014e56af413d1d46006e6c6845",
+      "size_bytes": 20837,
+      "git_blob": "f238f5281dc81cf9cf727ed2ed561e9654a58b8a",
       "storage_scope": "public_repository"
     },
     {
@@ -119535,9 +119535,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25; original evidence retains its own SourceCommit",
-      "sha256": "a5a469be5ce8f02c6ac2515d47782ae115dba8e7fd0e9caaf176d5ae96d853dc",
-      "size_bytes": 5874,
-      "git_blob": "f978133b2609c013afcec72ce8fdbec5f7950f2a",
+      "sha256": "b1d576712bdffbbf71ff7777f3a45218ee4c61d7f340344def4dd75af97f2839",
+      "size_bytes": 6128,
+      "git_blob": "dfc9437691a211f05cd6473e43fa95786fd85e4f",
       "storage_scope": "public_repository"
     }
   ],

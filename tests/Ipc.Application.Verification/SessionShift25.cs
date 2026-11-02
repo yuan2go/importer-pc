@@ -53,6 +53,9 @@ static class SessionShift25
         using(var receipt=JsonDocument.Parse(File.ReadAllText(output+".result.json")))
             Check(receipt.RootElement.GetProperty("Snapshot").GetProperty("Totals").EnumerateArray().Sum(x=>x.GetProperty("Requests").GetInt64())==2 && receipt.RootElement.GetProperty("Snapshot").GetProperty("Totals").EnumerateArray().Sum(x=>x.GetProperty("Assigned").GetInt64())==1,"export owns an immutable original snapshot even if a caller mutates returned arrays");
         Check(File.ReadLines(output).First()=="UTC时间,投递位,识别次数,请求次数,格口取得次数,拒绝次数,未确认次数,人工请求次数","the existing eight CSV column headings remain exact");
+        var forbidden=Path.Combine(h.Launch.DataRoot,"forbidden-statistics.csv");
+        try { await api.ExportSessionStatisticsAsync(selection,forbidden,default); throw new Exception("export wrote into owned data root"); } catch(IOException){}
+        Check(!File.Exists(forbidden)&&!File.Exists(forbidden+".result.json"),"statistics export refuses the business root before reserving a file");
         try { await api.ExportSessionStatisticsAsync(selection,output,default); throw new Exception("overwritten"); } catch(IOException){}
         Check(true,"export cannot overwrite a prior CSV/receipt");
         h.App.StationReportLifetime=TimeSpan.FromMilliseconds(50); var shortLived=await api.ReadSessionStatisticsAsync(Detail(),default); await Task.Delay(100);
@@ -122,6 +125,10 @@ static class SessionShift25
         var current=StationSessionReportReader.Read(Path.Combine(folder,"sportmaster.db"),b.ToString("N"),Detail(),policy,clock.GetUtcNow(),0,default);
         Check(previous.Totals.Sum(x=>x.Requests)==1&&current.Totals.Sum(x=>x.Requests)==0,"even same-minute reopen and later attempt registration retain the original T1 shift");
         Check(previous.Shift!.Sequence<current.Shift!.Sequence,"shift order uses durable sequence rather than a timestamp tie");
+        var eastern=policy with {TimeZoneId=OperatingSystem.IsWindows()?"Eastern Standard Time":"America/New_York"};
+        var daylight=StationSessionReportReader.Read(Path.Combine(folder,"sportmaster.db"),b.ToString("N"),Detail(StationReportRange.Today),eastern,DateTimeOffset.Parse("2026-11-01T12:00:00Z"),0,default);
+        var standard=StationSessionReportReader.Read(Path.Combine(folder,"sportmaster.db"),b.ToString("N"),Detail(StationReportRange.Today),eastern,DateTimeOffset.Parse("2026-11-02T12:00:00Z"),0,default);
+        Check(daylight.From==DateTimeOffset.Parse("2026-11-01T04:00:00Z")&&standard.From==DateTimeOffset.Parse("2026-11-02T05:00:00Z")&&(standard.From-daylight.From).TotalHours==25,"calendar today uses the station timezone through a 25-hour DST day rather than a fixed 24-hour subtraction");
         clock.Advance(TimeSpan.FromMinutes(2));clock.MoveUtc(TimeSpan.FromMinutes(-5));repo.CloseStationShift(true);
         using(var db=Open(Path.Combine(folder,"sportmaster.db"),true))
         {using var c=db.CreateCommand();c.CommandText="SELECT elapsed_ms,clock_adjusted,closed_at<opened_at FROM station_run_shifts WHERE id=$id";c.Parameters.AddWithValue("$id",b.ToString("N"));using var r=c.ExecuteReader();r.Read();Check(r.GetDouble(0)==120000&&r.GetInt32(1)==1&&r.GetInt32(2)==1,"normal close records two monotonic minutes despite a backwards UTC clock");}

@@ -17,6 +17,12 @@ internal sealed class StationExceptionsControl : UserControl
         public string Position => StationExceptionText.Position(Fact.Position);
         public string Barcode => Fact.Barcode;
         public string Reason => StationExceptionText.Label(Fact.ReasonCode);
+        public string Suggestion => Fact.ReasonCode switch {
+            "RcsUnknown" or "RcsTimeout" or "RcsConflict" => "凭原请求交接核对",
+            "RcsNotDelivered" => "连接恢复后重新扫描",
+            "RcsRejected" => "按原始原因处理",
+            "BarcodeRule" or "MultipleCodes" => "核对条码与筛选规则",
+            _ => "核对本次观察原因" };
     }
     readonly SupplyStationViewModel vm;
     readonly Func<string, Task> details, recovery;
@@ -38,7 +44,7 @@ internal sealed class StationExceptionsControl : UserControl
         body.Children.Add(Text("格口未确认的包裹勿重复上件。先凭原请求交接核对；当前内置RCS不提供查询，恢复不会重发。")); body.Children.Add(counts);
         var actions = new WrapPanel(); actions.Children.Add(category); actions.Children.Add(Button("刷新异常", () => Refresh()));
         first = Button("最新一页", () => { before = null; return Refresh(); }); next = Button("下一页未确认", () => { before = nextSequence; return Refresh(); }); actions.Children.Add(first); actions.Children.Add(next); body.Children.Add(actions); body.Children.Add(status);
-        foreach (var (label, path) in new[] { ("观察时间（本机时区）", "Time"), ("投递位", "Position"), ("条码", "Barcode"), ("类型", "Reason") }) grid.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = DataGridLength.Auto });
+        foreach (var (label, path) in new[] { ("观察时间（本机时区）", "Time"), ("投递位", "Position"), ("条码", "Barcode"), ("状态 / 原因", "Reason"), ("建议操作", "Suggestion") }) grid.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = DataGridLength.Auto });
         var workspace = new Grid(); workspace.ColumnDefinitions.Add(new()); workspace.ColumnDefinitions.Add(new()); workspace.RowDefinitions.Add(new()); workspace.RowDefinitions.Add(new()); body.Children.Add(workspace); workspace.Children.Add(grid);
         var inspector = new StackPanel(); inspector.Children.Add(hint); inspector.Children.Add(detail); workspace.Children.Add(inspector);
         var selected = new WrapPanel(); show = Button("查看详情与核对…", Show); restore = Button("打开恢复操作…", Restore); copy = Button("复制交接信息", Copy); selected.Children.Add(show); selected.Children.Add(restore); selected.Children.Add(copy); inspector.Children.Add(selected);

@@ -34,6 +34,7 @@ static partial class Program
             await Click("异常处理");await Until(()=>Has("当前 0 条"));
             var category=Descendants(window).OfType<ComboBox>().Single(c=>AutomationProperties.GetName(c)=="异常类别");category.SelectedIndex=1;await Until(()=>Has("当前 1 条"));
             var grid=Descendants(window).OfType<DataGrid>().Single(g=>g.IsVisible);grid.SelectedIndex=0;await Flush();
+            Check(grid.Columns.Any(c=>Equals(c.Header,"建议操作"))&&grid.Items[0].GetType().GetProperty("Suggestion")!.GetValue(grid.Items[0])?.ToString()=="按原始原因处理","per-row suggestion is derived from the typed original reason code");
             Check(Has(rejected.OperationId!)&&Has("SYNTH-UI-REJECT"),"selected exception exposes the exact original operation and barcode");
             var restore=Descendants(window).OfType<Button>().Single(b=>Equals(b.Content,"打开恢复操作…"));Check(!restore.IsEnabled,"ordinary mode cannot start recovery and rejection never advertises resend");
             var selection=grid.SelectedItem;await Task.Delay(2200);await Until(()=>!category.IsEnabled||grid.Items.Count==1);await Flush();

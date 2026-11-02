@@ -97,7 +97,8 @@ internal sealed class StationStatisticsControl : UserControl
         scope.Text = value.Shift is { } s ? $"班次 #{s.Sequence} · {TimeZoneInfo.ConvertTime(s.OpenedAt, zone):yyyy-MM-dd HH:mm:ss zzz} 开始 · {(s.Status == "Open" ? "运行中" : s.Status == "Closed" ? "已正常关闭" : "上次运行中断，结束时间未确认")}" : value.Range == StationReportRange.PreviousShift ? "尚无上一班记录" : $"{TimeZoneInfo.ConvertTime(value.From, zone):yyyy-MM-dd HH:mm zzz} ～ {TimeZoneInfo.ConvertTime(value.ToExclusive, zone):yyyy-MM-dd HH:mm zzz}";
         feedback.Text = $"读取于 {TimeZoneInfo.ConvertTime(value.ReadAt, zone):HH:mm:ss zzz} · 站点时区 {value.TimeZoneId} · CSV导出使用本次快照";
         notices.Text = string.Join("\n", value.Notices);
-        reasons.Text = value.Reasons.Length == 0 ? "当前范围没有异常原因记录。" : string.Join("\n", value.Reasons.Select(x => $"{(x.Scope == "rcs" ? "RCS请求" : x.Scope == "admission" ? "实体准入" : "识别观察")} · {StationExceptionText.Label(x.Code)}：{x.Count:N0} 次"));
+        string ReasonGroup(bool rcs) { var rows = value.Reasons.Where(x => (x.Scope == "rcs") == rcs).OrderBy(x => x.Scope).ThenBy(x => x.Code).ToArray(); return (rcs ? "RCS请求" : "识别与准入观察") + "\n" + (rows.Length == 0 ? "当前范围没有此类异常记录。" : string.Join("\n", rows.Select(x => $"{StationExceptionText.Label(x.Code)}：{x.Count:N0} 次"))); }
+        reasons.Text = ReasonGroup(false) + "\n\n" + ReasonGroup(true);
         grid.ItemsSource = value.Buckets.GroupBy(x => new { Hour = TimeZoneInfo.ConvertTime(x.Minute, zone).ToString("yyyy-MM-dd HH:00 zzz"), x.Position }).Select(g => new { Time = g.Key.Hour, Position = StationExceptionText.Position(g.Key.Position), Recognitions = g.Sum(x => x.Recognitions), Requests = g.Sum(x => x.Requests), Assigned = g.Sum(x => x.Assigned), Rejected = g.Sum(x => x.Rejected), Unknown = g.Sum(x => x.Unknown), ManualRequests = g.Sum(x => x.ManualRequests) }).ToArray();
         chart.Set(value.Buckets, zone, vm.TargetEfficiencyPerHour);
     }

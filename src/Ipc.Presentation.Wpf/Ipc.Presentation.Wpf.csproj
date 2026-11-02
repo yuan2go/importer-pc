@@ -5,6 +5,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Sounds/ipc-*.wav" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Resource Include="Fonts/*.otf" />
     <Resource Include="Fonts/OFL.txt" />
     <Resource Include="Fonts/NOTICE.json" />

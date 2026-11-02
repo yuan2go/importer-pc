@@ -311,9 +311,9 @@ public partial class SupplyStationPosition
         if (wait < 0) return;
         switch (sound.Kind)
         {
-            case StationSound.Read: PlayedReadSounds++; System.Media.SystemSounds.Beep.Play(); break;
-            case StationSound.Success: PlayedSuccessSounds++; System.Media.SystemSounds.Asterisk.Play(); break;
-            case StationSound.Rejected: PlayedRejectionSounds++; System.Media.SystemSounds.Hand.Play(); break;
+            case StationSound.Read: PlayedReadSounds++; Host?.PlayCue(OperatorCue.Read, ((SupplyStationPositionViewModel)DataContext).PositionId); break;
+            case StationSound.Success: PlayedSuccessSounds++; Host?.PlayCue(OperatorCue.Success, ((SupplyStationPositionViewModel)DataContext).PositionId); break;
+            case StationSound.Rejected: PlayedRejectionSounds++; Host?.PlayCue(OperatorCue.Rejected, ((SupplyStationPositionViewModel)DataContext).PositionId); break;
         }
     }
     static double ClaimSound(PendingSound sound)

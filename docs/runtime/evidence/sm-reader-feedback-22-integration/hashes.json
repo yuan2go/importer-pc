@@ -1,0 +1,172 @@
+[
+  {
+    "file": "assembly-hashes.json",
+    "bytes": 3777,
+    "sha256": "CAE92A8F1F703D2E188F97E7A3ADC28EE58280D62563200D2354687F7439AD18"
+  },
+  {
+    "file": "build-Ipc.Application.Verification.log",
+    "bytes": 84,
+    "sha256": "E3F02DE94AD7E01FF681CE1F0C398DE9A6A3A2294285842456AEDEFD4DBDDCD7"
+  },
+  {
+    "file": "build-Ipc.Desktop.log",
+    "bytes": 84,
+    "sha256": "C3217CF555EB3F82C7F1931877669AB17A0FF47E2F0122B39F4BCB66650B253D"
+  },
+  {
+    "file": "build-Ipc.Desktop.UiVerification.log",
+    "bytes": 84,
+    "sha256": "FF119678F8C6F2D0497D9E8CDE8A67B938169BABD7351DD6E637FA216299907B"
+  },
+  {
+    "file": "core-camera-chain-closure.log",
+    "bytes": 2157,
+    "sha256": "57ABAA57E74F54F2A70C9A9723DE4152239B8E10636499C6DBE3944DB19C7511"
+  },
+  {
+    "file": "core-camera-chain-reliability.log",
+    "bytes": 3454,
+    "sha256": "15302A36966193C6B66FF076FA93DD5CB5F2F3A87E02A0A8C9E311EB8CE39247"
+  },
+  {
+    "file": "core-db11-compatible-update.log",
+    "bytes": 4472,
+    "sha256": "EF69E40A87D537BB74CE5682EF10BCCF571D06D8F0D67C25C368E2EC3C5650B2"
+  },
+  {
+    "file": "core-manual-supply.log",
+    "bytes": 2214,
+    "sha256": "D215F7F9154389719F1716E1D2AC320252E64E4A20E08D59FBAB2ADFEB215084"
+  },
+  {
+    "file": "core-product-closure-21.log",
+    "bytes": 3400,
+    "sha256": "7F45ED12FF3015A71B8B6C3DCAA0758192FD18B842F0238926CC05C4BF97141C"
+  },
+  {
+    "file": "core-rcs-timeout-errors.log",
+    "bytes": 4807,
+    "sha256": "A24F3C77D5F86E6ED2BF51028F233975D4E9D9BB6E7CBDCF065D32347FB73ED1"
+  },
+  {
+    "file": "core-reader-feedback-22.log",
+    "bytes": 6271,
+    "sha256": "A1B5A765823A07C89E394DBEB216FE96EF20CFF12359B0CEA7B01B6F150455B9"
+  },
+  {
+    "file": "core-reader-ingress-terminal-22.log",
+    "bytes": 101,
+    "sha256": "227F31D28CB90C69AFC1AC54E1108A885F55F3BD7DF1AA090E4FE2B185D3D702"
+  },
+  {
+    "file": "core-shutdown-resources.log",
+    "bytes": 2012,
+    "sha256": "9FCC500262C42B63D3BA9449F6B58C5B22E203A89992EF64CB37A046DDED1D9F"
+  },
+  {
+    "file": "core-sm-original-frame.log",
+    "bytes": 2786,
+    "sha256": "1FB0F37EAEA59722CBA3D4BFBC29C23C4A600D98D5029CEE6697A62692BC5A8D"
+  },
+  {
+    "file": "core-summary.json",
+    "bytes": 5151,
+    "sha256": "6E151D52FDD826D26314C9C79FE0D4209278B0836503666B3486B7272A10FC58"
+  },
+  {
+    "file": "environment-error.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "environment.json",
+    "bytes": 731,
+    "sha256": "3525257FA5B313BDDB33E4A95522AF54A7BFA24A92FAF69D6D561E64455D06B0"
+  },
+  {
+    "file": "native-camera-barcode-current.log",
+    "bytes": 2909,
+    "sha256": "B5252DC3FB397C279BE45920F0256F7082DAFD28DBB78C5A67CD37C0EA278E7C"
+  },
+  {
+    "file": "native-camera-chain-reliability-ui.log",
+    "bytes": 2893,
+    "sha256": "135DFF01BE5828FA200C6818026294ECA54F211D36C000F3AB161C250C1593E1"
+  },
+  {
+    "file": "native-continuous-pda-input.log",
+    "bytes": 3964,
+    "sha256": "C7F90688E654929535C75F43EF88A7DB6310A3BDB69EE0C0FE089708F30E329D"
+  },
+  {
+    "file": "native-hikrobot-sdk-editing.log",
+    "bytes": 3775,
+    "sha256": "E997C8FACDBCAE1CE7A4D3948F7A320FC9F6FCF71DC5F6A328E721A54ECE64E8"
+  },
+  {
+    "file": "native-operator-ux-18.log",
+    "bytes": 4022,
+    "sha256": "A676D99CAC6177AEE356847EA1A4020AC43A9128E3D293F8CB8C0A2E2AA438BB"
+  },
+  {
+    "file": "native-operator-workspace.log",
+    "bytes": 3156,
+    "sha256": "412B748AED36128E0D5CD41F58C5773EA2FB5605AC7B3CDA4BA5565DB3AAEAB5"
+  },
+  {
+    "file": "native-presentation-ordering-ui.log",
+    "bytes": 1028,
+    "sha256": "3BC50BD1CB76E5C0533BC29FF0F5AE88644A2BB480131DA442986A392C145251"
+  },
+  {
+    "file": "native-product-closure-21.log",
+    "bytes": 1486,
+    "sha256": "DE4AB22F20B7B074AE2F4F1A49CF8D11A561E39A315AA2FFCBB8BE243DB05FB1"
+  },
+  {
+    "file": "native-reader-feedback-22-ui.log",
+    "bytes": 2321,
+    "sha256": "7C58B9056A58704C08C49A4A150FCB083B9EC7C441384062A62105DC410AD376"
+  },
+  {
+    "file": "native-summary.json",
+    "bytes": 4733,
+    "sha256": "CD2B175FC133D66019F00799895448235E27161727C0041055F9DB83AD509695"
+  },
+  {
+    "file": "publish-smoke.json",
+    "bytes": 865,
+    "sha256": "DD01B5E60857B761FCAB49E907647E3A5E83D1266A6747F21991D8C7EBF5791B"
+  },
+  {
+    "file": "publish.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "reader22-audio-settings.png",
+    "bytes": 117531,
+    "sha256": "0865B7F21F7969E3BB4530CE42EC5BCE591CE63AFECA50F3EA09C4E283123EF2"
+  },
+  {
+    "file": "reader22-expired-1366.png",
+    "bytes": 126225,
+    "sha256": "2EEB4D09463B28D5B22EA06594B2C1B1638A3F9EB474CF7CE3399FAAA8794BA0"
+  },
+  {
+    "file": "reader22-expired-800.png",
+    "bytes": 89956,
+    "sha256": "DF230E32BC53827C575752833FFDB2516163C1C1A018939ECC07CBE17CD8537B"
+  },
+  {
+    "file": "README.md",
+    "bytes": 2305,
+    "sha256": "AB3EA0D264ADE618583673FB7216FCC0D7A2A9664F8768A0E246C1967D45528B"
+  },
+  {
+    "file": "summary.json",
+    "bytes": 9515,
+    "sha256": "9E7B02FC3EE49215EE645D3D7629C8F157DC742C7C2ECB02E11976CA93C446B1"
+  }
+]

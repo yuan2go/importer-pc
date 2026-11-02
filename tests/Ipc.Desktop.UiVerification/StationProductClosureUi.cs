@@ -57,7 +57,8 @@ static partial class Program
             await ManagementModeFixture.Authorize(h.App); await window.ViewModel.RefreshManagementModeAsync(); await ClickReady("维护中心");
             await Until(() => HasText("自动清理："));
             Check(HasText("恢复备份、换机、修复或卸载") && HasText("创建完整备份"), "maintenance center exposes online tasks and explicit offline handoff");
-            await ClickReady("打开诊断"); await Until(() => HasText("格口未确认")); await ClickReady("刷新体检");
+            await ClickReady("打开诊断"); await Until(() => window.ViewModel.SelectedPage == "diagnostics" && window.ViewModel.CanStartOperation &&
+                Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "刷新体检"))); await ClickReady("刷新体检");
             await Until(() => HasText("体检只读取现有相机和心跳数据"));
             Check(!HasText("RCS：当前可用") && (HasText("等待 RCS 确认") || HasText("只表示 RCS 可连接") || HasText("组件未就绪")), "RCS health summary distinguishes local readiness, remote HTTP confirmation and business acceptance");
             Check(HasText("存储剩余"), "diagnostic health reads actual current storage and confirms passive probe semantics");

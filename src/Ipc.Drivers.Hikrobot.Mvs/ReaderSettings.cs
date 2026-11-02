@@ -17,6 +17,7 @@ internal sealed record ReaderSettings(string[] Formats, bool TryInvert)
         return new(formats, invert == "true");
     }
     // Parsing native format names runs only after DecoderRuntime.Prepare, never during config validation.
-    internal BarcodeFormats NativeFormats() => new(Formats.Select(name => (BarcodeFormat)typeof(BarcodeFormat)
-        .GetField(name, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)!.GetValue(null)!));
+    internal BarcodeFormats NativeFormats() => new(Formats.Select(name =>
+        typeof(BarcodeFormat).GetField(name, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)?.GetValue(null) is BarcodeFormat format
+            ? format : throw new InvalidDataException("code.formats: 当前识别组件不支持所选码制：" + name)));
 }

@@ -108,6 +108,7 @@ public sealed partial class ParameterSettingsControl
             { modeStatus.Text = "打开方式未保存：" + error.Message; }
         };
         display.Body.Children.Add(saveMode); display.Body.Children.Add(modeStatus);
+        if (m.ApplicationId == "sportmaster") AudioPreferences(display);
         display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));
         if (DisplayPreferencesRequested is not null)
         {

@@ -440,7 +440,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (o.OperatorInput is not null || !readers.TryGetValue(o.DeviceId, out var reader) ||
             string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
             o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
-        { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/time; " + Wire.Encode(o)); return; }
+        {
+            // Rejection is a terminal input fact, never trusted source/admission evidence.
+            // Do not link unvalidated capture/session IDs into the inspection store.
+            RecordInput(Input(position, o with { CaptureSessionId = null, InspectionSessionId = null, OperatorInput = null }, ParcelInputOutcome.Rejected,
+                "UntrustedObservation; 本次来源、连接周期、顺序或时效未通过校验；未创建作业或请求。"), "ObservationRejected");
+            return;
+        }
         await ProcessTrustedObservationAsync(position, o, admittedOperator, receivedAt, reader).ConfigureAwait(false);
     }
     async Task ProcessTrustedObservationAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt, ObservationSession reader)

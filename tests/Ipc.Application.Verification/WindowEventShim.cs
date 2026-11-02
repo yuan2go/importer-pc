@@ -137,6 +137,8 @@ namespace Ipc.Application.Sportmaster.Desktop
         Task OpenOperatorSettingsAsync(string? deviceId = null, string? instanceId = null) => Task.CompletedTask;
         readonly System.Windows.Controls.Grid workContent = new();
         void BuildOperatorWorkspace() { workContent.Children.Add(work); }
+        void RestoreBarcodeFocus() { } // Native focus is exercised only by the real WPF suite.
+        void InitializeAudio() { } // Media playback is not provided by this event-owner shim.
         readonly System.Windows.Controls.Grid ClientArea = new();
         readonly System.Windows.Controls.ContentControl PageHost = new();
         readonly System.Windows.Controls.PasswordBox LoginProof = new();

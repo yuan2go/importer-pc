@@ -123,7 +123,12 @@ public partial class SupplyStationWindow
     }
     bool offlineMaintenanceRequested;
     Button ProductButton(string label, Func<Task> action)
-    { var button = new Button { Content = label, MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Padding = new(12, 4, 12, 4), Margin = new(0, 6, 12, 6) }; button.Click += async (_, _) => await ViewModel.RunAsync(action, label); return button; }
+    {
+        var button = new Button { Content = label, MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Padding = new(12, 4, 12, 4), Margin = new(0, 6, 12, 6) };
+        button.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
+        button.Click += async (_, _) => await ViewModel.RunAsync(action, label);
+        return button;
+    }
     static TextBlock ProductText(string value, bool title = false) => new() { Text = value, TextWrapping = TextWrapping.Wrap, Margin = new(0, 6, 0, 6), FontSize = title ? UiTypography.PageTitle : UiTypography.Body, FontWeight = title ? UiTypography.Emphasis : FontWeights.Normal };
     async Task<string> ReadProductHealth()
     {

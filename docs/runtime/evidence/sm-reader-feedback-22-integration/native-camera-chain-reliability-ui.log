@@ -1,0 +1,21 @@
+Native SendInput/WPF with explicitly labelled UI-only terminal receipts; camera leg uses actual ZXing/Application/SQLite and synthetic MVS/loopback RCS. Physical devices NOT_RUN.
+PASS CHAIN20-NATIVE Rejected terminal receipt retains and selects the result while releasing edit ownership: text=000123450001, selection=12, editing=False, feedback=未受理 · Synthetic UI-only terminal receipt
+PASS CHAIN20-NATIVE Rejected followed by native scanner input replaces A with B, never AB; UI projection emits no HTTP
+PASS CHAIN20-NATIVE Blocked terminal receipt retains and selects the result while releasing edit ownership: text=000123450001, selection=12, editing=False, feedback=暂不能受理 · Synthetic UI-only terminal receipt
+PASS CHAIN20-NATIVE Blocked followed by native scanner input replaces A with B, never AB; UI projection emits no HTTP
+PASS CHAIN20-NATIVE Duplicate terminal receipt retains and selects the result while releasing edit ownership: text=000123450001, selection=12, editing=False, feedback=重复扫描 · Synthetic UI-only terminal receipt
+PASS CHAIN20-NATIVE Duplicate followed by native scanner input replaces A with B, never AB; UI projection emits no HTTP
+PASS CHAIN20-NATIVE Conflict terminal receipt retains and selects the result while releasing edit ownership: text=000123450001, selection=12, editing=False, feedback=本位状态已变化，请确认后重交 · Synthetic UI-only terminal receipt
+PASS CHAIN20-NATIVE Conflict followed by native scanner input replaces A with B, never AB; UI projection emits no HTTP
+PASS CHAIN20-NATIVE deleting a draft to empty resumes camera projection even when the next independent frame has the same code
+PASS CHAIN20-NATIVE clear action releases edit ownership and all three independent same-code frames still reach RCS
+PASS CHAIN20-NATIVE long confirmed wave wraps into a taller measured task row before the stability check
+PASS CHAIN20-NATIVE 1366 same-code independent request keeps task/result geometry stable without rendering the old task
+PASS CHAIN20-NATIVE 1366 stable layout never borrows the old task or assigned chute while the next request is pending
+PASS CHAIN20-NATIVE 1366 completion restores the matching task with exactly one new HTTP request
+PASS CHAIN20-NATIVE 800 same-code independent request keeps task/result geometry stable without rendering the old task
+PASS CHAIN20-NATIVE 800 stable layout never borrows the old task or assigned chute while the next request is pending
+PASS CHAIN20-NATIVE 800 completion restores the matching task with exactly one new HTTP request
+PASS CHAIN20-NATIVE right position success sound invocation is independent of left cooldown
+PASS CHAIN20-NATIVE still-current deferred left result invokes its sound after cooldown without another read; audible hardware NOT_RUN
+CAPTURE chain20-camera-cleared-recovered: 800x420 DIP, Windows DPI 1.25/1.25

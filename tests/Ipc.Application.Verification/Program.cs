@@ -45,6 +45,8 @@ if (args.Contains("--camera-rounds")) { await CameraRoundChecks.Run(workspace, r
 if (args.Contains("--camera-single-frame-recovery")) { await CameraSingleFrameRecovery.Run(workspace, root); return; }
 if (args.Contains("--camera-chain-reliability")) { await CameraChainReliability.Run(workspace, root); return; }
 if (args.Contains("--camera-chain-closure")) { await CameraChainClosure.Run(workspace, root); return; }
+if (args.Contains("--reader-feedback-22")) { await ReaderFeedback22.Run(workspace, root); return; }
+if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
 if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResources(workspace, root); return; }
 if (args.Contains("--mvs-contrast-checks")) { SportmasterRcs.MvsContrastChecks(); return; }

@@ -1,0 +1,22 @@
+{
+  "source_commit": "926e27008eea9bce7b2ffe0f7211fc9cfb08c39e",
+  "desktop_sha256": "048E6161B9C3E33D8FB20895C60B6DD61F916796CE04B778D871AD18E2F8D982",
+  "publish_exit": 0,
+  "launch_exit": 0,
+  "scope": "PR177 integration; actual EXE environment report, installation/SDK/field NOT_RUN",
+  "informational_version": "1.0.0+926e27008eea9bce7b2ffe0f7211fc9cfb08c39e",
+  "audio": [
+    {
+      "sha256": "403E439F13486858340492135FBCAD764DA333895DD70ED23733F4C25C44612E",
+      "file": "ipc-read.wav"
+    },
+    {
+      "sha256": "97BE35AEEF82AA5B18219365943377E3DABD041896BD9821AFDA810DA6D5D2CB",
+      "file": "ipc-rejected.wav"
+    },
+    {
+      "sha256": "7548CB08C9063DDD082B76869B4303A3E3A921DF2B93B28DD52696E63B05195E",
+      "file": "ipc-success.wav"
+    }
+  ]
+}

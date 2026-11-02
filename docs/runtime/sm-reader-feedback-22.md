@@ -44,4 +44,6 @@
 
 最终整合验证源 `ebb966866e25fdea2cc0d370c070edaa4fea470c`：三项Release构建0警告0错误，19套件569项PASS（应用349、原生WPF220，含53项DB11升级专项），同源发布、三段WAV闭包和真实EXE环境报告启动通过。[整合后证据](evidence/sm-reader-feedback-22-integration/README.md)保留独立命令/退出码、原始日志、截图与程序集身份。
 
+合并前main再次合入PR177/cf98e139的私有WAL句柄及原始快照身份修复，已完整保留。最新冻结源 `926e27008eea9bce7b2ffe0f7211fc9cfb08c39e` 相对ebb仅有该PR两处维护生产文件变化，读码/界面代码不变；三个Release构建及6套178项实际增量检查（应用165、原生集成13）、同源发布/EXE启动通过。[WAL增量证据](evidence/sm-reader-feedback-22-wal/README.md)保留精确源码差异和边界；原569项不倒写为本源实跑，不累计重叠断言。
+
 物理海康 MVS/SDK、客户 RCS、真实 PDA/扬声器、目标 IPC 安装、现场30分钟流量/磁盘及长稳未执行均为 NOT_RUN。本轮不部署现场、不改真实配置、不启用 CI。软件回归不等于真实设备验收。

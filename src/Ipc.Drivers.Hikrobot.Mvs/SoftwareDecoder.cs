@@ -13,7 +13,7 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
     Action<BarcodeReader>? searchOptionsForVerification = null, ReaderSettings? settings = null) : IMonoBarcodeDecoder
 {
     const int CandidateLimit = 64, CodeByteLimit = 4096;
-    BarcodeReader? reader;
+    BarcodeReader? reader, thresholdReader;
     readonly MvsTimings timings = new();
     public MvsTimingSnapshot TimingSnapshot => timings.Snapshot();
     public bool PreservesInput => true;
@@ -35,6 +35,16 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
             TryInvert = true, TryDownscale = true, ReturnErrors = false, MaxNumberOfSymbols = CandidateLimit };
         if (settings is not null) { reader.Formats = settings.NativeFormats(); reader.TryInvert = settings.TryInvert; }
         searchOptionsForVerification?.Invoke(reader);
+        thresholdReader ??= new BarcodeReader();
+        // A second binarizer recovers narrow/uneven reflective labels which the
+        // local average can erase. Keep the same search, checksum and line guards.
+        thresholdReader.Formats = reader.Formats;
+        thresholdReader.TryHarder = reader.TryHarder; thresholdReader.TryRotate = reader.TryRotate;
+        thresholdReader.TryInvert = reader.TryInvert; thresholdReader.TryDownscale = reader.TryDownscale;
+        thresholdReader.ReturnErrors = reader.ReturnErrors; thresholdReader.MaxNumberOfSymbols = CandidateLimit;
+        thresholdReader.MinLineCount = Math.Max(2, reader.MinLineCount);
+        thresholdReader.ValidateOptionalChecksum = reader.ValidateOptionalChecksum;
+        thresholdReader.Binarizer = Binarizer.FixedThreshold;
     }
     public string[] Decode(byte[] pixels, int length, int width, int height)
         => DecodeDetailed(pixels, length, width, height).Select(symbol => symbol.Text).ToArray();
@@ -69,6 +79,11 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
             pin = GCHandle.Alloc(contrast ?? pixels, GCHandleType.Pinned);
             using (timings.Measure("zxing.native"))
                 results = reader.From(new ImageView(pin.AddrOfPinnedObject(), width, height, ImageFormat.Lum));
+            if (results.Length == 0)
+            {
+                using (timings.Measure("zxing.threshold-fallback"))
+                    results = thresholdReader!.From(new ImageView(pin.AddrOfPinnedObject(), width, height, ImageFormat.Lum));
+            }
             using var extraction = timings.Measure("candidates.extract");
             if (results.Length >= CandidateLimit) throw new MvsFrameRejection("CandidateLimit", "Recognition candidate limit reached; frame rejected without partial results");
             return results.Select(result => {
@@ -116,7 +131,11 @@ internal sealed class SoftwareDecoder(string charset, Action? prepareNative = nu
         for (var value = (int)lo; value <= hi; value++) levels[value] = (byte)((value - lo) * 255 / (hi - lo));
         for (var index = 0; index < pixels.Length; index++) pixels[index] = levels[pixels[index]];
     }
-    public void Release() { reader?.Dispose(); reader = null; }
+    public void Release()
+    {
+        try { reader?.Dispose(); }
+        finally { reader = null; thresholdReader?.Dispose(); thresholdReader = null; }
+    }
 }
 
 internal static class DecoderRuntime

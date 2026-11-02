@@ -1,0 +1,23 @@
+{
+  "source_commit": "90ed7c859bef2e2df8c4f3df7a6a550c038a826d",
+  "files": [
+    {
+      "path": "docs/INDEX.md",
+      "archive": "docs__INDEX.md",
+      "sha256": "b29a21c8c2c626abd7dd69f9dd710d19c7da02c3311e88d3d17c989978eaa661",
+      "bytes": 15261
+    },
+    {
+      "path": "docs/runtime/mvs-software-reader-01.md",
+      "archive": "docs__runtime__mvs-software-reader-01.md",
+      "sha256": "68adb136631db1808e993d085d4791d2bb086952597296ed9ef12fa6066329d4",
+      "bytes": 8401
+    },
+    {
+      "path": "docs/runtime/sm-responsive-presentation-16.md",
+      "archive": "docs__runtime__sm-responsive-presentation-16.md",
+      "sha256": "4c35deb4394369162cc7dd110b8bc8867c00caa152efde86fc3e4de61fb9c244",
+      "bytes": 10232
+    }
+  ]
+}

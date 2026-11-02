@@ -18,3 +18,5 @@
 中间失败独立保留，不计入最终PASS：`intermediate-70488950-chute-failure.log` 是源70488950的实际格口缩放退化；`intermediate-uncommitted-history-reserve-failure.log` 是基于70488950的未提交开发树，字体已恢复但记录空间不足。最终相同原断言均通过，未放宽字号/按钮/行数。`historical-camera-debug-interface-mismatch.log` 来自未提交开发树对已淘汰单Image/ListBox界面的旧测试，不作为现行契约；旧脚本保留，当前按轮及预览生命周期套件单独通过。中间Source变更导致脚本停止的部分运行只在本机保留，不合并统计。
 
 所有数据与部署回调均为合成；没有修改现场配置或部署。未执行真实海康物理连接/客户RCS、受保护安装/UAC/重启卸载、目标IPC、物理触摸/扬声器/PDA、现场长稳，均为NOT_RUN。P07/P08页面改造延期。CI保持停用。不得将这些软件证据扩张为历史D批准/RV关闭或现场验收。
+
+此证据目录在 `.gitattributes` 中禁用换行转换；原始回执的CRLF及末尾空格保留。`hashes.json` 与Git中实际存储字节逐项核对，不依赖检出机器的换行设置。

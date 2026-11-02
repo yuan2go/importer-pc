@@ -54024,9 +54024,9 @@
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
       "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "8ae171a8a14da9c7ff8fa0922545460822fd016160b646f6f4b1fde2ca5b2069",
-      "size_bytes": 16348,
-      "git_blob": "64d518b4d63edf773776c371c457dc18aaa71915",
+      "sha256": "5a3198e99f8ecca588545701f2da0343843ba9755a8d76d6e9a6c8e168bf945a",
+      "size_bytes": 17445,
+      "git_blob": "013c80ed6469f1506685cb43a21f7569b5002421",
       "previous_git_blob": "042d059b24ae09dcf1ffe584b36ecf427eba2eba",
       "pre_parallel_task_integration_01_identity": {
         "git_blob": "0764f67a235adb121a40793c24b18ebb386baf7f",
@@ -54044,9 +54044,9 @@
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
       "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "6a00ee375da887d177b5b9b64b843fb3a0a315a38dd49167010137fe0bd87422",
-      "size_bytes": 7761,
-      "git_blob": "8e66b9d93d42059e7e4aa9ab6114abaecc9fb510",
+      "sha256": "7fabe616526dd3a8d593f94b96a968ef7b705f4c17a4fbc768272b2d4e7af1ba",
+      "size_bytes": 7797,
+      "git_blob": "9f9dfb30bec67d1745d3306a4593cfc67eacb707",
       "previous_git_blob": "f4114faeccddf4adcf7b17625e6d6bdbd375f584",
       "pre_parallel_task_integration_01_identity": {
         "git_blob": "81603ab46e3d6c607769e5bfd2fb4e4b1679e395",
@@ -54339,9 +54339,9 @@
       "source": "WP-IPC-TYPOGRAPHY-01; PR97 prerequisite retained; original source and evidence identity in associated records",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs",
-      "sha256": "72b7f70cfaf0220f3024d4f3b7c6034194a77d6904f679136124c4c5c61ce5da",
-      "size_bytes": 20930,
-      "git_blob": "db5cc267deadd3c5f6ade2cb1c0b98280e5d6c80",
+      "sha256": "57a7f80b6b3394abdaffae08a8353fd8984a66480ada9b4d5a6184882c0e84bc",
+      "size_bytes": 21500,
+      "git_blob": "4d0f6e98710128b4f158f4e1c3a3341f2939ba74",
       "previous_git_blob": "abe7799d4557985e2e012f7869fa1a370de3e0e3"
     },
     {
@@ -55374,9 +55374,9 @@
       "purpose": "WPF typography comparison, actual font provenance and bounded layout correction",
       "source": "WP-IPC-TYPOGRAPHY-01 follow-up; latest PR97 inherited; historical evidence retained",
       "storage_scope": "public_repository",
-      "sha256": "90656d51901716bdb017d5c608095861959882bbe7bef18f168820aa71c38183",
-      "size_bytes": 28027,
-      "git_blob": "fe36e15d3da0e515d939b2c64087b29d3c2b5855",
+      "sha256": "34267bc24da154af1d2a0689c702b3c3f11a1af9d7b045eba2b0d1fd0f567ea0",
+      "size_bytes": 28155,
+      "git_blob": "d42e74462d2dd5bb67a0b7698e2baaf72239f806",
       "previous_git_blob": "63bdfd8d733e71cfbc157fd71deb3df55003bbc4",
       "pre_parameter_settings_v3_source_identity": {
         "git_blob": "4e0db0b810312c5488ec588d18398dcc182f6da5",
@@ -112913,9 +112913,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-OPERATOR-UX-18; original evidence retains its own SourceCommit",
-      "sha256": "c74175fb4b6c20e856b707e2c42291f0f2a6a9004e8e0fb49e14deec09124f6a",
-      "size_bytes": 11365,
-      "git_blob": "8c7969e83402f6dc8ddd43e880be3c7dbc2346f3",
+      "sha256": "38a22284677d4fcfcc51bb6c169fa1412eee970dbf167bde863604dc42afd141",
+      "size_bytes": 11417,
+      "git_blob": "5f3943ed1baa8e433e6d5ecd273d77568e920403",
       "storage_scope": "public_repository"
     },
     {
@@ -118589,9 +118589,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-UI-SPEC-CLOSURE-24; original evidence retains its own SourceCommit",
-      "sha256": "57ae21aa989fb4534d92e68a88b91d1e1b19c2fb95abf4d01937e97576a5da8d",
-      "size_bytes": 2451,
-      "git_blob": "37f13a8cb39e62fc64c3a8a8a267af670086ba46",
+      "sha256": "a6c21acf22e875a388be5ec1d4d323fbeff75c1d9ea48a11ec446ac6157a94df",
+      "size_bytes": 3425,
+      "git_blob": "ad9f92ae0b256266a01cd1330a60eea7be29d1aa",
       "storage_scope": "public_repository"
     },
     {

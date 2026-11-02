@@ -312,6 +312,8 @@
        <TextBlock Text="{Binding RcsPresentation.Text}" Foreground="{Binding RcsPresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="RCS 连接状态" AutomationProperties.LiveSetting="Polite" ToolTip="RCS 在线只表示服务可连接；每件包裹以本件返回的格口为准。"/>
       </Border>
       <StackPanel>
+       <DockPanel LastChildFill="True">
+       <TextBlock x:Name="PaceBadge" Visibility="{Binding PaceVisibility}" FontSize="{x:Static type:UiTypography.Label}" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="12,0,0,0" ToolTip="按原请求准备时间统计取得格口次数；读取持久事实，不代表实物落格件数。管理模式可右键隐藏。"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{Binding PaceText}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Text" Value="{Binding PaceCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
        <TextBlock x:Name="InputTarget" Text="{Binding InputTargetLabel}" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{x:Static type:OperatorBrushes.Accent}" AutomationProperties.LiveSetting="Polite">
         <TextBlock.Style>
          <Style TargetType="TextBlock">
@@ -324,7 +326,7 @@
          </Style>
         </TextBlock.Style>
        </TextBlock>
-       <TextBlock x:Name="PaceBadge" Visibility="{Binding PaceVisibility}" FontSize="{x:Static type:UiTypography.Label}" HorizontalAlignment="Right" ToolTip="按原请求准备时间统计取得格口次数；读取持久事实，不代表实物落格件数。管理模式可右键隐藏。"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{Binding PaceText}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Text" Value="{Binding PaceCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+       </DockPanel>
        <ScrollViewer x:Name="StatusDiagnostics" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <ScrollViewer.Style>
          <Style TargetType="ScrollViewer">

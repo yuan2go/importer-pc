@@ -53922,9 +53922,9 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs",
-      "sha256": "eaae66b263a110a81611db1c8e75bb08447f8a9cef4713680c41f7ec371bd42f",
-      "size_bytes": 17700,
-      "git_blob": "df89b08149c0b6ddb2428991c19693fc47fd4fc4",
+      "sha256": "5a8b20c9c212ef5464e9ea1b952e8621050520552640320a623df08f5aaf0946",
+      "size_bytes": 17823,
+      "git_blob": "b2696475fad58ab3939a638e42c3bbd67e3c6957",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -54449,9 +54449,9 @@
       "source": "WP-IPC-PARAMETER-GUIDANCE-STARTUP-01; prior evidence retains its original identity",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
-      "sha256": "881b9546a7810295d560fce6cb4cd48db9dba61094d3dc2a56b8f2b6b119a8cf",
-      "size_bytes": 41216,
-      "git_blob": "022d24468ce596fedda05d5835b29b127e50ec54",
+      "sha256": "9d73bd0ad99a14888267b6325184aeb4b742acaede55c2fac429905fb7cf3ee0",
+      "size_bytes": 41339,
+      "git_blob": "7a872e00b63ed8a9cedc3bb1a7bea66db9d03460",
       "previous_git_blob": "7f83ebaf841538bc52aa436cabf336a02b978695",
       "pre_publication_no_test_git_blob": "858e246531da51131b4d190e97978b23abe1bafe",
       "pre_parameter_settings_v3_source_identity": {
@@ -122956,9 +122956,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-NO-ISOLATION-31; original evidence retains its own SourceCommit",
-      "sha256": "e296064c223475acdc50a829cd9e3d61aa2339ecf3c338ac1a3c2378af8636b5",
-      "size_bytes": 2042,
-      "git_blob": "c151b953f5f00fa0ef36c5b595053146e5a61d6c",
+      "sha256": "9a5e5b3bbca8a870ebf0275a30b5f32032e62913de7dd9f4a3d67cd85e0df804",
+      "size_bytes": 2105,
+      "git_blob": "29663aa80f71a05788606ebdcb68dadb52963758",
       "storage_scope": "public_repository"
     },
     {
@@ -123022,9 +123022,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-NO-ISOLATION-31; original evidence retains its own SourceCommit",
-      "sha256": "2a24fa6dfb478cf764bf8822403b32b1324d9ecea2286f7b9cbefb544fcda8f2",
+      "sha256": "075e192a6b43b1e835d050442a7e1e1aa281ca708aca619019ec946568b781ae",
       "size_bytes": 12364,
-      "git_blob": "f35e99ab0a0be9b6231df1b274e9eb27879ac5bd",
+      "git_blob": "44321f0d279acd1274745f970a69be4a44aa540e",
       "storage_scope": "public_repository"
     },
     {
@@ -123033,9 +123033,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-NO-ISOLATION-31; original evidence retains its own SourceCommit",
-      "sha256": "f350a36dd3ba5398267c8ef1914eed7731ea626e90f485e8a32bd89030a97b1e",
-      "size_bytes": 3603,
-      "git_blob": "4be0827c8f735dffbe50d40a8190b4dea03bdcc4",
+      "sha256": "1f0c778f9259e768a98e1347b1a9713a177ff1c9f897566822ac4af1a979d60b",
+      "size_bytes": 4002,
+      "git_blob": "1011a02cf36e1fc5943e091d14d9d96e26ec57fa",
       "storage_scope": "public_repository"
     },
     {
@@ -123066,9 +123066,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-NO-ISOLATION-31; original evidence retains its own SourceCommit",
-      "sha256": "f4f44166cc6e2928b72e7c45a601e3fb9d2657c5fbacbe81bb64b7fc442455d0",
-      "size_bytes": 6861,
-      "git_blob": "a0fc07e988e0438c0502a7104a8c0b19a3820459",
+      "sha256": "c88caf3f6ce2e8308b20b57b970b84fb1d4c48e6c892a14b4c81fb9b0d9d26e9",
+      "size_bytes": 7177,
+      "git_blob": "aafef4f8f72062d431a7b048287b498cfdfc5249",
       "storage_scope": "public_repository"
     }
   ],

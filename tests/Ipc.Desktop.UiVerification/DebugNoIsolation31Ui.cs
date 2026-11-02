@@ -46,6 +46,8 @@ static partial class Program
             vm.ConfigurationReason = "合成RCS地址变更";
             var prepared = await vm.PrepareConfigurationReviewAsync();
             Check(prepared, "actual RCS endpoint candidate validates after legacy isolation recovery: " + vm.Message + " · " + vm.ParameterConfigurationSummary + " · " + string.Join("; ", vm.ParameterEditor!.Issues));
+            Check(vm.ParameterConfigurationSummary.Contains("检查通过") && !vm.ConfigurationEditorState.Contains("Complete candidate") && !vm.ParameterEditStatus.Contains("Validated"),
+                "validation summaries and accessible save guidance use Chinese rather than adapter receipt status or reason");
             Check(vm.ReviewedConfigurationChanges.All(c => System.Text.RegularExpressions.Regex.IsMatch(c.Label, "[\\p{IsCJKUnifiedIdeographs}]")) &&
                 vm.ReviewedConfigurationChanges.Where(c => c.TechnicalPath.StartsWith("Reader.Parameters.")).All(c => c.Object == "左相机" && !c.Label.Contains("Parameters")),
                 "all review labels including legacy device aliases use Chinese while exact technical paths remain internal");

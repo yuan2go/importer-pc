@@ -55,7 +55,7 @@ public partial class ParcelViewModel
         var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
         if (signature != CurrentReviewSignature())
         { validationState = "检查期间输入已改变"; NotifyConfigurationEditorState(); Message = "输入已改变，本次检查已过期。请重新保存以检查当前更改。"; return false; }
-        validationState = validation.Status + " · " + validation.Reason;
+        validationState = validation.Status == "Validated" ? "检查通过" : ChineseInterfaceText.ParameterMessage(validation.Reason, "检查未通过，请查看诊断详情并修正设置。");
         if (validation.Status != "Validated")
         { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过，请查看参数错误与诊断详情；输入已保留。"; return false; }
         var live = Snapshot is { } snapshot && ConfigurationActivation.RulesOnly(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate);

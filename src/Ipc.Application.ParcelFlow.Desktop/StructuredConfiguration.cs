@@ -357,7 +357,7 @@ public partial class ParcelViewModel
         if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
         if (ConfigurationEditSignature() != signature) { validationState = "输入已改变，原校验结果过期；请重新检查"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
-        validationState = receipt.Status + " · " + receipt.Reason;
+        validationState = receipt.Status == "Validated" ? "检查通过" : ChineseInterfaceText.ParameterMessage(receipt.Reason, "检查未通过，请查看诊断详情并修正设置。");
         if (receipt.Status != "Validated") ParameterEditor?.Report(receipt.Reason);
         Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = "配置检查：" + validationState + "；未保存。";
     }

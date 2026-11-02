@@ -27,6 +27,16 @@ static class ParcelCli
             Console.WriteLine(Wire.Encode(DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ParcelAssembly.Definition().Id)));
             return true;
         }
+        if (map["--action"] == "close-unsubmitted")
+        {
+            MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+            var launch = new BusinessLaunch(Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!, Path.GetFullPath(map["--data-root"]), null, null);
+            using var budget = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var maintenance = new ParcelStartupMaintenance(launch, ParcelAssembly.Definition(), () => new ParcelCapabilityFactory(launch),
+                MachineRuntimePolicy.RequireExtensionInstallerAuthority, () => Environment.UserName);
+            Console.WriteLine(maintenance.CloseNeverAttemptedAsync(map["--operation"], map["--sha256"], map["--reason"], map["--destination"], token: budget.Token).GetAwaiter().GetResult());
+            return true;
+        }
         if (map["--action"] is "runtime-check" or "runtime-prepare")
         {
             if (map["--action"] == "runtime-prepare") ParcelRuntimeSetup.Prepare();

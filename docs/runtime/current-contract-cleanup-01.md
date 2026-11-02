@@ -1,8 +1,10 @@
+> 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](../work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
+
 > 2026-10-29 WT001续修：当前Supply 6的完整原始回执预检已前移到写连接与配置激活之前；本机当前合同57条PASS，Product本机验证受存储策略限制。范围、真实崩溃WAL及CI入口见[本轮记录](integration-20261028-supply-preflight.md)。下文原实施记录保留形成时来源。
 
 # 当前版本与从零安装规则
 
-工作包：[FRESH-BASELINE-01](../work-packages/WP-IPC-FRESH-BASELINE-01.md)。这是开发中的第一版，没有外部旧版用户；只支持当前版本从零安装、从零建库。任何非当前格式都明确拒绝，请使用全新数据目录。不迁移旧库、旧配置、账号或草稿，不提供旧入口桥接。原实施报告及K01～K15历史结论见[原件归档](../archive/pre-fresh-baseline-01/README.md)，冻结证据不改写。
+工作包：[FRESH-BASELINE-01](../work-packages/WP-IPC-FRESH-BASELINE-01.md)。原FRESH-BASELINE-01形成时仅从零安装；本轮DB22用户明确要求保留本机配置/历史更新，现允许已核验Parcel10→11在独占离线、完整备份及原责任守卫下单步升级。其他非当前格式仍拒绝并保全，不转换旧配置、账号或草稿，不恢复通用旧入口桥接。原实施报告及K01～K15历史结论见[原件归档](../archive/pre-fresh-baseline-01/README.md)，冻结证据不改写。
 
 当前格式、发布身份和外部兼容见[版本规则](version-compatibility-01.md)；安装见[Windows交付](windows-application-delivery.md)，首次操作见[运行入门](getting-started.md)。历史安装包及GitHub Releases保留，当前工具不重验历史介质。
 

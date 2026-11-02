@@ -1,0 +1,42 @@
+{
+  "source_commit": "56bf77f41765ecaebe2e62122981dadbdc9ce591",
+  "representation": "Exact Windows checkout bytes before DB22 edits",
+  "files": [
+    {
+      "source": "docs/INDEX.md",
+      "archive": "docs/archive/pre-db11-compatible-update-22/docs__INDEX.md.txt",
+      "sha256": "4f3c42d5f7fb4f88917d0d891b10d5422053bf668e0629ea08808920810c49a1",
+      "bytes": 13099
+    },
+    {
+      "source": "docs/design/framework.md",
+      "archive": "docs/archive/pre-db11-compatible-update-22/docs__design__framework.md.txt",
+      "sha256": "f38448daffcbaa193361b0fc01d084260a3f89d7ad574a4a6f59cadd4a8bf413",
+      "bytes": 7642
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "archive": "docs/archive/pre-db11-compatible-update-22/docs__design__framework-decisions.md.txt",
+      "sha256": "e3975977766ad59dcc3066787dd5828e38d94d0aa7b6631e90bf234eeea75748",
+      "bytes": 3290
+    },
+    {
+      "source": "docs/runtime/version-compatibility-01.md",
+      "archive": "docs/archive/pre-db11-compatible-update-22/docs__runtime__version-compatibility-01.md.txt",
+      "sha256": "262531c36ca8a801fad0ddb95f5a47ffbeebba7e753413955f3de96b6445ed1f",
+      "bytes": 3703
+    },
+    {
+      "source": "docs/runtime/windows-application-delivery.md",
+      "archive": "docs/archive/pre-db11-compatible-update-22/docs__runtime__windows-application-delivery.md.txt",
+      "sha256": "d5715e115400c7d9c6a43ddc4c39dcfcc6af536a7012f1c7358a285de68972e7",
+      "bytes": 3447
+    },
+    {
+      "source": "docs/runtime/current-contract-cleanup-01.md",
+      "archive": "docs/archive/pre-db11-compatible-update-22/docs__runtime__current-contract-cleanup-01.md.txt",
+      "sha256": "43001329c6f55084f9f2ca8ccade2062df5d6b595e47a2559aa57c4c60dc6bc8",
+      "bytes": 2622
+    }
+  ]
+}

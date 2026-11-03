@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "repository": "yuan2go/importer-pc",
+  "request": "Commit and push completed task code, reports, docs and execution artifacts; merge all existing PRs without tests",
+  "baseline_remote_main": "4afe2afacde9e2acab7648fff3440fa3cc331b6e",
+  "initial_local_main": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "open_prs_at_start": [
+    26
+  ],
+  "merged_prs": [
+    {
+      "number": 26,
+      "head": "78298b5dc7ccdcb7bb08e857d2d94f3681182fde",
+      "merge": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458",
+      "url": "https://github.com/yuan2go/importer-pc/pull/26"
+    }
+  ],
+  "pr26_commits_not_in_baseline": 8,
+  "pr26_non_merge_commits_not_in_baseline": 7,
+  "pr26_branch_integration_commits": 1,
+  "publication_receipt_additional_source_commits": 1,
+  "publication_checks": {
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "builds": "NOT_RUN_BY_USER_REQUEST",
+    "repackaging": "NOT_RUN_BY_USER_REQUEST",
+    "runtime": "NOT_RUN_BY_USER_REQUEST",
+    "git_hooks": "DISABLED_FOR_PUBLICATION",
+    "upload_custody": "GitHub asset SHA256 digests equal local original bytes; no product qualification"
+  },
+  "release": {
+    "url": "https://github.com/yuan2go/importer-pc/releases/tag/audit02-rereview-reference-e914e75",
+    "tag": "audit02-rereview-reference-e914e75",
+    "source": "e914e75a109672cd1d52be91c40459f09231ea57",
+    "assets": [
+      {
+        "name": "barcode-1.1.1.ipcx",
+        "size_bytes": 7576,
+        "digest": "sha256:54babb6c5af3ba03c2da7908d8be637e805b441f01687698fb09ed0cee7f2919",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/barcode-1.1.1.ipcx"
+      },
+      {
+        "name": "barcode-1.1.1.ipcx.identity.json",
+        "size_bytes": 1189,
+        "digest": "sha256:28306b6e76abc274f5f624f1aaf4d7e3eb8ca2d7542d4a84742f0867a0a02688",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/barcode-1.1.1.ipcx.identity.json"
+      },
+      {
+        "name": "parcel-1.8.1.ipcx",
+        "size_bytes": 20554,
+        "digest": "sha256:40beeffa73bfe897c7d7a8759807710bf2587fffbc6d4633ab3da2a232cee254",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/parcel-1.8.1.ipcx"
+      },
+      {
+        "name": "parcel-1.8.1.ipcx.identity.json",
+        "size_bytes": 1300,
+        "digest": "sha256:9ce0e9f5f1a7710bc26f592ffe4f7362f168eb561685aefb1fdb461751284fd9",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/parcel-1.8.1.ipcx.identity.json"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size_bytes": 612,
+        "digest": "sha256:787568d27ab46e2b4cef391251d7455e574db494cddde78eb4cda77842bc179d",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/SHA256SUMS"
+      },
+      {
+        "name": "sport-core.zip",
+        "size_bytes": 18367202,
+        "digest": "sha256:4cf65a3a9ef9f46523fbd9d3bee532ccb8a9cd50f93d76d2de7db58d1e53f135",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/sport-core.zip"
+      },
+      {
+        "name": "sport-selected.zip",
+        "size_bytes": 18397047,
+        "digest": "sha256:2944b98f8ef991a6809f8ab9974d54e99c377d2b19a157fdb4eecd4dcb8f2ac9",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/sport-selected.zip"
+      },
+      {
+        "name": "sport-win.zip",
+        "size_bytes": 104075994,
+        "digest": "sha256:09ce344bb949e023ee2d107858e417a4929f33c9c650aef38dded0078b162439",
+        "state": "uploaded",
+        "url": "https://github.com/yuan2go/importer-pc/releases/download/audit02-rereview-reference-e914e75/sport-win.zip"
+      }
+    ]
+  },
+  "historical_evidence": "PR26 original failures, rerun results and 267 historical archive errors (0 added) retain their original scope and identity; none rerun by this publication task",
+  "limits": {
+    "windows_actual": "NOT_RUN",
+    "sdk_protocol_devices_site": "BLOCKED",
+    "production": "NotReady",
+    "full_customer_archive": "PUBLIC_SUBSET_ONLY"
+  },
+  "excluded_untouched": [
+    "Other concurrent unfinished worktrees (Sportmaster alternate UI, Sportmaster RCS, business compatibility)",
+    "Restricted local customer PRD/HTML and baseline archive",
+    "Runtime lease file and local duplicate delivery12 documents",
+    "Private signing keys, trust configuration, vendor SDK/fonts and production data"
+  ],
+  "receipt_identity": "This receipt is committed through a separate main PR; exact receipt commit, PR and final merge identity are available in Git/GitHub. No self-referential commit hash is embedded."
+}

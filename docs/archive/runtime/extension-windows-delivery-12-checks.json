@@ -1,0 +1,198 @@
+{
+  "WorkPackage": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12",
+  "BaseMain": "9f320459969ee4398dc602ae037ecdcb3685996c",
+  "HostSourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+  "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "SourceCodeSha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
+  "ReleaseVersion": "EXTENSION-WINDOWS-DELIVERY-12",
+  "StorageVersion": 3,
+  "MinimumReader": 3,
+  "Contract": "SIMULATION-v1",
+  "ExtensionContract": 1,
+  "SourceImplementation": "IMPLEMENTED",
+  "CoreVerification": "PASS_REFERENCE",
+  "WindowsAcceptance": "OPEN_NOT_RUN",
+  "RemoteDelivery": "PASS_CANDIDATE_DELIVERY",
+  "FieldQualification": "BLOCKED",
+  "Overall": "NOT_COMPLETE_WINDOWS_EVIDENCE_MISSING",
+  "Checks": [
+    {
+      "Id": "C1",
+      "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+      "Command": "dotnet build ImporterPc.slnx -m:1 -nr:false -p:EnableWindowsTargeting=true",
+      "Result": "PASS",
+      "Evidence": "ipc12-11f0728-build.log",
+      "Notes": "SDK 10.0.402, 0 warnings/errors; cross build only, no WPF execution"
+    },
+    {
+      "Id": "C2",
+      "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --extensions",
+      "Result": "PASS",
+      "Evidence": [
+        "ipc12-11f0728-extensions.log",
+        "extension-evidence.json"
+      ],
+      "Notes": "Actual plugin build is independent, static package negatives, persisted interruption recovery and process exit73, two sources, original Unknown reconciliation, upgrade/activation/uninstall race, delayed Stop, package/device/data leases"
+    },
+    {
+      "Id": "C3",
+      "SourceCommit": "ae57856a7aca55866817dfd9ce9a3a32bb757a3e",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --review-followup",
+      "Result": "PASS",
+      "Evidence": "ipc12-ae57856-review-followup.log",
+      "Notes": "Linked actual PresentationPolicy incl actor/revision modal token and Product ownership faults. Actual WPF NOT_RUN. Relevant src unchanged to final except isolated independent builder"
+    },
+    {
+      "Id": "C4",
+      "SourceCommit": "b4c88bd48b76a5f4e46c685ce1474b2ac8eec3ef",
+      "Commands": [
+        "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --baseline",
+        "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --followup",
+        "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --review-followup",
+        "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --closure"
+      ],
+      "Result": "PASS",
+      "Evidence": [
+        "ipc12-b4c88bd-baseline.log",
+        "ipc12-b4c88bd-followup.log",
+        "ipc12-b4c88bd-review-followup.log",
+        "ipc12-b4c88bd-closure.log",
+        "journey.json",
+        "review-product-ownership.json"
+      ],
+      "Notes": "T1/T2/T3/process crash; actual synthetic dual-box journey; exact original requests and accepted ledger; final Platform/Supply/Product/Adapters/config same as b4. E11 ran again after modal token change; final E12 rerun."
+    },
+    {
+      "Id": "C5",
+      "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+      "Commands": [
+        "python3 scripts/package-reference.py --dotnet $DOTNET --target portable --composition core-reference --output $NEW_CORE",
+        "python3 scripts/package-reference.py --dotnet $DOTNET --target portable --composition barcode-reference --extension-key $PRIVATE_BUILD_KEY --extension-trust $INDEPENDENT_TEST_TRUST --output $NEW_BARCODE",
+        "python3 scripts/package-reference.py --dotnet $DOTNET --target win-x64 --composition barcode-reference --extension-key $PRIVATE_BUILD_KEY --extension-trust $INDEPENDENT_TEST_TRUST --output $NEW_WINDOWS"
+      ],
+      "Result": "PASS",
+      "Evidence": [
+        "final-11f0728-build-session.json",
+        "ipc12-11f0728-package-core-portable.log",
+        "ipc12-11f0728-package-barcode-portable.log",
+        "ipc12-11f0728-package-barcode-win-x64.log",
+        "candidate-inventory.json"
+      ],
+      "Notes": "Private key external build-only, not shipped; test-only public root. HEAD unchanged across builds."
+    },
+    {
+      "Id": "C6",
+      "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+      "Commands": [
+        "python3 scripts/smoke.py --product $UNPACKED_CORE/app --fixture $UNPACKED_CORE/fixture/Ipc.Fixture.dll --dotnet $DOTNET --output $EVIDENCE",
+        "python3 scripts/smoke-extension.py --release $FROZEN_BARCODE_PORTABLE --dotnet $DOTNET --output $EVIDENCE",
+        "python3 scripts/build-extension.py --contract $FROZEN_WINDOWS/app/Ipc.Platform.dll --output $NEW_OUTPUT/reference.barcode-1.1.0-win-x64.ipcx --key $PRIVATE_BUILD_KEY --publisher reference-test --trust $INDEPENDENT_TEST_TRUST --version 1.1.0 --dotnet $DOTNET"
+      ],
+      "Result": "PASS",
+      "Evidence": [
+        "final-core-smoke.json",
+        "final-extension-smoke.json",
+        "ipc12-final-upgrade-build.log"
+      ],
+      "Notes": "Published native core 7 checks PASS. Published frozen host extension accepted2, all Ipc.* bytes unchanged. Windows plugin separately built and signature checked, no Windows execution."
+    },
+    {
+      "Id": "C7",
+      "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+      "Commands": [
+        "Bundled Python -m unittest discover -s tools -p test_*.py -v",
+        "verify_archive.py --root $CLEAN_MAIN_ARCHIVE --scope public",
+        "verify_archive.py --root . --scope public"
+      ],
+      "Result": "TOOL_TESTS_PASS_ARCHIVE_INHERITED_FAIL",
+      "Evidence": [
+        "ipc12-tools-tests.log",
+        "ipc12-tools-tests-bundled.log",
+        "archive-comparison.json"
+      ],
+      "Notes": "7 archive +2 composition tests. System Python PIL missing retained. Original archive has267 failures, current comparison records added and removed; no assertion/exclusion relaxed.",
+      "ArchiveBaselineErrors": 267,
+      "ArchiveCurrentErrors": 267,
+      "NewArchiveErrors": 0
+    },
+    {
+      "Id": "C8",
+      "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+      "Commands": [
+        "gh release create delivery-12-reference-11f0728 --prerelease --target 11f0728e506753dafcdc22fb190c5b268118423d --notes-file $NOTES $ASSETS",
+        "gh release download delivery-12-reference-11f0728 --repo yuan2go/importer-pc --dir $NEW_READBACK",
+        "SHA256 all downloaded assets, zip CRC/exact file-set/module/dependency/signature inventory"
+      ],
+      "Result": "PASS_CANDIDATE_DELIVERY",
+      "Evidence": [
+        "remote-readback.json",
+        "candidate-inventory.json"
+      ],
+      "Notes": "Windows NOT_RUN candidate, prerelease. Final report and manifest commits are documentation-only; runtime fingerprint unchanged."
+    }
+  ],
+  "Acceptance": [
+    {
+      "Id": "AC12-01",
+      "Status": "PASS",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-02",
+      "Status": "PASS_REFERENCE",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-03",
+      "Status": "PASS_CORE_UI_NOT_RUN",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-04",
+      "Status": "PASS_CORE_WINDOWS_AUTH_NOT_RUN",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-05",
+      "Status": "OPEN",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-06",
+      "Status": "PASS_CORE",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-07",
+      "Status": "OPEN",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-08",
+      "Status": "OPEN",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-09",
+      "Status": "NOT_RUN",
+      "Details": "extension-windows-delivery-12.md"
+    },
+    {
+      "Id": "AC12-10",
+      "Status": "CANDIDATE_DELIVERY_PASS_WINDOWS_ACCEPTANCE_OPEN",
+      "Details": "extension-windows-delivery-12.md"
+    }
+  ],
+  "Windows": {
+    "W01": "NOT_RUN",
+    "W02": "NOT_RUN",
+    "W03": "NOT_RUN",
+    "W04": "NOT_RUN",
+    "W05": "NOT_RUN",
+    "W06": "NOT_RUN",
+    "ActualWpfScreenshots": 0
+  },
+  "HistoricalEvidenceUnchanged": true,
+  "ApprovalDRVUnchanged": true
+}

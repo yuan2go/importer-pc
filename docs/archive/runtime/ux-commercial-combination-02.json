@@ -1,0 +1,38 @@
+{
+  "WorkPackage": "WP-01/WP-04/WP-06",
+  "Status": "AWAITING_COMMERCIAL_INPUTS",
+  "ReferenceCandidate": {
+    "Application": "sportmaster",
+    "Uis": [
+      "classic",
+      "supply-station"
+    ],
+    "Flow": "independent camera -> WCS destination -> display; no PLC or image retention",
+    "Mode": "Simulation"
+  },
+  "CommercialApplication": null,
+  "Hardware": null,
+  "WindowsSkuBuild": null,
+  "DisplayDpiDistanceLighting": null,
+  "InputDevicesEncoding": null,
+  "CameraModelFirmwareSdkBitnessLicense": null,
+  "ProtocolVersionAuthorityAndUnknownDisposition": null,
+  "AuthorizedLabTopology": null,
+  "NormalBurstLatencyShiftRpoRto": null,
+  "AcceptanceOwnerAndApprovalSource": null,
+  "EngineeringCandidateOnly": {
+    "Windows": "Windows11 build26100+ x64 / PowerShell7",
+    "ReflowClientDip": "800x420 minimum target; actual matrix requires Windows verification"
+  },
+  "ApprovalReceived": false,
+  "WindowsNative": "NOT_RUN",
+  "RealSdkProtocolField": "BLOCKED_PER_CAPABILITY",
+  "OptionalNotAdopted": [
+    "additional history filters/export",
+    "installation operation enumeration"
+  ],
+  "PreservedReferences": [
+    "D-01/D-02/D-05/D-06/D-07/D-09/D-10/D-12/D-13/D-14/D-15",
+    "RV-01..17 remain original OPEN"
+  ]
+}

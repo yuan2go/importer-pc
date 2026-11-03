@@ -1,0 +1,38 @@
+name: Delivery 12 native Windows candidate evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: ['codex/wp-ipc-extension-windows-delivery-12']
+    paths: ['src/**','scripts/**','config/**','examples/**','.github/workflows/reference-windows.yml','global.json','Directory.Build.props','NuGet.Config','ImporterPc.slnx','docs/runtime/operations.md','docs/extensions/developer-guide.md']
+permissions:
+  contents: read
+jobs:
+  native-reference:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.402'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Publish committed native candidate
+        shell: pwsh
+        run: python scripts/package-reference.py --target win-x64 --composition core-reference --output .artifacts/windows-core
+      - name: Execute actual WPF startup and core management smoke
+        shell: pwsh
+        run: ./scripts/windows-reference-validation.ps1 -PackageRoot .artifacts/windows-core -Output .artifacts/windows-observations -RunUi -ProvisionCurrentAccountForRunnerSmoke
+      - name: Preserve candidate and native observations including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: delivery-12-native-candidate-${{ github.sha }}
+          path: |
+            .artifacts/windows-core.zip
+            .artifacts/windows-observations/
+          if-no-files-found: error
+          retention-days: 30

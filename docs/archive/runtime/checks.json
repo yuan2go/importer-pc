@@ -1,0 +1,89 @@
+{
+  "work_package": "WP-IPC-RUNTIME-03",
+  "execution_base": "89089092ad8b7445071e0c12c9c558dc012a26e5",
+  "environment": {
+    "os": "macOS 26.5",
+    "rid": "osx-arm64",
+    "sdk": "10.0.402",
+    "runtime": "10.0.13",
+    "powershell": "7.6.7"
+  },
+  "core_build": {
+    "command": "dotnet build ImporterPc.slnx --no-restore -m:1 -nr:false",
+    "result": "PASS",
+    "warnings": 0,
+    "errors": 0
+  },
+  "core_regression": {
+    "command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll .",
+    "result": "PASS",
+    "cases": [
+      "AC-01/10 lifecycle, bounded command queue and ownership",
+      "AC-01/11 product assembly, modes and strict configuration",
+      "AC-02/07 combined guards and independent alarms",
+      "AC-03/04/06 continuous same-code entities, correction and unique ledger",
+      "AC-04/09 split, atomic two-lane demand and close barrier",
+      "AC-05/06/09 dropped/late response, original binding and close Unknown",
+      "AC-05 query absent/unsupported is not proof of non-delivery; delayed receipts",
+      "AC-05 actual SQLite rollback and T3 storage failure",
+      "AC-05/09 real process crash/restart windows",
+      "AC-02/05/06 durable T3 failure, stale commands, entity permit restart",
+      "AC-10 actual observation queue full preserves accepted events and overflow marker",
+      "AC-04/06 guarded pre-network cancellation allows same-ID second attempt",
+      "AC-01/06/09 config validation/activation and backup quarantine",
+      "AC-09 restored Prepared may already exist remotely, retention preserves current aggregate",
+      "AC-01/03/10 source replacement, capacity and resource stop"
+    ],
+    "raw_log_sha256": "63600863105b1a143938bf5a87797aae3cd3ce3274f20fb63c629ab4e833b030"
+  },
+  "archive_baseline": {
+    "base_manifest": "PASS",
+    "original_tests_with_pillow": "PASS"
+  },
+  "archive_scope_tests": {
+    "command": "python3 -m unittest discover -s tools -p 'test_*.py' -v",
+    "result": "PASS",
+    "tests": 7
+  },
+  "wpf_compile": "PASS",
+  "windows_runtime": "BLOCKED",
+  "real_sdk_wcs_site": "BLOCKED",
+  "production_readiness": "NotReady / mandatory capabilities missing",
+  "historical_rv_status": "RV-01..RV-17 OPEN",
+  "source_commit": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+  "windows_reference_baseline": "Windows 11 24H2 / build 26100+ x64; deployment script check; runtime NOT_RUN",
+  "locked_restore": "PASS / portable and separate win-x64 dependency graphs / no suppressed NuGet audit",
+  "publication": {
+    "result": "PASS",
+    "file_count": 810,
+    "zip_bytes": 118902308,
+    "zip_sha256": "c185501702b51e70fd330e78aaacd2279cfb4f72e695b0ce3db3b6fad4825665",
+    "module_hashes": "PASS",
+    "release": {
+      "WorkPackage": "WP-IPC-RUNTIME-03",
+      "SchemaVersion": 1,
+      "SourceCodeSha256": "8ec828c921c9556ad3a50394d286d18c9614a120d9ad06b1c8a45770c3d01b69",
+      "GitBase": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+      "Mode": "Simulation",
+      "Target": "win-x64"
+    },
+    "command": "pwsh -NoProfile -File scripts/publish.ps1 -Mode Simulation -Output .artifacts/WP-IPC-RUNTIME-03-win-x64"
+  },
+  "native_published_smoke": {
+    "command": "python3 scripts/smoke.py --product .artifacts/native-04a3d46 --fixture src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --output .artifacts/smoke-final-results.json",
+    "results": {
+      "published_native_start": "PASS",
+      "second_process_ownership": "PASS",
+      "published_backup_preflight_restore_quarantine": "PASS",
+      "metadata_export": "PASS",
+      "unwritable_storage_not_ready": "PASS",
+      "changed_module_not_ready": "PASS",
+      "production_no_fixture_or_business": "PASS",
+      "windows_desktop_runtime": "BLOCKED_ON_NON_WINDOWS"
+    },
+    "log_sha256": "2e293d1e1f29572d4486938e4473f34ba7825a7bb1111d849651e40f6bb3a384"
+  },
+  "powershell_scripts": "PASS syntax / publish.ps1 executed on macOS PowerShell 7.6.7; Windows station.ps1 execution BLOCKED",
+  "archive_final": "PASS manifest, hashes, JSON, references, source/publication scan; not business acceptance",
+  "restricted_evidence": "Original untracked customer files preserved in original checkout; issues.json and public tokens byte-identical to main"
+}

@@ -1,0 +1,190 @@
+{
+  "WorkPackage": "WP-IPC-APPLICATION-CONVERGENCE-17",
+  "Baseline": "6e9c890a7483c3006b3448c203570ef2ca19ed25",
+  "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+  "SourceCodeSha256": "2af1e2976ec88791043b47c76b4d67c4a587522e445e163e69f1f5e0229e3ba9",
+  "DocumentationPrerequisiteCommit": "54abf1f",
+  "Branch": "codex/application-convergence-17",
+  "Phase": "ENGINEERING_REFERENCE_PASS_WINDOWS_NOT_RUN_REAL_CAPABILITIES_BLOCKED",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/17",
+  "SDK": "10.0.402",
+  "Runtime": "10.0.13",
+  "Host": "macOS 26.5 arm64",
+  "Build": "PASS_LOCKED_RESTORE_FULL_SOLUTION_AND_ALL_THREE_WPF_SELECTIONS",
+  "ApplicationRiskTests": "PASS",
+  "LegacyScopes": [
+    {
+      "scope": "baseline",
+      "exit_code": 0,
+      "seconds": 8.58
+    },
+    {
+      "scope": "architecture",
+      "exit_code": 0,
+      "seconds": 50.14
+    },
+    {
+      "scope": "operation-closure",
+      "exit_code": 0,
+      "seconds": 1.48
+    },
+    {
+      "scope": "conformance",
+      "exit_code": 0,
+      "seconds": 16.13
+    },
+    {
+      "scope": "closure",
+      "exit_code": 0,
+      "seconds": 6.41
+    },
+    {
+      "scope": "maintainability",
+      "exit_code": 0,
+      "seconds": 0.96
+    }
+  ],
+  "Tools": {
+    "Packaging": "PASS_15",
+    "Archive": "PASS_10_BUNDLED_PYTHON_PILLOW"
+  },
+  "PortableUnpacked": "PASS_ALL_THREE_START_CHAIN_RESTART_STOP",
+  "IndependentExtension": "PASS_EXTERNAL_GIT_BUILD_REPEAT_INSTALL_BIND_ACTIVATE_RESTART_QUERY_STOP",
+  "Windows": "NOT_RUN",
+  "RealSDK": "BLOCKED",
+  "RealPLC": "BLOCKED",
+  "RealWCS": "BLOCKED",
+  "Production": "NOT_READY",
+  "ActualWpfScreenshots": 0,
+  "SharedPublicByteIdentity": "PASS_ACROSS_ALL_SIX",
+  "Candidates": [
+    {
+      "Name": "sportmaster-portable.zip",
+      "Sha256": "f3735a0a7bbf01b54839f95c694262d8df3b231e18c433b3cc09fc071c195be5",
+      "Bytes": 18088740,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "sportmaster",
+      "Target": "portable",
+      "ZipIntegrity": "PASS",
+      "Runtime": "PASS_ACTUAL_UNPACKED"
+    },
+    {
+      "Name": "sportmaster-win-x64.zip",
+      "Sha256": "b2e698573130585bc420e20505227764bd18fabb70a51d3da890606f78666d81",
+      "Bytes": 103484650,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "sportmaster",
+      "Target": "win-x64",
+      "ZipIntegrity": "PASS",
+      "Runtime": "NOT_RUN_WINDOWS"
+    },
+    {
+      "Name": "direct-plc-portable.zip",
+      "Sha256": "386dfa7a334e22693aaef8d1fcfbc435389e7c9acf90d4a8e58ae415d759fea0",
+      "Bytes": 18005951,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "direct-plc",
+      "Target": "portable",
+      "ZipIntegrity": "PASS",
+      "Runtime": "PASS_ACTUAL_UNPACKED"
+    },
+    {
+      "Name": "direct-plc-win-x64.zip",
+      "Sha256": "ef788ea13798ddf65d4eb4aa82ff100ba8e869bdf33f6b953580646b706427cd",
+      "Bytes": 103319240,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "direct-plc",
+      "Target": "win-x64",
+      "ZipIntegrity": "PASS",
+      "Runtime": "NOT_RUN_WINDOWS"
+    },
+    {
+      "Name": "wcs-to-plc-portable.zip",
+      "Sha256": "d2c12c5361b2a568273f92db59fa8ec0829cd8dc4a6d7647ac10ffcd7f6ab9ce",
+      "Bytes": 18088646,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "wcs-to-plc",
+      "Target": "portable",
+      "ZipIntegrity": "PASS",
+      "Runtime": "PASS_ACTUAL_UNPACKED"
+    },
+    {
+      "Name": "wcs-to-plc-win-x64.zip",
+      "Sha256": "ec272cf5064a4113f5864ef6520d75863da632bb42e08a531dcd7318d8ba35c8",
+      "Bytes": 103484705,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "wcs-to-plc",
+      "Target": "win-x64",
+      "ZipIntegrity": "PASS",
+      "Runtime": "NOT_RUN_WINDOWS"
+    }
+  ],
+  "Acceptance": [
+    {
+      "Id": "17-01",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    },
+    {
+      "Id": "17-02",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    },
+    {
+      "Id": "17-03",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    },
+    {
+      "Id": "17-04",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    },
+    {
+      "Id": "17-05",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    },
+    {
+      "Id": "17-06",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    },
+    {
+      "Id": "17-07",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    },
+    {
+      "Id": "17-08",
+      "Implementation": "IMPLEMENTED",
+      "ReferenceValidation": "PASS",
+      "Windows": "NOT_RUN",
+      "Field": "BLOCKED"
+    }
+  ],
+  "ArchiveVerification": {
+    "Status": "FAIL_EXISTING_SOURCE_ASSETS_ONLY",
+    "HistoricalPptxMediaMismatches": 265,
+    "HistoricalMetadataMarkers": 2,
+    "NewlyIntroducedErrors": 0,
+    "ContentIdentityErrors": 0,
+    "HistoricalSourceLinksPinned": 59,
+    "Evidence": "docs/runtime/evidence/application-convergence-17/archive-verification.json"
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+  "Baseline": "feed6e9ce79449e48c667c17e2671939a86fb588",
+  "HostSourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+  "ObservationSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "IntegrationSourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+  "Environment": {
+    "Os": "26.5.2",
+    "Architecture": "arm64",
+    "Sdk": "10.0.402",
+    "Windows": "WINDOWS_NOT_RUN",
+    "ActualWpfScreenshots": 0,
+    "VmOrRunnerSearch": false,
+    "OAuthChanged": false
+  },
+  "Commands": [
+    {
+      "Id": "C1",
+      "Command": "dotnet build ImporterPc.slnx -m:1 -nr:false -p:EnableWindowsTargeting=true",
+      "Result": "PASS_0_WARNINGS_0_ERRORS_WPF_CROSS_BUILD",
+      "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-build.log"
+    },
+    {
+      "Id": "C2",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --architecture",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-architecture.log",
+      "Sha256": "013324d3ab2c9a4d57b796834086f52f0a5bce7210846421eb77e378c6c48272"
+    },
+    {
+      "Id": "C3",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --extensions",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-extensions.log",
+      "Sha256": "f8107f41e0d2e957c0da6fd558f1ed62acf4634d5d2e63bbaf7112cf6977baf8"
+    },
+    {
+      "Id": "C4",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --baseline",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-baseline.log",
+      "Sha256": "94221adca4cdf215d8d09687db657156cf7183cd664df5a81a8d8a6229f155a3"
+    },
+    {
+      "Id": "C5",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --followup",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-followup.log",
+      "Sha256": "8f2195bb9ebcff76af265b284444f29bd089ad013b86e54921c25cdec89f0a77"
+    },
+    {
+      "Id": "C6",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --review-followup",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-review-followup.log",
+      "Sha256": "0ced4753fc09d5afb4a9130d003779f34717b70b5d83d881cf34f837ea17f14d"
+    },
+    {
+      "Id": "C7",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --closure",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-closure.log",
+      "Sha256": "93c7d7ef3239b0f34cb7509896d5bbdfc0027347b1354a6f29400f9f817e8f35"
+    },
+    {
+      "Id": "C8",
+      "Command": "python3 -m unittest discover -s tools -p 'test_*.py' -v",
+      "Result": "PASS_10",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-tools.log",
+      "ToolChange": "Exact generated output roots for three new registered projects; original source/docs/unknown-project assertions preserved"
+    },
+    {
+      "Id": "C9",
+      "Result": "PASS_REFERENCE",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/candidate-inventory.json"
+    },
+    {
+      "Id": "C10",
+      "Result": "PASS_REFERENCE",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-extensions-smoke.json"
+    },
+    {
+      "Id": "C11",
+      "Result": "PASS_REFERENCE",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-businesses-smoke.json"
+    },
+    {
+      "Id": "C12",
+      "Result": "PASS_REFERENCE",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/remote-readback.json"
+    },
+    {
+      "Id": "C13",
+      "Command": "python3 tools/verify_archive.py --root $ROOT --scope public",
+      "Result": "FAIL_267_INHERITED_ASSET_ERRORS_NO_NEW_ERRORS",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/archive-comparison.json"
+    }
+  ],
+  "Acceptance": [
+    {
+      "Id": "AC13-01",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "NOT_APPLICABLE_TO_THIS_CORE_AC",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C13"
+      ]
+    },
+    {
+      "Id": "AC13-02",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "NOT_APPLICABLE_TO_THIS_CORE_AC",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C1",
+        "C2",
+        "C9",
+        "C11"
+      ]
+    },
+    {
+      "Id": "AC13-03",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "NOT_APPLICABLE_TO_THIS_CORE_AC",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C2",
+        "C3"
+      ]
+    },
+    {
+      "Id": "AC13-04",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "NOT_APPLICABLE_TO_THIS_CORE_AC",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C2",
+        "C9",
+        "C10"
+      ]
+    },
+    {
+      "Id": "AC13-05",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "BUILD_PASS_WINDOWS_INTERACTION_NOT_RUN",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C1",
+        "C2",
+        "C3",
+        "C5"
+      ]
+    },
+    {
+      "Id": "AC13-06",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "NOT_APPLICABLE_TO_THIS_CORE_AC",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7"
+      ]
+    },
+    {
+      "Id": "AC13-07",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "NOT_APPLICABLE_TO_THIS_CORE_AC",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9",
+        "C10",
+        "C11"
+      ]
+    },
+    {
+      "Id": "AC13-08",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Wpf": "BUILD_PASS_WINDOWS_INTERACTION_NOT_RUN",
+      "Windows": "WINDOWS_NOT_RUN",
+      "Evidence": [
+        "C1",
+        "C8",
+        "C9",
+        "C10",
+        "C11",
+        "C12",
+        "C13"
+      ]
+    }
+  ],
+  "Delivery": {
+    "Release": "https://github.com/yuan2go/importer-pc/releases/tag/closure13-reference-dc5b405",
+    "Remote": "PASS_11_FULL_ASSETS_PLUS_12TH_READBACK_RECEIPT",
+    "Pr": "https://github.com/yuan2go/importer-pc/pull/12",
+    "Merged": false,
+    "PhysicalQualification": "BLOCKED",
+    "HistoricalRv": "UNCHANGED_OPEN",
+    "Prior12Acceptance": "UNCHANGED",
+    "ReportCommit": "10ca8f4"
+  },
+  "ArchiveComparison": "PASS_NO_NEW_ERRORS",
+  "VerificationContinuation": {
+    "Report": "docs/runtime/arch-extension-closure-13-recheck.md",
+    "Checks": "docs/runtime/arch-extension-closure-13-recheck-checks.json",
+    "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+    "Meaning": "Original command records retain dc5b405 identities; current patch has its own final evidence"
+  }
+}

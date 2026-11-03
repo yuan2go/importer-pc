@@ -1,0 +1,864 @@
+{
+  "work_package": "WP-IPC-AUDIT-RECONCILIATION-01",
+  "validation_package": "WP-IPC-REFERENCE-VALIDATION-09",
+  "date": "2026-10-16",
+  "execution_base": "856e4de73f09a1c4f12af798c4d21e8631a6a86f",
+  "source_commit": "a08082563bc13b2f146e71c4be9136f0469af9db",
+  "source_code_sha256": "bae6bc350e576aa726b609c9eced8aa4dc37eac0aadfc4c48f5e186e4b3a1bd5",
+  "branch": "codex/wp-ipc-audit-reconciliation-01",
+  "host": {
+    "os": "macOS 26.5.2",
+    "build": "25F84",
+    "architecture": "arm64",
+    "sdk": "10.0.402",
+    "runtime": "10.0.13"
+  },
+  "versions": {
+    "release": "AUDIT-RECONCILIATION-01",
+    "storage": 3,
+    "minimum_reader": 3,
+    "contract": "SIMULATION-v1"
+  },
+  "authorization": {
+    "engineering": true,
+    "synthetic_reference_verification": true,
+    "production_wcs_writes": false,
+    "physical_device_actions": false
+  },
+  "results": {
+    "locked_restore": "PASS",
+    "solution_build": "PASS",
+    "warnings": 0,
+    "errors": 0,
+    "core_selector": "--reconciliation",
+    "core": "PASS",
+    "pass_output_lines": 67,
+    "engineering_08": "PASS_REFERENCE",
+    "ui_10": "STATIC_PATH_CLOSED_BUILD_PASS_WINDOWS_NOT_RUN",
+    "schema_legacy_explicit_migration": "PASS",
+    "sustained_two_box_journey": "PASS",
+    "original_lost_response_request_send_count": 1,
+    "portable_publish": "PASS",
+    "win_x64_cross_publish": "PASS",
+    "zip_readback": "PASS",
+    "native_published_smoke": "PASS",
+    "windows_environment": "BLOCKED",
+    "windows_groups": {
+      "W-01": "NOT_RUN",
+      "W-02": "NOT_RUN",
+      "W-03": "NOT_RUN",
+      "W-04": "NOT_RUN",
+      "W-05": "NOT_RUN",
+      "W-06": "NOT_RUN"
+    },
+    "real_capabilities": {
+      "B-01": "BLOCKED",
+      "B-02": "BLOCKED",
+      "B-03": "BLOCKED",
+      "B-04": "BLOCKED",
+      "B-05": "BLOCKED",
+      "B-06": "BLOCKED"
+    },
+    "historical_d_rv_unchanged": true,
+    "archive_tests": "PASS_7",
+    "t1_t2_t3_process_interruptions": "PASS_REFERENCE",
+    "zip_extracted_native_smoke": "PASS",
+    "public_archive_validator": "FAIL_INHERITED_BASELINE_ASSETS"
+  },
+  "review": {
+    "standards": {
+      "initial_findings": 1,
+      "final_open": 0,
+      "closure_commit": "461ab33",
+      "method": "independent read-only static review"
+    },
+    "spec": {
+      "initial_findings": 2,
+      "final_open": 0,
+      "closure_commit": "0a7c8317d48d55e8995af167846a0a41db831c20",
+      "method": "independent read-only static review"
+    },
+    "additional_root_fixes": [
+      "Freeze historical detail disposition authority",
+      "Bind packaged operations and solution to source identity",
+      "Protect unauthenticated Snapshot recent history"
+    ]
+  },
+  "commands": {
+    "build": "./scripts/build.sh (dotnet 10.0.402 selected by global.json)",
+    "core": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --reconciliation",
+    "portable_package": "python3 scripts/package-reference.py --target portable --output <fresh-directory>",
+    "win_package": "python3 scripts/package-reference.py --target win-x64 --output <fresh-directory>",
+    "smoke": "python3 scripts/smoke.py --product <unpacked>/app --fixture <unpacked>/fixture/Ipc.Fixture.dll --output <new-result.json>",
+    "archive_tests": "python3 -m unittest discover -s tools -p 'test_*.py' -v"
+  },
+  "local_raw_evidence_root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-e9482f32d9064ba3b9d152eb7bd96570",
+  "local_database_identities": [
+    {
+      "path": "0424b8ef51e84a749136374bdb7ba21c/station.db",
+      "sha256": "5375755568862aab17dda473dc649243f49af0bc6bba99a895ac6cd644c4ba42",
+      "size_bytes": 233472
+    },
+    {
+      "path": "051ae9d69719423b9953f4121533f4ee/station.db",
+      "sha256": "08acdb3c164eaae7ec988c73d88e5bc8387453c250d6d850e0de967bb16566f8",
+      "size_bytes": 339968
+    },
+    {
+      "path": "0b366a9104324129bf58da6a5f1dbc70/station.db",
+      "sha256": "a698f47f1da451ebd2c6c5ee50a27917a1973911b3e89005ae8c54eeeada5ccd",
+      "size_bytes": 208896
+    },
+    {
+      "path": "0d082fe080414cb296964e1a3c6148fb/station.db",
+      "sha256": "a0cf5232a39d84f7b1c00c494c4d2d8e4a4c856b5d0b8b0c3bd8a96c172d0891",
+      "size_bytes": 208896
+    },
+    {
+      "path": "0f0f08d8daf8454592558a4cb38633e9/station.db",
+      "sha256": "0e1d846fcefe34408358aebbee4e46f10437b13657bf64dae5792cc5bfeddc6d",
+      "size_bytes": 180224
+    },
+    {
+      "path": "0f6904d77053458d90565b1fe84ca9bc/station.db",
+      "sha256": "54e50219fd02a759bf790eb12eedcf0f610989499275bea5483c88bdbc79f49b",
+      "size_bytes": 208896
+    },
+    {
+      "path": "1192eb6736674365af988970a0e5911a/station.db",
+      "sha256": "c9863ac8edd56a394bc997e2dc783c3a4125331a7fd51a0ece7b3524cc110c5f",
+      "size_bytes": 1052672
+    },
+    {
+      "path": "203ae36792884fea9c0292dd50ebb7d1/station.db",
+      "sha256": "d3d862dacf61118121279818d9cc3a0bb3e787ee05552b458f22cc4f40531b78",
+      "size_bytes": 208896
+    },
+    {
+      "path": "246bceaea7cf4d438f45c6bfdfb8b6ba/station.db",
+      "sha256": "9bf1a712815aad7fdd6953e50054d234bc46e03d303efcca05dc21556ec3f0fe",
+      "size_bytes": 221184
+    },
+    {
+      "path": "2ac2cae79f364b439323a15842f1c4ba/station.db",
+      "sha256": "70ebe12b0764b7573771cfb642a9d36aca2b25a90eb9dc100c8fcfcfd05d8d7a",
+      "size_bytes": 208896
+    },
+    {
+      "path": "2fa72374d8e3470b90b256d2af92ce75/station.db",
+      "sha256": "4d507b8120dc926cd8b7356b1a46b7a20d46062d75f286a5ed7b6673fab663d9",
+      "size_bytes": 249856
+    },
+    {
+      "path": "3f9be42ce3b64aaf97709ce62485c3b1/station.db",
+      "sha256": "4d18927c1ac452ad80b64bd99395397be8bfc834500daad318fa95ef4f000888",
+      "size_bytes": 180224
+    },
+    {
+      "path": "47571573f0104594975c53d48105917e/station.db",
+      "sha256": "daea45f66d67d90d094ea1151ccb4e66666cb5f44d4480b9bdabfe00311e1c38",
+      "size_bytes": 200704
+    },
+    {
+      "path": "49d90b92ae64425dbbe747ea90e8dd19/station.db",
+      "sha256": "fb8e1ce0df4e0b85663faf97df1bb1087bac86043af9021961b31b6edc2f3043",
+      "size_bytes": 212992
+    },
+    {
+      "path": "4f786e322eeb4994b01c82bd7de750dd/station.db",
+      "sha256": "533eddd1f4e84fdcb3b2b92f30a63dcc8001772661fe35e02001708c96328be4",
+      "size_bytes": 290816
+    },
+    {
+      "path": "53ea3c586f7b4120a9fad73f785b4c88/station.db",
+      "sha256": "f2b559fb87ef565bbeeb3056d0d77f1678f1e3a79cac89e397ba73048a6ac24e",
+      "size_bytes": 208896
+    },
+    {
+      "path": "5e24f489bc524a7eba2f93a8e5e71572/station.db",
+      "sha256": "82944edcef28e830a6e9f15fe8bef7920702934b3e32be87c52b41c64fd635df",
+      "size_bytes": 176128
+    },
+    {
+      "path": "5e87c90f41c449758c2d4a3fcf3ab75c/station.db",
+      "sha256": "43aedd3f0e5869ccec19d50dfccc66c532e3c4fd834ddb8ebdb16239b1d0b267",
+      "size_bytes": 208896
+    },
+    {
+      "path": "5f7e398c49904c12b1fd734132c95181/station.db",
+      "sha256": "ffdc1c747801cc79e380f974daf5a490104f945358664fa37100f56841fabba7",
+      "size_bytes": 172032
+    },
+    {
+      "path": "797720ad12464026a8cb23cbc5cf34f3/station.db",
+      "sha256": "7e011d5a2f2bcd7e7104e0ccbcfe736975ad6a991261e13c32cef30d859a6aae",
+      "size_bytes": 180224
+    },
+    {
+      "path": "845d998b4d8744498f316cf633066c9c/station.db",
+      "sha256": "83e082be45958c254e9c98861e749c167e5112ffab3caa993e7a3924e2d07311",
+      "size_bytes": 180224
+    },
+    {
+      "path": "8c684df03b844ccaa42f385913269320/station.db",
+      "sha256": "599e53b846b37d8090c79e82c0033d12d7e26052cceced87e9619635adf31f89",
+      "size_bytes": 229376
+    },
+    {
+      "path": "8f2d5b7403d64a9d95a97e0feb78366d/station.db",
+      "sha256": "69e5cbf3607a90e2a4f5c838840fcdf71517c67624c3dcfcc79d2c99df1093d9",
+      "size_bytes": 196608
+    },
+    {
+      "path": "9be2b562f8564661ac9ff294e851ba13/station.db",
+      "sha256": "ffd8ce72bdbb37c8dad2cabc859b1993a77f54272b9797b0326be5697cfda9f4",
+      "size_bytes": 180224
+    },
+    {
+      "path": "a5c1c2270bf44bb89985cf2adb6e65cf/station.db",
+      "sha256": "74ca6a7aad0285c35871f75373559138d804bc43d35ad98fb8676d54047e1472",
+      "size_bytes": 184320
+    },
+    {
+      "path": "a771a2b18caa49eca086d3906269c5b3/station.db",
+      "sha256": "7d36b884bc9063de27ebc33a4ef283c29cc8ae1aba23986c0fa25523671cfecd",
+      "size_bytes": 196608
+    },
+    {
+      "path": "alignment-background/station.db",
+      "sha256": "48134e99b0a2873e0aede37ce31af96d9a383b30b9f33de60d5c164f6a413435",
+      "size_bytes": 176128
+    },
+    {
+      "path": "alignment-data/station.db",
+      "sha256": "7d7b6bf0906bc05c906d79291e7d67e9a3e29c5526ddc43bbd62375a3fea583f",
+      "size_bytes": 237568
+    },
+    {
+      "path": "alignment-view-data/Simulation/VIEW-d2a8979226b44489b3f7d4c7ed681ab1/station.db",
+      "sha256": "1c1c7832d29abf98f55b2d0b64b2a9f326baefb19d14d3e32af23937ec716895",
+      "size_bytes": 180224
+    },
+    {
+      "path": "ba4608274f7f41b19fbef87fcff579a1/station.db",
+      "sha256": "77918e1a0f5722d8964f277a2d6ae5a834358a8486936109f41b771defb92783",
+      "size_bytes": 208896
+    },
+    {
+      "path": "cbe4040c9ba94ccab63b97487a04bd68/station.db",
+      "sha256": "c58ae2758bc677858475fe53721f7088027c606acd57b4ddc6270d288cf3fa85",
+      "size_bytes": 204800
+    },
+    {
+      "path": "closure-cue-overflow/station.db",
+      "sha256": "20c447bd96736f0dc08a5c0a3495c45b23e67757db15a169e11cd284725f2feb",
+      "size_bytes": 487424
+    },
+    {
+      "path": "closure-health/station.db",
+      "sha256": "f417305d5125ba56cc7d89fa3ae586f0222d271ea31b89df9500cfd6eec4c86d",
+      "size_bytes": 184320
+    },
+    {
+      "path": "closure-resource-dispose/station.db",
+      "sha256": "e30473f1ae43c39000008faed01e3cb6572ede029ea03752b761d16206bdd58f",
+      "size_bytes": 163840
+    },
+    {
+      "path": "closure-resource-stop/station.db",
+      "sha256": "1f24bd7c2fdb678df6b99225dab96f8272224af392c0dc9e3030725872335903",
+      "size_bytes": 163840
+    },
+    {
+      "path": "closure-resource-timeout/station.db",
+      "sha256": "58d51c37ee83db3cf3510b4e1e0e1fa76bc49d8791827b5b193e0b70c1948c58",
+      "size_bytes": 163840
+    },
+    {
+      "path": "consistent-backup.db",
+      "sha256": "583454d1bafc3b68406ea986291f03ff0e1d9661ef1fed97d457d079a07774a7",
+      "size_bytes": 180224
+    },
+    {
+      "path": "corrupt.db",
+      "sha256": "9eaed1a500d1c88f2a68f5ca13875fe38fc1b5f9b394555c8d34618d634f6586",
+      "size_bytes": 14
+    },
+    {
+      "path": "crash-AfterT1/station.db",
+      "sha256": "c8e44347fb9f522c24674e906af2285c0227cd02477752a379949ea95eb2f594",
+      "size_bytes": 180224
+    },
+    {
+      "path": "crash-AfterT2/station.db",
+      "sha256": "03a678a8d41b4c104119a0892b688305c837b24e391b24dfcd2dbb8d29a4a192",
+      "size_bytes": 188416
+    },
+    {
+      "path": "crash-AfterT3/station.db",
+      "sha256": "499c8f88074e0e82c849b676e5f7f4799aecfea14b7cf2cb54b46f3cf4aaeb2c",
+      "size_bytes": 180224
+    },
+    {
+      "path": "crash-BeforeT1/station.db",
+      "sha256": "35859ebfe66a9b92881b8e6b70d22f65d3f3ac5af0aedd2c798bb4a779a89309",
+      "size_bytes": 180224
+    },
+    {
+      "path": "crash-Remote/station.db",
+      "sha256": "e22a553163af9a01ddc7895a438d5553275527a5a5d955b07cdf7a3c3a00fda5",
+      "size_bytes": 188416
+    },
+    {
+      "path": "crash-T3Failure/station.db",
+      "sha256": "886aeb393b6fdd37f64b585c078a3c1bc549afe578c149cac6d56a2b459e4834",
+      "size_bytes": 188416
+    },
+    {
+      "path": "e276c5c185154c83a954cc01c02e34d1/station.db",
+      "sha256": "288938237bcfcecd90a32e36000b3b3595882d82030f288f69f773b961a2e05a",
+      "size_bytes": 208896
+    },
+    {
+      "path": "e3b45c4826e9416e8c28ffc3e2637833/station.db",
+      "sha256": "d0a3cb23f2860b25f8a5107ec5052dc8a46ff063c1e77834c5c198cc9c9237f4",
+      "size_bytes": 258048
+    },
+    {
+      "path": "e6c25357e205415b9a3b0f4eba599319/station.db",
+      "sha256": "bf084c2750720abd7194a8ff59ab288767f7c080e4cdabb0447b4f7694eb249b",
+      "size_bytes": 180224
+    },
+    {
+      "path": "e7811d1bed3a46e5a82a0b53487e2708/station.db",
+      "sha256": "11f2416946d5f30364dcd55526612ce98e4d31c709516c03f5c70baeb34443fa",
+      "size_bytes": 208896
+    },
+    {
+      "path": "eb5fcae34e6d4597acca57c1f91f8e1a/station.db",
+      "sha256": "8a3d6afd92cba53ae044e5f820ec668728474d1c674e1e5ffe80a8eeb30e20be",
+      "size_bytes": 307200
+    },
+    {
+      "path": "ff72a72883e34c2986cabaed1b738b05/station.db",
+      "sha256": "a0e4a0cd9bbd533926d59ed4436eff9db3cc0492094589507f2f4a09931b21d8",
+      "size_bytes": 180224
+    },
+    {
+      "path": "followup-config-history/station.db",
+      "sha256": "736b72c325219fd253fa29c6c7bac26a69e9069cd42ddda1683f3f489cf78a30",
+      "size_bytes": 180224
+    },
+    {
+      "path": "followup-identity/station.db",
+      "sha256": "60c80a73ecceff35947c8279e80636cea95ed361e0a0905ac4f55f19d442b43f",
+      "size_bytes": 163840
+    },
+    {
+      "path": "followup-ownership/different-station-competes-a/data/Simulation/SIM-e26551e80257482492f3d012afdb5f0e/station.db",
+      "sha256": "861912beb69103ba873bb450fc64399ff914f3d0956ca63d11023434dd06651d",
+      "size_bytes": 163840
+    },
+    {
+      "path": "followup-ownership/effective-a-seed-b/data/Simulation/SIM-ee51886b0c47475fb341ba692734ed10/station.db",
+      "sha256": "f7315d0ca29c0393afb7327298ed8d1d5c2e0851d02544db223b1c0a08679bc6",
+      "size_bytes": 385024
+    },
+    {
+      "path": "followup-ownership/pending-invalid-fallback/data/Simulation/SIM-ee51886b0c47475fb341ba692734ed10/station.db",
+      "sha256": "f056e3ebbf13f868a20f3b9c805fb613c0dbe56c5461308e27998646a084ba65",
+      "size_bytes": 172032
+    },
+    {
+      "path": "followup-ownership/pending-new-device-set/data/Simulation/SIM-ee51886b0c47475fb341ba692734ed10/station.db",
+      "sha256": "e49049ef98503fba244f637a4bb2c3f30c73fbf2aa1c564b465c0ded3784089c",
+      "size_bytes": 172032
+    },
+    {
+      "path": "followup-ownership/pending-source-failure/data/Simulation/SIM-ee51886b0c47475fb341ba692734ed10/station.db",
+      "sha256": "489e9bcd058e40e9929b9ea432c3f28b49ad054078d8c1e161bd20e00df805bc",
+      "size_bytes": 172032
+    },
+    {
+      "path": "followup-ownership/restored-identity-973f942477ed45199af652bd349447e3/data/Simulation/SIM-ee51886b0c47475fb341ba692734ed10/station.db",
+      "sha256": "ea20df569daff255c70b8846bde64608574e2702c17eecfbf410c27486a76e3a",
+      "size_bytes": 163840
+    },
+    {
+      "path": "followup-ownership/restored-identity-f01411d1ae354e3b9828365b99814d2f/data/Simulation/SIM-ee51886b0c47475fb341ba692734ed10/station.db",
+      "sha256": "a57b2e1e79fbb095cdd7eff611d914705a2ef1d55f20534b0c363a31477408e5",
+      "size_bytes": 163840
+    },
+    {
+      "path": "format1-pre-upgrade.db",
+      "sha256": "c22ab9d15d821c7373fbdefa8d05469c8a8a7ecd8170f7cfe86a4ee0128297a0",
+      "size_bytes": 159744
+    },
+    {
+      "path": "format2-pre-upgrade.db",
+      "sha256": "d8a9a9f54b8862d2ad08a3bddfb4346ba0e28adc34e83649a1782611dd969683",
+      "size_bytes": 163840
+    },
+    {
+      "path": "future-format.db",
+      "sha256": "a3b65b7bb65efc5e3faa8720aa8109874f4872955448ac3cfeb4076933a3dfe4",
+      "size_bytes": 163840
+    },
+    {
+      "path": "future-migration.db",
+      "sha256": "8059c54455094e0a901d1069220cd20ad1f33f2a33ea46c5bcddda8c1010e31a",
+      "size_bytes": 163840
+    },
+    {
+      "path": "h04-expiry/station.db",
+      "sha256": "ba20ad3238d12500b442f70ab7dc0191e94b0e5dee002ff5bc8c49be0f43db3c",
+      "size_bytes": 208896
+    },
+    {
+      "path": "h04-marker/station.db",
+      "sha256": "7ffcfcd3e3063405233d53858860a768f0b24822b54eb78b0d9092dbb8bec178",
+      "size_bytes": 188416
+    },
+    {
+      "path": "h04-rollback/station.db",
+      "sha256": "8c8fd4b5a6dd8717ce96ef71edf030f991a3679c14df917a036b769cca78e4fe",
+      "size_bytes": 208896
+    },
+    {
+      "path": "lagging-restored/station.db",
+      "sha256": "722cca82053bb276da3013d4b641ac23360499c25c9e2d464eff5f0b81c2744e",
+      "size_bytes": 192512
+    },
+    {
+      "path": "legacy-active.db",
+      "sha256": "35f36c0cad606b96449531d594c081a5a866c4e03304299d4557515c50b7b2ed",
+      "size_bytes": 159744
+    },
+    {
+      "path": "legacy-format1-restore/station.db",
+      "sha256": "dbbe930187ff6a6bffa3ca6726f74a4f88db3bcb81ea7840016b9f8768a24cea",
+      "size_bytes": 163840
+    },
+    {
+      "path": "legacy-format1.db",
+      "sha256": "77b1479e014cfbe19901de320ccd430b02c53c5e03c5875c3e30fa764ba48b97",
+      "size_bytes": 163840
+    },
+    {
+      "path": "legacy-format2-restore/station.db",
+      "sha256": "7fc274b2af79fcb43a958b88d985751bb750062383be8d1184fcb7b526f9eb9a",
+      "size_bytes": 163840
+    },
+    {
+      "path": "legacy-format2.db",
+      "sha256": "18d243d0d08acf75e66d12aac13a370ac025e6d9aec632daa8a3d862fb0dfe6b",
+      "size_bytes": 163840
+    },
+    {
+      "path": "legacy-migration-failure.db",
+      "sha256": "36e55b82d018cc39b56f9b1fccafb52f3911870dea49894d993ce18b84ac6673",
+      "size_bytes": 159744
+    },
+    {
+      "path": "legacy-receipt-failure.db",
+      "sha256": "dc2af0a4423ccff0a1033dd733ca8df0bf53f0eb45b5dbda65b93ce1b890d1fa",
+      "size_bytes": 159744
+    },
+    {
+      "path": "original-format1-backup.db",
+      "sha256": "c22ab9d15d821c7373fbdefa8d05469c8a8a7ecd8170f7cfe86a4ee0128297a0",
+      "size_bytes": 159744
+    },
+    {
+      "path": "original-format2-backup.db",
+      "sha256": "d8a9a9f54b8862d2ad08a3bddfb4346ba0e28adc34e83649a1782611dd969683",
+      "size_bytes": 163840
+    },
+    {
+      "path": "permit-restart/station.db",
+      "sha256": "b4b876830b7ad13351d276a0322f2f169586ccc57697233557bf04a735236e53",
+      "size_bytes": 233472
+    },
+    {
+      "path": "prepared-before-remote.db",
+      "sha256": "f7d526eefe4487982ff4d18b489583f5ca94c3162fb49b35b5617c4bc0d56c2c",
+      "size_bytes": 172032
+    },
+    {
+      "path": "product-data/Simulation/SIM-37f7de9c5dd041e486f3f307395ca2dc/station.db",
+      "sha256": "e06fd0c0f39f191f1c44f5eadb4712187130322513ce7551bc18dc92f4b638fd",
+      "size_bytes": 204800
+    },
+    {
+      "path": "queue-burst/station.db",
+      "sha256": "d3d2f1219de7470f4b9665393940583c950eb4b675c9843894c3846e8b335750",
+      "size_bytes": 163840
+    },
+    {
+      "path": "queue-full/station.db",
+      "sha256": "c178a331124f3f6dc42f50d5636384ff9565474f172712e982d280535f9e2554",
+      "size_bytes": 172032
+    },
+    {
+      "path": "receiver/receiver.db",
+      "sha256": "2e96884c16791c7d4bde90a6db2c9da33c2a2aab3e52088adc148c368552a423",
+      "size_bytes": 4096
+    },
+    {
+      "path": "reference-journey/data/Simulation/SIM-c235997a575d4a8c933e07c648db2194/station.db",
+      "sha256": "2519f5a7f64d18182efadc9444af408be22ab2df61202ef414d08ad6b59b773a",
+      "size_bytes": 278528
+    },
+    {
+      "path": "restored/station.db",
+      "sha256": "def672e5eac7f79b84aea5a528072986c7c0f8d3f7a1de151401395eb870db16",
+      "size_bytes": 196608
+    },
+    {
+      "path": "wrong-checksum.db",
+      "sha256": "21f444e8ba242b97141327e1167fd500d832de2f9c316154145f6b87d689631f",
+      "size_bytes": 163840
+    }
+  ],
+  "boundaries": [
+    "No actual Windows client execution or screenshots",
+    "No scanner/touch/DPI/audio acoustic acceptance",
+    "No physical SDK/WCS/approved customer rules",
+    "Module/Catalog lifecycle fault tests are dynamic; still-live Product composite store/lease retention remains static inspection",
+    "Core PASS does not close historical RV or prove production admission"
+  ],
+  "corrected_failures": [
+    {
+      "log": "first-h04-failure.log",
+      "kind": "outdated fixture health precondition",
+      "fix": "Confirm real loopback health and assert context command receipt before claim"
+    },
+    {
+      "log": "first-journey-conflict.log",
+      "kind": "synthetic journey startup race",
+      "fix": "Wait for actual source/transport confirmation before reviewing Login revision"
+    },
+    {
+      "log": "first-a01-stop-failure.log",
+      "kind": "unreleased test fault injection",
+      "fix": "Assert original stop failure/barrier/independent shutdown, remove synthetic trigger, assert durable stop retry"
+    },
+    {
+      "log": "first-wpf-build-failure.log",
+      "kind": "source compile failure CS4014",
+      "fix": "Explicit Dispatcher scheduling; subsequent full build passes"
+    }
+  ],
+  "trial_package": {
+    "source_commit": "a84257b877f55bbbaede553c27a8effff8dc688a",
+    "status": "SUPERSEDED_TRIAL_NOT_FINAL_DELIVERY",
+    "portable_sha256": "81285d67a8495f10fbb48a2e46f3274ad7665de700c95b663d408260eace3171"
+  },
+  "packages": [
+    {
+      "target": "portable",
+      "path": ".artifacts/reconciliation-a080825-portable.zip",
+      "sha256": "d625224d2109cd15a3a1e1a0a2cfe7901116c912e986fd6cb300956ba10f33fb",
+      "size_bytes": 35206842,
+      "release": {
+        "WorkPackage": "WP-IPC-AUDIT-RECONCILIATION-01",
+        "SchemaVersion": 1,
+        "ReleaseVersion": "AUDIT-RECONCILIATION-01",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "ProductId": "ipc-reference",
+        "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+        "SourceCodeSha256": "bae6bc350e576aa726b609c9eced8aa4dc37eac0aadfc4c48f5e186e4b3a1bd5",
+        "SourceCommit": "a08082563bc13b2f146e71c4be9136f0469af9db",
+        "WorkingTree": false,
+        "GitBase": "a08082563bc13b2f146e71c4be9136f0469af9db",
+        "Mode": "Simulation",
+        "Target": "portable-development"
+      }
+    },
+    {
+      "target": "win-x64",
+      "path": ".artifacts/reconciliation-a080825-win-x64.zip",
+      "sha256": "0eeebec5b07995af3a2fb02beaa63abfe2a436ba70e01cc35cc865a8df623849",
+      "size_bytes": 115343484,
+      "release": {
+        "WorkPackage": "WP-IPC-AUDIT-RECONCILIATION-01",
+        "SchemaVersion": 1,
+        "ReleaseVersion": "AUDIT-RECONCILIATION-01",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "ProductId": "ipc-reference",
+        "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+        "SourceCodeSha256": "bae6bc350e576aa726b609c9eced8aa4dc37eac0aadfc4c48f5e186e4b3a1bd5",
+        "SourceCommit": "a08082563bc13b2f146e71c4be9136f0469af9db",
+        "WorkingTree": false,
+        "GitBase": "a08082563bc13b2f146e71c4be9136f0469af9db",
+        "Mode": "Simulation",
+        "Target": "win-x64"
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-current.json",
+      "sha256": "710bd16d7e73011757810f47a512f5ebfc4cc54c9c3c706ae7d82009f71b1743",
+      "size_bytes": 50188
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-pristine-main.json",
+      "sha256": "dc2f474cd6c3a5b1e650afb09e38e241b7d3eebb3518f19a74d30d99cd191231",
+      "size_bytes": 50188
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-tests.log",
+      "sha256": "defeaa54a91e062dc6c4ae3a9ff0218b8c379bda9c05eb598a989ab87d018a43",
+      "size_bytes": 1048
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/final-build.log",
+      "sha256": "867941445cb3ba492d8778e4004c7a6908eb09c584f0fe3e43b1c1817666227e",
+      "size_bytes": 892
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/final-reference.log",
+      "sha256": "e3701303e87d6ec97bbe85793d13b157f2cd7fb8917abe8452dc82b8391b073f",
+      "size_bytes": 17254
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-a01-stop-failure.log",
+      "sha256": "e7394f8a6f5ec4cc92812e14c597d276b39e9d4759892ad908a00363c8b5c1af",
+      "size_bytes": 6978
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-h04-failure.log",
+      "sha256": "7ef7618514a547b5f5941a4019b50eddc8a87a53f88d3d304db997462e5f8efe",
+      "size_bytes": 2887
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-journey-conflict.log",
+      "sha256": "d2bfdab4ec616be8da2090200d17e2805a0a98e514231ed03a2d3bfdb9c0855c",
+      "size_bytes": 1634
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-wpf-build-failure.log",
+      "sha256": "03cc1f03b5c17fcd2c9b86ca8987c57c07cab6405bb28cc1f4ce3ed9de4d8ec1",
+      "size_bytes": 1222
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-portable.log",
+      "sha256": "5f81a10590803246eddb71c7fca49c0ea3163a26b5917aba88b486baeaaa7780",
+      "size_bytes": 1673
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-readback.json",
+      "sha256": "17e580b6c79939aefe716969b6b454d928bebcc1aa82cde26e2563079ec85293",
+      "size_bytes": 4032
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-win-x64.log",
+      "sha256": "b6557aef4d25fe6e5ccaa7239223e909602fa132ef585c7cbda233d171c66622",
+      "size_bytes": 2717
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/published-smoke.json",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/published-smoke.log",
+      "sha256": "59e8d7655bcedbcee7f64d4b3db4f789d2fa92f1cc15f80bd55ef0d7e062058a",
+      "size_bytes": 432
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/reference-journey.json",
+      "sha256": "8114be1577c7ecb8b7b039e59a841a8633385fbdef481ba70be9db500c3ee178",
+      "size_bytes": 345222
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.json",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.log",
+      "sha256": "67900764b13aa1199fa0b81c918c17b2134c9a78a03e08db49354d14bbdd50dd",
+      "size_bytes": 432
+    }
+  ],
+  "original_local_logs": [
+    {
+      "local_path": "/tmp/ipc-reconcile-all-1.log",
+      "original_sha256": "a6772aab42e04d6f9e8b83f7520bde58eabe0222ae861a500ff229227f8d0e0c",
+      "original_bytes": 3351,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/first-h04-failure.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-followup-1.log",
+      "original_sha256": "b549d27e4271e9ffca9ac2a1ef2be020b55f1f9534bfa8c610a57c84f115c6a3",
+      "original_bytes": 2040,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/first-journey-conflict.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-data-1.log",
+      "original_sha256": "6d075e20e2c6984d6d7e085433bbe1ca4f1d6f2a0af89fee55d85e7044afe6e2",
+      "original_bytes": 7964,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/first-a01-stop-failure.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-solution-build-1.log",
+      "original_sha256": "03eca8b519d2151798f1eba5254f8e51e91a0b47933c59270d0a1ab3209ff38e",
+      "original_bytes": 1802,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/first-wpf-build-failure.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-final-build-2.log",
+      "original_sha256": "9b4dbf15152bd11f4c8380183af0a1fdc27c93cd22fd4b5d4ee171a142a89f97",
+      "original_bytes": 1298,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/final-build.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-a080825-all.log",
+      "original_sha256": "87f8ef88b9b98566b66e7c723f1377f377fc78125ea5dead33fb33e3b52c134e",
+      "original_bytes": 18066,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/final-reference.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-a080825-package-portable.log",
+      "original_sha256": "f745d5bf263eb6d96ed979b9d6f3c0cfee8b7ac84ee4d190b783891807a70d85",
+      "original_bytes": 2369,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/package-portable.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-a080825-package-win.log",
+      "original_sha256": "1528b7eac2a89b7bdd61340dd739243c497d564d8b8dd39cfabda0368c8407d4",
+      "original_bytes": 4109,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/package-win-x64.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-a080825-smoke.log",
+      "original_sha256": "59e8d7655bcedbcee7f64d4b3db4f789d2fa92f1cc15f80bd55ef0d7e062058a",
+      "original_bytes": 432,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/published-smoke.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-a080825-unpacked-smoke.log",
+      "original_sha256": "67900764b13aa1199fa0b81c918c17b2134c9a78a03e08db49354d14bbdd50dd",
+      "original_bytes": 432,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    },
+    {
+      "local_path": "/tmp/ipc-reconcile-archive-tests.log",
+      "original_sha256": "defeaa54a91e062dc6c4ae3a9ff0218b8c379bda9c05eb598a989ab87d018a43",
+      "original_bytes": 1048,
+      "public_rendition": "docs/runtime/evidence/reconciliation-01/archive-tests.log",
+      "redactions": [
+        "local worktree path replaced by <WORKTREE>",
+        "local SDK path replaced by <DOTNET_SDK>"
+      ],
+      "result_text_unchanged": true
+    }
+  ],
+  "public_archive_validation": {
+    "status": "FAIL",
+    "baseline_status": "FAIL",
+    "baseline_error_count": 267,
+    "current_error_count": 267,
+    "identical_error_set": true,
+    "new_changed_files_errors": 0,
+    "counts": {
+      "pptx_media_type_mismatch": 265,
+      "private_metadata_marker": 2
+    },
+    "asset_identities": [
+      {
+        "path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
+        "baseline_git_blob": "670d0cf0ab6c690b4e0d01ddc40328bca9207b73",
+        "sha256": "0d6659534ab054403fe3f7cb8f5d8bb38cf94b50058868c8743483e44326ae99",
+        "unchanged": true
+      },
+      {
+        "path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html",
+        "baseline_git_blob": "0ba2fa079727f97d86d148a85ae066d5cc524bde",
+        "sha256": "513e0fd177b5f58d1c90ff799d9f20fe093f72b485a43b75dc3aadf5d57e8786",
+        "unchanged": true
+      },
+      {
+        "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
+        "baseline_git_blob": "e2ed3647d5355b41eaf041a1a4632c05b9a3209e",
+        "sha256": "88a71e35bc9e97c7995d63ee8369868a6f18c576c93c1aed21276ef259c34dda",
+        "unchanged": true
+      }
+    ],
+    "reason": "Published v1.1 exact original source contains retained Canva-link markers and SVG bytes named PNG inside PPTX; do not rewrite baseline assets or suppress assertions to obtain PASS. No new code/evidence file errors.",
+    "command": "python3 tools/verify_archive.py --root . --scope public",
+    "current_counts": {
+      "files": 256,
+      "references": 405,
+      "json": 57,
+      "boards": 18,
+      "slides": 18,
+      "pptx": 1,
+      "images": 34
+    }
+  },
+  "pull_request": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/9",
+    "state_at_creation": "OPEN",
+    "creation_head": "f2de36ab44c4b55144ef7ea49d03aee558ab5ee6",
+    "mergeable_at_readback": "MERGEABLE",
+    "merge_state_at_readback": "CLEAN",
+    "github_checks_at_readback": [],
+    "github_ci_result": "NOT_RUN_NO_CHECKS_CONFIGURED",
+    "merged_by_this_task": false
+  }
+}

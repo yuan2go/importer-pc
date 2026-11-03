@@ -1,0 +1,31 @@
+{
+  "work_package": "WP-IPC-FRAMEWORK-01",
+  "date": "2026-10-16",
+  "analysis_base": "39747a8c35b748da71bf9acfd56a9c9812b199b4",
+  "scope": "Changed documentation and publication preparation only",
+  "status": "PASS",
+  "checked": {
+    "candidate_markdown_files": 9,
+    "local_references_resolved_against_candidate_and_remote_tree": 57,
+    "local_anchor_references_checked": 4,
+    "unchanged_archived_entrypoints": 3,
+    "official_reference_urls": 8
+  },
+  "checks": [
+    "New/changed Markdown paths and new-document anchors",
+    "Archived entrypoints match remote baseline SHA-256 and Git blob identities",
+    "New text reviewed for customer identities/private links/credentials; no SDK/font/image binaries",
+    "Manifest generated from changed bytes and inherited remote baseline records; separate checksum"
+  ],
+  "errors": [],
+  "mermaid": "Source headers and fences checked; diagram rendering NOT_RUN",
+  "baseline_file_hashes": "Unchanged SHA-256 inherited from baseline manifest and paired with remote Git blobs; not claimed freshly rehashed locally",
+  "repository_archive_verifier": "NOT_RUN in this turn; only the specified candidate checks were performed",
+  "business_code_changes": 0,
+  "business_tests": "NOT_RUN",
+  "historical_ui_tests": "NOT_RUN",
+  "windows_sdk_wcs": "NOT_RUN",
+  "d_approvals_added": 0,
+  "rv_closures": 0,
+  "remote_publication": "Verify after commit; this candidate record is not remote inclusion proof"
+}

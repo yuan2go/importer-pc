@@ -39,3 +39,5 @@ src/Ipc.Assembly/ParcelStartupServices.Quiet.cs
 tests/Ipc.Application.Verification/IndustrialQuietDeployment.cs
 src/Ipc.Platform/QuietDeploymentOutput.cs
 src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.ProductOperations.cs
+src/Ipc.Desktop/StartupSetupWindow.cs
+tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs

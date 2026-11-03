@@ -43,7 +43,7 @@ jobs:
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true --logger "trx;LogFileName=core.trx" --results-directory .artifacts/core
+          dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true --settings scripts/industrial-coverage.runsettings --collect "Code Coverage;Format=cobertura" --logger "trx;LogFileName=core.trx" --results-directory .artifacts/core
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
@@ -67,6 +67,15 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           ./scripts/verify-industrial-format.ps1
+      - name: Verify actual child-process product coverage
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python -m unittest discover -s scripts -p test_product_coverage.py -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python scripts/verify_product_coverage.py --results .artifacts/core
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Get-Content -LiteralPath .artifacts/core/product-coverage/summary.md | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
       - name: Passive performance collector and statistics regression
         shell: pwsh
         run: |
@@ -89,7 +98,11 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: core-results-${{ github.sha }}
-          path: .artifacts/core
+          path: |
+            .artifacts/core/core.trx
+            .artifacts/core/product-coverage/product.cobertura.xml
+            .artifacts/core/product-coverage/summary.json
+            .artifacts/core/product-coverage/summary.md
           if-no-files-found: error
           retention-days: 14
   windows-build:

@@ -42,6 +42,12 @@ static class HistoryDetailSheet
         Check(r.Tone == ParcelPresentationTone.Rejected && r.Sections.Single(s => s.Title == "取格口").Rows.Single(x => x.Label == "分配格口") is { Value: "否", Attention: true },
             "a refused request is shown as no chute, highlighted");
 
+        OriginalFrameArchive Frame(string state) => new(state, new("left-camera", "e", "mvs.frame.5236", ok.AdmissionId, at), 3072, 2048, "images/original-frames/x.png", at);
+        var saved = ParcelDetailSheets.Build(ok with { OriginalFrame = Frame("Saved") }).Sections.Single(s => s.Title == "包裹图片");
+        var failed = ParcelDetailSheets.Build(ok with { OriginalFrame = Frame("Failed") }).Sections.Single(s => s.Title == "包裹图片");
+        Check(saved.ShowsPicture && saved.Rows.Single().Value == "已保存（3072 × 2048）" && !failed.ShowsPicture && failed.Rows.Single().Attention &&
+            !ParcelDetailSheets.Build(ok with { OriginalFrame = Frame("Saved") }).ToText().Contains("images/original-frames"),
+            "the picture link appears only for a saved image, without its file path; a failed save is flagged");
         var manual = ok with { OperatorInput = new(Wire.Id(), "Keyboard", "operator", null, at) };
         Check(ParcelDetailSheets.Build(manual).Sections[0].Rows.Single(x => x.Label == "来源").Value == "键盘录入" &&
             ParcelDetailSheets.Build(ok).Sections[0].Rows.Single(x => x.Label == "来源").Value == "相机读码", "the input source is named in station words");

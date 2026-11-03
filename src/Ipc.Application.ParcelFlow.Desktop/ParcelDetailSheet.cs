@@ -7,7 +7,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // targets, contracts, hashes, file paths and protocol evidence only appear in the management
 // "详细信息" view.
 public sealed record DetailRow(string Label, string Value, bool Attention = false);
-public sealed record DetailSection(string Title, DetailRow[] Rows, string? Note = null);
+public sealed record DetailSection(string Title, DetailRow[] Rows, string? Note = null, bool ShowsPicture = false);
 public sealed record ParcelDetailSheet(string Headline, ParcelPresentationTone Tone, string Explanation, DetailSection[] Sections)
 {
     // Plain-text form for copying and for the screen reader.
@@ -32,7 +32,7 @@ public static class ParcelDetailSheets
             "Pending" => "正在保存",
             "Failed" => "保存失败，交维护人员查看日志",
             _ => "保存中断，交维护人员检查原图",
-        }, frame.State is not ("Saved" or "Pending"))]));
+        }, frame.State is not ("Saved" or "Pending"))], ShowsPicture: frame.State == "Saved"));
         sections.Add(new("交接编号", [new("作业号", op.Id), .. op.Wcs is { } wcs ? [new DetailRow("取格口请求号", wcs.Request.Id)] : Array.Empty<DetailRow>()],
             "向维护人员或 RCS 方核对时提供这些编号。"));
         return new(headline, status.Tone, Explanation(op, status.Tone), [.. sections]);

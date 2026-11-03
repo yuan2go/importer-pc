@@ -40,6 +40,7 @@ static partial class Program
         await vm.SaveCapabilitiesAsync();
         await Until(()=>vm.Snapshot?.Configuration.Pending?.StationCode=="SYNTH-SAVE-WITHOUT-PAUSE");
         Check(vm.Snapshot!.Configuration.Pending?.StationCode=="SYNTH-SAVE-WITHOUT-PAUSE" && !vm.Snapshot.Paused,"native editor saves pending settings while remaining unpaused");
+        Check(vm.ConfigurationReason.Length == 0, "a confirmed save clears the note, so the next change record cannot reuse it");
         editor.ShowPage(0,"显示偏好"); window.UpdateLayout();
         Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM preference page removes the unused name and target inputs");
         Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode" && t.IsVisible), "window opening mode remains directly editable");

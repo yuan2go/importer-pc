@@ -45,10 +45,13 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     public object RuntimeProgress()
     {
         int reads, administration, managementStatus; lock (readOwnership) { reads = readOperations.Count; administration = administrationOperations.Count; managementStatus = managementStatusOperations.Count; }
-        return new { At = DateTimeOffset.UtcNow, ProcessId = Environment.ProcessId, RuntimeId = runtimeId, Stopping = stopping.IsCancellationRequested,
+        return new { SchemaVersion = 2, At = DateTimeOffset.UtcNow, RuntimeElapsedMs = Stopwatch.GetElapsedTime(performanceStarted).TotalMilliseconds,
+            SourceVersion = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(typeof(ParcelRuntime).Assembly)?.InformationalVersion,
+            ProcessId = Environment.ProcessId, RuntimeId = runtimeId, Stopping = stopping.IsCancellationRequested,
             Connections = readers.Values.Select(r => new { r.Source.DeviceId, r.Epoch, Health = r.Health?.Health.ToString(),
-                Acquisition = (r.Source as IObservationDiagnosticsSource)?.ReadDiagnostics() }).ToArray(),
-            Presentation = PresentationProgress(), Workers = WorkerProgress(), Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
+                Acquisition = (r.Source as IObservationDiagnosticsSource)?.ReadDiagnostics(),
+                Performance = (r.Source as IObservationPerformanceSource)?.ReadPerformance() }).ToArray(),
+            Flow = FlowPerformance(), Presentation = PresentationProgress(), Workers = WorkerProgress(), Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new { Name = p.Key, State = p.Value.Status.ToString(),
                 LastProgress = backgroundProgress.TryGetValue(p.Key, out var seen) ? (DateTimeOffset?)seen.At : null,
                 Detail = backgroundProgress.TryGetValue(p.Key, out var detail) ? detail.Detail : "NotStarted" }).ToArray(),
@@ -69,7 +72,8 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
                     process.Refresh();
                     long Bytes(string name) { var f = new FileInfo(Path.Combine(directory!, name)); return f.Exists ? f.Length : 0; }
                     var sample = new { Progress = RuntimeProgress(), Resource = new { process.WorkingSet64, process.PrivateMemorySize64, process.HandleCount,
-                        Threads = process.Threads.Count, ManagedBytes = GC.GetTotalMemory(false), DatabaseBytes = Bytes(Id + ".db"), WalBytes = Bytes(Id + ".db-wal") },
+                        Threads = process.Threads.Count, ManagedBytes = GC.GetTotalMemory(false), CpuTotalMs = process.TotalProcessorTime.TotalMilliseconds,
+                        LogicalProcessors = Environment.ProcessorCount, DatabaseBytes = Bytes(Id + ".db"), WalBytes = Bytes(Id + ".db-wal") },
                         Policy = "Observation only; no restart/replay/GC; an absent/stale file requires external investigation" };
                     ExtensionStore.AtomicWrite(Path.Combine(directory!, "runtime-progress.json"), sample);
                     if (cameraSample.Elapsed >= TimeSpan.FromSeconds(5))

@@ -1,0 +1,164 @@
+{
+  "Date": "2026-11-03",
+  "Platform": "Windows x64 / .NET SDK 10.0.402",
+  "MainBaseline": "90d6fdc9f6c866d643d40cfd7d3fe6fa1e90695c",
+  "CSharpSourceCommit": "9ab212bca1eceda06efc6a8f218c2f169ab1e894",
+  "StatisticsSourceCommit": "7a93ccc71cbeb5ce4c5f7ee4a27e7270a25729f2",
+  "CollectorSha256": "84307a554461b76cdb0cb03deebd211e9cae1cf7fb630700ecb690cfcd97e2ad",
+  "Builds": [
+    {
+      "Project": "Ipc.Application.Verification",
+      "Configuration": "Release",
+      "Warnings": 0,
+      "Errors": 0,
+      "LogSha256": "3180f2b13ed920cbc7bd6b6a4373749b4489619aaf50032920621800ff5c6d99"
+    },
+    {
+      "Project": "Ipc.Drivers.Hikrobot.Probe",
+      "Configuration": "Release",
+      "Warnings": 0,
+      "Errors": 0,
+      "LogSha256": "d0b30b8ede2a56d9cc009ff85a7bda6496fc3677e85f3d4a6e2c345cdbababdd"
+    },
+    {
+      "Project": "Ipc.Desktop",
+      "Configuration": "Release",
+      "Warnings": 0,
+      "Errors": 0,
+      "LogSha256": "fc666024be1d3b282691d3f8868e7ef09e3f8f2e964e449e8de239eb82e404ed"
+    }
+  ],
+  "Core": {
+    "Executed": 10,
+    "Failed": 0,
+    "Skipped": 0,
+    "Assertions": 299,
+    "Cases": [
+      {
+        "Selector": "--industrial-recovery",
+        "Assertions": 22,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--storage-schema-only",
+        "Assertions": 17,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--dual-camera-performance",
+        "Assertions": 13,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--station-single-camera",
+        "Assertions": 65,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--debug-no-isolation-31",
+        "Assertions": 16,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--same-placement-29",
+        "Assertions": 17,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--industrial-lifecycle",
+        "Assertions": 31,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--industrial-diagnostics",
+        "Assertions": 34,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--installer-storage-checks",
+        "Assertions": 5,
+        "Outcome": "Passed"
+      },
+      {
+        "Selector": "--management-mode",
+        "Assertions": 79,
+        "Outcome": "Passed"
+      }
+    ],
+    "TrxSha256": "55de7edcae0a5b754163adc894a14b63cdf9566b84bd33b026f7826ef0823145"
+  },
+  "AdditionalSuites": [
+    {
+      "Selector": "--reader-robustness-28",
+      "Assertions": 26,
+      "LogSha256": "02030f8826c672b0a174755c572f2bc36391602d88ba6145f73f108a85e130a6",
+      "Outcome": "Passed"
+    },
+    {
+      "Selector": "--camera-chain-reliability",
+      "Assertions": 37,
+      "LogSha256": "0a239ece9cc4171939ece39f84b543bae623fdf3b73ba9f3f915f49ede5dc593",
+      "Outcome": "Passed"
+    },
+    {
+      "Selector": "--sportmaster-rcs",
+      "Assertions": 159,
+      "LogSha256": "07c401fcbe9ade7b98a96e7ad321b6e70cfd7ccdfa18998ea0a5480fa760881c",
+      "Outcome": "Passed"
+    },
+    {
+      "Selector": "--mvs-self-test",
+      "Assertions": 87,
+      "LogSha256": "03b9df11bec83a90ffc50ebf5ae35926ca1f3e9c02d91e6027dc25a64222a947",
+      "Outcome": "Passed"
+    },
+    {
+      "Selector": "--mvs-pipeline",
+      "Assertions": 8,
+      "LogSha256": "559e8041322a414c6b4d0941adf42eadffdff6fb9ddf668d6fbd2c3973353d17",
+      "Outcome": "Passed"
+    }
+  ],
+  "CSharpAssertions": 616,
+  "Python": [
+    {
+      "Suite": "performance",
+      "Tests": 15,
+      "LogSha256": "78c58e9a1d5f404d3de9585950427c32b96a260d3be6c4f4c7d0ecea9173dbc4",
+      "Outcome": "Passed"
+    },
+    {
+      "Suite": "release-documents",
+      "Tests": 5,
+      "LogSha256": "cd9437a4216fbfb877b6813028cf321bbf4840ab974323bc93414bd2caaadfce",
+      "Outcome": "Passed"
+    },
+    {
+      "Suite": "application-bundles",
+      "Tests": 3,
+      "LogSha256": "c481b4b60b47c7a457b5aa24777cb7bf0dc7e2a1f351cf33152e74a2f0b3ec7c",
+      "Outcome": "Passed"
+    }
+  ],
+  "PythonTests": 23,
+  "DocumentationGate": "8 entry pages / 197 links / 5 CP codes passed",
+  "IncrementalFormat": "13 existing files passed",
+  "CI": "Not yet run on final PR head; independent of local validation",
+  "Tier": "Actual ZXing/SQLite/built-in RCS loopback; synthetic MVS APIs and synthetic composition reports",
+  "NotRun": [
+    "Physical MVS",
+    "Target IPC dual-camera production cadence",
+    "Customer RCS",
+    "Real motion blur",
+    "Site recognition/correct-code/chute accuracy",
+    "Physical completion",
+    "Native UI performance measurement"
+  ],
+  "InitialFailures": [
+    "Old RCS future-version fixture inserted current version 12; now CurrentStorageVersion+1, original refusal assertions retained",
+    "Paused preview fixture observed copied preview before SDK loan return; now waits actual return without weakening assertions",
+    "Development correlation regression caught canonical operation identity differing from raw observation; explicit device/epoch/source mapping added",
+    "New main shipped guide lacked existing RCS-offline read-only statement; restored statement, assertions retained"
+  ],
+  "Policy": "Raw local logs and TRX remain private on D drive; hashes are of actual local files. No customer assets or performance acceptance inferred."
+}

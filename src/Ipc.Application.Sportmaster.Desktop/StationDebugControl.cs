@@ -68,7 +68,7 @@ internal sealed partial class StationDebugControl : UserControl
         livePreview = new(vm); livePreview.SelectDevice(Position.ReaderId);
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = UiTypography.Regular;
-        Background = Brush("#F3F5F8"); Foreground = Brush("#18283D");
+        SetResourceReference(BackgroundProperty, "Background"); SetResourceReference(ForegroundProperty, "Ink");
         var body = new StackPanel { Margin = new(20, 8, 20, 16) };
         var toolbar = new StackPanel { Margin = new(20, 12, 20, 0) };
         var scanSurface = new DockPanel(); DockPanel.SetDock(toolbar, Dock.Top); scanSurface.Children.Add(toolbar);
@@ -78,20 +78,20 @@ internal sealed partial class StationDebugControl : UserControl
         tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
         var header = new DockPanel { LastChildFill = true };
         var triggerStyle = new Style(typeof(Button), TryFindResource(typeof(Button)) as Style);
-        triggerStyle.Setters.Add(new Setter(BackgroundProperty, Brush("#245FD3")));
+        triggerStyle.Setters.Add(new Setter(BackgroundProperty, new DynamicResourceExtension("Accent")));
         triggerStyle.Setters.Add(new Setter(ForegroundProperty, Brushes.White));
-        triggerStyle.Setters.Add(new Setter(BorderBrushProperty, Brush("#245FD3")));
+        triggerStyle.Setters.Add(new Setter(BorderBrushProperty, new DynamicResourceExtension("Accent")));
         var disabledTrigger = new Trigger { Property = IsEnabledProperty, Value = false };
-        disabledTrigger.Setters.Add(new Setter(BackgroundProperty, Brush("#E9EEF4")));
-        disabledTrigger.Setters.Add(new Setter(ForegroundProperty, Brush("#52647A")));
-        disabledTrigger.Setters.Add(new Setter(BorderBrushProperty, Brush("#BCC7D6")));
+        disabledTrigger.Setters.Add(new Setter(BackgroundProperty, new DynamicResourceExtension("Soft")));
+        disabledTrigger.Setters.Add(new Setter(ForegroundProperty, new DynamicResourceExtension("Muted")));
+        disabledTrigger.Setters.Add(new Setter(BorderBrushProperty, new DynamicResourceExtension("Line")));
         triggerStyle.Triggers.Add(disabledTrigger); trigger.Style = triggerStyle;
-        readStatus.Foreground = Brush("#9A6511"); readStatus.VerticalAlignment = VerticalAlignment.Center;
+        readStatus.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); readStatus.VerticalAlignment = VerticalAlignment.Center;
         var scanActions = Flow(readStatus, trigger); DockPanel.SetDock(scanActions, Dock.Right); header.Children.Add(scanActions);
         var title = new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis,
             VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 20, 6) };
         header.Children.Add(Flow(title, left, right)); toolbar.Children.Add(header);
-        camera.Foreground = Brush("#68788E"); state.Foreground = Brush("#68788E");
+        camera.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); state.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         toolbar.Children.Add(camera); toolbar.Children.Add(Text("正常供包继续运行；扫码锁定本轮图片，点击发送请求才调用实际 RCS 服务。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
         trigger.ToolTip = "读码不要求 RCS 在线；读码不额外发送调试请求，正常供包继续。";
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
@@ -101,7 +101,7 @@ internal sealed partial class StationDebugControl : UserControl
         reading.Children.Add(Heading("实时画面")); reading.Children.Add(livePreview);
         var resultHeading = new DockPanel(); DockPanel.SetDock(photoState, Dock.Right); resultHeading.Children.Add(photoState); resultHeading.Children.Add(Heading("本次读码")); visual.Children.Add(resultHeading);
         barcode.FontFamily = UiTypography.Code; barcode.FontSize = UiTypography.Barcode; barcode.MinHeight = 48; barcode.MaxHeight = 96;
-        barcode.Background = Brush("#F3FBF7"); barcode.BorderBrush = Brush("#C7E4D8"); barcode.Margin = new(0, 0, 0, 8);
+        barcode.SetResourceReference(BackgroundProperty, "SuccessBackground"); barcode.SetResourceReference(BorderBrushProperty, "Line"); barcode.Margin = new(0, 0, 0, 8);
         barcode.ToolTip = "本轮完整条码，可选择复制"; visual.Children.Add(barcode);
         imageLayer.Children.Add(photo); imageLayer.Children.Add(marks); viewport.Content = imageLayer;
         var photoArea = new Grid(); photoArea.Children.Add(viewport); photoArea.Children.Add(imageHint); visual.Children.Add(photoArea); visual.Children.Add(photoCaption);
@@ -112,15 +112,15 @@ internal sealed partial class StationDebugControl : UserControl
         requestBarcode.FontFamily = UiTypography.Code; requestBarcode.Width = 220; requestBarcode.MaxHeight = 64; requestBarcode.Margin = new(8, 0, 10, 6);
         requestBarcode.IsReadOnly = false; requestBarcode.MaxLength = 4096;
         requestBarcode.ToolTip = "可手工输入完整条码；准备请求不要求配置或连接相机。";
-        send.Foreground = Brush("#245FD3"); send.BorderBrush = Brush("#BFCFED");
+        send.SetResourceReference(ForegroundProperty, "Accent"); send.SetResourceReference(BorderBrushProperty, "Line");
         var entry = Flow(Text("请求条码"), requestBarcode, prepare, send); DockPanel.SetDock(entry, Dock.Right); requestHeader.Children.Add(entry); requestHeader.Children.Add(Heading("请求调试")); requestPanel.Children.Add(requestHeader);
-        fillStatus.Foreground = Brush("#17805C"); requestPanel.Children.Add(fillStatus);
+        fillStatus.SetResourceReference(TextBlock.ForegroundProperty, "Success"); requestPanel.Children.Add(fillStatus);
         requestPanel.Children.Add(Text("扫码自动填入，或手工输入条码后准备请求；不要求配置或连接相机。点击发送才调用RCS。"));
         jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto }); jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var requestJson = new StackPanel(); var responseJson = new StackPanel { Margin = new(14, 0, 0, 0) };
-        requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 150; requestBody.Background = Brush("#F7F9FC"); requestJson.Children.Add(requestBody);
-        responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; responseBody.Background = Brush("#F7F9FC"); responseJson.Children.Add(responseBody);
+        requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 150; requestBody.SetResourceReference(BackgroundProperty, "Soft"); requestJson.Children.Add(requestBody);
+        responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; responseBody.SetResourceReference(BackgroundProperty, "Soft"); responseJson.Children.Add(responseBody);
         jsonColumns.Children.Add(requestJson); jsonColumns.Children.Add(responseJson); Grid.SetColumn(responseJson, 1); requestPanel.Children.Add(jsonColumns);
         body.Children.Add(Text("调试请求使用当前生效的 RCS 配置；实时预览与本轮结果独立。"));
         InitializeBatch(body);
@@ -303,7 +303,7 @@ internal sealed partial class StationDebugControl : UserControl
         send.Content = sendCommand is null ? "发送请求" : "查看发送结果";
         send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
             (sendCommand is not null || !requestDirty && current is { CanSend: true } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
-        left.IsEnabled = right.IsEnabled = !busy; left.Background = position == "left" ? Brush("#E8F1FF") : Brushes.White; right.Background = position == "right" ? Brush("#E8F1FF") : Brushes.White;
+        left.IsEnabled = right.IsEnabled = !busy; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");
     }
     void LayoutColumns()
     {
@@ -366,7 +366,12 @@ internal sealed partial class StationDebugControl : UserControl
         if (session is not null) _ = CloseOwnedScanAsync(session, round);
         else if (manual is not null && runtime is { } id) _ = CloseOwnedManualAsync(manual, id);
     }
-    static Border Panel(UIElement child) => new() { Child = child, Background = Brushes.White, BorderBrush = Brush("#DFE5ED"), BorderThickness = new(1), CornerRadius = new(7), Padding = new(12, 8, 12, 10) };
+    static Border Panel(UIElement child)
+    {
+        var panel = new Border { Child = child, BorderThickness = new(1), CornerRadius = new(7), Padding = new(12, 8, 12, 10) };
+        panel.SetResourceReference(Border.BackgroundProperty, "Surface"); panel.SetResourceReference(Border.BorderBrushProperty, "Line"); return panel;
+    }
+    // Only the photo viewer keeps fixed colours: a dark backdrop and the green code outline drawn on the image.
     static SolidColorBrush Brush(string color) => new((Color)ColorConverter.ConvertFromString(color));
     static TextBlock Text(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 4, 0, 6) };
     static TextBlock Heading(string text) => new() { Text = text, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 4, 0, 8) };

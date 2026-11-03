@@ -16,7 +16,9 @@ internal static partial class MvsVerification
             "a real empty decode still exposes a video frame and completed/empty counters without a business observation");
         await source.SetInspectionAsync(new("paused-inspection", true, _ => true) { DecodeAllowed = _ => false }, default);
         await Task.Delay(210); source.ReadPreview(); api.Frames.Enqueue(pixels.Frame with { Number = 2 });
-        await Until(() => source.ReadPreview()?.FrameNumber == 2);
+        // Preview is published before the capture owner returns the native loan.
+        // Wait for that actual boundary before asserting the unchanged ownership contract.
+        await Until(() => source.ReadPreview()?.FrameNumber == 2 && api.Freed == 2 && source.ReadDiagnostics().DecodePaused);
         Check(source.ReadDiagnostics() is { Frames: 2, DecodeCompleted: 1, DecodePaused: true, State: "DecodePaused" } && decoder.Calls == 1 && delivered == 0 && api.Freed == 2,
             "paused single-round decoding continues live video and releases native loans without decoding or sending a candidate");
         await Task.Delay(3100);

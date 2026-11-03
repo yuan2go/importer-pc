@@ -47,8 +47,8 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
-          if ([int]$testCounters.executed -lt 8 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
+          if ([int]$testCounters.executed -lt 10 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
+          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
@@ -59,6 +59,12 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           ./scripts/verify-industrial-format.ps1
+      - name: Passive performance collector and statistics regression
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python -m unittest discover -s scripts -p test_dual_camera_performance.py -v
+          exit $LASTEXITCODE
       - name: Release policy unit boundaries (no publisher qualification)
         shell: pwsh
         run: |

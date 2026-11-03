@@ -79,7 +79,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     {
         this.vm = vm; this.settings = settings; this.details = details; api = vm.Application as ICameraInspection;
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
-        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; Foreground = ColorBrush("#18212D"); Background = Brushes.White;
+        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(ForegroundProperty, "Ink"); SetResourceReference(BackgroundProperty, "Surface");
         var root = new DockPanel(); var header = new StackPanel { Margin = new(24, 14, 24, 8) };
         header.Children.Add(new TextBlock { Text = "相机与业务调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis }); banner.Child = state; header.Children.Add(banner);
         var actions = Wrap(left, right); header.Children.Add(actions); header.Children.Add(new ScrollViewer { Content = feedback, MaxHeight = 76, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
@@ -98,7 +98,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
         {
             if (selectedFrame is not { } frame) throw new InvalidOperationException("请选择可用原图。");
             var dialog = new SaveFileDialog { Title = "导出对应原图及身份JSON", Filter = "无损PNG原图|*.png", InitialDirectory = "D:\\", FileName = frame.Id + ".png", OverwritePrompt = false };
-            if (dialog.ShowDialog(Window.GetWindow(this)) == true) { var value = await Api.ExportCameraOriginalAsync(frame.Id, dialog.FileName, t); Say("原图已导出，SHA256：" + value.Sha256); }
+            if (dialog.ShowDialog(Window.GetWindow(this)) == true) { var value = await Api.ExportCameraOriginalAsync(frame.Id, dialog.FileName, t); Say("原图已导出：" + dialog.FileName); }
         });
         business.ItemsSource = businessRows; frames.ItemsSource = frameRows; tabs.Items.Add(new TabItem { Header = "业务扫描（原审计）", Content = business }); tabs.Items.Add(new TabItem { Header = "关联帧 / 未读码", Content = frames }); tabs.SelectedIndex = 0;
         tabs.SelectionChanged += async (_, e) => { if (!ReferenceEquals(e.Source, tabs)) return; selection = null; selectionGeneration++; ClearImage(); await PollAsync(); };
@@ -116,7 +116,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
         {
             var id = viewedSession.Length == 0 ? status?.SessionId : viewedSession; if (id is null) throw new InvalidOperationException("请先选择会话。");
             var dialog = new SaveFileDialog { Title = "导出原图、识别记录与覆盖清单", Filter = "诊断证据ZIP|*.zip", InitialDirectory = "D:\\", FileName = "camera-inspection-" + id + ".zip", OverwritePrompt = false };
-            if (dialog.ShowDialog(Window.GetWindow(this)) == true) { var value = await Api.ExportCameraInspectionAsync(id, dialog.FileName, t); Say($"已导出 {value.Frames} 帧记录，缺失/轮替原图 {value.MissingImages} 张。SHA256：{value.Sha256}"); }
+            if (dialog.ShowDialog(Window.GetWindow(this)) == true) { var value = await Api.ExportCameraInspectionAsync(id, dialog.FileName, t); Say($"已导出 {value.Frames} 帧记录" + (value.MissingImages > 0 ? $"，其中 {value.MissingImages} 张原图已被覆盖或缺失" : "") + "。"); }
         });
         purge.Click += async (_, _) => await Run(async t =>
         {
@@ -189,9 +189,10 @@ internal sealed class StationDebugEvidenceControl : UserControl
         try
         {
             var current = await Api.CameraInspectionStatusAsync(t); if (!Current(version)) return; status = current;
-            banner.Background = ColorBrush("#F2F5F8");
+            banner.SetResourceReference(Border.BackgroundProperty, "Soft");
             state.Text = (current.State == "Active" ? "调试采集 · 正常供包继续" : "调试记录 · " + SessionText(current.State)) +
-                $"\n{current.Detail}\n帧记录 {current.Frames:N0} · 原图 {current.ImageBytes / 1048576d:N1} MiB · 轮替 {current.EvictedImages:N0} · 诊断接收缺口 {current.MissingFrames:N0}" + (current.ExpiresAt is { } expires ? " · 截止 " + expires.ToLocalTime().ToString("HH:mm:ss") : "");
+                $"\n{current.Detail}\n已记录 {current.Frames:N0} 帧 · 原图 {current.ImageBytes / 1048576d:N1} MiB" + (current.EvictedImages > 0 ? $" · 最早的 {current.EvictedImages:N0} 张原图已被覆盖" : "") +
+                (current.MissingFrames > 0 ? $" · 漏收 {current.MissingFrames:N0} 帧" : "") + (current.ExpiresAt is { } expires ? " · " + expires.ToLocalTime().ToString("HH:mm") + " 自动结束" : "");
             identity.Text = (position == "left" ? vm.LeftConnectionDiagnosis : vm.RightConnectionDiagnosis) + "  ·  " + Position.CameraAddress + "  ·  " + Position.ReaderIdentity;
             simulation.Visibility = vm.Snapshot?.Configuration.Effective.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
             var stateKey = current.SessionId + ":" + current.State;
@@ -207,14 +208,14 @@ internal sealed class StationDebugEvidenceControl : UserControl
                     var page = await Api.ReadCameraBusinessAsync(Position.ReaderId, businessCursor, businessInitialized ? null : long.MaxValue, 200, t); if (!Current(version)) return;
                     if (!businessInitialized) businessRows.Clear(); Merge(businessRows, page.Rows.Select(x => new Row { Business = x }));
                     businessCursor = businessInitialized ? page.Cursor : page.HighWater; businessOlder = businessRows.Count == 0 ? page.FirstSequence : businessRows.Min(x => x.Sequence); businessNewer = page.LastSequence == 0 ? businessCursor : page.LastSequence; businessInitialized = true;
-                    coverage.Text = $"可视区最近 {businessRows.Count} 条；审计游标 {businessCursor:N0}/{page.HighWater:N0}。" + (page.HasMore ? "按页追赶；原审计不受显示容量限制。" : "本次已追平。") + "\n" + page.Coverage;
+                    coverage.Text = $"显示最近 {businessRows.Count} 条，共 {page.HighWater:N0} 条" + (page.HasMore ? "，正在加载更早的记录。" : "。");
                 }
                 else if (viewedSession.Length != 0)
                 {
                     var page = await Api.ReadCameraFramesAsync(viewedSession, Position.ReaderId, frameCursor, framesInitialized ? null : long.MaxValue, 200, t); if (!Current(version)) return;
                     if (!framesInitialized) frameRows.Clear(); Merge(frameRows, page.Rows.Select(x => new Row { Frame = x }));
                     frameCursor = framesInitialized ? page.Cursor : page.Rows.Length == 0 ? page.HighWater : page.Rows.Max(x => x.Sequence); framesInitialized = true;
-                    coverage.Text = $"可视区最近 {frameRows.Count} 帧；持久游标 {frameCursor:N0}/{page.HighWater:N0}。完整记录可分页/导出；轮替原图明确标记。";
+                    coverage.Text = $"显示最近 {frameRows.Count} 帧，共 {page.HighWater:N0} 帧；完整记录可导出。";
                 }
             }
             var allWatched = businessRows.Concat(frameRows).Select(x => x.OperationId).OfType<string>().Distinct().ToArray();
@@ -279,7 +280,8 @@ internal sealed class StationDebugEvidenceControl : UserControl
         if (raw.Metadata.Id != frame.Id || raw.Metadata.DeviceId != Position.ReaderId || raw.Gray8.LongLength != (long)frame.Width * frame.Height) throw new InvalidDataException("原图与选中记录身份不一致。");
         original = raw; var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, raw.Gray8, frame.Width); bitmap.Freeze(); image.Source = bitmap;
         imageLayer.Width = image.Width = marks.Width = frame.Width; imageLayer.Height = image.Height = marks.Height = frame.Height; symbols.ItemsSource = frame.Symbols; symbols.SelectedIndex = frame.Symbols.Length > 0 ? 0 : -1;
-        caption.Text = $"原始 Mono8 · 帧 {frame.FrameNumber} · 主机接收时间 {frame.CapturedAt.ToLocalTime():HH:mm:ss.fff} · {frame.Width}×{frame.Height}\n识别到 {frame.Symbols.Length} 个条码 · 可标注 {frame.Symbols.Count(x => x.Corners.Length == 4)} 个 · 解码 {frame.DecodeMilliseconds:N1} ms · 前序视频跳帧 {frame.VideoFramesSkippedBefore}\n原始像素 SHA256：{frame.OriginalSha256}"; ApplyZoom();
+        caption.Text = $"第 {frame.FrameNumber} 帧 · {frame.CapturedAt.ToLocalTime():HH:mm:ss.fff} · {frame.Width}×{frame.Height}\n识别到 {frame.Symbols.Length} 个条码 · 识别用时 {frame.DecodeMilliseconds:N0} ms";
+        caption.ToolTip = $"原图像素校验值（SHA256）：{frame.OriginalSha256}\n此前跳过的视频帧：{frame.VideoFramesSkippedBefore}"; ApplyZoom();
     }
     async Task RefreshOperation(string id, long version, CancellationToken t)
     {
@@ -309,7 +311,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     static string Protect(string value, int limit) => DiagnosticText.Protect(value[..Math.Min(value.Length, limit)]) + (value.Length > limit ? "\n[显示已截断]" : "");
     static Brush ColorBrush(string color) => (Brush)new BrushConverter().ConvertFromString(color)!;
     static Button Button(string text) => new() { Content = text, MinHeight = 44, Padding = new(12, 6, 12, 6), Margin = new(0, 0, 8, 6) };
-    static TextBlock Label(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Foreground = ColorBrush("#52606F"), Margin = new(0, 4, 0, 6) };
+    static TextBlock Label(string text) { var label = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 4, 0, 6) }; label.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); return label; }
     static TextBlock Title(string text) => new() { Text = text, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 8, 0, 8) };
     static TextBox Number(string text) => new() { Text = text, MaxLength = 6, MinWidth = 80, MaxWidth = 120 };
     static TextBox ReadOnly() => new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Height = 190, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };

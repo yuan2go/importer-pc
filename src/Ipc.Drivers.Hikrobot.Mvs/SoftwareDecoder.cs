@@ -17,6 +17,7 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
     BarcodeReader? reader, thresholdReader;
     readonly MvsTimings timings = new();
     public MvsTimingSnapshot TimingSnapshot => timings.Snapshot();
+    internal object DiagnosticConfiguration => new { Encoding = charset, Formats = settings?.Formats ?? ["All"], TryInvert = settings?.TryInvert ?? true };
     public bool PreservesInput => true;
     readonly Encoding encoding = charset switch {
         "utf-8" => new UTF8Encoding(false, true),

@@ -60,6 +60,7 @@ if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); retu
 if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--live-devices-30")) { await LiveDevices30.Run(workspace, root); return; }
+if (args.Contains("--dual-camera-performance")) { await DualCameraPerformance.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
 if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResources(workspace, root); return; }

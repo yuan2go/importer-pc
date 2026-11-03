@@ -182,7 +182,7 @@ public partial class ParcelViewModel
     public string ConfigurationSaveGuidance => !Fresh ? "状态读取中断，恢复后才能检查和保存；已填写的内容会保留。" :
         Busy ? "正在执行当前操作，请等待结果。" :
         !CanConfigure ? !IsManagementMode ? "请进入管理模式后保存；已填写的内容保留。" : Snapshot?.ApplicationId == "sportmaster" ? "当前仍有保存或备份正在执行，请等待完成后再保存；已填写的内容保留。" : "保存前需要暂停供包，并等待当前请求和维护操作完成；已填写的内容保留。" :
-        "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查。" + ConfigurationActivationGuidance;
+        "保存条件已满足。核对更改后保存，备注可不填；提交时由业务服务再次检查。" + ConfigurationActivationGuidance;
     public string ConfigurationEditorState
     {
         get

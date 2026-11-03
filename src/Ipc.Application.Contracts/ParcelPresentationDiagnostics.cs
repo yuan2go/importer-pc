@@ -13,6 +13,7 @@ public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, strin
     // Bounded display metadata only; neither selection nor admission authority.
     public int CandidateCount { get; init; } = SingleCode is null ? 0 : 1;
     public long SourceSequence { get; init; }
+    public string? SourceEventId { get; init; }
     // Same-process display deadline only. Expiry grants no business/retry authority.
     public int PendingDisplayBudgetMs { get; init; } = 10000;
 }

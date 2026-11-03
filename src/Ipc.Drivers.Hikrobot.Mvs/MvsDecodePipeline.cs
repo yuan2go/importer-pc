@@ -36,7 +36,7 @@ internal sealed partial class MvsAcquisition
         var started = Stopwatch.GetTimestamp();
         ArrayPool<byte>.Shared.Return(work.Pixels, true);
         var clearMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds; Timings.Record("image.clear-return", clearMs);
-        if (work.Trace is { } trace) Timings.Frame(trace with { ClearMs = clearMs });
+        if (work.Trace is { } trace) Timings.Frame(trace with { ClearMs = clearMs, Width = work.Frame.Width, Height = work.Frame.Height });
     }
     void OfferDecode(DecodeWork work)
     {
@@ -85,7 +85,8 @@ internal sealed partial class MvsAcquisition
                 {
                     RejectFrame(work.Frame.Number, error, true);
                     work.Trace = new(work.Frame.Number, work.ObservedAt, work.Frame.DeviceTimestampRaw, work.Frame.HostTimestampRaw,
-                        work.CopyMs, work.ReleaseMs, Timings.LastMs("decode"), 0, 0, 0, 0, false);
+                        work.CopyMs, work.ReleaseMs, Timings.LastMs("decode"), 0, 0, 0, 0, false)
+                        { DecodeAttempted = true, RejectedFrame = true, DecodeQueueMs = Timings.LastMs("host.decode-queue-wait") };
                 }
                 finally { ReturnWork(work, work.SupersededBeforeDecode); decodeIdle.Set(); }
             }
@@ -168,7 +169,8 @@ internal sealed partial class MvsAcquisition
             original?.Dispose();
             lock (gate) emptyFrames++;
             work.Trace = new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
-                work.CopyMs, work.ReleaseMs, Timings.LastMs("decode"), 0, 0, 0, 0, false) { OriginalCopyMs = Timings.LastMs("image.original-copy"), DecodeQueueMs = queueMs };
+                work.CopyMs, work.ReleaseMs, Timings.LastMs("decode"), 0, 0, 0, 0, false) { DecodeAttempted = true, OriginalCopyMs = Timings.LastMs("image.original-copy"), DecodeQueueMs = queueMs,
+                    HostDeliveryToDecodeMs = Stopwatch.GetElapsedTime(deliveredTicks, decodedTicks).TotalMilliseconds };
         }
 
         else
@@ -201,7 +203,8 @@ internal sealed partial class MvsAcquisition
                 if (!delivered) { lock (gate) rejected++; }
                 work.Trace = new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
                     work.CopyMs, work.ReleaseMs, Timings.LastMs("decode"), 0,
-                    Timings.LastMs("host.observed-to-receiver"), Timings.LastMs("application.durable-handoff"), codes.Length, delivered) { OriginalCopyMs = Timings.LastMs("image.original-copy"), DecodeQueueMs = queueMs };
+                    Timings.LastMs("host.observed-to-receiver"), Timings.LastMs("application.durable-handoff"), codes.Length, delivered) { DecodeAttempted = true, ObservationId = observationIdentity, OriginalCopyMs = Timings.LastMs("image.original-copy"), DecodeQueueMs = queueMs,
+                        HostDeliveryToDecodeMs = Stopwatch.GetElapsedTime(deliveredTicks, decodedTicks).TotalMilliseconds };
             }
             Timings.Record("host.observed-to-handoff-complete", Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds);
             Undelivered = null;

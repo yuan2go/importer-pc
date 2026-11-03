@@ -76,13 +76,14 @@ static partial class Program
             CaptureInternal(evidence, "ui24-save-review", (FrameworkElement)review.Content, lines); review.Close();
             model.Policy.TimeoutMs = h.Config.TimeoutMs.ToString();
             await window.ShowDetailsAsync(admitted.OperationId!); await Until(() => window.ViewModel.Selected?.Id == admitted.OperationId);
-            Check(Descendants(window).OfType<DataGrid>().Any(g => g.Columns.Any(c => Equals(c.Header, "已归档") && c.IsReadOnly)), "archive column is explicit read-only fact");
+            Check(Descendants(window).OfType<DataGrid>().Any(g => g.Columns.Any(c => Equals(c.Header, "条码 / 图片")) && g.Columns.All(c => !Equals(c.Header, "已归档"))),
+                "history grid shows station facts only; the storage archive flag is not a column");
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Check(Descendants(window).OfType<TextBox>().Any(t => t.IsVisible && AutomationProperties.GetName(t) == "历史完整条码"), "history scanner input is visible without opening advanced filters");
             CaptureInternal(evidence, "ui24-history-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             window.UpdateLayout();
-            var historyGrid = Descendants(window).OfType<DataGrid>().Single(g => g.Columns.Any(c => Equals(c.Header, "已归档")));
+            var historyGrid = Descendants(window).OfType<DataGrid>().Single(g => g.Columns.Any(c => Equals(c.Header, "条码 / 图片")));
             Check(Descendants(historyGrid).OfType<DataGridRow>().Any(r => r.ActualHeight >= 39 && r.TransformToAncestor(window).TransformBounds(new Rect(r.RenderSize)).Bottom <= window.ActualHeight), "small history viewport preserves an actual complete result row");
             CaptureInternal(evidence, "ui24-history-800", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 1366, 768);

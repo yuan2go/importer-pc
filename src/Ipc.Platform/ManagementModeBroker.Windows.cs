@@ -16,7 +16,7 @@ public static partial class ManagementModeBroker
     static string CanonicalRoot(string root) => WindowsStoragePaths.CanonicalDirectory(root);
     public static string ProtectedRoot(string root) => Path.Combine(WindowsStoragePaths.AdministratorRoot, Key(root));
     static string ServiceName(string root) => "ImporterPc.Administrator." + Key(root);
-    static string PipeName(string root) => "ImporterPc.ManagementMode.v3." + Key(root);
+    static string PipeName(string root) => "ImporterPc.ManagementMode.v" + ProtocolVersion.ToString(System.Globalization.CultureInfo.InvariantCulture) + "." + Key(root);
     public static bool IsManaged(string root)
     {
         if (!OperatingSystem.IsWindows()) return false;

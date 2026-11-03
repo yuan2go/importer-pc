@@ -90,6 +90,8 @@
        <MenuItem Header="设置" Click="Maintenance_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="日志" Click="Logs_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="调试" Click="Debug_Click" Visibility="{Binding ManagementModeVisibility}"/>
+       <Separator/>
+       <MenuItem Header="使用帮助" InputGestureText="F1" Click="Help_Click"/>
       </MenuItem>
      </Menu>
     </Grid>
@@ -106,6 +108,7 @@
     </Style>
    </Border.Style>
    <DockPanel Margin="12,20,12,12">
+    <Button Content="使用帮助" Click="Help_Click" DockPanel.Dock="Bottom" MinHeight="44" HorizontalContentAlignment="Left" Style="{StaticResource StationButton}" ToolTip="作业卡、故障说明、版本与诊断导出（F1）"/>
     <StackPanel>
      <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="作业" Click="Workstation_Click" Margin="0,0,0,8" HorizontalContentAlignment="Left">
       <Button.Style>

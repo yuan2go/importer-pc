@@ -41,22 +41,39 @@ jobs:
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true --logger "trx;LogFileName=core.trx" --results-directory .artifacts/core
+          dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true --settings scripts/industrial-coverage.runsettings --collect "Code Coverage;Format=cobertura" --logger "trx;LogFileName=core.trx" --results-directory .artifacts/core
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
-          if ([int]$testCounters.executed -lt 10 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
+          if ([int]$testCounters.executed -lt 25 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
+          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
             if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required suite missing or incomplete: $suite" }
+          }
+          foreach ($action in @('ReviewRollback', 'Rollback', 'ReviewVersionPruning', 'PruneVersions', 'ResumeVersionPruning', 'ReviewOpaqueRemoval', 'OpaqueUninstall')) {
+            $matched = @($actualResults | Where-Object { $_.testName.StartsWith('NewVersionActionRequiresBegin (') -and $_.testName.Contains('"' + $action + '"') })
+            if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Helper Begin gate test missing: $action" }
+          }
+          foreach ($method in @('UnknownAndOversizedTerminalRemainUnknown', 'VersionReviewUsesBoundedSummary', 'VersionReceiptDisclosesDisplayTruncation')) {
+            $matched = @($actualResults | Where-Object { $_.testName -eq $method })
+            if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required helper boundary test missing: $method" }
           }
       - name: Incremental code format
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
           ./scripts/verify-industrial-format.ps1
+      - name: Verify actual child-process product coverage
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python -m unittest discover -s scripts -p test_product_coverage.py -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python scripts/verify_product_coverage.py --results .artifacts/core
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Get-Content -LiteralPath .artifacts/core/product-coverage/summary.md | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
       - name: Passive performance collector and statistics regression
         shell: pwsh
         run: |
@@ -69,13 +86,54 @@ jobs:
           . ./scripts/project-environment.ps1
           python -m unittest discover -s scripts -p test_commercial_delivery.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_deployment_compatibility.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_release_documents.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           ./scripts/test-signature-policy.ps1
       - name: Keep actual results including failures
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: core-results-${{ github.sha }}
-          path: .artifacts/core
+          path: |
+            .artifacts/core/core.trx
+            .artifacts/core/product-coverage/product.cobertura.xml
+            .artifacts/core/product-coverage/summary.json
+            .artifacts/core/product-coverage/summary.md
+          if-no-files-found: error
+          retention-days: 14
+  operator-print:
+    runs-on: windows-2025
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Build source-bound searchable A4 guides
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python -m venv .artifacts/print-env
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .artifacts/print-env/Scripts/python.exe -m pip install --require-hashes --only-binary=:all: -r scripts/operator-print.requirements.txt
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .artifacts/print-env/Scripts/python.exe -m unittest discover -s scripts -p test_operator_print.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .artifacts/print-env/Scripts/python.exe scripts/build-operator-print.py --output .artifacts/operator-print/output/pdf
+          exit $LASTEXITCODE
+      - name: Keep generated guides and exact source manifest
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: operator-print-${{ github.sha }}
+          path: |
+            .artifacts/operator-print/output/pdf/*.pdf
+            .artifacts/operator-print/output/pdf/print-manifest.json
+            .artifacts/operator-print/output/pdf/OFL.txt
           if-no-files-found: error
           retention-days: 14
   windows-build:

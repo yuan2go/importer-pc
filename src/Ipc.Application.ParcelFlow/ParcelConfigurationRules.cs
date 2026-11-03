@@ -5,9 +5,10 @@ namespace Ipc.Application.ParcelFlow;
 // Shared format/shape rules only. The three Applications retain their business rules.
 public static partial class ParcelConfigurationRules
 {
+    public const int CurrentConfigurationSchema = 3;
     public static string[] Validate(ParcelConfiguration c, string application, string[] positionRoles)
     {
-        if (c.SchemaVersion != 3 || c.Topology is null) return ["仅支持第三版完整拓扑配置；请保留原配置并使用当前模板。"];
+        if (c.SchemaVersion != CurrentConfigurationSchema || c.Topology is null) return ["仅支持第三版完整拓扑配置；请保留原配置并使用当前模板。"];
         if (c.MaintenanceLogin is not null) return ["旧维护认证配置不再支持；管理密码由管理模式保护，原配置不得自动转换。"];
         List<string> e = [];
         if (c.OperationsPolicy is { } operations)

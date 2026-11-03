@@ -15,6 +15,13 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     string? ManagementPassword = null, StartupRetentionPlan? RetentionPlan = null)
 {
     public ManagementPasswordRecoveryChallenge? RecoveryChallenge { get; init; }
+    public DeploymentRollbackPlan? RollbackPlan { get; init; }
+    public string? RollbackOperationId { get; init; }
+    public DeploymentPrunePlan? VersionPrunePlan { get; init; }
+    public bool OrdinaryStartupConfirmed { get; init; }
+    public DeploymentOpaqueRemovalPlan? OpaqueRemovalPlan { get; init; }
+    public bool SkipBackup { get; init; }
+    public string? RemovalOperationId { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
 }
@@ -133,8 +140,10 @@ public static partial class ParcelStartupServices
         => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("ResumeRemoval", ExpectedHash: expectedHash)) ?? throw new IOException("缺少原清理回执。"));
     public static Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash,string plan,string backup)
         => RemoveAsync(expectedRegistrationHash,plan,backup,null,CancellationToken.None);
-    public static async Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash,string plan,string backup,IProgress<MaintenanceProgress>? progress,CancellationToken token)
-        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("Uninstall",ExpectedHash:expectedRegistrationHash,Destination:backup,ChangePlanIdentity:plan),maintenanceProgress:progress,cancellationToken:token)??throw new IOException("缺少卸载回执"));
+    public static async Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash,string plan,string backup,IProgress<MaintenanceProgress>? progress,CancellationToken token,string? operationId = null)
+        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("Uninstall",ExpectedHash:expectedRegistrationHash,Destination:backup,ChangePlanIdentity:plan) { RemovalOperationId = operationId ?? Wire.Id() },maintenanceProgress:progress,cancellationToken:token)??throw new IOException("缺少卸载回执"));
+    public static async Task<WindowsRemovalReceipt> CloseUncommittedRemovalAsync(string operationId, string expectedHash)
+        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("CloseUncommittedRemoval", ExpectedHash: expectedHash) { RemovalOperationId = operationId }) ?? throw new IOException("缺少原卸载核对回执。"));
     public static async Task<WindowsRemovalReceipt> ResumeRemovalAsync(DeploymentMedia media, string expectedRegistrationHash)
     {
         var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少退役登记");
@@ -206,6 +215,23 @@ public static partial class ParcelStartupServices
         execution?.Checkpoint();
         switch (request.Action)
         {
+            case "ReviewRollback": return await ReviewRollbackCore(request, execution);
+            case "ReviewOpaqueRemoval": return ReviewOpaqueRemovalCore(request, execution);
+            case "OpaqueUninstall":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                var opaquePlan = request.OpaqueRemovalPlan ?? throw new InvalidDataException("缺少仅移除程序的原计划。");
+                if (opaquePlan.ApplicationId != ApplicationId || !request.SkipBackup) throw new InvalidDataException("仅移除程序的业务或备份选择不匹配。");
+                return Wire.Encode(WindowsDeploymentSetup.RemoveWithoutReadableConfiguration(opaquePlan, RemoveShortcuts, execution));
+            case "ReviewVersionPruning": return await ReviewVersionPruningCore(request, execution);
+            case "PruneVersions": return await ExecuteVersionPruningCore(request, execution);
+            case "InspectVersionPruning": return await InspectVersionPruningCore(request, resume: false, execution);
+            case "ResumeVersionPruning": return await InspectVersionPruningCore(request, resume: true, execution);
+            case "KeepVersionPruningRemainder":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                return Wire.Encode(VersionPruningReceiptSummary(WindowsDeploymentSetup.KeepVersionPruningRemainder(ApplicationId, request.RollbackOperationId!)));
+            case "Rollback": return await ExecuteRollbackCore(request, execution);
+            case "InspectRollback": return await InspectRollbackCore(request, repair: false);
+            case "RepairRollback": return await InspectRollbackCore(request, repair: true);
             case "ExpireHistory": return Wire.Encode(await Core(request.Launch!, installer: true).ExecuteRetentionAsync(request.RetentionPlan ?? throw new InvalidDataException("缺少固定原维护计划")));
             case "InspectManagementPasswordRecovery":
                 MachineRuntimePolicy.RequireExtensionInstallerAuthority();
@@ -286,15 +312,19 @@ public static partial class ParcelStartupServices
             case "ReviewRemoval":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 if (Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) != request.ExpectedHash) throw new InvalidOperationException("安装登记已变化，请重新读取。");
+                if (WindowsDeploymentSetup.InspectRemoval(ApplicationId).Status != "Installed") throw new InstallationOutcomeUnknownException("请先核对并结束原卸载，不创建新卸载或备份。");
                 var originalRemoval = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少原部署。");
                 return Wire.Encode(await Core(new(originalRemoval.ConfigurationDirectory, originalRemoval.DataRoot, null, null), installer: true)
                     .PlanChangeAsync("Uninstall", request.Destination, execution ?? throw new InvalidOperationException("缺少卸载预检执行上下文。")));
+            case "CloseUncommittedRemoval":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                return Wire.Encode(WindowsDeploymentSetup.CloseUncommittedRemoval(ApplicationId, request.RemovalOperationId!, request.ExpectedHash!));
             case "Uninstall":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var removing = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("没有原部署登记");
                 WindowsRemovalReceipt? removed = null;
                 await Core(new(removing.ConfigurationDirectory, removing.DataRoot, null, null), installer: true).ExecuteChangeAsync(request.ChangePlanIdentity!, "Uninstall", request.Destination!,
-                    () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); removed = WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!, _ => { }, RemoveShortcuts, null, execution); return Task.CompletedTask; }, execution);
+                    () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); removed = WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!, _ => { }, RemoveShortcuts, null, execution, operationId: request.RemovalOperationId ?? throw new InvalidDataException("缺少原卸载身份。")); return Task.CompletedTask; }, execution);
                 return Wire.Encode(removed!);
             case "ResumeRemoval":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
@@ -310,6 +340,7 @@ public static partial class ParcelStartupServices
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var install = request.Deployment ?? throw new InvalidDataException("Missing deployment");
                 if (install.ApplicationId != ParcelAssembly.Definition().Id) throw new InvalidDataException("Helper belongs to another Application");
+                if (ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(install.DataRoot, install.ProgramRoot);
                 RequireMatchingMedia(install,execution?.Token??default);
                 _ = DeploymentComponentReviewing.Inspect(install,execution?.Token??default);
                 ValidateSeed(install); // Validate bounded source/identity and ordinary paths before creating even an owner lease.
@@ -527,27 +558,6 @@ public static partial class ParcelStartupServices
             if (line.Length == 65536) throw new IOException("维护回执超出预算"); line.Append(character[0]);
         }
         return null; // A truncated final line never proves completion.
-    }
-    internal static string? CompleteMaintenanceResponse(string? response, int exitCode)
-    {
-        string? failure = null, result = null;
-        try
-        {
-            if (response is null || response.Length > 65536) throw new IOException("维护终态回执缺失");
-            using var document = System.Text.Json.JsonDocument.Parse(response);
-            var terminal = document.RootElement.GetProperty("Status").GetString();
-            if (terminal is not ("Completed" or "Failed") || terminal == "Completed" && exitCode != 0 || terminal == "Failed" && exitCode != 2) throw new IOException("维护终态与进程结果不一致");
-            if (terminal == "Failed") failure = document.RootElement.GetProperty("Error").GetString() ?? "维护未完成";
-            if (document.RootElement.TryGetProperty("Result", out var value))
-            {
-                if (value.ValueKind is not (System.Text.Json.JsonValueKind.String or System.Text.Json.JsonValueKind.Null)) throw new IOException("维护终态结果格式无效");
-                result = value.ValueKind == System.Text.Json.JsonValueKind.String ? value.GetString() : null;
-            }
-        }
-        catch (Exception error) when (error is IOException or System.Text.Json.JsonException or KeyNotFoundException or InvalidOperationException)
-        { throw new InstallationOutcomeUnknownException("未取得可信维护终态，请先核对安装记录。", error); }
-        if (failure is not null) throw new IOException(failure);
-        return result;
     }
     static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "ReviewDeployment";
     static void RequireProtectedHelper(string directory)

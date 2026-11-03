@@ -13,6 +13,7 @@ public sealed record ManagementModeSessionGrant(string SessionId, string Token, 
 
 public static partial class ManagementModeBroker
 {
+    public const int ProtocolVersion = 3;
     internal const int MaximumFrame = 16384;
     internal static async Task<byte[]> ReadFrame(Stream stream, CancellationToken token)
     {

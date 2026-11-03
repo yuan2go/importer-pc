@@ -11,6 +11,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public readonly ParcelConfiguration Config;
     public ManualFactory Factory = null!;
     public ParcelRuntime App = null!;
+    public Func<IDisposable?>? RootOwnership { get; set; }
     public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true, int? maximumOperations = null, long requestIdCount = 100000, RunMode mode = RunMode.Production)
     {
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
@@ -29,7 +30,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public async Task StartAsync(bool ready = true)
     {
         Factory = new(Launch);
-        App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { } };
+        App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { }, AcquireRootOwnership = RootOwnership };
         await App.StartAsync(default);
         if (ready) await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true));
     }
@@ -45,6 +46,8 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     {
         readonly ParcelCapabilityFactory validation = new(launch);
         public bool RcsOffline;
+        public bool FailDisposal { get; set; }
+        public int CreateCalls { get; private set; }
         public readonly Dictionary<string, SilentCamera> Cameras = [];
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validation.Normalize(c);
         public void Validate(ParcelConfiguration c) => validation.ValidateStructure(c);
@@ -53,6 +56,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public CapabilityRequirements Requirements(CapabilityBinding b) => validation.Requirements(b);
         public ParcelPorts Create(ParcelConfiguration c)
         {
+            CreateCalls++;
             var readers = new Dictionary<string, IControlledObservationSource>();
             foreach (var reader in ParcelBindings.Readers(c))
             {
@@ -63,7 +67,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             return new(readers[c.Reader.DeviceId], null, new RcsHealth(wcs, this), null,
                 new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-manual-rcs-implementation" }, Readers: readers);
         }
-        public ValueTask DisposeAsync() => validation.DisposeAsync();
+        public ValueTask DisposeAsync() => FailDisposal ? ValueTask.FromException(new IOException("synthetic factory still owns resources")) : validation.DisposeAsync();
     }
     sealed class RcsHealth(Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService inner, ManualFactory owner) : IWcsPort, IWcsRequestPreparer
     {

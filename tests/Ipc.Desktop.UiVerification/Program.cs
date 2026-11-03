@@ -99,8 +99,9 @@ static partial class Program
                 else if (args.Contains("--dual-camera-diagnostics")) await VerifyDualCameraDiagnostics(root, evidence, lines);
                 else if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
                 else if (args.Contains("--installer-lifecycle")) await VerifyInstallerLifecycle(evidence, lines);
-                else if (args.Contains("--maintenance-progress-ui")) await VerifyMaintenanceProgressNative(evidence,lines);
-                else if (args.Contains("--installer-first-run-ui")) { await VerifyInstallerFirstRunUi(root, evidence, lines); await VerifyMaintenanceProgressNative(evidence,lines); }
+                else if (args.Contains("--maintenance-progress-ui")) await VerifyMaintenanceProgressNative(evidence, lines);
+                else if (args.Contains("--industrial-maintenance-ui")) await VerifyIndustrialMaintenanceUi(evidence, lines, args.Contains("--baseline"));
+                else if (args.Contains("--installer-first-run-ui")) { await VerifyInstallerFirstRunUi(root, evidence, lines); await VerifyMaintenanceProgressNative(evidence, lines); }
                 else if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
                 else if (args.Contains("--management-mode")) await VerifyOperatorAdministration(root, evidence, lines);
                 else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);
@@ -114,6 +115,7 @@ static partial class Program
                 else if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--audit-performance")) await VerifyAuditPerformance(root, evidence, lines);
                 else if (args.Contains("--visual-productization")) await VerifyVisualProductization(root, evidence, lines, args.Contains("--baseline"), args.Contains("--interactive"));
+                else if (args.Contains("--industrial-help")) await VerifyIndustrialHelp(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
                 else if (args.Contains("--comm-native-pages")) await VerifyCommercialPages(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
                 else await Verify(root, evidence, lines, args.Contains("--commercial-productization-native")).WaitAsync(TimeSpan.FromSeconds(90));
                 desktop.Shutdown(0);
@@ -129,8 +131,11 @@ static partial class Program
         void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); lines.Add("PASS " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        config = config with { Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with
-        { InstanceId = "native.operator", Target = "reference://native-operator", Parameters = new() { ["subjects"] = "alice" } } };
+        config = config with
+        {
+            Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with
+            { InstanceId = "native.operator", Target = "reference://native-operator", Parameters = new() { ["subjects"] = "alice" } }
+        };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         IBusinessRuntime runtime;

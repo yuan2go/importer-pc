@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <IncludeTestAssembly>False</IncludeTestAssembly>
+          <CodeCoverage>
+            <CollectFromChildProcesses>True</CollectFromChildProcesses>
+            <EnableDynamicManagedInstrumentation>True</EnableDynamicManagedInstrumentation>
+            <EnableDynamicNativeInstrumentation>False</EnableDynamicNativeInstrumentation>
+            <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
+            <ModulePaths>
+              <Include>
+                <ModulePath>.*Ipc\.Platform\.dll$</ModulePath>
+                <ModulePath>.*Ipc\.Application\.Contracts\.dll$</ModulePath>
+                <ModulePath>.*Ipc\.Application\.ParcelFlow\.dll$</ModulePath>
+                <ModulePath>.*Ipc\.Application\.Sportmaster\.dll$</ModulePath>
+              </Include>
+            </ModulePaths>
+          </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

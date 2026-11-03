@@ -22,6 +22,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     Task? worker;
     Task? ingressDrain;
     ResourceLease? lease;
+    IDisposable? rootOwnership;
     RuntimeJournal? journal;
     ParcelRepository? repository;
     ConfigurationRevisions<ParcelConfiguration>? configuration;
@@ -54,6 +55,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     // Isolated synthetic verification can supply identity without provisioning this machine.
     // No executable/configuration exposes this internal dependency.
     internal Action RuntimeIdentityPreflight { get; set; } = MachineRuntimePolicy.RequireRuntimeIdentity;
+    internal Func<IDisposable?>? AcquireRootOwnership { get; set; }
     internal Func<string, CancellationToken, Task>? BeforeMonitorProbe { get; set; }
     readonly System.Collections.Concurrent.ConcurrentDictionary<Task, Exception> terminalWorkerFailures = [];
     Exception? terminalWorkerFailure => terminalWorkerFailures.Count == 0 ? null :
@@ -93,6 +95,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     async Task StartCoreAsync(CancellationToken token)
     {
         RuntimeIdentityPreflight();
+        rootOwnership = AcquireRootOwnership?.Invoke();
         var seed = Wire.Decode<ParcelConfiguration>(StartupStorage(() => File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "business.json")), "SeedRead"));
         var errors = definition.Validate(seed); if (errors.Length > 0) throw new InvalidDataException(string.Join("; ", errors));
         seed = factory.Normalize(seed);

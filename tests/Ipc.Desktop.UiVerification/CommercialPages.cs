@@ -106,7 +106,9 @@ static partial class Program
         Check(ReferenceEquals(((ParcelViewModel)primary.DataContext).Application, alternate.ViewModel.Application), "native shared pages keep one Application instance");
         await SetClient(primary, 1100, 600); primary.Activate(); Click(primary, "作业记录"); await Task.Delay(250); primary.UpdateLayout();
         var page = (ContentControl)primary.FindName("PageHost");
-        var filters = Descendants(page).OfType<Expander>().Single(e => e.Name == "HistoryFilters"); filters.IsExpanded = true; primary.UpdateLayout();
+        // Current compact history collapses the whole filter group; the nested
+        // HistoryFilters now controls only time. Open the actual barcode group.
+        var filters = (Expander)((HistoryPage)page.Content).FindName("AllHistoryFilters"); filters.IsExpanded = true; primary.UpdateLayout();
         var barcode = Descendants(page).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "历史完整条码");
         Check(barcode.Focus() && barcode.IsKeyboardFocused, "native history exact-barcode filter takes keyboard focus and has an automation name");
         barcode.Text = "000000000000000000001"; barcode.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
@@ -135,9 +137,9 @@ static partial class Program
         {
             tools.IsSubmenuOpen = true; primary.UpdateLayout(); await System.Windows.Threading.Dispatcher.Yield();
             var actions = tools.Items.OfType<MenuItem>().ToArray();
-            Check(actions.Any(i => i.IsVisible && Equals(i.Header, "暂存未完成的设置")) &&
-                actions.Any(i => i.IsVisible && Equals(i.Header, "继续编辑暂存的设置")),
-                "native settings tools keep both persistent draft actions reachable outside the save review");
+            Check(actions.Single(i => Equals(i.Header, "暂存未完成的设置")).Visibility == Visibility.Collapsed &&
+                actions.Single(i => Equals(i.Header, "继续编辑暂存的设置")).Visibility == Visibility.Collapsed,
+                "current SM daily settings hides stashed-draft tools; in-window candidate preservation is checked below");
         }
         finally { tools.IsSubmenuOpen = false; }
         Check(maintenance.NavigateToParameter("StationCode"), "primary parameter directory resolves StationCode in the loaded candidate");

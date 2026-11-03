@@ -41,7 +41,7 @@ class ReleaseDocumentTests(unittest.TestCase):
         root = Path(__file__).resolve().parent.parent
         self.assertEqual(docs.SPORTMASTER_GUIDES['docs/runtime/sm-operator-corrections-29.md'], 'SM-SCAN-AND-DEBUG.md')
         guide = docs.render(root, 'docs/runtime/sm-operator-corrections-29.md', 'a' * 40)
-        for fact in ['一次托盘放置只创建一次RCS请求', '连续3帧无码且跨度至少800毫秒', '相机采集、视频和识别继续运行', '升级时保留已有站点码制', '不提供结果查询', 'RCS离线不阻止只读码', '不申请预览缩略图', '历史丢帧不会否定']:
+        for fact in ['一次托盘放置只创建一次RCS请求', '连续3帧无码且跨度至少800毫秒', '相机采集、视频和识别继续运行', '升级时保留已有站点码制', '不提供结果查询', 'RCS离线仍可读码', '调试不暂停两位供包', '只有点击“发送请求”才调用', '当前生效配置中的实际RCS服务', '不申请预览缩略图', '历史丢帧不会否定']:
             self.assertIn(fact, guide)
 
     def test_current_links_standalone_and_evidence_links_immutable(self):

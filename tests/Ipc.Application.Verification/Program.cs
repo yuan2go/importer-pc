@@ -55,6 +55,10 @@ if (args.Contains("--reader-feedback-22")) { await ReaderFeedback22.Run(workspac
 if (args.Contains("--unread-package-27")) { await UnreadPackage27.Run(workspace, root); return; }
 if (args.Contains("--reader-robustness-28")) { await ReaderRobustness28.Run(workspace, root); return; }
 if (args.Contains("--industrial-lifecycle")) { IndustrialLifecycle.Run(root); return; }
+if (args.Contains("--industrial-rollback")) { await IndustrialRollback.Run(workspace, root); return; }
+if (args.Contains("--industrial-version-pruning")) { await IndustrialVersionPruning.Run(workspace, root); return; }
+if (args.Contains("--industrial-opaque-removal")) { await IndustrialOpaqueRemoval.Run(workspace, root); return; }
+if (args.Contains("--industrial-quiet-deployment")) { IndustrialQuietDeployment.Run(root); return; }
 if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }
 if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
 if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }

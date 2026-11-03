@@ -13,7 +13,7 @@ import tarfile
 import zipfile
 from release_build import frozen_export, build_properties, cleanup, archive_package
 from composition import resolve
-from application_compatibility import read_business, read_storage_format
+from application_compatibility import read_business, read_storage_format, read_deployment_compatibility
 from application_bundles import read_packages, publish_packages
 from release_documents import SOURCE_PATHS, publish as publish_guides
 from release_dependencies import publish as publish_dependencies
@@ -106,6 +106,9 @@ for directory in [output / 'app', output / 'desktop']:
     shutil.copyfile(compatibility_source, directory / 'application-compatibility.json')
     files = {f.relative_to(directory).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest().upper()
              for f in sorted(directory.rglob('*')) if f.is_file()}
+    runtime_compatibility = directory / 'deployment-compatibility.json'
+    runtime_compatibility.write_text(json.dumps(read_deployment_compatibility(build_source, database_format, business, files), indent=2) + '\n', encoding='utf-8')
+    files[runtime_compatibility.name] = hashlib.sha256(runtime_compatibility.read_bytes()).hexdigest().upper()
     release = dict(SchemaVersion=2, RecoverySecurityEpoch=1, ApplicationId=a.application, SourceCommit=source, **business,
                    Views=selection['product']['views'], Layouts=selection['product']['layouts'], Files=files)
     (directory / 'application-release.json').write_text(json.dumps(release, indent=2) + '\n')

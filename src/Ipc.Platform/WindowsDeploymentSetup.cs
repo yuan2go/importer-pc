@@ -108,6 +108,7 @@ public static partial class WindowsDeploymentSetup
         execution?.Checkpoint();execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         RequireCurrentInstallationRequest(request);
+        if (request.ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(request.DataRoot, request.ProgramRoot);
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot,request.ApplicationId,execution?.Token??CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
@@ -136,8 +137,10 @@ public static partial class WindowsDeploymentSetup
         TrustedProgramRoots.Approve(vendor, data, sid); ProtectedDirectory(Path.Combine(vendor, "releases"), sid);
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        using var rootOwnership = request.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(request.ApplicationId, data) : null;
         var before = Current(request.ApplicationId);
         RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
+        RequireNoUnresolvedLifecycle(request.ApplicationId);
         if (before is { LifecycleState: "Installed" })
         {
             var candidateRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "app", "application-release.json")));

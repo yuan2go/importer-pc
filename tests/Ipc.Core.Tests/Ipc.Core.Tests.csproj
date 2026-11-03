@@ -9,5 +9,8 @@
     <PackageReference Include="MSTest.TestAdapter" Version="4.5.2" />
     <PackageReference Include="MSTest.TestFramework" Version="4.5.2" />
     <ProjectReference Include="../Ipc.Application.Verification/Ipc.Application.Verification.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj" />
+    <Compile Include="../../src/Ipc.Assembly/ParcelStartupServices.VersionTransport.cs" Link="Production/ParcelStartupServices.VersionTransport.cs" />
+    <Compile Include="../../src/Ipc.Assembly/ParcelStartupServices.MaintenanceFrames.cs" Link="Production/ParcelStartupServices.MaintenanceFrames.cs" />
   </ItemGroup>
 </Project>

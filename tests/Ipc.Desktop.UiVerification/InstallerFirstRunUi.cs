@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -69,22 +69,32 @@ static partial class Program
         IProgress<MaintenanceProgress>? maintenanceReporter = null;
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => null));
         WindowsDeploymentRequest? submitted = null; var installCalls = 0;
-        type.GetProperty("Install", flags)!.SetValue(window, (Func<WindowsDeploymentRequest,IProgress<WindowsInstallationStage>,IProgress<MaintenanceProgress>,CancellationToken,Task<DeploymentLocation>>)((r,p,maintenance,token) => { installCalls++; submitted = r; reporter = p; maintenanceReporter=maintenance; return pending.Task; }));
+        type.GetProperty("Install", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, IProgress<WindowsInstallationStage>, IProgress<MaintenanceProgress>, CancellationToken, Task<DeploymentLocation>>)((r, p, maintenance, token) => { installCalls++; submitted = r; reporter = p; maintenanceReporter = maintenance; return pending.Task; }));
         window.Show(); await Idle(window);
         Set("step", 1); Render();
         Check(window.Width == 880 && window.Height == 560, "installation options use a compact default aspect with fixed reachable actions");
         Capture("installer-options-default", window);
         Check(!Descendants(window).OfType<RadioButton>().Any() && !Text(window).Contains("使用范围") && Box("程序目录").Text == @"D:\CainiaoSupplyStation" && Box("数据目录").Text == @"D:\ProgramData\ImporterPc\data", "new SM installation defaults to independent D program and data locations");
+        var advancedOptions = Descendants(window).OfType<Expander>().Single(x => AutomationProperties.GetName(x) == "高级安装选项");
+        Check(!advancedOptions.IsExpanded && !Box("程序目录").IsReadOnly && !Box("数据目录").IsReadOnly,
+            "new station keeps editable D paths while shortcut choices default to collapsed advanced options");
+        Check(Descendants(advancedOptions).OfType<System.Windows.Controls.Primitives.ToggleButton>().Single().ActualHeight >= 44,
+            "advanced header has an actual 44-DIP input target instead of only an expanded container minimum");
+        Box("程序目录").Focus(); Box("程序目录").MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        Check(Keyboard.FocusedElement is Button browseProgram && AutomationProperties.GetName(browseProgram) == "浏览程序目录", "new-station native tab traversal follows label/path/browse reading order");
         var original = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(evidence, "existing", "releases", "original"), launch.ConfigurationDirectory, launch.DataRoot, "S-1-5-21-1-2-3-1001");
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => original)); Render();
         Check(Box("程序目录").Text == Path.Combine(evidence, "existing") && Box("数据目录").Text == original.DataRoot && !Text(window).Contains("使用范围"), "existing deployment retains both registered program and data roots instead of new-station defaults");
+        Check(Box("程序目录").IsReadOnly && Box("数据目录").IsReadOnly &&
+            Descendants(window).OfType<Button>().Where(b => AutomationProperties.GetName(b).StartsWith("浏览", StringComparison.Ordinal)).All(b => !b.IsEnabled),
+            "existing SM roots remain copyable but cannot be changed by the ordinary update wizard");
         var existingC = original with { ReleaseRoot = @"C:\Program Files\CainiaoSupplyStation\releases\original", DataRoot = @"C:\ProgramData\ImporterPc\data" };
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => existingC)); Render();
         Check(Box("程序目录").Text == @"C:\Program Files\CainiaoSupplyStation" && Box("数据目录").Text == existingC.DataRoot, "existing C-drive deployment is not silently redirected or migrated by D-drive defaults");
         type.GetProperty("CurrentInstallation", flags)!.SetValue(window, (Func<string, DeploymentLocation?>)(_ => original)); Render();
         var longProgram = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的程序目录-for-path-review", 8));
         var longData = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的数据目录-for-path-review", 8));
-        Box("程序目录").Text = longProgram; Box("数据目录").Text = longData;
+        original = original with { ReleaseRoot = Path.Combine(longProgram, "releases", "original"), DataRoot = longData }; Render();
         const string preflightFailure = "Invalid Application seed or mode: Incomplete or unknown capability inventory identity";
         type.GetMethod("OperationFailed", flags)!.Invoke(window, [new InvalidDataException(preflightFailure)]);
         window.UpdateLayout();
@@ -95,8 +105,8 @@ static partial class Program
             "preflight failure preserves both exact path inputs");
         preflightDetails!.Focus(); Check(preflightDetails.IsKeyboardFocused, "preflight details are keyboard reachable");
         Capture("installer-preflight-details", window);
-        Box("程序目录").Focus(); Box("程序目录").MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-        Check(Keyboard.FocusedElement is Button focused && AutomationProperties.GetName(focused) == "浏览程序目录", "native tab traversal follows label/path/browse reading order");
+        advancedOptions = Descendants(window).OfType<Expander>().Single(x => AutomationProperties.GetName(x) == "高级安装选项");
+        advancedOptions.IsExpanded = true; window.UpdateLayout();
         var shortcuts = Descendants(window).OfType<CheckBox>().ToArray(); shortcuts[0].IsChecked = false; shortcuts[1].IsChecked = true;
         type.GetMethod("CaptureInputs", flags)!.Invoke(window, null);
         var request = new WindowsDeploymentRequest(evidence, "sportmaster", new string('a', 40), "S-1-5-21-1-2-3-1001", longData, launch.ConfigurationDirectory, RunMode.Production, null, null, new(), false, new(), longProgram, null, Shortcuts: new(false, true));
@@ -108,7 +118,7 @@ static partial class Program
         var reviewRelease = new TaskCompletionSource<WindowsDeploymentRequest>(TaskCreationOptions.RunContinuationsAsynchronously);
         (string Account, string Data, string Config, string? Program, bool Repair, int Packages) observedReview = default;
         type.GetProperty("Review", flags)!.SetValue(window,
-            (Func<DeploymentMedia,string,string,string,string?,string[],bool,string?,CancellationToken,WindowsDeploymentRequest>)((m,account,d,c,trust,packages,repair,programRoot,token) =>
+            (Func<DeploymentMedia, string, string, string, string?, string[], bool, string?, CancellationToken, WindowsDeploymentRequest>)((m, account, d, c, trust, packages, repair, programRoot, token) =>
             {
                 observedReview = (account, d, c, programRoot, repair, packages.Length);
                 if (Interlocked.Increment(ref reviewCalls) == 1) throw new InvalidDataException("Synthetic retry token=SYNTHETIC_RETRY_SECRET");
@@ -125,10 +135,45 @@ static partial class Program
         request = (WindowsDeploymentRequest)type.GetField("reviewed", flags)!.GetValue(window)!;
         Check(!Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetName(b) == "安装预检详情"), "confirmation does not display stale preflight details");
         Check(!Text(window).Contains("使用范围") && !Text(window).Contains("所有 Windows 用户") && !Text(window).Contains("仅当前 Windows 用户"), "confirmation omits scope details for the retained per-user deployment");
-        Check(Box("程序目录").Text == longProgram && Box("数据目录").Text == longData && Box("开始菜单").Text == "不创建快捷方式" && Box("桌面").Text == "创建快捷方式", "confirmation reads the exact reviewed paths and independent shortcuts");
+        window.UpdateLayout();
+        var frozenShortcuts = Descendants(window).OfType<CheckBox>().ToArray();
+        Check(Box("程序目录").Text == longProgram && Box("数据目录").Text == longData &&
+            frozenShortcuts.Length == 2 && frozenShortcuts[0].IsChecked == false && frozenShortcuts[1].IsChecked == true && frozenShortcuts.All(c => !c.IsEnabled),
+            "inline impact review freezes the exact paths and independent shortcut choices");
+        Check((int)type.GetField("step", flags)!.GetValue(window)! == 1 && Text(window).Contains("本次安装影响") &&
+            !Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetAutomationId(b) == "Maintenance.Progress" && b.IsVisible),
+            "successful read-only preview stays on the options page and hides completed technical progress only");
+        Check(Box("备份位置").Text == request.BackupDestination && request.BackupDestination is not null,
+            "actual frozen backup target is visible before any installation submission");
+        Check(installCalls == 0 && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "安装")).IsDefault,
+            "read-only preview cannot install or make installation the default Enter action");
+        var impact = Descendants(window).OfType<TextBlock>().Single(t => t.Text == "本次安装影响");
+        var impactScroll = Descendants(window).OfType<ScrollViewer>().Single(s => ReferenceEquals(s.Content, impact.Parent));
+        Check(impactScroll.VerticalOffset == 0 && Box("备份位置").ActualHeight <= 120,
+            "impact review starts at the top and long copyable backup paths cannot consume the whole page");
+        var reviewedOriginal = original;
+        original = original with { DataRoot = Path.Combine(evidence, "changed-registration") }; Render();
+        Check(Box("数据目录").Text == request.DataRoot,
+            "later registration change cannot replace displayed frozen paths while retaining an older request");
+        original = reviewedOriginal;
         Capture("installer-confirm-long", window);
-        Click(window, "上一步"); await Idle(window);
+        Click(window, "修改选项"); await Idle(window); window.UpdateLayout();
+        Check(type.GetField("reviewed", flags)!.GetValue(window) is null,
+            "editing clears preview readiness and requires a fresh exact review");
+        Check(Descendants(window).OfType<Expander>().Single(x => AutomationProperties.GetName(x) == "高级安装选项").IsExpanded,
+            "advanced expansion survives preflight, confirmation and back without changing shortcut choices");
         Check(Box("程序目录").Text == longProgram && Box("数据目录").Text == longData && Descendants(window).OfType<CheckBox>().First().IsChecked == false, "back navigation retains exact input and independent choices");
+        var seedPath = Path.Combine(launch.ConfigurationDirectory, "business.json");
+        var originalSeed = File.ReadAllBytes(seedPath);
+        File.WriteAllText(seedPath, "{");
+        try
+        {
+            Click(window, "下一步"); await Idle(window); window.UpdateLayout();
+            Check(type.GetField("reviewed", flags)!.GetValue(window) is null && installCalls == 0 &&
+                !Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "安装")),
+                "seed failure after component preview never publishes partial install readiness");
+        }
+        finally { File.WriteAllBytes(seedPath, originalSeed); }
         foreach (var (width, height, label) in new[] { (960d, 700d, "1366x768-100-equivalent"), (800d, 560d, "1024x768-125-equivalent"), (665d, 460d, "1024x768-150-equivalent") })
         {
             window.Width = width; window.Height = height; window.UpdateLayout();
@@ -138,7 +183,9 @@ static partial class Program
             Capture("installer-options-" + label, window);
         }
         window.Width = 880; window.Height = 680;
-        Set("step", 2); Render(); Click(window, "安装");
+        Click(window, "下一步"); await Idle(window); window.UpdateLayout();
+        request = (WindowsDeploymentRequest)type.GetField("reviewed", flags)!.GetValue(window)!;
+        Click(window, "安装");
         for (var i = 0; i < 100 && reporter is null; i++) await Task.Delay(20);
         Check(reporter is not null && maintenanceReporter is not null, "install action calls the real service binding with a progress observer; synthetic transaction boundary injected");
         Check((string?)type.GetField("installationRecordDirectory", flags)!.GetValue(window) == Path.GetDirectoryName(WindowsDeploymentSetup.Registration(request.ApplicationId)), "record directory is captured from the authoritative registration route for this installation attempt");
@@ -146,10 +193,10 @@ static partial class Program
         Check(submitted == request && submitted.RuntimeAccountSid == original.RuntimeAccountSid, "hidden scope does not rewrite the reviewed upgrade identity at installation submission");
         foreach (var stage in new[] { WindowsInstallationStage.WaitingForAuthorization, WindowsInstallationStage.CopyingFiles, WindowsInstallationStage.CommittingInstallation })
         {
-            var canCancel=stage==WindowsInstallationStage.WaitingForAuthorization;
-            maintenanceReporter!.Report(new(canCancel?MaintenanceStage.Checking:MaintenanceStage.InstallingMachine,null,null,canCancel));
+            var canCancel = stage == WindowsInstallationStage.WaitingForAuthorization;
+            maintenanceReporter!.Report(new(canCancel ? MaintenanceStage.Checking : MaintenanceStage.InstallingMachine, null, null, canCancel));
             reporter!.Report(stage); progress.Add(stage); await Task.Delay(100); window.UpdateLayout();
-            Check(Descendants(window).OfType<ProgressBar>().Single().IsIndeterminate && Descendants(window).OfType<Button>().All(b => !b.IsVisible || AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel") && Descendants(window).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel").IsEnabled==canCancel, "unmetered installation has no fake percent or navigation; only pre-commit cancellation is enabled; " + stage);
+            Check(Descendants(window).OfType<ProgressBar>().Single().IsIndeterminate && Descendants(window).OfType<Button>().All(b => !b.IsVisible || AutomationProperties.GetAutomationId(b) == "Maintenance.Cancel") && Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Maintenance.Cancel").IsEnabled == canCancel, "unmetered installation has no fake percent or navigation; only pre-commit cancellation is enabled; " + stage);
             Check(Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible).Any(b => b.Text.Contains(stage == WindowsInstallationStage.WaitingForAuthorization ? "等待 Windows 授权" : stage == WindowsInstallationStage.CopyingFiles ? "正在复制" : "正在提交")), "stage changes only with observed service reports; " + stage);
             if (stage == WindowsInstallationStage.WaitingForAuthorization)
                 Check(Text(window).Contains("如有提示，请在电脑上确认"), "authorization stage does not claim that Windows necessarily displayed a prompt");
@@ -173,7 +220,7 @@ static partial class Program
         Capture("installer-prestart-failed", window); Click(window, "返回安装选项"); await Idle(window);
         Check(Box("数据目录").Text == longData, "failure recovery retains inputs and requires new review");
         pending = new TaskCompletionSource<DeploymentLocation>(); reporter = null;
-        Set("reviewed", request); Set("step", 2); Render();
+        Set("reviewed", request); Set("reviewedLocation", original); Set("step", 1); Render();
         Check(!Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetName(b) == "安装预检详情"), "confirmation does not display stale preflight details"); Click(window, "安装");
         for (var i = 0; i < 100 && reporter is null; i++) await Task.Delay(20);
         reporter!.Report(WindowsInstallationStage.WaitingForAuthorization); await Task.Delay(100);
@@ -216,7 +263,7 @@ static partial class Program
         var committed = new InstallationInspection("CommittedNeedsSystemRepair", "合成：原安装登记已提交，系统入口尚需修复。", original);
         var repairs = 0;
         type.GetProperty("InspectInstallation", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, InstallationInspection>)(r => r == request ? committed : throw new InvalidOperationException("Inspection changed original request")));
-        type.GetProperty("RepairRegistration", flags)!.SetValue(window, (Func<WindowsDeploymentRequest,IProgress<MaintenanceProgress>,CancellationToken,Task>)((r,progress,token) =>
+        type.GetProperty("RepairRegistration", flags)!.SetValue(window, (Func<WindowsDeploymentRequest, IProgress<MaintenanceProgress>, CancellationToken, Task>)((r, progress, token) =>
         { repairs++; if (r != request) throw new InvalidOperationException("Repair changed original request"); return Task.FromException(new FileNotFoundException("合成：原系统入口修复失败")); }));
         Click(window, "查看本次安装结果"); await Idle(window);
         Click(window, "修复开始菜单和程序入口…"); await Idle(window); window.UpdateLayout();

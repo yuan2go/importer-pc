@@ -74,6 +74,8 @@ static partial class Program
         }));
         Click(management, "忘记管理密码？"); await recoveryDone.Task;
         management.Close(); await vm.RefreshAsync(); window.UpdateLayout();
+        Check(!vm.ManagementStatus.Authorized, "cancelling password recovery cannot reauthorize the exited management session");
+        await ManagementModeFixture.Authorize(runtime); await vm.RefreshAsync(); window.UpdateLayout();
         menu.ContextMenu.PlacementTarget = menu; menu.ContextMenu.IsOpen = true; await Flush();
         menuItems = menu.ContextMenu.Items.OfType<MenuItem>().ToArray();
         Check(menuItems.Any(i => Equals(i.Header, "退出管理模式")) && menuItems.Any(i => i.IsVisible && i.Header?.ToString()?.Contains("自动退出") == true), "active menu retains exit action and actual expiry");

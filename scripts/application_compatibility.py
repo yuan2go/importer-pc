@@ -29,6 +29,27 @@ def read_storage_format(root):
     return int(matches[0])
 
 
+def read_deployment_compatibility(root, database_format, business, files):
+    """Emit exact current readers/protocols; no inferred old-format support."""
+    def constant(path, name):
+        text = (Path(root) / path).read_text(encoding='utf-8-sig')
+        values = re.findall(r'public const int ' + re.escape(name) + r'\s*=\s*([0-9]+);', text)
+        if len(values) != 1 or int(values[0]) < 1:
+            raise ValueError('One current protocol declaration required: ' + name)
+        return int(values[0])
+    dependencies = '\n'.join(name + '\t' + value.upper() for name, value in sorted(files.items())
+                             if Path(name).suffix.lower() in ('.dll', '.exe') and not Path(name).name.lower().startswith('ipc.'))
+    contract = ET.parse(Path(root) / 'src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj').findtext('./PropertyGroup/Version')
+    return dict(SchemaVersion=1, DataFormat=database_format,
+                ConfigurationSchema=constant('src/Ipc.Application.ParcelFlow/ParcelConfigurationRules.cs', 'CurrentConfigurationSchema'),
+                CredentialSchema=constant('src/Ipc.Platform/LocalManagementMode.cs', 'CredentialSchemaVersion'),
+                ManagementProtocol=constant('src/Ipc.Platform/ManagementModeBroker.Protocol.cs', 'ProtocolVersion'),
+                RecoverySecurityEpoch=constant('src/Ipc.Platform/RecoverySecurityPolicy.cs', 'CurrentEpoch'),
+                LifecycleProtocol=constant('src/Ipc.Platform/DeploymentRuntimeCompatibility.cs', 'CurrentLifecycleProtocol'),
+                ApplicationContractVersion=contract, ProviderPolicySha256=business['CompatibilitySha256'],
+                DependencyInventorySha256=hashlib.sha256(dependencies.encode('utf-8')).hexdigest().upper())
+
+
 def read_business(root, application, selection):
     module = APPLICATIONS[application]
     project = ET.parse(root / f'src/Ipc.Application.{module}/Ipc.Application.{module}.csproj')

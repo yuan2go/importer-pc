@@ -76,6 +76,43 @@ static class IndustrialLifecycle
         var removedDamaged = WindowsDeploymentSetup.CleanRemovalInventory(files, recorded, _ => false);
         Check(!File.Exists(Path.Combine(files, "damaged.exe")) && !removedDamaged.RestartRequired && File.Exists(Path.Combine(files, "extra.txt")),
             "damaged owned program can be removed while uninventoried files remain");
+        var operation = Wire.Id(); var journal = Path.Combine(root, "sportmaster.remove-" + operation + ".json");
+        var originalHash = Wire.Hash(Wire.Encode(installed));
+        var prepared = new WindowsDeploymentSetup.RemovalState("Prepared", installed, ["owned.txt"])
+        { OperationId = operation, ExpectedRegistrationHash = originalHash, WithoutBusinessInspection = true };
+        File.WriteAllText(journal, Wire.Encode(prepared)); var originalBytes = File.ReadAllBytes(journal);
+        var inspected = WindowsDeploymentSetup.ProjectRemoval(prepared, journal, installed, originalHash);
+        Check(inspected.Status == "NotCommittedNeedsClosure" && inspected.OperationId == operation && inspected.WithoutBusinessInspection,
+            "unchanged exact registration proves precommit interruption but requires explicit closure");
+        Check(File.ReadAllBytes(journal).SequenceEqual(originalBytes), "read-only inspection cannot finalize or rewrite original intent");
+        Check(WindowsDeploymentSetup.ProjectRemoval(prepared, journal, installed, new string('f', 64)).Status == "Unknown", "different registration bytes remain Unknown");
+        Check(WindowsDeploymentSetup.ProjectRemoval(prepared, journal, installed with { DataRoot = Path.Combine(root, "other-data") }, originalHash).Status == "Unknown", "changed data root cannot be explained by matching hash alone");
+        Check(WindowsDeploymentSetup.ProjectRemoval(prepared, journal, installed with { SourceCommit = new string('c', 40) }, originalHash).Status == "Unknown", "different release is not a precommit proof");
+        var retired = installed with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = journal };
+        Check(WindowsDeploymentSetup.ProjectRemoval(prepared, journal, retired, "retired-hash").Status == "RetiredCleanupPending", "registration detach with lost final receipt continues original cleanup");
+        Check(WindowsDeploymentSetup.ProjectRemoval(prepared, journal, retired with { ConfigurationDirectory = Path.Combine(root, "other-config") }, "hash").Status == "Unknown", "changed detached configuration does not authorize cleanup");
+        var completed = prepared with { Status = "RemovedDataRetained" };
+        Check(WindowsDeploymentSetup.ProjectRemoval(completed, journal, retired, "hash").Status == "RemovedDataRetained", "completed original matches exact retired registration");
+        Check(WindowsDeploymentSetup.ProjectRemoval(completed, journal, installed, originalHash).Status == "Unknown", "completed receipt cannot claim current installed registration was removed");
+        var legacy = prepared with { OperationId = null, ExpectedRegistrationHash = null };
+        Check(WindowsDeploymentSetup.ProjectRemoval(legacy, journal, installed, originalHash).Status == "Unknown", "legacy intent without exact precondition cannot be declared uncommitted");
+        Check(WindowsDeploymentSetup.ProjectRemoval(legacy, journal, retired, "hash").Status == "RetiredCleanupPending", "legacy exact detached registration remains resumable");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateRemovalJournal("sportmaster", journal, prepared with { OperationId = Wire.Id() }), "journal filename binds original operation");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateRemovalJournal("sportmaster", journal, prepared with { ExpectedRegistrationHash = "bad" }), "invalid registration digest rejected");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateRemovalJournal("sportmaster", journal, prepared with { Status = "InventedSuccess" }), "unknown journal terminal cannot permit a second removal");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateRemovalJournal("sportmaster", journal, prepared with { Files = ["../data.db"] }), "journal cannot expand removal into business data");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.RemovalOperationFile("sportmaster", Guid.Empty.ToString("N")), "empty removal operation identity rejected");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.RemovalOperationFile("../sportmaster", operation), "application traversal rejected before journal access");
+        var marker = Path.Combine(files, "deployment-retired.json"); File.WriteAllText(marker, "synthetic original marker");
+        var closeCalls = 0;
+        Reject<InvalidOperationException>(() => WindowsDeploymentSetup.CloseRemovalBeforeCommit(prepared, journal, retired, "hash", () => closeCalls++), "committed original cannot be closed as not committed");
+        Check(closeCalls == 0 && File.Exists(marker), "Unknown or committed closure refuses before touching marker");
+        Reject<IOException>(() => WindowsDeploymentSetup.CloseRemovalBeforeCommit(prepared, journal, installed, originalHash, () => throw new IOException("synthetic marker failure")), "marker failure cannot finalize intent");
+        Check(prepared.Status == "Prepared" && File.ReadAllBytes(journal).SequenceEqual(originalBytes), "failed closure preserves exact original journal bytes");
+        var closed = WindowsDeploymentSetup.CloseRemovalBeforeCommit(prepared, journal, installed, originalHash, () => { File.Delete(marker); closeCalls++; });
+        Check(closed.Status == "NotCommitted" && prepared.Status == "Prepared" && !File.Exists(marker) && closeCalls == 1, "explicit precommit closure only resolves original marker and intent");
+        Check(File.ReadAllBytes(journal).SequenceEqual(originalBytes) && File.Exists(Path.Combine(files, "extra.txt")), "projection returns closed state separately and preserves original and unowned files");
+        Check(WindowsDeploymentSetup.ProjectRemoval(closed, journal, installed, originalHash).Status == "NotCommitted", "closed intent is a known non-removal result");
         Console.WriteLine("IE01-LIFECYCLE checks=" + count + "; file/command/version boundaries; UAC/SCM/VM NOT_RUN");
     }
 }

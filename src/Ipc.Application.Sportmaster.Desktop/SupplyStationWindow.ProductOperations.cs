@@ -76,10 +76,15 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         var dialog = new SaveFileDialog { Filter = "诊断包|*.zip", InitialDirectory = "D:\\", FileName = "station-diagnostics-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".zip" };
-        if (dialog.ShowDialog(this) != true || ViewModel.Application is not IStationOperations api) return;
+        if (dialog.ShowDialog(this) != true || ViewModel.Application is not IDiagnosticPackageApplication api) return;
         if (productDiagnosticCancellation is not null) throw new InvalidOperationException("诊断包正在导出，请等待或取消");
         using var cancellation = new CancellationTokenSource(); productDiagnosticCancellation = cancellation;
-        try { ViewModel.Message = "诊断包已导出：" + await api.ExportDiagnosticPackageAsync(dialog.FileName, cancellation.Token); }
+        try
+        {
+            var receipt = await api.ExportDiagnosticPackageReportAsync(dialog.FileName, cancellation.Token);
+            ViewModel.Message = (receipt.Status == DiagnosticPackageStatus.Partial ? "诊断摘要已导出（含未收集项）：" : "诊断包已导出：") + receipt.Path +
+                "\n" + string.Join("\n", receipt.Notices);
+        }
         finally { productDiagnosticCancellation = null; }
     }
     async Task RequestOfflineMaintenance()

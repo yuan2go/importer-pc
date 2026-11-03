@@ -12,16 +12,38 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
     const int DiagnosticEventLimit = 2000;
     const int DiagnosticByteLimit = 8 * 1024 * 1024;
 
+    public Task<DiagnosticProductInformation> ReadDiagnosticProductInformationAsync(CancellationToken token)
+        => OwnedRead(owned =>
+        {
+            if (Id != "sportmaster") throw new NotSupportedException("该业务尚未提供普通版本概览。");
+            owned.ThrowIfCancellationRequested();
+            var release = StationDiagnosticProjection.Release(definition.GetType().Assembly, Id);
+            owned.ThrowIfCancellationRequested();
+            return Task.FromResult(new DiagnosticProductInformation(Id, release.BusinessVersion, release.SourceCommit,
+                release.BinarySha256, release.Published, release.Integrity, DateTimeOffset.UtcNow));
+        }, token);
+
     public async Task<string> ExportDiagnosticPackageAsync(string destination, CancellationToken token)
         => (await ExportDiagnosticPackageReportAsync(destination, token).ConfigureAwait(false)).Path;
 
     public Task<DiagnosticPackageReceipt> ExportDiagnosticPackageReportAsync(string destination, CancellationToken token)
+        => ExportDiagnosticPackage(destination, detailed: true, token);
+
+    public Task<DiagnosticPackageReceipt> ExportDiagnosticOverviewAsync(string destination, CancellationToken token)
+    {
+        if (Id != "sportmaster") throw new NotSupportedException("该业务尚未提供普通诊断概览。");
+        return ExportDiagnosticPackage(destination, detailed: false, token);
+    }
+
+    Task<DiagnosticPackageReceipt> ExportDiagnosticPackage(string destination, bool detailed, CancellationToken token)
         => OwnedRead(async owned =>
     {
-        using var authorized = CancellationTokenSource.CreateLinkedTokenSource(owned, Management.Require());
+        using var authorized = detailed
+            ? CancellationTokenSource.CreateLinkedTokenSource(owned, Management.Require())
+            : CancellationTokenSource.CreateLinkedTokenSource(owned);
         authorized.CancelAfter(TimeSpan.FromSeconds(60));
         var cancellation = authorized.Token;
-        var logSource = Logs;
+        var logSource = detailed ? Logs : null;
         if (!await diagnosticExportOwnership.WaitAsync(0, cancellation).ConfigureAwait(false))
             throw new InvalidOperationException("已有诊断导出正在执行，请等待或取消当前导出。");
         string? temporary = null, selection = null;
@@ -31,13 +53,12 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
             temporary = destination + ".partial-" + Wire.Id();
             var started = DateTimeOffset.UtcNow;
             var cutoff = started;
-            var from = cutoff.AddHours(-24);
-            var snapshot = await SnapshotAsync().ConfigureAwait(false);
+            var from = detailed ? cutoff.AddHours(-24) : cutoff;
             cancellation.ThrowIfCancellationRequested();
             var projection = new StationDiagnosticProjection();
             var files = new Dictionary<string, byte[]>(StringComparer.Ordinal);
             var entries = new List<object>();
-            var notices = new List<string> { "仅包含当前保留范围内的白名单摘要；不能证明最近24小时日志完整。", "诊断包不是备份，不含原始日志正文、业务库、条码、图片、凭据或原始报文；对外分享仍需授权。" };
+            var notices = new List<string> { "诊断包不是备份，不含原始日志正文、业务库、条码、图片、凭据或原始报文；对外分享仍需授权。" };
             void Add(string name, string source, string status, object value)
             {
                 cancellation.ThrowIfCancellationRequested();
@@ -55,46 +76,61 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
                     Sha256 = Convert.ToHexString(SHA256.HashData(bytes))
                 });
             }
-            Add("station.json", "RuntimeSnapshot", "Collected", projection.Station(snapshot));
-            if (snapshot.Operations.Length > 100) notices.Add("作业索引仅收集最近100条；完整业务记录未进入诊断包。");
-            var events = new List<object>();
-            var query = new SoftwareLogQuery(from, cutoff);
-            var truncated = false;
-            for (var page = 0; page < DiagnosticEventLimit / 200; page++)
+            if (detailed)
             {
+                notices.Add("仅包含当前保留范围内的白名单摘要；不能证明最近24小时日志完整。");
+                var snapshot = await SnapshotAsync().ConfigureAwait(false);
                 cancellation.ThrowIfCancellationRequested();
-                var result = await logSource.QueryAsync(query, selection, page * 200, cancellation).ConfigureAwait(false);
-                selection = result.Selection;
-                foreach (var entry in result.Entries)
+                Add("station.json", "RuntimeSnapshot", "Collected", projection.Station(snapshot));
+                if (snapshot.Operations.Length > 100) notices.Add("作业索引仅收集最近100条；完整业务记录未进入诊断包。");
+                var events = new List<object>();
+                var query = new SoftwareLogQuery(from, cutoff);
+                var truncated = false;
+                for (var page = 0; page < DiagnosticEventLimit / 200; page++)
                 {
                     cancellation.ThrowIfCancellationRequested();
-                    events.Add(projection.Event(entry));
+                    var result = await logSource!.QueryAsync(query, selection, page * 200, cancellation).ConfigureAwait(false);
+                    selection = result.Selection;
+                    foreach (var entry in result.Entries)
+                    {
+                        cancellation.ThrowIfCancellationRequested();
+                        events.Add(projection.Event(entry));
+                    }
+                    truncated = result.HasMore;
+                    if (!result.HasMore) break;
                 }
-                truncated = result.HasMore;
-                if (!result.HasMore) break;
+                if (truncated) notices.Add("日志摘要达到2000条上限，后续记录未收集。");
+                Add("event-index.json", "PinnedRetainedLogs", "Partial", new
+                {
+                    From = from,
+                    Cutoff = cutoff,
+                    Truncated = truncated,
+                    MaximumEntries = DiagnosticEventLimit,
+                    Coverage = "RetainedWindowOnly",
+                    Events = events
+                });
             }
-            if (truncated) notices.Add("日志摘要达到2000条上限，后续记录未收集。");
-            Add("event-index.json", "PinnedRetainedLogs", "Partial", new
+            else
             {
-                From = from,
-                Cutoff = cutoff,
-                Truncated = truncated,
-                MaximumEntries = DiagnosticEventLimit,
-                Coverage = "RetainedWindowOnly",
-                Events = events
-            });
+                Add("overview.json", "InMemoryHealthCounts", "Partial", await DiagnosticOverview(cancellation).ConfigureAwait(false));
+                notices.Add("普通概览仅含健康计数、版本和环境摘要；未读取配置、作业、日志及受保护安装回执，不包含具体故障原因或供包资格判断。");
+            }
             Add("environment.json", "LocalEnvironment", "Collected", StationDiagnosticProjection.EnvironmentSummary(launch.DataRoot));
             var release = StationDiagnosticProjection.Release(definition.GetType().Assembly, Id);
             Add("release.json", "RunningRelease", release.Published ? "Collected" : "Unavailable", release);
-            Add("installation.json", "ProtectedRegistration", "Partial", StationDiagnosticProjection.Installation(Id));
-            notices.Add("安装项仅为受保护登记摘要；未收集完整安装事务回执。多个来源有各自采集时间，不是一致性备份。");
+            if (detailed)
+            {
+                Add("installation.json", "ProtectedRegistration", "Partial", StationDiagnosticProjection.Installation(Id));
+                notices.Add("安装项仅为受保护登记摘要；未收集完整安装事务回执。");
+            }
+            notices.Add("多个来源有各自采集时间，不是一致性备份；健康计数不证明设备实际联通或业务可用。");
             var hashes = files.ToDictionary(p => p.Key, p => Convert.ToHexString(SHA256.HashData(p.Value)), StringComparer.Ordinal);
             files.Add("manifest.json", Encoding.UTF8.GetBytes(Wire.Encode(new
             {
-                Schema = 2,
-                Privacy = "allowlist-v2",
-                Authority = "ManagementMode",
-                GeneratorVersion = 2,
+                Schema = detailed ? 2 : 3,
+                Privacy = detailed ? "allowlist-v2" : "overview-v1",
+                Authority = detailed ? "ManagementMode" : "Operator",
+                GeneratorVersion = 3,
                 ProductAssemblySha256 = Wire.FileHash(typeof(ParcelRuntime).Assembly.Location),
                 StartedAt = started,
                 CompletedAt = DateTimeOffset.UtcNow,
@@ -124,13 +160,18 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
             var receipt = new DiagnosticPackageReceipt(destination, DiagnosticPackageStatus.Partial,
                 new FileInfo(temporary).Length, Wire.FileHash(temporary), from, cutoff, notices.ToArray());
             Boundary?.Invoke("BeforeDiagnosticPackagePublish");
-            Management.Commit(() =>
+            cancellation.ThrowIfCancellationRequested();
+            if (new FileInfo(temporary).Length != receipt.Bytes || Wire.FileHash(temporary) != receipt.Sha256)
+                throw new InvalidDataException("诊断包在发布前发生变化，未发布文件。");
+            bool Publish()
             {
                 cancellation.ThrowIfCancellationRequested();
                 _ = DiagnosticDestination(destination);
                 File.Move(temporary, destination, overwrite: false);
                 return true;
-            });
+            }
+            if (detailed) Management.Commit(Publish);
+            else Publish();
             return receipt;
         }
         catch (Exception failure)
@@ -142,10 +183,39 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
         }
         finally
         {
-            try { if (selection is not null) logSource.Release(selection); }
+            try { if (selection is not null) logSource!.Release(selection); }
             finally { diagnosticExportOwnership.Release(); }
         }
     }, token);
+
+    // Do not build the detailed snapshot: it reads receipt/configuration originals.
+    // Only fixed booleans/counts leave the short business gate; no disk/ZIP I/O here.
+    async Task<object> DiagnosticOverview(CancellationToken token)
+    {
+        await gate.WaitAsync(token).ConfigureAwait(false);
+        try
+        {
+            if (!started || stopped || disposed) throw new InvalidOperationException("软件尚未就绪或正在停止，不能生成概览。");
+            var now = DateTimeOffset.UtcNow;
+            var health = capabilityHealth.Values.ToArray();
+            var readerHealth = readers.Values.Select(r => r.Health).ToArray();
+            return new
+            {
+                Schema = 1,
+                CapturedAt = now,
+                Application = "sportmaster",
+                RuntimeFailurePresent = failure is not null,
+                CapabilityCount = health.Length,
+                CapabilityReadyCount = health.Count(h => h.Ready && h.ConfirmedAt <= now && h.ValidUntil > now && h.ValidUntil > h.ConfirmedAt),
+                ReaderCount = readerHealth.Length,
+                ReaderReadyCount = readerHealth.Count(h => h?.IsValid(now) == true),
+                Admission = "NotAssessed",
+                FaultDetails = "NotCollected",
+                Installation = "NotCollected"
+            };
+        }
+        finally { gate.Release(); }
+    }
 
     string DiagnosticDestination(string destination)
     {
@@ -166,10 +236,11 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
     {
         using var archive = ZipFile.OpenRead(file);
         if (archive.Entries.Count != expected.Count) throw new InvalidDataException("诊断ZIP目录校验失败。");
+        var names = new HashSet<string>(StringComparer.Ordinal);
         foreach (var entry in archive.Entries)
         {
             token.ThrowIfCancellationRequested();
-            if (!expected.TryGetValue(entry.FullName, out var bytes) || entry.Length != bytes.Length)
+            if (!names.Add(entry.FullName) || !expected.TryGetValue(entry.FullName, out var bytes) || entry.Length != bytes.Length)
                 throw new InvalidDataException("诊断ZIP条目校验失败。");
             using var input = entry.Open();
             if (!CryptographicOperations.FixedTimeEquals(await SHA256.HashDataAsync(input, token).ConfigureAwait(false), SHA256.HashData(bytes)))

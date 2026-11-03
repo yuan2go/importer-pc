@@ -42,7 +42,7 @@ def verify():
         errors.append('Work package index is stale; generate it explicitly')
     if errors:
         raise ValueError('\n'.join(errors))
-    print(f'PASS DOCS: {len(files)} entry pages, {count} local links, {len(codes)} CP codes; printing/native/site NOT_RUN')
+    print(f'PASS DOCS: {len(files)} entry pages, {count} local links, {len(codes)} CP codes; physical printing/native/site NOT_RUN; PDF generation and visual review recorded separately')
 
 
 if __name__ == '__main__':

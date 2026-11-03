@@ -27,6 +27,39 @@ static class IndustrialDiagnostics
         var denied = Path.Combine(root, "denied.zip");
         await Reject<UnauthorizedAccessException>(() => api.ExportDiagnosticPackageReportAsync(denied, default), "ordinary user cannot read detailed sources");
         Check(!File.Exists(denied) && NoPartials(), "unauthorized export creates no output");
+        var overviewPath = Path.Combine(root, "ordinary-overview.zip");
+        h.App.Boundary = phase =>
+        {
+            if (phase == "SnapshotGateAcquired") throw new InvalidOperationException("ordinary overview must not build detailed snapshot");
+        };
+        DiagnosticPackageReceipt overview;
+        try
+        {
+            var information = await api.ReadDiagnosticProductInformationAsync(default);
+            Check(information.ApplicationId == "sportmaster" && !string.IsNullOrWhiteSpace(information.BusinessVersion) &&
+                information.BinarySha256.Length == 64 && information.BinarySha256.All(char.IsAsciiHexDigit),
+                "ordinary product information reads actual version and binary hash without detailed snapshot");
+            overview = await api.ExportDiagnosticOverviewAsync(overviewPath, default);
+        }
+        finally { h.App.Boundary = null; }
+        Check(overview.Status == DiagnosticPackageStatus.Partial && overview.From == overview.Cutoff,
+            "ordinary overview exports without authority and never claims 24-hour coverage");
+        Check(overview.Sha256 == Wire.FileHash(overviewPath) && overview.Bytes == new FileInfo(overviewPath).Length,
+            "ordinary receipt binds actual published bytes");
+        using (var archive = ZipFile.OpenRead(overviewPath))
+        {
+            Check(archive.Entries.Select(e => e.FullName).Order().SequenceEqual(new[] { "environment.json", "manifest.json", "overview.json", "release.json" }),
+                "ordinary package excludes log, configuration, operations and protected registration sources");
+            using var manifest = JsonDocument.Parse(archive.GetEntry("manifest.json")!.Open());
+            Check(manifest.RootElement.GetProperty("Schema").GetInt32() == 3 &&
+                manifest.RootElement.GetProperty("Authority").GetString() == "Operator" &&
+                manifest.RootElement.GetProperty("Privacy").GetString() == "overview-v1", "ordinary privacy profile explicit");
+            using var view = JsonDocument.Parse(archive.GetEntry("overview.json")!.Open());
+            Check(view.RootElement.GetProperty("Admission").GetString() == "NotAssessed" &&
+                view.RootElement.GetProperty("FaultDetails").GetString() == "NotCollected", "health counts do not imply admission or complete fault collection");
+        }
+        await Reject<UnauthorizedAccessException>(() => api.ExportDiagnosticPackageReportAsync(denied, default),
+            "ordinary overview does not grant detailed source access");
         await ManagementModeFixture.Authorize(h.App);
         var snapshot = await h.App.SnapshotAsync();
         var canary = "CANARY-" + Guid.NewGuid().ToString("N");
@@ -73,6 +106,16 @@ static class IndustrialDiagnostics
                 })
             });
         var requests = h.Peer.Requests.Count;
+        var overviewCanary = Path.Combine(root, "overview-canary.zip");
+        var ordinaryAfterLogs = await api.ExportDiagnosticOverviewAsync(overviewCanary, default);
+        using (var archive = ZipFile.OpenRead(overviewCanary))
+            foreach (var entry in archive.Entries)
+            {
+                using var reader = new StreamReader(entry.Open());
+                var text = await reader.ReadToEndAsync();
+                Check(!text.Contains(canary) && !text.Contains(h.Peer.Endpoint) && !text.Contains(h.Launch.DataRoot),
+                    "ordinary allowlist excludes log canary and local identity: " + entry.FullName);
+            }
         var target = Path.Combine(root, "diagnostics.ZIP");
         var receipt = await api.ExportDiagnosticPackageReportAsync(target, default);
         Check(receipt.Path == target && receipt.Status == DiagnosticPackageStatus.Partial, "receipt explicitly reports retained-window partial package");
@@ -117,6 +160,29 @@ static class IndustrialDiagnostics
         try { await Reject<InvalidDataException>(() => api.ExportDiagnosticPackageReportAsync(damaged, default), "closed ZIP is verified before atomic publication"); }
         finally { h.App.Boundary = null; }
         Check(!File.Exists(damaged) && NoPartials(), "failed validation removes temporary output");
+        var duplicate = Path.Combine(root, "duplicate.zip");
+        h.App.Boundary = phase =>
+        {
+            if (phase != "AfterDiagnosticPackageWrite") return;
+            using var archive = ZipFile.Open(Directory.GetFiles(root, "duplicate.zip.partial-*").Single(), ZipArchiveMode.Update);
+            byte[] bytes;
+            using (var input = archive.GetEntry("release.json")!.Open())
+            using (var memory = new MemoryStream()) { input.CopyTo(memory); bytes = memory.ToArray(); }
+            archive.GetEntry("environment.json")!.Delete();
+            using var output = archive.CreateEntry("release.json").Open();
+            output.Write(bytes);
+        };
+        try { await Reject<InvalidDataException>(() => api.ExportDiagnosticOverviewAsync(duplicate, default), "same-count duplicate ZIP names cannot hide a missing source"); }
+        finally { h.App.Boundary = null; }
+        Check(!File.Exists(duplicate) && NoPartials(), "duplicate archive is never published");
+        var lateDamage = Path.Combine(root, "late-damage.zip");
+        h.App.Boundary = phase =>
+        {
+            if (phase == "BeforeDiagnosticPackagePublish") File.WriteAllText(Directory.GetFiles(root, "late-damage.zip.partial-*").Single(), "changed");
+        };
+        try { await Reject<InvalidDataException>(() => api.ExportDiagnosticOverviewAsync(lateDamage, default), "bytes rechecked after publication boundary"); }
+        finally { h.App.Boundary = null; }
+        Check(!File.Exists(lateDamage) && NoPartials(), "late damage removes only unpublished temporary bytes");
         var revoked = Path.Combine(root, "revoked.zip");
         h.App.Boundary = phase => { if (phase == "BeforeDiagnosticPackagePublish") LocalManagementMode.ForRoot(h.Launch.DataRoot).Exit(); };
         try
@@ -135,9 +201,20 @@ static class IndustrialDiagnostics
         {
             await reached.Task.WaitAsync(TimeSpan.FromSeconds(20));
             await Reject<InvalidOperationException>(() => api.ExportDiagnosticPackageReportAsync(Path.Combine(root, "parallel.zip"), default), "parallel export rejected without waiting queue");
+            await Reject<InvalidOperationException>(() => api.ExportDiagnosticOverviewAsync(Path.Combine(root, "parallel-overview.zip"), default), "ordinary and detailed export share ownership");
         }
         finally { release.Set(); await first; h.App.Boundary = null; }
         Check(!File.Exists(Path.Combine(root, "parallel.zip")) && NoPartials(), "single owner releases after actual completion");
+        var collision = Path.Combine(root, "overview-collision.zip");
+        h.App.Boundary = phase => { if (phase == "BeforeDiagnosticPackagePublish") File.WriteAllText(collision, "foreign"); };
+        try { await Reject<IOException>(() => api.ExportDiagnosticOverviewAsync(collision, default), "ordinary publication cannot overwrite a late destination"); }
+        finally { h.App.Boundary = null; }
+        Check(File.ReadAllText(collision) == "foreign" && NoPartials(), "ordinary publication preserves foreign bytes and removes only its temporary file");
+        using (var cancelledOverview = new CancellationTokenSource())
+        {
+            cancelledOverview.Cancel();
+            await Reject<OperationCanceledException>(() => api.ExportDiagnosticOverviewAsync(Path.Combine(root, "cancelled-overview.zip"), cancelledOverview.Token), "ordinary cancellation before source read honored");
+        }
         Console.WriteLine("IE01-DIAGNOSTICS checks=" + checks + "; actual ZIP/SQLite/loopback; native/system/real devices NOT_RUN");
     }
 }

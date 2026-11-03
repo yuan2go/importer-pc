@@ -109701,9 +109701,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SHUTDOWN-RESOURCES-13; original evidence retains its own SourceCommit",
-      "sha256": "5399827eb17e629aa1458e2b9a36c72c3068cc0061c6282ef3912f772508f529",
-      "size_bytes": 3324,
-      "git_blob": "b000d0353b580c495234c148a76cd39a5907b4e5",
+      "sha256": "da05e6dc52b06223ef90693184ea1c85cf8eb17b8d1903a8eedb8eee8fdecac8",
+      "size_bytes": 3557,
+      "git_blob": "6558ef6c4fce3405e535fd0626430ce590b40bac",
       "storage_scope": "public_repository"
     },
     {

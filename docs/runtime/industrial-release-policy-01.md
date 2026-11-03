@@ -16,6 +16,7 @@
 - 输出明确保留吊销在线/离线矩阵NOT_RUN；Windows当次信任策略结果不能冒充独立完成吊销矩阵。
 - SmartScreen下载信誉NOT_RUN，不能承诺“有签名就永不拦截”。
 - 签名工具不证明单EXE载荷属于哪个SourceCommit。正式交付新增必需`installer-bytes`证据项：最终签名后的下载SHA256及载荷/冻结介质绑定。仅签名通过不能代替该项，不能拿另一个同公司签名的旧安装器放行。
+- 需要公司提供的资料、签名顺序和证书轮换见[代码签名证书接入](../design/code-signing-onboarding-06.md)。
 - ARP正式Publisher及完整签名流水线尚待真实授权资料、签名阶段的同源字节闭环与最终安装包验证；当前包工具继续如实报告NOT_SIGNED，未加入任何发布secret。
 
 ## 运行方式

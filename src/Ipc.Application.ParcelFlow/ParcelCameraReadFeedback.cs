@@ -56,6 +56,11 @@ public sealed partial class ParcelRuntime
         cameraReadFeedback[position] = new(position, frame);
         pendingCameraCodes.Remove(position);
     }
+    void UnregisterCameraReadFeedback(IControlledObservationSource replaced)
+    {
+        foreach (var subscription in cameraReadSubscriptions.Where(x => ReferenceEquals(x.Source, replaced)).ToArray())
+        { subscription.Source.ReadFeedback -= subscription.Handler; cameraReadSubscriptions.Remove(subscription); }
+    }
     void ReleaseCameraReadFeedback()
     {
         foreach (var (source, handler) in cameraReadSubscriptions) source.ReadFeedback -= handler;

@@ -27,9 +27,9 @@ public partial class ParcelViewModel
     public bool CanSubmitReviewedConfiguration => CanConfigure && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission;
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
     public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration ? "有未保存的更改" : "没有未保存的更改";
-    public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "仅修改条码规则时可直接生效；连接等其他设置需重启，以保存结果为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
+    public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "条码规则、相机和 RCS 设置保存后立即生效，只重新连接对应设备；其他设置保存后需重启。以保存结果为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
     public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" : Snapshot?.Configuration.Failure is not null ? ConfigurationActivationOutcome :
-        Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "条码规则已保存并生效" : ConfigurationActivationGuidance;
+        Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "设置已保存并生效" : ConfigurationActivationGuidance;
     string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature());
     ParcelConfiguration CurrentReviewCandidate() => configurationAuthority switch
     {
@@ -58,7 +58,9 @@ public partial class ParcelViewModel
         validationState = validation.Status == "Validated" ? "检查通过" : ChineseInterfaceText.ParameterMessage(validation.Reason, "检查未通过，请查看诊断详情并修正设置。");
         if (validation.Status != "Validated")
         { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过，请查看参数错误与诊断详情；输入已保留。"; return false; }
-        var live = Snapshot is { } snapshot && ConfigurationActivation.RulesOnly(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate);
+        // The same rules the Application applies; it may still fall back to a restart (e.g. an unconfirmed request).
+        var live = Snapshot is { } snapshot && (ConfigurationActivation.RulesOnly(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate) ||
+            ConfigurationActivation.LiveDevices(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate) is not null);
         reviewedConfigurationChanges = BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate)
             .Select(c => c with { Activation = live ? "保存后立即生效" : "重启后生效" }).ToArray();
         if (reviewedConfigurationChanges.Length == 0)

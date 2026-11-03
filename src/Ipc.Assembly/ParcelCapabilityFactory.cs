@@ -537,6 +537,49 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
 #endif
         transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, readers, devicePorts);
     }
+    // SM: a saved camera or RCS change rebuilds only that built-in port; everything else keeps running.
+    // The runtime owns what is returned. Anything this cannot rebuild exactly (extensions, a qualified
+    // deployment, an unconfigured or non-built-in device) returns null and the caller stages a restart.
+    public ParcelLiveDevices? CreateLive(ParcelConfiguration c, IReadOnlyCollection<string> readerIds, bool integration)
+    {
+#if SPORTMASTER
+        if (!transferred || c.ApplicationId != "sportmaster" || c.Extensions is { Packages.Length: > 0 } || qualification is not null) return null;
+        Dictionary<string, IControlledObservationSource> readers = [];
+        Dictionary<string, string> hashes = [];
+        try
+        {
+            foreach (var id in readerIds)
+            {
+                var binding = ParcelBindings.Readers(c).SingleOrDefault(r => r.DeviceId == id);
+                if (binding is null || ParcelConnectionSetup.IsDeferred(c, id) || binding.Driver != Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderImplementation) return Release();
+                var source = Ipc.Drivers.Hikrobot.Mvs.BundledMvs.CreateReader(binding); readers.Add(id, source);
+                if (source.DeviceId != id) throw new InvalidDataException("Reader returned the wrong stable identity");
+            }
+            IWcsPort? wcs = null;
+            if (integration)
+            {
+                if (c.Wcs is not { Package: null, Implementation: "sportmaster-rcs" } w || ParcelConnectionSetup.IsDeferred(c, w.InstanceId)) return Release();
+                var service = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w); service.ConfigureRuntime(c); wcs = service;
+                hashes.Add(w.InstanceId, BuiltInFingerprint(service.GetType()));
+            }
+            return new(readers, wcs, hashes);
+        }
+        catch { Release(); throw; }
+        ParcelLiveDevices? Release()
+        {
+            foreach (var reader in readers.Values) try { reader.DisposeAsync().AsTask().GetAwaiter().GetResult(); } catch (Exception) { /* not started; nothing acquired */ }
+            readers.Clear(); return null;
+        }
+#else
+        return null;
+#endif
+    }
+    public void ConfirmLive(ParcelConfiguration c)
+    {
+#if SPORTMASTER
+        builtInConfigurationHash = c.ApplicationId == "sportmaster" ? Wire.Hash(Wire.Encode(c)) : null;
+#endif
+    }
     static IImageCamera BindReader(IControlledObservationSource source, CapabilityBinding binding, string directory) => source is IReaderImageCapture provider
         ? provider.BindCapture(binding, directory) : throw new InvalidDataException("Reader does not expose controlled original-acquisition capture; a second connection is forbidden");
     static string BuiltInFingerprint(Type implementation)

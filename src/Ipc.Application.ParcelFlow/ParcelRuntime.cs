@@ -11,7 +11,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     readonly CancellationTokenSource stopping = new();
     readonly Dictionary<string, ParcelOperation> operations = [];
     readonly Dictionary<string, Channel<object>> positionQueues = [];
-    readonly Dictionary<string, ObservationSession> readers = [];
+    // Concurrent: a saved camera change replaces one session while progress sampling enumerates.
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, ObservationSession> readers = new(StringComparer.Ordinal);
     readonly Dictionary<string, DeliveryPosition> positions = [];
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> scaleEpochs = new();
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, long> scaleSequences = new();
@@ -203,7 +204,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
-            foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
+            foreach (var reader in ReaderPorts()) readers[reader.DeviceId] = new(reader);
             lock (startupOwnership)
             {
                 token.ThrowIfCancellationRequested();

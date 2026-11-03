@@ -11,7 +11,7 @@ public partial class ParcelViewModel
         if (structuredBase is null) throw new InvalidOperationException("先读取完整配置；当前输入保留。");
         var candidate = configurationAuthority == "高级JSON" ? Wire.Decode<ParcelConfiguration>(ConfigurationDraft) : BuildStructuredConfiguration();
         return DraftRevisionState + "\n" + ConfigurationEditorState + "\n\n" +
-            "影响范围：以下是相对于本窗原读取候选的完整字段路径；参数值请在对应对象或高级文本核对。仅规则修改可直接生效；混合及其他修改需重启，以保存结果为准。已发出的请求不受影响。\n\n" +
+            "影响范围：以下是相对于本窗原读取候选的完整字段路径；参数值请在对应对象或高级文本核对。只改条码规则、相机或 RCS 时立即生效，只重新连接对应设备；包含其他设置时需重启。以保存结果为准。已发出的请求不受影响。\n\n" +
             DescribeConfigurationChanges(structuredBase, candidate);
     }
 

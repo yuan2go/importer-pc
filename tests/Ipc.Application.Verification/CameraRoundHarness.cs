@@ -48,7 +48,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         if (!nativeLoaded)
         {
             var cache = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? throw new InvalidOperationException("D-drive restored cache required");
-            var library = NativeLibrary.Load(Path.Combine(cache, "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll"));
+            var library = NativeLibrary.Load(Path.Combine(cache, OperatingSystem.IsWindows() ? "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll" : "zxingcpp/0.5.3/runtimes/linux-x64/native/libZXing.so"));
             NativeLibrary.SetDllImportResolver(typeof(BarcodeReader).Assembly, (name, _, _) => name is "ZXing" or "ZXing.dll" ? library : 0);
             nativeLoaded = true;
         }
@@ -133,24 +133,44 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public readonly Dictionary<string, RoundApi> Apis = [];
         public readonly Dictionary<string, MvsAcquisition> Sources = [];
         public readonly Dictionary<string, RoundDecoder> Decoders = [];
+        // Live replacement bookkeeping: how many ports were rebuilt, and whether new cameras are found.
+        public int ReaderBuilds, WcsBuilds;
+        public bool DiscoverReplacements = true;
+        public ParcelConfiguration? LiveConfirmed;
+        // The fixture validates one exact configuration; a test names the next one before saving it.
+        public void Expect(ParcelConfiguration next) => expected = next;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validator.Normalize(c);
         public void ValidateStructure(ParcelConfiguration c) => validator.ValidateStructure(c);
         public void Validate(ParcelConfiguration c)
         { if (c.Mode != RunMode.Simulation || Wire.Encode(c) != Wire.Encode(Normalize(expected))) throw new InvalidOperationException("Exact Simulation round fixture only"); validator.ValidateStructure(c); }
         public CapabilityRequirements Requirements(CapabilityBinding b) => validator.Requirements(b);
+        MvsAcquisition Reader(DeviceBinding binding)
+        {
+            var api = new RoundApi(binding); Apis[binding.DeviceId] = api; var decoder = new RoundDecoder(api, binding.Parameters!); Decoders[binding.DeviceId] = decoder;
+            var source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), api,
+                serial => new ResourceLease(Path.Combine(launch.DataRoot, "synthetic-device-leases"), [serial]), decoder: decoder);
+            Sources[binding.DeviceId] = source; return source;
+        }
         public ParcelPorts Create(ParcelConfiguration c)
         {
             Validate(c); var readers = new Dictionary<string, IControlledObservationSource>();
-            foreach (var binding in c.Topology!.Readers)
-            {
-                var api = new RoundApi(binding); Apis.Add(binding.DeviceId, api); var decoder = new RoundDecoder(api, binding.Parameters!); Decoders.Add(binding.DeviceId, decoder);
-                var source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), api,
-                    serial => new ResourceLease(Path.Combine(launch.DataRoot, "synthetic-device-leases"), [serial]), decoder: decoder);
-                readers.Add(binding.DeviceId, source); Sources.Add(binding.DeviceId, source);
-            }
+            foreach (var binding in c.Topology!.Readers) readers.Add(binding.DeviceId, Reader(binding));
             var wcs = new SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
             return new(readers[c.Reader.DeviceId], null, wcs, null, new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" }, Readers: readers);
         }
+        public ParcelLiveDevices? CreateLive(ParcelConfiguration c, IReadOnlyCollection<string> readerIds, bool integration)
+        {
+            Validate(c); var readers = new Dictionary<string, IControlledObservationSource>();
+            foreach (var id in readerIds)
+            {
+                readers.Add(id, Reader(c.Topology!.Readers.Single(r => r.DeviceId == id))); ReaderBuilds++;
+                Apis[id].Discovered = DiscoverReplacements;
+            }
+            SportmasterRcsTaskService? wcs = null;
+            if (integration) { wcs = new(c.Wcs!); wcs.ConfigureRuntime(c); WcsBuilds++; }
+            return new(readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" });
+        }
+        public void ConfirmLive(ParcelConfiguration c) => LiveConfirmed = c;
         public ValueTask DisposeAsync() => validator.DisposeAsync();
     }
     internal sealed class RoundDecoder(RoundApi api, IReadOnlyDictionary<string, string> parameters) : IMonoBarcodeDecoder

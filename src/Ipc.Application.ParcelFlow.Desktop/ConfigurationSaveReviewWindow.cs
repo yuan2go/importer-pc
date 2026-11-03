@@ -148,7 +148,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         activate.IsEnabled = vm.CanRequestActivation;
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
-            "Effective" => "条码规则已保存并生效，无需重启。已受理作业继续使用原规则。",
+            "Effective" => "设置已保存并生效，无需重启。改了相机或 RCS 时只重新连接了对应设备；已受理的作业继续使用原设置。",
             "PendingRestart" => "更改已保存，尚未生效。点“重启软件使设置生效…”后才使用新设置。",
             "Unchanged" => "设置与当前一致，无需保存。",
             "Unknown" => "暂时无法确认是否保存成功。请先查看上次保存结果，不要重复提交。",

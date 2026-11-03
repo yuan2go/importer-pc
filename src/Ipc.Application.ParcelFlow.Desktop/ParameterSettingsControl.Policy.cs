@@ -28,7 +28,7 @@ public sealed partial class ParameterSettingsControl
                 Input(Form(station), "供包台编号 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "RCS 分配给本供包台的编号，左右投递位共用。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
                 locations["StationCode"] = locations[rcs.InstanceId + "/left-station-code"];
-                Technical(station, "供包台编号", rcs.InstanceId + "/left-station-code / right-station-code", "RCS 用它识别本供包台。保存并重启软件后，用于新的取格口请求和心跳。" + pair.OriginalValues);
+                Technical(station, "供包台编号", rcs.InstanceId + "/left-station-code / right-station-code", "RCS 用它识别本供包台。设置生效后用于新的取格口请求和心跳；生效方式以保存回执为准，旧请求保留原编号。" + pair.OriginalValues);
             }
         }
         if (!hasRcs) Input(Form(station), "供包台编号 *", m.Policy, "StationCode", "StationCode", station, "用于向外部系统识别当前供包台。");

@@ -23,7 +23,7 @@ public sealed partial class ParameterSettingsControl
         foreach (var component in m.Components.Where(c => (!FirstConfiguration || c.Bound) && (m.ApplicationId != "sportmaster" || c.Kind is not ("weight" or "plc" or "camera" or "upload"))))
         {
             var page = Page(ParameterOwnership.ObjectCategory(component), ParameterOwnership.IsRcs(component) ? "RCS 服务" : FirstConfiguration ? m.ComponentName(component) : m.ComponentLabel(component),
-                ParameterOwnership.IsRcs(component) ? "左右投递位共用此连接，保存并重启软件后生效。" : "保存并重启软件后生效。");
+                ParameterOwnership.IsRcs(component) && m.ApplicationId == "sportmaster" ? "左右投递位共用此连接。符合条件时保存后重连 RCS 生效，否则需受控重启；以保存回执为准。" : "保存并重启软件后生效。");
             if (!ParameterOwnership.IsRcs(component))
                 foreach (var role in m.ComponentRoles)
                 {
@@ -52,7 +52,7 @@ public sealed partial class ParameterSettingsControl
                 var item = new StackPanel(); item.Children.Add(Text((camera is null ? "" : camera + " · ") + ParameterLabel(p))); item.Children.Add(value); row.Children.Add(item); references.Children.Add(row);
             }
             page.Body.Children.Add(new Expander { Header = "其他页面的相关设置", Content = references, Margin = new(0, 20, 24, 0) });
-            Technical(page, "连接与业务结果", component.Contract, "心跳正常只说明 RCS 可连接。格口未确认的包裹不会自动重发。重连使用当前设置，已保存但未重启的修改不会生效。");
+            Technical(page, "连接与业务结果", component.Contract, "心跳正常只说明 RCS 可连接。格口未确认的包裹不会自动重发。重连只使用已生效设置；待重启的修改仍需受控重启。");
         }
     }
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);

@@ -1,21 +1,19 @@
 #requires -Version 7.0
+# Whitespace/layout gate for every C# file under src and tests (.editorconfig rules).
+# -Fix rewrites the files; without it any difference fails the check.
 param([switch]$Fix)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $root = Split-Path -Parent $PSScriptRoot
-$files = @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'industrial-format-files.txt') | Where-Object { $_.Trim().Length -gt 0 })
-if ($files.Count -eq 0 -or @($files | Sort-Object -Unique).Count -ne $files.Count) { throw 'Format scope must be non-empty and unique' }
-foreach ($file in $files) {
-    if ($file -notmatch '^(src|tests)/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.cs$' -or
-        -not (Test-Path -LiteralPath (Join-Path $root $file) -PathType Leaf)) { throw "Format scope missing or unsafe: $file" }
-}
 # Folder mode does not load/build/restore a project. The SDK rejects combining
 # --folder with --no-restore; locked restore remains in the separate build job.
-$arguments = @('format', 'whitespace', $root, '--folder', '--include') + $files
+$arguments = @('format', 'whitespace', $root, '--folder', '--include', 'src', 'tests')
 if (-not $Fix) { $arguments += '--verify-no-changes' }
 Push-Location $root
 try {
     & dotnet @arguments
-    if ($LASTEXITCODE -ne 0) { throw "Incremental format check failed ($LASTEXITCODE)" }
-    Write-Output "PASS FORMAT: $($files.Count) explicit IE01 files; remaining repository formatting is outside this check"
+    if ($LASTEXITCODE -ne 0) { throw "Format check failed ($LASTEXITCODE); run ./scripts/verify-industrial-format.ps1 -Fix and commit the result separately" }
+    $count = @(Get-ChildItem -LiteralPath (Join-Path $root 'src'), (Join-Path $root 'tests') -Recurse -Filter *.cs -File |
+        Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' }).Count
+    Write-Output "PASS FORMAT: $count C# files under src and tests"
 } finally { Pop-Location }

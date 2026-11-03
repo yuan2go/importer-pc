@@ -71,8 +71,10 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         mode = configuration.Mode;
         CapabilityBinding? Resolve(CapabilityBinding? b)
         {
+#if SPORTMASTER
             if (configuration.ApplicationId == "sportmaster" && b?.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
                 b = b with { Parameters = new(b.Parameters.Where(p => !Ipc.Integrations.SportmasterRcs.RcsTaskOptions.RetiredKeys.Contains(p.Key, StringComparer.Ordinal))) };
+#endif
             if (b is null || b.Implementation != "reference-" + b.Kind || b.Kind is "weight" or "login" or "camera" || b.Package is not null || b.Parameters.ContainsKey("endpoint")) return b;
             var parameters = new Dictionary<string, string>(b.Parameters);
             parameters.TryAdd("peer-root", Path.GetFullPath(Path.Combine(launch.DataRoot, "Simulation", "reference-peers")));

@@ -32,10 +32,7 @@
     "Contract": "SPORTMASTER-RCS-SORTER-v1",
     "Parameters": {
       "left-station-code": "station-01",
-      "right-station-code": "station-01",
-      "request-id-base": "0",
-      "request-id-count": "10000",
-      "specified-chute": "false"
+      "right-station-code": "station-01"
     }
   },
   "Plc": null,

@@ -10,9 +10,9 @@
 
 新独立集成程序集实现 `IWcsExtension`、`IWcsPort`，由既有签名安装、配置修订、受控重启链装配。HTTP不进入业务/UI/基座。首项只实现POST目标地址上的 `sorter.task.dest_request`；不实现RCS服务器、PLC控制、认证/查询/拆包提交或物理完成。
 
-`IWcsRequestPreparer` 是纯序列化的可选伴随端口：使用实际T1准备时的持久编号边界和冻结配置，生成数字requestId与完整UTF8 JSON；T1保存原JSON/hash/目标/合同/包后T2只发送原字节。数字ID在组件声明的request-id-base/count区间内，按已提交T1高水位分配，不能用更早入场序号拒绝合法迟到准备。SQL7的永久唯一Owner账与原WCS请求同事务提交，归档不删除编号归属。恢复备份时退役已登记的全部来源范围（包含源在备份后可能消耗的尾段），新业务必须经原CAS/受控重启取得外部分配的新不重叠范围；旧请求ID/原报文不变。不同工位/新库/克隆库仍须分配不重叠范围并停用旧根。未提供上游幂等保证，不声称全局恰好一次。
+`IWcsRequestPreparer` 是纯序列化的可选伴随端口：使用实际T1准备时的持久编号边界和冻结配置，生成数字requestId与完整UTF8 JSON；T1保存原JSON/hash/目标/合同/包后T2只发送原字节。当前 SM 由 Application 使用 Unix 微秒时间及永久编号下限自动分配数字 ID，不再配置编号范围；SQL7 的永久唯一 Owner 账与原 WCS 请求同事务提交，归档不删除编号归属。恢复保留原编号下限、已登记范围的退役证据和原请求，旧请求 ID/原报文不变。不得同时运行克隆数据根。未提供上游幂等保证，不声称全局恰好一次。
 
-地址由binding.Target明确给出（路径 `/rcs/sorter/api`）。source、locale、zoneId、projectId、每位stationCode/bcrCode、quantity、specifiedChute/chuteCode均属于组件参数；数量为明确配置的每次准入量，不从扫码/重量推导。默认参考配置保持参考协议，真实HTTP需显式选择签名组件。
+地址由binding.Target明确给出（路径 `/rcs/sorter/api`）。source/locale 固定，仓 ID、生产线 ID、供包台编号及左右相机编码来自完整候选。每次请求数量固定为 1；不提供指定格口，specifiedChute=false、chuteCode=null。SM 固定使用内置 RCS HTTP 客户端，不提供本地模拟连接方式。
 
 ## 回包与业务
 

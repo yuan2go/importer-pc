@@ -682,10 +682,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             try
             {
                 var range = preparer.GetRequestIdRange(request.Binding);
-                var sequence = range is null ? repository!.OperationSequence(op.Id) : repository!.NextIntegrationPreparationSequence(range);
+                var sequence = preparer.UsesAutomaticRequestIds ? repository!.NextAutomaticIntegrationRequestId() :
+                    range is null ? repository!.OperationSequence(op.Id) : repository!.NextIntegrationPreparationSequence(range);
                 var prepared = preparer.PrepareRequest(Wire.Decode<FrozenRequest>(Wire.Encode(request)), sequence);
-                if (range is not null && prepared.RequestId != checked(range.First + sequence - 1))
-                    throw new InvalidDataException("Numeric request ID differs from the allocated T1 range position");
+                if (preparer.UsesAutomaticRequestIds && prepared.RequestId != sequence ||
+                    range is not null && prepared.RequestId != checked(range.First + sequence - 1))
+                    throw new InvalidDataException("Numeric request ID differs from the assigned T1 identity");
                 if (prepared.RequestId <= 0 || prepared.ContentType != "application/json" || string.IsNullOrWhiteSpace(prepared.Body) ||
                     System.Text.Encoding.UTF8.GetByteCount(prepared.Body) > 65536 || Wire.Hash(prepared.Body) != prepared.BodyHash)
                     throw new InvalidDataException("Invalid external request preparation; no delivery permitted");

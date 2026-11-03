@@ -21,9 +21,6 @@ static partial class SportmasterRcs
     {
         ["zone-id"] = "71",
         ["project-id"] = "83",
-        ["specified-chute"] = "false",
-        ["request-id-base"] = "810000000",
-        ["request-id-count"] = "100000",
         ["heartbeat-interval-seconds"] = "3600",
         ["left-station-code"] = "TEST-LEFT",
         ["left-bcr-code"] = "TEST-LEFT-READER",
@@ -78,7 +75,7 @@ static partial class SportmasterRcs
                 Check(peer.Requests.Count == postCount + 1 && actual.Body == frozen.IntegrationRequest.Body && Wire.Hash(actual.Body) == frozen.IntegrationRequest.BodyHash && actual.Method == "POST" && actual.ContentType.StartsWith("application/json", StringComparison.Ordinal), mode + " sends exact pre-frozen JSON bytes once");
                 using var body = JsonDocument.Parse(actual.Body); var envelope = body.RootElement; var item = envelope.GetProperty("data").EnumerateArray().Single(); var p = item.GetProperty("params");
                 Check(envelope.GetProperty("source").GetString() == "BAR" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN" &&
-                    envelope.GetProperty("requestId").GetInt64() == 810000007 && item.GetProperty("index").GetInt32() == 1 && item.GetProperty("command").GetString() == "sorter.task.dest_request" &&
+                    envelope.GetProperty("requestId").GetInt64() == 7 && item.GetProperty("index").GetInt32() == 1 && item.GetProperty("command").GetString() == "sorter.task.dest_request" &&
                     p.GetProperty("zoneId").GetInt32() == 71 && p.GetProperty("projectId").GetInt32() == 83 && p.GetProperty("loadCode").GetString() == "SYNTH-0001" &&
                     p.GetProperty("stationCode").GetString() == "TEST-LEFT" && p.GetProperty("bcrCode").GetString() == "TEST-LEFT-READER" && !p.GetProperty("specifiedChute").GetBoolean() &&
                     p.GetProperty("chuteCode").ValueKind == JsonValueKind.Null && p.GetProperty("quantity").GetInt32() == 1, mode + " preserves documented field casing, numbers, booleans, null and configured mapping");
@@ -177,7 +174,7 @@ static partial class SportmasterRcs
         snapshot = await Wait(app, s => s.Inputs!.SingleOrDefault(x => x.PositionId == "left") is { Outcome: ParcelInputOutcome.Duplicate } latest && latest.Reason.StartsWith("SamePlacement", StringComparison.Ordinal));
         Check(peer.Requests.Count == resting && snapshot.Operations.Length == 3 &&
             snapshot.Inputs!.Single(x => x.PositionId == "left").OperationId == snapshot.Operations.Single(o => o.ParcelCode == "000456").Id,
-            "a parcel resting on the tray is read every frame but requests RCS once; repeated reads point at the original operation");
+            "a parcel resting on the tray is read every frame but requests RCS once; repeated reads point at the original operation; posts=" + peer.Requests.Count + "/" + resting + "; operations=" + snapshot.Operations.Length + "; input=" + Wire.Encode(snapshot.Inputs));
         await Task.Delay(release + 200);
         await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000456\n"));
         snapshot = await Wait(app, s => s.Operations.Length == 4 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
@@ -188,7 +185,7 @@ static partial class SportmasterRcs
         var a = Binding(peer.Endpoint); a = a with { Parameters = new(a.Parameters) { ["request-id-base"] = "100" } };
         var b = a with { Parameters = new(a.Parameters) { ["request-id-base"] = "99" } };
         await using (var first = new SportmasterRcsTaskService(a)) await using (var second = new SportmasterRcsTaskService(b))
-            Check(first.PrepareRequest(Request(a), 1).RequestId == second.PrepareRequest(Request(b), 2).RequestId, "rebase arithmetic reproduces the original numeric-ID collision; application must guard durable allocations");
+            Check(first.PrepareRequest(Request(a), 1).RequestId != second.PrepareRequest(Request(b), 2).RequestId, "retired allocation offsets no longer change software-assigned request IDs");
         var name = "rcs-numeric-history"; var configPath = Path.Combine(root, name, "config"); Directory.CreateDirectory(configPath);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Wcs = Binding(peer.Endpoint), TimeoutMs = 1500 };
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
@@ -208,20 +205,21 @@ static partial class SportmasterRcs
             app.EmitReferenceAt("right", "numeric-original", "SYNTH-0001", Wire.Id()); var s = await Wait(app, x => x.Operations.SingleOrDefault()?.State == ParcelState.SlotResolved);
             original = s.Operations.Single().Id; allocated = s.Operations.Single().Wcs!.Request.IntegrationRequest!.RequestId;
             await Maintenance(app); s = await app.SnapshotAsync(); var low = s.Configuration.Effective with { Wcs = s.Configuration.Effective.Wcs! with { Parameters = new(s.Configuration.Effective.Wcs!.Parameters) { ["request-id-base"] = "1" } } };
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, low, "Synthetic obsolete numeric range, no remote action allowed")).Status == "PendingRestart", "numeric range candidate remains one controlled configuration revision");
+            Check((await app.StageConfigurationAsync(s.Configuration.Revision, low, "Synthetic obsolete numeric range, no remote action allowed")).Status == "Unchanged", "retired numeric fields are removed before candidate comparison without changing effective configuration");
         }
         var posts = peer.Requests.Count;
         await using (var app = await Open(data))
         {
             await Command(app, "Resume"); app.EmitReferenceAt("right", "numeric-blocked", "SYNTH-0001", Wire.Id());
             var s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "numeric-blocked" && o.State is ParcelState.Blocked or ParcelState.SlotResolved)); var op = s.Operations.Single(o => o.AdmissionId == "numeric-blocked");
-            Check(op.State == ParcelState.Blocked && op.Wcs is null && peer.Requests.Count == posts && op.Reason!.Contains("numeric request ID"), "obsolete range is durably blocked before T1/attempt/POST without crashing the worker");
+            Check(op.State == ParcelState.SlotResolved && op.Wcs!.Request.IntegrationRequest!.RequestId > allocated && peer.Requests.Count == posts + 1,
+                "reopening automatically allocates above the permanent floor without a configured range");
             await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
-            Check((await Command(app, "AbandonUnsubmitted", op.Id, "Synthetic entity inspected after ID allocation refusal")).Status == "Persisted", "blocked unsent entity supports existing inspected disposition");
             await Wait(app, x => x.Availability!.Configure); await Command(app, "ArchiveHistory", value: "Synthetic numeric history must retain allocation identity");
             using (var repo = new ParcelRepository(directory, c.ApplicationId)) Check(repo.History(long.MaxValue, 20).Items.Any(i => i.Operation.Id == original && i.Archived), "numeric allocation authority survives real transaction history archival");
             Check((await app.BackupAsync(backup)).Status == "BackupCreated", "numeric history uses the actual complete backup path");
         }
+        posts = peer.Requests.Count;
         var restored = Path.Combine(root, "rcs-numeric-restored"); ParcelRecovery.Restore(backup, Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId));
         await using (var app = await Open(restored))
         {
@@ -232,22 +230,11 @@ static partial class SportmasterRcs
                 "restored DB10 remains isolated before handoff; attempted admission cannot create a request or POST");
             using var repository = new ParcelRepository(Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId), c.ApplicationId);
             await using var preparer = new SportmasterRcsTaskService(s.Configuration.Effective.Wcs!);
-            var range = preparer.GetRequestIdRange(s.Configuration.Effective.Wcs!)!;
-            var retiredBudget = repository.IntegrationBudget(range);
-            Check(retiredBudget.Remaining == 0 && retiredBudget.State == "Exhausted" && retiredBudget.PermanentHighWater >= range.Last,
-                "restored numeric budget publicly reports zero remaining and permanent retirement floor");
-            var nextRange = new IntegrationRequestIdRange(retiredBudget.PermanentHighWater + 1, retiredBudget.PermanentHighWater + 100);
-            Check(repository.IntegrationBudget(nextRange).Remaining == 100 && repository.NextIntegrationPreparationSequence(nextRange) == 1,
-                "new externally allocated disjoint range starts beyond permanent floor without reusing retired IDs");
-            var resized = s.Configuration.Effective.Wcs! with { Parameters = new(s.Configuration.Effective.Wcs!.Parameters) { ["request-id-count"] = "100001" } };
-            try { repository.RegisterIntegrationRequestRanges(preparer, [s.Configuration.Effective with { Wcs = resized }], null); throw new Exception("Overlapping resized range accepted"); }
-            catch (InvalidDataException error) { Check(error.Message.Contains("overlaps"), "controlled renewal rejects resizing into a previous allocation; identical existing range remains compatible"); }
-            try { repository.NextIntegrationPreparationSequence(range); throw new Exception("Restored retired range reused"); }
-            catch (InvalidDataException error)
-            {
-                Check(error.Message.Contains("exhausted/retired", StringComparison.Ordinal) && repository.History(long.MaxValue, 20).Items.Any(i => i.Operation.Id == original && i.Archived && i.Operation.Wcs!.Request.IntegrationRequest!.RequestId == allocated),
-                    "fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
-            }
+            Check(preparer.GetRequestIdRange(s.Configuration.Effective.Wcs!) is null && preparer.UsesAutomaticRequestIds,
+                "restored SM has no numeric range renewal requirement");
+            Check(repository.NextAutomaticIntegrationRequestId() > allocated && repository.History(long.MaxValue, 20).Items.Any(i => i.Operation.Id == original && i.Archived && i.Operation.Wcs!.Request.IntegrationRequest!.RequestId == allocated),
+                "automatic allocation advances after restore while archived original wire IDs remain fixed");
+
         }
         using (var retired = new ParcelRepository(Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId), c.ApplicationId))
         {
@@ -260,12 +247,12 @@ static partial class SportmasterRcs
     static async Task PreparationGuards(SportmasterRcsTaskService service, CapabilityBinding binding, Peer peer)
     {
         var signedStyle = binding with { Implementation = "extension:sportmaster.rcs-task/sportmaster-rcs-task" };
-        Check(service.GetRequestIdRange(signedStyle) == new IntegrationRequestIdRange(810000001, 810100000), "numeric range uses the actual signed binding contract, not a built-in implementation alias");
+        Check(service.GetRequestIdRange(signedStyle) is null && service.UsesAutomaticRequestIds, "SM preparation uses automatic persisted IDs without a configured range");
         var count = peer.Requests.Count; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 11) };
         var alteredBody = frozen.IntegrationRequest!.Body + " ";
         try { await service.RequestDestinationAsync(frozen with { IntegrationRequest = frozen.IntegrationRequest with { Body = alteredBody, BodyHash = Wire.Hash(alteredBody) } }, CancellationToken.None); throw new Exception("Changed wire body accepted"); }
         catch (InvalidDataException) { Check(peer.Requests.Count == count, "tampered wire body fails before HTTP even when attacker recomputes its body hash"); }
-        foreach (var sequence in new long[] { 0, 100001 })
+        foreach (var sequence in new long[] { 0, -1 })
         {
             try { service.PrepareRequest(original, sequence); throw new Exception("Out-of-range sequence accepted"); }
             catch (InvalidDataException) { Check(peer.Requests.Count == count, "request-ID range rejects invalid durable sequence " + sequence + " without an external call"); }
@@ -276,14 +263,14 @@ static partial class SportmasterRcs
         {
             binding with { Target = "http://127.0.0.1/synthetic-other-api" },
             binding with { Contract = "UNKNOWN-CONTRACT" },
-            binding with { Parameters = new(binding.Parameters) { ["specified-chute"] = "true" } },
-            binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = long.MaxValue.ToString(System.Globalization.CultureInfo.InvariantCulture) } },
-            binding with { Parameters = new(binding.Parameters) { ["request-id-count"] = "0" } }
+            binding with { Parameters = new(binding.Parameters) { ["unexpected"] = "true" } },
+            binding with { Parameters = new(binding.Parameters) { ["zone-id"] = "0" } },
+            binding with { Parameters = new(binding.Parameters) { ["project-id"] = "invalid" } }
         };
         foreach (var value in invalid)
         {
             try { await using var rejected = new SportmasterRcsTaskService(value); throw new Exception("Invalid RCS binding accepted"); }
-            catch (InvalidDataException) { Check(peer.Requests.Count == count, "invalid endpoint/contract/mapping/chute/range configuration rejects before an external call"); }
+            catch (InvalidDataException) { Check(peer.Requests.Count == count, "invalid endpoint/contract/mapping configuration rejects before an external call"); }
         }
         var missingCameraCode = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "left-bcr-code")) };
         await using (var missingService = new SportmasterRcsTaskService(missingCameraCode))
@@ -294,7 +281,7 @@ static partial class SportmasterRcs
         var specified = binding with { Parameters = new(binding.Parameters) { ["specified-chute"] = "true", ["chute-code"] = "SYNTH-EXPLICIT" } };
         await using var explicitService = new SportmasterRcsTaskService(specified); var explicitRequest = Request(specified);
         using var parsed = JsonDocument.Parse(explicitService.PrepareRequest(explicitRequest, 1).Body); var parameters = parsed.RootElement.GetProperty("data")[0].GetProperty("params");
-        Check(parameters.GetProperty("specifiedChute").GetBoolean() && parameters.GetProperty("chuteCode").GetString() == "SYNTH-EXPLICIT", "explicit configured chute preserves its documented boolean and code");
+        Check(!parameters.GetProperty("specifiedChute").GetBoolean() && parameters.GetProperty("chuteCode").ValueKind == JsonValueKind.Null, "retired fixed-chute settings cannot affect new ordinary destination requests");
     }
     static async Task RuntimeChecks(string workspace, string root, Peer peer)
     {
@@ -389,10 +376,12 @@ static partial class SportmasterRcs
             app.EmitReferenceAt("left", "synthetic-range-first", "SYNTH-0001", Wire.Id()); await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved);
             var count = peer.Requests.Count;
             app.EmitReferenceAt("right", "synthetic-range-second", "SYNTH-0001", Wire.Id());
-            var s = await Wait(app, x => x.Operations.Any(o => o.State == ParcelState.Blocked)); var blocked = s.Operations.Single(o => o.State == ParcelState.Blocked);
-            Check(blocked.Wcs is null && blocked.Reason?.Contains("IntegrationPreparationBlocked", StringComparison.Ordinal) == true && peer.Requests.Count == count && !s.BlockingReasons.Any(x => x.Contains("worker failed", StringComparison.OrdinalIgnoreCase)), "exhausted durable numeric-ID range blocks only the unsent entity without POST or global worker failure");
-            Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause"))).Status == "Persisted", "range exhaustion leaves runtime available for software pause");
-            s = await app.SnapshotAsync(); Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", blocked.Id, "Synthetic entity inspected after exhausted namespace"))).Status == "Persisted", "range-exhausted unsent entity supports guarded inspection and disposition");
+            var s = await Wait(app, x => x.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
+            Check(s.Operations.All(o => o.Wcs!.Request.IntegrationRequest!.RequestId > 10000) && s.Operations.Select(o => o.Wcs!.Request.IntegrationRequest!.RequestId).Distinct().Count() == 2 && peer.Requests.Count == count + 1,
+                "automatic IDs have no configured capacity and two positions receive distinct persisted requests");
+            Check(!s.AuxiliaryReasons!.Any(x => x.StartsWith("IntegrationIdBudget:", StringComparison.Ordinal)), "SM no longer publishes a configured request-number budget");
+            Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause"))).Status == "Persisted", "ordinary request processing retains the software pause guard");
+
         }
     }
     static async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> ready)

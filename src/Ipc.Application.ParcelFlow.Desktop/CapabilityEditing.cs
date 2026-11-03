@@ -81,7 +81,13 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         var selected = proposedProvider ?? throw new InvalidOperationException("尚未选择新的连接方式");
         CancelProviderChange(); Provider = selected;
     }
-    public CapabilityDescriptor[] Providers { get; }
+    public CapabilityDescriptor[] Providers { get; private set; }
+    internal void UseRcsOnly()
+    {
+        if (Kind != "integration") return;
+        Providers = Providers.Where(p => p.Implementation == "sportmaster-rcs" && p.Package is null && p.Module is null).ToArray();
+        CancelProviderChange();
+    }
     public string Kind { get; }
     public string Role { get; }
     bool enabled, bound, configureLater;
@@ -141,9 +147,10 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         // Keep original insertion order and explicitly omitted defaults. Reordering
         // unrelated parameter bytes would change the frozen configuration hash.
         var parameters = new Dictionary<string, string>(originalParameters);
+        if (ParameterOwnership.IsRcs(this))
+            foreach (var key in new[] { "request-id-base", "request-id-count", "specified-chute", "chute-code" }) parameters.Remove(key);
         foreach (var item in Parameters)
         {
-            if (!ParameterOwnership.Applicable(this, item.Field.Key)) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
             // A required default must become part of the candidate when an
             // incomplete/deferred connection is configured. Optional omitted

@@ -12,13 +12,10 @@ public static class ParameterOwnership
     public static int Category(CapabilityDraft draft, string key) => IsDriver(draft) ? 2 : !IsRcs(draft) ? 3 : key switch
     {
         "zone-id" or "project-id" or "left-station-code" or "right-station-code" => 0,
-        "specified-chute" or "chute-code" => 1,
         "left-bcr-code" or "right-bcr-code" => 2,
         _ => 3
     };
     public static string CategoryName(int category) => new[] { "系统", "业务模块", "驱动", "组件" }[category];
-    public static bool Applicable(CapabilityDraft draft, string key) => !IsRcs(draft) || key != "chute-code" ||
-        draft.Parameters.FirstOrDefault(p => p.Field.Key == "specified-chute")?.Value != "false";
     public static bool StationConflict(CapabilityDraft draft) => IsRcs(draft) &&
         draft.Parameters.FirstOrDefault(p => p.Field.Key == "left-station-code")?.Value != draft.Parameters.FirstOrDefault(p => p.Field.Key == "right-station-code")?.Value;
 }

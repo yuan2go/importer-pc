@@ -54,6 +54,7 @@ if (args.Contains("--camera-chain-closure")) { await CameraChainClosure.Run(work
 if (args.Contains("--reader-feedback-22")) { await ReaderFeedback22.Run(workspace, root); return; }
 if (args.Contains("--unread-package-27")) { await UnreadPackage27.Run(workspace, root); return; }
 if (args.Contains("--reader-robustness-28")) { await ReaderRobustness28.Run(workspace, root); return; }
+if (args.Contains("--sm-automatic-rcs")) { await SportmasterRcs.AutomaticRcs(workspace, root); return; }
 if (args.Contains("--industrial-lifecycle")) { IndustrialLifecycle.Run(root); return; }
 if (args.Contains("--industrial-rollback")) { await IndustrialRollback.Run(workspace, root); return; }
 if (args.Contains("--industrial-version-pruning")) { await IndustrialVersionPruning.Run(workspace, root); return; }

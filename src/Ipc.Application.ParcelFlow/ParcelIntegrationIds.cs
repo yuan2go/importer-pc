@@ -17,6 +17,13 @@ public sealed partial class ParcelRuntime
 
 public sealed partial class ParcelRepository
 {
+    internal long NextAutomaticIntegrationRequestId()
+    {
+        // Microsecond wall-clock seed keeps new requests separate from millisecond
+        // heartbeats. The permanent ledger wins on restart and clock rollback.
+        var now = (DateTimeOffset.UtcNow.UtcTicks - DateTimeOffset.UnixEpoch.UtcTicks) / 10;
+        return Math.Max(now, checked(IntegrationRequestIdFloor() + 1));
+    }
     public IntegrationIdBudget IntegrationBudget(IntegrationRequestIdRange range)
     {
         if (range.First <= 0 || range.Last < range.First) throw new InvalidDataException("Invalid numeric request ID range");

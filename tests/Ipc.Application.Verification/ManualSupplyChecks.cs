@@ -12,7 +12,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public ManualFactory Factory = null!;
     public ParcelRuntime App = null!;
     public Func<IDisposable?>? RootOwnership { get; set; }
-    public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true, int? maximumOperations = null, long requestIdCount = 100000, RunMode mode = RunMode.Production)
+    public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true, int? maximumOperations = null, RunMode mode = RunMode.Production)
     {
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var readers = seed.Topology!.Readers.Select((r, i) => r with
@@ -25,9 +25,6 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         {
             ["zone-id"] = "71",
             ["project-id"] = "83",
-            ["specified-chute"] = "false",
-            ["request-id-base"] = "830000000",
-            ["request-id-count"] = requestIdCount.ToString(System.Globalization.CultureInfo.InvariantCulture),
             ["heartbeat-interval-seconds"] = "3600",
             ["left-station-code"] = "MANUAL-STATION",
             ["right-station-code"] = "MANUAL-STATION",
@@ -68,6 +65,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         readonly ParcelCapabilityFactory validation = new(launch);
         public bool RcsOffline;
         public bool FailDisposal { get; set; }
+        public bool FailPreparation { get; set; }
         public int CreateCalls { get; private set; }
         public readonly Dictionary<string, SilentCamera> Cameras = [];
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validation.Normalize(c);
@@ -99,7 +97,8 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t) => inner.ResolveSlotAsync(r, t);
         public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
         public IntegrationRequestIdRange? GetRequestIdRange(CapabilityBinding b) => inner.GetRequestIdRange(b);
-        public PreparedIntegrationRequest PrepareRequest(FrozenRequest r, long s) => inner.PrepareRequest(r, s);
+        public bool UsesAutomaticRequestIds => inner.UsesAutomaticRequestIds;
+        public PreparedIntegrationRequest PrepareRequest(FrozenRequest r, long s) => owner.FailPreparation ? throw new InvalidDataException("synthetic preparation failure") : inner.PrepareRequest(r, s);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }

@@ -45,17 +45,18 @@ internal static partial class ManualRcsDebugChecks
         }
         async Task PreparationFailure()
         {
-            await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "prepare-failure"), deferred: true, maximumOperations: 1, requestIdCount: 1, mode: RunMode.Simulation);
+            await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "prepare-failure"), deferred: true, maximumOperations: 1, mode: RunMode.Simulation);
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
             var s = await h.App.SnapshotAsync();
-            var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "USE-ONLY-ID", null);
+            var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "FIRST-INTENT", null);
             var first = await h.App.PrepareManualRcsRequestAsync(command, default);
             await h.App.CloseUnsentDebugRoundAsync(new(Wire.Id(), s.RuntimeId, first.Id!), default);
-            command = command with { CommandId = Wire.Id(), Barcode = "NO-ID-LEFT", ExpectedRoundId = first.Id };
+            command = command with { CommandId = Wire.Id(), Barcode = "PREPARATION-FAILURE", ExpectedRoundId = first.Id };
+            h.Factory.FailPreparation = true;
             var failed = await h.App.PrepareManualRcsRequestAsync(command, default);
             var original = await Original(h, failed);
-            Check(original is { State: ParcelState.Blocked, Wcs: null } && original.Reason!.Contains("exhausted") && h.Peer.Requests.IsEmpty,
-                "real numeric ID exhaustion persists a blocked intent without WCS or HTTP attempt");
+            Check(original is { State: ParcelState.Blocked, Wcs: null } && original.Reason!.Contains("synthetic preparation failure") && h.Peer.Requests.IsEmpty,
+                "a preparation failure persists a blocked intent without WCS or HTTP attempt");
             Check((await h.App.PrepareManualRcsRequestAsync(command, default)).OperationId == failed.OperationId,
                 "repeated failed preparation retains the same operation");
             var close = new CloseUnsentDebugRound(Wire.Id(), s.RuntimeId, failed.Id!);

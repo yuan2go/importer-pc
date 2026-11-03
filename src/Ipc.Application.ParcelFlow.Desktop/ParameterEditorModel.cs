@@ -15,7 +15,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public string StationId { get; } = stationId;
     public ParcelConfigurationLocations? Locations { get; } = locations;
     public CapabilityDraft[] Readers { get; } = readers.Select(r => { if (applicationId == "sportmaster") r.UseSimpleCameraConfiguration(); return r; }).ToArray();
-    public CapabilityDraft[] Components { get; } = components;
+    public CapabilityDraft[] Components { get; } = components.Select(c => { if (applicationId == "sportmaster") c.UseRcsOnly(); return c; }).ToArray();
     // Daily schema-3 roles and startup bindings already own their respective candidate.
     // This is a read-only projection; never copy role state into the component inventory.
     public CapabilityRoleDraft? OperatorLoginRole { get; } = operatorLoginRole;
@@ -118,7 +118,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             if (draft.ConfigureLater) continue;
             if (draft.IsSimpleCamera && !draft.Parameters.Any(p => p.Field.Key == "device.serial" && !string.IsNullOrWhiteSpace(p.Value)))
                 Issue("驱动", draft.InstanceId + "/device.serial", "请填写相机序列号。");
-            var values = draft.Parameters.Where(p => p.Value.Length > 0 && ParameterOwnership.Applicable(draft, p.Field.Key)).ToDictionary(p => p.Field.Key, p => p.Value);
+            var values = draft.Parameters.Where(p => p.Value.Length > 0).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
                 Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, error.Split(':')[0])), draft.InstanceId + "/" + error.Split(':')[0], draft.Role + " · " + error);
             // Mirror the installed Hikrobot driver's existing address-format rule
@@ -133,16 +133,11 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             }
             if (ParameterOwnership.StationConflict(draft))
                 Issue("系统", draft.InstanceId + "/left-station-code", "供包台编号不一致；请核对原值后填写本站共同使用的编号。");
-            if (ParameterOwnership.IsRcs(draft) && values.GetValueOrDefault("specified-chute") == "true" && !values.ContainsKey("chute-code"))
-                Issue("业务模块", draft.InstanceId + "/chute-code", "启用指定格口时须填写格口编码。");
             if (ParameterOwnership.IsRcs(draft))
             {
                 if (!Uri.TryCreate(draft.Target, UriKind.Absolute, out var endpoint) || endpoint.Scheme is not ("http" or "https") ||
                     endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
                     Issue("组件", draft.InstanceId + "/Target", "调度服务地址须使用网页传输协议，接口路径为 /rcs/sorter/api，不能含凭据、查询串或片段。");
-                if (long.TryParse(values.GetValueOrDefault("request-id-base"), out var start) && long.TryParse(values.GetValueOrDefault("request-id-count"), out var count) &&
-                    (start < 0 || count < 1 || start > long.MaxValue - count))
-                    Issue("组件", draft.InstanceId + "/request-id-count", "请求编号起点与数量合计超出协议整数范围。");
             }
         }
         foreach (var rcs in Components.Where(ParameterOwnership.IsRcs))

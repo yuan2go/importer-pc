@@ -74,7 +74,7 @@ static partial class Program
             Check(editor.ShowPage(3, "RCS 服务"), "first configuration opens the actual RCS step"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); first.UpdateLayout();
             Check(!Descendants(editor).OfType<ListBox>().Any(b => b.IsVisible), "single-page first-configuration step hides the redundant left rail");
             Check(Descendants(editor).OfType<Button>().Count(b => AutomationProperties.GetItemStatus(b) == "当前步骤") == 1 && Descendants(editor).OfType<Button>().Any(b => AutomationProperties.GetItemStatus(b) == "当前步骤" && b.Content.ToString()!.Contains("4 RCS")), "step bar exposes exactly one highlighted and accessible current step");
-            Check(Descendants(editor).OfType<TextBlock>().Any(t => t.Text.StartsWith("请求编号范围（由 RCS 分配）", StringComparison.Ordinal)) && Descendants(editor).OfType<TextBlock>().Any(t => t.Text == "填 RCS 分给本供包台的编号段，不能和其他供包台重叠。"), "request range uses the allocated-range instruction");
+            Check(!Descendants(editor).OfType<TextBlock>().Any(t => t.Text.Contains("请求编号范围") || t.Text.Contains("请求编号区间")), "RCS configuration has no allocated-range instruction");
             CaptureInternal(evidence, "review-first-rcs", editor, lines);
         }
         finally { first.Close(); }

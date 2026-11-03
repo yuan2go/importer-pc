@@ -119,9 +119,7 @@ static partial class Program
         foreach (var invalid in new[] { "127.1", "192.0.2.01", "0.0.0.0", "255.255.255.255", "::1" })
         { ip.Text = invalid; Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == cameraAddressPath), "driver canonical address rule retained: " + invalid); }
         ip.Text = "192.0.2.23"; control.ShowPage(3, "RCS 服务"); model.ValidateFields();
-        control.NavigateTo("rcs.one/request-id-base"); window.UpdateLayout();
-        Check(Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "rcs.one/request-id-base").IsKeyboardFocused, "advanced request range stays directly reachable and focused"); Capture("request-range");
-        if (!baseline) Check(Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "rcs.one/request-id-count").IsVisible, "request range fields remain ordinary form inputs rather than hidden diagnostics");
+        Check(!control.NavigateTo("rcs.one/request-id-base") && !control.NavigateTo("rcs.one/request-id-count"), "removed allocation fields cannot be navigated to");
         control.ShowPage(2, "左相机"); window.UpdateLayout();
         Check(ReferenceEquals(ip, Boxes().Single(b => AutomationProperties.GetAutomationId(b) == cameraAddressPath)) && ip.Text == "192.0.2.23", "object navigation retains original editor and corrected input");
         control.ShowPage(0, "供包台标识"); window.UpdateLayout(); Capture("system");

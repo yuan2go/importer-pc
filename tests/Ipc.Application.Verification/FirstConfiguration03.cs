@@ -8,8 +8,8 @@ internal static class FirstConfiguration03
     internal static async Task Run()
     {
         var initial = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
-        Check(initial.Wcs!.Parameters["request-id-base"] == "0" && initial.Wcs.Parameters["request-id-count"] == "10000" && initial.Wcs.Parameters["specified-chute"] == "false",
-            "a new station explicitly allocates inclusive request ids 1..10000 and leaves chute assignment to RCS");
+        Check(!initial.Wcs!.Parameters.Keys.Intersect(new[] { "request-id-base", "request-id-count", "specified-chute", "chute-code" }).Any(),
+            "new station configuration has no manual request allocation or fixed chute options");
         CameraSlot Left(string ip = "", string serial = "") => new("left", ip, serial);
         CameraSlot Right(string ip = "", string serial = "") => new("right", ip, serial);
         var blank = new[] { Left(), Right() };

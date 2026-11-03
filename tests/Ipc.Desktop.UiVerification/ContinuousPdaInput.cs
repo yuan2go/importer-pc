@@ -184,6 +184,26 @@ static class BarcodeNativeKeyboard
     [DllImport("user32.dll", SetLastError = true)] static extern uint SendInput(uint count, Input[] inputs, int size);
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] static extern short GetAsyncKeyState(int key);
+    [DllImport("user32.dll", SetLastError = true)] static extern bool SetCursorPos(int x, int y);
+    public static async Task ClickAsync(Window window, FrameworkElement target, Point offset)
+    {
+        if (!window.IsActive || GetForegroundWindow() != new WindowInteropHelper(window).Handle || !target.IsVisible)
+            throw new InvalidOperationException("Native mouse input requires the foreground test HWND and a visible target");
+        var point = target.PointToScreen(offset);
+        if (!SetCursorPos((int)Math.Round(point.X), (int)Math.Round(point.Y))) throw new Win32Exception(Marshal.GetLastWin32Error());
+        var processed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        MouseButtonEventHandler acknowledged = (_, e) => { if (e.ChangedButton == MouseButton.Left) processed.TrySetResult(); };
+        window.AddHandler(Mouse.MouseUpEvent, acknowledged, true);
+        try
+        {
+            Input[] inputs = [new() { Type = 0, Data = new InputUnion { Mouse = new MouseInput { Flags = 2 } } },
+                new() { Type = 0, Data = new InputUnion { Mouse = new MouseInput { Flags = 4 } } }];
+            if (SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<Input>()) != inputs.Length) throw new Win32Exception(Marshal.GetLastWin32Error());
+            await processed.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        }
+        finally { window.RemoveHandler(Mouse.MouseUpEvent, acknowledged); }
+    }
     public static async Task SendAsync(Window window, TextBox entry, ushort[] keys, FrameworkElement? initialFocus = null)
     {
         window.Dispatcher.VerifyAccess();

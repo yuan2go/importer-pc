@@ -42,7 +42,7 @@
   <Setter Property="VerticalAlignment" Value="Center"/>
   <Setter Property="IsTabStop" Value="True"/>
   <Style.Triggers>
-   <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="28"/></DataTrigger>
+   <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="32"/></DataTrigger>
   </Style.Triggers>
  </Style>
  <Style x:Key="StationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

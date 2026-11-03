@@ -34,10 +34,10 @@ static partial class Program
                 foreach (var name in new[] { "WaveValue", "TaskValue", "SkuValue", "QuantityValue" })
                 {
                     var value = (TextBox)position.FindName(name);
-                    Check(value.IsVisible && value.FontSize == UiTypography.TaskValue && value.FontSize == 20 && value.IsReadOnly && Inside(value, client), "larger selectable task value fits: " + name + " at " + size.Item1);
+                    Check(value.IsVisible && value.FontSize == UiTypography.TaskValue && value.FontSize == 24 && value.IsReadOnly && value.ActualHeight >= 28 && Inside(value, client), "larger selectable task value fits: " + name + " at " + size.Item1);
                 }
                 var labels = Descendants(position).OfType<TextBlock>().Where(t => t.Text is "波次号" or "任务号" or "商品编码" or "返回数量").ToArray();
-                Check(labels.Length == 4 && labels.All(t => t.FontSize == 16), "all four task labels use the larger shared scale");
+                Check(labels.Length == 4 && labels.All(t => t.FontSize == 18), "all four task labels use the larger shared scale");
                 CaptureInternal(evidence, "field-readability-" + (int)size.Item1, client, lines);
             }
         }

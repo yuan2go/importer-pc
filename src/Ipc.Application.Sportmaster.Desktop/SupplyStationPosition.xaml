@@ -27,7 +27,7 @@
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
      </Grid.ColumnDefinitions>
-     <TextBox x:Name="BarcodeEntry" MinHeight="48" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" LostKeyboardFocus="Entry_LostKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
+     <TextBox x:Name="BarcodeEntry" MinHeight="48" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
       <TextBox.ContextMenu>
        <ContextMenu>
         <MenuItem Header="剪切" Command="ApplicationCommands.Cut"/>
@@ -99,7 +99,7 @@
          They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
          Hidden retains measured space only during processing; errors reclaim it for actionable reasons.
          Two rows keep labels and values readable; values are selectable and wrap without ellipsis. -->
-    <Grid Grid.Row="3" x:Name="TaskFields" Margin="0,4,0,0">
+    <Grid Grid.Row="3" x:Name="TaskFields" Margin="0,2,0,0">
      <Grid.Style>
       <Style TargetType="Grid">
        <Setter Property="Visibility" Value="Collapsed"/>

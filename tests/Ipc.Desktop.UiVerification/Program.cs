@@ -56,6 +56,7 @@ static partial class Program
                 else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);
                 else if (args.Contains("--startup-defaults-ui")) await VerifyStartupDefaultsUi(root, evidence, lines);
                 else if (args.Contains("--site-ui-refinement")) { await VerifyStartupDefaultsUi(root, evidence, lines); await VerifyFieldReadability(root, evidence, lines); }
+                else if (args.Contains("--position-input-ui")) await VerifyPositionInputUi(root, evidence, lines);
                 else if (args.Contains("--operator-review-ui")) await VerifyOperatorReviewUi(root, evidence, lines);
                 else if (args.Contains("--installer-review-ui")) await VerifyInstallerReviewUi(evidence, lines);
                 else if (args.Contains("--query-filters")) await VerifyQueryFilters(root, evidence, lines);

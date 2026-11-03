@@ -30,8 +30,8 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
     // Called only with the short presentation lock. Never calls a consumer, UI, DB or device.
     void OfferPresentation()
     {
-        var reads = presentationFeedback.Values.ToArray(); var devices = presentationReaderStates.Values.ToArray();
-        var camera = cameraReadFeedback.Values.ToArray();
+        var reads = ProjectedReads(presentationSnapshotInputs); var devices = presentationReaderStates.Values.ToArray();
+        var camera = ProjectedCameraReads(reads);
         foreach (var subscriber in presentationSubscribers)
             subscriber.Offer(++presentationVersion, presentationSnapshotJson, presentationSnapshotTicks, reads, devices, presentationFailure, camera);
     }
@@ -66,6 +66,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
                     lock (presentationGate)
                     {
                         presentationSnapshotJson = encoded; presentationSnapshotTicks = snapshot.PublishedTicks;
+                        presentationSnapshotInputs = snapshot.Inputs ?? [];
                         presentationFailure = fatalStorage.Task.IsCompleted ? Volatile.Read(ref failure) : null;
                         OfferPresentation();
                     }

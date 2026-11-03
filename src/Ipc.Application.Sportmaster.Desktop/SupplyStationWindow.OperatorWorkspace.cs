@@ -33,8 +33,10 @@ public partial class SupplyStationWindow
             // Route scanner text away from workspace actions before its Enter.
             // Explicit Tab/Enter navigation and other editors remain native.
             if (!CanRestoreBarcodeFocus || Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ||
-                args.Text.Length == 0 || args.Text.Any(char.IsControl) || Keyboard.FocusedElement is not ButtonBase) return;
-            if (RecentPosition() is { } position) { args.Handled = true; position.ReceiveScannerText(args.Text); }
+                args.Text.Length == 0 || args.Text.Any(char.IsControl)) return;
+            if (RecentPosition() is { } position && (Keyboard.FocusedElement is ButtonBase ||
+                position.IsKeyboardFocusWithin && Keyboard.FocusedElement is TextBox { IsReadOnly: true }))
+            { args.Handled = true; position.ReceiveScannerText(args.Text); }
         };
     }
     void InitializePace()

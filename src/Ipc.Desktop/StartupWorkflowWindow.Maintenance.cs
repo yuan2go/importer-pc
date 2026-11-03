@@ -42,6 +42,12 @@ public abstract partial class StartupWorkflowWindow
         UnknownOutcome = false;
         unknownMaintenanceContext = null;
     }
+    protected void HideCompletedReadOnlyProgress()
+    {
+        if (maintenanceCancellation is not null || UnknownOutcome)
+            throw new InvalidOperationException("维护仍在执行或结果尚未确认，不能收起当前结果。");
+        maintenancePanel.Visibility = Visibility.Collapsed;
+    }
     protected async Task<T> RunMaintenance<T>(string context, Func<IProgress<MaintenanceProgress>, CancellationToken, Task<T>> operation, bool readOnly = false, bool canRequestCancellation = true)
     {
         if (UnknownOutcome && !readOnly) throw new InstallationOutcomeUnknownException("上次维护结果未确认，暂不能再次执行维护操作。");

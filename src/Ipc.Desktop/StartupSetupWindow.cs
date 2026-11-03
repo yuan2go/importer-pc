@@ -32,6 +32,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     TextBox? installationDetailView;
     DeploymentMedia? media;
     WindowsDeploymentRequest? reviewed;
+    DeploymentLocation? reviewedLocation;
     DeploymentComponentReview[] components = [];
     DeploymentLocation? installed;
     public DeploymentLocation? Installed => installed;
@@ -57,7 +58,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     {
         this.prepareMedia = prepareMedia;
         if (businessVersion is not null) { VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + businessVersion + " Windows 64位"; VersionLabel.Visibility = Visibility.Visible; }
-        back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
+        back = Action("上一步", () =>
+        {
+            CaptureInputs();
+            if (InlineReviewReady) { reviewed = null; reviewedLocation = null; }
+            else if (step > 0) step--;
+            Render(); return Task.CompletedTask;
+        });
         next = Action("检查安装媒介", Next); StartupAppearance.Primary(next);
         records = Action("打开安装记录目录", OpenRecordDirectory, readOnly: true);
         inspect = Action("查看本次安装结果", InspectOriginal, readOnly: true);
@@ -85,6 +92,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); Message("正在取消安装文件准备，请稍候…"); } };
     }
     string ApplicationId => ParcelStartupServices.ApplicationId;
+    bool InlineReviewReady => ApplicationId == "sportmaster" && step == 1 && reviewed is not null;
     void Section(string label)
     {
         Body.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 20, 0, 10) });
@@ -100,21 +108,23 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (end is not null) { row.ColumnDefinitions.Add(new() { Width = GridLength.Auto }); Grid.SetColumn(end, 2); row.Children.Add(end); }
         Body.Children.Add(row); return row;
     }
-    TextBox InstallationFolder(string label, string value, bool retainRegistered = false)
+    TextBox InstallationFolder(string label, string value, bool retainRegistered = false, bool reviewFrozen = false)
     {
-        var box = new TextBox { Text = value, IsReadOnly = retainRegistered, MinWidth = 0, FontSize = UiTypography.Label, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto };
+        var box = new TextBox { Text = value, IsReadOnly = retainRegistered || reviewFrozen, MinWidth = 0, FontSize = UiTypography.Label, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto };
         AutomationProperties.SetName(box, label);
         if (retainRegistered) AutomationProperties.SetHelpText(box, "沿用已登记位置；迁移位置请使用完整备份与恢复流程。");
+        else if (reviewFrozen) AutomationProperties.SetHelpText(box, "安装选项已核对；需要修改时请先选择修改选项。");
         box.SetBinding(ToolTipProperty, new System.Windows.Data.Binding(nameof(TextBox.Text)) { Source = box });
-        var browse = new Button { Content = "浏览…", IsEnabled = !retainRegistered, MinWidth = 72, Margin = new(10, 0, 0, 0) };
+        var browse = new Button { Content = "浏览…", IsEnabled = !retainRegistered && !reviewFrozen, MinWidth = 72, Margin = new(10, 0, 0, 0) };
         AutomationProperties.SetName(browse, "浏览" + label);
         browse.Click += (_, _) => { var picker = new OpenFolderDialog { Title = label }; if (picker.ShowDialog(this) == true) box.Text = picker.FolderName; };
         Row(label, box, browse); return box;
     }
-    void Summary(string label, string value)
+    void Summary(string label, string value, bool bounded = false)
     {
         var box = new TextBox { Text = value, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 0, Padding = new(0, 6, 0, 6), BorderThickness = new(0), Background = Brushes.Transparent };
         AutomationProperties.SetName(box, label); Row(label, box);
+        if (bounded) { box.MaxHeight = 120; box.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; }
     }
     void CaptureInputs()
     {
@@ -128,18 +138,19 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (runAfter is not null) Actions.Children.Remove(runAfter);
         InstallationStep(step == 3 ? 2 : step >= 2 ? 1 : 0);
         InstallationHeading.Text = outcomeUnknown ? "安装结果待确认" : failed ? "安装未完成" : installing ? "正在安装" : step switch { 0 => "准备安装", 1 => "安装选项", 2 => "确认安装", _ => "安装完成" };
-        back.Visibility = step == 2 && !installing && !failed && !outcomeUnknown ? Visibility.Visible : Visibility.Collapsed;
+        back.Content = InlineReviewReady ? "修改选项" : "上一步";
+        back.Visibility = (step == 2 || InlineReviewReady) && !installing && !failed && !outcomeUnknown ? Visibility.Visible : Visibility.Collapsed;
         cancel.Visibility = installing || step == 3 ? Visibility.Collapsed : Visibility.Visible;
         cancel.Content = failed || outcomeUnknown ? "关闭" : "取消";
         next.Visibility = installing || outcomeUnknown ? Visibility.Collapsed : Visibility.Visible;
         records.Visibility = outcomeUnknown || failed && Directory.Exists(installationRecordDirectory) ? Visibility.Visible : Visibility.Collapsed;
         records.SetResourceReference(StyleProperty, typeof(Button));
         inspect.SetResourceReference(StyleProperty, "StartupPrimary");
-        records.IsDefault = false; next.IsDefault = step < 2 && !outcomeUnknown;
+        records.IsDefault = false; next.IsDefault = step < 2 && !InlineReviewReady && !outcomeUnknown;
         inspect.Visibility = outcomeUnknown ? Visibility.Visible : Visibility.Collapsed;
         repairCommitted.Visibility = outcomeUnknown && originalInspection?.Status == "CommittedNeedsSystemRepair" ? Visibility.Visible : Visibility.Collapsed;
         inspect.IsDefault = outcomeUnknown;
-        resumeRemoval.Visibility = step == 1 && CurrentInstallation(ApplicationId) is { LifecycleState: not "Installed" } ? Visibility.Visible : Visibility.Collapsed;
+        resumeRemoval.Visibility = step == 1 && !InlineReviewReady && CurrentInstallation(ApplicationId) is { LifecycleState: not "Installed" } ? Visibility.Visible : Visibility.Collapsed;
         recordFeedback.Text = "";
         recordFeedback.ToolTip = null;
         if (outcomeUnknown)
@@ -173,7 +184,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Details();
             Note("取消是否可用以当前步骤和取消按钮为准。请求取消后仍须等待本次结果；关闭窗口不会回滚安装。"); return;
         }
-        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => "选择安装位置和安装设置，然后点击下一步。", 2 => "本次操作：" + installationKind + "。确认以下选项后开始。", _ => "菜鸟供包台已安装。" });
+        Message(step switch { 0 => "正在检查安装文件，请稍候…", 1 => InlineReviewReady ? "选项已核对。请查看本次影响，点击安装后才修改电脑。" : "选择安装位置和安装设置，然后点击下一步。", 2 => "本次操作：" + installationKind + "。确认以下选项后开始。", _ => "菜鸟供包台已安装。" });
         if (step == 0)
         {
             preparationProgress.IsIndeterminate = prepareMedia is null;
@@ -183,26 +194,54 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         else if (step == 1)
         {
             Height = Math.Min(optionsHeight, MaxHeight);
-            var current = CurrentInstallation(ApplicationId);
+            var current = InlineReviewReady ? reviewedLocation : CurrentInstallation(ApplicationId);
             var retainRegistered = ApplicationId == "sportmaster" && current is not null;
             if (retainRegistered)
             {
                 selectedProgram = Directory.GetParent(Directory.GetParent(current!.ReleaseRoot)!.FullName)!.FullName;
                 enteredData = current.DataRoot;
             }
+            if (InlineReviewReady)
+            {
+                selectedProgram = reviewed!.ProgramRoot ?? selectedProgram;
+                enteredData = reviewed.DataRoot;
+            }
+            installationKind = current is null ? "安装" : current.LifecycleState != "Installed" ? "重新安装" : current.SourceCommit == media?.SourceCommit ? "修复安装" : "更新";
+            if (InlineReviewReady)
+            {
+                Section("本次安装影响");
+                Note("本次操作：" + installationKind + "。保留现有数据与配置；原软件须完全退出，安装前仍会核对实际责任和资源。安装完成后不会自动连接设备。");
+                if (reviewed!.BackupDestination is { } backup) Summary("备份位置", backup, bounded: true);
+                else Note("本次检查未发现需要备份的原业务库；执行前条件变化时须重新核对，不会用空目录替代原数据。");
+                Note("安装需要 Windows 管理员授权，与软件管理密码无关。");
+                foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
+            }
             Section("安装位置");
             // New SM stations use independent D-drive locations. Existing deployments
             // and explicitly reviewed/user-entered paths retain their original authority.
-            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? (ApplicationId == "sportmaster" ? @"D:\CainiaoSupplyStation" : WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation")) : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName), retainRegistered);
-            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (ApplicationId == "sportmaster" ? @"D:\ProgramData\ImporterPc\data" : Path.Combine(WindowsDeploymentSetup.MachineRoot, "data")), retainRegistered);
+            program = InstallationFolder("程序目录", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? (ApplicationId == "sportmaster" ? @"D:\CainiaoSupplyStation" : WindowsStoragePaths.ProgramRoot("CainiaoSupplyStation")) : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName), retainRegistered, InlineReviewReady);
+            data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? (ApplicationId == "sportmaster" ? @"D:\ProgramData\ImporterPc\data" : Path.Combine(WindowsDeploymentSetup.MachineRoot, "data")), retainRegistered, InlineReviewReady);
             if (retainRegistered) Note("沿用本机已登记的程序和数据位置。需要迁移位置时，请先完成完整备份，再按恢复流程处理。");
             startMenu = new CheckBox { Content = "在开始菜单创建快捷方式", IsChecked = selectedStartMenu };
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop };
             var shortcuts = new StackPanel(); shortcuts.Children.Add(startMenu); shortcuts.Children.Add(desktopIcon);
             if (ApplicationId == "sportmaster")
             {
+                startMenu.IsEnabled = desktopIcon.IsEnabled = !InlineReviewReady;
                 startMenu.MinHeight = desktopIcon.MinHeight = 44;
-                var advanced = new Expander { Header = "高级选项 · 快捷方式", IsExpanded = advancedExpanded, Content = shortcuts, MinHeight = 44, Margin = new(0, 16, 0, 8) };
+                var advanced = new Expander
+                {
+                    Header = new Border
+                    {
+                        MinHeight = 44,
+                        Background = Brushes.Transparent,
+                        Child = new TextBlock { Text = "高级选项 · 快捷方式", VerticalAlignment = VerticalAlignment.Center }
+                    },
+                    IsExpanded = advancedExpanded,
+                    Content = shortcuts,
+                    MinHeight = 44,
+                    Margin = new(0, 16, 0, 8)
+                };
                 AutomationProperties.SetName(advanced, "高级安装选项");
                 advanced.Expanded += (_, _) => advancedExpanded = true;
                 advanced.Collapsed += (_, _) => advancedExpanded = false;
@@ -211,9 +250,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             else { Section("安装设置"); Row("快捷方式", shortcuts); }
             if (ApplicationId == "sportmaster")
                 Note("相机采图、条码识别和 RCS 接口已随软件安装，无需另装组件。安装完成不代表相机或 RCS 已连接。程序和数据按本机存储规则放在 D 盘。");
-            installationKind = current is null ? "安装" : current.LifecycleState != "Installed" ? "重新安装" : current.SourceCommit == media?.SourceCommit ? "修复安装" : "更新";
-            if (current is not null) Message("本次操作：" + installationKind + "。账户、数据和配置将保留。");
-            if (current is not null) Note("本次" + installationKind + "将保留账户、数据目录和配置；执行前会检查未处理完的作业并完整备份。" +
+            if (current is not null && !InlineReviewReady) Message("本次操作：" + installationKind + "。账户、数据和配置将保留。");
+            if (current is not null && !InlineReviewReady) Note("本次" + installationKind + "将保留账户、数据目录和配置；执行前会检查未处理完的作业并完整备份。" +
                 (current.LifecycleState != "Installed" ? "重新安装不会清除已有业务记录。" : ""));
             if (preflightError.Length != 0)
             {
@@ -229,7 +267,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 AutomationProperties.SetName(detail, "安装预检详情");
                 Body.Children.Add(new Expander { Header = "本次安装预检详情", IsExpanded = true, Content = detail, Margin = new(0, 12, 0, 0) });
             }
-            next.Content = "下一步";
+            next.Content = InlineReviewReady ? "安装" : "下一步";
         }
         else if (step == 2)
         {
@@ -355,6 +393,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     protected override void OperationCompleted()
     {
         if (outcomeUnknown && IsVisible) inspect.Focus();
+        else if (InlineReviewReady && IsVisible)
+        {
+            InstallationOptionsScroll?.ScrollToHome();
+            back.Focus();
+        }
     }
     async Task Next()
     {
@@ -376,7 +419,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             VersionLabel.Text = "版本: " + (ApplicationId == "sportmaster" ? "SM " : "") + "V" + Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "desktop", "application-release.json"))).BusinessVersion + " Windows 64位";
             VersionLabel.Visibility = Visibility.Visible; newStation = SystemParameterDefaults.InitialStationId; step = 1; Render();
         }
-        else if (step == 1)
+        else if (step == 1 && !InlineReviewReady)
         {
             CaptureInputs(); preflightError = ""; Render(); var current = CurrentInstallation(ApplicationId);
             var selectedAccount = current?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
@@ -393,13 +436,21 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 }
                 catch (OperationCanceledException) when (token.IsCancellationRequested) { throw new MaintenanceCancelledException("已停止检查，电脑上未做任何更改。"); }
             }, readOnly: true);
-            reviewed = preview.candidate; components = preview.review;
-            var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
-            if (current is not null || File.Exists(Path.Combine(reviewed.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db"))) reviewed = reviewed with { BackupDestination = Path.Combine(reviewed.DataRoot, "backups", ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db") };
-            step = 2; Render();
+            var reviewedCandidate = preview.candidate;
+            var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewedCandidate.ConfigurationSource, "business.json")));
+            if (current is not null || File.Exists(Path.Combine(reviewedCandidate.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db"))) reviewedCandidate = reviewedCandidate with { BackupDestination = Path.Combine(reviewedCandidate.DataRoot, "backups", ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db") };
+            // Publish UI readiness only after every preview/seed/backup decision succeeds.
+            // The execution path still rechecks the original registration CAS and owners.
+            if (ApplicationId == "sportmaster") HideCompletedReadOnlyProgress();
+            reviewedLocation = current;
+            reviewed = reviewedCandidate;
+            components = preview.review;
+            step = ApplicationId == "sportmaster" ? 1 : 2;
+            Render();
         }
-        else if (step == 2)
+        else if (step == 2 || InlineReviewReady)
         {
+            step = 2;
             optionsHeight = Height;
             installationRecordDirectory = Path.GetDirectoryName(WindowsDeploymentSetup.Registration(reviewed!.ApplicationId));
             installing = true; installationDetails.Clear(); installationStage.Text = "正在准备安装请求"; Render();

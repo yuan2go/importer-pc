@@ -1,6 +1,6 @@
 # SM主条码随最新观察更新19
 
-2026-11-02，基线main `039ccdee`；范围、守卫及现场现象见[工作包](../work-packages/WP-IPC-SM-CAMERA-BARCODE-CURRENT-19.md)。最终验证产品源为 `1740ab47eb36ebefbac35db4a488ddf89f66d60b`，三个Release构建0警告0错误，16套件519条PASS断言。历史16/17/18及PR170原证据、原NOT_RUN不改写；本页不把本机合成验证称为现场修复验收。
+2026-11-02，基线main `039ccdee`；范围、守卫及现场现象见[工作包](../archive/work-packages/WP-IPC-SM-CAMERA-BARCODE-CURRENT-19.md)。最终验证产品源为 `1740ab47eb36ebefbac35db4a488ddf89f66d60b`，三个Release构建0警告0错误，16套件519条PASS断言。历史16/17/18及PR170原证据、原NOT_RUN不改写；本页不把本机合成验证称为现场修复验收。
 
 ## 原因与修复
 

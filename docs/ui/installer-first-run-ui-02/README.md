@@ -10,4 +10,4 @@
 
 本包仅替代旧 INSTALLER-SINGLE-WINDOW-01、V2 和 MANAGEMENT-MODE-01 中冲突的安装布局、首配授权呈现；沿用其事务、五步首配、单一配置账和管理服务权限机制。参数内页、业务流程、协议及历史证据不变。
 
-实施和核验见 [工作包](../../work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)。
+实施和核验见 [工作包](../../archive/work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)。

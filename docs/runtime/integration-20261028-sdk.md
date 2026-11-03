@@ -1,6 +1,6 @@
 # 2026-10-29 SDK整合验证记录
 
-范围：[PR137](https://github.com/yuan2go/importer-pc/pull/137)，原头 `76dd6078faecbc2e120e6ca8dde222e7fcfc1398`，整合基线main `2bcde8bb063d97dc2907990616426d5e07c9c2c1`。本记录是该组合及下述修正的本机验证，不是所有任务的最终main验收。精确合并提交、CI和任务归宿由[整合台账](../work-packages/WP-IPC-INTEGRATION-20261028.md)及PR记录承接。
+范围：[PR137](https://github.com/yuan2go/importer-pc/pull/137)，原头 `76dd6078faecbc2e120e6ca8dde222e7fcfc1398`，整合基线main `2bcde8bb063d97dc2907990616426d5e07c9c2c1`。本记录是该组合及下述修正的本机验证，不是所有任务的最终main验收。精确合并提交、CI和任务归宿由[整合台账](../archive/work-packages/WP-IPC-INTEGRATION-20261028.md)及PR记录承接。
 
 ## 任务取舍与实现
 

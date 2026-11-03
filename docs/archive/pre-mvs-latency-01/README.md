@@ -13,4 +13,4 @@
 
 当前有效[索引](../../INDEX.md)、[MVS指南](../../runtime/mvs-software-reader-01.md)、[时延结论](../../runtime/mvs-latency-01.md)与性能证据均不修改。本目录只作历史追溯，快照内部相对链接属于原字节，不作为本目录操作入口，也不重写来迁就快照位置。
 
-PR157已于`9df3901ec20d73512d48920b4671b529ebc58a9e`合入main，不能再向该已合并PR增加有效补丁；本次通过后续修复PR交付。只验证来源、字节、引用、属性和manifest，不重新运行软件、性能或真实设备验证，不新增真机资格。工作包见[归档修复](../../work-packages/WP-IPC-MVS-LATENCY-ARCHIVE-01.md)。
+PR157已于`9df3901ec20d73512d48920b4671b529ebc58a9e`合入main，不能再向该已合并PR增加有效补丁；本次通过后续修复PR交付。只验证来源、字节、引用、属性和manifest，不重新运行软件、性能或真实设备验证，不新增真机资格。工作包见[归档修复](../work-packages/WP-IPC-MVS-LATENCY-ARCHIVE-01.md)。

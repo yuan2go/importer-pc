@@ -1,0 +1,2 @@
+PASS FRAME-RECOVERY incomplete frame returned without business request or camera fence
+PASS FRAME-RECOVERY next valid frame resolves through real ZXing/Application/SQLite/RCS on original camera owner

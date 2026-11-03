@@ -2,7 +2,7 @@
 
 # Application架构22 · 当前运行指南
 
-[现行设计](../design/application-architecture-22.md) · [工作包](../work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
+[现行设计](../design/application-architecture-22.md) · [工作包](../archive/work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
 
 ## 构建、选装与运行
 
@@ -26,7 +26,7 @@ ParcelConfiguration.SchemaVersion=3，Topology.Readers是DeviceBinding数组（�
 
 Images.Camera启用采图；Images.Uploader=null为仅取图。有Uploader时Strategy=BeforeMain/Attached分别要求前置地址或独立后台责任；若协议要求图片地址，禁止仅取图或Attached。仅取图原件保留到主链终态/安全取消；未知采集/上传保留原件及独立接收责任。MaximumBytes、TotalBytes、MaximumPending控制临时原件容量，无长期图库或预览服务。
 
-Camera.Target等于本位Reader.DeviceId表示复用同物理相机；reader须实现IReaderImageCapture并返回受控原采集门面，拒绝另开连接。签名相机模块须与reader属于同一精确包；不允许借另一位设备。独立相机Target为独立设备身份。schema3每张返回图必须带与原AcquisitionIdentity完全相同的证据，不能取“最近图”。参考manual源的原采集登记按[采集生命周期P2](../work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)管理，不按固定条数逐出在途记录，仍只有合成图；真实SDK关联仍待验收。
+Camera.Target等于本位Reader.DeviceId表示复用同物理相机；reader须实现IReaderImageCapture并返回受控原采集门面，拒绝另开连接。签名相机模块须与reader属于同一精确包；不允许借另一位设备。独立相机Target为独立设备身份。schema3每张返回图必须带与原AcquisitionIdentity完全相同的证据，不能取“最近图”。参考manual源的原采集登记按[采集生命周期P2](../archive/work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)管理，不按固定条数逐出在途记录，仍只有合成图；真实SDK关联仍待验收。
 
 Platform.ObservationSession为每个reader固定epoch、来源sequence和健康，旧注册回调被围栏拒绝；每个秤使用IControlledWeightSource的注册epoch/sequence。重量还需原AdmissionId、绑定实例/设备、稳定性、质量、单位/精度和期限。无重量不是0。PLC语义和握手归驱动，WCS字段、单位、缺省操作人/认证和响应转换归组件，Platform不规定现场报文。
 

@@ -6,6 +6,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed record ConfigurationChangeItem(string Category, string Object, string Label, string Before, string After, string Path, string TechnicalPath)
 {
     public string Location => Category + " / " + Object;
+    public override string ToString() => Label + " · " + Location;
     public string Activation { get; init; } = "重启后生效";
 }
 
@@ -54,7 +55,7 @@ public partial class ParcelViewModel
         var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
         if (signature != CurrentReviewSignature())
         { validationState = "检查期间输入已改变"; NotifyConfigurationEditorState(); Message = "输入已改变，本次检查已过期。请重新保存以检查当前更改。"; return false; }
-        validationState = validation.Status + " · " + validation.Reason;
+        validationState = validation.Status == "Validated" ? "检查通过" : ChineseInterfaceText.ParameterMessage(validation.Reason, "检查未通过，请查看诊断详情并修正设置。");
         if (validation.Status != "Validated")
         { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过，请查看参数错误与诊断详情；输入已保留。"; return false; }
         var live = Snapshot is { } snapshot && ConfigurationActivation.RulesOnly(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate);
@@ -82,6 +83,9 @@ public partial class ParcelViewModel
         using var before = JsonDocument.Parse(Wire.Encode(original)); using var after = JsonDocument.Parse(Wire.Encode(candidate));
         List<ConfigurationChangeItem> changes = [];
         var drafts = ReaderDrafts.Select(x => x.Capability).Concat(CapabilityDrafts).DistinctBy(x => x.InstanceId).ToDictionary(x => x.InstanceId);
+        // DeviceBinding uses DeviceId whereas the editor uses its capability instance.
+        // Resolve both identities without exposing JSON property paths to operators.
+        foreach (var reader in ReaderDrafts) drafts.TryAdd(reader.Original.DeviceId, reader.Capability);
         static string? Identity(JsonElement value)
         {
             if (value.ValueKind != JsonValueKind.Object) return null;
@@ -92,15 +96,21 @@ public partial class ParcelViewModel
         static string Read(JsonElement value) => value.ValueKind switch { JsonValueKind.Undefined => "未设置", JsonValueKind.Null => "未设置", JsonValueKind.String => value.GetString() ?? "", _ => value.GetRawText() };
         void Add(JsonElement left, JsonElement right, string path, string? instance, string? parameter)
         {
-            var category = "高级设置"; var owner = "全部设置"; var label = path; var fieldPath = ""; var showValues = false;
+            var category = "高级设置"; var owner = "全部设置"; var label = "其他配置项"; var fieldPath = ""; var showValues = false;
+            var translateChoice = false;
             if (instance is not null && drafts.TryGetValue(instance, out var draft))
             {
                 owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 服务" : ParameterEditor?.ComponentLabel(draft) ?? draft.InstanceId;
                 category = ParameterOwnership.CategoryName(parameter is null ? ParameterOwnership.ObjectCategory(draft) : ParameterOwnership.Category(draft, parameter));
                 if (parameter is not null && draft.Parameters.FirstOrDefault(x => x.Field.Key == parameter) is { } p)
-                { label = ChineseInterfaceText.ParameterName(parameter, p.EditorLabel); fieldPath = instance + "/" + parameter; showValues = !p.IsSensitive; }
-                else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = instance + "/Target"; showValues = true; }
-                else { label = path; fieldPath = ""; }
+                { label = ChineseInterfaceText.ParameterName(parameter, p.EditorLabel); fieldPath = draft.InstanceId + "/" + parameter; showValues = !p.IsSensitive; translateChoice = p.Field.Type is "choice" or "boolean"; }
+                else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = draft.InstanceId + "/Target"; showValues = true; }
+                else label = path.Split('.').Last() switch
+                {
+                    "Enabled" => "启用状态", "Implementation" or "Driver" => "连接方式", "Version" => "组件版本",
+                    "Contract" => "服务协议", "InstanceId" or "DeviceId" => "设备与组件标识", "Package" => "组件安装来源",
+                    "Module" => "组件模块", _ => "其他配置项"
+                };
                 if (category == "系统") owner = "供包台标识";
                 else if (category == "业务模块") owner = "格口请求";
                 else if (parameter is "left-bcr-code" or "right-bcr-code") owner = parameter.StartsWith("left", StringComparison.Ordinal) ? "左相机" : "右相机";
@@ -143,6 +153,11 @@ public partial class ParcelViewModel
             }
             var oldValue = showValues ? Read(left) : left.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined ? "未设置" : "已设置";
             var newValue = showValues ? Read(right) : right.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined ? "已移除" : "已更改（内容不显示）";
+            if (translateChoice)
+            {
+                oldValue = ChineseInterfaceText.Choice(oldValue);
+                newValue = ChineseInterfaceText.Choice(newValue);
+            }
             // The JSON candidate may intentionally differ from cached form drafts.
             // Keep its exact technical path; never jump to an older form value.
             if (!CanEditStructuredConfiguration) fieldPath = "";

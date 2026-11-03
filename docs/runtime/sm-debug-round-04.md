@@ -1,3 +1,5 @@
+> 2026-11-03：当前SM调试以[SM-DEBUG-NO-ISOLATION-31](../archive/work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)为准。调试页面继续调用实际RCS；全站调试隔离、清场及恢复阻断已删除，正常识别和供包继续。下文隔离/停解码描述仅保留历史范围；原请求防重、原图身份、管理权限和SDK资源责任继续有效。修订前字节见`docs/archive/pre-sm-debug-no-isolation-31/manifest.json`。
+
 > 2026-10-30追加[07闭环审查和定向软件验证](sm-debug-closure-07.md)：本次授权子集已取得新证据，下文04形成时NOT_RUN不倒写；真实设备/客户RCS/现场仍未通过。
 
 # 调试按轮扫码与手动请求 · SM-DEBUG-ROUND-04

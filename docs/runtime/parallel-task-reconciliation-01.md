@@ -1,6 +1,6 @@
 # 并发任务整合报告
 
-工作包[WP-IPC-PARALLEL-TASK-RECONCILIATION-01](../work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)。开工2026-10-19 01:08:15 +08:00，main **713f23d7c39743762adb884fdffa18745cad08f8**。调查、冲突修复、最终组合验证与4个源PR实际合并完成；本报告由整合PR交付。固定运行源码21e6cae3c9e20f34fc9429812e48e7f95e455fb9，Git统计截止点见文末，不用候选或启用auto-merge代替实际合并状态。
+工作包[WP-IPC-PARALLEL-TASK-RECONCILIATION-01](../archive/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)。开工2026-10-19 01:08:15 +08:00，main **713f23d7c39743762adb884fdffa18745cad08f8**。调查、冲突修复、最终组合验证与4个源PR实际合并完成；本报告由整合PR交付。固定运行源码21e6cae3c9e20f34fc9429812e48e7f95e455fb9，Git统计截止点见文末，不用候选或启用auto-merge代替实际合并状态。
 
 ## 成果保护与调查证据
 

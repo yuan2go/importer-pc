@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
@@ -21,7 +21,7 @@ static partial class Program
         var right = model.Readers.Single(r => r.Role == "right");
         var rcs = model.Components.Single(ParameterOwnership.IsRcs);
         CapabilityParameter Value(CapabilityDraft draft, string key) => draft.Parameters.Single(p => p.Field.Key == key);
-        TextBox Box(string path) => Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == path);
+        TextBox Box(string path) => Descendants(editor).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == path);
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         void Capture(string name)
         {

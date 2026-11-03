@@ -51,6 +51,7 @@ static partial class Program
                 if (args.Contains("--stability-seed-upgrade"))
                     VerifyPreservedSeedUpgrade(Path.GetDirectoryName(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"))!, evidence,
                         (ok, text) => { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS SEED-GUARDS " + text); });
+                else if (args.Contains("--debug-no-isolation-31-ui")) await VerifyDebugNoIsolation31(root, evidence, lines);
                 else if (args.Contains("--audit-fixes-26")) await VerifyAuditFixes26(root, evidence, lines);
                 else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);
                 else if (args.Contains("--query-filters")) await VerifyQueryFilters(root, evidence, lines);
@@ -64,6 +65,7 @@ static partial class Program
                 else if (args.Contains("--reader-feedback-22-ui")) await VerifyReaderFeedback22Ui(root, evidence, lines);
                 else if (args.Contains("--unread-package-27-ui")) await VerifyUnreadPackage27Ui(root, evidence, lines);
                 else if (args.Contains("--reader-robustness-28-ui")) await VerifyReaderRobustness28Ui(root, evidence, lines);
+                else if (args.Contains("--operator-corrections-29-ui")) await VerifyOperatorCorrections29(root, evidence, lines);
                 else if (args.Contains("--manual-rcs-debug-ui")) await VerifyManualRcsDebugUi(root, evidence, lines);
                 else if (args.Contains("--camera-round-ui")) await VerifyCameraRoundUi(root, evidence, lines);
                 else if (args.Contains("--camera-stream-ui")) await VerifyCameraStreamUi(root, evidence, lines);
@@ -236,6 +238,9 @@ static partial class Program
             if (name is "诊断与恢复" or "站位与设备诊断") { station.ShowPositionDiagnostics(station.ViewModel.Left); return; }
             name = name switch { "设备与维护" or "参数配置" => "参数设置", "工作台" => "作业", "作业记录" => "记录", "日志查询" => "日志", _ => name };
             if (name == "参数设置" && station.ViewModel.SelectedPage == "maintenance") return;
+            // The settings tab row was removed; the left navigation "设置" opens the same page.
+            if (name == "参数设置") name = "设置";
+            if (name == "相机调试") name = "调试";
             if (name == "返回作业") name = "作业";
         }
         var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));

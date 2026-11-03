@@ -10,7 +10,7 @@
 
 - [151项逐项迁移表](ui-task-redesign-v2-migration.md)：54项 V2 字段、58项原字段/状态、39项操作保留原编号。
 - [同版 WPF 高清界面](../ui/sportmaster-v2-wpf-20261020/README.md)：真实 WPF 控件与合成状态，不是浏览器或设计稿。
-- [目标设计](../ui/sportmaster-task-redesign-v2-20261020/README.md)、[实施裁决](../design/sportmaster-task-redesign-01.md)、[完整工作包](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)保留要求及替代关系。
+- [目标设计](../ui/sportmaster-task-redesign-v2-20261020/README.md)、[实施裁决](../design/sportmaster-task-redesign-01.md)、[完整工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)保留要求及替代关系。
 - [实施前原字节](../archive/pre-ui-task-redesign-implementation-20261020/README.md)保留设计阶段指导；既有历史证据未倒写。
 
 ## UIR-00～06 对照

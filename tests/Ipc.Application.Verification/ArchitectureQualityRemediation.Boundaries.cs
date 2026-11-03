@@ -13,6 +13,7 @@ static partial class ArchitectureQualityRemediation
         app.EmitReferenceAt("left", "trusted-original", "123", "trusted-source");
         var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved);
         var original = s.Inputs!.Single(); var reader = factory!.Readers![c.Reader.DeviceId];
+        var originalRequest = Wire.Encode(s.Operations.Single().Wcs);
         foreach (var invalid in new[] {
             original.Observation with { Sequence = 9000, ObservedAt = DateTimeOffset.UtcNow.AddHours(1), SourceEventId = "future-source" },
             original.Observation with { Sequence = 9001, ObservedAt = DateTimeOffset.UtcNow.AddHours(-1), SourceEventId = "stale-source" },
@@ -21,7 +22,9 @@ static partial class ArchitectureQualityRemediation
             var revision = (await app.SnapshotAsync()).Revision;
             Check(reader.Raw(invalid), "invalid time/event callback reaches actual ingress for rejection");
             s = await Wait(app, x => x.Revision > revision);
-            Check(Wire.Encode(s.Inputs!.Single()) == Wire.Encode(original), "untrusted high sequence cannot overwrite current input: " + invalid.SourceEventId);
+            Check(s.Inputs!.Single() is { Outcome: ParcelInputOutcome.Rejected, OperationId: null } terminal && terminal.Observation.SourceEventId == invalid.SourceEventId && terminal.Reason.StartsWith("UntrustedObservation") &&
+                Wire.Encode(s.Operations.Single().Wcs) == originalRequest,
+                "READER22 untrusted high sequence has a matching terminal rejection without changing the original request: " + invalid.SourceEventId);
         }
         Check(!reader.Raw(original.Observation with { Epoch = Wire.Id(), Sequence = 9003 }) &&
             !reader.Raw(original.Observation with { DeviceId = "unbound-reader", Sequence = 9004 }), "wrong epoch/device fenced before ingress");
@@ -86,6 +89,7 @@ static partial class ArchitectureQualityRemediation
             await Task.Delay(TimeSpan.FromSeconds(10)); throw new Exception("Seed crash boundary not reached");
         }
         Check(await app.EnterManagementModeAsync(password), "query child real management re-entry");
+        Check((await Command(app, "Pause")).Status == "Persisted", "query child explicitly pauses original-receipt maintenance before the crash boundary");
         using var repo = new ParcelRepository(DirectoryFor(path, c), c.ApplicationId); var occurrence = repo.PendingReceipts().Single(x => x.Reply is null).Id;
         app.Boundary = point => { if (point == (boundary == "ReceiptQueryAfterAdmission" ? "AfterCommandAdmitted" : "AfterRawDurable")) Environment.Exit(77); };
         for (var attempt = 0; attempt < 100; attempt++)
@@ -125,6 +129,7 @@ static partial class ArchitectureQualityRemediation
         var password = "Aqa01-" + Wire.Id(); var seed = await MissingReceipt(workspace, path, password); QueryFactory? factory = null;
         await using var app = await Open(seed.Configuration, path, inner => factory = new(inner));
         Check(await app.EnterManagementModeAsync(password), "in-flight real management re-entry");
+        Check((await Command(app, "Pause")).Status == "Persisted", "in-flight receipt fixture explicitly enters paused maintenance");
         await Wait(app, s => s.Availability!.Configure);
         BusinessCommand command = null!; Task<BusinessReceipt> executing = null!;
         var deadline = DateTimeOffset.UtcNow.AddSeconds(8);

@@ -58,9 +58,10 @@ static partial class Program
         Check(!vm.ConfigurationRoles.Any(r => r.Role == "维护认证") && !control.ShowPage(3, "维护认证") && !control.ShowPage(3, "身份认证"),
             "current candidate and daily directory contain no obsolete maintenance authentication role");
         window.UpdateLayout();
-        Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && ((TextBlock)window.FindName("SettingsRunMode")).IsVisible &&
-            ((TextBlock)window.FindName("SettingsRunMode")).Text.Contains("模拟模式 · 软件暂停不是安全急停"),
-            "settings hides the duplicate job footer while retaining visible mode and software-pause boundary");
+        // 2026-11-02 user decision: the settings page no longer shows the job-status line
+        // (run mode, pause boundary, blocking reasons); work pages still show it.
+        Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && !((TextBlock)window.FindName("SettingsRunMode")).IsVisible,
+            "settings hides the job footer and the job-status line");
         lines.Add("SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {
@@ -71,12 +72,12 @@ static partial class Program
                 Capture(item.Item3 + "-" + size.Item1);
                 var save = (Button)page.FindName("SaveChanges"); var bounds = save.TransformToAncestor(client).TransformBounds(new Rect(save.RenderSize));
                 Check(bounds.Bottom <= client.ActualHeight + 1 && bounds.Right <= client.ActualWidth + 1 && save.ActualHeight >= 44, "save remains visible with full schema at " + size);
-                var first = Boxes().First(b => AutomationProperties.GetName(b) == (item.Item3 == "camera" ? cameraAddressPath : "rcs.one/Target"));
+                var first = Boxes().First(b => AutomationProperties.GetAutomationId(b) == (item.Item3 == "camera" ? cameraAddressPath : "rcs.one/Target"));
                 Check(first.ActualWidth >= 240 && first.ActualHeight >= 36, "readable address dimensions at " + size + ": " + first.RenderSize);
                 if (size.Item1 == 1366 && item.Item3 == "rcs")
                 {
-                    Check(!Boxes().Any(b => AutomationProperties.GetName(b) is "rcs.one/source" or "rcs.one/locale"), "fixed protocol envelope values have no configuration input");
-                    var heartbeat = Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/heartbeat-interval-seconds");
+                    Check(!Boxes().Any(b => AutomationProperties.GetAutomationId(b) is "rcs.one/source" or "rcs.one/locale"), "fixed protocol envelope values have no configuration input");
+                    var heartbeat = Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "rcs.one/heartbeat-interval-seconds");
                     Check(AutomationProperties.GetHelpText(heartbeat).Contains("3600") && heartbeat.ToolTip is string tooltip && tooltip.Contains("3600") && tooltip.Contains("RCS"),
                         "remaining heartbeat usage and range stay accessible in help and tooltip");
                     var heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
@@ -85,14 +86,14 @@ static partial class Program
                     Check(heartbeatBounds.Top >= 0 && heartbeatBounds.Bottom <= control.ActualHeight + 1,
                         "preserved heartbeat field scrolls above the fixed save bar at 1366x768");
                 }
-                control.NavigateTo(AutomationProperties.GetName(first)); window.UpdateLayout();
+                control.NavigateTo(AutomationProperties.GetAutomationId(first)); window.UpdateLayout();
                 var fieldBounds = first.TransformToAncestor(control).TransformBounds(new Rect(first.RenderSize));
                 Check(fieldBounds.Top >= -1 && fieldBounds.Bottom <= control.ActualHeight + 1, "field navigation scrolls the complete input above the fixed footer at " + size);
                 if (size.Item1 == 800) Capture(item.Item3 + "-800-focused");
             }
         }
         await SetClient(window, 1366, 768);
-        Check(control.NavigateTo(cameraAddressPath), "current SDK camera address remains directly reachable"); var ip = Boxes().Single(b => AutomationProperties.GetName(b) == cameraAddressPath);
+        Check(control.NavigateTo(cameraAddressPath), "current SDK camera address remains directly reachable"); var ip = Boxes().Single(b => AutomationProperties.GetAutomationId(b) == cameraAddressPath);
         ip.Text = "192.0.2.999"; ip.Select(2, 4); await vm.RefreshAsync(); window.UpdateLayout();
         Check(vm.HasUnsavedConfiguration && ((Button)page.FindName("SaveChanges")).IsEnabled, "full schema edit updates the real save footer before validation");
         Check(ip.Text == "192.0.2.999" && ip.SelectionLength == 4, "snapshot preserves raw invalid IP and selection");
@@ -101,15 +102,15 @@ static partial class Program
         { ip.Text = invalid; Check(!model.ValidateFields() && model.Issues.Any(i => i.Path == cameraAddressPath), "driver canonical address rule retained: " + invalid); }
         ip.Text = "192.0.2.23"; control.ShowPage(3, "RCS 服务"); model.ValidateFields();
         control.NavigateTo("rcs.one/request-id-base"); window.UpdateLayout();
-        Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-base").IsKeyboardFocused, "advanced request range stays directly reachable and focused"); Capture("request-range");
-        if (!baseline) Check(Boxes().Single(b => AutomationProperties.GetName(b) == "rcs.one/request-id-count").IsVisible, "request range fields remain ordinary form inputs rather than hidden diagnostics");
+        Check(Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "rcs.one/request-id-base").IsKeyboardFocused, "advanced request range stays directly reachable and focused"); Capture("request-range");
+        if (!baseline) Check(Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "rcs.one/request-id-count").IsVisible, "request range fields remain ordinary form inputs rather than hidden diagnostics");
         control.ShowPage(2, "左相机"); window.UpdateLayout();
-        Check(ReferenceEquals(ip, Boxes().Single(b => AutomationProperties.GetName(b) == cameraAddressPath)) && ip.Text == "192.0.2.23", "object navigation retains original editor and corrected input");
+        Check(ReferenceEquals(ip, Boxes().Single(b => AutomationProperties.GetAutomationId(b) == cameraAddressPath)) && ip.Text == "192.0.2.23", "object navigation retains original editor and corrected input");
         control.ShowPage(0, "供包台标识"); window.UpdateLayout(); Capture("system");
         model.Policy.BackupEnabled = true; model.Policy.BackupDirectory = @"D:\Synthetic\Station-Backup\Daily-Recovery";
         control.ShowPage(0, "自动备份"); window.UpdateLayout(); Capture("backup");
-        if (!baseline) Check(Boxes().Single(b => AutomationProperties.GetName(b) == "BackupDirectory").ActualWidth >
-            Boxes().Single(b => AutomationProperties.GetName(b) == "BackupIntervalMinutes").ActualWidth * 2, "backup path receives its own wide row");
+        if (!baseline) Check(Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "BackupDirectory").ActualWidth >
+            Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "BackupIntervalMinutes").ActualWidth * 2, "backup path receives its own wide row");
         control.ShowPage(2, "左相机"); window.UpdateLayout();
         vm.MarkReadFailure("SYNTHETIC 状态读取中断，请检查连接"); window.UpdateLayout(); Capture("stale");
         Check(vm.ParameterRuntimeSummary(new(leftReader.InstanceId, devices[0].DeviceId, "左相机")).Contains("运行状态未知"), "stale evidence is never rendered as confirmed");
@@ -126,7 +127,7 @@ static partial class Program
             var directory = Descendants(control).OfType<ListBox>().Single(b => b.Name == "ParameterDirectory");
             var selectedPage = directory.SelectedItem;
             var retainedModel = control.Model;
-            var target = Boxes().Single(b => AutomationProperties.GetName(b) == original.Capability.InstanceId + "/Target");
+            var target = Boxes().Single(b => AutomationProperties.GetAutomationId(b) == original.Capability.InstanceId + "/Target");
             target.Text = "reference://synthetic-maintenance-draft"; target.Focus(); target.Select(2, 5);
             role.Selection = replacement; window.UpdateLayout();
             Check(directory.SelectedItem?.ToString()?.StartsWith("操作员登录（未绑定）", StringComparison.Ordinal) == true &&

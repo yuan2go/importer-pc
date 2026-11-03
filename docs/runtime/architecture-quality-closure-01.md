@@ -1,13 +1,13 @@
 > 2026-10-20操作裁决：[审查整改](sportmaster-audit-remediation-01.md)固定业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
 
-> 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
+> 现行商业化补差范围见[完整工作包](../archive/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
 
 > 当前版本与DB9迁移、7～30天到期维护见[长稳运行指南](win11-24x7-stability-remediation-01.md)。COMM形成时业务1.4.0/Contracts1.10.0/DB8及其SQL1～7不变事实保留为历史；本次SQL1～8未改。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
 # Application运行、维护与兼容
 
-审查03形成时实施范围见[原工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
+审查03形成时实施范围见[原工作包](../archive/work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../archive/work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
 
-本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。本页历史Windows结果保持原身份；本轮Windows原生合成结果、真实SDK/合同及24h资格分别见[长稳指南](win11-24x7-stability-remediation-01.md)。软件暂停不是安全急停。
+本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../archive/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。本页历史Windows结果保持原身份；本轮Windows原生合成结果、真实SDK/合同及24h资格分别见[长稳指南](win11-24x7-stability-remediation-01.md)。软件暂停不是安全急停。
 
 PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审与原证据](../reviews/pr24-independent-rereview-f862c2a/README.md)及[R03结果](architecture-quality-closure-01-r03-results.md)为继承来源；本页旧DB7阶段的验证保持形成时身份；当前DB9操作见页首指引，旧账确认与独立资料规则继续适用，不以历史DB4候选或PASS替代。
 

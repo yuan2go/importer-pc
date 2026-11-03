@@ -18,6 +18,8 @@ public sealed record InspectedFrame(string DeviceId, string Epoch, long FrameNum
 public sealed record InspectionRegistration(string Id, bool Isolated, Func<InspectedFrame, bool> Receive, bool CaptureImages = true)
 {
     public Func<string, bool>? DecodeAllowed { get; init; }
+    // Passive diagnostic image demand never pauses normal decoding or publication.
+    public Func<string, bool>? CaptureAllowed { get; init; }
     public string? CutoverKey { get; init; }
 }
 public interface IObservationInspectionSource

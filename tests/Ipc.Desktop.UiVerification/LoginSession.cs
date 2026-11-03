@@ -34,7 +34,7 @@ static partial class Program
             window.Show(); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
             Check(editor.NavigateTo("SessionLifetimeMs"), "schema-3 bound operator login exposes an addressable daily session field");
             window.UpdateLayout();
-            var session = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "SessionLifetimeMs");
+            var session = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "SessionLifetimeMs");
             Check(session.IsVisible && session.Text == "300000", "daily native field shows the existing configured value and unit");
             session.Text = "600000"; session.Focus(); session.Select(1, 3);
             Check(ReferenceEquals(editor.Model!.Policy, vm.StructuredPolicy) && vm.BuildStructuredConfiguration().SessionLifetimeMs == 600000,
@@ -57,7 +57,7 @@ static partial class Program
             Check(searchResults.Items.Count == 0,
                 "search excludes the inapplicable session field");
             login.Selection = selected; window.UpdateLayout(); editor.NavigateTo("SessionLifetimeMs");
-            Check(session.IsVisible && session.Text == "600000" && ReferenceEquals(session, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "SessionLifetimeMs")),
+            Check(session.IsVisible && session.Text == "600000" && ReferenceEquals(session, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "SessionLifetimeMs")),
                 "rebinding reveals the same control and unsaved session value without rebuilding the editor");
             search.Text = "SessionLifetimeMs"; window.UpdateLayout();
             Check(searchResults.Items.Count == 1, "search offers the actual session editor without duplicate read-only technical matches");

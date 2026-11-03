@@ -1,0 +1,1290 @@
+{
+  "product_source": "9ce54bab1f243fa2c4b0641f46336847fced8e23",
+  "harness_followup_source": "dc81df9d",
+  "integrated_main": "38cb7dc0e8e15f009ee88c5a35f1db53c27d5205",
+  "product_tree_identical_to_harness_source": true,
+  "core_suites": 23,
+  "core_assertions": 711,
+  "native_suites": 24,
+  "native_assertions": 1018,
+  "python_tests": 22,
+  "suites": [
+    {
+      "kind": "core",
+      "flag": "--same-placement-29",
+      "pass_count": 17,
+      "exit_code": 0,
+      "file": "logs/core-same-placement-29.log",
+      "bytes": 1570,
+      "sha256": "adb48705e730a336bb81a9475d73a4ae23bb705b183334d34f6aa38b8f5774e8"
+    },
+    {
+      "kind": "core",
+      "flag": "--operator-corrections-29",
+      "pass_count": 12,
+      "exit_code": 0,
+      "file": "logs/core-operator-corrections-29.log",
+      "bytes": 1180,
+      "sha256": "cd6389ba6c6aa73adc1a76faf5decaec96e5e1c6e99fff27efd37e36901ac867"
+    },
+    {
+      "kind": "core",
+      "flag": "--rcs-timeout-errors",
+      "pass_count": 57,
+      "exit_code": 0,
+      "file": "logs/core-rcs-timeout-errors.log",
+      "bytes": 4807,
+      "sha256": "b8695cd4ef39ae5cd840c1825658fda8eaefdad159dd6a406f5cc9a44f543d20"
+    },
+    {
+      "kind": "core",
+      "flag": "--reader-feedback-22",
+      "pass_count": 72,
+      "exit_code": 0,
+      "file": "logs/core-reader-feedback-22.log",
+      "bytes": 6458,
+      "sha256": "334879b34ec2cfdcb97f33bf9c9c9673e36f5dff058709e76d0ed01806a2e40f"
+    },
+    {
+      "kind": "core",
+      "flag": "--unread-package-27",
+      "pass_count": 14,
+      "exit_code": 0,
+      "file": "logs/core-unread-package-27.log",
+      "bytes": 1451,
+      "sha256": "3681f75efe77c33f124b9ab74af49e17ab440cef2459c23f890a6d78ad61496e"
+    },
+    {
+      "kind": "core",
+      "flag": "--reader-robustness-28",
+      "pass_count": 26,
+      "exit_code": 0,
+      "file": "logs/core-reader-robustness-28.log",
+      "bytes": 2704,
+      "sha256": "02030f8826c672b0a174755c572f2bc36391602d88ba6145f73f108a85e130a6"
+    },
+    {
+      "kind": "core",
+      "flag": "--reader-ingress-terminal-22",
+      "pass_count": 1,
+      "exit_code": 0,
+      "file": "logs/core-reader-ingress-terminal-22.log",
+      "bytes": 101,
+      "sha256": "227f31d28cb90c69afc1ac54e1108a885f55f3bd7df1aa090e4fe2b185d3d702"
+    },
+    {
+      "kind": "core",
+      "flag": "--camera-rounds",
+      "pass_count": 41,
+      "exit_code": 0,
+      "file": "logs/core-camera-rounds.log",
+      "bytes": 31170,
+      "sha256": "c43042a28836921c2675cb6809e391c4b251591feb26d7a5a592dd56d8049cbc"
+    },
+    {
+      "kind": "core",
+      "flag": "--camera-chain-reliability",
+      "pass_count": 37,
+      "exit_code": 0,
+      "file": "logs/core-camera-chain-reliability.log",
+      "bytes": 3500,
+      "sha256": "0a239ece9cc4171939ece39f84b543bae623fdf3b73ba9f3f915f49ede5dc593"
+    },
+    {
+      "kind": "core",
+      "flag": "--camera-single-frame-recovery",
+      "pass_count": 2,
+      "exit_code": 0,
+      "file": "logs/core-camera-single-frame-recovery.log",
+      "bytes": 202,
+      "sha256": "25979b6284497e1e63cb20eeffbd6fb050125e92847e3209c88defb77e2d06f0"
+    },
+    {
+      "kind": "core",
+      "flag": "--sm-original-frame",
+      "pass_count": 26,
+      "exit_code": 0,
+      "file": "logs/core-sm-original-frame.log",
+      "bytes": 2786,
+      "sha256": "303b6547fa14ca47c0d80d02530655425e13ee2ea882945a113a5833a606e72e"
+    },
+    {
+      "kind": "core",
+      "flag": "--shutdown-resources",
+      "pass_count": 21,
+      "exit_code": 0,
+      "file": "logs/core-shutdown-resources.log",
+      "bytes": 2012,
+      "sha256": "9fcc500262c42b63d3ba9449f6b58c5b22e203a89992ef64cb37a046dded1d9f"
+    },
+    {
+      "kind": "core",
+      "flag": "--mvs-software-flow",
+      "pass_count": 15,
+      "exit_code": 0,
+      "file": "logs/core-mvs-software-flow.log",
+      "bytes": 2017,
+      "sha256": "4342394dfb7fe0cac8258e419cf629962790ffb52a1fb211e5b07b7064bcba98"
+    },
+    {
+      "kind": "core",
+      "flag": "--manual-rcs-debug",
+      "pass_count": 29,
+      "exit_code": 0,
+      "file": "logs/core-manual-rcs-debug.log",
+      "bytes": 2566,
+      "sha256": "3cb61ea274999f8e05148e1afefe702701c7f00271dca6413662f83dd8b2d3d2"
+    },
+    {
+      "kind": "core",
+      "flag": "--manual-rcs-debug-lifecycle",
+      "pass_count": 18,
+      "exit_code": 0,
+      "file": "logs/core-manual-rcs-debug-lifecycle.log",
+      "bytes": 1516,
+      "sha256": "09f4cf8035fa2939a241951a01d7fa790465a06326c9f198dc638222d26c0f3b"
+    },
+    {
+      "kind": "core",
+      "flag": "--manual-supply",
+      "pass_count": 24,
+      "exit_code": 0,
+      "file": "logs/core-manual-supply.log",
+      "bytes": 2214,
+      "sha256": "136da04189b6c9acb449dca2d46c995a917cec2800e2c6f32fcc994e76b6a8cf"
+    },
+    {
+      "kind": "core",
+      "flag": "--session-shift-25",
+      "pass_count": 36,
+      "exit_code": 0,
+      "file": "logs/core-session-shift-25.log",
+      "bytes": 3358,
+      "sha256": "0bee7698c223a42191bebb204f535cb34a5fe99ffde5f2ec906f8eb829c0e29f"
+    },
+    {
+      "kind": "core",
+      "flag": "--ui-spec-24",
+      "pass_count": 27,
+      "exit_code": 0,
+      "file": "logs/core-ui-spec-24.log",
+      "bytes": 2185,
+      "sha256": "007363e8f76f48fee82409961ce1d4af498e3bfc91eab36b6e6a9bb2fb78014c"
+    },
+    {
+      "kind": "core",
+      "flag": "--parameter-guidance-startup",
+      "pass_count": 23,
+      "exit_code": 0,
+      "file": "logs/core-parameter-guidance-startup.log",
+      "bytes": 2419,
+      "sha256": "81b49682cc7356d46df32ffe9a3415700da6f2d60aac84db23ab2c2600775217"
+    },
+    {
+      "kind": "core",
+      "flag": "--ux-commercial-configuration",
+      "pass_count": 49,
+      "exit_code": 0,
+      "file": "logs/core-ux-commercial-configuration.log",
+      "bytes": 4926,
+      "sha256": "547106ee36cec91fb8cc611cae92eb2b809ea37784609ae5342c593f66914e52"
+    },
+    {
+      "kind": "core",
+      "flag": "--product-closure-21",
+      "pass_count": 40,
+      "exit_code": 0,
+      "file": "logs/core-product-closure-21.log",
+      "bytes": 3437,
+      "sha256": "4aa363a511afbc2597af3c817801c39e4cc0b2c3431be2fac0ffba22003e5780"
+    },
+    {
+      "kind": "core",
+      "flag": "--receipt-custody",
+      "pass_count": 13,
+      "exit_code": 0,
+      "file": "logs/core-receipt-custody.log",
+      "bytes": 2163,
+      "sha256": "c18f4a85664e4503a5e63eb51e8766b49c68a3c3c3f68f213cb63f7517fae79d"
+    },
+    {
+      "kind": "core",
+      "flag": "--architecture-quality-remediation",
+      "pass_count": 111,
+      "exit_code": 0,
+      "file": "logs/core-architecture-quality-remediation.log",
+      "bytes": 10204,
+      "sha256": "c486ed135e272f42bf7993836a5b4a2ffa0f278ea8d4cdbe9d9e81bdf936df78"
+    },
+    {
+      "kind": "native",
+      "flag": "--operator-corrections-29-ui",
+      "pass_count": 15,
+      "exit_code": 0,
+      "file": "logs/native-operator-corrections-29-ui.log",
+      "bytes": 1697,
+      "sha256": "de519a2c661557f691bba9242f9f1f017c77ba8954c64893b50e490be46109a2",
+      "screenshots": [
+        {
+          "name": "op29-debug-offline-locked.png",
+          "sha256": "1cdf5f4c3c8a1b194e088431d742f6bb5e00ea9ae38a9bb9018170745b74b9a7"
+        },
+        {
+          "name": "op29-debug-video-first-1092.png",
+          "sha256": "50394f859fac689d1f3ef1cd6bcde95c37aadc21edc43f0ac0c2cec3ba0e8a28"
+        },
+        {
+          "name": "op29-debug-video-first-1366.png",
+          "sha256": "07d4c24f314871db332eeeca02187e6254c3d982dae296a87434cf3abeaf55fe"
+        },
+        {
+          "name": "op29-debug-video-first-800.png",
+          "sha256": "cf56083b58ff027dd6dd89b8a788c2879739c6d9275c04b52d8d5d1a0ca86a3e"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--parameter-guidance-startup",
+      "pass_count": 99,
+      "exit_code": 0,
+      "file": "logs/native-parameter-guidance-startup.log",
+      "bytes": 9405,
+      "sha256": "c508a59693cdfe0cc252d1555e3c75b09bceb9445621779eccd655664752f98f",
+      "screenshots": [
+        {
+          "name": "deferred-left-active-rcs.png",
+          "sha256": "b1b3956cbddf202b957e5c396658b3ba3d87fe80b8a7b7bbb1ce770a2e1f70d5"
+        },
+        {
+          "name": "op29-field-correction-before-click.png",
+          "sha256": "877a526413e732b47eb8824e2c492b0178aa48d4bf8da48cd65e422d2a3979b9"
+        },
+        {
+          "name": "pgs-RCS 服务-1092.png",
+          "sha256": "08abcaf1ff20219eab27954c5693161da793dec710f6268797ea95d4c8f266da"
+        },
+        {
+          "name": "pgs-RCS 服务-1366.png",
+          "sha256": "d4d9644778240b706066f01d6e316dfe8ce2ee09d6acb1905a12208f899661d5"
+        },
+        {
+          "name": "pgs-RCS 服务-800.png",
+          "sha256": "525d5a0efdf280fb3bedf58692c4af0c92e5298deff042faeb8f93b2c7316c13"
+        },
+        {
+          "name": "pgs-workstation-fullscreen.png",
+          "sha256": "7dea2ceead3d27705b2131586914d9bddea59a95534097de65ae70f22ef66fcd"
+        },
+        {
+          "name": "pgs-供包台标识-1092.png",
+          "sha256": "b60b9c4c38f1234ead8527753172faf43859fbe99c5fe1f91682d52c9b315c11"
+        },
+        {
+          "name": "pgs-供包台标识-1366.png",
+          "sha256": "4f0a26f2fef0694514a86e168606ea0ac1b56d8273b21e10ba1846bb5d9d5db1"
+        },
+        {
+          "name": "pgs-供包台标识-800.png",
+          "sha256": "7432f20d57d0a81fc4b5a025ba60a753ab3086c80af5688b91cc3ba4114d1f58"
+        },
+        {
+          "name": "pgs-左相机-1092.png",
+          "sha256": "11895093841a2a2911f54624f63851a42ad26abbe82650682ccf81dd2b2d9520"
+        },
+        {
+          "name": "pgs-左相机-1366.png",
+          "sha256": "4e8d166b01737a82d010ff37eba48cf9591237ab1816f8bce2a2b76ba6f71a36"
+        },
+        {
+          "name": "pgs-左相机-800.png",
+          "sha256": "71f2ea4c1e77f9058b4a1badf88fdde03ea48856a3594a52207550d8b819e221"
+        },
+        {
+          "name": "pgs-接收与等待限制-1092.png",
+          "sha256": "330a65aee4929bb3470743757b4eba31a2afd8c3c6334535b2eda7c9d389e061"
+        },
+        {
+          "name": "pgs-接收与等待限制-1366.png",
+          "sha256": "072a46fcdfab8d259abc201649ee499f3147649341101de2c55b421357deb2f1"
+        },
+        {
+          "name": "pgs-接收与等待限制-800.png",
+          "sha256": "3e534280ca1046a4b2bbc0c8405bcbe68db26b0902b7aa23b7ad3e9bdeca498d"
+        },
+        {
+          "name": "pgs-数据与记录-1092.png",
+          "sha256": "474ad04c2370e6df9f8dcb98f980f04cb27893d6965d71fb6121678e38d98889"
+        },
+        {
+          "name": "pgs-数据与记录-1366.png",
+          "sha256": "ff2a219868d3b16a85678559444e31c128874e7f87f10c0c9bea1883194d1e74"
+        },
+        {
+          "name": "pgs-数据与记录-800.png",
+          "sha256": "f5e0d0b68afab6244f155d7cf7f21b9954cf83f247eaaf27e8fca21ef0c1a28f"
+        },
+        {
+          "name": "pgs-显示偏好-1092.png",
+          "sha256": "48b02e94034ec1103db21329a02222e6d55aeca84e4d410fb60236d1be8b7de5"
+        },
+        {
+          "name": "pgs-显示偏好-1366.png",
+          "sha256": "a81d8dfc638486af206751023a5fbf62742fc9ff722d3a900b9266ac541ce0f6"
+        },
+        {
+          "name": "pgs-显示偏好-800.png",
+          "sha256": "6f9f5678d011838f7da399fdc508de452dd6df4cfd6e7a730d4565c28c2821e1"
+        },
+        {
+          "name": "pgs-格口请求-1092.png",
+          "sha256": "3454aefd1c6772b748b1602ecf64e59ca72a2a133954b635bfe84fb348f18553"
+        },
+        {
+          "name": "pgs-格口请求-1366.png",
+          "sha256": "58d452aa97889070bb02b3a945b8d6d5475835bc17da2d892459fddfb9d49238"
+        },
+        {
+          "name": "pgs-格口请求-800.png",
+          "sha256": "b9696c2d6b981191d50b98aa5d2266d54e8b139cecdb140f916adec3a058627e"
+        },
+        {
+          "name": "retest28-first-run-invalid-warehouse.png",
+          "sha256": "f1ba6041ac7bed54bbd67e7349d82f8e1a7087ef638d14c4037c429c9a015232"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--manual-rcs-debug-ui",
+      "pass_count": 13,
+      "exit_code": 0,
+      "file": "logs/native-manual-rcs-debug-ui.log",
+      "bytes": 1500,
+      "sha256": "79b9ba2cb9d6ae03c6a866bb8eeadcd1d7939e09a6d19bd76e2e8640629bb2e3",
+      "screenshots": [
+        {
+          "name": "manual-debug-no-camera.png",
+          "sha256": "513fcd1b6d8763b046a01688209b4baf31f4665aa57ba7e582ecfb4e7447b52f"
+        },
+        {
+          "name": "manual-debug-request-response.png",
+          "sha256": "24a232cc51f401a3892e036ccf161907e6be196e174b7d4fd6dff0cb1acc9a94"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--audit-fixes-26",
+      "pass_count": 26,
+      "exit_code": 0,
+      "file": "logs/native-audit-fixes-26.log",
+      "bytes": 2363,
+      "sha256": "cd09f71e0b9fed6e03fea71806c78e8ddca16c23f040459e394638d1cad94cab",
+      "screenshots": [
+        {
+          "name": "audit26-activation-failed-1092.png",
+          "sha256": "421956011b231ed8657a735315c2f2919d6b9af5c99bdfdb181237f4c45552b7"
+        },
+        {
+          "name": "audit26-activation-failed-1366.png",
+          "sha256": "9ab7ca22dd7743cb4921d1d781ec5d655b77cdb5433d4ed4f206472e990c3ea6"
+        },
+        {
+          "name": "audit26-activation-failed-800.png",
+          "sha256": "577a97236c82b20351ab2f31ad7d5967fcbeda9c5cf50b59f907ace8e28a6a5b"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--query-filters",
+      "pass_count": 28,
+      "exit_code": 0,
+      "file": "logs/native-query-filters.log",
+      "bytes": 2458,
+      "sha256": "7e632fc8308821457667dba176dcbff99c880d96ced8d45d3794ad6b9c39977c",
+      "screenshots": [
+        {
+          "name": "query-history-1366.png",
+          "sha256": "9173bbf52f569114bfe40034f7d020837e3410747aa4f4e185e40b7aa59526b4"
+        },
+        {
+          "name": "query-history-800.png",
+          "sha256": "1315924fe6a7eec9a586960d3489174ff8689f455a7c0c41c69f99f2751fdd53"
+        },
+        {
+          "name": "query-logs-1366.png",
+          "sha256": "27877c5e7783b411afcda5d644adad4f7f783d6dd4a95df3d8cb23fe9b78bf3e"
+        },
+        {
+          "name": "query-logs-800.png",
+          "sha256": "e2cdd4d4a79f8ec270b299c698f0fac156c572f9a4fa1630f9e76d2bfd0b8558"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--session-shift-25",
+      "pass_count": 17,
+      "exit_code": 0,
+      "file": "logs/native-session-shift-25.log",
+      "bytes": 1808,
+      "sha256": "7f0575250cfdaa292ee266f051da4ebfe382ab88436a1fbe58ba2961927a456c",
+      "screenshots": [
+        {
+          "name": "ss25-exceptions-1092.png",
+          "sha256": "88373d9b13f0a00aec33c34af97472c02dc4a6b9a9ec3f47da2bde01d415542d"
+        },
+        {
+          "name": "ss25-exceptions-1366.png",
+          "sha256": "ba0c1b32ac733851f55aa7a634eaf63f02d66dd2b577c6fbbce857122cd7ed53"
+        },
+        {
+          "name": "ss25-exceptions-800.png",
+          "sha256": "205a1dcc8779b38c470dac7cb9164c19d48f631ecfac0775f6a2f8304f45c2f4"
+        },
+        {
+          "name": "ss25-statistics-1092.png",
+          "sha256": "3357f6050e942310c884c3438150bb3dabfcbf6fa3deda1ecbc74d64c91d1bad"
+        },
+        {
+          "name": "ss25-statistics-1366.png",
+          "sha256": "bf72fbd90cb8f8ce5a8bdf8b6fdeeecd3c5b9321abb383cefdbff4375af4f988"
+        },
+        {
+          "name": "ss25-statistics-800.png",
+          "sha256": "9d02ef482ce9cc747c02da719c626e5e2c957753aefcddbd8d5e3248e5ea656f"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--ui-spec-24",
+      "pass_count": 37,
+      "exit_code": 0,
+      "file": "logs/native-ui-spec-24.log",
+      "bytes": 3939,
+      "sha256": "761c059b70117c98651fa1f948a6856b1cbe2547cf89b5bca4a46b545d9b5c04",
+      "screenshots": [
+        {
+          "name": "ui24-cameras-1366.png",
+          "sha256": "790764e3f956b7d1518e9db1c5f7be7012204399208674fd9f4189655dbeb71a"
+        },
+        {
+          "name": "ui24-cameras-800.png",
+          "sha256": "233b3ecb1d6b4a8bc4374f853f7879e829da6a84fc3ff4b7888db698d80d2e5f"
+        },
+        {
+          "name": "ui24-first-run-review.png",
+          "sha256": "4c704d64156111ba64a5c04f7b655b02e33e0aa3cf65e7803d9cef88355fa6d0"
+        },
+        {
+          "name": "ui24-history-1366.png",
+          "sha256": "15102ceff8298cde5ffd190865d09dda7b0596c1e016152a2dd547b89097d49e"
+        },
+        {
+          "name": "ui24-history-800.png",
+          "sha256": "abbe6fcd009dab4c4a7c104902179cc6492b8db4b1187244dacdafa47aaddb73"
+        },
+        {
+          "name": "ui24-logs-1366.png",
+          "sha256": "e3a9d61e3a8362f35de29fddd16c7ac02f1d782c9fd379f4706fd6dd23a2fdd9"
+        },
+        {
+          "name": "ui24-logs-800.png",
+          "sha256": "c0744f1f8cc58f2a5485410596757fd838d03de0ea55a801705ac349c3f9bc88"
+        },
+        {
+          "name": "ui24-offline-check.png",
+          "sha256": "00ec6d1949c1b64fcad408a641ecb1d6ec76135f4b74b94b6ebaca362fb911a6"
+        },
+        {
+          "name": "ui24-offline-recovery.png",
+          "sha256": "d76afc81f7e71467ef3316b765ec7d87a5729cb3c86f9624d9a510771c335fd1"
+        },
+        {
+          "name": "ui24-save-review.png",
+          "sha256": "857fff2166c5d229f068bd8800289bcba23ec668a270a118ee7122319a7bafcd"
+        },
+        {
+          "name": "ui24-work-1092.png",
+          "sha256": "f6410a4a2d61665ce9784c8d9144742b8bc1a063bbc38cfa0baa9c0a720f71bc"
+        },
+        {
+          "name": "ui24-work-1366.png",
+          "sha256": "5f59d9908d61748bb5551cf580e028d20d55088a4b16b8bc9bc4c339928a395c"
+        },
+        {
+          "name": "ui24-work-800.png",
+          "sha256": "73e9f62e3cde1e2702ea46e49c36998fd24d841b7c8eb12d7dd609d60ccf8fc2"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--parameter-v3-only",
+      "pass_count": 28,
+      "exit_code": 0,
+      "file": "logs/native-parameter-v3-only.log",
+      "bytes": 3376,
+      "sha256": "ecdeb0e9ca89a1e6493b2891d54c5eabbd6636815ca453ef7d58482c2d0d974a",
+      "screenshots": [
+        {
+          "name": "v3-left-running.png",
+          "sha256": "8a99745f16829c28604c76e8da07417dd27f8a2f11bf65583205d007b0f525e5"
+        },
+        {
+          "name": "v3-object-diagnostics.png",
+          "sha256": "9f798f6afad03cee0edc712c478761c6010b988e3c583a7c5508b665b0731703"
+        },
+        {
+          "name": "v3-rcs-running.png",
+          "sha256": "18afc5b5d4f7711b7153e9b8a652a2d43c2b37f319997ede8a18d8453fc7aeb0"
+        },
+        {
+          "name": "v3-save-review-ready.png",
+          "sha256": "46dfea898139d9ac1229463c9fb3a6a81b89aec748b3d277d899aefa8119dca8"
+        },
+        {
+          "name": "v3-save-review.png",
+          "sha256": "90f30a004fdbe5c7e2676e46bef8cd2f1e6fb739a95f961a04cc04cba120194f"
+        },
+        {
+          "name": "v3-saved-pending.png",
+          "sha256": "64ad4a40cc81a52c39ba3be5886fe0953bd9e46fc636802e152920065b6e2afb"
+        },
+        {
+          "name": "v3-sensitive-reference.png",
+          "sha256": "4a89294494f19fa0388e231216858313dcc17f9667c115c1601824ce029e817a"
+        },
+        {
+          "name": "v3-size-1092x614.png",
+          "sha256": "3b1a9ce9b343175b3ec4334192a01fa1b0cbaa1648c243c253069ecaf5a4b0e0"
+        },
+        {
+          "name": "v3-size-1366x768.png",
+          "sha256": "32d8f32b0011dabcbe612b3fc771d3b4b3eff425840f554d568b4eda01e360cf"
+        },
+        {
+          "name": "v3-size-800x420.png",
+          "sha256": "19984cdb91ad79829735d0488e9d088946bdf5441d429f776a61552feaedb773"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--station-settings",
+      "pass_count": 11,
+      "exit_code": 0,
+      "file": "logs/native-station-settings.log",
+      "bytes": 1277,
+      "sha256": "185bb026de629603e72f992f8f21a093d26801ec4adcd913750533561b5887f7",
+      "screenshots": [
+        {
+          "name": "sm-save-without-pause.png",
+          "sha256": "bb722f1f949cb811e3c9a471e702089ca17396db3c56878427e4fe5df4152e02"
+        },
+        {
+          "name": "station-display-1366.png",
+          "sha256": "f2f6caffaed0f2ceb4a2c18929611649c0f7c2bca7cc7a913c5271830a35f382"
+        },
+        {
+          "name": "station-display-800.png",
+          "sha256": "5813b96cfade7a72eff08773004b0b865ea290a0f32d4f8d5d499b989a9972d9"
+        },
+        {
+          "name": "station-management-menu.png",
+          "sha256": "db4740203d94093e4175f1816e0a7418c8960ffaf74b7d84d3000afeb62a4b41"
+        },
+        {
+          "name": "station-root-recovery.png",
+          "sha256": "a9b93a7fc2f4f3737495660f5334dda7c64f0de65d7b816f17ddb198c0325a79"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--hikrobot-sdk-editing",
+      "pass_count": 41,
+      "exit_code": 0,
+      "file": "logs/native-hikrobot-sdk-editing.log",
+      "bytes": 4109,
+      "sha256": "4752abbd3b9f84e80c268ffc2f7f5a5456cc7d4c8403d3380caa2299eaafdb86",
+      "screenshots": [
+        {
+          "name": "bundled-sdk-daily-left.png",
+          "sha256": "f176113b9519c9db3df5b95997d051aad95442019791379b8fc9642f223edaef"
+        },
+        {
+          "name": "bundled-sdk-first-compact.png",
+          "sha256": "49513feb5331829c4ccba6b3f338b21ce655aba768b73a9f44d82ee852094d2f"
+        },
+        {
+          "name": "bundled-sdk-first-left.png",
+          "sha256": "63e8451ff75e3d3194667c218be5b5b2973bfd3dd84165c56868a1daf70f68c6"
+        },
+        {
+          "name": "bundled-sdk-format-selection.png",
+          "sha256": "89cdecc927af5ac21eba14633354d00ecb4cb3bcb1863f81acbde003cf88d17f"
+        },
+        {
+          "name": "bundled-sdk-legacy-transition.png",
+          "sha256": "1b5d07f5cd4bc454609558282027cc76d1e59f3c8f90c4cc78c7583a10053f38"
+        },
+        {
+          "name": "rcs-without-deferred-checkbox.png",
+          "sha256": "1f3c09925c24bd723d27775063fec5a13acaaf548a7f701bdb0c8fc332a6037b"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--startup-experience",
+      "pass_count": 236,
+      "exit_code": 0,
+      "file": "logs/native-startup-experience.log",
+      "bytes": 21342,
+      "sha256": "11fa094f181270e16152ee7e9d5cfe306a1e235a5f56744352d9cf1591d5063c",
+      "screenshots": [
+        {
+          "name": "configuration-paused.png",
+          "sha256": "2e5be437ea3e75fb0d45fae7c38911f23c3411da2bbfa8ae273789737797d238"
+        },
+        {
+          "name": "installer-complete-launch-failed.png",
+          "sha256": "876a751a061d7fefe3f028a45ff435878aa5777272c5acb0c9ddd355015eb91a"
+        },
+        {
+          "name": "installer-complete.png",
+          "sha256": "93ebd64f9aaaae8f658fee4f871370b6b0aa1d91e9672c6cb96af44bac293dc1"
+        },
+        {
+          "name": "installer-confirmation.png",
+          "sha256": "2d2861afe64ff011bb5e73b3d66bff855b10adcf4bd08d8b256f119d64ff069f"
+        },
+        {
+          "name": "installer-options.png",
+          "sha256": "08e5824e591ba80eadef90b4a1134204e30eb2056ab6a6376b50cca7605fd861"
+        },
+        {
+          "name": "installer-reinstall-confirmation.png",
+          "sha256": "8fbb0741d9e2fd9debea2b60e811902ccaac08953998242a2b3ab8b67b2289d7"
+        },
+        {
+          "name": "leaf-barcode-error.png",
+          "sha256": "16784e97adb64f4419c12dd8ac3ae6888a2a0a290a9e654a55aace97f24db37c"
+        },
+        {
+          "name": "refine-barcode.png",
+          "sha256": "af2811e5eab83d1333ea70f97f4fb30de074ffe3f4dddbb1bb5907d4b97faf0e"
+        },
+        {
+          "name": "refine-check-errors.png",
+          "sha256": "d7c98a96368ba1ba655e494ad186b1728c2b163fb2d8a9563e9d11d2c36ee1a0"
+        },
+        {
+          "name": "refine-chute-errors.png",
+          "sha256": "4cc48900a85079bb87ad84cffc7c356b46917e918ad133ed43a95fc14ce53b4a"
+        },
+        {
+          "name": "refine-data.png",
+          "sha256": "c4686501c5e3490d4a7e13de069c67d38da337f28b3862e84aa2f0ac8e1c0ddf"
+        },
+        {
+          "name": "refine-management-menu.png",
+          "sha256": "cf72781634d6db0e85204044a5fd33a2ffbf26c00a5dcc9c1ea2eccc2844b947"
+        },
+        {
+          "name": "refine-processing.png",
+          "sha256": "09f738fa706516b02bc5bc34e5a08dfe9c6c34706b36e73624e607694f3f7b61"
+        },
+        {
+          "name": "refine-rcs.png",
+          "sha256": "0103d18f7952f42ea10864340d591954b1e505e90dc275c5a3d265cd600b122d"
+        },
+        {
+          "name": "refine-right-camera-error.png",
+          "sha256": "e9a73f9e82005a33ae74ccc7b2d383b36877d26a6c96c54fcab8709c9c1d9698"
+        },
+        {
+          "name": "refine-station.png",
+          "sha256": "7e2c8e90d4ec0a0066fa51d338bc27ad9cb4b7a3f6920103f997322ddd01fecf"
+        },
+        {
+          "name": "startup-session-restored.png",
+          "sha256": "10d4e7e1ce83b20f5e363694b34ee20623bf666f24f6e1d57d51ddfaf36a781b"
+        },
+        {
+          "name": "startup-small.png",
+          "sha256": "40b16390bd673be7249de8ea13400c7a933ae9fc8a11b0103d3aa7cc16506eb1"
+        },
+        {
+          "name": "startup-step-1.png",
+          "sha256": "02059fc22ace97378075ecc33be9f51d0cc588e58f2856803b6c9ae3174612c4"
+        },
+        {
+          "name": "startup-step-2.png",
+          "sha256": "976cfabf6cff9d7013e689758f85aec958eac27f24bf9339615bbb43c4baa6fc"
+        },
+        {
+          "name": "startup-step-3.png",
+          "sha256": "b65bd9ae3539f0fc930e7d0a9013c6b90d6a67288c6031dbfa8b373f3ec9a570"
+        },
+        {
+          "name": "startup-step-4.png",
+          "sha256": "1e33fdda1ec9ec8852f195edfa3983ced7926e78e6f59870f2e5d9acf583aab9"
+        },
+        {
+          "name": "startup-step-5.png",
+          "sha256": "74294a3959fed8bab22d88793a456ffe028e82380e00b3381e69fe1b12ad9dac"
+        },
+        {
+          "name": "uninstall-rechecked-compact.png",
+          "sha256": "167843b49ab774c52dfefdbb2e653e4c59bd89d51ce15bb537ed44831e44fd90"
+        },
+        {
+          "name": "uninstall-result-complete.png",
+          "sha256": "a5941cd80a822b0d0dd296bc202ab1ce284d7c81adc303b26f70a55a2f739caa"
+        },
+        {
+          "name": "uninstall-result-restart.png",
+          "sha256": "7e759c5b08ae91ea592bde86f812937dc6065139820c8768b2519b632900e05f"
+        },
+        {
+          "name": "uninstall-source-mismatch.png",
+          "sha256": "6290a8398254d220ffeb3ba11d3ede92155dc58e03522abb769a4f9fc1f03ca7"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--parameter-experience",
+      "pass_count": 44,
+      "exit_code": 0,
+      "file": "logs/native-parameter-experience.log",
+      "bytes": 4311,
+      "sha256": "97ceafccab67cf3d91081365126b902752b7209e3b5dad3f434a6ce9d0a4e9aa",
+      "screenshots": [
+        {
+          "name": "backup.png",
+          "sha256": "2cc9c539c9d0373f68453d5d6b03d8897fa9c493c0b5bbdef5596f7e524119bd"
+        },
+        {
+          "name": "camera-1092.png",
+          "sha256": "3f5b44de7ca19d804b8108ccc22fc1c288f03f1ef80941f857e069d7695d5046"
+        },
+        {
+          "name": "camera-1366.png",
+          "sha256": "16e66ce44655ef326c7b813ca291349f9ccf4151c2162a71ac555dd4919dead6"
+        },
+        {
+          "name": "camera-800-focused.png",
+          "sha256": "aece6a988303544f3a4284784bc060c32b4f1198168bc8f04eb2e2f5375df309"
+        },
+        {
+          "name": "camera-800.png",
+          "sha256": "2a14e67f8976c63570b914586ec39392de6910f617f711265c2b72eac8bd46fe"
+        },
+        {
+          "name": "field-error.png",
+          "sha256": "ede9bdefa88348f3a128559dde3d0d0c7152dbe4d6854dbe44316add947b2650"
+        },
+        {
+          "name": "rcs-1092.png",
+          "sha256": "be908088eef8cdce4e7280779c6d8c2c09a36f8ced6f2fb4da0b16e06f73c1bc"
+        },
+        {
+          "name": "rcs-1366.png",
+          "sha256": "7fc63f31972aa88b69b2de9cfa0b71dc1e1a37457ed5487b3a8d3069613b8e7b"
+        },
+        {
+          "name": "rcs-800-focused.png",
+          "sha256": "e2caf23f42dc3b95e8e55211e470bafef83daa8d776f5d42e0c967296544b2ff"
+        },
+        {
+          "name": "rcs-800.png",
+          "sha256": "f9c219414c770d20a06c969d2d443d25feeeea0862f37446799faeafe33777b3"
+        },
+        {
+          "name": "request-range.png",
+          "sha256": "810f1bd98b127a0bf5bdb53963f208046254885cf672acf19452ddd54a2ab474"
+        },
+        {
+          "name": "role-labels.png",
+          "sha256": "2ea86c16b50be864c41de0af24417f3a26eadd31b1ac0bcf4c5c18f847dc1df0"
+        },
+        {
+          "name": "stale.png",
+          "sha256": "fb3f37e6884f311b9def8509deb3b79245d2f8ac71fb709a6a868bb0359548a6"
+        },
+        {
+          "name": "system.png",
+          "sha256": "810f1bd98b127a0bf5bdb53963f208046254885cf672acf19452ddd54a2ab474"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--parameter-refactor",
+      "pass_count": 46,
+      "exit_code": 0,
+      "file": "logs/native-parameter-refactor.log",
+      "bytes": 5169,
+      "sha256": "5bdec3194293cb6f0e9e092fa84fb3b7cb9326625602c3f10366076b3c61e329",
+      "screenshots": [
+        {
+          "name": "inherit-parameters-business.png",
+          "sha256": "512fa35c8b5a7a2888578c26c891454666638ad99332e32c1d2cfb369d8fd1f0"
+        },
+        {
+          "name": "inherit-parameters-compact.png",
+          "sha256": "a23fd3573b182b8a8a199cf3ff19f928ca285fe297a312395221fc070af50e47"
+        },
+        {
+          "name": "inherit-parameters-display.png",
+          "sha256": "60fbd00370759a4da371b0f1c1f79d0d72c3200948783268b273edead2592dd4"
+        },
+        {
+          "name": "inherit-parameters-drivers.png",
+          "sha256": "18bcdcabf620faa09cb40b623b9ac7838b253b67a789c415c5b172aeb1320733"
+        },
+        {
+          "name": "inherit-parameters-error.png",
+          "sha256": "ee2173384ad8698faada4b105117d46d969cf3ba11fdce6f306d0326e54fc988"
+        },
+        {
+          "name": "inherit-parameters-exclusion.png",
+          "sha256": "2ef22b9d5c979713991a3b3f330f019535f90ef52c52a76a01fefdace4b293f5"
+        },
+        {
+          "name": "inherit-parameters-login.png",
+          "sha256": "9fb3a075b908209dfe9600f62f2ca992db4187c330caed47edfd1bec1a0b8eed"
+        },
+        {
+          "name": "inherit-parameters-multicode.png",
+          "sha256": "b227c2bc0921f7ea2f75502daa0d99e7e3cebe7b4113efd2c7d40ac7b2bb4dac"
+        },
+        {
+          "name": "inherit-parameters-retention.png",
+          "sha256": "c487ae4f4b5e050ca2b86de82d6813b2de0d4ced84066339bcf6e0548a5a0a06"
+        },
+        {
+          "name": "inherit-parameters-system.png",
+          "sha256": "64427ad123e57b87cc570a861019913d0e906c240cee829c1e09b22daf4cbcfd"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--internal-pages",
+      "pass_count": 44,
+      "exit_code": 0,
+      "file": "logs/native-internal-pages.log",
+      "bytes": 4551,
+      "sha256": "b79838fd598c45e890d04337e6a11c55cb7e1196d83a336b79bd5deea73208c3",
+      "screenshots": [
+        {
+          "name": "daily-parameter-error-800.png",
+          "sha256": "0077d19c564fafd28b2ce8b6ffcaeb67c52cc781403bddeb3a88b6ff7875f48b"
+        },
+        {
+          "name": "diagnostics-1366.png",
+          "sha256": "db85ece3acd6f093471ff5aadf7bbef97e5c9ee5120b00bf746875815ec8899f"
+        },
+        {
+          "name": "diagnostics-800.png",
+          "sha256": "ce4d69e7676ff9732f4433a9dcc8faddca35c2abd1ded0dcff859f2f64b6cf80"
+        },
+        {
+          "name": "history-1366.png",
+          "sha256": "7734b72fba5d12d124420132b2948d80bdf7267a9f478f9f7e034af35f5f02c6"
+        },
+        {
+          "name": "history-800.png",
+          "sha256": "f5efbb21b059916aefc8a4aa19d78649f868c8bf73d4675db4c00b4d530bf43d"
+        },
+        {
+          "name": "history-empty.png",
+          "sha256": "b76f2d1a87b23df3179280e6cb4379c41411d4128987974de7a7ae60284e40f8"
+        },
+        {
+          "name": "history-filters-800.png",
+          "sha256": "7f3ce422b5b2771ba7cf0ac8ea6512af9ed4390a4f03bdb7e70f1d062b7a596b"
+        },
+        {
+          "name": "history-selected-1366.png",
+          "sha256": "68a588a22d643367db24cb1fa53fda2116f54a7b51d19e69cc6bd1911cf59902"
+        },
+        {
+          "name": "logs-compact-detail-before-query.png",
+          "sha256": "3a7a3665af48983bb95ba30477145829e8d490ced86028b80cc4627416b66b67"
+        },
+        {
+          "name": "logs-compact-filters-after-query.png",
+          "sha256": "0c909c41d1becca56a0cf215a8a16a1b79db4c5ed57e612d7502646894278784"
+        },
+        {
+          "name": "logs-empty.png",
+          "sha256": "c7bf0b3eb74982ffae5c17115f8c4d7916e660d49b9dc6c67c60383c304a2e86"
+        },
+        {
+          "name": "logs-failed.png",
+          "sha256": "30fe6f9bb36a9ce75de8f7c3619ab6cb502971720d4c3ea26e5e5c3c223deb90"
+        },
+        {
+          "name": "logs-pending.png",
+          "sha256": "2917400c76a1ad4260e9dac89135068ac9615f64852cafca9b11634ac6d210fb"
+        },
+        {
+          "name": "workstation-1366.png",
+          "sha256": "ec09d82f9fea1fdf773b5ab6005366584fbef5f36b31256b9d6105fc2e1411b1"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--debug-log-live",
+      "pass_count": 41,
+      "exit_code": 0,
+      "file": "logs/native-debug-log-live.log",
+      "bytes": 3762,
+      "sha256": "cad0d2d9cc6f2bb06a4bb8f7b41387fac34febe39f79211d8be08e42581491f0",
+      "screenshots": [
+        {
+          "name": "terminal-display-paused.png",
+          "sha256": "5ccde563b8285f6483750ace7175c5054c673771c6541cccaec7eb9559ed51bc"
+        },
+        {
+          "name": "terminal-live-800.png",
+          "sha256": "1601d4b177beee76253d127b5e92e553a21c827b260b6e058c3c0c02171d6950"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--installer-first-run-ui",
+      "pass_count": 145,
+      "exit_code": 0,
+      "file": "logs/native-installer-first-run-ui.log",
+      "bytes": 17828,
+      "sha256": "1fef3dad82194c34389dbfab208f0b9fb3c3c551c861ff3a2d85afbf24071fe9",
+      "screenshots": [
+        {
+          "name": "after-configuration-start-gate.png",
+          "sha256": "48b4be99fd8f24f3421791e761b49f5a942b2107ab92121f3225fcdd2a5cef26"
+        },
+        {
+          "name": "after-install-start-gate.png",
+          "sha256": "a5b27085d22b9aae40a7152903ee2b5ad435459b4852fc29cfa2618b762cf6c7"
+        },
+        {
+          "name": "first-run-expired.png",
+          "sha256": "6ce724f8a9713cba1425dfbfba6b9098a4c7d3e7b95afb6e0422be9f007bcf77"
+        },
+        {
+          "name": "first-run-unconfigured.png",
+          "sha256": "ec0ecba3f920a5643b7ac4f081fd6698479f909afaf2130fede1c72af8a7fa0d"
+        },
+        {
+          "name": "installer-committed-repair-failure.png",
+          "sha256": "3a8034afafffe78232100e3f7dbbc711a40718065888d3226bc6a76474873efb"
+        },
+        {
+          "name": "installer-complete-existing.png",
+          "sha256": "2eaf9b2bcad816791c82393c2b19ee747fcdc90e5018b05bb8bce5c55950b8b4"
+        },
+        {
+          "name": "installer-complete-first.png",
+          "sha256": "9d01498d9a886f2f9831ed815e825d5bab6e0390d17632bd77ca8196cfc81827"
+        },
+        {
+          "name": "installer-confirm-long.png",
+          "sha256": "e1e0f9afefcde774d978241a180966708f9320f2f3e596cb4c62243a130271d2"
+        },
+        {
+          "name": "installer-failure.png",
+          "sha256": "5daf88c802fcdc49a8655ccccbb149492d22c9d3c34680c5d3d20c551be697ef"
+        },
+        {
+          "name": "installer-options-1024x768-125-equivalent.png",
+          "sha256": "c69a9ec3936a183f9c14a9f9574b802ca5e47810dfe15325443ba2e7c2dfc509"
+        },
+        {
+          "name": "installer-options-1024x768-150-equivalent.png",
+          "sha256": "2cec22757d767afc2df562b44d9e5a21456f81a3e2f013e5a96eeb81565a9f2b"
+        },
+        {
+          "name": "installer-options-1366x768-100-equivalent.png",
+          "sha256": "1a47f9815a831db9a09d4ed751fa3534aab9b890755a479a4a1f83b383396971"
+        },
+        {
+          "name": "installer-options-default.png",
+          "sha256": "020354db414c96692801a4ce58be9084715a1151327e6714bd98709244e8f67c"
+        },
+        {
+          "name": "installer-preflight-details.png",
+          "sha256": "eb5707227bf74d2ae3fafad4e42a4befbd409d21b75198ebf79d5f421bd9aab0"
+        },
+        {
+          "name": "installer-stage-CommittingInstallation.png",
+          "sha256": "956204e402a710a82532606ba8351ef1169277c347067840e14a748d0cf05c9d"
+        },
+        {
+          "name": "installer-stage-CopyingFiles.png",
+          "sha256": "6fae2d64a5c017857f6d7484dac36b80dd1d19c6225840c959117c0c30d1f4e6"
+        },
+        {
+          "name": "installer-stage-WaitingForAuthorization.png",
+          "sha256": "8eb28a98ecb358179c804be01131c4c03ff8df909cecb0805bd4c1f843b9a2b8"
+        },
+        {
+          "name": "installer-unknown-125-equivalent.png",
+          "sha256": "9b52ed49897585b1813051fc7376e811225c33a6803a4aefb8452d114f0e9e71"
+        },
+        {
+          "name": "installer-unknown-150-equivalent.png",
+          "sha256": "3569bcd6c8da9e98c280ae2f012e02de41e371db495dcf9e93ed6dbe3d68e40a"
+        },
+        {
+          "name": "installer-unknown-expanded.png",
+          "sha256": "dc9b1a7b68ae186f16a73f962dcc4f9c09530bf0c968c2fa6b9e1d41cc57ae89"
+        },
+        {
+          "name": "installer-unknown-original-text.png",
+          "sha256": "b206ef6156fbcea2ecbc4043f4ce5e21c12f0d546f468dc09c05db92a430dee4"
+        },
+        {
+          "name": "installer-unknown-records-unavailable.png",
+          "sha256": "fb88461d28b76325e2ee19632763e4044a90e833735f2ff46781cecbdb4f0fff"
+        },
+        {
+          "name": "installer-unknown.png",
+          "sha256": "ebd8ecf6c40bf92a9224ff3f6b8251faa58241408b0e21fc9fe1aa0b530da79c"
+        },
+        {
+          "name": "maintenance-progress-minimum.png",
+          "sha256": "3dce538124b3a7453d0a9af1414dfbcb66da29cc087c6502a4e32d6c2747e1a8"
+        },
+        {
+          "name": "maintenance-progress-standard.png",
+          "sha256": "f530975e050cb1d7cabd1f743ec5aedd6ffd537fbc473ec184ca6aeef31dea5f"
+        },
+        {
+          "name": "maintenance-unknown.png",
+          "sha256": "1fb6869f9f1ce84a65e58a3a3746eef46b3a02771871e9cb0fa70e03be20155d"
+        },
+        {
+          "name": "password-bootstrap-cancelled.png",
+          "sha256": "81cca23623e82261e6a3ff80ec5a2df57e77209e6a8bfeb9ad4501effe0643d6"
+        },
+        {
+          "name": "password-first-setup.png",
+          "sha256": "29b427bbbf0046689301c2798c5b048c3bd9ac6847a923aaebd6989d71f0640d"
+        },
+        {
+          "name": "password-rejected.png",
+          "sha256": "dc1a2b4454f71429e89ac2345756094c5e5fcbf263c9095e71e1ca7349638455"
+        },
+        {
+          "name": "password-service-unavailable.png",
+          "sha256": "9d729bccff6729d7b0c019ad261e7981192c7de4ed29f7f224e844e8ea4c51bd"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--reader-feedback-22-ui",
+      "pass_count": 20,
+      "exit_code": 0,
+      "file": "logs/native-reader-feedback-22-ui.log",
+      "bytes": 2321,
+      "sha256": "7c58b9056a58704c08c49a4a150fcb083b9ec7c441384062a62105dc410ad376",
+      "screenshots": [
+        {
+          "name": "reader22-audio-settings.png",
+          "sha256": "dd6478fd6a58e4e3e5a8527778fa87ecc359e1dbc90129f6d3c2f5964a055317"
+        },
+        {
+          "name": "reader22-expired-1366.png",
+          "sha256": "34a26301e145494852de91c0c7d9e48320cf2b5300b1d9e71f81569120c1ef0f"
+        },
+        {
+          "name": "reader22-expired-800.png",
+          "sha256": "35e3e0260ffed74bebf7c2283214265ca4c10a34f5d1380dfc32877449544af5"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--unread-package-27-ui",
+      "pass_count": 9,
+      "exit_code": 0,
+      "file": "logs/native-unread-package-27-ui.log",
+      "bytes": 1120,
+      "sha256": "7e004ab9c9a0efcc31a7351ca33694fd56f8ca505361a048827a435af202b848",
+      "screenshots": [
+        {
+          "name": "unread27-no-code-1366.png",
+          "sha256": "26fefc5caf38c7c5fe21601a0bdab2575e8c28ad349037117af8a7ec9ac923b7"
+        },
+        {
+          "name": "unread27-no-code-800.png",
+          "sha256": "48695478eb492011b4c96e6159d7999bae4f0bf2b3c7c76b756aec2d72025e5f"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--reader-robustness-28-ui",
+      "pass_count": 8,
+      "exit_code": 0,
+      "file": "logs/native-reader-robustness-28-ui.log",
+      "bytes": 990,
+      "sha256": "7c13bf56530b10a3cfd335d95d5de3459cb23559ec9ed4ef125e8b4cf807f996",
+      "screenshots": [
+        {
+          "name": "reader28-snapshot-first-1366.png",
+          "sha256": "16a2561e1558369c515c9f0581ae246bb60091c2ce9ce461267a589625b57779"
+        },
+        {
+          "name": "reader28-snapshot-first-800.png",
+          "sha256": "ae8e94ec91c6afebe600e38a1f27a1ffb1bdcc67488e989e8d85d1a36a6db530"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--camera-chain-reliability-ui",
+      "pass_count": 21,
+      "exit_code": 0,
+      "file": "logs/native-camera-chain-reliability-ui.log",
+      "bytes": 3175,
+      "sha256": "0e570936d7a26674808538b05b6d437313c455fa9e848dab43b7b38302d00a27",
+      "screenshots": [
+        {
+          "name": "chain20-camera-cleared-recovered.png",
+          "sha256": "bfdd4dc3e5aea303a001b7a073c34898cb4071711abfe3f9d8c509f2ef5cb517"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--camera-round-ui",
+      "pass_count": 27,
+      "exit_code": 0,
+      "file": "logs/native-camera-round-ui.log",
+      "bytes": 9875,
+      "sha256": "a24039984f542d5bd7b7044d7b1e4837297917c385ab9d243292ff2f28ecb300",
+      "screenshots": [
+        {
+          "name": "round-1024-native.png",
+          "sha256": "3bee14bf0318dfa21fe8db7dbab35db43baf5866fb74188a7a8cb6b6e8cd6570"
+        },
+        {
+          "name": "round-800-native.png",
+          "sha256": "36aa72d1c197fe4a1a0a47056b2e8405f3808abd8d7a8fc9f87355986f647143"
+        },
+        {
+          "name": "round-locked-native.png",
+          "sha256": "c7b9ba4b015ef5c28be0e5c70029708b44eb690240df7d4a1cd011e8b1bc0c98"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--continuous-pda-input",
+      "pass_count": 35,
+      "exit_code": 0,
+      "file": "logs/native-continuous-pda-input.log",
+      "bytes": 3964,
+      "sha256": "c7f90688e654929535c75f43ef88a7db6310a3bdb69ee0c0fe089708f30e329d",
+      "screenshots": []
+    },
+    {
+      "kind": "native",
+      "flag": "--station-responsive-ui",
+      "pass_count": 14,
+      "exit_code": 0,
+      "file": "logs/native-station-responsive-ui.log",
+      "bytes": 2006,
+      "sha256": "d4ea0817cfe35256d072f36c971a99012e69df659f70e789101dac39c885777d",
+      "screenshots": [
+        {
+          "name": "responsive-before-durable.png",
+          "sha256": "8580bff756292e195eb8299d9ca69de4564ed4aa6dc2948168a3e80bd0fef282"
+        },
+        {
+          "name": "responsive-offline-rejection.png",
+          "sha256": "16a5ee950f23065847b912969e834dc79ccb3e3c5bb49423adabca67b851a839"
+        }
+      ]
+    },
+    {
+      "kind": "native",
+      "flag": "--product-closure-21",
+      "pass_count": 13,
+      "exit_code": 0,
+      "file": "logs/native-product-closure-21.log",
+      "bytes": 1516,
+      "sha256": "5599f1cf1f0df35af8bc5cd1c5d63f4f602bda732ac96c564cfa802938e7a8dc",
+      "screenshots": [
+        {
+          "name": "pc21-diagnostics-1366.png",
+          "sha256": "1d06299f1a7eb770b462daa81f85efe97566154a031cfa5d49894a8475077cdf"
+        },
+        {
+          "name": "pc21-exceptions-1366.png",
+          "sha256": "9d899951618bc86410e3c3781637a39e4ab11731824a7fc39e7a2bf5a87b9d4e"
+        },
+        {
+          "name": "pc21-first-configuration-1100.png",
+          "sha256": "ff8bedd4ba542a5ba5b74fea2e5bbed6c0037a4e7d8692f40dbb600716514951"
+        },
+        {
+          "name": "pc21-statistics-1366.png",
+          "sha256": "17e78725fa25a91d76b0d08ecf3e16e9a9942934bbee217553854f192d53d7a4"
+        },
+        {
+          "name": "pc21-statistics-800.png",
+          "sha256": "7e9cdb4779b2e484376fd3b6ff3b8052649e3d16ba3efb05000c24ffd7099b7b"
+        }
+      ]
+    }
+  ],
+  "python": [
+    {
+      "file": "logs/test_application_compatibility.py.log",
+      "bytes": 121,
+      "sha256": "3e8b28e492f39da4af9fef98110b1a168ea722bb370bc709f08e64c85f65c146"
+    },
+    {
+      "file": "logs/test_release_documents.py.log",
+      "bytes": 108,
+      "sha256": "d7eb40f08c717a9c98e31ae6ff720aa78d75bb0a324bbcee32bb1ebd85155a69"
+    }
+  ],
+  "published_media": {
+    "source_commit": "9ce54bab1f243fa2c4b0641f46336847fced8e23",
+    "database_format": 12,
+    "guide": "PARCEL12-OPERATIONS.md",
+    "old_db11_guide_absent": true,
+    "session_guide_present": true,
+    "verified_package_files": 797,
+    "zip_sha256": "2e71bb364ad494c3a5b04b0fe8389f54edcbad7b0e45f9cb6abb55b9e0e24ed1",
+    "desktop_dll_sha256": "2faa40bc039a3c53fabfc7a9d6d88b12d76ec6b9167cbd87433c04fa180c23b0"
+  },
+  "installer_sha256": "5d3761cdd111ef8bcc73abae2b763190a527d84c53654059c569bb9eb86d2ea8",
+  "published_exe_environment_exit": 0,
+  "actual_installation": "WAITING_FOR_USER_UAC",
+  "installed_end_to_end": "PENDING",
+  "physical_mvs_customer_rcs_site": "NOT_RUN",
+  "actual_installation_followup": {
+    "initial_checkpoint": "WAITING_FOR_USER_UAC",
+    "observed": "DESKTOP_HANDOFF_DID_NOT_RETURN_ACKNOWLEDGED_HELPER",
+    "user_saw_uac": false,
+    "installed_source_unchanged": true,
+    "protected_operation_journal_present": false,
+    "new_source_installed": false
+  }
+}

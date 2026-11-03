@@ -40,7 +40,7 @@ static partial class Program
         var revision = (await runtime.SnapshotAsync()).Configuration.Revision;
         Check(!await vm.PrepareConfigurationReviewAsync() && !vm.CanSubmitReviewedConfiguration && (await runtime.SnapshotAsync()).Configuration.Revision == revision,
             "forced empty review remains non-submittable and creates no revision");
-        editor.NavigateTo("StationCode"); var station = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
+        editor.NavigateTo("StationCode"); var station = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode");
         station.Text = "SYNTHETIC-EDIT"; station.Focus(); station.Select(2, 4);
         await vm.RefreshAsync(); await vm.RefreshAsync();
         Check(station.IsKeyboardFocused && station.SelectionStart == 2 && station.SelectionLength == 4 && ((Button)page.FindName("SaveChanges")).IsEnabled,
@@ -63,7 +63,7 @@ static partial class Program
         for (var wait = 0; wait < 100 && (vm.SelectedPage != "maintenance" || vm.Busy); wait++) await Task.Delay(20);
         Check(vm.SelectedPage == "maintenance" && !vm.Busy, "object settings return completes its authority and load checks");
         window.UpdateLayout(); editor.NavigateTo("StationCode");
-        Check(ReferenceEquals(station, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode")) && station.Text == "SYNTHETIC-EDIT", "object diagnostics returns to the cached form and preserves draft identity");
+        Check(ReferenceEquals(station, Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode")) && station.Text == "SYNTHETIC-EDIT", "object diagnostics returns to the cached form and preserves draft identity");
         vm.MarkReadFailure("SYNTHETIC stale probe");
         Check(vm.ParameterRuntimeSummary(target).Contains("运行状态未知") && !vm.ParameterRuntimeSummary(target).Contains("运行连接：已确认"), "stale snapshot cannot continue presenting a healthy connection");
         var staleReview = new ConfigurationSaveReviewWindow(window, vm); staleReview.Show(); staleReview.UpdateLayout();
@@ -117,7 +117,7 @@ static partial class Program
         var choiceDraft = new CapabilityDraft(choiceBinding.Kind, [choiceDescriptor], choiceBinding, true, "synthetic");
         var choiceEditor = new ParameterSettingsControl { Model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [choiceDraft], runtime.TestBarcodeFilterAsync) };
         window.Content = choiceEditor; choiceEditor.NavigateTo(choiceBinding.InstanceId + "/entity.mode"); window.UpdateLayout();
-        var association = Descendants(choiceEditor).OfType<ComboBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/entity.mode"));
+        var association = Descendants(choiceEditor).OfType<ComboBox>().Single(x => AutomationProperties.GetAutomationId(x).EndsWith("/entity.mode"));
         Check(Equals(association.SelectedItem, "observe-only") && Descendants(association).OfType<TextBlock>().Any(x => x.Text == "仅观察"),
             "native choice displays Chinese while selection retains its protocol value");
         association.SelectedItem = "trigger"; window.UpdateLayout();
@@ -133,10 +133,10 @@ static partial class Program
         var model = new ParameterEditorModel(vm.StructuredPolicy!, "sportmaster", [], [draft], runtime.TestBarcodeFilterAsync);
         var secureEditor = new ParameterSettingsControl { Model = model }; window.Content = secureEditor;
         secureEditor.NavigateTo(binding.InstanceId + "/reference"); window.UpdateLayout();
-        var secret = Descendants(secureEditor).OfType<PasswordBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/reference"));
+        var secret = Descendants(secureEditor).OfType<PasswordBox>().Single(x => AutomationProperties.GetAutomationId(x).EndsWith("/reference"));
         Check(secret.Password == binding.Parameters["reference"] && !Descendants(secureEditor).OfType<TextBox>().Any(t => t.Text.Contains("synthetic-reference") || t.Text == "SYNTHETIC-A"), "sensitive and secret-reference values never appear in ordinary text editors");
         secret.Password = "secret:synthetic-edited"; secureEditor.ShowPage(0, "供包台标识"); secureEditor.NavigateTo(binding.InstanceId + "/reference");
-        Check(ReferenceEquals(secret, Descendants(secureEditor).OfType<PasswordBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/reference"))) && draft.Parameters.Single(p => p.Field.Key == "reference").Value == "secret:synthetic-edited",
+        Check(ReferenceEquals(secret, Descendants(secureEditor).OfType<PasswordBox>().Single(x => AutomationProperties.GetAutomationId(x).EndsWith("/reference"))) && draft.Parameters.Single(p => p.Field.Key == "reference").Value == "secret:synthetic-edited",
             "masked editing and object navigation preserve the exact reference instead of a sentinel");
         var peer = System.Windows.Automation.Peers.UIElementAutomationPeer.CreatePeerForElement(secret);
         var valueProvider = peer!.GetPattern(System.Windows.Automation.Peers.PatternInterface.Value) as System.Windows.Automation.Provider.IValueProvider;

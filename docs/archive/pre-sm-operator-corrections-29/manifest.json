@@ -1,0 +1,37 @@
+{
+  "source_commit": "38481144ba49cf52e611f4f4b3b0770fd6e8d1db",
+  "byte_source": "Git blob bytes; not working-tree CRLF normalization",
+  "reason": "2026-11-02 user operator-language, RCS-paced scanning, debug-layout and acquisition-diagnostic corrections; original evidence remains historical",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "96f4ddfdfd7fe20c707c664d622089fedb1485e65ea33d82ddd43061ea363585",
+      "bytes": 9297
+    },
+    {
+      "path": "docs/INDEX.md",
+      "sha256": "37d6085f499a216f91456e9fe438b6795d984543b46ef4a9de351e1a16ba070f",
+      "bytes": 16313
+    },
+    {
+      "path": "docs/runtime/mvs-software-reader-01.md",
+      "sha256": "ae27898ec7ef774a54621c467a9eb6fcc69884067fcace41b6632958e9810104",
+      "bytes": 9085
+    },
+    {
+      "path": "docs/runtime/sm-reader-feedback-22.md",
+      "sha256": "2222db5d49890599702cceb3eab498d35a2573d024161d92142f263ff98a793b",
+      "bytes": 7540
+    },
+    {
+      "path": "docs/runtime/sm-responsive-presentation-16.md",
+      "sha256": "71a0f9b942ffffed54d451ae4b4a56df68c61aa9dacb94240087889a86b34ef4",
+      "bytes": 10607
+    },
+    {
+      "path": "docs/runtime/sm-reader-robustness-28.md",
+      "sha256": "8646f36f886b6a679f3a2b1b620291cd1a2f7adef0f1b556edfe0d7bf4cace9d",
+      "bytes": 4430
+    }
+  ]
+}

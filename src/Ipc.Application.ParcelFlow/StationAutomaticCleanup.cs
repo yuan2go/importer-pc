@@ -82,7 +82,7 @@ public sealed partial class ParcelRuntime
         var local = TimeZoneInfo.ConvertTime(now, TimeZoneInfo.FindSystemTimeZoneById(policy.TimeZoneId));
         if (local.Hour < policy.CleanupHour) { cleanupWarmup = now.AddMinutes(1); return; }
         if (configuration!.Current.Pending is not null || configuration.Current.Confirmation?.Required != false ||
-            backupInProgress || configurationSaving || CameraBusinessFenced || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 ||
+            backupInProgress || configurationSaving || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 ||
             Volatile.Read(ref pendingObservations) != 0 || latestInputs.Values.Any(i => now - i.RecordedAt < TimeSpan.FromSeconds(30)) ||
             operations.Values.Any(o => (!MainTerminated(o) && !NeedsReconciliation(o)) || o.OriginalFrame?.State == "Pending"))
         { cleanupWarmup = now.AddMinutes(1); return; }

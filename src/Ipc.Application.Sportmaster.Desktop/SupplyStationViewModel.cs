@@ -60,7 +60,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string WorkNotice => BlockingReasons;
     const string PauseNotice = "Software admission paused; this is not an emergency stop";
     public bool IsInternalWorkspace => SelectedPage != "workstation";
-    public bool IsSettingsNavigation => SelectedPage is "maintenance" or "diagnostics";
+    public bool IsSettingsNavigation => SelectedPage == "maintenance";
     public bool IsSettingsWorkspace => SelectedPage is "maintenance" or "logs";
     public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
     { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
@@ -72,6 +72,9 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string WorkspaceStatusForeground => OperatorTokens.Ink;
     internal void ReportBarcodeFeedback(ParcelBarcodeReceipt receipt, string value) => SetPresentationMessage(value, receipt.Status == "Admitted" ? PresentationFeedbackKind.ResultMirrored : PresentationFeedbackKind.General);
     public string WorkFeedback => SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(TaskFeedback) : TaskFeedback;
+    // This release hides page entrances only; the business ledger and retained pages remain.
+    public bool ShowExceptionAndStatisticsEntries => false;
+    public Visibility ExceptionAndStatisticsEntryVisibility => ShowExceptionAndStatisticsEntries ? Visibility.Visible : Visibility.Collapsed;
     public string SelectedPage
     {
         get => selectedPage;

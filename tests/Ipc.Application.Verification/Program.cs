@@ -21,6 +21,7 @@ var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifa
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--debug-no-isolation-31")) { await DebugNoIsolation31.Run(workspace, root); return; }
 if (args.Contains("--installer-storage-checks")) { InstallerStorageChecks.Run(root); return; }
 if (args.Contains("--installer-storage-matrix"))
 {
@@ -37,6 +38,7 @@ if (args.Contains("--installer-storage-matrix-direct"))
 if (args.Contains("--runtime-identity-boundary")) { await RuntimeIdentityBoundary.Run(root); return; }
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
 if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
+if (args.Contains("--maintenance-launch-fence")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Windows named-pipe boundary required"); await MaintenanceLaunchFence.Run(); return; }
 if (args.Contains("--session-shift-crash-child")) { var i=Array.IndexOf(args,"--session-shift-crash-child"); await SessionShift25.CrashChild(args[i+1],args[i+2]); return; }
 if (args.Contains("--session-shift-25")) { await SessionShift25.Run(workspace,root); return; }
 if (args.Contains("--ui-spec-24")) { await UiSpec24.Run(workspace, root); return; }
@@ -56,6 +58,7 @@ if (args.Contains("--industrial-lifecycle")) { IndustrialLifecycle.Run(root); re
 if (args.Contains("--industrial-rollback")) { await IndustrialRollback.Run(workspace, root); return; }
 if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }
 if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
+if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }

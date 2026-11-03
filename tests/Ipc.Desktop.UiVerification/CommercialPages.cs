@@ -56,7 +56,7 @@ static partial class Program
             first.UpdateLayout();
             Check(Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")) && Descendants(first).OfType<TextBox>().Any(t => t.Text == config.TimeoutMs.ToString()) && Wire.FileHash(draftFile) == draftHash,
                 "actual Windows DPAPI refusal leaves the original ciphertext unchanged while the published offline editor loads configuration fields and an explicit unavailable-draft diagnosis");
-            var timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "TimeoutMs");
+            var timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "TimeoutMs");
             Check(timeout.IsEnabled && timeout.Focus(), "native policy editor is enabled and accepts keyboard focus before editing");
             var originalTimeout = timeout.Text; timeout.Text = "4321";
             var discardPrompts = 0;
@@ -92,7 +92,7 @@ static partial class Program
             Check(checkedField.GetValue(first) is string && !(bool)busyField.GetValue(first)!, "actual candidate check completes and records the exact current editor input");
             await SelectTask(1);
             parameterEditor = Descendants(first).OfType<ParameterSettingsControl>().Single(); parameterEditor.NavigateTo("TimeoutMs"); first.UpdateLayout();
-            timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "TimeoutMs"); timeout.Text = "4322";
+            timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "TimeoutMs"); timeout.Text = "4322";
             Check(checkedField.GetValue(first) is null, "editing policy invalidates a completed candidate check");
             timeout.Text = originalTimeout; await SelectTask(1);
             await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
@@ -143,7 +143,7 @@ static partial class Program
         Check(maintenance.NavigateToParameter("StationCode"), "primary parameter directory resolves StationCode in the loaded candidate");
         await primary.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         primary.UpdateLayout();
-        var stationInput = Descendants(maintenance).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "StationCode");
+        var stationInput = Descendants(maintenance).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode");
         var originalStation = stationInput.Text; stationInput.Text = "NATIVE-REVIEW";
         var configurationRevision = (await runtime.SnapshotAsync()).Configuration.Revision;
         await ObserveSaveReviewAsync(primary, maintenance, dialog =>

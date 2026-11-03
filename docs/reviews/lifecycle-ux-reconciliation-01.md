@@ -4,7 +4,7 @@
 
 2026-10-25，开工核对当时远端 main 与本地 HEAD 均为 `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开放 PR 为 0。源码为 Sportmaster 1.12.3 / Contracts 1.18.0 / DB9。本文整合三份审查和用户追加的 UI、身份显示、参数权限、软件日志及帮助删除要求；不将审查完成记为修复完成。
 
-实施入口为 [七包总工作包](../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，产品约束为 [增量设计](../design/lifecycle-ux-optimization-01.md)，本版实际可用路径为 [当前操作入口](../runtime/lifecycle-ux-current-guidance-01.md)。原规划只做复核/文档；本轮七包独立工程已实施并执行定向本机测试，见末尾收口及验证报告。未执行真实安装操作。
+实施入口为 [七包总工作包](../archive/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)，产品约束为 [增量设计](../design/lifecycle-ux-optimization-01.md)，本版实际可用路径为 [当前操作入口](../runtime/lifecycle-ux-current-guidance-01.md)。原规划只做复核/文档；本轮七包独立工程已实施并执行定向本机测试，见末尾收口及验证报告。未执行真实安装操作。
 
 ## 三份来源与证据身份
 

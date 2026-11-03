@@ -71,7 +71,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
         public CameraOperationStatus? Operation { get => operation; set { operation = value; PropertyChanged?.Invoke(this, new(nameof(Label))); } }
         public string Label => (Business?.ObservedAt ?? Frame!.CapturedAt).ToLocalTime().ToString("HH:mm:ss.fff") + "  ·  " +
             Short(Business?.SelectedCode ?? Business?.Candidates.FirstOrDefault() ?? Frame?.Symbols.FirstOrDefault()?.Text ?? "未读到码", 80) + "  ·  " +
-            (Business is { } b ? InputText(b.Outcome) : Frame?.IsolatedSessionId is null ? "关联帧" : "实机调试") +
+            (Business is { } b ? InputText(b.Outcome) : Frame?.IsolatedSessionId is null ? "关联帧" : "历史调试帧") +
             (Operation is { } op ? "  ·  " + ResultText(op) : OperationId is null ? "" : "  ·  等待原结果刷新");
         public event PropertyChangedEventHandler? PropertyChanged;
     }
@@ -189,8 +189,8 @@ internal sealed class StationDebugEvidenceControl : UserControl
         try
         {
             var current = await Api.CameraInspectionStatusAsync(t); if (!Current(version)) return; status = current;
-            banner.Background = ColorBrush(current.BusinessFenced ? "#FFF2D5" : "#F2F5F8");
-            state.Text = (current.BusinessFenced ? "实机调试中 · 两位暂停新供包" : current.State == "Active" ? "生产观察 · 正常业务仍运行" : "关联调试 · " + SessionText(current.State)) +
+            banner.Background = ColorBrush("#F2F5F8");
+            state.Text = (current.State == "Active" ? "调试采集 · 正常供包继续" : "调试记录 · " + SessionText(current.State)) +
                 $"\n{current.Detail}\n帧记录 {current.Frames:N0} · 原图 {current.ImageBytes / 1048576d:N1} MiB · 轮替 {current.EvictedImages:N0} · 诊断接收缺口 {current.MissingFrames:N0}" + (current.ExpiresAt is { } expires ? " · 截止 " + expires.ToLocalTime().ToString("HH:mm:ss") : "");
             identity.Text = (position == "left" ? vm.LeftConnectionDiagnosis : vm.RightConnectionDiagnosis) + "  ·  " + Position.CameraAddress + "  ·  " + Position.ReaderIdentity;
             simulation.Visibility = vm.Snapshot?.Configuration.Effective.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
@@ -304,7 +304,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
     static string InputText(string value) => value switch { "Admitted" => "已受理", "Rejected" => "未受理", "Blocked" => "已受阻", "Duplicate" => "重复输入事件", _ => value };
     static string ResultText(CameraOperationStatus value) => value.BusinessAccepted ? "RCS业务已接受 · " + StateText(value.State) : value.StageState switch { "Unknown" => "请求结果未知", "Rejected" => "RCS业务拒绝", "Prepared" => "请求已准备", _ => "业务状态 " + StateText(value.State) };
     static string StateText(string value) => value switch { "SlotResolved" => "已分配格口", "WcsUnknown" => "请求结果未知", "PhysicalCompleted" => "物理完成", "Prepared" => "任务已准备", "Abandoned" => "已放弃", "WcsRejected" => "请求被拒绝", _ => value };
-    static string SessionText(string value) => value switch { "Idle" => "尚未采集", "Preparing" => "正在排空/切换", "Transitioning" => "正在切换", "Active" => "关联采集中", "Closed" => "会话已结束", "Expired" => "期限已到", "Faulted" => "采集故障", "Suspended" => "采集已停止", "RecoveryFenced" => "调试待清场", "Unavailable" => "诊断集合不可用", "Stopped" => "采集已停止", "Interrupted" => "上次会话中断", _ => value };
+    static string SessionText(string value) => value switch { "Idle" => "尚未采集", "Preparing" => "正在准备采集", "Transitioning" => "正在切换", "Active" => "关联采集中", "Closed" => "会话已结束", "Expired" => "期限已到", "Faulted" => "采集故障", "Suspended" => "采集已停止", "RecoveryFenced" => "旧版调试记录", "Unavailable" => "诊断集合不可用", "Stopped" => "采集已停止", "Interrupted" => "上次会话中断", _ => value };
     static string Short(string value, int length) => value.Length > length ? value[..length] + "…" : value;
     static string Protect(string value, int limit) => DiagnosticText.Protect(value[..Math.Min(value.Length, limit)]) + (value.Length > limit ? "\n[显示已截断]" : "");
     static Brush ColorBrush(string color) => (Brush)new BrushConverter().ConvertFromString(color)!;

@@ -20,7 +20,7 @@ public static class StartupConfigurationFiles
         return [new(0, "本站信息 · 返回修改", "仓ID " + Value(rcs, "zone-id") + " · 生产线ID " + Value(rcs, "project-id") + " · 供包台 " + draft.Policy.StationCode),
             new(1, "业务规则 · 返回修改", "条码规则 " + (draft.Policy.BarcodePattern.Length == 0 ? "不筛选" : draft.Policy.BarcodePattern) + (draft.Policy.RejectMultipleCodes ? " · 拒绝多码" : " · 按配置处理多码")),
             new(2, "左右相机 · 返回修改", string.Join("\n", cameras)),
-            new(3, "RCS 连接 · 返回修改", (rcs?.Target is { Length: > 0 } target ? target : "未配置") + " · " + range + "\n只核对草稿；实际试读在启动后的隔离调试中进行，不发送额外测试心跳。")];
+            new(3, "RCS 连接 · 返回修改", (rcs?.Target is { Length: > 0 } target ? target : "未配置") + " · " + range + "\n只核对草稿；实际试读在启动后的扫码调试中进行，不发送额外测试心跳。")];
     }
     public static string Summary(StartupConfigurationDraft draft, ParcelConfiguration identity)
     {

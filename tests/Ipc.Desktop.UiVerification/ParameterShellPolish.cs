@@ -67,7 +67,7 @@ static partial class Program
         if (!baseline) Check(Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("本机模拟认证")), "operator service choices show their factual Chinese capability name rather than raw instance keys");
         Capture("operator-session-1366", client);
         editor.NavigateTo("SessionLifetimeMs"); window.UpdateLayout();
-        var session = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "SessionLifetimeMs"); session.Focus(); session.SelectAll();
+        var session = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "SessionLifetimeMs"); session.Focus(); session.SelectAll();
         Check(session.IsKeyboardFocused && session.SelectedText == session.Text && session.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)), "session field retains native focus, selection and keyboard traversal");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {

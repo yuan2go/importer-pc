@@ -1,6 +1,8 @@
+> 当前操作工扫码流程已继承main `38cb7dc0` 的[SM-SAME-PLACEMENT-29](../archive/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)：持续识别，一次放置一次请求，空托盘确认后释放；此前OP29冻结解码及同码逐帧新请求说明已被替代，原字节见[归档](../archive/pre-sm-placement-integration-30/manifest.json)。中文参数、调试与真实采集诊断修复继续保留。
+
 # SM斜放、模糊及快照身份修复28
 
-2026-11-02，[工作包](../work-packages/WP-IPC-SM-READER-ROBUSTNESS-28.md)。基线main `0c018f15`，沿用内置MVS、进程内ZXingCpp 0.5.3/内核3.1.1及内置RCS。27包及PR181的回调顺序修复继续有效；旧文档[原字节归档](../archive/pre-sm-reader-robustness-28/manifest.json)，历史RV及验收不转记。
+2026-11-02，[工作包](../archive/work-packages/WP-IPC-SM-READER-ROBUSTNESS-28.md)。基线main `0c018f15`，沿用内置MVS、进程内ZXingCpp 0.5.3/内核3.1.1及内置RCS。27包及PR181的回调顺序修复继续有效；旧文档[原字节归档](../archive/pre-sm-reader-robustness-28/manifest.json)，历史RV及验收不转记。
 
 修复两项P1：主搜索读到简单的其他码时仍须搜索弱标签；新有码快照早于实时提示时不得恢复旧条码、格口和图片权限。
 

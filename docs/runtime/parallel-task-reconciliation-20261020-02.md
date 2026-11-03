@@ -17,7 +17,7 @@
 
 ## 裁决与验证边界
 
-先治理文档，再编码；[本包](../work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md)及[编码前裁决](../design/parallel-task-reconciliation-20261020-02.md)是当前实施入口。旧报告/PDF、原始失败、D/RV和前轮收窄保留原形成时身份。本轮最终覆盖/验证/提交与合并回执逐项追加，不以无Git冲突或单PR局部PASS作为完成依据。
+先治理文档，再编码；[本包](../archive/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md)及[编码前裁决](../design/parallel-task-reconciliation-20261020-02.md)是当前实施入口。旧报告/PDF、原始失败、D/RV和前轮收窄保留原形成时身份。本轮最终覆盖/验证/提交与合并回执逐项追加，不以无Git冲突或单PR局部PASS作为完成依据。
 
 ## 调查补充与实际冲突
 

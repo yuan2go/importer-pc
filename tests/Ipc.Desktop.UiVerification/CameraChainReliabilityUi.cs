@@ -53,33 +53,44 @@ static partial class Program
                 entry.Text = "DRAFT"; entry.Clear();
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 2);
                 await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.ShowConfirmedTask);
-                Check(entry.Text == "SYNTH-SAME", "deleting a draft to empty resumes camera projection even when the next independent frame has the same code");
+                Check(entry.Text == "SYNTH-SAME", "deleting a draft to empty resumes the camera observation for the same placement");
                 entry.ContextMenu.Items.OfType<MenuItem>().Single(m => Equals(m.Header, "清空输入")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), 3);
                 await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.3" && vm.Left.ShowConfirmedTask);
-                Check(entry.Text == "SYNTH-SAME" && h.Peer.Requests.Count == 3, "clear action releases edit ownership and all three independent same-code frames still reach RCS");
-                uint frameNumber = 3;
+                Check(entry.Text == "SYNTH-SAME" && h.Peer.Requests.Count == 1 && ParcelInputReasons.IsSamePlacement(vm.Left.Input!),
+                    "clearing text releases edit ownership but does not turn three observations of one placement into three RCS requests");
+                uint frameNumber = 4;
                 foreach (var size in new[] { (1366, 768), (800, 420) })
                 {
                     await SetClient(window, size.Item1, size.Item2); await Until(() => vm.Left.ShowConfirmedTask);
                     var fields = (Grid)control.FindName("TaskFields"); var result = (Border)control.FindName("ResultPanel");
                     var shortFieldHeight = fields.ActualHeight;
                     h.Peer.ReplyWaveNo = size.Item1 == 1366 ? new string('W', 64) : null;
-                    var preparation = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), preparation);
+                    var preparation = await h.ReplaceParcelAsync(h.Left, frameNumber); frameNumber = preparation + 1;
+                    h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), preparation);
                     await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + preparation);
                     window.UpdateLayout(); var fieldHeight = fields.ActualHeight; var resultHeight = result.ActualHeight;
                     if (size.Item1 == 1366) Check(fieldHeight > shortFieldHeight + 1, "long confirmed wave wraps into a taller measured task row before the stability check");
+                    var restingRequests = h.Peer.Requests.Count;
+                    var restingFrame = frameNumber++; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), restingFrame);
+                    await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + restingFrame);
+                    Check(h.Peer.Requests.Count == restingRequests && Math.Abs(fields.ActualHeight - fieldHeight) < 1 && Math.Abs(result.ActualHeight - resultHeight) < 1,
+                        $"{size.Item1} another observation of the resting placement preserves the confirmed task geometry without another request");
                     var sends = h.Peer.Requests.Count; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
                     try
                     {
-                        var nextFrame = ++frameNumber; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), nextFrame);
+                        var nextFrame = await h.ReplaceParcelAsync(h.Left, frameNumber); frameNumber = nextFrame + 1;
+                        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), nextFrame);
                         await Until(() => h.Peer.Requests.Count == sends + 1 && vm.Left.IsProcessing); window.UpdateLayout();
-                        Check(fields.Visibility == Visibility.Hidden && !fields.IsVisible && Math.Abs(fields.ActualHeight - fieldHeight) < 1 && Math.Abs(result.ActualHeight - resultHeight) < 1,
-                            $"{size.Item1} same-code independent request keeps task/result geometry stable without rendering the old task");
+                        var pendingId = vm.Left.Operation!.Id; var pendingFieldHeight = fields.ActualHeight; var pendingResultHeight = result.ActualHeight;
+                        var repeatedFrame = frameNumber++; h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SAME"), repeatedFrame);
+                        await Until(() => vm.Snapshot!.CameraReads.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == repeatedFrame)); window.UpdateLayout();
+                        Check(fields.Visibility == Visibility.Hidden && !fields.IsVisible && Math.Abs(fields.ActualHeight - pendingFieldHeight) < 1 && Math.Abs(result.ActualHeight - pendingResultHeight) < 1 && h.Peer.Requests.Count == sends + 1,
+                            $"{size.Item1} repeated reads during the new placement's pending request keep its geometry stable without another request");
                         Check(!vm.Left.ShowConfirmedTask && vm.Left.WaveNo == "—" && ((TextBox)control.FindName("CurrentSlot")).Text == "处理中…",
                             $"{size.Item1} stable layout never borrows the old task or assigned chute while the next request is pending");
                         h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-                        await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + nextFrame);
+                        await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Operation?.Id == pendingId && vm.Left.Input?.Observation.SourceEventId == "mvs.frame." + repeatedFrame);
                         Check(fields.IsVisible && h.Peer.Requests.Count == sends + 1, $"{size.Item1} completion restores the matching task with exactly one new HTTP request");
                     }
                     finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }

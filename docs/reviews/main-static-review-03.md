@@ -67,13 +67,13 @@ PR #7已使v1.1原HTML、分离源码、PPTX/画板JSON、tokens和34张同源PN
 
 另需在同包裁决普通供包是否每次模态确认：交接133/212行避免无意义确认，而`MainWindow.Closure.cs:77–81`每次供包均提供确认文案。保留owner/revision锁定，不简单删确认来模仿原型。
 
-这是可据现有图与源码确定的实施/范围映射工作，不是本轮测得的像素遮挡，也不意味着必须删除07的安全方案或逐像素照抄旧HTML。新增[UI-BASELINE-ALIGNMENT-10](../work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)，逐页明确继承/调整/待实现/受阻并落实获准差异；Windows可读性另属06。UI-01独立于原10项统计，不将E-02重新表述为“固定按钮完全没绑定任务”。
+这是可据现有图与源码确定的实施/范围映射工作，不是本轮测得的像素遮挡，也不意味着必须删除07的安全方案或逐像素照抄旧HTML。新增[UI-BASELINE-ALIGNMENT-10](../archive/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)，逐页明确继承/调整/待实现/受阻并落实获准差异；Windows可读性另属06。UI-01独立于原10项统计，不将E-02重新表述为“固定按钮完全没绑定任务”。
 
 ### 非Windows专属的运行验证债务
 
 07没有构建或运行，本轮仍没有执行授权，不能确认编译通过、恢复防重通过或新包能启动。现有验证资产还保留旧语义：`AlignmentDataVerification.cs:75–97` 期待构造时隐式迁移和format2；`HardeningVerification.cs:196–201` 期待两条迁移/2:2。它们与当前显式升级/format3不一致，这是静态识别的待对齐项，不是本轮实际测试FAIL，也不是Windows环境问题。
 
-新增 [REFERENCE-VALIDATION-09](../work-packages/WP-IPC-REFERENCE-VALIDATION-09.md) 承接核心合成验证和必要构建/发布启动；目前 **PLANNED / NOT_RUN**。未来须先保留原checksum/原请求字节/旧拒读边界并对齐验证源码，再按授权执行，不能删断言、把预期失败改成PASS，或拿历史ALIGNMENT/H04结果代替本轮。
+新增 [REFERENCE-VALIDATION-09](../archive/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md) 承接核心合成验证和必要构建/发布启动；目前 **PLANNED / NOT_RUN**。未来须先保留原checksum/原请求字节/旧拒读边界并对齐验证源码，再按授权执行，不能删断言、把预期失败改成PASS，或拿历史ALIGNMENT/H04结果代替本轮。
 
 ## 4. Windows待验：W-01～06全部NOT_RUN
 
@@ -86,7 +86,7 @@ PR #7已使v1.1原HTML、分离源码、PPTX/画板JSON、tokens和34张同源PN
 |W-05|自包含包、PowerShell、固定普通账户/ACL/跨会话、路径、旧库升级与回滚隔离|先修E-10；机级策略文件存在不代表实际设备集合已被正确锁定|
 |W-06|慢盘/故障中持续绘制、投影过期禁用、停止失败/重启/未决恢复|核心09与Windows06各自留证；SDK缓冲仍B-01|
 
-继承 [WINDOWS-VALIDATION-06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)；须绑定08/10最终改动及09形成的同一SourceCommit/包SHA。旧包可作历史基准，不能作为新代码截图或新验收证据。本轮没有制作新包。
+继承 [WINDOWS-VALIDATION-06](../archive/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)；须绑定08/10最终改动及09形成的同一SourceCommit/包SHA。旧包可作历史基准，不能作为新代码截图或新验收证据。本轮没有制作新包。
 
 ## 5. 真实接口、规则与许可：B-01～06全部BLOCKED
 
@@ -99,15 +99,15 @@ PR #7已使v1.1原HTML、分离源码、PPTX/画板JSON、tokens和34张同源PN
 |B-05 / D-08/11/10|真实认证/跳过、换班、特殊处置权限、人工SOP与输入来源|E-06现有模拟权限旁路先修；不以缺真实认证掩盖工程问题|
 |B-06 / D-09/12/13/15/16、PUB-01|目标工控机/显示输入、单站预算/保留政策、验收人员指标、本组以外原稿/视觉资产/SDK公开许可|Windows参考验证不等于现场放行，脱敏不自动等于许可|
 
-继承 [INTEGRATION-BOUNDARY-05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)，按能力分项解阻。本轮未取得新的SDK/合同/客户批准或现场操作授权，Production继续NotReady。D批准状态不变，RV-01～17仍OPEN。
+继承 [INTEGRATION-BOUNDARY-05](../archive/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)，按能力分项解阻。本轮未取得新的SDK/合同/客户批准或现场操作授权，Production继续NotReady。D批准状态不变，RV-01～17仍OPEN。
 
 ## 6. 下一阶段与交付
 
-1. [ENGINEERING-FOLLOWUP-08](../work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md)：只收敛E-06历史权限和E-10最终配置/租约；两条独立切片，均不依赖真实SDK/WCS。本轮仅定义，尚未实施。
-2. [UI-BASELINE-ALIGNMENT-10](../work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)：先读#7已入库实物，形成WPF逐页映射和获准差异，不改共享业务所有权；当前未实施。
-3. [REFERENCE-VALIDATION-09](../work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)：对齐旧验证预期，补07/08/10风险场景；明确获准恢复验证后才构建、运行及形成新包。当前NOT_RUN。
-4. [WINDOWS-VALIDATION-06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)：对最终同版包实施W-01～06；当前NOT_RUN，不能以09模拟结果替代。
-5. [INTEGRATION-BOUNDARY-05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)：可并行准备获授权资料，真实实现/联调逐项等待能力证据与授权；当前BLOCKED。
+1. [ENGINEERING-FOLLOWUP-08](../archive/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md)：只收敛E-06历史权限和E-10最终配置/租约；两条独立切片，均不依赖真实SDK/WCS。本轮仅定义，尚未实施。
+2. [UI-BASELINE-ALIGNMENT-10](../archive/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)：先读#7已入库实物，形成WPF逐页映射和获准差异，不改共享业务所有权；当前未实施。
+3. [REFERENCE-VALIDATION-09](../archive/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)：对齐旧验证预期，补07/08/10风险场景；明确获准恢复验证后才构建、运行及形成新包。当前NOT_RUN。
+4. [WINDOWS-VALIDATION-06](../archive/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)：对最终同版包实施W-01～06；当前NOT_RUN，不能以09模拟结果替代。
+5. [INTEGRATION-BOUNDARY-05](../archive/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)：可并行准备获授权资料，真实实现/联调逐项等待能力证据与授权；当前BLOCKED。
 
 本次仅文档和工作包整理；不改业务/测试源码、不重写07的检查JSON、历史issues、D批准或原验收记录，不修旧HTML。更新当前导航与manifest，提交文档开发分支供main PR审查，不自行合并本次复核PR，不发布二进制。实际提交/PR以最终回执与GitHub核验为准。
 

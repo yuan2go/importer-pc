@@ -1,6 +1,6 @@
 # IE01实施与验证
 
-2026-11-03，实施基线main `38cb7dc0`，设计提交`8d3f6616`。用户授权分阶段实现、必要验证和main PR；不合并、不操作当前生产部署。完整设计与23项验收定义见[工作包](../work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。本页持续更新实际状态，历史设计交付状态不倒写。
+2026-11-03，实施基线main `38cb7dc0`，设计提交`8d3f6616`。用户授权分阶段实现、必要验证和main PR；不合并、不操作当前生产部署。完整设计与23项验收定义见[工作包](../archive/work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。本页持续更新实际状态，历史设计交付状态不倒写。
 
 ## 当前阶段
 

@@ -222,9 +222,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (definition.ArchiveOriginalFrames && Effective.Mode == RunMode.Production && !ParcelConnectionSetup.IsDeferred(Effective, reader.Source.DeviceId) && reader.Source is not IOriginalFrameSource)
                     throw new InvalidDataException("Production SM reader must retain the exact original recognition frame; image fallback is forbidden");
                 if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
-                if (Volatile.Read(ref inspectionFence) is { } recoveredFence && reader.Source is IObservationInspectionSource recoveredSource)
-                    await recoveredSource.SetInspectionAsync(new(recoveredFence.Id, true, _ => false, false) { DecodeAllowed = _ => false }, token).ConfigureAwait(false);
-
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
                 catch (ObservationConnectionException ex)
                 {
@@ -302,8 +299,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     {
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
-        if (observation is not null && Volatile.Read(ref inspectionFence) is { } debugFence)
-            observation = observation with { InspectionSessionId = observation.InspectionSessionId ?? debugFence.Id };
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;

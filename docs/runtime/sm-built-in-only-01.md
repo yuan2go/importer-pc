@@ -1,8 +1,8 @@
-> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
+> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../archive/work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
 
 # SM内置组件运行修复
 
-工作包：[SM-BUILT-IN-ONLY-01](../work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)。当前SM只使用随软件安装的MVS SDK采图＋软件识别、RCS等内置组件。外置目录、信任文件和按配置签署的扩展资格不再是此组合的启动条件；外置配置与安装/维护入口明确拒绝。其他业务的独立扩展机制保留。
+工作包：[SM-BUILT-IN-ONLY-01](../archive/work-packages/WP-IPC-SM-BUILT-IN-ONLY-01.md)。当前SM只使用随软件安装的MVS SDK采图＋软件识别、RCS等内置组件。外置目录、信任文件和按配置签署的扩展资格不再是此组合的启动条件；外置配置与安装/维护入口明确拒绝。其他业务的独立扩展机制保留。
 
 修复位于 `src/Ipc.Assembly/ParcelCapabilityFactory.cs` 和 `ParcelCli.cs`，没有修改页面。构造完成后冻结配置hash，供运行准入核对；未构造或配置改变不能继承准入。原普通运行身份、管理授权、安装发布完整性、原生依赖文件/ABI/物理序列号、能力就绪与业务守卫继续执行。当前用户明确授权本机RCS模拟，不生成生产批准或改写历史验收。
 

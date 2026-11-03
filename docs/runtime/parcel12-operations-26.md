@@ -1,3 +1,5 @@
+> 2026-11-03 本版本按[SM-SECONDARY-ENTRIES-32](../archive/work-packages/WP-IPC-SM-SECONDARY-ENTRIES-32.md)先隐藏“异常处理”和“统计与班次”全部页面入口，顶部效率仅只读显示。下文页面操作属于保留实现及原版本范围；班次记录、业务数据和原请求守卫继续运行。当前可从“记录”查看原作业。修订前原字节见`docs/archive/pre-sm-secondary-entries-32/manifest.json`。
+
 # 当前 Parcel12 数据操作
 
 当前客户端新库直接创建格式 **12**。普通启动仅核验当前格式；非当前库不得直接启动运行。SM 的运行班次和统计说明见[运行班次](sm-session-shift-exceptions-25.md)。本文是当前安装介质的操作入口；DB11历史说明及验证保留原来源，不作为当前操作指引。

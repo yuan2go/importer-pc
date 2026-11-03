@@ -1,6 +1,6 @@
 > 2026-11-02 用户要求恢复格口原字号：SM复用UiTypography.SlotSize的64/44 DIP及长值40/28、28/24，不再采用18的112/72目标。任务字段直接展示，标签14/值16；状态色、18DIP指引与主要64DIP动作不变。见SM-WORK-FIELDS-20；此前原字节已归档。
 
-> 2026-10-27 作业三组呈现、醒目连接状态、普通启动与日志双视图以 [WORKSTATION-STATUS-LOGS-01](../work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md) 为准；本文冲突布局条款保留历史适用范围，字体与业务守卫继承。
+> 2026-10-27 作业三组呈现、醒目连接状态、普通启动与日志双视图以 [WORKSTATION-STATUS-LOGS-01](../archive/work-packages/WP-IPC-WORKSTATION-STATUS-LOGS-01.md) 为准；本文冲突布局条款保留历史适用范围，字体与业务守卫继承。
 
 # 供包台字体与排版 · TYPOGRAPHY-01
 
@@ -33,6 +33,6 @@
 
 ## 实现与验证边界
 
-共享语义资源同时供 XAML 和动态 C# 控件引用，覆盖模板与 SizeChanged；保持虚拟化、焦点、选区和滚动。不提供字体配置平台，不变更协议、设备或业务架构。必要原生证据记录源码、客户区DIP、系统DPI、实际字体URI/字重和截图；模拟窗口、实际系统缩放、真实设备与现场分别记录。验证与运行命令见[工作包](../work-packages/WP-IPC-TYPOGRAPHY-01.md)。
+共享语义资源同时供 XAML 和动态 C# 控件引用，覆盖模板与 SizeChanged；保持虚拟化、焦点、选区和滚动。不提供字体配置平台，不变更协议、设备或业务架构。必要原生证据记录源码、客户区DIP、系统DPI、实际字体URI/字重和截图；模拟窗口、实际系统缩放、真实设备与现场分别记录。验证与运行命令见[工作包](../archive/work-packages/WP-IPC-TYPOGRAPHY-01.md)。
 
 实际共享实现为 `src/Ipc.Presentation.Wpf/{UiTypography,TypographyScale}.cs`，两套宿主及安装/首配均引用此程序集。已核验每个字重65,535字形、44,810条Unicode映射、静态字库、fsType=0；完整覆盖清单不代表任意外部日志都只含这些字符，缺字仍走系统回退。版本以官方name表2.004为准，WPF的GlyphTypeface.Version在这组OTF上返回0，不作为版本来源。实际字体URI、资源哈希与原生对照见[实现证据](../runtime/typography-01.md)。

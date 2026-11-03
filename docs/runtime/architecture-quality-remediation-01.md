@@ -2,7 +2,7 @@
 
 # AQA01 架构质量整改 · 当前实现与验证入口
 
-用户授权在独立分支整改 AQA01-F01～F06，基线 main `0c5d7d25e572e80f23522c9ff7b562db920628a3`（PR91）。原只读报告及失败记录保持原身份；本包不合并、不发布安装包、不操作生产设备。范围与验收见[工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。
+用户授权在独立分支整改 AQA01-F01～F06，基线 main `0c5d7d25e572e80f23522c9ff7b562db920628a3`（PR91）。原只读报告及失败记录保持原身份；本包不合并、不发布安装包、不操作生产设备。范围与验收见[工作包](../archive/work-packages/WP-IPC-ARCHITECTURE-QUALITY-REMEDIATION-01.md)。
 
 ## 输入与显示（F01）
 

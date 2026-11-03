@@ -8,4 +8,4 @@
 
 ## 历史原件
 
-原README和按日期排列的索引见[本轮整理前清单](docs/archive/pre-industrial-user-docs-01/manifest.json)。详细变更、实现与原SourceCommit仍由[工作包目录](docs/work-packages/README.md)、各运行记录和Git历史追溯，原始证据不改写。
+原README和按日期排列的索引见[本轮整理前清单](docs/archive/pre-industrial-user-docs-01/manifest.json)。详细变更、实现与原SourceCommit仍由[工作包目录](docs/archive/work-packages/README.md)、各运行记录和Git历史追溯，原始证据不改写。

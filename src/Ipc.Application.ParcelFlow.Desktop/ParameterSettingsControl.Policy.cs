@@ -23,7 +23,7 @@ public sealed partial class ParameterSettingsControl
                 if (ParameterOwnership.StationConflict(rcs) || left.Value != m.Policy.StationCode)
                 {
                     var conflict = Text("请确认统一供包台编号。" + pair.OriginalValues + "。在下方填写后，会同时用于新取格口请求和心跳；旧请求保留原编号。");
-                    conflict.Foreground = Brush("#915300"); station.Body.Children.Add(conflict);
+                    conflict.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); station.Body.Children.Add(conflict);
                 }
                 Input(Form(station), "供包台编号 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "RCS 分配给本供包台的编号，左右投递位共用。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
@@ -80,10 +80,10 @@ public sealed partial class ParameterSettingsControl
             var pace = new CheckBox { Content = "作业页显示本班取得格口次数与近十分钟速度", MinHeight = 44 };
             bool readable = true;
             try { pace.IsChecked = Ipc.Platform.PresentationPreferences.Read("sportmaster", "pace") ?? true; }
-            catch (Exception error) { readable = false; display.Body.Children.Add(Text("效率偏好读取失败，原文件保留：" + error.Message)); }
+            catch (Exception error) { readable = false; display.Body.Children.Add(Text(ChineseInterfaceText.ParameterMessage(error.Message, "效率偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"))); }
             pace.IsEnabled = readable; display.Body.Children.Add(pace);
             var savePace = new Button { Content = "应用效率显示", MinHeight = 44, IsEnabled = readable, HorizontalAlignment = HorizontalAlignment.Left };
-            savePace.Click += async (_, _) => { try { if (RuntimeContext is { } context) await context.RequireManagementModeAsync(); Ipc.Platform.PresentationPreferences.Save("sportmaster", "pace", pace.IsChecked == true); } catch (Exception error) { if (RuntimeContext is { } context) context.Message = "效率偏好未保存：" + error.Message; } };
+            savePace.Click += async (_, _) => { try { if (RuntimeContext is { } context) await context.RequireManagementModeAsync(); Ipc.Platform.PresentationPreferences.Save("sportmaster", "pace", pace.IsChecked == true); } catch (Exception error) { if (RuntimeContext is { } context) context.Message = ChineseInterfaceText.ParameterMessage(error.Message, "效率偏好未保存；请检查本机设置文件与访问权限后重试。"); } };
             display.Body.Children.Add(savePace);
         }
         if (m.ApplicationId != "sportmaster" && RuntimeContext is { } runtime)
@@ -104,7 +104,7 @@ public sealed partial class ParameterSettingsControl
         bool modeReadable = true;
         try { opening.SelectedValue = Ipc.Platform.PresentationPreferences.ReadWindowMode(m.ApplicationId); }
         catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
-        { modeReadable = false; modeStatus.Text = "未能读取窗口设置：" + error.Message; }
+        { modeReadable = false; modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "窗口设置未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
         Field(Form(display), "默认打开方式", opening, "最大化（全屏）时隐藏标题栏并铺满屏幕；按 F11 切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
         var saveMode = new Button { Content = "保存打开方式", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44, IsEnabled = modeReadable };
         saveMode.Click += (_, _) =>
@@ -116,7 +116,7 @@ public sealed partial class ParameterSettingsControl
                 Ipc.Platform.PresentationPreferences.SaveWindowMode(m.ApplicationId, mode); modeStatus.Text = "已保存，下次打开作业窗口生效。";
             }
             catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)
-            { modeStatus.Text = "打开方式未保存：" + error.Message; }
+            { modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "打开方式未保存；请检查本机设置文件与访问权限后重试。"); }
         };
         display.Body.Children.Add(saveMode); display.Body.Children.Add(modeStatus);
         if (m.ApplicationId == "sportmaster") AudioPreferences(display);
@@ -241,9 +241,9 @@ public sealed partial class ParameterSettingsControl
                 var reply = await Task.Run(() => m.Preview(policy, raw.Replace("\r", "").Split('\n')));
                 result.Text = m.Policy.BuildBarcodePolicy() != policy || sample.Text != raw ? "输入已改变，本次测试结果已过期；请重新测试。" :
                     ChineseInterfaceText.Status(reply.Outcome) + "\n选中码：" + (reply.SelectedCode ?? "无") + " · 有效条码：" + reply.Matches;
-                diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(reply.Detail + string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + c.Reason)));
+                diagnostic.Text = ChineseInterfaceText.ParameterMessage(reply.Detail) + string.Concat((reply.Candidates ?? []).Select(c => "\n第" + (c.Index + 1) + "项：" + ChineseInterfaceText.ParameterMessage(c.Reason)));
             }
-            catch (Exception ex) { result.Text = "测试未完成：" + ex.Message + "；输入保留。"; }
+            catch (Exception ex) { result.Text = ChineseInterfaceText.ParameterMessage(ex.Message, "测试未完成，输入保留；请检查条码筛选规则后重试。"); }
             finally { test.IsEnabled = true; }
         };
         body.Children.Add(test); body.Children.Add(result); body.Children.Add(new Expander { Header = "测试详情", Content = diagnostic });

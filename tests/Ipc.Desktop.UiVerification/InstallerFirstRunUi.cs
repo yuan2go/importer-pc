@@ -151,6 +151,8 @@ static partial class Program
             reporter!.Report(stage); progress.Add(stage); await Task.Delay(100); window.UpdateLayout();
             Check(Descendants(window).OfType<ProgressBar>().Single().IsIndeterminate && Descendants(window).OfType<Button>().All(b => !b.IsVisible || AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel") && Descendants(window).OfType<Button>().Single(b=>AutomationProperties.GetAutomationId(b)=="Maintenance.Cancel").IsEnabled==canCancel, "unmetered installation has no fake percent or navigation; only pre-commit cancellation is enabled; " + stage);
             Check(Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible).Any(b => b.Text.Contains(stage == WindowsInstallationStage.WaitingForAuthorization ? "等待 Windows 授权" : stage == WindowsInstallationStage.CopyingFiles ? "正在复制" : "正在提交")), "stage changes only with observed service reports; " + stage);
+            if (stage == WindowsInstallationStage.WaitingForAuthorization)
+                Check(Text(window).Contains("如有提示，请在电脑上确认"), "authorization stage does not claim that Windows necessarily displayed a prompt");
             Check(!Text(window).Contains("正在写入安装，不能取消") && Text(window).Contains("取消是否可用以当前步骤和取消按钮为准"), "installation body shares observed maintenance cancellation authority; " + stage);
             if (stage == WindowsInstallationStage.CopyingFiles) Check(Descendants(window).OfType<TextBlock>().Where(b => b.IsVisible).All(b => !b.Text.Contains("授权窗口确认")), "UAC prompt disappears after helper begins work");
             Capture("installer-stage-" + stage, window);
@@ -158,7 +160,17 @@ static partial class Program
         window.Close(); Check(window.IsVisible, "window close cannot abandon the in-progress transaction");
         pending.SetException(new IOException("合成：快捷方式投影失败，登记可能已提交")); await Idle(window); window.UpdateLayout();
         Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "返回安装选项")) && Descendants(window).OfType<TextBlock>().Any(b => b.Text.Contains("不会自动回滚")), "known failure exposes explicit re-review without claiming rollback");
-        Capture("installer-failure", window); Click(window, "返回安装选项"); await Idle(window);
+        Capture("installer-failure", window);
+        type.GetMethod("OperationFailed", flags)!.Invoke(window, [new MaintenanceNotStartedException("Windows 未能完成维护授权交接，本次维护尚未开始。原配置和数据保留；请重新尝试，如有授权提示请在电脑上确认。", new TimeoutException("Synthetic dispatch timeout before acknowledgment"))]);
+        window.UpdateLayout();
+        Check(Text(window).Contains("安装未完成") && Text(window).Contains("本次维护尚未开始") &&
+            !(bool)type.GetField("outcomeUnknown", flags)!.GetValue(window)! && (bool)type.GetProperty("CanCleanPreparation")!.GetValue(window)! &&
+            (WindowsDeploymentRequest)type.GetField("reviewed", flags)!.GetValue(window)! == request,
+            "fenced pre-ack launch failure permits explicit re-review while retaining the exact original reviewed deployment");
+        var missing = WindowsDeploymentSetup.InspectInstallation(request with { OperationId = Wire.Id() });
+        Check(missing.Status == "Unknown" && missing.Detail.Contains("禁止重复提交") && !missing.Detail.Contains("Exception"),
+            "an absent protected journal alone remains unknown and exposes Chinese guidance rather than exception types");
+        Capture("installer-prestart-failed", window); Click(window, "返回安装选项"); await Idle(window);
         Check(Box("数据目录").Text == longData, "failure recovery retains inputs and requires new review");
         pending = new TaskCompletionSource<DeploymentLocation>(); reporter = null;
         Set("reviewed", request); Set("step", 2); Render();
@@ -177,7 +189,7 @@ static partial class Program
         Check(Text(window).Contains("历史消息") && Text(window).Contains("诊断结果") && Text(window).Contains("不代表当前仍在等待授权") && !Descendants(window).OfType<TextBox>().Any(b => b.IsVisible && b.Text.Contains("授权窗口确认")), "expanded summary identifies history and diagnostics without repeating an obsolete authorization command or inventing timestamps");
         Capture("installer-unknown-expanded", window);
         var originalMessages = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "原始消息文本")); originalMessages.IsExpanded = true; window.UpdateLayout();
-        Check(Descendants(window).OfType<TextBox>().Any(b => b.Text == "等待 Windows 授权，请在授权窗口确认\n合成：回执超时") && Descendants(window).OfType<TextBox>().Any(b => b.Text == "合成：回执超时"), "explicit raw-message expansion retains the exact received text separately from the readable summary");
+        Check(Descendants(window).OfType<TextBox>().Any(b => b.Text == "等待 Windows 授权；如有提示，请在电脑上确认。\n合成：回执超时") && Descendants(window).OfType<TextBox>().Any(b => b.Text == "合成：回执超时"), "explicit raw-message expansion retains the exact received text separately from the readable summary");
         originalMessages.BringIntoView(); window.UpdateLayout();
         Capture("installer-unknown-original-text", window); originalMessages.IsExpanded = false; unknownDetails.IsExpanded = false;
         var records = Descendants(window).OfType<Button>().Single(b => b.IsVisible && Equals(b.Content, "打开安装记录目录"));

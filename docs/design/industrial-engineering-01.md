@@ -2,7 +2,7 @@
 
 2026-11-03。状态：**设计完成，待实施与验收**。核查基线为 main `38cb7dc0e8e15f009ee88c5a35f1db53c27d5205`（PR183）。本设计回应用户提出的 A1～A10、B1～B6、C1～C3、D、E1～E5、F、G；不是安全修复、CI恢复或新版安装包已交付的声明。
 
-阅读顺序：本文 → [安全与密码恢复](industrial-security-recovery-01.md) → [安装生命周期](industrial-lifecycle-01.md) → [操作、诊断、文档与质量](industrial-operations-quality-01.md) → [实施工作包及验收矩阵](../work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。当前事实与原建议的差异见[核查记录](../reviews/industrial-engineering-design-01.md)。
+阅读顺序：本文 → [安全与密码恢复](industrial-security-recovery-01.md) → [安装生命周期](industrial-lifecycle-01.md) → [操作、诊断、文档与质量](industrial-operations-quality-01.md) → [实施工作包及验收矩阵](../archive/work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。当前事实与原建议的差异见[核查记录](../reviews/industrial-engineering-design-01.md)。
 
 ## 1. 产品目标与成功口径
 
@@ -26,7 +26,7 @@
 
 1. C#/.NET10/WPF/SQLite模块化单体，继承既有四层职责。Platform提供部署、权限、诊断机制；Application拥有状态和守卫；UI只调用正式应用契约；驱动/适配器只提供事实。一个Application服务全部页面，不另建连接、权限账或业务账。
 2. SM使用内置MVS采图、进程内软件识别、内置RCS，无PLC。模板只改变合法草稿，不引入TCP端口、MvCodeReader或外置扩展资格。每台相机的实际IP、物理序列号、唯一相机编码必须由现场填写；取格口与心跳使用同一映射。
-3. 最新main的[SM-SAME-PLACEMENT-29](../work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)优先：连续采集、逐帧观察仍存在，同工位同一次托盘放置只请求一次RCS。空托盘规则、不同码和显式人工提交沿原实现；不在本包重新发明实体去重。
+3. 最新main的[SM-SAME-PLACEMENT-29](../archive/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)优先：连续采集、逐帧观察仍存在，同工位同一次托盘放置只请求一次RCS。空托盘规则、不同码和显式人工提交沿原实现；不在本包重新发明实体去重。
 4. 相机自动业务与人工键盘/PDA分别准入。人工输入不以相机存在/在线/编码为前提；RCS、容量、原请求及身份冲突守卫继续有效。无相机模板不等于模拟运行。
 5. SM当前没有日常“暂停/恢复”按钮；普通导航为作业/记录，管理模式开放设置/日志/调试。本包不因指南中的旧措辞恢复这些按钮。内部停机、测试隔离和保存屏障沿现行合同。
 6. 四类参数编辑同一完整候选。草稿、待生效、正在使用的配置分开；仅符合现行条件的纯条码规则修改可热生效，混合修改全部待重启。保存执行时检查授权、CAS、在途和原责任。

@@ -53,17 +53,17 @@ static partial class Program
         {
             Check(control.NavigateTo(target.Path), target.Category + " is reachable through its actual parameter field");
             window.UpdateLayout();
-            Check(Descendants(control).OfType<FrameworkElement>().Any(x => x.IsVisible && AutomationProperties.GetName(x) == target.Path),
+            Check(Descendants(control).OfType<FrameworkElement>().Any(x => x.IsVisible && AutomationProperties.GetAutomationId(x) == target.Path),
                 target.Category + " navigation reveals the existing field in the shared editor");
         }
         control.NavigateTo("StationCode"); window.UpdateLayout();
-        var station = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
+        var station = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode");
         station.Text = "SYSTEM-EDIT"; Check(station.Focus(), "system parameter receives native keyboard focus"); station.Select(2, 4);
         var selection = station.SelectionStart; await vm.RefreshAsync(); await vm.RefreshAsync(); window.UpdateLayout();
         Check(station.Text == "SYSTEM-EDIT" && station.IsKeyboardFocused && station.SelectionStart == selection && station.SelectionLength == 4, "repeated real snapshots preserve input, focus and selection");
         Capture("parameters-system");
         Check(control.NavigateTo("BarcodePattern"), "business barcode policy is directly reachable without depending on a tab layout"); window.UpdateLayout();
-        var pattern = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodePattern"); pattern.Text = "OK[0-9]+";
+        var pattern = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "BarcodePattern"); pattern.Text = "OK[0-9]+";
         var preview = Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "测试条码"));
         preview.IsExpanded = true; window.UpdateLayout();
         var sample = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "条码筛选样例"); sample.Text = "noise\nother\nOK003";
@@ -72,7 +72,7 @@ static partial class Program
         for (var i = 0; i < 100 && !Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：OK003")); i++) await Task.Delay(20);
         Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("选中码：OK003")) && runtime.HasActiveWork, "native sample test evaluates the third candidate without stopping runtime or saving configuration");
         Capture("parameters-business");
-        var exclusion = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "BarcodeExclusionPattern");
+        var exclusion = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "BarcodeExclusionPattern");
         exclusion.Text = "OK003";
         Check(Descendants(control).OfType<TextBlock>().Any(x => x.Text.Contains("结果已过期")), "editing exclusion invalidates the existing local preview without discarding candidate input");
         var previewDetails = Descendants(preview).OfType<Expander>().Single(e => Equals(e.Header, "测试详情"));
@@ -86,8 +86,8 @@ static partial class Program
         Check(exclusion.IsKeyboardFocused && exclusion.SelectionLength == 3 && exclusion.Text == "OK003", "new exclusion input retains native focus, selection and draft across snapshots");
         Capture("parameters-exclusion");
         Check(control.NavigateTo("RejectMultipleCodes"), "multi-code policy is directly reachable in business settings"); window.UpdateLayout();
-        var rejectMultiple = Descendants(control).OfType<CheckBox>().Single(x => AutomationProperties.GetName(x) == "RejectMultipleCodes");
-        var separator = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "MultiCodeSeparator");
+        var rejectMultiple = Descendants(control).OfType<CheckBox>().Single(x => AutomationProperties.GetAutomationId(x) == "RejectMultipleCodes");
+        var separator = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "MultiCodeSeparator");
         Check(rejectMultiple.IsChecked == true && separator.Text == ";", "native checkbox and delimiter retain strict defaults");
         pattern.Text = ""; exclusion.Text = ""; rejectMultiple.IsChecked = false; separator.Text = "|"; sample.Text = "B\nA\nA";
         test.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -109,19 +109,19 @@ static partial class Program
                 "Windows native PNG decoder independently verifies exact pre-contrast archived pixels");
         }
         Check(control.NavigateTo("DiagnosticLogDays"), "diagnostic retention has its own system field distinct from resident history");
-        var days = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "DiagnosticLogDays"); days.Text = "0";
+        var days = Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "DiagnosticLogDays"); days.Text = "0";
         vm.ParameterEditor!.ValidateFields(); Check(control.FocusFirstIssue() && days.IsKeyboardFocused && days.Text == "0", "log retention error focuses the exact field and preserves invalid input");
         days.Text = "14"; vm.ParameterEditor.ValidateFields(); Capture("parameters-retention");
         control.ShowPage(0, "显示偏好"); window.UpdateLayout();
-        Check(!Descendants(control).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM removes display-only name and efficiency inputs");
-        var opening = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetName(x) == "WindowOpeningMode");
+        Check(!Descendants(control).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM removes display-only name and efficiency inputs");
+        var opening = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetAutomationId(x) == "WindowOpeningMode");
         Check(opening.IsVisible && opening.Focus(), "window opening preference is visible and accepts keyboard focus");
         var configRevision = vm.Snapshot!.Configuration.Revision;
         Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "保存打开方式")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         Check(!vm.HasUnsavedDisplayPreferences && vm.Snapshot.Configuration.Revision == configRevision, "local window preference does not create a business revision or hidden display draft");
         Capture("parameters-display");
         Check(control.NavigateTo("OperatorLogin"), "optional operator login belongs to business and has a native binding selector");
-        var login = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetName(x) == "OperatorLogin");
+        var login = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetAutomationId(x) == "OperatorLogin");
         var role = vm.ConfigurationRoles.Single(x => x.Role == "登录");
         var maintenanceBefore = Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin);
         login.SelectedItem = role.Choices.First(x => x.Capability is not null); window.UpdateLayout();
@@ -136,7 +136,7 @@ static partial class Program
         var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("扫码消息缓冲上限") && !text.Text.Contains("QueueCapacity"));
         Check(error.IsVisible && error.IsEnabled, "the current check-results page exposes the real field-location action");
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
-        Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
+        Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
         Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();
         foreach (var size in new[] { (1366d, 768d), (900d, 640d), (800d, 420d) })
         {
@@ -153,12 +153,12 @@ static partial class Program
         var offline = new StartupConfigurationDraft(driverConfig, catalog);
         var offlineEditor = new ParameterSettingsControl { Model = offline.CreateParameterEditor(runtime.TestBarcodeFilterAsync) }; window.Content = offlineEditor; window.Width = 1366; window.Height = 768; window.Left = 24; window.Top = 24; window.UpdateLayout();
         Check(offlineEditor.NavigateTo(offline.Readers[0].InstanceId + "/device.ip"), "left driver address is reachable by its stable field path"); window.UpdateLayout();
-        var leftIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/device.ip"));
+        var leftIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == offline.Readers[0].InstanceId + "/device.ip");
         Check(leftIp.Text == "192.0.2.21" && offline.Readers.Length == 2 && offline.Readers[0].Provider == descriptor && offline.Readers[0].Provider == offline.Readers[1].Provider,
-            "fixed two readers use the current SDK descriptor and display only the selected object's parameters");
+            "fixed two readers use the current SDK descriptor and preserve the left object's own parameters");
         Check(offlineEditor.NavigateTo(offline.Readers[1].InstanceId + "/device.ip"), "right instance is directly addressable by stable field path");
         await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
-        var rightIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/device.ip"));
+        var rightIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == offline.Readers[1].InstanceId + "/device.ip");
         Check(rightIp.Text == "192.0.2.22" && !ReferenceEquals(leftIp, rightIp), "object selection preserves distinct native editors and initial addresses");
         rightIp.Text = "192.0.2.99"; Check(offline.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.21", "editing right driver never changes left driver parameters");
         Capture("parameters-drivers");

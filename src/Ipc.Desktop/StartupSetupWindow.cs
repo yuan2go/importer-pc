@@ -235,7 +235,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (historical)
         {
             content.Children.Add(new TextBlock { Text = "历史消息", FontSize = UiTypography.Label, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 6) });
-            content.Children.Add(new TextBlock { Text = original.Replace("等待 Windows 授权，请在授权窗口确认", "等待 Windows 授权。", StringComparison.Ordinal), FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap });
+            content.Children.Add(new TextBlock { Text = original.Replace("等待 Windows 授权，请在授权窗口确认", "等待 Windows 授权。", StringComparison.Ordinal).Replace("等待 Windows 授权；如有提示，请在电脑上确认。", "等待 Windows 授权。", StringComparison.Ordinal), FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap });
             content.Children.Add(new TextBlock { Text = "以下为历史消息，不代表当前仍在等待授权。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) });
             content.Children.Add(new TextBlock { Text = "诊断结果", FontSize = UiTypography.Label, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 6) });
             content.Children.Add(new TextBox { Text = failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, MinHeight = 0, MaxHeight = 100, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
@@ -269,7 +269,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (!installing) return;
         installationStage.Text = value switch
         {
-            WindowsInstallationStage.WaitingForAuthorization => "等待 Windows 授权，请在授权窗口确认",
+            WindowsInstallationStage.WaitingForAuthorization => "等待 Windows 授权；如有提示，请在电脑上确认。",
             WindowsInstallationStage.CheckingResponsibilities => "正在检查安装条件",
             WindowsInstallationStage.PreparingBackup => "正在检查已安装版本并创建完整备份",
             WindowsInstallationStage.CopyingFiles => "正在复制并校验程序文件",

@@ -2,10 +2,22 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-public sealed partial class ParcelRuntime : ICameraDiagnostics, ICameraPreviewLeaseDiagnostics
+public sealed partial class ParcelRuntime : ICameraDiagnostics, ICameraPreviewLeaseDiagnostics, ICameraAcquisitionDiagnostics
 {
     sealed record PreviewReader(ObservationSession Session, bool Deferred);
     IReadOnlyDictionary<string, PreviewReader> previewReaders = new Dictionary<string, PreviewReader>();
+    public Task<CameraAcquisitionResult> ReadCameraAcquisitionAsync(string deviceId, CancellationToken token) => OwnedRead(t =>
+    {
+        var authority = Management.Require(); t.ThrowIfCancellationRequested();
+        if (!Volatile.Read(ref previewReaders).TryGetValue(deviceId, out var binding)) throw new InvalidOperationException("当前运行配置中没有该相机。");
+        var reader = binding.Session; var epoch = reader.Epoch;
+        var diagnostics = (reader.Source as IObservationDiagnosticsSource)?.ReadDiagnostics();
+        authority.ThrowIfCancellationRequested(); Management.Require(); t.ThrowIfCancellationRequested();
+        // A reconnect that races this passive read must not attach the prior epoch's counters.
+        var current = epoch == reader.Epoch && diagnostics?.Epoch == epoch ? diagnostics : null;
+        return Task.FromResult(new CameraAcquisitionResult(deviceId, epoch, reader.Health, current,
+            binding.Deferred, reader.Source is IObservationDiagnosticsSource));
+    }, token);
     public Task<CameraPreviewLeaseResult> ReadCameraPreviewLeaseAsync(string deviceId, CancellationToken token) => OwnedRead(t =>
     {
         var authority = Management.Require(); t.ThrowIfCancellationRequested();

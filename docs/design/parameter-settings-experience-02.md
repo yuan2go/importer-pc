@@ -1,26 +1,26 @@
-> 2026-11-02 当前页面增量以 [SM-UI-SPEC-CLOSURE-24](../work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](../runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08 页面改造延期，保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。
+> 2026-11-02 当前页面增量以 [SM-UI-SPEC-CLOSURE-24](../archive/work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](../runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08 页面改造延期，保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。
 
-> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
+> 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../archive/work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
 
-> 最新用户纠偏：[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。SM首配与日常相机仅内置SDK，无TCP选择或独立安装入口；RCS source=BAR、locale=zh_CN固定，无编辑项。原分包安装/来源语言输入条款保留形成时范围。
+> 最新用户纠偏：[BUNDLED-MVS-CAMERA-01](../archive/work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。SM首配与日常相机仅内置SDK，无TCP选择或独立安装入口；RCS source=BAR、locale=zh_CN固定，无编辑项。原分包安装/来源语言输入条款保留形成时范围。
 
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../archive/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
 
-> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
+> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../archive/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
 
 > TYPOGRAPHY-01（2026-10-24）：现行字体/字号统一由 [字体规范](typography-01.md) 定义。仅替代冲突的系统字体、不交付字体及旧字号条款；历史原型/截图/哈希/验收及其他资产授权保持原身份。
 
-> 2026-10-23 经典窗口与参数文案增量见 [PARAMETER-SHELL-POLISH-02](../work-packages/WP-IPC-PARAMETER-SHELL-POLISH-02.md)，仅细化原生分区、常用文案和按需说明，保留四类目录、同一候选及保存/授权机制。
+> 2026-10-23 经典窗口与参数文案增量见 [PARAMETER-SHELL-POLISH-02](../archive/work-packages/WP-IPC-PARAMETER-SHELL-POLISH-02.md)，仅细化原生分区、常用文案和按需说明，保留四类目录、同一候选及保存/授权机制。
 
-> 2026-10-23 续做：[内部页面与逐页校验](../work-packages/WP-IPC-INTERNAL-PAGES-UI-REFINE-01.md)。每个具体参数页完成实际校验后前进，左侧前往后续页不能绕过；回退保留输入。普通缺失/失败提示仅使用中文名称；原变量与异常留诊断。四类归属、完整候选及保存流程不变。
+> 2026-10-23 续做：[内部页面与逐页校验](../archive/work-packages/WP-IPC-INTERNAL-PAGES-UI-REFINE-01.md)。每个具体参数页完成实际校验后前进，左侧前往后续页不能绕过；回退保留输入。普通缺失/失败提示仅使用中文名称；原变量与异常留诊断。四类归属、完整候选及保存流程不变。
 
-> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
+> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../archive/work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
 
 > 2026-10-21 增量：V3布局/保存合同继续有效；硬件能力归驱动、作业登录条件归业务、条码排除与日志/显示的行为以[本轮继承裁决](parameter-inheritance-02.md)为准。原设计包和旧验证不改写。
 
 # 参数设置体验重设计 · PARAM-UX-02
 
-2026-10-22 当前呈现增量见[PARAMETER-UI-REFINE-01](../work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md)：统一首配与常规参数的单目录、正文滚动、字段行、错误定位及管理菜单。本页四类所有权、唯一候选和真实保存流程保留，冲突的布局/文案由新包替代。修改前原字节与哈希见[归档](../archive/pre-parameter-ui-refine-01/README.md)。
+2026-10-22 当前呈现增量见[PARAMETER-UI-REFINE-01](../archive/work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md)：统一首配与常规参数的单目录、正文滚动、字段行、错误定位及管理菜单。本页四类所有权、唯一候选和真实保存流程保留，冲突的布局/文案由新包替代。修改前原字节与哈希见[归档](../archive/pre-parameter-ui-refine-01/README.md)。
 
 > 2026-10-21 参数页简化续修：用户要求先优化参数页。沿用四类目录、同一完整候选及统一保存审阅；参数工作区保留当前作业状态、运行模式、安全说明和异常提示，底部左右作业摘要改为返回作业后查看，后台轮询及业务实例继续运行。表单压缩重复说明和过大间距，普通字符上限/选择提示保留在字段帮助与技术信息；重要用途、约束和错误继续就地显示。保存审阅中已满足的暂停条件只显示状态，维护授权、原因、差异、未知结果核对与Application守卫不减少。此增量替代形成时“左右当前摘要继续存在”的常驻展示要求；原V3图、字段映射和历史证据不改写。
 

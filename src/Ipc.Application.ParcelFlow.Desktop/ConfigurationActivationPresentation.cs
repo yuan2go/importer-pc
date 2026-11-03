@@ -16,7 +16,7 @@ public partial class ParcelViewModel
             if (c.Failure is not null || c.Status == "ActivationFailed")
             {
                 var reason = c.Failure?.Contains("Application activation barrier is closed", StringComparison.Ordinal) == true
-                    ? "仍有未处理完的作业、扫码或设备维护，启动检查未通过。请先核对原作业。" + (c.Effective.ApplicationId == "sportmaster" ? "请到异常处理交接核对；内置 RCS 不提供结果查询，不会重发。" : "请维护人员依据原请求核对，不会自动重发。")
+                    ? "仍有未处理完的作业、扫码或设备维护，启动检查未通过。请先核对原作业。" + (c.Effective.ApplicationId == "sportmaster" ? "请到“记录”核对原作业并联系维护人员；内置 RCS 不提供结果查询，不会重发。" : "请维护人员依据原请求核对，不会自动重发。")
                     : "启动检查未通过。" + ChineseInterfaceText.ParameterMessage(c.Failure ?? "") + " 请查看诊断详情并处理故障。";
                 var before = c.Effective.Wcs?.Parameters?.GetValueOrDefault("request-timeout-ms");
                 var after = c.Pending?.Wcs?.Parameters?.GetValueOrDefault("request-timeout-ms");

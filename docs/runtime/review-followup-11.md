@@ -1,6 +1,6 @@
 # REVIEW-FOLLOWUP-11：两个P2与Product组合所有权闭环
 
-2026-10-17（Asia/Shanghai）；起点main `4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5`（PR9已合并），开发分支`codex/wp-ipc-review-followup-11`。[工作包](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)、[计划](../superpowers/plans/2026-10-17-ipc-review-followup-11.md)、[完整checks](review-followup-11-checks.json)。**最终运行源码SourceCommit：`4edb909e71097a7da61506beaa10ae5db82ec6cb`**；后续报告/manifest提交不冒称二进制源码。
+2026-10-17（Asia/Shanghai）；起点main `4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5`（PR9已合并），开发分支`codex/wp-ipc-review-followup-11`。[工作包](../archive/work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)、[计划](../superpowers/plans/2026-10-17-ipc-review-followup-11.md)、[完整checks](review-followup-11-checks.json)。**最终运行源码SourceCommit：`4edb909e71097a7da61506beaa10ae5db82ec6cb`**；后续报告/manifest提交不冒称二进制源码。
 
 两个P2：**SOURCE_CORRECTED / SHARED_POLICY_PASS / WPF_BUILD_PASS**；Product组合层三故障：**PASS_REFERENCE**；E07、E08及持续双箱旅程：**PASS_REFERENCE**；portable解压启动/维护冒烟：**PASS**；win-x64交叉发布/字节回读：**PASS**。Windows环境 **BLOCKED**、W01～06 **NOT_RUN**，真实B01～06 **BLOCKED**；实际WPF截图0张，无现场准入。
 

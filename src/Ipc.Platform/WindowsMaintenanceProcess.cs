@@ -14,6 +14,33 @@ namespace Ipc.Platform;
 [SupportedOSPlatform("windows")]
 public static class WindowsMaintenanceProcess
 {
+    // Only for helpers that cannot execute work before the caller authenticates
+    // the returned child and writes its acknowledgment. No retry is performed.
+    public static async Task<Child> StartBeforeAcknowledgmentAsync(ProcessStartInfo start, NamedPipeServerStream receipt,
+        Task connected, CancellationTokenSource budget, CancellationToken userCancellation = default)
+    {
+        using var launchBudget = CancellationTokenSource.CreateLinkedTokenSource(budget.Token, userCancellation);
+        return await AwaitUnacknowledgedStartAsync(() => StartAsync(start, receipt, connected, launchBudget.Token),
+            receipt, budget, userCancellation).ConfigureAwait(false);
+    }
+
+    internal static async Task<Child> AwaitUnacknowledgedStartAsync(Func<Task<Child>> launch,
+        NamedPipeServerStream receipt, CancellationTokenSource budget, CancellationToken userCancellation = default)
+    {
+        try { return await launch().ConfigureAwait(false); }
+        catch (Exception error)
+        {
+            // The caller has sent neither its authenticated acknowledgment nor
+            // Begin. Close the original channel first: even a delayed desktop
+            // dispatch cannot subsequently acquire permission to do the work.
+            receipt.Dispose(); budget.Cancel();
+            if (userCancellation.IsCancellationRequested) throw new MaintenanceCancelledException("维护尚未启动，已取消；原配置和数据保留。");
+            if (error is Win32Exception { NativeErrorCode: 1223 }) throw;
+            throw new MaintenanceNotStartedException(
+                "Windows 未能完成维护授权交接，本次维护尚未开始。原配置和数据保留；请重新尝试，如有授权提示请在电脑上确认。", error);
+        }
+    }
+
     public static async Task<Child> StartAsync(ProcessStartInfo start, NamedPipeServerStream receipt,
         Task connected, CancellationToken token)
     {
@@ -29,7 +56,10 @@ public static class WindowsMaintenanceProcess
             return new Child(Process.Start(start) ?? throw new IOException("Windows did not start maintenance"));
 
         var started = DateTime.UtcNow;
-        await DispatchFromDesktop(start, caller.User!.Value).ConfigureAwait(false);
+        var dispatch = DispatchFromDesktop(start, caller.User!.Value);
+        _ = dispatch.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        await dispatch.WaitAsync(token).ConfigureAwait(false);
         try { await connected.WaitAsync(TimeSpan.FromSeconds(30), token).ConfigureAwait(false); }
         catch (TimeoutException error)
         { throw new InstallationOutcomeUnknownException("Windows 桌面未交回维护进程；原操作可能仍在启动，请保留窗口并核对结果，不要重复提交。", error); }

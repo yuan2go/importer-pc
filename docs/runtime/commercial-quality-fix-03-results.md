@@ -1,6 +1,6 @@
 # CQ03 四项整改结果
 
-基线main `ec698bd4e11d06c13c097c77f90cc5ce145ab3ea`。用户要求修复CQ03-01～04并先修文档；文档先行提交 `c70dee2`，源码与随包指南冻结于 `8eee4c61082e1c7eeda245d17a2202556d233eab`。原工作区客户资料未纳入，历史审查、失败、原候选及D/RV不改。范围见[工作包](../work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)，逐项命令选择器、退出码、原日志SHA及产物身份见[证据清单](evidence/commercial-quality-fix-03/verification.json)。
+基线main `ec698bd4e11d06c13c097c77f90cc5ce145ab3ea`。用户要求修复CQ03-01～04并先修文档；文档先行提交 `c70dee2`，源码与随包指南冻结于 `8eee4c61082e1c7eeda245d17a2202556d233eab`。原工作区客户资料未纳入，历史审查、失败、原候选及D/RV不改。范围见[工作包](../archive/work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)，逐项命令选择器、退出码、原日志SHA及产物身份见[证据清单](evidence/commercial-quality-fix-03/verification.json)。
 
 ## 结论与实现
 

@@ -2,7 +2,7 @@
 
 日期：2026-10-20。本版落实用户重新明确的三项产品结构及 RCS 字段要求，是当前设计目标；[原型](Prototype.html)、[逐图索引](README.md)和 [样式源码](source/styles.css)共同定义呈现。数据、连接结果和交互均为离线模拟，未连接设备或调用用户提供的 HTTP 接口。原型走查与 Windows/真实链路验收分别记录，不以设计图宣称软件已实现。
 
-源码裁决见 [实施裁决](../../design/sportmaster-task-redesign-01.md)，实施范围沿 [UIR-00～06](../../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)，下一轮可直接使用 [Codex 提示](../../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。此前 V1 的原截图事实、58 项字段/状态、39 项操作和历史 QA 保留；本版覆盖其中与新要求冲突的导航、参数归属及作业布局，不改写原件。
+源码裁决见 [实施裁决](../../design/sportmaster-task-redesign-01.md)，实施范围沿 [UIR-00～06](../../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)，下一轮可直接使用 [Codex 提示](../../archive/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。此前 V1 的原截图事实、58 项字段/状态、39 项操作和历史 QA 保留；本版覆盖其中与新要求冲突的导航、参数归属及作业布局，不改写原件。
 
 ## 0. 最新 main 增量与复用边界
 

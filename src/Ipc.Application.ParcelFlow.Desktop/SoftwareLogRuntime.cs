@@ -116,7 +116,7 @@ public sealed partial class SoftwareLogControl
         liveFollow.IsEnabled = !busy && !diagnosticsClosed; pauseDisplay.IsEnabled = liveActive && !diagnosticsClosed;
         pauseDisplay.Content = displayPaused ? "继续显示" : "暂停显示";
         if (!liveActive) return;
-        previousButton.IsEnabled = nextButton.IsEnabled = contextButton.IsEnabled = exportButton.IsEnabled = rangeButton.IsEnabled = false;
+        previousButton.IsEnabled = nextButton.IsEnabled = contextButton.IsEnabled = exportMenu.IsEnabled = exportButton.IsEnabled = rangeButton.IsEnabled = false;
         effectiveRange.Text = "实时终端 · " + (displayPaused ? "已暂停显示，后台继续写入" : "跟随当前运行日志") +
             " · 按当前筛选显示 · 关闭实时跟随后可查询和导出";
     }

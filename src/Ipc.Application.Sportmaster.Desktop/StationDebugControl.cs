@@ -15,6 +15,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 // A projection of the Application's one-shot round, never a local camera/sender.
 internal sealed partial class StationDebugControl : UserControl
 {
+    const string DebugFailure = "本轮调试未完成，请查看采集诊断并核对原轮次；请求结果未确认时不要重复发送。";
     readonly SupplyStationViewModel vm;
     readonly ICameraInspection? inspection;
     readonly ICameraReadRounds? rounds;
@@ -68,19 +69,31 @@ internal sealed partial class StationDebugControl : UserControl
         Resources.MergedDictionaries.Add(new() { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = UiTypography.Regular;
         Background = Brush("#F3F5F8"); Foreground = Brush("#18283D");
-        var body = new StackPanel { Margin = new(20, 16, 20, 16) };
-        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = new ScrollViewer { Content = body, Background = Background,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled } });
+        var body = new StackPanel { Margin = new(20, 8, 20, 16) };
+        var toolbar = new StackPanel { Margin = new(20, 12, 20, 0) };
+        var scanSurface = new DockPanel(); DockPanel.SetDock(toolbar, Dock.Top); scanSurface.Children.Add(toolbar);
+        scanSurface.Children.Add(new ScrollViewer { Content = body, Background = Background,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled });
+        tabs.Items.Add(new TabItem { Header = "扫码调试", Content = scanSurface });
         tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
         var header = new DockPanel { LastChildFill = true };
-        trigger.Background = Brush("#245FD3"); trigger.Foreground = Brushes.White; trigger.BorderBrush = trigger.Background;
+        var triggerStyle = new Style(typeof(Button), TryFindResource(typeof(Button)) as Style);
+        triggerStyle.Setters.Add(new Setter(BackgroundProperty, Brush("#245FD3")));
+        triggerStyle.Setters.Add(new Setter(ForegroundProperty, Brushes.White));
+        triggerStyle.Setters.Add(new Setter(BorderBrushProperty, Brush("#245FD3")));
+        var disabledTrigger = new Trigger { Property = IsEnabledProperty, Value = false };
+        disabledTrigger.Setters.Add(new Setter(BackgroundProperty, Brush("#E9EEF4")));
+        disabledTrigger.Setters.Add(new Setter(ForegroundProperty, Brush("#52647A")));
+        disabledTrigger.Setters.Add(new Setter(BorderBrushProperty, Brush("#BCC7D6")));
+        triggerStyle.Triggers.Add(disabledTrigger); trigger.Style = triggerStyle;
         readStatus.Foreground = Brush("#9A6511"); readStatus.VerticalAlignment = VerticalAlignment.Center;
         var scanActions = Flow(readStatus, trigger); DockPanel.SetDock(scanActions, Dock.Right); header.Children.Add(scanActions);
         var title = new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis,
             VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 20, 6) };
-        header.Children.Add(Flow(title, left, right)); body.Children.Add(header);
+        header.Children.Add(Flow(title, left, right)); toolbar.Children.Add(header);
         camera.Foreground = Brush("#68788E"); state.Foreground = Brush("#68788E");
-        body.Children.Add(camera); body.Children.Add(Text("触发扫码将隔离两位生产受理；只读实时预览不暂停生产。结束调试后需核对状态并恢复。")); body.Children.Add(state); body.Children.Add(feedback);
+        toolbar.Children.Add(camera); toolbar.Children.Add(Text("正常供包继续运行；扫码锁定本轮图片，点击发送请求才调用实际 RCS 服务。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
+        trigger.ToolTip = "读码不要求 RCS 在线；读码不额外发送调试请求，正常供包继续。";
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         liveCard = Panel(reading); resultCard = Panel(visual); resultCard.Margin = new(14, 0, 0, 0);
@@ -94,7 +107,7 @@ internal sealed partial class StationDebugControl : UserControl
         var photoArea = new Grid(); photoArea.Children.Add(viewport); photoArea.Children.Add(imageHint); visual.Children.Add(photoArea); visual.Children.Add(photoCaption);
         var adapt = Action("适应窗口"); var actual = Action("1:1"); var more = Action("放大"); var less = Action("缩小");
         visual.Children.Add(new Expander { Header = "照片缩放与条码标注", Content = Flow(adapt, actual, more, less, overlay), Margin = new(0, 4, 0, 0) });
-        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 0, 0, 14); body.Children.Insert(body.Children.IndexOf(columns), requestCard);
+        var requestPanel = new StackPanel(); var requestCard = Panel(requestPanel); requestCard.Margin = new(0, 14, 0, 0); body.Children.Add(requestCard);
         var requestHeader = new DockPanel();
         requestBarcode.FontFamily = UiTypography.Code; requestBarcode.Width = 220; requestBarcode.MaxHeight = 64; requestBarcode.Margin = new(8, 0, 10, 6);
         requestBarcode.IsReadOnly = false; requestBarcode.MaxLength = 4096;
@@ -109,7 +122,7 @@ internal sealed partial class StationDebugControl : UserControl
         requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 150; requestBody.Background = Brush("#F7F9FC"); requestJson.Children.Add(requestBody);
         responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; responseBody.Background = Brush("#F7F9FC"); responseJson.Children.Add(responseBody);
         jsonColumns.Children.Add(requestJson); jsonColumns.Children.Add(responseJson); Grid.SetColumn(responseJson, 1); requestPanel.Children.Add(jsonColumns);
-        body.Children.Add(Text("调试会话 · 两位生产已隔离时不产生自动请求 · 实时预览与本轮结果独立"));
+        body.Children.Add(Text("调试请求使用当前生效的 RCS 配置；实时预览与本轮结果独立。"));
         InitializeBatch(body);
         adapt.Click += (_, _) => { fit = true; ApplyZoom(); }; actual.Click += (_, _) => { fit = false; zoom = 1 / VisualTreeHelper.GetDpi(viewport).DpiScaleX; ApplyZoom(); };
         more.Click += (_, _) => Scale(1.25); less.Click += (_, _) => Scale(.8); overlay.Checked += (_, _) => DrawMarks(); overlay.Unchecked += (_, _) => DrawMarks();
@@ -158,7 +171,7 @@ internal sealed partial class StationDebugControl : UserControl
         prepareCommand = null; sendCommand = null;
         ownedManualRound = value.Id;
         ownedManualRuntime = command.RuntimeId;
-        if (scope is { BusinessFenced: true, SingleReadRounds: true } && value.SessionId == scope.SessionId)
+        if (scope is { SingleReadRounds: true } && value.SessionId == scope.SessionId)
         { ownedScanSession = value.SessionId; ownedScanRound = value.Id; }
         current = observed = value; authoritative = true; feedback.Text = ""; await PublishRoundAsync(value, token);
     }
@@ -166,12 +179,11 @@ internal sealed partial class StationDebugControl : UserControl
     {
         if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
         generation++; ClearRoundDisplay();
-        if (scope is not { BusinessFenced: true, State: "Active", SingleReadRounds: true })
+        if (scope is not { State: "Active", SingleReadRounds: true })
         {
-            if (scope is { BusinessFenced: true, SingleReadRounds: true, SessionId: { } oldSession })
+            if (scope is { SingleReadRounds: true, SessionId: { } oldSession })
                 await CloseScanScopeAsync(oldSession, observed?.Id);
-            if (scope?.BusinessFenced == true) throw new InvalidOperationException("有其他或中断的调试会话，请先确认清场并结束后再开始。");
-            beginCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.Isolated, "单次扫码调试", new()) { SingleReadRounds = true };
+            beginCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, CameraInspectionMode.ObserveProduction, "单次扫码调试", new()) { SingleReadRounds = true };
             var entered = await vm.ServiceAsync(() => Inspection.BeginCameraInspectionAsync(beginCommand, token));
             if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
             scope = entered;
@@ -208,7 +220,7 @@ internal sealed partial class StationDebugControl : UserControl
             return;
         }
         if (returned.ManualRequest) { ownedManualRound = null; ownedManualRuntime = null; }
-        if (scope is { BusinessFenced: true, SingleReadRounds: true } && returned.SessionId is { Length: > 0 } session && returned.Id is { } round)
+        if (scope is { SingleReadRounds: true } && returned.SessionId is { Length: > 0 } session && returned.Id is { } round)
             await CloseScanScopeAsync(session, round);
     }
     async Task Run(Func<CancellationToken, Task> action)
@@ -216,7 +228,7 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || busy) return; busy = true; var ownership = lifetime; Buttons();
         try { await vm.RequireManagementModeAsync(); await action(lifetime!.Token); }
         catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = "已停止等待。请求可能已发出，调试状态未变；请查看本轮结果。"; } }
-        catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = error.Message; } }
+        catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); } }
         finally { busy = false; if (active) { Buttons(); await PollAsync(); } }
     }
     public async Task PollAsync()
@@ -225,16 +237,16 @@ internal sealed partial class StationDebugControl : UserControl
         polling = true; var version = generation; var token = lifetime!.Token;
         try
         {
-            var isolation = await vm.ServiceAsync(() => Inspection.CameraInspectionStatusAsync(token));
+            var collection = await vm.ServiceAsync(() => Inspection.CameraInspectionStatusAsync(token));
             var value = await vm.ServiceAsync(() => Rounds.ReadCameraReadRoundAsync(token));
             if (!active || busy || version != generation || !vm.IsManagementMode) return;
-            scope = isolation; observed = value; authoritative = true;
+            scope = collection; observed = value; authoritative = true;
             if (current?.Frame is not null && current.Id is not null && value.Id != current.Id)
             { state.Text = "其他窗口已开始另一轮；本窗保留原轮次照片和请求。点击再次扫码明确开始本窗新一轮。"; Buttons(); return; }
             current = value; await PublishRoundAsync(value, token);
         }
         catch (OperationCanceledException) { if (active && version == generation) authoritative = false; }
-        catch (Exception error) { if (active && version == generation) { authoritative = false; state.Text = "调试状态读取失败；调试状态和请求保持不变。"; feedback.Text = error.Message; send.IsEnabled = false; } }
+        catch (Exception error) { if (active && version == generation) { authoritative = false; state.Text = "调试状态读取失败；调试状态和请求保持不变。"; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); send.IsEnabled = false; } }
         finally { polling = false; if (active && version == generation) Buttons(); }
     }
     async Task PublishRoundAsync(CameraReadRound value, CancellationToken token)
@@ -242,9 +254,10 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || !vm.IsManagementMode || token.IsCancellationRequested) return;
         camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus;
         var sameCamera = value.DeviceId == Position.ReaderId;
-        state.ToolTip = value.Detail;
-        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : value.Detail;
-        state.Text = value.ManualRequest ? value.Detail : scope?.BusinessFenced == true ? (scope.State == "Active" ? "实机调试已生效 · " : "调试中 · ") + detail : "点击触发扫码开始本轮读取；不会自动发送请求。";
+        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，请查看采集诊断后重新触发。" :
+            value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(value.Detail, DebugFailure);
+        state.ToolTip = detail;
+        state.Text = value.Id is null ? "点击触发扫码开始本轮读取；调试请求需明确发送。" : detail;
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
         SetText(barcode, value.Barcode ?? "");
         if (!requestDirty) { updatingRequest = true; try { SetText(requestBarcode, value.Barcode ?? ""); } finally { updatingRequest = false; } }
@@ -276,7 +289,7 @@ internal sealed partial class StationDebugControl : UserControl
             imageHint.Text = current.ManualRequest ? "本次为手工输入请求，无扫码照片。" : current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
                 current.Frame is not null ? "本轮照片不可用\n图片可能已被清理。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
         readStatus.Text = current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
-        { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已暂停", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
+        { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已锁定", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
         photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : displayedFrame is null ? "等待扫码" : "结果已锁定";
         if (current?.ManualRequest == true) photoCaption.Text = "本次为手工输入请求。";
         fillStatus.Text = requestDirty ? "输入已更改，请准备当前条码的请求。" : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
@@ -336,13 +349,13 @@ internal sealed partial class StationDebugControl : UserControl
     {
         try { await CloseScanScopeAsync(session, round); }
         catch (CameraReadRoundConflictException) { /* Another window owns a newer round; leave it intact. */ }
-        catch (Exception error) { vm.Message = "上次调试尚未结束，请求保留：" + error.Message; }
+        catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "本轮调试清理未完成，原请求保留；请查看调试记录。"); }
     }
     async Task CloseOwnedManualAsync(string round, Guid runtime)
     {
         try { await vm.ServiceAsync(() => Rounds.CloseUnsentDebugRoundAsync(new(Wire.Id(), runtime, round), CancellationToken.None)); }
         catch (CameraReadRoundConflictException) { /* A newer round belongs to another explicit command. */ }
-        catch (Exception error) { vm.Message = "原人工调试请求保留：" + error.Message; }
+        catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "人工调试退出未完成，原请求保留；请核对原调试状态。"); }
     }
     void Deactivate()
     {

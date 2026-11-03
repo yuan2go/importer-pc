@@ -24,9 +24,9 @@ public sealed partial class ParameterSettingsControl
     void SelectPageCore(ObjectPage? page)
     {
         if (page is null || !page.Available) return;
-        selectingPage = true;
+        var priorSelecting = selectingPage; selectingPage = true;
         try { if (FirstConfiguration) { categoryScope = page.Category; directoryView?.Refresh(); } directory.SelectedItem = page; currentPage = page; RefreshStepBar(); lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
-        finally { selectingPage = false; }
+        finally { selectingPage = priorSelecting; }
         SelectedPageChanged?.Invoke(this, EventArgs.Empty);
     }
     void RefreshStepBar()
@@ -40,16 +40,21 @@ public sealed partial class ParameterSettingsControl
             button.ToolTip = currentPage?.Category == index ? "当前步骤" : "前进时检查前置页面，返回保留输入";
         }
         var issues = Model?.Issues ?? [];
-        remainingSteps.Text = issues.Count == 0 ? "尚未发现字段错误。请逐步检查；相机和 RCS 可留待以后配置。" : "当前发现 " + issues.Count + " 项需要修改：\n" + string.Join("\n", issues.Take(6).Select(i => i.Category + "：" + i.Message));
+        remainingSteps.Text = issues.Count == 0 ? "尚未发现字段错误。请逐步检查；相机和 RCS 可留待以后配置。" : "当前发现 " + issues.Count + " 项需要修改：\n" + string.Join("\n", issues.Take(6).Select(issue =>
+        {
+            locations.TryGetValue(issue.Path, out var location);
+            var context = issue.Category + (location is null ? "" : " / " + location.Label.TrimEnd(' ', '*'));
+            return context + "：" + IssueMessage(issue, location);
+        }));
     }
     void RefreshAvailablePages()
     {
         // Role reassignment can expose a formerly maintenance-only component.
         // Keep its editor and drafts, while excluding it from every navigation
         // path again when its last actual business role is removed.
-        selectingPage = true;
+        var priorSelecting = selectingPage; selectingPage = true;
         try { directoryView?.Refresh(); if (currentPage?.Available == true) directory.SelectedItem = currentPage; }
-        finally { selectingPage = false; }
+        finally { selectingPage = priorSelecting; }
         if (currentPage?.Available != true)
         {
             var destination = OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope);
@@ -126,9 +131,9 @@ public sealed partial class ParameterSettingsControl
                 model.Report(Ipc.Platform.DiagnosticText.Protect(error.Message));
                 if (currentPage is { } page)
                 {
-                    page.Summary.Text = error is OperationCanceledException ? "检查已取消，输入保留。" : "当前页检查未完成，请查看诊断详情后重试。";
+                    page.Summary.Text = error is OperationCanceledException ? "检查已取消，输入保留。" : "当前页检查未完成，输入保留；请修正标出的字段后重试，仍失败时导出诊断记录。";
                     page.Summary.Visibility = Visibility.Visible;
-                    page.Diagnostic.Text += "\n" + Ipc.Platform.DiagnosticText.Protect(error.ToString());
+                    page.Diagnostic.Text += "\n" + ChineseInterfaceText.ParameterMessage(error.Message);
                 }
                 PageValidationFailed?.Invoke(this, EventArgs.Empty);
             }

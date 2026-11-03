@@ -2,7 +2,7 @@
 
 核心工程完成；Mac参考验证PASS；WPF交叉构建PASS（0警告/0错误）。**WINDOWS_NOT_RUN**：实际WPF交互/截图、普通账户/UAC/ACL、DPI/跨屏/输入/听审/持续运行统一后置；真实SDK/WCS/现场资格继续BLOCKED。没有寻找/开通VM或runner，没有扩OAuth，没有合并PR或改变D/RV及12验收。
 
-本轮先核验最新main仍为`feed6e9ce79449e48c667c17e2671939a86fb588`，相对指定基准无变化；发现同目标[PR12](https://github.com/yuan2go/importer-pc/pull/12)及工作包已存在。既有工作树干净且对应任务未在执行；从main创建`codex/closure13-verification-20261017`隔离分支，快进承接`451f7f5`并向同一远端PR分支快进交付，避免重复实现/重复PR。原main工作区及未跟踪客户材料保持原状；另一个工作树文件未修改。[开工记录](evidence/arch-extension-closure-13/recheck-20261017/opening.json)保留本轮观察，不倒写首轮“当时没有并行PR”。原[工作包](../work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)、[原始要求](../work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)、[首轮报告](arch-extension-closure-13.md)及全部历史证据继承；仍未收到额外独立附件。
+本轮先核验最新main仍为`feed6e9ce79449e48c667c17e2671939a86fb588`，相对指定基准无变化；发现同目标[PR12](https://github.com/yuan2go/importer-pc/pull/12)及工作包已存在。既有工作树干净且对应任务未在执行；从main创建`codex/closure13-verification-20261017`隔离分支，快进承接`451f7f5`并向同一远端PR分支快进交付，避免重复实现/重复PR。原main工作区及未跟踪客户材料保持原状；另一个工作树文件未修改。[开工记录](evidence/arch-extension-closure-13/recheck-20261017/opening.json)保留本轮观察，不倒写首轮“当时没有并行PR”。原[工作包](../archive/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)、[原始要求](../archive/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)、[首轮报告](arch-extension-closure-13.md)及全部历史证据继承；仍未收到额外独立附件。
 
 ## 实现与身份
 

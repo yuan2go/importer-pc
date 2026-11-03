@@ -1,6 +1,6 @@
 # SM人工请求与相机解耦12
 
-2026-10-30，基线main `d899eeac`。用户要求作业与调试人工取格口不依赖相机/相机配置/相机编码，并删除调试说明。工作范围及被替代条件见[12工作包](../work-packages/WP-IPC-SM-MANUAL-CAMERA-INDEPENDENT-12.md)。旧10/11和历史D/RV保留原身份。
+2026-10-30，基线main `d899eeac`。用户要求作业与调试人工取格口不依赖相机/相机配置/相机编码，并删除调试说明。工作范围及被替代条件见[12工作包](../archive/work-packages/WP-IPC-SM-MANUAL-CAMERA-INDEPENDENT-12.md)。旧10/11和历史D/RV保留原身份。
 
 ## 当前实现
 

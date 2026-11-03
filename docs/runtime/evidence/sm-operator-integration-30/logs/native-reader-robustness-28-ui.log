@@ -1,0 +1,10 @@
+PASS READER28-NATIVE snapshot-first native path shows the new pending barcode and never the old chute/picture while its stream render is delayed
+PASS READER28-NATIVE the assertion runs before the new input is durable or any new HTTP request exists
+PASS READER28-NATIVE 1366 preserves a readable pending instruction with no retired destination
+CAPTURE reader28-snapshot-first-1366: 1366.4x768 DIP, Windows DPI 1.25/1.25
+PASS READER28-NATIVE 800 preserves a readable pending instruction with no retired destination
+CAPTURE reader28-snapshot-first-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS READER28-NATIVE late previous native snapshot cannot grant a retired task again
+PASS READER28-NATIVE late stream rendering agrees with the snapshot watermark instead of changing parcel identity
+PASS READER28-NATIVE an in-flight original request still has no confirmed chute
+PASS READER28-NATIVE only the matched new response restores the left task and the right task never changes identity

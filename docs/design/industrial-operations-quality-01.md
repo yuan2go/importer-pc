@@ -1,6 +1,6 @@
 # 工业化操作、诊断、文档与质量设计 · IE01-OQ
 
-状态：目标设计；不把现有能力重复列成待重做项目。基线和全量追踪见[IE01](industrial-engineering-01.md)，实施/验收见[工作包](../work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。
+状态：目标设计；不把现有能力重复列成待重做项目。基线和全量追踪见[IE01](industrial-engineering-01.md)，实施/验收见[工作包](../archive/work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。
 
 ## 1. 首配与连接检查
 

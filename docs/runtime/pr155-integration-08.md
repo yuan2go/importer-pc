@@ -1,6 +1,6 @@
 # PR155、PR156、PR158 整合记录
 
-2026-10-30，工作包 [PR155-INTEGRATION-08](../work-packages/WP-IPC-PR155-INTEGRATION-08.md)。用户授权先合 PR156、PR158 到 PR155，再合入 main；不包含真实安装或设备操作。
+2026-10-30，工作包 [PR155-INTEGRATION-08](../archive/work-packages/WP-IPC-PR155-INTEGRATION-08.md)。用户授权先合 PR156、PR158 到 PR155，再合入 main；不包含真实安装或设备操作。
 
 ## 其他任务完成情况与代码审查
 

@@ -1,6 +1,6 @@
 # MVS-SOFTWARE-READER-01
 
-> 2026-10-29整合验证见[SDK整合记录](../../runtime/integration-20261028-sdk.md)。下列2026-10-28的RV与真机数字保留原分支证据范围，不转记为整合后main的验证。
+> 2026-10-29整合验证见[SDK整合记录](../runtime/integration-20261028-sdk.md)。下列2026-10-28的RV与真机数字保留原分支证据范围，不转记为整合后main的验证。
 
 2026-10-28，继承 MVCODEREADER-RESTORE-01 的实际源码和历史证据。用户明确授权改为已真机验证的 MVS 采图＋软件识别，所有独立识别结果交 RCS 去重；本轮 RCS 采用用户指定的本机 Python 模拟服务，不代表真实现场 RCS 验收。
 
@@ -24,4 +24,4 @@ D-MVS-SOFTWARE-01：本轮用户批准MVS＋软件识别及RCS去重口径；不
 
 ## 2026-10-29 SM续验
 
-后续核对以[本轮SDK→Python及启动参数验证](../../runtime/sm-sdk-python-validation-20261029.md)为准。仅SM，其他业务暂停；旧设备51/21笔记录保持原来源。起初SDK枚举0，用户接通后重新枚举1台；main `7af0be61` 实采20秒，31笔独立请求接受本机Python模拟格口，两端冻结报文及响应逐笔一致。隔离Simulation不代表正式部署或真实RCS验收。外部Python验证入口空引用已在候选修复，合成17条PASS及4种账本副本破坏拒绝验证通过；候选、main及后续CI身份分别记录。
+后续核对以[本轮SDK→Python及启动参数验证](../runtime/sm-sdk-python-validation-20261029.md)为准。仅SM，其他业务暂停；旧设备51/21笔记录保持原来源。起初SDK枚举0，用户接通后重新枚举1台；main `7af0be61` 实采20秒，31笔独立请求接受本机Python模拟格口，两端冻结报文及响应逐笔一致。隔离Simulation不代表正式部署或真实RCS验收。外部Python验证入口空引用已在候选修复，合成17条PASS及4种账本副本破坏拒绝验证通过；候选、main及后续CI身份分别记录。

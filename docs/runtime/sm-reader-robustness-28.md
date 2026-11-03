@@ -1,8 +1,8 @@
-> 当前操作工扫码流程已继承main `38cb7dc0` 的[SM-SAME-PLACEMENT-29](../archive/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)：持续识别，一次放置一次请求，空托盘确认后释放；此前OP29冻结解码及同码逐帧新请求说明已被替代，原字节见[归档](../archive/pre-sm-placement-integration-30/manifest.json)。中文参数、调试与真实采集诊断修复继续保留。
+> 当前操作工扫码流程已继承main `38cb7dc0` 的[SM-SAME-PLACEMENT-29](../archive/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)：持续识别，一次放置一次请求，空托盘确认后释放；此前OP29冻结解码及同码逐帧新请求说明已被替代，原字节见归档。中文参数、调试与真实采集诊断修复继续保留。
 
 # SM斜放、模糊及快照身份修复28
 
-2026-11-02，[工作包](../archive/work-packages/WP-IPC-SM-READER-ROBUSTNESS-28.md)。基线main `0c018f15`，沿用内置MVS、进程内ZXingCpp 0.5.3/内核3.1.1及内置RCS。27包及PR181的回调顺序修复继续有效；旧文档[原字节归档](../archive/pre-sm-reader-robustness-28/manifest.json)，历史RV及验收不转记。
+2026-11-02，[工作包](../archive/work-packages/WP-IPC-SM-READER-ROBUSTNESS-28.md)。基线main `0c018f15`，沿用内置MVS、进程内ZXingCpp 0.5.3/内核3.1.1及内置RCS。27包及PR181的回调顺序修复继续有效；旧文档原字节归档，历史RV及验收不转记。
 
 修复两项P1：主搜索读到简单的其他码时仍须搜索弱标签；新有码快照早于实时提示时不得恢复旧条码、格口和图片权限。
 
@@ -22,6 +22,6 @@ Application在同一短锁内把最新相机帧水位和对应观察反馈写入
 
 ## 验证与运行
 
-命令沿 `scripts/project-environment.ps1` 使用D盘临时目录及缓存。新增 `--reader-robustness-28` 与原生 `--reader-robustness-28-ui`，使用自造条码、真实ZXing、SQLite、内置RCS回环和合成MVS端口。覆盖15/30/45/70度、斜码叠加两档模糊、主搜索已成功的弱码、混合QR、同码不同位置/堆叠、合法短ITF、码制约束、原像素保持、反向快照/推送顺序、新窗口及双位身份。精确源码和最终构建/回归见[验证记录](evidence/sm-reader-robustness-28/README.md)。
+命令沿 `scripts/project-environment.ps1` 使用D盘临时目录及缓存。新增 `--reader-robustness-28` 与原生 `--reader-robustness-28-ui`，使用自造条码、真实ZXing、SQLite、内置RCS回环和合成MVS端口。覆盖15/30/45/70度、斜码叠加两档模糊、主搜索已成功的弱码、混合QR、同码不同位置/堆叠、合法短ITF、码制约束、原像素保持、反向快照/推送顺序、新窗口及双位身份。精确源码和最终构建/回归见验证记录。
 
 私有原图及斜放/模糊/尺度/亮度变体只留D盘Git外，公开证据不包含现场图片、码值、账本或客户RCS。离线照片回放不能验证物理MVS取帧、运动模糊、曝光/焦距、镜头/灯光、反光、目标IPC节拍或真实客户RCS；现场还未扫枪核验样本。需部署本包版本、受控重启后，以现场原始Mono8和实物连续过机核对完整码值、完整候选及格口关联；真实设备及现场稳定成功率待验。本轮不改现场安装/相机/RCS配置、不启用CI。

@@ -1,8 +1,0 @@
-{
-  "previous_product_source": "bc80d9457c430ed0f005ce4a4d193366fdb5e530",
-  "final_product_source": "9860301f09991a7a2875444595c2315f96f5bfa6",
-  "changed_product_paths": [
-    "src/Ipc.Application.ParcelFlow/ParcelStorageUpgrade10.cs"
-  ],
-  "scope": "Only exact optional SQLite optimizer-table recognition changed; full 53-check upgrade/closure/WAL/retry/restart suite rerun; frontend and all other production code unchanged"
-}

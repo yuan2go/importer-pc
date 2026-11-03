@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "<WORKTREE>/scripts/smoke-application.py", line 143, in <module>
-    if command('ContinuePrepared', operation['Id'])['Status'] != 'Persisted': raise ValueError('Original continuation rejected')
-                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-ValueError: Original continuation rejected

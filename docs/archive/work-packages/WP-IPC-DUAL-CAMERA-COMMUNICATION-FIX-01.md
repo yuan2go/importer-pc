@@ -18,6 +18,6 @@
 
 ## 当前规范与替代关系
 
-本包仅替代 `runtime/startup-experience-03.md` 中TCP启动/应用拒绝的当前描述。其用户确认的客户端、严格UTF-8、LF/CRLF、4096字节、安全实体模式继续有效。海康SDK说明只适用于原SDK实现，不把TCP成功解释成SDK可用。架构22、AQA01的左右拓扑、输入失效与原请求责任、PARAM-UX-02及管理模式继续有效。历史版本、D/RV和原证据不改写。实现、只读脚本、验证和现场步骤统一见[运行记录](../../runtime/dual-camera-communication-fix-01.md)。
+本包仅替代 `runtime/startup-experience-03.md` 中TCP启动/应用拒绝的当前描述。其用户确认的客户端、严格UTF-8、LF/CRLF、4096字节、安全实体模式继续有效。海康SDK说明只适用于原SDK实现，不把TCP成功解释成SDK可用。架构22、AQA01的左右拓扑、输入失效与原请求责任、PARAM-UX-02及管理模式继续有效。历史版本、D/RV和原证据不改写。实现、只读脚本、验证和现场步骤统一见[运行记录](../runtime/dual-camera-communication-fix-01.md)。
 
 本包风险验证限定于受影响构建、隔离TCP/真实Application/SQLite及相关恢复、配置、RCS回归；不做生产探测和无关视觉/全量压测。静态核查、Windows隔离执行、真实现场验收分别记录。

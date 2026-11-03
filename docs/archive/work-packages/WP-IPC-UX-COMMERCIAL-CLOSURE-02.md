@@ -1,6 +1,6 @@
 # UX商用质量审查01 · WP-01～07工程闭环
 
-> 续修现行结果：[独立复审后三项修复](../../runtime/ux-commercial-rereview-03-results.md)。最终产品6ce1d6d/业务1.3.2；下文初轮1.3.1及两个未发布本地尝试按形成时身份保留，不能混称实际Release。
+> 续修现行结果：[独立复审后三项修复](../runtime/ux-commercial-rereview-03-results.md)。最终产品6ce1d6d/业务1.3.2；下文初轮1.3.1及两个未发布本地尝试按形成时身份保留，不能混称实际Release。
 
 本轮依据[原24页PDF及发布交接](../../reviews/ux-commercial-quality-audit-01/README.md)。开工main `eeeed0e0700cd07a76587b2bb701e91d422b2c35`，PR37固定 `2d60fdc83a267c1ed4ad7a9f7ce200bd11255a94`，PR38仅skill。隔离分支codex/ux-commercial-closure-02从main创建，显式继承PR37为开发依赖；不合并远端PR37/38，不修改其工作树。原工作区未跟踪客户材料保持。
 
@@ -38,7 +38,7 @@ main在开工时仍为业务1.2.8/Contracts1.8.0/DB7；PR37产品冻结c384c3bc4
 
 ## 实际交付与本包边界
 
-[最终逐包结果](../../runtime/ux-commercial-closure-02-results.md)、[固定参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c)及[商业输入账](../../runtime/ux-commercial-combination-02.json)为实际交付。WP-02选择归属参考证据有效；WP-03/05在1a34a1e复审发现下述工程差额，不能记全部完成。WP-06的f1a655c参考媒介与远端回读保持原身份；WP-01商业输入待确认、WP-04真实SDK/权威合同受阻、WP-05/06 Windows及目标机验收NOT_RUN；WP-07新增可选建议未自动采纳。当前资料检查267项继承错误、新增0项，整体仍FAIL。原失败、原PDF/HTML/图册、D/RV及PR37原证据不倒写。
+[最终逐包结果](../runtime/ux-commercial-closure-02-results.md)、[固定参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c)及[商业输入账](../runtime/ux-commercial-combination-02.json)为实际交付。WP-02选择归属参考证据有效；WP-03/05在1a34a1e复审发现下述工程差额，不能记全部完成。WP-06的f1a655c参考媒介与远端回读保持原身份；WP-01商业输入待确认、WP-04真实SDK/权威合同受阻、WP-05/06 Windows及目标机验收NOT_RUN；WP-07新增可选建议未自动采纳。当前资料检查267项继承错误、新增0项，整体仍FAIL。原失败、原PDF/HTML/图册、D/RV及PR37原证据不倒写。
 
 ## 2026-10-19 复审差额及续修设计
 

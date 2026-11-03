@@ -1,4 +1,4 @@
-> 参数页面当前修订：[PARAM-UX-02](../../design/parameter-settings-experience-02.md) 与 [V3交付](../../ui/parameter-settings-v3-20261020/README.md) 替代本文参数版式、底部保存步骤和“维护与迁移”入口。PR74已实现的作业/首配合同及PR76会话修复继续复用；下文旧实施状态保留形成时身份，不要求重复实现。
+> 参数页面当前修订：[PARAM-UX-02](../design/parameter-settings-experience-02.md) 与 [V3交付](../../ui/parameter-settings-v3-20261020/README.md) 替代本文参数版式、底部保存步骤和“维护与迁移”入口。PR74已实现的作业/首配合同及PR76会话修复继续复用；下文旧实施状态保留形成时身份，不要求重复实现。
 
 > 当前实施：[V2 实施与验证记录](../../runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
 
@@ -6,7 +6,7 @@
 
 # 下一步 Codex 提示：完成 Sportmaster V2 UI 优化
 
-本提示规定目标与完成标准，具体字段、状态、迁移和验收以[工作包](WP-IPC-UI-TASK-REDESIGN-01.md)、[V2实施裁决](../../design/sportmaster-task-redesign-01.md)、[设计交接](../../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)及[PARAM-01现状](../../runtime/parameter-refactor-01.md)为准。
+本提示规定目标与完成标准，具体字段、状态、迁移和验收以[工作包](WP-IPC-UI-TASK-REDESIGN-01.md)、[V2实施裁决](../design/sportmaster-task-redesign-01.md)、[设计交接](../../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)及[PARAM-01现状](../../runtime/parameter-refactor-01.md)为准。
 
 ```text
 在 yuan2go/importer-pc 最新 main 上完整完成 WP-IPC-UI-TASK-REDESIGN-01 的 UIR-00～06，优先参数配置和双相机作业闭环。最新main已有PARAM-01参数编辑、条码筛选、RCS心跳及单窗口安装；复用并完善，不能从零重做，也不能把原参数范围完成当作V2完整验收。

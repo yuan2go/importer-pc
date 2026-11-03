@@ -12,4 +12,4 @@
 
 G01真实RCS核对合同、G02密码恢复政策、自动重连合同BLOCKED_EXTERNAL；真实安装/UAC/任务/SCM/WER、物理存储故障、设备、目标26100+/4核8GB、24h/72h、604800完整UAC恢复、2592000均NOT_RUN。记录实际source/commit/PR/CI、运行/回滚与未完成边界，不继承分支PASS为集成PASS。
 
-[当前报告](../../runtime/validation/stability-integration-02.md)。
+[当前报告](../runtime/validation/stability-integration-02.md)。

@@ -2,7 +2,7 @@
 
 来源：2026-10-18用户实施授权A～F及验证/交付要求。开工main08b8067aa6cba6a148252296c7a5b18a27b3be65，PR18已合并，无开放PR；开发工作树application-capability-19，主目录未跟踪资料原状保留。
 
-[唯一现行设计](../../design/application-capability-19.md)落实用户固定边界；原REQ/BR/CAPI/D/RV、历史报告/SQL/checksum/包身份不改。全部用户原要求保留于任务会话；此文件是执行映射，不替代或降低原目标。
+[唯一现行设计](../design/application-capability-19.md)落实用户固定边界；原REQ/BR/CAPI/D/RV、历史报告/SQL/checksum/包身份不改。全部用户原要求保留于任务会话；此文件是执行映射，不替代或降低原目标。
 
 ## 实施计划（writing-plans；本会话顺序执行）
 
@@ -17,6 +17,6 @@
 
 ## 执行回执
 
-实现与参考资格验证已完成，最终运行源码c213aad54f5d48687efc0b56428991b6bf4f3537；逐项结果、完整SHA、复现和剩余接入见[19结果](../../runtime/application-capability-19-results.md)。勾选表示本包授权实施/参考验证范围，不表示Windows实机、真实协议或现场通过。D/RV与原SQL不改。交付开发分支PR，不合并main。
+实现与参考资格验证已完成，最终运行源码c213aad54f5d48687efc0b56428991b6bf4f3537；逐项结果、完整SHA、复现和剩余接入见[19结果](../runtime/application-capability-19-results.md)。勾选表示本包授权实施/参考验证范围，不表示Windows实机、真实协议或现场通过。D/RV与原SQL不改。交付开发分支PR，不合并main。
 
 已推送并创建[PR #19](https://github.com/yuan2go/importer-pc/pull/19)，OPEN、未合并main。实际运行源码及本地候选仍固定c213aad，后续仅文档/证据。

@@ -1,7 +1,0 @@
-{
-  "scope": "Isolated synthetic maintenance suite plus actual Windows restore-directory ACL preparation; no original installation or business data touched",
-  "exit_code": 0,
-  "source_commit": "5ce8c1f9472f0d8652cac483aeff9c0ac200e59e",
-  "passes": 67,
-  "administrator_token": true
-}

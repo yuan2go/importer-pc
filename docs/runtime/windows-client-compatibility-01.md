@@ -16,7 +16,7 @@
 
 [.NET10官方系统列表](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md)当前列出的Windows10为特定Enterprise/LTSC/IoT版本，不能将其泛化到所有Home/Pro22H2。Win10 Home/Pro常规支持已在2025-10-14结束，见[微软生命周期](https://learn.microsoft.com/en-us/lifecycle/products/windows-10-home-and-pro)；ESU资格另行核对，不能因为购买ESU就自行声称已进入.NET10完整官方支持矩阵。本产品以用户明确的现场系统为功能适配目标，同时明确厂商支持风险和实际验证边界，不通过伪改版本/兼容模式或静默降级运行时假装全覆盖。
 
-海康SDK/驱动须核对厂商对Win10/Win11具体版本、CPU和驱动的说明，当前精确SDK资格仍按[原驱动指南](hikrobot-reader-01.md)。未授权SDK再分发，不捆绑厂商安装器，不把普通软件启动当成真实读码通过。
+海康SDK/驱动须核对厂商对Win10/Win11具体版本、CPU和驱动的说明，当前精确SDK资格仍按[原驱动指南](../archive/runtime/hikrobot-reader-01.md)。未授权SDK再分发，不捆绑厂商安装器，不把普通软件启动当成真实读码通过。
 
 ## 本轮验证与剩余矩阵
 
@@ -26,4 +26,4 @@
 
 ## 最终冻结27b0d8f的实际证据
 
-[最终原始记录](evidence/installer-single-window-01/README.md)为58项安装/启动PASS，其中实际运行时诊断与禁用托管intrinsic/R2R启动属于同机补充检查，非其他CPU资格。实际OS/CPU/运行时JSON、27个应用IL头检查、两个工作台原生截图和固定探针分别存档。Windows10 22H2与其他CPU仍未实际运行，不因纯策略12项PASS、关闭优化或本机安装通过而改为已验。本轮无可用Win10虚拟机/现场连接；尚需在用户现场系统上验安装/取消/启动/快捷方式、SDK与相机读码及业务接口。
+最终原始记录为58项安装/启动PASS，其中实际运行时诊断与禁用托管intrinsic/R2R启动属于同机补充检查，非其他CPU资格。实际OS/CPU/运行时JSON、27个应用IL头检查、两个工作台原生截图和固定探针分别存档。Windows10 22H2与其他CPU仍未实际运行，不因纯策略12项PASS、关闭优化或本机安装通过而改为已验。本轮无可用Win10虚拟机/现场连接；尚需在用户现场系统上验安装/取消/启动/快捷方式、SDK与相机读码及业务接口。

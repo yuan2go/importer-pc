@@ -1,6 +1,6 @@
 # WP-IPC-BACKUP-HEALTH-RECOVERY
 
-2026-10-18用户授权直接复核并修复PR18评审4305731150/4305731157；执行基线main `0828654`（PR19已合并，无开放PR）。独立工作树`backup-health-recovery`，主工作区未跟踪资料保留。继承[19设计](../../design/application-capability-19.md)、框架F-09、D/RV及公开范围，只用通用实现和合成数据。
+2026-10-18用户授权直接复核并修复PR18评审4305731150/4305731157；执行基线main `0828654`（PR19已合并，无开放PR）。独立工作树`backup-health-recovery`，主工作区未跟踪资料保留。继承[19设计](../design/application-capability-19.md)、框架F-09、D/RV及公开范围，只用通用实现和合成数据。
 
 ## 设计与取舍
 
@@ -20,4 +20,4 @@
 
 Windows实机NOT_RUN；真实SDK/设备/协议/现场BLOCKED，Production仍拒绝。原评审线程的GitHub状态不由局部PASS自动关闭；历史失败和D/RV不倒写。
 
-交付：[PR #20](https://github.com/yuan2go/importer-pc/pull/20)，运行源码2efb7b6；[实际结果](../../runtime/backup-health-recovery.md)。只提交main PR，不合并。
+交付：[PR #20](https://github.com/yuan2go/importer-pc/pull/20)，运行源码2efb7b6；[实际结果](../runtime/backup-health-recovery.md)。只提交main PR，不合并。

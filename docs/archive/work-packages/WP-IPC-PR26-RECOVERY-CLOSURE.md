@@ -20,4 +20,4 @@ DB2/3/4未结普通升级保守拒绝；不能只抬版本、删责任或盲重�
 
 验收界限：macOS参考实际Application/装配/SQLite及故障注入；Windows安装/WPF/HID/UAC/ACL NOT_RUN，真实SDK/设备/WCS/PLC及现场BLOCKED，生产门禁不变。
 
-本轮实际交付、精确源码、验证/历史失败及未验边界见[结果](../../runtime/pr26-recovery-closure-results.md)。PR发布状态另读GitHub；本任务不合并。
+本轮实际交付、精确源码、验证/历史失败及未验边界见[结果](../runtime/pr26-recovery-closure-results.md)。PR发布状态另读GitHub；本任务不合并。

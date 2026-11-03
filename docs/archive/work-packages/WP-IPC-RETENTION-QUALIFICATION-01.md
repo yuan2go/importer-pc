@@ -4,7 +4,7 @@
 
 中途同步main `1dfb676` / PR102的验证夹具、CI和RECHECK-02归档增量；其src/config tree与开工main相同。完整规模运行固定原产品和执行夹具，不因同步文档/测试而换写运行身份；新增合并和CI身份单列。
 
-依据：[稳定性工作包](WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[运行与维护](../../runtime/win11-24x7-stability-remediation-01.md)、[原查询独立复核](../../runtime/validation/retention-performance-review-01.md)。框架F-01/F-09/F-12、唯一账、未决原请求和D/RV边界继续有效；原查询、CI、发行及历史失败保持各自SourceCommit。
+依据：[稳定性工作包](WP-IPC-WIN11-24X7-STABILITY-REMEDIATION-01.md)、[运行与维护](../../runtime/win11-24x7-stability-remediation-01.md)、[原查询独立复核](../runtime/validation/retention-performance-review-01.md)。框架F-01/F-09/F-12、唯一账、未决原请求和D/RV边界继续有效；原查询、CI、发行及历史失败保持各自SourceCommit。
 
 ## 本轮范围
 
@@ -21,7 +21,7 @@
 
 本轮维护是受保护隔离Simulation目录的CLI验证，不是已登记Production部署/正式安装的完整生命周期，不取得真实RCS原报文规模、数字号段合同、真实双SDK、目标4核8GB、多Windows版本、完整24h/72h或工业现场资格。
 
-当前结果、复现和剩余缺口见[本轮验证报告](../../runtime/validation/retention-maintenance-qualification-01.md)。
+当前结果、复现和剩余缺口见[本轮验证报告](../runtime/validation/retention-maintenance-qualification-01.md)。
 
 ## 本轮终态与后续门槛
 

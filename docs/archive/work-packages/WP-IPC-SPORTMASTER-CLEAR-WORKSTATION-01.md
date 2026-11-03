@@ -14,4 +14,4 @@
 - 以原生 WPF 多尺寸、长文本、Unknown/拒绝/失效及输入失败验证；仅使用合成数据。构建、发布启动及截图按实际结果记录。
 - 不增加 Supply 的箱/波次字段、设备直控、假就绪、真实 SDK 或现场验收结论。
 
-运行结果见 [工作台精简记录](../../runtime/sportmaster-clear-workstation-01.md)。
+运行结果见 [工作台精简记录](../runtime/sportmaster-clear-workstation-01.md)。

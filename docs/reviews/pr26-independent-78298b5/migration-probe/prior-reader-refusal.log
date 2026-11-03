@@ -1,5 +1,0 @@
-{
-  "accepted": false,
-  "error": "InvalidDataException: Unknown/changed consumer migration; use matching release for inspection",
-  "unchanged": true
-}

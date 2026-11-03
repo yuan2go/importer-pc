@@ -1,6 +1,6 @@
 # UNICODE-SHORTCUT-COMPATIBILITY-01：Windows 快捷方式兼容性与集成工作包
 
-> 2026-10-26执行增量：用户已授权按本包实施、完成回归并提交代码/PR。继承PR110的980a1383，只对先红夹具确认的RCW生命周期、目录冲突及空目标补缺；[当前实现与证据](../../runtime/validation/unicode-shortcut-compatibility-01.md)、[操作和集成](../../runtime/unicode-shortcut-compatibility-01.md)。PR112已在43382c59继承原Unicode修复，但仍需继承本轮差量。下文“仅分析/尚未提交/尚未接入”是11:17工作包形成时的事实，不覆盖本段执行授权和后续回执；原快照字节保留。
+> 2026-10-26执行增量：用户已授权按本包实施、完成回归并提交代码/PR。继承PR110的980a1383，只对先红夹具确认的RCW生命周期、目录冲突及空目标补缺；[当前实现与证据](../runtime/validation/unicode-shortcut-compatibility-01.md)、[操作和集成](../../runtime/unicode-shortcut-compatibility-01.md)。PR112已在43382c59继承原Unicode修复，但仍需继承本轮差量。下文“仅分析/尚未提交/尚未接入”是11:17工作包形成时的事实，不覆盖本段执行授权和后续回执；原快照字节保留。
 
 形成日期：2026-10-26。初核快照：2026-10-26 03:12 UTC；末次状态核对：03:17 UTC（新加坡时间 11:17）。本轮交付为分析和后续执行工作包，未修改生产代码、运行安装/卸载或重新执行产品测试。工作包保存在独立 D 盘工作树；未提交、推送或合并。本包的新编号 USC-01～USC-10 只用于本项追踪，不替换 ST、REQ、BR、CAPI、D、RV 编号。
 

@@ -1,4 +1,4 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
 
 > TCP存活语义由[P0-STABILITY-01/ST06](p0-stability-01.md#st06-tcp存活第一阶段)更新：keepalive和有限入站确认；旧本地定时续Ready说明只保留形成时适用范围。自动重连仍未启用，实际资格见新回执。
 >
@@ -6,7 +6,7 @@
 
 # 长期稳定性运行、维护及资格
 
-当前历史维护采用[输入分页及完整预算](retention-ingress-02.md)。最新完整规模与受保护CLI实测见[PR106记录](validation/retention-ingress-full-retest-03.md)；PR103超预算FAIL及后续UAC取消是历史证据，未被删除，也不再表示最新实现状态。2592000、目标工控机、真实设备和24h/72h仍单独待验。
+当前历史维护采用[输入分页及完整预算](../archive/runtime/retention-ingress-02.md)。最新完整规模与受保护CLI实测见[PR106记录](../archive/runtime/validation/retention-ingress-full-retest-03.md)；PR103超预算FAIL及后续UAC取消是历史证据，未被删除，也不再表示最新实现状态。2592000、目标工控机、真实设备和24h/72h仍单独待验。
 
 当前可靠性与存储分别按本次程序集及Parcel 10基线验证；历史源码、冻结介质及24h资格记录保留原身份。真实设备和现场资格不能由结构等价证明替代。
 
@@ -91,10 +91,10 @@ python scripts/stability-qualification.py collect --plan D:/stability/plan.json 
 python scripts/stability-qualification.py analyze --collection D:/stability/新24h目录 --database D:/backups/完整备份.db --source-events D:/stability/source-events.jsonl --output D:/stability/分析.json
 ```
 
-`collect --smoke-seconds 30`只检查采集器，永远SMOKE_ONLY。正常段默认15分钟预热后连续24h；故障注入另开目录，不计入正常段；按风险执行72h及多次跨日。使用原[独立loopback负载脚本](../reviews/win11-24x7-stability-audit-01/verification/LOOPBACK-README.md)时保持127.0.0.1、双位独立节拍，负载总时长须覆盖预热+完整正常段+两端核对余量。socket-write只是来源写出，分析通过唯一合成条码/位与接收账逐笔核对；重复/多码/跨边界/缺失均单列，不静默丢弃。真实SDK来源需提供同等可关联的原来源日志后按其合同适配，不冒用合成条码结论。
+`collect --smoke-seconds 30`只检查采集器，永远SMOKE_ONLY。正常段默认15分钟预热后连续24h；故障注入另开目录，不计入正常段；按风险执行72h及多次跨日。使用原独立loopback负载脚本时保持127.0.0.1、双位独立节拍，负载总时长须覆盖预热+完整正常段+两端核对余量。socket-write只是来源写出，分析通过唯一合成条码/位与接收账逐笔核对；重复/多码/跨边界/缺失均单列，不静默丢弃。真实SDK来源需提供同等可关联的原来源日志后按其合同适配，不冒用合成条码结论。
 
 分析先校验COMPLETED全文件hash、DB完整性及Parcel 10，再流式导出输入ID/原hash/来源Epoch/序列/去向，计算逐位排队和业务处理P95/P99/最大值。统计业务处理完成不代表RCS接受或物理完成；并发源日志/RCS日志/原业务账继续核对。采集提供UI延迟、worker状态、资源趋势、最老等待与节拍，仍需审查性能阈值、真实设备合同和故障恢复证据。工具只给COLLECTED_REQUIRES_RECONCILIATION或ANALYZED_REVIEW_REQUIRED，不自动授予生产PASS。
 
 当前没有完整24h/72h、目标8GB、多Windows版本和实际双SDK/RCS组合证据，这些资格均NOT_RUN/BLOCKED。规模预置与短时原生验证单独记录，不能累计或改标为长稳。
 
-实际构建、冻结SHA及原始证据见[本轮验证记录](validation/win11-24x7-stability-remediation-01.md)。
+实际构建、冻结SHA及原始证据见[本轮验证记录](../archive/runtime/validation/win11-24x7-stability-remediation-01.md)。

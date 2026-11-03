@@ -3,7 +3,7 @@
 # WP-IPC-REFERENCE-VALIDATION-09：07/08/10核心证据与同版交付
 
 
-> 当前纠偏结果：**REFERENCE_PASS / WINDOWS_NOT_RUN / REAL_CAPABILITIES_BLOCKED**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../../runtime/reference-validation-09.md)及[检查](../../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+> 当前纠偏结果：**REFERENCE_PASS / WINDOWS_NOT_RUN / REAL_CAPABILITIES_BLOCKED**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
 
 ## 形成时工作包定义与记录
 

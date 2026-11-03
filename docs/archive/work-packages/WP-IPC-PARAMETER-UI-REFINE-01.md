@@ -1,4 +1,4 @@
-> 2026-10-23后续授权：用户现要求不测试，将已提交代码、报告和文档推送并创建PR、合并全部开放PR。下文“仅本地/不推送”等保留原任务形成时范围，最新发布状态见[本轮合并记录](../../runtime/publication-parameter-ui-20261023.md)；原验证与安装/现场边界不变。
+> 2026-10-23后续授权：用户现要求不测试，将已提交代码、报告和文档推送并创建PR、合并全部开放PR。下文“仅本地/不推送”等保留原任务形成时范围，最新发布状态见[本轮合并记录](../runtime/publication-parameter-ui-20261023.md)；原验证与安装/现场边界不变。
 
 ﻿# WP-IPC-PARAMETER-UI-REFINE-01
 
@@ -14,4 +14,4 @@
 
 验证按实际风险覆盖参数与首配共模、保存/草稿/导入、错误当前性/定位、左右实例、权限失效、原生尺寸/焦点/菜单。真实系统DPI、原生合成和SDK/设备/现场分别记录；不以设计PNG、HTML或测试数量代替验收。最终修改映射、截图与验证边界记入实施报告。
 
-本轮交付：[实际操作与源码映射](../../runtime/parameter-ui-refine-01.md)、[Windows原生验收、截图与剩余问题](../../runtime/validation/parameter-ui-refine-01.md)。
+本轮交付：[实际操作与源码映射](../runtime/parameter-ui-refine-01.md)、[Windows原生验收、截图与剩余问题](../runtime/validation/parameter-ui-refine-01.md)。

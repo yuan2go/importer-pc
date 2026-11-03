@@ -59,4 +59,4 @@ SM保存由Application临时阻断新准入并有界等待在途，不要求操�
 
 职责编号见[F-01～F-12](framework-decisions.md)，本轮规则入口见[INDEX](../INDEX.md)。构建、合成验证、本机Windows、系统安装、真实SDK/RCS、目标工控机及现场分别记录。SDK/合同/实体或授权缺失时完成不受影响工作，但缺能力拒绝Production。D/RV批准不因代码或测试通过自动改变。
 
-[整理前原文](../archive/pre-contract-convergence-02/README.md)保留完整设计来源和各阶段记录；它不要求当前代码继续支持已被替代的行为。
+整理前原文保留完整设计来源和各阶段记录；它不要求当前代码继续支持已被替代的行为。

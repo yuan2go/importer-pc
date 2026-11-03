@@ -14,7 +14,7 @@
 
 ## 验证与边界
 
-证据见[目录](evidence/sm-manual-debug-flow-10/README.md)。Application人工验证使用Production配置、显式合成待配置/断线相机端口、真实SQLite和内置RCS适配器连接本地合成HTTP对端；不经过真实SDK、设备或客户RCS。原生验证使用真实Windows WPF控件和同一Application，未通过网页/CDP代替WPF。
+证据见目录。Application人工验证使用Production配置、显式合成待配置/断线相机端口、真实SQLite和内置RCS适配器连接本地合成HTTP对端；不经过真实SDK、设备或客户RCS。原生验证使用真实Windows WPF控件和同一Application，未通过网页/CDP代替WPF。
 
 - 人工链路24项：两相机未配置/断线、键盘/PDA、前导零、左右位、缺少逻辑来源编码的精确拒绝、实际RCS接受、防重复、RCS离线、暂停/恢复、相机观察仍受健康守卫、Unknown/原责任、重启原字节保留且不重发。
 - 单轮Application36项、原生调试24项：清空、同帧像素/绿框、完整码在照片上方、冻结请求、下一件不覆盖、明确发送、撤权/多窗口/原请求保留及800×420滚动操作。

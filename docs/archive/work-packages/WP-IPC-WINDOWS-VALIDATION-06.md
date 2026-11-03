@@ -1,7 +1,7 @@
 # WP-IPC-WINDOWS-VALIDATION-06：Windows参考产品操作验证
 
 
-> 当前纠偏结果：**ENVIRONMENT_BLOCKED / W-01-06_NOT_RUN**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../../runtime/reference-validation-09.md)及[检查](../../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+> 当前纠偏结果：**ENVIRONMENT_BLOCKED / W-01-06_NOT_RUN**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
 
 ## 形成时工作包定义与记录
 
@@ -9,13 +9,13 @@
 
 状态：**NOT_RUN / 等待明确执行授权与目标Windows环境**。2026-10-16形成；分析基准main `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`。补齐manifest中已有工作包编号，不改原Windows结果。
 
-当前工程增量见 [07交付记录](../../runtime/engineering-closure-07.md)，代码源提交493416f；没有新二进制或运行结果。本包原NOT_RUN/BLOCKED边界继续有效，不因工程实现而自动关闭。
+当前工程增量见 [07交付记录](../runtime/engineering-closure-07.md)，代码源提交493416f；没有新二进制或运行结果。本包原NOT_RUN/BLOCKED边界继续有效，不因工程实现而自动关闭。
 
 最新复核为[MAIN-REVIEW-03](../../reviews/main-static-review-03.md)，基准main `2579392`；E-06/E-10继续由[工程增量08](WP-IPC-ENGINEERING-FOLLOWUP-08.md)整改，核心证据及同版包由[参考验证09](WP-IPC-REFERENCE-VALIDATION-09.md)在获准后形成。[UI基线落实10](WP-IPC-UI-BASELINE-ALIGNMENT-10.md)负责实物到WPF的逐页差异；本包状态不变，设计图和07代码存在不等于Windows已验证。
 
 ## 目标与前置
 
-验证实际Windows包、操作工作站、显示输入与维护路径；继承 [alignment-01-windows.md](../../runtime/alignment-01-windows.md) 的细目和 [MAIN-REVIEW-02](../../reviews/main-static-review-02.md) W-01～06。核心模拟PASS、交叉编译及包完整性不能代替本包。
+验证实际Windows包、操作工作站、显示输入与维护路径；继承 [alignment-01-windows.md](../runtime/alignment-01-windows.md) 的细目和 [MAIN-REVIEW-02](../../reviews/main-static-review-02.md) W-01～06。核心模拟PASS、交叉编译及包完整性不能代替本包。
 
 本次用户“不要测试”有效，当前不启动任何程序或场景。后续执行须收到明确恢复验证授权，有Windows 11 build26100+ x64参考环境、可用输入/显示设备，以及固定SourceCommit/发布包SHA。现场目标OS/触控/扫码与参考基线不同的部分另列差异，不能擅称已支持。
 

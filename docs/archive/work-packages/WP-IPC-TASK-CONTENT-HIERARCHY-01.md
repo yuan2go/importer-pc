@@ -1,6 +1,6 @@
 # TASK-CONTENT-HIERARCHY-01
 
-2026-10-24 CI续修：PR94已合并为`524ff26264003b283ae188ee28fd6630513b36d2`，PR95已合并为`67a6440711d1069f2cf82df265279d635d4e61b8`。本次从后者建立`codex/task-context-ci-fix`，补齐跨平台验证工程的TaskContextPresentation源码链接，继承PR94 TCP绑定修复和原安全断言。以下未合并描述保留原开发时点；新验证、提交和产物身份见[CI续修记录](../../runtime/validation/task-context-ci-fix-01.md)。
+2026-10-24 CI续修：PR94已合并为`524ff26264003b283ae188ee28fd6630513b36d2`，PR95已合并为`67a6440711d1069f2cf82df265279d635d4e61b8`。本次从后者建立`codex/task-context-ci-fix`，补齐跨平台验证工程的TaskContextPresentation源码链接，继承PR94 TCP绑定修复和原安全断言。以下未合并描述保留原开发时点；新验证、提交和产物身份见[CI续修记录](../runtime/validation/task-context-ci-fix-01.md)。
 
 2026-10-24：承接用户2026-10-23对信息主次的纠偏，以最新 main `c2300cd` 开工；无开放PR。开发分支 `codex/task-content-hierarchy-01`，四个未跟踪原稿/ZIP保留本地。
 
@@ -14,4 +14,4 @@
 
 验证两种原生窗口的当前组合，使用隔离合成端口/数据、真实HWND/Dispatcher和实际Windows DPI，采集同场景前后PNG及几何数据。覆盖标准/紧凑、长通知、失效、焦点/选区/滚动、草稿、管理撤权及必要构建；失败修复后重跑相关场景。未做物理键鼠/其他OS DPI/目标工控机、安装、真实SDK/RCS或现场验证时分别记录，不以静态分析代替。
 
-结果与证据：[运行记录](../../runtime/task-content-hierarchy-01.md)。
+结果与证据：[运行记录](../runtime/task-content-hierarchy-01.md)。

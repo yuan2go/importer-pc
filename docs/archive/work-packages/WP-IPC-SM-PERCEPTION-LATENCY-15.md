@@ -26,7 +26,7 @@ RV-SM-PERCEPTION-15-05：历史同一批30张6MP私有图像，完整ZXing与测
 
 ## 本轮收口状态
 
-最终产品SourceCommit `05a4b9abb049f876ad23b895350878d2e3a1de32`；完整结果和精确源码/证据散列见[实施报告](../../runtime/sm-perception-latency-15.md)及[summary.json](../../runtime/evidence/sm-perception-latency-15/summary.json)。
+最终产品SourceCommit `05a4b9abb049f876ad23b895350878d2e3a1de32`；完整结果和精确源码/证据散列见[实施报告](../runtime/sm-perception-latency-15.md)及[summary.json](../../runtime/evidence/sm-perception-latency-15/summary.json)。
 
 - RV-SM-PERCEPTION-15-01：本机原生WPF PASS；现场保留待验。
 - RV-SM-PERCEPTION-15-02：合成SDK压力、87条生命周期守卫及Application原图/原请求回归 PASS；真实相机长稳/停留时间待验。

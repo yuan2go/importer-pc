@@ -2,9 +2,9 @@
 
 # Sportmaster 原生视觉产品化
 
-> main 续核：PR58 的整套视觉实现及 PR57 的发行整合已合入 main `e0beb5d32c6a24a7799ba698731566bca6a6833a`。本轮沿[续核设计](../design/sportmaster-visual-main-closure-01.md)修复共享日历的无效日期恢复路径：错误保持到明确更正/清除，关闭日历不再使用旧日期，记录与支持共用此规则。最终候选的源码与库存以其 `app/application-release.json` / `SHA256SUMS` 为准；下文 dfc2ab6 是先前已验证的历史介质，不代表后继源码身份。续核结果单独记账，目标 Windows 和现场资格仍须独立验收。
+> main 续核：PR58 的整套视觉实现及 PR57 的发行整合已合入 main `e0beb5d32c6a24a7799ba698731566bca6a6833a`。本轮沿[续核设计](../archive/design/sportmaster-visual-main-closure-01.md)修复共享日历的无效日期恢复路径：错误保持到明确更正/清除，关闭日历不再使用旧日期，记录与支持共用此规则。最终候选的源码与库存以其 `app/application-release.json` / `SHA256SUMS` 为准；下文 dfc2ab6 是先前已验证的历史介质，不代表后继源码身份。续核结果单独记账，目标 Windows 和现场资格仍须独立验收。
 
-任务 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01；开工main `f3059d499cd4dbc60b443f0a54cac939b2e5db2f`。[编码前基准](../design/sportmaster-visual-productization-01.md)、[清理前原字节](../archive/pre-sportmaster-visual-01/README.md)、[本轮证据](evidence/sportmaster-visual-01/README.md)分别管理目标、来源与实测。业务1.4.0 / Application.Contracts1.10.0 / Parcel DB8不变，无新生产NuGet、浏览器、字体或设备依赖。
+任务 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01；开工main `f3059d499cd4dbc60b443f0a54cac939b2e5db2f`。[编码前基准](../archive/design/sportmaster-visual-productization-01.md)、清理前原字节、本轮证据分别管理目标、来源与实测。业务1.4.0 / Application.Contracts1.10.0 / Parcel DB8不变，无新生产NuGet、浏览器、字体或设备依赖。
 
 ## 实际使用
 
@@ -32,7 +32,7 @@ standard纵向条码/大格口，compact横向字段；小客户区使用更紧�
 
 开发构建：`dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json -m:1 -nr:false`。正常运行仍需已安装机器政策和指定账户，不用调试参数绕过。
 
-合成原生检查：`dotnet run --project tests/Ipc.Desktop.UiVerification -p:Application=Sportmaster -- . --visual-productization`；查看首配时设置IPC_FROZEN_DESKTOP为同版Sportmaster桌面DLL。该环境变量只供测试夹具定位DLL，客户端不读取它。最终发布DLL验证复用[Windows清单](validation/sportmaster-alternate-ui-windows.md)中的verify-commercial-wpf入口。
+合成原生检查：`dotnet run --project tests/Ipc.Desktop.UiVerification -p:Application=Sportmaster -- . --visual-productization`；查看首配时设置IPC_FROZEN_DESKTOP为同版Sportmaster桌面DLL。该环境变量只供测试夹具定位DLL，客户端不读取它。最终发布DLL验证复用[Windows清单](../archive/runtime/validation/sportmaster-alternate-ui-windows.md)中的verify-commercial-wpf入口。
 
 冻结打包：先提交运行源码/配置/随包指南，再执行 `python scripts/package-application.py --application sportmaster --target win-x64 --output <全新目录> --dotnet <10.0.402路径>`。本轮本地介质和实际检查的精确源码/库存/结果统一写在证据入口；不覆盖或重标旧Release。
 
@@ -50,7 +50,7 @@ standard纵向条码/大格口，compact横向字段；小客户区使用更紧�
 
 运行源码和同版原生夹具固定为 `dfc2ab68d263340037751651c442dd5b33023b32`；该提交相对9247db6仅修正维护展开区的验证定位，客户端代码相同。最终文档/证据及验证脚本的预览输出目录修正另行提交，不重标介质SourceCommit。
 
-本地介质 `.artifacts/sportmaster-visual-dfc2ab6-win-x64.zip`，SHA256 `f599db06205f0f1f782593654611839532c99ee27d6ee88dbb38393c63082ed9`。746项库存无变化、ZIP CRC通过；库存SHA、大小、版本及逐DLL身份见[MEDIA.json](evidence/sportmaster-visual-01/MEDIA.json)。本轮不覆盖旧Release。
+本地介质 `.artifacts/sportmaster-visual-dfc2ab6-win-x64.zip`，SHA256 `f599db06205f0f1f782593654611839532c99ee27d6ee88dbb38393c63082ed9`。746项库存无变化、ZIP CRC通过；库存SHA、大小、版本及逐DLL身份见MEDIA.json。本轮不覆盖旧Release。
 
 冻结原生入口（新输出目录）：
 
@@ -61,4 +61,4 @@ standard纵向条码/大格口，compact横向字段；小客户区使用更紧�
 
 验证机为Windows 11家庭中文版22631 x64，SDK10.0.402、WPF DPI1.25，低于安装目标26100+；不以本机界面测试授予目标安装资格。首配/维护/帮助与视觉工作台是分别运行的同版检查，日志和结果在证据final/；真实可见HWND输入与RenderTargetBitmap布局图分别标记。原生实测覆盖左右延迟/回执丢失/原请求核对、Unknown/拒绝/失效、长内容、800×420实际客户区、连续快照焦点/选择/滚动/展开/历史选择/草稿、显式时区和共享窗口资源。
 
-相关构建和生命周期回归通过；合并后发行文档2项、商业交付脚本5项回归通过。全树归档检查仍为FAIL：保留原稿PPTX的265项媒体类型不符及2项原元数据标记，规范Git字节导出未发现新增内容身份/manifest checksum错误；详见[检查摘要](evidence/sportmaster-visual-01/archive-audit-summary.json)。未删除原稿、压制检查或改写历史结果。
+相关构建和生命周期回归通过；合并后发行文档2项、商业交付脚本5项回归通过。全树归档检查仍为FAIL：保留原稿PPTX的265项媒体类型不符及2项原元数据标记，规范Git字节导出未发现新增内容身份/manifest checksum错误；详见检查摘要。未删除原稿、压制检查或改写历史结果。

@@ -22,6 +22,6 @@
 
 参考合成设备与macOS验证不等于Windows实际、真实相机SDK/WCS/PLC或现场验收。Production缺真实能力仍拒绝。只交授权通用实现和合成证据，不带客户原稿、SDK、字体、生产数据或凭据。
 
-实现及验证已完成，见[结果报告](../../runtime/acquisition-lifecycle-p2.md)。源码固定`ca35b16a0ef883126b39640c19ea6f840e5a9716`；最后远端PR交付另记，未授权合并main。
+实现及验证已完成，见[结果报告](../runtime/acquisition-lifecycle-p2.md)。源码固定`ca35b16a0ef883126b39640c19ea6f840e5a9716`；最后远端PR交付另记，未授权合并main。
 
 已创建并读回[PR #23](https://github.com/yuan2go/importer-pc/pull/23)，base=main，OPEN；源码提交`ca35b16`，结果/证据提交`8415e9c`。未合并。最后交付记录只补远端回执及清单，不改变运行源码或候选。

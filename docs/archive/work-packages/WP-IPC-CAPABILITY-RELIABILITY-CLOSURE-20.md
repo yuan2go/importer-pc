@@ -14,7 +14,7 @@
 
 验证入口：dotnet build tests/Ipc.Application.Verification -m:1 -nr:false；相同程序集运行 . --reliability-closure 与 . --capability-closure。新增测试先记录红灯，再修复并保存结果，不删除旧断言。源码/配置/指南提交后用scripts/package-application.py打包并解压检查；不复用旧包。
 
-源码完成后冻结提交；冻结身份、实际验证及最终PR见[实施回执](../../runtime/capability-reliability-20-results.md)。新候选只核受影响闭包，不重复六候选/18全组合；Windows实际仍NOT_RUN。
+源码完成后冻结提交；冻结身份、实际验证及最终PR见[实施回执](../runtime/capability-reliability-20-results.md)。新候选只核受影响闭包，不重复六候选/18全组合；Windows实际仍NOT_RUN。
 
 最终运行源码a147eac7e4bafb70e16b2c677c2a2933909234d3；A～E、44条定向断言、17/19/平台基线、实际签名链和四个新候选解包/四条进程冒烟完成。Windows实际NOT_RUN，真实能力按所选证据BLOCKED。PR交付回执在实施报告补录。
 

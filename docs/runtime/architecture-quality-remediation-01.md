@@ -1,4 +1,4 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
 
 # AQA01 架构质量整改 · 当前实现与验证入口
 
@@ -12,7 +12,7 @@
 * 进入时新鲜、处理时因本位排队超时的新实体：写既有`InputObserved`账为`Rejected / ObservationExpired`，不创建作业或请求。有效注册的当前输入遇到健康失效写`Blocked`。
 * 已有实体按原冻结条码策略核对重复/冲突，原请求、未知结果、资料和原图责任不清除。
 
-`DisplayedOperation`及既有Sportmaster/共享页面投影消费同一输入事实，上一终结格口不能借给本次失败输入。未结原作业继续作为独立责任显示；位间调度、位内顺序和软件暂停语义不变。接收责任现按[稳定性整改设计](../design/win11-24x7-stability-remediation-01.md)在同一业务账持久化；接收、内存排队、业务Admitted及完成分别核对。AQA01形成时仅RAM接收时间的原说明见[归档](../archive/pre-win11-24x7-stability-remediation-01/README.md)，原测试结论不扩大。
+`DisplayedOperation`及既有Sportmaster/共享页面投影消费同一输入事实，上一终结格口不能借给本次失败输入。未结原作业继续作为独立责任显示；位间调度、位内顺序和软件暂停语义不变。接收责任现按[稳定性整改设计](../archive/design/win11-24x7-stability-remediation-01.md)在同一业务账持久化；接收、内存排队、业务Admitted及完成分别核对。AQA01形成时仅RAM接收时间的原说明见归档，原测试结论不扩大。
 
 ## 命令持久化（F02）
 
@@ -54,4 +54,4 @@ dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=
 dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --architecture-quality-remediation
 ```
 
-其他必要验证、命令、退出码及边界见[本轮验证记录](validation/architecture-quality-remediation-01.md)。运行证据为本机Windows上的合成数据、真实SQLite/loopback及解包进程；界面投影测试不是原生窗口人工验收，参考端点不是真实WCS/PLC验收。Windows目标构建、实际进程、安装/UAC/受保护Store、厂商SDK及现场分别计证。
+其他必要验证、命令、退出码及边界见[本轮验证记录](../archive/runtime/validation/architecture-quality-remediation-01.md)。运行证据为本机Windows上的合成数据、真实SQLite/loopback及解包进程；界面投影测试不是原生窗口人工验收，参考端点不是真实WCS/PLC验收。Windows目标构建、实际进程、安装/UAC/受保护Store、厂商SDK及现场分别计证。

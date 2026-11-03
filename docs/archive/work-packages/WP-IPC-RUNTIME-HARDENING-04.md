@@ -16,6 +16,6 @@
 
 替代方案已排除：忽略Overload继续发送会绕过输入缺失证据；允许Prepared直接清库取消会丢失原意图；放大报警LIMIT仍不能保证旧活动报警可见。采用受控本地终结、独立故障确认及活动查询，不改变生产规则。
 
-实际结果与剩余外部/Windows边界见 [HARDENING-04结果](../../runtime/hardening-04.md)。
+实际结果与剩余外部/Windows边界见 [HARDENING-04结果](../runtime/hardening-04.md)。
 
-实际结果与剩余外部/Windows边界见 [HARDENING-04结果](../../runtime/hardening-04.md)。
+实际结果与剩余外部/Windows边界见 [HARDENING-04结果](../runtime/hardening-04.md)。

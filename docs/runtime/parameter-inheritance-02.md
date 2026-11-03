@@ -4,7 +4,7 @@
 
 本轮沿 PARAM-01 / PARAM-UX-02 实施，Sportmaster 版本 1.8.0；共享合同 1.14.0，DirectPlc/WcsToPlc 1.5.0。具体源码、原生截图和安装介质身份由本轮验证记录给出；本文不是现场验收。原 1.7.0 / PR80 介质和 PR81/82 验证各守原 SourceCommit。
 
-设计与证据依据见[本轮裁决](../design/parameter-inheritance-02.md)和[93项统一迁移表](../design/parameter-legacy-migration-02.csv)。旧字段来自用户的旧系统盘点；被引用的旧读取源码当前未取得，不执行猜测式自动转值。迁移前保留旧配置原件，逐行确认单位、用途和对应 Application，然后在现有首配或参数目录中填写；不能将旧 JSON 改键后直接用于生产。
+设计与证据依据见[本轮裁决](../archive/design/parameter-inheritance-02.md)和[93项统一迁移表](../archive/design/parameter-legacy-migration-02.csv)。旧字段来自用户的旧系统盘点；被引用的旧读取源码当前未取得，不执行猜测式自动转值。迁移前保留旧配置原件，逐行确认单位、用途和对应 Application，然后在现有首配或参数目录中填写；不能将旧 JSON 改键后直接用于生产。
 
 ## 日常参数与首配
 

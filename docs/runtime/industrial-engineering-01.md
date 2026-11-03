@@ -65,7 +65,7 @@ dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:RestoreLockedMode=tr
 
 ## P04诊断加固增量
 
-核对实际源码发现`StationDiagnosticPackage.cs`及维护中心/诊断页的导出入口已存在于main；前文“诊断zip未实现”是错误状态记录，按[原字节归档](../archive/pre-industrial-diagnostics-01/manifest.json)保留并在此更正。本次扩展现有路径，不重建第二套导出框架，也不覆盖并行PR185/186的界面。
+核对实际源码发现`StationDiagnosticPackage.cs`及维护中心/诊断页的导出入口已存在于main；前文“诊断zip未实现”是错误状态记录，按原字节归档保留并在此更正。本次扩展现有路径，不重建第二套导出框架，也不覆盖并行PR185/186的界面。
 
 - 详细包仍需管理模式；新增带Partial/大小/SHA256/固定截止时间的应用回执，原接口继续返回已发布路径。当前包明确Partial：保留日志不能证明24小时完整，安装仅有受保护登记摘要，不冒充完整事务回执。
 - 六项JSON：运行快照、最多2000条日志元数据索引、磁盘/网卡类型状态汇总、运行版本/源、安装登记摘要及manifest。只选显式类型字段，未知/嵌套/自由文本均不收集；本包一致别名替代配置/设备/作业身份。无原始日志正文、业务库、条码、图片、IP、序列号、配置目标、认证材料或原报文；不是恢复备份。
@@ -76,7 +76,7 @@ P02同期修正首次卸载：已有独立维护库存时，不再要求运行�
 
 [CI41510679875](https://github.com/yuan2go/importer-pc/actions/runs/41510679875)，SourceCommit `6b1ed40b225ad5836fc2857e5f80fd61ddf6935b`：8组标准核心回归全通过，包含诊断34项与生命周期27项；三个业务桌面构建及文档门禁通过。TRX同时核对8个必需selector各出现一次且Passed，不以仅有总数替代身份核验。以上待CI描述是提交时状态，现以本条结果更新，未扩大为原生/系统/现场PASS。
 
-P06签名门禁的当前实现、运行方式、14项合成策略与5项Python证据测试，以及未取得的正式签名/载荷/吊销/SmartScreen资格，见[发布策略](industrial-release-policy-01.md)。
+P06签名门禁的当前实现、运行方式、14项合成策略与5项Python证据测试，以及未取得的正式签名/载荷/吊销/SmartScreen资格，见[发布策略](../archive/runtime/industrial-release-policy-01.md)。
 
 P05增量格式：新增`industrial-format-files.txt`显式列出13个IE01安全/诊断/验证文件；`verify-industrial-format.ps1`先核验清单非空、路径存在及范围，再用当前锁定SDK的`dotnet format whitespace --folder --verify-no-changes`检查。Folder模式不加载/构建/restore项目，不能与`--no-restore`合用；首轮不兼容参数失败后已修正，未绕过检查。当前13项本地整理及复核通过，纯格式与行为提交分离；该门禁不覆盖全仓、不替代静态分析/测试，也不宣称超长单行治理已完成。框架决策中的旧“CI停用”当前指引同步纠正并保存原字节。
 

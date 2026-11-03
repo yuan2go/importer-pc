@@ -1,13 +1,13 @@
 # 商业化产品交付完整工作包
 
-> 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../../runtime/commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。
+> 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../runtime/commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。
 **编号：WP-IPC-COMMERCIAL-PRODUCTIZATION-01 · 版本：1.0 · 日期：2026-10-19**
 
 **状态：设计与实施交接已形成；本包产品增量待实施，验收 NOT_RUN。**
 
 代码核对基线为 main [b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)。本次授权是整理设计、实现逻辑与执行工作包，清理相关过期当前指引并提交 main；未在此次文档任务中实施业务代码、构建新安装介质或运行设备。下一执行任务须重新读取当时最新 main，继承已完成差额，不能按本文基线重做已合并成果。
 
-> 2026-10-20 安装交付范围已收敛为普通人工安装包和必要说明，详见[范围收敛与检查结论](../../runtime/installation-delivery-scope-01.md)。本次范围修订优先于下文旧计划中相应的批量安装要求；历史实现和验证记录保持原身份。
+> 2026-10-20 安装交付范围已收敛为普通人工安装包和必要说明，详见[范围收敛与检查结论](../runtime/installation-delivery-scope-01.md)。本次范围修订优先于下文旧计划中相应的批量安装要求；历史实现和验证记录保持原身份。
 
 ## 1. 目标与完成标准
 
@@ -23,12 +23,12 @@
 |---|---|
 |[基线核对](../../reviews/commercial-productization-01-baseline.md)|本次实际读到的代码、已有能力、剩余差额、历史来源和过期指引清理|
 |本工作包|范围、依赖、交付单元、完成标准与执行约束|
-|[产品设计](../../design/commercial-productization-01.md)|安装/首配/操作/维护体验、状态、权限和异常分支|
+|[产品设计](../design/commercial-productization-01.md)|安装/首配/操作/维护体验、状态、权限和异常分支|
 |[实现逻辑](../../implementation/commercial-productization-01.md)|责任映射、复用路径、持久化和控制流、变更顺序|
-|[必要验收](../../runtime/validation/commercial-productization-01.md)|风险驱动验证、证据身份、Windows/真实接口门槛|
+|[必要验收](../runtime/validation/commercial-productization-01.md)|风险驱动验证、证据身份、Windows/真实接口门槛|
 |[Codex 执行提示词](Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|精简执行入口；细节以上述文档为准|
 
-开始实施必须先读 [AGENTS](../../../AGENTS.md)、[INDEX](../../INDEX.md)、本包与基线核对，再读 [framework](../../design/framework.md)、[F 决策](../../design/framework-decisions.md)、[22 独立 Application](../../design/application-architecture-22.md)、[恢复设计](../../design/architecture-quality-closure-01.md)、[现行启动部署](../../runtime/startup-deployment-02.md)以及受影响运行指南和代码。UI 修改前还须读 [实物 UI 入口](../../ui/ss-ui-vis-001-v1.1/README.md)、图册、原 HTML、分离 CSS/JS 和完整交接，不把历史模拟流程照搬成当前业务。
+开始实施必须先读 [AGENTS](../../../AGENTS.md)、[INDEX](../../INDEX.md)、本包与基线核对，再读 [framework](../../design/framework.md)、[F 决策](../../design/framework-decisions.md)、[22 独立 Application](../../design/application-architecture-22.md)、[恢复设计](../design/architecture-quality-closure-01.md)、[现行启动部署](../../runtime/startup-deployment-02.md)以及受影响运行指南和代码。UI 修改前还须读 [实物 UI 入口](../../ui/ss-ui-vis-001-v1.1/README.md)、图册、原 HTML、分离 CSS/JS 和完整交接，不把历史模拟流程照搬成当前业务。
 
 对过期文档的处理必须在实际代码修改前形成可审查差异：修正当前指引、合并重复入口、标明替代范围；历史原件与证据保留。后续新发现直接影响实现的文档矛盾也先裁决再编码。不能为了开始编码而删除限制、改写批准状态或覆盖旧验证。
 
@@ -45,7 +45,7 @@
 
 已合并 PR #44/#45 的源码采用最终账户政策：**指定 Windows 账户以非提权进程日常运行；仅有 UAC 过滤/deny-only 管理员组身份不构成拒绝。** 真正提权、系统/服务身份、非指定 SID 继续受运行门禁约束。业务登录与 Windows 维护提权是两个边界，不互相代替。
 
-此基线尚无同时包含 PR #44 与 #45 的统一冻结发布介质。两个现成发布分别保留 e79a8bf 与 16ecb57 来源，详见 [发布记录](../../runtime/publication-deployment-20261019.md)。不能用旧 ZIP、历史测试或原生界面代码存在来宣称本包已完成或 Windows 已通过。
+此基线尚无同时包含 PR #44 与 #45 的统一冻结发布介质。两个现成发布分别保留 e79a8bf 与 16ecb57 来源，详见 [发布记录](../runtime/publication-deployment-20261019.md)。不能用旧 ZIP、历史测试或原生界面代码存在来宣称本包已完成或 Windows 已通过。
 
 ## 4. 不变的架构与业务边界
 
@@ -124,7 +124,7 @@
 
 ## 8. 必要测试与证据
 
-执行 [必要验收](../../runtime/validation/commercial-productization-01.md)。按实际变更选择受影响基线、关键回归和构建；同一不变量尽量由一个有真实区分力的场景覆盖。不为控件改字、重复属性或实现细节增加镜像单测；不重复全历史包、全组合笛卡尔积或无风险依据的压力循环。
+执行 [必要验收](../runtime/validation/commercial-productization-01.md)。按实际变更选择受影响基线、关键回归和构建；同一不变量尽量由一个有真实区分力的场景覆盖。不为控件改字、重复属性或实现细节增加镜像单测；不重复全历史包、全组合笛卡尔积或无风险依据的压力循环。
 
 以下风险涉及即必须验证：安装/配置权限与路径、首次确认和候选激活、CAS 和并发草稿、中断后的权威记录与审计、Unknown 防重发和原请求保真、停止保租约、完整备份恢复及数据库兼容。能用现有夹具覆盖则复用；测试代码失败须实际修复，不能删断言/吞异常/新增豁免换 PASS。
 
@@ -136,7 +136,7 @@
 
 manifest 保留历史发布对象与证据身份，记录本包设计状态、实际代码分析基线和新入口；未变化文件条目不重建或删除。不用局部文档校验替代全仓库历史资产验收。
 
-本次只验证文档范围、引用路径/必要锚点、清理原件字节、manifest 增量身份和远端提交。产品代码、构建、运行、Windows/设备验证未在本次执行。提交回执及文档检查见 [文档交付记录](../../runtime/commercial-productization-01-docs-delivery.md)。
+本次只验证文档范围、引用路径/必要锚点、清理原件字节、manifest 增量身份和远端提交。产品代码、构建、运行、Windows/设备验证未在本次执行。提交回执及文档检查见 [文档交付记录](../runtime/commercial-productization-01-docs-delivery.md)。
 
 ## 10. 下一执行任务的交付物
 

@@ -2,7 +2,7 @@
 
 # 当前Windows安装与维护
 
-支持当前版本从零安装，以及DB22已核验Parcel10→11保留配置与历史更新；不转换其他旧格式、账号或草稿。此前迁移和旧发行步骤已[归档](../archive/pre-fresh-baseline-01/README.md)。历史GitHub Releases保持原样；不能据其PASS声明新介质已验。
+支持当前版本从零安装，以及DB22已核验Parcel10→11保留配置与历史更新；不转换其他旧格式、账号或草稿。此前迁移和旧发行步骤已归档。历史GitHub Releases保持原样；不能据其PASS声明新介质已验。
 
 ## 安装与运行
 

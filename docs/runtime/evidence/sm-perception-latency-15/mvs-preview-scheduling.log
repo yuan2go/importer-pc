@@ -1,4 +1,0 @@
-PASS MVS: both cameras are online with valid frames while their next SDK acquisitions are in flight
-PASS MVS: two persistent SDK loops leave shared worker capacity available for Application preview reads
-PASS MVS: stop still waits for the real SDK acquisition and retains its physical lease
-PASS MVS: native loans and both camera owners drain before their leases are released

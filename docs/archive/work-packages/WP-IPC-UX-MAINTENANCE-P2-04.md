@@ -26,4 +26,4 @@
 
 交付设计补充：原任务要求可取得同源不可变候选，本轮业务升1.3.3、Contracts1.9/DB7保持；冻结Git的SourceRevisionId参与公共DLL身份，采用能力2.2.5、reader1.3.5、RCS1.1.5精确新版本，不覆盖旧包。版本联动在冻结前检查C#/Python及RCS模板。沿既有package/build-extension选装设施生成三个portable core、Sportmaster selected portable/win-x64，并执行解包参考/选装激活/失败恢复/RCS原件旅程；Windows原生仍NOT_RUN。该交付继承原任务授权，不新增商业能力或现场资格。
 
-实际产品冻结ff31b0e / 业务1.3.3，五ZIP及精确签名扩展已交付[参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)，[结果/同版旅程/剩余](../../runtime/ux-maintenance-p2-04-results.md)和本轮证据区分main、PR及实际产物。原1.3.2与所有失败保留；Windows/真实商用门禁未关闭。并行PR41不自动合入，共用交付文档须后续显式协调。
+实际产品冻结ff31b0e / 业务1.3.3，五ZIP及精确签名扩展已交付[参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)，[结果/同版旅程/剩余](../runtime/ux-maintenance-p2-04-results.md)和本轮证据区分main、PR及实际产物。原1.3.2与所有失败保留；Windows/真实商用门禁未关闭。并行PR41不自动合入，共用交付文档须后续显式协调。

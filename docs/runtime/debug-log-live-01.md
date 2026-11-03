@@ -24,4 +24,4 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 # 冻结交付：scripts/verify-commercial-wpf.ps1 -Media <介质> -Output <新的D盘目录> -DebugLogLive
 ```
 
-契约为可选`IRuntimeDiagnosticsControl`，原`IWorkstationAdministration`和配置格式不变；实现为`ParcelRuntimeDiagnostics.cs`、`RuntimeJournal.Tail.cs`、`SoftwareLogRuntime.cs`。不增加运行依赖；继续使用原运行目录和保留配置。[工作包](../archive/work-packages/WP-IPC-DEBUG-LOG-LIVE-01.md)与[本次证据](evidence/debug-log-live-01/README.md)区分源、构建、模拟和真实现场。旧证据保持原身份。
+契约为可选`IRuntimeDiagnosticsControl`，原`IWorkstationAdministration`和配置格式不变；实现为`ParcelRuntimeDiagnostics.cs`、`RuntimeJournal.Tail.cs`、`SoftwareLogRuntime.cs`。不增加运行依赖；继续使用原运行目录和保留配置。[工作包](../archive/work-packages/WP-IPC-DEBUG-LOG-LIVE-01.md)与本次证据区分源、构建、模拟和真实现场。旧证据保持原身份。

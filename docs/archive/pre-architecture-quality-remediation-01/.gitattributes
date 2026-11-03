@@ -1,2 +1,0 @@
-# Original checkout bytes retain their captured line endings and spacing.
-*.txt -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

@@ -1,10 +1,10 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
 
-> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](../archive/runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
 
 # P0稳定性修复运行说明
 
-交付基线为 main `a8cd431456f73e83040f75a0c5e3cc1423440d1b`（PR109后）；F0原基线3a5b1d13的失败/通过记录各守原身份。范围见[工作包](../archive/work-packages/WP-IPC-P0-STABILITY-01.md)，本次结果见[问题卡](validation/p0-stability-01.md)。
+交付基线为 main `a8cd431456f73e83040f75a0c5e3cc1423440d1b`（PR109后）；F0原基线3a5b1d13的失败/通过记录各守原身份。范围见[工作包](../archive/work-packages/WP-IPC-P0-STABILITY-01.md)，本次结果见[问题卡](../archive/runtime/validation/p0-stability-01.md)。
 
 ## ST01 连接分别延后
 

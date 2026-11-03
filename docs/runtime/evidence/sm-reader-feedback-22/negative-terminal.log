@@ -1,5 +1,0 @@
-Unhandled exception. System.InvalidOperationException: B1: processed stale observation has no matching terminal rejection; read feedback can remain orphaned
-   at ReaderIngressTerminal22.Run(String workspace, String root) in D:\w\ipc-camera-chain-main-21\tests\Ipc.Application.Verification\ReaderIngressTerminal22.cs:line 25
-   at ReaderIngressTerminal22.Run(String workspace, String root) in D:\w\ipc-camera-chain-main-21\tests\Ipc.Application.Verification\ReaderIngressTerminal22.cs:line 26
-   at Program.<Main>$(String[] args) in D:\w\ipc-camera-chain-main-21\tests\Ipc.Application.Verification\Program.cs:line 45
-   at Program.<Main>(String[] args)

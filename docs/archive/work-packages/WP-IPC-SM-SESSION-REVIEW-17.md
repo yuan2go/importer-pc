@@ -10,6 +10,6 @@ RV-SM-SESSION-17-02：同帧替换后的观察身份才可记成功呈现，不�
 
 RV-SM-SESSION-17-03：完整驱动/持久责任/原请求/Unknown/原图/原生输入和布局回归，新源码构建、manifest/证据核验及普通受保护PR合并。真实相机/RCS、曝光时基/实机帧率、低端磁盘、物理设备、安装和长稳分别保留待验，不变成代码合并前伪造的PASS。
 
-原当前入口字节见[归档](../pre-sm-session-review-17/manifest.json)，核查矩阵及实际执行见[会话复核](../../runtime/sm-session-review-17.md)。业务/显示输入原身份、SQLite WAL/FULL、内置MVS/RCS、资源守卫和公开范围不变。
+原当前入口字节见[归档](../pre-sm-session-review-17/manifest.json)，核查矩阵及实际执行见[会话复核](../runtime/sm-session-review-17.md)。业务/显示输入原身份、SQLite WAL/FULL、内置MVS/RCS、资源守卫和公开范围不变。
 
 本轮源码`552365c1`四个Release构建0警告/错误，20套件464条定向断言PASS。RV-SM-SESSION-17-01/02本机原生回归PASS；03中的代码/资源/原请求/原图/输入/界面回归PASS，真机/安装/现场边界仍待验。两次PDA前台守卫FAIL保留，用户提供前台后原样35条PASS。无剩余已识别代码合并阻断，按已授权正常PR合并；实际merge以GitHub回执为准。

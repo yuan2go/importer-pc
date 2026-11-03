@@ -27,4 +27,4 @@
 
 ## 最终软件验证
 
-最终源 `4119f23ac50f2d22539496c09eb1513a702b11e6`：三项Release构建、14套应用559项、9套原生WPF292项断言全部通过；同源发布及真实EXE环境报告启动退出0。PC21-01～08的软件实现与局部验证见[运行报告](../../runtime/sm-product-closure-21.md)及[逐项证据](../../runtime/evidence/sm-product-closure-21/README.md)。集中看板依用户决定延期。物理设备、客户RCS、目标IPC/安装、现场及24×7验证未运行，不能据此关闭历史现场RV或声明投产；DB11不提供旧库自动迁移。
+最终源 `4119f23ac50f2d22539496c09eb1513a702b11e6`：三项Release构建、14套应用559项、9套原生WPF292项断言全部通过；同源发布及真实EXE环境报告启动退出0。PC21-01～08的软件实现与局部验证见[运行报告](../runtime/sm-product-closure-21.md)及[逐项证据](../../runtime/evidence/sm-product-closure-21/README.md)。集中看板依用户决定延期。物理设备、客户RCS、目标IPC/安装、现场及24×7验证未运行，不能据此关闭历史现场RV或声明投产；DB11不提供旧库自动迁移。

@@ -8,4 +8,4 @@
 
 不修改UI、业务流程、SQL/schema、历史请求、现有策略文件、SDK/设备或现行发布资产。源码修复不改变旧媒介；部署必须从新固定源码重新构建可信候选，旧包/旧hash不能改称已修复。现有业务/Contracts版本保持，不借本包重新发布或覆盖已签名扩展。
 
-验证：先记录实际脚本分支RED，再运行相同用例GREEN；共享身份判定定向测试；三个Application装配构建、受影响客户端交叉构建和一个固定源码portable媒介启动冒烟。只验证受影响入口，不跑全量业务/恢复/负载套件。Windows身份/ACL/UAC/实际数据库不变性另列NOT_RUN，真实SDK/现场仍BLOCKED。D批准及RV状态不改。结果和命令见[修复证据](../../runtime/runtime-identity-preflight-01.md)。
+验证：先记录实际脚本分支RED，再运行相同用例GREEN；共享身份判定定向测试；三个Application装配构建、受影响客户端交叉构建和一个固定源码portable媒介启动冒烟。只验证受影响入口，不跑全量业务/恢复/负载套件。Windows身份/ACL/UAC/实际数据库不变性另列NOT_RUN，真实SDK/现场仍BLOCKED。D批准及RV状态不改。结果和命令见[修复证据](../runtime/runtime-identity-preflight-01.md)。

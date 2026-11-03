@@ -1,9 +1,0 @@
-PASS PRESENTATION-ORDER newer read notification is pending while the older full snapshot application finishes
-PASS PRESENTATION-ORDER latest full result survives a newer read-only update without waiting for a watchdog publication
-PASS PRESENTATION-ORDER coalescing preserves newest notification and newest full snapshot independently in either arrival order
-PASS PRESENTATION-ORDER coalescing preserves newest notification and newest full snapshot independently in either arrival order
-PASS PRESENTATION-ORDER an older in-flight success cannot clear a newer failure or resurrect its destination
-PASS PRESENTATION-ORDER a newer successful publication recovers the projection without repeating any original request
-CAPTURE presentation-ordering: 1365.6x768 DIP, Windows DPI 1.25/1.25
-PASS PRESENTATION-ORDER an observation replaced before rendering is not falsely recorded as composed; the current identity is measured instead
-PASS PRESENTATION-ORDER coalesced read measurements never create or repeat a business request

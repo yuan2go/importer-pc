@@ -1,8 +1,0 @@
-{
-  "product_commit": "ecec9640c0dbc91925b1a9c4a27632120b505c09",
-  "product_source_unchanged": true,
-  "test": "--reader-ingress-terminal-22",
-  "expected_failure": "B1: processed stale observation has no matching terminal rejection",
-  "exit_code": -532462766,
-  "fixture_sha256": "3FB8C56F3E8BDB5BFA2B2C18779B8C160B5B6E1E6231958308F0CABE0FC8756E"
-}

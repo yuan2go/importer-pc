@@ -1,0 +1,9 @@
+{
+  "strict": true,
+  "checks": [
+    { "context": "core-regression", "app_id": 15368 },
+    { "context": "windows-build (Sportmaster)", "app_id": 15368 },
+    { "context": "windows-build (DirectPlc)", "app_id": 15368 },
+    { "context": "windows-build (WcsToPlc)", "app_id": 15368 }
+  ]
+}

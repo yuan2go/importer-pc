@@ -1,4 +1,4 @@
-> 2026-11-03 本版本按[SM-SECONDARY-ENTRIES-32](../work-packages/WP-IPC-SM-SECONDARY-ENTRIES-32.md)先隐藏“异常处理”和“统计与班次”全部页面入口，顶部效率仅只读显示。下文页面操作属于保留实现及原版本范围；班次记录、业务数据和原请求守卫继续运行。当前可从“记录”查看原作业。修订前原字节见`docs/archive/pre-sm-secondary-entries-32/manifest.json`。
+> 2026-11-03 本版本按[SM-SECONDARY-ENTRIES-32](../archive/work-packages/WP-IPC-SM-SECONDARY-ENTRIES-32.md)先隐藏“异常处理”和“统计与班次”全部页面入口，顶部效率仅只读显示。下文页面操作属于保留实现及原版本范围；班次记录、业务数据和原请求守卫继续运行。当前可从“记录”查看原作业。修订前原字节见`docs/archive/pre-sm-secondary-entries-32/manifest.json`。
 
 # 当前 Parcel12 数据操作
 

@@ -1,6 +1,6 @@
 # 2026-10-26整合执行记录（持续更新）
 
-对应[意图台账](../work-packages/WP-IPC-INTEGRATION-20261026.md)。只记本轮实际执行，不授予现场或发布资格。原冻结回执保持原SourceCommit。
+对应[意图台账](../archive/work-packages/WP-IPC-INTEGRATION-20261026.md)。只记本轮实际执行，不授予现场或发布资格。原冻结回执保持原SourceCommit。
 
 ## 起点与文档收口
 

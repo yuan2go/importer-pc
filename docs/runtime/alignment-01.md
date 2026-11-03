@@ -1,6 +1,6 @@
 # ARCH-UI-ALIGNMENT-01 实施与交付
 
-工作包：[WP-IPC-ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)。基准 main `2b8b35b6025ed87438f27c7c821260f4740befba`（PR #3），2026-10-16。本包在既有 C#/.NET10/WPF/SQLite 参考产品增量实施；不是客户现场迁移。实际源提交、构建/回归/发布哈希与 PR 见[检查记录](alignment-01-checks.json)。H04及RUNTIME-03原记录保留形成时证据。
+工作包：[WP-IPC-ARCH-UI-ALIGNMENT-01](../archive/work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)。基准 main `2b8b35b6025ed87438f27c7c821260f4740befba`（PR #3），2026-10-16。本包在既有 C#/.NET10/WPF/SQLite 参考产品增量实施；不是客户现场迁移。实际源提交、构建/回归/发布哈希与 PR 见[检查记录](alignment-01-checks.json)。H04及RUNTIME-03原记录保留形成时证据。
 
 ## 当前实现与所有权
 

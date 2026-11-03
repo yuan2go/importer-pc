@@ -1,6 +1,6 @@
 # Sportmaster 首个商业交付组合设计
 
-状态：实施设计；起点 `939462bee40c9eebe8eb2aa60860217afd95fcdd`；对应 [工作包](../work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)。工程候选允许真实缺口显式存在；生产交付必须满足额外外部证据，不能以合并代替批准。
+状态：实施设计；起点 `939462bee40c9eebe8eb2aa60860217afd95fcdd`；对应 [工作包](../archive/work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)。工程候选允许真实缺口显式存在；生产交付必须满足额外外部证据，不能以合并代替批准。
 
 ## 产品旅程与唯一权威
 

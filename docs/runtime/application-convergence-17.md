@@ -2,7 +2,7 @@
 
 # Application 架构收敛与场地业务贯通 · 17
 
-当前工作包：[WP-IPC-APPLICATION-CONVERGENCE-17](../work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)。基线 main `6e9c890`；前置文档提交 `54abf1f`。继承 F-02 独立参考工程，不宣称旧现场迁移完成。当前源冻结、运行证据、候选和逐项结果将在本页末尾登记；本节是实际操作指南，不把计划当验证结论。
+当前工作包：[WP-IPC-APPLICATION-CONVERGENCE-17](../archive/work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)。基线 main `6e9c890`；前置文档提交 `54abf1f`。继承 F-02 独立参考工程，不宣称旧现场迁移完成。当前源冻结、运行证据、候选和逐项结果将在本页末尾登记；本节是实际操作指南，不把计划当验证结论。
 
 ## 职责与兼容入口
 

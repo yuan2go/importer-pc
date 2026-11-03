@@ -1,7 +1,7 @@
 
 # Unicode 快捷方式的创建、修复和清理
 
-本增量继承 PR110 `980a1383` 的 IShellLinkW/IPersistFile 实现，保留精确中文名、菜单参数、上一部署归属和安装权限。工作范围见[工作包](../work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md)，真实源码、失败及回归见[验证记录](validation/unicode-shortcut-compatibility-01.md)。
+本增量继承 PR110 `980a1383` 的 IShellLinkW/IPersistFile 实现，保留精确中文名、菜单参数、上一部署归属和安装权限。工作范围见[工作包](../archive/work-packages/WP-IPC-UNICODE-SHORTCUT-COMPATIBILITY-01.md)，真实源码、失败及回归见[验证记录](validation/unicode-shortcut-compatibility-01.md)。
 
 ## 运行行为
 

@@ -4,7 +4,7 @@
 
 ## 身份与范围
 
-开工及冻结时main均为 `9f320459969ee4398dc602ae037ecdcb3685996c`，与分析基准相同；开工无并行PR。隔离工作树、`codex/wp-ipc-extension-windows-delivery-12`分支实施，原工作区未跟踪的客户材料及用户输入留在原处，未覆盖、未公开。工作包从用户放入docs的原文件逐字节复制到 [正式工作包](../work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)。
+开工及冻结时main均为 `9f320459969ee4398dc602ae037ecdcb3685996c`，与分析基准相同；开工无并行PR。隔离工作树、`codex/wp-ipc-extension-windows-delivery-12`分支实施，原工作区未跟踪的客户材料及用户输入留在原处，未覆盖、未公开。工作包从用户放入docs的原文件逐字节复制到 [正式工作包](../archive/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)。
 
 前置文档提交 `7e61323` 在业务改动前保存原始证据到 [pre-extension-delivery-12](../archive/pre-extension-delivery-12/README.md)，更新当前入口与F-04/F-06/F-10，允许受控后装与配置扩展。历史PASS/NOT_RUN、D/RV批准与实际现场缺口不倒写；目标未改为现有代码即正确。
 

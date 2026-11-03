@@ -1,4 +1,4 @@
-> 当前SM调试隔离条款已被[SM-DEBUG-NO-ISOLATION-31](../work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)替代：调试不暂停整站、不阻止保存或启动，不恢复旧隔离。保留真实RCS调试及原请求守卫。修订前完整字节见`docs/archive/pre-sm-debug-no-isolation-31/manifest.json`；下文冲突的旧隔离描述仅保留历史范围。
+> 当前SM调试隔离条款已被[SM-DEBUG-NO-ISOLATION-31](../archive/work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)替代：调试不暂停整站、不阻止保存或启动，不恢复旧隔离。保留真实RCS调试及原请求守卫。修订前完整字节见`docs/archive/pre-sm-debug-no-isolation-31/manifest.json`；下文冲突的旧隔离描述仅保留历史范围。
 
 # SM扫码、调试与采集诊断 · OP29
 
@@ -6,7 +6,7 @@
 
 ## 正常供包（继承 main 38cb7dc0）
 
-按[SM-SAME-PLACEMENT-29](../work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)执行：每个投递位的一次托盘放置只创建一次RCS请求，持续同码观察指向原作业，不创建新的作业或请求。相机采集、视频和识别继续运行，以观察空托盘；不能冻结解码来实现等待，否则会失去空托盘事实。每位RCS请求仍按原处理顺序完成，另一位独立运行。
+按[SM-SAME-PLACEMENT-29](../archive/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)执行：每个投递位的一次托盘放置只创建一次RCS请求，持续同码观察指向原作业，不创建新的作业或请求。相机采集、视频和识别继续运行，以观察空托盘；不能冻结解码来实现等待，否则会失去空托盘事实。每位RCS请求仍按原处理顺序完成，另一位独立运行。
 
 相机连续3帧无码且跨度至少800毫秒后结束该次放置，短暂反光和坏帧不作为释放；相机来源不能仅因时间过去而释放。空托盘后再次读到同码属于新放置，读取不同码按main规则进入新放置。人工输入是明确提交；人工与相机关联、未送达和超时后的新放置准入沿用main的原合同守卫，不自动重发原请求。畸形回包、冲突及无证据的未知结果仍须核对原责任；内置RCS不提供结果查询，不伪造结果查询。
 

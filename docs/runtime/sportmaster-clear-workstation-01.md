@@ -1,6 +1,6 @@
 # Sportmaster 工作台信息精简
 
-[工作包](../work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)。本轮只调整 Sportmaster 默认 WPF 工作台，继承 PR60 的业务和安全守卫。原 HTML/CSS/JS 为 SS-UI-VIS-001 v1.1 模拟设计，当前实现仍是扫码到 WCS 格口，不补造箱号、波次、数量或物理完成。
+[工作包](../archive/work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)。本轮只调整 Sportmaster 默认 WPF 工作台，继承 PR60 的业务和安全守卫。原 HTML/CSS/JS 为 SS-UI-VIS-001 v1.1 模拟设计，当前实现仍是扫码到 WCS 格口，不补造箱号、波次、数量或物理完成。
 
 ## 视觉与交互
 

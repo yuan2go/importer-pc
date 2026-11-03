@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.ComponentModel;
@@ -14,6 +15,12 @@ public sealed partial class ParameterSettingsControl
         if (!FirstConfiguration)
         {
             station.Title = "站点编号与 RCS";
+            // One page in reading order: who this station is, how RCS tells the two cameras apart,
+            // where RCS is and which request numbers it allotted; protocol details stay folded.
+            if (station.Body.Children.OfType<ParameterFormPanel>().FirstOrDefault() is { } identity)
+            { var heading = Text("本站身份", true); heading.Margin = new(0, 16, 0, 8); station.Body.Children.Insert(station.Body.Children.IndexOf(identity), heading); }
+            var cameras = Section(station, "相机编码"); var service = Section(station, "RCS 服务"); var numbers = Section(station, "请求编号区间");
+            var protocol = AdvancedForm(station, "协议与心跳");
             foreach (var component in Model!.Components.Where(ParameterOwnership.IsRcs))
             {
                 var rcs = pages.FirstOrDefault(p => p.Title == "RCS 服务");
@@ -23,16 +30,21 @@ public sealed partial class ParameterSettingsControl
                     if (pair.Key.EndsWith("/specified-chute", StringComparison.Ordinal) || pair.Key.EndsWith("/chute-code", StringComparison.Ordinal)) continue;
                     var location = pair.Value;
                     if (ReferenceEquals(location.Page, station) || location.Row is null) continue;
+                    var key = pair.Key[(component.InstanceId.Length + 1)..];
+                    var target = key.EndsWith("-bcr-code", StringComparison.Ordinal) ? cameras.Form : key is "Provider" or "Target" ? service.Form : key is "request-id-base" or "request-id-count" ? numbers.Form : protocol;
                     if (location.Row.Parent is Panel parent) parent.Children.Remove(location.Row);
-                    station.Body.Children.Add(location.Row);
+                    target.Children.Add(location.Row);
                     locations[pair.Key] = location with { Page = station };
                 }
                 foreach (var running in rcs.Body.Children.OfType<Border>().ToArray())
-                { rcs.Body.Children.Remove(running); station.Body.Children.Add(running); }
+                { rcs.Body.Children.Remove(running); service.Form.Children.Insert(0, running); }
                 foreach (var evidence in rcs.Technical.Children.OfType<UIElement>().ToArray())
                 { rcs.Technical.Children.Remove(evidence); station.Technical.Children.Add(evidence); }
                 rcs.Applicable = () => false;
             }
+            foreach (var section in new[] { cameras, service, numbers }.Where(x => x.Form.Children.Count == 0))
+            { station.Body.Children.Remove(section.Heading); station.Body.Children.Remove(section.Form); }
+            if (protocol.Children.Count == 0 && protocol.Parent is Expander folded) station.Body.Children.Remove(folded);
         }
         var cameraPages = pages.Where(p => p.Category == 2 && p.Title is "左相机" or "右相机").ToArray();
         if (cameraPages.Length > 0)
@@ -65,7 +77,7 @@ public sealed partial class ParameterSettingsControl
                     if (reference.Parameter is not null)
                     {
                         var code = new TextBlock { FontSize = UiTypography.Label, Margin = new(0, 4, 0, 4), TextWrapping = TextWrapping.Wrap };
-                        code.SetBinding(TextBlock.TextProperty, new Binding("Value") { Source = reference.Parameter, Mode = BindingMode.OneWay, StringFormat = "相机编码：{0}（在本站接入中修改）" });
+                        code.SetBinding(TextBlock.TextProperty, new Binding("Value") { Source = reference.Parameter, Mode = BindingMode.OneWay, StringFormat = "相机编码：{0}（在“站点编号与 RCS”中修改）" });
                         page.Body.Children.Insert(Math.Min(2, page.Body.Children.Count), code);
                     }
                 }
@@ -87,8 +99,26 @@ public sealed partial class ParameterSettingsControl
         var baseValue = draft.Parameters.Single(p => p.Field.Key == "request-id-base");
         var countValue = draft.Parameters.Single(p => p.Field.Key == "request-id-count");
         var projection = new InclusiveRange(baseValue, countValue); unsubscribe.Add(projection.Dispose);
-        Input(form, "请求编号从 *", projection, nameof(projection.First), draft.InstanceId + "/request-id-base", page, "包含此编号。由 RCS 分配，不能与其他供包台重叠。历史区间不能扩缩后重用。");
-        Input(form, "到 *", projection, nameof(projection.Last), draft.InstanceId + "/request-id-count", page, "包含此编号。保存时继续检查本机永久分配下限；其他供包台区间须由 RCS 统一分配。");
+        // One setting, two boxes: the first and last number RCS allotted, both inclusive.
+        TextBox Box(string property, string path)
+        {
+            var box = new TextBox { MinHeight = 40, MaxLength = 20, Width = 148, VerticalContentAlignment = VerticalAlignment.Center };
+            box.SetBinding(TextBox.TextProperty, new Binding(property) { Source = projection, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            AutomationProperties.SetName(box, path); AutomationProperties.SetAutomationId(box, path); return box;
+        }
+        var basePath = draft.InstanceId + "/request-id-base"; var countPath = draft.InstanceId + "/request-id-count";
+        var first = Box(nameof(projection.First), basePath); var last = Box(nameof(projection.Last), countPath);
+        var to = Text("至"); to.Margin = new(8, 0, 8, 0); to.VerticalAlignment = VerticalAlignment.Center;
+        var range = new StackPanel { Orientation = Orientation.Horizontal, Tag = "inline" }; range.Children.Add(first); range.Children.Add(to); range.Children.Add(last);
+        Field(form, "请求编号 *", range, "RCS 分配的编号段，两端都包含。不能与其他供包台重叠，用过的区间不能扩缩后重用；保存时还会核对本机已用编号。", basePath, page);
+        // The pair is one row; each box keeps its own path for navigation, errors and automation.
+        range.ClearValue(AutomationProperties.NameProperty); range.ClearValue(AutomationProperties.AutomationIdProperty);
+        var row = locations[basePath];
+        AutomationProperties.SetLabeledBy(first, AutomationProperties.GetLabeledBy(range)); AutomationProperties.SetLabeledBy(last, AutomationProperties.GetLabeledBy(range));
+        AutomationProperties.SetHelpText(first, "起始编号（含）"); AutomationProperties.SetHelpText(last, "结束编号（含）");
+        locations[basePath] = row with { Control = first, Label = "请求编号起点 *" };
+        locations[countPath] = row with { Control = last, Label = "请求编号终点 *" };
+        TrackEdits(first); TrackEdits(last);
     }
     sealed class InclusiveRange : INotifyPropertyChanged, IDisposable
     {

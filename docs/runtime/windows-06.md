@@ -17,4 +17,4 @@
 
 本轮WPF交叉构建和win-x64发布/文件完整性分别在09登记PASS或FAIL，不扩张为本表PASS。实际客户端截图数量为0，未制造空截图、拼图或将v1.1 PNG更名为WPF。全部格保持NOT_RUN；环境阻塞原因与尚未执行的动作分开登记。
 
-后续必须使用本次实际变更对应的SourceCommit/ZIP SHA，09身份仅用于其历史版本及新的合成数据根。记录OS build/CPU/账户会话、物理分辨率/系统缩放/实际DIP、前置/动作/观察/预期、执行者/时间与独立截图/请求证据；改代码后重新形成同版身份。按[06工作包](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)逐格执行，不复用旧截图。Windows参考通过也不能关闭[05真实能力](integration-05.md)或现场D/RV。
+后续必须使用本次实际变更对应的SourceCommit/ZIP SHA，09身份仅用于其历史版本及新的合成数据根。记录OS build/CPU/账户会话、物理分辨率/系统缩放/实际DIP、前置/动作/观察/预期、执行者/时间与独立截图/请求证据；改代码后重新形成同版身份。按[06工作包](../archive/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)逐格执行，不复用旧截图。Windows参考通过也不能关闭[05真实能力](integration-05.md)或现场D/RV。

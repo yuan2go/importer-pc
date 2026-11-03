@@ -1,6 +1,6 @@
 # UI-MAINTAINABILITY-16 实施与验证
 
-基线main `12a40b308e13744eb4be959dff4a62dca473b5d9`，PR15已合并，开工无开放PR。原工作区未跟踪材料保留，使用隔离分支`codex/ui-maintainability-16`。前置文档提交`a0595ed`早于业务改动，原字节及替代关系见[前置归档](../archive/pre-ui-maintainability-16/README.md)。[有效基线/计划](ui-maintainability-16-baseline.md)与[工作包](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)记录当前有效要求。
+基线main `12a40b308e13744eb4be959dff4a62dca473b5d9`，PR15已合并，开工无开放PR。原工作区未跟踪材料保留，使用隔离分支`codex/ui-maintainability-16`。前置文档提交`a0595ed`早于业务改动，原字节及替代关系见[前置归档](../archive/pre-ui-maintainability-16/README.md)。[有效基线/计划](ui-maintainability-16-baseline.md)与[工作包](../archive/work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)记录当前有效要求。
 
 实现与候选冻结于 **089fd98028c665c4bc483b28ade236c7f137d267**。本包工程实现、必要核心验证、WPF交叉构建和同版候选解压冒烟已通过；[checks](ui-maintainability-16-checks.json)登记逐AC/命令/源/包/hash。Windows实际截图0、全部客户端旅程NOT_RUN；真实SDK/WCS/身份/实体/数量/逐SKU少货及现场批准仍按能力BLOCKED，Production NotReady。
 

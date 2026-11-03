@@ -8,4 +8,4 @@
 
 规范SHA256 `8bba81b0c6e45d8dfb81c7e87ee3c5cf159f2cba4d10cbc51d493a0b7f8413e8`；预览SHA256 `69b8990ce72ec2beeaee8550cc35e4d62cddbc3a288d4d2084f68c9011375b38`。用户实机截图仅留D盘本地私有输入区，不加入公开源码或冒充本轮原生验收。
 
-实施入口：[工作包](../../../work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)、[源码映射与验证边界](../../../runtime/installer-first-run-ui-02-result-unconfirmed.md)。本轮只本地提交，未经新授权不推送、发布、自动安装或连接设备。
+实施入口：[工作包](../../../archive/work-packages/WP-IPC-INSTALLER-FIRST-RUN-UI-02.md)、[源码映射与验证边界](../../../runtime/installer-first-run-ui-02-result-unconfirmed.md)。本轮只本地提交，未经新授权不推送、发布、自动安装或连接设备。

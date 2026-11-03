@@ -58,9 +58,10 @@ static partial class Program
         Check(!vm.ConfigurationRoles.Any(r => r.Role == "维护认证") && !control.ShowPage(3, "维护认证") && !control.ShowPage(3, "身份认证"),
             "current candidate and daily directory contain no obsolete maintenance authentication role");
         window.UpdateLayout();
-        Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && ((TextBlock)window.FindName("SettingsRunMode")).IsVisible &&
-            ((TextBlock)window.FindName("SettingsRunMode")).Text.Contains("模拟模式 · 软件暂停不是安全急停"),
-            "settings hides the duplicate job footer while retaining visible mode and software-pause boundary");
+        // 2026-11-02 user decision: the settings page no longer shows the job-status line
+        // (run mode, pause boundary, blocking reasons); work pages still show it.
+        Check(!((Border)window.FindName("WorkstationFooter")).IsVisible && !((TextBlock)window.FindName("SettingsRunMode")).IsVisible,
+            "settings hides the job footer and the job-status line");
         lines.Add("SYNTHETIC full window and schema projection; no SDK, no remote RCS, no install; visual draft is never staged.");
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {

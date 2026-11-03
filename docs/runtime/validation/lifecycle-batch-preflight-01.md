@@ -2,7 +2,7 @@
 
 本次剩余批量部署及维护P1/P2整改已在工程源 `63795eba20550718562cd770bf28f4c43ffa909a` 完成源码、冻结介质和CI验证。CI [40220858550](https://github.com/yuan2go/importer-pc/actions/runs/40220858550) 的Linux、Windows、安装器打包及交付/证据归档全部SUCCESS。真实产品安装/卸载/重启、设备和现场仍NOT_RUN；G01/G02继续BLOCKED_EXTERNAL。不能将本结论扩张为现场资格或把上一轮“全部完成”直接沿用。
 
-总包：[LIA-01～07](../../work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)；[U/G总账](../../reviews/lifecycle-ux-reconciliation-01.md)。PR [#108](https://github.com/yuan2go/importer-pc/pull/108) 已恢复可审查，不合并、不发布。当前main为 `a8cd431456f73e83040f75a0c5e3cc1423440d1b`；原开工main为3a5b1d13。主线自行合入PR109后，183f9fac将其整合进本开发分支，保留双方源码、CI、目录及证据；不是把108合入main。
+总包：[LIA-01～07](../../archive/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md)；[U/G总账](../../reviews/lifecycle-ux-reconciliation-01.md)。PR [#108](https://github.com/yuan2go/importer-pc/pull/108) 已恢复可审查，不合并、不发布。当前main为 `a8cd431456f73e83040f75a0c5e3cc1423440d1b`；原开工main为3a5b1d13。主线自行合入PR109后，183f9fac将其整合进本开发分支，保留双方源码、CI、目录及证据；不是把108合入main。
 
 ## 实际修复与闭环
 

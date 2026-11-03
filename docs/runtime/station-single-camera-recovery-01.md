@@ -1,10 +1,10 @@
 > IE01实施中（2026-11-03）：共享固定恢复口令退出当前设计，改为Windows管理员批准的本站重置；本页旧恢复说明仅保留形成时历史语境。当前实现/验证进度见[IE01](industrial-engineering-01.md)，未完成的Windows/设备验收不得转记为通过。
 
-> 2026-10-28 当前读码恢复以 [MVCODEREADER-RESTORE-01](../work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md) 为准：用户确认同机旧客户端使用两套 SDK 均可读码，优先复用 MvCodeReader 与现场一包一次触发。下文 MVS 仅采图和原验证保留原范围；未回填真机成功。
+> 2026-10-28 当前读码恢复以 [MVCODEREADER-RESTORE-01](../archive/work-packages/WP-IPC-MVCODEREADER-RESTORE-01.md) 为准：用户确认同机旧客户端使用两套 SDK 均可读码，优先复用 MvCodeReader 与现场一包一次触发。下文 MVS 仅采图和原验证保留原范围；未回填真机成功。
 
 # 单相机、窗口显示与管理密码恢复
 
-工作包：[STATION-SINGLE-CAMERA-RECOVERY-01](../work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)。开发阶段自有产品版本保持 1.0.0。
+工作包：[STATION-SINGLE-CAMERA-RECOVERY-01](../archive/work-packages/WP-IPC-STATION-SINGLE-CAMERA-RECOVERY-01.md)。开发阶段自有产品版本保持 1.0.0。
 
 SM 的显示偏好现在仅保留窗口打开方式及标准/紧凑布局。站点显示名称与目标效率原来主要用于本机摘要和悬停提示，不参与取格口或效率控制，已从 SM 设置页移除。共享偏好机制及历史本机文件保留，其他业务不受影响；SM 不再因这两项隐藏显示值触发未保存提示。
 

@@ -1,6 +1,6 @@
 # 首次管理密码与维护权限交接
 
-2026-11-03维护启动补修以[SM-OPERATOR-INTEGRATION-30](../work-packages/WP-IPC-SM-OPERATOR-INTEGRATION-30.md)为准：仅在发起者从未确认helper执行、且已关闭原回执通道后，将启动失败报告为“尚未开始”，允许用户重新审阅；不自动重试。原helper的同源、令牌、管道及Begin守卫不变，开始后的终态缺失仍为Unknown。Windows授权窗口是否出现取决于实际系统状态，界面不再保证存在弹窗。下文旧真实令牌及密码验收记录保持原SourceCommit，不能代替本次实际安装复验。
+2026-11-03维护启动补修以[SM-OPERATOR-INTEGRATION-30](../archive/work-packages/WP-IPC-SM-OPERATOR-INTEGRATION-30.md)为准：仅在发起者从未确认helper执行、且已关闭原回执通道后，将启动失败报告为“尚未开始”，允许用户重新审阅；不自动重试。原helper的同源、令牌、管道及Begin守卫不变，开始后的终态缺失仍为Unknown。Windows授权窗口是否出现取决于实际系统状态，界面不再保证存在弹窗。下文旧真实令牌及密码验收记录保持原SourceCommit，不能代替本次实际安装复验。
 
 2026-10-29，基线 main `7af0be61`。用户截图的 -532462766 是未处理 .NET 异常；本机 Windows 事件指向 `ParcelStartupServices.Handle` 的安装维护权限检查。机器关闭 UAC，当前日常程序主动采用 NORMALUSER 受限令牌，直接 runas 未恢复维护权限。旧的本地鉴权与 UAC 合成截图不涵盖这条真实链路。
 

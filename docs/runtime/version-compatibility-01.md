@@ -1,4 +1,4 @@
-> 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](../work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
+> 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](../archive/work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
 
 > 2026-11-02 PC21：Parcel格式11新增 `station_metric_buckets` 和三个有界统计查询索引。清理明细与累积汇总在同一事务；备份/恢复/发布manifest和长稳分析统一读取11。PC21形成时DB10及更早只读拒绝；本轮DB22仅为已核验10→11增加离线备份后的单步升级，不自动转换其他格式。本轮操作见[PC21](sm-product-closure-21.md)；原说明见[归档](../archive/pre-sm-product-closure-21/manifest.json)。
 

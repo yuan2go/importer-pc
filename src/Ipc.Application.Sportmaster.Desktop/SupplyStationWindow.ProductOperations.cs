@@ -43,18 +43,16 @@ public partial class SupplyStationWindow
         System.ComponentModel.PropertyChangedEventHandler attentionChanged = (_, args) => { if (args.PropertyName is nameof(ViewModel.Snapshot) or nameof(ViewModel.Fresh)) Attention(); };
         body.Loaded += (_, _) => { ViewModel.PropertyChanged += attentionChanged; Attention(); };
         body.Unloaded += (_, _) => ViewModel.PropertyChanged -= attentionChanged;
-        body.Children.Add(ProductText("请选择要做的维护。连接诊断、配置检查和备份可在软件运行中进行；恢复备份、换机和修复/卸载需先完全停止软件。软件暂停不是安全急停。"));
+        // Only tasks that exist nowhere else: diagnostics, backup, support export and offline maintenance.
+        body.Children.Add(ProductText("请选择要做的维护。前四项在软件运行中完成；恢复备份、换机和修复/卸载需先完全停止软件。"));
         void TaskRow(string name, string description, string action, Func<Task> run)
         {
-            var row = new DockPanel { Margin = new(0, 12, 0, 8) }; var button = ProductButton(action, run); if (name == "配置已保存但未生效") button.SetBinding(Button.ContentProperty, new Binding(nameof(ViewModel.ConfigurationActivationActionText)) { Source = ViewModel }); DockPanel.SetDock(button, Dock.Right); row.Children.Add(button);
+            var row = new DockPanel { Margin = new(0, 12, 0, 8) }; var button = ProductButton(action, run); DockPanel.SetDock(button, Dock.Right); row.Children.Add(button);
             var text = new StackPanel(); text.Children.Add(new TextBlock { Text = name, FontWeight = UiTypography.Emphasis }); text.Children.Add(ProductText(description)); row.Children.Add(text); tasks.Children.Add(row);
         }
         TaskRow("连接或供包异常", "查看两台相机、RCS、存储与备份的实际状态，再按对象处理。", "打开诊断", () => { SetPage("diagnostics"); return Task.CompletedTask; });
-        if (ViewModel.ShowExceptionAndStatisticsEntries) TaskRow("待核对包裹", "逐件查看被拒绝和格口未确认的包裹；不会自动重发。", "处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; });
-        TaskRow("配置已保存但未生效", "重启软件使已保存的设置生效；重启失败时继续使用原设置，并显示原因。", "检查并重启…", async () => { await ViewModel.RequireManagementModeAsync(); if (ViewModel.Snapshot?.Configuration.Pending is null) throw new InvalidOperationException("没有待重启设置"); await InspectOrActivateConfiguration(); });
         TaskRow("创建完整备份", "先暂停新供包，等进行中的请求处理完，再备份数据库、配置和 RCS 返回记录。完成后点击“检查并恢复”。", "备份…", CreateProductBackup);
         TaskRow("备份后恢复供包", "重新检查连接、暂停状态、存储容量和未确认作业，通过后恢复供包；不会重发格口未确认的请求。", "检查并恢复", async () => { await ViewModel.RequireManagementModeAsync(); var s = await ViewModel.Application.SnapshotAsync(); var r = await ViewModel.Application.CommandAsync(new(Wire.Id(), s.Revision, "Resume")); ViewModel.Message = r.Status + " · " + r.Reason; });
-        if (ViewModel.ShowExceptionAndStatisticsEntries) TaskRow("自动清理与班次", "设置保留策略、清理时刻和备份份数上限；清理后保留统计汇总。", "打开设置", () => { SetPage("statistics"); return Task.CompletedTask; });
         TaskRow("远程支持", "导出诊断包：设备状态、近期请求索引和校验清单，不含条码、图片和密码；文件只保存在本机。", "导出诊断包…", ExportProductDiagnostics);
         TaskRow("恢复备份、换机、修复或卸载", "先完全停止软件，再进入离线维护。备份恢复到新目录，不覆盖原数据。", "进入离线维护…", RequestOfflineMaintenance);
         tasks.SizeChanged += (_, _) => { var two = tasks.ActualWidth >= 900; foreach (var item in tasks.Children.OfType<FrameworkElement>()) item.Width = Math.Max(220, tasks.ActualWidth / (two ? 2 : 1) - 24); };

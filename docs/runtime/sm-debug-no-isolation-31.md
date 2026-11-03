@@ -1,6 +1,6 @@
 # SM调试隔离删除与保存修复 · 31
 
-用户明确保留调试页面，并调用实际RCS服务；本包删除全站调试隔离。工作包见[SM-DEBUG-NO-ISOLATION-31](../work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)。实现继承main `38cb7dc0`的一次放置一次请求流程，不把调试页面改为模拟服务。
+用户明确保留调试页面，并调用实际RCS服务；本包删除全站调试隔离。工作包见[SM-DEBUG-NO-ISOLATION-31](../archive/work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)。实现继承main `38cb7dc0`的一次放置一次请求流程，不把调试页面改为模拟服务。
 
 管理模式已开启但不能保存的根因是旧相机调试隔离被持久恢复，Application保存资格仍依赖该隔离，页面又把资格不足误写成需要进入管理模式。现已移除供包、人工输入、保存、配置激活、图片处理和清理上的全站调试条件。启动仅追加遗留隔离退役审计，不修改暂停标记、不删除业务记录、不改写或重发原请求。管理授权、完整候选CAS/Pending/Effective、未知结果、SDK身份及真实资源所有权继续检查。
 

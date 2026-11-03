@@ -2,7 +2,7 @@
 
 # Application架构22 · 现行增量
 
-当前实施和格式规则见[运行说明](../runtime/application-architecture-22.md)及[从零安装工作包](../work-packages/WP-IPC-FRESH-BASELINE-01.md)。
+当前实施和格式规则见[运行说明](../runtime/application-architecture-22.md)及[从零安装工作包](../archive/work-packages/WP-IPC-FRESH-BASELINE-01.md)。
 
 ## 所有权与拓扑
 

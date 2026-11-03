@@ -1,6 +1,6 @@
 # Sportmaster 审查整改与R-02定向分析
 
-[工作包](../work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md) · [证据与复跑](evidence/sportmaster-audit-remediation-01/README.md)。D-01～D-03在下述范围整改完成；R-02完成合成定向分析，性能风险尚未获客户预算/长时证据关闭。R-01规则未改，正式商业发布仍NOT_READY。
+[工作包](../archive/work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md) · [证据与复跑](evidence/sportmaster-audit-remediation-01/README.md)。D-01～D-03在下述范围整改完成；R-02完成合成定向分析，性能风险尚未获客户预算/长时证据关闭。R-01规则未改，正式商业发布仍NOT_READY。
 
 ## 冻结、环境和实际范围
 

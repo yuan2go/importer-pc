@@ -24,7 +24,7 @@ public static class ChineseInterfaceText
         "device.ip" => "相机网络地址", "device.serial" => "相机序列号", "code.encoding" => "条码字符编码", "code.formats" => "需要识别的条码种类", "code.try-invert" => "识别反色条码", "entity.mode" => "包裹关联方式", "queue.capacity" => "驱动队列容量",
         "quantity" => "请求数量", "specified-chute" => "指定格口", "chute-code" => "格口编码", "request-timeout-ms" => "取格口请求超时",
         "zone-id" => "仓ID", "project-id" => "生产线ID", "request-id-base" => "请求编号起点", "request-id-count" => "请求编号数量",
-        "left-station-code" or "right-station-code" => "供包台编号", "left-bcr-code" or "right-bcr-code" => "相机编码",
+        "left-station-code" or "right-station-code" => "供包台编号", "left-bcr-code" => "左相机编码", "right-bcr-code" => "右相机编码",
         "source" => "协议来源", "locale" => "协议语言", "endpoint" => "服务地址", "subjects" => "允许登录的账号", "roles" => "账号权限",
         _ => label is not null && label.Any(c => c >= '\u4e00' && c <= '\u9fff') ? label : "其他设置"
     };

@@ -2,7 +2,7 @@
 
 > 2026-10-24 深度复核：本轮继承 PR97，整合最新 main `c5ac51d`；新增真实 Application → 冻结 HTTP 请求 → 原回包 → 原生画面的独立验证。当前源码 `cf2ab07`、证据表、反证和复现步骤见[深度复核](evidence/task-content-hierarchy-02/deep-review/README.md)。下述 `1663033`、371项及旧图保持上一轮身份，不能代替新链路或使用者证据。
 
-2026-10-24。开工main `c91559f6f981a9f2c9f89bd5afc271089f0e9d8e`，当时无开放PR；继承PR93～96。最终生产/夹具源码`166303306e73e2d970ab44231ec26d4792a943a6`，包含首次CI发现的紧凑视口续修；初次`c1e7950`结果保留来源。最终结果见[CI续修清单](evidence/task-content-hierarchy-02/CI-FIX.json)，[初次清单](evidence/task-content-hierarchy-02/RESULT.json)不覆盖最终源码。工作包及替代关系见[HIERARCHY-02](../work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)，交付[PR97](https://github.com/yuan2go/importer-pc/pull/97)。
+2026-10-24。开工main `c91559f6f981a9f2c9f89bd5afc271089f0e9d8e`，当时无开放PR；继承PR93～96。最终生产/夹具源码`166303306e73e2d970ab44231ec26d4792a943a6`，包含首次CI发现的紧凑视口续修；初次`c1e7950`结果保留来源。最终结果见[CI续修清单](evidence/task-content-hierarchy-02/CI-FIX.json)，[初次清单](evidence/task-content-hierarchy-02/RESULT.json)不覆盖最终源码。工作包及替代关系见[HIERARCHY-02](../archive/work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)，交付[PR97](https://github.com/yuan2go/importer-pc/pull/97)。
 
 ## 实现与使用
 

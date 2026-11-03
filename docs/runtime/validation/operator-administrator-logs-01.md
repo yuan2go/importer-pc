@@ -2,7 +2,7 @@
 
 2026-10-21，开发分支 `codex/operator-admin-logs`，[PR86](https://github.com/yuan2go/importer-pc/pull/86)。开工及最终复核 main 均为 `3b883fe6a53b58b29eeca18c3719b5bfc0ee388e`；PR82～85仍open（84/85 draft）。整合85 `d52ade7` 与84 `587fbe8`，最终核对这四个PR的head均无后续源码差异，保留原PR和历史SourceCommit。最终交付产品为Sportmaster 1.10.2 / Contracts 1.15.0 / 配置schema3 / DB8；1.9.x、1.10.0及1.10.1冻结保留中间候选身份。
 
-功能取舍见[工作包](../../work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)，实际操作和安全边界见[当前指南](../operator-administrator-logs-01.md)。删除支持摘要的契约与实现，保留独立诊断、备份恢复和原业务审计。本轮不改写历史D/RV。
+功能取舍见[工作包](../../archive/work-packages/WP-IPC-OPERATOR-ADMIN-LOGS-01.md)，实际操作和安全边界见[当前指南](../operator-administrator-logs-01.md)。删除支持摘要的契约与实现，保留独立诊断、备份恢复和原业务审计。本轮不改写历史D/RV。
 
 ## 最终交付与本机D盘迁移
 

@@ -1,6 +1,6 @@
 # 首次安装：计划任务缺失异常与原操作恢复
 
-2026-10-26，基线 main `e70b8ece`，工作包 [INSTALLER-TASK-LOOKUP-01](../work-packages/WP-IPC-INSTALLER-TASK-LOOKUP-01.md)。本增量替代“计划任务不存在只会抛出COMException”和“未知结果中的修复失败可返回安装选项”的当前实现；历史安装记录、UI02原稿及原验收不改写。
+2026-10-26，基线 main `e70b8ece`，工作包 [INSTALLER-TASK-LOOKUP-01](../archive/work-packages/WP-IPC-INSTALLER-TASK-LOOKUP-01.md)。本增量替代“计划任务不存在只会抛出COMException”和“未知结果中的修复失败可返回安装选项”的当前实现；历史安装记录、UI02原稿及原验收不改写。
 
 `DesktopRecoveryInstallation.FindRegisteredTask` 仅包围原GetTask调用。`0x80070002` 或 `0x8004130F` 的COM异常，以及没有FileName的原生映射FileNotFoundException表示任务缺失。具名缺失文件、目录缺失、权限、服务异常及其他IO错误原样抛出。默认关闭恢复时，任务缺失是幂等清理，不会创建或启动任务；启用恢复时仍使用原任务XML、所有者与权限检查。
 

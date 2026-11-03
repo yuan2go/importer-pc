@@ -2,7 +2,7 @@
 
 日期：2026-10-19。来源为 main [b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)。本目录保留本次收敛前七份当前入口/运行指南的完整原字节，供追溯；它们是历史快照，不是现行实施指令。
 
-当前入口见 [INDEX](../../INDEX.md)、[商业化工作包](../../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)和[基线核对](../../reviews/commercial-productization-01-baseline.md)。采用 .txt 后缀保留历史相对链接和语境，不将旧路由再次作为当前导航。
+当前入口见 [INDEX](../../INDEX.md)、[商业化工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)和[基线核对](../../reviews/commercial-productization-01-baseline.md)。采用 .txt 后缀保留历史相对链接和语境，不将旧路由再次作为当前导航。
 
 |原路径|原字节快照|字节数|SHA256|
 |---|---|---|---|

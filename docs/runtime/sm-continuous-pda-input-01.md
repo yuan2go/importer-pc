@@ -2,7 +2,7 @@
 
 # 连续 PDA 扫码拼接修复：实现完成，Windows 验证待执行
 
-2026-10-30。基线 main `67ab87c1a1b146611504342c6ab080ed045231ec`；[工作包](../work-packages/WP-IPC-SM-CONTINUOUS-PDA-INPUT-01.md)。本轮为 Linux 工具环境，无 dotnet、PowerShell 或可访问的 Windows 交互桌面。**没有执行 WPF 原生复现/测试或构建，不宣称 P1 已验证关闭。** GitHub Actions 保持停用。
+2026-10-30。基线 main `67ab87c1a1b146611504342c6ab080ed045231ec`；[工作包](../archive/work-packages/WP-IPC-SM-CONTINUOUS-PDA-INPUT-01.md)。本轮为 Linux 工具环境，无 dotnet、PowerShell 或可访问的 Windows 交互桌面。**没有执行 WPF 原生复现/测试或构建，不宣称 P1 已验证关闭。** GitHub Actions 保持停用。
 
 ## 源码依据与修复
 

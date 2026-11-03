@@ -14,8 +14,8 @@ main 已有实际装配、SQLite/Outbox、原请求恢复及受控扩展；四�
 |[审查结果摘要](checks.json)|固定 SHA、验证层级、确定缺陷和条件风险的机器可读摘要。|
 |[原始证据入口](../../runtime/evidence/project-conformance-audit-01/README.md)|构建/选择器/失败/复验日志、覆盖记录、远端基线、两探针源码与原始合成数据库。|
 |[下一步分析](next-step-analysis.md)|修复顺序、文档清理对象、条件风险与兼容性边界。|
-|[修复工作包14](../../work-packages/WP-IPC-CONFORMANCE-FIX-14.md)|AC14 结果约束及必要验证；状态 PLANNED / NOT_IMPLEMENTED。|
-|[Codex执行提示词](../../work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md)|直接复制给执行 Codex；具体拆分及实现方式自主选择。|
+|[修复工作包14](../../archive/work-packages/WP-IPC-CONFORMANCE-FIX-14.md)|AC14 结果约束及必要验证；状态 PLANNED / NOT_IMPLEMENTED。|
+|[Codex执行提示词](../../archive/work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md)|直接复制给执行 Codex；具体拆分及实现方式自主选择。|
 
 ## 版本与公开范围
 

@@ -1,6 +1,6 @@
 # 现行合同收敛 02
 
-工作包：[CONTRACT-CONVERGENCE-02](../work-packages/WP-IPC-CONTRACT-CONVERGENCE-02.md)。起点 `e165e490`。代码与测试都服从当前合同；历史记录不转为新源的通过证明。
+工作包：[CONTRACT-CONVERGENCE-02](../archive/work-packages/WP-IPC-CONTRACT-CONVERGENCE-02.md)。起点 `e165e490`。代码与测试都服从当前合同；历史记录不转为新源的通过证明。
 
 ## B1：SM 装配与交付
 

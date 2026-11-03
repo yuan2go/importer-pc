@@ -1,6 +1,6 @@
 > TYPOGRAPHY-01（2026-10-24）：现行字体/字号统一由 [字体规范](typography-01.md) 定义。仅替代冲突的系统字体、不交付字体及旧字号条款；历史原型/截图/哈希/验收及其他资产授权保持原身份。
 
-> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
+> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../archive/work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
 
 > 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
 > 作业主界面当前增量：[信息与操作完善](../runtime/workstation-information-01.md)。仅调整运行信息和按状态出现的操作；原 V2 作业合同、PARAM-UX-02 参数及各历史证据继续保留。
@@ -17,7 +17,7 @@
 
 [PARAM-01](parameter-refactor-01.md) 保留已授权参数实施及已有模型；本次用户明确的四类字段归属和 V2 任务结构为后续目标。冲突处按本页受控迁移，不回滚条码筛选、心跳、保存核对或单窗口安装。快照范围及各介质原来源分别见 [参数快照](../runtime/publication-parameter-snapshot-20261020.md)、[参数实施记录](../runtime/parameter-refactor-01.md)与[PR69～72发布说明](../runtime/publication-pr69-pr71-20261020.md)。
 
-当前目标为 [V2 设计入口](../ui/sportmaster-task-redesign-v2-20261020/README.md)及 [V2 交接](../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)。V2 采用用户重新明确的三组作业信息、首次启动流程、系统/业务模块/驱动/组件配置归属及新增 RCS 响应字段。界面与 PNG 数量以 V2 索引为准；源码、导出图和格式副本不重复计作页面。此前 [V1 设计集](../ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)保留原字节及 58 项字段/状态、39 项动作的来源证据，其侧栏“首次配置”、旧设置对象平铺及演示端口不再作为现行实现目标。实施顺序仍沿 [UIR-00～06](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
+当前目标为 [V2 设计入口](../ui/sportmaster-task-redesign-v2-20261020/README.md)及 [V2 交接](../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)。V2 采用用户重新明确的三组作业信息、首次启动流程、系统/业务模块/驱动/组件配置归属及新增 RCS 响应字段。界面与 PNG 数量以 V2 索引为准；源码、导出图和格式副本不重复计作页面。此前 [V1 设计集](../ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)保留原字节及 58 项字段/状态、39 项动作的来源证据，其侧栏“首次配置”、旧设置对象平铺及演示端口不再作为现行实现目标。实施顺序仍沿 [UIR-00～06](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
 
 本轮用户提供的成功响应明确包含 `waveNo`、`taskId`、`skuId`、`chuteCode` 及字符串 `quantity`。这些是已确认的目标字段；当前代码缺少相应传递时应补实现，不继续以“Demo 未证实”取消需求。HTML 中的随机值、人工 Dispatch、AGV 放行、共享周转箱及拆包演示没有因此获得 Sportmaster 业务授权。
 
@@ -170,7 +170,7 @@ PARAM-01 已实现 `ParameterEditorModel.ValidateFields/Report` 和双方 `Confi
 
 ## 7. 视觉、清理与验收裁决
 
-用户追加的“商业软件质感”按六项可观察结果实施：重点清楚、组织一致、密度合适、细节完整、操作连贯、真实显示可靠。作业页首眼可识别当前包裹/格口/异常，参数页按准确输入组织；相似操作同位、同名、同反馈，全部适用状态明确。刷新保留焦点/选择/输入，耗时操作不阻塞整个UI；目标工控机分辨率和Windows缩放下无意外截断、遮挡或关键内容缺失。各项完成标准与必要证据统一见[工作包的六项质量要求](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md#商业软件质感六项可观察完成标准)。原生实际交互和目标环境检查分别验证连贯性与显示可靠性，静态设计图不替代这些证据。
+用户追加的“商业软件质感”按六项可观察结果实施：重点清楚、组织一致、密度合适、细节完整、操作连贯、真实显示可靠。作业页首眼可识别当前包裹/格口/异常，参数页按准确输入组织；相似操作同位、同名、同反馈，全部适用状态明确。刷新保留焦点/选择/输入，耗时操作不阻塞整个UI；目标工控机分辨率和Windows缩放下无意外截断、遮挡或关键内容缺失。各项完成标准与必要证据统一见[工作包的六项质量要求](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md#商业软件质感六项可观察完成标准)。原生实际交互和目标环境检查分别验证连贯性与显示可靠性，静态设计图不替代这些证据。
 
 采用 V2 的克制浅色、稳定双位三组信息、分类对象表单与统一控件；中文/数字层级、间距、焦点、禁用原因、长内容和忙碌状态按 V2 交接及样式源码实现。1600×900逻辑为主，1366×768补查；现有正常作业下限800×420 DIP、1280/680紧凑阈值及不足空间暂停保护仍继承，不能抬高下限或删严格几何断言。800×420应验证当前条码/格口仍在本位视口、原责任与主要操作可达；表单允许纵向滚动。依据 `src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs`；`src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs`；`tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs`。
 

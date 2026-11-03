@@ -1,4 +1,4 @@
-> 2026-11-03：当前SM调试以[SM-DEBUG-NO-ISOLATION-31](../work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)为准。调试页面继续调用实际RCS；全站调试隔离、清场及恢复阻断已删除，正常识别和供包继续。下文隔离/停解码描述仅保留历史范围；原请求防重、原图身份、管理权限和SDK资源责任继续有效。修订前字节见`docs/archive/pre-sm-debug-no-isolation-31/manifest.json`。
+> 2026-11-03：当前SM调试以[SM-DEBUG-NO-ISOLATION-31](../archive/work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)为准。调试页面继续调用实际RCS；全站调试隔离、清场及恢复阻断已删除，正常识别和供包继续。下文隔离/停解码描述仅保留历史范围；原请求防重、原图身份、管理权限和SDK资源责任继续有效。修订前字节见`docs/archive/pre-sm-debug-no-isolation-31/manifest.json`。
 
 # 当前筛选规则预览修复 · SM-DEBUG-FILTER-05
 

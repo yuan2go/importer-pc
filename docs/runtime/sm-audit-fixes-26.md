@@ -1,6 +1,6 @@
 # SM审查问题修复26
 
-基线main `90ed7c85`，工作包[SM-AUDIT-FIXES-26](../work-packages/WP-IPC-SM-AUDIT-FIXES-26.md)。七项用户授权问题按AUD26-001～007保留编号。所有修改复用既有Application/配置账/统计和导航，无新增设备或发送所有者。
+基线main `90ed7c85`，工作包[SM-AUDIT-FIXES-26](../archive/work-packages/WP-IPC-SM-AUDIT-FIXES-26.md)。七项用户授权问题按AUD26-001～007保留编号。所有修改复用既有Application/配置账/统计和导航，无新增设备或发送所有者。
 
 安装可取消性仍以实际MaintenanceProgress与取消按钮为唯一权威；正文避免另存一套取消状态。当前介质交付[Parcel12操作说明](parcel12-operations-26.md)，历史DB11原文不倒写。交付清单的DatabaseFormat直接读取冻结源码的CurrentStorageVersion；缺失、重复或无效声明阻止出包，不另存版本常量。指南测试与该同一权威比较，实际介质还要核验指南和清单一致。日志继续在写入/读取边界脱敏，关键词说明明确按作业号/请求号；条码查找经记录页取得原作业身份。
 

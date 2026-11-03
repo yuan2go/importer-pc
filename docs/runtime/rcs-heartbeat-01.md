@@ -1,8 +1,8 @@
-> 2026-10-27 用户确认RCS固定source=BAR、locale=zh_CN，不再提供编辑项；当前安装即内置SDK见[BUNDLED-MVS-CAMERA-01](../work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。
+> 2026-10-27 用户确认RCS固定source=BAR、locale=zh_CN，不再提供编辑项；当前安装即内置SDK见[BUNDLED-MVS-CAMERA-01](../archive/work-packages/WP-IPC-BUNDLED-MVS-CAMERA-01.md)。
 
 # RCS 心跳：当前相机单一编码
 
-2026-10-27起以[CAMERA-SDK-SINGLE-CODE-01](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准。修改前说明及历史SDK/验证身份见[原字节归档](../archive/pre-camera-sdk-single-code-01/manifest.json)，不把原PASS扩张到当前源码。
+2026-10-27起以[CAMERA-SDK-SINGLE-CODE-01](../archive/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准。修改前说明及历史SDK/验证身份见[原字节归档](../archive/pre-camera-sdk-single-code-01/manifest.json)，不把原PASS扩张到当前源码。
 
 每台相机只填写一个相机编码，在参数“左相机/右相机”页唯一编辑，取格口请求与心跳共同读取同一映射。当前规范保存位置是已选RCS组件的left-bcr-code/right-bcr-code；驱动仅保存连接、采集和识别参数，不再声明bcr-code。两个用途没有各自的可写副本，不从IP、序列号、条码或DeviceId推测业务编码，模拟Reader也使用同一配置来源。
 

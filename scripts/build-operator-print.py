@@ -103,8 +103,22 @@ def styles(card: bool) -> dict:
     }
 
 
-def verify_text(reader: PdfReader, sources: list[str]) -> int:
-    rendered = re.sub(r'\s+', '', '\n'.join(page.extract_text() for page in reader.pages))
+def searchable_body(reader: PdfReader, footer_text: str) -> str:
+    bodies = []
+    for number, page in enumerate(reader.pages, 1):
+        text = page.extract_text()
+        # The canvas emits the footer before the story on every page. Strip
+        # exactly that checked prefix so a paragraph split across pages remains
+        # contiguous; never globally remove matching words from the body.
+        prefix = footer_text + '\n' + str(number) + '\n'
+        if not text.startswith(prefix):
+            raise ValueError('Unexpected or missing fixed footer on page ' + str(number))
+        bodies.append(text[len(prefix):])
+    return re.sub(r'\s+', '', '\n'.join(bodies))
+
+
+def verify_text(reader: PdfReader, sources: list[str], footer_text: str) -> int:
+    rendered = searchable_body(reader, footer_text)
     if '\ufffd' in rendered:
         raise ValueError('Replacement glyph in searchable text')
     checked = 0
@@ -286,7 +300,7 @@ def main() -> None:
         pages = len(reader.pages)
         if pages < 1 or pages > (20 if name == 'implementation-guide' else 1):
             raise ValueError('Page budget exceeded: ' + name + ' pages=' + str(pages))
-        checked = verify_text(reader, [texts[name], texts['fault-codes']] if name == 'implementation-guide' else [texts[name]])
+        checked = verify_text(reader, [texts[name], texts['fault-codes']] if name == 'implementation-guide' else [texts[name]], footer_text)
         outputs[path.name] = {'pages': pages, 'bytes': path.stat().st_size, 'sha256': digest(path),
                               'sourceTextSegmentsVerified': checked, 'bothFontSubsetsEmbedded': True}
         print('BUILT ' + path.name + ' pages=' + str(pages))

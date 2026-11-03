@@ -108,19 +108,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        env:
-          GIT_CONFIG_COUNT: '2'
-          GIT_CONFIG_KEY_0: core.protectNTFS
-          GIT_CONFIG_VALUE_0: 'false'
-          GIT_CONFIG_KEY_1: core.longpaths
-          GIT_CONFIG_VALUE_1: 'true'
         with:
           persist-credentials: false
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
-            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
@@ -132,6 +121,8 @@ jobs:
           python -m venv .artifacts/print-env
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           & .artifacts/print-env/Scripts/python.exe -m pip install --require-hashes --only-binary=:all: -r scripts/operator-print.requirements.txt
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .artifacts/print-env/Scripts/python.exe -m unittest discover -s scripts -p test_operator_print.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           & .artifacts/print-env/Scripts/python.exe scripts/build-operator-print.py --output .artifacts/operator-print/output/pdf
           exit $LASTEXITCODE

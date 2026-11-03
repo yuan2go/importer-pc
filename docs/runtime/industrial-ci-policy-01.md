@@ -1,6 +1,6 @@
 # IE01 CI与main保护
 
-当前PR/main工作流：[industrial-core.yml](../../.github/workflows/industrial-core.yml)。它执行locked restore、25项标准测试及逐项身份核对、四个托管产品程序集的子进程覆盖率、44文件格式、文档、被动性能与发布策略测试；三个桌面装配分别构建。另有独立`operator-print`任务以哈希锁依赖生成并核对现场PDF。真实SDK/设备、UAC/SCM和最终安装生命周期不由这些工程检查代替。
+当前PR/main工作流：[industrial-core.yml](../../.github/workflows/industrial-core.yml)。它执行locked restore、25项标准测试及逐项身份核对、四个托管产品程序集的子进程覆盖率、51文件格式、文档、被动性能与发布策略测试；三个桌面装配分别构建。另有独立`operator-print`任务以哈希锁依赖生成并核对现场PDF。真实SDK/设备、UAC/SCM和最终安装生命周期不由这些工程检查代替。
 
 ## 已核对，尚未应用的仓库设置
 

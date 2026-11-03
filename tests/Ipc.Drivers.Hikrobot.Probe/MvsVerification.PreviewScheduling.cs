@@ -21,7 +21,7 @@ internal static partial class MvsVerification
         }
         var leftApi = Api(enteredLeft, leftPixels); var rightApi = Api(enteredRight, rightPixels);
         var leftLease = new Lease(); var rightLease = new Lease();
-        MvsAcquisition Create(Fake api, Lease lease, string id) => new(new(id, id, new Dictionary<string, string> { ["device.ip"] = api.Ip }),
+        MvsAcquisition Create(Fake api, Lease lease, string id) => new(new(id, id, new Dictionary<string, string> { ["motion.still-ms"] = "0", ["device.ip"] = api.Ip }),
             api, _ => lease, decoder: new ControlledDecoder { Codes = [] });
         var left = Create(leftApi, leftLease, "preview-left"); var right = Create(rightApi, rightLease, "preview-right");
         var ready = new System.Collections.Concurrent.ConcurrentDictionary<string, bool>();

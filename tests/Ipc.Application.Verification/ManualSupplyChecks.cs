@@ -19,7 +19,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         {
             Driver = "hikrobot-mvs-reader",
             Parameters = deferred ? new() : new()
-            { ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-OFFLINE-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
+            { ["motion.still-ms"] = "0", ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-OFFLINE-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
         }).ToArray();
         var wcs = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {

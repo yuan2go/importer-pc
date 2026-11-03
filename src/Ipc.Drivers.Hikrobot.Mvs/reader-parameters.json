@@ -138,5 +138,17 @@
     "Type": "boolean",
     "Default": "true",
     "Description": "默认启用；关闭后可能无法识别浅色条码配深色背景。按真实标签验证后调整。"
+  },
+  {
+    "Key": "motion.still-ms",
+    "Group": "识别 / 静止判定",
+    "Label": "放稳后再识别",
+    "Type": "integer",
+    "Default": "200",
+    "Minimum": 0,
+    "Maximum": 2000,
+    "MaximumLength": 4,
+    "Unit": "毫秒",
+    "Description": "画面持续不动达到这个时间后才识别条码，避免识别放置过程中模糊或被手挡住的画面。画面一直不稳超过约 1.5 秒时仍会识别一次。0 表示每帧都识别。"
   }
 ]

@@ -155,7 +155,7 @@ public sealed partial class ParameterSettingsControl
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") continue;
-            else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes")) advanced.Add(p);
+            else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes" or "motion.still-ms")) advanced.Add(p);
             else Parameter(form, page, draft, p);
         }
         if (draft.Kind == "observation")
@@ -216,6 +216,7 @@ public sealed partial class ParameterSettingsControl
         "queue.maximum-code-bytes" => "条码排队占用的内存上限，默认 16 MiB，可填 1–64 MiB。超出后本位停止供包，需要检查后恢复。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
         "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，1–3600 秒。",
+        "motion.still-ms" => "包裹放稳多久后才识别，默认 200 毫秒，可填 0–2000 毫秒。放置过程中的画面不识别；画面一直不稳时约每 1.5 秒仍识别一次。填 0 表示每帧都识别。",
         "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后结果未确认，请到记录核对；不会自动重发。",
         "specified-chute" => "一般选“不指定”，由 RCS 分配格口。只有现场要求包裹去固定格口时才选“指定”。",
         "chute-code" => "选择“指定”时要求 RCS 使用的格口编号，最终仍以 RCS 返回为准。",

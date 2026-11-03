@@ -48,7 +48,6 @@ static partial class Program
         {
             var input = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == right.InstanceId + "/device.ip");
             input.Focus(); input.SelectAll();
-            var expander = Descendants(editor).OfType<Expander>().First(e => Equals(e.Header, "参数说明")); expander.IsExpanded = true;
             await Flush();
             Check(input.Text == "111" && model.Issues.Any(i => i.Path == right.InstanceId + "/device.ip"), "invalid input stays intact with its exact field issue");
             Check(model.Readers.All(r => r.Parameters.All(p => p.Field.Key != "bcr-code")) && model.Components.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "TASK-LEFT", "one camera code is shared by task and heartbeat without a driver copy");

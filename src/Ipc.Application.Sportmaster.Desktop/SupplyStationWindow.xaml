@@ -68,6 +68,9 @@
          <DataTrigger Binding="{Binding IsCompact}" Value="True">
           <Setter Property="MaxWidth" Value="120"/>
          </DataTrigger>
+         <DataTrigger Binding="{Binding AccountDisplay}" Value="">
+          <Setter Property="Visibility" Value="Collapsed"/>
+         </DataTrigger>
         </Style.Triggers>
        </Style>
       </TextBlock.Style>

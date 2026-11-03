@@ -137,7 +137,7 @@ public sealed partial class SoftwareLogControl : UserControl
         results.Style = (Style)FindResource("QueryResultsGrid");
         var cellStyle = (Style)FindResource("QueryCellText");
         results.Columns.Add(new DataGridTextColumn { Header = "时间（本地）", Binding = new Binding("At") { Converter = new LocalTimestampConverter(), StringFormat = "yyyy-MM-dd HH:mm:ss.fff" }, Width = 238, ElementStyle = cellStyle });
-        results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source"), Width = 130, ElementStyle = cellStyle });
+        results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source") { Converter = new LogSourceConverter() }, Width = 130, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "级别", Binding = new Binding("Level"), Width = 82, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "日志内容", Binding = new Binding("Text") { Converter = summary }, Width = new DataGridLength(1, DataGridLengthUnitType.Star), MinWidth = 80, ElementStyle = (Style)FindResource("QueryCodeText") });
         var panel = new Grid(); panel.Children.Add(results); panel.Children.Add(terminal); panel.Children.Add(empty); root.Children.Add(panel);
@@ -319,6 +319,12 @@ public sealed partial class SoftwareLogControl : UserControl
         if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
         exportedFile = picker.FileName; status.Text = "已导出" + count + "条原始记录：" + exportedFile + "。可点击“打开导出位置”查看。";
     }
+}
+
+sealed class LogSourceConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value is string source ? SoftwareLogText.SourceName(source) : value;
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
 }
 
 // The table is a readable projection; original JSON and multiline values remain in detail/export.

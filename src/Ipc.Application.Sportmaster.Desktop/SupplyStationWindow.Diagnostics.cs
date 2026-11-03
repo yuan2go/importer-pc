@@ -8,6 +8,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
 {
+    StackPanel? diagnosticLogDetails;
     readonly Dictionary<string, FrameworkElement> diagnosticObjects = [];
     TextBlock? selectedDiagnostic;
     Button? backToDiagnosticSettings;
@@ -78,12 +79,13 @@ public partial class SupplyStationWindow
         body.Unloaded += (_, _) => ViewModel.PropertyChanged -= changed;
         body.Children.Add(CreateDiagnosticRows());
         var evidence = new StackPanel();
+        if (diagnosticLogDetails is { } logDetails) { logDetails.Margin = new(0, 0, 0, 12); evidence.Children.Add(logDetails); }
         foreach (var property in new[] { nameof(ViewModel.DiagnosticBlockers), nameof(ViewModel.DiagnosticConfiguration), nameof(ViewModel.DiagnosticCapacity), nameof(ViewModel.DiagnosticTechnicalSummary) })
         {
             var value = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Background = System.Windows.Media.Brushes.Transparent, BorderThickness = new(0), MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(0, 8, 0, 0) };
             value.SetBinding(TextBox.TextProperty, new Binding(property) { Mode = BindingMode.OneWay }); evidence.Children.Add(value);
         }
-        body.Children.Add(new Expander { Header = "详情与原始证据", Content = evidence, Margin = new(0, 12, 0, 12) });
+        body.Children.Add(new Expander { Header = "技术详情", Content = evidence, Margin = new(0, 12, 0, 12) });
         body.Children.Add(new Expander { Header = "维护工具", Content = CreateMaintenanceTools(), Margin = new(0, 12, 0, 0) });
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         return scroll;

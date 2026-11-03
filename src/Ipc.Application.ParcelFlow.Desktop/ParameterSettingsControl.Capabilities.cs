@@ -51,8 +51,8 @@ public sealed partial class ParameterSettingsControl
                 value.SetBinding(TextBox.TextProperty, new Binding("Value") { Source = p, Mode = BindingMode.OneWay });
                 var item = new StackPanel(); item.Children.Add(Text((camera is null ? "" : camera + " · ") + ParameterLabel(p))); item.Children.Add(value); row.Children.Add(item); references.Children.Add(row);
             }
+            page.Body.Children.Add(Text("心跳正常只说明 RCS 可以连接；格口未确认的包裹不会自动重发。"));
             page.Body.Children.Add(new Expander { Header = "其他页面的相关设置", Content = references, Margin = new(0, 20, 24, 0) });
-            Technical(page, "连接与业务结果", component.Contract, "心跳正常只说明 RCS 可连接。格口未确认的包裹不会自动重发。重连只使用已生效设置；待重启的修改仍需受控重启。");
         }
     }
     sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
@@ -219,7 +219,7 @@ public sealed partial class ParameterSettingsControl
         "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后结果未确认，请到记录核对；不会自动重发。",
         "source" => "RCS 接口约定的来源标记，按接口文档填写。",
         "locale" => "RCS 接口约定的语言标记，按接口文档填写（不影响本软件界面语言）。",
-        _ => p.EditorHelp.Length > 100 ? "完整规则见下方参数说明。" : p.EditorHelp
+        _ => p.EditorHelp
     };
     sealed record BooleanChoice(string Value, string Label);
     void Parameter(Panel form, ObjectPage page, CapabilityDraft draft, CapabilityParameter p)
@@ -259,6 +259,5 @@ public sealed partial class ParameterSettingsControl
         AutomationProperties.SetHelpText(locations[path].Control, accessibleHelp);
         locations[path].Control.ToolTip = accessibleHelp;
         locations[path].Control.IsEnabled = !p.Field.ReadOnly;
-        Technical(page, ParameterLabel(p), path, help + "\n填写要求：" + requirements);
     }
 }

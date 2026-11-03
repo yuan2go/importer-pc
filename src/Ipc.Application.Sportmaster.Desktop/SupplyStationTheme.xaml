@@ -22,6 +22,8 @@
   <Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/>
   <Setter Property="Margin" Value="0,0,0,12"/>
   <Setter Property="IsTabStop" Value="True"/>
+  <!-- Selectable read-only text inside coloured result areas: no dashed focus frame after a click. -->
+  <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
   <Setter Property="AutomationProperties.Name" Value="只读作业标识，可选择复制"/>
  </Style>
  <Style x:Key="StationTaskLabel" TargetType="TextBlock">
@@ -44,6 +46,9 @@
   <Setter Property="IsTabStop" Value="True"/>
   <Style.Triggers>
    <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="34"/></DataTrigger>
+   <!-- A field RCS did not return, or no task yet, reads as secondary rather than as a value. -->
+   <Trigger Property="Text" Value="未返回"><Setter Property="Foreground" Value="{StaticResource StationMuted}"/></Trigger>
+   <Trigger Property="Text" Value="—"><Setter Property="Foreground" Value="{StaticResource StationMuted}"/></Trigger>
   </Style.Triggers>
  </Style>
  <Style x:Key="StationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

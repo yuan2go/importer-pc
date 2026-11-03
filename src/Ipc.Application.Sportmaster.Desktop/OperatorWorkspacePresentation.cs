@@ -27,7 +27,16 @@ public sealed partial class SupplyStationViewModel
     // PositionName is the shared ParcelViewModel display mapping.
     public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "供包已暂停" :
         Snapshot?.Positions is { } positions && positions.Any(p => p.Admit || p.BarcodeInput?.Manual == true)
-            ? positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包" : "暂不能供包";
+            ? (positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包") + OfflineCameraNote(positions) : "暂不能供包";
+    // A configured camera that is offline while its position still takes manual entry is named,
+    // so a positive headline never hides it.
+    string OfflineCameraNote(PositionSnapshot[] positions)
+    {
+        if (Snapshot is not { } s) return "";
+        var offline = positions.Where(p => p.BarcodeInput?.Manual == true && !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, p.ReaderDeviceId) &&
+            s.Devices?.SingleOrDefault(d => d.DeviceId == p.ReaderDeviceId)?.IsValid(DateTimeOffset.UtcNow) != true).Select(p => PositionName(p.Id)).ToArray();
+        return offline.Length == 0 ? "" : " · " + string.Join("、", offline) + "相机离线，可手动输入";
+    }
     public string OperatorNotice => !Fresh ? OperatorCopy.StaleStep :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :

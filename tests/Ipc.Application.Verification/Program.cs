@@ -69,6 +69,7 @@ if (args.Contains("--live-devices-30")) { await LiveDevices30.Run(workspace, roo
 if (args.Contains("--mvs-stop-reconnect")) { await MvsStopReconnect.Run(); return; }
 if (args.Contains("--mvs-still-frames")) { await MvsStillFrames.Run(); return; }
 if (args.Contains("--log-readable")) { LogReadable.Run(); return; }
+if (args.Contains("--work-card-current")) { await WorkCardCurrent.Run(workspace, root); return; }
 if (args.Contains("--history-detail-sheet")) { HistoryDetailSheet.Run(workspace); return; }
 if (args.Contains("--installation-receipts-04")) { InstallationReceipts04.Run(root); return; }
 if (args.Contains("--first-configuration-03")) { await FirstConfiguration03.Run(); return; }

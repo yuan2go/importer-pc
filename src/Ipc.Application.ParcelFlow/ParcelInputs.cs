@@ -68,6 +68,8 @@ public sealed partial class ParcelRuntime
         var current = repository!.Latest(position);
         if (current is not null && IsDebugRequest(current)) return null; // Test destinations never appear as a live production parcel.
         if (current is null || !MainTerminated(current)) return current;
+        // A finished result is an instruction only for the parcel that is on the tray now.
+        if (!ShowsFinishedResult(position, current)) return null;
         var originalReader = current.ReaderBinding ?? ParcelBindings.Readers(current.FrozenConfiguration).Single(r =>
             r.DeviceId == ParcelBindings.Positions(current.FrozenConfiguration).Single(p => p.Id == position).ReaderDeviceId);
         if (Wire.Encode(originalReader) != Wire.Encode(ReaderBinding(position))) return null;

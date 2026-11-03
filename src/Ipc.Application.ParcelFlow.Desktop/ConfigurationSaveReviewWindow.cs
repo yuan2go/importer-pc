@@ -106,14 +106,17 @@ public sealed class ConfigurationSaveReviewWindow : Window
     async void SaveAsync(object sender, RoutedEventArgs e)
     {
         if (!vm.CanSubmitReviewedConfiguration) { UpdateState(); return; }
-        // The change record still carries a reason; an empty note records what changed instead.
-        if (string.IsNullOrWhiteSpace(vm.ConfigurationReason)) vm.ConfigurationReason = AutomaticReason(vm.ReviewedConfigurationChanges);
         if (vm.ConfigurationReason.Length > 1024)
         { reasonError.Text = "备注最多 1024 字。"; reasonError.Visibility = Visibility.Visible; reason.Focus(); return; }
+        // The change record still carries a reason. An empty note submits a summary of this
+        // save's changes for this attempt only; the note box itself stays empty.
+        var automatic = string.IsNullOrWhiteSpace(vm.ConfigurationReason) ? AutomaticReason(vm.ReviewedConfigurationChanges) : null;
         localFailure = null; bool completed = false;
         await vm.RunAsync(async () =>
         {
-            if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync();
+            if (automatic is not null) vm.ConfigurationReason = automatic;
+            try { if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync(); }
+            finally { if (automatic is not null && vm.ConfigurationReason == automatic) vm.ConfigurationReason = ""; }
             completed = true;
         }, "保存并查看结果");
         if (!completed) localFailure = "保存未完成。" + vm.Message;
@@ -145,7 +148,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         activate.IsEnabled = vm.CanRequestActivation;
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
-            "Effective" => "条码规则已保存并生效，无需重启。已受理作业继续使用原规则。",
+            "Effective" => "设置已保存并生效，无需重启。改了相机或 RCS 时只重新连接了对应设备；已受理的作业继续使用原设置。",
             "PendingRestart" => "更改已保存，尚未生效。点“重启软件使设置生效…”后才使用新设置。",
             "Unchanged" => "设置与当前一致，无需保存。",
             "Unknown" => "暂时无法确认是否保存成功。请先查看上次保存结果，不要重复提交。",

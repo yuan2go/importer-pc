@@ -11,7 +11,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     readonly CancellationTokenSource stopping = new();
     readonly Dictionary<string, ParcelOperation> operations = [];
     readonly Dictionary<string, Channel<object>> positionQueues = [];
-    readonly Dictionary<string, ObservationSession> readers = [];
+    // Concurrent: a saved camera change replaces one session while progress sampling enumerates.
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, ObservationSession> readers = new(StringComparer.Ordinal);
     readonly Dictionary<string, DeliveryPosition> positions = [];
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> scaleEpochs = new();
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, long> scaleSequences = new();
@@ -206,7 +207,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
-            foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
+            foreach (var reader in ReaderPorts()) readers[reader.DeviceId] = new(reader);
             lock (startupOwnership)
             {
                 token.ThrowIfCancellationRequested();
@@ -394,7 +395,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     else
                     {
                         var processingStarted = System.Diagnostics.Stopwatch.GetTimestamp();
-                        repository!.BeginIngress(item.Id, System.Diagnostics.Stopwatch.GetElapsedTime(item.ReceivedTicks).TotalMilliseconds);
+                        var queueMs = System.Diagnostics.Stopwatch.GetElapsedTime(item.ReceivedTicks).TotalMilliseconds;
+                        repository!.BeginIngress(item.Id, queueMs);
+                        if (item.Value is ParcelObservation queuedObservation) RecordIngressPerformance(position, queuedObservation.Observation, "IngressQueue", queueMs);
                         if (item.Value is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
                         else if (item.Value is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                         var input = latestInputs.GetValueOrDefault(position);
@@ -402,6 +405,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                         FinishIngress(item.Id, "Processed", Wire.Encode(new { Policy = "Business handler completed; not physical completion", Revision = repository!.Revision,
                             Disposition = input?.Outcome.ToString() ?? (item.Value is ParcelObservation ? "RejectedUntrustedSource" : "MeasurementHandlerCompleted"), Input = input }), System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
                         Interlocked.Increment(ref lane.Processed);
+                        if (item.Value is ParcelObservation processedObservation) RecordIngressPerformance(position, processedObservation.Observation,
+                            "IngressProcessed", System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
                     }
                     Interlocked.Exchange(ref lane.ProgressTicks, DateTimeOffset.UtcNow.UtcTicks);
                 }

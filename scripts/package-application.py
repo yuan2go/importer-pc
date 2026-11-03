@@ -124,6 +124,7 @@ publish_guides(build_source, output, source, a.application)
 if a.application == 'sportmaster':
     tools = output / 'tools'; tools.mkdir(exist_ok=True)
     shutil.copyfile(build_source / 'scripts/rcs-local-simulator.py', tools / 'rcs-local-simulator.py')
+    shutil.copyfile(build_source / 'scripts/dual-camera-performance.py', tools / 'dual-camera-performance.py')
 publish_dependencies(build_source, output, source)
 shutil.copyfile(build_source / 'scripts/stability-qualification.py', output / 'stability-qualification.py')
 shutil.copyfile(build_source / 'config/stability-target-plan.example.json', output / 'stability-target-plan.example.json')

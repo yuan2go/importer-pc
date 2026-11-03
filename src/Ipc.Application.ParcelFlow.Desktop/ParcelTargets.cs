@@ -40,7 +40,10 @@ public partial class ParcelViewModel
     public string AuxiliaryState => string.Join("\n", Snapshot?.AuxiliaryReasons ?? []);
     public string InstalledProviderParameters { get; private set; } = "";
     public async Task ValidateConfigurationDraftAsync() { var candidate = Wire.Decode<ParcelConfiguration>(ConfigurationDraft); var r = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate)); Message = r.Status + " · " + r.Reason; }
-    public string ConfigurationReason { get; set; } = "";
+    // The note belongs to one save: a confirmed save clears it, so the next change record
+    // cannot silently reuse an earlier note or an earlier automatic summary.
+    string configurationReason = "";
+    public string ConfigurationReason { get => configurationReason; set { value ??= ""; if (configurationReason == value) return; configurationReason = value; Changed(); } }
     public string ExtensionAction { get; set; } = "extension-recover";
     public string ExtensionIdentity { get; set; } = "";
     public string IdentityConflictId { get; set; } = "";

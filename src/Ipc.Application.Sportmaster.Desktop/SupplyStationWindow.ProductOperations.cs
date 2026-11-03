@@ -113,8 +113,8 @@ public partial class SupplyStationWindow
         foreach (var health in snapshot.Health.Where(h => h.InstanceId == snapshot.Configuration.Effective.Wcs?.InstanceId))
         {
             var confirmation = !health.Ready ? "组件未就绪" : health.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived && health.ValidUntil > DateTimeOffset.UtcNow && health.ConfirmedAt <= DateTimeOffset.UtcNow
-                ? "心跳正常（只表示 RCS 可连接）" : "等待 RCS 确认";
-            text.AppendLine($"RCS：{confirmation} · 确认于 {health.ConfirmedAt.ToLocalTime():HH:mm:ss} · 有效至 {health.ValidUntil.ToLocalTime():HH:mm:ss}");
+                ? "心跳正常" : "等待 RCS 确认";
+            text.AppendLine($"RCS：{confirmation} · 最近确认 {health.ConfirmedAt.ToLocalTime():HH:mm:ss}");
         }
         text.AppendLine($"存储剩余：{snapshot.Capacity?.FreeStorageBytes / 1048576}MiB · 备份：{(snapshot.BackupScheduleStatus?.Enabled != true ? "未启用" : snapshot.BackupScheduleStatus.Outcome == "BackupCreated" ? "最近一次已完成" : "未完成或结果未确认")}");
         text.AppendLine("体检只读取现有相机和心跳数据，不会发送测试请求；在线不代表能识别条码或取得格口。");

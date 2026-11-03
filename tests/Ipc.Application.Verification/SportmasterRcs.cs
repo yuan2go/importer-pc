@@ -433,7 +433,7 @@ static partial class SportmasterRcs
             using(var db=new SqliteConnection("Data Source="+file+";Pooling=False"))
             {
                 db.Open();using var command=db.CreateCommand();command.CommandText=damage switch{
-                    "future"=>"INSERT INTO platform_migrations VALUES('sportmaster',12,'future')",
+                    "future"=>$"INSERT INTO platform_migrations VALUES('sportmaster',{ParcelRepository.CurrentStorageVersion + 1},'future')",
                     "foreign"=>"UPDATE platform_migrations SET application='another-business'",
                     _=>"UPDATE platform_migrations SET sha='changed' WHERE version=11"};command.ExecuteNonQuery();
             }

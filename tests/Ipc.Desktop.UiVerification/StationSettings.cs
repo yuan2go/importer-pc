@@ -40,6 +40,7 @@ static partial class Program
         await vm.SaveCapabilitiesAsync();
         await Until(()=>vm.Snapshot?.Configuration.Pending?.StationCode=="SYNTH-SAVE-WITHOUT-PAUSE");
         Check(vm.Snapshot!.Configuration.Pending?.StationCode=="SYNTH-SAVE-WITHOUT-PAUSE" && !vm.Snapshot.Paused,"native editor saves pending settings while remaining unpaused");
+        Check(vm.ConfigurationReason.Length == 0, "a confirmed save clears the note, so the next change record cannot reuse it");
         editor.ShowPage(0,"显示偏好"); window.UpdateLayout();
         Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM preference page removes the unused name and target inputs");
         Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode" && t.IsVisible), "window opening mode remains directly editable");
@@ -73,6 +74,8 @@ static partial class Program
         }));
         Click(management, "忘记管理密码？"); await recoveryDone.Task;
         management.Close(); await vm.RefreshAsync(); window.UpdateLayout();
+        Check(!vm.ManagementStatus.Authorized, "cancelling password recovery cannot reauthorize the exited management session");
+        await ManagementModeFixture.Authorize(runtime); await vm.RefreshAsync(); window.UpdateLayout();
         menu.ContextMenu.PlacementTarget = menu; menu.ContextMenu.IsOpen = true; await Flush();
         menuItems = menu.ContextMenu.Items.OfType<MenuItem>().ToArray();
         Check(menuItems.Any(i => Equals(i.Header, "退出管理模式")) && menuItems.Any(i => i.IsVisible && i.Header?.ToString()?.Contains("自动退出") == true), "active menu retains exit action and actual expiry");

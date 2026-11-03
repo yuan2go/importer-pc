@@ -213,6 +213,10 @@ public sealed partial class ParcelRuntime
                 Diagnostic("参数", "条码规则已生效", detail: "Revision=" + configuration.Current.Revision);
                 return new("Effective", "条码规则已保存并生效；已受理作业及原请求保持原规则。", repository.Revision);
             }
+            // Camera/RCS-only changes reconnect just those devices; anything else restarts as before.
+            if (definition.AutomaticConfigurationQuiescence && ConfigurationActivation.LiveDevices(Id, Effective, configuration.Current.Pending, candidate) is { } live &&
+                await ApplyDevicesLiveAsync(expectedRevision, candidate, live, audit).ConfigureAwait(false) is { } applied)
+                return applied.Receipt;
             configuration.Stage(expectedRevision, candidate);
             Diagnostic("参数", "配置已保存待重启", detail: "Revision=" + configuration.Current.Revision);
             Boundary?.Invoke("AfterConfigurationStaged");

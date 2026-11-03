@@ -125,3 +125,11 @@ SM候选从1.0.1递增1.0.2，同步项目、装配声明和现场文案；避�
 为隔离纯通道测试与业务装配，帧解析和终态核对从原partial等义移至`ParcelStartupServices.MaintenanceFrames.cs`，根装配与测试共用同一源。未新增运行时或协议权威。整套工作仍按表内剩余阶段继续，未关闭历史RV，也未使用模拟代替实际验收。
 
 本切片G1收口：本地18项标准测试全部通过（10组行为夹具+8项通道边界，失败0/跳过0），含回退48项、清理33项。新增删除前取消的NotStarted终态；已完成卸载的受保护回执可结束旧回退的入口修复义务，防止卸载后旧回退日志阻断重新安装，但不将其解释为业务清责。原生维护UI21项交互断言及原维护/真实本机管道34项检查通过，使用合成委托/独立测试管道，没有修改生产部署或设备。26文件格式、8入口/196链接/5CP文档、兼容声明1项及随包文档5项测试通过。随包测试发现main合并后“RCS离线仍可读码”的同义文案改变，更新当前断言并补“不暂停供包/仅明确发送调用实际RCS”约束，未删断言。正式冻结包、实际UAC/SCM/卸载/回退VM和现场仍未验；最新CI随后按实际commit补记。
+
+## 045e218a冻结切片结果
+
+续作草稿[PR191](https://github.com/yuan2go/importer-pc/pull/191)，源`045e218a4f5536f6df28e25c2c4bad55873d3885`。[CI41565792619](https://github.com/yuan2go/importer-pc/actions/runs/41565792619)全部通过：18项标准测试及必需身份核对、Sportmaster/DirectPlc/WcsToPlc三装配构建、26文件格式、文档、14项签名策略、5项交付证据/1项兼容声明/5项随包文档测试。其他业务只做既有装配回归，不扩大当前SM开发范围。PR184已合并，本任务已更新其说明指向续作；不尝试向已合并PR追加代码，也不自行合并PR191。
+
+同源本地Windows候选`frozen-sm-1.0.2-045e218a4f55.zip`已构建；SHA256 `5461BA678617F3B34B37CC205E6A7FBE62A53F153122E9C8F38D85DB5438BF5B`。实际读回ZIP的772个唯一条目，对照771项SHA256SUMS及两份内层发布清单逐项校验；兼容声明自身摘要亦一致。运行候选内真实`app/Ipc.Assembly.exe --action business-identity`退出0，读回sportmaster/1.0.2及原来源；该只读命令不启动业务、设备或系统安装。
+
+这是**缺厂商运行时的验证介质，不可交付**：实际`BUILD-INFO.json`为`VERIFICATION_ONLY_VENDOR_ABSENT`且`BusinessReady=false`；Authenticode实际为`NotSigned`。本机未配置MVS运行时，未构建正式签名的最终单EXE，也未在当前部署上实验。ZIP完整性和只读EXE启动只证明上述范围；UAC/SCM/安装更新回退卸载/无重启/真实SDK与RCS/现场资格仍NOT_RUN。候选和原生证据仅在D盘本地`.artifacts`/受控临时证据目录，未上传受限二进制或现场数据。此后的文档提交不改变该介质SourceCommit，后续代码切片须另构建，不沿用本条验收。

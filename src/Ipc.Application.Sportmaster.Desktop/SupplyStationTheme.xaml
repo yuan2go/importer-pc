@@ -33,6 +33,7 @@
  <Style x:Key="StationTaskValue" TargetType="TextBox" BasedOn="{StaticResource ReadonlyValue}">
   <Setter Property="FontFamily" Value="{x:Static type:UiTypography.Code}"/>
   <Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/>
+  <Setter Property="MinHeight" Value="32"/>
   <Setter Property="MaxHeight" Value="64"/>
   <Setter Property="TextWrapping" Value="Wrap"/>
   <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
@@ -42,7 +43,7 @@
   <Setter Property="VerticalAlignment" Value="Center"/>
   <Setter Property="IsTabStop" Value="True"/>
   <Style.Triggers>
-   <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="32"/></DataTrigger>
+   <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="34"/></DataTrigger>
   </Style.Triggers>
  </Style>
  <Style x:Key="StationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

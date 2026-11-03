@@ -188,7 +188,7 @@ static class BarcodeNativeKeyboard
     public static async Task ClickAsync(Window window, FrameworkElement target, Point offset)
     {
         if (!window.IsActive || GetForegroundWindow() != new WindowInteropHelper(window).Handle || !target.IsVisible)
-            throw new InvalidOperationException("Native mouse input requires the foreground test HWND and a visible target");
+            throw new InvalidOperationException($"Native mouse input requires the foreground test HWND and a visible target; active={window.IsActive}; foreground={GetForegroundWindow()}; expected={new WindowInteropHelper(window).Handle}; visible={target.IsVisible}");
         var point = target.PointToScreen(offset);
         if (!SetCursorPos((int)Math.Round(point.X), (int)Math.Round(point.Y))) throw new Win32Exception(Marshal.GetLastWin32Error());
         var processed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

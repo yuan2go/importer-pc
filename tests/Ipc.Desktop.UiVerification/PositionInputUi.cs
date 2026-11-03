@@ -13,7 +13,7 @@ static partial class Program
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS POSITION-INPUT " + text); }
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "position-input"), 15000);
         await h.StartAsync();
-        var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
+        var window = new SupplyStationWindow(h.App, null, "standard") { Title = "菜鸟供包台 · 合成输入验证" }; window.Show();
         try
         {
             await SetClient(window, 1536, 816); window.Activate();
@@ -72,15 +72,18 @@ static partial class Program
             requests = h.Peer.Requests.Count;
             // Actual OS mouse input, including a hit in empty space and on a label.
             var rightOutline = (Border)right.FindName("PositionOutline");
+            window.Activate(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             await BarcodeNativeKeyboard.ClickAsync(window, rightOutline, new Point(4, rightOutline.ActualHeight / 2));
             Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "clicking empty right-card space selects right and focuses barcode input");
             await BarcodeNativeKeyboard.SendAsync(window, rightEntry, "000731".Select(c => (ushort)c).Append((ushort)0x0D).ToArray());
             await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Barcode == "000731");
             Check(vm.Left.Barcode == "SYNTH-CHANGED" && h.Peer.Requests.Count == requests + 1, "PDA input after card click submits one right request with leading zeros and leaves left unchanged");
             var leftTitle = Descendants(left).OfType<TextBlock>().Single(t => t.Text == "左投递位");
+            window.Activate(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             await BarcodeNativeKeyboard.ClickAsync(window, leftTitle, new Point(8, leftTitle.ActualHeight / 2));
             Check(vm.InputTargetPosition == "left" && leftEntry.IsKeyboardFocused, "clicking the left camera-area title selects left without touching the input box");
             var rightSlot = (TextBox)right.FindName("CurrentSlot");
+            window.Activate(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             await BarcodeNativeKeyboard.ClickAsync(window, rightSlot, new Point(12, rightSlot.ActualHeight / 2));
             Check(vm.InputTargetPosition == "right" && rightSlot.IsKeyboardFocusWithin, "clicking a selectable chute chooses right and keeps native text selection available");
             rightSlot.SelectAll(); var copied = rightSlot.SelectedText;

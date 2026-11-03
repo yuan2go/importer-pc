@@ -27,17 +27,22 @@ static partial class Program
             {
                 await SetClient(window, size.Item1, size.Item2); await Flush();
                 var slot = (TextBox)position.FindName("CurrentSlot");
-                Check(slot.Text == "SIM-CHUTE-03" && slot.FontSize <= 32 && Inside(slot, client), "long chute stays complete at reduced size: " + size.Item1);
+                Check(slot.Text == "SIM-CHUTE-03" && slot.FontSize == (vm.IsCompact ? 28 : 32) && Inside(slot, client), "enlarged chute stays complete: " + size.Item1);
                 var transform = slot.TransformToAncestor(client);
                 var scale = (transform.Transform(new Point(0, 1)) - transform.Transform(new Point())).Length;
                 Check(slot.FontSize * scale >= 24, "actually drawn long chute stays at least 24 DIP: " + size.Item1);
                 foreach (var name in new[] { "WaveValue", "TaskValue", "SkuValue", "QuantityValue" })
                 {
                     var value = (TextBox)position.FindName(name);
-                    Check(value.IsVisible && value.FontSize == UiTypography.TaskValue && value.FontSize == 24 && value.IsReadOnly && value.ActualHeight >= 28 && Inside(value, client), "larger selectable task value fits: " + name + " at " + size.Item1);
+                    var glyph = value.GetRectFromCharacterIndex(0);
+                    lines.Add("GEOMETRY " + name + " font=" + value.FontSize + " height=" + value.ActualHeight + " glyph=" + glyph.Height);
+                    Check(value.IsVisible && value.FontSize == UiTypography.TaskValue && value.FontSize == 22 && value.IsReadOnly &&
+                        !glyph.IsEmpty && glyph.Height >= value.FontSize && value.ActualHeight + .1 >= glyph.Height && Inside(value, client),
+                        "selectable task value fits with a complete native text line: " + name + " at " + size.Item1);
                 }
                 var labels = Descendants(position).OfType<TextBlock>().Where(t => t.Text is "波次号" or "任务号" or "商品编码" or "返回数量").ToArray();
-                Check(labels.Length == 4 && labels.All(t => t.FontSize == 18), "all four task labels use the larger shared scale");
+                Check(labels.Length == 4 && labels.All(t => t.FontSize == 16), "all four task labels use the balanced shared scale");
+                Check(((Grid)position.FindName("TaskFields")).ActualHeight >= (vm.IsTight ? 72 : 104), "task metadata receives its own expanded two-row area: " + size.Item1);
                 CaptureInternal(evidence, "field-readability-" + (int)size.Item1, client, lines);
             }
         }

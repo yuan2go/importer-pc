@@ -45,7 +45,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         DockPanel.SetDock(activate, Dock.Right); footer.Children.Add(save); footer.Children.Add(inspect); footer.Children.Add(activate); footer.Children.Add(back);
         activate.Click += async (_, _) => { if (vm.RequestActivationAsync is { } request) { Close(); await request(); } };
         back.IsCancel = true;
-        var footerChrome = new Border { BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 1, 0, 0), Child = footer };
+        var footerChrome = Themed(new Border { BorderThickness = new(0, 1, 0, 0), Child = footer }, Border.BorderBrushProperty, "Line");
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
         body.Children.Add(Heading(Title, UiTypography.PageTitle, 0));
@@ -159,12 +159,13 @@ public sealed class ConfigurationSaveReviewWindow : Window
         };
         outcome.Text = vm.Busy ? vm.OperationStatus : localFailure ?? (outcomeText + (vm.ConfigurationSubmissionOutcome is "Unknown" or "NotSaved" or "Conflict" or "Rejected" ? "\n" + vm.ConfigurationSubmissionDetail : ""));
         outcome.Visibility = outcome.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        outcome.Foreground = Brush(vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "#915300" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "#19745A" : "#5A6878");
+        outcome.SetResourceReference(TextBlock.ForegroundProperty, vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "Warning" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "Success" : "Muted");
     }
-    static SolidColorBrush Brush(string value) => (SolidColorBrush)new BrushConverter().ConvertFromString(value)!;
-    static TextBlock Heading(string value, double size, double top) => new() { Text = value, FontSize = size, FontWeight = UiTypography.Emphasis, Foreground = Brush("#1C3044"), Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap };
-    static TextBlock Note(string value) => new() { Text = value, FontSize = UiTypography.Body, Foreground = Brush("#5A6878"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) };
-    static TextBlock Label(string value) => new() { Text = value, Margin = new(0, 0, 0, 6), Foreground = Brush("#25384B") };
+    // Colours come from the Workstation theme keys (AGENTS.md), resolved where the window is shown.
+    static T Themed<T>(T element, DependencyProperty property, string key) where T : FrameworkElement { element.SetResourceReference(property, key); return element; }
+    static TextBlock Heading(string value, double size, double top) => Themed(new TextBlock { Text = value, FontSize = size, FontWeight = UiTypography.Emphasis, Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap }, TextBlock.ForegroundProperty, "Ink");
+    static TextBlock Note(string value) => Themed(new TextBlock { Text = value, FontSize = UiTypography.Body, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) }, TextBlock.ForegroundProperty, "Muted");
+    static TextBlock Label(string value) => Themed(new TextBlock { Text = value, Margin = new(0, 0, 0, 6) }, TextBlock.ForegroundProperty, "Ink");
     internal static DataGrid ChangeTable(ConfigurationChangeItem[] changes)
     {
         var table = new DataGrid
@@ -177,9 +178,6 @@ public sealed class ConfigurationSaveReviewWindow : Window
             CanUserResizeRows = false,
             HeadersVisibility = DataGridHeadersVisibility.Column,
             GridLinesVisibility = DataGridGridLinesVisibility.Horizontal,
-            HorizontalGridLinesBrush = Brush("#E5E9EF"),
-            Background = Brushes.White,
-            BorderBrush = Brush("#E1E5EB"),
             BorderThickness = new(1),
             RowHeaderWidth = 0,
             RowHeight = double.NaN,
@@ -195,6 +193,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         table.Columns.Add(new DataGridTextColumn { Header = "更改后", Binding = new Binding(nameof(ConfigurationChangeItem.After)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "生效方式", Binding = new Binding(nameof(ConfigurationChangeItem.Activation)), Width = new(1.4, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         var rowStyle = new Style(typeof(DataGridRow)); rowStyle.Setters.Add(new Setter(ToolTipProperty, new Binding(nameof(ConfigurationChangeItem.Label)))); rowStyle.Setters.Add(new Setter(AutomationProperties.NameProperty, new Binding(nameof(ConfigurationChangeItem.Label)))); table.RowStyle = rowStyle;
+        table.SetResourceReference(DataGrid.HorizontalGridLinesBrushProperty, "Line"); table.SetResourceReference(Control.BorderBrushProperty, "Line"); table.SetResourceReference(Control.BackgroundProperty, "Surface");
         AutomationProperties.SetName(table, "本次设置更改"); return table;
     }
     public static void ShowChanges(Window? owner, ConfigurationChangeItem[] changes, string revision)

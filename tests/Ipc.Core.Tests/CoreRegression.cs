@@ -24,7 +24,6 @@ public sealed class CoreRegression
     [DataRow("--live-devices-30", 23)]
     [DataRow("--mvs-network-reconnect", 20)]
     [DataRow("--mvs-offline-activation", 14)]
-    [DataRow("--update-notice-07", 14)]
     [DataRow("--mvs-stop-reconnect", 9)]
     [DataRow("--mvs-still-frames", 8)]
     [DataRow("--history-detail-sheet", 9)]

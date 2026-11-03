@@ -271,9 +271,9 @@ SM现按“欢迎与位置→安装→完成”三主阶段组织；准备与只
 | 层次 | 结果 |
 |---|---|
 | 编译 | Linux交叉编译（SDK 10.0.114，无锁文件）：Verification、Ipc.Assembly、Ipc.Desktop、SM桌面均0错误 |
-| 本机测试（Linux） | `--update-notice-07` 14、`--installation-receipts-04` 9、`--first-configuration-03` 12全部通过；`--permanent-deletion-02`平台部分22项通过，SQLite业务部分需Windows夹具（未运行） |
+| 本机测试（Linux） | `--update-notice-07` 14、`--installation-receipts-04` 9、`--first-configuration-03` 12全部通过；`--permanent-deletion-02`平台部分22项通过，SQLite业务部分需Windows夹具（Linux未运行，CI已运行） |
 | 格式/文档/打印 | 全量格式门禁、文档门禁通过；作业卡1页、手册7页（打印核对现剔除页脚，允许段落跨页） |
-| CI | 未运行（待开PR后记录实际结果） |
+| CI | [CI41601049832](https://github.com/yuan2go/importer-pc/actions/runs/41601049832)（源`31808576`）五项任务全部通过：29项标准测试失败0/跳过0（含Windows上`--permanent-deletion-02`全部26项，SQLite业务部分在此运行），全量格式728个C#文件，覆盖率、性能、发布策略、三装配构建与PDF任务。首轮失败只因最低断言数误写为27，实际26项全部通过，已改正数字未删断言 |
 | Windows实机/原生界面 | 未运行：永久删除区、首配场景卡与网络检查只编译，未截图；帮助窗口的原生检查见上节（PR191） |
 | 真实SDK / 客户RCS / 现场验收 | 未运行 |
 

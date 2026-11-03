@@ -147,15 +147,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string? savedInput, checkedInput;
     ParameterEditorModel? parameterEditor;
     ParameterSettingsControl? parameterControl;
-    public string IncompleteSummary
-    {
-        get
-        {
-            if (parameterEditor is null) return "尚未完成本站、业务规则、相机及 RCS 的配置检查。继续配置后可查看具体缺项。";
-            parameterEditor.ValidateFields();
-            return parameterEditor.Issues.Count == 0 ? "当前字段检查未发现错误；尚未保存正式配置。继续配置，在“检查与完成”中保存。" : "当前还需修改 " + parameterEditor.Issues.Count + " 项：\n" + string.Join("\n", parameterEditor.Issues.Take(8).Select(i => "• " + ChineseInterfaceText.ParameterMessage(i.Message)));
-        }
-    }
     bool startupSaveUncertain;
     bool lastSaveConfirmed;
     bool savingCandidate;

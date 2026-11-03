@@ -17,7 +17,7 @@ def frame(seq, observation=None, skipped=False, decode=100):
     return dict(TraceSequence=seq, Number=seq, ObservationId=observation, DecodeAttempted=not skipped,
                 SkippedBeforeDecode=skipped, RejectedFrame=False, Candidates=1 if observation else 0,
                 Delivered=bool(observation), DecodeMs=decode, DecodeQueueMs=5, CopyMs=2, ReleaseMs=1,
-                OriginalCopyMs=3, HandoffMs=4, ObservedToReceiverMs=110, ClearMs=1)
+                OriginalCopyMs=3, HandoffMs=4, ObservedToReceiverMs=110, ClearMs=1, HostDeliveryToDecodeMs=110)
 
 
 def event(seq, kind, observation='obs-L', position='left', state=None, elapsed=None):
@@ -97,6 +97,8 @@ class Performance(unittest.TestCase):
         joined = list(self.a.correlations())
         self.assertTrue(joined[0]['FrameCorrelated'])
         self.assertEqual(joined[0]['RcsResultToSlotMs'], 50)
+        self.assertEqual(joined[0]['HostFrameToRcsMs'], 260)
+        self.assertEqual(joined[0]['HostFrameToSlotMs'], 310)
         self.a.db.execute("UPDATE presentation SET position='right'")
         bad = list(self.a.correlations())[0]
         self.assertIsNone(bad['DecodeToSlotMs'])

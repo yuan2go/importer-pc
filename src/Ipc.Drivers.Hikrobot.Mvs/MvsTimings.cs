@@ -68,4 +68,5 @@ internal sealed record MvsFrameLatency(uint Number, DateTimeOffset DeliveredAt, 
     public string? ObservationId { get; init; }
     public uint Width { get; init; }
     public uint Height { get; init; }
+    public double? HostDeliveryToDecodeMs { get; init; }
 }

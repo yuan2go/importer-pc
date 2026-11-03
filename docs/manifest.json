@@ -106335,9 +106335,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-MVS-LATENCY-01; original evidence retains its own SourceCommit",
-      "sha256": "636d2d63f1a9b0006c147c1e59031dcc36ebf5a16edcee1b04fbb35fa8e44ba3",
-      "size_bytes": 3771,
-      "git_blob": "a429e6c2bc5fcc9bc02fcc1e59e3d13bef524494",
+      "sha256": "93f25a7157c0324d2f8705afbcaff11e31bb786569e27251efe736ed329ce7ec",
+      "size_bytes": 3828,
+      "git_blob": "22e35c28dd63cfc811cd1b1c955198df86ed19d1",
       "storage_scope": "public_repository"
     },
     {
@@ -111461,9 +111461,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-PERCEPTION-LATENCY-15; original evidence retains its own SourceCommit",
-      "sha256": "02c45a8deb30990891d9fea7dfda27b9bf1a3a0cd27939c84424df5c3d648a7d",
-      "size_bytes": 11376,
-      "git_blob": "c3b93f102e4803fbc021b64f408bb63f14e4f7c1",
+      "sha256": "aa427de6b2f5b217bf197e3a3e93eebef801a1f096d82539c5ccd81e4a412390",
+      "size_bytes": 11618,
+      "git_blob": "b7e4301ddc8c684d647673e18bd5d4ead12749fb",
       "storage_scope": "public_repository"
     },
     {
@@ -121702,9 +121702,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DUAL-CAMERA-PERFORMANCE-33; original evidence retains its own SourceCommit",
-      "sha256": "bacd1bab54c8b175effb4c2bba78441c640d253f37a47872158bbb1abeb07fca",
-      "size_bytes": 13997,
-      "git_blob": "2d7da126d2d8b459df650ad88ae418571f8d094f",
+      "sha256": "3dbb30c2ef391641899afb757859dc9d9910fee77c82517655fb7f10f4c4dfd9",
+      "size_bytes": 14398,
+      "git_blob": "333e79207a961de86b44f70c866f2cfe66e9c7e4",
       "storage_scope": "public_repository"
     },
     {
@@ -121724,9 +121724,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DUAL-CAMERA-PERFORMANCE-33; original evidence retains its own SourceCommit",
-      "sha256": "a7c69a9e9ea93bb19e607c17b9eaf865658a51f68a78db0f738af7ccc8de7e50",
-      "size_bytes": 28612,
-      "git_blob": "e598a1da50c54e88cc0403c611f77c418ee06529",
+      "sha256": "2751e2be69883b71d430314a9b037f5fa22969aa13b6485687f64e5a36592056",
+      "size_bytes": 29305,
+      "git_blob": "1980d5f788107904e240ec4cbee6735ebe293a03",
       "storage_scope": "public_repository"
     },
     {
@@ -121735,9 +121735,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DUAL-CAMERA-PERFORMANCE-33; original evidence retains its own SourceCommit",
-      "sha256": "b3c2230a874a03e37174f31d9f68c0727c4d499a590f799164db45e1a0b13823",
-      "size_bytes": 12648,
-      "git_blob": "b414bc0aa9a231d13088156ae68502761874e99b",
+      "sha256": "deb76a0ae8980e911a0e41e0512dfe4a05df76748b3ab196392915f15910d83b",
+      "size_bytes": 12799,
+      "git_blob": "402e6bfc05e603a0adbf02a02fb71ee5d0c3fe6e",
       "storage_scope": "public_repository"
     },
     {
@@ -121757,9 +121757,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DUAL-CAMERA-PERFORMANCE-33; original evidence retains its own SourceCommit",
-      "sha256": "5dee2fc4a39dd468d894d4ab7c36c8df1c28caf05ee26fd1f431f7f8bc2c4194",
-      "size_bytes": 7717,
-      "git_blob": "532a4bd297bc370a7a0ed363e1012811fea8d6d4",
+      "sha256": "cca129221fc69f2eafb3214fb56a7e83fa39f7021a39b9dd996dca25fb634b73",
+      "size_bytes": 7767,
+      "git_blob": "68f9ecb98402d9a47aeb6501d2cb6468796e5644",
       "storage_scope": "public_repository"
     }
   ],

@@ -21,7 +21,7 @@ COUNTERS = ('AcquireCalls', 'NoData', 'Frames', 'DecodeStarted', 'DecodeComplete
             'EmptyFrames', 'Candidates', 'Delivered', 'Rejected', 'RejectedFrames',
             'SupersededDecodeFrames', 'OriginalFrameCopies', 'SdkFrameNumberGaps', 'SdkGapEvents')
 FRAME_METRICS = ('CopyMs', 'ReleaseMs', 'DecodeMs', 'DecodeQueueMs', 'OriginalCopyMs',
-                 'ObservedToReceiverMs', 'HandoffMs', 'ClearMs')
+                 'ObservedToReceiverMs', 'HandoffMs', 'ClearMs', 'HostDeliveryToDecodeMs')
 
 
 def dump(path, value):
@@ -390,12 +390,18 @@ class Analysis:
                 self.issues['SLOT_BEFORE_RESULT_OR_CLOCK_MISMATCH'] += 1
                 result_to_slot = None
             self.metric(position, 'RcsResultToSlotComposedMs', result_to_slot, pooled=True)
+            host_to_decode = frame.get('HostDeliveryToDecodeMs') if exact_frame else None
+            host_to_rcs = host_to_decode + event['SinceDecodeMs'] if host_to_decode is not None and event.get('SinceDecodeMs') is not None else None
+            host_to_slot = host_to_decode + read_to_slot if host_to_decode is not None and read_to_slot is not None else None
+            self.metric(position, 'HostFrameToRcsResultMs', host_to_rcs, pooled=True)
+            self.metric(position, 'HostFrameToSlotComposedMs', host_to_slot, pooled=True)
             yield dict(RuntimeId=runtime, Position=position, ObservationId=obs, OperationId=op, RequestId=req, State=state,
                        FrameCorrelated=exact_frame, FrameNumber=frame['Number'] if exact_frame else None,
                        DecodeMs=frame.get('DecodeMs') if exact_frame else None,
                        DecodeQueueMs=frame.get('DecodeQueueMs') if exact_frame else None,
                        HandoffMs=frame.get('HandoffMs') if exact_frame else None,
                        ObservedToReceiverMs=frame.get('ObservedToReceiverMs') if exact_frame else None,
+                       HostFrameToRcsMs=host_to_rcs, HostFrameToSlotMs=host_to_slot,
                        RcsMs=event.get('ElapsedMs'), DecodeToRcsMs=event.get('SinceDecodeMs'), DecodeToSlotMs=read_to_slot,
                        RcsResultToSlotMs=result_to_slot, SlotComposed=read_to_slot is not None)
 
@@ -427,7 +433,7 @@ def analyze(args):
                     raise ValueError('Invalid sample line ' + str(number)) from error
         fields = ('RuntimeId', 'Position', 'ObservationId', 'OperationId', 'RequestId', 'State', 'FrameCorrelated',
                   'FrameNumber', 'DecodeMs', 'DecodeQueueMs', 'HandoffMs', 'ObservedToReceiverMs',
-                  'RcsMs', 'DecodeToRcsMs', 'DecodeToSlotMs', 'RcsResultToSlotMs', 'SlotComposed')
+                  'HostFrameToRcsMs', 'HostFrameToSlotMs', 'RcsMs', 'DecodeToRcsMs', 'DecodeToSlotMs', 'RcsResultToSlotMs', 'SlotComposed')
         write_csv(root / 'correlations.csv', a.correlations(), fields)
         stages = []
         for key, (first, last) in a.stage_totals.items():

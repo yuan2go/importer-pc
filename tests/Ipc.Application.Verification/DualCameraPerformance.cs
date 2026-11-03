@@ -33,7 +33,7 @@ internal static class DualCameraPerformance
                 await CameraRoundHarness.Until(() => Task.FromResult(source.Timings.Snapshot().RecentFrames.Length == 1));
                 var frame = source.Timings.Snapshot().RecentFrames.Single();
                 Check(frame.ObservationId == result.GetProperty("ObservationId").GetString() && frame.DecodeAttempted && frame.Delivered &&
-                    frame.Number == 1 && frame.Width > 0 && frame.Height > 0 && frame.TraceSequence == 1 && !frame.SkippedBeforeDecode,
+                    frame.Number == 1 && frame.Width > 0 && frame.Height > 0 && frame.TraceSequence == 1 && !frame.SkippedBeforeDecode && frame.HostDeliveryToDecodeMs >= frame.DecodeMs,
                     position + " completion correlates to its exact epoch/frame/observation, even when both cameras use frame number one");
                 Check(result.GetProperty("State").GetString() == "Accepted" && result.GetProperty("ElapsedMs").GetDouble() >= 0 &&
                     result.GetProperty("SinceDecodeMs").GetDouble() >= result.GetProperty("ElapsedMs").GetDouble() &&

@@ -77,6 +77,8 @@ Pq 用精确 nearest-rank：排序后第 `ceil(q × N)` 个样本；无样本不
 
 呈现指标是已有的同进程解码完成至 DWM 合成栅栏，不代表相机曝光到屏幕光子，也不能证明现场格口物理正确。非当前观察可能已被更新画面替换，没有 `SlotComposed` 并不自动等于 RCS 丢回包。
 
+同一观察有完整关联时，另输出 `HostFrameToRcsResultMs` 和 `HostFrameToSlotComposedMs`：用驱动单调时钟的 `HostDeliveryToDecodeMs` 加同一观察的解码后耗时。边界从 SDK 已将帧交给主机起算，不含曝光和未标定的相机传输年龄；不把 SDK 原始时间戳当主机时间，不把 `ObservedToReceiverMs` 与解码后耗时相加造成重叠计时。
+
 ## 异常和判定
 
 | 异常分类 | 调查方法 |

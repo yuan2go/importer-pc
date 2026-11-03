@@ -418,6 +418,26 @@ def write_csv(path, rows, fields):
             writer.writerow({k: "'" + v if isinstance(v, str) and v.startswith(('=', '+', '-', '@')) else v for k, v in row.items()})
 
 
+def counter_ratios(counters, issues):
+    computed = {}
+    for position in ('left', 'right'):
+        c = counters[position]
+        decoded, frames = c.get('DecodeCompleted', 0), c.get('Frames', 0)
+        coded = decoded - c['EmptyFrames'] if 'DecodeCompleted' in c and 'EmptyFrames' in c else None
+        superseded = c.get('SupersededDecodeFrames')
+        if coded is not None and not 0 <= coded <= decoded:
+            issues['COUNTER_BOUNDARY_MISMATCH'] += 1
+            coded = None
+        replacement = superseded / frames if frames and superseded is not None else None
+        if replacement is not None and not 0 <= replacement <= 1:
+            issues['COUNTER_BOUNDARY_MISMATCH'] += 1
+            replacement = None
+        computed[position] = dict(FramesWithCandidates=coded,
+            CandidateFrameFractionOfDecoded=coded / decoded if decoded and coded is not None else None,
+            SupersededFractionOfCaptured=replacement)
+    return computed
+
+
 def analyze(args):
     source = args.capture
     manifest = json.loads((source / 'capture.json').read_text(encoding='utf-8-sig'))
@@ -457,14 +477,7 @@ def analyze(args):
         outstanding = a.db.execute("SELECT count(*) FROM events s WHERE kind='RcsSubmitStarted' AND NOT EXISTS(SELECT 1 FROM events e WHERE e.runtime=s.runtime AND e.request=s.request AND e.kind='RcsSubmitCompleted')").fetchone()[0]
         if outstanding:
             a.issues['RCS_STARTED_WITHOUT_COLLECTED_RESULT'] += outstanding
-        computed = {}
-        for position in ('left', 'right'):
-            c = a.counters[position]
-            decoded, frames = c.get('DecodeCompleted', 0), c.get('Frames', 0)
-            coded = decoded - c['EmptyFrames'] if 'DecodeCompleted' in c and 'EmptyFrames' in c else None
-            computed[position] = dict(FramesWithCandidates=coded,
-                CandidateFrameFractionOfDecoded=coded / decoded if decoded and coded is not None else None,
-                SupersededFractionOfCaptured=c['SupersededDecodeFrames'] / frames if frames and 'SupersededDecodeFrames' in c else None)
+        computed = counter_ratios(a.counters, a.issues)
         summary = dict(Schema=1, Status='MEASURED_NOT_ACCEPTANCE', PerformanceAcceptance='NOT_EVALUATED_NO_SITE_SLA',
                        EvidenceQuality='REVIEW_ANOMALIES' if a.issues else 'NO_COLLECTION_ANOMALIES_DETECTED',
                        Scenario=manifest['Scenario'], SourceVersions=sorted(a.versions), UniqueSnapshots=a.unique,

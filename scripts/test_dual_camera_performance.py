@@ -203,6 +203,14 @@ class Performance(unittest.TestCase):
         self.assertEqual(self.a.issues['INVALID_NUMERIC_METRIC'], 3)
         self.assertEqual(self.a.quantiles(), [])
 
+    def test_counter_boundary_skew_is_unavailable_instead_of_negative_or_over_100_percent(self):
+        self.a.counters['left'].update(DecodeCompleted=0, EmptyFrames=1, Frames=1, SupersededDecodeFrames=2)
+        ratios = p.counter_ratios(self.a.counters, self.a.issues)['left']
+        self.assertIsNone(ratios['FramesWithCandidates'])
+        self.assertIsNone(ratios['CandidateFrameFractionOfDecoded'])
+        self.assertIsNone(ratios['SupersededFractionOfCaptured'])
+        self.assertEqual(self.a.issues['COUNTER_BOUNDARY_MISMATCH'], 2)
+
     def test_reconnect_transition_never_attributes_new_epoch_traces_to_old_epoch(self):
         self.a.feed(sample(0))
         transitioning = sample(1, frames=[frame(1, 'obs-L')])

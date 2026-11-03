@@ -1,3 +1,4 @@
+using Ipc.Application.Contracts;
 using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow;
@@ -75,6 +76,25 @@ public sealed partial class ParcelRuntime
             else if (observedAt > placement.LastSeen) placement.LastSeen = observedAt;
             placement.CameraSeen |= camera;
             placement.Operation = operation;
+        }
+    }
+
+    // How long a manually entered result stays on the card when nothing else happens at the position.
+    internal static readonly TimeSpan ManualResultDisplay = TimeSpan.FromMinutes(10);
+
+    // A finished (chute assigned/refused) result stays on the work card only while it is the
+    // current parcel of this shift: never one from before this run opened (restart, previous
+    // shift), never after its placement ended (empty tray) or another code took the position,
+    // and a manually entered one for at most ManualResultDisplay. Unfinished and unconfirmed
+    // operations are not affected: they stay until handled.
+    bool ShowsFinishedResult(string position, ParcelOperation finished)
+    {
+        if (definition.SamePlacementReleaseMs <= 0) return true;
+        if (finished.ObservedAt < stationOpeningAt) return false;
+        lock (placements)
+        {
+            if (!placements.TryGetValue(position, out var placement) || placement.Operation != finished.Id || placement.EndedAt is not null) return false;
+            return placement.CameraSeen && frameFedPositions.Contains(position) || StationTime.GetUtcNow() - placement.LastSeen <= ManualResultDisplay;
         }
     }
 

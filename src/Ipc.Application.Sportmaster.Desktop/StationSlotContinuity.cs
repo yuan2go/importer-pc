@@ -54,7 +54,9 @@ public sealed partial class SupplyStationPositionViewModel
     string ObservedBarcode => CameraNoCode ? "" : CameraObservationUnmatched ? MatchedCameraCue ? SingleDisplayCode(readFeedback!.SingleCode) : "" : unreadFeedback ? SingleDisplayCode(readFeedback!.SingleCode) : Input is { } input
         ? SingleDisplayCode(input.BarcodeSelection?.SelectedCode ?? (input.Observation.Codes is [var single] ? single : null))
         : Operation?.ParcelCode ?? "等待包裹";
-    public string BarcodePlaceholder => CameraAwaitingRead ? "相机已重连，请重新扫码" : CameraNoCode ? "等待放件；已放包裹请将条码朝上" : CameraObservationUnmatched && !MatchedCameraCue ? "正在核对本次条码" : (unreadFeedback ? readFeedback!.CandidateCount : Input?.Observation.Codes.Length ?? 0) > 1
+    // Manual entry is an independent source (AGENTS.md): an offline camera does not pause it.
+    bool ManualInputAvailable => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
+    public string BarcodePlaceholder => ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线，可扫码枪或键盘输入条码" : "相机离线" : CameraAwaitingRead ? "相机已重连，请重新扫码" : CameraNoCode ? "等待放件；已放包裹请将条码朝上" : CameraObservationUnmatched && !MatchedCameraCue ? "正在核对本次条码" : (unreadFeedback ? readFeedback!.CandidateCount : Input?.Observation.Codes.Length ?? 0) > 1
         ? "本帧读到多个条码，请检查包裹" : HasCurrentInput ? "本次条码无效，请检查包裹" : "等待相机扫码或输入条码";
     public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || CameraNoCode || CameraObservationUnmatched || unreadFeedback || InputUnadmitted || IsProcessing ? null :
         Input is { } resting && Operation is { } placed && ParcelInputReasons.IsSamePlacement(resting) && resting.OperationId == placed.Id ? new(OperationId: placed.Id) :
@@ -95,15 +97,16 @@ public sealed partial class SupplyStationPositionViewModel
         CameraNoCode && !HasUncertainOriginal ? ParcelPresentation.Neutral(CameraAwaitingRead ? "等待重新扫码" : "未读到条码") : invalidReadFeedback ? ParcelPresentation.Unknown("本次读码已失效") : IsProcessing ? ParcelPresentation.Pending("处理中") : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown("未取得格口") : Presentation;
     public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
     public string ContinuityNotice => "";
-    public string DisplayStatus => ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused ? "供包已暂停" : ReaderUnavailableForDisplay ? "相机离线 · 本位暂停供包" : HasUncertainOriginal ? Status :
+    public string DisplayStatus => ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused ? "供包已暂停" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线 · 可手动输入条码" : "相机离线 · 本位暂停供包" : HasUncertainOriginal ? Status :
         CameraNoCode ? CameraAwaitingRead ? "等待重新扫码" : "未读到条码" : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Status;
     public string DisplayAttentionReason => DisplayPaused ? "" : ReaderUnavailableForDisplay ? CurrentReaderState?.Health == DeviceHealth.Faulted
-        ? "相机故障已阻断自动恢复；请通知维护人员检查配置、图像格式或资源清理，再受控恢复。" : "相机恢复连接后自动继续；另一投递位不受影响。" :
+        ? "相机故障，无法自动恢复；另一投递位不受影响。" : "相机正在自动重连，恢复后自动继续；另一投递位不受影响。" :
         CameraNoCode ? (CameraAwaitingRead ? "相机连接周期已变化，上一周期的格口已失效。" : cameraRead!.Frame.Outcome == ObservationReadOutcome.RejectedFrame ? "当前图像无法识别；上一件格口不可用于本件。" : "托盘上未读到条码；上一件格口不可用于本件。") +
             (HasUncertainOriginal ? " " + AttentionReason : "") :
         invalidReadFeedback ? "相机连接周期已变化，或本次读码等待已超时；没有本次有效格口。" : unreadFeedback ? HasUncertainOriginal ? "本次条码已读到；上一件 " + Operation?.ParcelCode + " 的格口仍未确认。" :
             "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
-    public string DisplayNextStep => DisplayPaused ? "本件暂勿投递，等待恢复供包。" : ShowConfirmedTask ? IsTight ? "" : "按本次格口投递" : ReaderUnavailableForDisplay ? "本位暂停供包，请通知维护人员检查相机。" :
+    public string DisplayNextStep => DisplayPaused ? "本件暂勿投递，等待恢复供包。" : ShowConfirmedTask ? IsTight ? "" : "按本次格口投递" : ReaderUnavailableForDisplay ? CurrentReaderState?.Health == DeviceHealth.Faulted
+            ? "请通知维护人员检查相机。" : ManualInputAvailable ? "需要时用扫码枪或键盘输入条码；相机一直未恢复时请通知维护人员。" : "相机一直未恢复时请通知维护人员。" :
         CameraNoCode ? HasUncertainOriginal ? NextStep : "托盘空时直接放上包裹，条码朝上；已放包裹仍未读到，请调整标签或用扫码枪/键盘补录，取得本件格口后再投递。" : invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" : NextStep;
     public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
     public string CameraReadFeedback => !CameraNoCode && (!CameraObservationUnmatched || MatchedCameraCue) && !invalidReadFeedback && readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)

@@ -6,6 +6,11 @@ public sealed record DeploymentLocation(string ApplicationId, string SourceCommi
 {
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public DesktopRecoveryOptions? Recovery { get; init; }
+    public string? MaintenanceRoot { get; init; }
+    public string? InventoryFile { get; init; }
+    public string? InventorySha256 { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public DeploymentLocation? PreviousDeployment { get; init; }
 }
 public sealed record DeploymentMedia(string Root, string ApplicationId, string SourceCommit, Dictionary<string, string> Files)
 {

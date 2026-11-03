@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--level', choices=('engineering', 'production'), default='engineering')
     parser.add_argument('--prepare', action='store_true', help='Create an immutable NOT_RUN/BLOCKED plan after media verification')
     parser.add_argument('--approved-signer', type=Path, help='Externally approved public .cer signer, mandatory for production signature verification; never a private key')
+    parser.add_argument('--installer', type=Path, help='Actual final signed single EXE; mandatory for production verification')
     args = parser.parse_args()
     spec = importlib.util.spec_from_file_location('release_windows', Path(__file__).with_name('release-windows.py'))
     release = importlib.util.module_from_spec(spec); spec.loader.exec_module(release)
@@ -39,7 +40,7 @@ def main():
     result = evaluate(args.evidence.resolve().parent, report, source, inventory, args.level)
     result['Authenticode'] = receipt.get('Authenticode', 'NOT_VERIFIED')
     if args.level == 'production':
-        signature = distribution_signature(medium, args.approved_signer)
+        signature = distribution_signature(medium, args.approved_signer, args.installer)
         result['DistributionSignature'] = signature
         if signature['Status'] != 'PASS':
             result['Status'] = 'FAIL'

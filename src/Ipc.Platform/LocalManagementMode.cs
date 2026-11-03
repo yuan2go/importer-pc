@@ -39,7 +39,7 @@ public sealed partial class LocalManagementMode
     sealed record Delegation(string Id, string TokenHash, string RequestHash, string SessionId, DateTimeOffset ExpiresAt, string SessionHash, bool Consumed = false,
         DateTimeOffset? OperationUntil = null);
     sealed record Store(int SchemaVersion, Credential? Credential, int Failures, DateTimeOffset LockedUntil, Audit[] Audit,
-        string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null, int RecoveryFailures = 0, DateTimeOffset RecoveryLockedUntil = default, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DateTimeOffset? SessionEnteredAt = null);
+        string? SessionHash = null, string? SessionId = null, DateTimeOffset? SessionExpires = null, Delegation[]? Delegations = null, int RecoveryFailures = 0, DateTimeOffset RecoveryLockedUntil = default, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DateTimeOffset? SessionEnteredAt = null, long CredentialRevision = 1, ManagementPasswordRecoveryChallenge[]? RecoveryChallenges = null, string? LastRecoveryOperation = null, long? LastRecoveryRevision = null);
     static string ProofHash(string token) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
     public LocalManagementMode(string root) : this(root, false) { }
     internal LocalManagementMode(string root, bool serviceAuthority)
@@ -78,7 +78,7 @@ public sealed partial class LocalManagementMode
         }
         if (new FileInfo(path).Length > 1024 * 1024) throw new InvalidDataException("管理模式凭据超出限制，保留原件修复。");
         var s = JsonSerializer.Deserialize<Store>(File.ReadAllText(path)) ?? throw new InvalidDataException("管理模式凭据损坏。");
-        if (s.SchemaVersion != 2 || s.Audit is null || s.Audit.Length > 512 || s.Delegations?.Length > 1024 || s.Credential is null) throw new InvalidDataException("管理模式凭据不完整，禁止重新设置覆盖。");
+        if (s.SchemaVersion != 2 || s.Audit is null || s.Audit.Length > 512 || s.CredentialRevision < 1 || s.RecoveryChallenges?.Length > 8 || s.Delegations?.Length > 1024 || s.Credential is null) throw new InvalidDataException("管理模式凭据不完整，禁止重新设置覆盖。");
         if(s.Credential is not null) ValidateStoredCredential(s.Credential);
         return s;
     }
@@ -205,7 +205,7 @@ public sealed partial class LocalManagementMode
     {
         if (Remote) { Rpc<bool>(new("ChangePassword", Password: password)); lock (sync) Revoke(); return; }
         Require(); var replacement = Create(password);
-        lock (sync) { using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理模式已退出或到期。"); } Save(s with { Credential = replacement, SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementPasswordChanged"); Revoke(); }
+        lock (sync) { using var held = LockStore(); var s = Read(); if (!ValidSession(s)) { Revoke(); throw new UnauthorizedAccessException("管理模式已退出或到期。"); } Save(s with { Credential = replacement, CredentialRevision = checked(s.CredentialRevision + 1), RecoveryChallenges = [], SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementPasswordChanged"); Revoke(); }
     }
     public ManagementModeDelegation Delegate(string requestHash) => IssueDelegation(requestHash, null);
     // The two-minute ticket is only admission. Once consumed, this exact

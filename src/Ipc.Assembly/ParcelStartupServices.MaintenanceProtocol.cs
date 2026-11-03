@@ -9,7 +9,7 @@ namespace Ipc.Assembly;
 
 public static partial class ParcelStartupServices
 {
-    static bool CancellableMaintenance(string action) => action is "Backup" or "Restore" or "Uninstall" or "PlanChange" or "PrepareChange" or "ReviewDeployment" or "Install" or "InstallWithPreflight" or "RepairSystem";
+    static bool CancellableMaintenance(string action) => action is "ReviewRemoval" or "Backup" or "Restore" or "Uninstall" or "PlanChange" or "PrepareChange" or "ReviewDeployment" or "Install" or "InstallWithPreflight" or "RepairSystem";
     sealed class ImmediateProgress<T>(Action<T> report) : IProgress<T> { public void Report(T value) => report(value); }
     internal sealed record MaintenancePipeReply(string? Terminal, bool CancelAccepted);
     [DllImport("kernel32.dll", SetLastError=true)]

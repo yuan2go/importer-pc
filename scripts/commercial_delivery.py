@@ -18,6 +18,7 @@ CASES = {
     'windows-migration': ('production', '完整恢复集、新根隔离、旧根退役、双账户/换机DPAPI拒绝、原请求不重发'),
     'field': ('production', '真实SDK/合同/设备/实体许可、连续运行与异常恢复、目标触控/DPI、部署资格'),
     'signoff': ('production', '可信分发签名、逐项资格和获授权负责方放行；不能用手填PASS代替证书/批准'),
+    'installer-bytes': ('production', '最终已签名单EXE与冻结介质的载荷/SourceCommit绑定及实际下载SHA256；签名验证不能替代载荷来源核对'),
 }
 STATES = {'PASS', 'FAIL', 'NOT_RUN', 'BLOCKED'}
 
@@ -88,18 +89,21 @@ def plan(source, inventory):
                             Reason=text, Evidence=[]) for key, (_, text) in CASES.items()])
 
 
-def distribution_signature(medium, approved_signer):
+def distribution_signature(medium, approved_signer, installer=None):
     # A release manifest string or a manually supplied PASS is never signature evidence.
     if not approved_signer:
         return dict(Status='BLOCKED', Reason='No externally approved public signer certificate supplied; no distribution signature qualification')
+    if not installer:
+        return dict(Status='BLOCKED', Reason='Actual final signed installer is required; inner media signatures alone are incomplete')
     shell = shutil.which('pwsh')
     if os.name != 'nt' or not shell:
         return dict(Status='BLOCKED', Reason='Actual Windows Authenticode verification requires Windows PowerShell 7')
-    result = subprocess.run([shell, '-NoProfile', '-File', str(Path(__file__).with_name('verify-distribution-signature.ps1')),
-                             '-Media', str(medium), '-ApprovedSigner', str(approved_signer)], capture_output=True, text=True, encoding='utf-8')
+    result = subprocess.run([shell, '-NoProfile', '-NonInteractive', '-File', str(Path(__file__).with_name('verify-distribution-signature.ps1')),
+                             '-Media', str(medium), '-ApprovedSigner', str(approved_signer), '-Installer', str(installer)], capture_output=True, text=True, encoding='utf-8')
     if result.returncode != 0:
         return dict(Status='BLOCKED', Reason='Windows rejected distribution signatures or approved certificate', Detail=result.stdout.strip())
     receipt = json.loads(result.stdout)
-    if receipt.get('Status') != 'PASS' or not receipt.get('Files'):
+    if (receipt.get('Status') != 'PASS' or not receipt.get('Files') or receipt.get('InstallerVerified') is not True
+            or receipt.get('Scope') != 'RecursiveProductPeAndFinalInstaller'):
         raise ValueError('Signature verifier returned incomplete evidence')
     return receipt

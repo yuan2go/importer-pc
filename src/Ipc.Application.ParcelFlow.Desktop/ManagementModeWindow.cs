@@ -12,11 +12,11 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed class ManagementModeWindow : Window
 {
     public ManagementModeWindow(IWorkstationAdministration service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync) { }
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync) { }
     public ManagementModeWindow(IManagementMode service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync) { }
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync) { }
     ManagementModeWindow(Func<Task<ManagementModeStatus>> status, Func<string, Task> configure, Func<string, Task<bool>> enter,
-        Func<Task> exit, Func<string, Task> change, Func<string, string, Task> reset)
+        Func<Task> exit, Func<string, Task> change, Func<string, Task> reset, Func<Task<ManagementPasswordRecoveryReceipt?>> inspect)
     {
         Title = "管理模式"; Width = 520; Height = 540; MinWidth = 360; MinHeight = 320;
         StartupAppearance.Apply(this); WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -31,7 +31,7 @@ public sealed class ManagementModeWindow : Window
         var confirmation = new StackPanel(); confirmation.Children.Add(new Label { Content = "确认密码", Target = confirm, Padding = new(0), Margin = new(0, 12, 0, 4) }); confirmation.Children.Add(confirm); passwordFields.Children.Add(confirmation);
         var rules = new TextBlock { Text = "5–256 个字符，可使用纯数字。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) }; passwordFields.Children.Add(rules);
         var recoveryPolicy = new Button { Name = "RecoverManagementPassword", Content = "忘记管理密码？", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 8, 0, 0) };
-        recoveryPolicy.Click += (_, _) => new ManagementPasswordRecoveryWindow(reset) { Owner = this }.ShowDialog();
+        recoveryPolicy.Click += (_, _) => new ManagementPasswordRecoveryWindow(reset, inspect) { Owner = this }.ShowDialog();
         body.Children.Add(recoveryPolicy);
         var changeBody = new StackPanel(); var changeTools = new Expander { Header = "修改管理密码", Content = changeBody, Visibility = Visibility.Collapsed, Margin = new(0, 12, 0, 0) }; body.Children.Add(changeTools);
         var next = new PasswordBox { Name = "NewManagementPassword", MaxLength = 256, MinHeight = 44 }; changeBody.Children.Add(new Label { Content = "新管理密码", Target = next, Padding = new(0) }); changeBody.Children.Add(next);

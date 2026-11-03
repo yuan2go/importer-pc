@@ -7,6 +7,7 @@ using Ipc.Assembly;
 using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
+Console.OutputEncoding = new System.Text.UTF8Encoding(false);
 if (args.Any(a => a is "--audit03-rcs-signed" or "--sportmaster-rcs-signed" or "--rcs-heartbeat-signed" or "--mvreader-flow"))
     throw new ArgumentException("Unsupported retired SM verification path; use built-in MVS/RCS checks");
 if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");
@@ -51,6 +52,9 @@ if (args.Contains("--camera-chain-closure")) { await CameraChainClosure.Run(work
 if (args.Contains("--reader-feedback-22")) { await ReaderFeedback22.Run(workspace, root); return; }
 if (args.Contains("--unread-package-27")) { await UnreadPackage27.Run(workspace, root); return; }
 if (args.Contains("--reader-robustness-28")) { await ReaderRobustness28.Run(workspace, root); return; }
+if (args.Contains("--industrial-lifecycle")) { IndustrialLifecycle.Run(root); return; }
+if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }
+if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }

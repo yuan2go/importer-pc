@@ -92,14 +92,21 @@ static class AdministratorBoundary
             for (var i = 0; i < 5; i++) Check(!client.Enter("wrong"), "protected login failure counted " + i);
             Deny(() => new LocalManagementMode(root).Enter(password), "failure lockout is owned by the service and survives a new client");
             var recoveredPassword = "Recovered-" + Guid.NewGuid().ToString("N");
+            ManagementPasswordRecoveryChallenge? recoveryChallenge = null;
             AsOrdinary(() =>
             {
                 var recovery = new LocalManagementMode(root);
-                Deny(() => recovery.ResetPassword("wrong-root", recoveredPassword), "ordinary-token recovery still requires the actual root credential");
-                recovery.ResetPassword("Cainiao123", recoveredPassword);
-                Check(!recovery.InspectStatus().Authorized && !client.InspectStatus().Authorized, "real protected broker recovery grants no session and revokes previous client authority");
-                Check(!recovery.Enter(password) && recovery.Enter(recoveredPassword), "ordinary-token root recovery works through the System service and accepts only the replacement password");
-                Deny(() => File.ReadAllText(protectedCredentials), "recovered credential remains unreadable under an ordinary Windows token");
+                Deny(() => recovery.ResetPassword("retired-protocol", recoveredPassword), "retired recovery always rejects, even through the real broker");
+                recoveryChallenge = recovery.BeginPasswordRecovery();
+                Deny(() => recovery.CompletePasswordRecovery(recoveryChallenge, recoveredPassword), "ordinary Windows token cannot authorize password recovery");
+            });
+            var reset = new LocalManagementMode(root).CompletePasswordRecovery(recoveryChallenge!, recoveredPassword);
+            Check(reset.Completed && !client.InspectStatus().Authorized, "real administrator reset commits and revokes original authority without granting a mode");
+            AsOrdinary(() =>
+            {
+                var recovery = new LocalManagementMode(root);
+                Check(recovery.Enter(recoveredPassword), "ordinary caller can enter only with replacement password after administrator reset");
+                Deny(() => File.ReadAllText(protectedCredentials), "reset credential remains protected from ordinary Windows caller");
                 recovery.Exit();
             });
         }

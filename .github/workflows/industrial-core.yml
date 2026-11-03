@@ -105,6 +105,48 @@ jobs:
             .artifacts/core/product-coverage/summary.md
           if-no-files-found: error
           retention-days: 14
+  operator-print:
+    runs-on: windows-2025
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        env:
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: core.protectNTFS
+          GIT_CONFIG_VALUE_0: 'false'
+          GIT_CONFIG_KEY_1: core.longpaths
+          GIT_CONFIG_VALUE_1: 'true'
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
+            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Build source-bound searchable A4 guides
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          python -m venv .artifacts/print-env
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .artifacts/print-env/Scripts/python.exe -m pip install --require-hashes --only-binary=:all: -r scripts/operator-print.requirements.txt
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & .artifacts/print-env/Scripts/python.exe scripts/build-operator-print.py --output .artifacts/operator-print/output/pdf
+          exit $LASTEXITCODE
+      - name: Keep generated guides and exact source manifest
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: operator-print-${{ github.sha }}
+          path: |
+            .artifacts/operator-print/output/pdf/*.pdf
+            .artifacts/operator-print/output/pdf/print-manifest.json
+            .artifacts/operator-print/output/pdf/OFL.txt
+          if-no-files-found: error
+          retention-days: 14
   windows-build:
     runs-on: windows-2025
     timeout-minutes: 15

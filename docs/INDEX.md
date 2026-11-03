@@ -13,6 +13,7 @@
 - [安装、卸载与生命周期](runtime/lifecycle-ux-current-guidance-01.md)
 - [MVS 软件识别](runtime/mvs-software-reader-01.md)
 - [双相机性能测量、采集与统计](design/sm-dual-camera-performance.md)
+- [现场打印稿生成与排版核查](runtime/industrial-print-guides-01.md)
 
 ## 设计
 

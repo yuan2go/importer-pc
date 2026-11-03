@@ -27,7 +27,7 @@ public sealed class CoreRegression
     [DataRow("--mvs-stop-reconnect", 9)]
     [DataRow("--mvs-still-frames", 8)]
     [DataRow("--work-card-current", 8)]
-    [DataRow("--history-detail-sheet", 9)]
+    [DataRow("--history-detail-sheet", 12)]
     [DataRow("--installation-receipts-04", 9)]
     [DataRow("--first-configuration-03", 13)]
     [DataRow("--dual-camera-performance", 13)]

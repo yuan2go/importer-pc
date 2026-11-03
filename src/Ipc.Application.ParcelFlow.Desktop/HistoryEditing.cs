@@ -49,7 +49,15 @@ public partial class ParcelViewModel
         Message = "筛选已清除，点击“查询”刷新列表。";
     }
     public string[] HistoryStates => ["", .. Enum.GetNames<ParcelState>()];
-    public string HistoryMetricsSummary { get; private set; } = "统计口径：按作业与请求事实统计，相同条码的独立观察分别记录；不代表实物落格件数。";
+    public string HistoryMetricsSummary { get; private set; } = "";
+    public string HistoryMetricsDetail { get; private set; } = "查询后显示本次范围的统计。";
+    // One plain line for the operator; the technical counts stay in "更多筛选与查询信息".
+    internal static string HistoryMetricsText(ParcelHistoryMetrics m)
+    {
+        var notResolved = Math.Max(0, m.Operations - m.WcsAccepted - m.Unknown);
+        return m.Operations == 0 ? "本次查询没有包裹" : $"共 {m.Operations} 件 · 已取得格口 {m.WcsAccepted}" +
+            (m.Unknown > 0 ? $" · 格口未确认 {m.Unknown}，请核对" : " · 无待核对") + (notResolved > 0 ? $" · 未取得格口 {notResolved}" : "");
+    }
     ParcelHistorySelection? historySelection;
     string? appliedHistorySignature;
     string HistoryFilterSignature() => Ipc.Platform.Wire.Encode(new[] { HistoryBarcode, HistoryPosition, HistoryState, HistoryFrom, HistoryToExclusive, HistoryRequest });

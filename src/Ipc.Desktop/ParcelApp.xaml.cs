@@ -103,7 +103,7 @@ public partial class App : System.Windows.Application
             ordinaryArguments.AddRange(["--config", Path.GetFullPath(launch.ConfigurationDirectory), "--data-root", Path.GetFullPath(launch.DataRoot), "--ui", options.Ui]);
             if (launch.View is not null) ordinaryArguments.AddRange(["--view", launch.View]);
             if (launch.Layout is not null) ordinaryArguments.AddRange(["--layout", launch.Layout]);
-            // Reuse PR137's same-user bootstrap before configuration or supervision.
+            // Reuse the same-user bootstrap before configuration or supervision.
             // A supervised child must never replace its registered process ID.
             if (!recoveryChild && OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(ordinaryArguments.ToArray()))
             { startup.AllowClose = true; Shutdown(0); return; }

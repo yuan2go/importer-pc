@@ -20,4 +20,4 @@
 
 必要验证覆盖真实ZXing/SQLite/内置RCS回环、坏帧后有效帧、资源容量/取消、原帧像素、编码和码制筛选、明确未连接与已发送后断线、终态A/B独立输入、空框同码恢复、左右提示、旋转框、原请求/Unknown、构建、发布启动及原生参数界面。保留原负向与失败日志，不删除断言换PASS。Windows合成、真实SDK、客户RCS、现场验收各自记录；不启用CI，不改现场配置/部署，不上传受限资产。
 
-实施与结果见[报告](../../runtime/sm-camera-chain-reliability-20.md)；索引原字节见[归档](../pre-sm-camera-chain-reliability-20/manifest.json)。
+实施与结果见[报告](../runtime/sm-camera-chain-reliability-20.md)；索引原字节见[归档](../pre-sm-camera-chain-reliability-20/manifest.json)。

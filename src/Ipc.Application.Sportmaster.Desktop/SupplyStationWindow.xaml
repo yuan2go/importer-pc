@@ -1,4 +1,4 @@
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:parameters="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationWindow" Title="菜鸟供包台" Width="1600" Height="900" MinWidth="640" MinHeight="420" Background="{DynamicResource StationBackground}" UseLayoutRounding="True" PreviewKeyDown="Window_PreviewKeyDown">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:parameters="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationWindow" Title="菜鸟供包台" Width="1600" Height="900" MinWidth="640" MinHeight="420" Background="{DynamicResource StationBackground}" UseLayoutRounding="True">
  <Window.Resources>
   <ResourceDictionary>
    <ResourceDictionary.MergedDictionaries>
@@ -72,7 +72,6 @@
        </Style>
       </TextBlock.Style>
      </TextBlock>
-     <Button x:Name="HelpAccess" Content="帮助" Click="Help_Click" ToolTip="作业卡、故障目录和诊断概览（F1）" AutomationProperties.HelpText="按 F1 也可以打开" Style="{StaticResource StationButton}" Margin="0,0,8,0"/>
      <parameters:ManagementModeMenu Status="{Binding ManagementStatus}" ModeActionRequested="ManagementMode_Click" RenewalRequested="ManagementRenew_Click"/>
      <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationButton}"/>
     </StackPanel>
@@ -91,6 +90,8 @@
        <MenuItem Header="设置" Click="Maintenance_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="日志" Click="Logs_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="调试" Click="Debug_Click" Visibility="{Binding ManagementModeVisibility}"/>
+       <Separator/>
+       <MenuItem Header="使用帮助" InputGestureText="F1" Click="Help_Click"/>
       </MenuItem>
      </Menu>
     </Grid>
@@ -107,6 +108,7 @@
     </Style>
    </Border.Style>
    <DockPanel Margin="12,20,12,12">
+    <Button Content="使用帮助" Click="Help_Click" DockPanel.Dock="Bottom" MinHeight="44" HorizontalContentAlignment="Left" Style="{StaticResource StationButton}" ToolTip="作业卡、故障说明、版本与诊断导出（F1）"/>
     <StackPanel>
      <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="作业" Click="Workstation_Click" Margin="0,0,0,8" HorizontalContentAlignment="Left">
       <Button.Style>

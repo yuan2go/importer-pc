@@ -1,4 +1,4 @@
-> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](../../runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
+> 2026-10-26：用户已授权修复PR110非CJK代码页中文快捷方式，并与PR112/108/111整合。[本轮源码、验证与边界](../runtime/validation/pr110-unicode-shortcuts-01.md)取代旧“另包待授权”的当前状态；原CI失败、原PASS及SourceCommit保留，修复前原件见docs/archive/pre-pr110-unicode-shortcuts-01/FILES.json。
 
 # P0-STABILITY-01
 
@@ -16,7 +16,7 @@ ST14：全局异常记录、受控转储、自启动/失败重启和循环保护
 
 只使用全新 Simulation 根和本地桩。Windows组件本机可验证部分另记；实际UAC、系统注册/卸载往返、重启、目标IPC、真实SDK/RCS、24h/72h、物理断电均不得借用旧证据。2592000规模先做磁盘预检，本包不以该规模作为默认回归。
 
-实现及运行：[运行说明](../../runtime/p0-stability-01.md)；问题卡与本次结果：[验证回执](../../runtime/validation/p0-stability-01.md)。
+实现及运行：[运行说明](../../runtime/p0-stability-01.md)；问题卡与本次结果：[验证回执](../runtime/validation/p0-stability-01.md)。
 
 四工程提交已推送并取得69df6bef冻结候选后，CI发现诊断断言/隔离快捷方式前置/冻结WPF夹具混编问题；只追加验证修正提交到同一分支/PR，不改产品代码、不强推、不改旧介质SourceCommit，后续CI结果另计。
 

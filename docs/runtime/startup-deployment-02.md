@@ -1,9 +1,9 @@
-> 2026-10-25当前窗口操作、PR107首配规则和介质身份见[当前入口](lifecycle-ux-current-guidance-01.md)。本页保留启动/恢复机制；旧章节中的本次、NOT_RUN和DB版本按形成时语境读取，不能覆盖后续证据。原字节见[归档](../archive/pre-lifecycle-ux-optimization-01/README.md)。
+> 2026-10-25当前窗口操作、PR107首配规则和介质身份见[当前入口](lifecycle-ux-current-guidance-01.md)。本页保留启动/恢复机制；旧章节中的本次、NOT_RUN和DB版本按形成时语境读取，不能覆盖后续证据。原字节见归档。
 
 
 # 原生安装、启动修复与独立基础配置
-> 单 EXE 交付增量见[菜鸟供包台安装程序](single-exe-installer-01.md)：现场双击一个 EXE，自动准备固定介质后进入本页原生向导。原 ZIP 仍为兼容介质，历史验证按原来源保留。
-> COMM-00～10 当前操作见[产品操作指南](commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
+> 单 EXE 交付增量见[菜鸟供包台安装程序](../archive/runtime/single-exe-installer-01.md)：现场双击一个 EXE，自动准备固定介质后进入本页原生向导。原 ZIP 仍为兼容介质，历史验证按原来源保留。
+> COMM-00～10 当前操作见[产品操作指南](commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](../archive/runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 
 本指南属于 STARTUP-DEPLOYMENT-02，适用于本次新发布的 Sportmaster、DirectPlc、WcsToPlc Windows 候选。旧媒介按其 SourceCommit 和随包指南操作。本实现采用 Windows 程序/数据分离、按需提升、并排部署和失败保旧等实践；不宣称 MSI 事务、工业标准认证或现场验收通过。Windows 原生 UAC/ACL/快捷方式及实际窗口交互为 NOT_RUN，真实 SDK/设备/合同为 BLOCKED，Production 仍为 NotReady。
 

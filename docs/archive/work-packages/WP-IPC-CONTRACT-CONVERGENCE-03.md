@@ -15,4 +15,4 @@
 
 LegacyNamedCapabilities内的重量、能力、健康与操作员契约需追踪实际生产引用；不能只按文件名删除。原请求/Unknown、原始接收责任、退役范围与当前完整恢复、共享扩展、其他业务、维护暂停屏障及按故障阶段区分的资源测试继续依据调用入口核查。无证据证明失效或等价的保留并列出定位。
 
-计数沿用02：跟踪的src/tests/scripts指定文本代码物理行、Python test_方法、C#检查调用点分开统计；后者不是独立测试数。Windows/SDK/RCS/现场及提权维护不继承历史PASS。结果见[报告](../../runtime/contract-convergence-03.md)。
+计数沿用02：跟踪的src/tests/scripts指定文本代码物理行、Python test_方法、C#检查调用点分开统计；后者不是独立测试数。Windows/SDK/RCS/现场及提权维护不继承历史PASS。结果见[报告](../runtime/contract-convergence-03.md)。

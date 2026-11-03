@@ -33,7 +33,14 @@ static class IndustrialDiagnostics
             if (phase == "SnapshotGateAcquired") throw new InvalidOperationException("ordinary overview must not build detailed snapshot");
         };
         DiagnosticPackageReceipt overview;
-        try { overview = await api.ExportDiagnosticOverviewAsync(overviewPath, default); }
+        try
+        {
+            var information = await api.ReadDiagnosticProductInformationAsync(default);
+            Check(information.ApplicationId == "sportmaster" && !string.IsNullOrWhiteSpace(information.BusinessVersion) &&
+                information.BinarySha256.Length == 64 && information.BinarySha256.All(char.IsAsciiHexDigit),
+                "ordinary product information reads actual version and binary hash without detailed snapshot");
+            overview = await api.ExportDiagnosticOverviewAsync(overviewPath, default);
+        }
         finally { h.App.Boundary = null; }
         Check(overview.Status == DiagnosticPackageStatus.Partial && overview.From == overview.Cutoff,
             "ordinary overview exports without authority and never claims 24-hour coverage");

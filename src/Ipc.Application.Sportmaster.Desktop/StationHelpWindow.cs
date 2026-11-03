@@ -1,121 +1,123 @@
-using System.IO;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
+using Ipc.Platform;
 using Microsoft.Win32;
 
 namespace Ipc.Application.Sportmaster.Desktop;
 
-// Offline help for everyone at the station (no management mode): the operator card, the
-// fault catalog, and an ordinary diagnostic overview export that carries only health counts,
-// version and environment, never barcodes, images, configuration or passwords.
-public sealed class StationHelpWindow : Window
+// Presentation only. The same running Application owns reads and export authority.
+public sealed partial class StationHelpWindow : Window
 {
-    readonly IDiagnosticPackageApplication? diagnostics;
-    readonly TextBlock exportResult = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 0) };
-    readonly Button export = new() { Content = "导出诊断概览…", MinHeight = 44, Padding = new(12, 4, 12, 4), HorizontalAlignment = HorizontalAlignment.Left };
-
-    public StationHelpWindow(Window owner, IDiagnosticPackageApplication? diagnostics)
+    readonly IDiagnosticPackageApplication? api;
+    readonly Func<bool> detailedAllowed;
+    readonly CancellationTokenSource lifetime = new();
+    readonly DispatcherTimer authorityRefresh = new() { Interval = TimeSpan.FromSeconds(1) };
+    readonly TextBlock version = Text("正在读取版本信息…");
+    readonly TextBlock status = Text("");
+    readonly TextBox details = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 100 };
+    readonly TextBox result = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 80 };
+    readonly Button overview, detailed, cancel;
+    CancellationTokenSource? exporting;
+    bool closed;
+    internal Func<Window, string?> DestinationPicker { get; set; } = owner =>
     {
-        this.diagnostics = diagnostics; Owner = owner;
-        Title = "帮助"; WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body;
-        Width = Math.Min(960, Math.Max(560, owner.ActualWidth - 96)); Height = Math.Min(780, Math.Max(420, owner.ActualHeight - 96)); MinWidth = 520; MinHeight = 360;
+        var dialog = new SaveFileDialog { Filter = "ZIP诊断包|*.zip", InitialDirectory = @"D:\", OverwritePrompt = false, FileName = "station-diagnostics-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".zip" };
+        return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
+    };
+    public bool IsExporting => exporting is not null;
+
+    public StationHelpWindow(IParcelApplication application, Func<bool> detailedAllowed)
+    {
+        api = application as IDiagnosticPackageApplication;
+        this.detailedAllowed = detailedAllowed;
+        Title = "使用帮助 · 菜鸟供包台"; Width = 900; Height = 680; MinWidth = 640; MinHeight = 420;
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.Sportmaster.Desktop;component/SupplyStationTheme.xaml", UriKind.Relative) });
+        ProductBrand.Apply(this); UiTypography.Apply(this);
         SetResourceReference(BackgroundProperty, "Background"); SetResourceReference(ForegroundProperty, "Ink");
-
-        var root = new DockPanel();
-        var footer = new Border { BorderThickness = new(0, 1, 0, 0), Padding = new(24, 12, 24, 12), Child = Footer() };
-        footer.SetResourceReference(Border.BorderBrushProperty, "Line"); footer.SetResourceReference(Border.BackgroundProperty, "Surface");
-        DockPanel.SetDock(footer, Dock.Bottom); root.Children.Add(footer);
-        var tabs = new TabControl { Margin = new(16, 12, 16, 0), BorderThickness = new(0) };
-        foreach (var (resource, title) in OperatorHelpDocument.Documents)
-            tabs.Items.Add(new TabItem { Header = title, MinHeight = 40, Padding = new(16, 6, 16, 6), Content = Page(resource) });
-        AutomationProperties.SetName(tabs, "帮助内容");
-        root.Children.Add(tabs);
-        Content = root;
+        var layout = new DockPanel { Margin = new(16) };
+        var close = Action("返回作业", () => { Close(); return Task.CompletedTask; }); close.IsCancel = true;
+        DockPanel.SetDock(close, Dock.Bottom); layout.Children.Add(close);
+        var tabs = new TabControl();
+        foreach (var (label, source) in new[] { ("作业卡", "quick-guide"), ("部署卡", "deployment-card"), ("实施手册", "implementation-guide"), ("故障码", "fault-codes") })
+            tabs.Items.Add(new TabItem { Header = label, Content = Guide(source) });
+        var body = new StackPanel { Margin = new(12) };
+        body.Children.Add(version);
+        var identity = new Expander { Header = "版本详情", Content = details, Margin = new(0, 8, 0, 8) }; body.Children.Add(identity);
+        body.Children.Add(Text("请选择D盘上的新ZIP文件，不覆盖已有文件。文件只保存在本机，分享前须取得现场授权。诊断包不是完整备份；概览不含日志、配置、作业或安装回执，健康计数不代表设备实际联通。"));
+        overview = Action("导出普通概览…", () => Export(false));
+        detailed = Action("导出详细诊断…", () => Export(true));
+        cancel = Action("取消当前导出", () => { exporting?.Cancel(); status.Text = "已请求取消，正在等待导出结束与清理。"; return Task.CompletedTask; });
+        var actions = new WrapPanel(); actions.Children.Add(overview); actions.Children.Add(detailed); actions.Children.Add(cancel); body.Children.Add(actions);
+        body.Children.Add(Text("详细诊断需要先进入管理模式；到期或撤权后会停止读取和发布。导出不暂停供包、不重连设备，也不发送格口请求。"));
+        body.Children.Add(status); body.Children.Add(result);
+        body.Children.Add(Text("需要协助时，请联系本站实施或维护负责人，按现场批准渠道交接版本、时间与诊断文件。"));
+        tabs.Items.Add(new TabItem { Header = "版本与诊断", Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
+        layout.Children.Add(tabs); Content = layout;
+        AutomationProperties.SetName(details, "版本详情"); AutomationProperties.SetName(result, "诊断导出结果");
+        AutomationProperties.SetLiveSetting(status, AutomationLiveSetting.Polite);
+        Loaded += async (_, _) => { RefreshAuthority(); authorityRefresh.Start(); await LoadInformation(); };
+        PreviewKeyDown += (_, e) => { if (e.Key == Key.Escape) { e.Handled = true; Close(); } };
+        authorityRefresh.Tick += (_, _) => RefreshAuthority();
+        Closed += (_, _) => { closed = true; authorityRefresh.Stop(); lifetime.Cancel(); exporting?.Cancel(); lifetime.Dispose(); };
+        RefreshAuthority();
     }
-
-    FrameworkElement Footer()
+    static TextBlock Text(string value) => new() { Text = value, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body, Margin = new(0, 6, 0, 8) };
+    Button Action(string label, Func<Task> run)
     {
-        var panel = new DockPanel { LastChildFill = true };
-        var close = new Button { Content = "关闭", MinHeight = 44, MinWidth = 96, IsCancel = true, VerticalAlignment = VerticalAlignment.Top };
-        close.Click += (_, _) => Close(); DockPanel.SetDock(close, Dock.Right); panel.Children.Add(close);
-        var left = new StackPanel { Margin = new(0, 0, 16, 0) };
-        export.Click += async (_, _) => await ExportOverview(); left.Children.Add(export);
-        left.Children.Add(Muted("诊断概览只含设备就绪数量、软件版本和本机环境，不含条码、图片、设置和密码；文件只保存在本机 D 盘，交给支持人员前请取得现场同意。"));
-        AutomationProperties.SetLiveSetting(exportResult, AutomationLiveSetting.Polite); left.Children.Add(exportResult);
-        if (diagnostics is null) { export.IsEnabled = false; exportResult.Text = "当前版本不支持导出诊断概览。"; }
-        panel.Children.Add(left);
-        return panel;
+        var button = new Button { Content = label, MinHeight = 44, Margin = new(0, 4, 10, 8), Padding = new(12, 4, 12, 4), HorizontalAlignment = HorizontalAlignment.Left };
+        button.SetResourceReference(StyleProperty, "StationButton");
+        button.Click += async (_, _) => { try { await run(); } catch (Exception error) { if (!closed) status.Text = Error(error); } };
+        return button;
     }
-
-    async Task ExportOverview()
+    void RefreshAuthority()
     {
-        if (diagnostics is null) return;
-        var dialog = new SaveFileDialog { Filter = "诊断概览|*.zip", InitialDirectory = "D:\\", FileName = "station-overview-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".zip" };
-        if (dialog.ShowDialog(this) != true) return;
-        export.IsEnabled = false; exportResult.Text = "正在导出诊断概览…";
-        exportResult.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
+        if (closed) return;
+        overview.IsEnabled = api is not null && !IsExporting;
+        detailed.IsEnabled = api is not null && !IsExporting && detailedAllowed();
+        detailed.ToolTip = detailedAllowed() ? "导出时仍会重新核对管理权限。" : "请先从主窗口进入管理模式。";
+        cancel.IsEnabled = IsExporting;
+    }
+    async Task LoadInformation()
+    {
+        if (api is null) { version.Text = "当前版本未提供普通版本与诊断概览。"; return; }
         try
         {
-            var receipt = await diagnostics.ExportDiagnosticOverviewAsync(dialog.FileName, CancellationToken.None);
-            exportResult.Text = "诊断概览已导出：" + receipt.Path;
-            exportResult.SetResourceReference(TextBlock.ForegroundProperty, "Success");
+            var info = await api.ReadDiagnosticProductInformationAsync(lifetime.Token);
+            if (closed) return;
+            version.Text = "SM " + (info.BusinessVersion ?? "版本未确认");
+            details.Text = "来源：" + (info.SourceCommit ?? (info.Integrity == "SourceBuild" ? "源码构建，未提供发布身份" : "来源尚未确认")) + "\n业务程序集 SHA256：" + info.BinarySha256 +
+                "\n读取时间：" + info.CapturedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") +
+                "\n" + (info.Published ? "这里只读取版本元数据；签名、设备与现场资格需要另外核验。" : info.Integrity == "SourceBuild" ? "这是源码构建，不代表已发布或具备投产资格。" : "版本登记暂时无法核验，请保留原程序并联系维护人员。");
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException or OperationCanceledException or NotSupportedException)
+        catch (OperationCanceledException) { if (!closed) version.Text = "版本读取已取消。"; }
+        catch (Exception error) { if (!closed) version.Text = "版本信息暂时不可用。" + Error(error); }
+    }
+    async Task Export(bool includeDetails)
+    {
+        if (closed || IsExporting || api is null) return;
+        if (includeDetails && !detailedAllowed()) throw new UnauthorizedAccessException("请先进入管理模式。");
+        var destination = DestinationPicker(this);
+        if (destination is null) return;
+        using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
+        exporting = cancellation; result.Text = ""; status.Text = "正在收集白名单摘要…"; RefreshAuthority();
+        try
         {
-            // Application refusals are written for the operator; file-system errors are not, so they stay generic.
-            exportResult.Text = "诊断概览未导出：" + (error is InvalidOperationException ? error.Message : "请选择 D 盘上程序、配置和数据目录之外的位置后重试，或联系维护人员。");
-            exportResult.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
+            var receipt = includeDetails
+                ? await api.ExportDiagnosticPackageReportAsync(destination, cancellation.Token)
+                : await api.ExportDiagnosticOverviewAsync(destination, cancellation.Token);
+            if (closed) return;
+            status.Text = receipt.Status == DiagnosticPackageStatus.Partial ? "诊断摘要已导出（含未收集项）。" : "诊断包已导出。";
+            result.Text = receipt.Path + "\nSHA256：" + receipt.Sha256 + "\n" + string.Join("\n", receipt.Notices);
         }
-        finally { export.IsEnabled = true; }
+        catch (OperationCanceledException) { if (!closed) status.Text = "导出已取消，未发布完成文件。"; }
+        catch (Exception error) { if (!closed) status.Text = Error(error); }
+        finally { exporting = null; RefreshAuthority(); }
     }
-
-    static FrameworkElement Page(string resource)
-    {
-        var body = new StackPanel { Margin = new(8, 16, 16, 24), MaxWidth = 860, HorizontalAlignment = HorizontalAlignment.Left };
-        HelpBlock[] blocks;
-        try { blocks = OperatorHelpDocument.Parse(OperatorHelpDocument.Read(resource)); }
-        catch (InvalidOperationException error) { blocks = [new(HelpBlockKind.Paragraph, error.Message)]; }
-        foreach (var block in blocks) body.Children.Add(block.Kind switch
-        {
-            HelpBlockKind.Title => Text(block.Text, UiTypography.PageTitle, UiTypography.Emphasis, new(0, 0, 0, 12)),
-            HelpBlockKind.Heading => Text(block.Text, UiTypography.Group, UiTypography.Emphasis, new(0, 16, 0, 8)),
-            HelpBlockKind.Step => Text(block.Text, UiTypography.Body, FontWeights.Normal, new(0, 6, 0, 6)),
-            HelpBlockKind.Table => Table(block.Rows!),
-            _ => Text(block.Text, UiTypography.Body, FontWeights.Normal, new(0, 6, 0, 6))
-        });
-        return new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
-    }
-
-    static FrameworkElement Table(string[][] rows)
-    {
-        var grid = new Grid { Margin = new(0, 8, 0, 16) };
-        var columns = rows.Max(r => r.Length);
-        for (var c = 0; c < columns; c++) grid.ColumnDefinitions.Add(new() { Width = c == 0 ? new GridLength(1, GridUnitType.Auto) : new GridLength(1, GridUnitType.Star), MinWidth = 96 });
-        for (var r = 0; r < rows.Length; r++)
-        {
-            grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            for (var c = 0; c < columns; c++)
-            {
-                var cell = new Border { BorderThickness = new(0, 0, 0, 1), Padding = new(8, 8, 12, 8), Child = Text(c < rows[r].Length ? rows[r][c] : "", r == 0 ? UiTypography.Label : UiTypography.Body, r == 0 ? UiTypography.Emphasis : FontWeights.Normal, new(0)) };
-                cell.SetResourceReference(Border.BorderBrushProperty, "Line");
-                if (r == 0) cell.SetResourceReference(Border.BackgroundProperty, "Soft");
-                Grid.SetRow(cell, r); Grid.SetColumn(cell, c); grid.Children.Add(cell);
-            }
-        }
-        return grid;
-    }
-
-    static TextBlock Text(string value, double size, FontWeight weight, Thickness margin) =>
-        new() { Text = value, FontSize = size, FontWeight = weight, Margin = margin, TextWrapping = TextWrapping.Wrap };
-
-    static TextBlock Muted(string value)
-    {
-        var text = Text(value, UiTypography.Label, FontWeights.Normal, new(0, 6, 0, 0));
-        text.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
-        return text;
-    }
+    static string Error(Exception error) => ChineseInterfaceText.ParameterMessage(DiagnosticText.Protect(error.Message));
 }

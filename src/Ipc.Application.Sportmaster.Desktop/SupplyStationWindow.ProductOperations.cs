@@ -23,17 +23,6 @@ public partial class SupplyStationWindow
         await OpenOperatorSettingsAsync();
         if (ViewModel.IsManagementMode) SetPage("diagnostics");
     }
-    StationHelpWindow? help;
-    void Help_Click(object sender, RoutedEventArgs e) => ShowHelp();
-    void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e) { if (e.Key == System.Windows.Input.Key.F1) { e.Handled = true; ShowHelp(); } }
-    // Not modal: the station keeps working and stays visible while someone reads the help.
-    void ShowHelp()
-    {
-        if (help is { IsLoaded: true }) { help.Activate(); return; }
-        help = new StationHelpWindow(this, ViewModel.Application as IDiagnosticPackageApplication);
-        help.Closed += (_, _) => { help = null; RestoreBarcodeFocus(); };
-        help.Show();
-    }
     void Statistics_Click(object sender, RoutedEventArgs e) => SetPage("statistics");
     void Exceptions_Click(object sender, RoutedEventArgs e) => SetPage("exceptions");
     void MaintenanceCenter_Click(object sender, RoutedEventArgs e) => SetPage("maintenance-center");

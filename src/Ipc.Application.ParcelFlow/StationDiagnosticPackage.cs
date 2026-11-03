@@ -12,6 +12,17 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
     const int DiagnosticEventLimit = 2000;
     const int DiagnosticByteLimit = 8 * 1024 * 1024;
 
+    public Task<DiagnosticProductInformation> ReadDiagnosticProductInformationAsync(CancellationToken token)
+        => OwnedRead(owned =>
+        {
+            if (Id != "sportmaster") throw new NotSupportedException("该业务尚未提供普通版本概览。");
+            owned.ThrowIfCancellationRequested();
+            var release = StationDiagnosticProjection.Release(definition.GetType().Assembly, Id);
+            owned.ThrowIfCancellationRequested();
+            return Task.FromResult(new DiagnosticProductInformation(Id, release.BusinessVersion, release.SourceCommit,
+                release.BinarySha256, release.Published, release.Integrity, DateTimeOffset.UtcNow));
+        }, token);
+
     public async Task<string> ExportDiagnosticPackageAsync(string destination, CancellationToken token)
         => (await ExportDiagnosticPackageReportAsync(destination, token).ConfigureAwait(false)).Path;
 

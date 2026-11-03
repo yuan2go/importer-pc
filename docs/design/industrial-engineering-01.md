@@ -1,8 +1,8 @@
 # 工业化交付与现场使用设计 · IE01
 
-2026-11-03。状态：**设计完成，待实施与验收**。核查基线为 main `38cb7dc0e8e15f009ee88c5a35f1db53c27d5205`（PR183）。本设计回应用户提出的 A1～A10、B1～B6、C1～C3、D、E1～E5、F、G；不是安全修复、CI恢复或新版安装包已交付的声明。
+2026-11-03。状态：**分阶段实施中，整体验收未完成**。设计形成时的核查基线为 main `38cb7dc0e8e15f009ee88c5a35f1db53c27d5205`（PR183）；当前开发分支已合入 main `adca76dc`（PR193），实际完成项、证据与剩余工作见[实施记录](../runtime/industrial-engineering-01.md)。本设计回应用户提出的 A1～A10、B1～B6、C1～C3、D、E1～E5、F、G；设计条目不等于新版安装包或现场资格已经交付。
 
-阅读顺序：本文 → [安全与密码恢复](industrial-security-recovery-01.md) → [安装生命周期](industrial-lifecycle-01.md) → [操作、诊断、文档与质量](industrial-operations-quality-01.md) → [实施工作包及验收矩阵](../archive/work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。当前事实与原建议的差异见[核查记录](../reviews/industrial-engineering-design-01.md)。
+阅读顺序：本文 → [安全与密码恢复](industrial-security-recovery-01.md) → [安装生命周期](industrial-lifecycle-01.md) → [操作、诊断、文档与质量](industrial-operations-quality-01.md) → [实施工作包及验收矩阵](../archive/work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。当前事实与原建议的差异见核查记录。
 
 ## 1. 产品目标与成功口径
 

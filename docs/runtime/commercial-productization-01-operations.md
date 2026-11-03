@@ -1,6 +1,6 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
 
-> 2026-10-25当前生命周期优化候选的人工操作以[源码操作入口与交付身份](lifecycle-ux-current-guidance-01.md)为准。本页保留部署、恢复和责任机制；冲突的旧向导步骤已纠正，原字节见[归档](../archive/pre-lifecycle-ux-optimization-01/README.md)。
+> 2026-10-25当前生命周期优化候选的人工操作以[源码操作入口与交付身份](lifecycle-ux-current-guidance-01.md)为准。本页保留部署、恢复和责任机制；冲突的旧向导步骤已纠正，原字节见归档。
 
 > 当前管理能力为[管理模式](management-mode-01.md)，不是软件管理员账号。四类参数、原请求及历史账号证据各守原身份；本轮稳定性和到期维护见[长稳指南](win11-24x7-stability-remediation-01.md)。
 
@@ -10,7 +10,7 @@
 
 COMM-00～10的当前操作机制适用于本次完整同源发布。当前版本和格式以唯一入口及本次构建清单核对；历史ZIP、实施结果和PASS保留原SourceCommit，不作为当前操作指令。
 
-> 当前安装交付为普通人工安装包和必要说明，见[范围收敛记录](installation-delivery-scope-01.md)。下列人工向导是正常路径；已有高级部署入口仅保留实现说明，不是交付前置条件。
+> 当前安装交付为普通人工安装包和必要说明，见[范围收敛记录](../archive/runtime/installation-delivery-scope-01.md)。下列人工向导是正常路径；已有高级部署入口仅保留实现说明，不是交付前置条件。
 
 ## 安装和首次配置
 
@@ -77,7 +77,7 @@ COMM-00～10的当前操作机制适用于本次完整同源发布。当前版�
 
 ## 管理模式、操作员与日志
 
-当前完整操作见[管理模式](management-mode-01.md)与[当前日志入口](lifecycle-ux-current-guidance-01.md)。管理模式无需正常管理员用户名，独立于操作员账号/免登录；进入和浏览不暂停。参数保存仍按暂停/排空/CAS及唯一账执行，受限读取和操作由服务鉴权。帮助与支持及旧摘要已删除；实际软件日志按时间/级别/来源/关键词或显式正则查询，查看原始上下文，并按固定匹配或整个时间范围导出。[账号版旧说明](operator-administrator-logs-01.md)只保留SM1.10.2及显式迁移语境。
+当前完整操作见[管理模式](management-mode-01.md)与[当前日志入口](lifecycle-ux-current-guidance-01.md)。管理模式无需正常管理员用户名，独立于操作员账号/免登录；进入和浏览不暂停。参数保存仍按暂停/排空/CAS及唯一账执行，受限读取和操作由服务鉴权。帮助与支持及旧摘要已删除；实际软件日志按时间/级别/来源/关键词或显式正则查询，查看原始上下文，并按固定匹配或整个时间范围导出。[账号版旧说明](../archive/runtime/operator-administrator-logs-01.md)只保留SM1.10.2及显式迁移语境。
 
 ### 已有高级部署入口（按需使用）
 
@@ -92,4 +92,4 @@ COMM-00～10的当前操作机制适用于本次完整同源发布。当前版�
 
 退出0为 PreflightPassed/Installed/同一计划 AlreadyInstalled，2为无效格式/输入或原登记变化/LegacyPlanNeedsReview，5为缺维护权限，10为IO失败/OriginalOperationNeedsInspection。逐站回执必须用新文件，原 Reviewing/成功/失败回执均不覆盖。相同计划多次预检保留原 OperationId 和 PlanSha256；完整请求比较和登记 CAS 不省略。原记录存在即禁止再次提交，Unknown 只沿原计划调用既有 InspectInstallation 核对；明确 Failed/NotCommitted 后才能显式审阅新动作。无 OperationId 的 Schema1 旧计划允许原哈希只读预检及原提交的 AlreadyInstalled 核对，未提交计划执行须重新显式审阅，不自动补身份。成功重入只核验原已提交计划，不重置站点。预检不安装/启动，不替代正常部署验证；输入变化须重新审阅。资格、真实 SDK/协议/实体及现场授权未获得时逐项 BLOCKED，不生成生产默认或虚假商业许可。
 
-开发者冻结后可运行 `scripts/verify-commercial-media.ps1 -Media <同一win-x64介质目录> -Output <新证据目录> -Dotnet <固定SDK>`，将该提交的现有合成夹具绑定到介质真实 DLL，校验原介质未变化。该夹具显式注入内部合成身份/端口，不提供运行时绕过选项，不构成实际UAC安装或现场资格证据。原生权限/重启清理/跨账户、触控DPI、设备组合逐项按[验收计划](validation/commercial-productization-01.md)后验。
+开发者冻结后可运行 `scripts/verify-commercial-media.ps1 -Media <同一win-x64介质目录> -Output <新证据目录> -Dotnet <固定SDK>`，将该提交的现有合成夹具绑定到介质真实 DLL，校验原介质未变化。该夹具显式注入内部合成身份/端口，不提供运行时绕过选项，不构成实际UAC安装或现场资格证据。原生权限/重启清理/跨账户、触控DPI、设备组合逐项按[验收计划](../archive/runtime/validation/commercial-productization-01.md)后验。

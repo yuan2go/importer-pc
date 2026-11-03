@@ -103,15 +103,22 @@ def styles(card: bool) -> dict:
     }
 
 
-def verify_text(reader: PdfReader, sources: list[str], footer_text: str = '') -> int:
-    # Each page's footer (version line and page number) is drawn on the canvas and can land in
-    # the middle of a paragraph that crosses the page break; remove it before comparing.
-    footer = re.sub(r'\s+', '', footer_text)
-    pages = []
-    for number, page in enumerate(reader.pages, start=1):
-        text = re.sub(r'\s+', '', page.extract_text())
-        pages.append(text.replace(footer + str(number), '', 1) if footer else text)
-    rendered = ''.join(pages)
+def searchable_body(reader: PdfReader, footer_text: str) -> str:
+    bodies = []
+    for number, page in enumerate(reader.pages, 1):
+        text = page.extract_text()
+        # The canvas emits the footer before the story on every page. Strip
+        # exactly that checked prefix so a paragraph split across pages remains
+        # contiguous; never globally remove matching words from the body.
+        prefix = footer_text + '\n' + str(number) + '\n'
+        if not text.startswith(prefix):
+            raise ValueError('Unexpected or missing fixed footer on page ' + str(number))
+        bodies.append(text[len(prefix):])
+    return re.sub(r'\s+', '', '\n'.join(bodies))
+
+
+def verify_text(reader: PdfReader, sources: list[str], footer_text: str) -> int:
+    rendered = searchable_body(reader, footer_text)
     if '\ufffd' in rendered:
         raise ValueError('Replacement glyph in searchable text')
     checked = 0

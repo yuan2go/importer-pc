@@ -21,6 +21,6 @@
 
 R-01同侧在途时第二实体准入仍待上游合同；不更改准入、去重、重试、发送或恢复规则。R-03保护规则需仓库管理者；不自行修改。真实SDK/设备/RCS合同、目标Windows安装账户/重启/升级/恢复、签名与售后资格仍独立阻塞。
 
-UI按[已采用基准](../../design/sportmaster-visual-productization-01.md)、v1.1原稿/分离源/完整交接与tokens进行精简，使用固定项目ui-ux-pro-max WPF、Impeccable Operate。原型的数量/AGV/拆包候选不扩为Sportmaster要求。不新增框架/依赖/消息总线或异常吞咽。
+UI按[已采用基准](../design/sportmaster-visual-productization-01.md)、v1.1原稿/分离源/完整交接与tokens进行精简，使用固定项目ui-ux-pro-max WPF、Impeccable Operate。原型的数量/AGV/拆包候选不扩为Sportmaster要求。不新增框架/依赖/消息总线或异常吞咽。
 
-运行、样本、结果和剩余工作见[实施与分析](../../runtime/sportmaster-audit-remediation-01.md)。源码/介质/现场资格分别记账；本轮不重标已有Release。
+运行、样本、结果和剩余工作见[实施与分析](../runtime/sportmaster-audit-remediation-01.md)。源码/介质/现场资格分别记账；本轮不重标已有Release。

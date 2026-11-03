@@ -12,7 +12,7 @@
 | 当前manifest身份 | 生成器默认保留现有work_package，可显式指定；保存原记录顺序、继承来源和冻结字段，按staged Git blob重算。--check继续核对完整路径集合/内容/hash。 |
 | 损坏库拒绝 | 完整入口AC-01/03/10与current-contracts共享同一检查：预检抛InvalidDataException且保留内部SQLite错误26；原文件逐字节不变，不产生WAL、SHM、journal或替代文件。不恢复旧异常合同，不修改业务预检。 |
 
-命令沿现有Actions：Release/locked完整解决方案、Debug Fixture、无参数Application及Supply默认入口、Supply current-contracts。首次失败日志在仓库外D盘原审计目录保留；本包验证结果在实际运行后记录，不借用旧PASS。原始[OC15合同](WP-IPC-OPERATION-CLOSURE-15.md)与[CF14记录](../../runtime/conformance-fix-14.md)继续有效。
+命令沿现有Actions：Release/locked完整解决方案、Debug Fixture、无参数Application及Supply默认入口、Supply current-contracts。首次失败日志在仓库外D盘原审计目录保留；本包验证结果在实际运行后记录，不借用旧PASS。原始[OC15合同](WP-IPC-OPERATION-CLOSURE-15.md)与[CF14记录](../runtime/conformance-fix-14.md)继续有效。
 
 原冲突扫描命中历史Python日志的长等号分隔符，保留其原字节及原扫描输出；追加精确Git冲突标记检测，不能删除冻结证据以得到空输出。
 

@@ -28,5 +28,5 @@ G-01真实Windows验收按用户要求后置；G-02缺真实SDK/协议/权威Unk
 - [x] UXC-02/04/05/06两布局状态、布局和页面状态接线。
 - [x] UXC-03 schema3编辑、校验、CAS/激活与原Store管理路径。
 - [x] UXC-07异步服务调用及关闭/暂停/草稿回归。
-- [x] 版本、配置/依赖、随包指南、manifest、实际构建/参考媒介及证据，见[结果](../../runtime/ux-commercial-fix-01-results.md)。
+- [x] 版本、配置/依赖、随包指南、manifest、实际构建/参考媒介及证据，见[结果](../runtime/ux-commercial-fix-01-results.md)。
 - [x] 已提交推送并创建[main PR #37](https://github.com/yuan2go/importer-pc/pull/37)，未合并；已修/待验/受阻见结果，后续验收不在本包宣告通过。

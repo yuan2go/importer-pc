@@ -1,7 +1,7 @@
 # WP-IPC-ENGINEERING-FOLLOWUP-08：历史权限与最终配置所有权
 
 
-> 当前纠偏结果：**IMPLEMENTED / REFERENCE_PASS**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../../runtime/reference-validation-09.md)及[检查](../../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+> 当前纠偏结果：**IMPLEMENTED / REFERENCE_PASS**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
 
 ## 形成时工作包定义与记录
 

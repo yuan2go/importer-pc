@@ -14,6 +14,6 @@
 
 文件边界：Application.Contracts拥有拓扑和实体事实；ParcelFlow拥有调度/业务账与原件；Platform通用设备会话；Assembly拥有具体工厂；Drivers/扩展提供采集能力；既有UI只加结构编辑保护。目标/实现/模拟/现场分别报告。原SQL/checksum、历史报告、发布身份、REQ/BR/CAPI/D/RV保持。
 
-实现和参考验证见[22结果](../../runtime/application-architecture-22-results.md)，运行闭包固定8981d54；最终PR单独回执，不改历史证据。
+实现和参考验证见[22结果](../runtime/application-architecture-22-results.md)，运行闭包固定8981d54；最终PR单独回执，不改历史证据。
 
 已创建并读回[PR #22](https://github.com/yuan2go/importer-pc/pull/22)，OPEN，未合并main。候选和运行闭包保持8981d54；后续仅交付回执/manifest。

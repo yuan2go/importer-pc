@@ -1,1 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting></PropertyGroup><ItemGroup><ProjectReference Include="../Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj"/></ItemGroup><ItemGroup><Using Include="Ipc.Presentation.Wpf"/></ItemGroup><ItemGroup><!-- Offline help: the operator card and fault catalog, same text as the printed copies. --><EmbeddedResource Include="../../docs/operator/quick-guide.md" LogicalName="help.quick-guide.md"/><EmbeddedResource Include="../../docs/operator/fault-codes.md" LogicalName="help.fault-codes.md"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj"/></ItemGroup>
+  <ItemGroup><Using Include="Ipc.Presentation.Wpf"/></ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../../docs/operator/quick-guide.md" LogicalName="Ipc.Sportmaster.Help.quick-guide.md"/>
+    <EmbeddedResource Include="../../docs/operator/deployment-card.md" LogicalName="Ipc.Sportmaster.Help.deployment-card.md"/>
+    <EmbeddedResource Include="../../docs/operator/implementation-guide.md" LogicalName="Ipc.Sportmaster.Help.implementation-guide.md"/>
+    <EmbeddedResource Include="../../docs/operator/fault-codes.md" LogicalName="Ipc.Sportmaster.Help.fault-codes.md"/>
+  </ItemGroup>
+</Project>

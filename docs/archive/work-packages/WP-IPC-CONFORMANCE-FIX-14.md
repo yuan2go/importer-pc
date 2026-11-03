@@ -1,4 +1,4 @@
-> 本包保留原AC要求，不重复执行整包。实际结果见 [14报告](../../runtime/conformance-fix-14.md)，关闭范围以 [最新复核](../../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md) 为准；下一实施为 [15](WP-IPC-OPERATION-CLOSURE-15.md)。修改前原文见 [归档](../pre-audit-reconciliation-publication-01/README.md)。
+> 本包保留原AC要求，不重复执行整包。实际结果见 [14报告](../runtime/conformance-fix-14.md)，关闭范围以 [最新复核](../../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md) 为准；下一实施为 [15](WP-IPC-OPERATION-CLOSURE-15.md)。修改前原文见 [归档](../pre-audit-reconciliation-publication-01/README.md)。
 
 # WP-IPC-CONFORMANCE-FIX-14
 

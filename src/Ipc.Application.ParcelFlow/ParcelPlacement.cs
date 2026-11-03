@@ -2,7 +2,7 @@ using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow;
 
-// One physical placement on a supply tray is one business request (SM-SAME-PLACEMENT-29).
+// One physical placement on a supply tray is one business request (AGENTS.md: one placement, one request).
 // Continuous acquisition sees a parcel resting on the tray in every frame; each frame
 // is still recorded as its own observation, but only the first admitted read of a
 // placement may create an operation/request. A placement ends when:

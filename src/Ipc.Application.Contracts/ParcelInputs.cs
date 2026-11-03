@@ -5,7 +5,7 @@ namespace Ipc.Application.Contracts;
 // An observation is independent of an admitted entity and of its external result.
 public enum ParcelInputOutcome { Admitted, Rejected, Blocked, Duplicate }
 // A later read of the parcel still resting on the tray: recorded, owned by the
-// operation that admitted this placement, never a new request (SM-SAME-PLACEMENT-29).
+// operation that admitted this placement, never a new request (AGENTS.md: one placement, one request).
 public static class ParcelInputReasons
 {
     public const string SamePlacement = "SamePlacement";

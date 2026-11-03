@@ -17,7 +17,6 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivation.cs" Link="Client/ConfigurationActivation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs" Link="Client/HistoryEditing.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs" Link="Client/FaultGuidance.cs"/>
- <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/OperatorHelpDocument.cs" Link="Client/OperatorHelpDocument.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/FirstConfigurationReadiness.cs" Link="Client/FirstConfigurationReadiness.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ManagementModePresentation.cs" Link="Client/ManagementModePresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/TaskContextPresentation.cs" Link="Client/TaskContextPresentation.cs"/>

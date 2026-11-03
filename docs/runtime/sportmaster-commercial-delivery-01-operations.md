@@ -64,4 +64,4 @@ python scripts/release-windows.py --profile sportmaster --source <完整冻结SH
 
 交付负责人填写：产品组合与精确源码/介质/业务/契约/DB；目标 Windows/账户/目录；组件许可/SDK与真实部署资格；安装/恢复/升级卸载证据；备份窗口/容量/退役责任；支持联系人和响应承诺；培训/操作权限；未关闭 NOT_RUN/BLOCKED、风险接受和批准来源。公开仓库仅保留通用模板和合成证据，客户实值存获授权位置。
 
-整理前说明见[原字节归档](../archive/pre-contract-convergence-02/README.md)。
+整理前说明见原字节归档。

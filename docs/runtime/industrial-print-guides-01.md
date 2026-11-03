@@ -10,6 +10,7 @@
 . ./scripts/project-environment.ps1
 py -3.12 -m venv .artifacts/print-env
 & .artifacts/print-env/Scripts/python.exe -m pip install --require-hashes --only-binary=:all: -r scripts/operator-print.requirements.txt
+& .artifacts/print-env/Scripts/python.exe -m unittest discover -s scripts -p test_operator_print.py
 & .artifacts/print-env/Scripts/python.exe scripts/build-operator-print.py --output .artifacts/operator-print/output/pdf
 ```
 
@@ -30,5 +31,7 @@ Poppler100DPI渲染全部8页，逐页检查标题、正文、长路径/命令�
 CI新增独立`operator-print`任务，以固定Action提交、Python3.12和哈希锁依赖生成、检查并保存三份PDF/清单/OFL；不上传临时字体、SDK或原始采集物。CI自动检查正文、嵌入、版本和页数，**不代替逐页视觉检查**。新任务的实际CI结果在实施记录中另记；本页不提前写通过。
 
 后续实际结果：[CI41581640147](https://github.com/yuan2go/importer-pc/actions/runs/41581640147)在源3f1ac766全通过，独立PDF任务实际生成1/1/6页并保存附件。该干净源还在本机重新生成于`.artifacts/industrial-engineering-01/print-3f1ac766/output/pdf`，manifest明确未修改工作区，全部8页再次渲染检查通过；各PDF实际摘要见[实施记录](industrial-engineering-01.md)。这是本机排版与CI生成两层证据，仍未完成下述实体与现场验收。
+
+合入main `adca76dc`后，帮助入口文案更新的候选再次本机生成1/1/6页，全部8页以Poppler80DPI渲染并实际查看，位于`.artifacts/industrial-engineering-01/print-main-adca76dc-02/output/pdf`。该次来源为`e6c658d6`加工作区补丁，manifest明确dirty；旧干净3f1ac766候选仍保留原身份。扩展段落跨页时，页脚曾打断全文检查而拒绝生成；现在每页严格核对固定页脚和页码，只去掉准确前缀后连续检查所有正文。4项测试覆盖跨页、正文同名词不丢失、错误/缺失页脚拒绝及正文缺失仍拒绝，并随PDF任务运行。
 
 仍未执行：实体打印、现场阅读距离/照明、新人30分钟旅程、同源最终安装包附带与离线打开、正式版本/签名绑定。当前仅是候选打印稿，不宣布整套IE01或历史RV已验收。

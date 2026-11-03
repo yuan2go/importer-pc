@@ -1,6 +1,0 @@
-{
-  "scope": "Exact user schema including SQLite-prefix lookalikes; all DB22 migration/closure/WAL/retry/pause checks rerun",
-  "source_commit": "9860301f09991a7a2875444595c2315f96f5bfa6",
-  "passes": 53,
-  "exit_code": 0
-}

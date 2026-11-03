@@ -1,14 +1,14 @@
-> 2026-10-29 WT048 增量：保全任务中的旧审查标签 LI-R03（离线维护响应与恢复结果）按[本轮记录](../../runtime/integration-20261028-maintenance-progress.md)接续，不重占下文 LIA-03 历史查询包编号。新增进度、取消和 helper 终态证据单独计证；原冻结 PASS、G01/G02 与现场门槛保留。
+> 2026-10-29 WT048 增量：保全任务中的旧审查标签 LI-R03（离线维护响应与恢复结果）按[本轮记录](../runtime/integration-20261028-maintenance-progress.md)接续，不重占下文 LIA-03 历史查询包编号。新增进度、取消和 helper 终态证据单独计证；原冻结 PASS、G01/G02 与现场门槛保留。
 
-> 2026-10-26整合状态：本轮授权逐项合并PR108，继承P0/Unicode/时间存储/卡顿容量；统一版本SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。下文独立候选、冻结介质和PASS仅属其原来源。当前组合结果见[整合执行记录](../../runtime/integration-20261026.md)。G01/G02及现场门槛保留。
+> 2026-10-26整合状态：本轮授权逐项合并PR108，继承P0/Unicode/时间存储/卡顿容量；统一版本SM1.17.0、DirectPlc/WcsToPlc1.11.0、Contracts1.21.0，DB9不变。下文独立候选、冻结介质和PASS仅属其原来源。当前组合结果见[整合执行记录](../runtime/integration-20261026.md)。G01/G02及现场门槛保留。
 
-> 2026-10-26剩余整改：工程源63795eba的同源发布DLL、批量15项、维护P1/P2、实际只读CLI及CI40220858550均通过；原15分钟管理会话不延长，完整备份逐项核对。当前结论和报告头最新检查见[续报](../../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围；G01/G02继续BLOCKED_EXTERNAL，真实产品安装和现场门槛保留。
+> 2026-10-26剩余整改：工程源63795eba的同源发布DLL、批量15项、维护P1/P2、实际只读CLI及CI40220858550均通过；原15分钟管理会话不延长，完整备份逐项核对。当前结论和报告头最新检查见[续报](../runtime/validation/lifecycle-batch-preflight-01.md)。旧FAIL/PASS各守原范围；G01/G02继续BLOCKED_EXTERNAL，真实产品安装和现场门槛保留。
 
-2026-10-26剩余整改以 [批量部署续报](../../runtime/validation/lifecycle-batch-preflight-01.md) 为当前执行/验收入口；U03/U21已按最终工程源及CI更新为VERIFIED_LOCAL + CI_PASS；其他正确成果、G01/G02、真实系统/现场门槛及历史原编号/哈希保留。下文上一轮收口仅保留形成时语境。
+2026-10-26剩余整改以 [批量部署续报](../runtime/validation/lifecycle-batch-preflight-01.md) 为当前执行/验收入口；U03/U21已按最终工程源及CI更新为VERIFIED_LOCAL + CI_PASS；其他正确成果、G01/G02、真实系统/现场门槛及历史原编号/哈希保留。下文上一轮收口仅保留形成时语境。
 
 # WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01
 
-2026-10-25。用户要求规划并落地七个优化工作包及下一阶段Codex提示，覆盖整体UI/操作简化、身份显示、参数权限、软件日志查询导出和帮助与支持完整删除。原规划交付固定于`4c42f567`，原件见[规划归档](../lifecycle-ux-planning-01/README.md)。用户本轮已授权并实施七包独立工程，实际状态见[实现](../../runtime/lifecycle-ux-implementation-01.md)及[验证](../../runtime/validation/lifecycle-ux-optimization-01.md)；G01/G02继续BLOCKED_EXTERNAL。
+2026-10-25。用户要求规划并落地七个优化工作包及下一阶段Codex提示，覆盖整体UI/操作简化、身份显示、参数权限、软件日志查询导出和帮助与支持完整删除。原规划交付固定于`4c42f567`，原件见[规划归档](../lifecycle-ux-planning-01/README.md)。用户本轮已授权并实施七包独立工程，实际状态见[实现](../runtime/lifecycle-ux-implementation-01.md)及[验证](../runtime/validation/lifecycle-ux-optimization-01.md)；G01/G02继续BLOCKED_EXTERNAL。
 
 开工基线：当时远端main和本地HEAD均为 `3a5b1d13ec5969213db35ed43d72a5aecd437777`，开放PR为0；SM1.12.3 / Contracts1.18.0 / DB9。后续必须重新核对最新main和并行工作。原始三审查、21组归并及G01/G02见[问题总账](../../reviews/lifecycle-ux-reconciliation-01.md)。原[F01～09报告](../../reviews/lifecycle-interaction-audit-01/findings.md)和[五包建议](../../reviews/lifecycle-interaction-audit-01/remediation-work-packages.md)保留；本包为七包实施范围和调度的当前定义。
 
@@ -32,8 +32,8 @@
 首次阅读顺序：
 
 1. `AGENTS.md`、`docs/INDEX.md`、本包、[问题总账](../../reviews/lifecycle-ux-reconciliation-01.md)。
-2. [框架](../../design/framework.md)、[F决策](../../design/framework-decisions.md)、[本批增量设计](../../design/lifecycle-ux-optimization-01.md)、[当前操作入口](../../runtime/lifecycle-ux-current-guidance-01.md)。
-3. 当前[管理模式](../../runtime/management-mode-01.md)、[PR107纠偏](WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[字体规范](../../design/typography-01.md)、[参数体验](../../design/parameter-settings-experience-02.md)、[参数设计机制](../../design/parameter-refactor-01.md)及[运行机制](../../runtime/parameter-refactor-01.md)。
+2. [框架](../../design/framework.md)、[F决策](../../design/framework-decisions.md)、[本批增量设计](../design/lifecycle-ux-optimization-01.md)、[当前操作入口](../../runtime/lifecycle-ux-current-guidance-01.md)。
+3. 当前[管理模式](../../runtime/management-mode-01.md)、[PR107纠偏](WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md)、[字体规范](../../design/typography-01.md)、[参数体验](../design/parameter-settings-experience-02.md)、[参数设计机制](../design/parameter-refactor-01.md)及[运行机制](../../runtime/parameter-refactor-01.md)。
 4. 依据本包子项，实际查看V2作业/首配、V3参数的原型、相关全部界面、HANDOFF、字段/原功能迁移表与当前同源截图；旧HTML不作原生验收。遵守AGENTS规定的实物阅读要求，明确后续纠偏对原型的覆盖。
 5. 相关源文件、定向测试、D/CAPI/RV与[公开范围](../../baseline/PUBLICATION.md)，再拟定实际修改。
 

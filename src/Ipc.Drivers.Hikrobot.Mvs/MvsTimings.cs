@@ -11,6 +11,7 @@ internal sealed class MvsTimings
     readonly Dictionary<string, Series> stages = new();
     readonly Queue<MvsFrameLatency> frames = new();
     long started = Stopwatch.GetTimestamp();
+    long frameTraceCount;
     sealed class Series
     {
         internal long Count;
@@ -23,11 +24,11 @@ internal sealed class MvsTimings
         public void Dispose() => owner.Record(stage, Stopwatch.GetElapsedTime(started).TotalMilliseconds);
     }
     internal Scope Measure(string stage) => new(this, stage);
-    internal void Reset() { lock (gate) { stages.Clear(); frames.Clear(); started = Stopwatch.GetTimestamp(); } }
+    internal void Reset() { lock (gate) { stages.Clear(); frames.Clear(); frameTraceCount = 0; started = Stopwatch.GetTimestamp(); } }
     internal double LastMs(string stage) { lock (gate) return stages.TryGetValue(stage, out var s) ? s.Recent[(s.Count - 1) % Window] : 0; }
     internal void Frame(MvsFrameLatency frame)
     {
-        lock (gate) { if (frames.Count == Window) frames.Dequeue(); frames.Enqueue(frame); }
+        lock (gate) { if (frames.Count == Window) frames.Dequeue(); frames.Enqueue(frame with { TraceSequence = ++frameTraceCount }); }
     }
     internal void Record(string stage, double ms)
     {
@@ -46,11 +47,12 @@ internal sealed class MvsTimings
                 var s = p.Value; var recent = s.Recent.Take((int)Math.Min(s.Count, Window)).Order().ToArray();
                 double Percentile(double fraction) => recent[Math.Clamp((int)Math.Ceiling(recent.Length * fraction) - 1, 0, recent.Length - 1)];
                 return new MvsStageTiming(s.Count, s.Total, s.Min, s.Max, recent.Length, Percentile(.5), Percentile(.95), Percentile(.99));
-            }), frames.ToArray());
+            }), frames.ToArray()) { FrameTraceCount = frameTraceCount };
     }
 }
 internal sealed record MvsTimingSnapshot(double ElapsedMs, int PercentileWindow, Dictionary<string, MvsStageTiming> Stages, MvsFrameLatency[] RecentFrames)
 {
+    public long FrameTraceCount { get; init; }
     public string ExposureFrameAge => "Unavailable: device/SDK timestamp unit and host-clock mapping must be calibrated on target hardware";
 }
 internal sealed record MvsStageTiming(long Count, double TotalMs, double MinimumMs, double MaximumMs, int WindowCount, double P50Ms, double P95Ms, double P99Ms);
@@ -60,4 +62,10 @@ internal sealed record MvsFrameLatency(uint Number, DateTimeOffset DeliveredAt, 
     public double OriginalCopyMs { get; init; }
     public double DecodeQueueMs { get; init; }
     public bool SkippedBeforeDecode { get; init; }
+    public long TraceSequence { get; init; }
+    public bool DecodeAttempted { get; init; }
+    public bool RejectedFrame { get; init; }
+    public string? ObservationId { get; init; }
+    public uint Width { get; init; }
+    public uint Height { get; init; }
 }

@@ -5,6 +5,12 @@ public interface IObservationDiagnosticsSource
 {
     ObservationDiagnostics ReadDiagnostics();
 }
+
+// The supervisor samples these bounded traces separately from frequently read UI counters.
+public interface IObservationPerformanceSource
+{
+    object ReadPerformance();
+}
 public sealed record ObservationDiagnostics(string DeviceId, string Epoch, string Phase, string State,
     long AcquireCalls, long NoData, long Frames, long DecodeStarted, long DecodeCompleted,
     long EmptyFrames, long Candidates, long Delivered, long Rejected, bool DecodePaused,
@@ -16,4 +22,6 @@ public sealed record ObservationDiagnostics(string DeviceId, string Epoch, strin
     public string? LastFrameRejection { get; init; }
     public long OriginalFrameCopies { get; init; }
     public bool WaitingForOriginalCapacity { get; init; }
+    public long SdkFrameNumberGaps { get; init; }
+    public long SdkGapEvents { get; init; }
 }

@@ -52,6 +52,7 @@ public sealed partial class ParcelRuntime
             Target = stage.Request.Binding.Target, Contract = stage.Request.Binding.Contract, stage.Attempts,
             TimeoutMs = definition.RequestTimeoutMs(op, kind), Payload = DiagnosticFragment(stage.Request.IntegrationRequest?.Body ?? stage.Request.Payload) });
         StageReply? reply;
+        if (Id == "sportmaster" && kind == ParcelStage.Wcs) RecordRcsPerformance(op, query ? "RcsQueryStarted" : "RcsSubmitStarted");
         try
         {
             reply = await ExternalPortAsync(port, () => PortCallAsync(port, async () => kind switch
@@ -81,7 +82,7 @@ public sealed partial class ParcelRuntime
                 LocalFailure = timedOut ? RequestLocalFailure.DeadlineExpired : stage.LocalFailure };
             op = SetStage(op, kind, stage) with { State = attached || knownOutcome ? op.State : UnknownState(kind),
                 Reason = attached || knownOutcome ? op.Reason : "Delivery/outcome unknown; original request must be reconciled, never resent" };
-            Save(op, "OutcomeUnknown", stage.Failure!); LogRcsResult(op, kind, receiptStartedTicks); return op;
+            Save(op, "OutcomeUnknown", stage.Failure!); LogRcsResult(op, kind, receiptStartedTicks, query); return op;
         }
         DebugDiagnostic("外部通信", "原请求响应详情", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
             Request = stage.Request.Id, ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
@@ -93,7 +94,7 @@ public sealed partial class ParcelRuntime
             // Query absence does not prove no side effect.
             if (stage.State is not (StageState.Accepted or StageState.Rejected)) stage = stage with { State = StageState.Unknown };
             op = StageFailure(SetStage(op, kind, stage), kind, stage, "Original query has no authoritative result; no resend is permitted");
-            Save(op, "QueryInconclusive", GetStage(op, kind)!.Failure!); return op;
+            Save(op, "QueryInconclusive", GetStage(op, kind)!.Failure!); LogRcsResult(op, kind, receiptStartedTicks, query); return op;
         }
         // If persistence fails here, the Awaiting occurrence remains independently visible.
         // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
@@ -116,15 +117,16 @@ public sealed partial class ParcelRuntime
         }
         else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
             Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
-        LogRcsResult(op, kind, receiptStartedTicks);
+        LogRcsResult(op, kind, receiptStartedTicks, query);
         return op;
         }
         finally { activeStages.Remove(key); }
     }
-    void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks)
+    void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks, bool query)
     {
         if (Id != "sportmaster" || kind != ParcelStage.Wcs || operation.Wcs is not { } stage) return;
         RecordRequestLatency(operation, ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds);
+        RecordRcsPerformance(operation, query ? "RcsQueryCompleted" : "RcsSubmitCompleted", ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds);
         // Ordinary operational summary. Credentials, target URLs and raw bodies stay out.
         Diagnostic("RCS结果", "取格口结果", detail: Wire.Encode(new {
             OperationId = operation.Id, operation.ParcelCode, operation.PositionId,

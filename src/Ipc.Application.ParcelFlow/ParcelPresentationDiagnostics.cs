@@ -10,13 +10,14 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
     readonly Dictionary<string, ParcelReadFeedback> presentationFeedback = [];
     readonly Queue<ParcelReadFeedback> presentationReads = [];
     readonly Queue<ParcelPresentationMetric> presentationMetrics = [];
+    long presentationMetricCount;
     void RecordPresentationRead(string position, Observation observation, bool operatorInput = false)
     {
         if (observation.DecodedTicks <= 0 || observation.DecodedTicks > Stopwatch.GetTimestamp()) return;
         var feedback = new ParcelReadFeedback(runtimeId, position, observation.Id, observation.DeviceId, observation.Epoch,
             observation.Codes is { Length: 1 } codes && codes[0] is { Length: > 0 and <= 4096 } single && !single.Any(char.IsControl) ? single : null,
             observation.DecodedTicks, observation.ObservedAt)
-            { OperatorInput = operatorInput, CandidateCount = observation.Codes?.Length ?? 0, SourceSequence = observation.Sequence,
+            { OperatorInput = operatorInput, CandidateCount = observation.Codes?.Length ?? 0, SourceSequence = observation.Sequence, SourceEventId = observation.SourceEventId,
                 PendingDisplayBudgetMs = (int)Math.Clamp(2L * definition.QueuedObservationTimeoutMs(Effective), 1000, 120000) };
         lock (presentationGate)
         {
@@ -52,13 +53,14 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
                 snapshotTicks > 0 ? Stopwatch.GetElapsedTime(snapshotTicks, composedTicks).TotalMilliseconds : null, DateTimeOffset.UtcNow);
             if (presentationMetrics.Count == 512) presentationMetrics.Dequeue();
             presentationMetrics.Enqueue(metric);
+            presentationMetricCount++;
         }
         return Task.CompletedTask;
     }
     object PresentationProgress()
     {
         lock (presentationGate) return new { Availability = presentationMetrics.Count == 0 ? "NotMeasured" : "SamplesRecorded", Boundary = "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
-            Recent = presentationMetrics.ToArray(), Window = 512, Subscribers = presentationSubscribers.Count,
+            Recent = presentationMetrics.ToArray(), Total = presentationMetricCount, Window = 512, Subscribers = presentationSubscribers.Count,
             Publisher = presentationPublisher?.Status.ToString() ?? "NotStarted", Failure = presentationFailure };
     }
 }

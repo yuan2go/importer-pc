@@ -3,6 +3,9 @@ using Ipc.Platform;
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
 internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
+#if !MVS_ACQUISITION_EXTENSION
+    , IObservationPerformanceSource
+#endif
 {
     long acquireCalls, noData, decodeStarted, decodeCompleted, decodedCandidates, rejected, lastFrameTicks;
     DateTimeOffset? lastFrameAt, lastDecodeAt;
@@ -43,9 +46,17 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
                 failure.Length == 0 ? null : failure) { Window = decodeWindow.Read(), SupersededDecodeFrames = Interlocked.Read(ref supersededDecodeFrames)
 #if !MVS_ACQUISITION_EXTENSION
                 , RejectedFrames = rejectedFrames, LastFrameRejection = lastFrameRejection, OriginalFrameCopies = originalFrameCopies,
-                WaitingForOriginalCapacity = waitingOriginalCapacity
+                WaitingForOriginalCapacity = waitingOriginalCapacity,
+                SdkFrameNumberGaps = skippedVideoFrames, SdkGapEvents = videoGapEvents
 #endif
             };
         }
     }
+#if !MVS_ACQUISITION_EXTENSION
+    public object ReadPerformance()
+    {
+        lock (gate) return new { Epoch = epoch, Acquisition = Timings.Snapshot(), Decoder = DecoderTimings,
+            DecoderConfiguration = (decoder as SoftwareDecoder)?.DiagnosticConfiguration };
+    }
+#endif
 }

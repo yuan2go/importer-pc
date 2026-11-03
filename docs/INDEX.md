@@ -1,3 +1,5 @@
+> 2026-11-03 双相机性能测量见 [33运行说明](runtime/sm-dual-camera-performance-33.md)及[工作包](work-packages/WP-IPC-SM-DUAL-CAMERA-PERFORMANCE-33.md)：复用 runtime-progress 和既有窗口，被动采集、精确分位统计、原始观察关联；不操作设备/生产部署，不以合成测试或未解码帧比例替代现场成功率。
+
 > 2026-11-02 现场反馈“包裹放上去后一直扫码、一直发RCS”，用户要求按现场托盘流程修正，以 [SM-SAME-PLACEMENT-29](work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md) 为准：一次放上托盘为一次RCS请求；同工位同码持续可读视为同一放置，只留观察不再请求；取下超过释放窗口再放回或换码才是新请求。替代此前“各独立有效观察交RCS去重”的条款，其他原请求/Unknown守卫不变。
 
 > 2026-11-02 当前斜放、模糊和完整多码搜索，以及快照先到的观察身份守卫，以 [SM-READER-ROBUSTNESS-28](runtime/sm-reader-robustness-28.md) 为准；替代27包的“首搜索零结果才补搜索”及两线策略。27原实现/验证保留历史身份，旧文档完整字节见归档。

@@ -33,6 +33,17 @@ public sealed partial class ParcelRuntime
     readonly HashSet<string> frameFedPositions = [];
     void RegisterPlacementFrames(string position) { lock (placements) frameFedPositions.Add(position); }
 
+    // Presentation may coalesce observations only while the business placement
+    // ledger still owns them. This grants no admission or retry authority.
+    bool ContinuingCameraPlacement(string position, Observation observation)
+    {
+        if (Id != "sportmaster" || observation.Kind != "Read" || observation.CandidateIssue is not null ||
+            observation.Codes is not [var code]) return false;
+        lock (placements) return frameFedPositions.Contains(position) && placements.TryGetValue(position, out var placement) &&
+            placement.CameraSeen && placement.Operation is not null && placement.Code == code &&
+            !(placement.EndedAt is { } ended && observation.ObservedAt > ended);
+    }
+
     // Returns the operation that already owns this placement, or null when the
     // read may proceed to the normal admission guards. Always records presence.
     string? SamePlacementOwner(string position, string code, DateTimeOffset observedAt)

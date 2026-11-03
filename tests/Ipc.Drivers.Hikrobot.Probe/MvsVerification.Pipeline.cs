@@ -9,7 +9,7 @@ internal static partial class MvsVerification
         using var pixels = new PixelLoan(4); using var release = new ManualResetEventSlim(); using var entered = new ManualResetEventSlim();
         var api = new Fake(); var lease = new Lease(); var reads = new ConcurrentQueue<Observation>();
         var decoder = new PipelinePixelGuard(entered, release);
-        await using (var source = new MvsAcquisition(new("pipeline", "pipeline", new Dictionary<string, string> { ["device.ip"] = api.Ip }), api, _ => lease, decoder: decoder))
+        await using (var source = new MvsAcquisition(new("pipeline", "pipeline", new Dictionary<string, string> { ["motion.still-ms"] = "0", ["device.ip"] = api.Ip }), api, _ => lease, decoder: decoder))
         {
             try
             {
@@ -38,7 +38,7 @@ internal static partial class MvsVerification
         }
         var healthApi = new Fake(); var enumerations = 0;
         healthApi.Enumerating = () => { Interlocked.Increment(ref enumerations); Thread.Sleep(80); };
-        await using (var source = new MvsAcquisition(new("health", "health", new Dictionary<string, string> { ["device.ip"] = healthApi.Ip }), healthApi, _ => new Lease(), decoder: new ControlledDecoder { Codes = [] }))
+        await using (var source = new MvsAcquisition(new("health", "health", new Dictionary<string, string> { ["motion.still-ms"] = "0", ["device.ip"] = healthApi.Ip }), healthApi, _ => new Lease(), decoder: new ControlledDecoder { Codes = [] }))
         {
             await source.StartControlledAsync("health-epoch", _ => true, _ => { }, default);
             uint number = 0; var deadline = DateTimeOffset.UtcNow.AddSeconds(2.3);

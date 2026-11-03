@@ -45,7 +45,9 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     readonly SemaphoreSlim lifecycle = new(1, 1);
     readonly object gate = new();
     readonly string ip, serial, triggerRequirement;
-    readonly int nodes, maximumPayload;
+    readonly int nodes, maximumPayload, stillMs;
+    MvsStillness stillness = new(0, 0);
+    long movingFrames, fallbackDecodes;
     IDisposable? lease;
     CancellationTokenSource? cancel;
     Task? worker, stopping, disposal;
@@ -62,7 +64,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     public string Failure { get { lock (gate) return failure; } }
     // SDK errors from StopGrabbing/CloseDevice in the last teardown that did complete; empty when clean.
     public string TeardownNotes { get { lock (gate) return teardown; } }
-    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; failure={failure}; teardown={teardown}"; } }
+    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; stillMs={stillMs}; movingFrames={movingFrames}; fallbackDecodes={fallbackDecodes}; failure={failure}; teardown={teardown}"; } }
     internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null, bool diagnosticVideoSampling = false)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoder = decoder;
@@ -80,6 +82,9 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         nodes = int.Parse(context.Parameters.GetValueOrDefault("image.nodes", "3"), System.Globalization.CultureInfo.InvariantCulture);
         maximumPayload = int.Parse(context.Parameters.GetValueOrDefault("image.maximum-payload-bytes", "8388608"), System.Globalization.CultureInfo.InvariantCulture);
         if (nodes is < 1 or > 4 || maximumPayload is < 1048576 or > 33554432) throw new InvalidDataException("Image nodes must be 1..4 and payload budget 1..32 MiB");
+        // Recognise only settled frames (decoder path only); 0 decodes every frame as before.
+        stillMs = decoder is null ? 0 : int.Parse(context.Parameters.GetValueOrDefault("motion.still-ms", "200"), System.Globalization.CultureInfo.InvariantCulture);
+        if (stillMs is < 0 or > 2000) throw new InvalidDataException("motion.still-ms must be 0..2000");
     }
     void PhaseTo(string value) { lock (gate) phase = value; phaseChanged?.Invoke(value); }
     readonly object healthPublication = new();
@@ -104,7 +109,9 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (initialized || created || worker is not null || lease is not null || Undelivered is not null) throw new InvalidOperationException("Original acquisition owner retained; stop before restart");
             Timings.Reset();
-            lock (gate) { epoch = registeredEpoch; failure = ""; teardown = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; ResetDiagnostics(); }
+            lock (gate) { epoch = registeredEpoch; failure = ""; teardown = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = movingFrames = fallbackDecodes = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; ResetDiagnostics(); }
+            // A new session starts from a new reference frame; nothing from the old stream is compared.
+            stillness = new(stillMs, Math.Max(1500, 3 * stillMs));
             try
             {
                 preview.Clear();
@@ -231,6 +238,14 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             preview.Offer(frame.Data, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
                             var allowDecode = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
                             lock (gate) decodePaused = !allowDecode;
+                            if (decoder is not null && allowDecode)
+                            {
+                                var sampled = Stopwatch.GetTimestamp();
+                                var settled = stillness.Observe(frame.Data, checked((int)frame.Width), checked((int)frame.Height), deliveredTicks);
+                                Timings.Record("motion.sample", Stopwatch.GetElapsedTime(sampled).TotalMilliseconds);
+                                lock (gate) { if (settled == StillnessDecision.Moving) movingFrames++; else if (settled == StillnessDecision.Fallback) fallbackDecodes++; }
+                                allowDecode = settled != StillnessDecision.Moving;
+                            }
                             if (decoder is not null && allowDecode)
                             {
                                 var copyStarted = Stopwatch.GetTimestamp();

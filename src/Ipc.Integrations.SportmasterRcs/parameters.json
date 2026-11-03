@@ -24,6 +24,7 @@
     "Group": "RCS 分拣任务",
     "Label": "独占请求编号区间起点（不含）",
     "Type": "integer",
+    "Default": "0",
     "Required": true,
     "MaximumLength": 32,
     "Minimum": 0,
@@ -34,6 +35,7 @@
     "Group": "RCS 分拣任务",
     "Label": "独占请求编号区间容量",
     "Type": "integer",
+    "Default": "10000",
     "Required": true,
     "MaximumLength": 32,
     "Minimum": 1,
@@ -78,6 +80,7 @@
     "Group": "RCS 分拣任务",
     "Label": "是否指定格口",
     "Type": "choice",
+    "Default": "false",
     "Required": true,
     "Choices": [
       "false",

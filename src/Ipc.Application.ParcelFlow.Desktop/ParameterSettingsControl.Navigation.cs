@@ -27,6 +27,7 @@ public sealed partial class ParameterSettingsControl
         var priorSelecting = selectingPage; selectingPage = true;
         try { if (FirstConfiguration) { categoryScope = page.Category; directoryView?.Refresh(); } directory.SelectedItem = page; currentPage = page; RefreshStepBar(); lastPages[page.Category] = page.Title; pageHost.Content = page.Scroll; directory.ScrollIntoView(page); }
         finally { selectingPage = priorSelecting; }
+        UpdateDirectoryVisibility();
         SelectedPageChanged?.Invoke(this, EventArgs.Empty);
     }
     void RefreshStepBar()
@@ -35,7 +36,11 @@ public sealed partial class ParameterSettingsControl
         {
             var categoryPages = OrderedPages().Where(p => p.Category == index).ToArray();
             var complete = categoryPages.Length > 0 && categoryPages.All(checkedPages.Contains);
-            button.Content = (complete ? "✓ " : (index + 1) + " ") + button.Tag;
+            var current = currentPage?.Category == index;
+            button.Content = (current ? "当前 · " : complete ? "✓ " : "") + (index + 1) + " " + button.Tag;
+            button.SetResourceReference(Control.BackgroundProperty, current ? "AccentBackground" : "Surface");
+            button.SetResourceReference(Control.ForegroundProperty, current ? "Accent" : "Ink");
+            System.Windows.Automation.AutomationProperties.SetItemStatus(button, current ? "当前步骤" : complete ? "已检查" : "未检查");
             button.FontWeight = currentPage?.Category == index ? UiTypography.Emphasis : FontWeights.Normal;
             button.ToolTip = currentPage?.Category == index ? "当前步骤" : "前进时检查前置页面，返回保留输入";
         }
@@ -46,6 +51,13 @@ public sealed partial class ParameterSettingsControl
             var context = issue.Category + (location is null ? "" : " / " + location.Label.TrimEnd(' ', '*'));
             return context + "：" + IssueMessage(issue, location);
         }));
+    }
+    void UpdateDirectoryVisibility()
+    {
+        if (settingsRoot is null || directoryRail is null) return;
+        var single = FirstConfiguration && currentPage is not null && OrderedPages().Count(p => p.Category == currentPage.Category) == 1;
+        directoryRail.Visibility = single ? Visibility.Collapsed : Visibility.Visible;
+        settingsRoot.ColumnDefinitions[0].Width = new(single ? 0 : settingsRoot.ActualWidth < 960 ? 200 : 240);
     }
     void RefreshAvailablePages()
     {

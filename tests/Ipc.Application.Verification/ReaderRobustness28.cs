@@ -51,6 +51,34 @@ internal static class ReaderRobustness28
             var stacked = Enumerable.Repeat((byte)255, a.Width * (a.Height * 2 + 80)).ToArray();
             Paste(stacked, a.Width, a.Data, a.Width, a.Height, 0, 0); Paste(stacked, a.Width, a.Data, a.Width, a.Height, 0, a.Height + 80);
             Check(ordinary.Decode(stacked, stacked.Length, a.Width, a.Height * 2 + 80).Length == 2, "a quiet gap between identical stacked codes prevents search-result merging");
+            using (var ean = new Barcode("1234567890128", new CreatorOptions(BarcodeFormat.EAN13)))
+            using (var eanImage = ean.ToImage(new WriterOptions { Scale = 6, AddQuietZones = true }))
+            {
+                var eanPixels = new byte[eanImage.Width * eanImage.Height]; Marshal.Copy(eanImage.Data, eanPixels, 0, eanPixels.Length);
+                // Independent synthetic uneven illumination: searches can report a
+                // short thick band and a larger band of this same printed label.
+                for (var y = 0; y < eanImage.Height; y++) for (var x = 0; x < eanImage.Width; x++)
+                    eanPixels[y * eanImage.Width + x] = eanPixels[y * eanImage.Width + x] < 128
+                        ? (byte)(y < eanImage.Height / 3 ? 20 : 115) : (byte)230;
+                var label = new CameraRoundHarness.RoundPixels(eanPixels, eanImage.Width, eanImage.Height);
+                foreach (var angle in new[] { -2d, -.75, 0, .75, 1.5, 2.5 })
+                {
+                    var tilted = Rotate(label, angle); var unchanged = tilted.Data.ToArray();
+                    Check(ordinary.Decode(tilted.Data, tilted.Data.Length, tilted.Width, tilted.Height).SequenceEqual(new[] { "1234567890128" }) && tilted.Data.SequenceEqual(unchanged),
+                        "one unevenly lit EAN13 tilted " + angle + " degrees remains one physical candidate and preserves original pixels");
+                }
+                var two = Enumerable.Repeat((byte)255, label.Width * (label.Height * 2 + 80)).ToArray();
+                Paste(two, label.Width, label.Data, label.Width, label.Height, 0, 0);
+                Paste(two, label.Width, label.Data, label.Width, label.Height, 0, label.Height + 80);
+                var both = ordinary.DecodeDetailed(two, two.Length, label.Width, label.Height * 2 + 80);
+                Check(both.Length == 2 && both.All(c => c.Text == "1234567890128") && BarcodeFiltering.Select(null, both.Select(c => c.Text).ToArray()).Outcome == "MultipleCodes",
+                    "two physically separate identical EAN13 labels remain two candidates and are rejected by strict multi-code policy");
+                var ordered = both.OrderBy(c => c.Corners[0].Y).ToArray();
+                var oversized = ordered[0] with { Corners = [ordered[0].Corners[0], ordered[0].Corners[1], ordered[1].Corners[2], ordered[1].Corners[3]] };
+                var associate = typeof(SoftwareDecoder).GetMethod("SamePrintedRegion", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+                Check(!(bool)associate.Invoke(ordinary, [ordered[0], oversized, two, label.Width, label.Height * 2 + 80])!,
+                    "even a containing search band cannot bridge the original-pixel quiet gap between separate identical labels");
+            }
             foreach (var angle in new[] { 15, 30, 45, 70 })
             {
                 var rotated = Rotate(weak, angle); var original = rotated.Data.ToArray();
@@ -155,7 +183,7 @@ internal static class ReaderRobustness28
     }
     static void Paste(byte[] canvas, int width, byte[] data, int w, int h, int x, int y)
     { for (var row = 0; row < h; row++) data.AsSpan(row * w, w).CopyTo(canvas.AsSpan((y + row) * width + x, w)); }
-    static CameraRoundHarness.RoundPixels Rotate(CameraRoundHarness.RoundPixels input, int degrees)
+    static CameraRoundHarness.RoundPixels Rotate(CameraRoundHarness.RoundPixels input, double degrees)
     {
         var radians = degrees * Math.PI / 180; var c = Math.Cos(radians); var s = Math.Sin(radians);
         var w = (int)Math.Ceiling(Math.Abs(c) * input.Width + Math.Abs(s) * input.Height) + 80;

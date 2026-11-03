@@ -155,7 +155,7 @@ public sealed partial class ParameterSettingsControl
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") continue;
-            else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes")) advanced.Add(p);
+            else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes" or "motion.still-ms")) advanced.Add(p);
             else Parameter(form, page, draft, p);
         }
         if (draft.Kind == "observation")
@@ -189,6 +189,7 @@ public sealed partial class ParameterSettingsControl
         "left-bcr-code" => "左相机编码",
         "right-bcr-code" => "右相机编码",
         "heartbeat-interval-seconds" => "心跳间隔",
+        "request-timeout-ms" => "取格口请求超时",
         "request-id-base" => "起始编号（不含）",
         "request-id-count" => "编号数量",
         "source" => "协议来源",
@@ -205,7 +206,8 @@ public sealed partial class ParameterSettingsControl
         "decision" or "reply-mode" or "complete-on-query" => "仅用于模拟服务调试，不代表真实业务结果。",
         "zone-id" => "RCS 分配的仓库编号。",
         "project-id" => "RCS 分配的产线编号。",
-        "left-bcr-code" or "right-bcr-code" => "RCS 用来区分左右相机的编码，两台不能相同。",
+        "left-bcr-code" => "左投递位使用的相机编码，取格口与心跳共用；不能与右相机编码相同。",
+        "right-bcr-code" => "右投递位使用的相机编码，取格口与心跳共用；不能与左相机编码相同。",
         "device.ip" => "相机的 IP 地址（软件不会修改相机设置）。",
         "device.serial" => "相机机身上的序列号，正式使用必填。",
         "code.encoding" => "与相机输出条码报文的字符编码一致；编码不匹配会导致条码无法正确解码。",
@@ -214,7 +216,8 @@ public sealed partial class ParameterSettingsControl
         "queue.maximum-code-bytes" => "条码排队占用的内存上限，默认 16 MiB，可填 1–64 MiB。超出后本位停止供包，需要检查后恢复。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
         "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，1–3600 秒。",
-        "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后提示取下包裹再重新放上。",
+        "motion.still-ms" => "包裹放稳多久后才识别，默认 200 毫秒，可填 0–2000 毫秒。放置过程中的画面不识别；画面一直不稳时约每 1.5 秒仍识别一次。填 0 表示每帧都识别。",
+        "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后结果未确认，请到记录核对；不会自动重发。",
         "specified-chute" => "一般选“不指定”，由 RCS 分配格口。只有现场要求包裹去固定格口时才选“指定”。",
         "chute-code" => "选择“指定”时要求 RCS 使用的格口编号，最终仍以 RCS 返回为准。",
         "source" => "RCS 接口约定的来源标记，按接口文档填写。",
@@ -226,11 +229,12 @@ public sealed partial class ParameterSettingsControl
     sealed record BooleanChoice(string Value, string Label);
     void Parameter(Panel form, ObjectPage page, CapabilityDraft draft, CapabilityParameter p)
     {
+        if (Model!.ApplicationId == "sportmaster" && ParameterOwnership.IsRcs(draft) && p.Field.Key is "specified-chute" or "chute-code") return;
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "quantity") return;
         var path = draft.InstanceId + "/" + p.Field.Key;
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
         var required = p.Field.Required || cameraCodeRequired || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
-        var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key == "heartbeat-interval-seconds" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
+        var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-seconds" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
         if (p.IsSensitive)

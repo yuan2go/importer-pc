@@ -67,6 +67,7 @@ if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace,
 if (args.Contains("--live-devices-30")) { await LiveDevices30.Run(workspace, root); return; }
 if (args.Contains("--update-notice-07")) { UpdateNotice07.Run(root); return; }
 if (args.Contains("--mvs-stop-reconnect")) { await MvsStopReconnect.Run(); return; }
+if (args.Contains("--mvs-still-frames")) { await MvsStillFrames.Run(); return; }
 if (args.Contains("--history-detail-sheet")) { HistoryDetailSheet.Run(workspace); return; }
 if (args.Contains("--installation-receipts-04")) { InstallationReceipts04.Run(root); return; }
 if (args.Contains("--first-configuration-03")) { await FirstConfiguration03.Run(); return; }
@@ -79,6 +80,7 @@ if (args.Contains("--mvs-latency")) { SportmasterRcs.MvsLatency(args); return; }
 if (args.Contains("--decode-format-benchmark")) { SportmasterRcs.DecodeFormatBenchmark(args); return; }
 if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }
 if (args.Contains("--mvs-offline-activation")) { await SportmasterRcs.MvsOfflineActivation(workspace, root); return; }
+if (args.Contains("--mvs-network-reconnect")) { await MvsNetworkReconnect.Run(workspace, root); return; }
 if (args.Contains("--sm-built-in-only")) { await SportmasterRcs.BuiltInOnly(workspace, root, args); return; }
 if (args.Contains("--station-single-camera")) { await SportmasterRcs.SingleCamera(workspace, root); return; }
 if (args.Contains("--hikrobot-sdk-editing")) { HikrobotSdkEditing.Run(workspace, root); return; }

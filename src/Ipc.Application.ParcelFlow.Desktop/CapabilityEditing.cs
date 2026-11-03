@@ -145,7 +145,10 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         {
             if (!ParameterOwnership.Applicable(this, item.Field.Key)) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
-            if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
+            // A required default must become part of the candidate when an
+            // incomplete/deferred connection is configured. Optional omitted
+            // defaults still retain the original effective meaning and bytes.
+            if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default || item.Field.Required) parameters[item.Field.Key] = item.Value;
         }
         if (IsSimpleCamera)
         {

@@ -12,7 +12,7 @@ internal static partial class MvsVerification
             using var pixels = new PixelLoan(4);
             var api = new Fake(); var lease = new Lease(); var decoder = new ControlledDecoder();
             var received = new ConcurrentQueue<Observation>();
-            var parameters = new Dictionary<string, string> { ["device.ip"] = api.Ip };
+            var parameters = new Dictionary<string, string> { ["motion.still-ms"] = "0", ["device.ip"] = api.Ip };
             if (mode is not null) parameters["entity.mode"] = mode;
             await using var source = new MvsAcquisition(new("synthetic.mvs", api.Ip, parameters), api, _ => lease, decoder: decoder);
             await source.StartControlledAsync("software-default", o => { received.Enqueue(o); return true; }, _ => { }, default);
@@ -36,7 +36,7 @@ internal static partial class MvsVerification
             var health = new ConcurrentQueue<DeviceHealthConfirmation>();
             var stopped = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             var decoder = new ControlledDecoder { DuringDecode = () => { entered.Set(); release.Wait(); } };
-            await using var source = new MvsAcquisition(new("synthetic.mvs", api.Ip, new Dictionary<string, string> { ["device.ip"] = api.Ip }), api,
+            await using var source = new MvsAcquisition(new("synthetic.mvs", api.Ip, new Dictionary<string, string> { ["motion.still-ms"] = "0", ["device.ip"] = api.Ip }), api,
                 _ => lease, phase => { if (phase == "stop-requested") stopped.TrySetResult(); }, decoder);
             await source.StartControlledAsync("stop-while-decoding", o => { received.Enqueue(o); return true; }, health.Enqueue, default);
             api.Frames.Enqueue(pixels.Frame);
@@ -63,7 +63,7 @@ internal static partial class MvsVerification
         {
             var api = new Fake(); var lease = new Lease(); var decoder = new ControlledDecoder();
             var received = new ConcurrentQueue<Observation>();
-            await using var source = new MvsAcquisition(new("synthetic.mvs", api.Ip, new Dictionary<string, string> { ["device.ip"] = api.Ip }), api, _ => lease, decoder: decoder);
+            await using var source = new MvsAcquisition(new("synthetic.mvs", api.Ip, new Dictionary<string, string> { ["motion.still-ms"] = "0", ["device.ip"] = api.Ip }), api, _ => lease, decoder: decoder);
             await source.StartControlledAsync("padded-frame", o => { received.Enqueue(o); return true; }, _ => { }, default);
             api.Frames.Enqueue(pixels.Frame); await Until(() => decoder.Calls > 0 || source.Failure.Length > 0);
             await source.StopAsync(default);

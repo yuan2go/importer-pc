@@ -62,11 +62,13 @@ public partial class SupplyStationWindow : Window
         SetPage(initialPage);
         timer.Tick += (_, _) =>
         {
+            UpdateStationClock();
             ViewModel.RefreshFreshness();
             if (ViewModel.Application is not IParcelPresentationSource && pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
         };
         Loaded += async (_, _) =>
         {
+            UpdateStationClock();
             if (ActualWidth > SystemParameters.WorkArea.Width || ActualHeight > SystemParameters.WorkArea.Height) WindowState = WindowState.Maximized;
             pendingRefresh = RefreshAsync(); await pendingRefresh;
             if (closing || closed) return;
@@ -87,10 +89,16 @@ public partial class SupplyStationWindow : Window
     }
     void SetPage(string page)
     {
-        if (page is "maintenance" or "diagnostics" or "logs" or "debug" or "maintenance-center" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
+        if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "maintenance-center" => maintenanceCenter ??= CreateMaintenanceCenter(), "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= CreateOperationLogs(), _ => workContent };
+        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= CreateOperationLogs(), _ => workContent };
+    }
+    void UpdateStationClock()
+    {
+        var now = DateTimeOffset.Now;
+        StationClock.Text = now.ToString(ViewModel.IsCompact ? "HH:mm:ss" : "yyyy-MM-dd HH:mm:ss");
+        StationClock.ToolTip = now.ToString("yyyy-MM-dd HH:mm:ss zzz");
     }
     SoftwareLogControl CreateOperationLogs()
     {

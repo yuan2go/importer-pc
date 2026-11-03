@@ -40,7 +40,7 @@ static partial class SportmasterRcs
         {
             Driver = "hikrobot-mvs-reader",
             Parameters = new()
-            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ORIGINAL-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
+            { ["motion.still-ms"] = "0", ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ORIGINAL-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
         }).ToArray();
         var config = seed with
         {

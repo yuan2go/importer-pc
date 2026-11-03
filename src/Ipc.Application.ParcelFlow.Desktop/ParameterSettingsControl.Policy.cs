@@ -193,9 +193,6 @@ public sealed partial class ParameterSettingsControl
             Input(form, "多条码分隔符", m.Policy, "MultiCodeSeparator", "MultiCodeSeparator", page, "仅在允许多码时使用，1–16 个字符。拼接后最长 512 字符，超出则不发送。");
             Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "规则按整串匹配，单次判断限时 25 毫秒；不会自动挑选第一个条码。");
             Preview(page, m);
-            var rules = Page(1, "格口请求", "软件把识别到的条码发给 RCS 获取格口。这里只设置是否指定固定格口，最终格口以 RCS 返回为准。"); form = Form(rules);
-            foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
-                foreach (var p in rcs.Parameters.Where(p => ParameterOwnership.Category(rcs, p.Field.Key) == 1)) Parameter(form, rules, rcs, p);
         }
         else
         {
@@ -217,7 +214,7 @@ public sealed partial class ParameterSettingsControl
         }
         var budget = Page(1, "接收与等待限制", "一般保持默认值。出现积压或超时，应先检查相机和 RCS 连接。"); form = Form(budget);
         Input(form, "扫码消息缓冲上限", m.Policy, "QueueCapacity", "QueueCapacity", budget, "等待处理的扫码最多可排队多少条，1–4096。排满后新扫码会被拒收。");
-        Input(form, "外部服务等待时间", m.Policy, "TimeoutMs", "TimeoutMs", budget, "调用外部系统时最多等待多久，100–30000 毫秒。超时后结果未确认，系统不会自动重发。");
+        if (m.ApplicationId != "sportmaster") Input(form, "外部服务等待时间", m.Policy, "TimeoutMs", "TimeoutMs", budget, "调用外部系统时最多等待多久，100–30000 毫秒。超时后结果未确认，系统不会自动重发。");
         Input(form, "待处理作业上限", m.Policy, "MaximumOperations", "MaximumOperations", budget, "未处理完的作业最多保留多少个，1–100000。达到上限后暂停接收新包裹。");
     }
     void Preview(ObjectPage page, ParameterEditorModel m)

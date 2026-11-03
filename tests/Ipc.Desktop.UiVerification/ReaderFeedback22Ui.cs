@@ -74,7 +74,8 @@ static partial class Program
             }
             typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(window, ["diagnostics"]);
             await Until(() => vm.CanStartOperation);
-            var healthAction = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "刷新体检"));
+            Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "维护工具")).IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            var healthAction = Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "创建完整备份…"));
             var releaseAction = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             var action = vm.RunAsync(() => releaseAction.Task, "Synthetic held action");
             try

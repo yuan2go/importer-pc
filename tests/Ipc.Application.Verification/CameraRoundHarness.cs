@@ -57,7 +57,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             Driver = "hikrobot-mvs-reader",
             Parameters = new()
-            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
+            { ["motion.still-ms"] = "0", ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
         }).ToArray();
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, rcsEndpoint ?? Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
@@ -158,6 +158,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public void Validate(ParcelConfiguration c)
         { if (c.Mode != RunMode.Simulation || Wire.Encode(c) != Wire.Encode(Normalize(expected))) throw new InvalidOperationException("Exact Simulation round fixture only"); validator.ValidateStructure(c); }
         public CapabilityRequirements Requirements(CapabilityBinding b) => validator.Requirements(b);
+        public CapabilityCatalog Catalog() => validator.Catalog();
         MvsAcquisition Reader(DeviceBinding binding)
         {
             var api = new RoundApi(binding); Apis[binding.DeviceId] = api; var decoder = new RoundDecoder(api, binding.Parameters!); Decoders[binding.DeviceId] = decoder;
@@ -203,7 +204,9 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     internal sealed class RoundApi(DeviceBinding binding) : IMvsApi
     {
         readonly ConcurrentQueue<(RoundPixels Pixels, uint Number)> queue = new();
-        public int Releases, Acquires, Clears, Opens, Starts, Stops;
+        public int Releases, Acquires, Clears, Opens, Starts, Stops, Closes, Destroys, Finalizes;
+        public int StopError = 0, CloseError = 0, DestroyError = 0;
+        public Action? BeforeDestroy = null;
         public bool FailNextClear;
         public int NextLostPackets;
         public readonly ManualResetEventSlim ClearGate = new(true);
@@ -236,10 +239,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; Interlocked.Increment(ref Releases); }
         public void ClearBuffers() { Interlocked.Increment(ref Clears); ClearGate.Wait(); if (FailNextClear) { FailNextClear = false; throw new IOException("Synthetic SDK cache clear failed"); } while (queue.TryDequeue(out _)) { } }
         public bool Connected() => Discovered;
-        public void Stop() => Interlocked.Increment(ref Stops);
-        public void Close() { }
-        public void Destroy() { }
-        public void Shutdown() { }
+        public void Stop() { Interlocked.Increment(ref Stops); MvsNative.Check(Volatile.Read(ref StopError), "StopGrabbing"); }
+        public void Close() { Interlocked.Increment(ref Closes); MvsNative.Check(Volatile.Read(ref CloseError), "CloseDevice"); }
+        public void Destroy() { BeforeDestroy?.Invoke(); MvsNative.Check(Volatile.Read(ref DestroyError), "DestroyHandle"); Interlocked.Increment(ref Destroys); }
+        public void Shutdown() => Interlocked.Increment(ref Finalizes);
     }
     internal sealed class RoundPeer : IAsyncDisposable
     {

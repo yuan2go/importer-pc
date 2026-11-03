@@ -98,7 +98,7 @@ internal static class ReaderFeedback22
         PresentationPreferences.UserRootForVerification = () => Path.Combine(root, "audio-preference");
         try
         {
-            Check(PresentationPreferences.ReadCueVolume("sportmaster") == 70, "first-use cue volume has an explicit local default");
+            Check(PresentationPreferences.ReadCueVolume("sportmaster") == 0, "first-use cue volume defaults to mute");
             foreach (var volume in new[] { 0, 30, 100 }) { PresentationPreferences.SaveCueVolume("sportmaster", volume); Check(PresentationPreferences.ReadCueVolume("sportmaster") == volume, "volume survives a preference read: " + volume); }
             try { PresentationPreferences.SaveCueVolume("sportmaster", 101); throw new InvalidOperationException("Out-of-range volume accepted"); }
             catch (InvalidDataException) { Check(PresentationPreferences.ReadCueVolume("sportmaster") == 100, "invalid volume preserves the last saved preference"); }

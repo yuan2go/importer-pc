@@ -129,14 +129,21 @@ internal sealed class StationDiagnosticProjection
             if (current is null) return new { Status = "Unavailable", Reason = "NoProtectedRegistration" };
             return new
             {
-                Status = "RegistrationOnly",
+                Status = "Collected",
                 State = current.LifecycleState is "Installed" or "Retired" ? current.LifecycleState : "Unknown",
                 SourceCommit = current.SourceCommit is { Length: 40 } && current.SourceCommit.All(char.IsAsciiHexDigit) ? current.SourceCommit : null,
                 HasMaintenanceCache = current.MaintenanceRoot is not null,
-                TransactionReceipt = "NotCollected"
+                Transactions = Receipts(application)
             };
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException)
         { return new { Status = "Unavailable", Reason = "ProtectedRegistrationUnreadable" }; }
+    }
+
+    // Latest setup/quiet/remove/rollback/prune receipt per kind, allowlisted fields only.
+    static object Receipts(string application)
+    {
+        try { return DeploymentReceipts.Summarize(application); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException) { return "Unreadable"; }
     }
 }

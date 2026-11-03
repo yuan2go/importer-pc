@@ -65,6 +65,8 @@ if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Ru
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--live-devices-30")) { await LiveDevices30.Run(workspace, root); return; }
 if (args.Contains("--update-notice-07")) { UpdateNotice07.Run(root); return; }
+if (args.Contains("--installation-receipts-04")) { InstallationReceipts04.Run(root); return; }
+if (args.Contains("--operator-help-04")) { OperatorHelp04.Run(workspace); return; }
 if (args.Contains("--dual-camera-performance")) { await DualCameraPerformance.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }

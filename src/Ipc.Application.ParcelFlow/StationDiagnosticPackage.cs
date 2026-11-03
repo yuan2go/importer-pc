@@ -109,8 +109,8 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
             Add("release.json", "RunningRelease", release.Published ? "Collected" : "Unavailable", release);
             if (detailed)
             {
-                Add("installation.json", "ProtectedRegistration", "Partial", StationDiagnosticProjection.Installation(Id));
-                notices.Add("安装项仅为受保护登记摘要；未收集完整安装事务回执。");
+                Add("installation.json", "ProtectedRegistrationAndReceipts", "Collected", StationDiagnosticProjection.Installation(Id));
+                notices.Add("安装项含登记摘要和每类安装回执（安装、静默部署、卸载、回退、旧版本清理）的最近状态；不含路径、账户、哈希和文件清单。");
             }
             notices.Add("多个来源有各自采集时间，不是一致性备份；健康计数不证明设备实际联通或业务可用。");
             var hashes = files.ToDictionary(p => p.Key, p => Convert.ToHexString(SHA256.HashData(p.Value)), StringComparer.Ordinal);

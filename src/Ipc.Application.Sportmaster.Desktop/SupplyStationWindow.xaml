@@ -1,4 +1,4 @@
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:parameters="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationWindow" Title="菜鸟供包台" Width="1600" Height="900" MinWidth="640" MinHeight="420" Background="{DynamicResource StationBackground}" UseLayoutRounding="True">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:type="clr-namespace:Ipc.Presentation.Wpf;assembly=Ipc.Presentation.Wpf" xmlns:parameters="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop" xmlns:local="clr-namespace:Ipc.Application.Sportmaster.Desktop" x:Class="Ipc.Application.Sportmaster.Desktop.SupplyStationWindow" Title="菜鸟供包台" Width="1600" Height="900" MinWidth="640" MinHeight="420" Background="{DynamicResource StationBackground}" UseLayoutRounding="True" PreviewKeyDown="Window_PreviewKeyDown">
  <Window.Resources>
   <ResourceDictionary>
    <ResourceDictionary.MergedDictionaries>
@@ -72,6 +72,7 @@
        </Style>
       </TextBlock.Style>
      </TextBlock>
+     <Button x:Name="HelpAccess" Content="帮助" Click="Help_Click" ToolTip="作业卡、故障目录和诊断概览（F1）" AutomationProperties.HelpText="按 F1 也可以打开" Style="{StaticResource StationButton}" Margin="0,0,8,0"/>
      <parameters:ManagementModeMenu Status="{Binding ManagementStatus}" ModeActionRequested="ManagementMode_Click" RenewalRequested="ManagementRenew_Click"/>
      <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationButton}"/>
     </StackPanel>
@@ -84,8 +85,8 @@
       <MenuItem Header="页面" MinHeight="44">
        <MenuItem Header="作业" Click="Workstation_Click"/>
        <MenuItem Header="记录" Click="History_Click"/>
-       <MenuItem Header="异常" Click="Exceptions_Click"/>
-       <MenuItem Header="统计" Click="Statistics_Click"/>
+       <MenuItem Header="异常" Click="Exceptions_Click" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}"/>
+       <MenuItem Header="统计" Click="Statistics_Click" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}"/>
        <MenuItem Header="维护中心" Click="MaintenanceCenter_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="设置" Click="Maintenance_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="日志" Click="Logs_Click" Visibility="{Binding ManagementModeVisibility}"/>

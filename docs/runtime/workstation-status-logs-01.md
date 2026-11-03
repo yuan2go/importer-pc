@@ -2,7 +2,7 @@
 
 # 作业状态、管理入口与日志双视图
 
-历史实施、版本和验收原件见[归档](../archive/pre-fresh-baseline-current-guides-01/README.md)；原PASS只属于原SourceCommit。当前仅支持从零安装、当前格式建库；非当前输入保留原件并拒绝，请使用全新数据目录。
+历史实施、版本和验收原件见归档；原PASS只属于原SourceCommit。当前仅支持从零安装、当前格式建库；非当前输入保留原件并拒绝，请使用全新数据目录。
 
 ## V2对照与修复
 
@@ -40,4 +40,4 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 # 既有回归：--task-hierarchy、--management-mode、--reliability-logs
 ```
 
-冻结介质入口 `scripts/verify-commercial-wpf.ps1 -WorkstationStatusLogs` 已加入现有Windows CI。原D/RV、SDK、资格、现场条件保持；不自动安装或合并PR。历史同源身份、实际结果、初次失败与截图见[证据](evidence/workstation-status-logs-01/README.md)。
+冻结介质入口 `scripts/verify-commercial-wpf.ps1 -WorkstationStatusLogs` 已加入现有Windows CI。原D/RV、SDK、资格、现场条件保持；不自动安装或合并PR。历史同源身份、实际结果、初次失败与截图见证据。

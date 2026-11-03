@@ -6,4 +6,4 @@ D-SM-MVS-UI-01：继承 [MVS-SOFTWARE-READER-01](../../runtime/mvs-software-read
 
 本包仅纠正当前相机页和框架顶部的过期当前说明。共享驱动、其他业务、历史配置原件、历史 D/RV、冻结请求及旧验收不改写，不将通用 TCP 代码视为当前 SM 页面支持方式。
 
-RV-SM-MVS-UI-01：PASS_NATIVE_WPF，沿现有 `--hikrobot-sdk-editing` 原生夹具核对首配、日常左右相机、紧凑窗口和原设置重新配置；增加所有文本块及文本框不出现 TCP、固定 MVS SDK 身份的断言。构建 0 警告、0 错误，原生退出码 0。实际结果及边界见[实施记录](../../runtime/sm-mvs-only-ui-01.md)；不代表安装、真实设备或现场验收。
+RV-SM-MVS-UI-01：PASS_NATIVE_WPF，沿现有 `--hikrobot-sdk-editing` 原生夹具核对首配、日常左右相机、紧凑窗口和原设置重新配置；增加所有文本块及文本框不出现 TCP、固定 MVS SDK 身份的断言。构建 0 警告、0 错误，原生退出码 0。实际结果及边界见[实施记录](../runtime/sm-mvs-only-ui-01.md)；不代表安装、真实设备或现场验收。

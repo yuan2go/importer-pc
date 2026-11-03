@@ -52,7 +52,7 @@
 | Windows原生 | HWND/Dispatcher实际参数交互通过：明确切换/取消、字段替换、左右隔离、非法IP保留/定位、MVS仅采图状态、首配共模；1120×760与820×520 DIP，实际125%缩放。合成安装目录描述，无SDK/真实RCS/安装/UAC/目标工控机验收。 |
 | 真实SDK | 本机当前MVS完整路径加载、17个实际导出检查、GetSDKVersion、Initialize、EnumDevices、Finalize成功；GigE设备0。MvCodeReader实际加载/枚举成功，设备0。这只证明本机SDK加载/枚举，不能记真机帧或条码通过。 |
 
-运行与依赖方法见[当前SDK操作说明](../../runtime/hikrobot-reader-01.md)，实际ABI和依赖声明见两个驱动目录的sdk-boundary/manifest/build/schema。新增必要CI验证驱动与原生编辑；原仓库必需门禁保持，远端结果分别记录。
+运行与依赖方法见[当前SDK操作说明](../runtime/hikrobot-reader-01.md)，实际ABI和依赖声明见两个驱动目录的sdk-boundary/manifest/build/schema。新增必要CI验证驱动与原生编辑；原仓库必需门禁保持，远端结果分别记录。
 
 工程实现：当前可做范围已完成，采集可构建/配置/联调；完整目标中的真实图像→条码组件接入仍BLOCKED，不能宣布整个工作包完成。工程验证：上述范围PASS，失败前样本保留。真机左右帧/真实条码/可信包裹关联：本机NOT_RUN/BLOCKED；用户已提供的现场MVS成功取流仍属用户现场证据，不转记本机或本源码读码验收。真实RCS/格口全链与现场可用：BLOCKED/NOT_RUN。
 

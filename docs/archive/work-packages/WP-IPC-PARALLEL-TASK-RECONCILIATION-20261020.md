@@ -19,4 +19,4 @@
 
 沿用 F-01～12、19/20/22、REQ/BR/CAPI/D/RV。Platform 提供机制，Application 拥有独立主流程和守卫，Driver/Component 适配现场协议；一个实例多页面。Sportmaster 双独立 reader/位置、扫码取格口、不下 PLC、不新增图片展示/图库；DirectPlc/WcsToPlc 单位顺序、DirectPlc UI 延期。原请求、目标、报文、合同、版本、原件与 Unknown 责任不改。Production 缺能力拒绝。
 
-本次设计与冲突裁决见 [整合设计](../../design/parallel-task-reconciliation-20261020.md)，任务表/成果/覆盖/验证/计数见 [报告](../../runtime/parallel-task-reconciliation-20261020.md)。最终远端 main 覆盖及 GitHub merged 状态才是完成依据；历史 PASS 不拼接为组合资格。
+本次设计与冲突裁决见 [整合设计](../design/parallel-task-reconciliation-20261020.md)，任务表/成果/覆盖/验证/计数见 [报告](../runtime/parallel-task-reconciliation-20261020.md)。最终远端 main 覆盖及 GitHub merged 状态才是完成依据；历史 PASS 不拼接为组合资格。

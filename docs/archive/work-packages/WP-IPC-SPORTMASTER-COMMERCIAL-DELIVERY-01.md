@@ -4,7 +4,7 @@
 
 ## 范围及阅读顺序
 
-读 AGENTS、[INDEX](../../INDEX.md)、[基线裁决](../../reviews/sportmaster-commercial-delivery-01-baseline.md)、[设计](../../design/sportmaster-commercial-delivery-01.md)、[验收](../../runtime/validation/sportmaster-commercial-delivery-01.md)，再沿 INDEX 读框架/F、19/20/22、既有 COMM-00～10 设计/实现/验收、安装与身份、恢复/维护、版本/扩展及公开范围。UI 使用完整 v1.1 实物和交接，WPF skill 仅辅助。
+读 AGENTS、[INDEX](../../INDEX.md)、[基线裁决](../../reviews/sportmaster-commercial-delivery-01-baseline.md)、[设计](../design/sportmaster-commercial-delivery-01.md)、[验收](../runtime/validation/sportmaster-commercial-delivery-01.md)，再沿 INDEX 读框架/F、19/20/22、既有 COMM-00～10 设计/实现/验收、安装与身份、恢复/维护、版本/扩展及公开范围。UI 使用完整 v1.1 实物和交接，WPF skill 仅辅助。
 
 Sportmaster 是首个商业交付组合；不附加 PLC/图片，不实现延期的 DirectPlc 完整 UI。继承独立 Application、多页面共享实例、唯一配置账和受保护部署登记。登录按组合可选，指定 Windows SID 非提权运行。原请求身份、目标、合同、报文不变，Unknown 不重发。真实资格不足拒绝 Production。
 

@@ -4,7 +4,7 @@
 
 状态：**IMPLEMENTED / VALIDATION_NOT_RUN**。形成日期2026-10-16；依据 [MAIN-REVIEW-02](../../reviews/main-static-review-02.md)，原分析基准main `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`。用户已明确授权先合并PR #5再实施本包；实际执行基准main `6d4063ec54e8167c8710e46befbe66f8b688ef08`，开发分支 `codex/wp-ipc-engineering-closure-07`。用户仍要求不测试；本轮不构建、不运行验证器或程序。
 
-当前交付与逐项映射见 [实施记录](../../runtime/engineering-closure-07.md) 及 [执行边界记录](../../runtime/engineering-closure-07-checks.json)。以下勾选仅表示实现或文档已落地，不表示运行验收通过；用户要求不测试，运行验证全部NOT_RUN。
+当前交付与逐项映射见 [实施记录](../runtime/engineering-closure-07.md) 及 [执行边界记录](../runtime/engineering-closure-07-checks.json)。以下勾选仅表示实现或文档已落地，不表示运行验收通过；用户要求不测试，运行验证全部NOT_RUN。
 
 **目标：** 修复E-01～10，使当前参考产品的状态有效性、恢复证据、运维安全和UI操作信息形成可审查闭环，再提交Windows操作验收。
 

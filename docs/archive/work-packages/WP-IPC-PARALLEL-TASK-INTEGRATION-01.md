@@ -24,4 +24,4 @@
 
 真实双SDK/真实RCS、目标8GB、多Windows11版本、完整raw规模/RTO、受保护离线维护全链和24h/72h资格仍按各自NOT_RUN/BLOCKED记录，不作为已完成。集成代码合入与现场放行分别判断。
 
-处置表、实际验证版本、PR/提交及回退见[整合报告](../../runtime/parallel-task-integration-01.md)。
+处置表、实际验证版本、PR/提交及回退见[整合报告](../runtime/parallel-task-integration-01.md)。

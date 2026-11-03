@@ -1,6 +1,6 @@
 # 形成时 Codex 执行提示（工程已续做）
 
-以下保留`4c42f567`形成时的整批执行提示。该批独立工程已经续做，当前状态与源身份见[实现](../../runtime/lifecycle-ux-implementation-01.md)和[验证](../../runtime/validation/lifecycle-ux-optimization-01.md)。后续先读取实际状态，不机械重做七包；G01/G02仍须外部合同/政策。原字节与原FILES见[归档](../lifecycle-ux-planning-01/README.md)。
+以下保留`4c42f567`形成时的整批执行提示。该批独立工程已经续做，当前状态与源身份见[实现](../runtime/lifecycle-ux-implementation-01.md)和[验证](../runtime/validation/lifecycle-ux-optimization-01.md)。后续先读取实际状态，不机械重做七包；G01/G02仍须外部合同/政策。原字节与原FILES见[归档](../lifecycle-ux-planning-01/README.md)。
 
 ```text
 执行 docs/work-packages/WP-IPC-LIFECYCLE-UX-OPTIMIZATION-01.md，完成其中LIA-01～07全部可独立实施的工程范围，持续推进到代码、必要验证、文档和main PR齐备。

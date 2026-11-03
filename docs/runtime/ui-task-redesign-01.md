@@ -1,17 +1,17 @@
-> 当前参数界面与操作已由 [V3实施](parameter-settings-experience-02.md) 替代；本页保留V2源码、介质及原验证身份。V3没有被记为这些历史Windows证据通过。
+> 当前参数界面与操作已由 [V3实施](../archive/runtime/parameter-settings-experience-02.md) 替代；本页保留V2源码、介质及原验证身份。V3没有被记为这些历史Windows证据通过。
 
 # Sportmaster V2 · UIR-00～06 实施与运行
 
-后续局部修复：[日常参数页登录会话时长](login-session-lifetime-fix-01.md)。日常schema-3按原登录角色选择显示/隐藏，首配沿原绑定草稿；共享配置账、范围校验与保存守卫不变。下述1.6.0实现及原图集/验证保留形成时身份。
+后续局部修复：[日常参数页登录会话时长](../archive/runtime/login-session-lifetime-fix-01.md)。日常schema-3按原登录角色选择显示/隐藏，首配沿原绑定草稿；共享配置账、范围校验与保存守卫不变。下述1.6.0实现及原图集/验证保留形成时身份。
 
-实施基准 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，实现分支 `codex/sportmaster-v2-ui`。本包完成 V2 原生 UI 及必要契约补足，继承 PARAM-01、周期心跳、完整配置 CAS、原请求责任、原生安装及独立维护。精确构建来源、验证结果与介质身份以[本版验收记录](evidence/ui-task-redesign-v2/ACCEPTANCE.md)为准。原型模拟与 Windows/设备验收分别记录，不把新局部验证写成旧 HTML 修复或历史 RV 全部关闭。
+实施基准 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，实现分支 `codex/sportmaster-v2-ui`。本包完成 V2 原生 UI 及必要契约补足，继承 PARAM-01、周期心跳、完整配置 CAS、原请求责任、原生安装及独立维护。精确构建来源、验证结果与介质身份以本版验收记录为准。原型模拟与 Windows/设备验收分别记录，不把新局部验证写成旧 HTML 修复或历史 RV 全部关闭。
 
 ## 交付与入口
 
-- [151项逐项迁移表](ui-task-redesign-v2-migration.md)：54项 V2 字段、58项原字段/状态、39项操作保留原编号。
-- [同版 WPF 高清界面](../ui/sportmaster-v2-wpf-20261020/README.md)：真实 WPF 控件与合成状态，不是浏览器或设计稿。
-- [目标设计](../ui/sportmaster-task-redesign-v2-20261020/README.md)、[实施裁决](../design/sportmaster-task-redesign-01.md)、[完整工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)保留要求及替代关系。
-- [实施前原字节](../archive/pre-ui-task-redesign-implementation-20261020/README.md)保留设计阶段指导；既有历史证据未倒写。
+- [151项逐项迁移表](../archive/runtime/ui-task-redesign-v2-migration.md)：54项 V2 字段、58项原字段/状态、39项操作保留原编号。
+- 同版 WPF 高清界面：真实 WPF 控件与合成状态，不是浏览器或设计稿。
+- 目标设计、[实施裁决](../archive/design/sportmaster-task-redesign-01.md)、[完整工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)保留要求及替代关系。
+- 实施前原字节保留设计阶段指导；既有历史证据未倒写。
 
 ## UIR-00～06 对照
 
@@ -66,7 +66,7 @@ dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Veri
 python scripts/package-application.py --application sportmaster --target win-x64 --output .artifacts/sportmaster-v2-win --dotnet dotnet
 ```
 
-发行工具要求所有发行输入已提交，使用不可变 Git 源快照并做锁定依赖还原。Windows 介质含 `desktop/Ipc.Desktop.exe`、安装/维护入口、配置与文档；本页随介质为 `SPORTMASTER-V2.md`。首次安装沿 [单窗口安装流程](installer-single-window-01.md)，设备资格和现场参数按 [Hikrobot指南](hikrobot-reader-01.md)及 [RCS指南](sportmaster-rcs-task.md)核对，不能直接使用图中合成数据。已有配置从安装快捷方式运行；故障修复使用维护快捷方式，禁止把手工删除数据当恢复步骤。
+发行工具要求所有发行输入已提交，使用不可变 Git 源快照并做锁定依赖还原。Windows 介质含 `desktop/Ipc.Desktop.exe`、安装/维护入口、配置与文档；本页随介质为 `SPORTMASTER-V2.md`。首次安装沿 [单窗口安装流程](../archive/runtime/installer-single-window-01.md)，设备资格和现场参数按 [Hikrobot指南](../archive/runtime/hikrobot-reader-01.md)及 [RCS指南](sportmaster-rcs-task.md)核对，不能直接使用图中合成数据。已有配置从安装快捷方式运行；故障修复使用维护快捷方式，禁止把手工删除数据当恢复步骤。
 
 ## 验证边界
 

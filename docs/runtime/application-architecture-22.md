@@ -1,8 +1,8 @@
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见[收口前归档](../archive/pre-fresh-baseline-current-guides-01/README.md)，不用于当前操作。
+当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
 
 # Application架构22 · 当前运行指南
 
-[现行设计](../design/application-architecture-22.md) · [工作包](../archive/work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
+[现行设计](../design/application-architecture-22.md) · [工作包](../archive/work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](../archive/runtime/architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
 
 ## 构建、选装与运行
 

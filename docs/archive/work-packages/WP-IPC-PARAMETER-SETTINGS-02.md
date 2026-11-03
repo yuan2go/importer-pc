@@ -2,17 +2,17 @@
 
 ﻿> 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
 
-> 2026-10-21 后续纠偏：[STARTUP-UX-03](../../design/startup-experience-03.md)替代上一轮折叠式安装/首配操作；[实施及边界](../../runtime/startup-experience-03.md)。用户确认所有Windows用户共享供包台、TCP客户端按换行收码。新证据不倒写PS-00～05、D/RV或旧SourceCommit。
+> 2026-10-21 后续纠偏：[STARTUP-UX-03](../design/startup-experience-03.md)替代上一轮折叠式安装/首配操作；[实施及边界](../runtime/startup-experience-03.md)。用户确认所有Windows用户共享供包台、TCP客户端按换行收码。新证据不倒写PS-00～05、D/RV或旧SourceCommit。
 
-> 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](../../design/startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
+> 2026-10-21 安装与首次配置当前增量：[用户纠偏与执行边界](../design/startup-experience-02.md)。只替代本范围旧当前交互，历史原件和证据保留。
 
-> 2026-10-21 本轮继承增量已交付：源码 `1366333`，PR [#83](https://github.com/yuan2go/importer-pc/pull/83)，219项冻结原生验证及可安装介质。完成项、93项迁移裁决、原始失败和待验边界见[交付验证](../../runtime/validation/parameter-inheritance-02.md)。原SourceCommit及历史状态继续保留。
+> 2026-10-21 本轮继承增量已交付：源码 `1366333`，PR [#83](https://github.com/yuan2go/importer-pc/pull/83)，219项冻结原生验证及可安装介质。完成项、93项迁移裁决、原始失败和待验边界见[交付验证](../runtime/validation/parameter-inheritance-02.md)。原SourceCommit及历史状态继续保留。
 
 ## 2026-10-21 本轮增量执行
 
 固定 main `20251b4c10db76a37f4d204332e3e6cf68340429`，PR80已合并；PR81 open且非Draft，审查并继承 `2215487c0c40d19e88fb9eaa968b507cd5421b97` 的原生体验增量。参数任务在独立工作树中进行，避免与中文文案任务覆盖。
 
-先完成[旧指引归档](../pre-parameter-inheritance-02/README.md)和[继承裁决](../../design/parameter-inheritance-02.md)，再实施。原PS-00～05编号及原结果保持；本轮沿PS-01/02/03/05扩展实际功能，不重复开发原V3。
+先完成[旧指引归档](../pre-parameter-inheritance-02/README.md)和[继承裁决](../design/parameter-inheritance-02.md)，再实施。原PS-00～05编号及原结果保持；本轮沿PS-01/02/03/05扩展实际功能，不重复开发原V3。
 
 | 增量 | 开工核查 / 完成标准 |
 |---|---|
@@ -28,21 +28,21 @@
 
 # WP-IPC-PARAMETER-SETTINGS-02
 
-> 2026-10-21 参数页精简续修：用户指定先优化参数页，在 main `3b883fe` 及 PR82 中文增量上继续收紧表单与重复摘要；当前增量以[精简报告、原生截图和验证边界](../../runtime/parameter-settings-simplification-01.md)为准。四类归属、统一候选及保存/恢复守卫继承；下列形成时布局、原图和历史证据不反向改写。
+> 2026-10-21 参数页精简续修：用户指定先优化参数页，在 main `3b883fe` 及 PR82 中文增量上继续收紧表单与重复摘要；当前增量以[精简报告、原生截图和验证边界](../runtime/parameter-settings-simplification-01.md)为准。四类归属、统一候选及保存/恢复守卫继承；下列形成时布局、原图和历史证据不反向改写。
 
-> 2026-10-21 中文文案增量：用户要求页面提示全部中文。沿本包复用现有参数/首配共模，将固定提示、选项与任务标签中文化；实际编码、协议值和原始技术证据保持。此要求替代历史双语提示，不改布局、归属或合同；[实现与本轮验证](../../runtime/chinese-interface-copy-01.md)独立于下述原交付身份。
+> 2026-10-21 中文文案增量：用户要求页面提示全部中文。沿本包复用现有参数/首配共模，将固定提示、选项与任务标签中文化；实际编码、协议值和原始技术证据保持。此要求替代历史双语提示，不改布局、归属或合同；[实现与本轮验证](../runtime/chinese-interface-copy-01.md)独立于下述原交付身份。
 
-> 2026-10-21 独立商业体验复核：基于 main `767075a` 和 PR80，已继承其最新证据提交 `d245b12`。本轮体验差距、针对性补修、前后原生截图及目标工控机待验项见[商业体验复核](../../runtime/validation/parameter-settings-v3-experience-01.md)。工程门禁与商业体验结论分别记录；旧介质不因本轮源码修正自动更新。
+> 2026-10-21 独立商业体验复核：基于 main `767075a` 和 PR80，已继承其最新证据提交 `d245b12`。本轮体验差距、针对性补修、前后原生截图及目标工控机待验项见[商业体验复核](../runtime/validation/parameter-settings-v3-experience-01.md)。工程门禁与商业体验结论分别记录；旧介质不因本轮源码修正自动更新。
 
-> PS-05 本轮执行基线为 main `767075abe62a77c30e70766bb5d3f1feca02686b`，复用 PR78/79；原生缺口已实现，新构建业务版本为 1.7.0。当前操作见[原生运行说明](../../runtime/parameter-settings-v3-native-01.md)，逐项结果、最终 SourceCommit、截图/介质身份与未验边界见[本轮原生验证](../../runtime/validation/parameter-settings-v3-native-01.md)。以下原开工检查、原始授权和历史结论保留；不再用其待实施措辞否定后续实际交付，也不反向扩张旧证据。
+> PS-05 本轮执行基线为 main `767075abe62a77c30e70766bb5d3f1feca02686b`，复用 PR78/79；原生缺口已实现，新构建业务版本为 1.7.0。当前操作见[原生运行说明](../runtime/parameter-settings-v3-native-01.md)，逐项结果、最终 SourceCommit、截图/介质身份与未验边界见[本轮原生验证](../runtime/validation/parameter-settings-v3-native-01.md)。以下原开工检查、原始授权和历史结论保留；不再用其待实施措辞否定后续实际交付，也不反向扩张旧证据。
 
 当前 PS-05 工程交付已取得同源 `bfec0a5672d846a865db62af9ef6a573a953f914` 的 CI 核心/恢复/页面/视觉/V3 PASS、原生截图和1.7.0安装器；本机已核对EXE及ZIP哈希、735文件库存和源码身份，见[PR80](https://github.com/yuan2go/importer-pc/pull/80)。空间恢复后，最终同源介质在本机125%通过142项原生断言、键鼠/草稿/错误/对象诊断，以及安装器选项/取消和发布Desktop隔离离线启动；ce9dcd3仍仅为中间证据。完整安装生命周期、目标IPC/触控、真实SDK/RCS及现场资格继续待验；自定义提取环境启动失败的原事件与边界已保留。下表保留开工时状态。
 
 ## 开工结论与读取顺序（历史快照）
 
-2026-10-21（北京时间）重新读取远端 main，固定基线为 `42a047c3c0dbba3208e6bc6ce2910cd6ffabbf5e`；本地 HEAD 与远端一致，开工工作区干净、开放 PR 为 0。PR78 参数 V3 与 PR79 启动恢复已合并，见[发布记录](../../runtime/publication-pr78-pr79-20261021.md)。**完整设计与主要原生源码已在 main，下一步为现有 PS-05 的原生交付收口及实际缺口修复。** 不再把四类参数、统一保存或“维护与迁移”入口拆分当成从零开发事项。
+2026-10-21（北京时间）重新读取远端 main，固定基线为 `42a047c3c0dbba3208e6bc6ce2910cd6ffabbf5e`；本地 HEAD 与远端一致，开工工作区干净、开放 PR 为 0。PR78 参数 V3 与 PR79 启动恢复已合并，见[发布记录](../runtime/publication-pr78-pr79-20261021.md)。**完整设计与主要原生源码已在 main，下一步为现有 PS-05 的原生交付收口及实际缺口修复。** 不再把四类参数、统一保存或“维护与迁移”入口拆分当成从零开发事项。
 
-完成用户对实际参数页面的美学与可用性纠偏。先读 AGENTS、[文档索引](../../INDEX.md)、[框架](../../design/framework.md)与[F 决策](../../design/framework-decisions.md)，再读 [PARAM-UX-02](../../design/parameter-settings-experience-02.md)、[V3交付](../../ui/parameter-settings-v3-20261020/README.md)、[交接](../../ui/parameter-settings-v3-20261020/HANDOFF.md)、[原验证](../../ui/parameter-settings-v3-20261020/QA.md)及实际代码。编码前先清理本任务冲突的当前指引；PR74三组作业、首配、字段合同、PR76会话修复与PR79启动回退继续复用。
+完成用户对实际参数页面的美学与可用性纠偏。先读 AGENTS、[文档索引](../../INDEX.md)、[框架](../../design/framework.md)与[F 决策](../../design/framework-decisions.md)，再读 [PARAM-UX-02](../design/parameter-settings-experience-02.md)、[V3交付](../../ui/parameter-settings-v3-20261020/README.md)、[交接](../../ui/parameter-settings-v3-20261020/HANDOFF.md)、[原验证](../../ui/parameter-settings-v3-20261020/QA.md)及实际代码。编码前先清理本任务冲突的当前指引；PR74三组作业、首配、字段合同、PR76会话修复与PR79启动回退继续复用。
 
 V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字节和分支语境；其中“开发分支进入 main PR”已由上述合并事实更新。当前实现与验证以本文开头链接的本轮原生验证为准；末尾执行提示保留原始授权。原 `bf61337`、原源码指纹、历史 PASS / NOT_RUN 及旧安装包身份不改写为本次验证。
 
@@ -86,7 +86,7 @@ V3目录中的 README、HANDOFF、CODEX-NEXT 及 SOURCE-STATE 保留形成时字
 | 无变更仍可保存 | [MaintenancePage](../../../src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml)保存仅绑定`CanStartOperation`；[审阅模型](../../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs)的`PrepareConfigurationReviewAsync`计算空差异后仍返回可审阅；`CanSubmitReviewedConfiguration`未要求实际变更。[StageConfigurationAsync](../../../src/Ipc.Application.ParcelFlow/ParcelCommands.cs)只对同值Pending去重，没有Pending且候选等于Effective时仍可Stage | 正确表达未修改、无效输入、Pending及Unknown；没有实际变更不创建无意义待重启修订；原提交核对入口仍可达，保留CAS及审计 |
 | 敏感字段编辑不一致 | [统一字段控件](../../../src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs)的`Parameter`只区分boolean/choice/普通输入；[Input](../../../src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs)创建普通TextBox。平台[字段契约](../../../src/Ipc.Platform/ExtensionContracts.cs)与[真实扩展示例](../../../examples/IntegrationExtension/parameters.json)已有`Sensitive=true/secret-reference`，审阅层却已掩码 | 首配与日常共用控件遵守已有敏感声明；显示、审阅及输出一致保护引用，不能为掩码丢失真实值或误清空；不新造凭据系统。现有Sportmaster RCS14项没有该类型，本结论不等于生产密码泄露 |
 | 当前对象运行上下文不完整 | V3[相机设计图](../../ui/parameter-settings-v3-20261020/screens/01-left-camera.png)及HANDOFF要求运行连接/运行版本和当前对象“连接诊断”。上述原生控件主要构建参数与安装身份，没有按选中实例进入诊断的直接入口或对应运行摘要绑定 | 将当前相机/RCS与真实运行快照、已有诊断路径关联；编辑地址与运行地址明确区分；复用已支持诊断，不引入无合同Probe或业务试单 |
-| 原生与发行证据缺口 | [V3 QA](../../ui/parameter-settings-v3-20261020/QA.md)明确Windows/DPI/SDK/RCS/现场NOT_RUN；[合并发布记录](../../runtime/publication-pr78-pr79-20261021.md)明确PR79旧CI不覆盖加入V3后的组合，1.6.1未重建 | 使用最终冻结源码执行必要原生验证，取得真实WPF截图与键鼠/缩放记录，并生成同源安装介质和启动证据；不能重标旧包 |
+| 原生与发行证据缺口 | [V3 QA](../../ui/parameter-settings-v3-20261020/QA.md)明确Windows/DPI/SDK/RCS/现场NOT_RUN；[合并发布记录](../runtime/publication-pr78-pr79-20261021.md)明确PR79旧CI不覆盖加入V3后的组合，1.6.1未重建 | 使用最终冻结源码执行必要原生验证，取得真实WPF截图与键鼠/缩放记录，并生成同源安装介质和启动证据；不能重标旧包 |
 
 ## 限定与必要验证
 

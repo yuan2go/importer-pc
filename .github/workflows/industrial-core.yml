@@ -28,8 +28,6 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
-            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           global-json-file: global.json
@@ -100,8 +98,6 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
-            !/docs/ui/sportmaster-task-redesign-20261020/source/aux.js
-            !/docs/ui/sportmaster-task-redesign-v2-20261020/source/aux.js
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           global-json-file: global.json

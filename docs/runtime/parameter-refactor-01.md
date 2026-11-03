@@ -6,19 +6,19 @@
 
 > 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../archive/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
 
-> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../archive/work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)。
+> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../archive/work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已保留。
 
 > 2026-10-23 参数与首配呈现增量由 [PARAMETER-UI-REFINE-01](../archive/work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md) 替代：单目录、单正文滚动、中文字段错误与紧凑管理菜单。四类归属、原字段与保存/应用责任不变；下文及历史证据继续保留原阶段身份。
 
-> 历史实施记录：下文操作和字段表保留 PR73 时语境。当前增量入口为[参数继承裁决](../design/parameter-inheritance-02.md)与[现有工作包](../archive/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)；原现场与发行身份不扩张。
+> 历史实施记录：下文操作和字段表保留 PR73 时语境。当前增量入口为[参数继承裁决](../archive/design/parameter-inheritance-02.md)与[现有工作包](../archive/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)；原现场与发行身份不扩张。
 
 > 2026-10-21 当前执行入口：PARAM-UX-02 / WP-IPC-PARAMETER-SETTINGS-02，参数采用 V3，复用已合并 PR78/79。下文“当前、待实施、不测试”均保留原阶段语境；不再定义当前布局或禁止本轮原生验证。
 
-> 最新 V2 目标见[实施裁决](../design/sportmaster-task-redesign-01.md)。本页记录 PR73 原参数范围与原验证；本轮合并上传不测试、不构建，不扩大为 V2 或现场验收。
+> 最新 V2 目标见[实施裁决](../archive/design/sportmaster-task-redesign-01.md)。本页记录 PR73 原参数范围与原验证；本轮合并上传不测试、不构建，不扩大为 V2 或现场验收。
 
 # PARAM-01 参数正式重构：实现与验证
 
-2026-10-20。参数及必要联动实现完成，受影响构建和下列定向验证已通过；真实设备、RCS 和现场验收仍待执行。本页是现行参数操作入口，原型和旧发行证据保留各自身份。设计边界见 [现行裁决](../design/parameter-refactor-01.md)，完整 UI 余项见 [工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
+2026-10-20。参数及必要联动实现完成，受影响构建和下列定向验证已通过；真实设备、RCS 和现场验收仍待执行。本页是现行参数操作入口，原型和旧发行证据保留各自身份。设计边界见 [现行裁决](../archive/design/parameter-refactor-01.md)，完整 UI 余项见 [工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
 
 ## 来源与并行保护
 
@@ -58,7 +58,7 @@ RCS 参数和跨类别映射由组件纯静态代码校验，装配调用同一�
 
 ## 已执行验证
 
-所有数据均为合成。日志与截图位于 [证据目录](evidence/parameter-refactor-01/WINDOWS-WPF.log)，保留最终结果，不借用旧 PASS。
+所有数据均为合成。日志与截图位于 证据目录，保留最终结果，不借用旧 PASS。
 
 | 验证 | 结果 |
 |---|---|
@@ -71,7 +71,7 @@ RCS 参数和跨类别映射由组件纯静态代码校验，装配调用同一�
 | Python test_application_compatibility.py | 17项 |
 | UiVerification --parameter-refactor | 实际 WPF HWND/Dispatcher：首配缺种子可打开、系统默认、四分类、刷新焦点/选择保留、样例第三候选、错误定位、固定双实例独立参数；1366×768、900×640及800×420 DIP 可滚动 |
 
-Windows 主机实际125%缩放；请求1600×900的夹具实际客户区1553.6×881.6 DIP，截图记录真实尺寸，不冒称目标分辨率验收。通过原生实际键盘/鼠标改左IP、改业务规则/样例并点击测试，再切回驱动，左右输入独立保留；没有连接真实设备。截图：[系统](evidence/parameter-refactor-01/parameters-system.png)、[业务](evidence/parameter-refactor-01/parameters-business.png)、[驱动](evidence/parameter-refactor-01/parameters-drivers.png)、[错误](evidence/parameter-refactor-01/parameters-error.png)、[紧凑](evidence/parameter-refactor-01/parameters-compact.png)。
+Windows 主机实际125%缩放；请求1600×900的夹具实际客户区1553.6×881.6 DIP，截图记录真实尺寸，不冒称目标分辨率验收。通过原生实际键盘/鼠标改左IP、改业务规则/样例并点击测试，再切回驱动，左右输入独立保留；没有连接真实设备。截图：系统、业务、驱动、错误、紧凑。
 
 设计原型48 PNG全部查看，交接/58字段/39动作及源码已阅读；原 HTML 浏览器入口超时/受安全限制，未绕过，也不声明原型浏览器动态验收通过。共享参数控件使用真实WPF验证替代实现验收。最初原生构建因仍打开的测试窗口锁DLL失败，正常关闭后最终构建通过；其他Application初次缺还原资产，按既有各自锁文件还原后通过，没有新增锁文件或降低门禁。
 
@@ -100,18 +100,18 @@ python -m unittest discover -s scripts -p test_application_compatibility.py -v
 
 ## 冻结发布与最终回执
 
-冻结源码 `220d35931a6e2174d35629a65a01a1b61cc39b21`，业务1.5.0。其后仅补充桌面备份数值错误的字段定位及文档/证据，未改变 portable 中的业务、驱动、组件或公共契约；最终桌面与原生定向检查另行构建通过。按既有 package-application 构建 portable 包，SHA256 `0f78368ed20ed2a8f3898eaf353c239a0347997e60b332a6d82e56a91f5e96f6`，见 [发行身份](evidence/parameter-refactor-01/release-identity.json)。这是必要的发布启动验证候选，不覆盖既有安装器介质或宣称完整安装升级通过。其 PARAMETERS.md 为同一冻结提交的操作指南，后续回执提交不改变原包 SourceCommit。
+冻结源码 `220d35931a6e2174d35629a65a01a1b61cc39b21`，业务1.5.0。其后仅补充桌面备份数值错误的字段定位及文档/证据，未改变 portable 中的业务、驱动、组件或公共契约；最终桌面与原生定向检查另行构建通过。按既有 package-application 构建 portable 包，SHA256 `0f78368ed20ed2a8f3898eaf353c239a0347997e60b332a6d82e56a91f5e96f6`，见 发行身份。这是必要的发布启动验证候选，不覆盖既有安装器介质或宣称完整安装升级通过。其 PARAMETERS.md 为同一冻结提交的操作指南，后续回执提交不改变原包 SourceCommit。
 
-[实际解包冒烟](evidence/parameter-refactor-01/release-smoke.json)通过6类检查：候选文件SHA、实际所选程序集启动、参考相机到最终格口链、重启保持原阶段、有序停止、左右两个读码器。原字段 Windows=NOT_RUN、RealEquipment=BLOCKED 保持；Windows主机执行 portable CLI Simulation 不等于图形或真实设备验收。
+实际解包冒烟通过6类检查：候选文件SHA、实际所选程序集启动、参考相机到最终格口链、重启保持原阶段、有序停止、左右两个读码器。原字段 Windows=NOT_RUN、RealEquipment=BLOCKED 保持；Windows主机执行 portable CLI Simulation 不等于图形或真实设备验收。
 
-两个新包均用独立 TestOnly Simulation 信任构建，经冻结宿主 extension-check 接受且冻结宿主/检查器未改变，见 [静态验签回执](evidence/parameter-refactor-01/extension-static.json)：
+两个新包均用独立 TestOnly Simulation 信任构建，经冻结宿主 extension-check 接受且冻结宿主/检查器未改变，见 静态验签回执：
 
 | 包 | SHA256 |
 |---|---|
 | sportmaster.rcs-task 1.2.1 | da02fde4ce44aa2074a75f878823eb70eb421819372ead3d879c6997119c43c3 |
 | hikrobot.idmvs-reader 1.0.3 | ac1aeaa2177819cd06dc1673955b7cf73163ebac9ae7534a66e796f3a0b5e319 |
 
-公共 Platform SHA256 `13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3`，Application.Contracts SHA256 `c60b4d9872627ad6dbf4f605b43f86801b03300a8013c46aa6a08458ebcbb609`。原本地测试输出的不同公共DLL被精确哈希守卫正确拒绝；改用隔离测试输出和上述冻结DLL复验，未改守卫或冻结宿主。[签名包实际加载的5项检查](evidence/parameter-refactor-01/rcs-signed.log)全部通过：元数据/无查询能力、精确契约、实际双读码心跳、取格口、停止排空。夹具[绑定身份](evidence/parameter-refactor-01/signed-fixture.json)可复核。未安装到机器登记、未修改信任、未提交私钥或真实SDK；TestOnly 包不能用于Production。
+公共 Platform SHA256 `13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3`，Application.Contracts SHA256 `c60b4d9872627ad6dbf4f605b43f86801b03300a8013c46aa6a08458ebcbb609`。原本地测试输出的不同公共DLL被精确哈希守卫正确拒绝；改用隔离测试输出和上述冻结DLL复验，未改守卫或冻结宿主。签名包实际加载的5项检查全部通过：元数据/无查询能力、精确契约、实际双读码心跳、取格口、停止排空。夹具绑定身份可复核。未安装到机器登记、未修改信任、未提交私钥或真实SDK；TestOnly 包不能用于Production。
 
 Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因此失败；仅在发布子进程设置 Git core.protectNTFS=false，使用既有 extended-path 导出器保留原件后重试成功。没有删除/改名原设计资产、覆盖并行工作或把首次失败记录为PASS。历史 Codex 工作包在整合时恢复原 main 字节，最终无该文件业务变更。
 
@@ -124,7 +124,7 @@ Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因�
 
 [首次远端检查](https://github.com/yuan2go/importer-pc/actions/runs/39406264803/job/118572825786)在 `0d4ee6d` 的 checkout 阶段因原型 `source/aux.js` Windows保留名失败，尚未执行构建/测试，不计为应用回归失败或PASS。现有Windows工作流改为非cone sparse checkout，仅不在工作副本落地该文件；Git blob和完整历史均保留。core.protectNTFS=false仅作用于checkout子进程；冻结导出器仅在只读git archive命令设置该选项，仍使用data_filter与extended-path目录，签名包SafePath和部署安全门禁不变。
 
-复用 [统一发行测试](../../scripts/test_unified_release.py) 增加实际Git blob→稀疏工作副本→完整冻结导出检查，验证AUX原字节仍可从Git/导出读取、普通文件完整、原件未删除；其余篡改/混源/ZIP/清理断言保留。Windows本机15项全部通过，现有商业交付拒绝策略5项亦通过，见 [日志](evidence/parameter-refactor-01/release-windows-paths.log)。两次夹具初验暴露主机autocrlf转换，固定合成仓库自身换行策略后原字节断言通过，没有删减断言。远端重跑结果以PR检查为准，不预记PASS。
+复用 [统一发行测试](../../scripts/test_unified_release.py) 增加实际Git blob→稀疏工作副本→完整冻结导出检查，验证AUX原字节仍可从Git/导出读取、普通文件完整、原件未删除；其余篡改/混源/ZIP/清理断言保留。Windows本机15项全部通过，现有商业交付拒绝策略5项亦通过，见 日志。两次夹具初验暴露主机autocrlf转换，固定合成仓库自身换行策略后原字节断言通过，没有删减断言。远端重跑结果以PR检查为准，不预记PASS。
 
 
 ## ba80 合并快照的源码对照（形成时历史，2026-10-20）
@@ -132,7 +132,7 @@ Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因�
 以下保留V2设计轮对ba80的原静态对照。表中“继续完成”是当时判断；PR73已经完成的原参数范围见本文前述证据，V2新增目标仍待实施。
 
 
-仅静态读取，不新增构建/测试/Windows验证。PR71冻结 `5abe82071471d525686352c094dbb79dc7fea3ce` 已随 PR69/70/72 合入main `ba80d0ea90d86b24f9d9eebd20d075da34320972`；发布范围及原产物见[快照](publication-parameter-snapshot-20261020.md)和[发布回执](publication-pr69-pr71-20261020.md)。
+仅静态读取，不新增构建/测试/Windows验证。PR71冻结 `5abe82071471d525686352c094dbb79dc7fea3ce` 已随 PR69/70/72 合入main `ba80d0ea90d86b24f9d9eebd20d075da34320972`；发布范围及原产物见[快照](../archive/runtime/publication-parameter-snapshot-20261020.md)和[发布回执](../archive/runtime/publication-pr69-pr71-20261020.md)。
 
 | 已有代码 | 当前可确认范围 | 继续完成 |
 |---|---|---|
@@ -142,4 +142,4 @@ Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因�
 | 桌面/应用 `ConfigurationSubmission` | 规范化候选、配置账及原所有者核对；Unknown/PendingRestart/NotSaved/Conflict。 | 准确呈现结果、保留更新后的输入、冲突/未知的可执行下一步及最终验证。 |
 | `RcsConfigurationValidation` 与既有心跳 | 保存前静态联合校验；已有周期、编码、生命周期和HTTP证据。 | 保留两类编码的用途与历史，按V2迁移取格口字段；不把心跳传输当应用确认。 |
 
-三组相机任务展示、waveNo/响应quantity的兼容传递、完整对象维护与V2视觉尚有工作；taskId/skuId原有解析/应用传递继续复用。V2目标见[现行裁决](../design/sportmaster-task-redesign-01.md)，不以临时参数摆放反向覆盖用户字段归属。单窗口安装和已发布原介质继续保留各自SourceCommit，此参数快照及最终合并树未据此取得新安装或现场PASS。
+三组相机任务展示、waveNo/响应quantity的兼容传递、完整对象维护与V2视觉尚有工作；taskId/skuId原有解析/应用传递继续复用。V2目标见[现行裁决](../archive/design/sportmaster-task-redesign-01.md)，不以临时参数摆放反向覆盖用户字段归属。单窗口安装和已发布原介质继续保留各自SourceCommit，此参数快照及最终合并树未据此取得新安装或现场PASS。

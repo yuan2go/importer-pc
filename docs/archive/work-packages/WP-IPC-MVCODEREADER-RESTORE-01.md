@@ -18,7 +18,7 @@
 
 用户随后确认：现场有一包一次的触发信号；同一相机在 Sportmaster/MvCodeReader 和天猫/MVIDCodeReader 两套旧程序均可读码。本轮继续复用已有 MvCodeReader 实现，默认外部触发；连续采集保留为只观察诊断。MVIDCodeReader 旧链路证明另一套 SDK 已含算法，不等于两套 ABI 可以互换。本轮不引入额外 VisionMaster 作为前置，不复制旧天猫 PLC/UDP 锁与按型号回退首设备的行为。
 
-新增内置描述和精确运行清单，首配/日常保留唯一完整候选和明确提供者切换。实际源码和操作见 [运行说明](../../runtime/hikrobot-reader-01.md)，本机验证见 [验证记录](../../runtime/evidence/mvreader-restore-01/verification.json)。默认恢复条码路径不能代替现场实际识码与实体/RCS验收。
+新增内置描述和精确运行清单，首配/日常保留唯一完整候选和明确提供者切换。实际源码和操作见 [运行说明](../runtime/hikrobot-reader-01.md)，本机验证见 [验证记录](../../runtime/evidence/mvreader-restore-01/verification.json)。默认恢复条码路径不能代替现场实际识码与实体/RCS验收。
 
 ## 历史本机交付与验证边界（3669d436，已替代）
 

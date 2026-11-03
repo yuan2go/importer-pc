@@ -6,4 +6,4 @@
 
 验证采用受影响的 Application/WPF 闭环、安装预检/选项/变更守卫、随包文档、实际归档字节及构建；不启动真实安装、SCM 修改、设备或客户 RCS，不开启 GitHub CI。通过普通 PR 合并接口，保留完整提交，不强推、不修改保护规则。合入 main 是源码集成，不升级真实设备、安装及现场验收状态。
 
-实际审查、整合源码和验证结果见 [08 报告](../../runtime/pr155-integration-08.md)。历史工作包、D/RV、SourceCommit 和失败证据保持原身份。
+实际审查、整合源码和验证结果见 [08 报告](../runtime/pr155-integration-08.md)。历史工作包、D/RV、SourceCommit 和失败证据保持原身份。

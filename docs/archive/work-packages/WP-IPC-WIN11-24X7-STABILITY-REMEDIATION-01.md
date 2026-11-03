@@ -1,12 +1,12 @@
 # Windows 11 长期稳定性整改
 
-2026-10-24归档增量：用户授权将已完成的[历史清理查询独立复核](../../runtime/validation/retention-performance-review-01.md)、[原件和复现脚本](../../runtime/evidence/retention-performance-review-01/README.md)经PR/CI合入main。复核固定`12a7cbd`，不重复修改业务代码；原证据身份、D/RV及待长稳/现场资格不变。
+2026-10-24归档增量：用户授权将已完成的[历史清理查询独立复核](../runtime/validation/retention-performance-review-01.md)、[原件和复现脚本](../../runtime/evidence/retention-performance-review-01/README.md)经PR/CI合入main。复核固定`12a7cbd`，不重复修改业务代码；原证据身份、D/RV及待长稳/现场资格不变。
 
 同日RECHECK-02：用户要求核查PR99查询风险并安全集成main；开工已确认PR99/100/101合入`5bb032d`，继承实际TEMP主键修复。独立百万规模、责任/迁移/故障复现及升级夹具竞态续修见上述报告的再核查段；新增CI升级专项，未改变生产查询/SQL1～9或真实资格。新分支`codex/retention-query-final-recheck-02`仅提交本轮拥有的增量，经最终PR/CI核对后合并，不吸收其他工作区材料。
 
 状态：代码与本机专项验证已实施，固定Release记录独立保存，待现场资格；尚未取得24h/72h或真实设备资格。开工 main `c5ac51d21a820f7b39ef458d7cf0c403c2cdec6b`，独立D盘工作树 `D:/projects/importer-pc-stability`。2026-10-24核对PR97开放，head `a43ecb86efdc78ddc48e7082dcb6f96848138a8b`；PR98字体排版开放，head `2fb04fec970443539c73ced4482032c263ee32c7`。不代合并、不覆盖它们的有效格口、跨页回执或意图/导航代次保护。原工作区四个未跟踪附件保持本地。
 
-依据：[原审查及原始ZIP](../../reviews/win11-24x7-stability-audit-01/README.md)、[框架](../../design/framework.md)、[决定](../../design/framework-decisions.md)、[当前实施设计](../../design/win11-24x7-stability-remediation-01.md)。原审查固定c91559f6及其Linux探针，不改写为本轮Windows结果。REQ/BR/CAPI、D/RV及SQL1～8校验和保持。
+依据：[原审查及原始ZIP](../../reviews/win11-24x7-stability-audit-01/README.md)、[框架](../../design/framework.md)、[决定](../../design/framework-decisions.md)、[当前实施设计](../design/win11-24x7-stability-remediation-01.md)。原审查固定c91559f6及其Linux探针，不改写为本轮Windows结果。REQ/BR/CAPI、D/RV及SQL1～8校验和保持。
 
 以下为开工时的风险—证据—缺口矩阵；实施结果在后列验证记录，不将开工缺口误作当前结论。
 
@@ -29,6 +29,6 @@
 
 交付为开发分支提交及main PR，不发布安装包或操作生产设备。升级、回退、运行命令和逐项实测结果收录到本包运行记录；实施完成前不关闭本工作包。
 
-本轮用户决策：4核/8GB、双位合计30～60件/分钟；现场选择7～30天，到期删除已结明细，永久防重与未决保留；RCS Unknown先保留。当前[运行/删除/迁移与回退](../../runtime/win11-24x7-stability-remediation-01.md)及[R01～R12结果/未执行项](../../runtime/validation/win11-24x7-stability-remediation-01.md)为实施入口。
+本轮用户决策：4核/8GB、双位合计30～60件/分钟；现场选择7～30天，到期删除已结明细，永久防重与未决保留；RCS Unknown先保留。当前[运行/删除/迁移与回退](../../runtime/win11-24x7-stability-remediation-01.md)及[R01～R12结果/未执行项](../runtime/validation/win11-24x7-stability-remediation-01.md)为实施入口。
 
 收口期间PR97已由其他获授权工作合并，main `c310705b5a927c90e8f6bb93de908b2fea36e826`；本分支整合该main并保留其全部有效业务呈现守卫。PR98随后也由其他获授权工作合入main `016976c65a4ba3c9119f4cc0a131bae82283aae5`，本分支继承其字体/布局/日志恢复；没有代合并PR。上方开放PR状态为开工记录，不作为交付当前状态。

@@ -1,6 +1,6 @@
-> 2026-10-21 用户指定先完善作业主界面信息和操作，本轮按 UIR-01/UIR-05 续修；[实现、运行方式与原生证据](../../runtime/workstation-information-01.md)。原 UIR-00～06 及旧发行结果不改写为本轮验收。
+> 2026-10-21 用户指定先完善作业主界面信息和操作，本轮按 UIR-01/UIR-05 续修；[实现、运行方式与原生证据](../runtime/workstation-information-01.md)。原 UIR-00～06 及旧发行结果不改写为本轮验收。
 
-> 参数页面当前修订：[PARAM-UX-02](../../design/parameter-settings-experience-02.md) 与 [V3交付](../../ui/parameter-settings-v3-20261020/README.md) 替代本文参数版式、底部保存步骤和“维护与迁移”入口。PR74已实现的作业/首配合同及PR76会话修复继续复用；下文旧实施状态保留形成时身份，不要求重复实现。
+> 参数页面当前修订：[PARAM-UX-02](../design/parameter-settings-experience-02.md) 与 [V3交付](../../ui/parameter-settings-v3-20261020/README.md) 替代本文参数版式、底部保存步骤和“维护与迁移”入口。PR74已实现的作业/首配合同及PR76会话修复继续复用；下文旧实施状态保留形成时身份，不要求重复实现。
 
 > 当前实施：[V2 实施与验证记录](../../runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
 
@@ -10,9 +10,9 @@
 
 ## 目标、基准与当前交付状态
 
-将 [V2 设计集](../../ui/sportmaster-task-redesign-v2-20261020/README.md)及 [V2 交接](../../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)落实为现有 Windows C#/WPF 客户端的完整任务体验，优先完成参数配置，再完成连续作业、异常诊断和维护配套。实施裁决见 [代码与设计差距](../../design/sportmaster-task-redesign-01.md)。实施前静态复核源为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`；本次实际基准为最新 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，继承 #62/63/64/66/67/68、#69 单窗口安装、#70 心跳、#71 参数快照、#72 发布及 #73 原 PARAM-01 实施。
+将 [V2 设计集](../../ui/sportmaster-task-redesign-v2-20261020/README.md)及 [V2 交接](../../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)落实为现有 Windows C#/WPF 客户端的完整任务体验，优先完成参数配置，再完成连续作业、异常诊断和维护配套。实施裁决见 [代码与设计差距](../design/sportmaster-task-redesign-01.md)。实施前静态复核源为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`；本次实际基准为最新 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，继承 #62/63/64/66/67/68、#69 单窗口安装、#70 心跳、#71 参数快照、#72 发布及 #73 原 PARAM-01 实施。
 
-**当前已获授权实施 UIR-00～06 并执行必要验证，继承 PR73 已完成的 PARAM-01。设计入库阶段的“仅设计／不测试”不限制本实施包；实际完成状态与证据以 V2 实施记录为准。** UIR-00资料和原型QA以V2最终清单/回执为准。已合入的 [PARAM-01](../../design/parameter-refactor-01.md) 在ba80时是四分类WPF控件、条码筛选、首配共模和保存核对的未完成快照；PR73已完成原参数范围，V2目标继续复用并补完，不声称全部UIR尚未移植，也不借合并或历史PASS宣布全包完成。参数当前事实见[实施记录](../../runtime/parameter-refactor-01.md)，安装/心跳介质及不测试合并范围见[发布回执](../../runtime/publication-pr69-pr71-20261020.md)。V2 界面和图片数量见其索引。V1 的 45 状态、48 PNG 和 95 个物理文件保留原字节与形成时记录，属于历史设计，不叠加为本轮页面数。
+**当前已获授权实施 UIR-00～06 并执行必要验证，继承 PR73 已完成的 PARAM-01。设计入库阶段的“仅设计／不测试”不限制本实施包；实际完成状态与证据以 V2 实施记录为准。** UIR-00资料和原型QA以V2最终清单/回执为准。已合入的 [PARAM-01](../design/parameter-refactor-01.md) 在ba80时是四分类WPF控件、条码筛选、首配共模和保存核对的未完成快照；PR73已完成原参数范围，V2目标继续复用并补完，不声称全部UIR尚未移植，也不借合并或历史PASS宣布全包完成。参数当前事实见[实施记录](../../runtime/parameter-refactor-01.md)，安装/心跳介质及不测试合并范围见[发布回执](../runtime/publication-pr69-pr71-20261020.md)。V2 界面和图片数量见其索引。V1 的 45 状态、48 PNG 和 95 个物理文件保留原字节与形成时记录，属于历史设计，不叠加为本轮页面数。
 
 本轮以用户新确认的字段及产品结构为目标：相机框内固定设备信息、扫描信息和 RCS 任务信息；首次配置只在首次启动出现；系统/业务模块/驱动/组件四类配置及其字段归属清楚；任务结果显示波次、任务、SKU、格口和返回数量。现有代码与新要求冲突之处应受控迁移，不能继续用旧代码否定已确认需求。
 

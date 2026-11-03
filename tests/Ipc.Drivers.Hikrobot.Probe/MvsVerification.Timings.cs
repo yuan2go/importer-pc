@@ -55,8 +55,11 @@ internal static partial class MvsVerification
             try { using var invalid = source.RetainOriginalFrame(secondIdentity with { Epoch = "unregistered-epoch" }); throw new Exception("Wrong epoch matched a frame"); }
             catch (IOException) { Check(source.RetainedOriginalFrames == 2, "wrong acquisition epoch refuses lookup without releasing either writer"); }
             try { await source.DisposeAsync(); throw new Exception("Disposed outstanding image writers"); }
-            catch (InvalidOperationException) { Check(source.RetainedOriginalFrames == 2 && oldWriter.Pixels.Length == 4 && newWriter.Pixels.Length == 4,
-                "source disposal fences new sessions and preserves both outstanding writer leases after native teardown"); }
+            catch (InvalidOperationException)
+            {
+                Check(source.RetainedOriginalFrames == 2 && oldWriter.Pixels.Length == 4 && newWriter.Pixels.Length == 4,
+                "source disposal fences new sessions and preserves both outstanding writer leases after native teardown");
+            }
             oldWriter.Dispose(); newWriter.Dispose(); oldWriter.Dispose(); newWriter.Dispose();
             await source.DisposeAsync();
             Check(source.RetainedOriginalFrames == 0 && epochApi.Freed == 2 && epochApi.Calls.Count(c => c == "destroy") == 2,

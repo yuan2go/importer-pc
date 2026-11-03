@@ -9,7 +9,8 @@ public static class Wire
 {
     public static readonly JsonSerializerOptions Json = new()
     {
-        PropertyNameCaseInsensitive = false, WriteIndented = true,
+        PropertyNameCaseInsensitive = false,
+        WriteIndented = true,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
         Converters = { new JsonStringEnumConverter() }
     };

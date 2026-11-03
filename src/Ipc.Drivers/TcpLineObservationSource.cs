@@ -195,10 +195,17 @@ public sealed class TcpLineObservationSource : IControlledObservationSource
         var at = state == DeviceHealth.Ready ? confirmedAt : DateTimeOffset.UtcNow;
         var evidence = ConfirmationSource + "; " + Wire.Encode(new
         {
-            Phase = phase, Category = failureCategory, SocketError = socketError, Sequence = sequence,
-            ConfiguredRemote = EndpointIdentity(binding), Local = localEndpoint, Remote = remoteEndpoint,
-            LastReceivedAt = receivedAt, LastValidObservationAt = validObservationAt,
-            LastConfirmedAt = confirmedAt, LivenessTimeoutSeconds = livenessTimeout.TotalSeconds,
+            Phase = phase,
+            Category = failureCategory,
+            SocketError = socketError,
+            Sequence = sequence,
+            ConfiguredRemote = EndpointIdentity(binding),
+            Local = localEndpoint,
+            Remote = remoteEndpoint,
+            LastReceivedAt = receivedAt,
+            LastValidObservationAt = validObservationAt,
+            LastConfirmedAt = confirmedAt,
+            LivenessTimeoutSeconds = livenessTimeout.TotalSeconds,
             CurrentConnectionEpoch = Epoch,
             Confirmation = "Connect/received-byte evidence; TCP keepalive is not application heartbeat; business admission is separate"
         });

@@ -94,9 +94,19 @@ internal static class Diagnostic
                 deadline.Stage("stop");
                 await StopRetainingOwner(() => reader.StopAsync(CancellationToken.None), () => reader.Phase).ConfigureAwait(false);
             }
-            Console.WriteLine(Wire.Encode(new { Observations = observations, Codes = codes, reader.FramesReceived, reader.FramesRejected, reader.LastFailure,
+            Console.WriteLine(Wire.Encode(new
+            {
+                Observations = observations,
+                Codes = codes,
+                reader.FramesReceived,
+                reader.FramesRejected,
+                reader.LastFailure,
                 ReadStatus = codes > 0 ? "DecodedCandidatesObserved" : observations > 0 ? "FramesWithoutCodes" : "NoFramesOrTriggers",
-                Mode = profile, ExternalRequests = 0, DeviceSettingsChanged = profile != "existing", TargetModelQualified = false }));
+                Mode = profile,
+                ExternalRequests = 0,
+                DeviceSettingsChanged = profile != "existing",
+                TargetModelQualified = false
+            }));
             if (reader.LastFailure is not null) throw new IOException(reader.LastFailure);
             return deadline.Expired ? 124 : codes == 0 ? 3 : 0;
         }

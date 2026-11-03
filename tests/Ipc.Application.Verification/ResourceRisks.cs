@@ -17,26 +17,26 @@ static class ResourceRisks
         await app.StartAsync(CancellationToken.None);
         try
         {
-        Pass(app.EmitReference("first", "001", "source-one"), "first observation enters the asynchronous worker");
-        await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3));
-        Pass(app.EmitReference("second", "002", "source-two") && !app.EmitReference("third", "003", "source-three"), "bounded ingress rejects overflow without blocking callback on WCS");
-        using (var timeout = new CancellationTokenSource(50))
-        {
-            try { await app.StopAsync(timeout.Token); throw new Exception("Stop unexpectedly completed"); }
-            catch (OperationCanceledException) { Pass(app.HasUnreleasedResources, "stop timeout retains downstream database/port/lease ownership"); }
-        }
-        var contender = new ParcelRuntime(launch, new WcsToPlcFlow(), new ParcelCapabilityFactory(launch));
-        try { await contender.StartAsync(CancellationToken.None); throw new Exception("second owner unexpectedly started"); }
-        catch (IOException) { Pass(true, "second runtime cannot acquire retained application/device leases"); }
-        finally { await contender.DisposeAsync(); }
+            Pass(app.EmitReference("first", "001", "source-one"), "first observation enters the asynchronous worker");
+            await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3));
+            Pass(app.EmitReference("second", "002", "source-two") && !app.EmitReference("third", "003", "source-three"), "bounded ingress rejects overflow without blocking callback on WCS");
+            using (var timeout = new CancellationTokenSource(50))
+            {
+                try { await app.StopAsync(timeout.Token); throw new Exception("Stop unexpectedly completed"); }
+                catch (OperationCanceledException) { Pass(app.HasUnreleasedResources, "stop timeout retains downstream database/port/lease ownership"); }
+            }
+            var contender = new ParcelRuntime(launch, new WcsToPlcFlow(), new ParcelCapabilityFactory(launch));
+            try { await contender.StartAsync(CancellationToken.None); throw new Exception("second owner unexpectedly started"); }
+            catch (IOException) { Pass(true, "second runtime cannot acquire retained application/device leases"); }
+            finally { await contender.DisposeAsync(); }
         }
         finally { factory.Release.TrySetResult(); await app.StopAsync(CancellationToken.None); await app.DisposeAsync(); }
         Pass(!app.HasUnreleasedResources && !app.HasActiveWork, "released only after callback, worker and port termination");
         ParcelSnapshot s;
         await using (var restarted = new ParcelRuntime(launch, new WcsToPlcFlow(), new ParcelCapabilityFactory(launch)))
         {
-        await restarted.StartAsync(CancellationToken.None); s = await restarted.SnapshotAsync();
-        Pass(s.BlockingReasons.Any(x => x.Contains("Overload")) && s.Operations.First().Wcs?.State == StageState.Unknown, "restart preserves overload marker and original cancelled-stage uncertainty");
+            await restarted.StartAsync(CancellationToken.None); s = await restarted.SnapshotAsync();
+            Pass(s.BlockingReasons.Any(x => x.Contains("Overload")) && s.Operations.First().Wcs?.State == StageState.Unknown, "restart preserves overload marker and original cancelled-stage uncertainty");
         }
 
         // Candidate construction failure cannot become the persisted Effective authority.
@@ -72,7 +72,7 @@ static class ResourceRisks
         var rawLaunch = launch with { DataRoot = Path.Combine(root, "raw-data") };
         var rawDurable = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var raw = new ParcelRuntime(rawLaunch, new WcsToPlcFlow(), new ParcelCapabilityFactory(rawLaunch))
-            { Boundary = point => { if (point == "AfterRawDurable") { rawDurable.TrySetResult(); throw new IOException("AC17 injected T3 interruption after original raw became durable"); } } };
+        { Boundary = point => { if (point == "AfterRawDurable") { rawDurable.TrySetResult(); throw new IOException("AC17 injected T3 interruption after original raw became durable"); } } };
         await raw.StartAsync(CancellationToken.None); raw.EmitReference("raw-parcel", "009", "raw-event");
         await rawDurable.Task.WaitAsync(TimeSpan.FromSeconds(3));
         for (var n = 0; n < 100 && raw.HasActiveWork; n++) await Task.Delay(20);

@@ -145,8 +145,16 @@ static partial class ReliabilityHardening
                 cut + " interrupted left handoff remains inspectable even after business T3");
             VerifyInputLedger(database, Path.Combine(path, "source.json"), Path.Combine(path, "input-after.json"));
             await recovered.DisposeAsync();
-            File.WriteAllText(Path.Combine(path, "result.json"), Wire.Encode(new { Cut = cut, SourceCommit = typeof(ParcelRuntime).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
-                ProcessId = process.Id, process.ExitCode, Milliseconds = watch.Elapsed.TotalMilliseconds, ExternalCallsOnRecovery = calls, Snapshot = snapshot }));
+            File.WriteAllText(Path.Combine(path, "result.json"), Wire.Encode(new
+            {
+                Cut = cut,
+                SourceCommit = typeof(ParcelRuntime).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
+                ProcessId = process.Id,
+                process.ExitCode,
+                Milliseconds = watch.Elapsed.TotalMilliseconds,
+                ExternalCallsOnRecovery = calls,
+                Snapshot = snapshot
+            }));
             Console.WriteLine($"MEASURE H02 crash={cut}; elapsed_ms={watch.Elapsed.TotalMilliseconds:F2}; input_receipts=2; recovery_external_calls={calls}");
         }
         finally

@@ -25,8 +25,11 @@ static partial class Program
         {
             await SetClient(window, 1366, 768); await Until(() => window.ViewModel.Fresh && window.ViewModel.Left.ShowConfirmedTask, "initial actual snapshot");
             var basis = window.ViewModel.Snapshot!;
-            ParcelSnapshot Project(string slot) => basis with { PublishedTicks = Stopwatch.GetTimestamp(),
-                Operations = basis.Operations.Select(o => o.PositionId == "left" ? o with { Slot = slot } : o).ToArray() };
+            ParcelSnapshot Project(string slot) => basis with
+            {
+                PublishedTicks = Stopwatch.GetTimestamp(),
+                Operations = basis.Operations.Select(o => o.PositionId == "left" ? o with { Slot = slot } : o).ToArray()
+            };
             ParcelPresentationUpdate Update(long version, ParcelSnapshot? snapshot, string? failure = null) =>
                 new(basis.RuntimeId, version, snapshot, [], [], failure);
             // Only the display slot is projected. All commands remain real, and this
@@ -86,7 +89,8 @@ static partial class Program
             var record = h.App.GetType().GetMethod("RecordPresentationRead", BindingFlags.NonPublic | BindingFlags.Instance)!;
             var apply = p.GetType().GetMethod("ApplyReadFeedback", BindingFlags.NonPublic | BindingFlags.Instance)!;
             Observation Read(string code) => new(Wire.Id(), p.ReaderId, p.Input!.Observation.Epoch, "synthetic." + code, 100, "synthetic." + code,
-                "Read", [code], null, DateTimeOffset.UtcNow) { DecodedTicks = Stopwatch.GetTimestamp() };
+                "Read", [code], null, DateTimeOffset.UtcNow)
+            { DecodedTicks = Stopwatch.GetTimestamp() };
             var a = Read("RENDER-A"); var b = Read("RENDER-B");
             using (measured.Dispatcher.DisableProcessing())
             {

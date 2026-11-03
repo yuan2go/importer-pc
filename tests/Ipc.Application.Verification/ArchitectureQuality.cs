@@ -35,8 +35,11 @@ static partial class ArchitectureQuality
     public static async Task Run(string source, string evidence)
     {
         workspace = source; root = evidence;
-        var c = Config("direct-plc") with { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 60000, WaitTimeoutMs: 300000),
-            Scale = new("weight", "reference-weight", "1.0.0", "quality.scale", "reference://quality/scale", "PARCEL-REFERENCE-v1", []) };
+        var c = Config("direct-plc") with
+        {
+            Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 60000, WaitTimeoutMs: 300000),
+            Scale = new("weight", "reference-weight", "1.0.0", "quality.scale", "reference://quality/scale", "PARCEL-REFERENCE-v1", [])
+        };
         ParcelOperation original;
         await using (var app = await Open(c, "restart-weight"))
         { app.EmitReference("restart-original", "00001", "restart-source"); original = (await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.WaitingWeight)).Operations.Single(); }

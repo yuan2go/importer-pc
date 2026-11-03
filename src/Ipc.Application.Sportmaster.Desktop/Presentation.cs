@@ -3,6 +3,7 @@ using Ipc.Platform;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 namespace Ipc.Application.Sportmaster.Desktop;
+
 public static class Presentation
 {
     public static Window Create(IParcelApplication application, string? view, string? layout, string ui = "supply-station", Func<Task>? stopOwner = null)

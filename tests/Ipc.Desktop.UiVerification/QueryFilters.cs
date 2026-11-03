@@ -80,7 +80,7 @@ static partial class Program
         Click(logs, "今天"); await Flush();
         Check(applied.Text.Contains("待查询"), "editing the default range does not claim that the new filter is applied");
         Click(logs, "查询");
-        for (var i=0; i<200 && !queryButton.IsEnabled; i++) await Task.Delay(25); await Flush();
+        for (var i = 0; i < 200 && !queryButton.IsEnabled; i++) await Task.Delay(25); await Flush();
         var query = (SoftwareLogQuery)typeof(SoftwareLogControl).GetField("query", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(logs)!;
         Check(query.From.EqualsExact(DateTimeOffset.Parse(ranges[0].Timestamp)) && query.ToExclusive.EqualsExact(DateTimeOffset.Parse(ranges[1].Timestamp)), "log query retains the exact canonical endpoints behind local input");
         Check(applied.Text.Contains("查询范围"), "successful log query replaces pending wording");

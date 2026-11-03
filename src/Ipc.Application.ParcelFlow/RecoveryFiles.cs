@@ -40,8 +40,8 @@ internal static class RecoveryFiles
             stem.Equals("AUX", StringComparison.OrdinalIgnoreCase) || stem.Equals("NUL", StringComparison.OrdinalIgnoreCase) ||
             stem.Length == 4 && (stem.StartsWith("COM", StringComparison.OrdinalIgnoreCase) || stem.StartsWith("LPT", StringComparison.OrdinalIgnoreCase)) && "123456789¹²³".Contains(stem[3]);
     }
-    public static void ValidateNames(string root,IEnumerable<string> names)=>ValidateNames(root,names,CancellationToken.None);
-    public static void ValidateNames(string root,IEnumerable<string> names,CancellationToken token)
+    public static void ValidateNames(string root, IEnumerable<string> names) => ValidateNames(root, names, CancellationToken.None);
+    public static void ValidateNames(string root, IEnumerable<string> names, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         Dictionary<string, (string Original, bool Directory)> identities = new(StringComparer.OrdinalIgnoreCase);
@@ -66,8 +66,8 @@ internal static class RecoveryFiles
         }
     }
     // Walk one level at a time so a linked directory is rejected before recursion.
-    public static IEnumerable<string> Enumerate(string root,string? subtree=null,bool skipImageLeases=false)=>Enumerate(root,subtree,skipImageLeases,CancellationToken.None);
-    public static IEnumerable<string> Enumerate(string root,string? subtree,bool skipImageLeases,CancellationToken token)
+    public static IEnumerable<string> Enumerate(string root, string? subtree = null, bool skipImageLeases = false) => Enumerate(root, subtree, skipImageLeases, CancellationToken.None);
+    public static IEnumerable<string> Enumerate(string root, string? subtree, bool skipImageLeases, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         var start = subtree is null ? root : Resolve(root, subtree);
@@ -112,10 +112,10 @@ internal static class RecoveryFiles
             p.Length == 2 && p[0] == "startup-maintenance" && (p[1] == "editor-draft.bin" || p[1].StartsWith("editor-draft.bin.", StringComparison.Ordinal) && p[1].EndsWith(".new", StringComparison.Ordinal)) ||
             p.Length == 3 && p[0] == "startup-maintenance" && p[1] == "editor-history" && (p[2].EndsWith(".bin", StringComparison.Ordinal) || p[2].EndsWith(".new", StringComparison.Ordinal));
     }
-    public static IEnumerable<string> MaintenanceEvidence(string root)=>MaintenanceEvidence(root,CancellationToken.None);
-    public static IEnumerable<string> MaintenanceEvidence(string root,CancellationToken token)
+    public static IEnumerable<string> MaintenanceEvidence(string root) => MaintenanceEvidence(root, CancellationToken.None);
+    public static IEnumerable<string> MaintenanceEvidence(string root, CancellationToken token)
     {
-        foreach (var name in Enumerate(root,"startup-maintenance",false,token))
+        foreach (var name in Enumerate(root, "startup-maintenance", false, token))
         {
             if (Path.GetExtension(name) == ".lease" && ExtensionSchema.IsHash(Path.GetFileNameWithoutExtension(name))) continue;
             if (!IsMaintenanceEvidence(name)) throw new InvalidDataException("Unrecognized private maintenance evidence; preserve and inspect: " + name);
@@ -124,8 +124,8 @@ internal static class RecoveryFiles
     }
     public static Dictionary<string, string> Inventory(string root, CancellationToken cancellationToken = default)
     {
-        var names = Enumerate(root,null,false,cancellationToken).Where(x => x != "COMPLETED.json").ToArray();
-        ValidateNames(root,names,cancellationToken);
+        var names = Enumerate(root, null, false, cancellationToken).Where(x => x != "COMPLETED.json").ToArray();
+        ValidateNames(root, names, cancellationToken);
         return names.ToDictionary(x => x, x => Wire.FileHash(Resolve(root, x), cancellationToken), StringComparer.Ordinal);
     }
 }

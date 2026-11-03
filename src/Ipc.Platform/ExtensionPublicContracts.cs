@@ -7,7 +7,7 @@ public static class ExtensionPublicContracts
 {
     static readonly object gate = new();
     static readonly Dictionary<string, Assembly> contracts = new(StringComparer.OrdinalIgnoreCase)
-        { [typeof(IObservationExtension).Assembly.GetName().Name!] = typeof(IObservationExtension).Assembly };
+    { [typeof(IObservationExtension).Assembly.GetName().Name!] = typeof(IObservationExtension).Assembly };
     static bool sealedPolicy;
     public static void Register(Assembly contract)
     {

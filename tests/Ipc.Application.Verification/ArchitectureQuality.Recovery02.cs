@@ -13,21 +13,25 @@ static partial class ArchitectureQuality
         var c = Config("sportmaster");
         var left = B("camera") with { Target = c.Topology!.Readers[0].DeviceId };
         var right = left with { InstanceId = "quality.camera.right", Target = c.Topology.Readers[1].DeviceId };
-        return c with { Images = new(left, B("upload"), Strategy: UploadStrategy.Attached), CapabilityInstances = [c.Wcs!, left, right, B("upload")],
-            Topology = c.Topology with { Positions = [c.Topology.Positions[0], c.Topology.Positions[1] with { CameraInstanceId = right.InstanceId }] } };
+        return c with
+        {
+            Images = new(left, B("upload"), Strategy: UploadStrategy.Attached),
+            CapabilityInstances = [c.Wcs!, left, right, B("upload")],
+            Topology = c.Topology with { Positions = [c.Topology.Positions[0], c.Topology.Positions[1] with { CameraInstanceId = right.InstanceId }] }
+        };
     }
     public static async Task UploadCrashChild(string source, string path)
     {
         workspace = source;
-        var c = InterruptedConfig(); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path,"business.json"),c);
-        var launch = new BusinessLaunch(path,Path.Combine(path,"data"),null,null);
+        var c = InterruptedConfig(); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
+        var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var crash = new UploadCrashFactory(new ParcelCapabilityFactory(launch));
-        var app = new ParcelRuntime(launch,new SportmasterFlow(),crash); await app.StartAsync(default);
+        var app = new ParcelRuntime(launch, new SportmasterFlow(), crash); await app.StartAsync(default);
         await ManagementModeFixture.Authorize(app);
-        app.EmitReferenceAt("left","interrupted-attached","00017","interrupted-source");
+        app.EmitReferenceAt("left", "interrupted-attached", "00017", "interrupted-source");
         await crash.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
         var s = await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved);
-        ExtensionStore.AtomicWrite(Path.Combine(path,"before.json"),s); Environment.Exit(74);
+        ExtensionStore.AtomicWrite(Path.Combine(path, "before.json"), s); Environment.Exit(74);
     }
     sealed class UploadCrashFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
     {
@@ -35,7 +39,7 @@ static partial class ArchitectureQuality
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
         public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
-        public ParcelPorts Create(ParcelConfiguration c) { var p=inner.Create(c); return p with { Uploader=new WaitingUpload(p.Uploader!,Entered) }; }
+        public ParcelPorts Create(ParcelConfiguration c) { var p = inner.Create(c); return p with { Uploader = new WaitingUpload(p.Uploader!, Entered) }; }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
     sealed class WaitingUpload(IImageUploader inner, TaskCompletionSource entered) : IImageUploader
@@ -44,9 +48,9 @@ static partial class ArchitectureQuality
         public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
-        public async Task<StageReply> UploadAsync(FrozenRequest r,ReadOnlyMemory<byte> bytes,CancellationToken t)
-        { var reply=await inner.UploadAsync(r,bytes,t); entered.TrySetResult(); await Task.Delay(Timeout.Infinite,t); return reply; }
-        public Task<StageReply?> QueryAsync(FrozenRequest r,CancellationToken t) => inner.QueryAsync(r,t);
+        public async Task<StageReply> UploadAsync(FrozenRequest r, ReadOnlyMemory<byte> bytes, CancellationToken t)
+        { var reply = await inner.UploadAsync(r, bytes, t); entered.TrySetResult(); await Task.Delay(Timeout.Infinite, t); return reply; }
+        public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
@@ -58,111 +62,111 @@ static partial class ArchitectureQuality
         public int QueryCalls => Volatile.Read(ref queryCalls);
         public TaskCompletionSource HealthEntered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         readonly TaskCompletionSource healthRelease = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        public void HoldNextHealth() => Interlocked.Exchange(ref holdHealth,1);
-        public void ReleaseHealth() { Interlocked.Exchange(ref holdHealth,0); healthRelease.TrySetResult(); }
+        public void HoldNextHealth() => Interlocked.Exchange(ref holdHealth, 1);
+        public void ReleaseHealth() { Interlocked.Exchange(ref holdHealth, 0); healthRelease.TrySetResult(); }
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
         public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
         public ParcelPorts Create(ParcelConfiguration c)
         {
-            var p=inner.Create(c);
-            return p with { Wcs=new Health(p.Wcs!,this), Uploader=new UploadQuery(p.Uploader!,this) };
+            var p = inner.Create(c);
+            return p with { Wcs = new Health(p.Wcs!, this), Uploader = new UploadQuery(p.Uploader!, this) };
         }
         public ValueTask DisposeAsync() { ReleaseHealth(); return inner.DisposeAsync(); }
-        sealed class Health(IWcsPort inner,RecoveryQueryFactory owner) : IWcsPort
+        sealed class Health(IWcsPort inner, RecoveryQueryFactory owner) : IWcsPort
         {
             public string InstanceId => inner.InstanceId;
             public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
             public async Task<CapabilityHealth> HealthAsync(CancellationToken t)
             {
-                if(Volatile.Read(ref owner.holdHealth)!=0)
+                if (Volatile.Read(ref owner.holdHealth) != 0)
                 { owner.HealthEntered.TrySetResult(); await owner.healthRelease.Task.WaitAsync(t); }
                 return await inner.HealthAsync(t);
             }
             public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
-            public Task<StageReply> ResolveSlotAsync(FrozenRequest r,CancellationToken t) => inner.ResolveSlotAsync(r,t);
-            public Task<StageReply?> QueryAsync(FrozenRequest r,CancellationToken t) => inner.QueryAsync(r,t);
+            public Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t) => inner.ResolveSlotAsync(r, t);
+            public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
             public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
             public ValueTask DisposeAsync() => inner.DisposeAsync();
         }
-        sealed class UploadQuery(IImageUploader inner,RecoveryQueryFactory owner) : IImageUploader
+        sealed class UploadQuery(IImageUploader inner, RecoveryQueryFactory owner) : IImageUploader
         {
             public string InstanceId => inner.InstanceId;
             public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
             public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
             public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
-            public Task<StageReply> UploadAsync(FrozenRequest r,ReadOnlyMemory<byte> bytes,CancellationToken t) => inner.UploadAsync(r,bytes,t);
-            public Task<StageReply?> QueryAsync(FrozenRequest r,CancellationToken t)
-            { Interlocked.Increment(ref owner.queryCalls); return inner.QueryAsync(r,t); }
+            public Task<StageReply> UploadAsync(FrozenRequest r, ReadOnlyMemory<byte> bytes, CancellationToken t) => inner.UploadAsync(r, bytes, t);
+            public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t)
+            { Interlocked.Increment(ref owner.queryCalls); return inner.QueryAsync(r, t); }
             public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
             public ValueTask DisposeAsync() => inner.DisposeAsync();
         }
     }
     static async Task Recovery02Checks()
     {
-        var name="real-upload-crash"; var path=Path.Combine(root,name); var c=InterruptedConfig();
-        var psi=new ProcessStartInfo(Environment.ProcessPath!) { RedirectStandardOutput=true,RedirectStandardError=true };
+        var name = "real-upload-crash"; var path = Path.Combine(root, name); var c = InterruptedConfig();
+        var psi = new ProcessStartInfo(Environment.ProcessPath!) { RedirectStandardOutput = true, RedirectStandardError = true };
         ManagementModeFixture.ShareWith(psi);
-        foreach(var arg in new[]{typeof(ArchitectureQuality).Assembly.Location,workspace,"--upload-crash-child",path}) psi.ArgumentList.Add(arg);
-        using(var child=Process.Start(psi)!)
-        { var output=child.StandardOutput.ReadToEndAsync(); var error=child.StandardError.ReadToEndAsync(); await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); Console.Write(await output); Console.Write(await error); Check(child.ExitCode==74,"real process stops inside upload after independent receiver commit and before response custody"); }
-        var before=Wire.Decode<ParcelSnapshot>(File.ReadAllText(Path.Combine(path,"before.json"))).Operations.Single();
+        foreach (var arg in new[] { typeof(ArchitectureQuality).Assembly.Location, workspace, "--upload-crash-child", path }) psi.ArgumentList.Add(arg);
+        using (var child = Process.Start(psi)!)
+        { var output = child.StandardOutput.ReadToEndAsync(); var error = child.StandardError.ReadToEndAsync(); await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); Console.Write(await output); Console.Write(await error); Check(child.ExitCode == 74, "real process stops inside upload after independent receiver commit and before response custody"); }
+        var before = Wire.Decode<ParcelSnapshot>(File.ReadAllText(Path.Combine(path, "before.json"))).Operations.Single();
         string occurrence;
         RecoveryQueryFactory? recoveryFactory = null;
-        await using(var app=await Open(c,name,f=>recoveryFactory=new RecoveryQueryFactory(new FaultFactory(f){EmptyUploadQuery=true})))
+        await using (var app = await Open(c, name, f => recoveryFactory = new RecoveryQueryFactory(new FaultFactory(f) { EmptyUploadQuery = true })))
         {
-            var s=await app.SnapshotAsync(); var op=s.Operations.Single();
-            Check(op.State==ParcelState.SlotResolved && op.Reason==before.Reason && op.Wcs!.Attempts==1 && op.Upload!.State==StageState.Unknown && !op.ImageReleased,
+            var s = await app.SnapshotAsync(); var op = s.Operations.Single();
+            Check(op.State == ParcelState.SlotResolved && op.Reason == before.Reason && op.Wcs!.Attempts == 1 && op.Upload!.State == StageState.Unknown && !op.ImageReleased,
                 "Dispatching interruption preserves accepted main state/reason and the original upload/image responsibility");
             recoveryFactory!.HoldNextHealth();
             await recoveryFactory.HealthEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             await Maintenance(app);
-            var inventory=await Command(app,"ReceiptResponsibilities",op.Id);
-            var rows=Wire.Decode<ParcelReceiptResponsibility[]>(inventory.Reason); occurrence=rows.Single(r=>r.State=="Awaiting").Id;
-            var fenced=await Command(app,"ReconcileReceipt",occurrence,"Capability health is still in flight; retain original responsibility");
-            var fencedSnapshot=await app.SnapshotAsync();
-            var fencedInventory=await Command(app,"ReceiptResponsibilities",op.Id);
-            Check(fenced.Status=="Rejected" && fencedSnapshot.Availability?.Configure==false && recoveryFactory.QueryCalls==0 &&
-                Wire.Encode(fencedSnapshot.Operations.Single().Upload)==Wire.Encode(op.Upload) && !fencedSnapshot.Operations.Single().ImageReleased &&
-                fencedInventory.Reason==inventory.Reason,
+            var inventory = await Command(app, "ReceiptResponsibilities", op.Id);
+            var rows = Wire.Decode<ParcelReceiptResponsibility[]>(inventory.Reason); occurrence = rows.Single(r => r.State == "Awaiting").Id;
+            var fenced = await Command(app, "ReconcileReceipt", occurrence, "Capability health is still in flight; retain original responsibility");
+            var fencedSnapshot = await app.SnapshotAsync();
+            var fencedInventory = await Command(app, "ReceiptResponsibilities", op.Id);
+            Check(fenced.Status == "Rejected" && fencedSnapshot.Availability?.Configure == false && recoveryFactory.QueryCalls == 0 &&
+                Wire.Encode(fencedSnapshot.Operations.Single().Upload) == Wire.Encode(op.Upload) && !fencedSnapshot.Operations.Single().ImageReleased &&
+                fencedInventory.Reason == inventory.Reason,
                 "in-flight health fences original recovery before Query without changing receipt custody, upload facts or image ownership");
             recoveryFactory.ReleaseHealth();
-            await Wait(app,s=>s.Availability?.Configure==true);
-            var inconclusive=await Command(app,"ReconcileReceipt",occurrence,"Synthetic authority returned no result; retain original");
-            Console.WriteLine("AQ original receipt recovery after health drain: "+Wire.Encode(inconclusive));
-            Check(recoveryFactory.QueryCalls==1,"drained explicit recovery executes exactly one original upload Query");
-            Check(inconclusive.Status=="Unresolved" && !(await app.SnapshotAsync()).Operations.Single().ImageReleased,"inconclusive original Query never dispositions missing raw or releases its image");
-            await Command(app,"Resume");
-            app.EmitReferenceAt("right","unrelated-right","00018","unrelated-right-source");
-            await Wait(app,s=>s.Operations.Any(o=>o.AdmissionId=="unrelated-right" && o.State==ParcelState.SlotResolved));
-            Check((await app.OperationAsync(op.Id))!.Wcs!.Attempts==1,"unrelated position continues while old attachment retains one original WCS attempt");
-            await Maintenance(app); await Wait(app,s=>s.Availability?.Configure==true);
-            await app.BackupAsync(Path.Combine(root,"legacy-before.backup.db"));
+            await Wait(app, s => s.Availability?.Configure == true);
+            var inconclusive = await Command(app, "ReconcileReceipt", occurrence, "Synthetic authority returned no result; retain original");
+            Console.WriteLine("AQ original receipt recovery after health drain: " + Wire.Encode(inconclusive));
+            Check(recoveryFactory.QueryCalls == 1, "drained explicit recovery executes exactly one original upload Query");
+            Check(inconclusive.Status == "Unresolved" && !(await app.SnapshotAsync()).Operations.Single().ImageReleased, "inconclusive original Query never dispositions missing raw or releases its image");
+            await Command(app, "Resume");
+            app.EmitReferenceAt("right", "unrelated-right", "00018", "unrelated-right-source");
+            await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "unrelated-right" && o.State == ParcelState.SlotResolved));
+            Check((await app.OperationAsync(op.Id))!.Wcs!.Attempts == 1, "unrelated position continues while old attachment retains one original WCS attempt");
+            await Maintenance(app); await Wait(app, s => s.Availability?.Configure == true);
+            await app.BackupAsync(Path.Combine(root, "legacy-before.backup.db"));
         }
         // Current-format restart keeps the proven main result and missing upload custody.
         // Format identity is checked before recovery writes.
-        var database=Path.Combine(DirectoryFor(name,c),"sportmaster.db");
-        await using(var app=await Open(c,name))
+        var database = Path.Combine(DirectoryFor(name, c), "sportmaster.db");
+        await using (var app = await Open(c, name))
         {
-            var restored=await app.OperationAsync(before.Id);
-            Check(restored!.State==ParcelState.SlotResolved && restored.Reason==before.Reason && Wire.Encode(restored.Wcs)==Wire.Encode(before.Wcs) && Wire.Encode(restored.Upload!.Request)==Wire.Encode(before.Upload!.Request),
+            var restored = await app.OperationAsync(before.Id);
+            Check(restored!.State == ParcelState.SlotResolved && restored.Reason == before.Reason && Wire.Encode(restored.Wcs) == Wire.Encode(before.Wcs) && Wire.Encode(restored.Upload!.Request) == Wire.Encode(before.Upload!.Request),
                 "current restart retains the committed main projection without rewriting original requests or missing upload custody");
             await app.ExitManagementModeAsync();
-            var denied=await Command(app,"ReconcileReceipt",occurrence,"Must authenticate first"); Check(denied.Status=="Rejected","missing receipt recovery requires paused authenticated maintenance");
-            await Maintenance(app); await Wait(app,s=>s.Availability?.Configure==true);
-            var result=await Command(app,"ReconcileReceipt",occurrence,"Original receiver queried; authoritative upload result and image verified");
-            Check(result.Status=="OutcomeKnownRawMissing","explicit recovery links business outcome to its own Query/T3 while original raw responsibility remains");
-            Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"known business outcome does not release missing original raw/image custody");
-            var rows=Wire.Decode<ParcelReceiptResponsibility[]>((await Command(app,"ReceiptResponsibilities",before.Id)).Reason);
-            var original=rows.Single(r=>r.Id==occurrence);
-            Check(original.State=="Awaiting" && original.Source=="Submit" && original.RawHash is null && rows.Any(r=>r.Source=="Query" && r.State=="Committed" && r.RawHash is not null),
+            var denied = await Command(app, "ReconcileReceipt", occurrence, "Must authenticate first"); Check(denied.Status == "Rejected", "missing receipt recovery requires paused authenticated maintenance");
+            await Maintenance(app); await Wait(app, s => s.Availability?.Configure == true);
+            var result = await Command(app, "ReconcileReceipt", occurrence, "Original receiver queried; authoritative upload result and image verified");
+            Check(result.Status == "OutcomeKnownRawMissing", "explicit recovery links business outcome to its own Query/T3 while original raw responsibility remains");
+            Check(!(await app.OperationAsync(before.Id))!.ImageReleased, "known business outcome does not release missing original raw/image custody");
+            var rows = Wire.Decode<ParcelReceiptResponsibility[]>((await Command(app, "ReceiptResponsibilities", before.Id)).Reason);
+            var original = rows.Single(r => r.Id == occurrence);
+            Check(original.State == "Awaiting" && original.Source == "Submit" && original.RawHash is null && rows.Any(r => r.Source == "Query" && r.State == "Committed" && r.RawHash is not null),
                 "original Awaiting remains pending with absent raw; distinct query has its own durable raw");
-            Check(File.Exists(Path.Combine(DirectoryFor(name,c),before.Image!.RelativeFile)) && (await app.OperationAsync(before.Id))!.Upload!.Attempts==1,
+            Check(File.Exists(Path.Combine(DirectoryFor(name, c), before.Image!.RelativeFile)) && (await app.OperationAsync(before.Id))!.Upload!.Attempts == 1,
                 "original missing raw keeps image bytes and upload is never resubmitted");
-            await Command(app,"ArchiveHistory",value:"Synthetic settled archive after explicit receipt resolution");
-            Check((await app.OperationAsync(before.Id))!.Wcs!.Request.Id==before.Wcs!.Request.Id,"archive keeps frozen original request after outcome recovery");
+            await Command(app, "ArchiveHistory", value: "Synthetic settled archive after explicit receipt resolution");
+            Check((await app.OperationAsync(before.Id))!.Wcs!.Request.Id == before.Wcs!.Request.Id, "archive keeps frozen original request after outcome recovery");
         }
-        await using(var app=await Open(c,name)) Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"independent missing raw/image custody survives restart after outcome query");
+        await using (var app = await Open(c, name)) Check(!(await app.OperationAsync(before.Id))!.ImageReleased, "independent missing raw/image custody survives restart after outcome query");
         await CurrentCustody07Checks(c);
         await CurrentOfflineRecoveryCuts(c);
         await Relocation02Checks(c);
@@ -202,30 +206,30 @@ static partial class ArchitectureQuality
     {
         var c = Config("sportmaster"); var name = "legacy-conflict";
         await using (var app = await Open(c, name)) await Maintenance(app);
-        using(var repo=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId)) repo.Commit(null,"IdentityConflict","Legacy synthetic audit without scope");
-        var originalFiles=CustodyFiles(name,c);
-        try {await using var app=await Open(c,name);Check(false,"old unscoped conflict must refuse");}
-        catch(InvalidDataException){Check(originalFiles.All(p=>Wire.FileHash(p.Key)==p.Value),"old conflict audit is retained without synthesized identities or a force-clear path");}
-        await using (var app = await Open(c,"same-position-conflict"))
+        using (var repo = new ParcelRepository(DirectoryFor(name, c), c.ApplicationId)) repo.Commit(null, "IdentityConflict", "Legacy synthetic audit without scope");
+        var originalFiles = CustodyFiles(name, c);
+        try { await using var app = await Open(c, name); Check(false, "old unscoped conflict must refuse"); }
+        catch (InvalidDataException) { Check(originalFiles.All(p => Wire.FileHash(p.Key) == p.Value), "old conflict audit is retained without synthesized identities or a force-clear path"); }
+        await using (var app = await Open(c, "same-position-conflict"))
         {
-            app.EmitReferenceAt("left","local-conflict","001","local-conflict-1"); await Wait(app,s=>s.Operations.Any(o=>o.State==ParcelState.SlotResolved));
-            app.EmitReferenceAt("left","local-conflict","002","local-conflict-2"); var s=await Wait(app,s=>s.IdentityConflicts?.Length==1);
-            Check(!s.Positions!.Single(p=>p.Id=="left").Admit && s.Positions!.Single(p=>p.Id=="right").Admit,"same-position durable conflict isolates left while unrelated right retains admission");
+            app.EmitReferenceAt("left", "local-conflict", "001", "local-conflict-1"); await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved));
+            app.EmitReferenceAt("left", "local-conflict", "002", "local-conflict-2"); var s = await Wait(app, s => s.IdentityConflicts?.Length == 1);
+            Check(!s.Positions!.Single(p => p.Id == "left").Admit && s.Positions!.Single(p => p.Id == "right").Admit, "same-position durable conflict isolates left while unrelated right retains admission");
         }
-        await using (var app = await Open(Config("sportmaster") with { Retention = new(MinimumFreeBytes:1099511627776) },"backup-capacity"))
+        await using (var app = await Open(Config("sportmaster") with { Retention = new(MinimumFreeBytes: 1099511627776) }, "backup-capacity"))
         {
-            await Maintenance(app); var destination=Path.Combine(root,"no-space.backup.db");
-            try { await app.BackupAsync(destination); Check(false,"backup must preserve configured free reserve"); }
-            catch(IOException) { Check(!File.Exists(destination) && !Directory.Exists(destination+".recovery"),"backup capacity preflight rejects before creating any incomplete recovery set"); }
+            await Maintenance(app); var destination = Path.Combine(root, "no-space.backup.db");
+            try { await app.BackupAsync(destination); Check(false, "backup must preserve configured free reserve"); }
+            catch (IOException) { Check(!File.Exists(destination) && !Directory.Exists(destination + ".recovery"), "backup capacity preflight rejects before creating any incomplete recovery set"); }
         }
     }
     static async Task Relocation02Checks(ParcelConfiguration c)
     {
-        var backup=Path.Combine(root,"legacy-before.backup.db"); var target=DirectoryFor("relocated-history",c);
-        var plan=ParcelRecovery.PlanRestore(backup,target);
-        Check(plan.CopyBytes>=new FileInfo(backup).Length && plan.RemainingGrowthBytes==plan.AvailableBytes-plan.CopyBytes-plan.MinimumFreeBytes && !Directory.Exists(target),"new-volume restore plan uses measured complete recovery bytes plus explicit reserve before creating target");
-        ParcelRecovery.Restore(backup,target);
-        await using var app=await Open(c,"relocated-history"); var s=await app.SnapshotAsync();
-        Check(s.Paused && s.Operations.Any(o=>o.AdmissionId=="interrupted-attached") && s.Operations.Any(o=>o.AdmissionId=="unrelated-right"),"whole-history relocation preserves both positions, unresolved image/raw and starts isolated");
+        var backup = Path.Combine(root, "legacy-before.backup.db"); var target = DirectoryFor("relocated-history", c);
+        var plan = ParcelRecovery.PlanRestore(backup, target);
+        Check(plan.CopyBytes >= new FileInfo(backup).Length && plan.RemainingGrowthBytes == plan.AvailableBytes - plan.CopyBytes - plan.MinimumFreeBytes && !Directory.Exists(target), "new-volume restore plan uses measured complete recovery bytes plus explicit reserve before creating target");
+        ParcelRecovery.Restore(backup, target);
+        await using var app = await Open(c, "relocated-history"); var s = await app.SnapshotAsync();
+        Check(s.Paused && s.Operations.Any(o => o.AdmissionId == "interrupted-attached") && s.Operations.Any(o => o.AdmissionId == "unrelated-right"), "whole-history relocation preserves both positions, unresolved image/raw and starts isolated");
     }
 }

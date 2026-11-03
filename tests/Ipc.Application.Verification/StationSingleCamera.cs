@@ -17,12 +17,23 @@ static partial class SportmasterRcs
         for (var mask = 0; mask < 8; mask++)
         {
             await using var peer = new Peer();
-            var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Parameters = new(Binding(peer.Endpoint).Parameters)
-                { ["request-timeout-ms"] = RcsRequestPolicy.DefaultTimeoutMs.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                  ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION" } };
+            var binding = Binding(peer.Endpoint) with
+            {
+                Implementation = "sportmaster-rcs",
+                Parameters = new(Binding(peer.Endpoint).Parameters)
+                {
+                    ["request-timeout-ms"] = RcsRequestPolicy.DefaultTimeoutMs.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    ["left-station-code"] = "SYNTH-STATION",
+                    ["right-station-code"] = "SYNTH-STATION"
+                }
+            };
             var readers = ParcelBindings.Readers(seed).ToArray();
-            var c = seed with { StationCode = "SYNTH-STATION", Wcs = binding,
-                DeferredConnections = Enumerable.Range(0, 3).Where(i => (mask & (1 << i)) != 0).Select(i => i == 2 ? binding.InstanceId : readers[i].DeviceId).ToArray() };
+            var c = seed with
+            {
+                StationCode = "SYNTH-STATION",
+                Wcs = binding,
+                DeferredConnections = Enumerable.Range(0, 3).Where(i => (mask & (1 << i)) != 0).Select(i => i == 2 ? binding.InstanceId : readers[i].DeviceId).ToArray()
+            };
             var folder = Path.Combine(root, "single-" + mask); Directory.CreateDirectory(folder); ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), c);
             var launch = new BusinessLaunch(folder, Path.Combine(folder, "data"), null, null);
             await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } };

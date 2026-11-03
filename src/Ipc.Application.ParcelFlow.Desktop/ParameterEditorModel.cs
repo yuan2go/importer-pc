@@ -34,7 +34,9 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     {
         var name = ParameterOwnership.IsRcs(component) ? "RCS 服务" : component.Provider?.Implementation switch
         {
-            "reference-integration" => "RCS 服务", "reference-login" => "本机模拟认证", "reference-weight" => "模拟称重",
+            "reference-integration" => "RCS 服务",
+            "reference-login" => "本机模拟认证",
+            "reference-weight" => "模拟称重",
             _ => ChineseInterfaceText.CapabilityKind(component.Kind)
         };
         var peers = Components.Where(c => c.Kind == component.Kind).ToArray();

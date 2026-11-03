@@ -22,17 +22,35 @@ static partial class Program
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
         var application = DispatchProxy.Create<IManagementParcelFixture, ProjectionProbe>(); var probe = (ProjectionProbe)(object)application; probe.Inner = runtime;
-        var readers = config.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "192.0.2." + (10 + i), ["device.port"] = "1234", ["entity.mode"] = "observe-only" } }).ToArray();
+        var readers = config.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = "tcp-line",
+            Parameters = new()
+            { ["device.ip"] = "192.0.2." + (10 + i), ["device.port"] = "1234", ["entity.mode"] = "observe-only" }
+        }).ToArray();
         var projection = config with { Reader = readers[0], Topology = config.Topology with { Readers = readers } };
         probe.Project = s =>
         {
             var now = DateTimeOffset.UtcNow;
-            return s with { State = "PartiallyReady", Positions = s.Positions?.Select(p => p.Id == "left" ? p with { Admit = false, BlockingReasons = ["Reader confirmation missing"] } : p).ToArray(),
-                Configuration = s.Configuration with { Effective = projection }, Devices = readers.Select((r, i) => new DeviceState(r.DeviceId, "synthetic-epoch-" + i, 1,
+            return s with
+            {
+                State = "PartiallyReady",
+                Positions = s.Positions?.Select(p => p.Id == "left" ? p with { Admit = false, BlockingReasons = ["Reader confirmation missing"] } : p).ToArray(),
+                Configuration = s.Configuration with { Effective = projection },
+                Devices = readers.Select((r, i) => new DeviceState(r.DeviceId, "synthetic-epoch-" + i, 1,
                 i == 0 ? DeviceHealth.Faulted : DeviceHealth.Ready, now, now, now.AddSeconds(3),
-                "TCP:client-LF:" + r.DeviceId + "; " + Wire.Encode(new { Phase = "Protocol", Category = i == 0 ? "InvalidUtf8" : "None", Sequence = 1,
-                    Local = "192.0.2.210:42001", Remote = "192.0.2." + (10 + i) + ":1234", LastReceivedAt = now, LastValidObservationAt = now.AddSeconds(-5), Confirmation = "LocalTransportOnly" }))).ToArray() };
+                "TCP:client-LF:" + r.DeviceId + "; " + Wire.Encode(new
+                {
+                    Phase = "Protocol",
+                    Category = i == 0 ? "InvalidUtf8" : "None",
+                    Sequence = 1,
+                    Local = "192.0.2.210:42001",
+                    Remote = "192.0.2." + (10 + i) + ":1234",
+                    LastReceivedAt = now,
+                    LastValidObservationAt = now.AddSeconds(-5),
+                    Confirmation = "LocalTransportOnly"
+                }))).ToArray()
+            };
         };
         var window = new SupplyStationWindow(application, null, "standard");
         try

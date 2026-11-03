@@ -308,13 +308,25 @@ static partial class Program
         var rcs = new CapabilityDescriptor("integration", "sportmaster-rcs-task", "1.3.0", "SPORTMASTER-RCS-SORTER-v1", rcsFields, new());
         var binding = new CapabilityBinding("integration", rcs.Implementation, rcs.Version, "rcs.one", "http://192.0.2.10/rcs/sorter/api", rcs.Contract, new()
         {
-            ["zone-id"] = "71", ["project-id"] = "83",
-            ["specified-chute"] = "false", ["chute-code"] = "OLD-CHUTE", ["request-id-base"] = "810000000", ["request-id-count"] = "1000",
-            ["left-station-code"] = "OLD-LEFT", ["right-station-code"] = "OLD-RIGHT", ["left-bcr-code"] = "TAKE-L", ["right-bcr-code"] = "TAKE-R"
+            ["zone-id"] = "71",
+            ["project-id"] = "83",
+            ["specified-chute"] = "false",
+            ["chute-code"] = "OLD-CHUTE",
+            ["request-id-base"] = "810000000",
+            ["request-id-count"] = "1000",
+            ["left-station-code"] = "OLD-LEFT",
+            ["right-station-code"] = "OLD-RIGHT",
+            ["left-bcr-code"] = "TAKE-L",
+            ["right-bcr-code"] = "TAKE-R"
         });
         var devices = config.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray();
-        var draft = new StartupConfigurationDraft(config with { Wcs = binding, Reader = devices[0], Topology = config.Topology with { Readers = devices },
-            Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, reader.Module!, r.DeviceId, true, new() { ["device.ip"] = "192.0.2." + (21 + i) })).ToArray()) },
+        var draft = new StartupConfigurationDraft(config with
+        {
+            Wcs = binding,
+            Reader = devices[0],
+            Topology = config.Topology with { Readers = devices },
+            Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("reader." + i, package.Id, reader.Module!, r.DeviceId, true, new() { ["device.ip"] = "192.0.2." + (21 + i) })).ToArray())
+        },
             new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], [package.Id], Packages: [new(package, [])]));
         var model = draft.CreateParameterEditor(runtime.TestBarcodeFilterAsync); var control = new ParameterSettingsControl { Model = model };
         window.Content = control; window.Width = 1366; window.Height = 768; window.UpdateLayout();

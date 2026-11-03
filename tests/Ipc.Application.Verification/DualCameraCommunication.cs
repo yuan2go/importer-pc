@@ -30,8 +30,12 @@ static class DualCameraCommunication
         using var leftListener = new TcpListener(IPAddress.Loopback, 0); leftListener.Start();
         using var rightListener = new TcpListener(IPAddress.Loopback, 0); rightListener.Start();
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        var rs = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)(i == 0 ? leftListener : rightListener).LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+        var rs = c.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = "tcp-line",
+            Parameters = new()
+            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)(i == 0 ? leftListener : rightListener).LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" }
+        }).ToArray();
         c = c with { Reader = rs[0], Topology = c.Topology with { Readers = rs } };
         Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
@@ -141,10 +145,17 @@ static class DualCameraCommunication
             Check(peer.Available == 0, scenario + ": connecting sends no handshake or application data");
             byte[] bytes = scenario switch
             {
-                "split" => Encoding.UTF8.GetBytes("条码\r\nSAME\nSAME\n"), "observe" => Encoding.UTF8.GetBytes("CODE\n"),
-                "max-lf" => Encoding.UTF8.GetBytes(new string('x', 4096) + "\n"), "max-crlf" => Encoding.UTF8.GetBytes(new string('x', 4096) + "\r\n"),
-                "long" => Encoding.UTF8.GetBytes(new string('x', 4097)), "utf8" => [255, 10], "empty" => [10], "control" => [65, 0, 10],
-                "partial" => Encoding.UTF8.GetBytes("PARTIAL"), "eof" => [], _ => Encoding.UTF8.GetBytes("CODE\nSECOND\n")
+                "split" => Encoding.UTF8.GetBytes("条码\r\nSAME\nSAME\n"),
+                "observe" => Encoding.UTF8.GetBytes("CODE\n"),
+                "max-lf" => Encoding.UTF8.GetBytes(new string('x', 4096) + "\n"),
+                "max-crlf" => Encoding.UTF8.GetBytes(new string('x', 4096) + "\r\n"),
+                "long" => Encoding.UTF8.GetBytes(new string('x', 4097)),
+                "utf8" => [255, 10],
+                "empty" => [10],
+                "control" => [65, 0, 10],
+                "partial" => Encoding.UTF8.GetBytes("PARTIAL"),
+                "eof" => [],
+                _ => Encoding.UTF8.GetBytes("CODE\nSECOND\n")
             };
             if (scenario == "split") { await peer.GetStream().WriteAsync(bytes.AsMemory(0, 1)); await Task.Delay(20); await peer.GetStream().WriteAsync(bytes.AsMemory(1)); }
             else await peer.GetStream().WriteAsync(bytes);

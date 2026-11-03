@@ -20,7 +20,7 @@ public static partial class ParcelStartupServices
             // Retain the challenge on any failure. The protected service decides
             // whether it committed; a client exception is not proof of rollback.
             await ElevateAsync(new("ResetManagementPassword", Launch: launch, ManagementPassword: password)
-                { RecoveryChallenge = challenge }).ConfigureAwait(false);
+            { RecoveryChallenge = challenge }).ConfigureAwait(false);
             pendingRecovery.Remove(root);
         }
         finally { recoveryGate.Release(); }
@@ -34,7 +34,7 @@ public static partial class ParcelStartupServices
             var root = Path.GetFullPath(launch.DataRoot);
             if (!pendingRecovery.TryGetValue(root, out var challenge)) return null;
             var json = await ElevateAsync(new("InspectManagementPasswordRecovery", Launch: launch)
-                { RecoveryChallenge = challenge }).ConfigureAwait(false);
+            { RecoveryChallenge = challenge }).ConfigureAwait(false);
             var receipt = Wire.Decode<ManagementPasswordRecoveryReceipt>(json ?? throw new IOException("原重置回执缺失。"));
             if (receipt.OperationId != challenge.Id) throw new InvalidDataException("原重置回执身份不匹配。");
             if (receipt.Completed || receipt.CanRetry) pendingRecovery.Remove(root);

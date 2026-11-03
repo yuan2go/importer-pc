@@ -10,15 +10,29 @@ namespace Ipc.Application.Sportmaster.Desktop;
 internal static class StationExceptionText
 {
     internal static string Position(string value) => value == "left" ? "左位" : value == "right" ? "右位" : value;
-    internal static string Label(string code) => code switch {
-        "NoBarcodeObservation" => "未识别到条码的观察", "MultipleCodes" => "多码拒绝", "BarcodeRule" => "条码规则不匹配", "BarcodeFilterFailure" => "条码筛选未完成", "OtherRejectedObservation" => "其他识别拒绝", "AdmissionBlocked" => "未准入观察",
-        "RcsTimeout" => "RCS响应超时", "RcsNotDelivered" => "连接失败且确认未送达", "RcsConflict" => "RCS结果冲突", "RcsUnknown" => "RCS结果未确认", "RcsRejected" => "RCS拒绝", _ => code };
-    internal static string Guidance(StationExceptionItem row) => row.ReasonCode switch {
+    internal static string Label(string code) => code switch
+    {
+        "NoBarcodeObservation" => "未识别到条码的观察",
+        "MultipleCodes" => "多码拒绝",
+        "BarcodeRule" => "条码规则不匹配",
+        "BarcodeFilterFailure" => "条码筛选未完成",
+        "OtherRejectedObservation" => "其他识别拒绝",
+        "AdmissionBlocked" => "未准入观察",
+        "RcsTimeout" => "RCS响应超时",
+        "RcsNotDelivered" => "连接失败且确认未送达",
+        "RcsConflict" => "RCS结果冲突",
+        "RcsUnknown" => "RCS结果未确认",
+        "RcsRejected" => "RCS拒绝",
+        _ => code
+    };
+    internal static string Guidance(StationExceptionItem row) => row.ReasonCode switch
+    {
         "RcsNotDelivered" => "已确认原请求未送达。连接恢复后取下本件重新放上即可再次请求；原请求不会重发。",
         "RcsTimeout" or "RcsUnknown" or "RcsConflict" => "格口未确认，勿重复上件。当前内置RCS不提供结果查询，请凭原请求号交接核对；恢复不会重发。",
         "RcsRejected" => "按RCS原始原因和现场流程处理；拒绝不等于实物已处理。",
         "BarcodeRule" or "MultipleCodes" => "核对条码及已生效筛选规则；本次观察不代表已发送RCS请求。",
-        _ => "查看本次观察或原作业详情，核对原因后按现场流程处理；不自动创建或重发请求。" };
+        _ => "查看本次观察或原作业详情，核对原因后按现场流程处理；不自动创建或重发请求。"
+    };
 }
 
 // Native geometry with a complete data-grid alternative; at most the last 24 hours are drawn.

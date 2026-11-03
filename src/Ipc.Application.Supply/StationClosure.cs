@@ -89,8 +89,15 @@ public sealed partial class StationApplication
                     store.Commit(state, "StaleHealthIgnored", confirmation.DeviceId, "driver", "Non-newer confirmation cannot replace health/validity; no authority changed");
                 return;
             }
-            var current = previous with { Health = confirmation.Health, UpdatedAt = previous.Health == confirmation.Health ? previous.UpdatedAt : confirmation.ConfirmedAt,
-                ConfirmedAt = confirmation.ConfirmedAt, ValidUntil = confirmation.ValidUntil, Source = confirmation.Source, Invalidity = null };
+            var current = previous with
+            {
+                Health = confirmation.Health,
+                UpdatedAt = previous.Health == confirmation.Health ? previous.UpdatedAt : confirmation.ConfirmedAt,
+                ConfirmedAt = confirmation.ConfirmedAt,
+                ValidUntil = confirmation.ValidUntil,
+                Source = confirmation.Source,
+                Invalidity = null
+            };
             if (current == previous) return;
             var transition = previous.Health != current.Health || previous.ValidityReason(Now) != current.ValidityReason(Now);
             if (transition)

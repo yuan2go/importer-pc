@@ -25,7 +25,8 @@ Console.WriteLine(Wire.Encode(new { Business = business.Id, business.Presentatio
 string? line;
 while ((line = Console.ReadLine()) is not null && line != "quit")
 {
-    try {
+    try
+    {
 #if PARCEL
         Console.WriteLine(await ParcelCli.Command((Ipc.Application.Contracts.IParcelApplication)business.Application, line));
 #else

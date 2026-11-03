@@ -12,9 +12,9 @@ public static partial class ParcelRecovery
     public static ParcelRecoveryCapacity PlanRestore(string databaseBackup, string newApplicationDirectory) => RestoreCore(databaseBackup, newApplicationDirectory, true);
     internal static void RestoreAuthorized(string backup, string target, Action authority) => RestoreCore(backup, target, false, authority);
     internal static void RestoreAuthorized(string backup, string target, Action authority, MaintenanceExecution execution)
-        => RestoreCore(backup,target,false,authority,execution.Token,execution);
-    internal static ParcelRecoveryCapacity PlanRestore(string backup,string target,Action authority,MaintenanceExecution execution)
-        => RestoreCore(backup,target,true,authority,execution.Token,execution);
+        => RestoreCore(backup, target, false, authority, execution.Token, execution);
+    internal static ParcelRecoveryCapacity PlanRestore(string backup, string target, Action authority, MaintenanceExecution execution)
+        => RestoreCore(backup, target, true, authority, execution.Token, execution);
     // One custody verifier for restore and original-maintenance inspection.
     // Read-only: no target directory or cleanup intent is created here.
     internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default, bool allowPreviousStorage = false)
@@ -30,9 +30,9 @@ public static partial class ParcelRecovery
         if (document.RootElement.ValueKind != JsonValueKind.Object || document.RootElement.EnumerateObject().Select(x => x.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() != document.RootElement.EnumerateObject().Count() ||
             !document.RootElement.TryGetProperty("Files", out var entries) || entries.ValueKind != JsonValueKind.Object)
             throw new InvalidDataException("Malformed recovery manifest");
-        RecoveryFiles.ValidateNames(recovery,entries.EnumerateObject().Select(x=>x.Name),token);
+        RecoveryFiles.ValidateNames(recovery, entries.EnumerateObject().Select(x => x.Name), token);
         var manifest = Wire.Decode<ParcelRecoveryManifest>(json);
-        if (!ExtensionSchema.IsId(manifest.Application) || manifest.Database != Path.GetFileName(source) || Wire.FileHash(source,token) != manifest.DatabaseHash ||
+        if (!ExtensionSchema.IsId(manifest.Application) || manifest.Database != Path.GetFileName(source) || Wire.FileHash(source, token) != manifest.DatabaseHash ||
             manifest.Files is null || !manifest.Files.ContainsKey("configuration.json") || manifest.Files.Count > RecoveryFiles.MaximumFiles || !ExtensionSchema.IsHash(manifest.DatabaseHash))
             throw new InvalidDataException("Incomplete or changed backup custody manifest");
         if (allowPreviousStorage) _ = ParcelRepository.ReadMaintenanceStorageVersion(source, manifest.Application);
@@ -40,10 +40,10 @@ public static partial class ParcelRecovery
         foreach (var file in manifest.Files)
         {
             authority?.Invoke();
-            if (!ExtensionSchema.IsHash(file.Value) || !File.Exists(RecoveryFiles.Resolve(recovery, file.Key)) || Wire.FileHash(RecoveryFiles.Resolve(recovery, file.Key),token) != file.Value)
+            if (!ExtensionSchema.IsHash(file.Value) || !File.Exists(RecoveryFiles.Resolve(recovery, file.Key)) || Wire.FileHash(RecoveryFiles.Resolve(recovery, file.Key), token) != file.Value)
                 throw new InvalidDataException("Recovery custody file missing/changed/unsafe: " + file.Key);
         }
-        var actual = RecoveryFiles.Inventory(recovery,token);
+        var actual = RecoveryFiles.Inventory(recovery, token);
         if (!actual.Keys.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
         authority?.Invoke(); return manifest;
     }
@@ -73,17 +73,17 @@ public static partial class ParcelRecovery
         Directory.CreateDirectory(target);
         ExtensionStore.AtomicWrite(Path.Combine(target, "RESTORE-INCOMPLETE.json"), manifest);
         long databaseCopied = 0; var databaseBytes = new FileInfo(source).Length;
-        execution?.Report(MaintenanceStage.CopyingDatabase,0,databaseBytes);
-        RecoveryFiles.CopyVerified(source,Path.Combine(target,manifest.Application+".db"),manifest.DatabaseHash,token,
-            count => { databaseCopied += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase,databaseCopied,databaseBytes); });
-        long copiedBytes=0;var totalBytes=manifest.Files.Sum(f=>new FileInfo(RecoveryFiles.Resolve(recovery,f.Key)).Length);
-        execution?.Report(MaintenanceStage.CopyingCustody,0,totalBytes);
+        execution?.Report(MaintenanceStage.CopyingDatabase, 0, databaseBytes);
+        RecoveryFiles.CopyVerified(source, Path.Combine(target, manifest.Application + ".db"), manifest.DatabaseHash, token,
+            count => { databaseCopied += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase, databaseCopied, databaseBytes); });
+        long copiedBytes = 0; var totalBytes = manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length);
+        execution?.Report(MaintenanceStage.CopyingCustody, 0, totalBytes);
         foreach (var file in manifest.Files)
         {
             authority?.Invoke();
             var destination = RecoveryFiles.Resolve(target, file.Key); Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
-            RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(recovery,file.Key),destination,file.Value,token,
-                count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingCustody,copiedBytes,totalBytes); });
+            RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(recovery, file.Key), destination, file.Value, token,
+                count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingCustody, copiedBytes, totalBytes); });
         }
         authority?.Invoke();
         token.ThrowIfCancellationRequested(); execution?.Checkpoint(); execution?.BeginCommit(MaintenanceStage.PublishingRestore);

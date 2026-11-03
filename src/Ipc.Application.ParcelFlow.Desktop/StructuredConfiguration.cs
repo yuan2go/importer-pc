@@ -63,16 +63,23 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
             throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
         var retention = (c.Retention ?? new ParcelRetentionPolicy()) with
         {
-            ResidentHistory = Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), MinimumFreeBytes = checked((long)(reserve * 1048576)),
+            ResidentHistory = Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000),
+            MinimumFreeBytes = checked((long)(reserve * 1048576)),
             DiagnosticLogDays = DiagnosticLogDays.Length == 0 ? null : Integer(DiagnosticLogDays, "系统/DiagnosticLogDays", 1, 3650),
             HistoryDays = HistoryDays.Length == 0 ? null : Integer(HistoryDays, "系统/HistoryDays", 7, 30)
         };
-        return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
+        return c with
+        {
+            StationCode = StationCode,
+            SessionLifetimeMs = Integer(SessionLifetimeMs, "业务模块/SessionLifetimeMs", 100, 86400000),
             BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) && RejectMultipleCodes && MultiCodeSeparator == ";" ? null : BuildBarcodePolicy(),
             WeightRange = BuildWeightRange(),
-            QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096), TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
+            QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
+            TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
-            Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention, BackupSchedule = BuildBackup() };
+            Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention,
+            BackupSchedule = BuildBackup()
+        };
     }
     public WeightSource WeightSource { get => Get<WeightSource>(); set => Set(value); }
     public WeightUnit Unit { get => Get<WeightUnit>(); set => Set(value); }
@@ -91,18 +98,37 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string BackupMaximumSets { get => Get<string>(); set => Set(value); }
     internal static ConfigurationPolicyDraft From(ParcelConfiguration c) => new()
     {
-        StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), SessionLifetimeMs = c.SessionLifetimeMs.ToString(CultureInfo.InvariantCulture), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
-        BarcodeExclusionPattern = c.BarcodeFilter?.ExclusionPattern ?? "", DiagnosticLogDays = c.Retention?.DiagnosticLogDays?.ToString(CultureInfo.InvariantCulture) ?? "", HistoryDays = c.Retention?.HistoryDays?.ToString(CultureInfo.InvariantCulture) ?? "",
-        RejectMultipleCodes = c.BarcodeFilter?.RejectMultipleCodes ?? true, MultiCodeSeparator = c.BarcodeFilter?.MultiCodeSeparator ?? ";",
-        WeightRangeEnabled = c.WeightRange is not null, MinimumWeight = c.WeightRange?.Minimum.ToString(CultureInfo.InvariantCulture) ?? "", MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
-        QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture), TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture), MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
-        ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),
-        WeightSource = c.Weight.Source, Unit = c.Weight.Unit, Validity = c.WeightValidity ?? WeightValidity.UntilDispatch,
-        Precision = c.Weight.Precision.ToString(CultureInfo.InvariantCulture), ConfiguredWeight = c.Weight.ConfiguredValue?.ToString(CultureInfo.InvariantCulture) ?? "",
-        MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture), WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
-        BackupEnabled = c.BackupSchedule is not null, BackupDirectory = c.BackupSchedule?.Directory ?? (c.ApplicationId == "sportmaster" && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)), BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.BackupIntervalMinutes.ToString(CultureInfo.InvariantCulture), BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
-        UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain, ImageBytes = (c.Images?.MaximumBytes ?? 4194304).ToString(CultureInfo.InvariantCulture),
-        TotalBytes = (c.Images?.TotalBytes ?? 33554432).ToString(CultureInfo.InvariantCulture), MaximumPending = (c.Images?.MaximumPending ?? 32).ToString(CultureInfo.InvariantCulture)
+        StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId),
+        SessionLifetimeMs = c.SessionLifetimeMs.ToString(CultureInfo.InvariantCulture),
+        BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
+        BarcodeExclusionPattern = c.BarcodeFilter?.ExclusionPattern ?? "",
+        DiagnosticLogDays = c.Retention?.DiagnosticLogDays?.ToString(CultureInfo.InvariantCulture) ?? "",
+        HistoryDays = c.Retention?.HistoryDays?.ToString(CultureInfo.InvariantCulture) ?? "",
+        RejectMultipleCodes = c.BarcodeFilter?.RejectMultipleCodes ?? true,
+        MultiCodeSeparator = c.BarcodeFilter?.MultiCodeSeparator ?? ";",
+        WeightRangeEnabled = c.WeightRange is not null,
+        MinimumWeight = c.WeightRange?.Minimum.ToString(CultureInfo.InvariantCulture) ?? "",
+        MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
+        QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture),
+        TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture),
+        MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
+        ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture),
+        MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),
+        WeightSource = c.Weight.Source,
+        Unit = c.Weight.Unit,
+        Validity = c.WeightValidity ?? WeightValidity.UntilDispatch,
+        Precision = c.Weight.Precision.ToString(CultureInfo.InvariantCulture),
+        ConfiguredWeight = c.Weight.ConfiguredValue?.ToString(CultureInfo.InvariantCulture) ?? "",
+        MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture),
+        WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
+        BackupEnabled = c.BackupSchedule is not null,
+        BackupDirectory = c.BackupSchedule?.Directory ?? (c.ApplicationId == "sportmaster" && WindowsStoragePaths.ProtectedAnchor is null ? Path.Combine(@"D:\ProgramData\ImporterPc", "backups", c.ApplicationId) : Path.Combine(WindowsStoragePaths.UserRoot, "backups", c.ApplicationId)),
+        BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.BackupIntervalMinutes.ToString(CultureInfo.InvariantCulture),
+        BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
+        UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain,
+        ImageBytes = (c.Images?.MaximumBytes ?? 4194304).ToString(CultureInfo.InvariantCulture),
+        TotalBytes = (c.Images?.TotalBytes ?? 33554432).ToString(CultureInfo.InvariantCulture),
+        MaximumPending = (c.Images?.MaximumPending ?? 32).ToString(CultureInfo.InvariantCulture)
     };
     internal static int Integer(string text, string label, int minimum, int maximum = int.MaxValue) => int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out var value) && value >= minimum && value <= maximum
         ? value : throw new InvalidOperationException(label + "须为" + minimum + "～" + maximum + "之间的整数");
@@ -316,9 +342,17 @@ public partial class ParcelViewModel
         return policy.ApplyParameters(c) with
         {
             DeferredConnections = StartupConfigurationDraft.DeferredConnectionIds(ReaderDrafts.Select(r => r.Capability), CapabilityDrafts),
-            Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId), Topology = new(readers, PositionDrafts.Select(x => x.Build()).ToArray()),
-            CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory, Login = Role("登录"), Scale = Role("默认秤"), Wcs = Role("上游格口"), Plc = Role("PLC"),
-            Weight = policy.BuildWeight(), WeightValidity = policy.Validity, Images = image, Extensions = extensions
+            Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId),
+            Topology = new(readers, PositionDrafts.Select(x => x.Build()).ToArray()),
+            CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory,
+            Login = Role("登录"),
+            Scale = Role("默认秤"),
+            Wcs = Role("上游格口"),
+            Plc = Role("PLC"),
+            Weight = policy.BuildWeight(),
+            WeightValidity = policy.Validity,
+            Images = image,
+            Extensions = extensions
         };
     }
     public Task AddCapabilityInstanceAsync()

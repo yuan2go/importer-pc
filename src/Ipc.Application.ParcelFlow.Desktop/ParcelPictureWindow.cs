@@ -47,8 +47,17 @@ public sealed class ParcelPictureWindow : Window
         UiTypography.Apply(this); FontSize = UiTypography.Body; Background = Brushes.White;
         var body = new DockPanel { Margin = new(16) };
         var top = new StackPanel(); DockPanel.SetDock(top, Dock.Top); body.Children.Add(top);
-        top.Children.Add(new TextBox { Text = barcode, IsReadOnly = true, FontFamily = UiTypography.Code, FontSize = UiTypography.PageTitle,
-            TextWrapping = TextWrapping.Wrap, MaxHeight = 80, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, BorderThickness = new(0) });
+        top.Children.Add(new TextBox
+        {
+            Text = barcode,
+            IsReadOnly = true,
+            FontFamily = UiTypography.Code,
+            FontSize = UiTypography.PageTitle,
+            TextWrapping = TextWrapping.Wrap,
+            MaxHeight = 80,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            BorderThickness = new(0)
+        });
         var actions = new WrapPanel { Margin = new(0, 8, 0, 0) }; top.Children.Add(actions);
         Add(actions, "适应窗口", () => { fit = true; Fit(); });
         Add(actions, "原始1:1", () => Scale(1 / VisualTreeHelper.GetDpi(this).DpiScaleX));
@@ -157,8 +166,14 @@ public sealed class ParcelPictureWindow : Window
         if (annotations.IsChecked != true || frame is null) return;
         foreach (var symbol in frame.Symbols.Where(s => s.Corners.Length == 4))
         {
-            var polygon = new Polygon { Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))),
-                Stroke = Brushes.OrangeRed, StrokeThickness = 2 / zoom, Fill = Brushes.Transparent, IsHitTestVisible = false };
+            var polygon = new Polygon
+            {
+                Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))),
+                Stroke = Brushes.OrangeRed,
+                StrokeThickness = 2 / zoom,
+                Fill = Brushes.Transparent,
+                IsHitTestVisible = false
+            };
             polygons.Add(polygon); scene.Children.Add(polygon);
         }
     }

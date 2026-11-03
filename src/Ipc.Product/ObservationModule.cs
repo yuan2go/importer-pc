@@ -22,8 +22,11 @@ sealed class ObservationModule(StationApplication application, IControlledObserv
     Task? sourceInputDisposal;
     public bool HasActiveWork
     {
-        get { lock (ingress) return sourceOwners.Count != 0 || worker is { IsCompleted: false } || healthWorker is { IsCompleted: false } ||
-            sourceInputDisposal is { IsCompleted: false } || sourceDisposals.Values.Any(x => !x.IsCompleted); }
+        get
+        {
+            lock (ingress) return sourceOwners.Count != 0 || worker is { IsCompleted: false } || healthWorker is { IsCompleted: false } ||
+            sourceInputDisposal is { IsCompleted: false } || sourceDisposals.Values.Any(x => !x.IsCompleted);
+        }
     }
     public bool HasUnreleasedResources => HasActiveWork || disposedSources.Count != sources.Length || !sourceInputDisposed;
     public string[] OwnershipDiagnostics

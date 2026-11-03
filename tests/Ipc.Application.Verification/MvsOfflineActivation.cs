@@ -10,13 +10,26 @@ static partial class SportmasterRcs
     {
         PrepareZxingFixture();
         await using var peer = new Peer();
-        var rcs = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Parameters = new(Binding(peer.Endpoint).Parameters)
-        { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-seconds"] = "1" } };
+        var rcs = Binding(peer.Endpoint) with
+        {
+            Implementation = "sportmaster-rcs",
+            Parameters = new(Binding(peer.Endpoint).Parameters)
+            { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-seconds"] = "1" }
+        };
         var seed = HeartbeatConfiguration(workspace, rcs);
-        var readers = seed.Topology!.Readers.Select((r, i) => r with { Driver = "hikrobot-mvs-reader", Parameters = new()
-        { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-MVS-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }).ToArray();
-        var candidate = seed with { Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Login = null,
-            DeferredConnections = [readers[1].DeviceId] };
+        var readers = seed.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = "hikrobot-mvs-reader",
+            Parameters = new()
+            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-MVS-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
+        }).ToArray();
+        var candidate = seed with
+        {
+            Reader = readers[0],
+            Topology = seed.Topology with { Readers = readers },
+            Login = null,
+            DeferredConnections = [readers[1].DeviceId]
+        };
         var prior = candidate with { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, rcs.InstanceId] };
         var folder = Path.Combine(root, "offline-config"); Directory.CreateDirectory(folder);
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), prior);

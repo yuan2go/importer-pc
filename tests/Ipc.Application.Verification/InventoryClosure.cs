@@ -11,12 +11,12 @@ static partial class ArchitectureQuality
     {
         workspace = source; root = evidence; failures = 0;
         var package = new PackageReference("inventory.reference", "1.0.0", new string('A', 64));
-        foreach(var oldSchema in new[]{1,2})foreach(var scope in inventoryScopes)
-        {var old=InventorySeed(oldSchema);InspectInventoryCase(oldSchema,scope,"unsupported-format",old,old,null);}
+        foreach (var oldSchema in new[] { 1, 2 }) foreach (var scope in inventoryScopes)
+            { var old = InventorySeed(oldSchema); InspectInventoryCase(oldSchema, scope, "unsupported-format", old, old, null); }
         foreach (var schema in new[] { 3 })
         {
             var seed = InventorySeed(schema);
-            var plc = seed.Plc!; var unbound = new CapabilityBinding("login","reference-login","1.0.0","inventory.unbound-login","reference://inventory/login","PARCEL-REFERENCE-v1",new(){["subjects"]="synthetic"});
+            var plc = seed.Plc!; var unbound = new CapabilityBinding("login", "reference-login", "1.0.0", "inventory.unbound-login", "reference://inventory/login", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "synthetic" });
             var bound = plc with { Package = package, Module = "parcel-plc", Implementation = "extension:" + package.Id + "/parcel-plc" };
             var spare = plc with { InstanceId = "inventory.spare" };
             (string Name, ParcelConfiguration Candidate)[] invalid =
@@ -59,7 +59,8 @@ static partial class ArchitectureQuality
     }
     static ParcelConfiguration InventorySeed(int schema) => Config("direct-plc") with
     {
-        SchemaVersion = schema, Topology = schema == 3 ? Config("direct-plc").Topology : null,
+        SchemaVersion = schema,
+        Topology = schema == 3 ? Config("direct-plc").Topology : null,
         WeightValidity = schema == 1 ? null : WeightValidity.UntilDispatch
     };
     static void WriteInventoryConsumer(string directory, ParcelConfiguration seed, ParcelConfiguration candidate, string scope)
@@ -94,26 +95,26 @@ static partial class ArchitectureQuality
     static async Task LegacyInventoryUninstallChecks(string packageFile, string trustFile, ExtensionTrust trust)
     {
         foreach (var schema in new[] { 1, 2 }) foreach (var scope in inventoryScopes)
-        {
-            var path = Path.Combine(root, "inventory-uninstall-" + schema + "-" + scope); Directory.CreateDirectory(path);
-            var store = new ExtensionStore(Path.Combine(path, "store"), trust, RunMode.Simulation, Path.Combine(path, "leases"));
-            var seed = Config("direct-plc"); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), seed);
-            ExtensionStore.AtomicWrite(Path.Combine(path, "extension-store.json"), new ParcelExtensionStoreConfiguration(store.Root, trustFile));
-            var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-            await using var app = DirectPlcApplication.Create(launch, new ParcelCapabilityFactory(launch)); await app.StartAsync(default); await Maintenance(app);
-            Check((await app.InstallCapabilityAsync(packageFile, Wire.FileHash(packageFile))).Status == "Installed", "R03 exact signed package installed for isolated legacy consumer guard");
-            var package = store.Inventory().Single().Package; var legacy = InventorySeed(schema);
-            var hidden = legacy.Plc! with { Package = package, Module = "parcel-plc", Version = package.Version, Implementation = "extension:" + package.Id + "/parcel-plc" };
-            var ambiguous = legacy with { CapabilityInstances = [legacy.Plc!, hidden] };
-            var consumer = Path.Combine(path, "offline-original"); WriteInventoryConsumer(consumer, seed, ambiguous, scope);
-            var database = Path.Combine(consumer, seed.ApplicationId + ".db"); var configuration = Path.Combine(consumer, "configuration.json");
-            store.RegisterConsumer(database); var dbBytes = File.ReadAllBytes(database); var configBytes = File.ReadAllBytes(configuration);
-            var result = await app.ManageCapabilityAsync("extension-uninstall", Wire.Encode(package));
-            Check(result.Status == "Rejected" && store.Inventory().Single().Status == "Installed" &&
-                File.ReadAllBytes(database).SequenceEqual(dbBytes) && File.ReadAllBytes(configuration).SequenceEqual(configBytes),
-                "R03 schema" + schema + "/" + scope + " real Application uninstall preserves exact installed package and ambiguous original bytes");
-            // Deliberately retain the malformed consumer, registry and installed package.
-            // A later test must never clear this responsibility to obtain Uninstalled.
-        }
+            {
+                var path = Path.Combine(root, "inventory-uninstall-" + schema + "-" + scope); Directory.CreateDirectory(path);
+                var store = new ExtensionStore(Path.Combine(path, "store"), trust, RunMode.Simulation, Path.Combine(path, "leases"));
+                var seed = Config("direct-plc"); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), seed);
+                ExtensionStore.AtomicWrite(Path.Combine(path, "extension-store.json"), new ParcelExtensionStoreConfiguration(store.Root, trustFile));
+                var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
+                await using var app = DirectPlcApplication.Create(launch, new ParcelCapabilityFactory(launch)); await app.StartAsync(default); await Maintenance(app);
+                Check((await app.InstallCapabilityAsync(packageFile, Wire.FileHash(packageFile))).Status == "Installed", "R03 exact signed package installed for isolated legacy consumer guard");
+                var package = store.Inventory().Single().Package; var legacy = InventorySeed(schema);
+                var hidden = legacy.Plc! with { Package = package, Module = "parcel-plc", Version = package.Version, Implementation = "extension:" + package.Id + "/parcel-plc" };
+                var ambiguous = legacy with { CapabilityInstances = [legacy.Plc!, hidden] };
+                var consumer = Path.Combine(path, "offline-original"); WriteInventoryConsumer(consumer, seed, ambiguous, scope);
+                var database = Path.Combine(consumer, seed.ApplicationId + ".db"); var configuration = Path.Combine(consumer, "configuration.json");
+                store.RegisterConsumer(database); var dbBytes = File.ReadAllBytes(database); var configBytes = File.ReadAllBytes(configuration);
+                var result = await app.ManageCapabilityAsync("extension-uninstall", Wire.Encode(package));
+                Check(result.Status == "Rejected" && store.Inventory().Single().Status == "Installed" &&
+                    File.ReadAllBytes(database).SequenceEqual(dbBytes) && File.ReadAllBytes(configuration).SequenceEqual(configBytes),
+                    "R03 schema" + schema + "/" + scope + " real Application uninstall preserves exact installed package and ambiguous original bytes");
+                // Deliberately retain the malformed consumer, registry and installed package.
+                // A later test must never clear this responsibility to obtain Uninstalled.
+            }
     }
 }

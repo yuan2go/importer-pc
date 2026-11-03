@@ -14,7 +14,7 @@ static partial class SportmasterRcs
 {
     public static async Task MvsSoftwareFlow(string workspace, string root, string[] args)
     {
-        Console.WriteLine("VerifierSource="+typeof(SportmasterRcs).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion);
+        Console.WriteLine("VerifierSource=" + typeof(SportmasterRcs).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion);
         var live = args.Contains("--live-ip");
         var bundled = args.Contains("--bundled-native");
         if (bundled && !live) throw new InvalidOperationException("Bundled path requires actual camera and explicit private identity file");
@@ -26,8 +26,11 @@ static partial class SportmasterRcs
             var header = System.Text.Encoding.ASCII.GetString(data, 0, end).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
             if (header.Length != 4 || header[0] != "P5" || header[3] != "255") throw new InvalidDataException("Explicit diagnostic Mono8 PGM only");
             var pixels = data[end..]; var decoder = new SoftwareDecoder("utf-8", PrepareZxingFixture); decoder.Prepare();
-            try { var codes = decoder.Decode(pixels, pixels.Length, int.Parse(header[1]), int.Parse(header[2]));
-                ExtensionStore.AtomicWrite(path + ".dotnet-private.json", codes); Console.WriteLine("PRIVATE_PGM decoded=" + codes.Length); }
+            try
+            {
+                var codes = decoder.Decode(pixels, pixels.Length, int.Parse(header[1]), int.Parse(header[2]));
+                ExtensionStore.AtomicWrite(path + ".dotnet-private.json", codes); Console.WriteLine("PRIVATE_PGM decoded=" + codes.Length);
+            }
             finally { decoder.Release(); }
             return;
         }
@@ -53,13 +56,31 @@ static partial class SportmasterRcs
         var rcs = Binding(endpoint) with { Implementation = "sportmaster-rcs" };
         if (live) rcs.Parameters!["heartbeat-interval-seconds"] = "3";
         var c = HeartbeatConfiguration(workspace, rcs);
-        var reader = c.Reader with { Driver = "hikrobot-mvs-reader", Parameters = new()
-            { ["device.ip"] = device?.Ip ?? "192.0.2.11", ["device.serial"] = device?.Serial ?? "SYNTH-MVS-LEFT",
-              ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" } };
-        var all = c.Topology!.Readers.Select(r => r.DeviceId == c.Reader.DeviceId ? reader : r with { Driver = "hikrobot-mvs-reader", Parameters = new()
-            { ["device.ip"] = "192.0.2.12", ["device.serial"] = "SYNTH-MVS-RIGHT", ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }).ToArray();
-        c = c with { Reader = reader, Topology = c.Topology with { Readers = all }, Login = null,
-            DeferredConnections = all.Where(r => r.DeviceId != reader.DeviceId).Select(r => r.DeviceId).ToArray() };
+        var reader = c.Reader with
+        {
+            Driver = "hikrobot-mvs-reader",
+            Parameters = new()
+            {
+                ["device.ip"] = device?.Ip ?? "192.0.2.11",
+                ["device.serial"] = device?.Serial ?? "SYNTH-MVS-LEFT",
+                ["entity.mode"] = "read-result",
+                ["acquisition.trigger"] = "off",
+                ["code.encoding"] = "utf-8"
+            }
+        };
+        var all = c.Topology!.Readers.Select(r => r.DeviceId == c.Reader.DeviceId ? reader : r with
+        {
+            Driver = "hikrobot-mvs-reader",
+            Parameters = new()
+            { ["device.ip"] = "192.0.2.12", ["device.serial"] = "SYNTH-MVS-RIGHT", ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
+        }).ToArray();
+        c = c with
+        {
+            Reader = reader,
+            Topology = c.Topology with { Readers = all },
+            Login = null,
+            DeferredConnections = all.Where(r => r.DeviceId != reader.DeviceId).Select(r => r.DeviceId).ToArray()
+        };
         var config = Path.Combine(root, "config"); Directory.CreateDirectory(config);
         ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), c);
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
@@ -80,10 +101,14 @@ static partial class SportmasterRcs
             while (DateTimeOffset.UtcNow < until) await Task.Delay(250);
             var snapshot = await app.SnapshotAsync();
             ExtensionStore.AtomicWrite(Path.Combine(root, "live-snapshot-private.json"), snapshot);
-            Console.WriteLine(Wire.Encode(new { Operations = snapshot.Operations.Length,
+            Console.WriteLine(Wire.Encode(new
+            {
+                Operations = snapshot.Operations.Length,
                 Resolved = snapshot.Operations.Count(o => o.State == ParcelState.SlotResolved),
                 Unknown = snapshot.Operations.Count(o => o.State == ParcelState.WcsUnknown),
-                Inputs = snapshot.Inputs!.Length, Source = factory.Source!.ConfirmationSource }));
+                Inputs = snapshot.Inputs!.Length,
+                Source = factory.Source!.ConfirmationSource
+            }));
             if (!snapshot.Operations.Any(o => o.State == ParcelState.SlotResolved)) throw new Exception("Actual camera/RCS pipeline did not resolve any read request; inspect private evidence");
         }
         else
@@ -101,7 +126,7 @@ static partial class SportmasterRcs
                 fake!.Enqueue(pixels, number);
                 await Wait(app, state => state.Operations.Length == (number == 1 ? 1 : number == 2 ? 2 : 3) && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             }
-            Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"),"software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
+            Check(fake.Calls.Contains("set:TriggerMode=0") && fake.Calls.Contains("set:AcquisitionMode=2") && fake.Calls.IndexOf("set:AcquisitionMode=2") < fake.Calls.IndexOf("start"), "software reader configures and verifies continuous acquisition before starting, without a customer trigger setting");
             var s = await Wait(app, state => state.Operations.Length == 3 && state.Operations.All(o => o.State == ParcelState.SlotResolved));
             Check((peer is null ? VerifyPythonLedger(pythonLedger!, s.Operations) : peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request")) == 3) && s.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3,
                 "actual software decoder -> MVS lifecycle -> Application/SQLite -> actual RCS adapter: three identical codes remain three independent requests");
@@ -121,7 +146,7 @@ static partial class SportmasterRcs
             {
                 Check(VerifyPythonLedger(pythonLedger!, s.Operations), "Python ledger has no blank-frame request, replay or changed original after the empty frame");
                 VerifyPythonLedgerRefusals(pythonLedger!, s.Operations, root);
-                ExtensionStore.AtomicWrite(Path.Combine(root,"mvs-python-snapshot-private.json"),s);
+                ExtensionStore.AtomicWrite(Path.Combine(root, "mvs-python-snapshot-private.json"), s);
             }
             await app.StopAsync(default);
             Check((await app.SnapshotAsync()).Operations.All(o => o.OriginalFrame is { State: "Saved" } image &&
@@ -148,19 +173,23 @@ static partial class SportmasterRcs
             }
             foreach (var ignore in new[] { false, true })
             {
-                var refusedApi = new SoftwareFrameApi(reader) { FailConfigure=!ignore, IgnoreConfigure=ignore };
-                await using var refused = new MvsAcquisition(new(reader.DeviceId,reader.DeviceId,reader.Parameters!),refusedApi,
-                    serial=>new ResourceLease(Path.Combine(root,"configuration-leases"),[serial]),decoder:new SoftwareDecoder("utf-8",PrepareZxingFixture));
-                try { await refused.StartControlledAsync(Wire.Id(),_=>true,_=>{},default);throw new Exception("Configuration failure silently accepted"); }
-                catch(Exception ex) when(ex is IOException or InvalidDataException)
-                { Check(!refusedApi.Calls.Contains("start")&&refusedApi.Calls.TakeLast(3).SequenceEqual(["close","destroy","finalize"]),"rejected or ineffective device settings refuse acquisition and release native owner"); }
+                var refusedApi = new SoftwareFrameApi(reader) { FailConfigure = !ignore, IgnoreConfigure = ignore };
+                await using var refused = new MvsAcquisition(new(reader.DeviceId, reader.DeviceId, reader.Parameters!), refusedApi,
+                    serial => new ResourceLease(Path.Combine(root, "configuration-leases"), [serial]), decoder: new SoftwareDecoder("utf-8", PrepareZxingFixture));
+                try { await refused.StartControlledAsync(Wire.Id(), _ => true, _ => { }, default); throw new Exception("Configuration failure silently accepted"); }
+                catch (Exception ex) when (ex is IOException or InvalidDataException)
+                { Check(!refusedApi.Calls.Contains("start") && refusedApi.Calls.TakeLast(3).SequenceEqual(["close", "destroy", "finalize"]), "rejected or ineffective device settings refuse acquisition and release native owner"); }
             }
             Console.WriteLine("MVS_SOFTWARE_FLOW_PASS synthetic pixels/native port, actual ZXingCpp/Application/SQLite/HTTP; field acceptance NOT_RUN");
         }
         await app.StopAsync(default);
-        ExtensionStore.AtomicWrite(Path.Combine(root, "mvs-timings.json"), new { Acquisition = factory.Source!.Timings.Snapshot(), Decoder = factory.Source.DecoderTimings,
+        ExtensionStore.AtomicWrite(Path.Combine(root, "mvs-timings.json"), new
+        {
+            Acquisition = factory.Source!.Timings.Snapshot(),
+            Decoder = factory.Source.DecoderTimings,
             Tier = live ? "Actual camera; isolated fixture; local simulated RCS" : "Synthetic SDK; actual decoder/Application/SQLite; local simulated RCS",
-            Boundary = "ObservedAt starts after SDK Acquire returns; excludes exposure/transport/SDK queue age. Durable handoff includes SQLite custody, excludes Application queue/business/RCS completion." });
+            Boundary = "ObservedAt starts after SDK Acquire returns; excludes exposure/transport/SDK queue age. Durable handoff includes SQLite custody, excludes Application queue/business/RCS completion."
+        });
         Console.WriteLine("EvidenceRoot=" + root);
     }
 
@@ -252,7 +281,7 @@ static partial class SportmasterRcs
         public void Open() { Calls.Add("open"); Interlocked.Increment(ref OpenAttempts); if (Interlocked.Decrement(ref OpenFailures) >= 0) throw new IOException("Synthetic camera busy"); }
         uint trigger = 1, acquisition;
         public uint EnumValue(string key) => key == "PixelFormat" ? MvsNative.Mono8 : key == "AcquisitionMode" ? acquisition : trigger;
-        public void SetEnumValue(string key, uint value) { Calls.Add("set:"+key+"="+value); if(FailConfigure)throw new IOException("Synthetic camera write failure");if(IgnoreConfigure)return; if (key=="TriggerMode") trigger=value; else if (key=="AcquisitionMode") acquisition=value; else throw new Exception("Unexpected camera write"); }
+        public void SetEnumValue(string key, uint value) { Calls.Add("set:" + key + "=" + value); if (FailConfigure) throw new IOException("Synthetic camera write failure"); if (IgnoreConfigure) return; if (key == "TriggerMode") trigger = value; else if (key == "AcquisitionMode") acquisition = value; else throw new Exception("Unexpected camera write"); }
         public long PayloadSize() => 8388608;
         public void ConfigureBuffers(uint count, uint strategy = 0) { }
         public void Start() => Calls.Add("start");

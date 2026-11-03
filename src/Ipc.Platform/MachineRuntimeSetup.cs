@@ -139,8 +139,11 @@ public static class MachineRuntimeSetup
         // then re-read the final policy; sharing violations alone are retryable.
         for (var attempt = 0; ; attempt++)
         {
-            try { return new FileInfo(path).Create(FileMode.OpenOrCreate, FileSystemRights.FullControl,
-                FileShare.None, 4096, FileOptions.None, FileAcl(account)); }
+            try
+            {
+                return new FileInfo(path).Create(FileMode.OpenOrCreate, FileSystemRights.FullControl,
+                FileShare.None, 4096, FileOptions.None, FileAcl(account));
+            }
             catch (IOException ex) when ((ex.HResult & 0xffff) == 32 && attempt < 100) { Thread.Sleep(100); }
         }
     }

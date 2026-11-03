@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Ipc.Application.ParcelFlow.Desktop;
 namespace Ipc.Application.DirectPlc.Desktop;
+
 public partial class Workstation : UserControl
 {
     public Workstation() => InitializeComponent();

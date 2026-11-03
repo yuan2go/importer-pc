@@ -42,8 +42,12 @@ public static class ConfigurationActivation
             ? effective.CapabilityInstances?.SingleOrDefault(e => e.InstanceId == x.InstanceId) ?? x : x).ToArray();
         var rest = candidate with
         {
-            BarcodeFilter = effective.BarcodeFilter, StationCode = effective.StationCode, Wcs = effective.Wcs, Reader = effective.Reader,
-            Topology = after with { Readers = before.Readers }, CapabilityInstances = instances
+            BarcodeFilter = effective.BarcodeFilter,
+            StationCode = effective.StationCode,
+            Wcs = effective.Wcs,
+            Reader = effective.Reader,
+            Topology = after with { Readers = before.Readers },
+            CapabilityInstances = instances
         };
         return Wire.Encode(rest) == Wire.Encode(effective) ? new([.. readers], integration) : null;
     }

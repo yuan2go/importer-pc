@@ -9,9 +9,14 @@ public static class Database
     public static SqliteConnection Open(string path, bool create = true) => Open(path, create, CancellationToken.None);
     public static SqliteConnection Open(string path, bool create, CancellationToken cancellationToken)
     {
-        var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = path,
+        var db = new SqliteConnection(new SqliteConnectionStringBuilder
+        {
+            DataSource = path,
             Mode = create ? SqliteOpenMode.ReadWriteCreate : SqliteOpenMode.ReadWrite,
-            Pooling = false, DefaultTimeout = 5, ForeignKeys = true }.ToString());
+            Pooling = false,
+            DefaultTimeout = 5,
+            ForeignKeys = true
+        }.ToString());
         try
         {
             cancellationToken.ThrowIfCancellationRequested();

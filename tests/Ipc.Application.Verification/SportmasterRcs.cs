@@ -19,9 +19,16 @@ static partial class SportmasterRcs
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
     static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.0", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
-        ["zone-id"] = "71", ["project-id"] = "83",
-        ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000", ["heartbeat-interval-seconds"] = "3600",
-        ["left-station-code"] = "TEST-LEFT", ["left-bcr-code"] = "TEST-LEFT-READER", ["right-station-code"] = "TEST-RIGHT", ["right-bcr-code"] = "TEST-RIGHT-READER"
+        ["zone-id"] = "71",
+        ["project-id"] = "83",
+        ["specified-chute"] = "false",
+        ["request-id-base"] = "810000000",
+        ["request-id-count"] = "100000",
+        ["heartbeat-interval-seconds"] = "3600",
+        ["left-station-code"] = "TEST-LEFT",
+        ["left-bcr-code"] = "TEST-LEFT-READER",
+        ["right-station-code"] = "TEST-RIGHT",
+        ["right-bcr-code"] = "TEST-RIGHT-READER"
     });
     static FrozenRequest Request(CapabilityBinding binding, string position = "left", string barcode = "SYNTH-0001")
     {
@@ -108,7 +115,7 @@ static partial class SportmasterRcs
         await ConfirmedScanFlow(workspace, root, peer);
         await RuntimeChecks(workspace, root, peer);
         MigrationChecks(workspace, root);
-        await NumericIdentityHistoryChecks(workspace,root,peer);
+        await NumericIdentityHistoryChecks(workspace, root, peer);
         Console.WriteLine("PASS RCS20 COMPLETE: synthetic HTTP protocol, exact custody, independent positions, unpack guards, restart unknown and current custody transitions");
     }
     static async Task ConfirmedScanFlow(string workspace, string root, Peer peer)
@@ -132,8 +139,12 @@ static partial class SportmasterRcs
         catch (InvalidDataException) { Check(true, "obsolete quantity configuration explicitly rejected"); }
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
         var c = HeartbeatConfiguration(workspace, Binding(peer.Endpoint)); c.Wcs!.Parameters.Remove("quantity");
-        var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+        var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with
+        {
+            Driver = "tcp-line",
+            Parameters = new()
+            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" }
+        }).ToArray();
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers }, DeferredConnections = null };
         var directory = Path.Combine(root, "confirmed-camera-flow"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
@@ -172,54 +183,54 @@ static partial class SportmasterRcs
         snapshot = await Wait(app, s => s.Operations.Length == 4 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         Check(peer.Requests.Count == resting + 1, "lifting and re-placing the same parcel after the release window requests a new chute once");
     }
-    static async Task NumericIdentityHistoryChecks(string workspace,string root,Peer peer)
+    static async Task NumericIdentityHistoryChecks(string workspace, string root, Peer peer)
     {
-        var a=Binding(peer.Endpoint);a=a with{Parameters=new(a.Parameters){["request-id-base"]="100"}};
-        var b=a with{Parameters=new(a.Parameters){["request-id-base"]="99"}};
-        await using(var first=new SportmasterRcsTaskService(a))await using(var second=new SportmasterRcsTaskService(b))
-            Check(first.PrepareRequest(Request(a),1).RequestId==second.PrepareRequest(Request(b),2).RequestId,"rebase arithmetic reproduces the original numeric-ID collision; application must guard durable allocations");
-        var name="rcs-numeric-history";var configPath=Path.Combine(root,name,"config");Directory.CreateDirectory(configPath);
-        var c=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with{Wcs=Binding(peer.Endpoint),TimeoutMs=1500};
-        ExtensionStore.AtomicWrite(Path.Combine(configPath,"business.json"),c);
-        var data=Path.Combine(root,name,"data");var directory=Path.Combine(data,"Simulation",c.StationId,c.ApplicationId);
+        var a = Binding(peer.Endpoint); a = a with { Parameters = new(a.Parameters) { ["request-id-base"] = "100" } };
+        var b = a with { Parameters = new(a.Parameters) { ["request-id-base"] = "99" } };
+        await using (var first = new SportmasterRcsTaskService(a)) await using (var second = new SportmasterRcsTaskService(b))
+            Check(first.PrepareRequest(Request(a), 1).RequestId == second.PrepareRequest(Request(b), 2).RequestId, "rebase arithmetic reproduces the original numeric-ID collision; application must guard durable allocations");
+        var name = "rcs-numeric-history"; var configPath = Path.Combine(root, name, "config"); Directory.CreateDirectory(configPath);
+        var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Wcs = Binding(peer.Endpoint), TimeoutMs = 1500 };
+        ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
+        var data = Path.Combine(root, name, "data"); var directory = Path.Combine(data, "Simulation", c.StationId, c.ApplicationId);
         async Task<ParcelRuntime> Open(string dataRoot)
         {
-            var launch=new BusinessLaunch(configPath,dataRoot,null,null);var app=new ParcelRuntime(launch,new SportmasterFlow(),new Factory(new ParcelCapabilityFactory(launch)));
-            try{await app.StartAsync(default); await ManagementModeFixture.Authorize(app);return app;}catch{await app.DisposeAsync();throw;}
+            var launch = new BusinessLaunch(configPath, dataRoot, null, null); var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
+            try { await app.StartAsync(default); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
         }
-        async Task<BusinessReceipt> Command(ParcelRuntime app,string kind,string? owner=null,string? value=null)
-        {var s=await app.SnapshotAsync();return await app.CommandAsync(new(Wire.Id(),s.Revision,kind,owner,value));}
+        async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
+        { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); }
         async Task Maintenance(ParcelRuntime app)
-        {await Command(app,"Pause");Check((await ManagementModeFixture.Authorize(app)).Status=="Authorized","numeric-ID fixture explicitly authenticates maintenance");await Wait(app,s=>s.Availability!.Configure);}
-        peer.Mode="assigned";string original;long allocated;var backup=Path.Combine(root,"rcs-numeric-history.backup.db");
-        await using(var app=await Open(data))
+        { await Command(app, "Pause"); Check((await ManagementModeFixture.Authorize(app)).Status == "Authorized", "numeric-ID fixture explicitly authenticates maintenance"); await Wait(app, s => s.Availability!.Configure); }
+        peer.Mode = "assigned"; string original; long allocated; var backup = Path.Combine(root, "rcs-numeric-history.backup.db");
+        await using (var app = await Open(data))
         {
-            app.EmitReferenceAt("right","numeric-original","SYNTH-0001",Wire.Id());var s=await Wait(app,x=>x.Operations.SingleOrDefault()?.State==ParcelState.SlotResolved);
-            original=s.Operations.Single().Id;allocated=s.Operations.Single().Wcs!.Request.IntegrationRequest!.RequestId;
-            await Maintenance(app);s=await app.SnapshotAsync();var low=s.Configuration.Effective with{Wcs=s.Configuration.Effective.Wcs! with{Parameters=new(s.Configuration.Effective.Wcs!.Parameters){["request-id-base"]="1"}}};
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision,low,"Synthetic obsolete numeric range, no remote action allowed")).Status=="PendingRestart","numeric range candidate remains one controlled configuration revision");
+            app.EmitReferenceAt("right", "numeric-original", "SYNTH-0001", Wire.Id()); var s = await Wait(app, x => x.Operations.SingleOrDefault()?.State == ParcelState.SlotResolved);
+            original = s.Operations.Single().Id; allocated = s.Operations.Single().Wcs!.Request.IntegrationRequest!.RequestId;
+            await Maintenance(app); s = await app.SnapshotAsync(); var low = s.Configuration.Effective with { Wcs = s.Configuration.Effective.Wcs! with { Parameters = new(s.Configuration.Effective.Wcs!.Parameters) { ["request-id-base"] = "1" } } };
+            Check((await app.StageConfigurationAsync(s.Configuration.Revision, low, "Synthetic obsolete numeric range, no remote action allowed")).Status == "PendingRestart", "numeric range candidate remains one controlled configuration revision");
         }
-        var posts=peer.Requests.Count;
-        await using(var app=await Open(data))
+        var posts = peer.Requests.Count;
+        await using (var app = await Open(data))
         {
-            await Command(app,"Resume");app.EmitReferenceAt("right","numeric-blocked","SYNTH-0001",Wire.Id());
-            var s=await Wait(app,x=>x.Operations.Any(o=>o.AdmissionId=="numeric-blocked"&&o.State is ParcelState.Blocked or ParcelState.SlotResolved));var op=s.Operations.Single(o=>o.AdmissionId=="numeric-blocked");
-            Check(op.State==ParcelState.Blocked&&op.Wcs is null&&peer.Requests.Count==posts&&op.Reason!.Contains("numeric request ID"),"obsolete range is durably blocked before T1/attempt/POST without crashing the worker");
-            await Command(app,"Pause");await ManagementModeFixture.Authorize(app);
-            Check((await Command(app,"AbandonUnsubmitted",op.Id,"Synthetic entity inspected after ID allocation refusal")).Status=="Persisted","blocked unsent entity supports existing inspected disposition");
-            await Wait(app,x=>x.Availability!.Configure);await Command(app,"ArchiveHistory",value:"Synthetic numeric history must retain allocation identity");
-            using(var repo=new ParcelRepository(directory,c.ApplicationId))Check(repo.History(long.MaxValue,20).Items.Any(i=>i.Operation.Id==original&&i.Archived),"numeric allocation authority survives real transaction history archival");
-            Check((await app.BackupAsync(backup)).Status=="BackupCreated","numeric history uses the actual complete backup path");
+            await Command(app, "Resume"); app.EmitReferenceAt("right", "numeric-blocked", "SYNTH-0001", Wire.Id());
+            var s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "numeric-blocked" && o.State is ParcelState.Blocked or ParcelState.SlotResolved)); var op = s.Operations.Single(o => o.AdmissionId == "numeric-blocked");
+            Check(op.State == ParcelState.Blocked && op.Wcs is null && peer.Requests.Count == posts && op.Reason!.Contains("numeric request ID"), "obsolete range is durably blocked before T1/attempt/POST without crashing the worker");
+            await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
+            Check((await Command(app, "AbandonUnsubmitted", op.Id, "Synthetic entity inspected after ID allocation refusal")).Status == "Persisted", "blocked unsent entity supports existing inspected disposition");
+            await Wait(app, x => x.Availability!.Configure); await Command(app, "ArchiveHistory", value: "Synthetic numeric history must retain allocation identity");
+            using (var repo = new ParcelRepository(directory, c.ApplicationId)) Check(repo.History(long.MaxValue, 20).Items.Any(i => i.Operation.Id == original && i.Archived), "numeric allocation authority survives real transaction history archival");
+            Check((await app.BackupAsync(backup)).Status == "BackupCreated", "numeric history uses the actual complete backup path");
         }
-        var restored=Path.Combine(root,"rcs-numeric-restored");ParcelRecovery.Restore(backup,Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId));
-        await using(var app=await Open(restored))
+        var restored = Path.Combine(root, "rcs-numeric-restored"); ParcelRecovery.Restore(backup, Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId));
+        await using (var app = await Open(restored))
         {
-            var resume = await Command(app,"Resume");app.EmitReferenceAt("right","numeric-restored-blocked","SYNTH-0001",Wire.Id());
-            var s=await Wait(app,x=>x.Inputs?.Any(i=>i.Observation.AdmissionId=="numeric-restored-blocked")==true);
-            Check(resume.Status=="Rejected"&&s.Paused&&s.BlockingReasons.Any(r=>r.StartsWith("RestoreHandoffRequired",StringComparison.Ordinal))&&
-                !s.Operations.Any(o=>o.AdmissionId=="numeric-restored-blocked")&&peer.Requests.Count==posts,
+            var resume = await Command(app, "Resume"); app.EmitReferenceAt("right", "numeric-restored-blocked", "SYNTH-0001", Wire.Id());
+            var s = await Wait(app, x => x.Inputs?.Any(i => i.Observation.AdmissionId == "numeric-restored-blocked") == true);
+            Check(resume.Status == "Rejected" && s.Paused && s.BlockingReasons.Any(r => r.StartsWith("RestoreHandoffRequired", StringComparison.Ordinal)) &&
+                !s.Operations.Any(o => o.AdmissionId == "numeric-restored-blocked") && peer.Requests.Count == posts,
                 "restored DB10 remains isolated before handoff; attempted admission cannot create a request or POST");
-            using var repository = new ParcelRepository(Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId),c.ApplicationId);
+            using var repository = new ParcelRepository(Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId), c.ApplicationId);
             await using var preparer = new SportmasterRcsTaskService(s.Configuration.Effective.Wcs!);
             var range = preparer.GetRequestIdRange(s.Configuration.Effective.Wcs!)!;
             var retiredBudget = repository.IntegrationBudget(range);
@@ -232,13 +243,13 @@ static partial class SportmasterRcs
             try { repository.RegisterIntegrationRequestRanges(preparer, [s.Configuration.Effective with { Wcs = resized }], null); throw new Exception("Overlapping resized range accepted"); }
             catch (InvalidDataException error) { Check(error.Message.Contains("overlaps"), "controlled renewal rejects resizing into a previous allocation; identical existing range remains compatible"); }
             try { repository.NextIntegrationPreparationSequence(range); throw new Exception("Restored retired range reused"); }
-            catch(InvalidDataException error)
+            catch (InvalidDataException error)
             {
-                Check(error.Message.Contains("exhausted/retired",StringComparison.Ordinal)&&repository.History(long.MaxValue,20).Items.Any(i=>i.Operation.Id==original&&i.Archived&&i.Operation.Wcs!.Request.IntegrationRequest!.RequestId==allocated),
+                Check(error.Message.Contains("exhausted/retired", StringComparison.Ordinal) && repository.History(long.MaxValue, 20).Items.Any(i => i.Operation.Id == original && i.Archived && i.Operation.Wcs!.Request.IntegrationRequest!.RequestId == allocated),
                     "fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
             }
         }
-        using (var retired = new ParcelRepository(Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId), c.ApplicationId))
+        using (var retired = new ParcelRepository(Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId), c.ApplicationId))
         {
             var before = retired.IntegrationBudget(new(1, 900000000));
             retired.ExpireHistoryCore(new Ipc.Application.Sportmaster.SportmasterFlow(), 7, DateTimeOffset.UtcNow.AddDays(8), Wire.FileHash(backup), () => { });
@@ -346,8 +357,12 @@ static partial class SportmasterRcs
         CapabilityBinding Camera(string position) => new("camera", "reference-camera", "1.0.0", "rcs.camera." + position, config.Topology!.Readers.Single(x => x.DeviceId.EndsWith("." + position, StringComparison.Ordinal)).DeviceId, "PARCEL-REFERENCE-v1", []);
         var leftCamera = Camera("left"); var rightCamera = Camera("right");
         var uploader = new CapabilityBinding("upload", "reference-upload", "1.0.0", "rcs.upload", "reference://upload/rcs-attached", "PARCEL-REFERENCE-v1", []);
-        config = config with { Images = new(leftCamera, uploader, Strategy: UploadStrategy.Attached),
-            CapabilityInstances = [config.Wcs!, leftCamera, rightCamera, uploader], Topology = config.Topology! with { Positions = [config.Topology.Positions[0], config.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] } };
+        config = config with
+        {
+            Images = new(leftCamera, uploader, Strategy: UploadStrategy.Attached),
+            CapabilityInstances = [config.Wcs!, leftCamera, rightCamera, uploader],
+            Topology = config.Topology! with { Positions = [config.Topology.Positions[0], config.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] }
+        };
         peer.Mode = "unpack"; ParcelOperation unpackOriginal;
         await using (var app = await Open("rcs-unpack-projection-recovery"))
         {
@@ -395,51 +410,55 @@ static partial class SportmasterRcs
         }
 
     }
-    static void MigrationChecks(string workspace,string root)
+    static void MigrationChecks(string workspace, string root)
     {
-        var config=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        var request=Request(config.Wcs!);
-        var reply=new StageReply(Wire.Id(),request.Id,request.PayloadHash,true,null,null,null,null,"Synthetic original unknown",DateTimeOffset.UtcNow);
-        var stage=new StageFact(request,StageState.Unknown,1,[reply],"Original outcome unknown");
-        var operation=new ParcelOperation(request.OperationId,request.AdmissionId,"SYNTH-0001",Wire.Id(),request.PreparedAt,request.ConfigurationHash,config,
-            new(){[config.Wcs!.InstanceId]=request.ImplementationHash},config.Weight,null,ParcelState.WcsUnknown,null,stage,null,"Original awaiting reconciliation",PositionId:"left");
-        var current=Path.Combine(root,"current-custody");string durable,awaiting;
-        using(var repo=new ParcelRepository(current,"sportmaster"))
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
+        var request = Request(config.Wcs!);
+        var reply = new StageReply(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, "Synthetic original unknown", DateTimeOffset.UtcNow);
+        var stage = new StageFact(request, StageState.Unknown, 1, [reply], "Original outcome unknown");
+        var operation = new ParcelOperation(request.OperationId, request.AdmissionId, "SYNTH-0001", Wire.Id(), request.PreparedAt, request.ConfigurationHash, config,
+            new() { [config.Wcs!.InstanceId] = request.ImplementationHash }, config.Weight, null, ParcelState.WcsUnknown, null, stage, null, "Original awaiting reconciliation", PositionId: "left");
+        var current = Path.Combine(root, "current-custody"); string durable, awaiting;
+        using (var repo = new ParcelRepository(current, "sportmaster"))
         {
-            repo.Commit(operation,"SyntheticOriginal","Current frozen unknown");
-            durable=repo.BeginReceipt(operation,stage,"Submit");repo.StoreRaw(durable,reply);
-            awaiting=repo.BeginReceipt(operation,stage,"Query");
+            repo.Commit(operation, "SyntheticOriginal", "Current frozen unknown");
+            durable = repo.BeginReceipt(operation, stage, "Submit"); repo.StoreRaw(durable, reply);
+            awaiting = repo.BeginReceipt(operation, stage, "Query");
         }
-        var raw=File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json"));
-        using(var reopened=new ParcelRepository(current,"sportmaster"))
-            Check(reopened.StorageVersion== ParcelRepository.CurrentStorageVersion && Wire.Encode(reopened.Load().Single())==Wire.Encode(operation) &&
-                reopened.PendingReceipts().Length==2 && reopened.ReceiptById(durable) is {State:"RawDurable"} &&
-                reopened.ReceiptById(awaiting) is {State:"Awaiting",RawHash:null} && File.ReadAllBytes(Path.Combine(current,"receipts",durable+".json")).SequenceEqual(raw),
+        var raw = File.ReadAllBytes(Path.Combine(current, "receipts", durable + ".json"));
+        using (var reopened = new ParcelRepository(current, "sportmaster"))
+            Check(reopened.StorageVersion == ParcelRepository.CurrentStorageVersion && Wire.Encode(reopened.Load().Single()) == Wire.Encode(operation) &&
+                reopened.PendingReceipts().Length == 2 && reopened.ReceiptById(durable) is { State: "RawDurable" } &&
+                reopened.ReceiptById(awaiting) is { State: "Awaiting", RawHash: null } && File.ReadAllBytes(Path.Combine(current, "receipts", durable + ".json")).SequenceEqual(raw),
                 "current DB10 restart retains frozen Unknown, independent custody, raw bytes and one send");
-        foreach(var version in Enumerable.Range(1,10).Append(12))
+        foreach (var version in Enumerable.Range(1, 10).Append(12))
         {
-            var directory=Path.Combine(root,"unsupported-format"+version);
-            var file=NonCurrentStorageFixture.Create(directory,"sportmaster",version,operation);
-            var original=Wire.FileHash(file);var receipt=Path.Combine(directory,"original-receipt.json");File.WriteAllBytes(receipt,raw);
-            try { using var denied=new ParcelRepository(directory,"sportmaster");throw new Exception("Historical SQL accepted"); }
-            catch(InvalidDataException)
-            { Check(Wire.FileHash(file)==original && File.ReadAllBytes(receipt).SequenceEqual(raw) && NonCurrentStorageFixture.Version(file)==version && !Directory.Exists(Path.Combine(directory,"receipts")),
-                "SQL"+version+" refuses before writes/receipt directories; original request and raw remain exact"); }
-        }
-        foreach(var damage in new[]{"future","foreign","checksum"})
-        {
-            var directory=Path.Combine(root,"current-db-"+damage);Directory.CreateDirectory(directory);var file=Path.Combine(directory,"sportmaster.db");
-            File.Copy(Path.Combine(current,"sportmaster.db"),file);
-            using(var db=new SqliteConnection("Data Source="+file+";Pooling=False"))
+            var directory = Path.Combine(root, "unsupported-format" + version);
+            var file = NonCurrentStorageFixture.Create(directory, "sportmaster", version, operation);
+            var original = Wire.FileHash(file); var receipt = Path.Combine(directory, "original-receipt.json"); File.WriteAllBytes(receipt, raw);
+            try { using var denied = new ParcelRepository(directory, "sportmaster"); throw new Exception("Historical SQL accepted"); }
+            catch (InvalidDataException)
             {
-                db.Open();using var command=db.CreateCommand();command.CommandText=damage switch{
-                    "future"=>$"INSERT INTO platform_migrations VALUES('sportmaster',{ParcelRepository.CurrentStorageVersion + 1},'future')",
-                    "foreign"=>"UPDATE platform_migrations SET application='another-business'",
-                    _=>"UPDATE platform_migrations SET sha='changed' WHERE version=11"};command.ExecuteNonQuery();
+                Check(Wire.FileHash(file) == original && File.ReadAllBytes(receipt).SequenceEqual(raw) && NonCurrentStorageFixture.Version(file) == version && !Directory.Exists(Path.Combine(directory, "receipts")),
+                "SQL" + version + " refuses before writes/receipt directories; original request and raw remain exact");
             }
-            var hash=Wire.FileHash(file);
-            try { using var denied=new ParcelRepository(directory,"sportmaster");throw new Exception("Damaged identity accepted"); }
-            catch(InvalidDataException){Check(Wire.FileHash(file)==hash,"future/foreign/changed migration identity is refused read-only: "+damage);}
+        }
+        foreach (var damage in new[] { "future", "foreign", "checksum" })
+        {
+            var directory = Path.Combine(root, "current-db-" + damage); Directory.CreateDirectory(directory); var file = Path.Combine(directory, "sportmaster.db");
+            File.Copy(Path.Combine(current, "sportmaster.db"), file);
+            using (var db = new SqliteConnection("Data Source=" + file + ";Pooling=False"))
+            {
+                db.Open(); using var command = db.CreateCommand(); command.CommandText = damage switch
+                {
+                    "future" => $"INSERT INTO platform_migrations VALUES('sportmaster',{ParcelRepository.CurrentStorageVersion + 1},'future')",
+                    "foreign" => "UPDATE platform_migrations SET application='another-business'",
+                    _ => "UPDATE platform_migrations SET sha='changed' WHERE version=11"
+                }; command.ExecuteNonQuery();
+            }
+            var hash = Wire.FileHash(file);
+            try { using var denied = new ParcelRepository(directory, "sportmaster"); throw new Exception("Damaged identity accepted"); }
+            catch (InvalidDataException) { Check(Wire.FileHash(file) == hash, "future/foreign/changed migration identity is refused read-only: " + damage); }
         }
     }
     sealed class Factory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory

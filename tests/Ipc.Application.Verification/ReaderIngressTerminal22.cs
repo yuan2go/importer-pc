@@ -15,8 +15,16 @@ internal static class ReaderIngressTerminal22
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
         var original = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation;
         await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed == 1));
-        var rejected = original with { Id = Wire.Id(), AdmissionId = "synthetic.expired", SourceEventId = "synthetic.expired", Sequence = 2,
-            ObservedAt = DateTimeOffset.UtcNow.AddSeconds(-2), DecodedTicks = Stopwatch.GetTimestamp(), Codes = ["SYNTH-STALE"] };
+        var rejected = original with
+        {
+            Id = Wire.Id(),
+            AdmissionId = "synthetic.expired",
+            SourceEventId = "synthetic.expired",
+            Sequence = 2,
+            ObservedAt = DateTimeOffset.UtcNow.AddSeconds(-2),
+            DecodedTicks = Stopwatch.GetTimestamp(),
+            Codes = ["SYNTH-STALE"]
+        };
         if (!(bool)typeof(ParcelRuntime).GetMethod("Enqueue", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(h.App, [rejected])!)
             throw new InvalidOperationException("Synthetic stale observation was not handed off");
         await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed == 2));

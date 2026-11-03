@@ -64,10 +64,10 @@ static partial class ArchitectureQuality
                 if (!keepBackup)
                 {
                     using (var legacy = new Ipc.Supply.SupplyStore(supplyDb))
-                        legacy.Commit(legacy.Load(), "SyntheticPendingSupply", "legacy-pending", "synthetic", config: new("legacy-pending", "seed", supplyConfig with {Extensions=new([package],[])}, "synthetic", "PendingActivation", "", DateTimeOffset.UtcNow));
+                        legacy.Commit(legacy.Load(), "SyntheticPendingSupply", "legacy-pending", "synthetic", config: new("legacy-pending", "seed", supplyConfig with { Extensions = new([package], []) }, "synthetic", "PendingActivation", "", DateTimeOffset.UtcNow));
                     Check((await app.ManageCapabilityAsync("extension-uninstall", Wire.Encode(package))).Status == "Rejected", "R04 actual Parcel management retains mixed offline Supply Pending package");
                     using (var legacy = new Ipc.Supply.SupplyStore(supplyDb))
-                        legacy.Commit(legacy.Load(), "SyntheticRejectedSupply", "legacy-pending", "synthetic", config: new("legacy-pending", "seed", supplyConfig with {Extensions=new([package],[])}, "synthetic", "Rejected", "", DateTimeOffset.UtcNow));
+                        legacy.Commit(legacy.Load(), "SyntheticRejectedSupply", "legacy-pending", "synthetic", config: new("legacy-pending", "seed", supplyConfig with { Extensions = new([package], []) }, "synthetic", "Rejected", "", DateTimeOffset.UtcNow));
                 }
                 var result = await app.ManageCapabilityAsync("extension-uninstall", Wire.Encode(package));
                 Check(result.Status == (keepBackup ? "Rejected" : "Uninstalled"), keepBackup ? "offline original backup pins exact package after live binding and resources are removed" : "cleared live deployment and settled originals permit real safe uninstall through Application entry");

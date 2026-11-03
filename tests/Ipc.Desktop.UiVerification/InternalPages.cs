@@ -34,8 +34,10 @@ static partial class Program
         {
             var controls = new FrameworkElement[] { target }.Concat(Descendants(target).OfType<FrameworkElement>())
                 .Where(e => e.IsVisible && (e is TextBlock || e is TextBox || e is Button || e is Window));
-            File.WriteAllText(Path.Combine(evidence, name + "-typography.json"), System.Text.Json.JsonSerializer.Serialize(new {
-                Dpi = dpi.DpiScaleX, Client = new { Width = bounds.Width, Height = bounds.Height },
+            File.WriteAllText(Path.Combine(evidence, name + "-typography.json"), System.Text.Json.JsonSerializer.Serialize(new
+            {
+                Dpi = dpi.DpiScaleX,
+                Client = new { Width = bounds.Width, Height = bounds.Height },
                 Controls = controls.Select(e => TypographyControlRow(e, target)).ToArray()
             }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
         }

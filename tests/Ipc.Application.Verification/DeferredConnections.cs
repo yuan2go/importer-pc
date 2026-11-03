@@ -26,21 +26,35 @@ static partial class SportmasterRcs
     static ParcelConfiguration DeferredCandidate(TcpListener[] cameras, Peer peer, int mask)
     {
         var c = new SportmasterFlow().InitialConfiguration();
-        var readers = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
+        var readers = c.Topology!.Readers.Select((r, i) => r with
         {
-            ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)cameras[i].LocalEndpoint).Port.ToString(),
-            ["entity.mode"] = "line"
-        } }).ToArray();
+            Driver = "tcp-line",
+            Parameters = new()
+            {
+                ["device.ip"] = "127.0.0.1",
+                ["device.port"] = ((IPEndPoint)cameras[i].LocalEndpoint).Port.ToString(),
+                ["entity.mode"] = "line"
+            }
+        }).ToArray();
         var b = Binding(peer.Endpoint);
         return c with
         {
-            Reader = readers[0], Topology = c.Topology with { Readers = readers },
-            Wcs = b with { Implementation = c.Wcs!.Implementation, Version = c.Wcs.Version, Parameters = new(b.Parameters)
+            Reader = readers[0],
+            Topology = c.Topology with { Readers = readers },
+            Wcs = b with
             {
-                ["left-station-code"] = c.StationCode!, ["right-station-code"] = c.StationCode!,
-                ["heartbeat-interval-seconds"] = "1", ["zone-id"] = (mask & 4) != 0 ? "" : "71",
-                ["left-bcr-code"] = (mask & 1) != 0 ? "" : "SYNTH-BCR-0", ["right-bcr-code"] = (mask & 2) != 0 ? "" : "SYNTH-BCR-1"
-            } },
+                Implementation = c.Wcs!.Implementation,
+                Version = c.Wcs.Version,
+                Parameters = new(b.Parameters)
+                {
+                    ["left-station-code"] = c.StationCode!,
+                    ["right-station-code"] = c.StationCode!,
+                    ["heartbeat-interval-seconds"] = "1",
+                    ["zone-id"] = (mask & 4) != 0 ? "" : "71",
+                    ["left-bcr-code"] = (mask & 1) != 0 ? "" : "SYNTH-BCR-0",
+                    ["right-bcr-code"] = (mask & 2) != 0 ? "" : "SYNTH-BCR-1"
+                }
+            },
             DeferredConnections = readers.Where((_, i) => (mask & (1 << i)) != 0).Select(r => r.DeviceId)
                 .Concat((mask & 4) != 0 ? new[] { c.Wcs.InstanceId } : []).ToArray()
         };

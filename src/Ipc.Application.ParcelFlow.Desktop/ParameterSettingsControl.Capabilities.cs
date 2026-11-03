@@ -180,10 +180,24 @@ public sealed partial class ParameterSettingsControl
     }
     static string ParameterLabel(CapabilityParameter p) => p.Field.Key switch
     {
-        "zone-id" => "仓ID", "project-id" => "生产线ID", "device.ip" => "IP 地址", "device.port" or "port" => "端口", "specified-chute" => "指定格口", "chute-code" => "格口编号",
-        "left-bcr-code" => "左相机编码", "right-bcr-code" => "右相机编码", "heartbeat-interval-seconds" => "心跳间隔",
-        "request-id-base" => "起始编号（不含）", "request-id-count" => "编号数量", "source" => "协议来源", "locale" => "协议语言",
-        "reply-mode" => "模拟返回方式", "decision" => "模拟业务结果", "complete-on-query" => "查询时报告完成", "endpoint" => "服务地址", _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
+        "zone-id" => "仓ID",
+        "project-id" => "生产线ID",
+        "device.ip" => "IP 地址",
+        "device.port" or "port" => "端口",
+        "specified-chute" => "指定格口",
+        "chute-code" => "格口编号",
+        "left-bcr-code" => "左相机编码",
+        "right-bcr-code" => "右相机编码",
+        "heartbeat-interval-seconds" => "心跳间隔",
+        "request-id-base" => "起始编号（不含）",
+        "request-id-count" => "编号数量",
+        "source" => "协议来源",
+        "locale" => "协议语言",
+        "reply-mode" => "模拟返回方式",
+        "decision" => "模拟业务结果",
+        "complete-on-query" => "查询时报告完成",
+        "endpoint" => "服务地址",
+        _ => ChineseInterfaceText.ParameterName(p.Field.Key, p.EditorLabel)
     };
     static string ParameterHint(CapabilityParameter p) => p.Field.Key switch
     {
@@ -192,9 +206,11 @@ public sealed partial class ParameterSettingsControl
         "zone-id" => "RCS 分配的仓库编号。",
         "project-id" => "RCS 分配的产线编号。",
         "left-bcr-code" or "right-bcr-code" => "RCS 用来区分左右相机的编码，两台不能相同。",
-        "device.ip" => "相机的 IP 地址（软件不会修改相机设置）。", "device.serial" => "相机机身上的序列号，正式使用必填。",
+        "device.ip" => "相机的 IP 地址（软件不会修改相机设置）。",
+        "device.serial" => "相机机身上的序列号，正式使用必填。",
         "code.encoding" => "与相机输出条码报文的字符编码一致；编码不匹配会导致条码无法正确解码。",
-        "entity.mode" => "仅观察不创建作业。触发关联要求设备已开启触发，并已确认一触发一个包裹、同触发多帧及重连后的原包裹处置；本选项不会修改相机触发设置。", "queue.capacity" => "排队等待处理的条码最多多少条。排满后停止接收，需要检查后手动重连。",
+        "entity.mode" => "仅观察不创建作业。触发关联要求设备已开启触发，并已确认一触发一个包裹、同触发多帧及重连后的原包裹处置；本选项不会修改相机触发设置。",
+        "queue.capacity" => "排队等待处理的条码最多多少条。排满后停止接收，需要检查后手动重连。",
         "queue.maximum-code-bytes" => "条码排队占用的内存上限，默认 16 MiB，可填 1–64 MiB。超出后本位停止供包，需要检查后恢复。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
         "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，1–3600 秒。",

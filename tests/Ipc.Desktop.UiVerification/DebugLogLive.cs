@@ -26,9 +26,16 @@ static partial class Program
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
-            ["zone-id"] = "71", ["project-id"] = "83",
-            ["specified-chute"] = "false", ["request-id-base"] = "910000000", ["request-id-count"] = "10000", ["heartbeat-interval-seconds"] = "3600",
-            ["left-station-code"] = "TASK-STATION", ["right-station-code"] = "TASK-STATION", ["left-bcr-code"] = "TASK-LEFT", ["right-bcr-code"] = "TASK-RIGHT"
+            ["zone-id"] = "71",
+            ["project-id"] = "83",
+            ["specified-chute"] = "false",
+            ["request-id-base"] = "910000000",
+            ["request-id-count"] = "10000",
+            ["heartbeat-interval-seconds"] = "3600",
+            ["left-station-code"] = "TASK-STATION",
+            ["right-station-code"] = "TASK-STATION",
+            ["left-bcr-code"] = "TASK-LEFT",
+            ["right-bcr-code"] = "TASK-RIGHT"
         });
         var config = seed with { Login = null, Wcs = binding, TimeoutMs = 10000 };
         ExtensionStore.AtomicWrite(Path.Combine(folder, "business.json"), config);

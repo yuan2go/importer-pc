@@ -59,8 +59,10 @@ public static partial class AtomicStorageWrite
                         if (SQLitePCL.raw.sqlite3_get_autocommit(db.Handle) == 0) throw new InvalidDataException("Rollback not confirmed");
                     }
                     catch (Exception rollback)
-                    { throw new StorageWriteFailure(IsUnrecoverable(error) || IsUnrecoverable(rollback) ? StorageFailureKind.Unrecoverable : StorageFailureKind.DurableOutcomeUncertain,
-                        attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, new AggregateException(error, rollback)); }
+                    {
+                        throw new StorageWriteFailure(IsUnrecoverable(error) || IsUnrecoverable(rollback) ? StorageFailureKind.Unrecoverable : StorageFailureKind.DurableOutcomeUncertain,
+                        attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, new AggregateException(error, rollback));
+                    }
                     if (!Transient(error)) throw new StorageWriteFailure(IsUnrecoverable(error) ? StorageFailureKind.Unrecoverable : StorageFailureKind.DurableOutcomeUncertain,
                         attempts, Stopwatch.GetElapsedTime(started).TotalMilliseconds, error);
                     if (attempts >= 32 || Stopwatch.GetElapsedTime(started) >= budget)

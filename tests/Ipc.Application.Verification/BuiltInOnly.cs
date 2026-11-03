@@ -16,14 +16,26 @@ static partial class SportmasterRcs
         Check(catalog.Providers.Where(p => p.Kind == "observation").Select(p => p.Implementation).Order().SequenceEqual(new[] { "hikrobot-mvs-reader", "manual" }),
             "SM catalog contains only the current MVS reader and explicit manual simulation source");
         var seed = new SportmasterFlow().InitialConfiguration();
-        var readers = seed.Topology!.Readers.Select((r, i) => r with { Parameters = i == 0
+        var readers = seed.Topology!.Readers.Select((r, i) => r with
+        {
+            Parameters = i == 0
             ? new() { ["device.ip"] = "192.0.2.11", ["device.serial"] = "SYNTH-MVS-LEFT", ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
-            : r.Parameters }).ToArray();
-        var binding = Binding("http://127.0.0.1:18848/rcs/sorter/api") with { Implementation = "sportmaster-rcs",
+            : r.Parameters
+        }).ToArray();
+        var binding = Binding("http://127.0.0.1:18848/rcs/sorter/api") with
+        {
+            Implementation = "sportmaster-rcs",
             Parameters = new(Binding("http://127.0.0.1:18848/rcs/sorter/api").Parameters)
-            { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION" } };
-        var configured = seed with { Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding,
-            StationCode = "SYNTH-STATION", DeferredConnections = [readers[1].DeviceId] };
+            { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION" }
+        };
+        var configured = seed with
+        {
+            Reader = readers[0],
+            Topology = seed.Topology with { Readers = readers },
+            Wcs = binding,
+            StationCode = "SYNTH-STATION",
+            DeferredConnections = [readers[1].DeviceId]
+        };
         Check(new SportmasterFlow().Validate(configured).Length == 0, "single-camera built-in candidate satisfies business fields");
         factory.ValidateStructure(configured);
         factory.Validate(configured with { Mode = RunMode.Simulation });
@@ -31,18 +43,18 @@ static partial class SportmasterRcs
         var originalFile = Path.Combine(root, "unsupported-reader.json");
         var constructed = 0; factory.Boundary = _ => constructed++;
         foreach (var driver in new[] { "hikrobot-idmvs", "hikrobot-mvs", "tcp-line" })
-        foreach (var mode in new[] { RunMode.Production, RunMode.Simulation })
-        {
-            // Loopback TCP remains a shared transport fixture, never an SM production driver.
-            if (driver == "tcp-line" && mode == RunMode.Simulation) continue;
-            var replaced = readers.Select(r => r with { Driver = driver }).ToArray();
-            var old = configured with { Mode = mode, Reader = replaced[0], Topology = configured.Topology! with { Readers = replaced } };
-            ExtensionStore.AtomicWrite(originalFile, old);
-            var bytes = File.ReadAllBytes(originalFile);
-            try { factory.Create(old); throw new Exception("Unsupported SM reader accepted: " + driver); }
-            catch (InvalidDataException e) when (e.Message.Contains("不支持原相机配置", StringComparison.Ordinal))
-            { Check(constructed == 0 && File.ReadAllBytes(originalFile).SequenceEqual(bytes), driver + " is rejected before resource construction without changing the input in " + mode); }
-        }
+            foreach (var mode in new[] { RunMode.Production, RunMode.Simulation })
+            {
+                // Loopback TCP remains a shared transport fixture, never an SM production driver.
+                if (driver == "tcp-line" && mode == RunMode.Simulation) continue;
+                var replaced = readers.Select(r => r with { Driver = driver }).ToArray();
+                var old = configured with { Mode = mode, Reader = replaced[0], Topology = configured.Topology! with { Readers = replaced } };
+                ExtensionStore.AtomicWrite(originalFile, old);
+                var bytes = File.ReadAllBytes(originalFile);
+                try { factory.Create(old); throw new Exception("Unsupported SM reader accepted: " + driver); }
+                catch (InvalidDataException e) when (e.Message.Contains("不支持原相机配置", StringComparison.Ordinal))
+                { Check(constructed == 0 && File.ReadAllBytes(originalFile).SequenceEqual(bytes), driver + " is rejected before resource construction without changing the input in " + mode); }
+            }
         var external = configured with { Wcs = binding with { Implementation = "extension:synthetic.rcs/rcs", Module = "rcs" } };
         try { factory.ValidateStructure(external); throw new Exception("External binding accepted"); }
         catch (InvalidDataException e) when (e.Message.Contains("不支持外置扩展配置", StringComparison.Ordinal))

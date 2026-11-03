@@ -9,10 +9,20 @@ static partial class SportmasterRcs
     {
         await using var peer = new Peer();
         var seed = HeartbeatConfiguration(workspace, Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs" });
-        var readers = seed.Topology!.Readers.Select((r, i) => r with { Driver = "hikrobot-mvs-reader", Parameters = new()
-        { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-SHUTDOWN-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }).ToArray();
-        var config = seed with { Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Login = null,
-            DeferredConnections = [readers[1].DeviceId], BarcodeFilter = new("") };
+        var readers = seed.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = "hikrobot-mvs-reader",
+            Parameters = new()
+            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-SHUTDOWN-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
+        }).ToArray();
+        var config = seed with
+        {
+            Reader = readers[0],
+            Topology = seed.Topology with { Readers = readers },
+            Login = null,
+            DeferredConnections = [readers[1].DeviceId],
+            BarcodeFilter = new("")
+        };
         foreach (var (directDispose, failBeforeStop) in new[] { (false, false), (true, false), (false, true) })
         {
             var caseRoot = Path.Combine(root, failBeforeStop ? "failure-before-stop" : directDispose ? "dispose" : "stop-then-dispose");

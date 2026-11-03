@@ -41,8 +41,16 @@ public sealed partial class ParcelRuntime
                 var jobs = sequence - first.Sequence; var growth = bytes - first.Bytes;
                 double? bytesPerJob = jobs > 0 && growth > 0 ? (double)growth / jobs : null;
                 double? remainingDays = elapsed > 0 && bytesPerJob is { } perJob ? Math.Max(0, freeStorageBytes - Retention.MinimumFreeBytes) / (perJob * jobs / elapsed * 86400) : null;
-                storageCapacityEstimate = "StorageForecast:" + Ipc.Platform.Wire.Encode(new { Result = remainingDays is null ? "InsufficientSamples" : "EstimateOnly", Jobs = jobs, SampleSeconds = elapsed, DatabaseGrowthBytes = growth,
-                    BytesPerJob = bytesPerJob, RemainingDays = remainingDays, Basis = "Recent physical SQLite page growth and admission sequence; exclude backups/images/logs; no deletion or site guarantee" });
+                storageCapacityEstimate = "StorageForecast:" + Ipc.Platform.Wire.Encode(new
+                {
+                    Result = remainingDays is null ? "InsufficientSamples" : "EstimateOnly",
+                    Jobs = jobs,
+                    SampleSeconds = elapsed,
+                    DatabaseGrowthBytes = growth,
+                    BytesPerJob = bytesPerJob,
+                    RemainingDays = remainingDays,
+                    Basis = "Recent physical SQLite page growth and admission sequence; exclude backups/images/logs; no deletion or site guarantee"
+                });
                 Diagnostic("StorageCapacity", "Forecast", "信息", storageCapacityEstimate);
             }
             if (repository is not null && (retentionChecked == default || StorageTimeForVerification.GetElapsedTime(retentionCheckedTimestamp, timestamp) >= TimeSpan.FromMinutes(1)))

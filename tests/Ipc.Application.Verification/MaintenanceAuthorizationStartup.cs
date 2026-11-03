@@ -51,8 +51,13 @@ static class MaintenanceAuthorizationStartup
     {
         var name = Wire.Id() + Wire.Id(); var path = Path.Combine(root, "negative-request.bin");
         using var initiator = Process.GetCurrentProcess();
-        ProtectedDraftPayload.Write(path, System.Text.Json.JsonSerializer.Serialize(new { Action = "ConfigureManagementPassword", Pipe = name,
-            InitiatorProcessId = initiator.Id, InitiatorStartedTicks = initiator.StartTime.ToUniversalTime().Ticks }), false);
+        ProtectedDraftPayload.Write(path, System.Text.Json.JsonSerializer.Serialize(new
+        {
+            Action = "ConfigureManagementPassword",
+            Pipe = name,
+            InitiatorProcessId = initiator.Id,
+            InitiatorStartedTicks = initiator.StartTime.ToUniversalTime().Ticks
+        }), false);
         try
         {
             using var pipe = new NamedPipeServerStream(name, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
@@ -81,7 +86,7 @@ static class MaintenanceAuthorizationStartup
         if (!new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator)) throw new UnauthorizedAccessException("Start fixture from the existing Windows maintenance session");
         var receipt = Path.Combine(root, "maintenance-authority.json");
         var helper = Path.Combine(workspace, "src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.exe");
-        using var child = OrdinaryRuntimeProcess.Start(Environment.ProcessPath!, [..Prefix, "--ordinary-maintenance-child", receipt, helper], Environment.CurrentDirectory);
+        using var child = OrdinaryRuntimeProcess.Start(Environment.ProcessPath!, [.. Prefix, "--ordinary-maintenance-child", receipt, helper], Environment.CurrentDirectory);
         if (child.Wait(60000) != 0 || !File.Exists(receipt)) throw new Exception("Restricted runtime could not complete real maintenance authority round trip");
         var result = Wire.Decode<Receipt>(File.ReadAllText(receipt));
         if (!result.AdminEnabled || result.UserHash != Wire.Hash(identity.User!.Value)) throw new Exception("Maintenance authority changed user or remained restricted");

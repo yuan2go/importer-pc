@@ -62,7 +62,7 @@ public partial class MainWindow
     }
     public async Task SubmitLaneAsync(LaneViewModel lane)
     {
-        if (lane.Current is not { } operation || !ReviewFits(lane) || !IsWorkstationActive) { model.LastResult="请完整核对本通道当前Item、任务和数量"; return; }
+        if (lane.Current is not { } operation || !ReviewFits(lane) || !IsWorkstationActive) { model.LastResult = "请完整核对本通道当前Item、任务和数量"; return; }
         // Capture this owner and station revision before any risk dialog. The application CAS
         // rejects changed observations/owners; normal manual supply needs no repeated dialog.
         await SendAsync(SupplyCommands.Submit, operation.Id, confirm: operation.Status == OperationStatus.SplitRequired ?
@@ -147,7 +147,7 @@ public partial class MainWindow
             var page = await Runtime.Application.QueryHistoryAsync(query).WaitAsync(lifetime.Token);
             if (closing || generation != historyGeneration || !ReadIdentityMatches(readActor)) return;
             HistoryGrid.IsEnabled = true;
-            ReadAccessFeedback.Text="历史为本次有效身份取得的只读快照；退出或过期后须重新查询。";
+            ReadAccessFeedback.Text = "历史为本次有效身份取得的只读快照；退出或过期后须重新查询。";
             loadedHistory = page;
             updatingHistory = true;
             try
@@ -274,13 +274,18 @@ public partial class MainWindow
         {
             var detail = await Runtime.Application.SessionDetailsAsync(sessionId).WaitAsync(lifetime.Token);
             if (closing || generation != detailGeneration || !ReadIdentityMatches(readActor)) return;
-            DetailTree.IsEnabled=true; ReadAccessFeedback.Text="箱关闭链为本次有效身份取得的只读快照。";
+            DetailTree.IsEnabled = true; ReadAccessFeedback.Text = "箱关闭链为本次有效身份取得的只读快照。";
             RenderDetails(sessionId, null, detail.Requests);
             if (DetailTree.Items[0] is TreeViewItem root)
             {
                 root.Header = $"箱会话 · {OperatorText.Session(detail.Session.Status)} · {detail.Session.Barcode}";
-                root.Items.Insert(0, new TextBox { Text = $"箱会话ID {detail.Session.Id}\n箱码 {detail.Session.Barcode}\n箱波次 {OperatorText.Known(detail.Session.Context?.BoxWave)}\n{HistoryQueryRow.FormatDate(detail.OpenedAt)} · 唯一接受量 {detail.AcceptedQuantity}",
-                    Style = (Style)FindResource("ReadonlyValue"), IsTabStop = true, Margin = new Thickness(4) });
+                root.Items.Insert(0, new TextBox
+                {
+                    Text = $"箱会话ID {detail.Session.Id}\n箱码 {detail.Session.Barcode}\n箱波次 {OperatorText.Known(detail.Session.Context?.BoxWave)}\n{HistoryQueryRow.FormatDate(detail.OpenedAt)} · 唯一接受量 {detail.AcceptedQuantity}",
+                    Style = (Style)FindResource("ReadonlyValue"),
+                    IsTabStop = true,
+                    Margin = new Thickness(4)
+                });
                 root.Items.Insert(1, new TextBlock { Text = $"作业 {detail.OperationCount} · 唯一接受量 {detail.AcceptedQuantity}；可导航全部作业，以下为验箱与关闭链。", TextWrapping = TextWrapping.Wrap });
                 var audit = new TreeViewItem { Header = "箱会话审计", IsExpanded = false };
                 foreach (var entry in detail.Audit) audit.Items.Add($"{entry.At:O} · {entry.Kind} · {entry.Actor} · {entry.Evidence}");

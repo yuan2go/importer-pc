@@ -162,11 +162,11 @@ internal static class ReaderRobustness28
         var h = (int)Math.Ceiling(Math.Abs(s) * input.Width + Math.Abs(c) * input.Height) + 80;
         var pixels = Enumerable.Repeat((byte)255, w * h).ToArray();
         for (var y = 0; y < h; y++) for (var x = 0; x < w; x++)
-        {
-            var sourceX = (int)Math.Round((x - w / 2d) * c + (y - h / 2d) * s + input.Width / 2d);
-            var sourceY = (int)Math.Round(-(x - w / 2d) * s + (y - h / 2d) * c + input.Height / 2d);
-            if (sourceX >= 0 && sourceX < input.Width && sourceY >= 0 && sourceY < input.Height) pixels[y * w + x] = input.Data[sourceY * input.Width + sourceX];
-        }
+            {
+                var sourceX = (int)Math.Round((x - w / 2d) * c + (y - h / 2d) * s + input.Width / 2d);
+                var sourceY = (int)Math.Round(-(x - w / 2d) * s + (y - h / 2d) * c + input.Height / 2d);
+                if (sourceX >= 0 && sourceX < input.Width && sourceY >= 0 && sourceY < input.Height) pixels[y * w + x] = input.Data[sourceY * input.Width + sourceX];
+            }
         return new(pixels, w, h);
     }
     static CameraRoundHarness.RoundPixels Blur(CameraRoundHarness.RoundPixels input, int radius)
@@ -175,12 +175,12 @@ internal static class ReaderRobustness28
         var kernel = radius == 1 ? new[] { 1, 2, 1 } : new[] { 1, 4, 6, 4, 1 };
         var total = kernel.Sum(); var w = input.Width; var h = input.Height; var result = new byte[input.Data.Length];
         for (var y = 0; y < h; y++) for (var x = 0; x < w; x++)
-        {
-            var sum = 0;
-            for (var ky = -radius; ky <= radius; ky++) for (var kx = -radius; kx <= radius; kx++)
-                sum += input.Data[Math.Clamp(y + ky, 0, h - 1) * w + Math.Clamp(x + kx, 0, w - 1)] * kernel[ky + radius] * kernel[kx + radius];
-            result[y * w + x] = (byte)(sum / (total * total));
-        }
+            {
+                var sum = 0;
+                for (var ky = -radius; ky <= radius; ky++) for (var kx = -radius; kx <= radius; kx++)
+                        sum += input.Data[Math.Clamp(y + ky, 0, h - 1) * w + Math.Clamp(x + kx, 0, w - 1)] * kernel[ky + radius] * kernel[kx + radius];
+                result[y * w + x] = (byte)(sum / (total * total));
+            }
         return new(result, w, h);
     }
 }

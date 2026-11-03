@@ -72,8 +72,12 @@ public static class ParcelPresentation
     {
         ParcelInputOutcome.Rejected => input.BarcodeSelection?.Outcome switch
         {
-            "NoMatchingCode" => "条码不符合规则", "ExcludedCodes" => "条码被排除规则拦截", "AmbiguousCodes" => "读到多个符合规则的条码",
-            "IncompleteCandidates" => "条码读取不完整", "FilterTimeout" => "条码判断超时", "InvalidPattern" => "条码规则配置错误",
+            "NoMatchingCode" => "条码不符合规则",
+            "ExcludedCodes" => "条码被排除规则拦截",
+            "AmbiguousCodes" => "读到多个符合规则的条码",
+            "IncompleteCandidates" => "条码读取不完整",
+            "FilterTimeout" => "条码判断超时",
+            "InvalidPattern" => "条码规则配置错误",
             _ => input.Observation.Kind == "NoRead" || input.Observation.Codes.Length == 0 ? "未读到条码" : input.Observation.Codes.Length > 1 ? "读到多个条码" : "条码校验未通过"
         },
         ParcelInputOutcome.Blocked => "本次扫描未受理",

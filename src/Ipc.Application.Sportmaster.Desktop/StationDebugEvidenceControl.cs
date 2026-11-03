@@ -185,7 +185,8 @@ internal sealed class StationDebugEvidenceControl : UserControl
     bool Selected(long version) => active && selectionGeneration == version && vm.IsManagementMode;
     internal async Task PollAsync()
     {
-        if (!active || polling) return; if (!vm.IsManagementMode) { Revoke(); return; } polling = true; var version = generation; var t = lifetime!.Token;
+        if (!active || polling) return; if (!vm.IsManagementMode) { Revoke(); return; }
+        polling = true; var version = generation; var t = lifetime!.Token;
         try
         {
             var current = await Api.CameraInspectionStatusAsync(t); if (!Current(version)) return; status = current;
@@ -286,7 +287,8 @@ internal sealed class StationDebugEvidenceControl : UserControl
     async Task RefreshOperation(string id, long version, CancellationToken t)
     {
         var value = await Api.ReadCameraOperationDetailAsync(id, t); if (!Selected(version)) return;
-        if (value is null) { result.Text = "作业无法读取，结果未知。"; return; } detailRevision = value.Status.Revision;
+        if (value is null) { result.Text = "作业无法读取，结果未知。"; return; }
+        detailRevision = value.Status.Revision;
         result.Text = ResultText(value.Status) + " · 请求 " + (value.Status.RequestId ?? "尚未建立") + " · 发送尝试 " + value.Status.Attempts;
         var text = ParcelViewModel.Handover(value.Original, true); if (value.Original.Wcs?.Request.IntegrationRequest is { } request) text += "\n\n请求正文\n" + Protect(request.Body, 8192);
         if (value.Original.Wcs?.Replies.LastOrDefault()?.HttpResponse is { } response)

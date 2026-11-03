@@ -23,13 +23,26 @@ async Task Check(string name, Func<Task> test)
 MvsAcquisition Acquisition(MvsPort port, LeaseCounter lease, string id = "left") => new(
     new("local.mvs." + id, id, new Dictionary<string, string> { ["device.ip"] = port.Address, ["device.serial"] = port.Serial }), port, _ => lease);
 HikrobotReader Reader(ReaderPort port, LeaseCounter lease, string id = "left", int capacity = 128) => new(
-    new("local.reader." + id, id, new Dictionary<string, string> { ["device.ip"] = port.Address, ["device.serial"] = port.Serial,
-        ["entity.mode"] = "trigger", ["queue.capacity"] = capacity.ToString() }), port, _ => lease);
+    new("local.reader." + id, id, new Dictionary<string, string>
+    {
+        ["device.ip"] = port.Address,
+        ["device.serial"] = port.Serial,
+        ["entity.mode"] = "trigger",
+        ["queue.capacity"] = capacity.ToString()
+    }), port, _ => lease);
 object Resources(string phase)
 {
     using var p = Process.GetCurrentProcess(); p.Refresh();
-    return new { Phase = phase, p.PrivateMemorySize64, p.WorkingSet64, Handles = p.HandleCount, Threads = p.Threads.Count,
-        ManagedBytes = GC.GetTotalMemory(false), Note = "observed snapshot; no GC forced; not a soak or native-SDK leak test" };
+    return new
+    {
+        Phase = phase,
+        p.PrivateMemorySize64,
+        p.WorkingSet64,
+        Handles = p.HandleCount,
+        Threads = p.Threads.Count,
+        ManagedBytes = GC.GetTotalMemory(false),
+        Note = "observed snapshot; no GC forced; not a soak or native-SDK leak test"
+    };
 }
 
 await Check("MVS.100SequentialGenerationsReleaseEveryOwner", async () =>
@@ -67,27 +80,27 @@ await Check("Reader.100RestartsFenceOldCallbacks", async () =>
 });
 
 foreach (var fault in new[] { "disconnect", "address-changed", "acquire-throws" })
-await Check("MVS.FaultAndExplicitRecovery." + fault, async () =>
-{
-    var port = new MvsPort(); var lease = new LeaseCounter(); var states = new ConcurrentQueue<DeviceHealth>();
-    await using var source = Acquisition(port, lease);
-    await source.StartControlledAsync("fault-one", _ => throw new Exception("fabricated observation"), h => states.Enqueue(h.Health), default);
-    var timer = Stopwatch.StartNew();
-    if (fault == "disconnect") port.Online = false;
-    if (fault == "address-changed") port.Address = "192.0.2.99";
-    if (fault == "acquire-throws") port.ThrowAcquire = true;
-    await Until(() => states.Contains(DeviceHealth.Faulted));
-    var detectionMs = timer.ElapsedMilliseconds;
-    await Task.Delay(1100);
-    Require(port.Starts == 1 && states.Last() == DeviceHealth.Faulted && !states.Contains(DeviceHealth.Ready), "auto-reconnect or false Ready after fault");
-    await source.StopAsync(default);
-    port.Online = true; port.Address = "192.0.2.1"; port.ThrowAcquire = false; port.Enqueue(1);
-    await source.StartControlledAsync("fault-two", _ => throw new Exception("fabricated observation"), h => states.Enqueue(h.Health), default);
-    await Until(() => source.Frames == 1);
-    await source.StopAsync(default);
-    Require(port.Starts == 2 && port.Destroys == 2 && lease.Releases == 2 && source.Failure.Length == 0, "explicit recovery failed to finish old owner");
-    Console.WriteLine($"METRIC fault={fault} simulatedDetectionMs={detectionMs} starts=2 manualRecoveries=1");
-});
+    await Check("MVS.FaultAndExplicitRecovery." + fault, async () =>
+    {
+        var port = new MvsPort(); var lease = new LeaseCounter(); var states = new ConcurrentQueue<DeviceHealth>();
+        await using var source = Acquisition(port, lease);
+        await source.StartControlledAsync("fault-one", _ => throw new Exception("fabricated observation"), h => states.Enqueue(h.Health), default);
+        var timer = Stopwatch.StartNew();
+        if (fault == "disconnect") port.Online = false;
+        if (fault == "address-changed") port.Address = "192.0.2.99";
+        if (fault == "acquire-throws") port.ThrowAcquire = true;
+        await Until(() => states.Contains(DeviceHealth.Faulted));
+        var detectionMs = timer.ElapsedMilliseconds;
+        await Task.Delay(1100);
+        Require(port.Starts == 1 && states.Last() == DeviceHealth.Faulted && !states.Contains(DeviceHealth.Ready), "auto-reconnect or false Ready after fault");
+        await source.StopAsync(default);
+        port.Online = true; port.Address = "192.0.2.1"; port.ThrowAcquire = false; port.Enqueue(1);
+        await source.StartControlledAsync("fault-two", _ => throw new Exception("fabricated observation"), h => states.Enqueue(h.Health), default);
+        await Until(() => source.Frames == 1);
+        await source.StopAsync(default);
+        Require(port.Starts == 2 && port.Destroys == 2 && lease.Releases == 2 && source.Failure.Length == 0, "explicit recovery failed to finish old owner");
+        Console.WriteLine($"METRIC fault={fault} simulatedDetectionMs={detectionMs} starts=2 manualRecoveries=1");
+    });
 
 await Check("Reader.BlockedConsumerHasExplicitOverflowAndConservedCounts", async () =>
 {

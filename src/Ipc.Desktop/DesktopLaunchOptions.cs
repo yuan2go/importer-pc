@@ -36,7 +36,8 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
         return new(new(
             options.GetValueOrDefault("--config", installed?.ConfigurationDirectory ?? Path.Combine(AppContext.BaseDirectory, "config")),
             options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "data")),
-            options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout")) { RequireRecoveryReview = recoveryChild }, ui);
+            options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout"))
+        { RequireRecoveryReview = recoveryChild }, ui);
     }
     public static string DefaultUi(string applicationId) => applicationId == "sportmaster" ? "supply-station" : "classic";
 }

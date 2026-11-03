@@ -48,9 +48,19 @@ static class StabilityHistoryScale
         command.CommandText = "PRAGMA integrity_check"; command.Parameters.Clear(); if (command.ExecuteScalar() as string != "ok") throw new InvalidDataException("Projection scale integrity failed");
         command.CommandText = "PRAGMA wal_checkpoint(TRUNCATE)"; command.ExecuteNonQuery();
         using var process = Process.GetCurrentProcess();
-        ExtensionStore.AtomicWrite(Path.Combine(evidence, "SCALE-PROJECTION.json"), new { Status = "PASS_INDEX_SCALE_ONLY", Rows = count, PrefillMs = prefillMs, DatabaseBytes = new FileInfo(database).Length,
-            ProcessPeakWorkingSet = process.PeakWorkingSet64, Queries = results, RuntimeSha256 = Wire.FileHash(typeof(ParcelRuntime).Assembly.Location),
-            FullCustodyScale = "NOT_RUN", Target8GiB = "NOT_RUN", DurationQualification = "NOT_RUN" });
+        ExtensionStore.AtomicWrite(Path.Combine(evidence, "SCALE-PROJECTION.json"), new
+        {
+            Status = "PASS_INDEX_SCALE_ONLY",
+            Rows = count,
+            PrefillMs = prefillMs,
+            DatabaseBytes = new FileInfo(database).Length,
+            ProcessPeakWorkingSet = process.PeakWorkingSet64,
+            Queries = results,
+            RuntimeSha256 = Wire.FileHash(typeof(ParcelRuntime).Assembly.Location),
+            FullCustodyScale = "NOT_RUN",
+            Target8GiB = "NOT_RUN",
+            DurationQualification = "NOT_RUN"
+        });
         Console.WriteLine("PASS INDEX SCALE ONLY rows=" + count + "; full custody/8GiB/24h NOT_RUN");
     }
 }

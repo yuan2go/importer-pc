@@ -20,10 +20,17 @@ static partial class Program
         {
             Operations = snapshot.Operations.Select(o => o.Id != target ? o : o with
             {
-                State = rejected ? ParcelState.WcsRejected : ParcelState.WcsUnknown, Slot = null, Reason = reason,
-                Wcs = o.Wcs! with { State = state, Failure = reason, Replies = rejected
+                State = rejected ? ParcelState.WcsRejected : ParcelState.WcsUnknown,
+                Slot = null,
+                Reason = reason,
+                Wcs = o.Wcs! with
+                {
+                    State = state,
+                    Failure = reason,
+                    Replies = rejected
                     ? [o.Wcs.Replies.Last() with { BusinessAccepted = false, Slot = null, Destination = null, Evidence = reason }]
-                    : state == StageState.Conflict ? [o.Wcs.Replies.Last(), o.Wcs.Replies.Last() with { Id = Wire.Id(), BusinessAccepted = false, Slot = null, Destination = null, Evidence = reason }] : [] }
+                    : state == StageState.Conflict ? [o.Wcs.Replies.Last(), o.Wcs.Replies.Last() with { Id = Wire.Id(), BusinessAccepted = false, Slot = null, Destination = null, Evidence = reason }] : []
+                }
             }).ToArray(),
             Positions = snapshot.Positions!.Select(p => p.Id != "left" ? p : p with { Admit = rejected && !snapshot.Paused, MainResultComplete = rejected, BackgroundComplete = rejected, BlockingReasons = rejected ? [] : [reason] }).ToArray()
         };

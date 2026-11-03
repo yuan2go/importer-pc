@@ -39,7 +39,8 @@ public sealed partial class ParcelRuntime : ICameraInspection
             return value;
         }
         return new CameraInspectionStatus(session, null, "Unavailable", false, null, 0, 0, 0, 0,
-            inspectionStoreFailure ?? "诊断集合尚未打开。", "") { SingleReadRounds = singleReadInspection };
+            inspectionStoreFailure ?? "诊断集合尚未打开。", "")
+        { SingleReadRounds = singleReadInspection };
     }, t), token);
     static void ValidateInspectionCommand(string id, string reason)
     {

@@ -41,16 +41,27 @@ static class ParcelCli
         {
             if (map["--action"] == "runtime-prepare") ParcelRuntimeSetup.Prepare();
             MachineRuntimePolicy.RequireRuntimeIdentity();
-            Console.WriteLine(Wire.Encode(new { Status = OperatingSystem.IsWindows() ? "RuntimeIdentityChecked" : "PortableDevelopmentOnly", WindowsPolicyChecked = OperatingSystem.IsWindows(),
-                PersistentWrites = map["--action"] == "runtime-check" ? 0 : (int?)null, BusinessDataWrites = 0, MachineSetupAllowed = map["--action"] == "runtime-prepare" }));
+            Console.WriteLine(Wire.Encode(new
+            {
+                Status = OperatingSystem.IsWindows() ? "RuntimeIdentityChecked" : "PortableDevelopmentOnly",
+                WindowsPolicyChecked = OperatingSystem.IsWindows(),
+                PersistentWrites = map["--action"] == "runtime-check" ? 0 : (int?)null,
+                BusinessDataWrites = 0,
+                MachineSetupAllowed = map["--action"] == "runtime-prepare"
+            }));
             return true;
         }
         if (map["--action"] == "business-identity")
         {
             var assembly = ParcelAssembly.Definition().GetType().Assembly;
-            Console.WriteLine(Wire.Encode(new { ApplicationId = ParcelAssembly.Definition().Id,
-                BusinessVersion = BusinessCompatibility.VersionOf(assembly), BusinessAssembly = Path.GetFileName(assembly.Location),
-                CompatibilitySha256 = BusinessCompatibility.Fingerprint(assembly), Declaration = BusinessCompatibility.Read(assembly) }));
+            Console.WriteLine(Wire.Encode(new
+            {
+                ApplicationId = ParcelAssembly.Definition().Id,
+                BusinessVersion = BusinessCompatibility.VersionOf(assembly),
+                BusinessAssembly = Path.GetFileName(assembly.Location),
+                CompatibilitySha256 = BusinessCompatibility.Fingerprint(assembly),
+                Declaration = BusinessCompatibility.Read(assembly)
+            }));
             return true;
         }
         if (map["--action"] is "deployment-identity" or "deployment-check")
@@ -65,9 +76,16 @@ static class ParcelCli
                 var errors = ParcelAssembly.Definition().Validate(c);
                 if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
                 if (map["--action"] == "deployment-check") factory.Validate(c);
-                Console.WriteLine(Wire.Encode(new { Status = map["--action"] == "deployment-check" ? "PreflightPassed" : "IdentityOnly", ConfigurationHash = Wire.Hash(Wire.Encode(c)),
-                    HostContractSha256 = Wire.FileHash(typeof(ExtensionStore).Assembly.Location), ApplicationContractSha256 = Wire.FileHash(typeof(IParcelApplication).Assembly.Location),
-                    NormalizedConfiguration = c, ExternalCalls = 0, PhysicalReadiness = "NOT_VERIFIED" }));
+                Console.WriteLine(Wire.Encode(new
+                {
+                    Status = map["--action"] == "deployment-check" ? "PreflightPassed" : "IdentityOnly",
+                    ConfigurationHash = Wire.Hash(Wire.Encode(c)),
+                    HostContractSha256 = Wire.FileHash(typeof(ExtensionStore).Assembly.Location),
+                    ApplicationContractSha256 = Wire.FileHash(typeof(IParcelApplication).Assembly.Location),
+                    NormalizedConfiguration = c,
+                    ExternalCalls = 0,
+                    PhysicalReadiness = "NOT_VERIFIED"
+                }));
                 return true;
             }
             finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
@@ -100,18 +118,18 @@ static class ParcelCli
         if (map["--action"] == "recover-receipt")
         {
             MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-            var directory=Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!;
-            var dataRoot=Directory.GetParent(directory)!.Parent!.Parent!.FullName;
-            using var cancellation=new CancellationTokenSource(TimeSpan.FromMinutes(2));
-            var factory=new ParcelCapabilityFactory(new(directory,dataRoot,null,null));
+            var directory = Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!;
+            var dataRoot = Directory.GetParent(directory)!.Parent!.Parent!.FullName;
+            using var cancellation = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var factory = new ParcelCapabilityFactory(new(directory, dataRoot, null, null));
             try
             {
-                Console.WriteLine(Wire.Encode(ParcelOfflineReceiptRecovery.RecoverAsync(map["--file"],map["--sha256"],map["--destination"],map["--occurrence"],map["--original-release"],map["--reason"],ParcelAssembly.Definition(),
-                    (json,config,data,t)=>OriginalParcelQuery.QueryAsync(map["--original-release"],json,"image-upload",config,data,t),
-                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256")).GetAwaiter().GetResult()));
+                Console.WriteLine(Wire.Encode(ParcelOfflineReceiptRecovery.RecoverAsync(map["--file"], map["--sha256"], map["--destination"], map["--occurrence"], map["--original-release"], map["--reason"], ParcelAssembly.Definition(),
+                    (json, config, data, t) => OriginalParcelQuery.QueryAsync(map["--original-release"], json, "image-upload", config, data, t),
+                    (backup, c) => { factory.Normalize(c); factory.RegisterBackup(backup, c); }, cancellation.Token, map.GetValueOrDefault("--wal-sha256")).GetAwaiter().GetResult()));
                 return true;
             }
-            finally {factory.DisposeAsync().AsTask().GetAwaiter().GetResult();}
+            finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
         }
         if (map["--action"] == "recovery-plan")
         { Console.WriteLine(Wire.Encode(ParcelRecovery.PlanRestore(map["--file"], map["--destination"]))); return true; }

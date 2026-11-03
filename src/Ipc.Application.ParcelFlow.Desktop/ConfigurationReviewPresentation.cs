@@ -109,9 +109,14 @@ public partial class ParcelViewModel
                 else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = draft.InstanceId + "/Target"; showValues = true; }
                 else label = path.Split('.').Last() switch
                 {
-                    "Enabled" => "启用状态", "Implementation" or "Driver" => "连接方式", "Version" => "组件版本",
-                    "Contract" => "服务协议", "InstanceId" or "DeviceId" => "设备与组件标识", "Package" => "组件安装来源",
-                    "Module" => "组件模块", _ => "其他配置项"
+                    "Enabled" => "启用状态",
+                    "Implementation" or "Driver" => "连接方式",
+                    "Version" => "组件版本",
+                    "Contract" => "服务协议",
+                    "InstanceId" or "DeviceId" => "设备与组件标识",
+                    "Package" => "组件安装来源",
+                    "Module" => "组件模块",
+                    _ => "其他配置项"
                 };
                 if (category == "系统") owner = "供包台标识";
                 else if (category == "业务模块") owner = "格口请求";

@@ -68,7 +68,7 @@ internal static class PolicyVerification
             DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(10), [], [proof]);
         var withPreload = declaration with { Preload = ["MVGigEVision.dll", "MvSmtDevCtrl.dll"] };
         var roundtrip = Wire.Decode<DeploymentQualification>(Wire.Encode(qualification with
-            { Prerequisites = [proof with { Declaration = withPreload }] }));
+        { Prerequisites = [proof with { Declaration = withPreload }] }));
         DeploymentQualifications.RequirePrerequisites(roundtrip, verified with { Manifest = manifest with { Prerequisites = [withPreload] } });
         Console.WriteLine("PASS: signed preload declaration retains value equality across independent JSON decoding");
         foreach (var invalid in new[] { qualification with { ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(-1) }, qualification with { Prerequisites = [] }, qualification })
@@ -81,8 +81,13 @@ internal static class PolicyVerification
         var mvsBytes = File.ReadAllBytes(typeof(Ipc.Drivers.Hikrobot.Mvs.MvsAcquisitionModule).Assembly.Location);
         var mvsFile = new ExtensionFile("Ipc.Drivers.Hikrobot.Mvs.dll", mvsBytes.Length, Convert.ToHexString(SHA256.HashData(mvsBytes)));
         var mvsDeclaration = new ExtensionPrerequisite("vendor-sdk", "MvCameraControl.dll", "4.8.2.2", new('B', 64)) { Preload = ["MVGigEVisionSDK.dll"] };
-        var mvsManifest = manifest with { Id = "test.mvs-acquisition", Files = [mvsFile], Prerequisites = [mvsDeclaration],
-            Modules = [new("mvs-acquisition", mvsFile.Path, "Ipc.Drivers.Hikrobot.Mvs.MvsAcquisitionModule", "observation", 2, [new("device.ip", "device", "Camera IPv4", "string", true)])] };
+        var mvsManifest = manifest with
+        {
+            Id = "test.mvs-acquisition",
+            Files = [mvsFile],
+            Prerequisites = [mvsDeclaration],
+            Modules = [new("mvs-acquisition", mvsFile.Path, "Ipc.Drivers.Hikrobot.Mvs.MvsAcquisitionModule", "observation", 2, [new("device.ip", "device", "Camera IPv4", "string", true)])]
+        };
         var mvsArchive = Package(mvsManifest, mvsFile, mvsBytes);
         var mvsPackage = ExtensionPackages.Inspect(mvsArchive, trust, RunMode.Simulation);
         bool missingMvsRejected = false;

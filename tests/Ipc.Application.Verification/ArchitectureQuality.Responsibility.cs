@@ -83,14 +83,14 @@ static partial class ArchitectureQuality
         var original = new ParcelOperation(Wire.Id(), "legacy3-original", "00091", Wire.Hash("legacy3-observation"), DateTimeOffset.UtcNow,
             Wire.Hash(Wire.Encode(c)), c, new() { [c.Scale!.InstanceId] = new string('A', 64) }, c.Weight, null, ParcelState.WaitingWeight,
             null, null, null, "Original pre-upgrade same-parcel weight wait");
-        NonCurrentStorageFixture.Create(path,"direct-plc",3,original);
+        NonCurrentStorageFixture.Create(path, "direct-plc", 3, original);
         string body;
         using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))
         { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_operations"; body = (string)q.ExecuteScalar()!; }
         try { using var upgraded = new ParcelRepository(path, "direct-plc"); Check(false, "non-current DB3 identity must be refused before any write"); }
         catch (InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录"), "DB3 unresolved originals refuse before any format conversion"); }
-        using(var readOnly=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=Path.Combine(path,"direct-plc.db"),Mode=SqliteOpenMode.ReadOnly,Pooling=false}.ToString()))
-        {readOnly.Open();using var q=readOnly.CreateCommand();q.CommandText="SELECT body FROM parcel_operations";Check((string)q.ExecuteScalar()! == body,"old request JSON remains byte-identical through read-only inspection");}
+        using (var readOnly = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
+        { readOnly.Open(); using var q = readOnly.CreateCommand(); q.CommandText = "SELECT body FROM parcel_operations"; Check((string)q.ExecuteScalar()! == body, "old request JSON remains byte-identical through read-only inspection"); }
         using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(path, "direct-plc.db"), Pooling = false }.ToString()))
         {
             db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT max(version) FROM platform_migrations";
@@ -98,9 +98,9 @@ static partial class ArchitectureQuality
             q.CommandText = "UPDATE parcel_operations SET body=$body";
             q.Parameters.AddWithValue("$body", Wire.Encode(original with { State = ParcelState.Abandoned, Reason = "Synthetic old-release inspected local cancellation; no request attempted" })); q.ExecuteNonQuery();
         }
-        var settledHash=Wire.FileHash(Path.Combine(path,"direct-plc.db"));
-        try{using var denied=new ParcelRepository(path,"direct-plc");Check(false,"settled old format must refuse");}
-        catch(InvalidDataException){Check(Wire.FileHash(Path.Combine(path,"direct-plc.db"))==settledHash,"explicit old local settlement still cannot authorize schema conversion");}
+        var settledHash = Wire.FileHash(Path.Combine(path, "direct-plc.db"));
+        try { using var denied = new ParcelRepository(path, "direct-plc"); Check(false, "settled old format must refuse"); }
+        catch (InvalidDataException) { Check(Wire.FileHash(Path.Combine(path, "direct-plc.db")) == settledHash, "explicit old local settlement still cannot authorize schema conversion"); }
     }
     static async Task OverloadChecks()
     {
@@ -139,7 +139,7 @@ static partial class ArchitectureQuality
         await using (var app = await Open(c, "config-audit"))
         {
             await Maintenance(app); var s = await app.SnapshotAsync();
-            beforeConfigurationRevision=s.Configuration.Revision;
+            beforeConfigurationRevision = s.Configuration.Revision;
             var candidate = s.Configuration.Effective with { TimeoutMs = 1800 };
             Check((await app.ValidateConfigurationAsync(candidate)).Status == "Validated" && (await app.SnapshotAsync()).Configuration.Pending is null, "full topology candidate can be validated without saving or activating");
             app.Boundary = p => { if (p == "AfterConfigurationStaged") throw new IOException("Synthetic envelope/audit interruption"); };
@@ -151,7 +151,7 @@ static partial class ArchitectureQuality
             var s = await app.SnapshotAsync(); Check(s.Configuration.Effective.TimeoutMs == 1800, "controlled restart activates complete original candidate");
             using var db = new SqliteConnection("Data Source=" + Path.Combine(DirectoryFor("config-audit", c), "sportmaster.db")); db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_configuration_audit";
             var audit = Wire.Decode<ConfigurationChangeAudit>((string)q.ExecuteScalar()!);
-            Check(audit.Authorization is not null && audit.Actor?.Authority != "software-administrator" && audit.Status == "Activated" && audit.BeforeRevision == beforeConfigurationRevision && audit.AfterRevision == beforeConfigurationRevision+3 && s.Configuration.Revision == beforeConfigurationRevision+3 && s.Configuration.Activation?.Outcome == "Activated" && audit.BeforeHash != audit.CandidateHash && audit.Reason.Contains("timeout"), "restart closes configuration audit with original management authorization/operator/reason, before/after revisions and exact hashes");
+            Check(audit.Authorization is not null && audit.Actor?.Authority != "software-administrator" && audit.Status == "Activated" && audit.BeforeRevision == beforeConfigurationRevision && audit.AfterRevision == beforeConfigurationRevision + 3 && s.Configuration.Revision == beforeConfigurationRevision + 3 && s.Configuration.Activation?.Outcome == "Activated" && audit.BeforeHash != audit.CandidateHash && audit.Reason.Contains("timeout"), "restart closes configuration audit with original management authorization/operator/reason, before/after revisions and exact hashes");
             await ManagementModeFixture.Authorize(app);
             Check((await app.StageConfigurationAsync(0, s.Configuration.Effective, "Stale synthetic editor")).Status == "Rejected", "configuration CAS still rejects a stale full editor after activation");
         }

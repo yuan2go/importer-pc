@@ -36,22 +36,22 @@ public sealed partial class ParcelRepository
         HashSet<string> pendingReceipts = []; using (var r = c.ExecuteReader()) while (r.Read()) pendingReceipts.Add(r.GetString(0));
         c.CommandText = "SELECT body FROM parcel_operations UNION ALL SELECT body FROM parcel_archives WHERE id IN (SELECT operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable'))";
         using (var r = c.ExecuteReader()) while (r.Read())
-        {
-            var op = Wire.Decode<ParcelOperation>(r.GetString(0));
-            ValidateConsumerConfiguration(op.FrozenConfiguration, application, config.Effective);
-            if (!Enum.IsDefined(op.State) || op.ConfigurationHash != Wire.Hash(Wire.Encode(op.FrozenConfiguration)))
-                throw new InvalidDataException("Unknown/changed frozen operation format; retain packages");
-            foreach (var stage in new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>())
-                if (!Enum.IsDefined(stage.State) || stage.Request is null || stage.Replies is null || stage.Attempts is < 0 or > 1 ||
-                    stage.Request.ApplicationId != application || stage.Request.OperationId != op.Id || stage.Request.ConfigurationHash != op.ConfigurationHash ||
-                    !ParcelBindings.All(op.FrozenConfiguration).Any(b => Wire.Encode(b) == Wire.Encode(stage.Request.Binding)))
-                    throw new InvalidDataException("Unknown/changed frozen stage identity; retain packages");
-            var terminal = op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application == "sportmaster" && op.State == ParcelState.SlotResolved;
-            var pendingReceipt = pendingReceipts.Remove(op.Id);
-            var unsettledStage = new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
-            if (!terminal || op.RecoveryRequired || unsettledStage || op.FrozenConfiguration.Images is not null && !op.ImageReleased || pendingReceipt)
-                foreach (var package in op.FrozenConfiguration.Extensions?.Packages ?? []) required.Add(package);
-        }
+            {
+                var op = Wire.Decode<ParcelOperation>(r.GetString(0));
+                ValidateConsumerConfiguration(op.FrozenConfiguration, application, config.Effective);
+                if (!Enum.IsDefined(op.State) || op.ConfigurationHash != Wire.Hash(Wire.Encode(op.FrozenConfiguration)))
+                    throw new InvalidDataException("Unknown/changed frozen operation format; retain packages");
+                foreach (var stage in new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>())
+                    if (!Enum.IsDefined(stage.State) || stage.Request is null || stage.Replies is null || stage.Attempts is < 0 or > 1 ||
+                        stage.Request.ApplicationId != application || stage.Request.OperationId != op.Id || stage.Request.ConfigurationHash != op.ConfigurationHash ||
+                        !ParcelBindings.All(op.FrozenConfiguration).Any(b => Wire.Encode(b) == Wire.Encode(stage.Request.Binding)))
+                        throw new InvalidDataException("Unknown/changed frozen stage identity; retain packages");
+                var terminal = op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application == "sportmaster" && op.State == ParcelState.SlotResolved;
+                var pendingReceipt = pendingReceipts.Remove(op.Id);
+                var unsettledStage = new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
+                if (!terminal || op.RecoveryRequired || unsettledStage || op.FrozenConfiguration.Images is not null && !op.ImageReleased || pendingReceipt)
+                    foreach (var package in op.FrozenConfiguration.Extensions?.Packages ?? []) required.Add(package);
+            }
         if (pendingReceipts.Count != 0) throw new InvalidDataException("Original receipt occurrence lacks its owning operation; retain packages");
         return required.ToArray();
     }

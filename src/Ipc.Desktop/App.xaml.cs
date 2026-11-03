@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Ipc.Desktop;
+
 public partial class App : global::System.Windows.Application
 {
     IHost? host;
@@ -13,10 +14,10 @@ public partial class App : global::System.Windows.Application
         base.OnStartup(e);
         try
         {
-            var map = new Dictionary<string,string>(StringComparer.Ordinal);
-            for(var i=0;i<e.Args.Length;i+=2)
+            var map = new Dictionary<string, string>(StringComparer.Ordinal);
+            for (var i = 0; i < e.Args.Length; i += 2)
             {
-                if(i+1>=e.Args.Length || e.Args[i] is not ("--config" or "--data-root" or "--view" or "--layout") || e.Args[i+1].StartsWith("--",StringComparison.Ordinal) || !map.TryAdd(e.Args[i],e.Args[i+1]))
+                if (i + 1 >= e.Args.Length || e.Args[i] is not ("--config" or "--data-root" or "--view" or "--layout") || e.Args[i + 1].StartsWith("--", StringComparison.Ordinal) || !map.TryAdd(e.Args[i], e.Args[i + 1]))
                     throw new ArgumentException("启动参数无效；支持 --config、--data-root、--view、--layout，每项仅一个值。");
             }
             var root = map.GetValueOrDefault("--config", System.IO.Path.Combine(AppContext.BaseDirectory, "config"));

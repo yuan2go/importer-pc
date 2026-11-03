@@ -167,9 +167,27 @@ public sealed class ConfigurationSaveReviewWindow : Window
     static TextBlock Label(string value) => new() { Text = value, Margin = new(0, 0, 0, 6), Foreground = Brush("#25384B") };
     internal static DataGrid ChangeTable(ConfigurationChangeItem[] changes)
     {
-        var table = new DataGrid { ItemsSource = changes, IsReadOnly = true, AutoGenerateColumns = false, CanUserAddRows = false, CanUserDeleteRows = false, CanUserResizeRows = false,
-            HeadersVisibility = DataGridHeadersVisibility.Column, GridLinesVisibility = DataGridGridLinesVisibility.Horizontal, HorizontalGridLinesBrush = Brush("#E5E9EF"),
-            Background = Brushes.White, BorderBrush = Brush("#E1E5EB"), BorderThickness = new(1), RowHeaderWidth = 0, RowHeight = double.NaN, MinRowHeight = 44, MinHeight = 80, FontSize = UiTypography.Body, SelectionMode = DataGridSelectionMode.Single };
+        var table = new DataGrid
+        {
+            ItemsSource = changes,
+            IsReadOnly = true,
+            AutoGenerateColumns = false,
+            CanUserAddRows = false,
+            CanUserDeleteRows = false,
+            CanUserResizeRows = false,
+            HeadersVisibility = DataGridHeadersVisibility.Column,
+            GridLinesVisibility = DataGridGridLinesVisibility.Horizontal,
+            HorizontalGridLinesBrush = Brush("#E5E9EF"),
+            Background = Brushes.White,
+            BorderBrush = Brush("#E1E5EB"),
+            BorderThickness = new(1),
+            RowHeaderWidth = 0,
+            RowHeight = double.NaN,
+            MinRowHeight = 44,
+            MinHeight = 80,
+            FontSize = UiTypography.Body,
+            SelectionMode = DataGridSelectionMode.Single
+        };
         var textStyle = new Style(typeof(TextBlock)); textStyle.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap)); textStyle.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(8)));
         table.Columns.Add(new DataGridTextColumn { Header = "设置", Binding = new Binding(nameof(ConfigurationChangeItem.Label)), Width = new(2, DataGridLengthUnitType.Star), ElementStyle = textStyle });
         table.Columns.Add(new DataGridTextColumn { Header = "所在页面", Binding = new Binding(nameof(ConfigurationChangeItem.Location)), Width = new(1.5, DataGridLengthUnitType.Star), ElementStyle = textStyle });

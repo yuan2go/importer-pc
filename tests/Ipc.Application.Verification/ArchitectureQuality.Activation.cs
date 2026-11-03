@@ -77,8 +77,8 @@ static partial class ArchitectureQuality
         public async Task StartAsync(CancellationToken t) { await inner.StartAsync(t); Environment.Exit(73); }
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
-        public Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t) => inner.ResolveSlotAsync(r,t);
-        public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r,t);
+        public Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t) => inner.ResolveSlotAsync(r, t);
+        public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }

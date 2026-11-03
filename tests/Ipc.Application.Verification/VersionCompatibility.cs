@@ -39,10 +39,10 @@ static class VersionCompatibility
             {
                 var rcsProject = global::System.Xml.Linq.XDocument.Load(Path.Combine(workspace, "src", "Ipc.Integrations.SportmasterRcs", "Ipc.Integrations.SportmasterRcs.csproj"));
                 var rcsVersion = rcsProject.Descendants("Version").Single().Value;
-                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration","sportmaster-rcs",rcsVersion,"SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
-                Pass(policy.Require(rcs)=="builtin-reference","built-in RCS and explicit simulation capabilities match the current business declaration");
-                Reject(()=>policy.Require(rcs.Select(p=>p.Kind=="integration"?p with{Implementation="extension:sportmaster.rcs-task/sportmaster-rcs-task"}:p)),"SM external RCS is not a current compatible provider");
-                Reject(()=>policy.Require(rcs.Select(p=>p.Kind=="integration"?p with{Version="1.0.2"}:p).ToArray()),"old immutable RCS version is not silently relabelled for new host");
+                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration", "sportmaster-rcs", rcsVersion, "SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
+                Pass(policy.Require(rcs) == "builtin-reference", "built-in RCS and explicit simulation capabilities match the current business declaration");
+                Reject(() => policy.Require(rcs.Select(p => p.Kind == "integration" ? p with { Implementation = "extension:sportmaster.rcs-task/sportmaster-rcs-task" } : p)), "SM external RCS is not a current compatible provider");
+                Reject(() => policy.Require(rcs.Select(p => p.Kind == "integration" ? p with { Version = "1.0.2" } : p).ToArray()), "old immutable RCS version is not silently relabelled for new host");
             }
             int constructed = 0; factory.Boundary = _ => constructed++;
             var capability = config.Wcs ?? config.Plc!;
@@ -92,14 +92,14 @@ static class VersionCompatibility
             await using var runtime = new ParcelRuntime(launch, flow, new ParcelCapabilityFactory(launch, policy));
             await runtime.StartAsync(CancellationToken.None);
             var before = await runtime.SnapshotAsync();
-            for(var pauseAttempt=0;pauseAttempt<100 && !before.Paused;pauseAttempt++)
-            { await runtime.CommandAsync(new(Wire.Id(),before.Revision,"Pause"));await Task.Delay(10);before=await runtime.SnapshotAsync(); }
-            Pass(before.Paused,"explicit pause is persisted before configuration validation");
+            for (var pauseAttempt = 0; pauseAttempt < 100 && !before.Paused; pauseAttempt++)
+            { await runtime.CommandAsync(new(Wire.Id(), before.Revision, "Pause")); await Task.Delay(10); before = await runtime.SnapshotAsync(); }
+            Pass(before.Paused, "explicit pause is persisted before configuration validation");
             await ManagementModeFixture.Authorize(runtime);
             before = await runtime.SnapshotAsync();
-            for(var settle=0;settle<100 && before.Availability?.Configure!=true;settle++){await Task.Delay(10);before=await runtime.SnapshotAsync();}
+            for (var settle = 0; settle < 100 && before.Availability?.Configure != true; settle++) { await Task.Delay(10); before = await runtime.SnapshotAsync(); }
             var rejected = await runtime.StageConfigurationAsync(before.Configuration.Revision, Replace(capability with { Version = "9.0.0" }), "Verify incompatible provider version rejection");
-            Console.WriteLine("VC01 stage="+Wire.Encode(rejected));
+            Console.WriteLine("VC01 stage=" + Wire.Encode(rejected));
             Pass(rejected.Status == "Rejected" && rejected.Reason.Contains("not declared compatible", StringComparison.Ordinal) && Wire.Encode((await runtime.SnapshotAsync()).Configuration) == Wire.Encode(before.Configuration), "actual maintenance reaches compatibility rejection without replacing Effective/Pending");
         }
         Console.WriteLine("PASS VC01 COMPLETE");

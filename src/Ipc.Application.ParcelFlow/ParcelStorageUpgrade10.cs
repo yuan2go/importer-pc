@@ -117,10 +117,18 @@ public sealed partial class ParcelRepository
         using var audit = db.CreateCommand(); audit.Transaction = tx;
         audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'StorageFormatUpgraded',$owner,$detail)";
         audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$owner", application);
-        audit.Parameters.AddWithValue("$detail", Wire.Encode(new { From = predecessor, To = CurrentStorageVersion, Actor = actor, Backup = backupPath, BackupHash = backupHash,
-            OriginalDatabaseHash = expectedDatabaseHash, OriginalWalHash = expectedWalHash,
+        audit.Parameters.AddWithValue("$detail", Wire.Encode(new
+        {
+            From = predecessor,
+            To = CurrentStorageVersion,
+            Actor = actor,
+            Backup = backupPath,
+            BackupHash = backupHash,
+            OriginalDatabaseHash = expectedDatabaseHash,
+            OriginalWalHash = expectedWalHash,
             Source = typeof(ParcelRepository).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
-            Policy = "Derived metric keys and transactional shift/fact projections; original requests, receipts, configuration and identities unchanged; software paused; no replay" }));
+            Policy = "Derived metric keys and transactional shift/fact projections; original requests, receipts, configuration and identities unchanged; software paused; no replay"
+        }));
         audit.ExecuteNonQuery();
         RequireCurrentStorage(db, application, tx); RequireSchema(db, application, CurrentStorageVersion, tx);
         boundary?.Invoke("BeforeStorageTransactionCommit");

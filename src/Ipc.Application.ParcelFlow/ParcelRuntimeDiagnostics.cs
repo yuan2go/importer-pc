@@ -26,7 +26,7 @@ public sealed partial class ParcelRuntime : IRuntimeDiagnosticsControl
                 var prior = diagnosticSettings;
                 if (prior.DebugEnabled == enabled) return prior;
                 var next = new RuntimeDiagnosticSettings(enabled, checked(prior.Revision + 1), DateTimeOffset.UtcNow)
-                    { ExpiresAt = enabled ? DateTimeOffset.UtcNow + DebugLoggingLifetime : null };
+                { ExpiresAt = enabled ? DateTimeOffset.UtcNow + DebugLoggingLifetime : null };
                 Volatile.Write(ref diagnosticSettings, next);
                 debugExpiry?.Dispose(); debugExpiry = null;
                 debugStarted = System.Diagnostics.Stopwatch.GetTimestamp();
@@ -77,8 +77,15 @@ public sealed partial class ParcelRuntime : IRuntimeDiagnosticsControl
         string body;
         try { body = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(response.BodyBase64[..length])); }
         catch (FormatException) { body = "原响应编码无效，请查看原始回执。"; }
-        return new { response.StatusCode, response.BodyHash, response.Complete, Body = DiagnosticFragment(body),
-            EncodedCharacters = response.BodyBase64.Length, Truncated = length != response.BodyBase64.Length };
+        return new
+        {
+            response.StatusCode,
+            response.BodyHash,
+            response.Complete,
+            Body = DiagnosticFragment(body),
+            EncodedCharacters = response.BodyBase64.Length,
+            Truncated = length != response.BodyBase64.Length
+        };
     }
     static object DiagnosticFragment(string? text, int maximum = 8192)
     {

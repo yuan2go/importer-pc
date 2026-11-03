@@ -27,12 +27,12 @@ public static class StationShiftSchedule
         var zone = TimeZoneInfo.FindSystemTimeZoneById(policy.TimeZoneId);
         var date = TimeZoneInfo.ConvertTime(now, zone).Date;
         foreach (var day in new[] { date.AddDays(-1), date })
-        foreach (var shift in policy.Shifts)
-        {
-            var start = Boundary(day.AddMinutes(shift.StartMinute), zone);
-            var end = Boundary(day.AddMinutes(shift.EndMinute <= shift.StartMinute ? shift.EndMinute + 1440 : shift.EndMinute), zone);
-            if (now >= start && now < end) return new(shift.Name, start, end);
-        }
+            foreach (var shift in policy.Shifts)
+            {
+                var start = Boundary(day.AddMinutes(shift.StartMinute), zone);
+                var end = Boundary(day.AddMinutes(shift.EndMinute <= shift.StartMinute ? shift.EndMinute + 1440 : shift.EndMinute), zone);
+                if (now >= start && now < end) return new(shift.Name, start, end);
+            }
         throw new InvalidDataException("当前时刻未能对应班次，请核对站点时区");
     }
     static DateTimeOffset Boundary(DateTime value, TimeZoneInfo zone)

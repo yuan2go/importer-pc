@@ -47,7 +47,8 @@ internal sealed class MvsTimings
                 var s = p.Value; var recent = s.Recent.Take((int)Math.Min(s.Count, Window)).Order().ToArray();
                 double Percentile(double fraction) => recent[Math.Clamp((int)Math.Ceiling(recent.Length * fraction) - 1, 0, recent.Length - 1)];
                 return new MvsStageTiming(s.Count, s.Total, s.Min, s.Max, recent.Length, Percentile(.5), Percentile(.95), Percentile(.99));
-            }), frames.ToArray()) { FrameTraceCount = frameTraceCount };
+            }), frames.ToArray())
+            { FrameTraceCount = frameTraceCount };
     }
 }
 internal sealed record MvsTimingSnapshot(double ElapsedMs, int PercentileWindow, Dictionary<string, MvsStageTiming> Stages, MvsFrameLatency[] RecentFrames)

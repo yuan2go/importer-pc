@@ -16,8 +16,8 @@ public sealed record DeploymentLocation(string ApplicationId, string SourceCommi
 public sealed record DeploymentMedia(string Root, string ApplicationId, string SourceCommit, Dictionary<string, string> Files)
 {
     // A byte inventory is integrity evidence, not publisher trust. The maintainer selects trusted media.
-    public static DeploymentMedia Inspect(string root,string application)=>Inspect(root,application,CancellationToken.None);
-    public static DeploymentMedia Inspect(string root,string application,CancellationToken token)
+    public static DeploymentMedia Inspect(string root, string application) => Inspect(root, application, CancellationToken.None);
+    public static DeploymentMedia Inspect(string root, string application, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         root = Path.GetFullPath(root); DeploymentPaths.RequireOrdinaryAncestors(root);
@@ -34,15 +34,15 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
                 !release.SourceCommit.All(char.IsAsciiHexDigit) || release.Files.Count is < 1 or > 4096 ||
                 source is not null && source != release.SourceCommit) throw new InvalidDataException("Media application/source differs");
             source = release.SourceCommit;
-            foreach (var entry in release.Files.Append(new("application-release.json", Wire.FileHash(registration,token))))
+            foreach (var entry in release.Files.Append(new("application-release.json", Wire.FileHash(registration, token))))
             {
                 if (!ExtensionPackages.SafePath(entry.Key) || !ExtensionSchema.IsHash(entry.Value)) throw new InvalidDataException("Unsafe media entry");
                 var path = Path.Combine(directory, entry.Key); DeploymentPaths.RequireOrdinaryAncestors(path);
-                if (new FileInfo(path).Length > 256L * 1024 * 1024 || Wire.FileHash(path,token) != entry.Value) throw new InvalidDataException("Media integrity failed: " + entry.Key);
+                if (new FileInfo(path).Length > 256L * 1024 * 1024 || Wire.FileHash(path, token) != entry.Value) throw new InvalidDataException("Media integrity failed: " + entry.Key);
                 files.Add(area + "/" + entry.Key, entry.Value);
             }
             // Reject extra files (including DLL search-path injection), rather than copying them.
-            foreach (var path in Enumerate(directory,token))
+            foreach (var path in Enumerate(directory, token))
             {
                 DeploymentPaths.RequireOrdinaryAncestors(path);
                 if (File.Exists(path) && !files.ContainsKey(area + "/" + Path.GetRelativePath(directory, path).Replace('\\', '/')))
@@ -66,16 +66,16 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
                     throw new InvalidDataException("Invalid or duplicate media inventory entry");
                 var name = line[66..]; var path = Path.Combine(root, name); DeploymentPaths.RequireOrdinaryAncestors(path);
                 var hash = line[..64].ToUpperInvariant();
-                if (new FileInfo(path).Length > 256L * 1024 * 1024 || Wire.FileHash(path,token) != hash) throw new InvalidDataException("Outer media integrity failed: " + name);
+                if (new FileInfo(path).Length > 256L * 1024 * 1024 || Wire.FileHash(path, token) != hash) throw new InvalidDataException("Outer media integrity failed: " + name);
                 if (files.TryGetValue(name, out var registered) && registered != hash) throw new InvalidDataException("Media inventories disagree");
                 files[name] = hash;
             }
             if (files.Keys.Any(name => !names.Contains(name))) throw new InvalidDataException("Outer media inventory is incomplete");
-            files.Add("SHA256SUMS", Wire.FileHash(inventory,token));
+            files.Add("SHA256SUMS", Wire.FileHash(inventory, token));
         }
         return new(root, application, source!, files);
     }
-    static IEnumerable<string> Enumerate(string root,CancellationToken token)
+    static IEnumerable<string> Enumerate(string root, CancellationToken token)
     {
         var directories = new Stack<string>(); directories.Push(root); int count = 0;
         while (directories.TryPop(out var directory))

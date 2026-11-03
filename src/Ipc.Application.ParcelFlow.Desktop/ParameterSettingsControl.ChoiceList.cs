@@ -13,8 +13,15 @@ public partial class ParameterSettingsControl
     {
         var choices = parameter.Field.Choices!;
         var wrap = new WrapPanel();
-        var checks = choices.Select(value => new CheckBox { Content = value == "All" && parameter.Field.Key == "code.formats" ? "全部码制" : value,
-            Tag = value, MinWidth = 148, MinHeight = 44, Margin = new(0, 0, 8, 0), VerticalContentAlignment = VerticalAlignment.Center }).ToArray();
+        var checks = choices.Select(value => new CheckBox
+        {
+            Content = value == "All" && parameter.Field.Key == "code.formats" ? "全部码制" : value,
+            Tag = value,
+            MinWidth = 148,
+            MinHeight = 44,
+            Margin = new(0, 0, 8, 0),
+            VerticalContentAlignment = VerticalAlignment.Center
+        }).ToArray();
         foreach (var check in checks) { AutomationProperties.SetName(check, label + "：" + check.Content); wrap.Children.Add(check); }
         var section = new Expander { Content = wrap, IsExpanded = false, MinHeight = 44 };
         var updating = false;

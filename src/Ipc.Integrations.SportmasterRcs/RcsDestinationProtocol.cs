@@ -18,7 +18,10 @@ internal static class RcsDestinationProtocol
         var requestId = checked(options.RequestIdBase + sequence);
         var body = JsonSerializer.Serialize(new
         {
-            source = options.Source, version = 1, requestId, locale = options.Locale,
+            source = options.Source,
+            version = 1,
+            requestId,
+            locale = options.Locale,
             data = new[] { new { index = 1, command = Command, @params = new {
                 zoneId = options.ZoneId, projectId = options.ProjectId, loadCode = payload.ParcelCode,
                 stationCode = position.Station, bcrCode = position.Bcr, specifiedChute = options.SpecifiedChute,

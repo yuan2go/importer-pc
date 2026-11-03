@@ -25,9 +25,12 @@ public sealed partial class SupplyStore
             throw new ArgumentException("History start must precede exclusive end", nameof(query));
         var q = query with
         {
-            SessionId = HistoryText(query.SessionId), BoxBarcode = HistoryText(query.BoxBarcode),
-            ItemBarcode = HistoryText(query.ItemBarcode), Sku = HistoryText(query.Sku),
-            TaskId = HistoryText(query.TaskId), Lane = HistoryText(query.Lane)
+            SessionId = HistoryText(query.SessionId),
+            BoxBarcode = HistoryText(query.BoxBarcode),
+            ItemBarcode = HistoryText(query.ItemBarcode),
+            Sku = HistoryText(query.Sku),
+            TaskId = HistoryText(query.TaskId),
+            Lane = HistoryText(query.Lane)
         };
         var operations = q.Entity == HistoryEntity.Operations;
         var table = operations ? "operations" : "sessions";
@@ -109,7 +112,8 @@ public sealed partial class SupplyStore
             var session = Wire.Decode<StationSession>(reader.GetString(0));
             var operation = reader.IsDBNull(1) ? null : Wire.Decode<SupplyOperation>(reader.GetString(1));
             entries.Add(new(operation?.Id ?? session.Id, session.Id, session, operation,
-                reader.IsDBNull(2) ? null : HistoryDate(reader.GetString(2)), reader.GetInt32(3), reader.GetInt32(4), reader.GetInt32(5)) { AttemptCount = reader.GetInt32(6), IncompleteReceiptCount = reader.GetInt32(7) });
+                reader.IsDBNull(2) ? null : HistoryDate(reader.GetString(2)), reader.GetInt32(3), reader.GetInt32(4), reader.GetInt32(5))
+            { AttemptCount = reader.GetInt32(6), IncompleteReceiptCount = reader.GetInt32(7) });
         }
         return new(q, entries.ToArray(), total);
     }
@@ -123,7 +127,8 @@ public sealed partial class SupplyStore
         var opened = Scalar("SELECT json_extract(json,'$.OpenedAt') FROM sessions WHERE id=$a", sessionId);
         var requests = Read<BusinessRequest>("SELECT json FROM requests WHERE session=$a AND owner=$a ORDER BY coalesce(julianday(json_extract(json,'$.CreatedAt')),0),id", sessionId);
         var details = requests.Select(request => new RequestDetail(request, Attempts(request.Id), Responses(request.Id),
-            Audits(request.OwnerId).Concat(Audits(request.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ThenBy(a => a.Id, StringComparer.Ordinal).ToArray()) { Conflicts = Conflicts(request.Id), Receipts = Receipts(request.Id) }).ToArray();
+            Audits(request.OwnerId).Concat(Audits(request.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ThenBy(a => a.Id, StringComparer.Ordinal).ToArray())
+        { Conflicts = Conflicts(request.Id), Receipts = Receipts(request.Id) }).ToArray();
         var operations = int.Parse(Scalar("SELECT count(*) FROM operations WHERE session=$a", sessionId)!, CultureInfo.InvariantCulture);
         return new(session, HistoryDate(opened), details,
             Audits(sessionId).OrderBy(a => a.At).ThenBy(a => a.Id, StringComparer.Ordinal).ToArray(), operations, AcceptedQuantity(sessionId));

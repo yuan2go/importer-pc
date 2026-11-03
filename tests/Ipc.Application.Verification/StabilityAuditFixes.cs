@@ -65,64 +65,69 @@ static class StabilityAuditFixes
             var database = Path.Combine(directory, "sportmaster.db"); File.Copy(baseline, database);
             using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Pooling = false }.ToString()))
             {
-                db.Open();using var sql=db.CreateCommand();sql.CommandText="PRAGMA journal_mode=DELETE";sql.ExecuteScalar();
-                sql.CommandText=test.Sql;sql.ExecuteNonQuery();
+                db.Open(); using var sql = db.CreateCommand(); sql.CommandText = "PRAGMA journal_mode=DELETE"; sql.ExecuteScalar();
+                sql.CommandText = test.Sql; sql.ExecuteNonQuery();
             }
-            var owners=HistoryOpenSafety.Owners(database);var bytes=HistoryOpenSafety.Snapshot(directory);var rejected=false;
+            var owners = HistoryOpenSafety.Owners(database); var bytes = HistoryOpenSafety.Snapshot(directory); var rejected = false;
             try { using var invalid = new ParcelRepository(directory, "sportmaster"); }
             catch (Exception e) when (e is InvalidDataException or SqliteException or System.Text.Json.JsonException) { rejected = true; }
             Check(rejected, test.Name + " refuses corrupted original history");
-            Check(HistoryOpenSafety.Owners(database)==owners, test.Name + " does not partially publish owner backfill");
-            Check(HistoryOpenSafety.Snapshot(directory)==bytes,test.Name+" leaves closed original database, sidecars and directory unchanged");
+            Check(HistoryOpenSafety.Owners(database) == owners, test.Name + " does not partially publish owner backfill");
+            Check(HistoryOpenSafety.Snapshot(directory) == bytes, test.Name + " leaves closed original database, sidecars and directory unchanged");
         }
         using (var repository = new ParcelRepository(fixture, "sportmaster"))
         {
             Check(repository.IntegrationBudget(new(1, 100)).PermanentHighWater == 2, "resident and archived numeric originals retain the allocation floor");
             repository.Backup(Path.Combine(root, "verified-originals.db"));
         }
-        SelfConsistentBlankOwners(baseline,root);
-        HistoryOpenSafety.ChangedArchiveRequest(baseline,root);
-        var scale=Path.Combine(root,"scale-originals");HistoryOpenBenchmark.Populate(scale,configuration);
-        var facts=HistoryOpenBenchmark.ReadFacts(scale);List<double> samples=[];
-        for(var i=0;i<3;i++)samples.Add(HistoryOpenBenchmark.Measure(scale,facts));
-        Check(facts.Resident==1000&&facts.Archived==1000&&facts.MaximumArchived==2000&&facts.Floor==2000,
+        SelfConsistentBlankOwners(baseline, root);
+        HistoryOpenSafety.ChangedArchiveRequest(baseline, root);
+        var scale = Path.Combine(root, "scale-originals"); HistoryOpenBenchmark.Populate(scale, configuration);
+        var facts = HistoryOpenBenchmark.ReadFacts(scale); List<double> samples = [];
+        for (var i = 0; i < 3; i++) samples.Add(HistoryOpenBenchmark.Measure(scale, facts));
+        Check(facts.Resident == 1000 && facts.Archived == 1000 && facts.MaximumArchived == 2000 && facts.Floor == 2000,
             "mixed public-open smoke retains 2000 permanent owners and highest archived allocation");
-        HistoryOpenSafety.Cancellation(scale,root);
-        ExtensionStore.AtomicWrite(Path.Combine(root,"HISTORY-CURRENT.json"),new{Rows=2000,Facts=facts,Samples=samples,
-            Scope="Current public-constructor smoke only; paired parent/candidate comparison is separate; no runtime/physical/24h qualification",
-            RuntimeSha256=Wire.FileHash(typeof(ParcelRepository).Assembly.Location)});
+        HistoryOpenSafety.Cancellation(scale, root);
+        ExtensionStore.AtomicWrite(Path.Combine(root, "HISTORY-CURRENT.json"), new
+        {
+            Rows = 2000,
+            Facts = facts,
+            Samples = samples,
+            Scope = "Current public-constructor smoke only; paired parent/candidate comparison is separate; no runtime/physical/24h qualification",
+            RuntimeSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location)
+        });
     }
 
-    static void SelfConsistentBlankOwners(string baseline,string root)
+    static void SelfConsistentBlankOwners(string baseline, string root)
     {
-        List<(string Name,bool Refused,bool BytesUnchanged,bool OwnersUnchanged,bool DirectoryUnchanged)> outcomes=[];
-        foreach(var (name,id) in new[]{("empty",""),("spaces","   "),("tab","\t")})
+        List<(string Name, bool Refused, bool BytesUnchanged, bool OwnersUnchanged, bool DirectoryUnchanged)> outcomes = [];
+        foreach (var (name, id) in new[] { ("empty", ""), ("spaces", "   "), ("tab", "\t") })
         {
-            var directory=Path.Combine(root,"consistent-owner-"+name);Directory.CreateDirectory(directory);
-            var file=Path.Combine(directory,"sportmaster.db");File.Copy(baseline,file);
+            var directory = Path.Combine(root, "consistent-owner-" + name); Directory.CreateDirectory(directory);
+            var file = Path.Combine(directory, "sportmaster.db"); File.Copy(baseline, file);
             string Owners()
             {
-                using var db=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=file,Mode=SqliteOpenMode.ReadOnly,Pooling=false}.ToString());db.Open();
-                using var q=db.CreateCommand();q.CommandText="SELECT id,operation,request,request_hash FROM parcel_integration_id_owners ORDER BY id";
-                using var r=q.ExecuteReader();List<object> rows=[];while(r.Read())rows.Add(new{Id=r.GetInt64(0),Operation=r.GetString(1),Request=r.GetString(2),Hash=r.GetString(3)});
+                using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
+                using var q = db.CreateCommand(); q.CommandText = "SELECT id,operation,request,request_hash FROM parcel_integration_id_owners ORDER BY id";
+                using var r = q.ExecuteReader(); List<object> rows = []; while (r.Read()) rows.Add(new { Id = r.GetInt64(0), Operation = r.GetString(1), Request = r.GetString(2), Hash = r.GetString(3) });
                 return Wire.Hash(Wire.Encode(rows));
             }
-            using(var db=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=file,Pooling=false}.ToString()))
+            using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Pooling = false }.ToString()))
             {
-                db.Open();using var q=db.CreateCommand();q.CommandText="PRAGMA journal_mode=DELETE";q.ExecuteScalar();
-                q.CommandText="SELECT body FROM parcel_archives WHERE id='op-1'";var original=Wire.Decode<ParcelOperation>((string)q.ExecuteScalar()!);
-                var request=original.Wcs!.Request with{Id=id};var changed=original with{Wcs=original.Wcs with{Request=request}};var body=Wire.Encode(changed);
-                using var tx=db.BeginTransaction();q.Transaction=tx;
-                q.CommandText="UPDATE parcel_archives SET body=$body,body_hash=$hash WHERE id='op-1'";q.Parameters.AddWithValue("$body",body);q.Parameters.AddWithValue("$hash",Wire.Hash(body));q.ExecuteNonQuery();
-                q.Parameters.Clear();q.CommandText="UPDATE parcel_integration_id_owners SET request=$request,request_hash=$hash WHERE id=1";
-                q.Parameters.AddWithValue("$request",id);q.Parameters.AddWithValue("$hash",Wire.Hash(Wire.Encode(request)));q.ExecuteNonQuery();tx.Commit();
+                db.Open(); using var q = db.CreateCommand(); q.CommandText = "PRAGMA journal_mode=DELETE"; q.ExecuteScalar();
+                q.CommandText = "SELECT body FROM parcel_archives WHERE id='op-1'"; var original = Wire.Decode<ParcelOperation>((string)q.ExecuteScalar()!);
+                var request = original.Wcs!.Request with { Id = id }; var changed = original with { Wcs = original.Wcs with { Request = request } }; var body = Wire.Encode(changed);
+                using var tx = db.BeginTransaction(); q.Transaction = tx;
+                q.CommandText = "UPDATE parcel_archives SET body=$body,body_hash=$hash WHERE id='op-1'"; q.Parameters.AddWithValue("$body", body); q.Parameters.AddWithValue("$hash", Wire.Hash(body)); q.ExecuteNonQuery();
+                q.Parameters.Clear(); q.CommandText = "UPDATE parcel_integration_id_owners SET request=$request,request_hash=$hash WHERE id=1";
+                q.Parameters.AddWithValue("$request", id); q.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(request))); q.ExecuteNonQuery(); tx.Commit();
             }
-            var bytes=Wire.FileHash(file);var owners=Owners();var snapshot=HistoryOpenSafety.Snapshot(directory);var refused=false;
-            try{using var invalid=new ParcelRepository(directory,"sportmaster");}catch(InvalidDataException){refused=true;}
-            var outcome=(Name:name,Refused:refused,BytesUnchanged:Wire.FileHash(file)==bytes,OwnersUnchanged:Owners()==owners,DirectoryUnchanged:HistoryOpenSafety.Snapshot(directory)==snapshot);outcomes.Add(outcome);
-            Console.WriteLine((refused?"PASS":"FAIL")+" WT054-IDENTITY "+System.Text.Json.JsonSerializer.Serialize(new{outcome.Name,outcome.Refused,outcome.BytesUnchanged,outcome.OwnersUnchanged,outcome.DirectoryUnchanged}));
+            var bytes = Wire.FileHash(file); var owners = Owners(); var snapshot = HistoryOpenSafety.Snapshot(directory); var refused = false;
+            try { using var invalid = new ParcelRepository(directory, "sportmaster"); } catch (InvalidDataException) { refused = true; }
+            var outcome = (Name: name, Refused: refused, BytesUnchanged: Wire.FileHash(file) == bytes, OwnersUnchanged: Owners() == owners, DirectoryUnchanged: HistoryOpenSafety.Snapshot(directory) == snapshot); outcomes.Add(outcome);
+            Console.WriteLine((refused ? "PASS" : "FAIL") + " WT054-IDENTITY " + System.Text.Json.JsonSerializer.Serialize(new { outcome.Name, outcome.Refused, outcome.BytesUnchanged, outcome.OwnersUnchanged, outcome.DirectoryUnchanged }));
         }
-        Check(outcomes.All(x=>x.Refused&&x.BytesUnchanged&&x.OwnersUnchanged&&x.DirectoryUnchanged),"self-consistent blank archived requests must refuse without rewriting original bytes or owners");
+        Check(outcomes.All(x => x.Refused && x.BytesUnchanged && x.OwnersUnchanged && x.DirectoryUnchanged), "self-consistent blank archived requests must refuse without rewriting original bytes or owners");
     }
     public static async Task Maintenance(string root)
     {

@@ -52,10 +52,10 @@ public sealed partial class ParcelRuntime
         var body = Wire.Encode(item); var hash = Wire.Hash(body);
         AtomicStorageWrite.Execute(db, tx =>
         {
-        using var c = db.CreateCommand(); c.Transaction = tx;
-        c.CommandText = "INSERT INTO parcel_ingress(id,position,received_at,state,body,body_hash,session) VALUES($id,$position,$at,'Pending',$body,$hash,$session)";
-        c.Parameters.AddWithValue("$id", id); c.Parameters.AddWithValue("$position", position); c.Parameters.AddWithValue("$at", at.ToString("O"));
-        c.Parameters.AddWithValue("$body", body); c.Parameters.AddWithValue("$hash", hash); c.Parameters.AddWithValue("$session", session); c.ExecuteNonQuery();
+            using var c = db.CreateCommand(); c.Transaction = tx;
+            c.CommandText = "INSERT INTO parcel_ingress(id,position,received_at,state,body,body_hash,session) VALUES($id,$position,$at,'Pending',$body,$hash,$session)";
+            c.Parameters.AddWithValue("$id", id); c.Parameters.AddWithValue("$position", position); c.Parameters.AddWithValue("$at", at.ToString("O"));
+            c.Parameters.AddWithValue("$body", body); c.Parameters.AddWithValue("$hash", hash); c.Parameters.AddWithValue("$session", session); c.ExecuteNonQuery();
         }, beforeBegin);
     }
     static void FinishIngress(SqliteConnection db, string id, string state, string detail)
@@ -80,8 +80,13 @@ public sealed partial class ParcelRuntime
             return new("Rejected", "Pause, drain and enter management mode; inspect original input and entity", repository!.Revision);
         var position = repository!.IngressPosition(command.Owner);
         if (position is null) return new("Rejected", "No interrupted input with this identity", repository.Revision);
-        repository.Commit(null, "InterruptedIngressInspected", Wire.Encode(new { Input = command.Owner, Reason = command.Value, Actor = ManagementEvidence,
-            Policy = "Receipt inspection only; original operation/request/raw/Unknown retained; never replay input" }), command: command, inspectedIngress: command.Owner);
+        repository.Commit(null, "InterruptedIngressInspected", Wire.Encode(new
+        {
+            Input = command.Owner,
+            Reason = command.Value,
+            Actor = ManagementEvidence,
+            Policy = "Receipt inspection only; original operation/request/raw/Unknown retained; never replay input"
+        }), command: command, inspectedIngress: command.Owner);
         if (!repository.HasInterruptedIngress(position)) interruptedPositions.TryRemove(position, out _);
         return repository.PriorCommand(command)!;
     }
@@ -109,7 +114,7 @@ public sealed partial class ParcelRepository
         c.CommandText = "SELECT body,body_hash FROM parcel_ingress WHERE state IN ('Pending','Interrupted')";
         using (var originals = c.ExecuteReader())
             while (originals.Read()) if (Wire.Hash(originals.GetString(0)) != originals.GetString(1))
-                throw new InvalidDataException("Unsettled ingress original checksum differs; preserve original database and restore its complete custody set");
+                    throw new InvalidDataException("Unsettled ingress original checksum differs; preserve original database and restore its complete custody set");
         c.CommandText = "UPDATE parcel_ingress SET state='Interrupted',detail='Previous owner ended before receipt disposition; inspect original entity and business facts; no replay' WHERE state='Pending'";
         c.ExecuteNonQuery();
         c.CommandText = "SELECT DISTINCT position FROM parcel_ingress WHERE state='Interrupted'";
@@ -138,9 +143,18 @@ public sealed partial class ParcelRepository
             var preview = body.Length <= 65536 ? body : body[..65536];
             if (characters + preview.Length > 524288 && rows.Count != 0) break;
             characters += preview.Length;
-            rows.Add(new { Id = r.GetString(0), Position = r.GetString(1), At = r.GetString(2), State = r.GetString(3), Body = preview,
-                OriginalSha256 = r.GetString(5), OriginalCharacters = body.Length, PreviewTruncated = preview.Length != body.Length,
-                Detail = r.IsDBNull(6) ? null : r.GetString(6) });
+            rows.Add(new
+            {
+                Id = r.GetString(0),
+                Position = r.GetString(1),
+                At = r.GetString(2),
+                State = r.GetString(3),
+                Body = preview,
+                OriginalSha256 = r.GetString(5),
+                OriginalCharacters = body.Length,
+                PreviewTruncated = preview.Length != body.Length,
+                Detail = r.IsDBNull(6) ? null : r.GetString(6)
+            });
         }
         return rows.ToArray();
     }

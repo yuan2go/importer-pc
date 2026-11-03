@@ -14,11 +14,19 @@ static partial class SportmasterRcs
     {
         await using var peer = new Peer { Mode = "timeout-left" };
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
-        var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0",
-            Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
+        var binding = Binding(peer.Endpoint) with
+        {
+            Implementation = "sportmaster-rcs",
+            Version = "1.0.0",
+            Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" }
+        };
         var c = HeartbeatConfiguration(workspace, binding) with { TimeoutMs = 1500 };
-        var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with { Driver = "tcp-line", Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+        var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with
+        {
+            Driver = "tcp-line",
+            Parameters = new()
+            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" }
+        }).ToArray();
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } };
         var directory = Path.Combine(root, "timeout-rescan"); Directory.CreateDirectory(directory);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);

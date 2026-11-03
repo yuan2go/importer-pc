@@ -34,7 +34,8 @@ static partial class ReceiptPreflightVerification
             };
             switch (kind)
             {
-                case "empty-fence": case "fence":
+                case "empty-fence":
+                case "fence":
                     ExtensionStore.AtomicWrite(Path.Combine(directory, "receipt-owner-fence.json"), kind == "empty-fence" ? Array.Empty<string>() : new[] { "synthetic-owner" }); break;
                 case "bad-json": File.WriteAllText(file, "{"); break;
                 case "wrong-file": File.Move(file, Path.Combine(Path.GetDirectoryName(file)!, "wrong-name.json")); break;
@@ -113,7 +114,7 @@ static partial class ReceiptPreflightVerification
             // Deliberate on-disk corruption, not an application command: Commit correctly
             // forbids changing a final receipt. The original child writer remains open.
             using var connection = new SqliteConnection(new SqliteConnectionStringBuilder
-                { DataSource = Path.Combine(directory, "station.db"), Mode = SqliteOpenMode.ReadWrite, Pooling = false }.ToString());
+            { DataSource = Path.Combine(directory, "station.db"), Mode = SqliteOpenMode.ReadWrite, Pooling = false }.ToString());
             connection.Open(); using var command = connection.CreateCommand();
             command.CommandText = "UPDATE receipt_occurrences SET json=json_set(json,'$.ContentSha256',$hash) WHERE id=$id";
             command.Parameters.AddWithValue("$hash", new string('0', 64)); command.Parameters.AddWithValue("$id", id);

@@ -12,7 +12,8 @@ static class ArchitectureClosureVerification
     static void Assert(bool value, string reason) { if (!value) throw new Exception("E13: " + reason); Console.WriteLine("PASS E13 " + reason); }
     static void Refuse(Action action, string reason)
     {
-        try { action(); } catch (Exception ex) when (ex is IOException or InvalidDataException or InvalidOperationException or CryptographicException)
+        try { action(); }
+        catch (Exception ex) when (ex is IOException or InvalidDataException or InvalidOperationException or CryptographicException)
         { Console.WriteLine("PASS E13 refused " + reason + " / " + ex.GetType().Name); return; }
         throw new Exception("E13 accepted: " + reason);
     }
@@ -102,8 +103,17 @@ static class ArchitectureClosureVerification
         await IntegrationJourney(area, url, manager, trustFile, op.Package, ip.Package, integrationArchive, key, im, integration);
         await AssemblyJourney(workspace, area, url);
         Assert(Wire.Encode(Host()) == frozen, "host hashes remain unchanged after install, execution, recovery and stop");
-        File.WriteAllText(Path.Combine(area, "closure-13.json"), Wire.Encode(new { Result = "PASS_REFERENCE", HostHashes = Host(), ObservationSource = om.SourceCommit, IntegrationSource = im.SourceCommit,
-            Packages = manager.Inventory(), Operations = manager.Operations(), Windows = "WINDOWS_NOT_RUN", ActualWpfScreenshots = 0 }));
+        File.WriteAllText(Path.Combine(area, "closure-13.json"), Wire.Encode(new
+        {
+            Result = "PASS_REFERENCE",
+            HostHashes = Host(),
+            ObservationSource = om.SourceCommit,
+            IntegrationSource = im.SourceCommit,
+            Packages = manager.Inventory(),
+            Operations = manager.Operations(),
+            Windows = "WINDOWS_NOT_RUN",
+            ActualWpfScreenshots = 0
+        }));
     }
     static async Task ManagedReferences(string workspace, string area, ExtensionManifest om, string observationArchive, RSA key, ExtensionStore manager, string observation)
     {
@@ -182,13 +192,17 @@ static class ArchitectureClosureVerification
     static async Task IntegrationJourney(string area, string url, ExtensionStore manager, string trustFile, PackageReference observation, PackageReference integration,
         string archive, RSA key, ExtensionManifest manifest, string binary)
     {
-        var configuration = Rig.Config(url) with { Version = "E13-DEPLOY-1", Extensions = new([observation, integration],
+        var configuration = Rig.Config(url) with
+        {
+            Version = "E13-DEPLOY-1",
+            Extensions = new([observation, integration],
             [new("reader-a", observation.Id, "barcode-source", "SIM-E13-A", true, new() { ["input.prefix"] = "000" }),
              new("reader-b", observation.Id, "barcode-source", "SIM-E13-B", true, new() { ["input.prefix"] = "111" })],
             [new("receiver-a", integration.Id, "reference-http", true, new() { ["metadata.label"] = "primary" }),
              new("receiver-b", integration.Id, "reference-http", true, new() { ["metadata.label"] = "secondary" })],
             [new("requests", "receiver-a", new("reference-target-a", "1", "SIMULATION-v1", url)),
-             new("reference-query", "receiver-b", new("reference-target-b", "2", "SIMULATION-v1", url))]) };
+             new("reference-query", "receiver-b", new("reference-target-b", "2", "SIMULATION-v1", url))])
+        };
         configuration = configuration with { Devices = [new("left", "extension:reader-a", "SIM-E13-A", "1"), new("right", "extension:reader-b", "SIM-E13-B", "1")], Integration = configuration.Extensions!.Ports![0].Target };
         Assert(ExtensionDeployment.Validate(configuration.Extensions, configuration.Devices, manager).Length == 0, "two device and two service instances have separate identity/binding/parameter validation");
         var bad = configuration.Extensions with { Ports = [configuration.Extensions.Ports![0], configuration.Extensions.Ports[1] with { Port = "requests" }] };
@@ -257,7 +271,8 @@ static class ArchitectureClosureVerification
     }
     static async Task ThrowsData(Func<Task> action)
     {
-        try { await action(); } catch (InvalidDataException) { return; } throw new Exception("E13 expected exact identity refusal");
+        try { await action(); } catch (InvalidDataException) { return; }
+        throw new Exception("E13 expected exact identity refusal");
     }
     static async Task FrozenRoutingAndCancellation(string area, StationConfig configuration, ExtensionStore manager, BusinessRequest original,
         string archive, RSA key, ExtensionManifest manifest, string binary)
@@ -266,11 +281,17 @@ static class ArchitectureClosureVerification
         var upgradedFile = Package(area, "integration-upgrade", upgradedManifest, key, binary);
         var upgraded = manager.Install(upgradedFile, Wire.FileHash(upgradedFile));
         var newTarget = new IntegrationBinding("new-unavailable-target", "new-revision", "SIMULATION-v1", "http://127.0.0.1:1/");
-        var changed = configuration with { Version = "E13-NEW-IMPLEMENTATION", Integration = newTarget,
-            Extensions = configuration.Extensions! with {
+        var changed = configuration with
+        {
+            Version = "E13-NEW-IMPLEMENTATION",
+            Integration = newTarget,
+            Extensions = configuration.Extensions! with
+            {
                 Packages = configuration.Extensions.Packages.Select(x => x.Id == upgraded.Package.Id ? upgraded.Package : x).ToArray(),
                 Services = configuration.Extensions.Services!.Select(x => x with { Parameters = new(x.Parameters) { ["metadata.label"] = "new-parameters" } }).ToArray(),
-                Ports = configuration.Extensions.Ports!.Select(x => x with { Target = newTarget }).ToArray() } };
+                Ports = configuration.Extensions.Ports!.Select(x => x with { Target = newTarget }).ToArray()
+            }
+        };
         var router = new IntegrationRuntime(changed, manager); router.Initialize();
         var missingIdentity = original with { Implementation = null }; var frozenMissing = Wire.Encode(missingIdentity);
         var entriesBefore = router.Diagnostics.Length;
@@ -326,18 +347,26 @@ static class ArchitectureClosureVerification
     {
         foreach (var failure in new[] { "stop", "dispose" })
         {
-        var slow = configuration with { StationId = "SIM-E13-SLOW-" + failure, Version = "E13-SLOW-" + failure, Devices = configuration.Devices.Select(x => x with { DeviceId = x.DeviceId + "-slow-" + failure }).ToArray(),
-            Extensions = configuration.Extensions! with { Instances = configuration.Extensions.Instances.Select(x => x with { DeviceId = x.DeviceId + "-slow-" + failure }).ToArray(),
-                Services = configuration.Extensions.Services!.Select((x, i) => x with { Parameters = new(x.Parameters) { ["fault." + failure + "-delay-ms"] = i == 0 ? "16000" : "0" } }).ToArray() } };
-        var boot = Boot(Path.Combine(area, "integration-" + failure), slow, manager, trust);
-        var runtime = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance); await runtime.StartAsync(CancellationToken.None);
-        Assert(runtime.Diagnostics.Count == 0, "delayed integration " + failure + " starts real typed instance");
-        Exception? timeoutFailure = null; try { await runtime.DisposeAsync(); } catch (AggregateException ex) { timeoutFailure = ex; }
-        Assert(timeoutFailure is not null && runtime.HeldResources.Length > 0, "integration " + failure + " timeout retains data/station/device ownership");
-        Refuse(() => manager.Uninstall(package, []), "integration Stop not terminated retains package/dependency lease");
-        Refuse(() => { using var duplicate = new ResourceLease(runtime.DataDirectory!, ["database"]); }, "integration Stop not terminated retains actual database lease");
-        await Task.Delay(11500); await runtime.DisposeAsync();
-        Assert(runtime.HeldResources.Length == 0, "late integration " + failure + " releases exact resources once after termination");
+            var slow = configuration with
+            {
+                StationId = "SIM-E13-SLOW-" + failure,
+                Version = "E13-SLOW-" + failure,
+                Devices = configuration.Devices.Select(x => x with { DeviceId = x.DeviceId + "-slow-" + failure }).ToArray(),
+                Extensions = configuration.Extensions! with
+                {
+                    Instances = configuration.Extensions.Instances.Select(x => x with { DeviceId = x.DeviceId + "-slow-" + failure }).ToArray(),
+                    Services = configuration.Extensions.Services!.Select((x, i) => x with { Parameters = new(x.Parameters) { ["fault." + failure + "-delay-ms"] = i == 0 ? "16000" : "0" } }).ToArray()
+                }
+            };
+            var boot = Boot(Path.Combine(area, "integration-" + failure), slow, manager, trust);
+            var runtime = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance); await runtime.StartAsync(CancellationToken.None);
+            Assert(runtime.Diagnostics.Count == 0, "delayed integration " + failure + " starts real typed instance");
+            Exception? timeoutFailure = null; try { await runtime.DisposeAsync(); } catch (AggregateException ex) { timeoutFailure = ex; }
+            Assert(timeoutFailure is not null && runtime.HeldResources.Length > 0, "integration " + failure + " timeout retains data/station/device ownership");
+            Refuse(() => manager.Uninstall(package, []), "integration Stop not terminated retains package/dependency lease");
+            Refuse(() => { using var duplicate = new ResourceLease(runtime.DataDirectory!, ["database"]); }, "integration Stop not terminated retains actual database lease");
+            await Task.Delay(11500); await runtime.DisposeAsync();
+            Assert(runtime.HeldResources.Length == 0, "late integration " + failure + " releases exact resources once after termination");
         }
     }
     static async Task AssemblyJourney(string workspace, string area, string url)

@@ -86,10 +86,21 @@ internal static class MvsDiagnostic
                 await Task.Delay(TimeSpan.FromSeconds(options.CaptureSeconds), deadline.Token).ConfigureAwait(false);
             }
             finally { await Diagnostic.StopRetainingOwner(() => source.StopAsync(default), () => source.Phase).ConfigureAwait(false); }
-            Console.WriteLine(Wire.Encode(new { source.Frames, source.Failure, BarcodeStatus = "BLOCKED: recognition component not available", Codes = 0,
-                Observations = 0, Operations = 0, ExternalRequests = 0, TriggerSettingsChanged = false, RawImagesPersisted = false,
+            Console.WriteLine(Wire.Encode(new
+            {
+                source.Frames,
+                source.Failure,
+                BarcodeStatus = "BLOCKED: recognition component not available",
+                Codes = 0,
+                Observations = 0,
+                Operations = 0,
+                ExternalRequests = 0,
+                TriggerSettingsChanged = false,
+                RawImagesPersisted = false,
                 FrameSequencePolicy = sampling ? "VideoSamplingGapsCounted; reset/duplicate/incomplete still fault" : "StrictContiguousLegacy",
-                Counters = source.ConfirmationSource, Timings = source.Timings.Snapshot() }));
+                Counters = source.ConfirmationSource,
+                Timings = source.Timings.Snapshot()
+            }));
             return deadline.Expired ? 124 : source.Failure.Length > 0 ? 1 : 3; // 3=acquisition-only, barcode capability unavailable.
         }
         catch (OperationCanceledException) when (deadline.Expired) { return 124; }

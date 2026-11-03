@@ -51,7 +51,8 @@ static partial class Program
         await vm.RefreshAsync();
         if (!baseline)
         {
-            Click(window, "暂停供包"); for (var i = 0; i < 100 && vm.Snapshot?.Paused != true; i++) { await Task.Delay(20); await vm.RefreshAsync(); } window.UpdateLayout();
+            Click(window, "暂停供包"); for (var i = 0; i < 100 && vm.Snapshot?.Paused != true; i++) { await Task.Delay(20); await vm.RefreshAsync(); }
+            window.UpdateLayout();
             Check(vm.Snapshot!.Paused && Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "恢复供包")).IsVisible && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "暂停供包")).IsVisible, "header shows the actual paused state and its available resume action");
             Capture("paused-1366", client);
             Click(window, "恢复供包"); for (var i = 0; i < 100 && vm.Snapshot?.Paused != false; i++) { await Task.Delay(20); await vm.RefreshAsync(); }
@@ -103,7 +104,8 @@ static partial class Program
             Check(modeMenu.ContextMenu!.IsOpen && modeMenu.ContextMenu.Items.OfType<MenuItem>().Any(i => i.Header is string text && text.StartsWith("将于 ")), "keyboard-accessible native management menu shows the actual expiry without inventing an account");
             Capture("management-menu", modeMenu.ContextMenu);
             modeMenu.ContextMenu.Items.OfType<MenuItem>().Single(i => Equals(i.Header, "退出管理模式")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent)); modeMenu.ContextMenu.IsOpen = false;
-            for (var i = 0; i < 100 && vm.IsManagementMode; i++) { await Task.Delay(20); await vm.RefreshManagementModeAsync(); } window.UpdateLayout();
+            for (var i = 0; i < 100 && vm.IsManagementMode; i++) { await Task.Delay(20); await vm.RefreshManagementModeAsync(); }
+            window.UpdateLayout();
             Check(!vm.CanEditFormConfiguration && host.Content is not MaintenancePage && ReferenceEquals(draft, vm.StructuredPolicy) && draft.TimeoutMs == "28000" && vm.Snapshot!.CurrentOperator!.SessionId == operatorSession, "exit closes protected page and keeps the process draft without changing operator identity");
             bool denied = false; try { await vm.SaveStructuredConfigurationAsync(); } catch (UnauthorizedAccessException) { denied = true; }
             Check(denied, "direct save remains denied after revocation");

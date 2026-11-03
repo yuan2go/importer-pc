@@ -55,56 +55,56 @@ static class ApplicationArchitecture
         {
             try
             {
-            app.EmitReferenceAt("left", "left-one", "000123", "left-source"); await blocked!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
-            Check(app.EmitReferenceAt("right", "right-one", "000123", "right-source"), "right input enters while left WCS is slow");
-            var s = await Wait(app, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
-            var left = s.Operations.Single(o => o.PositionId == "left"); var right = s.Operations.Single(o => o.PositionId == "right");
-            Check(left.Wcs?.State == StageState.Dispatching && right.Plc is null && right.Wcs?.Attempts == 1 && right.ReaderBinding!.DeviceId == topology.Readers[1].DeviceId,
-                "real dual consumers interleave; same barcode has two distinct entities and reader bindings");
-            var payload = Wire.Decode<ParcelPayload>(right.Wcs!.Request.Payload);
-            Check(payload.PositionId == "right" && payload.ReaderBinding == right.ReaderBinding && payload.Acquisition == right.Acquisition, "T1 freezes original position/device/acquisition in delivered semantics");
-            app.EmitReferenceAt("right", "right-one", "000123", "right-source"); await Task.Delay(80);
-            Check((await app.SnapshotAsync()).Operations.Length == 2, "duplicate original does not create another request");
-            await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
-            s = await app.SnapshotAsync(); var rightEpoch = s.Devices!.Single(x => x.DeviceId == topology.Readers[1].DeviceId).Epoch;
-            Check((await app.ReconnectDeviceAsync(topology.Readers[0].DeviceId)).Status == "Reconnected", "single-side reconnect while other original remains owned");
-            s = await app.SnapshotAsync(); Check(s.Devices!.Single(x => x.DeviceId == topology.Readers[1].DeviceId).Epoch == rightEpoch, "other reader epoch unchanged by single-side reconnect");
-            var oldLeft = blocked.Readers![topology.Readers[0].DeviceId];
-            Check(!oldLeft.EmitOld("late", "000123"), "old registration callback is fenced after reconnect");
-            blocked.Release.TrySetResult(); await Wait(app, x => x.Operations.All(o => o.State == ParcelState.SlotResolved));
-            Check((await Command(app, "Resume")).Status == "Persisted", "resume does not resend original stages");
-            blocked.Readers[topology.Readers[0].DeviceId].Disconnect();
-            s = await app.SnapshotAsync(); Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "reader disconnect blocks only its position");
-            app.EmitReferenceAt("right", "right-two", "000123", "right-two-source"); await Wait(app, x => x.Operations.Length == 3 && x.Operations.First().State == ParcelState.SlotResolved);
-            blocked.Unavailable = true; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && !h.Ready));
-            Check((await app.SnapshotAsync()).Positions!.All(p => !p.Admit), "shared WCS health failure blocks both positions without rewriting originals");
-            blocked.Unavailable = false; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && h.Ready));
-            await Command(app, "Pause"); s = await app.SnapshotAsync();
-            Check((await Stage(app, s.Configuration.Revision, s.Configuration.Effective with { SchemaVersion = 2, Topology = null })).Status == "Rejected", "application API rejects schema3 flattening, beyond UI protection");
-            var candidate = s.Configuration.Effective with { TimeoutMs = 1700 };
-            Check((await Stage(app, s.Configuration.Revision, candidate)).Status == "PendingRestart", "complete topology staged using original configuration CAS");
-            Check((await Stage(app, s.Configuration.Revision, candidate)).Status == "Rejected", "stale configuration CAS rejected");
-            s = await app.SnapshotAsync(); Check(s.Configuration.Pending!.Topology!.Readers.Length == 2 && s.Configuration.Effective.TimeoutMs != 1700, "Pending/Effective preserve both bindings and separate activation");
-            var vm = new ParcelViewModel(app, "22", "22"); await vm.RefreshAsync(); var before = Wire.Encode((await app.SnapshotAsync()).Configuration);
-            await vm.LoadCapabilitiesAsync(); await vm.SaveCapabilitiesAsync();
-            Check(vm.ReaderDrafts.Count == 2 && vm.PositionDrafts.Count == 2 && Wire.Encode(vm.BuildStructuredConfiguration().Topology) == Wire.Encode(s.Configuration.Pending!.Topology) && Wire.Encode((await app.SnapshotAsync()).Configuration) == before, "schema3 complete ViewModel preserves topology and empty-reason save leaves authority unchanged");
-            var backup = Path.Combine(root, "dual.backup.db"); BusinessReceipt? backupReceipt = null;
-            var backupDeadline = DateTimeOffset.UtcNow.AddSeconds(5);
-            while (DateTimeOffset.UtcNow < backupDeadline)
-            {
-                // Background health probes share the maintenance drain guard. A snapshot
-                // can race the next probe; only the explicit pre-I/O rejection is retryable.
-                if ((await app.SnapshotAsync()).Availability?.Configure == true)
+                app.EmitReferenceAt("left", "left-one", "000123", "left-source"); await blocked!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+                Check(app.EmitReferenceAt("right", "right-one", "000123", "right-source"), "right input enters while left WCS is slow");
+                var s = await Wait(app, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
+                var left = s.Operations.Single(o => o.PositionId == "left"); var right = s.Operations.Single(o => o.PositionId == "right");
+                Check(left.Wcs?.State == StageState.Dispatching && right.Plc is null && right.Wcs?.Attempts == 1 && right.ReaderBinding!.DeviceId == topology.Readers[1].DeviceId,
+                    "real dual consumers interleave; same barcode has two distinct entities and reader bindings");
+                var payload = Wire.Decode<ParcelPayload>(right.Wcs!.Request.Payload);
+                Check(payload.PositionId == "right" && payload.ReaderBinding == right.ReaderBinding && payload.Acquisition == right.Acquisition, "T1 freezes original position/device/acquisition in delivered semantics");
+                app.EmitReferenceAt("right", "right-one", "000123", "right-source"); await Task.Delay(80);
+                Check((await app.SnapshotAsync()).Operations.Length == 2, "duplicate original does not create another request");
+                await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
+                s = await app.SnapshotAsync(); var rightEpoch = s.Devices!.Single(x => x.DeviceId == topology.Readers[1].DeviceId).Epoch;
+                Check((await app.ReconnectDeviceAsync(topology.Readers[0].DeviceId)).Status == "Reconnected", "single-side reconnect while other original remains owned");
+                s = await app.SnapshotAsync(); Check(s.Devices!.Single(x => x.DeviceId == topology.Readers[1].DeviceId).Epoch == rightEpoch, "other reader epoch unchanged by single-side reconnect");
+                var oldLeft = blocked.Readers![topology.Readers[0].DeviceId];
+                Check(!oldLeft.EmitOld("late", "000123"), "old registration callback is fenced after reconnect");
+                blocked.Release.TrySetResult(); await Wait(app, x => x.Operations.All(o => o.State == ParcelState.SlotResolved));
+                Check((await Command(app, "Resume")).Status == "Persisted", "resume does not resend original stages");
+                blocked.Readers[topology.Readers[0].DeviceId].Disconnect();
+                s = await app.SnapshotAsync(); Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "reader disconnect blocks only its position");
+                app.EmitReferenceAt("right", "right-two", "000123", "right-two-source"); await Wait(app, x => x.Operations.Length == 3 && x.Operations.First().State == ParcelState.SlotResolved);
+                blocked.Unavailable = true; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && !h.Ready));
+                Check((await app.SnapshotAsync()).Positions!.All(p => !p.Admit), "shared WCS health failure blocks both positions without rewriting originals");
+                blocked.Unavailable = false; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && h.Ready));
+                await Command(app, "Pause"); s = await app.SnapshotAsync();
+                Check((await Stage(app, s.Configuration.Revision, s.Configuration.Effective with { SchemaVersion = 2, Topology = null })).Status == "Rejected", "application API rejects schema3 flattening, beyond UI protection");
+                var candidate = s.Configuration.Effective with { TimeoutMs = 1700 };
+                Check((await Stage(app, s.Configuration.Revision, candidate)).Status == "PendingRestart", "complete topology staged using original configuration CAS");
+                Check((await Stage(app, s.Configuration.Revision, candidate)).Status == "Rejected", "stale configuration CAS rejected");
+                s = await app.SnapshotAsync(); Check(s.Configuration.Pending!.Topology!.Readers.Length == 2 && s.Configuration.Effective.TimeoutMs != 1700, "Pending/Effective preserve both bindings and separate activation");
+                var vm = new ParcelViewModel(app, "22", "22"); await vm.RefreshAsync(); var before = Wire.Encode((await app.SnapshotAsync()).Configuration);
+                await vm.LoadCapabilitiesAsync(); await vm.SaveCapabilitiesAsync();
+                Check(vm.ReaderDrafts.Count == 2 && vm.PositionDrafts.Count == 2 && Wire.Encode(vm.BuildStructuredConfiguration().Topology) == Wire.Encode(s.Configuration.Pending!.Topology) && Wire.Encode((await app.SnapshotAsync()).Configuration) == before, "schema3 complete ViewModel preserves topology and empty-reason save leaves authority unchanged");
+                var backup = Path.Combine(root, "dual.backup.db"); BusinessReceipt? backupReceipt = null;
+                var backupDeadline = DateTimeOffset.UtcNow.AddSeconds(5);
+                while (DateTimeOffset.UtcNow < backupDeadline)
                 {
-                    backupReceipt = await app.BackupAsync(backup);
-                    if (backupReceipt.Status == "BackupCreated") break;
-                    if (backupReceipt.Status != "Rejected" || backupReceipt.Reason != "Pause before reference maintenance backup")
-                        throw new Exception("Unexpected backup result: " + Wire.Encode(backupReceipt));
+                    // Background health probes share the maintenance drain guard. A snapshot
+                    // can race the next probe; only the explicit pre-I/O rejection is retryable.
+                    if ((await app.SnapshotAsync()).Availability?.Configure == true)
+                    {
+                        backupReceipt = await app.BackupAsync(backup);
+                        if (backupReceipt.Status == "BackupCreated") break;
+                        if (backupReceipt.Status != "Rejected" || backupReceipt.Reason != "Pause before reference maintenance backup")
+                            throw new Exception("Unexpected backup result: " + Wire.Encode(backupReceipt));
+                    }
+                    await Task.Delay(20);
                 }
-                await Task.Delay(20);
-            }
-            Check(backupReceipt?.Status == "BackupCreated", "multi-device original set backed up through actual application: " + Wire.Encode(backupReceipt));
-            ParcelRecovery.Restore(backup, Path.Combine(root, "dual-restored/data/Simulation", sport.StationId, sport.ApplicationId));
+                Check(backupReceipt?.Status == "BackupCreated", "multi-device original set backed up through actual application: " + Wire.Encode(backupReceipt));
+                ParcelRecovery.Restore(backup, Path.Combine(root, "dual-restored/data/Simulation", sport.StationId, sport.ApplicationId));
             }
             finally { blocked!.Release.TrySetResult(); }
         }
@@ -138,8 +138,13 @@ static class ApplicationArchitecture
             await app.ReconcileAsync(op.Id); app.EmitReferenceAt("main", "second", "0001", "two"); s = await Wait(app, x => x.Operations.Length == 2 && x.Operations.First().State == ParcelState.PlcAccepted);
             Check(s.Operations.All(x => (x.Wcs is not null) == (id == "wcs-to-plc")) && s.Operations.All(x => x.Plc?.Attempts == 1), id + " preserves own main chain/delivery object without WCS leakage or repeats");
         }
-        var captureOnly = Config("direct-plc") with { Login = B("login"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, WaitTimeoutMs: 2000), Scale = B("weight"),
-            Images = new(B("camera") with { Target = Config("direct-plc").Reader.DeviceId }, null) };
+        var captureOnly = Config("direct-plc") with
+        {
+            Login = B("login"),
+            Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, WaitTimeoutMs: 2000),
+            Scale = B("weight"),
+            Images = new(B("camera") with { Target = Config("direct-plc").Reader.DeviceId }, null)
+        };
         ScaleFactory? scales = null;
         await using (var app = await Open(captureOnly, "capture-only", f => scales = new(f)))
         {
@@ -191,14 +196,14 @@ static class ApplicationArchitecture
         var overloadApp = await Open(sport with { QueueCapacity = 1 }, "dual-overload", f => overloaded = new(f, retainOnStop: true));
         try
         {
-        overloadApp.EmitReferenceAt("left", "left-one", "001", "left"); await overloaded!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
-        Check(overloadApp.EmitReferenceAt("left", "queued", "002", "queued") && !overloadApp.EmitReferenceAt("left", "overflow", "003", "overflow"), "position queue bounds and visibly rejects overload");
-        Check(overloadApp.EmitReferenceAt("right", "right", "001", "right"), "left overload does not consume right queue"); await Wait(overloadApp, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
-        using (var budget = new CancellationTokenSource(50))
-        {
-            try { await overloadApp.StopAsync(budget.Token); throw new Exception("premature Stop"); }
-            catch (OperationCanceledException) { Check(overloadApp.HasUnreleasedResources, "Stop timeout retains database/device/package ownership until both workers drain"); }
-        }
+            overloadApp.EmitReferenceAt("left", "left-one", "001", "left"); await overloaded!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+            Check(overloadApp.EmitReferenceAt("left", "queued", "002", "queued") && !overloadApp.EmitReferenceAt("left", "overflow", "003", "overflow"), "position queue bounds and visibly rejects overload");
+            Check(overloadApp.EmitReferenceAt("right", "right", "001", "right"), "left overload does not consume right queue"); await Wait(overloadApp, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
+            using (var budget = new CancellationTokenSource(50))
+            {
+                try { await overloadApp.StopAsync(budget.Token); throw new Exception("premature Stop"); }
+                catch (OperationCanceledException) { Check(overloadApp.HasUnreleasedResources, "Stop timeout retains database/device/package ownership until both workers drain"); }
+            }
         }
         finally { overloaded!.Release.TrySetResult(); await overloadApp.StopAsync(CancellationToken.None); await overloadApp.DisposeAsync(); }
         Check(!overloadApp.HasUnreleasedResources, "Stop retry drains all positions before final resource release");
@@ -250,10 +255,10 @@ static class ApplicationArchitecture
     }
     static Task VerifyStorageGate(string root)
     {
-        var path=Path.Combine(root,"noncurrent-storage"); var file=NonCurrentStorageFixture.Create(path,"sportmaster",9);
-        var hash=Wire.FileHash(file);
-        try { using var denied=new ParcelRepository(path,"sportmaster"); Check(false,"non-current storage accepted"); }
-        catch(InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录") && Wire.FileHash(file)==hash,"non-current storage refuses before writes with fresh-directory guidance"); }
+        var path = Path.Combine(root, "noncurrent-storage"); var file = NonCurrentStorageFixture.Create(path, "sportmaster", 9);
+        var hash = Wire.FileHash(file);
+        try { using var denied = new ParcelRepository(path, "sportmaster"); Check(false, "non-current storage accepted"); }
+        catch (InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录") && Wire.FileHash(file) == hash, "non-current storage refuses before writes with fresh-directory guidance"); }
         return Task.CompletedTask;
     }
     sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false, bool retainOnStop = false) : IParcelCapabilityFactory

@@ -158,9 +158,9 @@ static class OperatorAdministration
         Check(pausedAudit.Paused && pausedAudit.Availability?.Configure == true, "audit setup waits for paused, authorized and drained configuration availability: " + string.Join("; ", pausedAudit.BlockingReasons));
         var unchanged = await app.StageConfigurationAsync(pausedAudit.Configuration.Revision, pausedAudit.Configuration.Effective, "Synthetic mode evidence audit");
         Check(unchanged.Status == "Unchanged", "management mode preserves the existing unified save and complete-candidate guard for an unchanged revision; receipt=" + unchanged);
-        using(var auditDb = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", seed.StationId, "sportmaster/sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
+        using (var auditDb = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", seed.StationId, "sportmaster/sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
         {
-            auditDb.Open(); using var command = auditDb.CreateCommand(); command.CommandText="SELECT body FROM parcel_configuration_audit ORDER BY rowid DESC LIMIT 1";
+            auditDb.Open(); using var command = auditDb.CreateCommand(); command.CommandText = "SELECT body FROM parcel_configuration_audit ORDER BY rowid DESC LIMIT 1";
             var evidence = Wire.Decode<ConfigurationChangeAudit>((string)command.ExecuteScalar()!);
             Check(evidence.Actor is null && evidence.Authorization?.SessionId == admin.Evidence?.SessionId, "parameter audit records a separate management-mode grant without inventing an operator account");
         }

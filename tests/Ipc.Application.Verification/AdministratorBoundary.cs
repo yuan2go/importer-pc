@@ -55,7 +55,7 @@ static class AdministratorBoundary
             Check(Enumerable.Range(0, 64).All(_ => client.InspectStatus().Authorized), "reused pipe instances retain each complete acknowledged reply across 64 round trips");
             var protectedCredentials = Path.Combine(ManagementModeBroker.ProtectedRoot(root), "management-mode.json");
             Check(!File.ReadAllText(protectedCredentials).Contains(password), "System store contains salted password hashes, not passwords");
-            Check(JsonNode.Parse(File.ReadAllText(protectedCredentials))!["Audit"]!.AsArray().Any(a=>a?["WindowsSid"]?.GetValue<string>()==current.User!.Value), "mode audit records the real Windows caller context without creating a software account");
+            Check(JsonNode.Parse(File.ReadAllText(protectedCredentials))!["Audit"]!.AsArray().Any(a => a?["WindowsSid"]?.GetValue<string>() == current.User!.Value), "mode audit records the real Windows caller context without creating a software account");
             AsOrdinary(() =>
             {
                 Deny(() => File.ReadAllText(protectedCredentials), "runtime token cannot read protected password/session state");
@@ -133,7 +133,7 @@ static class AdministratorBoundary
             var salt = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
             var legacyFile = Path.Combine(ManagementModeBroker.ProtectedRoot(legacyRoot), "administrators.json");
             var legacyJson = System.Text.Json.JsonSerializer.Serialize(new { Accounts = new[] { new { Name = "old-maintainer", Salt = Convert.ToBase64String(salt), Hash = Convert.ToBase64String(System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2(oldPassword, salt, 600000, System.Security.Cryptography.HashAlgorithmName.SHA256, 32)), Enabled = true } }, Failures = 0, LockedUntil = DateTimeOffset.MinValue });
-            using(var output = new FileInfo(legacyFile).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))) { output.Write(System.Text.Encoding.UTF8.GetBytes(legacyJson)); output.Flush(true); }
+            using (var output = new FileInfo(legacyFile).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")))) { output.Write(System.Text.Encoding.UTF8.GetBytes(legacyJson)); output.Flush(true); }
             var legacyHash = Wire.FileHash(legacyFile); var mode = new LocalManagementMode(legacyRoot);
             Check(mode.InspectStatus().HasUnsupportedCredentials && !mode.InspectStatus().Authorized, "real protected legacy account credentials cannot silently become management mode");
             Unsupported(() => mode.ConfigurePassword(newPassword), "even an elevated installer cannot overwrite legacy software proof through first mode setup");
@@ -153,21 +153,21 @@ static class AdministratorBoundary
             var currentToken = mode.Require(); mode.ChangePassword(newPassword + "-changed");
             Check(currentToken.IsCancellationRequested && !mode.InspectStatus().Authorized, "current password replacement cancels original authorization");
             Check(mode.Enter(newPassword + "-changed"), "current credential is active before the existing protected deployment migration test");
-            var sourceModeFile=Path.Combine(ManagementModeBroker.ProtectedRoot(legacyRoot),"management-mode.json");
+            var sourceModeFile = Path.Combine(ManagementModeBroker.ProtectedRoot(legacyRoot), "management-mode.json");
             Check(JsonNode.Parse(File.ReadAllText(sourceModeFile))!["SessionHash"] is not null, "migration fixture starts with a real active source grant");
-            var copiedGrant=mode.Delegate(new string('A',64));
-            var movedRoot=legacyRoot+"-moved"; Directory.CreateDirectory(movedRoot);
-            ManagementModeBroker.CopyCredentialsForMigration(legacyRoot,movedRoot);
-            ManagementModeBroker.Install(movedRoot,source);
+            var copiedGrant = mode.Delegate(new string('A', 64));
+            var movedRoot = legacyRoot + "-moved"; Directory.CreateDirectory(movedRoot);
+            ManagementModeBroker.CopyCredentialsForMigration(legacyRoot, movedRoot);
+            ManagementModeBroker.Install(movedRoot, source);
             try
             {
-                var moved=new LocalManagementMode(movedRoot);
-                var movedState=JsonNode.Parse(File.ReadAllText(Path.Combine(ManagementModeBroker.ProtectedRoot(movedRoot),"management-mode.json")))!;
+                var moved = new LocalManagementMode(movedRoot);
+                var movedState = JsonNode.Parse(File.ReadAllText(Path.Combine(ManagementModeBroker.ProtectedRoot(movedRoot), "management-mode.json")))!;
                 Check(moved.InspectStatus().Configured && !moved.InspectStatus().Authorized && movedState["SessionHash"] is null, "migration copies the single mode password and startup revokes copied sessions before service readiness");
-                Check(moved.Enter(newPassword+"-changed"), "migrated protected password works without a username");
-                Deny(()=>moved.ValidateDelegation(copiedGrant,new string('A',64),true),"copied old-session helper proof cannot survive target service startup or a new mode entry");
-                try { ManagementModeBroker.CopyCredentialsForMigration(legacyRoot,movedRoot); throw new Exception("Existing mode password overwritten"); }
-                catch(InvalidOperationException) { Check(true,"credential migration refuses overwriting an existing target mode password"); }
+                Check(moved.Enter(newPassword + "-changed"), "migrated protected password works without a username");
+                Deny(() => moved.ValidateDelegation(copiedGrant, new string('A', 64), true), "copied old-session helper proof cannot survive target service startup or a new mode entry");
+                try { ManagementModeBroker.CopyCredentialsForMigration(legacyRoot, movedRoot); throw new Exception("Existing mode password overwritten"); }
+                catch (InvalidOperationException) { Check(true, "credential migration refuses overwriting an existing target mode password"); }
                 moved.Exit();
             }
             finally { ManagementModeBroker.RemoveIfUnused(movedRoot); }

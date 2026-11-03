@@ -27,8 +27,11 @@ public partial class App : System.Windows.Application
         if (InstallerCommandLine.IsQuiet(e.Args))
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            try { Shutdown(await Task.Run(() => ParcelStartupServices.RunQuietAsync(e.Args,
-                Directory.GetParent(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))!.FullName))); }
+            try
+            {
+                Shutdown(await Task.Run(() => ParcelStartupServices.RunQuietAsync(e.Args,
+                Directory.GetParent(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))!.FullName)));
+            }
             catch { Shutdown(1603); }
             return;
         }
@@ -196,8 +199,11 @@ public partial class App : System.Windows.Application
             }
             else startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true), repair.IncompleteSummary);
         }
-        else { startup.Show(); MainWindow = startup; startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
-            () => StartSelected(), () => Repair(), ShowSetup); }
+        else
+        {
+            startup.Show(); MainWindow = startup; startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
+            () => StartSelected(), () => Repair(), ShowSetup);
+        }
     }
     async Task ShowSetup()
     {

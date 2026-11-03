@@ -28,9 +28,12 @@ public partial class ParcelViewModel
         return new PositionPresentation(p.Id, p.ReaderDeviceId, !Fresh ? "状态过期" : p.Admit ? "可以供包" : string.Join(" · ", p.BlockingReasons.Select(ChineseInterfaceText.Notice)), failed ? ParcelPresentation.InputCode(input!) : op?.ParcelCode ?? "—", failed ? input!.Observation.AdmissionId : op?.AdmissionId ?? "—", style.Text,
             failed ? "本次未取得" : !Fresh ? "旧格口已失效 · " + (op?.Slot ?? "未取得") : op?.Wcs is { State: not StageState.Accepted } ? "未取得" : op?.Slot ?? "未取得", reason,
             failed ? "本次观察未创建新作业" : p.MainResultComplete ? "主结果已确认" : "主结果未完成", p.BackgroundComplete ? "后台作业已处理完" : "后台作业待处理 · " + op?.Upload?.State + " · " + op?.Upload?.Failure,
-            style.Foreground, style.Background, style.Border, style.Icon, ParcelPresentation.InputSummary(input), failed && op is not null ? "原始数据保留 · " + ParcelPresentation.Operation(op, Fresh).Text  : "")
-        { CurrentSlotAvailable = currentResult && !string.IsNullOrWhiteSpace(op?.Slot),
-          HasCurrentInput = op is not null || input is not null, NeedsAttention = !Fresh || failed || style.NeedsAttention };
+            style.Foreground, style.Background, style.Border, style.Icon, ParcelPresentation.InputSummary(input), failed && op is not null ? "原始数据保留 · " + ParcelPresentation.Operation(op, Fresh).Text : "")
+        {
+            CurrentSlotAvailable = currentResult && !string.IsNullOrWhiteSpace(op?.Slot),
+            HasCurrentInput = op is not null || input is not null,
+            NeedsAttention = !Fresh || failed || style.NeedsAttention
+        };
     }).ToArray() ?? [];
     public string CurrentCommandTarget => "当前位命令目标：" + SelectedPositionId + " · " + (Current?.ParcelCode ?? "无作业") + " · " + (Current?.Id ?? "—");
     public string HistoryCommandTarget => "记录命令目标：" + (Selected?.PositionId ?? "—") + " · " + (Selected?.ParcelCode ?? "未选择") + " · " + (Selected?.Id ?? "—");
@@ -200,7 +203,8 @@ public partial class ParcelViewModel
     string[] receiptInventoryIds = [];
     public string ReceiptInventory { get; private set; } = "请先在记录页选择作业，再读取扫描记录。";
     public async Task LoadReceiptResponsibilitiesAsync()
-    { RequireFreshSnapshot();
+    {
+        RequireFreshSnapshot();
         var op = Selected ?? throw new InvalidOperationException("请先在记录中选择作业");
         var generation = selectionGeneration;
         var command = new BusinessCommand(Wire.Id(), Snapshot!.Revision, "ReceiptResponsibilities", op.Id);
@@ -217,7 +221,8 @@ public partial class ParcelViewModel
         Changed(nameof(ReceiptInventory));
     }
     public async Task ReconcileReceiptAsync()
-    { RequireFreshSnapshot();
+    {
+        RequireFreshSnapshot();
         if (Selected?.Id != receiptInventoryOwner || !receiptInventoryIds.Contains(ReceiptOccurrenceId))
             throw new InvalidOperationException("重新读取所选作业的扫描记录，并选择其中对应的一条");
         var command = new BusinessCommand(Wire.Id(), Snapshot!.Revision, "ReconcileReceipt", ReceiptOccurrenceId, InspectionReason);

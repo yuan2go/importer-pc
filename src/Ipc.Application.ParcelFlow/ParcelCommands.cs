@@ -61,7 +61,7 @@ public sealed partial class ParcelRuntime
             foreach (var reader in readers.Values.Select(r => r.Health).OfType<DeviceState>()) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
             foreach (var h in health.Where(x => !x.Ready && !ParcelConnectionSetup.IsDeferred(Effective, x.InstanceId)))
                 (Id == "sportmaster" && readers.ContainsKey(h.InstanceId) || Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
-            auxiliaryReasons.AddRange(repository.PendingReceipts().Select(x=>x.Operation+": original receipt custody "+x.Id+"; stage="+x.Stage+"; raw="+(x.Reply is null?"missing":"durable pending T3")+"; outcome="+(repository.HasReceiptOutcomeBasis(x.Id)?"known by separate Query":"unresolved")));
+            auxiliaryReasons.AddRange(repository.PendingReceipts().Select(x => x.Operation + ": original receipt custody " + x.Id + "; stage=" + x.Stage + "; raw=" + (x.Reply is null ? "missing" : "durable pending T3") + "; outcome=" + (repository.HasReceiptOutcomeBasis(x.Id) ? "known by separate Query" : "unresolved")));
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
             auxiliaryReasons.AddRange(repository.PendingCommands().Select(id => "CommandPending:" + id + "; inspect CommandAdmitted audit and original facts; this ID is never replayed"));
             if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
@@ -84,8 +84,13 @@ public sealed partial class ParcelRuntime
     public async Task<BusinessProjection> QueryAsync()
     {
         var s = await SnapshotAsync().ConfigureAwait(false);
-        return new(s.RuntimeId, s.Revision, s.State, new() { ["Application"] = Id, ["Operations"] = s.Operations.Length.ToString(),
-            ["Unresolved"] = s.Operations.Count(NeedsReconciliation).ToString(), ["Reasons"] = string.Join("; ", s.BlockingReasons) });
+        return new(s.RuntimeId, s.Revision, s.State, new()
+        {
+            ["Application"] = Id,
+            ["Operations"] = s.Operations.Length.ToString(),
+            ["Unresolved"] = s.Operations.Count(NeedsReconciliation).ToString(),
+            ["Reasons"] = string.Join("; ", s.BlockingReasons)
+        });
     }
     public async Task<BusinessReceipt> CommandAsync(BusinessCommand command)
     {
@@ -121,8 +126,14 @@ public sealed partial class ParcelRuntime
                     identityConflicts.Remove(command.Owner); break;
                 case "CloseInterruptedCommand" when CanConfigure && command.Owner != command.Id && repository.IsPendingCommand(command.Owner) &&
                     !string.IsNullOrWhiteSpace(command.Value) && command.Value.Length <= 1024:
-                    repository.Commit(null, "InterruptedCommandInspected", Wire.Encode(new { OriginalCommand = command.Owner, InspectionCommand = command.Id,
-                        Actor = ManagementEvidence, Reason = command.Value, Policy = "Inspection only; no business fact, request or recovery guard is cleared" }), command: command, interruptedCommand: command.Owner);
+                    repository.Commit(null, "InterruptedCommandInspected", Wire.Encode(new
+                    {
+                        OriginalCommand = command.Owner,
+                        InspectionCommand = command.Id,
+                        Actor = ManagementEvidence,
+                        Reason = command.Value,
+                        Policy = "Inspection only; no business fact, request or recovery guard is cleared"
+                    }), command: command, interruptedCommand: command.Owner);
                     break;
                 case "ArchiveHistory" when CanConfigure && !string.IsNullOrWhiteSpace(command.Value):
                     ArchiveSettled(true, "Maintenance=" + ManagementEvidence?.AuditActor + "; " + command.Value, command); break;

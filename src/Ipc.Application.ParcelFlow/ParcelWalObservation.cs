@@ -32,10 +32,20 @@ public sealed partial class ParcelRuntime
                     var backlog = Math.Max(0L, (long)log - checkpointed); var after = Bytes(file + "-wal");
                     walHighWaterBytes = Math.Max(walHighWaterBytes, after);
                     var warning = after > (Retention.WalWarningBytes ?? 67108864);
-                    var observation = new { At = DateTimeOffset.UtcNow, BytesBefore = before, BytesAfter = after, HighWaterBytes = walHighWaterBytes,
-                        Busy = busy, LogFrames = log, CheckpointedFrames = checkpointed, BacklogFrames = backlog,
-                        LogicalReclaimed = previousWalBacklog > 0 && backlog == 0, Warning = warning,
-                        Policy = "PASSIVE only; checkpointed WAL can be reused without physical truncation; never delete active WAL" };
+                    var observation = new
+                    {
+                        At = DateTimeOffset.UtcNow,
+                        BytesBefore = before,
+                        BytesAfter = after,
+                        HighWaterBytes = walHighWaterBytes,
+                        Busy = busy,
+                        LogFrames = log,
+                        CheckpointedFrames = checkpointed,
+                        BacklogFrames = backlog,
+                        LogicalReclaimed = previousWalBacklog > 0 && backlog == 0,
+                        Warning = warning,
+                        Policy = "PASSIVE only; checkpointed WAL can be reused without physical truncation; never delete active WAL"
+                    };
                     previousWalBacklog = backlog;
                     var encoded = Wire.Encode(observation); Volatile.Write(ref walObservation, "WalCheckpoint:" + encoded);
                     Diagnostic("StorageWal", "WalCheckpoint", warning ? "警告" : "信息", encoded);

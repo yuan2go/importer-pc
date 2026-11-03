@@ -180,8 +180,11 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     static TextBlock Text(string value, bool heading = false) => Themed(new TextBlock
     {
-        Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? UiTypography.Group : UiTypography.Label,
-        FontWeight = heading ? UiTypography.Emphasis : FontWeights.Normal, Margin = new(0, heading ? 24 : 4, 0, 8)
+        Text = value,
+        TextWrapping = TextWrapping.Wrap,
+        FontSize = heading ? UiTypography.Group : UiTypography.Label,
+        FontWeight = heading ? UiTypography.Emphasis : FontWeights.Normal,
+        Margin = new(0, heading ? 24 : 4, 0, 8)
     }, TextBlock.ForegroundProperty, heading ? "Ink" : "Muted");
     // Colours come from the application theme (Ipc.Desktop/Themes/Workstation.xaml): Ink, Muted, Line,
     // Surface, Background, Soft, Accent*, Success, Warning, Danger.
@@ -309,8 +312,16 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     TextBox Input(Panel form, string label, object source, string property, string path, ObjectPage page, string? help = null, bool multiline = false)
     {
-        var box = new TextBox { MinHeight = 40, MaxLength = 65536, AcceptsReturn = multiline, TextWrapping = multiline ? TextWrapping.Wrap : TextWrapping.NoWrap,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Disabled, FontSize = UiTypography.Body, VerticalContentAlignment = multiline ? VerticalAlignment.Top : VerticalAlignment.Center };
+        var box = new TextBox
+        {
+            MinHeight = 40,
+            MaxLength = 65536,
+            AcceptsReturn = multiline,
+            TextWrapping = multiline ? TextWrapping.Wrap : TextWrapping.NoWrap,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            FontSize = UiTypography.Body,
+            VerticalContentAlignment = multiline ? VerticalAlignment.Top : VerticalAlignment.Center
+        };
         box.SetBinding(TextBox.TextProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
         box.MaxWidth = multiline || property is "Target" or "BarcodePattern" or "BackupDirectory" ? 760 :
             property is "QueueCapacity" or "TimeoutMs" or "MaximumOperations" or "ResidentHistory" or "MinimumFreeMiB" or "DiagnosticLogDays" or "HistoryDays" or "SessionLifetimeMs" or "BackupIntervalMinutes" or "BackupMaximumSets" or "Precision" or "ConfiguredWeight" or "MaximumAgeMs" or "WaitTimeoutMs" or "ImageBytes" or "TotalBytes" or "MaximumPending" ? 240 : 400;
@@ -331,8 +342,18 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Technical(ObjectPage page, string label, string path, string? detail = null)
     {
-        var text = new TextBox { IsReadOnly = true, Text = label + (string.IsNullOrWhiteSpace(detail) ? "" : "\n" + detail),
-            TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, Margin = new(0, 0, 0, 10), Padding = new(0), MinHeight = 28, FontSize = UiTypography.Label };
+        var text = new TextBox
+        {
+            IsReadOnly = true,
+            Text = label + (string.IsNullOrWhiteSpace(detail) ? "" : "\n" + detail),
+            TextWrapping = TextWrapping.Wrap,
+            BorderThickness = new(0),
+            Background = Brushes.Transparent,
+            Margin = new(0, 0, 0, 10),
+            Padding = new(0),
+            MinHeight = 28,
+            FontSize = UiTypography.Label
+        };
         page.Technical.Children.Add(text);
         if (!locations.ContainsKey(path))
         {

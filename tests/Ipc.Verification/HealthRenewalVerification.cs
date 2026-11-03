@@ -89,10 +89,18 @@ static class HealthRenewalVerification
             var timer = Stopwatch.StartNew(); await h.App.SnapshotAsync(); timer.Stop(); latencies.Add(timer.Elapsed.TotalMilliseconds);
         }
         latencies.Sort();
-        var result = new { Scenario = "120 virtual seconds, two Ready sources + one Ready requests service; two occupied lanes; no business observations sampled", HealthEvents = 360,
-            ExternalCommitIntervals = transactions, AuditGrowth = Scalar("SELECT count(*) FROM audit") - auditBefore,
-            StateRewrites = Scalar("SELECT count(*) FROM profile_writes WHERE kind='state'"), OperationRewrites = Scalar("SELECT count(*) FROM profile_writes WHERE kind='operation'"),
-            SnapshotMedianMs = latencies[latencies.Count / 2], SnapshotP95Ms = latencies[(int)(latencies.Count * .95)], SnapshotMaxMs = latencies[^1] };
+        var result = new
+        {
+            Scenario = "120 virtual seconds, two Ready sources + one Ready requests service; two occupied lanes; no business observations sampled",
+            HealthEvents = 360,
+            ExternalCommitIntervals = transactions,
+            AuditGrowth = Scalar("SELECT count(*) FROM audit") - auditBefore,
+            StateRewrites = Scalar("SELECT count(*) FROM profile_writes WHERE kind='state'"),
+            OperationRewrites = Scalar("SELECT count(*) FROM profile_writes WHERE kind='operation'"),
+            SnapshotMedianMs = latencies[latencies.Count / 2],
+            SnapshotP95Ms = latencies[(int)(latencies.Count * .95)],
+            SnapshotMaxMs = latencies[^1]
+        };
         var json = JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(Path.Combine(root, "health-profile.json"), json + "\n"); Console.WriteLine(json);
     }

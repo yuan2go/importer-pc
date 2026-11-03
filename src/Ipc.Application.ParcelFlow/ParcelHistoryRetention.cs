@@ -174,7 +174,7 @@ public sealed partial class ParcelRepository
                 {
                     files.CommandText = "SELECT id FROM parcel_receipts WHERE operation=$id"; files.Parameters.AddWithValue("$id", op.Id);
                     using var r = files.ExecuteReader(); while (r.Read()) if (File.Exists(Path.Combine(rawRoot, r.GetString(0) + ".json")))
-                        throw new IOException("Archived raw spool cleanup still pending; original retained");
+                            throw new IOException("Archived raw spool cleanup still pending; original retained");
                 }
                 authority(); using var tx = db.BeginTransaction();
                 using var c = db.CreateCommand(); c.Transaction = tx;

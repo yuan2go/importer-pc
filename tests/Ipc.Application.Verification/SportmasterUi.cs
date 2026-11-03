@@ -167,7 +167,8 @@ static class SportmasterUi
         var rightScale = leftScale with { InstanceId = "smui.weight.right", Target = "reference://weight/smui/right" };
         var measured = configuration with
         {
-            Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = leftScale,
+            Weight = new(WeightSource.Measured, WeightUnit.Kg, 3),
+            Scale = leftScale,
             CapabilityInstances = [leftScale, rightScale, configuration.Wcs!],
             Topology = configuration.Topology! with { Positions = configuration.Topology.Positions.Select(p => p with { ScaleInstanceId = p.Id == "left" ? leftScale.InstanceId : rightScale.InstanceId }).ToArray() }
         };
@@ -221,8 +222,11 @@ static class SportmasterUi
         }
         ExtensionStore.AtomicWrite(Path.Combine(root, "sportmaster-ui-verification.json"), new
         {
-            Status = "PASS", Coverage = "CLI selection; real shared runtime; dual position projection; Unknown/rejection; snapshot failure/order; schema2 compatibility",
-            Windows = "NOT_RUN", RealSdk = "BLOCKED", FieldAcceptance = "NOT_RUN"
+            Status = "PASS",
+            Coverage = "CLI selection; real shared runtime; dual position projection; Unknown/rejection; snapshot failure/order; schema2 compatibility",
+            Windows = "NOT_RUN",
+            RealSdk = "BLOCKED",
+            FieldAcceptance = "NOT_RUN"
         });
         Console.WriteLine("PASS SMUI COMPLETE: actual application integration and alternate UI projection; Windows UI NOT_RUN");
     }
@@ -249,11 +253,11 @@ static class SportmasterUi
         probe.Read = null; await ui.RefreshDisplayAsync();
         probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("current command read banner"));
         await ui.RunAsync(() => Task.CompletedTask);
-        Check(!ui.Fresh && ui.Message.Contains("current command read banner"),"command read failure owns its diagnostic while projection is stale");
+        Check(!ui.Fresh && ui.Message.Contains("current command read banner"), "command read failure owns its diagnostic while projection is stale");
         probe.Read = null; await ui.RefreshDisplayAsync();
-        Check(ui.Fresh && !ui.Message.Contains("current command read banner") && !ui.Message.Contains("旧快照仅供参考"),"successful recovery removes only the read failure banner");
-        ui.MarkReadFailure("scoped read diagnostic");ui.Message="Independent business result must remain";await ui.RefreshDisplayAsync();
-        Check(ui.Message=="Independent business result must remain","snapshot recovery preserves a later unrelated business message");
+        Check(ui.Fresh && !ui.Message.Contains("current command read banner") && !ui.Message.Contains("旧快照仅供参考"), "successful recovery removes only the read failure banner");
+        ui.MarkReadFailure("scoped read diagnostic"); ui.Message = "Independent business result must remain"; await ui.RefreshDisplayAsync();
+        Check(ui.Message == "Independent business result must remain", "snapshot recovery preserves a later unrelated business message");
         var beforeFailure = await app.SnapshotAsync();
         var delayedFailure = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Read = () => delayedFailure.Task; var failedOlderRead = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));

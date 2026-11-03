@@ -39,66 +39,66 @@ static class OptionalCapabilities
         { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner)); }
         ReferencePeer.PeerEntry ReadPeer(StageFact stage) => Wire.Decode<ReferencePeer.PeerEntry>(File.ReadAllText(Path.Combine(stage.Request.Binding.Parameters["peer-root"], Wire.Hash(stage.Request.Binding.Target), stage.Request.Id + ".json")));
         foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
-        foreach (var login in new[] { false, true })
-        foreach (var weight in new[] { false, true })
-        foreach (var images in new[] { false, true })
-        {
-            var name = id + "-" + login + "-" + weight + "-" + images;
-            var c = Options(id, login, weight, images);
-            await using var app = await Open(c, name);
-            var initial = await app.SnapshotAsync();
-            Pass(initial.Health.Length == 1 + (id != "direct-plc" ? 1 : 0) + (id != "sportmaster" ? 1 : 0) + (login ? 1 : 0) + (weight ? 1 : 0) + (images ? 2 : 0), name + " creates only selected runtime dependencies");
-            if (login)
-            {
-                Pass(!app.EmitReference("unauthenticated", "00001", Wire.Id()) && (await app.SnapshotAsync()).Operations.Length == 0, name + " unauthenticated observation cannot enter the queue or create an operation");
-                Pass((await app.LoginAsync("alice", "incorrect")).Status == "Rejected", name + " rejected login preserves no session");
-                Pass((await app.LoginAsync("alice", "SIMULATION_ONLY")).Status == "Authenticated", name + " authenticates through selected component");
-            }
-            app.EmitReference("parcel-one", "00001", Wire.Id());
-            if (weight)
-            {
-                var waiting = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.WaitingWeight);
-                Pass(waiting.Operations.Single() is { Wcs: null, Plc: null }, name + " waits before WCS and PLC; correlated capture may precede weight");
-                var wrong = new WeightMeasurement(Wire.Id(), "another-parcel", c.Scale!.Target, 2.345m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
-                app.EmitReferenceWeight(wrong); await Task.Delay(30);
-                Pass((await app.SnapshotAsync()).Operations.Single().State == ParcelState.WaitingWeight, name + " wrong entity weight cannot advance");
-                var now = DateTimeOffset.UtcNow;
-                app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", MeasuredAt = now.AddSeconds(-10) });
-                app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", Unit = WeightUnit.G, MeasuredAt = now });
-                app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", Quality = MeasurementQuality.Unstable, Stable = false, MeasuredAt = now });
-                await Task.Delay(30);
-                Pass((await app.SnapshotAsync()).Operations.Single().Plc is null, name + " stale/unit/quality failures cannot send PLC");
-                app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", MeasuredAt = DateTimeOffset.UtcNow });
-            }
-            var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));
-            var op = s.Operations.Single();
-            Pass(op.Operator?.Subject == (login ? "alice" : null) && (op.Weight is not null) == weight && (op.Image?.UploadedUri is not null) == images, name + " freezes selected identity, actual weight and uploaded image");
-            foreach (var stage in new[] { op.Wcs, op.Plc }.OfType<StageFact>())
-            {
-                var peer = ReadPeer(stage); var payload = Wire.Decode<ParcelPayload>(peer.Request.Payload);
-                Pass(peer.Executions == 1 && payload.Operator == op.Operator && payload.Weight == op.Weight && payload.Image == op.Image, name + " independent receiver contains original operator/weight/image exactly once");
-                if (stage == op.Plc && id == "wcs-to-plc") Pass(payload.Slot == op.Slot && payload.WcsRequestId == op.Wcs!.Request.Id, name + " PLC receives exact original WCS slot and request");
-            }
-            if (images)
-            {
-                var upload = ReadPeer(op.Upload!);
-                var remote = Path.Combine(op.Upload!.Request.Binding.Parameters["peer-root"], Wire.Hash(op.Upload.Request.Binding.Target), op.Upload.Request.Id + ".png");
-                Pass(upload.Executions == 1 && Wire.FileHash(remote) == op.Image!.Sha256 && new FileInfo(remote).Length == op.Image.Length, name + " uploader actually transfers captured PNG bytes to independent receiver");
-            }
-            app.EmitReference("parcel-one", "00001", Wire.Id()); await Task.Delay(30);
-            Pass((await app.SnapshotAsync()).Operations.Length == 1 && (await app.SnapshotAsync()).RuntimeId == initial.RuntimeId, name + " repeated admission shares owner and does not repeat stages");
-            if (id != "sportmaster")
-            {
-                if (login) Pass((await app.LogoutAsync()).Status == "Rejected", name + " accepted PLC with unknown physical completion protects operator");
-                await app.ReconcileAsync(op.Id);
-            }
-            if (login)
-            {
-                Pass((await app.LogoutAsync()).Status == "LoggedOut" && (await app.LoginAsync("bob", "SIMULATION_ONLY")).Status == "Authenticated", name + " changes operator only after original operation settles");
-                Pass((await app.SnapshotAsync()).Operations.Single().Operator == op.Operator, name + " operator change preserves old immutable snapshot");
-            }
-            matrix.Add(new { Application = id, Login = login, MeasuredWeight = weight, Images = images, Status = "PASS", Operation = op.Id, Operator = op.Operator?.Subject, Wcs = op.Wcs?.Request.PayloadHash, Plc = op.Plc?.Request.PayloadHash, Image = op.Image?.Sha256 });
-        }
+            foreach (var login in new[] { false, true })
+                foreach (var weight in new[] { false, true })
+                    foreach (var images in new[] { false, true })
+                    {
+                        var name = id + "-" + login + "-" + weight + "-" + images;
+                        var c = Options(id, login, weight, images);
+                        await using var app = await Open(c, name);
+                        var initial = await app.SnapshotAsync();
+                        Pass(initial.Health.Length == 1 + (id != "direct-plc" ? 1 : 0) + (id != "sportmaster" ? 1 : 0) + (login ? 1 : 0) + (weight ? 1 : 0) + (images ? 2 : 0), name + " creates only selected runtime dependencies");
+                        if (login)
+                        {
+                            Pass(!app.EmitReference("unauthenticated", "00001", Wire.Id()) && (await app.SnapshotAsync()).Operations.Length == 0, name + " unauthenticated observation cannot enter the queue or create an operation");
+                            Pass((await app.LoginAsync("alice", "incorrect")).Status == "Rejected", name + " rejected login preserves no session");
+                            Pass((await app.LoginAsync("alice", "SIMULATION_ONLY")).Status == "Authenticated", name + " authenticates through selected component");
+                        }
+                        app.EmitReference("parcel-one", "00001", Wire.Id());
+                        if (weight)
+                        {
+                            var waiting = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.WaitingWeight);
+                            Pass(waiting.Operations.Single() is { Wcs: null, Plc: null }, name + " waits before WCS and PLC; correlated capture may precede weight");
+                            var wrong = new WeightMeasurement(Wire.Id(), "another-parcel", c.Scale!.Target, 2.345m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
+                            app.EmitReferenceWeight(wrong); await Task.Delay(30);
+                            Pass((await app.SnapshotAsync()).Operations.Single().State == ParcelState.WaitingWeight, name + " wrong entity weight cannot advance");
+                            var now = DateTimeOffset.UtcNow;
+                            app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", MeasuredAt = now.AddSeconds(-10) });
+                            app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", Unit = WeightUnit.G, MeasuredAt = now });
+                            app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", Quality = MeasurementQuality.Unstable, Stable = false, MeasuredAt = now });
+                            await Task.Delay(30);
+                            Pass((await app.SnapshotAsync()).Operations.Single().Plc is null, name + " stale/unit/quality failures cannot send PLC");
+                            app.EmitReferenceWeight(wrong with { Id = Wire.Id(), AdmissionId = "parcel-one", MeasuredAt = DateTimeOffset.UtcNow });
+                        }
+                        var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));
+                        var op = s.Operations.Single();
+                        Pass(op.Operator?.Subject == (login ? "alice" : null) && (op.Weight is not null) == weight && (op.Image?.UploadedUri is not null) == images, name + " freezes selected identity, actual weight and uploaded image");
+                        foreach (var stage in new[] { op.Wcs, op.Plc }.OfType<StageFact>())
+                        {
+                            var peer = ReadPeer(stage); var payload = Wire.Decode<ParcelPayload>(peer.Request.Payload);
+                            Pass(peer.Executions == 1 && payload.Operator == op.Operator && payload.Weight == op.Weight && payload.Image == op.Image, name + " independent receiver contains original operator/weight/image exactly once");
+                            if (stage == op.Plc && id == "wcs-to-plc") Pass(payload.Slot == op.Slot && payload.WcsRequestId == op.Wcs!.Request.Id, name + " PLC receives exact original WCS slot and request");
+                        }
+                        if (images)
+                        {
+                            var upload = ReadPeer(op.Upload!);
+                            var remote = Path.Combine(op.Upload!.Request.Binding.Parameters["peer-root"], Wire.Hash(op.Upload.Request.Binding.Target), op.Upload.Request.Id + ".png");
+                            Pass(upload.Executions == 1 && Wire.FileHash(remote) == op.Image!.Sha256 && new FileInfo(remote).Length == op.Image.Length, name + " uploader actually transfers captured PNG bytes to independent receiver");
+                        }
+                        app.EmitReference("parcel-one", "00001", Wire.Id()); await Task.Delay(30);
+                        Pass((await app.SnapshotAsync()).Operations.Length == 1 && (await app.SnapshotAsync()).RuntimeId == initial.RuntimeId, name + " repeated admission shares owner and does not repeat stages");
+                        if (id != "sportmaster")
+                        {
+                            if (login) Pass((await app.LogoutAsync()).Status == "Rejected", name + " accepted PLC with unknown physical completion protects operator");
+                            await app.ReconcileAsync(op.Id);
+                        }
+                        if (login)
+                        {
+                            Pass((await app.LogoutAsync()).Status == "LoggedOut" && (await app.LoginAsync("bob", "SIMULATION_ONLY")).Status == "Authenticated", name + " changes operator only after original operation settles");
+                            Pass((await app.SnapshotAsync()).Operations.Single().Operator == op.Operator, name + " operator change preserves old immutable snapshot");
+                        }
+                        matrix.Add(new { Application = id, Login = login, MeasuredWeight = weight, Images = images, Status = "PASS", Operation = op.Id, Operator = op.Operator?.Subject, Wcs = op.Wcs?.Request.PayloadHash, Plc = op.Plc?.Request.PayloadHash, Image = op.Image?.Sha256 });
+                    }
         // Uploaded bytes may have committed before the reply disappeared. Restart queries
         // original stages and never repeats capture/upload or advances PLC on its own.
         foreach (var lostKind in new[] { "capture", "upload", "plc" })

@@ -162,46 +162,46 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         next.Session = new() { Barcode = command.Value!, Status = SessionStatus.Validating, OpenedBy = next.Actor };
                         next.Lanes.Clear(); owner = next.Session.Id; request = Prepare(next, owner, 1, RequestKind.Context, command.Value!, null, null); break;
                     case SupplyAction.Submit:
-                    {
-                        var op = Operation(next, owner); Demand(OperationGuard(next, op));
-                        Require(op.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired, "Operation not ready to submit");
-                        Require(op.Occupancy == Occupancy.Occupied, "Entity not occupied");
-                        Require(op.Supply is > 0 && op.Remaining is > 0, "Missing quantity authority");
-                        Require(op.Status != OperationStatus.SplitRequired || op.SplitScans.Count == op.Supply, "Scan exactly the retained units first");
-                        op.Revision++; op.Status = OperationStatus.SubmitPending;
-                        request = Prepare(next, op.Id, op.Revision, RequestKind.Submit, op.Barcode, op.Package, op.Supply); break;
-                    }
+                        {
+                            var op = Operation(next, owner); Demand(OperationGuard(next, op));
+                            Require(op.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired, "Operation not ready to submit");
+                            Require(op.Occupancy == Occupancy.Occupied, "Entity not occupied");
+                            Require(op.Supply is > 0 && op.Remaining is > 0, "Missing quantity authority");
+                            Require(op.Status != OperationStatus.SplitRequired || op.SplitScans.Count == op.Supply, "Scan exactly the retained units first");
+                            op.Revision++; op.Status = OperationStatus.SubmitPending;
+                            request = Prepare(next, op.Id, op.Revision, RequestKind.Submit, op.Barcode, op.Package, op.Supply); break;
+                        }
                     case SupplyAction.ScanRetained:
-                    {
-                        Demand(GuardFor(next, SupplyGuardAction.Submit)); var op = Operation(next, owner);
-                        Require(op.Status == OperationStatus.SplitRequired, "Not a split task");
-                        Require(command.Value?.Length is > 0 and <= 128, "Synthetic retained-unit identity required");
-                        Require(op.SplitScans.Count < op.Supply || op.SplitScans.Contains(command.Value!), "Target count already reached");
-                        op.SplitScans.Add(command.Value!); op.Revision++; break;
-                    }
+                        {
+                            Demand(GuardFor(next, SupplyGuardAction.Submit)); var op = Operation(next, owner);
+                            Require(op.Status == OperationStatus.SplitRequired, "Not a split task");
+                            Require(command.Value?.Length is > 0 and <= 128, "Synthetic retained-unit identity required");
+                            Require(op.SplitScans.Count < op.Supply || op.SplitScans.Contains(command.Value!), "Target count already reached");
+                            op.SplitScans.Add(command.Value!); op.Revision++; break;
+                        }
                     case SupplyAction.ClearSplit:
-                    {
-                        var op = Operation(next, owner); Require(op.Status == OperationStatus.SplitRequired, "Split already submitted");
-                        Require(command.Value == "CONFIRM", "Explicit clear confirmation required"); op.SplitScans.Clear(); op.Revision++; break;
-                    }
+                        {
+                            var op = Operation(next, owner); Require(op.Status == OperationStatus.SplitRequired, "Split already submitted");
+                            Require(command.Value == "CONFIRM", "Explicit clear confirmation required"); op.SplitScans.Clear(); op.Revision++; break;
+                        }
                     case SupplyAction.CancelPrepared:
-                    {
-                        Require(command.Value?.Length is >= 8 and <= 1000, "Local termination inspection evidence required");
-                        request = store.Request(owner) ?? throw new GuardException("Original request not found");
-                        Demand(LocalTerminationGuard(next, request));
-                        request = request with { Status = RequestStatus.CancelledBeforeDispatch };
-                        // This local fact says nothing about reservations from earlier requests or physical permission.
-                        SetBlock(next, SupplyReasonCodes.LocalDispositionRequired, "request", request.Id, request.PayloadHash, "approved-disposition-evidence");
-                        var affected = next.Lanes.Values.SingleOrDefault(x => x.Id == request.OwnerId);
-                        if (affected is not null) { affected.Status = OperationStatus.AwaitingDisposition; affected.Reason = "Original request locally terminated; prior reservations/entity require disposition"; }
-                        else if (next.Session?.Id == request.SessionId) next.Session.Status = SessionStatus.AwaitingDisposition;
-                        break;
-                    }
+                        {
+                            Require(command.Value?.Length is >= 8 and <= 1000, "Local termination inspection evidence required");
+                            request = store.Request(owner) ?? throw new GuardException("Original request not found");
+                            Demand(LocalTerminationGuard(next, request));
+                            request = request with { Status = RequestStatus.CancelledBeforeDispatch };
+                            // This local fact says nothing about reservations from earlier requests or physical permission.
+                            SetBlock(next, SupplyReasonCodes.LocalDispositionRequired, "request", request.Id, request.PayloadHash, "approved-disposition-evidence");
+                            var affected = next.Lanes.Values.SingleOrDefault(x => x.Id == request.OwnerId);
+                            if (affected is not null) { affected.Status = OperationStatus.AwaitingDisposition; affected.Reason = "Original request locally terminated; prior reservations/entity require disposition"; }
+                            else if (next.Session?.Id == request.SessionId) next.Session.Status = SessionStatus.AwaitingDisposition;
+                            break;
+                        }
                     case SupplyAction.CancelDraft:
-                    {
-                        var op = Operation(next, owner); Require(op.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired or OperationStatus.ValidationRejected or OperationStatus.Rejected, "Cannot cancel unknown/in-flight/accepted effect");
-                        Require(!store.Requests(op.Id).Any(IsPending), "Pending request must be resolved first"); op.Status = OperationStatus.Cancelled; op.Revision++; break;
-                    }
+                        {
+                            var op = Operation(next, owner); Require(op.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired or OperationStatus.ValidationRejected or OperationStatus.Rejected, "Cannot cancel unknown/in-flight/accepted effect");
+                            Require(!store.Requests(op.Id).Any(IsPending), "Pending request must be resolved first"); op.Status = OperationStatus.Cancelled; op.Revision++; break;
+                        }
                     case SupplyAction.CheckClose:
                         Demand(GuardFor(next, SupplyGuardAction.Close));
                         Require(next.Session is not null && SupplyCommands.SessionReady(action, next.Session), "Box must be active");
@@ -230,59 +230,59 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Require(command.Value is "EntityPermit" or "WcsUnavailable" or "License" or "DeviceFault", "Only the matching synthetic source may clear");
                         next.Blocks.RemoveAll(x => x.Code == command.Value && x.Source == "fixture-control"); break;
                     case SupplyAction.ReviewObservations:
-                    {
-                        Require(command.Value is { Length: > 0 and <= 65536 }, "Versioned source review required");
-                        ObservationReviewEvidence review;
-                        try { review = Wire.Decode<ObservationReviewEvidence>(command.Value!); }
-                        catch (System.Text.Json.JsonException) { throw new GuardException("Invalid source review selection"); }
-                        Require(review.Sources is { Length: > 0 and <= 128 } && review.Evidence?.Length is >= 8 and <= 1000, "Select source evidence and provide 8..1000 characters of inspection evidence");
-                        Require(review.Sources.Distinct().Count() == review.Sources.Length, "Duplicate source selection");
-                        foreach (var selection in review.Sources)
                         {
-                            Require(selection is not null && selection.Code == SupplyReasonCodes.ObservationReview, "Only observation source evidence can be reviewed here");
-                            Require(next.Blocks.Any(b => MatchesReview(b, selection)), "Source evidence changed; inspect the current version");
+                            Require(command.Value is { Length: > 0 and <= 65536 }, "Versioned source review required");
+                            ObservationReviewEvidence review;
+                            try { review = Wire.Decode<ObservationReviewEvidence>(command.Value!); }
+                            catch (System.Text.Json.JsonException) { throw new GuardException("Invalid source review selection"); }
+                            Require(review.Sources is { Length: > 0 and <= 128 } && review.Evidence?.Length is >= 8 and <= 1000, "Select source evidence and provide 8..1000 characters of inspection evidence");
+                            Require(review.Sources.Distinct().Count() == review.Sources.Length, "Duplicate source selection");
+                            foreach (var selection in review.Sources)
+                            {
+                                Require(selection is not null && selection.Code == SupplyReasonCodes.ObservationReview, "Only observation source evidence can be reviewed here");
+                                Require(next.Blocks.Any(b => MatchesReview(b, selection)), "Source evidence changed; inspect the current version");
+                            }
+                            next.Blocks.RemoveAll(b => review.Sources.Any(x => MatchesReview(b, x)));
+                            break;
                         }
-                        next.Blocks.RemoveAll(b => review.Sources.Any(x => MatchesReview(b, x)));
-                        break;
-                    }
                     case SupplyAction.RecordReconciliation:
                         Require(store.Request(owner) is not null, "Original request required");
                         Require(command.Value?.Length is >= 8 and <= 1000, "Record authority/source/evidence; notes cannot force success"); break;
                     case SupplyAction.SaveConfig:
-                    {
-                        Require(command.Value is not null, "Configuration JSON required");
-                        var draft = Wire.Decode<StationConfig>(command.Value!);
-                        configurationLease = configurationLeaseFactory?.Invoke(draft);
-                        var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
-                        Require(command.OwnerId is null || command.OwnerId == config.Version, "Deployment base version changed");
-                        Require(draft.StationId == config.StationId && draft.Mode == config.Mode && draft.Version != config.Version, "Station/mode fixed; revision must change");
-                        Require(!store.ConfigVersionExists(draft.Version), "Configuration version already used; create a new immutable revision identity");
-                        revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Length == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
-                        owner = revision.Id; break;
-                    }
+                        {
+                            Require(command.Value is not null, "Configuration JSON required");
+                            var draft = Wire.Decode<StationConfig>(command.Value!);
+                            configurationLease = configurationLeaseFactory?.Invoke(draft);
+                            var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
+                            Require(command.OwnerId is null || command.OwnerId == config.Version, "Deployment base version changed");
+                            Require(draft.StationId == config.StationId && draft.Mode == config.Mode && draft.Version != config.Version, "Station/mode fixed; revision must change");
+                            Require(!store.ConfigVersionExists(draft.Version), "Configuration version already used; create a new immutable revision identity");
+                            revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Length == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
+                            owner = revision.Id; break;
+                        }
                     case SupplyAction.ActivateConfig:
-                    {
-                        Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
-                        Require(!next.Quarantined && next.Lanes.Values.All(x => x.Occupancy == Occupancy.Clear) &&
-                            !next.Blocks.Any(x => x.Code is SupplyReasonCodes.LocalDispositionRequired or SupplyReasonCodes.ConflictingEvidence), "Entity/recovery responsibilities prevent deployment activation");
-                        var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
-                        Demand(ConfigurationActivation.Evaluate(next, draft, config.Version, HasUnresolved(), Now));
-                        configurationLease = configurationLeaseFactory?.Invoke(draft.Content);
-                        Require(draft.Status == "Validated" && draft.BaseVersion == config.Version, "Stale/invalid configuration draft");
-                        Require(!store.ConfigVersionExists(draft.Content.Version, draft.Id), "Configuration version reused in retained history; create a new draft");
-                        Require(store.CurrentConfig("PendingActivation") is null, "A configuration is already pending controlled restart");
-                        Require(SupplyConfiguration.Validate(draft.Content).Concat(configurationValidator?.Invoke(draft.Content) ?? []).Count() == 0, "Configuration capabilities changed; validate draft again");
-                        revision = draft with { Status = "PendingActivation" };
-                        SetBlock(next, SupplyReasonCodes.ConfigPending, "station", "configuration", revision.Id, "controlled-restart"); break;
-                    }
+                        {
+                            Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
+                            Require(!next.Quarantined && next.Lanes.Values.All(x => x.Occupancy == Occupancy.Clear) &&
+                                !next.Blocks.Any(x => x.Code is SupplyReasonCodes.LocalDispositionRequired or SupplyReasonCodes.ConflictingEvidence), "Entity/recovery responsibilities prevent deployment activation");
+                            var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
+                            Demand(ConfigurationActivation.Evaluate(next, draft, config.Version, HasUnresolved(), Now));
+                            configurationLease = configurationLeaseFactory?.Invoke(draft.Content);
+                            Require(draft.Status == "Validated" && draft.BaseVersion == config.Version, "Stale/invalid configuration draft");
+                            Require(!store.ConfigVersionExists(draft.Content.Version, draft.Id), "Configuration version reused in retained history; create a new draft");
+                            Require(store.CurrentConfig("PendingActivation") is null, "A configuration is already pending controlled restart");
+                            Require(SupplyConfiguration.Validate(draft.Content).Concat(configurationValidator?.Invoke(draft.Content) ?? []).Count() == 0, "Configuration capabilities changed; validate draft again");
+                            revision = draft with { Status = "PendingActivation" };
+                            SetBlock(next, SupplyReasonCodes.ConfigPending, "station", "configuration", revision.Id, "controlled-restart"); break;
+                        }
                     case SupplyAction.ClearQuarantine:
                         Require(next.Quarantined && !HasUnresolved() && command.Value?.Length >= 8, "Resolve all retained effects and record external inventory evidence first");
                         next.Quarantined = false; break;
                     case SupplyAction.AckAlarm:
-                    {
-                        var alarm = store.Alarm(owner) ?? throw new GuardException("Alarm identity not found");
-                        acknowledgement = alarm with { AckedBy = next.Actor!.Id, AckedAt = Now }; break;
-                    }
+                        {
+                            var alarm = store.Alarm(owner) ?? throw new GuardException("Alarm identity not found");
+                            acknowledgement = alarm with { AckedBy = next.Actor!.Id, AckedAt = Now }; break;
+                        }
                     default: throw new GuardException("Unknown application command");
                 }
                 next.Revision++;
@@ -426,34 +426,34 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         await gate.WaitAsync();
         try
         {
-                var current = store.Request(request.Id);
-                var latest = store.Attempts(request.Id).LastOrDefault();
-                if (current?.Status != RequestStatus.Dispatching || latest?.Id != attempt.Id || latest.Disposition != "Dispatching") return false;
-                var next = Clone(state); next.Revision++;
-                var guardAllowed = SendGuard(state, current).Allowed;
-                bool authorize; long authorizedOverflowVersion;
-                lock (faultGate) { authorize = guardAllowed && runtimeFaults.IsEmpty; authorizedOverflowVersion = overloadVersion; }
-                if (authorize)
+            var current = store.Request(request.Id);
+            var latest = store.Attempts(request.Id).LastOrDefault();
+            if (current?.Status != RequestStatus.Dispatching || latest?.Id != attempt.Id || latest.Disposition != "Dispatching") return false;
+            var next = Clone(state); next.Revision++;
+            var guardAllowed = SendGuard(state, current).Allowed;
+            bool authorize; long authorizedOverflowVersion;
+            lock (faultGate) { authorize = guardAllowed && runtimeFaults.IsEmpty; authorizedOverflowVersion = overloadVersion; }
+            if (authorize)
+            {
+                // Conservative durable authorization boundary. After this, cancellation cannot prove non-delivery.
+                store.Commit(next, "TransportHandoffAuthorized", request.OwnerId, "sender", request.Id,
+                    attempt: latest with { Disposition = "TransportHandoff" },
+                    occurrence: new("send-" + attempt.Id, request.Id, attempt.Id, "execute", Now, ReceiptResponsibilityRules.AwaitingResponse));
+                Adopt(next);
+                bool changedDuringCommit;
+                lock (faultGate) changedDuringCommit = !runtimeFaults.IsEmpty || overloadVersion != authorizedOverflowVersion;
+                if (changedDuringCommit)
                 {
-                    // Conservative durable authorization boundary. After this, cancellation cannot prove non-delivery.
-                    store.Commit(next, "TransportHandoffAuthorized", request.OwnerId, "sender", request.Id,
-                        attempt: latest with { Disposition = "TransportHandoff" },
-                        occurrence: new("send-" + attempt.Id, request.Id, attempt.Id, "execute", Now, ReceiptResponsibilityRules.AwaitingResponse));
-                    Adopt(next);
-                    bool changedDuringCommit;
-                    lock (faultGate) changedDuringCommit = !runtimeFaults.IsEmpty || overloadVersion != authorizedOverflowVersion;
-                    if (changedDuringCommit)
-                    {
-                        // Durable handoff already exists. A concurrent fault during slow storage
-                        // forbids network, but is never relabeled as proven non-delivery/Prepared.
-                        await UnknownLocked(current, latest with { Disposition = "TransportHandoff" }, "Runtime guard changed while persisting handoff; network suppressed; reconcile original identity");
-                        return false;
-                    }
-                    return true;
+                    // Durable handoff already exists. A concurrent fault during slow storage
+                    // forbids network, but is never relabeled as proven non-delivery/Prepared.
+                    await UnknownLocked(current, latest with { Disposition = "TransportHandoff" }, "Runtime guard changed while persisting handoff; network suppressed; reconcile original identity");
+                    return false;
                 }
-                store.Commit(next, "NotDelivered", request.OwnerId, "sender", "Guard changed before handing request to network",
-                    request: request with { Status = RequestStatus.Prepared }, attempt: attempt with { EndedAt = Now, Disposition = "NotDelivered" });
-                Adopt(next); return false;
+                return true;
+            }
+            store.Commit(next, "NotDelivered", request.OwnerId, "sender", "Guard changed before handing request to network",
+                request: request with { Status = RequestStatus.Prepared }, attempt: attempt with { EndedAt = Now, Disposition = "NotDelivered" });
+            Adopt(next); return false;
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); return false; }
         finally { gate.Release(); }
@@ -630,7 +630,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         foreach (var alarm in active)
             if (!blocks.Any(x => x.Code == alarm.Code && x.Scope == alarm.Scope && x.Owner == alarm.OwnerId && x.Source == alarm.Source && x.Epoch == alarm.Epoch)) store.SaveAlarm(alarm with { ClearedAt = Now });
         foreach (var b in blocks.Distinct()) if (!active.Any(x => x.Code == b.Code && x.Scope == b.Scope && x.OwnerId == b.Owner && x.Source == b.Source && x.Epoch == b.Epoch))
-            store.SaveAlarm(new(Wire.Id(), b.Code, b.Scope, b.Source, b.Epoch, b.Owner, Now, null, null, null));
+                store.SaveAlarm(new(Wire.Id(), b.Code, b.Scope, b.Source, b.Epoch, b.Owner, Now, null, null, null));
     }
     string RecoveryStep(BusinessRequest request)
     {
@@ -655,15 +655,22 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     async Task<StationSnapshot> SnapshotCore()
     {
         await gate.WaitAsync();
-        try { return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, SupplyGuardAction.Admit), GuardFor(state, SupplyGuardAction.Submit), GuardFor(state, SupplyGuardAction.Close), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), RecoveryStep(x)) { Receipts = store.Receipts(x.Id).Where(ReceiptResponsibilityRules.IsUnresolved).ToArray() }).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
+        try
+        {
+            return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, SupplyGuardAction.Admit), GuardFor(state, SupplyGuardAction.Submit), GuardFor(state, SupplyGuardAction.Close), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), RecoveryStep(x)) { Receipts = store.Receipts(x.Id).Where(ReceiptResponsibilityRules.IsUnresolved).ToArray() }).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
             {
-                BoxResult = CurrentBoxResult(), StationId = config.StationId, NotificationBacklog = notifications.Count, NotificationOverflow = notificationOverflow,
-                ProjectionVersion = Interlocked.Increment(ref projectionVersion), GeneratedAt = Now,
+                BoxResult = CurrentBoxResult(),
+                StationId = config.StationId,
+                NotificationBacklog = notifications.Count,
+                NotificationOverflow = notificationOverflow,
+                ProjectionVersion = Interlocked.Increment(ref projectionVersion),
+                GeneratedAt = Now,
                 AcceptedQuantity = state.Session is null ? 0 : store.AcceptedQuantity(state.Session.Id),
                 // Current station/recovery diagnostics remain visible. Cross-session
                 // recent history is a historical read and must obey the same identity rule.
                 RecentOperations = state.Actor is { } reader && reader.ExpiresAt > Now ? store.History(null, 0, 8) : []
-            }; }
+            };
+        }
         finally { gate.Release(); }
     }
     Guard OverloadRecoveryGuard()

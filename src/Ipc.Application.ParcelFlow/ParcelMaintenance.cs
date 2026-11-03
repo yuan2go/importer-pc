@@ -18,7 +18,7 @@ public sealed record ParcelMaintenanceInspection(string Application, string Stat
 public sealed partial class ParcelRepository
 {
     public static ParcelMaintenanceInspection InspectMaintenance(string database, FlowDefinition flow)
-        => InspectMaintenance(database,flow,CancellationToken.None);
+        => InspectMaintenance(database, flow, CancellationToken.None);
     public static ParcelMaintenanceInspection InspectMaintenance(string database, FlowDefinition flow, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -26,8 +26,8 @@ public sealed partial class ParcelRepository
         if (!File.Exists(database)) throw new FileNotFoundException("Original database is required; no empty runtime is created", database);
         using var owner = new ResourceLease(Path.GetDirectoryName(database)!, ["application-owner"]);
         try { return InspectMaintenanceCore(database, flow, token); }
-        catch(SqliteException error) when(error.SqliteErrorCode==9 && token.IsCancellationRequested)
-        { throw new OperationCanceledException("Maintenance inspection was cancelled",error,token); }
+        catch (SqliteException error) when (error.SqliteErrorCode == 9 && token.IsCancellationRequested)
+        { throw new OperationCanceledException("Maintenance inspection was cancelled", error, token); }
     }
     internal static ParcelMaintenanceInspection InspectMaintenanceCore(string database, FlowDefinition flow, CancellationToken token = default, bool allowPreviousStorage = false)
     {
@@ -91,8 +91,8 @@ public sealed partial class ParcelRepository
         if (pending != 0) reasons.Add("Original receipt custody is unsettled; Query is not the missing original raw");
         if (conflicts != 0) reasons.Add("Persistent identity conflicts require authorized inspection");
         if (File.Exists(Path.Combine(directory, "overload.json"))) reasons.Add("Callback loss/overload requires original entity inspection");
-        var names = new[] { "configuration.json" }.Concat(RecoveryFiles.Enumerate(directory,"receipts",false,token)).Concat(RecoveryFiles.Enumerate(directory,"images",true,token)).ToArray();
-        RecoveryFiles.ValidateNames(directory,names,token);
+        var names = new[] { "configuration.json" }.Concat(RecoveryFiles.Enumerate(directory, "receipts", false, token)).Concat(RecoveryFiles.Enumerate(directory, "images", true, token)).ToArray();
+        RecoveryFiles.ValidateNames(directory, names, token);
         var inspection = new ParcelMaintenanceInspection(flow.Id, config.Effective.StationId, config.Effective.Mode, version,
             Scalar("SELECT revision FROM parcel_meta WHERE id=1"), Scalar("SELECT paused FROM parcel_meta WHERE id=1") != 0,
             resident, archived, unsettled, pending, conflicts, new FileInfo(database).Length + (File.Exists(wal) ? new FileInfo(wal).Length : 0),
@@ -149,10 +149,10 @@ public static partial class ParcelRecovery
         using var editor = new ResourceLease(Path.Combine(directory, "startup-maintenance"), ["configuration-editor"]);
         var names = new List<string> { "configuration.json" };
         if (File.Exists(Path.Combine(directory, ParcelMachineOrigin.FileName))) names.Add(ParcelMachineOrigin.FileName);
-        names.AddRange(RecoveryFiles.Enumerate(directory,"receipts",false,cancellationToken)); names.AddRange(RecoveryFiles.Enumerate(directory,"images",true,cancellationToken));
-        names.AddRange(RecoveryFiles.MaintenanceEvidence(directory,cancellationToken));
+        names.AddRange(RecoveryFiles.Enumerate(directory, "receipts", false, cancellationToken)); names.AddRange(RecoveryFiles.Enumerate(directory, "images", true, cancellationToken));
+        names.AddRange(RecoveryFiles.MaintenanceEvidence(directory, cancellationToken));
         if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
-        RecoveryFiles.ValidateNames(directory,names,cancellationToken);
+        RecoveryFiles.ValidateNames(directory, names, cancellationToken);
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n), cancellationToken), StringComparer.Ordinal);
         var bytes = checked(databaseBytes + names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length) + RecoveryFiles.MaximumManifestBytes);
         if (!ParcelStorageVolume.Plan(destination, bytes, effective.Retention?.MinimumFreeBytes ?? 67108864).Fits) throw new IOException("Backup requires database/custody capacity plus manifest and configured reserve");
@@ -160,7 +160,7 @@ public static partial class ParcelRecovery
         registerBackup(destination, effective); if (pending is not null) registerBackup(destination, pending);
         requireAuthority?.Invoke(); execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase);
         backupDatabase(destination);
-        long copiedBytes = 0; var totalBytes = names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory,n)).Length);
+        long copiedBytes = 0; var totalBytes = names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length);
         execution?.Report(MaintenanceStage.CopyingCustody, 0, totalBytes);
         foreach (var name in names)
         {

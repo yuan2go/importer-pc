@@ -69,9 +69,17 @@ public sealed class InspectionRuntime(BusinessLaunch launch) : IBusinessRuntime,
     public async Task<BusinessProjection> QueryAsync()
     {
         await gate.WaitAsync().ConfigureAwait(false);
-        try { return new(runtimeId, ledger.Revision, stopped ? "Stopped" : path is null ? "NotReady" : "Ready", new() {
-            ["Business"] = Id, ["Batches"] = ledger.Batches.Length.ToString(), ["Samples"] = ledger.Batches.Sum(x => x.Samples.Length).ToString(),
-            ["CurrentBatch"] = ledger.Batches.LastOrDefault()?.Id ?? "", ["CurrentState"] = ledger.Batches.LastOrDefault()?.State ?? "Empty" }); }
+        try
+        {
+            return new(runtimeId, ledger.Revision, stopped ? "Stopped" : path is null ? "NotReady" : "Ready", new()
+            {
+                ["Business"] = Id,
+                ["Batches"] = ledger.Batches.Length.ToString(),
+                ["Samples"] = ledger.Batches.Sum(x => x.Samples.Length).ToString(),
+                ["CurrentBatch"] = ledger.Batches.LastOrDefault()?.Id ?? "",
+                ["CurrentState"] = ledger.Batches.LastOrDefault()?.State ?? "Empty"
+            });
+        }
         finally { gate.Release(); }
     }
     public async Task StopAsync(CancellationToken token)

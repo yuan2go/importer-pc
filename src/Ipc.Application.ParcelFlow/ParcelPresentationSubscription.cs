@@ -9,7 +9,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
     readonly HashSet<PresentationSubscription> presentationSubscribers = [];
     readonly Dictionary<string, DeviceState> presentationReaderStates = [];
     readonly Channel<byte> presentationChanges = Channel.CreateBounded<byte>(new BoundedChannelOptions(1)
-        { FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, AllowSynchronousContinuations = false });
+    { FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, AllowSynchronousContinuations = false });
     string? presentationSnapshotJson, presentationFailure;
     long presentationVersion, presentationSnapshotTicks;
     Task? presentationPublisher;
@@ -87,7 +87,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
     {
         readonly object sync = new();
         readonly Channel<byte> ready = Channel.CreateBounded<byte>(new BoundedChannelOptions(1)
-            { FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, AllowSynchronousContinuations = false });
+        { FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, AllowSynchronousContinuations = false });
         bool closed;
         int reading;
         long version, ticks, deliveredTicks;
@@ -110,20 +110,20 @@ public sealed partial class ParcelRuntime : IParcelPresentationSource
             if (Interlocked.CompareExchange(ref reading, 1, 0) != 0) throw new InvalidOperationException("Only one presentation read per subscriber may be in flight");
             try
             {
-            await ready.Reader.ReadAsync(token).ConfigureAwait(false);
-            string? json, error; long id, published; ParcelReadFeedback[] feedback; DeviceState[] devices; ParcelCameraReadFeedback[] camera;
-            lock (sync)
-            {
-                ObjectDisposedException.ThrowIf(closed, this);
-                json = ticks != deliveredTicks ? encoded : null; deliveredTicks = ticks;
-                error = failure; id = version; published = ticks;
-                feedback = (ParcelReadFeedback[])reads.Clone(); devices = (DeviceState[])readers.Clone();
-                camera = (ParcelCameraReadFeedback[])cameraReads.Clone();
-            }
-            // Each subscriber receives a detached mutable-array graph. The only shared
-            // business projection is an immutable string; deserialization never holds a gate.
-            var snapshot = json is null ? null : Wire.Decode<ParcelSnapshot>(json) with { PublishedTicks = published };
-            return new(owner.runtimeId, id, snapshot, feedback, devices, error) { CameraReads = camera };
+                await ready.Reader.ReadAsync(token).ConfigureAwait(false);
+                string? json, error; long id, published; ParcelReadFeedback[] feedback; DeviceState[] devices; ParcelCameraReadFeedback[] camera;
+                lock (sync)
+                {
+                    ObjectDisposedException.ThrowIf(closed, this);
+                    json = ticks != deliveredTicks ? encoded : null; deliveredTicks = ticks;
+                    error = failure; id = version; published = ticks;
+                    feedback = (ParcelReadFeedback[])reads.Clone(); devices = (DeviceState[])readers.Clone();
+                    camera = (ParcelCameraReadFeedback[])cameraReads.Clone();
+                }
+                // Each subscriber receives a detached mutable-array graph. The only shared
+                // business projection is an immutable string; deserialization never holds a gate.
+                var snapshot = json is null ? null : Wire.Decode<ParcelSnapshot>(json) with { PublishedTicks = published };
+                return new(owner.runtimeId, id, snapshot, feedback, devices, error) { CameraReads = camera };
             }
             finally { Volatile.Write(ref reading, 0); }
         }

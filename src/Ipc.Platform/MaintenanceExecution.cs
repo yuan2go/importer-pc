@@ -18,8 +18,8 @@ public sealed class MaintenanceExecution : IDisposable
 {
     readonly object gate = new();
     readonly object observations = new();
-    (MaintenanceStage Stage,bool CanCancel)? previousStage;
-    int previousPercent=-1, byteObservations, phaseObservations;
+    (MaintenanceStage Stage, bool CanCancel)? previousStage;
+    int previousPercent = -1, byteObservations, phaseObservations;
     readonly HashSet<(MaintenanceStage, bool)> stages = new();
     readonly CancellationTokenSource cancellation = new();
     readonly CancellationTokenRegistration registration;
@@ -73,17 +73,17 @@ public sealed class MaintenanceExecution : IDisposable
         var canCancel = CanCancel;
         lock (observations)
         {
-            var pair=(stage,canCancel);var transition=previousStage!=pair;
-            if(transition){previousStage=pair;previousPercent=-1;}
-            var changed=stages.Add(pair)||(transition&&phaseObservations<64);
-            if(changed)phaseObservations++;
-            if(processed is { } done&&total is >0)
+            var pair = (stage, canCancel); var transition = previousStage != pair;
+            if (transition) { previousStage = pair; previousPercent = -1; }
+            var changed = stages.Add(pair) || (transition && phaseObservations < 64);
+            if (changed) phaseObservations++;
+            if (processed is { } done && total is > 0)
             {
-                var percent=(int)(100m*done/total.Value);
-                if(percent>previousPercent)
+                var percent = (int)(100m * done / total.Value);
+                if (percent > previousPercent)
                 {
-                    previousPercent=percent;
-                    if(!changed&&byteObservations<1600){byteObservations++;changed=true;}
+                    previousPercent = percent;
+                    if (!changed && byteObservations < 1600) { byteObservations++; changed = true; }
                 }
             }
             if (!changed) return;

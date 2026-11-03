@@ -55,8 +55,13 @@ public sealed partial class ParcelRuntime
             elapsed: elapsed, decodedTicks: observation.DecodedTicks);
     object FlowPerformance()
     {
-        lock (performanceSync) return new { Window = PerformanceWindow, Sequence = performanceSequence,
+        lock (performanceSync) return new
+        {
+            Window = PerformanceWindow,
+            Sequence = performanceSequence,
             Counts = performanceCounts.ToDictionary(p => p.Key, p => new Dictionary<string, long>(p.Value)),
-            Recent = performanceEvents.ToArray(), Boundary = "Observed input / persisted application result; not physical parcel completion" };
+            Recent = performanceEvents.ToArray(),
+            Boundary = "Observed input / persisted application result; not physical parcel completion"
+        };
     }
 }

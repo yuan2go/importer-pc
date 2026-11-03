@@ -91,7 +91,8 @@ public static partial class DesktopRecoveryInstallation
         // COM interop maps HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) to
         // FileNotFoundException. Only absence from this GetTask call is benign.
         catch (Exception error) when ((error is COMException or FileNotFoundException { FileName: null }) &&
-            (uint)error.HResult is 0x80070002 or 0x8004130F) { return null; }
+            (uint)error.HResult is 0x80070002 or 0x8004130F)
+        { return null; }
     }
     [SupportedOSPlatform("windows")]
     static void Task(DesktopRecoveryPlan plan, DeploymentLocation location, bool remove)

@@ -15,13 +15,16 @@ public static class BundledHikrobot
         return Wire.Decode<T>(reader.ReadToEnd());
     }
     public static CapabilityDescriptor Descriptor { get; } = new("observation", Implementation, "1.0.0", Contract,
-        Resource<ParameterField[]>("Hikrobot.Parameters.json").Select(p => p.Key switch {
+        Resource<ParameterField[]>("Hikrobot.Parameters.json").Select(p => p.Key switch
+        {
             "entity.mode" => p with { Default = "read-result" },
             "acquisition.mode" => p with { Default = "continuous" },
-            _ => p }).ToArray(), new());
+            _ => p
+        }).ToArray(), new());
     sealed record RuntimeInventory(int SchemaVersion, string Abi, string Entry, string[] Preload, ExtensionFile[] Files, ExtensionFile? LoggingSource = null, string? LoggingPolicy = null);
     static string? logRoot;
-    static readonly Lazy<nint> runtime = new(() => {
+    static readonly Lazy<nint> runtime = new(() =>
+    {
         var manifest = Resource<RuntimeInventory>("Hikrobot.Runtime.json");
         if (manifest.SchemaVersion != 1 || manifest.Abi != "0x02000004" || manifest.Entry != NativeMethods.Library) throw new InvalidDataException("Unsupported bundled MvCodeReader ABI");
         if (logRoot is null || Environment.GetEnvironmentVariable("IPC_MVCODEREADER_LOG_ROOT") != logRoot) throw new InvalidDataException("MvCodeReader process log root changed; controlled restart required");

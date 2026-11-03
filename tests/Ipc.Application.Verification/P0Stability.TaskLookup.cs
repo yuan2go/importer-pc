@@ -24,7 +24,7 @@ static class P0TaskLookup
             ((dynamic)service).Connect(); folder = ((dynamic)service).GetFolder("\\");
             using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
             var location = new DeploymentLocation("lookup-" + Guid.NewGuid().ToString("N"), new string('a', 40), root, root, root, identity.User!.Value)
-                { Recovery = new(Enabled: false) };
+            { Recovery = new(Enabled: false) };
             var plan = DesktopRecoveryInstallation.Plan(location);
             Exception? observed = null;
             try { _ = ((dynamic)folder).GetTask(plan.TaskName); }

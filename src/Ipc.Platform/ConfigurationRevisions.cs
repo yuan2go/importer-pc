@@ -68,9 +68,21 @@ public sealed class ConfigurationRevisions<T> where T : class
         if (Current.Pending is not null || Current.Confirmation is not { Required: false } || Current.Status != "Effective")
             throw new InvalidOperationException("Confirm the current configuration and resolve pending changes before live activation");
         RequireValid(candidate);
-        var next = Current with { Revision = Current.Revision + 1, Effective = candidate, Status = "Effective", Failure = null,
-            Activation = null, InitialRepair = null, Confirmation = Current.Confirmation with {
-                EffectiveHash = Wire.Hash(Wire.Encode(candidate)), ConfirmedBy = "application-live-rule-barrier", ConfirmedAt = DateTimeOffset.UtcNow } };
+        var next = Current with
+        {
+            Revision = Current.Revision + 1,
+            Effective = candidate,
+            Status = "Effective",
+            Failure = null,
+            Activation = null,
+            InitialRepair = null,
+            Confirmation = Current.Confirmation with
+            {
+                EffectiveHash = Wire.Hash(Wire.Encode(candidate)),
+                ConfirmedBy = "application-live-rule-barrier",
+                ConfirmedAt = DateTimeOffset.UtcNow
+            }
+        };
         Save(next); return Current = next;
     }
     public ConfigurationRevision<T> Stage(long expectedRevision, T candidate)
@@ -115,13 +127,23 @@ public sealed class ConfigurationRevisions<T> where T : class
         {
             var attempts = confirmation.Attempts.ToArray();
             attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Interrupted", Failure = "Process ended before resource startup confirmation" };
-            var recovered = Current with { Revision = Current.Revision + 1, Status = Current.Pending is null ? "ConfirmationRequired" : Current.Status,
-                Failure = "Effective startup interrupted; successful resource startup remains required", Confirmation = confirmation with { State = "Required", Attempts = attempts } };
+            var recovered = Current with
+            {
+                Revision = Current.Revision + 1,
+                Status = Current.Pending is null ? "ConfirmationRequired" : Current.Status,
+                Failure = "Effective startup interrupted; successful resource startup remains required",
+                Confirmation = confirmation with { State = "Required", Attempts = attempts }
+            };
             Save(recovered); Current = recovered;
         }
         if (Current.Status != "ActivationInProgress") return;
-        var next = Current with { Revision = Current.Revision + 1, Status = "ActivationFailed", Failure = "Activation interrupted; prior confirmed Effective retained; explicit restaging required",
-            Activation = Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Interrupted" } : null };
+        var next = Current with
+        {
+            Revision = Current.Revision + 1,
+            Status = "ActivationFailed",
+            Failure = "Activation interrupted; prior confirmed Effective retained; explicit restaging required",
+            Activation = Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Interrupted" } : null
+        };
         Save(next); Current = next;
     }
     public T? BeginActivation(Func<T, bool> applicationBarrier, Action<T> preflight)
@@ -132,8 +154,13 @@ public sealed class ConfigurationRevisions<T> where T : class
             RequireValid(candidate);
             if (!applicationBarrier(candidate)) throw new InvalidOperationException("Application activation barrier is closed");
             preflight(candidate);
-            var next = Current with { Revision = Current.Revision + 1, Status = "ActivationInProgress", Failure = null,
-                Activation = new(Wire.Id(), DateTimeOffset.UtcNow) };
+            var next = Current with
+            {
+                Revision = Current.Revision + 1,
+                Status = "ActivationInProgress",
+                Failure = null,
+                Activation = new(Wire.Id(), DateTimeOffset.UtcNow)
+            };
             Save(next); Current = next; return candidate;
         }
         catch (Exception ex)
@@ -170,21 +197,38 @@ public sealed class ConfigurationRevisions<T> where T : class
     public void BeginEffectiveStartup()
     {
         if (Current.Confirmation is not { Required: true } confirmation) return;
-        var next = Current with { Revision = Current.Revision + 1,
-            Confirmation = confirmation with { State = "InProgress", Attempts = [.. confirmation.Attempts, new(Wire.Id(), DateTimeOffset.UtcNow)] } };
+        var next = Current with
+        {
+            Revision = Current.Revision + 1,
+            Confirmation = confirmation with { State = "InProgress", Attempts = [.. confirmation.Attempts, new(Wire.Id(), DateTimeOffset.UtcNow)] }
+        };
         Save(next); Current = next;
     }
     public void CompleteEffectiveStartup(Exception? failure = null)
     {
         if (Current.Confirmation is not { Required: true, State: "InProgress" } confirmation) return;
         var attempts = confirmation.Attempts.ToArray();
-        attempts[^1] = attempts[^1] with { FinishedAt = DateTimeOffset.UtcNow, Outcome = failure is null ? "ResourcesStarted" : "Failed",
-            Failure = failure is null ? null : failure.GetType().Name + ": " + failure.Message };
+        attempts[^1] = attempts[^1] with
+        {
+            FinishedAt = DateTimeOffset.UtcNow,
+            Outcome = failure is null ? "ResourcesStarted" : "Failed",
+            Failure = failure is null ? null : failure.GetType().Name + ": " + failure.Message
+        };
         var confirmed = failure is null;
-        var next = Current with { Revision = Current.Revision + 1, Status = Current.Pending is null ? confirmed ? "Effective" : "ConfirmationRequired" : Current.Status,
+        var next = Current with
+        {
+            Revision = Current.Revision + 1,
+            Status = Current.Pending is null ? confirmed ? "Effective" : "ConfirmationRequired" : Current.Status,
             Failure = failure is null ? Current.Pending is null ? null : Current.Failure : attempts[^1].Failure,
-            Confirmation = confirmation with { Attempts = attempts, Required = !confirmed, State = confirmed ? "Confirmed" : "Required",
-                ConfirmedBy = confirmed ? "initial-resource-startup" : null, ConfirmedAt = confirmed ? DateTimeOffset.UtcNow : null } };
+            Confirmation = confirmation with
+            {
+                Attempts = attempts,
+                Required = !confirmed,
+                State = confirmed ? "Confirmed" : "Required",
+                ConfirmedBy = confirmed ? "initial-resource-startup" : null,
+                ConfirmedAt = confirmed ? DateTimeOffset.UtcNow : null
+            }
+        };
         Save(next); Current = next;
     }
     public void Activate(Func<T, bool> applicationBarrier, Action<T> preflight)
@@ -195,9 +239,22 @@ public sealed class ConfigurationRevisions<T> where T : class
             RequireValid(candidate);
             if (!applicationBarrier(candidate)) throw new InvalidOperationException("Application activation barrier is closed");
             preflight(candidate);
-            var next = Current with { Revision = Current.Revision + 1, Effective = candidate, Pending = null, Status = "Effective", Failure = null,
-                Confirmation = Current.Confirmation! with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = "Confirmed",
-                    ConfirmedBy = "application-preflight", ConfirmedAt = DateTimeOffset.UtcNow } };
+            var next = Current with
+            {
+                Revision = Current.Revision + 1,
+                Effective = candidate,
+                Pending = null,
+                Status = "Effective",
+                Failure = null,
+                Confirmation = Current.Confirmation! with
+                {
+                    EffectiveHash = Wire.Hash(Wire.Encode(candidate)),
+                    Required = false,
+                    State = "Confirmed",
+                    ConfirmedBy = "application-preflight",
+                    ConfirmedAt = DateTimeOffset.UtcNow
+                }
+            };
             Save(next); Current = next;
         }
         catch (Exception ex)

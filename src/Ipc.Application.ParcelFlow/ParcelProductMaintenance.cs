@@ -25,22 +25,22 @@ public sealed partial class ParcelStartupMaintenance
         var database = Path.Combine(directory, definition.Id + ".db");
         if (!File.Exists(database)) throw new FileNotFoundException("原数据库不存在；不能用空库代替维护检查", database);
         var names = new[] { "configuration.json", ParcelMachineOrigin.FileName, definition.Id + ".db", definition.Id + ".db-wal", "overload.json", "RESTORED-ISOLATED.json", "RESTORE-INCOMPLETE.json" }
-            .Where(n => File.Exists(Path.Combine(directory, n))).Concat(RecoveryFiles.Enumerate(directory,"receipts",false,token))
-            .Concat(RecoveryFiles.Enumerate(directory,"images",true,token)).Concat(RecoveryFiles.MaintenanceEvidence(directory,token)).Order(StringComparer.Ordinal).ToArray();
-        RecoveryFiles.ValidateNames(directory, names.Where(n => n is "configuration.json" or "overload.json" or ParcelMachineOrigin.FileName || n.StartsWith("receipts/") || n.StartsWith("images/") || n.StartsWith("startup-maintenance/")),token);
+            .Where(n => File.Exists(Path.Combine(directory, n))).Concat(RecoveryFiles.Enumerate(directory, "receipts", false, token))
+            .Concat(RecoveryFiles.Enumerate(directory, "images", true, token)).Concat(RecoveryFiles.MaintenanceEvidence(directory, token)).Order(StringComparer.Ordinal).ToArray();
+        RecoveryFiles.ValidateNames(directory, names.Where(n => n is "configuration.json" or "overload.json" or ParcelMachineOrigin.FileName || n.StartsWith("receipts/") || n.StartsWith("images/") || n.StartsWith("startup-maintenance/")), token);
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n), token));
         var scratch = MaintenanceWorkspace();
         try
         {
-            var bytes = names.Sum(n => {token.ThrowIfCancellationRequested();return new FileInfo(RecoveryFiles.Resolve(directory,n)).Length;});
+            var bytes = names.Sum(n => { token.ThrowIfCancellationRequested(); return new FileInfo(RecoveryFiles.Resolve(directory, n)).Length; });
             if (!ParcelStorageVolume.Plan(scratch, bytes, 67108864).Fits) throw new IOException("完整维护快照卷空间不足；原文件保留");
-            long copiedBytes = 0; execution?.Report(MaintenanceStage.CopyingSnapshot,0,bytes);
+            long copiedBytes = 0; execution?.Report(MaintenanceStage.CopyingSnapshot, 0, bytes);
             foreach (var name in names)
             {
                 Authorize(); execution?.Checkpoint();
                 var target = RecoveryFiles.Resolve(scratch, name); Directory.CreateDirectory(Path.GetDirectoryName(target)!);
                 RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory, name), target, hashes[name], token,
-                    count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingSnapshot,copiedBytes,bytes); });
+                    count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingSnapshot, copiedBytes, bytes); });
             }
             if (hashes.Any(h => Wire.FileHash(RecoveryFiles.Resolve(directory, h.Key), token) != h.Value)) throw new IOException("原文件在取得所有权后变化；拒绝使用不一致副本");
             return new(scratch, Path.Combine(scratch, definition.Id + ".db"), Wire.Hash(Wire.Encode(hashes)), hashes);
@@ -70,11 +70,12 @@ public sealed partial class ParcelStartupMaintenance
         return new(Wire.Hash(copy.SourceIdentity + state.Hash + purpose + destination), purpose, allowed,
             Wire.Encode(inspection) + "\n隔离标记：" + string.Join(",", markers) + (purpose == "Repair" ? "\n仅相同冻结发布的程序修复：原责任/标记保留，完整备份后不改账、不激活、不启动；装配层必须核对相同源码。" : "\n程序切换不回滚数据库；未决请求须原发布核对。") +
             (pruningBlocker is null ? "" : "\n" + pruningBlocker) +
-            (inspection.DatabaseVersion is 10 or 11 ? "\n将先核验完整格式10/11备份，再事务升级至12；原配置、历史、请求与回包保留，软件保持暂停。" : ""), state.Hash, destination) {
-                OperatorSummary = pruningBlocker ?? (!inspection.ResponsibilitiesSettled ?
+            (inspection.DatabaseVersion is 10 or 11 ? "\n将先核验完整格式10/11备份，再事务升级至12；原配置、历史、请求与回包保留，软件保持暂停。" : ""), state.Hash, destination)
+        {
+            OperatorSummary = pruningBlocker ?? (!inspection.ResponsibilitiesSettled ?
                     purpose == "Uninstall" ? "仍有未完成或结果未确认的请求。卸载只移除程序，原记录和责任保留，仍须按原记录核对。" : "仍有未完成或结果未确认的请求。请先按原记录处理，所有版本和数据保留。" :
                     markers.Length > 0 ? "仍有恢复或存储保护状态，原记录保留；程序移除不会解除这些保护。" : "原记录检查完成，业务数据和身份保留。")
-            };
+        };
     }
     string? VersionPruningBlocker(string current, ConfigurationRevision<ParcelConfiguration>? configuration)
     {
@@ -99,34 +100,34 @@ public sealed partial class ParcelStartupMaintenance
         }
         return null;
     }
-    static async Task<T> ObserveMaintenance<T>(IProgress<MaintenanceProgress>? progress,CancellationToken token,Func<MaintenanceExecution,Task<T>> operation)
+    static async Task<T> ObserveMaintenance<T>(IProgress<MaintenanceProgress>? progress, CancellationToken token, Func<MaintenanceExecution, Task<T>> operation)
     {
-        using var execution=new MaintenanceExecution(progress,token);
-        try{var result=await operation(execution);execution.Complete();return result;}
-        catch(OperationCanceledException)when(execution.CancellationRequested&&!execution.Committing)
-        {throw new MaintenanceCancelledException("维护已在提交前取消；原数据保留，准备生成的文件须核对后保管。");}
-        finally{execution.Finish();}
+        using var execution = new MaintenanceExecution(progress, token);
+        try { var result = await operation(execution); execution.Complete(); return result; }
+        catch (OperationCanceledException) when (execution.CancellationRequested && !execution.Committing)
+        { throw new MaintenanceCancelledException("维护已在提交前取消；原数据保留，准备生成的文件须核对后保管。"); }
+        finally { execution.Finish(); }
     }
-    public Task<StartupChangePreview> PlanChangeAsync(string purpose,string? backupDestination)
-        => PlanChangeAsync(purpose,backupDestination,null,CancellationToken.None);
-    public Task<StartupChangePreview> PlanChangeAsync(string purpose,string? backupDestination,IProgress<MaintenanceProgress>? progress,CancellationToken token)
-        => ObserveMaintenance(progress,token,e=>PlanChangeAsync(purpose,backupDestination,e));
-    public Task<StartupChangePreview> PlanChangeAsync(string purpose,string? backupDestination,MaintenanceExecution execution)
+    public Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination)
+        => PlanChangeAsync(purpose, backupDestination, null, CancellationToken.None);
+    public Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => ObserveMaintenance(progress, token, e => PlanChangeAsync(purpose, backupDestination, e));
+    public Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination, MaintenanceExecution execution)
     {
-        execution.Checkpoint();execution.Report(MaintenanceStage.Checking);
+        execution.Checkpoint(); execution.Report(MaintenanceStage.Checking);
         Authorize(); var state = ReadState();
         using var owner = Directory.Exists(state.Directory) ? new ResourceLease(state.Directory, ["application-owner"]) : null;
         if (ReadState().Hash != state.Hash) throw new InvalidOperationException("配置在取得所有权时变化");
-        using var copy = File.Exists(Path.Combine(state.Directory, definition.Id + ".db")) ? CopyForMaintenance(state.Directory,execution) : null;
-        Authorize();execution.Checkpoint();
-        return Task.FromResult(Preview(purpose, backupDestination, state, copy,execution));
+        using var copy = File.Exists(Path.Combine(state.Directory, definition.Id + ".db")) ? CopyForMaintenance(state.Directory, execution) : null;
+        Authorize(); execution.Checkpoint();
+        return Task.FromResult(Preview(purpose, backupDestination, state, copy, execution));
     }
-    public Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan,string purpose,string backupDestination)
-        => PrepareChangeAsync(expectedPlan,purpose,backupDestination,null,CancellationToken.None);
-    public Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan,string purpose,string backupDestination,IProgress<MaintenanceProgress>? progress,CancellationToken token)
-        => ObserveMaintenance(progress,token,e=>ExecuteChangeAsync(expectedPlan,purpose,backupDestination,null,e));
+    public Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination)
+        => PrepareChangeAsync(expectedPlan, purpose, backupDestination, null, CancellationToken.None);
+    public Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => ObserveMaintenance(progress, token, e => ExecuteChangeAsync(expectedPlan, purpose, backupDestination, null, e));
     public Task<StartupChangePreview> ExecuteChangeAsync(string expectedPlan, string purpose, string backupDestination, Func<Task>? change)
-        => ExecuteChangeAsync(expectedPlan,purpose,backupDestination,change,null);
+        => ExecuteChangeAsync(expectedPlan, purpose, backupDestination, change, null);
     public async Task<StartupChangePreview> ExecuteChangeAsync(string expectedPlan, string purpose, string backupDestination, Func<Task>? change, MaintenanceExecution? execution)
     {
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
@@ -164,14 +165,14 @@ public sealed partial class ParcelStartupMaintenance
         var snapshotBytes = checked(new FileInfo(copy.Database).Length + (File.Exists(copy.Database + "-wal") ? new FileInfo(copy.Database + "-wal").Length : 0));
         ParcelRecovery.CreateBackup(directory, destination, envelope.Effective, envelope.Pending, snapshotBytes,
             file => Database.Backup(database, file, execution?.Token ?? CancellationToken.None,
-                (done,total) => { Authorize(); execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase,done,total); }),
+                (done, total) => { Authorize(); execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase, done, total); }),
             ports.RegisterBackup, Authorize, execution?.Token ?? CancellationToken.None, execution, finalOperation);
     }
-    public Task BackupAsync(string destination) => BackupAsync(destination,null,CancellationToken.None);
+    public Task BackupAsync(string destination) => BackupAsync(destination, null, CancellationToken.None);
     public async Task BackupAsync(string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
     {
-        using var execution = new MaintenanceExecution(progress,token);
-        try { await BackupAsync(destination,execution); }
+        using var execution = new MaintenanceExecution(progress, token);
+        try { await BackupAsync(destination, execution); }
         catch (OperationCanceledException) when (execution.CancellationRequested && !execution.Committing)
         { throw new MaintenanceCancelledException("备份已在完成标记提交前取消；保留未完成恢复集，重新执行须选择新目标。"); }
         finally { execution.Finish(); }
@@ -181,14 +182,14 @@ public sealed partial class ParcelStartupMaintenance
         execution.Checkpoint(); execution.Report(MaintenanceStage.Checking);
         Authorize(); var state = ReadState(); using var owner = new ResourceLease(state.Directory, ["application-owner"]);
         if (ReadState().Hash != state.Hash) throw new InvalidOperationException("配置已变化");
-        using var copy = CopyForMaintenance(state.Directory,execution); await BackupCopy(state.Directory,destination,state,copy,execution);
+        using var copy = CopyForMaintenance(state.Directory, execution); await BackupCopy(state.Directory, destination, state, copy, execution);
     }
-    public Task<StartupBackupItem[]> ListBackupsAsync(string directory,CancellationToken token)=>ListBackupsAsync(directory,null,token);
-    public Task<StartupBackupItem[]> ListBackupsAsync(string directory,IProgress<MaintenanceProgress>? progress,CancellationToken token)
-        => ObserveMaintenance(progress,token,e=>ListBackupsCore(directory,e));
-    Task<StartupBackupItem[]> ListBackupsCore(string directory,MaintenanceExecution execution)
+    public Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token) => ListBackupsAsync(directory, null, token);
+    public Task<StartupBackupItem[]> ListBackupsAsync(string directory, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => ObserveMaintenance(progress, token, e => ListBackupsCore(directory, e));
+    Task<StartupBackupItem[]> ListBackupsCore(string directory, MaintenanceExecution execution)
     {
-        execution.Checkpoint();execution.Report(MaintenanceStage.Verifying);var token=execution.Token;
+        execution.Checkpoint(); execution.Report(MaintenanceStage.Verifying); var token = execution.Token;
         Authorize();
         directory = Path.GetFullPath(directory); RecoveryFiles.RequireOrdinaryAncestors(directory);
         var result = new List<StartupBackupItem>();
@@ -200,9 +201,9 @@ public sealed partial class ParcelStartupMaintenance
             {
                 var config = BackupConfiguration(backup);
                 var target = Path.Combine(Path.GetTempPath(), "ipc-backup-preview-" + Wire.Id(), config.Mode.ToString(), config.StationId, definition.Id);
-                var plan = ParcelRecovery.PlanRestore(backup,target,Authorize,execution);
+                var plan = ParcelRecovery.PlanRestore(backup, target, Authorize, execution);
                 var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(Path.Combine(recovery, "COMPLETED.json")));
-                result.Add(new(backup, "Verified", manifest.At, new FileInfo(backup).Length + manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length), BackupIdentity(backup,token), Wire.Encode(plan)));
+                result.Add(new(backup, "Verified", manifest.At, new FileInfo(backup).Length + manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length), BackupIdentity(backup, token), Wire.Encode(plan)));
             }
             catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
             { result.Add(new(backup, "InvalidOrIncomplete", null, 0, null, error.GetType().Name + "；保留原备份，重新取得完整集合")); }

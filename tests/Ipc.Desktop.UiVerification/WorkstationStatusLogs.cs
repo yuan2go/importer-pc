@@ -56,9 +56,12 @@ static partial class Program
         {
             var now = DateTimeOffset.UtcNow; var effective = s.Configuration.Effective;
             effective = effective with { Mode = RunMode.Production, Wcs = effective.Wcs! with { Contract = "SPORTMASTER-RCS-SORTER-v1" }, DeferredConnections = state == "deferred" ? [effective.Wcs!.InstanceId, .. s.Positions!.Select(p => p.ReaderDeviceId)] : null };
-            return s with { Configuration = s.Configuration with { Effective = effective },
+            return s with
+            {
+                Configuration = s.Configuration with { Effective = effective },
                 Devices = s.Devices!.Select((d, i) => d with { Health = state == "offline" && i == 0 ? DeviceHealth.Disconnected : DeviceHealth.Ready, ConfirmedAt = now.AddSeconds(-1), ValidUntil = state == "expired" ? now.AddMilliseconds(-1) : now.AddMinutes(1), Source = "TCP:client-LF:synthetic", Invalidity = null }).ToArray(),
-                Health = [new(effective.Wcs!.InstanceId, state != "offline", now.AddSeconds(-1), now.AddMinutes(1), state == "local" ? "local lifecycle only" : "Synthetic wording changed; typed response evidence owns state") { RemoteConfirmation = state is "local" or "offline" ? RemoteConnectionConfirmation.Unconfirmed : RemoteConnectionConfirmation.ResponseReceived }] };
+                Health = [new(effective.Wcs!.InstanceId, state != "offline", now.AddSeconds(-1), now.AddMinutes(1), state == "local" ? "local lifecycle only" : "Synthetic wording changed; typed response evidence owns state") { RemoteConfirmation = state is "local" or "offline" ? RemoteConnectionConfirmation.Unconfirmed : RemoteConnectionConfirmation.ResponseReceived }]
+            };
         }
         foreach (var state in new[] { "online", "offline", "expired", "deferred", "local" })
         {

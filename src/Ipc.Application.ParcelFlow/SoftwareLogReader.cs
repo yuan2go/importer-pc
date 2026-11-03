@@ -87,23 +87,23 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
         {
             // Only the four files owned by RuntimeJournal, never user-supplied paths.
             foreach (var logRoot in new[] { diagnostics, securityDiagnostics }.OfType<string>())
-            RuntimeJournal.Capture(logRoot, () =>
-            {
-            for (int i = 3; i >= 0; i--)
-            {
-                var file = Path.Combine(logRoot, "runtime.jsonl" + (i == 0 ? "" : "." + i));
-                DeploymentPaths.RequireOrdinaryAncestors(file);
-                try
+                RuntimeJournal.Capture(logRoot, () =>
                 {
-                    var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 16384, FileOptions.Asynchronous | FileOptions.RandomAccess);
-                    if (stream.Length > 16 * 1024 * 1024) { stream.Dispose(); throw new IOException("单个日志超过16MiB读取预算，请检查日志写入器。"); }
-                    sources.Add(new(Guid.NewGuid().ToString("N"), (logRoot == diagnostics ? "运行/" : "认证/") + Path.GetFileName(file), stream, stream.Length));
-                }
-                catch (FileNotFoundException) { }
-                catch (DirectoryNotFoundException) { }
-            }
-            return true;
-            });
+                    for (int i = 3; i >= 0; i--)
+                    {
+                        var file = Path.Combine(logRoot, "runtime.jsonl" + (i == 0 ? "" : "." + i));
+                        DeploymentPaths.RequireOrdinaryAncestors(file);
+                        try
+                        {
+                            var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 16384, FileOptions.Asynchronous | FileOptions.RandomAccess);
+                            if (stream.Length > 16 * 1024 * 1024) { stream.Dispose(); throw new IOException("单个日志超过16MiB读取预算，请检查日志写入器。"); }
+                            sources.Add(new(Guid.NewGuid().ToString("N"), (logRoot == diagnostics ? "运行/" : "认证/") + Path.GetFileName(file), stream, stream.Length));
+                        }
+                        catch (FileNotFoundException) { }
+                        catch (DirectoryNotFoundException) { }
+                    }
+                    return true;
+                });
             authority.ThrowIfCancellationRequested();
             var id = Guid.NewGuid().ToString("N");
             lock (sync)
@@ -133,14 +133,14 @@ public sealed partial class SoftwareLogReader(string diagnostics, LocalManagemen
         var id = selection ?? Select(q);
         try
         {
-        using var lease = Get(id); var s = lease.Value;
-        using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromSeconds(20));
-        var index = await IndexAsync(s, budget.Token).ConfigureAwait(false); ValidateLengths(s);
-        if (index.Streaming) return await StreamQuery(s, id, skip, budget.Token).ConfigureAwait(false);
-        List<SoftwareLogEntry> page = []; var check = AuthorityCheck(budget.Token);
-        foreach (var row in index.Matches.Skip(skip).Take(200)) { check(); page.Add(await ReadRow(s, index.Rows[row], budget.Token).ConfigureAwait(false)); }
-        management.Require(); budget.Token.ThrowIfCancellationRequested();
-        return new(id, page.ToArray(), index.Matches.Length > (long)skip + page.Count, Notices(s));
+            using var lease = Get(id); var s = lease.Value;
+            using var budget = CancellationTokenSource.CreateLinkedTokenSource(token, s.Authority, s.Lifetime.Token); budget.CancelAfter(TimeSpan.FromSeconds(20));
+            var index = await IndexAsync(s, budget.Token).ConfigureAwait(false); ValidateLengths(s);
+            if (index.Streaming) return await StreamQuery(s, id, skip, budget.Token).ConfigureAwait(false);
+            List<SoftwareLogEntry> page = []; var check = AuthorityCheck(budget.Token);
+            foreach (var row in index.Matches.Skip(skip).Take(200)) { check(); page.Add(await ReadRow(s, index.Rows[row], budget.Token).ConfigureAwait(false)); }
+            management.Require(); budget.Token.ThrowIfCancellationRequested();
+            return new(id, page.ToArray(), index.Matches.Length > (long)skip + page.Count, Notices(s));
         }
         catch { if (selection is null) Release(id); throw; }
     }

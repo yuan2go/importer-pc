@@ -17,8 +17,13 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
         var feedback = new ParcelReadFeedback(runtimeId, position, observation.Id, observation.DeviceId, observation.Epoch,
             observation.Codes is { Length: 1 } codes && codes[0] is { Length: > 0 and <= 4096 } single && !single.Any(char.IsControl) ? single : null,
             observation.DecodedTicks, observation.ObservedAt)
-            { OperatorInput = operatorInput, CandidateCount = observation.Codes?.Length ?? 0, SourceSequence = observation.Sequence, SourceEventId = observation.SourceEventId,
-                PendingDisplayBudgetMs = (int)Math.Clamp(2L * definition.QueuedObservationTimeoutMs(Effective), 1000, 120000) };
+        {
+            OperatorInput = operatorInput,
+            CandidateCount = observation.Codes?.Length ?? 0,
+            SourceSequence = observation.Sequence,
+            SourceEventId = observation.SourceEventId,
+            PendingDisplayBudgetMs = (int)Math.Clamp(2L * definition.QueuedObservationTimeoutMs(Effective), 1000, 120000)
+        };
         lock (presentationGate)
         {
             if (presentationReads.Any(r => r.ObservationId == feedback.ObservationId && r.DeviceId == feedback.DeviceId && r.Epoch == feedback.Epoch)) return;
@@ -59,8 +64,16 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
     }
     object PresentationProgress()
     {
-        lock (presentationGate) return new { Availability = presentationMetrics.Count == 0 ? "NotMeasured" : "SamplesRecorded", Boundary = "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
-            Recent = presentationMetrics.ToArray(), Total = presentationMetricCount, Window = 512, Subscribers = presentationSubscribers.Count,
-            Publisher = presentationPublisher?.Status.ToString() ?? "NotStarted", Failure = presentationFailure };
+        lock (presentationGate) return new
+        {
+            Availability = presentationMetrics.Count == 0 ? "NotMeasured" : "SamplesRecorded",
+            Boundary = "Same-process decode completion to DWM composition fence; not camera exposure or photon timing",
+            Recent = presentationMetrics.ToArray(),
+            Total = presentationMetricCount,
+            Window = 512,
+            Subscribers = presentationSubscribers.Count,
+            Publisher = presentationPublisher?.Status.ToString() ?? "NotStarted",
+            Failure = presentationFailure
+        };
     }
 }

@@ -59,7 +59,7 @@ static class CommercialProductization
         await InitialConfiguration(seed, root);
         // Current DB10 and complete unconfirmed metadata precede a deliberately failed first startup.
         using (var prior = new ParcelRepository(directory, seed.ApplicationId)) { }
-        File.WriteAllText(Path.Combine(directory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, seed, null, "ConfirmationRequired", null, Confirmed:false)));
+        File.WriteAllText(Path.Combine(directory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, seed, null, "ConfirmationRequired", null, Confirmed: false)));
         ParcelRuntime Runtime(bool fail = true) => new(launch, new SportmasterFlow(), new SyntheticFactory(launch, fail)) { RuntimeIdentityPreflight = () => { } };
         Console.WriteLine("Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.");
         await using (var broken = Runtime()) await Reject<InvalidOperationException>(() => broken.StartAsync(default), "original unconfirmed configuration fails resource construction");
@@ -187,13 +187,13 @@ static class CommercialProductization
         await Unknown(seed, root);
         var legacyLaunch = launch with { DataRoot = Path.Combine(root, "legacy-handoff-data") };
         var legacyDirectory = Path.Combine(legacyLaunch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
-        var legacyDatabase=NonCurrentStorageFixture.Create(legacyDirectory,seed.ApplicationId,7);
-        File.WriteAllText(Path.Combine(legacyDirectory,"configuration.json"),Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0,seed,null,"Effective",null)));
-        var legacyService=new ParcelStartupMaintenance(legacyLaunch,new SportmasterFlow(),()=>new SyntheticFactory(legacyLaunch),()=>{})
+        var legacyDatabase = NonCurrentStorageFixture.Create(legacyDirectory, seed.ApplicationId, 7);
+        File.WriteAllText(Path.Combine(legacyDirectory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, seed, null, "Effective", null)));
+        var legacyService = new ParcelStartupMaintenance(legacyLaunch, new SportmasterFlow(), () => new SyntheticFactory(legacyLaunch), () => { })
         { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "prior-scratch-" + Wire.Id())).FullName };
-        var legacyBackup=Path.Combine(root,"legacy-handoff.db");var legacyHash=Wire.FileHash(legacyDatabase);
+        var legacyBackup = Path.Combine(root, "legacy-handoff.db"); var legacyHash = Wire.FileHash(legacyDatabase);
         await Reject<InvalidDataException>(() => legacyService.BackupAsync(legacyBackup), "non-current format refuses backup before creating output");
-        Check(Wire.FileHash(legacyDatabase)==legacyHash && !File.Exists(legacyBackup) && !File.Exists(Path.Combine(legacyDirectory,"MIGRATION-SOURCE-FENCED.json")), "non-current refusal preserves original bytes and creates no backup or fence");
+        Check(Wire.FileHash(legacyDatabase) == legacyHash && !File.Exists(legacyBackup) && !File.Exists(Path.Combine(legacyDirectory, "MIGRATION-SOURCE-FENCED.json")), "non-current refusal preserves original bytes and creates no backup or fence");
         await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "current root without original machine custody cannot be certified by copying a policy");
         Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "refused restore adoption never mints a new machine claim or a false source fence");
         Check(Convert.FromBase64String(repairedEnvelope).Length > original.Length, "repair preserves the full later envelope including ordinary stage and failed retry history");
@@ -273,7 +273,7 @@ static class CommercialProductization
         var oldLaunch = launch with { DataRoot = Path.Combine(root, "db7-original-data") };
         var oldDirectory = Path.Combine(oldLaunch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId); Directory.CreateDirectory(oldDirectory);
         File.WriteAllText(Path.Combine(oldDirectory, "configuration.json"), Wire.Encode(CurrentConfigurationFixture.Create<ParcelConfiguration>(0, c, null, "Effective", null)));
-        NonCurrentStorageFixture.Create(oldDirectory,c.ApplicationId,7,original);
+        NonCurrentStorageFixture.Create(oldDirectory, c.ApplicationId, 7, original);
         var oldDatabase = Path.Combine(oldDirectory, c.ApplicationId + ".db"); var oldHash = Wire.FileHash(oldDatabase);
         await using (var refusedRuntime = new ParcelRuntime(oldLaunch, new SportmasterFlow(), new SyntheticFactory(oldLaunch)) { RuntimeIdentityPreflight = () => { } })
             await Reject<InvalidDataException>(() => refusedRuntime.StartAsync(default), "non-current format with Unknown responsibility refuses startup before recovery writes");

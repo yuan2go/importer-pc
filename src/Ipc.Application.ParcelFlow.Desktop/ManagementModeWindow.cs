@@ -12,9 +12,11 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed class ManagementModeWindow : Window
 {
     public ManagementModeWindow(IWorkstationAdministration service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync) { }
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync)
+    { }
     public ManagementModeWindow(IManagementMode service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync) { }
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync)
+    { }
     ManagementModeWindow(Func<Task<ManagementModeStatus>> status, Func<string, Task> configure, Func<string, Task<bool>> enter,
         Func<Task> exit, Func<string, Task> change, Func<string, Task> reset, Func<Task<ManagementPasswordRecoveryReceipt?>> inspect)
     {

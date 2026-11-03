@@ -1,6 +1,6 @@
 # 人工供包与单轮调试 · SM-MANUAL-DEBUG-FLOW-10
 
-2026-10-30，基准main `fa39f6bc39634a06d531cd59e38f052c609562b2`，独立分支 `codex/sm-manual-debug-flow-10`。见[工作包](../work-packages/WP-IPC-SM-MANUAL-DEBUG-FLOW-10.md)。开发分支经main PR交付；不自动合并或替换本机安装。
+2026-10-30，基准main `fa39f6bc39634a06d531cd59e38f052c609562b2`，独立分支 `codex/sm-manual-debug-flow-10`。见[工作包](../archive/work-packages/WP-IPC-SM-MANUAL-DEBUG-FLOW-10.md)。开发分支经main PR交付；不自动合并或替换本机安装。
 
 ## 修复结果
 

@@ -6,7 +6,7 @@
 
 # INTEGRATION-BOUNDARY-05 当前逐能力状态
 
-2026-10-16；归属[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。本次授权只含合成/参考工程实施与验证，未取得生产WCS写入或真实设备动作授权。源码/包身份引用[09检查](reference-validation-09-checks.json)，不复制第二套D批准登记。
+2026-10-16；归属[AUDIT-RECONCILIATION-01](../archive/work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。本次授权只含合成/参考工程实施与验证，未取得生产WCS写入或真实设备动作授权。源码/包身份引用[09检查](reference-validation-09-checks.json)，不复制第二套D批准登记。
 
 |能力|状态|缺失证据与准确受阻部分|已独立完成的参考边界|
 |---|---|---|---|
@@ -19,4 +19,4 @@
 
 所有真实必需能力缺失时，`SupplyConfiguration.Validate`和产品装配拒绝Production；没有注册manual/replay/loopback为Production成功回退。发布启动冒烟核对Production拒绝时接收端调用数不增加，数据根不伪造生产成功。其结果只证明此参考产品拒绝规则，不表示已实现真实能力。
 
-客户原稿、私密来源、凭据、生产数据、SDK/字体没有进入本次交付；限定v1.1生成资产沿用既有公开授权。未新增批准人、未改D/RV、未修写历史issues或原HTML逻辑。后续取得材料时按[05工作包](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)逐能力登记来源/版本/指纹/实际批准与验证，再解除相应阻断。
+客户原稿、私密来源、凭据、生产数据、SDK/字体没有进入本次交付；限定v1.1生成资产沿用既有公开授权。未新增批准人、未改D/RV、未修写历史issues或原HTML逻辑。后续取得材料时按[05工作包](../archive/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)逐能力登记来源/版本/指纹/实际批准与验证，再解除相应阻断。

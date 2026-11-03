@@ -1,6 +1,6 @@
 # Sportmaster 商业交付风险验收
 
-关联 [设计](../../design/sportmaster-commercial-delivery-01.md)、[工作包](../../work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)。初始状态全部 NOT_RUN；真实依赖 BLOCKED。最终证据见本包结果，不倒写此计划为历史执行。
+关联 [设计](../../design/sportmaster-commercial-delivery-01.md)、[工作包](../../archive/work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)。初始状态全部 NOT_RUN；真实依赖 BLOCKED。最终证据见本包结果，不倒写此计划为历史执行。
 
 |必需项|范围与断言|计划环境|
 |---|---|---|

@@ -24,6 +24,14 @@ public partial class App : System.Windows.Application
 #endif
     protected override async void OnStartup(StartupEventArgs e)
     {
+        if (InstallerCommandLine.IsQuiet(e.Args))
+        {
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            try { Shutdown(await Task.Run(() => ParcelStartupServices.RunQuietAsync(e.Args,
+                Directory.GetParent(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))!.FullName))); }
+            catch { Shutdown(1603); }
+            return;
+        }
         if (e.Args.FirstOrDefault() == "--supervise-desktop")
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;

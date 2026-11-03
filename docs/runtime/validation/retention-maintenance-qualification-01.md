@@ -2,7 +2,7 @@
 
 **结论：60.48万完整历史维护失败，不能授予最大规模或长稳资格。** 修正输入合同后的1千/1万条实际受保护CLI清理、备份、隔离恢复及逐笔核对通过；60.48万条在输入候选选择处被原两小时预算中断，CLI总耗时7855.705秒（130.928分钟）。新发现输入分页重复筛选/排序热点，业务源码未改。259.2万修正样本未运行；60.48万完整备份的受保护隔离恢复启动被UAC取消，明确NOT_RUN。本报告形成于2026-10-24 UTC至本地10月25日，原始时间戳不改写。
 
-2026-10-24，固定main `5bb032d7354ef619064a015484a5001204edfff5`，Sportmaster1.12.0 / DB9。[工作包](../../work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)定义范围。原[查询微基准](retention-performance-review-01.md)仍对应`12a7cbd`；本轮直接测试完整原件结构和真实Windows CLI，不用旧CI代替新增结果。
+2026-10-24，固定main `5bb032d7354ef619064a015484a5001204edfff5`，Sportmaster1.12.0 / DB9。[工作包](../../archive/work-packages/WP-IPC-RETENTION-QUALIFICATION-01.md)定义范围。原[查询微基准](retention-performance-review-01.md)仍对应`12a7cbd`；本轮直接测试完整原件结构和真实Windows CLI，不用旧CI代替新增结果。
 
 运行中远端main已合入PR102，前进到`1dfb676a2970f80e80d635303d84dcec75676cf5`。已比较两者`src`和`config`的Git tree，完全相同；增量是RECHECK-02归档、升级冲突夹具的持久确认等待和新增Linux验证步骤。本轮继承该增量，但实际执行的产品DLL、完整规模结果及旧回归仍保留`5bb032d`身份，新夹具/CI另行记录，不能因源码树相同改写旧SourceCommit。实际大样本产品DLL SHA256为`E865FC377BEBF9D11EDDE09AD477B35FAB7C7C04C51909DD586254E0C50B9ADA`，完整输入夹具DLL为`16527F76A217784E01CE1875B3411DDD241A7FAB6771B90D64224BB9A14FDCF1`；SDK10.0.402、运行时10.0.13、产品SQLite3.54.0。后续构建/合并不能替换这些身份。
 

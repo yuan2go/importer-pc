@@ -111,6 +111,7 @@ public static partial class WindowsDeploymentSetup
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot,request.ApplicationId,execution?.Token??CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
+        RecoverySecurityPolicy.RequireRelease(Path.Combine(media.Root, "app"));
         validateConfiguration(request);
         var sourceFiles = ConfigurationFiles(request.ConfigurationSource);
         if (request.ConfigurationHashes is null || !sourceFiles.Select(Path.GetFileName).Order().SequenceEqual(request.ConfigurationHashes.Keys.Order()) ||
@@ -136,6 +137,13 @@ public static partial class WindowsDeploymentSetup
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         var before = Current(request.ApplicationId);
+        RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
+        if (before is { LifecycleState: "Installed" })
+        {
+            var candidateRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "app", "application-release.json")));
+            var previousRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(before.ReleaseRoot, "app", "application-release.json")));
+            ReleaseVersionPolicy.RequireForward(candidateRelease, previousRelease);
+        }
         if ((before is null ? null : Wire.FileHash(Registration(request.ApplicationId))) != request.ExpectedRegistrationHash)
             throw new InvalidOperationException("部署登记在计划审阅后变化；重新审阅，不覆盖并行安装");
         if (before is not null && (!string.Equals(Path.GetFullPath(before.DataRoot), data, StringComparison.OrdinalIgnoreCase) || before.RuntimeAccountSid != request.RuntimeAccountSid))
@@ -179,6 +187,9 @@ public static partial class WindowsDeploymentSetup
                 { Recovery = request.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
             if (before is null && request.ExpectedRegistrationHash is null && location.Recovery is not null)
                 DesktopRecoverySupervisor.InitializeNewDeployment(location);
+            location = location with { PreviousDeployment = before is not { LifecycleState: "Installed" } ? null :
+                before.SourceCommit == location.SourceCommit ? before.PreviousDeployment : before with { PreviousDeployment = null } };
+            location = CacheMaintenance(location, media, sid);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);
@@ -223,8 +234,8 @@ public static partial class WindowsDeploymentSetup
         output.Write(System.Text.Encoding.UTF8.GetBytes(DiagnosticText.Protect(Wire.Encode(entry)) + "\n")); output.Flush(true);
     }
     [SupportedOSPlatform("windows")]
-    static void WriteProtected<T>(string path, T value, SecurityIdentifier sid)
-        => WriteProtectedBytes(path, System.Text.Encoding.UTF8.GetBytes(Wire.Encode(value)), sid);
+    static void WriteProtected<T>(string path, T value, SecurityIdentifier sid, bool overwrite = true)
+        => WriteProtectedBytes(path, System.Text.Encoding.UTF8.GetBytes(Wire.Encode(value)), sid, overwrite);
     [SupportedOSPlatform("windows")]
     static void WriteProtectedBytes(string path, byte[] bytes, SecurityIdentifier sid, bool overwrite = true)
     {

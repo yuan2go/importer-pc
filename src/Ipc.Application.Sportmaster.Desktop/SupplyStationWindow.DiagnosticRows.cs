@@ -35,13 +35,10 @@ public partial class SupplyStationWindow
                 await ViewModel.RequireManagementModeAsync();
                 foreach (var entry in rows)
                 {
-                    if (ViewModel.Application is not ICameraPreviewLeaseDiagnostics api) { entry.Value.Text = "当前来源没有诊断能力"; continue; }
-                    using var value = await api.ReadCameraPreviewLeaseAsync(entry.Key, token);
+                    if (ViewModel.Application is not ICameraAcquisitionDiagnostics api) { entry.Value.Text = "当前来源没有采集诊断能力"; continue; }
+                    var value = await api.ReadCameraAcquisitionAsync(entry.Key, token);
                     if (token.IsCancellationRequested || version != generation || !ViewModel.IsManagementMode) return;
-                    var d = value.Diagnostics;
-                    var window = d?.Window;
-                    var rates = window is null ? "窗口指标尚不可用" : $"当前连接窗口 {window.Coverage.TotalMinutes:F1} 分钟（最多60分钟） · 有码解码帧 {window.FramesWithCodes}/{window.DecodedFrames} · 有码帧占比 {(window.DecodedFrames == 0 ? "—" : (100d * window.FramesWithCodes / window.DecodedFrames).ToString("F1") + "%")} · 窗口采集 {window.Frames} 帧";
-                    entry.Value.Text = d is null ? value.Status : $"{value.Status} · 有效帧 {d.Frames} · 解码完成 {d.DecodeCompleted} · 条码候选 {d.Candidates}\n{rates}\n最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · 最近错误：{DiagnosticText.Protect(d.Failure ?? d.LastFrameRejection ?? "无")}";
+                    entry.Value.Text = CameraAcquisitionPresentation.Describe(value);
                 }
                 var snapshot = await ViewModel.Application.SnapshotAsync(); token.ThrowIfCancellationRequested();
                 var latency = ViewModel.Application is IStationDiagnostics station ? await station.ReadRequestLatencyAsync(token) : null;
@@ -57,7 +54,7 @@ public partial class SupplyStationWindow
                 toggle.IsEnabled = settings is not null && !setting;
             }
             catch (OperationCanceledException) { }
-            catch (Exception error) { if (version == generation) { foreach (var text in rows.Values) text.Text = "诊断读取中断，旧指标已失效"; rcs.Text = "诊断读取中断：" + DiagnosticText.Protect(error.Message); storage.Text = "存储与备份读取中断，原指标已失效"; logState.Text = "详细日志状态未确认"; toggle.IsEnabled = false; } }
+            catch (Exception) { if (version == generation) { foreach (var text in rows.Values) text.Text = "诊断读取中断，旧指标已失效"; rcs.Text = "诊断读取中断，请刷新体检；持续失败时导出诊断记录。"; storage.Text = "存储与备份读取中断，原指标已失效"; logState.Text = "详细日志状态未确认"; toggle.IsEnabled = false; } }
             finally { reading = false; }
         }
         toggle.Click += async (_, _) =>
@@ -65,7 +62,7 @@ public partial class SupplyStationWindow
             if (setting || lifetime is null || ViewModel.Application is not IRuntimeDiagnosticsControl api) return;
             setting = true; toggle.IsEnabled = false;
             try { await ViewModel.RequireManagementModeAsync(); await api.SetDebugLoggingAsync(current?.DebugEnabled != true); }
-            catch (Exception error) { logState.Text = "日志设置结果未确认：" + DiagnosticText.Protect(error.Message); }
+            catch (Exception error) { logState.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "日志设置结果未确认，请刷新体检；持续失败时导出诊断记录。"); }
             finally { setting = false; await Read(); }
         };
         var poll = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) }; poll.Tick += async (_, _) => await Read();

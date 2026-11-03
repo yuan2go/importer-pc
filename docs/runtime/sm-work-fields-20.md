@@ -1,6 +1,6 @@
 # SM-WORK-FIELDS-20
 
-依据用户2026-11-02三项纠偏，基线main039ccdee（PR170），见[工作包](../work-packages/WP-IPC-SM-WORK-FIELDS-20.md)。原始指引保存在[归档](../archive/pre-sm-work-fields-20/README.md)，历史18和170验收身份不倒写。PR171相机最新观察投影为并行修复，本包不重建或替代那条链路。
+依据用户2026-11-02三项纠偏，基线main039ccdee（PR170），见[工作包](../archive/work-packages/WP-IPC-SM-WORK-FIELDS-20.md)。原始指引保存在[归档](../archive/pre-sm-work-fields-20/README.md)，历史18和170验收身份不倒写。PR171相机最新观察投影为并行修复，本包不重建或替代那条链路。
 
 四字段沿用PR170的绑定和ShowConfirmedTask守卫，改为两列两行，波次号/任务号/商品编码/返回数量直接显示，标签14、值16DIP，可选择复制、换行和查看完整值；长值局部滚动，不依赖“查看详情”。新观察、暂停、拒绝、Unknown或过期时撤下旧件字段。格口使用原UiTypography.SlotSize（短64/44、较长40/28、很长28/24），删除SM112/72的重复令牌；保留状态色与异常提示。紧凑布局集中减少卡片垂直空隙，保留主要64DIP动作和32DIP动作间隔。
 

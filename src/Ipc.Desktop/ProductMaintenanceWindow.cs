@@ -19,6 +19,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     string? registrationHash;
     readonly System.Windows.Controls.TextBox backupDirectory;
     string backupFile = "";
+    readonly CheckBox backupEnabled = new() { Content = "卸载前创建完整备份（推荐）", IsChecked = true, Margin = new(0, 8, 0, 8) };
     bool removalCompleted;
     string operationLabel = "读取卸载记录";
     readonly DeploymentMedia? cleanupMedia;
@@ -27,6 +28,8 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     internal ProductMaintenanceWindow(DeploymentMedia media) : this() => cleanupMedia = media;
     public ProductMaintenanceWindow() : base("菜鸟供包台 · 修复与卸载")
     {
+        Body.Children.Add(backupEnabled);
+        backupEnabled.Click += (_, _) => { plan = null; };
         backupDirectory = Folder("完整备份目录（卸载会保留业务数据、配置和设备身份）", Path.Combine(WindowsStoragePaths.UserRoot, "backups"));
         backupDirectory.TextChanged += (_, _) =>
         {
@@ -48,7 +51,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         {
             if (removalCompleted) return;
             if (plan is null || location is null || registrationHash is null || !plan.Allowed) throw new InvalidOperationException("请先读取安装信息并检查备份位置");
-            if (MessageBox.Show(this, "将先创建完整备份，再卸载程序、快捷方式和系统登记。业务数据、设备身份和配置全部保留。部分文件被占用时可能需要重启电脑。注意：旧版本程序不能读取新版本的数据。", "确认保留数据卸载", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+            if (MessageBox.Show(this, (backupEnabled.IsChecked == true ? "将先创建完整备份。" : "本次不创建备份，若数据损坏可能无法恢复。") + "卸载程序后业务数据、设备身份、配置和未决记录全部保留。", "确认保留数据卸载", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
             var receipt = await RunMaintenance("完整备份并卸载程序\n程序："+location.ReleaseRoot+"\n保留数据："+location.DataRoot+"\n备份："+backupFile,
                 (progress,token)=>ParcelStartupServices.RemoveAsync(registrationHash,plan.Identity,backupFile,progress,token));
             ShowRemovalResult(receipt);
@@ -63,18 +66,12 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         if (location.LifecycleState != "Installed") { ShowRemovalResult(await Task.Run(InspectRemoval)); return; }
         registrationHash = Wire.FileHash(WindowsDeploymentSetup.Registration(location.ApplicationId));
         if (UnknownOutcome) { Message("上次卸载尚未完成，请稍后查看结果，勿重复卸载。"); return; }
-        var launch = new BusinessLaunch(location.ConfigurationDirectory, location.DataRoot, null, null);
-        var management = ParcelStartupServices.ManagementMode(launch);
-        if (!(await management.ManagementModeStatusAsync()).Authorized)
-            new ManagementModeWindow(management) { Owner = this }.ShowDialog();
-        if (!(await management.ManagementModeStatusAsync()).Authorized)
-        { Message("未进入管理模式，卸载未执行；配置和数据未改动。"); return; }
-        Directory.CreateDirectory(backupDirectory.Text);
-        backupFile = Path.Combine(Path.GetFullPath(backupDirectory.Text), location.ApplicationId + "-pre-remove-" + Wire.Id() + ".db");
-        var service = ParcelStartupServices.Maintenance(launch);
-        plan = await RunMaintenance("卸载前检查\n数据："+location.DataRoot+"\n计划备份："+backupFile,(progress,token)=>service.PlanChangeAsync("Uninstall",backupFile,progress,token),readOnly:true);
+        if (backupEnabled.IsChecked == true) Directory.CreateDirectory(backupDirectory.Text);
+        backupFile = backupEnabled.IsChecked == true ? Path.Combine(Path.GetFullPath(backupDirectory.Text), location.ApplicationId + "-pre-remove-" + Wire.Id() + ".db") : "";
+        plan = await RunMaintenance("卸载前检查\n数据：" + location.DataRoot + "\n备份：" + (backupFile.Length == 0 ? "本次不备份" : backupFile),
+            (progress, token) => ParcelStartupServices.ReviewRemovalAsync(registrationHash, backupFile, progress, token), readOnly: true);
         Message("产品 " + location.ApplicationId + " · 源码 " + location.SourceCommit + "\n程序 " + location.ReleaseRoot + "\n数据 " + location.DataRoot +
-            "\n备份 " + backupFile + "\n" + (plan.Allowed ? "检查通过，可以卸载；执行时会再次检查。" : "有未处理完的作业，暂不能卸载。请先在软件中处理，或用相同版本的安装包检查。") + "\n" + plan.Summary);
+            "\n备份 " + backupFile + "\n" + (plan.Allowed ? "检查通过，可以卸载；执行时会再次检查。" : "当前仍有执行者或无法安全停止，请关闭软件后重新检查。未决记录不会因卸载清偿。") + "\n" + plan.Summary);
     }
     async Task InspectOriginal()
     {
@@ -93,11 +90,9 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         if (UnknownOutcome) { Message("上次清理结果未确认，请先查看结果。"); return; }
         var current = CurrentDeployment() ?? throw new InvalidDataException("找不到安装登记");
         if (current.LifecycleState == "Installed") throw new InvalidOperationException("软件尚未卸载，不能直接清理");
-        var media = cleanupMedia ?? throw new InvalidOperationException("请打开卸载前使用的完整安装包，选择“继续上次未完成的卸载清理…”。");
-        if (media.SourceCommit != current.SourceCommit) throw new InvalidOperationException("当前安装包与原安装来源不同。请关闭此窗口，打开原版完整安装包后继续清理。");
-        Message("正在继续清理程序文件；不会删除业务数据或其他文件。");
-        var result = await RunMaintenance("继续清理程序文件\n程序目录："+current.ReleaseRoot+"\n保留数据："+current.DataRoot+"\n软件已卸载，只清理剩余的程序文件。",async(progress,_)=>
-        {progress.Report(new(MaintenanceStage.RemovingProgram,null,null,false));return await ContinueRemoval(media);},canRequestCancellation:false);
+        Message("正在按原安装库存继续清理，业务数据保留。");
+        var result = await RunMaintenance("继续清理原程序清单", async (progress, _) =>
+        { progress.Report(new(MaintenanceStage.RemovingProgram, null, null, false)); return await ParcelStartupServices.ResumeRemovalAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(current.ApplicationId))); }, canRequestCancellation: false);
         location = current;
         ShowRemovalResult(result);
     }
@@ -117,14 +112,9 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         Message(message);
         var details = new TextBox { Text = "正常保留：" + string.Join("；", receipt.Retained) + "\n卸载结果：" + receipt.OperationFile + "\n程序目录：" + receipt.ReleaseRoot + "\n剩余文件/目录：\n" + string.Join("\n", receipt.RemainingFiles ?? []), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 220 };
         Body.Children.Add(new Expander { Header = "卸载记录与剩余文件详情", Content = details });
-        Note("请勿手动删除程序目录。业务数据、设备身份和共享驱动会保留。如需继续清理，请使用原安装包。");
+        Note("业务数据、设备身份和共享驱动保留。可按原安装库存继续清理，无需原安装包。");
         Action("查看上次卸载结果", InspectOriginal, readOnly: true);
-        if (cleanupMedia is not null && receipt.Status != "RemovedDataRetained")
-        {
-            var matches = location is not null && location.SourceCommit == cleanupMedia.SourceCommit;
-            if (!matches) Note("当前安装包与原安装版本不一致，不能继续清理。请关闭此窗口，打开原版完整安装包。\n原安装版本：" + (location?.SourceCommit ?? "尚未核对") + "\n当前安装包版本：" + cleanupMedia.SourceCommit);
-            Action("继续清理…", ResumeOriginal, readOnly: true).IsEnabled = matches;
-        }
+        if (receipt.Status != "RemovedDataRetained") Action("继续清理…", ResumeOriginal, readOnly: true);
         CloseAction();
     }
     void CloseAction()

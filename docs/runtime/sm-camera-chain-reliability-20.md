@@ -1,6 +1,6 @@
 # 相机—展示—RCS全链路续修20
 
-2026-11-02，承接PR171，续修起点`e656c6e8`；实施期间正常合入main的PR172/`f2055ace`，保留其两列两行任务字段、64/44DIP格口及统一Keyboard输入入口。[工作包](../work-packages/WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20.md)登记用户决定，19及WORK-FIELDS-20原验证身份各自保留。
+2026-11-02，承接PR171，续修起点`e656c6e8`；实施期间正常合入main的PR172/`f2055ace`，保留其两列两行任务字段、64/44DIP格口及统一Keyboard输入入口。[工作包](../archive/work-packages/WP-IPC-SM-CAMERA-CHAIN-RELIABILITY-20.md)登记用户决定，19及WORK-FIELDS-20原验证身份各自保留。
 
 用户明确保留每次独立识别交RCS去重。本轮没有实现同码离场去重，不用同码推断同一包裹，也不保留旧格口掩盖下一次真实请求的处理中状态。
 

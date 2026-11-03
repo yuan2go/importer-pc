@@ -4,7 +4,7 @@
 
 # SM同帧原图留档与多码配置
 
-2026-10-30，工作包 [SM-ORIGINAL-FRAME-01](../work-packages/WP-IPC-SM-ORIGINAL-FRAME-01.md)。本次实现不沿用旧MVID供包台的同步UI/HTTP/Bitmap共享缓冲。复用当前MVS独占采集、Application输入/作业账与RCS原请求链；当前SM仍为MVS采图＋进程内ZXing、连续识别、独立请求交RCS去重，无PLC。
+2026-10-30，工作包 [SM-ORIGINAL-FRAME-01](../archive/work-packages/WP-IPC-SM-ORIGINAL-FRAME-01.md)。本次实现不沿用旧MVID供包台的同步UI/HTTP/Bitmap共享缓冲。复用当前MVS独占采集、Application输入/作业账与RCS原请求链；当前SM仍为MVS采图＋进程内ZXing、连续识别、独立请求交RCS去重，无PLC。
 
 ## 同帧与原始像素
 

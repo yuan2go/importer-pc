@@ -40,7 +40,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         public Func<bool>? Applicable { get; set; }
         public bool Available => Applicable?.Invoke() != false;
         public Expander? Details { get; set; }
-        public TextBlock Summary { get; } = new() { Foreground = Brush("#B42318"), TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed };
+        public TextBlock Summary { get; } = Themed(new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed }, TextBlock.ForegroundProperty, "Danger");
         public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
         public string? TaskGroup { get; set; }
         public string GroupTitle => TaskGroup ?? (Category == 4 ? "检查" : ParameterOwnership.CategoryName(Category));
@@ -59,9 +59,10 @@ public sealed partial class ParameterSettingsControl : UserControl
     public ParameterSettingsControl()
     {
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
-        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; Foreground = Brush("#25384B");
-        var root = new Grid { Background = Brushes.White };
-        root.ColumnDefinitions.Add(new() { Width = new(224) }); root.ColumnDefinitions.Add(new());
+        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(ForegroundProperty, "Ink");
+        // Settings content sits on the theme's page background; each setting is a white card on it.
+        var root = Themed(new Grid(), Panel.BackgroundProperty, "Background");
+        root.ColumnDefinitions.Add(new() { Width = new(240) }); root.ColumnDefinitions.Add(new());
         var rail = new DockPanel { LastChildFill = true, Margin = new(12, 16, 12, 12) };
         root.RowDefinitions.Add(new() { Height = GridLength.Auto }); root.RowDefinitions.Add(new());
         Grid.SetColumnSpan(firstStepBar, 2); root.Children.Add(firstStepBar);
@@ -78,7 +79,8 @@ public sealed partial class ParameterSettingsControl : UserControl
         DockPanel.SetDock(remainingSteps, Dock.Bottom); rail.Children.Add(remainingSteps);
         var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); rail.Children.Add(searchBar);
         var lists = new Grid(); lists.Children.Add(directory); lists.Children.Add(searchResults); rail.Children.Add(lists);
-        var railBorder = new Border { Background = Brush("#F5F6F8"), BorderBrush = Brush("#E1E5EB"), BorderThickness = new(0, 0, 1, 0), Child = rail }; Grid.SetRow(railBorder, 1); root.Children.Add(railBorder);
+        var railBorder = new Border { BorderThickness = new(0, 0, 1, 0), Child = rail }; Grid.SetRow(railBorder, 1); root.Children.Add(railBorder);
+        railBorder.SetResourceReference(Border.BackgroundProperty, "Surface"); railBorder.SetResourceReference(Border.BorderBrushProperty, "Line");
         Grid.SetColumn(pageHost, 1); root.Children.Add(pageHost);
         directory.ItemTemplate = (DataTemplate)Resources["ParameterObjectTemplate"];
         directory.GroupStyle.Add((GroupStyle)Resources["ParameterDirectoryGroup"]);
@@ -87,7 +89,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，制表键进入表单。");
         directory.SelectionChanged += DirectorySelectionChanged;
         Unloaded += (_, _) => navigationGeneration++;
-        root.SizeChanged += (_, _) => root.ColumnDefinitions[0].Width = new(root.ActualWidth < 960 ? 192 : 224);
+        root.SizeChanged += (_, _) => root.ColumnDefinitions[0].Width = new(root.ActualWidth < 960 ? 200 : 240);
         Content = root;
         PreviewKeyDown += (_, e) =>
         {
@@ -99,8 +101,13 @@ public sealed partial class ParameterSettingsControl : UserControl
     // the category order and adds its real review content, never another tab bar.
     public void SelectCategory(int category)
     {
-        search.Clear(); categoryScope = null; directoryView?.Refresh();
-        SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Available && p.Category == category));
+        search.Clear(); var priorSelecting = selectingPage; selectingPage = true;
+        try
+        {
+            categoryScope = null; directoryView?.Refresh();
+            SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Available && p.Category == category));
+        }
+        finally { selectingPage = priorSelecting; }
         if (directory.SelectedItem is { } item) directory.ScrollIntoView(item);
     }
     public void SetReviewContent(FrameworkElement content)
@@ -118,7 +125,9 @@ public sealed partial class ParameterSettingsControl : UserControl
         reviewPage.Body.Children.Add(errors);
         reviewPage.Technical.Children.Add(reviewPage.Diagnostic);
         reviewPage.Body.Children.Add(new Expander { Header = "诊断详情", Content = reviewPage.Technical, Margin = new(0, 16, 0, 0) });
-        directoryView?.Refresh();
+        var priorSelecting = selectingPage; selectingPage = true;
+        try { directoryView?.Refresh(); }
+        finally { selectingPage = priorSelecting; }
     }
     public void ShowCategory(int? index)
     {
@@ -128,9 +137,15 @@ public sealed partial class ParameterSettingsControl : UserControl
         var selected = directory.SelectedItem as ObjectPage;
         var destination = selected is not null && selected.Available && (index is null || selected.Category == index) ? selected :
             pages.FirstOrDefault(p => p.Available && p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => p.Available && (index is null || p.Category == index));
-        categoryScope = index; directoryView?.Refresh();
-        SelectPageCore(destination);
-        RefreshSearch();
+        var priorSelecting = selectingPage; selectingPage = true;
+        try
+        {
+            // Filtering can synchronously select the view's new current item.
+            // This is programmatic navigation, not a user's forward-step intent.
+            categoryScope = index; directoryView?.Refresh();
+            SelectPageCore(destination); RefreshSearch();
+        }
+        finally { selectingPage = priorSelecting; }
     }
     public bool ShowPage(int category, string title)
     {
@@ -163,60 +178,68 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (e.NewValue is ParameterEditorModel next) next.ValidationChanged += view.ShowIssues;
         view.Render();
     }
-    static TextBlock Text(string value, bool heading = false) => new()
+    static TextBlock Text(string value, bool heading = false) => Themed(new TextBlock
     {
         Text = value, TextWrapping = TextWrapping.Wrap, FontSize = heading ? UiTypography.Group : UiTypography.Label,
-        Foreground = Brush(heading ? "#1C3044" : "#5A6878"),
-        FontWeight = heading ? UiTypography.Emphasis : FontWeights.Normal, Margin = new(0, heading ? 16 : 4, 0, 8)
-    };
-    static SolidColorBrush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
+        FontWeight = heading ? UiTypography.Emphasis : FontWeights.Normal, Margin = new(0, heading ? 24 : 4, 0, 8)
+    }, TextBlock.ForegroundProperty, heading ? "Ink" : "Muted");
+    // Colours come from the application theme (Ipc.Desktop/Themes/Workstation.xaml): Ink, Muted, Line,
+    // Surface, Background, Soft, Accent*, Success, Warning, Danger.
+    static T Themed<T>(T element, DependencyProperty property, string key) where T : FrameworkElement
+    { element.SetResourceReference(property, key); return element; }
+    static Border Card(UIElement? child = null)
+    {
+        var card = new Border { BorderThickness = new(1), CornerRadius = new(4), Padding = new(16, 12, 16, 12), Margin = new(0, 0, 0, 4), SnapsToDevicePixels = true, Child = child };
+        card.SetResourceReference(Border.BackgroundProperty, "Surface"); card.SetResourceReference(Border.BorderBrushProperty, "Line");
+        return card;
+    }
     ObjectPage Page(int category, string title, string guidance)
     {
-        var body = new StackPanel { Margin = new(28, 20, 28, 20), MaxWidth = 968, HorizontalAlignment = HorizontalAlignment.Left };
+        var body = new StackPanel { Margin = new(32, 24, 32, 32), MaxWidth = 960, HorizontalAlignment = HorizontalAlignment.Left };
         TextElement.SetFontWeight(body, FontWeights.Normal);
-        var heading = Text(title, true); heading.FontSize = UiTypography.PageTitle; heading.Margin = new(0, 0, 0, 8); body.Children.Add(heading);
-        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 12); body.Children.Add(note); }
+        var heading = Text(title, true); heading.FontSize = UiTypography.PageTitle; heading.Margin = new(0, 0, 0, 4); body.Children.Add(heading);
+        if (guidance.Length > 0) { var note = Text(guidance); note.Margin = new(0, 0, 0, 8); body.Children.Add(note); }
         var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalContentAlignment = HorizontalAlignment.Left, Focusable = false };
-        scroll.SizeChanged += (_, _) => body.Width = Math.Min(968, Math.Max(0, scroll.ActualWidth - 76));
+        scroll.SizeChanged += (_, _) => body.Width = Math.Min(960, Math.Max(0, scroll.ActualWidth - 76));
         var page = new ObjectPage(category, title, body, scroll, new StackPanel());
         AutomationProperties.SetLiveSetting(page.Summary, AutomationLiveSetting.Polite);
         body.Children.Add(page.Summary);
         heading.SetBinding(TextBlock.TextProperty, new Binding(nameof(ObjectPage.Title)) { Source = page });
         pages.Add(page); return page;
     }
+    // A section: an optional heading, then its settings as cards.
     ParameterFormPanel Form(ObjectPage page, string? title = null)
     {
-        if (title is not null) { var heading = Text(title, true); if (page.Body.Children.Count <= 2) heading.Margin = new(0, 0, 0, 12); page.Body.Children.Add(heading); }
+        if (title is not null) { var heading = Text(title, true); if (page.Body.Children.Count <= 3) heading.Margin = new(0, 16, 0, 8); page.Body.Children.Add(heading); }
         var form = new ParameterFormPanel(); page.Body.Children.Add(form); return form;
+    }
+    (TextBlock Heading, ParameterFormPanel Form) Section(ObjectPage page, string title)
+    {
+        var heading = Text(title, true); page.Body.Children.Add(heading);
+        var form = new ParameterFormPanel(); page.Body.Children.Add(form); return (heading, form);
     }
     ParameterFormPanel AdvancedForm(ObjectPage page, string title = "高级设置")
     {
         var form = new ParameterFormPanel();
-        page.Body.Children.Add(new Expander { Header = title, Content = form, Margin = new(0, 16, 0, 8), Padding = new(0, 8, 0, 0) }); return form;
+        page.Body.Children.Add(new Expander { Header = title, Content = form, Margin = new(0, 24, 0, 4), Padding = new(0, 4, 0, 0) }); return form;
     }
+    // One card per setting: its name and explanation on the left, the control on the right.
+    // Wide values (addresses, patterns, lists) and narrow windows put the control under the text.
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
         var focusedPage = page.Title is "左相机" or "右相机" or "供包台标识";
-        var field = new Grid { Margin = new(0, 0, 0, focusedPage ? 12 : 18) };
-        field.ColumnDefinitions.Add(new() { Width = new(148) }); field.ColumnDefinitions.Add(new());
-        field.RowDefinitions.Add(new() { Height = GridLength.Auto }); field.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var caption = Text(label); caption.VerticalAlignment = VerticalAlignment.Top; caption.Foreground = Brush("#202833"); caption.FontWeight = UiTypography.Emphasis; caption.Margin = new(0, 8, 12, 0);
-        var value = new StackPanel(); Grid.SetColumn(value, 1); field.Children.Add(caption); field.Children.Add(value);
-        var line = new DockPanel { LastChildFill = true };
+        var field = new Grid();
+        var card = Card(field);
+        field.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); field.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+        for (var row = 0; row < 3; row++) field.RowDefinitions.Add(new() { Height = GridLength.Auto });
+        var caption = Themed(new TextBlock { Text = label, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body }, TextBlock.ForegroundProperty, "Ink");
+        var describe = new StackPanel { VerticalAlignment = VerticalAlignment.Center }; describe.Children.Add(caption); field.Children.Add(describe);
+        var line = new DockPanel { LastChildFill = true, VerticalAlignment = VerticalAlignment.Center };
         var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
-        if (unit.Length > 0) { line.MaxWidth = (double.IsFinite(control.MaxWidth) ? control.MaxWidth : 240) + 64; line.HorizontalAlignment = HorizontalAlignment.Left; line.SetBinding(WidthProperty, new Binding(nameof(ActualWidth)) { Source = value }); var suffix = Text(unit); suffix.Width = 54; suffix.Margin = new(10, 8, 0, 0); DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
-        line.SizeChanged += (_, _) => { if (unit.Length > 0) line.MaxWidth = (double.IsFinite(control.MaxWidth) ? control.MaxWidth : 240) + 64; };
-        var inputHost = new Grid(); inputHost.Children.Add(control); line.Children.Add(inputHost); value.Children.Add(line);
-        if (control is TextBox or ComboBox or PasswordBox)
-        {
-            // The field's layout slot supplies the width; the editor's cap keeps
-            // short values compact. Empty text and one digit use the same box.
-            control.HorizontalAlignment = HorizontalAlignment.Left;
-            control.SetBinding(WidthProperty, new Binding(nameof(ActualWidth)) { Source = inputHost, Mode = BindingMode.OneWay });
-            if (control is ComboBox) control.MaxWidth = 400;
-        }
+        if (unit.Length > 0) { var suffix = Text(unit); suffix.Margin = new(8, 0, 0, 0); suffix.VerticalAlignment = VerticalAlignment.Center; DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
+        line.Children.Add(control); field.Children.Add(line);
         // Preserve stable automation paths used by support and native verification.
-        AutomationProperties.SetName(control, path); AutomationProperties.SetAutomationId(control, path);
+        AutomationProperties.SetName(control, label.TrimEnd(' ', '*')); AutomationProperties.SetAutomationId(control, path);
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
         // Routine schema hints remain available to assistive technology and in
         // technical information, without adding a repeated line to every field.
@@ -224,18 +247,18 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (routine) control.ToolTip = help;
         else if (!string.IsNullOrEmpty(help))
         {
-            var hint = Text(help); hint.FontSize = UiTypography.Label; hint.Margin = new(0, 4, 0, 0);
-            // Identity/connection explanations are on demand. Entity admission and
+            var hint = Text(help); hint.Margin = new(0, 2, 0, 0);
+            // Identity explanations are on demand. Entity admission and
             // required constraints remain inline; errors always stay next to the field.
             if (focusedPage && path.Split('/').Last() is "left-station-code" or "right-station-code" or "StationCode")
             {
                 control.ToolTip = help;
                 page.Technical.Children.Add(Text(label.TrimEnd(' ', '*') + "：" + help));
             }
-            else value.Children.Add(hint);
+            else describe.Children.Add(hint);
         }
-        var error = Text(""); error.Foreground = Brush("#B42318"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; value.Children.Add(error);
-        form.Children.Add(field); locations[path] = new(page, control, error, label, help ?? "", Row: field);
+        var error = Text(""); error.SetResourceReference(TextBlock.ForegroundProperty, "Danger"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
+        form.Children.Add(card); locations[path] = new(page, control, error, label, help ?? "", Row: card);
         var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
         if (draft is not null && path != draft.InstanceId + "/ConfigureLater" && !path.EndsWith("-station-code", StringComparison.Ordinal))
         {
@@ -246,15 +269,32 @@ public sealed partial class ParameterSettingsControl : UserControl
             draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed); RefreshRequirement();
             if (camera is not null) { camera.PropertyChanged += changed; unsubscribe.Add(() => camera.PropertyChanged -= changed); }
         }
-        field.SizeChanged += (_, _) =>
+        // The control's cap sizes the field (its creator may still lower it, so it is read on every layout):
+        // short numbers 200, ordinary values 320, wide values the full card width.
+        void Arrange()
         {
-            var compact = field.ActualWidth < 380;
-            field.ColumnDefinitions[0].Width = compact ? new(0) : new(148);
-            Grid.SetColumn(caption, compact ? 1 : 0); Grid.SetRow(value, compact ? 1 : 0);
-            caption.Margin = compact ? new(0, 0, 0, 6) : new(0, 8, 12, 0);
-        };
-        // Refresh an already-shown local error after an actual edit and blur.
-        // Do not reflow the form while typing or treat this as authority validation.
+            var cap = control.MaxWidth;
+            var input = control is TextBox or PasswordBox or ComboBox or Slider;
+            var wide = control is TextBox box && (box.AcceptsReturn || box.IsReadOnly || !double.IsFinite(cap) || cap >= 760) || !input && control is not CheckBox && control.Tag as string != "inline";
+            var stacked = wide || card.ActualWidth is > 0 and < 600;
+            Grid.SetColumnSpan(describe, stacked ? 2 : 1); describe.Margin = stacked ? new(0) : new(0, 0, 24, 0);
+            Grid.SetRow(line, stacked ? 1 : 0); Grid.SetColumn(line, stacked ? 0 : 1); Grid.SetColumnSpan(line, stacked ? 2 : 1);
+            line.Margin = stacked ? new(0, 8, 0, 0) : new(0); line.HorizontalAlignment = wide ? HorizontalAlignment.Stretch : stacked ? HorizontalAlignment.Left : HorizontalAlignment.Right;
+            Grid.SetRow(error, stacked ? 2 : 1); Grid.SetColumnSpan(error, 2);
+            if (input)
+            {
+                control.HorizontalAlignment = wide ? HorizontalAlignment.Stretch : HorizontalAlignment.Left;
+                if (wide) { control.Width = double.NaN; control.MaxWidth = double.PositiveInfinity; }
+                else control.Width = Math.Min(cap, cap <= 240 ? 200 : 320);
+            }
+        }
+        Arrange(); card.SizeChanged += (_, e) => { if (e.WidthChanged) Arrange(); };
+        TrackEdits(control);
+    }
+    // Refresh an already-shown local error after an actual edit and blur.
+    // Do not reflow the form while typing or treat this as authority validation.
+    void TrackEdits(FrameworkElement control)
+    {
         void Edited()
         {
             editRevision++; checkedPages.Clear(); RefreshStepBar();
@@ -284,10 +324,10 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Readonly(ObjectPage page, string label, string value)
     {
-        var row = new StackPanel { Margin = new(0, 0, 24, 16) };
+        var row = new StackPanel();
         var caption = Text(label); caption.Margin = new(0, 0, 0, 4); row.Children.Add(caption);
         var box = new TextBox { Text = value, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 28, Padding = new(0), BorderThickness = new(0), Background = Brushes.Transparent };
-        AutomationProperties.SetName(box, label); row.Children.Add(box); page.Body.Children.Add(row);
+        AutomationProperties.SetName(box, label); row.Children.Add(box); page.Body.Children.Add(Card(row));
     }
     void Technical(ObjectPage page, string label, string path, string? detail = null)
     {
@@ -298,7 +338,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         {
             var error = Text(""); error.Visibility = Visibility.Collapsed; page.Technical.Children.Add(error);
             locations[path] = new(page, text, error, label, detail ?? "");
-            AutomationProperties.SetName(text, path);
+            AutomationProperties.SetName(text, label); AutomationProperties.SetAutomationId(text, path);
         }
     }
     void Render()
@@ -319,7 +359,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         foreach (var page in pages)
         {
             page.Technical.Children.Add(page.Diagnostic);
-            page.Details = new Expander { Header = "参数说明", Content = page.Technical, Margin = new(0, 16, 0, 0), Padding = new(0, 8, 0, 0) };
+            page.Details = new Expander { Header = "参数说明", Content = Card(page.Technical), Margin = new(0, 24, 0, 0), Padding = new(0, 4, 0, 0) };
             page.Body.Children.Add(page.Details);
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
         }
@@ -334,8 +374,13 @@ public sealed partial class ParameterSettingsControl : UserControl
         else if (m.ApplicationId == "sportmaster") directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.TaskOrder), ListSortDirection.Ascending));
         directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
         directoryView.Filter = value => value is ObjectPage p && p.Available && (categoryScope is null || p.Category == categoryScope);
-        directory.ItemsSource = directoryView;
-        SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope));
+        var priorSelecting = selectingPage; selectingPage = true;
+        try
+        {
+            directory.ItemsSource = directoryView;
+            SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope));
+        }
+        finally { selectingPage = priorSelecting; }
         ShowIssues(this, EventArgs.Empty); RefreshSearch();
     }
     void ShowIssues(object? sender, EventArgs e)
@@ -349,14 +394,15 @@ public sealed partial class ParameterSettingsControl : UserControl
             var found = locations.TryGetValue(issue.Path, out var location);
             var message = IssueMessage(issue, location);
             var context = found ? issue.Category + " / " + location!.Page.Title + " / " + location.Label.TrimEnd(' ', '*') : issue.Category;
-            var button = new Button { Content = new TextBlock { Text = context + "\n" + message + (found ? "  定位字段" : ""), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Foreground = Brush("#B42318"), Margin = new(0, 2, 0, 2), MinHeight = 44 };
+            var button = new Button { Content = new TextBlock { Text = context + "\n" + message + (found ? "  定位字段" : ""), TextWrapping = TextWrapping.Wrap }, Style = (Style)Resources["ParameterResultAction"], Margin = new(0, 2, 0, 2), MinHeight = 44 };
+            button.SetResourceReference(ForegroundProperty, "Danger");
             if (found)
             {
-                location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B42318")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + message; location.Error.Visibility = Visibility.Visible;
-                location.Page.Diagnostic.Text += issue.Path + " · " + Ipc.Platform.DiagnosticText.Protect(issue.Message) + "\n";
+                location!.Control.SetResourceReference(Control.BorderBrushProperty, "Danger"); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + message; location.Error.Visibility = Visibility.Visible;
+                location.Page.Diagnostic.Text += location.Label.TrimEnd(' ', '*') + "：" + message + "\n";
                 button.Click += (_, _) => NavigateTo(issue.Path);
             }
-            else if (reviewPage is not null) reviewPage.Diagnostic.Text += Ipc.Platform.DiagnosticText.Protect(issue.Message) + "\n";
+            else if (reviewPage is not null) reviewPage.Diagnostic.Text += message + "\n";
             errors.Children.Add(found ? button : Text(context + "\n" + message));
         }
         RefreshStepBar();
@@ -370,7 +416,8 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (page.Category != 4 && count > 0)
             {
                 var first = (Model?.Issues ?? []).First(i => locations.TryGetValue(i.Path, out var entry) && ReferenceEquals(entry.Page, page));
-                var locate = new Hyperlink(new Run("定位首项")); locate.Click += (_, _) => NavigateTo(first.Path);
+                var label = locations[first.Path].Label.TrimEnd(' ', '*');
+                var locate = new Hyperlink(new Run("前往修改：" + label)); locate.Click += (_, _) => NavigateTo(first.Path);
                 page.Summary.Inlines.Add(new Run("    ")); page.Summary.Inlines.Add(locate);
             }
         }

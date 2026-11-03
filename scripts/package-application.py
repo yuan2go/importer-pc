@@ -106,7 +106,7 @@ for directory in [output / 'app', output / 'desktop']:
     shutil.copyfile(compatibility_source, directory / 'application-compatibility.json')
     files = {f.relative_to(directory).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest().upper()
              for f in sorted(directory.rglob('*')) if f.is_file()}
-    release = dict(SchemaVersion=2, ApplicationId=a.application, SourceCommit=source, **business,
+    release = dict(SchemaVersion=2, RecoverySecurityEpoch=1, ApplicationId=a.application, SourceCommit=source, **business,
                    Views=selection['product']['views'], Layouts=selection['product']['layouts'], Files=files)
     (directory / 'application-release.json').write_text(json.dumps(release, indent=2) + '\n')
 selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.target, ApplicationContractVersion=next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts'), DatabaseFormat=database_format, EntryPoint='app/Ipc.Assembly.dll',

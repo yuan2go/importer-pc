@@ -1,6 +1,6 @@
 # D 盘安装预检与服务登记诊断
 
-2026-10-29，工作包 [D-DRIVE-INSTALL-01](../work-packages/WP-IPC-D-DRIVE-INSTALL-01.md)，基线 main `f870ffc0`。用户同机同包观察到 D/D 预检失败、C 程序/D 数据在授权服务阶段报 1783、全 C 成功。三个现象按原阶段分别保留，尚无目标机原调用栈，不将不同失败合并为单一已证原因。
+2026-10-29，工作包 [D-DRIVE-INSTALL-01](../archive/work-packages/WP-IPC-D-DRIVE-INSTALL-01.md)，基线 main `f870ffc0`。用户同机同包观察到 D/D 预检失败、C 程序/D 数据在授权服务阶段报 1783、全 C 成功。三个现象按原阶段分别保留，尚无目标机原调用栈，不将不同失败合并为单一已证原因。
 
 ## 已证缺口与修改
 

@@ -4,7 +4,7 @@
 
 交付PR：[PR #3](https://github.com/yuan2go/importer-pc/pull/3)（保持开放，不自行合并）。
 
-本轮机器结果和日志指纹见 [checks](hardening-04-checks.json)，当前恢复步骤见 [operations](operations.md#hardening-04-恢复与请求处置)，范围见 [工作包](../work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付和历史D/RV证据保留，不倒写。
+本轮机器结果和日志指纹见 [checks](hardening-04-checks.json)，当前恢复步骤见 [operations](operations.md#hardening-04-恢复与请求处置)，范围见 [工作包](../archive/work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付和历史D/RV证据保留，不倒写。
 
 ## 已实现与已验证
 

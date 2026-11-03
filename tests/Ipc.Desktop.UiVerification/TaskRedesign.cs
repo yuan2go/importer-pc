@@ -130,7 +130,7 @@ static partial class Program
         Check(Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "返回作业")) &&
             !Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "作业")),
             "focused settings replaces the daily sidebar with a visible return-to-work action");
-        editor.NavigateTo("StationCode"); var station = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
+        editor.NavigateTo("StationCode"); var station = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode");
         station.Text = "SYNTHETIC-UNSAVED"; station.Focus(); station.Select(2, 4);
         var pending = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var busy = vm.RunAsync(() => pending.Task, "合成慢检查");
         try
@@ -149,10 +149,10 @@ static partial class Program
         var searchFocused = search.Focus();
         Check(results.IsVisible && results.Items.Count > 0 && searchFocused, "parameter search presents matches and accepts native keyboard input: visible=" + results.IsVisible + ", matches=" + results.Items.Count + ", focused=" + searchFocused + ", enabled=" + search.IsEnabled + ", active=" + window.IsActive);
         search.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(search)!, 0, Key.Enter) { RoutedEvent = Keyboard.KeyDownEvent }); window.UpdateLayout();
-        Check(search.Text.Length == 0 && Descendants(editor).OfType<TextBox>().Any(x => AutomationProperties.GetName(x) == "QueueCapacity" && x.IsKeyboardFocused),
+        Check(search.Text.Length == 0 && Descendants(editor).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused),
             "cross-category search locates and focuses the actual field without recreating editors");
         editor.NavigateTo("StationCode");
-        var returnedStation = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "StationCode");
+        var returnedStation = Descendants(editor).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "StationCode");
         Check(ReferenceEquals(station, returnedStation) && station.Text == "SYNTHETIC-UNSAVED", $"search and category navigation retain exact unsaved controls and input (same={ReferenceEquals(station, returnedStation)}, before={station.Text}, after={returnedStation.Text})");
         search.Text = "没有这种字段"; window.UpdateLayout();
         Check(results.Items.Count == 0 && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("没有找到")), "empty search explains how to return without changing the draft");
@@ -165,7 +165,7 @@ static partial class Program
             "position diagnosis returns to the bound reader settings while retaining the same complete unsaved candidate: selected=" + directory.SelectedItem + "; same=" + ReferenceEquals(editor, maintenance.FindName("MainParameterEditor")) + "; station=" + station.Text);
         var revisionBeforeReview = (await runtime.SnapshotAsync()).Configuration.Revision;
         editor.NavigateTo("QueueCapacity"); window.UpdateLayout();
-        var budget = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "QueueCapacity");
+        var budget = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "QueueCapacity");
         var originalBudget = budget.Text; budget.Text = "bad";
         ((Button)maintenance.FindName("SaveChanges")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         await Until(() => !vm.Busy && vm.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity")); window.UpdateLayout();
@@ -320,7 +320,7 @@ static partial class Program
         window.Content = control; window.Width = 1366; window.Height = 768; window.UpdateLayout();
         check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("left-station-code")), "old unequal station codes block saving without silently choosing a side");
         control.NavigateTo("rcs.one/left-station-code"); window.UpdateLayout();
-        var common = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "rcs.one/left-station-code");
+        var common = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "rcs.one/left-station-code");
         check(common.Text.Length == 0, "conflicting legacy pair is visible with blank explicit migration input"); capture("parameters-station-conflict", control);
         common.Text = "SYNTHETIC-COMMON";
         var rcsDraft = draft.Capabilities.Single(c => c.InstanceId == "rcs.one"); var built = rcsDraft.Build();
@@ -331,7 +331,7 @@ static partial class Program
         check(control.NavigateTo("reader.1"), "right camera object remains a valid navigation target after the SDK-only transition"); window.UpdateLayout(); capture("parameters-right-driver", control);
         check(Descendants(control).OfType<TextBox>().Count(t => t.Text == "TAKE-R") == 1 &&
             draft.Readers[1].Parameters.All(p => p.Field.Key != "bcr-code") &&
-            !Descendants(control).OfType<FrameworkElement>().Any(t => AutomationProperties.GetName(t) == "reader.1/bcr-code"),
+            !Descendants(control).OfType<FrameworkElement>().Any(t => AutomationProperties.GetAutomationId(t) == "reader.1/bcr-code"),
             "right camera displays one shared request/heartbeat code and no driver code copy");
         control.NavigateTo("rcs.one/Target"); window.UpdateLayout(); capture("parameters-rcs-component", control);
         check(!Descendants(control).OfType<TextBox>().Any(t => !t.IsReadOnly && t.Text == "71"), "moved system values are read-only references on the RCS object");

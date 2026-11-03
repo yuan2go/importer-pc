@@ -1,0 +1,17 @@
+PASS STATION01 SM header has no manual pause/resume controls
+PASS STATION01 edited SM settings can be reviewed while running
+PASS STATION01 SM save review has no manual pause prerequisite
+PASS STATION01 SM review permits saving without manual pause
+CAPTURE sm-save-without-pause: 880x740 DIP, Windows DPI 1.25/1.25
+PASS STATION01 native editor saves pending settings while remaining unpaused
+PASS STATION01 SM preference page removes the unused name and target inputs
+PASS STATION01 window opening mode remains directly editable
+CAPTURE station-display-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+CAPTURE station-display-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS STATION01 ordinary menu contains the single clear enter action without redundant state rows
+PASS STATION01 wrong recovery proof keeps the dialog open and clears every secret field
+CAPTURE station-root-recovery: 520x580 DIP, Windows DPI 1.25/1.25
+PASS STATION01 native root recovery sets the password and requires a fresh real management login
+PASS STATION01 active menu retains exit action and actual expiry
+CAPTURE station-management-menu: 280x98.4 DIP, Windows DPI 1.25/1.25
+Windows native HWND/Dispatcher, synthetic records; no live camera trigger, installed replacement or site acceptance.

@@ -1,6 +1,6 @@
-> 2026-10-30 最新追加：[SM-WORKSTATION-03](../../work-packages/WP-IPC-SM-WORKSTATION-03.md)授权生产作业键盘/PDA键盘补录、按原身份查看包裹图片，并将日常导航统一为“作业、记录、设置、日志”；只替代下文冲突的手工输入/图片预览/导航条款。V2原型、映射、哈希及历史验证不倒写，新源码全部待验证。
+> 2026-10-30 最新追加：[SM-WORKSTATION-03](../../archive/work-packages/WP-IPC-SM-WORKSTATION-03.md)授权生产作业键盘/PDA键盘补录、按原身份查看包裹图片，并将日常导航统一为“作业、记录、设置、日志”；只替代下文冲突的手工输入/图片预览/导航条款。V2原型、映射、哈希及历史验证不倒写，新源码全部待验证。
 
-> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
+> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../../archive/work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
 
 # Sportmaster UI 重设计 V2
 
@@ -17,7 +17,7 @@
 | 开发交接 | [HANDOFF.md](HANDOFF.md)：任务、状态、按钮、字段归属、生效、诊断、迁移及实现依赖。 |
 | 当前字段与原功能 | [54 条当前字段映射](data/ui-v2-field-migration.csv)、[58 条原字段/状态去向](data/ui-v2-original-field-overlay.csv)、[数据来源说明](data/README.md)。 |
 | 必要走查结果 | [QA 记录](qa/README.md)，区分分阶段原型验证、最终图像复核、待做的 Windows/现场验收。 |
-| 下一步实现 | [精简 Codex 提示](../../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)、[UIR-00～06 工作包](../../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)、[代码实施裁决](../../design/sportmaster-task-redesign-01.md)。 |
+| 下一步实现 | [精简 Codex 提示](../../archive/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)、[UIR-00～06 工作包](../../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)、[代码实施裁决](../../design/sportmaster-task-redesign-01.md)。 |
 | 可编辑源文件 | [source/README.md](source/README.md)，独立模型、视图、样式、场景与构建/渲染脚本。 |
 | 文件核对 | [FILES.json](FILES.json)，分别统计图片、源码、资料与 QA 文件，不把物理文件数称作设计页面数。 |
 | 发布范围 | [V2 发布记录](../../runtime/ui-task-redesign-v2-publication-20261020.md)，列明代码基准、当前入口调整和生产实现边界。 |

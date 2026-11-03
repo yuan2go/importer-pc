@@ -35,6 +35,35 @@ static partial class Program
         try
         {
             window.Show(); await Flush();
+            var summaryRcs = model.Components.Single(ParameterOwnership.IsRcs);
+            var originalTarget = summaryRcs.Target;
+            summaryRcs.Target = "http://127.0.0.1:49828/rcs/sorter/api";
+            editor.ShowPage(0, "供包台标识"); await Flush();
+            var zoneInput = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "sportmaster.integration/zone-id");
+            var originalZone = zoneInput.Text;
+            zoneInput.Text = "bad"; await Flush();
+            Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/zone-id") && i.Message.Contains("invalid value")), "actual invalid warehouse input retains its original validation issue");
+            var summary = (TextBlock)typeof(ParameterSettingsControl).GetField("remainingSteps", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(editor)!;
+            Check(summary.Text.Contains("仓ID") && summary.Text.Contains("整数") && !summary.Text.Contains("invalid value") && !summary.Text.Contains("integration") && !summary.Text.Contains("zone-id"), "first-run rail summary uses the same field label and Chinese correction as the inline error");
+            await Flush(); window.UpdateLayout();
+            CaptureInternal(evidence, "op29-field-correction-before-click", client, lines);
+            var correctionLinks = Descendants(editor).OfType<TextBlock>().ToArray()
+                .SelectMany(t => t.Inlines.Cast<System.Windows.Documents.Inline>().ToArray())
+                .OfType<System.Windows.Documents.Hyperlink>().ToArray();
+            // TextBlock hyperlinks are not hosted by a FlowDocument; inspect their actual Runs.
+            var correction = correctionLinks.Single(link => string.Concat(link.Inlines.OfType<System.Windows.Documents.Run>().Select(run => run.Text)) == "前往修改：仓ID");
+            correction.RaiseEvent(new RoutedEventArgs(System.Windows.Documents.Hyperlink.ClickEvent)); await Flush();
+            Check(editor.CurrentPageTitle == "供包台标识" && zoneInput.IsVisible && !Descendants(editor).OfType<TextBlock>().Any(t => t.Text.Contains("定位首项")),
+                "correction link names the field and reaches its existing editor instead of exposing an internal navigation term");
+            var fieldHelp = Descendants(editor).OfType<Expander>().Single(e => Equals(e.Header, "参数说明"));
+            fieldHelp.IsExpanded = true; await Flush();
+            Check(AutomationProperties.GetName(zoneInput) == "仓ID" &&
+                !Descendants(fieldHelp).OfType<TextBox>().Any(t => t.Text.Contains("zone-id") || t.Text.Contains("invalid value") || t.Text.Contains("integration")) &&
+                model.Issues.Any(i => i.Path.EndsWith("/zone-id") && i.Message.Contains("invalid value")),
+                "expanded parameter help and accessible field name are Chinese while original diagnostic issues remain intact");
+            CaptureInternal(evidence, "retest28-first-run-invalid-warehouse", client, lines);
+            summaryRcs.Target = originalTarget; zoneInput.Text = originalZone; await Flush();
+            Check(model.ValidateFields() && !summary.Text.Contains("当前发现"), "correcting the field clears the stale first-run summary without losing the draft");
             for (var count = 0; !editor.IsReviewPage && count < 25; count++)
                 Check(await editor.MoveNextAsync(), "first-run page can advance with explicitly deferred camera/RCS fields: " + editor.CurrentPageTitle);
             Check(editor.IsReviewPage, "incomplete connections do not block the first-run completion page");

@@ -1,8 +1,8 @@
 > 2026-11-02 当前任务导航、双相机/统一RCS、完整候选生效和查询边界见[SM-UI-SPEC-CLOSURE-24](../runtime/sm-ui-spec-closure-24.md)。旧页面摆放保留形成时范围；系统/业务/驱动/组件字段所有权、原请求及历史证据不变。
 
-> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
+> 2026-10-27 用户最新纠偏以[SDK入口与单一相机编码](../archive/work-packages/WP-IPC-CAMERA-SDK-SINGLE-CODE-01.md)为准：每台相机只有一个编码，取格口与心跳共用；SDK通过IP连接、不使用TCP端口；正式启用需预期物理序列号，模拟/独立诊断可省略。下文旧分开编码说明保留形成时范围，原请求与历史证据不改写。
 
-> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)。
+> 2026-10-27 SDK-BARCODE-02：当前相机接入、参数与诊断规则见[本轮工作包](../archive/work-packages/WP-IPC-HIKROBOT-SDK-BARCODE-02.md)。下文是原阶段记录，不定义当前入口；旧“不改 UI”、旧配置/SDK迁移、兼容与旧包版本条款不适用于本轮。原字节与历史验证已[保留](../archive/pre-hikrobot-sdk-barcode-02/README.md)。
 
 > 2026-10-21 本轮所有权、旧参数继承和真实消费者以[继承增量](parameter-inheritance-02.md)及[迁移表](parameter-legacy-migration-02.csv)为准。原 PARAM-01 实施结果保留；本页旧字段摆放不覆盖本轮硬件驱动/外部服务职责裁决。
 
@@ -14,7 +14,7 @@
 
 状态：**原 PARAM-01 参数及必要联动已在 PR73 完成；V2 新要求继续实施**。2026-10-20 用户另行授权的参数开发保留；当前来源为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`，PR71 冻结范围见[快照记录](../runtime/publication-parameter-snapshot-20261020.md)。本轮 V2 是设计/文档增量，不新增生产实现或测试。不能因快照已合并宣布全包完成，也不能继续说全部 UIR 尚无 WPF 移植。
 
-后续目标统一见 [Sportmaster V2 实施裁决](sportmaster-task-redesign-01.md)、[设计入口](../ui/sportmaster-task-redesign-v2-20261020/README.md)和[UIR工作包](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。**用户本轮的四类字段归属、五步独立首配、三组相机信息优先于本快照的临时字段摆放。** 已有参数模型、条码筛选、保存核对、RCS心跳和单窗口安装必须复用；以下明确源码现状与待迁移目标，不建立并列参数权威。V1 原型/48 PNG/58字段状态/39动作只保留原件与形成时证据。
+后续目标统一见 [Sportmaster V2 实施裁决](sportmaster-task-redesign-01.md)、[设计入口](../ui/sportmaster-task-redesign-v2-20261020/README.md)和[UIR工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。**用户本轮的四类字段归属、五步独立首配、三组相机信息优先于本快照的临时字段摆放。** 已有参数模型、条码筛选、保存核对、RCS心跳和单窗口安装必须复用；以下明确源码现状与待迁移目标，不建立并列参数权威。V1 原型/48 PNG/58字段状态/39动作只保留原件与形成时证据。
 
 ## 实施来源与当前已有代码
 

@@ -33,12 +33,17 @@ static partial class Program
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
             var firstOperation = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentOperation;
             h.Api(h.Left).Enqueue(code, 2);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Observation.SourceEventId == "mvs.frame.2"));
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentOperation == firstOperation && h.Peer.Requests.Count == 1,
+                "same-placement observations retain the original operation without another RCS request");
+            var nextFrame = await h.ReplaceParcelAsync(h.Left, 3);
+            h.Api(h.Left).Enqueue(code, nextFrame++);
             await CameraRoundHarness.Until(async () => { var s = await h.App.SnapshotAsync(); var id = s.Positions!.Single(p => p.Id == "left").CurrentOperation; return id != firstOperation && s.Operations.Any(o => o.Id == id && o.State == ParcelState.SlotResolved); });
             var revision = (await h.App.SnapshotAsync()).Revision;
             await ReadSnapshot(subscriptions[0], revision);
             var latest = await subscriptions[1].ReadAsync(default);
             Check(latest.Snapshot?.Revision >= revision && latest.Snapshot.Positions!.Single(p => p.Id == "left").CurrentOperation != firstOperation && h.Peer.Requests.Count == 2,
-                "unread subscriber receives latest committed snapshot directly while same-code observations still create independent original requests");
+                "unread subscriber receives latest committed snapshot directly after an empty tray and new same-code placement create an independent original request");
             latest.Snapshot!.Operations[0] = latest.Snapshot.Operations[0] with { Slot = "MUTATED-CONSUMER" };
             var detached = await subscriptions[2].ReadAsync(default);
             Check(detached.Snapshot!.Operations.All(o => o.Slot != "MUTATED-CONSUMER"), "subscribers never share mutable snapshot arrays or authoritative business objects");
@@ -77,13 +82,14 @@ static partial class Program
             var slot = (TextBox)control.FindName("CurrentSlot");
             var rightControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, other));
             var entry = (TextBox)rightControl.FindName("BarcodeEntry"); entry.Focus(); entry.Text = "UNSUBMITTED-DRAFT"; entry.Select(3, 4);
+            var nextPlacementFrame = await h.ReplaceParcelAsync(h.Left, 7);
             h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref hold, 0) == 1) { entered.Set(); release.Wait(); } };
             hold = 1; var original = p.Operation!.Id; var calls = h.Peer.Requests.Count; var clock = Stopwatch.StartNew();
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("RESPONSIVE-0001"), 3);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("RESPONSIVE-0001"), nextPlacementFrame);
             await Until(() => entered.IsSet && p.IsProcessing && p.ReadCueLabel.EndsWith("0001", StringComparison.Ordinal), "read cue before durable input");
             Check(!p.ShowConfirmedTask && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && !((Grid)control.FindName("TaskFields")).IsVisible &&
                 p.Operation?.Id == original && h.Peer.Requests.Count == calls && p.DisplayAttentionReason.Contains("尚未确认接收"),
-                "before FULL commit completes, a new same-code observation clears the old destination and fields without inventing custody/admission or sending RCS");
+                "before FULL commit completes, a new same-code placement clears the old destination and fields without inventing custody/admission or sending RCS");
             var feedback = (await ((IParcelPresentationDiagnostics)h.App).ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left");
             await Until(() =>
             {

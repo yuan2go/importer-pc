@@ -2,7 +2,7 @@
 
 # SM 新站 D 盘默认安装位置
 
-2026-10-30，[工作包](../work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md)，基线 main `d899eeac`。
+2026-10-30，[工作包](../archive/work-packages/WP-IPC-D-DRIVE-DEFAULTS-02.md)，基线 main `d899eeac`。
 
 全新 SM 安装默认程序目录 `D:\CainiaoSupplyStation`，数据目录 `D:\ProgramData\ImporterPc\data`。原有部署优先显示原登记路径，用户改选及已审阅路径优先于默认值；更新安装包不会自动迁移 C 盘数据。D 盘不可用或不满足原权限/本地固定卷要求时明确预检失败，不回退 C 盘。
 

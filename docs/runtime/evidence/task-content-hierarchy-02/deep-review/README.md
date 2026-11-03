@@ -4,7 +4,7 @@
 
 ## 方法与证据身份
 
-预设假设见[工作包](../../../../work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。依据为有效 [RCS合同](../../../../design/sportmaster-rcs-task.md)、V2作业/58字段/39动作、V3参数及管理模式；先裁决文档再编码。Impeccable采用WPF Assessment A/Operate，未开启网页检测替代原生验收。V2全部67张原始界面通过图集实际查看，原型源码/交互场景已读；浏览器拒绝本地file入口，未绕过，动态HTML原型本轮未运行。
+预设假设见[工作包](../../../../archive/work-packages/WP-IPC-TASK-CONTENT-HIERARCHY-02.md)。依据为有效 [RCS合同](../../../../design/sportmaster-rcs-task.md)、V2作业/58字段/39动作、V3参数及管理模式；先裁决文档再编码。Impeccable采用WPF Assessment A/Operate，未开启网页检测替代原生验收。V2全部67张原始界面通过图集实际查看，原型源码/交互场景已读；浏览器拒绝本地file入口，未绕过，动态HTML原型本轮未运行。
 
 所有实体、条码、端点与回包均为**合成场景**。现有manual读码适配器输入具有device/epoch/event/admission身份的观察，真实Sportmaster Application执行准入、持久化和命令守卫，现有RCS适配器发送冻结报文到独立loopback HTTP对端。预期L-07/R-09、L-08、L-09/R-10和各状态在夹具中按合同预先书写；对端只从请求读取关联requestId，不调用被测解析器/VM生成答案。Conflict仅在端口返回边界注入错误请求身份，随后由真实Application拒绝；不是RCS查询能力证明。
 

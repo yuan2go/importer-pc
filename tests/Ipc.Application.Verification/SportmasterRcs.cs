@@ -505,6 +505,9 @@ static partial class SportmasterRcs
                     await Task.Delay(2500, stop.Token); return;
                 }
                 if (mode == "timeout") await Task.Delay(2500, stop.Token);
+                // Deterministic deadline fixture: no success can race the client
+                // timeout. Dispose owns cancellation and drains this handler.
+                if (mode == "withhold-response") await Task.Delay(Timeout.Infinite, stop.Token);
                 if (mode == "delayed-assignment") await Task.Delay(5500, stop.Token);
                 var bytes = Encoding.UTF8.GetBytes(response); context.Response.StatusCode = status; if (mode == "redirect") context.Response.RedirectLocation = Endpoint + "/synthetic-followed"; context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stop.Token);

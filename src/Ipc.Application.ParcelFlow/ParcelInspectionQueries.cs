@@ -55,9 +55,9 @@ public sealed partial class ParcelRepository
         return new(id, r.GetString(0), r.IsDBNull(1) ? null : r.GetString(1), r.IsDBNull(2) ? null : r.GetString(2), stage,
             checked((int)r.GetInt64(4)), stage == "Accepted", r.IsDBNull(5) ? null : r.GetString(5), Revision);
     }
-    internal string? LatestCameraIsolation()
+    internal string? LatestLegacyCameraIsolation()
     {
-        using var c = db.CreateCommand(); c.CommandText = "SELECT event,detail FROM parcel_audit WHERE event IN ('CameraIsolationStarted','CameraIsolationReleased') ORDER BY seq DESC LIMIT 1";
+        using var c = db.CreateCommand(); c.CommandText = "SELECT event,detail FROM parcel_audit WHERE event IN ('CameraIsolationStarted','CameraIsolationReleased','CameraIsolationRetired') ORDER BY seq DESC LIMIT 1";
         using var r = c.ExecuteReader(); return r.Read() && r.GetString(0) == "CameraIsolationStarted" ? r.GetString(1) : null;
     }
 }
@@ -168,7 +168,7 @@ public sealed partial class ParcelRuntime
         await inspectionControl.WaitAsync(t).ConfigureAwait(false);
         try
         {
-            if (Volatile.Read(ref inspectionFence)?.Id == sessionId || Volatile.Read(ref collectingInspection)?.Id == sessionId) throw new InvalidOperationException("活动或待恢复隔离会话不能清理。");
+            if (Volatile.Read(ref collectingInspection)?.Id == sessionId) throw new InvalidOperationException("活动调试采集不能清理。");
             await InspectionStore.FlushAsync(t).ConfigureAwait(false);
             await Task.Run(() => InspectionStore.Purge(sessionId), t).ConfigureAwait(false);
             Diagnostic("相机调试", "已清理诊断会话", detail: Wire.Encode(new { Session = sessionId, Reason = reason, Actor = ManagementEvidence })); return true;

@@ -1,8 +1,8 @@
-> 2026-11-02 当前四字段布局、恢复格口字号与取消来源选择以 [SM-WORK-FIELDS-20](../work-packages/WP-IPC-SM-WORK-FIELDS-20.md) 为准。本包原实现和验证保持原SourceCommit，不转记为20验收。
+> 2026-11-02 当前四字段布局、恢复格口字号与取消来源选择以 [SM-WORK-FIELDS-20](../archive/work-packages/WP-IPC-SM-WORK-FIELDS-20.md) 为准。本包原实现和验证保持原SourceCommit，不转记为20验收。
 
 # SM-OPERATOR-UX-18 实施与边界
 
-基线 main 02b0891b，工作包 [WP-IPC-SM-OPERATOR-UX-18](../work-packages/WP-IPC-SM-OPERATOR-UX-18.md)。用户要求先修体验，明确暂不增加统计。
+基线 main 02b0891b，工作包 [WP-IPC-SM-OPERATOR-UX-18](../archive/work-packages/WP-IPC-SM-OPERATOR-UX-18.md)。用户要求先修体验，明确暂不增加统计。
 
 呈现以类型状态为输入：ParcelPresentationTone、RcsConnectionState、PresentationFeedbackKind；RCS端口补RemoteConnectionConfirmation，只由真实心跳HTTP回应设置，重启连接清除；本地生命周期不伪装远端在线。详细原始证据和中文文案不再作为SM状态/颜色/反馈过滤的分支依据。generic状态码与受守卫原请求协议不变。
 

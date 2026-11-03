@@ -32,7 +32,7 @@ public partial class ParcelViewModel
         ManagementNotice = "";
         Changed(nameof(ManagementNotice)); Changed(nameof(HasManagementNotice));
         InvalidateDetailsAuthority();
-        foreach (var name in new[] { nameof(IsManagementMode), nameof(ManagementStatus), nameof(ManagementModeVisibility), nameof(ManagementModeActionText), nameof(AccountDisplay), nameof(CanEditFormConfiguration), nameof(PauseVisibility), nameof(ResumeVisibility) }) Changed(name);
+        foreach (var name in new[] { nameof(IsManagementMode), nameof(ConfigurationSaveGuidance), nameof(ManagementStatus), nameof(ManagementModeVisibility), nameof(ManagementModeActionText), nameof(AccountDisplay), nameof(CanEditFormConfiguration), nameof(PauseVisibility), nameof(ResumeVisibility) }) Changed(name);
     }
     public async Task RequireManagementModeAsync()
     { await RefreshManagementModeAsync(); if (!IsManagementMode) throw new UnauthorizedAccessException("请先进入管理模式；未保存输入保留。"); }

@@ -8,6 +8,9 @@ public enum MaintenanceStage
 }
 public sealed record MaintenanceProgress(MaintenanceStage Stage, long? ProcessedBytes, long? TotalBytes, bool CanCancel);
 public sealed class MaintenanceCancelledException(string message) : OperationCanceledException(message);
+// The owned helper was never acknowledged; its receipt channel has been closed.
+// This is distinct from losing a terminal after maintenance was allowed to begin.
+public sealed class MaintenanceNotStartedException(string message, Exception inner) : IOException(message, inner);
 
 // One offline operation owns this guard through cleanup. Cancellation is a request,
 // not a rollback. The business owner chooses the first irreversible publication.

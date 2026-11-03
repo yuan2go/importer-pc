@@ -215,7 +215,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     void SetBusy(bool value)
     {
         Busy = value;
-        foreach (var name in new[] { nameof(Busy), nameof(CanStartOperation), nameof(CanStartFreshOperation), nameof(OperationStatus), nameof(Feedback) }) Changed(name);
+        foreach (var name in new[] { nameof(Busy), nameof(CanStartOperation), nameof(CanStartFreshOperation), nameof(ConfigurationSaveGuidance), nameof(OperationStatus), nameof(Feedback) }) Changed(name);
         RefreshFreshness();
     }
     public Task RunAsync(Func<Task> action, string operation = "操作") => Own(RunCoreAsync(action, operation));

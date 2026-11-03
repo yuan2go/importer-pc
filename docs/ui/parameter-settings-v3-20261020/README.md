@@ -1,6 +1,6 @@
 > 2026-11-02 当前任务导航、双相机/统一RCS、完整候选生效和查询边界见[SM-UI-SPEC-CLOSURE-24](../../runtime/sm-ui-spec-closure-24.md)。旧页面摆放保留形成时范围；系统/业务/驱动/组件字段所有权、原请求及历史证据不变。
 
-> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../../work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
+> 2026-10-22 当前权限语义以 [MANAGEMENT-MODE-01](../../archive/work-packages/WP-IPC-MANAGEMENT-MODE-01.md) 为准：管理密码进入临时管理模式，不是管理员账号；操作员身份独立。四类参数、唯一候选、保存守卫和原业务合同继续有效。下述形成时界面与历史证据不倒写。
 
 # 参数设置 V3 · 完整设计与开发包
 
@@ -75,4 +75,4 @@ V2继续作为三组作业、首次配置与原合同基线。本目录只替代
 
 `source/template.html`、`styles.css`、`model.js`、`views.js`、`app.js`可直接编辑；`build_prototype.py`生成自包含原型；`render_screens.cjs`导出27图；`walkthrough.cjs`执行10组必要模拟流程；`build_field_inventory.py`从当前驱动/组件描述及明确系统映射重建字段表。具体依赖和命令见QA。
 
-开发以 [工作包PS-00～05](../../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)和简洁CODEX-NEXT为入口。没有重新构建技术栈、第二个配置账、通用流程切换器或生产Probe；需要确切后台合同的能力已在交接中明确。
+开发以 [工作包PS-00～05](../../archive/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)和简洁CODEX-NEXT为入口。没有重新构建技术栈、第二个配置账、通用流程切换器或生产Probe；需要确切后台合同的能力已在交接中明确。

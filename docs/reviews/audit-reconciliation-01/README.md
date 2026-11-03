@@ -1,6 +1,6 @@
 # 架构与 UI 归并审查：原 PDF 与最新复核
 
-**当前阅读顺序：[PR14 后复核](POST-PR14-ANALYSIS.zh-CN.md) → [当前问题表](current-findings.json) → [下一工作包15](../../work-packages/WP-IPC-OPERATION-CLOSURE-15.md) → [精简 Codex 提示词](../../work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md)。**
+**当前阅读顺序：[PR14 后复核](POST-PR14-ANALYSIS.zh-CN.md) → [当前问题表](current-findings.json) → [下一工作包15](../../archive/work-packages/WP-IPC-OPERATION-CLOSURE-15.md) → [精简 Codex 提示词](../../archive/work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md)。**
 
 ## 本次提交的 PDF
 

@@ -1,4 +1,4 @@
-> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
+> 2026-10-25 用户纠偏以 [PARAMETER-GUIDANCE-STARTUP-01](../archive/work-packages/WP-IPC-PARAMETER-GUIDANCE-STARTUP-01.md) 为准：仓ID、生产线ID；供包台编号由同一候选明确统一到取格口与心跳；新站日志/已结历史默认7天；增加本机窗口启动模式；相机/RCS可明确延后配置，待配置能力拒绝业务。下文旧分开编号与启动必填条款保留历史适用范围。
 
 > 2026-10-23 续做的内部页面风格与参数逐页校验以 [INTERNAL-PAGES-UI-REFINE-01](internal-pages-ui-refine-01.md) 为准；本页保留上一轮实现和验收身份。
 
@@ -38,6 +38,6 @@
 
 用户补充的两份 ZIP 原包保持未跟踪，SHA256 分别为 `853fd1aa277c3d24073f822b087bfa1192bc2a06e0ce2583814059153c753639`、`b0e72c59247a2c9f9f2efd241e5856d18f26f47f90a8993efcaed5b129ff5560`。原稿安全解压至 D 盘私有输入区，已读规范、预览源文件、交接与验证边界并逐张查看 12 份布局。浏览器工具拒绝本地 file 协议后没有绕过该限制；未将 HTML 当原生证据。原始截图及设计资产不加入 Git。
 
-旧当前指引的原字节与哈希见[归档](../archive/pre-parameter-ui-refine-01/README.md)，当前工作包见[任务记录](../work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md)。历史 V2/V3、REQ/BR/CAPI/D/RV、旧介质与 SourceCommit 不倒写。
+旧当前指引的原字节与哈希见[归档](../archive/pre-parameter-ui-refine-01/README.md)，当前工作包见[任务记录](../archive/work-packages/WP-IPC-PARAMETER-UI-REFINE-01.md)。历史 V2/V3、REQ/BR/CAPI/D/RV、旧介质与 SourceCommit 不倒写。
 
 本轮真实 HWND/Dispatcher 合成截图、完整日志与修改文件清单见[验收记录](validation/parameter-ui-refine-01.md)。它们来自实际 WPF 控件、真实本地授权及合成配置/端口；不代表 SDK、真实 RCS、UAC 安装或现场验收。

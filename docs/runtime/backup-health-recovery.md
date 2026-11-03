@@ -11,7 +11,7 @@
 |关联数据保护|恢复创建目标之前验证SHA256、完整文件集合、重复原始JSON键、Windows保留名/尾点尾空格、大小写和文件目录别名、越界及逐层链接；禁止递归跟随链接。备份/恢复共用32MiB清单上限，写完成标记前再验容量；新文件独占创建、Flush及复制后验hash，失败保留无完成标记的残件。备份前重验未释放图像与原作业metadata，目标不得位于运行目录；不删除或覆盖原业务数据。|
 |关联取消语义|旧Supply LoopbackIntegration自身HTTP超时仍false，真正调用取消传播。PLC确认查询失败保留先前接受/拒绝及原回执；发送后取消仍Unknown/单次原尝试，重启只能原查询，不自动重发。两处均先新增FAIL回归后修复。|
 
-方案/边界及运行操作见[工作包](../work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)、[随包运行指南](application-capability-19.md#备份路径与健康预算修复)。不新增框架、配置字段、公共协议、迁移或依赖。旧非规范反斜杠清单继续明确拒绝并保留原件，不静默篡改原身份或重签同版本旧包。恢复仍只进全新同Application隔离根、暂停且无登录，不回滚独立接收账。
+方案/边界及运行操作见[工作包](../archive/work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)、[随包运行指南](application-capability-19.md#备份路径与健康预算修复)。不新增框架、配置字段、公共协议、迁移或依赖。旧非规范反斜杠清单继续明确拒绝并保留原件，不静默篡改原身份或重签同版本旧包。恢复仍只进全新同Application隔离根、暂停且无登录，不回滚独立接收账。
 
 资料校验[本轮结果](evidence/backup-health-recovery/archive-checks.json)：新增文件/hash/链接错误0；原有265项PPTX媒体类型和2项UI元数据问题保持FAIL，相关资产从基线未改。
 

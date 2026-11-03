@@ -42,7 +42,9 @@ public partial class ParcelViewModel
                 status = ready ? "SDK 连接已确认" : status;
                 notice += (notice.Length == 0 ? "" : "\n") + ((reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode", "observe-only") == "observe-only"
                     ? "仅观察，不创建供包作业。已连接不代表能读到条码。"
-                    : (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode") == "read-result" ? "逐次识别结果上报已选择，相同条码也会交给 RCS 去重。读码请求不代表物理包裹完成。"
+                    : (reader.Parameters ?? extension!.Parameters).GetValueOrDefault("entity.mode") == "read-result" ? snapshot.ApplicationId == "sportmaster"
+                        ? "持续识别用于判断空托盘；同一位的一次放置只创建一次请求。读码请求不代表物理包裹完成。"
+                        : "逐次识别结果上报已选择，相同条码也会交给 RCS 去重。读码请求不代表物理包裹完成。"
                     : "已选择触发关联方式。已连接不代表包裹分割准确。");
             }
             if (reader.Driver == "hikrobot-mvs" || extension?.PackageId == "hikrobot.mvs-acquisition")
@@ -66,7 +68,7 @@ public partial class ParcelViewModel
             status = ready ? "本地就绪" : "未就绪";
             evidence = "\n运行证据：" + (health?.Detail ?? "尚无运行确认");
             notice = "本地已就绪不代表 RCS 已接受；心跳和返回结果请在诊断中查看。";
-            if (!ready) notice = (health?.Detail ?? "尚无运行确认") + "\n" + notice;
+            if (!ready) notice = "服务连接尚未就绪，请核对当前运行地址与网络；详细原因见连接诊断。\n" + notice;
         }
         // The envelope revision is not an Effective version. Use the actual
         // Effective fingerprint, never the edited candidate or Pending identity.

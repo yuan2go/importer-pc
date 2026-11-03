@@ -5,6 +5,13 @@ public interface ICameraDiagnostics
 {
     Task<CameraPreviewResult> ReadCameraPreviewAsync(string deviceId, CancellationToken token);
 }
+// Passive acquisition facts; reading health must not create thumbnail demand.
+public interface ICameraAcquisitionDiagnostics
+{
+    Task<CameraAcquisitionResult> ReadCameraAcquisitionAsync(string deviceId, CancellationToken token);
+}
+public sealed record CameraAcquisitionResult(string DeviceId, string Epoch, DeviceState? Connection,
+    ObservationDiagnostics? Diagnostics, bool Deferred, bool Supported);
 public sealed record CameraPreviewResult(string Status, ObservationPreview? Frame)
 {
     public ObservationDiagnostics? Diagnostics { get; init; }

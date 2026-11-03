@@ -2,7 +2,7 @@
 
 > PS-05 本轮原生实现与新版 1.7.0 的日常操作见[原生交付说明](parameter-settings-v3-native-01.md)。下列为 PR78 形成时结果；不倒写其 Windows NOT_RUN 或旧安装包身份。
 
-> 2026-10-21当前状态：已实际核对main `42a047c3c0dbba3208e6bc6ce2910cd6ffabbf5e`，PR78参数V3及PR79启动回退均已合并。V3原设计54个文件完整、53个登记文件哈希及25个源码文件指纹全部匹配。当前剩余工作与精简执行提示见[原工作包的收口更新](../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)。以下形成时基线、原交叉构建和Windows未验记录保留，不扩张为本次或最终main验收。
+> 2026-10-21当前状态：已实际核对main `42a047c3c0dbba3208e6bc6ce2910cd6ffabbf5e`，PR78参数V3及PR79启动回退均已合并。V3原设计54个文件完整、53个登记文件哈希及25个源码文件指纹全部匹配。当前剩余工作与精简执行提示见[原工作包的收口更新](../archive/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)。以下形成时基线、原交叉构建和Windows未验记录保留，不扩张为本次或最终main验收。
 
 用户要求重新设计实际参数页并完成优化。本轮先查看1708×960原截图、读取main `837370e`的代码/文档、研究Rider/PowerToys/Visual Studio设置，再建立V3当前指导后改代码。完成阶段三方整合main `bf61337`的PR76/77，保留操作员会话时长修复与1.6.1原发布身份。
 
@@ -43,4 +43,4 @@
 
 原型的连接检查是明确标注的离线模拟。原生本轮没有新增设备抢占Probe或RCS业务试单；现有无权威Query限制继续表达。UI不能给出未经证实的连接成功、业务接受或运行配置生效。
 
-[V2实施](ui-task-redesign-01.md)、PR74/76介质与历史Windows结果保留原身份。后续按[PS工作包及其最新Codex执行提示](../work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)收口实际Windows工作，不重做已正确业务，也不增加不必要测试。设计包内原CODEX-NEXT保持原哈希，形成时分支语境由当前工作包说明。
+[V2实施](ui-task-redesign-01.md)、PR74/76介质与历史Windows结果保留原身份。后续按[PS工作包及其最新Codex执行提示](../archive/work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)收口实际Windows工作，不重做已正确业务，也不增加不必要测试。设计包内原CODEX-NEXT保持原哈希，形成时分支语境由当前工作包说明。

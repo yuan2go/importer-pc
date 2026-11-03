@@ -93,19 +93,26 @@ static partial class ArchitectureQualityRemediation
             Check(vm.Left.Barcode == "333" && !vm.Left.SlotAvailable && !vm.Left.NextStep.Contains("按格口投递") && vm.Right.SlotAvailable,
                 "actual shared UI projection suppresses left delivery instruction while right stays independent");
             var reader = factory.Readers![c.Reader.DeviceId]; var revision = s.Revision;
-            reader.Raw(input.Observation with { Id = Wire.Id(), SourceEventId = "old-sequence", Codes = ["OLD"] });
+            var originalStages = Wire.Encode(s.Operations.OrderBy(o => o.Id).Select(o => o.Wcs).ToArray());
+            var oldSequence = input.Observation with { Id = Wire.Id(), SourceEventId = "old-sequence", Codes = ["OLD"] };
+            Check(reader.Raw(oldSequence), "old-sequence callback reaches actual durable ingress for terminal rejection");
             s = await Wait(app, x => x.Revision > revision);
-            Check(Wire.Encode(s.Inputs!.Single(i => i.PositionId == "left")) == Wire.Encode(input), "old sequence cannot overwrite current rejected input");
+            Check(s.Inputs!.Single(i => i.PositionId == "left") is { Outcome: ParcelInputOutcome.Rejected, OperationId: null } terminal && terminal.Observation.Id == oldSequence.Id && terminal.Reason.StartsWith("UntrustedObservation") &&
+                Wire.Encode(s.Operations.OrderBy(o => o.Id).Select(o => o.Wcs).ToArray()) == originalStages,
+                "READER22 old-sequence input receives its own terminal rejection without changing any original request");
             revision = s.Revision;
-            reader.Raw(input.Observation with { Id = Wire.Id(), SourceEventId = "already-stale-at-ingress", Sequence = 9000, ObservedAt = DateTimeOffset.UtcNow.AddHours(-1) });
+            var stale = input.Observation with { Id = Wire.Id(), SourceEventId = "already-stale-at-ingress", Sequence = 9000, ObservedAt = DateTimeOffset.UtcNow.AddHours(-1) };
+            Check(reader.Raw(stale), "stale high-sequence callback reaches actual ingress for terminal rejection");
             s = await Wait(app, x => x.Revision > revision);
-            Check(Wire.Encode(s.Inputs!.Single(i => i.PositionId == "left")) == Wire.Encode(input), "source already stale at ingress remains audit-only and cannot poison sequence");
+            Check(s.Inputs!.Single(i => i.PositionId == "left") is { Outcome: ParcelInputOutcome.Rejected, OperationId: null } rejected && rejected.Observation.Id == stale.Id && rejected.Reason.StartsWith("UntrustedObservation") &&
+                Wire.Encode(s.Operations.OrderBy(o => o.Id).Select(o => o.Wcs).ToArray()) == originalStages,
+                "READER22 stale high-sequence input has a durable rejection and leaves original requests untouched");
         }
         await using (var app = await Open(c, path, inner => factory = new(inner)))
         {
             var s = await app.SnapshotAsync(); var input = s.Inputs!.Single(i => i.PositionId == "left");
-            Check(input.Outcome == ParcelInputOutcome.Rejected && input.Reason.StartsWith("ObservationExpired") && s.Positions!.Single(p => p.Id == "left").CurrentOperation is null,
-                "direct runtime restart restores queue-expired rejection and does not resurrect previous terminal slot");
+            Check(input.Outcome == ParcelInputOutcome.Rejected && input.Reason.StartsWith("UntrustedObservation") && input.Observation.SourceEventId == "already-stale-at-ingress" && s.Positions!.Single(p => p.Id == "left").CurrentOperation is null,
+                "direct runtime restart restores the latest durable rejection and never resurrects a previous terminal slot");
             var reader = factory!.Readers![c.Reader.DeviceId]; var vm = new SupplyStationViewModel(app);
             await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
             Check((await app.ReconnectDeviceAsync(c.Reader.DeviceId)).Status == "Reconnected" && !reader.Old(input.Observation), "old registration fenced after real reconnect");

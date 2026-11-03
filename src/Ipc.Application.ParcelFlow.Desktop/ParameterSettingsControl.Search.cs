@@ -9,14 +9,17 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class ParameterSettingsControl
 {
     readonly TextBox search = new() { MinHeight = 38, FontSize = UiTypography.Body, VerticalContentAlignment = VerticalAlignment.Center };
-    readonly TextBlock searchCount = new() { Margin = new(4, 8, 0, 4), Foreground = Brush("#5A6878"), FontSize = UiTypography.Label };
+    readonly TextBlock searchCount = Themed(new TextBlock { Margin = new(4, 8, 0, 4), FontSize = UiTypography.Label }, TextBlock.ForegroundProperty, "Muted");
     readonly ListBox searchResults = new() { Visibility = Visibility.Collapsed, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     sealed record SearchHit(string Path, string Title, string Context);
     FrameworkElement BuildSearch()
     {
         var bar = new StackPanel { Margin = new(0, 0, 0, 8) };
-        var input = new Grid(); input.Children.Add(search);
-        var hint = Text("搜索设置  Ctrl+F"); hint.IsHitTestVisible = false; hint.FontSize = UiTypography.Label; hint.Margin = new(10, 0, 8, 0); hint.VerticalAlignment = VerticalAlignment.Center; input.Children.Add(hint);
+        var input = new Grid(); search.Padding = new(36, 7, 10, 7); input.Children.Add(search);
+        var glass = Themed(new System.Windows.Shapes.Path { Data = System.Windows.Media.Geometry.Parse("M 6.5,1 A 5.5,5.5 0 1 1 6.49,1 Z M 10.5,10.5 L 15,15"), StrokeThickness = 1.5, Width = 15, Height = 15, Stretch = System.Windows.Media.Stretch.Uniform,
+            HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 0, 0), IsHitTestVisible = false }, System.Windows.Shapes.Shape.StrokeProperty, "Muted");
+        input.Children.Add(glass);
+        var hint = Text("搜索设置  Ctrl+F"); hint.IsHitTestVisible = false; hint.FontSize = UiTypography.Label; hint.Margin = new(36, 0, 8, 0); hint.VerticalAlignment = VerticalAlignment.Center; input.Children.Add(hint);
         AutomationProperties.SetName(search, "搜索参数"); AutomationProperties.SetAutomationId(search, "ParameterSearch");
         AutomationProperties.SetHelpText(search, "按名称或用途搜索。回车跳到第一项，按 Esc 清除。");
         searchResults.ItemTemplate = (DataTemplate)Resources["ParameterSearchTemplate"];

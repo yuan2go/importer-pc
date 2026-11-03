@@ -41,7 +41,7 @@ static partial class Program
         {
             for (var i = 0; i < 200 && !window.ViewModel.Fresh; i++) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); await Task.Delay(25); }
             var text = window.ViewModel.ConfigurationActivationOutcome;
-            Check(text.Contains("设置未生效") && text.Contains("1000") && text.Contains("1200") && text.Contains("重新保存") && text.Contains("异常处理"), "failure-first presentation includes running/pending values and actionable reconciliation/restaging");
+            Check(text.Contains("设置未生效") && text.Contains("1000") && text.Contains("1200") && text.Contains("重新保存") && text.Contains("记录") && !text.Contains("异常处理"), "failure-first presentation includes running/pending values and actionable reconciliation/restaging");
             Check(window.ViewModel.DiagnosticConfiguration == text && window.ViewModel.ConfigurationSavedStatusText == text, "diagnostics and settings share the same failure-first outcome");
             foreach (var size in new[] { (1366,768), (1092,614), (800,420) })
             { await SetClient(window,size.Item1,size.Item2); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);

@@ -7,7 +7,7 @@ namespace Ipc.Platform;
 public sealed record ManagementModeRpcRequest(string Action, string? Token = null, string? Password = null,
     string? RequestHash = null, ManagementModeDelegation? Grant = null, bool Consume = false,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] int? OperationSeconds = null,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? NewPassword = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? NewPassword = null, ManagementPasswordRecoveryChallenge? Recovery = null);
 public sealed record ManagementModeRpcReply(JsonElement Value, string? Error = null, string? Code = null);
 public sealed record ManagementModeSessionGrant(string SessionId, string Token, DateTimeOffset ExpiresAt);
 
@@ -109,7 +109,7 @@ public sealed partial class LocalManagementMode
             active = true; sessionId = s.SessionId; credentialHash = s.Credential.Hash; sessionSecret = token; enteredAt = s.SessionEnteredAt ?? until.AddMinutes(-15); expires = until; return true;
         }
     }
-    internal object? HandleBrokerRequest(ManagementModeRpcRequest request, bool installer, string? windowsSid = null)
+    internal object? HandleBrokerRequest(ManagementModeRpcRequest request, bool installer, string? windowsSid = null, ManagementRecoveryCaller? recoveryCaller = null)
     {
         if (!serviceAuthority) throw new UnauthorizedAccessException("仅受保护管理模式服务可以处理此请求。");
         callerWindowsSid = windowsSid;
@@ -121,7 +121,14 @@ public sealed partial class LocalManagementMode
             case "ConfigurePassword":
                 if (!installer) throw new ManagementModeBootstrapRequiredException("首次设置管理密码须由Windows安装维护批准；进入管理模式仍须验证本次设置的密码。");
                 ConfigurePassword(request.Password ?? ""); return true;
-            case "ResetPassword": ResetPassword(request.Password ?? "", request.NewPassword ?? ""); return true;
+            case "ResetPassword": throw new UnauthorizedAccessException("共享恢复口令已停用，请使用Windows管理员恢复入口。");
+            case "BeginPasswordRecovery":
+                return IssueRecoveryChallenge(recoveryCaller ?? throw new UnauthorizedAccessException("缺少Windows调用身份。"));
+            case "CompletePasswordRecovery":
+                return CompleteRecoveryCore(request.Recovery ?? throw new UnauthorizedAccessException("缺少本站恢复确认。"),
+                    request.Password ?? "", recoveryCaller ?? throw new UnauthorizedAccessException("缺少Windows调用身份。"));
+            case "InspectPasswordRecovery":
+                return InspectRecoveryCore(request.RequestHash ?? "", recoveryCaller ?? throw new UnauthorizedAccessException("缺少Windows调用身份。"));
             case "Enter":
                 if (!Enter(request.Password ?? "")) return null;
                 return new ManagementModeSessionGrant(sessionId, sessionSecret, expires);

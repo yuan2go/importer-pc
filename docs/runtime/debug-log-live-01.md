@@ -1,6 +1,6 @@
 # 调试模式与实时终端
 
-> 2026-10-27 [HIKROBOT-HARDENING-01](../work-packages/WP-IPC-HIKROBOT-HARDENING-01.md) 增量：普通和调试诊断均遮蔽条码/原始候选及嵌套、截断片段中的识别值；保留计数、筛选结果、请求身份、错误码和响应状态。下述“候选/正文”仅指受保护的诊断副本，不授权传播条码原文；业务原账、冻结报文和原始回执不改写。
+> 2026-10-27 [HIKROBOT-HARDENING-01](../archive/work-packages/WP-IPC-HIKROBOT-HARDENING-01.md) 增量：普通和调试诊断均遮蔽条码/原始候选及嵌套、截断片段中的识别值；保留计数、筛选结果、请求身份、错误码和响应状态。下述“候选/正文”仅指受保护的诊断副本，不授权传播条码原文；业务原账、冻结报文和原始回执不改写。
 
 在管理模式进入“日志查询”。勾选“调试模式”后立即输出详细日志，取消后恢复常规日志；操作完成文案来自当前运行实例的实际状态。无需保存业务参数或暂停供包。设置只作用于当前运行实例，多窗口共享；退出管理不关闭已经开启的记录，重启默认关闭。旧服务未提供可选运行诊断契约时隐藏此开关，不显示虚假能力。
 
@@ -24,4 +24,4 @@ dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.
 # 冻结交付：scripts/verify-commercial-wpf.ps1 -Media <介质> -Output <新的D盘目录> -DebugLogLive
 ```
 
-契约为可选`IRuntimeDiagnosticsControl`，原`IWorkstationAdministration`和配置格式不变；实现为`ParcelRuntimeDiagnostics.cs`、`RuntimeJournal.Tail.cs`、`SoftwareLogRuntime.cs`。不增加运行依赖；继续使用原运行目录和保留配置。[工作包](../work-packages/WP-IPC-DEBUG-LOG-LIVE-01.md)与[本次证据](evidence/debug-log-live-01/README.md)区分源、构建、模拟和真实现场。旧证据保持原身份。
+契约为可选`IRuntimeDiagnosticsControl`，原`IWorkstationAdministration`和配置格式不变；实现为`ParcelRuntimeDiagnostics.cs`、`RuntimeJournal.Tail.cs`、`SoftwareLogRuntime.cs`。不增加运行依赖；继续使用原运行目录和保留配置。[工作包](../archive/work-packages/WP-IPC-DEBUG-LOG-LIVE-01.md)与[本次证据](evidence/debug-log-live-01/README.md)区分源、构建、模拟和真实现场。旧证据保持原身份。

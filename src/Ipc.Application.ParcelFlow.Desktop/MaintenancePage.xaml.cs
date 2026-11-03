@@ -24,7 +24,6 @@ public partial class MaintenancePage : UserControl
     public MaintenancePage()
     {
         InitializeComponent();
-        MainParameterEditor.SelectedPageChanged += (_, _) => UpdateParameterNavigation();
         MainParameterEditor.PageValidationFailed += (_, _) => { if (DataContext is ParcelViewModel vm) vm.Message = "请修正当前页标出的参数；输入已保留。"; };
         MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
         MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(8);
@@ -42,18 +41,17 @@ public partial class MaintenancePage : UserControl
             SelectReader(null); SelectInstance(null);
             Dispatcher.BeginInvoke(new Action(SyncSelections), DispatcherPriority.DataBind);
         };
-        Loaded += (_, _) => { SyncSelections(); if (MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor(); UpdateParameterNavigation(); };
+        Loaded += (_, _) => { SyncSelections(); if (MainParameterEditor.Visibility == Visibility.Visible) ShowParameterEditor(); };
     }
-    void UpdateParameterNavigation()
+    // Daily settings is a directory, not a wizard: no previous/next page actions.
+    // SM uses built-in devices only, so extension, component, binding and raw-JSON tools,
+    // duplicate entries and stashed drafts (edits are kept while the window is open) are hidden there.
+    void AdvancedToggle_SubmenuOpened(object sender, RoutedEventArgs e)
     {
-        var visible = MainParameterEditor.IsVisible;
-        PreviousParameterPage.Visibility = visible && MainParameterEditor.HasPreviousPage ? Visibility.Visible : Visibility.Collapsed;
-        NextParameterPage.Visibility = visible && MainParameterEditor.NextPageTitle is not null ? Visibility.Visible : Visibility.Collapsed;
-        PreviousParameterPage.IsEnabled = NextParameterPage.IsEnabled = !MainParameterEditor.IsNavigating;
-        NextParameterPage.ToolTip = MainParameterEditor.NextPageTitle is { } title ? "校验当前页后前往“" + title + "”" : null;
+        var sm = DataContext is ParcelViewModel { Snapshot.ApplicationId: "sportmaster" };
+        foreach (var item in new FrameworkElement[] { CompareTool, ModulesTool, InventoryTool, InstallationTool, BindingsTool, JsonTool, AdvancedSeparator, ConditionsTool, StashDraftTool, ResumeDraftTool })
+            item.Visibility = sm ? Visibility.Collapsed : Visibility.Visible;
     }
-    void PreviousParameterPage_Click(object sender, RoutedEventArgs e) => MainParameterEditor.MovePrevious();
-    async void NextParameterPage_Click(object sender, RoutedEventArgs e) => await MainParameterEditor.MoveNextAsync();
     void EditorStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(ParcelViewModel.CanEditFormConfiguration) || DataContext is not ParcelViewModel vm) return;
@@ -114,7 +112,7 @@ public partial class MaintenancePage : UserControl
     {
         if (DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false }) { ShowTechnicalTool(1); return; }
         TechnicalTabs.Visibility = Visibility.Collapsed; MainParameterEditor.Visibility = Visibility.Visible;
-        BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "未保存的修改会保留"; UpdateParameterNavigation();
+        BackToSettings.Visibility = Visibility.Collapsed; ToolTitle.Text = "未保存的修改会保留";
     }
     public void ShowTechnicalMaintenance() => ShowTechnicalTool(0);
     public void ShowTechnicalTool(MaintenanceTool tool) => ShowTechnicalTool((int)tool);
@@ -123,7 +121,7 @@ public partial class MaintenancePage : UserControl
         if (index < 0 || index >= TechnicalTabs.Items.Count) throw new ArgumentOutOfRangeException(nameof(index));
         TechnicalTabs.SelectedIndex = index; TechnicalTabs.Visibility = Visibility.Visible; MainParameterEditor.Visibility = Visibility.Collapsed;
         BackToSettings.Visibility = index == 1 && DataContext is ParcelViewModel { AdvancedConfigurationReadOnly: false } ? Visibility.Collapsed : Visibility.Visible;
-        ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中的配置", "已安装模块描述", "已安装组件", "换机恢复核对", "安装与卸载组件", "异常作业处理", "创建完整备份", "设置模板" }[index]; UpdateParameterNavigation();
+        ToolTitle.Text = new[] { "实例与角色绑定", "高级 JSON 编辑", "已保存与运行中的配置", "已安装模块描述", "已安装组件", "换机恢复核对", "安装与卸载组件", "异常作业处理", "创建完整备份", "设置模板" }[index];
     }
     public bool NavigateToParameter(string path) { ShowParameterEditor(); return MainParameterEditor.NavigateTo(path); }
     void ReviewChanges_Click(object sender, RoutedEventArgs e)

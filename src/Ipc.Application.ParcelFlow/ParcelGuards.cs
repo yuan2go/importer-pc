@@ -5,7 +5,7 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
-        !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving && !CameraBusinessFenced;
+        !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving;
     bool CanResume(bool acknowledgeStorageUpgrade = false) => (!storageUpgradeReviewRequired || acknowledgeStorageUpgrade && MaintenanceAuthorized) &&
         CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
@@ -20,16 +20,16 @@ public sealed partial class ParcelRuntime
         CanSendUpload(op) && op.Upload is { State: StageState.Prepared, Attempts: 0 } &&
         (!factory.Requirements(op.FrozenConfiguration.Images.Uploader!).MeasuredWeight || WeightReady(op));
     bool CanSendUpload(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && !ParcelConnectionSetup.BlocksWork(Effective) && op.Upload is { } upload && PortMaintenanceClear(Capability(upload.Request.Binding.InstanceId)) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
-        !repository!.Paused && !CameraBusinessFenced && failure is null && SessionValid && (Effective.Login is null || currentOperator is not null && currentOperator.Subject == op.Operator?.Subject);
+        !repository!.Paused && failure is null && SessionValid && (Effective.Login is null || currentOperator is not null && currentOperator.Subject == op.Operator?.Subject);
     bool CanAbandon(ParcelOperation op) => repository!.Paused && SessionValid && !MainTerminated(op) &&
         (op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 } || op.Wcs.State is StageState.Accepted or StageState.Rejected) &&
         (op.Plc is null || op.Plc is { State: StageState.Prepared, Attempts: 0 }) &&
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
     bool configurationSaving, resumePriorPause;
-    bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress && !configurationSaving && !CameraBusinessFenced;
-    bool CanSaveConfiguration => repository is not null && MaintenanceAuthorized && !backupInProgress && !configurationSaving && !CameraBusinessFenced &&
+    bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress && !configurationSaving;
+    bool CanSaveConfiguration => repository is not null && MaintenanceAuthorized && !backupInProgress && !configurationSaving &&
         (definition.AutomaticConfigurationQuiescence || repository.Paused && externalWaits == 0);
-    bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && !CameraBusinessFenced && PositionReady(position) && ImageCapacityAvailable() &&
+    bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
         !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
     bool CanAdmit() => positions.Keys.Any(p => CanAdmit(p) || CanManuallyAdmit(p));
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>

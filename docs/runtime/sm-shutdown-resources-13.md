@@ -1,6 +1,6 @@
 # SM关闭资源修复13
 
-2026-10-30，基线 main `67ab87c1`，分支 `codex/sm-shutdown-resource-13`。范围见[工作包](../work-packages/WP-IPC-SM-SHUTDOWN-RESOURCES-13.md)。本轮修复Application与MVS生命周期，不修改页面、现场配置、SDK ABI、安装或原请求合同。
+2026-10-30，基线 main `67ab87c1`，分支 `codex/sm-shutdown-resource-13`。范围见[工作包](../archive/work-packages/WP-IPC-SM-SHUTDOWN-RESOURCES-13.md)。本轮修复Application与MVS生命周期，不修改页面、现场配置、SDK ABI、安装或原请求合同。
 
 ## 行为与责任
 

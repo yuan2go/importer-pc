@@ -1,6 +1,6 @@
 # 审查整改证据
 
-[结果与R-02分析](../../sportmaster-audit-remediation-01.md) · [任务范围](../../../work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)。原独立审查D-01～03和原型D编号分开；R-01未决不改。
+[结果与R-02分析](../../sportmaster-audit-remediation-01.md) · [任务范围](../../../archive/work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)。原独立审查D-01～03和原型D编号分开；R-01未决不改。
 
 ## 最终同版证据
 

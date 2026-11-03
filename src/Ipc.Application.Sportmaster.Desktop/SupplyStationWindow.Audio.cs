@@ -10,7 +10,7 @@ public partial class SupplyStationWindow
     {
         try { cueVolume = PresentationPreferences.ReadCueVolume("sportmaster"); }
         catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
-        { cueVolume = 0; ViewModel.Message = "提示音设置未读取，原文件保留；请在设置中核对：" + error.GetType().Name; }
+        { cueVolume = 0; ViewModel.Message = "提示音设置未读取，原文件保留；请在设置中核对文件与访问权限。"; }
         void Changed(string application, int volume)
         {
             if (application != "sportmaster") return;

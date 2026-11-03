@@ -68,8 +68,8 @@ static class UiSpec24
         Check(batch.Page.Items.Length == 1 && batch.Metrics.Operations == 1 && batch.Metrics.WcsAccepted == 1 && batch.Page.Items[0].Operation.Wcs?.State == StageState.Accepted && h.Peer.Requests.Count == 1, "same short SQLite read transaction returns the page and its aggregate without another RCS request");
         await using var camera = new CameraRoundHarness(workspace, Path.Combine(root, "continuous-trial")); await camera.StartAsync();
         var cameraSnapshot = await camera.App.SnapshotAsync();
-        var scope = await camera.App.BeginCameraInspectionAsync(new(Wire.Id(), cameraSnapshot.RuntimeId, cameraSnapshot.Configuration.Revision, CameraInspectionMode.Isolated, "合成连续二十帧试扫验证", new(1, 64, 1000), true), default);
-        Check((await camera.App.SnapshotAsync()).Paused && scope.BusinessFenced, "continuous trial isolates both production positions through the existing durable Application fence");
+        var scope = await camera.App.BeginCameraInspectionAsync(new(Wire.Id(), cameraSnapshot.RuntimeId, cameraSnapshot.Configuration.Revision, CameraInspectionMode.ObserveProduction, "合成连续二十帧试扫验证", new(1, 64, 1000), true), default);
+        Check((await camera.App.SnapshotAsync()).Paused == cameraSnapshot.Paused && !scope.BusinessFenced, "continuous trial leaves both production positions and pause state unchanged");
         var pixels = CameraRoundHarness.Barcode("SYNTH-CONTINUOUS");
         for (var i = 0; i < 20; i++)
         {
@@ -77,14 +77,15 @@ static class UiSpec24
             var count = i + 1;
             await CameraRoundHarness.Until(() => Task.FromResult(camera.Factory.Decoders[camera.Left].Count >= count));
         }
-        await camera.App.StopCameraInspectionCaptureAsync(scope.SessionId!, "合成连续试扫停止，保留隔离", default);
+        await camera.App.StopCameraInspectionCaptureAsync(scope.SessionId!, "合成连续试扫结束采集", default);
         var framePage = await camera.App.ReadCameraFramesAsync(scope.SessionId!, camera.Left, 0, null, 200, default);
         Check(framePage.Rows.Length == 20 && framePage.Rows.Count(f => f.Symbols.Length > 0) == 10, "real ZXing and inspection store retain twenty independent frames including ten empty frames");
         using (var diagnostics = await camera.App.ReadCameraPreviewLeaseAsync(camera.Left, default))
             Check(diagnostics.Diagnostics?.Window is { DecodedFrames: 20, FramesWithCodes: 10 }, "driver rolling diagnostics use decoded frame counts rather than candidate or physical parcel counts");
-        Check(camera.Peer.Requests.IsEmpty && (await camera.App.SnapshotAsync()).Operations.Length == 0, "continuous isolated recognition creates no production operation or RCS request");
-        await camera.App.EndCameraInspectionAsync(new(Wire.Id(), scope.SessionId!, true, false, "合成两位清场确认，保留软件暂停"), default);
-        Check((await camera.App.SnapshotAsync()).Paused && !(await camera.App.CameraInspectionStatusAsync(default)).BusinessFenced, "explicit clearing releases only this trial fence and does not silently resume production");
+        await CameraRoundHarness.Until(async () => (await camera.App.SnapshotAsync()).Operations.Count(o => o.Wcs?.State == StageState.Accepted) == 1);
+        Check(camera.Peer.Requests.Count == 1 && (await camera.App.SnapshotAsync()).Operations.Length == 1, "passive sampling adds no debug POST while normal same-placement production creates its one request");
+        await camera.App.EndCameraInspectionAsync(new(Wire.Id(), scope.SessionId!, false, false, "合成结束采集，不改变正常供包"), default);
+        Check((await camera.App.SnapshotAsync()).Paused == cameraSnapshot.Paused && !(await camera.App.CameraInspectionStatusAsync(default)).BusinessFenced, "ending the trial requires no clearance and leaves normal production state unchanged");
     }
     static DateTimeOffset Minute(DateTimeOffset value) => new(value.UtcDateTime.AddTicks(-(value.UtcTicks % TimeSpan.TicksPerMinute)), TimeSpan.Zero);
 }

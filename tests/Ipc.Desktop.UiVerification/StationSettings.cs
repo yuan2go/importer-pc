@@ -30,7 +30,7 @@ static partial class Program
         await Until(() => vm.HasLoadedConfiguration && !vm.Busy && Descendants(window).OfType<ParameterSettingsControl>().Any());
         var editor = Descendants(window).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(0, "显示偏好"); window.UpdateLayout();
         editor.NavigateTo("StationCode");
-        Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetName(t)=="StationCode").Text="SYNTH-SAVE-WITHOUT-PAUSE";
+        Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetAutomationId(t)=="StationCode").Text="SYNTH-SAVE-WITHOUT-PAUSE";
         vm.ConfigurationReason="Synthetic save without manual pause";
         Check(await vm.PrepareConfigurationReviewAsync() && !vm.Snapshot!.Paused,"edited SM settings can be reviewed while running");
         var review = new ConfigurationSaveReviewWindow(window, vm); review.Show(); await Flush();
@@ -41,8 +41,8 @@ static partial class Program
         await Until(()=>vm.Snapshot?.Configuration.Pending?.StationCode=="SYNTH-SAVE-WITHOUT-PAUSE");
         Check(vm.Snapshot!.Configuration.Pending?.StationCode=="SYNTH-SAVE-WITHOUT-PAUSE" && !vm.Snapshot.Paused,"native editor saves pending settings while remaining unpaused");
         editor.ShowPage(0,"显示偏好"); window.UpdateLayout();
-        Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetName(t) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM preference page removes the unused name and target inputs");
-        Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetName(t) == "WindowOpeningMode" && t.IsVisible), "window opening mode remains directly editable");
+        Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM preference page removes the unused name and target inputs");
+        Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode" && t.IsVisible), "window opening mode remains directly editable");
         CaptureInternal(evidence, "station-display-1366", (Grid)window.FindName("ClientArea"), lines);
         await SetClient(window, 800, 420); CaptureInternal(evidence, "station-display-800", (Grid)window.FindName("ClientArea"), lines);
         await runtime.ExitManagementModeAsync(); await vm.RefreshAsync();
@@ -59,14 +59,14 @@ static partial class Program
                 await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementPasswordRecoveryWindow>().Any());
                 var recovery = System.Windows.Application.Current.Windows.OfType<ManagementPasswordRecoveryWindow>().Single();
                 PasswordBox Field(string name) => Descendants(recovery).OfType<PasswordBox>().Single(p => p.Name == name);
-                Field("RecoveryRootPassword").Password = "wrong-root"; Field("RecoveryNewPassword").Password = Field("RecoveryConfirmation").Password = "Native-Recovered-123";
+                Check(!Descendants(recovery).OfType<PasswordBox>().Any(p => p.Name == "RecoveryRootPassword"), "native recovery exposes no shared password input");
+                Field("RecoveryNewPassword").Password = "Synthetic-Replacement";
+                Field("RecoveryConfirmation").Password = "different";
                 Click(recovery, "重置管理密码");
-                await Until(() => Descendants(recovery).OfType<TextBlock>().Any(t => t.Text.Contains("根密码不正确")));
-                Check(recovery.IsVisible && Descendants(recovery).OfType<PasswordBox>().All(p => p.Password.Length == 0), "wrong recovery proof keeps the dialog open and clears every secret field");
-                Field("RecoveryRootPassword").Password = "Cainiao123"; Field("RecoveryNewPassword").Password = Field("RecoveryConfirmation").Password = "Native-Recovered-123";
-                CaptureInternal(evidence, "station-root-recovery", recovery, lines);
-                Click(recovery, "重置管理密码"); await Until(() => !recovery.IsVisible);
-                Check(!(await runtime.ManagementModeStatusAsync()).Authorized && await runtime.EnterManagementModeAsync("Native-Recovered-123"), "native root recovery sets the password and requires a fresh real management login");
+                await Until(() => Descendants(recovery).OfType<TextBlock>().Any(t => t.Text.Contains("两次新管理密码不一致")));
+                Check(recovery.IsVisible && Descendants(recovery).OfType<PasswordBox>().All(p => p.Password.Length == 0), "mismatched confirmation keeps the dialog and clears secrets");
+                CaptureInternal(evidence, "station-windows-recovery", recovery, lines);
+                Click(recovery, "取消");
                 recoveryDone.SetResult();
             }
             catch (Exception error) { recoveryDone.SetException(error); foreach (var child in System.Windows.Application.Current.Windows.OfType<ManagementPasswordRecoveryWindow>().ToArray()) child.Close(); }

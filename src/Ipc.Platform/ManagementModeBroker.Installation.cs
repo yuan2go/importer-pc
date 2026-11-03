@@ -62,6 +62,7 @@ public static partial class ManagementModeBroker
         if (dataRoot.Contains('"')) throw new InvalidDataException("认证服务数据目录无效。");
         var executable = trace.Run("PrepareVerifiedHost", "VerifyAndCopyHostFiles", () =>
         {
+            RecoverySecurityPolicy.RequireRelease(sourceApp);
             var declarationPath = Path.Combine(sourceApp, "application-release.json"); MachineRuntimePolicy.RequireProtectedEvidence(declarationPath);
             var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(declarationPath));
             var hostParent = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator");
@@ -82,7 +83,7 @@ public static partial class ManagementModeBroker
             if (!File.Exists(anchor))
             {
                 using var output = new FileInfo(anchor).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.Read, 4096, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-32-545")));
-                output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { Protocol = 1, DataRoot = dataRoot, Service = serviceName }))); output.Flush(true);
+                output.Write(System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { Protocol = 3, RecoverySecurityEpoch = RecoverySecurityPolicy.CurrentEpoch, DataRoot = dataRoot, Service = serviceName }))); output.Flush(true);
             }
             MachineRuntimePolicy.RequireProtectedEvidence(anchor);
             var targetExecutable = Path.Combine(host, "Ipc.Assembly.exe"); if (!File.Exists(targetExecutable)) throw new InvalidDataException("认证服务宿主缺失。");

@@ -7,15 +7,28 @@ internal static class CameraRoundChecks
     static void Check(bool ok, string detail) { if (!ok) throw new InvalidOperationException(detail); Console.WriteLine("PASS ROUND " + detail); }
     static async Task Reject(Func<Task> action, string detail)
     { try { await action(); } catch (Exception e) when (e is InvalidOperationException or UnauthorizedAccessException or OperationCanceledException) { Check(true, detail); return; } throw new InvalidOperationException("Guard escaped: " + detail); }
+    static async Task PauseForDirectDebug(Ipc.Application.ParcelFlow.ParcelRuntime app)
+    {
+        // Explicit test setup separates debug POST counts from normal production.
+        // DEBUG31 independently verifies unpaused two-position production continues.
+        for (var n = 0; n < 20; n++)
+        {
+            var snapshot = await app.SnapshotAsync();
+            var receipt = await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
+            if (receipt.Status == "Persisted") return;
+            if (receipt.Status != "Conflict") throw new InvalidOperationException(receipt.Reason);
+        }
+        throw new TimeoutException("Explicit test pause did not settle");
+    }
     public static async Task Run(string workspace, string root)
     {
         Console.WriteLine("Real MVS driver/ZXing/SQLite/built-in RCS, synthetic native APIs and loopback HTTP; real hardware/customer RCS NOT_RUN");
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "frozen-offline")))
         {
-            await h.StartAsync(); var snapshot = await h.App.SnapshotAsync();
+            await h.StartAsync(); await PauseForDirectDebug(h.App); var snapshot = await h.App.SnapshotAsync();
             var scope = await h.App.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision,
-                CameraInspectionMode.Isolated, "Synthetic one-shot trigger", new()) { SingleReadRounds = true }, default);
-            Check(scope.BusinessFenced, "explicit one-shot trigger establishes its software fence without a physical checklist or user explanation");
+                CameraInspectionMode.ObserveProduction, "Synthetic one-shot trigger", new()) { SingleReadRounds = true }, default);
+            Check(!scope.BusinessFenced, "explicit one-shot trigger creates no station fence or physical checklist");
             await h.ArmAsync(h.Left); h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("FROZEN-OFFLINE"), 1);
             var locked = await h.LockedAsync(); h.Api(h.Left).Discovered = false;
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.SingleOrDefault(d => d.DeviceId == h.Left) is not { Health: DeviceHealth.Ready });
@@ -36,37 +49,38 @@ internal static class CameraRoundChecks
         }
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "complete")))
         {
-            await h.StartAsync(); await h.App.ExitManagementModeAsync();
+            await h.StartAsync(); await PauseForDirectDebug(h.App); await h.App.ExitManagementModeAsync();
             await Reject(async () => { await h.App.ReadCameraReadRoundAsync(default); }, "round evidence requires management authority");
             await h.AuthorizeAsync(); var scope = await h.BeginAsync();
-            Check(scope.BusinessFenced && scope.SingleReadRounds && scope.State == "Active", "isolated one-shot scope is authoritative before scanning");
+            Check(!scope.BusinessFenced && scope.SingleReadRounds && scope.State == "Active", "passive one-shot scope is authoritative before scanning");
             var pixels = CameraRoundHarness.Barcode("ROUND-0001"); h.Api(h.Left).Enqueue(pixels, 1);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Releases >= 1));
-            Check(h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.IsEmpty, "scope starts decode-closed while the single native owner still returns SDK loans");
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 1));
+            Check(h.Factory.Decoders[h.Left].Count >= 1 && h.Peer.Requests.IsEmpty, "passive scope keeps recognition running while this test explicitly pauses production");
             var first = await h.ArmAsync(h.Left); Check(first.State == "Reading" && first.Frame is null && first.Barcode is null && first.RequestBody is null, "arm opens a clean round without a request or old photo");
             h.Api(h.Left).Enqueue(new(new byte[100 * 80], 100, 80), 2);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 1));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 2));
             Check((await h.App.ReadCameraReadRoundAsync(default)).State == "Reading", "NoRead continues the same round without a fabricated result");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Multiple("MULTI-A", "MULTI-B"), 3);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 2));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 3));
             Check(h.Factory.Decoders[h.Left].Last.Length == 2 && (await h.App.ReadCameraReadRoundAsync(default)).State == "Reading", "real ZXing multi-candidate frame is not silently reduced to the first code");
             h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("WRONG-CAMERA"), 1);
             h.Api(h.Left).Enqueue(pixels, 4);
             var locked = await h.LockedAsync();
             // Latest-pending video may be superseded before decoding. This check
             // owns the *locked* winner, so introduce the next parcel after that boundary.
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-PARCEL"), 5);
             Check(locked.Barcode == "ROUND-0001" && locked.Frame is { FrameNumber: 4 } && locked.CanSend, "unique winner locks its exact frame and prepares an eligible manual request: " + locked.Detail);
             var original = await h.App.ReadCameraOriginalAsync(locked.Frame!.Id, default) ?? throw new InvalidDataException("Locked image missing");
             Check(original.Gray8.SequenceEqual(pixels.Data) && original.Metadata.OriginalSha256 == Convert.ToHexString(SHA256.HashData(pixels.Data)), "persisted original equals pre-contrast bytes for the selected frame");
             Check(original.Metadata.Symbols.Length == 1 && original.Metadata.Symbols[0].Corners.Length == 4 &&
                 Wire.Encode(original.Metadata.Symbols) == Wire.Encode(h.Factory.Decoders[h.Left].Last), "image geometry equals actual ZXing coordinates from that one frame");
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Releases >= 5 && h.Api(h.Right).Releases >= 1));
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Observation.SourceEventId == locked.Frame.SourceEventId));
+            var blocked = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left" && i.Observation.SourceEventId == locked.Frame.SourceEventId);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-PARCEL"), 5);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 5 && h.Factory.Decoders[h.Right].Count >= 1));
             var frozen = await h.App.ReadCameraReadRoundAsync(default);
-            Check(frozen.Frame?.Id == locked.Frame.Id && frozen.Barcode == locked.Barcode && h.Factory.Decoders[h.Left].Count == 3 && h.Factory.Decoders[h.Right].Count == 0,
-                "later parcels and the unselected camera cannot decode/overwrite the frozen winner");
-            var op = (await h.App.SnapshotAsync()).Operations.Single();
-            var blocked = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.Observation.SourceEventId == locked.Frame.SourceEventId);
+            Check(frozen.Frame?.Id == locked.Frame.Id && frozen.Barcode == locked.Barcode && h.Factory.Decoders[h.Left].Count >= 5 && h.Factory.Decoders[h.Right].Count >= 1,
+                "later parcels and the other camera continue decoding without overwriting the debug winner");
+            var op = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == locked.OperationId);
             Check(blocked.Outcome == ParcelInputOutcome.Blocked && op.Acquisition is { } capture && capture.DeviceId == blocked.Observation.DeviceId &&
                 capture.Epoch == blocked.Observation.Epoch && capture.SourceEventId == blocked.Observation.SourceEventId && capture.AdmissionId == blocked.Observation.AdmissionId &&
                 capture.ObservedAt == blocked.Observation.ObservedAt && op.AdmissionId != capture.AdmissionId,
@@ -103,40 +117,39 @@ internal static class CameraRoundChecks
             unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == right.OperationId);
             Check(unknown.Wcs!.Request.IntegrationRequest!.Body == right.RequestBody, "reauthorized custody exposes the unchanged original JSON");
             Check(h.Peer.Requests.Count == 2 && !(await h.App.ReadCameraReadRoundAsync(default)).CanSend, "reauthorization/query never replays Unknown");
-            var unknownRequest = Wire.Encode(unknown.Wcs!.Request); await h.App.DisposeAsync(); await h.StartAsync();
+            var unknownRequest = Wire.Encode(unknown.Wcs!.Request); await h.App.DisposeAsync(); await h.StartAsync(); await PauseForDirectDebug(h.App);
             var recovered = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == unknown.Id);
             Check(recovered.Wcs is { State: StageState.Unknown, Attempts: 1 } && Wire.Encode(recovered.Wcs.Request) == unknownRequest &&
-                (await h.App.CameraInspectionStatusAsync(default)).BusinessFenced, "restart preserves original Unknown and the persistent isolation fence");
-            h.Api(h.Left).Enqueue(pixels, 100); await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Releases == 1));
-            Check(h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.Count == 2, "recovered isolation starts decode-closed and does not replay an old round");
-            await h.EndAsync();
-            Check((await h.App.SnapshotAsync()).Operations.Single(o => o.Id == unknown.Id).Wcs!.State == StageState.Unknown && h.Peer.Requests.Count == 2, "explicit clearance keeps unresolved original responsibility");
+                !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced, "restart preserves original Unknown without restoring a debug isolation fence");
+            h.Api(h.Left).Enqueue(pixels, 100); await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 1));
+            Check(h.Factory.Decoders[h.Left].Count >= 1 && h.Peer.Requests.Count == 2, "recognition resumes normally while explicit pause and original Unknown prevent unintended sends");
+            Check((await h.App.SnapshotAsync()).Operations.Single(o => o.Id == unknown.Id).Wcs!.State == StageState.Unknown && h.Peer.Requests.Count == 2, "retired isolation needs no clearance and keeps unresolved original responsibility");
         }
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "clear-cancel")))
         {
-            await h.StartAsync(); await h.BeginAsync(); h.Api(h.Left).ClearGate.Reset();
+            await h.StartAsync(); await PauseForDirectDebug(h.App); await h.BeginAsync(); h.Api(h.Left).ClearGate.Reset();
             var baseline = h.Api(h.Left).Clears; using var cancel = new CancellationTokenSource(); var snap = await h.App.SnapshotAsync(); var status = await h.App.CameraInspectionStatusAsync(default);
             var arming = h.App.ArmCameraReadAsync(new(Wire.Id(), snap.RuntimeId, snap.Configuration.Revision, status.SessionId!, h.Left, null), cancel.Token);
             try
             {
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Clears > baseline)); cancel.Cancel();
                 await Reject(async () => { await arming; }, "cancelling SDK cutover does not certify native completion");
-                Check(h.Api(h.Left).Starts == 1 && h.Api(h.Left).Opens == 1 && (await h.App.CameraInspectionStatusAsync(default)).BusinessFenced && h.Peer.Requests.IsEmpty,
-                    "cancelled native cutover retains one owner and isolation without an HTTP request");
+                Check(h.Api(h.Left).Starts == 1 && h.Api(h.Left).Opens == 1 && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced && h.Peer.Requests.IsEmpty,
+                    "cancelled native cutover retains one owner and no global isolation or HTTP request");
             }
             finally { h.Api(h.Left).ClearGate.Set(); }
         }
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "clear-failure")))
         {
-            await h.StartAsync(); await h.BeginAsync(); h.Api(h.Left).FailNextClear = true;
+            await h.StartAsync(); await PauseForDirectDebug(h.App); await h.BeginAsync(); h.Api(h.Left).FailNextClear = true;
             try { await h.ArmAsync(h.Left); throw new InvalidOperationException("Injected SDK failure escaped"); }
             catch (IOException error) when (error.Message == "Synthetic SDK cache clear failed") { Check(true, "SDK cache-clear failure is not reported as a completed scan trigger"); }
-            Check((await h.App.ReadCameraReadRoundAsync(default)).State == "Interrupted" && (await h.App.CameraInspectionStatusAsync(default)).BusinessFenced && h.Peer.Requests.IsEmpty,
-                "failed SDK cutover preserves isolation and has no request/photo substitution");
+            Check((await h.App.ReadCameraReadRoundAsync(default)).State == "Interrupted" && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced && h.Peer.Requests.IsEmpty,
+                "failed SDK cutover does not create global isolation and has no request/photo substitution");
         }
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "rejected-send")))
         {
-            await h.StartAsync(); await h.BeginAsync(); await h.ArmAsync(h.Left); h.Peer.Mode = "reject";
+            await h.StartAsync(); await PauseForDirectDebug(h.App); await h.BeginAsync(); await h.ArmAsync(h.Left); h.Peer.Mode = "reject";
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("ROUND-REJECT"), 1); var round = await h.LockedAsync();
             var command = await h.SendCommandAsync(round); var returned = await h.App.SendCameraRoundAsync(command, default);
             Check(returned.Result!.StartsWith("状态：Rejected") && h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single().Wcs is { State: StageState.Rejected, Attempts: 1 },
@@ -146,7 +159,7 @@ internal static class CameraRoundChecks
         }
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "missing-acquisition")))
         {
-            await h.StartAsync(); await h.BeginAsync(); await h.ArmAsync(h.Left);
+            await h.StartAsync(); await PauseForDirectDebug(h.App); await h.BeginAsync(); await h.ArmAsync(h.Left);
             // Deliberate adapter-boundary corruption. Keep the actual driver,
             // decoder and pixels; remove only the capture identity delivered to Application.
             var source = h.Factory.Sources[h.Left];

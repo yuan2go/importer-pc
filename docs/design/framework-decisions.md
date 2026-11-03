@@ -1,8 +1,10 @@
-> 2026-11-02 用户追加以 [SM-SESSION-SHIFT-EXCEPTIONS-25](../work-packages/WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25.md) 为准：P07/P08现在实施；SM每次成功打开至完成关闭为一个持久班次，不按固定时刻切班，异常退出与原请求跨班责任分开。替代24包延期及旧排班对本班的定义，其他守卫/历史证据不变。
+> 当前SM调试隔离条款已被[SM-DEBUG-NO-ISOLATION-31](../archive/work-packages/WP-IPC-SM-DEBUG-NO-ISOLATION-31.md)替代：调试不暂停整站、不阻止保存或启动，不恢复旧隔离。保留真实RCS调试及原请求守卫。修订前完整字节见`docs/archive/pre-sm-debug-no-isolation-31/manifest.json`；下文冲突的旧隔离描述仅保留历史范围。
 
-> 2026-11-02 24包交付记录以 [SM-UI-SPEC-CLOSURE-24](../work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](../runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08已由后续25包接续实施；原24包交付当时保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。
+> 2026-11-02 用户追加以 [SM-SESSION-SHIFT-EXCEPTIONS-25](../archive/work-packages/WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25.md) 为准：P07/P08现在实施；SM每次成功打开至完成关闭为一个持久班次，不按固定时刻切班，异常退出与原请求跨班责任分开。替代24包延期及旧排班对本班的定义，其他守卫/历史证据不变。
 
-> 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](../work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
+> 2026-11-02 24包交付记录以 [SM-UI-SPEC-CLOSURE-24](../archive/work-packages/WP-IPC-SM-UI-SPEC-CLOSURE-24.md)、[运行与验证](../runtime/sm-ui-spec-closure-24.md)为准：先修订全局隔离、完整候选生效、软件次数及原请求查询语义；P07/P08已由后续25包接续实施；原24包交付当时保留既有功能。任务导航替代旧四类导航的摆放，字段所有权和原请求不变。混合修改全部待重启；确认项缺少外部合同不新增实际动作。历史证据保持原 SourceCommit。
+
+> 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](../archive/work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
 
 # 当前框架决策
 
@@ -23,7 +25,7 @@
 | F-11 当前业务 | SM、DirectPlc、WcsToPlc各自Application；参考业务独立 | SM无PLC，真实规则依证据，模拟不授予生产资格 |
 | F-12 交付验收 | 真实SQLite/边界验证，精确发布身份，必要构建与启动冒烟 | Windows/SDK/客户协议/现场分开，未运行写NOT_RUN |
 
-管理模式、机器运行身份、D盘存储与原请求责任适用于相应执行入口。恢复、安装、修复、卸载和日常运行各守权限，不以新建目录、改包版本或重写配置绕开旧责任。实现变更在开发分支分批验证并通过main PR交付；CI保持用户指定的停用状态。
+管理模式、机器运行身份、D盘存储与原请求责任适用于相应执行入口。恢复、安装、修复、卸载和日常运行各守权限，不以新建目录、改包版本或重写配置绕开旧责任。实现变更在开发分支分批验证并通过main PR交付；用户已于2026-11-03授权IE01恢复PR/main自动CI，当前工程结果和未配置的分支必需检查见[实施记录](../runtime/industrial-engineering-01.md)。[更新前原字节](../archive/pre-industrial-ci-guidance-01/manifest.json)保留形成时的停用说明。
 
 ## PC21：规则、统计与自动维护
 

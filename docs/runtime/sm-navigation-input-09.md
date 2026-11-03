@@ -2,7 +2,7 @@
 
 # 作业导航与条码输入 · SM-NAVIGATION-INPUT-09
 
-2026-10-30，基准main `9b1384d5`，独立分支`codex/navigation-input-fix-01`。工作包见[09](../work-packages/WP-IPC-SM-NAVIGATION-INPUT-09.md)。
+2026-10-30，基准main `9b1384d5`，独立分支`codex/navigation-input-fix-01`。工作包见[09](../archive/work-packages/WP-IPC-SM-NAVIGATION-INPUT-09.md)。
 
 截图中的设置/日志来自03把四个入口常显、点击再认证的实现；调试仍在设置的内部工具区。现恢复普通模式只显示作业/记录，管理模式显示设置/日志/调试；宽侧栏与紧凑页面菜单一致。调试使用已有`StationDebugControl`，退出/到期沿既有撤权逻辑回作业，不新建采集或发送器。
 

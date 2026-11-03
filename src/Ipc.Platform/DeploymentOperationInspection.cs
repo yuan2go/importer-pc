@@ -6,6 +6,20 @@ public sealed record InstallationInspection(string Status, string Detail, Deploy
 
 public static partial class WindowsDeploymentSetup
 {
+    static void RequireNoUnresolvedInstallation(string application, string? operationId)
+    {
+        var directory = Path.Combine(MachineRoot, "deployments");
+        foreach (var file in Directory.EnumerateFiles(directory, application + ".setup-*.json"))
+        {
+            MachineRuntimePolicy.RequireProtectedEvidence(file);
+            if (new FileInfo(file).Length > 4 * 1024 * 1024) throw new InvalidDataException("原安装记录超出预算，须先核对。");
+            using var document = JsonDocument.Parse(File.ReadAllBytes(file));
+            var status = document.RootElement.GetProperty("Status").GetString();
+            if (status is not ("Completed" or "Failed"))
+                throw new InstallationOutcomeUnknownException("存在尚未核对完成的原安装，请先核对该次结果，不创建新操作。");
+        }
+    }
+
     public static void RequireCurrentInstallationRequest(WindowsDeploymentRequest request)
     {
         if (!IsInstallationOperationId(request.OperationId) || request.Shortcuts is null)
@@ -35,7 +49,7 @@ public static partial class WindowsDeploymentSetup
             return ProjectInstallation(request, File.ReadAllText(file), Current(request.ApplicationId));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or JsonException)
-        { return new("Unknown", "尚未取得可核验的原操作终态。安装可能仍在执行；请稍后再次核对，禁止重复提交。" + error.GetType().Name); }
+        { return new("Unknown", "尚未取得可核验的原操作终态。安装记录缺失或暂时无法读取；请稍后再次核对，禁止重复提交。"); }
     }
     internal static InstallationInspection ProjectInstallation(WindowsDeploymentRequest request, string journal, DeploymentLocation? current)
     {

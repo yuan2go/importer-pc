@@ -16,7 +16,7 @@ public static partial class ManagementModeBroker
     static string CanonicalRoot(string root) => WindowsStoragePaths.CanonicalDirectory(root);
     public static string ProtectedRoot(string root) => Path.Combine(WindowsStoragePaths.AdministratorRoot, Key(root));
     static string ServiceName(string root) => "ImporterPc.Administrator." + Key(root);
-    static string PipeName(string root) => "ImporterPc.ManagementMode.v2." + Key(root);
+    static string PipeName(string root) => "ImporterPc.ManagementMode.v3." + Key(root);
     public static bool IsManaged(string root)
     {
         if (!OperatingSystem.IsWindows()) return false;
@@ -106,11 +106,29 @@ public static partial class ManagementModeBroker
             {
                 var bytes = await ReadFrame(pipe, budget.Token).ConfigureAwait(false);
                 var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
-                bool installer = false; string? windowsSid = null;
-                pipe.RunAsClient(() => { using var client = WindowsIdentity.GetCurrent(); windowsSid = client.User?.Value; if(request.Action == "ConfigurePassword") installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator); });
-                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "ResetPassword";
+                bool installer = false; string? windowsSid = null; ManagementRecoveryCaller? recoveryCaller = null;
+                pipe.RunAsClient(() =>
+                {
+                    using var client = WindowsIdentity.GetCurrent();
+                    windowsSid = client.User?.Value;
+                    installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator);
+                });
+                if (request.Action is "BeginPasswordRecovery" or "CompletePasswordRecovery" or "InspectPasswordRecovery")
+                {
+                    if (!GetNamedPipeClientProcessId(pipe.SafePipeHandle, out var callerPid)) throw new UnauthorizedAccessException("无法确认恢复调用进程。");
+                    using var process = System.Diagnostics.Process.GetProcessById(checked((int)callerPid));
+                    recoveryCaller = new(windowsSid ?? throw new UnauthorizedAccessException("Windows身份缺失。"), installer,
+                        process.Id, process.StartTime.ToUniversalTime().Ticks, process.SessionId);
+                    if (request.Recovery is { } challenge)
+                    {
+                        using var origin = System.Diagnostics.Process.GetProcessById(challenge.InitiatorProcessId);
+                        if (origin.StartTime.ToUniversalTime().Ticks != challenge.InitiatorStartedTicks || origin.SessionId != challenge.WindowsSessionId)
+                            throw new UnauthorizedAccessException("密码恢复发起窗口已更换或关闭。");
+                    }
+                }
+                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "CompletePasswordRecovery";
                 if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
-                try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid), budget.Token).ConfigureAwait(false); }
+                try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid, recoveryCaller), budget.Token).ConfigureAwait(false); }
                 finally { if (expensive) passwordWork.Release(); }
                 await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(value)), budget.Token).ConfigureAwait(false);
             }
@@ -149,6 +167,7 @@ public static partial class ManagementModeBroker
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern ServiceHandle OpenService(ServiceHandle manager, string name, uint access);
     [DllImport("advapi32.dll", SetLastError = true)] static extern bool CloseServiceHandle(IntPtr handle);
     [DllImport("advapi32.dll", SetLastError = true)] static extern bool QueryServiceStatusEx(ServiceHandle service, int level, out ServiceProcessStatus status, int size, out int needed);
+    [DllImport("kernel32.dll", SetLastError = true)] static extern bool GetNamedPipeClientProcessId(SafePipeHandle pipe, out uint pid);
     [DllImport("kernel32.dll", SetLastError = true)] static extern bool GetNamedPipeServerProcessId(SafePipeHandle pipe, out uint pid);
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern bool StartServiceCtrlDispatcher([In] ServiceEntry[] table);
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)] static extern IntPtr RegisterServiceCtrlHandlerEx(string name, ServiceHandler handler, IntPtr context);
@@ -162,6 +181,6 @@ public sealed partial class LocalManagementMode
 {
     internal void RevokeBrokerSessions()
     {
-        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Credential is not null) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [] }, "ManagementModeServiceRestarted"); }
+        lock (sync) { using var held = LockStore(); var s = Read(); if (s.Credential is not null) Save(s with { SessionHash = null, SessionId = null, SessionExpires = null, Delegations = [], RecoveryChallenges = [] }, "ManagementModeServiceRestarted"); }
     }
 }

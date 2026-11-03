@@ -35,7 +35,7 @@ static class MaintenanceAuthorizationStartup
         var connected = pipe.WaitForConnectionAsync(budget.Token);
         var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = true, Verb = "runas", WindowStyle = ProcessWindowStyle.Hidden, WorkingDirectory = Environment.CurrentDirectory };
         foreach (var argument in Prefix.Concat(new[] { "--maintenance-authority-probe", name })) start.ArgumentList.Add(argument);
-        using var process = await WindowsMaintenanceProcess.StartAsync(start, pipe, connected, budget.Token);
+        using var process = await WindowsMaintenanceProcess.StartBeforeAcknowledgmentAsync(start, pipe, connected, budget);
         await connected;
         await pipe.WriteAsync(new byte[] { 1 }, budget.Token);
         using var reader = new StreamReader(pipe, leaveOpen: true);

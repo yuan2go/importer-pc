@@ -1,0 +1,6 @@
+FAIL System.TimeoutException: Round fixture did not converge
+   at CameraRoundHarness.Until(Func`1 done) in D:\w\ipc-reinstall-retest-28\tests\Ipc.Application.Verification\CameraRoundHarness.cs:line 111
+   at ManualSupplyHarness.StartAsync(Boolean ready) in D:\w\ipc-reinstall-retest-28\tests\Ipc.Application.Verification\ManualSupplyChecks.cs:line 34
+   at Program.VerifyUiSpec24(String root, String evidence, List`1 lines) in D:\w\ipc-reinstall-retest-28\tests\Ipc.Desktop.UiVerification\UiSpec24Ui.cs:line 18
+   at Program.VerifyUiSpec24(String root, String evidence, List`1 lines) in D:\w\ipc-reinstall-retest-28\tests\Ipc.Desktop.UiVerification\UiSpec24Ui.cs:line 135
+   at Program.<>c__DisplayClass51_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-reinstall-retest-28\tests\Ipc.Desktop.UiVerification\Program.cs:line 80

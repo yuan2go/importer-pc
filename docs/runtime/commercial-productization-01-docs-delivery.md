@@ -1,6 +1,6 @@
 # 商业化工作包 · 文档交付记录
 
-日期：2026-10-19。工作包：[WP-IPC-COMMERCIAL-PRODUCTIZATION-01](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)。
+日期：2026-10-19。工作包：[WP-IPC-COMMERCIAL-PRODUCTIZATION-01](../archive/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)。
 
 ## 范围与真实起点
 
@@ -12,12 +12,12 @@
 
 |文档|内容|
 |---|---|
-|[工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|COMM-00～10、完整核心范围、依赖、完成标准、条件商业方向、执行要求|
+|[工作包](../archive/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|COMM-00～10、完整核心范围、依赖、完成标准、条件商业方向、执行要求|
 |[产品设计](../design/commercial-productization-01.md)|安装/首配、五个状态维度、统一设置、作业、健康/故障、历史导出、升级备份、支持和批量交付|
 |[实现逻辑](../implementation/commercial-productization-01.md)|当前源文件映射、唯一权威、目录权限/部署提交、首配分层与确认循环、数据/资源/请求恢复|
 |[基线核对](../reviews/commercial-productization-01-baseline.md)|PR44/45 最新能力、旧介质独立身份、静态缺口与文档清理|
 |[必要验收](validation/commercial-productization-01.md)|CPV-01～16，按实际风险选检查；未来产品验收初值 NOT_RUN|
-|[Codex 提示词](../work-packages/Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|可直接复制的精简实施入口|
+|[Codex 提示词](../archive/work-packages/Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|可直接复制的精简实施入口|
 
 清理了 README、INDEX、framework/F 决策和三份首次运行/Windows 交付/运行维护指南顶部的过期当前路由及矛盾依赖说明；[七份原字节](../archive/pre-commercial-productization-01/README.md)和原 manifest 选定元信息已保留。没有改写原审查、历史结果、旧发布、D/RV 或原客户资料。
 
@@ -56,4 +56,4 @@
 
 按本次明确授权将文档提交到 main，使用已核对的真实 main 为父提交、完整原 tree 为基底，仅叠加文档差额；拒绝覆盖已变化 head，不强推。回读 main、提交父子关系、变更文件及字节身份后报告完成。若提交期间 main 前进，先复核新增差额再决定更新。
 
-下一阶段执行提示词在[此处](../work-packages/Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)。实现须先读最新文档并清理新发现的过期当前指引，再在实施分支完成整个核心范围并创建 main PR；本次文档 main 授权不自动替其他业务 PR 增加合并权限。
+下一阶段执行提示词在[此处](../archive/work-packages/Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)。实现须先读最新文档并清理新发现的过期当前指引，再在实施分支完成整个核心范围并创建 main PR；本次文档 main 授权不自动替其他业务 PR 增加合并权限。

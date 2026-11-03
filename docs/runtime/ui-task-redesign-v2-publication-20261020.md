@@ -5,7 +5,7 @@
 ## 发布范围
 
 - 当前入口：[V2设计包](../ui/sportmaster-task-redesign-v2-20261020/README.md)，含一个可独立打开的离线原型、可编辑源码、60个命名状态及67张高清PNG、逐图索引、字段迁移、交接、必要QA和文件清单。
-- 更新 [实施裁决](../design/sportmaster-task-redesign-01.md)、[UIR-00～06工作包](../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)和[精简Codex提示](../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。工业级完整实现、只做必要测试、编码前详细阅读并清理过期现行文档，以及六项可观察商业质感均已纳入。
+- 更新 [实施裁决](../design/sportmaster-task-redesign-01.md)、[UIR-00～06工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)和[精简Codex提示](../archive/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。工业级完整实现、只做必要测试、编码前详细阅读并清理过期现行文档，以及六项可观察商业质感均已纳入。
 - README、AGENTS中的当前UI入口、docs索引、UI状态、两处UI skill索引及发布摘要统一指向V2；PARAM设计与实施快照补充复用/迁移边界，保留新main的安装、心跳与发布前缀。V1仅更新仓库入口的历史标记，原设计与证据保留，不把历史图片改写为新版本。
 - 原始客户Demo HTML、截图、先前未获公开授权的源材料继续保留既有范围。本次仅发布衍生设计、干净示例转写及核对资料。
 

@@ -29,7 +29,6 @@ public sealed partial class ParcelRuntime
         if (!SessionValid) reasons.Add("操作员会话已失效，请重新登录。");
         if (failure is not null) reasons.Add("运行故障：" + failure);
         if (includePause && repository!.Paused) reasons.Add("供包已暂停，新包裹等维护人员恢复后再扫。");
-        if (CameraBusinessFenced && !debugRequest) reasons.Add("调试隔离尚未结束，请先移除测试件并确认清场。");
         if (backupInProgress || configurationSaving || !ManualPositionMaintenanceClear(position))
             reasons.Add("配置或维护操作正在进行，请等待完成。");
         if (Effective.Images is not null) reasons.Add("当前业务要求同件采图，人工输入不能代替必需图像。");

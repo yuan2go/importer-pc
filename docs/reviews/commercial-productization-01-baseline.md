@@ -1,7 +1,7 @@
 # COMMERCIAL-PRODUCTIZATION-01：源码基线与文档收敛
 
 > 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../runtime/commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。
-核对日期：2026-10-19。源码基线：[`b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5`](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)。本文服务于[商业化工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)，记录实际起点、需补齐的产品闭环和文档清理依据；本次没有实施业务代码，也没有重新执行历史测试。
+核对日期：2026-10-19。源码基线：[`b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5`](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)。本文服务于[商业化工作包](../archive/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)，记录实际起点、需补齐的产品闭环和文档清理依据；本次没有实施业务代码，也没有重新执行历史测试。
 
 阅读顺序：[当前索引](../INDEX.md) → 本文 → [产品设计](../design/commercial-productization-01.md) → [实施逻辑](../implementation/commercial-productization-01.md) → [必要验收](../runtime/validation/commercial-productization-01.md)。下一次编码必须重新读取最新 main 及并行修改，本文的固定 SHA 是可追溯起点，不授权覆盖其后的实现。
 
@@ -31,7 +31,7 @@
 |COMM-07 升级修复卸载|并排版本、原 seed 保留、配置来源 hash 固定、受保护匹配 helper、版本专属快捷方式及最后提交部署登记已实现；失败保留前次登记和原数据|补全客户可执行的预检、维护窗口、版本识别、修复/卸载入口及数据保留政策；有依据决定安装技术，不把原 ZIP/WPF 向导标为已实现 MSI 或系统级卸载|[WindowsDeploymentSetup.Install](https://github.com/yuan2go/importer-pc/blob/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5/src/Ipc.Platform/WindowsDeploymentSetup.cs)、[实施边界](../runtime/startup-deployment-02-results.md)|
 |COMM-08 备份与迁移|已有完整备份预检/恢复 UI；恢复使用原账身份、新目标目录和隔离标记；离线保存只检查 DB 副本，不改原 DB/WAL|补齐备份列表、策略/容量和可理解的恢复选择；区分原站点灾备与新站点模板，保留未决责任和请求编号归属；避免重新实现一套恢复引擎|[PlanRestoreAsync / RestoreAsync](https://github.com/yuan2go/importer-pc/blob/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5/src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs)、[恢复维护说明](../runtime/architecture-quality-closure-01.md)|
 |COMM-09 诊断帮助|启动支持摘要已包含 Application、配置 hash/revision、诊断及扩展库存，不含配置参数、报文和数据库字节|在原机制上提供分级支持包、脱敏预览、关联定位、离线帮助及版本对应 SOP；不能把当前轻量摘要夸成完整售后平台|[ExportAsync](https://github.com/yuan2go/importer-pc/blob/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5/src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs)|
-|COMM-10 品牌与批量交付|产品定义、版本组合、WPF 实物设计及固定参考包已存在|统一安装/窗口/快捷方式/关于/帮助身份；模板批量配置复用同一校验链；集中管理、许可收费、多语言/OEM按已确认产品需求触发，不无条件建设云平台|[版本与组合](../runtime/version-compatibility-01.md)、[UI 实物](../ui/ss-ui-vis-001-v1.1/README.md)、[设计工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|
+|COMM-10 品牌与批量交付|产品定义、版本组合、WPF 实物设计及固定参考包已存在|统一安装/窗口/快捷方式/关于/帮助身份；模板批量配置复用同一校验链；集中管理、许可收费、多语言/OEM按已确认产品需求触发，不无条件建设云平台|[版本与组合](../runtime/version-compatibility-01.md)、[UI 实物](../ui/ss-ui-vis-001-v1.1/README.md)、[设计工作包](../archive/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)|
 
 ### 2.1 首配与启动修复还需解决的静态风险
 

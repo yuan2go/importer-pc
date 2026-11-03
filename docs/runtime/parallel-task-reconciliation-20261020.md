@@ -27,7 +27,7 @@
 
 ## 设计、产物与验收边界
 
-详见 [编码前裁决](../design/parallel-task-reconciliation-20261020.md) 与 [本包](../work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md)。2026-10-19 [原整合报告](parallel-task-reconciliation-01.md)、全部历史审查/PDF/原失败保留。新产物与最终需求覆盖、测试、合并及计数待本轮执行逐项追加。
+详见 [编码前裁决](../design/parallel-task-reconciliation-20261020.md) 与 [本包](../archive/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md)。2026-10-19 [原整合报告](parallel-task-reconciliation-01.md)、全部历史审查/PDF/原失败保留。新产物与最终需求覆盖、测试、合并及计数待本轮执行逐项追加。
 
 
 ## 最终整合范围与要求覆盖

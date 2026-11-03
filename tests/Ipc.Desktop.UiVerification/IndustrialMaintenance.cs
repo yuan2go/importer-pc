@@ -136,6 +136,38 @@ static partial class Program
                     Check(button.ActualWidth <= window.ActualWidth - 40, "narrow window keeps action width: " + button.Content);
                 Button("修复上次回退的入口…").BringIntoView();
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "软件或配置无法打开时")).IsExpanded = true;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                var backup = (CheckBox)type.GetField("backupEnabled", flags)!.GetValue(window)!;
+                var opaqueAllowed = false; var opaqueReviews = 0; var opaqueExecutions = 0;
+                Set("ReviewOpaqueProgramRemoval", (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<DeploymentOpaqueRemovalPlan>>)((hash, skip, _, _) =>
+                {
+                    if (!skip) throw new Exception("implicit backup skip"); opaqueReviews++;
+                    return Task.FromResult(new DeploymentOpaqueRemovalPlan("synthetic-review", "sportmaster", hash, location.ReleaseRoot, location.DataRoot, location.ConfigurationDirectory,
+                        opaqueAllowed, opaqueAllowed ? "合成停机条件已核对；仅作原生交互测试。" : "原安装未提供可核验停机能力，原件保留。", [], 2));
+                }));
+                Set("ExecuteOpaqueProgramRemoval", (Func<DeploymentOpaqueRemovalPlan, IProgress<MaintenanceProgress>?, CancellationToken, Task<WindowsRemovalReceipt>>)((review, _, _) =>
+                {
+                    if (review.Identity != "synthetic-review") throw new Exception("opaque plan changed"); opaqueExecutions++;
+                    return Task.FromException<WindowsRemovalReceipt>(new InstallationOutcomeUnknownException("synthetic lost opaque removal receipt"));
+                }));
+                Check(!Button("仅移除程序，保留数据…").IsEnabled, "opaque removal disabled until explicit no-backup review");
+                await Invoke("ReviewOpaque");
+                Check(backup.IsChecked == true && opaqueReviews == 0, "normal default backup cannot silently become an opaque skip");
+                backup.IsChecked = false; backup.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                await Invoke("ReviewOpaque");
+                Check(!Button("仅移除程序，保留数据…").IsEnabled, "missing runtime fence cannot authorize opaque removal");
+                opaqueAllowed = true; await Invoke("ReviewOpaque");
+                Check(Button("仅移除程序，保留数据…").IsEnabled, "explicit no-backup and reviewed ownership enable only program removal");
+                Set("ConfirmOpaqueProgramRemoval", (Func<string, bool>)(_ => false)); await Invoke("RemoveOpaque");
+                Check(opaqueExecutions == 0, "declining opaque confirmation preserves all program files");
+                Set("ConfirmOpaqueProgramRemoval", (Func<string, bool>)(_ => true));
+                try { await Invoke("RemoveOpaque"); throw new Exception("opaque lost receipt accepted"); } catch (InstallationOutcomeUnknownException) { }
+                Check(opaqueExecutions == 1 && !Button("仅移除程序，保留数据…").IsEnabled, "opaque lost receipt cannot silently submit another program removal");
+                try { await Invoke("ReviewOpaque"); throw new Exception("opaque Unknown review accepted"); } catch (InvalidOperationException) { }
+                Check(opaqueReviews == 2, "unknown opaque result must be inspected before another review");
+                Button("仅移除程序，保留数据…").BringIntoView(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                Capture("industrial-maintenance-opaque-680.png");
             }
             var image = Path.Combine(evidence, baseline ? "industrial-maintenance-before.png" : "industrial-maintenance-after.png");
             Capture(Path.GetFileName(image));

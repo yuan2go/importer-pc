@@ -97,7 +97,8 @@ public static partial class WindowsDeploymentSetup
             throw new InvalidDataException("原卸载记录不可信");
         var plan = Wire.Decode<RemovalState>(File.ReadAllText(file)); ValidateRemovalState(plan, location);
         return ObserveRemoval(new(plan.Status == "Prepared" ? "RetiredCleanupPending" : plan.Status, file,
-            [location.DataRoot, location.ConfigurationDirectory], plan.RestartRequired, plan.Remaining ?? [], location.ReleaseRoot), plan.Files);
+            [location.DataRoot, location.ConfigurationDirectory], plan.RestartRequired, plan.Remaining ?? [], location.ReleaseRoot) {
+                WithoutBusinessInspection = plan.WithoutBusinessInspection }, plan.Files);
     }
     // The journal records the original action; disk observations must never rewrite it.
     // Enumerate without following links and with a fixed budget, including unlisted

@@ -6,13 +6,17 @@ using Microsoft.Win32;
 
 namespace Ipc.Platform;
 
-public sealed record WindowsRemovalReceipt(string Status, string OperationFile, string[] Retained, bool RestartRequired, string[]? RemainingFiles = null, string? ReleaseRoot = null);
+public sealed record WindowsRemovalReceipt(string Status, string OperationFile, string[] Retained, bool RestartRequired, string[]? RemainingFiles = null, string? ReleaseRoot = null)
+{
+    public bool WithoutBusinessInspection { get; init; }
+}
 public static partial class WindowsDeploymentSetup
 {
     sealed record RemovalState(string Status, DeploymentLocation Location, string[] Files, string[]? Remaining = null, bool RestartRequired = false)
     {
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
         public string[]? SystemEntries { get; init; }
+        public bool WithoutBusinessInspection { get; init; }
     }
     static HashSet<string> RemovedRollbackOperations(string application)
     {
@@ -119,7 +123,7 @@ public static partial class WindowsDeploymentSetup
         => Remove(application,expectedHash,requireResponsibilitiesAndBackup,removeShortcuts,originalMediaFiles,null);
     [SupportedOSPlatform("windows")]
     public static WindowsRemovalReceipt Remove(string application,string expectedHash,Action<DeploymentLocation> requireResponsibilitiesAndBackup,
-        Action<DeploymentLocation> removeShortcuts,string[]? originalMediaFiles,MaintenanceExecution? execution)
+        Action<DeploymentLocation> removeShortcuts,string[]? originalMediaFiles,MaintenanceExecution? execution, bool withoutBusinessInspection = false)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
@@ -138,7 +142,8 @@ public static partial class WindowsDeploymentSetup
                 DeploymentMedia.Inspect(location.ReleaseRoot, application).Files.Keys.ToArray();
             requireResponsibilitiesAndBackup(location); // Caller holds application-owner until return.
             plan = new("Prepared", location, files.Append("deployment-location.json").Append("deployment-retired.json").ToArray())
-                { SystemEntries = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).SystemEntries : null };
+                { SystemEntries = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).SystemEntries : null,
+                    WithoutBusinessInspection = withoutBusinessInspection };
             WriteProtected(operation, plan, sid);
         }
         else
@@ -163,7 +168,8 @@ public static partial class WindowsDeploymentSetup
         WriteProtected(operation, plan with { Status = status, Remaining = cleanup.Remaining, RestartRequired = cleanup.RestartRequired }, sid);
         var dumpDirectory = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).DumpFolder : null;
         return new(status, operation, [location.DataRoot, location.ConfigurationDirectory,
-            .. dumpDirectory is not null && Directory.Exists(dumpDirectory) ? new[] { dumpDirectory } : Array.Empty<string>()], cleanup.RestartRequired, cleanup.Remaining, location.ReleaseRoot);
+            .. dumpDirectory is not null && Directory.Exists(dumpDirectory) ? new[] { dumpDirectory } : Array.Empty<string>()], cleanup.RestartRequired, cleanup.Remaining, location.ReleaseRoot) {
+                WithoutBusinessInspection = plan.WithoutBusinessInspection };
     }
     internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete)
     {

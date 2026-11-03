@@ -14,16 +14,19 @@ static class IndustrialRollback
         { try { action(); } catch (T) { Check(true, message); return; } throw new Exception("Expected " + typeof(T).Name + ": " + message); }
         var files = new Dictionary<string, string> { ["Ipc.Own.dll"] = new string('a', 64), ["native/vendor.dll"] = new string('b', 64) };
         var release = new ApplicationRelease(2, "sportmaster", new string('a', 40), [], [], files, "1.2.0", CompatibilitySha256: new string('c', 64));
-        var compatibility = new DeploymentRuntimeCompatibility(1, 12, 3, 2, 3, 1, 1, "1.0.0", release.CompatibilitySha256!, DeploymentRuntimeCompatibility.DependencyHash(files));
+        var compatibility = new DeploymentRuntimeCompatibility(1, 12, 3, 2, 3, 1, 2, "1.0.0", release.CompatibilitySha256!, DeploymentRuntimeCompatibility.DependencyHash(files));
         compatibility.Validate(release);
         Check(DeploymentRuntimeCompatibility.DependencyHash(files) == Wire.Hash("native/vendor.dll\t" + new string('B', 64)), "dependency identity excludes own source-varying binaries but binds actual SDK bytes");
         Check(DeploymentRuntimeCompatibility.Incompatibility(compatibility, compatibility) is null, "identical current readers/protocols allow program-only rollback");
         foreach (var incompatible in new[] { compatibility with { DataFormat = 11 }, compatibility with { ConfigurationSchema = 2 },
             compatibility with { CredentialSchema = 1 }, compatibility with { ManagementProtocol = 2 }, compatibility with { RecoverySecurityEpoch = 0 },
-            compatibility with { LifecycleProtocol = 0 }, compatibility with { ApplicationContractVersion = "2.0.0" },
+            compatibility with { LifecycleProtocol = 1 }, compatibility with { ApplicationContractVersion = "2.0.0" },
             compatibility with { ProviderPolicySha256 = new string('d', 64) }, compatibility with { DependencyInventorySha256 = new string('e', 64) } })
             Check(DeploymentRuntimeCompatibility.Incompatibility(compatibility, incompatible) is not null, "different reader/security/provider/SDK dimension rejected: " + Wire.Hash(Wire.Encode(incompatible))[..8]);
         Reject<InvalidDataException>(() => (compatibility with { DependencyInventorySha256 = new string('e', 64) }).Validate(release), "compatibility metadata cannot contradict inventory");
+        var oversized = Path.Combine(root, "oversized-compatibility-release"); Directory.CreateDirectory(oversized);
+        using (var file = File.Create(Path.Combine(oversized, "application-release.json"))) file.SetLength(4 * 1024 * 1024 + 1);
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.RuntimeCompatibility(oversized), "oversized cached release refused before decoding or hashing further metadata");
 
         foreach (var cut in new[] { "before-commit", "projection", "receipt", "success" })
         {

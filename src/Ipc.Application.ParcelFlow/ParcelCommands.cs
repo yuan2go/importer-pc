@@ -393,7 +393,7 @@ public sealed partial class ParcelRuntime
             foreach (var lane in ingressLanes.Values) lane.Dispose();
             ReleaseStationReports();
             repository?.CloseStationShift(stationStartupCompleted && stopFailure is null);
-            repository?.Dispose(); lease?.Dispose(); stopping.Dispose(); disposed = true;
+            repository?.Dispose(); lease?.Dispose(); rootOwnership?.Dispose(); stopping.Dispose(); disposed = true;
         }
         finally { gate.Release(); }
         if (stopFailure is not null) throw new InvalidOperationException("Application resources released after terminal worker failure", stopFailure);

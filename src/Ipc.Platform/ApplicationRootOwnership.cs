@@ -1,0 +1,37 @@
+using System.Runtime.Versioning;
+
+namespace Ipc.Platform;
+
+// Complements per-station/database and device leases. The shared key fences new
+// runtime startup before any seed/DB reads, including an unreadable station seed.
+public static class ApplicationRootOwnership
+{
+    public static string Resource(string application, string dataRoot)
+    {
+        if (!ExtensionSchema.IsId(application) || !Path.IsPathFullyQualified(dataRoot) || dataRoot.StartsWith(@"\\", StringComparison.Ordinal) ||
+            Path.GetFullPath(dataRoot).TrimEnd(Path.DirectorySeparatorChar) == Path.GetPathRoot(dataRoot)?.TrimEnd(Path.DirectorySeparatorChar) ||
+            OperatingSystem.IsWindows() && !Path.GetPathRoot(dataRoot)!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("应用根所有权身份无效。");
+        DeploymentPaths.RequireOrdinaryAncestors(dataRoot);
+        var path = Path.GetFullPath(dataRoot).TrimEnd(Path.DirectorySeparatorChar);
+        if (OperatingSystem.IsWindows()) path = path.ToUpperInvariant();
+        return "application-root:" + application + ":" + Wire.Hash(path);
+    }
+
+    public static IDisposable AcquireRuntime(string application, string dataRoot)
+        => AcquireAt(MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(dataRoot, ".runtime-ownership")), application, dataRoot);
+
+    [SupportedOSPlatform("windows")]
+    public static IDisposable AcquireMaintenance(string application, string dataRoot)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        return AcquireAt(MachineRuntimePolicy.InstallerLeaseRoot(""), application, dataRoot);
+    }
+
+    internal static IDisposable AcquireAt(string leaseRoot, string application, string dataRoot)
+    {
+        if (OperatingSystem.IsWindows() && !Path.GetPathRoot(Path.GetFullPath(leaseRoot))!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("应用停机所有权须使用管理员批准的D盘机器租约根。");
+        return new ResourceLease(leaseRoot, ["application-lifetime:" + application, Resource(application, dataRoot)]);
+    }
+}

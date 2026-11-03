@@ -24,3 +24,9 @@ tests/Ipc.Application.Verification/IndustrialVersionPruning.cs
 src/Ipc.Assembly/ParcelStartupServices.VersionTransport.cs
 tests/Ipc.Core.Tests/MaintenanceVersionBoundary.cs
 src/Ipc.Assembly/ParcelStartupServices.MaintenanceFrames.cs
+src/Ipc.Platform/ApplicationRootOwnership.cs
+src/Ipc.Platform/OpaqueRemovalOwnership.cs
+src/Ipc.Platform/DeploymentOpaqueRemoval.cs
+src/Ipc.Assembly/ParcelStartupServices.OpaqueRemoval.cs
+src/Ipc.Desktop/ProductMaintenanceWindow.OpaqueRemoval.cs
+tests/Ipc.Application.Verification/IndustrialOpaqueRemoval.cs

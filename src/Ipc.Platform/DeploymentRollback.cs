@@ -19,9 +19,12 @@ public static partial class WindowsDeploymentSetup
         return Path.Combine(MachineRoot, "deployments", application + ".rollback-" + operation + ".json");
     }
 
-    static (ApplicationRelease Release, DeploymentRuntimeCompatibility Compatibility) RuntimeCompatibility(string directory)
+    internal static (ApplicationRelease Release, DeploymentRuntimeCompatibility Compatibility) RuntimeCompatibility(string directory)
     {
-        var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(directory, "application-release.json")));
+        var releaseFile = Path.Combine(directory, "application-release.json");
+        DeploymentPaths.RequireOrdinaryAncestors(releaseFile);
+        if (new FileInfo(releaseFile).Length > 4 * 1024 * 1024) throw new InvalidDataException("版本声明超出读取预算。");
+        var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(releaseFile));
         RecoverySecurityPolicy.RequireRelease(directory);
         if (!release.Files.TryGetValue(DeploymentRuntimeCompatibility.FileName, out var hash))
             throw new InvalidDataException("此版本没有可核验的回退兼容声明。");

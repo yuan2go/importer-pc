@@ -15,6 +15,8 @@ public sealed class MaintenanceVersionBoundary
     [DataRow("ReviewVersionPruning")]
     [DataRow("PruneVersions")]
     [DataRow("ResumeVersionPruning")]
+    [DataRow("ReviewOpaqueRemoval")]
+    [DataRow("OpaqueUninstall")]
     public void NewVersionActionRequiresBegin(string action)
         => Assert.IsTrue(ParcelStartupServices.CancellableMaintenance(action), "The real helper dispatch must allocate MaintenanceExecution and await Begin: " + action);
 

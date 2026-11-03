@@ -32,7 +32,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
     {
         WorkflowHeading.Text = "修复与卸载";
         Body.Children.Add(backupEnabled);
-        backupEnabled.Click += (_, _) => { plan = null; };
+        backupEnabled.Click += (_, _) => { plan = null; InvalidateOpaqueRemoval(); };
         var personal = WindowsStoragePaths.UserRoot;
         var defaultBackup = Path.GetPathRoot(personal)?.Equals(@"D:\", StringComparison.OrdinalIgnoreCase) == true ? Path.Combine(personal, "backups") : @"D:\ProgramData\ImporterPc\backups";
         backupDirectory = Folder("完整备份目录（卸载会保留业务数据、配置和设备身份）", defaultBackup);
@@ -41,6 +41,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
             plan = null; backupFile = "";
             InvalidateRollbackReview();
             InvalidatePruningReview();
+            InvalidateOpaqueRemoval();
             if (!removalCompleted) Message("备份目录已更改，请重新点击“读取安装信息”。");
         };
         Note("此窗口不会启动供包或设备。修复程序需要使用完整的原安装包；开始菜单和快捷方式可直接修复。卸载不会删除共享驱动和业务数据。");
@@ -63,8 +64,12 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
                 (progress,token)=>ParcelStartupServices.RemoveAsync(registrationHash,plan.Identity,backupFile,progress,token));
             ShowRemovalResult(receipt);
         });
-        AddRollbackSection();
-        AddVersionPruningSection();
+        if (ParcelStartupServices.ApplicationId == "sportmaster")
+        {
+            AddRollbackSection();
+            AddVersionPruningSection();
+            AddOpaqueRemovalSection();
+        }
         CloseAction();
         Loaded += async (_, _) => { if (AutomaticRead) await Run(Read); };
     }
@@ -118,6 +123,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
             _ => "卸载结果尚未完全确认，请保留卸载记录。"
         };
         Message(message);
+        if (receipt.WithoutBusinessInspection) Note("本次未读取作业账、未创建完整备份。全部配置与数据保留，未完成或结果未确认的请求仍须核对。");
         var details = new TextBox { Text = "正常保留：" + string.Join("；", receipt.Retained) + "\n卸载结果：" + receipt.OperationFile + "\n程序目录：" + receipt.ReleaseRoot + "\n剩余文件/目录：\n" + string.Join("\n", receipt.RemainingFiles ?? []), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 220 };
         Body.Children.Add(new Expander { Header = "卸载记录与剩余文件详情", Content = details });
         Note("业务数据、设备身份和共享驱动保留。可按原安装库存继续清理，无需原安装包。");

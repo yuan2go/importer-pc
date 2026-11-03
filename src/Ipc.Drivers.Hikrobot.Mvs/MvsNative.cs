@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using Ipc.Platform;
 
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
@@ -59,6 +60,14 @@ internal static class MvsNative
         // stream. It permits advancing to close/destroy, NOT releasing ownership.
         // DestroyHandle and Finalize must still succeed before the lease is freed.
         if (result == unchecked((int)0x80000003) && stage is "StopGrabbing" or "CloseDevice") return;
+        // Vendor MvErrorDefine.h: MV_E_NETER and UDP send/receive/connect/reset.
+        // A failed transport transition retains the original handle and lease.
+        // The owner may retry this same step, but must not advance to Start or
+        // report cleanup complete. Destroy/Finalize errors are never downgraded.
+        if ((stage is "StopGrabbing" or "CloseDevice") &&
+            unchecked((uint)result) is 0x80000206 or 0x80000213 or 0x80000214 or 0x80000215 or 0x80000216)
+            throw new ObservationCleanupPendingException("MVS " + stage + " 网络异常，保留原连接并等待自动重试清理。",
+                new IOException("MVS " + stage + " failed: 0x" + unchecked((uint)result).ToString("X8")));
         Check(result, stage);
     }
 }

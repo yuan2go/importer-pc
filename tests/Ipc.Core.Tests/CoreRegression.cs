@@ -20,6 +20,8 @@ public sealed class CoreRegression
     [DataRow("--station-single-camera", 65)]
     [DataRow("--same-placement-29", 17)]
     [DataRow("--live-devices-30", 21)]
+    [DataRow("--mvs-network-reconnect", 22)]
+    [DataRow("--mvs-offline-activation", 13)]
     [DataRow("--update-notice-07", 14)]
     [DataRow("--installation-receipts-04", 9)]
     [DataRow("--first-configuration-03", 12)]

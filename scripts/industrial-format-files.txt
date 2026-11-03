@@ -34,3 +34,6 @@ src/Ipc.Platform/DeploymentRemovalJournal.cs
 src/Ipc.Platform/WindowsDeploymentMaintenance.cs
 src/Ipc.Desktop/ProductMaintenanceWindow.cs
 src/Ipc.Desktop/StartupWorkflowWindow.Maintenance.cs
+src/Ipc.Platform/DeploymentQuietJournal.cs
+src/Ipc.Assembly/ParcelStartupServices.Quiet.cs
+tests/Ipc.Application.Verification/IndustrialQuietDeployment.cs

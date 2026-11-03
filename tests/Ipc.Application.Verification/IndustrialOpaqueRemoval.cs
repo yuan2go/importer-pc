@@ -24,6 +24,12 @@ static class IndustrialOpaqueRemoval
         {
             Reject<InvalidDataException>(() => ApplicationRootOwnership.Resource("sportmaster", @"C:\synthetic-not-created"), "Windows data scope cannot silently fall back to C drive");
             Reject<InvalidDataException>(() => { using var denied = ApplicationRootOwnership.AcquireAt(@"C:\synthetic-not-created", "sportmaster", data); }, "Windows global lease cannot be created on C drive");
+            ApplicationRootOwnership.RequireDPaths([data, leaseRoot]); Check(true, "D-only preflight accepts bounded ordinary roots without creating directories");
+            Reject<InvalidDataException>(() => ApplicationRootOwnership.RequireDPaths([data, @"C:\synthetic-machine-root"]), "C machine policy root rejected before setup effects");
+            Reject<InvalidDataException>(() => ApplicationRootOwnership.RequireDPaths([@"C:\synthetic-program-root", data]), "C program root rejected before setup effects");
+            Reject<InvalidDataException>(() => ApplicationRootOwnership.RequireDPaths([@"\\server\share\root"]), "UNC policy root rejected before setup effects");
+            Reject<InvalidDataException>(() => ApplicationRootOwnership.RequireDPaths([@"D:\"]), "volume root rejected as deployment storage");
+            Reject<InvalidDataException>(() => ApplicationRootOwnership.RequireDPaths(["relative"]), "relative policy root rejected before setup effects");
         }
         using (var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", data, default))
         {

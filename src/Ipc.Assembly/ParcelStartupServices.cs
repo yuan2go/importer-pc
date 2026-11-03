@@ -340,6 +340,7 @@ public static partial class ParcelStartupServices
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var install = request.Deployment ?? throw new InvalidDataException("Missing deployment");
                 if (install.ApplicationId != ParcelAssembly.Definition().Id) throw new InvalidDataException("Helper belongs to another Application");
+                if (ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(install.DataRoot, install.ProgramRoot);
                 RequireMatchingMedia(install,execution?.Token??default);
                 _ = DeploymentComponentReviewing.Inspect(install,execution?.Token??default);
                 ValidateSeed(install); // Validate bounded source/identity and ordinary paths before creating even an owner lease.

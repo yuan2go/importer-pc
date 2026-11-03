@@ -108,6 +108,7 @@ public static partial class WindowsDeploymentSetup
         execution?.Checkpoint();execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         RequireCurrentInstallationRequest(request);
+        if (request.ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(request.DataRoot, request.ProgramRoot);
         request.Recovery?.Validate();
         var media = DeploymentMedia.Inspect(request.MediaRoot,request.ApplicationId,execution?.Token??CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");

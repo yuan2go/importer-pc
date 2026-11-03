@@ -23,7 +23,7 @@ public static partial class WindowsDeploymentSetup
             if (!files.TryGetProperty(area + "/application-release.json", out var expected) || expected.GetString() != Wire.FileHash(releaseFile))
                 throw new InvalidDataException("维护缓存的停机能力声明不能由原库存证明。");
             var compatibility = RuntimeCompatibility(Path.Combine(cache, area));
-            if (compatibility.Release.SourceCommit != location.SourceCommit || compatibility.Compatibility.LifecycleProtocol < 3)
+            if (compatibility.Release.SourceCommit != location.SourceCommit || compatibility.Compatibility.LifecycleProtocol < 4)
                 throw new InvalidDataException("原安装未提供可核验的全应用停机能力，请先核对同源程序。");
         }
         _ = InstalledInventory(location);

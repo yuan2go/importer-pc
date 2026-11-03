@@ -6,6 +6,24 @@ namespace Ipc.Platform;
 // runtime startup before any seed/DB reads, including an unreadable station seed.
 public static class ApplicationRootOwnership
 {
+    [SupportedOSPlatform("windows")]
+    public static void RequireWindowsStorage(string dataRoot, string? programRoot = null)
+    {
+        RequireDPaths([dataRoot, WindowsStoragePaths.MachineRoot, WindowsStoragePaths.AdministratorRoot,
+            programRoot ?? WindowsStoragePaths.ProgramRoot("ImporterPc")]);
+    }
+
+    internal static void RequireDPaths(IEnumerable<string> paths)
+    {
+        foreach (var path in paths)
+        {
+            if (!Path.IsPathFullyQualified(path) || !Path.GetPathRoot(path)!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase) ||
+                Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar) == Path.GetPathRoot(path)!.TrimEnd(Path.DirectorySeparatorChar))
+                throw new InvalidDataException(@"SM安装与维护须使用D盘的程序、数据及受保护存储根；请由Windows管理员核对HKLM\SOFTWARE\ImporterPc\Storage，不能静默使用C盘。");
+            DeploymentPaths.RequireOrdinaryAncestors(path);
+        }
+    }
+
     public static string Resource(string application, string dataRoot)
     {
         if (!ExtensionSchema.IsId(application) || !Path.IsPathFullyQualified(dataRoot) || dataRoot.StartsWith(@"\\", StringComparison.Ordinal) ||

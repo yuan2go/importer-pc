@@ -21,11 +21,13 @@
 静默参数为候选功能，必须在已提权的部署上下文执行；不弹产品窗口、不自动启动设备、不自动重启。示例路径需由实施人员检查权限和归属：
 
 ```text
-Ipc.Installer.exe /quiet /norestart /log="D:\deploy\station-01.json" /dataRoot="D:\ProgramData\ImporterPc\data"
-Ipc.Installer.exe /quiet /repair /norestart /log="D:\deploy\repair-01.json"
+Ipc.Installer.exe /quiet /norestart /log="D:\deploy\station-01.json" /dataRoot="D:\ProgramData\ImporterPc\data" /operationId=<本工单的32位GUID>
+Ipc.Installer.exe /quiet /repair /norestart /log="D:\deploy\repair-01.json" /operationId=<另一工单的32位GUID>
 ```
 
-日志只写新文件，不能覆盖上次记录。高级逐站计划仍使用原`--deployment-plan`协议及其原退出码；不能与简化EXE退出码混用。静默安装/真实系统往返尚未完成隔离VM验收。
+首次日志只写新文件，不覆盖已有文件。自动化为同一工单保存同一个非空32位GUID；重放时须保留原参数、日志位置和同字节介质。重放只核对原事务，明确已完成且当前登记一致才返回原成功码；不会重新安装、备份或覆盖原日志。日志缺失/被外部改动另行标记，不把它当成部署权威。Unknown/进行中保持1627，不能换ID绕过；未提交的准备物和备份保留。
+
+全部SM程序、数据和机器政策根须使用管理员批准的D盘位置；未配置受保护D盘存储根时在机器变更前拒绝，不落到C盘。已有存储位置的迁移仍须独立核对，不自动修改HKLM或放宽ACL。高级逐站计划仍使用原`--deployment-plan`协议及其原退出码；不能与简化EXE退出码混用。静默安装/真实系统往返尚未完成隔离VM验收。
 
 ## 首配与日常设置
 
@@ -59,7 +61,7 @@ Ipc.Installer.exe /quiet /repair /norestart /log="D:\deploy\repair-01.json"
 
 ### 配置或软件无法打开时，仅移除程序
 
-此方式只适用于具备当前生命周期协议3、受保护维护缓存和应用停机围栏的新SM安装。旧安装无法证明停机和原操作恢复能力时拒绝执行，不把未查到进程当作安全证明。
+此方式只适用于具备当前生命周期协议4、受保护维护缓存和应用停机围栏的新SM安装。旧安装无法证明停机和原操作恢复能力时拒绝执行，不把未查到进程当作安全证明。
 
 1. 完全关闭本应用的所有窗口和运行实例，从Windows应用列表打开维护。
 2. 明确取消“卸载前创建完整备份”，展开“软件或配置无法打开时”。此方式不会创建完整备份；如仍可正常备份，应优先使用普通卸载。

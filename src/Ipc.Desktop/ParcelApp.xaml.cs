@@ -84,8 +84,10 @@ public partial class App : System.Windows.Application
                 var classification = await Task.Run(() => ParcelStartupServices.Maintenance(selected.Business).ClassifyAsync());
                 var route = DesktopLaunchOptions.StartupRoute(classification);
                 if (route != DesktopStartupRoute.Runtime) { await Repair(initialConfiguration: route == DesktopStartupRoute.FirstConfiguration); return; }
-                startup.AfterInstallation(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected());
-                startup.Show(); return;
+                // A complete existing configuration starts directly: starting only connects cameras
+                // and RCS; no chute request exists until a parcel is placed or keyed in.
+                startup.Show(); await Dispatcher.Yield(DispatcherPriority.Background);
+                await StartSelected(); return;
             }
             startup.Show(); await Dispatcher.Yield(DispatcherPriority.Background);
             await StartSelected();
@@ -191,13 +193,14 @@ public partial class App : System.Windows.Application
         if (repair.RetryRequested) { selected = selected with { Business = repair.SelectedLaunch }; await StartSelected(firstConfigurationReviewed: initialConfiguration); }
         else if (initialConfiguration)
         {
-            startup.Show(); MainWindow = startup;
+            // Saved first configuration opens the station ("保存并打开作业"); closing it unsaved
+            // (draft kept or discarded) exits, and the next launch reopens first configuration.
             if (repair.ConfigurationSaved)
             {
                 selected = selected with { Business = repair.SelectedLaunch };
-                startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected(firstConfigurationReviewed: true));
+                await StartSelected(firstConfigurationReviewed: true);
             }
-            else startup.ConfigurationPaused(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => Repair(initialConfiguration: true), repair.IncompleteSummary);
+            else { startup.AllowClose = true; Shutdown(); }
         }
         else
         {
@@ -230,7 +233,7 @@ public partial class App : System.Windows.Application
             selected = selected with { Business = center.SelectedLaunch };
             MainWindow = startup;
             if (center.RetryRequested) await StartSelected();
-            else { startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show(); }
+            else { startup.AfterMaintenance(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show(); }
         }));
         return Task.CompletedTask;
     }
@@ -242,7 +245,7 @@ public partial class App : System.Windows.Application
         {
             var service = (IStartupRetentionMaintenance)ParcelStartupServices.Maintenance(selected!.Business);
             new HistoryRetentionWindow(service, ParcelStartupServices.ManagementMode(selected.Business)).ShowDialog();
-            startup.AfterConfiguration(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show();
+            startup.AfterMaintenance(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show();
         }));
         return Task.CompletedTask;
     }
@@ -278,8 +281,8 @@ public partial class App : System.Windows.Application
 // describe completed calls, never guessed device health or simulated percentages.
 sealed class ParcelStartupWindow : Window
 {
-    readonly TextBlock title = new() { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, Text = "正在启动客户端" };
-    readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = "校验启动参数，尚未创建业务或设备会话。" };
+    readonly TextBlock title = new() { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, Text = "正在启动供包台" };
+    readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = "正在准备启动，请稍候。" };
     readonly TextBox diagnostic = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 120 };
     readonly WrapPanel actions = new();
     readonly List<string> completed = [];
@@ -287,7 +290,7 @@ sealed class ParcelStartupWindow : Window
     public ParcelStartupWindow()
     {
         Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this);
-        Title = "启动与恢复 · 菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
+        Title = "菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
         Ipc.Application.ParcelFlow.Desktop.StartupAppearance.FitToWorkArea(this);
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         var grid = new Grid { Margin = new Thickness(24) };
@@ -304,47 +307,34 @@ sealed class ParcelStartupWindow : Window
         diagnostic.Text = string.Join("\n", completed);
     }
     public void BeginAttempt() { actions.Children.Clear(); completed.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520; }
-    public void ConfigurationPaused(Func<Task> close, Func<Task> resume, string? incomplete = null)
+    // After offline maintenance or history cleanup the station stays stopped until asked to start;
+    // this is the only start/exit choice. Normal launches, installs and first configuration start directly.
+    public void AfterMaintenance(Func<Task> close, Func<Task> start)
     {
-        title.Text = "供包台尚未完成配置";
-        detail.Text = "完成配置后即可尝试启动。已保存的内容会保留；未连接设备。\n\n" + incomplete;
-        diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = incomplete is null ? 280 : 460; MinHeight = 260;
-        Add("继续配置", resume); Add("退出", close);
-        void Add(string label, Func<Task> run)
+        title.Text = "维护已结束 · 供包台未启动";
+        detail.Text = "点击“启动供包台”后连接相机和 RCS；也可以直接退出。";
+        diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = 280; MinHeight = 260;
+        foreach (var (label, run) in new[] { ("启动供包台", start), ("退出", close) })
         {
             var button = new Button { Content = label, MinHeight = 44, Margin = new(0, 8, 12, 0) };
             button.Click += async (_, _) =>
             {
                 actions.IsEnabled = false;
                 try { await run(); }
-                catch (Exception error) { await FailedResume(error); }
+                catch (Exception error)
+                {
+                    diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
+                    detail.Text = "操作没有完成，请查看下方诊断后重试。"; diagnostic.Text = error.ToString();
+                }
                 finally { actions.IsEnabled = true; }
             };
             actions.Children.Add(button);
         }
-        Task FailedResume(Exception error)
-        {
-            diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
-            detail.Text = "无法继续配置，请查看诊断后重试。"; diagnostic.Text = error.ToString(); return Task.CompletedTask;
-        }
-    }
-    public void AfterInstallation(Func<Task> close, Func<Task> start)
-    {
-        ConfigurationPaused(close, start);
-        title.Text = "供包台已打开";
-        detail.Text = "已识别现有配置。点击启动后才检查并连接设备与服务；安装完成不代表设备已可运行。";
-        ((Button)actions.Children[0]).Content = "启动供包台";
-    }
-    public void AfterConfiguration(Func<Task> close, Func<Task> start)
-    {
-        AfterInstallation(close, start);
-        title.Text = "配置已保存 · 尚未启动";
-        detail.Text = "点击启动后才检查并连接设备与服务。保存配置不代表设备已可运行。";
     }
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {
         actions.Children.Clear(); diagnostic.Visibility = Visibility.Visible; MinHeight = 360; Height = 520;
-        title.Text = "客户端已打开 · 业务尚未就绪"; detail.Text = "可修改参数、查看诊断，尚未开始作业。如果停止失败，可再次点击停止。";
+        title.Text = "供包台没有启动成功"; detail.Text = "原因见下方。可以重试启动，或修改参数、进入离线维护；需要支持时复制诊断交给维护人员。尚未开始作业。";
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
         var copy = new Button { Content = "复制诊断", MinHeight = 44 };
         copy.Click += (_, _) => { try { Clipboard.SetText(diagnostic.Text); } catch (Exception error) { detail.Text = "复制失败，可选择诊断文本复制：" + error.Message; } };

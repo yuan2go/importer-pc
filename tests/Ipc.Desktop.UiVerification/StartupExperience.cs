@@ -148,12 +148,14 @@ static partial class Program
             Check(modalResult == true && modalFailure is null && succeeded?.Saves == 1 && !Retry(success) && (bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!, "one reviewed save is read back then completes configuration without starting runtime; receipt lost=" + receiptLost + "; result=" + modalResult + "; failure=" + modalFailure + "; saved=" + type.GetProperty("ConfigurationSaved")!.GetValue(success));
         }
         var pendingType = assembly.GetType("Ipc.Desktop.ParcelStartupWindow", true)!;
+        Check(new[] { "ConfigurationPaused", "AfterInstallation", "AfterConfiguration" }.All(name => pendingType.GetMethod(name) is null),
+            "launch, install and first configuration have no extra start gate; incomplete configuration opens first configuration directly");
         var pending = (Window)Activator.CreateInstance(pendingType)!;
-        pendingType.GetMethod("ConfigurationPaused")!.Invoke(pending, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => Task.CompletedTask), null]);
+        pendingType.GetMethod("AfterMaintenance")!.Invoke(pending, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => Task.CompletedTask)]);
         pending.Show(); pending.UpdateLayout();
-        Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "继续配置", "退出" }), "incomplete configuration shows a direct continuation instead of generic failure actions");
-        Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible), "incomplete setup has no large empty diagnostic box");
-        Capture("configuration-paused", pending); pendingType.GetProperty("AllowClose")!.SetValue(pending, true); pending.Close();
+        Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "启动供包台", "退出" }), "after offline maintenance the only choice is to start or exit");
+        Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible), "the post-maintenance choice has no large empty diagnostic box");
+        Capture("after-maintenance", pending); pendingType.GetProperty("AllowClose")!.SetValue(pending, true); pending.Close();
         var installerType = assembly.GetType("Ipc.Desktop.StartupSetupWindow", true)!;
         var businessVersion = BusinessCompatibility.VersionOf(typeof(Ipc.Application.Sportmaster.SportmasterFlow).Assembly);
         var installer = (Window)Activator.CreateInstance(installerType, [launch, null, businessVersion])!;

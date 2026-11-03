@@ -349,13 +349,11 @@ static partial class Program
         Check(ReferenceEquals(sameModel, editor.Model) && editor.Model.Policy.QueueCapacity == "77" && editor.IsVisible, "reauthorization restores the same process-only unsaved candidate");
         first.Close();
         var readyType = assembly.GetType("Ipc.Desktop.ParcelStartupWindow", true)!; var ready = (Window)Activator.CreateInstance(readyType)!;
-        var started = false; readyType.GetMethod("AfterInstallation")!.Invoke(ready, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => { started = true; return Task.CompletedTask; })]); ready.Show();
-        Check(!started && Descendants(ready).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "启动供包台")), "post-install entry waits for an explicit startup action without creating runtime or device ports");
-        Capture("after-install-start-gate", ready);
-        readyType.GetMethod("AfterConfiguration")!.Invoke(ready, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => { started = true; return Task.CompletedTask; })]); ready.UpdateLayout();
-        Check(!started && Text(ready).Contains("配置已保存 · 尚未启动"), "completing configuration also waits for a separate explicit startup action");
-        Capture("after-configuration-start-gate", ready);
-        Click(ready, "启动供包台"); await Task.Delay(50); Check(started, "explicit post-configuration start calls the supplied real startup contract");
+        Check(readyType.GetMethod("AfterInstallation") is null && readyType.GetMethod("AfterConfiguration") is null, "install and first configuration start the station directly, without a start gate");
+        var started = false; readyType.GetMethod("AfterMaintenance")!.Invoke(ready, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => { started = true; return Task.CompletedTask; })]); ready.Show();
+        Check(!started && Text(ready).Contains("维护已结束"), "after offline maintenance the station waits for an explicit start");
+        Capture("after-maintenance-start", ready);
+        Click(ready, "启动供包台"); await Task.Delay(50); Check(started, "the start button calls the supplied real startup contract");
         readyType.GetProperty("AllowClose")!.SetValue(ready, true); ready.Close();
         lines.Add("Native WPF HWND/Dispatcher and real local authorization; synthetic installation contract only. Actual Windows display DPI=" + VisualTreeHelper.GetDpi(dialog).DpiScaleX + "; logical workspace matrix is not an OS DPI change. UAC/full installation transaction, target IPC/keyboard hardware and devices NOT_RUN.");
 

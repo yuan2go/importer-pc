@@ -161,11 +161,35 @@ internal sealed partial class SoftwareDecoder
         // Matrix codes have a genuine 2-D polygon. Linear results may be only a scan line.
         if (!IsLinear(a.Format) || !IsLinear(b.Format))
             return across < Math.Min(aHeight, bHeight) * .25 && Math.Abs(a0.X - b0.X) + Math.Abs(a0.Y - b0.Y) < Math.Min(size, bsize) * .3;
+        // Different searches can see a short thick portion and the full height of
+        // the same oblique label. Their centre lines need not contain each other.
+        // Require near-complete containment in the actual source quadrilateral,
+        // in addition to the aligned full encoded extent above. A quiet gap or
+        // a separate same-text label does not satisfy this spatial identity.
+        static bool ContainsPrintedBand(ImagePoint[] outer, ImagePoint[] inner)
+        {
+            var inside = 0;
+            for (var row = 0; row < 5; row++)
+            {
+                var down = (row + .5) / 5;
+                var lx = inner[0].X + (inner[3].X - inner[0].X) * down;
+                var ly = inner[0].Y + (inner[3].Y - inner[0].Y) * down;
+                var rx = inner[1].X + (inner[2].X - inner[1].X) * down;
+                var ry = inner[1].Y + (inner[2].Y - inner[1].Y) * down;
+                for (var column = 0; column < 17; column++)
+                {
+                    var along = (column + .5) / 17;
+                    if (InPolygon(outer, lx + (rx - lx) * along, ly + (ry - ly) * along)) inside++;
+                }
+            }
+            return inside >= 80;
+        }
+        var nested = (aContains || bContains) && (ContainsPrintedBand(a.Corners, b.Corners) || ContainsPrintedBand(b.Corners, a.Corners));
         if (across > Math.Min(512, size * .6)) return false;
         var steps = Math.Max(1, (int)Math.Ceiling(across));
         SpendPatternSamples((steps + 1) * 128);
         const int samples = 128;
-        Span<double> reference = stackalloc double[samples];
+        Span<double> reference = stackalloc double[samples]; Span<double> nextLine = stackalloc double[samples];
         for (var i = 0; i < samples; i++)
         {
             var t = lo + (hi - lo) * (i + .5) / samples;
@@ -187,11 +211,16 @@ internal sealed partial class SoftwareDecoder
                 var ax = a0.X + dx * t; var ay = a0.Y + dy * t;
                 var value = Sample(pixels, width, height, ax * (1 - f) + (b0.X + (b1.X - b0.X) * bt) * f,
                     ay * (1 - f) + (b0.Y + (b1.Y - b0.Y) * bt) * f);
+                nextLine[i] = value;
                 sum += value; square += value * value; product += (reference[i] - mean) * value;
             }
             var otherVariance = square - sum * sum / samples;
             // A quiet gap between two equal printed codes breaks the continuous pattern.
             if (otherVariance < samples * 16 || product / Math.Sqrt(variance * otherVariance) < .72) return false;
+            // Nested bands can use slightly different native start/stop extents.
+            // Adjacent source lines preserve pattern continuity without accumulated
+            // phase drift, while still rejecting every quiet gap between labels.
+            if (nested) { nextLine.CopyTo(reference); mean = sum / samples; variance = otherVariance; }
         }
         return true;
     }

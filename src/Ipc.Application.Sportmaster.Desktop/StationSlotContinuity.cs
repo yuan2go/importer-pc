@@ -78,7 +78,7 @@ public sealed partial class SupplyStationPositionViewModel
         !CameraNoCode && !invalidReadFeedback && (CameraObservationUnmatched || unreadFeedback || !InputUnadmitted && Operation?.State == ParcelState.ResolvingWcs);
     bool DisplayPaused => owner.Snapshot?.Paused == true;
     public bool ShowConfirmedTask => CurrentTaskAvailable && SlotAvailable && !unreadFeedback && !ReaderUnavailableForDisplay && !DisplayPaused && owner.ViewportReady;
-    public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Input?.Observation.Id ?? Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
+    public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
     public string ResultBackground => DisplayPresentation.Tone switch
     {
         ParcelPresentationTone.Accepted => OperatorTokens.Success,

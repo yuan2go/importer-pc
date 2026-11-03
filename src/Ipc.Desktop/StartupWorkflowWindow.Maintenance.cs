@@ -26,7 +26,10 @@ public abstract partial class StartupWorkflowWindow
         AutomationProperties.SetName(maintenanceReadout, "维护详情");
         AutomationProperties.SetLiveSetting(maintenanceReadout, AutomationLiveSetting.Polite);
         AutomationProperties.SetAutomationId(maintenanceCancel, "Maintenance.Cancel");
-        var layout = new DockPanel(); DockPanel.SetDock(maintenanceCancel, Dock.Right); layout.Children.Add(maintenanceCancel); var content = new StackPanel(); content.Children.Add(maintenanceReadout); content.Children.Add(maintenanceElapsed); layout.Children.Add(content); maintenancePanel.Child = layout;
+        var layout = new DockPanel(); DockPanel.SetDock(maintenanceCancel, Dock.Right); layout.Children.Add(maintenanceCancel); var content = new StackPanel();
+        if (compact) content.Children.Add(new Expander { Header = "安装记录与路径详情", Content = maintenanceReadout });
+        else content.Children.Add(maintenanceReadout);
+        content.Children.Add(maintenanceElapsed); layout.Children.Add(content); maintenancePanel.Child = layout;
         maintenanceCancel.Click += (_, _) =>
         {
             if (maintenanceCancellation is null) return;
@@ -59,7 +62,7 @@ public abstract partial class StartupWorkflowWindow
         maintenancePanel.Visibility = Visibility.Visible; maintenanceCancel.Visibility = canRequestCancellation ? Visibility.Visible : Visibility.Collapsed; maintenanceCancel.IsEnabled = canRequestCancellation;
         maintenanceReadout.Text = (canRequestCancellation ? "等待授权与检查；提交前可以请求取消。" : "正在继续上次操作，此步骤不能取消。") + "\n" + context; maintenanceReadout.Focus();
         var elapsed = Stopwatch.StartNew();
-        void UpdateElapsed() => maintenanceElapsed.Text = "已等待 " + ((long)elapsed.Elapsed.TotalSeconds) + " 秒；等待时间不代表完成比例。";
+        void UpdateElapsed() => maintenanceElapsed.Text = "已用时 " + ((long)elapsed.Elapsed.TotalSeconds) + " 秒";
         var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) }; timer.Tick += (_, _) => UpdateElapsed(); UpdateElapsed(); timer.Start();
         var progress = new Progress<MaintenanceProgress>(p =>
         {

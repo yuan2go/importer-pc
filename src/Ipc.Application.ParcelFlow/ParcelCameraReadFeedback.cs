@@ -70,6 +70,12 @@ public sealed partial class ParcelRuntime
     {
         // A snapshot can reach a window before its stream notification. Publish
         // frame and observation watermarks from the same short critical section.
-        lock (presentationGate) return snapshot with { CameraReads = cameraReadFeedback.Values.ToArray(), ReadFeedbacks = presentationFeedback.Values.ToArray() };
+        lock (presentationGate)
+        {
+            foreach (var input in snapshot.Inputs ?? [])
+                if (presentationReads.Any(r => r.ObservationId == input.Observation.Id)) classifiedPresentationReads.Add(input.Observation.Id);
+            var reads = ProjectedReads(snapshot.Inputs ?? []);
+            return snapshot with { CameraReads = ProjectedCameraReads(reads), ReadFeedbacks = reads };
+        }
     }
 }

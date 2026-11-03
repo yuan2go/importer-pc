@@ -180,7 +180,6 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Height = Math.Min(440, MaxHeight);
             Message("请稍候，安装完成后将显示结果。");
             Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 10, Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)), Margin = new(0, 12, 0, 12) });
-            Body.Children.Add(new TextBlock { Text = "按实际安装步骤显示进度。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
             Details();
             Note("取消是否可用以当前步骤和取消按钮为准。请求取消后仍须等待本次结果；关闭窗口不会回滚安装。"); return;
         }
@@ -188,7 +187,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (step == 0)
         {
             preparationProgress.IsIndeterminate = prepareMedia is null;
-            Body.Children.Add(preparationProgress); Body.Children.Add(preparationFile);
+            Body.Children.Add(preparationProgress); Body.Children.Add(new Expander { Header = "安装文件详情", Content = preparationFile });
             Note("正在核对版本与完整性，完成后显示安装选项。"); next.Content = "重试检查";
         }
         else if (step == 1)
@@ -308,7 +307,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         installationDetailView = new TextBox { Text = original, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 0, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         content.Children.Add(installationDetailView);
         content.Children.Add(new TextBlock { Text = failureMessage, TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 0) });
-        Body.Children.Add(new Expander { Header = "查看本次安装详情", Content = content, IsExpanded = true, Margin = new(0, 12, 0, 0) });
+        Body.Children.Add(new Expander { Header = "查看本次安装详情", Content = content, IsExpanded = failed || outcomeUnknown, Margin = new(0, 12, 0, 0) });
     }
     Task OpenRecordDirectory()
     {
@@ -343,18 +342,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             WindowsInstallationStage.RegisteringApplication => "正在登记 Windows 程序入口",
             _ => "正在确认安装结果"
         };
-        AutomationProperties.SetLiveSetting(installationStage, AutomationLiveSetting.Polite);
-        var group = value switch
-        {
-            WindowsInstallationStage.CheckingResponsibilities => 1,
-            WindowsInstallationStage.PreparingBackup => 2,
-            WindowsInstallationStage.CopyingFiles => 3,
-            WindowsInstallationStage.PreparingConfiguration => 4,
-            WindowsInstallationStage.InstallingComponents or WindowsInstallationStage.RegisteringManagementService => 5,
-            WindowsInstallationStage.CommittingInstallation or WindowsInstallationStage.CreatingShortcuts or WindowsInstallationStage.RegisteringApplication => 6,
-            _ => 0
-        };
-        if (group > 0) installationStage.Text = "第 " + group + " / 6 步 · " + installationStage.Text;
+        var authorizing = value == WindowsInstallationStage.WaitingForAuthorization;
+        installationStage.SetResourceReference(TextBlock.ForegroundProperty, authorizing ? "Warning" : "Ink");
+        installationStage.SetResourceReference(TextBlock.BackgroundProperty, authorizing ? "WarningBackground" : "Surface");
+        installationStage.Padding = authorizing ? new(12) : new(0);
+        AutomationProperties.SetLiveSetting(installationStage, authorizing ? AutomationLiveSetting.Assertive : AutomationLiveSetting.Polite);
         installationDetails.Add(installationStage.Text);
         if (installationDetailView is not null) installationDetailView.Text = string.Join("\n", installationDetails);
     }

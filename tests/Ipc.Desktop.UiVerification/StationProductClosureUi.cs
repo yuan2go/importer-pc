@@ -54,18 +54,15 @@ static partial class Program
             await SetClient(window, 1366, 768); OpenRetainedStationPageForVerification(window, "exceptions"); await Flush(); await Until(() => HasText("格口未确认的包裹勿重复上件"));
             Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "查看详情与核对…")), "exceptions retain operation-specific evidence and guarded recovery entry");
             CaptureInternal(evidence, "pc21-exceptions-1366", (Grid)window.FindName("ClientArea"), lines);
-            await ManagementModeFixture.Authorize(h.App); await window.ViewModel.RefreshManagementModeAsync(); await ClickReady("维护中心");
-            await Until(() => HasText("自动清理："));
-            Check(HasText("恢复备份、换机、修复或卸载") && HasText("创建完整备份"), "maintenance center exposes online tasks and explicit offline handoff");
-            Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "处理异常")) && !HasText("自动清理与班次"),
-                "maintenance center exposes no hidden-page shortcut");
-            await ClickReady("打开诊断"); await Until(() => window.ViewModel.SelectedPage == "diagnostics" && window.ViewModel.CanStartOperation &&
-                Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "刷新体检"))); await ClickReady("刷新体检");
-            await Until(() => HasText("体检只读取现有相机和心跳数据") && HasText("存储剩余") && (HasText("等待 RCS 确认") || HasText("只表示 RCS 可连接") || HasText("组件未就绪")));
-            Check(!HasText("RCS：当前可用") && (HasText("等待 RCS 确认") || HasText("只表示 RCS 可连接") || HasText("组件未就绪")), "RCS health summary distinguishes local readiness, remote HTTP confirmation and business acceptance");
-            Check(HasText("存储剩余"), "diagnostic health reads actual current storage and confirms passive probe semantics");
-            Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "处理异常")),
-                "diagnostics exposes no hidden exception-page shortcut");
+            await ManagementModeFixture.Authorize(h.App); await window.ViewModel.RefreshManagementModeAsync(); await ClickReady("设备与诊断");
+            await Until(() => Descendants(window).OfType<Border>().Count(b => AutomationProperties.GetAutomationId(b).StartsWith("DiagnosticCard.", StringComparison.Ordinal)) == 4);
+            var maintenanceTools = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "维护工具")); maintenanceTools.IsExpanded = true; await Flush();
+            Check(Descendants(maintenanceTools).OfType<Button>().Any(b => Equals(b.Content, "离线维护…")) && Descendants(maintenanceTools).OfType<Button>().Any(b => Equals(b.Content, "创建完整备份…")), "diagnostic maintenance tools retain online backup and explicit offline handoff");
+            Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "处理异常")) && !Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "维护中心")), "device workspace exposes no retired maintenance center or hidden-page shortcut");
+            maintenanceTools.IsExpanded = false; await Flush();
+            Check(HasText("在线状态不代表本件已取得格口") && !HasText("RCS：当前可用"), "RCS health distinguishes connection state from business acceptance");
+            Check(Descendants(window).OfType<TextBlock>().Any(t => t.Text.Contains("MiB；低于", StringComparison.Ordinal)), "diagnostic storage reads current capacity and its actual admission threshold");
+            Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "处理异常")), "diagnostics exposes no hidden exception-page shortcut");
             CaptureInternal(evidence, "pc21-diagnostics-1366", (Grid)window.FindName("ClientArea"), lines);
             await ClickReady("日志");
             await Until(() => Descendants(window).OfType<SoftwareLogControl>().Any());

@@ -59,10 +59,10 @@ static partial class Program
                 var scale = (transform.Transform(new Point(0, 1)) - transform.Transform(new Point())).Length;
                 CaptureInternal(evidence, "operator18-geometry-" + (int)size.Item1, (Grid)window.FindName("ClientArea"), lines);
                 lines.Add("GEOMETRY tight=" + vm.IsTight + " compact=" + vm.IsCompact + " panel=" + panel.ActualHeight + " slot=" + slot.ActualHeight + " scale=" + scale + " guidance=" + vm.Left.DisplayNextStep + " actions=" + ((StackPanel)left.FindName("FixedActions")).ActualHeight);
-                Check(slot.FontSize == (vm.IsCompact ? UiTypography.SlotCompact : UiTypography.Slot), "chute uses the original64/44 DIP scale at " + size.Item1);
+                Check(slot.FontSize == (vm.IsCompact ? UiTypography.SlotCompact : UiTypography.Slot), "chute uses the balanced 44/36 DIP scale at " + size.Item1);
                 foreach (var name in new[] { "WaveValue", "TaskValue", "SkuValue", "QuantityValue" })
-                { var value = (TextBox)left.FindName(name); Check(value.IsVisible && value.ActualWidth > 50 && Inside(value, (Grid)window.FindName("ClientArea")), "task field stays visible and readable: " + name + " at " + size.Item1); }
-                Check(slot.FontSize * scale >= 44, "actually drawn short chute font is at least 44 DIP at " + size.Item1 + "; measured=" + (slot.FontSize * scale).ToString("F1"));
+                { var value = (TextBox)left.FindName(name); Check(value.IsVisible && value.FontSize == 22 && value.MaxHeight == (vm.IsTight ? 34 : 64) && value.ActualWidth > 50 && Inside(value, (Grid)window.FindName("ClientArea")), "task field stays visible and readable in its expanded area: " + name + " at " + size.Item1); }
+                Check(slot.FontSize * scale >= 32, "actually drawn short chute font is at least 32 DIP at " + size.Item1 + "; measured=" + (slot.FontSize * scale).ToString("F1"));
                 Check(submit.ActualHeight >= OperatorTokens.TouchHeight && Inside(submit, (Grid)window.FindName("ClientArea")), "primary touch action remains 64 DIP and on screen at " + size.Item1);
                 CaptureInternal(evidence, "operator18-success-" + (int)size.Item1, (Grid)window.FindName("ClientArea"), lines);
             }

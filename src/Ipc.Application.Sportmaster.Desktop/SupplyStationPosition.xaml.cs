@@ -1,7 +1,9 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 
@@ -12,6 +14,21 @@ public partial class SupplyStationPosition : UserControl
     public SupplyStationPosition()
     {
         InitializeComponent(); InitializeCompositionFeedback();
+        PreviewMouseLeftButtonDown += (_, e) =>
+        {
+            if (DataContext is not SupplyStationPositionViewModel p) return;
+            p.SetInputFocused(true);
+            // Buttons and selectable values keep their native mouse behaviour.
+            // The rest of the card immediately becomes a barcode input surface.
+            for (var source = e.OriginalSource as DependencyObject; source is not null && source != this;
+                source = source is Visual ? VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source))
+                if (source is ButtonBase or TextBoxBase or ScrollBar) return;
+            FocusBarcodeInput();
+        };
+        IsKeyboardFocusWithinChanged += (_, _) =>
+        {
+            if (DataContext is SupplyStationPositionViewModel p) p.SetInputFocused(IsKeyboardFocusWithin);
+        };
         TaskFields.IsVisibleChanged += (_, _) => RefreshTaskRegionGeometry();
         DataContextChanged += (_, e) =>
         {
@@ -101,10 +118,6 @@ public partial class SupplyStationPosition : UserControl
     {
         PrepareResultReplacement();
         if (DataContext is SupplyStationPositionViewModel p) p.SetInputFocused(true);
-    }
-    void Entry_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-    {
-        if (DataContext is SupplyStationPositionViewModel p) p.SetInputFocused(false);
     }
     void RefreshSubmitAvailability()
     {

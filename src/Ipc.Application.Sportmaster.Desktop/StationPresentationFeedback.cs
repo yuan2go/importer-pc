@@ -104,15 +104,25 @@ public partial class SupplyStationWindow
             if (closing || closed || value is null) return;
             void FastFeedback()
             {
+                // A classified continuation belongs to the accompanying business
+                // snapshot. Applying its newer watermark first would briefly hide
+                // the same parcel's confirmed chute while that snapshot is awaited.
+                bool AwaitingContinuation(string position, string? observation) =>
+                    value.Snapshot?.Inputs?.SingleOrDefault(i => i.PositionId == position) is { } input &&
+                    input.Observation.Id == observation && ParcelInputReasons.IsSamePlacement(input) &&
+                    (position == "left" ? ViewModel.Left : ViewModel.Right).Input?.Observation.Id != observation;
                 foreach (var frame in value.CameraReads)
-                    (frame.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyCameraReadFeedback(value.RuntimeId, frame);
+                    if (frame.Frame.Outcome != Ipc.Platform.ObservationReadOutcome.Codes ||
+                        !value.Reads.Any(r => r.PositionId == frame.PositionId && r.DetectedTicks == frame.Frame.CompletedTicks && AwaitingContinuation(r.PositionId, r.ObservationId)))
+                        (frame.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyCameraReadFeedback(value.RuntimeId, frame);
                 foreach (var state in value.Readers)
                 {
                     ViewModel.Left.ApplyReaderFeedback(value.RuntimeId, state);
                     ViewModel.Right.ApplyReaderFeedback(value.RuntimeId, state);
                 }
                 foreach (var read in value.Reads)
-                    (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
+                    if (!AwaitingContinuation(read.PositionId, read.ObservationId))
+                        (read.PositionId == "left" ? ViewModel.Left : ViewModel.Right).ApplyReadFeedback(read);
             }
             FastFeedback();
             if (value.Failure is { } failure)
@@ -196,7 +206,6 @@ public partial class SupplyStationPosition
     internal int PlayedReadSounds { get; private set; }
     internal int PlayedSuccessSounds { get; private set; }
     internal int PlayedRejectionSounds { get; private set; }
-    long lastPulse;
     string? rejectionShown, successShown;
     internal int SuccessCueCount { get; private set; }
     internal int ReadCueCount { get; private set; }
@@ -206,14 +215,11 @@ public partial class SupplyStationPosition
     EventHandler? compositionWaiter;
     internal string? CompositionFailure { get; private set; }
     long presentationGeneration;
-    readonly DispatcherTimer cueTimer = new() { Interval = TimeSpan.FromMilliseconds(220) };
-    Brush? originalOutline;
     void InitializeCompositionFeedback()
     {
         soundRetry.Tick += (_, _) => TryPlayPendingSound();
-        cueTimer.Tick += (_, _) => { cueTimer.Stop(); if (originalOutline is not null) PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, originalOutline); };
         Loaded += (_, _) => ObservePresentation();
-        Unloaded += (_, _) => { presentationGeneration++; pendingSound = null; soundRetry.Stop(); if (compositionWaiter is not null) { CompositionTarget.Rendering -= compositionWaiter; compositionWaiter = null; measuring = false; } cueTimer.Stop(); if (originalOutline is not null) PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, originalOutline); };
+        Unloaded += (_, _) => { presentationGeneration++; pendingSound = null; soundRetry.Stop(); if (compositionWaiter is not null) { CompositionTarget.Rendering -= compositionWaiter; compositionWaiter = null; measuring = false; } };
     }
     void ObservePresentation()
     {
@@ -226,7 +232,6 @@ public partial class SupplyStationPosition
         if (p.RejectionIdentity is { } rejection && rejectionShown != rejection)
         {
             rejectionShown = rejection; RejectionCueCount++; rejected = true;
-            Pulse(OperatorBrushes.Danger.Color, true);
             OfferSound("Rejected/" + rejection, soundChannel, StationSound.Rejected);
         }
         if (p.SuccessIdentity is { } success && successShown != success)
@@ -237,7 +242,6 @@ public partial class SupplyStationPosition
         if (p.ReadFeedbackIdentity is { } read && feedbackShown != p.ReadFeedbackKey && p.CameraReadFeedback.Length != 0)
         {
             feedbackShown = p.ReadFeedbackKey; ReadCueCount++;
-            if (!rejected) Pulse(OperatorBrushes.Accent.Color, false);
             // A terminal result owns the sound if read and result coalesce into one render.
             if (!rejected && p.SuccessIdentity is null && p.RejectionIdentity is null) OfferSound("Read/" + p.ReadFeedbackKey, soundChannel, StationSound.Read);
         }
@@ -282,15 +286,6 @@ public partial class SupplyStationPosition
         };
         compositionWaiter = rendered; CompositionTarget.Rendering += rendered;
         InvalidateVisual();
-    }
-    void Pulse(Color color, bool rejection)
-    {
-        var now = Stopwatch.GetTimestamp();
-        if (!SystemParameters.ClientAreaAnimation || SystemParameters.HighContrast ||
-            !rejection && lastPulse != 0 && Stopwatch.GetElapsedTime(lastPulse, now) < TimeSpan.FromSeconds(1)) return;
-        lastPulse = now; originalOutline ??= PositionOutline.BorderBrush;
-        PositionOutline.SetCurrentValue(System.Windows.Controls.Border.BorderBrushProperty, new SolidColorBrush(color));
-        cueTimer.Stop(); cueTimer.Start();
     }
     void OfferSound(string key, string channel, StationSound kind)
     {

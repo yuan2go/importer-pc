@@ -70,16 +70,12 @@ static partial class Program
             foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
             {
                 await SetClient(window, size.Item1, size.Item2);
-                foreach (var (category, title) in new[] { (1, "格口请求"), (1, "接收与等待限制"), (0, "供包台标识"), (0, "数据与记录"), (0, "显示偏好"), (2, "左相机"), (3, "RCS 服务") })
+                Check(!editor.ShowPage(1, "格口请求"), "fixed-chute settings have no first-run navigation entry");
+                foreach (var (category, title) in new[] { (1, "接收与等待限制"), (0, "供包台标识"), (0, "数据与记录"), (0, "显示偏好"), (2, "左相机"), (3, "RCS 服务") })
                 {
                     Check(editor.ShowPage(category, title), "existing shared directory contains " + title);
                     await Flush(); window.UpdateLayout();
-                    if (title == "格口请求")
-                    {
-                        Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/quantity")), "no configurable quantity editor remains");
-                        var help = Descendants(editor).OfType<Expander>().First(e => Equals(e.Header, "参数说明")); help.IsExpanded = true; await Flush();
-                        Check(!Descendants(help).OfType<TextBox>().Any(t => t.Text.Contains("sportmaster.integration/quantity")), "parameter help describes purpose without an internal configuration path");
-                    }
+                    Check(!Descendants(editor).Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/quantity") || AutomationProperties.GetAutomationId(t).EndsWith("/specified-chute") || AutomationProperties.GetAutomationId(t).EndsWith("/chute-code")), "quantity and fixed-chute editors remain hidden");
                     CaptureInternal(evidence, "pgs-" + title + "-" + (int)size.Item1, client, lines);
                 }
             }

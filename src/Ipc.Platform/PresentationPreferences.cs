@@ -14,7 +14,7 @@ public static class PresentationPreferences
     public static int ReadCueVolume(string application)
     {
         var file = FileFor(application, "audio");
-        if (!File.Exists(file)) return 70;
+        if (!File.Exists(file)) return 0;
         if (new FileInfo(file).Length > 4096) throw new InvalidDataException("提示音偏好超出预算；保留原文件");
         var value = Wire.Decode<AudioPreference>(File.ReadAllText(file));
         if (value.Schema != 1 || value.Volume is < 0 or > 100) throw new InvalidDataException("提示音音量无效；保留原文件");

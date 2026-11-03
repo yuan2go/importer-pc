@@ -15,7 +15,15 @@ public partial class SupplyStationWindow
     async void ManagementMode_Click(object sender, RoutedEventArgs e)
     {
         if (ViewModel.Application is not IWorkstationAdministration service) { ViewModel.Message = "此组合尚未提供管理模式。"; return; }
-        try { await ViewModel.RefreshManagementModeAsync(); if (ViewModel.IsManagementMode) await service.ExitManagementModeAsync(); else new ManagementModeWindow(service) { Owner = this }.ShowDialog(); await ViewModel.RefreshManagementModeAsync(); EnforceManagementModeView(); if (ViewModel.IsManagementMode && restrictedReturn is { } page) { restrictedReturn = null; SetPage(page); } }
+        try
+        {
+            await ViewModel.RefreshManagementModeAsync();
+            if (ViewModel.IsManagementMode) await service.ExitManagementModeAsync();
+            else new ManagementModeWindow(service) { Owner = this }.ShowDialog();
+            await ViewModel.RefreshManagementModeAsync(); EnforceManagementModeView();
+            if (ViewModel.IsManagementMode && restrictedReturn is { } page) { restrictedReturn = null; SetPage(page); }
+            else if (ViewModel.IsManagementMode && ViewModel.SelectedPage == "workstation") SetPage("diagnostics");
+        }
         catch (Exception error) { ViewModel.Message = error.Message; }
     }
     async void Logs_Click(object sender, RoutedEventArgs e)
@@ -37,7 +45,7 @@ public partial class SupplyStationWindow
         {
             logs?.Revoke();
             debug?.Revoke();
-            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug" or "maintenance-center") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
+            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
         }
     }
 }

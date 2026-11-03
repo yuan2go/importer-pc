@@ -76,7 +76,7 @@ internal sealed class StationCameraPreviewControl : UserControl
             status.Text = "实时视频 · 帧 " + frame.FrameNumber + " · " + frame.CapturedAt.ToLocalTime().ToString("HH:mm:ss.fff");
         }
         catch (OperationCanceledException) { if (version == generation) Clear("预览已停止"); }
-        catch (Exception) { if (version == generation) { Clear("实时预览暂不可用，请刷新体检并检查相机状态。"); counters.Text = ""; } }
+        catch (Exception) { if (version == generation) { Clear("实时预览暂不可用，请检查相机连接；状态会自动更新。"); counters.Text = ""; } }
         finally { polling = false; }
     }
     static string Describe(ObservationDiagnostics? d)

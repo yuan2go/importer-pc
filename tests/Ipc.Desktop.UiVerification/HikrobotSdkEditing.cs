@@ -79,7 +79,7 @@ static partial class Program
             rcs.ConfigureLater = true; rcs.Target = "http://127.0.0.1:18848/rcs/sorter/api";
             var invalidRejected = false; try { draft.Build(); } catch (InvalidOperationException) { invalidRejected = true; }
             Check(invalidRejected, "filled RCS address still validates every required parameter");
-            foreach (var pair in new Dictionary<string, string> { ["zone-id"] = "71", ["project-id"] = "83", ["request-id-base"] = "1", ["request-id-count"] = "1000", ["specified-chute"] = "false" })
+            foreach (var pair in new Dictionary<string, string> { ["zone-id"] = "71", ["project-id"] = "83" })
                 rcs.Parameters.Single(p => p.Field.Key == pair.Key).Value = pair.Value;
             Check(!rcs.ConfigureLater && !draft.Build().DeferredConnections!.Contains(rcs.InstanceId), "filled RCS address clears the obsolete deferred marker in the saved candidate");
             CaptureInternal(evidence, "rcs-without-deferred-checkbox", editor, lines);

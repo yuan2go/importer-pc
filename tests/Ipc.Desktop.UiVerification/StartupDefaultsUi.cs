@@ -15,20 +15,30 @@ static partial class Program
         Check(Ipc.Platform.PresentationPreferences.ReadCueVolume("sportmaster") == 0, "new user preferences default to muted operator cues");
         var initial = new SportmasterFlow().InitialConfiguration();
         var seed = Ipc.Platform.Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
-        Check(new[] { initial, seed }.All(c => c.Wcs!.Parameters.GetValueOrDefault("request-id-base") == "0" && c.Wcs.Parameters.GetValueOrDefault("request-id-count") == "10000" && c.Wcs.Parameters.GetValueOrDefault("specified-chute") == "false"),
-            "both generated and packaged new stations default to inclusive requests 1..10000 and no fixed chute");
+        string[] removed = ["request-id-base", "request-id-count", "specified-chute", "chute-code"];
+        Check(new[] { initial, seed }.All(c => !c.Wcs!.Parameters.Keys.Intersect(removed).Any()),
+            "generated and packaged new stations contain neither request ranges nor fixed-chute configuration");
         await using var factory = new ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), Path.Combine(evidence, "data"), null, null));
         var catalog = factory.Catalog();
         var incomplete = initial.Wcs! with { Parameters = new() { ["left-station-code"] = "NEW-STATION", ["right-station-code"] = "NEW-STATION" } };
         var completing = new CapabilityDraft("integration", catalog.Providers, incomplete, true) { ConfigureLater = false, Target = "http://127.0.0.1:18849/rcs/sorter/api" };
         foreach (var parameter in completing.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) parameter.Value = "1";
         var built = completing.Build();
-        Check(built.Parameters.GetValueOrDefault("request-id-base") == "0" && built.Parameters.GetValueOrDefault("request-id-count") == "10000" && built.Parameters.GetValueOrDefault("specified-chute") == "false" && !built.Parameters.ContainsKey("request-timeout-ms"),
-            "completing a deferred binding materializes required defaults while preserving omitted optional defaults");
+        Check(!built.Parameters.Keys.Intersect(removed).Any() && !built.Parameters.ContainsKey("request-timeout-ms"),
+            "completing a deferred binding needs no retired options and preserves omitted optional defaults");
+        var retired = incomplete with { Parameters = new(incomplete.Parameters) { ["request-id-base"] = "40", ["request-id-count"] = "20", ["specified-chute"] = "true", ["chute-code"] = "OLD" } };
+        var clean = new CapabilityDraft("integration", catalog.Providers, retired, true);
+        Check(!clean.Parameters.Any(p => removed.Contains(p.Field.Key)) && !clean.Build().Parameters.Keys.Intersect(removed).Any(),
+            "saving an existing draft removes retired fields without exposing replacement editors");
         foreach (var firstRun in new[] { true, false })
         {
             var draft = new StartupConfigurationDraft(initial, catalog);
+            var rcsDraft = draft.Capabilities.Single(c => c.Kind == "integration");
+            var originalRcs = Ipc.Platform.Wire.Encode(rcsDraft.Build());
+            rcsDraft.ProposeProvider(rcsDraft.Providers.Single(p => p.Implementation == "reference-integration"));
             var model = draft.CreateParameterEditor((policy, codes) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(policy, codes)));
+            Check(!rcsDraft.ProviderChangePending && Ipc.Platform.Wire.Encode(rcsDraft.Build()) == originalRcs,
+                "removed simulation proposal is cancelled without resetting the current RCS binding");
             var editor = new ParameterSettingsControl { FirstConfiguration = firstRun, Model = model };
             var client = new Grid(); client.Children.Add(editor);
             var window = new Window { Content = client, Title = firstRun ? "首次配置 · 默认值验证" : "日常参数 · 相机编码验证", Width = 1280, Height = 800 };
@@ -51,17 +61,15 @@ static partial class Program
                 CaptureInternal(evidence, firstRun ? "defaults-first-cameras" : "defaults-daily-cameras", client, lines);
                 if (firstRun) Check(editor.ShowPage(3, "RCS 服务"), "first-run RCS range page is available");
                 await Flush();
-                TextBox Range(string key) => Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "sportmaster.integration/" + key);
-                Check(Range("request-id-base").Text == "1" && Range("request-id-count").Text == "10000", "actual inclusive range editors start at 1 and end at 10000");
-                Check(!Descendants(editor).Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/specified-chute", StringComparison.Ordinal) || AutomationProperties.GetAutomationId(t).EndsWith("/chute-code", StringComparison.Ordinal)),
-                    "fixed-chute switch and code have no editable controls");
-                var rcs = model.Components.Single(ParameterOwnership.IsRcs);
-                Check(rcs.Parameters.Single(p => p.Field.Key == "specified-chute").Value == "false", "hidden new-station fixed-chute value is explicitly false");
+                Check(!Descendants(editor).Any(t => removed.Any(key => AutomationProperties.GetAutomationId(t).EndsWith("/" + key, StringComparison.Ordinal))),
+                    "neither ranges nor fixed-chute controls exist in first configuration or daily settings");
+                Check(!model.Components.Single(ParameterOwnership.IsRcs).Parameters.Any(p => removed.Contains(p.Field.Key)),
+                    "retired fields are absent from the editor model, not merely hidden");
+                Check(!Descendants(editor).OfType<ComboBox>().Any(c => AutomationProperties.GetAutomationId(c).EndsWith("/Provider", StringComparison.Ordinal)),
+                    "SM RCS page has no connection provider selector");
+                Check(model.Components.Single(ParameterOwnership.IsRcs).Providers.All(p => p.Implementation == "sportmaster-rcs"),
+                    "SM editor offers only built-in RCS and no local simulation provider");
                 CaptureInternal(evidence, firstRun ? "defaults-first-rcs" : "defaults-daily-rcs", client, lines);
-                rcs.Parameters.Single(p => p.Field.Key == "request-id-base").Value = "40";
-                rcs.Parameters.Single(p => p.Field.Key == "request-id-count").Value = "20";
-                await Flush();
-                Check(Range("request-id-base").Text == "41" && Range("request-id-count").Text == "60", "explicitly allocated ranges remain editable and are never replaced by startup defaults");
                 if (!firstRun)
                 {
                     Check(editor.NavigateTo("CueVolume"), "daily audio preference is reachable");

@@ -99,9 +99,9 @@ static partial class SportmasterRcs
                     "A03 stale restored backup stays isolated before protected handoff; no entity, request or POST is invented");
                 using var repository = new ParcelRepository(directory, "sportmaster");
                 await using var preparer = new SportmasterRcsTaskService(binding);
-                var range = preparer.GetRequestIdRange(binding)!; var budget = repository.IntegrationBudget(range);
-                Check(budget.Remaining == 0 && budget.PermanentHighWater >= range.Last,
-                    "A03 restored backup permanently retires the whole source range including IDs used after the backup");
+                var nextId = repository.NextAutomaticIntegrationRequestId();
+                Check(preparer.GetRequestIdRange(binding) is null && nextId > lastId,
+                    "A03 restored backup retains permanent IDs and automatic allocation advances without a configured range");
             }
             // An isolated stale backup may not retire its newer source. Verify the
             // current range change on that authoritative source, without bypassing handoff.
@@ -110,14 +110,14 @@ static partial class SportmasterRcs
                 await Command(app, "Pause"); await ManagementModeFixture.Authorize(app); await Wait(app, x => x.Availability!.Configure);
                 var snapshot = await app.SnapshotAsync(); var nextBinding = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "820000000" } };
                 var next = snapshot.Configuration.Effective with { Wcs = nextBinding, CapabilityInstances = snapshot.Configuration.Effective.CapabilityInstances!.Select(b => b.InstanceId == binding.InstanceId ? nextBinding : b).ToArray() };
-                Check((await app.StageConfigurationAsync(snapshot.Configuration.Revision, next, "Synthetic disjoint range on the authoritative current source")).Status == "PendingRestart",
-                    "A03 new disjoint range uses original configuration CAS and controlled restart");
+                Check((await app.StageConfigurationAsync(snapshot.Configuration.Revision, next, "Synthetic disjoint range on the authoritative current source")).Status == "Unchanged",
+                    "A03 retired range fields cannot change the effective configuration");
             }
             await using (var app = await Open(data))
             {
                 await Command(app, "Resume"); app.EmitReferenceAt("right", "current-new-range", "SYNTH-0001", "new-range-event");
                 var snapshot = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "current-new-range" && o.State == ParcelState.SlotResolved));
-                Check(snapshot.Operations.Single(o => o.AdmissionId == "current-new-range").Wcs!.Request.IntegrationRequest!.RequestId == 820000001 && peer.Requests.Count == posts + 1,
+                Check(snapshot.Operations.Single(o => o.AdmissionId == "current-new-range").Wcs!.Request.IntegrationRequest!.RequestId > lastId && peer.Requests.Count == posts + 1,
                     "A03 current root uses the newly allocated range exactly once after controlled restart");
             }
             using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", c.StationId, c.ApplicationId, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))

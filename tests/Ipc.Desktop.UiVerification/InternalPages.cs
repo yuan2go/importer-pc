@@ -57,29 +57,19 @@ static partial class Program
         Check(!Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && (t.Text.Contains("BarcodeFilter") || t.Text.Contains("BarcodePattern") || t.Text.Contains("required"))), "ordinary error text contains no backing property or raw required rule");
         CaptureInternal(evidence, "leaf-barcode-error", window, lines);
         Box("BarcodePattern").Text = ""; await Flush();
-        Check(await editor.MoveNextAsync() && editor.CurrentPageTitle == "格口请求", "corrected optional rule advances only one leaf, not the entire category");
+        Check(await editor.MoveNextAsync() && editor.CurrentPageTitle == "接收与等待限制", "corrected optional rule advances to the next current leaf");
         model.Policy.BarcodePattern = model.Policy.BarcodeExclusionPattern = " ";
         await Flush();
         var whitespaceValid = await model.ValidatePageAsync(new HashSet<string> { "BarcodePattern", "BarcodeExclusionPattern" });
         if (!whitespaceValid) lines.Add("LEAF WHITESPACE " + string.Join(" | ", model.Issues.Select(i => i.Path + ":" + i.Message)) + " :: " + Wire.Encode(model.Policy.BuildBarcodePolicy()));
         Check(whitespaceValid, "whitespace-only optional rules retain the existing absent-filter semantics");
         model.Policy.BarcodePattern = model.Policy.BarcodeExclusionPattern = "";
-        var rcs = model.Components.Single(ParameterOwnership.IsRcs);
-        var specified = rcs.Parameters.Single(p => p.Field.Key == "specified-chute"); var originalSpecified = specified.Value;
-        specified.Value = ""; await Flush();
-        directory.SelectedItem = directory.Items.Cast<object>().Single(p => p.ToString() == "接收与等待限制"); await Settled();
-        Check(editor.CurrentPageTitle == "格口请求" && model.Issues.Any(i => i.Path == rcs.InstanceId + "/specified-chute"), "forward directory jump cannot skip a missing value on the current leaf");
-        specified.Value = originalSpecified;
-        var chute = rcs.Parameters.Single(p => p.Field.Key == "chute-code");
-        var oldSpecified = specified.Value; var oldChute = chute.Value; specified.Value = "true"; chute.Value = ""; await Flush();
-        Check(!await editor.MoveNextAsync() && model.Issues.Any(i => i.Path.EndsWith("/chute-code")), "conditional specified chute remains required on its own page");
-        specified.Value = "false"; await Flush();
-        Check(await editor.MoveNextAsync() && editor.CurrentPageTitle == "接收与等待限制", "explicitly disabling the condition permits the next leaf without deleting retained values");
+        Check(!editor.ShowPage(1, "格口请求"), "removed fixed-chute page cannot be opened");
         var oldQueue = model.Policy.QueueCapacity; Box("QueueCapacity").Text = "bad"; await Flush();
         Check(!await editor.MoveNextAsync() && editor.CurrentPageTitle == "接收与等待限制", "numeric error blocks processing page");
         Check(!Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("QueueCapacity")), "numeric error uses a Chinese name");
         editor.MovePrevious(); await Flush();
-        Check(editor.CurrentPageTitle == "格口请求" && model.Policy.QueueCapacity == "bad", $"backward navigation retains invalid process-only input: page={editor.CurrentPageTitle}; value={model.Policy.QueueCapacity}");
+        Check(editor.CurrentPageTitle == "条码筛选" && model.Policy.QueueCapacity == "bad", $"backward navigation retains invalid process-only input: page={editor.CurrentPageTitle}; value={model.Policy.QueueCapacity}");
         if (editor.FirstConfiguration)
             Descendants(editor).OfType<Button>().Single(b => Equals(b.Content, "4 RCS 连接")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         else directory.SelectedItem = directory.Items.Cast<object>().Single(p => p.ToString() == "RCS 服务");
@@ -91,7 +81,6 @@ static partial class Program
         Check(editor.CurrentPageTitle == "接收与等待限制", "keyboard search cannot bypass current-page validation");
         Box("QueueCapacity").Text = oldQueue; await Flush();
         Check(await editor.MoveNextAsync() && editor.CurrentPageTitle == (editor.FirstConfiguration ? "左右相机" : "供包台标识") && model.Issues.All(i => i.Path != "QueueCapacity"), "editing bound input clears obsolete field errors and advances to the real next page");
-        specified.Value = oldSpecified; chute.Value = oldChute;
         // A slow format check cannot advance after the user changes the input.
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource<BarcodeFilterResult>(TaskCreationOptions.RunContinuationsAsynchronously);

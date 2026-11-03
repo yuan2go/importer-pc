@@ -455,7 +455,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     string IssueMessage(ParameterIssue issue, Location? location)
     {
         var label = location?.Label.TrimEnd(' ', '*') ?? "此参数";
-        if (issue.Message.EndsWith(": required", StringComparison.Ordinal)) return (issue.Path.EndsWith("/specified-chute", StringComparison.Ordinal) ? "请选择" : "请填写") + label + "。";
+        if (issue.Message.EndsWith(": required", StringComparison.Ordinal)) return "请填写" + label + "。";
         if (issue.Message.Contains(": invalid value", StringComparison.Ordinal))
         {
             var parameter = Model?.Readers.Concat(Model.Components).SelectMany(d => d.Parameters.Select(p => (Path: d.InstanceId + "/" + p.Field.Key, Parameter: p))).FirstOrDefault(x => x.Path == issue.Path).Parameter;

@@ -48,9 +48,6 @@ public sealed partial class SportmasterRcsTaskService
                 {
                     var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                     var requestId = NextHeartbeatId(timestamp);
-                    // Do not consume or collide with the durable destination request range.
-                    if (requestId > options.RequestIdBase && requestId <= checked(options.RequestIdBase + options.RequestIdCount))
-                        throw new InvalidDataException("Heartbeat clock requestId overlaps the configured destination range; allocate disjoint ranges");
                     var body = JsonSerializer.Serialize(new
                     {
                         source = options.Source,

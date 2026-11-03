@@ -10,12 +10,26 @@ internal static class RcsDestinationProtocol
     internal static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     internal static PreparedIntegrationRequest Prepare(RcsTaskOptions options, FrozenRequest request, long sequence)
+        => PrepareWire(options, request, sequence, false, null);
+
+    internal static bool MatchesFrozen(RcsTaskOptions options, FrozenRequest request, PreparedIntegrationRequest frozen)
+    {
+        if (Prepare(options, request, frozen.RequestId) == frozen) return true;
+        // Only validate original wire evidence; this path cannot prepare a new
+        // fixed-chute request or change the frozen bytes/target/ID.
+        if (options.Binding.Parameters.GetValueOrDefault("specified-chute") != "true" ||
+            !long.TryParse(options.Binding.Parameters.GetValueOrDefault("request-id-base"), out var first) ||
+            !long.TryParse(options.Binding.Parameters.GetValueOrDefault("request-id-count"), out var count) ||
+            first < 0 || count <= 0 || first > long.MaxValue - count || frozen.RequestId <= first || frozen.RequestId > first + count) return false;
+        return PrepareWire(options, request, frozen.RequestId, true, options.Text("chute-code", 64)) == frozen;
+    }
+
+    static PreparedIntegrationRequest PrepareWire(RcsTaskOptions options, FrozenRequest request, long requestId, bool specified, string? chute)
     {
         options.ValidateOriginal(request);
-        if (sequence <= 0 || sequence > options.RequestIdCount) throw new InvalidDataException("RCS request-id range exhausted; allocate a new disjoint range through controlled configuration");
+        if (requestId <= 0) throw new InvalidDataException("RCS requestId must be positive");
         var payload = Wire.Decode<ParcelPayload>(request.Payload);
         var position = options.Position(payload);
-        var requestId = checked(options.RequestIdBase + sequence);
         var body = JsonSerializer.Serialize(new
         {
             source = options.Source,
@@ -24,8 +38,8 @@ internal static class RcsDestinationProtocol
             locale = options.Locale,
             data = new[] { new { index = 1, command = Command, @params = new {
                 zoneId = options.ZoneId, projectId = options.ProjectId, loadCode = payload.ParcelCode,
-                stationCode = position.Station, bcrCode = position.Bcr, specifiedChute = options.SpecifiedChute,
-                chuteCode = options.ChuteCode, quantity = 1
+                stationCode = position.Station, bcrCode = position.Bcr, specifiedChute = specified,
+                chuteCode = chute, quantity = 1
             } } }
         }, Json);
         return new(requestId, "application/json", body, Wire.Hash(body));

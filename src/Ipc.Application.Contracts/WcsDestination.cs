@@ -6,6 +6,8 @@ namespace Ipc.Application.Contracts;
 public interface IWcsRequestPreparer
 {
     PreparedIntegrationRequest PrepareRequest(FrozenRequest request, long preparationSequence);
+    // The application assigns and persists automatic numeric IDs before delivery.
+    bool UsesAutomaticRequestIds => false;
     // Numeric components describe their configured range without I/O. The application
     // chooses a sequence at T1 using its durable allocations, never admission order.
     IntegrationRequestIdRange? GetRequestIdRange(CapabilityBinding binding) => null;

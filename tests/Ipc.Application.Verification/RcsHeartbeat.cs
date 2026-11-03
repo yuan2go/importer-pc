@@ -60,12 +60,12 @@ static partial class SportmasterRcs
         {
             service.ConfigureRuntime(config); peer.Mode = "http-error";
             var count = peer.Requests.Count; await service.StartAsync(default);
-            await Until(async () => peer.Requests.Count > count && !(await service.HealthAsync(default)).Ready);
+            await Until(async () => peer.Requests.Count > count && (await service.HealthAsync(default)).Detail.Contains("503", StringComparison.Ordinal));
             Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "failed HTTP heartbeat cannot retain typed online evidence");
             Check((await service.HealthAsync(default)).Detail.Contains("503", StringComparison.Ordinal), "configured one-second schedule exposes HTTP failures");
             peer.Mode = "assigned"; await Healthy(service);
             var first = peer.Requests.Last().Body;
-            peer.Mode = "redirect"; await Until(async () => !(await service.HealthAsync(default)).Ready);
+            peer.Mode = "redirect"; await Until(async () => (await service.HealthAsync(default)).Detail.Contains("302", StringComparison.Ordinal));
             Check((await service.HealthAsync(default)).Detail.Contains("302", StringComparison.Ordinal), "heartbeat does not follow redirects");
             peer.Mode = "timeout"; await Until(async () => (await service.HealthAsync(default)).Detail.Contains("timeout", StringComparison.Ordinal));
             Check(true, "stalled heartbeat times out and leaves destination outcomes untouched");
@@ -77,7 +77,7 @@ static partial class SportmasterRcs
             Check(after.RootElement.GetProperty("requestId").GetInt64() > before.RootElement.GetProperty("requestId").GetInt64(), "reconnect restarts a single loop with fresh increasing heartbeat IDs");
             var original = Request(binding); var prepared = service.PrepareRequest(original, 7);
             var reply = await service.RequestDestinationAsync(original with { IntegrationRequest = prepared }, default);
-            Check(prepared.RequestId == 810000007 && reply.BusinessAccepted == true && reply.PhysicalCompleted != true,
+            Check(prepared.RequestId == 7 && reply.BusinessAccepted == true && reply.PhysicalCompleted != true,
                 "heartbeat neither consumes durable destination IDs nor changes destination acceptance semantics");
             using (var destination = JsonDocument.Parse(prepared.Body))
             using (var heartbeat = JsonDocument.Parse(peer.Requests.First(r => r.Body.Contains("station_heartbeat", StringComparison.Ordinal)).Body))
@@ -121,9 +121,9 @@ static partial class SportmasterRcs
         {
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, collision));
             var count = peer.Requests.Count; await service.StartAsync(default);
-            await Until(async () => !(await service.HealthAsync(default)).Ready);
-            Check(peer.Requests.Count == count && (await service.HealthAsync(default)).Detail.Contains("overlaps", StringComparison.Ordinal),
-                "heartbeat refuses destination-ID range collisions before HTTP without consuming business IDs");
+            await Until(() => peer.Requests.Count > count);
+            Check(peer.Requests.Count > count && (await service.HealthAsync(default)).Ready,
+                "retired allocation fields do not block heartbeat or consume persisted destination IDs");
         }
         Console.WriteLine("PASS RCS HEARTBEAT COMPLETE");
     }

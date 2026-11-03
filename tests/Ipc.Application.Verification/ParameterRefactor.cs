@@ -52,7 +52,7 @@ static class ParameterRefactor
             Reader = bootstrapReaders[0],
             Topology = missing.Candidate.Topology with { Readers = bootstrapReaders },
             BarcodeFilter = new("OK[0-9]+"),
-            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["zone-id"] = "1", ["project-id"] = "1", ["specified-chute"] = "false", ["request-id-base"] = "1000000", ["request-id-count"] = "100", ["left-station-code"] = "SYNTHETIC", ["right-station-code"] = "SYNTHETIC", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } }
+            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["zone-id"] = "1", ["project-id"] = "1", ["left-station-code"] = "SYNTHETIC", ["right-station-code"] = "SYNTHETIC", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } }
         };
         var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, bootstrap, "Synthetic initial defaults and explicit synthetic connection settings");
         Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && (!Directory.Exists(missingLaunch.DataRoot) || !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any()) && (!Directory.Exists(missingLaunch.DataRoot) || Directory.EnumerateFiles(missingLaunch.DataRoot, "*lease*", SearchOption.AllDirectories).All(p => Path.GetFullPath(p) == Path.GetFullPath(Path.Combine(missingLaunch.DataRoot, "security/diagnostics/rotation.lease")))), "explicit first save persists parameters without starting SDK, creating a business database/device lease, or inventing qualification; administrator custody and diagnostic rotation are separate");
@@ -120,7 +120,7 @@ static class ParameterRefactor
         probe.FailInspection = false; await pendingVm.InspectLastSaveAsync();
         Check(!pendingVm.HasUnsavedConfiguration && pendingVm.Message.StartsWith("PendingRestart") && probe.StageCalls == 1, "later authority inspection confirms the original submission without resubmitting");
         var stale = new ParcelViewModel(app, "旧CAS", "合成验证"); await stale.RefreshAsync(); await stale.LoadCapabilitiesAsync();
-        pendingVm.StructuredPolicy.TimeoutMs = "1800"; await pendingVm.SaveStructuredConfigurationAsync();
+        pendingVm.StructuredPolicy.TimeoutMs = "1800"; pendingVm.ConfigurationReason = "Synthetic newer revision for CAS conflict"; await pendingVm.SaveStructuredConfigurationAsync();
         stale.StructuredPolicy!.TimeoutMs = "1900"; stale.ConfigurationReason = "Synthetic stale CAS"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.Message.StartsWith("Conflict") && stale.HasUnsavedConfiguration && stale.StructuredPolicy.TimeoutMs == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
         var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.QueueCapacity = "bad"; await stale.SaveStructuredConfigurationAsync();

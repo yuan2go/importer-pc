@@ -19,7 +19,7 @@
 |---|---|---|
 | UIR-00 | 核对最新 main、工作区和并行 PR；完整查看 V1 48 PNG、V2 67 PNG、两版原型及交接。撤出仅设计/不测试的现行限制，保持有效实现和原件 | INDEX、STATUS、design、工作包、PUBLICATION；历史归档不重新标记为新实现 |
 | UIR-01 | 一个业务实例的四导航，左右摘要；四类参数、对象选择、宽屏双列、跨分类搜索、控件和草稿保留 | `ParameterSettingsControl.*`、`SupplyStationWindow.*`、共享 `ShellWindow`。页面脱离视觉树时保持自身 DataContext，避免编辑控件重建 |
-| UIR-02 | 真实元数据字段、范围/依赖校验、错误定位；左右站码冲突显式迁移、两种 bcrCode 独立；条码样例有界测试、输入变化令旧结果过期 | `ParameterOwnership`、`ParameterEditorModel`、`CapabilityDraft`。无海康端口字段；未声明能力不补造。关闭指定格口不提交旧值，但保留当前原始草稿 |
+| UIR-02 | 真实元数据字段、范围/依赖校验、错误定位；左右站码冲突显式迁移、两种 bcrCode 独立；条码样例有界测试、输入变化令旧结果过期 | `ParameterOwnership`、`ParameterEditorModel`、`CapabilityDraft`。无海康端口字段；未声明能力不补造。SM 不提供指定格口和请求编号范围，保存时移除废弃字段；已冻结原请求保持原样 |
 | UIR-03 | 单一候选账及编辑来源，完整修改摘要、受控保存、回执核对、Pending/Effective、三选项离开保护、多窗草稿不合并 | 复用 `ConfigurationSubmission` / `PersistentConfigurationDrafts`；`ConfigurationCloseGuard`。保存失败保留输入；未知提交核对原账，不自行重送 |
 | UIR-04 | 相机、扫描、RCS任务三组；任务号/SKU/波次/响应数量随同一接受请求整组更新或失效；原责任单独保留 | `SupplyStationViewModel`、`SupplyStationPosition`、`WcsDestinationResult`、RCS解析。窄视口把候选详情放入展开区，保留条码/格口/原责任与操作空间 |
 | UIR-05 | 独立五步首配共用模型；记录、诊断、维护、模板差异预览、备份恢复、安装及离线帮助 | `StartupWorkflows`、`StartupConfigurationDraft`、`ProductHelp`、`MaintenancePage`。已配置故障仍进独立维护；不新增部署平台 |

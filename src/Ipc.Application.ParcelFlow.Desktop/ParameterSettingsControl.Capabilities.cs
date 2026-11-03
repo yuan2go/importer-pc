@@ -85,8 +85,18 @@ public sealed partial class ParameterSettingsControl
             var optional = new CheckBox { Content = "绑定此可选能力", MinHeight = 38 };
             optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); page.Body.Children.Add(optional);
         }
+        var fixedRcs = Model?.ApplicationId == "sportmaster" && draft.Kind == "integration";
+        if (fixedRcs && !draft.Providers.Contains(draft.Provider!))
+        {
+            page.Body.Children.Add(Text("此连接不适用于当前 SM。请重新配置 RCS 服务，并填写实际服务地址。"));
+            var rcs = draft.Providers.SingleOrDefault();
+            var configure = new Button { Content = "配置 RCS 服务", MinHeight = 44, IsEnabled = rcs is not null, HorizontalAlignment = HorizontalAlignment.Left };
+            configure.Click += (_, _) => { draft.ProposeProvider(rcs!); draft.ApplyProviderChange(); if (!Uri.TryCreate(draft.Target, UriKind.Absolute, out var address) || address.Scheme is not ("http" or "https")) draft.Target = ""; };
+            page.Body.Children.Add(configure);
+            return;
+        }
         var choices = draft.Providers.Where(p => Model!.ApplicationId != "sportmaster" || draft.Kind != "observation" || p.Implementation == "hikrobot-mvs-reader").Where(p => !FirstConfiguration || p == draft.Provider || p.Implementation != "manual" && !p.Implementation.StartsWith("reference-", StringComparison.Ordinal)).Select(p => new ProviderChoice(p.Implementation == "tcp-line" ? "TCP/IP（换行收码）" : p.Implementation is "manual" or "reference-integration" ? "本地模拟" : p.Contract == "SPORTMASTER-RCS-SORTER-v1" ? "RCS 服务" : p.Implementation is "hikrobot-mvs" or "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? "海康标准相机 SDK（MVS，仅采图）" : p.Implementation == "hikrobot-mvs-reader" ? "海康 MVS＋软件识别" : p.Implementation is "hikrobot-idmvs" or "extension:hikrobot.idmvs-reader/idmvs-reader" ? "海康智能读码器（MvCodeReader SDK）" : ChineseInterfaceText.CapabilityKind(p.Kind), p)).ToArray();
-        if (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null || !choices.Any(c => c.Provider == draft.Provider))
+        if (!fixedRcs && (draft.Kind is "observation" or "integration" && choices.Length > 1 || draft.Provider is null || !choices.Any(c => c.Provider == draft.Provider)))
         {
             var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 38 };
             var providerForm = Form(page);
@@ -142,19 +152,12 @@ public sealed partial class ParameterSettingsControl
             page.Body.Children.Add(Text("相机连续读码，每次读到的条码都发给 RCS（重复条码由 RCS 去重）。启用前请关闭其他占用相机的软件，例如 MVS 客户端。"));
         if (draft.Kind != "observation") Input(Form(page, isRcs ? "服务连接" : "连接"), isRcs ? "服务地址 *" : ParameterOwnership.IsDriver(draft) ? "设备连接目标" : "组件连接目标", draft, "Target", draft.InstanceId + "/Target", page,
             ParameterOwnership.IsRcs(draft) ? "HTTP(S) 地址，路径为 /rcs/sorter/api。" : draft.TargetBoundary);
-        if (isRcs)
-        {
-            var numbers = Form(page, "请求编号区间");
-            if (Model!.ApplicationId == "sportmaster") RequestRange(numbers, page, draft);
-            else foreach (var p in draft.Parameters.Where(p => p.Field.Key is "request-id-base" or "request-id-count")) Parameter(numbers, page, draft, p);
-        }
         var form = Form(page, draft.Kind == "observation" ? "连接" : isRcs ? "协议与心跳" : null);
         var advanced = new List<CapabilityParameter>();
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
-            else if (isRcs && p.Field.Key is "request-id-base" or "request-id-count") continue;
             else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes" or "motion.still-ms")) advanced.Add(p);
             else Parameter(form, page, draft, p);
         }
@@ -184,14 +187,10 @@ public sealed partial class ParameterSettingsControl
         "project-id" => "生产线ID",
         "device.ip" => "IP 地址",
         "device.port" or "port" => "端口",
-        "specified-chute" => "指定格口",
-        "chute-code" => "格口编号",
         "left-bcr-code" => "左相机编码",
         "right-bcr-code" => "右相机编码",
         "heartbeat-interval-seconds" => "心跳间隔",
         "request-timeout-ms" => "取格口请求超时",
-        "request-id-base" => "起始编号（不含）",
-        "request-id-count" => "编号数量",
         "source" => "协议来源",
         "locale" => "协议语言",
         "reply-mode" => "模拟返回方式",
@@ -218,22 +217,17 @@ public sealed partial class ParameterSettingsControl
         "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，1–3600 秒。",
         "motion.still-ms" => "包裹放稳多久后才识别，默认 200 毫秒，可填 0–2000 毫秒。放置过程中的画面不识别；画面一直不稳时约每 1.5 秒仍识别一次。填 0 表示每帧都识别。",
         "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后结果未确认，请到记录核对；不会自动重发。",
-        "specified-chute" => "一般选“不指定”，由 RCS 分配格口。只有现场要求包裹去固定格口时才选“指定”。",
-        "chute-code" => "选择“指定”时要求 RCS 使用的格口编号，最终仍以 RCS 返回为准。",
         "source" => "RCS 接口约定的来源标记，按接口文档填写。",
         "locale" => "RCS 接口约定的语言标记，按接口文档填写（不影响本软件界面语言）。",
-        "request-id-base" => "RCS 分配给本供包台的请求编号段起点（不含此编号），不能与其他供包台重叠。",
-        "request-id-count" => "编号段的大小。用完后无法再发请求，需要向 RCS 申请新的编号段。",
         _ => p.EditorHelp.Length > 100 ? "完整规则见下方参数说明。" : p.EditorHelp
     };
     sealed record BooleanChoice(string Value, string Label);
     void Parameter(Panel form, ObjectPage page, CapabilityDraft draft, CapabilityParameter p)
     {
-        if (Model!.ApplicationId == "sportmaster" && ParameterOwnership.IsRcs(draft) && p.Field.Key is "specified-chute" or "chute-code") return;
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "quantity") return;
         var path = draft.InstanceId + "/" + p.Field.Key;
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
-        var required = p.Field.Required || cameraCodeRequired || ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code" && ParameterOwnership.Applicable(draft, p.Field.Key);
+        var required = p.Field.Required || cameraCodeRequired;
         var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-seconds" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
@@ -247,10 +241,9 @@ public sealed partial class ParameterSettingsControl
             p.PropertyChanged += changed; unsubscribe.Add(() => p.PropertyChanged -= changed);
             Field(form, label, box, "敏感内容已隐藏。" + (p.Field.ReadOnly ? "此字段只读。" : ""), path, page);
         }
-        else if (p.Field.Type == "boolean" || p.Field.Key == "specified-chute")
+        else if (p.Field.Type == "boolean")
         {
-            var specified = p.Field.Key == "specified-chute";
-            var choice = new ComboBox { ItemsSource = specified ? new[] { new BooleanChoice("", "请选择"), new BooleanChoice("false", "不指定"), new BooleanChoice("true", "指定") } : new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") }, DisplayMemberPath = "Label", SelectedValuePath = "Value" };
+            var choice = new ComboBox { ItemsSource = new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") }, DisplayMemberPath = "Label", SelectedValuePath = "Value" };
             choice.SetBinding(ComboBox.SelectedValueProperty, new Binding("Value") { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
             Field(form, label, choice, help, path, page);
         }
@@ -265,18 +258,7 @@ public sealed partial class ParameterSettingsControl
         var accessibleHelp = help == requirements ? help : help + "\n填写要求：" + requirements;
         AutomationProperties.SetHelpText(locations[path].Control, accessibleHelp);
         locations[path].Control.ToolTip = accessibleHelp;
-        locations[path].Control.IsEnabled = !p.Field.ReadOnly && ParameterOwnership.Applicable(draft, p.Field.Key);
+        locations[path].Control.IsEnabled = !p.Field.ReadOnly;
         Technical(page, ParameterLabel(p), path, help + "\n填写要求：" + requirements);
-        if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code")
-        {
-            var field = locations[path].Control;
-            var row = locations[path].Row!;
-            bool Applicable() => draft.Parameters.FirstOrDefault(x => x.Field.Key == "specified-chute")?.Value == "true";
-            locations[path] = locations[path] with { Applicable = Applicable };
-            void Update() { var selected = Applicable(); row.Visibility = selected ? Visibility.Visible : Visibility.Collapsed; field.IsEnabled = !p.Field.ReadOnly && selected; RefreshSearch(); }
-            PropertyChangedEventHandler handler = (_, _) => Update();
-            draft.PropertyChanged += handler; unsubscribe.Add(() => draft.PropertyChanged -= handler);
-            Update();
-        }
     }
 }

@@ -20,28 +20,6 @@
     "Maximum": 9223372036854775807
   },
   {
-    "Key": "request-id-base",
-    "Group": "RCS 分拣任务",
-    "Label": "独占请求编号区间起点（不含）",
-    "Type": "integer",
-    "Default": "0",
-    "Required": true,
-    "MaximumLength": 32,
-    "Minimum": 0,
-    "Maximum": 9223372036854775806
-  },
-  {
-    "Key": "request-id-count",
-    "Group": "RCS 分拣任务",
-    "Label": "独占请求编号区间容量",
-    "Type": "integer",
-    "Default": "10000",
-    "Required": true,
-    "MaximumLength": 32,
-    "Minimum": 1,
-    "Maximum": 9223372036854775807
-  },
-  {
     "Key": "left-station-code",
     "Group": "RCS 分拣任务",
     "Label": "左位工位编号",
@@ -74,27 +52,6 @@
     "Required": false,
     "MaximumLength": 256,
     "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。"
-  },
-  {
-    "Key": "specified-chute",
-    "Group": "RCS 分拣任务",
-    "Label": "是否指定格口",
-    "Type": "choice",
-    "Default": "false",
-    "Required": true,
-    "Choices": [
-      "false",
-      "true"
-    ]
-  },
-  {
-    "Key": "chute-code",
-    "Group": "RCS 分拣任务",
-    "Label": "指定格口（仅指定时填写）",
-    "Type": "string",
-    "MaximumLength": 64,
-    "RequiredWhenKey": "specified-chute",
-    "RequiredWhenEquals": "true"
   },
   {
     "Key": "request-timeout-ms",

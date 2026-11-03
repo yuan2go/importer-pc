@@ -42,17 +42,6 @@ public partial class SupplyStationWindow
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);
         actions.Children.Add(ProductButton("离线维护…", RequestOfflineMaintenance)); body.Children.Add(actions);
-        body.Children.Add(ProductText("软件更新", true));
-        var update = ProductText("正在读取新版本说明…");
-        async Task CheckUpdate()
-        {
-            if (ViewModel.Application is not IUpdateNoticeSource source) { update.Text = "当前版本不支持新版本提示。"; return; }
-            var notice = await source.ReadUpdateNoticeAsync(CancellationToken.None);
-            update.Text = notice.Text;
-            update.SetResourceReference(TextBlock.ForegroundProperty, notice.State is UpdateNoticeState.CurrentRevoked ? "Danger" : notice.State is UpdateNoticeState.Available ? "Accent" : "Muted");
-        }
-        body.Children.Add(update); body.Children.Add(ProductButton("检查软件更新", CheckUpdate));
-        body.Loaded += async (_, _) => { try { await CheckUpdate(); } catch (Exception) { update.Text = "新版本说明读取失败，不影响作业；请稍后重新检查。"; } };
         return body;
     }
     async Task CreateProductBackup()

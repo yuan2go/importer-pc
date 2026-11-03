@@ -8,6 +8,6 @@
 
 相机和RCS都已启用时，该相机编码必填且左右不能重复；明确延后或停用的相机不参与心跳，延后字段可留空。所有相机均延后时不发空心跳。启用相机前，完整候选静态校验及实际RCS运行配置均核对原拓扑位置、编码、重复和设备身份；缺失拒绝，不回退至旧驱动编码。SDK切换只重置本相机连接参数，相机编码保留。取格口准备仍固定本件的原RCS绑定和编码，新的Pending编码不会覆盖原请求，Unknown不会自动重发。
 
-供包台编号读取系统StationCode，并沿既有完整候选统一到取格口映射。接口仍为sorter.task.station_heartbeat，沿当前RCS端点，source固定BAR、locale固定zh_CN，version=1、数值requestId及UTC Unix毫秒timestamp。默认5秒，参数范围1～3600秒。心跳编号不消耗持久化取格口编号范围；冲突拒绝。HTTP成功只代表传输，未提供应用层确认合同，不能标为业务接受；失败不重发旧心跳，不重发Unknown业务请求。
+供包台编号读取系统StationCode，并沿既有完整候选统一到取格口映射。接口仍为sorter.task.station_heartbeat，沿当前RCS端点，source固定BAR、locale固定zh_CN，version=1、数值requestId及UTC Unix毫秒timestamp。默认5秒，参数范围1～3600秒。心跳按 Unix 毫秒生成编号，取格口按 Unix 微秒与永久编号下限自动生成并持久化，不配置或消耗编号段。HTTP成功只代表传输，未提供应用层确认合同，不能标为业务接受；失败不重发旧心跳，不重发Unknown业务请求。
 
 沿用唯一RCS实例和生命周期。运行中的实例禁止重配；受控停止排空定时任务及HTTP调用，保存后Pending与Effective分离。真实SDK、真实RCS、现场验收分别记录；环回HTTP和原生UI验证不是现场证据。

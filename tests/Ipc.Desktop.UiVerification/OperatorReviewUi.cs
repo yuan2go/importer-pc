@@ -46,10 +46,17 @@ static partial class Program
             Check(h.Peer.Requests.Count == peerCount && h.Api(h.Right).Opens == opens && h.Factory.Sources[h.Right].Epoch == epoch, "automatic diagnostic polling creates no parcel request or replacement camera owner");
             var tools = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "维护工具")); tools.IsExpanded = true; await Flush();
             Check(Descendants(tools).OfType<Button>().Single(b => Equals(b.Content, "取消导出")).Visibility == Visibility.Collapsed && Descendants(tools).OfType<Button>().Any(b => Equals(b.Content, "创建完整备份…")) && Descendants(tools).OfType<Button>().Any(b => Equals(b.Content, "离线维护…")), "maintenance retains backup and offline handoff while hiding idle export cancellation");
+            Check(!Descendants(tools).OfType<Button>().Any(b => Equals(b.Content, "检查软件更新")) &&
+                !Descendants(tools).OfType<TextBlock>().Any(t => t.Text is "软件更新" or "未配置新版本说明。" or "正在读取新版本说明…"),
+                "maintenance has no software update action, status or empty section");
             tools.IsExpanded = false;
             foreach (var size in new[] { (1536d, 816d), (800d, 420d) })
             {
                 await SetClient(window, size.Item1, size.Item2); await Flush();
+                tools.IsExpanded = true; tools.BringIntoView(); await Flush();
+                tools.BringIntoView(); await Flush();
+                CaptureInternal(evidence, "review-maintenance-without-updates-" + size.Item1, (Grid)window.FindName("ClientArea"), lines);
+                tools.IsExpanded = false; await Flush();
                 Check(Inside(clock, (Grid)window.FindName("ClientArea")), "clock stays inside the header at " + size.Item1);
                 CaptureInternal(evidence, "review-diagnostics-" + size.Item1, (Grid)window.FindName("ClientArea"), lines);
             }
@@ -74,7 +81,7 @@ static partial class Program
             Check(editor.ShowPage(3, "RCS 服务"), "first configuration opens the actual RCS step"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); first.UpdateLayout();
             Check(!Descendants(editor).OfType<ListBox>().Any(b => b.IsVisible), "single-page first-configuration step hides the redundant left rail");
             Check(Descendants(editor).OfType<Button>().Count(b => AutomationProperties.GetItemStatus(b) == "当前步骤") == 1 && Descendants(editor).OfType<Button>().Any(b => AutomationProperties.GetItemStatus(b) == "当前步骤" && b.Content.ToString()!.Contains("4 RCS")), "step bar exposes exactly one highlighted and accessible current step");
-            Check(Descendants(editor).OfType<TextBlock>().Any(t => t.Text.StartsWith("请求编号范围（由 RCS 分配）", StringComparison.Ordinal)) && Descendants(editor).OfType<TextBlock>().Any(t => t.Text == "填 RCS 分给本供包台的编号段，不能和其他供包台重叠。"), "request range uses the allocated-range instruction");
+            Check(!Descendants(editor).OfType<TextBlock>().Any(t => t.Text.Contains("请求编号范围") || t.Text.Contains("请求编号区间")), "RCS configuration has no allocated-range instruction");
             CaptureInternal(evidence, "review-first-rcs", editor, lines);
         }
         finally { first.Close(); }

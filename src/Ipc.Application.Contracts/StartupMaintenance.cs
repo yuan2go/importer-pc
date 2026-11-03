@@ -12,6 +12,7 @@ public sealed record StartupCheck(string Layer, string Status, string Reason);
 public sealed record StartupCheckReport(string CandidateHash, DateTimeOffset At, StartupCheck[] Checks);
 public sealed record StartupBackupItem(string Path, string Status, DateTimeOffset? At, long Bytes, string? Identity, string Summary);
 public sealed record StartupChangePreview(string Identity, string Purpose, bool Allowed, string Summary, string ConfigurationHash, string? BackupDestination);
+public sealed record StartupRollbackReview(DeploymentRollbackPlan Deployment, StartupChangePreview? Business);
 public sealed record StartupSiteTemplate(int SchemaVersion, string Application, string SourceIdentity, StartupEditorState Defaults);
 public sealed record StartupRestoreHandoff(string Id, string SourceDirectory, string TargetDirectory, string BackupIdentity,
     string SourceConfigurationHash, string TargetManifestHash, string MachinePolicyHash, DateTimeOffset At);

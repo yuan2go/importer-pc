@@ -8,9 +8,11 @@ using Ipc.Platform;
 
 namespace Ipc.Desktop;
 
-sealed class ProductMaintenanceWindow : StartupWorkflowWindow
+sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
 {
     internal Func<DeploymentLocation?> CurrentDeployment { get; set; } = () => WindowsDeploymentSetup.Current(ParcelStartupServices.ApplicationId);
+    internal bool AutomaticRead { get; set; } = true;
+    internal Func<string> RegistrationIdentity { get; set; } = () => Wire.FileHash(WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId));
     internal Func<WindowsRemovalReceipt> InspectRemoval { get; set; } = () => WindowsDeploymentSetup.InspectRemoval(ParcelStartupServices.ApplicationId);
     internal Func<DeploymentMedia, Task<WindowsRemovalReceipt>> ContinueRemoval { get; set; } = media =>
         ParcelStartupServices.ResumeRemovalAsync(media, Wire.FileHash(WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId)));
@@ -28,18 +30,22 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     internal ProductMaintenanceWindow(DeploymentMedia media) : this() => cleanupMedia = media;
     public ProductMaintenanceWindow() : base("菜鸟供包台 · 修复与卸载")
     {
+        WorkflowHeading.Text = "修复与卸载";
         Body.Children.Add(backupEnabled);
         backupEnabled.Click += (_, _) => { plan = null; };
-        backupDirectory = Folder("完整备份目录（卸载会保留业务数据、配置和设备身份）", Path.Combine(WindowsStoragePaths.UserRoot, "backups"));
+        var personal = WindowsStoragePaths.UserRoot;
+        var defaultBackup = Path.GetPathRoot(personal)?.Equals(@"D:\", StringComparison.OrdinalIgnoreCase) == true ? Path.Combine(personal, "backups") : @"D:\ProgramData\ImporterPc\backups";
+        backupDirectory = Folder("完整备份目录（卸载会保留业务数据、配置和设备身份）", defaultBackup);
         backupDirectory.TextChanged += (_, _) =>
         {
             plan = null; backupFile = "";
+            InvalidateRollbackReview();
             if (!removalCompleted) Message("备份目录已更改，请重新点击“读取安装信息”。");
         };
         Note("此窗口不会启动供包或设备。修复程序需要使用完整的原安装包；开始菜单和快捷方式可直接修复。卸载不会删除共享驱动和业务数据。");
         Action("读取安装信息", Read, readOnly: true);
         Action("查看上次卸载结果", InspectOriginal, readOnly: true);
-        var resume = Action("用原安装包继续清理…", ResumeOriginal, readOnly: true);
+        var resume = Action("继续上次卸载清理…", ResumeOriginal, readOnly: true);
         resume.Visibility = CurrentDeployment()?.LifecycleState is { } lifecycle && lifecycle != "Installed" ? Visibility.Visible : Visibility.Collapsed;
         Action("修复开始菜单与快捷方式…", async () =>
         {
@@ -56,17 +62,17 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
                 (progress,token)=>ParcelStartupServices.RemoveAsync(registrationHash,plan.Identity,backupFile,progress,token));
             ShowRemovalResult(receipt);
         });
+        AddRollbackSection();
         CloseAction();
-        Loaded += async (_, _) => await Run(Read);
+        Loaded += async (_, _) => { if (AutomaticRead) await Run(Read); };
     }
     async Task Read()
     {
         if (removalCompleted) return;
         location = CurrentDeployment() ?? throw new InvalidDataException("未找到安装登记，请用完整安装包重新安装");
         if (location.LifecycleState != "Installed") { ShowRemovalResult(await Task.Run(InspectRemoval)); return; }
-        registrationHash = Wire.FileHash(WindowsDeploymentSetup.Registration(location.ApplicationId));
+        registrationHash = RegistrationIdentity();
         if (UnknownOutcome) { Message("上次卸载尚未完成，请稍后查看结果，勿重复卸载。"); return; }
-        if (backupEnabled.IsChecked == true) Directory.CreateDirectory(backupDirectory.Text);
         backupFile = backupEnabled.IsChecked == true ? Path.Combine(Path.GetFullPath(backupDirectory.Text), location.ApplicationId + "-pre-remove-" + Wire.Id() + ".db") : "";
         plan = await RunMaintenance("卸载前检查\n数据：" + location.DataRoot + "\n备份：" + (backupFile.Length == 0 ? "本次不备份" : backupFile),
             (progress, token) => ParcelStartupServices.ReviewRemovalAsync(registrationHash, backupFile, progress, token), readOnly: true);

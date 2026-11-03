@@ -138,6 +138,7 @@ public static partial class WindowsDeploymentSetup
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         var before = Current(request.ApplicationId);
         RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
+        RequireNoUnresolvedLifecycle(request.ApplicationId);
         if (before is { LifecycleState: "Installed" })
         {
             var candidateRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "app", "application-release.json")));

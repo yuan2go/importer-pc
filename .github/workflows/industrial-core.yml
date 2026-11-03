@@ -47,8 +47,8 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
-          if ([int]$testCounters.executed -lt 8 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
+          if ([int]$testCounters.executed -lt 9 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
+          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
@@ -64,6 +64,8 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           python -m unittest discover -s scripts -p test_commercial_delivery.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_deployment_compatibility.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           ./scripts/test-signature-policy.ps1
       - name: Keep actual results including failures

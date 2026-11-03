@@ -11,6 +11,7 @@ public sealed record DeploymentLocation(string ApplicationId, string SourceCommi
     public string? InventorySha256 { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public DeploymentLocation? PreviousDeployment { get; init; }
+    public string? LifecycleOperation { get; init; }
 }
 public sealed record DeploymentMedia(string Root, string ApplicationId, string SourceCommit, Dictionary<string, string> Files)
 {
@@ -117,18 +118,27 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
              string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(current.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase)))
         {
             if (current.LifecycleState != "Installed") throw new InvalidOperationException("本发布已退役；从可信介质继续维护，原数据保留");
+            WindowsDeploymentSetup.RequireInstalledReady(current);
             return current;
         }
         if (!File.Exists(file)) return null;
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         var location = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
-        if (OperatingSystem.IsWindows() && WindowsDeploymentSetup.Current(application) is { } authoritative &&
-            string.Equals(Path.GetFullPath(authoritative.ReleaseRoot), Path.GetFullPath(location.ReleaseRoot), StringComparison.OrdinalIgnoreCase)) location = authoritative;
+        if (OperatingSystem.IsWindows()) location = AuthoritativeLocation(location, WindowsDeploymentSetup.Current(application));
         if (location.LifecycleState != "Installed" || File.Exists(Path.Combine(location.ReleaseRoot, "deployment-retired.json")))
             throw new InvalidOperationException("本发布已卸载/退役；原数据保留，请从可信介质重新安装后运行");
+        WindowsDeploymentSetup.RequireInstalledReady(location);
         if (location.ApplicationId != application || !string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(location.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(location.ReleaseRoot, "app"), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Deployment location differs from the selected executable");
         return location;
+    }
+
+    internal static DeploymentLocation AuthoritativeLocation(DeploymentLocation descriptor, DeploymentLocation? authoritative)
+    {
+        if (authoritative is null || authoritative.ApplicationId != descriptor.ApplicationId ||
+            !string.Equals(Path.GetFullPath(authoritative.ReleaseRoot), Path.GetFullPath(descriptor.ReleaseRoot), StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("此程序版本已不属于当前安装；请使用当前开始菜单入口，原数据保留。");
+        return authoritative;
     }
 }

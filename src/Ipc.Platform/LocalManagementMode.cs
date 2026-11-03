@@ -18,6 +18,7 @@ public sealed record ManagementModeDelegation(string Token, string SessionId, st
 // A station mode grant, never an operator or a hidden administrator account.
 public sealed partial class LocalManagementMode
 {
+    public const int CredentialSchemaVersion = 2;
     static readonly System.Collections.Concurrent.ConcurrentDictionary<string, LocalManagementMode> stores = new(StringComparer.OrdinalIgnoreCase);
     public static LocalManagementMode ForRoot(string root) => stores.GetOrAdd(Path.GetFullPath(root), r => new(r));
     readonly string directory, path, legacyPath, markerPath, dataRoot, diagnosticDirectory;
@@ -74,11 +75,11 @@ public sealed partial class LocalManagementMode
             if (File.Exists(markerPath)) throw new InvalidDataException("已设置的管理密码文件缺失，禁止重新设置覆盖；请由安装维护修复原件。");
             if (File.Exists(legacyPath)) throw new InvalidDataException("旧管理凭据不受支持；请保留原件，禁止转换或重新设置覆盖。");
             if (File.Exists(Path.Combine(directory, "PROVISIONED"))) throw new InvalidDataException("旧版已配置凭据缺失，禁止按首次设置覆盖。");
-            return new(2, null, 0, default, []);
+            return new(CredentialSchemaVersion, null, 0, default, []);
         }
         if (new FileInfo(path).Length > 1024 * 1024) throw new InvalidDataException("管理模式凭据超出限制，保留原件修复。");
         var s = JsonSerializer.Deserialize<Store>(File.ReadAllText(path)) ?? throw new InvalidDataException("管理模式凭据损坏。");
-        if (s.SchemaVersion != 2 || s.Audit is null || s.Audit.Length > 512 || s.CredentialRevision < 1 || s.RecoveryChallenges?.Length > 8 || s.Delegations?.Length > 1024 || s.Credential is null) throw new InvalidDataException("管理模式凭据不完整，禁止重新设置覆盖。");
+        if (s.SchemaVersion != CredentialSchemaVersion || s.Audit is null || s.Audit.Length > 512 || s.CredentialRevision < 1 || s.RecoveryChallenges?.Length > 8 || s.Delegations?.Length > 1024 || s.Credential is null) throw new InvalidDataException("管理模式凭据不完整，禁止重新设置覆盖。");
         if(s.Credential is not null) ValidateStoredCredential(s.Credential);
         return s;
     }

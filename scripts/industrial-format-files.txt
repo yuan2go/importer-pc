@@ -11,3 +11,9 @@ tests/Ipc.Application.Verification/IndustrialDiagnostics.cs
 tests/Ipc.Application.Verification/IndustrialLifecycle.cs
 tests/Ipc.Application.Verification/IndustrialRecovery.cs
 tests/Ipc.Core.Tests/CoreRegression.cs
+src/Ipc.Platform/DeploymentRollback.cs
+src/Ipc.Platform/DeploymentRuntimeCompatibility.cs
+src/Ipc.Assembly/ParcelStartupServices.Rollback.cs
+src/Ipc.Desktop/ProductMaintenanceWindow.Rollback.cs
+tests/Ipc.Application.Verification/IndustrialRollback.cs
+tests/Ipc.Desktop.UiVerification/IndustrialMaintenance.cs

@@ -15,6 +15,8 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     string? ManagementPassword = null, StartupRetentionPlan? RetentionPlan = null)
 {
     public ManagementPasswordRecoveryChallenge? RecoveryChallenge { get; init; }
+    public DeploymentRollbackPlan? RollbackPlan { get; init; }
+    public string? RollbackOperationId { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
 }
@@ -206,6 +208,10 @@ public static partial class ParcelStartupServices
         execution?.Checkpoint();
         switch (request.Action)
         {
+            case "ReviewRollback": return await ReviewRollbackCore(request, execution);
+            case "Rollback": return await ExecuteRollbackCore(request, execution);
+            case "InspectRollback": return await InspectRollbackCore(request, repair: false);
+            case "RepairRollback": return await InspectRollbackCore(request, repair: true);
             case "ExpireHistory": return Wire.Encode(await Core(request.Launch!, installer: true).ExecuteRetentionAsync(request.RetentionPlan ?? throw new InvalidDataException("缺少固定原维护计划")));
             case "InspectManagementPasswordRecovery":
                 MachineRuntimePolicy.RequireExtensionInstallerAuthority();

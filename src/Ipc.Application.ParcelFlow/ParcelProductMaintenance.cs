@@ -7,6 +7,15 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelStartupMaintenance
 {
+    // System projections never own business state. Keep the actual application
+    // lease through the callback instead of treating a prior check as a lease.
+    public async Task WithOfflineApplicationOwnerAsync(Func<Task> action)
+    {
+        Authorize(); var state = ReadState();
+        using var owner = new ResourceLease(state.Directory, ["application-owner"]);
+        if (ReadState().Hash != state.Hash) throw new InvalidOperationException("配置在取得所有权时变化。");
+        Authorize(); await action().ConfigureAwait(false);
+    }
     sealed record Snapshot(string Directory, string Database, string SourceIdentity, IReadOnlyDictionary<string, string> OriginalHashes) : IDisposable
     { public void Dispose() => System.IO.Directory.Delete(Directory, true); }
     Snapshot CopyForMaintenance(string directory, MaintenanceExecution? execution = null)
@@ -40,9 +49,11 @@ public sealed partial class ParcelStartupMaintenance
     }
     StartupChangePreview Preview(string purpose, string? destination, (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) state, Snapshot? copy, MaintenanceExecution? execution = null)
     {
-        if (purpose is not ("Upgrade" or "Repair" or "Uninstall" or "Backup")) throw new InvalidDataException("不支持的产品维护目的");
+        if (purpose is not ("Upgrade" or "Repair" or "Uninstall" or "Backup" or "Rollback" or "PruneVersions")) throw new InvalidDataException("不支持的产品维护目的");
         if (copy is null)
         {
+            if (purpose is "Rollback" or "PruneVersions")
+                return new(Wire.Hash(state.Hash + purpose + destination), purpose, false, "本站尚无可核验的业务库，不能证明新版本已正常打开；保留所有版本并先修复安装。", state.Hash, destination);
             if (new[] { definition.Id + ".db-wal", definition.Id + ".db-shm", "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }
                 .Any(n => File.Exists(Path.Combine(state.Directory, n))))
                 throw new InvalidDataException("无数据库却存在日志或恢复/过载责任标记；保留原根并核对原发布，不能按未使用部署升级");

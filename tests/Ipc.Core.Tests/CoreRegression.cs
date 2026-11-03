@@ -11,6 +11,7 @@ public sealed class CoreRegression
     [TestCategory("Core")]
     [DataRow("--industrial-recovery", 22)]
     [DataRow("--industrial-lifecycle", 31)]
+    [DataRow("--industrial-rollback", 43)]
     [DataRow("--industrial-diagnostics", 34)]
     [DataRow("--station-single-camera", 65)]
     [DataRow("--same-placement-29", 17)]

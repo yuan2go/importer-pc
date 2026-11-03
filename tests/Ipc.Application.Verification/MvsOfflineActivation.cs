@@ -121,6 +121,8 @@ static partial class SportmasterRcs
             s = await app.SnapshotAsync();
             Check(saved.Status == "PendingRestart" && !s.Paused && SavedEffective() == original && s.Configuration.Pending is not null,
                 "unpaused parameter save automatically quiesces, keeps effective settings and restores normal admission after staging");
+            // Field case: GigE packet loss, then StopGrabbing fails with 0x80000214 on the broken
+            // stream. Teardown records it, really destroys/finalizes, and automatic reconnect reopens.
             var stops = returned.StopAttempts;
             var opens = returned.OpenAttempts;
             returned.FailStop = true; returned.Discovered = false;
@@ -128,12 +130,25 @@ static partial class SportmasterRcs
             {
                 await Wait(app, _ => returned.StopAttempts > stops);
                 returned.Discovered = true;
+                s = await Wait(app, s => returned.OpenAttempts > opens && s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+                Check(returned.Calls.Contains("destroy") && s.Operations.All(o => o.Wcs!.Attempts == 1),
+                    "a StopGrabbing error after stream loss no longer blocks reconnect: native handle destroyed, camera reopened, original requests not resent");
+            }
+            finally { returned.FailStop = false; }
+            // A real release failure (DestroyHandle) still keeps the owner and blocks automatic reopen.
+            var destroys = returned.DestroyAttempts;
+            opens = returned.OpenAttempts;
+            returned.FailDestroy = true; returned.Discovered = false;
+            try
+            {
+                await Wait(app, _ => returned.DestroyAttempts > destroys);
+                returned.Discovered = true;
                 await Task.Delay(2200);
                 s = await app.SnapshotAsync();
                 Check(returned.OpenAttempts == opens && s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == false && s.Operations.All(o => o.Wcs!.Attempts == 1),
-                    "failed native cleanup blocks automatic reopen and camera admission while retaining original requests and ownership");
+                    "failed native release blocks automatic reopen and camera admission while retaining original requests and ownership");
             }
-            finally { returned.FailStop = false; }
+            finally { returned.FailDestroy = false; }
             await app.StopAsync(default);
             await Task.Delay(1200);
             Check(returned.OpenAttempts == opens, "completed application stop cancels recovery and never opens the camera again");

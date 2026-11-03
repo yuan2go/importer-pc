@@ -52,7 +52,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     Action<DeviceHealthConfirmation>? health;
     bool initialized, created, opened, grabbing, disposed;
     volatile bool disposeRequested;
-    string phase = "not-started", epoch = "not-started", failure = "", physicalSerial = "";
+    string phase = "not-started", epoch = "not-started", failure = "", physicalSerial = "", teardown = "";
     long frames, bytes;
     uint? priorFrame;
     public string DeviceId => context.DeviceId;
@@ -60,7 +60,9 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     public string Phase { get { lock (gate) return phase; } }
     public long Frames { get { lock (gate) return frames; } }
     public string Failure { get { lock (gate) return failure; } }
-    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; failure={failure}"; } }
+    // SDK errors from StopGrabbing/CloseDevice in the last teardown that did complete; empty when clean.
+    public string TeardownNotes { get { lock (gate) return teardown; } }
+    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; failure={failure}; teardown={teardown}"; } }
     internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null, bool diagnosticVideoSampling = false)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoder = decoder;
@@ -102,7 +104,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (initialized || created || worker is not null || lease is not null || Undelivered is not null) throw new InvalidOperationException("Original acquisition owner retained; stop before restart");
             Timings.Reset();
-            lock (gate) { epoch = registeredEpoch; failure = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; ResetDiagnostics(); }
+            lock (gate) { epoch = registeredEpoch; failure = ""; teardown = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; ResetDiagnostics(); }
             try
             {
                 preview.Clear();
@@ -191,8 +193,12 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         lock (gate) acquireCalls++;
                         frame = api.Acquire(); observedAt = DateTimeOffset.UtcNow; deliveredTicks = Stopwatch.GetTimestamp();
                     }
-                    catch (IOException error) when (!api.Connected())
-                    { throw new ObservationConnectionException("MVS相机连接已断开。", error); }
+                    catch (IOException error)
+                    {
+                        // Any SDK error from GetImageBuffer (GigE packet loss, UDP receive failure,
+                        // device loss) ends this stream. Reconnect re-verifies IP and serial.
+                        throw new ObservationConnectionException("MVS相机图像流中断。", error);
+                    }
                     finally { Timings.Record("sdk.acquire", Stopwatch.GetElapsedTime(acquireStarted).TotalMilliseconds); }
                     Timings.Record(frame is null ? "sdk.acquire.no-data" : "sdk.acquire.frame", Timings.LastMs("sdk.acquire"));
                     if (frame is null) { lock (gate) noData++; }
@@ -337,8 +343,19 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         // errors still retain the original owner and stop at the failed step.
         Report(DeviceHealth.Stopping);
         if (api.HasFrame) { PhaseTo("retry-free-original-buffer"); await Task.Run(api.Release).ConfigureAwait(false); }
-        if (grabbing) { PhaseTo("stop-grabbing"); await Task.Run(api.Stop).ConfigureAwait(false); grabbing = false; }
-        if (opened) { PhaseTo("close"); await Task.Run(api.Close).ConfigureAwait(false); opened = false; }
+        // StopGrabbing and CloseDevice are transitions, not releases. After GigE packet loss
+        // they can fail (e.g. 0x80000214 UDP receive, 0x80000003 call order) on a stream that
+        // is already broken; retrying them only repeats the error. Record the error and go on:
+        // ownership is released only when DestroyHandle and Finalize actually succeed below.
+        List<string> transitions = [];
+        async Task Transition(string stage, Action call)
+        {
+            try { await Task.Run(call).ConfigureAwait(false); }
+            catch (IOException error) { transitions.Add(stage + ": " + error.Message); }
+        }
+        if (grabbing) { PhaseTo("stop-grabbing"); await Transition("StopGrabbing", api.Stop).ConfigureAwait(false); grabbing = false; }
+        if (opened) { PhaseTo("close"); await Transition("CloseDevice", api.Close).ConfigureAwait(false); opened = false; }
+        if (transitions.Count != 0) lock (gate) teardown = string.Join("; ", transitions);
         if (created) { PhaseTo("destroy"); await Task.Run(api.Destroy).ConfigureAwait(false); created = false; }
         if (initialized) { PhaseTo("finalize"); await Task.Run(api.Shutdown).ConfigureAwait(false); initialized = false; }
         decoder?.Release();

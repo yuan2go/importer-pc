@@ -106,6 +106,22 @@ internal static class LiveDevices30
             "a camera change together with new barcode rules applies both at once");
         await CameraRoundHarness.Until(() => Online(h.Right));
 
+        // The two RCS fields whose descriptor used to promise a mandatory restart
+        // use the same live path, retaining provider identity and both camera sessions.
+        foreach (var (key, value) in new[] { ("request-timeout-ms", "2300"), ("heartbeat-interval-seconds", "1800") })
+        {
+            var cameraBuilds = h.Factory.ReaderBuilds;
+            var wcsBuilds = h.Factory.WcsBuilds;
+            receipt = await Save(c => WithRcs(c, key, value));
+            snapshot = await h.App.SnapshotAsync();
+            Check(receipt.Status == "Effective" && snapshot.Configuration.Pending is null &&
+                snapshot.Configuration.Effective.Wcs!.Parameters[key] == value &&
+                snapshot.Configuration.Effective.Wcs.Version == "1.0.0" &&
+                snapshot.Configuration.Effective.Wcs.Contract == "SPORTMASTER-RCS-SORTER-v1" &&
+                h.Factory.ReaderBuilds == cameraBuilds && h.Factory.WcsBuilds == wcsBuilds + 1,
+                key + " applies live with unchanged provider contract and no camera rebuild");
+        }
+
         // 6. Any other setting still uses the controlled restart, and so does a mix with it.
         var builds = (h.Factory.ReaderBuilds, h.Factory.WcsBuilds);
         receipt = await Save(c => WithReader(c, h.Left, "device.ip", "192.0.2.45") with { TimeoutMs = c.TimeoutMs + 1 });

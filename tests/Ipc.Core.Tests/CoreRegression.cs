@@ -25,6 +25,7 @@ public sealed class CoreRegression
     [DataRow("--mvs-offline-activation", 14)]
     [DataRow("--update-notice-07", 14)]
     [DataRow("--mvs-stop-reconnect", 9)]
+    [DataRow("--mvs-still-frames", 8)]
     [DataRow("--installation-receipts-04", 9)]
     [DataRow("--first-configuration-03", 13)]
     [DataRow("--dual-camera-performance", 13)]

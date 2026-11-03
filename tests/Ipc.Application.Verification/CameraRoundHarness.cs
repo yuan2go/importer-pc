@@ -57,7 +57,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             Driver = "hikrobot-mvs-reader",
             Parameters = new()
-            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
+            { ["motion.still-ms"] = "0", ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
         }).ToArray();
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, rcsEndpoint ?? Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {

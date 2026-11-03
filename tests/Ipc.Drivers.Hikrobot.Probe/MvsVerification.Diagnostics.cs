@@ -6,7 +6,7 @@ internal static partial class MvsVerification
     {
         using var pixels = new PixelLoan(4);
         var api = new Fake(); var decoder = new ControlledDecoder { Codes = [] }; var delivered = 0;
-        await using var source = new MvsAcquisition(new("synthetic.preview", api.Ip, new Dictionary<string, string> { ["device.ip"] = api.Ip }), api, _ => new Lease(), decoder: decoder);
+        await using var source = new MvsAcquisition(new("synthetic.preview", api.Ip, new Dictionary<string, string> { ["motion.still-ms"] = "0", ["device.ip"] = api.Ip }), api, _ => new Lease(), decoder: decoder);
         await source.StartControlledAsync("preview-epoch", _ => { delivered++; return true; }, _ => { }, default);
         await Until(() => source.ReadDiagnostics().NoData > 2);
         Check(source.ReadDiagnostics() is { State: "WaitingForFrame", Frames: 0, DecodeStarted: 0 }, "connected no-data loop is explicitly distinct from successful frame acquisition and decoding");

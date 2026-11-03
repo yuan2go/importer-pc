@@ -61,7 +61,7 @@ static partial class SportmasterRcs
             Driver = "hikrobot-mvs-reader",
             Parameters = new()
             {
-                ["device.ip"] = device?.Ip ?? "192.0.2.11",
+                ["motion.still-ms"] = "0", ["device.ip"] = device?.Ip ?? "192.0.2.11",
                 ["device.serial"] = device?.Serial ?? "SYNTH-MVS-LEFT",
                 ["entity.mode"] = "read-result",
                 ["acquisition.trigger"] = "off",
@@ -72,7 +72,7 @@ static partial class SportmasterRcs
         {
             Driver = "hikrobot-mvs-reader",
             Parameters = new()
-            { ["device.ip"] = "192.0.2.12", ["device.serial"] = "SYNTH-MVS-RIGHT", ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
+            { ["motion.still-ms"] = "0", ["device.ip"] = "192.0.2.12", ["device.serial"] = "SYNTH-MVS-RIGHT", ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
         }).ToArray();
         c = c with
         {

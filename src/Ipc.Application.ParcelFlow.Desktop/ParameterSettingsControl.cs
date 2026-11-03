@@ -19,6 +19,8 @@ public sealed partial class ParameterSettingsControl : UserControl
     readonly TextBlock remainingSteps = new() { TextWrapping = TextWrapping.Wrap, Margin = new(4, 12, 4, 8), FontSize = UiTypography.Label };
     readonly ListBox directory = new() { Name = "ParameterDirectory", BorderThickness = new(0), Background = Brushes.Transparent, HorizontalContentAlignment = HorizontalAlignment.Stretch };
     readonly ContentControl pageHost = new() { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
+    Grid? settingsRoot;
+    Border? directoryRail;
     readonly StackPanel errors = new();
     readonly Dictionary<string, Location> locations = [];
     readonly List<Action> unsubscribe = [];
@@ -62,6 +64,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(ForegroundProperty, "Ink");
         // Settings content sits on the theme's page background; each setting is a white card on it.
         var root = Themed(new Grid(), Panel.BackgroundProperty, "Background");
+        settingsRoot = root;
         root.ColumnDefinitions.Add(new() { Width = new(240) }); root.ColumnDefinitions.Add(new());
         var rail = new DockPanel { LastChildFill = true, Margin = new(12, 16, 12, 12) };
         root.RowDefinitions.Add(new() { Height = GridLength.Auto }); root.RowDefinitions.Add(new());
@@ -80,6 +83,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var searchBar = BuildSearch(); DockPanel.SetDock(searchBar, Dock.Top); rail.Children.Add(searchBar);
         var lists = new Grid(); lists.Children.Add(directory); lists.Children.Add(searchResults); rail.Children.Add(lists);
         var railBorder = new Border { BorderThickness = new(0, 0, 1, 0), Child = rail }; Grid.SetRow(railBorder, 1); root.Children.Add(railBorder);
+        directoryRail = railBorder;
         railBorder.SetResourceReference(Border.BackgroundProperty, "Surface"); railBorder.SetResourceReference(Border.BorderBrushProperty, "Line");
         Grid.SetColumn(pageHost, 1); root.Children.Add(pageHost);
         directory.ItemTemplate = (DataTemplate)Resources["ParameterObjectTemplate"];
@@ -89,11 +93,11 @@ public sealed partial class ParameterSettingsControl : UserControl
         AutomationProperties.SetHelpText(directory, "系统、业务模块、驱动、组件。使用上下方向键选择页面，制表键进入表单。");
         directory.SelectionChanged += DirectorySelectionChanged;
         Unloaded += (_, _) => navigationGeneration++;
-        root.SizeChanged += (_, _) => root.ColumnDefinitions[0].Width = new(root.ActualWidth < 960 ? 200 : 240);
+        root.SizeChanged += (_, _) => UpdateDirectoryVisibility();
         Content = root;
         PreviewKeyDown += (_, e) =>
         {
-            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control) { search.Focus(); search.SelectAll(); e.Handled = true; }
+            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control && directoryRail?.Visibility == Visibility.Visible) { search.Focus(); search.SelectAll(); e.Handled = true; }
             else if (e.Key == Key.Escape && search.Text.Length > 0) { search.Clear(); search.Focus(); e.Handled = true; }
         };
     }
@@ -243,7 +247,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var caption = Themed(new TextBlock { Text = label, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body }, TextBlock.ForegroundProperty, "Ink");
         var describe = new StackPanel { VerticalAlignment = VerticalAlignment.Center }; describe.Children.Add(caption); field.Children.Add(describe);
         var line = new DockPanel { LastChildFill = true, VerticalAlignment = VerticalAlignment.Center };
-        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
+        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" or "request-timeout-ms" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
         if (unit.Length > 0) { var suffix = Text(unit); suffix.Margin = new(8, 0, 0, 0); suffix.VerticalAlignment = VerticalAlignment.Center; DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
         line.Children.Add(control); field.Children.Add(line);
         // Preserve stable automation paths used by support and native verification.

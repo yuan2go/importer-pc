@@ -24,6 +24,7 @@ public partial class SupplyStationWindow
         if (!ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; return; }
         diagnosticTarget = target; SetPage("diagnostics");
         selectedDiagnostic!.Text = target.Label;
+        selectedDiagnostic.Visibility = Visibility.Visible;
         backToDiagnosticSettings!.Visibility = Visibility.Visible;
         UpdateLayout();
         if (diagnosticObjects.TryGetValue(target.DeviceId ?? "shared", out var anchor)) { anchor.BringIntoView(new Rect(0, 0, 1, 1)); }
@@ -53,149 +54,38 @@ public partial class SupplyStationWindow
         => SetPage("diagnostics");
     FrameworkElement CreateDiagnostics()
     {
-        var root = new DockPanel { Background = System.Windows.Media.Brushes.White };
-        root.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/QueryWorkspaceTheme.xaml", UriKind.Relative) });
-        var header = new StackPanel { Margin = new(24, 16, 24, 12) };
-        header.Children.Add(new TextBlock { Text = "诊断与恢复", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis });
-        selectedDiagnostic = new TextBlock { Margin = new(0, 4, 0, 0), TextWrapping = TextWrapping.Wrap };
-        header.Children.Add(selectedDiagnostic);
-        backToDiagnosticSettings = new Button
-        {
-            Content = "返回该设备设置",
-            MinHeight = 44,
-            HorizontalAlignment = HorizontalAlignment.Left,
-            Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible,
-            Margin = new(0, 8, 0, 0)
-        };
+        var body = new StackPanel { Margin = new(24, 16, 24, 24) };
+        body.Children.Add(ProductText("设备与诊断", true));
+        body.Children.Add(ProductText("状态自动更新。相机断线后自动重连；在线状态不代表本件已取得格口。"));
+        selectedDiagnostic = ProductText(""); selectedDiagnostic.Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible; body.Children.Add(selectedDiagnostic);
+        backToDiagnosticSettings = new Button { Content = "返回该设备设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+        backToDiagnosticSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
         backToDiagnosticSettings.Click += async (_, _) => await OpenOperatorSettingsAsync(diagnosticTarget?.DeviceId, diagnosticTarget?.InstanceId);
-        header.Children.Add(backToDiagnosticSettings);
-        var status = new TextBlock { Margin = new(0, 8, 0, 0), TextWrapping = TextWrapping.Wrap };
-        status.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.ReadStatus))); header.Children.Add(status);
-        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, MaxHeight = 64, Margin = new(0, 4, 0, 0) };
-        feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.TaskFeedback))); header.Children.Add(feedback);
-        DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
-        var body = new StackPanel { Margin = new(24, 0, 24, 16) };
-        var pending = ProductText("");
-        void PendingState() { var count = ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0; pending.Text = $"格口未确认 {count} 件作业 · {(ViewModel.Snapshot?.Configuration.Pending is null ? "没有待重启设置" : "设置已保存，重启后生效")}"; }
-        PendingState(); body.Children.Add(pending);
-        System.ComponentModel.PropertyChangedEventHandler pendingChanged = (_, args) => { if (args.PropertyName is nameof(ViewModel.Snapshot) or nameof(ViewModel.Fresh)) PendingState(); };
-        body.Loaded += (_, _) => { ViewModel.PropertyChanged += pendingChanged; PendingState(); };
-        body.Unloaded += (_, _) => ViewModel.PropertyChanged -= pendingChanged;
-        var checkActions = new WrapPanel { Margin = new(0, 4, 0, 8) }; body.Children.Add(checkActions);
-        if (ViewModel.ShowExceptionAndStatisticsEntries) checkActions.Children.Add(ProductButton("处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; }));
-        checkActions.Children.Add(ProductButton("检查并重启…", async () => { await ViewModel.RequireManagementModeAsync(); if (ViewModel.Snapshot?.Configuration.Pending is null) throw new InvalidOperationException("没有待重启设置"); await RequestActivation(); }));
-        var healthSummary = ProductText("点击刷新体检，读取现有采集、RCS确认及存储事实。"); healthSummary.FontSize = UiTypography.Label;
-        checkActions.Children.Add(ProductButton("刷新体检", async () => { healthSummary.Text = await ReadProductHealth(); PendingState(); }));
-        checkActions.Children.Add(ProductButton("导出诊断包…", ExportProductDiagnostics));
-        var cancelDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Margin = new(0, 6, 0, 6), Padding = new(12, 4, 12, 4) };
-        cancelDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); checkActions.Children.Add(cancelDiagnostic);
-        body.Children.Add(healthSummary); healthSummary.Visibility = Visibility.Collapsed;
+        backToDiagnosticSettings.Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible; body.Children.Add(backToDiagnosticSettings);
+        var unresolved = new Border { Padding = new(12), Margin = new(0, 8, 0, 12), Visibility = Visibility.Collapsed };
+        unresolved.SetResourceReference(Border.BackgroundProperty, "WarningBackground");
+        var attention = new DockPanel(); var pending = ProductText("");
+        var records = ProductButton("去记录核对", async () => { SetPage("history"); await ViewModel.OpenHistoryAsync(); });
+        DockPanel.SetDock(records, Dock.Right); attention.Children.Add(records); attention.Children.Add(pending); unresolved.Child = attention; body.Children.Add(unresolved);
+        void RefreshAttention()
+        {
+            var count = ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0;
+            unresolved.Visibility = ViewModel.Fresh && count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            pending.Text = $"有 {count} 件作业的格口结果未确认，请到记录核对；不会自动重发。";
+        }
+        System.ComponentModel.PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(ViewModel.Snapshot) or nameof(ViewModel.Fresh)) RefreshAttention(); };
+        body.Loaded += (_, _) => { ViewModel.PropertyChanged += changed; RefreshAttention(); };
+        body.Unloaded += (_, _) => ViewModel.PropertyChanged -= changed;
         body.Children.Add(CreateDiagnosticRows());
-        var connections = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Stretch };
-        body.Children.Add(new Expander { Header = "连接操作与原始证据", Content = connections });
-        connections.SizeChanged += (_, _) =>
+        var evidence = new StackPanel();
+        foreach (var property in new[] { nameof(ViewModel.DiagnosticBlockers), nameof(ViewModel.DiagnosticConfiguration), nameof(ViewModel.DiagnosticCapacity), nameof(ViewModel.DiagnosticTechnicalSummary) })
         {
-            var columns = connections.ActualWidth >= 1020 ? 3 : 1;
-            foreach (var card in connections.Children.OfType<Border>()) card.Width = Math.Max(240, connections.ActualWidth / columns - 12);
-        };
-        TextBlock Text(string property, double size = UiTypography.Body)
-        {
-            var text = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = size, Margin = new(0, 4, 0, 4) };
-            text.SetBinding(TextBlock.TextProperty, new Binding(property)); return text;
+            var value = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Background = System.Windows.Media.Brushes.Transparent, BorderThickness = new(0), MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(0, 8, 0, 0) };
+            value.SetBinding(TextBox.TextProperty, new Binding(property) { Mode = BindingMode.OneWay }); evidence.Children.Add(value);
         }
-        void Connection(string label, string diagnosis, string time, Func<Task> configure, SupplyStationPositionViewModel? position = null)
-        {
-            var row = new StackPanel();
-            var heading = new DockPanel { Margin = new(0, 0, 0, 8) };
-            var badge = new TextBlock { FontSize = UiTypography.Label, VerticalAlignment = VerticalAlignment.Center, Margin = new(8, 0, 0, 0) };
-            badge.Padding = new(6, 3, 6, 3);
-            badge.SetBinding(TextBlock.ForegroundProperty, new Binding(position is null ? "RcsPresentation.Foreground" : "DevicePresentation.Foreground") { Source = position is null ? ViewModel : position });
-            badge.SetBinding(TextBlock.BackgroundProperty, new Binding(position is null ? "RcsPresentation.Background" : "DevicePresentation.Background") { Source = position is null ? ViewModel : position });
-            badge.SetBinding(TextBlock.TextProperty, new Binding(position is null ? nameof(ViewModel.RcsServiceStatus) : nameof(position.DeviceLabel)) { Source = position is null ? ViewModel : position });
-            DockPanel.SetDock(badge, Dock.Right); heading.Children.Add(badge);
-            heading.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Position, FontWeight = UiTypography.Emphasis }); row.Children.Add(heading);
-            var facts = new StackPanel();
-            facts.Children.Add(Text(diagnosis)); facts.Children.Add(Text(time, UiTypography.Label));
-            row.Children.Add(facts);
-            var actions = new WrapPanel { Margin = new(0, 8, 0, 0) };
-            var edit = new Button { Content = "设置" + label, MinHeight = 44, MinWidth = 112 };
-            edit.Click += async (_, _) => await configure(); actions.Children.Add(edit);
-            if (position is not null)
-            {
-                var debugButton = new Button { Content = "调试" + label, MinHeight = 44, Margin = new(8, 0, 0, 0) };
-                debugButton.Click += (_, _) => ShowPositionDebug(position); actions.Children.Add(debugButton);
-                var original = new Button { Content = "查看包裹记录", MinHeight = 44, Margin = new(0, 4, 0, 0), DataContext = position };
-                original.SetBinding(IsEnabledProperty, new Binding(nameof(position.CanReconcile)));
-                original.SetBinding(VisibilityProperty, new Binding(nameof(position.CanReconcile)) { Converter = new BooleanToVisibilityConverter() });
-                original.Click += async (_, _) => { if (position.Operation is { } operation) await ShowDetailsAsync(operation); }; actions.Children.Add(original);
-            }
-            row.Children.Add(actions);
-            connections.Children.Add(new Border
-            {
-                Child = row,
-                BorderBrush = (System.Windows.Media.Brush)FindResource("StationLine"),
-                BorderThickness = new(1),
-                CornerRadius = new(8),
-                Padding = new(16),
-                Margin = new(0, 0, 12, 12),
-                Background = System.Windows.Media.Brushes.White
-            });
-            diagnosticObjects.TryAdd(position?.ReaderId ?? "shared", row);
-        }
-        Connection("左相机", nameof(ViewModel.LeftConnectionDiagnosis), nameof(ViewModel.LeftConnectionTime), () => OpenOperatorSettingsAsync(ViewModel.Left.ReaderId), ViewModel.Left);
-        Connection("右相机", nameof(ViewModel.RightConnectionDiagnosis), nameof(ViewModel.RightConnectionTime), () => OpenOperatorSettingsAsync(ViewModel.Right.ReaderId), ViewModel.Right);
-        Connection("RCS", nameof(ViewModel.RcsConnectionDiagnosis), nameof(ViewModel.RcsConnectionTime), () => OpenOperatorSettingsAsync(instanceId: ViewModel.Snapshot?.Configuration.Effective.Wcs?.InstanceId));
-        body.Children.Add(new Separator { Margin = new(0, 0, 0, 12) });
-        body.Children.Add(new TextBlock { Text = "供包状态", FontWeight = UiTypography.Emphasis });
-        body.Children.Add(Text(nameof(ViewModel.DiagnosticBlockers)));
-        body.Children.Add(Text(nameof(ViewModel.DiagnosticConfiguration)));
-        body.Children.Add(Text(nameof(ViewModel.DiagnosticCapacity)));
-        var reconnect = new Button { Content = "重新连接相机和 RCS", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
-        reconnect.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanReconnectConfigured)));
-        reconnect.Click += async (_, _) => await ViewModel.ReconnectConfiguredAsync();
-        var controlled = new StackPanel(); controlled.Children.Add(reconnect); controlled.Children.Add(Text(nameof(ViewModel.ReconnectHint), UiTypography.Label));
-        body.Children.Add(new Expander { Header = "连接没有恢复？手动重连", Content = controlled, Margin = new(0, 8, 0, 8) });
-        body.Children.Add(new TextBlock { Text = "相机断线后会自动重连。格口未确认的包裹不会被重发。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label });
-        var tools = new WrapPanel { Margin = new(0, 8, 0, 0) };
-        foreach (var (label, index) in new[] { ("查看设置是否生效", MaintenanceTool.Running), ("查看备份恢复结果", MaintenanceTool.RestoreHandoff), ("处理格口未确认的包裹", MaintenanceTool.Recovery) })
-        {
-            var button = new Button { Content = label, MinHeight = 44, Margin = new(0, 0, 8, 8) };
-            button.Click += async (_, _) => { await OpenOperatorSettingsAsync(); if (ViewModel.IsManagementMode && ViewModel.SelectedPage == "maintenance" && ViewModel.HasLoadedConfiguration) maintenance.ShowTechnicalTool(index); };
-            tools.Children.Add(button);
-        }
-        body.Children.Add(new Expander { Header = "其他维护操作", Content = tools, Margin = new(0, 16, 0, 8) });
-        var scans = new StackPanel();
-        foreach (var position in new[] { ViewModel.Left, ViewModel.Right })
-        {
-            var details = new StackPanel { DataContext = position, Margin = new(0, 8, 0, 16) };
-            details.Children.Add(new TextBlock { Text = position.Heading, FontWeight = UiTypography.Emphasis });
-            details.Children.Add(Text(nameof(position.CameraAddress)));
-            details.Children.Add(Text(nameof(position.ScanTime)));
-            details.Children.Add(new TextBlock { Text = "相机读到的全部条码" });
-            details.Children.Add(Text(nameof(position.RawCandidates)));
-            details.Children.Add(new TextBlock { Text = "发给 RCS 的条码" });
-            details.Children.Add(Text(nameof(position.SelectedCode)));
-            var simulation = new StackPanel();
-            simulation.SetBinding(VisibilityProperty, new Binding(nameof(ViewModel.SimulationVisibility)) { Source = ViewModel });
-            simulation.Children.Add(new TextBlock { Text = "模拟输入（仅模拟模式）", Margin = new(0, 12, 0, 4) });
-            var code = new TextBox { MinHeight = 44 }; code.SetBinding(TextBox.TextProperty, new Binding(nameof(position.ParcelCode)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); simulation.Children.Add(code);
-            var simulateActions = new WrapPanel();
-            var next = new Button { Content = "模拟新包裹", MinHeight = 44 }; next.Click += (_, _) => position.NewParcel(); simulateActions.Children.Add(next);
-            var emit = new Button { Content = "模拟本位读码", MinHeight = 44 }; emit.SetBinding(IsEnabledProperty, new Binding(nameof(position.CanAdmit)));
-            emit.Click += async (_, _) => await ViewModel.EmitPositionAsync(position); simulateActions.Children.Add(emit); simulation.Children.Add(simulateActions);
-            details.Children.Add(simulation); scans.Children.Add(details);
-        }
-        body.Children.Add(new Expander { Header = "查看扫描内容", Content = scans, Margin = new(0, 4, 0, 8) });
-        var copy = new Button { Content = "复制诊断信息", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        var copied = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label };
-        copy.Click += (_, _) =>
-        {
-            if (!ViewModel.IsManagementMode) return;
-            try { Clipboard.SetText(ViewModel.DiagnosticTechnicalSummary); copied.Text = "已复制诊断信息，可发给维护支持人员。"; }
-            catch (System.Runtime.InteropServices.ExternalException) { copied.Text = "剪贴板正被占用，请稍后再复制。"; }
-        };
-        body.Children.Add(copy); body.Children.Add(copied);
-        root.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-        return root;
+        body.Children.Add(new Expander { Header = "详情与原始证据", Content = evidence, Margin = new(0, 12, 0, 12) });
+        body.Children.Add(new Expander { Header = "维护工具", Content = CreateMaintenanceTools(), Margin = new(0, 12, 0, 0) });
+        var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        return scroll;
     }
 }

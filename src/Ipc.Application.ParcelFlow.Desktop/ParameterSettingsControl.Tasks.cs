@@ -109,7 +109,7 @@ public sealed partial class ParameterSettingsControl
         var first = Box(nameof(projection.First), basePath); var last = Box(nameof(projection.Last), countPath);
         var to = Text("至"); to.Margin = new(8, 0, 8, 0); to.VerticalAlignment = VerticalAlignment.Center;
         var range = new StackPanel { Orientation = Orientation.Horizontal, Tag = "inline" }; range.Children.Add(first); range.Children.Add(to); range.Children.Add(last);
-        Field(form, "请求编号 *", range, "RCS 分配的编号段，两端都包含。不能与其他供包台重叠，用过的区间不能扩缩后重用；保存时还会核对本机已用编号。", basePath, page);
+        Field(form, "请求编号范围（由 RCS 分配） *", range, "填 RCS 分给本供包台的编号段，不能和其他供包台重叠。", basePath, page);
         // The pair is one row; each box keeps its own path for navigation, errors and automation.
         range.ClearValue(AutomationProperties.NameProperty); range.ClearValue(AutomationProperties.AutomationIdProperty);
         var row = locations[basePath];

@@ -214,7 +214,7 @@ public sealed partial class ParameterSettingsControl
         }
         var budget = Page(1, "接收与等待限制", "一般保持默认值。出现积压或超时，应先检查相机和 RCS 连接。"); form = Form(budget);
         Input(form, "扫码消息缓冲上限", m.Policy, "QueueCapacity", "QueueCapacity", budget, "等待处理的扫码最多可排队多少条，1–4096。排满后新扫码会被拒收。");
-        Input(form, "外部服务等待时间", m.Policy, "TimeoutMs", "TimeoutMs", budget, "调用外部系统时最多等待多久，100–30000 毫秒。超时后结果未确认，系统不会自动重发。");
+        if (m.ApplicationId != "sportmaster") Input(form, "外部服务等待时间", m.Policy, "TimeoutMs", "TimeoutMs", budget, "调用外部系统时最多等待多久，100–30000 毫秒。超时后结果未确认，系统不会自动重发。");
         Input(form, "待处理作业上限", m.Policy, "MaximumOperations", "MaximumOperations", budget, "未处理完的作业最多保留多少个，1–100000。达到上限后暂停接收新包裹。");
     }
     void Preview(ObjectPage page, ParameterEditorModel m)

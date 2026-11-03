@@ -158,6 +158,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public void Validate(ParcelConfiguration c)
         { if (c.Mode != RunMode.Simulation || Wire.Encode(c) != Wire.Encode(Normalize(expected))) throw new InvalidOperationException("Exact Simulation round fixture only"); validator.ValidateStructure(c); }
         public CapabilityRequirements Requirements(CapabilityBinding b) => validator.Requirements(b);
+        public CapabilityCatalog Catalog() => validator.Catalog();
         MvsAcquisition Reader(DeviceBinding binding)
         {
             var api = new RoundApi(binding); Apis[binding.DeviceId] = api; var decoder = new RoundDecoder(api, binding.Parameters!); Decoders[binding.DeviceId] = decoder;

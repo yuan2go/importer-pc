@@ -1,9 +1,0 @@
-Windows SendInput -> HWND -> WPF text/key events; real Application/SQLite/built-in RCS with synthetic loopback peer. Physical PDA/customer RCS/site NOT_RUN.
-FAIL System.TimeoutException: Continuous PDA input did not converge; commands=000123450001,000123450001000123450002
-   at Program.<>c__DisplayClass8_1.<<VerifyContinuousPdaInput>g__Until|2>d.MoveNext() in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 30
---- End of stack trace from previous location ---
-   at Program.<>c__DisplayClass8_2.<<VerifyContinuousPdaInput>g__Accepted|12>d.MoveNext() in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 46
---- End of stack trace from previous location ---
-   at Program.VerifyContinuousPdaInput(String root, String evidence, List`1 lines) in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 53
-   at Program.VerifyContinuousPdaInput(String root, String evidence, List`1 lines) in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\ContinuousPdaInput.cs:line 133
-   at Program.<>c__DisplayClass42_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-pr161-165-integration-20261101\tests\Ipc.Desktop.UiVerification\Program.cs:line 58

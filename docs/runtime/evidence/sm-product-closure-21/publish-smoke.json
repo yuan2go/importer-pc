@@ -1,8 +1,0 @@
-{
-  "assembly_sha256": "EA72C58E7D8B6BC81895F7B09456DBCD155F8706AB63C9FD3E1D6FC9F6F0BC2E",
-  "assembly_version": "1.0.0+4119f23ac50f2d22539496c09eb1513a702b11e6",
-  "publish_exit_code": 0,
-  "source_commit": "4119f23ac50f2d22539496c09eb1513a702b11e6",
-  "scope": "Framework-dependent no-build Sportmaster Release publish; actual EXE environment-report startup. No installation, SDK load or business connections.",
-  "launch_exit_code": 0
-}

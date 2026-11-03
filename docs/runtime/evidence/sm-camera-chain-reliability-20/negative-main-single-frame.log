@@ -1,5 +1,0 @@
-Unhandled exception. System.InvalidOperationException: Single incomplete software-reader frame must be returned/rejected without fencing the camera: InvalidDataException: MVS image missing/oversized/incomplete or incompatible with current Mono8 single-image acquisition: buffer=present; width=693; height=150; pixel=0x01080001; length=103950; limit=8388608; lostPackets=1; extraType=0; subImages=0
-   at CameraSingleFrameRecovery.Run(String workspace, String folder) in D:\w\ipc-barcode-039-baseline\tests\Ipc.Application.Verification\CameraSingleFrameRecovery.cs:line 14
-   at CameraSingleFrameRecovery.Run(String workspace, String folder) in D:\w\ipc-barcode-039-baseline\tests\Ipc.Application.Verification\CameraSingleFrameRecovery.cs:line 20
-   at Program.<Main>$(String[] args) in D:\w\ipc-barcode-039-baseline\tests\Ipc.Application.Verification\Program.cs:line 42
-   at Program.<Main>(String[] args)

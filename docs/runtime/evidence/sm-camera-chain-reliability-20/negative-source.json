@@ -1,7 +1,0 @@
-{
-  "product_source": "039ccdeeeebf10ddc267ae7f2a0103a6b5be52ba",
-  "test_source": "75a7930a",
-  "purpose": "Negative reproduction: production source unchanged; synthetic API adds LostPackets fixture and Program dispatch only",
-  "baseline_test_sha256": "93BB0081CCCCFD24096C5A8C425F9B3CB5CFE9ED06B012606BE4D05BD9A67561",
-  "driver_sha256": "3A58CE248EB31E95BBC68D255755D954ACF9CAC31B855B00648E351639270C40"
-}

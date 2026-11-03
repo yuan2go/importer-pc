@@ -1,5 +1,0 @@
-BASELINE same-code pending: slotVisible=False; oldSlotPreserved=False
-FAIL System.InvalidOperationException: same-code pending request clears the displayed slot instead of a distinctly provisional hold
-   at Program.VerifyBaselineSlot(String root, String evidence, List`1 lines) in D:\w\ipc-perception-baseline-15\tests\Ipc.Desktop.UiVerification\BaselineSlot.cs:line 22
-   at Program.VerifyBaselineSlot(String root, String evidence, List`1 lines) in D:\w\ipc-perception-baseline-15\tests\Ipc.Desktop.UiVerification\BaselineSlot.cs:line 24
-   at Program.<>c__DisplayClass44_0.<<Main>b__1>d.MoveNext() in D:\w\ipc-perception-baseline-15\tests\Ipc.Desktop.UiVerification\Program.cs:line 62

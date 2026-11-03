@@ -1,8 +1,0 @@
-PASS MVS: preview demand alone never fabricates a frame
-PASS MVS: 6MP input becomes an identity-preserving bounded thumbnail before any UI handoff
-PASS MVS: a newer pooled frame never overwrites a consumer's outstanding lease
-PASS MVS: eight outstanding thumbnail leases bound pool ownership even when a consumer forgets to return frames
-PASS MVS: 2000 warmed preview leases allocate bounded metadata rather than a new large pixel array per frame
-MEASURE pooled preview leases=2000; allocated_bytes=400000; thumbnail_bytes=272640; actual pool reuse, not field GC qualification
-PASS MVS: source clear revokes its latest thumbnail while outstanding consumer ownership remains valid
-PASS MVS: lease release is idempotent and its public frame cannot be read after return

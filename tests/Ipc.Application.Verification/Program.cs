@@ -66,6 +66,7 @@ if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Ru
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--live-devices-30")) { await LiveDevices30.Run(workspace, root); return; }
 if (args.Contains("--update-notice-07")) { UpdateNotice07.Run(root); return; }
+if (args.Contains("--mvs-stop-reconnect")) { await MvsStopReconnect.Run(); return; }
 if (args.Contains("--installation-receipts-04")) { InstallationReceipts04.Run(root); return; }
 if (args.Contains("--first-configuration-03")) { await FirstConfiguration03.Run(); return; }
 if (args.Contains("--dual-camera-performance")) { await DualCameraPerformance.Run(workspace, root); return; }

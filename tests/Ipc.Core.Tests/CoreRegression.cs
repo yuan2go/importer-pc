@@ -21,6 +21,7 @@ public sealed class CoreRegression
     [DataRow("--same-placement-29", 17)]
     [DataRow("--live-devices-30", 23)]
     [DataRow("--update-notice-07", 14)]
+    [DataRow("--mvs-stop-reconnect", 9)]
     [DataRow("--installation-receipts-04", 9)]
     [DataRow("--first-configuration-03", 12)]
     [DataRow("--dual-camera-performance", 13)]

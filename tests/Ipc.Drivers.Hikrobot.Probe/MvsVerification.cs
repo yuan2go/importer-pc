@@ -30,6 +30,14 @@ internal static partial class MvsVerification
             await source.StopAsync(default);
             Check(source.Phase == "stopped" && stoppedLease.Releases == 1 && stoppedApi.Calls.Last() == "finalize", "retry completes real destroy/finalize after an already-stopped stream; application can exit");
         }
+        var udpApi = new Fake { StopResult = unchecked((int)0x80000214) }; var udpLease = new Lease();
+        await using (var source = Source(udpApi, udpLease))
+        {
+            await source.StartControlledAsync("udp-receive", _ => true, _ => { }, default);
+            await source.StopAsync(default);
+            Check(source.Phase == "stopped" && udpLease.Releases == 1 && source.TeardownNotes.Contains("0x80000214") && udpApi.Calls.TakeLast(3).SequenceEqual(["close", "destroy", "finalize"]),
+                "field 0x80000214 (UDP receive) on StopGrabbing after GigE loss is recorded; close, destroy and finalize still run before the device is released");
+        }
         await using (var source = Source(api, lease))
         {
             await source.StartControlledAsync("mvs-one", _ => { observations++; return true; }, health.Enqueue, default);
@@ -127,6 +135,17 @@ internal static partial class MvsVerification
                 await Reject(() => source.StartControlledAsync("start-failure", _ => true, _ => { }, default));
                 Check(held.Releases == 1 && failed.Calls.Contains("destroy"), "native Start failure cleans returned resources without declaring acquisition success");
             }
+            else if (stage is "stop" or "close")
+            {
+                // A broken GigE stream can fail StopGrabbing/CloseDevice forever; teardown records
+                // the error and still requires a real DestroyHandle/Finalize before releasing.
+                await source.StartControlledAsync(stage, _ => true, _ => { }, default); await source.StopAsync(default);
+                Check(held.Releases == 1 && failed.Calls.TakeLast(2).SequenceEqual(["destroy", "finalize"]) && source.TeardownNotes.Contains(stage == "stop" ? "StopGrabbing" : "CloseDevice"),
+                    stage + " failure is recorded and teardown continues to a real destroy/finalize release");
+                await source.StartControlledAsync(stage + "-again", _ => true, _ => { }, default);
+                Check(source.TeardownNotes.Length == 0 && failed.Calls.Count(c => c == "open") == 2, stage + " failure does not block the next exclusive open");
+                failed.FailStage = ""; await source.StopAsync(default);
+            }
             else
             {
                 await source.StartControlledAsync(stage, _ => true, _ => { }, default); await Reject(() => source.StopAsync(default));
@@ -196,8 +215,8 @@ internal static partial class MvsVerification
         public MvsFrame? Acquire() { Acquiring?.Invoke(); if (HasFrame) throw new InvalidOperationException("Loan still held"); if (Frames.TryDequeue(out var f)) { HasFrame = true; return f; } Thread.Sleep(5); return null; }
         public void Release() { if (FailFree) throw new IOException("Synthetic FreeImageBuffer failure"); if (HasFrame) { Freed++; HasFrame = false; } }
         public bool Connected() => Online;
-        public void Stop() { Call("stop"); MvsNative.CheckTeardownTransition(StopResult, "StopGrabbing"); }
-        public void Close() { Call("close"); MvsNative.CheckTeardownTransition(CloseResult, "CloseDevice"); }
+        public void Stop() { Call("stop"); MvsNative.Check(StopResult, "StopGrabbing"); }
+        public void Close() { Call("close"); MvsNative.Check(CloseResult, "CloseDevice"); }
         public void Destroy() => Call("destroy");
         public void Shutdown() => Call("finalize");
     }

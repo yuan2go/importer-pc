@@ -268,10 +268,10 @@ static partial class SportmasterRcs
         readonly ConcurrentQueue<(SoftwarePixels Pixels, uint Number)> waiting = new();
         public List<string> Calls = [];
         public int Released;
-        public int OpenAttempts, OpenFailures, StopAttempts;
+        public int OpenAttempts, OpenFailures, StopAttempts, DestroyAttempts;
         public bool FailConfigure, IgnoreConfigure;
         public volatile bool Discovered = true;
-        public volatile bool FailStop;
+        public volatile bool FailStop, FailDestroy;
         nint buffer;
         public bool HasFrame { get; private set; }
         public void Enqueue(SoftwarePixels pixels, uint number) => waiting.Enqueue((pixels, number));
@@ -294,9 +294,9 @@ static partial class SportmasterRcs
         }
         public void Release() { if (!HasFrame) throw new Exception("Double native release"); Marshal.FreeHGlobal(buffer); HasFrame = false; Interlocked.Increment(ref Released); }
         public bool Connected() => Discovered;
-        public void Stop() { Calls.Add("stop"); Interlocked.Increment(ref StopAttempts); if (FailStop) throw new IOException("Synthetic native stop ownership retained"); }
+        public void Stop() { Calls.Add("stop"); Interlocked.Increment(ref StopAttempts); if (FailStop) throw new IOException("MVS StopGrabbing failed: 0x80000214"); }
         public void Close() => Calls.Add("close");
-        public void Destroy() => Calls.Add("destroy");
+        public void Destroy() { Calls.Add("destroy"); Interlocked.Increment(ref DestroyAttempts); if (FailDestroy) throw new IOException("MVS DestroyHandle failed: synthetic"); }
         public void Shutdown() => Calls.Add("finalize");
     }
 }

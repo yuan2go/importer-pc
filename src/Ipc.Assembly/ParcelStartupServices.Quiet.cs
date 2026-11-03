@@ -9,7 +9,9 @@ public static partial class ParcelStartupServices
     public static async Task<int> RunQuietAsync(string[] args, string? mediaRoot = null)
     {
         string? log = null, operationId = null;
-        FileStream? output = null;
+        FileStream? legacyOutput = null;
+        QuietDeploymentOutput? output = null;
+        string? failureDetail = null;
         QuietDeploymentOperation? operation = null;
         var code = 1603;
         object? result = null;
@@ -19,7 +21,7 @@ public static partial class ParcelStartupServices
             var command = InstallerCommandLine.Parse(args); operationId = command.OperationId;
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
             MachineRuntimePolicy.RequireExtensionInstallerAuthority();
-            log = Path.GetFullPath(command.Log ?? Path.Combine(@"D:\ProgramData\ImporterPc\DeploymentLogs", command.OperationId + ".json"));
+            log = Path.GetFullPath(command.Log ?? Path.Combine(@"D:\ProgramData\ImporterPc\DeploymentLogs", command.OperationId + ".log"));
             if (!Path.GetPathRoot(log)!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("部署日志须使用D盘。");
             DeploymentPaths.RequireOrdinaryAncestors(log);
             var media = command.Action == "Uninstall" ? null : DeploymentMedia.Inspect(mediaRoot ?? throw new ArgumentException("安装或修复须使用完整安装包。"), ApplicationId);
@@ -37,41 +39,57 @@ public static partial class ParcelStartupServices
             else
             {
                 if (File.Exists(log) || Directory.Exists(log)) throw new ArgumentException("不会覆盖已有部署日志，请使用新文件。");
-                Directory.CreateDirectory(Path.GetDirectoryName(log)!);
-                output = new FileStream(log, FileMode.CreateNew, FileAccess.Write, FileShare.Read, 4096, FileOptions.WriteThrough);
+                if (ApplicationId == "sportmaster") output = operation!.CreateOutput();
+                else
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(log)!);
+                    legacyOutput = new FileStream(log, FileMode.CreateNew, FileAccess.Write, FileShare.Read, 4096, FileOptions.WriteThrough);
+                }
                 (code, result) = await ExecuteQuietCommand(command, log, media, operation).ConfigureAwait(false);
             }
         }
         catch (Exception error)
         {
             code = QuietExitCode(error);
-            result = new { Status = code == 1627 ? "Unknown" : "Failed", ErrorCode = error.GetType().Name, Message = DiagnosticText.Protect(error.Message) };
+            failureDetail = DiagnosticText.Protect(error.Message);
+            result = new { Status = code == 1627 ? "Unknown" : "Failed", ErrorCode = error.GetType().Name, Message = failureDetail };
         }
         finally
         {
             try
             {
+                QuietDeploymentReplay? original = null;
                 if (operation is not null)
                 {
-                    var original = operation.Finish(code); code = original.ExitCode;
+                    original = operation.Finish(code); code = original.ExitCode;
                     if (replay || code == 1627) result = original;
                 }
                 if (output is not null)
                 {
-                    System.Text.Json.JsonSerializer.Serialize(output, new { OperationId = operationId, ExitCode = code, Result = result });
-                    output.Flush(true); output.Dispose(); output = null;
-                    if (operation is not null) code = operation.Finish(code, Wire.FileHash(log!)).ExitCode;
+                    var receipt = output.Finish(code, original?.Status ?? (code == 0 ? "Completed" : code == 1627 ? "Unknown" : "Failed"),
+                        operation?.OriginalOperationFile, (original?.Detail ?? "请核对本次部署记录。") + (failureDetail is null ? "" : "\n原因：" + failureDetail));
+                    output.Dispose(); output = null;
+                    if (operation is not null) code = operation.Finish(code, receipt.LogSha256).ExitCode;
+                }
+                if (legacyOutput is not null)
+                {
+                    System.Text.Json.JsonSerializer.Serialize(legacyOutput, new { OperationId = operationId, ExitCode = code, Result = result });
+                    legacyOutput.Flush(true); legacyOutput.Dispose(); legacyOutput = null;
                 }
             }
             catch (Exception error)
             {
                 code = 1627;
                 Console.Error.WriteLine("静默部署回执未完成，请核对原操作，不重新提交：" + DiagnosticText.Protect(error.GetType().Name));
+                Console.Error.WriteLine(DiagnosticText.Protect("操作标识：" + operationId +
+                    "；日志：" + log + "；暂存回执：" + (output?.TemporaryReceiptFile ?? "未生成")));
             }
             finally
             {
                 try { output?.Dispose(); }
                 catch (Exception error) { code = 1627; Console.Error.WriteLine("原静默日志释放未确认：" + error.GetType().Name); }
+                try { legacyOutput?.Dispose(); }
+                catch (Exception error) { code = 1627; Console.Error.WriteLine("原结构化日志释放未确认：" + error.GetType().Name); }
                 try { operation?.Dispose(); }
                 catch (Exception error) { code = 1627; Console.Error.WriteLine("原静默命令租约释放未确认：" + error.GetType().Name); }
             }

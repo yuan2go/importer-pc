@@ -83,6 +83,46 @@ static class IndustrialQuietDeployment
         File.AppendAllText(log, "; synthetic external change");
         Check(WindowsDeploymentSetup.ProjectQuietOutcome(logged, "Completed").LogStatus == "Changed", "changed log cannot be represented as original evidence");
         File.Delete(log); Check(WindowsDeploymentSetup.ProjectQuietOutcome(logged, "Completed").LogStatus == "Missing", "missing log is explicit and is not recreated by replay");
+        var human = Path.Combine(root, "operator-readable.log");
+        QuietDeploymentOutputReceipt outputReceipt;
+        using (var output = new QuietDeploymentOutput(human, "sportmaster", id, "Install"))
+        {
+            Check(File.Exists(human) && !File.Exists(output.ReceiptFile), "human log starts without publishing an empty success receipt");
+            Reject<InvalidDataException>(() => output.Finish(0, "Unknown", null, "synthetic"), "output cannot label zero exit as Unknown");
+            outputReceipt = output.Finish(1627, "Unknown", null, "合成原结果尚未核对。password=quiet-canary-917");
+            Check(outputReceipt.OperationId == id && outputReceipt.ExitCode == 1627 && !outputReceipt.BusinessStarted && !outputReceipt.DevicesStarted,
+                "JSON output binds original identity and honest no-runtime facts");
+            Check(outputReceipt.LogSha256 == Wire.FileHash(human) && output.TemporaryReceiptFile is null, "closed human log and atomic JSON output hashes read back exactly");
+            Reject<InvalidOperationException>(() => output.Finish(0, "Completed", null, "do not overwrite"), "completed output cannot be rewritten as success");
+        }
+        var humanText = File.ReadAllText(human); var machineText = File.ReadAllText(human + ".receipt.json");
+        Check(humanText.StartsWith("部署开始：") && humanText.Contains("操作标识：" + id) && humanText.Contains("结果未确认"), "operator log is readable text with original operation and safe next action");
+        Check(!humanText.Contains("quiet-canary-917") && !machineText.Contains("quiet-canary-917"), "both independently written outputs exclude the synthetic secret canary");
+        Check(System.Text.Json.JsonSerializer.Deserialize<QuietDeploymentOutputReceipt>(machineText) == outputReceipt, "published machine JSON is a separate verified receipt");
+        var humanHash = Wire.FileHash(human); var machineHash = Wire.FileHash(human + ".receipt.json");
+        Reject<ArgumentException>(() => { using var duplicate = new QuietDeploymentOutput(human, "sportmaster", id, "Install"); }, "existing human log cannot be reused or overwritten");
+        Check(Wire.FileHash(human) == humanHash && Wire.FileHash(human + ".receipt.json") == machineHash, "refusal retains both original output byte streams");
+        var foreign = Path.Combine(root, "foreign-receipt.log"); File.WriteAllText(foreign + ".receipt.json", "synthetic foreign receipt");
+        Reject<ArgumentException>(() => { using var blockedOutput = new QuietDeploymentOutput(foreign, "sportmaster", id, "Repair"); }, "existing sidecar is checked before human log creation");
+        Check(!File.Exists(foreign), "foreign receipt refusal creates no new operator log");
+        var interruptedLog = Path.Combine(root, "interrupted-output.log");
+        using (var interruptedOutput = new QuietDeploymentOutput(interruptedLog, "sportmaster", id, "Repair")) { }
+        Check(File.ReadAllText(interruptedLog).Contains("当前尚未完成") && !File.Exists(interruptedLog + ".receipt.json"), "interrupted logger never fabricates a terminal JSON receipt");
+        var collisionLog = Path.Combine(root, "late-collision.log");
+        using (var late = new QuietDeploymentOutput(collisionLog, "sportmaster", id, "Uninstall"))
+        {
+            File.WriteAllText(late.ReceiptFile, "synthetic concurrent foreign file");
+            Reject<IOException>(() => late.Finish(1603, "Completed", "synthetic-original-removal", "原事务完成，残件保留。"), "late sidecar collision cannot overwrite another output");
+            Check(File.ReadAllText(late.ReceiptFile) == "synthetic concurrent foreign file" && late.TemporaryReceiptFile is { } partial && File.Exists(partial), "failed publication keeps foreign bytes and identifies exact own temporary evidence");
+            Reject<InvalidOperationException>(() => late.Finish(0, "Completed", null, "retry"), "failed publication cannot silently rerun or rewrite original result");
+        }
+        var oversizedLog = Path.Combine(root, "oversized-external.log");
+        using (var oversized = new FileStream(oversizedLog, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None))
+        {
+            oversized.SetLength(4 * 1024 * 1024 + 1);
+            Check(WindowsDeploymentSetup.ProjectQuietOutcome(frozen with { Intent = intent with { LogFile = oversizedLog }, LogSha256 = new string('f', 64) }, "Completed").LogStatus == "TooLarge",
+                "oversized external log is classified before opening or hashing locked bytes");
+        }
         Console.WriteLine("IE01-QUIET checks=" + checks + "; real file locks/JSON and injected authoritative outcomes; Windows ACL/actual quiet lifecycle NOT_RUN");
     }
 }

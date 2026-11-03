@@ -14,7 +14,7 @@ public sealed class CoreRegression
     [DataRow("--industrial-rollback", 49)]
     [DataRow("--industrial-version-pruning", 33)]
     [DataRow("--industrial-opaque-removal", 48)]
-    [DataRow("--industrial-quiet-deployment", 43)]
+    [DataRow("--industrial-quiet-deployment", 60)]
     [DataRow("--industrial-diagnostics", 34)]
     [DataRow("--station-single-camera", 65)]
     [DataRow("--same-placement-29", 17)]

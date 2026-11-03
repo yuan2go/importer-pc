@@ -37,3 +37,4 @@ src/Ipc.Desktop/StartupWorkflowWindow.Maintenance.cs
 src/Ipc.Platform/DeploymentQuietJournal.cs
 src/Ipc.Assembly/ParcelStartupServices.Quiet.cs
 tests/Ipc.Application.Verification/IndustrialQuietDeployment.cs
+src/Ipc.Platform/QuietDeploymentOutput.cs

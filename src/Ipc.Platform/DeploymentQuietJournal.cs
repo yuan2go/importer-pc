@@ -40,9 +40,18 @@ public sealed class QuietDeploymentOperation : IDisposable
     QuietDeploymentRecord record;
     bool disposed;
     public bool IsReplay { get; }
+    public string? OriginalOperationFile => record.Installation is { } request ? WindowsDeploymentSetup.InstallationOperationFile(request) : record.RemovalFile;
     internal QuietDeploymentOperation(QuietDeploymentRecord record, bool replay, IDisposable guard,
         Action<QuietDeploymentRecord> save, Func<QuietDeploymentRecord, QuietDeploymentReplay> inspect)
     { this.record = record; IsReplay = replay; this.guard = guard; this.save = save; this.inspect = inspect; }
+
+    [SupportedOSPlatform("windows")]
+    public QuietDeploymentOutput CreateOutput()
+    {
+        RequireNew(); MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        WindowsStoragePaths.PrepareProtectedDirectory(Path.GetDirectoryName(record.Intent.LogFile)!, new SecurityIdentifier(MachineRuntimePolicy.SharedUsersSid));
+        return new(record.Intent.LogFile, record.Intent.ApplicationId, record.Intent.OperationId, record.Intent.Action);
+    }
 
     public void FreezeInstallation(WindowsDeploymentRequest request)
     {
@@ -169,7 +178,8 @@ public static partial class WindowsDeploymentSetup
                     }
                 }
                 DeploymentPaths.RequireOrdinaryAncestors(intent.LogFile);
-                if (File.Exists(intent.LogFile) || Directory.Exists(intent.LogFile)) throw new ArgumentException("不会覆盖已有部署日志。");
+                WindowsStoragePaths.RequireExistingProtectedAncestors(Path.GetDirectoryName(intent.LogFile)!);
+                QuietDeploymentOutput.RequireNewPaths(intent.LogFile);
                 using (var deployment = new FileStream(Path.Combine(directory, intent.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                 {
                     if (File.Exists(RemovalOperationFile(intent.ApplicationId, intent.OperationId)) ||

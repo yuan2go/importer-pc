@@ -21,13 +21,15 @@
 静默参数为候选功能，必须在已提权的部署上下文执行；不弹产品窗口、不自动启动设备、不自动重启。示例路径需由实施人员检查权限和归属：
 
 ```text
-Ipc.Installer.exe /quiet /norestart /log="D:\deploy\station-01.json" /dataRoot="D:\ProgramData\ImporterPc\data" /operationId=<本工单的32位GUID>
-Ipc.Installer.exe /quiet /repair /norestart /log="D:\deploy\repair-01.json" /operationId=<另一工单的32位GUID>
+Ipc.Installer.exe /quiet /norestart /log="D:\deploy\station-01.log" /dataRoot="D:\ProgramData\ImporterPc\data" /operationId=<本工单的32位GUID>
+Ipc.Installer.exe /quiet /repair /norestart /log="D:\deploy\repair-01.log" /operationId=<另一工单的32位GUID>
 ```
 
-首次日志只写新文件，不覆盖已有文件。自动化为同一工单保存同一个非空32位GUID；重放时须保留原参数、日志位置和同字节介质。重放只核对原事务，明确已完成且当前登记一致才返回原成功码；不会重新安装、备份或覆盖原日志。日志缺失/被外部改动另行标记，不把它当成部署权威。Unknown/进行中保持1627，不能换ID绕过；未提交的准备物和备份保留。
+首次日志只写新文件，不覆盖已有文件。`/log`为可读文本；独立JSON回执写到同一路径加`.receipt.json`，含相同操作ID、退出码及文本日志SHA256。启动日志不代表完成，只有结束回执核对后才按退出码处理；回执发布失败时保留原事务与暂存证据，不覆盖或伪报成功。
 
-全部SM程序、数据和机器政策根须使用管理员批准的D盘位置；未配置受保护D盘存储根时在机器变更前拒绝，不落到C盘。已有存储位置的迁移仍须独立核对，不自动修改HKLM或放宽ACL。高级逐站计划仍使用原`--deployment-plan`协议及其原退出码；不能与简化EXE退出码混用。静默安装/真实系统往返尚未完成隔离VM验收。
+自动化为同一工单保存同一个非空32位GUID；重放时须保留原参数、日志位置和同字节介质。重放只核对原事务，明确已完成且当前登记一致才返回原成功码；不会重新安装、备份或覆盖原日志/JSON回执。日志缺失/被外部改动另行标记，不把它当成部署权威。Unknown/进行中保持1627，不能换ID绕过；未提交的准备物和备份保留。
+
+全部SM程序、数据和机器政策根须使用管理员批准的D盘位置；未配置受保护D盘存储根时在机器变更前拒绝，不落到C盘。日志父目录也须由管理员保护：缺失的目录按明确ACL创建，已有可被普通用户改写的目录拒绝，不自动放宽权限。已有存储位置的迁移仍须独立核对，不自动修改HKLM。高级逐站计划仍使用原`--deployment-plan`协议及其原退出码；不能与简化EXE退出码混用。静默安装/真实系统往返尚未完成隔离VM验收。
 
 ## 首配与日常设置
 

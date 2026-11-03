@@ -122,6 +122,11 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (reviewPage is not null) return;
         reviewPage = Page(4, FirstConfiguration ? "检查与完成" : "检查结果", "检查全部设置。保存后需重启软件才会生效。");
         if (errors.Parent is Panel old) old.Children.Remove(errors);
+        if (UsesFirstReadiness)
+        {
+            reviewPage.Body.Children.Add(ReadinessCard());
+            if (!readinessHooked) { readinessHooked = true; SelectedPageChanged += (_, _) => { if (currentPage?.Category == 4) RefreshReadiness(); }; }
+        }
         reviewPage.Body.Children.Add(errors);
         reviewPage.Technical.Children.Add(reviewPage.Diagnostic);
         reviewPage.Body.Children.Add(new Expander { Header = "诊断详情", Content = reviewPage.Technical, Margin = new(0, 16, 0, 0) });

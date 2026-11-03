@@ -96,7 +96,7 @@ def main():
         return
     result.sort(key=lambda row: (previous_order.get(row["path"], len(previous_order)), row["path"]))
     current.update(work_package=work_package,
-        current_implementation_work_package="docs/work-packages/" + work_package + ".md", files=result)
+        current_implementation_work_package="docs/archive/work-packages/" + work_package + ".md", files=result)
     if identities:
         current["integration_sources"] = identities
     path.write_text(json.dumps(current, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")

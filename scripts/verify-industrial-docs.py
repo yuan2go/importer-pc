@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def package_index():
-    paths = sorted((ROOT / 'docs/work-packages').glob('WP-IPC-*.md'))
+    paths = sorted((ROOT / 'docs/archive/work-packages').glob('WP-IPC-*.md'))
     return ('# 工作包目录\n\n由`scripts/verify-industrial-docs.py --generate-work-packages`生成；'
             '只导航，不重写各包的原身份与状态。\n\n'
             + ''.join(f'- [{p.stem}]({p.name})\n' for p in paths))
@@ -16,7 +16,7 @@ def package_index():
 
 def verify():
     files = [ROOT / 'README.md', ROOT / 'CHANGELOG.md', ROOT / 'docs/INDEX.md',
-             ROOT / 'docs/work-packages/README.md', *sorted((ROOT / 'docs/operator').glob('*.md'))]
+             ROOT / 'docs/archive/work-packages/README.md', *sorted((ROOT / 'docs/operator').glob('*.md'))]
     errors = []
     count = 0
     for path in files:
@@ -38,7 +38,7 @@ def verify():
     version = ET.parse(ROOT / 'src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj').findtext('./PropertyGroup/Version')
     if f'SM {version}' not in (ROOT / 'docs/operator/implementation-guide.md').read_text(encoding='utf-8'):
         errors.append('Operator manual version differs from actual SM project')
-    if (ROOT / 'docs/work-packages/README.md').read_text(encoding='utf-8') != package_index():
+    if (ROOT / 'docs/archive/work-packages/README.md').read_text(encoding='utf-8') != package_index():
         errors.append('Work package index is stale; generate it explicitly')
     if errors:
         raise ValueError('\n'.join(errors))
@@ -47,7 +47,7 @@ def verify():
 
 if __name__ == '__main__':
     if sys.argv[1:] == ['--generate-work-packages']:
-        (ROOT / 'docs/work-packages/README.md').write_text(package_index(), encoding='utf-8')
+        (ROOT / 'docs/archive/work-packages/README.md').write_text(package_index(), encoding='utf-8')
     elif sys.argv[1:]:
         raise SystemExit('Usage: verify-industrial-docs.py [--generate-work-packages]')
     verify()

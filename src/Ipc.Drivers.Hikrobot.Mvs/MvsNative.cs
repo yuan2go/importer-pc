@@ -53,14 +53,6 @@ internal static class MvsNative
     [return: MarshalAs(UnmanagedType.I1)] internal static extern bool MV_CC_IsDeviceConnected(nint handle);
     internal static void Check(int result, string stage)
     { if (result != 0) throw new IOException("MVS " + stage + " failed: 0x" + unchecked((uint)result).ToString("X8")); }
-    internal static void CheckTeardownTransition(int result, string stage)
-    {
-        // Vendor MV_E_CALLORDER may follow transport loss or an already stopped
-        // stream. It permits advancing to close/destroy, NOT releasing ownership.
-        // DestroyHandle and Finalize must still succeed before the lease is freed.
-        if (result == unchecked((int)0x80000003) && stage is "StopGrabbing" or "CloseDevice") return;
-        Check(result, stage);
-    }
 }
 
 internal sealed record MvsDevice(string Ip, string Serial, string Model, string Firmware, byte[] Descriptor);
@@ -189,8 +181,9 @@ internal sealed class MvsApi : IMvsApi
         if (HasFrame) throw new InvalidOperationException("Return the original frame before clearing SDK buffers");
         MvsNative.Check(MvsNative.MV_CC_ClearImageBuffer(handle), "ClearImageBuffer inspection cutover");
     }
-    public void Stop() => MvsNative.CheckTeardownTransition(MvsNative.MV_CC_StopGrabbing(handle), "StopGrabbing");
-    public void Close() => MvsNative.CheckTeardownTransition(MvsNative.MV_CC_CloseDevice(handle), "CloseDevice");
+    // Failures here are recorded by the acquisition teardown, which still requires DestroyHandle.
+    public void Stop() => MvsNative.Check(MvsNative.MV_CC_StopGrabbing(handle), "StopGrabbing");
+    public void Close() => MvsNative.Check(MvsNative.MV_CC_CloseDevice(handle), "CloseDevice");
     public void Destroy()
     {
         if (HasFrame) throw new InvalidOperationException("Cannot destroy an outstanding native frame");

@@ -74,6 +74,13 @@ static class IndustrialRollback
             () => ++observations == 1 ? (unreadableLocation, "before") : throw new IOException("synthetic unreadable registration"),
             _ => throw new IOException("synthetic interrupted commit"), _ => { }, _ => { }),
             "unreadable postcommit registration stays Unknown and preserves both failures");
+        var removedTarget = unreadableLocation with { LifecycleOperation = "synthetic-original-rollback", SourceCommit = new string('a', 40) };
+        string Removed(string status, DeploymentLocation location) => Wire.Encode(new { Status = status, Location = location, Files = Array.Empty<string>() });
+        Check(WindowsDeploymentSetup.RemovalSupersedesRollback("sportmaster", "synthetic-original-rollback", Removed("RemovedDataRetained", removedTarget)), "completed program removal ends old projection obligation without claiming business settlement");
+        Check(!WindowsDeploymentSetup.RemovalSupersedesRollback("sportmaster", "synthetic-original-rollback", Removed("Prepared", removedTarget)), "prepared removal does not prove rollback is superseded");
+        Check(!WindowsDeploymentSetup.RemovalSupersedesRollback("other", "synthetic-original-rollback", Removed("RemovedDataRetained", removedTarget)), "another application removal cannot resolve original rollback");
+        Check(!WindowsDeploymentSetup.RemovalSupersedesRollback("sportmaster", "other-operation", Removed("RemovedDataRetained", removedTarget)), "another operation removal cannot resolve original rollback");
+        Check(!WindowsDeploymentSetup.RemovalSupersedesRollback("sportmaster", "synthetic-original-rollback", Removed("RemovedDataRetained", removedTarget with { SourceCommit = "" })), "unidentified removal cannot resolve original rollback");
 
         foreach (var unknown in new[] { false, true })
         {

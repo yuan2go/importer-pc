@@ -17,6 +17,8 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     public ManagementPasswordRecoveryChallenge? RecoveryChallenge { get; init; }
     public DeploymentRollbackPlan? RollbackPlan { get; init; }
     public string? RollbackOperationId { get; init; }
+    public DeploymentPrunePlan? VersionPrunePlan { get; init; }
+    public bool OrdinaryStartupConfirmed { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
 }
@@ -209,6 +211,13 @@ public static partial class ParcelStartupServices
         switch (request.Action)
         {
             case "ReviewRollback": return await ReviewRollbackCore(request, execution);
+            case "ReviewVersionPruning": return await ReviewVersionPruningCore(request, execution);
+            case "PruneVersions": return await ExecuteVersionPruningCore(request, execution);
+            case "InspectVersionPruning": return await InspectVersionPruningCore(request, resume: false, execution);
+            case "ResumeVersionPruning": return await InspectVersionPruningCore(request, resume: true, execution);
+            case "KeepVersionPruningRemainder":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                return Wire.Encode(VersionPruningReceiptSummary(WindowsDeploymentSetup.KeepVersionPruningRemainder(ApplicationId, request.RollbackOperationId!)));
             case "Rollback": return await ExecuteRollbackCore(request, execution);
             case "InspectRollback": return await InspectRollbackCore(request, repair: false);
             case "RepairRollback": return await InspectRollbackCore(request, repair: true);
@@ -533,27 +542,6 @@ public static partial class ParcelStartupServices
             if (line.Length == 65536) throw new IOException("维护回执超出预算"); line.Append(character[0]);
         }
         return null; // A truncated final line never proves completion.
-    }
-    internal static string? CompleteMaintenanceResponse(string? response, int exitCode)
-    {
-        string? failure = null, result = null;
-        try
-        {
-            if (response is null || response.Length > 65536) throw new IOException("维护终态回执缺失");
-            using var document = System.Text.Json.JsonDocument.Parse(response);
-            var terminal = document.RootElement.GetProperty("Status").GetString();
-            if (terminal is not ("Completed" or "Failed") || terminal == "Completed" && exitCode != 0 || terminal == "Failed" && exitCode != 2) throw new IOException("维护终态与进程结果不一致");
-            if (terminal == "Failed") failure = document.RootElement.GetProperty("Error").GetString() ?? "维护未完成";
-            if (document.RootElement.TryGetProperty("Result", out var value))
-            {
-                if (value.ValueKind is not (System.Text.Json.JsonValueKind.String or System.Text.Json.JsonValueKind.Null)) throw new IOException("维护终态结果格式无效");
-                result = value.ValueKind == System.Text.Json.JsonValueKind.String ? value.GetString() : null;
-            }
-        }
-        catch (Exception error) when (error is IOException or System.Text.Json.JsonException or KeyNotFoundException or InvalidOperationException)
-        { throw new InstallationOutcomeUnknownException("未取得可信维护终态，请先核对安装记录。", error); }
-        if (failure is not null) throw new IOException(failure);
-        return result;
     }
     static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "ReviewDeployment";
     static void RequireProtectedHelper(string directory)

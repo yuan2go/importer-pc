@@ -65,9 +65,39 @@ public sealed partial class ParcelStartupMaintenance
         var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None, allowPreviousStorage: purpose == "Upgrade");
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
         var allowed = purpose is "Backup" or "Repair" or "Uninstall" || inspection.ResponsibilitiesSettled && markers.Length == 0;
+        var pruningBlocker = purpose == "PruneVersions" ? VersionPruningBlocker(state.Directory, state.Envelope) : null;
+        if (pruningBlocker is not null) allowed = false;
         return new(Wire.Hash(copy.SourceIdentity + state.Hash + purpose + destination), purpose, allowed,
             Wire.Encode(inspection) + "\n隔离标记：" + string.Join(",", markers) + (purpose == "Repair" ? "\n仅相同冻结发布的程序修复：原责任/标记保留，完整备份后不改账、不激活、不启动；装配层必须核对相同源码。" : "\n程序切换不回滚数据库；未决请求须原发布核对。") +
-            (inspection.DatabaseVersion is 10 or 11 ? "\n将先核验完整格式10/11备份，再事务升级至12；原配置、历史、请求与回包保留，软件保持暂停。" : ""), state.Hash, destination);
+            (pruningBlocker is null ? "" : "\n" + pruningBlocker) +
+            (inspection.DatabaseVersion is 10 or 11 ? "\n将先核验完整格式10/11备份，再事务升级至12；原配置、历史、请求与回包保留，软件保持暂停。" : ""), state.Hash, destination) {
+                OperatorSummary = pruningBlocker ?? (!inspection.ResponsibilitiesSettled ?
+                    purpose == "Uninstall" ? "仍有未完成或结果未确认的请求。卸载只移除程序，原记录和责任保留，仍须按原记录核对。" : "仍有未完成或结果未确认的请求。请先按原记录处理，所有版本和数据保留。" :
+                    markers.Length > 0 ? "仍有恢复或存储保护状态，原记录保留；程序移除不会解除这些保护。" : "原记录检查完成，业务数据和身份保留。")
+            };
+    }
+    string? VersionPruningBlocker(string current, ConfigurationRevision<ParcelConfiguration>? configuration)
+    {
+        if (configuration is not { Pending: null, Status: "Effective", Confirmation.Required: false })
+            return "当前配置尚未确认生效，不能清理原版本。";
+        // A current settled DB is not evidence about a previous station/mode.
+        // Keep all versions if another root might still own frozen requests.
+        var count = 0;
+        foreach (var mode in Directory.EnumerateDirectories(launch.DataRoot))
+        {
+            RecoveryFiles.RequireOrdinaryAncestors(mode);
+            if (++count > 1024) return "历史根超过核对预算，所有版本保留。";
+            foreach (var station in Directory.EnumerateDirectories(mode))
+            {
+                RecoveryFiles.RequireOrdinaryAncestors(station);
+                if (++count > 1024) return "历史根超过核对预算，所有版本保留。";
+                var area = Path.Combine(station, definition.Id); RecoveryFiles.RequireOrdinaryAncestors(area);
+                if (Directory.Exists(area) && !Path.GetFullPath(area).Equals(Path.GetFullPath(current), StringComparison.OrdinalIgnoreCase) &&
+                    Directory.EnumerateFileSystemEntries(area).Any())
+                    return "存在其他站或模式的原业务根，不能由当前已结状态证明其原实现不再被引用；所有版本保留。";
+            }
+        }
+        return null;
     }
     static async Task<T> ObserveMaintenance<T>(IProgress<MaintenanceProgress>? progress,CancellationToken token,Func<MaintenanceExecution,Task<T>> operation)
     {

@@ -47,12 +47,20 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
-          if ([int]$testCounters.executed -lt 9 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
+          if ([int]$testCounters.executed -lt 18 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
+          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
             if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required suite missing or incomplete: $suite" }
+          }
+          foreach ($action in @('ReviewRollback', 'Rollback', 'ReviewVersionPruning', 'PruneVersions', 'ResumeVersionPruning')) {
+            $matched = @($actualResults | Where-Object { $_.testName.StartsWith('NewVersionActionRequiresBegin (') -and $_.testName.Contains('"' + $action + '"') })
+            if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Helper Begin gate test missing: $action" }
+          }
+          foreach ($method in @('UnknownAndOversizedTerminalRemainUnknown', 'VersionReviewUsesBoundedSummary', 'VersionReceiptDisclosesDisplayTruncation')) {
+            $matched = @($actualResults | Where-Object { $_.testName -eq $method })
+            if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required helper boundary test missing: $method" }
           }
       - name: Incremental code format
         shell: pwsh
@@ -66,6 +74,8 @@ jobs:
           python -m unittest discover -s scripts -p test_commercial_delivery.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_deployment_compatibility.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_release_documents.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           ./scripts/test-signature-policy.ps1
       - name: Keep actual results including failures

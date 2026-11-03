@@ -40,6 +40,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
         {
             plan = null; backupFile = "";
             InvalidateRollbackReview();
+            InvalidatePruningReview();
             if (!removalCompleted) Message("备份目录已更改，请重新点击“读取安装信息”。");
         };
         Note("此窗口不会启动供包或设备。修复程序需要使用完整的原安装包；开始菜单和快捷方式可直接修复。卸载不会删除共享驱动和业务数据。");
@@ -63,6 +64,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
             ShowRemovalResult(receipt);
         });
         AddRollbackSection();
+        AddVersionPruningSection();
         CloseAction();
         Loaded += async (_, _) => { if (AutomaticRead) await Run(Read); };
     }
@@ -77,7 +79,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
         plan = await RunMaintenance("卸载前检查\n数据：" + location.DataRoot + "\n备份：" + (backupFile.Length == 0 ? "本次不备份" : backupFile),
             (progress, token) => ParcelStartupServices.ReviewRemovalAsync(registrationHash, backupFile, progress, token), readOnly: true);
         Message("产品 " + location.ApplicationId + " · 源码 " + location.SourceCommit + "\n程序 " + location.ReleaseRoot + "\n数据 " + location.DataRoot +
-            "\n备份 " + backupFile + "\n" + (plan.Allowed ? "检查通过，可以卸载；执行时会再次检查。" : "当前仍有执行者或无法安全停止，请关闭软件后重新检查。未决记录不会因卸载清偿。") + "\n" + plan.Summary);
+            "\n备份 " + backupFile + "\n" + (plan.Allowed ? "检查通过，可以卸载；执行时会再次检查。" : "当前仍有执行者或无法安全停止，请关闭软件后重新检查。未决记录不会因卸载清偿。") + "\n" + (plan.OperatorSummary ?? "原记录和数据保留；完整检查详情供实施人员核对。"));
     }
     async Task InspectOriginal()
     {

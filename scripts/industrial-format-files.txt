@@ -17,3 +17,10 @@ src/Ipc.Assembly/ParcelStartupServices.Rollback.cs
 src/Ipc.Desktop/ProductMaintenanceWindow.Rollback.cs
 tests/Ipc.Application.Verification/IndustrialRollback.cs
 tests/Ipc.Desktop.UiVerification/IndustrialMaintenance.cs
+src/Ipc.Platform/DeploymentVersionPruning.cs
+src/Ipc.Assembly/ParcelStartupServices.VersionPruning.cs
+src/Ipc.Desktop/ProductMaintenanceWindow.VersionPruning.cs
+tests/Ipc.Application.Verification/IndustrialVersionPruning.cs
+src/Ipc.Assembly/ParcelStartupServices.VersionTransport.cs
+tests/Ipc.Core.Tests/MaintenanceVersionBoundary.cs
+src/Ipc.Assembly/ParcelStartupServices.MaintenanceFrames.cs

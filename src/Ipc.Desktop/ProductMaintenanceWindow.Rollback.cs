@@ -41,7 +41,7 @@ sealed partial class ProductMaintenanceWindow
             var button = Action(name, action, readOnly); Actions.Children.Remove(button); buttons.Children.Add(button); return button;
         }
         VersionAction("检查回退条件", ReviewRollback, readOnly: true);
-        rollbackExecute = VersionAction("备份并回退到上一版本…", ExecuteRollback); rollbackExecute.IsEnabled = false;
+        rollbackExecute = VersionAction("备份并回退…", ExecuteRollback); rollbackExecute.IsEnabled = false;
         VersionAction("核对上次回退", () => InspectRollback(false), readOnly: true);
         rollbackRepair = VersionAction("修复上次回退的入口…", () => InspectRollback(true), readOnly: true); rollbackRepair.IsEnabled = false;
         Body.Children.Add(new Expander { Header = "版本回退", Content = body, Margin = new(0, 16, 0, 8) });
@@ -59,7 +59,7 @@ sealed partial class ProductMaintenanceWindow
         var allowed = rollbackReview.Deployment.Allowed && rollbackReview.Business?.Allowed == true;
         rollbackStatus!.Text = rollbackReview.Deployment.Reason +
             (rollbackReview.Deployment.CurrentVersion is { } version ? "\n当前版本：" + version + "；上一版本：" + rollbackReview.Deployment.TargetVersion : "") +
-            (rollbackReview.Business is { } business && !business.Allowed ? "\n" + business.Summary : "") +
+            (rollbackReview.Business is { } business && !business.Allowed ? "\n" + (business.OperatorSummary ?? "当前业务记录检查未通过，请先按原记录处理。") : "") +
             (allowed ? "\n完整备份：" + rollbackBackup : "\n原程序、数据和记录保留。请先处理上述条件。");
         rollbackExecute.IsEnabled = allowed;
     }
@@ -82,7 +82,7 @@ sealed partial class ProductMaintenanceWindow
         rollbackOperation ??= LastVersionRollback();
         if (rollbackOperation is null) { rollbackStatus!.Text = "没有上次回退记录。"; return; }
         var receipt = await RunMaintenance(repair ? "按原登记修复系统入口；不再次回退" : "只读核对上次回退", (progress, token) =>
-            InspectVersionRollback(rollbackOperation, repair, progress, token), readOnly: true);
+            InspectVersionRollback(rollbackOperation, repair, progress, token), readOnly: true, canRequestCancellation: !repair);
         ShowRollbackReceipt(receipt);
     }
 
@@ -92,7 +92,7 @@ sealed partial class ProductMaintenanceWindow
         rollbackStatus!.Text = receipt.Detail + (receipt.Status == "Completed" ? "\n请关闭本窗口，从开始菜单重新打开软件。" : "");
         rollbackExecute!.IsEnabled = false;
         rollbackRepair!.IsEnabled = receipt.Status is "CommittedNeedsSystemRepair" or "NotCommitted";
-        if (receipt.Status is "Completed" or "NotCommitted") { ResolveKnownMaintenanceOutcome(); rollbackReview = null; }
+        if (receipt.Status is "Completed" or "NotCommitted" or "SupersededByRemoval") { ResolveKnownMaintenanceOutcome(); rollbackReview = null; }
         Message(receipt.Detail);
     }
 }

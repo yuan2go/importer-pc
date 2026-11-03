@@ -39,6 +39,10 @@ public static partial class WindowsDeploymentSetup
     {
         var root = location.MaintenanceRoot ?? throw new InvalidDataException("原版本没有独立维护缓存，请先使用已修复的同版安装维护工具。");
         DeploymentPaths.RequireOrdinaryAncestors(root);
+        var parent = Path.Combine(MaintenanceCacheRoot, location.ApplicationId);
+        if (!Path.GetDirectoryName(Path.GetFullPath(root))!.Equals(Path.GetFullPath(parent), StringComparison.OrdinalIgnoreCase) ||
+            !Guid.TryParseExact(Path.GetFileName(root), "N", out var cacheId) || cacheId == Guid.Empty)
+            throw new InvalidDataException("维护缓存必须是本站独立版本目录，不能使用共享根。");
         if (!TrustedProgramRoots.Contains(Path.Combine(MaintenanceCacheRoot, location.ApplicationId), root) ||
             location.InventoryFile != Path.Combine(root, "installed-inventory.json") || !ExtensionSchema.IsHash(location.InventorySha256 ?? ""))
             throw new InvalidDataException("维护缓存身份或范围无效。");

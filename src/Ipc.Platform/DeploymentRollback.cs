@@ -196,10 +196,13 @@ public static partial class WindowsDeploymentSetup
 
     static void RequireNoUnresolvedLifecycle(string application)
     {
+        RequireNoUnresolvedPruning(application);
+        var removed = RemovedRollbackOperations(application);
         var records = Directory.EnumerateFiles(Path.Combine(MachineRoot, "deployments"), application + ".rollback-*.json").Take(1025).ToArray();
         if (records.Length > 1024) throw new InvalidDataException("版本切换记录超过核对预算。");
         foreach (var file in records)
         {
+            if (removed.Contains(file)) continue; // Program retirement, never business settlement.
             var operation = Path.GetFileNameWithoutExtension(file)[(application.Length + ".rollback-".Length)..];
             if (ReadRollback(application, operation).Status is not ("Completed" or "NotCommitted"))
                 throw new InstallationOutcomeUnknownException("存在尚未核对的原回退，请先核对原操作。");
@@ -212,7 +215,8 @@ public static partial class WindowsDeploymentSetup
         if (!Directory.Exists(directory)) return null;
         var records = Directory.EnumerateFiles(directory, application + ".rollback-*.json").Take(1025).ToArray();
         if (records.Length > 1024) throw new InvalidDataException("版本切换记录超过核对预算。");
-        return records.Select(file => ReadRollback(application, Path.GetFileNameWithoutExtension(file)[(application.Length + ".rollback-".Length)..]))
+        var removed = RemovedRollbackOperations(application);
+        return records.Where(file => !removed.Contains(file)).Select(file => ReadRollback(application, Path.GetFileNameWithoutExtension(file)[(application.Length + ".rollback-".Length)..]))
             .OrderByDescending(r => r.At).FirstOrDefault()?.Plan.OperationId;
     }
 
@@ -222,6 +226,8 @@ public static partial class WindowsDeploymentSetup
     {
         if (repair) MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        if (RemovedRollbackOperations(application).Contains(RollbackFile(application, operation)))
+            return new(operation, "SupersededByRemoval", "原回退涉及的程序已卸载，不再修复已移除入口。原数据和业务责任保留。", RollbackFile(application, operation));
         var record = ReadRollback(application, operation);
         var current = Current(application) ?? throw new InvalidDataException("缺少唯一部署登记。");
         var file = RollbackFile(application, operation);

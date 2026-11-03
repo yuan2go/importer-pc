@@ -62,16 +62,16 @@ static partial class Program
                     if (id != operation) throw new Exception("original operation changed"); inspectedOriginal = true; repairedOriginal |= repair;
                     return Task.FromResult(new DeploymentRollbackReceipt(id, repair ? "Completed" : "CommittedNeedsSystemRepair", repair ? "原回退已修复，数据未回滚。" : "原登记已提交，请修复入口。"));
                 }));
-                Check(!Button("备份并回退到上一版本…").IsEnabled, "rollback disabled before review");
+                Check(!Button("备份并回退…").IsEnabled, "rollback disabled before review");
                 await Invoke("ReviewRollback");
-                Check(!Button("备份并回退到上一版本…").IsEnabled, "incompatible release remains disabled with reason");
+                Check(!Button("备份并回退…").IsEnabled, "incompatible release remains disabled with reason");
                 allowed = true; await Invoke("ReviewRollback");
-                Check(Button("备份并回退到上一版本…").IsEnabled, "compatible and settled reviewed plan enables explicit action");
+                Check(Button("备份并回退…").IsEnabled, "compatible and settled reviewed plan enables explicit action");
                 Set("ConfirmVersionRollback", (Func<string, bool>)(_ => false)); await Invoke("ExecuteRollback");
                 Check(executeCalls == 0, "declining confirmation never invokes maintenance");
                 Set("ConfirmVersionRollback", (Func<string, bool>)(_ => true));
                 try { await Invoke("ExecuteRollback"); throw new Exception("lost receipt accepted"); } catch (InstallationOutcomeUnknownException) { }
-                Check(executeCalls == 1 && !Button("备份并回退到上一版本…").IsEnabled, "lost receipt cannot silently resubmit rollback");
+                Check(executeCalls == 1 && !Button("备份并回退…").IsEnabled, "lost receipt cannot silently resubmit rollback");
                 await Invoke("InspectRollback", false);
                 Check(inspectedOriginal && Button("修复上次回退的入口…").IsEnabled, "inspection retains original operation and offers projection repair");
                 await Invoke("InspectRollback", true);
@@ -81,8 +81,58 @@ static partial class Program
                 Button("检查回退条件").BringIntoView();
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 Capture("industrial-maintenance-rollback-960.png");
+                Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "清理旧版本")).IsExpanded = true;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                var confirmation = (CheckBox)type.GetField("ordinaryStartupConfirmed", flags)!.GetValue(window)!;
+                var pruneId = Wire.Id(); var pruneReviewCalls = 0; var pruneExecuteCalls = 0; var pruneResumeCalls = 0;
+                Set("ReviewOldVersions", (Func<string, string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<StartupVersionPruneReview>>)((_, backup, observed, _, _) =>
+                {
+                    pruneReviewCalls++;
+                    return Task.FromResult(new StartupVersionPruneReview(new("synthetic-prune", pruneId, "sportmaster", "synthetic-registration", observed, "已核对合成旧版本范围。",
+                        [new(@"D:\synthetic-older", new() { ["app/Ipc.Synthetic.dll"] = new string('a', 64) })], [new(location.ReleaseRoot, "当前版本")], observed),
+                        new("synthetic-business", "PruneVersions", true, "合成已结状态", "synthetic", backup)));
+                }));
+                Set("ExecuteOldVersions", (Func<StartupVersionPruneReview, string, IProgress<MaintenanceProgress>?, CancellationToken, Task<DeploymentPruneReceipt>>)((review, _, _, _) =>
+                {
+                    pruneExecuteCalls++;
+                    if (review.Deployment.OperationId != pruneId) throw new Exception("prune original changed");
+                    return Task.FromException<DeploymentPruneReceipt>(new InstallationOutcomeUnknownException("synthetic lost prune receipt"));
+                }));
+                Set("InspectOldVersions", (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<DeploymentPruneReceipt>>)((id, resume, _, _) =>
+                {
+                    if (id != pruneId) throw new Exception("prune original changed");
+                    if (resume) pruneResumeCalls++;
+                    return Task.FromResult(new DeploymentPruneReceipt(id, resume ? "CompletedWithRetainedFiles" : "Partial", resume ? "原清单完成；清单外原件保留。" : "原文件被占用，可继续原清单。", [@"D:\synthetic-older\unlisted.txt"], "synthetic-receipt"));
+                }));
+                var keepCalls = 0;
+                Set("KeepOldVersionRemainder", (Func<string, IProgress<MaintenanceProgress>?, CancellationToken, Task<DeploymentPruneReceipt>>)((id, _, _) =>
+                {
+                    if (id != pruneId) throw new Exception("keep disposition changed original"); keepCalls++;
+                    return Task.FromResult(new DeploymentPruneReceipt(id, "RetainedUnverified", "原范围余项保留，未逐项核对。", [@"D:\synthetic-older"], "synthetic-receipt"));
+                }));
+                Check(confirmation.IsChecked != true && !Button("备份并清理旧版本…").IsEnabled, "version cleanup requires explicit startup observation and review");
+                await Invoke("ReviewPruneVersions");
+                Check(pruneReviewCalls == 0, "missing startup observation never calls elevated cleanup review");
+                confirmation.IsChecked = true; await Invoke("ReviewPruneVersions");
+                Check(pruneReviewCalls == 1 && Button("备份并清理旧版本…").IsEnabled, "observed settled reviewed cleanup can be explicitly confirmed");
+                Set("ConfirmVersionPruning", (Func<string, bool>)(_ => false)); await Invoke("PruneVersions");
+                Check(pruneExecuteCalls == 0, "declining cleanup confirmation leaves all versions untouched");
+                Set("ConfirmVersionPruning", (Func<string, bool>)(_ => true));
+                try { await Invoke("PruneVersions"); throw new Exception("lost prune receipt accepted"); } catch (InstallationOutcomeUnknownException) { }
+                Check(pruneExecuteCalls == 1 && !Button("备份并清理旧版本…").IsEnabled, "lost cleanup receipt disables another delete submission");
+                await Invoke("InspectPruneVersions", false);
+                Check(Button("继续原清单清理…").IsEnabled, "original Partial receipt offers fixed-list continuation");
+                await Invoke("InspectPruneVersions", true);
+                Check(pruneResumeCalls == 1 && pruneExecuteCalls == 1 && !Button("继续原清单清理…").IsEnabled, "retained extras finish original cleanup without new delete scope");
+                await Invoke("InspectPruneVersions", false);
+                Set("ConfirmVersionPruning", (Func<string, bool>)(_ => false)); await Invoke("KeepPruneRemainder");
+                Check(keepCalls == 0, "keeping unverified remainder requires explicit disposition");
+                Set("ConfirmVersionPruning", (Func<string, bool>)(_ => true)); await Invoke("KeepPruneRemainder");
+                Check(keepCalls == 1 && pruneExecuteCalls == 1 && !Button("保留余项，结束清理…").IsEnabled, "keep disposition finishes original without another filesystem deletion");
+                Button("检查旧版本").BringIntoView(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                Capture("industrial-maintenance-pruning-960.png");
                 window.Width = 680; window.Height = 500; window.UpdateLayout();
-                foreach (var button in new[] { Button("检查回退条件"), Button("备份并回退到上一版本…"), Button("核对上次回退") })
+                foreach (var button in new[] { Button("检查回退条件"), Button("备份并回退…"), Button("核对上次回退") })
                     Check(button.ActualWidth <= window.ActualWidth - 40, "narrow window keeps action width: " + button.Content);
                 Button("修复上次回退的入口…").BringIntoView();
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);

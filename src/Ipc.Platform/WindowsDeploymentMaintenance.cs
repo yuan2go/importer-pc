@@ -14,6 +14,31 @@ public static partial class WindowsDeploymentSetup
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
         public string[]? SystemEntries { get; init; }
     }
+    static HashSet<string> RemovedRollbackOperations(string application)
+    {
+        var directory = Path.Combine(MachineRoot, "deployments");
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var files = Directory.EnumerateFiles(directory, application + ".remove-*.json").Take(129).ToArray();
+        if (files.Length > 128) throw new InvalidDataException("原卸载记录超过核对预算，保留原件。");
+        long bytes = 0;
+        foreach (var file in files)
+        {
+            MachineRuntimePolicy.RequireProtectedEvidence(file);
+            bytes = checked(bytes + new FileInfo(file).Length);
+            if (bytes > 16 * 1024 * 1024) throw new InvalidDataException("原卸载记录超过读取预算，保留原件。");
+            var json = File.ReadAllText(file); var state = Wire.Decode<RemovalState>(json);
+            if (state.Location.LifecycleOperation is { } operation && RemovalSupersedesRollback(application, operation, json))
+                result.Add(operation);
+        }
+        return result;
+    }
+    internal static bool RemovalSupersedesRollback(string application, string operation, string json)
+    {
+        var state = Wire.Decode<RemovalState>(json);
+        return state.Status is "RemovedDataRetained" or "RestartRequired" or "RemovedWithRetainedFiles" &&
+            state.Location.ApplicationId == application && state.Location.LifecycleOperation == operation &&
+            state.Location.SourceCommit.Length == 40 && state.Location.SourceCommit.All(char.IsAsciiHexDigit);
+    }
     static string SystemKey(string application) => @"Software\Microsoft\Windows\CurrentVersion\Uninstall\ImporterPc." + application;
     [SupportedOSPlatform("windows")]
     static void ProjectInstalledApplication(DeploymentLocation location)
@@ -106,6 +131,7 @@ public static partial class WindowsDeploymentSetup
         RemovalState plan;
         if (location.LifecycleState == "Installed")
         {
+            RequireNoUnresolvedPruning(application);
             // Removal uses the protected installation inventory. A missing or
             // damaged product executable must not prevent program-only removal.
             var files = location.MaintenanceRoot is not null ? InstalledInventory(location) :

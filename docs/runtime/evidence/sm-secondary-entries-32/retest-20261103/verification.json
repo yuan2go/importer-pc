@@ -1,0 +1,212 @@
+{
+  "source_commit": "8ae4f276e5c88395b4930281d3a6dabc345b8900",
+  "platform": "Windows native WPF, 125% DPI; real ZXing/SQLite/built-in RCS/loopback HTTP, synthetic MVS API",
+  "scope": "Release-hidden entries plus retained pages, authorized save, frozen requests, original pixels, same-placement dedup, cancellation and real resource shutdown; hardware/customer RCS/site NOT_RUN",
+  "suites": [
+    {
+      "suite": "--ui-spec-24",
+      "result": "PASS",
+      "pass_assertions": 38,
+      "evidence": "native-ui-spec-24.log",
+      "sha256": "f0f6b33d6a5c55b32b6658bf46bf0a7c92435af88ba08fbf0189b9abbdc03728",
+      "private_screenshots": [
+        {
+          "name": "ui24-cameras-1366.png",
+          "sha256": "d3ac1dd8ebf41b86a0d3358762fbb884c13768ca528c8773252644621c519cbd"
+        },
+        {
+          "name": "ui24-cameras-800.png",
+          "sha256": "233b3ecb1d6b4a8bc4374f853f7879e829da6a84fc3ff4b7888db698d80d2e5f"
+        },
+        {
+          "name": "ui24-first-run-review.png",
+          "sha256": "0cc63f19f2f24b04e10e5b5bb09d2e704c2af6d21ccbf720218080a3f465359f"
+        },
+        {
+          "name": "ui24-history-1366.png",
+          "sha256": "f7a95fc86886b29b8eae79a3e48a32285f02d821218cc5220961e19d79b1626a"
+        },
+        {
+          "name": "ui24-history-800.png",
+          "sha256": "40152b60b4a943112e271fa57c1d372aaded2676a62f90a7c7a6ad5052ea01d6"
+        },
+        {
+          "name": "ui24-logs-1366.png",
+          "sha256": "fd1d57c90356292eeed42a5eb946dff89627c8adf7b3b1698a3b5046f94bc5d8"
+        },
+        {
+          "name": "ui24-logs-800.png",
+          "sha256": "96a70ac5b3adf54ca39fe7a85142e793e75dd78e748d55a7f7a76aabc74332ee"
+        },
+        {
+          "name": "ui24-offline-check.png",
+          "sha256": "00ec6d1949c1b64fcad408a641ecb1d6ec76135f4b74b94b6ebaca362fb911a6"
+        },
+        {
+          "name": "ui24-offline-recovery.png",
+          "sha256": "6a78090adb318ff8f2c76a9ca204b009fa25009d810bb992f19d70120a8d7fbd"
+        },
+        {
+          "name": "ui24-save-review.png",
+          "sha256": "897e022efcc914bdb81ff9b31bf30643e9fe0564c2402abbf892734a00a0ccdf"
+        },
+        {
+          "name": "ui24-work-1092.png",
+          "sha256": "ca38d41710b0a68e70dbef00fb2556d0207c6be805a7c6566cf31818d21149d9"
+        },
+        {
+          "name": "ui24-work-1366.png",
+          "sha256": "ee0a212df7fc8a9e2dd2506fb8217fe1412126623162cbc44b6968cc216732bb"
+        },
+        {
+          "name": "ui24-work-800.png",
+          "sha256": "3f58763a89f83aecb1572e76d454659032944cfb638ae48d1af590d21a58a056"
+        }
+      ]
+    },
+    {
+      "suite": "--session-shift-25",
+      "result": "PASS",
+      "pass_assertions": 15,
+      "evidence": "native-session-shift-25.log",
+      "sha256": "c0102787a4521637673d8883b6f151d8da13b65fe90cd668c4bacbde5218b740",
+      "private_screenshots": [
+        {
+          "name": "ss25-exceptions-1092.png",
+          "sha256": "ff10fd688c7b0157fef3c201a4dbc4c862a25f650f85ae0f6680df7325466ab2"
+        },
+        {
+          "name": "ss25-exceptions-1366.png",
+          "sha256": "c18ebef0dd941662aeed852826a96299018ef9cb7bd057e72fd7e5c191a37ab1"
+        },
+        {
+          "name": "ss25-exceptions-800.png",
+          "sha256": "58cbb1f28dac37540d4dc9b558eccc2a7e558264707568df36548f97a72483b7"
+        },
+        {
+          "name": "ss25-statistics-1092.png",
+          "sha256": "3de8f3f79f5b2c100fb0c86cab8e8d1d9d4960aca1e3bc74dea1124d0be08bfc"
+        },
+        {
+          "name": "ss25-statistics-1366.png",
+          "sha256": "7e5b4a6a24c2a73f066e9a061f74a546b7006800628c9d3d4aa8573b7744cac8"
+        },
+        {
+          "name": "ss25-statistics-800.png",
+          "sha256": "b877b11001014320ef57949d18d85d3247f254f0c04a52658200b8afdb573f61"
+        }
+      ]
+    },
+    {
+      "suite": "--product-closure-21",
+      "result": "PASS",
+      "pass_assertions": 15,
+      "evidence": "native-product-closure-21.log",
+      "sha256": "838cab794ce80496579962a1cf072f212590671cfd19bdecbe42909d5163b24b",
+      "private_screenshots": [
+        {
+          "name": "pc21-diagnostics-1366.png",
+          "sha256": "91c3c2930125111ec40ce09a44abea9d896d48c39aefdc83428f973bf58e8315"
+        },
+        {
+          "name": "pc21-exceptions-1366.png",
+          "sha256": "bb42f1e19d5c6b362df91a1652545a3fc778b4fccf351e7a0a70e80e9357f391"
+        },
+        {
+          "name": "pc21-first-configuration-1100.png",
+          "sha256": "ff8bedd4ba542a5ba5b74fea2e5bbed6c0037a4e7d8692f40dbb600716514951"
+        },
+        {
+          "name": "pc21-statistics-1366.png",
+          "sha256": "eeed2beea615147da25c52318df6b6f2763531447c7897988e97b472f0dce25a"
+        },
+        {
+          "name": "pc21-statistics-800.png",
+          "sha256": "2107bc25aebcbc15d94e88160d29291a6772ef794853f9375aff11f279652f7e"
+        }
+      ]
+    },
+    {
+      "suite": "--audit-fixes-26",
+      "result": "PASS",
+      "pass_assertions": 26,
+      "evidence": "native-audit-fixes-26.log",
+      "sha256": "cd09f71e0b9fed6e03fea71806c78e8ddca16c23f040459e394638d1cad94cab",
+      "private_screenshots": [
+        {
+          "name": "audit26-activation-failed-1092.png",
+          "sha256": "971a41911bae1f3513c85db3a04e96a1f4045281e42cfa4fa9335f3bf9b658c7"
+        },
+        {
+          "name": "audit26-activation-failed-1366.png",
+          "sha256": "5da4572b0042cdbd2041d809909416c028ea5140eeda433b36aaef7259cf2e49"
+        },
+        {
+          "name": "audit26-activation-failed-800.png",
+          "sha256": "aa0e8a42d12bc4d4a35bedb7be4f02a70b7009f7a34cb8e50761d4b846ce61ab"
+        }
+      ]
+    },
+    {
+      "suite": "--debug-no-isolation-31-ui",
+      "result": "PASS",
+      "pass_assertions": 17,
+      "evidence": "native-debug-no-isolation-31-ui.log",
+      "sha256": "9a5e5b3bbca8a870ebf0275a30b5f32032e62913de7dd9f4a3d67cd85e0df804",
+      "private_screenshots": [
+        {
+          "name": "debug31-save-confirmed.png",
+          "sha256": "66dc2aa19412dd9e47b62429f305c7547cfb18893e83f4471fc5d6e146336b7b"
+        },
+        {
+          "name": "debug31-save-review-665.png",
+          "sha256": "b8cd4f3b84c5e8996e05e4f35aee58933bd9aa42db490fc24f3c09977b5293df"
+        },
+        {
+          "name": "debug31-save-review-800.png",
+          "sha256": "57ade6df0b1dd7637ddcf2119d99efc222546f9c4e706ffe908b6ed496aac989"
+        },
+        {
+          "name": "debug31-save-review-880.png",
+          "sha256": "19e9525d5c14ffa65a3c25aed694594ac0fe396c3553aa48496d43496cd904d0"
+        }
+      ]
+    },
+    {
+      "suite": "--debug-no-isolation-31",
+      "result": "PASS",
+      "pass_assertions": 15,
+      "evidence": "core-debug-no-isolation-31.log",
+      "sha256": "fea7bcf10a4f3d17f34d1d1ccb64c29f795235f58cf25c28188fe01c4b751158"
+    },
+    {
+      "suite": "--same-placement-29",
+      "result": "PASS",
+      "pass_assertions": 17,
+      "evidence": "core-same-placement-29.log",
+      "sha256": "7260c79836de12d2e19548f743afdefc2ec948c03c851b3da64304178e60bbfa"
+    },
+    {
+      "suite": "--camera-rounds",
+      "result": "PASS",
+      "pass_assertions": 41,
+      "evidence": "core-camera-rounds.log",
+      "sha256": "bb4ddbeadded86945375974dee180a931df942a4093e56783d5315fba7bebbc8"
+    },
+    {
+      "suite": "--manual-rcs-debug-lifecycle",
+      "result": "PASS",
+      "pass_assertions": 18,
+      "evidence": "core-manual-rcs-debug-lifecycle.log",
+      "sha256": "d7eddc6dbdb5d0c0e9396ba43f2870cd389472cec5d9af4885dff130aadcf461"
+    },
+    {
+      "suite": "--shutdown-resources",
+      "result": "PASS",
+      "pass_assertions": 21,
+      "evidence": "core-shutdown-resources.log",
+      "sha256": "9fcc500262c42b63d3ba9449f6b58c5b22e203a89992ef64cb37a046dded1d9f"
+    }
+  ],
+  "pass_assertions": 223
+}

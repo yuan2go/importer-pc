@@ -1,0 +1,15 @@
+PASS DEBUG31 persisted legacy isolation cannot block an authorized save after restart
+PASS DEBUG31 retirement preserves original request/receipt bytes without replay or a clearance workflow
+PASS DEBUG31 actual RCS address save persists a complete Pending candidate and retains old Effective
+PASS DEBUG31 controlled restart activates the saved RCS address without obsolete isolation barriers
+PASS DEBUG31 activation never changes or resends the historical original request
+PASS DEBUG31 removing isolation does not grant save rights outside management mode
+PASS DEBUG31 scan debugging neither pauses the station nor disables settings
+PASS DEBUG31 rejected concurrent begin preserves the active collection and its owner
+PASS DEBUG31 both positions continue production HTTP while the separate debug request stays unsent
+PASS DEBUG31 debug result retains the exact original image, barcode and recognition geometry
+PASS DEBUG31 operation picture uses the exact passive debug session without requiring a retired isolation tag
+PASS DEBUG31 explicit send calls actual configured RCS using frozen JSON and a real HTTP reply
+PASS DEBUG31 locked debug image never freezes normal recognition or gets overwritten by later parcels
+PASS DEBUG31 ending debugging requires no clearance, changes no pause state and replays no request
+PASS DEBUG31 legacy API cannot recreate the removed isolation feature

@@ -1,0 +1,18 @@
+{
+  "source_commit": "8ae4f276e5c88395b4930281d3a6dabc345b8900",
+  "database_format": 12,
+  "guide": "PARCEL12-OPERATIONS.md",
+  "old_db11_guide_absent": true,
+  "session_guide_present": true,
+  "verified_package_files": 797,
+  "zip_sha256": "620c6722dc4450eaf90975409a8f68f451d561cbf49416097863f3a3a12bfad7",
+  "desktop_dll_sha256": "db2a61149311fb7ac1fd1cee1e0e2abf73821d8629629a6ea0334921ec5281d9",
+  "installer_name": "CainiaoSupplyStation_SM_Setup_v1.0.0_win-x64.exe",
+  "installer_sha256": "9efecdbff3a178ee44ddfafb751bd3305e9c2929e3700787d0afa4329435a6f3",
+  "installer_built": true,
+  "actual_windows_installation": "NOT_RUN",
+  "retained_data_check": "PENDING_NORMAL_CLIENT_CLOSE",
+  "installed_flow": "NOT_RUN",
+  "merge": "NOT_DONE",
+  "authentication": "User must authenticate in existing client to encrypt and retain unsaved draft before normal exit; no forced termination or discard."
+}

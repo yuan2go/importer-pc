@@ -38,6 +38,7 @@ GUIDES = {
 # Current operation guides and real interface prerequisites only. Historical UI,
 # old account and support-page evidence remains in Git with its original identity.
 SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
+    'docs/design/sm-dual-camera-performance.md': 'SM-DUAL-CAMERA-PERFORMANCE.md',
     'docs/operator/quick-guide.md': 'OPERATOR-QUICK-GUIDE.md',
     'docs/operator/deployment-card.md': 'DEPLOYMENT-CARD.md',
     'docs/operator/implementation-guide.md': 'IMPLEMENTATION-GUIDE.md',

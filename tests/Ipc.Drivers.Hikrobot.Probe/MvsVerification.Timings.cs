@@ -69,7 +69,8 @@ internal static partial class MvsVerification
             "timing retention is bounded; session totals/extrema and recent-window percentiles have explicit different scopes");
         for (uint i = 0; i < 1025; i++) timings.Frame(new(i, DateTimeOffset.UnixEpoch, 0, 0, 0, 0, 0, 0, 0, 0, 0, false));
         var frames = timings.Snapshot().RecentFrames;
-        Check(frames.Length == 512 && frames[0].Number == 513 && frames[^1].Number == 1024, "numeric frame traces retain only the last 512 frames");
+        Check(frames.Length == 512 && frames[0].Number == 513 && frames[^1].Number == 1024 && frames[0].TraceSequence == 514 &&
+            frames[^1].TraceSequence == 1025 && timings.Snapshot().FrameTraceCount == 1025, "bounded traces expose monotonic cursors so collectors detect overwritten frames");
         timings.Reset(); Check(timings.Snapshot().Stages.Count == 0, "new timing session clears old samples");
         var api = new Fake(); var health = new ConcurrentQueue<DeviceHealthConfirmation>();
         await using (var source = new MvsAcquisition(new("diagnostic.mvs", "synthetic.mvs", new Dictionary<string, string> { ["device.ip"] = api.Ip, ["device.serial"] = api.Serial }),

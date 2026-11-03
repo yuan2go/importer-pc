@@ -106,14 +106,17 @@ public sealed class ConfigurationSaveReviewWindow : Window
     async void SaveAsync(object sender, RoutedEventArgs e)
     {
         if (!vm.CanSubmitReviewedConfiguration) { UpdateState(); return; }
-        // The change record still carries a reason; an empty note records what changed instead.
-        if (string.IsNullOrWhiteSpace(vm.ConfigurationReason)) vm.ConfigurationReason = AutomaticReason(vm.ReviewedConfigurationChanges);
         if (vm.ConfigurationReason.Length > 1024)
         { reasonError.Text = "备注最多 1024 字。"; reasonError.Visibility = Visibility.Visible; reason.Focus(); return; }
+        // The change record still carries a reason. An empty note submits a summary of this
+        // save's changes for this attempt only; the note box itself stays empty.
+        var automatic = string.IsNullOrWhiteSpace(vm.ConfigurationReason) ? AutomaticReason(vm.ReviewedConfigurationChanges) : null;
         localFailure = null; bool completed = false;
         await vm.RunAsync(async () =>
         {
-            if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync();
+            if (automatic is not null) vm.ConfigurationReason = automatic;
+            try { if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync(); }
+            finally { if (automatic is not null && vm.ConfigurationReason == automatic) vm.ConfigurationReason = ""; }
             completed = true;
         }, "保存并查看结果");
         if (!completed) localFailure = "保存未完成。" + vm.Message;

@@ -42,6 +42,7 @@ public partial class ParcelViewModel
         if (result.Status != "Unknown") unconfirmedSubmission = null;
         if (result.Status is "PendingRestart" or "Unchanged" or "Effective")
         {
+            ConfigurationReason = "";
             savedEditorSignature = submissionEditorSignature; savedCandidate = submissionEditorDocument; configurationReviewBaseline = submitted.Candidate; reviewedConfigurationSignature = null;
             Changed(nameof(HasUnsavedConfiguration));
             draftConfigurationRevision = result.Revision; Changed(nameof(DraftRevisionState));

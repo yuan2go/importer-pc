@@ -136,6 +136,7 @@ public static partial class WindowsDeploymentSetup
         TrustedProgramRoots.Approve(vendor, data, sid); ProtectedDirectory(Path.Combine(vendor, "releases"), sid);
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        using var rootOwnership = request.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(request.ApplicationId, data) : null;
         var before = Current(request.ApplicationId);
         RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
         RequireNoUnresolvedLifecycle(request.ApplicationId);

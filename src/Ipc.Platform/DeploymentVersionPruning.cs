@@ -163,6 +163,7 @@ public static partial class WindowsDeploymentSetup
         using var identity = WindowsIdentity.GetCurrent();
         var record = new DeploymentPruneRecord(1, DateTimeOffset.UtcNow, actual, "Prepared", [], identity.User!.Value);
         var current = Current(actual.ApplicationId)!;
+        using var rootOwnership = actual.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(actual.ApplicationId, current.DataRoot) : null;
         RequirePruneExcludesCurrent(actual, current);
         RequireProtectedPruneFiles(actual.Delete);
         return ApplyVersionPruning(record, path, () => Wire.FileHash(Registration(actual.ApplicationId)),
@@ -290,6 +291,7 @@ public static partial class WindowsDeploymentSetup
         if (resume && record.Status is "Prepared" or "Partial")
         {
             var current = Current(application) ?? throw new InvalidDataException("原登记缺失，不能扩大清理范围。");
+            using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
             RequirePruneExcludesCurrent(record.Plan, current);
             RequireProtectedPruneFiles(record.Plan.Delete);
             return ApplyVersionPruning(record, path, () => Wire.FileHash(Registration(application)),

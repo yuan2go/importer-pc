@@ -31,7 +31,12 @@ public static class ParcelAssembly
 #endif
         runtime.ManagementPasswordSetupApproval = password => ParcelStartupServices.ManagementMode(launch).ConfigureManagementPasswordAsync(password);
 #if SPORTMASTER
-        runtime.AcquireRootOwnership = () => ApplicationRootOwnership.AcquireRuntime(runtime.Id, launch.DataRoot);
+        var deployment = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, runtime.Id);
+        runtime.AcquireRootOwnership = () => ApplicationRootOwnership.AcquireRuntime(runtime.Id, launch.DataRoot, () =>
+        {
+            if (deployment is not null) DeploymentMedia.RequireRuntimeLocation(deployment,
+                DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, runtime.Id), launch.DataRoot, launch.ConfigurationDirectory);
+        });
 #endif
         runtime.ManagementPasswordResetApproval = password => ParcelStartupServices.ManagementMode(launch).ResetManagementPasswordAsync(password);
         runtime.ManagementPasswordRecoveryInspection = () => ParcelStartupServices.ManagementMode(launch).InspectManagementPasswordRecoveryAsync();

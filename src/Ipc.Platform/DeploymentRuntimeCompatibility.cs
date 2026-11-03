@@ -5,7 +5,7 @@ public sealed record DeploymentRuntimeCompatibility(int SchemaVersion, int DataF
     int CredentialSchema, int ManagementProtocol, int RecoverySecurityEpoch, int LifecycleProtocol,
     string ApplicationContractVersion, string ProviderPolicySha256, string DependencyInventorySha256)
 {
-    public const int CurrentLifecycleProtocol = 2;
+    public const int CurrentLifecycleProtocol = 3;
     public const string FileName = "deployment-compatibility.json";
 
     public void Validate(ApplicationRelease release)

@@ -88,17 +88,23 @@ public static partial class WindowsDeploymentSetup
 
     public static WindowsRemovalReceipt InspectRemoval(string application)
     {
+        if (!ExtensionSchema.IsId(application)) throw new InvalidDataException("无效的应用身份。");
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         var location = Current(application) ?? throw new InvalidDataException("原部署登记不可读");
-        if (location.LifecycleState == "Installed") return new("Installed", "", [location.DataRoot, location.ConfigurationDirectory], false);
+        if (location.LifecycleState == "Installed")
+        {
+            var pending = RemovalRecords(application).Where(item => item.State.Status == "Prepared").ToArray();
+            if (pending.Length == 0) return new("Installed", "", [location.DataRoot, location.ConfigurationDirectory], false);
+            if (pending.Length != 1) return new("Unknown", "", [location.DataRoot, location.ConfigurationDirectory], false);
+            return ProjectRemoval(pending[0].State, pending[0].File, location, Wire.FileHash(Registration(application)));
+        }
         var file = location.MaintenanceOperation ?? throw new InvalidDataException("退役登记缺少原卸载操作");
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         if (!TrustedProgramRoots.Contains(Path.Combine(MachineRoot, "deployments"), file) || new FileInfo(file).Length > 4 * 1024 * 1024)
             throw new InvalidDataException("原卸载记录不可信");
         var plan = Wire.Decode<RemovalState>(File.ReadAllText(file)); ValidateRemovalState(plan, location);
-        return ObserveRemoval(new(plan.Status == "Prepared" ? "RetiredCleanupPending" : plan.Status, file,
-            [location.DataRoot, location.ConfigurationDirectory], plan.RestartRequired, plan.Remaining ?? [], location.ReleaseRoot) {
-                WithoutBusinessInspection = plan.WithoutBusinessInspection }, plan.Files);
+        var receipt = ProjectRemoval(plan, file, location, Wire.FileHash(Registration(application)));
+        return receipt.Status == "Unknown" ? receipt : ObserveRemoval(receipt, plan.Files);
     }
     // The journal records the original action; disk observations must never rewrite it.
     // Enumerate without following links and with a fixed budget, including unlisted
@@ -132,7 +138,9 @@ public static partial class WindowsDeploymentSetup
     }
     static void ValidateRemovalState(RemovalState plan, DeploymentLocation location)
     {
-        if (plan.Location.ApplicationId != location.ApplicationId || plan.Location.ReleaseRoot != location.ReleaseRoot ||
+        if (plan.Location is null || plan.Files is null || plan.Location.SourceCommit is not { Length: 40 } || !plan.Location.SourceCommit.All(char.IsAsciiHexDigit) ||
+            !Path.IsPathFullyQualified(plan.Location.ReleaseRoot) || !Path.IsPathFullyQualified(plan.Location.DataRoot) || !Path.IsPathFullyQualified(plan.Location.ConfigurationDirectory) ||
+            plan.Location.ApplicationId != location.ApplicationId || plan.Location.ReleaseRoot != location.ReleaseRoot ||
             plan.Location.SourceCommit != location.SourceCommit || plan.Location.DataRoot != location.DataRoot || plan.Files.Length > 16384 ||
             plan.Files.Any(n => !ExtensionPackages.SafePath(n)) || plan.Files.Distinct(StringComparer.OrdinalIgnoreCase).Count() != plan.Files.Length)
             throw new InvalidDataException("Removal journal differs from authoritative registration");

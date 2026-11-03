@@ -18,8 +18,8 @@ public static class ApplicationRootOwnership
         return "application-root:" + application + ":" + Wire.Hash(path);
     }
 
-    public static IDisposable AcquireRuntime(string application, string dataRoot)
-        => AcquireAt(MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(dataRoot, ".runtime-ownership")), application, dataRoot);
+    public static IDisposable AcquireRuntime(string application, string dataRoot, Action? verifyDeployment = null)
+        => AcquireAt(MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(dataRoot, ".runtime-ownership")), application, dataRoot, verifyDeployment);
 
     [SupportedOSPlatform("windows")]
     public static IDisposable AcquireMaintenance(string application, string dataRoot)
@@ -28,10 +28,17 @@ public static class ApplicationRootOwnership
         return AcquireAt(MachineRuntimePolicy.InstallerLeaseRoot(""), application, dataRoot);
     }
 
-    internal static IDisposable AcquireAt(string leaseRoot, string application, string dataRoot)
+    internal static IDisposable AcquireAt(string leaseRoot, string application, string dataRoot, Action? verifyDeployment = null)
     {
         if (OperatingSystem.IsWindows() && !Path.GetPathRoot(Path.GetFullPath(leaseRoot))!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("应用停机所有权须使用管理员批准的D盘机器租约根。");
-        return new ResourceLease(leaseRoot, ["application-lifetime:" + application, Resource(application, dataRoot)]);
+        var scope = new ResourceLease(leaseRoot, ["application-lifetime:" + application, Resource(application, dataRoot)]);
+        try { verifyDeployment?.Invoke(); return scope; }
+        catch (Exception original)
+        {
+            try { scope.Dispose(); }
+            catch (Exception cleanup) { throw new AggregateException("部署复核失败且所有权释放未完成。", original, cleanup); }
+            throw;
+        }
     }
 }

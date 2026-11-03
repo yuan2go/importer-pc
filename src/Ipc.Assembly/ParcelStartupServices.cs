@@ -21,6 +21,7 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     public bool OrdinaryStartupConfirmed { get; init; }
     public DeploymentOpaqueRemovalPlan? OpaqueRemovalPlan { get; init; }
     public bool SkipBackup { get; init; }
+    public string? RemovalOperationId { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
 }
@@ -139,8 +140,10 @@ public static partial class ParcelStartupServices
         => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("ResumeRemoval", ExpectedHash: expectedHash)) ?? throw new IOException("缺少原清理回执。"));
     public static Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash,string plan,string backup)
         => RemoveAsync(expectedRegistrationHash,plan,backup,null,CancellationToken.None);
-    public static async Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash,string plan,string backup,IProgress<MaintenanceProgress>? progress,CancellationToken token)
-        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("Uninstall",ExpectedHash:expectedRegistrationHash,Destination:backup,ChangePlanIdentity:plan),maintenanceProgress:progress,cancellationToken:token)??throw new IOException("缺少卸载回执"));
+    public static async Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash,string plan,string backup,IProgress<MaintenanceProgress>? progress,CancellationToken token,string? operationId = null)
+        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("Uninstall",ExpectedHash:expectedRegistrationHash,Destination:backup,ChangePlanIdentity:plan) { RemovalOperationId = operationId ?? Wire.Id() },maintenanceProgress:progress,cancellationToken:token)??throw new IOException("缺少卸载回执"));
+    public static async Task<WindowsRemovalReceipt> CloseUncommittedRemovalAsync(string operationId, string expectedHash)
+        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("CloseUncommittedRemoval", ExpectedHash: expectedHash) { RemovalOperationId = operationId }) ?? throw new IOException("缺少原卸载核对回执。"));
     public static async Task<WindowsRemovalReceipt> ResumeRemovalAsync(DeploymentMedia media, string expectedRegistrationHash)
     {
         var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少退役登记");
@@ -309,15 +312,19 @@ public static partial class ParcelStartupServices
             case "ReviewRemoval":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 if (Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) != request.ExpectedHash) throw new InvalidOperationException("安装登记已变化，请重新读取。");
+                if (WindowsDeploymentSetup.InspectRemoval(ApplicationId).Status != "Installed") throw new InstallationOutcomeUnknownException("请先核对并结束原卸载，不创建新卸载或备份。");
                 var originalRemoval = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少原部署。");
                 return Wire.Encode(await Core(new(originalRemoval.ConfigurationDirectory, originalRemoval.DataRoot, null, null), installer: true)
                     .PlanChangeAsync("Uninstall", request.Destination, execution ?? throw new InvalidOperationException("缺少卸载预检执行上下文。")));
+            case "CloseUncommittedRemoval":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                return Wire.Encode(WindowsDeploymentSetup.CloseUncommittedRemoval(ApplicationId, request.RemovalOperationId!, request.ExpectedHash!));
             case "Uninstall":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
                 var removing = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("没有原部署登记");
                 WindowsRemovalReceipt? removed = null;
                 await Core(new(removing.ConfigurationDirectory, removing.DataRoot, null, null), installer: true).ExecuteChangeAsync(request.ChangePlanIdentity!, "Uninstall", request.Destination!,
-                    () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); removed = WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!, _ => { }, RemoveShortcuts, null, execution); return Task.CompletedTask; }, execution);
+                    () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); removed = WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!, _ => { }, RemoveShortcuts, null, execution, operationId: request.RemovalOperationId ?? throw new InvalidDataException("缺少原卸载身份。")); return Task.CompletedTask; }, execution);
                 return Wire.Encode(removed!);
             case "ResumeRemoval":
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();

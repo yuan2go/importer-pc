@@ -30,3 +30,7 @@ src/Ipc.Platform/DeploymentOpaqueRemoval.cs
 src/Ipc.Assembly/ParcelStartupServices.OpaqueRemoval.cs
 src/Ipc.Desktop/ProductMaintenanceWindow.OpaqueRemoval.cs
 tests/Ipc.Application.Verification/IndustrialOpaqueRemoval.cs
+src/Ipc.Platform/DeploymentRemovalJournal.cs
+src/Ipc.Platform/WindowsDeploymentMaintenance.cs
+src/Ipc.Desktop/ProductMaintenanceWindow.cs
+src/Ipc.Desktop/StartupWorkflowWindow.Maintenance.cs

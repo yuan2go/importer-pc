@@ -41,7 +41,7 @@ public static partial class ParcelStartupServices
                     await core.ExecuteChangeAsync(preview.Identity, "Uninstall", backup, () =>
                     {
                         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                        receipt = WindowsDeploymentSetup.Remove(ApplicationId, hash, _ => { }, RemoveShortcuts, null); return Task.CompletedTask;
+                        receipt = WindowsDeploymentSetup.Remove(ApplicationId, hash, _ => { }, RemoveShortcuts, null, null, operationId: command.OperationId); return Task.CompletedTask;
                     }).ConfigureAwait(false);
                     code = receipt!.RestartRequired ? 3010 : receipt.RemainingFiles?.Length > 0 ? 1603 : 0; result = receipt;
                 }

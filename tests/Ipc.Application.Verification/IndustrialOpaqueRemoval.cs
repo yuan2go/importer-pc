@@ -53,6 +53,38 @@ static class IndustrialOpaqueRemoval
         }
         var fileRoot = Path.Combine(root, "not-a-directory"); File.WriteAllText(fileRoot, "synthetic original");
         Reject<InvalidDataException>(() => OpaqueRemovalOwnership.Discover("sportmaster", fileRoot, default), "file replacing a data directory cannot be treated as an empty station");
+        var deployment = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "release"), Path.Combine(root, "config"), data, "synthetic");
+        DeploymentMedia.RequireRuntimeLocation(deployment, deployment, data, deployment.ConfigurationDirectory);
+        Check(true, "runtime launch accepts the exact installed identity under ownership");
+        Reject<InvalidOperationException>(() => DeploymentMedia.RequireRuntimeLocation(deployment, null, data, deployment.ConfigurationDirectory), "lost registration after initial check refuses launch");
+        Reject<InvalidOperationException>(() => DeploymentMedia.RequireRuntimeLocation(deployment, deployment with { LifecycleState = "RemovedDataRetained" }, data, deployment.ConfigurationDirectory), "retirement between initial check and owned startup refuses launch");
+        Reject<InvalidOperationException>(() => DeploymentMedia.RequireRuntimeLocation(deployment, deployment with { SourceCommit = new string('b', 40) }, data, deployment.ConfigurationDirectory), "changed program identity before owned startup refuses launch");
+        Reject<InvalidOperationException>(() => DeploymentMedia.RequireRuntimeLocation(deployment, deployment, data + "-other", deployment.ConfigurationDirectory), "launch cannot override installed data root");
+        Reject<InvalidOperationException>(() => DeploymentMedia.RequireRuntimeLocation(deployment, deployment, data, deployment.ConfigurationDirectory + "-other"), "launch cannot override installed seed root");
+        var verified = 0;
+        using (ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", data, () =>
+        {
+            verified++;
+            Reject<IOException>(() => { using var competitor = ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", data); }, "deployment recheck executes while global ownership is already held");
+        })) Check(verified == 1, "deployment check runs once before owned startup can open data");
+        Reject<InvalidOperationException>(() =>
+        {
+            using var rejected = ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", data,
+            () => DeploymentMedia.RequireRuntimeLocation(deployment, null, data, deployment.ConfigurationDirectory));
+        }, "failed deployment recheck aborts owned startup");
+        using (ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", data)) Check(true, "failed recheck releases its acquired lease without opening data");
+
+        await using (var changed = new ManualSupplyHarness(workspace, Path.Combine(root, "changed-before-owned-start"), deferred: true))
+        {
+            var expected = deployment with { DataRoot = changed.Launch.DataRoot, ConfigurationDirectory = changed.Launch.ConfigurationDirectory };
+            var registrationFile = Path.Combine(root, "synthetic-deployment.json");
+            File.WriteAllText(registrationFile, Wire.Encode(expected with { LifecycleState = "RemovedDataRetained" }));
+            changed.RootOwnership = () => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", changed.Launch.DataRoot, () =>
+                DeploymentMedia.RequireRuntimeLocation(expected, Wire.Decode<DeploymentLocation>(File.ReadAllText(registrationFile)), changed.Launch.DataRoot, changed.Launch.ConfigurationDirectory));
+            try { await changed.StartAsync(); throw new Exception("changed deployment started"); }
+            catch (InvalidOperationException) { Check(true, "actual Application rejects changed synthetic deployment after ownership acquisition"); }
+            Check(changed.Factory.CreateCalls == 0 && !Directory.Exists(changed.Launch.DataRoot), "changed deployment cannot create ports or a replacement empty database");
+        }
 
         await using (var blocked = new ManualSupplyHarness(workspace, Path.Combine(root, "blocked-start"), deferred: true))
         {

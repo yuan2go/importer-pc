@@ -104,6 +104,7 @@ public static partial class WindowsDeploymentSetup
         if (File.Exists(file)) throw new InstallationOutcomeUnknownException("原回退记录已存在，请核对该次结果，不重复提交。");
         var actual = PlanRollbackCore(application, reviewed.OperationId);
         if (!actual.Allowed || actual.Identity != reviewed.Identity) throw new InvalidOperationException("回退计划已变化或不再兼容，请重新核对。");
+        using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, actual.Current.DataRoot) : null;
         var after = actual.Target! with
         {
             ConfigurationDirectory = actual.Current.ConfigurationDirectory,
@@ -182,6 +183,7 @@ public static partial class WindowsDeploymentSetup
 
     public static void RequireInstalledReady(DeploymentLocation location)
     {
+        RequireNoUnresolvedRemoval(location.ApplicationId);
         if (location.LifecycleOperation is null) return;
         var name = Path.GetFileNameWithoutExtension(location.LifecycleOperation);
         var prefix = location.ApplicationId + ".rollback-";
@@ -199,6 +201,7 @@ public static partial class WindowsDeploymentSetup
 
     static void RequireNoUnresolvedLifecycle(string application)
     {
+        RequireNoUnresolvedRemoval(application);
         RequireNoUnresolvedPruning(application);
         var removed = RemovedRollbackOperations(application);
         var records = Directory.EnumerateFiles(Path.Combine(MachineRoot, "deployments"), application + ".rollback-*.json").Take(1025).ToArray();

@@ -121,7 +121,13 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
             WindowsDeploymentSetup.RequireInstalledReady(current);
             return current;
         }
-        if (!File.Exists(file)) return null;
+        if (!File.Exists(file))
+        {
+            if (OperatingSystem.IsWindows() && WindowsDeploymentSetup.Current(application) is { } registered &&
+                TrustedProgramRoots.Contains(Path.GetDirectoryName(Path.GetDirectoryName(registered.ReleaseRoot))!, directory))
+                throw new InvalidOperationException("程序位于部署范围但已不属于当前安装，请使用当前开始菜单入口。");
+            return null;
+        }
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         var location = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
         if (OperatingSystem.IsWindows()) location = AuthoritativeLocation(location, WindowsDeploymentSetup.Current(application));
@@ -140,5 +146,13 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
             !string.Equals(Path.GetFullPath(authoritative.ReleaseRoot), Path.GetFullPath(descriptor.ReleaseRoot), StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("此程序版本已不属于当前安装；请使用当前开始菜单入口，原数据保留。");
         return authoritative;
+    }
+
+    public static void RequireRuntimeLocation(DeploymentLocation expected, DeploymentLocation? current, string dataRoot, string configurationDirectory)
+    {
+        if (current is null || current.LifecycleState != "Installed" || Wire.Encode(current) != Wire.Encode(expected) ||
+            !Path.GetFullPath(dataRoot).Equals(Path.GetFullPath(current.DataRoot), StringComparison.OrdinalIgnoreCase) ||
+            !Path.GetFullPath(configurationDirectory).Equals(Path.GetFullPath(current.ConfigurationDirectory), StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("取得应用所有权后部署身份已变化，未打开业务数据；请使用当前开始菜单入口。");
     }
 }

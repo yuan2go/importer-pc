@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Principal;
 using Microsoft.Win32;
@@ -9,14 +8,17 @@ namespace Ipc.Platform;
 public sealed record WindowsRemovalReceipt(string Status, string OperationFile, string[] Retained, bool RestartRequired, string[]? RemainingFiles = null, string? ReleaseRoot = null)
 {
     public bool WithoutBusinessInspection { get; init; }
+    public string? OperationId { get; init; }
 }
 public static partial class WindowsDeploymentSetup
 {
-    sealed record RemovalState(string Status, DeploymentLocation Location, string[] Files, string[]? Remaining = null, bool RestartRequired = false)
+    internal sealed record RemovalState(string Status, DeploymentLocation Location, string[] Files, string[]? Remaining = null, bool RestartRequired = false)
     {
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
         public string[]? SystemEntries { get; init; }
         public bool WithoutBusinessInspection { get; init; }
+        public string? OperationId { get; init; }
+        public string? ExpectedRegistrationHash { get; init; }
     }
     static HashSet<string> RemovedRollbackOperations(string application)
     {
@@ -71,15 +73,15 @@ public static partial class WindowsDeploymentSetup
     public static void RepairCommittedInstallation(WindowsDeploymentRequest original, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts)
         => RepairSystemRegistrationCore(original.ApplicationId, expectedHash, repairShortcuts, original);
     [SupportedOSPlatform("windows")]
-    public static void RepairSystemRegistration(string application,string expectedHash,Action<DeploymentLocation>? repairShortcuts,MaintenanceExecution? execution)
-        => RepairSystemRegistrationCore(application,expectedHash,(location,_)=>repairShortcuts?.Invoke(location),null,execution);
+    public static void RepairSystemRegistration(string application, string expectedHash, Action<DeploymentLocation>? repairShortcuts, MaintenanceExecution? execution)
+        => RepairSystemRegistrationCore(application, expectedHash, (location, _) => repairShortcuts?.Invoke(location), null, execution);
     [SupportedOSPlatform("windows")]
-    public static void RepairCommittedInstallation(WindowsDeploymentRequest original,string expectedHash,Action<DeploymentLocation,DeploymentLocation?> repairShortcuts,MaintenanceExecution? execution)
-        => RepairSystemRegistrationCore(original.ApplicationId,expectedHash,repairShortcuts,original,execution);
+    public static void RepairCommittedInstallation(WindowsDeploymentRequest original, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts, MaintenanceExecution? execution)
+        => RepairSystemRegistrationCore(original.ApplicationId, expectedHash, repairShortcuts, original, execution);
     [SupportedOSPlatform("windows")]
     static void RepairSystemRegistrationCore(string application, string expectedHash, Action<DeploymentLocation, DeploymentLocation?> repairShortcuts, WindowsDeploymentRequest? original, MaintenanceExecution? execution = null)
     {
-        execution?.Checkpoint();execution?.Report(MaintenanceStage.Checking);
+        execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("部署登记变化；重新检查维护计划");
@@ -112,39 +114,55 @@ public static partial class WindowsDeploymentSetup
         if (location is { LifecycleState: "Installed", Recovery.Enabled: true }) DesktopRecoverySupervisor.RepairAndReset(location, RepairProjections);
         else RepairProjections();
         if (original is not null && inspection is { Status: "CommittedNeedsSystemRepair" })
-            WriteProtected(operation!, new { Status = "Completed", RequestIdentity = InstallationRequestIdentity(original), inspection.ChangePlanIdentity,
-                Location = location, inspection.Previous, BusinessStarted = false, RepairedFromStatus = inspection.Status, SystemRepairArchive = archive }, new SecurityIdentifier(location.RuntimeAccountSid));
+            WriteProtected(operation!, new
+            {
+                Status = "Completed",
+                RequestIdentity = InstallationRequestIdentity(original),
+                inspection.ChangePlanIdentity,
+                Location = location,
+                inspection.Previous,
+                BusinessStarted = false,
+                RepairedFromStatus = inspection.Status,
+                SystemRepairArchive = archive
+            }, new SecurityIdentifier(location.RuntimeAccountSid));
     }
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    static extern bool MoveFileEx(string path, string? target, int flags);
     [SupportedOSPlatform("windows")]
     public static WindowsRemovalReceipt Remove(string application, string expectedHash, Action<DeploymentLocation> requireResponsibilitiesAndBackup,
         Action<DeploymentLocation> removeShortcuts, string[]? originalMediaFiles = null)
-        => Remove(application,expectedHash,requireResponsibilitiesAndBackup,removeShortcuts,originalMediaFiles,null);
+        => Remove(application, expectedHash, requireResponsibilitiesAndBackup, removeShortcuts, originalMediaFiles, null);
     [SupportedOSPlatform("windows")]
-    public static WindowsRemovalReceipt Remove(string application,string expectedHash,Action<DeploymentLocation> requireResponsibilitiesAndBackup,
-        Action<DeploymentLocation> removeShortcuts,string[]? originalMediaFiles,MaintenanceExecution? execution, bool withoutBusinessInspection = false)
+    public static WindowsRemovalReceipt Remove(string application, string expectedHash, Action<DeploymentLocation> requireResponsibilitiesAndBackup,
+        Action<DeploymentLocation> removeShortcuts, string[]? originalMediaFiles, MaintenanceExecution? execution, bool withoutBusinessInspection = false, string? operationId = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        if (!ExtensionSchema.IsId(application)) throw new InvalidDataException("无效的应用身份。");
         using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("部署登记变化；重新检查卸载计划");
         var location = Current(application) ?? throw new InvalidDataException("没有可核验的原部署");
+        using var rootOwnership = application == "sportmaster" && !withoutBusinessInspection ? ApplicationRootOwnership.AcquireMaintenance(application, location.DataRoot) : null;
         var sid = new SecurityIdentifier(location.RuntimeAccountSid);
-        var operation = location.LifecycleState != "Installed" && location.MaintenanceOperation is not null ? location.MaintenanceOperation : Path.Combine(MachineRoot, "deployments", application + ".remove-" + Wire.Id() + ".json");
+        var operation = location.LifecycleState != "Installed" && location.MaintenanceOperation is not null ? location.MaintenanceOperation : RemovalOperationFile(application, operationId ?? Wire.Id());
         _ = TrustedProgramRoots.RequireBoundary(location.ReleaseRoot);
         RemovalState plan;
         if (location.LifecycleState == "Installed")
         {
             RequireNoUnresolvedPruning(application);
+            RequireNoUnresolvedRemoval(application);
+            if (File.Exists(operation)) throw new InvalidOperationException("卸载操作身份已使用，请核对原记录；不覆盖或重新执行。");
             // Removal uses the protected installation inventory. A missing or
             // damaged product executable must not prevent program-only removal.
             var files = location.MaintenanceRoot is not null ? InstalledInventory(location) :
                 DeploymentMedia.Inspect(location.ReleaseRoot, application).Files.Keys.ToArray();
             requireResponsibilitiesAndBackup(location); // Caller holds application-owner until return.
             plan = new("Prepared", location, files.Append("deployment-location.json").Append("deployment-retired.json").ToArray())
-                { SystemEntries = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).SystemEntries : null,
-                    WithoutBusinessInspection = withoutBusinessInspection };
-            WriteProtected(operation, plan, sid);
+            {
+                SystemEntries = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).SystemEntries : null,
+                WithoutBusinessInspection = withoutBusinessInspection,
+                OperationId = Path.GetFileNameWithoutExtension(operation)[(application.Length + ".remove-".Length)..],
+                ExpectedRegistrationHash = expectedHash
+            };
+            try { WriteProtected(operation, plan, sid, overwrite: false); }
+            catch (Exception error) { throw new InstallationOutcomeUnknownException("原卸载意图写入结果未确认，请先核对原记录。", error); }
         }
         else
         {
@@ -156,20 +174,31 @@ public static partial class WindowsDeploymentSetup
             if (!plan.Files.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(originalMediaFiles.Append("deployment-location.json").Append("deployment-retired.json").Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase))
                 throw new InvalidDataException("原卸载清单与同源完整介质不一致，拒绝清理；原件保留");
         }
-        execution?.Checkpoint(); execution?.BeginCommit(MaintenanceStage.RetiringDeployment);
-        var retired = location with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = operation };
-        if (Directory.Exists(location.ReleaseRoot)) WriteProtected(Path.Combine(location.ReleaseRoot, "deployment-retired.json"), retired, sid);
-        WriteProtected(Registration(application), retired, sid); // one irreversible detach; reentry reads this state
-        if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.RemoveIfUnused(location.DataRoot);
-        ProjectInstalledApplication(retired); removeShortcuts(location);
-        execution?.Report(MaintenanceStage.RemovingProgram);
-        var cleanup = CleanRemovalInventory(location.ReleaseRoot, plan.Files, path => MoveFileEx(path, null, 4));
-        var status = cleanup.RestartRequired ? "RestartRequired" : cleanup.Remaining.Length == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
-        WriteProtected(operation, plan with { Status = status, Remaining = cleanup.Remaining, RestartRequired = cleanup.RestartRequired }, sid);
-        var dumpDirectory = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).DumpFolder : null;
-        return new(status, operation, [location.DataRoot, location.ConfigurationDirectory,
-            .. dumpDirectory is not null && Directory.Exists(dumpDirectory) ? new[] { dumpDirectory } : Array.Empty<string>()], cleanup.RestartRequired, cleanup.Remaining, location.ReleaseRoot) {
-                WithoutBusinessInspection = plan.WithoutBusinessInspection };
+        try
+        {
+            execution?.Checkpoint(); execution?.BeginCommit(MaintenanceStage.RetiringDeployment);
+            var retired = location with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = operation };
+            if (Directory.Exists(location.ReleaseRoot)) WriteProtected(Path.Combine(location.ReleaseRoot, "deployment-retired.json"), retired, sid);
+            WriteProtected(Registration(application), retired, sid); // one irreversible detach; reentry reads this state
+            if (application is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.RemoveIfUnused(location.DataRoot);
+            ProjectInstalledApplication(retired); removeShortcuts(location);
+            execution?.Report(MaintenanceStage.RemovingProgram);
+            // New removals leave locked files as explicit leftovers. They never add a
+            // reboot-delete obligation; old scheduled obligations remain observable.
+            var cleanup = CleanRemovalInventory(location.ReleaseRoot, plan.Files, _ => false);
+            var restart = plan.RestartRequired && plan.Files.Any(name => File.Exists(Path.Combine(location.ReleaseRoot, name)));
+            var status = restart ? "RestartRequired" : cleanup.Remaining.Length == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
+            WriteProtected(operation, plan with { Status = status, Remaining = cleanup.Remaining, RestartRequired = restart }, sid);
+            var dumpDirectory = location.Recovery is not null ? DesktopRecoveryInstallation.Plan(location).DumpFolder : null;
+            return new(status, operation, [location.DataRoot, location.ConfigurationDirectory,
+            .. dumpDirectory is not null && Directory.Exists(dumpDirectory) ? new[] { dumpDirectory } : Array.Empty<string>()], restart, cleanup.Remaining, location.ReleaseRoot)
+            {
+                WithoutBusinessInspection = plan.WithoutBusinessInspection,
+                OperationId = plan.OperationId
+            };
+        }
+        catch (Exception error) when (error is not InstallationOutcomeUnknownException)
+        { throw new InstallationOutcomeUnknownException("原卸载记录已保存，结果须按原操作核对；不要再次提交。", error); }
     }
     internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete)
     {
@@ -235,6 +264,7 @@ public static partial class WindowsDeploymentSetup
         recovery.RequireRegistration(Registration(application), expectedRegistrationHash);
         if (Wire.FileHash(Registration(application)) != expectedRegistrationHash) throw new InvalidOperationException("原部署在接管前变化；原根围栏保留，重新核对后继续");
         var current = Current(application) ?? throw new InvalidDataException("原机部署登记缺失");
+        using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
         if (current.LifecycleState != "Installed") throw new InvalidOperationException("只有已安装原机部署可接管恢复根");
         recovery.Require(current, newDataRoot);
         PreviewDataAccess(newDataRoot, current.RuntimeAccountSid);

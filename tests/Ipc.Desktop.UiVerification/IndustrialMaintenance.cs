@@ -166,8 +166,27 @@ static partial class Program
                 Check(opaqueExecutions == 1 && !Button("仅移除程序，保留数据…").IsEnabled, "opaque lost receipt cannot silently submit another program removal");
                 try { await Invoke("ReviewOpaque"); throw new Exception("opaque Unknown review accepted"); } catch (InvalidOperationException) { }
                 Check(opaqueReviews == 2, "unknown opaque result must be inspected before another review");
+                Check(Button("卸载程序…").Content is string removalLabel && !removalLabel.Contains("备份"), "program removal action does not falsely promise an explicitly skipped backup");
                 Button("仅移除程序，保留数据…").BringIntoView(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
                 Capture("industrial-maintenance-opaque-680.png");
+                var removalOriginal = Wire.Id(); var closeOriginalCalls = 0;
+                var unfinished = new WindowsRemovalReceipt("NotCommittedNeedsClosure", "synthetic-original-removal", [location.DataRoot], false) { OperationId = removalOriginal };
+                Set("InspectRemoval", (Func<WindowsRemovalReceipt>)(() => unfinished));
+                Set("CloseOriginalRemoval", (Func<string, string, Task<WindowsRemovalReceipt>>)((id, _) =>
+                {
+                    if (id != removalOriginal) throw new Exception("original removal identity changed"); closeOriginalCalls++;
+                    return Task.FromResult(unfinished with { Status = "NotCommitted" });
+                }));
+                await Invoke("InspectOriginal"); await Invoke("InspectOriginal");
+                Check(Descendants(window).OfType<Button>().Count(button => Equals(button.Content, "结束这次未提交的卸载…")) == 1,
+                    "repeated read-only inspection offers one original closure action");
+                Check(opaqueExecutions == 1 && closeOriginalCalls == 0, "inspection neither resubmits removal nor silently closes intent");
+                Set("ConfirmCloseOriginalRemoval", (Func<string, bool>)(_ => false)); await Invoke("CloseOriginalRemovalRecord");
+                Check(closeOriginalCalls == 0, "declining precommit closure preserves original Unknown restriction");
+                Set("ConfirmCloseOriginalRemoval", (Func<string, bool>)(_ => true)); await Invoke("CloseOriginalRemovalRecord");
+                Check(closeOriginalCalls == 1 && Descendants(window).OfType<Button>().All(button => !Equals(button.Content, "结束这次未提交的卸载…")),
+                    "explicit closure resolves original identity without removing program or data");
+                Check(Descendants(window).OfType<TextBox>().All(box => !box.Text.Contains("上次操作结果未确认")), "resolved original no longer displays stale Unknown progress");
             }
             var image = Path.Combine(evidence, baseline ? "industrial-maintenance-before.png" : "industrial-maintenance-after.png");
             Capture(Path.GetFileName(image));

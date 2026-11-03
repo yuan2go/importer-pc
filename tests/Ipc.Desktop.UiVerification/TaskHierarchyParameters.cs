@@ -46,7 +46,7 @@ static partial class Program
         CaptureInternal(evidence, "parameters-right-error-800", client, lines);
         if (!baseline)
         {
-            var input = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == right.InstanceId + "/device.ip");
+            var input = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == right.InstanceId + "/device.ip");
             input.Focus(); input.SelectAll();
             var expander = Descendants(editor).OfType<Expander>().First(e => Equals(e.Header, "参数说明")); expander.IsExpanded = true;
             await Flush();

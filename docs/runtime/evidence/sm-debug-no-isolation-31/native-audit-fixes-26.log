@@ -1,0 +1,29 @@
+PASS AUD26 known local selection receipt is actionable Chinese: NoMatchingCode
+PASS AUD26 known local selection receipt is actionable Chinese: ExcludedCodes
+PASS AUD26 known local selection receipt is actionable Chinese: AmbiguousCodes
+PASS AUD26 known local selection receipt is actionable Chinese: IncompleteCandidates
+PASS AUD26 known local selection receipt is actionable Chinese: FilterTimeout
+PASS AUD26 known local selection receipt is actionable Chinese: InvalidPattern
+PASS AUD26 known local selection receipt is actionable Chinese: NoCode
+PASS AUD26 known local selection receipt is actionable Chinese: MultipleCodes
+PASS AUD26 known local selection receipt is actionable Chinese: InvalidCode
+PASS AUD26 known local selection receipt is actionable Chinese: JoinedCodeTooLong
+PASS AUD26 remote identifiers and unknown receipt content are not rewritten
+PASS AUD26 complete backup receipt explains the whole recovery set
+PASS AUD26 first-run validation summary does not expose raw field failure text
+PASS AUD26 unresolved original does not turn connection save into premature activation
+PASS AUD26 actual original responsibility guard retains old Effective and saved Pending on failed restart
+PASS AUD26 restart preserves original identity without resend
+PASS AUD26 failure-first presentation includes running/pending values and actionable reconciliation/restaging
+PASS AUD26 diagnostics and settings share the same failure-first outcome
+PASS AUD26 activation notice preserves primary touch action in viewport at 1366
+PASS AUD26 activation notice preserves primary touch action in viewport at 1366
+CAPTURE audit26-activation-failed-1366: 1365.6x768 DIP, Windows DPI 1.25/1.25
+PASS AUD26 activation notice preserves primary touch action in viewport at 1092
+PASS AUD26 activation notice preserves primary touch action in viewport at 1092
+CAPTURE audit26-activation-failed-1092: 1092x613.6 DIP, Windows DPI 1.25/1.25
+PASS AUD26 activation notice preserves primary touch action in viewport at 800
+PASS AUD26 activation notice preserves primary touch action in viewport at 800
+CAPTURE audit26-activation-failed-800: 800x420 DIP, Windows DPI 1.25/1.25
+PASS AUD26 failed activation offers inspection instead of a misleading disabled restart
+PASS AUD26 failure inspection reaches authorized diagnostics without restarting or resending

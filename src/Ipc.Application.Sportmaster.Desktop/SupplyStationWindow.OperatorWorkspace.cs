@@ -40,7 +40,7 @@ public partial class SupplyStationWindow
     void InitializePace()
     {
         try { ViewModel.SetPaceVisibility(Ipc.Platform.PresentationPreferences.Read("sportmaster", "pace") ?? true); }
-        catch (Exception error) { ViewModel.Message = "效率显示偏好读取失败，原文件保留：" + error.Message; }
+        catch (Exception error) { ViewModel.Message = ChineseInterfaceText.ParameterMessage(error.Message, "效率显示偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
         void Preference(string app, string surface, bool visible) { if (app == "sportmaster" && surface == "pace") Dispatcher.InvokeAsync(() => ViewModel.SetPaceVisibility(visible)); }
         Ipc.Platform.PresentationPreferences.DisplayChanged += Preference;
         Closed += (_, _) => Ipc.Platform.PresentationPreferences.DisplayChanged -= Preference;
@@ -53,7 +53,7 @@ public partial class SupplyStationWindow
             reading = true; var token = lifetime.Token;
             try { var value = await StationPace.Read(ViewModel.Application).WaitAsync(token); if (!token.IsCancellationRequested) { last = value; ViewModel.SetPace(value); } }
             catch (OperationCanceledException) { }
-            catch (Exception error) { last = null; ViewModel.SetPace(null); PaceBadge.ToolTip = "统计读取中断：" + Ipc.Platform.DiagnosticText.Protect(error.Message); }
+            catch (Exception error) { last = null; ViewModel.SetPace(null); PaceBadge.ToolTip = ChineseInterfaceText.ParameterMessage(error.Message, "作业效率读取中断；持续失败时请在诊断页导出诊断记录。"); }
             finally { reading = false; }
         }
         paceTimer.Tick += async (_, _) => await Read();

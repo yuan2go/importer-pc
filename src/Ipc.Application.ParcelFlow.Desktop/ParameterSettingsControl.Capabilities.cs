@@ -240,12 +240,13 @@ public sealed partial class ParameterSettingsControl
         {
             var box = Input(form, label, p, "Value", path, page, help, p.IsList); box.MaxLength = p.EditorMaximumLength; box.IsReadOnly = p.Field.ReadOnly; if (p.Field.Type == "integer") box.MaxWidth = 240;
         }
-        locations[path] = locations[path] with { Help = p.EditorHelp + " " + help };
-        var accessibleHelp = help == p.EditorHelp ? help : help + "\n填写要求：" + p.EditorHelp;
+        var requirements = ChineseInterfaceText.ParameterMessage(p.EditorHelp, help ?? "请按字段说明填写。");
+        locations[path] = locations[path] with { Help = requirements + " " + help };
+        var accessibleHelp = help == requirements ? help : help + "\n填写要求：" + requirements;
         AutomationProperties.SetHelpText(locations[path].Control, accessibleHelp);
         locations[path].Control.ToolTip = accessibleHelp;
         locations[path].Control.IsEnabled = !p.Field.ReadOnly && ParameterOwnership.Applicable(draft, p.Field.Key);
-        Technical(page, ParameterLabel(p), path, help + "\n填写要求：" + p.EditorHelp);
+        Technical(page, ParameterLabel(p), path, help + "\n填写要求：" + requirements);
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "chute-code")
         {
             var field = locations[path].Control;

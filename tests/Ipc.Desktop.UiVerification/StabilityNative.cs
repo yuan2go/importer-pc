@@ -65,7 +65,7 @@ static partial class Program
             var editor = (ParameterSettingsControl)page.FindName("MainParameterEditor");
             Check(editor.NavigateTo("HistoryDays"), "retention policy has an accessible system-settings destination");
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-            var historyDays = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "HistoryDays");
+            var historyDays = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "HistoryDays");
             var originalHistoryDays = historyDays.Text;
             historyDays.Text = "7";
             Check(historyDays.IsVisible && window.ViewModel.BuildStructuredConfiguration().Retention?.HistoryDays == 7,

@@ -45,7 +45,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string BarcodeExclusionPattern { get => Get<string>(); set => Set(value); }
     public bool RejectMultipleCodes { get => Get<bool>(); set => Set(value); }
     public string MultiCodeSeparator { get => Get<string>(); set => Set(value); }
-    public BarcodeFilterPolicy BuildBarcodePolicy() => new(BarcodePattern, BarcodeExclusionPattern.Length == 0 ? null : BarcodeExclusionPattern,
+    public BarcodeFilterPolicy BuildBarcodePolicy() => new(BarcodePattern, string.IsNullOrWhiteSpace(BarcodeExclusionPattern) ? null : BarcodeExclusionPattern,
         RejectMultipleCodes ? null : false, MultiCodeSeparator == ";" ? null : MultiCodeSeparator);
     public string DiagnosticLogDays { get => Get<string>(); set => Set(value); }
     public string HistoryDays { get => Get<string>(); set => Set(value); }
@@ -181,7 +181,7 @@ public partial class ParcelViewModel
             Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  当前设置待确认" : "");
     public string ConfigurationSaveGuidance => !Fresh ? "状态读取中断，恢复后才能检查和保存；已填写的内容会保留。" :
         Busy ? "正在执行当前操作，请等待结果。" :
-        !CanConfigure ? Snapshot?.ApplicationId == "sportmaster" ? "进入管理模式后即可保存；程序自动等待当前请求完成。" : "保存前需要暂停供包、进入管理模式，并等待当前请求完成。" :
+        !CanConfigure ? !IsManagementMode ? "请进入管理模式后保存；已填写的内容保留。" : Snapshot?.ApplicationId == "sportmaster" ? "当前仍有保存或备份正在执行，请等待完成后再保存；已填写的内容保留。" : "保存前需要暂停供包，并等待当前请求和维护操作完成；已填写的内容保留。" :
         "保存条件已满足。填写变更原因并核对更改；提交时由业务服务再次检查。" + ConfigurationActivationGuidance;
     public string ConfigurationEditorState
     {
@@ -206,7 +206,7 @@ public partial class ParcelViewModel
         Changed(nameof(InstalledPackageReferences)); Changed(nameof(SelectedInstalledPackage)); Changed(nameof(NewCapabilityKinds));
     }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasConfigurationActivationNotice)); Changed(nameof(ConfigurationActivationOutcome)); Changed(nameof(ConfigurationActivationBannerText)); Changed(nameof(ConfigurationSavedStatusText)); Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
+    { Changed(nameof(ConfigurationSaveGuidance)); Changed(nameof(HasConfigurationActivationNotice)); Changed(nameof(ConfigurationActivationOutcome)); Changed(nameof(ConfigurationActivationBannerText)); Changed(nameof(ConfigurationSavedStatusText)); Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing
@@ -357,7 +357,7 @@ public partial class ParcelViewModel
         if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
         if (ConfigurationEditSignature() != signature) { validationState = "输入已改变，原校验结果过期；请重新检查"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
-        validationState = receipt.Status + " · " + receipt.Reason;
+        validationState = receipt.Status == "Validated" ? "检查通过" : ChineseInterfaceText.ParameterMessage(receipt.Reason, "检查未通过，请查看诊断详情并修正设置。");
         if (receipt.Status != "Validated") ParameterEditor?.Report(receipt.Reason);
         Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = "配置检查：" + validationState + "；未保存。";
     }

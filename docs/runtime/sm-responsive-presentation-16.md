@@ -1,3 +1,5 @@
+> 当前操作工扫码流程已继承main `38cb7dc0` 的[SM-SAME-PLACEMENT-29](../work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)：持续识别，一次放置一次请求，空托盘确认后释放；此前OP29冻结解码及同码逐帧新请求说明已被替代，原字节见[归档](../archive/pre-sm-placement-integration-30/manifest.json)。中文参数、调试与真实采集诊断修复继续保留。
+
 > 2026-11-02 [SM-UNREAD-PACKAGE-27](sm-unread-package-27.md) 补充默认识别无候选时的受限固定阈值搜索，以及无码/坏帧和重连的当前呈现失效水位。原像素、完整候选、多码拒绝、源时效与原请求责任不变。下文相应旧说明保持形成时范围；[原字节归档](../archive/pre-sm-unread-package-27/manifest.json)。
 
 > 2026-11-01 合并前全会话复核和边界补修见 [SM-SESSION-REVIEW-17](sm-session-review-17.md)。本页456项及对比度补证保持各自原源；17不倒写这些历史结果。

@@ -58,7 +58,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         {
             c.CommandText = "PRAGMA user_version"; if ((long)c.ExecuteScalar()! != 1) throw new InvalidDataException("不支持的相机诊断集合格式，保留原件。");
             c.CommandText = "PRAGMA quick_check"; if (!Equals(c.ExecuteScalar(), "ok")) throw new InvalidDataException("相机诊断索引损坏，保留原件。");
-            c.CommandText = "UPDATE sessions SET state='Interrupted',detail='上个进程未完成会话；已持久记录可查，尾部覆盖未知；业务隔离由原业务审计恢复',closed=$at WHERE closed IS NULL";
+            c.CommandText = "UPDATE sessions SET state='Interrupted',detail='上个进程未完成调试采集；已持久记录可查，尾部覆盖未知；正常供包不受影响',closed=$at WHERE closed IS NULL";
             c.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); c.ExecuteNonQuery(); c.Parameters.Clear();
         }
         c.CommandText = "CREATE INDEX IF NOT EXISTS frames_acquisition ON frames(device,json_extract(body,'$.Epoch'),json_extract(body,'$.SourceEventId'))"; c.Parameters.Clear(); c.ExecuteNonQuery();
@@ -127,7 +127,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         {
             using var c = db.CreateCommand(); c.CommandText = "SELECT state,detail,frames,evicted,(SELECT coalesce(sum(size),0) FROM frames WHERE session=$id) FROM sessions WHERE id=$id";
             c.Parameters.AddWithValue("$id", id); using var r = c.ExecuteReader();
-            if (!r.Read()) return new(id, CameraInspectionMode.Isolated, "RecoveryFenced", true, null, 0, 0, 0, Dropped, "隔离审计仍存在，但诊断集合缺失。保持阻断，核对并显式清场。", "");
+            if (!r.Read()) return new(id, null, "Missing", false, null, 0, 0, 0, Dropped, "原调试集合不存在或已清理；不能补造原图和回执，正常供包不受影响。", "");
             var state = r.GetString(0); var detail = r.GetString(1); var frames = r.GetInt64(2); var evicted = r.GetInt64(3); var bytes = r.GetInt64(4); r.Close(); var s = Session(id);
             return new(id, s.Command.Mode, Fault is null ? state : "Faulted", fenced, s.ExpiresAt, frames, bytes, evicted, Dropped, Fault ?? detail, s.ConfigurationHash);
         }
@@ -151,7 +151,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         if (total > BufferBudget || !queue.Writer.TryWrite(new FrameWork(session, frame, bytes)))
         {
             Interlocked.Add(ref buffered, -bytes); Interlocked.Increment(ref dropped);
-            Interlocked.CompareExchange(ref fault, "诊断写入背压超限；已停止收集，尾部存在缺口。隔离不会自动解除。", null); return false;
+            Interlocked.CompareExchange(ref fault, "诊断写入背压超限；已停止收集，尾部存在缺口。正常供包不受影响。", null); return false;
         }
         return true;
     }
@@ -215,7 +215,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     void Persist(FrameWork work)
     {
         if (new DriveInfo(Path.GetPathRoot(root)!).AvailableFreeSpace < Math.Max(512L * 1024 * 1024, businessReserve()) + work.Bytes + 1024 * 1024)
-            throw new IOException("诊断原图停止写入：低于业务存储保留余量（至少512MiB），保留原件及隔离栅。");
+            throw new IOException("诊断原图停止写入：低于业务存储保留余量（至少512MiB），保留原件。");
         var s = Session(work.Session); var f = work.Frame;
         if (f.Width <= 0 || f.Height <= 0 || (long)f.Width * f.Height != f.OriginalGray8.LongLength || f.Symbols.Length > 64 || f.Symbols.Any(x => x.Corners.Length is not (0 or 4)))
             throw new InvalidDataException("关联帧不符合原始Mono8与位置契约。");
@@ -223,7 +223,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         {
             count.CommandText = "SELECT frames FROM sessions WHERE id=$id"; count.Parameters.AddWithValue("$id", work.Session);
             if ((long)count.ExecuteScalar()! >= s.Command.Limits.Records || UsedDatabaseBytes() > DatabaseBudget)
-                throw new IOException("诊断记录配额已满；采集结束，保留原记录与隔离栅。");
+                throw new IOException("诊断记录配额已满；采集结束，保留原记录。");
         }
         var id = Wire.Hash(work.Session + ":" + f.DeviceId + ":" + f.Epoch + ":" + f.FrameNumber).ToLowerInvariant();
         var name = id + ".gray.br"; var target = RecoveryFiles.Resolve(images, name); var temporary = target + ".tmp";

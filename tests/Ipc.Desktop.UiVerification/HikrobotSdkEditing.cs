@@ -13,6 +13,12 @@ static partial class Program
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS BUNDLED SDK NATIVE " + reason); }
         var config = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root,"config/sportmaster"),evidence,null,null)).Catalog();
+        var existingReaders = config.Topology!.Readers.Select(reader => reader with { Parameters = reader.Parameters!.Where(pair => pair.Key != "code.formats").ToDictionary(pair => pair.Key, pair => pair.Value) }).ToArray();
+        var existing = config with { Reader = existingReaders[0], Topology = config.Topology with { Readers = existingReaders } };
+        var existingBefore = Wire.Encode(existing);
+        var existingDraft = new StartupConfigurationDraft(existing, catalog);
+        Check(existingDraft.Readers.All(reader => Wire.Decode<string[]>(reader.Parameters.Single(p => p.Field.Key == "code.formats").Value).SequenceEqual(new[] { "All" })) && Wire.Encode(existing) == existingBefore,
+            "opening an existing station without symbology settings retains its All fallback and does not mutate the original configuration");
         var draft = new StartupConfigurationDraft(config,catalog);
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         rcs.Parameters.Single(p=>p.Field.Key=="left-bcr-code").Value="SYNTH-LEFT";
@@ -28,7 +34,7 @@ static partial class Program
         var editor=new ParameterSettingsControl { Model=model };
         var window=new Window { Title="内置SDK参数验证", Content=editor, Width=1120, Height=760 }; window.Show();
         void Fields(ParameterSettingsControl control,CapabilityDraft reader) {
-            var names=Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetName).ToArray();
+            var names=Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetAutomationId).ToArray();
             Check(names.Contains(reader.InstanceId+"/device.ip")&&names.Contains(reader.InstanceId+"/device.serial"),"actual SDK IP and serial fields available");
             Check(!names.Any(n=>n==reader.InstanceId+"/acquisition.trigger"||n==reader.InstanceId+"/entity.mode"||n==reader.InstanceId+"/ConfigureLater") && !Descendants(control).OfType<FrameworkElement>().Any(e=>AutomationProperties.GetAutomationId(e)==reader.InstanceId+"/RuntimeSummary"),"camera page has no trigger/result policy or configuration-state block");
             Check(!names.Contains(reader.InstanceId+"/device.port")&&!Descendants(control).OfType<TextBlock>().Any(t=>t.Text.Contains("独立驱动包")||t.Text.Contains("TCP")) &&
@@ -39,24 +45,28 @@ static partial class Program
         try {
             editor.ShowPage(2,"左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); Fields(editor,left);
             var formats = left.Parameters.Single(p => p.Field.Key == "code.formats");
-            var formatSection = Descendants(editor).OfType<Expander>().Single(e => AutomationProperties.GetName(e) == left.InstanceId + "/code.formats");
+            var formatSection = Descendants(editor).OfType<Expander>().Single(e => AutomationProperties.GetAutomationId(e) == left.InstanceId + "/code.formats");
             formatSection.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             var formatChecks = Descendants(formatSection).OfType<CheckBox>().ToArray();
-            Check(formatChecks.Length == formats.Field.Choices!.Length && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == true &&
-                Equals(formatSection.Header, "当前：全部码制") && Descendants(formatSection).OfType<TextBlock>().Any(t => t.Text == "当前：全部码制"),
-                "native format selector exposes all declared formats with compatible All default");
+            var initialFormats = new HashSet<string>(new[] { "Code128", "Code39", "EAN13" }, StringComparer.Ordinal);
+            Check(formatChecks.Length == formats.Field.Choices!.Length &&
+                initialFormats.SetEquals(formatChecks.Where(c => c.IsChecked == true).Select(c => (string)c.Tag)) &&
+                formatSection.Header is string header && header.StartsWith("当前：", StringComparison.Ordinal) && !header.Contains("全部码制") && Descendants(formatSection).OfType<TextBlock>().Any(t => t.Text == header),
+                "new-site native selector exposes every declared format and selects only Code128, Code39 and EAN13");
+            var rightFormats = right.Parameters.Single(p => p.Field.Key == "code.formats").Value;
+            foreach (var extra in new[] { "Code39", "EAN13" }) formatChecks.Single(c => Equals(c.Tag, extra)).IsChecked = false;
             formatChecks.Single(c => Equals(c.Tag, "Code128")).IsChecked = true;
             formatChecks.Single(c => Equals(c.Tag, "QRCode")).IsChecked = true;
             Check(Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "Code128", "QRCode" }) && formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked == false,
                 "native multi-selection clears All and writes both selected formats to the shared candidate");
-            Check(draft.Build().Topology!.Readers[0].Parameters!["code.formats"] == formats.Value && right.Parameters.Single(p => p.Field.Key == "code.formats").Value == "[\"All\"]",
+            Check(draft.Build().Topology!.Readers[0].Parameters!["code.formats"] == formats.Value && right.Parameters.Single(p => p.Field.Key == "code.formats").Value == rightFormats,
                 "saved full candidate isolates left format selection from right defaults");
             CaptureInternal(evidence,"bundled-sdk-format-selection",editor,lines);
             formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked = true;
             Check(formatChecks.Count(c => c.IsChecked == true) == 1 && Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "All" }), "choosing All clears explicit native choices");
             formatSection.IsExpanded = false;
             Check(editor.NavigateTo(rcs.InstanceId+"/left-bcr-code"), "shared camera code is reached in the station task page");
-            Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetName(t)==rcs.InstanceId+"/left-bcr-code").Text="SYNTH-LEFT-EDITED";
+            Descendants(editor).OfType<TextBox>().Single(t=>AutomationProperties.GetAutomationId(t)==rcs.InstanceId+"/left-bcr-code").Text="SYNTH-LEFT-EDITED";
             Check(rcs.Parameters.Single(p=>p.Field.Key=="left-bcr-code").Value=="SYNTH-LEFT-EDITED"&&rcs.Parameters.Single(p=>p.Field.Key=="right-bcr-code").Value=="SYNTH-RIGHT","one shared camera code editor isolates left/right");
             CaptureInternal(evidence,"bundled-sdk-daily-left",editor,lines);
             editor.ShowPage(2,"右相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); Fields(editor,right);
@@ -82,7 +92,7 @@ static partial class Program
             var oldCode = oldDraft.Capabilities.Single(ParameterOwnership.IsRcs).Parameters.Single(p=>p.Field.Key=="left-bcr-code"); oldCode.Value="SYNTH-MIGRATION";
             var oldControl = new ParameterSettingsControl { Model=oldDraft.CreateParameterEditor((p,c)=>Task.FromResult(BarcodeFiltering.Select(p,c))) };
             window.Width=1120;window.Height=760;window.Content=oldControl;oldControl.ShowPage(2,"左相机");await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            Check(!Descendants(oldControl).OfType<TextBox>().Any(t=>AutomationProperties.GetName(t).EndsWith("/device.port")) &&
+            Check(!Descendants(oldControl).OfType<TextBox>().Any(t=>AutomationProperties.GetAutomationId(t).EndsWith("/device.port")) &&
                 !Descendants(oldControl).OfType<ComboBox>().Any(t=>AutomationProperties.GetAutomationId(t)==oldDraft.Readers[0].InstanceId+"/Provider"),
                 "legacy TCP candidate shows one explicit SDK transition, never a blank selector or TCP port mixed with the SDK");
             Check(oldDraft.Readers[0].CaptureRaw().Original?.Implementation=="tcp-line" && oldDraft.Readers[0].Provider?.Implementation!="hikrobot-mvs-reader",

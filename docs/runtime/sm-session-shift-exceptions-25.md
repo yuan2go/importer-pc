@@ -1,3 +1,5 @@
+> 2026-11-03 本版本按[SM-SECONDARY-ENTRIES-32](../work-packages/WP-IPC-SM-SECONDARY-ENTRIES-32.md)先隐藏“异常处理”和“统计与班次”全部页面入口，顶部效率仅只读显示。下文页面操作属于保留实现及原版本范围；班次记录、业务数据和原请求守卫继续运行。当前可从“记录”查看原作业。修订前原字节见`docs/archive/pre-sm-secondary-entries-32/manifest.json`。
+
 # SM运行班次、异常与统计 · SS25
 
 本包基线 `0fc6af419d402568f12c9ee5fcae28fd434f6d76`（PR178）。用户追加P07/P08一并开发，并指定打开、关闭供包台为一个班次。只使用获授权通用要求、既有代码及合成数据；客户原稿不入库。工作包及编号见 [SS25](../work-packages/WP-IPC-SM-SESSION-SHIFT-EXCEPTIONS-25.md)。

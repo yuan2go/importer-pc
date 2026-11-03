@@ -466,7 +466,7 @@ public static partial class ParcelStartupServices
             _ = connection.ContinueWith(t => { _ = t.Exception; }, CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             if(cancellationToken.IsCancellationRequested)throw new MaintenanceCancelledException("维护尚未启动，已取消。");
             progress?.Report(WindowsInstallationStage.WaitingForAuthorization);
-            using var process = await WindowsMaintenanceProcess.StartAsync(start, server, connection, budget.Token);
+            using var process = await WindowsMaintenanceProcess.StartBeforeAcknowledgmentAsync(start, server, connection, budget, cancellationToken);
             async Task<MaintenancePipeReply> ReadResponse()
             {
                 try

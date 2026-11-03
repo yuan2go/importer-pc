@@ -1,0 +1,42 @@
+PASS SS25 successful business startup owns one durable empty shift
+PASS SS25 first run has an explicit no-previous-shift result
+PASS SS25 management enter/exit and repeated reads never create another shift
+PASS SS25 two independent same-code manual requests count separately without fabricating camera or physical parcel counts
+PASS SS25 typed RCS rejection has its own reason group
+PASS SS25 exception read model retains the rejected original identity without inventing RCS query support
+PASS SS25 rule rejection is typed input evidence, not a fabricated RCS rejection or POST
+PASS SS25 input-only rejection stays an observation without a fabricated operation or request
+PASS SS25 exception read cancellation propagates without changing business facts
+PASS SS25 fixed clock schedules cannot silently replace open-close shift semantics
+PASS SS25 export owns an immutable original snapshot even if a caller mutates returned arrays
+PASS SS25 the existing eight CSV column headings remain exact
+PASS SS25 statistics export refuses the business root before reserving a file
+PASS SS25 export cannot overwrite a prior CSV/receipt
+PASS SS25 expired snapshot refuses before creating an output file
+PASS SS25 timeout fixture admits its explicit new original: {
+  "Status": "Admitted",
+  "Detail": "\u4EBA\u5DE5\u8F93\u5165\u5DF2\u521B\u5EFA\u72EC\u7ACB\u4F5C\u4E1A\uFF1BRCS\u7ED3\u679C\u4EE5\u8BE5\u4F5C\u4E1A\u4E3A\u51C6\u3002",
+  "OperationId": "a607e57c12414ee6a5214c4fb7cf953f",
+  "ObservationId": "1e6d374133474ed4b82593f7b4ffc5aa",
+  "Revision": 27
+}
+PASS SS25 actual expired request budget produces a typed timeout without parsing failure text
+PASS SS25 typed timeout reaches exceptions with the exact original ID and full unresolved count
+PASS SS25 a real dispose/reopen starts a new shift with zero requests
+PASS SS25 previous shift retains its original totals and unresolved responsibility after normal shutdown
+PASS SS25 opening reports and another shift never replays or replaces an original request
+PASS SS25 calendar totals combine both runs without changing their shift ownership
+PASS SS25 runtime refuses DB11 before writes instead of silently migrating it
+PASS SS25 offline review plans DB11 full backup and exact format12 without writing the original
+PASS SS25 verified backup remains format11 while the live database commits format12
+PASS SS25 upgrade never fabricates historical shifts
+PASS SS25 legacy retained aggregate survives under an explicit unassigned scope
+PASS SS25 format12 upgrade preserves exact configuration bytes
+PASS SS25 even same-minute reopen and later attempt registration retain the original T1 shift
+PASS SS25 shift order uses durable sequence rather than a timestamp tie
+PASS SS25 calendar today uses the station timezone through a 25-hour DST day rather than a fixed 24-hour subtraction
+PASS SS25 normal close records two monotonic minutes despite a backwards UTC clock
+PASS SS25 101 unresolved originals paginate without omission, duplicate identity or an unbounded payload list
+PASS SS25 inconsistent durable aggregates refuse business startup instead of inventing a repair from retained detail
+PASS SS25 actual process kill leaves an interrupted prior shift without a fabricated normal end or mean speed
+PASS SS25 crash recovery and shift inspection send no production request

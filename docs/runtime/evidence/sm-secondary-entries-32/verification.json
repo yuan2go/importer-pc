@@ -1,0 +1,56 @@
+{
+  "scope": "SM-SECONDARY-ENTRIES-32",
+  "checks": [
+    {
+      "check": "Ipc.Application.ParcelFlow.Desktop",
+      "result": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": "build-Ipc.Application.ParcelFlow.Desktop.log",
+      "sha256": "f1d794c4396ddaf0c515e92b78c9b40088d6f1248e96497d25436fac3726b71e",
+      "scope": "Release --no-restore -p:BuildProjectReferences=false; existing unchanged dependencies"
+    },
+    {
+      "check": "Ipc.Application.Sportmaster.Desktop",
+      "result": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": "build-Ipc.Application.Sportmaster.Desktop.log",
+      "sha256": "e7e52b66def06f03d4eb7c308a7ae503cf56a895935b808d07965e21c663bf4b",
+      "scope": "Release --no-restore -p:BuildProjectReferences=false; existing unchanged dependencies"
+    },
+    {
+      "check": "Ipc.Desktop.UiVerification",
+      "result": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "evidence": "build-Ipc.Desktop.UiVerification.log",
+      "sha256": "7f182e2409b749cf161e5f380fc6570f370bd7362e5d74b029f21d7cc55d4885",
+      "scope": "Release --no-restore -p:BuildProjectReferences=false; existing unchanged dependencies"
+    },
+    {
+      "check": "--ui-spec-24",
+      "result": "FAIL_FIXTURE_INITIALIZATION",
+      "reason": "Manual input readiness timed out before constructing the window; D free 32534528 < configured MinimumFreeBytes 67108864. No storage guard bypass or test skip to claim PASS.",
+      "evidence": "ui24-initialization-failure.log",
+      "sha256": "a07850fa6fa7d1d1ff4d382bad1bb9c7d28fac8af001d8ba175c289c92fcb4dc"
+    },
+    {
+      "check": "--session-shift-25",
+      "result": "NOT_RUN",
+      "reason": "The first actual-storage fixture failed before the page; insufficient free disk space remains."
+    },
+    {
+      "check": "--product-closure-21",
+      "result": "NOT_RUN",
+      "reason": "The first actual-storage fixture failed before the page; insufficient free disk space remains."
+    },
+    {
+      "check": "--audit-fixes-26",
+      "result": "NOT_RUN",
+      "reason": "The first actual-storage fixture failed before the page; insufficient free disk space remains."
+    }
+  ],
+  "installed_version_changed": false,
+  "package_built": false
+}

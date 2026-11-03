@@ -75,7 +75,7 @@ static partial class Program
             startupEditor.SelectCategory(1); first.UpdateLayout();
             Check(Descendants(first).OfType<ParameterSettingsControl>().Single().NavigateTo("TimeoutMs"), "first-configuration business budget locates the actual shared timeout field");
             first.UpdateLayout();
-            var timeout = Descendants(first).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "TimeoutMs"); timeout.Text = "1601";
+            var timeout = Descendants(first).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "TimeoutMs"); timeout.Text = "1601";
             Check(timeout.IsEnabled && timeout.Focus(), "first-configuration native form becomes enabled and accepts keyboard focus after the read completes");
             startupEditor.ShowReview(); first.UpdateLayout(); startupEditor.SelectCategory(1); first.UpdateLayout();
             Check(timeout.Text == "1601" && Descendants(first).OfType<TextBox>().Contains(timeout), "first-configuration step navigation retains the same native unsaved form controls");

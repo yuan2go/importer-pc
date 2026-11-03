@@ -90,7 +90,7 @@ static partial class Program
             var editor = new ParameterSettingsControl { Model = draft.CreateParameterEditor((p, c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c))) };
             var settings = new Window { Title = "Synthetic reader22 audio settings", Content = editor, Width = 1100, Height = 760 };
             settings.Show(); editor.NavigateTo("CueVolume"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            var slider = Descendants(editor).OfType<Slider>().Single(s => System.Windows.Automation.AutomationProperties.GetName(s) == "CueVolume");
+            var slider = Descendants(editor).OfType<Slider>().Single(s => System.Windows.Automation.AutomationProperties.GetAutomationId(s) == "CueVolume");
             slider.Value = 30;
             Descendants(editor).OfType<Button>().Single(b => Equals(b.Content, "保存提示音音量")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);

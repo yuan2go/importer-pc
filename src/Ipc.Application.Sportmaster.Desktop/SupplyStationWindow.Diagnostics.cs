@@ -76,7 +76,7 @@ public partial class SupplyStationWindow
         body.Loaded += (_, _) => { ViewModel.PropertyChanged += pendingChanged; PendingState(); };
         body.Unloaded += (_, _) => ViewModel.PropertyChanged -= pendingChanged;
         var checkActions = new WrapPanel { Margin = new(0, 4, 0, 8) }; body.Children.Add(checkActions);
-        checkActions.Children.Add(ProductButton("处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; }));
+        if (ViewModel.ShowExceptionAndStatisticsEntries) checkActions.Children.Add(ProductButton("处理异常", () => { SetPage("exceptions"); return Task.CompletedTask; }));
         checkActions.Children.Add(ProductButton("检查并重启…", async () => { await ViewModel.RequireManagementModeAsync(); if (ViewModel.Snapshot?.Configuration.Pending is null) throw new InvalidOperationException("没有待重启设置"); await RequestActivation(); }));
         var healthSummary = ProductText("点击刷新体检，读取现有采集、RCS确认及存储事实。"); healthSummary.FontSize = UiTypography.Label;
         checkActions.Children.Add(ProductButton("刷新体检", async () => { healthSummary.Text = await ReadProductHealth(); PendingState(); }));

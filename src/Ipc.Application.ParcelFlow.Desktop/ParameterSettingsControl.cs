@@ -99,8 +99,13 @@ public sealed partial class ParameterSettingsControl : UserControl
     // the category order and adds its real review content, never another tab bar.
     public void SelectCategory(int category)
     {
-        search.Clear(); categoryScope = null; directoryView?.Refresh();
-        SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Available && p.Category == category));
+        search.Clear(); var priorSelecting = selectingPage; selectingPage = true;
+        try
+        {
+            categoryScope = null; directoryView?.Refresh();
+            SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == category && p.Title == lastPages.GetValueOrDefault(category)) ?? pages.FirstOrDefault(p => p.Available && p.Category == category));
+        }
+        finally { selectingPage = priorSelecting; }
         if (directory.SelectedItem is { } item) directory.ScrollIntoView(item);
     }
     public void SetReviewContent(FrameworkElement content)
@@ -118,7 +123,9 @@ public sealed partial class ParameterSettingsControl : UserControl
         reviewPage.Body.Children.Add(errors);
         reviewPage.Technical.Children.Add(reviewPage.Diagnostic);
         reviewPage.Body.Children.Add(new Expander { Header = "诊断详情", Content = reviewPage.Technical, Margin = new(0, 16, 0, 0) });
-        directoryView?.Refresh();
+        var priorSelecting = selectingPage; selectingPage = true;
+        try { directoryView?.Refresh(); }
+        finally { selectingPage = priorSelecting; }
     }
     public void ShowCategory(int? index)
     {
@@ -128,9 +135,15 @@ public sealed partial class ParameterSettingsControl : UserControl
         var selected = directory.SelectedItem as ObjectPage;
         var destination = selected is not null && selected.Available && (index is null || selected.Category == index) ? selected :
             pages.FirstOrDefault(p => p.Available && p.Category == index && lastPages.GetValueOrDefault(p.Category) == p.Title) ?? pages.FirstOrDefault(p => p.Available && (index is null || p.Category == index));
-        categoryScope = index; directoryView?.Refresh();
-        SelectPageCore(destination);
-        RefreshSearch();
+        var priorSelecting = selectingPage; selectingPage = true;
+        try
+        {
+            // Filtering can synchronously select the view's new current item.
+            // This is programmatic navigation, not a user's forward-step intent.
+            categoryScope = index; directoryView?.Refresh();
+            SelectPageCore(destination); RefreshSearch();
+        }
+        finally { selectingPage = priorSelecting; }
     }
     public bool ShowPage(int category, string title)
     {
@@ -196,9 +209,10 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
+        const double labelWidth = 148, minimumEditorWidth = 240;
         var focusedPage = page.Title is "左相机" or "右相机" or "供包台标识";
         var field = new Grid { Margin = new(0, 0, 0, focusedPage ? 12 : 18) };
-        field.ColumnDefinitions.Add(new() { Width = new(148) }); field.ColumnDefinitions.Add(new());
+        field.ColumnDefinitions.Add(new() { Width = new(labelWidth) }); field.ColumnDefinitions.Add(new());
         field.RowDefinitions.Add(new() { Height = GridLength.Auto }); field.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var caption = Text(label); caption.VerticalAlignment = VerticalAlignment.Top; caption.Foreground = Brush("#202833"); caption.FontWeight = UiTypography.Emphasis; caption.Margin = new(0, 8, 12, 0);
         var value = new StackPanel(); Grid.SetColumn(value, 1); field.Children.Add(caption); field.Children.Add(value);
@@ -216,7 +230,7 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (control is ComboBox) control.MaxWidth = 400;
         }
         // Preserve stable automation paths used by support and native verification.
-        AutomationProperties.SetName(control, path); AutomationProperties.SetAutomationId(control, path);
+        AutomationProperties.SetName(control, label.TrimEnd(' ', '*')); AutomationProperties.SetAutomationId(control, path);
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
         // Routine schema hints remain available to assistive technology and in
         // technical information, without adding a repeated line to every field.
@@ -248,8 +262,8 @@ public sealed partial class ParameterSettingsControl : UserControl
         }
         field.SizeChanged += (_, _) =>
         {
-            var compact = field.ActualWidth < 380;
-            field.ColumnDefinitions[0].Width = compact ? new(0) : new(148);
+            var compact = field.ActualWidth < labelWidth + minimumEditorWidth;
+            field.ColumnDefinitions[0].Width = compact ? new(0) : new(labelWidth);
             Grid.SetColumn(caption, compact ? 1 : 0); Grid.SetRow(value, compact ? 1 : 0);
             caption.Margin = compact ? new(0, 0, 0, 6) : new(0, 8, 12, 0);
         };
@@ -298,7 +312,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         {
             var error = Text(""); error.Visibility = Visibility.Collapsed; page.Technical.Children.Add(error);
             locations[path] = new(page, text, error, label, detail ?? "");
-            AutomationProperties.SetName(text, path);
+            AutomationProperties.SetName(text, label); AutomationProperties.SetAutomationId(text, path);
         }
     }
     void Render()
@@ -334,8 +348,13 @@ public sealed partial class ParameterSettingsControl : UserControl
         else if (m.ApplicationId == "sportmaster") directoryView.SortDescriptions.Add(new SortDescription(nameof(ObjectPage.TaskOrder), ListSortDirection.Ascending));
         directoryView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ObjectPage.GroupTitle)));
         directoryView.Filter = value => value is ObjectPage p && p.Available && (categoryScope is null || p.Category == categoryScope);
-        directory.ItemsSource = directoryView;
-        SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope));
+        var priorSelecting = selectingPage; selectingPage = true;
+        try
+        {
+            directory.ItemsSource = directoryView;
+            SelectPageCore(pages.FirstOrDefault(p => p.Available && p.Category == selected?.Category && p.Title == selected.Title && (categoryScope is null || p.Category == categoryScope)) ?? OrderedPages().FirstOrDefault(p => categoryScope is null || p.Category == categoryScope));
+        }
+        finally { selectingPage = priorSelecting; }
         ShowIssues(this, EventArgs.Empty); RefreshSearch();
     }
     void ShowIssues(object? sender, EventArgs e)
@@ -353,10 +372,10 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (found)
             {
                 location!.Control.SetValue(Control.BorderBrushProperty, Brush("#B42318")); location.Error.Text += (location.Error.Text.Length > 0 ? "\n" : "") + message; location.Error.Visibility = Visibility.Visible;
-                location.Page.Diagnostic.Text += issue.Path + " · " + Ipc.Platform.DiagnosticText.Protect(issue.Message) + "\n";
+                location.Page.Diagnostic.Text += location.Label.TrimEnd(' ', '*') + "：" + message + "\n";
                 button.Click += (_, _) => NavigateTo(issue.Path);
             }
-            else if (reviewPage is not null) reviewPage.Diagnostic.Text += Ipc.Platform.DiagnosticText.Protect(issue.Message) + "\n";
+            else if (reviewPage is not null) reviewPage.Diagnostic.Text += message + "\n";
             errors.Children.Add(found ? button : Text(context + "\n" + message));
         }
         RefreshStepBar();
@@ -370,7 +389,8 @@ public sealed partial class ParameterSettingsControl : UserControl
             if (page.Category != 4 && count > 0)
             {
                 var first = (Model?.Issues ?? []).First(i => locations.TryGetValue(i.Path, out var entry) && ReferenceEquals(entry.Page, page));
-                var locate = new Hyperlink(new Run("定位首项")); locate.Click += (_, _) => NavigateTo(first.Path);
+                var label = locations[first.Path].Label.TrimEnd(' ', '*');
+                var locate = new Hyperlink(new Run("前往修改：" + label)); locate.Click += (_, _) => NavigateTo(first.Path);
                 page.Summary.Inlines.Add(new Run("    ")); page.Summary.Inlines.Add(locate);
             }
         }

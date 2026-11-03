@@ -76,8 +76,8 @@ public sealed partial class ParcelRuntime
             protectedRead.Token.ThrowIfCancellationRequested(); Management.Require();
             if (original is not null && (original.Metadata.DeviceId != originalDebug.DeviceId || original.Metadata.Epoch != originalDebug.Epoch ||
                 original.Metadata.SourceEventId != originalDebug.SourceEventId || original.Metadata.OriginalSha256 != originalDebug.OriginalSha256 ||
-                original.Metadata.IsolatedSessionId != originalDebug.SessionId)) throw new InvalidDataException("调试原图与原请求证据不一致，拒绝显示。");
-            return new(original is null ? "Missing" : "Available", original is null ? "调试原图未保留或已清理；原测试请求和回执仍保留。" : "原隔离调试请求对应原帧；受当前管理授权保护。", operationId, original?.Metadata.ObservationId, original);
+                original.Metadata.SessionId != originalDebug.SessionId)) throw new InvalidDataException("调试原图与原请求证据不一致，拒绝显示。");
+            return new(original is null ? "Missing" : "Available", original is null ? "调试原图未保留或已清理；原测试请求和回执仍保留。" : "原调试请求对应原帧；受当前管理授权保护。", operationId, original?.Metadata.ObservationId, original);
         }
         if (archived is not null && operationId is not null)
         {

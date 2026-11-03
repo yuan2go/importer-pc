@@ -160,7 +160,9 @@ static class UxCommercialPresentation
         Check(vm.HistoryStatus.Contains("没有作业记录") && !vm.HasNextHistory, "empty history has an explicit completed empty state");
         vm.Selected = a;
         await vm.DrainAsync();
-        Check(vm.StructuredDetails.Contains(a.Id) && vm.StructuredDetails.Contains(a.Wcs!.Request.Id) && vm.StructuredDetails.Contains("发送尝试") && vm.Details.Contains(a.Wcs!.Request.PayloadHash), "structured details preserve operation/request/attempt/reply distinctions and full original JSON");
+        Check(vm.StructuredDetails.Contains(a.Id) && vm.StructuredDetails.Contains(a.Wcs!.Request.Id) && vm.StructuredDetails.Contains("发送次数") && vm.Details.Contains(a.Wcs!.Request.PayloadHash), "structured details preserve operation/request/attempt/reply distinctions and full original JSON");
+        Check(vm.StructuredSheet is { Sections.Length: > 0 } && !vm.StructuredDetails.Contains(a.Wcs!.Request.PayloadHash) && !vm.StructuredDetails.Contains(a.Wcs.Request.Binding.Contract) && !vm.StructuredDetails.Contains(a.AdmissionId),
+            "the operator detail shows a plain-language sheet; hashes, contract names and admission identities stay in the technical view");
         var reconciliation = new TaskCompletionSource<BusinessReceipt>(TaskCreationOptions.RunContinuationsAsynchronously); var commandEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Reconcile = _ => { commandEntered.SetResult(); return reconciliation.Task; };
         var selectedRead = vm.QuerySelectedAsync(); await commandEntered.Task; vm.Selected = b;

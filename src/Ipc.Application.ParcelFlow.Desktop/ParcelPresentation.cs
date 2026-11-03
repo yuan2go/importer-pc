@@ -143,19 +143,6 @@ public partial class ParcelViewModel
     public ParcelStatusPresentation CurrentPresentation => !Fresh ? ParcelPresentation.Stale() : CurrentInputUnadmitted ? ParcelPresentation.InputPresentation(CurrentInput!) : ParcelPresentation.Operation(Current, true);
     public ParcelStatusPresentation StatusPresentation => !Fresh ? ParcelPresentation.Stale() : Snapshot?.Operations.Any(o => new[] { o.Wcs, o.Plc, o.Capture, o.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict)) == true ? ParcelPresentation.Unknown("有包裹格口未确认 · 其他投递位照常作业") : Snapshot?.BlockingReasons.Length > 0 ? ParcelPresentation.Unknown(Status) : Snapshot?.Paused == true ? ParcelPresentation.Neutral("维护中 · 暂停接收新包裹") : ParcelPresentation.Neutral(Status);
     public string StructuredDetails => structuredDetailsText;
-    static string FormatStructuredDetails(ParcelOperation? op) => op is null ? "选择一条作业，查看作业、请求与 RCS 返回。" :
-        "作业 " + op.Id + "\n投递位 " + (op.PositionId ?? "main") + " · 包裹号 " + op.ParcelCode + "\n受理 " + op.AdmissionId +
-        (op.DebugRequest is { } debug ? "\n调试手动请求 · 轮次 " + debug.RoundId + " · 原帧 " + debug.FrameId + "\n管理主体 " + debug.ManagementActor + "；调试扫描不进入生产" : "") +
-        "\n输入来源 " + (op.OperatorInput is { } manual ? (manual.Kind == "PdaKeyboard" ? "PDA键盘" : "手动键盘") + " · 提交主体 " + manual.Actor + " · 命令 " + manual.CommandId : "设备读码") +
-        "\n观察时间 " + op.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n结果 " + ParcelPresentation.Operation(op, true).Text + "\n原因 " + (op.Reason ?? "无") +
-        (op.OriginalFrame is { } original ? "\n\n原识码帧 " + (original.State switch { "Pending" => "后台保存中", "Saved" => "已保存原始灰度PNG", "Failed" => "保存失败", _ => "保存中断，需检查原文件" }) +
-            "\n尺寸 " + original.Width + " × " + original.Height + " · 帧 " + original.Acquisition.SourceEventId +
-            "\n原图文件 " + original.RelativeFile + (original.Failure is null ? "" : "\n留档说明 " + original.Failure) : "") +
-        "\n\n" + string.Join("\n\n", new[] { ("WCS", op.Wcs), ("PLC", op.Plc), ("采集", op.Capture), ("上传", op.Upload) }.Where(x => x.Item2 is not null).Select(x => StageDetails(x.Item1, x.Item2!)));
-    static string StageDetails(string name, StageFact stage) => name + " 请求 " + stage.Request.Id + "\n状态 " + ChineseInterfaceText.Status(stage.State.ToString()) + " · 发送尝试 " + stage.Attempts +
-        "\n准备时间 " + stage.Request.PreparedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") + "\n原目标 " + stage.Request.Binding.Target + "\n原合同 " + stage.Request.Binding.Contract +
-        "\n报文SHA256 " + stage.Request.PayloadHash + "\n" + (stage.Failure is { } failure ? "失败 / 未确认原因 " + failure + "\n" : "") +
-        (stage.Replies.Length == 0 ? "尚无返回；已发送不代表已接受" : string.Join("\n", stage.Replies.Select(reply => "返回 " + reply.Id + " · " + reply.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
-            "\n传输 " + Known(reply.TransportSucceeded) + " · 协议确认 " + Known(reply.ProtocolAcknowledged) + " · 业务接受 " + Known(reply.BusinessAccepted) + " · 物理完成 " + Known(reply.PhysicalCompleted) + "\n证据 " + reply.Evidence)));
+    public ParcelDetailSheet? StructuredSheet => structuredSheet;
     static string Known(bool? value) => value is null ? "未知" : value.Value ? "是" : "否";
 }

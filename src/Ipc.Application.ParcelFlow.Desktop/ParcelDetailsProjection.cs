@@ -6,8 +6,9 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class ParcelViewModel
 {
     const int DetailPreviewLimit = 65536;
-    const string DetailPrompt = "选择一条作业，查看阶段、格口、报文和 RCS 返回。";
+    const string DetailPrompt = "选择一条记录，查看这件包裹的处理结果。";
     string detailsText = DetailPrompt, structuredDetailsText = DetailPrompt;
+    ParcelDetailSheet? structuredSheet;
     bool structuredDetailsVisible, rawDetailsVisible, detailsWorker, detailsAuthorityPending;
     internal Func<Task>? BeforeDetailsFormatForVerification { get; set; }
     object? detailsRevision, structuredPublished, rawPublished;
@@ -15,8 +16,8 @@ public partial class ParcelViewModel
     void InvalidateDetailsAuthority()
     {
         detailsAuthorityPending = true; detailsGeneration++; structuredPublished = rawPublished = null;
-        detailsText = structuredDetailsText = "管理授权变化，正在读取当前权限的作业详情…";
-        Changed(nameof(Details)); Changed(nameof(StructuredDetails));
+        detailsText = structuredDetailsText = "管理授权变化，正在读取当前权限的作业详情…"; structuredSheet = null;
+        Changed(nameof(Details)); Changed(nameof(StructuredDetails)); Changed(nameof(StructuredSheet));
     }
     void DetailsSnapshotApplied() { detailsAuthorityPending = false; RefreshDetailsProjection(); }
     // Original request/reply identities and configuration hashes are immutable.
@@ -38,8 +39,8 @@ public partial class ParcelViewModel
         if (!Equals(key, detailsRevision))
         {
             detailsRevision = key; detailsGeneration++; structuredPublished = rawPublished = null;
-            detailsText = structuredDetailsText = Selected is null ? DetailPrompt : "正在后台整理所选作业详情…";
-            Changed(nameof(Details)); Changed(nameof(StructuredDetails));
+            detailsText = structuredDetailsText = Selected is null ? DetailPrompt : "正在整理所选作业详情…"; structuredSheet = null;
+            Changed(nameof(Details)); Changed(nameof(StructuredDetails)); Changed(nameof(StructuredSheet));
         }
         if (!IsManagementMode && rawPublished is not null)
         { rawPublished = null; detailsText = "查看详细信息需要进入管理模式。"; Changed(nameof(Details)); }
@@ -68,20 +69,25 @@ public partial class ParcelViewModel
                         return value[..length] + "\n[内容过长已截断；点击“复制完整数据”获取全部]";
                     }
                     var summary = raw ? DestinationSummary(operation) : "";
-                    return (Structured: structured ? Clip(FormatStructuredDetails(operation)) : null,
+                    var sheet = structured ? ParcelDetailSheets.Build(operation) : null;
+                    return (Sheet: sheet, Structured: sheet is null ? null : Clip(sheet.ToText()),
                         Raw: raw ? Clip((summary.Length == 0 ? "" : summary + "\n\n作业、请求与 RCS 返回完整数据：\n") + Wire.Encode(operation)) : null);
                 });
                 if (generation != detailsGeneration || !Equals(key, detailsRevision)) continue;
                 if (!Equals(key, DetailsRevision(Selected))) { InvalidateDetailsAuthority(); continue; }
                 if (result.Structured is { } summary && structuredDetailsVisible)
-                { structuredDetailsText = summary; structuredPublished = key; Changed(nameof(StructuredDetails)); }
+                { structuredDetailsText = summary; structuredSheet = result.Sheet; structuredPublished = key; Changed(nameof(StructuredDetails)); Changed(nameof(StructuredSheet)); }
                 if (result.Raw is { } full && rawDetailsVisible && IsManagementMode)
                 { detailsText = full; rawPublished = key; Changed(nameof(Details)); }
                 break;
             }
         }
-        catch (Exception error)
-        { detailsText = structuredDetailsText = "详情生成未完成：" + error.GetType().Name + "；可重新选择后再读取。"; Changed(nameof(Details)); Changed(nameof(StructuredDetails)); }
+        catch (Exception)
+        {
+            // Formatting is a local projection of already-read data; reselecting rebuilds it.
+            detailsText = structuredDetailsText = "详情暂时没能整理出来，请重新选择这条记录。"; structuredSheet = null;
+            Changed(nameof(Details)); Changed(nameof(StructuredDetails)); Changed(nameof(StructuredSheet));
+        }
         finally { detailsWorker = false; }
     }
     public async Task<string> FullDetailsAsync()

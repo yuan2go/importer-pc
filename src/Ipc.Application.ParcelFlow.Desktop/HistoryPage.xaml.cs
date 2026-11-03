@@ -14,7 +14,7 @@ public partial class HistoryPage : UserControl
         Loaded += (_, _) => { ArrangeTaskFilters(); UpdateDetailsVisibility(); };
         Unloaded += (_, _) => { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(false, false); };
         DataContextChanged += (_, e) => { if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
-        StructuredDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
+        StructuredDetailsPanel.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         RawDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         SizeChanged += (_, _) => FitQueryViewport();
         AllHistoryFilters.SizeChanged += (_, _) => FitQueryViewport();
@@ -30,7 +30,7 @@ public partial class HistoryPage : UserControl
         if (op is not null) ParcelPictureWindow.Open(owner, vm, new(OperationId: op.Id), op.ParcelCode);
     }
     void UpdateDetailsVisibility()
-    { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(IsLoaded && StructuredDetailsText.IsVisible, IsLoaded && RawDetailsText.IsVisible); }
+    { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(IsLoaded && StructuredDetailsPanel.IsVisible, IsLoaded && RawDetailsText.IsVisible); }
     void FitQueryViewport()
     {
         var shortPage = ActualHeight < 500;

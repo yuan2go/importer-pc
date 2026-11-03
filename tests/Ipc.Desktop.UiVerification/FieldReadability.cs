@@ -27,7 +27,7 @@ static partial class Program
             {
                 await SetClient(window, size.Item1, size.Item2); await Flush();
                 var slot = (TextBox)position.FindName("CurrentSlot");
-                Check(slot.Text == "SIM-CHUTE-03" && slot.FontSize == (vm.IsCompact ? 28 : 32) && Inside(slot, client), "enlarged chute stays complete: " + size.Item1);
+                Check(slot.Text == "SIM-CHUTE-03" && slot.FontSize == UiTypography.SlotSize(slot.Text, vm.IsCompact) && Inside(slot, client), "enlarged chute stays complete: " + size.Item1);
                 var transform = slot.TransformToAncestor(client);
                 var scale = (transform.Transform(new Point(0, 1)) - transform.Transform(new Point())).Length;
                 Check(slot.FontSize * scale >= 24, "actually drawn long chute stays at least 24 DIP: " + size.Item1);

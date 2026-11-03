@@ -42,3 +42,10 @@ src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.ProductOperations.cs
 src/Ipc.Desktop/StartupSetupWindow.cs
 tests/Ipc.Desktop.UiVerification/InstallerFirstRunUi.cs
 src/Ipc.Desktop/StartupWorkflows.cs
+src/Ipc.Application.Sportmaster.Desktop/StationHelpWindow.cs
+src/Ipc.Application.Sportmaster.Desktop/StationHelpWindow.Documents.cs
+tests/Ipc.Desktop.UiVerification/IndustrialHelp.cs
+tests/Ipc.Desktop.UiVerification/CommercialPages.cs
+tests/Ipc.Desktop.UiVerification/Program.cs
+src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Help.cs
+src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs

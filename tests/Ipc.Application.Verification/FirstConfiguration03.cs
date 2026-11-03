@@ -7,6 +7,9 @@ internal static class FirstConfiguration03
     static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS FIRST03 " + text); }
     internal static async Task Run()
     {
+        var initial = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
+        Check(initial.Wcs!.Parameters["request-id-base"] == "0" && initial.Wcs.Parameters["request-id-count"] == "10000" && initial.Wcs.Parameters["specified-chute"] == "false",
+            "a new station explicitly allocates inclusive request ids 1..10000 and leaves chute assignment to RCS");
         CameraSlot Left(string ip = "", string serial = "") => new("left", ip, serial);
         CameraSlot Right(string ip = "", string serial = "") => new("right", ip, serial);
         var blank = new[] { Left(), Right() };

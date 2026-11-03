@@ -27,7 +27,6 @@ public sealed partial class ParameterSettingsControl
                 if (rcs is null) continue;
                 foreach (var pair in locations.Where(x => x.Key.StartsWith(component.InstanceId + "/", StringComparison.Ordinal)).ToArray())
                 {
-                    if (pair.Key.EndsWith("/specified-chute", StringComparison.Ordinal) || pair.Key.EndsWith("/chute-code", StringComparison.Ordinal)) continue;
                     var location = pair.Value;
                     if (ReferenceEquals(location.Page, station) || location.Row is null) continue;
                     var key = pair.Key[(component.InstanceId.Length + 1)..];
@@ -92,7 +91,7 @@ public sealed partial class ParameterSettingsControl
         }
         foreach (var page in pages)
             page.TaskGroup = FirstConfiguration ? page.Category switch { 0 => "本站信息", 1 => "业务规则", 2 => "左右相机", 3 => "RCS 连接", _ => "检查与完成" } :
-                ReferenceEquals(page, station) ? "本站接入" : page.Category == 2 ? "相机" : page.Title is "条码筛选" or "格口请求" ? "分拣规则" : page.Title is "数据与记录" or "自动备份" or "显示偏好" or "作业登录" ? "系统维护" : "高级";
+                ReferenceEquals(page, station) ? "本站接入" : page.Category == 2 ? "相机" : page.Title == "条码筛选" ? "分拣规则" : page.Title is "数据与记录" or "自动备份" or "显示偏好" or "作业登录" ? "系统维护" : "高级";
     }
     void RequestRange(Panel form, ObjectPage page, CapabilityDraft draft)
     {

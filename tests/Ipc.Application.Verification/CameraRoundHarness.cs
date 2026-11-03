@@ -204,7 +204,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     {
         readonly ConcurrentQueue<(RoundPixels Pixels, uint Number)> queue = new();
         public int Releases, Acquires, Clears, Opens, Starts, Stops, Closes, Destroys, Finalizes;
-        public int StopError, CloseError;
+        public int StopError = 0, CloseError = 0;
         public bool FailNextClear;
         public int NextLostPackets;
         public readonly ManualResetEventSlim ClearGate = new(true);

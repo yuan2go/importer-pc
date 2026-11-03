@@ -205,7 +205,8 @@ public sealed partial class ParameterSettingsControl
         "decision" or "reply-mode" or "complete-on-query" => "仅用于模拟服务调试，不代表真实业务结果。",
         "zone-id" => "RCS 分配的仓库编号。",
         "project-id" => "RCS 分配的产线编号。",
-        "left-bcr-code" or "right-bcr-code" => "RCS 用来区分左右相机的编码，两台不能相同。",
+        "left-bcr-code" => "左投递位使用的相机编码，取格口与心跳共用；不能与右相机编码相同。",
+        "right-bcr-code" => "右投递位使用的相机编码，取格口与心跳共用；不能与左相机编码相同。",
         "device.ip" => "相机的 IP 地址（软件不会修改相机设置）。",
         "device.serial" => "相机机身上的序列号，正式使用必填。",
         "code.encoding" => "与相机输出条码报文的字符编码一致；编码不匹配会导致条码无法正确解码。",
@@ -226,6 +227,7 @@ public sealed partial class ParameterSettingsControl
     sealed record BooleanChoice(string Value, string Label);
     void Parameter(Panel form, ObjectPage page, CapabilityDraft draft, CapabilityParameter p)
     {
+        if (Model!.ApplicationId == "sportmaster" && ParameterOwnership.IsRcs(draft) && p.Field.Key is "specified-chute" or "chute-code") return;
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "quantity") return;
         var path = draft.InstanceId + "/" + p.Field.Key;
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";

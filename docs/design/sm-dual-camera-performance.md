@@ -21,7 +21,7 @@ $snapshot.Progress.Connections | Select-Object DeviceId, Epoch, Health
 
 ## 三组可复现实验
 
-先记录实际版本、CPU/逻辑核数、内存、电源模式、相机分辨率/取帧设置、曝光、照明、码制多选、反色、软件筛选规则及 RCS 类型（本机模拟/客户接口）。曝光、焦距、速度是人工现场记录，本脚本不读写设备。实际软件码制与反色保留在快照 `Performance.DecoderConfiguration`；帧尺寸在逐帧记录中。驱动/SDK 时间戳尚未标定，不能把它换算为曝光到主机的延迟。
+先记录实际版本、CPU/逻辑核数、内存、电源模式、相机分辨率/取帧设置、曝光、照明、码制多选、反色、软件筛选规则及 RCS 类型（本机模拟/客户接口）、请求超时与心跳间隔。曝光、焦距、速度是人工现场记录，本脚本不读写设备。实际软件码制与反色保留在快照 `Performance.DecoderConfiguration`；帧尺寸在逐帧记录中。驱动/SDK 时间戳尚未标定，不能把它换算为曝光到主机的延迟。
 
 使用同一软件版本、同一参数、同批包裹和摆放/反光条件，分别安排左侧供包、右侧供包、双侧同时供包。`--scenario` 只标记实验，不启停相机，不改变任何一侧配置。若另一台相机仍采空托盘，也会占用采集/解码资源；如实记录该事实。需要“仅一个采集实例”对照时，由现场按已有授权手动安排独立实验，不能把左侧供包自动称为只运行一台相机。
 
@@ -111,4 +111,8 @@ dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Ve
 python -m unittest discover -s scripts -p test_dual_camera_performance.py -v
 ```
 
-验证结果在本包提交前补记精确来源。原生采集探针只运行 `--mvs-self-test`/`--mvs-pipeline` 合成端口，不能运行 `--mvs-connect`/`--mvs-throughput` 代替授权。真实设备、目标工控机双相机连续过机、真实运动模糊、客户 RCS、现场长期成功率及验收：**NOT_RUN**。
+Windows 本机验证记录见 [verification.json](../archive/validation/dual-camera-performance-20261103/verification.json)。C# 冻结源码 `9ab212bc`（含 main `90d6fdc9`）：Application 验证项目、MVS 探针、SM WPF 桌面三项 Release 构建均零警告/错误；MSTest 实际执行10组、0失败/0跳过，包含299项子夹具断言。另5组读码/背压/RCS/探针回归317项，共616项 C# 断言。统计脚本冻结源 `7a93ccc7`，15项性能脚本、5项交付说明、3项依赖闭包测试，共23项 Python 测试通过。文档门禁和既有13文件增量格式检查通过；这些数字不代表现场性能。C# 在后续统计脚本/文档提交中未改变，原始日志/TRX只留私有D盘，记录实际文件哈希。
+
+原RCS“未来版本”夹具硬编码12撞到当前版本，已改为当前版本+1，保留只读拒绝及原件不变断言；MVS暂停预览夹具曾在SDK归还前断言，现等待真实归还边界，原断言不变。开发回归还发现并修正了规范化作业身份与原始观察ID的关联差异。最终源码重新完整验证，不用早期结果代记。新 main 恢复的原有 CI 增加本包两组实际链路 selector 及 Python 回归；最终 PR 的远端结果需单独读取，不能用本机通过冒充。
+
+原生采集探针只运行 `--mvs-self-test`/`--mvs-pipeline` 合成端口，不能运行 `--mvs-connect`/`--mvs-throughput` 代替授权。真实设备、目标工控机双相机连续过机、真实运动模糊、客户 RCS、现场长期成功率及验收：**NOT_RUN**。本轮没有修改生产部署或真实设备，也没有生成应用安装包。

@@ -26,7 +26,7 @@ internal sealed partial class StationDebugControl : UserControl
     readonly TextBlock readStatus = Text("尚未开始扫码"), photoState = Text("等待扫码"), fillStatus = Text("");
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Button left = Action("左相机"), right = Action("右相机"), trigger = Action("触发扫码"), prepare = Action("准备请求"), send = Action("发送请求");
-    readonly TextBlock state = Text("点击触发扫码开始本轮读取"), feedback = Text(""), photoCaption = Text("本轮读码照片"), result = Text("本轮尚未发送请求。"), camera = Text("左相机");
+    readonly TextBlock state = Text("点击“触发扫码”开始读取。"), feedback = Text(""), photoCaption = Text("本轮读码照片"), result = Text("本轮尚未发送请求。"), camera = Text("左相机");
     readonly TextBox barcode = Value(), requestBarcode = Value(), requestBody = Value(), responseBody = Value();
     readonly Image photo = new() { Stretch = Stretch.Fill, IsHitTestVisible = false };
     readonly Canvas marks = new() { IsHitTestVisible = false, ClipToBounds = true };
@@ -112,7 +112,7 @@ internal sealed partial class StationDebugControl : UserControl
         };
         header.Children.Add(Flow(title, left, right)); toolbar.Children.Add(header);
         camera.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); state.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
-        toolbar.Children.Add(camera); toolbar.Children.Add(Text("正常供包继续运行；扫码锁定本轮图片，点击发送请求才调用实际 RCS 服务。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
+        toolbar.Children.Add(camera); toolbar.Children.Add(Text("调试不影响正常供包；只有点“发送请求”才会调用 RCS。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
         trigger.ToolTip = "读码不要求 RCS 在线；读码不额外发送调试请求，正常供包继续。";
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
@@ -135,14 +135,13 @@ internal sealed partial class StationDebugControl : UserControl
         send.SetResourceReference(ForegroundProperty, "Accent"); send.SetResourceReference(BorderBrushProperty, "Line");
         var entry = Flow(Text("请求条码"), requestBarcode, prepare, send); DockPanel.SetDock(entry, Dock.Right); requestHeader.Children.Add(entry); requestHeader.Children.Add(Heading("请求调试")); requestPanel.Children.Add(requestHeader);
         fillStatus.SetResourceReference(TextBlock.ForegroundProperty, "Success"); requestPanel.Children.Add(fillStatus);
-        requestPanel.Children.Add(Text("扫码自动填入，或手工输入条码后准备请求；不要求配置或连接相机。点击发送才调用RCS。"));
+        requestPanel.Children.Add(Text("扫码后自动填入条码，也可以手工输入；先“准备请求”查看报文，再“发送请求”。"));
         jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto }); jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var requestJson = new StackPanel(); var responseJson = new StackPanel { Margin = new(14, 0, 0, 0) };
-        requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.Height = 150; requestBody.SetResourceReference(BackgroundProperty, "Soft"); requestJson.Children.Add(requestBody);
-        responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.Height = 150; responseBody.SetResourceReference(BackgroundProperty, "Soft"); responseJson.Children.Add(responseBody);
+        requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.MinHeight = 72; requestBody.MaxHeight = 220; requestBody.SetResourceReference(BackgroundProperty, "Soft"); requestJson.Children.Add(requestBody);
+        responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.MinHeight = 72; responseBody.MaxHeight = 220; responseBody.SetResourceReference(BackgroundProperty, "Soft"); responseJson.Children.Add(responseBody);
         jsonColumns.Children.Add(requestJson); jsonColumns.Children.Add(responseJson); Grid.SetColumn(responseJson, 1); requestPanel.Children.Add(jsonColumns);
-        body.Children.Add(Text("调试请求使用当前生效的 RCS 配置；实时预览与本轮结果独立。"));
         InitializeBatch(body);
         adapt.Click += (_, _) => { fit = true; ApplyZoom(); }; actual.Click += (_, _) => { fit = false; zoom = 1 / VisualTreeHelper.GetDpi(viewport).DpiScaleX; ApplyZoom(); };
         more.Click += (_, _) => Scale(1.25); less.Click += (_, _) => Scale(.8); overlay.Checked += (_, _) => DrawMarks(); overlay.Unchecked += (_, _) => DrawMarks();
@@ -277,7 +276,7 @@ internal sealed partial class StationDebugControl : UserControl
         var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，请查看采集诊断后重新触发。" :
             value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(value.Detail, DebugFailure);
         state.ToolTip = detail;
-        state.Text = value.Id is null ? "点击触发扫码开始本轮读取；调试请求需明确发送。" : detail;
+        state.Text = value.Id is null ? "点击“触发扫码”开始读取。" : detail;
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
         SetText(barcode, value.Barcode ?? "");
         if (!requestDirty) { updatingRequest = true; try { SetText(requestBarcode, value.Barcode ?? ""); } finally { updatingRequest = false; } }
@@ -308,7 +307,10 @@ internal sealed partial class StationDebugControl : UserControl
         if (photo.Source is null && current?.DeviceId == Position.ReaderId)
             imageHint.Text = current.ManualRequest ? "本次为手工输入请求，无扫码照片。" : current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
                 current.Frame is not null ? "本轮照片不可用\n图片可能已被清理。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
-        readStatus.Text = current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
+        // Scanning needs this camera online; a keyed-in request does not.
+        var cameraOnline = vm.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == Position.ReaderId)?.IsValid(DateTimeOffset.UtcNow) == true;
+        readStatus.Text = !cameraOnline && current?.State is not ("Reading" or "Preparing" or "Sealing" or "Locked") ? "相机离线，不能扫码；可手工输入条码" :
+            current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
         { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已锁定", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
         photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : displayedFrame is null ? "等待扫码" : "结果已锁定";
         if (current?.ManualRequest == true) photoCaption.Text = "本次为手工输入请求。";
@@ -317,7 +319,9 @@ internal sealed partial class StationDebugControl : UserControl
         feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
         var waiting = observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
         trigger.Content = armCommand is not null || beginCommand is not null ? "检查触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
-        trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode;
+        trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode && cameraOnline;
+        trigger.ToolTip = cameraOnline ? "读码不额外发送请求，正常供包继续。" : "相机离线，不能扫码；可在下方手工输入条码。";
+        ToolTipService.SetShowOnDisabled(trigger, true);
         prepare.Content = prepareCommand is null ? "准备请求" : "查看准备结果";
         prepare.IsEnabled = active && !busy && !waiting && vm.Fresh && vm.IsManagementMode && !string.IsNullOrWhiteSpace(requestBarcode.Text);
         send.Content = sendCommand is null ? "发送请求" : "查看发送结果";

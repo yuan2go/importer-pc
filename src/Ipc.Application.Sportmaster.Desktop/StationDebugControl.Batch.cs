@@ -10,7 +10,7 @@ internal sealed partial class StationDebugControl
     void InitializeBatch(Panel body)
     {
         var actions = new WrapPanel(); var start = Action("采样 20 帧"); var end = Action("停止试扫");
-        var summary = Text("连续试扫统计已解码帧，不代表20件包裹。正常供包继续，调试采样不计入生产统计。");
+        var summary = Text("连续试扫只统计识别到的帧数，不计入生产。");
         actions.Children.Add(start); actions.Children.Add(end); body.Children.Add(actions); body.Children.Add(summary);
         start.Click += async (_, _) => await Run(async token =>
         {

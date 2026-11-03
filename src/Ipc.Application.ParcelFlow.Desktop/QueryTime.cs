@@ -19,7 +19,9 @@ public static class QueryTime
         value = new DateTimeOffset(local, zone.GetUtcOffset(local)); return true;
     }
     public static string DisplayNotice(string notice) => !notice.StartsWith("现存日志记录时间：", StringComparison.Ordinal) ? notice :
-        Regex.Replace(notice.Replace("现存日志记录时间：", "现存日志记录时间（本机）："), @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})", m => Display(m.Value));
+        Regex.Replace(notice.Replace("现存日志记录时间：", "可查询的日志（本机时间）：")
+                .Replace("。早于首条/晚于末条的请求范围无法证明完整；无记录不等于无异常。", "。这段时间以外的日志已清理或尚未产生；没有记录不代表没有异常。"),
+            @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})", m => Display(m.Value));
     public static string Display(string text, string empty = "不限") => string.IsNullOrWhiteSpace(text) ? empty :
         TryRead(text, out var value) ? value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "时间无效，请修正";
 }

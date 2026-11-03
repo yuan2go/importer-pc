@@ -54,7 +54,8 @@ static partial class Program
         }
         var vm = window.ViewModel; await Task.Delay(300); await vm.RefreshAsync();
         var client = (Grid)window.FindName("ClientArea"); await SetClient(window, 1366, 768);
-        Check(!vm.IsManagementMode && vm.AccountDisplay.Contains("免登录作业") && Descendants(window).OfType<ManagementModeMenu>().Single().Status.Authorized == false, "right-corner identity distinguishes unauthenticated administration and login-free operation");
+        Check(!vm.IsManagementMode && vm.AccountDisplay.Length == 0 && !((FrameworkElement)window.FindName("AccountIdentity")).IsVisible && Descendants(window).OfType<ManagementModeMenu>().Single().Status.Authorized == false,
+            "a login-free station shows no operator label; the management menu still shows the unauthorized state");
         Check(!Descendants(window).OfType<Button>().Any(b => b.IsVisible && b.Content is string s && (s == "参数设置" || s == "日志查询" || s.Contains("支持"))), "ordinary navigation has no administrator or support actions");
         var identity = (TextBlock)window.FindName("AccountIdentity"); Check(identity.IsVisible && identity.ActualHeight >= identity.FontSize && !string.IsNullOrWhiteSpace(identity.Text), "operator identity remains readable beside the separate management menu");
         runtime.EmitReferenceAt("left", "native-left", "00123456", "native-left-event"); runtime.EmitReferenceAt("right", "native-right", "00987654", "native-right-event"); factory.ReleaseLeft.TrySetResult();

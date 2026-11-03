@@ -93,7 +93,7 @@ public partial class SupplyStationWindow
         cards.SizeChanged += (_, _) => { var columns = cards.ActualWidth >= 900 ? 2 : 1; foreach (var card in cards.Children.OfType<Border>()) card.Width = Math.Max(220, cards.ActualWidth / columns - 12); };
         var logState = ProductText("详细日志状态未确认"); var toggle = new Button { Content = "开启详细日志 30 分钟", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         var logDetails = new StackPanel(); logDetails.Children.Add(logState); logDetails.Children.Add(toggle);
-        panel.Children.Add(new Expander { Header = "日志与性能详情", Content = logDetails, Margin = new(0, 8, 0, 0) });
+        diagnosticLogDetails = logDetails; // shown inside the page's single "技术详情" section
         CancellationTokenSource? lifetime = null; long generation = 0; bool reading = false, setting = false;
         RuntimeDiagnosticSettings? current = null;
         void UpdateActions() { foreach (var action in actions) action(); }

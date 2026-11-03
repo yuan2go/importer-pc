@@ -63,12 +63,26 @@ static class SoftwareLogText
                 return OneLine(Field("PositionId") + " · " + Field("ParcelCode") + " · " + Field("RequestId") + " · " + state + " · 格口 " + Field("Slot") + " · " + Field("ElapsedMs") + " ms");
             }
             if (json.RootElement.ValueKind == JsonValueKind.Object)
-                foreach (var name in new[] { "message", "Message", "detail", "Detail", "event", "Event" })
-                    if (json.RootElement.TryGetProperty(name, out var item) && item.ValueKind == JsonValueKind.String) return OneLine(item.GetString() ?? text);
+            {
+                // The event name is the readable line ("相机自动重连"); a short plain detail may follow.
+                // Nested JSON and long details stay in the original view and export.
+                string? Plain(string name) => json.RootElement.TryGetProperty(name, out var item) && item.ValueKind == JsonValueKind.String ? item.GetString() : null;
+                if ((Plain("Event") ?? Plain("event")) is { Length: > 0 } action)
+                {
+                    var detail = Plain("Detail") ?? Plain("detail");
+                    return OneLine(action + (detail is { Length: > 0 and <= 80 } d && !d.TrimStart().StartsWith('{') && !d.TrimStart().StartsWith('[') ? " · " + Device(d) : ""));
+                }
+                foreach (var name in new[] { "message", "Message", "detail", "Detail" })
+                    if (Plain(name) is { } item) return OneLine(item);
+            }
         }
         catch (JsonException) { }
         return OneLine(text);
     }
+    // Camera device ids read as the station's own names.
+    static string Device(string text) => System.Text.RegularExpressions.Regex.Replace(text, @"\b[\w-]+\.reader\.(left|right)\b", m => m.Groups[1].Value == "left" ? "左相机" : "右相机");
+    // Log sources written with internal names are shown in station words; filtering still uses the original.
+    public static string SourceName(string source) => source switch { "StorageCapacity" => "存储容量", "StorageWal" => "存储日志文件", _ => source };
     static string OneLine(string text)
     {
         var length = Math.Min(384, text.Length);

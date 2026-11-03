@@ -28,15 +28,13 @@ public sealed partial class ParameterSettingsControl
                 Input(Form(station), "供包台编号 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "RCS 分配给本供包台的编号，左右投递位共用。");
                 locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
                 locations["StationCode"] = locations[rcs.InstanceId + "/left-station-code"];
-                Technical(station, "供包台编号", rcs.InstanceId + "/left-station-code / right-station-code", "RCS 用它识别本供包台。设置生效后用于新的取格口请求和心跳；生效方式以保存回执为准，旧请求保留原编号。" + pair.OriginalValues);
             }
         }
         if (!hasRcs) Input(Form(station), "供包台编号 *", m.Policy, "StationCode", "StationCode", station, "用于向外部系统识别当前供包台。");
-        Technical(station, "本地工作站标识", "StationId", m.StationId);
         if (UsesFirstReadiness) station.Body.Children.Add(ScenarioCard());
         var data = Page(0, "数据与记录", ""); form = Form(data);
-        Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000");
-        Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "剩余空间低于此值时暂停接收新包裹。");
+        Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "本机保留的近期记录条数，1～10000。");
+        Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "剩余空间低于此值时暂停接收新包裹，1～1048576 MiB。");
         Input(form, "日志保留天数", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "默认 7 天。只清理诊断日志，不删除作业记录；留空则按容量自动轮换。");
         Input(form, "已结数据保留天数", m.Policy, "HistoryDays", "HistoryDays", data, "默认 7 天，可填 7–30 天。到期后清理已完成的作业明细，未处理完的作业始终保留；留空则不清理。");
         data.Body.Children.Add(Text("保留天数保存并重启后生效。只有明确启用自动清理并满足空闲、备份和责任保护条件时，才会后台清理。"));
@@ -46,12 +44,9 @@ public sealed partial class ParameterSettingsControl
             maintain.Click += async (_, _) => { if (retentionContext.RequestRetentionAsync is { } request) await request(); else retentionContext.Message = "请先暂停并退出软件，再从开始菜单的“配置工具”清理到期记录。"; };
             data.Body.Children.Add(maintain);
         }
-        Technical(data, "到期记录清理", "HistoryDays", "保存并重启后生效。手动清理需先暂停并退出软件；自动清理由已生效策略在空闲窗口执行。两者都先完整备份，未处理完的作业不会被删除。");
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "未取得配置目录。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
-        Technical(data, "日志保留", "DiagnosticLogDays", "留空则按容量自动轮换，可填 1–3650 天。只影响诊断日志。");
-        Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "常驻记录 1–10000 条，磁盘预留空间 1–1048576 MiB。软件运行时目录不能修改，迁移数据请使用维护工具。");
         var backup = Page(0, "自动备份", "只在暂停供包、处于管理模式且没有进行中的请求时执行。");
         if (RuntimeContext is { } backupContext)
         {
@@ -74,7 +69,7 @@ public sealed partial class ParameterSettingsControl
             var open = new Button { Content = "立即备份…", HorizontalAlignment = HorizontalAlignment.Left };
             open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
         }
-        Technical(backup, "自动备份", "BackupEnabled / BackupDirectory / BackupIntervalMinutes / BackupMaximumSets", "完整备份由数据库文件和同名恢复文件夹组成，恢复时两者都需要。关闭自动备份不会删除已有备份。");
+        backup.Body.Children.Add(Text("完整备份包括数据库文件和同名恢复文件夹，恢复时两者都需要；关闭自动备份不会删除已有备份。"));
         var display = Page(0, "显示偏好", m.ApplicationId == "sportmaster" ? "设置本机窗口的打开方式和布局。" : "仅影响本机显示。");
         if (m.ApplicationId == "sportmaster")
         {
@@ -128,7 +123,6 @@ public sealed partial class ParameterSettingsControl
             change.Click += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty); display.Body.Children.Add(change);
         }
         else display.Body.Children.Add(Text("完成首次配置后，可在作业窗口调整本机布局。"));
-        Technical(display, "本机显示", "PresentationPreferences", "窗口打开方式和布局按当前 Windows 用户保存，不影响业务设置和设备。");
     }
     sealed record WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode Mode, string Label);
     void SessionLifetime(Panel form, ObjectPage page, ParameterEditorModel m)
@@ -138,7 +132,6 @@ public sealed partial class ParameterSettingsControl
             "仅用于操作员登录。");
         input.ToolTip = "100～86400000 毫秒";
         AutomationProperties.SetHelpText(input, "操作员登录后多久需要重新登录，100–86400000 毫秒，与管理模式无关。");
-        Technical(page, "操作员会话", path, "100–86400000 毫秒，只用于操作员登录。");
         var field = locations[path].Row!;
         bool Applicable() => m.HasOperatorLogin || m.Issues.Any(i => i.Path == path);
         locations[path] = locations[path] with { Applicable = Applicable };
@@ -190,8 +183,17 @@ public sealed partial class ParameterSettingsControl
             var reject = new CheckBox { Content = "拒绝多个有效条码", MinHeight = 38 };
             reject.SetBinding(CheckBox.IsCheckedProperty, new Binding("RejectMultipleCodes") { Source = m.Policy, Mode = BindingMode.TwoWay });
             Field(form, "多码处理", reject, "默认开启：读到多个有效条码时不发送，需要重新扫描。关闭后按读取顺序拼接成一个条码发给 RCS。", "RejectMultipleCodes", page);
-            Input(form, "多条码分隔符", m.Policy, "MultiCodeSeparator", "MultiCodeSeparator", page, "仅在允许多码时使用，1–16 个字符。拼接后最长 512 字符，超出则不发送。");
-            Technical(page, "筛选执行边界", "BarcodeFilter.Pattern", "规则按整串匹配，单次判断限时 25 毫秒；不会自动挑选第一个条码。");
+            Input(form, "多条码分隔符", m.Policy, "MultiCodeSeparator", "MultiCodeSeparator", page, "1–16 个字符。拼接后最长 512 字符，超出则不发送。");
+            // The separator only matters when several codes are joined; it is shown, searched and
+            // navigated to only then. Its value is kept either way.
+            if (locations.TryGetValue("MultiCodeSeparator", out var separator) && separator.Row is { } separatorRow)
+            {
+                locations["MultiCodeSeparator"] = separator with { Applicable = () => !m.Policy.RejectMultipleCodes };
+                void SyncSeparator() => separatorRow.Visibility = m.Policy.RejectMultipleCodes ? Visibility.Collapsed : Visibility.Visible;
+                SyncSeparator();
+                PropertyChangedEventHandler separatorChanged = (_, e) => { if (e.PropertyName == "RejectMultipleCodes") SyncSeparator(); };
+                m.Policy.PropertyChanged += separatorChanged; unsubscribe.Add(() => m.Policy.PropertyChanged -= separatorChanged);
+            }
             Preview(page, m);
         }
         else

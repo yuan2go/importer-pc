@@ -19,6 +19,8 @@ public sealed partial class ParcelRuntime
                 var owns = false;
                 try
                 {
+                    // A saved camera change replaced this session; the replacement has its own loop.
+                    if (!ReferenceEquals(readers.GetValueOrDefault(id), reader)) return;
                     backgroundProgress[name] = (DateTimeOffset.UtcNow, reader.Health?.Health.ToString() ?? "Unconfirmed");
                     if (reader.Health?.Health != DeviceHealth.Disconnected) { delaySeconds = 1; continue; }
                     if (reader.Epoch == blockedEpoch || Volatile.Read(ref accepting) != 1 || backupInProgress || configurationSaving ||

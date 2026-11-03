@@ -48,7 +48,14 @@ public interface IParcelCapabilityFactory : IAsyncDisposable
     void Validate(ParcelConfiguration configuration);
     void ValidateStructure(ParcelConfiguration configuration) => Validate(configuration);
     ParcelPorts Create(ParcelConfiguration configuration);
+    // Replacements for some already-constructed readers and/or the integration, built from a
+    // validated candidate whose identities are unchanged. Null: this factory cannot rebuild them
+    // live, and the caller stages a controlled restart instead. The caller owns what is returned.
+    ParcelLiveDevices? CreateLive(ParcelConfiguration candidate, IReadOnlyCollection<string> readers, bool integration) => null;
+    // Called once the replacements run and the candidate is the effective configuration.
+    void ConfirmLive(ParcelConfiguration effective) { }
 }
+public sealed record ParcelLiveDevices(IReadOnlyDictionary<string, IControlledObservationSource> Readers, IWcsPort? Wcs, IReadOnlyDictionary<string, string> ImplementationHashes);
 public static class WeightRules
 {
     public static bool WithinRange(decimal value, ParcelWeightRange? range) => range is null || value >= range.Minimum && value <= range.Maximum;

@@ -49,7 +49,7 @@ public sealed partial class ParameterSettingsControl
         var cameraPages = pages.Where(p => p.Category == 2 && p.Title is "左相机" or "右相机").ToArray();
         if (cameraPages.Length > 0)
         {
-            var combined = Page(2, "左右相机", "IP 用于找到相机，物理序列号用于确认设备。不使用的位置两项都留空。画面来自当前运行设置，修改后需重启。");
+            var combined = Page(2, "左右相机", "IP 用于找到相机，物理序列号用于确认设备。不使用的位置两项都留空。保存后只重新连接改动的那台相机。");
             var columns = new Grid(); columns.ColumnDefinitions.Add(new()); columns.ColumnDefinitions.Add(new()); columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
             combined.Body.Children.Add(columns);
             foreach (var (page, index) in cameraPages.Select((p, i) => (p, i)))

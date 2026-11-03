@@ -47,6 +47,8 @@ public sealed class ObservationSession(IControlledObservationSource source)
             }
         }, token);
     }
+    // A replaced source: its late observations and health callbacks no longer match this session.
+    public void Retire() { lock (publication) { Volatile.Write(ref epoch, Wire.Id()); Volatile.Write(ref health, null); } }
     public async Task ReconnectAsync(Func<Observation, bool> receive, CancellationToken token)
     {
         lock (publication) { Volatile.Write(ref epoch, Wire.Id()); sequence = 0; Volatile.Write(ref health, null); }

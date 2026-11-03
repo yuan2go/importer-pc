@@ -14,6 +14,7 @@ public sealed class CoreRegression
     [DataRow("--industrial-diagnostics", 34)]
     [DataRow("--station-single-camera", 65)]
     [DataRow("--same-placement-29", 17)]
+    [DataRow("--live-devices-30", 21)]
     [DataRow("--management-mode", 40)]
     [DataRow("--installer-storage-checks", 1)]
     [DataRow("--storage-schema-only", 1)]

@@ -13,6 +13,7 @@ public sealed class CoreRegression
     [DataRow("--industrial-lifecycle", 55)]
     [DataRow("--industrial-rollback", 49)]
     [DataRow("--industrial-version-pruning", 33)]
+    [DataRow("--permanent-deletion-02", 27)]
     [DataRow("--industrial-opaque-removal", 48)]
     [DataRow("--industrial-quiet-deployment", 60)]
     [DataRow("--industrial-diagnostics", 52)]

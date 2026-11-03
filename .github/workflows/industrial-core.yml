@@ -48,7 +48,7 @@ jobs:
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
           if ([int]$testCounters.executed -lt 25 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--update-notice-07', '--installation-receipts-04', '--operator-help-04', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
+          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--update-notice-07', '--installation-receipts-04', '--operator-help-04', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })

@@ -8,7 +8,7 @@ public static partial class ParcelStartupServices
 {
     internal static string MaintenanceFailureStatus(Exception error) => error is InstallationOutcomeUnknownException ? "Unknown" : "Failed";
     internal static bool CancellableMaintenance(string action) => action is "ReviewRemoval" or "Backup" or "Restore" or "Uninstall" or "PlanChange" or "PrepareChange" or "ReviewDeployment" or "Install" or "InstallWithPreflight" or "RepairSystem" or
-        "ReviewRollback" or "Rollback" or "ReviewVersionPruning" or "PruneVersions" or "ResumeVersionPruning" or "ReviewOpaqueRemoval" or "OpaqueUninstall";
+        "ReviewRollback" or "Rollback" or "ReviewVersionPruning" or "PruneVersions" or "ResumeVersionPruning" or "ReviewDataPurge" or "PurgeData" or "ResumeDataPurge" or "ReviewOpaqueRemoval" or "OpaqueUninstall";
     internal static (string Status, string? Error, string? Result) BoundMaintenanceTerminal(string status, string hash, string? error, string? result)
     {
         error = error is null ? null : error[..Math.Min(error.Length, 4000)];

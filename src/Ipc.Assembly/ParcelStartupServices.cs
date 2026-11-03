@@ -18,6 +18,7 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     public DeploymentRollbackPlan? RollbackPlan { get; init; }
     public string? RollbackOperationId { get; init; }
     public DeploymentPrunePlan? VersionPrunePlan { get; init; }
+    public DeploymentPurgePlan? DataPurgePlan { get; init; }
     public bool OrdinaryStartupConfirmed { get; init; }
     public DeploymentOpaqueRemovalPlan? OpaqueRemovalPlan { get; init; }
     public bool SkipBackup { get; init; }
@@ -225,6 +226,9 @@ public static partial class ParcelStartupServices
                 if (opaquePlan.ApplicationId != ApplicationId || !request.SkipBackup) throw new InvalidDataException("仅移除程序的业务或备份选择不匹配。");
                 return Wire.Encode(WindowsDeploymentSetup.RemoveWithoutReadableConfiguration(opaquePlan, RemoveShortcuts, execution));
             case "ReviewVersionPruning": return await ReviewVersionPruningCore(request, execution);
+            case "ReviewDataPurge": return await ReviewDataPurgeCore(request, execution);
+            case "PurgeData": return await ExecuteDataPurgeCore(request, execution);
+            case "ResumeDataPurge": return ResumeDataPurgeCore(request, execution);
             case "PruneVersions": return await ExecuteVersionPruningCore(request, execution);
             case "InspectVersionPruning": return await InspectVersionPruningCore(request, resume: false, execution);
             case "ResumeVersionPruning": return await InspectVersionPruningCore(request, resume: true, execution);

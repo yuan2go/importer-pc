@@ -49,7 +49,7 @@ public sealed partial class ParcelStartupMaintenance
     }
     StartupChangePreview Preview(string purpose, string? destination, (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) state, Snapshot? copy, MaintenanceExecution? execution = null)
     {
-        if (purpose is not ("Upgrade" or "Repair" or "Uninstall" or "Backup" or "Rollback" or "PruneVersions")) throw new InvalidDataException("不支持的产品维护目的");
+        if (purpose is not ("Upgrade" or "Repair" or "Uninstall" or "Backup" or "Rollback" or "PruneVersions" or "Purge")) throw new InvalidDataException("不支持的产品维护目的");
         if (copy is null)
         {
             if (purpose is "Rollback" or "PruneVersions")
@@ -59,13 +59,15 @@ public sealed partial class ParcelStartupMaintenance
                 throw new InvalidDataException("无数据库却存在日志或恢复/过载责任标记；保留原根并核对原发布，不能按未使用部署升级");
             if (Directory.Exists(state.Directory) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(state.Directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(state.Directory, n)).Any()))
                 throw new InvalidDataException("无数据库却存在原件；保留原根并核对原发布");
+            if (purpose == "Purge" && OtherRootBlocker(state.Directory) is { } other)
+                return new(Wire.Hash(state.Hash + purpose + destination), purpose, false, other, state.Hash, destination) { OperatorSummary = other };
             return new(Wire.Hash(state.Hash + purpose + destination), purpose, true, "尚未创建业务库；保留原配置和数据根，未启动设备。", state.Hash, destination);
         }
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
         var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None, allowPreviousStorage: purpose == "Upgrade");
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
         var allowed = purpose is "Backup" or "Repair" or "Uninstall" || inspection.ResponsibilitiesSettled && markers.Length == 0;
-        var pruningBlocker = purpose == "PruneVersions" ? VersionPruningBlocker(state.Directory, state.Envelope) : null;
+        var pruningBlocker = purpose == "PruneVersions" ? VersionPruningBlocker(state.Directory, state.Envelope) : purpose == "Purge" ? OtherRootBlocker(state.Directory) : null;
         if (pruningBlocker is not null) allowed = false;
         return new(Wire.Hash(copy.SourceIdentity + state.Hash + purpose + destination), purpose, allowed,
             Wire.Encode(inspection) + "\n隔离标记：" + string.Join(",", markers) + (purpose == "Repair" ? "\n仅相同冻结发布的程序修复：原责任/标记保留，完整备份后不改账、不激活、不启动；装配层必须核对相同源码。" : "\n程序切换不回滚数据库；未决请求须原发布核对。") +
@@ -74,28 +76,32 @@ public sealed partial class ParcelStartupMaintenance
         {
             OperatorSummary = pruningBlocker ?? (!inspection.ResponsibilitiesSettled ?
                     purpose == "Uninstall" ? "仍有未完成或结果未确认的请求。卸载只移除程序，原记录和责任保留，仍须按原记录核对。" : "仍有未完成或结果未确认的请求。请先按原记录处理，所有版本和数据保留。" :
-                    markers.Length > 0 ? "仍有恢复或存储保护状态，原记录保留；程序移除不会解除这些保护。" : "原记录检查完成，业务数据和身份保留。")
+                    markers.Length > 0 ? "仍有恢复或存储保护状态，原记录保留；程序移除不会解除这些保护。" : purpose == "Purge" ? "原记录已全部结清，可以永久删除本站数据。" : "原记录检查完成，业务数据和身份保留。")
         };
     }
     string? VersionPruningBlocker(string current, ConfigurationRevision<ParcelConfiguration>? configuration)
     {
         if (configuration is not { Pending: null, Status: "Effective", Confirmation.Required: false })
             return "当前配置尚未确认生效，不能清理原版本。";
-        // A current settled DB is not evidence about a previous station/mode.
-        // Keep all versions if another root might still own frozen requests.
+        return OtherRootBlocker(current);
+    }
+    // A current settled DB is not evidence about a previous station/mode: another root
+    // might still own frozen requests, so version cleanup and permanent deletion both stop.
+    string? OtherRootBlocker(string current)
+    {
         var count = 0;
         foreach (var mode in Directory.EnumerateDirectories(launch.DataRoot))
         {
             RecoveryFiles.RequireOrdinaryAncestors(mode);
-            if (++count > 1024) return "历史根超过核对预算，所有版本保留。";
+            if (++count > 1024) return "历史根超过核对预算，所有版本和数据保留。";
             foreach (var station in Directory.EnumerateDirectories(mode))
             {
                 RecoveryFiles.RequireOrdinaryAncestors(station);
-                if (++count > 1024) return "历史根超过核对预算，所有版本保留。";
+                if (++count > 1024) return "历史根超过核对预算，所有版本和数据保留。";
                 var area = Path.Combine(station, definition.Id); RecoveryFiles.RequireOrdinaryAncestors(area);
                 if (Directory.Exists(area) && !Path.GetFullPath(area).Equals(Path.GetFullPath(current), StringComparison.OrdinalIgnoreCase) &&
                     Directory.EnumerateFileSystemEntries(area).Any())
-                    return "存在其他站或模式的原业务根，不能由当前已结状态证明其原实现不再被引用；所有版本保留。";
+                    return "存在其他站或模式的原业务根，不能由当前已结状态证明其原实现和记录不再被引用；所有版本和数据保留。";
             }
         }
         return null;
@@ -137,7 +143,7 @@ public sealed partial class ParcelStartupMaintenance
         using var copy = File.Exists(Path.Combine(state.Directory, definition.Id + ".db")) ? CopyForMaintenance(state.Directory, execution) : null;
         var preview = Preview(purpose, backupDestination, state, copy, execution);
         if (preview.Identity != expectedPlan || !preview.Allowed) throw new InvalidOperationException("维护计划已变化或原责任未清；重新检查，不能切换发布");
-        if (copy is not null && !(purpose == "Uninstall" && string.IsNullOrEmpty(backupDestination)))
+        if (copy is not null && !(purpose is "Uninstall" or "Purge" && string.IsNullOrEmpty(backupDestination)))
             await BackupCopy(state.Directory, backupDestination, state, copy, execution, finalOperation: change is null);
         Authorize(); execution?.Checkpoint();
         if (change is not null && copy is not null && purpose == "Upgrade" && ParcelRepository.ReadMaintenanceStorageVersion(copy.Database, definition.Id) is 10 or 11)

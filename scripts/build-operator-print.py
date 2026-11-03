@@ -103,8 +103,15 @@ def styles(card: bool) -> dict:
     }
 
 
-def verify_text(reader: PdfReader, sources: list[str]) -> int:
-    rendered = re.sub(r'\s+', '', '\n'.join(page.extract_text() for page in reader.pages))
+def verify_text(reader: PdfReader, sources: list[str], footer_text: str = '') -> int:
+    # Each page's footer (version line and page number) is drawn on the canvas and can land in
+    # the middle of a paragraph that crosses the page break; remove it before comparing.
+    footer = re.sub(r'\s+', '', footer_text)
+    pages = []
+    for number, page in enumerate(reader.pages, start=1):
+        text = re.sub(r'\s+', '', page.extract_text())
+        pages.append(text.replace(footer + str(number), '', 1) if footer else text)
+    rendered = ''.join(pages)
     if '\ufffd' in rendered:
         raise ValueError('Replacement glyph in searchable text')
     checked = 0
@@ -286,7 +293,7 @@ def main() -> None:
         pages = len(reader.pages)
         if pages < 1 or pages > (20 if name == 'implementation-guide' else 1):
             raise ValueError('Page budget exceeded: ' + name + ' pages=' + str(pages))
-        checked = verify_text(reader, [texts[name], texts['fault-codes']] if name == 'implementation-guide' else [texts[name]])
+        checked = verify_text(reader, [texts[name], texts['fault-codes']] if name == 'implementation-guide' else [texts[name]], footer_text)
         outputs[path.name] = {'pages': pages, 'bytes': path.stat().st_size, 'sha256': digest(path),
                               'sourceTextSegmentsVerified': checked, 'bothFontSubsetsEmbedded': True}
         print('BUILT ' + path.name + ' pages=' + str(pages))

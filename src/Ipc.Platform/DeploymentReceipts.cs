@@ -10,7 +10,7 @@ public sealed record DeploymentReceiptSummary(string Kind, int Count, Deployment
 
 public static class DeploymentReceipts
 {
-    public static readonly string[] Kinds = ["setup", "quiet", "remove", "rollback", "prune"];
+    public static readonly string[] Kinds = ["setup", "quiet", "remove", "rollback", "prune", "purge"];
     const int MaximumBytes = 1024 * 1024;
     const int MaximumFiles = 1025;
 

@@ -141,6 +141,9 @@ public static partial class WindowsDeploymentSetup
         var before = Current(request.ApplicationId);
         RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
         RequireNoUnresolvedLifecycle(request.ApplicationId);
+        // A partial permanent deletion must never become an empty working station.
+        if (before?.LifecycleState is "Purging" or "PartiallyPurged")
+            throw new InvalidOperationException("本站数据永久删除尚未完成，不能安装；请先核对并继续原次删除。");
         if (before is { LifecycleState: "Installed" })
         {
             var candidateRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "app", "application-release.json")));

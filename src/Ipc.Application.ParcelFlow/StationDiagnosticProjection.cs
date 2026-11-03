@@ -140,7 +140,7 @@ internal sealed class StationDiagnosticProjection
         { return new { Status = "Unavailable", Reason = "ProtectedRegistrationUnreadable" }; }
     }
 
-    // Latest setup/quiet/remove/rollback/prune receipt per kind, allowlisted fields only.
+    // Latest setup/quiet/remove/rollback/prune/purge receipt per kind, allowlisted fields only.
     static object Receipts(string application)
     {
         try { return DeploymentReceipts.Summarize(application); }

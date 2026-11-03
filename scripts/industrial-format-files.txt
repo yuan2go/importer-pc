@@ -38,3 +38,4 @@ src/Ipc.Platform/DeploymentQuietJournal.cs
 src/Ipc.Assembly/ParcelStartupServices.Quiet.cs
 tests/Ipc.Application.Verification/IndustrialQuietDeployment.cs
 src/Ipc.Platform/QuietDeploymentOutput.cs
+src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.ProductOperations.cs

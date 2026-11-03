@@ -7,5 +7,6 @@ public sealed record DiagnosticPackageReceipt(string Path, DiagnosticPackageStat
 // Local support export, never a restorable backup or permission to upload.
 public interface IDiagnosticPackageApplication
 {
+    Task<DiagnosticPackageReceipt> ExportDiagnosticOverviewAsync(string destination, CancellationToken token);
     Task<DiagnosticPackageReceipt> ExportDiagnosticPackageReportAsync(string destination, CancellationToken token);
 }

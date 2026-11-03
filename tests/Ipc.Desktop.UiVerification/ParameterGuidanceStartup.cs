@@ -55,10 +55,9 @@ static partial class Program
             correction.RaiseEvent(new RoutedEventArgs(System.Windows.Documents.Hyperlink.ClickEvent)); await Flush();
             Check(editor.CurrentPageTitle == "供包台标识" && zoneInput.IsVisible && !Descendants(editor).OfType<TextBlock>().Any(t => t.Text.Contains("定位首项")),
                 "correction link names the field and reaches its existing editor instead of exposing an internal navigation term");
-            var fieldHelp = Descendants(editor).OfType<Expander>().Single(e => Equals(e.Header, "参数说明"));
-            fieldHelp.IsExpanded = true; await Flush();
-            Check(AutomationProperties.GetName(zoneInput) == "仓ID" &&
-                !Descendants(fieldHelp).OfType<TextBox>().Any(t => t.Text.Contains("zone-id") || t.Text.Contains("invalid value") || t.Text.Contains("integration")) &&
+            await Flush();
+            Check(AutomationProperties.GetName(zoneInput) == "仓ID" && !Descendants(editor).OfType<Expander>().Any(e => Equals(e.Header, "参数说明")) &&
+                !Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && (t.Text.Contains("zone-id") || t.Text.Contains("invalid value") || t.Text.Contains("integration"))) &&
                 model.Issues.Any(i => i.Path.EndsWith("/zone-id") && i.Message.Contains("invalid value")),
                 "expanded parameter help and accessible field name are Chinese while original diagnostic issues remain intact");
             CaptureInternal(evidence, "retest28-first-run-invalid-warehouse", client, lines);

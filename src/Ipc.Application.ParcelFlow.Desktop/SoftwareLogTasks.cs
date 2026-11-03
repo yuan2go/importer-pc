@@ -6,7 +6,8 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed partial class SoftwareLogControl
 {
     readonly HashSet<string> selectedLevels = [], selectedSources = [];
-    readonly CheckBox keyEvents = new() { Content = "关键事件", MinHeight = 44 };
+    // Key events (errors, warnings, camera, RCS, settings, storage) are the default view; "全部日志" shows everything.
+    readonly CheckBox keyEvents = new() { Content = "关键事件", MinHeight = 44, IsChecked = true };
     readonly Button exportMenu = new() { Content = "导出…", MinHeight = 44 };
     string? operationFilter;
     long operationNavigation;

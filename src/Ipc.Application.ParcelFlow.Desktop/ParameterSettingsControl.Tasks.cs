@@ -35,8 +35,6 @@ public sealed partial class ParameterSettingsControl
                 }
                 foreach (var running in rcs.Body.Children.OfType<Border>().ToArray())
                 { rcs.Body.Children.Remove(running); service.Form.Children.Insert(0, running); }
-                foreach (var evidence in rcs.Technical.Children.OfType<UIElement>().ToArray())
-                { rcs.Technical.Children.Remove(evidence); station.Technical.Children.Add(evidence); }
                 rcs.Applicable = () => false;
             }
             foreach (var section in new[] { cameras, service }.Where(x => x.Form.Children.Count == 0))
@@ -58,7 +56,7 @@ public sealed partial class ParameterSettingsControl
                     providerParent.Children.Remove(providerRow);
                     if (provider.Control.Parent is Panel identityParent) identityParent.Children.Remove(provider.Control);
                     if (provider.Control is TextBox identity) { identity.MinHeight = 0; identity.BorderThickness = new(0); identity.Padding = new(0); identity.FontSize = UiTypography.Label; identity.Background = System.Windows.Media.Brushes.Transparent; }
-                    page.Body.Children.Insert(1, provider.Control); page.Technical.Children.Add(providerRow);
+                    page.Body.Children.Insert(1, provider.Control); // the driver row itself is technical and not shown
                 }
                 page.Scroll.Content = null; page.Body.Margin = new(0, 0, 16, 0); page.Body.MaxWidth = double.PositiveInfinity; page.Body.HorizontalAlignment = HorizontalAlignment.Stretch;
                 // Detached source scrolls must no longer dictate the embedded form's width.

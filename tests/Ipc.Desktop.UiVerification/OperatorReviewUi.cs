@@ -40,7 +40,9 @@ static partial class Program
             var cards = Descendants(window).OfType<Border>().Where(b => AutomationProperties.GetAutomationId(b).StartsWith("DiagnosticCard.", StringComparison.Ordinal)).ToArray();
             Check(cards.Length == 4 && cards.All(b => b.IsVisible), "four native cards expose left camera, right camera, RCS and storage");
             Check(!Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "刷新体检") || Equals(b.Content, "检查并重启…")), "diagnostics uses automatic updates and no always-present restart action");
-            Check(Descendants(window).OfType<Expander>().Where(e => e.Header is "详情与原始证据" or "维护工具" or "日志与性能详情").All(e => !e.IsExpanded), "technical evidence and maintenance tools start folded");
+            Check(Descendants(window).OfType<Expander>().Where(e => e.Header is "技术详情" or "维护工具").All(e => !e.IsExpanded) &&
+                Descendants(window).OfType<Expander>().Count(e => e.Header is "技术详情" or "维护工具") == 2 && !Descendants(window).OfType<Expander>().Any(e => e.Header is "详情与原始证据" or "日志与性能详情"),
+                "one technical section and the maintenance tools, both folded");
             var peerCount = h.Peer.Requests.Count;
             await Task.Delay(5300); await Flush();
             Check(h.Peer.Requests.Count == peerCount && h.Api(h.Right).Opens == opens && h.Factory.Sources[h.Right].Epoch == epoch, "automatic diagnostic polling creates no parcel request or replacement camera owner");

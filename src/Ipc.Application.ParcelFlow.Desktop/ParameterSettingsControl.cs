@@ -41,7 +41,6 @@ public sealed partial class ParameterSettingsControl : UserControl
         public StackPanel Technical { get; } = technical;
         public Func<bool>? Applicable { get; set; }
         public bool Available => Applicable?.Invoke() != false;
-        public Expander? Details { get; set; }
         public TextBlock Summary { get; } = Themed(new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), Visibility = Visibility.Collapsed }, TextBlock.ForegroundProperty, "Danger");
         public TextBox Diagnostic { get; } = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = Brushes.Transparent, FontSize = UiTypography.Label };
         public string? TaskGroup { get; set; }
@@ -239,7 +238,6 @@ public sealed partial class ParameterSettingsControl : UserControl
     // Wide values (addresses, patterns, lists) and narrow windows put the control under the text.
     void Field(Panel form, string label, FrameworkElement control, string? help, string path, ObjectPage page)
     {
-        var focusedPage = page.Title is "左相机" or "右相机" or "供包台标识";
         var field = new Grid();
         var card = Card(field);
         field.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); field.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
@@ -253,21 +251,14 @@ public sealed partial class ParameterSettingsControl : UserControl
         // Preserve stable automation paths used by support and native verification.
         AutomationProperties.SetName(control, label.TrimEnd(' ', '*')); AutomationProperties.SetAutomationId(control, path);
         AutomationProperties.SetLabeledBy(control, caption); AutomationProperties.SetHelpText(control, help ?? label);
-        // Routine schema hints remain available to assistive technology and in
-        // technical information, without adding a repeated line to every field.
+        // Routine schema hints stay available as tooltip and to assistive technology
+        // without adding a repeated line to every field.
         var routine = help is not null && (help == "从列表中选择" || help.StartsWith("最多 ", StringComparison.Ordinal) && help.EndsWith(" 个字符", StringComparison.Ordinal));
         if (routine) control.ToolTip = help;
         else if (!string.IsNullOrEmpty(help))
         {
             var hint = Text(help); hint.Margin = new(0, 2, 0, 0);
-            // Identity explanations are on demand. Entity admission and
-            // required constraints remain inline; errors always stay next to the field.
-            if (focusedPage && path.Split('/').Last() is "left-station-code" or "right-station-code" or "StationCode")
-            {
-                control.ToolTip = help;
-                page.Technical.Children.Add(Text(label.TrimEnd(' ', '*') + "：" + help));
-            }
-            else describe.Children.Add(hint);
+            describe.Children.Add(hint);
         }
         var error = Text(""); error.SetResourceReference(TextBlock.ForegroundProperty, "Danger"); error.Margin = new(0, 6, 0, 0); error.Visibility = Visibility.Collapsed; field.Children.Add(error);
         form.Children.Add(card); locations[path] = new(page, control, error, label, help ?? "", Row: card);
@@ -349,28 +340,6 @@ public sealed partial class ParameterSettingsControl : UserControl
         var box = new TextBox { Text = value, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 28, Padding = new(0), BorderThickness = new(0), Background = Brushes.Transparent };
         AutomationProperties.SetName(box, label); row.Children.Add(box); page.Body.Children.Add(Card(row));
     }
-    void Technical(ObjectPage page, string label, string path, string? detail = null)
-    {
-        var text = new TextBox
-        {
-            IsReadOnly = true,
-            Text = label + (string.IsNullOrWhiteSpace(detail) ? "" : "\n" + detail),
-            TextWrapping = TextWrapping.Wrap,
-            BorderThickness = new(0),
-            Background = Brushes.Transparent,
-            Margin = new(0, 0, 0, 10),
-            Padding = new(0),
-            MinHeight = 28,
-            FontSize = UiTypography.Label
-        };
-        page.Technical.Children.Add(text);
-        if (!locations.ContainsKey(path))
-        {
-            var error = Text(""); error.Visibility = Visibility.Collapsed; page.Technical.Children.Add(error);
-            locations[path] = new(page, text, error, label, detail ?? "");
-            AutomationProperties.SetName(text, label); AutomationProperties.SetAutomationId(text, path);
-        }
-    }
     void Render()
     {
         var selected = directory.SelectedItem as ObjectPage;
@@ -388,9 +357,6 @@ public sealed partial class ParameterSettingsControl : UserControl
         if (m.ApplicationId == "sportmaster") ArrangeSportmasterPages();
         foreach (var page in pages)
         {
-            page.Technical.Children.Add(page.Diagnostic);
-            page.Details = new Expander { Header = "参数说明", Content = Card(page.Technical), Margin = new(0, 24, 0, 0), Padding = new(0, 4, 0, 0) };
-            page.Body.Children.Add(page.Details);
             if (offsets.TryGetValue((page.Category, page.Title), out var offset)) page.Scroll.ScrollToVerticalOffset(offset);
         }
         foreach (var draft in m.Readers.Concat(m.Components))
@@ -438,7 +404,6 @@ public sealed partial class ParameterSettingsControl : UserControl
         RefreshStepBar();
         foreach (var page in pages)
         {
-            if (page.Details is not null) page.Details.Visibility = page.Technical.Children.Count > 1 || page.Diagnostic.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
             var count = (Model?.Issues ?? []).Count(i => locations.TryGetValue(i.Path, out var entry) && ReferenceEquals(entry.Page, page));
             page.SetIssueCount(count);
             page.Summary.Text = page.Category == 4 ? errors.Children.Count == 0 ? "当前页没有错误。" : "有 " + errors.Children.Count + " 项需要修改" : "有 " + count + " 项需要修改";

@@ -95,9 +95,8 @@ static partial class Program
         {
             editor.ShowPage(0, "数据与记录"); window.UpdateLayout();
             Check(Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "MiB") && Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "天"), "storage and retention retain separate accurate units");
-            var diagnostic = Descendants(editor).OfType<Expander>().Single(e => Equals(e.Header, "参数说明")); diagnostic.IsExpanded = true; window.UpdateLayout();
-            Check(Descendants(diagnostic).OfType<TextBox>().Any(t => t.Text.Contains("1048576")), "compact hints keep the full numeric range available in keyboard-expandable details");
-            diagnostic.Focus(); Check(diagnostic.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)), "expanded technical details permit keyboard traversal");
+            Check(!Descendants(editor).OfType<Expander>().Any(e => Equals(e.Header, "参数说明")), "settings pages carry no separate parameter-explanation section");
+            Check(Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("1048576")), "the full numeric range is in the field's own hint");
             vm.StructuredPolicy!.TimeoutMs = "28000"; var draft = vm.StructuredPolicy;
             var modeMenu = Descendants(window).OfType<ManagementModeMenu>().Single();
             ((IInvokeProvider)new ButtonAutomationPeer(modeMenu).GetPattern(PatternInterface.Invoke)!).Invoke(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();

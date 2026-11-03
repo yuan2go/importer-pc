@@ -48,7 +48,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         if (!nativeLoaded)
         {
             var cache = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? throw new InvalidOperationException("D-drive restored cache required");
-            var library = NativeLibrary.Load(Path.Combine(cache, "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll"));
+            var library = NativeLibrary.Load(Path.Combine(cache, OperatingSystem.IsWindows() ? "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll" : "zxingcpp/0.5.3/runtimes/linux-x64/native/libZXing.so"));
             NativeLibrary.SetDllImportResolver(typeof(BarcodeReader).Assembly, (name, _, _) => name is "ZXing" or "ZXing.dll" ? library : 0);
             nativeLoaded = true;
         }

@@ -21,6 +21,7 @@
 - [SM RCS 取格口任务](design/sportmaster-rcs-task.md)
 - [字体规范](design/typography-01.md)
 - [工业化交付（安全恢复、生命周期、诊断、发布门禁）](design/industrial-engineering-01.md)
+- [企业打包选型与新版本提示](design/enterprise-packaging-07.md)
 
 ## 公开范围
 

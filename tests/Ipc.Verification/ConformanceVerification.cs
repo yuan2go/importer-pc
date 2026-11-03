@@ -72,8 +72,12 @@ static class ConformanceVerification
                 {
                     await h.App.CompleteAsync(original, null, contrary);
                     var distinctId = Wire.Id();
-                    await h.App.CompleteAsync(original, null, contrary with { EvidenceId = distinctId, Reason = "Distinct contradictory evidence",
-                        Task = contrary.Task is null ? null : contrary.Task with { Provenance = contrary.Task.Provenance with { EvidenceId = distinctId } } });
+                    await h.App.CompleteAsync(original, null, contrary with
+                    {
+                        EvidenceId = distinctId,
+                        Reason = "Distinct contradictory evidence",
+                        Task = contrary.Task is null ? null : contrary.Task with { Provenance = contrary.Task.Provenance with { EvidenceId = distinctId } }
+                    });
                     Assert(h.Store.Conflicts(original.Id).Length == 2 && h.Store.Responses(original.Id).Single() == accepted, "same-ID altered content and different-ID contradiction retain deduplicated raw occurrences and immutable original response");
                     Assert(snap.State.Session!.Id != oldSession && snap.AcceptedQuantity == 0 && snap.State.Lanes.Count == 0, "late old-box conflict neither adopts old owner into new box nor changes its counter");
                 }
@@ -117,8 +121,12 @@ static class ConformanceVerification
     {
         var cfg = Rig.Config(url); await using var h = await Rig.Open(Path.Combine(root, "draft-ui-path"), cfg);
         var draft = new ConfigurationDraft(); draft.Replace(cfg);
-        var imported = cfg with { Version = "IMPORTED", Integration = cfg.Integration with { Id = "imported", Revision = "target-r2" },
-            Extensions = new([], [], [], [new("requests", "source", cfg.Integration with { Id = "imported", Revision = "target-r2" })]) };
+        var imported = cfg with
+        {
+            Version = "IMPORTED",
+            Integration = cfg.Integration with { Id = "imported", Revision = "target-r2" },
+            Extensions = new([], [], [], [new("requests", "source", cfg.Integration with { Id = "imported", Revision = "target-r2" })])
+        };
         draft.Replace(imported); draft["Version"] = "EDITED"; draft["Endpoint"] = cfg.Integration.Endpoint; draft.Devices[0].DeviceId = "changed-device";
         var beforeInvalid = Wire.Encode(draft.Build());
         Refuse(() => draft.Import("{bad-json", _ => []), "malformed import preserves existing draft");
@@ -196,8 +204,8 @@ static class ConformanceVerification
         var install = Path.GetDirectoryName(typeof(ProductRuntime).Assembly.Location)!; var definition = ReferenceProduct.Definition;
         var manifest = new ProductManifest(1, definition.ProductId, config.Mode, definition.Runtime, "any", definition.BusinessModule, definition.Views,
             definition.Modules.Select(x => new ModuleSpec(x.Id, x.Kind, x.Version, x.ContractMajor, x.Dependencies, x.File, Wire.FileHash(Path.Combine(install, x.File)))).ToArray());
-        File.WriteAllText(Path.Combine(cfg,"product.json"), Wire.Encode(manifest)); File.WriteAllText(Path.Combine(cfg,"station.json"), Wire.Encode(config)); File.WriteAllText(Path.Combine(cfg,"presentation.json"),Wire.Encode(new PresentationSettings()));
-        var boot = new BootOptions(Path.Combine(cfg,"product.json"),Path.Combine(cfg,"station.json"),Path.Combine(cfg,"presentation.json"),Path.Combine(area,"data"),install,Path.Combine(area,"leases"));
+        File.WriteAllText(Path.Combine(cfg, "product.json"), Wire.Encode(manifest)); File.WriteAllText(Path.Combine(cfg, "station.json"), Wire.Encode(config)); File.WriteAllText(Path.Combine(cfg, "presentation.json"), Wire.Encode(new PresentationSettings()));
+        var boot = new BootOptions(Path.Combine(cfg, "product.json"), Path.Combine(cfg, "station.json"), Path.Combine(cfg, "presentation.json"), Path.Combine(area, "data"), install, Path.Combine(area, "leases"));
         var runtime = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance); await runtime.StartAsync(CancellationToken.None);
         Assert(runtime.Application is not null && runtime.Diagnostics.Count == 0, "headless runtime startup: " + string.Join("; ", runtime.Diagnostics));
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -222,12 +230,12 @@ static class ConformanceVerification
             return state.Devices.Count == config.Devices.Length && state.Devices.Values.All(x => x.IsValid(now)) &&
                 state.IntegrationServiceHealth is { } health && health.ValidityReason(now) is null;
         });
-        await Command("Login", value:"maintenance"); await Command("OpenContext",value:"000001");
+        await Command("Login", value: "maintenance"); await Command("OpenContext", value: "000001");
         await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.Session?.Status == SessionStatus.Active);
-        await runtime.EmitAsync("left","Enter"); await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.Lanes.ContainsKey("left"));
-        await runtime.EmitAsync("left","Read",["000123"],1);
+        await runtime.EmitAsync("left", "Enter"); await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.Lanes.ContainsKey("left"));
+        await runtime.EmitAsync("left", "Read", ["000123"], 1);
         await Wait(async () => (await runtime.Application!.SnapshotAsync()).State.Lanes["left"].Status == OperationStatus.AwaitingAction);
-        var op = (await runtime.Application!.SnapshotAsync()).State.Lanes["left"]; await Command("Submit",op.Id);
+        var op = (await runtime.Application!.SnapshotAsync()).State.Lanes["left"]; await Command("Submit", op.Id);
         await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
         bool refused = false;
         try { await runtime.DisposeAsync(); } catch (AggregateException) { refused = true; }
@@ -235,8 +243,8 @@ static class ConformanceVerification
         Refuse(() => { using var lease = new ResourceLease(runtime.DataDirectory!, ["database"]); }, "notification owner still holds actual database lease");
         Assert((await runtime.Application.SnapshotAsync()).NotificationBacklog == 1, "cancelled undelivered cue is not falsely acknowledged");
         release.TrySetResult(); await Task.Delay(100); await runtime.DisposeAsync();
-        using var released = new ResourceLease(runtime.DataDirectory!,["database"]);
-        Assert(true,"terminated delivery releases application and database ownership on repeated cleanup");
+        using var released = new ResourceLease(runtime.DataDirectory!, ["database"]);
+        Assert(true, "terminated delivery releases application and database ownership on repeated cleanup");
     }
     static string SourceCommit(string workspace)
     {
@@ -259,9 +267,14 @@ static class ConformanceVerification
         await using var primaryOwner = primary; await using var auxiliaryOwner = auxiliary;
         var primaryTarget = new IntegrationBinding("primary", "p1", "SIMULATION-v1", primary.Url);
         var auxTarget = new IntegrationBinding("auxiliary", "a1", "SIMULATION-v1", auxiliary.Url);
-        var config = Rig.Config(primary.Url) with { TimeoutMs = 300, Extensions = new([installed.Package], [],
+        var config = Rig.Config(primary.Url) with
+        {
+            TimeoutMs = 300,
+            Extensions = new([installed.Package], [],
             [new("main", installed.Package.Id, "reference-http", true, []), new("aux", installed.Package.Id, "reference-http", true, [])],
-            [new("requests", "main", primaryTarget), new("auxiliary-status", "aux", auxTarget)]), Integration = primaryTarget };
+            [new("requests", "main", primaryTarget), new("auxiliary-status", "aux", auxTarget)]),
+            Integration = primaryTarget
+        };
         var install = Path.GetDirectoryName(typeof(ProductRuntime).Assembly.Location)!; var definition = ReferenceProduct.Definition;
         var hostManifest = new ProductManifest(1, definition.ProductId, config.Mode, definition.Runtime, "any", definition.BusinessModule, definition.Views,
             definition.Modules.Select(x => new ModuleSpec(x.Id, x.Kind, x.Version, x.ContractMajor, x.Dependencies, x.File, Wire.FileHash(Path.Combine(install, x.File)))).ToArray());
@@ -311,7 +324,7 @@ static class ConformanceVerification
         var clock = new TestClock();
         await using (var expired = await Rig.Open(Path.Combine(area, "expired-health"), Rig.Config(url), clock: clock))
         {
-            var now = clock.GetUtcNow(); var fact = new IntegrationHealthFact("builtin.reference", "requests", expired.ConfigValue.Version, new string('A',64), expired.ConfigValue.Integration,
+            var now = clock.GetUtcNow(); var fact = new IntegrationHealthFact("builtin.reference", "requests", expired.ConfigValue.Version, new string('A', 64), expired.ConfigValue.Integration,
                 "current", 1, ServiceStatus.Ready, now, now.AddSeconds(1), null);
             await expired.App.SetIntegrationHealthAsync([fact]); clock.Advance(TimeSpan.FromSeconds(2));
             Assert((await expired.App.SnapshotAsync()).Admit.Reasons.Any(x => x.StartsWith("WcsHealth:Expired")), "expired primary fact revokes business guard without a read refreshing it");
@@ -331,18 +344,18 @@ static class ConformanceVerification
         Refuse(() => manager.Uninstall(installed.Package, () => manager.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages)), "B cannot uninstall while stopped A retains Effective exact package");
         using (var a = new SupplyStore(offlineA)) a.Commit(a.Load(), "SyntheticDisabled", "deployment", "synthetic", config: new(Wire.Id(), "A", config with { Version = "A-disabled", Extensions = null }, "synthetic", "Effective", "", DateTimeOffset.UtcNow));
         var pendingId = Wire.Id();
-        using (var a = new SupplyStore(offlineA)) a.Commit(a.Load(), "SyntheticPending", pendingId, "synthetic", config: new(pendingId,"A-disabled",config with { Version="A-pending",Extensions=new([installed.Package],[]) },"synthetic","PendingActivation","",DateTimeOffset.UtcNow));
+        using (var a = new SupplyStore(offlineA)) a.Commit(a.Load(), "SyntheticPending", pendingId, "synthetic", config: new(pendingId, "A-disabled", config with { Version = "A-pending", Extensions = new([installed.Package], []) }, "synthetic", "PendingActivation", "", DateTimeOffset.UtcNow));
         Refuse(() => manager.Uninstall(installed.Package, () => manager.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages)), "stopped A Pending deployment also pins exact package");
         using (var a = new SupplyStore(offlineA))
         {
-            a.Commit(a.Load(), "SyntheticPendingRejected", pendingId, "synthetic", config:new(pendingId,"A-disabled",config with { Version="A-pending",Extensions=new([installed.Package],[]) },"synthetic","Rejected","",DateTimeOffset.UtcNow));
-            var state = a.Load(); state.Session = new() { Status=SessionStatus.Closed, Barcode="000001" };
-            a.Commit(state,"SyntheticOldRequest","old-request","synthetic");
-            var request = new BusinessRequest(Wire.Id(),state.Session.Id,state.Session.Id,RequestKind.Context,1,Wire.Id(),"synthetic",Wire.Hash("synthetic"),config.Integration,RequestStatus.Unknown,DateTimeOffset.UtcNow,
-                new("extension",installed.Package,"reference-http","main",config.Version,new string('A',64),manifest.PublicContracts!["Ipc.Supply.Contracts"],config.Integration,300,config.Policy,120,[]));
-            a.Commit(state,"SyntheticOldUnknown",request.Id,"synthetic",request:request);
+            a.Commit(a.Load(), "SyntheticPendingRejected", pendingId, "synthetic", config: new(pendingId, "A-disabled", config with { Version = "A-pending", Extensions = new([installed.Package], []) }, "synthetic", "Rejected", "", DateTimeOffset.UtcNow));
+            var state = a.Load(); state.Session = new() { Status = SessionStatus.Closed, Barcode = "000001" };
+            a.Commit(state, "SyntheticOldRequest", "old-request", "synthetic");
+            var request = new BusinessRequest(Wire.Id(), state.Session.Id, state.Session.Id, RequestKind.Context, 1, Wire.Id(), "synthetic", Wire.Hash("synthetic"), config.Integration, RequestStatus.Unknown, DateTimeOffset.UtcNow,
+                new("extension", installed.Package, "reference-http", "main", config.Version, new string('A', 64), manifest.PublicContracts!["Ipc.Supply.Contracts"], config.Integration, 300, config.Policy, 120, []));
+            a.Commit(state, "SyntheticOldUnknown", request.Id, "synthetic", request: request);
             Refuse(() => manager.Uninstall(installed.Package, () => manager.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages)), "stopped original Unknown pins its exact implementation even without an Effective binding");
-            a.Commit(state,"SyntheticAuthoritativeResolved",request.Id,"synthetic",request:request with {Status=RequestStatus.Rejected});
+            a.Commit(state, "SyntheticAuthoritativeResolved", request.Id, "synthetic", request: request with { Status = RequestStatus.Rejected });
         }
         File.Move(offlineA, offlineA + ".held");
         Refuse(() => manager.Uninstall(installed.Package, () => manager.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages)), "unreadable offline consumer cannot be called unreferenced");

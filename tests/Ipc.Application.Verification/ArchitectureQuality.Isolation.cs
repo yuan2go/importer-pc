@@ -140,8 +140,13 @@ static partial class ArchitectureQuality
             if (BlockCapture)
             {
                 var reader = new Reader(p.Reader, this); var camera = new Camera(p.Camera!, this);
-                p = p with { Reader = reader, Readers = new Dictionary<string, IControlledObservationSource> { [reader.DeviceId] = reader }, Camera = camera,
-                    Devices = p.Devices!.ToDictionary(x => x.Key, x => x.Value.InstanceId == camera.InstanceId ? camera : x.Value) };
+                p = p with
+                {
+                    Reader = reader,
+                    Readers = new Dictionary<string, IControlledObservationSource> { [reader.DeviceId] = reader },
+                    Camera = camera,
+                    Devices = p.Devices!.ToDictionary(x => x.Key, x => x.Value.InstanceId == camera.InstanceId ? camera : x.Value)
+                };
             }
             return p;
         }

@@ -41,9 +41,12 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     }
     public string RcsServiceStatus => RcsState switch
     {
-        RcsConnectionState.Online => "RCS 服务：在线", RcsConnectionState.Offline => "RCS 服务：离线",
-        RcsConnectionState.Simulation => "RCS 服务：模拟", RcsConnectionState.Deferred => "RCS 服务：待配置",
-        RcsConnectionState.AwaitingConfirmation => "RCS 服务：等待连接确认", _ => "RCS 服务：状态未知"
+        RcsConnectionState.Online => "RCS 服务：在线",
+        RcsConnectionState.Offline => "RCS 服务：离线",
+        RcsConnectionState.Simulation => "RCS 服务：模拟",
+        RcsConnectionState.Deferred => "RCS 服务：待配置",
+        RcsConnectionState.AwaitingConfirmation => "RCS 服务：等待连接确认",
+        _ => "RCS 服务：状态未知"
     };
     public ParcelStatusPresentation RcsPresentation => RcsState switch
     {
@@ -97,7 +100,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
         NotifyOperatorWorkspace();
-        foreach(var name in new[]{nameof(Station),nameof(TopologyStatus),nameof(WorkStatus),nameof(WorkNotice),nameof(DisplayWorkNotice),nameof(SettingsHasAttention),nameof(WorkspaceStatusBackground),nameof(WorkspaceStatusForeground),nameof(SettingsRunMode),nameof(RcsState),nameof(RcsServiceStatus),nameof(RcsPresentation)})Changed(name);
+        foreach (var name in new[] { nameof(Station), nameof(TopologyStatus), nameof(WorkStatus), nameof(WorkNotice), nameof(DisplayWorkNotice), nameof(SettingsHasAttention), nameof(WorkspaceStatusBackground), nameof(WorkspaceStatusForeground), nameof(SettingsRunMode), nameof(RcsState), nameof(RcsServiceStatus), nameof(RcsPresentation) }) Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)

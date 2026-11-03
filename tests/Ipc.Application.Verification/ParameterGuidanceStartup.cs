@@ -49,9 +49,9 @@ static class ParameterGuidanceStartup
         using (var shared = new CommonStationParameter(left, right, draft.Policy))
             Check(shared.Value == "" && !editor.ValidateFields() && editor.Issues.Any(i => i.Path == "StationCode"), "conflicting historical station identifiers require an explicit common choice");
         left.Value = right.Value;
-        draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.serial").Value="SYNTH-PARTIAL";
+        draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial").Value = "SYNTH-PARTIAL";
         Check(!editor.ValidateFields() && editor.Issues.Any(i => i.Path.EndsWith("/device.ip")), "activating an incomplete camera restores required field validation");
-        draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.serial").Value="";
+        draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial").Value = "";
         var state = draft.Capture(); draft.Readers[0].ConfigureLater = false; draft.Restore(state);
         Check(draft.Readers[0].ConfigureLater && draft.WithRestored(state).Build().DeferredConnections?.Length == 3, "raw startup drafts preserve deferred connections and incomplete input");
         var legacy = initial with { Retention = null, DeferredConnections = null };
@@ -92,7 +92,7 @@ static class ParameterGuidanceStartup
             foreach (var p in vm.ReaderDrafts[0].Capability.Parameters) p.Value = p.Field.Key switch { "device.ip" => "192.0.2.10", "device.serial" => "SYNTH-SERIAL-0", _ => p.Value };
             vm.ReaderDrafts[0].Capability.ConfigureLater = false;
             Check(vm.HasUnsavedConfiguration && vm.GetConfigurationChangeItems().Any(i => i.Label == "稍后配置的连接"), "daily deferred-state edits participate in dirty tracking and save review");
-            foreach(var p in vm.ReaderDrafts[0].Capability.Parameters.Where(p=>p.Field.Key is "device.ip" or "device.serial")) p.Value="";
+            foreach (var p in vm.ReaderDrafts[0].Capability.Parameters.Where(p => p.Field.Key is "device.ip" or "device.serial")) p.Value = "";
             Check(vm.BuildStructuredConfiguration().DeferredConnections?.Length == 3, "the daily editor preserves the same complete deferred candidate");
             vm.StructuredPolicy!.QueueCapacity = "65"; vm.ConfigurationReason = "synthetic deferred revision";
             await vm.SaveStructuredConfigurationAsync();

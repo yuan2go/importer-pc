@@ -46,7 +46,13 @@ static class SignedCapabilities
         }
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/wcs-to-plc/business.json"))) with
         {
-            Login = B("login"), Scale = B("weight"), Wcs = B("integration"), Plc = B("plc"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Images = new(B("camera"), B("upload")), Extensions = new([package.Package], [])
+            Login = B("login"),
+            Scale = B("weight"),
+            Wcs = B("integration"),
+            Plc = B("plc"),
+            Weight = new(WeightSource.Measured, WeightUnit.Kg, 3),
+            Images = new(B("camera"), B("upload")),
+            Extensions = new([package.Package], [])
         };
         var factory = new ParcelCapabilityFactory(launch, declaredCompatibility ? BusinessCompatibility.Read(typeof(WcsToPlcFlow).Assembly) : null);
         if (declaredCompatibility) Pass(true, "actual signed providers checked against compiled business compatibility declaration");
@@ -102,13 +108,31 @@ static class SignedCapabilities
                 var actual = (await app.SnapshotAsync()).Configuration.Effective;
                 await app.StopAsync(CancellationToken.None);
                 await app.DisposeAsync();
-                ExtensionStore.AtomicWrite(combinationFile, new { SchemaVersion = 1, Kind = "SignedHostVerification", RunId = runId, Status = "PASS", StartedAt = startedAt, FinishedAt = DateTimeOffset.UtcNow,
-                    ApplicationId = actual.ApplicationId, BusinessVersion = BusinessCompatibility.VersionOf(typeof(WcsToPlcFlow).Assembly),
-                    BusinessAssemblySha256 = Wire.FileHash(typeof(WcsToPlcFlow).Assembly.Location), CompatibilitySha256 = BusinessCompatibility.Fingerprint(typeof(WcsToPlcFlow).Assembly),
-                    HostContractSha256 = Wire.FileHash(typeof(ExtensionStore).Assembly.Location), ApplicationContractSha256 = Wire.FileHash(typeof(IParcelApplication).Assembly.Location),
-                    Package = package.Package, PackageSha256 = Wire.FileHash(packageFile), Configuration = actual, ConfigurationHash = Wire.Hash(Wire.Encode(actual)),
-                    Providers = factory.SelectedProviders(actual), op.ImplementationHashes, Checks = new[] { "signature and exact dependencies", "compiled business compatibility", "provider requirements", "actual login/capture/weight/upload/WCS/PLC", "original physical query", "orderly stop" },
-                    Assurance = "SIMULATION_REFERENCE_ONLY", Windows = "NOT_RUN", RealEquipment = "BLOCKED" });
+                ExtensionStore.AtomicWrite(combinationFile, new
+                {
+                    SchemaVersion = 1,
+                    Kind = "SignedHostVerification",
+                    RunId = runId,
+                    Status = "PASS",
+                    StartedAt = startedAt,
+                    FinishedAt = DateTimeOffset.UtcNow,
+                    ApplicationId = actual.ApplicationId,
+                    BusinessVersion = BusinessCompatibility.VersionOf(typeof(WcsToPlcFlow).Assembly),
+                    BusinessAssemblySha256 = Wire.FileHash(typeof(WcsToPlcFlow).Assembly.Location),
+                    CompatibilitySha256 = BusinessCompatibility.Fingerprint(typeof(WcsToPlcFlow).Assembly),
+                    HostContractSha256 = Wire.FileHash(typeof(ExtensionStore).Assembly.Location),
+                    ApplicationContractSha256 = Wire.FileHash(typeof(IParcelApplication).Assembly.Location),
+                    Package = package.Package,
+                    PackageSha256 = Wire.FileHash(packageFile),
+                    Configuration = actual,
+                    ConfigurationHash = Wire.Hash(Wire.Encode(actual)),
+                    Providers = factory.SelectedProviders(actual),
+                    op.ImplementationHashes,
+                    Checks = new[] { "signature and exact dependencies", "compiled business compatibility", "provider requirements", "actual login/capture/weight/upload/WCS/PLC", "original physical query", "orderly stop" },
+                    Assurance = "SIMULATION_REFERENCE_ONLY",
+                    Windows = "NOT_RUN",
+                    RealEquipment = "BLOCKED"
+                });
                 Console.WriteLine("SignedBusinessCombination=" + combinationFile);
             }
         }

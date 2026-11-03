@@ -103,48 +103,52 @@ static class BackupHealthRecovery
             // Inspect the actual admission guard without claiming device qualification:
             // this uninstalled Production root must first fail protected authority.
             await using var factory = new ParcelCapabilityFactory(restoredLaunch);
-            Check(factory.AdmissionFailure(production.Effective)?.Contains("Production NotReady",StringComparison.Ordinal)==true,
+            Check(factory.AdmissionFailure(production.Effective)?.Contains("Production NotReady", StringComparison.Ordinal) == true,
                 "restored Production without qualification retains explicit NotReady admission; no simulation fallback");
-            var targetConfig=Path.Combine(target,"configuration.json"); var beforeHash=Wire.FileHash(targetConfig);
-            var before=Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(targetConfig));
-            var retained=new[]{backup,configFile,manifestFile,Path.Combine(target,"RESTORED-ISOLATED.json")}.ToDictionary(f=>f,Wire.FileHash);
+            var targetConfig = Path.Combine(target, "configuration.json"); var beforeHash = Wire.FileHash(targetConfig);
+            var before = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(targetConfig));
+            var retained = new[] { backup, configFile, manifestFile, Path.Combine(target, "RESTORED-ISOLATED.json") }.ToDictionary(f => f, Wire.FileHash);
             try
             {
                 await using var restored = SportmasterApplication.Create(restoredLaunch, new ParcelCapabilityFactory(restoredLaunch));
-                Check(Wire.FileHash(targetConfig)==beforeHash,"constructing the restored runtime does not rewrite configuration");
+                Check(Wire.FileHash(targetConfig) == beforeHash, "constructing the restored runtime does not rewrite configuration");
                 await restored.StartAsync(CancellationToken.None); throw new Exception("Unqualified restored Production started");
             }
-            catch (InvalidOperationException e) when(e.Message.Contains("生产模式缺少受保护的管理模式授权服务", StringComparison.Ordinal))
+            catch (InvalidOperationException e) when (e.Message.Contains("生产模式缺少受保护的管理模式授权服务", StringComparison.Ordinal))
             {
-                var after=Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(targetConfig));
-                Check(Wire.Encode(after.Effective)==Wire.Encode(before.Effective) && after.Effective.Mode==RunMode.Production &&
-                    Wire.Encode(after.Pending)==Wire.Encode(before.Pending) && Wire.Encode(after.Activation)==Wire.Encode(before.Activation) &&
-                    Wire.Encode(after.InitialRepair)==Wire.Encode(before.InitialRepair),"rejected Production startup retains exact effective/pending configuration and original activation/repair identity");
-                var history=after.Confirmation ?? throw new InvalidDataException("Failed startup lost confirmation custody");
-                var prior=before.Confirmation!;
-                Check(after.Revision==before.Revision+2 && history is {Required:true,State:"Required",ConfirmedBy:null,ConfirmedAt:null} &&
-                    history.EffectiveHash==prior.EffectiveHash && history.Attempts.Length==prior.Attempts.Length+1 &&
-                    Wire.Encode(history.Attempts.Take(prior.Attempts.Length).ToArray())==Wire.Encode(prior.Attempts) &&
-                    history.Attempts[^1] is {Outcome:"Failed",FinishedAt:not null} && history.Attempts[^1].Failure!.Contains("生产模式缺少受保护的管理模式授权服务",StringComparison.Ordinal),
+                var after = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(targetConfig));
+                Check(Wire.Encode(after.Effective) == Wire.Encode(before.Effective) && after.Effective.Mode == RunMode.Production &&
+                    Wire.Encode(after.Pending) == Wire.Encode(before.Pending) && Wire.Encode(after.Activation) == Wire.Encode(before.Activation) &&
+                    Wire.Encode(after.InitialRepair) == Wire.Encode(before.InitialRepair), "rejected Production startup retains exact effective/pending configuration and original activation/repair identity");
+                var history = after.Confirmation ?? throw new InvalidDataException("Failed startup lost confirmation custody");
+                var prior = before.Confirmation!;
+                Check(after.Revision == before.Revision + 2 && history is { Required: true, State: "Required", ConfirmedBy: null, ConfirmedAt: null } &&
+                    history.EffectiveHash == prior.EffectiveHash && history.Attempts.Length == prior.Attempts.Length + 1 &&
+                    Wire.Encode(history.Attempts.Take(prior.Attempts.Length).ToArray()) == Wire.Encode(prior.Attempts) &&
+                    history.Attempts[^1] is { Outcome: "Failed", FinishedAt: not null } && history.Attempts[^1].Failure!.Contains("生产模式缺少受保护的管理模式授权服务", StringComparison.Ordinal),
                     "actual failed startup appends one completed failure without deleting history or granting Production confirmation");
-                Check(retained.All(f=>Wire.FileHash(f.Key)==f.Value),"failed startup preserves backup source bytes, completed manifest and isolated-recovery marker");
+                Check(retained.All(f => Wire.FileHash(f.Key) == f.Value), "failed startup preserves backup source bytes, completed manifest and isolated-recovery marker");
             }
         });
 
         await Case("custody", async () =>
         {
-            var c = Config() with {TimeoutMs=1500};
+            var c = Config() with { TimeoutMs = 1500 };
             var left = new CapabilityBinding("camera", "reference-camera", "1.0.0", "bhr.camera.left", c.Topology!.Readers[0].DeviceId, "PARCEL-REFERENCE-v1", []);
-            var right = left with { InstanceId="bhr.camera.right", Target=c.Topology.Readers[1].DeviceId };
-            var upload = new CapabilityBinding("upload", "reference-upload", "1.0.0", "bhr.upload", "reference://upload/bhr", "PARCEL-REFERENCE-v1", new(){["reply-mode"]="lose-after-commit"});
-            c = c with { Images=new(left,upload,Strategy:UploadStrategy.Attached), CapabilityInstances=[c.Wcs!,left,right,upload],
-                Topology=c.Topology with {Positions=[c.Topology.Positions[0] with {CameraInstanceId=left.InstanceId},c.Topology.Positions[1] with {CameraInstanceId=right.InstanceId}]} };
+            var right = left with { InstanceId = "bhr.camera.right", Target = c.Topology.Readers[1].DeviceId };
+            var upload = new CapabilityBinding("upload", "reference-upload", "1.0.0", "bhr.upload", "reference://upload/bhr", "PARCEL-REFERENCE-v1", new() { ["reply-mode"] = "lose-after-commit" });
+            c = c with
+            {
+                Images = new(left, upload, Strategy: UploadStrategy.Attached),
+                CapabilityInstances = [c.Wcs!, left, right, upload],
+                Topology = c.Topology with { Positions = [c.Topology.Positions[0] with { CameraInstanceId = left.InstanceId }, c.Topology.Positions[1] with { CameraInstanceId = right.InstanceId }] }
+            };
             var (app, launch) = Create(c, "custody"); await using var owned = app; await app.StartAsync(CancellationToken.None);
             Check(app.EmitReference("original-parcel", "00001", "original-event"), "original image observation admitted");
             var s = await Wait(app, x => x.Operations.SingleOrDefault()?.Upload?.State == StageState.Unknown);
             await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
             // Original evidence requires the authorized view, not the operator projection.
-            s=await app.SnapshotAsync(); var op=s.Operations.Single();
+            s = await app.SnapshotAsync(); var op = s.Operations.Single();
             var originalDirectory = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId);
             var originalImage = Path.Combine(originalDirectory, op.Image!.RelativeFile); var originalHash = Wire.FileHash(originalImage);
             var backup = Path.Combine(root, "custody.db");
@@ -160,9 +164,9 @@ static class BackupHealthRecovery
             var restoredLaunch = launch with { DataRoot = Path.Combine(root, "restored") };
             await using var restored = SportmasterApplication.Create(restoredLaunch, new ParcelCapabilityFactory(restoredLaunch));
             await restored.StartAsync(CancellationToken.None); s = await restored.SnapshotAsync();
-            Check(s.Paused && s.Operations.Single().Upload is {State:StageState.Unknown,Attempts:1},"isolated upload remains paused and unresent before management authority");
-            Check((await ManagementModeFixture.Authorize(restored)).Status=="Authorized", "restored custody query obtains an explicit current management grant");
-            s=await restored.SnapshotAsync(); var recovered=s.Operations.Single();
+            Check(s.Paused && s.Operations.Single().Upload is { State: StageState.Unknown, Attempts: 1 }, "isolated upload remains paused and unresent before management authority");
+            Check((await ManagementModeFixture.Authorize(restored)).Status == "Authorized", "restored custody query obtains an explicit current management grant");
+            s = await restored.SnapshotAsync(); var recovered = s.Operations.Single();
             Check(s.Paused && s.CurrentOperator is null && Wire.Encode(recovered.Upload!.Request) == Wire.Encode(op.Upload!.Request) && recovered.Upload.Attempts == 1 &&
                 recovered.Upload.State == StageState.Unknown && Wire.FileHash(originalImage) == originalHash,
                 "isolated restore retains original unknown upload identity/attempt, no login or automatic resend, source unchanged");
@@ -206,26 +210,26 @@ static class BackupHealthRecovery
             try { Reject("linked-directory", manifest); } finally { Directory.Delete(linkDirectory); }
             if (!OperatingSystem.IsWindows())
             {
-            var invalid = Path.Combine(recovery, "images/AUX.png"); File.WriteAllText(invalid, "synthetic reserved name");
-            try { Reject("windows-reserved-name", manifest with { Files = new(manifest.Files) { ["images/AUX.png"] = Wire.FileHash(invalid) } }); }
-            finally { File.Delete(invalid); }
+                var invalid = Path.Combine(recovery, "images/AUX.png"); File.WriteAllText(invalid, "synthetic reserved name");
+                try { Reject("windows-reserved-name", manifest with { Files = new(manifest.Files) { ["images/AUX.png"] = Wire.FileHash(invalid) } }); }
+                finally { File.Delete(invalid); }
             }
             Console.WriteLine("BHR Windows actual BackupAsync separator reproduction: " + (OperatingSystem.IsWindows() ? "EXECUTED" : "NOT_RUN (host is not Windows)"));
         });
 
         foreach (var mode in new[] { PeerMode.StallHeaders, PeerMode.StallBody })
-        await Case("startup-" + mode, async () =>
-        {
-            await using var server = new HealthServer { Mode = mode }; var c = Config();
-            c = c with { Wcs = c.Wcs! with { Parameters = new(c.Wcs.Parameters) { ["endpoint"] = server.Url } } };
-            var (app, _) = Create(c, "startup-" + mode); await using var owned = app;
-            using var watchdog = new CancellationTokenSource(2500); var clock = Stopwatch.StartNew();
-            await app.StartAsync(watchdog.Token); var s = await app.SnapshotAsync();
-            Check(clock.ElapsedMilliseconds < 1800 && s.Health.Single(x => x.InstanceId == c.Wcs.InstanceId) is { Ready: false } &&
-                !s.Availability!.Admit, "startup " + mode + " exhausts health budget as unavailable, no terminal worker failure");
-            server.Mode = PeerMode.Ready; await Wait(app, x => x.Health.Any(h => h.InstanceId == c.Wcs.InstanceId && h.Ready) && x.Availability!.Admit);
-            Check(true, "startup health can recover on later real confirmation " + mode);
-        });
+            await Case("startup-" + mode, async () =>
+            {
+                await using var server = new HealthServer { Mode = mode }; var c = Config();
+                c = c with { Wcs = c.Wcs! with { Parameters = new(c.Wcs.Parameters) { ["endpoint"] = server.Url } } };
+                var (app, _) = Create(c, "startup-" + mode); await using var owned = app;
+                using var watchdog = new CancellationTokenSource(2500); var clock = Stopwatch.StartNew();
+                await app.StartAsync(watchdog.Token); var s = await app.SnapshotAsync();
+                Check(clock.ElapsedMilliseconds < 1800 && s.Health.Single(x => x.InstanceId == c.Wcs.InstanceId) is { Ready: false } &&
+                    !s.Availability!.Admit, "startup " + mode + " exhausts health budget as unavailable, no terminal worker failure");
+                server.Mode = PeerMode.Ready; await Wait(app, x => x.Health.Any(h => h.InstanceId == c.Wcs.InstanceId && h.Ready) && x.Availability!.Admit);
+                Check(true, "startup health can recover on later real confirmation " + mode);
+            });
 
         await Case("caller-cancellation", async () =>
         {
@@ -279,7 +283,7 @@ static class BackupHealthRecovery
             var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
             var factory = new CancelAfterCommitFactory(new ParcelCapabilityFactory(launch));
             await using var app = SportmasterApplication.Create(launch, factory); await app.StartAsync(CancellationToken.None);
-            Check((await ManagementModeFixture.Authorize(app)).Status=="Authorized","original delivery custody is inspected through the authorized view");
+            Check((await ManagementModeFixture.Authorize(app)).Status == "Authorized", "original delivery custody is inspected through the authorized view");
             app.EmitReference("shutdown-delivery", "00004", "shutdown-delivery"); await factory.Committed.Task.WaitAsync(TimeSpan.FromSeconds(2));
             await app.StopAsync(CancellationToken.None); var original = (await app.SnapshotAsync()).Operations.Single();
             Check(original.Wcs is { State: StageState.Unknown, Attempts: 1 }, "shutdown after external commit retains Unknown and original single attempt");
@@ -288,10 +292,10 @@ static class BackupHealthRecovery
             // An in-process restart shares the root's management service; explicitly
             // end the old grant before testing the unauthenticated projection.
             await restored.ExitManagementModeAsync();
-            Check(!(await restored.ManagementModeStatusAsync()).Authorized,"restored delivery has no retained management grant for the operator check");
-            var operatorView=(await restored.SnapshotAsync()).Operations.Single();
-            Check(operatorView.Wcs is {State:StageState.Unknown,Attempts:1},"restart retains Unknown and one attempt before a new management grant");
-            Check((await ManagementModeFixture.Authorize(restored)).Status=="Authorized", "original delivery query obtains a new grant after restart");
+            Check(!(await restored.ManagementModeStatusAsync()).Authorized, "restored delivery has no retained management grant for the operator check");
+            var operatorView = (await restored.SnapshotAsync()).Operations.Single();
+            Check(operatorView.Wcs is { State: StageState.Unknown, Attempts: 1 }, "restart retains Unknown and one attempt before a new management grant");
+            Check((await ManagementModeFixture.Authorize(restored)).Status == "Authorized", "original delivery query obtains a new grant after restart");
             var recovered = (await restored.SnapshotAsync()).Operations.Single();
             Check(Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request) && recovered.Wcs.Attempts == 1 && recovered.Wcs.State == StageState.Unknown,
                 "restart after delivery cancellation preserves frozen request, no resend");
@@ -301,14 +305,14 @@ static class BackupHealthRecovery
                 "original query resolves cancelled delivery with exactly one independent execution");
         });
         foreach (var mode in new[] { PeerMode.OversizedDeclared, PeerMode.OversizedChunked, PeerMode.InvalidMarker, PeerMode.Unavailable })
-        await Case("invalid-health-" + mode, async () =>
-        {
-            await using var server = new HealthServer { Mode = mode }; var binding = Config().Wcs!;
-            binding = binding with { Parameters = new() { ["endpoint"] = server.Url } };
-            await using var peer = new ReferencePeer(binding, root, "wcs-slot"); await peer.StartAsync(CancellationToken.None);
-            using var caller = new CancellationTokenSource(1500); var health = await peer.HealthAsync(caller.Token);
-            Check(!health.Ready && !caller.IsCancellationRequested, "bounded health rejects " + mode + " without buffering or waiting for a huge body");
-        });
+            await Case("invalid-health-" + mode, async () =>
+            {
+                await using var server = new HealthServer { Mode = mode }; var binding = Config().Wcs!;
+                binding = binding with { Parameters = new() { ["endpoint"] = server.Url } };
+                await using var peer = new ReferencePeer(binding, root, "wcs-slot"); await peer.StartAsync(CancellationToken.None);
+                using var caller = new CancellationTokenSource(1500); var health = await peer.HealthAsync(caller.Token);
+                Check(!health.Ready && !caller.IsCancellationRequested, "bounded health rejects " + mode + " without buffering or waiting for a huge body");
+            });
         await Case("legacy-health-cancellation", async () =>
         {
             await using var server = new HealthServer { Mode = PeerMode.StallHeaders };
@@ -330,17 +334,17 @@ static class BackupHealthRecovery
             await using var app = Ipc.Application.DirectPlc.DirectPlcApplication.Create(launch, factory); await app.StartAsync(CancellationToken.None);
             app.EmitReference("accepted-original", "00005", "accepted-original");
             var original = (await Wait(app, x => x.Operations.SingleOrDefault()?.State == ParcelState.PlcAccepted)).Operations.Single();
-            Check((await ManagementModeFixture.Authorize(app)).Status=="Authorized", "accepted PLC query obtains explicit management authority");
-            original=(await app.SnapshotAsync()).Operations.Single(x=>x.Id==original.Id);
+            Check((await ManagementModeFixture.Authorize(app)).Status == "Authorized", "accepted PLC query obtains explicit management authority");
+            original = (await app.SnapshotAsync()).Operations.Single(x => x.Id == original.Id);
             var query = app.ReconcileAsync(original.Id);
-            if(await Task.WhenAny(factory.Entered.Task,query).WaitAsync(TimeSpan.FromSeconds(2))==query)
-            {await query;throw new InvalidOperationException("Original query completed before entering the cancellation fixture");}
+            if (await Task.WhenAny(factory.Entered.Task, query).WaitAsync(TimeSpan.FromSeconds(2)) == query)
+            { await query; throw new InvalidOperationException("Original query completed before entering the cancellation fixture"); }
             await factory.Entered.Task;
             await app.StopAsync(CancellationToken.None); await query;
             var final = (await app.SnapshotAsync()).Operations.Single();
-            var stateEqual=final.State==ParcelState.PlcAccepted; var acceptedOnce=final.Plc is {State:StageState.Accepted,Attempts:1};
-            var repliesEqual=Wire.Encode(final.Plc!.Replies)==Wire.Encode(original.Plc!.Replies); var requestEqual=Wire.Encode(final.Plc.Request)==Wire.Encode(original.Plc.Request);
-            Console.WriteLine("BHR accepted-query cancellation facts: "+Wire.Encode(new{stateEqual,acceptedOnce,repliesEqual,requestEqual}));
+            var stateEqual = final.State == ParcelState.PlcAccepted; var acceptedOnce = final.Plc is { State: StageState.Accepted, Attempts: 1 };
+            var repliesEqual = Wire.Encode(final.Plc!.Replies) == Wire.Encode(original.Plc!.Replies); var requestEqual = Wire.Encode(final.Plc.Request) == Wire.Encode(original.Plc.Request);
+            Console.WriteLine("BHR accepted-query cancellation facts: " + Wire.Encode(new { stateEqual, acceptedOnce, repliesEqual, requestEqual }));
             Check(stateEqual && acceptedOnce && repliesEqual && requestEqual,
                 "query cancellation cannot erase existing PLC acceptance or original reply; physical completion remains unconfirmed");
         });
@@ -411,27 +415,27 @@ static class BackupHealthRecovery
         async Task Serve(TcpClient client)
         {
             using (client)
-            try
-            {
-                var stream = client.GetStream(); using var reader = new StreamReader(stream, Encoding.ASCII, false, 1024, leaveOpen: true);
-                var request = await reader.ReadLineAsync(stop.Token); string? line;
-                do { line = await reader.ReadLineAsync(stop.Token); } while (!string.IsNullOrEmpty(line));
-                if (request?.StartsWith("GET /parcel-reference/health ", StringComparison.Ordinal) != true && request?.StartsWith("GET /health ", StringComparison.Ordinal) != true) return; // No submit endpoint: drop transport without claiming business acceptance.
-                var selected = Mode; Interlocked.Increment(ref requests);
-                if (selected == PeerMode.StallHeaders) { await Task.Delay(Timeout.Infinite, stop.Token); return; }
-                const string marker = "PARCEL-REFERENCE-v1";
-                var response = selected switch
+                try
                 {
-                    PeerMode.OversizedDeclared => "HTTP/1.1 200 OK\r\nContent-Length: 1000000000\r\nConnection: close\r\n\r\n",
-                    PeerMode.OversizedChunked => "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n14\r\n" + marker + "XX\r\n0\r\n\r\n",
-                    PeerMode.Unavailable => "HTTP/1.1 503 Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
-                    _ => "HTTP/1.1 200 OK\r\nContent-Length: " + Encoding.ASCII.GetByteCount(marker) + "\r\nConnection: close\r\n\r\n" + (selected == PeerMode.Ready ? marker : selected == PeerMode.InvalidMarker ? new string('X', marker.Length) : "P")
-                };
-                var bytes = Encoding.ASCII.GetBytes(response);
-                await stream.WriteAsync(bytes, stop.Token);
-                if (selected is PeerMode.StallBody or PeerMode.OversizedDeclared) await Task.Delay(Timeout.Infinite, stop.Token);
-            }
-            catch (Exception ex) when (ex is OperationCanceledException or IOException or SocketException) { }
+                    var stream = client.GetStream(); using var reader = new StreamReader(stream, Encoding.ASCII, false, 1024, leaveOpen: true);
+                    var request = await reader.ReadLineAsync(stop.Token); string? line;
+                    do { line = await reader.ReadLineAsync(stop.Token); } while (!string.IsNullOrEmpty(line));
+                    if (request?.StartsWith("GET /parcel-reference/health ", StringComparison.Ordinal) != true && request?.StartsWith("GET /health ", StringComparison.Ordinal) != true) return; // No submit endpoint: drop transport without claiming business acceptance.
+                    var selected = Mode; Interlocked.Increment(ref requests);
+                    if (selected == PeerMode.StallHeaders) { await Task.Delay(Timeout.Infinite, stop.Token); return; }
+                    const string marker = "PARCEL-REFERENCE-v1";
+                    var response = selected switch
+                    {
+                        PeerMode.OversizedDeclared => "HTTP/1.1 200 OK\r\nContent-Length: 1000000000\r\nConnection: close\r\n\r\n",
+                        PeerMode.OversizedChunked => "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n14\r\n" + marker + "XX\r\n0\r\n\r\n",
+                        PeerMode.Unavailable => "HTTP/1.1 503 Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
+                        _ => "HTTP/1.1 200 OK\r\nContent-Length: " + Encoding.ASCII.GetByteCount(marker) + "\r\nConnection: close\r\n\r\n" + (selected == PeerMode.Ready ? marker : selected == PeerMode.InvalidMarker ? new string('X', marker.Length) : "P")
+                    };
+                    var bytes = Encoding.ASCII.GetBytes(response);
+                    await stream.WriteAsync(bytes, stop.Token);
+                    if (selected is PeerMode.StallBody or PeerMode.OversizedDeclared) await Task.Delay(Timeout.Infinite, stop.Token);
+                }
+                catch (Exception ex) when (ex is OperationCanceledException or IOException or SocketException) { }
         }
         public async ValueTask DisposeAsync()
         { stop.Cancel(); listener.Stop(); await loop; await Task.WhenAll(clients.ToArray()); stop.Dispose(); }

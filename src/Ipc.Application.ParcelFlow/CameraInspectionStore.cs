@@ -42,10 +42,10 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         var existing = File.Exists(database); db = Database.Open(database);
         try
         {
-        using var c = db.CreateCommand();
-        if (!existing)
-        {
-            c.CommandText = """
+            using var c = db.CreateCommand();
+            if (!existing)
+            {
+                c.CommandText = """
                 PRAGMA user_version=1;
                 CREATE TABLE sessions(id TEXT PRIMARY KEY,command TEXT NOT NULL UNIQUE,hash TEXT NOT NULL,body TEXT NOT NULL,body_hash TEXT NOT NULL,state TEXT NOT NULL,detail TEXT NOT NULL,frames INTEGER NOT NULL DEFAULT 0,evicted INTEGER NOT NULL DEFAULT 0,closed TEXT);
                 CREATE TABLE frames(seq INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,session TEXT NOT NULL,device TEXT NOT NULL,observation TEXT,body TEXT NOT NULL,body_hash TEXT NOT NULL,image TEXT,image_hash TEXT,size INTEGER NOT NULL DEFAULT 0,input_seq INTEGER NOT NULL DEFAULT 0,operation TEXT);
@@ -53,33 +53,33 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
                 CREATE INDEX frames_observation ON frames(observation);
                 CREATE INDEX frames_eviction ON frames(image,seq);
                 """; c.ExecuteNonQuery();
-        }
-        else
-        {
-            c.CommandText = "PRAGMA user_version"; if ((long)c.ExecuteScalar()! != 1) throw new InvalidDataException("不支持的相机诊断集合格式，保留原件。");
-            c.CommandText = "PRAGMA quick_check"; if (!Equals(c.ExecuteScalar(), "ok")) throw new InvalidDataException("相机诊断索引损坏，保留原件。");
-            c.CommandText = "UPDATE sessions SET state='Interrupted',detail='上个进程未完成调试采集；已持久记录可查，尾部覆盖未知；正常供包不受影响',closed=$at WHERE closed IS NULL";
-            c.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); c.ExecuteNonQuery(); c.Parameters.Clear();
-        }
-        c.CommandText = "CREATE INDEX IF NOT EXISTS frames_acquisition ON frames(device,json_extract(body,'$.Epoch'),json_extract(body,'$.SourceEventId'))"; c.Parameters.Clear(); c.ExecuteNonQuery();
-        c.CommandText = "SELECT coalesce(sum(size),0) FROM frames"; imageBytes = (long)c.ExecuteScalar()!;
-        c.CommandText = "SELECT count(*) FROM frames WHERE image IS NOT NULL"; imageCount = (long)c.ExecuteScalar()!;
-        // A process can die after atomic image publication and before index commit.
-        // Such files are orphaned diagnostic bytes, not reconstructed scan evidence.
-        foreach (var file in Directory.EnumerateFiles(images, "*.tmp"))
-        {
-            var name = Path.GetFileName(file);
-            if (!name.EndsWith(".gray.br.tmp", StringComparison.Ordinal) || name.Length != 76 || name[..64].Any(ch => !char.IsAsciiHexDigit(ch))) throw new InvalidDataException("诊断目录存在未知临时文件，保留原件。");
-            RecoveryFiles.RequireOrdinaryAncestors(file); File.Delete(file);
-        }
-        foreach (var file in Directory.EnumerateFiles(images, "*.gray.br"))
-        {
-            var name = Path.GetFileName(file); var id = name[..^8];
-            if (id.Length != 64 || id.Any(ch => !char.IsAsciiHexDigit(ch))) throw new InvalidDataException("诊断原图目录含未知文件名，保留原件检查。");
-            using var lookup = db.CreateCommand(); lookup.CommandText = "SELECT 1 FROM frames WHERE image=$name LIMIT 1"; lookup.Parameters.AddWithValue("$name", name);
-            if (lookup.ExecuteScalar() is null) { RecoveryFiles.RequireOrdinaryAncestors(file); File.Delete(file); }
-        }
-        writer = Task.Run(WriteLoop);
+            }
+            else
+            {
+                c.CommandText = "PRAGMA user_version"; if ((long)c.ExecuteScalar()! != 1) throw new InvalidDataException("不支持的相机诊断集合格式，保留原件。");
+                c.CommandText = "PRAGMA quick_check"; if (!Equals(c.ExecuteScalar(), "ok")) throw new InvalidDataException("相机诊断索引损坏，保留原件。");
+                c.CommandText = "UPDATE sessions SET state='Interrupted',detail='上个进程未完成调试采集；已持久记录可查，尾部覆盖未知；正常供包不受影响',closed=$at WHERE closed IS NULL";
+                c.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); c.ExecuteNonQuery(); c.Parameters.Clear();
+            }
+            c.CommandText = "CREATE INDEX IF NOT EXISTS frames_acquisition ON frames(device,json_extract(body,'$.Epoch'),json_extract(body,'$.SourceEventId'))"; c.Parameters.Clear(); c.ExecuteNonQuery();
+            c.CommandText = "SELECT coalesce(sum(size),0) FROM frames"; imageBytes = (long)c.ExecuteScalar()!;
+            c.CommandText = "SELECT count(*) FROM frames WHERE image IS NOT NULL"; imageCount = (long)c.ExecuteScalar()!;
+            // A process can die after atomic image publication and before index commit.
+            // Such files are orphaned diagnostic bytes, not reconstructed scan evidence.
+            foreach (var file in Directory.EnumerateFiles(images, "*.tmp"))
+            {
+                var name = Path.GetFileName(file);
+                if (!name.EndsWith(".gray.br.tmp", StringComparison.Ordinal) || name.Length != 76 || name[..64].Any(ch => !char.IsAsciiHexDigit(ch))) throw new InvalidDataException("诊断目录存在未知临时文件，保留原件。");
+                RecoveryFiles.RequireOrdinaryAncestors(file); File.Delete(file);
+            }
+            foreach (var file in Directory.EnumerateFiles(images, "*.gray.br"))
+            {
+                var name = Path.GetFileName(file); var id = name[..^8];
+                if (id.Length != 64 || id.Any(ch => !char.IsAsciiHexDigit(ch))) throw new InvalidDataException("诊断原图目录含未知文件名，保留原件检查。");
+                using var lookup = db.CreateCommand(); lookup.CommandText = "SELECT 1 FROM frames WHERE image=$name LIMIT 1"; lookup.Parameters.AddWithValue("$name", name);
+                if (lookup.ExecuteScalar() is null) { RecoveryFiles.RequireOrdinaryAncestors(file); File.Delete(file); }
+            }
+            writer = Task.Run(WriteLoop);
         }
         catch { db.Dispose(); throw; }
     }
@@ -312,7 +312,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             c.CommandText = "SELECT body,body_hash,image,input_seq,operation FROM frames WHERE device=$device AND json_extract(body,'$.Epoch')=$epoch AND json_extract(body,'$.SourceEventId')=$event ORDER BY seq DESC LIMIT 1";
             c.Parameters.AddWithValue("$device", identity.DeviceId); c.Parameters.AddWithValue("$epoch", identity.Epoch); c.Parameters.AddWithValue("$event", identity.SourceEventId);
             using var r = c.ExecuteReader(); return r.Read() ? Decode(r.GetString(0), r.GetString(1), !r.IsDBNull(2)) with
-                { BusinessSequence = r.GetInt64(3), OperationId = r.IsDBNull(4) ? null : r.GetString(4) } : null;
+            { BusinessSequence = r.GetInt64(3), OperationId = r.IsDBNull(4) ? null : r.GetString(4) } : null;
         }
     }
     public CameraOriginalImage? Image(string id)
@@ -350,8 +350,17 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
                     StoredSession original; long upper;
                     lock (sync) { original = Session(session); using var c = db.CreateCommand(); c.CommandText = "SELECT coalesce(max(seq),0) FROM frames"; upper = (long)c.ExecuteScalar()!; }
                     using (var manifest = new StreamWriter(zip.CreateEntry("session.json").Open(), Encoding.UTF8))
-                        await manifest.WriteAsync(Wire.Encode(new { Schema = 1, Original = original, SourceCommit = sourceCommit, HighWater = upper,
-                            ExportedAt = DateTimeOffset.UtcNow, PixelFormat = "Mono8", ImageContract = "PGM, original pixels, immutable per-frame identity", FieldAcceptance = "NOT_RUN" }).AsMemory(), token).ConfigureAwait(false);
+                        await manifest.WriteAsync(Wire.Encode(new
+                        {
+                            Schema = 1,
+                            Original = original,
+                            SourceCommit = sourceCommit,
+                            HighWater = upper,
+                            ExportedAt = DateTimeOffset.UtcNow,
+                            PixelFormat = "Mono8",
+                            ImageContract = "PGM, original pixels, immutable per-frame identity",
+                            FieldAcceptance = "NOT_RUN"
+                        }).AsMemory(), token).ConfigureAwait(false);
                     long cursor = 0;
                     using var records = new StreamWriter(new FileStream(temporary + ".records", FileMode.CreateNew, FileAccess.Write, FileShare.None), Encoding.UTF8);
                     using var operationRecords = new StreamWriter(new FileStream(temporary + ".operations", FileMode.CreateNew, FileAccess.Write, FileShare.None), Encoding.UTF8);
@@ -391,8 +400,14 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
                     using (var operationSource = File.OpenRead(temporary + ".operations"))
                     using (var operationEntry = zip.CreateEntry("operations.jsonl").Open()) await operationSource.CopyToAsync(operationEntry, token).ConfigureAwait(false);
                     using var summary = new StreamWriter(zip.CreateEntry("coverage.json").Open(), Encoding.UTF8);
-                    await summary.WriteAsync(Wire.Encode(new { Frames = count, MissingImages = missing, Operations = exportedOperations.Count, Status = Status(session, false),
-                        Note = "容量轮替及缺口均显式保留；原业务请求与回执以业务库为准；未执行现场验收" }).AsMemory(), token).ConfigureAwait(false);
+                    await summary.WriteAsync(Wire.Encode(new
+                    {
+                        Frames = count,
+                        MissingImages = missing,
+                        Operations = exportedOperations.Count,
+                        Status = Status(session, false),
+                        Note = "容量轮替及缺口均显式保留；原业务请求与回执以业务库为准；未执行现场验收"
+                    }).AsMemory(), token).ConfigureAwait(false);
                 }
                 file.Flush(true);
             }

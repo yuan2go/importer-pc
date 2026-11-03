@@ -118,12 +118,21 @@ static partial class Program
         {
             foreach (var missing in new[] { false, true })
             {
-                probe.Project = s => s with {
-                    Configuration = s.Configuration with { Effective = s.Configuration.Effective with {
-                        Mode = RunMode.Production, DeferredConnections = missing ? [.. s.Positions!.Select(p => p.ReaderDeviceId), s.Configuration.Effective.Wcs!.InstanceId] : null } },
+                probe.Project = s => s with
+                {
+                    Configuration = s.Configuration with
+                    {
+                        Effective = s.Configuration.Effective with
+                        {
+                            Mode = RunMode.Production,
+                            DeferredConnections = missing ? [.. s.Positions!.Select(p => p.ReaderDeviceId), s.Configuration.Effective.Wcs!.InstanceId] : null
+                        }
+                    },
                     Devices = s.Devices!.Select(d => d with { Health = DeviceHealth.Disconnected }).ToArray(),
-                    Operations = missing ? [] : s.Operations, Inputs = missing ? [] : s.Inputs,
-                    Positions = s.Positions!.Select(p => p with { Admit = false, CurrentOperation = missing ? null : p.CurrentOperation, BlockingReasons = [missing ? "连接待配置" : "相机离线"] }).ToArray() };
+                    Operations = missing ? [] : s.Operations,
+                    Inputs = missing ? [] : s.Inputs,
+                    Positions = s.Positions!.Select(p => p with { Admit = false, CurrentOperation = missing ? null : p.CurrentOperation, BlockingReasons = [missing ? "连接待配置" : "相机离线"] }).ToArray()
+                };
                 foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
                 {
                     await SetClient(offline, size.Item1, size.Item2); await offline.ViewModel.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); offline.UpdateLayout();

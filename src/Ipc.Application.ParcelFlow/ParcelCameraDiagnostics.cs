@@ -30,7 +30,7 @@ public sealed partial class ParcelRuntime : ICameraDiagnostics, ICameraPreviewLe
         {
             var diagnostic = (reader.Source as IObservationDiagnosticsSource)?.ReadDiagnostics();
             CameraPreviewLeaseResult Result(string status, ObservationPreviewLease? frame = null) => new(status, frame)
-                { Diagnostics = diagnostic?.Epoch == reader.Epoch ? diagnostic : null };
+            { Diagnostics = diagnostic?.Epoch == reader.Epoch ? diagnostic : null };
             if (reader.Health?.Health is DeviceHealth.Disconnected or DeviceHealth.Faulted or DeviceHealth.Stopping or DeviceHealth.Stopped)
                 return Task.FromResult(Result("相机采集不可用；旧画面已清除。"));
             lease = source.ReadPreviewLease();

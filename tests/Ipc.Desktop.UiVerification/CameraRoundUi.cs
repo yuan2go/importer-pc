@@ -151,8 +151,14 @@ static partial class Program
                 "; application=" + (await ReadRound()).CanSend + "; feedback=" + Field<TextBlock>(control, "feedback").Text);
             lines.Add("DIAG final-round " + Wire.Encode(await ReadRound()));
             var diagnostic = await h.App.SnapshotAsync();
-            lines.Add("DIAG final-dependencies " + Wire.Encode(new { diagnostic.State, diagnostic.BlockingReasons, diagnostic.Devices, diagnostic.Health,
-                Operations = diagnostic.Operations.Select(o => new { o.Id, o.PositionId, o.State, Stage = o.Wcs?.State, Attempts = o.Wcs?.Attempts, o.RecoveryRequired }) }));
+            lines.Add("DIAG final-dependencies " + Wire.Encode(new
+            {
+                diagnostic.State,
+                diagnostic.BlockingReasons,
+                diagnostic.Devices,
+                diagnostic.Health,
+                Operations = diagnostic.Operations.Select(o => new { o.Id, o.PositionId, o.State, Stage = o.Wcs?.State, Attempts = o.Wcs?.Attempts, o.RecoveryRequired })
+            }));
             await Until(() => Field<Button>(control, "send").IsEnabled);
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); ClickField(control, "send");
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));

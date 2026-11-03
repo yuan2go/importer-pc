@@ -7,7 +7,7 @@ using Ipc.Platform;
 
 static partial class ArchitectureQuality
 {
-    static string? WalHash(string database)=>File.Exists(database+"-wal")&&new FileInfo(database+"-wal").Length>0?Wire.FileHash(database+"-wal"):null;
+    static string? WalHash(string database) => File.Exists(database + "-wal") && new FileInfo(database + "-wal").Length > 0 ? Wire.FileHash(database + "-wal") : null;
 
     public static async Task CurrentOfflineRecoveryChild(string database, string occurrence, string cut, string marker)
     {

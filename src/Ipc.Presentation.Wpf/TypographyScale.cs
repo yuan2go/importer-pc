@@ -18,5 +18,5 @@ public static partial class UiTypography
     public const double Log = 14;
 
     public static double SlotSize(string value, bool compact) => (value.Length, compact) switch
-    { (<= 6, false) => Slot, (<= 6, true) => SlotCompact, (<= 16, false) => 40, (<= 16, true) => Barcode, (_, false) => Barcode, _ => BarcodeCompact };
+    { ( <= 6, false) => Slot, ( <= 6, true) => SlotCompact, ( <= 16, false) => 40, ( <= 16, true) => Barcode, (_, false) => Barcode, _ => BarcodeCompact };
 }

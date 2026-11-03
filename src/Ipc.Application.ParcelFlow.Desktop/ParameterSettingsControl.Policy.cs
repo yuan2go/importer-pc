@@ -33,6 +33,7 @@ public sealed partial class ParameterSettingsControl
         }
         if (!hasRcs) Input(Form(station), "供包台编号 *", m.Policy, "StationCode", "StationCode", station, "用于向外部系统识别当前供包台。");
         Technical(station, "本地工作站标识", "StationId", m.StationId);
+        if (UsesFirstReadiness) station.Body.Children.Add(ScenarioCard());
         var data = Page(0, "数据与记录", ""); form = Form(data);
         Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000");
         Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "剩余空间低于此值时暂停接收新包裹。");
@@ -49,7 +50,7 @@ public sealed partial class ParameterSettingsControl
         data.Body.Children.Add(Text("存储位置", true));
         Readonly(data, "配置目录", m.Locations?.ConfigurationDirectory ?? "未取得配置目录。");
         Readonly(data, "数据目录", m.Locations?.DataDirectory ?? "未取得数据目录。");
-        Technical(data, "日志保留", "DiagnosticLogDays", "留空则按容量自动轮换，可填 1–3650 天。只影响诊断日志。" );
+        Technical(data, "日志保留", "DiagnosticLogDays", "留空则按容量自动轮换，可填 1–3650 天。只影响诊断日志。");
         Technical(data, "记录与容量", "ResidentHistory / MinimumFreeMiB", "常驻记录 1–10000 条，磁盘预留空间 1–1048576 MiB。软件运行时目录不能修改，迁移数据请使用维护工具。");
         var backup = Page(0, "自动备份", "只在暂停供包、处于管理模式且没有进行中的请求时执行。");
         if (RuntimeContext is { } backupContext)
@@ -148,9 +149,9 @@ public sealed partial class ParameterSettingsControl
             role.PropertyChanged += changed; unsubscribe.Add(() => role.PropertyChanged -= changed);
         }
         else foreach (var draft in m.Components.Where(c => c.Role == "operator-login"))
-        {
-            draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed);
-        }
+            {
+                draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed);
+            }
         EventHandler validated = (_, _) => Refresh();
         m.ValidationChanged += validated; unsubscribe.Add(() => m.ValidationChanged -= validated);
         Refresh();

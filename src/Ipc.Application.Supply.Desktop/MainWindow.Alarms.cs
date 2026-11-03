@@ -26,8 +26,8 @@ public partial class MainWindow
             if (alarm.Code.StartsWith("LocalDispositionRequired", StringComparison.Ordinal)) model.LastResult = "保留原记录与实体；待取得预留/实体处置证据，当前版本不提供放行命令。";
             else if (details.Length == 0) model.LastResult = "来源诊断：" + alarm.Source + " / " + alarm.Scope + " / " + alarm.Code;
         }
-        catch(OperationCanceledException) when(closing) { }
-        catch(Exception ex) { if(!closing && ticket == alarmSelectionGeneration && selectedAlarm?.Id == alarm.Id && ReadIdentityMatches(readActor))model.LastResult="关联请求读取失败："+ex.Message; }
+        catch (OperationCanceledException) when (closing) { }
+        catch (Exception ex) { if (!closing && ticket == alarmSelectionGeneration && selectedAlarm?.Id == alarm.Id && ReadIdentityMatches(readActor)) model.LastResult = "关联请求读取失败：" + ex.Message; }
     }
     async Task ShowAlarmDiagnosticAsync(Alarm alarm, long selectionTicket, Actor? actor)
     {

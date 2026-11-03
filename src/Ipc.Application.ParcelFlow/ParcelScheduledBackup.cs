@@ -56,9 +56,12 @@ public sealed partial class ParcelRuntime
                     { result = "Failed:" + error.GetType().Name + "; inspect backup/capacity/permission; originals retained"; resultDetail = DiagnosticText.Protect(error.Message); }
                     BackupScheduleState state;
                     await gate.WaitAsync().ConfigureAwait(false);
-                    try { state = backupScheduleState = new(hash, result == "BackupCreated" ? now.AddMinutes(policy.IntervalMinutes) : backupScheduleState!.NextDue, result, result == "BackupCreated" ? destination : null, DateTimeOffset.UtcNow,
+                    try
+                    {
+                        state = backupScheduleState = new(hash, result == "BackupCreated" ? now.AddMinutes(policy.IntervalMinutes) : backupScheduleState!.NextDue, result, result == "BackupCreated" ? destination : null, DateTimeOffset.UtcNow,
                         result == "BackupCreated" ? destination : backupScheduleState.LastSuccessfulBackup,
-                        result == "BackupCreated" ? now : backupScheduleState.LastSuccessfulAt, resultDetail); }
+                        result == "BackupCreated" ? now : backupScheduleState.LastSuccessfulAt, resultDetail);
+                    }
                     finally { gate.Release(); }
                     ExtensionStore.AtomicWrite(BackupScheduleFile, state);
                     return true;

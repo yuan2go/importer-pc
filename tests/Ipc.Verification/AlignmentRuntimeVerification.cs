@@ -23,7 +23,7 @@ static class AlignmentRuntimeVerification
         var snapshot = await app.SnapshotAsync();
         var blocked = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        
+
         faults.Hook = point => { if (point == "T1") { blocked.TrySetResult(); release.Task.GetAwaiter().GetResult(); } };
         var sw = Stopwatch.StartNew();
         var pending = app.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, "OpenContext", Value: "000001"));
@@ -79,7 +79,7 @@ static class AlignmentRuntimeVerification
         File.WriteAllText(Path.Combine(configDirectory, "product.json"), Wire.Encode(manifest));
         File.WriteAllText(Path.Combine(configDirectory, "station.json"), Wire.Encode(cfg with { StationId = "VIEW-" + Wire.Id() }));
         File.WriteAllText(Path.Combine(configDirectory, "presentation.json"), Wire.Encode(new PresentationSettings()));
-        var boot = new BootOptions(Path.Combine(configDirectory, "product.json"), Path.Combine(configDirectory, "station.json"), Path.Combine(configDirectory, "presentation.json"), Path.Combine(root, "alignment-view-data"), install, Path.Combine(root,"view-leases"), View: "history", Layout: "compact");
+        var boot = new BootOptions(Path.Combine(configDirectory, "product.json"), Path.Combine(configDirectory, "station.json"), Path.Combine(configDirectory, "presentation.json"), Path.Combine(root, "alignment-view-data"), install, Path.Combine(root, "view-leases"), View: "history", Layout: "compact");
         using var host = ProductHost.Build(boot); await host.StartAsync(); var runtime = host.Services.GetRequiredService<ProductRuntime>();
         Assert(runtime.Application is not null && runtime.Diagnostics.Count == 0 && runtime.Presentation.View == "history" && runtime.Presentation.Layout == "compact", "Startup View/Layout arguments select installed presentation");
         var business = runtime.Application; var id = runtime.RuntimeId;
@@ -147,21 +147,21 @@ static class AlignmentRuntimeVerification
             await app.DisposeAsync();
             Assert((await app.ExecuteAsync(new(Wire.Id(), after.State.Revision, "Login", Value: "maintenance")).WaitAsync(TimeSpan.FromSeconds(1))).Status == "NotReady", "Late command after disposal completes with explicit rejection");
         }
-        await using var rig = await Rig.New(root,url); await rig.OpenBox(); var op = await rig.Enter("left");
-        await rig.Event("left","Read",op.AdmissionId,["000123"],1); await rig.Drain(); await rig.Command("Submit",op.Id);
-        var claim=(await rig.App.ClaimAsync())!.Value;
-        using(var db=new SqliteConnection($"Data Source={rig.Store.Path};Pooling=False"))
+        await using var rig = await Rig.New(root, url); await rig.OpenBox(); var op = await rig.Enter("left");
+        await rig.Event("left", "Read", op.AdmissionId, ["000123"], 1); await rig.Drain(); await rig.Command("Submit", op.Id);
+        var claim = (await rig.App.ClaimAsync())!.Value;
+        using (var db = new SqliteConnection($"Data Source={rig.Store.Path};Pooling=False"))
         {
-            db.Open(); using var hold=db.BeginTransaction();
-            var handoff=rig.App.BeforeSendAsync(claim.Request,claim.Attempt); await Task.Delay(100);
-            Assert(!handoff.IsCompleted,"Real SQLite lock holds durable handoff transaction");
-            var watch=Stopwatch.StartNew(); rig.App.Latch("Overload","SIMULATION overflow while handoff waits on SQLite");
-            Assert(watch.Elapsed<TimeSpan.FromMilliseconds(500),"Device overload does not wait on SQLite decision lock");
-            hold.Rollback(); Assert(!await handoff,"Fault during slow durable handoff suppresses network");
+            db.Open(); using var hold = db.BeginTransaction();
+            var handoff = rig.App.BeforeSendAsync(claim.Request, claim.Attempt); await Task.Delay(100);
+            Assert(!handoff.IsCompleted, "Real SQLite lock holds durable handoff transaction");
+            var watch = Stopwatch.StartNew(); rig.App.Latch("Overload", "SIMULATION overflow while handoff waits on SQLite");
+            Assert(watch.Elapsed < TimeSpan.FromMilliseconds(500), "Device overload does not wait on SQLite decision lock");
+            hold.Rollback(); Assert(!await handoff, "Fault during slow durable handoff suppresses network");
         }
-        Assert(rig.Store.Request(claim.Request.Id)!.Status==RequestStatus.Unknown && rig.Store.Attempts(claim.Request.Id).Single().Disposition=="Unknown", "Committed handoff is conservatively Unknown, never Prepared or locally cancellable");
-        Assert(await rig.Port.QueryAsync(claim.Request,CancellationToken.None) is null,"Suppressed request absent from independent receiving ledger");
-        await rig.Command("CancelPrepared",claim.Request.Id,"SIMULATION transport handoff cannot prove non-delivery",expect:"RejectedByGuard");
+        Assert(rig.Store.Request(claim.Request.Id)!.Status == RequestStatus.Unknown && rig.Store.Attempts(claim.Request.Id).Single().Disposition == "Unknown", "Committed handoff is conservatively Unknown, never Prepared or locally cancellable");
+        Assert(await rig.Port.QueryAsync(claim.Request, CancellationToken.None) is null, "Suppressed request absent from independent receiving ledger");
+        await rig.Command("CancelPrepared", claim.Request.Id, "SIMULATION transport handoff cannot prove non-delivery", expect: "RejectedByGuard");
         Console.WriteLine("PASS A01 bounded command/control saturation and concurrent overload during real SQLite handoff");
     }
     static void Assert(bool condition, string reason) { if (!condition) throw new InvalidOperationException("ASSERT A01: " + reason); }

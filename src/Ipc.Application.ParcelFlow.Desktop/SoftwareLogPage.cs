@@ -15,9 +15,19 @@ public sealed partial class SoftwareLogControl : UserControl
     readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "调试", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
     readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Single, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
     readonly ComboBox viewMode = new() { ItemsSource = new[] { "列表视图", "终端视图" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 120, Margin = new(0, 0, 8, 4) };
-    readonly TextBox terminal = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, TextWrapping = TextWrapping.NoWrap,
-        Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(16, 24, 32)), Foreground = System.Windows.Media.Brushes.WhiteSmoke,
-        Padding = new(12), VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Visibility = Visibility.Collapsed };
+    readonly TextBox terminal = new()
+    {
+        FontFamily = UiTypography.Code,
+        FontSize = UiTypography.Log,
+        IsReadOnly = true,
+        TextWrapping = TextWrapping.NoWrap,
+        Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(16, 24, 32)),
+        Foreground = System.Windows.Media.Brushes.WhiteSmoke,
+        Padding = new(12),
+        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+        Visibility = Visibility.Collapsed
+    };
     readonly TextBox detail = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.NoWrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 32 };
     readonly TextBlock status = new() { TextWrapping = TextWrapping.Wrap };
     readonly StackPanel filters = new();

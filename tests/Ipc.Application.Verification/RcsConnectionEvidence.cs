@@ -17,8 +17,11 @@ static partial class SportmasterRcs
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding)); await service.StartAsync(default);
             var request = Request(binding); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
             var reply = await service.ResolveSlotAsync(request, default);
-            Check(reply is { SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false,
-                ProtocolAcknowledged: null, BusinessAccepted: null, PhysicalCompleted: null, HttpResponse: null } && reply.RequestId == request.Id && reply.PayloadHash == request.PayloadHash,
+            Check(reply is
+            {
+                SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false,
+                ProtocolAcknowledged: null, BusinessAccepted: null, PhysicalCompleted: null, HttpResponse: null
+            } && reply.RequestId == request.Id && reply.PayloadHash == request.PayloadHash,
                 "real loopback connection refusal produces only typed sender no-body evidence, no fabricated HTTP/business reply");
         }
         var template = HeartbeatConfiguration(workspace, binding);

@@ -359,11 +359,33 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
         {
             var s = await application.SnapshotAsync();
             var detail = owner is null ? [] : await application.DetailsAsync(owner);
-            report = new { RuntimeId, Mode = Configuration!.Mode.ToString(), Configuration!.StationId, Configuration.Version,
-                Schema = 1, Revision = s.State.Revision, Session = s.State.Session?.Id, SessionState = s.State.Session?.Status.ToString(),
-                Blocks = s.Admit.Reasons, Modules = ModuleStates, FaultCodes = s.RuntimeFaults.Select(x => x.Split(':')[0]).ToArray(),
-                Requests = detail.Select(x => new { x.Request.Id, x.Request.OwnerId, Kind = x.Request.Kind.ToString(), State = x.Request.Status.ToString(), x.Request.PayloadHash, x.Request.Binding.Contract, BindingRevision = x.Request.Binding.Revision, x.Attempts,
-                    Receipts = x.Receipts.Select(r => new { r.Id, r.RequestId, r.AttemptId, r.Origin, r.StartedAt, r.Status, r.ContentSha256 }), Responses = x.Responses.Select(r => new { r.EvidenceId, r.RequestId, r.Result, r.Quantity, r.Remaining }) }) };
+            report = new
+            {
+                RuntimeId,
+                Mode = Configuration!.Mode.ToString(),
+                Configuration!.StationId,
+                Configuration.Version,
+                Schema = 1,
+                Revision = s.State.Revision,
+                Session = s.State.Session?.Id,
+                SessionState = s.State.Session?.Status.ToString(),
+                Blocks = s.Admit.Reasons,
+                Modules = ModuleStates,
+                FaultCodes = s.RuntimeFaults.Select(x => x.Split(':')[0]).ToArray(),
+                Requests = detail.Select(x => new
+                {
+                    x.Request.Id,
+                    x.Request.OwnerId,
+                    Kind = x.Request.Kind.ToString(),
+                    State = x.Request.Status.ToString(),
+                    x.Request.PayloadHash,
+                    x.Request.Binding.Contract,
+                    BindingRevision = x.Request.Binding.Revision,
+                    x.Attempts,
+                    Receipts = x.Receipts.Select(r => new { r.Id, r.RequestId, r.AttemptId, r.Origin, r.StartedAt, r.Status, r.ContentSha256 }),
+                    Responses = x.Responses.Select(r => new { r.EvidenceId, r.RequestId, r.Result, r.Quantity, r.Remaining })
+                })
+            };
         }
         await File.WriteAllTextAsync(destination, Wire.Encode(report));
     }

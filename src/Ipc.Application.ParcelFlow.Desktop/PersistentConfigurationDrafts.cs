@@ -56,7 +56,7 @@ public partial class ParcelViewModel
         for (int n = 0; n < originalReaders.Length; n++) temporary.ReaderDrafts.Add(new(originalReaders[n], CapabilityDraft.RestoreRaw(savedReaders[n], installedCatalog.Providers)));
         temporary.CapabilityDrafts.Clear(); foreach (var draft in Wire.Decode<CapabilityDraft.Saved[]>(v["capabilities"])) temporary.CapabilityDrafts.Add(CapabilityDraft.RestoreRaw(draft, installedCatalog.Providers));
         foreach (var p in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))
-            { var value = v["policy." + p.Name]; p.SetValue(temporary.StructuredPolicy, p.PropertyType.IsEnum ? Enum.Parse(p.PropertyType, value) : p.PropertyType == typeof(bool) ? bool.Parse(value) : value); }
+        { var value = v["policy." + p.Name]; p.SetValue(temporary.StructuredPolicy, p.PropertyType.IsEnum ? Enum.Parse(p.PropertyType, value) : p.PropertyType == typeof(bool) ? bool.Parse(value) : value); }
         CapabilityChoice[] Choices(string kind) => [new("不绑定/沿用默认", null), .. temporary.CapabilityDrafts.Where(c => c.Kind == kind).Select(c => new CapabilityChoice(c.InstanceId, c))];
         var roles = temporary.ConfigurationRoles.ToArray(); temporary.ConfigurationRoles.Clear();
         foreach (var role in roles) { var choices = Choices(role.Kind); temporary.ConfigurationRoles.Add(new(role.Role, role.Kind, choices, choices.Single(c => (c.Capability?.InstanceId ?? "") == v["role." + role.Role]), role.Visibility == System.Windows.Visibility.Visible)); }

@@ -19,7 +19,8 @@ public static class DeploymentBatchVerification
         var runtimeSid = identity.User!.Value;
         var data = Path.Combine(evidence, "never-installed-data");
         var original = ParcelStartupServices.Review(media, runtimeSid, data, seed, null, [], false)
-            with { Shortcuts = new(false, false) };
+            with
+        { Shortcuts = new(false, false) };
         var plan = DeploymentBatch.Freeze(original);
         var planFile = Path.Combine(evidence, "plan.json"); File.WriteAllText(planFile, Wire.Encode(plan));
         var planHash = Wire.FileHash(planFile);
@@ -175,9 +176,20 @@ public static class DeploymentBatchVerification
         Check(Wire.FileHash(planFile) == planHash && Wire.FileHash(receiptFile) == receiptHash, "Original plan/receipt changed after failures");
         Check(Invoke("restored-preflight", planFile, 0)["Status"]!.GetValue<string>() == "PreflightPassed", "Restored unchanged inputs did not recover");
         cases.Add("restored-inputs-repreflight-with-original-identity");
-        File.WriteAllText(Path.Combine(evidence, "BATCH-RESULT.json"), Wire.Encode(new { Status = "PASS", MediaSourceCommit = media.SourceCommit,
-            BatchBinarySha256 = Wire.FileHash(typeof(DeploymentBatch).Assembly.Location), PlatformBinarySha256 = Wire.FileHash(typeof(WindowsDeploymentSetup).Assembly.Location),
-            original.OperationId, plan.PlanSha256, Cases = cases, Installation = "NOT_RUN", MachineRegistrationMutation = "NOT_RUN", Equipment = "NOT_RUN", Scope = "Readonly actual batch entry and synthetic journal fence; not a deployment success" }));
+        File.WriteAllText(Path.Combine(evidence, "BATCH-RESULT.json"), Wire.Encode(new
+        {
+            Status = "PASS",
+            MediaSourceCommit = media.SourceCommit,
+            BatchBinarySha256 = Wire.FileHash(typeof(DeploymentBatch).Assembly.Location),
+            PlatformBinarySha256 = Wire.FileHash(typeof(WindowsDeploymentSetup).Assembly.Location),
+            original.OperationId,
+            plan.PlanSha256,
+            Cases = cases,
+            Installation = "NOT_RUN",
+            MachineRegistrationMutation = "NOT_RUN",
+            Equipment = "NOT_RUN",
+            Scope = "Readonly actual batch entry and synthetic journal fence; not a deployment success"
+        }));
         Console.WriteLine("PASS deployment batch identity, integrity, unsupported input refusal, original receipt and original-operation fences (" + cases.Count + " cases); no installation/device startup");
     }
 }

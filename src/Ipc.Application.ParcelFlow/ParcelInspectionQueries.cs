@@ -119,10 +119,10 @@ public sealed partial class ParcelRuntime
         if (!await inspectionExportControl.WaitAsync(0, t).ConfigureAwait(false)) throw new InvalidOperationException("已有诊断导出正在执行，请等待当前原操作完成。");
         try
         {
-        await InspectionStore.FlushAsync(t).ConfigureAwait(false);
-        var exported = await InspectionStore.ExportAsync(sessionId, destination,
-            typeof(ParcelRuntime).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).OfType<System.Reflection.AssemblyInformationalVersionAttribute>().Single().InformationalVersion, ExportCameraOperationEvidence, t).ConfigureAwait(false);
-        Diagnostic("相机调试", "诊断证据已导出", detail: "Session=" + sessionId + "; Sha256=" + exported.Sha256); return exported;
+            await InspectionStore.FlushAsync(t).ConfigureAwait(false);
+            var exported = await InspectionStore.ExportAsync(sessionId, destination,
+                typeof(ParcelRuntime).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).OfType<System.Reflection.AssemblyInformationalVersionAttribute>().Single().InformationalVersion, ExportCameraOperationEvidence, t).ConfigureAwait(false);
+            Diagnostic("相机调试", "诊断证据已导出", detail: "Session=" + sessionId + "; Sha256=" + exported.Sha256); return exported;
         }
         finally { inspectionExportControl.Release(); }
     }, token);
@@ -141,25 +141,37 @@ public sealed partial class ParcelRuntime
                 try { responsePreview = DiagnosticText.Protect(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(response.BodyBase64[..length]))); }
                 catch (FormatException) { responsePreview = "原回执编码不能显示；不补造响应。"; }
             }
-            return new { Operation = OperationProjection(original, repository!.Revision), ObservedAt = original.ObservedAt,
-                OriginalConfigurationHash = original.ConfigurationHash, ReadAt = DateTimeOffset.UtcNow,
-                OriginalRequestHash = frozen is null ? null : Wire.Hash(Wire.Encode(frozen)), OriginalRequestBodyHash = body is null ? null : Wire.Hash(body),
-                RequestPreview = body is null ? null : DiagnosticText.Protect(body[..Math.Min(body.Length, 8192)]), RequestTruncated = body?.Length > 8192,
-                HttpStatus = response?.StatusCode, HttpComplete = response?.Complete,
-                ResponseBase64Hash = response is null ? null : Wire.Hash(response.BodyBase64), ResponsePreview = responsePreview,
+            return new
+            {
+                Operation = OperationProjection(original, repository!.Revision),
+                ObservedAt = original.ObservedAt,
+                OriginalConfigurationHash = original.ConfigurationHash,
+                ReadAt = DateTimeOffset.UtcNow,
+                OriginalRequestHash = frozen is null ? null : Wire.Hash(Wire.Encode(frozen)),
+                OriginalRequestBodyHash = body is null ? null : Wire.Hash(body),
+                RequestPreview = body is null ? null : DiagnosticText.Protect(body[..Math.Min(body.Length, 8192)]),
+                RequestTruncated = body?.Length > 8192,
+                HttpStatus = response?.StatusCode,
+                HttpComplete = response?.Complete,
+                ResponseBase64Hash = response is null ? null : Wire.Hash(response.BodyBase64),
+                ResponsePreview = responsePreview,
                 ResponseTruncated = response?.BodyBase64.Length > 10920,
-                DisplayPolicy = "本机受保护诊断摘要；预览可脱敏/截断，原始字节与原请求责任仍由业务库原件保管；不能用本包重放" };
+                DisplayPolicy = "本机受保护诊断摘要；预览可脱敏/截断，原始字节与原请求责任仍由业务库原件保管；不能用本包重放"
+            };
         }
         finally { gate.Release(); }
     }
     public Task<CameraInspectionExport> ExportCameraOriginalAsync(string frameId, string destination, CancellationToken token) => InspectionRead(async t =>
     {
         if (!await inspectionExportControl.WaitAsync(0, t).ConfigureAwait(false)) throw new InvalidOperationException("已有诊断导出正在执行。");
-        try { return await Task.Run(() =>
+        try
         {
-        var image = InspectionStore.Image(frameId) ?? throw new InvalidOperationException("此帧原图已不可用，不能导出替代图像。");
-        return CameraOriginalExport.Write(image, destination, Effective.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes, t);
-        }, t).ConfigureAwait(false); }
+            return await Task.Run(() =>
+        {
+            var image = InspectionStore.Image(frameId) ?? throw new InvalidOperationException("此帧原图已不可用，不能导出替代图像。");
+            return CameraOriginalExport.Write(image, destination, Effective.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes, t);
+        }, t).ConfigureAwait(false);
+        }
         finally { inspectionExportControl.Release(); }
     }, token);
     public Task PurgeCameraInspectionAsync(string sessionId, string reason, CancellationToken token) => InspectionRead(async t =>

@@ -53,11 +53,25 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             nativeLoaded = true;
         }
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        var readers = seed.Topology!.Readers.Select((r, i) => r with { Driver = "hikrobot-mvs-reader", Parameters = new()
-            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" } }).ToArray();
+        var readers = seed.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = "hikrobot-mvs-reader",
+            Parameters = new()
+            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
+        }).ToArray();
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, rcsEndpoint ?? Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
-        { ["zone-id"] = "71", ["project-id"] = "83", ["specified-chute"] = "false", ["request-id-base"] = "820000000", ["request-id-count"] = "100000",
-          ["heartbeat-interval-seconds"] = heartbeatSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture), ["left-station-code"] = "TEST-LEFT", ["left-bcr-code"] = "TEST-LEFT-READER", ["right-station-code"] = "TEST-RIGHT", ["right-bcr-code"] = "TEST-RIGHT-READER" });
+        {
+            ["zone-id"] = "71",
+            ["project-id"] = "83",
+            ["specified-chute"] = "false",
+            ["request-id-base"] = "820000000",
+            ["request-id-count"] = "100000",
+            ["heartbeat-interval-seconds"] = heartbeatSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["left-station-code"] = "TEST-LEFT",
+            ["left-bcr-code"] = "TEST-LEFT-READER",
+            ["right-station-code"] = "TEST-RIGHT",
+            ["right-bcr-code"] = "TEST-RIGHT-READER"
+        });
         Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [] };
         var configuration = Path.Combine(folder, "config"); Directory.CreateDirectory(configuration);
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
@@ -257,9 +271,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); Requests.Enqueue(body);
                 var hold = Hold; if (hold is not null && (HoldWhen?.Invoke(body) ?? true)) await hold.Task.WaitAsync(stopped.Token);
                 using var json = JsonDocument.Parse(body); var id = json.RootElement.GetProperty("requestId").GetInt64();
-                var reply = JsonSerializer.Serialize(new { requestId = id, result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
+                var reply = JsonSerializer.Serialize(new
+                {
+                    requestId = id,
+                    result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
                     message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
-                        width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } } });
+                        width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
+                });
                 var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stopped.Token);
             }

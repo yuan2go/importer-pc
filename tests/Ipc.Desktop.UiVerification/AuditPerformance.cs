@@ -81,10 +81,22 @@ static partial class Program
                 selectionMs.Add(sw.Elapsed.TotalMilliseconds); sw.Restart();
                 _ = await Task.Run(() => history.ReadHistoryPageAsync(selection, long.MaxValue, 50, default)); filteredMs.Add(sw.Elapsed.TotalMilliseconds);
             }
-            datasets.Add(new { Total = total, Resident = snapshot.Operations.Length, snapshot.Capacity, JsonBytes = Encoding.UTF8.GetByteCount(Wire.Encode(snapshot)),
-                Snapshot = Stats(snapshotMs), Clone = Stats(cloneMs), CapacityProjection = Stats(capacityMs), PendingReceiptQuery = Stats(pendingMs), HistoryPage50 = Stats(historyMs),
-                HistorySelection = Stats(selectionMs), FilteredHistoryPage50 = Stats(filteredMs),
-                AllocationBytes = GC.GetTotalAllocatedBytes(true) - allocated, CpuMs = (Process.GetCurrentProcess().TotalProcessorTime - cpu).TotalMilliseconds });
+            datasets.Add(new
+            {
+                Total = total,
+                Resident = snapshot.Operations.Length,
+                snapshot.Capacity,
+                JsonBytes = Encoding.UTF8.GetByteCount(Wire.Encode(snapshot)),
+                Snapshot = Stats(snapshotMs),
+                Clone = Stats(cloneMs),
+                CapacityProjection = Stats(capacityMs),
+                PendingReceiptQuery = Stats(pendingMs),
+                HistoryPage50 = Stats(historyMs),
+                HistorySelection = Stats(selectionMs),
+                FilteredHistoryPage50 = Stats(filteredMs),
+                AllocationBytes = GC.GetTotalAllocatedBytes(true) - allocated,
+                CpuMs = (Process.GetCurrentProcess().TotalProcessorTime - cpu).TotalMilliseconds
+            });
             lines.Add($"PERF total={total} resident={snapshot.Operations.Length} snapshot P50={Median(snapshotMs):F2}ms clone P50={Median(cloneMs):F2}ms capacity P50={Median(capacityMs):F2}ms");
         }
         // Controlled gate contention: demonstrates scheduling cost without pretending it is a field distribution.
@@ -117,17 +129,35 @@ static partial class Program
             // UI-thread heartbeat includes Dispatcher delays and timer quantization, with no universal pass threshold.
             for (var i = 0; i < 400; i++) { await Task.Delay(50); var now = watch.Elapsed.TotalMilliseconds; gaps.Add(now - last); last = now; }
             process.Refresh();
-            idle.Add(new { Windows = count, WallMs = watch.Elapsed.TotalMilliseconds, CpuMs = (process.TotalProcessorTime - cpu).TotalMilliseconds,
-                AllocationBytes = GC.GetTotalAllocatedBytes(true) - alloc, PrivateBytesStart = memory, PrivateBytesEnd = process.PrivateMemorySize64,
-                DataBytesStart = bytes, DataBytesEnd = Directory.GetFiles(launch.DataRoot, "*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length), HeartbeatGap = Stats(gaps) });
+            idle.Add(new
+            {
+                Windows = count,
+                WallMs = watch.Elapsed.TotalMilliseconds,
+                CpuMs = (process.TotalProcessorTime - cpu).TotalMilliseconds,
+                AllocationBytes = GC.GetTotalAllocatedBytes(true) - alloc,
+                PrivateBytesStart = memory,
+                PrivateBytesEnd = process.PrivateMemorySize64,
+                DataBytesStart = bytes,
+                DataBytesEnd = Directory.GetFiles(launch.DataRoot, "*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length),
+                HeartbeatGap = Stats(gaps)
+            });
         }
         foreach (var owned in windows.AsEnumerable().Reverse()) { owned.ConfirmDiscardDrafts = _ => true; owned.Close(); }
-        var result = new { Scope = "Synthetic only; no device, upstream contract, production identity or target hardware qualification. Single process, sequential inputs; no same-side in-flight admission decision.",
-            RuntimeStartReturnedMs = startReturnedMs, RuntimeStartToAdmissionReadyMs = startMs, WindowShowToAppliedSnapshotAndIdleMs = windowToReadyMs,
-            InputToOwnTerminalPoll = Stats(inputSamples), Datasets = datasets, Controlled50MsGateHold = Stats(contention),
-            NativeRefreshThroughDispatcherIdle = Stats(refresh), NativeRefreshNotifications = notifications, Idle = idle,
+        var result = new
+        {
+            Scope = "Synthetic only; no device, upstream contract, production identity or target hardware qualification. Single process, sequential inputs; no same-side in-flight admission decision.",
+            RuntimeStartReturnedMs = startReturnedMs,
+            RuntimeStartToAdmissionReadyMs = startMs,
+            WindowShowToAppliedSnapshotAndIdleMs = windowToReadyMs,
+            InputToOwnTerminalPoll = Stats(inputSamples),
+            Datasets = datasets,
+            Controlled50MsGateHold = Stats(contention),
+            NativeRefreshThroughDispatcherIdle = Stats(refresh),
+            NativeRefreshNotifications = notifications,
+            Idle = idle,
             Environment = new { OS = Environment.OSVersion.ToString(), Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription, CpuCount = Environment.ProcessorCount, Is64Bit = Environment.Is64BitProcess },
-            Limits = "Measurements include synthetic-peer filesystem work; terminal polling includes snapshot/poll delay. Clone and capacity probes are separate experiments, not additive phase attribution. Allocation includes background work. 20-second idle samples do not prove long-term stability; no field budget supplied." };
+            Limits = "Measurements include synthetic-peer filesystem work; terminal polling includes snapshot/poll delay. Clone and capacity probes are separate experiments, not additive phase attribution. Allocation includes background work. 20-second idle samples do not prove long-term stability; no field budget supplied."
+        };
         File.WriteAllText(Path.Combine(evidence, "R02-performance.json"), JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }));
         lines.Add("PASS R-02 samples completed with 300 independently correlated terminal results; no same-side overlap or production-policy changes.");
         static double Median(List<double> values) => values.Order().ElementAt(values.Count / 2);

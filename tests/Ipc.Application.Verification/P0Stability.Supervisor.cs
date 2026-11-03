@@ -111,8 +111,11 @@ static class P0Supervisor
         {
             location = Location("healthy-" + allowedRestarts, new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: allowedRestarts, HealthyResetSeconds: 60)); launches = 0;
             var healthyClock = new AcceleratedClock();
-            result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: start => { launches++; if (launches > 1) healthyClock.SlowDown(); var process = Launch(launches == 1 ? "--sleep" : "--fail");
-                if (launches == 1) _ = Task.Run(async () => { await Task.Delay(1400); using var first = Process.GetProcessById(process.Id); first.Kill(); }); return process; }, clock: healthyClock);
+            result = await DesktopRecoverySupervisor.RunAsync(location, () => location, launch: start =>
+            {
+                launches++; if (launches > 1) healthyClock.SlowDown(); var process = Launch(launches == 1 ? "--sleep" : "--fail");
+                if (launches == 1) _ = Task.Run(async () => { await Task.Delay(1400); using var first = Process.GetProcessById(process.Id); first.Kill(); }); return process;
+            }, clock: healthyClock);
             Check(result == 77 && launches == allowedRestarts + 1, "healthy interval preserves current child and exact restart budget=" + allowedRestarts);
         }
     }

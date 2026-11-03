@@ -59,8 +59,14 @@ public partial class SupplyStationWindow
         header.Children.Add(new TextBlock { Text = "诊断与恢复", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis });
         selectedDiagnostic = new TextBlock { Margin = new(0, 4, 0, 0), TextWrapping = TextWrapping.Wrap };
         header.Children.Add(selectedDiagnostic);
-        backToDiagnosticSettings = new Button { Content = "返回该设备设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left,
-            Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible, Margin = new(0, 8, 0, 0) };
+        backToDiagnosticSettings = new Button
+        {
+            Content = "返回该设备设置",
+            MinHeight = 44,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible,
+            Margin = new(0, 8, 0, 0)
+        };
         backToDiagnosticSettings.Click += async (_, _) => await OpenOperatorSettingsAsync(diagnosticTarget?.DeviceId, diagnosticTarget?.InstanceId);
         header.Children.Add(backToDiagnosticSettings);
         var status = new TextBlock { Margin = new(0, 8, 0, 0), TextWrapping = TextWrapping.Wrap };
@@ -124,8 +130,16 @@ public partial class SupplyStationWindow
                 original.Click += async (_, _) => { if (position.Operation is { } operation) await ShowDetailsAsync(operation); }; actions.Children.Add(original);
             }
             row.Children.Add(actions);
-            connections.Children.Add(new Border { Child = row, BorderBrush = (System.Windows.Media.Brush)FindResource("StationLine"), BorderThickness = new(1),
-                CornerRadius = new(8), Padding = new(16), Margin = new(0, 0, 12, 12), Background = System.Windows.Media.Brushes.White });
+            connections.Children.Add(new Border
+            {
+                Child = row,
+                BorderBrush = (System.Windows.Media.Brush)FindResource("StationLine"),
+                BorderThickness = new(1),
+                CornerRadius = new(8),
+                Padding = new(16),
+                Margin = new(0, 0, 12, 12),
+                Background = System.Windows.Media.Brushes.White
+            });
             diagnosticObjects.TryAdd(position?.ReaderId ?? "shared", row);
         }
         Connection("左相机", nameof(ViewModel.LeftConnectionDiagnosis), nameof(ViewModel.LeftConnectionTime), () => OpenOperatorSettingsAsync(ViewModel.Left.ReaderId), ViewModel.Left);

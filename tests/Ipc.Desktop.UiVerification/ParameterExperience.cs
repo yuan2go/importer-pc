@@ -39,17 +39,35 @@ static partial class Program
         var rcs = currentCatalog.Providers.Single(p => p.Kind == "integration" && p.Implementation == "sportmaster-rcs");
         var binding = new CapabilityBinding("integration", rcs.Implementation, rcs.Version, "rcs.one", "http://192.0.2.10/rcs/sorter/api", rcs.Contract, new()
         {
-            ["zone-id"] = "71", ["project-id"] = "83",
-            ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "1000",
-            ["left-station-code"] = "SYNTHETIC-COMMON", ["right-station-code"] = "SYNTHETIC-COMMON", ["left-bcr-code"] = "TAKE-L", ["right-bcr-code"] = "TAKE-R"
+            ["zone-id"] = "71",
+            ["project-id"] = "83",
+            ["specified-chute"] = "false",
+            ["request-id-base"] = "810000000",
+            ["request-id-count"] = "1000",
+            ["left-station-code"] = "SYNTHETIC-COMMON",
+            ["right-station-code"] = "SYNTHETIC-COMMON",
+            ["left-bcr-code"] = "TAKE-L",
+            ["right-bcr-code"] = "TAKE-R"
         });
-        var devices = config.Topology!.Readers.Select((r, i) => r with { Driver = reader.Implementation,
-            Parameters = new() { ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-" + i,
-                ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }).ToArray();
+        var devices = config.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = reader.Implementation,
+            Parameters = new()
+            {
+                ["device.ip"] = "192.0.2." + (21 + i),
+                ["device.serial"] = "SYNTH-" + i,
+                ["entity.mode"] = "read-result",
+                ["acquisition.trigger"] = "off"
+            }
+        }).ToArray();
         var visualConfig = config with { Wcs = binding, Reader = devices[0], Topology = config.Topology with { Readers = devices } };
         probe.Catalog = new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], []);
-        probe.Project = s => s with { Configuration = s.Configuration with { Effective = visualConfig }, Health =
-            [new(binding.InstanceId, true, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddMinutes(1), "SYNTHETIC local lifecycle; upstream acceptance unconfirmed")] };
+        probe.Project = s => s with
+        {
+            Configuration = s.Configuration with { Effective = visualConfig },
+            Health =
+            [new(binding.InstanceId, true, DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddMinutes(1), "SYNTHETIC local lifecycle; upstream acceptance unconfirmed")]
+        };
         for (var i = 0; i < 100 && vm.Snapshot?.Configuration.Effective.Wcs?.InstanceId != binding.InstanceId; i++) { await vm.RefreshAsync(); await Task.Delay(20); }
         await vm.LoadCapabilitiesAsync(); var model = vm.ParameterEditor!;
         var leftReader = model.Readers.Single(r => r.Role == "left");

@@ -55,6 +55,18 @@ public partial class SupplyStationWindow
         TaskRow("备份后恢复供包", "重新检查连接、暂停状态、存储容量和未确认作业，通过后恢复供包；不会重发格口未确认的请求。", "检查并恢复", async () => { await ViewModel.RequireManagementModeAsync(); var s = await ViewModel.Application.SnapshotAsync(); var r = await ViewModel.Application.CommandAsync(new(Wire.Id(), s.Revision, "Resume")); ViewModel.Message = r.Status + " · " + r.Reason; });
         TaskRow("远程支持", "导出诊断包：设备状态、近期请求索引和校验清单，不含条码、图片和密码；文件只保存在本机。", "导出诊断包…", ExportProductDiagnostics);
         TaskRow("恢复备份、换机、修复或卸载", "先完全停止软件，再进入离线维护。备份恢复到新目录，不覆盖原数据。", "进入离线维护…", RequestOfflineMaintenance);
+        // Optional notice from the station's update folder; reading never installs or pauses anything.
+        var update = ProductText("正在读取新版本说明…");
+        async Task CheckUpdate()
+        {
+            if (ViewModel.Application is not IUpdateNoticeSource source) { update.Text = "当前版本不支持新版本提示。"; return; }
+            var notice = await source.ReadUpdateNoticeAsync(CancellationToken.None);
+            update.Text = notice.Text;
+            update.SetResourceReference(TextBlock.ForegroundProperty, notice.State is UpdateNoticeState.CurrentRevoked ? "Danger" : notice.State is UpdateNoticeState.Available ? "Accent" : "Muted");
+        }
+        TaskRow("软件更新", "新版本说明由实施人员放在本机数据目录的 updates 文件夹（或在其中的 source.txt 写共享路径）。这里只提示，安装仍按部署卡进行。", "重新检查", CheckUpdate);
+        tasks.Children.Add(update);
+        body.Loaded += async (_, _) => { try { await CheckUpdate(); } catch (Exception) { update.Text = "新版本说明读取失败，不影响作业；请稍后重新检查。"; } };
         tasks.SizeChanged += (_, _) => { var two = tasks.ActualWidth >= 900; foreach (var item in tasks.Children.OfType<FrameworkElement>()) item.Width = Math.Max(220, tasks.ActualWidth / (two ? 2 : 1) - 24); };
         body.Children.Add(tasks);
         var cancelExport = new Button { Content = "取消诊断导出", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };

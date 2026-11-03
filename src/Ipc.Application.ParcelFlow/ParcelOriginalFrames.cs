@@ -16,8 +16,15 @@ public sealed partial class ParcelRuntime
     void RecoverOriginalFrameArchives()
     {
         foreach (var op in operations.Values.Where(o => o.OriginalFrame?.State == "Pending").ToArray())
-            Save(op with { OriginalFrame = op.OriginalFrame! with { State = "Interrupted", At = DateTimeOffset.UtcNow,
-                Failure = "Process stopped before archive completion; preserve any original file; never substitute a new frame or replay the business request" } },
+            Save(op with
+            {
+                OriginalFrame = op.OriginalFrame! with
+                {
+                    State = "Interrupted",
+                    At = DateTimeOffset.UtcNow,
+                    Failure = "Process stopped before archive completion; preserve any original file; never substitute a new frame or replay the business request"
+                }
+            },
                 "OriginalFrameInterrupted", "Image archive recovery only; original business facts unchanged");
         foreach (var op in operations.Values.Where(o => o.OriginalFrame?.State == "Saved").ToArray())
             try
@@ -85,8 +92,14 @@ public sealed partial class ParcelRuntime
         using (var file = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
         { file.Write(encoded); file.Flush(true); }
         File.Move(temporary, destination); // never overwrite another acquisition or an uncertain previous file
-        return frame with { State = "Saved", At = DateTimeOffset.UtcNow, RawSha256 = rawHash,
-            FileSha256 = Convert.ToHexString(SHA256.HashData(encoded)), Length = encoded.Length };
+        return frame with
+        {
+            State = "Saved",
+            At = DateTimeOffset.UtcNow,
+            RawSha256 = rawHash,
+            FileSha256 = Convert.ToHexString(SHA256.HashData(encoded)),
+            Length = encoded.Length
+        };
     }
     internal static byte[] EncodeOriginalPng(ReadOnlySpan<byte> pixels, int width, int height)
     {

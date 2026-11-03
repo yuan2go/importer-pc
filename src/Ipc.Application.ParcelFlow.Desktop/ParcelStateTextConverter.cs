@@ -13,16 +13,26 @@ public sealed class ParcelStateTextConverter : IValueConverter
         if (!Enum.TryParse<ParcelState>(value?.ToString(), out var state)) return value ?? "未取得";
         return state switch
         {
-            ParcelState.Prepared => "待处理", ParcelState.ResolvingWcs => "正在获取格口",
-            ParcelState.SlotResolved => "格口已取得", ParcelState.WcsUnknown => "格口未确认",
-            ParcelState.WcsRejected => "未分配格口", ParcelState.Blocked => "已受阻",
-            ParcelState.UnpackRequired => "需拆包检查", ParcelState.Abandoned => "未发送 · 已撤销",
-            ParcelState.WaitingWeight => "等待有效重量", ParcelState.WeightTimedOut => "称重超时",
-            ParcelState.CapturingImage => "正在采集图像", ParcelState.UploadingImage => "正在上传原图",
-            ParcelState.ImageUnknown => "图片上传未确认", ParcelState.ImageRejected => "图像阶段拒绝",
-            ParcelState.SubmittingPlc => "控制器请求处理中", ParcelState.PlcAccepted => "控制器已接受",
-            ParcelState.PlcUnknown => "控制器结果未确认", ParcelState.PlcRejected => "控制器明确拒绝",
-            ParcelState.PhysicalCompleted => "已报告物理完成", _ => state.ToString()
+            ParcelState.Prepared => "待处理",
+            ParcelState.ResolvingWcs => "正在获取格口",
+            ParcelState.SlotResolved => "格口已取得",
+            ParcelState.WcsUnknown => "格口未确认",
+            ParcelState.WcsRejected => "未分配格口",
+            ParcelState.Blocked => "已受阻",
+            ParcelState.UnpackRequired => "需拆包检查",
+            ParcelState.Abandoned => "未发送 · 已撤销",
+            ParcelState.WaitingWeight => "等待有效重量",
+            ParcelState.WeightTimedOut => "称重超时",
+            ParcelState.CapturingImage => "正在采集图像",
+            ParcelState.UploadingImage => "正在上传原图",
+            ParcelState.ImageUnknown => "图片上传未确认",
+            ParcelState.ImageRejected => "图像阶段拒绝",
+            ParcelState.SubmittingPlc => "控制器请求处理中",
+            ParcelState.PlcAccepted => "控制器已接受",
+            ParcelState.PlcUnknown => "控制器结果未确认",
+            ParcelState.PlcRejected => "控制器明确拒绝",
+            ParcelState.PhysicalCompleted => "已报告物理完成",
+            _ => state.ToString()
         };
     }
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();

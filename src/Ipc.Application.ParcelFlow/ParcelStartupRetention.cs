@@ -48,8 +48,11 @@ public sealed partial class ParcelStartupMaintenance : IStartupRetentionMaintena
         }
         catch (Exception error)
         {
-            try { ExtensionStore.AtomicWrite(file, new StartupRetentionOutcome("Interrupted", plan.Identity,
-                "维护未完整结束。已提交的到期事实不回滚；原数据和完整备份保留。请先核对原回执，再重新预检剩余范围。\n" + DiagnosticText.Protect(error.Message))); }
+            try
+            {
+                ExtensionStore.AtomicWrite(file, new StartupRetentionOutcome("Interrupted", plan.Identity,
+                "维护未完整结束。已提交的到期事实不回滚；原数据和完整备份保留。请先核对原回执，再重新预检剩余范围。\n" + DiagnosticText.Protect(error.Message)));
+            }
             catch (Exception receiptError) { throw new AggregateException("原维护及终态回执均未完整结束；保留原计划核对", error, receiptError); }
             throw;
         }

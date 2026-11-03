@@ -173,7 +173,8 @@ public class BarcodeTransportProbe : ProjectionProbe
 static class BarcodeNativeKeyboard
 {
     [StructLayout(LayoutKind.Sequential)] struct Input { public uint Type; public InputUnion Data; }
-    [StructLayout(LayoutKind.Explicit)] struct InputUnion
+    [StructLayout(LayoutKind.Explicit)]
+    struct InputUnion
     {
         [FieldOffset(0)] public KeyboardInput Keyboard;
         [FieldOffset(0)] public MouseInput Mouse;

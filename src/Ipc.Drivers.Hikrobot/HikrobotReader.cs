@@ -41,10 +41,16 @@ internal sealed class HikrobotReader : IControlledObservationSource
     readonly Dictionary<uint, uint> triggers = [];
     public string DeviceId => context.DeviceId;
     public string Epoch { get; private set; } = "not-started";
-    public string ConfirmationSource { get { lock (gate) return "SDK:hikrobot-idmvs:" + context.InstanceId + "; epoch=" + Epoch +
+    public string ConfirmationSource
+    {
+        get
+        {
+            lock (gate) return "SDK:hikrobot-idmvs:" + context.InstanceId + "; epoch=" + Epoch +
         "; received=" + FramesReceived + "; delivered=" + FramesDelivered + "; rejected=" + FramesRejected + "; inFlight=" + FramesInFlight +
         "; sequence=" + sequence + "; bufferedBytes=" + bufferedCodeBytes + "; codes=" + CodesReceived + "; emptyResultsIgnored=" + EmptyResultsIgnored + "; noCodeFrames=" + NoCodeFrames + "; multiCodeFrames=" + MultipleCodeFrames + "; acquisition=" + acquisitionMode + "; phase=" + Phase +
-        (LastFailure is null ? "" : "; failure=" + LastFailure); } }
+        (LastFailure is null ? "" : "; failure=" + LastFailure);
+        }
+    }
     public string Phase { get; private set; } = "not-started";
     public string? LastFailure { get; private set; }
     public long FramesReceived { get; private set; }
@@ -87,8 +93,11 @@ internal sealed class HikrobotReader : IControlledObservationSource
             ObjectDisposedException.ThrowIf(disposed || disposeRequested, this);
             if (created || queue is not null) throw new InvalidOperationException("Previous reader registration still owns resources");
             lock (gate) { if (stopTask is { IsCompleted: false }) throw new InvalidOperationException("Original stop is still running; resources retained"); stopTask = null; }
-            lock (gate) { Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = CodesReceived = NoCodeFrames = EmptyResultsIgnored = MultipleCodeFrames = 0;
-                faultSignal = new(TaskCreationOptions.RunContinuationsAsynchronously); }
+            lock (gate)
+            {
+                Epoch = registeredEpoch; receiver = receive; health = onHealth; faulted = false; LastFailure = null; sequence = 0; bufferedCodeBytes = 0; triggers.Clear(); FramesReceived = FramesDelivered = FramesRejected = CodesReceived = NoCodeFrames = EmptyResultsIgnored = MultipleCodeFrames = 0;
+                faultSignal = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            }
             // Exactly one fault publisher per registration. Native callbacks only
             // fence local state and signal it; they never call host health code.
             faultReporter = ReportFault(faultSignal.Task);

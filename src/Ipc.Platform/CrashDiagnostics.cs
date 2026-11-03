@@ -44,11 +44,26 @@ public sealed class CrashDiagnostics : IDisposable
         try
         {
             var current = Volatile.Read(ref context);
-            RuntimeJournal.AppendMetadata(directory, new { At = DateTimeOffset.UtcNow, Source = "进程", Level = isFatal ? "致命" : "错误", Event = kind,
-                Version = version, SourceCommit = sourceCommit, ProcessId = Environment.ProcessId, current.Instance, current.Epochs, current.RecentState,
-                LatestProgress = LatestProgress(), UnobservedTaskCount = UnobservedCount, FatalExitCode,
-                ExitCode = preventRestart ? PermanentStorageExitCode : FatalExitCode, PreventRestart = preventRestart,
-                Exception = Clip(error.ToString(), 16384), Policy = "Diagnostics only; no replay or in-process recovery" });
+            RuntimeJournal.AppendMetadata(directory, new
+            {
+                At = DateTimeOffset.UtcNow,
+                Source = "进程",
+                Level = isFatal ? "致命" : "错误",
+                Event = kind,
+                Version = version,
+                SourceCommit = sourceCommit,
+                ProcessId = Environment.ProcessId,
+                current.Instance,
+                current.Epochs,
+                current.RecentState,
+                LatestProgress = LatestProgress(),
+                UnobservedTaskCount = UnobservedCount,
+                FatalExitCode,
+                ExitCode = preventRestart ? PermanentStorageExitCode : FatalExitCode,
+                PreventRestart = preventRestart,
+                Exception = Clip(error.ToString(), 16384),
+                Policy = "Diagnostics only; no replay or in-process recovery"
+            });
             LastWriteFailure = null; return true; // AppendMetadata performs Flush(true).
         }
         catch (Exception ex) { LastWriteFailure = ex.GetType().Name; return false; }

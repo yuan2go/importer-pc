@@ -181,35 +181,43 @@ await Case("Journal.OrdinaryParcelMetadataMustNotPersistRawBarcode", async () =>
 });
 
 foreach (var scenario in new[] { "split-crlf-coalesced", "empty", "control", "overlong", "invalid-utf8", "partial-eof", "silent", "callback-throw" })
-await Case("TCP." + scenario, async () =>
-{
-    using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
-    var binding = new DeviceBinding("parcel-reader", "tcp-line", "review.tcp", "1") { Parameters = new()
-        { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["liveness-timeout-seconds"] = "2" } };
-    var seen = new ConcurrentQueue<Observation>(); var states = new ConcurrentQueue<DeviceHealth>();
-    await using var source = new TcpLineObservationSource(binding);
-    await source.StartControlledAsync("tcp-review", o => { if (scenario == "callback-throw") throw new IOException("SYNTHETIC-SECRET"); seen.Enqueue(o); return true; }, h => states.Enqueue(h.Health), default);
-    using var peer = await listener.AcceptTcpClientAsync(); var stream = peer.GetStream();
-    if (scenario == "split-crlf-coalesced")
+    await Case("TCP." + scenario, async () =>
     {
-        var bytes = Encoding.UTF8.GetBytes("合成\r\nSAME\nSAME\n");
-        await stream.WriteAsync(bytes.AsMemory(0, 1)); await stream.WriteAsync(bytes.AsMemory(1));
-        await Until(() => seen.Count == 3);
-        var observations = seen.ToArray();
-        Require(observations.Select(o => o.Codes[0]).SequenceEqual(["合成", "SAME", "SAME"]) && observations.All(o => o.Kind == "UncorrelatedRead") &&
-            observations.Select(o => o.Sequence).SequenceEqual([1L, 2L, 3L]) && observations.Select(o => o.AdmissionId).Distinct().Count() == 3, "framing, identity or observe-only broken");
-        return;
-    }
-    var payload = scenario switch
-    {
-        "empty" => "\nOK\n"u8.ToArray(), "control" => "BAD\0\nOK\n"u8.ToArray(), "overlong" => Encoding.UTF8.GetBytes(new string('X', 4097) + "\nOK\n"),
-        "invalid-utf8" => new byte[] { 0xff, 10, 79, 75, 10 }, "partial-eof" => "PARTIAL"u8.ToArray(), "callback-throw" => "SYNTHETIC\n"u8.ToArray(), _ => Array.Empty<byte>()
-    };
-    if (payload.Length != 0) await stream.WriteAsync(payload);
-    if (scenario == "partial-eof") peer.Close();
-    await Until(() => states.Contains(DeviceHealth.Faulted));
-    Require(seen.IsEmpty && states.Last() == DeviceHealth.Faulted && source.LastFailure is not null && !source.LastFailure.Contains("SECRET") && !listener.Pending(), "invalid stream continued, auto-reconnected or exposed input");
-});
+        using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
+        var binding = new DeviceBinding("parcel-reader", "tcp-line", "review.tcp", "1")
+        {
+            Parameters = new()
+            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["liveness-timeout-seconds"] = "2" }
+        };
+        var seen = new ConcurrentQueue<Observation>(); var states = new ConcurrentQueue<DeviceHealth>();
+        await using var source = new TcpLineObservationSource(binding);
+        await source.StartControlledAsync("tcp-review", o => { if (scenario == "callback-throw") throw new IOException("SYNTHETIC-SECRET"); seen.Enqueue(o); return true; }, h => states.Enqueue(h.Health), default);
+        using var peer = await listener.AcceptTcpClientAsync(); var stream = peer.GetStream();
+        if (scenario == "split-crlf-coalesced")
+        {
+            var bytes = Encoding.UTF8.GetBytes("合成\r\nSAME\nSAME\n");
+            await stream.WriteAsync(bytes.AsMemory(0, 1)); await stream.WriteAsync(bytes.AsMemory(1));
+            await Until(() => seen.Count == 3);
+            var observations = seen.ToArray();
+            Require(observations.Select(o => o.Codes[0]).SequenceEqual(["合成", "SAME", "SAME"]) && observations.All(o => o.Kind == "UncorrelatedRead") &&
+                observations.Select(o => o.Sequence).SequenceEqual([1L, 2L, 3L]) && observations.Select(o => o.AdmissionId).Distinct().Count() == 3, "framing, identity or observe-only broken");
+            return;
+        }
+        var payload = scenario switch
+        {
+            "empty" => "\nOK\n"u8.ToArray(),
+            "control" => "BAD\0\nOK\n"u8.ToArray(),
+            "overlong" => Encoding.UTF8.GetBytes(new string('X', 4097) + "\nOK\n"),
+            "invalid-utf8" => new byte[] { 0xff, 10, 79, 75, 10 },
+            "partial-eof" => "PARTIAL"u8.ToArray(),
+            "callback-throw" => "SYNTHETIC\n"u8.ToArray(),
+            _ => Array.Empty<byte>()
+        };
+        if (payload.Length != 0) await stream.WriteAsync(payload);
+        if (scenario == "partial-eof") peer.Close();
+        await Until(() => states.Contains(DeviceHealth.Faulted));
+        Require(seen.IsEmpty && states.Last() == DeviceHealth.Faulted && source.LastFailure is not null && !source.LastFailure.Contains("SECRET") && !listener.Pending(), "invalid stream continued, auto-reconnected or exposed input");
+    });
 
 Console.WriteLine($"INDEPENDENT_REVIEW_RESULT passed={passed} failed={failed} skipped=0; synthetic only; real hardware NOT_RUN");
 Environment.ExitCode = failed == 0 ? 0 : 1;

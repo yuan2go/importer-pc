@@ -88,15 +88,25 @@ if (action is "backup" or "preflight" or "restore")
         var inspection = SupplyStore.InspectReadOnly(source);
         RegisterRecoveryCopy(station.Mode, source, dbPath);
         SupplyStore.RestoreVerified(source, dbPath);
-        Console.WriteLine(Wire.Encode(new { Status = "RestoredQuarantined", SourceFormat = inspection.FormatVersion,
-            DestinationFormat = SupplyStore.CurrentFormatVersion, SourceBackupSha256 = Wire.FileHash(source),
-            Launch = "NOT_RUN", ExternalReconciliation = "REQUIRED" })); return;
+        Console.WriteLine(Wire.Encode(new
+        {
+            Status = "RestoredQuarantined",
+            SourceFormat = inspection.FormatVersion,
+            DestinationFormat = SupplyStore.CurrentFormatVersion,
+            SourceBackupSha256 = Wire.FileHash(source),
+            Launch = "NOT_RUN",
+            ExternalReconciliation = "REQUIRED"
+        })); return;
     }
     if (action == "preflight")
     {
         var inspection = SupplyStore.InspectReadOnly(dbPath);
-        Console.WriteLine(Wire.Encode(new { Status = inspection.RecoveryBlockers.Length == 0 ? "ReadOnlyInspectionCompleted" : "Blocked",
-            Inspection = inspection, Launch = "NOT_RUN" }));
+        Console.WriteLine(Wire.Encode(new
+        {
+            Status = inspection.RecoveryBlockers.Length == 0 ? "ReadOnlyInspectionCompleted" : "Blocked",
+            Inspection = inspection,
+            Launch = "NOT_RUN"
+        }));
         if (inspection.RecoveryBlockers.Length != 0) Environment.ExitCode = 2;
     }
     else if (action == "backup")

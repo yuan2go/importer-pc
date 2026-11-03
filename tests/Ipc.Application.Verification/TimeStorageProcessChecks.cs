@@ -20,7 +20,7 @@ static class TimeStorageProcessChecks
     {
         var location = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "release"), Path.Combine(root, "config"), Path.Combine(root, "data"), "synthetic-account")
         { Recovery = new(Enabled: true, RestartDelaySeconds: 1, MaximumRestarts: 2, HealthyResetSeconds: 60) };
-            DesktopRecoverySupervisor.InitializeNewDeployment(location);
+        DesktopRecoverySupervisor.InitializeNewDeployment(location);
         var launches = 0;
         Process Launch()
         {
@@ -75,7 +75,7 @@ static class TimeStorageProcessChecks
         var monitor = RuntimeFatalMonitor.RunAsync(app, diagnostics, stop.Token);
         if (mode == "startup-permanent")
         {
-            var seedFile=Path.Combine(root,"business.json");File.Move(seedFile,seedFile+".retained");Directory.CreateDirectory(seedFile);
+            var seedFile = Path.Combine(root, "business.json"); File.Move(seedFile, seedFile + ".retained"); Directory.CreateDirectory(seedFile);
             try { await app.StartAsync(default); }
             catch (UnauthorizedAccessException) { await monitor.WaitAsync(TimeSpan.FromSeconds(8)); }
             throw new Exception("Startup permanent fault did not terminate through the fatal monitor");
@@ -116,12 +116,12 @@ static class TimeStorageProcessChecks
         if (mode == "budget-empty") File.WriteAllText(Path.Combine(root, "expect-empty"), "No durable input existed before fault");
         else
         {
-        app.EmitReferenceAt("left", "synthetic-storage-unknown", "000123", Wire.Id());
-        ParcelOperation? original;
-        while ((original = (await app.SnapshotAsync()).Operations.SingleOrDefault())?.State != ParcelState.WcsUnknown)
-        { if (wait.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException("Synthetic Unknown"); await Task.Delay(10); }
-        File.WriteAllText(Path.Combine(root, "frozen-request.json"), Wire.Encode(original.Wcs!.Request));
-        if (factory.Calls != 1) throw new Exception("Expected one original provider call");
+            app.EmitReferenceAt("left", "synthetic-storage-unknown", "000123", Wire.Id());
+            ParcelOperation? original;
+            while ((original = (await app.SnapshotAsync()).Operations.SingleOrDefault())?.State != ParcelState.WcsUnknown)
+            { if (wait.Elapsed > TimeSpan.FromSeconds(8)) throw new TimeoutException("Synthetic Unknown"); await Task.Delay(10); }
+            File.WriteAllText(Path.Combine(root, "frozen-request.json"), Wire.Encode(original.Wcs!.Request));
+            if (factory.Calls != 1) throw new Exception("Expected one original provider call");
         }
         if (mode == "ambiguous") File.WriteAllText(Path.Combine(root, "expect-interrupted"), "original input must remain");
         app.Boundary = point =>
@@ -160,7 +160,7 @@ static class TimeStorageProcessChecks
             if (mode is "permanent" or "startup-permanent" ? result != 77 || launches != 1 : result != 0 || launches != 2)
                 throw new Exception("FAIL ST08 process closure " + mode + "; launches=" + launches + "; supervisor=" + result);
             var text = string.Join("\n", Directory.GetFiles(Path.Combine(childRoot, "fatal-diagnostics"), "*", SearchOption.AllDirectories).Select(File.ReadAllText));
-            if (!text.Contains(mode=="startup-permanent" ? "Storage.SeedRead.Unrecoverable" : "Storage.IngressCustody.") || !text.Contains("SourceCommit") || !text.Contains("Epochs") || !text.Contains("RecentState"))
+            if (!text.Contains(mode == "startup-permanent" ? "Storage.SeedRead.Unrecoverable" : "Storage.IngressCustody.") || !text.Contains("SourceCommit") || !text.Contains("Epochs") || !text.Contains("RecentState"))
                 throw new Exception("Missing flushed version/commit/instance/epoch/state fatal storage diagnostic");
             if (mode is ("permanent" or "startup-permanent") && !File.Exists(Path.Combine(DesktopRecoverySupervisor.StateDirectory(location), "alert.json"))) throw new Exception("Missing permanent failure alert");
             Console.WriteLine("PASS ST08 process closure " + mode + "; launches=" + launches + "; supervisor=" + result + "; elapsedMs=" + elapsed.ElapsedMilliseconds);

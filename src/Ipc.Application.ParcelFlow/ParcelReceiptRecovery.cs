@@ -10,14 +10,14 @@ public sealed partial class ParcelRepository
         using var c = db.CreateCommand();
         c.CommandText = "SELECT id,operation,stage,request,source,state,raw_hash FROM parcel_receipts WHERE operation=$op AND (state IN ('Awaiting','RawDurable') OR rowid IN (SELECT rowid FROM parcel_receipts WHERE operation=$op ORDER BY rowid DESC LIMIT 200)) ORDER BY rowid DESC";
         c.Parameters.AddWithValue("$op", operation); using var r = c.ExecuteReader(); List<ParcelReceiptResponsibility> rows = [];
-        while (r.Read()) rows.Add(new(r.GetString(0),r.GetString(1),r.GetString(2),r.GetString(3),r.GetString(4),r.GetString(5),r.IsDBNull(6) ? null : r.GetString(6)));
+        while (r.Read()) rows.Add(new(r.GetString(0), r.GetString(1), r.GetString(2), r.GetString(3), r.GetString(4), r.GetString(5), r.IsDBNull(6) ? null : r.GetString(6)));
         return rows.Select(x => x with { QueryOccurrence = CustodyQuery(x.Id), Custody = x.State == "Awaiting" && x.RawHash is null ? "OriginalRawMissing" : null }).ToArray();
     }
     public ParcelReceiptResponsibility? ReceiptById(string id)
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT id,operation,stage,request,source,state,raw_hash FROM parcel_receipts WHERE id=$id";
-        c.Parameters.AddWithValue("$id",id); using var r = c.ExecuteReader();
-        ParcelReceiptResponsibility? row = !r.Read() ? null : new(r.GetString(0),r.GetString(1),r.GetString(2),r.GetString(3),r.GetString(4),r.GetString(5),r.IsDBNull(6) ? null : r.GetString(6));
+        c.Parameters.AddWithValue("$id", id); using var r = c.ExecuteReader();
+        ParcelReceiptResponsibility? row = !r.Read() ? null : new(r.GetString(0), r.GetString(1), r.GetString(2), r.GetString(3), r.GetString(4), r.GetString(5), r.IsDBNull(6) ? null : r.GetString(6));
         r.Close(); return row is null ? null : row with { QueryOccurrence = CustodyQuery(row.Id), Custody = row.State == "Awaiting" && row.RawHash is null ? "OriginalRawMissing" : null };
     }
     public bool MissingAwaitingRaw(string id) => !File.Exists(Path.Combine(rawRoot, id + ".json")) &&
@@ -71,8 +71,15 @@ public sealed partial class ParcelRuntime
             return new("Rejected", "Original stage unavailable, conflicting or in use", repository.Revision);
         if (!factory.Requirements(stage.Request.Binding).Query)
             return new("QueryUnsupported", "原接口不提供结果查询；原请求及缺失回执责任保留，不会重发。", repository.Revision);
-        var auditReason = Wire.Encode(new { OriginalOccurrence = pending.Id, OriginalSource = repository.ReceiptById(pending.Id)!.Source,
-            Actor = ManagementEvidence, Reason = command.Value, MissingRaw = true, Policy = "Authoritative original-query outcome only; absent old raw remains absent and original occurrence retained" });
+        var auditReason = Wire.Encode(new
+        {
+            OriginalOccurrence = pending.Id,
+            OriginalSource = repository.ReceiptById(pending.Id)!.Source,
+            Actor = ManagementEvidence,
+            Reason = command.Value,
+            MissingRaw = true,
+            Policy = "Authoritative original-query outcome only; absent old raw remains absent and original occurrence retained"
+        });
         repository.AdmitCommand(command);
         await ExecuteStageAsync(op, kind, true, pending.Id, auditReason).ConfigureAwait(false);
         ReleaseCompletedImages();

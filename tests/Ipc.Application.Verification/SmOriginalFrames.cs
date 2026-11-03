@@ -36,10 +36,20 @@ static partial class SportmasterRcs
             "invalid delimiter, overlong joined payload and incomplete candidates refuse without truncation");
         await using var peer = new Peer();
         var seed = HeartbeatConfiguration(workspace, Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs" });
-        var readers = seed.Topology!.Readers.Select((r, i) => r with { Driver = "hikrobot-mvs-reader", Parameters = new()
-        { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ORIGINAL-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" } }).ToArray();
-        var config = seed with { Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Login = null,
-            DeferredConnections = [readers[1].DeviceId], BarcodeFilter = new("", RejectMultipleCodes: false, MultiCodeSeparator: "|") };
+        var readers = seed.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = "hikrobot-mvs-reader",
+            Parameters = new()
+            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ORIGINAL-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off" }
+        }).ToArray();
+        var config = seed with
+        {
+            Reader = readers[0],
+            Topology = seed.Topology with { Readers = readers },
+            Login = null,
+            DeferredConnections = [readers[1].DeviceId],
+            BarcodeFilter = new("", RejectMultipleCodes: false, MultiCodeSeparator: "|")
+        };
         var configRoot = Path.Combine(root, "original-config"); Directory.CreateDirectory(configRoot);
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(root, "original-data"), null, null);
@@ -78,8 +88,11 @@ static partial class SportmasterRcs
                 using (var cancelled = new CancellationTokenSource(20))
                 {
                     try { await app.StopAsync(cancelled.Token); throw new Exception("Blocked archive stop returned success"); }
-                    catch (OperationCanceledException) { Check(factory.Source!.RetainedOriginalFrames > 0 && !stopping.IsCompleted,
-                        "cancelled stop wait retains the actual pending raw-frame writers and their original memory"); }
+                    catch (OperationCanceledException)
+                    {
+                        Check(factory.Source!.RetainedOriginalFrames > 0 && !stopping.IsCompleted,
+                        "cancelled stop wait retains the actual pending raw-frame writers and their original memory");
+                    }
                 }
                 release.Set(); await stopping.WaitAsync(TimeSpan.FromSeconds(10));
                 saved = (await app.SnapshotAsync()).Operations;
@@ -142,8 +155,11 @@ static partial class SportmasterRcs
         {
             var reject = archiveCase == "rejected";
             peer.Mode = "assigned";
-            var c = config with { BarcodeFilter = reject ? null : config.BarcodeFilter,
-                Wcs = config.Wcs! with { Parameters = new(config.Wcs.Parameters) { ["request-timeout-ms"] = archiveCase == "saved" ? "1500" : "150" } } };
+            var c = config with
+            {
+                BarcodeFilter = reject ? null : config.BarcodeFilter,
+                Wcs = config.Wcs! with { Parameters = new(config.Wcs.Parameters) { ["request-timeout-ms"] = archiveCase == "saved" ? "1500" : "150" } }
+            };
             var folder = Path.Combine(root, archiveCase + "-archive-unknown"); var cfg = Path.Combine(folder, "config"); Directory.CreateDirectory(cfg);
             ExtensionStore.AtomicWrite(Path.Combine(cfg, "business.json"), c);
             var run = new BusinessLaunch(cfg, Path.Combine(folder, "data"), null, null);

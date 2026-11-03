@@ -46,7 +46,7 @@ internal static class CameraChainReliability
                 var step = Math.Max(qr.Width, qr.Height) + 20; var side = step * 8;
                 var many = Enumerable.Repeat((byte)255, side * side).ToArray();
                 for (var row = 0; row < 8; row++) for (var col = 0; col < 8; col++) for (var y = 0; y < qr.Height; y++)
-                    qr.Data.AsSpan(y * qr.Width, qr.Width).CopyTo(many.AsSpan((row * step + y) * side + col * step, qr.Width));
+                            qr.Data.AsSpan(y * qr.Width, qr.Width).CopyTo(many.AsSpan((row * step + y) * side + col * step, qr.Width));
                 try { decoder.Decode(many, many.Length, side, side); throw new Exception("Candidate limit produced a partial frame"); }
                 catch (MvsFrameRejection e) { Check(e.Reason == "CandidateLimit", "64-symbol frame is rejected completely instead of partial candidates"); }
                 Check(decoder.Decode(qr.Data, qr.Data.Length, qr.Width, qr.Height).Single() == "SYNTH-QR", "candidate overflow leaves decoder usable for the next frame");

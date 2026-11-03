@@ -38,9 +38,18 @@ static partial class Program
                 await Until(() => h.Factory.Decoders[h.Left].Last is [{ Text: var text }] && text == code && p.ReadCueLabel.EndsWith(code[^Math.Min(4, code.Length)..], StringComparison.Ordinal), "decode/feedback " + code);
             }
             async Task Resolved(string code) => await Until(() => p.Operation?.ParcelCode == code && p.ShowConfirmedTask, "resolved " + code);
-            string State() => Wire.Encode(new { Main = entry.Text, Model = p.Barcode, Read = p.ReadCueLabel,
-                Decoder = h.Factory.Decoders[h.Left].Last.Select(s => s.Text), Input = p.Input?.Observation.Codes,
-                Operation = p.Operation?.ParcelCode, p.ShowConfirmedTask, PictureEnabled = picture.IsEnabled, Editing = edits.GetValue(control) });
+            string State() => Wire.Encode(new
+            {
+                Main = entry.Text,
+                Model = p.Barcode,
+                Read = p.ReadCueLabel,
+                Decoder = h.Factory.Decoders[h.Left].Last.Select(s => s.Text),
+                Input = p.Input?.Observation.Codes,
+                Operation = p.Operation?.ParcelCode,
+                p.ShowConfirmedTask,
+                PictureEnabled = picture.IsEnabled,
+                Editing = edits.GetValue(control)
+            });
 
             // The first read has no older Input/Operation to make HasCurrentInput true.
             h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref blocked, 0) == 1) { entered.Set(); release.Wait(); } };
@@ -142,7 +151,8 @@ static partial class Program
             var current = await h.App.SnapshotAsync(); await projection.AcceptPublishedSnapshotAsync(current);
             var input = projection.Right.Input!.Observation;
             var read = new ParcelReadFeedback(current.RuntimeId, "right", Wire.Id(), input.DeviceId, input.Epoch,
-                "SYNTH-CLOCK-NEW", Stopwatch.GetTimestamp(), input.ObservedAt.AddHours(-1)) { SourceSequence = input.Sequence + 1 };
+                "SYNTH-CLOCK-NEW", Stopwatch.GetTimestamp(), input.ObservedAt.AddHours(-1))
+            { SourceSequence = input.Sequence + 1 };
             var apply = projection.Right.GetType().GetMethod("ApplyReadFeedback", BindingFlags.Instance | BindingFlags.NonPublic)!;
             apply.Invoke(projection.Right, [read]);
             Check(projection.Right.Barcode == "SYNTH-CLOCK-NEW" && !projection.Right.ShowConfirmedTask,

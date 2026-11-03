@@ -60,7 +60,7 @@ internal static partial class MvsVerification
         var failedCleanupApi = new Fake { Discovered = false, FailStage = "finalize" };
         var wrongIdentityApi = new Fake(); var wrongIdentityLease = new Lease();
         await using (var source = Source(wrongIdentityApi, wrongIdentityLease, new()
-            { ["device.ip"] = wrongIdentityApi.Ip, ["device.serial"] = "SYNTH-OTHER" }))
+        { ["device.ip"] = wrongIdentityApi.Ip, ["device.serial"] = "SYNTH-OTHER" }))
         {
             try { await source.StartControlledAsync("wrong-identity", _ => true, _ => { }, default); throw new Exception("Wrong physical camera opened"); }
             catch (ObservationConnectionException) { }

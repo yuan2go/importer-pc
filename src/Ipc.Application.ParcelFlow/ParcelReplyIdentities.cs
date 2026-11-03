@@ -55,8 +55,10 @@ public sealed partial class ParcelRepository
             var operation = ReadOperation(reader.GetString(2)) ?? throw new InvalidDataException("Original reply operation unavailable");
             var stage = reader.GetString(3) switch
             {
-                "image-capture" => operation.Capture, "image-upload" => operation.Upload,
-                "wcs-slot" => operation.Wcs, "plc-submit" => operation.Plc,
+                "image-capture" => operation.Capture,
+                "image-upload" => operation.Upload,
+                "wcs-slot" => operation.Wcs,
+                "plc-submit" => operation.Plc,
                 _ => throw new InvalidDataException("Unknown original reply stage")
             };
             if (stage?.Request.Id != reader.GetString(1) || stage.State != StageState.Conflict)

@@ -17,6 +17,7 @@ public sealed record StartupChangePreview(string Identity, string Purpose, bool 
 }
 public sealed record StartupRollbackReview(DeploymentRollbackPlan Deployment, StartupChangePreview? Business);
 public sealed record StartupVersionPruneReview(DeploymentPrunePlan Deployment, StartupChangePreview? Business);
+public sealed record StartupDataPurgeReview(DeploymentPurgePlan Deployment, StartupChangePreview? Business);
 public sealed record StartupSiteTemplate(int SchemaVersion, string Application, string SourceIdentity, StartupEditorState Defaults);
 public sealed record StartupRestoreHandoff(string Id, string SourceDirectory, string TargetDirectory, string BackupIdentity,
     string SourceConfigurationHash, string TargetManifestHash, string MachinePolicyHash, DateTimeOffset At);
@@ -44,7 +45,7 @@ public interface IStartupMaintenance
     Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination);
     Task RestoreAsync(string backup, string destination, string expectedBackupHash);
     Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token);
-    Task<StartupBackupItem[]> ListBackupsAsync(string directory,IProgress<MaintenanceProgress>? progress,CancellationToken token)
+    Task<StartupBackupItem[]> ListBackupsAsync(string directory, IProgress<MaintenanceProgress>? progress, CancellationToken token)
         => throw new NotSupportedException("此维护实现不支持真实进度与取消");
     Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination);
     Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination);

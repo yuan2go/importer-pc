@@ -63,23 +63,23 @@ public sealed class Receiver : IDisposable
             }
             else if (!exists || station != p.StationId || closed) { ok = false; reason = "Context missing/closed/station mismatch"; }
             else switch (p.Kind)
-            {
-                case RequestKind.Validate:
-                    if (p.Package is null or < 1 || p.Package > 10000 || !p.Barcode.All(char.IsAsciiDigit) || p.Barcode.Length is < 1 or > 128) { ok = false; reason = "Invalid synthetic item"; }
-                    else { quantity = Math.Min(p.Package.Value, demand - accepted); if (quantity == 0) { ok = false; reason = "No remaining demand"; } }
-                    break;
-                case RequestKind.Submit:
-                    if (p.Quantity is null or < 1 || p.Quantity > p.Package || p.Quantity > demand - accepted) { ok = false; reason = "Atomic demand conflict/invalid quantity"; }
-                    else { quantity = p.Quantity; accepted += quantity.Value; remaining = demand - accepted; Exec("UPDATE contexts SET accepted=$a,revision=revision+1 WHERE id=$b", tx, accepted, p.SessionId); }
-                    break;
-                case RequestKind.CheckClose:
-                    checkToken = Wire.Id(); Exec("INSERT INTO checks VALUES($a,$b,$c,$d)", tx, checkToken, p.SessionId, revision, remaining); break;
-                case RequestKind.Close:
-                    using (var c = Command("SELECT count(*) FROM checks WHERE token=$a AND session=$b AND revision=$c AND remaining=$d", tx, p.CheckToken, p.SessionId, revision, remaining))
-                        if (Convert.ToInt32(c.ExecuteScalar()) != 1) { ok = false; reason = "Stale close check"; }
-                    if (ok) Exec("UPDATE contexts SET closed=1,revision=revision+1 WHERE id=$a", tx, p.SessionId); break;
-                default: ok = false; reason = "Unsupported logical intent"; break;
-            }
+                {
+                    case RequestKind.Validate:
+                        if (p.Package is null or < 1 || p.Package > 10000 || !p.Barcode.All(char.IsAsciiDigit) || p.Barcode.Length is < 1 or > 128) { ok = false; reason = "Invalid synthetic item"; }
+                        else { quantity = Math.Min(p.Package.Value, demand - accepted); if (quantity == 0) { ok = false; reason = "No remaining demand"; } }
+                        break;
+                    case RequestKind.Submit:
+                        if (p.Quantity is null or < 1 || p.Quantity > p.Package || p.Quantity > demand - accepted) { ok = false; reason = "Atomic demand conflict/invalid quantity"; }
+                        else { quantity = p.Quantity; accepted += quantity.Value; remaining = demand - accepted; Exec("UPDATE contexts SET accepted=$a,revision=revision+1 WHERE id=$b", tx, accepted, p.SessionId); }
+                        break;
+                    case RequestKind.CheckClose:
+                        checkToken = Wire.Id(); Exec("INSERT INTO checks VALUES($a,$b,$c,$d)", tx, checkToken, p.SessionId, revision, remaining); break;
+                    case RequestKind.Close:
+                        using (var c = Command("SELECT count(*) FROM checks WHERE token=$a AND session=$b AND revision=$c AND remaining=$d", tx, p.CheckToken, p.SessionId, revision, remaining))
+                            if (Convert.ToInt32(c.ExecuteScalar()) != 1) { ok = false; reason = "Stale close check"; }
+                        if (ok) Exec("UPDATE contexts SET closed=1,revision=revision+1 WHERE id=$a", tx, p.SessionId); break;
+                    default: ok = false; reason = "Unsupported logical intent"; break;
+                }
             var evidenceId = Wire.Id(); var acquiredAt = DateTimeOffset.UtcNow;
             var response = new IntegrationResponse(envelope.RequestId, envelope.PayloadHash, evidenceId, ok ? "Accepted" : "Rejected", reason, remaining, quantity, checkToken,
                 ok && p.Kind == RequestKind.Context ? SyntheticSemanticFixture.Context(p, evidenceId, acquiredAt) : null,

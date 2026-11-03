@@ -100,17 +100,17 @@ public static partial class WindowsDeploymentSetup
     [SupportedOSPlatform("windows")]
     public static DeploymentLocation Install(WindowsDeploymentRequest request, Action<WindowsDeploymentRequest> validateConfiguration,
         Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress = null)
-        => Install(request,validateConfiguration,installPackages,createShortcuts,progress,null);
+        => Install(request, validateConfiguration, installPackages, createShortcuts, progress, null);
     [SupportedOSPlatform("windows")]
     public static DeploymentLocation Install(WindowsDeploymentRequest request, Action<WindowsDeploymentRequest> validateConfiguration,
         Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress, MaintenanceExecution? execution)
     {
-        execution?.Checkpoint();execution?.Report(MaintenanceStage.Checking);
+        execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         RequireCurrentInstallationRequest(request);
         if (request.ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(request.DataRoot, request.ProgramRoot);
         request.Recovery?.Validate();
-        var media = DeploymentMedia.Inspect(request.MediaRoot,request.ApplicationId,execution?.Token??CancellationToken.None);
+        var media = DeploymentMedia.Inspect(request.MediaRoot, request.ApplicationId, execution?.Token ?? CancellationToken.None);
         if (media.SourceCommit != request.SourceCommit) throw new InvalidDataException("Selected media changed");
         RecoverySecurityPolicy.RequireRelease(Path.Combine(media.Root, "app"));
         validateConfiguration(request);
@@ -131,7 +131,7 @@ public static partial class WindowsDeploymentSetup
             if (Wire.FileHash(trust) != request.TrustSha256) throw new InvalidDataException("Selected independent trust policy changed");
             _ = ReadTrust(trust, request.Mode);
         }
-        if(execution is {Committing:false}) execution.BeginCommit(MaintenanceStage.InstallingMachine);
+        if (execution is { Committing: false }) execution.BeginCommit(MaintenanceStage.InstallingMachine);
         else execution?.Report(MaintenanceStage.InstallingMachine);
         MachineRuntimeSetup.InstallForAccount(request.RuntimeAccountSid);
         TrustedProgramRoots.Approve(vendor, data, sid); ProtectedDirectory(Path.Combine(vendor, "releases"), sid);
@@ -141,6 +141,9 @@ public static partial class WindowsDeploymentSetup
         var before = Current(request.ApplicationId);
         RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
         RequireNoUnresolvedLifecycle(request.ApplicationId);
+        // A partial permanent deletion must never become an empty working station.
+        if (before?.LifecycleState is "Purging" or "PartiallyPurged")
+            throw new InvalidOperationException("本站数据永久删除尚未完成，不能安装；请先核对并继续原次删除。");
         if (before is { LifecycleState: "Installed" })
         {
             var candidateRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "app", "application-release.json")));
@@ -187,11 +190,14 @@ public static partial class WindowsDeploymentSetup
             installPackages(request);
             var location = new DeploymentLocation(request.ApplicationId, media.SourceCommit, releaseRoot, config, data, request.RuntimeAccountSid,
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts)
-                { Recovery = request.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
+            { Recovery = request.Recovery ?? (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc" ? new() : null) };
             if (before is null && request.ExpectedRegistrationHash is null && location.Recovery is not null)
                 DesktopRecoverySupervisor.InitializeNewDeployment(location);
-            location = location with { PreviousDeployment = before is not { LifecycleState: "Installed" } ? null :
-                before.SourceCommit == location.SourceCommit ? before.PreviousDeployment : before with { PreviousDeployment = null } };
+            location = location with
+            {
+                PreviousDeployment = before is not { LifecycleState: "Installed" } ? null :
+                before.SourceCommit == location.SourceCommit ? before.PreviousDeployment : before with { PreviousDeployment = null }
+            };
             location = CacheMaintenance(location, media, sid);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
@@ -215,9 +221,22 @@ public static partial class WindowsDeploymentSetup
         catch (Exception error)
         {
             var committed = Current(request.ApplicationId)?.ReleaseRoot == releaseRoot;
-            try { WriteProtected(operation, new { Status = committed ? "CommittedNeedsSystemRepair" : "Failed", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, ErrorCode = error.GetType().Name,
-                Error = WindowsInstallationError.Capture(error), ServiceDiagnosticFile = operation + ".service.jsonl", Previous = before, ReleaseRoot = releaseRoot, DataRoot = data,
-                Retained = "Previous deployment, seed, database and leases retained; retry creates another side-by-side release" }, sid); }
+            try
+            {
+                WriteProtected(operation, new
+                {
+                    Status = committed ? "CommittedNeedsSystemRepair" : "Failed",
+                    RequestIdentity = InstallationRequestIdentity(request),
+                    request.ChangePlanIdentity,
+                    ErrorCode = error.GetType().Name,
+                    Error = WindowsInstallationError.Capture(error),
+                    ServiceDiagnosticFile = operation + ".service.jsonl",
+                    Previous = before,
+                    ReleaseRoot = releaseRoot,
+                    DataRoot = data,
+                    Retained = "Previous deployment, seed, database and leases retained; retry creates another side-by-side release"
+                }, sid);
+            }
             catch (Exception receiptFailure)
             {
                 throw new InstallationOutcomeUnknownException("安装失败且原失败回执未能保存；保留原操作，先只读核对。原错误：" + WindowsInstallationError.Safe(error.Message) +

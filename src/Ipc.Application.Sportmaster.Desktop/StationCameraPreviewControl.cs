@@ -15,8 +15,15 @@ internal sealed class StationCameraPreviewControl : UserControl
     readonly SupplyStationViewModel vm;
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1d / 15) };
     readonly Image image = new() { Stretch = Stretch.Uniform, IsHitTestVisible = false };
-    readonly TextBlock hint = new() { Text = "等待相机实时画面", Foreground = Brushes.White, TextWrapping = TextWrapping.Wrap,
-        HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Margin = new(24) };
+    readonly TextBlock hint = new()
+    {
+        Text = "等待相机实时画面",
+        Foreground = Brushes.White,
+        TextWrapping = TextWrapping.Wrap,
+        HorizontalAlignment = HorizontalAlignment.Center,
+        VerticalAlignment = VerticalAlignment.Center,
+        Margin = new(24)
+    };
     readonly TextBlock status = Label(), counters = Label();
     CancellationTokenSource? lifetime;
     string device = "", shown = "";
@@ -77,11 +84,17 @@ internal sealed class StationCameraPreviewControl : UserControl
         if (d is null) return "当前来源未提供取帧与解码计数。";
         var state = d.State switch
         {
-            "WaitingForFrame" => "尚未取得完整图像", "FrameStale" => "取帧已停滞", "Decoding" => "正在解码",
-            "DecodePaused" => "本轮解码已暂停，实时预览继续", "NoBarcode" => "已解码，尚未发现条码",
+            "WaitingForFrame" => "尚未取得完整图像",
+            "FrameStale" => "取帧已停滞",
+            "Decoding" => "正在解码",
+            "DecodePaused" => "本轮解码已暂停，实时预览继续",
+            "NoBarcode" => "已解码，尚未发现条码",
             "WaitingForOriginalCapacity" => "正在等待前序原帧处理，采集预览继续",
-            "Reading" => "解码链路运行中", "Faulted" => "采集异常", "Stopped" => "采集已停止",
-            "DecoderUnavailable" => "解码器不可用", _ => "正在取帧"
+            "Reading" => "解码链路运行中",
+            "Faulted" => "采集异常",
+            "Stopped" => "采集已停止",
+            "DecoderUnavailable" => "解码器不可用",
+            _ => "正在取帧"
         };
         return state + "\n取帧 " + d.Frames + " · 无数据 " + d.NoData + " · 解码完成 " + d.DecodeCompleted + "/" + d.DecodeStarted +
             " · 空结果 " + d.EmptyFrames + "\n识别到条码 " + d.Candidates + " · 上报 " + d.Delivered + " · 拒收 " + d.Rejected + " · 丢弃异常帧 " + d.RejectedFrames +

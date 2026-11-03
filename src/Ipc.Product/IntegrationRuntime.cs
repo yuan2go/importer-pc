@@ -45,8 +45,15 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
                 var health = x.Health;
                 var state = x.CurrentPort is null ? "HistoricalQuery" : health is null ? "Unconfirmed" : health.ValidUntil <= DateTimeOffset.UtcNow ? "Expired" : health.Status.ToString();
                 return new IntegrationDiagnostic(x.Identity.InstanceId, state, lifecycle.InFlight, x.QueryFailure ?? health?.Failure ?? lifecycle.LastFailure)
-                { Target = x.Identity.Target, DeploymentVersion = x.Identity.DeploymentVersion, ConfigurationSha256 = x.Identity.ConfigurationSha256,
-                    Port = x.CurrentPort, Historical = x.CurrentPort is null, Lifecycle = lifecycle.State, Health = health };
+                {
+                    Target = x.Identity.Target,
+                    DeploymentVersion = x.Identity.DeploymentVersion,
+                    ConfigurationSha256 = x.Identity.ConfigurationSha256,
+                    Port = x.CurrentPort,
+                    Historical = x.CurrentPort is null,
+                    Lifecycle = lifecycle.State,
+                    Health = health
+                };
             }).ToArray();
         }
     }

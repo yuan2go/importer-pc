@@ -29,14 +29,14 @@ static class InstallerOptions
         try { DeploymentShortcuts.Plan(location, programs, desktop); throw new Exception("Missing choices accepted"); }
         catch (InvalidDataException) { Check(!Directory.Exists(programs) && !Directory.Exists(desktop), "absent shortcut choice refuses without creating or deleting links"); }
         foreach (var menu in new[] { false, true }) foreach (var icon in new[] { false, true })
-        {
-            var selected = new DeploymentShortcutOptions(menu, icon);
-            var serialized = Wire.Encode(request with { Shortcuts = selected });
-            Check(Wire.Decode<WindowsDeploymentRequest>(serialized).Shortcuts == selected && Wire.Hash(serialized) != Wire.Hash(Wire.Encode(request)), $"request binds explicit menu={menu} desktop={icon} in reviewed identity");
-            var registered = Wire.Decode<DeploymentLocation>(Wire.Encode(location with { Shortcuts = selected }));
-            var plan = DeploymentShortcuts.Plan(registered, programs, desktop);
-            Check(plan.Length == (menu ? 3 : 0) + (icon ? 1 : 0) && plan.All(p => p.Target == Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe") && p.WorkingDirectory == location.ReleaseRoot), $"registered menu={menu} desktop={icon} targets installed release");
-        }
+            {
+                var selected = new DeploymentShortcutOptions(menu, icon);
+                var serialized = Wire.Encode(request with { Shortcuts = selected });
+                Check(Wire.Decode<WindowsDeploymentRequest>(serialized).Shortcuts == selected && Wire.Hash(serialized) != Wire.Hash(Wire.Encode(request)), $"request binds explicit menu={menu} desktop={icon} in reviewed identity");
+                var registered = Wire.Decode<DeploymentLocation>(Wire.Encode(location with { Shortcuts = selected }));
+                var plan = DeploymentShortcuts.Plan(registered, programs, desktop);
+                Check(plan.Length == (menu ? 3 : 0) + (icon ? 1 : 0) && plan.All(p => p.Target == Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe") && p.WorkingDirectory == location.ReleaseRoot), $"registered menu={menu} desktop={icon} targets installed release");
+            }
         if (!OperatingSystem.IsWindows()) { Console.WriteLine("NOT_RUN Windows COM shortcuts"); return; }
         DeploymentShortcuts.Create(location with { Shortcuts = new(false, false) }, programs, desktop);
         Check(!Directory.Exists(programs) && !Directory.Exists(desktop), "unchecked choices create neither folder nor link");

@@ -33,40 +33,65 @@ static partial class SportmasterRcs
         try
         {
             for (var pass = 0; pass < repeats; pass++)
-            for (var index = 0; index < images.Length; index++)
-            {
-                var image = images[index]; var work = image.Data.ToArray(); // original file/bytes never mutated
-                var sampleCpu = process.TotalProcessorTime;
-                var gen2 = GC.CollectionCount(2);
-                var started = Stopwatch.GetTimestamp();
-                var codes = decoder.Decode(work, work.Length, image.Width, image.Height);
-                var decodeMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
-                var cpuMs = (process.TotalProcessorTime - sampleCpu).TotalMilliseconds;
-                var collections = GC.CollectionCount(2) - gen2;
-                if (fast is not null)
+                for (var index = 0; index < images.Length; index++)
                 {
-                    var alternate = image.Data.ToArray();
-                    var fastStarted = Stopwatch.GetTimestamp();
-                    var fastCodes = fast.Decode(alternate, alternate.Length, image.Width, image.Height);
-                    var fastMs = Stopwatch.GetElapsedTime(fastStarted).TotalMilliseconds;
-                    var match = codes.Order(StringComparer.Ordinal).SequenceEqual(fastCodes.Order(StringComparer.Ordinal));
-                    searchMatches &= match;
-                    searchComparisons.Add(new { Pass = pass, Image = index, BaselineMs = decodeMs, CandidateMs = fastMs,
-                        BaselineCount = codes.Length, CandidateCount = fastCodes.Length, ExactCandidateMultisetMatch = match });
+                    var image = images[index]; var work = image.Data.ToArray(); // original file/bytes never mutated
+                    var sampleCpu = process.TotalProcessorTime;
+                    var gen2 = GC.CollectionCount(2);
+                    var started = Stopwatch.GetTimestamp();
+                    var codes = decoder.Decode(work, work.Length, image.Width, image.Height);
+                    var decodeMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
+                    var cpuMs = (process.TotalProcessorTime - sampleCpu).TotalMilliseconds;
+                    var collections = GC.CollectionCount(2) - gen2;
+                    if (fast is not null)
+                    {
+                        var alternate = image.Data.ToArray();
+                        var fastStarted = Stopwatch.GetTimestamp();
+                        var fastCodes = fast.Decode(alternate, alternate.Length, image.Width, image.Height);
+                        var fastMs = Stopwatch.GetElapsedTime(fastStarted).TotalMilliseconds;
+                        var match = codes.Order(StringComparer.Ordinal).SequenceEqual(fastCodes.Order(StringComparer.Ordinal));
+                        searchMatches &= match;
+                        searchComparisons.Add(new
+                        {
+                            Pass = pass,
+                            Image = index,
+                            BaselineMs = decodeMs,
+                            CandidateMs = fastMs,
+                            BaselineCount = codes.Length,
+                            CandidateCount = fastCodes.Length,
+                            ExactCandidateMultisetMatch = match
+                        });
+                    }
+                    if (counts.TryGetValue(index, out var expected))
+                        Check(codes.Order().SequenceEqual(expected.Order()), "offline repeated image preserves every candidate including multiplicity");
+                    else counts.Add(index, codes);
+                    samples.Add(new
+                    {
+                        Pass = pass,
+                        Image = index,
+                        image.Width,
+                        image.Height,
+                        CandidateCount = codes.Length,
+                        DecodeMs = decodeMs,
+                        CpuMs = cpuMs,
+                        Gen2Collections = collections
+                    });
                 }
-                if (counts.TryGetValue(index, out var expected))
-                    Check(codes.Order().SequenceEqual(expected.Order()), "offline repeated image preserves every candidate including multiplicity");
-                else counts.Add(index, codes);
-                samples.Add(new { Pass = pass, Image = index, image.Width, image.Height, CandidateCount = codes.Length,
-                    DecodeMs = decodeMs, CpuMs = cpuMs, Gen2Collections = collections });
-            }
-            var result = new { VerifierSource = typeof(SportmasterRcs).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion,
+            var result = new
+            {
+                VerifierSource = typeof(SportmasterRcs).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion,
                 Tier = directory is null ? "Synthetic Mono8; actual ZXing-C++; no camera/RCS" : "Offline private recorded Mono8; actual ZXing-C++; no live capture/RCS",
                 SearchComparison = compareSearch ? new { Profile = "TryHarder=false; verification only; production retains full search", ExactRecallPreserved = searchMatches, Samples = searchComparisons } : null,
-                Contrast = reference ? "OriginalScalarFormulaVerificationOnly" : "ProductionSimdLookup", images.Length, Repeats = repeats, ElapsedMs = clock.Elapsed.TotalMilliseconds,
+                Contrast = reference ? "OriginalScalarFormulaVerificationOnly" : "ProductionSimdLookup",
+                images.Length,
+                Repeats = repeats,
+                ElapsedMs = clock.Elapsed.TotalMilliseconds,
                 CpuMs = (process.TotalProcessorTime - cpu).TotalMilliseconds,
-                AllocatedBytes = GC.GetTotalAllocatedBytes() - allocated, Timings = decoder.TimingSnapshot, Samples = samples,
-                Boundary = "Includes first-call cold sample; input file IO and copying excluded from DecodeMs; no camera exposure/transport/SDK or Application timings" };
+                AllocatedBytes = GC.GetTotalAllocatedBytes() - allocated,
+                Timings = decoder.TimingSnapshot,
+                Samples = samples,
+                Boundary = "Includes first-call cold sample; input file IO and copying excluded from DecodeMs; no camera exposure/transport/SDK or Application timings"
+            };
             ExtensionStore.AtomicWrite(output, result);
             Console.WriteLine("MVS_LATENCY_MEASURED images=" + images.Length + "; repeats=" + repeats + "; no live camera/production acceptance");
             Console.WriteLine("TimingOutput=" + output);
@@ -102,21 +127,21 @@ static partial class SportmasterRcs
     {
         var cases = 0;
         for (var lo = 0; lo <= 255; lo++)
-        for (var hi = lo; hi <= 255; hi++)
-        {
-            // Every level, vector boundary/tail, constant and full-range cases;
-            // sentinel outside the image must not participate or be overwritten.
-            var original = Enumerable.Range(0, 303).Select(i => (byte)(lo + i % (hi - lo + 1))).ToArray();
-            original[0] = (byte)lo; original[1] = (byte)hi;
-            var expected = original.ToArray();
-            if (hi > lo && (lo != 0 || hi != 255))
-                for (var i = 0; i < expected.Length; i++) expected[i] = (byte)((expected[i] - lo) * 255 / (hi - lo));
-            var actual = original.Concat(new byte[] { 0, 255, 43 }).ToArray();
-            SoftwareDecoder.ExpandContrast(actual.AsSpan(0, original.Length));
-            if (!actual.AsSpan(0, original.Length).SequenceEqual(expected) || !actual.AsSpan(original.Length).SequenceEqual(new byte[] { 0, 255, 43 }))
-                throw new Exception("Contrast differed from original scalar mapping");
-            cases++;
-        }
+            for (var hi = lo; hi <= 255; hi++)
+            {
+                // Every level, vector boundary/tail, constant and full-range cases;
+                // sentinel outside the image must not participate or be overwritten.
+                var original = Enumerable.Range(0, 303).Select(i => (byte)(lo + i % (hi - lo + 1))).ToArray();
+                original[0] = (byte)lo; original[1] = (byte)hi;
+                var expected = original.ToArray();
+                if (hi > lo && (lo != 0 || hi != 255))
+                    for (var i = 0; i < expected.Length; i++) expected[i] = (byte)((expected[i] - lo) * 255 / (hi - lo));
+                var actual = original.Concat(new byte[] { 0, 255, 43 }).ToArray();
+                SoftwareDecoder.ExpandContrast(actual.AsSpan(0, original.Length));
+                if (!actual.AsSpan(0, original.Length).SequenceEqual(expected) || !actual.AsSpan(original.Length).SequenceEqual(new byte[] { 0, 255, 43 }))
+                    throw new Exception("Contrast differed from original scalar mapping");
+                cases++;
+            }
         foreach (var length in new[] { 0, 1, 2, 15, 31, 32, 33, 63, 64, 65, 127, 128, 129 })
         {
             var original = Enumerable.Range(0, length).Select(i => (byte)(20 + i % 171)).ToArray(); var expected = original.ToArray();

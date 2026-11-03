@@ -16,11 +16,11 @@ public sealed partial class ParcelRepository
     }
     void ValidateIntegrationRequestHistory()
     {
-        var history="SELECT id,json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') AS wire FROM parcel_operations" +
+        var history = "SELECT id,json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') AS wire FROM parcel_operations" +
             (" UNION ALL SELECT id,json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') AS wire FROM parcel_archives");
-        using var invalid=db.CreateCommand();
-        invalid.CommandText="SELECT wire FROM ("+history+") WHERE wire IS NOT NULL GROUP BY wire HAVING typeof(wire)!='integer' OR wire<=0 OR count(DISTINCT id)>1 LIMIT 1";
-        if(invalid.ExecuteScalar() is not null)throw new InvalidDataException("Ambiguous original numeric request ID; preserve original owners and investigate before admission");
+        using var invalid = db.CreateCommand();
+        invalid.CommandText = "SELECT wire FROM (" + history + ") WHERE wire IS NOT NULL GROUP BY wire HAVING typeof(wire)!='integer' OR wire<=0 OR count(DISTINCT id)>1 LIMIT 1";
+        if (invalid.ExecuteScalar() is not null) throw new InvalidDataException("Ambiguous original numeric request ID; preserve original owners and investigate before admission");
         // The owner traversal below validates every original and computes the same
         // maximum. Keep the independent ambiguity checks, without a third scan.
         using var requests = db.CreateCommand();
@@ -31,19 +31,19 @@ public sealed partial class ParcelRepository
     internal void RequireNewIntegrationRequestId(long id)
     {
         var floor = IntegrationRequestIdFloor();
-        if(id<=floor)throw new InvalidDataException($"External numeric request ID {id} must exceed durable original allocation/retired range {floor}");
+        if (id <= floor) throw new InvalidDataException($"External numeric request ID {id} must exceed durable original allocation/retired range {floor}");
     }
-    void ValidateIntegrationIntentCommit(ParcelOperation operation,Microsoft.Data.Sqlite.SqliteTransaction transaction)
+    void ValidateIntegrationIntentCommit(ParcelOperation operation, Microsoft.Data.Sqlite.SqliteTransaction transaction)
     {
-        if(operation.Wcs?.Request.IntegrationRequest is not {} wire)return;
-        using var prior=db.CreateCommand();prior.Transaction=transaction;
-        prior.CommandText="SELECT json_extract(body,'$.Wcs.Request') FROM parcel_operations WHERE id=$id"+
+        if (operation.Wcs?.Request.IntegrationRequest is not { } wire) return;
+        using var prior = db.CreateCommand(); prior.Transaction = transaction;
+        prior.CommandText = "SELECT json_extract(body,'$.Wcs.Request') FROM parcel_operations WHERE id=$id" +
             (" UNION ALL SELECT json_extract(body,'$.Wcs.Request') FROM parcel_archives WHERE id=$id");
-        prior.Parameters.AddWithValue("$id",operation.Id);
-        var original=prior.ExecuteScalar();
-        if(original is string json)
+        prior.Parameters.AddWithValue("$id", operation.Id);
+        var original = prior.ExecuteScalar();
+        if (original is string json)
         {
-            if(Wire.Encode(Wire.Decode<FrozenRequest>(json))!=Wire.Encode(operation.Wcs.Request))
+            if (Wire.Encode(Wire.Decode<FrozenRequest>(json)) != Wire.Encode(operation.Wcs.Request))
                 throw new InvalidDataException("Original external intent cannot be replaced by a new allocation");
         }
         else RequireNewIntegrationRequestId(wire.RequestId);
@@ -72,7 +72,7 @@ public sealed partial class ParcelRepository
         c.Parameters.AddWithValue("$operation", request.OperationId); c.Parameters.AddWithValue("$request", request.Id); c.Parameters.AddWithValue("$hash", hash);
         var id = c.ExecuteScalar() as string ?? throw new InvalidDataException("Original reply custody is missing");
         byte[]? bytes = null;
-                {
+        {
             using var archived = db.CreateCommand(); archived.CommandText = "SELECT body,raw_hash FROM parcel_archived_receipts WHERE id=$id";
             archived.Parameters.AddWithValue("$id", id); using var row = archived.ExecuteReader();
             if (row.Read())

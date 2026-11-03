@@ -17,8 +17,15 @@ static partial class SportmasterRcs
             var binding = Binding(peer.Endpoint);
             CapabilityBinding Camera(string p) => new("camera", "reference-camera", "1.0.0", "audit.camera." + p, standard.Topology!.Positions.Single(x => x.Id == p).ReaderDeviceId, "PARCEL-REFERENCE-v1", []);
             var leftCamera = Camera("left"); var rightCamera = Camera("right");
-            var c = standard with { Wcs = binding, Extensions = null, TimeoutMs = 5000, Images = new(leftCamera, null), CapabilityInstances = [binding, leftCamera, rightCamera],
-                Topology = standard.Topology! with { Positions = [standard.Topology.Positions[0], standard.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] } };
+            var c = standard with
+            {
+                Wcs = binding,
+                Extensions = null,
+                TimeoutMs = 5000,
+                Images = new(leftCamera, null),
+                CapabilityInstances = [binding, leftCamera, rightCamera],
+                Topology = standard.Topology! with { Positions = [standard.Topology.Positions[0], standard.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] }
+            };
             var run = Path.Combine(root, "rcs-t1-" + delayedPosition); Directory.CreateDirectory(run); ExtensionStore.AtomicWrite(Path.Combine(run, "business.json"), c);
             var data = Path.Combine(run, "data");
             async Task<ParcelRuntime> Open(string dataRoot, HoldFactory? holder = null)
@@ -114,8 +121,10 @@ static partial class SportmasterRcs
                     "A03 current root uses the newly allocated range exactly once after controlled restart");
             }
             using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(data, "Simulation", c.StationId, c.ApplicationId, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
-            { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners";
-              Check((long)q.ExecuteScalar()! == 4, "A03 persistent SQL unique owners include archived, post-backup and new-range original allocations"); }
+            {
+                db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners";
+                Check((long)q.ExecuteScalar()! == 4, "A03 persistent SQL unique owners include archived, post-backup and new-range original allocations");
+            }
             NumericMigrationChecks(Path.Combine(data, "Simulation", c.StationId, c.ApplicationId), Path.Combine(root, "migration-" + delayedPosition));
         }
         Console.WriteLine("PASS A03 RCS COMPLETE");

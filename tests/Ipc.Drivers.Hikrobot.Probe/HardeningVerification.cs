@@ -102,12 +102,19 @@ internal static class HardeningVerification
             await CleanupFailure(() => source.StopAsync(default)); await source.DisposeAsync();
             Check(lease.Releases == 1 && api.Calls.Count(c => c == "destroy") == 1, notification + " notification failure cannot prevent cleanup or double-release ownership");
         }
-        var original = Wire.Encode(new { ParcelCode = "SYNTHETIC-CODE", Codes = new[] { "SYNTHETIC-CODES" },
-            Candidates = new[] { new { Text = "SYNTHETIC-CANDIDATE", Characters = 19 } }, Selection = new { SelectedCode = "SYNTHETIC-SELECTED", Matches = 1 },
+        var original = Wire.Encode(new
+        {
+            ParcelCode = "SYNTHETIC-CODE",
+            Codes = new[] { "SYNTHETIC-CODES" },
+            Candidates = new[] { new { Text = "SYNTHETIC-CANDIDATE", Characters = 19 } },
+            Selection = new { SelectedCode = "SYNTHETIC-SELECTED", Matches = 1 },
             Body = Wire.Encode(new { data = new[] { new { @params = new { loadCode = "SYNTHETIC-LOAD", taskId = "kept-task" } } }, token = "SYNTHETIC-TOKEN" }),
             PartialBody = "{\"loadCode\":\"SYNTHETIC-PARTIAL WITH SPACES",
             PartialCandidates = "{\"Candidates\":[\"SYNTHETIC-ONE\",\"SYNTHETIC-TWO",
-            StatusCode = 200, ErrorCode = "KEPT-ERROR", CandidateCount = 1 });
+            StatusCode = 200,
+            ErrorCode = "KEPT-ERROR",
+            CandidateCount = 1
+        });
         var frozenHash = Wire.Hash(original); var protectedText = DiagnosticText.Protect(original);
         Check(!new[] { "SYNTHETIC-CODE", "SYNTHETIC-CODES", "SYNTHETIC-CANDIDATE", "SYNTHETIC-SELECTED", "SYNTHETIC-LOAD", "SYNTHETIC-TOKEN", "SYNTHETIC-PARTIAL", "WITH SPACES", "SYNTHETIC-ONE", "SYNTHETIC-TWO" }.Any(protectedText.Contains),
             "diagnostic copy masks scalar, array, selected, fragment and nested-JSON barcode/credential values");

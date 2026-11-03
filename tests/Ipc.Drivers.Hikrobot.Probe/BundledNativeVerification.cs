@@ -7,7 +7,7 @@ static class BundledNativeVerification
     public static async Task Run()
     {
         await using var source = BundledMvs.Create(new DeviceBinding("parcel-reader", "hikrobot-mvs", "bundled-enumeration-only", "1")
-            { Parameters = new() { ["device.ip"] = "192.0.2.1", ["entity.mode"] = "observe-only" } });
+        { Parameters = new() { ["device.ip"] = "192.0.2.1", ["entity.mode"] = "observe-only" } });
         // Registers the production resolver, but never starts a source or opens/triggers a camera.
         var version = MvsNative.MV_CC_GetSDKVersion();
         if (version != MvsNative.Version) throw new InvalidDataException("Bundled SDK ABI mismatch: 0x" + version.ToString("X8"));

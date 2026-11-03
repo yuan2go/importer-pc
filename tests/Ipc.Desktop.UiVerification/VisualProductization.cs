@@ -110,8 +110,12 @@ static partial class Program
         probe.Project = s => s with { State = "PartiallyReady" };
         await RefreshClassicUntil(() => classicVm.Snapshot?.State == "PartiallyReady");
         Check(classicVm.Status == "部分投递位可作业", "partial readiness is translated without changing the authoritative state or permissions");
-        probe.Project = s => s with { State = "NotReady", BlockingReasons = ["SYNTHETIC operator authentication required", "SYNTHETIC maintenance in progress"],
-            Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = new("login", "reference-login", "1.0.0", "synthetic.login", "reference://synthetic-login", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "alice" }) } } };
+        probe.Project = s => s with
+        {
+            State = "NotReady",
+            BlockingReasons = ["SYNTHETIC operator authentication required", "SYNTHETIC maintenance in progress"],
+            Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = new("login", "reference-login", "1.0.0", "synthetic.login", "reference://synthetic-login", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "alice" }) } }
+        };
         await RefreshClassicUntil(() => classicVm.Snapshot?.BlockingReasons.Contains("SYNTHETIC maintenance in progress") == true); classic.UpdateLayout();
         var blockers = (TextBlock)classic.FindName("ActiveBlockingReasons");
         var login = (WrapPanel)classic.FindName("OperationalLogin");
@@ -244,9 +248,15 @@ static partial class Program
         foreach (var scenario in new[] { (Codes: Array.Empty<string>(), Status: "未读到条码"),
             (Codes: new[] { "SYNTHETIC-INVALID" }, Status: "条码校验未通过"), (Codes: new[] { "A", "B" }, Status: "读到多个条码") })
         {
-            probe.Project = s => s with { Inputs = s.Inputs!.Select(input => input with {
-                Outcome = ParcelInputOutcome.Rejected, Reason = "SYNTHETIC InvalidCode or InvalidAdmissionId",
-                Observation = input.Observation with { Codes = scenario.Codes } }).ToArray() };
+            probe.Project = s => s with
+            {
+                Inputs = s.Inputs!.Select(input => input with
+                {
+                    Outcome = ParcelInputOutcome.Rejected,
+                    Reason = "SYNTHETIC InvalidCode or InvalidAdmissionId",
+                    Observation = input.Observation with { Codes = scenario.Codes }
+                }).ToArray()
+            };
             await RefreshUntil(() => vm.Left.Status == scenario.Status && vm.Right.Status == scenario.Status);
             Check(vm.Left.Slot == "未取得" && vm.Right.Slot == "未取得" && !vm.Left.SlotAvailable &&
                 original.Any(x => x.Id == vm.Left.Operation?.Id),

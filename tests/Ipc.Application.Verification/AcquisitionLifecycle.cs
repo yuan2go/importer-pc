@@ -110,8 +110,16 @@ static class AcquisitionLifecycle
     static async Task RuntimeCases(string workspace, string root)
     {
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/optional/sportmaster/business.json")));
-        c = c with { Login = null, Scale = null, Weight = new(WeightSource.Disabled, WeightUnit.Kg, 3), TimeoutMs = 10000, QueueCapacity = 2,
-            Images = c.Images! with { Uploader = null }, Topology = c.Topology! with { Positions = c.Topology.Positions.Select(x => x with { ScaleInstanceId = null }).ToArray() } };
+        c = c with
+        {
+            Login = null,
+            Scale = null,
+            Weight = new(WeightSource.Disabled, WeightUnit.Kg, 3),
+            TimeoutMs = 10000,
+            QueueCapacity = 2,
+            Images = c.Images! with { Uploader = null },
+            Topology = c.Topology! with { Positions = c.Topology.Positions.Select(x => x with { ScaleInstanceId = null }).ToArray() }
+        };
         var path = Path.Combine(root, "runtime"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var factory = new SlowFactory(new ParcelCapabilityFactory(launch));

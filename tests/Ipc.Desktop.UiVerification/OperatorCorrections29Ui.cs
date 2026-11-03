@@ -54,7 +54,7 @@ static partial class Program
             window.ShowPositionDebug(window.ViewModel.Left); await Flush();
             var debug = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var trigger = Field<Button>(debug, "trigger"); var columns = Field<Grid>(debug, "columns");
-            foreach (var size in new[] { (1366,768), (1092,614), (800,420) })
+            foreach (var size in new[] { (1366, 768), (1092, 614), (800, 420) })
             {
                 await SetClient(window, size.Item1, size.Item2); await Flush();
                 Check(trigger.IsEnabled && trigger.ActualHeight >= 44 && Inside(trigger, (Grid)window.FindName("ClientArea")), "offline-RCS scan action remains visible, enabled and touchable at " + size.Item1);

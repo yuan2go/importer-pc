@@ -20,7 +20,8 @@ public static class BundledMvs
     public const string ReaderContract = "HIKROBOT-MVS-READRESULT-v1";
     public static CapabilityDescriptor ReaderDescriptor { get; } = new("observation", ReaderImplementation, "1.0.0", ReaderContract, Resource<ParameterField[]>("Mvs.ReaderParameters.json"), new());
     sealed record RuntimeInventory(int SchemaVersion, string Abi, string Entry, string[] Preload, ExtensionFile[] Files);
-    static readonly Lazy<nint> runtime = new(() => {
+    static readonly Lazy<nint> runtime = new(() =>
+    {
         var manifest = Resource<RuntimeInventory>("Mvs.Runtime.json");
         if (manifest.SchemaVersion != 1 || manifest.Abi != "0x04080201" || manifest.Entry != MvsNative.Library) throw new InvalidDataException("Unsupported bundled MVS ABI");
         return NativeSdkBoundary.LoadBundledFiles(typeof(BundledMvs).Assembly, "vendor/hikrobot-mvs", manifest.Files, manifest.Entry, manifest.Preload);

@@ -21,7 +21,7 @@ public sealed class SportmasterFlow : FlowDefinition
             Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),
             StationCode: SystemParameterDefaults.StationCode(SystemParameterDefaults.InitialStationId),
             Retention: new(DiagnosticLogDays: SystemParameterDefaults.DiagnosticLogDays, HistoryDays: SystemParameterDefaults.HistoryDays))
-            { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
+        { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
     }
     public static readonly string NewSiteCodeFormats = Wire.Encode(new[] { "Code128", "Code39", "EAN13" });
     public override string[] PositionRoles => ["left", "right"];
@@ -52,8 +52,11 @@ public sealed class SportmasterFlow : FlowDefinition
         stage.Replies.All(r => r.BusinessAccepted is null) &&
         (stage.Failure?.StartsWith("TimeoutException:", StringComparison.Ordinal) == true ||
          stage.Replies.LastOrDefault()?.Evidence.StartsWith("RCS_REQUEST_TIMEOUT:", StringComparison.Ordinal) == true ||
-         stage.Replies.LastOrDefault() is { SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false,
-             ProtocolAcknowledged: null, BusinessAccepted: null, PhysicalCompleted: null, HttpResponse: null } notDelivered &&
+         stage.Replies.LastOrDefault() is
+         {
+             SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false,
+             ProtocolAcknowledged: null, BusinessAccepted: null, PhysicalCompleted: null, HttpResponse: null
+         } notDelivered &&
              notDelivered.RequestId == stage.Request.Id && notDelivered.PayloadHash == stage.Request.PayloadHash &&
              notDelivered.Evidence.StartsWith("RCS_NOT_DELIVERED:", StringComparison.Ordinal));
     public override int RequestTimeoutMs(ParcelOperation op, ParcelStage stage)
@@ -68,9 +71,13 @@ public sealed class SportmasterFlow : FlowDefinition
     {
         if (op.Wcs is not { State: StageState.Accepted or StageState.Rejected } wcs) return op;
         var reply = wcs.Replies.Last(x => x.BusinessAccepted is not null);
-        return op with { State = wcs.State == StageState.Accepted ? ParcelState.SlotResolved :
+        return op with
+        {
+            State = wcs.State == StageState.Accepted ? ParcelState.SlotResolved :
                 reply.Destination?.Outcome == WcsDestinationOutcome.UnpackRequired ? ParcelState.UnpackRequired : ParcelState.WcsRejected,
-            Slot = wcs.State == StageState.Accepted ? reply.Slot : op.Slot, Reason = wcs.State == StageState.Accepted ? null : reply.Evidence };
+            Slot = wcs.State == StageState.Accepted ? reply.Slot : op.Slot,
+            Reason = wcs.State == StageState.Accepted ? null : reply.Evidence
+        };
     }
     public override async Task AdvanceAsync(IParcelExecution e, ParcelOperation op)
     {
@@ -82,9 +89,12 @@ public sealed class SportmasterFlow : FlowDefinition
     {
         if (stage == ParcelStage.Wcs)
         {
-            op = op with { Slot = reply.BusinessAccepted == true ? reply.Slot : op.Slot,
+            op = op with
+            {
+                Slot = reply.BusinessAccepted == true ? reply.Slot : op.Slot,
                 State = reply.BusinessAccepted == true ? ParcelState.SlotResolved :
-                    reply.Destination?.Outcome == WcsDestinationOutcome.UnpackRequired ? ParcelState.UnpackRequired : ParcelState.WcsRejected };
+                    reply.Destination?.Outcome == WcsDestinationOutcome.UnpackRequired ? ParcelState.UnpackRequired : ParcelState.WcsRejected
+            };
             return op;
         }
         throw new InvalidDataException("Stage does not belong to this Application");

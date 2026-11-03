@@ -150,7 +150,7 @@ public sealed partial class ParcelRepository : IDisposable
         using var r = cmd.ExecuteReader(); List<ParcelOperation> result = [];
         while (r.Read())
         {
-            var body=r.GetString(0); if(!r.IsDBNull(1) && Wire.Hash(body)!=r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");
+            var body = r.GetString(0); if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");
             result.Add(Wire.Decode<ParcelOperation>(body));
         }
         return result.ToArray();
@@ -216,11 +216,11 @@ public sealed partial class ParcelRepository : IDisposable
         }
         if (operation is not null)
         {
-            ValidateIntegrationIntentCommit(operation,tx);
-                        {
+            ValidateIntegrationIntentCommit(operation, tx);
+            {
                 using var prior = db.CreateCommand(); prior.Transaction = tx;
                 prior.CommandText = "INSERT OR IGNORE INTO parcel_archive_versions SELECT id,body_hash,body,archived_at FROM parcel_archives WHERE id=$id; DELETE FROM parcel_archives WHERE id=$id";
-                prior.Parameters.AddWithValue("$id",operation.Id); prior.ExecuteNonQuery();
+                prior.Parameters.AddWithValue("$id", operation.Id); prior.ExecuteNonQuery();
             }
             using var save = db.CreateCommand(); save.Transaction = tx;
             using var indexed = db.CreateCommand(); indexed.Transaction = tx;
@@ -276,7 +276,7 @@ public sealed partial class ParcelRepository : IDisposable
             resolve.Parameters.AddWithValue("$old", reconciledOccurrence);
             resolve.Parameters.AddWithValue("$query", occurrence ?? outcomeQuery ?? throw new InvalidOperationException("Resolution requires its own committed Query"));
             if ((long)resolve.ExecuteScalar()! != 1) throw new InvalidDataException("Original missing-raw occurrence or authoritative Query changed");
-                        {
+            {
                 using var basis = db.CreateCommand(); basis.Transaction = tx;
                 basis.CommandText = "INSERT INTO parcel_receipt_custody VALUES($old,$query,$at,$evidence) ON CONFLICT(occurrence) DO UPDATE SET query_occurrence=excluded.query_occurrence,observed_at=excluded.observed_at,evidence=excluded.evidence";
                 basis.Parameters.AddWithValue("$old", reconciledOccurrence); basis.Parameters.AddWithValue("$query", occurrence ?? outcomeQuery!);
@@ -291,7 +291,7 @@ public sealed partial class ParcelRepository : IDisposable
         Boundary?.Invoke("BeforeBusinessCommit:" + eventName);
         tx.Commit();
         Boundary?.Invoke("AfterBusinessCommit:" + eventName);
-        if(operation?.Wcs?.Request.IntegrationRequest is {} allocated)lastIntegrationRequestId=Math.Max(lastIntegrationRequestId,allocated.RequestId);
+        if (operation?.Wcs?.Request.IntegrationRequest is { } allocated) lastIntegrationRequestId = Math.Max(lastIntegrationRequestId, allocated.RequestId);
         Revision++; if (paused is not null) Paused = paused.Value;
         ProjectionChanged?.Invoke();
     }
@@ -307,8 +307,8 @@ public sealed partial class ParcelRepository : IDisposable
         ExtensionStore.AtomicWrite(Path.Combine(rawRoot, occurrence + ".json"), reply);
         if (Boundary is not null)
         {
-            using var hook=db.CreateCommand(); hook.CommandText="SELECT stage FROM parcel_receipts WHERE id=$id";hook.Parameters.AddWithValue("$id",occurrence);
-            Boundary("AfterRawFileDurable:"+(string)hook.ExecuteScalar()!);
+            using var hook = db.CreateCommand(); hook.CommandText = "SELECT stage FROM parcel_receipts WHERE id=$id"; hook.Parameters.AddWithValue("$id", occurrence);
+            Boundary("AfterRawFileDurable:" + (string)hook.ExecuteScalar()!);
         }
         using var tx = db.BeginTransaction();
         using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state='Awaiting'";

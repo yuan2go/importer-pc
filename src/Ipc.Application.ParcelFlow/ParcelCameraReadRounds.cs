@@ -94,7 +94,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             try
             {
                 var registration = new InspectionRegistration(round.Session, false, f => ReceiveRoundFrame(round.Session, f))
-                    { CaptureAllowed = device => RoundDecodeAllowed(round.Session, device), CutoverKey = round.Id };
+                { CaptureAllowed = device => RoundDecodeAllowed(round.Session, device), CutoverKey = round.Id };
                 foreach (var source in sources) await source.SetInspectionAsync(registration, t).ConfigureAwait(false);
                 await gate.WaitAsync(t).ConfigureAwait(false);
                 try
@@ -146,7 +146,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                     Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes), Effective.Weight,
                     WeightRules.Configured(Effective.Weight), ParcelState.Prepared, null, null, null, "独立手动调试请求；未发送",
                     Operator: currentOperator, Acquisition: acquisition, PositionId: positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id, ReaderBinding: ReaderBinding(positions.Values.Single(p => p.ReaderDeviceId == round.Device).Id))
-                    { DebugRequest = new(round.Session, round.Id, metadata.Id, round.Device, frame.Epoch, frame.SourceEventId!, metadata.OriginalSha256, ManagementEvidence!.AuditActor) };
+                { DebugRequest = new(round.Session, round.Id, metadata.Id, round.Device, frame.Epoch, frame.SourceEventId!, metadata.OriginalSha256, ManagementEvidence!.AuditActor) };
                 Save(op, "CameraDebugIntentCreated", "独立调试请求；仅明确发送命令可执行，正常供包继续。"); round.Operation = op.Id;
                 op = ((IParcelExecution)this).PrepareWcs(op);
                 Save(op, "CameraDebugRequestPrepared", "冻结本轮原请求，仅供查看，未执行外呼。");
@@ -219,8 +219,11 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         var value = new CameraReadRound(round.Id, round.Session, round.Device, round.State, round.Detail, round.Frame, round.Barcode, round.Operation,
             request?.IntegrationRequest?.RequestId.ToString() ?? request?.Id, request?.IntegrationRequest?.Body, request is null ? null : RoundRequestHash(request),
             request?.Binding.Target, response, op is not null && round.State == "Locked" && DebugRequestReady(op), repository!.Revision)
-            { ManualRequest = round.Manual, SendAttempts = op?.Wcs?.Attempts ?? 0,
-                SendBlockedReason = op?.Wcs is { State: StageState.Prepared, Attempts: 0 } && !DebugRequestReady(op) ? DebugRequestBlockingReason(op) : null };
+        {
+            ManualRequest = round.Manual,
+            SendAttempts = op?.Wcs?.Attempts ?? 0,
+            SendBlockedReason = op?.Wcs is { State: StageState.Prepared, Attempts: 0 } && !DebugRequestReady(op) ? DebugRequestBlockingReason(op) : null
+        };
         return Wire.Decode<CameraReadRound>(Wire.Encode(value));
     }
     static string ClipRound(string text, int maximum) => text.Length <= maximum ? text : text[..maximum] + "\n[显示已截断，原回执仍保留]";

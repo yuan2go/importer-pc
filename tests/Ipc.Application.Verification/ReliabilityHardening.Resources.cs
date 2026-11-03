@@ -29,8 +29,17 @@ static partial class ReliabilityHardening
             await app.DisposeAsync();
             Check(!app.HasUnreleasedResources && !app.HasActiveWork, "cycle " + i + " disposal releases ownership before the next startup");
             using var process = Process.GetCurrentProcess();
-            trend.Add(new { Cycle = i, process.HandleCount, Threads = process.Threads.Count, process.PrivateMemorySize64, process.WorkingSet64,
-                ReadOperations = 0, OwnedRuntimeResources = false, DbBytes = new FileInfo(Path.Combine(Data(launch, c), "sportmaster.db")).Length });
+            trend.Add(new
+            {
+                Cycle = i,
+                process.HandleCount,
+                Threads = process.Threads.Count,
+                process.PrivateMemorySize64,
+                process.WorkingSet64,
+                ReadOperations = 0,
+                OwnedRuntimeResources = false,
+                DbBytes = new FileInfo(Path.Combine(Data(launch, c), "sportmaster.db")).Length
+            });
         }
         File.WriteAllText(Path.Combine(root, "resource-trend.json"), Wire.Encode(trend));
         Console.WriteLine("MEASURE H02 ten startup/query/stop/disposal cycles=" + Wire.Encode(trend));

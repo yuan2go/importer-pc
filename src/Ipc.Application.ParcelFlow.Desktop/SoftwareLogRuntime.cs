@@ -10,12 +10,30 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class SoftwareLogControl
 {
-    readonly CheckBox debugMode = new() { Content = "调试模式", MinHeight = 44, Margin = new(4, 0, 8, 4), IsEnabled = false,
-        ToolTip = "开启后记录详细日志，三十分钟后由运行时自动关闭；重启后关闭。" };
-    readonly CheckBox liveFollow = new() { Content = "实时跟随", MinHeight = 44, Margin = new(0, 0, 8, 4), Visibility = Visibility.Collapsed,
-        ToolTip = "实时显示新写入的日志（按当前关键词、级别、来源筛选）。" };
-    readonly Button pauseDisplay = new() { Content = "暂停显示", MinHeight = 44, Margin = new(0, 0, 8, 4), Visibility = Visibility.Collapsed,
-        ToolTip = "只暂停画面滚动，日志仍在记录。" };
+    readonly CheckBox debugMode = new()
+    {
+        Content = "调试模式",
+        MinHeight = 44,
+        Margin = new(4, 0, 8, 4),
+        IsEnabled = false,
+        ToolTip = "开启后记录详细日志，三十分钟后由运行时自动关闭；重启后关闭。"
+    };
+    readonly CheckBox liveFollow = new()
+    {
+        Content = "实时跟随",
+        MinHeight = 44,
+        Margin = new(0, 0, 8, 4),
+        Visibility = Visibility.Collapsed,
+        ToolTip = "实时显示新写入的日志（按当前关键词、级别、来源筛选）。"
+    };
+    readonly Button pauseDisplay = new()
+    {
+        Content = "暂停显示",
+        MinHeight = 44,
+        Margin = new(0, 0, 8, 4),
+        Visibility = Visibility.Collapsed,
+        ToolTip = "只暂停画面滚动，日志仍在记录。"
+    };
     readonly DispatcherTimer diagnosticTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     CancellationTokenSource? liveCancellation;
     bool liveActive, displayPaused, liveReading, settingApplying, settingReading, updatingDebugControl, updatingFollowControl, diagnosticsClosed;

@@ -12,8 +12,11 @@ static partial class Program
         var initial = new SportmasterFlow().InitialConfiguration();
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), Path.GetTempPath(), null, null)).Catalog();
         var sdk = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs-reader");
-        var devices = initial.Topology!.Readers.Select((r, i) => r with { Parameters = new(r.Parameters!)
-        { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-" + i, ["entity.mode"] = "observe-only" } }).ToArray();
+        var devices = initial.Topology!.Readers.Select((r, i) => r with
+        {
+            Parameters = new(r.Parameters!)
+            { ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-" + i, ["entity.mode"] = "observe-only" }
+        }).ToArray();
         var candidate = initial with { Reader = devices[0], Topology = initial.Topology with { Readers = devices } };
         var original = Wire.Encode(candidate);
 
@@ -52,15 +55,22 @@ static partial class Program
                     var blocked = false; try { reader.Build(); } catch (InvalidOperationException) { blocked = true; }
                     Check(blocked, "unresolved reader cannot build a savable binding");
                 }
-        var manual = candidate with { Reader = devices[0] with { Driver = "manual", Parameters = null },
-            Topology = candidate.Topology with { Readers = devices.Select(r => r with { Driver = "manual", Parameters = null }).ToArray() } };
+        var manual = candidate with
+        {
+            Reader = devices[0] with { Driver = "manual", Parameters = null },
+            Topology = candidate.Topology with { Readers = devices.Select(r => r with { Driver = "manual", Parameters = null }).ToArray() }
+        };
         Check(Editors(manual, catalog).All(rs => rs.All(r => r.Provider?.Implementation == "manual" && r.Parameters.Count == 0)), "manual readers retain their field-free contract");
 
         var package = new PackageReference("synthetic.reader", "1.2.3", new string('a', 64));
         var extension = new CapabilityDescriptor("observation", "extension:" + package.Id + "/reader", package.Version, "CONTROLLED-OBSERVATION-v1", [], new(), package, "reader");
         var extDevices = devices.Select((r, i) => r with { Driver = "extension:synthetic." + i, Parameters = null }).ToArray();
-        var ext = candidate with { Reader = extDevices[0], Topology = candidate.Topology with { Readers = extDevices },
-            Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("synthetic." + i, package.Id, "reader", r.DeviceId, true, [])).ToArray()) };
+        var ext = candidate with
+        {
+            Reader = extDevices[0],
+            Topology = candidate.Topology with { Readers = extDevices },
+            Extensions = new([package], devices.Select((r, i) => new ExtensionInstance("synthetic." + i, package.Id, "reader", r.DeviceId, true, [])).ToArray())
+        };
         var exact = catalog with { Providers = [.. catalog.Providers, extension], Packages = [new(package, [])] };
         Check(Editors(ext, exact).All(rs => rs.All(r => r.Provider?.Package == package)), "extension readers resolve their exact pinned package");
         var changed = exact with { Providers = [.. catalog.Providers, extension with { Version = "1.2.4", Package = package with { Version = "1.2.4" } }] };

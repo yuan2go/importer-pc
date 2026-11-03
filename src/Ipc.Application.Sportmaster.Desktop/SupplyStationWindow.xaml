@@ -84,8 +84,8 @@
       <MenuItem Header="页面" MinHeight="44">
        <MenuItem Header="作业" Click="Workstation_Click"/>
        <MenuItem Header="记录" Click="History_Click"/>
-       <MenuItem Header="异常" Click="Exceptions_Click"/>
-       <MenuItem Header="统计" Click="Statistics_Click"/>
+       <MenuItem Header="异常" Click="Exceptions_Click" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}"/>
+       <MenuItem Header="统计" Click="Statistics_Click" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}"/>
        <MenuItem Header="维护中心" Click="MaintenanceCenter_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="设置" Click="Maintenance_Click" Visibility="{Binding ManagementModeVisibility}"/>
        <MenuItem Header="日志" Click="Logs_Click" Visibility="{Binding ManagementModeVisibility}"/>

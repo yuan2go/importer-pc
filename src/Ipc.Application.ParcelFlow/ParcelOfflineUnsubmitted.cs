@@ -55,8 +55,17 @@ public sealed partial class ParcelStartupMaintenance
         using var audit = db.CreateCommand(); audit.Transaction = tx;
         audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'UnsubmittedIntentClosedOffline',$owner,$detail)";
         audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$owner", operation);
-        audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Operation = operation, BeforeBodyHash = expectedBodyHash, AfterBodyHash = Wire.Hash(Wire.Encode(changed)), Actor, Reason = reason,
-            Backup = backup, BackupHash = manifest.DatabaseHash, Policy = "Explicit entity inspection; all stages Prepared and never attempted; frozen requests retained; no external call or physical completion" }));
+        audit.Parameters.AddWithValue("$detail", Wire.Encode(new
+        {
+            Operation = operation,
+            BeforeBodyHash = expectedBodyHash,
+            AfterBodyHash = Wire.Hash(Wire.Encode(changed)),
+            Actor,
+            Reason = reason,
+            Backup = backup,
+            BackupHash = manifest.DatabaseHash,
+            Policy = "Explicit entity inspection; all stages Prepared and never attempted; frozen requests retained; no external call or physical completion"
+        }));
         audit.ExecuteNonQuery(); tx.Commit();
         return Wire.Encode(new { Status = "UnsubmittedIntentClosed", Operation = operation, OriginalBodyHash = expectedBodyHash, Backup = backup, ExternalCalls = 0 });
     });

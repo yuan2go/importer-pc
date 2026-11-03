@@ -70,7 +70,8 @@ public sealed partial class ParcelRuntime
                 var at = DateTimeOffset.UtcNow;
                 var evidence = new OperatorInputEvidence(command.CommandId, "Keyboard", ManagementEvidence!.AuditActor, currentOperator?.SessionId, at);
                 var observation = new Observation(command.CommandId, positions[command.PositionId].ReaderDeviceId, "operator." + runtimeId.ToString("N"),
-                    "operator." + command.CommandId, 1, "manual." + command.CommandId, "Read", [command.Barcode], null, at) { OperatorInput = evidence };
+                    "operator." + command.CommandId, 1, "manual." + command.CommandId, "Read", [command.Barcode], null, at)
+                { OperatorInput = evidence };
                 var selection = definition.SelectBarcode(Effective, observation);
                 if (selection.SelectedCode is not { } code || selection.Matches != 1) throw new CameraReadRoundConflictException("人工条码未通过当前筛选规则；请求未准备、未发送。");
                 repository.AdmitCommand(receipt);

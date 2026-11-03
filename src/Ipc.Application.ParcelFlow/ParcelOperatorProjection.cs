@@ -11,9 +11,16 @@ public sealed partial class ParcelRuntime
     static DeviceBinding OperatorReader(DeviceBinding r) => r with { Parameters = null };
     static ParcelConfiguration OperatorConfiguration(ParcelConfiguration c) => c with
     {
-        Reader = OperatorReader(c.Reader), Scale = OperatorBinding(c.Scale), Wcs = OperatorBinding(c.Wcs), Plc = OperatorBinding(c.Plc),
-        Login = OperatorBinding(c.Login), MaintenanceLogin = null, CapabilityInstances = null, Extensions = null,
-        BarcodeFilter = null, BackupSchedule = null,
+        Reader = OperatorReader(c.Reader),
+        Scale = OperatorBinding(c.Scale),
+        Wcs = OperatorBinding(c.Wcs),
+        Plc = OperatorBinding(c.Plc),
+        Login = OperatorBinding(c.Login),
+        MaintenanceLogin = null,
+        CapabilityInstances = null,
+        Extensions = null,
+        BarcodeFilter = null,
+        BackupSchedule = null,
         Topology = c.Topology is null ? null : c.Topology with { Readers = c.Topology.Readers.Select(OperatorReader).ToArray() },
         Images = c.Images is null ? null : c.Images with { Camera = OperatorBinding(c.Images.Camera)!, Uploader = OperatorBinding(c.Images.Uploader)! }
     };
@@ -24,8 +31,12 @@ public sealed partial class ParcelRuntime
     };
     static ParcelOperation OperatorOperation(ParcelOperation op) => op with
     {
-        FrozenConfiguration = OperatorConfiguration(op.FrozenConfiguration), Wcs = OperatorStage(op.Wcs), Plc = OperatorStage(op.Plc),
-        Capture = OperatorStage(op.Capture), Upload = OperatorStage(op.Upload), BarcodeSelection = null,
+        FrozenConfiguration = OperatorConfiguration(op.FrozenConfiguration),
+        Wcs = OperatorStage(op.Wcs),
+        Plc = OperatorStage(op.Plc),
+        Capture = OperatorStage(op.Capture),
+        Upload = OperatorStage(op.Upload),
+        BarcodeSelection = null,
         ReaderBinding = op.ReaderBinding is null ? null : OperatorReader(op.ReaderBinding)
     };
     ParcelHistoryPage OperatorHistory(ParcelHistoryPage page) => Management.Status().Authorized ? page : page with
@@ -36,7 +47,9 @@ public sealed partial class ParcelRuntime
         BackupScheduleStatus = null,
         Configuration = s.Configuration with
         {
-            Effective = OperatorConfiguration(s.Configuration.Effective), Pending = null, InitialRepair = null
+            Effective = OperatorConfiguration(s.Configuration.Effective),
+            Pending = null,
+            InitialRepair = null
         },
         Operations = s.Operations.Select(OperatorOperation).ToArray(),
         // TCP evidence contains actual endpoints for management diagnostics only.

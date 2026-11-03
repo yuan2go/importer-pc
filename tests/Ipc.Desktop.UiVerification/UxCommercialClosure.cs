@@ -279,11 +279,21 @@ static partial class Program
         var longCode = "000" + new string('7', 90);
         probe.Project = snapshot => snapshot with
         {
-            Operations = snapshot.Operations.Select(op => op with { ParcelCode = longCode, State = ParcelState.WcsUnknown, Slot = null, Reason = "原请求回应未知",
-                Wcs = op.Wcs is { } fact ? fact with { State = StageState.Unknown, Replies = [], Failure = "原请求回应未知" } : null }).ToArray(),
+            Operations = snapshot.Operations.Select(op => op with
+            {
+                ParcelCode = longCode,
+                State = ParcelState.WcsUnknown,
+                Slot = null,
+                Reason = "原请求回应未知",
+                Wcs = op.Wcs is { } fact ? fact with { State = StageState.Unknown, Replies = [], Failure = "原请求回应未知" } : null
+            }).ToArray(),
             Positions = snapshot.Positions!.Select(p => p with { Admit = false, MainResultComplete = false, BackgroundComplete = false, BlockingReasons = ["原请求回应未知"] }).ToArray(),
-            Inputs = snapshot.Inputs!.Select(input => input with { Outcome = ParcelInputOutcome.Blocked,
-                Observation = input.Observation with { Codes = [longCode] }, Reason = string.Join(" ", Enumerable.Repeat("SYNTHETIC new input rejected; retain original Unknown", 30)) }).ToArray()
+            Inputs = snapshot.Inputs!.Select(input => input with
+            {
+                Outcome = ParcelInputOutcome.Blocked,
+                Observation = input.Observation with { Codes = [longCode] },
+                Reason = string.Join(" ", Enumerable.Repeat("SYNTHETIC new input rejected; retain original Unknown", 30))
+            }).ToArray()
         };
         await vm.RefreshAsync();
         var client = (Grid)window.FindName("ClientArea");

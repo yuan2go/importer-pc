@@ -22,7 +22,7 @@ static partial class Program
         // SQLite and WPF with explicit synthetic ports/identity. This scenario
         // neither installs machine policy nor qualifies deployment permission.
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch))
-            { RuntimeIdentityPreflight = () => { } };
+        { RuntimeIdentityPreflight = () => { } };
         lines.Add("SYNTHETIC ports/runtime identity; real Application/SQLite/WPF. Machine policy and production permissions remain independently guarded.");
         await runtime.StartAsync(default); await ManagementModeFixture.Authorize(runtime);
         var service = DispatchProxy.Create<IWorkstationAdministration, LogUiProbe>(); var probe = (LogUiProbe)(object)service; probe.Inner = runtime;

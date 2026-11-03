@@ -1,5 +1,6 @@
 using Ipc.Application.Contracts;
 namespace Ipc.Application.ParcelFlow;
+
 public static class FlowResults
 {
     public static ParcelState PlcState(StageFact stage) => stage.State switch

@@ -218,7 +218,8 @@ public partial class ParcelViewModel
     }
     public async Task ContinueUploadAsync() { var op = Selected ?? throw new InvalidOperationException("选择作业"); await CommandAsync("ContinueUpload", op.Id); }
     public async Task AbandonAsync()
-    { RequireFreshSnapshot();
+    {
+        RequireFreshSnapshot();
         var op = Selected ?? throw new InvalidOperationException("选择作业"); var s = Snapshot ?? throw new InvalidOperationException("刷新后选择作业");
         var command = new BusinessCommand(Wire.Id(), s.Revision, "AbandonUnsubmitted", op.Id, InspectionReason);
         var r = await ServiceAsync(() => application.CommandAsync(command)); Message = r.Status + " · " + r.Reason;

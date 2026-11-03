@@ -43,11 +43,18 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
                 decodedCandidates == 0 ? "NoBarcode" : "Reading";
             return new(DeviceId, epoch, phase, state, acquireCalls, noData, frames, decodeStarted, decodeCompleted,
                 emptyFrames, decodedCandidates, recognized, rejected, decodePaused, lastFrameAt, age, lastDecodeAt,
-                failure.Length == 0 ? null : failure) { Window = decodeWindow.Read(), SupersededDecodeFrames = Interlocked.Read(ref supersededDecodeFrames)
+                failure.Length == 0 ? null : failure)
+            {
+                Window = decodeWindow.Read(),
+                SupersededDecodeFrames = Interlocked.Read(ref supersededDecodeFrames)
 #if !MVS_ACQUISITION_EXTENSION
-                , RejectedFrames = rejectedFrames, LastFrameRejection = lastFrameRejection, OriginalFrameCopies = originalFrameCopies,
+                ,
+                RejectedFrames = rejectedFrames,
+                LastFrameRejection = lastFrameRejection,
+                OriginalFrameCopies = originalFrameCopies,
                 WaitingForOriginalCapacity = waitingOriginalCapacity,
-                SdkFrameNumberGaps = skippedVideoFrames, SdkGapEvents = videoGapEvents
+                SdkFrameNumberGaps = skippedVideoFrames,
+                SdkGapEvents = videoGapEvents
 #endif
             };
         }
@@ -55,8 +62,13 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
 #if !MVS_ACQUISITION_EXTENSION
     public object ReadPerformance()
     {
-        lock (gate) return new { Epoch = epoch, Acquisition = Timings.Snapshot(), Decoder = DecoderTimings,
-            DecoderConfiguration = (decoder as SoftwareDecoder)?.DiagnosticConfiguration };
+        lock (gate) return new
+        {
+            Epoch = epoch,
+            Acquisition = Timings.Snapshot(),
+            Decoder = DecoderTimings,
+            DecoderConfiguration = (decoder as SoftwareDecoder)?.DiagnosticConfiguration
+        };
     }
 #endif
 }

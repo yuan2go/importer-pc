@@ -39,8 +39,8 @@ if (args.Contains("--runtime-identity-boundary")) { await RuntimeIdentityBoundar
 if (args.Contains("--ordinary-runtime-startup")) { OrdinaryRuntimeStartup.Run(root); return; }
 if (args.Contains("--maintenance-authorization-startup")) { MaintenanceAuthorizationStartup.Run(root, workspace); return; }
 if (args.Contains("--maintenance-launch-fence")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Windows named-pipe boundary required"); await MaintenanceLaunchFence.Run(); return; }
-if (args.Contains("--session-shift-crash-child")) { var i=Array.IndexOf(args,"--session-shift-crash-child"); await SessionShift25.CrashChild(args[i+1],args[i+2]); return; }
-if (args.Contains("--session-shift-25")) { await SessionShift25.Run(workspace,root); return; }
+if (args.Contains("--session-shift-crash-child")) { var i = Array.IndexOf(args, "--session-shift-crash-child"); await SessionShift25.CrashChild(args[i + 1], args[i + 2]); return; }
+if (args.Contains("--session-shift-25")) { await SessionShift25.Run(workspace, root); return; }
 if (args.Contains("--ui-spec-24")) { await UiSpec24.Run(workspace, root); return; }
 if (args.Contains("--product-closure-21")) { await StationProductClosure.Run(workspace, root); return; }
 if (args.Contains("--db11-compatible-update")) { await Database11Compatibility.Run(workspace, root); return; }
@@ -57,6 +57,7 @@ if (args.Contains("--reader-robustness-28")) { await ReaderRobustness28.Run(work
 if (args.Contains("--industrial-lifecycle")) { IndustrialLifecycle.Run(root); return; }
 if (args.Contains("--industrial-rollback")) { await IndustrialRollback.Run(workspace, root); return; }
 if (args.Contains("--industrial-version-pruning")) { await IndustrialVersionPruning.Run(workspace, root); return; }
+if (args.Contains("--permanent-deletion-02")) { await PermanentDeletion02.Run(workspace, root); return; }
 if (args.Contains("--industrial-opaque-removal")) { await IndustrialOpaqueRemoval.Run(workspace, root); return; }
 if (args.Contains("--industrial-quiet-deployment")) { IndustrialQuietDeployment.Run(root); return; }
 if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }
@@ -64,6 +65,9 @@ if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); retu
 if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--live-devices-30")) { await LiveDevices30.Run(workspace, root); return; }
+if (args.Contains("--update-notice-07")) { UpdateNotice07.Run(root); return; }
+if (args.Contains("--installation-receipts-04")) { InstallationReceipts04.Run(root); return; }
+if (args.Contains("--first-configuration-03")) { await FirstConfiguration03.Run(); return; }
 if (args.Contains("--dual-camera-performance")) { await DualCameraPerformance.Run(workspace, root); return; }
 if (args.Contains("--reader-ingress-terminal-22")) { await ReaderIngressTerminal22.Run(workspace, root); return; }
 if (args.Contains("--sm-original-frame")) { await SportmasterRcs.OriginalFrameChecks(workspace, root); return; }
@@ -78,21 +82,21 @@ if (args.Contains("--station-single-camera")) { await SportmasterRcs.SingleCamer
 if (args.Contains("--hikrobot-sdk-editing")) { HikrobotSdkEditing.Run(workspace, root); return; }
 if (args.Contains("--hikrobot-hardening")) { await HikrobotHardening.Run(workspace, root); return; }
 if (args.Contains("--storage-baseline") || args.Contains("--storage-schema-only")) { await StorageBaseline.Run(workspace, root, args.Contains("--storage-baseline")); return; }
-if (args.Contains("--supervisor-continuity-child")) { await SupervisorContinuity.Child(workspace,args[^1]); return; }
-if (args.Contains("--time-storage-exit-child")) { await Task.Delay(400); Environment.Exit(int.Parse(args[Array.IndexOf(args,"--time-storage-exit-child")+1])); return; }
-if (args.Contains("--time-storage-process-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Processes(workspace, root); return; }
-if (args.Contains("--time-storage-runtime-child")) { var i=Array.IndexOf(args,"--time-storage-runtime-child"); await TimeStorageProcessChecks.Child(workspace,args[i+1],args[i+2]); return; }
-if (args.Contains("--time-storage-supervisor-checks")) { Console.WriteLine("EvidenceRoot="+root); await TimeStorageProcessChecks.Supervisor(root); await SupervisorContinuity.Run(Path.Combine(root,"continuity")); return; }
-if (args.Contains("--history-open-fixture")) { HistoryOpenBenchmark.CreateFixture(workspace,args[Array.IndexOf(args,"--history-open-fixture")+1]); return; }
-if (args.Contains("--history-open-worker")) { HistoryOpenBenchmark.Worker(args[Array.IndexOf(args,"--history-open-worker")+1]); return; }
+if (args.Contains("--supervisor-continuity-child")) { await SupervisorContinuity.Child(workspace, args[^1]); return; }
+if (args.Contains("--time-storage-exit-child")) { await Task.Delay(400); Environment.Exit(int.Parse(args[Array.IndexOf(args, "--time-storage-exit-child") + 1])); return; }
+if (args.Contains("--time-storage-process-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageProcessChecks.Processes(workspace, root); return; }
+if (args.Contains("--time-storage-runtime-child")) { var i = Array.IndexOf(args, "--time-storage-runtime-child"); await TimeStorageProcessChecks.Child(workspace, args[i + 1], args[i + 2]); return; }
+if (args.Contains("--time-storage-supervisor-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageProcessChecks.Supervisor(root); await SupervisorContinuity.Run(Path.Combine(root, "continuity")); return; }
+if (args.Contains("--history-open-fixture")) { HistoryOpenBenchmark.CreateFixture(workspace, args[Array.IndexOf(args, "--history-open-fixture") + 1]); return; }
+if (args.Contains("--history-open-worker")) { HistoryOpenBenchmark.Worker(args[Array.IndexOf(args, "--history-open-worker") + 1]); return; }
 if (args.Contains("--time-storage-atomic-checks")) { Console.WriteLine("EvidenceRoot=" + root); await AtomicStorageChecks.Run(root); return; }
-if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); await StartupStorageBoundaries.Run(workspace, Path.Combine(root,"startup-storage")); return; }
+if (args.Contains("--time-storage-fault-checks")) { Console.WriteLine("EvidenceRoot=" + root); await TimeStorageFaultChecks.Run(workspace, root); await StartupStorageBoundaries.Run(workspace, Path.Combine(root, "startup-storage")); return; }
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--stability-audit-fixes")) { await StabilityAuditFixes.Run(workspace, root); return; }
 if (args.Contains("--stability-audit-history")) { StabilityAuditFixes.History(workspace, root); return; }
 if (args.Contains("--stability-audit-maintenance")) { await StabilityAuditFixes.Maintenance(root); return; }
-if (args.Contains("--lifecycle-ux")) { await LifecycleOptimization.Run(workspace, root); await MaintenanceProgressChecks.Run(workspace,Path.Combine(root,"maintenance-progress")); return; }
-if (args.Contains("--maintenance-progress-checks")) { await MaintenanceProgressChecks.Run(workspace,root); return; }
+if (args.Contains("--lifecycle-ux")) { await LifecycleOptimization.Run(workspace, root); await MaintenanceProgressChecks.Run(workspace, Path.Combine(root, "maintenance-progress")); return; }
+if (args.Contains("--maintenance-progress-checks")) { await MaintenanceProgressChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-capacity-checks")) { await LatencyCapacityChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-projection-checks")) { await LatencyProjectionChecks.Run(workspace, root); return; }
 if (args.Contains("--latency-details-checks")) { await LatencyDetailsChecks.Run(workspace, root); return; }
@@ -146,7 +150,7 @@ if (args.Contains("--audit03-rcs")) { await SportmasterRcs.Audit03Checks(workspa
 if (args.Contains("--audit03-input")) { await Audit03.Inputs(workspace, root); return; }
 if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }
 if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }
-if (args.Contains("--storage-format-guards")) { await ArchitectureQuality.StorageFormatChecks(workspace,root); return; }
+if (args.Contains("--storage-format-guards")) { await ArchitectureQuality.StorageFormatChecks(workspace, root); return; }
 
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
 if (args.Contains("--rcs-timeout-errors")) { await SportmasterRcs.TimeoutErrorChecks(workspace, root); return; }
@@ -156,11 +160,11 @@ if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(w
 if (args.Contains("--signed-business-compatibility")) { var i = Array.IndexOf(args, "--signed-business-compatibility"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), declaredCompatibility: true); return; }
 if (args.Contains("--configuration-confirmation")) { await ArchitectureQuality.ConfigurationConfirmationChecks(workspace, root); return; }
 if (args.Contains("--configuration-confirmation-crash-child")) { var i = Array.IndexOf(args, "--configuration-confirmation-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], "BeforeCreate"); return; }
-if (args.Contains("--raw-custody-child")) { var i=Array.IndexOf(args,"--raw-custody-child"); await ArchitectureQuality.RawCustodyChild(workspace,args[i+1]); return; }
-if (args.Contains("--parcel-recovery-p2")) { await ArchitectureQuality.RecoveryP2Checks(workspace,root); return; }
+if (args.Contains("--raw-custody-child")) { var i = Array.IndexOf(args, "--raw-custody-child"); await ArchitectureQuality.RawCustodyChild(workspace, args[i + 1]); return; }
+if (args.Contains("--parcel-recovery-p2")) { await ArchitectureQuality.RecoveryP2Checks(workspace, root); return; }
 if (args.Contains("--history-session-contract")) { await HistorySessionContractChecks.Run(); return; }
-if (args.Contains("--current-offline-recovery-child")) { var i = Array.IndexOf(args, "--current-offline-recovery-child"); await ArchitectureQuality.CurrentOfflineRecoveryChild(args[i+1], args[i+2], args[i+3], args[i+4]); return; }
-if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyChecks(workspace,root); return; }
+if (args.Contains("--current-offline-recovery-child")) { var i = Array.IndexOf(args, "--current-offline-recovery-child"); await ArchitectureQuality.CurrentOfflineRecoveryChild(args[i + 1], args[i + 2], args[i + 3], args[i + 4]); return; }
+if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyChecks(workspace, root); return; }
 if (args.Contains("--upload-crash-child")) { var i = Array.IndexOf(args, "--upload-crash-child"); await ArchitectureQuality.UploadCrashChild(workspace, args[i + 1]); return; }
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }
 if (args.Contains("--quality-extensions")) { var i = Array.IndexOf(args, "--quality-extensions"); await ArchitectureQuality.ExtensionChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
@@ -243,8 +247,11 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     }
 }
 // Measurement is correlated to the admitted entity, never a code or piece count.
-var measured = Config("direct-plc"); measured = measured with { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 3000),
-    Scale = new("weight", "reference-weight", "1.0.0", "scale.one", "reference://scale/measured", "PARCEL-REFERENCE-v1", []) };
+var measured = Config("direct-plc"); measured = measured with
+{
+    Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 3000),
+    Scale = new("weight", "reference-weight", "1.0.0", "scale.one", "reference://scale/measured", "PARCEL-REFERENCE-v1", [])
+};
 await using (var app = await Open(measured, "measured"))
 {
     app.EmitReference("measured-one", "00100", "event-one"); var s = await Wait(app, x => x.Operations.SingleOrDefault()?.State == ParcelState.WaitingWeight);

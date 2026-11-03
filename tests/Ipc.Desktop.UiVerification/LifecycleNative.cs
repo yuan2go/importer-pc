@@ -26,7 +26,8 @@ static partial class Program
             stopCalls++;
             if (failStop) { failStop = false; throw new IOException("合成停止失败；原资源仍归原实例"); }
             await app.DisposeAsync();
-        }) { ConfirmOwnerExit = _ => true, ConfirmDiscardDrafts = _ => true };
+        })
+        { ConfirmOwnerExit = _ => true, ConfirmDiscardDrafts = _ => true };
         window.ReopenOwnerAsync = async () => { reopen++; replacement = Make(); await replacement.StartAsync(default); };
         window.Show(); var vm = window.ViewModel; await SetClient(window, 1366, 768); await vm.RefreshAsync();
         try

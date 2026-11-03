@@ -35,11 +35,17 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         options = new(binding);
         client = new(new SocketsHttpHandler
         {
-            AllowAutoRedirect = false, UseCookies = false, UseProxy = false,
-            AutomaticDecompression = DecompressionMethods.None, MaxConnectionsPerServer = 8,
+            AllowAutoRedirect = false,
+            UseCookies = false,
+            UseProxy = false,
+            AutomaticDecompression = DecompressionMethods.None,
+            MaxConnectionsPerServer = 8,
             // Destination and heartbeat each supply one finite cancellation budget, including connect.
-            ConnectTimeout = Timeout.InfiniteTimeSpan, ConnectCallback = connect, PooledConnectionLifetime = TimeSpan.FromMinutes(5)
-        }) { Timeout = Timeout.InfiniteTimeSpan };
+            ConnectTimeout = Timeout.InfiniteTimeSpan,
+            ConnectCallback = connect,
+            PooledConnectionLifetime = TimeSpan.FromMinutes(5)
+        })
+        { Timeout = Timeout.InfiniteTimeSpan };
     }
     public Task StartAsync(CancellationToken token)
     {
@@ -67,7 +73,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
         lock (lifecycle) return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed && heartbeatStations is not null && heartbeatFailure is null, now, now.AddSeconds(3),
             "RCS client local lifecycle/configuration readiness only; " + (heartbeatFailure ?? heartbeatEvidence))
-            { RemoteConfirmation = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null ? RemoteConnectionConfirmation.ResponseReceived : RemoteConnectionConfirmation.Unconfirmed });
+        { RemoteConfirmation = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null ? RemoteConnectionConfirmation.ResponseReceived : RemoteConnectionConfirmation.Unconfirmed });
     }
     public async Task ReconnectAsync(CancellationToken token)
     { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }
@@ -105,7 +111,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             using var content = new TrackedRequestContent(Encoding.UTF8.GetBytes(frozen.Body));
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {
-                Version = HttpVersion.Version11, VersionPolicy = HttpVersionPolicy.RequestVersionExact,
+                Version = HttpVersion.Version11,
+                VersionPolicy = HttpVersionPolicy.RequestVersionExact,
                 Content = content
             };
             message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -117,7 +124,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             {
                 return new StageReply(Wire.Id(), request.Id, request.PayloadHash, false, null, null, null, null,
                     "RCS_NOT_DELIVERED: connection refused before any serialization of the frozen nonempty request body; sender evidence only",
-                    ReceiptTimeForVerification.GetUtcNow()) { SenderDelivery = SenderDeliveryEvidence.ConnectionRefusedBeforeBody };
+                    ReceiptTimeForVerification.GetUtcNow())
+                { SenderDelivery = SenderDeliveryEvidence.ConnectionRefusedBeforeBody };
             }
             catch (HttpRequestException e) { throw new IOException("RCS HTTP delivery/outcome is unknown", e); }
             using (response)

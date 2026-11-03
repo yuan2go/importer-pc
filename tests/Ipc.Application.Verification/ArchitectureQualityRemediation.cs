@@ -57,7 +57,7 @@ static partial class ArchitectureQualityRemediation
         await TcpConsumersAndProjection(workspace, Path.Combine(root, "tcp"));
         foreach (var boundary in new[] { "AfterAbandonedDurable", "AfterImageReleaseDurable", "AfterContinuationAdmitted", "AfterArchiveCommit" })
             await CommandCrash(workspace, Path.Combine(root, boundary), boundary);
-        await ArchitectureQuality.ConfigurationConfirmationChecks(workspace,Path.Combine(root,"current-configuration-boundaries"));
+        await ArchitectureQuality.ConfigurationConfirmationChecks(workspace, Path.Combine(root, "current-configuration-boundaries"));
         Console.WriteLine("PASS AQA01 COMPLETE");
     }
     static async Task ExpiredWeight(string workspace, string path)
@@ -140,8 +140,12 @@ static partial class ArchitectureQualityRemediation
         try
         {
             var c = Config(workspace, "sportmaster");
-            var readers = c.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = new()
-            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listeners[i].LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" } }).ToArray();
+            var readers = c.Topology!.Readers.Select((r, i) => r with
+            {
+                Driver = "tcp-line",
+                Parameters = new()
+                { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listeners[i].LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" }
+            }).ToArray();
             c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } };
             await using var app = await Open(c, path);
             using var left = await listeners[0].AcceptTcpClientAsync(); using var right = await listeners[1].AcceptTcpClientAsync();
@@ -204,8 +208,8 @@ static partial class ArchitectureQualityRemediation
         if (boundary.StartsWith("ReceiptQuery", StringComparison.Ordinal)) { await ReceiptQueryChild(workspace, path, boundary); return; }
         if (boundary is not ("AfterAbandonedDurable" or "AfterImageReleaseDurable" or "AfterContinuationAdmitted" or "AfterArchiveCommit"))
             throw new ArgumentException("Unsupported current command boundary");
-        var c = Config(workspace,boundary=="AfterArchiveCommit" ? "sportmaster" : "direct-plc");
-        if(c.ApplicationId=="direct-plc")c=c with{Weight=new(WeightSource.Measured,WeightUnit.Kg,3),Scale=Binding("weight"),Images=new(Binding("camera"),null)};
+        var c = Config(workspace, boundary == "AfterArchiveCommit" ? "sportmaster" : "direct-plc");
+        if (c.ApplicationId == "direct-plc") c = c with { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = Binding("weight"), Images = new(Binding("camera"), null) };
         var app = await Open(c, path);
         var password = Environment.GetEnvironmentVariable("IPC_AQA01_FIXTURE_PASSWORD") ?? throw new InvalidOperationException("Missing isolated fixture credential");
         await app.ConfigureManagementPasswordAsync(password); Check(await app.EnterManagementModeAsync(password), "child uses real management service");

@@ -16,10 +16,21 @@ internal static class HikrobotHardening
         var instances = readers.Select((r, n) => new ExtensionInstance("identity-" + n,
             n == 0 ? "hikrobot.idmvs-reader" : "hikrobot.mvs-acquisition", "synthetic-module", r.DeviceId, true,
             new() { ["device.ip"] = "192.0.2." + (n + 1), ["device.serial"] = "SYNTHETIC-" + n })).ToArray();
-        var production = seed with { Mode = RunMode.Production, Reader = readers[0], Topology = seed.Topology with { Readers = readers },
-            Extensions = new([], instances), DeferredConnections = null };
-        ParcelConfiguration Change(int index, string key, string value) => production with { Extensions = production.Extensions! with {
-            Instances = instances.Select((i, n) => n == index ? i with { Parameters = new(i.Parameters) { [key] = value } } : i).ToArray() } };
+        var production = seed with
+        {
+            Mode = RunMode.Production,
+            Reader = readers[0],
+            Topology = seed.Topology with { Readers = readers },
+            Extensions = new([], instances),
+            DeferredConnections = null
+        };
+        ParcelConfiguration Change(int index, string key, string value) => production with
+        {
+            Extensions = production.Extensions! with
+            {
+                Instances = instances.Select((i, n) => n == index ? i with { Parameters = new(i.Parameters) { [key] = value } } : i).ToArray()
+            }
+        };
         void Reject(ParcelConfiguration config, string field)
         {
             try { ParcelCapabilityFactory.ValidateHikrobotIdentities(config); }
@@ -50,8 +61,13 @@ internal static class HikrobotHardening
         await using (var journal = new RuntimeJournal(directory, _ => { }))
         {
             journal.Write(current);
-            journal.WriteDebug(new { At = now, Event = "debug", Candidates = new[] { currentCode },
-                Body = Wire.Encode(new { loadCode = currentCode, skuId = "KEPT-SKU" }) });
+            journal.WriteDebug(new
+            {
+                At = now,
+                Event = "debug",
+                Candidates = new[] { currentCode },
+                Body = Wire.Encode(new { loadCode = currentCode, skuId = "KEPT-SKU" })
+            });
             using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             while (true)
             {

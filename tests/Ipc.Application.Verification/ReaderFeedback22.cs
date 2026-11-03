@@ -19,13 +19,25 @@ internal static class ReaderFeedback22
         var enqueue = typeof(ParcelRuntime).GetMethod("Enqueue", BindingFlags.NonPublic | BindingFlags.Instance)!;
         foreach (var reason in new[] { "age", "epoch", "future", "sequence", "operator" })
         {
-            var observation = original with { Id = Wire.Id(), SourceEventId = "synthetic-" + reason, AdmissionId = "synthetic." + reason,
-                Codes = ["SYNTH-REJECTED-" + reason], DecodedTicks = Stopwatch.GetTimestamp(), Sequence = original.Sequence + 10,
-                ObservedAt = DateTimeOffset.UtcNow, CaptureSessionId = "untrusted-capture-must-not-link" };
-            observation = reason switch { "age" => observation with { ObservedAt = DateTimeOffset.UtcNow.AddSeconds(-2) },
-                "epoch" => observation with { Epoch = "obsolete-epoch" }, "future" => observation with { ObservedAt = DateTimeOffset.UtcNow.AddMinutes(1) },
+            var observation = original with
+            {
+                Id = Wire.Id(),
+                SourceEventId = "synthetic-" + reason,
+                AdmissionId = "synthetic." + reason,
+                Codes = ["SYNTH-REJECTED-" + reason],
+                DecodedTicks = Stopwatch.GetTimestamp(),
+                Sequence = original.Sequence + 10,
+                ObservedAt = DateTimeOffset.UtcNow,
+                CaptureSessionId = "untrusted-capture-must-not-link"
+            };
+            observation = reason switch
+            {
+                "age" => observation with { ObservedAt = DateTimeOffset.UtcNow.AddSeconds(-2) },
+                "epoch" => observation with { Epoch = "obsolete-epoch" },
+                "future" => observation with { ObservedAt = DateTimeOffset.UtcNow.AddMinutes(1) },
                 "operator" => observation with { OperatorInput = new OperatorInputEvidence("forged", "Keyboard", "synthetic", null, DateTimeOffset.UtcNow) },
-                _ => observation with { Sequence = original.Sequence } };
+                _ => observation with { Sequence = original.Sequence }
+            };
             Check((bool)enqueue.Invoke(h.App, [observation])!, reason + " synthetic source is durably handed off, not treated as admission");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.Observation.Id == observation.Id));
             var snapshot = await h.App.SnapshotAsync(); var input = snapshot.Inputs!.Single(i => i.PositionId == "left");
@@ -42,8 +54,15 @@ internal static class ReaderFeedback22
         await h.App.ReconnectDeviceAsync(h.Left);
         await CameraRoundHarness.Until(async () => h.Factory.Sources[h.Left].Epoch != oldEpoch && (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow));
         var previousProcessed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
-        var oldQueued = original with { Id = Wire.Id(), SourceEventId = "synthetic.old-queued", AdmissionId = "synthetic.old-queued", Sequence = 99,
-            DecodedTicks = Stopwatch.GetTimestamp(), ObservedAt = DateTimeOffset.UtcNow };
+        var oldQueued = original with
+        {
+            Id = Wire.Id(),
+            SourceEventId = "synthetic.old-queued",
+            AdmissionId = "synthetic.old-queued",
+            Sequence = 99,
+            DecodedTicks = Stopwatch.GetTimestamp(),
+            ObservedAt = DateTimeOffset.UtcNow
+        };
         Check((bool)enqueue.Invoke(h.App, [oldQueued])!, "old queued camera epoch remains a durable input to be explicitly disposed after reconnect");
         await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > previousProcessed));
         var retired = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
@@ -55,7 +74,7 @@ internal static class ReaderFeedback22
         var vm = new SupplyStationViewModel(h.App); await vm.RefreshAsync(); vm.SetViewport(1366, 768);
         var state = vm.Snapshot!.Devices!.Single(d => d.DeviceId == h.Left);
         ParcelReadFeedback Read(long ticks, string epoch) => new(vm.Snapshot.RuntimeId, "left", Wire.Id(), h.Left, epoch, "SYNTH-LATEST", ticks, DateTimeOffset.UtcNow)
-            { SourceSequence = 100, PendingDisplayBudgetMs = 1000 };
+        { SourceSequence = 100, PendingDisplayBudgetMs = 1000 };
         vm.Left.ApplyReadFeedback(Read(Stopwatch.GetTimestamp() - 2 * Stopwatch.Frequency, state.Epoch));
         Check(vm.Left.ShowConfirmedTask && !vm.Left.IsProcessing, "feedback older than the snapshot watermark cannot replace its accepted current observation");
         vm.Left.ApplyReadFeedback(Read(Stopwatch.GetTimestamp(), state.Epoch));

@@ -60,20 +60,20 @@ static class AlignmentDataVerification
         Assert(SupplyStore.InspectReadOnly(source).FormatVersion == 6, "Fresh Supply baseline is format6");
         var backup = Path.Combine(root, "current-backup.db"); var receipt = SupplyStore.BackupReadOnly(source, backup);
         Assert(receipt.Sha256 == Wire.FileHash(backup) && receipt.Backup.FormatVersion == 6, "Current backup binds exact bytes and format");
-        foreach (var format in Enumerable.Range(1,5).Append(7))
+        foreach (var format in Enumerable.Range(1, 5).Append(7))
         {
-            var file = Path.Combine(root,"noncurrent-"+format+".db"); File.Copy(source,file);
-            using (var db = Open(file)) Exec(db,"UPDATE schema_history SET id=$a; UPDATE storage_format SET version=$a,minimum_reader=$a",format);
-            var before = Wire.FileHash(file); var destination = Path.Combine(root,"rejected-"+format,"station.db");
+            var file = Path.Combine(root, "noncurrent-" + format + ".db"); File.Copy(source, file);
+            using (var db = Open(file)) Exec(db, "UPDATE schema_history SET id=$a; UPDATE storage_format SET version=$a,minimum_reader=$a", format);
+            var before = Wire.FileHash(file); var destination = Path.Combine(root, "rejected-" + format, "station.db");
             Throws(() => SupplyStore.InspectReadOnly(file)); Throws(() => { using var denied = new SupplyStore(file); });
-            Throws(() => SupplyStore.BackupReadOnly(file,destination)); Throws(() => SupplyStore.RestoreVerified(file,destination));
-            Assert(Wire.FileHash(file)==before && !Directory.Exists(Path.GetDirectoryName(destination)), "Non-current format refuses before changing bytes or creating destination");
+            Throws(() => SupplyStore.BackupReadOnly(file, destination)); Throws(() => SupplyStore.RestoreVerified(file, destination));
+            Assert(Wire.FileHash(file) == before && !Directory.Exists(Path.GetDirectoryName(destination)), "Non-current format refuses before changing bytes or creating destination");
         }
-        foreach (var sql in new[]{"UPDATE schema_history SET checksum='changed'", "INSERT INTO schema_history VALUES(7,'extra','synthetic')", "UPDATE storage_format SET minimum_reader=99"})
+        foreach (var sql in new[] { "UPDATE schema_history SET checksum='changed'", "INSERT INTO schema_history VALUES(7,'extra','synthetic')", "UPDATE storage_format SET minimum_reader=99" })
         {
-            var file=Path.Combine(root,Wire.Id()+".db"); File.Copy(source,file); using(var db=Open(file))Exec(db,sql);
-            var before=Wire.FileHash(file); Throws(()=>SupplyStore.InspectReadOnly(file)); Throws(()=>{using var denied=new SupplyStore(file);});
-            Assert(Wire.FileHash(file)==before,"Corrupt baseline identity refuses without writes");
+            var file = Path.Combine(root, Wire.Id() + ".db"); File.Copy(source, file); using (var db = Open(file)) Exec(db, sql);
+            var before = Wire.FileHash(file); Throws(() => SupplyStore.InspectReadOnly(file)); Throws(() => { using var denied = new SupplyStore(file); });
+            Assert(Wire.FileHash(file) == before, "Corrupt baseline identity refuses without writes");
         }
         return Task.CompletedTask;
     }

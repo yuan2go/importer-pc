@@ -48,8 +48,14 @@ static partial class Program
                 vm.SelectedPositionId = "left"; vm.AdmissionId = "typography-fixed-entity"; vm.ParcelCode = "000123456789"; vm.Emit();
                 for (var i = 0; i < 150 && vm.Current?.State != ParcelState.SlotResolved; i++) { await Task.Delay(20); await vm.RefreshAsync(); }
                 Check(vm.Current?.State == ParcelState.SlotResolved, "fixture obtains a synthetic accepted result");
-                frozen = vm.Snapshot! with { Operations = vm.Snapshot!.Operations.Select(o => o with { Slot = "L-07",
-                    Wcs = o.Wcs! with { Replies = o.Wcs.Replies.Select(r => r with { Slot = "L-07" }).ToArray() } }).ToArray() };
+                frozen = vm.Snapshot! with
+                {
+                    Operations = vm.Snapshot!.Operations.Select(o => o with
+                    {
+                        Slot = "L-07",
+                        Wcs = o.Wcs! with { Replies = o.Wcs.Replies.Select(r => r with { Slot = "L-07" }).ToArray() }
+                    }).ToArray()
+                };
                 Directory.CreateDirectory(Path.GetDirectoryName(fixturePath)!); File.WriteAllText(fixturePath, Wire.Encode(frozen));
             }
             var snapshot = frozen;
@@ -60,8 +66,12 @@ static partial class Program
                 var longSlot = "SYNTHETIC-LONG-DESTINATION-" + new string('8', 40);
                 snapshot = scenario == "unknown" ? HierarchyState(frozen, StageState.Unknown) : scenario == "long" ? frozen with
                 {
-                    Operations = frozen.Operations.Select(o => o.PositionId != "left" ? o : o with { ParcelCode = longCode, Slot = longSlot,
-                        Wcs = o.Wcs! with { Replies = o.Wcs.Replies.Select(r => r with { Slot = longSlot }).ToArray() } }).ToArray()
+                    Operations = frozen.Operations.Select(o => o.PositionId != "left" ? o : o with
+                    {
+                        ParcelCode = longCode,
+                        Slot = longSlot,
+                        Wcs = o.Wcs! with { Replies = o.Wcs.Replies.Select(r => r with { Slot = longSlot }).ToArray() }
+                    }).ToArray()
                 } : frozen;
                 await SetClient(window, width, height);
                 for (var i = 0; i < 100 && !ReferenceEquals(vm.Snapshot, snapshot); i++) { await vm.RefreshAsync(); await Task.Delay(20); }
@@ -88,8 +98,16 @@ static partial class Program
                 var controls = new DependencyObject[] { window }.Concat(Descendants(window)).OfType<FrameworkElement>()
                     .Where(e => e.IsVisible && (e is TextBox || e is TextBlock || e is Window || e is Button)).ToArray();
                 var rows = controls.Select(e => TypographyControlRow(e, client, beforeOverrides.GetValueOrDefault(e))).ToArray();
-                reports.Add(new { Variant = variant, Ui = ui, Scenario = scenario, Client = new { client.ActualWidth, client.ActualHeight },
-                    Dpi = VisualTreeHelper.GetDpi(window).DpiScaleX, Host = TypographyBounds(host, client), Controls = rows });
+                reports.Add(new
+                {
+                    Variant = variant,
+                    Ui = ui,
+                    Scenario = scenario,
+                    Client = new { client.ActualWidth, client.ActualHeight },
+                    Dpi = VisualTreeHelper.GetDpi(window).DpiScaleX,
+                    Host = TypographyBounds(host, client),
+                    Controls = rows
+                });
                 var code = controls.OfType<TextBox>().FirstOrDefault(b => b.Name == "CurrentBarcode" || Equals(b.Tag, "CurrentBarcode"));
                 Check(code is not null && code.Text == (scenario == "long" ? longCode : "000123456789"), key + " exact barcode text preserved; actual=" + code?.Text);
                 code!.SelectAll(); Check(code.SelectedText == code.Text, key + " entire barcode remains selectable");
@@ -105,12 +123,20 @@ static partial class Program
             }
             window.Close(); for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
         }
-        var assemblies = new[] { typeof(SupplyStationWindow).Assembly, typeof(ShellWindow).Assembly, typeof(Program).Assembly }.Select(a => new {
-            Name = a.GetName().Name, Sha256 = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(a.Location))),
-            Version = a.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion });
-        File.WriteAllText(Path.Combine(evidence, "COMPARISON.json"), JsonSerializer.Serialize(new { Variant = variant,
-            OperatingSystem = Environment.OSVersion.ToString(), FixtureSha256 = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(fixturePath))),
-            Assemblies = assemblies, Scenes = reports }, new JsonSerializerOptions { WriteIndented = true }));
+        var assemblies = new[] { typeof(SupplyStationWindow).Assembly, typeof(ShellWindow).Assembly, typeof(Program).Assembly }.Select(a => new
+        {
+            Name = a.GetName().Name,
+            Sha256 = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(a.Location))),
+            Version = a.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+        });
+        File.WriteAllText(Path.Combine(evidence, "COMPARISON.json"), JsonSerializer.Serialize(new
+        {
+            Variant = variant,
+            OperatingSystem = Environment.OSVersion.ToString(),
+            FixtureSha256 = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(fixturePath))),
+            Assemblies = assemblies,
+            Scenes = reports
+        }, new JsonSerializerOptions { WriteIndented = true }));
         lines.Add("Comparison uses frozen synthetic presentation input, not an Application/field acceptance test. Private fixture is not published.");
     }
 
@@ -124,18 +150,37 @@ static partial class Program
         var familyProperty = e is Control ? Control.FontFamilyProperty : TextBlock.FontFamilyProperty;
         var sizeProperty = e is Control ? Control.FontSizeProperty : TextBlock.FontSizeProperty;
         var weightProperty = e is Control ? Control.FontWeightProperty : TextBlock.FontWeightProperty;
-        object Property(DependencyProperty property) => new { Value = e.GetValue(property).ToString(),
+        object Property(DependencyProperty property) => new
+        {
+            Value = e.GetValue(property).ToString(),
             Source = DependencyPropertyHelper.GetValueSource(e, property).BaseValueSource.ToString(),
-            DependencyPropertyHelper.GetValueSource(e, property).IsExpression };
-        var runs = (e is Window ? [] : TypographyGlyphRuns(e)).Select(r => new { Characters = r.Characters is null ? null : new string(r.Characters.ToArray()),
-            FontUri = r.GlyphTypeface.FontUri.ToString(), Weight = r.GlyphTypeface.Weight.ToOpenTypeWeight(),
-            Glyphs = r.GlyphIndices.ToArray(), AdvanceWidth = r.AdvanceWidths.Sum(), r.FontRenderingEmSize }).ToArray();
-        return new { Type = e.GetType().Name, e.Name, AutomationName = AutomationProperties.GetName(e),
+            DependencyPropertyHelper.GetValueSource(e, property).IsExpression
+        };
+        var runs = (e is Window ? [] : TypographyGlyphRuns(e)).Select(r => new
+        {
+            Characters = r.Characters is null ? null : new string(r.Characters.ToArray()),
+            FontUri = r.GlyphTypeface.FontUri.ToString(),
+            Weight = r.GlyphTypeface.Weight.ToOpenTypeWeight(),
+            Glyphs = r.GlyphIndices.ToArray(),
+            AdvanceWidth = r.AdvanceWidths.Sum(),
+            r.FontRenderingEmSize
+        }).ToArray();
+        return new
+        {
+            Type = e.GetType().Name,
+            e.Name,
+            AutomationName = AutomationProperties.GetName(e),
             Text = e is TextBlock block ? block.Text : e is TextBox box ? box.Text : e is Button button ? button.Content?.ToString() : null,
-            Family = Property(familyProperty), Size = Property(sizeProperty), Weight = Property(weightProperty), TestOverrideFrom = beforeOverride,
-            Bounds = TypographyBounds(e, root), MaxHeight = double.IsInfinity(e.MaxHeight) ? (double?)null : e.MaxHeight,
+            Family = Property(familyProperty),
+            Size = Property(sizeProperty),
+            Weight = Property(weightProperty),
+            TestOverrideFrom = beforeOverride,
+            Bounds = TypographyBounds(e, root),
+            MaxHeight = double.IsInfinity(e.MaxHeight) ? (double?)null : e.MaxHeight,
             Wrapping = e is TextBox tb ? tb.TextWrapping.ToString() : e is TextBlock text ? text.TextWrapping.ToString() : null,
-            Scroll = e is TextBox scroll ? new { scroll.ExtentHeight, scroll.ViewportHeight, scroll.VerticalOffset } : null, GlyphRuns = runs };
+            Scroll = e is TextBox scroll ? new { scroll.ExtentHeight, scroll.ViewportHeight, scroll.VerticalOffset } : null,
+            GlyphRuns = runs
+        };
     }
     static IEnumerable<GlyphRun> TypographyGlyphRuns(Visual visual)
     {

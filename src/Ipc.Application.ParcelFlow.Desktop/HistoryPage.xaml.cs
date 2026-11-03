@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 namespace Ipc.Application.ParcelFlow.Desktop;
+
 public partial class HistoryPage : UserControl
 {
     public event EventHandler<string>? LogsRequested;

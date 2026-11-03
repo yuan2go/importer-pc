@@ -116,8 +116,16 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
             if (Wire.Encode(entry.Request) != Wire.Encode(request)) throw new InvalidDataException("Original reference command identity differs");
             if (stage == "plc-submit" && entry.Reply.BusinessAccepted == true && binding.Parameters.GetValueOrDefault("complete-on-query") == "true" && entry.Reply.PhysicalCompleted != true)
             {
-                entry = entry with { Reply = entry.Reply with { Id = Wire.Id(), PhysicalCompleted = true, At = DateTimeOffset.UtcNow,
-                    Evidence = "SIMULATION: reference peer reports explicit physical completion; no real equipment operated" } };
+                entry = entry with
+                {
+                    Reply = entry.Reply with
+                    {
+                        Id = Wire.Id(),
+                        PhysicalCompleted = true,
+                        At = DateTimeOffset.UtcNow,
+                        Evidence = "SIMULATION: reference peer reports explicit physical completion; no real equipment operated"
+                    }
+                };
                 ExtensionStore.AtomicWrite(path, entry);
             }
             if (entry.Reply.Image is { } image && (!File.Exists(Path.Combine(DirectoryPath, request.Id + ".png")) || Wire.FileHash(Path.Combine(DirectoryPath, request.Id + ".png")) != image.Sha256))

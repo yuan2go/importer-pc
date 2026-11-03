@@ -58,7 +58,8 @@ static partial class Program
             var state = vm.Snapshot!.Devices!.Single(d => d.DeviceId == vm.Right.ReaderId);
             var apply = vm.Right.GetType().GetMethod("ApplyReadFeedback", BindingFlags.NonPublic | BindingFlags.Instance)!;
             var feedback = new ParcelReadFeedback(vm.Snapshot.RuntimeId, "right", Wire.Id(), state.DeviceId, state.Epoch, "SYNTH-UNACKNOWLEDGED",
-                Stopwatch.GetTimestamp(), DateTimeOffset.UtcNow) { SourceSequence = 100, PendingDisplayBudgetMs = 1000 };
+                Stopwatch.GetTimestamp(), DateTimeOffset.UtcNow)
+            { SourceSequence = 100, PendingDisplayBudgetMs = 1000 };
             apply.Invoke(vm.Right, [feedback]);
             await Until(() => !vm.Right.IsProcessing);
             Check(!vm.Right.IsProcessing && !vm.Right.ShowConfirmedTask && !vm.Right.CanViewCurrentPicture && vm.Right.DisplayStatus.Contains("失效"),

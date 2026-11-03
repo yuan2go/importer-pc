@@ -85,11 +85,11 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     {
         lock (healthPublication)
         {
-        if (state == DeviceHealth.Ready && Failure.Length != 0) return;
-        // No SDK callback exists. All host work runs on lifecycle/acquisition tasks,
-        // outside the metadata lock and after returning any acquired image buffer.
-        var now = DateTimeOffset.UtcNow;
-        health?.Invoke(new(DeviceId, Epoch, state, now, state == DeviceHealth.Ready ? now.AddSeconds(3) : null, ConfirmationSource));
+            if (state == DeviceHealth.Ready && Failure.Length != 0) return;
+            // No SDK callback exists. All host work runs on lifecycle/acquisition tasks,
+            // outside the metadata lock and after returning any acquired image buffer.
+            var now = DateTimeOffset.UtcNow;
+            health?.Invoke(new(DeviceId, Epoch, state, now, state == DeviceHealth.Ready ? now.AddSeconds(3) : null, ConfirmationSource));
         }
     }
     public async Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> onHealth, CancellationToken token)

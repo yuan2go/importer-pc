@@ -75,8 +75,20 @@ public static partial class DesktopRecoverySupervisor
     static int Block(DeploymentLocation location, State state, string reason)
     {
         Save(location, state with { Status = "Blocked" });
-        var alert = new { At = DateTimeOffset.UtcNow, Source = "进程监督", Level = "错误", Event = "DesktopCrashLoopBlocked", Reason = reason,
-            location.ApplicationId, location.SourceCommit, state.Launches, state.ChildPid, ExitCode = LoopBlockedExitCode, Policy = "No more client launches; no replay or Unknown changes" };
+        var alert = new
+        {
+            At = DateTimeOffset.UtcNow,
+            Source = "进程监督",
+            Level = "错误",
+            Event = "DesktopCrashLoopBlocked",
+            Reason = reason,
+            location.ApplicationId,
+            location.SourceCommit,
+            state.Launches,
+            state.ChildPid,
+            ExitCode = LoopBlockedExitCode,
+            Policy = "No more client launches; no replay or Unknown changes"
+        };
         try { ExtensionStore.AtomicWrite(AlertFile(location), alert, createDirectory: false); }
         catch (Exception error) when (LedgerError(error)) { DiagnosticFailure("Recovery state is blocked; alert unavailable: " + error.GetType().Name); }
         try { RuntimeJournal.AppendMetadata(Path.Combine(StateDirectory(location), "diagnostics"), alert, createDirectory: false); }

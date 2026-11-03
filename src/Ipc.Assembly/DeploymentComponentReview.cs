@@ -6,8 +6,8 @@ namespace Ipc.Assembly;
 public sealed record DeploymentComponentReview(string Package, string Version, string Sha256, string[] Capabilities, string[] Dependencies, string[] Prerequisites, long ExpandedBytes);
 public static class DeploymentComponentReviewing
 {
-    public static DeploymentComponentReview[] Inspect(WindowsDeploymentRequest request)=>Inspect(request,CancellationToken.None);
-    public static DeploymentComponentReview[] Inspect(WindowsDeploymentRequest request,CancellationToken token)
+    public static DeploymentComponentReview[] Inspect(WindowsDeploymentRequest request) => Inspect(request, CancellationToken.None);
+    public static DeploymentComponentReview[] Inspect(WindowsDeploymentRequest request, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (request.Packages.Count == 0) return [];
@@ -21,7 +21,7 @@ public static class DeploymentComponentReviewing
         foreach (var (path, hash) in request.Packages)
         {
             DeploymentPaths.RequireOrdinaryAncestors(path);
-            if (new FileInfo(path).Length > ExtensionPackages.MaximumExpandedBytes || Wire.FileHash(path,token) != hash) throw new InvalidDataException("审阅的组件文件已变化");
+            if (new FileInfo(path).Length > ExtensionPackages.MaximumExpandedBytes || Wire.FileHash(path, token) != hash) throw new InvalidDataException("审阅的组件文件已变化");
             using var zip = ZipFile.OpenRead(path); var entry = zip.GetEntry("manifest.json") ?? throw new InvalidDataException("组件缺少清单");
             if (entry.Length > ExtensionPackages.MaximumManifestBytes) throw new InvalidDataException("组件清单超出预算");
             using var reader = new StreamReader(entry.Open()); var text = reader.ReadToEnd(); var manifest = Wire.Decode<ExtensionManifest>(text);

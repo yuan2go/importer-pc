@@ -83,9 +83,22 @@ public sealed class ConfigurationDraft : INotifyPropertyChanged
         var integration = new IntegrationBinding(this["TargetId"].Trim(), this["BindingVersion"].Trim(), this["Contract"].Trim(), this["Endpoint"].Trim());
         var deployment = extensions;
         if (deployment?.Ports is { } ports) deployment = deployment with { Ports = ports.Select(x => x.Port == "requests" ? x with { Target = integration } : x).ToArray() };
-        return source with { StationId = this["StationId"].Trim(), Version = this["Version"].Trim(), Integration = integration,
-            TimeoutMs = Number("Timeout"), MinimumFreeMb = Number("MinimumFree"), FixtureDemand = Number("FixtureDemand"), MaximumPackage = Number("MaximumPackage"), Policy = this["Policy"],
-            EventCapacity = Number("EventCapacity"), CommandCapacity = Number("CommandCapacity"), OutboxCapacity = Number("OutboxCapacity"), Devices = Devices.Select(x => x.Binding()).ToArray(), Extensions = deployment };
+        return source with
+        {
+            StationId = this["StationId"].Trim(),
+            Version = this["Version"].Trim(),
+            Integration = integration,
+            TimeoutMs = Number("Timeout"),
+            MinimumFreeMb = Number("MinimumFree"),
+            FixtureDemand = Number("FixtureDemand"),
+            MaximumPackage = Number("MaximumPackage"),
+            Policy = this["Policy"],
+            EventCapacity = Number("EventCapacity"),
+            CommandCapacity = Number("CommandCapacity"),
+            OutboxCapacity = Number("OutboxCapacity"),
+            Devices = Devices.Select(x => x.Binding()).ToArray(),
+            Extensions = deployment
+        };
     }
 }
 public sealed class DeviceDraft(DeviceBinding source)

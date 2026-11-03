@@ -147,8 +147,11 @@ static partial class Program
         // Current built-in descriptor and synthetic identities; no SDK is loaded.
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(launch).Catalog();
         var descriptor = catalog.Providers.Single(p => p.Kind == "observation" && p.Implementation == "hikrobot-mvs-reader");
-        var devices = c.Topology!.Readers.Select((r, i) => r with { Driver = descriptor.Implementation,
-            Parameters = new() { ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-" + i } }).ToArray();
+        var devices = c.Topology!.Readers.Select((r, i) => r with
+        {
+            Driver = descriptor.Implementation,
+            Parameters = new() { ["device.ip"] = "192.0.2." + (21 + i), ["device.serial"] = "SYNTH-" + i }
+        }).ToArray();
         var driverConfig = c with { Reader = devices[0], Topology = c.Topology with { Readers = devices } };
         var offline = new StartupConfigurationDraft(driverConfig, catalog);
         var offlineEditor = new ParameterSettingsControl { Model = offline.CreateParameterEditor(runtime.TestBarcodeFilterAsync) }; window.Content = offlineEditor; window.Width = 1366; window.Height = 768; window.Left = 24; window.Top = 24; window.UpdateLayout();

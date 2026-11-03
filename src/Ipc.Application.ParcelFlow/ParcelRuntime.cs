@@ -104,29 +104,29 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var configurationFile = Path.Combine(directory, "configuration.json");
         try
         {
-        if (File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json"))) throw new InvalidOperationException("原数据根已在迁移中退役；保留原件，从部署登记的新根继续隔离核对，不能双活");
-        if (!File.Exists(configurationFile) && File.Exists(Path.Combine(directory, Id + ".db")))
-            throw new InvalidDataException("原数据库存在但配置账缺失；保留原目录，通过完整备份恢复，不允许使用种子补建配置账");
-        if (!File.Exists(Path.Combine(directory, Id + ".db")) && File.Exists(configurationFile))
-        {
-            RecoveryFiles.RequireOrdinaryAncestors(configurationFile);
-            if (new FileInfo(configurationFile).Length > 4 * 1024 * 1024) throw new InvalidDataException("原配置账超出检查预算；保留原件恢复");
-            var original = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(configurationFile));
-            if (original.Confirmation is { Required: false } or { Attempts.Length: > 0 } || original.Activation is not null)
-                throw new InvalidDataException("原配置账已有启动事实但业务库缺失；保留原账，通过完整备份恢复，不能创建空库抹去原责任");
-        }
-        if (!File.Exists(Path.Combine(directory, Id + ".db")) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(directory, n)).Any()))
-            throw new InvalidDataException("缺少业务库但存在原件；保留原根，不创建空库代替原责任");
-        if (!File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json")))
-            ParcelMachineOrigin.EnsureNew(directory, seed);
-        overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
-        if (overload != 0)
-        {
-            using var marker = System.Text.Json.JsonDocument.Parse(File.ReadAllText(overloadMarker));
-            if (marker.RootElement.TryGetProperty("Positions", out var priorPositions))
-                foreach (var position in priorPositions.EnumerateArray()) overloadedPositions.TryAdd(position.GetString()!, 0);
-        }
-        if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
+            if (File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json"))) throw new InvalidOperationException("原数据根已在迁移中退役；保留原件，从部署登记的新根继续隔离核对，不能双活");
+            if (!File.Exists(configurationFile) && File.Exists(Path.Combine(directory, Id + ".db")))
+                throw new InvalidDataException("原数据库存在但配置账缺失；保留原目录，通过完整备份恢复，不允许使用种子补建配置账");
+            if (!File.Exists(Path.Combine(directory, Id + ".db")) && File.Exists(configurationFile))
+            {
+                RecoveryFiles.RequireOrdinaryAncestors(configurationFile);
+                if (new FileInfo(configurationFile).Length > 4 * 1024 * 1024) throw new InvalidDataException("原配置账超出检查预算；保留原件恢复");
+                var original = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(configurationFile));
+                if (original.Confirmation is { Required: false } or { Attempts.Length: > 0 } || original.Activation is not null)
+                    throw new InvalidDataException("原配置账已有启动事实但业务库缺失；保留原账，通过完整备份恢复，不能创建空库抹去原责任");
+            }
+            if (!File.Exists(Path.Combine(directory, Id + ".db")) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(directory, n)).Any()))
+                throw new InvalidDataException("缺少业务库但存在原件；保留原根，不创建空库代替原责任");
+            if (!File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json")))
+                ParcelMachineOrigin.EnsureNew(directory, seed);
+            overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
+            if (overload != 0)
+            {
+                using var marker = System.Text.Json.JsonDocument.Parse(File.ReadAllText(overloadMarker));
+                if (marker.RootElement.TryGetProperty("Positions", out var priorPositions))
+                    foreach (var position in priorPositions.EnumerateArray()) overloadedPositions.TryAdd(position.GetString()!, 0);
+            }
+            if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         { StorageFailed(error, "StartupFiles"); throw; }
@@ -137,7 +137,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         try
         {
             repository = new(directory, Id, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray())
-                { Boundary = point => Boundary?.Invoke(point), ProjectionChanged = InvalidatePresentation };
+            { Boundary = point => Boundary?.Invoke(point), ProjectionChanged = InvalidatePresentation };
             storageUpgradeReviewRequired = repository.StorageUpgradeNeedsReview();
             if (launch.RequireRecoveryReview)
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
@@ -203,7 +203,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             {
                 positions.Add(binding.Id, binding);
                 positionQueues.Add(binding.Id, Channel.CreateBounded<object>(new BoundedChannelOptions(Effective.QueueCapacity)
-                    { SingleReader = true, FullMode = BoundedChannelFullMode.Wait, AllowSynchronousContinuations = false }));
+                { SingleReader = true, FullMode = BoundedChannelFullMode.Wait, AllowSynchronousContinuations = false }));
             }
             foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
                 latestInputs.Add(input.PositionId, input);
@@ -338,8 +338,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 var identity = SessionValid ? currentOperator : null;
                 var raw = observation.Codes ?? [];
                 var overflow = raw.Length > BarcodeFiltering.MaximumCandidates || raw.Any(x => x is null || x.Length > BarcodeFiltering.MaximumRawLength);
-                observation = observation with { Codes = raw.Take(BarcodeFiltering.MaximumCandidates).Select(x => (x ?? "")[..Math.Min(x?.Length ?? 0, BarcodeFiltering.MaximumRawLength)]).ToArray(),
-                    CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue };
+                observation = observation with
+                {
+                    Codes = raw.Take(BarcodeFiltering.MaximumCandidates).Select(x => (x ?? "")[..Math.Min(x?.Length ?? 0, BarcodeFiltering.MaximumRawLength)]).ToArray(),
+                    CandidateIssue = overflow ? "IngressCandidatesExceeded; raw source exceeded bounded complete-candidate contract" : observation.CandidateIssue
+                };
                 item = new ParcelObservation(observation, identity, at);
             }
             var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp());
@@ -402,8 +405,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                         else if (item.Value is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                         var input = latestInputs.GetValueOrDefault(position);
                         if (item.Value is ParcelObservation source && (input?.Observation.SourceEventId != source.Observation.SourceEventId || input.Observation.Epoch != source.Observation.Epoch)) input = null;
-                        FinishIngress(item.Id, "Processed", Wire.Encode(new { Policy = "Business handler completed; not physical completion", Revision = repository!.Revision,
-                            Disposition = input?.Outcome.ToString() ?? (item.Value is ParcelObservation ? "RejectedUntrustedSource" : "MeasurementHandlerCompleted"), Input = input }), System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
+                        FinishIngress(item.Id, "Processed", Wire.Encode(new
+                        {
+                            Policy = "Business handler completed; not physical completion",
+                            Revision = repository!.Revision,
+                            Disposition = input?.Outcome.ToString() ?? (item.Value is ParcelObservation ? "RejectedUntrustedSource" : "MeasurementHandlerCompleted"),
+                            Input = input
+                        }), System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
                         Interlocked.Increment(ref lane.Processed);
                         if (item.Value is ParcelObservation processedObservation) RecordIngressPerformance(position, processedObservation.Observation,
                             "IngressProcessed", System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
@@ -446,9 +454,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt)
     {
-        DebugDiagnostic("相机输入", "开始处理扫码消息", () => new { Position = position, Device = DiagnosticFragment(o.DeviceId, 256),
-            Epoch = DiagnosticFragment(o.Epoch, 256), EventId = DiagnosticFragment(o.SourceEventId, 256), o.Sequence, o.ObservedAt, ReceivedAt = receivedAt,
-            QueueAgeMs = (DateTimeOffset.UtcNow - receivedAt).TotalMilliseconds, CandidateCount = o.Codes.Length });
+        DebugDiagnostic("相机输入", "开始处理扫码消息", () => new
+        {
+            Position = position,
+            Device = DiagnosticFragment(o.DeviceId, 256),
+            Epoch = DiagnosticFragment(o.Epoch, 256),
+            EventId = DiagnosticFragment(o.SourceEventId, 256),
+            o.Sequence,
+            o.ObservedAt,
+            ReceivedAt = receivedAt,
+            QueueAgeMs = (DateTimeOffset.UtcNow - receivedAt).TotalMilliseconds,
+            CandidateCount = o.Codes.Length
+        });
         if (o.OperatorInput is not null || !readers.TryGetValue(o.DeviceId, out var reader) ||
             string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
             o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
@@ -528,7 +545,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
             Operator: admittedOperator, Acquisition: o.OperatorInput is null ? new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt) : null,
             PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection)
-            { OperatorInput = o.OperatorInput };
+        { OperatorInput = o.OperatorInput };
         admissionPositions.TryAdd(op.AdmissionId, position);
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
             ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
@@ -542,8 +559,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (definition.ArchiveOriginalFrames && o.OperatorInput is null && reader.Source is IOriginalFrameSource originalSource)
             {
                 originalFrame = originalSource.RetainOriginalFrame(op.Acquisition!);
-                op = op with { OriginalFrame = new("Pending", op.Acquisition!, originalFrame.Width, originalFrame.Height,
-                    "images/original-frames/" + op.Id + ".png", DateTimeOffset.UtcNow) };
+                op = op with
+                {
+                    OriginalFrame = new("Pending", op.Acquisition!, originalFrame.Width, originalFrame.Height,
+                    "images/original-frames/" + op.Id + ".png", DateTimeOffset.UtcNow)
+                };
             }
             Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
             ClaimPlacement(position, code!, o.ObservedAt, op.Id, camera: o.OperatorInput is null);
@@ -616,10 +636,17 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
         if (input is not null) { latestInputs[input.PositionId] = input; LogInput(input); }
         journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Source = "作业", Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, op.PositionId, op.AdmissionId, op.ParcelCode, State = op.State, Revision = repository.Revision, Detail = DiagnosticFragment(detail) });
-        DebugDiagnostic("作业", "作业阶段详情", () => new { Event = eventName, Operation = op.Id, op.PositionId, op.State, op.Slot,
+        DebugDiagnostic("作业", "作业阶段详情", () => new
+        {
+            Event = eventName,
+            Operation = op.Id,
+            op.PositionId,
+            op.State,
+            op.Slot,
             Wcs = op.Wcs is { } w ? new { Request = w.Request.Id, w.State, w.Attempts, Failure = DiagnosticFragment(w.Failure) } : null,
             Plc = op.Plc is { } p ? new { Request = p.Request.Id, p.State, p.Attempts, Failure = DiagnosticFragment(p.Failure) } : null,
-            Detail = DiagnosticFragment(detail) });
+            Detail = DiagnosticFragment(detail)
+        });
     }
     static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked or ParcelState.WeightTimedOut ||
         op.Capture?.State is StageState.Unknown or StageState.Conflict ||
@@ -628,7 +655,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     bool WeightPending(ParcelOperation op) => op.WeightPolicy.Source == WeightSource.Measured && op.Weight is null && !MainTerminated(op);
     bool WeightExpired(ParcelOperation op) => WeightPending(op) && DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs);
     bool IsSettled(ParcelOperation op) => MainTerminated(op) &&
-        (op.FrozenConfiguration.Images is null || op.ImageReleased) && repository?.PendingReceipts().Any(x=>x.Operation==op.Id) != true;
+        (op.FrozenConfiguration.Images is null || op.ImageReleased) && repository?.PendingReceipts().Any(x => x.Operation == op.Id) != true;
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
         var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding) { OperatorInput = op.OperatorInput });
@@ -679,7 +706,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     ParcelOperation PreparePlc(ParcelOperation op) => op with
     {
         Plc = new(Prepare(op, "plc-submit", op.FrozenConfiguration.Plc!, op.Slot, op.Wcs?.Request.Id), StageState.Prepared, 0, []),
-        State = ParcelState.SubmittingPlc, Reason = null
+        State = ParcelState.SubmittingPlc,
+        Reason = null
     };
     public bool EmitReference(string admissionId, string code, string sourceEventId) => EmitReferenceAt(ParcelBindings.Positions(Effective)[0].Id, admissionId, code, sourceEventId);
     public bool EmitReferenceAt(string positionId, string admissionId, string code, string sourceEventId) => Effective.Mode == RunMode.Simulation &&

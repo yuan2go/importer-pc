@@ -41,7 +41,7 @@ static partial class Program
         }
         Check(Footer(first).Contains("保存配置") && !Footer(first).Contains("检查并预览更改"), "final step offers real save without automatic startup; internal operations have no separate setup entry");
         Check(!Descendants(first).OfType<Button>().Any(x => (x.Content as string) == "配置工具…"), "configuration tools are removed from first setup rather than hidden in a menu");
-        Check(!Footer(first).Contains("导入配置") && Footer(first).Contains("保存草稿并退出") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content,"导入配置")), "import is in the fixed header and encrypted draft persistence remains in the footer");
+        Check(!Footer(first).Contains("导入配置") && Footer(first).Contains("保存草稿并退出") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "导入配置")), "import is in the fixed header and encrypted draft persistence remains in the footer");
         first.Width = 800; first.Height = 600; first.UpdateLayout();
         Check(Footer(first).Count <= 4 && Descendants(first).OfType<ScrollViewer>().Any(x => x.IsVisible && x.ViewportHeight > 0), "small startup window preserves the primary action and scrollable content");
         Capture("startup-small", first); first.Width = 960; first.Height = 760; first.UpdateLayout();
@@ -124,28 +124,28 @@ static partial class Program
         // without installing, elevating, starting hardware or swallowing a close error.
         foreach (var receiptLost in new[] { false, true })
         {
-        var success = (Window)Activator.CreateInstance(type, [launch, null, true])!;
-        Exception? modalFailure = null;
-        StartupMaintenanceProbe? succeeded = null;
-        success.Loaded += async (_, _) =>
-        {
-            try
+            var success = (Window)Activator.CreateInstance(type, [launch, null, true])!;
+            Exception? modalFailure = null;
+            StartupMaintenanceProbe? succeeded = null;
+            success.Loaded += async (_, _) =>
             {
-                await Ready(success);
-                var candidate = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(success)!;
-                FillInitial(Descendants(success).OfType<ParameterSettingsControl>().Single().Model!);
-                var candidateDraft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(success)!;
-                succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost };
-                type.GetField("maintenance", flags)!.SetValue(success, succeeded);
-                Descendants(success).OfType<ParameterSettingsControl>().Single().ShowReview();
-                Click(success, "保存配置"); await Idle(success);
-                Check(success.IsVisible && !Retry(success) && succeeded.Saves == 1, "confirmed persistence keeps configuration open without starting runtime");
-                Click(success, "完成");
-            }
-            catch (Exception error) { modalFailure = error; success.Close(); }
-        };
-        var modalResult = success.ShowDialog();
-        Check(modalResult == true && modalFailure is null && succeeded?.Saves == 1 && !Retry(success) && (bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!, "one reviewed save is read back then completes configuration without starting runtime; receipt lost=" + receiptLost + "; result=" + modalResult + "; failure=" + modalFailure + "; saved=" + type.GetProperty("ConfigurationSaved")!.GetValue(success));
+                try
+                {
+                    await Ready(success);
+                    var candidate = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(success)!;
+                    FillInitial(Descendants(success).OfType<ParameterSettingsControl>().Single().Model!);
+                    var candidateDraft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(success)!;
+                    succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost };
+                    type.GetField("maintenance", flags)!.SetValue(success, succeeded);
+                    Descendants(success).OfType<ParameterSettingsControl>().Single().ShowReview();
+                    Click(success, "保存配置"); await Idle(success);
+                    Check(success.IsVisible && !Retry(success) && succeeded.Saves == 1, "confirmed persistence keeps configuration open without starting runtime");
+                    Click(success, "完成");
+                }
+                catch (Exception error) { modalFailure = error; success.Close(); }
+            };
+            var modalResult = success.ShowDialog();
+            Check(modalResult == true && modalFailure is null && succeeded?.Saves == 1 && !Retry(success) && (bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!, "one reviewed save is read back then completes configuration without starting runtime; receipt lost=" + receiptLost + "; result=" + modalResult + "; failure=" + modalFailure + "; saved=" + type.GetProperty("ConfigurationSaved")!.GetValue(success));
         }
         var pendingType = assembly.GetType("Ipc.Desktop.ParcelStartupWindow", true)!;
         var pending = (Window)Activator.CreateInstance(pendingType)!;
@@ -230,7 +230,8 @@ static partial class Program
         {
             var target = (FrameworkElement)w; target.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(target);
             var bitmap = new RenderTargetBitmap((int)Math.Ceiling(target.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(target.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-            var visual = new DrawingVisual(); using (var drawing = visual.RenderOpen()) { drawing.DrawRectangle(w.Background ?? Brushes.White, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); drawing.DrawRectangle(new VisualBrush(target) { ViewboxUnits = BrushMappingMode.Absolute, Viewbox = new Rect(0, 0, target.ActualWidth, target.ActualHeight), Stretch = Stretch.Fill }, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); } bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, name + ".png")); encoder.Save(file);
+            var visual = new DrawingVisual(); using (var drawing = visual.RenderOpen()) { drawing.DrawRectangle(w.Background ?? Brushes.White, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); drawing.DrawRectangle(new VisualBrush(target) { ViewboxUnits = BrushMappingMode.Absolute, Viewbox = new Rect(0, 0, target.ActualWidth, target.ActualHeight), Stretch = Stretch.Fill }, null, new Rect(0, 0, target.ActualWidth, target.ActualHeight)); }
+            bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(Path.Combine(evidence, name + ".png")); encoder.Save(file);
         }
         static void Click(Window w, string label) => Descendants(w).OfType<Button>().First(b => (b.Content as string) == label).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     }

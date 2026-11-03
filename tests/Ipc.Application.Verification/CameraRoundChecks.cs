@@ -27,23 +27,34 @@ internal static class CameraRoundChecks
         {
             await h.StartAsync(); await PauseForDirectDebug(h.App); var snapshot = await h.App.SnapshotAsync();
             var scope = await h.App.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision,
-                CameraInspectionMode.ObserveProduction, "Synthetic one-shot trigger", new()) { SingleReadRounds = true }, default);
+                CameraInspectionMode.ObserveProduction, "Synthetic one-shot trigger", new())
+            { SingleReadRounds = true }, default);
             Check(!scope.BusinessFenced, "explicit one-shot trigger creates no station fence or physical checklist");
             await h.ArmAsync(h.Left); h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("FROZEN-OFFLINE"), 1);
             var locked = await h.LockedAsync(); h.Api(h.Left).Discovered = false;
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.SingleOrDefault(d => d.DeviceId == h.Left) is not { Health: DeviceHealth.Ready });
             var offline = await h.App.ReadCameraReadRoundAsync(default);
-            Console.WriteLine("FROZEN-OFFLINE-DIAG " + Wire.Encode(new { offline.State, offline.CanSend, offline.SendBlockedReason, offline.Detail, SameBody = offline.RequestBody == locked.RequestBody,
-                Snapshot = await h.App.SnapshotAsync() }));
+            Console.WriteLine("FROZEN-OFFLINE-DIAG " + Wire.Encode(new
+            {
+                offline.State,
+                offline.CanSend,
+                offline.SendBlockedReason,
+                offline.Detail,
+                SameBody = offline.RequestBody == locked.RequestBody,
+                Snapshot = await h.App.SnapshotAsync()
+            }));
             Check(offline.CanSend && offline.RequestBody == locked.RequestBody && offline.SendBlockedReason is null,
                 "a verified frozen frame/request remains sendable when its optional camera disconnects; no epoch rebinding or payload rewrite");
             await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
             Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == locked.RequestBody,
                 "explicit send after camera loss posts the exact original request once");
-            await Reject(async () => { await h.App.EndCameraInspectionAsync(new(Wire.Id(), scope.SessionId!, false, true, "Synthetic automatic round cleanup")
-                { CloseReadRounds = true, ExpectedRoundId = Wire.Id() }, default); }, "stale page cleanup cannot close another current round");
+            await Reject(async () =>
+            {
+                await h.App.EndCameraInspectionAsync(new(Wire.Id(), scope.SessionId!, false, true, "Synthetic automatic round cleanup")
+                { CloseReadRounds = true, ExpectedRoundId = Wire.Id() }, default);
+            }, "stale page cleanup cannot close another current round");
             var ended = await h.App.EndCameraInspectionAsync(new(Wire.Id(), scope.SessionId!, false, true, "Synthetic automatic round cleanup")
-                { CloseReadRounds = true, ExpectedRoundId = locked.Id }, default);
+            { CloseReadRounds = true, ExpectedRoundId = locked.Id }, default);
             Check(!ended.BusinessFenced && h.Peer.Requests.Count == 1,
                 "one-shot lifecycle cleanup needs no physical checklist and never replays an HTTP request");
         }

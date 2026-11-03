@@ -80,7 +80,7 @@ public sealed partial class LocalManagementMode
         if (new FileInfo(path).Length > 1024 * 1024) throw new InvalidDataException("管理模式凭据超出限制，保留原件修复。");
         var s = JsonSerializer.Deserialize<Store>(File.ReadAllText(path)) ?? throw new InvalidDataException("管理模式凭据损坏。");
         if (s.SchemaVersion != CredentialSchemaVersion || s.Audit is null || s.Audit.Length > 512 || s.CredentialRevision < 1 || s.RecoveryChallenges?.Length > 8 || s.Delegations?.Length > 1024 || s.Credential is null) throw new InvalidDataException("管理模式凭据不完整，禁止重新设置覆盖。");
-        if(s.Credential is not null) ValidateStoredCredential(s.Credential);
+        if (s.Credential is not null) ValidateStoredCredential(s.Credential);
         return s;
     }
     void Save(Store s, string action, string? detail = null)

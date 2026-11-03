@@ -8,8 +8,10 @@ internal static class ParcelUnsubmittedIntent
     // Both online and offline recovery retain every frozen request and original identity.
     internal static ParcelOperation Abandon(ParcelOperation operation, string reason) => operation with
     {
-        State = ParcelState.Abandoned, RecoveryRequired = false,
-        Wcs = Cancel(operation.Wcs), Plc = Cancel(operation.Plc),
+        State = ParcelState.Abandoned,
+        RecoveryRequired = false,
+        Wcs = Cancel(operation.Wcs),
+        Plc = Cancel(operation.Plc),
         Upload = Cancel(operation.Upload, "Local cancellation before any external upload attempt"),
         Capture = Cancel(operation.Capture, "Local cancellation before acquisition"),
         Reason = "Unsubmitted parcel inspected and removed: " + reason

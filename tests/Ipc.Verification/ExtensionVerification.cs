@@ -144,9 +144,13 @@ static class ExtensionVerification
         Refuse(() => manager.Plan(Package(Path.Combine(area, "shadow.ipcx"), shadowManifest, key, binary)), "ambiguous assembly across signed dependency closure");
         await Build(workspace, Path.Combine(area, "dependent-build"), contract, "Ipc.Reference.Dependent");
         var dependentBytes = File.ReadAllBytes(Path.Combine(area, "dependent-build/Ipc.Reference.Dependent.dll"));
-        var dependencyManifest = manifest with { Id = "reference.dependent", Dependencies = [installation.Package],
+        var dependencyManifest = manifest with
+        {
+            Id = "reference.dependent",
+            Dependencies = [installation.Package],
             Files = [new("Ipc.Reference.Dependent.dll", dependentBytes.Length, Convert.ToHexString(SHA256.HashData(dependentBytes)))],
-            Modules = [manifest.Modules[0] with { Assembly = "Ipc.Reference.Dependent.dll" }] };
+            Modules = [manifest.Modules[0] with { Assembly = "Ipc.Reference.Dependent.dll" }]
+        };
         var depFile = Package(Path.Combine(area, "dependent.ipcx"), dependencyManifest, key, dependentBytes);
         var dependent = manager.Install(depFile, Wire.FileHash(depFile));
         Refuse(() => manager.Uninstall(installation.Package, []), "reverse package dependency");
@@ -161,9 +165,13 @@ static class ExtensionVerification
         var durable = new ExtensionStore(manager.Root, trust, RunMode.Simulation, leases);
         Assert(durable.Inventory().Count(x => x.Status == "Installed") == 2 && durable.Operations().Any(x => x.State == "Uninstalled"), "Persistent inventory and retained uninstall audit");
 
-        var cfg = Rig.Config(url) with { Version = "DEPLOY-1", Extensions = new([installation.Package],
+        var cfg = Rig.Config(url) with
+        {
+            Version = "DEPLOY-1",
+            Extensions = new([installation.Package],
             [new("left-instance", manifest.Id, "barcode-source", "SIM-EXT-L", true, new() { ["input.prefix"] = "000" }),
-             new("right-instance", manifest.Id, "barcode-source", "SIM-EXT-R", true, new() { ["input.prefix"] = "111" })]) };
+             new("right-instance", manifest.Id, "barcode-source", "SIM-EXT-R", true, new() { ["input.prefix"] = "111" })])
+        };
         cfg = cfg with { Devices = [new("left", "extension:left-instance", "SIM-EXT-L", cfg.Version), new("right", "extension:right-instance", "SIM-EXT-R", cfg.Version)] };
         Assert(ExtensionDeployment.Validate(cfg.Extensions, cfg.Devices, manager).Length == 0, "Two instance parameters, role/device identities validate");
         Assert(ExtensionDeployment.Validate(cfg.Extensions with { Instances = cfg.Extensions!.Instances.Select(x => x with { DeviceId = "same" }).ToArray() }, cfg.Devices, manager).Length > 0, "Renaming instances does not bypass device collision");
@@ -171,9 +179,16 @@ static class ExtensionVerification
         var constructionConfig = Rig.Config(url) with { Version = "CONSTRUCTION-1" };
         await SourceConstructionVerification.Run(MakeBoot(Path.Combine(area, "construction"), constructionConfig, manager.Root, trustFile, leases), constructionConfig);
         var journey = await RuntimeJourney(boot, cfg, manager, install2.Package);
-        var slow = cfg with { StationId = "SIM-SLOW-" + Wire.Id(), Version = "SLOW-1", Extensions = cfg.Extensions! with {
-            Instances = cfg.Extensions!.Instances.Select((x, i) => x with { DeviceId = x.DeviceId + "-slow", Parameters = new(x.Parameters) { ["fault.stop-delay-ms"] = i == 0 ? "20000" : "0" } }).ToArray() },
-            Devices = cfg.Devices.Select(x => x with { DeviceId = x.DeviceId + "-slow" }).ToArray() };
+        var slow = cfg with
+        {
+            StationId = "SIM-SLOW-" + Wire.Id(),
+            Version = "SLOW-1",
+            Extensions = cfg.Extensions! with
+            {
+                Instances = cfg.Extensions!.Instances.Select((x, i) => x with { DeviceId = x.DeviceId + "-slow", Parameters = new(x.Parameters) { ["fault.stop-delay-ms"] = i == 0 ? "20000" : "0" } }).ToArray()
+            },
+            Devices = cfg.Devices.Select(x => x with { DeviceId = x.DeviceId + "-slow" }).ToArray()
+        };
         var slowBoot = MakeBoot(Path.Combine(area, "slow"), slow, manager.Root, trustFile, leases);
         var held = new ProductRuntime(slowBoot, NullLogger<ProductRuntime>.Instance); await held.StartAsync(CancellationToken.None);
         Assert(held.Diagnostics.Count == 0, "Signed delayed-stop source starts");
@@ -186,10 +201,21 @@ static class ExtensionVerification
         using (manager.AcquireUse([installation.Package])) { }
         Assert(held.HeldResources.Length == 0, "Late terminal extension stop/disposal releases exact package/device/data leases");
         Assert(Wire.Encode(before) == Wire.Encode(HostHashes()), "Host hashes unchanged after actual extension runtime/upgrade/disposal");
-        File.WriteAllText(Path.Combine(area, "extension-evidence.json"), Wire.Encode(new { Result = "PASS_REFERENCE", HostBefore = before, HostAfter = HostHashes(),
-            IndependentContract = contract, PluginSourceCommit = manifest.SourceCommit, PluginBinarySha256 = Wire.FileHash(Path.Combine(area, "independent/Ipc.Reference.BarcodeExtension.dll")),
-            Installation = installation, Upgrade = install2, Trust = new { TestOnly = true, PolicySha256 = Wire.Hash(Wire.Encode(trust)), OnlineRevocation = "NOT_RUN" },
-            Journey = journey, Operations = manager.Operations(), Windows = "NOT_RUN" }));
+        File.WriteAllText(Path.Combine(area, "extension-evidence.json"), Wire.Encode(new
+        {
+            Result = "PASS_REFERENCE",
+            HostBefore = before,
+            HostAfter = HostHashes(),
+            IndependentContract = contract,
+            PluginSourceCommit = manifest.SourceCommit,
+            PluginBinarySha256 = Wire.FileHash(Path.Combine(area, "independent/Ipc.Reference.BarcodeExtension.dll")),
+            Installation = installation,
+            Upgrade = install2,
+            Trust = new { TestOnly = true, PolicySha256 = Wire.Hash(Wire.Encode(trust)), OnlineRevocation = "NOT_RUN" },
+            Journey = journey,
+            Operations = manager.Operations(),
+            Windows = "NOT_RUN"
+        }));
         Console.WriteLine("PASS E12 signed offline packages, interruption recovery, independent late extension, deployment/ownership/upgrade/original-request journey");
     }
     static BootOptions MakeBoot(string area, StationConfig config, string extensions, string trust, string leases)
@@ -223,7 +249,8 @@ static class ExtensionVerification
         await runtime.SetWindowAreaAsync(windowA, false); await runtime.SetWindowAreaAsync(windowB, false);
         Assert((await runtime.Application.SnapshotAsync()).State.Blocks.Any(x => x.Code == "OperatorPaused"), "Enlarging/closing windows does not automatically resume admission");
         await Command("Resume"); await Command("OpenContext", value: "000001");
-        await Wait(async () => {
+        await Wait(async () =>
+        {
             var snapshot = await runtime.Application.SnapshotAsync();
             if (snapshot.RuntimeFaults.Length > 0) throw new InvalidOperationException("Runtime failure: " + string.Join("; ", snapshot.RuntimeFaults));
             return snapshot.State.Session?.Status == SessionStatus.Active;
@@ -256,8 +283,11 @@ static class ExtensionVerification
         // separate clean station so no business fact is rolled back or deleted to manufacture it.
         await runtime.DisposeAsync();
         var clean = Rig.Config(cfg.Integration.Endpoint) with { Version = "CLEAN-1", Extensions = cfg.Extensions };
-        clean = clean with { Devices = cfg.Devices.Select(x => x with { DeviceId = x.DeviceId + "-upgrade" }).ToArray(),
-            Extensions = clean.Extensions! with { Instances = clean.Extensions!.Instances.Select(x => x with { DeviceId = x.DeviceId + "-upgrade" }).ToArray() } };
+        clean = clean with
+        {
+            Devices = cfg.Devices.Select(x => x with { DeviceId = x.DeviceId + "-upgrade" }).ToArray(),
+            Extensions = clean.Extensions! with { Instances = clean.Extensions!.Instances.Select(x => x with { DeviceId = x.DeviceId + "-upgrade" }).ToArray() }
+        };
         var cleanBoot = MakeBoot(Path.Combine(Path.GetDirectoryName(boot.Manifest)!, "upgrade"), clean, manager.Root, boot.ExtensionTrustFile!, boot.LeaseRoot!);
         await using (var candidate = new ProductRuntime(cleanBoot, NullLogger<ProductRuntime>.Instance))
         {

@@ -129,7 +129,7 @@ static partial class Program
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = firstPassword;
         Descendants(setup).OfType<PasswordBox>().Single(p => p.Name == "ManagementPasswordConfirmation").Password = firstPassword;
         Click(setup, "设置并继续");
-        for(int i=0;i<100 && !(await setupMode.ManagementModeStatusAsync()).Authorized;i++) await Task.Delay(30);
+        for (int i = 0; i < 100 && !(await setupMode.ManagementModeStatusAsync()).Authorized; i++) await Task.Delay(30);
         await Task.Delay(100); Check((await setupMode.ManagementModeStatusAsync()).Authorized && !setup.IsVisible, "password-only first setup enters management mode and returns to the original work window");
         var editPassword = new ManagementModeWindow(setupMode) { Owner = window }; editPassword.Show(); await WaitModeReady(editPassword, "退出管理模式");
         Check(Descendants(editPassword).OfType<Button>().Any(e => Equals(e.Content, "忘记管理密码？")), "existing-password deployment provides the Windows administrator recovery entry");
@@ -137,7 +137,7 @@ static partial class Program
         var replacement = "22222";
         Descendants(editPassword).OfType<PasswordBox>().Single(p => p.Name == "NewManagementPassword").Password = replacement;
         Descendants(editPassword).OfType<PasswordBox>().Single(p => p.Name == "NewManagementPasswordConfirmation").Password = replacement;
-        Click(editPassword,"修改密码并退出管理模式"); for(int i=0;i<100 && editPassword.IsVisible;i++) await Task.Delay(30);
+        Click(editPassword, "修改密码并退出管理模式"); for (int i = 0; i < 100 && editPassword.IsVisible; i++) await Task.Delay(30);
         Check(!(await setupMode.ManagementModeStatusAsync()).Authorized && !await setupMode.EnterManagementModeAsync(firstPassword) && await setupMode.EnterManagementModeAsync(replacement), "native password change exits mode, revokes old proof and accepts the one replacement password");
         await setupMode.ExitManagementModeAsync();
         window.Close(); await Task.Delay(150); await runtime.StopAsync(default);

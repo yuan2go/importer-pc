@@ -27,7 +27,8 @@ static partial class Program
         {
             window.UpdateLayout(); var dpi = VisualTreeHelper.GetDpi(window);
             var bitmap = new RenderTargetBitmap((int)Math.Ceiling(window.ActualWidth * dpi.DpiScaleX), (int)Math.Ceiling(window.ActualHeight * dpi.DpiScaleY), dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
-            var visual = new DrawingVisual(); using (var dc = visual.RenderOpen()) { var bounds = new Rect(0, 0, window.ActualWidth, window.ActualHeight); dc.DrawRectangle(Brushes.White, null, bounds); dc.DrawRectangle(new VisualBrush(window) { ViewboxUnits = BrushMappingMode.Absolute, Viewbox = bounds, Stretch = Stretch.Fill }, null, bounds); } bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            var visual = new DrawingVisual(); using (var dc = visual.RenderOpen()) { var bounds = new Rect(0, 0, window.ActualWidth, window.ActualHeight); dc.DrawRectangle(Brushes.White, null, bounds); dc.DrawRectangle(new VisualBrush(window) { ViewboxUnits = BrushMappingMode.Absolute, Viewbox = bounds, Stretch = Stretch.Fill }, null, bounds); }
+            bitmap.Render(visual); var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
             using var file = File.Create(Path.Combine(evidence, name + ".png")); encoder.Save(file);
         }
         var leftIp = Value(left, "device.ip"); var rightIp = Value(right, "device.ip");
@@ -78,8 +79,11 @@ static partial class Program
         reserve.Focus(); Check(reserve.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)), "Tab traverses from a parameter without trapping focus");
         Check(Descendants(editor).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "MiB"), "binary storage unit remains explicitly MiB");
         var longPath = @"D:\Synthetic\" + string.Join("\\", Enumerable.Repeat("很长的配置目录-parameter-review", 16));
-        var pathEditor = new ParameterSettingsControl { Model = new ParameterEditorModel(model.Policy, model.ApplicationId, model.Readers, model.Components, model.Preview, model.StationId,
-            new(longPath, longPath + "\\data")) };
+        var pathEditor = new ParameterSettingsControl
+        {
+            Model = new ParameterEditorModel(model.Policy, model.ApplicationId, model.Readers, model.Components, model.Preview, model.StationId,
+            new(longPath, longPath + "\\data"))
+        };
         var pathWindow = new Window { Owner = window, Content = pathEditor, Width = 800, Height = 600 };
         pathWindow.Show(); pathEditor.ShowPage(0, "数据与记录"); pathWindow.UpdateLayout();
         var pathBox = Descendants(pathEditor).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "配置目录");

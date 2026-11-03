@@ -10,119 +10,168 @@ public sealed partial class ParcelRuntime
         if (!activeStages.Add(key)) return operations[op.Id];
         try
         {
-        op = operations[op.Id];
-        var stage = GetStage(op, kind)!;
-        var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
-        var binding = BindingFor(Effective, kind, op.PositionId);
-        if (binding is null || Wire.Encode(binding) != Wire.Encode(stage.Request.Binding) ||
-            ports!.ImplementationHashes.GetValueOrDefault(binding.InstanceId) != stage.Request.ImplementationHash)
-        { op = StageFailure(op, kind, stage, "OriginalCapabilityUnavailable: preserve original request, package, target and implementation"); Save(op, "OriginalCapabilityBlocked", GetStage(op, kind)!.Failure!); return op; }
-        if (query && !factory.Requirements(stage.Request.Binding).Query)
-        {
-            repository!.Commit(null, "QueryUnsupported", Wire.Encode(new { Operation = op.Id, OriginalRequest = stage.Request.Id,
-                Policy = "Provider declares no authoritative query capability; original stage and receipt responsibility remain unchanged" }));
-            return op;
-        }
-        var port = PortFor(op, kind);
-        if (!PortMaintenanceClear(port)) return op;
-        CapabilityHealth health;
-        try { health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
-        catch (OperationCanceledException) when (stopping.IsCancellationRequested)
-        { return operations[op.Id]; } // No delivery occurred, no failed health fact is invented on shutdown.
-        capabilityHealth[port.InstanceId] = health;
-        op = operations[op.Id];
-        if (!PortMaintenanceClear(port)) return op;
-        if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
-        { op = StageFailure(op, kind, stage, "Original capability is not healthy; reconnect and reconcile"); Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
-        if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
-            !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
-        if (stopping.IsCancellationRequested) return op;
-        var deliveryAuthority = query || IsDebugRequest(op) ? Management.Require() : CancellationToken.None;
-        // Adapter dictionaries are mutable; never expose the owned original intent.
-        var deliveryRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
-        if (!query)
-        {
-            if (stage.State != StageState.Prepared || stage.Attempts != 0) throw new InvalidOperationException("Only a never-attempted prepared intent can be dispatched");
-            stage = stage with { State = StageState.Dispatching, Attempts = 1 };
-            op = SetStage(op, kind, stage); Save(op, "Dispatching", "T2: attempt persisted before external call");
-        }
-        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, deliveryAuthority);
-        budget.CancelAfter(definition.RequestTimeoutMs(op, kind));
-        var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
-        var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();
-        var receiptStartedTicks = ReceiptTimeForVerification.GetTimestamp();
-        DebugDiagnostic("外部通信", "原请求发送开始", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
-            Request = stage.Request.Id, stage.Request.PayloadHash, stage.Request.ConfigurationHash, stage.Request.ImplementationHash,
-            Target = stage.Request.Binding.Target, Contract = stage.Request.Binding.Contract, stage.Attempts,
-            TimeoutMs = definition.RequestTimeoutMs(op, kind), Payload = DiagnosticFragment(stage.Request.IntegrationRequest?.Body ?? stage.Request.Payload) });
-        StageReply? reply;
-        if (Id == "sportmaster" && kind == ParcelStage.Wcs) RecordRcsPerformance(op, query ? "RcsQueryStarted" : "RcsSubmitStarted");
-        try
-        {
-            reply = await ExternalPortAsync(port, () => PortCallAsync(port, async () => kind switch
+            op = operations[op.Id];
+            var stage = GetStage(op, kind)!;
+            var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
+            var binding = BindingFor(Effective, kind, op.PositionId);
+            if (binding is null || Wire.Encode(binding) != Wire.Encode(stage.Request.Binding) ||
+                ports!.ImplementationHashes.GetValueOrDefault(binding.InstanceId) != stage.Request.ImplementationHash)
+            { op = StageFailure(op, kind, stage, "OriginalCapabilityUnavailable: preserve original request, package, target and implementation"); Save(op, "OriginalCapabilityBlocked", GetStage(op, kind)!.Failure!); return op; }
+            if (query && !factory.Requirements(stage.Request.Binding).Query)
             {
-                ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
-                ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
-                ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
-                ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(deliveryRequest, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
-                _ => throw new InvalidOperationException("Unregistered stage")
-            }, budget.Token)).ConfigureAwait(false);
+                repository!.Commit(null, "QueryUnsupported", Wire.Encode(new
+                {
+                    Operation = op.Id,
+                    OriginalRequest = stage.Request.Id,
+                    Policy = "Provider declares no authoritative query capability; original stage and receipt responsibility remain unchanged"
+                }));
+                return op;
+            }
+            var port = PortFor(op, kind);
+            if (!PortMaintenanceClear(port)) return op;
+            CapabilityHealth health;
+            try { health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
+            catch (OperationCanceledException) when (stopping.IsCancellationRequested)
+            { return operations[op.Id]; } // No delivery occurred, no failed health fact is invented on shutdown.
+            capabilityHealth[port.InstanceId] = health;
             op = operations[op.Id];
-        }
-        catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
-        {
-            DebugDiagnostic("外部通信", "原请求发送异常详情", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
-                Request = stage.Request.Id, ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
-                DeadlineCancelled = budget.IsCancellationRequested, Stopping = stopping.IsCancellationRequested, Exception = DiagnosticFragment(ex.ToString()) });
-            Diagnostic("通信", query ? "原请求核对异常" : "业务请求异常", "错误", ex.ToString());
-            repository.NoReply(occurrence);
-            op = operations[op.Id];
-            // A failed confirmation query supplies no contrary evidence about an
-            // already accepted/rejected command. Keep that fact and its original reply.
-            var knownOutcome = stage.State is StageState.Accepted or StageState.Rejected;
-            var timedOut = !query && budget.IsCancellationRequested && !stopping.IsCancellationRequested;
-            stage = stage with { State = knownOutcome ? stage.State : StageState.Unknown,
-                Failure = timedOut ? "TimeoutException: Request deadline expired" : ex.GetType().Name + ": " + ex.Message,
-                LocalFailure = timedOut ? RequestLocalFailure.DeadlineExpired : stage.LocalFailure };
-            op = SetStage(op, kind, stage) with { State = attached || knownOutcome ? op.State : UnknownState(kind),
-                Reason = attached || knownOutcome ? op.Reason : "Delivery/outcome unknown; original request must be reconciled, never resent" };
-            Save(op, "OutcomeUnknown", stage.Failure!); LogRcsResult(op, kind, receiptStartedTicks, query); return op;
-        }
-        DebugDiagnostic("外部通信", "原请求响应详情", () => new { Operation = op.Id, op.PositionId, Stage = kind, Query = query,
-            Request = stage.Request.Id, ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
-            Reply = reply is null ? null : new { reply.Id, reply.RequestId, reply.PayloadHash, reply.TransportSucceeded, reply.ProtocolAcknowledged,
-                reply.BusinessAccepted, reply.PhysicalCompleted, reply.Slot, Evidence = DiagnosticFragment(reply.Evidence), Response = DiagnosticResponse(reply.HttpResponse) } });
-        if (reply is null)
-        {
-            repository.NoReply(occurrence);
-            // Query absence does not prove no side effect.
-            if (stage.State is not (StageState.Accepted or StageState.Rejected)) stage = stage with { State = StageState.Unknown };
-            op = StageFailure(SetStage(op, kind, stage), kind, stage, "Original query has no authoritative result; no resend is permitted");
-            Save(op, "QueryInconclusive", GetStage(op, kind)!.Failure!); LogRcsResult(op, kind, receiptStartedTicks, query); return op;
-        }
-        // If persistence fails here, the Awaiting occurrence remains independently visible.
-        // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
-        reply = ParcelReceiptChronology.Observe(stage.Request, reply, runtimeId, receiptStartedAt, ReceiptTimeForVerification.GetUtcNow(),
-            ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), definition.RequestTimeoutMs(op, kind), repository.ReadOriginalReply(stage.Request, reply.Id));
-        repository.StoreRaw(occurrence, reply);
-        Boundary?.Invoke("AfterRawDurable");
-        op = ApplyReply(op, kind, reply);
-        // Some adapters retain a partial response on cancellation. Preserve that raw
-        // receipt while recording the caller's expired request deadline separately.
-        if (!query && reply.BusinessAccepted is null && budget.IsCancellationRequested && !stopping.IsCancellationRequested && GetStage(op, kind) is { State: StageState.Unknown } timedOutStage)
-            op = SetStage(op, kind, timedOutStage with { Failure = "TimeoutException: Request deadline expired", LocalFailure = RequestLocalFailure.DeadlineExpired });
-        if (missingOccurrence is not null && repository.Paused && MaintenanceAuthorized &&
-            GetStage(op, kind) is { State: StageState.Accepted or StageState.Rejected, Failure: null } resolved &&
-            resolved.Replies.Any(r => r.Id == reply.Id && r.BusinessAccepted is not null) && repository.MissingAwaitingRaw(missingOccurrence))
-        {
-            repository.Commit(op, "ReceiptOutcomeKnown", Wire.Encode(new { OriginalOccurrence = missingOccurrence, QueryOccurrence = occurrence, Detail = resolutionReason }),
-                occurrence: occurrence, command: resolutionCommand, reconciledOccurrence: missingOccurrence);
-            operations[op.Id] = op;
-        }
-        else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
-            Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
-        LogRcsResult(op, kind, receiptStartedTicks, query);
-        return op;
+            if (!PortMaintenanceClear(port)) return op;
+            if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
+            { op = StageFailure(op, kind, stage, "Original capability is not healthy; reconnect and reconcile"); Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
+            if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
+                !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
+            if (stopping.IsCancellationRequested) return op;
+            var deliveryAuthority = query || IsDebugRequest(op) ? Management.Require() : CancellationToken.None;
+            // Adapter dictionaries are mutable; never expose the owned original intent.
+            var deliveryRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
+            if (!query)
+            {
+                if (stage.State != StageState.Prepared || stage.Attempts != 0) throw new InvalidOperationException("Only a never-attempted prepared intent can be dispatched");
+                stage = stage with { State = StageState.Dispatching, Attempts = 1 };
+                op = SetStage(op, kind, stage); Save(op, "Dispatching", "T2: attempt persisted before external call");
+            }
+            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, deliveryAuthority);
+            budget.CancelAfter(definition.RequestTimeoutMs(op, kind));
+            var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
+            var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();
+            var receiptStartedTicks = ReceiptTimeForVerification.GetTimestamp();
+            DebugDiagnostic("外部通信", "原请求发送开始", () => new
+            {
+                Operation = op.Id,
+                op.PositionId,
+                Stage = kind,
+                Query = query,
+                Request = stage.Request.Id,
+                stage.Request.PayloadHash,
+                stage.Request.ConfigurationHash,
+                stage.Request.ImplementationHash,
+                Target = stage.Request.Binding.Target,
+                Contract = stage.Request.Binding.Contract,
+                stage.Attempts,
+                TimeoutMs = definition.RequestTimeoutMs(op, kind),
+                Payload = DiagnosticFragment(stage.Request.IntegrationRequest?.Body ?? stage.Request.Payload)
+            });
+            StageReply? reply;
+            if (Id == "sportmaster" && kind == ParcelStage.Wcs) RecordRcsPerformance(op, query ? "RcsQueryStarted" : "RcsSubmitStarted");
+            try
+            {
+                reply = await ExternalPortAsync(port, () => PortCallAsync(port, async () => kind switch
+                {
+                    ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                    ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                    ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                    ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(deliveryRequest, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
+                    _ => throw new InvalidOperationException("Unregistered stage")
+                }, budget.Token)).ConfigureAwait(false);
+                op = operations[op.Id];
+            }
+            catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
+            {
+                DebugDiagnostic("外部通信", "原请求发送异常详情", () => new
+                {
+                    Operation = op.Id,
+                    op.PositionId,
+                    Stage = kind,
+                    Query = query,
+                    Request = stage.Request.Id,
+                    ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
+                    DeadlineCancelled = budget.IsCancellationRequested,
+                    Stopping = stopping.IsCancellationRequested,
+                    Exception = DiagnosticFragment(ex.ToString())
+                });
+                Diagnostic("通信", query ? "原请求核对异常" : "业务请求异常", "错误", ex.ToString());
+                repository.NoReply(occurrence);
+                op = operations[op.Id];
+                // A failed confirmation query supplies no contrary evidence about an
+                // already accepted/rejected command. Keep that fact and its original reply.
+                var knownOutcome = stage.State is StageState.Accepted or StageState.Rejected;
+                var timedOut = !query && budget.IsCancellationRequested && !stopping.IsCancellationRequested;
+                stage = stage with
+                {
+                    State = knownOutcome ? stage.State : StageState.Unknown,
+                    Failure = timedOut ? "TimeoutException: Request deadline expired" : ex.GetType().Name + ": " + ex.Message,
+                    LocalFailure = timedOut ? RequestLocalFailure.DeadlineExpired : stage.LocalFailure
+                };
+                op = SetStage(op, kind, stage) with
+                {
+                    State = attached || knownOutcome ? op.State : UnknownState(kind),
+                    Reason = attached || knownOutcome ? op.Reason : "Delivery/outcome unknown; original request must be reconciled, never resent"
+                };
+                Save(op, "OutcomeUnknown", stage.Failure!); LogRcsResult(op, kind, receiptStartedTicks, query); return op;
+            }
+            DebugDiagnostic("外部通信", "原请求响应详情", () => new
+            {
+                Operation = op.Id,
+                op.PositionId,
+                Stage = kind,
+                Query = query,
+                Request = stage.Request.Id,
+                ElapsedMs = ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks).TotalMilliseconds,
+                Reply = reply is null ? null : new
+                {
+                    reply.Id,
+                    reply.RequestId,
+                    reply.PayloadHash,
+                    reply.TransportSucceeded,
+                    reply.ProtocolAcknowledged,
+                    reply.BusinessAccepted,
+                    reply.PhysicalCompleted,
+                    reply.Slot,
+                    Evidence = DiagnosticFragment(reply.Evidence),
+                    Response = DiagnosticResponse(reply.HttpResponse)
+                }
+            });
+            if (reply is null)
+            {
+                repository.NoReply(occurrence);
+                // Query absence does not prove no side effect.
+                if (stage.State is not (StageState.Accepted or StageState.Rejected)) stage = stage with { State = StageState.Unknown };
+                op = StageFailure(SetStage(op, kind, stage), kind, stage, "Original query has no authoritative result; no resend is permitted");
+                Save(op, "QueryInconclusive", GetStage(op, kind)!.Failure!); LogRcsResult(op, kind, receiptStartedTicks, query); return op;
+            }
+            // If persistence fails here, the Awaiting occurrence remains independently visible.
+            // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
+            reply = ParcelReceiptChronology.Observe(stage.Request, reply, runtimeId, receiptStartedAt, ReceiptTimeForVerification.GetUtcNow(),
+                ReceiptTimeForVerification.GetElapsedTime(receiptStartedTicks), definition.RequestTimeoutMs(op, kind), repository.ReadOriginalReply(stage.Request, reply.Id));
+            repository.StoreRaw(occurrence, reply);
+            Boundary?.Invoke("AfterRawDurable");
+            op = ApplyReply(op, kind, reply);
+            // Some adapters retain a partial response on cancellation. Preserve that raw
+            // receipt while recording the caller's expired request deadline separately.
+            if (!query && reply.BusinessAccepted is null && budget.IsCancellationRequested && !stopping.IsCancellationRequested && GetStage(op, kind) is { State: StageState.Unknown } timedOutStage)
+                op = SetStage(op, kind, timedOutStage with { Failure = "TimeoutException: Request deadline expired", LocalFailure = RequestLocalFailure.DeadlineExpired });
+            if (missingOccurrence is not null && repository.Paused && MaintenanceAuthorized &&
+                GetStage(op, kind) is { State: StageState.Accepted or StageState.Rejected, Failure: null } resolved &&
+                resolved.Replies.Any(r => r.Id == reply.Id && r.BusinessAccepted is not null) && repository.MissingAwaitingRaw(missingOccurrence))
+            {
+                repository.Commit(op, "ReceiptOutcomeKnown", Wire.Encode(new { OriginalOccurrence = missingOccurrence, QueryOccurrence = occurrence, Detail = resolutionReason }),
+                    occurrence: occurrence, command: resolutionCommand, reconciledOccurrence: missingOccurrence);
+                operations[op.Id] = op;
+            }
+            else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
+                Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
+            LogRcsResult(op, kind, receiptStartedTicks, query);
+            return op;
         }
         finally { activeStages.Remove(key); }
     }
@@ -132,13 +181,19 @@ public sealed partial class ParcelRuntime
         RecordRequestLatency(operation, ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds);
         RecordRcsPerformance(operation, query ? "RcsQueryCompleted" : "RcsSubmitCompleted", ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds);
         // Ordinary operational summary. Credentials, target URLs and raw bodies stay out.
-        Diagnostic("RCS结果", "取格口结果", detail: Wire.Encode(new {
-            OperationId = operation.Id, operation.ParcelCode, operation.PositionId,
-            RequestId = stage.Request.Id, Result = stage.State.ToString(), operation.Slot,
+        Diagnostic("RCS结果", "取格口结果", detail: Wire.Encode(new
+        {
+            OperationId = operation.Id,
+            operation.ParcelCode,
+            operation.PositionId,
+            RequestId = stage.Request.Id,
+            Result = stage.State.ToString(),
+            operation.Slot,
             ElapsedMs = Math.Round(ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds, 1),
             NextAction = stage.State is StageState.Unknown or StageState.Conflict
                 ? "勿重复上件；核对本件原请求结果" : stage.State == StageState.Rejected
-                ? "本件未分配格口；按拒绝原因处理" : "结果已记录；投放以作业页当前有效格口为准" }));
+                ? "本件未分配格口；按拒绝原因处理" : "结果已记录；投放以作业页当前有效格口为准"
+        }));
     }
     internal TimeProvider ReceiptTimeForVerification { get; set; } = TimeProvider.System;
     ParcelOperation ApplyReply(ParcelOperation op, ParcelStage kind, StageReply reply)
@@ -178,7 +233,7 @@ public sealed partial class ParcelRuntime
         {
             if (terminal is not null) return SetStage(op, kind, stage); // Less information cannot erase a terminal fact.
             return SetStage(op, kind, stage with { State = StageState.Unknown }) with
-                { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = independentUpload ? op.Reason : "Transport/protocol facts do not establish business acceptance" };
+            { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = independentUpload ? op.Reason : "Transport/protocol facts do not establish business acceptance" };
         }
         stage = stage with { State = reply.BusinessAccepted == true ? StageState.Accepted : StageState.Rejected, Failure = null };
         op = SetStage(op, kind, stage) with { Reason = independentUpload ? op.Reason : reply.BusinessAccepted == true ? null : reply.Evidence };
@@ -206,7 +261,7 @@ public sealed partial class ParcelRuntime
                 }
                 if (stage?.State is StageState.Prepared or StageState.Dispatching)
                     op = SetStage(op, kind, stage with { State = StageState.Unknown, Failure = "Interrupted startup: reconcile the original identity" }) with
-                        { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.Reason : "Restart does not authorize automatic dispatch or replay" };
+                    { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.Reason : "Restart does not authorize automatic dispatch or replay" };
             }
             if (op != op0) Save(op, "RestartRecovery", "Prepared/Dispatching conservatively retained as unknown");
         }

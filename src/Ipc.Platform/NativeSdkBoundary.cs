@@ -59,7 +59,8 @@ public static class NativeSdkBoundary
             files.Any(f => !ExtensionPackages.SafePath(f.Path) || Path.GetFileName(f.Path) != f.Path || !ExtensionSchema.IsHash(f.Sha256) || f.Length <= 0))
             throw new InvalidDataException("Invalid bundled SDK inventory");
         var root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(owner.Location)!, relativeDirectory));
-        var qualified = files.Select(f => {
+        var qualified = files.Select(f =>
+        {
             var path = Path.Combine(root, f.Path);
             if (!File.Exists(path) || new FileInfo(path).Length != f.Length) throw new InvalidDataException("Bundled SDK missing/changed: " + f.Path);
             return new QualificationFile(path, f.Sha256);

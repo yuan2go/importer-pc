@@ -510,12 +510,12 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         foreach (var scaleBinding in ParcelBindings.Bound(c).Where(b => b.Kind == "weight"))
             devicePorts.Add(scaleBinding.InstanceId, Own<IControlledWeightSource>(scaleBinding, () => new ReferenceWeightSource(scaleBinding), (l, m) => l.CreateFactory<IWeightExtension>(scaleBinding.Package!, m, "weight").Create(scaleBinding)));
         var weight = c.Scale is null ? null : (IControlledWeightSource)devicePorts[c.Scale.InstanceId];
-        #if DIRECTPLC
+#if DIRECTPLC
         IWcsPort? wcs = null;
-        #else
+#else
         var wcs = c.Wcs is { } w ? Own<IWcsPort>(w, () => ParcelConnectionSetup.IsDeferred(c, w.InstanceId) ? new DeferredWcsPort(w.InstanceId) : w.Implementation == "sportmaster-rcs" ? new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(w) : new ReferenceWcs(w, w.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
         if (wcs is IWcsRuntimeConfiguration configuredWcs) configuredWcs.ConfigureRuntime(c);
-        #endif
+#endif
         var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => new ReferencePlc(p, p.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;
         var login = c.Login is { } a ? Own<IOperatorAuthenticator>(a, () => new ReferenceOperatorAuthenticator(a), (l, m) => l.CreateFactory<ILoginExtension>(a.Package!, m, "login").Create(a)) : null;
         foreach (var cameraBinding in ParcelBindings.Bound(c).Where(b => b.Kind == "camera"))

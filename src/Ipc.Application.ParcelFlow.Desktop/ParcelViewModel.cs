@@ -28,9 +28,16 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string BlockingReasons => !Fresh ? ReadStatus : string.Join("\n", (Snapshot?.BlockingReasons ?? []).Select(ChineseInterfaceText.Notice));
     public string Status => !Fresh ? "状态已过期 · 仅供参考" : Snapshot?.State switch
     {
-        "Ready" => "作业就绪", "PartiallyReady" => "部分投递位可作业", "Blocked" => "暂不可作业", "Paused" => "已暂停供包", "NotReady" => "暂不可作业",
-        "Starting" => "正在启动", "Stopping" => "正在停止", "Stopped" => "已停止",
-        null => "正在初始化", var state => state
+        "Ready" => "作业就绪",
+        "PartiallyReady" => "部分投递位可作业",
+        "Blocked" => "暂不可作业",
+        "Paused" => "已暂停供包",
+        "NotReady" => "暂不可作业",
+        "Starting" => "正在启动",
+        "Stopping" => "正在停止",
+        "Stopped" => "已停止",
+        null => "正在初始化",
+        var state => state
     };
     public string Health => !Fresh ? "设备旧状态已失效 · " + ReadStatus : string.Join("\n", Snapshot?.Health.Select(x => ParcelPresentation.Health(x, DateTimeOffset.UtcNow)) ?? []);
     public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
@@ -129,8 +136,8 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     long refreshGeneration;
     long snapshotReadId;
     protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => Own(SharedSnapshotRead.Read(application, ManagementStatus, this));
-    protected virtual void ReportCommandFailure(Exception error,string prefix)
-    { if (!ReferenceEquals(error, lastReadError)) Message=prefix+error.Message; }
+    protected virtual void ReportCommandFailure(Exception error, string prefix)
+    { if (!ReferenceEquals(error, lastReadError)) Message = prefix + error.Message; }
     async Task<(long Id, ParcelSnapshot Snapshot)> ReadSnapshotWithIdAsync()
     {
         var id = Interlocked.Increment(ref snapshotReadId);
@@ -321,7 +328,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         if (name == nameof(Current)) PropertyChanged?.Invoke(this, new(nameof(HasCurrentOperation)));
         if (name == nameof(ParameterConfigurationSummary)) PropertyChanged?.Invoke(this, new(nameof(ParameterEditStatus)));
         if (name is nameof(ParameterConfigurationSummary) or nameof(Busy) or nameof(CanConfigure))
-            {
+        {
             PropertyChanged?.Invoke(this, new(nameof(ConfigurationSaveGuidance)));
             PropertyChanged?.Invoke(this, new(nameof(CanSubmitReviewedConfiguration)));
             PropertyChanged?.Invoke(this, new(nameof(CanReviewConfiguration)));

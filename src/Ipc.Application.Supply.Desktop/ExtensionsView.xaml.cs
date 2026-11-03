@@ -284,10 +284,15 @@ public partial class ExtensionsView : UserControl
                 }
                 else
                 {
-                    var text = new TextBox { Text = field.Type == "string-list" && value.Length > 0 ? string.Join("\n", Wire.Decode<string[]>(value)) : value,
+                    var text = new TextBox
+                    {
+                        Text = field.Type == "string-list" && value.Length > 0 ? string.Join("\n", Wire.Decode<string[]>(value)) : value,
                         MaxLength = field.Type == "string-list" ? field.MaximumLength * field.MaximumItems : field.MaximumLength,
-                        AcceptsReturn = field.Type == "string-list", TextWrapping = TextWrapping.Wrap, IsReadOnly = field.ReadOnly,
-                        MinHeight = field.Type == "string-list" ? 90 : 44 };
+                        AcceptsReturn = field.Type == "string-list",
+                        TextWrapping = TextWrapping.Wrap,
+                        IsReadOnly = field.ReadOnly,
+                        MinHeight = field.Type == "string-list" ? 90 : 44
+                    };
                     values[field.Key] = () => field.Type == "string-list" ? Wire.Encode(text.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(x => x.TrimEnd('\r')).ToArray()) : text.Text;
                     editor = text;
                 }
@@ -308,9 +313,14 @@ public partial class ExtensionsView : UserControl
                     var effectiveField = schema.Modules.SingleOrDefault(x => x.Id == effective.ModuleId)?.Parameters.SingleOrDefault(x => x.Key == field.Key);
                     active = effectiveField is null ? "当前有效版本无此参数" : effective.Parameters.GetValueOrDefault(field.Key) ?? effectiveField.Default ?? "未设置";
                 }
-                content.Children.Add(new TextBlock { FontSize = 12, Text = (field.Description ?? "") + $"\n当前有效：{(field.Sensitive && active.StartsWith("credential:", StringComparison.Ordinal) ? "已设置凭据引用" : active)} · 生效：受控重启" +
+                content.Children.Add(new TextBlock
+                {
+                    FontSize = 12,
+                    Text = (field.Description ?? "") + $"\n当前有效：{(field.Sensitive && active.StartsWith("credential:", StringComparison.Ordinal) ? "已设置凭据引用" : active)} · 生效：受控重启" +
                     (field.Minimum is null ? "" : $" · 最小 {field.Minimum}") + (field.Maximum is null ? "" : $" · 最大 {field.Maximum}") +
-                    (field.RequiredWhenKey is null ? "" : $" · {field.RequiredWhenKey}={field.RequiredWhenEquals} 时必填"), Margin = new Thickness(4) });
+                    (field.RequiredWhenKey is null ? "" : $" · {field.RequiredWhenKey}={field.RequiredWhenEquals} 时必填"),
+                    Margin = new Thickness(4)
+                });
             }
         }
     }

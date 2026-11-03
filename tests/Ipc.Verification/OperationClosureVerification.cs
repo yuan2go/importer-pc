@@ -36,8 +36,8 @@ static partial class OperationClosureVerification
         var manifest = new ProductManifest(1, definition.ProductId, config.Mode, definition.Runtime, "any", definition.BusinessModule, definition.Views,
             definition.Modules.Select(x => new ModuleSpec(x.Id, x.Kind, x.Version, x.ContractMajor, x.Dependencies, x.File, Wire.FileHash(Path.Combine(install, x.File)))).ToArray());
         var cfg = Path.Combine(directory, "config"); Directory.CreateDirectory(cfg);
-        File.WriteAllText(Path.Combine(cfg,"station.json"), Wire.Encode(config)); File.WriteAllText(Path.Combine(cfg,"product.json"), Wire.Encode(manifest)); File.WriteAllText(Path.Combine(cfg,"presentation.json"), Wire.Encode(new PresentationSettings()));
-        var boot = new BootOptions(Path.Combine(cfg,"product.json"),Path.Combine(cfg,"station.json"),Path.Combine(cfg,"presentation.json"),Path.Combine(directory,"data"),install,Path.Combine(directory,"leases"));
+        File.WriteAllText(Path.Combine(cfg, "station.json"), Wire.Encode(config)); File.WriteAllText(Path.Combine(cfg, "product.json"), Wire.Encode(manifest)); File.WriteAllText(Path.Combine(cfg, "presentation.json"), Wire.Encode(new PresentationSettings()));
+        var boot = new BootOptions(Path.Combine(cfg, "product.json"), Path.Combine(cfg, "station.json"), Path.Combine(cfg, "presentation.json"), Path.Combine(directory, "data"), install, Path.Combine(directory, "leases"));
         string requestId;
         await using (var runtime = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance))
         {
@@ -46,31 +46,31 @@ static partial class OperationClosureVerification
             async Task Command(string kind, string? value = null)
             {
                 CommandReceipt? result = null;
-                await Wait(async () => { var snapshot = await app.SnapshotAsync(); result = await runtime.CommandAsync(new(Wire.Id(), snapshot.State.Revision, kind, Value:value)); return result.Status != "Conflict"; });
+                await Wait(async () => { var snapshot = await app.SnapshotAsync(); result = await runtime.CommandAsync(new(Wire.Id(), snapshot.State.Revision, kind, Value: value)); return result.Status != "Conflict"; });
                 Assert(result!.Status == "Persisted", "actual product command " + kind);
             }
             await Command("Login", "maintenance");
             await Wait(async () => !(await app.SnapshotAsync()).Admit.Reasons.Any(x => x.StartsWith("Device:") || x.StartsWith("Wcs")));
             await Command("SetFixtureFault", "Drop"); await Command("OpenContext", "000001");
-            await Wait(async () => (await app.SnapshotAsync()).Requests.Any(x=>x.Status==RequestStatus.Unknown));
+            await Wait(async () => (await app.SnapshotAsync()).Requests.Any(x => x.Status == RequestStatus.Unknown));
             requestId = (await app.SnapshotAsync()).Requests.Single().Id;
             var q1 = runtime.ReconcileAsync(requestId); var q2 = runtime.ReconcileAsync(requestId);
             await endpoint.BothStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            var receipts = Path.Combine(runtime.DataDirectory!,"receipt-ingress");
+            var receipts = Path.Combine(runtime.DataDirectory!, "receipt-ingress");
             if (Directory.Exists(receipts)) Directory.Delete(receipts);
-            File.WriteAllText(receipts,"AC15 deliberate custody-create failure");
+            File.WriteAllText(receipts, "AC15 deliberate custody-create failure");
             endpoint.Release[0].SetResult(); await (await Task.WhenAny(q1, q2));
             File.Delete(receipts);
             endpoint.Release[1].SetResult(); await Task.WhenAll(q1, q2);
-            var recovery = (await app.SnapshotAsync()).Recovery.Single(x=>x.Request.Id==requestId);
-            Assert(recovery.Request.Status==RequestStatus.Accepted && recovery.Receipts.Length==1 && recovery.Receipts[0].Origin=="original-query",
+            var recovery = (await app.SnapshotAsync()).Recovery.Single(x => x.Request.Id == requestId);
+            Assert(recovery.Request.Status == RequestStatus.Accepted && recovery.Receipts.Length == 1 && recovery.Receipts[0].Origin == "original-query",
                 "actual concurrent Product/Integration queries retain failed Q1 after Q2 succeeds");
             await runtime.StopAsync(CancellationToken.None);
         }
         await using var restarted = new ProductRuntime(boot, NullLogger<ProductRuntime>.Instance);
         await restarted.StartAsync(CancellationToken.None);
         var restored = await restarted.Application!.SnapshotAsync();
-        Assert(restored.Recovery.Single(x=>x.Request.Id==requestId).Receipts.Single().Status=="RawUnavailable" && !restored.Admit.Allowed,
+        Assert(restored.Recovery.Single(x => x.Request.Id == requestId).Receipts.Single().Status == "RawUnavailable" && !restored.Admit.Allowed,
             "actual Product controlled stop/restart retains missing original without blind resend or resource loss");
         await restarted.DisposeAsync();
         await endpoint.DisposeAsync();
@@ -197,7 +197,7 @@ static partial class OperationClosureVerification
             faults.Hook = null;
             Assert(h.Store.ReceiptOccurrence(q1)!.Status == "AwaitingResponse" &&
                 h.Store.ReceiptOccurrence(q2)!.Status == (flushedFirst ? "AwaitingResponse" : "Committed"), "Q2 completion cannot erase Q1 reservation");
-            Assert(h.Store.PendingRequests().Any(x => x.Id == original.Id) && ! (await h.App.SnapshotAsync()).Close.Allowed,
+            Assert(h.Store.PendingRequests().Any(x => x.Id == original.Id) && !(await h.App.SnapshotAsync()).Close.Allowed,
                 "pending/recovery and business guards retain independently incomplete responsibility");
         }
         await using (var recovered = await Rig.Open(directory, cfg))
@@ -220,7 +220,7 @@ static partial class OperationClosureVerification
             var replayed = recovered.Store.Responses(original.Id).Single();
             await recovered.App.CompleteAsync(stored, null, replayed);
             Assert(recovered.Store.IncompleteReceipts().Single().Id == lost && SupplyStore.InspectReadOnly(recovered.Store.Path).PendingRequests == 1 &&
-                ! (await recovered.App.SnapshotAsync()).Admit.Allowed && await recovered.App.ClaimAsync() is null,
+                !(await recovered.App.SnapshotAsync()).Admit.Allowed && await recovered.App.ClaimAsync() is null,
                 "matching later delivery cannot clear another missing original; maintenance counts original once; no blind resend");
         }
     }

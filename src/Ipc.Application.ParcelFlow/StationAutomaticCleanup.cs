@@ -129,8 +129,12 @@ public sealed partial class ParcelRuntime
             ParcelRecovery.CreateBackup(directory!, backup, captured, null, repository!.StorageBytes,
                 p =>
                 {
-                    using var source = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder {
-                        DataSource = Path.Combine(directory!, Id + ".db"), Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
+                    using var source = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
+                    {
+                        DataSource = Path.Combine(directory!, Id + ".db"),
+                        Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly,
+                        Pooling = false
+                    }.ToString());
                     source.Open(); Ipc.Platform.Storage.Database.Backup(source, p, cancellation);
                 }, factory.RegisterBackup, cancellation.ThrowIfCancellationRequested, cancellation);
             var manifest = ParcelRecovery.VerifyBackup(backup, cancellation.ThrowIfCancellationRequested, cancellation);

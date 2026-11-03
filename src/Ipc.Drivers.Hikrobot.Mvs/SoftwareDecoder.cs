@@ -19,11 +19,13 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
     public MvsTimingSnapshot TimingSnapshot => timings.Snapshot();
     internal object DiagnosticConfiguration => new { Encoding = charset, Formats = settings?.Formats ?? ["All"], TryInvert = settings?.TryInvert ?? true };
     public bool PreservesInput => true;
-    readonly Encoding encoding = charset switch {
+    readonly Encoding encoding = charset switch
+    {
         "utf-8" => new UTF8Encoding(false, true),
         "ascii" => Encoding.GetEncoding("us-ascii", EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback),
         "gb18030" => StrictChineseEncoding(),
-        _ => throw new InvalidDataException("Unsupported explicit barcode encoding") };
+        _ => throw new InvalidDataException("Unsupported explicit barcode encoding")
+    };
     static Encoding StrictChineseEncoding()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -33,8 +35,17 @@ internal sealed partial class SoftwareDecoder(string charset, Action? prepareNat
     {
         timings.Reset();
         (prepareNative ?? DecoderRuntime.Prepare)();
-        reader ??= new BarcodeReader { Formats = BarcodeFormat.All, TryHarder = true, TryRotate = true,
-            TryInvert = true, TryDownscale = true, ReturnErrors = false, MinLineCount = 2, MaxNumberOfSymbols = CandidateLimit };
+        reader ??= new BarcodeReader
+        {
+            Formats = BarcodeFormat.All,
+            TryHarder = true,
+            TryRotate = true,
+            TryInvert = true,
+            TryDownscale = true,
+            ReturnErrors = false,
+            MinLineCount = 2,
+            MaxNumberOfSymbols = CandidateLimit
+        };
         if (settings is not null) { reader.Formats = settings.NativeFormats(); reader.TryInvert = settings.TryInvert; }
         searchOptionsForVerification?.Invoke(reader);
         thresholdReader ??= new BarcodeReader();

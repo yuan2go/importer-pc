@@ -23,7 +23,8 @@ static class RuntimeEntryBoundaryVerification
                     (_, _) => throw new Exception("Denied Supply identity reached a device factory"));
                 RequireDefault(runtime.RuntimeIdentityPreflight);
                 await using var denied = new ProductRuntime(options, NullLogger<ProductRuntime>.Instance,
-                    (_, _) => throw new Exception("Denied Supply identity reached a device factory")) { RuntimeIdentityPreflight = () => throw denial };
+                    (_, _) => throw new Exception("Denied Supply identity reached a device factory"))
+                { RuntimeIdentityPreflight = () => throw denial };
                 await denied.StartAsync(default);
                 if (denied.Application is not null || denied.Configuration is not null || denied.DataDirectory is not null || denied.HeldResources.Length != 0 ||
                     !denied.Diagnostics.Contains("Startup NotReady: UnauthorizedAccessException: " + denial.Message))

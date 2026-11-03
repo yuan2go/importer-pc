@@ -90,11 +90,11 @@ static partial class Program
             Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == "StationCode"), "no second heartbeat station editor remains");
             Check(draft.Policy.DiagnosticLogDays == "7" && draft.Policy.HistoryDays == "7", "first-run retention editors contain seven days");
             editor.ShowPage(2, "左相机"); await Flush();
-            Check(!Descendants(editor).OfType<ComboBox>().Any(t=>AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode")||AutomationProperties.GetAutomationId(t).EndsWith("/acquisition.trigger")) &&
-                !Descendants(editor).OfType<CheckBox>().Any(t=>AutomationProperties.GetAutomationId(t)==draft.Readers[0].InstanceId+"/ConfigureLater"),"camera uses fixed per-result/continuous defaults without configuration-state controls");
-            var serial=draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.serial"); serial.Value="SYNTH-PARTIAL";await Flush();
-            Check(!model.ValidateFields() && model.Issues.Any(i=>i.Path.EndsWith("/device.ip")),"partially filled camera identity is refused instead of silently deferred");
-            serial.Value="";await Flush();Check(model.ValidateFields()&&draft.Readers[0].ConfigureLater,"empty camera is omitted without a configuration-state switch");
+            Check(!Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode") || AutomationProperties.GetAutomationId(t).EndsWith("/acquisition.trigger")) &&
+                !Descendants(editor).OfType<CheckBox>().Any(t => AutomationProperties.GetAutomationId(t) == draft.Readers[0].InstanceId + "/ConfigureLater"), "camera uses fixed per-result/continuous defaults without configuration-state controls");
+            var serial = draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial"); serial.Value = "SYNTH-PARTIAL"; await Flush();
+            Check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/device.ip")), "partially filled camera identity is refused instead of silently deferred");
+            serial.Value = ""; await Flush(); Check(model.ValidateFields() && draft.Readers[0].ConfigureLater, "empty camera is omitted without a configuration-state switch");
             await VerifyIndependentDeferredPreflight(evidence, window, editor, draft, model, lines);
             editor.ShowPage(0, "显示偏好"); await Flush();
             var modes = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode");
@@ -144,7 +144,8 @@ static partial class Program
                     foreach (var p in draft.Readers[i].Parameters)
                         p.Value = p.Field.Key switch
                         {
-                            "device.ip" => (mask & (1 << i)) != 0 ? "" : "192.0.2." + (10 + i), "device.serial" => (mask & (1 << i)) != 0 ? "" : "SYNTH-SERIAL-" + i,
+                            "device.ip" => (mask & (1 << i)) != 0 ? "" : "192.0.2." + (10 + i),
+                            "device.serial" => (mask & (1 << i)) != 0 ? "" : "SYNTH-SERIAL-" + i,
                             _ => p.Value
                         };
                     Check(editor.ShowPage(2, i == 0 ? "左相机" : "右相机"), "camera page is reachable");
@@ -155,10 +156,15 @@ static partial class Program
                 foreach (var p in rcs.Parameters)
                     p.Value = p.Field.Key switch
                     {
-                        "zone-id" => (mask & 4) != 0 ? "" : "71", "project-id" => "83",
-                        "specified-chute" => "false", "heartbeat-interval-seconds" => "5",
-                        "left-bcr-code" => (mask & 1) != 0 ? "" : "SYNTH-LEFT", "right-bcr-code" => (mask & 2) != 0 ? "" : "SYNTH-RIGHT",
-                        "request-id-base" => "810000000", "request-id-count" => "100000", _ => p.Value
+                        "zone-id" => (mask & 4) != 0 ? "" : "71",
+                        "project-id" => "83",
+                        "specified-chute" => "false",
+                        "heartbeat-interval-seconds" => "5",
+                        "left-bcr-code" => (mask & 1) != 0 ? "" : "SYNTH-LEFT",
+                        "right-bcr-code" => (mask & 2) != 0 ? "" : "SYNTH-RIGHT",
+                        "request-id-base" => "810000000",
+                        "request-id-count" => "100000",
+                        _ => p.Value
                     };
                 Check(editor.ShowPage(3, "RCS 服务"), "RCS page is reachable");
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
@@ -173,8 +179,8 @@ static partial class Program
             activeRcs.Target = "http://127.0.0.1:24999/rcs/sorter/api";
             activeRcs.ConfigureLater = false;
             activeRcs.Parameters.Single(p => p.Field.Key == "zone-id").Value = "71";
-            draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.ip").Value="192.0.2.10";
-            draft.Readers[0].Parameters.Single(p=>p.Field.Key=="device.serial").Value="SYNTH-SERIAL-0";
+            draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value = "192.0.2.10";
+            draft.Readers[0].Parameters.Single(p => p.Field.Key == "device.serial").Value = "SYNTH-SERIAL-0";
             var incomplete = await offline.CheckAsync(draft.Build());
             Check(incomplete.Checks.Any(c => c.Status == "FAIL" && c.Reason.Contains("bcr-code", StringComparison.Ordinal)),
                 "restoring a camera requires its real identity at preflight; stale deferred blank is refused");

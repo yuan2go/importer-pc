@@ -16,8 +16,18 @@ public sealed partial class ParameterSettingsControl
     {
         var bar = new StackPanel { Margin = new(0, 0, 0, 8) };
         var input = new Grid(); search.Padding = new(36, 7, 10, 7); input.Children.Add(search);
-        var glass = Themed(new System.Windows.Shapes.Path { Data = System.Windows.Media.Geometry.Parse("M 6.5,1 A 5.5,5.5 0 1 1 6.49,1 Z M 10.5,10.5 L 15,15"), StrokeThickness = 1.5, Width = 15, Height = 15, Stretch = System.Windows.Media.Stretch.Uniform,
-            HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 0, 0), IsHitTestVisible = false }, System.Windows.Shapes.Shape.StrokeProperty, "Muted");
+        var glass = Themed(new System.Windows.Shapes.Path
+        {
+            Data = System.Windows.Media.Geometry.Parse("M 6.5,1 A 5.5,5.5 0 1 1 6.49,1 Z M 10.5,10.5 L 15,15"),
+            StrokeThickness = 1.5,
+            Width = 15,
+            Height = 15,
+            Stretch = System.Windows.Media.Stretch.Uniform,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new(12, 0, 0, 0),
+            IsHitTestVisible = false
+        }, System.Windows.Shapes.Shape.StrokeProperty, "Muted");
         input.Children.Add(glass);
         var hint = Text("搜索设置  Ctrl+F"); hint.IsHitTestVisible = false; hint.FontSize = UiTypography.Label; hint.Margin = new(36, 0, 8, 0); hint.VerticalAlignment = VerticalAlignment.Center; input.Children.Add(hint);
         AutomationProperties.SetName(search, "搜索参数"); AutomationProperties.SetAutomationId(search, "ParameterSearch");

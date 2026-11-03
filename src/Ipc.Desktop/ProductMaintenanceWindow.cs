@@ -52,7 +52,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
         Action("读取安装信息", Read, readOnly: true);
         Action("查看上次卸载结果", InspectOriginal, readOnly: true);
         var resume = Action("继续上次卸载清理…", ResumeOriginal, readOnly: true);
-        resume.Visibility = CurrentDeployment()?.LifecycleState is { } lifecycle && lifecycle != "Installed" ? Visibility.Visible : Visibility.Collapsed;
+        resume.Visibility = CurrentDeployment()?.LifecycleState is { } lifecycle && lifecycle != "Installed" && !IsPurgeState(lifecycle) ? Visibility.Visible : Visibility.Collapsed;
         Action("修复开始菜单与快捷方式…", async () =>
         {
             if (removalCompleted) return;
@@ -81,6 +81,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
     {
         if (removalCompleted) return;
         location = CurrentDeployment() ?? throw new InvalidDataException("未找到安装登记，请用完整安装包重新安装");
+        if (IsPurgeState(location.LifecycleState)) { ShowPurgeState(location); return; }
         if (location.LifecycleState != "Installed") { ShowRemovalResult(await Task.Run(InspectRemoval)); return; }
         registrationHash = RegistrationIdentity();
         if (UnknownOutcome) { Message("上次卸载尚未完成，请稍后查看结果，勿重复卸载。"); return; }
@@ -158,6 +159,7 @@ sealed partial class ProductMaintenanceWindow : StartupWorkflowWindow
         Note("业务数据、设备身份和共享驱动保留。可按原安装库存继续清理，无需原安装包。");
         Action("查看上次卸载结果", InspectOriginal, readOnly: true);
         if (receipt.Status != "RemovedDataRetained") Action("继续清理…", ResumeOriginal, readOnly: true);
+        else if (ParcelStartupServices.ApplicationId == "sportmaster") AddDataPurgeSection();
         CloseAction();
     }
     void CloseAction()

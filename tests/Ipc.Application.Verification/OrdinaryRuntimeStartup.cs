@@ -24,11 +24,11 @@ static class OrdinaryRuntimeStartup
         if (!OperatingSystem.IsWindows()) { Console.WriteLine("WINDOWS_TOKEN_PROCESS_NOT_RUN portable host"); return; }
         using var identity = WindowsIdentity.GetCurrent();
         if (!new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator))
-        { Check(!OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(special),"already ordinary entry creates no duplicate process");return; }
+        { Check(!OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(special), "already ordinary entry creates no duplicate process"); return; }
         var executable = Environment.ProcessPath!;
         var prefix = Path.GetFileNameWithoutExtension(executable).Equals("dotnet", StringComparison.OrdinalIgnoreCase) ? new[] { Assembly.GetExecutingAssembly().Location } : [];
         var file = Path.Combine(root, "ordinary-child.json");
-        using (var child = OrdinaryRuntimeProcess.Start(executable, [..prefix, "--ordinary-start-child", file, ..special], Environment.CurrentDirectory))
+        using (var child = OrdinaryRuntimeProcess.Start(executable, [.. prefix, "--ordinary-start-child", file, .. special], Environment.CurrentDirectory))
             Check(child.Wait(20000) == 0, "real restricted child starts and passes unchanged ordinary-account validator");
         var receipt = Wire.Decode<Receipt>(File.ReadAllText(file));
         Check(!receipt.AdminEnabled && receipt.UserHash == Wire.Hash(identity.User!.Value) && receipt.Arguments.SequenceEqual(special),

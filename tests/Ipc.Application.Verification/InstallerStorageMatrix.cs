@@ -139,17 +139,29 @@ static class InstallerStorageMatrix
                     var password = "Synthetic-" + Wire.Id(); var client = new LocalManagementMode(data); client.ConfigurePassword(password); Check(client.Enter(password), mode + " isolated management password works");
                     void VerifyOrdinaryAccess(DeploymentLocation location)
                     {
-                        using var ordinary = OrdinaryRuntimeProcess.Start(Environment.ProcessPath!, [..Prefix, "--installation-storage-ordinary-child", Path.Combine(location.ReleaseRoot, "app", "Ipc.Platform.dll"), data], Environment.CurrentDirectory);
+                        using var ordinary = OrdinaryRuntimeProcess.Start(Environment.ProcessPath!, [.. Prefix, "--installation-storage-ordinary-child", Path.Combine(location.ReleaseRoot, "app", "Ipc.Platform.dll"), data], Environment.CurrentDirectory);
                         Check(ordinary.Wait(30000) == 0 && File.Exists(Path.Combine(data, "ordinary-result.txt")), mode + " actual ordinary account reads program, cannot modify it, writes an image sample on D and queries service");
                     }
                     if (freshDOnly)
                     {
                         VerifyOrdinaryAccess(first);
                         Check(Wire.FileHash(sentinel) == dataHash && !File.ReadAllText(serviceJournal).Contains(password, StringComparison.Ordinal), mode + " new data retained and service journal excludes password");
-                        File.WriteAllText(Path.Combine(sample, "RESULT.json"), Wire.Encode(new { Status = "PASS", Mode = mode, Scope = "FreshInstallOnly", ProgramRoot = program, DataRoot = data,
-                            SyntheticApplication = appId, MediumSource = medium.SourceCommit, ServiceHostRoot = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"),
-                            Receipt = WindowsDeploymentSetup.InstallationOperationFile(request), ServiceJournal = serviceJournal, Reinstall = "NOT_RUN", FailureRecovery = "NOT_RUN",
-                            Boundary = "Common installation kernel plus real SCM/System service and ordinary image write; synthetic product, no devices or production launch" }));
+                        File.WriteAllText(Path.Combine(sample, "RESULT.json"), Wire.Encode(new
+                        {
+                            Status = "PASS",
+                            Mode = mode,
+                            Scope = "FreshInstallOnly",
+                            ProgramRoot = program,
+                            DataRoot = data,
+                            SyntheticApplication = appId,
+                            MediumSource = medium.SourceCommit,
+                            ServiceHostRoot = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"),
+                            Receipt = WindowsDeploymentSetup.InstallationOperationFile(request),
+                            ServiceJournal = serviceJournal,
+                            Reinstall = "NOT_RUN",
+                            FailureRecovery = "NOT_RUN",
+                            Boundary = "Common installation kernel plus real SCM/System service and ordinary image write; synthetic product, no devices or production launch"
+                        }));
                         continue;
                     }
                     var secondRequest = Request(); var second = Install(secondRequest);
@@ -172,10 +184,21 @@ static class InstallerStorageMatrix
                         new LocalManagementMode(data).InspectStatus().Available && new LocalManagementMode(data).InspectStatus().Configured && Wire.FileHash(sentinel) == dataHash,
                         mode + " injected registration failure retains native code and actually restores previous service/data/password authority");
                     Check(File.ReadAllText(serviceJournal).Contains("NativeErrorCode", StringComparison.Ordinal) && !File.ReadAllText(serviceJournal).Contains(password, StringComparison.Ordinal), mode + " protected per-step service journal retains failure and excludes password");
-                    File.WriteAllText(Path.Combine(sample, "RESULT.json"), Wire.Encode(new { Status = "PASS", Mode = mode, ProgramRoot = program, DataRoot = data,
-                        SyntheticApplication = appId, MediumSource = medium.SourceCommit, ServiceHostRoot = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"),
-                        Receipt = WindowsDeploymentSetup.InstallationOperationFile(secondRequest), ServiceJournal = serviceJournal, Failure = WindowsInstallationError.Capture(failure!), CredentialAuthorityPreserved = true,
-                        Boundary = "Common installation kernel plus real SCM/System service; 1783 deliberately injected, not target-machine reproduction; no devices or production launch" }));
+                    File.WriteAllText(Path.Combine(sample, "RESULT.json"), Wire.Encode(new
+                    {
+                        Status = "PASS",
+                        Mode = mode,
+                        ProgramRoot = program,
+                        DataRoot = data,
+                        SyntheticApplication = appId,
+                        MediumSource = medium.SourceCommit,
+                        ServiceHostRoot = WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"),
+                        Receipt = WindowsDeploymentSetup.InstallationOperationFile(secondRequest),
+                        ServiceJournal = serviceJournal,
+                        Failure = WindowsInstallationError.Capture(failure!),
+                        CredentialAuthorityPreserved = true,
+                        Boundary = "Common installation kernel plus real SCM/System service; 1783 deliberately injected, not target-machine reproduction; no devices or production launch"
+                    }));
                 }
                 finally
                 {

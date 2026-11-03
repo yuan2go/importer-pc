@@ -99,7 +99,7 @@ public sealed partial class ParcelRuntime
             try { if (!SessionValid || currentOperator?.SessionId != operatorSession || stopped) throw new InvalidOperationException("操作员会话已改变，图片未返回。"); }
             finally { gate.Release(); }
             return new ParcelPictureResult("Available", "原业务同帧PNG留档，文件身份与哈希已核对。", operationId, observationId, null)
-                { Archived = new(operationId, file, png) };
+            { Archived = new(operationId, file, png) };
         }
         if (manual) return new("NoAcquisition", "此条码来自键盘或PDA键盘输入，没有同帧相机采集证据，不使用实时图或其他包裹图片补配。", operationId, observationId, null);
         if (acquisition is null) return new("Missing", "原记录未包含可核对的相机采集身份，无法取得对应原图。", operationId, observationId, null);

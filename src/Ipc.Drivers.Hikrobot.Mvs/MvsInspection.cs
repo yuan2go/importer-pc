@@ -17,53 +17,53 @@ internal sealed partial class MvsAcquisition : IObservationInspectionSource
         await lifecycle.WaitAsync(token).ConfigureAwait(false);
         try
         {
-        Task barrier;
-        var applyWithoutWorker = false;
-        lock (inspectionGate)
-        {
-            var clearCache = inspection?.Isolated == true && registration is null || inspection?.Isolated != true && registration?.Isolated == true ||
-                registration?.CutoverKey is not null && inspection?.CutoverKey != registration.CutoverKey;
-            if (clearCache || cacheCutover is not null || decoder is not null)
+            Task barrier;
+            var applyWithoutWorker = false;
+            lock (inspectionGate)
             {
-                cacheCutover ??= new(TaskCreationOptions.RunContinuationsAsynchronously); afterCacheCutover = registration;
-                // Retain the isolation tag while the old cycle and SDK cache drain.
-                // No diagnostic original is allocated during this transient fence.
-                var transient = inspection?.Isolated == true ? inspection : registration;
-                inspection = transient is null ? null : transient with { CaptureImages = false, DecodeAllowed = _ => false };
-                barrier = cacheCutover.Task; applyWithoutWorker = worker is null || worker.IsCompleted;
-            }
-            else
-            {
-            var retired = inspectionGeneration++;
-            inspection = registration; inspectionFailure = null;
-            if (activeInspectionGeneration != 0 && activeInspectionGeneration <= retired + 1)
-            {
-                var existing = inspectionBarriers.FirstOrDefault(x => x.Generation == activeInspectionGeneration).Completion;
-                if (existing is not null) barrier = existing.Task;
+                var clearCache = inspection?.Isolated == true && registration is null || inspection?.Isolated != true && registration?.Isolated == true ||
+                    registration?.CutoverKey is not null && inspection?.CutoverKey != registration.CutoverKey;
+                if (clearCache || cacheCutover is not null || decoder is not null)
+                {
+                    cacheCutover ??= new(TaskCreationOptions.RunContinuationsAsynchronously); afterCacheCutover = registration;
+                    // Retain the isolation tag while the old cycle and SDK cache drain.
+                    // No diagnostic original is allocated during this transient fence.
+                    var transient = inspection?.Isolated == true ? inspection : registration;
+                    inspection = transient is null ? null : transient with { CaptureImages = false, DecodeAllowed = _ => false };
+                    barrier = cacheCutover.Task; applyWithoutWorker = worker is null || worker.IsCompleted;
+                }
                 else
                 {
-                    var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-                    inspectionBarriers.Add((activeInspectionGeneration, completion)); barrier = completion.Task;
+                    var retired = inspectionGeneration++;
+                    inspection = registration; inspectionFailure = null;
+                    if (activeInspectionGeneration != 0 && activeInspectionGeneration <= retired + 1)
+                    {
+                        var existing = inspectionBarriers.FirstOrDefault(x => x.Generation == activeInspectionGeneration).Completion;
+                        if (existing is not null) barrier = existing.Task;
+                        else
+                        {
+                            var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                            inspectionBarriers.Add((activeInspectionGeneration, completion)); barrier = completion.Task;
+                        }
+                    }
+                    else barrier = Task.CompletedTask;
                 }
             }
-            else barrier = Task.CompletedTask;
+            if (applyWithoutWorker)
+            {
+                try { await Task.Run(ApplyInspectionCacheCutover, CancellationToken.None).ConfigureAwait(false); }
+                catch { await barrier.ConfigureAwait(false); throw; }
             }
-        }
-        if (applyWithoutWorker)
-        {
-            try { await Task.Run(ApplyInspectionCacheCutover, CancellationToken.None).ConfigureAwait(false); }
-            catch { await barrier.ConfigureAwait(false); throw; }
-        }
-        else if (worker is { } capture)
-        {
-            // A pending cache boundary has no executor once Capture exits. Observe
-            // the actual task as well as the barrier, including the race where it
-            // exits just after the IsCompleted check above. Keep isolation on failure.
-            var completed = await Task.WhenAny(barrier, capture).WaitAsync(token).ConfigureAwait(false);
-            if (completed == capture && !barrier.IsCompleted) RejectInspectionAfterCaptureExit(barrier);
-        }
-        // Cancellation only cancels waiting; it never claims that a native call drained.
-        await barrier.WaitAsync(token).ConfigureAwait(false);
+            else if (worker is { } capture)
+            {
+                // A pending cache boundary has no executor once Capture exits. Observe
+                // the actual task as well as the barrier, including the race where it
+                // exits just after the IsCompleted check above. Keep isolation on failure.
+                var completed = await Task.WhenAny(barrier, capture).WaitAsync(token).ConfigureAwait(false);
+                if (completed == capture && !barrier.IsCompleted) RejectInspectionAfterCaptureExit(barrier);
+            }
+            // Cancellation only cancels waiting; it never claims that a native call drained.
+            await barrier.WaitAsync(token).ConfigureAwait(false);
         }
         finally { lifecycle.Release(); }
     }

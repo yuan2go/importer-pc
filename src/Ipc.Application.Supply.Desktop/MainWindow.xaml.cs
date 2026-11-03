@@ -11,6 +11,7 @@ using Ipc.Supply;
 using Microsoft.Win32;
 
 namespace Ipc.Desktop;
+
 public partial class MainWindow : Window
 {
     public IStationRuntime Runtime { get; }
@@ -76,10 +77,10 @@ public partial class MainWindow : Window
             model.Accepted = session is null || session.Status is SessionStatus.Closed or SessionStatus.Rejected ? "—" : snapshot.AcceptedQuantity.ToString();
             model.Projection = $"投影 v{snapshot.ProjectionVersion} · 取得于 {snapshot.GeneratedAt.ToLocalTime():HH:mm:ss.fff} · 业务修订 {snapshot.State.Revision}";
             var recent = snapshot.RecentOperations.Select(x => new HistoryRow(x)).ToArray();
-            if (RecentGrid.ItemsSource is not HistoryRow[] oldRecent || !oldRecent.Select(x => (x.Id,x.Status)).SequenceEqual(recent.Select(x => (x.Id,x.Status)))) RecentGrid.ItemsSource = recent;
+            if (RecentGrid.ItemsSource is not HistoryRow[] oldRecent || !oldRecent.Select(x => (x.Id, x.Status)).SequenceEqual(recent.Select(x => (x.Id, x.Status)))) RecentGrid.ItemsSource = recent;
             var reasons = snapshot.Admit.Reasons.Concat(snapshot.OperationGuards.Where(x => snapshot.State.Lanes[x.Key].Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired or OperationStatus.SubmitPending).SelectMany(x => x.Value.Reasons.Select(r => x.Key + ":" + r))).Concat(snapshot.RuntimeFaults).Distinct().ToArray();
             model.GlobalStatus = (reasons.Length == 0 ? "● 就绪 · 按当前操作指引继续" : "! 业务受控阻断 · " + OperatorText.Reasons(reasons));
-            StatusBanner.Background = new System.Windows.Media.SolidColorBrush(reasons.Length == 0 ? System.Windows.Media.Color.FromRgb(237,247,241) : System.Windows.Media.Color.FromRgb(255,245,223));
+            StatusBanner.Background = new System.Windows.Media.SolidColorBrush(reasons.Length == 0 ? System.Windows.Media.Color.FromRgb(237, 247, 241) : System.Windows.Media.Color.FromRgb(255, 245, 223));
             model.Devices = string.Join("\n", snapshot.State.Devices.Select(x => $"{x.Key}: {x.Value.DeviceId} / {OperatorText.Health(x.Value.Health.ToString())} / 代次 {x.Value.Epoch}"));
             model.AlarmSummary = $"活动报警 {snapshot.ActiveAlarmCount} · 已读仍计入活动";
             model.RecoveryHint = $"过载证据版本 {snapshot.OverloadVersion} · " + (snapshot.OverloadRecovery.Allowed ? "已排空；检查来源和实体后可确认过载。其它阻断仍保留。" : OperatorText.Reasons(snapshot.OverloadRecovery.Reasons));
@@ -92,7 +93,7 @@ public partial class MainWindow : Window
                 var old = alarms.FirstOrDefault(x => x.Id == alarm.Id);
                 if (old is null) alarms.Add(alarm); else if (old != alarm) alarms[alarms.IndexOf(old)] = alarm;
             }
-            if(selectedActiveAlarm is not null)AlarmGrid.SelectedItem=alarms.FirstOrDefault(x=>x.Id==selectedActiveAlarm);
+            if (selectedActiveAlarm is not null) AlarmGrid.SelectedItem = alarms.FirstOrDefault(x => x.Id == selectedActiveAlarm);
             var selectedRequest = (RecoveryGrid.SelectedItem as RequestRecoveryRow)?.Id;
             var recoveryRows = snapshot.Recovery.Select(x => new RequestRecoveryRow(x)).ToArray();
             if (RecoveryGrid.ItemsSource is not RequestRecoveryRow[] oldRows || Wire.Encode(oldRows) != Wire.Encode(recoveryRows))
@@ -127,7 +128,7 @@ public partial class MainWindow : Window
         var evidenceVersion = kind == SupplyCommands.ClearOverload ? snapshot?.OverloadVersion : null;
         if (confirm is not null && !Confirmation.Ask(this, confirm, ConfirmationLabel(kind), kind == SupplyCommands.ConfirmClose || kind == SupplyCommands.Submit)) return null;
         busy = true; UpdateGuards(); model.LastResult = "正在执行，请勿重复操作…";
-        try { var receipt = await Runtime.CommandAsync(new(commandId ?? Wire.Id(), revision, kind, owner, value, EvidenceVersion:evidenceVersion)); if (kind == SupplyCommands.Resume && receipt.Status == "Persisted") layoutPauseRequired = false; if (!closing) model.LastResult = $"{(receipt.Status == "Persisted" ? "已处理" : "命令反馈")} · {receipt.Status} · {OperatorText.Reason(receipt.Reason)}"; return receipt; }
+        try { var receipt = await Runtime.CommandAsync(new(commandId ?? Wire.Id(), revision, kind, owner, value, EvidenceVersion: evidenceVersion)); if (kind == SupplyCommands.Resume && receipt.Status == "Persisted") layoutPauseRequired = false; if (!closing) model.LastResult = $"{(receipt.Status == "Persisted" ? "已处理" : "命令反馈")} · {receipt.Status} · {OperatorText.Reason(receipt.Reason)}"; return receipt; }
         catch (Exception ex) { if (!closing) model.LastResult = "命令失败：" + ex.Message; return null; }
         finally { busy = false; if (!closing) { await RefreshAsync(); UpdateGuards(); } }
     }
@@ -158,28 +159,28 @@ public partial class MainWindow : Window
                 if (!guard.Allowed) reason = string.Join("；", guard.Reasons);
             }
             if (kind is "Enter" or "Read" or "NoCode" or "MultiCode" or "Depart" or "Reset" or "Replay" or "Revalidate" or "ReconnectSource" && Runtime.Mode != RunMode.Simulation) reason = "仅模拟模式允许工程事件";
-            if(kind == SupplyCommands.AckAlarm && (selectedAlarm is null || selectedAlarm.AckedBy is not null))reason="请选择尚未已读的报警";
-            if(kind == "Reconcile" && RequestIdBox.Text.Trim().Length==0)reason="请选择或输入原请求身份";
-            if(kind is SupplyCommands.RecordReconciliation or SupplyCommands.CancelPrepared && (EvidenceBox.Text.Length is <8 or >1000))reason="请填写 8～1000 字符的检查依据";
-            if(kind is SupplyCommands.ClearOverload or SupplyCommands.ClearQuarantine or SupplyCommands.ReviewObservations && (ReviewEvidence.Text.Length is <8 or >1000))reason="请填写 8～1000 字符的来源或实体检查依据";
-            if(kind == SupplyCommands.Pause && snapshot.State.Blocks.Any(x=>x.Code=="OperatorPaused"))reason="工位已人工暂停";
-            if(kind == SupplyCommands.Resume && !snapshot.State.Blocks.Any(x=>x.Code=="OperatorPaused"))reason="当前无人工暂停；恢复不解除其它阻断";
+            if (kind == SupplyCommands.AckAlarm && (selectedAlarm is null || selectedAlarm.AckedBy is not null)) reason = "请选择尚未已读的报警";
+            if (kind == "Reconcile" && RequestIdBox.Text.Trim().Length == 0) reason = "请选择或输入原请求身份";
+            if (kind is SupplyCommands.RecordReconciliation or SupplyCommands.CancelPrepared && (EvidenceBox.Text.Length is < 8 or > 1000)) reason = "请填写 8～1000 字符的检查依据";
+            if (kind is SupplyCommands.ClearOverload or SupplyCommands.ClearQuarantine or SupplyCommands.ReviewObservations && (ReviewEvidence.Text.Length is < 8 or > 1000)) reason = "请填写 8～1000 字符的来源或实体检查依据";
+            if (kind == SupplyCommands.Pause && snapshot.State.Blocks.Any(x => x.Code == "OperatorPaused")) reason = "工位已人工暂停";
+            if (kind == SupplyCommands.Resume && !snapshot.State.Blocks.Any(x => x.Code == "OperatorPaused")) reason = "当前无人工暂停；恢复不解除其它阻断";
             var current = snapshot.State.Lanes.GetValueOrDefault(Selected(EngineeringLane));
             if (kind == "Enter" && (!snapshot.Admit.Allowed || current is not null && current.Occupancy != Occupancy.Clear)) reason = !snapshot.Admit.Allowed ? OperatorText.Reasons(snapshot.Admit.Reasons) : "上一实体尚未复位";
             if (kind is "Read" or "NoCode" or "MultiCode" && (current?.Occupancy != Occupancy.Occupied || current.Status is not (OperationStatus.Observed or OperationStatus.ValidationRejected or OperationStatus.Rejected))) reason = "需有在位、允许读码的实体；先解决原请求";
             if (kind == "Depart" && (current is null || current.Status is not (OperationStatus.Accepted or OperationStatus.Rejected or OperationStatus.ValidationRejected or OperationStatus.Cancelled))) reason = "原请求或草稿尚未处置，不得提供离场事件";
             if (kind == "Reset" && current?.Occupancy != Occupancy.Departed) reason = "先提供对应实体的离场证据";
             if (kind == "Revalidate" && current?.Occupancy != Occupancy.Occupied) reason = "仅可核对当前在位实体";
-            if (kind == "Replay" && Runtime.Configuration?.Devices.FirstOrDefault(x=>x.Role==Selected(EngineeringLane))?.Driver != "replay") reason = "此通道未绑定回放驱动";
+            if (kind == "Replay" && Runtime.Configuration?.Devices.FirstOrDefault(x => x.Role == Selected(EngineeringLane))?.Driver != "replay") reason = "此通道未绑定回放驱动";
 
         }
         return reason.Length == 0;
     }
     static IEnumerable<T> Children<T>(DependencyObject parent) where T : DependencyObject
     {
-        for (var i=0;i<System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);i++)
+        for (var i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent); i++)
         {
-            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent,i);
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
             if (child is T found) yield return found;
             foreach (var nested in Children<T>(child)) yield return nested;
         }
@@ -194,11 +195,11 @@ public partial class MainWindow : Window
             left.Apply(snapshot, available, HasIdentity, ReviewFits(left), busy);
             right.Apply(snapshot, available, HasIdentity, ReviewFits(right), busy);
         }
-        foreach (var button in Children<Button>(this).Where(x=>x.Tag is string))
+        foreach (var button in Children<Button>(this).Where(x => x.Tag is string))
         {
             button.IsEnabled = CanCommand((string)button.Tag, out var why, (string)button.Tag == SupplyCommands.ActivateConfig && ConfigsList.IsEnabled ? ConfigsList.SelectedItem as ConfigRevision : null);
             button.ToolTip = button.IsEnabled ? "执行时由应用层复核身份、对象和版本" : why;
-            ToolTipService.SetShowOnDisabled(button,true);
+            ToolTipService.SetShowOnDisabled(button, true);
         }
         EngineeringControls.IsEnabled = HasIdentity && !smallArea;
         ExtensionsControl.SetAccess(HasIdentity && !busy && snapshot?.State.Actor?.Role == SimulationRole.Maintenance);
@@ -226,18 +227,18 @@ public partial class MainWindow : Window
     async void CancelCloseClick(object sender, RoutedEventArgs e) => await SendAsync(SupplyCommands.CancelClose);
     async void ConfirmCloseClick(object sender, RoutedEventArgs e)
     {
-        if (!CanCommand(SupplyCommands.ConfirmClose, out var why)) { model.LastResult=why; return; }
+        if (!CanCommand(SupplyCommands.ConfirmClose, out var why)) { model.LastResult = why; return; }
         var session = snapshot?.State.Session;
         if (session is null) return;
-        var revision=snapshot!.State.Revision;
-        var owner=session.CloseCheckRequest;
-        if (session.CloseRemaining is null) { model.LastResult="关闭检查数量未取得；不能按零缺失或少货强制结束。"; return; }
-        if (session.CloseRemaining == 0) { await SendAsync(SupplyCommands.ConfirmClose,owner,"CONFIRM",expectedRevision:revision); return; }
-        var message=$"箱 {session.Barcode} / 会话 {session.Id}\n当前关闭检查 {owner}\n缺失基础SKU总量 {session.CloseRemaining?.ToString() ?? "未取得"}；分SKU明细：参考合同未提供。\n两通道及原请求仍由应用层复核。请核对箱与工位、缺失事实及数量；提交后等待原关闭回执，不会直接清空箱。";
-        var confirmed=Confirmation.Ask(this,message,"确认强制结束",true,"取消，继续供包");
-        await SendAsync(confirmed?SupplyCommands.ConfirmClose:SupplyCommands.CancelClose,owner,confirmed?"CONFIRM":null,expectedRevision:revision);
+        var revision = snapshot!.State.Revision;
+        var owner = session.CloseCheckRequest;
+        if (session.CloseRemaining is null) { model.LastResult = "关闭检查数量未取得；不能按零缺失或少货强制结束。"; return; }
+        if (session.CloseRemaining == 0) { await SendAsync(SupplyCommands.ConfirmClose, owner, "CONFIRM", expectedRevision: revision); return; }
+        var message = $"箱 {session.Barcode} / 会话 {session.Id}\n当前关闭检查 {owner}\n缺失基础SKU总量 {session.CloseRemaining?.ToString() ?? "未取得"}；分SKU明细：参考合同未提供。\n两通道及原请求仍由应用层复核。请核对箱与工位、缺失事实及数量；提交后等待原关闭回执，不会直接清空箱。";
+        var confirmed = Confirmation.Ask(this, message, "确认强制结束", true, "取消，继续供包");
+        await SendAsync(confirmed ? SupplyCommands.ConfirmClose : SupplyCommands.CancelClose, owner, confirmed ? "CONFIRM" : null, expectedRevision: revision);
     }
-    async void BoxKeyDown(object sender, KeyEventArgs e) { if (e.Key is Key.Enter or Key.Tab && Keyboard.Modifiers == ModifierKeys.None && model.BoxDraft.Length > 0) { e.Handled = true; await SendAsync(SupplyCommands.OpenContext, value: model.BoxDraft.TrimEnd('\r','\n','\t')); } }
+    async void BoxKeyDown(object sender, KeyEventArgs e) { if (e.Key is Key.Enter or Key.Tab && Keyboard.Modifiers == ModifierKeys.None && model.BoxDraft.Length > 0) { e.Handled = true; await SendAsync(SupplyCommands.OpenContext, value: model.BoxDraft.TrimEnd('\r', '\n', '\t')); } }
     void SecondViewClick(object sender, RoutedEventArgs e) => new MainWindow(Runtime) { Owner = this }.Show();
     async void LayoutClick(object sender, RoutedEventArgs e)
     {
@@ -249,13 +250,13 @@ public partial class MainWindow : Window
     void ApplyLayout() => ApplyWorkstationLayout();
     void TabChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (ReferenceEquals(e.Source,Pages) && IsLoaded) UpdateGuards();
+        if (ReferenceEquals(e.Source, Pages) && IsLoaded) UpdateGuards();
     }
     public async Task ShowDetailAsync(string owner, SupplyOperation? operation = null)
     {
         if (Runtime.Application is null || closing) return;
         if (!BeginHistoricalRead("作业详情", out var readActor)) return;
-        var reviewedStateRevision=snapshot!.State.Revision;
+        var reviewedStateRevision = snapshot!.State.Revision;
         var generation = ++detailGeneration;
         try
         {
@@ -265,16 +266,16 @@ public partial class MainWindow : Window
             RenderDetails(owner, operation, details, reviewedStateRevision); NavigateToHistoryDetail();
         }
         catch (OperationCanceledException) when (closing) { }
-        catch(Exception ex) { if (!closing && generation == detailGeneration) MarkDetailReadFailure("详情读取失败：" + ex.Message); }
+        catch (Exception ex) { if (!closing && generation == detailGeneration) MarkDetailReadFailure("详情读取失败：" + ex.Message); }
     }
     void RenderDetails(string owner, SupplyOperation? operation, RequestDetail[] details, long? reviewedStateRevision = null)
     {
         DetailTree.Items.Clear();
         var root = new TreeViewItem { Header = "作业 / 会话  " + owner, IsExpanded = true };
-        void Add(ItemsControl parent, string text) => parent.Items.Add(new TextBox { Text=text, IsReadOnly=true, IsTabStop=false, AcceptsReturn=true, TextWrapping=TextWrapping.Wrap, Margin=new Thickness(4), Padding=new Thickness(0), BorderThickness=new Thickness(0), Background=System.Windows.Media.Brushes.Transparent, MinHeight=0, MaxWidth=700 });
+        void Add(ItemsControl parent, string text) => parent.Items.Add(new TextBox { Text = text, IsReadOnly = true, IsTabStop = false, AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(4), Padding = new Thickness(0), BorderThickness = new Thickness(0), Background = System.Windows.Media.Brushes.Transparent, MinHeight = 0, MaxWidth = 700 });
         if (operation is not null)
         {
-            Add(root,$"作业 {operation.Id} / r{operation.Revision}\n{OperatorText.Operation(operation.Status)} · {operation.Occupancy}\n箱 {OperatorText.Known(operation.BoxBarcode)} / 箱波次 {OperatorText.Known(operation.BoxWave)}\nItem {OperatorText.Known(operation.Barcode)} / SKU {OperatorText.Known(operation.Task?.Sku)}\nItem 波次 {OperatorText.Known(operation.Task?.ItemWave)} / 任务 {OperatorText.Known(operation.Task?.TaskId)}\n格口 {OperatorText.Known(operation.Task?.Destination)} / 数量 {operation.Supply?.ToString() ?? "未取得"} {OperatorText.Known(operation.Task?.Unit)}\n{OperatorText.Reason(operation.Reason)}");
+            Add(root, $"作业 {operation.Id} / r{operation.Revision}\n{OperatorText.Operation(operation.Status)} · {operation.Occupancy}\n箱 {OperatorText.Known(operation.BoxBarcode)} / 箱波次 {OperatorText.Known(operation.BoxWave)}\nItem {OperatorText.Known(operation.Barcode)} / SKU {OperatorText.Known(operation.Task?.Sku)}\nItem 波次 {OperatorText.Known(operation.Task?.ItemWave)} / 任务 {OperatorText.Known(operation.Task?.TaskId)}\n格口 {OperatorText.Known(operation.Task?.Destination)} / 数量 {operation.Supply?.ToString() ?? "未取得"} {OperatorText.Known(operation.Task?.Unit)}\n{OperatorText.Reason(operation.Reason)}");
             if (reviewedStateRevision is { } reviewedRevision && snapshot!.State.Revision == reviewedRevision &&
                 CanCommand(SupplyCommands.CancelDraft, out _) && LaneForOwner(operation.Id)?.Current is { } current &&
                 current.Revision == operation.Revision && Wire.Encode(current) == Wire.Encode(operation) &&
@@ -289,34 +290,34 @@ public partial class MainWindow : Window
                 };
                 root.Items.Add(dispose);
             }
-            if(operation.CurrentInput is { } input) Add(root,$"本次观察 {input.ObservationId} / {input.ObservedAt:O} / 码集合 {string.Join(" / ",input.Codes)} / 包装量 {input.PackageQuantity?.ToString() ?? "未取得"}");
-            if(operation.PreviousConfirmed is { } prior) Add(root,$"历史证实结果 r{prior.Revision}（不授权本次输入） · Item {prior.Barcode} / 数量 {prior.Supply?.ToString() ?? "未取得"} / SKU {OperatorText.Known(prior.Task?.Sku)}");
-            if(operation.Task?.Provenance is {} p) Add(root,$"语义来源 {p.Source} / {p.Version} / {p.EvidenceId} / {p.AcquiredAt:O}");
+            if (operation.CurrentInput is { } input) Add(root, $"本次观察 {input.ObservationId} / {input.ObservedAt:O} / 码集合 {string.Join(" / ", input.Codes)} / 包装量 {input.PackageQuantity?.ToString() ?? "未取得"}");
+            if (operation.PreviousConfirmed is { } prior) Add(root, $"历史证实结果 r{prior.Revision}（不授权本次输入） · Item {prior.Barcode} / 数量 {prior.Supply?.ToString() ?? "未取得"} / SKU {OperatorText.Known(prior.Task?.Sku)}");
+            if (operation.Task?.Provenance is { } p) Add(root, $"语义来源 {p.Source} / {p.Version} / {p.EvidenceId} / {p.AcquiredAt:O}");
         }
-        foreach(var detail in details)
+        foreach (var detail in details)
         {
-            var request=detail.Request;
-            var node=new TreeViewItem { Header=$"请求 · {OperatorText.Kind(request.Kind)} · {OperatorText.Request(request.Status)} · {request.Id}", IsExpanded=false }; root.Items.Add(node);
-            Add(node,$"原请求 {request.Id}\n原哈希 {request.PayloadHash}\n合同 {request.Binding.Contract} / 目标版本 {request.Binding.Revision}\n固定目标 {request.Binding.Endpoint}\n创建 {request.CreatedAt:O}");
-            var attempts=new TreeViewItem { Header=$"发送尝试 ({detail.Attempts.Length})", IsExpanded=true }; node.Items.Add(attempts);
-            foreach(var attempt in detail.Attempts) Add(attempts,$"#{attempt.Ordinal} {attempt.Id}\n{attempt.StartedAt:O} → {attempt.EndedAt?.ToString("O") ?? "未结束"}\n{attempt.Disposition} / {attempt.Error}");
-            var responses=new TreeViewItem { Header=$"响应证据 ({detail.Responses.Length})", IsExpanded=true }; node.Items.Add(responses);
-            foreach(var response in detail.Responses)
+            var request = detail.Request;
+            var node = new TreeViewItem { Header = $"请求 · {OperatorText.Kind(request.Kind)} · {OperatorText.Request(request.Status)} · {request.Id}", IsExpanded = false }; root.Items.Add(node);
+            Add(node, $"原请求 {request.Id}\n原哈希 {request.PayloadHash}\n合同 {request.Binding.Contract} / 目标版本 {request.Binding.Revision}\n固定目标 {request.Binding.Endpoint}\n创建 {request.CreatedAt:O}");
+            var attempts = new TreeViewItem { Header = $"发送尝试 ({detail.Attempts.Length})", IsExpanded = true }; node.Items.Add(attempts);
+            foreach (var attempt in detail.Attempts) Add(attempts, $"#{attempt.Ordinal} {attempt.Id}\n{attempt.StartedAt:O} → {attempt.EndedAt?.ToString("O") ?? "未结束"}\n{attempt.Disposition} / {attempt.Error}");
+            var responses = new TreeViewItem { Header = $"响应证据 ({detail.Responses.Length})", IsExpanded = true }; node.Items.Add(responses);
+            foreach (var response in detail.Responses)
             {
-                Add(responses,$"{(response.Result=="Accepted"?"已接受":response.Result=="Rejected"?"已拒绝":response.Result)} · {OperatorText.Reason(response.Reason)}\n证据 {response.EvidenceId} / 数量 {response.Quantity?.ToString() ?? "未取得"} / 剩余 {response.Remaining?.ToString() ?? "未取得"}\n原请求 {response.RequestId} / 哈希 {response.PayloadHash}");
-                Add(responses,$"箱波次 {OperatorText.Known(response.Context?.BoxWave)}\nSKU {OperatorText.Known(response.Task?.Sku)} / Item 波次 {OperatorText.Known(response.Task?.ItemWave)}\n任务 {OperatorText.Known(response.Task?.TaskId)} / 格口 {OperatorText.Known(response.Task?.Destination)} / 单位 {OperatorText.Known(response.Task?.Unit)}");
-                foreach(var source in new[]{response.Context?.Provenance,response.Task?.Provenance}.Where(x=>x is not null).Distinct())
-                    Add(responses,$"来源 {source!.Source} / 版本 {source.Version}\n语义证据 {source.EvidenceId} / 取得时间 {source.AcquiredAt:O}");
+                Add(responses, $"{(response.Result == "Accepted" ? "已接受" : response.Result == "Rejected" ? "已拒绝" : response.Result)} · {OperatorText.Reason(response.Reason)}\n证据 {response.EvidenceId} / 数量 {response.Quantity?.ToString() ?? "未取得"} / 剩余 {response.Remaining?.ToString() ?? "未取得"}\n原请求 {response.RequestId} / 哈希 {response.PayloadHash}");
+                Add(responses, $"箱波次 {OperatorText.Known(response.Context?.BoxWave)}\nSKU {OperatorText.Known(response.Task?.Sku)} / Item 波次 {OperatorText.Known(response.Task?.ItemWave)}\n任务 {OperatorText.Known(response.Task?.TaskId)} / 格口 {OperatorText.Known(response.Task?.Destination)} / 单位 {OperatorText.Known(response.Task?.Unit)}");
+                foreach (var source in new[] { response.Context?.Provenance, response.Task?.Provenance }.Where(x => x is not null).Distinct())
+                    Add(responses, $"来源 {source!.Source} / 版本 {source.Version}\n语义证据 {source.EvidenceId} / 取得时间 {source.AcquiredAt:O}");
             }
-            var audit=new TreeViewItem { Header=$"审计 ({detail.Audit.Length})", IsExpanded=true }; node.Items.Add(audit);
-            var receipts = new TreeViewItem { Header=$"每次接收责任 ({detail.Receipts.Length})", IsExpanded=detail.Receipts.Any(ReceiptResponsibilityRules.IsUnresolved) }; node.Items.Add(receipts);
-            foreach(var received in detail.Receipts) Add(receipts,$"接收 {received.Id} · {received.Origin} · {received.StartedAt:O}\n{received.Status} · 原请求 {received.RequestId} / Attempt {received.AttemptId}\n{(received.Response is null ? "未取得原件，不可恢复原内容" : "原件已持久接管 · SHA " + received.ContentSha256)}");
-            foreach(var conflict in detail.Conflicts)
-                Add(responses,$"持续核对冲突 {conflict.Id} · 原EvidenceId {conflict.OriginalEvidenceId}\n{conflict.ReceivedAt:O} · 来源 {conflict.Source} · Attempt {conflict.AttemptId}\n{Wire.Encode(conflict.Response)}");
-            foreach(var entry in detail.Audit) Add(audit,$"{entry.At:O} · {entry.Actor} · {entry.Kind}\n命令 {entry.CommandId} / {entry.Evidence}");
-            var payload=new TreeViewItem { Header="高级诊断 · 原始固定报文", IsExpanded=false }; payload.Items.Add(new TextBox {Text=request.Payload,IsReadOnly=true,AcceptsReturn=true,TextWrapping=TextWrapping.Wrap,MaxWidth=700,MaxHeight=220,VerticalScrollBarVisibility=ScrollBarVisibility.Auto}); node.Items.Add(payload);
+            var audit = new TreeViewItem { Header = $"审计 ({detail.Audit.Length})", IsExpanded = true }; node.Items.Add(audit);
+            var receipts = new TreeViewItem { Header = $"每次接收责任 ({detail.Receipts.Length})", IsExpanded = detail.Receipts.Any(ReceiptResponsibilityRules.IsUnresolved) }; node.Items.Add(receipts);
+            foreach (var received in detail.Receipts) Add(receipts, $"接收 {received.Id} · {received.Origin} · {received.StartedAt:O}\n{received.Status} · 原请求 {received.RequestId} / Attempt {received.AttemptId}\n{(received.Response is null ? "未取得原件，不可恢复原内容" : "原件已持久接管 · SHA " + received.ContentSha256)}");
+            foreach (var conflict in detail.Conflicts)
+                Add(responses, $"持续核对冲突 {conflict.Id} · 原EvidenceId {conflict.OriginalEvidenceId}\n{conflict.ReceivedAt:O} · 来源 {conflict.Source} · Attempt {conflict.AttemptId}\n{Wire.Encode(conflict.Response)}");
+            foreach (var entry in detail.Audit) Add(audit, $"{entry.At:O} · {entry.Actor} · {entry.Kind}\n命令 {entry.CommandId} / {entry.Evidence}");
+            var payload = new TreeViewItem { Header = "高级诊断 · 原始固定报文", IsExpanded = false }; payload.Items.Add(new TextBox { Text = request.Payload, IsReadOnly = true, AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MaxWidth = 700, MaxHeight = 220, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); node.Items.Add(payload);
         }
-        if(details.Length==0) Add(root,"尚无请求记录；观察事实与任务快照不会被补造为外部接受。");
+        if (details.Length == 0) Add(root, "尚无请求记录；观察事实与任务快照不会被补造为外部接受。");
         DetailTree.Items.Add(root);
     }
     async void ReconcileClick(object sender, RoutedEventArgs e) => await RunAsync(() => Runtime.ReconcileAsync(RequestIdBox.Text));
@@ -355,15 +356,15 @@ public partial class MainWindow : Window
     async void FaultClick(object sender, RoutedEventArgs e) => await SendAsync(SupplyCommands.SetFixtureFault, value: Selected(FaultBox));
     async void BlockClick(object sender, RoutedEventArgs e) => await SendAsync(SupplyCommands.SetSyntheticBlock, value: Selected(BlockBox));
     async void UnblockClick(object sender, RoutedEventArgs e) => await SendAsync(SupplyCommands.ClearSyntheticBlock, value: Selected(BlockBox));
-    async void EventClick(object sender,RoutedEventArgs e) => await EmitEventAsync((string)((Button)sender).Tag);
-    async void EngineeringKeyDown(object sender,KeyEventArgs e) { if(e.Key is Key.Enter or Key.Tab && Keyboard.Modifiers == ModifierKeys.None && EngineeringBarcode.Text.Length>0){e.Handled=true;await EmitEventAsync("Read");} }
+    async void EventClick(object sender, RoutedEventArgs e) => await EmitEventAsync((string)((Button)sender).Tag);
+    async void EngineeringKeyDown(object sender, KeyEventArgs e) { if (e.Key is Key.Enter or Key.Tab && Keyboard.Modifiers == ModifierKeys.None && EngineeringBarcode.Text.Length > 0) { e.Handled = true; await EmitEventAsync("Read"); } }
     async Task EmitEventAsync(string kind)
     {
-        if(!CanCommand(kind,out var why)){model.LastResult=why;return;}
-        if(kind is "Depart" or "Reset" or "Revalidate" && !Confirmation.Ask(this,"确认已提供对应实体的模拟物理事件？原业务结果和实体责任继续保留。"))return;
-        await RunAsync(async()=> {if(!int.TryParse(EngineeringQuantity.Text,out var quantity))throw new InvalidDataException("模拟包装量必须是整数"); var code=EngineeringBarcode.Text.TrimEnd('\r','\n','\t'); var codes=kind switch{"NoCode"=>Array.Empty<string>(),"MultiCode"=>new[]{code,"999999"},_=>new[]{code}}; await Runtime.EmitAsync(Selected(EngineeringLane),kind is "NoCode" or "MultiCode"?"Read":kind,codes,quantity);});
+        if (!CanCommand(kind, out var why)) { model.LastResult = why; return; }
+        if (kind is "Depart" or "Reset" or "Revalidate" && !Confirmation.Ask(this, "确认已提供对应实体的模拟物理事件？原业务结果和实体责任继续保留。")) return;
+        await RunAsync(async () => { if (!int.TryParse(EngineeringQuantity.Text, out var quantity)) throw new InvalidDataException("模拟包装量必须是整数"); var code = EngineeringBarcode.Text.TrimEnd('\r', '\n', '\t'); var codes = kind switch { "NoCode" => Array.Empty<string>(), "MultiCode" => new[] { code, "999999" }, _ => new[] { code } }; await Runtime.EmitAsync(Selected(EngineeringLane), kind is "NoCode" or "MultiCode" ? "Read" : kind, codes, quantity); });
     }
-    async void ReplayClick(object sender,RoutedEventArgs e) { if(CanCommand("Replay",out var why))await RunAsync(()=>Runtime.ReplayAsync(Selected(EngineeringLane)));else model.LastResult=why; }
+    async void ReplayClick(object sender, RoutedEventArgs e) { if (CanCommand("Replay", out var why)) await RunAsync(() => Runtime.ReplayAsync(Selected(EngineeringLane))); else model.LastResult = why; }
     async void ExportClick(object sender, RoutedEventArgs e)
     {
         var dialog = new SaveFileDialog { Filter = "JSON|*.json", FileName = "ipc-diagnostics-" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".json" };
@@ -375,7 +376,7 @@ public partial class MainWindow : Window
         if (dialog.ShowDialog(this) == true && Runtime.Application is not null) await RunAsync(() => Runtime.Application.BackupAsync(dialog.FileName));
     }
     async void ReviewClick(object sender, RoutedEventArgs e) => await ReviewSelectedSourcesAsync();
-    async void OverloadClick(object sender, RoutedEventArgs e) => await SendAsync(SupplyCommands.ClearOverload,value:ReviewEvidence.Text,confirm:$"确认已检查当前过载证据版本 {snapshot?.OverloadVersion} 的来源与实体？新拒收会使本次确认失效，其它阻断继续保留。");
+    async void OverloadClick(object sender, RoutedEventArgs e) => await SendAsync(SupplyCommands.ClearOverload, value: ReviewEvidence.Text, confirm: $"确认已检查当前过载证据版本 {snapshot?.OverloadVersion} 的来源与实体？新拒收会使本次确认失效，其它阻断继续保留。");
     async void QuarantineClick(object sender, RoutedEventArgs e) => await SendAsync(SupplyCommands.ClearQuarantine, value: ReviewEvidence.Text, confirm: "已核对原外部账与实体库存，解除恢复隔离？未决请求将继续阻断。");
     async void WindowClosing(object? sender, CancelEventArgs e)
     {
@@ -383,7 +384,7 @@ public partial class MainWindow : Window
         e.Cancel = true;
         if (!Confirmation.Ask(this, "退出将停止采集和发送。未决结果与原责任保留，重启后需登录和核对。确认退出？")) return;
         closing = true; timer.Stop(); soundStop.Cancel();
-        try { if(soundTask is not null) await soundTask; await ((App)global::System.Windows.Application.Current).StopRuntimeAsync(); global::System.Windows.Application.Current.Shutdown(); }
+        try { if (soundTask is not null) await soundTask; await ((App)global::System.Windows.Application.Current).StopRuntimeAsync(); global::System.Windows.Application.Current.Shutdown(); }
         catch (Exception ex)
         {
             closing = false; ready = false; timer.Start();

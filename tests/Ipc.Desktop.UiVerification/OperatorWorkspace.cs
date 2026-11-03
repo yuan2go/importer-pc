@@ -32,11 +32,19 @@ static partial class Program
         }
         await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.IsManagementMode);
         // Presentation-only unconfigured fixture. It does not start any Production resources.
-        ParcelSnapshot Deferred(ParcelSnapshot s) => s with {
-            Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Mode = RunMode.Production,
-                DeferredConnections = [vm.Left.ReaderId, vm.Right.ReaderId, s.Configuration.Effective.Wcs!.InstanceId] } },
+        ParcelSnapshot Deferred(ParcelSnapshot s) => s with
+        {
+            Configuration = s.Configuration with
+            {
+                Effective = s.Configuration.Effective with
+                {
+                    Mode = RunMode.Production,
+                    DeferredConnections = [vm.Left.ReaderId, vm.Right.ReaderId, s.Configuration.Effective.Wcs!.InstanceId]
+                }
+            },
             Positions = s.Positions!.Select(p => p with { Admit = false, BlockingReasons = ["连接待配置"] }).ToArray(),
-            BlockingReasons = ["连接待配置：左相机、右相机、RCS。"] };
+            BlockingReasons = ["连接待配置：左相机、右相机、RCS。"]
+        };
         probe.Project = Deferred; await Until(() => vm.ShowSetupGuidance);
         Check(vm.SetupItems == "RCS" && vm.SetupHeading.Contains("1"), "unconfigured guide lists the exact missing connection count");
         foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
@@ -92,12 +100,18 @@ static partial class Program
         // Coherent display fixtures cover copy and layout only; the separate chain suite verifies Application transitions.
         foreach (var scenario in new[] { "no-read", "duplicate", "unknown" })
         {
-            probe.Project = s => scenario == "unknown" ? HierarchyState(s, StageState.Unknown) : s with {
-                Inputs = s.Inputs!.Select(i => i.PositionId != "left" ? i : i with {
+            probe.Project = s => scenario == "unknown" ? HierarchyState(s, StageState.Unknown) : s with
+            {
+                Inputs = s.Inputs!.Select(i => i.PositionId != "left" ? i : i with
+                {
                     Outcome = scenario == "duplicate" ? ParcelInputOutcome.Duplicate : ParcelInputOutcome.Rejected,
-                    OperationId = null, BarcodeSelection = scenario == "no-read" ? null : i.BarcodeSelection, Reason = scenario == "duplicate" ? "重复读取，未创建新任务" : "未读到条码，请检查包裹标签后重新读码",
-                    Observation = scenario == "duplicate" ? i.Observation : i.Observation with { Codes = [], Kind = "NoRead" } }).ToArray(),
-                Positions = s.Positions!.Select(p => p.Id != "left" ? p : p with { CurrentOperation = scenario == "duplicate" ? p.CurrentOperation : null }).ToArray() };
+                    OperationId = null,
+                    BarcodeSelection = scenario == "no-read" ? null : i.BarcodeSelection,
+                    Reason = scenario == "duplicate" ? "重复读取，未创建新任务" : "未读到条码，请检查包裹标签后重新读码",
+                    Observation = scenario == "duplicate" ? i.Observation : i.Observation with { Codes = [], Kind = "NoRead" }
+                }).ToArray(),
+                Positions = s.Positions!.Select(p => p.Id != "left" ? p : p with { CurrentOperation = scenario == "duplicate" ? p.CurrentOperation : null }).ToArray()
+            };
             await Until(() => scenario == "unknown" ? vm.Left.HasUncertainOriginal : vm.Left.InputUnadmitted && vm.Left.Input?.Outcome == (scenario == "duplicate" ? ParcelInputOutcome.Duplicate : ParcelInputOutcome.Rejected));
             Check(!vm.Left.SlotAvailable && vm.Right.SlotAvailable && !vm.ShowSetupGuidance, scenario + " hides the current left destination and retains the healthy right result");
             CaptureInternal(evidence, "operator-" + scenario, client, lines);

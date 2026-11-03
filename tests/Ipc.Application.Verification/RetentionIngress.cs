@@ -19,10 +19,16 @@ static class RetentionIngress
         using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = new Uri(Path.GetFullPath(path)).AbsoluteUri + "?mode=ro&immutable=1", Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
         db.Open(); Exec(db, "PRAGMA query_only=ON");
         using var version = db.CreateCommand(); version.CommandText = "SELECT sqlite_version()";
-        ExtensionStore.AtomicWrite(output, new { Source = path, Bytes = sharing.Length, SQLite = version.ExecuteScalar(),
+        ExtensionStore.AtomicWrite(output, new
+        {
+            Source = path,
+            Bytes = sharing.Length,
+            SQLite = version.ExecuteScalar(),
             Original = Plan(db, ParcelRepository.ExpiredInputPageSql.Replace(" i NOT INDEXED ", " i "), false),
-            Fixed = Plan(db, ParcelRepository.ExpiredInputPageSql, true), ProductSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location),
-            Scope = "EXPLAIN only on closed original full backup, Windows sharing excludes writes/replacement; no data mutation or maintenance/restore qualification" });
+            Fixed = Plan(db, ParcelRepository.ExpiredInputPageSql, true),
+            ProductSha256 = Wire.FileHash(typeof(ParcelRepository).Assembly.Location),
+            Scope = "EXPLAIN only on closed original full backup, Windows sharing excludes writes/replacement; no data mutation or maintenance/restore qualification"
+        });
     }
     static readonly DateTimeOffset Now = new(2026, 10, 25, 0, 0, 0, TimeSpan.Zero);
     static void Check(bool value, string message)

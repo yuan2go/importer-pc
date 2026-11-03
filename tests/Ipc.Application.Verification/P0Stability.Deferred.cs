@@ -35,15 +35,33 @@ static partial class SportmasterRcs
             try
             {
                 var flow = new SportmasterFlow(); var seed = flow.InitialConfiguration();
-                var readers = seed.Topology!.Readers.Select((r, i) => r with { Driver = "tcp-line", Parameters = (mask & (1 << i)) != 0
+                var readers = seed.Topology!.Readers.Select((r, i) => r with
+                {
+                    Driver = "tcp-line",
+                    Parameters = (mask & (1 << i)) != 0
                     ? new() { ["entity.mode"] = "line" }
-                    : new() { ["entity.mode"] = "line", ["device.ip"] = "127.0.0.1", ["device.port"] =
-                        ((IPEndPoint)(i == 0 ? left : right).LocalEndpoint).Port.ToString() } }).ToArray();
-                var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0",
-                    Parameters = new(Binding(peer.Endpoint).Parameters) { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-seconds"] = "1" } };
-                var c = seed with { StationCode = "SYNTH-STATION",
-                    Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding,
-                    DeferredConnections = Enumerable.Range(0, 3).Where(i => (mask & (1 << i)) != 0).Select(i => i < 2 ? readers[i].DeviceId : binding.InstanceId).ToArray() };
+                    : new()
+                    {
+                        ["entity.mode"] = "line",
+                        ["device.ip"] = "127.0.0.1",
+                        ["device.port"] =
+                        ((IPEndPoint)(i == 0 ? left : right).LocalEndpoint).Port.ToString()
+                    }
+                }).ToArray();
+                var binding = Binding(peer.Endpoint) with
+                {
+                    Implementation = "sportmaster-rcs",
+                    Version = "1.0.0",
+                    Parameters = new(Binding(peer.Endpoint).Parameters) { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-seconds"] = "1" }
+                };
+                var c = seed with
+                {
+                    StationCode = "SYNTH-STATION",
+                    Reader = readers[0],
+                    Topology = seed.Topology with { Readers = readers },
+                    Wcs = binding,
+                    DeferredConnections = Enumerable.Range(0, 3).Where(i => (mask & (1 << i)) != 0).Select(i => i < 2 ? readers[i].DeviceId : binding.InstanceId).ToArray()
+                };
                 var launch = new BusinessLaunch(Path.Combine(root, "matrix-" + mask, "config"), Path.Combine(root, "matrix-" + mask, "data"), null, null);
                 await using var factory = new ParcelCapabilityFactory(launch);
                 async Task Stage(string name, Func<Task> action)
@@ -108,8 +126,13 @@ static partial class SportmasterRcs
         var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0" };
         var seed = new SportmasterFlow().InitialConfiguration();
         var oldBinding = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "", ["request-id-count"] = "" } };
-        var old = seed with { Mode = RunMode.Simulation, StationCode = "SYNTH-STATION", Wcs = oldBinding,
-            DeferredConnections = seed.Topology!.Readers.Select(r => r.DeviceId).Append(binding.InstanceId).ToArray() };
+        var old = seed with
+        {
+            Mode = RunMode.Simulation,
+            StationCode = "SYNTH-STATION",
+            Wcs = oldBinding,
+            DeferredConnections = seed.Topology!.Readers.Select(r => r.DeviceId).Append(binding.InstanceId).ToArray()
+        };
         Directory.CreateDirectory(root); ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), old);
         var launch = new BusinessLaunch(root, Path.Combine(root, "data"), null, null);
         var completed = old with { Wcs = binding, DeferredConnections = seed.Topology.Readers.Select(r => r.DeviceId).ToArray() };
@@ -121,16 +144,25 @@ static partial class SportmasterRcs
             await ManagementModeFixture.Authorize(app);
             foreach (var id in old.DeferredConnections)
             {
-                try { var receipt = await app.ReconnectDeviceAsync(id); result["Reconnect/" + id] = receipt.Status;
-                    if (receipt.Status != "Rejected") failures.Add("deferred reconnect reported " + receipt.Status); }
+                try
+                {
+                    var receipt = await app.ReconnectDeviceAsync(id); result["Reconnect/" + id] = receipt.Status;
+                    if (receipt.Status != "Rejected") failures.Add("deferred reconnect reported " + receipt.Status);
+                }
                 catch (InvalidOperationException error) { result["Reconnect/" + id] = error.GetType().Name; failures.Add("deferred reconnect threw"); }
             }
-            try { var all = await app.ReconnectAsync(); result["ReconnectAll"] = all.Status;
-                if (all.Status != "Rejected") failures.Add("all-deferred reconnect reported " + all.Status); }
+            try
+            {
+                var all = await app.ReconnectAsync(); result["ReconnectAll"] = all.Status;
+                if (all.Status != "Rejected") failures.Add("all-deferred reconnect reported " + all.Status);
+            }
             catch (InvalidOperationException error) { result["ReconnectAll"] = error.GetType().Name; failures.Add("all-deferred reconnect threw"); }
             BusinessReceipt? saved = null;
-            await Until(async () => { var s = await app.SnapshotAsync(); if (!s.Availability!.Configure) return false;
-                saved = await app.StageConfigurationAsync(s.Configuration.Revision, completed, "synthetic completion of postponed RCS"); return saved.Status != "Rejected"; });
+            await Until(async () =>
+            {
+                var s = await app.SnapshotAsync(); if (!s.Availability!.Configure) return false;
+                saved = await app.StageConfigurationAsync(s.Configuration.Revision, completed, "synthetic completion of postponed RCS"); return saved.Status != "Rejected";
+            });
             Check(saved!.Status == "PendingRestart", "postponed RCS completion saved as Pending"); result["Save"] = saved.Status;
             Check(Wire.Encode((await app.SnapshotAsync()).Configuration.Effective) == Wire.Encode(old), "save does not apply pending RCS through reconnect");
         }

@@ -8,9 +8,17 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
     long dropped, written;
     string? lastFailure, currentFailure;
     long progressTicks;
-    public object Status => new { State = worker.IsCompleted ? "Stopped" : Volatile.Read(ref currentFailure) is null ? "Running" : "Degraded",
-        QueueDepth = queue.Reader.Count, Dropped = Interlocked.Read(ref dropped), DebugDropped = Interlocked.Read(ref debugDropped), Written = Interlocked.Read(ref written),
-        LastFailure = Volatile.Read(ref lastFailure), CurrentFailure = Volatile.Read(ref currentFailure), LastProgressUtcTicks = Interlocked.Read(ref progressTicks) };
+    public object Status => new
+    {
+        State = worker.IsCompleted ? "Stopped" : Volatile.Read(ref currentFailure) is null ? "Running" : "Degraded",
+        QueueDepth = queue.Reader.Count,
+        Dropped = Interlocked.Read(ref dropped),
+        DebugDropped = Interlocked.Read(ref debugDropped),
+        Written = Interlocked.Read(ref written),
+        LastFailure = Volatile.Read(ref lastFailure),
+        CurrentFailure = Volatile.Read(ref currentFailure),
+        LastProgressUtcTicks = Interlocked.Read(ref progressTicks)
+    };
     void Report(string detail)
     {
         Volatile.Write(ref lastFailure, detail);
@@ -121,21 +129,21 @@ public sealed partial class RuntimeJournal : IAsyncDisposable
     static void MaintainFilesUnlocked(string directory, int? days)
     {
         var path = Path.Combine(directory, "runtime.jsonl");
-                    // These four diagnostic files are disposable metadata. Never
-                    // enumerate arbitrary files or delete business/custody evidence.
-                    for (var i = 0; i <= 3; i++) DeploymentPaths.RequireOrdinaryAncestors(i == 0 ? path : path + "." + i);
-                    var now = DateTime.UtcNow;
-                    if (File.Exists(path) && (new FileInfo(path).Length > 5_000_000 || days is not null && File.GetLastWriteTimeUtc(path).Date < now.Date))
-                    {
-                        for (int i = 2; i >= 1; i--) { var old = path + "." + i; if (File.Exists(old)) File.Move(old, path + "." + (i + 1), overwrite: true); }
-                        File.Move(path, path + ".1", overwrite: true);
-                    }
-                    if (days is { } keep)
-                        for (var i = 1; i <= 3; i++)
-                        {
-                            var file = path + "." + i;
-                            if (File.Exists(file) && File.GetLastWriteTimeUtc(file) <= now.AddDays(-keep)) File.Delete(file);
-                        }
+        // These four diagnostic files are disposable metadata. Never
+        // enumerate arbitrary files or delete business/custody evidence.
+        for (var i = 0; i <= 3; i++) DeploymentPaths.RequireOrdinaryAncestors(i == 0 ? path : path + "." + i);
+        var now = DateTime.UtcNow;
+        if (File.Exists(path) && (new FileInfo(path).Length > 5_000_000 || days is not null && File.GetLastWriteTimeUtc(path).Date < now.Date))
+        {
+            for (int i = 2; i >= 1; i--) { var old = path + "." + i; if (File.Exists(old)) File.Move(old, path + "." + (i + 1), overwrite: true); }
+            File.Move(path, path + ".1", overwrite: true);
+        }
+        if (days is { } keep)
+            for (var i = 1; i <= 3; i++)
+            {
+                var file = path + "." + i;
+                if (File.Exists(file) && File.GetLastWriteTimeUtc(file) <= now.AddDays(-keep)) File.Delete(file);
+            }
     }
     static void ValidateDays(int? days) { if (days is < 1 or > 3650) throw new ArgumentOutOfRangeException(nameof(days), "诊断日志保留天数须为1～3650"); }
     public void ConfigureRetention(int? days)

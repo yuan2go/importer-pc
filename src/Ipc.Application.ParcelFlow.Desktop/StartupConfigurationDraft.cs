@@ -62,9 +62,12 @@ public sealed class StartupConfigurationDraft
         CapabilityBinding? Map(CapabilityBinding? b) => b is null ? null : replacements[b.InstanceId];
         var c = original;
         var readerBindings = Readers.Select(d => d.BuildReader(c.ApplicationId)).ToArray();
-        var devices = ParcelBindings.Readers(c).Select((r, i) => r with { DeviceId = readerBindings[i].Target,
+        var devices = ParcelBindings.Readers(c).Select((r, i) => r with
+        {
+            DeviceId = readerBindings[i].Target,
             Driver = readerBindings[i].Package is null ? readerBindings[i].Implementation : "extension:" + readerBindings[i].InstanceId,
-            Parameters = readerBindings[i].Implementation is "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" ? readerBindings[i].Parameters : null }).ToArray();
+            Parameters = readerBindings[i].Implementation is "tcp-line" or "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" ? readerBindings[i].Parameters : null
+        }).ToArray();
         var instances = readerBindings.Where(b => b.Package is not null).Select(b => new ExtensionInstance(b.InstanceId, b.Package!.Id, b.Module!, b.Target, b.Enabled, b.Parameters)).ToArray();
         var roots = replacements.Values.Concat(readerBindings).Select(b => b.Package).OfType<PackageReference>().Distinct().ToArray();
         var packages = roots.Length == 0 ? [] : ParcelViewModel.ResolvePackageClosure(roots, catalog.Packages ?? []);
@@ -72,14 +75,17 @@ public sealed class StartupConfigurationDraft
         return Policy.ApplyParameters(c) with
         {
             DeferredConnections = DeferredConnectionIds(Readers, Capabilities),
-            Reader = devices[0], Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
-            Weight = Policy.BuildWeight(), WeightValidity = Policy.Validity,
+            Reader = devices[0],
+            Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
+            Weight = Policy.BuildWeight(),
+            WeightValidity = Policy.Validity,
             QueueCapacity = ConfigurationPolicyDraft.Integer(QueueCapacity, "输入队列容量", 1, 4096),
             TimeoutMs = ConfigurationPolicyDraft.Integer(TimeoutMs, "调用超时(ms)", 100, 30000),
             MaximumOperations = ConfigurationPolicyDraft.Integer(MaximumOperations, "作业容量", 1, 100000),
             Login = Capabilities.Single(d => d.Role == "operator-login") is { Bound: true } login ? replacements[login.InstanceId] : null,
             Scale = Policy.WeightSource == WeightSource.Measured && Capabilities.Single(d => d.Role == "default-scale") is { Bound: true } scale ? replacements[scale.InstanceId] : null,
-            Wcs = Map(c.Wcs), Plc = Map(c.Plc),
+            Wcs = Map(c.Wcs),
+            Plc = Map(c.Plc),
             CapabilityInstances = c.CapabilityInstances?.Select(b => Map(b)!).ToArray(),
             Images = c.Images is { } image ? image with { Camera = Map(image.Camera)!, Uploader = Map(image.Uploader)! } : null,
             Extensions = extensions

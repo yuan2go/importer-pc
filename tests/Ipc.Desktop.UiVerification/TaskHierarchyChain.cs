@@ -32,12 +32,24 @@ static partial class Program
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", "sportmaster.integration", peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
-            ["zone-id"] = "71", ["project-id"] = "83",
-            ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "10000", ["heartbeat-interval-seconds"] = "3600",
-            ["left-station-code"] = "TASK-STATION", ["right-station-code"] = "TASK-STATION", ["left-bcr-code"] = "TASK-LEFT", ["right-bcr-code"] = "TASK-RIGHT"
+            ["zone-id"] = "71",
+            ["project-id"] = "83",
+            ["specified-chute"] = "false",
+            ["request-id-base"] = "810000000",
+            ["request-id-count"] = "10000",
+            ["heartbeat-interval-seconds"] = "3600",
+            ["left-station-code"] = "TASK-STATION",
+            ["right-station-code"] = "TASK-STATION",
+            ["left-bcr-code"] = "TASK-LEFT",
+            ["right-bcr-code"] = "TASK-RIGHT"
         });
-        var config = seed with { Wcs = binding, BarcodeFilter = new("^[0-9]+$"), TimeoutMs = 10000,
-            Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } } };
+        var config = seed with
+        {
+            Wcs = binding,
+            BarcodeFilter = new("^[0-9]+$"),
+            TimeoutMs = 10000,
+            Login = new CapabilityBinding("login", "reference-login", "1.0.0", "operator-login", "reference://operator", "PARCEL-REFERENCE-v1", new()) with { InstanceId = "synthetic.operator", Target = "reference://operator", Parameters = new() { ["subjects"] = "alice" } }
+        };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "chain-data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new HierarchyRcsFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -56,12 +68,51 @@ static partial class Program
         async Task<object> EvidenceSnapshot()
         {
             var s = await runtime.SnapshotAsync();
-            return new { s.RuntimeId, s.Revision, s.State, s.Paused, s.BlockingReasons, s.Positions, s.Inputs,
-                Operations = s.Operations.Select(o => new { o.Id, o.AdmissionId, o.ObservationId, o.ObservedAt, o.ParcelCode, o.PositionId,
-                    o.Acquisition, o.ReaderBinding, o.State, o.Slot, o.Reason, Wcs = o.Wcs is not { } w ? null : new {
-                        w.State, w.Attempts, w.Failure, w.Replies, Request = new { w.Request.Id, w.Request.ApplicationId, w.Request.OperationId,
-                            w.Request.AdmissionId, w.Request.Stage, w.Request.Binding, w.Request.ImplementationHash, w.Request.ConfigurationHash,
-                            w.Request.PayloadHash, w.Request.PreparedAt, w.Request.IntegrationRequest } } }).ToArray() };
+            return new
+            {
+                s.RuntimeId,
+                s.Revision,
+                s.State,
+                s.Paused,
+                s.BlockingReasons,
+                s.Positions,
+                s.Inputs,
+                Operations = s.Operations.Select(o => new
+                {
+                    o.Id,
+                    o.AdmissionId,
+                    o.ObservationId,
+                    o.ObservedAt,
+                    o.ParcelCode,
+                    o.PositionId,
+                    o.Acquisition,
+                    o.ReaderBinding,
+                    o.State,
+                    o.Slot,
+                    o.Reason,
+                    Wcs = o.Wcs is not { } w ? null : new
+                    {
+                        w.State,
+                        w.Attempts,
+                        w.Failure,
+                        w.Replies,
+                        Request = new
+                        {
+                            w.Request.Id,
+                            w.Request.ApplicationId,
+                            w.Request.OperationId,
+                            w.Request.AdmissionId,
+                            w.Request.Stage,
+                            w.Request.Binding,
+                            w.Request.ImplementationHash,
+                            w.Request.ConfigurationHash,
+                            w.Request.PayloadHash,
+                            w.Request.PreparedAt,
+                            w.Request.IntegrationRequest
+                        }
+                    }
+                }).ToArray()
+            };
         }
         async Task Until(Func<bool> ready)
         {
@@ -79,9 +130,17 @@ static partial class Program
             await Flush();
             ExtensionStore.AtomicWrite(Path.Combine(evidence, "chain-" + name + ".json"), new
             {
-                Scenario = name, Synthetic = true, Snapshot = await EvidenceSnapshot(), Exchanges = peer.Exchanges.ToArray(), Commands = transport.Receipts.ToArray(),
-                Display = new { Left = new { vm.Left.Barcode, vm.Left.Slot, vm.Left.Status, vm.Left.AttentionReason, vm.Left.NextStep, vm.Left.WaveNo, vm.Left.TaskId, vm.Left.SkuId, vm.Left.ResponseQuantity, vm.Left.CanAdmit, vm.Left.CanContinue },
-                    Right = new { vm.Right.Barcode, vm.Right.Slot, vm.Right.Status, vm.Right.CanAdmit }, vm.GlobalOperationFeedback }
+                Scenario = name,
+                Synthetic = true,
+                Snapshot = await EvidenceSnapshot(),
+                Exchanges = peer.Exchanges.ToArray(),
+                Commands = transport.Receipts.ToArray(),
+                Display = new
+                {
+                    Left = new { vm.Left.Barcode, vm.Left.Slot, vm.Left.Status, vm.Left.AttentionReason, vm.Left.NextStep, vm.Left.WaveNo, vm.Left.TaskId, vm.Left.SkuId, vm.Left.ResponseQuantity, vm.Left.CanAdmit, vm.Left.CanContinue },
+                    Right = new { vm.Right.Barcode, vm.Right.Slot, vm.Right.Status, vm.Right.CanAdmit },
+                    vm.GlobalOperationFeedback
+                }
             });
             CaptureInternal(evidence, "chain-" + name, client, lines);
         }

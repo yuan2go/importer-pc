@@ -33,9 +33,18 @@ internal sealed partial class StationDebugControl : UserControl
     readonly Grid imageLayer = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, ClipToBounds = true };
     readonly ScrollViewer viewport = new() { MinHeight = 180, Height = 206, Background = Brush("#252B33"), HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly CheckBox overlay = new() { Content = "绿色框显示条码位置", IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
-    readonly TextBlock imageHint = new() { Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。", Foreground = Brush("#E0E5EB"),
-        TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center, MaxWidth = 320, Margin = new(24),
-        HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, IsHitTestVisible = false };
+    readonly TextBlock imageHint = new()
+    {
+        Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。",
+        Foreground = Brush("#E0E5EB"),
+        TextWrapping = TextWrapping.Wrap,
+        TextAlignment = TextAlignment.Center,
+        MaxWidth = 320,
+        Margin = new(24),
+        HorizontalAlignment = HorizontalAlignment.Center,
+        VerticalAlignment = VerticalAlignment.Center,
+        IsHitTestVisible = false
+    };
     readonly Grid columns = new();
     readonly TabControl tabs = new();
     readonly StackPanel reading = new(), visual = new();
@@ -72,8 +81,13 @@ internal sealed partial class StationDebugControl : UserControl
         var body = new StackPanel { Margin = new(20, 8, 20, 16) };
         var toolbar = new StackPanel { Margin = new(20, 12, 20, 0) };
         var scanSurface = new DockPanel(); DockPanel.SetDock(toolbar, Dock.Top); scanSurface.Children.Add(toolbar);
-        scanSurface.Children.Add(new ScrollViewer { Content = body, Background = Background,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled });
+        scanSurface.Children.Add(new ScrollViewer
+        {
+            Content = body,
+            Background = Background,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+        });
         tabs.Items.Add(new TabItem { Header = "扫码调试", Content = scanSurface });
         tabs.Items.Add(new TabItem { Header = "历史证据", Content = evidence }); Content = tabs;
         var header = new DockPanel { LastChildFill = true };
@@ -88,8 +102,14 @@ internal sealed partial class StationDebugControl : UserControl
         triggerStyle.Triggers.Add(disabledTrigger); trigger.Style = triggerStyle;
         readStatus.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); readStatus.VerticalAlignment = VerticalAlignment.Center;
         var scanActions = Flow(readStatus, trigger); DockPanel.SetDock(scanActions, Dock.Right); header.Children.Add(scanActions);
-        var title = new TextBlock { Text = "调试", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis,
-            VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 0, 20, 6) };
+        var title = new TextBlock
+        {
+            Text = "调试",
+            FontSize = UiTypography.PageTitle,
+            FontWeight = UiTypography.Emphasis,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new(0, 0, 20, 6)
+        };
         header.Children.Add(Flow(title, left, right)); toolbar.Children.Add(header);
         camera.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); state.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         toolbar.Children.Add(camera); toolbar.Children.Add(Text("正常供包继续运行；扫码锁定本轮图片，点击发送请求才调用实际 RCS 服务。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
@@ -327,8 +347,13 @@ internal sealed partial class StationDebugControl : UserControl
         marks.Children.Clear(); if (overlay.IsChecked != true || displayedFrame is null) return;
         foreach (var symbol in displayedFrame.Symbols.Where(s => s.Text == current?.Barcode && s.Corners.Length == 4))
         {
-            var polygon = new Polygon { Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))),
-                Stroke = Brush("#28D76F"), StrokeThickness = Math.Max(2 / zoom, 1), Fill = Brushes.Transparent };
+            var polygon = new Polygon
+            {
+                Points = new PointCollection(symbol.Corners.Select(p => new Point(p.X, p.Y))),
+                Stroke = Brush("#28D76F"),
+                StrokeThickness = Math.Max(2 / zoom, 1),
+                Fill = Brushes.Transparent
+            };
             marks.Children.Add(polygon);
             // Some 1D engines return collinear corners. Mark the measured line
             // visibly without inventing an axis-aligned bounding rectangle.
@@ -341,7 +366,7 @@ internal sealed partial class StationDebugControl : UserControl
     async Task CloseScanScopeAsync(string session, string? round)
     {
         var closed = await vm.ServiceAsync(() => Inspection.EndCameraInspectionAsync(new(Wire.Id(), session, false, true, "结束单次扫码调试")
-            { CloseReadRounds = true, ExpectedRoundId = round }, CancellationToken.None));
+        { CloseReadRounds = true, ExpectedRoundId = round }, CancellationToken.None));
         if (ownedScanSession == session) { ownedScanSession = null; ownedScanRound = null; }
         if (active && scope?.SessionId == session) scope = closed;
     }

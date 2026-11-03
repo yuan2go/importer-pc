@@ -7,6 +7,7 @@ using Ipc.Platform;
 using Ipc.Supply;
 
 namespace Ipc.Desktop;
+
 public class Bindable : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -18,31 +19,81 @@ public static class OperatorText
     public static string Known(string? value) => string.IsNullOrWhiteSpace(value) ? "未取得" : value;
     public static string Operation(OperationStatus status) => status switch
     {
-        OperationStatus.Observed => "○ 已入场 · 等待读码", OperationStatus.ValidationPending => "◷ 已保存 · 等待校验", OperationStatus.ValidationRejected => "✕ 校验未通过",
-        OperationStatus.AwaitingAction => "● 待确认供包", OperationStatus.SplitRequired => "◐ 待拆包计数", OperationStatus.SubmitPending => "◷ 已保存 · 待发送 / 处理中",
-        OperationStatus.Accepted => "✓ 业务已接受", OperationStatus.Rejected => "✕ 业务已拒绝", OperationStatus.OutcomeUnknown => "? 结果待核对", OperationStatus.Cancelled => "— 草稿已处置", OperationStatus.AwaitingDisposition => "! 请求已本地终结 · 实体待处置", _ => "未取得"
+        OperationStatus.Observed => "○ 已入场 · 等待读码",
+        OperationStatus.ValidationPending => "◷ 已保存 · 等待校验",
+        OperationStatus.ValidationRejected => "✕ 校验未通过",
+        OperationStatus.AwaitingAction => "● 待确认供包",
+        OperationStatus.SplitRequired => "◐ 待拆包计数",
+        OperationStatus.SubmitPending => "◷ 已保存 · 待发送 / 处理中",
+        OperationStatus.Accepted => "✓ 业务已接受",
+        OperationStatus.Rejected => "✕ 业务已拒绝",
+        OperationStatus.OutcomeUnknown => "? 结果待核对",
+        OperationStatus.Cancelled => "— 草稿已处置",
+        OperationStatus.AwaitingDisposition => "! 请求已本地终结 · 实体待处置",
+        _ => "未取得"
     };
     public static string Session(SessionStatus status) => status switch { SessionStatus.Validating => "校验中", SessionStatus.Active => "作业中", SessionStatus.ClosingCheck => "关闭检查中", SessionStatus.AwaitingShortageDecision => "少货待确认", SessionStatus.Closing => "关闭请求处理中", SessionStatus.CloseUnknown => "关闭结果待核对", SessionStatus.Closed => "已关闭", SessionStatus.Rejected => "已拒绝", SessionStatus.AwaitingDisposition => "已本地终结 · 待处置", _ => "未取得" };
     public static string Request(RequestStatus status) => status switch { RequestStatus.Prepared => "已保存 · 待发送", RequestStatus.Dispatching => "处理中 · 已授权交付", RequestStatus.Accepted => "已接受", RequestStatus.Rejected => "已拒绝", RequestStatus.Unknown => "待核对", RequestStatus.CancelledBeforeDispatch => "已本地终结", _ => "未取得" };
     public static string Reason(string value)
     {
-        var map = new Dictionary<string, string> { ["WcsHealth"]="接收端健康未确认或已过期", ["OperatorNotificationBacklog"]="提示事件积压，已阻断新业务，请维护核对", ["No code"]="本次观察未识别到条码", ["Multiple codes"]="本次观察包含多个条码", ["Invalid barcode/quantity"]="本次条码或数量格式无效", ["IdentityRequired"]="请使用模拟身份入口登录", ["IdentityExpired"]="身份已过期，请重新登录", ["OperatorPaused"]="人工暂停中，请确认后恢复", ["ContextNotActive"]="当前箱未就绪，请先校验箱码", ["OperationNotReady"]="作业尚未达到可供包状态", ["RetainedCountIncomplete"]="保留件数量未完成，请继续扫码", ["WcsUnavailable"]="接收端不可用，请检查模拟接收端", ["Overload"]="观察过载，请核对来源与实体", ["DeviceFault"]="设备故障，请检查连接", ["UnexpiredMaintenanceIdentityRequired"]="需要有效维护身份", ["OutboxCapacity"]="发送队列已满，请等待处理", ["NoActiveContext"]="请先校验当前箱", ["Quarantine"]="恢复隔离中，请完成外部账与实体核对" };
-        var extra = new Dictionary<string,string> {
-            ["OriginalActorExpired"]="原请求身份已过期；重新登录不能改写原授权", ["AdmittedObservationsDraining"]="已接纳观察正在排空", ["ReconcileSentOrTerminateProvenUndeliveredPrepared"]="先核对已交付或未知请求，或受控终结有未交付证明的请求", ["OnlyPreparedCanTerminateLocally"]="仅待发送请求可本地终结", ["NoDurableNonDeliveryProof"]="缺少持久未交付证明，禁止本地终结", ["RequestNotBlocked"]="请求仍可发送；请先暂停并核对", ["UnresolvedRuntimeFault"]="运行故障尚未解决", ["SIMULATION accepted"]="模拟接收端已接受", ["SIMULATION business rejection"]="模拟接收端业务拒绝", ["Context already opened"]="此箱已建立上下文", ["Station already has an open context"]="工位仍有未关闭的箱", ["Invalid synthetic item"]="合成 Item 数据无效", ["No remaining demand"]="需求已满足，没有剩余需求", ["Stale close check"]="关闭检查已过期，请重新检查", ["Unsupported logical intent"]="未支持的业务意图", ["IdentityUnavailable"]="身份未取得或已过期，请登录", ["NoActiveBoxOrCloseBarrier"]="当前箱未激活或正在关闭检查", ["RestoreQuarantine"]="备份恢复隔离中，请核对外部账与实体", ["OutcomeUnknown"]="存在结果待核对请求，请查询原请求", ["UnknownRequest"]="原请求结果待核对", ["PendingExternalEffect"]="仍有未决外部请求", ["PhysicalOccupancyNotClear"]="实体位未复位，请核对实体离场", ["EntityPermitExpired"]="实体许可已过期，需要维护核对", ["EntityEpochChanged"]="设备代次已变化，需要显式实体核对", ["EntityNotOccupied"]="实体不在位", ["QuantityAuthorityMissing"]="尚未取得有效数量依据", ["OriginalBindingNotActive"]="原请求绑定不是当前有效版本，保留原请求核对", ["SessionChanged"]="当前箱身份已变化", ["OperationRevisionOrOccupancyChanged"]="作业版本或实体占位已变化", ["CloseBarrier"]="关闭屏障中", ["Stopping"]="工位正在停止", ["OperationRejected"]="作业已拒绝，请检查原因", ["LocalDispositionRequired"]="请求已本地终结，原预留和实体仍待处置", ["License"]="许可不可用", ["EntityPermit"]="实体许可阻断", ["UnresolvedRequests"]="仍有未解决请求", ["InputNotDrained"]="已接纳观察尚未排空", ["NoActiveOverload"]="当前无活动过载", ["Conflict"]="状态已变化，请重新核对", ["Snapshot changed; review current state"]="状态已变化，请核对最新投影后重试", ["Original request locally terminated; prior reservations/entity require disposition"]="原请求已本地终结；此前预留与实体仍须处置"
-        };
-        if(map.TryGetValue(value,out var known)||extra.TryGetValue(value,out known))return known;
-        var separator=value.IndexOf(':');
-        if(separator>0)
+        var map = new Dictionary<string, string> { ["WcsHealth"] = "接收端健康未确认或已过期", ["OperatorNotificationBacklog"] = "提示事件积压，已阻断新业务，请维护核对", ["No code"] = "本次观察未识别到条码", ["Multiple codes"] = "本次观察包含多个条码", ["Invalid barcode/quantity"] = "本次条码或数量格式无效", ["IdentityRequired"] = "请使用模拟身份入口登录", ["IdentityExpired"] = "身份已过期，请重新登录", ["OperatorPaused"] = "人工暂停中，请确认后恢复", ["ContextNotActive"] = "当前箱未就绪，请先校验箱码", ["OperationNotReady"] = "作业尚未达到可供包状态", ["RetainedCountIncomplete"] = "保留件数量未完成，请继续扫码", ["WcsUnavailable"] = "接收端不可用，请检查模拟接收端", ["Overload"] = "观察过载，请核对来源与实体", ["DeviceFault"] = "设备故障，请检查连接", ["UnexpiredMaintenanceIdentityRequired"] = "需要有效维护身份", ["OutboxCapacity"] = "发送队列已满，请等待处理", ["NoActiveContext"] = "请先校验当前箱", ["Quarantine"] = "恢复隔离中，请完成外部账与实体核对" };
+        var extra = new Dictionary<string, string>
         {
-            var prefix=value[..separator];var rest=value[(separator+1)..];
-            if(prefix is "left" or "right")return (prefix=="left"?"左通道：":"右通道：")+Reason(rest);
-            if(prefix=="Device")return "设备未就绪："+string.Join(" / ",rest.Split(':').Select(x=>x is "left"?"左通道":x is "right"?"右通道":Health(x)));
-            if(map.TryGetValue(prefix,out known)||extra.TryGetValue(prefix,out known))return known+"（"+rest+"）";
+            ["OriginalActorExpired"] = "原请求身份已过期；重新登录不能改写原授权",
+            ["AdmittedObservationsDraining"] = "已接纳观察正在排空",
+            ["ReconcileSentOrTerminateProvenUndeliveredPrepared"] = "先核对已交付或未知请求，或受控终结有未交付证明的请求",
+            ["OnlyPreparedCanTerminateLocally"] = "仅待发送请求可本地终结",
+            ["NoDurableNonDeliveryProof"] = "缺少持久未交付证明，禁止本地终结",
+            ["RequestNotBlocked"] = "请求仍可发送；请先暂停并核对",
+            ["UnresolvedRuntimeFault"] = "运行故障尚未解决",
+            ["SIMULATION accepted"] = "模拟接收端已接受",
+            ["SIMULATION business rejection"] = "模拟接收端业务拒绝",
+            ["Context already opened"] = "此箱已建立上下文",
+            ["Station already has an open context"] = "工位仍有未关闭的箱",
+            ["Invalid synthetic item"] = "合成 Item 数据无效",
+            ["No remaining demand"] = "需求已满足，没有剩余需求",
+            ["Stale close check"] = "关闭检查已过期，请重新检查",
+            ["Unsupported logical intent"] = "未支持的业务意图",
+            ["IdentityUnavailable"] = "身份未取得或已过期，请登录",
+            ["NoActiveBoxOrCloseBarrier"] = "当前箱未激活或正在关闭检查",
+            ["RestoreQuarantine"] = "备份恢复隔离中，请核对外部账与实体",
+            ["OutcomeUnknown"] = "存在结果待核对请求，请查询原请求",
+            ["UnknownRequest"] = "原请求结果待核对",
+            ["PendingExternalEffect"] = "仍有未决外部请求",
+            ["PhysicalOccupancyNotClear"] = "实体位未复位，请核对实体离场",
+            ["EntityPermitExpired"] = "实体许可已过期，需要维护核对",
+            ["EntityEpochChanged"] = "设备代次已变化，需要显式实体核对",
+            ["EntityNotOccupied"] = "实体不在位",
+            ["QuantityAuthorityMissing"] = "尚未取得有效数量依据",
+            ["OriginalBindingNotActive"] = "原请求绑定不是当前有效版本，保留原请求核对",
+            ["SessionChanged"] = "当前箱身份已变化",
+            ["OperationRevisionOrOccupancyChanged"] = "作业版本或实体占位已变化",
+            ["CloseBarrier"] = "关闭屏障中",
+            ["Stopping"] = "工位正在停止",
+            ["OperationRejected"] = "作业已拒绝，请检查原因",
+            ["LocalDispositionRequired"] = "请求已本地终结，原预留和实体仍待处置",
+            ["License"] = "许可不可用",
+            ["EntityPermit"] = "实体许可阻断",
+            ["UnresolvedRequests"] = "仍有未解决请求",
+            ["InputNotDrained"] = "已接纳观察尚未排空",
+            ["NoActiveOverload"] = "当前无活动过载",
+            ["Conflict"] = "状态已变化，请重新核对",
+            ["Snapshot changed; review current state"] = "状态已变化，请核对最新投影后重试",
+            ["Original request locally terminated; prior reservations/entity require disposition"] = "原请求已本地终结；此前预留与实体仍须处置"
+        };
+        if (map.TryGetValue(value, out var known) || extra.TryGetValue(value, out known)) return known;
+        var separator = value.IndexOf(':');
+        if (separator > 0)
+        {
+            var prefix = value[..separator]; var rest = value[(separator + 1)..];
+            if (prefix is "left" or "right") return (prefix == "left" ? "左通道：" : "右通道：") + Reason(rest);
+            if (prefix == "Device") return "设备未就绪：" + string.Join(" / ", rest.Split(':').Select(x => x is "left" ? "左通道" : x is "right" ? "右通道" : Health(x)));
+            if (map.TryGetValue(prefix, out known) || extra.TryGetValue(prefix, out known)) return known + "（" + rest + "）";
         }
         return value;
     }
-    public static string Health(string value) => value switch { "Ready"=>"就绪", "Connecting"=>"连接中", "Disconnected"=>"已断开", "Reconnecting"=>"重连中", "Faulted"=>"故障", "Stopping"=>"停止中", "Stopped"=>"已停止", "Unknown"=>"未取得", _=>value };
-    public static string Kind(RequestKind value) => value switch { RequestKind.Context=>"箱校验", RequestKind.Validate=>"Item 校验", RequestKind.Submit=>"供包提交", RequestKind.CheckClose=>"关闭检查", RequestKind.Close=>"关闭箱", _=>"未取得" };
+    public static string Health(string value) => value switch { "Ready" => "就绪", "Connecting" => "连接中", "Disconnected" => "已断开", "Reconnecting" => "重连中", "Faulted" => "故障", "Stopping" => "停止中", "Stopped" => "已停止", "Unknown" => "未取得", _ => value };
+    public static string Kind(RequestKind value) => value switch { RequestKind.Context => "箱校验", RequestKind.Validate => "Item 校验", RequestKind.Submit => "供包提交", RequestKind.CheckClose => "关闭检查", RequestKind.Close => "关闭箱", _ => "未取得" };
     public static string Reasons(IEnumerable<string> reasons) => string.Join("；", reasons.Select(Reason));
 }
 public sealed class LaneViewModel(string lane) : Bindable
@@ -60,7 +111,7 @@ public sealed class LaneViewModel(string lane) : Bindable
     readonly ScanInputDraft scanInput = new();
     public ScanInputDraft ScanInput => scanInput;
     string disabledReason = "等待业务投影";
-    Brush statusBrush = Brushes.SteelBlue, statusBackground = new SolidColorBrush(Color.FromRgb(238,244,255));
+    Brush statusBrush = Brushes.SteelBlue, statusBackground = new SolidColorBrush(Color.FromRgb(238, 244, 255));
     public string KeyTask { get => keyTask; private set => Put(ref keyTask, value); }
     public string Quantities { get => quantities; private set => Put(ref quantities, value); }
     public string PreviousResult { get => previousResult; private set => Put(ref previousResult, value); }
@@ -117,23 +168,23 @@ public sealed class LaneViewModel(string lane) : Bindable
         var d = snapshot.State.Devices.GetValueOrDefault(lane);
         Health = d is not null && !d.IsValid(now) ? "! 未就绪 · " + d.ValidityReason(now) : d?.Health switch { DeviceHealth.Ready => "● 采集就绪", DeviceHealth.Connecting => "连接中", DeviceHealth.Reconnecting => "重连中", DeviceHealth.Disconnected => "已断开", DeviceHealth.Faulted => "设备故障", DeviceHealth.Stopping => "停止中", DeviceHealth.Stopped => "已停止", _ => "状态未取得" };
         Status = Current is null ? "等待有效Item入场" : OperatorText.Operation(Current.Status);
-        if(Current?.Status is OperationStatus.SubmitPending or OperationStatus.ValidationPending)
+        if (Current?.Status is OperationStatus.SubmitPending or OperationStatus.ValidationPending)
         {
-            var pending = snapshot.Requests.Where(x=>x.OwnerId==Current.Id).OrderByDescending(x=>x.CreatedAt).FirstOrDefault();
-            if(pending is not null) Status = OperatorText.Kind(pending.Kind)+" · "+OperatorText.Request(pending.Status);
+            var pending = snapshot.Requests.Where(x => x.OwnerId == Current.Id).OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+            if (pending is not null) Status = OperatorText.Kind(pending.Kind) + " · " + OperatorText.Request(pending.Status);
         }
         var state = Current?.Status;
         var accepted = state == OperationStatus.Accepted;
         var rejected = state is OperationStatus.Rejected or OperationStatus.ValidationRejected;
         var warning = state is OperationStatus.OutcomeUnknown or OperationStatus.AwaitingDisposition or OperationStatus.SplitRequired;
-        StatusBrush = new SolidColorBrush(accepted ? Color.FromRgb(20,116,80) : rejected ? Color.FromRgb(181,47,56) : warning ? Color.FromRgb(137,85,9) : Color.FromRgb(32,95,206));
-        StatusBackground = new SolidColorBrush(accepted ? Color.FromRgb(237,247,241) : rejected ? Color.FromRgb(253,240,240) : warning ? Color.FromRgb(255,245,223) : Color.FromRgb(238,244,255));
-        Barcode = !string.IsNullOrWhiteSpace(Current?.Barcode) ? Current.Barcode : Current?.CurrentInput is { Codes.Length: > 0 } currentInput ? string.Join(" / ",currentInput.Codes) : "未取得";
+        StatusBrush = new SolidColorBrush(accepted ? Color.FromRgb(20, 116, 80) : rejected ? Color.FromRgb(181, 47, 56) : warning ? Color.FromRgb(137, 85, 9) : Color.FromRgb(32, 95, 206));
+        StatusBackground = new SolidColorBrush(accepted ? Color.FromRgb(237, 247, 241) : rejected ? Color.FromRgb(253, 240, 240) : warning ? Color.FromRgb(255, 245, 223) : Color.FromRgb(238, 244, 255));
+        Barcode = !string.IsNullOrWhiteSpace(Current?.Barcode) ? Current.Barcode : Current?.CurrentInput is { Codes.Length: > 0 } currentInput ? string.Join(" / ", currentInput.Codes) : "未取得";
         Package = Current?.Package?.ToString(CultureInfo.InvariantCulture) ?? "未取得";
         Remaining = Current?.Remaining?.ToString(CultureInfo.InvariantCulture) ?? "未取得";
         Supply = Current?.Supply?.ToString(CultureInfo.InvariantCulture) ?? "未取得";
         var t = Current?.Task;
-        QuantityUnit = "数量单位："+OperatorText.Known(t?.Unit);
+        QuantityUnit = "数量单位：" + OperatorText.Known(t?.Unit);
         Sku = OperatorText.Known(t?.Sku); TaskId = OperatorText.Known(t?.TaskId); Destination = OperatorText.Known(t?.Destination);
         var waves = WaveComparison.Compare(Current?.BoxWave, t?.ItemWave);
         ItemWave = $"Item关联波次  {waves.Item}";
@@ -141,8 +192,8 @@ public sealed class LaneViewModel(string lane) : Bindable
         ObservationSource = Current?.CurrentInput is { } input ? $"观察 {input.ObservedAt.ToLocalTime():HH:mm:ss zzz} · {input.ObservationId}" : "本次观察来源 / 时间：未取得";
         Provenance = t?.Provenance is { } p ? $"来源 {p.Source} · 版本 {p.Version}\n证据 {p.EvidenceId} · {p.AcquiredAt:O}" : "语义来源 / 版本 / 证据：未取得";
         SplitVisible = state == OperationStatus.SplitRequired;
-        SplitCount = Current?.SplitScans.Count ?? 0; SplitTarget = Math.Max(1,Current?.Supply ?? 0);
-        Remove = Current?.Package is { } pack && Current.Supply is { } retained ? $"需移除 {pack-retained}" : "移除量未取得";
+        SplitCount = Current?.SplitScans.Count ?? 0; SplitTarget = Math.Max(1, Current?.Supply ?? 0);
+        Remove = Current?.Package is { } pack && Current.Supply is { } retained ? $"需移除 {pack - retained}" : "移除量未取得";
         SplitProgress = SplitVisible ? $"有效保留件 {SplitCount} / {Supply}" : "当前无需拆包计数";
         SplitPolicy = $"SIMULATION · 扫描保留件；{Remove} · 作业 r{Current?.Revision}。生产规则未批准。";
         Occupancy = Current?.Occupancy switch { Ipc.Supply.Occupancy.Occupied => "实体在位", Ipc.Supply.Occupancy.Departed => "已离场 · 待复位", Ipc.Supply.Occupancy.Clear => "实体位已复位", _ => "实体位待入场" };
@@ -162,7 +213,7 @@ public sealed class LaneViewModel(string lane) : Bindable
         CanCancel = hasIdentity && !executing && state is OperationStatus.Rejected or OperationStatus.ValidationRejected or OperationStatus.AwaitingAction or OperationStatus.SplitRequired;
         CanDetail = hasIdentity && Current is not null;
         ActionLabel = state switch { OperationStatus.Accepted => "查看作业详情", OperationStatus.OutcomeUnknown => "查看原请求核对", OperationStatus.ValidationRejected or OperationStatus.Rejected => "查看拒绝详情", OperationStatus.SubmitPending or OperationStatus.ValidationPending => "查看处理详情", OperationStatus.AwaitingDisposition => "查看处置详情", OperationStatus.SplitRequired => "确认拆包并供包", _ => "手动供包" };
-        if (executing && PrimaryIsCommand) ActionLabel="正在处理…";
+        if (executing && PrimaryIsCommand) ActionLabel = "正在处理…";
         CanPrimary = !executing && (state is OperationStatus.AwaitingAction or OperationStatus.SplitRequired ? CanSubmit : CanDetail);
         ActionSummary = CanSubmit ? $"本次 {Supply} {OperatorText.Known(t?.Unit)} · 目标格口 {Destination}" : Next;
     }
@@ -228,7 +279,7 @@ public sealed class OperatorLabelConverter : IValueConverter
         RequestStatus status => OperatorText.Request(status),
         OperationStatus status => OperatorText.Operation(status),
         SessionStatus status => OperatorText.Session(status),
-        string text => text switch { "Validated"=>"已验证 · 待激活", "Rejected"=>"已拒绝", "PendingActivation"=>"待重启激活", "Effective"=>"当前有效", "ActivationFailed"=>"激活失败 · 保留旧版", "Superseded"=>"已被新修订替代", _=>OperatorText.Reason(text) },
+        string text => text switch { "Validated" => "已验证 · 待激活", "Rejected" => "已拒绝", "PendingActivation" => "待重启激活", "Effective" => "当前有效", "ActivationFailed" => "激活失败 · 保留旧版", "Superseded" => "已被新修订替代", _ => OperatorText.Reason(text) },
         _ => value
     };
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();

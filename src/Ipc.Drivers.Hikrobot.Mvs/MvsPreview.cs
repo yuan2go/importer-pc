@@ -64,14 +64,14 @@ internal sealed class MvsPreview
             var row = pixels is null ? ArrayPool<byte>.Shared.Rent(width) : null;
             try
             {
-            for (var y = 0; y < h; y++)
-            {
-                var offset = checked((int)((long)y * height / h) * width);
-                if (row is not null) Marshal.Copy(IntPtr.Add(native, offset), row, 0, width);
-                for (var x = 0; x < w; x++)
-                    result[y * w + x] = row is not null ? row[(int)((long)x * width / w)] : pixels![offset + (int)((long)x * width / w)];
-            }
-            current = new(device, epoch, frame, at, w, h, result); publishedAt = now;
+                for (var y = 0; y < h; y++)
+                {
+                    var offset = checked((int)((long)y * height / h) * width);
+                    if (row is not null) Marshal.Copy(IntPtr.Add(native, offset), row, 0, width);
+                    for (var x = 0; x < w; x++)
+                        result[y * w + x] = row is not null ? row[(int)((long)x * width / w)] : pixels![offset + (int)((long)x * width / w)];
+                }
+                current = new(device, epoch, frame, at, w, h, result); publishedAt = now;
             }
             finally { if (row is not null) ArrayPool<byte>.Shared.Return(row, clearArray: true); }
         }

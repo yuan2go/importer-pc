@@ -117,7 +117,8 @@ public static class WindowsMaintenanceProcess
                 foreach (var value in new[] { shell, document, desktop, windows })
                     if (value is not null && Marshal.IsComObject(value)) Marshal.ReleaseComObject(value);
             }
-        }) { IsBackground = true, Name = "Windows maintenance authorization" };
+        })
+        { IsBackground = true, Name = "Windows maintenance authorization" };
         thread.SetApartmentState(ApartmentState.STA); thread.Start(); return completion.Task;
     }
 
@@ -128,8 +129,8 @@ public static class WindowsMaintenanceProcess
         if (!OpenProcessToken(handle, 8, out var token)) throw new Win32Exception(Marshal.GetLastWin32Error());
         using (token)
         using (var identity = new WindowsIdentity(token.DangerousGetHandle()))
-                if (identity.User?.Value != sid || requireAdministrator && !identity.Claims.Any(c => c.Value == "S-1-5-32-544" && c.Type is System.Security.Claims.ClaimTypes.GroupSid or System.Security.Claims.ClaimTypes.PrimaryGroupSid))
-                    throw new UnauthorizedAccessException("Windows维护未取得当前用户的管理员权限；已有数据与凭据保留。");
+            if (identity.User?.Value != sid || requireAdministrator && !identity.Claims.Any(c => c.Value == "S-1-5-32-544" && c.Type is System.Security.Claims.ClaimTypes.GroupSid or System.Security.Claims.ClaimTypes.PrimaryGroupSid))
+                throw new UnauthorizedAccessException("Windows维护未取得当前用户的管理员权限；已有数据与凭据保留。");
     }
     static string ImagePath(SafeProcessHandle handle)
     {

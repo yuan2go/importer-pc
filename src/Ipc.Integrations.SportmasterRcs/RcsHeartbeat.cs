@@ -53,16 +53,21 @@ public sealed partial class SportmasterRcsTaskService
                         throw new InvalidDataException("Heartbeat clock requestId overlaps the configured destination range; allocate disjoint ranges");
                     var body = JsonSerializer.Serialize(new
                     {
-                        source = options.Source, version = 1, requestId, locale = options.Locale,
+                        source = options.Source,
+                        version = 1,
+                        requestId,
+                        locale = options.Locale,
                         data = heartbeatStations!.Select((p, i) => new
                         {
-                            index = i + 1, command = HeartbeatCommand,
+                            index = i + 1,
+                            command = HeartbeatCommand,
                             @params = new { stationCode = p.Station, bcrCode = p.Bcr, timestamp }
                         }).ToArray()
                     }, RcsDestinationProtocol.Json);
                     using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
                     {
-                        Version = HttpVersion.Version11, VersionPolicy = HttpVersionPolicy.RequestVersionExact,
+                        Version = HttpVersion.Version11,
+                        VersionPolicy = HttpVersionPolicy.RequestVersionExact,
                         Content = new ByteArrayContent(Encoding.UTF8.GetBytes(body))
                     };
                     message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

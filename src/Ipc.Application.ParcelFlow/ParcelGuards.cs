@@ -49,7 +49,7 @@ public sealed partial class ParcelRuntime
         if (repository!.Paused) reasons.Add("Global software pause");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
-            { BarcodeInput = manual is null ? null : new(camera, manualReady, manual) };
+        { BarcodeInput = manual is null ? null : new(camera, manualReady, manual) };
     }).ToArray();
     ParcelAvailability Availability() => new(CanAdmit(), CanResume(acknowledgeStorageUpgrade: true), CanSaveConfiguration,
         operations.Values.Where(CanContinue).Select(x => x.Id).ToArray(), operations.Values.Where(CanContinueUpload).Select(x => x.Id).ToArray(), operations.Values.Where(CanAbandon).Select(x => x.Id).ToArray());

@@ -46,7 +46,7 @@ public sealed partial class ParcelRuntime
         lock (presentationGate) read = op.Acquisition is { } acquisition
             ? presentationReads.LastOrDefault(r => r.DeviceId == acquisition.DeviceId && r.Epoch == acquisition.Epoch && r.SourceEventId == acquisition.SourceEventId)
             : null;
-        RecordFlowPerformance(op.PositionId ?? "Unassigned", kind, read?.ObservationId, op.Acquisition, op.Id,
+        RecordFlowPerformance(op.PositionId ?? "Unassigned", IsDebugRequest(op) ? "Debug" + kind : kind, read?.ObservationId, op.Acquisition, op.Id,
             op.Wcs?.Request.Id, op.Wcs?.State.ToString(), op.Wcs?.LocalFailure.ToString(), elapsed, read?.DetectedTicks ?? 0);
     }
     void RecordIngressPerformance(string position, Observation observation, string kind, double elapsed)

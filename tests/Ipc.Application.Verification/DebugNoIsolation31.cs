@@ -75,6 +75,10 @@ internal static class DebugNoIsolation31
             var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
             Check(h.Peer.Requests.Count == 3 && h.Peer.Requests.Last() == locked.RequestBody && sent.Result!.Contains("Accepted"),
                 "explicit send calls actual configured RCS using frozen JSON and a real HTTP reply");
+            var performance = System.Text.Json.JsonSerializer.SerializeToElement(h.App.RuntimeProgress()).GetProperty("Flow").GetProperty("Recent").EnumerateArray().ToArray();
+            Check(performance.Count(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted") == 2 &&
+                performance.Count(e => e.GetProperty("Kind").GetString() == "DebugRcsSubmitCompleted") == 1,
+                "debug and production requests sharing a camera frame remain separate performance cohorts");
             var decoded = h.Factory.Decoders[h.Left].Count;
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DEBUG31-NEXT"), 2);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "DEBUG31-NEXT" && o.Wcs?.State == StageState.Accepted));

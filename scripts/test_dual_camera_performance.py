@@ -185,6 +185,18 @@ class Performance(unittest.TestCase):
         self.assertEqual(self.a.issues['DECODE_REJECTED_FRAME'], 1)
         self.assertFalse(any(q['Metric'] == 'DecodeMs' for q in self.a.quantiles()))
 
+    def test_debug_request_cannot_borrow_production_slot_of_the_same_frame(self):
+        self.a.feed(sample(0))
+        events = [event(1, 'RcsSubmitCompleted', state='Accepted', elapsed=40),
+                  event(2, 'DebugRcsSubmitCompleted', state='Accepted', elapsed=2000)]
+        self.a.feed(sample(1, frames=[frame(1, 'obs-L')], events=events))
+        joined = list(self.a.correlations())
+        self.assertEqual(len(joined), 1)
+        self.assertEqual(joined[0]['RcsMs'], 40)
+        self.assertEqual(self.a.issues['DEBUG_RCS_FLOW_EVENT'], 1)
+        q = next(q for q in self.a.quantiles() if q['Scope'] == 'left' and q['Metric'] == 'RcsSubmitCompletedMs')
+        self.assertEqual((q['Count'], q['Mean']), (1, 40))
+
     def test_numeric_invalidity_is_reported_instead_of_zero(self):
         for value in (-1, float('nan'), float('inf')):
             self.a.metric('left', 'DecodeMs', value)

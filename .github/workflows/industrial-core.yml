@@ -47,8 +47,8 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
-          if ([int]$testCounters.executed -lt 9 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--dual-camera-performance', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
+          if ([int]$testCounters.executed -lt 10 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
+          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })

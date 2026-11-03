@@ -327,6 +327,9 @@ class Analysis:
             self.db.execute('INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?)',
                             (runtime, event['Sequence'], position, kind, event['ObservationId'], event.get('OperationId'),
                              event.get('RequestId'), event.get('State'), json.dumps(event)))
+            if kind.startswith('DebugRcs'):
+                self.issues['DEBUG_RCS_FLOW_EVENT'] += 1
+                continue  # A debug request must never borrow the production slot composition of the same camera frame.
             device = event.get('DeviceId')
             if device and self.devices.get(device) != position:
                 self.issues['FLOW_DEVICE_POSITION_MISMATCH'] += 1

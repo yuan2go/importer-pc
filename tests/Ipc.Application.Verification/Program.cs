@@ -80,6 +80,8 @@ if (args.Contains("--shutdown-resources")) { await SportmasterRcs.ShutdownResour
 if (args.Contains("--mvs-contrast-checks")) { SportmasterRcs.MvsContrastChecks(); return; }
 if (args.Contains("--mvs-latency")) { SportmasterRcs.MvsLatency(args); return; }
 if (args.Contains("--decode-format-benchmark")) { SportmasterRcs.DecodeFormatBenchmark(args); return; }
+if (args.Contains("--decode-tilt-benchmark")) { DecodeTiltBenchmark.Run(args); return; }
+if (args.Contains("--tilted-decode")) { TiltedDecode.Run(); return; }
 if (args.Contains("--mvs-software-flow")) { await SportmasterRcs.MvsSoftwareFlow(workspace, root, args); return; }
 if (args.Contains("--mvs-offline-activation")) { await SportmasterRcs.MvsOfflineActivation(workspace, root); return; }
 if (args.Contains("--mvs-network-reconnect")) { await MvsNetworkReconnect.Run(workspace, root); return; }

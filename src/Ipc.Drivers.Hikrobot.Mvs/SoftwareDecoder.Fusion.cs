@@ -53,9 +53,28 @@ internal sealed partial class SoftwareDecoder
         var bandHeight = Math.Max(Math.Sqrt(Math.Pow(p[3].X - p[0].X, 2) + Math.Pow(p[3].Y - p[0].Y, 2)),
             Math.Sqrt(Math.Pow(p[2].X - p[1].X, 2) + Math.Pow(p[2].Y - p[1].Y, 2)));
         var baseline = Math.Sqrt(Math.Pow((p[1].X + p[2].X - p[0].X - p[3].X) / 2d, 2) + Math.Pow((p[1].Y + p[2].Y - p[0].Y - p[3].Y) / 2d, 2));
-        if (!IsLinear(symbol.Format) || bandHeight < Math.Max(8, baseline * .45)) return [symbol];
+        if (!IsLinear(symbol.Format) || bandHeight < 8) return [symbol];
         if (bandHeight > 4096) throw new MvsFrameRejection("PatternBandLimit", "Printed-band height exceeds bounded verification; complete frame rejected");
         SpendPatternSamples(((int)Math.Ceiling(bandHeight) + 6) * 128);
+        var runs = BandRuns(p, bandHeight, pixels, width, height) ?? throw new MvsFrameRejection("UnprovenLinearBand", "Linear result has no original-pixel pattern evidence; frame rejected");
+        if (runs.Count == 0) throw new MvsFrameRejection("UnprovenLinearBand", "No continuous two-line original barcode pattern; frame rejected");
+        ImagePoint Along(ImagePoint top, ImagePoint bottom, double t) => new((int)Math.Round(top.X + (bottom.X - top.X) * t), (int)Math.Round(top.Y + (bottom.Y - top.Y) * t));
+        return runs.Select(r => symbol with { Corners = [Along(p[0], p[3], r.First), Along(p[1], p[2], r.First), Along(p[1], p[2], r.Last), Along(p[0], p[3], r.Last)] }).ToArray();
+    }
+    // A recognised box that is one continuous printed band: every scanline across it repeats the same bar pattern.
+    // A box spanning two stacked codes (with text or a gap between) is not one band; it explains nothing early.
+    bool SingleBand(RecognitionSymbol symbol, byte[] pixels, int width, int height)
+    {
+        var p = symbol.Corners;
+        var bandHeight = Math.Max(Math.Sqrt(Math.Pow(p[3].X - p[0].X, 2) + Math.Pow(p[3].Y - p[0].Y, 2)),
+            Math.Sqrt(Math.Pow(p[2].X - p[1].X, 2) + Math.Pow(p[2].Y - p[1].Y, 2)));
+        if (!IsLinear(symbol.Format) || bandHeight > 1024) return false;
+        return bandHeight < 8 || BandRuns(p, bandHeight, pixels, width, height) is { Count: 1 };
+    }
+    // Continuous runs (fractions across the box, top to bottom) of scanlines that repeat the box's clearest bar
+    // pattern; null when no scanline shows a bar pattern at all.
+    static List<(double First, double Last)>? BandRuns(ImagePoint[] p, double bandHeight, byte[] pixels, int width, int height)
+    {
         const int count = 128;
         Span<double> reference = stackalloc double[count]; Span<double> line = stackalloc double[count];
         void Signature(double t, Span<double> values)
@@ -76,8 +95,8 @@ internal sealed partial class SoftwareDecoder
             Signature(t, line); var stats = Statistics(line);
             if (stats.Variance > best) { best = stats.Variance; line.CopyTo(reference); }
         }
-        if (best < count * 16) throw new MvsFrameRejection("UnprovenLinearBand", "Linear result has no original-pixel pattern evidence; frame rejected");
-        var referenceStats = Statistics(reference); var steps = (int)Math.Ceiling(bandHeight); var start = -1; List<RecognitionSymbol> bands = [];
+        if (best < count * 16) return null;
+        var referenceStats = Statistics(reference); var steps = (int)Math.Ceiling(bandHeight); var start = -1; List<(double, double)> runs = [];
         for (var step = 0; step <= steps + 1; step++)
         {
             var matches = false;
@@ -89,16 +108,10 @@ internal sealed partial class SoftwareDecoder
             }
             if (matches && start < 0) start = step;
             if (matches || start < 0) continue;
-            if (step - start >= 2)
-            {
-                ImagePoint Along(ImagePoint top, ImagePoint bottom, double t) => new((int)Math.Round(top.X + (bottom.X - top.X) * t), (int)Math.Round(top.Y + (bottom.Y - top.Y) * t));
-                var first = start / (double)steps; var last = (step - 1) / (double)steps;
-                bands.Add(symbol with { Corners = [Along(p[0], p[3], first), Along(p[1], p[2], first), Along(p[1], p[2], last), Along(p[0], p[3], last)] });
-            }
+            if (step - start >= 2) runs.Add((start / (double)steps, (step - 1) / (double)steps));
             start = -1;
         }
-        if (bands.Count == 0) throw new MvsFrameRejection("UnprovenLinearBand", "No continuous two-line original barcode pattern; frame rejected");
-        return bands.ToArray();
+        return runs;
     }
     void MergeCandidate(List<RecognitionSymbol> all, RecognitionSymbol next, byte[] pixels, int width, int height)
     {

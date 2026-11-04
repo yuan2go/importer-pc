@@ -222,7 +222,7 @@ public sealed partial class ParameterSettingsControl
         "queue.capacity" => "排队等待处理的条码最多多少条。排满后停止接收，需要检查后手动重连。",
         "queue.maximum-code-bytes" => "条码排队占用的内存上限，默认 16 MiB，可填 1–64 MiB。超出后本位停止供包，需要检查后恢复。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
-        "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，1–3600 秒。",
+        "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，默认1秒，可填1–3600秒。响应中的小车状态只作提示，不限制投包。",
         "code.formats" => "只勾选面单实际使用的条码种类：勾得越少识别越快，也越不容易读到包装上的其他条码（如商品码）而整帧拒收。没勾的种类不会被识别。",
         "code.try-invert" => "识别白底黑条以外的浅色条码配深色背景。面单都是白底黑条时可关闭以提速；关闭前请用真实面单确认。",
         "motion.still-ms" => "包裹放稳多久后才接收识别结果，默认 200 毫秒，可填 0–2000 毫秒。放置过程中的结果不进入供包业务；画面一直不稳时仍会间隔接收。填 0 表示每帧接收。",

@@ -28,12 +28,14 @@ public static partial class ManagementModeBroker
         var prefix = new byte[4]; System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(prefix, bytes.Length);
         await stream.WriteAsync(prefix, token).ConfigureAwait(false); await stream.WriteAsync(bytes, token).ConfigureAwait(false); await stream.FlushAsync(token).ConfigureAwait(false);
     }
-    internal static T Call<T>(string root, ManagementModeRpcRequest request)
+    internal static T Call<T>(string root, ManagementModeRpcRequest request, bool starting = false)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("管理模式授权服务需要Windows。");
-        using var budget = new CancellationTokenSource(request.Action == "Status" ? TimeSpan.FromMilliseconds(500) : TimeSpan.FromSeconds(10));
+        using var budget = new CancellationTokenSource(request.Action == "Status" && !starting ? TimeSpan.FromMilliseconds(500) : TimeSpan.FromSeconds(10));
         using var pipe = new NamedPipeClientStream(".", PipeName(root), PipeDirection.InOut, PipeOptions.Asynchronous, TokenImpersonationLevel.Impersonation);
-        pipe.ConnectAsync(request.Action == "Status" ? 100 : 2000, budget.Token).GetAwaiter().GetResult();
+        try { pipe.ConnectAsync(starting ? 5000 : request.Action == "Status" ? 100 : 2000, budget.Token).GetAwaiter().GetResult(); }
+        catch (Exception error) when (error is TimeoutException or OperationCanceledException)
+        { throw new IOException("管理授权服务暂时不可用，请稍后重试；持续失败时请用完整安装包修复。原密码和配置保留。", error); }
         RequireServer(root, pipe.SafePipeHandle);
         WriteFrame(pipe, JsonSerializer.SerializeToUtf8Bytes(request), budget.Token).GetAwaiter().GetResult();
         var bytes = ReadFrame(pipe, budget.Token).GetAwaiter().GetResult();

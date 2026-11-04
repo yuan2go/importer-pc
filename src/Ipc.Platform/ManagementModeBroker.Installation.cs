@@ -117,7 +117,7 @@ public static partial class ManagementModeBroker
             { if (!ChangeServiceConfig(service, uint.MaxValue, 2, 1, command, null, IntPtr.Zero, null, null, null, displayName)) throw NativeFailure("ChangeServiceConfigW"); });
             trace.Run("ConfigureRecovery", "ChangeServiceConfig2W", () => ConfigureRecovery(service));
             trace.Run("StartService", "StartServiceW/QueryServiceStatusEx", () => Start(service));
-            trace.Run("VerifyServiceChannel", "ManagementMode.Status", () => Call<ManagementModeStatus>(dataRoot, new("Status")));
+            trace.Run("VerifyServiceChannel", "ManagementMode.Status", () => Call<ManagementModeStatus>(dataRoot, new("Status"), starting: true));
             trace.RequireDiagnostics();
         }
         catch (ManagementServiceInstallationException original)

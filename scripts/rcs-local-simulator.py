@@ -76,6 +76,8 @@ def main():
                 if mode not in ('assigned', 'timeout', 'reject', 'wrong-id', 'malformed'):
                     raise ValueError('unsupported simulation mode')
                 response = dict(requestId=request_id + (1 if mode == 'wrong-id' else 0), result=[])
+                vehicle_file = root / 'vehicles.json'
+                vehicles = json.loads(vehicle_file.read_text()) if vehicle_file.exists() else {}
                 with lock:
                     prior = db.execute('SELECT sha256 FROM requests WHERE request_id=? LIMIT 1', (request_id,)).fetchone()
                     digest = hashlib.sha256(raw).hexdigest()
@@ -98,7 +100,12 @@ def main():
                             if assigned:
                                 data = dict(taskId=assigned[0], chuteCode=assigned[1], skuId='SIM-SKU',
                                             length=None, width=None, height=None, weight=None)
-                        elif command != 'sorter.task.station_heartbeat':
+                        elif command == 'sorter.task.station_heartbeat':
+                            vehicle = vehicles.get(params['bcrCode'], {})
+                            data = dict(stationCode=params['stationCode'], bcrCode=params['bcrCode'], timestamp=int(time.time() * 1000),
+                                        agvNo=vehicle.get('agvNo', f"SIM-AGV-{50019 + item['index']}"),
+                                        status=vehicle.get('status', 'IDLE' if item['index'] % 2 else 'TASKING'))
+                        else:
                             raise ValueError('unsupported command')
                         rejected = mode == 'reject' and command == 'sorter.task.dest_request'
                         response['result'].append(dict(index=item['index'], command=command, success=not rejected,

@@ -27,7 +27,7 @@ static partial class SportmasterRcs
             Check(peer.Requests.IsEmpty, "repeated start owns one timer and default heartbeat waits for its interval");
             Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "local lifecycle cannot fabricate a typed remote connection confirmation");
             await Until(() => peer.Requests.Count == 1);
-            Check(clock.Elapsed >= TimeSpan.FromSeconds(4.7), "omitted component interval defaults to five seconds");
+            Check(clock.Elapsed >= TimeSpan.FromSeconds(.8) && clock.Elapsed < TimeSpan.FromSeconds(3), "omitted component interval defaults to one second");
             var exchange = peer.Requests.Single();
             using var json = JsonDocument.Parse(exchange.Body); var envelope = json.RootElement;
             var data = envelope.GetProperty("data").EnumerateArray().ToArray();
@@ -54,8 +54,8 @@ static partial class SportmasterRcs
         binding = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-seconds"] = "1" } };
         config = HeartbeatConfiguration(workspace, binding);
         var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
-        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(f => f.Key == "heartbeat-interval-seconds") is { Default: "5", Minimum: 1, Maximum: 3600 } &&
-            ExtensionSchema.Validate(schema, binding.Parameters).Length == 0, "component parameter schema exposes a valid five-second default and bounded editable interval");
+        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(f => f.Key == "heartbeat-interval-seconds") is { Default: "1", Minimum: 1, Maximum: 3600 } &&
+            ExtensionSchema.Validate(schema, binding.Parameters).Length == 0, "component parameter schema exposes a valid one-second default and bounded editable interval");
         await using (var service = new SportmasterRcsTaskService(binding))
         {
             service.ConfigureRuntime(config); peer.Mode = "http-error";
@@ -125,10 +125,56 @@ static partial class SportmasterRcs
             Check(peer.Requests.Count > count && (await service.HealthAsync(default)).Ready,
                 "retired allocation fields do not block heartbeat or consume persisted destination IDs");
         }
+        await VehicleHeartbeatChecks(peer, binding, HeartbeatConfiguration(workspace, binding));
+        await VehicleProjectionChecks(workspace);
         Console.WriteLine("PASS RCS HEARTBEAT COMPLETE");
     }
 
     static async Task Until(Func<bool> predicate) => await Until(() => Task.FromResult(predicate()));
+    static async Task VehicleProjectionChecks(string workspace)
+    {
+        await using var station = new CameraRoundHarness(workspace, Path.Combine(Path.GetTempPath(), "agv-projection-" + Wire.Id()), heartbeatSeconds: 1);
+        station.Peer.ReplyVehicleStates = true; await station.StartAsync();
+        await Until(async () => (await station.App.SnapshotAsync()).Positions!.All(p => p.Vehicle is not null));
+        var snapshot = await station.App.SnapshotAsync();
+        Check(snapshot.Configuration.Effective.Wcs!.Parameters.Count == 0 && snapshot.Positions!.Single(p => p.Id == "left").Vehicle?.Status == "IDLE" &&
+            snapshot.Positions!.Single(p => p.Id == "right").Vehicle?.Status == "TASKING",
+            "Application projects the correct vehicle per position without exposing editable configuration to operators");
+        var receipt = await station.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "SYNTH-WORKING-AGV", ParcelBarcodeInputKind.Keyboard, null, null), default);
+        Check(receipt.Status == "Admitted", "a working vehicle is informational and cannot block a real manual admission");
+        await Until(async () => (await station.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
+        station.Peer.ReplyVehicleStates = false;
+        await Until(async () => (await station.App.SnapshotAsync()).Positions!.All(p => p.Vehicle is null));
+        Check(true, "missing vehicle data clears previously projected idle state on the next heartbeat");
+    }
+    static async Task VehicleHeartbeatChecks(Peer peer, CapabilityBinding binding, ParcelConfiguration config)
+    {
+        peer.Mode = "heartbeat-vehicles";
+        await using var service = new SportmasterRcsTaskService(binding);
+        service.ConfigureRuntime(config); await service.StartAsync(default);
+        await Until(async () => (await service.HealthAsync(default)).StationVehicles.Length == 2);
+        var vehicles = (await service.HealthAsync(default)).StationVehicles;
+        Check(vehicles.Single(v => v.CameraCode == binding.Parameters["left-bcr-code"]) is { VehicleNo: "SYNTH-AGV-1", Status: "IDLE" } &&
+            vehicles.Single(v => v.CameraCode == binding.Parameters["right-bcr-code"]) is { VehicleNo: "SYNTH-AGV-2", Status: "TASKING" },
+            "heartbeat response order does not swap the camera-bound idle and tasking vehicles");
+        var exchange = peer.Requests.Last(); using var request = JsonDocument.Parse(exchange.Body);
+        var id = request.RootElement.GetProperty("requestId").GetInt64();
+        var mapping = RcsConfigurationValidation.HeartbeatMapping(config);
+        StationVehicleState[] Parse(string body) => SportmasterRcsTaskService.ReadHeartbeatVehicles(System.Text.Encoding.UTF8.GetBytes(body), id, mapping, DateTimeOffset.UtcNow, TimeSpan.FromSeconds(3));
+        Check(Parse(exchange.Response.Replace(id.ToString(), (id + 1).ToString(), StringComparison.Ordinal)).Length == 0,
+            "a previous heartbeat response cannot publish current idle state");
+        Check(Parse(exchange.Response.Replace("SYNTH-STATION", "OTHER-STATION", StringComparison.Ordinal)).Length == 0,
+            "a response for another station cannot show a vehicle at this station");
+        Check(Parse(exchange.Response.Replace("\"success\":true", "\"success\":false", StringComparison.Ordinal)).Length == 0 && Parse("{bad").Length == 0,
+            "failed and malformed heartbeat items never imply idle");
+        peer.Mode = "body-timeout";
+        await Until(async () => !(await service.HealthAsync(default)).Ready);
+        Check((await service.HealthAsync(default)).StationVehicles.Length == 0, "a stalled response body expires its previous green vehicle state");
+        peer.Mode = "heartbeat-vehicles"; await Until(async () => (await service.HealthAsync(default)).StationVehicles.Length == 2);
+        await service.StopAsync(default);
+        Check((await service.HealthAsync(default)).StationVehicles.Length == 0, "stop releases all previous vehicle telemetry");
+        peer.Mode = "assigned";
+    }
     static async Task Until(Func<Task<bool>> predicate)
     {
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(8));

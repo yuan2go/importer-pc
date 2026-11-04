@@ -70,11 +70,11 @@
     "Group": "RCS 心跳",
     "Label": "心跳请求间隔",
     "Type": "integer",
-    "Default": "5",
+    "Default": "1",
     "Minimum": 1,
     "Maximum": 3600,
     "MaximumLength": 4,
     "Unit": "秒",
-    "Description": "默认5秒。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。供包台编码读取系统StationCode，相机编码读取本组件同一份left-bcr-code/right-bcr-code；取格口与心跳共用，不重发旧心跳。"
+    "Description": "默认1秒，可按现场需要调整。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。心跳返回的小车状态只作提示，不限制投包。取格口与心跳共用同一相机编码，不重发旧心跳。"
   }
 ]

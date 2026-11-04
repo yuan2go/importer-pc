@@ -17,6 +17,7 @@ public sealed partial class SportmasterRcsTaskService
     string? heartbeatFailure;
     bool heartbeatResponseReceived;
     string heartbeatEvidence = "RCS client stopped; upstream acceptance unconfirmed";
+    StationVehicleState[] stationVehicles = [];
     static long lastHeartbeatId;
 
     public void ConfigureRuntime(ParcelConfiguration configuration)
@@ -69,10 +70,14 @@ public sealed partial class SportmasterRcsTaskService
                     };
                     message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
-                    // No response contract has been supplied. HTTP delivery proves no business acceptance.
                     if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
+                    var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
+                    if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
+                    var vehicles = ReadHeartbeatVehicles(bytes, requestId, heartbeatStations!, DateTimeOffset.UtcNow,
+                        TimeSpan.FromSeconds(Math.Max(3, options.HeartbeatIntervalSeconds * 3)));
                     lock (lifecycle)
                     {
+                        stationVehicles = vehicles;
                         heartbeatFailure = null; heartbeatResponseReceived = true;
                         heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; application acknowledgement unconfirmed";
                     }
@@ -80,7 +85,7 @@ public sealed partial class SportmasterRcsTaskService
                 catch (OperationCanceledException) when (stop.IsCancellationRequested) { break; }
                 catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException or InvalidDataException)
                 {
-                    lock (lifecycle) heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried";
+                    lock (lifecycle) { stationVehicles = []; heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried"; }
                 }
             }
         }

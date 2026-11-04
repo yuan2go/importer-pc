@@ -39,6 +39,13 @@ static partial class SportmasterRcs
         using var j = JsonDocument.Parse(request); var id = j.RootElement.GetProperty("requestId").GetInt64();
         if (mode == "malformed") return "{not-json";
         if (mode == "oversize") return new string('x', SportmasterRcsTaskService.MaximumResponseBytes + 500);
+        if (mode == "heartbeat-vehicles" && j.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
+            return JsonSerializer.Serialize(new { requestId = id, result = j.RootElement.GetProperty("data").EnumerateArray().Reverse().Select(item => new
+            {
+                index = item.GetProperty("index").GetInt32(), success = true, command = "sorter.task.station_heartbeat",
+                data = new { stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(), bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
+                    timestamp = 12321312312L, agvNo = "SYNTH-AGV-" + item.GetProperty("index").GetInt32(), status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING" }
+            }).ToArray() });
         var data = mode switch
         {
             "unpack" => "{\"barcode\":\"SYNTH-0001\",\"skuId\":\"SYNTH-SKU\",\"scanQty\":1,\"chutes\":[{\"chuteNo\":\"SYNTH-CHUTE\",\"orderNo\":\"SYNTH-ORDER\",\"remaining\":0,\"phase\":\"ASSIGNED\"}]}",

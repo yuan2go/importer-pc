@@ -150,6 +150,10 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public event PropertyChangedEventHandler? PropertyChanged;
     public string PositionId { get; private set; }
     public string Heading => requestedPosition == "left" ? "左投递位" : "右投递位";
+    StationVehicleState? vehicle;
+    public string VehicleStatusText => vehicle is null ? "小车：待确认" : vehicle.VehicleNo + " · " + (vehicle.Status switch
+    { "IDLE" => "空闲，可以投包", "TASKING" => "工作中，不可以投包", _ => "状态待确认" });
+    public string VehicleStatusForeground => vehicle?.Status switch { "IDLE" => OperatorTokens.Success, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
     public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";
     internal void SetInputFocused(bool focused) { if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
@@ -304,6 +308,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
             device.Health is DeviceHealth.Disconnected or DeviceHealth.Faulted or DeviceHealth.Stopped or DeviceHealth.Stopping
                 ? ParcelPresentation.Rejected("相机：离线") : ParcelPresentation.Unknown("相机：待确认");
         DeviceStatus = DevicePresentation.Text + (device?.ConfirmedAt is { } confirmed ? " · 最后确认 " + confirmed.ToLocalTime().ToString("HH:mm:ss") : "");
+        vehicle = fresh && position?.Vehicle is { } status && status.ReceivedAt <= now && status.ValidUntil > now ? status : null;
         var identityMissing = position?.CurrentOperation is not null && Operation is null;
         CanAdmit = !FastReaderBlocked && !owner.Busy && fresh && viewportReady && binding is not null && !identityMissing && position?.Admit == true;
         CanReconcile = !owner.Busy && fresh && viewportReady && Operation is not null;
@@ -319,6 +324,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity), (nameof(CameraAddress), CameraAddress), (nameof(DevicePresentation), DevicePresentation),
+            (nameof(VehicleStatusText), VehicleStatusText), (nameof(VehicleStatusForeground), VehicleStatusForeground),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(NeedsAttention), NeedsAttention), (nameof(SlotFontSize), SlotFontSize),
             (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(HasCurrentInput), HasCurrentInput), (nameof(AttentionReason), AttentionReason), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),

@@ -16,7 +16,7 @@ public static partial class ManagementModeBroker
     static string CanonicalRoot(string root) => WindowsStoragePaths.CanonicalDirectory(root);
     public static string ProtectedRoot(string root) => Path.Combine(WindowsStoragePaths.AdministratorRoot, Key(root));
     static string ServiceName(string root) => "ImporterPc.Administrator." + Key(root);
-    static string PipeName(string root) => "ImporterPc.ManagementMode.v" + ProtocolVersion.ToString(System.Globalization.CultureInfo.InvariantCulture) + "." + Key(root);
+    internal static string PipeName(string root) => "ImporterPc.ManagementMode.v" + ProtocolVersion.ToString(System.Globalization.CultureInfo.InvariantCulture) + "." + Key(root);
     public static bool IsManaged(string root)
     {
         if (!OperatingSystem.IsWindows()) return false;
@@ -34,7 +34,7 @@ public static partial class ManagementModeBroker
     public static void RequireProduction(string root)
     {
         if (!IsManaged(root)) throw new InvalidOperationException("生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。");
-        if (!Call<ManagementModeStatus>(root, new("Status")).Configured) throw new InvalidOperationException("请先设置管理密码，完成管理模式配置后再开始业务。");
+        if (!Call<ManagementModeStatus>(root, new("Status"), starting: true).Configured) throw new InvalidOperationException("请先设置管理密码，完成管理模式配置后再开始业务。");
     }
     [SupportedOSPlatform("windows")]
     static void RequireServer(string root, SafePipeHandle pipe)
@@ -98,12 +98,16 @@ public static partial class ManagementModeBroker
     [SupportedOSPlatform("windows")]
     static async Task Serve(string root, NamedPipeServerStream pipe, CancellationToken stopping)
     {
+        try
+        {
         while (!stopping.IsCancellationRequested)
         {
-            await pipe.WaitForConnectionAsync(stopping).ConfigureAwait(false);
-            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping); budget.CancelAfter(TimeSpan.FromSeconds(10));
+            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping);
             try
             {
+                // A broken or abandoned connection belongs to this instance, never the service.
+                await pipe.WaitForConnectionAsync(stopping).ConfigureAwait(false);
+                budget.CancelAfter(TimeSpan.FromSeconds(10));
                 var bytes = await ReadFrame(pipe, budget.Token).ConfigureAwait(false);
                 var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
                 bool installer = false; string? windowsSid = null; ManagementRecoveryCaller? recoveryCaller = null;
@@ -136,16 +140,20 @@ public static partial class ManagementModeBroker
             catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException or Win32Exception)
             {
                 var code = error is ManagementModeBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
-                try { await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code), budget.Token).ConfigureAwait(false); }
-                catch (Exception send) when (send is IOException or OperationCanceledException) { }
+                    if (pipe.IsConnected)
+                        try { await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code), budget.Token).ConfigureAwait(false); }
+                        catch (Exception send) when (send is IOException or OperationCanceledException or InvalidOperationException) { }
             }
-            finally { if (pipe.IsConnected) pipe.Disconnect(); }
+            finally { pipe.Dispose(); }
+            if (!stopping.IsCancellationRequested) pipe = CreateServer(root, false);
         }
+        }
+        finally { pipe.Dispose(); }
     }
     [SupportedOSPlatform("windows")]
     static NamedPipeServerStream CreateServer(string root, bool first)
     {
-        // Eight permanent instances occupy the entire name; the client additionally pins SCM's PID.
+        // Eight workers own the channel; clients additionally pin SCM's PID on every connection.
         if (!ConvertStringSecurityDescriptorToSecurityDescriptor("D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GRGW;;;AU)", 1, out var descriptor, out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
         try
         {

@@ -64,8 +64,8 @@ static partial class Program
             Check((int)cues.GetValue(left)! == 1, "repeated snapshots of one original result do not repeat its success cue");
             var manualAvailable = vm.Right.CanSubmitBarcode;
             await Vehicles();
-            Check(vm.Left.VehicleStatusText.Contains("SYNTH-50020") && vm.Left.VehicleStatusText.Contains("可以投包") && vm.Left.VehicleStatusForeground == OperatorTokens.Success &&
-                vm.Right.VehicleStatusText.Contains("SYNTH-50023") && vm.Right.VehicleStatusText.Contains("不可以投包") && vm.Right.CanSubmitBarcode == manualAvailable,
+            Check(vm.Left.VehicleStatusText.StartsWith("小车 SYNTH-50020") && vm.Left.VehicleStatusText.Contains("可以投包") && vm.Left.VehicleStatusForeground == OperatorTokens.Success &&
+                vm.Right.VehicleStatusText.StartsWith("小车 SYNTH-50023") && vm.Right.VehicleStatusText.Contains("不可以投包") && vm.Right.CanSubmitBarcode == manualAvailable,
                 "idle and tasking vehicle labels map to their own camera without changing manual admission");
             await Vehicles(expired: true);
             Check(vm.Left.VehicleStatusText == "小车：待确认" && vm.Left.VehicleStatusForeground == OperatorTokens.Muted, "expired idle telemetry cannot remain green");

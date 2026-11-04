@@ -61,10 +61,12 @@ internal static class ReaderRobustness28
                     eanPixels[y * eanImage.Width + x] = eanPixels[y * eanImage.Width + x] < 128
                         ? (byte)(y < eanImage.Height / 3 ? 20 : 115) : (byte)230;
                 var label = new CameraRoundHarness.RoundPixels(eanPixels, eanImage.Width, eanImage.Height);
-                foreach (var angle in new[] { -2d, -.75, 0, .75, 1.5, 2.5 })
+                foreach (var angle in new[] { -10d, -5, -3, -2, -1.5, -.75, -.5, 0, .5, .75, 1, 1.5, 2, 2.5, 3, 5, 10 })
                 {
                     var tilted = Rotate(label, angle); var unchanged = tilted.Data.ToArray();
-                    Check(ordinary.Decode(tilted.Data, tilted.Data.Length, tilted.Width, tilted.Height).SequenceEqual(new[] { "1234567890128" }) && tilted.Data.SequenceEqual(unchanged),
+                    var tiltedCodes = ordinary.DecodeDetailed(tilted.Data, tilted.Data.Length, tilted.Width, tilted.Height);
+                    if (tiltedCodes.Length != 1) Console.WriteLine("DIAGNOSTIC angle=" + angle + " candidates=" + Wire.Encode(tiltedCodes));
+                    Check(tiltedCodes.Select(c => c.Text).SequenceEqual(new[] { "1234567890128" }) && tilted.Data.SequenceEqual(unchanged),
                         "one unevenly lit EAN13 tilted " + angle + " degrees remains one physical candidate and preserves original pixels");
                 }
                 var two = Enumerable.Repeat((byte)255, label.Width * (label.Height * 2 + 80)).ToArray();
@@ -74,6 +76,13 @@ internal static class ReaderRobustness28
                 Check(both.Length == 2 && both.All(c => c.Text == "1234567890128") && BarcodeFiltering.Select(null, both.Select(c => c.Text).ToArray()).Outcome == "MultipleCodes",
                     "two physically separate identical EAN13 labels remain two candidates and are rejected by strict multi-code policy");
                 var ordered = both.OrderBy(c => c.Corners[0].Y).ToArray();
+                foreach (var angle in new[] { -10d, 10 })
+                {
+                    var tiltedPair = Rotate(new(two, label.Width, label.Height * 2 + 80), angle);
+                    var pair = ordinary.Decode(tiltedPair.Data, tiltedPair.Data.Length, tiltedPair.Width, tiltedPair.Height);
+                    Check(pair.Length == 2 && pair.All(c => c == "1234567890128") && BarcodeFiltering.Select(null, pair).Outcome == "MultipleCodes",
+                        "two separate equal EAN13 labels tilted " + angle + " degrees remain two physical candidates");
+                }
                 var oversized = ordered[0] with { Corners = [ordered[0].Corners[0], ordered[0].Corners[1], ordered[1].Corners[2], ordered[1].Corners[3]] };
                 var associate = typeof(SoftwareDecoder).GetMethod("SamePrintedRegion", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
                 Check(!(bool)associate.Invoke(ordinary, [ordered[0], oversized, two, label.Width, label.Height * 2 + 80])!,

@@ -20,4 +20,8 @@ public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, strin
 public sealed record ParcelPresentationMetric(string ObservationId, string PositionId, string Stage, double ReadToCompositionMs,
     double? SnapshotToCompositionMs, DateTimeOffset At);
 
-public sealed record ParcelCameraReadFeedback(string PositionId, Ipc.Platform.ObservationReadFeedback Frame);
+public sealed record ParcelCameraReadFeedback(string PositionId, Ipc.Platform.ObservationReadFeedback Frame)
+{
+    // Application-owned placement identity, only for an unchanged scene after a missed/rejected decode.
+    public string? RetainedOperationId { get; init; }
+}

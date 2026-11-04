@@ -14,14 +14,14 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
     long rejectedFrames, rejectedDecodes, originalFrameCopies;
     bool waitingOriginalCapacity;
     string? lastFrameRejection;
-    void RejectFrame(uint frame, MvsFrameRejection error, bool decoding)
+    void RejectFrame(uint frame, MvsFrameRejection error, bool decoding, long? scene = null)
     {
         lock (gate)
         {
             rejectedFrames++; if (decoding) rejectedDecodes++;
             lastFrameRejection = $"frame={frame}; reason={error.Reason}; {error.Message}";
         }
-        PublishReadFeedback(frame, DateTimeOffset.UtcNow, Stopwatch.GetTimestamp(), 0, rejected: true);
+        PublishReadFeedback(frame, DateTimeOffset.UtcNow, Stopwatch.GetTimestamp(), 0, rejected: true, scene: scene);
     }
     void ResetDiagnostics()
     {

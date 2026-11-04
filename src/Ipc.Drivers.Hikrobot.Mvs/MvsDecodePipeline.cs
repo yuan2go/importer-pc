@@ -85,7 +85,7 @@ internal sealed partial class MvsAcquisition
                 }
                 catch (MvsFrameRejection error)
                 {
-                    RejectFrame(work.Frame.Number, error, true);
+                    RejectFrame(work.Frame.Number, error, true, work.Scene);
                     work.Trace = new(work.Frame.Number, work.ObservedAt, work.Frame.DeviceTimestampRaw, work.Frame.HostTimestampRaw,
                         work.CopyMs, work.ReleaseMs, Timings.LastMs("decode"), 0, 0, 0, 0, false)
                     { DecodeAttempted = true, RejectedFrame = true, DecodeQueueMs = Timings.LastMs("host.decode-queue-wait") };

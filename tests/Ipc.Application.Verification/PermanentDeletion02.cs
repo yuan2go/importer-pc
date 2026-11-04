@@ -83,10 +83,34 @@ static class PermanentDeletion02
         var kept = WindowsDeploymentSetup.ApplyDataPurge(Record(leftoverPlan) with { Status = "Purging" }, "receipt", () => "registration", s => saved = s, registration.Add);
         Check(kept.Status == "PartiallyPurged" && registration[^1] == "PartiallyPurged" && File.Exists(Path.Combine(leftover.DataRoot, "Production", "S1", "sportmaster", "images", "b.jpg")) &&
             !File.Exists(Path.Combine(leftover.DataRoot, "Production", "S1", "sportmaster", "sportmaster.db")), "an unlisted file is never deleted and the station stays PartiallyPurged");
+        var originalPartial = saved!;
+        File.Delete(Path.Combine(leftover.DataRoot, "Production", "S1", "sportmaster", "images", "b.jpg"));
+        var resumed = WindowsDeploymentSetup.ApplyDataPurge(originalPartial, "receipt", () => "changed-after-retirement", s => saved = s, registration.Add);
+        Check(resumed.Status == "Purged" && !Directory.Exists(leftover.DataRoot) && !Directory.Exists(leftover.ConfigurationDirectory),
+            "partial deletion resumes when the configuration root and some recorded files are already absent");
         var lost = Station("lost"); var lostPlan = Plan(lost);
         Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ApplyDataPurge(Record(lostPlan), "receipt", () => "registration",
             s => { if (s.Status == "Purged") throw new IOException("synthetic receipt loss"); saved = s; }, registration.Add), "a lost final receipt reads as Unknown");
         Check(saved?.Status == "Purging", "the last confirmed state is Purging, never inferred as done");
+
+        var publication = Station("publication-gap"); var publicationPlan = Plan(publication);
+        var publicationPath = Path.Combine(root, "sportmaster.purge-" + publicationPlan.OperationId + ".json");
+        var publishing = publication with { LifecycleState = "Purging", MaintenanceOperation = publicationPath };
+        var prepared = Record(publicationPlan);
+        Check(WindowsDeploymentSetup.ProjectDataPurge(prepared, publicationPath, publishing).Status == "PartiallyPurged",
+            "a crash after marking registration but before marking the receipt permits only original-plan retry");
+        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ApplyDataPurge(prepared with { Status = "Purging" }, publicationPath, () => "retired", s => saved = s,
+            state => { if (state == "Purged") throw new IOException("synthetic final registration write loss"); }), "a lost final registration write does not claim completion");
+        var published = saved!;
+        Check(published.Status == "Purged" && WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing).Status == "PartiallyPurged",
+            "a completed receipt with an unfinished registration remains retryable without claiming success");
+        var finalized = WindowsDeploymentSetup.ApplyDataPurge(published, publicationPath, () => "retired", s => saved = s, registration.Add);
+        Check(finalized.Status == "Purged" && WindowsDeploymentSetup.ProjectDataPurge(saved!, publicationPath, publishing with { LifecycleState = "Purged" }).Status == "Purged",
+            "original-plan retry finishes the final registration after data directories have disappeared");
+        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing with { MaintenanceOperation = "other-operation" }),
+            "registration pointing at another operation cannot authorize retry");
+        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ProjectDataPurge(published, publicationPath, publishing with { DataRoot = Path.Combine(root, "other-root") }),
+            "another deployment data root cannot authorize the original deletion plan");
 
         var unconfirmed = Station("unconfirmed");
         var directory = Path.Combine(unconfirmed.DataRoot, "Production", "S1", "sportmaster");

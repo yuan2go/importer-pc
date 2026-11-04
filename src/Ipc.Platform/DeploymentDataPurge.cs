@@ -22,10 +22,25 @@ public static partial class WindowsDeploymentSetup
         MachineRuntimePolicy.RequireProtectedEvidence(path);
         if (new FileInfo(path).Length > 8 * 1024 * 1024) throw new InvalidDataException("数据删除记录超过读取预算。");
         var record = Wire.Decode<DeploymentPurgeRecord>(File.ReadAllText(path));
-        if (record.Plan.ApplicationId != application || path != PurgeFile(application, record.Plan.OperationId) ||
-            current.LifecycleState is not ("Purging" or "PartiallyPurged" or "Purged") || record.Status != current.LifecycleState)
+        if (path != PurgeFile(application, record.Plan.OperationId))
             throw new InstallationOutcomeUnknownException("数据删除结果尚未确认，请稍后再次查看。");
-        return new(record.Plan.OperationId, record.Status, record.Status == "Purged" ? "本站数据已删除。" : "部分数据尚未删除，请关闭占用文件的程序后重试卸载。", record.Remaining, path);
+        return ProjectDataPurge(record, path, current);
+    }
+
+    internal static DeploymentPurgeReceipt ProjectDataPurge(DeploymentPurgeRecord record, string path, DeploymentLocation current)
+    {
+        var roots = new[] { current.DataRoot, current.ConfigurationDirectory }.Select(Path.GetFullPath).Order(StringComparer.OrdinalIgnoreCase);
+        if (record.SchemaVersion != 1 || !record.Plan.Allowed || record.Plan.ApplicationId != current.ApplicationId ||
+            current.MaintenanceOperation != path || Path.GetFileName(path) != current.ApplicationId + ".purge-" + record.Plan.OperationId + ".json" ||
+            !record.Plan.Delete.Select(area => Path.GetFullPath(area.Root)).Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(roots, StringComparer.OrdinalIgnoreCase) ||
+            current.LifecycleState is not ("Purging" or "PartiallyPurged" or "Purged") ||
+            record.Status is not ("Prepared" or "Purging" or "PartiallyPurged" or "Purged") ||
+            current.LifecycleState == "Purged" && record.Status != "Purged")
+            throw new InstallationOutcomeUnknownException("数据删除结果尚未确认，请稍后再次查看。");
+        // Registration and receipt are separate durable writes. A crash between
+        // them still belongs to this exact plan and can finish through retry.
+        var status = current.LifecycleState == "Purged" ? "Purged" : "PartiallyPurged";
+        return new(record.Plan.OperationId, status, status == "Purged" ? "本站数据已删除。" : "数据清理尚未完成，请关闭占用文件的程序后重试卸载。", record.Remaining, path);
     }
     // Owner lease files are rewritten by every check, so their bytes are not part of the fence.
     internal const string LeaseHash = "lease";
@@ -102,7 +117,7 @@ public static partial class WindowsDeploymentSetup
         Action<DeploymentPurgeRecord> save, Action<string> markRegistration, MaintenanceExecution? execution = null)
     {
         var plan = record.Plan;
-        var resume = record.Status is "Purging" or "PartiallyPurged";
+        var resume = record.Status is "Purging" or "PartiallyPurged" or "Purged";
         if (!plan.Allowed || !resume && registrationHash() != plan.ExpectedRegistrationHash)
             throw new InvalidOperationException("登记已变化或计划不允许，请重新检查永久删除。");
         if (plan.Delete.Length is 0 or > 2 || plan.Delete.Select(d => Path.GetFullPath(d.Root)).Distinct(StringComparer.OrdinalIgnoreCase).Count() != plan.Delete.Length)
@@ -121,7 +136,9 @@ public static partial class WindowsDeploymentSetup
             {
                 foreach (var file in area.Files.Where(f => f.Value != LeaseHash))
                 {
-                    if (!ProductValidation.IsSafeRelativeFile(area.Root, file.Key, out var full)) throw new InvalidDataException("永久删除清单路径无效。");
+                    if (!ExtensionPackages.SafePath(file.Key)) throw new InvalidDataException("永久删除清单路径无效。");
+                    var full = Path.GetFullPath(Path.Combine(area.Root, file.Key));
+                    DeploymentPaths.RequireOrdinaryAncestors(full);
                     if (File.Exists(full) && Wire.FileHash(full) != file.Value) throw new InvalidDataException("剩余文件在中断后有变化；保留原状，交实施人员核对。");
                 }
             }
@@ -217,11 +234,12 @@ public static partial class WindowsDeploymentSetup
         var record = Wire.Decode<DeploymentPurgeRecord>(File.ReadAllText(path));
         var current = Current(application) ?? throw new InvalidDataException("缺少唯一部署登记。");
         using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
-        if (record.Plan.ApplicationId != application || record.Plan.OperationId != operation || current.MaintenanceOperation != path ||
-            record.Status is not ("Purging" or "PartiallyPurged") || current.LifecycleState is not ("Purging" or "PartiallyPurged"))
+        if (record.Plan.OperationId != operation)
             throw new InvalidOperationException("没有可继续的原永久删除。");
+        var observed = ProjectDataPurge(record, path, current);
+        if (observed.Status == "Purged") return observed;
         var sid = new SecurityIdentifier(current.RuntimeAccountSid);
-        return ApplyDataPurge(record, path, () => Wire.FileHash(Registration(application)),
+        return ApplyDataPurge(record with { Status = "Purging" }, path, () => Wire.FileHash(Registration(application)),
             state => WriteProtected(path, state, sid), state => WriteProtected(Registration(application), current with { LifecycleState = state }, sid), execution);
     }
 

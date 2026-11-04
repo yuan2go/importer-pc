@@ -60,6 +60,9 @@ internal static class DebugNoIsolation31
                     "rejected concurrent begin preserves the active collection and its owner");
             }
             await h.ArmAsync(h.Left);
+            // Arming debug acquisition completes before the asynchronous camera
+            // capability probes necessarily publish production admission readiness.
+            await h.WaitForCameraAdmissionAsync();
             h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("DEBUG31-RIGHT"), 1);
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DEBUG31-LEFT"), 1);
             var locked = await h.LockedAsync();

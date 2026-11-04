@@ -29,7 +29,7 @@ internal static class SamePlacement29
         }
         finally { siteDecoder.Release(); }
         await h.StartAsync();
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Camera == true));
+        await h.WaitForCameraAdmissionAsync();
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         uint frame = 0;
         long Processed() => h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
@@ -159,7 +159,7 @@ internal static class SamePlacement29
     {
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-scene"), stillMs: "40") { PlacementReleaseMs = 5000 };
         await h.StartAsync();
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Camera == true));
+        await h.WaitForCameraAdmissionAsync();
         uint frame = 0;
         var decoder = h.Factory.Decoders[h.Left];
         // Delivers the same picture until the camera has decoded `decodes` more frames of it.

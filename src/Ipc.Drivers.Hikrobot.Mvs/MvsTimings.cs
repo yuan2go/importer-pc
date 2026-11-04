@@ -39,6 +39,16 @@ internal sealed class MvsTimings
             series.Count++; series.Total += ms; series.Min = Math.Min(series.Min, ms); series.Max = Math.Max(series.Max, ms);
         }
     }
+    // Median of the recent window; null before the stage has run.
+    internal double? Median(string stage)
+    {
+        lock (gate)
+        {
+            if (!stages.TryGetValue(stage, out var s) || s.Count == 0) return null;
+            var recent = s.Recent.Take((int)Math.Min(s.Count, Window)).Order().ToArray();
+            return recent[(recent.Length - 1) / 2];
+        }
+    }
     internal MvsTimingSnapshot Snapshot()
     {
         lock (gate)

@@ -24,6 +24,11 @@ internal static class CameraAcquisitionPresentation
         var w = d.Window;
         var rates = w is null ? "窗口指标尚不可用" : $"当前连接窗口 {w.Coverage.TotalMinutes:F1} 分钟（最多60分钟） · 有码解码帧 {w.FramesWithCodes}/{w.DecodedFrames} · 有码帧占比 {(w.DecodedFrames == 0 ? "—" : (100d * w.FramesWithCodes / w.DecodedFrames).ToString("F1") + "%")} · 窗口采集 {w.Frames} 帧";
         var rejections = d.RejectedFrames == 0 ? "未记录图像丢弃" : $"本次连接累计丢弃 {d.RejectedFrames} 帧（历史记录，不代表当前无图像）";
-        return $"{status} · 有效帧 {d.Frames} · 解码完成 {d.DecodeCompleted} · 条码候选 {d.Candidates}\n{rates}\n最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {rejections}";
+        return $"{status} · 有效帧 {d.Frames} · 解码完成 {d.DecodeCompleted} · 条码候选 {d.Candidates}\n{Pace(d.DecodeMedianMs)}\n{rates}\n最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {rejections}";
     }
+    // Once a parcel rests, the chute request waits for one decode; a slow decode sets the station's pace.
+    internal const double SlowDecodeMs = 600;
+    internal static string Pace(double? medianMs) => medianMs is not { } ms ? "单帧识别耗时：尚无样本" :
+        $"单帧识别耗时约 {ms:F0} ms（最近中位数）" + (ms >= SlowDecodeMs
+            ? " · 识别较慢，会拖慢供包节奏：在设置“需要识别的条码种类”中只勾选实际使用的条码，可明显提速" : "");
 }

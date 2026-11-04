@@ -102,7 +102,7 @@ internal static class RcsDestinationProtocol
         var text = value.GetString();
         return !string.IsNullOrWhiteSpace(text) && text.Length <= maximum && !text.Any(char.IsControl) ? text : throw new InvalidDataException("RCS invalid text: " + name);
     }
-    static void UniqueObjects(JsonElement e)
+    internal static void UniqueObjects(JsonElement e)
     {
         if (e.ValueKind == JsonValueKind.Object)
         {

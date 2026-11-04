@@ -19,6 +19,14 @@ static partial class Program
         await h.StartAsync(); h.Peer.ReplySlot = "L-07"; h.Peer.ReplyWaveNo = "WAVE-01"; h.Peer.ReplyQuantity = "00012";
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show(); var vm = window.ViewModel;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
+        async Task Vehicles(bool expired = false)
+        {
+            var snapshot = await h.App.SnapshotAsync(); var now = DateTimeOffset.UtcNow; var config = h.Config;
+            var vehicles = new[] { new StationVehicleState(config.StationCode!, config.Wcs!.Parameters["left-bcr-code"], "SYNTH-50020", "IDLE", now.AddSeconds(-1), expired ? now.AddMilliseconds(-1) : now.AddSeconds(3)),
+                new StationVehicleState(config.StationCode!, config.Wcs.Parameters["right-bcr-code"], "SYNTH-50023", "TASKING", now.AddSeconds(-1), now.AddSeconds(3)) };
+            await vm.AcceptPublishedSnapshotAsync(snapshot with { Positions = snapshot.Positions!.Select(p => p with { Vehicle = vehicles[p.Id == "left" ? 0 : 1] }).ToArray() });
+            await Flush();
+        }
         async Task Until(Func<bool> ready)
         { for (var i = 0; i < 200; i++) { await Flush(); if (ready()) return; await Task.Delay(25); } throw new TimeoutException("Operator18 state"); }
         try
@@ -54,11 +62,20 @@ static partial class Program
             await Until(() => (int)cues.GetValue(left)! == 1);
             for (var i = 0; i < 5; i++) await vm.RefreshAsync(); await Flush();
             Check((int)cues.GetValue(left)! == 1, "repeated snapshots of one original result do not repeat its success cue");
+            var manualAvailable = vm.Right.CanSubmitBarcode;
+            await Vehicles();
+            Check(vm.Left.VehicleStatusText.Contains("SYNTH-50020") && vm.Left.VehicleStatusText.Contains("可以投包") && vm.Left.VehicleStatusForeground == OperatorTokens.Success &&
+                vm.Right.VehicleStatusText.Contains("SYNTH-50023") && vm.Right.VehicleStatusText.Contains("不可以投包") && vm.Right.CanSubmitBarcode == manualAvailable,
+                "idle and tasking vehicle labels map to their own camera without changing manual admission");
+            await Vehicles(expired: true);
+            Check(vm.Left.VehicleStatusText == "小车：待确认" && vm.Left.VehicleStatusForeground == OperatorTokens.Muted, "expired idle telemetry cannot remain green");
             await ManagementModeFixture.Authorize(h.App); await vm.RefreshManagementModeAsync(); await vm.RefreshAsync();
             var frozen = Wire.Encode(vm.Left.Operation!.Wcs!.Request);
             foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
             {
                 await SetClient(window, size.Item1, size.Item2); await Flush();
+                await Vehicles();
+                Check(Inside((TextBlock)left.FindName("VehicleState"), (Grid)window.FindName("ClientArea")) && Inside((TextBlock)right.FindName("VehicleState"), (Grid)window.FindName("ClientArea")), "vehicle labels remain inside the workstation at " + size.Item1);
                 var panel = (Border)left.FindName("ResultPanel");
                 Check(Math.Abs(panel.ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1, "chute regions stay aligned at " + size.Item1);
                 var actual = slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize));

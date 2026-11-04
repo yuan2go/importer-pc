@@ -13,9 +13,13 @@ public sealed record WeightMeasurement(string Id, string AdmissionId, string Dev
 public sealed record CapabilityBinding(string Kind, string Implementation, string Version, string InstanceId, string Target,
     string Contract, Dictionary<string, string> Parameters, PackageReference? Package = null, string? Module = null, bool Enabled = true);
 public enum RemoteConnectionConfirmation { Unconfirmed, ResponseReceived }
+public sealed record StationVehicleState(string StationCode, string CameraCode, string VehicleNo, string Status,
+    DateTimeOffset ReceivedAt, DateTimeOffset ValidUntil);
 public sealed record CapabilityHealth(string InstanceId, bool Ready, DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string Detail)
 {
     public RemoteConnectionConfirmation RemoteConfirmation { get; init; }
+    // Informational station telemetry only; never grants or refuses business admission.
+    public StationVehicleState[] StationVehicles { get; init; } = [];
 }
 public interface ICapabilityPort : IAsyncDisposable
 {

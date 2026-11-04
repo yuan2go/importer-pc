@@ -277,6 +277,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public string ReplySlot = "SYNTH-CHUTE";
         public string? ReplyWaveNo { get; set; }
         public string? ReplyQuantity { get; set; }
+        public bool ReplyVehicleStates { get; set; }
         public string Endpoint { get; }
         public RoundPeer(int? selectedPort = null)
         {
@@ -303,6 +304,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                     message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
                 });
+                if (ReplyVehicleStates && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
+                    reply = JsonSerializer.Serialize(new { requestId = id, result = json.RootElement.GetProperty("data").EnumerateArray().Select(item => new
+                    {
+                        index = item.GetProperty("index").GetInt32(), success = true, command = "sorter.task.station_heartbeat",
+                        data = new { stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(), bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
+                            agvNo = "SYNTH-AGV-" + item.GetProperty("index").GetInt32(), status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING" }
+                    }).ToArray() });
                 var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stopped.Token);
             }

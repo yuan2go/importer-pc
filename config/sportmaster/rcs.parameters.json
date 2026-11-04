@@ -8,5 +8,5 @@
   "left-bcr-code": "SYNTHETIC-L-READER",
   "right-station-code": "SYNTHETIC-R",
   "right-bcr-code": "SYNTHETIC-R-READER",
-  "heartbeat-interval-seconds": "5"
+  "heartbeat-interval-seconds": "1"
 }

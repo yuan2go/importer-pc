@@ -57,7 +57,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             if (active != 0 || heartbeatTask is { IsCompleted: false }) throw new InvalidOperationException("RCS stop is still draining");
             if (heartbeatStations is null) throw new InvalidDataException("RCS requires the effective station/reader configuration before start");
             heartbeatStop?.Dispose(); heartbeatStop = new();
-            heartbeatFailure = null; heartbeatResponseReceived = false;
+            heartbeatFailure = null; heartbeatResponseReceived = false; stationVehicles = [];
             heartbeatEvidence = heartbeatStations.Length == 0
                 ? "Camera heartbeat suspended: no configured camera codes; manual request client ready; upstream acceptance unconfirmed"
                 : "Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed";
@@ -73,7 +73,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
         token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
         lock (lifecycle) return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed && heartbeatStations is not null && heartbeatFailure is null, now, now.AddSeconds(3),
             "RCS client local lifecycle/configuration readiness only; " + (heartbeatFailure ?? heartbeatEvidence))
-        { RemoteConfirmation = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null ? RemoteConnectionConfirmation.ResponseReceived : RemoteConnectionConfirmation.Unconfirmed });
+        { RemoteConfirmation = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null ? RemoteConnectionConfirmation.ResponseReceived : RemoteConnectionConfirmation.Unconfirmed,
+            StationVehicles = running && !disposed && heartbeatFailure is null ? stationVehicles.Where(v => v.ReceivedAt <= now && v.ValidUntil > now).ToArray() : [] });
     }
     public async Task ReconnectAsync(CancellationToken token)
     { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }
@@ -188,7 +189,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     {
         Task wait; lock (lifecycle)
         {
-            running = false; heartbeatStop?.Cancel();
+            running = false; stationVehicles = []; heartbeatStop?.Cancel();
             wait = Task.WhenAll(heartbeatTask ?? Task.CompletedTask, active == 0 ? Task.CompletedTask : drained!.Task);
         }
         await wait.WaitAsync(token).ConfigureAwait(false);

@@ -10,17 +10,21 @@
   <Border x:Name="PositionOutline" Style="{StaticResource StationPositionCard}">
    <Grid>
     <Grid.RowDefinitions>
-     <RowDefinition Height="Auto"/>
+     <RowDefinition Height="Auto" SharedSizeGroup="PositionHeading"/>
      <RowDefinition Height="Auto"/>
      <RowDefinition Height="*"/>
      <RowDefinition Height="Auto" SharedSizeGroup="PositionTaskFields"/>
      <RowDefinition Height="Auto" SharedSizeGroup="PositionActions"/>
     </Grid.RowDefinitions>
     <DockPanel Style="{StaticResource StationPositionSection}">
-     <DockPanel>
-      <TextBlock Text="{Binding Heading}" DockPanel.Dock="Left" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
+     <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <TextBlock Text="{Binding Heading}" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
+      <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
       <TextBlock x:Name="CameraConnection" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding DevicePresentation.Text}" Foreground="{Binding DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
-     </DockPanel>
+       <TextBlock x:Name="VehicleState" Margin="12,0,0,0" Text="{Binding VehicleStatusText}" Foreground="{Binding VehicleStatusForeground}" FontSize="{x:Static type:UiTypography.Label}" TextWrapping="Wrap" AutomationProperties.Name="本位小车状态"/>
+      </WrapPanel>
+     </Grid>
     </DockPanel>
     <Grid Grid.Row="1" x:Name="ScanInformation" Style="{StaticResource StationPositionSection}">
      <Grid.ColumnDefinitions>

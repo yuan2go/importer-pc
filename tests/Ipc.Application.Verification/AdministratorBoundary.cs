@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using System.IO.Pipes;
+using System.Text.Json;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.AccessControl;
@@ -53,6 +55,21 @@ static class AdministratorBoundary
             });
             client.ConfigurePassword(password); Check(client.Enter(password), "approved initial password still needs its actual software password");
             Check(Enumerable.Range(0, 64).All(_ => client.InspectStatus().Authorized), "reused pipe instances retain each complete acknowledged reply across 64 round trips");
+            for (var attempt = 0; attempt < 64; attempt++)
+            {
+                using (var abandoned = new NamedPipeClientStream(".", ManagementModeBroker.PipeName(root), PipeDirection.InOut, PipeOptions.Asynchronous))
+                {
+                    abandoned.Connect(5000);
+                    if (attempt % 4 == 1) abandoned.Write(new byte[] { 1, 0 });
+                    if (attempt % 4 >= 2)
+                    {
+                        ManagementModeBroker.WriteFrame(abandoned, JsonSerializer.SerializeToUtf8Bytes(new ManagementModeRpcRequest("Status")), default).GetAwaiter().GetResult();
+                        if (attempt % 4 == 3) _ = ManagementModeBroker.ReadFrame(abandoned, default).GetAwaiter().GetResult();
+                    }
+                }
+                Check(ManagementModeBroker.Call<ManagementModeStatus>(root, new("Status"), starting: true).Configured,
+                    "abandoned connection leaves the real SCM service available: " + attempt);
+            }
             var protectedCredentials = Path.Combine(ManagementModeBroker.ProtectedRoot(root), "management-mode.json");
             Check(!File.ReadAllText(protectedCredentials).Contains(password), "System store contains salted password hashes, not passwords");
             Check(JsonNode.Parse(File.ReadAllText(protectedCredentials))!["Audit"]!.AsArray().Any(a => a?["WindowsSid"]?.GetValue<string>() == current.User!.Value), "mode audit records the real Windows caller context without creating a software account");

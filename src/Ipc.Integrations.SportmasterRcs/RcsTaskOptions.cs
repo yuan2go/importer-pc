@@ -32,7 +32,7 @@ internal sealed class RcsTaskOptions
         Source = "BAR"; Locale = "zh_CN";
         ZoneId = Number("zone-id", 1, long.MaxValue); ProjectId = Number("project-id", 1, long.MaxValue);
         HeartbeatIntervalSeconds = Binding.Parameters.ContainsKey("heartbeat-interval-seconds")
-            ? checked((int)Number("heartbeat-interval-seconds", 1, 3600)) : 5;
+            ? checked((int)Number("heartbeat-interval-seconds", 1, 3600)) : 1;
         RequestTimeoutMs = RcsRequestPolicy.TimeoutMs(Binding);
     }
     internal string Text(string key, int maximum)

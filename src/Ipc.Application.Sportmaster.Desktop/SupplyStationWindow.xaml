@@ -200,7 +200,7 @@
      <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasConfigurationActivationNotice}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCompact}" Value="True"/><Condition Binding="{Binding SelectedPage}" Value="workstation"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></Border.Style>
      <DockPanel><Button x:Name="ActivationOutcomeAction" Content="{Binding ConfigurationActivationActionText}" Click="ProductRestart_Click" IsEnabled="{Binding CanOpenConfigurationActivation}" DockPanel.Dock="Right" MinHeight="44"/><TextBlock Text="{Binding ConfigurationActivationBannerText}" ToolTip="{Binding ConfigurationActivationOutcome}" TextWrapping="Wrap" VerticalAlignment="Center"/></DockPanel>
     </Border>
-    <Border Padding="8,4" Background="#EEF4FF" BorderBrush="#BDD2F3" BorderThickness="1" Margin="0,0,0,4">
+    <Border Padding="8,4" Background="{DynamicResource AccentBackground}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Margin="0,0,0,4">
      <Border.Style>
       <Style TargetType="Border">
        <Style.Triggers>
@@ -220,7 +220,7 @@
      </Border.Style>
      <DockPanel>
       <Button Content="关闭提示" Click="DismissGlobalFeedback_Click" DockPanel.Dock="Right" MinHeight="44" Padding="8,4" FontSize="{x:Static type:UiTypography.Body}" Margin="8,0,0,0"/>
-      <TextBox x:Name="GlobalOperationFeedback" MinHeight="0" Padding="0" VerticalAlignment="Center" Text="{Binding GlobalOperationFeedback,Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#25384B" TextWrapping="Wrap" MaxHeight="44" VerticalScrollBarVisibility="Auto" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="最近一次操作结果，可选择复制" AutomationProperties.LiveSetting="Assertive"/>
+      <TextBox x:Name="GlobalOperationFeedback" MinHeight="0" Padding="0" VerticalAlignment="Center" Text="{Binding GlobalOperationFeedback,Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource Ink}" TextWrapping="Wrap" MaxHeight="44" VerticalScrollBarVisibility="Auto" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="最近一次操作结果，可选择复制" AutomationProperties.LiveSetting="Assertive"/>
      </DockPanel>
     </Border>
     <Border x:Name="OperationalStatusBar" Background="{Binding WorkspaceStatusBackground}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1">

@@ -216,7 +216,7 @@ public partial class SupplyStationPosition : UserControl
                 {
                     submitted = null;
                     editing = false; inputBasis = null;
-                    terminalTextRetained = receipt.Status != "Admitted";
+                    terminalTextRetained = true;
                     terminalObservationKey = p.BarcodeObservationKey;
                     PrepareResultReplacement();
                     if (receipt.Status == "Conflict") RebaseInput.Visibility = Visibility.Visible;

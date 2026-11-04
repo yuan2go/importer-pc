@@ -55,6 +55,8 @@ public sealed partial class ParcelRuntime
             var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
             var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();
             var receiptStartedTicks = ReceiptTimeForVerification.GetTimestamp();
+            if (kind == ParcelStage.Wcs)
+                Diagnostic("RCS请求", "开始请求格口", detail: Wire.Encode(new { OperationId = op.Id, op.PositionId, op.ParcelCode, RequestId = stage.Request.Id, ProtocolRequestId = stage.Request.IntegrationRequest?.RequestId, stage.Attempts, query }));
             DebugDiagnostic("外部通信", "原请求发送开始", () => new
             {
                 Operation = op.Id,
@@ -187,7 +189,13 @@ public sealed partial class ParcelRuntime
             operation.ParcelCode,
             operation.PositionId,
             RequestId = stage.Request.Id,
+            ProtocolRequestId = stage.Request.IntegrationRequest?.RequestId,
             Result = stage.State.ToString(),
+            stage.Failure,
+            HttpStatus = stage.Replies.LastOrDefault()?.HttpResponse?.StatusCode,
+            ResponseCode = stage.Replies.LastOrDefault()?.Destination?.Code,
+            ResponseMessage = stage.Replies.LastOrDefault()?.Destination?.Message,
+            stage.Attempts,
             operation.Slot,
             ElapsedMs = Math.Round(ReceiptTimeForVerification.GetElapsedTime(startedTicks).TotalMilliseconds, 1),
             NextAction = stage.State is StageState.Unknown or StageState.Conflict

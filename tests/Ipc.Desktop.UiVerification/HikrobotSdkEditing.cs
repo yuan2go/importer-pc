@@ -24,6 +24,9 @@ static partial class Program
         rcs.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value = "SYNTH-LEFT";
         rcs.Parameters.Single(p => p.Field.Key == "right-bcr-code").Value = "SYNTH-RIGHT";
         var left = draft.Readers[0]; var right = draft.Readers[1];
+        Check(new[] { left, right }.All(r => r.Parameters.Single(p => p.Field.Key == "reader.engine").Value == "mvid-native"), "new stations default both cameras to Hikrobot native recognition");
+        foreach (var reader in new[] { left, right }) reader.Parameters.Single(p => p.Field.Key == "reader.engine").Value = "zxing-cpp";
+        left.Parameters.Single(p => p.Field.Key == "code.formats").Value = Wire.Encode(new[] { "Code128", "Code39", "EAN13" });
         for (var i = 0; i < draft.Readers.Length; i++)
         {
             draft.Readers[i].Parameters.Single(p => p.Field.Key == "device.ip").Value = "192.0.2." + (10 + i);
@@ -77,6 +80,7 @@ static partial class Program
                 !Descendants(editor).OfType<FrameworkElement>().Any(e => AutomationProperties.GetAutomationId(e) == left.InstanceId + "/code.try-invert"),
                 "native selection updates only the left camera and hides the software-only inverted-code option");
             Check(draft.Build().Topology!.Readers[0].Parameters!["reader.engine"] == "mvid-native", "native selection is saved with the complete configuration candidate");
+            Check(!Descendants(editor).OfType<FrameworkElement>().Any(e => AutomationProperties.GetAutomationId(e) == left.InstanceId + "/code.formats"), "native mode hides the software symbology filter");
             CaptureInternal(evidence, "bundled-sdk-native-reader", editor, lines);
             Check(editor.NavigateTo(rcs.InstanceId + "/left-bcr-code"), "shared camera code is reached in the station task page");
             Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == rcs.InstanceId + "/left-bcr-code").Text = "SYNTH-LEFT-EDITED";
@@ -105,7 +109,7 @@ static partial class Program
                 startup.ShowReview(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
                 Check(Descendants(startup).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "各来源情况"), "review remains populated after camera engine changes");
                 startup.SelectCategory(0); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-                Check(!Descendants(startup).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("System.Windows.Controls")), "scenario choices render labels rather than CLR control names");
+                Check(!Descendants(startup).OfType<TextBlock>().Any(t => t.IsVisible && (t.Text.Contains("计划使用的来源") || t.Text.Contains("System.Windows.Controls"))), "first setup contains no separate planned-source parameter");
                 startup.ShowPage(2, "左相机");
             }
             CaptureInternal(evidence, "bundled-sdk-first-left", startup, lines);

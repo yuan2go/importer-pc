@@ -30,18 +30,25 @@ static partial class Program
             var submit = (Button)left.FindName("SubmitBarcode"); var slot = (TextBox)left.FindName("CurrentSlot");
             Check(left.FindName("VisibleInputSource") is null && left.FindName("KeyboardSource") is null && left.FindName("PdaSource") is null && !submit.IsEnabled, "operator has one barcode entry without source selectors; empty draft cannot submit");
             window.Activate(); entry.Focus(); await Flush();
-            Check(vm.InputTargetPosition == "left" && vm.InputTargetLabel.Contains("左位") && vm.Left.InputTargetActive && !vm.Right.InputTargetActive, "real left keyboard focus is the sole highlighted target");
+            Check(vm.InputTargetPosition == "left" && vm.Left.InputTargetActive && !vm.Right.InputTargetActive, "real left keyboard focus is the sole highlighted target");
             otherEntry.Focus(); await Flush();
-            Check(vm.InputTargetPosition == "right" && vm.InputTargetLabel.Contains("右位") && !vm.Left.InputTargetActive && vm.Right.InputTargetActive, "focus transfer moves target and outline together");
-            ((TextBlock)window.FindName("AccountIdentity")).Focus(); await Flush();
-            Check(vm.InputTargetPosition == "" && !vm.Left.InputTargetActive && !vm.Right.InputTargetActive, "non-barcode focus advertises no selected input target");
+            Check(vm.InputTargetPosition == "right" && !vm.Left.InputTargetActive && vm.Right.InputTargetActive, "focus transfer moves target and outline together");
+            ((TextBlock)window.FindName("StationClock")).RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.PreviewMouseDownEvent }); await Flush();
+            Check(vm.InputTargetPosition == "" && !vm.Left.InputTargetActive && !vm.Right.InputTargetActive, "clicking outside both cards clears the selected input target");
             entry.Focus(); await Flush();
-            Check(entry.IsKeyboardFocused && vm.InputTargetLabel.Contains("左相机"), "returning focus identifies the left camera position without asking for input device type");
+            Check(entry.IsKeyboardFocused && vm.InputTargetPosition == "left", "returning focus identifies the left camera position without asking for input device type");
             entry.Text = "000UX180001"; await Flush(); Check(submit.IsEnabled, "complete new draft has an enabled primary action");
+            Check(Math.Abs(((Border)left.FindName("ResultPanel")).ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1,
+                "a draft notice on one side does not misalign the two chute regions");
             submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
             Check(vm.Left.Operation?.OperatorInput?.Kind == "Keyboard" && h.Peer.Requests.Count == 1, "unified keyboard character input reaches the guarded command without fabricating a camera acquisition");
             Check(vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Accepted && vm.Left.ResultBackground == OperatorTokens.Success && vm.Left.ResultForeground == OperatorTokens.Surface && slot.Text == "L-07", "current accepted identity maps to solid green with white full destination");
+            await Flush(); window.UpdateLayout();
+            Check(Math.Abs(((Border)left.FindName("ResultPanel")).ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1,
+                "confirmed and waiting positions keep equal chute-region height");
+            Check(!Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && (t.Text.Contains("点击左侧或右侧相机区域") || t.Text.Contains("条码输入目标："))),
+                "the workstation does not repeat input-selection instructions above the cards");
             Check(((Grid)left.FindName("TaskFields")).IsVisible && vm.Left.WaveNo == "WAVE-01" && vm.Left.TaskId == "SYNTH-TASK" && vm.Left.SkuId == "SYNTH-SKU" && vm.Left.ResponseQuantity == "00012", "site-required task fields stay on the work surface with the confirmed chute; returned values retain their exact strings");
             var cues = typeof(SupplyStationPosition).GetProperty("SuccessCueCount", BindingFlags.Instance | BindingFlags.NonPublic)!;
             await Until(() => (int)cues.GetValue(left)! == 1);
@@ -53,6 +60,7 @@ static partial class Program
             {
                 await SetClient(window, size.Item1, size.Item2); await Flush();
                 var panel = (Border)left.FindName("ResultPanel");
+                Check(Math.Abs(panel.ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1, "chute regions stay aligned at " + size.Item1);
                 var actual = slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize));
                 Check(actual.Top >= 0 && actual.Bottom <= panel.ActualHeight + 1 && slot.Text == "L-07", "full current destination stays inside fixed result panel at " + size.Item1);
                 var transform = slot.TransformToAncestor(panel);

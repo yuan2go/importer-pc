@@ -8,6 +8,7 @@ public sealed record ObservationReadFeedback(string DeviceId, string Epoch, uint
     // Scene identity from the camera's stillness check: frames with the same value show the same unmoved
     // scene. Null when the source does not compare scenes; then a no-code frame is judged on its own.
     public long? Scene { get; init; }
+    public string? FailureReason { get; init; }
 }
 public interface IObservationReadFeedbackSource
 {

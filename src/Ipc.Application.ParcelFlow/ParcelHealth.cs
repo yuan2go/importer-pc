@@ -5,11 +5,20 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     readonly Dictionary<string, DateTimeOffset> diagnosticHealthWritten = new();
+    readonly Dictionary<string, (string Epoch, DeviceHealth Health)> loggedReaderHealth = new();
     void ReaderHealthChanged(DeviceHealthConfirmation h)
     {
         RecordPresentationHealth(h);
-        Diagnostic("相机通信", "相机连接状态变化",
-        h.Health == DeviceHealth.Faulted ? "警告" : "信息",
+        lock (loggedReaderHealth)
+        {
+            if (loggedReaderHealth.GetValueOrDefault(h.DeviceId) == (h.Epoch, h.Health)) return;
+            loggedReaderHealth[h.DeviceId] = (h.Epoch, h.Health);
+        }
+        if (h.Health is not (DeviceHealth.Ready or DeviceHealth.Disconnected or DeviceHealth.Faulted)) return;
+        var side = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == h.DeviceId)?.Id == "right" ? "右相机" : "左相机";
+        var state = h.Health == DeviceHealth.Ready ? "已连接，正在采图" : h.Health == DeviceHealth.Disconnected ? "已断开，自动重连中" : "采图失败";
+        Diagnostic("相机通信", side + " · " + state,
+        h.Health == DeviceHealth.Ready ? "信息" : "警告",
         Wire.Encode(new
         {
             Device = h.DeviceId,

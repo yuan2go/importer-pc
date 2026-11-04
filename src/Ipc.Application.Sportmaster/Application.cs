@@ -10,9 +10,8 @@ public sealed class SportmasterFlow : FlowDefinition
     public override bool ArchiveOriginalFrames => true;
     public override ParcelConfiguration InitialConfiguration()
     {
-        // New sites start with common 1D symbologies (about 10x faster than all formats on
-        // 6 MP frames). Written explicitly so sites that never set it keep the "All" fallback.
-        DeviceBinding[] readers = [new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.formats"] = NewSiteCodeFormats } }, new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.formats"] = NewSiteCodeFormats } }];
+        // New stations use native acquisition and its complete barcode result list.
+        DeviceBinding[] readers = [new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.left", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["reader.engine"] = "mvid-native", ["code.formats"] = "[\"All\"]" } }, new("parcel-reader", "hikrobot-mvs-reader", "sportmaster.reader.right", "1") { Parameters = new() { ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["reader.engine"] = "mvid-native", ["code.formats"] = "[\"All\"]" } }];
         // A draft in Production with unavailable real dependencies cannot silently run a simulation.
         return new(3, Id, SystemParameterDefaults.InitialStationId, RunMode.Production,
             new(WeightSource.Disabled, WeightUnit.Kg, 3, null, 3000), readers[0], null,
@@ -23,7 +22,6 @@ public sealed class SportmasterFlow : FlowDefinition
             Retention: new(DiagnosticLogDays: SystemParameterDefaults.DiagnosticLogDays, HistoryDays: SystemParameterDefaults.HistoryDays))
         { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
     }
-    public static readonly string NewSiteCodeFormats = Wire.Encode(new[] { "Code128", "Code39", "EAN13" });
     public override string[] PositionRoles => ["left", "right"];
     // Continuous acquisition reads a tray parcel in every frame. One placement is one
     // RCS request: the code must leave this position's reads for this long (operator

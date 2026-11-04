@@ -8,6 +8,13 @@ public sealed partial class ParcelRuntime
 {
     readonly Dictionary<string, ParcelCameraReadFeedback> cameraReadFeedback = [];
     readonly Dictionary<string, ObservationReadFeedback> pendingCameraCodes = [];
+    readonly Dictionary<string, (ObservationReadOutcome Outcome, long Ticks, int Count, ObservationReadFeedback? Last)> cameraLogWindows = [];
+    void LogCameraFrame(string position, ObservationReadFeedback frame, int count, string? retainedOperation)
+    {
+        var outcome = frame.Outcome == ObservationReadOutcome.Codes ? "识码成功" : frame.Outcome == ObservationReadOutcome.NoCode ? "图像已识别，未读到条码" : "图像识码失败";
+        Diagnostic("相机识码", outcome, frame.Outcome is ObservationReadOutcome.Codes or ObservationReadOutcome.NoCode ? "信息" : "警告",
+            Wire.Encode(new { PositionId = position, frame.DeviceId, frame.Epoch, frame.FrameNumber, frame.SourceEventId, frame.ObservedAt, frame.Outcome, frame.CandidateCount, frame.Scene, frame.FailureReason, FramesSinceLastLog = count, RetainedOperationId = retainedOperation }));
+    }
     readonly List<(IObservationReadFeedbackSource Source, Action<ObservationReadFeedback> Handler)> cameraReadSubscriptions = [];
     void RegisterCameraReadFeedback(ObservationSession session)
     {
@@ -23,6 +30,19 @@ public sealed partial class ParcelRuntime
             if (position is null) return;
             NotePlacementFrame(position, frame);
             var retainedOperation = RetainedCameraPlacement(position, frame);
+            lock (cameraLogWindows)
+            {
+                cameraLogWindows.TryGetValue(position, out var prior);
+                if (prior.Outcome != frame.Outcome && prior.Count > 0 && prior.Last is { } last)
+                    LogCameraFrame(position, last, prior.Count, null);
+                var count = prior.Outcome == frame.Outcome ? prior.Count + 1 : 1;
+                if (prior.Ticks == 0 || prior.Outcome != frame.Outcome || Stopwatch.GetElapsedTime(prior.Ticks) >= TimeSpan.FromSeconds(5))
+                {
+                    LogCameraFrame(position, frame, count, retainedOperation);
+                    cameraLogWindows[position] = (frame.Outcome, Stopwatch.GetTimestamp(), 0, frame);
+                }
+                else cameraLogWindows[position] = (prior.Outcome, prior.Ticks, count, frame);
+            }
             lock (presentationGate)
             {
                 cameraReadFeedback.TryGetValue(position, out var old);

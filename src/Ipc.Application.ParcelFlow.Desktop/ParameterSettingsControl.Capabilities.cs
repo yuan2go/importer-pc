@@ -164,6 +164,7 @@ public sealed partial class ParameterSettingsControl
         {
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
             if (engine?.Value == "mvid-native" && p.Field.Key == "code.try-invert") continue;
+            if (engine?.Value == "mvid-native" && p.Field.Key == "code.formats") continue;
             if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes" or "motion.still-ms")) advanced.Add(p);
             else Parameter(form, page, draft, p);
@@ -222,7 +223,7 @@ public sealed partial class ParameterSettingsControl
         "queue.maximum-code-bytes" => "条码排队占用的内存上限，默认 16 MiB，可填 1–64 MiB。超出后本位停止供包，需要检查后恢复。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
         "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，1–3600 秒。",
-        "code.formats" => "只勾选面单实际使用的条码种类：勾得越少识别越快，也越不容易读到包装上的其他条码（如商品码）而整帧拒收。新站默认 Code128、Code39、EAN13；没勾的种类不会被识别。",
+        "code.formats" => "只勾选面单实际使用的条码种类：勾得越少识别越快，也越不容易读到包装上的其他条码（如商品码）而整帧拒收。没勾的种类不会被识别。",
         "code.try-invert" => "识别白底黑条以外的浅色条码配深色背景。面单都是白底黑条时可关闭以提速；关闭前请用真实面单确认。",
         "motion.still-ms" => "包裹放稳多久后才接收识别结果，默认 200 毫秒，可填 0–2000 毫秒。放置过程中的结果不进入供包业务；画面一直不稳时仍会间隔接收。填 0 表示每帧接收。",
         "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后结果未确认，请到记录核对；不会自动重发。",
@@ -240,8 +241,6 @@ public sealed partial class ParameterSettingsControl
         var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-seconds" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
-        if (p.Field.Key == "code.formats" && draft.Parameters.Any(x => x.Field.Key == "reader.engine" && x.Value == "mvid-native"))
-            help = "海康原生库返回结果后，只接收勾选的条码种类。支持 Code128、Code39、Code93、EAN13、EAN8、UPC、ISBN、ITF、Codabar、二维码和 DataMatrix；这项筛选不会缩短原生库内部识别时间。";
         if (p.IsSensitive)
         {
             // PasswordBox keeps the existing reference masked. Never replace it

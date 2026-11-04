@@ -75,7 +75,7 @@
       "delivery": "core"
     },
     "application.sportmaster": {
-      "version": "1.0.3",
+      "version": "1.0.4",
       "contract": 1,
       "dependencies": [
         "platform-storage",

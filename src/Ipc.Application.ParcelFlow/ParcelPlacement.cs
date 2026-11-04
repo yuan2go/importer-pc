@@ -80,6 +80,14 @@ public sealed partial class ParcelRuntime
         if (definition.SamePlacementReleaseMs <= 0) return;
         lock (placements)
         {
+            if (!camera && placements.TryGetValue(position, out var resting) && resting.CameraSeen && resting.EndedAt is null)
+            {
+                // Manual correction owns this physical placement; keep its last camera code
+                // as presence evidence so the next unchanged camera read cannot create a new job.
+                resting.Operation = operation;
+                if (observedAt > resting.LastSeen) resting.LastSeen = observedAt;
+                return;
+            }
             if (!placements.TryGetValue(position, out var placement) || placement.Code != code || placement.EndedAt is not null)
                 placements[position] = placement = new(code, observedAt, camera);
             else if (observedAt > placement.LastSeen) placement.LastSeen = observedAt;
@@ -103,6 +111,7 @@ public sealed partial class ParcelRuntime
         lock (placements)
         {
             if (!placements.TryGetValue(position, out var placement) || placement.Operation != finished.Id || placement.EndedAt is not null) return false;
+            if (finished.OperatorInput is not null && StationTime.GetUtcNow() - finished.ObservedAt > ManualResultDisplay) return false;
             return placement.CameraSeen && frameFedPositions.Contains(position) || StationTime.GetUtcNow() - placement.LastSeen <= ManualResultDisplay;
         }
     }

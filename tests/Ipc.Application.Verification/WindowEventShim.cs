@@ -65,6 +65,7 @@ namespace System.Windows.Controls
         public event System.Windows.SizeChangedEventHandler? SizeChanged;
         public void RaiseSizeChanged() => SizeChanged?.Invoke(this, new());
         public static void SetColumn(object control, int column) { }
+        public static void SetIsSharedSizeScope(object control, bool enabled) { }
     }
     public class ContentControl { public object? Content { get; set; } }
     public class PasswordBox { public string Password { get; set; } = ""; public void Clear() => Password = ""; }

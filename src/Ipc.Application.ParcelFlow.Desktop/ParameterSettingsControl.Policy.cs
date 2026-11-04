@@ -31,7 +31,6 @@ public sealed partial class ParameterSettingsControl
             }
         }
         if (!hasRcs) Input(Form(station), "供包台编号 *", m.Policy, "StationCode", "StationCode", station, "用于向外部系统识别当前供包台。");
-        if (UsesFirstReadiness) station.Body.Children.Add(ScenarioCard());
         var data = Page(0, "数据与记录", ""); form = Form(data);
         Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "本机保留的近期记录条数，1～10000。");
         Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "剩余空间低于此值时暂停接收新包裹，1～1048576 MiB。");

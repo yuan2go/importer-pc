@@ -8,6 +8,14 @@ from mvid_runtime import publish
 
 
 class MvidRuntimeDelivery(unittest.TestCase):
+    def test_repository_configuration_matches_delivery_inventory(self):
+        metadata = Path(__file__).resolve().parent.parent / 'src/Ipc.Drivers.Hikrobot.Mvs'
+        inventory = json.loads((metadata / 'mvid-runtime.json').read_text(encoding='utf-8'))
+        item = next(item for item in inventory['Files'] if item['Path'] == 'MVIDCodeReaderConfig.ini')
+        data = (metadata / 'mvid-runtime.ini').read_text(encoding='utf-8').encode('utf-8')
+        self.assertEqual(len(data), item['Length'])
+        self.assertEqual(hashlib.sha256(data).hexdigest().upper(), item['Sha256'])
+
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)

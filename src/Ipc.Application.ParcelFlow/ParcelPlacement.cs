@@ -9,7 +9,10 @@ namespace Ipc.Application.ParcelFlow;
 // placement may create an operation/request. A placement ends when:
 //   * the camera decodes consecutive no-code frames (empty tray: the vehicle carried
 //     the parcel away or the operator lifted it) - reads captured after that moment
-//     are a new placement, reads captured before it still belong to the old one; or
+//     are a new placement, reads captured before it still belong to the old one. A no-code
+//     frame whose scene has not changed since the code was last read (the camera's stillness
+//     check gives both frames the same scene) is the decoder missing a parcel that never
+//     moved, not an empty tray, and is not counted; or
 //   * only where the position has no per-frame decode facts (manual entry, line readers),
 //     its code has not been read at the position for the release window. A camera that
 //     reports every decoded frame must show the empty tray: decode can be slower than the
@@ -32,6 +35,9 @@ public sealed partial class ParcelRuntime
     readonly Dictionary<string, Placement> placements = [];
     // Positions whose camera publishes every decoded frame (codes, no-code, rejected).
     readonly HashSet<string> frameFedPositions = [];
+    // Scene of the latest camera frame that read a code at each position. Kept per position, not per placement:
+    // the frame fact can arrive before the read creates its placement.
+    readonly Dictionary<string, long?> codeScenes = [];
     void RegisterPlacementFrames(string position) { lock (placements) frameFedPositions.Add(position); }
 
     // Presentation may coalesce observations only while the business placement
@@ -61,6 +67,9 @@ public sealed partial class ParcelRuntime
                 return null;
             }
             if (observedAt > placement.LastSeen) placement.LastSeen = observedAt;
+            // A read proves the parcel was present then: no-code frames counted before it are not an empty tray,
+            // whichever of the read and its frame fact arrives first.
+            if (placement.EmptySince is { } since && since < observedAt) { placement.EmptyFrames = 0; placement.EmptySince = null; }
             placement.CameraSeen = true;
             return placement.Operation;
         }
@@ -105,9 +114,16 @@ public sealed partial class ParcelRuntime
         if (definition.SamePlacementReleaseMs <= 0 || emptyFrames <= 0 || frame.Outcome == ObservationReadOutcome.RejectedFrame) return;
         lock (placements)
         {
-            if (!placements.TryGetValue(position, out var placement) || placement.EndedAt is not null || frame.ObservedAt <= placement.LastSeen) return;
-            if (frame.Outcome == ObservationReadOutcome.Codes) { placement.EmptyFrames = 0; placement.EmptySince = null; return; }
-            if (!placement.CameraSeen) return;
+            if (frame.Outcome == ObservationReadOutcome.Codes) codeScenes[position] = frame.Scene;
+            if (!placements.TryGetValue(position, out var placement) || placement.EndedAt is not null) return;
+            if (frame.Outcome == ObservationReadOutcome.Codes)
+            {
+                if (frame.ObservedAt >= placement.LastSeen) { placement.EmptyFrames = 0; placement.EmptySince = null; }
+                return;
+            }
+            if (frame.ObservedAt <= placement.LastSeen || !placement.CameraSeen) return;
+            // The scene is unchanged since a code was last read here: the parcel is still there and the decoder missed it.
+            if (frame.Scene is { } scene && codeScenes.TryGetValue(position, out var codeScene) && codeScene == scene) return;
             placement.EmptySince ??= frame.ObservedAt;
             if (++placement.EmptyFrames >= emptyFrames &&
                 frame.ObservedAt - placement.EmptySince.Value >= TimeSpan.FromMilliseconds(definition.SamePlacementEmptyMinimumMs))

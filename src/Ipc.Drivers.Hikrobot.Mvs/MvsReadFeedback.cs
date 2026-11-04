@@ -10,12 +10,12 @@ internal sealed partial class MvsAcquisition
 #if !MVS_ACQUISITION_EXTENSION
     public event Action<ObservationReadFeedback>? ReadFeedback;
 #endif
-    void PublishReadFeedback(uint number, DateTimeOffset observedAt, long completedTicks, int count, bool rejected = false)
+    void PublishReadFeedback(uint number, DateTimeOffset observedAt, long completedTicks, int count, bool rejected = false, long? scene = null)
     {
 #if !MVS_ACQUISITION_EXTENSION
         if (decoder is not null)
             ReadFeedback?.Invoke(new(DeviceId, Epoch, number, "mvs.frame." + number, observedAt, completedTicks, count,
-                rejected ? ObservationReadOutcome.RejectedFrame : count == 0 ? ObservationReadOutcome.NoCode : ObservationReadOutcome.Codes));
+                rejected ? ObservationReadOutcome.RejectedFrame : count == 0 ? ObservationReadOutcome.NoCode : ObservationReadOutcome.Codes) { Scene = scene });
 #endif
     }
 }

@@ -10,6 +10,7 @@ internal sealed partial class MvsAcquisition
         double CopyMs, double ReleaseMs, long SkippedBefore, InspectionRegistration? Registration)
     {
         internal MvsFrameLatency? Trace { get; set; }
+        internal long? Scene { get; init; }
         internal bool SupersededBeforeDecode { get; set; }
     }
     readonly object decodeGate = new();
@@ -154,7 +155,7 @@ internal sealed partial class MvsAcquisition
             codes = symbols.Select(symbol => symbol.Text).ToArray();
             if (decoder.PreservesInput && codes.Length > 0) CopyOriginal();
             lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; decodeWindow.Decoded(codes.Length > 0); lastDecodeAt = DateTimeOffset.UtcNow; }
-            PublishReadFeedback(frame.Number, observedAt, decodedTicks, codes.Length);
+            PublishReadFeedback(frame.Number, observedAt, decodedTicks, codes.Length, scene: work.Scene);
         }
         catch { original?.Dispose(); throw; }
         var observationIdentity = codes.Length == 0 ? null : Wire.Id();

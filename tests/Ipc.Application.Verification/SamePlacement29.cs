@@ -137,7 +137,58 @@ internal static class SamePlacement29
         h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-PLACE-C"), 1);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
         Check(h.Peer.Requests.Count == 6, "the same code on the other position is its own placement");
+
+        // 10. The camera reconnects (GigE packet loss) while parcel C rests on the left tray: the new connection
+        // reads the same code, which is still the same placement, and the card shows its chute again.
+        var oldEpoch = h.Factory.Sources[h.Left].Epoch;
+        await h.App.ReconnectDeviceAsync(h.Left);
+        await CameraRoundHarness.Until(async () => h.Factory.Sources[h.Left].Epoch != oldEpoch &&
+            (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Left).IsValid(DateTimeOffset.UtcNow));
+        await Read("SYNTH-PLACE-C");
+        var reread = await Latest();
+        await vm.RefreshAsync();
+        Check(h.Peer.Requests.Count == 6 && ParcelInputReasons.IsSamePlacement(reread) && reread.Observation.Epoch != oldEpoch &&
+            vm.Left.ShowConfirmedTask && vm.Left.DisplaySlot == "SYNTH-CHUTE" && vm.Left.DisplayStatus != "等待重新扫码",
+            "after a camera reconnect the resting parcel is not re-requested and its chute shows again without lifting it");
         await h.App.StopAsync(default);
         Check(h.Api(h.Left).Acquires == h.Api(h.Left).Releases && h.Api(h.Right).Acquires == h.Api(h.Right).Releases, "every SDK frame loan is returned");
+        await StillScene(workspace, root);
+    }
+
+    // With "放稳后再识别" on (as shipped), the decoder missing a parcel that never moved is not an empty tray:
+    // the frames keep the scene of the frame that read the code. A real lift changes the scene and still counts.
+    static async Task StillScene(string workspace, string root)
+    {
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-scene"), stillMs: "40") { PlacementReleaseMs = 5000 };
+        await h.StartAsync();
+        uint frame = 0;
+        var decoder = h.Factory.Decoders[h.Left];
+        // Delivers the same picture until the camera has decoded `decodes` more frames of it.
+        async Task Show(CameraRoundHarness.RoundPixels picture, int decodes, int spacingMs)
+        {
+            var target = decoder.Count + decodes;
+            var deadline = DateTime.UtcNow.AddSeconds(20);
+            while (decoder.Count < target && DateTime.UtcNow < deadline) { h.Api(h.Left).Enqueue(picture, ++frame); await Task.Delay(spacingMs); }
+            if (decoder.Count < target) throw new TimeoutException("synthetic camera did not decode the still picture");
+        }
+        async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
+        var parcel = CameraRoundHarness.Barcode("SYNTH-SCENE-A");
+
+        await Show(parcel, 1, 60);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
+        Check(h.Peer.Requests.Count == 1, "with the still check on, the resting parcel's first settled read requests once");
+
+        decoder.MissNext = 8;
+        await Show(parcel, 8, 150);
+        await Show(parcel, 1, 60);
+        await CameraRoundHarness.Until(async () => ParcelInputReasons.IsSamePlacement(await Latest()));
+        Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Length == 1,
+            "eight missed decodes over more than a second on an unmoved scene do not end the placement: no second request");
+
+        await Show(CameraRoundHarness.EmptyTray, 4, 300);
+        await Show(parcel, 1, 60);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
+        Check(h.Peer.Requests.Count == 2, "lifting the parcel changes the scene, the empty tray is seen, and placing it again requests once");
+        await h.App.StopAsync(default);
     }
 }

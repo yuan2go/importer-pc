@@ -12,7 +12,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     string selectedPage = "workstation";
     string inputTargetPosition = "";
     public string InputTargetPosition => inputTargetPosition;
-    public string InputTargetLabel => inputTargetPosition switch { "left" => "条码输入目标：左位（左相机）", "right" => "条码输入目标：右位（右相机）", _ => "请点击左侧或右侧相机区域选择条码输入位置" };
+    public string InputTargetLabel => inputTargetPosition switch { "left" => "条码输入目标：左位（左相机）", "right" => "条码输入目标：右位（右相机）", _ => "点击左侧或右侧相机区域，或按 F2 / F3，选择条码输入位置" };
     internal void SetInputTarget(string value)
     {
         if (inputTargetPosition == value) return;
@@ -23,7 +23,6 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
     public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待供包台配置";
-    public string TopologyStatus => "左 / 右独立投递位 · 扫码 → 上游格口";
     public enum RcsConnectionState { Unknown, Deferred, Simulation, Offline, AwaitingConfirmation, Online }
     public RcsConnectionState RcsState
     {
@@ -56,21 +55,13 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
         RcsConnectionState.Deferred => ParcelPresentation.Unknown("RCS：待配置"),
         _ => ParcelPresentation.Unknown("RCS：待确认")
     };
-    public string WorkStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "已暂停供包" :
-        Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true ? "有格口未确认" :
-        Snapshot?.BlockingReasons.Length > 0 ? "有作业受阻" : Status;
     // Display copy only: never infer availability or remove the original blocking facts.
     public string WorkNotice => BlockingReasons;
-    const string PauseNotice = "Software admission paused; this is not an emergency stop";
     public bool IsInternalWorkspace => SelectedPage != "workstation";
     public bool IsSettingsNavigation => SelectedPage == "maintenance";
     public bool IsSettingsWorkspace => SelectedPage is "maintenance" or "logs";
     public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
     { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
-    public bool SettingsHasAttention => !Fresh || Snapshot?.BlockingReasons.Any(x => x != PauseNotice) == true ||
-        Snapshot?.Operations.Any(op => new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(stage => stage.State is StageState.Unknown or StageState.Conflict)) == true;
-    public string DisplayWorkNotice => !IsSettingsWorkspace || !Fresh ? WorkNotice :
-        string.Join(" · ", Snapshot?.BlockingReasons.Where(x => x != PauseNotice).Select(ChineseInterfaceText.Notice) ?? []) is { Length: > 0 } reasons ? reasons : SettingsHasAttention ? "有包裹格口未确认，请查看诊断。" : "";
     public string WorkspaceStatusBackground => OperatorTokens.Neutral;
     public string WorkspaceStatusForeground => OperatorTokens.Ink;
     internal void ReportBarcodeFeedback(ParcelBarcodeReceipt receipt, string value) => SetPresentationMessage(value, receipt.Status == "Admitted" ? PresentationFeedbackKind.ResultMirrored : PresentationFeedbackKind.General);
@@ -81,7 +72,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(DisplayWorkNotice)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics" or "logs" or "debug" or "statistics" or "exceptions")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); Changed(nameof(IsInternalWorkspace)); Changed(nameof(IsSettingsNavigation)); Changed(nameof(IsSettingsWorkspace)); Changed(nameof(WorkspaceStatusBackground)); Changed(nameof(WorkspaceStatusForeground)); }
     }
     public string PageTitle => SelectedPage switch { "statistics" => "统计与班次", "exceptions" => "异常处理", "history" => "记录", "maintenance" => "设置", "diagnostics" => "设备与诊断", "debug" => "调试", "logs" => "日志", _ => "作业" };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "供包工作台", "扫码 → 上游格口")
@@ -100,7 +91,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
         NotifyOperatorWorkspace();
-        foreach (var name in new[] { nameof(Station), nameof(TopologyStatus), nameof(WorkStatus), nameof(WorkNotice), nameof(DisplayWorkNotice), nameof(SettingsHasAttention), nameof(WorkspaceStatusBackground), nameof(WorkspaceStatusForeground), nameof(SettingsRunMode), nameof(RcsState), nameof(RcsServiceStatus), nameof(RcsPresentation) }) Changed(name);
+        foreach (var name in new[] { nameof(Station), nameof(WorkNotice), nameof(WorkspaceStatusBackground), nameof(WorkspaceStatusForeground), nameof(SettingsRunMode), nameof(RcsState), nameof(RcsServiceStatus), nameof(RcsPresentation) }) Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
@@ -164,7 +155,6 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";
     internal void SetInputFocused(bool focused) { if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
     internal void NotifyInputTarget() { PropertyChanged?.Invoke(this, new(nameof(InputTargetActive))); PropertyChanged?.Invoke(this, new(nameof(InputTargetBrush))); }
-    public string Accent => "#192736";
     public string ReaderId { get; private set; } = "未配置";
     public string ReaderIdentity { get; private set; } = "未配置";
     public string CameraAddress { get; private set; } = "尚未配置地址";

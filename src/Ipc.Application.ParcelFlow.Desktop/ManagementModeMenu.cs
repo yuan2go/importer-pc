@@ -24,11 +24,14 @@ public sealed class ManagementModeMenu : Button
     public ManagementModeMenu()
     {
         FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; MinHeight = 44; Padding = new(10, 6, 10, 6);
-        Background = new SolidColorBrush(Color.FromRgb(246, 248, 251)); Foreground = new SolidColorBrush(Color.FromRgb(71, 85, 105)); BorderBrush = Brushes.Transparent;
+        SetResourceReference(BackgroundProperty, "Soft"); SetResourceReference(ForegroundProperty, "Muted"); BorderBrush = Brushes.Transparent;
         var content = new StackPanel { Orientation = Orientation.Horizontal };
-        content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M3,7 V4 A4,4 0 0 1 11,4 V7 M1,7 H13 V17 H1 Z M7,10 V14"), Width = 14, Height = 17, Stroke = Foreground, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(0, 0, 7, 0) });
+        content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M3,7 V4 A4,4 0 0 1 11,4 V7 M1,7 H13 V17 H1 Z M7,10 V14"), Width = 14, Height = 17, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(0, 0, 7, 0) });
         content.Children.Add(label);
-        content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M0,0 L4,4 L8,0"), Width = 8, Height = 4, Stroke = Foreground, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
+        content.Children.Add(new System.Windows.Shapes.Path { Data = Geometry.Parse("M0,0 L4,4 L8,0"), Width = 8, Height = 4, StrokeThickness = 1.3, Stretch = Stretch.Uniform, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
+        // Icons follow the themed foreground.
+        foreach (var icon in content.Children.OfType<System.Windows.Shapes.Path>())
+            icon.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, new System.Windows.Data.Binding(nameof(Foreground)) { Source = this });
         Content = content;
         menu.Items.Add(expires); menu.Items.Add(renew); menu.Items.Add(action);
         renew.Click += (_, _) => RenewalRequested?.Invoke(this, new RoutedEventArgs());

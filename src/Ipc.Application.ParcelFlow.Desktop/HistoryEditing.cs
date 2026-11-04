@@ -52,12 +52,9 @@ public partial class ParcelViewModel
     public string HistoryMetricsSummary { get; private set; } = "";
     public string HistoryMetricsDetail { get; private set; } = "查询后显示本次范围的统计。";
     // One plain line for the operator; the technical counts stay in "更多筛选与查询信息".
-    internal static string HistoryMetricsText(ParcelHistoryMetrics m)
-    {
-        var notResolved = Math.Max(0, m.Operations - m.WcsAccepted - m.Unknown);
-        return m.Operations == 0 ? "本次查询没有包裹" : $"共 {m.Operations} 件 · 已取得格口 {m.WcsAccepted}" +
-            (m.Unknown > 0 ? $" · 格口未确认 {m.Unknown}，请核对" : " · 无待核对") + (notResolved > 0 ? $" · 未取得格口 {notResolved}" : "");
-    }
+    // Only counted facts are shown: an unconfirmed image stage can overlap an accepted chute, so no count is derived by subtraction.
+    internal static string HistoryMetricsText(ParcelHistoryMetrics m) => m.Operations == 0 ? "本次查询没有包裹" :
+        $"共 {m.Operations} 件 · 已取得格口 {m.WcsAccepted}" + (m.Unknown > 0 ? $" · 格口未确认 {m.Unknown}，请核对" : " · 无待核对");
     ParcelHistorySelection? historySelection;
     string? appliedHistorySignature;
     string HistoryFilterSignature() => Ipc.Platform.Wire.Encode(new[] { HistoryBarcode, HistoryPosition, HistoryState, HistoryFrom, HistoryToExclusive, HistoryRequest });

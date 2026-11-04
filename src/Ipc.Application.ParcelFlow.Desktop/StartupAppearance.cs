@@ -10,7 +10,7 @@ public static class StartupAppearance
     public static void Apply(Window window)
     {
         window.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/StartupAppearance.xaml", UriKind.Relative) });
-        window.Background = Brushes.White; window.Foreground = new SolidColorBrush(Color.FromRgb(32, 37, 45));
+        window.SetResourceReference(Control.BackgroundProperty, "Surface"); window.SetResourceReference(Control.ForegroundProperty, "Ink");
         UiTypography.Apply(window);
         window.UseLayoutRounding = true;
         FitToWorkArea(window);

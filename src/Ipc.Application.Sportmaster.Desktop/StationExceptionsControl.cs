@@ -46,7 +46,7 @@ internal sealed class StationExceptionsControl : UserControl
         body.Children.Add(Text("格口未确认的包裹勿重复上件。先凭原请求交接核对；当前内置RCS不提供查询，恢复不会重发。")); body.Children.Add(counts);
         var actions = new WrapPanel(); actions.Children.Add(category); actions.Children.Add(Button("刷新异常", () => Refresh()));
         first = Button("最新一页", () => { before = null; return Refresh(); }); next = Button("下一页未确认", () => { before = nextSequence; return Refresh(); }); actions.Children.Add(first); actions.Children.Add(next); body.Children.Add(actions); body.Children.Add(status);
-        foreach (var (label, path) in new[] { ("观察时间（本机时区）", "Time"), ("投递位", "Position"), ("条码", "Barcode"), ("状态 / 原因", "Reason"), ("建议操作", "Suggestion") }) grid.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = DataGridLength.Auto });
+        foreach (var (label, path) in new[] { ("扫描时间（本机时区）", "Time"), ("投递位", "Position"), ("条码", "Barcode"), ("状态 / 原因", "Reason"), ("建议操作", "Suggestion") }) grid.Columns.Add(new DataGridTextColumn { Header = label, Binding = new Binding(path), Width = DataGridLength.Auto });
         var workspace = new Grid(); workspace.ColumnDefinitions.Add(new()); workspace.ColumnDefinitions.Add(new()); workspace.RowDefinitions.Add(new()); workspace.RowDefinitions.Add(new()); body.Children.Add(workspace); workspace.Children.Add(grid);
         var inspector = new StackPanel(); inspector.Children.Add(hint); inspector.Children.Add(detail); workspace.Children.Add(inspector);
         var selected = new WrapPanel(); show = Button("查看详情与核对…", Show); restore = Button("打开恢复操作…", Restore); copy = Button("复制交接信息", Copy); selected.Children.Add(show); selected.Children.Add(restore); selected.Children.Add(copy); inspector.Children.Add(selected);
@@ -84,7 +84,7 @@ internal sealed class StationExceptionsControl : UserControl
         hint.Text = row is null ? "选中一条记录查看原因和处理建议。" : StationExceptionText.Guidance(row);
         detail.Text = row is null ? "" : Handover(row);
     }
-    static string Handover(StationExceptionItem r) => $"观察时间：{r.ObservedAt.ToLocalTime():O}\n投递位：{StationExceptionText.Position(r.Position)} · 条码：{r.Barcode}\n类型：{StationExceptionText.Label(r.ReasonCode)}\n作业号：{r.OperationId ?? "未准入，无作业"}\n原请求号：{r.RequestId ?? "无原请求"}" + (r.ResponseCode is null && r.ResponseMessage is null ? "" : $"\nRCS原始原因：{DiagnosticText.Protect(r.ResponseCode ?? "")} · {DiagnosticText.Protect(r.ResponseMessage ?? "")}") + "\n" + StationExceptionText.Guidance(r);
+    static string Handover(StationExceptionItem r) => $"扫描时间：{r.ObservedAt.ToLocalTime():O}\n投递位：{StationExceptionText.Position(r.Position)} · 条码：{r.Barcode}\n类型：{StationExceptionText.Label(r.ReasonCode)}\n作业号：{r.OperationId ?? "未准入，无作业"}\n原请求号：{r.RequestId ?? "无原请求"}" + (r.ResponseCode is null && r.ResponseMessage is null ? "" : $"\nRCS原始原因：{DiagnosticText.Protect(r.ResponseCode ?? "")} · {DiagnosticText.Protect(r.ResponseMessage ?? "")}") + "\n" + StationExceptionText.Guidance(r);
     async Task Show() { var id = ((grid.SelectedItem as Row)?.Fact.OperationId) ?? throw new InvalidOperationException("本次观察未创建作业，请核对观察原因"); await details(id); }
     async Task Restore() { var id = ((grid.SelectedItem as Row)?.Fact.OperationId) ?? throw new InvalidOperationException("请先选择原作业"); await vm.RequireManagementModeAsync(); await recovery(id); }
     Task Copy() { if ((grid.SelectedItem as Row)?.Fact is not { } row) throw new InvalidOperationException("请先选择一条异常"); Clipboard.SetText(Handover(row)); status.Text = "已复制所选原记录的交接信息。"; return Task.CompletedTask; }

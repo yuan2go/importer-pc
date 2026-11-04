@@ -31,7 +31,7 @@ public sealed class ManagementModeWindow : Window
         var proofLabel = new Label { Content = "管理密码", Target = proof, Padding = new(0), Margin = new(0, 8, 0, 0) }; passwordFields.Children.Add(proofLabel); passwordFields.Children.Add(proof);
         var confirm = new PasswordBox { Name = "ManagementPasswordConfirmation", MaxLength = 256, MinHeight = 44 };
         var confirmation = new StackPanel(); confirmation.Children.Add(new Label { Content = "确认密码", Target = confirm, Padding = new(0), Margin = new(0, 12, 0, 4) }); confirmation.Children.Add(confirm); passwordFields.Children.Add(confirmation);
-        var rules = new TextBlock { Text = "5–256 个字符，可使用纯数字。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) }; passwordFields.Children.Add(rules);
+        var rules = new TextBlock { Text = "5–256 个字符，可使用纯数字。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 8, 0, 12) }.Themed(TextBlock.ForegroundProperty, "Muted"); passwordFields.Children.Add(rules);
         var recoveryPolicy = new Button { Name = "RecoverManagementPassword", Content = "忘记管理密码？", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 8, 0, 0) };
         recoveryPolicy.Click += (_, _) => new ManagementPasswordRecoveryWindow(reset, inspect) { Owner = this }.ShowDialog();
         body.Children.Add(recoveryPolicy);
@@ -49,7 +49,7 @@ public sealed class ManagementModeWindow : Window
         feedbackStyle.Triggers.Add(emptyFeedback); feedback.Style = feedbackStyle;
         var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right }; Grid.SetRow(actions, 2); layout.Children.Add(actions);
         var enterButton = new Button { Name = "EnterManagementMode", Content = "进入管理模式", MinHeight = 44, MinWidth = 140, IsDefault = true }; actions.Children.Add(enterButton);
-        StartupAppearance.Primary(enterButton); StartupAppearance.Primary(save); feedback.Foreground = Brushes.Firebrick;
+        StartupAppearance.Primary(enterButton); StartupAppearance.Primary(save); feedback.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
         var leave = new Button { Name = "ExitManagementMode", Content = "退出管理模式", MinHeight = 44, Margin = new(0, 0, 12, 0) }; actions.Children.Add(leave);
         var cancel = new Button { Content = "取消", MinHeight = 44, MinWidth = 88, Margin = new(12, 0, 0, 0), IsCancel = true }; actions.Children.Insert(0, cancel); cancel.Margin = new(0, 0, 12, 0); cancel.Click += (_, _) => Close();
         var show = new CheckBox { Content = "显示密码", Margin = new(0, 8, 0, 0) }; passwordFields.Children.Add(show);

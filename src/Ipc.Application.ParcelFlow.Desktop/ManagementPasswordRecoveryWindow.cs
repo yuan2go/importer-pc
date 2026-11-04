@@ -30,7 +30,7 @@ public sealed class ManagementPasswordRecoveryWindow : Window
         var next = Field("RecoveryNewPassword", "新管理密码");
         var confirmation = Field("RecoveryConfirmation", "再次输入新密码");
         body.Children.Add(new TextBlock { Text = "5–256 个字符，可使用纯数字。已有管理授权将在重置后退出。", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 0) });
-        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, Margin = new(0, 8, 0, 8) };
+        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 8, 0, 8) }.Themed(TextBlock.ForegroundProperty, "Danger");
         AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Polite); Grid.SetRow(feedback, 1); layout.Children.Add(feedback);
         var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right }; Grid.SetRow(actions, 2); layout.Children.Add(actions);
         var cancel = new Button { Content = "取消", IsCancel = true, MinHeight = 44, MinWidth = 88, Margin = new(0, 0, 12, 0) };

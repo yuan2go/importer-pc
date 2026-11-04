@@ -20,6 +20,15 @@ public partial class SupplyStationWindow
         Deactivated += (_, _) => ViewModel.SetInputTarget("");
         Activated += (_, _) => RestoreBarcodeFocus();
         Loaded += (_, _) => RestoreBarcodeFocus();
+        // F2 / F3 choose the left / right input position without the mouse. A scanner sends text and Enter only,
+        // so it cannot trigger these keys; other pages, dialogs and owned windows keep their own keys.
+        PreviewKeyDown += (_, args) =>
+        {
+            if (args.Key is not (Key.F2 or Key.F3) || Keyboard.Modifiers != ModifierKeys.None || !CanRestoreBarcodeFocus) return;
+            var id = args.Key == Key.F2 ? "left" : "right";
+            if (work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel p && p.PositionId == id) is not { IsVisible: true, IsEnabled: true } target) return;
+            args.Handled = true; recentInputPosition = id; target.FocusBarcodeInput();
+        };
         ViewModel.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(ViewModel.InputTargetPosition) && ViewModel.InputTargetPosition is "left" or "right")

@@ -25,7 +25,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         ParcelStartupServices.RepairRegistrationAsync(Wire.FileHash(WindowsDeploymentSetup.Registration(request.ApplicationId)), request, progress, token);
     readonly Func<IProgress<InstallationPreparationProgress>, CancellationToken, Task<string>>? prepareMedia;
     CancellationTokenSource? preparing;
-    readonly ProgressBar preparationProgress = new() { Height = 6, Margin = new(0, 20, 0, 12), Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)) };
+    readonly ProgressBar preparationProgress = new ProgressBar { Height = 6, Margin = new(0, 20, 0, 12) }.Themed(Control.ForegroundProperty, "Accent");
     readonly TextBlock preparationFile = new() { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label };
     readonly TextBlock installationStage = new() { FontSize = UiTypography.Body, TextWrapping = TextWrapping.Wrap, Margin = new(0, 24, 0, 14) };
     readonly List<string> installationDetails = [];
@@ -47,7 +47,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     string newStation = "", selectedProgram = "";
     string? enteredData;
     string? installationRecordDirectory;
-    readonly TextBlock recordFeedback = new() { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, FontSize = UiTypography.Label, Margin = new(0, 10, 0, 0) };
+    readonly TextBlock recordFeedback = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 10, 0, 0) }.Themed(TextBlock.ForegroundProperty, "Danger");
     bool selectedStartMenu = true, selectedDesktop = true, advancedExpanded;
     int step;
     string installationKind = "安装";
@@ -96,13 +96,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     void Section(string label)
     {
         Body.Children.Add(new TextBlock { Text = label, FontSize = UiTypography.Group, FontWeight = UiTypography.Emphasis, Margin = new(0, 20, 0, 10) });
-        Body.Children.Add(new Border { Height = 1, Background = new SolidColorBrush(Color.FromRgb(231, 235, 239)), Margin = new(0, 0, 0, 6) });
+        Body.Children.Add(new Border { Height = 1, Margin = new(0, 0, 0, 6) }.Themed(Border.BackgroundProperty, "Line"));
     }
     Grid Row(string label, UIElement value, UIElement? end = null)
     {
         var row = new Grid { Margin = new(0, 6, 0, 6) };
         row.ColumnDefinitions.Add(new() { Width = new(82) }); row.ColumnDefinitions.Add(new());
-        var heading = new Label { Content = label, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), Padding = new(0, 6, 8, 6), VerticalAlignment = VerticalAlignment.Top };
+        var heading = new Label { Content = label, Padding = new(0, 6, 8, 6), VerticalAlignment = VerticalAlignment.Top }.Themed(Control.ForegroundProperty, "Muted");
         if (value is Control control) heading.Target = control;
         row.Children.Add(heading); Grid.SetColumn(value, 1); row.Children.Add(value);
         if (end is not null) { row.ColumnDefinitions.Add(new() { Width = GridLength.Auto }); Grid.SetColumn(end, 2); row.Children.Add(end); }
@@ -160,18 +160,18 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 ? "安装已完成，但开始菜单和程序入口的修复结果未确认。请先查看安装结果。"
                 : "未能确认本次安装的最终结果。");
             Note("请点击“查看本次安装结果”确认，查看不会重新安装。");
-            var caution = new TextBlock { Text = "确认前，请勿重复安装。", TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromRgb(121, 85, 27)) };
+            var caution = new TextBlock { Text = "确认前，请勿重复安装。", TextWrapping = TextWrapping.Wrap }.Themed(TextBlock.ForegroundProperty, "Warning");
             AutomationProperties.SetLiveSetting(caution, AutomationLiveSetting.Assertive);
-            Body.Children.Add(new Border { Background = new SolidColorBrush(Color.FromRgb(255, 248, 231)), CornerRadius = new(4), Padding = new(14, 11, 14, 11), Margin = new(0, 16, 0, 18), Child = caution });
+            Body.Children.Add(new Border { CornerRadius = new(4), Padding = new(14, 11, 14, 11), Margin = new(0, 16, 0, 18), Child = caution }.Themed(Border.BackgroundProperty, "WarningBackground"));
             Details(historical: true);
-            Body.Children.Add(new TextBlock { Text = "关闭窗口不会停止仍在进行的安装。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Foreground = new SolidColorBrush(Color.FromRgb(98, 107, 120)), Margin = new(0, 16, 0, 0) });
+            Body.Children.Add(new TextBlock { Text = "关闭窗口不会停止仍在进行的安装。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 16, 0, 0) }.Themed(TextBlock.ForegroundProperty, "Muted"));
             Body.Children.Add(recordFeedback);
             return;
         }
         if (failed)
         {
             Height = Math.Min(optionsHeight, MaxHeight);
-            Message(ChineseInterfaceText.ParameterMessage(failureMessage)); Status.Foreground = Brushes.Firebrick;
+            Message(ChineseInterfaceText.ParameterMessage(failureMessage)); Status.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
             Note("失败阶段：" + installationStage.Text + "。请先查看本次安装详情和记录。安装可能已部分完成，不能据报错认定数据未改动；返回安装选项后将重新预检，结果未确认时先核对原次安装。安装不会自动回滚。");
             Details(); next.Content = "返回安装选项"; Body.Children.Add(recordFeedback); return;
         }
@@ -179,7 +179,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Height = Math.Min(440, MaxHeight);
             Message("请稍候，安装完成后将显示结果。");
-            Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 10, Foreground = new SolidColorBrush(Color.FromRgb(8, 102, 232)), Margin = new(0, 12, 0, 12) });
+            Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 10, Margin = new(0, 12, 0, 12) }.Themed(Control.ForegroundProperty, "Accent"));
             Details();
             Note("取消是否可用以当前步骤和取消按钮为准。请求取消后仍须等待本次结果；关闭窗口不会回滚安装。"); return;
         }
@@ -301,7 +301,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             content.Children.Add(new TextBlock { Text = "诊断结果", FontSize = UiTypography.Label, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 6) });
             content.Children.Add(new TextBox { Text = failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, MinHeight = 0, MaxHeight = 100, BorderThickness = new(0), Background = Brushes.Transparent, Padding = new(0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
             content.Children.Add(new Expander { Header = "原始消息文本", FontSize = UiTypography.Label, Margin = new(0, 12, 0, 0), Content = new TextBox { Text = original + "\n" + failureMessage, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, MinHeight = 0, MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
-            Body.Children.Add(new Expander { Header = "安装详情", Content = new Border { Background = new SolidColorBrush(Color.FromRgb(246, 248, 251)), CornerRadius = new(4), Padding = new(12), Margin = new(0, 8, 0, 0), Child = content }, IsExpanded = false });
+            Body.Children.Add(new Expander { Header = "安装详情", Content = new Border { CornerRadius = new(4), Padding = new(12), Margin = new(0, 8, 0, 0), Child = content }.Themed(Border.BackgroundProperty, "Soft"), IsExpanded = false });
             return;
         }
         installationDetailView = new TextBox { Text = original, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 0, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
@@ -358,7 +358,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             try { details = DiagnosticText.Protect(error.Message); }
             catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { details = "启动诊断无法显示，请查看启动记录。"; }
             Message("安装已完成，但打开供包台未成功。可点击完成重试打开，或取消勾选后关闭。\n" + details);
-            Status.Foreground = Brushes.Firebrick;
+            Status.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
             return;
         }
         if (step == 2 || installing)
@@ -375,11 +375,11 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 CaptureInputs();
                 try { preflightError = DiagnosticText.Protect(error.Message); }
                 catch (System.Text.RegularExpressions.RegexMatchTimeoutException) { preflightError = "预检诊断无法显示，请检查路径与配置后重试。"; }
-                Render(); Message("安装预检未通过，请查看本次预检详情。"); Status.Foreground = Brushes.Firebrick;
+                Render(); Message("安装预检未通过，请查看本次预检详情。"); Status.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
                 return;
             }
             if (step == 0) { next.Visibility = Visibility.Visible; next.Content = "重试检查"; cancel.Content = "取消"; cancel.IsEnabled = true; }
-            Message("未完成：" + ChineseInterfaceText.ParameterMessage(error.Message)); Status.Foreground = Brushes.Firebrick;
+            Message("未完成：" + ChineseInterfaceText.ParameterMessage(error.Message)); Status.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
         }
     }
     protected override void OperationCompleted()

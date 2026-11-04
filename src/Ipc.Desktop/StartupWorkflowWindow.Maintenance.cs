@@ -10,7 +10,7 @@ namespace Ipc.Desktop;
 
 public abstract partial class StartupWorkflowWindow
 {
-    readonly Border maintenancePanel = new() { Visibility = Visibility.Collapsed, Margin = new(0, 8, 0, 8), Padding = new(8), BorderThickness = new(1), BorderBrush = Brushes.LightSlateGray, Background = Brushes.White };
+    readonly Border maintenancePanel = new Border { Visibility = Visibility.Collapsed, Margin = new(0, 8, 0, 8), Padding = new(8), BorderThickness = new(1) }.Themed(Border.BorderBrushProperty, "Line").Themed(Border.BackgroundProperty, "Surface");
     readonly TextBox maintenanceReadout = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 54, MaxHeight = 140, BorderThickness = new(0), Background = Brushes.Transparent };
     readonly Button maintenanceCancel = new() { Content = "请求取消", MinHeight = 44, MinWidth = 110, Margin = new(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Top };
     readonly TextBlock maintenanceElapsed = new() { Margin = new(0, 4, 0, 0) };

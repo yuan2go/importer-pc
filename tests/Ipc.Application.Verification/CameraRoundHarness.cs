@@ -91,6 +91,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         if (!(await App.ManagementModeStatusAsync()).Configured) await App.ConfigureManagementPasswordAsync(Password);
         if (!await App.EnterManagementModeAsync(Password)) throw new InvalidOperationException("Synthetic management grant rejected");
     }
+    public Task WaitForCameraAdmissionAsync() => Until(async () =>
+        (await App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Camera == true));
     public async Task<CameraInspectionStatus> BeginAsync()
     {
         var snapshot = await App.SnapshotAsync();

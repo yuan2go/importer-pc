@@ -24,6 +24,9 @@ public partial class SupplyStationPosition : UserControl
                 source = source is Visual ? VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source))
                 if (source is ButtonBase or TextBoxBase or ScrollBar) return;
             FocusBarcodeInput();
+            // ScrollViewer's default mouse handling would otherwise take focus
+            // back from the barcode editor after this preview event.
+            e.Handled = true;
         };
         IsKeyboardFocusWithinChanged += (_, _) =>
         {
@@ -104,6 +107,7 @@ public partial class SupplyStationPosition : UserControl
         if (!IsVisible || !IsEnabled) return;
         BarcodeEntry.Focus(); PrepareResultReplacement();
     }
+    internal bool IsBarcodeInputFocused => BarcodeEntry.IsKeyboardFocused;
     internal void ReceiveScannerText(string text)
     {
         FocusBarcodeInput();

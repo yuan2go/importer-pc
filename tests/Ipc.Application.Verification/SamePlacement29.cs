@@ -2,6 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
+using Ipc.Drivers.Hikrobot.Mvs;
 
 // SM-SAME-PLACEMENT-29: one placement on the supply tray is one RCS request.
 // Real ZXing, synthetic MVS frames, built-in RCS over loopback HTTP and the SM work card.
@@ -28,13 +29,14 @@ internal static class SamePlacement29
         }
         finally { siteDecoder.Release(); }
         await h.StartAsync();
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Camera == true));
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         uint frame = 0;
         long Processed() => h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
         async Task Read(string code)
         {
             var before = Processed();
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(code), ++frame);
+            await Deliver(h, h.Left, CameraRoundHarness.Barcode(code), ++frame);
             await CameraRoundHarness.Until(() => Task.FromResult(Processed() > before));
         }
         var blank = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);
@@ -42,9 +44,7 @@ internal static class SamePlacement29
         {
             for (var i = 0; i < frames; i++)
             {
-                var decoded = h.Factory.Decoders[h.Left].Count;
-                h.Api(h.Left).Enqueue(blank, ++frame);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count > decoded));
+                await Deliver(h, h.Left, blank, ++frame);
                 await Task.Delay(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs / 2);
             }
         }
@@ -108,9 +108,7 @@ internal static class SamePlacement29
         // 6b. Glare flicker: three quick no-code frames shorter than the minimum empty time.
         for (var i = 0; i < 3; i++)
         {
-            var decoded = h.Factory.Decoders[h.Left].Count;
-            h.Api(h.Left).Enqueue(blank, ++frame);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count > decoded));
+            await Deliver(h, h.Left, blank, ++frame);
         }
         await Read("SYNTH-PLACE-C");
         Check(h.Peer.Requests.Count == 4 && ParcelInputReasons.IsSamePlacement(await Latest()),
@@ -161,25 +159,22 @@ internal static class SamePlacement29
     {
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-scene"), stillMs: "40") { PlacementReleaseMs = 5000 };
         await h.StartAsync();
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Camera == true));
         uint frame = 0;
         var decoder = h.Factory.Decoders[h.Left];
         // Delivers the same picture until the camera has decoded `decodes` more frames of it.
-        async Task Show(CameraRoundHarness.RoundPixels picture, int decodes, int spacingMs)
+        async Task<MvsFrameLatency[]> Show(CameraRoundHarness.RoundPixels picture, int decodes, int spacingMs)
         {
-            // The decoder counter can include an older picture already in flight.
-            // Count completed frame facts from this delivery, not queued prior work.
-            var first = frame + 1; var completed = 0;
-            var source = (IObservationReadFeedbackSource)h.Factory.Sources[h.Left];
-            void Observed(ObservationReadFeedback value) { if (value.FrameNumber >= first) Interlocked.Increment(ref completed); }
-            source.ReadFeedback += Observed;
-            try
+            var completed = new List<MvsFrameLatency>();
+            var deadline = DateTime.UtcNow.AddSeconds(20);
+            while (completed.Count < decodes && DateTime.UtcNow < deadline)
             {
-                var deadline = DateTime.UtcNow.AddSeconds(20);
-                while (Volatile.Read(ref completed) < decodes && DateTime.UtcNow < deadline)
-                { h.Api(h.Left).Enqueue(picture, ++frame); await Task.Delay(spacingMs); }
-                if (Volatile.Read(ref completed) < decodes) throw new TimeoutException("synthetic camera did not decode the still picture");
+                var delivered = await Deliver(h, h.Left, picture, ++frame);
+                if (delivered.DecodeAttempted) completed.Add(delivered);
+                await Task.Delay(spacingMs);
             }
-            finally { source.ReadFeedback -= Observed; }
+            if (completed.Count < decodes) throw new TimeoutException("synthetic camera did not decode the still picture");
+            return completed.ToArray();
         }
         async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
         var parcel = CameraRoundHarness.Barcode("SYNTH-SCENE-A");
@@ -223,7 +218,10 @@ internal static class SamePlacement29
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
         Check(h.Peer.Requests.Count == 1, "rereading after reconnect restores the original chute without another request");
 
-        await Show(CameraRoundHarness.EmptyTray, 4, 300);
+        var empty = await Show(CameraRoundHarness.EmptyTray, 4, 300);
+        Check(empty.Length >= SportmasterFlow.DefaultSamePlacementEmptyFrames &&
+            empty[^1].DeliveredAt - empty[0].DeliveredAt >= TimeSpan.FromMilliseconds(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs),
+            "empty-tray evidence contains enough completed frames spanning the actual minimum release time");
         await vm.RefreshAsync();
         Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture,
             "a changed empty tray clears the retained result and original picture");
@@ -231,5 +229,20 @@ internal static class SamePlacement29
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
         Check(h.Peer.Requests.Count == 2, "lifting the parcel changes the scene, the empty tray is seen, and placing it again requests once");
         await h.App.StopAsync(default);
+    }
+
+    static async Task<MvsFrameLatency> Deliver(CameraRoundHarness h, string device, CameraRoundHarness.RoundPixels picture, uint number)
+    {
+        // A decode feedback event precedes durable handoff. Wait for this exact
+        // frame's completed trace before changing the scene or reconnecting; no
+        // queued synthetic frame may turn into an undelivered original at stop.
+        h.Api(device).Enqueue(picture, number);
+        MvsFrameLatency? completed = null;
+        await CameraRoundHarness.Until(() =>
+        {
+            completed = h.Factory.Sources[device].Timings.Snapshot().RecentFrames.SingleOrDefault(f => f.Number == number);
+            return Task.FromResult(completed is not null);
+        });
+        return completed!;
     }
 }

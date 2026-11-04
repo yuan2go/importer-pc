@@ -73,6 +73,13 @@ static partial class Program
             // Actual OS mouse input, including a hit in empty space and on a label.
             var rightOutline = (Border)right.FindName("PositionOutline");
             window.Activate(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            var rightBody = (ScrollViewer)right.FindName("PositionBody");
+            await BarcodeNativeKeyboard.ClickAsync(window, rightBody, new Point(rightBody.ActualWidth / 2, rightBody.ActualHeight / 2));
+            Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "clicking the waiting card's central scroll area immediately focuses right barcode input");
+            rightBody.Focus();
+            await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [(ushort)'7'], rightBody);
+            Check(rightEntry.Text == "7" && rightEntry.IsKeyboardFocused, "scanner typing from the card scroll viewer transfers to its selected barcode editor");
+            rightEntry.Clear();
             await BarcodeNativeKeyboard.ClickAsync(window, rightOutline, new Point(4, rightOutline.ActualHeight / 2));
             Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "clicking empty right-card space selects right and focuses barcode input");
             await BarcodeNativeKeyboard.SendAsync(window, rightEntry, "000731".Select(c => (ushort)c).Append((ushort)0x0D).ToArray());
@@ -91,6 +98,28 @@ static partial class Program
             await BarcodeNativeKeyboard.SendAsync(window, rightEntry, "000732".Select(c => (ushort)c).Append((ushort)0x0D).ToArray(), rightSlot);
             await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Barcode == "000732");
             Check(h.Peer.Requests.Count == requests + 2 && rightEntry.IsKeyboardFocused, "scanner typing from the read-only chute reaches selected right entry before Enter and creates exactly one new request");
+            await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [0x1B], rightEntry);
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            Check(vm.InputTargetPosition == "" && !rightEntry.IsKeyboardFocused && !leftEntry.IsKeyboardFocused, "native Escape cancels selection and releases both barcode editors");
+            var client = (Grid)window.FindName("ClientArea"); client.Focusable = true; client.Focus();
+            var leftText = leftEntry.Text; var rightText = rightEntry.Text;
+            await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [(ushort)'9', 0x0D], client);
+            Check(leftEntry.Text == leftText && rightEntry.Text == rightText && h.Peer.Requests.Count == requests + 2 && vm.InputTargetPosition == "",
+                "text and Enter after Escape cannot edit or submit either barcode");
+            await BarcodeNativeKeyboard.ClickAsync(window, rightOutline, new Point(4, rightOutline.ActualHeight / 2));
+            Check(rightEntry.IsKeyboardFocused && vm.InputTargetPosition == "right", "an explicit card click selects it again after Escape");
+            var clock = (TextBlock)window.FindName("StationClock");
+            await BarcodeNativeKeyboard.ClickAsync(window, clock, new Point(8, clock.ActualHeight / 2));
+            await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            Check(vm.InputTargetPosition == "" && !rightEntry.IsKeyboardFocused && !leftEntry.IsKeyboardFocused, "clicking outside both cards cancels selection without snapshot-driven refocus");
+            client.Focus();
+            await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [(ushort)'8', 0x0D], client);
+            Check(leftEntry.Text == leftText && rightEntry.Text == rightText && h.Peer.Requests.Count == requests + 2,
+                "text and Enter after an outside click cannot edit or submit either barcode");
+            await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [0x72], client);
+            Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "F3 explicitly restores right input after cancellation");
+            await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [0x70], rightEntry);
+            Check(!Application.Current.Windows.OfType<StationHelpWindow>().Any(), "native F1 does not open help in this version");
             CaptureInternal(evidence, "position-input-card-selection", (Grid)window.FindName("ClientArea"), lines);
         }
         finally { window.Close(); }

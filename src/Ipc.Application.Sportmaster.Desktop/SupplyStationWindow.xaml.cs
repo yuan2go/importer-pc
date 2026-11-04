@@ -28,7 +28,6 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent(); ProductBrand.Apply(this); UiTypography.Apply(this);
         ViewModel = new(application); DataContext = ViewModel; InitializePresentationFeedback(); this.stopOwner = stopOwner;
-        InitializeHelp();
         InitializeAudio();
         ViewModel.RequestActivationAsync = RequestActivation;
         ViewModel.RequestRetentionAsync = RequestRetention;

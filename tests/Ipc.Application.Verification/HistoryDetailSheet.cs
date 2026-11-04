@@ -51,5 +51,12 @@ static class HistoryDetailSheet
         var manual = ok with { OperatorInput = new(Wire.Id(), "Keyboard", "operator", null, at) };
         Check(ParcelDetailSheets.Build(manual).Sections[0].Rows.Single(x => x.Label == "来源").Value == "键盘录入" &&
             ParcelDetailSheets.Build(ok).Sections[0].Rows.Single(x => x.Label == "来源").Value == "相机读码", "the input source is named in station words");
+
+        // Record page summary line: counts in station words, technical counts stay behind "更多筛选与查询信息".
+        var all = ParcelViewModel.HistoryMetricsText(new(12, 12, 12, 0, 0, 13));
+        var pending = ParcelViewModel.HistoryMetricsText(new(5, 5, 2, 1, 0, 5));
+        Check(all == "共 12 件 · 已取得格口 12 · 无待核对" && !all.Contains("序号") && !all.Contains("发送次数"), "a clean query reads as parcels and chutes, without sequence numbers or send counts");
+        Check(pending == "共 5 件 · 已取得格口 2 · 格口未确认 1，请核对 · 未取得格口 2", "unconfirmed chutes ask for a check, and parcels without a chute are counted");
+        Check(ParcelViewModel.HistoryMetricsText(new(0, 0, 0, 0, 0, 0)) == "本次查询没有包裹", "an empty query says so plainly");
     }
 }

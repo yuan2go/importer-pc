@@ -121,9 +121,10 @@ public partial class ParcelViewModel
                 }
                 cancellation.Token.ThrowIfCancellationRequested();
                 if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
-                compactHistoryMetrics = $"本范围 作业 {metrics.Operations} · 已接受 {metrics.WcsAccepted} · 格口未确认 {metrics.Unknown}";
-                HistoryMetricsSummary = $"序号 ≤ {selection.UpperSequence} · 作业 {metrics.Operations} · 请求 {metrics.WcsRequests} · 已接受 {metrics.WcsAccepted} · 格口未确认 {metrics.Unknown} · 记录物理完成 {metrics.PhysicalCompleted} · 发送次数 {metrics.SendAttempts}（取得格口不代表已落格）";
-                Changed(nameof(HistoryMetricsSummary)); appliedHistorySignature = signature; historySelection = selection;
+                compactHistoryMetrics = HistoryMetricsText(metrics);
+                HistoryMetricsSummary = HistoryMetricsText(metrics);
+                HistoryMetricsDetail = $"统计到查询时的第 {selection.UpperSequence} 号作业 · 作业 {metrics.Operations} · 取格口请求 {metrics.WcsRequests} · 已取得格口 {metrics.WcsAccepted} · 格口未确认 {metrics.Unknown} · 报告已落格 {metrics.PhysicalCompleted} · 发送次数 {metrics.SendAttempts}。同一条码的每次放置分别统计；取得格口不代表已落格。";
+                Changed(nameof(HistoryMetricsSummary)); Changed(nameof(HistoryMetricsDetail)); appliedHistorySignature = signature; historySelection = selection;
                 foreach (var id in positionIds) historicalPositions.Add(id);
             }
             else throw new NotSupportedException("当前组件缺少可取消的历史查询契约；请使用完整的同版组件。");

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using Ipc.Platform;
 
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
@@ -57,9 +58,15 @@ internal static class MvsNative
 
 internal sealed record MvsDevice(string Ip, string Serial, string Model, string Firmware, byte[] Descriptor);
 internal sealed record MvsFrame(nint Data, uint Width, uint Height, uint PixelType, ulong Length, uint Number, uint Trigger, uint LostPackets, uint ExtraType = 0, uint SubImages = 0,
-    ulong DeviceTimestampRaw = 0, long HostTimestampRaw = 0);
+    ulong DeviceTimestampRaw = 0, long HostTimestampRaw = 0)
+{
+    internal RecognitionSymbol[]? NativeSymbols { get; init; }
+    internal MvsFrameRejection? NativeRejection { get; init; }
+    internal double NativeRecognitionMs { get; init; }
+}
 internal interface IMvsApi
 {
+    bool ReturnsDecodedFrames => false;
     void Initialize();
     MvsDevice[] Enumerate();
     void Create(MvsDevice device);

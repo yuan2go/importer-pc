@@ -25,11 +25,13 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     readonly ExtensionContext context;
     readonly IMvsApi api;
     readonly IMonoBarcodeDecoder? decoder;
+    bool Recognizes => decoder is not null || api.ReturnsDecodedFrames;
+    string FramePrefix => api.ReturnsDecodedFrames ? "mvid" : "mvs";
     readonly bool diagnosticVideoSampling;
     readonly MvsOriginalFrames originals = new();
     public void EnableOriginalFrames()
     {
-        lock (gate) { if (worker is not null || decoder is null) throw new InvalidOperationException("Bind original frames before software reader startup"); originals.Enable(); }
+        lock (gate) { if (worker is not null || !Recognizes) throw new InvalidOperationException("Bind original frames before software reader startup"); originals.Enable(); }
     }
     public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity) => originals.Retain(identity);
     public void ReleaseOriginalFrame(AcquisitionIdentity identity) => originals.Release(identity);
@@ -64,18 +66,19 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     public string Failure { get { lock (gate) return failure; } }
     // SDK errors from StopGrabbing/CloseDevice in the last teardown that did complete; empty when clean.
     public string TeardownNotes { get { lock (gate) return teardown; } }
-    public string ConfirmationSource { get { lock (gate) return $"SDK:{(decoder is null ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(decoder is null ? "Unavailable" : "ZXingCpp-3.1.1")}; businessReady={(decoder is null ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; stillMs={stillMs}; movingFrames={movingFrames}; fallbackDecodes={fallbackDecodes}; failure={failure}; teardown={teardown}"; } }
+    public string ConfirmationSource { get { lock (gate) return $"SDK:{(api.ReturnsDecodedFrames ? "hikrobot-mvid-native" : !Recognizes ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(!Recognizes ? "Unavailable" : api.ReturnsDecodedFrames ? "MVIDCodeReader-1.1.4.0" : "ZXingCpp-3.1.1")}; businessReady={(!Recognizes ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; stillMs={stillMs}; movingFrames={movingFrames}; fallbackDecodes={fallbackDecodes}; failure={failure}; teardown={teardown}"; } }
     internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null, bool diagnosticVideoSampling = false)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoder = decoder;
+        if (api.ReturnsDecodedFrames && decoder is not null) throw new ArgumentException("One recognition engine must own a frame");
         this.diagnosticVideoSampling = diagnosticVideoSampling;
-        if (diagnosticVideoSampling && decoder is not null) throw new ArgumentException("Raw throughput diagnostic must not contain a decoder");
-        entityMode = context.Parameters.GetValueOrDefault("entity.mode", decoder is null ? "observe-only" : "read-result");
+        if (diagnosticVideoSampling && Recognizes) throw new ArgumentException("Raw throughput diagnostic must not contain a decoder");
+        entityMode = context.Parameters.GetValueOrDefault("entity.mode", !Recognizes ? "observe-only" : "read-result");
         this.acquireLease = acquireLease ?? (actualSerial => new ResourceLease(MachineRuntimePolicy.ResolveLeaseRoot(null), ["device:hikrobot-gige:" + actualSerial]));
         ip = context.Parameters.GetValueOrDefault("device.ip", ""); serial = context.Parameters.GetValueOrDefault("device.serial", "");
         if (!IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork || address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255")
             throw new InvalidDataException("device.ip: explicit canonical IPv4 required");
-        if (decoder is null && entityMode != "observe-only" || decoder is not null && entityMode is not ("read-result" or "observe-only"))
+        if (!Recognizes && entityMode != "observe-only" || Recognizes && entityMode is not ("read-result" or "observe-only"))
             throw new InvalidDataException("DecoderUnavailable: acquisition cannot create parcel admissions; entity.mode must be observe-only");
         triggerRequirement = context.Parameters.GetValueOrDefault("acquisition.trigger", "existing");
         if (triggerRequirement is not ("existing" or "on" or "off")) throw new InvalidDataException("Unknown trigger requirement");
@@ -83,7 +86,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         maximumPayload = int.Parse(context.Parameters.GetValueOrDefault("image.maximum-payload-bytes", "8388608"), System.Globalization.CultureInfo.InvariantCulture);
         if (nodes is < 1 or > 4 || maximumPayload is < 1048576 or > 33554432) throw new InvalidDataException("Image nodes must be 1..4 and payload budget 1..32 MiB");
         // Recognise only settled frames (decoder path only); 0 decodes every frame as before.
-        stillMs = decoder is null ? 0 : int.Parse(context.Parameters.GetValueOrDefault("motion.still-ms", "200"), System.Globalization.CultureInfo.InvariantCulture);
+        stillMs = !Recognizes ? 0 : int.Parse(context.Parameters.GetValueOrDefault("motion.still-ms", "200"), System.Globalization.CultureInfo.InvariantCulture);
         if (stillMs is < 0 or > 2000) throw new InvalidDataException("motion.still-ms must be 0..2000");
     }
     void PhaseTo(string value) { lock (gate) phase = value; phaseChanged?.Invoke(value); }
@@ -135,7 +138,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     catch (IOException error) { throw new ObservationConnectionException("MVS相机暂时无法取得独占连接。", error); }
                     opened = true; token.ThrowIfCancellationRequested();
                     PhaseTo("read-parameters");
-                    if (decoder is not null)
+                    if (Recognizes)
                     {
                         // Current standalone station has no PLC/trigger dependency.
                         // Set only when necessary and verify actual device readback.
@@ -146,14 +149,14 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         }
                     }
                     var trigger = api.EnumValue("TriggerMode");
-                    if (decoder is null && (triggerRequirement == "on" && trigger != 1 || triggerRequirement == "off" && trigger != 0))
+                    if (!Recognizes && (triggerRequirement == "on" && trigger != 1 || triggerRequirement == "off" && trigger != 0))
                         throw new InvalidDataException("Configured trigger requirement differs from device; no trigger settings were written");
                     if (api.EnumValue("PixelFormat") != MvsNative.Mono8) throw new InvalidDataException("Current target acquisition requires existing Mono8; pixel format was not changed");
                     var payload = api.PayloadSize();
                     if (payload <= 0 || payload > maximumPayload) throw new InvalidDataException("PayloadSize exceeds configured image byte budget");
-                    token.ThrowIfCancellationRequested(); PhaseTo("configure-sdk-buffers"); api.ConfigureBuffers((uint)nodes, decoder is null ? 0u : 1u);
+                    token.ThrowIfCancellationRequested(); PhaseTo("configure-sdk-buffers"); api.ConfigureBuffers((uint)nodes, !Recognizes ? 0u : 1u);
                     token.ThrowIfCancellationRequested(); PhaseTo("start-grabbing"); grabbing = true; api.Start(); token.ThrowIfCancellationRequested();
-                    cancel = new(); PhaseTo(decoder is null ? "acquiring-decoder-unavailable" : "reading"); Publish(decoder is null ? DeviceHealth.Unknown : DeviceHealth.Ready);
+                    cancel = new(); PhaseTo(!Recognizes ? "acquiring-decoder-unavailable" : "reading"); Publish(!Recognizes ? DeviceHealth.Unknown : DeviceHealth.Ready);
                     // GetImageBuffer and decoding form a synchronous, lifetime-long
                     // loop. Keep it off the shared pool used by Application/UI
                     // preview reads, continuations and shutdown coordination.
@@ -216,18 +219,18 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         previousDelivery = deliveredTicks;
                         try
                         {
-                            if (decoder is not null && frame.LostPackets != 0)
+                            if (Recognizes && frame.LostPackets != 0)
                                 throw new MvsFrameRejection("LostPackets", "Incomplete GigE frame discarded; SDK buffer will be returned");
                             ValidateFrame(frame, maximumPayload);
-                            if (decoder is not null && (ulong)frame.Width * frame.Height != frame.Length)
+                            if (Recognizes && (ulong)frame.Width * frame.Height != frame.Length)
                                 throw new InvalidDataException("MVS software decoding requires a verified tight Mono8 stride");
                             lock (gate)
                             {
                                 if (priorFrame is { } prior)
                                 {
-                                    if (decoder is not null && frame.Number <= prior)
+                                    if (Recognizes && frame.Number <= prior)
                                         throw new ObservationConnectionException("MVS帧号回退；须清理原采集并建立新周期。", new IOException("MVS frame sequence reset"));
-                                    if (frame.Number <= prior || decoder is null && !diagnosticVideoSampling && frame.Number - prior != 1)
+                                    if (frame.Number <= prior || !Recognizes && !diagnosticVideoSampling && frame.Number - prior != 1)
                                         throw new IOException("MVS frame sequence gap/reset; inspect original source before restart");
                                     skippedBefore = frame.Number - prior - 1; skippedVideoFrames += skippedBefore;
                                     if (skippedBefore > 0) videoGapEvents++;
@@ -238,7 +241,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             preview.Offer(frame.Data, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
                             var allowDecode = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
                             lock (gate) decodePaused = !allowDecode;
-                            if (decoder is not null && allowDecode)
+                            if (Recognizes && allowDecode)
                             {
                                 var sampled = Stopwatch.GetTimestamp();
                                 var settled = stillness.Observe(frame.Data, checked((int)frame.Width), checked((int)frame.Height), deliveredTicks);
@@ -247,7 +250,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 allowDecode = settled != StillnessDecision.Moving;
                                 scene = stillness.Scene;
                             }
-                            if (decoder is not null && allowDecode)
+                            if (Recognizes && allowDecode)
                             {
                                 var copyStarted = Stopwatch.GetTimestamp();
                                 length = checked((int)(frame.Width * frame.Height)); pixels = ArrayPool<byte>.Shared.Rent(length);
@@ -269,7 +272,23 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             finally { releaseMs = Stopwatch.GetElapsedTime(releaseStarted).TotalMilliseconds; Timings.Record("sdk.release", releaseMs); }
                         }
                         if (pixels is not null)
-                            OfferDecode(new(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration) { Scene = scene });
+                        {
+                            var work = new DecodeWork(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration) { Scene = scene };
+                            if (api.ReturnsDecodedFrames)
+                            {
+                                // Native recognition already happened. Do not replace a decoded result with a newer frame.
+                                try { ProcessDecode(work, token); }
+                                catch (MvsFrameRejection error)
+                                {
+                                    RejectFrame(frame.Number, error, true, scene);
+                                    work.Trace = new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
+                                        copyMs, releaseMs, frame.NativeRecognitionMs, 0, 0, 0, 0, false)
+                                        { DecodeAttempted = true, RejectedFrame = true };
+                                }
+                                finally { ReturnWork(work, false); }
+                            }
+                            else OfferDecode(work);
+                        }
                         else Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw, 0, releaseMs, 0, 0, 0, 0, 0, false));
                         Timings.Record("host.capture-work", Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds);
                     }
@@ -281,7 +300,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         if (!connected) throw new ObservationConnectionException("MVS原相机断开。", new IOException("Original camera unavailable"));
                         // The exclusive SDK handle was bound to the verified physical serial at startup.
                         // Fresh, validated frames on that handle prove liveness; global discovery is for idle/recovery.
-                        if (decoder is null || Frames == healthFrames)
+                        if (!Recognizes || Frames == healthFrames)
                         {
                             bool matches; using (Timings.Measure("health.enumerate")) matches = api.Enumerate().Count(d => d.Ip == ip && d.Serial == physicalSerial) == 1;
                             if (!matches) throw new ObservationConnectionException("MVS原相机身份不匹配。", new IOException("Original camera unavailable"));
@@ -290,7 +309,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             if (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0)
                                 throw new IOException("MVS device trigger setting changed");
                         healthFrames = Frames;
-                        PhaseTo(decoder is null ? "acquiring-decoder-unavailable" : "reading"); Publish(decoder is null ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
+                        PhaseTo(!Recognizes ? "acquiring-decoder-unavailable" : "reading"); Publish(!Recognizes ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
                     }
                 }
                 finally { EndInspectedCycle(inspected.Generation); }
@@ -392,7 +411,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 disposal = Task.Run(async () =>
                 {
                     await lifecycle.WaitAsync().ConfigureAwait(false);
-                    try { await StopCore().ConfigureAwait(false); originals.Dispose(); decodeWake.Dispose(); decodeIdle.Dispose(); disposed = true; }
+                    try { await StopCore().ConfigureAwait(false); originals.Dispose(); ReleaseNativeCustody(); decodeWake.Dispose(); decodeIdle.Dispose(); disposed = true; }
                     catch (Exception ex) { lock (gate) failure = ex.GetType().Name + ": " + ex.Message; throw; }
                     finally { lifecycle.Release(); }
                 });

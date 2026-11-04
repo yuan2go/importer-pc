@@ -25,7 +25,7 @@ F-01/F-02采用C#、.NET10、WPF、SQLite、Windows x64的模块化单体。优�
 
 Sportmaster、DirectPlc、WcsToPlc分别拥有独立主流程；Supply及Inspection是独立参考装配。不能以SM不用为由删除其他业务的设备、协议或通用扩展。
 
-SM使用内置MVS采图＋进程内软件识别和内置RCS，无PLC。每台相机配置真实IP/序列号及唯一编码，取格口与心跳共用编码，默认连续识别，各独立识别交RCS去重。TCP/MvCodeReader不在SM生产选装集合。显式Simulation测试可用人工输入或loopback夹具，但不能形成Production资格。
+SM使用内置MVS采图＋进程内软件识别，或按相机选择[海康MVID原生识码](mvid-native-reader.md)，共用内置RCS，无PLC。每台相机配置真实IP/序列号及唯一编码，取格口与心跳共用编码。连续识别交Application筛选和放置防重，同一次放置仅请求一次。TCP和旧MvCodeReader驱动不在SM生产选装集合。显式Simulation测试可用人工输入或loopback夹具，但不能形成Production资格。
 
 2026-10-30追加[SM-WORKSTATION-03](../archive/work-packages/WP-IPC-SM-WORKSTATION-03.md)：生产键盘/PDA键盘补录通过Application的独立持久命令进入原选码/准入流程；不借Simulation或伪造SDK采集身份，不更新设备健康，原必需连接、原请求及隔离守卫继续有效。日常图片沿同一MVS采集所有者按原观察/作业身份只读留存，切页不重建连接。该增量目前为未验证源码。
 

@@ -153,7 +153,7 @@ public sealed class ParcelPictureWindow : Window
         BitmapSource gray = decoded.Format == PixelFormats.Gray8 ? decoded : new FormatConvertedBitmap(decoded, PixelFormats.Gray8, null, 0);
         var pixels = new byte[checked(info.Width * info.Height)]; gray.CopyPixels(pixels, info.Width, 0);
         if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)) != info.RawSha256) throw new InvalidDataException("图片校验未通过，可能已损坏。");
-        var source = info.Acquisition; var numberText = source.SourceEventId.StartsWith("mvs.frame.", StringComparison.Ordinal) ? source.SourceEventId[10..] : "";
+        var source = info.Acquisition; var numberText = source.SourceEventId.StartsWith("mvs.frame.", StringComparison.Ordinal) ? source.SourceEventId[10..] : source.SourceEventId.StartsWith("mvid.frame.", StringComparison.Ordinal) ? source.SourceEventId[11..] : "";
         _ = long.TryParse(numberText, out var number);
         return new(new("business-original:" + archived.OperationId, "business-original", source.DeviceId, source.Epoch, number,
             source.ObservedAt, info.Width, info.Height, [], 0, null, source.SourceEventId, null, info.RawSha256!, true,

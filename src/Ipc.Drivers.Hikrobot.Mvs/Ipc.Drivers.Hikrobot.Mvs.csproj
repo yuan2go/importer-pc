@@ -9,6 +9,7 @@
     <Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference>
     <Compile Remove="SoftwareDecoder*.cs"/>
     <Compile Remove="ReaderSettings.cs"/>
+    <Compile Remove="Mvid*.cs"/>
   </ItemGroup>
   <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences">
     <Error Condition="'$(IpcContractPath)' != '' And !Exists('$(IpcContractPath)')" Text="Provide IpcContractPath from the exact frozen host delivery."/>
@@ -23,5 +24,6 @@
     <EmbeddedResource Include="bundled-runtime.json" LogicalName="Mvs.Runtime.json"/>
     <EmbeddedResource Include="reader-parameters.json" LogicalName="Mvs.ReaderParameters.json"/>
     <EmbeddedResource Include="zxing-runtime.json" LogicalName="Mvs.ZxingRuntime.json"/>
+    <EmbeddedResource Include="mvid-runtime.json" LogicalName="Mvid.Runtime.json"/>
   </ItemGroup>
 </Project>

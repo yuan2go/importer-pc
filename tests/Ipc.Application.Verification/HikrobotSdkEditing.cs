@@ -23,10 +23,13 @@ internal static class HikrobotSdkEditing
         Check(rcs.Parameters.All(p => p.Field.Key is not ("source" or "locale")), "RCS envelope constants are not parameters");
         rcs.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value = "SYNTH-LEFT";
         rcs.Parameters.Single(p => p.Field.Key == "right-bcr-code").Value = "SYNTH-RIGHT";
+        draft.Readers[0].Parameters.Single(p => p.Field.Key == "reader.engine").Value = "mvid-native";
         var candidate = draft.Build();
         Check(candidate.Topology!.Readers.All(r => r.Driver == "hikrobot-mvs-reader" && r.Parameters is not null) && candidate.Extensions is null, "save preserves SDK parameters without extension deployment");
         var restored = new StartupConfigurationDraft(candidate, catalog);
         Check(restored.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.10" && restored.Readers[1].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.11", "reload isolates left and right");
+        Check(restored.Readers[0].Parameters.Single(p => p.Field.Key == "reader.engine").Value == "mvid-native" &&
+            restored.Readers[1].Parameters.Single(p => p.Field.Key == "reader.engine").Value == "zxing-cpp", "native engine selection is saved and restored independently for each camera");
         var active = candidate with { DeferredConnections = [] }; ParcelCapabilityFactory.ValidateHikrobotIdentities(active);
         var changed = active.Topology!.Readers.Select((r, i) => i == 1 ? r with { Parameters = new(r.Parameters!) { ["device.serial"] = "SYNTH-0" } } : r).ToArray();
         try { ParcelCapabilityFactory.ValidateHikrobotIdentities(active with { Reader = changed[0], Topology = active.Topology with { Readers = changed } }); throw new Exception("Duplicate accepted"); }

@@ -48,7 +48,7 @@ def publish(root, output, source):
         fonts.append(notice)
     sdk = output / 'app/vendor/hikrobot-mvs/SDK-BUNDLE.json'
     sdk_record = json.loads(sdk.read_text()) if sdk.is_file() else None
-    reader_sdk = output / 'app/vendor/hikrobot-idmvs/SDK-BUNDLE.json'
+    reader_sdk = output / 'app/vendor/hikrobot-mvid/SDK-BUNDLE.json'
     reader_record = json.loads(reader_sdk.read_text()) if reader_sdk.is_file() else None
     record = dict(SchemaVersion=1, SourceCommit=source, Source='Resolved app deps.json and restored NuGet nuspec metadata',
                   Packages=records, BundledFonts=fonts, RuntimeNoticeFiles=[p.relative_to(output).as_posix() for area in ('app', 'desktop') for p in (output / area).rglob('*')

@@ -43,7 +43,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         }
         return next;
     }
-    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 3600)
+    // stillMs: "放稳后再识别" for both synthetic cameras; "0" decodes every frame.
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 3600, string stillMs = "0")
     {
         if (!nativeLoaded)
         {
@@ -57,7 +58,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             Driver = "hikrobot-mvs-reader",
             Parameters = new()
-            { ["motion.still-ms"] = "0", ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
+            { ["motion.still-ms"] = stillMs, ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
         }).ToArray();
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, rcsEndpoint ?? Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
@@ -193,12 +194,14 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         readonly SoftwareDecoder inner = new(parameters.GetValueOrDefault("code.encoding", "utf-8"), () => { }, settings: ReaderSettings.Read(parameters));
         public bool PreservesInput => true;
         public int Count;
+        // The next N decodes return no code although the frame is unchanged (the decoder missing a resting parcel).
+        public int MissNext;
         public RecognitionSymbol[] Last = [];
         public MvsTimingSnapshot? TimingSnapshot => inner.TimingSnapshot;
         public void Prepare() => inner.Prepare();
         public string[] Decode(byte[] p, int length, int width, int height) => DecodeDetailed(p, length, width, height).Select(s => s.Text).ToArray();
         public RecognitionSymbol[] DecodeDetailed(byte[] p, int length, int width, int height)
-        { if (!api.WasReturned(p.AsSpan(0, length))) throw new InvalidOperationException("Recognition must follow its own SDK loan return"); Last = inner.DecodeDetailed(p, length, width, height); Interlocked.Increment(ref Count); return Last; }
+        { if (!api.WasReturned(p.AsSpan(0, length))) throw new InvalidOperationException("Recognition must follow its own SDK loan return"); Last = inner.DecodeDetailed(p, length, width, height); if (Interlocked.Decrement(ref MissNext) >= 0) Last = []; else Interlocked.Exchange(ref MissNext, 0); Interlocked.Increment(ref Count); return Last; }
         public void Release() => inner.Release();
     }
     internal sealed class RoundApi(DeviceBinding binding) : IMvsApi

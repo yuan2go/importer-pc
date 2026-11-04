@@ -19,7 +19,11 @@ public sealed partial class SupplyStationPositionViewModel
             input.Observation.Epoch == camera.Frame.Epoch && input.Observation.SourceEventId == camera.Frame.SourceEventId);
     bool CameraAwaitingRead => !unreadFeedback && Input?.Observation.OperatorInput is null &&
         Operation?.Acquisition is { } acquired && CurrentReaderState is { } current &&
-        (acquired.DeviceId != current.DeviceId || acquired.Epoch != current.Epoch);
+        (acquired.DeviceId != current.DeviceId || acquired.Epoch != current.Epoch) &&
+        // After a reconnect the new connection re-read the same parcel still resting on the tray: the runtime
+        // kept it as the same placement (no new request), so its original result stands again.
+        !(ParcelInputReasons.IsSamePlacement(Input) && Input!.OperationId == Operation.Id &&
+            Input.Observation.DeviceId == current.DeviceId && Input.Observation.Epoch == current.Epoch);
     // No-code is a frame fact, not a declaration that a parcel exists or has left.
     // Manual input has its own source and remains usable while the camera sees no code.
     bool CameraNoCode => CameraAwaitingRead || cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&

@@ -211,7 +211,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     if (frame is null) { lock (gate) noData++; }
                     else
                     {
-                        byte[]? pixels = null; var length = 0; long skippedBefore = 0; double copyMs = 0, releaseMs;
+                        byte[]? pixels = null; var length = 0; long skippedBefore = 0; double copyMs = 0, releaseMs; long? scene = null;
                         if (previousDelivery != 0) Timings.Record("host.delivery-interval", Stopwatch.GetElapsedTime(previousDelivery, deliveredTicks).TotalMilliseconds);
                         previousDelivery = deliveredTicks;
                         try
@@ -245,6 +245,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 Timings.Record("motion.sample", Stopwatch.GetElapsedTime(sampled).TotalMilliseconds);
                                 lock (gate) { if (settled == StillnessDecision.Moving) movingFrames++; else if (settled == StillnessDecision.Fallback) fallbackDecodes++; }
                                 allowDecode = settled != StillnessDecision.Moving;
+                                scene = stillness.Scene;
                             }
                             if (decoder is not null && allowDecode)
                             {
@@ -268,7 +269,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             finally { releaseMs = Stopwatch.GetElapsedTime(releaseStarted).TotalMilliseconds; Timings.Record("sdk.release", releaseMs); }
                         }
                         if (pixels is not null)
-                            OfferDecode(new(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration));
+                            OfferDecode(new(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration) { Scene = scene });
                         else Timings.Frame(new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw, 0, releaseMs, 0, 0, 0, 0, 0, false));
                         Timings.Record("host.capture-work", Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds);
                     }

@@ -82,6 +82,10 @@ internal static class MvidReader
     internal static async Task Run(string workspace, string root)
     {
         Boundaries();
+        Check(MvidNative.IsRecognitionFailure(unchecked((int)0x80002200)) && MvidNative.IsRecognitionFailure(unchecked((int)0x80002300)) &&
+            !MvidNative.IsRecognitionFailure(unchecked((int)0x80000214)) && !MvidNative.IsRecognitionFailure(unchecked((int)0x80002100)),
+            "native barcode algorithm failure is frame-local while transport and camera failures remain connection faults");
+        await FreshFramesProveLiveness();
         await StopDuringCapacityWait();
         await DebugFlow(workspace, root);
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-reader"), stillMs: "50", nativeResults: true);
@@ -141,6 +145,23 @@ internal static class MvidReader
         await h.App.StopAsync(default);
         Check(api.Destroys == 2 && api.Finalizes == 2 && !api.HasFrame, "retrying a failed stop really releases the native owner");
         Console.WriteLine("BOUNDARY: synthetic native frame port + real Application/SQLite/loopback RCS; actual MVID camera NOT_RUN");
+    }
+    static async Task FreshFramesProveLiveness()
+    {
+        var parameters = new Dictionary<string, string>
+        { ["device.ip"] = "192.0.2.20", ["device.serial"] = "SYNTH-NATIVE-LIVE", ["reader.engine"] = "mvid-native", ["motion.still-ms"] = "0" };
+        var api = new CameraRoundHarness.RoundApi(new("native-live", BundledMvs.ReaderImplementation, "synthetic", "1") { Parameters = parameters });
+        await using var source = new MvsAcquisition(new("native-live", "native-live", parameters), api, _ => new CancellationTokenSource());
+        var count = 0;
+        await source.StartControlledAsync("native-live-epoch", _ => { Interlocked.Increment(ref count); return true; }, _ => { }, default);
+        for (uint frame = 1; frame <= 24; frame++)
+        {
+            api.EnqueueNative(CameraRoundHarness.EmptyTray, frame, [Symbol("SYNTH-LIVE")]);
+            await CameraRoundHarness.Until(() => Task.FromResult(Volatile.Read(ref count) == frame));
+            await Task.Delay(100);
+        }
+        await source.StopAsync(default);
+        Check(api.HealthReads == 0 && api.Starts == 1 && api.Destroys == 1, "fresh native frames prove liveness without register polling or reconnecting a healthy stream");
     }
     static async Task StopDuringCapacityWait()
     {

@@ -290,7 +290,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
         if (value is null) { result.Text = "作业无法读取，结果未知。"; return; }
         detailRevision = value.Status.Revision;
         result.Text = ResultText(value.Status) + " · 请求 " + (value.Status.RequestId ?? "尚未建立") + " · 发送尝试 " + value.Status.Attempts;
-        var text = ParcelViewModel.Handover(value.Original, true); if (value.Original.Wcs?.Request.IntegrationRequest is { } request) text += "\n\n请求正文\n" + Protect(request.Body, 8192);
+        var text = "作业号：" + value.Original.Id; if (value.Original.Wcs?.Request.IntegrationRequest is { } request) text += "\n\n请求正文\n" + Protect(request.Body, 8192);
         if (value.Original.Wcs?.Replies.LastOrDefault()?.HttpResponse is { } response)
         { var length = Math.Min(response.BodyBase64.Length, 10920); length -= length % 4; try { text += $"\n\n原响应 HTTP {response.StatusCode} · 完整接收 {response.Complete}\n" + Encoding.UTF8.GetString(Convert.FromBase64String(response.BodyBase64[..length])); } catch (FormatException) { text += "\n响应内容无法显示。"; } }
         requestEvidence.Text = Protect(text, 32768);

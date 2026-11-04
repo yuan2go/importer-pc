@@ -11,6 +11,7 @@ internal static class MvidNative
     internal const string Library = "MVIDCodeReader.dll";
     internal const string Version = "1.1.4.0_3.6.0_2.2.2";
     internal const int NoData = unchecked((int)0x80000006);
+    internal static bool IsRecognitionFailure(int status) => status is unchecked((int)0x80002200) or unchecked((int)0x80002300);
     internal const int DeviceBytes = 748, ImageBytes = 160, CodeBytes = 4268, OutputBytes = 1093048;
     [DllImport(Library, ExactSpelling = true)] internal static extern int MVID_CR_GetVersion(nint version);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MVID_CR_CreateHandle(ref nint handle, uint ability);
@@ -30,8 +31,18 @@ internal static class MvidNative
 
     internal static readonly IReadOnlyDictionary<int, string> Formats = new Dictionary<int, string>
     {
-        [1] = "DataMatrix", [2] = "QRCode", [8] = "EAN8", [9] = "UPCE", [12] = "UPCA", [13] = "EAN13",
-        [14] = "ISBN", [20] = "Codabar", [25] = "ITF", [39] = "Code39", [93] = "Code93", [128] = "Code128"
+        [1] = "DataMatrix",
+        [2] = "QRCode",
+        [8] = "EAN8",
+        [9] = "UPCE",
+        [12] = "UPCA",
+        [13] = "EAN13",
+        [14] = "ISBN",
+        [20] = "Codabar",
+        [25] = "ITF",
+        [39] = "Code39",
+        [93] = "Code93",
+        [128] = "Code128"
     };
     internal static Encoding EncodingFor(string name) => name switch
     {

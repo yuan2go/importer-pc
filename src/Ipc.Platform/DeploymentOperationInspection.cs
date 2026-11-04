@@ -14,6 +14,19 @@ public static partial class WindowsDeploymentSetup
             MachineRuntimePolicy.RequireProtectedEvidence(file);
             if (new FileInfo(file).Length > 4 * 1024 * 1024) throw new InvalidDataException("原安装记录超出预算，须先核对。");
             using var document = JsonDocument.Parse(File.ReadAllBytes(file));
+            var archiveMarker = file.LastIndexOf(".json.pre-system-repair-", StringComparison.Ordinal);
+            if (archiveMarker >= 0)
+            {
+                var originalFile = file[..(archiveMarker + 5)];
+                MachineRuntimePolicy.RequireProtectedEvidence(originalFile);
+                using var original = JsonDocument.Parse(File.ReadAllBytes(originalFile));
+                var value = original.RootElement;
+                if (value.GetProperty("Status").GetString() == "Completed" &&
+                    value.TryGetProperty("SystemRepairArchive", out var archive) && archive.GetString() == file &&
+                    file == originalFile + ".pre-system-repair-" + Wire.FileHash(file)[..12] + ".json" &&
+                    value.GetProperty("RequestIdentity").GetString() == document.RootElement.GetProperty("RequestIdentity").GetString())
+                    continue;
+            }
             var status = document.RootElement.GetProperty("Status").GetString();
             if (status is not ("Completed" or "Failed"))
                 throw new InstallationOutcomeUnknownException("存在尚未核对完成的原安装，请先核对该次结果，不创建新操作。");

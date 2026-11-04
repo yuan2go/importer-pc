@@ -53,6 +53,37 @@ public static partial class WindowsDeploymentSetup
         return root;
     }
 
+    [SupportedOSPlatform("windows")]
+    public static void RequireProtectedMaintenanceHelper(string application, string directory, IReadOnlyList<string> requiredFiles)
+    {
+        var location = Current(application);
+        var full = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar);
+        var cache = location?.MaintenanceRoot;
+        var area = cache is null ? null : new[] { "app", "desktop" }.FirstOrDefault(name =>
+            full.Equals(Path.Combine(cache, name), StringComparison.OrdinalIgnoreCase));
+        if (area is null)
+        {
+            MachineRuntimePolicy.RequireProtectedApplicationInstaller(directory, requiredFiles);
+            return;
+        }
+        // The installer owns this separate cache; it is not an operator-approved
+        // program root. Anchor its identity to the protected current registration.
+        RequireMaintenanceCache(location!);
+        var inventory = File.ReadAllText(location!.InventoryFile!);
+        _ = ValidateInstalledInventory(location, inventory);
+        using var document = System.Text.Json.JsonDocument.Parse(inventory);
+        var files = document.RootElement.GetProperty("Files");
+        foreach (var name in requiredFiles)
+        {
+            if (!ProductValidation.IsSafeRelativeFile(full, name, out var path) ||
+                !files.TryGetProperty(area + "/" + name.Replace('\\', '/'), out var expected))
+                throw new InvalidDataException("维护程序文件不属于本次安装清单。");
+            MachineRuntimePolicy.RequireProtectedEvidence(path);
+            if (!Wire.FileHash(path).Equals(expected.GetString(), StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("维护程序文件与本次安装清单不一致。");
+        }
+    }
+
     static string[] InstalledInventory(DeploymentLocation location)
     {
         RequireMaintenanceCache(location);

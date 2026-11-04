@@ -103,12 +103,6 @@ public partial class HistoryPage : UserControl
         try { await vm.RequireManagementModeAsync(); Clipboard.SetText(await vm.FullDetailsAsync()); vm.Message = "已复制作业、请求与 RCS 返回的完整数据。"; }
         catch (Exception error) { vm.Message = "复制失败，可选择详情文本复制：" + error.Message; }
     }
-    void CopyHandover_Click(object s, RoutedEventArgs e)
-    {
-        if (DataContext is not ParcelViewModel vm || vm.Selected is null) return;
-        try { Clipboard.SetText(vm.RequestHandover); vm.Message = "已复制交接信息。"; }
-        catch (Exception error) { vm.Message = "复制未完成，可选择交接文本复制：" + error.Message; }
-    }
     async void Refresh_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.LoadHistoryAsync(), "读取最新50条"); }
     async void First_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.FirstHistoryAsync, "同一范围首屏"); }
     async void Previous_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.PreviousHistoryAsync, "上一页"); }

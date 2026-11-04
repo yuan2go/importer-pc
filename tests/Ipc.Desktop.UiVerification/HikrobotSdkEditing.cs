@@ -96,6 +96,18 @@ static partial class Program
             rcs.Target = ""; Check(rcs.ConfigureLater, "blank RCS remains explicitly unconfigured");
             var startup = new ParameterSettingsControl { FirstConfiguration = true, Model = model }; window.Content = startup;
             startup.ShowPage(2, "左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); Fields(startup, left);
+            foreach (var selection in new[] { "zxing-cpp", "mvid-native", "zxing-cpp", "mvid-native" })
+            {
+                Descendants(startup).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == left.InstanceId + "/reader.engine").SelectedItem = selection;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+                Fields(startup, left);
+                Check(startup.CurrentPageTitle == "左右相机", "switching recognition repeatedly preserves the visible first-configuration camera page");
+                startup.ShowReview(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+                Check(Descendants(startup).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "各来源情况"), "review remains populated after camera engine changes");
+                startup.SelectCategory(0); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+                Check(!Descendants(startup).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("System.Windows.Controls")), "scenario choices render labels rather than CLR control names");
+                startup.ShowPage(2, "左相机");
+            }
             CaptureInternal(evidence, "bundled-sdk-first-left", startup, lines);
             window.Width = 800; window.Height = 420; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); CaptureInternal(evidence, "bundled-sdk-first-compact", startup, lines);
             Check(ReferenceEquals(startup.Model, model), "compact first setup retains same full candidate");

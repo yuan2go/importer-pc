@@ -75,8 +75,6 @@ static class LifecycleOptimization
             var page = await app.ReadHistoryPageAsync(selection, long.MaxValue, 200, default);
             oldest = page.Items.Last().Operation;
             uncertain = page.Items[1].Operation;
-            var handover = ParcelViewModel.Handover(oldest, true); var ordinary = ParcelViewModel.Handover(oldest, false); var sends = factory.Sends;
-            Check(handover.Contains(oldest.Wcs!.Request.Id) && handover.Contains(oldest.AdmissionId) && ordinary.Contains("请勿重新上件") && !ordinary.Contains("原目标指纹") && !handover.Contains(oldest.Wcs.Request.Payload) && factory.Sends == sends, "handover names exact original entity/request while excluding payload and causing no external call");
             await Pause(app);
             await AfterMonitorDrain(app, async () => { await app.CheckScheduledBackupAsync(due.AddMinutes(1)); return true; });
             var success = (await app.SnapshotAsync()).BackupScheduleStatus!;

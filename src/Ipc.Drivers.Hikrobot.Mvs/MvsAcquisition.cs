@@ -283,7 +283,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                     RejectFrame(frame.Number, error, true, scene);
                                     work.Trace = new(frame.Number, observedAt, frame.DeviceTimestampRaw, frame.HostTimestampRaw,
                                         copyMs, releaseMs, frame.NativeRecognitionMs, 0, 0, 0, 0, false)
-                                        { DecodeAttempted = true, RejectedFrame = true };
+                                    { DecodeAttempted = true, RejectedFrame = true };
                                 }
                                 finally { ReturnWork(work, false); }
                             }
@@ -296,17 +296,17 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     if (poll.Elapsed >= TimeSpan.FromSeconds(1))
                     {
                         PhaseTo("connection-check"); using var check = Timings.Measure("health.total");
-                        bool connected; using (Timings.Measure("health.connected")) connected = api.Connected();
-                        if (!connected) throw new ObservationConnectionException("MVS原相机断开。", new IOException("Original camera unavailable"));
                         // The exclusive SDK handle was bound to the verified physical serial at startup.
                         // Fresh, validated frames on that handle prove liveness; global discovery is for idle/recovery.
                         if (!Recognizes || Frames == healthFrames)
                         {
+                            bool connected; using (Timings.Measure("health.connected")) connected = api.Connected();
+                            if (!connected) throw new ObservationConnectionException("MVS原相机断开。", new IOException("Original camera unavailable"));
                             bool matches; using (Timings.Measure("health.enumerate")) matches = api.Enumerate().Count(d => d.Ip == ip && d.Serial == physicalSerial) == 1;
                             if (!matches) throw new ObservationConnectionException("MVS原相机身份不匹配。", new IOException("Original camera unavailable"));
                         }
                         using (Timings.Measure("health.trigger-readback"))
-                            if (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0)
+                            if (!api.ReturnsDecodedFrames && (triggerRequirement == "on" && api.EnumValue("TriggerMode") != 1 || triggerRequirement == "off" && api.EnumValue("TriggerMode") != 0))
                                 throw new IOException("MVS device trigger setting changed");
                         healthFrames = Frames;
                         PhaseTo(!Recognizes ? "acquiring-decoder-unavailable" : "reading"); Publish(!Recognizes ? DeviceHealth.Unknown : DeviceHealth.Ready); poll.Restart();
@@ -321,7 +321,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     void CaptureFailed(Exception error)
     {
         cancel?.Cancel(); preview.Clear();
-        lock (gate) { if (failure.Length == 0) failure = error.GetType().Name + ": " + error.Message; }
+        lock (gate) { if (failure.Length == 0) failure = DiagnosticText.Protect(error.ToString()); }
         try { Publish(error is ObservationConnectionException ? DeviceHealth.Disconnected : DeviceHealth.Faulted); }
         catch (Exception host) { lock (gate) failure += "; health receiver=" + host.GetType().Name; }
     }

@@ -237,7 +237,7 @@ public partial class ParcelViewModel
     {
         foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(NextAction), nameof(StatusPresentation), nameof(HistorySelectionState), nameof(HistoryQueryGuidance), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfigurationHeading) }) Changed(name);
         RefreshDetailsProjection();
-        foreach (var (name, value) in new[] { (nameof(RequestHandover), RequestHandover), (nameof(EffectiveConfiguration), EffectiveConfiguration), (nameof(PendingConfiguration), PendingConfiguration) })
+        foreach (var (name, value) in new[] { (nameof(EffectiveConfiguration), EffectiveConfiguration), (nameof(PendingConfiguration), PendingConfiguration) })
         {
             if (publishedText.TryGetValue(name, out var prior) && prior == value) continue;
             publishedText[name] = value; Changed(name);

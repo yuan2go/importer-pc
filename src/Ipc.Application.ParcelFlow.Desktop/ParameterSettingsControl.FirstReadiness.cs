@@ -32,7 +32,7 @@ public sealed partial class ParameterSettingsControl
         {
             var choice = new RadioButton
             {
-                GroupName = "FirstConfigurationScenario", IsChecked = option == scenario, Margin = new(0, 8, 0, 0), MinHeight = 32,
+                GroupName = "FirstConfigurationScenario", IsChecked = option == scenario, Margin = new(0, 8, 0, 0), MinHeight = 44, ContentTemplate = null,
                 Content = new StackPanel { Children = { Text(FirstConfigurationReadiness.Name(option), true), Text(FirstConfigurationReadiness.Description(option)) } }
             };
             AutomationProperties.SetName(choice, FirstConfigurationReadiness.Name(option));
@@ -44,6 +44,8 @@ public sealed partial class ParameterSettingsControl
 
     FrameworkElement ReadinessCard()
     {
+        foreach (var content in new FrameworkElement[] { readinessSummary, readinessLines, networkResults })
+            if (content.Parent is Panel previous) previous.Children.Remove(content);
         var panel = new StackPanel();
         panel.Children.Add(Text("各来源情况", true));
         AutomationProperties.SetLiveSetting(readinessSummary, AutomationLiveSetting.Polite);

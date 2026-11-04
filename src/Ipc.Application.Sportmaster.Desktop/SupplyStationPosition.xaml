@@ -13,8 +13,8 @@
      <RowDefinition Height="Auto"/>
      <RowDefinition Height="Auto"/>
      <RowDefinition Height="*"/>
-     <RowDefinition Height="Auto"/>
-     <RowDefinition Height="Auto"/>
+     <RowDefinition Height="Auto" SharedSizeGroup="PositionTaskFields"/>
+     <RowDefinition Height="Auto" SharedSizeGroup="PositionActions"/>
     </Grid.RowDefinitions>
     <DockPanel Style="{StaticResource StationPositionSection}">
      <DockPanel>
@@ -60,6 +60,7 @@
        <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
       <DockPanel>
+       <DockPanel.Style><Style TargetType="DockPanel"><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></DockPanel.Style>
        <TextBlock Text="{Binding DisplayPresentation.Icon}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Exception}" Margin="0,0,8,0" AutomationProperties.Name="本位状态符号"/>
        <TextBlock Text="{Binding ReadCueLabel}" Foreground="{Binding ResultForeground}" DockPanel.Dock="Right" Margin="8,0,0,0" AutomationProperties.LiveSetting="Polite"/>
        <TextBlock Text="{Binding DisplayStatus}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Status}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
@@ -103,7 +104,7 @@
     </Border>
     <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
          They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
-         Hidden retains measured space only during processing; errors reclaim it for actionable reasons.
+         Shared rows align the two cards; hidden retains measured space during processing.
          Two rows keep labels and values readable; values are selectable and wrap without ellipsis. -->
     <Grid Grid.Row="3" x:Name="TaskFields">
      <Grid.Style>

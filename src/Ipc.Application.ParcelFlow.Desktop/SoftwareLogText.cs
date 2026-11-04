@@ -55,12 +55,28 @@ static class SoftwareLogText
         try
         {
             using var json = JsonDocument.Parse(text);
+            if (json.RootElement.ValueKind == JsonValueKind.Object && json.RootElement.TryGetProperty("Source", out var diagnosticSource) &&
+                diagnosticSource.GetString() is "RCS请求" or "相机识码" or "扫码与准入" &&
+                json.RootElement.TryGetProperty("Detail", out var diagnosticDetail) && diagnosticDetail.ValueKind == JsonValueKind.String)
+            {
+                using var diagnosticDocument = JsonDocument.Parse(diagnosticDetail.GetString()!);
+                var d = diagnosticDocument.RootElement;
+                string Value(string key) => d.TryGetProperty(key, out var item) && item.ValueKind is not JsonValueKind.Null ? item.ToString() : "—";
+                var side = Value("PositionId") switch { "left" => "左投递位", "right" => "右投递位", var other => other };
+                var action = json.RootElement.GetProperty("Event").GetString();
+                string Detail(string key, string label) => Value(key) is "—" or "" ? "" : " · " + label + Value(key);
+                return OneLine(diagnosticSource.GetString() == "相机识码"
+                    ? $"{side} · {action} · 帧 {Value("FrameNumber")} · 候选 {Value("CandidateCount")} · 本段 {Value("FramesSinceLastLog")} 帧" + Detail("FailureReason", "原因：")
+                    : $"{side} · {action}" + Detail("SourceKind", "来源：") + Detail(diagnosticSource.GetString() == "RCS请求" ? "ParcelCode" : "Barcode", "条码 ") + Detail("ProtocolRequestId", "请求 ") + Detail("Reason", "原因：") + Detail("OperationId", "作业 "));
+            }
             if (json.RootElement.ValueKind == JsonValueKind.Object && json.RootElement.TryGetProperty("Source", out var origin) && origin.ValueKind == JsonValueKind.String && origin.GetString() == "RCS结果" && json.RootElement.TryGetProperty("Detail", out var payload) && payload.ValueKind == JsonValueKind.String)
             {
                 using var result = JsonDocument.Parse(payload.GetString()!); var r = result.RootElement;
                 string Field(string key) => r.TryGetProperty(key, out var v) ? v.ValueKind == JsonValueKind.String ? v.GetString() ?? "—" : v.ToString() : "—";
                 var state = Field("Result") switch { "Accepted" => "取得格口", "Rejected" => "未分配格口", "Unknown" or "Conflict" => "格口未确认", var other => other };
-                return OneLine(Field("PositionId") + " · " + Field("ParcelCode") + " · " + Field("RequestId") + " · " + state + " · 格口 " + Field("Slot") + " · " + Field("ElapsedMs") + " ms");
+                var request = r.TryGetProperty("ProtocolRequestId", out var protocol) && protocol.ValueKind != JsonValueKind.Null ? protocol.ToString() : Field("RequestId");
+                var reason = Field("ResponseMessage") != "—" ? Field("ResponseMessage") : Field("Failure");
+                return OneLine((Field("PositionId") == "left" ? "左投递位" : "右投递位") + " · " + Field("ParcelCode") + " · 请求 " + request + " · " + state + " · 格口 " + Field("Slot") + " · " + Field("ElapsedMs") + " ms · " + reason);
             }
             if (json.RootElement.ValueKind == JsonValueKind.Object)
             {
@@ -70,6 +86,16 @@ static class SoftwareLogText
                 if ((Plain("Event") ?? Plain("event")) is { Length: > 0 } action)
                 {
                     var detail = Plain("Detail") ?? Plain("detail");
+                    if (Plain("Source") == "相机通信" && detail is { Length: > 0 } && detail.TrimStart().StartsWith('{'))
+                    {
+                        using var camera = JsonDocument.Parse(detail);
+                        if (camera.RootElement.TryGetProperty("Evidence", out var evidence) && evidence.GetString() is { } reason)
+                        {
+                            var marker = reason.IndexOf("failure=", StringComparison.Ordinal);
+                            if (marker >= 0 && reason[(marker + 8)..].Split(';')[0] is { Length: > 0 } failure)
+                                return OneLine(action + " · 原因：" + failure);
+                        }
+                    }
                     return OneLine(action + (detail is { Length: > 0 and <= 80 } d && !d.TrimStart().StartsWith('{') && !d.TrimStart().StartsWith('[') ? " · " + Device(d) : ""));
                 }
                 foreach (var name in new[] { "message", "Message", "detail", "Detail" })

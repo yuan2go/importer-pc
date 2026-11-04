@@ -18,12 +18,14 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
     void RecordPresentationRead(string position, Observation observation, bool operatorInput = false)
     {
         if (observation.DecodedTicks <= 0 || observation.DecodedTicks > Stopwatch.GetTimestamp()) return;
-        var continuing = !operatorInput && ContinuingCameraPlacement(position, observation);
+        var placementOperation = operatorInput ? null : ContinuingCameraPlacementOwner(position, observation);
+        var continuing = placementOperation is not null;
         var feedback = new ParcelReadFeedback(runtimeId, position, observation.Id, observation.DeviceId, observation.Epoch,
             observation.Codes is { Length: 1 } codes && codes[0] is { Length: > 0 and <= 4096 } single && !single.Any(char.IsControl) ? single : null,
             observation.DecodedTicks, observation.ObservedAt)
         {
             OperatorInput = operatorInput,
+            PlacementOperationId = placementOperation,
             CandidateCount = observation.Codes?.Length ?? 0,
             SourceSequence = observation.Sequence,
             SourceEventId = observation.SourceEventId,

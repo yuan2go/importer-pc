@@ -4,12 +4,10 @@ using System.Windows.Controls;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// SM first configuration only: the planned sources on step one and, on the completion step,
-// what the draft has per source plus an optional network-layer check. Session state only:
-// the choice is not saved and never edits a field.
+// SM completion step: summarize actual source fields and an optional network-layer check.
+// Network results are session state only and never edit the draft.
 public sealed partial class ParameterSettingsControl
 {
-    FirstConfigurationScenario? scenario;
     readonly StackPanel readinessLines = new();
     readonly TextBlock readinessSummary = Themed(new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body, FontWeight = UiTypography.Emphasis, Margin = new(0, 0, 0, 8) }, TextBlock.ForegroundProperty, "Ink");
     readonly StackPanel networkResults = new() { Margin = new(0, 8, 0, 0) };
@@ -21,26 +19,6 @@ public sealed partial class ParameterSettingsControl
     CameraSlot[] CameraSlots() => (Model?.Readers ?? []).Where(r => r.IsSimpleCamera).Select(r => new CameraSlot(r.Role,
         r.Parameters.FirstOrDefault(p => p.Field.Key == "device.ip")?.Value ?? "", r.Parameters.FirstOrDefault(p => p.Field.Key == "device.serial")?.Value ?? "")).ToArray();
     string RcsTarget() => Model?.Components.FirstOrDefault(ParameterOwnership.IsRcs)?.Target ?? "";
-
-    FrameworkElement ScenarioCard()
-    {
-        scenario ??= FirstConfigurationReadiness.Infer(CameraSlots());
-        var panel = new StackPanel();
-        panel.Children.Add(Text("计划使用的来源", true));
-        panel.Children.Add(Text("只用来提示哪些设备需要填写；不会自动创建设备，也不会清空已填的内容。以后可在设置里随时补配相机。"));
-        foreach (var option in FirstConfigurationReadiness.Scenarios)
-        {
-            var choice = new RadioButton
-            {
-                GroupName = "FirstConfigurationScenario", IsChecked = option == scenario, Margin = new(0, 8, 0, 0), MinHeight = 44, ContentTemplate = null,
-                Content = new StackPanel { Children = { Text(FirstConfigurationReadiness.Name(option), true), Text(FirstConfigurationReadiness.Description(option)) } }
-            };
-            AutomationProperties.SetName(choice, FirstConfigurationReadiness.Name(option));
-            choice.Checked += (_, _) => { scenario = option; RefreshReadiness(); };
-            panel.Children.Add(choice);
-        }
-        var card = Card(panel); card.Margin = new(0, 16, 0, 8); return card;
-    }
 
     FrameworkElement ReadinessCard()
     {
@@ -63,7 +41,7 @@ public sealed partial class ParameterSettingsControl
     {
         if (!UsesFirstReadiness) return;
         var cameras = CameraSlots(); var target = RcsTarget();
-        var lines = FirstConfigurationReadiness.Lines(scenario ??= FirstConfigurationReadiness.Infer(cameras), cameras, target);
+        var lines = FirstConfigurationReadiness.Lines(cameras, target);
         readinessSummary.Text = FirstConfigurationReadiness.Summary(lines);
         readinessLines.Children.Clear();
         foreach (var line in lines)

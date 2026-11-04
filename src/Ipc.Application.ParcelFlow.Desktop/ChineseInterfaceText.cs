@@ -222,7 +222,7 @@ public static class ChineseInterfaceText
         "observe-only" => "仅观察",
         "read-result" => "识别结果交给供包台处理",
         "zxing-cpp" => "软件识别",
-        "mvid-native" => "海康原生识码（旧供包台方式）",
+        "mvid-native" => "海康原生识码",
         "trigger" => "触发关联",
         "utf-8" => "通用字符编码",
         "ascii" => "基础英文字符编码",

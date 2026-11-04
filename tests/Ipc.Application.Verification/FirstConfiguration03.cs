@@ -1,6 +1,6 @@
 using Ipc.Application.ParcelFlow.Desktop;
 
-// IE-P03 first configuration: scenario intent, per-source readiness wording and the bounded,
+// First configuration: actual per-source readiness wording and the bounded,
 // side-effect-free network check. Probes are substituted; no camera SDK and no RCS request.
 internal static class FirstConfiguration03
 {
@@ -13,21 +13,14 @@ internal static class FirstConfiguration03
         CameraSlot Left(string ip = "", string serial = "") => new("left", ip, serial);
         CameraSlot Right(string ip = "", string serial = "") => new("right", ip, serial);
         var blank = new[] { Left(), Right() };
-        Check(FirstConfigurationReadiness.Infer(blank) == FirstConfigurationScenario.DualCamera &&
-            FirstConfigurationReadiness.Infer([Left("10.0.0.5", "SN1"), Right()]) == FirstConfigurationScenario.LeftCamera &&
-            FirstConfigurationReadiness.Infer([Left(), Right("10.0.0.6")]) == FirstConfigurationScenario.RightCamera, "the starting scenario follows what is already filled");
-
-        var lines = FirstConfigurationReadiness.Lines(FirstConfigurationScenario.LeftCamera, [Left("10.0.0.5", "SN1"), Right()], "");
-        Check(lines.Single(l => l.Source == "左相机") is { NeedsAttention: false } && lines.Single(l => l.Source == "右相机").State.Contains("不使用") &&
-            lines.Single(l => l.Source == "RCS") is { NeedsAttention: true } && lines.Single(l => l.Source == "人工输入").State.Contains("先配置 RCS"),
-            "left-only lists the unused right camera calmly and RCS as the blocker");
+        Check(FirstConfigurationReadiness.Lines(blank, "").Where(l => l.Source.EndsWith("相机")).All(l => !l.NeedsAttention && l.State.Contains("不使用")), "empty camera fields are unused without a separate source-plan setting");
+        var lines = FirstConfigurationReadiness.Lines([Left("10.0.0.5", "SN1"), Right()], "");
+        Check(!lines[0].NeedsAttention && lines[1].State.Contains("不使用") && lines.Single(l => l.Source == "RCS").NeedsAttention, "actual camera fields determine readiness and missing RCS remains visible");
         var summary = FirstConfigurationReadiness.Summary(lines);
-        Check(summary.Contains("左相机已填写") && summary.Contains("请先处理RCS") && !summary.Contains("可以开始"), "the summary names the next action and never claims the station can work");
-        var dual = FirstConfigurationReadiness.Lines(FirstConfigurationScenario.DualCamera, [Left("10.0.0.5", "SN1"), Right()], "http://rcs.example:8080/api");
-        Check(dual.Single(l => l.Source == "右相机") is { NeedsAttention: true } r && r.State.Contains("需要配置"), "two cameras planned and one missing asks for it");
-        Check(FirstConfigurationReadiness.Lines(FirstConfigurationScenario.DualCamera, [Left("10.0.0.5"), Right()], "")[0].State.Contains("只填了一项"), "a half-filled camera is called out before save rejects it");
-        var manual = FirstConfigurationReadiness.Lines(FirstConfigurationScenario.ManualOnly, [Left("10.0.0.5", "SN1"), Right()], "http://rcs.example");
-        Check(manual[0].State.Contains("仍会连接") && manual.Single(l => l.Source == "人工输入") is { NeedsAttention: false }, "manual-only keeps a filled camera and says it will still connect");
+        Check(summary.Contains("左相机已填写") && summary.Contains("请先处理RCS") && !summary.Contains("可以开始"), "summary names actual missing connections without claiming production readiness");
+        Check(FirstConfigurationReadiness.Lines([Left("10.0.0.5", "SN1"), Right("10.0.0.6", "SN2")], "http://rcs.example").All(l => !l.NeedsAttention), "filled cameras and RCS require no separate plan confirmation");
+        Check(FirstConfigurationReadiness.Lines([Left("10.0.0.5"), Right()], "")[0].State.Contains("只填了一项"), "half-filled camera remains a real configuration error");
+        Check(FirstConfigurationReadiness.Lines(blank, "http://rcs.example").Single(l => l.Source == "人工输入") is { NeedsAttention: false }, "manual input works with RCS and no configured cameras");
 
         var pinged = new List<string>(); var connected = new List<string>();
         var results = await FirstConfigurationReadiness.CheckNetworkAsync([Left("10.0.0.5", "SN1"), Right("10.0.0.6", "SN2")], "http://rcs.example:8080/api",

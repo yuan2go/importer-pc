@@ -19,7 +19,7 @@ internal static class MvidReader
     {
         await using var source = BundledMvs.CreateReader(new("parcel-reader", BundledMvs.ReaderImplementation, "synthetic-native-probe", "1")
         { Parameters = new() { ["device.ip"] = "192.0.2.1", ["device.serial"] = "SYNTHETIC", ["reader.engine"] = "mvid-native" } });
-        var api = new MvidApi(new(["All"], true, "mvid-native"), "utf-8");
+        var api = new MvidApi("utf-8");
         api.Initialize();
         Check(true, "actual pinned MVID library loads and reports the expected native ABI version");
         nint first = 0, second = 0;
@@ -43,13 +43,13 @@ internal static class MvidReader
         var parameters = new Dictionary<string, string> { ["reader.engine"] = "mvid-native", ["code.formats"] = "[\"Code128\",\"EAN13\"]" };
         Check(ReaderSettings.Read(parameters).Engine == "mvid-native", "native recognition is an explicit per-camera setting");
         Reject(() => ReaderSettings.Read(new Dictionary<string, string>(parameters) { ["reader.engine"] = "unknown" }), "unknown engines cannot fall back silently");
-        Reject(() => ReaderSettings.Read(new Dictionary<string, string>(parameters) { ["code.formats"] = "[\"Aztec\"]" }), "unsupported native symbologies are refused");
+        Check(ReaderSettings.Read(new Dictionary<string, string>(parameters) { ["code.formats"] = "[\"Aztec\"]" }).Formats.SequenceEqual(new[] { "All" }), "native recognition ignores software-only symbology filters and accepts the full SDK result");
         var output = Marshal.AllocHGlobal(MvidNative.OutputBytes);
         try
         {
             Marshal.Copy(new byte[MvidNative.OutputBytes], 0, output, MvidNative.OutputBytes);
             var encoding = MvidNative.EncodingFor("utf-8");
-            RecognitionSymbol[] Read(string[]? formats = null) => MvidNative.CopyCodes(output, 640, 240, encoding, formats ?? ["All"]);
+            RecognitionSymbol[] Read() => MvidNative.CopyCodes(output, 640, 240, encoding);
             Check(Read().Length == 0, "a complete empty native list remains an empty-frame fact");
             void Write(int index, string text, int y, int type = 128)
             {
@@ -68,7 +68,7 @@ internal static class MvidReader
             var first = output + MvidNative.ImageBytes + 4;
             Marshal.WriteInt32(first, 4140, 1);
             Check(Read().Length == 2, "SDK filtered flags do not silently remove candidates before Application");
-            Check(Read(["EAN13"]).Length == 0, "configured symbology selection applies to the complete returned list");
+            Check(Read().All(s => s.Format == "Code128"), "native results retain SDK symbology metadata without a software filter");
             Marshal.WriteInt32(first, 4096, 4097); Reject(() => Read(), "oversized text rejects the complete frame");
             Write(0, "SYNTH-NATIVE", 20);
             Marshal.WriteByte(first, 0, 255); Reject(() => Read(), "invalid UTF-8 rejects the complete frame");
@@ -86,6 +86,7 @@ internal static class MvidReader
             !MvidNative.IsRecognitionFailure(unchecked((int)0x80000214)) && !MvidNative.IsRecognitionFailure(unchecked((int)0x80002100)),
             "native barcode algorithm failure is frame-local while transport and camera failures remain connection faults");
         await FreshFramesProveLiveness();
+        await ManualCorrection(workspace, root);
         await StopDuringCapacityWait();
         await DebugFlow(workspace, root);
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-reader"), stillMs: "50", nativeResults: true);
@@ -145,6 +146,51 @@ internal static class MvidReader
         await h.App.StopAsync(default);
         Check(api.Destroys == 2 && api.Finalizes == 2 && !api.HasFrame, "retrying a failed stop really releases the native owner");
         Console.WriteLine("BOUNDARY: synthetic native frame port + real Application/SQLite/loopback RCS; actual MVID camera NOT_RUN");
+    }
+    static async Task ManualCorrection(string workspace, string root)
+    {
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "native-manual-correction"), stillMs: "0", nativeResults: true);
+        await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)90, 640 * 240).ToArray(), 640, 240);
+        async Task Frame(uint number, RecognitionSymbol[] symbols, CameraRoundHarness.RoundPixels? pixels = null)
+        {
+            h.Api(h.Left).EnqueueNative(pixels ?? parcel, number, symbols);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads?.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == number) == true);
+        }
+        await Frame(1, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Accepted));
+        var basis = await h.App.SnapshotAsync();
+        await Frame(2, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation.SourceEventId == "mvid.frame.2");
+        var receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-MANUAL-CORRECTION", ParcelBarcodeInputKind.Keyboard,
+            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, basis.Positions!.Single(p => p.Id == "left").CurrentOperation), default);
+        Check(receipt.Status == "Admitted", "continuous same-placement camera reads do not invalidate the operator's manual input basis");
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
+        var requests = h.Peer.Requests.Count;
+        await Frame(3, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation.SourceEventId == "mvid.frame.3");
+        var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768); await vm.RefreshAsync();
+        Check((await h.App.ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left").PlacementOperationId == receipt.OperationId &&
+            h.Peer.Requests.Count == requests && vm.Left.Operation?.Id == receipt.OperationId && vm.Left.Barcode == "SYNTH-MANUAL-CORRECTION" && vm.Left.ShowConfirmedTask,
+            "unchanged camera code cannot replace the manual barcode/chute or send another request");
+        for (uint n = 4; n <= 6; n++) { await Frame(n, [], CameraRoundHarness.EmptyTray); if (n < 6) await Task.Delay(450); }
+        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return !vm.Left.ShowConfirmedTask; });
+        Check(!vm.Left.ShowConfirmedTask, "removing the physical parcel releases its manual correction and result");
+        await Frame(7, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == requests + 1));
+        Check(h.Peer.Requests.Count == requests + 1, "replacing the parcel permits exactly one new camera request");
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Acquisition?.SourceEventId == "mvid.frame.7" && o.Wcs?.State == StageState.Accepted));
+        basis = await h.App.SnapshotAsync();
+        receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-SECOND-CORRECTION", ParcelBarcodeInputKind.Keyboard,
+            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, basis.Positions!.Single(p => p.Id == "left").CurrentOperation), default);
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
+        await vm.RefreshAsync();
+        Check(vm.Left.ShowConfirmedTask, "second manual correction has its own confirmed result before changing parcels");
+        await Frame(8, [Symbol("SYNTH-NEXT-PARCEL")]);
+        var changedRead = (await h.App.ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left");
+        vm.Left.ApplyReadFeedback(changedRead);
+        Check(changedRead.SingleCode == "SYNTH-NEXT-PARCEL" && changedRead.PlacementOperationId is null && !vm.Left.ShowConfirmedTask,
+            "a genuinely different camera code immediately invalidates the previous manual chute before the next snapshot");
     }
     static async Task FreshFramesProveLiveness()
     {

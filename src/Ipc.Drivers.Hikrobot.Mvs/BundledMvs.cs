@@ -57,7 +57,7 @@ public static class BundledMvs
         var settings = recognize ? ReaderSettings.Read(binding.Parameters ?? new Dictionary<string, string>()) : null;
         var charset = binding.Parameters?.GetValueOrDefault("code.encoding", "utf-8") ?? "utf-8";
         if (settings?.Engine == "mvid-native")
-            return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), new MvidApi(settings, charset));
+            return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), new MvidApi(charset));
         IMonoBarcodeDecoder? decoder = recognize ? new SoftwareDecoder(charset, settings: settings) : null;
 #endif
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.

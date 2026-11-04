@@ -21,7 +21,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
             rejectedFrames++; if (decoding) rejectedDecodes++;
             lastFrameRejection = $"frame={frame}; reason={error.Reason}; {error.Message}";
         }
-        PublishReadFeedback(frame, DateTimeOffset.UtcNow, Stopwatch.GetTimestamp(), 0, rejected: true, scene: scene);
+        PublishReadFeedback(frame, DateTimeOffset.UtcNow, Stopwatch.GetTimestamp(), 0, rejected: true, scene: scene, failureReason: error.Reason + ": " + error.Message);
     }
     void ResetDiagnostics()
     {

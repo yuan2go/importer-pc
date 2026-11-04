@@ -54,8 +54,8 @@ internal static class MvidNative
     static Encoding ChineseEncoding()
     { Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); return Encoding.GetEncoding("gb18030", EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback); }
 
-    // Validate the complete list before filtering; never deduplicate equal payloads.
-    internal static RecognitionSymbol[] CopyCodes(nint output, int width, int height, Encoding encoding, string[] formats)
+    // Validate and preserve the complete list; never deduplicate equal payloads.
+    internal static RecognitionSymbol[] CopyCodes(nint output, int width, int height, Encoding encoding)
     {
         var count = Marshal.ReadInt32(output, ImageBytes);
         if (count is < 0 or >= 256) throw new MvsFrameRejection("CandidateLimit", "MVID result list is invalid or saturated");
@@ -79,8 +79,7 @@ internal static class MvidNative
             var flag = Marshal.ReadInt32(code, 4140);
             if (flag is not (0 or 1)) throw new MvsFrameRejection("InvalidCandidate", "MVID filter flag is invalid");
             // Include SDK-filtered candidates too: Application owns filtering and placement suppression.
-            if (formats.Contains("All") || formats.Contains(format))
-                result.Add(new(text, format, corners, (int)Math.Round(Marshal.ReadInt32(code, 4136) / 10d)));
+            result.Add(new(text, format, corners, (int)Math.Round(Marshal.ReadInt32(code, 4136) / 10d)));
         }
         return result.ToArray();
     }

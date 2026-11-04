@@ -49,6 +49,7 @@ public partial class SupplyStationWindow : Window
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
         work.ColumnDefinitions.Add(new()); work.ColumnDefinitions.Add(new());
+        Grid.SetIsSharedSizeScope(work, true);
         var left = new SupplyStationPosition { DataContext = ViewModel.Left };
         var right = new SupplyStationPosition { DataContext = ViewModel.Right };
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);

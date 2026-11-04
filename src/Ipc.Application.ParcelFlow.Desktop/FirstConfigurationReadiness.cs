@@ -3,11 +3,9 @@ using System.Net.Sockets;
 
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-// First configuration: which sources the station plans to use, what the draft actually has,
-// and an optional network-layer check. The scenario only states intent; it never creates a
-// device identity, clears a field or enables Simulation. Nothing here touches the camera SDK
+// First configuration summarizes the actual draft and an optional network-layer check.
+// Nothing here creates a device identity, clears a field, touches the camera SDK
 // or sends an RCS business request, so no result may read as "可以开始供包".
-public enum FirstConfigurationScenario { DualCamera, LeftCamera, RightCamera, ManualOnly }
 public sealed record CameraSlot(string Role, string Ip, string Serial)
 {
     public bool Filled => Ip.Trim().Length > 0 && Serial.Trim().Length > 0;
@@ -18,50 +16,16 @@ public sealed record NetworkProbeResult(string Source, string Target, bool Reach
 
 public static class FirstConfigurationReadiness
 {
-    public static readonly FirstConfigurationScenario[] Scenarios = Enum.GetValues<FirstConfigurationScenario>();
-
-    public static string Name(FirstConfigurationScenario scenario) => scenario switch
-    {
-        FirstConfigurationScenario.DualCamera => "左右两台相机",
-        FirstConfigurationScenario.LeftCamera => "只用左相机",
-        FirstConfigurationScenario.RightCamera => "只用右相机",
-        _ => "仅人工输入（相机稍后接入）"
-    };
-
-    public static string Description(FirstConfigurationScenario scenario) => scenario switch
-    {
-        FirstConfigurationScenario.DualCamera => "两个投递位都用相机自动读码。",
-        FirstConfigurationScenario.LeftCamera => "左位用相机，右位暂不接相机。",
-        FirstConfigurationScenario.RightCamera => "右位用相机，左位暂不接相机。",
-        _ => "先用键盘或 PDA 录入条码，相机以后再配置。不是模拟运行。"
-    };
-
     static string Side(string role) => role == "left" ? "左相机" : role == "right" ? "右相机" : role;
-    static bool Uses(FirstConfigurationScenario scenario, string role) => scenario switch
-    {
-        FirstConfigurationScenario.DualCamera => true,
-        FirstConfigurationScenario.LeftCamera => role == "left",
-        FirstConfigurationScenario.RightCamera => role == "right",
-        _ => false
-    };
-
-    // The scenario a station that already has fields most likely meant; a blank draft starts as two cameras.
-    public static FirstConfigurationScenario Infer(IReadOnlyCollection<CameraSlot> cameras)
-    {
-        var left = cameras.Any(c => c.Role == "left" && !c.Empty); var right = cameras.Any(c => c.Role == "right" && !c.Empty);
-        return left && !right ? FirstConfigurationScenario.LeftCamera : right && !left ? FirstConfigurationScenario.RightCamera : FirstConfigurationScenario.DualCamera;
-    }
-
-    public static ReadinessLine[] Lines(FirstConfigurationScenario scenario, IReadOnlyCollection<CameraSlot> cameras, string rcsTarget)
+    public static ReadinessLine[] Lines(IReadOnlyCollection<CameraSlot> cameras, string rcsTarget)
     {
         var lines = new List<ReadinessLine>();
         foreach (var camera in cameras.OrderBy(c => c.Role == "left" ? 0 : 1))
         {
-            var used = Uses(scenario, camera.Role);
             lines.Add(camera.Filled
-                ? new(Side(camera.Role), used ? "已填写，保存后启动时连接并采图" : "已填写；所选方式不用这台相机，但保存后仍会连接", !used)
+                ? new(Side(camera.Role), "已填写，保存后启动时连接并采图", false)
                 : camera.Empty
-                    ? new(Side(camera.Role), used ? "按所选方式需要配置，尚未填写网络地址和序列号" : "未配置（所选方式不使用）", used)
+                    ? new(Side(camera.Role), "未配置，不使用这台相机", false)
                     : new(Side(camera.Role), "网络地址和序列号只填了一项，保存会被拒绝", true));
         }
         var rcs = rcsTarget.Trim().Length > 0;

@@ -12,12 +12,12 @@ internal static class SamePlacement29
     internal static async Task Run(string workspace, string root)
     {
         // A window wide enough that loaded CI frame gaps never look like a lift.
-        // New sites start with common 1D symbologies; the schema and the decoder accept them.
+        // New sites accept the complete native-reader result set.
         var initial = new SportmasterFlow().InitialConfiguration();
-        Check(initial.Topology!.Readers.All(r => Wire.Decode<string[]>(r.Parameters!["code.formats"]).SequenceEqual(new[] { "Code128", "Code39", "EAN13" }) &&
+        Check(initial.Topology!.Readers.All(r => r.Parameters!["reader.engine"] == "mvid-native" && Wire.Decode<string[]>(r.Parameters["code.formats"]).SequenceEqual(new[] { "All" }) &&
                 !ExtensionSchema.Validate(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor.Parameters, r.Parameters).Any(e => e.Contains("code.formats", StringComparison.Ordinal))) &&
-            Ipc.Drivers.Hikrobot.Mvs.ReaderSettings.Read(initial.Topology.Readers[0].Parameters!).Formats.SequenceEqual(new[] { "Code128", "Code39", "EAN13" }),
-            "new-site template selects Code128, Code39 and EAN13 explicitly and passes the reader schema");
+            Ipc.Drivers.Hikrobot.Mvs.ReaderSettings.Read(initial.Topology.Readers[0].Parameters!).Formats.SequenceEqual(new[] { "All" }),
+            "new-site template selects native reading with the complete code list and passes the reader schema");
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-29")) { PlacementReleaseMs = 5000 };
         var siteDecoder = new Ipc.Drivers.Hikrobot.Mvs.SoftwareDecoder("utf-8", () => { }, settings: Ipc.Drivers.Hikrobot.Mvs.ReaderSettings.Read(initial.Topology.Readers[0].Parameters!));
         siteDecoder.Prepare();
@@ -25,7 +25,7 @@ internal static class SamePlacement29
         {
             var siteLabel = CameraRoundHarness.Barcode("JYMW02263");
             Check(siteDecoder.Decode(siteLabel.Data, siteLabel.Data.Length, siteLabel.Width, siteLabel.Height).SequenceEqual(new[] { "JYMW02263" }),
-                "the new-site symbology set decodes a site-style Code128 label");
+                "the software decoder also accepts the complete symbology set for a site-style Code128 label");
         }
         finally { siteDecoder.Release(); }
         await h.StartAsync();

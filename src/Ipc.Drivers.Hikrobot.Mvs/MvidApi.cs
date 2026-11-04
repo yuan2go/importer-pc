@@ -7,7 +7,7 @@ namespace Ipc.Drivers.Hikrobot.Mvs;
 
 // Adapter to the shared frame/placement pipeline. MVID owns image memory until the
 // next GetOneFrameTimeout; Release ends our borrowing, it is not an SDK free call.
-internal sealed class MvidApi(ReaderSettings settings, string charset) : IMvsApi
+internal sealed class MvidApi(string charset) : IMvsApi
 {
     static readonly object enumerationGate = new();
     readonly Encoding encoding = MvidNative.EncodingFor(charset);
@@ -116,7 +116,7 @@ internal sealed class MvidApi(ReaderSettings settings, string charset) : IMvsApi
         { NativeRecognitionMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds };
         if (recognitionFailure) return frame with { NativeRejection = new MvsFrameRejection("native-recognition-failed", $"MVID single-frame recognition failed: 0x{status:X8}") };
         // Keep a valid image on a bad-code frame so preview and unchanged-scene evidence survive.
-        try { return frame with { NativeSymbols = MvidNative.CopyCodes(output, width, height, encoding, settings.Formats) }; }
+        try { return frame with { NativeSymbols = MvidNative.CopyCodes(output, width, height, encoding) }; }
         catch (MvsFrameRejection error) { return frame with { NativeRejection = error }; }
     }
     public void Release() => HasFrame = false;

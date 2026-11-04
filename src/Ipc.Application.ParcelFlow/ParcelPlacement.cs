@@ -42,13 +42,13 @@ public sealed partial class ParcelRuntime
 
     // Presentation may coalesce observations only while the business placement
     // ledger still owns them. This grants no admission or retry authority.
-    bool ContinuingCameraPlacement(string position, Observation observation)
+    string? ContinuingCameraPlacementOwner(string position, Observation observation)
     {
         if (Id != "sportmaster" || observation.Kind != "Read" || observation.CandidateIssue is not null ||
-            observation.Codes is not [var code]) return false;
+            observation.Codes is not [var code]) return null;
         lock (placements) return frameFedPositions.Contains(position) && placements.TryGetValue(position, out var placement) &&
             placement.CameraSeen && placement.Operation is not null && placement.Code == code &&
-            !(placement.EndedAt is { } ended && observation.ObservedAt > ended);
+            !(placement.EndedAt is { } ended && observation.ObservedAt > ended) ? placement.Operation : null;
     }
 
     // Returns the operation that already owns this placement, or null when the
@@ -80,6 +80,14 @@ public sealed partial class ParcelRuntime
         if (definition.SamePlacementReleaseMs <= 0) return;
         lock (placements)
         {
+            if (!camera && placements.TryGetValue(position, out var resting) && resting.CameraSeen && resting.EndedAt is null)
+            {
+                // Manual correction owns this physical placement; keep its last camera code
+                // as presence evidence so the next unchanged camera read cannot create a new job.
+                resting.Operation = operation;
+                if (observedAt > resting.LastSeen) resting.LastSeen = observedAt;
+                return;
+            }
             if (!placements.TryGetValue(position, out var placement) || placement.Code != code || placement.EndedAt is not null)
                 placements[position] = placement = new(code, observedAt, camera);
             else if (observedAt > placement.LastSeen) placement.LastSeen = observedAt;
@@ -103,6 +111,7 @@ public sealed partial class ParcelRuntime
         lock (placements)
         {
             if (!placements.TryGetValue(position, out var placement) || placement.Operation != finished.Id || placement.EndedAt is not null) return false;
+            if (finished.OperatorInput is not null && StationTime.GetUtcNow() - finished.ObservedAt > ManualResultDisplay) return false;
             return placement.CameraSeen && frameFedPositions.Contains(position) || StationTime.GetUtcNow() - placement.LastSeen <= ManualResultDisplay;
         }
     }

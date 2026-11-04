@@ -177,7 +177,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         }
         if (installing)
         {
-            Height = Math.Min(440, MaxHeight);
+            Height = Math.Min(optionsHeight, MaxHeight);
             Message("请稍候，安装完成后将显示结果。");
             Body.Children.Add(installationStage); Body.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 10, Margin = new(0, 12, 0, 12) }.Themed(Control.ForegroundProperty, "Accent"));
             Details();
@@ -280,7 +280,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         }
         else
         {
-            Height = Math.Min(440, MaxHeight);
+            Height = Math.Min(optionsHeight, MaxHeight);
             if (needsFirstConfiguration == true)
             { Section("首次使用"); Note(ApplicationId == "sportmaster" ? "首次打开后先设置供包台。相机和 RCS 可稍后配置，配置完成前不能供包。" : "首次打开后，请完成设备与服务配置，再按检查结果启动。"); }
             else Note(needsFirstConfiguration == false ? "已有配置已识别。打开后仍需主动启动，启动时检查设备与服务条件。" : configurationMessage.Length > 0 ? configurationMessage : "打开后会检查配置；安装完成不代表设备已可运行。");

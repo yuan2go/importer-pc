@@ -11,6 +11,20 @@ public sealed partial class SoftwareLogControl
     readonly Button exportMenu = new() { Content = "导出…", MinHeight = 44 };
     string? operationFilter;
     long operationNavigation;
+    int? relativeHours = 1;
+    bool updatingRelativeRange;
+    void RefreshRelativeRange()
+    {
+        if (relativeHours is not { } hours) return;
+        var now = DateTimeInput.SecondNow();
+        updatingRelativeRange = true;
+        try
+        {
+            from.Text = (hours == 0 ? new DateTimeOffset(DateTime.Today) : now.AddHours(-hours)).ToString("O");
+            to.Text = now.AddSeconds(1).ToString("O");
+        }
+        finally { updatingRelativeRange = false; }
+    }
     public event EventHandler<string>? OperationRequested;
     public async Task ShowOperationAsync(string operation)
     {
@@ -23,6 +37,7 @@ public sealed partial class SoftwareLogControl
             await Task.Delay(20);
             if (navigation != operationNavigation || diagnosticsClosed) throw new OperationCanceledException("日志导航已改变");
         }
+        relativeHours = null;
         operationFilter = operation; keyword.Clear(); keyEvents.IsChecked = false;
         selectedLevels.Clear(); selectedSources.Clear(); level.SelectedIndex = 0; source.Clear();
         from.Text = DateTimeInput.SecondNow().AddDays(-7).ToString("O"); to.Text = DateTimeInput.SecondNow().AddMinutes(1).ToString("O");
@@ -46,7 +61,7 @@ public sealed partial class SoftwareLogControl
         foreach (var (name, hours) in new[] { ("最近1小时", 1), ("今天", 0), ("最近24小时", 24) })
         {
             var preset = new Button { Content = name, MinHeight = 44, Margin = new(4, 0, 4, 4) };
-            preset.Click += (_, _) => { var now = DateTimeInput.SecondNow(); from.Text = (hours == 0 ? new DateTimeOffset(DateTime.Today) : now.AddHours(-hours)).ToString("O"); to.Text = now.AddSeconds(1).ToString("O"); };
+            preset.Click += (_, _) => { relativeHours = hours; RefreshRelativeRange(); InvalidateSelection(); };
             search.Children.Add(preset);
         }
         var multi = new WrapPanel(); search.Children.Add(multi);
@@ -61,7 +76,7 @@ public sealed partial class SoftwareLogControl
             button.Click += (_, _) => { foreach (var item in menu.Items.OfType<MenuItem>()) item.IsChecked = selected.Contains((string)item.Header); menu.PlacementTarget = button; menu.IsOpen = true; }; multi.Children.Add(button);
         }
         Select("级别多选", ["信息", "警告", "错误", "调试", "无法解析"], selectedLevels);
-        Select("来源多选", ["RCS结果", "相机通信", "扫码与受理", "参数", "管理模式", "存储", "诊断日志"], selectedSources);
+        Select("来源多选", ["RCS请求", "RCS结果", "相机识码", "相机通信", "扫码与准入", "参数", "管理模式", "存储", "诊断日志"], selectedSources);
         var all = new Button { Content = "全部日志", MinHeight = 44 }; all.Click += (_, _) => { operationFilter = null; keyEvents.IsChecked = false; selectedLevels.Clear(); selectedSources.Clear(); level.SelectedIndex = 0; source.Clear(); InvalidateSelection(); }; multi.Children.Add(all);
         extraActions.Children.Remove(exportButton); extraActions.Children.Remove(rangeButton); exportButton.Visibility = rangeButton.Visibility = Visibility.Collapsed;
         var exports = new ContextMenu();

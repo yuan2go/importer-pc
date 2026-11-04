@@ -56,7 +56,7 @@ static partial class SportmasterRcs
             finally { inspector.Shutdown(); }
         }
         var rcs = Binding(endpoint) with { Implementation = "sportmaster-rcs" };
-        if (live) rcs.Parameters!["heartbeat-interval-seconds"] = "3";
+        if (live) rcs.Parameters!["heartbeat-interval-ms"] = "3000";
         var c = HeartbeatConfiguration(workspace, rcs);
         var reader = c.Reader with
         {

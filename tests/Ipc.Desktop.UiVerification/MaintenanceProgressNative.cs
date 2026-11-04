@@ -40,7 +40,7 @@ static partial class Program
             var running = Run(async (p, t) => { calls++; late = p; p.Report(new(MaintenanceStage.CopyingCustody, 4096, 16384, true)); using var subscription = t.Register(() => requested.TrySetResult()); entered.SetResult(); await release.Task; throw new MaintenanceCancelledException("合成资源已释放，取消完成。"); });
             await entered.Task; await Until(() => readout.Text.Contains("4,096"));
             Check((bool)busy.GetValue(window)! && !body.IsEnabled && !actions.IsEnabled && cancel.IsEnabled && readout.IsEnabled && readout.IsReadOnly, "real native window keeps source, target, byte observations and cancellation readable while ordinary actions are disabled");
-            await Until(() => Descendants(window).OfType<TextBlock>().Any(t => t.Text.StartsWith("已等待 ") && !t.Text.StartsWith("已等待 0 ")));
+            await Until(() => Descendants(window).OfType<TextBlock>().Any(t => t.Text.StartsWith("已用时 ") && !t.Text.StartsWith("已用时 0 ")));
             Check((bool)busy.GetValue(window)!, "actual elapsed-time observations continue while the backend is deliberately waiting");
             window.Width = 960; window.Height = 760; window.UpdateLayout(); CaptureInternal(evidence, "maintenance-progress-standard", window, lines);
             window.Width = 800; window.Height = 500; window.UpdateLayout();

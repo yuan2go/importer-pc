@@ -38,13 +38,13 @@ public sealed partial class SportmasterRcsTaskService
 
     async Task HeartbeatLoopAsync(CancellationToken stop)
     {
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(options.HeartbeatIntervalSeconds));
+        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(options.HeartbeatIntervalMs));
         try
         {
             while (await timer.WaitForNextTickAsync(stop).ConfigureAwait(false))
             {
                 using var timeout = CancellationTokenSource.CreateLinkedTokenSource(stop);
-                timeout.CancelAfter(TimeSpan.FromSeconds(Math.Min(3, options.HeartbeatIntervalSeconds)));
+                timeout.CancelAfter(TimeSpan.FromMilliseconds(Math.Min(3000, options.HeartbeatIntervalMs)));
                 try
                 {
                     var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -74,7 +74,7 @@ public sealed partial class SportmasterRcsTaskService
                     var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
                     if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
                     var vehicles = ReadHeartbeatVehicles(bytes, requestId, heartbeatStations!, DateTimeOffset.UtcNow,
-                        TimeSpan.FromSeconds(Math.Max(3, options.HeartbeatIntervalSeconds * 3)));
+                        TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3)));
                     lock (lifecycle)
                     {
                         stationVehicles = vehicles;

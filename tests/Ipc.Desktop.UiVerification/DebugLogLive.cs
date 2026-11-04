@@ -31,7 +31,7 @@ static partial class Program
             ["specified-chute"] = "false",
             ["request-id-base"] = "910000000",
             ["request-id-count"] = "10000",
-            ["heartbeat-interval-seconds"] = "3600",
+            ["heartbeat-interval-ms"] = "3600000",
             ["left-station-code"] = "TASK-STATION",
             ["right-station-code"] = "TASK-STATION",
             ["left-bcr-code"] = "TASK-LEFT",
@@ -57,6 +57,11 @@ static partial class Program
         var initial = await runtime.ReadDiagnosticTailAsync(null, null, default);
         Check(!initial.Entries.Any(e => e.Text.Contains("\"Level\":\"调试\"")) && initial.Entries.Any(e => e.Text.Contains("输入处理完成")),
             "normal mode retains detailed operational summaries without optional debug records");
+        await Until(async () => (await runtime.ReadDiagnosticTailAsync(null, null, default)).Entries.Any(e => e.Text.Contains("取格口结果")));
+        var ordinary = await runtime.QueryLogsAsync(new(DateTimeOffset.Now.AddMinutes(-5), DateTimeOffset.Now.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
+        Check(new[] { "扫码与准入", "RCS请求", "RCS结果" }.All(source => ordinary.Entries.Any(e => e.Source == source)),
+            "default key-event query includes ordinary barcode, RCS request and response with debug disabled");
+        runtime.ReleaseLogSelection(ordinary.Selection);
         var hot = await runtime.SetDebugLoggingAsync(true);
         Check(hot.DebugEnabled && hot.Revision == 1 && (await runtime.SnapshotAsync()).RuntimeId == before.RuntimeId &&
             (await runtime.SnapshotAsync()).Configuration.Revision == before.Configuration.Revision, "debug switch takes effect without restart or a pending configuration revision");
@@ -88,6 +93,22 @@ static partial class Program
         Check(debug.IsChecked == true, "log-page parameter reads the shared actual runtime setting");
         var export = Descendants(control).OfType<Button>().Single(b => Equals(b.Content, "导出…"));
         Click(window, "查询"); await Until(() => Task.FromResult(export.IsEnabled));
+        var previousEnd = probe.LastQuery!.ToExclusive;
+        await Until(() => Task.FromResult(DateTimeOffset.UtcNow > previousEnd));
+        var later = await Scan("right", "after-log-query", "000128");
+        await Until(async () => (await runtime.ReadDiagnosticTailAsync(null, null, default)).Entries.Any(e => e.Text.Contains("取格口结果") && e.Text.Contains(later.Id)));
+        Click(window, "查询"); await Until(() => Task.FromResult(export.IsEnabled));
+        var grid = Descendants(control).OfType<DataGrid>().Single();
+        Check(probe.LastQuery!.ToExclusive > previousEnd && grid.Items.OfType<SoftwareLogEntry>().Any(e => e.OperationId == later.Id && e.Source == "RCS结果"),
+            "re-querying recent logs advances the time window and finds the request made after the previous cutoff");
+        var fixedEnd = DateTimeOffset.Now.AddMinutes(-1);
+        var fields = BindingFlags.Instance | BindingFlags.NonPublic;
+        ((TextBox)typeof(SoftwareLogControl).GetField("from", fields)!.GetValue(control)!).Text = fixedEnd.AddHours(-1).ToString("O");
+        ((TextBox)typeof(SoftwareLogControl).GetField("to", fields)!.GetValue(control)!).Text = fixedEnd.ToString("O");
+        Click(window, "查询"); await Until(() => Task.FromResult(export.IsEnabled));
+        Check(probe.LastQuery!.ToExclusive == fixedEnd && !grid.Items.OfType<SoftwareLogEntry>().Any(e => e.OperationId == later.Id),
+            "manually entered historical cutoff stays fixed instead of silently expanding to now");
+        Click(window, "全部日志"); Click(window, "最近1小时"); Click(window, "查询"); await Until(() => Task.FromResult(export.IsEnabled));
         mode.SelectedIndex = 1; follow.IsChecked = true;
         await Until(() => Task.FromResult(terminal.Text.Contains("原请求响应详情")));
         Check(!export.IsEnabled, "live follow disables the visible export menu even when a prior fixed query was exportable");
@@ -189,9 +210,11 @@ public class RuntimeLogUiProbe : DispatchProxy
     public IWorkstationAdministration Inner = null!;
     public Func<Task<RuntimeDiagnosticBatch>>? Tail;
     public int TailReads;
+    public SoftwareLogQuery? LastQuery;
     protected override object? Invoke(MethodInfo? method, object?[]? arguments)
     {
         if (method!.Name == nameof(IRuntimeDiagnosticsControl.ReadDiagnosticTailAsync)) { TailReads++; if (Tail is not null) return Tail(); }
+        if (method.Name == nameof(IWorkstationAdministration.QueryLogsAsync)) LastQuery = (SoftwareLogQuery)arguments![0]!;
         return method.Invoke(Inner, arguments);
     }
 }

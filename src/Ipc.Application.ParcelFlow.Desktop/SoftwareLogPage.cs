@@ -170,7 +170,12 @@ public sealed partial class SoftwareLogControl : UserControl
         };
         results.MouseDoubleClick += async (_, _) => { if (results.SelectedItem is SoftwareLogEntry) await Run(LoadContext); };
         results.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && results.SelectedItem is SoftwareLogEntry && !busy) { e.Handled = true; await Run(LoadContext); } };
-        foreach (var box in new[] { from, to, keyword, source }) box.TextChanged += (_, _) => InvalidateSelection();
+        foreach (var box in new[] { from, to }) box.TextChanged += (_, _) =>
+        {
+            if (updatingRelativeRange) return;
+            relativeHours = null; InvalidateSelection();
+        };
+        foreach (var box in new[] { keyword, source }) box.TextChanged += (_, _) => InvalidateSelection();
         regex.Checked += (_, _) => InvalidateSelection(); regex.Unchecked += (_, _) => InvalidateSelection(); level.SelectionChanged += (_, _) => InvalidateSelection();
         InitializeRuntimeDiagnostics(actions);
         InitializeTaskFilters(search, actions, timeFilters, extraActions);
@@ -230,6 +235,7 @@ public sealed partial class SoftwareLogControl : UserControl
     }
     SoftwareLogQuery ReadQuery()
     {
+        RefreshRelativeRange();
         static bool Parse(string value, out DateTimeOffset at) => DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out at) && System.Text.RegularExpressions.Regex.IsMatch(value, @"(Z|[+-]\d{2}:\d{2})$");
         if (!Parse(from.Text, out var start) || !Parse(to.Text, out var end) || start >= end) throw new InvalidOperationException("请修正开始和结束时间，结束时间必须晚于开始时间。");
         return new(start, end, keyword.Text, regex.IsChecked == true, level.SelectedIndex == 0 ? "" : level.Text, source.Text) { Levels = selectedLevels.ToArray(), Sources = selectedSources.ToArray(), KeyEvents = keyEvents.IsChecked == true, OperationId = operationFilter };

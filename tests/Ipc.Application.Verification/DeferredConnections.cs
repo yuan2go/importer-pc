@@ -49,7 +49,7 @@ static partial class SportmasterRcs
                 {
                     ["left-station-code"] = c.StationCode!,
                     ["right-station-code"] = c.StationCode!,
-                    ["heartbeat-interval-seconds"] = "1",
+                    ["heartbeat-interval-ms"] = "1000",
                     ["zone-id"] = (mask & 4) != 0 ? "" : "71",
                     ["left-bcr-code"] = (mask & 1) != 0 ? "" : "SYNTH-BCR-0",
                     ["right-bcr-code"] = (mask & 2) != 0 ? "" : "SYNTH-BCR-1"

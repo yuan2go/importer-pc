@@ -16,7 +16,7 @@ public partial class ParcelViewModel
         {
             "作业交接信息",
             "工位：" + op.FrozenConfiguration.StationId + " · 投递位：" + (op.PositionId ?? "main"),
-            "观察时间：" + op.ObservedAt.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"),
+            "扫描时间：" + op.ObservedAt.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"),
             "包裹/受理：" + op.AdmissionId + " · 作业：" + op.Id,
             "条码：" + op.ParcelCode + "（相同条码不代表同一件包裹）",
             "本地状态：" + ChineseInterfaceText.Status(op.State.ToString())

@@ -24,7 +24,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     readonly Button inspect = new() { Content = "查看保存结果", MinWidth = 112 };
     readonly Button activate = new() { Content = "重启软件使设置生效…", MinHeight = 44 };
     readonly TextBox reason = new() { Name = "ChangeReason", AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 72, MaxLength = 1024, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-    readonly TextBlock reasonError = new() { Foreground = Brushes.Firebrick, TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed };
+    readonly TextBlock reasonError = new TextBlock { TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed }.Themed(TextBlock.ForegroundProperty, "Danger");
     string? localFailure;
     readonly PasswordBox proof = new() { Name = "MaintenanceProof" };
     public event EventHandler<string>? NavigateRequested;
@@ -32,7 +32,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     {
         vm = model; this.authorizationOnly = authorizationOnly; Owner = owner; DataContext = vm;
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
-        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; Background = Brushes.White;
+        FontFamily = UiTypography.Interface; FontSize = UiTypography.Body; FontWeight = FontWeights.Normal; SetResourceReference(BackgroundProperty, "Surface");
         Title = authorizationOnly ? "管理模式与操作条件" : "保存更改"; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         Width = Math.Min(880, Math.Max(540, (owner?.ActualWidth ?? 944) - 64)); Height = Math.Min(740, Math.Max(340, (owner?.ActualHeight ?? 804) - 64));
         MaxWidth = Math.Max(540, SystemParameters.WorkArea.Width - 24); MaxHeight = Math.Max(340, SystemParameters.WorkArea.Height - 24); MinWidth = 520; MinHeight = 320;
@@ -45,7 +45,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         DockPanel.SetDock(activate, Dock.Right); footer.Children.Add(save); footer.Children.Add(inspect); footer.Children.Add(activate); footer.Children.Add(back);
         activate.Click += async (_, _) => { if (vm.RequestActivationAsync is { } request) { Close(); await request(); } };
         back.IsCancel = true;
-        var footerChrome = Themed(new Border { BorderThickness = new(0, 1, 0, 0), Child = footer }, Border.BorderBrushProperty, "Line");
+        var footerChrome = new Border { BorderThickness = new(0, 1, 0, 0), Child = footer }.Themed(Border.BorderBrushProperty, "Line");
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
         body.Children.Add(Heading(Title, UiTypography.PageTitle, 0));
@@ -161,11 +161,9 @@ public sealed class ConfigurationSaveReviewWindow : Window
         outcome.Visibility = outcome.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         outcome.SetResourceReference(TextBlock.ForegroundProperty, vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "Warning" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "Success" : "Muted");
     }
-    // Colours come from the Workstation theme keys (AGENTS.md), resolved where the window is shown.
-    static T Themed<T>(T element, DependencyProperty property, string key) where T : FrameworkElement { element.SetResourceReference(property, key); return element; }
-    static TextBlock Heading(string value, double size, double top) => Themed(new TextBlock { Text = value, FontSize = size, FontWeight = UiTypography.Emphasis, Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap }, TextBlock.ForegroundProperty, "Ink");
-    static TextBlock Note(string value) => Themed(new TextBlock { Text = value, FontSize = UiTypography.Body, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) }, TextBlock.ForegroundProperty, "Muted");
-    static TextBlock Label(string value) => Themed(new TextBlock { Text = value, Margin = new(0, 0, 0, 6) }, TextBlock.ForegroundProperty, "Ink");
+    static TextBlock Heading(string value, double size, double top) => new TextBlock { Text = value, FontSize = size, FontWeight = UiTypography.Emphasis, Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap }.Themed(TextBlock.ForegroundProperty, "Ink");
+    static TextBlock Note(string value) => new TextBlock { Text = value, FontSize = UiTypography.Body, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) }.Themed(TextBlock.ForegroundProperty, "Muted");
+    static TextBlock Label(string value) => new TextBlock { Text = value, Margin = new(0, 0, 0, 6) }.Themed(TextBlock.ForegroundProperty, "Ink");
     internal static DataGrid ChangeTable(ConfigurationChangeItem[] changes)
     {
         var table = new DataGrid
@@ -199,7 +197,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     public static void ShowChanges(Window? owner, ConfigurationChangeItem[] changes, string revision)
     {
         var body = new DockPanel { Margin = new(24) }; var close = new Button { Content = "返回设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Right, Padding = new(16, 8, 16, 8), Margin = new(0, 12, 0, 0) };
-        var window = new Window { Owner = owner, Title = "查看修改", FontFamily = UiTypography.Interface, Content = body, Background = Brushes.White, FontSize = UiTypography.Body, Width = Math.Min(880, SystemParameters.WorkArea.Width - 24), Height = Math.Min(640, SystemParameters.WorkArea.Height - 24), WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var window = new Window { Owner = owner, Title = "查看修改", FontFamily = UiTypography.Interface, Content = body, FontSize = UiTypography.Body, Width = Math.Min(880, SystemParameters.WorkArea.Width - 24), Height = Math.Min(640, SystemParameters.WorkArea.Height - 24), WindowStartupLocation = WindowStartupLocation.CenterOwner }.Themed(Control.BackgroundProperty, "Surface");
         DockPanel.SetDock(close, Dock.Bottom); close.Click += (_, _) => window.Close(); body.Children.Add(close);
         var heading = new StackPanel(); heading.Children.Add(Heading(changes.Length == 0 ? "没有设置差异" : "本次更改", UiTypography.PageTitle, 0)); heading.Children.Add(Note(revision));
         DockPanel.SetDock(heading, Dock.Top); body.Children.Add(heading); body.Children.Add(ChangeTable(changes)); window.ShowDialog();

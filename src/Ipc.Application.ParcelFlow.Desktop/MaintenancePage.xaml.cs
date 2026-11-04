@@ -172,9 +172,8 @@ public partial class MaintenancePage : UserControl
             Height = Math.Min(620, SystemParameters.WorkArea.Height - 24),
             MinWidth = 440,
             MinHeight = 320,
-            Background = System.Windows.Media.Brushes.White,
             WindowStartupLocation = WindowStartupLocation.CenterOwner
-        };
+        }.Themed(Control.BackgroundProperty, "Surface");
         dialog.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         var body = new DockPanel { Margin = new(24) }; var actions = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 16, 0, 0) };
         var cancel = new Button { Content = "返回设置", Margin = new(0, 0, 8, 0), IsCancel = true }; cancel.Click += (_, _) => dialog.DialogResult = false;

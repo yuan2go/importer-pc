@@ -155,7 +155,6 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";
     internal void SetInputFocused(bool focused) { if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
     internal void NotifyInputTarget() { PropertyChanged?.Invoke(this, new(nameof(InputTargetActive))); PropertyChanged?.Invoke(this, new(nameof(InputTargetBrush))); }
-    public string Accent => "#192736";
     public string ReaderId { get; private set; } = "未配置";
     public string ReaderIdentity { get; private set; } = "未配置";
     public string CameraAddress { get; private set; } = "尚未配置地址";

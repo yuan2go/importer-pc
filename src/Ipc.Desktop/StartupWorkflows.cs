@@ -30,9 +30,9 @@ public abstract partial class StartupWorkflowWindow : Window
     {
         for (var i = 0; i < installationSteps.Length; i++)
         {
-            installationSteps[i].Foreground = i == step ? new SolidColorBrush(Color.FromRgb(8, 102, 232)) : new SolidColorBrush(Color.FromRgb(98, 107, 120));
+            installationSteps[i].SetResourceReference(TextBlock.ForegroundProperty, i == step ? "Accent" : "Muted");
             installationSteps[i].FontWeight = i == step ? UiTypography.Emphasis : FontWeights.Normal;
-            installationSteps[i].Background = i == step ? new SolidColorBrush(Color.FromRgb(232, 240, 254)) : Brushes.Transparent;
+            if (i == step) installationSteps[i].SetResourceReference(TextBlock.BackgroundProperty, "AccentBackground"); else installationSteps[i].Background = Brushes.Transparent;
             installationSteps[i].Padding = new(8, 12, 8, 12);
             installationSteps[i].FontSize = UiTypography.Label;
         }
@@ -46,7 +46,7 @@ public abstract partial class StartupWorkflowWindow : Window
         ProductBrand.Apply(this);
         VersionLabel.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         Title = title; FontSize = UiTypography.Body; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
+        SetResourceReference(BackgroundProperty, "Background"); SetResourceReference(ForegroundProperty, "Ink");
         if (installation)
         {
             Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
@@ -59,7 +59,7 @@ public abstract partial class StartupWorkflowWindow : Window
                 : new[] { ("1  安装选项", 0), ("2  确认并安装", 1), ("3  安装完成", 2) };
             foreach (var (label, index) in stepLabels)
             { installationSteps[index] = new TextBlock { Text = label, Margin = new(0, 12, 0, 12), TextWrapping = TextWrapping.Wrap }; rail.Children.Add(installationSteps[index]); }
-            var sidebar = new Border { Background = new SolidColorBrush(Color.FromRgb(245, 248, 252)), Child = rail }; layout.Children.Add(sidebar);
+            var sidebar = new Border { Child = rail }.Themed(Border.BackgroundProperty, "Soft"); layout.Children.Add(sidebar);
             var content = new Grid { Margin = new(28, 24, 28, 20) }; Grid.SetColumn(content, 1);
             content.RowDefinitions.Add(new() { Height = GridLength.Auto }); content.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); content.RowDefinitions.Add(new() { Height = GridLength.Auto });
             var header = new StackPanel(); header.Children.Add(InstallationHeading); header.Children.Add(VersionLabel); header.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 48, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); header.Children.Add(CreateMaintenancePanel(compact: true));
@@ -111,7 +111,7 @@ public abstract partial class StartupWorkflowWindow : Window
         UnknownOutcome |= error is InstallationOutcomeUnknownException;
         Status.Text = UnknownOutcome ? "上次维护操作结果未确认，请勿重复执行。\n" + ChineseInterfaceText.ParameterMessage(error.Message)
             : "未完成：" + ChineseInterfaceText.ParameterMessage(error.Message) + "\n已有数据和配置未改动。请按原因处理后再试。";
-        Status.Foreground = UnknownOutcome ? Brushes.DarkGoldenrod : Brushes.Firebrick;
+        Status.SetResourceReference(TextBlock.ForegroundProperty, UnknownOutcome ? "Warning" : "Danger");
     }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
     protected void Note(string text) => Form.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
@@ -189,7 +189,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         SessionActions.Children.Add(managementMenu);
         var administratorLogin = new Button { Content = "进入管理模式…", MinHeight = 44 };
         var gateTitle = new TextBlock { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, TextWrapping = TextWrapping.Wrap };
-        var gateDescription = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 20), FontSize = UiTypography.Body, Foreground = new SolidColorBrush(Color.FromRgb(83, 101, 119)) };
+        var gateDescription = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 20), FontSize = UiTypography.Body }.Themed(TextBlock.ForegroundProperty, "Muted");
         var gateActions = new WrapPanel();
         AuthorizationGate.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/StartupAppearance.xaml", UriKind.Relative) });
         var gateExit = new Button { Content = "退出配置", MinHeight = 40, MinWidth = 88, Margin = new(12, 0, 0, 0) };
@@ -294,7 +294,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             else if (tasks is not null) tasks.SelectedIndex = Math.Min(3, tasks.SelectedIndex + 1);
         });
-        next.Background = new SolidColorBrush(Color.FromRgb(32, 95, 206)); next.Foreground = Brushes.White;
+        next.SetResourceReference(BackgroundProperty, "Accent"); next.SetResourceReference(ForegroundProperty, "Surface");
         Action("维护操作", () => { showMaintenanceActions = !showMaintenanceActions; UpdateActions(); return Task.CompletedTask; });
         Action(initialConfiguration ? "保存配置" : "保存并启动", async () =>
         {

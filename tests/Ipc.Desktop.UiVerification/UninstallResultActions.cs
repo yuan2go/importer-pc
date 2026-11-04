@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Ipc.Application.Contracts;
 using Ipc.Platform;
 
 static partial class Program
@@ -12,19 +13,18 @@ static partial class Program
         var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"));
         var type = assembly.GetType("Ipc.Desktop.ProductMaintenanceWindow", true)!;
         var workflow = type.BaseType!;
-        var source = new string('a', 40);
-        var location = new DeploymentLocation("sportmaster", source, "D:/synthetic-release", "D:/synthetic-config", "D:/synthetic-data", "S-1-5-21-synthetic", "RemovedDataRetained");
-        var pending = new WindowsRemovalReceipt("RestartRequired", "D:/synthetic-remove.json", [location.DataRoot], true, ["app/locked.dll"], location.ReleaseRoot);
-        var clean = pending with { Status = "RemovedDataRetained", RestartRequired = false, RemainingFiles = [] };
-        var inspectCalls = 0; var continueCalls = 0;
-        void Check(bool ok, string why) { if (!ok) throw new InvalidOperationException(why); lines.Add("PASS UNINSTALL-ACTIONS " + why); }
-        Window Make(string mediaSource, Func<WindowsRemovalReceipt> inspect, Func<DeploymentMedia, Task<WindowsRemovalReceipt>> resume)
+        var clean = new WindowsRemovalReceipt("RemovedDataRetained", "D:/synthetic-remove.json", ["D:/synthetic-data"], false, [], "D:/synthetic-release");
+        var partial = clean with { Status = "RemovedWithRetainedFiles", RemainingFiles = ["app/locked.dll"] };
+        var calls = 0; var inspections = 0; var selectedDelete = false;
+        void Check(bool ok, string why) { if (!ok) throw new InvalidOperationException(why); lines.Add("PASS UNINSTALL " + why); }
+        Window Make(Func<bool, Task<ProgramUninstallResult>> execute, Func<ProgramUninstallResult>? inspect = null)
         {
-            var media = new DeploymentMedia("D:/synthetic-media", "sportmaster", mediaSource, []);
-            var window = (Window)type.GetConstructor(flags, null, [typeof(DeploymentMedia)], null)!.Invoke([media]);
-            type.GetProperty("CurrentDeployment", flags)!.SetValue(window, (Func<DeploymentLocation?>)(() => location));
-            type.GetProperty("InspectRemoval", flags)!.SetValue(window, (Func<WindowsRemovalReceipt>)(() => { inspectCalls++; return inspect(); }));
-            type.GetProperty("ContinueRemoval", flags)!.SetValue(window, (Func<DeploymentMedia, Task<WindowsRemovalReceipt>>)(media => { continueCalls++; return resume(media); }));
+            var window = (Window)Activator.CreateInstance(type)!;
+            type.GetProperty("RegistrationIdentity", flags)!.SetValue(window, (Func<string>)(() => "synthetic-registration"));
+            type.GetProperty("ExecuteUninstall", flags)!.SetValue(window,
+                (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((hash, delete, _, _) =>
+                { Check(hash == "synthetic-registration", "original installation identity reaches the application contract"); calls++; selectedDelete = delete; return execute(delete); }));
+            type.GetProperty("InspectUninstall", flags)!.SetValue(window, (Func<ProgramUninstallResult>)(() => { inspections++; return inspect!(); }));
             return window;
         }
         bool Busy(Window w) => (bool)workflow.GetField("Busy", flags)!.GetValue(w)!;
@@ -37,65 +37,61 @@ static partial class Program
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Check(!Busy(w), "operation returned to the native dispatcher within its wait budget"); w.UpdateLayout();
         }
-        var mismatch = Make(new string('b', 40), () => pending, _ => Task.FromResult(clean));
-        mismatch.Show(); await Idle(mismatch);
-        Check(!Button(mismatch, "继续清理…").IsEnabled && continueCalls == 0 && Descendants(mismatch).OfType<TextBlock>().Any(t => t.Text.Contains("原安装版本：" + source) && t.Text.Contains("当前安装包版本：") && t.Text.Contains("打开原版完整安装包")), "source mismatch is visible before a destructive action and cannot submit cleanup");
-        CaptureInternal(evidence, "uninstall-source-mismatch", mismatch, lines);
-        var before = inspectCalls; Click(mismatch, "查看上次卸载结果"); await Idle(mismatch);
-        Check(inspectCalls == before + 1 && Status(mismatch).Contains("检查完成") && continueCalls == 0 && !Button(mismatch, "继续清理…").IsEnabled, "read-only button performs a new inspection and shows completion even when remaining files are unchanged");
-        // Even a queued/forced event must preserve the source guard behind the disabled control.
-        var rejected = false;
-        try { await (Task)type.GetMethod("ResumeOriginal", flags)!.Invoke(mismatch, null)!; }
-        catch (InvalidOperationException) { rejected = true; }
-        Check(rejected && continueCalls == 0, "source guard also rejects a queued call behind the disabled button");
-        Click(mismatch, "关闭"); Check(!mismatch.IsVisible, "close exits the mismatched result window");
+        var keep = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false)));
+        keep.Show(); await Idle(keep);
+        Check(calls == 0 && inspections == 0, "opening uninstall neither reads business data nor starts maintenance");
+        Check(Descendants(keep).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked == true,
+            "data retention is the default");
+        Check(Descendants(keep).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "卸载", "取消" }),
+            "one uninstall action and cancel replace review, backup, repair, rollback and purge workflows");
+        Check(!Descendants(keep).OfType<TextBox>().Any(b => !b.IsReadOnly) && !Descendants(keep).OfType<CheckBox>().Any(),
+            "no backup location or typed confirmation is required");
+        CaptureInternal(evidence, "uninstall-options", keep, lines);
+        keep.Width = 680; keep.Height = 420; keep.UpdateLayout();
+        var cancelBounds = Button(keep, "取消").TransformToAncestor(keep).TransformBounds(new Rect(Button(keep, "取消").RenderSize));
+        Check(cancelBounds.Bottom < keep.ActualHeight && Descendants(keep).OfType<RadioButton>().All(b => b.ActualHeight >= 44),
+            "compact layout retains visible actions and accessible choice targets");
+        CaptureInternal(evidence, "uninstall-options-compact", keep, lines);
+        Click(keep, "卸载"); await Idle(keep);
+        Check(calls == 1 && !selectedDelete && Status(keep).Contains("本站数据已保留"), "one click uninstalls with retained data without further dialogs");
+        Check(Descendants(keep).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "关闭" }), "a completed uninstall only offers close");
+        CaptureInternal(evidence, "uninstall-retained", keep, lines); Click(keep, "关闭");
 
-        var inspectionFails = false; var cleanupUnknown = false;
-        var currentReceipt = pending;
-        var matching = Make(source, () => inspectionFails ? throw new IOException("synthetic inspection unavailable") : currentReceipt,
-            _ => cleanupUnknown ? throw new InstallationOutcomeUnknownException("synthetic cleanup receipt lost", new IOException()) : Task.FromResult(clean));
-        matching.Show(); await Idle(matching);
-        inspectionFails = true; Click(matching, "查看上次卸载结果"); await Idle(matching);
-        var retainedDetails = Descendants(matching).OfType<Expander>().Single(e => Equals(e.Header, "卸载记录与剩余文件详情"));
-        Check(!retainedDetails.IsExpanded, "residual evidence is initially collapsed behind an explicit details action");
-        retainedDetails.IsExpanded = true; matching.UpdateLayout();
-        Check(Status(matching).Contains("synthetic inspection unavailable") && Descendants(matching).OfType<TextBox>().Any(t => t.Text.Contains("locked.dll")) && Button(matching, "关闭").IsEnabled, "failed inspection preserves the original evidence and restores close instead of freezing the window; status=" + Status(matching) + "; retained=" + Descendants(matching).OfType<TextBox>().Any(t => t.Text.Contains("locked.dll")) + "; close=" + Button(matching, "关闭").IsEnabled);
-        inspectionFails = false; currentReceipt = clean; Click(matching, "查看上次卸载结果"); await Idle(matching);
-        Check(Status(matching).Contains("检查完成") && Status(matching).Contains("程序文件已清理") && !Descendants(matching).OfType<Button>().Any(b => Equals(b.Content, "继续清理…")) && Descendants(matching).OfType<TextBox>().All(t => !t.Text.Contains("locked.dll")), "successful refresh removes stale residuals and no longer offers cleanup for a clean result");
-        matching.Width = 680; matching.Height = 500; matching.UpdateLayout(); CaptureInternal(evidence, "uninstall-rechecked-compact", matching, lines);
-        Click(matching, "关闭"); Check(!matching.IsVisible, "close also exits after inspection recovery");
+        var deletion = new DeploymentPurgeReceipt("synthetic-purge", "Purged", "本站数据已删除。", [], "D:/synthetic-purge.json");
+        var delete = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true)));
+        delete.Show(); await Idle(delete);
+        Descendants(delete).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
+        Click(delete, "卸载"); await Idle(delete);
+        Check(calls == 2 && selectedDelete && Status(delete).Contains("本站数据已删除"), "explicit deletion choice reaches the application in the same uninstall action");
+        Check(Descendants(delete).OfType<TextBox>().All(b => !b.Text.Contains("保留数据：")), "deleted data is never described as retained");
+        CaptureInternal(evidence, "uninstall-deleted", delete, lines); Click(delete, "关闭");
 
-        currentReceipt = pending; var same = Make(source, () => currentReceipt,
-            _ => cleanupUnknown ? throw new InstallationOutcomeUnknownException("synthetic cleanup receipt lost", new IOException()) : Task.FromResult(clean));
-        same.Show(); await Idle(same); cleanupUnknown = true; before = continueCalls;
-        Click(same, "继续清理…"); await Idle(same);
-        Check(continueCalls == before + 1 && Status(same).Contains("结果未确认"), "uncertain cleanup reports the original unknown result");
-        Click(same, "继续清理…"); await Idle(same);
-        Check(continueCalls == before + 1, "unknown cleanup cannot be resubmitted through the same button");
-        Click(same, "查看上次卸载结果"); await Idle(same); cleanupUnknown = false;
-        Click(same, "继续清理…"); await Idle(same);
-        Check(continueCalls == before + 2 && Status(same).Contains("程序文件已清理") && !Descendants(same).OfType<Button>().Any(b => Equals(b.Content, "继续清理…")), "same-source cleanup proceeds only after inspection and ends without a duplicate submission action");
-        Click(same, "关闭");
+        var open = Make(_ => Task.FromException<ProgramUninstallResult>(new InvalidOperationException("请先关闭供包台，再卸载。程序和数据未删除。")));
+        open.Show(); await Idle(open); Click(open, "卸载"); await Idle(open);
+        Check(Status(open).Contains("请先关闭供包台") && Button(open, "卸载").IsEnabled && !Status(open).Contains("卸载完成"),
+            "a running workstation gets a clear close-first instruction without claiming removal");
+        CaptureInternal(evidence, "uninstall-close-first", open, lines); Click(open, "取消");
 
-        var completion = new TaskCompletionSource<WindowsRemovalReceipt>(TaskCreationOptions.RunContinuationsAsynchronously);
-        var busy = Make(source, () => pending, _ => completion.Task);
-        busy.Show(); await Idle(busy); Click(busy, "继续清理…");
-        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-        Check(Busy(busy) && !Button(busy, "关闭").IsEnabled, "cleanup in progress prevents reentry and disables close");
-        busy.Close(); Check(busy.IsVisible, "title-bar close cannot abandon an in-flight cleanup");
-        completion.SetResult(clean); await Idle(busy); Click(busy, "关闭");
-        Check(!busy.IsVisible, "close becomes available again after cleanup completes");
+        var pending = new TaskCompletionSource<ProgramUninstallResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var busy = Make(_ => pending.Task); busy.Show(); await Idle(busy); var before = calls; Click(busy, "卸载");
+        for (var i = 0; i < 100 && calls == before; i++) await Task.Delay(10);
+        Check(Busy(busy) && !Button(busy, "取消").IsEnabled, "active uninstall prevents reentry and close");
+        busy.Close(); Check(busy.IsVisible, "title bar cannot abandon an in-flight uninstall");
+        pending.SetResult(new(partial, null, false)); await Idle(busy);
+        Check(Status(busy).Contains("尚未删除") && Button(busy, "重试卸载").IsEnabled, "locked files remain an incomplete result with a single retry");
+        type.GetProperty("ExecuteUninstall", flags)!.SetValue(busy,
+            (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((_, _, _, _) => Task.FromResult(new ProgramUninstallResult(clean, null, false))));
+        Click(busy, "重试卸载"); await Idle(busy);
+        Check(Status(busy).Contains("卸载完成"), "retry completes the same installation cleanup"); Click(busy, "关闭");
 
-        var unknown = Make(source, () => pending, _ => Task.FromResult(clean)); unknown.Show(); await Idle(unknown);
-        workflow.GetField("UnknownOutcome", flags)!.SetValue(unknown, true);
-        Click(unknown, "关闭"); Check(!unknown.IsVisible, "unknown result can be closed without resubmitting maintenance or authenticating");
-
-        var owner = new Window { Title = "Synthetic installer owner", Width = 700, Height = 500 }; owner.Show();
-        var modal = Make(source, () => clean, _ => Task.FromResult(clean)); modal.Owner = owner;
-        Exception? modalFailure = null;
-        modal.Loaded += async (_, _) => { try { await Idle(modal); Click(modal, "关闭"); } catch (Exception error) { modalFailure = error; modal.Close(); } };
-        modal.ShowDialog();
-        Check(modalFailure is null && !modal.IsVisible && owner.IsEnabled && owner.IsVisible, "close returns from the actual modal result and restores the installer owner"); owner.Close();
-        lines.Add("BOUNDARY real WPF HWND/Dispatcher and button events; synthetic deployment/inspection/cleanup callbacks. Protected uninstall/UAC/reboot/SDK/site NOT_RUN.");
+        var original = new ProgramUninstallResult(partial, null, false);
+        var unknown = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("合成卸载回执中断")), () => original);
+        unknown.Show(); await Idle(unknown); Click(unknown, "卸载"); await Idle(unknown); before = calls;
+        Click(unknown, "卸载"); await Idle(unknown);
+        Check(calls == before && Status(unknown).Contains("结果未确认"), "lost receipt cannot submit a second uninstall");
+        Click(unknown, "查看结果"); await Idle(unknown);
+        Check(inspections == 1 && Button(unknown, "重试卸载").IsEnabled && Status(unknown).Contains("尚未删除"), "verified original partial result permits fixed-inventory retry");
+        CaptureInternal(evidence, "uninstall-partial", unknown, lines); Click(unknown, "关闭");
+        lines.Add("BOUNDARY real WPF HWND/Dispatcher and button events; synthetic uninstall callbacks. Protected uninstall/UAC/SDK/site NOT_RUN.");
     }
 }

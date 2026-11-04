@@ -107,9 +107,8 @@ static partial class Program
             var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP")!);
             var type = assembly.GetType("Ipc.Desktop.ProductMaintenanceWindow", true)!; const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             var empty = (Window)type.GetConstructor(flags, null, Type.EmptyTypes, null)!.Invoke(null);
-            type.GetField("plan", flags)!.SetValue(empty, new StartupChangePreview(new string('A', 64), "Uninstall", true, "synthetic plan A", new string('B', 64), "D:\\Synthetic\\A.db"));
-            var directory = (TextBox)type.GetField("backupDirectory", flags)!.GetValue(empty)!; directory.Text = Path.Combine(evidence, "plan-B");
-            Check(type.GetField("plan", flags)!.GetValue(empty) is null && (string)type.GetField("backupFile", flags)!.GetValue(empty)! == "", "native backup-directory edit invalidates both original removal plan and frozen backup file before submission");
+            Check(!Descendants(empty).OfType<TextBox>().Any(t => !t.IsReadOnly) && Descendants(empty).OfType<RadioButton>().Count() == 2,
+                "uninstall offers one data choice without a backup path or typed confirmation");
             empty.Close();
             foreach (var status in new[] { "RestartRequired", "RemovedWithRetainedFiles", "RetiredCleanupPending" })
             {
@@ -117,8 +116,8 @@ static partial class Program
                 var result = (Window)type.GetConstructor(flags, null, [typeof(WindowsRemovalReceipt), typeof(string)], null)!.Invoke([receipt, "D:\\Synthetic\\retained-data"]);
                 result.Show(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); result.UpdateLayout();
                 var text = string.Join("\n", Descendants(result).OfType<TextBlock>().Select(t => t.Text).Concat(Descendants(result).OfType<TextBox>().Select(t => t.Text)));
-                Check(text.Contains("软件已卸载") && text.Contains("locked.dll") && text.Contains("retained-data") && !text.Contains("菜鸟供包台已卸载。卸载操作已完成"), "native removal receipt distinguishes " + status + " from clean removal while retaining original inventory evidence");
-                Check(Descendants(result).OfType<Button>().Where(b => b.IsVisible).All(b => b.Content is "查看上次卸载结果" or "关闭"), "retired result offers inspection/close without removed-service authentication or duplicate uninstall");
+                Check(text.Contains("程序已卸载") && text.Contains("locked.dll") && text.Contains("retained-data") && !text.Contains("卸载完成"), "native removal receipt distinguishes " + status + " from clean removal while retaining original inventory evidence");
+                Check(Descendants(result).OfType<Button>().Where(b => b.IsVisible).All(b => b.Content is "重试卸载" or "关闭"), "retired result offers fixed-inventory retry and close without removed-service authentication");
                 CaptureInternal(evidence, "lia-removal-" + status, result, lines); result.Close();
             }
         }

@@ -17,7 +17,7 @@ public sealed record StartupChangePreview(string Identity, string Purpose, bool 
 }
 public sealed record StartupRollbackReview(DeploymentRollbackPlan Deployment, StartupChangePreview? Business);
 public sealed record StartupVersionPruneReview(DeploymentPrunePlan Deployment, StartupChangePreview? Business);
-public sealed record StartupDataPurgeReview(DeploymentPurgePlan Deployment, StartupChangePreview? Business);
+public sealed record ProgramUninstallResult(WindowsRemovalReceipt? Removal, DeploymentPurgeReceipt? DataDeletion, bool DeleteData);
 public sealed record StartupSiteTemplate(int SchemaVersion, string Application, string SourceIdentity, StartupEditorState Defaults);
 public sealed record StartupRestoreHandoff(string Id, string SourceDirectory, string TargetDirectory, string BackupIdentity,
     string SourceConfigurationHash, string TargetManifestHash, string MachinePolicyHash, DateTimeOffset At);

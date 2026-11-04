@@ -26,7 +26,7 @@ public sealed class MaintenanceCenterWindow : Window
             var service = (Ipc.Application.Contracts.IStartupRetentionMaintenance)Ipc.Assembly.ParcelStartupServices.Maintenance(SelectedLaunch);
             new HistoryRetentionWindow(service, Ipc.Assembly.ParcelStartupServices.ManagementMode(SelectedLaunch)) { Owner = this }.ShowDialog();
         });
-        Add("修复安装／卸载程序", () => new ProductMaintenanceWindow { Owner = this }.ShowDialog());
+        Add("卸载程序", () => new ProductMaintenanceWindow { Owner = this }.ShowDialog());
         Add("检查后启动软件", () => { RetryRequested = true; Close(); });
         var expert = new Expander { Header = "专家模式（供应商指导）", Margin = new(0, 16, 0, 0) };
         var advanced = new Button { Content = "打开启动修复全部操作…", MinHeight = 48 };

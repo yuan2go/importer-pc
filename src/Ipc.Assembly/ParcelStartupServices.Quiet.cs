@@ -118,7 +118,12 @@ public static partial class ParcelStartupServices
             if (command.DataRoot is not null) throw new ArgumentException("卸载不接受dataRoot覆盖。");
             var hash = Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId));
             WindowsRemovalReceipt? receipt = null;
-            if (original.LifecycleState != "Installed")
+            if (ApplicationId == "sportmaster")
+            {
+                operation?.FreezeRemoval(original, hash);
+                receipt = WindowsDeploymentSetup.UninstallProgram(ApplicationId, hash, RemoveShortcuts, null, command.OperationId);
+            }
+            else if (original.LifecycleState != "Installed")
             {
                 operation?.FreezeRemoval(original, hash);
                 receipt = WindowsDeploymentSetup.Remove(ApplicationId, hash,

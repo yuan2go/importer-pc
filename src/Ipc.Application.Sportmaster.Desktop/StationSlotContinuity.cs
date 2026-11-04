@@ -11,7 +11,10 @@ public sealed partial class SupplyStationPositionViewModel
     ParcelCameraReadFeedback? cameraRead;
     Guid cameraReadRuntime;
     bool ManualPlacementResult => Operation?.OperatorInput is not null && Input?.OperationId == Operation.Id &&
-        (Input.Observation.OperatorInput is not null || ParcelInputReasons.IsSamePlacement(Input));
+        (Input.Observation.OperatorInput is not null || ParcelInputReasons.IsSamePlacement(Input)) &&
+        (readFeedback is not { OperatorInput: false } read || read.ObservedAt <= Operation.ObservedAt || read.PlacementOperationId == Operation.Id) &&
+        !(cameraRead is { Frame.Outcome: ObservationReadOutcome.Codes } camera && camera.Frame.ObservedAt > Operation.ObservedAt &&
+            camera.Frame.CompletedTicks > (readFeedback?.DetectedTicks ?? 0));
     bool MatchedCameraCue => cameraRead is { } frame && readFeedback is { OperatorInput: false } read &&
         read.RuntimeId == cameraReadRuntime && read.DeviceId == frame.Frame.DeviceId && read.Epoch == frame.Frame.Epoch && read.DetectedTicks == frame.Frame.CompletedTicks;
     bool CameraObservationUnmatched => !ManualPlacementResult && cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&

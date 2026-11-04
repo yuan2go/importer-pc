@@ -42,13 +42,13 @@ public sealed partial class ParcelRuntime
 
     // Presentation may coalesce observations only while the business placement
     // ledger still owns them. This grants no admission or retry authority.
-    bool ContinuingCameraPlacement(string position, Observation observation)
+    string? ContinuingCameraPlacementOwner(string position, Observation observation)
     {
         if (Id != "sportmaster" || observation.Kind != "Read" || observation.CandidateIssue is not null ||
-            observation.Codes is not [var code]) return false;
+            observation.Codes is not [var code]) return null;
         lock (placements) return frameFedPositions.Contains(position) && placements.TryGetValue(position, out var placement) &&
             placement.CameraSeen && placement.Operation is not null && placement.Code == code &&
-            !(placement.EndedAt is { } ended && observation.ObservedAt > ended);
+            !(placement.EndedAt is { } ended && observation.ObservedAt > ended) ? placement.Operation : null;
     }
 
     // Returns the operation that already owns this placement, or null when the

@@ -170,7 +170,8 @@ internal static class MvidReader
         await Frame(3, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation.SourceEventId == "mvid.frame.3");
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768); await vm.RefreshAsync();
-        Check(h.Peer.Requests.Count == requests && vm.Left.Operation?.Id == receipt.OperationId && vm.Left.Barcode == "SYNTH-MANUAL-CORRECTION" && vm.Left.ShowConfirmedTask,
+        Check((await h.App.ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left").PlacementOperationId == receipt.OperationId &&
+            h.Peer.Requests.Count == requests && vm.Left.Operation?.Id == receipt.OperationId && vm.Left.Barcode == "SYNTH-MANUAL-CORRECTION" && vm.Left.ShowConfirmedTask,
             "unchanged camera code cannot replace the manual barcode/chute or send another request");
         for (uint n = 4; n <= 6; n++) { await Frame(n, [], CameraRoundHarness.EmptyTray); if (n < 6) await Task.Delay(450); }
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return !vm.Left.ShowConfirmedTask; });
@@ -178,6 +179,18 @@ internal static class MvidReader
         await Frame(7, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == requests + 1));
         Check(h.Peer.Requests.Count == requests + 1, "replacing the parcel permits exactly one new camera request");
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Acquisition?.SourceEventId == "mvid.frame.7" && o.Wcs?.State == StageState.Accepted));
+        basis = await h.App.SnapshotAsync();
+        receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-SECOND-CORRECTION", ParcelBarcodeInputKind.Keyboard,
+            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, basis.Positions!.Single(p => p.Id == "left").CurrentOperation), default);
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
+        await vm.RefreshAsync();
+        Check(vm.Left.ShowConfirmedTask, "second manual correction has its own confirmed result before changing parcels");
+        await Frame(8, [Symbol("SYNTH-NEXT-PARCEL")]);
+        var changedRead = (await h.App.ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left");
+        vm.Left.ApplyReadFeedback(changedRead);
+        Check(changedRead.SingleCode == "SYNTH-NEXT-PARCEL" && changedRead.PlacementOperationId is null && !vm.Left.ShowConfirmedTask,
+            "a genuinely different camera code immediately invalidates the previous manual chute before the next snapshot");
     }
     static async Task FreshFramesProveLiveness()
     {

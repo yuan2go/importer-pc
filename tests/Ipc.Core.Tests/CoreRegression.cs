@@ -18,7 +18,7 @@ public sealed class CoreRegression
     [DataRow("--industrial-quiet-deployment", 60)]
     [DataRow("--industrial-diagnostics", 53)]
     [DataRow("--station-single-camera", 65)]
-    [DataRow("--same-placement-29", 27)]
+    [DataRow("--same-placement-29", 28)]
     [DataRow("--reader-robustness-28", 47)]
     [DataRow("--sm-automatic-rcs", 20)]
     [DataRow("--live-devices-30", 23)]

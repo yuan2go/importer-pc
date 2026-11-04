@@ -131,6 +131,6 @@
  </Style>
  <Style x:Key="StationPositionActions" TargetType="StackPanel">
   <Setter Property="Margin" Value="0,8,0,0"/>
-  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger></Style.Triggers>
+  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers>
  </Style>
 </ResourceDictionary>

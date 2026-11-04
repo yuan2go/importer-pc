@@ -76,6 +76,11 @@ static partial class Program
                 await SetClient(window, size.Item1, size.Item2); await Flush();
                 await Vehicles();
                 Check(Inside((TextBlock)left.FindName("VehicleState"), (Grid)window.FindName("ClientArea")) && Inside((TextBlock)right.FindName("VehicleState"), (Grid)window.FindName("ClientArea")), "vehicle labels remain inside the workstation at " + size.Item1);
+                var vehicleTop = ((TextBlock)left.FindName("VehicleState")).TransformToAncestor(left).Transform(new Point()).Y;
+                var cameraTop = ((TextBlock)left.FindName("CameraConnection")).TransformToAncestor(left).Transform(new Point()).Y;
+                var submitBottom = submit.TransformToAncestor(left).Transform(new Point(0, submit.ActualHeight)).Y;
+                Check(vehicleTop < entry.TransformToAncestor(left).Transform(new Point()).Y && cameraTop >= submitBottom,
+                    "frequent vehicle status leads the card while steady camera status stays in the device footer at " + size.Item1);
                 var panel = (Border)left.FindName("ResultPanel");
                 Check(Math.Abs(panel.ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1, "chute regions stay aligned at " + size.Item1);
                 var actual = slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize));

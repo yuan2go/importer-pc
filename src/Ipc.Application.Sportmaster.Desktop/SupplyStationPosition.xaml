@@ -20,10 +20,7 @@
      <Grid>
       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
       <TextBlock Text="{Binding Heading}" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
-      <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-      <TextBlock x:Name="CameraConnection" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding DevicePresentation.Text}" Foreground="{Binding DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
-       <TextBlock x:Name="VehicleState" Margin="12,0,0,0" Text="{Binding VehicleStatusText}" Foreground="{Binding VehicleStatusForeground}" FontSize="{x:Static type:UiTypography.Label}" TextWrapping="Wrap" AutomationProperties.Name="本位小车状态"/>
-      </WrapPanel>
+      <TextBlock x:Name="VehicleState" Grid.Column="1" Margin="12,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding VehicleStatusText}" Foreground="{Binding VehicleStatusForeground}" FontSize="{x:Static type:UiTypography.Label}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextWrapping="Wrap" AutomationProperties.Name="本位小车状态"/>
      </Grid>
     </DockPanel>
     <Grid Grid.Row="1" x:Name="ScanInformation" Style="{StaticResource StationPositionSection}">
@@ -172,7 +169,12 @@
       <Button x:Name="RebaseInput" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}" ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
       <Button Grid.Column="2" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanReconcile}" Style="{StaticResource StationTouch}"/>
      </Grid>
-     <TextBlock FontSize="{x:Static type:UiTypography.Label}" HorizontalAlignment="Right" Margin="0,4,0,0"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="{Binding DataContext.PaceVisibility,RelativeSource={RelativeSource AncestorType=Window}}"/><Setter Property="Text" Value="{Binding DataContext.LeftPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/><Style.Triggers><DataTrigger Binding="{Binding PositionId}" Value="right"><Setter Property="Text" Value="{Binding DataContext.RightPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/></DataTrigger><DataTrigger Binding="{Binding DataContext.IsCompact,RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+     <Grid x:Name="PositionDeviceFooter">
+      <Grid.Style><Style TargetType="Grid"><Setter Property="Margin" Value="0,4,0,0"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers></Style></Grid.Style>
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <TextBlock x:Name="CameraConnection" VerticalAlignment="Center" Text="{Binding DevicePresentation.Text}" Foreground="{Binding DevicePresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="相机连接状态" AutomationProperties.LiveSetting="Polite"/>
+      <TextBlock Grid.Column="1" FontSize="{x:Static type:UiTypography.Label}" HorizontalAlignment="Right"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="{Binding DataContext.PaceVisibility,RelativeSource={RelativeSource AncestorType=Window}}"/><Setter Property="Text" Value="{Binding DataContext.LeftPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/><Style.Triggers><DataTrigger Binding="{Binding PositionId}" Value="right"><Setter Property="Text" Value="{Binding DataContext.RightPaceText,RelativeSource={RelativeSource AncestorType=Window}}"/></DataTrigger><DataTrigger Binding="{Binding DataContext.IsCompact,RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+     </Grid>
     </StackPanel>
    </Grid>
   </Border>

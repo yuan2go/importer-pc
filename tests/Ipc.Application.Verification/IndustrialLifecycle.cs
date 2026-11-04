@@ -64,6 +64,11 @@ static class IndustrialLifecycle
         });
         var recorded = WindowsDeploymentSetup.ValidateInstalledInventory(installed, Inventory(installed, originalFiles));
         Check(recorded.SequenceEqual(new[] { "damaged.exe" }), "retained installation inventory supplies exact program-only removal scope");
+        var absent = installed with { ReleaseRoot = Path.Combine(root, "already-removed-release") };
+        Check(WindowsDeploymentSetup.ValidateInstalledInventory(absent, Inventory(absent, originalFiles)).SequenceEqual(recorded),
+            "protected inventory remains readable after the complete release directory was removed");
+        Check(WindowsDeploymentSetup.CleanRemovalInventory(absent.ReleaseRoot, recorded, _ => false).Remaining.Length == 0,
+            "repeated cleanup of an already absent release completes without restoring its directory");
         Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateInstalledInventory(installed,
             Inventory(installed with { SourceCommit = new string('c', 40) }, originalFiles)), "inventory from different release rejected");
         Reject<InvalidDataException>(() => WindowsDeploymentSetup.ValidateInstalledInventory(installed,

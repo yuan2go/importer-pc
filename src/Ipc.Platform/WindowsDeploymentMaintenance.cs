@@ -61,9 +61,9 @@ public static partial class WindowsDeploymentSetup
         key.SetValue("EstimatedSize", (int)Math.Min(int.MaxValue, new DirectoryInfo(location.ReleaseRoot).EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length) / 1024), RegistryValueKind.DWord);
         key.SetValue("Publisher", "Importer PC reference project"); key.SetValue("InstallLocation", location.ReleaseRoot);
         key.SetValue("DisplayIcon", executable); key.SetValue("UninstallString", "\"" + executable + "\" --product-maintenance");
-        key.SetValue("ModifyPath", "\"" + executable + "\" --product-maintenance");
-        key.SetValue("URLInfoAbout", "https://github.com/yuan2go/importer-pc"); key.SetValue("NoModify", 0, RegistryValueKind.DWord);
-        key.SetValue("Comments", "程序维护沿唯一受保护部署登记；卸载保留业务数据、身份、原件及扩展。未取得现场投产资格。");
+        key.DeleteValue("ModifyPath", false);
+        key.SetValue("URLInfoAbout", "https://github.com/yuan2go/importer-pc"); key.SetValue("NoModify", 1, RegistryValueKind.DWord);
+        key.SetValue("Comments", "卸载不创建备份，默认保留本站数据；可选择同时删除已结清的本站数据。共享驱动保留。");
         key.Flush();
     }
     [SupportedOSPlatform("windows")]
@@ -200,10 +200,10 @@ public static partial class WindowsDeploymentSetup
         catch (Exception error) when (error is not InstallationOutcomeUnknownException)
         { throw new InstallationOutcomeUnknownException("原卸载记录已保存，结果须按原操作核对；不要再次提交。", error); }
     }
-    internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete)
+    internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete, int fileBudget = 16384)
     {
         root = Path.GetFullPath(root); DeploymentPaths.RequireOrdinaryAncestors(root);
-        if (files.Length > 16384 || files.Any(n => !ExtensionPackages.SafePath(n)) || files.Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
+        if (files.Length > fileBudget || files.Any(n => !ExtensionPackages.SafePath(n)) || files.Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
             throw new InvalidDataException("Unsafe removal inventory");
         if (!Directory.Exists(root))
         {
@@ -232,7 +232,7 @@ public static partial class WindowsDeploymentSetup
         }
         // Only empty, inventoried directories; no recursive delete, no shared drivers,
         // no other releases, policies, data, package consumers or arbitrary extra files.
-        var directories = files.Select(n => Path.GetDirectoryName(Path.Combine(root, n))!).SelectMany(p => Parents(p, root)).Distinct(StringComparer.OrdinalIgnoreCase).OrderByDescending(p => p.Length);
+        var directories = files.Select(n => Path.GetDirectoryName(Path.Combine(root, n))!).SelectMany(p => Parents(p, root)).Append(root).Distinct(StringComparer.OrdinalIgnoreCase).OrderByDescending(p => p.Length);
         foreach (var directory in directories)
         {
             DeploymentPaths.RequireOrdinaryAncestors(directory);

@@ -11,6 +11,32 @@ public sealed record DeploymentOpaqueRemovalPlan(string Identity, string Applica
 
 public static partial class WindowsDeploymentSetup
 {
+    // One user action: recover an uncommitted intent or continue the retired
+    // inventory automatically. No configuration, database or backup is opened.
+    [SupportedOSPlatform("windows")]
+    public static WindowsRemovalReceipt UninstallProgram(string application, string expectedHash,
+        Action<DeploymentLocation> shortcuts, MaintenanceExecution? execution, string? operationId = null)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        if (application != "sportmaster") throw new NotSupportedException("此卸载方式仅用于当前SM。");
+        if (Wire.FileHash(Registration(application)) != expectedHash) throw new InvalidOperationException("安装信息已变化，请重新打开卸载程序。");
+        var current = Current(application) ?? throw new InvalidDataException("未找到安装信息。");
+        if (current.LifecycleState == "Installed")
+        {
+            var original = InspectRemoval(application);
+            if (original.Status == "NotCommittedNeedsClosure")
+                CloseUncommittedRemoval(application, original.OperationId!, expectedHash);
+            else if (original.Status != "Installed")
+                throw new InstallationOutcomeUnknownException("上次卸载结果尚未确认，请先查看结果。");
+            var plan = ReviewOpaqueRemoval(application, expectedHash, execution, operationId);
+            if (!plan.Allowed) throw new InvalidOperationException(plan.Reason);
+            return RemoveWithoutReadableConfiguration(plan, shortcuts, execution);
+        }
+        if (current.LifecycleState != "RemovedDataRetained") throw new InvalidOperationException("本站正在删除数据，请查看上次卸载结果。");
+        using var ownership = new OpaqueRemovalOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, current.DataRoot, execution?.Token ?? default);
+        return Remove(application, expectedHash, _ => throw new InvalidOperationException("已卸载的程序不能重复提交。"), shortcuts, null, execution, withoutBusinessInspection: true);
+    }
+
     static void RequireOpaqueRemovalCapability(DeploymentLocation location)
     {
         if (location.ApplicationId != "sportmaster") throw new NotSupportedException("此程序移除方式仅用于当前SM。");
@@ -52,29 +78,28 @@ public static partial class WindowsDeploymentSetup
     }
 
     [SupportedOSPlatform("windows")]
-    public static DeploymentOpaqueRemovalPlan ReviewOpaqueRemoval(string application, string expectedHash, bool skipBackup, MaintenanceExecution? execution)
+    static DeploymentOpaqueRemovalPlan ReviewOpaqueRemoval(string application, string expectedHash, MaintenanceExecution? execution, string? operationId = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var deployment = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         var current = Current(application) ?? throw new InvalidDataException("缺少唯一部署登记，原文件保留。");
         if (Wire.FileHash(Registration(application)) != expectedHash || current.LifecycleState != "Installed") throw new InvalidOperationException("部署已变化，请重新读取。");
         DeploymentOpaqueRemovalPlan Denied(string reason) => new("", application, expectedHash, current.ReleaseRoot, current.DataRoot, current.ConfigurationDirectory, false, reason, []);
-        if (!skipBackup) return Denied("此方式不能创建或宣称完整备份。须先明确取消上方完整备份选择；优先使用正常备份卸载。");
         execution?.Checkpoint(); RequireDataStorage(current.DataRoot); RequireNoUnresolvedRemoval(application);
         try
         {
             RequireOpaqueRemovalCapability(current);
             using var scope = new OpaqueRemovalOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, current.DataRoot, execution?.Token ?? default);
-            execution?.Checkpoint(); return OpaqueRemovalPlan(current, expectedHash, scope, Wire.Id());
+            execution?.Checkpoint(); return OpaqueRemovalPlan(current, expectedHash, scope, operationId ?? Wire.Id());
         }
         catch (IOException error) when ((error.HResult & 0xFFFF) is 32 or 33)
-        { return Denied("仍有软件实例或维护操作占用，请完全关闭后重新检查。未移除程序，数据保留。"); }
+        { return Denied("请先关闭供包台，再卸载。程序和数据未删除。"); }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException or JsonException or NotSupportedException)
         { return Denied("当前安装的停机能力、原库存或存储权限无法核验；请由实施人员核对同源维护缓存。程序和数据保留。"); }
     }
 
     [SupportedOSPlatform("windows")]
-    public static WindowsRemovalReceipt RemoveWithoutReadableConfiguration(DeploymentOpaqueRemovalPlan reviewed,
+    static WindowsRemovalReceipt RemoveWithoutReadableConfiguration(DeploymentOpaqueRemovalPlan reviewed,
         Action<DeploymentLocation> shortcuts, MaintenanceExecution? execution)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();

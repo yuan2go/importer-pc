@@ -52,7 +52,7 @@ jobs:
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
             if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required suite missing or incomplete: $suite" }
           }
-          foreach ($action in @('ReviewRollback', 'Rollback', 'ReviewVersionPruning', 'PruneVersions', 'ResumeVersionPruning', 'ReviewOpaqueRemoval', 'OpaqueUninstall')) {
+          foreach ($action in @('ReviewRollback', 'Rollback', 'ReviewVersionPruning', 'PruneVersions', 'ResumeVersionPruning', 'SimpleUninstall', 'MediaUninstall')) {
             $matched = @($actualResults | Where-Object { $_.testName.StartsWith('NewVersionActionRequiresBegin (') -and $_.testName.Contains('"' + $action + '"') })
             if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Helper Begin gate test missing: $action" }
           }

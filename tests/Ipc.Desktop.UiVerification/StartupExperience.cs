@@ -189,10 +189,10 @@ static partial class Program
             var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), ["D:/synthetic-retained-data"], restart, [], "D:/synthetic-release");
             var removal = (Window)Activator.CreateInstance(removalType, BindingFlags.Instance | BindingFlags.NonPublic, null, [receipt, "D:/synthetic-retained-data"], null)!;
             removal.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); removal.UpdateLayout();
-            Descendants(removal).OfType<Expander>().Single(e => Equals(e.Header, "卸载记录与剩余文件详情")).IsExpanded = true; removal.UpdateLayout();
-            Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "查看上次卸载结果", "关闭" }) &&
+            Descendants(removal).OfType<Expander>().Single(e => Equals(e.Header, "卸载详情")).IsExpanded = true; removal.UpdateLayout();
+            Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(restart ? new[] { "重试卸载", "关闭" } : new[] { "关闭" }) &&
                 Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("程序目录")), "retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry");
-            Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && (restart ? t.Text.Contains("软件已卸载") && t.Text.Contains("重启电脑") : t.Text.Contains("程序文件已清理") && t.Text.Contains("业务数据已保留"))) &&
+            Check(Descendants(removal).OfType<TextBlock>().Any(t => t.IsVisible && (restart ? t.Text.Contains("程序已卸载") && t.Text.Contains("重启电脑") : t.Text.Contains("卸载完成") && t.Text.Contains("本站数据已保留"))) &&
                 !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(), "completed removal never opens an unavailable management dialog and explains its actual restart state");
             Capture(restart ? "uninstall-result-restart" : "uninstall-result-complete", removal); removal.Close();
         }

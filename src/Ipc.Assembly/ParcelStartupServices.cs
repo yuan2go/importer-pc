@@ -18,10 +18,8 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     public DeploymentRollbackPlan? RollbackPlan { get; init; }
     public string? RollbackOperationId { get; init; }
     public DeploymentPrunePlan? VersionPrunePlan { get; init; }
-    public DeploymentPurgePlan? DataPurgePlan { get; init; }
     public bool OrdinaryStartupConfirmed { get; init; }
-    public DeploymentOpaqueRemovalPlan? OpaqueRemovalPlan { get; init; }
-    public bool SkipBackup { get; init; }
+    public bool DeleteData { get; init; }
     public string? RemovalOperationId { get; init; }
     public int InitiatorProcessId { get; init; }
     public long InitiatorStartedTicks { get; init; }
@@ -134,25 +132,6 @@ public static partial class ParcelStartupServices
         => ReviewDeploymentAsync(request, destination, null, CancellationToken.None);
     public static async Task<StartupChangePreview> ReviewDeploymentAsync(WindowsDeploymentRequest request, string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
         => Wire.Decode<StartupChangePreview>(await ElevateAsync(new("ReviewDeployment", Destination: destination, Deployment: request), maintenanceProgress: progress, cancellationToken: token) ?? throw new IOException("缺少原部署预检回执"));
-    public static async Task<StartupChangePreview> ReviewRemovalAsync(string expectedHash, string? backup,
-        IProgress<MaintenanceProgress>? progress = null, CancellationToken token = default)
-        => Wire.Decode<StartupChangePreview>(await ElevateAsync(new("ReviewRemoval", ExpectedHash: expectedHash, Destination: backup),
-            maintenanceProgress: progress, cancellationToken: token) ?? throw new IOException("缺少卸载预检回执。"));
-    public static async Task<WindowsRemovalReceipt> ResumeRemovalAsync(string expectedHash)
-        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("ResumeRemoval", ExpectedHash: expectedHash)) ?? throw new IOException("缺少原清理回执。"));
-    public static Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash, string plan, string backup)
-        => RemoveAsync(expectedRegistrationHash, plan, backup, null, CancellationToken.None);
-    public static async Task<WindowsRemovalReceipt> RemoveAsync(string expectedRegistrationHash, string plan, string backup, IProgress<MaintenanceProgress>? progress, CancellationToken token, string? operationId = null)
-        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("Uninstall", ExpectedHash: expectedRegistrationHash, Destination: backup, ChangePlanIdentity: plan) { RemovalOperationId = operationId ?? Wire.Id() }, maintenanceProgress: progress, cancellationToken: token) ?? throw new IOException("缺少卸载回执"));
-    public static async Task<WindowsRemovalReceipt> CloseUncommittedRemovalAsync(string operationId, string expectedHash)
-        => Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("CloseUncommittedRemoval", ExpectedHash: expectedHash) { RemovalOperationId = operationId }) ?? throw new IOException("缺少原卸载核对回执。"));
-    public static async Task<WindowsRemovalReceipt> ResumeRemovalAsync(DeploymentMedia media, string expectedRegistrationHash)
-    {
-        var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少退役登记");
-        if (media.SourceCommit != current.SourceCommit) throw new InvalidDataException("继续固定清理须使用卸载前同一完整介质；从关于/原回执核对源码身份");
-        var request = new WindowsDeploymentRequest(media.Root, ApplicationId, media.SourceCommit, current.RuntimeAccountSid, current.DataRoot, current.ConfigurationDirectory, RunMode.Simulation, null, null, []);
-        return Wire.Decode<WindowsRemovalReceipt>(await ElevateAsync(new("ResumeRemoval", ExpectedHash: expectedRegistrationHash, Deployment: request)) ?? throw new IOException("缺少清理回执"));
-    }
     static ParcelStartupMaintenance Core(BusinessLaunch launch, bool installer = false) => new(launch, ParcelAssembly.Definition(), () => new ParcelCapabilityFactory(launch,
         BusinessCompatibility.Read(ParcelAssembly.Definition().GetType().Assembly), ParcelAssembly.Definition().GetType().Assembly, installer), installer ? () => { MachineRuntimePolicy.RequireExtensionInstallerAuthority(); delegatedAuthority.Value?.Invoke(); }
     : () => { LocalManagementMode.ForRoot(launch.DataRoot).Require(); }, () => delegatedPrincipal.Value ?? LocalManagementMode.ForRoot(launch.DataRoot).Evidence?.AuditActor);
@@ -218,17 +197,13 @@ public static partial class ParcelStartupServices
         execution?.Checkpoint();
         switch (request.Action)
         {
+            case "MediaUninstall":
+                RequireMatchingMedia(request.Deployment ?? throw new InvalidDataException("缺少完整安装包。"), execution?.Token ?? default);
+                _ = DeploymentMedia.Inspect(request.Deployment.MediaRoot, ApplicationId, execution?.Token ?? default);
+                return Wire.Encode(SimpleUninstallCore(request, execution));
+            case "SimpleUninstall": return Wire.Encode(SimpleUninstallCore(request, execution));
             case "ReviewRollback": return await ReviewRollbackCore(request, execution);
-            case "ReviewOpaqueRemoval": return ReviewOpaqueRemovalCore(request, execution);
-            case "OpaqueUninstall":
-                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                var opaquePlan = request.OpaqueRemovalPlan ?? throw new InvalidDataException("缺少仅移除程序的原计划。");
-                if (opaquePlan.ApplicationId != ApplicationId || !request.SkipBackup) throw new InvalidDataException("仅移除程序的业务或备份选择不匹配。");
-                return Wire.Encode(WindowsDeploymentSetup.RemoveWithoutReadableConfiguration(opaquePlan, RemoveShortcuts, execution));
             case "ReviewVersionPruning": return await ReviewVersionPruningCore(request, execution);
-            case "ReviewDataPurge": return await ReviewDataPurgeCore(request, execution);
-            case "PurgeData": return await ExecuteDataPurgeCore(request, execution);
-            case "ResumeDataPurge": return ResumeDataPurgeCore(request, execution);
             case "PruneVersions": return await ExecuteVersionPruningCore(request, execution);
             case "InspectVersionPruning": return await InspectVersionPruningCore(request, resume: false, execution);
             case "ResumeVersionPruning": return await InspectVersionPruningCore(request, resume: true, execution);
@@ -315,29 +290,6 @@ public static partial class ParcelStartupServices
                 else WindowsDeploymentSetup.RepairSystemRegistration(ApplicationId, request.ExpectedHash!, location =>
                 { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location); }, execution);
                 break;
-            case "ReviewRemoval":
-                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                if (Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) != request.ExpectedHash) throw new InvalidOperationException("安装登记已变化，请重新读取。");
-                if (WindowsDeploymentSetup.InspectRemoval(ApplicationId).Status != "Installed") throw new InstallationOutcomeUnknownException("请先核对并结束原卸载，不创建新卸载或备份。");
-                var originalRemoval = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("缺少原部署。");
-                return Wire.Encode(await Core(new(originalRemoval.ConfigurationDirectory, originalRemoval.DataRoot, null, null), installer: true)
-                    .PlanChangeAsync("Uninstall", request.Destination, execution ?? throw new InvalidOperationException("缺少卸载预检执行上下文。")));
-            case "CloseUncommittedRemoval":
-                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                return Wire.Encode(WindowsDeploymentSetup.CloseUncommittedRemoval(ApplicationId, request.RemovalOperationId!, request.ExpectedHash!));
-            case "Uninstall":
-                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                var removing = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("没有原部署登记");
-                WindowsRemovalReceipt? removed = null;
-                await Core(new(removing.ConfigurationDirectory, removing.DataRoot, null, null), installer: true).ExecuteChangeAsync(request.ChangePlanIdentity!, "Uninstall", request.Destination!,
-                    () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); removed = WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!, _ => { }, RemoveShortcuts, null, execution, operationId: request.RemovalOperationId ?? throw new InvalidDataException("缺少原卸载身份。")); return Task.CompletedTask; }, execution);
-                return Wire.Encode(removed!);
-            case "ResumeRemoval":
-                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                if (WindowsDeploymentSetup.Current(ApplicationId) is not { LifecycleState: "RemovedDataRetained" })
-                    throw new InvalidOperationException("只能继续原已退役部署的清单清理。");
-                return Wire.Encode(WindowsDeploymentSetup.Remove(ApplicationId, request.ExpectedHash!,
-                    _ => throw new InvalidOperationException("退役清理不能再次提交卸载。"), RemoveShortcuts, null));
             case "Restore":
                 if (execution is null) await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).RestoreAsync(request.Backup!, request.Destination!, request.ExpectedHash!);
                 else await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).RestoreAsync(request.Backup!, request.Destination!, request.ExpectedHash!, execution);
@@ -473,6 +425,7 @@ public static partial class ParcelStartupServices
         var helper = Path.Combine(directory, "Ipc.Assembly.exe");
         if (!File.Exists(helper)) helper = Path.GetFullPath(Path.Combine(directory, "..", "app", "Ipc.Assembly.exe"));
         if (request.Action == "InstallWithPreflight") helper = Path.Combine(request.Deployment!.MediaRoot, "desktop", "Ipc.Desktop.exe");
+        if (request.Action == "MediaUninstall") helper = Path.Combine(request.Deployment!.MediaRoot, "app", "Ipc.Assembly.exe");
         if (!MediaCommand(request.Action) && WindowsDeploymentSetup.Current(ApplicationId) is { } installed)
             helper = Path.Combine(installed.MaintenanceRoot ?? installed.ReleaseRoot, "app", "Ipc.Assembly.exe");
         foreach (var assembly in new[] { typeof(ParcelStartupServices).Assembly, typeof(MachineRuntimeSetup).Assembly })
@@ -568,7 +521,7 @@ public static partial class ParcelStartupServices
         }
         return null; // A truncated final line never proves completion.
     }
-    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "ReviewDeployment";
+    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "ReviewDeployment" or "MediaUninstall";
     static void RequireProtectedHelper(string directory)
     {
         var file = Path.Combine(directory, "application-release.json");

@@ -87,11 +87,11 @@ static class MaintenanceHelperWindows
         Check(Wire.FileHash(registration)==beforeRepair,"system-entry repair cancellation leaves the authoritative registration unchanged");
         await ParcelStartupServices.RepairRegistrationAsync(beforeRepair,null,null,default);Originals();
         // Uninstall retains original runtime authority; no new management-password policy is introduced.
-        mode.Enter(password);var removalBackup=Path.Combine(root,"pre-remove.db");var plan=await service.PlanChangeAsync("Uninstall",removalBackup,null,default);
-        await CancelBeforeBegin(async(p,t)=>{_=await ParcelStartupServices.RemoveAsync(Wire.FileHash(registration),plan.Identity,removalBackup,p,t);});
+        mode.Enter(password);var removalBackup=Path.Combine(root,"pre-remove.db");
+        await CancelBeforeBegin(async(p,t)=>{_=await ParcelStartupServices.UninstallAsync(Wire.FileHash(registration),false,p,t);});
         Check(WindowsDeploymentSetup.Current("sportmaster")!.LifecycleState=="Installed"&&!File.Exists(removalBackup),"cancelled uninstall neither retires the product nor starts its backup");
-        var receipt=await ParcelStartupServices.RemoveAsync(Wire.FileHash(registration),plan.Identity,removalBackup,null,default);
-        Check(WindowsDeploymentSetup.Current("sportmaster")!.LifecycleState!="Installed"&&File.Exists(removalBackup+".recovery/COMPLETED.json")&&File.Exists(database),"actual uninstall retires only after complete backup and retains original data");
+        var receipt=(await ParcelStartupServices.UninstallAsync(Wire.FileHash(registration),false,null,default)).Removal!;
+        Check(WindowsDeploymentSetup.Current("sportmaster")!.LifecycleState!="Installed"&&!File.Exists(removalBackup)&&File.Exists(database),"actual uninstall creates no backup and retains original data");
         Check(receipt.Status is "RemovedDataRetained" or "RestartRequired" or "RemovedWithRetainedFiles" or "RetiredCleanupPending","actual removal reports retained loaded files/restart truthfully: "+receipt.Status);
         ExtensionStore.AtomicWrite(Path.Combine(root,"REMOVAL-RECEIPT.json"),receipt);Originals();
         Console.WriteLine("BOUNDARY: actual Windows protected helper and SCM; synthetic offline data; interactive UAC, devices and a second-version upgrade medium NOT_RUN");

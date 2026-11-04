@@ -99,7 +99,9 @@ public static partial class WindowsDeploymentSetup
             value.GetProperty("SourceCommit").GetString() != location.SourceCommit || value.GetProperty("ReleaseRoot").GetString() != location.ReleaseRoot)
             throw new InvalidDataException("原安装库存不属于本部署。");
         var files = value.GetProperty("Files").EnumerateObject().Take(16385).ToArray();
-        if (files.Length is 0 or > 16384 || files.Any(p => !ProductValidation.IsSafeRelativeFile(location.ReleaseRoot, p.Name, out _) ||
+        // The release may already have been removed. Validate the recorded names
+        // without probing that tree; the deleter checks ordinary paths before I/O.
+        if (files.Length is 0 or > 16384 || files.Any(p => !ExtensionPackages.SafePath(p.Name) ||
                 p.Value.ValueKind != System.Text.Json.JsonValueKind.String || !ExtensionSchema.IsHash(p.Value.GetString()!)) ||
             files.Select(p => p.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
             throw new InvalidDataException("原安装库存路径、字节身份或数量无效。");

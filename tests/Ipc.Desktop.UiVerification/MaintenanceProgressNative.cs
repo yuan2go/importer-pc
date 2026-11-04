@@ -19,7 +19,6 @@ static partial class Program
         var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP")!);
         var type = assembly.GetType("Ipc.Desktop.ProductMaintenanceWindow", true)!; var parent = type.BaseType!;
         var window = (Window)Activator.CreateInstance(type)!;
-        type.GetProperty("CurrentDeployment", flags)!.SetValue(window, (Func<DeploymentLocation?>)(() => null));
         window.Show(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
         var run = parent.GetMethod("Run", flags)!;
         var maintenance = parent.GetMethods(flags).Single(m => m.Name == "RunMaintenance" && !m.IsGenericMethod);

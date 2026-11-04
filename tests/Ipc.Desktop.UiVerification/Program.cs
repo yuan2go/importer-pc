@@ -64,6 +64,7 @@ static partial class Program
                 else if (args.Contains("--query-filters")) await VerifyQueryFilters(root, evidence, lines);
                 else if (args.Contains("--session-shift-25")) await VerifySessionShift25(root, evidence, lines);
                 else if (args.Contains("--product-closure-21")) await VerifyStationProductClosure(root, evidence, lines);
+                else if (args.Contains("--startup-close")) await VerifyStartupClose(evidence, lines);
                 else if (args.Contains("--operator-ux-18")) await VerifyOperatorUx18(root, evidence, lines);
                 else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
                 else if (args.Contains("--manual-supply-ui")) await VerifyManualSupplyUi(root, evidence, lines);

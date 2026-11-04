@@ -134,7 +134,7 @@ static partial class SportmasterRcs
     static async Task VehicleProjectionChecks(string workspace)
     {
         await using var station = new CameraRoundHarness(workspace, Path.Combine(Path.GetTempPath(), "agv-projection-" + Wire.Id()), heartbeatSeconds: 1);
-        station.Peer.ReplyVehicleStates = true; await station.StartAsync();
+        station.Peer.ReplyVehicleStates = true; await station.StartAsync(); await station.App.ExitManagementModeAsync();
         await Until(async () => (await station.App.SnapshotAsync()).Positions!.All(p => p.Vehicle is not null));
         var snapshot = await station.App.SnapshotAsync();
         Check(snapshot.Configuration.Effective.Wcs!.Parameters.Count == 0 && snapshot.Positions!.Single(p => p.Id == "left").Vehicle?.Status == "IDLE" &&

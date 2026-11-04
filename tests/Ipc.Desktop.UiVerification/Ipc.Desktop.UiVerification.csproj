@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+ <ItemGroup><Compile Include="../../src/Ipc.Desktop/ParcelStartupWindow.cs" Link="ParcelStartupWindow.cs"/></ItemGroup>
  <PropertyGroup><DefineConstants>$(DefineConstants);SPORTMASTER;LATENCY_MEASUREMENT;P0_CRASH_HOOKS</DefineConstants></PropertyGroup>
  <ItemGroup><Compile Include="../../src/Ipc.Desktop/DesktopCrashHooks.cs" Link="DesktopCrashHooks.cs"/></ItemGroup>
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting><NuGetLockFilePath>packages.sportmaster.lock.json</NuGetLockFilePath></PropertyGroup>

@@ -205,8 +205,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 positionQueues.Add(binding.Id, Channel.CreateBounded<object>(new BoundedChannelOptions(Effective.QueueCapacity)
                 { SingleReader = true, FullMode = BoundedChannelFullMode.Wait, AllowSynchronousContinuations = false }));
             }
-            foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
-                latestInputs.Add(input.PositionId, input);
+            // SM opens a new shift with empty barcode inputs. Unresolved originals
+            // are restored independently through operations, never through old reads.
+            if (Id != "sportmaster")
+                foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
+                    latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers[reader.DeviceId] = new(reader);
             lock (startupOwnership)
             {

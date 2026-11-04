@@ -149,7 +149,7 @@ public partial class SupplyStationWindow : Window
     }
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     public Task ShowDetailsAsync(ParcelOperation operation) => ShowDetailsAsync(operation.Id);
-    public async Task ShowDetailsAsync(string operationId) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取作业详情"); }
+    public async Task ShowDetailsAsync(string operationId) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取作业详情"); history.ShowTaskDetails(); }
     public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     public Func<string, bool>? ConfirmOwnerExit { get; set; }
     public Func<Task>? ReopenOwnerAsync { get; set; }

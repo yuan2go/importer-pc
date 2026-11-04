@@ -72,6 +72,10 @@ static class SessionShift25
         var unknownPage = await exceptions.ReadExceptionsAsync(new(StationExceptionKind.Unconfirmed), default);
         Check(unknownPage.UnconfirmedCount == 1 && unknownPage.Items is [{ ReasonCode: "RcsTimeout" }] && unknownPage.Items[0].OperationId == uncertain.OperationId, "typed timeout reaches exceptions with the exact original ID and full unresolved count");
         var before = h.Peer.Requests.Count; await h.App.DisposeAsync(); await h.StartAsync(); api = h.App;
+        var restarted = await h.App.SnapshotAsync();
+        Check(restarted.Inputs is { Length: 0 } && restarted.Positions!.Single(p => p.Id == "right").CurrentOperation == uncertain.OperationId &&
+            (await h.App.OperationAsync(uncertain.OperationId!))?.Wcs?.State == StageState.Unknown,
+            "restart discards prior reads while keeping the unresolved original visible and guarded");
         var current = await api.ReadSessionStatisticsAsync(Detail(), default); var previous = await api.ReadSessionStatisticsAsync(Detail(StationReportRange.PreviousShift), default);
         Check(current.Shift!.Id != id && current.Totals.Sum(x => x.Requests) == 0, "a real dispose/reopen starts a new shift with zero requests");
         Check(previous.Shift is { Status: "Closed", ClosedAt: not null, ElapsedReliable: true } && previous.Shift.Id == id && previous.Totals.Sum(x => x.Requests) == 3 && previous.Totals.Sum(x => x.Unknown) == 1, "previous shift retains its original totals and unresolved responsibility after normal shutdown");

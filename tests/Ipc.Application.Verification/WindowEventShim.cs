@@ -103,7 +103,7 @@ namespace Ipc.Application.ParcelFlow.Desktop
         public static Task<bool> ReviewUnsavedAsync(System.Windows.Window window, int count, Func<Task>? save, string action) => Task.FromResult(false);
     }
     public class SoftwareLogControl(Ipc.Application.Contracts.IWorkstationAdministration service) : System.Windows.FrameworkElement { public Ipc.Application.Contracts.IWorkstationAdministration Service { get; } = service; public event EventHandler<string>? OperationRequested { add { } remove { } } public Task ShowOperationAsync(string id) => Task.CompletedTask; }
-    public class HistoryPage { public object? DataContext { get; set; } public event EventHandler<string>? LogsRequested { add { } remove { } } }
+    public class HistoryPage { public object? DataContext { get; set; } public event EventHandler<string>? LogsRequested { add { } remove { } } public void ShowTaskDetails() { } }
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
     public class MaintenancePage
     {

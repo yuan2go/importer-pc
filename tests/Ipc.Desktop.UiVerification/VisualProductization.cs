@@ -177,10 +177,10 @@ static partial class Program
             Check(filterRows.IsVisible && filterRows.TranslatePoint(new Point(), history).Y + filterRows.ActualHeight <= history.ActualHeight &&
                 columnHeaders.IsVisible && columnHeaders.ActualHeight >= 32 && headerBounds.Top >= 0 && headerBounds.Bottom <= filterRows.ActualHeight &&
                 firstResult.IsVisible && firstResult.ActualHeight >= 32 && rowBounds.Top >= headerBounds.Bottom && rowBounds.Bottom <= filterRows.ActualHeight &&
-                filterScroll.ScrollableHeight > 0 && !((Expander)history.FindName("HistoryDetailExpander")).IsExpanded &&
+                filterScroll.ScrollableHeight > 0 && !((ContentControl)history.FindName("HistoryDetailPanel")).IsVisible &&
                 !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
                 queryButtons.All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.IsVisible && b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
-                $"expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size; rows={filterRows.ActualHeight}/{filterRows.IsVisible}, row={firstResult.ActualHeight}, rowBottom={firstResult.TranslatePoint(new Point(), filterRows).Y + firstResult.ActualHeight}, scroll={filterScroll.ScrollableHeight}, detail={((Expander)history.FindName("HistoryDetailExpander")).IsExpanded}; buttons=" +
+                $"expanded filters scroll locally while fixed query actions, a complete result row and its header remain visible at minimum client size; rows={filterRows.ActualHeight}/{filterRows.IsVisible}, row={firstResult.ActualHeight}, rowBottom={firstResult.TranslatePoint(new Point(), filterRows).Y + firstResult.ActualHeight}, scroll={filterScroll.ScrollableHeight}, detail={((ContentControl)history.FindName("HistoryDetailPanel")).IsVisible}; buttons=" +
                 string.Join("|", queryButtons.Select(b => b.Content + ":" + b.ActualHeight + "/" + b.IsVisible + "/" + b.TranslatePoint(new Point(), history).Y)));
             await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
@@ -223,9 +223,9 @@ static partial class Program
             var historyScroll = (ScrollViewer)history.FindName("HistoryDetailsScroll");
             vm.InspectionReason = string.Concat(Enumerable.Repeat("SYNTHETIC 原实体检查说明 ", 40));
             await SetClient(window, 800, 420); window.UpdateLayout();
-            var historyDetail = (Expander)history.FindName("HistoryDetailExpander");
-            Check(!historyDetail.IsExpanded, "compact history initially folds task details rather than hiding query results");
-            historyDetail.IsExpanded = true; window.UpdateLayout();
+            var historyDetail = (ContentControl)history.FindName("HistoryDetailPanel");
+            Check(!historyDetail.IsVisible, "history selection keeps details closed until their explicit status action");
+            history.ShowTaskDetails(); window.UpdateLayout();
             var before = actions.TranslatePoint(new Point(), history);
             inspection.IsExpanded = true; historyScroll.ScrollToBottom(); window.UpdateLayout();
             var after = actions.TranslatePoint(new Point(), history);

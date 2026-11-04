@@ -69,6 +69,10 @@ internal static class DebugNoIsolation31
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null && o.Wcs?.State == StageState.Accepted) == 2);
             Check(locked.Frame is not null && locked.RequestBody is not null && h.Peer.Requests.Count == 2,
                 "both positions continue production HTTP while the separate debug request stays unsent");
+            var unsent = await h.App.SnapshotAsync();
+            Check(unsent.Positions!.All(p => p.BarcodeInput is { Camera: true, Manual: true }) &&
+                (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
+                "a prepared unsent debug request leaves camera and manual admission ready on both positions");
             var pixels = await h.App.ReadCameraOriginalAsync(locked.Frame!.Id, default);
             Check(pixels is not null && pixels.Metadata.SourceEventId == locked.Frame.SourceEventId && pixels.Metadata.Symbols.Single().Text == locked.Barcode,
                 "debug result retains the exact original image, barcode and recognition geometry");

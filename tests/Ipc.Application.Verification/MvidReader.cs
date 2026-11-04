@@ -185,15 +185,19 @@ internal static class MvidReader
         Check(image is not null && image.Metadata.SourceEventId == "mvid.frame.1" && image.Metadata.Symbols.Single().Text == locked.Barcode &&
             image.Metadata.Symbols.Single().Corners.SequenceEqual(Symbol(locked.Barcode!).Corners) && h.Peer.Requests.Count == 2,
             "native debug locks the same-frame original and barcode geometry while both positions continue supplying");
+        h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 2, [Symbol("SYNTH-NATIVE-BEFORE-SEND")]);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NATIVE-BEFORE-SEND" && o.Wcs?.State == StageState.Accepted));
+        Check(h.Peer.Requests.Count == 3 && (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
+            "an unsent prepared native debug request cannot block the next production parcel");
         var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
-        Check(h.Peer.Requests.Count == 3 && h.Peer.Requests.Last() == locked.RequestBody && sent.Result!.Contains("Accepted"),
+        Check(h.Peer.Requests.Count == 4 && h.Peer.Requests.Last() == locked.RequestBody && sent.Result!.Contains("Accepted"),
             "explicit native debug send makes one independent RCS request using the frozen body");
-        h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 2, [Symbol("SYNTH-NATIVE-DEBUG-NEXT")]);
+        h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 3, [Symbol("SYNTH-NATIVE-DEBUG-NEXT")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NATIVE-DEBUG-NEXT" && o.Wcs?.State == StageState.Accepted));
-        Check((await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id && h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.Count == 4,
+        Check((await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id && h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.Count == 5,
             "locked native debug picture does not freeze production, use ZXing or change to a later frame");
         await h.EndAsync();
-        Check(h.Peer.Requests.Count == 4 && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced,
+        Check(h.Peer.Requests.Count == 5 && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced,
             "ending native debugging clears the capture boundary without replaying a request");
     }
 }

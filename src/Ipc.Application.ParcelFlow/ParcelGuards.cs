@@ -8,7 +8,9 @@ public sealed partial class ParcelRuntime
         !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving;
     bool CanResume(bool acknowledgeStorageUpgrade = false) => (!storageUpgradeReviewRequired || acknowledgeStorageUpgrade && MaintenanceAuthorized) &&
         CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
-    bool ReleasedForNextAdmission(ParcelOperation op) => definition.AllowsNextAdmissionAfter(op) &&
+    // A frozen debug preview has made no external call and owns no production parcel.
+    // Reuse the full unsent guard; dispatched/unknown requests keep their original responsibility.
+    bool ReleasedForNextAdmission(ParcelOperation op) => CanCloseUnsentDebugIntent(op) || definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
     bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&

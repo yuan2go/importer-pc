@@ -574,7 +574,8 @@ public static partial class ParcelStartupServices
         var file = Path.Combine(directory, "application-release.json");
         if (!File.Exists(file)) throw new InvalidDataException("请先完成安装向导；离线写入使用受保护的匹配发布。原数据保留。");
         var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(file));
-        MachineRuntimePolicy.RequireProtectedApplicationInstaller(directory, release.Files.Keys.Append("application-release.json").ToArray());
+        if (OperatingSystem.IsWindows())
+            WindowsDeploymentSetup.RequireProtectedMaintenanceHelper(ApplicationId, directory, release.Files.Keys.Append("application-release.json").ToArray());
         ApplicationReleaseValidation.ValidateIfPublished(directory, ParcelAssembly.Definition().Id, new(release.Views, release.Layouts), ParcelAssembly.Definition().GetType().Assembly);
     }
     sealed class ElevatedMaintenance(BusinessLaunch launch) : IStartupMaintenance, IStartupRetentionMaintenance

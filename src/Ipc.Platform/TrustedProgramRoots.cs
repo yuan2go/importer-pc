@@ -67,7 +67,7 @@ public static class TrustedProgramRoots
     public static string RequireBoundary(string path)
     {
         var root = new[] { Default }.Concat(Read()).Where(r => Contains(r, path)).OrderByDescending(r => r.Length).FirstOrDefault()
-            ?? throw new UnauthorizedAccessException("Helper 不在经维护批准的受保护程序根内");
+            ?? throw new UnauthorizedAccessException("维护程序的位置与安装记录不一致，请用完整安装包修复软件后重试。");
         var existing = Directory.Exists(path) ? path : File.Exists(path) ? Path.GetDirectoryName(path)! : path;
         while (!Directory.Exists(existing)) existing = Path.GetDirectoryName(existing) ?? throw new UnauthorizedAccessException("可信程序路径已无可核验祖先");
         RequireAncestors(existing); return root;

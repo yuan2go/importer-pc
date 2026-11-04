@@ -304,13 +304,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate))
                 throw new InvalidOperationException("尚未确认保存成功，请按提示操作。已填写的内容保留。");
             savingCandidate = false;
-            if (initialConfiguration) { saveState.Text = "已保存，启动时检查"; refreshReview?.Invoke(); UpdateActions(); }
+            if (initialConfiguration) { ConfigurationSaved = true; CompleteDialog(); }
             else { await CheckCandidate(); await StartReviewed(); }
-        });
-        if (initialConfiguration) Action("完成", () =>
-        {
-            if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate)) throw new InvalidOperationException("请先检查并保存配置。");
-            ConfigurationSaved = true; CompleteDialog(); return Task.CompletedTask;
         });
         if (initialConfiguration) Action("重新读取配置…", Read);
         Action("稍后配置", () => { Busy = false; Close(); return Task.CompletedTask; });
@@ -679,7 +674,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 {
                     WorkflowBusinessName.Text = sharedEditor.PageProgress + " · 相机和 RCS 可稍后配置";
                     WorkflowBusinessName.Visibility = Visibility.Visible;
-                    selectedTask = sharedEditor.SelectedCategory switch { 1 => 0, 0 => 1, 2 => 2, 3 => 3, _ => 4 };
+                    selectedTask = sharedEditor.SelectedCategory;
                     if (selectedTask == 4) refreshReview?.Invoke(); UpdateActions();
                 };
                 sharedEditor.MaintenanceRequested += (_, _) => sharedEditor.ShowReview();

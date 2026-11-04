@@ -104,13 +104,17 @@ internal sealed class MvidApi(ReaderSettings settings, string charset) : IMvsApi
         var started = Stopwatch.GetTimestamp();
         var status = MvidNative.MVID_CR_CAM_GetOneFrameTimeout(handle, output, 100);
         if (status == MvidNative.NoData) return null;
-        MvidNative.Check(status, "GetOneFrameTimeout"); HasFrame = true;
+        var recognitionFailure = MvidNative.IsRecognitionFailure(status);
+        if (recognitionFailure && Marshal.ReadIntPtr(output) == 0) return null;
+        if (!recognitionFailure) MvidNative.Check(status, "GetOneFrameTimeout");
+        HasFrame = true;
         var width = unchecked((ushort)Marshal.ReadInt16(output, 16)); var height = unchecked((ushort)Marshal.ReadInt16(output, 18));
         var frame = new MvsFrame(Marshal.ReadIntPtr(output), width, height,
             Marshal.ReadInt32(output, 12) == 1 ? MvsNative.Mono8 : 0,
             unchecked((uint)Marshal.ReadInt32(output, 8)), unchecked((uint)Marshal.ReadInt32(output, 20)), 0, 0,
             DeviceTimestampRaw: ((ulong)unchecked((uint)Marshal.ReadInt32(output, 24)) << 32) | unchecked((uint)Marshal.ReadInt32(output, 28)))
         { NativeRecognitionMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds };
+        if (recognitionFailure) return frame with { NativeRejection = new MvsFrameRejection("native-recognition-failed", $"MVID single-frame recognition failed: 0x{status:X8}") };
         // Keep a valid image on a bad-code frame so preview and unchanged-scene evidence survive.
         try { return frame with { NativeSymbols = MvidNative.CopyCodes(output, width, height, encoding, settings.Formats) }; }
         catch (MvsFrameRejection error) { return frame with { NativeRejection = error }; }
@@ -132,7 +136,7 @@ internal sealed class MvidApi(ReaderSettings settings, string charset) : IMvsApi
         {
             var status = MvidNative.MVID_CR_CAM_GetOneFrameTimeout(handle, output, 0);
             if (status == MvidNative.NoData) return;
-            MvidNative.Check(status, "DrainFrameQueue");
+            if (!MvidNative.IsRecognitionFailure(status)) MvidNative.Check(status, "DrainFrameQueue");
         }
         throw new IOException("MVID queue did not reach a verified empty boundary");
     }

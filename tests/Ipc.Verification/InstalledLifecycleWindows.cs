@@ -71,6 +71,7 @@ static class InstalledLifecycleWindows
             => WindowsDeploymentSetup.Install(request, _ => { }, _ => { }, project ?? Project, progress);
         var firstRequest = Request(mediaA); var first = Install(firstRequest); prior = first;
         Check(WindowsDeploymentSetup.InspectInstallation(firstRequest).Status == "Completed" && first.LifecycleState == "Installed", "fresh protected install commits one authoritative deployment and complete receipt");
+        VerifyMaintenanceHelper(first);
         var supervisionRoot = DesktopRecoverySupervisor.StateDirectory(first);
         var initialLedger = Wire.FileHash(Path.Combine(supervisionRoot, "state.json"));
         Check(File.ReadAllText(Path.Combine(supervisionRoot, "state.json")).Contains("New"), "trusted first installation publishes complete initial supervision without enabling automatic launch");
@@ -80,6 +81,9 @@ static class InstalledLifecycleWindows
         var rootsFile = Path.Combine(machine, "trusted-program-roots.json"); var rootsHash = Wire.FileHash(rootsFile);
         VerifyOrdinary(first, "first");
         var repair = Install(Request(mediaA));
+        VerifyMaintenanceHelper(repair);
+        try { WindowsDeploymentSetup.RequireProtectedMaintenanceHelper(appId, Path.Combine(first.MaintenanceRoot!, "app"), ["Ipc.Assembly.exe"]); throw new Exception("Retired helper cache accepted"); }
+        catch (UnauthorizedAccessException) { Check(true, "superseded cache cannot impersonate the current installed maintenance helper"); }
         Check(repair.ReleaseRoot != first.ReleaseRoot && repair.DataRoot == first.DataRoot && repair.ConfigurationDirectory == first.ConfigurationDirectory &&
             Wire.FileHash(data) == dataHash && Wire.FileHash(Path.Combine(repair.ConfigurationDirectory, "business.json")) == configHash && Wire.FileHash(rootsFile) == rootsHash,
             "same-source reinstall keeps account/data/configuration and does not rewrite unchanged trusted roots");
@@ -113,7 +117,7 @@ static class InstalledLifecycleWindows
         Check(updated.SourceCommit == mediaB.SourceCommit && updated.DataRoot == dataRoot && Wire.FileHash(data) == dataHash, "source update commits the new program while retaining original data and account");
         var committedHash = Wire.FileHash(WindowsDeploymentSetup.Registration(appId));
         try { Install(unknown); throw new Exception("Repeated committed operation accepted"); }
-        catch (InvalidOperationException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == committedHash, "stale/repeated committed install cannot create a second deployment"); }
+        catch (Exception error) when (error is InvalidOperationException or InstallationOutcomeUnknownException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == committedHash, "stale/repeated committed install cannot create a second deployment"); }
         var failedJournal = WindowsDeploymentSetup.InstallationOperationFile(unknown); var failedHash = Wire.FileHash(failedJournal);
         var foreignRepairCalled = false;
         try { WindowsDeploymentSetup.RepairCommittedInstallation(unknown with { DataRoot = dataRoot + "-other" }, committedHash, (_, _) => foreignRepairCalled = true); throw new Exception("Mismatched repair accepted"); }
@@ -136,7 +140,7 @@ static class InstalledLifecycleWindows
         VerifyShortcuts(updated); VerifyOrdinary(updated, "update-repaired"); prior = updated;
         var displaced = Request(mediaA) with { DataRoot = Path.Combine(dataParent, appId + "-different") };
         try { Install(displaced); throw new Exception("Unexpected data switch"); }
-        catch (InvalidDataException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == committedHash && Wire.FileHash(data) == dataHash, "normal repair/update cannot silently switch the original data root"); }
+        catch (Exception error) when (error is InvalidDataException or InstallationOutcomeUnknownException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == committedHash && Wire.FileHash(data) == dataHash, "normal repair/update cannot silently switch the original data root"); }
         try { WindowsDeploymentSetup.Remove(appId, committedHash, _ => throw new InvalidOperationException("synthetic unresolved responsibility"), _ => { }); throw new Exception("Removal guard ignored"); }
         catch (InvalidOperationException) { Check(Wire.FileHash(WindowsDeploymentSetup.Registration(appId)) == committedHash && File.Exists(Path.Combine(updated.ReleaseRoot, "app", "Ipc.Platform.dll")), "responsibility rejection occurs before detach or program deletion"); }
         var foreign = Path.Combine(updated.ReleaseRoot, "foreign-evidence.txt"); File.WriteAllText(foreign, "retain outside inventory");
@@ -168,6 +172,23 @@ static class InstalledLifecycleWindows
         Console.WriteLine("EVIDENCE " + privateRoot);
         Console.WriteLine("BOUNDARY unique synthetic product; actual protected D-drive files/ARP/COM shortcuts/ordinary Windows processes. Business/SDK/RCS, actual restart queue and target-site acceptance NOT_RUN.");
 
+        void VerifyMaintenanceHelper(DeploymentLocation location)
+        {
+            var directory = Path.Combine(location.MaintenanceRoot!, "app");
+            var required = new[] { "Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll", "application-release.json" };
+            WindowsDeploymentSetup.RequireProtectedMaintenanceHelper(appId, directory, required);
+            Check(true, "fresh and repaired maintenance caches work without adding program-root approvals");
+            try { WindowsDeploymentSetup.RequireProtectedMaintenanceHelper(appId, directory, ["../installed-inventory.json"]); throw new Exception("Unlisted helper dependency accepted"); }
+            catch (InvalidDataException) { Check(true, "maintenance helper rejects files outside its installed component inventory"); }
+            var binary = Path.Combine(directory, "Ipc.Assembly.dll"); var bytes = File.ReadAllBytes(binary);
+            try
+            {
+                File.AppendAllText(binary, "SYNTHETIC CHANGED BY TEST ADMIN");
+                try { WindowsDeploymentSetup.RequireProtectedMaintenanceHelper(appId, directory, required); throw new Exception("Changed helper accepted"); }
+                catch (InvalidDataException) { Check(true, "maintenance helper checks installed bytes rather than trusting cache location alone"); }
+            }
+            finally { File.WriteAllBytes(binary, bytes); }
+        }
         DeploymentMedia Medium(string name, string source)
         {
             var root = Path.Combine(privateRoot, "media-" + name);
@@ -180,7 +201,7 @@ static class InstalledLifecycleWindows
                     var destination = Path.Combine(folder, file); Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
                     if (file == "config/business.json") File.Copy(seed, destination); else File.WriteAllText(destination, "SYNTHETIC NEVER EXECUTED " + source);
                 }
-                ExtensionStore.AtomicWrite(Path.Combine(folder, "application-release.json"), new ApplicationRelease(2, appId, source, ["synthetic"], ["standard"], names.ToDictionary(n => n, n => Wire.FileHash(Path.Combine(folder, n))), "1.0.0"));
+                ExtensionStore.AtomicWrite(Path.Combine(folder, "application-release.json"), new ApplicationRelease(2, appId, source, ["synthetic"], ["standard"], names.ToDictionary(n => n, n => Wire.FileHash(Path.Combine(folder, n))), name == "a" ? "1.0.0" : "1.0.1"));
             }
             return DeploymentMedia.Inspect(root, appId);
         }

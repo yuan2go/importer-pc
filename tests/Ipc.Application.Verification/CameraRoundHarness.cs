@@ -259,7 +259,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         }
         public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; Interlocked.Increment(ref Releases); }
         public void ClearBuffers() { Interlocked.Increment(ref Clears); ClearGate.Wait(); if (FailNextClear) { FailNextClear = false; throw new IOException("Synthetic SDK cache clear failed"); } while (queue.TryDequeue(out _)) { } }
-        public bool Connected() => Discovered;
+        public int HealthReads;
+        public bool Connected() { Interlocked.Increment(ref HealthReads); return Discovered; }
         public void Stop() { Interlocked.Increment(ref Stops); MvsNative.Check(Volatile.Read(ref StopError), "StopGrabbing"); }
         public void Close() { Interlocked.Increment(ref Closes); MvsNative.Check(Volatile.Read(ref CloseError), "CloseDevice"); }
         public void Destroy() { BeforeDestroy?.Invoke(); MvsNative.Check(Volatile.Read(ref DestroyError), "DestroyHandle"); Interlocked.Increment(ref Destroys); }

@@ -83,6 +83,7 @@ internal static class MvidReader
     {
         Boundaries();
         await StopDuringCapacityWait();
+        await DebugFlow(workspace, root);
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-reader"), stillMs: "50", nativeResults: true);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
@@ -167,5 +168,32 @@ internal static class MvidReader
             return;
         }
         throw new InvalidOperationException("Restart discarded a decoded native input");
+    }
+    static async Task DebugFlow(string workspace, string root)
+    {
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-debug"), nativeResults: true);
+        await h.StartAsync();
+        var epoch = h.Factory.Sources[h.Left].Epoch;
+        var scope = await h.BeginAsync(); await h.ArmAsync(h.Left); await h.WaitForCameraAdmissionAsync();
+        Check(!scope.BusinessFenced && h.Factory.Sources[h.Left].Epoch == epoch && h.Api(h.Left).Opens == 1,
+            "native debugging uses the current camera session without pausing production or reopening the camera");
+        h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 1, [Symbol("SYNTH-NATIVE-DEBUG")]);
+        h.Api(h.Right).EnqueueNative(CameraRoundHarness.EmptyTray, 1, [Symbol("SYNTH-NATIVE-DEBUG-RIGHT")]);
+        var locked = await h.LockedAsync();
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null && o.Wcs?.State == StageState.Accepted) == 2);
+        var image = await h.App.ReadCameraOriginalAsync(locked.Frame!.Id, default);
+        Check(image is not null && image.Metadata.SourceEventId == "mvid.frame.1" && image.Metadata.Symbols.Single().Text == locked.Barcode &&
+            image.Metadata.Symbols.Single().Corners.SequenceEqual(Symbol(locked.Barcode!).Corners) && h.Peer.Requests.Count == 2,
+            "native debug locks the same-frame original and barcode geometry while both positions continue supplying");
+        var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
+        Check(h.Peer.Requests.Count == 3 && h.Peer.Requests.Last() == locked.RequestBody && sent.Result!.Contains("Accepted"),
+            "explicit native debug send makes one independent RCS request using the frozen body");
+        h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 2, [Symbol("SYNTH-NATIVE-DEBUG-NEXT")]);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NATIVE-DEBUG-NEXT" && o.Wcs?.State == StageState.Accepted));
+        Check((await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id && h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.Count == 4,
+            "locked native debug picture does not freeze production, use ZXing or change to a later frame");
+        await h.EndAsync();
+        Check(h.Peer.Requests.Count == 4 && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced,
+            "ending native debugging clears the capture boundary without replaying a request");
     }
 }

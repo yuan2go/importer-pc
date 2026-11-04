@@ -73,7 +73,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
                 if (configuration.Current.Pending is not null) throw new InvalidOperationException("存在待重启配置；请先应用并核对生效参数，再开始扫码调试。");
                 if (command.ExpectedConfigurationRevision != configuration.Current.Revision || backupInProgress || configurationSaving || maintenanceOperations.Count != 0)
                     throw new InvalidOperationException("生效配置修订或维护状态已变化，请重新核对后操作。");
-                sources = InspectionSources(); if (sources.Length == 0) throw new InvalidOperationException("请先配置至少一台内置MVS相机。");
+                sources = InspectionSources(); if (sources.Length == 0) throw new InvalidOperationException("请先配置至少一台海康相机。");
                 id = Wire.Id(); var expires = new[] { DateTimeOffset.UtcNow.AddMinutes(command.Limits.DurationMinutes), actor.ExpiresAt }.Min();
                 InspectionStore.Begin(id, command, actor, expires, Wire.Hash(Wire.Encode(Effective)));
                 lastInspectionSession = id;

@@ -61,6 +61,12 @@
 - 汇报时分开写：编译、本机测试、CI、Windows 实机、真实 SDK、客户 RCS、现场验收。没跑的写“未运行”，不借用其他提交的结果。
 - 改动在开发分支提交，向 main 开 PR，不强推。
 
+## 安装包上传与交付
+
+- 每次更新安装包后都上传到 OSS：`http://gwcs-solution-test.oss-cn-hangzhou.aliyuncs.com/cjf/upload/`。使用发布当天（Asia/Singapore）的 `yyyyMMdd` 日期目录，例如 `20261105/`，保留安装包原文件名；同日同名但内容不同的包使用日期目录下的来源短提交子目录，不覆盖旧包。
+- 使用 HTTP PUT 上传：`curl --fail --show-error -T "<安装包完整路径>" "http://gwcs-solution-test.oss-cn-hangzhou.aliyuncs.com/cjf/upload/<yyyyMMdd>/"`；Windows PowerShell 使用 `curl.exe`。安装包不带本站配置、凭据或业务数据，仅保留安装必需的通用首配模板。
+- 上传后核对 HTTP 成功状态、远端文件大小及 MD5/ETag 与本地一致，确认 HTTPS 地址可访问，再把实际下载链接发给用户。下载地址格式为 `https://gwcs-solution-test.oss-cn-hangzhou.aliyuncs.com/cjf/upload/<yyyyMMdd>/<安装包文件名>`；使用提交号子目录时，链接也须包含该子目录。
+
 ## 界面
 
 - 字体只用随软件交付的 Noto Sans CJK SC（Regular/Medium），字号按 [TYPOGRAPHY-01](docs/design/typography-01.md)。

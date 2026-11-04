@@ -151,7 +151,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string PositionId { get; private set; }
     public string Heading => requestedPosition == "left" ? "左投递位" : "右投递位";
     StationVehicleState? vehicle;
-    public string VehicleStatusText => vehicle is null ? "小车：待确认" : vehicle.VehicleNo + " · " + (vehicle.Status switch
+    public string VehicleStatusText => vehicle is null ? "小车：待确认" : "小车 " + vehicle.VehicleNo + " · " + (vehicle.Status switch
     { "IDLE" => "空闲，可以投包", "TASKING" => "工作中，不可以投包", _ => "状态待确认" });
     public string VehicleStatusForeground => vehicle?.Status switch { "IDLE" => OperatorTokens.Success, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;

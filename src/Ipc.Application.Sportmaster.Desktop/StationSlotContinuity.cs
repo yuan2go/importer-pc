@@ -28,6 +28,7 @@ public sealed partial class SupplyStationPositionViewModel
     // Manual input has its own source and remains usable while the camera sees no code.
     bool CameraNoCode => CameraAwaitingRead || cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
         camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome != ObservationReadOutcome.Codes &&
+        !(Operation is { } placed && camera.RetainedOperationId == placed.Id) &&
         !(unreadFeedback ? readFeedback?.OperatorInput == true : Input?.Observation.OperatorInput is not null);
     DeviceState? fastReaderState;
     DeviceState? CurrentReaderState

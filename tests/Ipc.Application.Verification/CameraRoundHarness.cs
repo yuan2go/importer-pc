@@ -196,12 +196,24 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public int Count;
         // The next N decodes return no code although the frame is unchanged (the decoder missing a resting parcel).
         public int MissNext;
+        public int RejectNext;
         public RecognitionSymbol[] Last = [];
         public MvsTimingSnapshot? TimingSnapshot => inner.TimingSnapshot;
         public void Prepare() => inner.Prepare();
         public string[] Decode(byte[] p, int length, int width, int height) => DecodeDetailed(p, length, width, height).Select(s => s.Text).ToArray();
         public RecognitionSymbol[] DecodeDetailed(byte[] p, int length, int width, int height)
-        { if (!api.WasReturned(p.AsSpan(0, length))) throw new InvalidOperationException("Recognition must follow its own SDK loan return"); Last = inner.DecodeDetailed(p, length, width, height); if (Interlocked.Decrement(ref MissNext) >= 0) Last = []; else Interlocked.Exchange(ref MissNext, 0); Interlocked.Increment(ref Count); return Last; }
+        {
+            if (!api.WasReturned(p.AsSpan(0, length))) throw new InvalidOperationException("Recognition must follow its own SDK loan return");
+            if (Interlocked.Decrement(ref RejectNext) >= 0)
+            {
+                Interlocked.Increment(ref Count);
+                throw new MvsFrameRejection("SyntheticRejection", "Synthetic complete-frame rejection");
+            }
+            Interlocked.Exchange(ref RejectNext, 0);
+            Last = inner.DecodeDetailed(p, length, width, height);
+            if (Interlocked.Decrement(ref MissNext) >= 0) Last = []; else Interlocked.Exchange(ref MissNext, 0);
+            Interlocked.Increment(ref Count); return Last;
+        }
         public void Release() => inner.Release();
     }
     internal sealed class RoundApi(DeviceBinding binding) : IMvsApi

@@ -28,7 +28,9 @@ static partial class SportmasterRcs
             var pixels = data[end..]; var decoder = new SoftwareDecoder("utf-8", PrepareZxingFixture); decoder.Prepare();
             try
             {
-                var codes = decoder.Decode(pixels, pixels.Length, int.Parse(header[1]), int.Parse(header[2]));
+                var symbols = decoder.DecodeDetailed(pixels, pixels.Length, int.Parse(header[1]), int.Parse(header[2]));
+                var codes = symbols.Select(s => s.Text).ToArray();
+                ExtensionStore.AtomicWrite(path + ".symbols-private.json", symbols);
                 ExtensionStore.AtomicWrite(path + ".dotnet-private.json", codes); Console.WriteLine("PRIVATE_PGM decoded=" + codes.Length);
             }
             finally { decoder.Release(); }

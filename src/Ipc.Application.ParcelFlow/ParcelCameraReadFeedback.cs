@@ -22,6 +22,7 @@ public sealed partial class ParcelRuntime
             var position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == frame.DeviceId)?.Id;
             if (position is null) return;
             NotePlacementFrame(position, frame);
+            var retainedOperation = RetainedCameraPlacement(position, frame);
             lock (presentationGate)
             {
                 cameraReadFeedback.TryGetValue(position, out var old);
@@ -39,8 +40,9 @@ public sealed partial class ParcelRuntime
                     return;
                 }
                 pendingCameraCodes.Remove(position);
-                var changed = old is null || old.Frame.Epoch != frame.Epoch || old.Frame.Outcome != frame.Outcome || frame.Outcome == ObservationReadOutcome.Codes;
-                cameraReadFeedback[position] = new(position, frame);
+                var changed = old is null || old.Frame.Epoch != frame.Epoch || old.Frame.Outcome != frame.Outcome ||
+                    old.RetainedOperationId != retainedOperation || frame.Outcome == ObservationReadOutcome.Codes;
+                cameraReadFeedback[position] = new(position, frame) { RetainedOperationId = retainedOperation };
                 if (changed) OfferPresentation();
             }
         };

@@ -102,14 +102,28 @@ internal sealed partial class SoftwareDecoder
     }
     void MergeCandidate(List<RecognitionSymbol> all, RecognitionSymbol next, byte[] pixels, int width, int height)
     {
-        foreach (var prior in all)
+        static long Area(RecognitionSymbol symbol)
         {
+            var p = symbol.Corners; long area = 0;
+            for (var i = 0; i < 4; i++) area += (long)p[i].X * p[(i + 1) % 4].Y - (long)p[i].Y * p[(i + 1) % 4].X;
+            return Math.Abs(area);
+        }
+        var representative = next;
+        var insertion = all.Count;
+        for (var i = all.Count - 1; i >= 0; i--)
+        {
+            var prior = all[i];
             if (!SamePrintedRegion(prior, next, pixels, width, height)) continue;
             if (prior.Text != next.Text || prior.Format != next.Format)
                 throw new MvsFrameRejection("ConflictingRecognition", "Different valid results cover the same printed region; complete frame rejected");
-            return; // Only a repeated search of this same printed pattern, never text-only deduplication.
+            // Keep the most complete observed polygon. Keeping only the first
+            // partial band loses the geometry needed to associate later searches.
+            // A full-band search can also reconcile several earlier partial bands.
+            if (Area(prior) > Area(representative)) representative = prior;
+            all.RemoveAt(i);
+            insertion = i;
         }
-        all.Add(next);
+        all.Insert(insertion, representative);
         if (all.Count >= CandidateLimit) throw new MvsFrameRejection("CandidateLimit", "Combined candidate limit reached; complete frame rejected");
     }
     bool SamePrintedRegion(RecognitionSymbol a, RecognitionSymbol b, byte[] pixels, int width, int height)

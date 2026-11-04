@@ -37,7 +37,7 @@ public sealed partial class ParcelRuntime
     readonly HashSet<string> frameFedPositions = [];
     // Scene of the latest camera frame that read a code at each position. Kept per position, not per placement:
     // the frame fact can arrive before the read creates its placement.
-    readonly Dictionary<string, long?> codeScenes = [];
+    readonly Dictionary<string, (string Epoch, long? Scene)> codeScenes = [];
     void RegisterPlacementFrames(string position) { lock (placements) frameFedPositions.Add(position); }
 
     // Presentation may coalesce observations only while the business placement
@@ -114,7 +114,7 @@ public sealed partial class ParcelRuntime
         if (definition.SamePlacementReleaseMs <= 0 || emptyFrames <= 0 || frame.Outcome == ObservationReadOutcome.RejectedFrame) return;
         lock (placements)
         {
-            if (frame.Outcome == ObservationReadOutcome.Codes) codeScenes[position] = frame.Scene;
+            if (frame.Outcome == ObservationReadOutcome.Codes) codeScenes[position] = (frame.Epoch, frame.Scene);
             if (!placements.TryGetValue(position, out var placement) || placement.EndedAt is not null) return;
             if (frame.Outcome == ObservationReadOutcome.Codes)
             {
@@ -123,11 +123,19 @@ public sealed partial class ParcelRuntime
             }
             if (frame.ObservedAt <= placement.LastSeen || !placement.CameraSeen) return;
             // The scene is unchanged since a code was last read here: the parcel is still there and the decoder missed it.
-            if (frame.Scene is { } scene && codeScenes.TryGetValue(position, out var codeScene) && codeScene == scene) return;
+            if (frame.Scene is { } scene && codeScenes.TryGetValue(position, out var codeScene) && codeScene == (frame.Epoch, scene)) return;
             placement.EmptySince ??= frame.ObservedAt;
             if (++placement.EmptyFrames >= emptyFrames &&
                 frame.ObservedAt - placement.EmptySince.Value >= TimeSpan.FromMilliseconds(definition.SamePlacementEmptyMinimumMs))
                 placement.EndedAt = placement.EmptySince;
         }
+    }
+
+    string? RetainedCameraPlacement(string position, ObservationReadFeedback frame)
+    {
+        if (frame.Outcome == ObservationReadOutcome.Codes || frame.Scene is not { } scene) return null;
+        lock (placements) return codeScenes.TryGetValue(position, out var codeScene) && codeScene == (frame.Epoch, scene) &&
+            placements.TryGetValue(position, out var placement) && placement.CameraSeen && placement.EndedAt is null
+                ? placement.Operation : null;
     }
 }

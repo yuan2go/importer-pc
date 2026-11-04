@@ -1,9 +1,31 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 public partial class HistoryPage : UserControl
 {
+    public static readonly DependencyProperty DetailsOpenProperty = DependencyProperty.Register(
+        nameof(DetailsOpen), typeof(bool), typeof(HistoryPage), new PropertyMetadata(false));
+    public bool DetailsOpen { get => (bool)GetValue(DetailsOpenProperty); private set => SetValue(DetailsOpenProperty, value); }
+    Window? inputOwner;
+    public void ShowTaskDetails() => DetailsOpen = DataContext is ParcelViewModel { Selected: not null };
+    void StatusDetails_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ParcelViewModel vm || sender is not FrameworkElement { DataContext: Ipc.Application.Contracts.ParcelHistoryItem item }) return;
+        vm.SelectedHistory = item;
+        ShowTaskDetails();
+    }
+    void OwnerMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        for (var source = e.OriginalSource as DependencyObject; source is not null;
+            source = source is Visual or System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source))
+            if (ReferenceEquals(source, HistoryDetailPanel) || source is Button { Name: "HistoryStatusDetailsAction" }) return;
+        DetailsOpen = false;
+    }
+    void OwnerKeyDown(object sender, KeyEventArgs e)
+    { if (DetailsOpen && e.Key == Key.Escape) { DetailsOpen = false; e.Handled = true; HistoryRows.Focus(); } }
     public event EventHandler<string>? LogsRequested;
     void Logs_Click(object sender, RoutedEventArgs e) { if (DataContext is ParcelViewModel { IsManagementMode: true, Selected: { } op }) LogsRequested?.Invoke(this, op.Id); }
     async void BarcodeQuery_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -11,9 +33,19 @@ public partial class HistoryPage : UserControl
     public HistoryPage()
     {
         InitializeComponent();
-        Loaded += (_, _) => { ArrangeTaskFilters(); UpdateDetailsVisibility(); };
-        Unloaded += (_, _) => { if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(false, false); };
-        DataContextChanged += (_, e) => { if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
+        Loaded += (_, _) =>
+        {
+            ArrangeTaskFilters(); UpdateDetailsVisibility();
+            inputOwner = Window.GetWindow(this);
+            if (inputOwner is not null) { inputOwner.PreviewMouseDown += OwnerMouseDown; inputOwner.PreviewKeyDown += OwnerKeyDown; }
+        };
+        Unloaded += (_, _) =>
+        {
+            if (inputOwner is not null) { inputOwner.PreviewMouseDown -= OwnerMouseDown; inputOwner.PreviewKeyDown -= OwnerKeyDown; inputOwner = null; }
+            DetailsOpen = false;
+            if (DataContext is ParcelViewModel vm) vm.SetDetailsVisibility(false, false);
+        };
+        DataContextChanged += (_, e) => { DetailsOpen = false; if (e.OldValue is ParcelViewModel old) old.SetDetailsVisibility(false, false); UpdateDetailsVisibility(); };
         StructuredDetailsPanel.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         RawDetailsText.IsVisibleChanged += (_, _) => UpdateDetailsVisibility();
         SizeChanged += (_, _) => FitQueryViewport();
@@ -21,7 +53,7 @@ public partial class HistoryPage : UserControl
         HistoryQueryActions.SizeChanged += (_, _) => FitQueryViewport();
         HistoryStatusLine.SizeChanged += (_, _) => FitQueryViewport();
         ((FrameworkElement)HistoryStatusLine.Parent).SizeChanged += (_, _) => FitQueryViewport();
-        HistoryDetailExpander.SizeChanged += (_, _) => FitQueryViewport();
+        HistoryDetailPanel.SizeChanged += (_, _) => FitQueryViewport();
     }
     void Picture_Click(object sender, RoutedEventArgs e)
     {
@@ -42,8 +74,8 @@ public partial class HistoryPage : UserControl
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom + (HistoryHeading.IsVisible ? HistoryHeading.ActualHeight + HistoryHeading.Margin.Bottom : 0) +
             HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom + (AllHistoryFilters.IsVisible ? 32 : 0) +
             ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight +
-            (HistoryDetailExpander.IsVisible && Grid.GetRow(HistoryDetailExpander) == 1
-                ? HistoryDetailExpander.ActualHeight + HistoryDetailExpander.Margin.Top + HistoryDetailExpander.Margin.Bottom : 0);
+            (HistoryDetailPanel.IsVisible && Grid.GetRow(HistoryDetailPanel) == 1
+                ? HistoryDetailPanel.ActualHeight + HistoryDetailPanel.Margin.Top + HistoryDetailPanel.Margin.Bottom : 0);
         // Global receipts and custody reasons change the page's available height.
         // Keep the real header and one full result row; filters retain their own scroll.
         var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this).DpiScaleY;

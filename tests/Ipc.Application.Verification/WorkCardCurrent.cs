@@ -47,8 +47,8 @@ internal static class WorkCardCurrent
             await h.App.DisposeAsync();
             await h.StartAsync();
             var s = await h.App.SnapshotAsync();
-            Check(s.Positions!.All(p => p.CurrentOperation is null) && (await h.App.HistoryAsync()).Items.Count(i => i.Operation.State == ParcelState.SlotResolved) == 2,
-                "after a restart both cards wait for a parcel; earlier chutes are only in the records");
+            Check(s.Positions!.All(p => p.CurrentOperation is null) && s.Inputs is { Length: 0 } && (await h.App.HistoryAsync()).Items.Count(i => i.Operation.State == ParcelState.SlotResolved) == 2,
+                "after a restart both cards and barcode inputs are empty; earlier reads and chutes remain only in the records");
         }
 
         // Manual entry has no empty-tray signal: its result stays for at most ten minutes.

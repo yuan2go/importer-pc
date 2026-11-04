@@ -24,4 +24,6 @@ public sealed record ObservationDiagnostics(string DeviceId, string Epoch, strin
     public bool WaitingForOriginalCapacity { get; init; }
     public long SdkFrameNumberGaps { get; init; }
     public long SdkGapEvents { get; init; }
+    // Median time to decode one frame over the recent window; sets the scan pace once the parcel rests.
+    public double? DecodeMedianMs { get; init; }
 }

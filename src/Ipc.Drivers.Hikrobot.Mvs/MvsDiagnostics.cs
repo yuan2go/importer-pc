@@ -46,6 +46,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
                 failure.Length == 0 ? null : failure)
             {
                 Window = decodeWindow.Read(),
+                DecodeMedianMs = Timings.Median("decode"),
                 SupersededDecodeFrames = Interlocked.Read(ref supersededDecodeFrames)
 #if !MVS_ACQUISITION_EXTENSION
                 ,

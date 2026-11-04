@@ -80,6 +80,7 @@ internal static class MvsStillFrames
             var seen = decoder.Seen.ToArray();
             Check(seen.Length >= 3 && seen.All(s => s.Marker == StillMarker), "once the parcel rests, only resting frames are decoded, and decoding continues");
             Check(seen[0].At - settledAt >= 150 && seen[0].At - settledAt < 1200, "the first decode waits for the still time (about 200 ms), not a whole decode cycle");
+            Check(source.ReadDiagnostics().DecodeMedianMs is >= 0 and < 1000, "diagnostics report the recent median decode time that sets the scan pace");
             await source.StopAsync(default);
         }
 
@@ -104,6 +105,11 @@ internal static class MvsStillFrames
             Check(every.Seen.Any(s => s.Marker == MovingMarker), "with the still time set to 0, moving frames are decoded as before");
             await source.StopAsync(default);
         }
+        // The pace line maintenance reads on 设备与诊断.
+        var fast = Ipc.Application.Sportmaster.Desktop.CameraAcquisitionPresentation.Pace(150);
+        var slow = Ipc.Application.Sportmaster.Desktop.CameraAcquisitionPresentation.Pace(1700);
+        Check(fast == "单帧识别耗时约 150 ms（最近中位数）" && slow.Contains("识别较慢") && slow.Contains("需要识别的条码种类") &&
+            Ipc.Application.Sportmaster.Desktop.CameraAcquisitionPresentation.Pace(null).Contains("尚无样本"), "a slow decode names the setting that speeds it up; a fast one stays a plain number");
         try { _ = Source(new(), new(), "2500"); throw new Exception("out-of-range still time accepted"); }
         catch (InvalidDataException) { Check(true, "a still time outside 0-2000 ms is refused"); }
     }

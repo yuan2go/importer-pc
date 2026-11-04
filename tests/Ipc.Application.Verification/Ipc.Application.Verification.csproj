@@ -32,6 +32,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/PersistentConfigurationDrafts.cs" Link="Client/PersistentConfigurationDrafts.cs"/>
  <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Client/DesktopLaunchOptions.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/OperatorWorkspacePresentation.cs" Link="Client/OperatorWorkspacePresentation.cs"/>
+ <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/CameraAcquisitionPresentation.cs" Link="Client/CameraAcquisitionPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/QueryTime.cs" Link="Client/QueryTime.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogText.cs" Link="Client/SoftwareLogText.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/StationSlotContinuity.cs" Link="Client/StationSlotContinuity.cs"/>

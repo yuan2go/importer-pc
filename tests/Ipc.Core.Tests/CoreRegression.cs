@@ -20,6 +20,7 @@ public sealed class CoreRegression
     [DataRow("--station-single-camera", 65)]
     [DataRow("--same-placement-29", 28)]
     [DataRow("--reader-robustness-28", 47)]
+    [DataRow("--tilted-decode", 9)]
     [DataRow("--sm-automatic-rcs", 20)]
     [DataRow("--live-devices-30", 23)]
     [DataRow("--mvs-network-reconnect", 20)]

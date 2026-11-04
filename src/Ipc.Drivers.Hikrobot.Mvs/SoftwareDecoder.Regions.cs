@@ -1,13 +1,15 @@
 using System.Buffers;
 using Ipc.Platform;
+using ZXingCpp;
 
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
 internal sealed partial class SoftwareDecoder
 {
     const int Tile = 32, RegionLimit = 32, RegionPixelLimit = 4 * 1024 * 1024;
-    sealed record SearchRegion(int X, int Y, int Width, int Height, double Angle, double AlternateAngle, int Tiles);
-    struct EdgeTile { public double XX, YY, XY, Angle; public bool Active; }
+    // Centers: the bar-dense tiles of the region (at least half its median edge density), in original-image pixels.
+    sealed record SearchRegion(int X, int Y, int Width, int Height, double Angle, double AlternateAngle, int Tiles, (double X, double Y)[] Centers);
+    struct EdgeTile { public double XX, YY, XY, Angle, Density; public bool Active; }
     static List<SearchRegion> FindRegions(byte[] p, int width, int height)
     {
         var columns = (width + Tile - 1) / Tile; var rows = (height + Tile - 1) / Tile;
@@ -31,6 +33,7 @@ internal sealed partial class SoftwareDecoder
                     YY = yy,
                     XY = xy,
                     Angle = Math.Atan2(2 * xy, xx - yy) / 2,
+                    Density = count == 0 ? 0 : (double)strong / count,
                     Active = count > 0 && strong >= count * .16 && coherence >= .8
                 };
             }
@@ -87,17 +90,55 @@ internal sealed partial class SoftwareDecoder
             if (angle < -Math.PI / 4) angle += Math.PI / 2;
             if (alternate > Math.PI / 4) alternate -= Math.PI / 2;
             if (alternate < -Math.PI / 4) alternate += Math.PI / 2;
-            result.Add(new(left, top, right - left, bottom - top, angle, alternate, tiles));
+            // Tiles a recognised code must explain: bar-dense ones. A single straight edge (label paper, box flap)
+            // joins the component but is far sparser than bars; a second printed code is as dense as the first.
+            var densities = component.Select(at => cells[at].Density).Order().ToArray(); var dense = densities[densities.Length / 2] / 2;
+            var centers = component.Where(at => cells[at].Density >= dense)
+                .Select(at => (Math.Min(width - 1, (at % columns + .5) * Tile), Math.Min(height - 1, (at / columns + .5) * Tile))).ToArray();
+            result.Add(new(left, top, right - left, bottom - top, angle, alternate, tiles, centers));
             if (result.Count > RegionLimit) throw new MvsFrameRejection("SearchRegionLimit", "Directional search capacity exceeded; complete frame rejected");
         }
         return result;
+    }
+    // A region is explained once every barcode-like tile in it lies on a printed code already recognised.
+    // Its remaining deskewed passes could only find that same code again, so they are skipped. A tile that no
+    // recognised code explains - a second or still unread code - keeps the full search, so a real second code is
+    // still found and the frame is still rejected as multiple codes.
+    // Only a box that the original pixels show to be one continuous printed band can explain tiles.
+    bool Explained(SearchRegion region, List<RecognitionSymbol> symbols, byte[] original, int width, int height)
+    {
+        if (symbols.Count == 0) return false;
+        var bands = symbols.Where(s => SingleBand(s, original, width, height)).ToArray();
+        return bands.Length > 0 && region.Centers.All(c => bands.Any(s => Covers(s.Corners, c.X, c.Y)));
+    }
+    // The code box as an oriented band. Along the code axis the quiet zone and the label paper corner beyond it are
+    // allowed: two tiles or 18% of the code length. A second code placed end to end keeps a 20-module gap and is at
+    // least 35 modules long, so it never lies wholly inside that allowance and keeps the full search. Across the code
+    // the human-readable line printed under the bars is allowed: 60% of the bar height, between one and two tiles. A
+    // second code stacked above or below is a full bar height tall, so part of it stays outside and keeps the search.
+    static bool Covers(ImagePoint[] q, double x, double y)
+    {
+        double sx = (q[0].X + q[3].X) / 2d, sy = (q[0].Y + q[3].Y) / 2d, ex = (q[1].X + q[2].X) / 2d, ey = (q[1].Y + q[2].Y) / 2d;
+        var length = Math.Sqrt((ex - sx) * (ex - sx) + (ey - sy) * (ey - sy));
+        if (length < 1) return false;
+        double ux = (ex - sx) / length, uy = (ey - sy) / length;
+        var along = (x - sx) * ux + (y - sy) * uy;
+        double across = -(x - sx) * uy + (y - sy) * ux, low = double.MaxValue, high = double.MinValue;
+        foreach (var corner in q) { var v = -(corner.X - sx) * uy + (corner.Y - sy) * ux; low = Math.Min(low, v); high = Math.Max(high, v); }
+        var outsideAlong = Math.Max(0, Math.Max(-along, along - length));
+        var outsideAcross = Math.Max(0, Math.Max(low - across, across - high));
+        return outsideAlong <= Math.Max(2 * Tile, .18 * length) && outsideAcross <= Math.Clamp(.6 * (high - low), Tile, 2 * Tile);
     }
     void SearchRegions(byte[] original, int width, int height, List<RecognitionSymbol> symbols)
     {
         var used = 0;
         foreach (var region in FindRegions(original, width, height))
+        {
+            if (Explained(region, symbols, original, width, height)) { timings.Record("regions.explained-before-search", 0); continue; }
+            var explained = false;
             foreach (var direction in Math.Abs(region.Angle - region.AlternateAngle) >= Math.PI / 360 ? new[] { region.Angle, region.AlternateAngle } : new[] { region.Angle })
             {
+                if (explained) break;
                 var angle = -direction; var cos = Math.Cos(angle); var sin = Math.Sin(angle);
                 var w = (int)Math.Ceiling(region.Width * Math.Abs(cos) + region.Height * Math.Abs(sin));
                 var h = (int)Math.Ceiling(region.Height * Math.Abs(cos) + region.Width * Math.Abs(sin));
@@ -117,20 +158,27 @@ internal sealed partial class SoftwareDecoder
                             rotated[y * w + x] = p.X < region.X || p.X >= region.X + region.Width || p.Y < region.Y || p.Y >= region.Y + region.Height ? (byte)255 :
                                 (byte)Math.Round(Sample(original, width, height, p.X, p.Y));
                         }
-                    ReadPass(reader!, rotated, w, h, symbols, original, width, height, Point);
-                    ReadPass(thresholdReader!, rotated, w, h, symbols, original, width, height, Point);
+                    // Passes in increasing cost and specificity; stop as soon as the region is explained.
+                    bool Pass(BarcodeReader engine, byte[] image)
+                    {
+                        ReadPass(engine, image, w, h, symbols, original, width, height, Point);
+                        return explained = Explained(region, symbols, original, width, height);
+                    }
+                    if (Pass(reader!, rotated) || Pass(thresholdReader!, rotated)) { timings.Record("regions.explained-early", 0); continue; }
                     Sharpen(rotated, enhanced, w, h);
                     foreach (var threshold in new[] { 80, 104, 128, 152, 176 })
                     {
                         for (var i = 0; i < length; i++) binary[i] = enhanced[i] < threshold ? (byte)0 : (byte)255;
-                        ReadPass(thresholdReader!, binary, w, h, symbols, original, width, height, Point);
+                        if (Pass(thresholdReader!, binary)) break;
                     }
+                    if (explained) { timings.Record("regions.explained-sharpened", 0); continue; }
                     SharpenWide(rotated, enhanced, binary, w, h);
                     foreach (var threshold in new[] { 80, 104, 128, 152, 176 })
                     {
                         for (var i = 0; i < length; i++) binary[i] = enhanced[i] < threshold ? (byte)0 : (byte)255;
-                        ReadPass(thresholdReader!, binary, w, h, symbols, original, width, height, Point);
+                        if (Pass(thresholdReader!, binary)) break;
                     }
+                    if (!explained) timings.Record("regions.full-search", 0);
                 }
                 finally
                 {
@@ -139,6 +187,7 @@ internal sealed partial class SoftwareDecoder
                     if (binary is not null) ArrayPool<byte>.Shared.Return(binary, true);
                 }
             }
+        }
     }
     static void Sharpen(byte[] source, byte[] target, int w, int h)
     {

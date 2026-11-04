@@ -190,7 +190,7 @@ internal static class SamePlacement29
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         await vm.RefreshAsync();
 
-        decoder.MissNext = 8;
+        decoder.MissNext = int.MaxValue;
         await Show(parcel, 8, 150);
         await vm.RefreshAsync();
         Check(vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-SCENE-A" && vm.Left.CanViewCurrentPicture &&
@@ -198,11 +198,13 @@ internal static class SamePlacement29
             "missed decodes on an unchanged scene retain the current chute, barcode and original picture before any successful reread");
         var reopened = new SupplyStationViewModel(h.App); reopened.SetViewport(1366, 768); await reopened.RefreshAsync();
         Check(reopened.Left.ShowConfirmedTask, "a new work-card subscriber also retains the application-owned unchanged placement");
-        decoder.RejectNext = 1;
+        decoder.MissNext = 0;
+        decoder.RejectNext = int.MaxValue;
         await Show(parcel, 1, 60);
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Single(c => c.PositionId == "left").Frame.Outcome == ObservationReadOutcome.RejectedFrame; });
         Check(vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 1,
             "a rejected decode on the same unchanged scene preserves the current result without another request");
+        decoder.RejectNext = 0;
         await Show(parcel, 1, 60);
         await CameraRoundHarness.Until(async () => ParcelInputReasons.IsSamePlacement(await Latest()));
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Length == 1,
@@ -211,11 +213,12 @@ internal static class SamePlacement29
         var oldEpoch = h.Factory.Sources[h.Left].Epoch;
         await h.App.ReconnectDeviceAsync(h.Left);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Epoch != oldEpoch));
-        decoder = h.Factory.Decoders[h.Left]; decoder.MissNext = 1;
+        decoder = h.Factory.Decoders[h.Left]; decoder.MissNext = int.MaxValue;
         await Show(parcel, 1, 60);
         await vm.RefreshAsync();
         Check(!vm.Left.ShowConfirmedTask && vm.Snapshot!.CameraReads.Single(c => c.PositionId == "left").RetainedOperationId is null,
             "a new camera epoch cannot reuse the old scene's display authority before rereading the parcel");
+        decoder.MissNext = 0;
         await Show(parcel, 1, 60);
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
         Check(h.Peer.Requests.Count == 1, "rereading after reconnect restores the original chute without another request");

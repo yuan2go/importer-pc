@@ -38,13 +38,14 @@ static partial class Program
         var primary = (SupplyStationWindow)Presentation.Create(runtime, null, "standard");
         primary.Show(); await Task.Delay(300); await SetClient(primary, 1100, 600); primary.UpdateLayout();
         Capture("help-workstation-baseline", primary);
-        ApplicationCommands.Help.Execute(null, primary);
-        await Until(() => System.Windows.Application.Current.Windows.OfType<StationHelpWindow>().Any());
-        var window = System.Windows.Application.Current.Windows.OfType<StationHelpWindow>().Single();
-        Check(ReferenceEquals(window.Owner, primary), "actual help command reuses the running workstation owner");
-        ApplicationCommands.Help.Execute(null, primary);
-        Check(System.Windows.Application.Current.Windows.OfType<StationHelpWindow>().Count() == 1,
-            "reopening help activates one existing window instead of creating another reader");
+        Check(!Descendants(primary).OfType<Button>().Any(b => Equals(b.Content, "使用帮助")) &&
+            !Descendants(primary).OfType<MenuItem>().Any(m => Equals(m.Header, "使用帮助")) &&
+            !primary.InputBindings.OfType<KeyBinding>().Any(b => b.Key == Key.F1) && !ApplicationCommands.Help.CanExecute(null, primary),
+            "this version exposes no help button, menu, F1 binding or help command");
+        // Retained offline content is tested directly, with no product entry point.
+        var window = new StationHelpWindow(runtime, () => primary.ViewModel.IsManagementMode) { Owner = primary };
+        window.Show();
+        Check(ReferenceEquals(window.Owner, primary), "retained offline help still accepts the running workstation owner");
         var destination = Path.Combine(evidence, "ordinary-help.zip");
         typeof(StationHelpWindow).GetProperty("DestinationPicker", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(window, (Func<Window, string?>)(_ => destination));
         await Task.Delay(150); window.UpdateLayout();

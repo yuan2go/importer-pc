@@ -24,6 +24,7 @@ public sealed class ParcelPictureWindow : Window
     readonly Canvas scene = new() { ClipToBounds = true };
     readonly Image image = new() { Stretch = Stretch.Fill, IsHitTestVisible = false };
     readonly CheckBox annotations = new() { Content = "识别位置", IsChecked = true, VerticalAlignment = VerticalAlignment.Center, Margin = new(12, 0, 12, 0) };
+    readonly Button copyImage = new() { Content = "复制图片", IsEnabled = false, MinHeight = 44, Padding = new(12, 6, 12, 6), Margin = new(6, 0, 0, 0), ToolTip = "复制完整包裹原图，可粘贴到其他软件" };
     readonly List<Polygon> polygons = [];
     CameraFrameMetadata? frame;
     double zoom = 1;
@@ -65,6 +66,7 @@ public sealed class ParcelPictureWindow : Window
         actions.Children.Add(annotations); annotations.Checked += (_, _) => DrawAnnotations(); annotations.Unchecked += (_, _) => DrawAnnotations();
         var reload = new Button { Content = "刷新原图", MinHeight = 44, Padding = new(12, 6, 12, 6) };
         reload.Click += async (_, _) => await LoadOriginalAsync(); actions.Children.Add(reload);
+        copyImage.Click += (_, _) => CopyImage(); actions.Children.Add(copyImage);
         top.Children.Add(status);
         var bottom = new DockPanel { Margin = new(0, 8, 0, 0) }; DockPanel.SetDock(bottom, Dock.Bottom); body.Children.Add(bottom);
         var close = new Button { Content = "关闭", IsCancel = true, MinHeight = 44, MinWidth = 88, Padding = new(12, 6, 12, 6) };
@@ -99,7 +101,14 @@ public sealed class ParcelPictureWindow : Window
     }
     void ClearImage()
     {
+        copyImage.IsEnabled = false;
         image.Source = null; frame = null; provenance.Clear(); foreach (var polygon in polygons) scene.Children.Remove(polygon); polygons.Clear(); scene.Width = scene.Height = 0;
+    }
+    void CopyImage()
+    {
+        if (closed || !copyImage.IsEnabled || image.Source is not BitmapSource bitmap) return;
+        try { Clipboard.SetImage(bitmap); status.Text = "已复制包裹原图，可粘贴到其他软件。"; }
+        catch (System.Runtime.InteropServices.ExternalException) { status.Text = "图片暂时无法复制，请关闭占用剪贴板的软件后重试。"; }
     }
     async Task LoadOriginalAsync()
     {
@@ -121,6 +130,7 @@ public sealed class ParcelPictureWindow : Window
             frame = original.Metadata;
             var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, original.Gray8, frame.Width); bitmap.Freeze();
             image.Source = bitmap; image.Width = scene.Width = frame.Width; image.Height = scene.Height = frame.Height;
+            copyImage.IsEnabled = true;
             provenance.Text = "作业：" + (result.OperationId ?? "本次扫描未受理") + "\n观察：" + result.ObservationId + "\n相机：" + frame.DeviceId +
                 " · 周期：" + frame.Epoch + " · 帧：" + frame.FrameNumber + "\n采集：" + frame.CapturedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
                 "\n像素：" + frame.Width + " × " + frame.Height + " · SHA256：" + frame.OriginalSha256;

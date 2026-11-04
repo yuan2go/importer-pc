@@ -142,7 +142,6 @@ namespace Ipc.Application.Sportmaster.Desktop
         void BuildOperatorWorkspace() { workContent.Children.Add(work); }
         void RestoreBarcodeFocus() { } // Native focus is exercised only by the real WPF suite.
         void InitializeAudio() { } // Media playback is not provided by this event-owner shim.
-        void InitializeHelp() { } // Native help commands/windows are exercised by --industrial-help, not this event-owner shim.
         readonly System.Windows.Controls.Grid ClientArea = new();
         readonly System.Windows.Controls.ContentControl PageHost = new();
         readonly System.Windows.Controls.PasswordBox LoginProof = new();

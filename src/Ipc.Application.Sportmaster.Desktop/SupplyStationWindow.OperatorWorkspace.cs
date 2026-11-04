@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
@@ -13,29 +12,40 @@ public partial class SupplyStationWindow
     readonly Grid workContent = new();
     string recentInputPosition = "left";
     bool focusRestoreQueued;
+    bool barcodeSelectionCancelled;
     void BuildOperatorWorkspace()
     {
         InitializePace();
         workContent.Children.Add(work);
-        Deactivated += (_, _) => ViewModel.SetInputTarget("");
+        Deactivated += (_, _) => CancelBarcodeSelection();
         Activated += (_, _) => RestoreBarcodeFocus();
         Loaded += (_, _) => RestoreBarcodeFocus();
         // F2 / F3 choose the left / right input position without the mouse. A scanner sends text and Enter only,
         // so it cannot trigger these keys; other pages, dialogs and owned windows keep their own keys.
         PreviewKeyDown += (_, args) =>
         {
+            if (args.Key == Key.Escape && ViewModel.SelectedPage == "workstation" && ViewModel.InputTargetPosition.Length != 0)
+            { args.Handled = true; CancelBarcodeSelection(); return; }
             if (args.Key is not (Key.F2 or Key.F3) || Keyboard.Modifiers != ModifierKeys.None || !CanRestoreBarcodeFocus) return;
             var id = args.Key == Key.F2 ? "left" : "right";
             if (work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel p && p.PositionId == id) is not { IsVisible: true, IsEnabled: true } target) return;
             args.Handled = true; recentInputPosition = id; target.FocusBarcodeInput();
         };
+        PreviewMouseDown += (_, args) =>
+        {
+            if (ViewModel.SelectedPage != "workstation") return;
+            for (var source = args.OriginalSource as DependencyObject; source is not null;
+                source = source is System.Windows.Media.Visual or System.Windows.Media.Media3D.Visual3D ? System.Windows.Media.VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source))
+                if (source is SupplyStationPosition) return;
+            CancelBarcodeSelection();
+        };
         ViewModel.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(ViewModel.InputTargetPosition) && ViewModel.InputTargetPosition is "left" or "right")
-                recentInputPosition = ViewModel.InputTargetPosition;
+            { barcodeSelectionCancelled = false; recentInputPosition = ViewModel.InputTargetPosition; }
             if (args.PropertyName == nameof(ViewModel.SelectedPage)) ViewModel.NotifyPaceVisibility();
             if (args.PropertyName == nameof(ViewModel.Fresh) && !ViewModel.Fresh) ViewModel.SetPace(null);
-            if (args.PropertyName == nameof(ViewModel.SelectedPage) && ViewModel.SelectedPage == "workstation") RestoreBarcodeFocus();
+            if (args.PropertyName == nameof(ViewModel.SelectedPage) && ViewModel.SelectedPage != "workstation") CancelBarcodeSelection();
         };
         PreviewTextInput += (_, args) =>
         {
@@ -43,10 +53,22 @@ public partial class SupplyStationWindow
             // Explicit Tab/Enter navigation and other editors remain native.
             if (!CanRestoreBarcodeFocus || Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ||
                 args.Text.Length == 0 || args.Text.Any(char.IsControl)) return;
-            if (RecentPosition() is { } position && (Keyboard.FocusedElement is ButtonBase ||
-                position.IsKeyboardFocusWithin && Keyboard.FocusedElement is TextBox { IsReadOnly: true }))
+            if (ViewModel.InputTargetPosition is "left" or "right" && RecentPosition() is { } position &&
+                work.IsKeyboardFocusWithin && !position.IsBarcodeInputFocused)
             { args.Handled = true; position.ReceiveScannerText(args.Text); }
         };
+    }
+    void CancelBarcodeSelection()
+    {
+        barcodeSelectionCancelled = true;
+        if (work.IsKeyboardFocusWithin)
+        {
+            Keyboard.ClearFocus(); FocusManager.SetFocusedElement(this, null);
+            // Keep window shortcuts available after Esc without leaving a
+            // barcode editor as the keyboard target or activating another HWND.
+            if (IsActive) Focus();
+        }
+        ViewModel.SetInputTarget("");
     }
     void InitializePace()
     {
@@ -84,7 +106,7 @@ public partial class SupplyStationWindow
         Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
         {
             focusRestoreQueued = false;
-            if (CanRestoreBarcodeFocus) RecentPosition()?.FocusBarcodeInput();
+            if (CanRestoreBarcodeFocus && !barcodeSelectionCancelled) RecentPosition()?.FocusBarcodeInput();
         }));
     }
     async Task OpenOperatorSettingsAsync(string? deviceId = null, string? instanceId = null)

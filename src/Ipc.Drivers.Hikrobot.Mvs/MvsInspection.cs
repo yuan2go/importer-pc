@@ -23,7 +23,7 @@ internal sealed partial class MvsAcquisition : IObservationInspectionSource
             {
                 var clearCache = inspection?.Isolated == true && registration is null || inspection?.Isolated != true && registration?.Isolated == true ||
                     registration?.CutoverKey is not null && inspection?.CutoverKey != registration.CutoverKey;
-                if (clearCache || cacheCutover is not null || decoder is not null)
+                if (clearCache || cacheCutover is not null || Recognizes)
                 {
                     cacheCutover ??= new(TaskCreationOptions.RunContinuationsAsynchronously); afterCacheCutover = registration;
                     // Retain the isolation tag while the old cycle and SDK cache drain.

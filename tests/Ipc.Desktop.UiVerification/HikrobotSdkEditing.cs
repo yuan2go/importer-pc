@@ -41,7 +41,8 @@ static partial class Program
             Check(!names.Any(n => n == reader.InstanceId + "/acquisition.trigger" || n == reader.InstanceId + "/entity.mode" || n == reader.InstanceId + "/ConfigureLater") && !Descendants(control).OfType<FrameworkElement>().Any(e => AutomationProperties.GetAutomationId(e) == reader.InstanceId + "/RuntimeSummary"), "camera page has no trigger/result policy or configuration-state block");
             Check(!names.Contains(reader.InstanceId + "/device.port") && !Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("独立驱动包") || t.Text.Contains("TCP")) &&
                 !Descendants(control).OfType<TextBox>().Any(t => t.Text.Contains("TCP")), "camera page has no TCP copy, fields or separate driver installation");
-            Check(Descendants(control).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/Provider" && t.IsReadOnly && t.Text.Contains("MVS SDK")), "camera driver identifies the fixed MVS SDK");
+            Check(Descendants(control).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/Provider" && t.IsReadOnly && t.Text.Contains("海康相机")), "camera driver identifies the bundled Hikrobot camera");
+            Check(Descendants(control).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/reader.engine" && t.Items.Count == 2), "each camera offers software and native recognition in the shared settings draft");
             Check(!Descendants(control).OfType<Button>().Any(b => AutomationProperties.GetAutomationId(b).EndsWith("/OpenPackageInstallation")), "no separate driver-install action");
         }
         try
@@ -68,6 +69,15 @@ static partial class Program
             formatChecks.Single(c => Equals(c.Tag, "All")).IsChecked = true;
             Check(formatChecks.Count(c => c.IsChecked == true) == 1 && Wire.Decode<string[]>(formats.Value).SequenceEqual(new[] { "All" }), "choosing All clears explicit native choices");
             formatSection.IsExpanded = false;
+            var engine = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == left.InstanceId + "/reader.engine");
+            engine.SelectedItem = "mvid-native";
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            Check(left.Parameters.Single(p => p.Field.Key == "reader.engine").Value == "mvid-native" &&
+                right.Parameters.Single(p => p.Field.Key == "reader.engine").Value == "zxing-cpp" &&
+                !Descendants(editor).OfType<FrameworkElement>().Any(e => AutomationProperties.GetAutomationId(e) == left.InstanceId + "/code.try-invert"),
+                "native selection updates only the left camera and hides the software-only inverted-code option");
+            Check(draft.Build().Topology!.Readers[0].Parameters!["reader.engine"] == "mvid-native", "native selection is saved with the complete configuration candidate");
+            CaptureInternal(evidence, "bundled-sdk-native-reader", editor, lines);
             Check(editor.NavigateTo(rcs.InstanceId + "/left-bcr-code"), "shared camera code is reached in the station task page");
             Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == rcs.InstanceId + "/left-bcr-code").Text = "SYNTH-LEFT-EDITED";
             Check(rcs.Parameters.Single(p => p.Field.Key == "left-bcr-code").Value == "SYNTH-LEFT-EDITED" && rcs.Parameters.Single(p => p.Field.Key == "right-bcr-code").Value == "SYNTH-RIGHT", "one shared camera code editor isolates left/right");

@@ -40,7 +40,11 @@ public static class BundledMvs
             if (!resolverSet)
             {
                 NativeLibrary.SetDllImportResolver(typeof(BundledMvs).Assembly, (name, _, _) =>
-                    name == MvsNative.Library ? runtime.Value : 0);
+                    name == MvsNative.Library ? runtime.Value :
+#if !MVS_ACQUISITION_EXTENSION
+                    name == MvidNative.Library ? MvidRuntime.Load() :
+#endif
+                    0);
                 resolverSet = true;
             }
         }
@@ -50,8 +54,11 @@ public static class BundledMvs
         if (recognize) throw new NotSupportedException("Software reader belongs to the built-in composition, not the acquisition-only extension");
         IMonoBarcodeDecoder? decoder = null;
 #else
-        IMonoBarcodeDecoder? decoder = recognize ? new SoftwareDecoder(binding.Parameters?.GetValueOrDefault("code.encoding", "utf-8") ?? "utf-8",
-            settings: ReaderSettings.Read(binding.Parameters ?? new Dictionary<string, string>())) : null;
+        var settings = recognize ? ReaderSettings.Read(binding.Parameters ?? new Dictionary<string, string>()) : null;
+        var charset = binding.Parameters?.GetValueOrDefault("code.encoding", "utf-8") ?? "utf-8";
+        if (settings?.Engine == "mvid-native")
+            return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), new MvidApi(settings, charset));
+        IMonoBarcodeDecoder? decoder = recognize ? new SoftwareDecoder(charset, settings: settings) : null;
 #endif
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.
         return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi(), decoder: decoder);

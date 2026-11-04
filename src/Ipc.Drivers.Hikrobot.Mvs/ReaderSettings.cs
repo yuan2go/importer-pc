@@ -3,7 +3,7 @@ using ZXingCpp;
 
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
-internal sealed record ReaderSettings(string[] Formats, bool TryInvert)
+internal sealed record ReaderSettings(string[] Formats, bool TryInvert, string Engine = "zxing-cpp")
 {
     internal static ReaderSettings Read(IReadOnlyDictionary<string, string> values)
     {
@@ -14,7 +14,11 @@ internal sealed record ReaderSettings(string[] Formats, bool TryInvert)
             throw new InvalidDataException("code.formats: 请至少选择一种已声明码制；全部码制不能与具体码制同时勾选。");
         var invert = values.GetValueOrDefault("code.try-invert", "true");
         if (invert is not ("true" or "false")) throw new InvalidDataException("code.try-invert: 请选择启用或关闭反色识别。");
-        return new(formats, invert == "true");
+        var engine = values.GetValueOrDefault("reader.engine", "zxing-cpp");
+        if (engine is not ("zxing-cpp" or "mvid-native")) throw new InvalidDataException("识码方式无效，请重新选择。");
+        if (engine == "mvid-native" && formats.Any(f => f != "All" && !MvidNative.Formats.Values.Contains(f)))
+            throw new InvalidDataException("海康原生识码不支持所选条码种类，请选择全部或该组件支持的常用码制。");
+        return new(formats, invert == "true", engine);
     }
     // Parsing native format names runs only after DecoderRuntime.Prepare, never during config validation.
     internal BarcodeFormats NativeFormats() => new(Formats.Select(name =>

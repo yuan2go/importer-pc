@@ -17,6 +17,18 @@
     "Description": "正式启用固定本位物理相机；模拟或独立诊断可省略。同一实例重连仍固定原序列号。"
   },
   {
+    "Key": "reader.engine",
+    "Group": "识别 / 方式",
+    "Label": "识码方式",
+    "Type": "choice",
+    "Default": "zxing-cpp",
+    "Choices": [
+      "zxing-cpp",
+      "mvid-native"
+    ],
+    "Description": "选择本相机使用的识码方式。海康原生识码使用旧供包台同系列组件，需完整安装包包含该组件；两种方式都由供包台抑制同次放置的重复请求。"
+  },
+  {
     "Key": "acquisition.trigger",
     "Group": "采集 / 触发",
     "Label": "设备触发要求",
@@ -40,7 +52,7 @@
       "observe-only"
     ],
     "ReadOnly": false,
-    "Description": "逐次识别结果上报RCS，相同条码也上报，由RCS去重；识别身份不证明物理数量或完成。仅观察不创建作业。"
+    "Description": "识别结果交给供包台筛选；同一次放置只请求一次格口。仅观察不创建作业。"
   },
   {
     "Key": "image.nodes",
@@ -137,7 +149,7 @@
     "Label": "识别反色条码",
     "Type": "boolean",
     "Default": "true",
-    "Description": "默认启用；关闭后可能无法识别浅色条码配深色背景。按真实标签验证后调整。"
+    "Description": "仅用于软件识别。海康原生识码使用厂商算法的图像处理。"
   },
   {
     "Key": "motion.still-ms",
@@ -149,6 +161,6 @@
     "Maximum": 2000,
     "MaximumLength": 4,
     "Unit": "毫秒",
-    "Description": "画面持续不动达到这个时间后才识别条码，避免识别放置过程中模糊或被手挡住的画面。画面一直不稳超过约 1.5 秒时仍会识别一次。0 表示每帧都识别。"
+    "Description": "放稳后接收识别结果，默认200毫秒。软件识别在放稳后执行；海康原生识码已随采图完成，放置过程中的结果不进入供包业务。0表示每帧接收。"
   }
 ]

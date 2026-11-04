@@ -44,7 +44,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         return next;
     }
     // stillMs: "放稳后再识别" for both synthetic cameras; "0" decodes every frame.
-    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 3600, string stillMs = "0")
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 3600, string stillMs = "0", bool nativeResults = false)
     {
         if (!nativeLoaded)
         {
@@ -58,7 +58,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             Driver = "hikrobot-mvs-reader",
             Parameters = new()
-            { ["motion.still-ms"] = stillMs, ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
+            { ["reader.engine"] = nativeResults ? "mvid-native" : "zxing-cpp", ["motion.still-ms"] = stillMs, ["device.ip"] = "192.0.2." + (11 + i), ["device.serial"] = "SYNTH-ROUND-" + i, ["entity.mode"] = "read-result", ["acquisition.trigger"] = "off", ["code.encoding"] = "utf-8" }
         }).ToArray();
         var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, rcsEndpoint ?? Peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
         {
@@ -166,7 +166,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             var api = new RoundApi(binding); Apis[binding.DeviceId] = api; var decoder = new RoundDecoder(api, binding.Parameters!); Decoders[binding.DeviceId] = decoder;
             var source = new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters!), api,
-                serial => new ResourceLease(Path.Combine(launch.DataRoot, "synthetic-device-leases"), [serial]), decoder: decoder);
+                serial => new ResourceLease(Path.Combine(launch.DataRoot, "synthetic-device-leases"), [serial]), decoder: api.ReturnsDecodedFrames ? null : decoder);
             Sources[binding.DeviceId] = source; return source;
         }
         public ParcelPorts Create(ParcelConfiguration c)
@@ -220,7 +220,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     }
     internal sealed class RoundApi(DeviceBinding binding) : IMvsApi
     {
-        readonly ConcurrentQueue<(RoundPixels Pixels, uint Number)> queue = new();
+        readonly ConcurrentQueue<(RoundPixels Pixels, uint Number, RecognitionSymbol[]? Symbols, MvsFrameRejection? Rejection)> queue = new();
         public int Releases, Acquires, Clears, Opens, Starts, Stops, Closes, Destroys, Finalizes;
         public int StopError = 0, CloseError = 0, DestroyError = 0;
         public Action? BeforeDestroy = null;
@@ -233,7 +233,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         readonly ConcurrentDictionary<string, byte> returnedPixels = new();
         internal bool WasReturned(ReadOnlySpan<byte> pixels) => returnedPixels.ContainsKey(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)));
         public bool HasFrame { get; private set; }
-        public void Enqueue(RoundPixels p, uint number) => queue.Enqueue((p, number));
+        public bool ReturnsDecodedFrames => binding.Parameters?.GetValueOrDefault("reader.engine") == "mvid-native";
+        public void Enqueue(RoundPixels p, uint number) => queue.Enqueue((p, number, null, null));
+        public void EnqueueNative(RoundPixels p, uint number, RecognitionSymbol[] symbols, MvsFrameRejection? rejection = null)
+            => queue.Enqueue((p, number, symbols, rejection));
         public void Initialize() { }
         public MvsDevice[] Enumerate() => Discovered ? [new(binding.Parameters!["device.ip"], binding.Parameters["device.serial"], "SYNTHETIC", "SYNTHETIC", [])] : [];
         public void Create(MvsDevice d) { }
@@ -251,7 +254,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             buffer = Marshal.AllocHGlobal(frame.Pixels.Data.Length); Marshal.Copy(frame.Pixels.Data, 0, buffer, frame.Pixels.Data.Length); HasFrame = true;
             Interlocked.Increment(ref Acquires);
             return new(buffer, (uint)frame.Pixels.Width, (uint)frame.Pixels.Height, MvsNative.Mono8, (ulong)frame.Pixels.Data.Length, frame.Number,
-                Trigger: 0, LostPackets: (uint)Interlocked.Exchange(ref NextLostPackets, 0));
+                Trigger: 0, LostPackets: (uint)Interlocked.Exchange(ref NextLostPackets, 0))
+            { NativeSymbols = frame.Symbols, NativeRejection = frame.Rejection, NativeRecognitionMs = 12.5 };
         }
         public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; Interlocked.Increment(ref Releases); }
         public void ClearBuffers() { Interlocked.Increment(ref Clears); ClearGate.Wait(); if (FailNextClear) { FailNextClear = false; throw new IOException("Synthetic SDK cache clear failed"); } while (queue.TryDequeue(out _)) { } }

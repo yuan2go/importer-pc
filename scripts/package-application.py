@@ -3,6 +3,7 @@
 import argparse
 import os
 from mvs_runtime import publish as publish_mvs
+from mvid_runtime import publish as publish_mvid
 import hashlib
 import json
 from pathlib import Path
@@ -31,6 +32,7 @@ p.add_argument('--extension-package', type=Path, action='append', default=[], he
 p.add_argument('--extension-trust', type=Path, help='Independent trust used only for static acceptance; never copied into the candidate')
 p.add_argument('--extension-check-host', type=Path, help='Runnable Assembly with byte-identical public DLLs for a Windows target')
 p.add_argument('--mvs-runtime', type=Path, default=os.environ.get('IPC_MVS_RUNTIME'), help='Build input: reviewed current x64 MVS GigE runtime; never an operator step')
+p.add_argument('--mvid-runtime', type=Path, default=os.environ.get('IPC_MVID_RUNTIME'), help='Optional reviewed x64 MVIDCodeReader runtime and vendor notice for the native recognition choice')
 p.add_argument('--verification-without-vendor-runtime', action='store_true', default=os.environ.get('IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME') == '1', help='Explicit non-delivery verification medium when vendor files are unavailable')
 a = p.parse_args()
 root = Path(__file__).resolve().parent.parent
@@ -98,6 +100,7 @@ if a.target == 'win-x64':
             raise ValueError('Console/helper and desktop bytes differ: ' + binary.name)
 if a.application == 'sportmaster' and a.target == 'win-x64':
     provenance['VendorRuntime'] = publish_mvs(build_source, output, a.mvs_runtime, a.verification_without_vendor_runtime)
+    provenance['MvidRuntime'] = publish_mvid(build_source, output, a.mvid_runtime, a.verification_without_vendor_runtime)
 publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
 publish_provenance(output, provenance)
 selection.update(business)

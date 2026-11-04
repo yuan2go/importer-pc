@@ -46,7 +46,7 @@ jobs:
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
           if ([int]$testCounters.executed -lt 25 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode')
+          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode', '--mvid-reader')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
@@ -89,6 +89,8 @@ jobs:
           python -m unittest discover -s scripts -p test_deployment_compatibility.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_release_documents.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_mvid_runtime.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           ./scripts/test-signature-policy.ps1
       - name: Keep actual results including failures

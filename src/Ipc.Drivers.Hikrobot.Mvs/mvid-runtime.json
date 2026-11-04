@@ -1,0 +1,43 @@
+{
+  "SchemaVersion": 1,
+  "Version": "1.1.4.0_3.6.0_2.2.2",
+  "Entry": "MVIDCodeReader.dll",
+  "Preload": [
+    "libxml2.dll",
+    "zip.dll",
+    "MvCodeReaderCtrl.dll",
+    "RulerFilter.dll"
+  ],
+  "Files": [
+    {
+      "Path": "MVIDCodeReader.dll",
+      "Length": 28495872,
+      "Sha256": "0B267680990F4A82046A4C120D6FEB7AAC9ED08B41CA456343AACFFC91AA8DDD"
+    },
+    {
+      "Path": "RulerFilter.dll",
+      "Length": 11776,
+      "Sha256": "C068FF73940F6E82E57F5C642A0995E572E96D16F98D0B29C5EF87EA8E824D91"
+    },
+    {
+      "Path": "MvCodeReaderCtrl.dll",
+      "Length": 879104,
+      "Sha256": "B237B45B27677F2D23437FE23DA5E70ADE8D4AAE00D4F9AD384F4B95AF4836FA"
+    },
+    {
+      "Path": "zip.dll",
+      "Length": 165376,
+      "Sha256": "3C3DFF44BCA61E98695F518C511552504368CF0D0AE21FB289801D0C043DB497"
+    },
+    {
+      "Path": "libxml2.dll",
+      "Length": 2219520,
+      "Sha256": "7DEFB30EF09EC069049B0C6E37B10ACF92797DE031EE005B63CE4272123C4A28"
+    },
+    {
+      "Path": "MVIDCodeReaderConfig.ini",
+      "Length": 59,
+      "Sha256": "6A833419352CD7633CE249ABAC8AEE13F16007B27A600DC7865A038ABD83180E"
+    }
+  ]
+}

@@ -18,6 +18,7 @@ internal sealed partial class MvsAcquisition
     readonly ManualResetEventSlim decodeIdle = new(true);
     Task? decodeWorker;
     DecodeWork? pendingDecode;
+    DecodeWork? retainedNativeWork;
     bool decodeComplete;
     long supersededDecodeFrames;
     void StartDecodePipeline(CancellationToken token)
@@ -28,6 +29,11 @@ internal sealed partial class MvsAcquisition
     }
     void ReturnWork(DecodeWork work, bool skipped)
     {
+        if (ReferenceEquals(retainedNativeWork, work))
+        {
+            if (Undelivered is not null) return; // Preserve this already decoded image until explicit disposal.
+            retainedNativeWork = null;
+        }
         if (skipped)
         {
             Interlocked.Increment(ref supersededDecodeFrames);
@@ -39,6 +45,11 @@ internal sealed partial class MvsAcquisition
         ArrayPool<byte>.Shared.Return(work.Pixels, true);
         var clearMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds; Timings.Record("image.clear-return", clearMs);
         if (work.Trace is { } trace) Timings.Frame(trace with { ClearMs = clearMs, Width = work.Frame.Width, Height = work.Frame.Height });
+    }
+    void ReleaseNativeCustody()
+    {
+        if (retainedNativeWork is not { } work) return;
+        ArrayPool<byte>.Shared.Return(work.Pixels, true); retainedNativeWork = null;
     }
     void OfferDecode(DecodeWork work)
     {
@@ -114,6 +125,22 @@ internal sealed partial class MvsAcquisition
         string[] codes;
         RecognitionSymbol[] symbols;
         byte[]? inspectionOriginal = null;
+        Observation? nativeObservation = null;
+        if (api.ReturnsDecodedFrames && frame.NativeRejection is null && frame.NativeSymbols is { Length: > 0 } nativeSymbols)
+        {
+            var nativeSource = FramePrefix + ".frame." + frame.Number;
+            nativeObservation = new(Wire.Id(), DeviceId, Epoch, nativeSource, ++sequence,
+                FramePrefix + ".read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + nativeSource)[..40].ToLowerInvariant(),
+                entityMode == "read-result" ? "Read" : "UncorrelatedRead", nativeSymbols.Select(s => s.Text).ToArray(), null, observedAt)
+            {
+                DecodedTicks = deliveredTicks,
+                InspectionSessionId = inspected.Registration is { Isolated: true } nativeIsolated ? nativeIsolated.Id : null,
+                CaptureSessionId = inspected.Registration is { CaptureImages: true } nativeCapture ? nativeCapture.Id : null
+            };
+            // Unlike a software frame, this input already exists before waiting for image capacity.
+            // Cancellation must keep its identity and pixels and fence restart, not discard it.
+            Undelivered = nativeObservation; retainedNativeWork = work;
+        }
         try
         {
             if (inspected.Registration?.Isolated != true)
@@ -145,22 +172,28 @@ internal sealed partial class MvsAcquisition
                 using (Timings.Measure("image.original-copy")) pixels.AsSpan(0, length).CopyTo(original.Pixels);
                 lock (gate) originalFrameCopies++;
             }
-            if (!decoder!.PreservesInput) CopyOriginal();
+            if (decoder is { PreservesInput: false }) CopyOriginal();
             using (Timings.Measure("inspection.original-copy"))
                 if (inspected.Registration is { CaptureImages: true } demand && demand.CaptureAllowed?.Invoke(DeviceId) != false) inspectionOriginal = pixels.AsSpan(0, length).ToArray();
             PhaseTo("decode");
             lock (gate) decodeStarted++;
-            using (Timings.Measure("decode")) symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
+            if (api.ReturnsDecodedFrames)
+            {
+                Timings.Record("decode", frame.NativeRecognitionMs);
+                if (frame.NativeRejection is { } rejection) throw rejection;
+                symbols = frame.NativeSymbols ?? throw new MvsFrameRejection("MissingNativeResult", "Native frame omitted its complete barcode list");
+            }
+            else using (Timings.Measure("decode")) symbols = decoder!.DecodeDetailed(pixels, length, checked((int)frame.Width), checked((int)frame.Height));
             decodedTicks = Stopwatch.GetTimestamp();
             codes = symbols.Select(symbol => symbol.Text).ToArray();
-            if (decoder.PreservesInput && codes.Length > 0) CopyOriginal();
+            if ((decoder?.PreservesInput ?? true) && codes.Length > 0) CopyOriginal();
             lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; decodeWindow.Decoded(codes.Length > 0); lastDecodeAt = DateTimeOffset.UtcNow; }
             PublishReadFeedback(frame.Number, observedAt, decodedTicks, codes.Length, scene: work.Scene);
         }
         catch { original?.Dispose(); throw; }
-        var observationIdentity = codes.Length == 0 ? null : Wire.Id();
-        var sourceEvent = codes.Length == 0 ? null : "mvs.frame." + frame.Number;
-        var admissionIdentity = sourceEvent is null ? null : "mvs.read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + sourceEvent)[..40].ToLowerInvariant();
+        var observationIdentity = codes.Length == 0 ? null : nativeObservation?.Id ?? Wire.Id();
+        var sourceEvent = codes.Length == 0 ? null : FramePrefix + ".frame." + frame.Number;
+        var admissionIdentity = sourceEvent is null ? null : FramePrefix + ".read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + sourceEvent)[..40].ToLowerInvariant();
         var acquisitionIdentity = sourceEvent is null ? null : new AcquisitionIdentity(DeviceId, Epoch, sourceEvent, admissionIdentity!, observedAt);
         if (inspected.Registration is { } registration && inspectionOriginal is not null)
             PublishInspection(registration, new(DeviceId, Epoch, frame.Number, observedAt, checked((int)frame.Width), checked((int)frame.Height),
@@ -185,7 +218,7 @@ internal sealed partial class MvsAcquisition
         {
             var source = sourceEvent!;
             var admission = admissionIdentity!;
-            var observation = new Observation(observationIdentity!, DeviceId, Epoch, source, ++sequence, admission,
+            var observation = nativeObservation is not null ? nativeObservation with { DecodedTicks = decodedTicks } : new Observation(observationIdentity!, DeviceId, Epoch, source, ++sequence, admission,
                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", codes, null, observedAt)
             {
                 DecodedTicks = decodedTicks,

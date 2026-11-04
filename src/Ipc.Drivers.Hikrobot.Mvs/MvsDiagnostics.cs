@@ -39,7 +39,7 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
             double? age = lastFrameTicks == 0 ? null : Stopwatch.GetElapsedTime(lastFrameTicks).TotalMilliseconds;
             var state = failure.Length != 0 ? "Faulted" : phase is "stopped" or "stopping" or "not-started" ? "Stopped" :
                 waitingOriginalCapacity ? "WaitingForOriginalCapacity" : decodeStarted > decodeCompleted + rejectedDecodes ? "Decoding" : frames == 0 ? "WaitingForFrame" : age > 3000 ? "FrameStale" :
-                decodePaused ? "DecodePaused" : decoder is null ? "DecoderUnavailable" : decodeCompleted == 0 ? "Acquiring" :
+                decodePaused ? "DecodePaused" : !Recognizes ? "DecoderUnavailable" : decodeCompleted == 0 ? "Acquiring" :
                 decodedCandidates == 0 ? "NoBarcode" : "Reading";
             return new(DeviceId, epoch, phase, state, acquireCalls, noData, frames, decodeStarted, decodeCompleted,
                 emptyFrames, decodedCandidates, recognized, rejected, decodePaused, lastFrameAt, age, lastDecodeAt,

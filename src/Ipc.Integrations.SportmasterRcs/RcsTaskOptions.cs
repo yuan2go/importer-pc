@@ -10,7 +10,7 @@ internal sealed class RcsTaskOptions
     internal readonly Uri Endpoint;
     internal readonly string Source, Locale;
     internal readonly long ZoneId, ProjectId;
-    internal readonly int HeartbeatIntervalSeconds;
+    internal readonly int HeartbeatIntervalMs;
     internal readonly int RequestTimeoutMs;
     internal static readonly string[] RequiredKeys = ["zone-id", "project-id", "left-station-code", "right-station-code"];
     // Old bindings remain readable as immutable evidence for already-sent requests.
@@ -26,13 +26,12 @@ internal sealed class RcsTaskOptions
             endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
             throw new InvalidDataException("RCS requires an enabled integration binding and an explicit HTTP(S) /rcs/sorter/api target without credentials/query/fragment");
         Endpoint = endpoint;
-        if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(RetiredKeys).Concat(["left-bcr-code", "right-bcr-code", "heartbeat-interval-seconds", "request-timeout-ms"]), StringComparer.Ordinal).Any())
+        if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(RetiredKeys).Concat(["left-bcr-code", "right-bcr-code", "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms"]), StringComparer.Ordinal).Any())
             throw new InvalidDataException("Unknown RCS parameter");
         foreach (var key in RequiredKeys) _ = Text(key, 256);
         Source = "BAR"; Locale = "zh_CN";
         ZoneId = Number("zone-id", 1, long.MaxValue); ProjectId = Number("project-id", 1, long.MaxValue);
-        HeartbeatIntervalSeconds = Binding.Parameters.ContainsKey("heartbeat-interval-seconds")
-            ? checked((int)Number("heartbeat-interval-seconds", 1, 3600)) : 1;
+        HeartbeatIntervalMs = RcsRequestPolicy.HeartbeatMs(Binding);
         RequestTimeoutMs = RcsRequestPolicy.TimeoutMs(Binding);
     }
     internal string Text(string key, int maximum)

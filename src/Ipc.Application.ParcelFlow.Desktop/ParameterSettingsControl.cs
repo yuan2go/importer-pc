@@ -245,7 +245,7 @@ public sealed partial class ParameterSettingsControl : UserControl
         var caption = Themed(new TextBlock { Text = label, TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body }, TextBlock.ForegroundProperty, "Ink");
         var describe = new StackPanel { VerticalAlignment = VerticalAlignment.Center }; describe.Children.Add(caption); field.Children.Add(describe);
         var line = new DockPanel { LastChildFill = true, VerticalAlignment = VerticalAlignment.Center };
-        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" or "request-timeout-ms" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-seconds" => "秒", _ => "" };
+        var unit = path.Split('/').Last() switch { "TimeoutMs" or "SessionLifetimeMs" or "request-timeout-ms" => "毫秒", "TargetEfficiencyDraft" => "件/小时", "ResidentHistory" or "QueueCapacity" => "条", "MaximumOperations" => "个", "MinimumFreeMiB" => "MiB", "DiagnosticLogDays" or "HistoryDays" => "天", "BackupIntervalMinutes" => "分钟", "BackupMaximumSets" => "份", "heartbeat-interval-ms" => "毫秒", _ => "" };
         if (unit.Length > 0) { var suffix = Text(unit); suffix.Margin = new(8, 0, 0, 0); suffix.VerticalAlignment = VerticalAlignment.Center; DockPanel.SetDock(suffix, Dock.Right); line.Children.Add(suffix); }
         line.Children.Add(control); field.Children.Add(line);
         // Preserve stable automation paths used by support and native verification.

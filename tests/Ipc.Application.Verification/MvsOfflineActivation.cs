@@ -14,7 +14,7 @@ static partial class SportmasterRcs
         {
             Implementation = "sportmaster-rcs",
             Parameters = new(Binding(peer.Endpoint).Parameters)
-            { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-seconds"] = "1" }
+            { ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["heartbeat-interval-ms"] = "1000" }
         };
         var seed = HeartbeatConfiguration(workspace, rcs);
         var readers = seed.Topology!.Readers.Select((r, i) => r with

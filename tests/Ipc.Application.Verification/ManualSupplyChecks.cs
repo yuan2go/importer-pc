@@ -25,7 +25,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         {
             ["zone-id"] = "71",
             ["project-id"] = "83",
-            ["heartbeat-interval-seconds"] = "3600",
+            ["heartbeat-interval-ms"] = "3600000",
             ["left-station-code"] = "MANUAL-STATION",
             ["right-station-code"] = "MANUAL-STATION",
             ["left-bcr-code"] = leftCode ? "MANUAL-LEFT" : "",

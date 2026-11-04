@@ -108,7 +108,7 @@ internal static class LiveDevices30
 
         // The two RCS fields whose descriptor used to promise a mandatory restart
         // use the same live path, retaining provider identity and both camera sessions.
-        foreach (var (key, value) in new[] { ("request-timeout-ms", "2300"), ("heartbeat-interval-seconds", "1800") })
+        foreach (var (key, value) in new[] { ("request-timeout-ms", "2300"), ("heartbeat-interval-ms", "1800000") })
         {
             var cameraBuilds = h.Factory.ReaderBuilds;
             var wcsBuilds = h.Factory.WcsBuilds;

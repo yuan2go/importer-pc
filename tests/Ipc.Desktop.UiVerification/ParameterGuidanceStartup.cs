@@ -154,7 +154,7 @@ static partial class Program
                         "zone-id" => (mask & 4) != 0 ? "" : "71",
                         "project-id" => "83",
                         "specified-chute" => "false",
-                        "heartbeat-interval-seconds" => "5",
+                        "heartbeat-interval-ms" => "5000",
                         "left-bcr-code" => (mask & 1) != 0 ? "" : "SYNTH-LEFT",
                         "right-bcr-code" => (mask & 2) != 0 ? "" : "SYNTH-RIGHT",
                         "request-id-base" => "810000000",

@@ -37,7 +37,7 @@ static partial class Program
             ["specified-chute"] = "false",
             ["request-id-base"] = "810000000",
             ["request-id-count"] = "10000",
-            ["heartbeat-interval-seconds"] = "3600",
+            ["heartbeat-interval-ms"] = "3600000",
             ["left-station-code"] = "TASK-STATION",
             ["right-station-code"] = "TASK-STATION",
             ["left-bcr-code"] = "TASK-LEFT",

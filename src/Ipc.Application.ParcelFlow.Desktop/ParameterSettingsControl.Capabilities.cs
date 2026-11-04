@@ -197,7 +197,7 @@ public sealed partial class ParameterSettingsControl
         "device.port" or "port" => "端口",
         "left-bcr-code" => "左相机编码",
         "right-bcr-code" => "右相机编码",
-        "heartbeat-interval-seconds" => "心跳间隔",
+        "heartbeat-interval-ms" => "心跳间隔",
         "request-timeout-ms" => "取格口请求超时",
         "source" => "协议来源",
         "locale" => "协议语言",
@@ -222,7 +222,7 @@ public sealed partial class ParameterSettingsControl
         "queue.capacity" => "排队等待处理的条码最多多少条。排满后停止接收，需要检查后手动重连。",
         "queue.maximum-code-bytes" => "条码排队占用的内存上限，默认 16 MiB，可填 1–64 MiB。超出后本位停止供包，需要检查后恢复。",
         "device.port" or "port" => "填写相机提供条码报文的TCP端口；与相机网络设置一致，范围1～65535。",
-        "heartbeat-interval-seconds" => "多久向 RCS 报告一次在线状态，默认1秒，可填1–3600秒。响应中的小车状态只作提示，不限制投包。",
+        "heartbeat-interval-ms" => "多久向 RCS 报告一次在线状态，默认1000毫秒，可填100–3600000毫秒。小车状态只提示托盘放包，不限制条码受理或格口申请。",
         "code.formats" => "只勾选面单实际使用的条码种类：勾得越少识别越快，也越不容易读到包装上的其他条码（如商品码）而整帧拒收。没勾的种类不会被识别。",
         "code.try-invert" => "识别白底黑条以外的浅色条码配深色背景。面单都是白底黑条时可关闭以提速；关闭前请用真实面单确认。",
         "motion.still-ms" => "包裹放稳多久后才接收识别结果，默认 200 毫秒，可填 0–2000 毫秒。放置过程中的结果不进入供包业务；画面一直不稳时仍会间隔接收。填 0 表示每帧接收。",
@@ -238,7 +238,7 @@ public sealed partial class ParameterSettingsControl
         var path = draft.InstanceId + "/" + p.Field.Key;
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
         var required = p.Field.Required || cameraCodeRequired;
-        var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-seconds" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
+        var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-ms" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
         if (p.IsSensitive)

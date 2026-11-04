@@ -14,7 +14,7 @@ static partial class SportmasterRcs
     public static async Task HeartbeatChecks(string workspace)
     {
         await using var peer = new Peer();
-        var binding = Binding(peer.Endpoint) with { Parameters = new(Binding(peer.Endpoint).Parameters.Where(p => p.Key != "heartbeat-interval-seconds")) };
+        var binding = Binding(peer.Endpoint) with { Parameters = new(Binding(peer.Endpoint).Parameters.Where(p => p.Key != "heartbeat-interval-ms")) };
         var config = HeartbeatConfiguration(workspace, binding);
         await using (var service = new SportmasterRcsTaskService(binding))
         {
@@ -51,10 +51,10 @@ static partial class SportmasterRcs
             var count = peer.Requests.Count; await Task.Delay(200);
             Check(peer.Requests.Count == count && !(await service.HealthAsync(default)).Ready, "stop drains the timer and reports stopped");
         }
-        binding = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-seconds"] = "1" } };
+        binding = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-ms"] = "1000" } };
         config = HeartbeatConfiguration(workspace, binding);
         var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
-        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(f => f.Key == "heartbeat-interval-seconds") is { Default: "1", Minimum: 1, Maximum: 3600 } &&
+        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(f => f.Key == "heartbeat-interval-ms") is { Default: "1000", Minimum: 100, Maximum: 3600000 } &&
             ExtensionSchema.Validate(schema, binding.Parameters).Length == 0, "component parameter schema exposes a valid one-second default and bounded editable interval");
         await using (var service = new SportmasterRcsTaskService(binding))
         {
@@ -87,10 +87,24 @@ static partial class SportmasterRcs
             await service.StopAsync(default); count = peer.Requests.Count; await Task.Delay(1300);
             Check(peer.Requests.Count == count, "stopped component performs no later scheduled requests");
         }
-        foreach (var invalid in new[] { "0", "-1", "1.5", "3601", "bad" })
+        foreach (var invalid in new[] { "0", "99", "-1", "1.5", "3600001", "bad" })
         {
-            try { await using var service = new SportmasterRcsTaskService(binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-seconds"] = invalid } }); throw new Exception("Invalid interval accepted"); }
+            try { await using var service = new SportmasterRcsTaskService(binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-ms"] = invalid } }); throw new Exception("Invalid interval accepted"); }
             catch (InvalidDataException) { Check(true, "invalid interval refused: " + invalid); }
+        }
+        var seconds = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "heartbeat-interval-ms")) { ["heartbeat-interval-seconds"] = "5" } };
+        var originalSeconds = Wire.Encode(seconds);
+        Check(RcsRequestPolicy.HeartbeatMs(seconds) == 5000 && RcsRequestPolicy.NormalizeHeartbeat(seconds).Parameters["heartbeat-interval-ms"] == "5000" && Wire.Encode(seconds) == originalSeconds,
+            "editable seconds convert to equivalent milliseconds without rewriting the frozen original binding");
+        foreach (var interval in new[] { 500, 1500 })
+        {
+            var precise = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-ms"] = interval.ToString() } };
+            await using var service = new SportmasterRcsTaskService(precise);
+            service.ConfigureRuntime(HeartbeatConfiguration(workspace, precise));
+            var count = peer.Requests.Count; var elapsed = Stopwatch.StartNew();
+            await service.StartAsync(default); await Until(() => peer.Requests.Count > count);
+            Check(elapsed.Elapsed.TotalMilliseconds >= interval * .8 && elapsed.Elapsed.TotalMilliseconds < interval + 1500,
+                "actual heartbeat timer uses millisecond interval " + interval);
         }
         var sharedBinding = binding with { Parameters = new(binding.Parameters) { ["left-bcr-code"] = "SYNTH-NEW-BCR" } };
         config = HeartbeatConfiguration(workspace, sharedBinding);

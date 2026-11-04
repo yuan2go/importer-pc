@@ -80,7 +80,7 @@
     </StackPanel>
     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
      <Image Source="pack://application:,,,/Ipc.Application.ParcelFlow.Desktop;component/Assets/cainiao.png" Width="24" Height="24" Stretch="Uniform" Margin="0,0,8,0" RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="菜鸟标志"/>
-     <TextBlock Text="菜鸟供包台" FontSize="{x:Static type:UiTypography.Body}" FontWeight="{x:Static type:UiTypography.Emphasis}" VerticalAlignment="Center" ToolTip="{Binding Station}"/>
+     <TextBlock Text="菜鸟供包台" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}" VerticalAlignment="Center" ToolTip="{Binding Station}"/>
      <TextBlock x:Name="StationClock" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="16,0,0,0" AutomationProperties.Name="本机时间"/>
     </StackPanel>
     <Grid VerticalAlignment="Center">

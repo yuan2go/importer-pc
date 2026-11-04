@@ -21,7 +21,7 @@ static partial class SportmasterRcs
     {
         ["zone-id"] = "71",
         ["project-id"] = "83",
-        ["heartbeat-interval-seconds"] = "3600",
+        ["heartbeat-interval-ms"] = "3600000",
         ["left-station-code"] = "TEST-LEFT",
         ["left-bcr-code"] = "TEST-LEFT-READER",
         ["right-station-code"] = "TEST-RIGHT",

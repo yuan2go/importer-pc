@@ -229,7 +229,7 @@ static partial class Program
         Check(!(bool)type.GetField("failed", flags)!.GetValue(window)! && Descendants(window).OfType<TextBlock>().Single(b => b.Text == "3  安装完成").FontWeight == FontWeights.Normal, "unknown outcome is distinct from confirmed failure and does not mark installation complete");
         Check(Descendants(window).OfType<Border>().Any(b => b.Background is SolidColorBrush brush && brush.Color == ((SolidColorBrush)window.FindResource("WarningBackground")).Color) && Text(window).Contains("确认前，请勿重复安装。"), "unknown result emphasizes the repeat-install warning with the theme warning surface");
         Check(Descendants(window).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "打开安装记录目录", "查看本次安装结果", "关闭" }), "unknown result offers fixed-operation inspection, original records and close without replay or rollback");
-        var unknownDetails = Descendants(window).OfType<Expander>().Single();
+        var unknownDetails = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "安装详情"));
         Check(!unknownDetails.IsExpanded && !Descendants(window).OfType<TextBox>().Any(b => b.IsVisible && b.Text.Contains("授权窗口确认")), "historical authorization instructions remain collapsed rather than masquerading as the current stage");
         Capture("installer-unknown", window);
         unknownDetails.IsExpanded = true; window.UpdateLayout();
@@ -282,6 +282,7 @@ static partial class Program
         window.Width = 880;
         Set("failed", false); Set("outcomeUnknown", false); Set("step", 3);
         Set("installed", new DeploymentLocation("sportmaster", request.SourceCommit, Path.Combine(evidence, "release"), launch.ConfigurationDirectory, launch.DataRoot, MachineRuntimePolicy.SharedUsersSid)); Set("needsFirstConfiguration", true); Render();
+        Check(Math.Abs(window.Height - Math.Min((double)type.GetField("optionsHeight", flags)!.GetValue(window)!, window.MaxHeight)) < 1, "completion retains the taller options-page height within the available work area");
         Check(Descendants(window).OfType<TextBlock>().Any(b => b.Text == "首次使用") && Descendants(window).OfType<CheckBox>().Single().Content!.ToString() == "完成后打开供包台", "completion separates installation from first configuration and keeps open choice");
         Capture("installer-complete-first", window); Set("needsFirstConfiguration", false); Render();
         Check(!Descendants(window).OfType<TextBlock>().Any(b => b.Text == "首次使用"), "recognized existing configuration is not forced to repeat first configuration"); Capture("installer-complete-existing", window);

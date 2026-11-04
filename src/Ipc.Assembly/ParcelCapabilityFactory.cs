@@ -73,7 +73,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         {
 #if SPORTMASTER
             if (configuration.ApplicationId == "sportmaster" && b?.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
-                b = b with { Parameters = new(b.Parameters.Where(p => !Ipc.Integrations.SportmasterRcs.RcsTaskOptions.RetiredKeys.Contains(p.Key, StringComparer.Ordinal))) };
+                b = RcsRequestPolicy.NormalizeHeartbeat(b with { Parameters = new(b.Parameters.Where(p => !Ipc.Integrations.SportmasterRcs.RcsTaskOptions.RetiredKeys.Contains(p.Key, StringComparer.Ordinal))) });
 #endif
             if (b is null || b.Implementation != "reference-" + b.Kind || b.Kind is "weight" or "login" or "camera" || b.Package is not null || b.Parameters.ContainsKey("endpoint")) return b;
             var parameters = new Dictionary<string, string>(b.Parameters);

@@ -66,15 +66,15 @@
     "Description": "单次取格口请求的总时限，包含连接及响应读取；默认5000毫秒。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。超时提示操作员重新扫描。"
   },
   {
-    "Key": "heartbeat-interval-seconds",
+    "Key": "heartbeat-interval-ms",
     "Group": "RCS 心跳",
     "Label": "心跳请求间隔",
     "Type": "integer",
-    "Default": "1",
-    "Minimum": 1,
-    "Maximum": 3600,
-    "MaximumLength": 4,
-    "Unit": "秒",
-    "Description": "默认1秒，可按现场需要调整。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。心跳返回的小车状态只作提示，不限制投包。取格口与心跳共用同一相机编码，不重发旧心跳。"
+    "Default": "1000",
+    "Minimum": 100,
+    "Maximum": 3600000,
+    "MaximumLength": 7,
+    "Unit": "毫秒",
+    "Description": "默认1000毫秒，可按现场需要精确调整。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。小车状态只提示托盘放包，不限制条码受理或格口申请。取格口与心跳共用同一相机编码，不重发旧心跳。"
   }
 ]

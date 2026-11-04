@@ -132,6 +132,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public CapabilityDraft(string kind, CapabilityDescriptor[] providers, CapabilityBinding? binding, bool bound, string? role = null)
     {
         originalBinding = binding;
+        if (binding?.Contract == RcsRequestPolicy.Contract) binding = RcsRequestPolicy.NormalizeHeartbeat(binding);
         Kind = kind; Role = role ?? kind; Providers = providers.Where(x => x.Kind == kind).ToArray();
         InstanceId = binding?.InstanceId ?? kind + ".one"; Target = binding?.Target ?? "reference://" + kind + "/one"; Contract = binding?.Contract ?? "";
         Provider = binding is null ? Providers.FirstOrDefault() : Providers.SingleOrDefault(x => x.Implementation == binding.Implementation && x.Version == binding.Version && x.Package == binding.Package && x.Module == binding.Module);

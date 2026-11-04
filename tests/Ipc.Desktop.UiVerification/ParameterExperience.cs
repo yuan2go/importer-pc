@@ -95,11 +95,11 @@ static partial class Program
                 if (size.Item1 == 1366 && item.Item3 == "rcs")
                 {
                     Check(!Boxes().Any(b => AutomationProperties.GetAutomationId(b) is "rcs.one/source" or "rcs.one/locale"), "fixed protocol envelope values have no configuration input");
-                    var heartbeat = Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "rcs.one/heartbeat-interval-seconds");
+                    var heartbeat = Boxes().Single(b => AutomationProperties.GetAutomationId(b) == "rcs.one/heartbeat-interval-ms");
                     Check(AutomationProperties.GetHelpText(heartbeat).Contains("3600") && heartbeat.ToolTip is string tooltip && tooltip.Contains("3600") && tooltip.Contains("RCS"),
                         "remaining heartbeat usage and range stay accessible in help and tooltip");
                     var heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
-                    control.NavigateTo("rcs.one/heartbeat-interval-seconds"); window.UpdateLayout();
+                    control.NavigateTo("rcs.one/heartbeat-interval-ms"); window.UpdateLayout();
                     heartbeatBounds = heartbeat.TransformToAncestor(control).TransformBounds(new Rect(heartbeat.RenderSize));
                     Check(heartbeatBounds.Top >= 0 && heartbeatBounds.Bottom <= control.ActualHeight + 1,
                         "preserved heartbeat field scrolls above the fixed save bar at 1366x768");

@@ -67,7 +67,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             ["specified-chute"] = "false",
             ["request-id-base"] = "820000000",
             ["request-id-count"] = "100000",
-            ["heartbeat-interval-seconds"] = heartbeatSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["heartbeat-interval-ms"] = (heartbeatSeconds * 1000).ToString(System.Globalization.CultureInfo.InvariantCulture),
             ["left-station-code"] = "TEST-LEFT",
             ["left-bcr-code"] = "TEST-LEFT-READER",
             ["right-station-code"] = "TEST-RIGHT",

@@ -276,4 +276,3 @@ public partial class App : System.Windows.Application
         fatalObservationStop?.Dispose(); fatalObservationStop = null; fatalObservation = null;
     }
 }
-

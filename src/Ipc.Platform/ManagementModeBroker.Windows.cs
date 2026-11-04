@@ -100,53 +100,53 @@ public static partial class ManagementModeBroker
     {
         try
         {
-        while (!stopping.IsCancellationRequested)
-        {
-            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping);
-            try
+            while (!stopping.IsCancellationRequested)
             {
-                // A broken or abandoned connection belongs to this instance, never the service.
-                await pipe.WaitForConnectionAsync(stopping).ConfigureAwait(false);
-                budget.CancelAfter(TimeSpan.FromSeconds(10));
-                var bytes = await ReadFrame(pipe, budget.Token).ConfigureAwait(false);
-                var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
-                bool installer = false; string? windowsSid = null; ManagementRecoveryCaller? recoveryCaller = null;
-                pipe.RunAsClient(() =>
+                using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping);
+                try
                 {
-                    using var client = WindowsIdentity.GetCurrent();
-                    windowsSid = client.User?.Value;
-                    installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator);
-                });
-                if (request.Action is "BeginPasswordRecovery" or "CompletePasswordRecovery" or "InspectPasswordRecovery")
-                {
-                    if (!GetNamedPipeClientProcessId(pipe.SafePipeHandle, out var callerPid)) throw new UnauthorizedAccessException("无法确认恢复调用进程。");
-                    using var process = System.Diagnostics.Process.GetProcessById(checked((int)callerPid));
-                    recoveryCaller = new(windowsSid ?? throw new UnauthorizedAccessException("Windows身份缺失。"), installer,
-                        process.Id, process.StartTime.ToUniversalTime().Ticks, process.SessionId);
-                    if (request.Recovery is { } challenge)
+                    // A broken or abandoned connection belongs to this instance, never the service.
+                    await pipe.WaitForConnectionAsync(stopping).ConfigureAwait(false);
+                    budget.CancelAfter(TimeSpan.FromSeconds(10));
+                    var bytes = await ReadFrame(pipe, budget.Token).ConfigureAwait(false);
+                    var request = JsonSerializer.Deserialize<ManagementModeRpcRequest>(bytes) ?? throw new InvalidDataException("认证请求无效。");
+                    bool installer = false; string? windowsSid = null; ManagementRecoveryCaller? recoveryCaller = null;
+                    pipe.RunAsClient(() =>
                     {
-                        using var origin = System.Diagnostics.Process.GetProcessById(challenge.InitiatorProcessId);
-                        if (origin.StartTime.ToUniversalTime().Ticks != challenge.InitiatorStartedTicks || origin.SessionId != challenge.WindowsSessionId)
-                            throw new UnauthorizedAccessException("密码恢复发起窗口已更换或关闭。");
+                        using var client = WindowsIdentity.GetCurrent();
+                        windowsSid = client.User?.Value;
+                        installer = new WindowsPrincipal(client).IsInRole(WindowsBuiltInRole.Administrator);
+                    });
+                    if (request.Action is "BeginPasswordRecovery" or "CompletePasswordRecovery" or "InspectPasswordRecovery")
+                    {
+                        if (!GetNamedPipeClientProcessId(pipe.SafePipeHandle, out var callerPid)) throw new UnauthorizedAccessException("无法确认恢复调用进程。");
+                        using var process = System.Diagnostics.Process.GetProcessById(checked((int)callerPid));
+                        recoveryCaller = new(windowsSid ?? throw new UnauthorizedAccessException("Windows身份缺失。"), installer,
+                            process.Id, process.StartTime.ToUniversalTime().Ticks, process.SessionId);
+                        if (request.Recovery is { } challenge)
+                        {
+                            using var origin = System.Diagnostics.Process.GetProcessById(challenge.InitiatorProcessId);
+                            if (origin.StartTime.ToUniversalTime().Ticks != challenge.InitiatorStartedTicks || origin.SessionId != challenge.WindowsSessionId)
+                                throw new UnauthorizedAccessException("密码恢复发起窗口已更换或关闭。");
+                        }
                     }
+                    object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "CompletePasswordRecovery";
+                    if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
+                    try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid, recoveryCaller), budget.Token).ConfigureAwait(false); }
+                    finally { if (expensive) passwordWork.Release(); }
+                    await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(value)), budget.Token).ConfigureAwait(false);
                 }
-                object? value; bool expensive = request.Action is "Enter" or "ConfigurePassword" or "ChangePassword" or "CompletePasswordRecovery";
-                if (expensive) await passwordWork.WaitAsync(budget.Token).ConfigureAwait(false);
-                try { budget.Token.ThrowIfCancellationRequested(); value = await Task.Run(() => new LocalManagementMode(root, true).HandleBrokerRequest(request, installer, windowsSid, recoveryCaller), budget.Token).ConfigureAwait(false); }
-                finally { if (expensive) passwordWork.Release(); }
-                await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(value)), budget.Token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException) { }
-            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException or Win32Exception)
-            {
-                var code = error is ManagementModeBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
+                catch (OperationCanceledException) { }
+                catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or JsonException or Win32Exception)
+                {
+                    var code = error is ManagementModeBootstrapRequiredException ? "BootstrapRequiresInstaller" : error is UnauthorizedAccessException or Win32Exception ? "Unauthorized" : "Rejected";
                     if (pipe.IsConnected)
                         try { await Reply(pipe, new ManagementModeRpcReply(JsonSerializer.SerializeToElement(false), DiagnosticText.Protect(error.Message), code), budget.Token).ConfigureAwait(false); }
                         catch (Exception send) when (send is IOException or OperationCanceledException or InvalidOperationException) { }
+                }
+                finally { pipe.Dispose(); }
+                if (!stopping.IsCancellationRequested) pipe = CreateServer(root, false);
             }
-            finally { pipe.Dispose(); }
-            if (!stopping.IsCancellationRequested) pipe = CreateServer(root, false);
-        }
         }
         finally { pipe.Dispose(); }
     }

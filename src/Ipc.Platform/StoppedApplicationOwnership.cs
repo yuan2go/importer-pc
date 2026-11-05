@@ -32,7 +32,7 @@ internal sealed class StoppedApplicationOwnership : IDisposable
             try { Dispose(); }
             catch (Exception cleanup) { throw new AggregateException("停机围栏取得及释放均未完成，原数据保留。", acquisition, cleanup); }
             if (acquisition is IOException && (acquisition.HResult & 0xFFFF) is 32 or 33)
-                throw new IOException("供包台仍在运行或尚未释放资源。请先关闭供包台，再安装或卸载。", acquisition);
+                throw new IOException("供包台仍在运行或尚未释放资源。请先关闭供包台，再安装或卸载。", acquisition) { HResult = acquisition.HResult };
             throw;
         }
     }

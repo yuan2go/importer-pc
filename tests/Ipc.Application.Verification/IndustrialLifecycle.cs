@@ -72,7 +72,13 @@ static class IndustrialLifecycle
         var stationRoot = Path.Combine(dataRoot, "Production", "station-01", "sportmaster"); Directory.CreateDirectory(stationRoot);
         var stationLock = Path.Combine(stationRoot, Wire.Hash("application-owner") + ".lease");
         using (new ResourceLease(stationRoot, ["application-owner"]))
+        {
             Reject<IOException>(() => new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default).Dispose(), "running station with only a per-station owner still blocks installation");
+            var closeAndRetry = false;
+            try { using var blocked = new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default); }
+            catch (IOException error) when (!OperatingSystem.IsWindows() || (error.HResult & 0xFFFF) is 32 or 33) { closeAndRetry = true; }
+            Check(closeAndRetry, "running station reaches the uninstall sharing-violation close-and-retry handler");
+        }
         using (new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default))
             Check(Wire.FileHash(original) == businessHash, "stopped station admits installation without reading or rewriting original business data");
         Check(!File.Exists(stationLock), "installation reclaims ended per-station ownership files after closing their handles");

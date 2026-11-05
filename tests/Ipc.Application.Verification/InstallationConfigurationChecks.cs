@@ -17,10 +17,10 @@ static class InstallationConfigurationChecks
         var config = Path.Combine(root, "missing-machine-configuration");
         var data = Path.Combine(root, "original-data");
         var installed = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "old-release"), config, data, "synthetic-account");
-        var effective = initial with { StationId = "original-station-17" };
+        var effective = initial with { StationId = "original-station-17", Wcs = initial.Wcs! with { Parameters = new(initial.Wcs.Parameters) { ["no-dest-to-exp"] = "false" } } };
         var area = Path.Combine(data, effective.Mode.ToString(), effective.StationId, effective.ApplicationId); Directory.CreateDirectory(area);
         var ledger = Path.Combine(area, "configuration.json");
-        var pending = effective with { Wcs = effective.Wcs! with { Parameters = new(effective.Wcs.Parameters) { ["no-dest-to-exp"] = "false" } } };
+        var pending = effective with { Wcs = effective.Wcs! with { Parameters = new(effective.Wcs.Parameters) { ["no-dest-to-exp"] = "true" } } };
         File.WriteAllText(ledger, Wire.Encode(CurrentConfigurationFixture.Create(19, effective, pending, "Pending", (string?)null)));
         var database = Path.Combine(area, "sportmaster.db"); File.WriteAllText(database, "SYNTHETIC unknown original request; deliberately not a SQLite database");
         var ledgerHash = Wire.FileHash(ledger); var databaseHash = Wire.FileHash(database);
@@ -39,6 +39,9 @@ static class InstallationConfigurationChecks
                 if (rule.IdentityReference.Value is "S-1-1-0" or "S-1-5-11" or "S-1-5-32-545") privateAcl = false;
             Check(privateAcl, "temporary configuration has a private Windows ACL");
         }
+        var withoutRegistration = InstallationConfiguration.Prepare(initial, null, Path.Combine(root, "no-registration"), data);
+        Check(Wire.Encode(Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(withoutRegistration, "business.json")))) == Wire.Encode(effective), "lost machine registration still discovers the original site and nondefault RCS settings in the selected data root");
+        Check(Wire.FileHash(ledger) == ledgerHash && Wire.FileHash(database) == databaseHash, "registration recovery leaves pending configuration and original requests unchanged");
         Directory.CreateDirectory(config); File.WriteAllText(Path.Combine(config, "retained-other.json"), "SYNTHETIC retained settings");
         _ = InstallationConfiguration.Prepare(initial, installed, Path.Combine(root, "missing-business-file"));
         Check(!File.Exists(Path.Combine(config, "business.json")) && File.ReadAllText(Path.Combine(config, "retained-other.json")).Contains("retained settings"), "a missing business seed in an existing folder leaves every original file untouched");

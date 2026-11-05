@@ -140,7 +140,7 @@ public static partial class WindowsDeploymentSetup
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         var before = Current(request.ApplicationId);
-        RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
+        RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId, closeUncommitted: request.ApplicationId == "sportmaster");
         RequireNoUnresolvedLifecycle(request.ApplicationId);
         // A partial permanent deletion must never become an empty working station.
         if (before?.LifecycleState is "Purging" or "PartiallyPurged")

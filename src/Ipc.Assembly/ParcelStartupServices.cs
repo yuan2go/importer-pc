@@ -49,8 +49,8 @@ public static partial class ParcelStartupServices
         if (Directory.Exists(destination) || File.Exists(destination)) throw new IOException("新站种子暂存目标须为新目录");
         Directory.CreateDirectory(destination); File.WriteAllText(Path.Combine(destination, "business.json"), Wire.Encode(c));
     }
-    public static string PrepareInstallationConfiguration(DeploymentLocation? installed, string destination)
-        => InstallationConfiguration.Prepare(ParcelAssembly.Definition().InitialConfiguration() with { Mode = RunMode.Production }, installed, destination);
+    public static string PrepareInstallationConfiguration(DeploymentLocation? installed, string destination, string? dataRoot = null)
+        => InstallationConfiguration.Prepare(ParcelAssembly.Definition().InitialConfiguration() with { Mode = RunMode.Production }, installed, destination, dataRoot);
     static bool IsInitialDraft(ParcelConfiguration candidate) => candidate.Mode == RunMode.Production &&
         Wire.Encode(candidate with { StationId = SystemParameterDefaults.InitialStationId }) == Wire.Encode(ParcelAssembly.Definition().InitialConfiguration());
     public static string ApplicationId => ParcelAssembly.Definition().Id;
@@ -311,7 +311,7 @@ public static partial class ParcelStartupServices
             request.ExpectedRegistrationHash is { } registrationHash && ExtensionSchema.IsHash(registrationHash) &&
             request.ConfigurationHashes?.TryGetValue("business.json", out var originalHash) == true &&
             Wire.FileHash(Path.Combine(deployed.ConfigurationDirectory, "business.json")) == originalHash;
-        var originalMissing = deployed is not null && InstallationConfiguration.MissingSeed(deployed.ConfigurationDirectory);
+        var originalMissing = deployed is null || InstallationConfiguration.MissingSeed(deployed.ConfigurationDirectory);
         var savedConfiguration = Path.Combine(request.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "configuration.json");
         var retainingSaved = originalMissing && File.Exists(savedConfiguration) && Wire.Encode(InstallationConfiguration.ReadSaved(savedConfiguration)) == Wire.Encode(c);
         if (errors.Length != 0 && !((deployed is null || originalMissing) && IsInitialDraft(c)) && !retainingOriginal && !retainingSaved)

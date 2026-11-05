@@ -153,7 +153,7 @@ public static partial class ParcelStartupServices
             installed is null ? @"D:\CainiaoSupplyStation" : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!);
         var seed = installed?.ConfigurationDirectory;
         if (ApplicationId == "sportmaster")
-            seed = PrepareInstallationConfiguration(installed, Path.Combine(Path.GetDirectoryName(log)!, "quiet-seed-" + command.OperationId));
+            seed = PrepareInstallationConfiguration(installed, Path.Combine(Path.GetDirectoryName(log)!, "quiet-seed-" + command.OperationId), data);
         else if (seed is null)
         {
             seed = Path.Combine(Path.GetDirectoryName(log)!, "quiet-seed-" + command.OperationId);

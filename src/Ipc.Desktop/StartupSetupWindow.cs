@@ -425,7 +425,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             {
                 if (preparedConfigurationDirectory is { } previous && Directory.Exists(previous)) { File.Delete(Path.Combine(previous, "business.json")); Directory.Delete(previous); }
                 preparedConfigurationDirectory = Path.Combine(Path.GetTempPath(), "ipc-install-seed-" + Wire.Id());
-                configPath = await Task.Run(() => ParcelStartupServices.PrepareInstallationConfiguration(current, preparedConfigurationDirectory));
+                configPath = await Task.Run(() => ParcelStartupServices.PrepareInstallationConfiguration(current, preparedConfigurationDirectory, enteredData));
             }
             else if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
             var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();

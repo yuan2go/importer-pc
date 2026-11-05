@@ -39,6 +39,24 @@ static class IndustrialLifecycle
         Reject<InvalidDataException>(() => WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.1.0" }, removedRelease), "missing original release permits only the fixed SM 1.0.0 repair package");
         Directory.CreateDirectory(Path.GetDirectoryName(removedRelease)!); File.WriteAllText(removedRelease, "{ original malformed manifest");
         Reject<System.Text.Json.JsonException>(() => WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.0.0" }, removedRelease), "an existing malformed release manifest remains an integrity failure");
+        var interruptedTarget = Path.Combine(root, "interrupted-target");
+        var priorInstall = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "prior-release"), Path.Combine(root, "seed"), Path.Combine(root, "data"), "synthetic");
+        bool CanClose(string status, DeploymentLocation? prior, DeploymentLocation? actual, string? target = null)
+        {
+            var location = priorInstall with { ReleaseRoot = target ?? interruptedTarget };
+            object record = status == "ReadyToCommit"
+                ? new { Status = status, RequestIdentity = new string('a', 64), Previous = prior, Location = location, BusinessStarted = false }
+                : new { Status = status, RequestIdentity = new string('a', 64), Previous = prior, ReleaseRoot = location.ReleaseRoot, DataRoot = location.DataRoot };
+            using var journal = System.Text.Json.JsonDocument.Parse(Wire.Encode(record));
+            return WindowsDeploymentSetup.CanCloseUncommittedInstallation(journal.RootElement, actual);
+        }
+        Check(CanClose("Prepared", null, null), "interrupted fresh install with no committed registration can be closed before a new install");
+        Check(CanClose("ReadyToCommit", priorInstall, priorInstall), "interrupted overwrite with the exact previous registration can be closed");
+        Check(!CanClose("ReadyToCommit", priorInstall, priorInstall with { ReleaseRoot = interruptedTarget }), "a committed target never becomes a precommit failure");
+        Check(!CanClose("Prepared", priorInstall, priorInstall with { SourceCommit = new string('b', 40) }), "changed registration preserves the unresolved original transaction");
+        Check(!CanClose("Completed", priorInstall, priorInstall), "completed original operations are never rewritten by interruption recovery");
+        using (var incomplete = System.Text.Json.JsonDocument.Parse("{\"Status\":\"Prepared\"}"))
+            Check(!WindowsDeploymentSetup.CanCloseUncommittedInstallation(incomplete.RootElement, null), "incomplete journal is not proof of an uncommitted installation");
         var leaseRoot = Path.Combine(root, "ended-session-leases"); Directory.CreateDirectory(leaseRoot);
         var dataRoot = Path.Combine(root, "stopped-station"); Directory.CreateDirectory(dataRoot);
         var original = Path.Combine(dataRoot, "sportmaster.db"); File.WriteAllText(original, "SYNTHETIC original requests and historical inputs");

@@ -23,7 +23,7 @@ public static class InstallationConfiguration
         catch (DirectoryNotFoundException) { return true; }
     }
 
-    public static string Prepare(ParcelConfiguration initial, DeploymentLocation? installed, string destination)
+    public static string Prepare(ParcelConfiguration initial, DeploymentLocation? installed, string destination, string? dataRoot = null)
     {
         if (installed is not null)
         {
@@ -31,12 +31,13 @@ public static class InstallationConfiguration
             if (!MissingSeed(installed.ConfigurationDirectory)) return installed.ConfigurationDirectory;
         }
         var seed = initial;
-        if (installed is not null)
+        dataRoot = installed?.DataRoot ?? dataRoot;
+        if (dataRoot is not null)
         {
             var candidates = new List<(string Directory, RunMode Mode, string Station)>();
             foreach (var mode in Enum.GetValues<RunMode>())
             {
-                var modeRoot = Path.Combine(installed.DataRoot, mode.ToString());
+                var modeRoot = Path.Combine(dataRoot, mode.ToString());
                 DeploymentPaths.RequireOrdinaryAncestors(modeRoot);
                 if (!Directory.Exists(modeRoot)) continue;
                 foreach (var station in Directory.EnumerateDirectories(modeRoot))

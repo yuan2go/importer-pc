@@ -178,7 +178,10 @@ static partial class SportmasterRcs
                     Check(s.Operations.Length == 0 && f.Source!.RetainedOriginalFrames == 0 &&
                         peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == sent &&
                         !Directory.Exists(Path.Combine(run.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "images/original-frames")),
-                        "strictly rejected multi-code frame releases original pixels and produces no task, image or HTTP request");
+                        "strictly rejected multi-code frame releases the driver lease and produces no task, disk archive or HTTP request");
+                    var rejectedPicture = await app.ReadParcelPictureAsync(new(ObservationId: s.Inputs!.Single(i => i.Outcome == ParcelInputOutcome.Rejected).Observation.Id), default);
+                    Check(rejectedPicture.Image?.Gray8.SequenceEqual(raw) == true,
+                        "rejected multi-code frame remains available as a bounded current-placement original picture");
                 }
                 else
                 {

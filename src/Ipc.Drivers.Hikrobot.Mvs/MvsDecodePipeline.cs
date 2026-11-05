@@ -134,6 +134,7 @@ internal sealed partial class MvsAcquisition
                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", nativeSymbols.Select(s => s.Text).ToArray(), null, observedAt)
             {
                 DecodedTicks = deliveredTicks,
+                Symbols = nativeSymbols,
                 InspectionSessionId = inspected.Registration is { Isolated: true } nativeIsolated ? nativeIsolated.Id : null,
                 CaptureSessionId = inspected.Registration is { CaptureImages: true } nativeCapture ? nativeCapture.Id : null
             };
@@ -188,7 +189,7 @@ internal sealed partial class MvsAcquisition
             codes = symbols.Select(symbol => symbol.Text).ToArray();
             if ((decoder?.PreservesInput ?? true) && codes.Length > 0) CopyOriginal();
             lock (gate) { decodeCompleted++; decodedCandidates += codes.Length; decodeWindow.Decoded(codes.Length > 0); lastDecodeAt = DateTimeOffset.UtcNow; }
-            PublishReadFeedback(frame.Number, observedAt, decodedTicks, codes.Length, scene: work.Scene);
+            PublishReadFeedback(frame.Number, observedAt, decodedTicks, codes.Length, scene: work.Scene, formats: symbols.Select(s => s.Format).ToArray(), codes: codes);
         }
         catch { original?.Dispose(); throw; }
         var observationIdentity = codes.Length == 0 ? null : nativeObservation?.Id ?? Wire.Id();
@@ -222,6 +223,7 @@ internal sealed partial class MvsAcquisition
                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", codes, null, observedAt)
             {
                 DecodedTicks = decodedTicks,
+                Symbols = symbols,
                 InspectionSessionId = inspected.Registration is { Isolated: true } isolated ? isolated.Id : null,
                 CaptureSessionId = inspected.Registration is { CaptureImages: true } capture ? capture.Id : null
             };

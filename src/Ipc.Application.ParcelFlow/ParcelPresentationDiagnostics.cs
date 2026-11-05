@@ -15,7 +15,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
     ParcelInputSnapshot[] presentationSnapshotInputs = [];
     readonly Queue<ParcelPresentationMetric> presentationMetrics = [];
     long presentationMetricCount;
-    void RecordPresentationRead(string position, Observation observation, bool operatorInput = false)
+    void RecordPresentationRead(string position, Observation observation, bool operatorInput = false, string? retainedInput = null)
     {
         if (observation.DecodedTicks <= 0 || observation.DecodedTicks > Stopwatch.GetTimestamp()) return;
         var placementOperation = operatorInput ? null : ContinuingCameraPlacementOwner(position, observation);
@@ -26,6 +26,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
         {
             OperatorInput = operatorInput,
             PlacementOperationId = placementOperation,
+            RetainedObservationId = retainedInput,
             CandidateCount = observation.Codes?.Length ?? 0,
             SourceSequence = observation.Sequence,
             SourceEventId = observation.SourceEventId,

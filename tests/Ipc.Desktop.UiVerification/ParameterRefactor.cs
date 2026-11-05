@@ -47,7 +47,7 @@ static partial class Program
             (Category: "系统", Path: "StationCode"),
             (Category: "业务模块", Path: "BarcodePattern"),
             (Category: "驱动", Path: vm.ReaderDrafts[0].Capability.InstanceId + "/Provider"),
-            (Category: "组件", Path: vm.CapabilityDrafts[0].InstanceId + "/Target")
+            (Category: "组件", Path: vm.CapabilityDrafts.Single(c => c.InstanceId == "operator-spare").InstanceId + "/Target")
         };
         foreach (var target in categoryTargets)
         {
@@ -117,7 +117,7 @@ static partial class Program
         var opening = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetAutomationId(x) == "WindowOpeningMode");
         Check(opening.IsVisible && opening.Focus(), "window opening preference is visible and accepts keyboard focus");
         var configRevision = vm.Snapshot!.Configuration.Revision;
-        Descendants(control).OfType<Button>().Single(x => Equals(x.Content, "保存打开方式")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(!Descendants(control).OfType<Button>().Any(x => Equals(x.Content, "保存打开方式")), "daily window preference uses the shared bottom save action");
         Check(!vm.HasUnsavedDisplayPreferences && vm.Snapshot.Configuration.Revision == configRevision, "local window preference does not create a business revision or hidden display draft");
         Capture("parameters-display");
         Check(control.NavigateTo("OperatorLogin"), "optional operator login belongs to business and has a native binding selector");

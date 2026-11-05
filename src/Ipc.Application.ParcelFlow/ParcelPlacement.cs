@@ -25,6 +25,9 @@ public sealed partial class ParcelRuntime
         public readonly string Code = code;
         public DateTimeOffset LastSeen = lastSeen;
         public string? Operation;
+        public ParcelInputSnapshot? RejectedInput;
+        public CameraOriginalImage? RejectedImage;
+        public string[]? RejectedCodes;
         // A manually entered parcel may simply be unreadable; camera no-code frames
         // only end a placement whose code the camera has actually read.
         public bool CameraSeen = cameraSeen;
@@ -44,10 +47,10 @@ public sealed partial class ParcelRuntime
     // ledger still owns them. This grants no admission or retry authority.
     string? ContinuingCameraPlacementOwner(string position, Observation observation)
     {
-        if (Id != "sportmaster" || observation.Kind != "Read" || observation.CandidateIssue is not null ||
-            observation.Codes is not [var code]) return null;
+        if (Id != "sportmaster" || observation.Kind != "Read" || observation.CandidateIssue is not null) return null;
         lock (placements) return frameFedPositions.Contains(position) && placements.TryGetValue(position, out var placement) &&
-            placement.CameraSeen && placement.Operation is not null && placement.Code == code &&
+            placement.CameraSeen && placement.Operation is not null &&
+            (observation.Codes is [var code] && placement.Code == code || placement.RejectedCodes is { } rejected && observation.Codes.Any(rejected.Contains)) &&
             !(placement.EndedAt is { } ended && observation.ObservedAt > ended) ? placement.Operation : null;
     }
 
@@ -85,6 +88,7 @@ public sealed partial class ParcelRuntime
                 // Manual correction owns this physical placement; keep its last camera code
                 // as presence evidence so the next unchanged camera read cannot create a new job.
                 resting.Operation = operation;
+                resting.RejectedInput = null; resting.RejectedImage = null;
                 if (observedAt > resting.LastSeen) resting.LastSeen = observedAt;
                 return;
             }
@@ -93,6 +97,7 @@ public sealed partial class ParcelRuntime
             else if (observedAt > placement.LastSeen) placement.LastSeen = observedAt;
             placement.CameraSeen |= camera;
             placement.Operation = operation;
+            placement.RejectedInput = null; placement.RejectedImage = null;
         }
     }
 
@@ -132,11 +137,13 @@ public sealed partial class ParcelRuntime
             }
             if (frame.ObservedAt <= placement.LastSeen || !placement.CameraSeen) return;
             // The scene is unchanged since a code was last read here: the parcel is still there and the decoder missed it.
-            if (frame.Scene is { } scene && codeScenes.TryGetValue(position, out var codeScene) && codeScene == (frame.Epoch, scene)) return;
+            var rejectedBackground = placement.RejectedInput is { } rejected &&
+                CameraBarcodeCandidates.Excluded(Effective.BarcodeFilter, rejected.Observation.Codes)?.Length == rejected.Observation.Codes.Length;
+            if (!rejectedBackground && frame.Scene is { } scene && codeScenes.TryGetValue(position, out var codeScene) && codeScene == (frame.Epoch, scene)) return;
             placement.EmptySince ??= frame.ObservedAt;
             if (++placement.EmptyFrames >= emptyFrames &&
                 frame.ObservedAt - placement.EmptySince.Value >= TimeSpan.FromMilliseconds(definition.SamePlacementEmptyMinimumMs))
-                placement.EndedAt = placement.EmptySince;
+            { placement.EndedAt = placement.EmptySince; placement.RejectedImage = null; }
         }
     }
 

@@ -95,7 +95,7 @@ public sealed partial class SoftwareLogControl : UserControl
             System.Windows.Automation.AutomationProperties.SetName(element, "日志" + label); return group;
         }
         search.Children.Add(Field("关键词", keyword, 260)); search.Children.Add(Field("级别", level, 120));
-        keyword.ToolTip = "输入作业号、请求号或事件关键词。日志中的条码已隐藏；按条码查找请先到记录页查询，再打开该作业日志。";
+        keyword.ToolTip = "输入完整条码、作业号、请求号或事件关键词。相机识码日志包含原始候选码值、码制和筛选结果。";
         keyword.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && !busy) { e.Handled = true; await Run(Search); } };
         DateTimeInput Calendar(TextBox value)
         {

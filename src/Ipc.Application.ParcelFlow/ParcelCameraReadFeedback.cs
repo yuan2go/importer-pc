@@ -8,12 +8,15 @@ public sealed partial class ParcelRuntime
 {
     readonly Dictionary<string, ParcelCameraReadFeedback> cameraReadFeedback = [];
     readonly Dictionary<string, ObservationReadFeedback> pendingCameraCodes = [];
-    readonly Dictionary<string, (ObservationReadOutcome Outcome, long Ticks, int Count, ObservationReadFeedback? Last)> cameraLogWindows = [];
+    readonly Dictionary<string, (string Signature, long Ticks, int Count, ObservationReadFeedback? Last)> cameraLogWindows = [];
     void LogCameraFrame(string position, ObservationReadFeedback frame, int count, string? retainedOperation)
     {
         var outcome = frame.Outcome == ObservationReadOutcome.Codes ? "识码成功" : frame.Outcome == ObservationReadOutcome.NoCode ? "图像已识别，未读到条码" : "图像识码失败";
         Diagnostic("相机识码", outcome, frame.Outcome is ObservationReadOutcome.Codes or ObservationReadOutcome.NoCode ? "信息" : "警告",
-            Wire.Encode(new { PositionId = position, frame.DeviceId, frame.Epoch, frame.FrameNumber, frame.SourceEventId, frame.ObservedAt, frame.Outcome, frame.CandidateCount, frame.Scene, frame.FailureReason, FramesSinceLastLog = count, RetainedOperationId = retainedOperation }));
+            Wire.Encode(new { PositionId = position, frame.DeviceId, frame.Epoch, frame.FrameNumber, frame.SourceEventId, frame.ObservedAt, frame.Outcome, frame.CandidateCount,
+                RawCandidateCount = frame.Codes?.Length ?? frame.CandidateCount, Candidates = frame.Codes, frame.Formats,
+                Selection = frame.Codes is { } codes ? BarcodeFiltering.Select(Effective.BarcodeFilter, codes) : null,
+                frame.Scene, frame.FailureReason, FramesSinceLastLog = count, RetainedOperationId = retainedOperation }));
     }
     readonly List<(IObservationReadFeedbackSource Source, Action<ObservationReadFeedback> Handler)> cameraReadSubscriptions = [];
     void RegisterCameraReadFeedback(ObservationSession session)
@@ -24,24 +27,34 @@ public sealed partial class ParcelRuntime
             // The registered source owns this callback. Old epochs/ticks cannot
             // invalidate a newer observation, and decode facts never enter the DB.
             if (Volatile.Read(ref accepting) == 0 || frame.DeviceId != session.Source.DeviceId || frame.Epoch != session.Epoch ||
-                frame.CompletedTicks <= 0 || frame.CompletedTicks > Stopwatch.GetTimestamp() || frame.CandidateCount is < 0 or >= 64 ||
+                frame.CompletedTicks <= 0 || frame.CompletedTicks > Stopwatch.GetTimestamp() || frame.CandidateCount is < 0 or > BarcodeFiltering.MaximumCandidates ||
                 frame.Outcome == ObservationReadOutcome.Codes != (frame.CandidateCount > 0) || !Enum.IsDefined(frame.Outcome)) return;
             var position = positions.Values.SingleOrDefault(p => p.ReaderDeviceId == frame.DeviceId)?.Id;
             if (position is null) return;
+            if (frame.Outcome == ObservationReadOutcome.Codes && frame.Codes is { } codes)
+            {
+                if (codes.Length != frame.CandidateCount) return;
+                var eligible = codes.Length - (CameraBarcodeCandidates.Excluded(Effective.BarcodeFilter, codes)?.Length ?? 0);
+                frame = frame with { CandidateCount = eligible, Outcome = eligible == 0 ? ObservationReadOutcome.NoCode : ObservationReadOutcome.Codes };
+            }
             NotePlacementFrame(position, frame);
             var retainedOperation = RetainedCameraPlacement(position, frame);
+            var retainedInput = RetainedRejectedFrame(position, frame);
             lock (cameraLogWindows)
             {
+                var signature = Wire.Hash(Wire.Encode(new { frame.Epoch, frame.Outcome, frame.CandidateCount, frame.FailureReason,
+                    Candidates = frame.Codes?.Select((code, index) => Wire.Encode(new { Code = code, Format = frame.Formats?.ElementAtOrDefault(index) })).Order(StringComparer.Ordinal).ToArray(),
+                    Policy = Effective.BarcodeFilter }));
                 cameraLogWindows.TryGetValue(position, out var prior);
-                if (prior.Outcome != frame.Outcome && prior.Count > 0 && prior.Last is { } last)
+                if (prior.Signature != signature && prior.Count > 0 && prior.Last is { } last)
                     LogCameraFrame(position, last, prior.Count, null);
-                var count = prior.Outcome == frame.Outcome ? prior.Count + 1 : 1;
-                if (prior.Ticks == 0 || prior.Outcome != frame.Outcome || Stopwatch.GetElapsedTime(prior.Ticks) >= TimeSpan.FromSeconds(5))
+                var count = prior.Signature == signature ? prior.Count + 1 : 1;
+                if (prior.Ticks == 0 || prior.Signature != signature || Stopwatch.GetElapsedTime(prior.Ticks) >= TimeSpan.FromSeconds(5))
                 {
                     LogCameraFrame(position, frame, count, retainedOperation);
-                    cameraLogWindows[position] = (frame.Outcome, Stopwatch.GetTimestamp(), 0, frame);
+                    cameraLogWindows[position] = (signature, Stopwatch.GetTimestamp(), 0, frame);
                 }
-                else cameraLogWindows[position] = (prior.Outcome, prior.Ticks, count, frame);
+                else cameraLogWindows[position] = (signature, prior.Ticks, count, frame);
             }
             lock (presentationGate)
             {
@@ -61,8 +74,8 @@ public sealed partial class ParcelRuntime
                 }
                 pendingCameraCodes.Remove(position);
                 var changed = old is null || old.Frame.Epoch != frame.Epoch || old.Frame.Outcome != frame.Outcome ||
-                    old.RetainedOperationId != retainedOperation || frame.Outcome == ObservationReadOutcome.Codes;
-                cameraReadFeedback[position] = new(position, frame) { RetainedOperationId = retainedOperation };
+                    old.RetainedOperationId != retainedOperation || old.RetainedObservationId != retainedInput || frame.Outcome == ObservationReadOutcome.Codes;
+                cameraReadFeedback[position] = new(position, frame) { RetainedOperationId = retainedOperation, RetainedObservationId = retainedInput };
                 if (changed) OfferPresentation();
             }
         };

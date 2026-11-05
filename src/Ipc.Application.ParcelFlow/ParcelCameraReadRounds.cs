@@ -37,7 +37,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         var accepted = InspectionStore.Offer(session, frame);
         if (!accepted) { round.Capture?.TrySetException(new IOException("原帧留存未接纳，本轮停止；正常供包状态未改变。")); return false; }
         var observation = new Observation(frame.ObservationId ?? Wire.Id(), frame.DeviceId, frame.Epoch, frame.SourceEventId ?? "no-read", 1,
-            "debug." + round.Id, "Read", frame.Symbols.Select(s => s.Text).ToArray(), null, frame.CapturedAt);
+            "debug." + round.Id, "Read", frame.Symbols.Select(s => s.Text).ToArray(), null, frame.CapturedAt) { Symbols = frame.Symbols };
         var selection = definition.SelectBarcode(round.Configuration, observation);
         if (selection.SelectedCode is null || selection.Matches != 1)
         { Volatile.Write(ref round.Detail, frame.Symbols.Length == 0 ? "正在等待条码…" : "未取得唯一有效条码，继续等待；未生成请求。"); return true; }

@@ -92,7 +92,7 @@ static partial class Program
             await Until(() => Descendants(window).OfType<DataGrid>().Any(g => g.Items.OfType<SoftwareLogEntry>().Any(e => e.OperationId == admitted.OperationId)));
             Check(Descendants(window).OfType<DataGrid>().SelectMany(g => g.Items.OfType<SoftwareLogEntry>()).All(e => e.OperationId == admitted.OperationId), "record-to-log jump pins the structured original operation rather than a barcode search");
             Check(Descendants(window).OfType<Button>().Any(b => Equals(b.Content, "导出…")), "log export uses one explicit selection entry");
-            Check(Descendants(window).OfType<TextBox>().Any(t => t.ToolTip is string hint && hint.Contains("日志中的条码已隐藏") && hint.Contains("记录页")), "log keyword guidance preserves redaction and points barcode lookup through original records");
+            Check(Descendants(window).OfType<TextBox>().Any(t => t.ToolTip is string hint && hint.Contains("完整条码") && hint.Contains("筛选结果")), "log keyword guidance supports original candidate lookup and filter diagnosis");
             CaptureInternal(evidence, "ui24-logs-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); CaptureInternal(evidence, "ui24-logs-800", (Grid)window.FindName("ClientArea"), lines);
             Check(!Descendants(window).OfType<CheckBox>().Any(b => b.IsVisible && AutomationProperties.GetAutomationId(b) == "DebugLoggingMode"), "SM detailed-log switch belongs to diagnostics rather than logs");

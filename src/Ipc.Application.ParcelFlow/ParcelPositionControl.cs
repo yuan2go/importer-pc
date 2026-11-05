@@ -13,7 +13,7 @@ public sealed partial class ParcelRepository
         if (state.PositionId is not ("left" or "right") || !Enum.IsDefined(state.Mode) || state.Revision <= 0 ||
             state.ChangedAt is null || string.IsNullOrWhiteSpace(state.ChangedBy) || state.ChangedBy.Length > 256 ||
             state.OperationId?.Length > 256 || state.TaskId?.Length > 4096 ||
-            state.PlacementCode is { } code && (code.Length is 0 or > 4096 || code.Any(char.IsControl) || state.OperationId is null))
+            state.PlacementCode is { } code && (code.Length is 0 or > 4096 || code.Any(char.IsControl)))
             throw new InvalidDataException("投递位启停记录格式无效，保留原记录后核对。");
     }
     internal StationPositionState? ReadPositionControl(string position)
@@ -74,7 +74,8 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         var pending = repository!.PendingReceipts().Select(r => r.Operation).ToHashSet(StringComparer.Ordinal);
         if (operations.Values.Any(op => op.PositionId == position && !IsDebugRequest(op) &&
             (!MainTerminated(op) || NeedsReconciliation(op) || pending.Contains(op.Id)))) return true;
-        lock (placements) return placements.TryGetValue(position, out var placement) && placement.Operation is not null && placement.EndedAt is null;
+        lock (placements) return placements.TryGetValue(position, out var placement) &&
+            (placement.CameraSeen || placement.Operation is not null) && placement.EndedAt is null;
     }
     void MaintainPositionControls()
     {
@@ -116,10 +117,10 @@ public sealed partial class ParcelRuntime : IStationPositionControl
             var current = DisplayedOperation(request.PositionId);
             string? placementCode = null; bool cameraSeen = false;
             lock (placements)
-                if (placements.TryGetValue(request.PositionId, out var placement) && placement.Operation is { } owner && placement.EndedAt is null)
+                if (placements.TryGetValue(request.PositionId, out var placement) && placement.EndedAt is null)
                 {
                     placementCode = placement.Code; cameraSeen = placement.CameraSeen;
-                    current = operations.GetValueOrDefault(owner) ?? current;
+                    if (placement.Operation is { } owner) current = operations.GetValueOrDefault(owner) ?? current;
                 }
             var state = new StationPositionState(request.PositionId, request.Enabled ? StationPositionMode.Enabled :
                 PositionDrainRequired(request.PositionId) ? StationPositionMode.Disabling : StationPositionMode.Disabled,

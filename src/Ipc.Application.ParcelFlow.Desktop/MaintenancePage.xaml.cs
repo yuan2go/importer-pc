@@ -63,6 +63,11 @@ public partial class MaintenancePage : UserControl
     async void SaveChanges_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm || vm.Busy || !vm.IsManagementMode) return;
+        if (!vm.HasUnconfirmedConfigurationSubmission && !vm.HasUnsavedConfiguration && vm.HasUnsavedWindowPreference)
+        {
+            await vm.RunAsync(vm.SaveWindowPreferenceAsync, "保存打开方式");
+            return;
+        }
         if (!vm.HasUnconfirmedConfigurationSubmission)
         {
             if (vm.CanEditFormConfiguration && ConfigurationCloseGuard.CommitAndFindInvalid(this, enabledOnly: true) is { } invalid)

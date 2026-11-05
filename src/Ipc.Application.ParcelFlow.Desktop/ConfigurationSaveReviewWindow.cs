@@ -115,7 +115,12 @@ public sealed class ConfigurationSaveReviewWindow : Window
         await vm.RunAsync(async () =>
         {
             if (automatic is not null) vm.ConfigurationReason = automatic;
-            try { if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync(); }
+            try
+            {
+                if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync();
+                if (!vm.HasUnconfirmedConfigurationSubmission && !vm.HasUnsavedConfiguration && vm.HasUnsavedWindowPreference)
+                    await vm.SaveWindowPreferenceAsync();
+            }
             finally { if (automatic is not null && vm.ConfigurationReason == automatic) vm.ConfigurationReason = ""; }
             completed = true;
         }, "保存并查看结果");
@@ -157,6 +162,8 @@ public sealed class ConfigurationSaveReviewWindow : Window
             "Rejected" => "保存未被接受，请查看下方原因。你的输入已保留。",
             _ => !authorizationOnly && !vm.ConfigurationReviewIsCurrent ? "设置又有改动，请返回重新检查。" : ""
         };
+        if (vm.ConfigurationSubmissionOutcome is "Effective" or "PendingRestart" or "Unchanged" && vm.WindowPreferenceStatus.Length > 0)
+            outcomeText += "\n" + vm.WindowPreferenceStatus;
         outcome.Text = vm.Busy ? vm.OperationStatus : localFailure ?? (outcomeText + (vm.ConfigurationSubmissionOutcome is "Unknown" or "NotSaved" or "Conflict" or "Rejected" ? "\n" + vm.ConfigurationSubmissionDetail : ""));
         outcome.Visibility = outcome.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         outcome.SetResourceReference(TextBlock.ForegroundProperty, vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "Warning" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "Success" : "Muted");

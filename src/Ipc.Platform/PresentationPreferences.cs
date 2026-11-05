@@ -10,6 +10,7 @@ public static class PresentationPreferences
     public enum WindowOpeningMode { Window, FullScreen }
     sealed record AudioPreference(int Schema, int Volume);
     public static event Action<string, int>? CueVolumeChanged;
+    public static event Action<string, WindowOpeningMode>? WindowModeChanged;
     public static event Action<string, string, bool>? DisplayChanged;
     public static int ReadCueVolume(string application)
     {
@@ -45,6 +46,7 @@ public static class PresentationPreferences
         _ = ReadWindowMode(application);
         var file = FileFor(application, "window");
         Directory.CreateDirectory(Path.GetDirectoryName(file)!); ExtensionStore.AtomicWrite(file, new WindowPreference(1, mode));
+        WindowModeChanged?.Invoke(application, mode);
     }
     public sealed record StationDisplay(int Schema, string Name, int? TargetPerHour);
     sealed record Preference(int Schema, bool Compact);

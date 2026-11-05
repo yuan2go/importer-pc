@@ -22,15 +22,15 @@ public partial class ParcelViewModel
     public string ConfigurationSubmissionOutcome => configurationSubmissionOutcome;
     public string ConfigurationSubmissionDetail => configurationSubmissionDetail;
     public bool ConfigurationReviewIsCurrent => reviewedConfigurationSignature is not null && reviewedConfigurationSignature == CurrentReviewSignature();
-    public bool CanReviewConfiguration => !Busy && (HasUnconfirmedConfigurationSubmission || HasUnsavedConfiguration);
+    public bool CanReviewConfiguration => !Busy && (HasUnconfirmedConfigurationSubmission || HasUnsavedConfiguration || HasUnsavedWindowPreference);
     public string ConfigurationSaveActionText => HasUnconfirmedConfigurationSubmission ? "查看保存结果…" : "保存设置…";
     public bool CanSubmitReviewedConfiguration => CanConfigure && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission;
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
-    public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration ? "有未保存的更改" : "没有未保存的更改";
+    public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration || HasUnsavedWindowPreference ? "有未保存的更改" : "没有未保存的更改";
     public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "条码规则、相机和 RCS 设置保存后立即生效，只重新连接对应设备；其他设置保存后需重启。以保存结果为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
     public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" : Snapshot?.Configuration.Failure is not null ? ConfigurationActivationOutcome :
         Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "设置已保存并生效" : ConfigurationActivationGuidance;
-    string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature());
+    string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature()) + "\n" + WindowModeDraft;
     ParcelConfiguration CurrentReviewCandidate() => configurationAuthority switch
     {
         "高级JSON" => Wire.Decode<ParcelConfiguration>(ConfigurationDraft),
@@ -61,8 +61,8 @@ public partial class ParcelViewModel
         // The same rules the Application applies; it may still fall back to a restart (e.g. an unconfirmed request).
         var live = Snapshot is { } snapshot && (ConfigurationActivation.RulesOnly(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate) ||
             ConfigurationActivation.LiveDevices(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate) is not null);
-        reviewedConfigurationChanges = BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate)
-            .Select(c => c with { Activation = live ? "保存后立即生效" : "重启后生效" }).ToArray();
+        reviewedConfigurationChanges = [.. BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate)
+            .Select(c => c with { Activation = live ? "保存后立即生效" : "重启后生效" }), .. WindowPreferenceChanges()];
         if (reviewedConfigurationChanges.Length == 0)
         {
             validationState = "没有配置差异";
@@ -74,7 +74,7 @@ public partial class ParcelViewModel
     public ConfigurationChangeItem[] GetConfigurationChangeItems()
     {
         var candidate = CurrentReviewCandidate();
-        return BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate);
+        return [.. BuildConfigurationChangeItems(configurationReviewBaseline ?? structuredBase ?? Wire.Decode<ParcelConfiguration>(savedCandidate), candidate), .. WindowPreferenceChanges()];
     }
     void NotifyConfigurationReview()
     {

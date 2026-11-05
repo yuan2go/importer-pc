@@ -54,6 +54,14 @@
     "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。"
   },
   {
+    "Key": "no-dest-to-exp",
+    "Group": "RCS 分拣任务",
+    "Label": "无可用格口时",
+    "Type": "boolean",
+    "Default": "true",
+    "Description": "送往异常口：小车前往 RCS 返回的异常口。\n留在原位，人工处理：小车不动，页面显示异常原因，请取下包裹判断。"
+  },
+  {
     "Key": "request-timeout-ms",
     "Group": "RCS 分拣任务",
     "Label": "取格口请求超时",

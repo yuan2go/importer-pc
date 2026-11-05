@@ -55,6 +55,7 @@ public static class ChineseInterfaceText
         "specified-chute" => "指定格口",
         "chute-code" => "格口编码",
         "request-timeout-ms" => "取格口请求超时",
+        "no-dest-to-exp" => "无可用格口时",
         "zone-id" => "仓ID",
         "project-id" => "生产线ID",
         "request-id-base" => "请求编号起点",

@@ -11,6 +11,7 @@ static partial class SportmasterRcs
 {
     public static async Task AutomaticRcs(string workspace, string root)
     {
+        await NoDestinationPolicyChecks(workspace, root);
         var removed = RcsTaskOptions.RetiredKeys;
         var initial = new SportmasterFlow().InitialConfiguration();
         Check(!initial.Wcs!.Parameters.Keys.Intersect(removed).Any(), "SM new stations require no allocation range or fixed-chute fields");

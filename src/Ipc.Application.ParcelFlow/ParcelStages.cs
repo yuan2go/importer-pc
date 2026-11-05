@@ -220,6 +220,8 @@ public sealed partial class ParcelRuntime
             kind is ParcelStage.Capture or ParcelStage.Upload && reply.BusinessAccepted == true && !ValidImageReply(op, kind, reply.Image);
         inconsistent |= reply.Destination is { } destination && (!wcs || !Enum.IsDefined(destination.Outcome) ||
             (destination.Outcome == WcsDestinationOutcome.Assigned) != (reply.BusinessAccepted == true) ||
+            destination.ManualHandlingRequired && (reply.BusinessAccepted != false || destination.Outcome != WcsDestinationOutcome.Rejected ||
+                stage.Request.Binding.Contract != RcsRequestPolicy.Contract || RcsRequestPolicy.NoDestToExp(stage.Request.Binding)) ||
             destination.Outcome == WcsDestinationOutcome.UnpackRequired && (reply.BusinessAccepted != false || destination.Unpack is null));
         var terminal = stage.Replies.LastOrDefault(x => x.BusinessAccepted is not null);
         inconsistent |= !Enum.IsDefined(reply.SenderDelivery) || reply.SenderDelivery != SenderDeliveryEvidence.Unknown &&

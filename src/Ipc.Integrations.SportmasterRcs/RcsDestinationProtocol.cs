@@ -14,33 +14,41 @@ internal static class RcsDestinationProtocol
 
     internal static bool MatchesFrozen(RcsTaskOptions options, FrozenRequest request, PreparedIntegrationRequest frozen)
     {
-        if (Prepare(options, request, frozen.RequestId) == frozen) return true;
+        using var original = JsonDocument.Parse(frozen.Body);
+        var includesPolicy = original.RootElement.GetProperty("data")[0].GetProperty("params").TryGetProperty("noDestToExp", out _);
+        // Requests sent before the optional policy existed retain their exact original bytes.
+        // An explicit policy in the frozen binding may never be dropped from its wire evidence.
+        if (!includesPolicy && options.Binding.Parameters.ContainsKey("no-dest-to-exp")) return false;
+        if (PrepareWire(options, request, frozen.RequestId, false, null, includesPolicy) == frozen) return true;
         // Only validate original wire evidence; this path cannot prepare a new
         // fixed-chute request or change the frozen bytes/target/ID.
         if (options.Binding.Parameters.GetValueOrDefault("specified-chute") != "true" ||
             !long.TryParse(options.Binding.Parameters.GetValueOrDefault("request-id-base"), out var first) ||
             !long.TryParse(options.Binding.Parameters.GetValueOrDefault("request-id-count"), out var count) ||
             first < 0 || count <= 0 || first > long.MaxValue - count || frozen.RequestId <= first || frozen.RequestId > first + count) return false;
-        return PrepareWire(options, request, frozen.RequestId, true, options.Text("chute-code", 64)) == frozen;
+        return PrepareWire(options, request, frozen.RequestId, true, options.Text("chute-code", 64), includesPolicy) == frozen;
     }
 
-    static PreparedIntegrationRequest PrepareWire(RcsTaskOptions options, FrozenRequest request, long requestId, bool specified, string? chute)
+    static PreparedIntegrationRequest PrepareWire(RcsTaskOptions options, FrozenRequest request, long requestId, bool specified, string? chute, bool includePolicy = true)
     {
         options.ValidateOriginal(request);
         if (requestId <= 0) throw new InvalidDataException("RCS requestId must be positive");
         var payload = Wire.Decode<ParcelPayload>(request.Payload);
         var position = options.Position(payload);
+        var parameters = new Dictionary<string, object?>
+        {
+            ["zoneId"] = options.ZoneId, ["projectId"] = options.ProjectId, ["loadCode"] = payload.ParcelCode,
+            ["stationCode"] = position.Station, ["bcrCode"] = position.Bcr, ["specifiedChute"] = specified,
+            ["chuteCode"] = chute, ["quantity"] = 1
+        };
+        if (includePolicy) parameters["noDestToExp"] = options.NoDestToExp;
         var body = JsonSerializer.Serialize(new
         {
             source = options.Source,
             version = 1,
             requestId,
             locale = options.Locale,
-            data = new[] { new { index = 1, command = Command, @params = new {
-                zoneId = options.ZoneId, projectId = options.ProjectId, loadCode = payload.ParcelCode,
-                stationCode = position.Station, bcrCode = position.Bcr, specifiedChute = specified,
-                chuteCode = chute, quantity = 1
-            } } }
+            data = new[] { new { index = 1, command = Command, @params = parameters } }
         }, Json);
         return new(requestId, "application/json", body, Wire.Hash(body));
     }
@@ -55,22 +63,24 @@ internal static class RcsDestinationProtocol
         var result = results[0];
         if (result.GetProperty("index").GetInt32() != 1 || Text(result, "command", 128) != Command) throw new InvalidDataException("RCS index/command mismatch");
         var accepted = result.GetProperty("success").GetBoolean();
-        var code = OptionalText(result, "code", 256); var message = OptionalText(result, "message", 4096);
+        var code = ResponseText(result, "code", 256);
+        var message = ResponseText(result, "msg", 4096) ?? ResponseText(result, "message", 4096);
         var args = result.TryGetProperty("args", out var a) && a.ValueKind != JsonValueKind.Null ? a.GetRawText() : null;
         try
         {
-            var data = result.GetProperty("data");
             if (accepted)
             {
+                var data = result.GetProperty("data");
                 if (code is not null) throw new InvalidDataException("RCS success contradicts its error code");
                 var slot = Text(data, "chuteCode", 64);
                 return (true, slot, new(WcsDestinationOutcome.Assigned, code, message, args, Text(data, "taskId", 256), Text(data, "skuId", 256),
                     Measurement(data, "length"), Measurement(data, "width"), Measurement(data, "height"), Measurement(data, "weight"), null,
                     AddedText(data, "waveNo", 256), AddedText(data, "quantity", 256)));
             }
-            if (string.IsNullOrWhiteSpace(code)) throw new InvalidDataException("RCS rejection requires an error code");
+            if (code is null && message is null) throw new InvalidDataException("RCS rejection requires an error code or message");
             if (code == "NEED_UNPACK")
             {
+                var data = result.GetProperty("data");
                 var chutes = data.GetProperty("chutes");
                 if (chutes.ValueKind != JsonValueKind.Array || chutes.GetArrayLength() > 256) throw new InvalidDataException("RCS unpack chute quota exceeded or invalid");
                 var items = chutes.EnumerateArray().Select(c => new WcsUnpackChute(Text(c, "chuteNo", 64), Text(c, "orderNo", 256), Nonnegative(c, "remaining"), Text(c, "phase", 128))).ToArray();
@@ -80,12 +90,22 @@ internal static class RcsDestinationProtocol
                     throw new InvalidDataException("RCS unpack barcode does not match original loadCode");
                 return (false, null, new(WcsDestinationOutcome.UnpackRequired, code, message, args, null, unpack.SkuId, null, null, null, null, unpack));
             }
-            return (false, null, new(WcsDestinationOutcome.Rejected, code, message, args, null, null, null, null, null, null, null));
+            using var originalRequest = JsonDocument.Parse(original.Body);
+            var parameters = originalRequest.RootElement.GetProperty("data")[0].GetProperty("params");
+            var manual = parameters.TryGetProperty("noDestToExp", out var policy) && policy.ValueKind == JsonValueKind.False;
+            return (false, null, new(WcsDestinationOutcome.Rejected, code, message, args, null, null, null, null, null, null, null, ManualHandlingRequired: manual));
         }
         catch (Exception e) when (e is InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
         { throw new RcsResponseException(message ?? "RCS 未返回有效格口，请查看异常信息。", e); }
     }
     static int Nonnegative(JsonElement e, string name) => e.GetProperty(name).GetInt32() is var n && n >= 0 ? n : throw new InvalidDataException("RCS negative quantity");
+    static string? ResponseText(JsonElement e, string name, int maximum)
+    {
+        if (!e.TryGetProperty(name, out var value) || value.ValueKind == JsonValueKind.Null) return null;
+        var text = value.GetString();
+        if (string.IsNullOrWhiteSpace(text)) return null;
+        return text.Length <= maximum && !text.Any(c => char.IsControl(c) && c is not ('\r' or '\n' or '\t')) ? text : throw new InvalidDataException("RCS invalid response text: " + name);
+    }
     static decimal? Measurement(JsonElement e, string name)
     {
         var value = e.GetProperty(name); if (value.ValueKind == JsonValueKind.Null) return null;

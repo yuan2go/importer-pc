@@ -21,4 +21,5 @@ public sealed record WcsUnpackDetails(string Barcode, string SkuId, int ScanQty,
 public sealed record WcsDestinationResult(WcsDestinationOutcome Outcome, string? Code, string? Message, string? ArgsJson,
     string? TaskId, string? SkuId, decimal? Length, decimal? Width, decimal? Height, decimal? Weight, WcsUnpackDetails? Unpack,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? WaveNo = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Quantity = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Quantity = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool ManualHandlingRequired = false);

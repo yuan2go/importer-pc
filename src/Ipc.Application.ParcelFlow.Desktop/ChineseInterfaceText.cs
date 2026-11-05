@@ -69,6 +69,9 @@ public static class ChineseInterfaceText
         "roles" => "账号权限",
         _ => label is not null && label.Any(c => c >= '\u4e00' && c <= '\u9fff') ? label : "其他设置"
     };
+    public static string InstallationFailure(string text) => text.Contains("SM安装与维护须使用D盘", StringComparison.Ordinal)
+        ? "安装所需的 D 盘存储位置未准备好，请返回安装选项重试；仍失败时由实施人员查看安装详情。"
+        : ParameterMessage(text, "安装未完成，请展开安装详情查看原因，处理后返回安装选项重试。");
     public static string ParameterMessage(string text) => ParameterMessage(text, "参数检查未通过，请查看诊断详情并修正输入。");
     public static string ParameterMessage(string text, string fallback)
     {

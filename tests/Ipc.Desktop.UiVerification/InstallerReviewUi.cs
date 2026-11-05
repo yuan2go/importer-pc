@@ -42,6 +42,18 @@ static partial class Program
             CaptureInternal(evidence, "review-installer-authorization", (FrameworkElement)window.Content, lines);
             type.GetMethod("Stage", flags)!.Invoke(window, [WindowsInstallationStage.CopyingFiles]); window.UpdateLayout();
             Check(stage.Text == "正在复制并校验程序文件" && !Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("/ 6 步")), "installation phases do not introduce a second numbered step system");
+            const string storageFailure = @"SM安装与维护须使用D盘的程序、数据及受保护存储根；请由Windows管理员核对HKLM\SOFTWARE\ImporterPc\Storage，不能静默使用C盘。";
+            type.GetMethod("OperationFailed", flags | BindingFlags.DeclaredOnly)!.Invoke(window, [new InvalidDataException(storageFailure)]);
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            Check(Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("D 盘存储位置未准备好") && t.Text.Contains("返回安装选项重试")) &&
+                !Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && (t.Text.Contains("参数检查") || t.Text.Contains("HKLM"))),
+                "machine storage failure explains installation recovery without blaming parameter input or exposing registry paths");
+            var failureDetails = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "安装详情"));
+            Check(!failureDetails.IsExpanded, "failure diagnostics and historical authorization notices start folded");
+            CaptureInternal(evidence, "review-installer-storage-failure", (FrameworkElement)window.Content, lines);
+            failureDetails.IsExpanded = true; window.UpdateLayout();
+            Check(Descendants(window).OfType<TextBox>().Any(t => t.Text.Contains(storageFailure)), "full original storage failure remains available in diagnostic details");
+            type.GetField("failed", flags)!.SetValue(window, false);
             type.GetField("installing", flags)!.SetValue(window, false);
             type.GetField("step", flags)!.SetValue(window, 3);
             type.GetField("installed", flags)!.SetValue(window, new DeploymentLocation("sportmaster", new string('a', 40),

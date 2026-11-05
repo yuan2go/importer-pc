@@ -26,6 +26,8 @@ public static class ParcelPresentation
     public static bool RcsNotDelivered(ParcelOperation? op) => op?.State == ParcelState.WcsUnknown &&
         op.Wcs is { State: StageState.Unknown, Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage &&
         stage.Replies.LastOrDefault() is { SenderDelivery: SenderDeliveryEvidence.ConnectionRefusedBeforeBody, TransportSucceeded: false };
+    public static bool RcsManualHandling(ParcelOperation? op) => op?.State == ParcelState.WcsRejected &&
+        op.Wcs is { State: StageState.Rejected, Request.Binding.Contract: RcsRequestPolicy.Contract } stage && stage.Replies.LastOrDefault()?.Destination?.ManualHandlingRequired == true;
     public static string? RcsException(ParcelOperation? op)
     {
         if (op?.Wcs is not { Request.Binding.Contract: "SPORTMASTER-RCS-SORTER-v1" } stage || stage.State == StageState.Conflict) return null;

@@ -304,6 +304,9 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                     message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
                 });
+                if (Mode == "no-destination")
+                    reply = JsonSerializer.Serialize(new { requestId = id, result = new[] { new { index = 1, success = false,
+                        command = "sorter.task.dest_request", msg = "合成异常：未找到可用格口，请人工核对包裹。", data = new { chuteCode = "" } } } });
                 if (ReplyVehicleStates && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
                     reply = JsonSerializer.Serialize(new { requestId = id, result = json.RootElement.GetProperty("data").EnumerateArray().Select(item => new
                     {

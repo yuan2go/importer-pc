@@ -162,8 +162,10 @@ public partial class ParcelViewModel
             var newValue = showValues ? Read(right) : right.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined ? "已移除" : "已更改（内容不显示）";
             if (translateChoice)
             {
-                oldValue = ChineseInterfaceText.Choice(oldValue);
-                newValue = ChineseInterfaceText.Choice(newValue);
+                string Choice(string value) => parameter == "no-dest-to-exp" ? value switch
+                { "true" => "送往异常口（默认）", "false" => "留在原位，人工处理", "未设置" => "送往异常口（默认）", _ => value } : ChineseInterfaceText.Choice(value);
+                oldValue = Choice(oldValue);
+                newValue = Choice(newValue);
             }
             // The JSON candidate may intentionally differ from cached form drafts.
             // Keep its exact technical path; never jump to an older form value.

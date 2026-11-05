@@ -28,7 +28,7 @@ public sealed partial class ParameterSettingsControl
                     var location = pair.Value;
                     if (ReferenceEquals(location.Page, station) || location.Row is null) continue;
                     var key = pair.Key[(component.InstanceId.Length + 1)..];
-                    var target = key.EndsWith("-bcr-code", StringComparison.Ordinal) ? cameras.Form : key is "Provider" or "Target" ? service.Form : protocol;
+                    var target = key.EndsWith("-bcr-code", StringComparison.Ordinal) ? cameras.Form : key is "Provider" or "Target" or "no-dest-to-exp" ? service.Form : protocol;
                     if (location.Row.Parent is Panel parent) parent.Children.Remove(location.Row);
                     target.Children.Add(location.Row);
                     locations[pair.Key] = location with { Page = station };

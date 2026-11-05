@@ -199,6 +199,7 @@ public sealed partial class ParameterSettingsControl
         "right-bcr-code" => "右相机编码",
         "heartbeat-interval-ms" => "心跳间隔",
         "request-timeout-ms" => "取格口请求超时",
+        "no-dest-to-exp" => "无可用格口时",
         "source" => "协议来源",
         "locale" => "协议语言",
         "reply-mode" => "模拟返回方式",
@@ -253,7 +254,10 @@ public sealed partial class ParameterSettingsControl
         }
         else if (p.Field.Type == "boolean")
         {
-            var choice = new ComboBox { ItemsSource = new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") }, DisplayMemberPath = "Label", SelectedValuePath = "Value" };
+            var values = ParameterOwnership.IsRcs(draft) && p.Field.Key == "no-dest-to-exp"
+                ? new[] { new BooleanChoice("true", "送往异常口（默认）"), new BooleanChoice("false", "留在原位，人工处理") }
+                : new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") };
+            var choice = new ComboBox { ItemsSource = values, DisplayMemberPath = "Label", SelectedValuePath = "Value", MinHeight = 44 };
             choice.SetBinding(ComboBox.SelectedValueProperty, new Binding("Value") { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
             Field(form, label, choice, help, path, page);
         }

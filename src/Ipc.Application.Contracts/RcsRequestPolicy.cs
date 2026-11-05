@@ -13,7 +13,13 @@ public static class RcsRequestPolicy
     static readonly HashSet<string> Parameters = new([
         "source", "locale", "zone-id", "project-id", "specified-chute", "request-id-base", "request-id-count",
         "left-station-code", "left-bcr-code", "right-station-code", "right-bcr-code", "chute-code",
-        "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms"], StringComparer.Ordinal);
+        "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp"], StringComparer.Ordinal);
+    public static bool NoDestToExp(CapabilityBinding binding) => !binding.Parameters.TryGetValue("no-dest-to-exp", out var value) ? true : value switch
+    {
+        "true" => true,
+        "false" => false,
+        _ => throw new InvalidDataException("无可用格口时的处理方式无效，请重新选择。")
+    };
     public static int HeartbeatMs(CapabilityBinding binding)
     {
         var values = binding.Parameters;
@@ -43,6 +49,7 @@ public static class RcsRequestPolicy
         if (binding.Parameters.Keys.Any(key => !Parameters.Contains(key)))
             throw new InvalidDataException("RCS包含不受支持的参数；数量固定为每次扫码一个包裹。");
         _ = HeartbeatMs(binding);
+        _ = NoDestToExp(binding);
         if (!binding.Parameters.TryGetValue("request-timeout-ms", out var value)) return DefaultTimeoutMs;
         return int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var timeout) &&
             timeout is >= MinimumTimeoutMs and <= MaximumTimeoutMs ? timeout :

@@ -37,6 +37,12 @@ static partial class SportmasterRcs
     static string Response(string request, string mode)
     {
         using var j = JsonDocument.Parse(request); var id = j.RootElement.GetProperty("requestId").GetInt64();
+        if (mode.StartsWith("no-destination", StringComparison.Ordinal))
+        {
+            var result = new Dictionary<string, object?> { ["index"] = 1, ["success"] = false, ["command"] = "sorter.task.dest_request", ["msg"] = "合成异常：未找到可用格口，请人工核对包裹。" };
+            if (mode != "no-destination-without-data") result["data"] = new { chuteCode = mode == "no-destination-null" ? null : "" };
+            return JsonSerializer.Serialize(new { requestId = id, result = new[] { result } });
+        }
         if (mode == "malformed") return "{not-json";
         if (mode == "oversize") return new string('x', SportmasterRcsTaskService.MaximumResponseBytes + 500);
         if (mode == "heartbeat-vehicles" && j.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")

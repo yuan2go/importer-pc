@@ -48,15 +48,15 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         var dialog = new SaveFileDialog { Filter = "完整备份数据库|*.db", InitialDirectory = "D:\\", FileName = "station-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db" };
-        if (dialog.ShowDialog(this) != true) return;
-        if (MessageBox.Show(this, "将暂停新供包并创建完整备份。备份完成后可检查并恢复供包。", "创建完整备份", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        if (dialog.ShowDialog(ManagementDialogOwner) != true) return;
+        if (MessageBox.Show(ManagementDialogOwner, "将暂停新供包并创建完整备份。备份完成后可检查并恢复供包。", "创建完整备份", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
         await ViewModel.PauseAsync(); await ViewModel.RefreshAsync();
         if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认，未创建备份。");
         var receipt = await ViewModel.Application.BackupAsync(dialog.FileName);
         ViewModel.Message = receipt.Status + " · " + receipt.Reason;
         await ViewModel.RefreshAsync();
         if (receipt.Status != "BackupCreated") return;
-        if (MessageBox.Show(this, "完整备份已完成。现在检查连接、未确认作业和存储条件，并恢复供包？", "备份完成", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+        if (MessageBox.Show(ManagementDialogOwner, "完整备份已完成。现在检查连接、未确认作业和存储条件，并恢复供包？", "备份完成", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
         await ViewModel.RequireManagementModeAsync();
         var snapshot = await ViewModel.Application.SnapshotAsync();
         var resumed = await ViewModel.Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
@@ -68,7 +68,7 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         var dialog = new SaveFileDialog { Filter = "诊断包|*.zip", InitialDirectory = "D:\\", FileName = "station-diagnostics-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".zip" };
-        if (dialog.ShowDialog(this) != true || ViewModel.Application is not IDiagnosticPackageApplication api) return;
+        if (dialog.ShowDialog(ManagementDialogOwner) != true || ViewModel.Application is not IDiagnosticPackageApplication api) return;
         if (productDiagnosticCancellation is not null) throw new InvalidOperationException("诊断包正在导出，请等待或取消");
         using var cancellation = new CancellationTokenSource(); productDiagnosticCancellation = cancellation;
         if (cancelProductDiagnostic is not null) cancelProductDiagnostic.Visibility = Visibility.Visible;
@@ -84,7 +84,7 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         if (root.OpenMaintenanceOwnerAsync is null) throw new InvalidOperationException("当前版本不支持离线维护");
-        if (MessageBox.Show(this, "将完全停止软件并关闭所有窗口，然后打开离线维护。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        if (MessageBox.Show(ManagementDialogOwner, "将完全停止软件并关闭所有窗口，然后打开离线维护。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
         await ViewModel.PauseAsync(); await ViewModel.RefreshAsync();
         if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停结果未确认，软件未停止");
         root.offlineMaintenanceRequested = true; root.Close();

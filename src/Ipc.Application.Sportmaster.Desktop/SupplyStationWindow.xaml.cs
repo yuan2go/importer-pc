@@ -64,6 +64,7 @@ public partial class SupplyStationWindow : Window
         {
             UpdateStationClock();
             ViewModel.RefreshFreshness();
+            EnforceManagementModeView();
             if (ViewModel.Application is not IParcelPresentationSource && pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
         };
         Loaded += async (_, _) =>
@@ -91,13 +92,20 @@ public partial class SupplyStationWindow : Window
     {
         if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
+        if (page is "maintenance" or "diagnostics" or "logs" or "debug")
+        {
+            ShowManagementPage(page);
+            return;
+        }
+        dailyPage = page;
+        if (managementCenter is { IsVisible: true }) managementCenter.Close();
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "history" => PositionHistory(), "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= CreateOperationLogs(), _ => workContent };
+        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "history" => PositionHistory(), _ => workContent };
     }
     void UpdateStationClock()
     {
         var now = DateTimeOffset.Now;
-        StationClock.Text = now.ToString(ViewModel.IsCompact ? "HH:mm:ss" : "yyyy-MM-dd HH:mm:ss");
+        StationClock.Text = now.ToString("yyyy-MM-dd HH:mm:ss");
         StationClock.ToolTip = now.ToString("yyyy-MM-dd HH:mm:ss zzz");
     }
     SoftwareLogControl CreateOperationLogs()
@@ -139,6 +147,7 @@ public partial class SupplyStationWindow : Window
         ViewModel.ChuteScale = Math.Min(ClientArea.ActualWidth / 1366, ClientArea.ActualHeight / 768);
         ViewModel.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;
         ViewModel.IsTight = ClientArea.ActualHeight < 680;
+        ApplyNavigation();
         FontSize = UiTypography.Body; work.Margin = ViewModel.IsCompact ? new Thickness(0) : new Thickness(4);
     }
     void ViewportChanged(object sender, SizeChangedEventArgs e) => UpdateViewport();
@@ -187,13 +196,13 @@ public partial class SupplyStationWindow : Window
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
-            if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(this, ViewModel.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }
+            if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(ManagementDialogOwner, ViewModel.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }
             if (affected.Any(x => x.statistics?.HasUnsavedChanges == true) && !(ConfirmDiscardDrafts?.Invoke(1) ??
-                ConfigurationCloseGuard.ConfirmExit(this, "时区、自动维护设置或本机目标尚未保存。继续关闭将放弃这些修改。")))
+                ConfigurationCloseGuard.ConfirmExit(ManagementDialogOwner, "时区、自动维护设置或本机目标尚未保存。继续关闭将放弃这些修改。")))
             { RestoreAfterClose(); return; }
             var dirtyWindows = affected.Where(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance)).ToArray();
             var dirty = dirtyWindows.Length;
-            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(this, dirty,
+            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? await ConfigurationCloseGuard.ReviewUnsavedAsync(ManagementDialogOwner, dirty,
                 dirty == 1 ? dirtyWindows[0].ViewModel.SaveIncompleteEditorAsync : null, "关闭")))
             {
                 ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";

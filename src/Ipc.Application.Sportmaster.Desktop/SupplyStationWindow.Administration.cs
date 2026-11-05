@@ -1,4 +1,7 @@
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 namespace Ipc.Application.Sportmaster.Desktop;
@@ -6,46 +9,133 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public partial class SupplyStationWindow
 {
     SoftwareLogControl? logs;
-    string? restrictedReturn;
-    async void ManagementRenew_Click(object sender, RoutedEventArgs e)
+    ManagementCenterWindow? managementCenter;
+    Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
+    string dailyPage = "workstation";
+    bool openingManagement, centerClosing, centerCloseReady;
+    bool? navigationCollapsed;
+    public static readonly DependencyProperty IsNavigationCollapsedProperty = DependencyProperty.Register(nameof(IsNavigationCollapsed), typeof(bool), typeof(SupplyStationWindow), new PropertyMetadata(false));
+    public bool IsNavigationCollapsed { get => (bool)GetValue(IsNavigationCollapsedProperty); private set => SetValue(IsNavigationCollapsedProperty, value); }
+    void ApplyNavigation()
+    {
+        IsNavigationCollapsed = navigationCollapsed ?? ViewModel.IsCompact;
+        NavigationToggle.Content = IsNavigationCollapsed ? "展开菜单" : "收起菜单";
+        NavigationToggle.ToolTip = NavigationToggle.Content;
+        System.Windows.Automation.AutomationProperties.SetName(NavigationToggle, (string)NavigationToggle.Content);
+    }
+    void NavigationToggle_Click(object sender, RoutedEventArgs e) { navigationCollapsed = !IsNavigationCollapsed; ApplyNavigation(); }
+    async Task AuthenticateManagementAsync(bool newEntry = false)
     {
         if (ViewModel.Application is not IWorkstationAdministration service) return;
-        await ViewModel.RunAsync(async () => { await service.RenewManagementModeAsync(); await ViewModel.RefreshManagementModeAsync(); ViewModel.Message = "管理模式可继续使用十五分钟；已有调试轮次和维护票据仍遵守原期限。"; }, "延长管理模式");
+        // Each new visit requires a password, even if another window granted a temporary lease.
+        if (newEntry) await service.ExitManagementModeAsync();
+        await ViewModel.RefreshManagementModeAsync();
+        if (!ViewModel.IsManagementMode)
+        {
+            new ManagementModeWindow(service, "管理中心") { Owner = managementCenter is { IsVisible: true } center ? center : this }.ShowDialog();
+            await ViewModel.RefreshManagementModeAsync();
+        }
+        EnforceManagementModeView();
     }
     async void ManagementMode_Click(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.Application is not IWorkstationAdministration service) { ViewModel.Message = "此组合尚未提供管理模式。"; return; }
+        if (openingManagement) return;
+        if (managementCenter is { } center) { if (center.IsVisible) center.Activate(); return; }
+        openingManagement = true; ManagementCenterEntry.IsEnabled = false;
         try
         {
-            await ViewModel.RefreshManagementModeAsync();
-            if (ViewModel.IsManagementMode) await service.ExitManagementModeAsync();
-            else new ManagementModeWindow(service) { Owner = this }.ShowDialog();
-            await ViewModel.RefreshManagementModeAsync(); EnforceManagementModeView();
-            if (ViewModel.IsManagementMode && restrictedReturn is { } page) { restrictedReturn = null; SetPage(page); }
-            else if (ViewModel.IsManagementMode && ViewModel.SelectedPage == "workstation") SetPage("diagnostics");
+            await AuthenticateManagementAsync(newEntry: true);
+            if (ViewModel.IsManagementMode && !closing && !closed) SetPage("diagnostics");
         }
-        catch (Exception error) { ViewModel.Message = error.Message; }
+        catch (Exception) { ViewModel.Message = "管理中心未能打开，请稍后重试或检查管理授权服务。"; }
+        finally { openingManagement = false; ManagementCenterEntry.IsEnabled = true; }
+    }
+    async Task RenewManagementAsync()
+    {
+        if (ViewModel.Application is not IWorkstationAdministration service) return;
+        await ViewModel.RunAsync(async () => { await service.RenewManagementModeAsync(); await ViewModel.RefreshManagementModeAsync(); }, "延长管理授权");
+    }
+    async Task ManagePasswordAsync()
+    {
+        if (ViewModel.Application is not IWorkstationAdministration service || managementCenter is not { } center) return;
+        new ManagementModeWindow(service) { Owner = center }.ShowDialog();
+        await ViewModel.RefreshManagementModeAsync(); EnforceManagementModeView();
+    }
+    void ShowManagementPage(string page)
+    {
+        if (managementCenter is null)
+        {
+            centerCloseReady = false;
+            var center = new ManagementCenterWindow(ViewModel, NavigateManagement, async () =>
+            {
+                try { await AuthenticateManagementAsync(); }
+                catch (Exception) { ViewModel.Message = "管理密码验证未完成，请稍后重试。"; }
+            }, RenewManagementAsync, ManagePasswordAsync) { Owner = this };
+            managementCenter = center;
+            center.Closing += CloseManagementCenter;
+            center.Closed += (_, _) =>
+            {
+                center.DetachPage(); managementCenter = null;
+                ViewModel.SelectedPage = dailyPage; ApplyLayout();
+            };
+            // Queue the native modal loop so callers can finish loading or selecting the requested page.
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                if (managementCenter == center && !closing && !closed) center.ShowDialog();
+            }));
+        }
+        ViewModel.SelectedPage = page;
+        managementCenter.ShowPage(page switch
+        {
+            "maintenance" => maintenance,
+            "diagnostics" => diagnostics ??= CreateDiagnostics(),
+            "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync),
+            "logs" => logs ??= CreateOperationLogs(),
+            _ => throw new ArgumentException("未安装的管理页面")
+        });
+        managementCenter.UpdateAuthorization(ViewModel.ManagementStatus);
+    }
+    async void NavigateManagement(string page)
+    {
+        if (!ViewModel.IsManagementMode) return;
+        SetPage(page);
+        if (page == "maintenance") { pendingMaintenanceLoad = !ViewModel.HasLoadedConfiguration; await LoadRequestedMaintenanceAsync(); }
+    }
+    async void CloseManagementCenter(object? sender, CancelEventArgs e)
+    {
+        if (centerCloseReady || closing || closed) return;
+        e.Cancel = true;
+        if (centerClosing || sender is not ManagementCenterWindow center) return;
+        centerClosing = true; center.SetClosing(true);
+        try
+        {
+            await Dispatcher.Yield();
+            await ViewModel.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            if (ViewModel.Application is IWorkstationAdministration service) await service.ExitManagementModeAsync();
+            await ViewModel.RefreshManagementModeAsync();
+            centerCloseReady = true; center.Close();
+        }
+        catch (Exception) { center.ShowCloseFailure(); }
+        finally { centerClosing = false; center.SetClosing(false); }
     }
     async void Logs_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            await ViewModel.RefreshManagementModeAsync();
-            if (!ViewModel.IsManagementMode && ViewModel.Application is IWorkstationAdministration service)
-            { new ManagementModeWindow(service) { Owner = this }.ShowDialog(); await ViewModel.RefreshManagementModeAsync(); }
-            await ViewModel.RequireManagementModeAsync(); restrictedReturn = null; SetPage("logs");
+            await AuthenticateManagementAsync(newEntry: managementCenter is null);
+            if (ViewModel.IsManagementMode) SetPage("logs");
         }
-        catch (Exception error) { ViewModel.Message = error.Message; }
+        catch (Exception) { ViewModel.Message = "日志未能打开，请重新验证管理密码后再试。"; }
     }
     void EnforceManagementModeView()
     {
         maintenance.IsEnabled = ViewModel.IsManagementMode;
-        if (ViewModel.IsManagementMode && restrictedReturn is { } previous) { restrictedReturn = null; SetPage(previous); }
+        managementCenter?.UpdateAuthorization(ViewModel.ManagementStatus);
         if (!ViewModel.IsManagementMode)
         {
-            logs?.Revoke();
-            debug?.Revoke();
-            if (ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug") { restrictedReturn = ViewModel.SelectedPage; SetPage("workstation"); }
+            managementCenter?.DetachPage();
+            logs?.Revoke(); debug?.Revoke();
         }
+        else if (managementCenter is not null && ViewModel.SelectedPage is "maintenance" or "diagnostics" or "logs" or "debug") ShowManagementPage(ViewModel.SelectedPage);
     }
 }

@@ -18,27 +18,12 @@
      <Setter.Value>
       <DataTemplate>
        <StackPanel Orientation="Horizontal">
-        <Path Data="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.7" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="18" Height="18" Stretch="Uniform" Margin="2,0,10,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
-        <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+        <Path Data="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.7" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center" IsHitTestVisible="False"><Path.Style><Style TargetType="Path"><Setter Property="Margin" Value="2,0,10,0"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Margin" Value="2,0,0,0"/></DataTrigger></Style.Triggers></Style></Path.Style></Path>
+        <TextBlock Text="{Binding}" VerticalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
        </StackPanel>
       </DataTemplate>
      </Setter.Value>
     </Setter>
-   </Style>
-   <Style x:Key="ExpandedNavigation" TargetType="WrapPanel">
-    <Style.Triggers>
-     <DataTrigger Binding="{Binding IsCompact}" Value="True">
-      <Setter Property="Visibility" Value="Collapsed"/>
-     </DataTrigger>
-    </Style.Triggers>
-   </Style>
-   <Style x:Key="CompactNavigation" TargetType="Menu">
-    <Setter Property="Visibility" Value="Collapsed"/>
-    <Style.Triggers>
-     <DataTrigger Binding="{Binding IsCompact}" Value="True">
-      <Setter Property="Visibility" Value="Visible"/>
-     </DataTrigger>
-    </Style.Triggers>
    </Style>
   </Grid.Resources>
   <Grid.RowDefinitions>
@@ -47,142 +32,23 @@
    <RowDefinition Height="*"/>
    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
-  <Border Grid.ColumnSpan="2" Background="White" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1">
-   <Border.Style>
-    <Style TargetType="Border">
-     <Setter Property="Padding" Value="16,8"/>
-     <Style.Triggers>
-      <DataTrigger Binding="{Binding IsCompact}" Value="True">
-       <Setter Property="Padding" Value="12,4"/>
-      </DataTrigger>
-     </Style.Triggers>
-    </Style>
-   </Border.Style>
-   <DockPanel LastChildFill="True">
-    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="8,0,0,0">
-     <TextBlock x:Name="AccountIdentity" Text="{Binding AccountDisplay}" Focusable="True" FontSize="{x:Static type:UiTypography.Body}" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding AccountDisplay}" Margin="0,0,8,0">
-      <TextBlock.Style>
-       <Style TargetType="TextBlock">
-        <Setter Property="MaxWidth" Value="230"/>
-        <Style.Triggers>
-         <DataTrigger Binding="{Binding IsCompact}" Value="True">
-          <Setter Property="MaxWidth" Value="120"/>
-         </DataTrigger>
-         <DataTrigger Binding="{Binding AccountDisplay}" Value="">
-          <Setter Property="Visibility" Value="Collapsed"/>
-         </DataTrigger>
-        </Style.Triggers>
-       </Style>
-      </TextBlock.Style>
-     </TextBlock>
-     <parameters:ManagementModeMenu Status="{Binding ManagementStatus}" ModeActionRequested="ManagementMode_Click" RenewalRequested="ManagementRenew_Click"/>
-     <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationButton}"/>
-    </StackPanel>
-    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
-     <Image Source="pack://application:,,,/Ipc.Application.ParcelFlow.Desktop;component/Assets/cainiao.png" Width="24" Height="24" Stretch="Uniform" Margin="0,0,8,0" RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="菜鸟标志"/>
-     <TextBlock Text="菜鸟供包台" FontSize="{x:Static type:UiTypography.PageTitle}" FontWeight="{x:Static type:UiTypography.Emphasis}" VerticalAlignment="Center" ToolTip="{Binding Station}"/>
-     <TextBlock x:Name="StationClock" FontSize="{x:Static type:UiTypography.Label}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="16,0,0,0" AutomationProperties.Name="本机时间"/>
-    </StackPanel>
-    <Grid VerticalAlignment="Center">
-     <Menu Style="{StaticResource CompactNavigation}" Background="White">
-      <MenuItem Header="页面" MinHeight="44">
-       <MenuItem Header="作业" Click="Workstation_Click"/>
-       <MenuItem Header="记录" Click="History_Click"/>
-       <MenuItem Header="异常" Click="Exceptions_Click" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}"/>
-       <MenuItem Header="统计" Click="Statistics_Click" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}"/>
-       <MenuItem Header="设备与诊断" Click="Diagnostics_Click" Visibility="{Binding ManagementModeVisibility}"/>
-       <MenuItem Header="设置" Click="Maintenance_Click" Visibility="{Binding ManagementModeVisibility}"/>
-       <MenuItem Header="调试" Click="Debug_Click" Visibility="{Binding ManagementModeVisibility}"/>
-       <MenuItem Header="日志" Click="Logs_Click" Visibility="{Binding ManagementModeVisibility}"/>
-       <Separator/>
-      </MenuItem>
-     </Menu>
-    </Grid>
-   </DockPanel>
+  <Border x:Name="TimeHeader" Grid.ColumnSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1" Padding="16,8" MinHeight="48">
+   <TextBlock x:Name="StationClock" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
   </Border>
-  <Border x:Name="DailyNavigation" Grid.Row="1" Grid.RowSpan="2" Width="176" Background="White" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,1,0">
-   <Border.Style>
-    <Style TargetType="Border">
-     <Style.Triggers>
-      <DataTrigger Binding="{Binding IsCompact}" Value="True">
-       <Setter Property="Visibility" Value="Collapsed"/>
-      </DataTrigger>
-     </Style.Triggers>
-    </Style>
-   </Border.Style>
-   <DockPanel Margin="12,20,12,12">
+  <Border x:Name="DailyNavigation" Grid.Row="1" Grid.RowSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,1,0">
+   <Border.Style><Style TargetType="Border"><Setter Property="Width" Value="176"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Width" Value="64"/></DataTrigger></Style.Triggers></Style></Border.Style>
+   <DockPanel Margin="8,12,8,8" LastChildFill="True">
+    <Button x:Name="NavigationToggle" DockPanel.Dock="Top" Click="NavigationToggle_Click" Content="收起菜单" ToolTip="收起或展开菜单" AutomationProperties.Name="收起或展开菜单" Style="{StaticResource StationIconNavigation}" Tag="M 3,5 L 21,5 M 3,12 L 21,12 M 3,19 L 21,19" Margin="0,0,0,16"/>
+    <StackPanel DockPanel.Dock="Bottom">
+     <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationIconNavigation}" Tag="M 8,6 A 4,4 0 1 0 16,6 A 4,4 0 1 0 8,6 M 3,22 L 3,19 C 3,12 21,12 21,19 L 21,22" ToolTip="操作员身份" AutomationProperties.Name="操作员身份"/>
+     <Button x:Name="ManagementCenterEntry" Content="管理中心" Click="ManagementMode_Click" Style="{StaticResource StationIconNavigation}" Tag="M 5,10 L 19,10 19,22 5,22 Z M 8,10 L 8,6 A 4,4 0 0 1 16,6 L 16,10 M 12,15 L 12,18" ToolTip="管理中心（需要管理密码）" AutomationProperties.Name="管理中心，需要管理密码"/>
+    </StackPanel>
     <StackPanel>
-     <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="作业" Click="Workstation_Click" Margin="0,0,0,8" HorizontalContentAlignment="Left">
-      <Button.Style>
-       <Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}">
-        <Style.Triggers>
-         <DataTrigger Binding="{Binding SelectedPage}" Value="workstation">
-          <Setter Property="Background" Value="{StaticResource AccentBackground}"/>
-          <Setter Property="Foreground" Value="{StaticResource Accent}"/>
-          <Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/>
-         </DataTrigger>
-        </Style.Triggers>
-       </Style>
-      </Button.Style>
+     <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="作业" Click="Workstation_Click" Margin="0,0,0,8" ToolTip="作业" AutomationProperties.Name="作业">
+      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="workstation"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
-     <Button Tag="M 8,4 L 4,4 4,22 20,22 20,4 16,4 M 8,2 L 16,2 16,6 8,6 Z M 8,11 L 9,11 M 12,11 L 17,11 M 8,16 L 9,16 M 12,16 L 17,16" Content="记录" Click="History_Click" Margin="0,0,0,8" HorizontalContentAlignment="Left">
-      <Button.Style>
-       <Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}">
-        <Style.Triggers>
-         <DataTrigger Binding="{Binding SelectedPage}" Value="history">
-          <Setter Property="Background" Value="{StaticResource AccentBackground}"/>
-          <Setter Property="Foreground" Value="{StaticResource Accent}"/>
-          <Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/>
-         </DataTrigger>
-        </Style.Triggers>
-       </Style>
-      </Button.Style>
-     </Button>
-     <Button Content="异常处理" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}" Click="Exceptions_Click" MinHeight="44" Margin="0,0,0,8" HorizontalContentAlignment="Left" Tag="M 12,3 L 22,21 2,21 Z M 12,9 L 12,14 M 12,17 L 12,18"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="exceptions"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
-     <Button Content="统计与班次" Visibility="{Binding ExceptionAndStatisticsEntryVisibility}" Click="Statistics_Click" MinHeight="44" Margin="0,0,0,8" HorizontalContentAlignment="Left" Tag="M 3,3 L 3,21 22,21 M 7,17 L 7,12 M 12,17 L 12,7 M 17,17 L 17,4"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="statistics"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
-     <TextBlock Text="管理模式" Visibility="{Binding ManagementModeVisibility}" Foreground="{DynamicResource Muted}" FontSize="{x:Static type:UiTypography.Label}" Margin="12,12,0,8"/>
-     <Button Content="设备与诊断" Click="Diagnostics_Click" MinHeight="44" Margin="0,0,0,8" HorizontalContentAlignment="Left" Visibility="{Binding ManagementModeVisibility}" Tag="M 4,4 L 9,4 9,9 4,9 Z M 15,4 L 20,4 20,9 15,9 Z M 4,15 L 9,15 9,20 4,20 Z M 15,15 L 20,15 20,20 15,20 Z">
-      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="diagnostics"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
-     </Button>
-
-     <Button Tag="M 3,6 L 8,6 M 12,6 L 21,6 M 3,12 L 14,12 M 18,12 L 21,12 M 3,18 L 6,18 M 10,18 L 21,18 M 8,3 L 12,3 12,9 8,9 Z M 14,9 L 18,9 18,15 14,15 Z M 6,15 L 10,15 10,21 6,21 Z" Content="设置" Click="Maintenance_Click" Visibility="{Binding ManagementModeVisibility}" Margin="0,0,0,8" HorizontalContentAlignment="Left">
-      <Button.Style>
-       <Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}">
-        <Style.Triggers>
-         <DataTrigger Binding="{Binding IsSettingsNavigation}" Value="True">
-          <Setter Property="Background" Value="{StaticResource AccentBackground}"/>
-          <Setter Property="Foreground" Value="{StaticResource Accent}"/>
-          <Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/>
-         </DataTrigger>
-        </Style.Triggers>
-       </Style>
-      </Button.Style>
-     </Button>
-     <Button Tag="M 8,3 L 3,3 3,8 M 16,3 L 21,3 21,8 M 3,16 L 3,21 8,21 M 21,16 L 21,21 16,21 M 3,12 L 21,12 M 8,8 L 8,10 M 12,7 L 12,10 M 16,8 L 16,10 M 8,14 L 8,16 M 12,14 L 12,17 M 16,14 L 16,16" Content="调试" Click="Debug_Click" Visibility="{Binding ManagementModeVisibility}" Margin="0,8,0,0">
-      <Button.Style>
-       <Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}">
-        <Style.Triggers>
-         <DataTrigger Binding="{Binding SelectedPage}" Value="debug">
-          <Setter Property="Background" Value="{StaticResource AccentBackground}"/>
-          <Setter Property="Foreground" Value="{StaticResource Accent}"/>
-          <Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/>
-         </DataTrigger>
-        </Style.Triggers>
-       </Style>
-      </Button.Style>
-     </Button>
-     <Button Tag="M 5,2 L 15,2 20,7 20,22 5,22 Z M 15,2 L 15,7 20,7 M 9,12 L 16,12 M 9,16 L 16,16" Content="日志" Click="Logs_Click" Visibility="{Binding ManagementModeVisibility}">
-      <Button.Style>
-       <Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}">
-        <Style.Triggers>
-         <DataTrigger Binding="{Binding SelectedPage}" Value="logs">
-          <Setter Property="Background" Value="{StaticResource AccentBackground}"/>
-          <Setter Property="Foreground" Value="{StaticResource Accent}"/>
-          <Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/>
-         </DataTrigger>
-        </Style.Triggers>
-       </Style>
-      </Button.Style>
+     <Button Tag="M 8,4 L 4,4 4,22 20,22 20,4 16,4 M 8,2 L 16,2 16,6 8,6 Z M 8,11 L 9,11 M 12,11 L 17,11 M 8,16 L 9,16 M 12,16 L 17,16" Content="记录" Click="History_Click" Margin="0,0,0,8" ToolTip="记录" AutomationProperties.Name="记录">
+      <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationIconNavigation}"><Style.Triggers><DataTrigger Binding="{Binding SelectedPage}" Value="history"><Setter Property="Background" Value="{StaticResource AccentBackground}"/><Setter Property="Foreground" Value="{StaticResource Accent}"/><Setter Property="BorderBrush" Value="{StaticResource AccentBackground}"/></DataTrigger></Style.Triggers></Style></Button.Style>
      </Button>
     </StackPanel>
    </DockPanel>

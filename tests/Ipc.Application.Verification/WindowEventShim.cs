@@ -149,6 +149,23 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.PasswordBox LoginProof = new();
         void InitializeComponent() { }
         Ipc.Application.ParcelFlow.Desktop.SoftwareLogControl? logs;
+        string dailyPage = "workstation";
+        System.Windows.Window? managementCenter;
+        System.Windows.Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
+        void ApplyNavigation() { } // Geometry and input are verified by --management-center on Windows.
+        void ShowManagementPage(string page)
+        {
+            ViewModel.SelectedPage = page;
+            managementCenter ??= new System.Windows.Window();
+            PageHost.Content = page switch
+            {
+                "maintenance" => maintenance,
+                "diagnostics" => diagnostics ??= CreateDiagnostics(),
+                "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync),
+                "logs" => logs ??= CreateOperationLogs(),
+                _ => throw new ArgumentException("未安装的管理页面")
+            };
+        }
         void EnforceManagementModeView() { }
         System.Windows.FrameworkElement CreateDiagnostics() => new();
         void ShowObjectDiagnostics(Ipc.Application.ParcelFlow.Desktop.ParameterDiagnosticTarget target) { }

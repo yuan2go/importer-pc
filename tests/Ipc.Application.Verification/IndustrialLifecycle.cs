@@ -23,7 +23,15 @@ static class IndustrialLifecycle
         Reject<InvalidDataException>(() => ReleaseVersionPolicy.Compare("1.0.0-01", "1.0.0"), "leading-zero prerelease rejected");
         var current = new ApplicationRelease(2, "sportmaster", new string('a', 40), [], [], [], "1.2.0");
         Reject<InvalidDataException>(() => ReleaseVersionPolicy.RequireForward(current with { BusinessVersion = "1.1.0" }, current), "downgrade rejected");
-        Reject<InvalidDataException>(() => ReleaseVersionPolicy.RequireForward(current with { SourceCommit = new string('b', 40) }, current), "same-version different bytes rejected");
+        ReleaseVersionPolicy.RequireForward(current with { SourceCommit = new string('b', 40) }, current);
+        Check(true, "same business version with a different source supports overwrite installation");
+        var installedFiles = current with { Files = new() { ["program.dll"] = new string('c', 64) } };
+        ReleaseVersionPolicy.RequireForward(installedFiles with { Files = new() { ["program.dll"] = new string('d', 64) } }, installedFiles);
+        Check(true, "same version and source with rebuilt file bytes supports overwrite installation");
+        ReleaseVersionPolicy.RequireForward(current with { Files = installedFiles.Files }, current);
+        Check(true, "same-version overwrite may add or remove release files");
+        ReleaseVersionPolicy.RequireForward(current with { BusinessVersion = "1.2.0+test-build" }, current);
+        Check(true, "same-precedence build metadata does not block overwrite installation");
         ReleaseVersionPolicy.RequireForward(current, current); Check(true, "identical version/source supports repair");
         var parsed = InstallerCommandLine.Parse(["/quiet", "/norestart", @"/dataRoot=D:\station data", @"/log=D:\logs\result.json"]);
         Check(parsed.Action == "Install" && parsed.DataRoot == @"D:\station data" && Guid.TryParseExact(parsed.OperationId, "N", out _), "spaces and operation identity preserved");

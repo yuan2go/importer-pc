@@ -33,6 +33,57 @@ static class IndustrialLifecycle
         ReleaseVersionPolicy.RequireForward(current with { BusinessVersion = "1.2.0+test-build" }, current);
         Check(true, "same-precedence build metadata does not block overwrite installation");
         ReleaseVersionPolicy.RequireForward(current, current); Check(true, "identical version/source supports repair");
+        var removedRelease = Path.Combine(root, "removed-original-release", "application-release.json");
+        WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.0.0" }, removedRelease);
+        Check(!Directory.Exists(Path.GetDirectoryName(removedRelease)), "current SM package repairs a missing original release without recreating its files during preflight");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.1.0" }, removedRelease), "missing original release permits only the fixed SM 1.0.0 repair package");
+        Directory.CreateDirectory(Path.GetDirectoryName(removedRelease)!); File.WriteAllText(removedRelease, "{ original malformed manifest");
+        Reject<System.Text.Json.JsonException>(() => WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.0.0" }, removedRelease), "an existing malformed release manifest remains an integrity failure");
+        var interruptedTarget = Path.Combine(root, "interrupted-target");
+        var priorInstall = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "prior-release"), Path.Combine(root, "seed"), Path.Combine(root, "data"), "synthetic");
+        bool CanClose(string status, DeploymentLocation? prior, DeploymentLocation? actual, string? target = null)
+        {
+            var location = priorInstall with { ReleaseRoot = target ?? interruptedTarget };
+            object record = status == "ReadyToCommit"
+                ? new { Status = status, RequestIdentity = new string('a', 64), Previous = prior, Location = location, BusinessStarted = false }
+                : new { Status = status, RequestIdentity = new string('a', 64), Previous = prior, ReleaseRoot = location.ReleaseRoot, DataRoot = location.DataRoot };
+            using var journal = System.Text.Json.JsonDocument.Parse(Wire.Encode(record));
+            return WindowsDeploymentSetup.CanCloseUncommittedInstallation(journal.RootElement, actual);
+        }
+        Check(CanClose("Prepared", null, null), "interrupted fresh install with no committed registration can be closed before a new install");
+        Check(CanClose("ReadyToCommit", priorInstall, priorInstall), "interrupted overwrite with the exact previous registration can be closed");
+        Check(!CanClose("ReadyToCommit", priorInstall, priorInstall with { ReleaseRoot = interruptedTarget }), "a committed target never becomes a precommit failure");
+        Check(!CanClose("Prepared", priorInstall, priorInstall with { SourceCommit = new string('b', 40) }), "changed registration preserves the unresolved original transaction");
+        Check(!CanClose("Completed", priorInstall, priorInstall), "completed original operations are never rewritten by interruption recovery");
+        using (var incomplete = System.Text.Json.JsonDocument.Parse("{\"Status\":\"Prepared\"}"))
+            Check(!WindowsDeploymentSetup.CanCloseUncommittedInstallation(incomplete.RootElement, null), "incomplete journal is not proof of an uncommitted installation");
+        var leaseRoot = Path.Combine(root, "ended-session-leases"); Directory.CreateDirectory(leaseRoot);
+        var dataRoot = Path.Combine(root, "stopped-station"); Directory.CreateDirectory(dataRoot);
+        var original = Path.Combine(dataRoot, "sportmaster.db"); File.WriteAllText(original, "SYNTHETIC original requests and historical inputs");
+        var businessHash = Wire.FileHash(original);
+        var lifetime = "application-lifetime:sportmaster";
+        File.WriteAllText(Path.Combine(leaseRoot, Wire.Hash(lifetime) + ".lease"), "pid=ended-session");
+        using (ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", dataRoot))
+        {
+            Reject<IOException>(() => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", dataRoot).Dispose(), "running station blocks installation ownership");
+            Reject<IOException>(() => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", Path.Combine(root, "different-data")).Dispose(), "running station cannot be bypassed with another data directory");
+        }
+        Check(Directory.GetFiles(leaseRoot, "*.lease").Length == 0, "closing the station removes session locks including a stale previous-session file");
+        var stationRoot = Path.Combine(dataRoot, "Production", "station-01", "sportmaster"); Directory.CreateDirectory(stationRoot);
+        var stationLock = Path.Combine(stationRoot, Wire.Hash("application-owner") + ".lease");
+        using (new ResourceLease(stationRoot, ["application-owner"]))
+        {
+            Reject<IOException>(() => new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default).Dispose(), "running station with only a per-station owner still blocks installation");
+            var closeAndRetry = false;
+            try { using var blocked = new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default); }
+            catch (IOException error) when (!OperatingSystem.IsWindows() || (error.HResult & 0xFFFF) is 32 or 33) { closeAndRetry = true; }
+            Check(closeAndRetry, "running station reaches the uninstall sharing-violation close-and-retry handler");
+        }
+        using (new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default))
+            Check(Wire.FileHash(original) == businessHash, "stopped station admits installation without reading or rewriting original business data");
+        Check(!File.Exists(stationLock), "installation reclaims ended per-station ownership files after closing their handles");
+        Reject<InvalidOperationException>(() => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", dataRoot, () => throw new InvalidOperationException("Synthetic recheck failure")).Dispose(), "failed deployment recheck remains an error");
+        Check(Directory.GetFiles(leaseRoot, "*.lease").Length == 0, "failed recheck releases ownership and removes partial session files");
         var parsed = InstallerCommandLine.Parse(["/quiet", "/norestart", @"/dataRoot=D:\station data", @"/log=D:\logs\result.json"]);
         Check(parsed.Action == "Install" && parsed.DataRoot == @"D:\station data" && Guid.TryParseExact(parsed.OperationId, "N", out _), "spaces and operation identity preserved");
         Check(InstallerCommandLine.Parse(["/QUIET", "/repair"]).Action == "Repair", "case insensitive switches");

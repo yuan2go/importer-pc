@@ -50,7 +50,9 @@ public static class ApplicationRootOwnership
     {
         if (OperatingSystem.IsWindows() && !Path.GetPathRoot(Path.GetFullPath(leaseRoot))!.Equals(@"D:\", StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("应用停机所有权须使用管理员批准的D盘机器租约根。");
-        var scope = new ResourceLease(leaseRoot, ["application-lifetime:" + application, Resource(application, dataRoot)]);
+        // DeleteOnClose lets the OS remove ended-session files atomically. Never
+        // delete a lock pathname by hand while another process can still own it.
+        var scope = new ResourceLease(leaseRoot, ["application-lifetime:" + application, Resource(application, dataRoot)], createDirectory: true, removeOnClose: true);
         try { verifyDeployment?.Invoke(); return scope; }
         catch (Exception original)
         {

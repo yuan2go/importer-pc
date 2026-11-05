@@ -84,7 +84,8 @@ public sealed class ModuleCatalog(IEnumerable<IRuntimeModule> modules) : IAsyncD
 }
 
 // FileShare.None covers the same canonical root across processes/login sessions. The file
-// is retained; removing a lock pathname could create a second lock identity. This mechanism
+// is retained by default; scoped session locks use OS DeleteOnClose. Manually removing
+// a held lock pathname could create a second lock identity. This mechanism
 // does not prove or replace the device vendor's control-ownership protocol.
 public sealed class ResourceLease : IDisposable
 {
@@ -92,7 +93,7 @@ public sealed class ResourceLease : IDisposable
     readonly string[] resources;
     public string[] Resources => locks.Count == resources.Length ? resources.ToArray() : [];
     public ResourceLease(string root, IEnumerable<string> resources) : this(root, resources, createDirectory: true) { }
-    internal ResourceLease(string root, IEnumerable<string> resources, bool createDirectory)
+    internal ResourceLease(string root, IEnumerable<string> resources, bool createDirectory, bool removeOnClose = false)
     {
         this.resources = resources.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
         if (createDirectory) Directory.CreateDirectory(root);
@@ -100,7 +101,8 @@ public sealed class ResourceLease : IDisposable
         {
             foreach (var resource in this.resources)
             {
-                var stream = new FileStream(Path.Combine(root, Wire.Hash(resource) + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                var stream = new FileStream(Path.Combine(root, Wire.Hash(resource) + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None,
+                    4096, removeOnClose ? FileOptions.DeleteOnClose : FileOptions.None);
                 locks.Add(stream);
                 stream.SetLength(0); using var writer = new StreamWriter(stream, leaveOpen: true);
                 writer.Write($"pid={Environment.ProcessId}; resource={resource}"); writer.Flush(); stream.Flush(true);

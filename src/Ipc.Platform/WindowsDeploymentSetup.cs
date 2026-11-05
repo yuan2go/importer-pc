@@ -89,13 +89,14 @@ public static partial class WindowsDeploymentSetup
         if (!Directory.Exists(dataRoot)) new DirectoryInfo(dataRoot).Create(MachineRuntimeSetup.DirectoryAcl(sid, FileSystemRights.Modify));
         PreviewDataAccess(dataRoot, sid.Value);
     }
-    [SupportedOSPlatform("windows")]
-    public static void PrepareInitialDataRoot(string dataRoot, string runtimeSid)
+    internal static void RequireInstallationVersion(ApplicationRelease candidate, string previousReleaseFile)
     {
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority(); PreviewDataAccess(dataRoot, runtimeSid);
-        MachineRuntimeSetup.InstallForAccount(runtimeSid);
-        if (!Directory.Exists(dataRoot)) new DirectoryInfo(dataRoot).Create(MachineRuntimeSetup.DirectoryAcl(new SecurityIdentifier(runtimeSid), FileSystemRights.Modify));
-        PreviewDataAccess(dataRoot, runtimeSid);
+        if (candidate.ApplicationId == "sportmaster" && !File.Exists(previousReleaseFile))
+        {
+            if (candidate.BusinessVersion != "1.0.0") throw new InvalidDataException("修复安装须使用当前 1.0.0 完整安装包。");
+            return;
+        }
+        ReleaseVersionPolicy.RequireForward(candidate, Wire.Decode<ApplicationRelease>(File.ReadAllText(previousReleaseFile)));
     }
     [SupportedOSPlatform("windows")]
     public static DeploymentLocation Install(WindowsDeploymentRequest request, Action<WindowsDeploymentRequest> validateConfiguration,
@@ -134,12 +135,12 @@ public static partial class WindowsDeploymentSetup
         if (execution is { Committing: false }) execution.BeginCommit(MaintenanceStage.InstallingMachine);
         else execution?.Report(MaintenanceStage.InstallingMachine);
         MachineRuntimeSetup.InstallForAccount(request.RuntimeAccountSid);
+        using var rootOwnership = request.ApplicationId == "sportmaster" ? new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), request.ApplicationId, data, execution?.Token ?? default) : null;
         TrustedProgramRoots.Approve(vendor, data, sid); ProtectedDirectory(Path.Combine(vendor, "releases"), sid);
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-        using var rootOwnership = request.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(request.ApplicationId, data) : null;
         var before = Current(request.ApplicationId);
-        RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
+        RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId, closeUncommitted: request.ApplicationId == "sportmaster");
         RequireNoUnresolvedLifecycle(request.ApplicationId);
         // A partial permanent deletion must never become an empty working station.
         if (before?.LifecycleState is "Purging" or "PartiallyPurged")
@@ -147,8 +148,7 @@ public static partial class WindowsDeploymentSetup
         if (before is { LifecycleState: "Installed" })
         {
             var candidateRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media.Root, "app", "application-release.json")));
-            var previousRelease = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(before.ReleaseRoot, "app", "application-release.json")));
-            ReleaseVersionPolicy.RequireForward(candidateRelease, previousRelease);
+            RequireInstallationVersion(candidateRelease, Path.Combine(before.ReleaseRoot, "app", "application-release.json"));
         }
         if ((before is null ? null : Wire.FileHash(Registration(request.ApplicationId))) != request.ExpectedRegistrationHash)
             throw new InvalidOperationException("部署登记在计划审阅后变化；重新审阅，不覆盖并行安装");
@@ -170,7 +170,7 @@ public static partial class WindowsDeploymentSetup
             ProtectedDirectory(Path.Combine(MachineRoot, "configuration"), sid);
             var config = request.RepairSeed ? Path.Combine(MachineRoot, "configuration", request.ApplicationId + "-" + Wire.Id()) :
                 before?.ConfigurationDirectory ?? Path.Combine(MachineRoot, "configuration", request.ApplicationId);
-            if (!Directory.Exists(config))
+            if (!File.Exists(Path.Combine(config, "business.json")))
             {
                 // Publish a complete seed directory once; upgrades retain it byte for byte.
                 var temporary = config + "." + Wire.Id() + ".new"; ProtectedDirectory(temporary, sid);
@@ -180,7 +180,18 @@ public static partial class WindowsDeploymentSetup
                     new FileInfo(target).SetAccessControl(MachineRuntimeSetup.FileAcl(sid));
                     if (Wire.FileHash(target) != request.ConfigurationHashes[Path.GetFileName(source)]) throw new InvalidDataException("Configuration source changed while copying");
                 }
-                Directory.Move(temporary, config);
+                if (!Directory.Exists(config)) Directory.Move(temporary, config);
+                else
+                {
+                    MachineRuntimePolicy.RequireProtectedAcl(new DirectoryInfo(config), null);
+                    foreach (var staged in Directory.GetFiles(temporary))
+                    {
+                        var target = Path.Combine(config, Path.GetFileName(staged));
+                        if (File.Exists(target)) File.Delete(staged); // Retain every existing configuration file.
+                        else File.Move(staged, target);
+                    }
+                    Directory.Delete(temporary);
+                }
             }
             else { MachineRuntimePolicy.RequireProtectedEvidence(Path.Combine(config, "business.json")); validateConfiguration(request with { ConfigurationSource = config }); }
 

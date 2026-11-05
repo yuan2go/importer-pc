@@ -3,7 +3,7 @@ namespace Ipc.Platform;
 // Observations only. DeploymentLocation remains the sole success authority.
 public enum WindowsInstallationStage
 {
-    WaitingForAuthorization, CheckingResponsibilities, PreparingBackup, CopyingFiles,
+    WaitingForAuthorization, CheckingInstallation, CopyingFiles = 3,
     PreparingConfiguration, InstallingComponents, RegisteringManagementService,
     CommittingInstallation, CreatingShortcuts, RegisteringApplication, VerifyingReceipt
 }

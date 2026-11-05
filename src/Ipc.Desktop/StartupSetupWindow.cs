@@ -47,6 +47,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     string newStation = "", selectedProgram = "";
     string? enteredData;
     string? installationRecordDirectory;
+    string? preparedConfigurationDirectory;
     readonly TextBlock recordFeedback = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 10, 0, 0) }.Themed(TextBlock.ForegroundProperty, "Danger");
     bool selectedStartMenu = true, selectedDesktop = true, advancedExpanded;
     int step;
@@ -89,6 +90,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         };
         foreach (var button in Actions.Children.OfType<Button>()) { button.MinHeight = 40; button.Margin = new(10, 16, 0, 0); }
         Render(); Loaded += async (_, _) => await Run(Next);
+        Closed += (_, _) =>
+        {
+            if (CanCleanPreparation && preparedConfigurationDirectory is { } directory && Directory.Exists(directory))
+            {
+                File.Delete(Path.Combine(directory, "business.json")); Directory.Delete(directory);
+            }
+        };
         Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); Message("正在取消安装文件准备，请稍候…"); } };
     }
     string ApplicationId => ParcelStartupServices.ApplicationId;
@@ -209,9 +217,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             if (InlineReviewReady)
             {
                 Section("本次安装影响");
-                Note("本次操作：" + installationKind + "。保留现有数据与配置；原软件须完全退出，安装前仍会核对实际责任和资源。安装完成后不会自动连接设备。");
-                if (reviewed!.BackupDestination is { } backup) Summary("备份位置", backup, bounded: true);
-                else Note("本次检查未发现需要备份的原业务库；执行前条件变化时须重新核对，不会用空目录替代原数据。");
+                Note("本次操作：" + installationKind + "。保留现有账户、数据与配置；请先关闭供包台。安装会核验程序已退出并释放资源，不要求清空作业或暂停供包。");
                 Note("安装需要 Windows 管理员授权，与软件管理密码无关。");
                 foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
             }
@@ -250,7 +256,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             if (ApplicationId == "sportmaster")
                 Note("相机采图、条码识别和 RCS 接口已随软件安装，无需另装组件。安装完成不代表相机或 RCS 已连接。程序和数据按本机存储规则放在 D 盘。");
             if (current is not null && !InlineReviewReady) Message("本次操作：" + installationKind + "。账户、数据和配置将保留。");
-            if (current is not null && !InlineReviewReady) Note("本次" + installationKind + "将保留账户、数据目录和配置；执行前会检查未处理完的作业并完整备份。" +
+            if (current is not null && !InlineReviewReady) Note("本次" + installationKind + "将保留账户、数据目录和配置；请先关闭供包台，安装时会确认资源已释放。" +
                 (current.LifecycleState != "Installed" ? "重新安装不会清除已有业务记录。" : ""));
             if (preflightError.Length != 0)
             {
@@ -274,7 +280,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Section("安装位置"); Summary("程序目录", r.ProgramRoot!); Summary("数据目录", r.DataRoot);
             Section("安装设置");
             Summary("开始菜单", r.Shortcuts!.StartMenu ? "创建快捷方式" : "不创建快捷方式"); Summary("桌面", r.Shortcuts.Desktop ? "创建快捷方式" : "不创建快捷方式");
-            if (r.BackupDestination is not null) { Section("作业检查与备份"); Note("安装前会检查未处理完的作业并完整备份；检查不通过时停止安装。"); Summary("备份位置", r.BackupDestination); }
+            Note("请先关闭供包台；安装保留现有账户、数据与配置。");
             foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
             Note("安装需要 Windows 管理员授权（与软件管理密码无关）。"); next.Content = "安装";
         }
@@ -331,8 +337,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         installationStage.Text = value switch
         {
             WindowsInstallationStage.WaitingForAuthorization => "等待 Windows 授权；如有提示，请在电脑上确认。",
-            WindowsInstallationStage.CheckingResponsibilities => "正在检查安装条件",
-            WindowsInstallationStage.PreparingBackup => "正在检查已安装版本并创建完整备份",
+            WindowsInstallationStage.CheckingInstallation => "正在确认供包台已关闭",
             WindowsInstallationStage.CopyingFiles => "正在复制并校验程序文件",
             WindowsInstallationStage.PreparingConfiguration => "正在准备配置与数据目录",
             WindowsInstallationStage.InstallingComponents => "正在安装已核验组件",
@@ -416,7 +421,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             CaptureInputs(); preflightError = ""; Render(); var current = CurrentInstallation(ApplicationId);
             var selectedAccount = current?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
             var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
-            if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
+            if (ApplicationId == "sportmaster")
+            {
+                if (preparedConfigurationDirectory is { } previous && Directory.Exists(previous)) { File.Delete(Path.Combine(previous, "business.json")); Directory.Delete(previous); }
+                preparedConfigurationDirectory = Path.Combine(Path.GetTempPath(), "ipc-install-seed-" + Wire.Id());
+                configPath = await Task.Run(() => ParcelStartupServices.PrepareInstallationConfiguration(current, preparedConfigurationDirectory, enteredData));
+            }
+            else if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
             var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();
             var preview = await RunMaintenance("检查安装选项\n安装包：" + media!.Root + "\n程序：" + selectedProgram + "\n数据：" + enteredData + "\n取消将在当前文件或组件核验结束后停止。", (progress, token) =>
             {
@@ -430,8 +441,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             }, readOnly: true);
             var reviewedCandidate = preview.candidate;
             var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewedCandidate.ConfigurationSource, "business.json")));
-            if (current is not null || File.Exists(Path.Combine(reviewedCandidate.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db"))) reviewedCandidate = reviewedCandidate with { BackupDestination = Path.Combine(reviewedCandidate.DataRoot, "backups", ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db") };
-            // Publish UI readiness only after every preview/seed/backup decision succeeds.
+            // Publish UI readiness only after every preview/seed check succeeds.
             // The execution path still rechecks the original registration CAS and owners.
             if (ApplicationId == "sportmaster") HideCompletedReadOnlyProgress();
             reviewedLocation = current;

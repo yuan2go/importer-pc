@@ -31,7 +31,7 @@ static class IndustrialOpaqueRemoval
             Reject<InvalidDataException>(() => ApplicationRootOwnership.RequireDPaths([@"D:\"]), "volume root rejected as deployment storage");
             Reject<InvalidDataException>(() => ApplicationRootOwnership.RequireDPaths(["relative"]), "relative policy root rejected before setup effects");
         }
-        using (var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", data, default))
+        using (var scope = new StoppedApplicationOwnership(leaseRoot, "sportmaster", data, default))
         {
             Check(scope.Directories.Length == 2, "both existing station/mode roots discovered without decoding corrupt originals");
             Reject<IOException>(() => { using var competitor = ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", data); }, "global fence prevents a new runtime startup during opaque maintenance");
@@ -41,24 +41,24 @@ static class IndustrialOpaqueRemoval
             Check(hashes.All(p => Wire.FileHash(p.Key) == p.Value), "unreadable seed/DB bytes are never parsed or changed by ownership inspection");
         }
         using (ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", data))
-            Reject<IOException>(() => { using var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", data, default); }, "existing root owner prevents opaque removal inspection");
+            Reject<IOException>(() => { using var scope = new StoppedApplicationOwnership(leaseRoot, "sportmaster", data, default); }, "existing root owner prevents opaque removal inspection");
         using (new ResourceLease(simulation, ["application-owner"]))
-            Reject<IOException>(() => { using var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", data, default); }, "existing per-station legacy owner cannot be bypassed");
+            Reject<IOException>(() => { using var scope = new StoppedApplicationOwnership(leaseRoot, "sportmaster", data, default); }, "existing per-station legacy owner cannot be bypassed");
         using (ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", data))
             Check(true, "partial discovery failure releases acquired global fence");
         using (new ResourceLease(old, ["application-owner"]))
             Check(true, "partial discovery failure releases earlier station owners");
         var missing = Path.Combine(root, "missing-original-data");
-        using (var empty = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", missing, default))
+        using (var empty = new StoppedApplicationOwnership(leaseRoot, "sportmaster", missing, default))
             Check(empty.Directories.Length == 0 && !Directory.Exists(missing), "missing original data remains missing; no empty station or database created");
         using (var cancellation = new CancellationTokenSource())
         {
             cancellation.Cancel(); var untouched = Path.Combine(root, "cancelled-lease-root");
-            Reject<OperationCanceledException>(() => { using var scope = new OpaqueRemovalOwnership(untouched, "sportmaster", missing, cancellation.Token); }, "cancellation accepted before first ownership side effect");
+            Reject<OperationCanceledException>(() => { using var scope = new StoppedApplicationOwnership(untouched, "sportmaster", missing, cancellation.Token); }, "cancellation accepted before first ownership side effect");
             Check(!Directory.Exists(untouched), "pre-cancelled inspection creates no lease directory");
         }
         var fileRoot = Path.Combine(root, "not-a-directory"); File.WriteAllText(fileRoot, "synthetic original");
-        Reject<InvalidDataException>(() => OpaqueRemovalOwnership.Discover("sportmaster", fileRoot, default), "file replacing a data directory cannot be treated as an empty station");
+        Reject<InvalidDataException>(() => StoppedApplicationOwnership.Discover("sportmaster", fileRoot, default), "file replacing a data directory cannot be treated as an empty station");
         var deployment = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "release"), Path.Combine(root, "config"), data, "synthetic");
         DeploymentMedia.RequireRuntimeLocation(deployment, deployment, data, deployment.ConfigurationDirectory);
         Check(true, "runtime launch accepts the exact installed identity under ownership");
@@ -95,7 +95,7 @@ static class IndustrialOpaqueRemoval
         await using (var blocked = new ManualSupplyHarness(workspace, Path.Combine(root, "blocked-start"), deferred: true))
         {
             blocked.RootOwnership = () => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", blocked.Launch.DataRoot);
-            using (new OpaqueRemovalOwnership(leaseRoot, "sportmaster", blocked.Launch.DataRoot, default))
+            using (new StoppedApplicationOwnership(leaseRoot, "sportmaster", blocked.Launch.DataRoot, default))
             {
                 try { await blocked.StartAsync(); throw new Exception("startup bypassed root fence"); }
                 catch (IOException) { Check(true, "actual Application startup cannot pass the injected global fence"); }
@@ -107,17 +107,17 @@ static class IndustrialOpaqueRemoval
         {
             running.RootOwnership = () => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", running.Launch.DataRoot);
             await running.StartAsync();
-            Reject<IOException>(() => { using var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default); }, "actual running Application keeps opaque maintenance out");
+            Reject<IOException>(() => { using var scope = new StoppedApplicationOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default); }, "actual running Application keeps opaque maintenance out");
             await running.App.StopAsync(default);
-            Reject<IOException>(() => { using var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default); }, "Stop alone does not release global ownership before full disposal");
+            Reject<IOException>(() => { using var scope = new StoppedApplicationOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default); }, "Stop alone does not release global ownership before full disposal");
             running.Factory.FailDisposal = true;
             try { await running.App.DisposeAsync(); throw new Exception("factory release failure hidden"); }
             catch (IOException) { Check(running.App.HasUnreleasedResources, "actual failed factory disposal keeps resource ownership explicit"); }
-            Reject<IOException>(() => { using var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default); }, "failed resource release retains global maintenance fence");
+            Reject<IOException>(() => { using var scope = new StoppedApplicationOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default); }, "failed resource release retains global maintenance fence");
             running.Factory.FailDisposal = false; await running.App.DisposeAsync();
             var database = Path.Combine(running.Launch.DataRoot, running.Config.Mode.ToString(), running.Config.StationId, "sportmaster", "sportmaster.db");
             var databaseHash = Wire.FileHash(database);
-            using (var scope = new OpaqueRemovalOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default))
+            using (var scope = new StoppedApplicationOwnership(leaseRoot, "sportmaster", running.Launch.DataRoot, default))
                 Check(scope.Directories.Length == 1 && Wire.FileHash(database) == databaseHash, "complete disposal allows ownership inspection without reopening actual SQLite");
         }
         Check(hashes.All(p => Wire.FileHash(p.Key) == p.Value), "all corrupt original canaries retained after every refusal and cleanup");

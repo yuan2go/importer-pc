@@ -6,7 +6,8 @@ public sealed record InstallationInspection(string Status, string Detail, Deploy
 
 public static partial class WindowsDeploymentSetup
 {
-    static void RequireNoUnresolvedInstallation(string application, string? operationId)
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    static void RequireNoUnresolvedInstallation(string application, string? operationId, bool closeUncommitted = false)
     {
         var directory = Path.Combine(MachineRoot, "deployments");
         foreach (var file in Directory.EnumerateFiles(directory, application + ".setup-*.json"))
@@ -28,9 +29,37 @@ public static partial class WindowsDeploymentSetup
                     continue;
             }
             var status = document.RootElement.GetProperty("Status").GetString();
+            if (closeUncommitted && CanCloseUncommittedInstallation(document.RootElement, Current(application)))
+            {
+                var closed = System.Text.Json.Nodes.JsonNode.Parse(document.RootElement.GetRawText())!;
+                closed["Status"] = "Failed";
+                closed["RecoveredFromStatus"] = status;
+                closed["RecoveryReason"] = "Exclusive installation ownership confirmed the original registration was not committed";
+                var policy = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(Path.Combine(MachineRoot, "runtime-policy.json")));
+                WriteProtected(file, closed, new System.Security.Principal.SecurityIdentifier(policy.RuntimeAccountSid));
+                continue;
+            }
             if (status is not ("Completed" or "Failed"))
                 throw new InstallationOutcomeUnknownException("存在尚未核对完成的原安装，请先核对该次结果，不创建新操作。");
         }
+    }
+
+    // Called only while the real installation writer lease is held. A changed
+    // registration, committed target or incomplete evidence must remain unresolved.
+    internal static bool CanCloseUncommittedInstallation(JsonElement journal, DeploymentLocation? current)
+    {
+        if (!journal.TryGetProperty("Status", out var status) || status.GetString() is not ("Prepared" or "ReadyToCommit") ||
+            !journal.TryGetProperty("RequestIdentity", out var identity) || !ExtensionSchema.IsHash(identity.GetString() ?? "") ||
+            !journal.TryGetProperty("Previous", out var previous)) return false;
+        var targetRecord = status.GetString() == "ReadyToCommit" && journal.TryGetProperty("Location", out var location) ? location : journal;
+        if (!targetRecord.TryGetProperty("ReleaseRoot", out var release) || release.GetString() is not { } target || !Path.IsPathFullyQualified(target) ||
+            !targetRecord.TryGetProperty("DataRoot", out var data) || data.GetString() is not { } dataRoot || !Path.IsPathFullyQualified(dataRoot)) return false;
+        if (current is not null && string.Equals(Path.GetFullPath(current.ReleaseRoot), Path.GetFullPath(target), StringComparison.OrdinalIgnoreCase)) return false;
+        if (previous.ValueKind == JsonValueKind.Null) return current is null;
+        if (current is null) return false;
+        var original = Wire.Decode<DeploymentLocation>(previous.GetRawText());
+        return string.Equals(Path.GetFullPath(current.DataRoot), Path.GetFullPath(dataRoot), StringComparison.OrdinalIgnoreCase) &&
+            Wire.Encode(original) == Wire.Encode(current);
     }
 
     public static void RequireCurrentInstallationRequest(WindowsDeploymentRequest request)

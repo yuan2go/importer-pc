@@ -21,6 +21,29 @@ static partial class Program
         var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"));
         var type = assembly.GetType("Ipc.Desktop.StartupSetupWindow", true)!;
         var services = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(assembly.Location)!, "Ipc.Assembly.dll")).GetType("Ipc.Assembly.ParcelStartupServices", true)!;
+        var repairRoot = Path.Combine(evidence, "missing-registered-configuration");
+        var repairData = Path.Combine(repairRoot, "data");
+        var repairConfiguration = new SportmasterFlow().InitialConfiguration() with { StationId = "retained-station-17" };
+        var repairArea = Path.Combine(repairData, repairConfiguration.Mode.ToString(), repairConfiguration.StationId, "sportmaster"); Directory.CreateDirectory(repairArea);
+        var repairLedger = Path.Combine(repairArea, "configuration.json");
+        File.WriteAllText(repairLedger, Wire.Encode(CurrentConfigurationFixture.Create(23, repairConfiguration, (ParcelConfiguration?)null, "Effective", (string?)null)));
+        var repairDatabase = Path.Combine(repairArea, "sportmaster.db"); File.WriteAllText(repairDatabase, "SYNTHETIC original requests; not a readable database");
+        var originalLedgerHash = Wire.FileHash(repairLedger); var originalDatabaseHash = Wire.FileHash(repairDatabase);
+        var repairInstalled = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(repairRoot, "old-release"), Path.Combine(repairRoot, "missing-machine-configuration"), repairData, MachineRuntimePolicy.SharedUsersSid);
+        var repairSeed = (string)services.GetMethod("PrepareInstallationConfiguration")!.Invoke(null, [repairInstalled, Path.Combine(repairRoot, "prepared"), repairData])!;
+        var repairRequest = new WindowsDeploymentRequest(evidence, "sportmaster", new string('b', 40), repairInstalled.RuntimeAccountSid, repairData, repairSeed, repairConfiguration.Mode, null, null, [],
+            ConfigurationHashes: new() { ["business.json"] = Wire.FileHash(Path.Combine(repairSeed, "business.json")) }, ExpectedRegistrationHash: new string('c', 64));
+        var validateSeed = services.GetMethod("ValidateSeed", BindingFlags.NonPublic | BindingFlags.Static, null, [typeof(WindowsDeploymentRequest), typeof(DeploymentLocation)], null)!;
+        validateSeed.Invoke(null, [repairRequest, repairInstalled]);
+        Check(Wire.Encode(Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(repairSeed, "business.json")))) == Wire.Encode(repairConfiguration),
+            "actual production preparation and preflight accept a missing registered directory and retain the saved nondefault site configuration");
+        Check(!Directory.Exists(repairInstalled.ConfigurationDirectory) && Wire.FileHash(repairLedger) == originalLedgerHash && Wire.FileHash(repairDatabase) == originalDatabaseHash,
+            "missing-directory preflight creates only a private launch seed and never writes machine configuration or original business data");
+        var registrationLostSeed = (string)services.GetMethod("PrepareInstallationConfiguration")!.Invoke(null, [null, Path.Combine(repairRoot, "registration-lost"), repairData])!;
+        var registrationLostRequest = repairRequest with { ConfigurationSource = registrationLostSeed, ExpectedRegistrationHash = null, ConfigurationHashes = new() { ["business.json"] = Wire.FileHash(Path.Combine(registrationLostSeed, "business.json")) } };
+        validateSeed.Invoke(null, [registrationLostRequest, null]);
+        Check(Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(registrationLostSeed, "business.json"))).StationId == repairConfiguration.StationId,
+            "actual preparation and preflight recover a nondefault original site even when machine registration is missing");
         var readResponse = services.GetMethod("ReadMaintenanceResponse", BindingFlags.NonPublic | BindingFlags.Static)!;
         var writeProgress = services.GetMethod("WriteInstallationProgress", BindingFlags.NonPublic | BindingFlags.Static)!;
         var completeResponse = services.GetMethod("CompleteMaintenanceResponse", BindingFlags.NonPublic | BindingFlags.Static)!;
@@ -143,14 +166,14 @@ static partial class Program
         Check((int)type.GetField("step", flags)!.GetValue(window)! == 1 && Text(window).Contains("本次安装影响") &&
             !Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetAutomationId(b) == "Maintenance.Progress" && b.IsVisible),
             "successful read-only preview stays on the options page and hides completed technical progress only");
-        Check(Box("备份位置").Text == request.BackupDestination && request.BackupDestination is not null,
-            "actual frozen backup target is visible before any installation submission");
+        Check(request.BackupDestination is null && !Text(window).Contains("备份位置") && Text(window).Contains("请先关闭供包台"),
+            "overwrite requires a stopped workstation without business inspection or a mandatory backup target");
         Check(installCalls == 0 && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "安装")).IsDefault,
             "read-only preview cannot install or make installation the default Enter action");
         var impact = Descendants(window).OfType<TextBlock>().Single(t => t.Text == "本次安装影响");
         var impactScroll = Descendants(window).OfType<ScrollViewer>().Single(s => ReferenceEquals(s.Content, impact.Parent));
-        Check(impactScroll.VerticalOffset == 0 && Box("备份位置").ActualHeight <= 120,
-            "impact review starts at the top and long copyable backup paths cannot consume the whole page");
+        Check(impactScroll.VerticalOffset == 0 && !Text(window).Contains("原业务责任"),
+            "impact review starts at the top without an obsolete business responsibility step");
         var reviewedOriginal = original;
         original = original with { DataRoot = Path.Combine(evidence, "changed-registration") }; Render();
         Check(Box("数据目录").Text == request.DataRoot,

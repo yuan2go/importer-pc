@@ -49,6 +49,8 @@ public static partial class ParcelStartupServices
         if (Directory.Exists(destination) || File.Exists(destination)) throw new IOException("新站种子暂存目标须为新目录");
         Directory.CreateDirectory(destination); File.WriteAllText(Path.Combine(destination, "business.json"), Wire.Encode(c));
     }
+    public static string PrepareInstallationConfiguration(DeploymentLocation? installed, string destination, string? dataRoot = null)
+        => InstallationConfiguration.Prepare(ParcelAssembly.Definition().InitialConfiguration() with { Mode = RunMode.Production }, installed, destination, dataRoot);
     static bool IsInitialDraft(ParcelConfiguration candidate) => candidate.Mode == RunMode.Production &&
         Wire.Encode(candidate with { StationId = SystemParameterDefaults.InitialStationId }) == Wire.Encode(ParcelAssembly.Definition().InitialConfiguration());
     public static string ApplicationId => ParcelAssembly.Definition().Id;
@@ -128,10 +130,6 @@ public static partial class ParcelStartupServices
         => RepairRegistrationAsync(expectedRegistrationHash, original, null, CancellationToken.None);
     public static async Task RepairRegistrationAsync(string expectedRegistrationHash, WindowsDeploymentRequest? original, IProgress<MaintenanceProgress>? progress, CancellationToken token)
         => _ = await ElevateAsync(new("RepairSystem", ExpectedHash: expectedRegistrationHash, Deployment: original), maintenanceProgress: progress, cancellationToken: token);
-    public static Task<StartupChangePreview> ReviewDeploymentAsync(WindowsDeploymentRequest request, string destination)
-        => ReviewDeploymentAsync(request, destination, null, CancellationToken.None);
-    public static async Task<StartupChangePreview> ReviewDeploymentAsync(WindowsDeploymentRequest request, string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
-        => Wire.Decode<StartupChangePreview>(await ElevateAsync(new("ReviewDeployment", Destination: destination, Deployment: request), maintenanceProgress: progress, cancellationToken: token) ?? throw new IOException("缺少原部署预检回执"));
     static ParcelStartupMaintenance Core(BusinessLaunch launch, bool installer = false) => new(launch, ParcelAssembly.Definition(), () => new ParcelCapabilityFactory(launch,
         BusinessCompatibility.Read(ParcelAssembly.Definition().GetType().Assembly), ParcelAssembly.Definition().GetType().Assembly, installer), installer ? () => { MachineRuntimePolicy.RequireExtensionInstallerAuthority(); delegatedAuthority.Value?.Invoke(); }
     : () => { LocalManagementMode.ForRoot(launch.DataRoot).Require(); }, () => delegatedPrincipal.Value ?? LocalManagementMode.ForRoot(launch.DataRoot).Evidence?.AuditActor);
@@ -147,18 +145,15 @@ public static partial class ParcelStartupServices
         => InstallWithPreflightAsync(request, progress, null, CancellationToken.None);
     public static async Task<DeploymentLocation> InstallWithPreflightAsync(WindowsDeploymentRequest request, IProgress<WindowsInstallationStage>? progress, IProgress<MaintenanceProgress>? maintenanceProgress, CancellationToken token)
     {
-        if (request.ChangePlanIdentity is not null) throw new InvalidDataException("交互安装由同一次授权检查原责任，不能传入旧计划");
-        string? identity;
-        try { identity = await ElevateAsync(new("InstallWithPreflight", Deployment: request), progress, maintenanceProgress, token); }
+        try { await ElevateAsync(new("InstallWithPreflight", Deployment: request), progress, maintenanceProgress, token); }
         catch (IOException error) when (error is not InstallationOutcomeUnknownException && request.OperationId is not null && File.Exists(WindowsDeploymentSetup.InstallationOperationFile(request)))
         {
             var original = InspectInstallation(request);
             if (original.Status is "Completed" or "CommittedNeedsSystemRepair" or "Unknown") throw new InstallationOutcomeUnknownException("原安装可能已提交；先只读核对固定操作及原系统入口，不重复安装。", error);
             throw;
         }
-        if (identity is not null && !ExtensionSchema.IsHash(identity)) throw new InstallationOutcomeUnknownException("原部署计划回执无效，请先核对安装记录。");
         progress?.Report(WindowsInstallationStage.VerifyingReceipt);
-        try { return InstalledReceipt(request with { ChangePlanIdentity = identity }); }
+        try { return InstalledReceipt(request); }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         { throw new InstallationOutcomeUnknownException("安装进程已返回，但安装登记未核对成功。请检查安装记录，勿直接重复安装。", error); }
     }
@@ -226,28 +221,8 @@ public static partial class ParcelStartupServices
                 LocalManagementMode.ForRoot(request.Launch?.DataRoot ?? throw new InvalidDataException("管理模式数据目录缺失。")).ConfigurePassword(request.ManagementPassword ?? "");
                 break;
             case "InstallWithPreflight":
-                progress?.Invoke(WindowsInstallationStage.CheckingResponsibilities);
-                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                var candidate = request.Deployment ?? throw new InvalidDataException("Missing deployment");
-                if (candidate.ChangePlanIdentity is not null) throw new InvalidDataException("Interactive installation refuses a stale supplied plan");
-                RequireMatchingMedia(candidate, execution?.Token ?? default); _ = DeploymentMedia.Inspect(candidate.MediaRoot, ApplicationId, execution?.Token ?? default); ValidateSeed(candidate);
-                var candidateSeed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(candidate.ConfigurationSource, "business.json")));
-                if (WindowsDeploymentSetup.Current(ApplicationId) is not null || File.Exists(Path.Combine(candidate.DataRoot, candidateSeed.Mode.ToString(), candidateSeed.StationId, ApplicationId, ApplicationId + ".db")))
-                {
-                    if (candidate.BackupDestination is null) throw new InvalidDataException("升级必须指定新的完整备份目标");
-                    var preview = Wire.Decode<StartupChangePreview>((await ExecuteAsync(new("ReviewDeployment", Deployment: candidate, Destination: candidate.BackupDestination), progress, execution))!);
-                    if (!preview.Allowed) throw new InvalidOperationException("原责任阻止升级：" + preview.Summary);
-                    candidate = candidate with { ChangePlanIdentity = preview.Identity };
-                }
-                await ExecuteAsync(new("Install", Deployment: candidate), progress, execution);
-                return candidate.ChangePlanIdentity;
-            case "ReviewDeployment":
-                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-                var reviewedDeployment = request.Deployment ?? throw new InvalidDataException("缺少介质计划");
-                RequireMatchingMedia(reviewedDeployment, execution?.Token ?? default); _ = DeploymentMedia.Inspect(reviewedDeployment.MediaRoot, ApplicationId, execution?.Token ?? default); ValidateSeed(reviewedDeployment);
-                var original = WindowsDeploymentSetup.Current(ApplicationId);
-                var reviewLaunch = original is null ? new BusinessLaunch(reviewedDeployment.ConfigurationSource, reviewedDeployment.DataRoot, null, null) : new(original.ConfigurationDirectory, original.DataRoot, null, null);
-                return Wire.Encode(await Core(reviewLaunch, installer: true).PlanChangeAsync(original?.SourceCommit == reviewedDeployment.SourceCommit ? "Repair" : "Upgrade", request.Destination, execution ?? throw new InvalidOperationException("Missing review execution")));
+                await ExecuteAsync(new("Install", Deployment: request.Deployment), progress, execution);
+                break;
             case "Stage": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).StageAsync(request.ExpectedHash!, request.Candidate!, request.Reason!); break;
             case "RepairInitial": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).RepairInitialAsync(request.ExpectedHash!, request.Candidate!, request.Reason!); break;
             case "SaveDraft": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).SaveDraftAsync(request.ExpectedHash!, request.DraftHash, request.Editor!); break;
@@ -302,27 +277,11 @@ public static partial class ParcelStartupServices
                 RequireMatchingMedia(install, execution?.Token ?? default);
                 _ = DeploymentComponentReviewing.Inspect(install, execution?.Token ?? default);
                 ValidateSeed(install); // Validate bounded source/identity and ordinary paths before creating even an owner lease.
-                var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(install.ConfigurationSource, "business.json")));
-                var ownerDirectory = Path.Combine(install.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+                progress?.Invoke(WindowsInstallationStage.CheckingInstallation);
                 var previous = WindowsDeploymentSetup.Current(install.ApplicationId);
-                var previousDirectory = previous is null ? ownerDirectory : Path.Combine(previous.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
-                DeploymentPaths.RequireOrdinaryAncestors(ownerDirectory); DeploymentPaths.RequireOrdinaryAncestors(previousDirectory);
-                if (previous is { LifecycleState: "Installed" } || File.Exists(Path.Combine(ownerDirectory, seed.ApplicationId + ".db")))
-                {
-                    if (install.ChangePlanIdentity is null || install.BackupDestination is null) throw new InvalidOperationException("升级/修复须先审阅原责任及完整备份计划");
-                    var originalLaunch = previous is null ? new BusinessLaunch(install.ConfigurationSource, install.DataRoot, null, null) : new(previous.ConfigurationDirectory, previous.DataRoot, null, null);
-                    progress?.Invoke(WindowsInstallationStage.PreparingBackup);
-                    await Core(originalLaunch, installer: true).ExecuteChangeAsync(install.ChangePlanIdentity, previous?.SourceCommit == install.SourceCommit ? "Repair" : "Upgrade", install.BackupDestination,
-                        () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); }, progress, execution); return Task.CompletedTask; }, execution);
-                }
-                else
-                {
-                    _ = DeploymentMedia.Inspect(install.MediaRoot, ApplicationId, execution?.Token ?? default);
-                    execution?.BeginCommit(MaintenanceStage.InstallingMachine);
-                    WindowsDeploymentSetup.PrepareInitialDataRoot(install.DataRoot, install.RuntimeAccountSid);
-                    using var owner = new ResourceLease(ownerDirectory, ["application-owner"]);
-                    _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); }, progress, execution);
-                }
+                // Installation replaces programs only. Runtime history and original requests
+                // stay in place; the platform holds the application lifetime ownership throughout.
+                _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location, previous); }, progress, execution);
                 break;
             default: throw new InvalidDataException("Unknown maintenance action");
         }
@@ -352,14 +311,17 @@ public static partial class ParcelStartupServices
             request.ExpectedRegistrationHash is { } registrationHash && ExtensionSchema.IsHash(registrationHash) &&
             request.ConfigurationHashes?.TryGetValue("business.json", out var originalHash) == true &&
             Wire.FileHash(Path.Combine(deployed.ConfigurationDirectory, "business.json")) == originalHash;
-        if (errors.Length != 0 && !(deployed is null && IsInitialDraft(c)) && !retainingOriginal)
+        var originalMissing = deployed is null || InstallationConfiguration.MissingSeed(deployed.ConfigurationDirectory);
+        var savedConfiguration = Path.Combine(request.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "configuration.json");
+        var retainingSaved = originalMissing && File.Exists(savedConfiguration) && Wire.Encode(InstallationConfiguration.ReadSaved(savedConfiguration)) == Wire.Encode(c);
+        if (errors.Length != 0 && !((deployed is null || originalMissing) && IsInitialDraft(c)) && !retainingOriginal && !retainingSaved)
             throw new InvalidDataException("Invalid Application seed or mode: " + string.Join("; ", errors));
         if (deployed is not null)
         {
             var originalSeed = Path.Combine(deployed.ConfigurationDirectory, "business.json");
             ParcelConfiguration? originalIdentity = null;
             try { originalIdentity = Wire.Decode<ParcelConfiguration>(File.ReadAllText(originalSeed)); }
-            catch (Exception error) when (request.RepairSeed && error is IOException or System.Text.Json.JsonException or InvalidDataException) { }
+            catch (Exception error) when (error is FileNotFoundException or DirectoryNotFoundException || request.RepairSeed && error is IOException or System.Text.Json.JsonException or InvalidDataException) { }
             if (originalIdentity is not null && (originalIdentity.ApplicationId != c.ApplicationId || originalIdentity.StationId != c.StationId || originalIdentity.Mode != c.Mode))
                 throw new InvalidDataException("程序修复/升级保留原站/模式；新站不能复用原安装及数据身份");
         }
@@ -521,7 +483,7 @@ public static partial class ParcelStartupServices
         }
         return null; // A truncated final line never proves completion.
     }
-    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "ReviewDeployment" or "MediaUninstall";
+    static bool MediaCommand(string action) => action is "Install" or "InstallWithPreflight" or "MediaUninstall";
     static void RequireProtectedHelper(string directory)
     {
         var file = Path.Combine(directory, "application-release.json");

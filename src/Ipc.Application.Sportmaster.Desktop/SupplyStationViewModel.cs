@@ -302,8 +302,9 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         if (!recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)).SequenceEqual(Recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)))) Recent = recent;
         if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
-        DevicePresentation = fresh && position?.CameraConnectionSuspended == true ? ParcelPresentation.Neutral("相机：已断开（本位停用）") :
-            SupplyDisabled ? ParcelPresentation.Unknown("相机：正在断开或释放待确认") : FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复中") : !fresh ? ParcelPresentation.Unknown("相机：状态中断") :
+        DevicePresentation = !fresh ? ParcelPresentation.Unknown("相机：状态中断") : position?.CameraConnectionSuspended == true ?
+            SupplyDisabled ? ParcelPresentation.Neutral("相机：已断开（本位停用）") : ParcelPresentation.Unknown("相机：等待连接") :
+            SupplyDisabled ? ParcelPresentation.Unknown("相机：正在断开或释放待确认") : FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复中") :
             snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? ParcelPresentation.Unknown("相机：待配置") :
             device is null ? ParcelPresentation.Unknown("相机：待确认") :
             device.IsValid(now) ? snapshot?.Configuration.Effective.Mode == RunMode.Simulation

@@ -9,6 +9,8 @@ public sealed record ObservationReadFeedback(string DeviceId, string Epoch, uint
     // scene. Null when the source does not compare scenes; then a no-code frame is judged on its own.
     public long? Scene { get; init; }
     public string? FailureReason { get; init; }
+    public string[]? Formats { get; init; }
+    public string[]? Codes { get; init; }
 }
 public interface IObservationReadFeedbackSource
 {

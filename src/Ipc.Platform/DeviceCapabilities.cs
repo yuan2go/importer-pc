@@ -25,6 +25,8 @@ public sealed record Observation(string Id, string DeviceId, string Epoch, strin
 {
     [System.Text.Json.Serialization.JsonIgnore]
     public long DecodedTicks { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public RecognitionSymbol[]? Symbols { get; init; }
     // Optional evidence fields retain the existing constructor/deconstruction ABI.
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public string? InspectionSessionId { get; init; }

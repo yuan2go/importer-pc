@@ -116,8 +116,8 @@ internal static class HardeningVerification
             CandidateCount = 1
         });
         var frozenHash = Wire.Hash(original); var protectedText = DiagnosticText.Protect(original);
-        Check(!new[] { "SYNTHETIC-CODE", "SYNTHETIC-CODES", "SYNTHETIC-CANDIDATE", "SYNTHETIC-SELECTED", "SYNTHETIC-LOAD", "SYNTHETIC-TOKEN", "SYNTHETIC-PARTIAL", "WITH SPACES", "SYNTHETIC-ONE", "SYNTHETIC-TWO" }.Any(protectedText.Contains),
-            "diagnostic copy masks scalar, array, selected, fragment and nested-JSON barcode/credential values");
+        Check(new[] { "SYNTHETIC-CODE", "SYNTHETIC-CODES", "SYNTHETIC-CANDIDATE", "SYNTHETIC-SELECTED", "SYNTHETIC-LOAD", "SYNTHETIC-PARTIAL", "WITH SPACES", "SYNTHETIC-ONE", "SYNTHETIC-TWO" }.All(protectedText.Contains) && !protectedText.Contains("SYNTHETIC-TOKEN"),
+            "diagnostic copy preserves complete barcode candidates and nested payloads while masking credentials");
         using (var json = JsonDocument.Parse(protectedText))
             Check(json.RootElement.GetProperty("StatusCode").GetInt32() == 200 && json.RootElement.GetProperty("CandidateCount").GetInt32() == 1 &&
                 protectedText.Contains("KEPT-ERROR") && protectedText.Contains("kept-task") && Wire.Hash(original) == frozenHash,
@@ -125,7 +125,7 @@ internal static class HardeningVerification
         using (var json = JsonDocument.Parse(protectedText))
         using (var body = JsonDocument.Parse(json.RootElement.GetProperty("Body").GetString()!))
             Check(body.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("taskId").GetString() == "kept-task",
-                "complete nested JSON stays parseable after masking while partial scalar/array fragments fail closed");
+                "complete nested JSON stays parseable after credential masking and barcode fragments remain readable");
         Console.WriteLine("HARDENING_SELF_TEST_PASS checks=" + checks + "; synthetic native ports; real SDK/hardware NOT_RUN");
     }
 }

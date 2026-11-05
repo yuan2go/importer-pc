@@ -96,15 +96,25 @@ public sealed partial class ParameterSettingsControl
         display.Body.Children.Add(Text("窗口布局", true));
         var opening = new ComboBox { ItemsSource = new[] { new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.Window, "窗口"), new WindowModeChoice(Ipc.Platform.PresentationPreferences.WindowOpeningMode.FullScreen, "最大化（全屏）") }, DisplayMemberPath = "Label", SelectedValuePath = "Mode", MinHeight = 40 };
         var modeStatus = Text("");
+        AutomationProperties.SetLiveSetting(modeStatus, AutomationLiveSetting.Polite);
         bool modeReadable = true;
-        try { opening.SelectedValue = Ipc.Platform.PresentationPreferences.ReadWindowMode(m.ApplicationId); }
+        try
+        {
+            if (RuntimeContext is { } context)
+            {
+                context.LoadWindowPreference(m.ApplicationId);
+                opening.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(context.WindowModeDraft)) { Source = context, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+                modeStatus.SetBinding(TextBlock.TextProperty, new Binding(nameof(context.WindowPreferenceStatus)) { Source = context });
+            }
+            else opening.SelectedValue = Ipc.Platform.PresentationPreferences.ReadWindowMode(m.ApplicationId);
+        }
         catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
         { modeReadable = false; modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "窗口设置未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
-        Field(Form(display), "默认打开方式", opening, "最大化（全屏）时隐藏标题栏并铺满屏幕；按 F11 切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
+        opening.IsEnabled = modeReadable;
+        Field(Form(display), "默认打开方式", opening, "保存后立即生效，并记住下次打开方式。最大化（全屏）时隐藏标题栏并铺满屏幕；按 F11 临时切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
         var saveMode = new Button { Content = "保存打开方式", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44, IsEnabled = modeReadable };
         saveMode.Click += (_, _) =>
         {
-            if (RuntimeContext is { IsManagementMode: false }) { modeStatus.Text = "请先进入管理模式。"; return; }
             try
             {
                 if (opening.SelectedValue is not Ipc.Platform.PresentationPreferences.WindowOpeningMode mode) throw new InvalidOperationException("请选择默认打开方式。");
@@ -113,7 +123,8 @@ public sealed partial class ParameterSettingsControl
             catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)
             { modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "打开方式未保存；请检查本机设置文件与访问权限后重试。"); }
         };
-        display.Body.Children.Add(saveMode); display.Body.Children.Add(modeStatus);
+        if (RuntimeContext is null) display.Body.Children.Add(saveMode);
+        display.Body.Children.Add(modeStatus);
         if (m.ApplicationId == "sportmaster") AudioPreferences(display);
         display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));
         if (DisplayPreferencesRequested is not null)
@@ -178,10 +189,10 @@ public sealed partial class ParameterSettingsControl
         if (m.ApplicationId == "sportmaster")
         {
             Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "条码需完整匹配此规则（正则表达式）；留空则不筛选。", true);
-            Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "完整匹配此规则的条码会被排除；留空则不排除。", true);
+            Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "用正则表达式完整匹配要忽略的小车底部固定码；可先从相机识码日志复制码值，在下方测试规则。只排除匹配的码，包裹二维码仍正常识别。只看到被排除的码时按空托盘观察；留空不排除。", true);
             var reject = new CheckBox { Content = "拒绝多个有效条码", MinHeight = 38 };
             reject.SetBinding(CheckBox.IsCheckedProperty, new Binding("RejectMultipleCodes") { Source = m.Policy, Mode = BindingMode.TwoWay });
-            Field(form, "多码处理", reject, "默认开启：读到多个有效条码时不发送，需要重新扫描。关闭后按读取顺序拼接成一个条码发给 RCS。", "RejectMultipleCodes", page);
+            Field(form, "多码处理", reject, "默认开启：读到多个有效条码时不发送，保留拒绝结果和图片，移出包裹后再放下一件。关闭后按读取顺序拼接成一个条码发给 RCS。", "RejectMultipleCodes", page);
             Input(form, "多条码分隔符", m.Policy, "MultiCodeSeparator", "MultiCodeSeparator", page, "1–16 个字符。拼接后最长 512 字符，超出则不发送。");
             // The separator only matters when several codes are joined; it is shown, searched and
             // navigated to only then. Its value is kept either way.

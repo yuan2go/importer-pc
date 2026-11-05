@@ -48,6 +48,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivationPresentation.cs" Link="Client/ConfigurationActivationPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParameterRuntimePresentation.cs" Link="Client/ParameterRuntimePresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StationDisplayPreferences.cs" Link="Client/StationDisplayPreferences.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/WindowPreferenceDraft.cs" Link="Client/WindowPreferenceDraft.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ChineseInterfaceText.cs" Link="Client/ChineseInterfaceText.cs"/>
 </ItemGroup><ItemGroup>
  <EmbeddedResource Include="../../src/Ipc.Integrations.SportmasterRcs/parameters.json" LogicalName="Ipc.BuiltInRcs.Parameters.json"/>

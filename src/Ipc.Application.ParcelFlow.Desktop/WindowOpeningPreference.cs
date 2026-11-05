@@ -29,6 +29,12 @@ public static class WindowOpeningPreference
             catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
             { report("窗口偏好读取失败，原文件保留：" + error.Message); }
         };
+        void PreferenceChanged(string id, PresentationPreferences.WindowOpeningMode mode)
+        {
+            if (id == application) window.Dispatcher.Invoke(() => SetFullScreen(mode == PresentationPreferences.WindowOpeningMode.FullScreen));
+        }
+        PresentationPreferences.WindowModeChanged += PreferenceChanged;
+        window.Closed += (_, _) => PresentationPreferences.WindowModeChanged -= PreferenceChanged;
         var toggle = new RoutedCommand();
         window.CommandBindings.Add(new CommandBinding(toggle, (_, e) => { SetFullScreen(!fullScreen); e.Handled = true; }));
         window.InputBindings.Add(new KeyBinding(toggle, Key.F11, ModifierKeys.None));

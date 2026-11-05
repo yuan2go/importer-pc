@@ -10,6 +10,8 @@ public sealed partial class SupplyStationPositionViewModel
     ParcelReadFeedback? readFeedback;
     ParcelCameraReadFeedback? cameraRead;
     Guid cameraReadRuntime;
+    bool RetainedRejectedInput => Input is { Outcome: ParcelInputOutcome.Rejected } input &&
+        readFeedback?.RetainedObservationId == input.Observation.Id;
     bool ManualPlacementResult => Operation?.OperatorInput is not null && Input?.OperationId == Operation.Id &&
         (Input.Observation.OperatorInput is not null || ParcelInputReasons.IsSamePlacement(Input)) &&
         (readFeedback is not { OperatorInput: false } read || read.ObservedAt <= Operation.ObservedAt || read.PlacementOperationId == Operation.Id) &&
@@ -20,6 +22,8 @@ public sealed partial class SupplyStationPositionViewModel
     bool CameraObservationUnmatched => !ManualPlacementResult && cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
         camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome == ObservationReadOutcome.Codes &&
         !(readFeedback is { OperatorInput: true } manual && manual.DetectedTicks > camera.Frame.CompletedTicks) &&
+        !(RetainedRejectedInput && readFeedback!.DeviceId == camera.Frame.DeviceId && readFeedback.Epoch == camera.Frame.Epoch &&
+            readFeedback.DetectedTicks >= camera.Frame.CompletedTicks) &&
         !(Input is { } input && input.Observation.OperatorInput is null && input.Observation.DeviceId == camera.Frame.DeviceId &&
             input.Observation.Epoch == camera.Frame.Epoch && input.Observation.SourceEventId == camera.Frame.SourceEventId);
     bool CameraAwaitingRead => !unreadFeedback && Input?.Observation.OperatorInput is null &&
@@ -34,6 +38,7 @@ public sealed partial class SupplyStationPositionViewModel
     bool CameraNoCode => CameraAwaitingRead || cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
         camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome != ObservationReadOutcome.Codes &&
         !(Operation is { } placed && camera.RetainedOperationId == placed.Id) &&
+        !(Input is { } rejected && camera.RetainedObservationId == rejected.Observation.Id) &&
         !(unreadFeedback ? readFeedback?.OperatorInput == true : Input?.Observation.OperatorInput is not null);
     DeviceState? fastReaderState;
     DeviceState? CurrentReaderState
@@ -44,7 +49,7 @@ public sealed partial class SupplyStationPositionViewModel
             return fastReaderState is { } fast && (published is null || fast.UpdatedAt >= published.UpdatedAt) ? fast : published;
         }
     }
-    bool unreadFeedback => !(ManualPlacementResult && readFeedback?.OperatorInput == false) && readFeedback is { } read && owner.Snapshot?.RuntimeId == read.RuntimeId &&
+    bool unreadFeedback => !(ManualPlacementResult && readFeedback?.OperatorInput == false) && !RetainedRejectedInput && readFeedback is { } read && owner.Snapshot?.RuntimeId == read.RuntimeId &&
         read.ObservationId != Input?.Observation.Id && (Input is null ||
             (Input.Observation.Epoch == read.Epoch && read.SourceSequence > 0 && Input.Observation.Sequence > 0
                 ? read.SourceSequence > Input.Observation.Sequence : Input.Observation.ObservedAt <= read.ObservedAt));
@@ -68,7 +73,8 @@ public sealed partial class SupplyStationPositionViewModel
     bool ManualInputAvailable => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
     public string BarcodePlaceholder => !SupplyEnabled ? SupplyDisabling ? "停用中，不再接收新条码" : "本位已停用，不接收条码" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线，可扫码枪或键盘输入条码" : "相机离线" : CameraAwaitingRead ? "相机已重连，请重新扫码" : CameraNoCode ? "等待放件；已放包裹请将条码朝上" : CameraObservationUnmatched && !MatchedCameraCue ? "正在核对本次条码" : (unreadFeedback ? readFeedback!.CandidateCount : Input?.Observation.Codes.Length ?? 0) > 1
         ? "本帧读到多个条码，请检查包裹" : HasCurrentInput ? "本次条码无效，请检查包裹" : "等待相机扫码或输入条码";
-    public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || CameraNoCode || CameraObservationUnmatched || unreadFeedback || InputUnadmitted || IsProcessing ? null :
+    public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || CameraNoCode || CameraObservationUnmatched || unreadFeedback || IsProcessing ? null :
+        Input is { Outcome: ParcelInputOutcome.Rejected, Observation.OperatorInput: null } rejected ? new(ObservationId: rejected.Observation.Id) : InputUnadmitted ? null :
         Input is { } resting && Operation is { } placed && ParcelInputReasons.IsSamePlacement(resting) && resting.OperationId == placed.Id ? new(OperationId: placed.Id) :
         Input is { } input && Operation is { } current && input.OperationId == current.Id &&
             (current.Acquisition is null || input.Observation.DeviceId == current.Acquisition.DeviceId &&
@@ -116,7 +122,8 @@ public sealed partial class SupplyStationPositionViewModel
         invalidReadFeedback ? "相机连接周期已变化，或本次读码等待已超时；没有本次有效格口。" : unreadFeedback ? HasUncertainOriginal ? "本次条码已读到；上一件 " + Operation?.ParcelCode + " 的格口仍未确认。" :
             "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
     public string DisplayNextStep => SupplyDisabled ? "" : DisplayPaused ? "本件暂勿投递，等待恢复供包。" : ShowConfirmedTask ? "" : OfflineCameraSurface ? ManualInputAvailable ? "输入完整条码后按回车或点击提交。" : NextStep :
-        CameraNoCode ? HasUncertainOriginal ? NextStep : "托盘空时直接放上包裹，条码朝上；已放包裹仍未读到，请调整标签或用扫码枪/键盘补录，取得本件格口后再投递。" : invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" : NextStep;
+        CameraNoCode ? HasUncertainOriginal ? NextStep : "托盘空时直接放上包裹，条码朝上；已放包裹仍未读到，请调整标签或用扫码枪/键盘补录，取得本件格口后再投递。" : invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" :
+        !HasUncertainOriginal && Input is { Outcome: ParcelInputOutcome.Rejected, BarcodeSelection.SelectedCode: null } ? "本件未取得格口，请查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep;
     public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
     public string CameraReadFeedback => !CameraNoCode && (!CameraObservationUnmatched || MatchedCameraCue) && !invalidReadFeedback && readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
         ? "已读到条码，等待处理结果。" : "";

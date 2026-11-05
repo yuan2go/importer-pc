@@ -317,6 +317,22 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             if (Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
             var at = DateTimeOffset.UtcNow;
+            if (Id == "sportmaster" && observation is not null)
+            {
+                var originalCount = observation.Codes.Length;
+                observation = CameraBarcodeCandidates.WithoutBackground(Effective.BarcodeFilter, observation);
+                // A complete camera result containing only configured background codes is
+                // a no-code frame, already delivered through frame feedback. It
+                // owns no parcel input/request and must not fill the durable lane.
+                if (originalCount > 0 && observation.Codes.Length == 0 && observation.CandidateIssue is null && observation.InspectionSessionId is null)
+                { ReleaseIngressAcquisition(observation); return true; }
+                if (ContinuingRejectedPlacement(positionId, observation) is { } rejected)
+                {
+                    RecordPresentationRead(positionId, observation, retainedInput: rejected.Observation.Id);
+                    ReleaseIngressAcquisition(observation);
+                    return true;
+                }
+            }
             if (observation is not null) RecordPresentationRead(positionId, observation);
             if (Id == "sportmaster" && observation is not null)
             {
@@ -505,6 +521,19 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // Re-observing an existing entity uses its original policy, never a newly applied rule.
         var selection = definition.SelectBarcode(priors.FirstOrDefault()?.FrozenConfiguration ?? Effective, o);
         var code = selection.SelectedCode;
+        if (!manual && ContinuingRejectedPlacement(position, o) is { } heldRejection)
+        {
+            RetainRejectedPresentation(position, o, heldRejection.Observation.Id);
+            return;
+        }
+        // Manual correction of a rejected multi-label parcel owns that same
+        // physical placement, including later partial/multiple camera reads.
+        if (!manual && priors.Length == 0 && ExtensionSchema.IsId(o.AdmissionId) && ContinuingCameraPlacementOwner(position, o) is { } correctedOwner &&
+            operations.GetValueOrDefault(correctedOwner)?.OperatorInput is not null)
+        {
+            RecordInput(Input(position, o, ParcelInputOutcome.Duplicate, ParcelInputReasons.SamePlacement + "; 人工补录已处理本次放置；未创建作业或请求。", correctedOwner, selection), "SamePlacementObserved");
+            return;
+        }
         var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind :
             !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : code is null ? selection.Outcome : null;
         if (!manual && !PositionSupplyEnabled(position))
@@ -516,7 +545,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         if (rejection is not null)
         {
-            RecordInput(Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created", selection: selection), "ObservationRejected"); return;
+            var input = Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created", selection: selection);
+            RecordInput(input, "ObservationRejected");
+            if (!manual && rejection == selection.Outcome && selection.Outcome is "MultipleCodes" or "AmbiguousCodes" or "NoMatchingCode" or "ExcludedCodes" or "InvalidCode")
+                ClaimRejectedPlacement(input, reader);
+            return;
         }
         if (priors.Length > 0)
         {

@@ -12,6 +12,7 @@ public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, strin
     public bool OperatorInput { get; init; }
     // Application-confirmed existing placement; display only, never admission authority.
     public string? PlacementOperationId { get; init; }
+    public string? RetainedObservationId { get; init; }
     // Bounded display metadata only; neither selection nor admission authority.
     public int CandidateCount { get; init; } = SingleCode is null ? 0 : 1;
     public long SourceSequence { get; init; }
@@ -26,4 +27,5 @@ public sealed record ParcelCameraReadFeedback(string PositionId, Ipc.Platform.Ob
 {
     // Application-owned placement identity, only for an unchanged scene after a missed/rejected decode.
     public string? RetainedOperationId { get; init; }
+    public string? RetainedObservationId { get; init; }
 }

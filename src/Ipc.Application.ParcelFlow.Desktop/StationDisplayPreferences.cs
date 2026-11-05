@@ -11,8 +11,8 @@ public partial class ParcelViewModel
     public int? TargetEfficiencyPerHour => stationDisplay.TargetPerHour;
     public string DisplayNameDraft { get => displayNameDraft; set { displayNameDraft = value; DisplayPreferenceStatus = "本机显示有未应用输入"; Changed(); Changed(nameof(HasUnsavedDisplayPreferences)); } }
     public string TargetEfficiencyDraft { get => targetEfficiencyDraft; set { targetEfficiencyDraft = value; DisplayPreferenceStatus = "本机显示有未应用输入"; Changed(); Changed(nameof(HasUnsavedDisplayPreferences)); } }
-    public bool HasUnsavedDisplayPreferences => Snapshot?.Configuration.Effective.ApplicationId != "sportmaster" && (displayNameDraft != stationDisplay.Name ||
-        targetEfficiencyDraft != (stationDisplay.TargetPerHour?.ToString(CultureInfo.InvariantCulture) ?? ""));
+    public bool HasUnsavedDisplayPreferences => HasUnsavedWindowPreference || (Snapshot?.Configuration.Effective.ApplicationId != "sportmaster" && (displayNameDraft != stationDisplay.Name ||
+        targetEfficiencyDraft != (stationDisplay.TargetPerHour?.ToString(CultureInfo.InvariantCulture) ?? "")));
     public string DisplayPreferenceStatus { get => displayStatus; private set { displayStatus = value; Changed(); } }
     public string StationDisplaySummary => (stationDisplay.Name.Length > 0 ? stationDisplay.Name + " · " : "") +
         (Snapshot?.Configuration.Effective.StationId ?? "等待站位配置") +

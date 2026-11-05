@@ -22,10 +22,31 @@ public sealed partial class ParcelRuntime
                     // A saved camera change replaced this session; the replacement has its own loop.
                     if (!ReferenceEquals(readers.GetValueOrDefault(id), reader)) return;
                     backgroundProgress[name] = (DateTimeOffset.UtcNow, reader.Health?.Health.ToString() ?? "Unconfirmed");
-                    if (reader.Health?.Health != DeviceHealth.Disconnected) { delaySeconds = 1; continue; }
+                    var supplyActive = ReaderSupplyActive(id);
+                    var suspended = supplySuspendedReaders.Contains(id);
+                    if (!supplyActive && suspended || supplyActive && !suspended &&
+                        (reader.Health?.Health != DeviceHealth.Disconnected || reader.Source is not IAutomaticReconnectObservationSource)) { delaySeconds = 1; continue; }
                     if (reader.Epoch == blockedEpoch || Volatile.Read(ref accepting) != 1 || backupInProgress || configurationSaving ||
                         maintenanceOperations.Contains("*") || maintenanceOperations.Contains(id) || maintainedResources.ContainsKey(id)) continue;
                     maintenanceOperations.Add(id); maintainedResources.TryAdd(id, 0); owns = true;
+                    if (!supplyActive)
+                    {
+                        reader.Retire();
+                        try
+                        {
+                            await ExternalAsync(async () => { await DeviceCallAsync(id, () => reader.Source.StopAsync(stopping.Token), stopping.Token).ConfigureAwait(false); return true; }).ConfigureAwait(false);
+                            supplySuspendedReaders.Add(id);
+                            Diagnostic("相机通信", "投递位停用，已断开相机", "信息", id);
+                        }
+                        catch (OperationCanceledException) when (stopping.IsCancellationRequested) { throw; }
+                        catch (Exception error)
+                        {
+                            blockedEpoch = reader.Epoch;
+                            Diagnostic("相机通信", "投递位停用，相机释放未确认", "错误", id + ": " + error);
+                        }
+                        delaySeconds = 1;
+                        continue;
+                    }
                     Diagnostic("相机通信", "相机自动重连", "信息", id);
                     try
                     {
@@ -33,14 +54,17 @@ public sealed partial class ParcelRuntime
                         // drain. No management session, pause change or RCS restart.
                         await ExternalAsync(async () =>
                         {
-                            await DeviceCallAsync(id, () => reader.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false);
+                            await DeviceCallAsync(id, () => suspended
+                                ? reader.StartAsync(Enqueue, ReaderHealthChanged, stopping.Token)
+                                : reader.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false);
                             return true;
                         }).ConfigureAwait(false);
+                        supplySuspendedReaders.Remove(id);
                         delaySeconds = 1;
                         Diagnostic("相机通信", "相机自动重连完成", "信息", id);
                     }
                     catch (ObservationConnectionException)
-                    { delaySeconds = Math.Min(delaySeconds * 2, 10); }
+                    { supplySuspendedReaders.Remove(id); delaySeconds = Math.Min(delaySeconds * 2, 10); }
                     catch (OperationCanceledException) when (stopping.IsCancellationRequested) { throw; }
                     catch (Exception error)
                     {

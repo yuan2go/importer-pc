@@ -46,6 +46,7 @@ public sealed partial class ParcelRuntime
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
+            if (Id == "sportmaster" && positions.Keys.All(p => !PositionSupplyEnabled(p))) reasons.Add("左右投递位均未启用，不再接收新包裹。");
             if (storageUpgradeReviewRequired) reasons.Add("数据库已升级；请进入管理模式核对历史后，明确继续供包。原请求不会自动重发。");
             if (!RestoreConfirmed) reasons.Add("RestoreHandoffRequired: keep isolated; verify same-machine source retirement and authenticate maintenance; cross-machine evidence still required");
             reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));

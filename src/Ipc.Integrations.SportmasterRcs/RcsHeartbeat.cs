@@ -12,6 +12,9 @@ public sealed partial class SportmasterRcsTaskService
 {
     internal const string HeartbeatCommand = "sorter.task.station_heartbeat";
     (string Station, string Bcr)[]? heartbeatStations;
+    (string Station, string Bcr)[]? enabledHeartbeatStations;
+    Dictionary<string, string> heartbeatPositions = new(StringComparer.Ordinal);
+    long heartbeatSelectionRevision;
     CancellationTokenSource? heartbeatStop;
     Task? heartbeatTask;
     string? heartbeatFailure;
@@ -32,6 +35,30 @@ public sealed partial class SportmasterRcsTaskService
                 throw new InvalidDataException("RCS runtime context must match its effective binding");
             var mapping = RcsConfigurationValidation.HeartbeatMapping(configuration);
             heartbeatStations = mapping;
+            enabledHeartbeatStations = mapping;
+            heartbeatPositions = ParcelBindings.Positions(configuration).ToDictionary(p => p.Id,
+                p => configuration.Wcs.Parameters.GetValueOrDefault(p.Id + "-bcr-code") ?? "", StringComparer.Ordinal);
+            heartbeatSelectionRevision++;
+        }
+    }
+
+    public void SetEnabledPositions(string[] positionIds)
+    {
+        lock (lifecycle)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            if (heartbeatStations is null || positionIds.Distinct(StringComparer.Ordinal).Count() != positionIds.Length ||
+                positionIds.Any(p => !heartbeatPositions.ContainsKey(p))) throw new InvalidDataException("RCS heartbeat position identity differs from its configured topology");
+            var codes = positionIds.Select(p => heartbeatPositions[p]).ToHashSet(StringComparer.Ordinal);
+            var selected = heartbeatStations.Where(p => codes.Contains(p.Bcr)).ToArray();
+            if (enabledHeartbeatStations is not null && selected.SequenceEqual(enabledHeartbeatStations)) return;
+            enabledHeartbeatStations = selected; heartbeatSelectionRevision++;
+            stationVehicles = stationVehicles.Where(v => codes.Contains(v.CameraCode)).ToArray();
+            if (selected.Length == 0)
+            {
+                heartbeatResponseReceived = false; heartbeatFailure = null;
+                heartbeatEvidence = "No enabled heartbeat positions; remote connection unconfirmed";
+            }
         }
     }
 
@@ -43,6 +70,9 @@ public sealed partial class SportmasterRcsTaskService
         {
             while (await timer.WaitForNextTickAsync(stop).ConfigureAwait(false))
             {
+                (string Station, string Bcr)[] mapping; long selectionRevision;
+                lock (lifecycle) { mapping = enabledHeartbeatStations ?? []; selectionRevision = heartbeatSelectionRevision; }
+                if (mapping.Length == 0) continue; // Never send an empty or synthetic identity heartbeat.
                 using var timeout = CancellationTokenSource.CreateLinkedTokenSource(stop);
                 timeout.CancelAfter(TimeSpan.FromMilliseconds(Math.Min(3000, options.HeartbeatIntervalMs)));
                 try
@@ -55,7 +85,7 @@ public sealed partial class SportmasterRcsTaskService
                         version = 1,
                         requestId,
                         locale = options.Locale,
-                        data = heartbeatStations!.Select((p, i) => new
+                        data = mapping.Select((p, i) => new
                         {
                             index = i + 1,
                             command = HeartbeatCommand,
@@ -73,10 +103,11 @@ public sealed partial class SportmasterRcsTaskService
                     if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
                     var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
                     if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
-                    var vehicles = ReadHeartbeatVehicles(bytes, requestId, heartbeatStations!, DateTimeOffset.UtcNow,
+                    var vehicles = ReadHeartbeatVehicles(bytes, requestId, mapping, DateTimeOffset.UtcNow,
                         TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3)));
                     lock (lifecycle)
                     {
+                        if (selectionRevision != heartbeatSelectionRevision) continue; // A prior selection cannot resurrect disabled vehicle hints.
                         stationVehicles = vehicles;
                         heartbeatFailure = null; heartbeatResponseReceived = true;
                         heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; application acknowledgement unconfirmed";
@@ -85,7 +116,11 @@ public sealed partial class SportmasterRcsTaskService
                 catch (OperationCanceledException) when (stop.IsCancellationRequested) { break; }
                 catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException or InvalidDataException)
                 {
-                    lock (lifecycle) { stationVehicles = []; heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried"; }
+                    lock (lifecycle)
+                    {
+                        if (selectionRevision != heartbeatSelectionRevision) continue;
+                        stationVehicles = []; heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried";
+                    }
                 }
             }
         }

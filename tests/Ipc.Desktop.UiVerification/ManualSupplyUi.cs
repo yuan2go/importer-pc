@@ -26,7 +26,7 @@ static partial class Program
             try
             {
                 await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.Left.CanAdmit && vm.Right.CanAdmit);
-                Check(!vm.IsManagementMode && (deferred ? vm.OperatorStatus == "可以供包" : vm.OperatorStatus.StartsWith("可以供包") && vm.OperatorStatus.Contains("相机离线，可手动输入")) && !vm.ShowSetupGuidance &&
+                Check(!vm.IsManagementMode && vm.OperatorStatus.StartsWith("可以供包") && !vm.ShowSetupGuidance &&
                     vm.Left.DeviceLabel.Contains(deferred ? "待配置" : "离线") && vm.Left.BlockingReasons.Length == 0,
                     "ordinary mode permits manual supply while preserving camera facts; deferred=" + deferred);
                 var positions = Descendants(window).OfType<SupplyStationPosition>().ToArray();

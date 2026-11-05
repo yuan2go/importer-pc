@@ -155,8 +155,15 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null)
     {
+        if (positionControl is not null)
+        {
+            if (eventName != "PositionSupplyChanged" || operation is not null || positionControl.Revision != Revision + 1)
+                throw new InvalidDataException("Position control requires its own atomic state/audit transaction");
+            ValidatePositionControl(positionControl);
+            detail = Wire.Encode(positionControl);
+        }
         if (identityConflict is not null)
         {
             if (eventName != "IdentityConflict") throw new InvalidDataException("Conflict facts require their canonical audit event");
@@ -243,7 +250,7 @@ public sealed partial class ParcelRepository : IDisposable
         {
             audit.Transaction = tx; audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,$event,$owner,$detail)";
             audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$event", eventName);
-            audit.Parameters.AddWithValue("$owner", operation?.Id ?? "runtime"); audit.Parameters.AddWithValue("$detail", detail); audit.ExecuteNonQuery();
+            audit.Parameters.AddWithValue("$owner", positionControl is null ? operation?.Id ?? "runtime" : PositionControlOwner(positionControl.PositionId)); audit.Parameters.AddWithValue("$detail", detail); audit.ExecuteNonQuery();
         }
         if (input is not null)
         {

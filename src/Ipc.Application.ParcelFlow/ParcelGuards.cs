@@ -31,7 +31,7 @@ public sealed partial class ParcelRuntime
     bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress && !configurationSaving;
     bool CanSaveConfiguration => repository is not null && MaintenanceAuthorized && !backupInProgress && !configurationSaving &&
         (definition.AutomaticConfigurationQuiescence || repository.Paused && externalWaits == 0);
-    bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
+    bool CanAdmit(string position) => PositionSupplyEnabled(position) && CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
         !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
     bool CanAdmit() => positions.Keys.Any(p => CanAdmit(p) || CanManuallyAdmit(p));
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
@@ -49,13 +49,16 @@ public sealed partial class ParcelRuntime
         if (current is not null && !MainTerminated(current) && !ReleasedForNextAdmission(current)) reasons.Add("Current entity main result is incomplete");
         if (!CapacityAvailable) reasons.Add("Unresolved capacity exhausted");
         if (repository!.Paused) reasons.Add("Global software pause");
+        if (!PositionSupplyEnabled(p.Id)) reasons.Add("本位已请求停用，不再接收新条码。");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
-        { BarcodeInput = manual is null ? null : new(camera, manualReady, manual), Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow) };
+        { BarcodeInput = manual is null ? null : new(camera, manualReady, manual), Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
+            SupplyControl = Id == "sportmaster" ? PositionControl(p.Id) : null,
+            CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId) };
     }).ToArray();
     StationVehicleState? PositionVehicle(string position, DateTimeOffset now)
     {
-        if (Id != "sportmaster" || Effective.Wcs is not { } binding ||
+        if (Id != "sportmaster" || !PositionSupplyEnabled(position) || Effective.Wcs is not { } binding ||
             !capabilityHealth.TryGetValue(binding.InstanceId, out var health) || !health.Ready ||
             health.RemoteConfirmation != RemoteConnectionConfirmation.ResponseReceived || health.ConfirmedAt > now || health.ValidUntil <= now) return null;
         var matching = health.StationVehicles.Where(v => v.StationCode == Effective.StationCode &&
@@ -102,6 +105,7 @@ public sealed partial class ParcelRuntime
                 {
                     CheckCameraInspectionLease();
                     MaintainParcelPictures();
+                    MaintainPositionControls();
                     if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)
                     { repository!.Commit(null, "AutomaticSupplyRestored", "Retired manual pause restored after startup readiness checks", paused: false); resumePriorPause = false; }
                     if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); TryAutomaticCleanup(cleanupClock.GetUtcNow()); }

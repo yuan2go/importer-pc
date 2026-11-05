@@ -47,6 +47,9 @@ public sealed partial class ParcelRuntime
                 return new("Rejected", "Pause, maintenance authorization and exclusive device maintenance are required", repository?.Revision ?? 0);
             var selectedReaders = readers.Values.Where(r => deviceId is null || r.Source.DeviceId == deviceId).ToArray();
             var selectedPorts = CapabilityPorts().Where(p => deviceId is null || p.InstanceId == deviceId || DeviceKey(p) == deviceId).ToArray();
+            if (deviceId is not null && selectedReaders.Any(r => !ReaderSupplyActive(r.Source.DeviceId)))
+                return new("Rejected", "本位已停用；请先启用投递位，再连接相机。", repository.Revision);
+            selectedReaders = selectedReaders.Where(r => ReaderSupplyActive(r.Source.DeviceId)).ToArray();
             if (selectedReaders.Length == 0 && selectedPorts.Length == 0) return new("Rejected", "Unknown device/capability identity", repository.Revision);
             if (deviceId is not null && (selectedReaders.Any(r => ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId)) ||
                 selectedPorts.Any(p => ParcelConnectionSetup.IsDeferred(Effective, p.InstanceId) || ParcelConnectionSetup.IsDeferred(Effective, DeviceKey(p)))))

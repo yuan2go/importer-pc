@@ -92,7 +92,7 @@ public partial class SupplyStationWindow : Window
         if (page is "maintenance" or "diagnostics" or "logs" or "debug" && !ViewModel.IsManagementMode) { ViewModel.Message = "请先进入管理模式。"; page = "workstation"; }
         if (page != "maintenance") pendingMaintenanceLoad = false;
         ViewModel.SelectedPage = page; ApplyLayout();
-        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "history" => history, "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= CreateOperationLogs(), _ => workContent };
+        PageHost.Content = page switch { "statistics" => statistics ??= new StationStatisticsControl(ViewModel), "exceptions" => exceptions ??= CreateExceptions(), "history" => PositionHistory(), "maintenance" => maintenance, "diagnostics" => diagnostics ??= CreateDiagnostics(), "debug" => debug ??= new StationDebugControl(ViewModel, id => OpenOperatorSettingsAsync(id), ShowDetailsAsync), "logs" => logs ??= CreateOperationLogs(), _ => workContent };
     }
     void UpdateStationClock()
     {

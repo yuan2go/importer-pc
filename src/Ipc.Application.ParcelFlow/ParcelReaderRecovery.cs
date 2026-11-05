@@ -54,7 +54,9 @@ public sealed partial class ParcelRuntime
                         // drain. No management session, pause change or RCS restart.
                         await ExternalAsync(async () =>
                         {
-                            await DeviceCallAsync(id, () => reader.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false);
+                            await DeviceCallAsync(id, () => suspended
+                                ? reader.StartAsync(Enqueue, ReaderHealthChanged, stopping.Token)
+                                : reader.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false);
                             return true;
                         }).ConfigureAwait(false);
                         supplySuspendedReaders.Remove(id);

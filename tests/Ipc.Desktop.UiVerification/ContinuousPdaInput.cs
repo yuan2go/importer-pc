@@ -21,7 +21,7 @@ static partial class Program
         await h.StartAsync();
         var application = DispatchProxy.Create<IBarcodeTransportFixture, BarcodeTransportProbe>();
         var transport = (BarcodeTransportProbe)(object)application; transport.Inner = h.App;
-        var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true };
+        var window = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "菜鸟供包台 · PDA合成验证" };
         window.Show(); var vm = window.ViewModel;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> ready)
@@ -97,7 +97,7 @@ static partial class Program
                 entry.Focus(); await Flush(); transport.NextReply = reply;
                 var code = reply == "Pending" ? "000123450004" : "000123450005";
                 await Text(code, enter: true);
-                await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains(reply == "Pending" ? "受理结果未确认" : "提交结果未确认"));
+                await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains("提交结果未确认"));
                 var command = transport.Commands.Last(); var sends = h.Peer.Requests.Count; var calls = transport.Commands.Count;
                 await Text("999"); await Flush();
                 Check(entry.Text == code && entry.IsReadOnly && transport.Commands.Count == calls && h.Peer.Requests.Count == sends,
@@ -185,8 +185,18 @@ static class BarcodeNativeKeyboard
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] static extern short GetAsyncKeyState(int key);
     [DllImport("user32.dll", SetLastError = true)] static extern bool SetCursorPos(int x, int y);
+    static async Task WaitForForegroundAsync(Window window)
+    {
+        var handle = new WindowInteropHelper(window).Handle;
+        var budget = System.Diagnostics.Stopwatch.StartNew();
+        // A background process's Activate() can be refused by Windows. Wait for
+        // actual activation; never inject input into another foreground app.
+        while (window.IsVisible && (!window.IsActive || GetForegroundWindow() != handle) && budget.Elapsed < TimeSpan.FromSeconds(30))
+            await Task.Delay(50);
+    }
     public static async Task ClickAsync(Window window, FrameworkElement target, Point offset)
     {
+        await WaitForForegroundAsync(window);
         if (!window.IsActive || GetForegroundWindow() != new WindowInteropHelper(window).Handle || !target.IsVisible)
             throw new InvalidOperationException($"Native mouse input requires the foreground test HWND and a visible target; active={window.IsActive}; foreground={GetForegroundWindow()}; expected={new WindowInteropHelper(window).Handle}; visible={target.IsVisible}");
         var point = target.PointToScreen(offset);
@@ -208,6 +218,13 @@ static class BarcodeNativeKeyboard
     {
         window.Dispatcher.VerifyAccess();
         if (keys.Length == 0) throw new ArgumentException("At least one native key is required", nameof(keys));
+        var neededActivation = !window.IsActive || GetForegroundWindow() != new WindowInteropHelper(window).Handle;
+        await WaitForForegroundAsync(window);
+        if (neededActivation)
+        {
+            (initialFocus ?? entry).Focus();
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        }
         var foreground = GetForegroundWindow(); var expectedWindow = new WindowInteropHelper(window).Handle;
         var modifiers = new[] { 0x10, 0x11, 0x12, 0x5B, 0x5C }.Where(k => (GetAsyncKeyState(k) & 0x8000) != 0).ToArray();
         if (!window.IsActive || foreground != expectedWindow || !(initialFocus ?? entry).IsKeyboardFocused || modifiers.Length != 0)

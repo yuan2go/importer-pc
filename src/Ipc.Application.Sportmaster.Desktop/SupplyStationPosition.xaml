@@ -11,7 +11,7 @@
    <Grid>
     <Grid.RowDefinitions>
      <RowDefinition Height="Auto" SharedSizeGroup="PositionHeading"/>
-     <RowDefinition Height="Auto"/>
+     <RowDefinition Height="Auto" SharedSizeGroup="PositionScan"/>
      <RowDefinition Height="*"/>
      <RowDefinition Height="Auto" SharedSizeGroup="PositionTaskFields"/>
      <RowDefinition Height="Auto" SharedSizeGroup="PositionActions"/>
@@ -28,7 +28,10 @@
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
      </Grid.ColumnDefinitions>
-     <TextBox x:Name="BarcodeEntry" MinHeight="48" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
+     <TextBox x:Name="BarcodeEntry" MinHeight="48" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0" VerticalContentAlignment="Center" FontSize="{x:Static type:UiTypography.BarcodeCompact}" FontFamily="{x:Static type:UiTypography.Code}" MaxLength="4096" AcceptsReturn="False" AcceptsTab="False" TextChanged="InputChanged" GotKeyboardFocus="Entry_GotKeyboardFocus" PreviewKeyDown="BarcodeEntry_KeyDown" PreviewTextInput="Entry_PreviewTextInput" AutomationProperties.Name="本次条码，可输入，回车提交" ToolTip="点击本位后输入；保留前导零。直接输入将替换已显示的整条旧码。完整条码输入后按回车或点击提交。">
+      <TextBox.Style><Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+       <Setter Property="MaxHeight" Value="80"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="48"/></DataTrigger></Style.Triggers>
+      </Style></TextBox.Style>
       <TextBox.ContextMenu>
        <ContextMenu>
         <MenuItem Header="剪切" Command="ApplicationCommands.Cut"/>
@@ -67,9 +70,9 @@
        <TextBlock Text="{Binding ReadCueLabel}" Foreground="{Binding ResultForeground}" DockPanel.Dock="Right" Margin="8,0,0,0" AutomationProperties.LiveSetting="Polite"/>
        <TextBlock Text="{Binding DisplayStatus}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Status}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
       </DockPanel>
-      <Viewbox Grid.Row="1" Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Center">
-       <Viewbox.Style>
-        <Style TargetType="Viewbox">
+      <Grid Grid.Row="1" x:Name="SlotViewport">
+       <Grid.Style>
+        <Style TargetType="Grid">
          <Setter Property="Margin" Value="0,4"/>
          <Setter Property="Grid.ColumnSpan" Value="2"/>
          <Style.Triggers>
@@ -77,8 +80,9 @@
           <MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Grid.ColumnSpan" Value="1"/></MultiDataTrigger>
          </Style.Triggers>
         </Style>
-       </Viewbox.Style>
-       <TextBox x:Name="CurrentSlot" Text="{Binding DisplaySlot,Mode=OneWay}" FontSize="{Binding DisplaySlotFontSize}" Foreground="{Binding ResultForeground}" Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True" FontFamily="{x:Static type:UiTypography.Code}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="{Binding DisplaySlotLabel}">
+       </Grid.Style>
+       <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+       <TextBox x:Name="CurrentSlot" Text="{Binding DisplaySlot,Mode=OneWay}" FontSize="{Binding DisplaySlotFontSize}" MaxWidth="{Binding ActualWidth,ElementName=SlotViewport}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{Binding ResultForeground}" Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True" FontFamily="{x:Static type:UiTypography.Interface}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="{Binding DisplaySlotLabel}">
         <TextBox.Style>
          <Style TargetType="TextBox">
           <Style.Triggers>
@@ -90,6 +94,7 @@
         </TextBox.Style>
        </TextBox>
       </Viewbox>
+      </Grid>
       <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" x:Name="PositionBody" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
        <ScrollViewer.Style>
         <Style TargetType="ScrollViewer">

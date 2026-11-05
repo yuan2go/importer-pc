@@ -52,6 +52,7 @@ static partial class Program
                     VerifyPreservedSeedUpgrade(Path.GetDirectoryName(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"))!, evidence,
                         (ok, text) => { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS SEED-GUARDS " + text); });
                 else if (args.Contains("--window-preference")) await VerifyWindowPreference(root, evidence, lines);
+                else if (args.Contains("--management-center")) await VerifyManagementCenter(root, evidence, lines);
                 else if (args.Contains("--restart-barcode-details")) await VerifyRestartBarcodeDetails(root, evidence, lines);
                 else if (args.Contains("--parcel-picture-copy")) await VerifyParcelPictureCopy(root, evidence, lines);
                 else if (args.Contains("--debug-no-isolation-31-ui")) await VerifyDebugNoIsolation31(root, evidence, lines);
@@ -246,6 +247,11 @@ static partial class Program
     }
     static void Click(DependencyObject root, string name)
     {
+        if (root is ManagementCenterWindow center && name is "设备与诊断" or "设置" or "调试" or "日志")
+        {
+            ((WrapPanel)center.FindName("ManagementNavigation")).Children.OfType<Button>().Single(b => Equals(b.Content, name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            return;
+        }
         if (root is ShellWindow)
             name = name switch { "设备与维护" or "参数配置" => "参数设置", _ => name };
         if (root is SupplyStationWindow station)

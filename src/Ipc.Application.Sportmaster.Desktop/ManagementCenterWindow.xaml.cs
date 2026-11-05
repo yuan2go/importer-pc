@@ -1,0 +1,43 @@
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using Ipc.Application.Contracts;
+using Ipc.Platform;
+
+namespace Ipc.Application.Sportmaster.Desktop;
+
+public sealed class ManagementTabSelectedConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) => values.Length == 2 && values[0] is string page && Equals(page, values[1]);
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) => throw new NotSupportedException();
+}
+
+public partial class ManagementCenterWindow : Window
+{
+    readonly Action<string> navigate;
+    readonly Func<Task> authenticate, renew, password;
+    public ManagementCenterWindow(SupplyStationViewModel model, Action<string> navigate, Func<Task> authenticate, Func<Task> renew, Func<Task> password)
+    {
+        InitializeComponent(); UiTypography.Apply(this);
+        DataContext = model; this.navigate = navigate; this.authenticate = authenticate; this.renew = renew; this.password = password;
+        Width = Math.Min(Width, SystemParameters.WorkArea.Width); Height = Math.Min(Height, SystemParameters.WorkArea.Height);
+        UpdateAuthorization(model.ManagementStatus);
+    }
+    public void ShowPage(FrameworkElement page) => ManagementPageHost.Content = page;
+    public void DetachPage() => ManagementPageHost.Content = null;
+    public void UpdateAuthorization(ManagementModeStatus status)
+    {
+        AuthorizedBody.Visibility = status.Authorized ? Visibility.Visible : Visibility.Collapsed;
+        AuthorizationGate.Visibility = status.Authorized ? Visibility.Collapsed : Visibility.Visible;
+        ManagementNavigation.IsEnabled = RenewAuthorization.IsEnabled = PasswordSettings.IsEnabled = status.Authorized;
+        AuthorizationStatus.Text = status.Authorized ? $"授权至 {status.ExpiresAt?.ToLocalTime():HH:mm} · 关闭窗口后结束授权" : "管理授权已结束；可验证密码后继续。";
+    }
+    public void SetClosing(bool value) { IsEnabled = !value; if (value) AuthorizationStatus.Text = "正在结束管理操作，请稍候…"; }
+    public void ShowCloseFailure() => AuthorizationStatus.Text = "管理窗口尚未关闭，请稍后重试；未保存的设置保留。";
+    void Navigate_Click(object sender, RoutedEventArgs e) => navigate((string)((Button)sender).Tag);
+    async void Authenticate_Click(object sender, RoutedEventArgs e) => await authenticate();
+    async void Renew_Click(object sender, RoutedEventArgs e) => await renew();
+    async void Password_Click(object sender, RoutedEventArgs e) => await password();
+    void Close_Click(object sender, RoutedEventArgs e) => Close();
+}

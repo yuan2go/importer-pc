@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -10,11 +11,17 @@ namespace Ipc.Desktop;
 sealed class ProductMaintenanceWindow : StartupWorkflowWindow
 {
     internal Func<string> RegistrationIdentity { get; set; } = () => Wire.FileHash(WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId));
+    internal Func<string> RegistrationScope { get; set; } = () =>
+    {
+        var current = WindowsDeploymentSetup.Current(ParcelStartupServices.ApplicationId) ?? throw new InvalidDataException("未找到安装信息。");
+        return Wire.Hash(Wire.Encode(current with { LifecycleState = "", MaintenanceOperation = null }));
+    };
     internal Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>> ExecuteUninstall { get; set; } = ParcelStartupServices.UninstallAsync;
     internal Func<ProgramUninstallResult> InspectUninstall { get; set; } = ParcelStartupServices.InspectUninstall;
     readonly RadioButton keepData = new() { Content = "保留本站数据", GroupName = "StationData", IsChecked = true, MinHeight = 44 };
     readonly RadioButton deleteData = new() { Content = "同时删除本站数据", GroupName = "StationData", MinHeight = 44 };
-    bool deletionRequested;
+    string? originalRegistration;
+    string? originalScope;
 
     internal ProductMaintenanceWindow(WindowsRemovalReceipt completed, string retainedDataRoot) : this()
         => ShowResult(new(completed, null, false));
@@ -25,6 +32,11 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     {
         Width = 680; Height = 420; MinHeight = 380;
         RenderOptions();
+        Loaded += (_, _) =>
+        {
+            try { originalScope ??= RegistrationScope(); originalRegistration ??= RegistrationIdentity(); }
+            catch (Exception error) { OperationFailed(error); }
+        };
     }
 
     void RenderOptions()
@@ -45,21 +57,45 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
 
     async Task Uninstall()
     {
-        deletionRequested = deleteData.IsChecked == true;
+        RequireOriginalScope();
+        var hash = RegistrationIdentity();
+        if (originalRegistration is null || originalRegistration != hash)
+            throw new InvalidOperationException("安装信息已变化，请关闭并重新打开卸载程序。");
+        var deletionRequested = deleteData.IsChecked == true;
         var context = deletionRequested ? "卸载程序并删除本站数据；不创建备份。" : "卸载程序，保留本站数据；不创建备份。";
-        ShowResult(await RunMaintenance(context, (progress, token) => ExecuteUninstall(RegistrationIdentity(), deletionRequested, progress, token)));
+        var result = await RunMaintenance(context, (progress, token) => ExecuteUninstall(hash, deletionRequested, progress, token));
+        // The operation itself changes registration. A verified result may retry
+        // that retired installation; an unconfirmed result must first be inspected.
+        RefreshOriginalRegistration();
+        ShowResult(result);
     }
 
     async Task InspectResult()
     {
+        RequireOriginalScope();
         var result = await Task.Run(InspectUninstall);
+        RefreshOriginalRegistration();
         if (result.Removal?.Status is "Installed" or "NotCommitted" or "NotCommittedNeedsClosure")
         {
             ResolveKnownMaintenanceOutcome(); RenderOptions();
             Message("程序尚未卸载。可重新点击“卸载”，将自动处理上次未完成的卸载。"); return;
         }
         if (result.Removal?.Status == "Unknown") throw new InstallationOutcomeUnknownException("上次卸载结果尚未确认，请稍后再次查看。");
-        ResolveKnownMaintenanceOutcome(); ShowResult(result with { DeleteData = result.DeleteData || deletionRequested });
+        ResolveKnownMaintenanceOutcome(); ShowResult(result with { DeleteData = result.DeleteData || deleteData.IsChecked == true });
+    }
+
+    void RequireOriginalScope()
+    {
+        if (originalScope is null || RegistrationScope() != originalScope)
+            throw new InvalidOperationException("安装信息已变化，请关闭并重新打开卸载程序。");
+    }
+
+    void RefreshOriginalRegistration()
+    {
+        RequireOriginalScope();
+        var hash = RegistrationIdentity();
+        RequireOriginalScope();
+        originalRegistration = hash;
     }
 
     void ShowResult(ProgramUninstallResult result)
@@ -85,7 +121,6 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         if (deleted) Note("程序已移除。共享驱动、安装回执和本站以外的备份保留。");
         if (!complete)
         {
-            deletionRequested = result.DeleteData;
             deleteData.IsChecked = result.DeleteData; keepData.IsChecked = !result.DeleteData;
             Action("重试卸载", Uninstall);
         }

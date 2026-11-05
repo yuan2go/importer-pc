@@ -21,6 +21,7 @@ static partial class Program
         {
             var window = (Window)Activator.CreateInstance(type)!;
             type.GetProperty("RegistrationIdentity", flags)!.SetValue(window, (Func<string>)(() => "synthetic-registration"));
+            type.GetProperty("RegistrationScope", flags)!.SetValue(window, (Func<string>)(() => "synthetic-installation"));
             type.GetProperty("ExecuteUninstall", flags)!.SetValue(window,
                 (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((hash, delete, _, _) =>
                 { Check(hash == "synthetic-registration", "original installation identity reaches the application contract"); calls++; selectedDelete = delete; return execute(delete); }));
@@ -92,6 +93,52 @@ static partial class Program
         Click(unknown, "查看结果"); await Idle(unknown);
         Check(inspections == 1 && Button(unknown, "重试卸载").IsEnabled && Status(unknown).Contains("尚未删除"), "verified original partial result permits fixed-inventory retry");
         CaptureInternal(evidence, "uninstall-partial", unknown, lines); Click(unknown, "关闭");
+
+        var changedChoice = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")),
+            () => new(clean, null, false));
+        changedChoice.Show(); await Idle(changedChoice);
+        Descendants(changedChoice).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
+        Click(changedChoice, "卸载"); await Idle(changedChoice);
+        Descendants(changedChoice).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked = true;
+        Click(changedChoice, "查看结果"); await Idle(changedChoice);
+        Check(Status(changedChoice).Contains("本站数据已保留") && !Descendants(changedChoice).OfType<Button>().Any(b => Equals(b.Content, "重试卸载")),
+            "inspection preserves a later retention choice when no data-deletion operation exists");
+        Click(changedChoice, "关闭");
+        var purgeAttempts = 0;
+        var purgeRetry = Make(_ => ++purgeAttempts == 1
+                ? Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic purge interruption"))
+                : Task.FromResult(new ProgramUninstallResult(null, deletion, true)),
+            () => new(null, deletion with { Status = "PartiallyPurged" }, true));
+        purgeRetry.Show(); await Idle(purgeRetry);
+        Descendants(purgeRetry).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
+        Click(purgeRetry, "卸载"); await Idle(purgeRetry); before = calls;
+        Click(purgeRetry, "查看结果"); await Idle(purgeRetry);
+        Check(calls == before && Status(purgeRetry).Contains("部分数据尚未删除"), "inspecting an original partial data deletion never submits another deletion");
+        Click(purgeRetry, "重试卸载"); await Idle(purgeRetry);
+        Check(selectedDelete && Status(purgeRetry).Contains("本站数据已删除"), "an explicit retry continues a committed partial deletion rather than silently claiming retention");
+        Click(purgeRetry, "关闭");
+        var stale = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false)));
+        stale.Show(); await Idle(stale); before = calls;
+        type.GetProperty("RegistrationIdentity", flags)!.SetValue(stale, (Func<string>)(() => "replacement-registration"));
+        Click(stale, "卸载"); await Idle(stale);
+        Check(calls == before && Status(stale).Contains("重新打开"), "a registration changed after opening cannot authorize another uninstall");
+        Click(stale, "取消");
+
+        var replaced = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")), () => new(clean, null, false));
+        replaced.Show(); await Idle(replaced); Click(replaced, "卸载"); await Idle(replaced); before = inspections;
+        type.GetProperty("RegistrationScope", flags)!.SetValue(replaced, (Func<string>)(() => "replacement-installation"));
+        Click(replaced, "查看结果"); await Idle(replaced);
+        Check(inspections == before && Status(replaced).Contains("重新打开"), "result inspection cannot rebind an old window to another installation");
+        Click(replaced, "取消");
+
+        var reopened = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false)));
+        reopened.Show(); await Idle(reopened);
+        Check(Descendants(reopened).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked == true,
+            "a newly opened window does not inherit an earlier deletion choice");
+        Descendants(reopened).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
+        Descendants(reopened).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked = true;
+        Click(reopened, "卸载"); await Idle(reopened);
+        Check(!selectedDelete, "switching deletion back to retention submits retention"); Click(reopened, "关闭");
         lines.Add("BOUNDARY real WPF HWND/Dispatcher and button events; synthetic uninstall callbacks. Protected uninstall/UAC/SDK/site NOT_RUN.");
     }
 }

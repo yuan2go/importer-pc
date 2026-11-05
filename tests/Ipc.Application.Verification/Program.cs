@@ -59,6 +59,7 @@ if (args.Contains("--industrial-lifecycle")) { IndustrialLifecycle.Run(root); re
 if (args.Contains("--industrial-rollback")) { await IndustrialRollback.Run(workspace, root); return; }
 if (args.Contains("--industrial-version-pruning")) { await IndustrialVersionPruning.Run(workspace, root); return; }
 if (args.Contains("--permanent-deletion-02")) { await PermanentDeletion02.Run(workspace, root); return; }
+if (args.Contains("--uninstall-data-boundary")) { await UninstallDataBoundary.Run(root); return; }
 if (args.Contains("--industrial-opaque-removal")) { await IndustrialOpaqueRemoval.Run(workspace, root); return; }
 if (args.Contains("--industrial-quiet-deployment")) { IndustrialQuietDeployment.Run(root); return; }
 if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }

@@ -87,9 +87,11 @@ public static partial class WindowsDeploymentSetup
 
     // No business database or configuration parsing, and no request-state check.
     internal static DeploymentPurgePlan PlanDataPurgeCore(DeploymentLocation location, string registrationHash, string operation,
-        string machineRoot)
+        string machineRoot, DeploymentLocation? expectedRetired = null)
     {
         DeploymentPurgePlan Denied(string why) => new("", operation, location.ApplicationId, registrationHash, false, why, [], PurgeRetained);
+        if (expectedRetired is not null && Wire.Encode(location) != Wire.Encode(expectedRetired))
+            return Denied("安装信息已变化，原卸载不能删除另一份安装的数据。请重新打开卸载程序。");
         if (location.LifecycleState is "PartiallyPurged" or "Purging")
             return Denied("上一次永久删除尚未完成，请核对并继续原次，不能换清单重新删除。");
         if (location.LifecycleState == "Purged") return Denied("本站数据已永久删除。");
@@ -97,12 +99,8 @@ public static partial class WindowsDeploymentSetup
             return Denied("程序尚未卸载，请先关闭供包台后卸载。");
         var roots = new[] { location.DataRoot, location.ConfigurationDirectory }.Select(Path.GetFullPath).ToArray();
         machineRoot = Path.GetFullPath(machineRoot);
-        foreach (var root in roots)
-            if (Path.GetPathRoot(root) == root || TrustedProgramRoots.Contains(root, machineRoot) ||
-                TrustedProgramRoots.Contains(root, Path.Combine(machineRoot, "deployments")) || TrustedProgramRoots.Contains(root, location.ReleaseRoot))
-                return Denied("数据目录与磁盘根、部署记录或程序目录重叠，拒绝永久删除。");
-        if (TrustedProgramRoots.Contains(roots[0], roots[1]) || TrustedProgramRoots.Contains(roots[1], roots[0]))
-            return Denied("数据目录与配置目录互相包含，拒绝永久删除。");
+        try { RequirePurgeScope(location, machineRoot); }
+        catch (InvalidDataException error) { return Denied(error.Message); }
         var delete = roots.Select(PurgeInventory).ToArray();
         // The deleter only accepts plain relative names; find any other name now, not halfway through.
         if (delete.Any(area => area.Files.Keys.Any(name => !ExtensionPackages.SafePath(name))))
@@ -161,7 +159,7 @@ public static partial class WindowsDeploymentSetup
             markRegistration("Purging"); save(record with { Status = "Purging" });
             var remaining = plan.Delete.SelectMany(area =>
             {
-                var cleanup = CleanRemovalInventory(area.Root, area.Files.Keys.ToArray(), _ => false, PurgeFileBudget);
+                var cleanup = CleanRemovalInventory(area.Root, area.Files.Keys.ToArray(), _ => false, PurgeFileBudget, area.Files);
                 // Empty directories have no file entry in the original inventory.
                 // Remove them without following links or deleting unlisted files.
                 var pending = new Stack<string>(); var directories = new List<string>();
@@ -177,13 +175,13 @@ public static partial class WindowsDeploymentSetup
                 foreach (var directory in directories.AsEnumerable().Reverse())
                 {
                     DeploymentPaths.RequireOrdinaryAncestors(directory);
-                    try { Directory.Delete(directory, false); }
+                    try { DeleteReviewedPath(directory, null); }
                     catch (Exception error) when (error is IOException or UnauthorizedAccessException) { remainingDirectories.Add(directory); }
                 }
                 return cleanup.Remaining.Select(name => Path.IsPathFullyQualified(name) ? name : Path.Combine(area.Root, name))
                     .Where(path => File.Exists(path) || Directory.Exists(path)).Concat(remainingDirectories);
             }).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
-            var leftovers = plan.Delete.Any(area => Directory.Exists(area.Root));
+            var leftovers = plan.Delete.Any(area => Directory.Exists(area.Root) || File.Exists(area.Root));
             var status = remaining.Length == 0 && !leftovers ? "Purged" : "PartiallyPurged";
             save(record with { Status = status, Remaining = remaining });
             markRegistration(status);
@@ -196,12 +194,13 @@ public static partial class WindowsDeploymentSetup
     }
 
     [SupportedOSPlatform("windows")]
-    public static DeploymentPurgePlan PlanDataPurge(string application, string operation)
+    public static DeploymentPurgePlan PlanDataPurge(string application, string operation, DeploymentLocation expectedRetired)
     {
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
+        using var otherDeployments = AcquireOtherPurgeDeployments(application, MachineRoot);
         _ = PurgeFile(application, operation);
         var current = Current(application) ?? throw new InvalidDataException("缺少唯一部署登记。");
-        return PlanDataPurgeCore(current, Wire.FileHash(Registration(application)), operation, MachineRoot);
+        return PlanDataPurgeCore(current, Wire.FileHash(Registration(application)), operation, MachineRoot, expectedRetired);
     }
 
     [SupportedOSPlatform("windows")]
@@ -209,6 +208,7 @@ public static partial class WindowsDeploymentSetup
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", reviewed.ApplicationId + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        using var otherDeployments = AcquireOtherPurgeDeployments(reviewed.ApplicationId, MachineRoot);
         var path = PurgeFile(reviewed.ApplicationId, reviewed.OperationId);
         if (File.Exists(path)) throw new InstallationOutcomeUnknownException("原永久删除记录已存在，请核对或继续原次，不能重复提交。");
         var current = Current(reviewed.ApplicationId) ?? throw new InvalidDataException("缺少唯一部署登记。");
@@ -228,6 +228,7 @@ public static partial class WindowsDeploymentSetup
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", application + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        using var otherDeployments = AcquireOtherPurgeDeployments(application, MachineRoot);
         var path = PurgeFile(application, operation);
         MachineRuntimePolicy.RequireProtectedEvidence(path);
         if (new FileInfo(path).Length > 8 * 1024 * 1024) throw new InvalidDataException("永久删除记录超过读取预算。");
@@ -238,6 +239,7 @@ public static partial class WindowsDeploymentSetup
             throw new InvalidOperationException("没有可继续的原永久删除。");
         var observed = ProjectDataPurge(record, path, current);
         if (observed.Status == "Purged") return observed;
+        RequirePurgeScope(current, MachineRoot);
         var sid = new SecurityIdentifier(current.RuntimeAccountSid);
         return ApplyDataPurge(record with { Status = "Purging" }, path, () => Wire.FileHash(Registration(application)),
             state => WriteProtected(path, state, sid), state => WriteProtected(Registration(application), current with { LifecycleState = state }, sid), execution);

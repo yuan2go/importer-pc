@@ -113,7 +113,9 @@
       <TextBlock x:Name="NextStep" Text="{Binding DisplayNextStep}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:OperatorTokens.InstructionSize}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite">
        <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource StationInstruction}">
         <Setter Property="Grid.Row" Value="2"/><Setter Property="Grid.ColumnSpan" Value="2"/>
-        <Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions>
+        <Style.Triggers>
+         <DataTrigger Binding="{Binding DisplayNextStep}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+         <MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions>
          <Setter Property="Grid.Row" Value="1"/><Setter Property="Grid.Column" Value="1"/><Setter Property="Grid.ColumnSpan" Value="1"/>
          <Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="8,0,0,0"/>
         </MultiDataTrigger></Style.Triggers>

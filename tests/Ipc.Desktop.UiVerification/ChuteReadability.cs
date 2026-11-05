@@ -72,6 +72,8 @@ static partial class Program
                     Math.Abs(Bounds((FrameworkElement)left.FindName("FixedActions")).Top - Bounds((FrameworkElement)right.FindName("FixedActions")).Top) < 1,
                     "accepted left and rejected right keep aligned results and primary actions with unequal barcode and task lengths");
                 Check(Bounds(panel).Contains(Bounds(slot)), "wrapped chute is fully inside its result area");
+                Check(vm.Left.DisplayNextStep.Length == 0 && !((TextBlock)left.FindName("NextStep")).IsVisible,
+                    "confirmed chute has no redundant package-removal instruction or reserved instruction space");
                 var entry = (TextBox)left.FindName("BarcodeEntry"); entry.SelectAll();
                 Check(entry.SelectedText == barcode && entry.FontSize == 24 && entry.TextWrapping == TextWrapping.Wrap && entry.VerticalScrollBarVisibility == ScrollBarVisibility.Auto,
                     "long barcode preserves leading zeros and all characters, with readable wrapping, scrolling and selection");

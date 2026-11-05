@@ -7,9 +7,10 @@ namespace Ipc.Presentation.Wpf;
 public static partial class UiTypography
 {
     public static FontFamily Interface { get; } = new(new Uri("pack://application:,,,/Ipc.Presentation.Wpf;component/"),
-        "./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI");
-    public static FontFamily Code { get; } = new(new Uri("pack://application:,,,/Ipc.Presentation.Wpf;component/"),
-        "Consolas, ./Fonts/#Noto Sans CJK SC, Microsoft YaHei UI, Segoe UI");
+        "./Fonts/#Noto Sans CJK SC");
+    // Identifiers and technical text share the shipped family; the role retains
+    // its own sizing without introducing a system-font dependency.
+    public static FontFamily Code => Interface;
     public static FontWeight Regular => FontWeights.Normal;
     public static FontWeight Emphasis => FontWeights.Medium;
 

@@ -18,6 +18,8 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
         inputTargetPosition = value; Changed(nameof(InputTargetPosition)); Left.NotifyInputTarget(); Right.NotifyInputTarget();
     }
     bool isTight;
+    double chuteScale = 1;
+    public double ChuteScale { get => chuteScale; internal set { if (Math.Abs(chuteScale - value) < .001) return; chuteScale = value; Left.NotifyLayout(); Right.NotifyLayout(); } }
     public bool IsTight { get => isTight; set { if (isTight == value) return; isTight = value; Changed(); } }
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
@@ -206,7 +208,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
     public string ScanSummary => Input is null ? "等待相机扫码或输入条码" : (Input.Observation.OperatorInput is { } entry ? (entry.Kind == "PdaKeyboard" ? "PDA键盘输入 " : "手动键盘输入 ") : "相机读取 ") + ScanTime + " · 条码 " + Input.Observation.Codes.Length + " 项";
     public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
-    public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.SlotSize(Operation!.Slot!, IsCompact);
+    public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.ResponsiveSlotSize(Operation!.Slot!, owner.ChuteScale);
     public bool NeedsAttention => !owner.Fresh || InputUnadmitted || HasUncertainOriginal || Presentation.NeedsAttention;
     public string OperatorInstruction => !owner.Fresh ? OperatorCopy.StaleStep :
         InputUnadmitted ? (InputFailed ? ChineseInterfaceText.Notice(Input!.Reason) + "；" + OperatorCopy.RescanStep : OperatorCopy.PreviousPendingStep) :

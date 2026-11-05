@@ -209,8 +209,7 @@ public partial class SupplyStationPosition : UserControl
             {
                 var receipt = await vm.ServiceAsync(() => service.SubmitParcelBarcodeAsync(request, CancellationToken.None));
                 var label = receipt.Status switch { "Admitted" => "已受理", "Rejected" => "未受理", "Blocked" => "暂不能受理", "Conflict" => "本位状态已变化，请确认后重交", "Duplicate" => "重复扫描", "Pending" => "受理结果未确认", _ => receipt.Status };
-                InputFeedback.Text = label + " · " + Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.Notice(receipt.Detail) + (receipt.OperationId is null ? "" : "\n作业：" + receipt.OperationId) +
-                    (receipt.Status == "Pending" ? "\n命令：" + request.CommandId : "");
+                InputFeedback.Text = receipt.Status == "Pending" ? SubmissionUnconfirmed : label + " · " + Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.Notice(receipt.Detail);
                 vm.ReportBarcodeFeedback(receipt, InputFeedback.Text);
                 if (receipt.Status != "Pending")
                 {
@@ -223,17 +222,19 @@ public partial class SupplyStationPosition : UserControl
                     if (receipt.Status == "Admitted") { editing = false; inputBasis = null; InputFeedback.Text = ""; }
                 }
             }
-            catch (ArgumentException error) { submitted = null; InputFeedback.Text = error.Message; }
-            catch (Exception error)
+            catch (Exception)
             {
-                InputFeedback.Text = "提交结果未确认，系统不会自动重发。请点“查看提交结果”，或在记录中查找本件。命令：" + request.CommandId + "\n" + error.Message;
-                throw;
+                // The Application journals the original exception and command.
+                // Exception type alone cannot prove that no intent was committed.
+                InputFeedback.Text = SubmissionUnconfirmed;
+                vm.Message = InputFeedback.Text;
             }
         }, "提交或核对本位条码");
         submitting = false; BarcodeEntry.IsReadOnly = submitted is not null;
         SubmitBarcode.Content = submitted is null ? "提交" : "查看提交结果";
         RefreshSubmitAvailability(); RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay(); PrepareResultReplacement();
     }
+    const string SubmissionUnconfirmed = "提交结果未确认，请保留包裹；点“查看提交结果”，勿重复提交。";
     void Picture_Click(object sender, RoutedEventArgs e)
     {
         if (editing || terminalTextRetained || submitting || submitted is not null || Host is not { } host ||

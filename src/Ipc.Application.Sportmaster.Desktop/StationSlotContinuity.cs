@@ -107,8 +107,8 @@ public sealed partial class SupplyStationPositionViewModel
         CameraNoCode && !HasUncertainOriginal ? ParcelPresentation.Neutral(CameraAwaitingRead ? "等待重新扫码" : "未读到条码") : invalidReadFeedback ? ParcelPresentation.Unknown("本次读码已失效") : IsProcessing ? ParcelPresentation.Pending("处理中") : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown("未取得格口") : Presentation;
     public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
     public string ContinuityNotice => "";
-    public string DisplayStatus => ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused ? "供包已暂停" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线 · 可手动输入条码" : "相机离线 · 本位暂停供包" : HasUncertainOriginal ? Status :
-        CameraNoCode ? CameraAwaitingRead ? "等待重新扫码" : "未读到条码" : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Status;
+    public string DisplayStatus => ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused ? "供包已暂停" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线 · 可手动输入条码" : "相机离线 · 本位暂停供包" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
+        CameraNoCode ? CameraAwaitingRead ? "等待重新扫码" : "未读到条码" : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Operation?.State == ParcelState.WcsRejected ? "未取得格口" : Status;
     public string DisplayAttentionReason => DisplayPaused ? "" : ReaderUnavailableForDisplay ? CurrentReaderState?.Health == DeviceHealth.Faulted
         ? "相机故障，无法自动恢复；另一投递位不受影响。" : "相机正在自动重连，恢复后自动继续；另一投递位不受影响。" :
         CameraNoCode ? (CameraAwaitingRead ? "相机连接周期已变化，上一周期的格口已失效。" : cameraRead!.Frame.Outcome == ObservationReadOutcome.RejectedFrame ? "当前图像无法识别；上一件格口不可用于本件。" : "托盘上未读到条码；上一件格口不可用于本件。") +

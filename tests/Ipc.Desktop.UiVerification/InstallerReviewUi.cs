@@ -43,6 +43,16 @@ static partial class Program
             type.GetMethod("Stage", flags)!.Invoke(window, [WindowsInstallationStage.CopyingFiles]); window.UpdateLayout();
             Check(stage.Text == "正在复制并校验程序文件" && !Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("/ 6 步")), "installation phases do not introduce a second numbered step system");
             type.GetField("installing", flags)!.SetValue(window, false);
+            type.GetField("step", flags)!.SetValue(window, 3);
+            type.GetField("installed", flags)!.SetValue(window, new DeploymentLocation("sportmaster", new string('a', 40),
+                System.IO.Path.Combine(evidence, "synthetic-release"), launch.ConfigurationDirectory, launch.DataRoot, MachineRuntimePolicy.SharedUsersSid));
+            type.GetField("needsFirstConfiguration", flags)!.SetValue(window, false);
+            type.GetMethod("Render", flags | BindingFlags.DeclaredOnly)!.Invoke(window, null);
+            window.UpdateLayout();
+            Check(Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("打开后自动检查并启动") && t.Text.Contains("具体原因")) &&
+                !Descendants(window).OfType<TextBlock>().Any(t => t.IsVisible && t.Text.Contains("仍需主动启动")),
+                "existing-configuration completion explains automatic startup and unmet conditions");
+            CaptureInternal(evidence, "review-installer-automatic-start", (FrameworkElement)window.Content, lines);
         }
         finally { type.GetField("installing", flags)!.SetValue(window, false); window.Close(); }
     }

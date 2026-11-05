@@ -283,7 +283,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             Height = Math.Min(optionsHeight, MaxHeight);
             if (needsFirstConfiguration == true)
             { Section("首次使用"); Note(ApplicationId == "sportmaster" ? "首次打开后先设置供包台。相机和 RCS 可稍后配置，配置完成前不能供包。" : "首次打开后，请完成设备与服务配置，再按检查结果启动。"); }
-            else Note(needsFirstConfiguration == false ? "已有配置已识别。打开后仍需主动启动，启动时检查设备与服务条件。" : configurationMessage.Length > 0 ? configurationMessage : "打开后会检查配置；安装完成不代表设备已可运行。");
+            else Note(needsFirstConfiguration == false ? "已有配置已识别。打开后自动检查并启动；条件不满足时会显示具体原因。" : configurationMessage.Length > 0 ? configurationMessage : "打开后自动检查配置；首次配置保存后自动启动，条件不满足时会显示具体原因。安装完成不代表设备已可运行。");
             var canRun = ParcelStartupServices.IsRuntimeAccount(installed!);
             runAfter = new CheckBox { Content = "完成后打开供包台", IsChecked = canRun, IsEnabled = canRun, VerticalAlignment = VerticalAlignment.Center, Margin = new(0, 16, 12, 0) };
             Actions.Children.Insert(0, runAfter); if (!canRun) Note("请使用原供包台的 Windows 账户打开程序。"); next.Content = "完成";

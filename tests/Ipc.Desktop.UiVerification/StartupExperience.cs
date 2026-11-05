@@ -39,7 +39,7 @@ static partial class Program
             Check(Descendants(first).OfType<Button>().Where(x => x.IsVisible && Footer(first).Contains(x.Content as string ?? "")).All(x => x.TransformToAncestor(first).TransformBounds(new Rect(x.RenderSize)).Bottom <= first.ActualHeight), "footer stays inside the native window on step " + (i + 1));
             Capture("startup-step-" + (i + 1), first);
         }
-        Check(Footer(first).Contains("保存配置") && !Footer(first).Contains("检查并预览更改"), "final step offers real save without automatic startup; internal operations have no separate setup entry");
+        Check(Footer(first).Contains("保存配置") && !Footer(first).Contains("检查并预览更改"), "final step offers real save; runtime starts after configuration completion without another start gate");
         Check(!Descendants(first).OfType<Button>().Any(x => (x.Content as string) == "配置工具…"), "configuration tools are removed from first setup rather than hidden in a menu");
         Check(!Footer(first).Contains("导入配置") && Footer(first).Contains("保存草稿并退出") && Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "导入配置")), "import is in the fixed header and encrypted draft persistence remains in the footer");
         first.Width = 800; first.Height = 600; first.UpdateLayout();
@@ -50,21 +50,15 @@ static partial class Program
         // Current-format imports are edits, not a way to transplant another machine's identity.
         var reference = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), launch.DataRoot, null, null)).Catalog();
-        var legacyEditor = new StartupConfigurationDraft(reference, catalog);
-        var legacyControl = new ParameterSettingsControl { FirstConfiguration = true, Model = legacyEditor.CreateParameterEditor((p, c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c))) };
-        var legacyWindow = new Window { Content = legacyControl, Width = 960, Height = 680 }; legacyWindow.Show(); legacyControl.ShowCategory(3); legacyWindow.UpdateLayout();
-        var legacyService = legacyControl.Model.Components.Single(c => c.Kind == "integration");
-        var selector = Descendants(legacyControl).OfType<ComboBox>().Single(c => AutomationProperties.GetAutomationId(c) == legacyService.InstanceId + "/Provider");
-        // The catalog retains frozen legacy bindings alongside the current version.
-        // Select one exact descriptor, rather than assuming display labels are identities.
-        var currentRcs = catalog.Providers.Where(p => p.Implementation == "sportmaster-rcs").MaxBy(p => Version.Parse(p.Version))!;
-        selector.SelectedIndex = Enumerable.Range(0, selector.Items.Count).Single(i =>
-            selector.Items[i]!.GetType().GetProperty("Provider")!.GetValue(selector.Items[i]) is CapabilityDescriptor provider && provider == currentRcs);
-        legacyWindow.UpdateLayout();
-        Check(legacyService.ProviderChangePending && legacyService.Provider != currentRcs, "selecting another service requires an explicit parameter reset decision");
-        Descendants(legacyControl).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == legacyService.InstanceId + "/ApplyProviderChange").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        Check(legacyControl.Model.Components.Single(c => c.Kind == "integration").Provider == currentRcs && Descendants(legacyControl).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == legacyService.InstanceId + "/Target" && x.IsVisible), "current service selection applies after explicit reset while station identity is preserved");
-        legacyWindow.Close();
+        var importedEditor = new StartupConfigurationDraft(new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration(), catalog);
+        var importedControl = new ParameterSettingsControl { FirstConfiguration = true, Model = importedEditor.CreateParameterEditor((p, c) => Task.FromResult(Ipc.Application.ParcelFlow.BarcodeFiltering.Select(p, c))) };
+        var importedWindow = new Window { Content = importedControl, Width = 960, Height = 680 }; importedWindow.Show(); importedControl.ShowCategory(3); importedWindow.UpdateLayout();
+        var importedService = importedControl.Model.Components.Single(c => c.Kind == "integration");
+        Check(!Descendants(importedControl).OfType<ComboBox>().Any(c => AutomationProperties.GetAutomationId(c) == importedService.InstanceId + "/Provider") &&
+            importedService.Providers.All(p => p.Implementation == "sportmaster-rcs"), "SM first configuration offers only built-in RCS without a provider selector");
+        Check(!importedService.ProviderChangePending && Descendants(importedControl).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == importedService.InstanceId + "/Target" && x.IsVisible),
+            "current RCS address is editable without a provider reset or station identity change");
+        importedWindow.Close();
         var original = new StartupConfigurationDraft(reference, catalog);
         var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", QueueCapacity = 71 }), reference, original, catalog);
         Check(imported.Build().StationId == reference.StationId && imported.Build().QueueCapacity == 71 && original.Build().QueueCapacity == reference.QueueCapacity, "preview import preserves local station identity and leaves the original draft untouched");
@@ -164,10 +158,11 @@ static partial class Program
         installer.Show(); await Idle(installer);
         installerType.GetProperty("CurrentInstallation", flags)!.SetValue(installer, (Func<string, DeploymentLocation?>)(_ => null));
         installerType.GetField("newStation", flags)!.SetValue(installer, "synthetic-supply-station");
+        installerType.GetField("failed", flags)!.SetValue(installer, false);
         installerType.GetField("step", flags)!.SetValue(installer, 1);
         installerType.GetMethod("Render", flags | BindingFlags.DeclaredOnly)!.Invoke(installer, null); installer.UpdateLayout();
         Check(Descendants(installer).OfType<TextBlock>().Any(x => x.Text == "版本: SM V" + businessVersion + " Windows 64位"), "installer version follows the requested format and actual business version");
-        Check(!Descendants(installer).OfType<Expander>().Any() && !Descendants(installer).OfType<ComboBox>().Any(), "installer contains no hidden advanced settings, mode, account, trust or package choices");
+        Check(!Descendants(installer).OfType<ComboBox>().Any(), "installer has no mode, account, trust or package selectors; technical details and shortcuts may fold");
         Check(Descendants(installer).OfType<TextBox>().Count(x => !x.IsReadOnly) == 2, "only installation and data folders require editable text");
         Check(!Descendants(installer).OfType<RadioButton>().Any() && !Descendants(installer).OfType<Label>().Any(x => Equals(x.Content, "使用范围")), "installation scope is resolved internally without a customer-facing choice");
         Capture("installer-options", installer);

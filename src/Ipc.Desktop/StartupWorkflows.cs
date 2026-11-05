@@ -656,7 +656,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 review.Children.Add(new Expander { Header = "配置检查诊断详情", Content = diagnostic, Margin = new(0, 16, 0, 0) });
                 refreshReview = () =>
                 {
-                    state.Text = startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : lastSaveConfirmed && savedInput == Input() ? "配置已保存，尚未连接设备。完成后可明确选择启动供包台。" : "检查填写内容并保存配置；不会启动设备。";
+                    state.Text = startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : lastSaveConfirmed && savedInput == Input() ? "配置已保存，点击“完成”后自动检查并启动供包台。" : "检查填写内容并保存配置，完成后自动检查并启动。";
                     diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails);
                     sections.Children.Clear();
                     foreach (var section in StartupConfigurationFiles.ReviewSections(draft!))

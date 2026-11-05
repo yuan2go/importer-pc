@@ -91,7 +91,7 @@ static partial class Program
             var fullText = new System.Windows.Media.FormattedText(feedback.Text, System.Globalization.CultureInfo.CurrentUICulture,
                 feedback.FlowDirection, new System.Windows.Media.Typeface(feedback.FontFamily, feedback.FontStyle, feedback.FontWeight, feedback.FontStretch),
                 feedback.FontSize, feedback.Foreground, System.Windows.Media.VisualTreeHelper.GetDpi(feedback).PixelsPerDip)
-                { MaxTextWidth = feedback.ActualWidth };
+            { MaxTextWidth = feedback.ActualWidth };
             Check(fullText.Height <= feedback.ActualHeight + 1 && Inside(submit, (Grid)window.FindName("ClientArea")),
                 "compact failure copy is fully visible and inspection action remains reachable");
             Check(((Border)left.FindName("ResultPanel")).ActualHeight >= 72 &&

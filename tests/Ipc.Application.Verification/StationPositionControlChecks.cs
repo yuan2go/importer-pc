@@ -12,6 +12,14 @@ internal static class StationPositionControlChecks
     }
     internal static async Task Run(string workspace, string root)
     {
+        var source = new ManualSupplyHarness.SilentCamera("SYNTH-SESSION");
+        var session = new ObservationSession(source); var accepted = 0;
+        bool Receive(Observation observation) { if (!session.AcceptSequence(observation)) return false; accepted++; return true; }
+        await session.StartAsync(Receive, default); source.Emit();
+        session.Retire(); await source.StopAsync(default);
+        await session.StartAsync(Receive, default); source.Emit();
+        Check(accepted == 2, "retired session resets sequence so first observation of newly enabled camera is accepted");
+        await source.DisposeAsync();
         await using (var h = new ManualSupplyHarness(workspace, Path.Combine(root, "offline"), false))
         {
             await h.StartAsync();

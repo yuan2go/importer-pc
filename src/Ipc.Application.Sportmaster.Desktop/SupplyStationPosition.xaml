@@ -18,9 +18,14 @@
     </Grid.RowDefinitions>
     <DockPanel Style="{StaticResource StationPositionSection}">
      <Grid>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-      <TextBlock Text="{Binding Heading}" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
-      <TextBlock x:Name="VehicleState" Grid.Column="1" Margin="12,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding VehicleStatusText}" Foreground="{Binding VehicleStatusForeground}" FontSize="{x:Static type:UiTypography.Label}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextWrapping="Wrap" AutomationProperties.Name="本位小车状态"/>
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+       <TextBlock Text="{Binding Heading}" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
+       <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource StationButton}" MinHeight="44" MinWidth="64" Margin="10,0,0,0" Background="{Binding EnableBackground}" Foreground="{Binding EnableForeground}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+       <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource StationButton}" MinHeight="44" MinWidth="64" Background="{Binding DisableBackground}" Foreground="{Binding DisableForeground}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+      </StackPanel>
+      <TextBlock x:Name="VehicleState" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding VehicleStatusText}" Foreground="{Binding VehicleStatusForeground}" FontSize="{x:Static type:UiTypography.Label}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextWrapping="Wrap" AutomationProperties.Name="本位小车状态"/>
      </Grid>
     </DockPanel>
     <Grid Grid.Row="1" x:Name="ScanInformation" Style="{StaticResource StationPositionSection}">
@@ -56,7 +61,12 @@
      <Button x:Name="CurrentBarcode" Grid.Column="1" Content="图片" Click="Picture_Click" IsEnabled="{Binding CanViewCurrentPicture}" Style="{StaticResource StationButton}" MinWidth="64" Margin="8,0,0,0" AutomationProperties.Name="查看当前包裹图片"/>
     </Grid>
     <!-- The result owns the remaining height. Auxiliary metadata never scrolls it away. -->
-    <Border x:Name="ResultPanel" Grid.Row="2" Background="{Binding ResultBackground}" Style="{StaticResource StationResultPanel}">
+    <Grid Grid.Row="2">
+     <Grid.RowDefinitions><RowDefinition Height="Auto" SharedSizeGroup="PositionSupplyNotice"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <TextBlock x:Name="DisablingNotice" Text="{Binding SupplyNotice}" Foreground="{DynamicResource Warning}" TextWrapping="Wrap" Margin="0,0,0,4" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.LiveSetting="Polite">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabling}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    <Border x:Name="ResultPanel" Grid.Row="1" Background="{Binding ResultBackground}" Style="{StaticResource StationResultPanel}">
      <Grid>
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
@@ -110,10 +120,12 @@
         <TextBlock x:Name="RetainedResponsibility" Text="{Binding OriginalResultSummary}" Foreground="{Binding ResultForeground}" Style="{StaticResource StationNotice}"/>
        </StackPanel>
       </ScrollViewer>
-      <TextBlock x:Name="NextStep" Text="{Binding DisplayNextStep}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:OperatorTokens.InstructionSize}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite">
+      <TextBlock x:Name="NextStep" Text="{Binding DisplayNextStep}" Foreground="{Binding ResultForeground}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite">
        <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource StationInstruction}">
+        <Setter Property="FontSize" Value="{x:Static type:OperatorTokens.InstructionSize}"/>
         <Setter Property="Grid.Row" Value="2"/><Setter Property="Grid.ColumnSpan" Value="2"/>
         <Style.Triggers>
+         <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger>
          <DataTrigger Binding="{Binding DisplayNextStep}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
          <MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions>
          <Setter Property="Grid.Row" Value="1"/><Setter Property="Grid.Column" Value="1"/><Setter Property="Grid.ColumnSpan" Value="1"/>
@@ -121,8 +133,21 @@
         </MultiDataTrigger></Style.Triggers>
        </Style></TextBlock.Style>
       </TextBlock>
+      <Border x:Name="DisabledSupplyPanel" Grid.RowSpan="3" Grid.ColumnSpan="2" Background="{DynamicResource Soft}" Padding="8">
+       <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+       <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="已停用" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{DynamicResource Muted}" HorizontalAlignment="Center">
+         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.PageTitle}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+        </TextBlock>
+        <TextBlock Text="不接收条码" Foreground="{DynamicResource Muted}" HorizontalAlignment="Center" Margin="0,4,0,12">
+         <TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+        </TextBlock>
+        <Button Content="{Binding EnableLabel}" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource StationButton}" MinHeight="44" Background="{DynamicResource Success}" Foreground="{DynamicResource Surface}"/>
+       </StackPanel>
+      </Border>
      </Grid>
     </Border>
+    </Grid>
     <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
          They belong to the same confirmed identity, so they follow ShowConfirmedTask and never outlive the slot.
          Shared rows align the two cards; hidden retains measured space during processing.

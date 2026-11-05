@@ -64,7 +64,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     public string SettingsRunMode => (Snapshot?.Configuration.Effective.Mode switch
     { RunMode.Simulation => "模拟模式", RunMode.Production => "生产模式", _ => "模式未确认" }) + " · 软件暂停不是安全急停";
     public string WorkspaceStatusBackground => OperatorTokens.Neutral;
-    public string WorkspaceStatusForeground => OperatorTokens.Ink;
+    public string WorkspaceStatusForeground => Fresh && !Left.SupplyEnabled && !Right.SupplyEnabled ? OperatorTokens.Warning : OperatorTokens.Ink;
     internal void ReportBarcodeFeedback(ParcelBarcodeReceipt receipt, string value) => SetPresentationMessage(value, receipt.Status == "Admitted" ? PresentationFeedbackKind.ResultMirrored : PresentationFeedbackKind.General);
     public string WorkFeedback => SelectedPage == "maintenance" ? ChineseInterfaceText.ParameterMessage(TaskFeedback) : TaskFeedback;
     // This release hides page entrances only; the business ledger and retained pages remain.
@@ -158,7 +158,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string VehicleStatusForeground => vehicle?.Status switch { "IDLE" => OperatorTokens.Success, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
     public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";
-    internal void SetInputFocused(bool focused) { if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
+    internal void SetInputFocused(bool focused) { if (focused && !SupplyEnabled) return; if (focused || InputTargetActive) owner.SetInputTarget(focused ? PositionId : ""); }
     internal void NotifyInputTarget() { PropertyChanged?.Invoke(this, new(nameof(InputTargetActive))); PropertyChanged?.Invoke(this, new(nameof(InputTargetBrush))); }
     public string ReaderId { get; private set; } = "未配置";
     public string ReaderIdentity { get; private set; } = "未配置";
@@ -265,7 +265,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string ObservedAt => "作业扫描：" + (Operation?.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") ?? "尚无作业") + "\n原结果时间：" + (Operation?.Wcs?.Replies.LastOrDefault()?.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") ?? "尚无返回");
     public string ImageStatus => Operation?.Capture is { } c ? "采集 " + c.State + (Operation.Upload is { } u ? " · 上传 " + u.State : "") : "未参与采集";
     public bool CanAdmit { get; private set; }
-    public bool CanSubmitBarcode => owner.CanUseWorkspace && owner.CanStartOperation && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
+    public bool CanSubmitBarcode => SupplyEnabled && owner.CanUseWorkspace && owner.CanStartOperation && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
     public bool CanReconcile { get; private set; }
     public bool CanQueryOriginal => owner.IsManagementMode && CanReconcile && HasUncertainOriginal;
     public bool HasUncertainOriginal => Operation is { } op && new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict);
@@ -302,7 +302,8 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         if (!recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)).SequenceEqual(Recent.Select(x => (x.Id, x.ParcelCode, x.State, x.Slot)))) Recent = recent;
         if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
-        DevicePresentation = FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复中") : !fresh ? ParcelPresentation.Unknown("相机：状态中断") :
+        DevicePresentation = fresh && position?.CameraConnectionSuspended == true ? ParcelPresentation.Neutral("相机：已断开（本位停用）") :
+            SupplyDisabled ? ParcelPresentation.Unknown("相机：正在断开或释放待确认") : FastReaderBlocked ? ParcelPresentation.Rejected("相机：离线或恢复中") : !fresh ? ParcelPresentation.Unknown("相机：状态中断") :
             snapshot is not null && ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, ReaderId) ? ParcelPresentation.Unknown("相机：待配置") :
             device is null ? ParcelPresentation.Unknown("相机：待确认") :
             device.IsValid(now) ? snapshot?.Configuration.Effective.Mode == RunMode.Simulation

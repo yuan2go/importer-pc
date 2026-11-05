@@ -1,0 +1,144 @@
+using Ipc.Application.Contracts;
+using Ipc.Platform;
+using System.Text.Json;
+
+internal static class StationPositionControlChecks
+{
+    static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS POSITION-CONTROL " + text); }
+    static async Task<SetStationPositionEnabled> Command(IParcelApplication app, string position, bool enabled)
+    {
+        var s = await app.SnapshotAsync();
+        return new(Wire.Id(), s.RuntimeId, position, s.Positions!.Single(p => p.Id == position).SupplyControl!.Revision, enabled);
+    }
+    internal static async Task Run(string workspace, string root)
+    {
+        await using (var h = new ManualSupplyHarness(workspace, Path.Combine(root, "offline"), false))
+        {
+            await h.StartAsync();
+            var s = await h.App.SnapshotAsync();
+            Check(s.Positions!.All(p => p.SupplyControl?.Mode == StationPositionMode.Enabled && p.BarcodeInput?.Manual == true), "both positions default enabled independently of offline cameras");
+            var disable = await Command(h.App, "left", false);
+            Check((await h.App.SetPositionEnabledAsync(disable, default)).Status == "Accepted", "ordinary operator can disable idle position without management authorization");
+            s = await h.App.SnapshotAsync();
+            Check(s.Positions!.Single(p => p.Id == "left") is { SupplyControl.Mode: StationPositionMode.Disabled, BarcodeInput.Manual: false } && s.Positions!.Single(p => p.Id == "right").BarcodeInput?.Manual == true, "idle disable blocks only this position");
+            Check((await h.App.SetPositionEnabledAsync(disable, default)).Status == "Accepted" && (await h.App.ReadPositionControlHistoryAsync(long.MaxValue, 100, default)).Length == 1, "same command replays its receipt without a second toggle audit");
+            Check((await h.App.SetPositionEnabledAsync(disable with { CommandId = Wire.Id(), Enabled = true }, default)).Status == "Conflict", "stale control revision cannot enable position");
+            Check((await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-BLOCKED"), default)).Status != "Admitted" && h.Peer.Requests.IsEmpty, "manual entry cannot bypass disabled application guard");
+            var rightControl = await Command(h.App, "right", false);
+            var admitted = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-MANUAL"), default);
+            Check(admitted.Status == "Admitted" && h.Peer.Requests.Count == 1, "other offline-camera position still works through manual input and real loopback RCS");
+            Check((await h.App.SetPositionEnabledAsync(rightControl, default)).Status == "Accepted", "unrelated observation revisions do not conflict with unchanged position control revision");
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Disabling, "accepted manual result with no placement-end evidence remains disabling");
+            await Task.Delay(450);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Disabling, "elapsed release window cannot fabricate physical completion");
+            await h.App.DisposeAsync(); await h.StartAsync(false); await Task.Delay(250);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Disabling,
+                "restart retains the draining placement guard rather than inferring the parcel left");
+            Check(h.Factory.Cameras[h.Config.Topology!.Positions.Single(p => p.Id == "left").ReaderDeviceId].Epoch.Length == 0 &&
+                (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended, "restart never starts persisted disabled camera");
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "right", true), default);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Enabled && h.Peer.Requests.Count == 1, "enable cancels draining without replaying original request");
+            await h.App.DisposeAsync(); await h.StartAsync(false);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions?.Length == 2);
+            s = await h.App.SnapshotAsync();
+            Check(s.Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled && s.Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Enabled, "restart restores durable control facts independently of parcel history");
+            var records = await h.App.ReadPositionControlHistoryAsync(long.MaxValue, 100, default);
+            Check(records.Length == 3 && records.Any(r => r.State.TaskId == "SYNTH-TASK") && records.All(r => r.State.ChangedAt is not null && r.State.ChangedBy is not null), "audit retains time position actor action and task identity across restart");
+            Check((await h.App.ReadPositionControlHistoryAsync(records[0].Sequence, 1, default)).Single().Sequence == records[1].Sequence, "audit cursor pages earlier records without repeating current row");
+        }
+        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "camera-drain")))
+        {
+            await h.StartAsync(); await h.App.ExitManagementModeAsync(); await h.WaitForCameraAdmissionAsync();
+            uint frame = 0;
+            async Task Deliver(CameraRoundHarness.RoundPixels pixels)
+            {
+                var number = ++frame; h.Api(h.Left).Enqueue(pixels, number);
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == number)));
+            }
+            await Deliver(CameraRoundHarness.Barcode("SYNTH-DRAIN"));
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Accepted));
+            var original = (await h.App.SnapshotAsync()).Operations.Single();
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling, "confirmed request alone cannot finish disabling while parcel still rests on tray");
+            await Deliver(CameraRoundHarness.Barcode("SYNTH-DRAIN"));
+            Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Devices!.All(d => d.IsValid(DateTimeOffset.UtcNow)), "draining keeps cameras connected and suppresses repeated barcode requests");
+            await Deliver(CameraRoundHarness.EmptyTray); await Task.Delay(420); await Deliver(CameraRoundHarness.EmptyTray);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling, "two empty frames are insufficient placement evidence");
+            await Task.Delay(420); await Deliver(CameraRoundHarness.EmptyTray);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled);
+            Check(h.Peer.Requests.Count == 1 && (await h.App.ReadPositionControlHistoryAsync(long.MaxValue, 100, default))[0].State.ChangedBy == "application", "three changed-scene frames spanning 800ms finish draining and record automatic transition");
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended);
+            var rightEpoch = (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Epoch;
+            var opens = h.Api(h.Left).Opens; await Task.Delay(1100);
+            Check(h.Api(h.Left).Destroys == 1 && h.Api(h.Left).Finalizes == 1 && h.Api(h.Left).Opens == opens && h.Peer.Requests.Count == 1,
+                "disabled position actually releases camera handle and SDK and suppresses automatic reconnect");
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CameraConnectionSuspended: false, BarcodeInput.Camera: true });
+            Check(h.Api(h.Left).Opens == opens + 1 && (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Epoch == rightEpoch,
+                "enabling reconnects only the selected camera with a new session");
+            await Deliver(CameraRoundHarness.Barcode("SYNTH-REENABLED"));
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.Wcs?.State == StageState.Accepted) == 2);
+            Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == original.Id), "reenabled camera admits next placement and preserves historical original");
+        }
+        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "release-failed")))
+        {
+            await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+            h.Api(h.Left).DestroyError = unchecked((int)0x80000000);
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Stops > 0));
+            await Task.Delay(1200);
+            Check(!(await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended && h.Api(h.Left).Destroys == 0 && h.Api(h.Left).Opens == 1,
+                "failed handle destruction retains ownership without claiming disconnected or reconnecting");
+            h.Api(h.Left).DestroyError = 0; // Allow actual shutdown to release the original synthetic handle.
+        }
+        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "unknown-drain"), timeoutMs: 250))
+        {
+            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 1);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
+            var originalBody = h.Peer.Requests.Single();
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.WcsUnknown));
+            for (uint number = 2; number <= 4; number++)
+            {
+                h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, number);
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == number)));
+                await Task.Delay(420);
+            }
+            var snapshot = await h.App.SnapshotAsync();
+            Check(snapshot.Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling && snapshot.Operations.Single().State == ParcelState.WcsUnknown,
+                "empty tray cannot finish disabling before original request result is confirmed");
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
+            Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == originalBody && (await h.App.SnapshotAsync()).Operations.Single().State == ParcelState.WcsUnknown,
+                "reenabling preserves Unknown original without changing its body or resending");
+            h.Peer.Hold.TrySetResult();
+        }
+        await HeartbeatSelection(workspace);
+    }
+    static async Task HeartbeatSelection(string workspace)
+    {
+        await using var peer = new CameraRoundHarness.RoundPeer { ReplyVehicleStates = true };
+        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
+        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+        { ["zone-id"] = "71", ["project-id"] = "83", ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["left-bcr-code"] = "SYNTH-LEFT", ["right-bcr-code"] = "SYNTH-RIGHT", ["heartbeat-interval-ms"] = "100" });
+        var config = seed with { Wcs = binding, StationCode = "SYNTH-STATION" };
+        await using var service = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(binding);
+        peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        service.ConfigureRuntime(config); service.SetEnabledPositions(["right"]); await service.StartAsync(default);
+        await CameraRoundHarness.Until(() => Task.FromResult(peer.Requests.Count > 0));
+        using (var json = JsonDocument.Parse(peer.Requests.Last()))
+        {
+            var data = json.RootElement.GetProperty("data"); var parameters = data[0].GetProperty("params");
+            Check(data.GetArrayLength() == 1 && parameters.GetProperty("bcrCode").GetString() == binding.Parameters["right-bcr-code"] && parameters.EnumerateObject().Count() == 3,
+                "heartbeat uses enabled position selection with unchanged stationCode bcrCode timestamp protocol");
+        }
+        service.SetEnabledPositions([]); peer.Hold.TrySetResult(); peer.Hold = null; await Task.Delay(150); var count = peer.Requests.Count; await Task.Delay(250);
+        Check(peer.Requests.Count == count && (await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "both disabled sends no empty heartbeat and cannot claim fresh remote confirmation");
+        Check((await service.HealthAsync(default)).StationVehicles.Length == 0, "late response from previous selection cannot restore disabled vehicle state");
+        service.SetEnabledPositions(["left"]);
+        await CameraRoundHarness.Until(() => Task.FromResult(peer.Requests.Count > count));
+        using var last = JsonDocument.Parse(peer.Requests.Last());
+        Check(last.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").GetString() == binding.Parameters["left-bcr-code"], "reenabling resumes only selected position without camera state changes");
+    }
+}

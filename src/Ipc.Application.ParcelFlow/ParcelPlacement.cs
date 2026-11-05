@@ -61,7 +61,7 @@ public sealed partial class ParcelRuntime
         {
             if (!placements.TryGetValue(position, out var placement) || placement.Code != code ||
                 placement.EndedAt is { } ended && observedAt > ended ||
-                !(placement.CameraSeen && frameFedPositions.Contains(position)) && observedAt - placement.LastSeen > TimeSpan.FromMilliseconds(release))
+                PositionControl(position).Mode != StationPositionMode.Disabling && !(placement.CameraSeen && frameFedPositions.Contains(position)) && observedAt - placement.LastSeen > TimeSpan.FromMilliseconds(release))
             {
                 placements[position] = new(code, observedAt, cameraSeen: true);
                 return null;

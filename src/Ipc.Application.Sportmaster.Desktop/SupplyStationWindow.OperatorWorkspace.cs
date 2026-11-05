@@ -28,7 +28,7 @@ public partial class SupplyStationWindow
             { args.Handled = true; CancelBarcodeSelection(); return; }
             if (args.Key is not (Key.F2 or Key.F3) || Keyboard.Modifiers != ModifierKeys.None || !CanRestoreBarcodeFocus) return;
             var id = args.Key == Key.F2 ? "left" : "right";
-            if (work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel p && p.PositionId == id) is not { IsVisible: true, IsEnabled: true } target) return;
+            if (work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel p && p.PositionId == id && p.SupplyEnabled) is not { IsVisible: true, IsEnabled: true } target) return;
             args.Handled = true; recentInputPosition = id; target.FocusBarcodeInput();
         };
         PreviewMouseDown += (_, args) =>
@@ -98,7 +98,15 @@ public partial class SupplyStationWindow
     bool CanRestoreBarcodeFocus => IsLoaded && IsActive && IsEnabled && !closing && !closed &&
         ViewModel.SelectedPage == "workstation" && ViewModel.ViewportReady && !OwnedWindows.OfType<Window>().Any(w => w.IsVisible && w.IsActive);
     SupplyStationPosition? RecentPosition() => work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c =>
-        c.DataContext is SupplyStationPositionViewModel p && p.PositionId == recentInputPosition);
+        c.DataContext is SupplyStationPositionViewModel p && p.PositionId == recentInputPosition && p.SupplyEnabled);
+    internal void RefreshEnabledPositionFocus()
+    {
+        if (ViewModel.InputTargetPosition.Length == 0 || RecentPosition() is not null) return;
+        CancelBarcodeSelection();
+        if (!CanRestoreBarcodeFocus) return;
+        var next = work.Children.OfType<SupplyStationPosition>().FirstOrDefault(c => c.DataContext is SupplyStationPositionViewModel { SupplyEnabled: true });
+        next?.FocusBarcodeInput();
+    }
     void RestoreBarcodeFocus()
     {
         if (focusRestoreQueued) return;

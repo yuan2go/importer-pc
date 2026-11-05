@@ -59,6 +59,11 @@ public partial class SupplyStationPosition : UserControl
     string? terminalObservationKey;
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(SupplyStationPositionViewModel.SupplyEnabled))
+        {
+            RefreshSubmitAvailability();
+            Host?.RefreshEnabledPositionFocus();
+        }
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.IsProcessing) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) RefreshTaskRegionGeometry();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanSubmitBarcode)) RefreshSubmitAvailability();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanViewCurrentPicture)) RefreshPictureAvailability();
@@ -104,7 +109,7 @@ public partial class SupplyStationPosition : UserControl
     }
     internal void FocusBarcodeInput()
     {
-        if (!IsVisible || !IsEnabled) return;
+        if (!IsVisible || !IsEnabled || DataContext is not SupplyStationPositionViewModel { SupplyEnabled: true }) return;
         BarcodeEntry.Focus(); PrepareResultReplacement();
     }
     internal bool IsBarcodeInputFocused => BarcodeEntry.IsKeyboardFocused;
@@ -127,6 +132,8 @@ public partial class SupplyStationPosition : UserControl
     {
         if (SubmitBarcode is null) return;
         var available = DataContext is SupplyStationPositionViewModel p && p.CanSubmitBarcode;
+        BarcodeEntry.IsReadOnly = submitting || submitted is not null || DataContext is not SupplyStationPositionViewModel { SupplyEnabled: true };
+        BarcodeEntry.IsTabStop = DataContext is SupplyStationPositionViewModel { SupplyEnabled: true };
         if (submitted is not null) available = Host?.ViewModel is { CanUseWorkspace: true, CanStartOperation: true };
         SubmitBarcode.IsEnabled = !submitting && available && (submitted is not null || editing && !overflow && BarcodeEntry.Text.Length > 0);
         RefreshPictureAvailability();
@@ -182,6 +189,18 @@ public partial class SupplyStationPosition : UserControl
         { e.Handled = true; overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "条码过长或含无效字符，已停止接收。请清空后重新输入完整条码。"; }
     }
     async void SubmitBarcode_Click(object sender, RoutedEventArgs e) => await SubmitBarcodeAsync();
+    async void EnableSupply_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SupplyStationPositionViewModel p)
+        {
+            await p.SetSupplyEnabledAsync(true);
+            if (Window.GetWindow(this)?.IsActive == true) FocusBarcodeInput();
+        }
+    }
+    async void DisableSupply_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SupplyStationPositionViewModel p) await p.SetSupplyEnabledAsync(false);
+    }
     async Task SubmitBarcodeAsync()
     {
         showingDraftNotice = false;

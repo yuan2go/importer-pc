@@ -301,6 +301,7 @@
             </MultiDataTrigger.Conditions>
             <Setter Property="Visibility" Value="Collapsed"/>
            </MultiDataTrigger>
+           <DataTrigger Binding="{Binding ShowSupplyControlNotice}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
           </Style.Triggers>
          </Style>
         </ScrollViewer.Style>

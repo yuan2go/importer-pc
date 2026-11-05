@@ -221,6 +221,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             StartOverloadWriter();
             foreach (var position in positions.Keys) positionWorkers.Add(position, Task.Run(() => ProcessIngressAsync(position), CancellationToken.None));
             worker = Task.WhenAll(positionWorkers.Values);
+            InitializePositionControls();
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
             foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
@@ -229,6 +230,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (definition.ArchiveOriginalFrames && Effective.Mode == RunMode.Production && !ParcelConnectionSetup.IsDeferred(Effective, reader.Source.DeviceId) && reader.Source is not IOriginalFrameSource)
                     throw new InvalidDataException("Production SM reader must retain the exact original recognition frame; image fallback is forbidden");
                 if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
+                if (!ReaderSupplyActive(reader.Source.DeviceId)) { supplySuspendedReaders.Add(reader.Source.DeviceId); continue; }
                 try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
                 catch (ObservationConnectionException ex)
                 {
@@ -262,7 +264,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
             backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));
-            foreach (var reader in readers.Values.Where(r => r.Source is IAutomaticReconnectObservationSource &&
+            foreach (var reader in readers.Values.Where(r => (Id == "sportmaster" || r.Source is IAutomaticReconnectObservationSource) &&
                 !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId)))
                 backgroundTasks.TryAdd("reader-reconnect:" + reader.Source.DeviceId, Task.Run(() => ReconnectReaderAutomaticallyAsync(reader), CancellationToken.None));
             maintenanceWorker = Task.WhenAll(backgroundTasks.Values);
@@ -505,6 +507,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var code = selection.SelectedCode;
         var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind :
             !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : code is null ? selection.Outcome : null;
+        if (!manual && !PositionSupplyEnabled(position))
+        {
+            // Keep placement presence/change evidence while acquisition continues,
+            // but disabled reads never replace the current input or create work.
+            if (rejection is null) _ = SamePlacementOwner(position, code!, o.ObservedAt);
+            return;
+        }
         if (rejection is not null)
         {
             RecordInput(Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created", selection: selection), "ObservationRejected"); return;

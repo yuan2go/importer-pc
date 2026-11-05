@@ -8,6 +8,8 @@ public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Adm
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public ParcelBarcodeAvailability? BarcodeInput { get; init; }
     public StationVehicleState? Vehicle { get; init; }
+    public StationPositionState? SupplyControl { get; init; }
+    public bool CameraConnectionSuspended { get; init; }
 }
 public sealed record ParcelBarcodeAvailability(bool Camera, bool Manual, string[] ManualBlockingReasons);
 // A reader may expose a capture facade over its OWN acquisition session. The facade

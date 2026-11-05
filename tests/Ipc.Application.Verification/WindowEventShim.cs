@@ -132,6 +132,7 @@ namespace Ipc.Application.Sportmaster.Desktop
     internal sealed class StationStatisticsControl(SupplyStationViewModel vm) : System.Windows.FrameworkElement { public SupplyStationViewModel ViewModel { get; } = vm; public bool HasUnsavedChanges => false; }
     public partial class SupplyStationWindow
     {
+        object PositionHistory() => history;
         StationStatisticsControl? statistics;
         System.Windows.FrameworkElement? exceptions;
         readonly System.Windows.Controls.TextBlock StationClock = new();

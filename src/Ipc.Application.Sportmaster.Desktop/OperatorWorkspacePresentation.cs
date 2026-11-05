@@ -26,17 +26,10 @@ public sealed partial class SupplyStationViewModel
     // Lead with the position that needs attention; a positive phrase never sits on a warning band.
     // PositionName is the shared ParcelViewModel display mapping.
     public string OperatorStatus => !Fresh ? "状态读取中断" : Snapshot?.Paused == true ? "供包已暂停" :
+        !Left.SupplyEnabled && !Right.SupplyEnabled ? Left.SupplyDisabling || Right.SupplyDisabling ? "暂停接收新包裹 · 投递位停用中" : "暂停供包 · 左右投递位均已停用" :
+        Left.SupplyEnabled != Right.SupplyEnabled && (Left.CanSubmitBarcode || Right.CanSubmitBarcode) ? "可以供包 · 仅" + (Left.SupplyEnabled ? "左投递位" : "右投递位") :
         Snapshot?.Positions is { } positions && positions.Any(p => p.Admit || p.BarcodeInput?.Manual == true)
-            ? (positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包") + OfflineCameraNote(positions) : "暂不能供包";
-    // A configured camera that is offline while its position still takes manual entry is named,
-    // so a positive headline never hides it.
-    string OfflineCameraNote(PositionSnapshot[] positions)
-    {
-        if (Snapshot is not { } s) return "";
-        var offline = positions.Where(p => p.BarcodeInput?.Manual == true && !ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, p.ReaderDeviceId) &&
-            s.Devices?.SingleOrDefault(d => d.DeviceId == p.ReaderDeviceId)?.IsValid(DateTimeOffset.UtcNow) != true).Select(p => PositionName(p.Id)).ToArray();
-        return offline.Length == 0 ? "" : " · " + string.Join("、", offline) + "相机离线，可手动输入";
-    }
+            ? (positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包") : "暂不能供包";
     public string OperatorNotice => !Fresh ? OperatorCopy.StaleStep :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :
@@ -143,7 +136,7 @@ public sealed partial class SupplyStationViewModel
     void NotifyOperatorWorkspace()
     {
         foreach (var name in new[] { nameof(ShowSetupGuidance), nameof(SetupHeading), nameof(SetupItems), nameof(SetupInstruction),
-            nameof(OperatorStatus), nameof(OperatorNotice), nameof(CanReconnectConfigured), nameof(ReconnectHint),
+            nameof(OperatorStatus), nameof(OperatorNotice), nameof(ShowSupplyControlNotice), nameof(CanReconnectConfigured), nameof(ReconnectHint),
             nameof(LeftConnectionDiagnosis), nameof(RightConnectionDiagnosis), nameof(RcsConnectionDiagnosis),
             nameof(LeftConnectionTime), nameof(RightConnectionTime), nameof(RcsConnectionTime), nameof(HasConfigurationActivationFailure), nameof(ConfigurationActivationActionText), nameof(ConfigurationActivationCompactText), nameof(CanOpenConfigurationActivation), nameof(DiagnosticConfiguration), nameof(DiagnosticCapacity), nameof(DiagnosticBlockers) }) Changed(name);
     }

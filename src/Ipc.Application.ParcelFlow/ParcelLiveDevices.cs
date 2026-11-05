@@ -84,7 +84,7 @@ public sealed partial class ParcelRuntime
                 await ExternalAsync(async () =>
                 {
                     foreach (var (id, session) in oldSessions)
-                        try { await DeviceCallAsync(id, () => session.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false); RegisterCameraReadFeedback(session); }
+                        try { if (ReaderSupplyActive(id)) await DeviceCallAsync(id, () => session.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false); RegisterCameraReadFeedback(session); }
                         catch (Exception reconnect) when (reconnect is not OperationCanceledException || !stopping.IsCancellationRequested) { Diagnostic("相机通信", "保存设置时原相机未能恢复", "警告", id + ": " + reconnect.GetType().Name); }
                     if (oldWcs is not null) try { await oldWcs.StartAsync(stopping.Token).ConfigureAwait(false); } catch (Exception restart) when (restart is not OperationCanceledException || !stopping.IsCancellationRequested) { Diagnostic("设备通信", "保存设置时原 RCS 连接未能恢复", "警告", restart.GetType().Name); }
                     return true;
@@ -101,6 +101,7 @@ public sealed partial class ParcelRuntime
             foreach (var id in change.Readers) readers[id] = new(built.Readers[id]);
             configuration.ApplyLive(expectedRevision, candidate);
             factory.ConfirmLive(Effective);
+            PublishPositionHeartbeat(ports.Wcs);
             RefreshIntegrationBudget();
             var faults = new List<string>();
             await ExternalAsync(async () =>
@@ -113,6 +114,8 @@ public sealed partial class ParcelRuntime
                     var session = readers[id];
                     RegisterCameraReadFeedback(session);
                     if (definition.ArchiveOriginalFrames && session.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
+                    if (!ReaderSupplyActive(id)) { supplySuspendedReaders.Add(id); continue; }
+                    supplySuspendedReaders.Remove(id);
                     // As at startup: an unreachable camera only takes its own position offline.
                     try { await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false); }
                     catch (ObservationConnectionException error) { Diagnostic("相机通信", "保存设置后相机连接失败", "警告", Wire.Encode(new { Device = id, session.Epoch, Error = error.GetType().Name })); }
@@ -127,7 +130,7 @@ public sealed partial class ParcelRuntime
                 var monitor = Task.Run(() => MonitorAsync(started), CancellationToken.None);
                 backgroundTasks["capability:" + started.InstanceId] = monitor; auxiliary.Add(monitor);
             }
-            foreach (var id in change.Readers.Where(id => readers[id].Source is IAutomaticReconnectObservationSource))
+            foreach (var id in change.Readers.Where(id => Id == "sportmaster" || readers[id].Source is IAutomaticReconnectObservationSource))
             {
                 var session = readers[id];
                 var recovery = Task.Run(() => ReconnectReaderAutomaticallyAsync(session), CancellationToken.None);

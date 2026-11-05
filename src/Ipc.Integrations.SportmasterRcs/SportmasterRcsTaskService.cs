@@ -15,7 +15,7 @@ public sealed class SportmasterRcsTaskExtension : IWcsExtension
 }
 
 /// <summary>RCS destination requests and station heartbeat. Heartbeat never resolves a business request.</summary>
-public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer, IWcsRuntimeConfiguration
+public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer, IWcsRuntimeConfiguration, IWcsPositionHeartbeat
 {
     public const string Contract = RcsConfigurationValidation.Contract;
     public const int MaximumResponseBytes = 262144;

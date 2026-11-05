@@ -119,7 +119,7 @@
  </Style>
  <Style x:Key="StationResultPanel" TargetType="Border">
   <Setter Property="Padding" Value="12,8"/><Setter Property="CornerRadius" Value="4"/>
-  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="12,2"/></DataTrigger></Style.Triggers>
+  <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="12,1"/></DataTrigger></Style.Triggers>
  </Style>
  <Style x:Key="StationPositionCard" TargetType="Border" BasedOn="{StaticResource StationCard}">
   <Setter Property="Padding" Value="8"/>

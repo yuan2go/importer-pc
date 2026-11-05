@@ -121,12 +121,7 @@ public partial class SupplyStationWindow
     {
         try
         {
-            await ViewModel.RefreshManagementModeAsync();
-            if (!ViewModel.IsManagementMode && ViewModel.Application is IWorkstationAdministration service)
-            {
-                new ManagementModeWindow(service) { Owner = this }.ShowDialog();
-                await ViewModel.RefreshManagementModeAsync();
-            }
+            await AuthenticateManagementAsync(newEntry: managementCenter is null);
             if (!ViewModel.IsManagementMode) { ViewModel.Message = "未进入管理模式；参数未修改。"; return; }
             SetPage("maintenance");
             await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取连接参数");

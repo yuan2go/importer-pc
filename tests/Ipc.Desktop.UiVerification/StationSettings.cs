@@ -26,14 +26,17 @@ static partial class Program
         var window = new SupplyStationWindow(runtime, null, null); window.Show();
         var vm = window.ViewModel; await vm.RefreshAsync(); await SetClient(window, 1366, 768);
         Check(!Descendants(window).OfType<Button>().Any(b => b.Content?.ToString() is "暂停供包" or "恢复供包"), "SM header has no manual pause/resume controls");
-        Click(window, "参数设置");
-        await Until(() => vm.HasLoadedConfiguration && !vm.Busy && Descendants(window).OfType<ParameterSettingsControl>().Any());
-        var editor = Descendants(window).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(0, "显示偏好"); window.UpdateLayout();
+        window.ShowPositionDiagnostics(vm.Left);
+        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
+        var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+        Click(center, "设置");
+        await Until(() => vm.HasLoadedConfiguration && !vm.Busy && Descendants(center).OfType<ParameterSettingsControl>().Any());
+        var editor = Descendants(center).OfType<ParameterSettingsControl>().Single(); editor.ShowPage(0, "显示偏好"); center.UpdateLayout();
         editor.NavigateTo("StationCode");
         Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode").Text = "SYNTH-SAVE-WITHOUT-PAUSE";
         vm.ConfigurationReason = "Synthetic save without manual pause";
         Check(await vm.PrepareConfigurationReviewAsync() && !vm.Snapshot!.Paused, "edited SM settings can be reviewed while running");
-        var review = new ConfigurationSaveReviewWindow(window, vm); review.Show(); await Flush();
+        var review = new ConfigurationSaveReviewWindow(center, vm); review.Show(); await Flush();
         Check(!Descendants(review).OfType<Button>().Any(b => b.Name == "ReviewPause" && b.IsVisible), "SM save review has no manual pause prerequisite");
         Check(Descendants(review).OfType<Button>().Single(b => b.Name == "ConfirmSaveChanges").IsEnabled, "SM review permits saving without manual pause");
         CaptureInternal(evidence, "sm-save-without-pause", review, lines); review.Close();
@@ -41,16 +44,14 @@ static partial class Program
         await Until(() => vm.Snapshot?.Configuration.Pending?.StationCode == "SYNTH-SAVE-WITHOUT-PAUSE");
         Check(vm.Snapshot!.Configuration.Pending?.StationCode == "SYNTH-SAVE-WITHOUT-PAUSE" && !vm.Snapshot.Paused, "native editor saves pending settings while remaining unpaused");
         Check(vm.ConfigurationReason.Length == 0, "a confirmed save clears the note, so the next change record cannot reuse it");
-        editor.ShowPage(0, "显示偏好"); window.UpdateLayout();
+        editor.ShowPage(0, "显示偏好"); center.UpdateLayout();
         Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) is "DisplayNameDraft" or "TargetEfficiencyDraft"), "SM preference page removes the unused name and target inputs");
         Check(Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode" && t.IsVisible), "window opening mode remains directly editable");
-        CaptureInternal(evidence, "station-display-1366", (Grid)window.FindName("ClientArea"), lines);
-        await SetClient(window, 800, 420); CaptureInternal(evidence, "station-display-800", (Grid)window.FindName("ClientArea"), lines);
+        CaptureInternal(evidence, "station-display-1366", center, lines);
+        await SetClient(center, 800, 420); CaptureInternal(evidence, "station-display-800", center, lines);
         await runtime.ExitManagementModeAsync(); await vm.RefreshAsync();
-        var menu = Descendants(window).OfType<ManagementModeMenu>().Single();
-        var menuItems = menu.ContextMenu.Items.OfType<MenuItem>().ToArray();
-        Check(menuItems.Any(i => Equals(i.Header, "进入管理模式")) && !menuItems.Any(i => i.Header?.ToString() is "管理权限未开启" or "管理权限已开启" or "重新验证"), "ordinary menu contains the single clear enter action without redundant state rows");
-        var management = new ManagementModeWindow((IWorkstationAdministration)runtime) { Owner = window }; management.Show();
+        Check(((Border)center.FindName("AuthorizationGate")).IsVisible, "ended authorization locks the management center");
+        var management = new ManagementModeWindow((IWorkstationAdministration)runtime) { Owner = center }; management.Show();
         await Until(() => Descendants(management).OfType<Button>().Any(b => Equals(b.Content, "忘记管理密码？") && b.IsVisible));
         var recoveryDone = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         _ = Dispatcher.CurrentDispatcher.BeginInvoke(new Action(async () =>
@@ -76,11 +77,9 @@ static partial class Program
         management.Close(); await vm.RefreshAsync(); window.UpdateLayout();
         Check(!vm.ManagementStatus.Authorized, "cancelling password recovery cannot reauthorize the exited management session");
         await ManagementModeFixture.Authorize(runtime); await vm.RefreshAsync(); window.UpdateLayout();
-        menu.ContextMenu.PlacementTarget = menu; menu.ContextMenu.IsOpen = true; await Flush();
-        menuItems = menu.ContextMenu.Items.OfType<MenuItem>().ToArray();
-        Check(menuItems.Any(i => Equals(i.Header, "退出管理模式")) && menuItems.Any(i => i.IsVisible && i.Header?.ToString()?.Contains("自动退出") == true), "active menu retains exit action and actual expiry");
-        CaptureInternal(evidence, "station-management-menu", menu.ContextMenu, lines);
-        menu.ContextMenu.IsOpen = false; window.Close();
+        Check(!((Border)center.FindName("AuthorizationGate")).IsVisible && ((Button)center.FindName("RenewAuthorization")).IsEnabled, "reauthorization restores the editor and renewal action");
+        CaptureInternal(evidence, "station-management-authorized", center, lines);
+        center.Close(); await Until(() => !center.IsVisible); window.Close();
         lines.Add("Windows native HWND/Dispatcher, synthetic records; no live camera trigger, installed replacement or site acceptance.");
     }
 }

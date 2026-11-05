@@ -11,14 +11,14 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed class ManagementModeWindow : Window
 {
-    public ManagementModeWindow(IWorkstationAdministration service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
-        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync)
+    public ManagementModeWindow(IWorkstationAdministration service, string? entryName = null) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
+        service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync, entryName)
     { }
     public ManagementModeWindow(IManagementMode service) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
         service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync)
     { }
     ManagementModeWindow(Func<Task<ManagementModeStatus>> status, Func<string, Task> configure, Func<string, Task<bool>> enter,
-        Func<Task> exit, Func<string, Task> change, Func<string, Task> reset, Func<Task<ManagementPasswordRecoveryReceipt?>> inspect)
+        Func<Task> exit, Func<string, Task> change, Func<string, Task> reset, Func<Task<ManagementPasswordRecoveryReceipt?>> inspect, string? entryName = null)
     {
         Title = "管理模式"; Width = 520; Height = 540; MinWidth = 360; MinHeight = 320;
         StartupAppearance.Apply(this); WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -76,7 +76,7 @@ public sealed class ManagementModeWindow : Window
         {
             var previous = current; current = await status();
             if (previous.Authorized && !current.Authorized || previous.Configured != current.Configured || !current.Available) ClearSecrets();
-            Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.Configured ? "验证管理密码" : "设置管理密码";
+            Title = heading.Text = !current.Available ? "管理模式不可用" : current.Authorized ? "管理模式" : current.Configured ? entryName is null ? "验证管理密码" : "进入" + entryName : "设置管理密码";
             state.Text = current.HasUnsupportedCredentials ? "管理密码文件缺失或无法识别，请联系部署负责人处理。" : !current.Available ? "管理模式服务不可用，请用原安装包修复软件。" : current.Authorized ? "管理模式已开启 · " + current.ExpiresAt?.ToLocalTime().ToString("HH:mm") + " 自动退出\n进入或退出管理模式不影响正在进行的作业。" : current.Configured ? "输入管理密码以继续配置。管理模式 15 分钟后自动退出。" : "用于保护参数设置，请妥善保管。";
             var preferredHeight = current.Authorized ? changeTools.IsExpanded ? 640 : 340 : current.Configured ? 400 : 540;
             if (lastPreferredHeight != preferredHeight) { Height = Math.Min(preferredHeight, MaxHeight); lastPreferredHeight = preferredHeight; }
@@ -85,7 +85,7 @@ public sealed class ManagementModeWindow : Window
             confirmation.Visibility = !current.Configured ? Visibility.Visible : Visibility.Collapsed; rules.Visibility = confirmation.Visibility;
             recoveryPolicy.Visibility = current.Configured && !current.Authorized ? Visibility.Visible : Visibility.Collapsed;
             proofLabel.Content = "管理密码";
-            enterButton.Content = current.Configured ? "进入管理模式" : "设置并继续";
+            enterButton.Content = current.Configured ? entryName is null ? "进入管理模式" : "进入" + entryName : "设置并继续";
             enterButton.Visibility = current.Authorized ? Visibility.Collapsed : Visibility.Visible; enterButton.IsEnabled = current.Available;
             leave.Visibility = current.Authorized ? Visibility.Visible : Visibility.Collapsed; changeTools.Visibility = leave.Visibility;
         }

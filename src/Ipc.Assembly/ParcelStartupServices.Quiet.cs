@@ -152,7 +152,9 @@ public static partial class ParcelStartupServices
         if (ApplicationId == "sportmaster") ApplicationRootOwnership.RequireWindowsStorage(data,
             installed is null ? @"D:\CainiaoSupplyStation" : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!);
         var seed = installed?.ConfigurationDirectory;
-        if (seed is null)
+        if (ApplicationId == "sportmaster")
+            seed = PrepareInstallationConfiguration(installed, Path.Combine(Path.GetDirectoryName(log)!, "quiet-seed-" + command.OperationId));
+        else if (seed is null)
         {
             seed = Path.Combine(Path.GetDirectoryName(log)!, "quiet-seed-" + command.OperationId);
             CreateSiteSeed(media, seed, SystemParameterDefaults.InitialStationId, RunMode.Production);

@@ -47,6 +47,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
     string newStation = "", selectedProgram = "";
     string? enteredData;
     string? installationRecordDirectory;
+    string? preparedConfigurationDirectory;
     readonly TextBlock recordFeedback = new TextBlock { TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Label, Margin = new(0, 10, 0, 0) }.Themed(TextBlock.ForegroundProperty, "Danger");
     bool selectedStartMenu = true, selectedDesktop = true, advancedExpanded;
     int step;
@@ -89,6 +90,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         };
         foreach (var button in Actions.Children.OfType<Button>()) { button.MinHeight = 40; button.Margin = new(10, 16, 0, 0); }
         Render(); Loaded += async (_, _) => await Run(Next);
+        Closed += (_, _) =>
+        {
+            if (CanCleanPreparation && preparedConfigurationDirectory is { } directory && Directory.Exists(directory))
+            {
+                File.Delete(Path.Combine(directory, "business.json")); Directory.Delete(directory);
+            }
+        };
         Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); Message("正在取消安装文件准备，请稍候…"); } };
     }
     string ApplicationId => ParcelStartupServices.ApplicationId;
@@ -413,7 +421,13 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             CaptureInputs(); preflightError = ""; Render(); var current = CurrentInstallation(ApplicationId);
             var selectedAccount = current?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
             var configPath = current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config");
-            if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
+            if (ApplicationId == "sportmaster")
+            {
+                if (preparedConfigurationDirectory is { } previous && Directory.Exists(previous)) { File.Delete(Path.Combine(previous, "business.json")); Directory.Delete(previous); }
+                preparedConfigurationDirectory = Path.Combine(Path.GetTempPath(), "ipc-install-seed-" + Wire.Id());
+                configPath = await Task.Run(() => ParcelStartupServices.PrepareInstallationConfiguration(current, preparedConfigurationDirectory));
+            }
+            else if (current is null) { var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id()); await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, RunMode.Production)); configPath = seedDirectory; }
             var selected = media!.Files.Keys.Where(p => p.StartsWith("offline-extensions/", StringComparison.Ordinal) && p.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).Select(p => Path.Combine(media.Root, p)).ToArray();
             var preview = await RunMaintenance("检查安装选项\n安装包：" + media!.Root + "\n程序：" + selectedProgram + "\n数据：" + enteredData + "\n取消将在当前文件或组件核验结束后停止。", (progress, token) =>
             {

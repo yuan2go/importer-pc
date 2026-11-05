@@ -21,6 +21,24 @@ static partial class Program
         var assembly = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"));
         var type = assembly.GetType("Ipc.Desktop.StartupSetupWindow", true)!;
         var services = Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(assembly.Location)!, "Ipc.Assembly.dll")).GetType("Ipc.Assembly.ParcelStartupServices", true)!;
+        var repairRoot = Path.Combine(evidence, "missing-registered-configuration");
+        var repairData = Path.Combine(repairRoot, "data");
+        var repairConfiguration = new SportmasterFlow().InitialConfiguration() with { StationId = "retained-station-17" };
+        var repairArea = Path.Combine(repairData, repairConfiguration.Mode.ToString(), repairConfiguration.StationId, "sportmaster"); Directory.CreateDirectory(repairArea);
+        var repairLedger = Path.Combine(repairArea, "configuration.json");
+        File.WriteAllText(repairLedger, Wire.Encode(CurrentConfigurationFixture.Create(23, repairConfiguration, (ParcelConfiguration?)null, "Effective", (string?)null)));
+        var repairDatabase = Path.Combine(repairArea, "sportmaster.db"); File.WriteAllText(repairDatabase, "SYNTHETIC original requests; not a readable database");
+        var originalLedgerHash = Wire.FileHash(repairLedger); var originalDatabaseHash = Wire.FileHash(repairDatabase);
+        var repairInstalled = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(repairRoot, "old-release"), Path.Combine(repairRoot, "missing-machine-configuration"), repairData, MachineRuntimePolicy.SharedUsersSid);
+        var repairSeed = (string)services.GetMethod("PrepareInstallationConfiguration")!.Invoke(null, [repairInstalled, Path.Combine(repairRoot, "prepared")])!;
+        var repairRequest = new WindowsDeploymentRequest(evidence, "sportmaster", new string('b', 40), repairInstalled.RuntimeAccountSid, repairData, repairSeed, repairConfiguration.Mode, null, null, [],
+            ConfigurationHashes: new() { ["business.json"] = Wire.FileHash(Path.Combine(repairSeed, "business.json")) }, ExpectedRegistrationHash: new string('c', 64));
+        var validateSeed = services.GetMethod("ValidateSeed", BindingFlags.NonPublic | BindingFlags.Static, null, [typeof(WindowsDeploymentRequest), typeof(DeploymentLocation)], null)!;
+        validateSeed.Invoke(null, [repairRequest, repairInstalled]);
+        Check(Wire.Encode(Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(repairSeed, "business.json")))) == Wire.Encode(repairConfiguration),
+            "actual production preparation and preflight accept a missing registered directory and retain the saved nondefault site configuration");
+        Check(!Directory.Exists(repairInstalled.ConfigurationDirectory) && Wire.FileHash(repairLedger) == originalLedgerHash && Wire.FileHash(repairDatabase) == originalDatabaseHash,
+            "missing-directory preflight creates only a private launch seed and never writes machine configuration or original business data");
         var readResponse = services.GetMethod("ReadMaintenanceResponse", BindingFlags.NonPublic | BindingFlags.Static)!;
         var writeProgress = services.GetMethod("WriteInstallationProgress", BindingFlags.NonPublic | BindingFlags.Static)!;
         var completeResponse = services.GetMethod("CompleteMaintenanceResponse", BindingFlags.NonPublic | BindingFlags.Static)!;

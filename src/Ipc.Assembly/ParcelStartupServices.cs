@@ -49,6 +49,8 @@ public static partial class ParcelStartupServices
         if (Directory.Exists(destination) || File.Exists(destination)) throw new IOException("新站种子暂存目标须为新目录");
         Directory.CreateDirectory(destination); File.WriteAllText(Path.Combine(destination, "business.json"), Wire.Encode(c));
     }
+    public static string PrepareInstallationConfiguration(DeploymentLocation? installed, string destination)
+        => InstallationConfiguration.Prepare(ParcelAssembly.Definition().InitialConfiguration() with { Mode = RunMode.Production }, installed, destination);
     static bool IsInitialDraft(ParcelConfiguration candidate) => candidate.Mode == RunMode.Production &&
         Wire.Encode(candidate with { StationId = SystemParameterDefaults.InitialStationId }) == Wire.Encode(ParcelAssembly.Definition().InitialConfiguration());
     public static string ApplicationId => ParcelAssembly.Definition().Id;
@@ -309,14 +311,17 @@ public static partial class ParcelStartupServices
             request.ExpectedRegistrationHash is { } registrationHash && ExtensionSchema.IsHash(registrationHash) &&
             request.ConfigurationHashes?.TryGetValue("business.json", out var originalHash) == true &&
             Wire.FileHash(Path.Combine(deployed.ConfigurationDirectory, "business.json")) == originalHash;
-        if (errors.Length != 0 && !(deployed is null && IsInitialDraft(c)) && !retainingOriginal)
+        var originalMissing = deployed is not null && InstallationConfiguration.MissingSeed(deployed.ConfigurationDirectory);
+        var savedConfiguration = Path.Combine(request.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "configuration.json");
+        var retainingSaved = originalMissing && File.Exists(savedConfiguration) && Wire.Encode(InstallationConfiguration.ReadSaved(savedConfiguration)) == Wire.Encode(c);
+        if (errors.Length != 0 && !((deployed is null || originalMissing) && IsInitialDraft(c)) && !retainingOriginal && !retainingSaved)
             throw new InvalidDataException("Invalid Application seed or mode: " + string.Join("; ", errors));
         if (deployed is not null)
         {
             var originalSeed = Path.Combine(deployed.ConfigurationDirectory, "business.json");
             ParcelConfiguration? originalIdentity = null;
             try { originalIdentity = Wire.Decode<ParcelConfiguration>(File.ReadAllText(originalSeed)); }
-            catch (Exception error) when (request.RepairSeed && error is IOException or System.Text.Json.JsonException or InvalidDataException) { }
+            catch (Exception error) when (error is FileNotFoundException or DirectoryNotFoundException || request.RepairSeed && error is IOException or System.Text.Json.JsonException or InvalidDataException) { }
             if (originalIdentity is not null && (originalIdentity.ApplicationId != c.ApplicationId || originalIdentity.StationId != c.StationId || originalIdentity.Mode != c.Mode))
                 throw new InvalidDataException("程序修复/升级保留原站/模式；新站不能复用原安装及数据身份");
         }

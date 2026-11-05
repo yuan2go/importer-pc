@@ -33,6 +33,12 @@ static class IndustrialLifecycle
         ReleaseVersionPolicy.RequireForward(current with { BusinessVersion = "1.2.0+test-build" }, current);
         Check(true, "same-precedence build metadata does not block overwrite installation");
         ReleaseVersionPolicy.RequireForward(current, current); Check(true, "identical version/source supports repair");
+        var removedRelease = Path.Combine(root, "removed-original-release", "application-release.json");
+        WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.0.0" }, removedRelease);
+        Check(!Directory.Exists(Path.GetDirectoryName(removedRelease)), "current SM package repairs a missing original release without recreating its files during preflight");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.1.0" }, removedRelease), "missing original release permits only the fixed SM 1.0.0 repair package");
+        Directory.CreateDirectory(Path.GetDirectoryName(removedRelease)!); File.WriteAllText(removedRelease, "{ original malformed manifest");
+        Reject<System.Text.Json.JsonException>(() => WindowsDeploymentSetup.RequireInstallationVersion(current with { BusinessVersion = "1.0.0" }, removedRelease), "an existing malformed release manifest remains an integrity failure");
         var leaseRoot = Path.Combine(root, "ended-session-leases"); Directory.CreateDirectory(leaseRoot);
         var dataRoot = Path.Combine(root, "stopped-station"); Directory.CreateDirectory(dataRoot);
         var original = Path.Combine(dataRoot, "sportmaster.db"); File.WriteAllText(original, "SYNTHETIC original requests and historical inputs");

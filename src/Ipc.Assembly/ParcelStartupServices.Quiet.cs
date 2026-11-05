@@ -161,16 +161,7 @@ public static partial class ParcelStartupServices
         var plan = Review(media, account, data, seed, null, [], false, installed is null ? @"D:\CainiaoSupplyStation" : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!)
             with
         { OperationId = command.OperationId };
-        if (command.Action == "Repair" && installed?.SourceCommit != media.SourceCommit) throw new ArgumentException("修复须使用已安装的同源版本，更新请使用默认安装操作。");
         if (command.Action == "Repair" && installed is null) throw new ArgumentException("未安装时不能选择修复。");
-        if (installed is not null)
-        {
-            var backup = Path.Combine(Path.GetDirectoryName(log)!, ApplicationId + "-" + command.OperationId + ".db");
-            var preview = await Core(new(installed.ConfigurationDirectory, data, null, null), installer: true)
-                .PlanChangeAsync(installed.SourceCommit == media.SourceCommit ? "Repair" : "Upgrade", backup).ConfigureAwait(false);
-            if (!preview.Allowed) throw new InvalidOperationException("原业务责任阻止程序切换。");
-            plan = plan with { ChangePlanIdentity = preview.Identity, BackupDestination = backup };
-        }
         operation?.FreezeInstallation(plan);
         await ExecuteBatchInstall(plan).ConfigureAwait(false);
         return (0, new { command.OperationId, Status = "Completed", Location = WindowsDeploymentSetup.Current(ApplicationId), BusinessStarted = false });

@@ -33,6 +33,27 @@ static class IndustrialLifecycle
         ReleaseVersionPolicy.RequireForward(current with { BusinessVersion = "1.2.0+test-build" }, current);
         Check(true, "same-precedence build metadata does not block overwrite installation");
         ReleaseVersionPolicy.RequireForward(current, current); Check(true, "identical version/source supports repair");
+        var leaseRoot = Path.Combine(root, "ended-session-leases"); Directory.CreateDirectory(leaseRoot);
+        var dataRoot = Path.Combine(root, "stopped-station"); Directory.CreateDirectory(dataRoot);
+        var original = Path.Combine(dataRoot, "sportmaster.db"); File.WriteAllText(original, "SYNTHETIC original requests and historical inputs");
+        var businessHash = Wire.FileHash(original);
+        var lifetime = "application-lifetime:sportmaster";
+        File.WriteAllText(Path.Combine(leaseRoot, Wire.Hash(lifetime) + ".lease"), "pid=ended-session");
+        using (ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", dataRoot))
+        {
+            Reject<IOException>(() => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", dataRoot).Dispose(), "running station blocks installation ownership");
+            Reject<IOException>(() => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", Path.Combine(root, "different-data")).Dispose(), "running station cannot be bypassed with another data directory");
+        }
+        Check(Directory.GetFiles(leaseRoot, "*.lease").Length == 0, "closing the station removes session locks including a stale previous-session file");
+        var stationRoot = Path.Combine(dataRoot, "Production", "station-01", "sportmaster"); Directory.CreateDirectory(stationRoot);
+        var stationLock = Path.Combine(stationRoot, Wire.Hash("application-owner") + ".lease");
+        using (new ResourceLease(stationRoot, ["application-owner"]))
+            Reject<IOException>(() => new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default).Dispose(), "running station with only a per-station owner still blocks installation");
+        using (new StoppedApplicationOwnership(leaseRoot, "sportmaster", dataRoot, default))
+            Check(Wire.FileHash(original) == businessHash, "stopped station admits installation without reading or rewriting original business data");
+        Check(!File.Exists(stationLock), "installation reclaims ended per-station ownership files after closing their handles");
+        Reject<InvalidOperationException>(() => ApplicationRootOwnership.AcquireAt(leaseRoot, "sportmaster", dataRoot, () => throw new InvalidOperationException("Synthetic recheck failure")).Dispose(), "failed deployment recheck remains an error");
+        Check(Directory.GetFiles(leaseRoot, "*.lease").Length == 0, "failed recheck releases ownership and removes partial session files");
         var parsed = InstallerCommandLine.Parse(["/quiet", "/norestart", @"/dataRoot=D:\station data", @"/log=D:\logs\result.json"]);
         Check(parsed.Action == "Install" && parsed.DataRoot == @"D:\station data" && Guid.TryParseExact(parsed.OperationId, "N", out _), "spaces and operation identity preserved");
         Check(InstallerCommandLine.Parse(["/QUIET", "/repair"]).Action == "Repair", "case insensitive switches");

@@ -90,14 +90,6 @@ public static partial class WindowsDeploymentSetup
         PreviewDataAccess(dataRoot, sid.Value);
     }
     [SupportedOSPlatform("windows")]
-    public static void PrepareInitialDataRoot(string dataRoot, string runtimeSid)
-    {
-        MachineRuntimePolicy.RequireExtensionInstallerAuthority(); PreviewDataAccess(dataRoot, runtimeSid);
-        MachineRuntimeSetup.InstallForAccount(runtimeSid);
-        if (!Directory.Exists(dataRoot)) new DirectoryInfo(dataRoot).Create(MachineRuntimeSetup.DirectoryAcl(new SecurityIdentifier(runtimeSid), FileSystemRights.Modify));
-        PreviewDataAccess(dataRoot, runtimeSid);
-    }
-    [SupportedOSPlatform("windows")]
     public static DeploymentLocation Install(WindowsDeploymentRequest request, Action<WindowsDeploymentRequest> validateConfiguration,
         Action<WindowsDeploymentRequest> installPackages, Action<DeploymentLocation> createShortcuts, Action<WindowsInstallationStage>? progress = null)
         => Install(request, validateConfiguration, installPackages, createShortcuts, progress, null);
@@ -134,10 +126,10 @@ public static partial class WindowsDeploymentSetup
         if (execution is { Committing: false }) execution.BeginCommit(MaintenanceStage.InstallingMachine);
         else execution?.Report(MaintenanceStage.InstallingMachine);
         MachineRuntimeSetup.InstallForAccount(request.RuntimeAccountSid);
+        using var rootOwnership = request.ApplicationId == "sportmaster" ? new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), request.ApplicationId, data, execution?.Token ?? default) : null;
         TrustedProgramRoots.Approve(vendor, data, sid); ProtectedDirectory(Path.Combine(vendor, "releases"), sid);
         ProtectedDirectory(Path.Combine(MachineRoot, "deployments"), sid);
         using var setup = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-        using var rootOwnership = request.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(request.ApplicationId, data) : null;
         var before = Current(request.ApplicationId);
         RequireNoUnresolvedInstallation(request.ApplicationId, request.OperationId);
         RequireNoUnresolvedLifecycle(request.ApplicationId);

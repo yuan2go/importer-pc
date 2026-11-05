@@ -33,7 +33,7 @@ public static partial class WindowsDeploymentSetup
             return RemoveWithoutReadableConfiguration(plan, shortcuts, execution);
         }
         if (current.LifecycleState != "RemovedDataRetained") throw new InvalidOperationException("本站正在删除数据，请查看上次卸载结果。");
-        using var ownership = new OpaqueRemovalOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, current.DataRoot, execution?.Token ?? default);
+        using var ownership = new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, current.DataRoot, execution?.Token ?? default);
         return Remove(application, expectedHash, _ => throw new InvalidOperationException("已卸载的程序不能重复提交。"), shortcuts, null, execution, withoutBusinessInspection: true);
     }
 
@@ -55,7 +55,7 @@ public static partial class WindowsDeploymentSetup
         _ = InstalledInventory(location);
     }
 
-    static DeploymentOpaqueRemovalPlan OpaqueRemovalPlan(DeploymentLocation location, string registrationHash, OpaqueRemovalOwnership scope, string operationId)
+    static DeploymentOpaqueRemovalPlan OpaqueRemovalPlan(DeploymentLocation location, string registrationHash, StoppedApplicationOwnership scope, string operationId)
     {
         if (scope.Application != location.ApplicationId || !scope.DataRoot.Equals(Path.GetFullPath(location.DataRoot), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("停机所有权不属于当前数据根。");
@@ -89,7 +89,7 @@ public static partial class WindowsDeploymentSetup
         try
         {
             RequireOpaqueRemovalCapability(current);
-            using var scope = new OpaqueRemovalOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, current.DataRoot, execution?.Token ?? default);
+            using var scope = new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, current.DataRoot, execution?.Token ?? default);
             execution?.Checkpoint(); return OpaqueRemovalPlan(current, expectedHash, scope, operationId ?? Wire.Id());
         }
         catch (IOException error) when ((error.HResult & 0xFFFF) is 32 or 33)
@@ -111,7 +111,7 @@ public static partial class WindowsDeploymentSetup
         var approved = false;
         try
         {
-            using var scope = new OpaqueRemovalOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), current.ApplicationId, current.DataRoot, execution?.Token ?? default);
+            using var scope = new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), current.ApplicationId, current.DataRoot, execution?.Token ?? default);
             return Remove(current.ApplicationId, reviewed.ExpectedRegistrationHash, location =>
             {
                 RequireOpaqueRemovalCapability(location);

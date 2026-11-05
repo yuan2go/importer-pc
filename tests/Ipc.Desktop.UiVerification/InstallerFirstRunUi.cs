@@ -143,14 +143,14 @@ static partial class Program
         Check((int)type.GetField("step", flags)!.GetValue(window)! == 1 && Text(window).Contains("本次安装影响") &&
             !Descendants(window).OfType<TextBox>().Any(b => AutomationProperties.GetAutomationId(b) == "Maintenance.Progress" && b.IsVisible),
             "successful read-only preview stays on the options page and hides completed technical progress only");
-        Check(Box("备份位置").Text == request.BackupDestination && request.BackupDestination is not null,
-            "actual frozen backup target is visible before any installation submission");
+        Check(request.BackupDestination is null && !Text(window).Contains("备份位置") && Text(window).Contains("请先关闭供包台"),
+            "overwrite requires a stopped workstation without business inspection or a mandatory backup target");
         Check(installCalls == 0 && !Descendants(window).OfType<Button>().Single(b => Equals(b.Content, "安装")).IsDefault,
             "read-only preview cannot install or make installation the default Enter action");
         var impact = Descendants(window).OfType<TextBlock>().Single(t => t.Text == "本次安装影响");
         var impactScroll = Descendants(window).OfType<ScrollViewer>().Single(s => ReferenceEquals(s.Content, impact.Parent));
-        Check(impactScroll.VerticalOffset == 0 && Box("备份位置").ActualHeight <= 120,
-            "impact review starts at the top and long copyable backup paths cannot consume the whole page");
+        Check(impactScroll.VerticalOffset == 0 && !Text(window).Contains("原业务责任"),
+            "impact review starts at the top without an obsolete business responsibility step");
         var reviewedOriginal = original;
         original = original with { DataRoot = Path.Combine(evidence, "changed-registration") }; Render();
         Check(Box("数据目录").Text == request.DataRoot,

@@ -200,7 +200,8 @@ public static partial class WindowsDeploymentSetup
         catch (Exception error) when (error is not InstallationOutcomeUnknownException)
         { throw new InstallationOutcomeUnknownException("原卸载记录已保存，结果须按原操作核对；不要再次提交。", error); }
     }
-    internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete, int fileBudget = 16384)
+    internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete, int fileBudget = 16384,
+        IReadOnlyDictionary<string, string>? reviewedHashes = null)
     {
         root = Path.GetFullPath(root); DeploymentPaths.RequireOrdinaryAncestors(root);
         if (files.Length > fileBudget || files.Any(n => !ExtensionPackages.SafePath(n)) || files.Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
@@ -222,7 +223,11 @@ public static partial class WindowsDeploymentSetup
             if (!ProductValidation.IsSafeRelativeFile(root, name, out var path)) throw new InvalidDataException("Unsafe removal inventory");
             DeploymentPaths.RequireOrdinaryAncestors(path);
             if (!File.Exists(path)) continue;
-            try { File.Delete(path); }
+            try
+            {
+                if (reviewedHashes is null) File.Delete(path);
+                else DeleteReviewedPath(path, reviewedHashes[name]);
+            }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException)
             {
                 var sharingViolation = error is IOException && (error.HResult & 0xFFFF) is 32 or 33;
@@ -237,7 +242,11 @@ public static partial class WindowsDeploymentSetup
         {
             DeploymentPaths.RequireOrdinaryAncestors(directory);
             if (!Directory.Exists(directory)) continue;
-            try { Directory.Delete(directory, false); }
+            try
+            {
+                if (reviewedHashes is null) Directory.Delete(directory, false);
+                else DeleteReviewedPath(directory, null);
+            }
             catch (IOException) { if (restart && scheduleDelete(directory)) continue; remaining.Add(directory); }
         }
         return (restart, remaining.ToArray());

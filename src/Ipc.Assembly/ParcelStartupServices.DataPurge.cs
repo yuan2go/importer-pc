@@ -48,7 +48,8 @@ public static partial class ParcelStartupServices
         if (!request.DeleteData || removal.Status != "RemovedDataRetained") return new(removal, null, request.DeleteData);
         try
         {
-            var plan = WindowsDeploymentSetup.PlanDataPurge(ApplicationId, Wire.Id());
+            var retired = current with { LifecycleState = "RemovedDataRetained", MaintenanceOperation = removal.OperationFile };
+            var plan = WindowsDeploymentSetup.PlanDataPurge(ApplicationId, Wire.Id(), retired);
             if (!plan.Allowed) throw new InvalidOperationException(plan.Reason);
             var deletion = WindowsDeploymentSetup.PurgeData(plan, execution);
             return new(removal, deletion with { Remaining = deletion.Remaining.Take(256).ToArray() }, true);

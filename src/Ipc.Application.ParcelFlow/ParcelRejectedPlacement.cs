@@ -44,8 +44,11 @@ public sealed partial class ParcelRuntime
             catch (Exception error) when (error is IOException or InvalidOperationException)
             { Diagnostic("原图留档", "拒绝包裹原图不可用", "警告", "Observation=" + o.Id + "; " + error); }
         }
+        // Rejected candidates may be empty or contain control characters. Keep
+        // them verbatim as evidence; the persisted draining key is a separate,
+        // bounded identity and must never borrow an invalid barcode value.
         lock (placements)
-            placements[input.PositionId] = new(o.Codes[0], o.ObservedAt, true) { RejectedInput = input, RejectedImage = image, RejectedCodes = o.Codes.ToArray() };
+            placements[input.PositionId] = new("rejected." + Wire.Hash(o.Id), o.ObservedAt, true) { RejectedInput = input, RejectedImage = image, RejectedCodes = o.Codes.ToArray() };
     }
 
     string? RetainedRejectedFrame(string position, ObservationReadFeedback frame)

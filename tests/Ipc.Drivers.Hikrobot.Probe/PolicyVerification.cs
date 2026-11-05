@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Reflection;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using Ipc.Drivers.Hikrobot;
@@ -78,7 +79,9 @@ internal static class PolicyVerification
             throw new InvalidOperationException("Expired/mismatched/missing-file native proof accepted");
         }
         Console.WriteLine("PASS: expired qualification, wrong prerequisite owner and missing native entry bytes rejected");
-        var mvsBytes = File.ReadAllBytes(typeof(Ipc.Drivers.Hikrobot.Mvs.MvsAcquisitionModule).Assembly.Location);
+        // This check exercises the external acquisition-only boundary, not the
+        // built-in reader (which also contains MVID and the software decoder).
+        var mvsBytes = await BuildAcquisitionFixture(root);
         var mvsFile = new ExtensionFile("Ipc.Drivers.Hikrobot.Mvs.dll", mvsBytes.Length, Convert.ToHexString(SHA256.HashData(mvsBytes)));
         var mvsDeclaration = new ExtensionPrerequisite("vendor-sdk", "MvCameraControl.dll", "4.8.2.2", new('B', 64)) { Preload = ["MVGigEVisionSDK.dll"] };
         var mvsManifest = manifest with
@@ -108,5 +111,22 @@ internal static class PolicyVerification
         }
         Console.WriteLine("PASS: MVS signed import boundary and real ALC missing-qualification refusal preserve current native policy");
         Console.WriteLine("NATIVE_POLICY_PASS");
+    }
+    static async Task<byte[]> BuildAcquisitionFixture(string root)
+    {
+        var output = Path.Combine(root, "acquisition");
+        var intermediate = Path.Combine(root, "obj");
+        var start = new ProcessStartInfo("dotnet") { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+        foreach (var arg in new[] { "build", Path.GetFullPath("src/Ipc.Drivers.Hikrobot.Mvs/Ipc.Drivers.Hikrobot.Mvs.csproj"), "-c", "Release", "-v", "quiet", "-m:1", "-nr:false",
+            "-p:RestoreLockedMode=true", "-p:IpcContractPath=" + typeof(ExtensionStore).Assembly.Location,
+            "-p:OutputPath=" + output + Path.DirectorySeparatorChar, "-p:MSBuildProjectExtensionsPath=" + intermediate + Path.DirectorySeparatorChar,
+            "-p:IntermediateOutputPath=" + Path.Combine(intermediate, "Release") + Path.DirectorySeparatorChar }) start.ArgumentList.Add(arg);
+        using var build = Process.Start(start) ?? throw new InvalidOperationException("Could not build the current acquisition-only policy fixture");
+        var stdout = build.StandardOutput.ReadToEndAsync(); var stderr = build.StandardError.ReadToEndAsync();
+        try { await build.WaitForExitAsync().WaitAsync(TimeSpan.FromMinutes(2)); }
+        catch { if (!build.HasExited) build.Kill(entireProcessTree: true); throw; }
+        var result = await stdout + await stderr;
+        if (build.ExitCode != 0) throw new InvalidOperationException("Acquisition-only fixture build failed: " + result);
+        return File.ReadAllBytes(Path.Combine(output, "Ipc.Drivers.Hikrobot.Mvs.dll"));
     }
 }

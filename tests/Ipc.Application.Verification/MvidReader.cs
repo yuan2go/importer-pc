@@ -87,6 +87,7 @@ internal static class MvidReader
             "native barcode algorithm failure is frame-local while transport and camera failures remain connection faults");
         await FreshFramesProveLiveness();
         await RejectedPlacement(workspace, root);
+        await InvalidRejectedPlacement(workspace, root);
         await ManualCorrection(workspace, root);
         await StopDuringCapacityWait();
         await DebugFlow(workspace, root);
@@ -266,6 +267,35 @@ internal static class MvidReader
         for (var i = 0; i < 3; i++) { await Frame([qr], CameraRoundHarness.EmptyTray); if (i < 2) await Task.Delay(450); }
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled);
         Check(h.Peer.Requests.Count == 2, "confirmed removal completes disabling without sending the rejected parcel");
+    }
+    static async Task InvalidRejectedPlacement(string workspace, string root)
+    {
+        foreach (var (invalid, name) in new[] { ("", "empty"), ("SYNTH\u001fCONTROL", "control") })
+        {
+            await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "invalid-rejected-" + name), stillMs: "0", nativeResults: true);
+            await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+            var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)190, 640 * 240).ToArray(), 640, 240);
+            h.Api(h.Left).EnqueueNative(parcel, 1, [Symbol(invalid)]);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Outcome == ParcelInputOutcome.Rejected));
+            var basis = await h.App.SnapshotAsync();
+            var rejected = basis.Inputs!.Single(i => i.PositionId == "left");
+            Check(rejected.Observation.Codes.Single() == invalid && rejected.BarcodeSelection?.SelectedCode is null,
+                "invalid " + name + " candidate remains exact rejection evidence");
+            var receipt = await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", basis.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, false), default);
+            var state = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!;
+            Check(receipt.Status == "Accepted" && state.Mode == StationPositionMode.Disabling && state.PlacementCode is { Length: > 0 } key && !key.Any(char.IsControl),
+                "invalid " + name + " barcode can persist a safe draining identity without throwing");
+            Check((await h.App.ReadParcelPictureAsync(new(ObservationId: rejected.Observation.Id), default)).Image?.Gray8.SequenceEqual(parcel.Data) == true,
+                "disabling retains the invalid " + name + " parcel original until removal");
+            for (uint frame = 2; frame <= 4; frame++)
+            {
+                h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, frame, []);
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame && f.DecodeAttempted)));
+                if (frame < 4) await Task.Delay(450);
+            }
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled);
+            Check(h.Peer.Requests.Count == 0, "invalid " + name + " parcel drains after confirmed removal without sending a request");
+        }
     }
     static async Task ManualCorrection(string workspace, string root)
     {

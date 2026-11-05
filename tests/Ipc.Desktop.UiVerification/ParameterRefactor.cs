@@ -47,7 +47,7 @@ static partial class Program
             (Category: "系统", Path: "StationCode"),
             (Category: "业务模块", Path: "BarcodePattern"),
             (Category: "驱动", Path: vm.ReaderDrafts[0].Capability.InstanceId + "/Provider"),
-            (Category: "组件", Path: vm.CapabilityDrafts[0].InstanceId + "/Target")
+            (Category: "组件", Path: vm.CapabilityDrafts.Single(c => c.InstanceId == "operator-spare").InstanceId + "/Target")
         };
         foreach (var target in categoryTargets)
         {

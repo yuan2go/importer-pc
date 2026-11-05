@@ -81,6 +81,16 @@ static partial class Program
         var maintenance = Descendants(center).OfType<MaintenancePage>().Single();
         var editor = Descendants(maintenance).OfType<ParameterSettingsControl>().Single();
         editor.ShowPage(0, "显示偏好"); center.UpdateLayout();
+        var opening = Descendants(editor).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == "WindowOpeningMode");
+        opening.SelectedValue = PresentationPreferences.WindowOpeningMode.FullScreen;
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        var saveWindow = (Button)maintenance.FindName("SaveChanges");
+        Check(saveWindow.IsEnabled && vm.HasUnsavedDisplayPreferences, "management window includes full-screen selection in the bottom save action");
+        saveWindow.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await Until(() => !vm.Busy && !vm.HasUnsavedWindowPreference);
+        Check(window.WindowStyle == WindowStyle.None && window.WindowState == WindowState.Maximized && center.IsVisible && center.WindowStyle != WindowStyle.None &&
+            PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.FullScreen,
+            "saving inside management immediately changes and persists the main workstation only");
         editor.NavigateTo("StationCode");
         Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode").Text = "SYNTHETIC-MANAGEMENT-DRAFT";
         editor.ShowPage(0, "显示偏好"); center.UpdateLayout();

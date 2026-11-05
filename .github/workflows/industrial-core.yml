@@ -169,3 +169,12 @@ jobs:
           . ./scripts/project-environment.ps1
           dotnet build src/Ipc.Desktop -c Release "-p:BusinessModule=$env:IPC_BUSINESS" -p:RestoreLockedMode=true -m:1
           exit $LASTEXITCODE
+      - name: Verify clean Windows installation storage without registration
+        if: matrix.business == 'Sportmaster'
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet build tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -m:1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --clean-storage-defaults
+          exit $LASTEXITCODE

@@ -15,7 +15,7 @@ dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj
 
 脚本仅设置当前进程的TEMP/TMP、dotnet用户目录、NuGet包/HTTP缓存和UTF-8；不更改全机环境。D:/DevCache/importer-pc和D:/DevCache/nuget属于开发缓存，不是业务数据。
 
-安装向导允许选择程序和全新数据位置，保留D盘偏好。受保护机器存储根使用64位HKLM/Software/ImporterPc/Storage的Root，由Windows安装管理员管理；运行端验证注册表/目录归属、ACL、本地固定卷及祖先权限，不接受环境变量或链接绕过保护。日常账户、管理模式、机器身份和退役围栏保持。
+安装向导允许选择程序和全新数据位置。全新 Windows 电脑没有机器存储登记时，受保护存储根内置为 `D:\ImporterPc`，机器政策、管理授权服务、维护程序和个人偏好分别位于其下的 `Machine`、`Administrators`、`Programs`、`UserData`。读取与安装预检不创建目录；确认 Windows 安装授权后，安装器创建所需目录及权限，不要求预先运行脚本或修改注册表。已有64位HKLM/Software/ImporterPc/Storage的Root登记继续使用原位置，并验证注册表/目录归属、ACL、本地固定卷及祖先权限；登记无效时保留原件并拒绝安装，不静默改用默认位置。不接受环境变量或链接绕过保护。日常账户、管理模式、机器身份和退役围栏保持。
 
 管理密码无默认值，首次通过当前设密流程配置；操作员身份独立。不要手工移动机级身份或目录、替换密文或复制运行数据来接管旧站。需要保留的当前数据使用完整备份恢复到新隔离目录，并完成来源退役与身份核验。
 

@@ -11,6 +11,7 @@ namespace Ipc.Platform;
 // Machine installation choice, never a per-user/environment override of authority.
 public static class WindowsStoragePaths
 {
+    public const string DefaultProtectedAnchor = @"D:\ImporterPc";
     public static string CanonicalDirectory(string path)
     {
         var full = Path.GetFullPath(path);
@@ -28,7 +29,10 @@ public static class WindowsStoragePaths
         get
         {
             if (!OperatingSystem.IsWindows()) return null;
-            return ReadAnchor();
+            // A clean workstation has no HKLM registration. Reading the built-in
+            // location stays read-only; the elevated installer creates its ACLs.
+            // Invalid existing registrations still fail in ReadAnchor, never fall back.
+            return ReadAnchor() ?? DefaultProtectedAnchor;
         }
     }
     [SupportedOSPlatform("windows")]

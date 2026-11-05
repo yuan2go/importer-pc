@@ -10,6 +10,10 @@ using Ipc.Supply;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 
+if (args.FirstOrDefault() == "--clean-storage-defaults")
+{
+    CleanStorageBootstrap.VerifyUnregisteredDefaults(); return;
+}
 if (args.FirstOrDefault() == "--initialize-isolated-ci-storage")
 {
     CleanStorageBootstrap.InitializeIsolatedCiStorage(); return;

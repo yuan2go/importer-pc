@@ -171,9 +171,9 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (failed)
         {
             Height = Math.Min(optionsHeight, MaxHeight);
-            Message(ChineseInterfaceText.ParameterMessage(failureMessage)); Status.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
-            Note("失败阶段：" + installationStage.Text + "。请先查看本次安装详情和记录。安装可能已部分完成，不能据报错认定数据未改动；返回安装选项后将重新预检，结果未确认时先核对原次安装。安装不会自动回滚。");
-            Details(); next.Content = "返回安装选项"; Body.Children.Add(recordFeedback); return;
+            Message(ChineseInterfaceText.InstallationFailure(failureMessage)); Status.SetResourceReference(TextBlock.ForegroundProperty, "Danger");
+            Note("停止位置：" + installationStage.Text + "。安装可能已部分完成，不会自动回滚；重试会重新核对安装条件。结果未确认时须先核对原次安装。");
+            Details(historical: true); next.Content = "返回安装选项"; Body.Children.Add(recordFeedback); return;
         }
         if (installing)
         {

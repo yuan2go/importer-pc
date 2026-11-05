@@ -5,6 +5,28 @@ using Microsoft.Win32;
 
 static class CleanStorageBootstrap
 {
+    public static void VerifyUnregisteredDefaults()
+    {
+        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Actual Windows registry/path verification required");
+        using var registry = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+        using var key = registry.OpenSubKey(@"SOFTWARE\ImporterPc\Storage");
+        if (key is not null) throw new InvalidOperationException("This regression requires a workstation without storage registration; retain the existing registration");
+        var root = WindowsStoragePaths.DefaultProtectedAnchor;
+        var existed = Directory.Exists(root);
+        var paths = new[] { WindowsStoragePaths.MachineRoot, WindowsStoragePaths.AdministratorRoot,
+            WindowsStoragePaths.ProgramRoot("ImporterPc.Administrator"), WindowsStoragePaths.UserRoot };
+        ApplicationRootOwnership.RequireWindowsStorage(@"D:\ProgramData\ImporterPc\data", @"D:\CainiaoSupplyStation");
+        Console.WriteLine("PASS CLEAN-DEFAULTS actual SM installation precondition accepts clean-machine D defaults");
+        if (WindowsStoragePaths.ProtectedAnchor != root || paths.Any(path => !path.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException("Unregistered installation selected a Windows system-drive fallback");
+        Console.WriteLine("PASS CLEAN-DEFAULTS machine, administrator, helper and personal locations use the built-in D root without registry provisioning");
+        TrustedProgramRoots.Preview(@"D:\CainiaoSupplyStation", @"D:\ProgramData\ImporterPc\data");
+        using var after = registry.OpenSubKey(@"SOFTWARE\ImporterPc\Storage");
+        if (Directory.Exists(root) != existed || after is not null)
+            throw new InvalidOperationException("Read-only installation preview changed machine state");
+        Console.WriteLine("PASS CLEAN-DEFAULTS location reads and program preview create no directory or registration");
+    }
+
     // Infrastructure for the disposable hosted Windows job only. This is not a
     // product installer or a runtime environment override of the HKLM authority.
     public static void InitializeIsolatedCiStorage()

@@ -55,12 +55,13 @@
     <!-- The result owns the remaining height. Auxiliary metadata never scrolls it away. -->
     <Border x:Name="ResultPanel" Grid.Row="2" Background="{Binding ResultBackground}" Style="{StaticResource StationResultPanel}">
      <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
        <RowDefinition Height="Auto"/>
        <RowDefinition Height="*"/>
        <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
-      <DockPanel>
+      <DockPanel Grid.ColumnSpan="2">
        <DockPanel.Style><Style TargetType="DockPanel"><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></DockPanel.Style>
        <TextBlock Text="{Binding DisplayPresentation.Icon}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Exception}" Margin="0,0,8,0" AutomationProperties.Name="本位状态符号"/>
        <TextBlock Text="{Binding ReadCueLabel}" Foreground="{Binding ResultForeground}" DockPanel.Dock="Right" Margin="8,0,0,0" AutomationProperties.LiveSetting="Polite"/>
@@ -70,7 +71,11 @@
        <Viewbox.Style>
         <Style TargetType="Viewbox">
          <Setter Property="Margin" Value="0,4"/>
-         <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers>
+         <Setter Property="Grid.ColumnSpan" Value="2"/>
+         <Style.Triggers>
+          <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger>
+          <MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Grid.ColumnSpan" Value="1"/></MultiDataTrigger>
+         </Style.Triggers>
         </Style>
        </Viewbox.Style>
        <TextBox x:Name="CurrentSlot" Text="{Binding DisplaySlot,Mode=OneWay}" FontSize="{Binding DisplaySlotFontSize}" Foreground="{Binding ResultForeground}" Background="Transparent" BorderThickness="0" Padding="0" IsReadOnly="True" FontFamily="{x:Static type:UiTypography.Code}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="{Binding DisplaySlotLabel}">
@@ -85,7 +90,7 @@
         </TextBox.Style>
        </TextBox>
       </Viewbox>
-      <ScrollViewer Grid.Row="1" x:Name="PositionBody" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" x:Name="PositionBody" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
        <ScrollViewer.Style>
         <Style TargetType="ScrollViewer">
          <Style.Triggers>
@@ -100,7 +105,15 @@
         <TextBlock x:Name="RetainedResponsibility" Text="{Binding OriginalResultSummary}" Foreground="{Binding ResultForeground}" Style="{StaticResource StationNotice}"/>
        </StackPanel>
       </ScrollViewer>
-      <TextBlock x:Name="NextStep" Grid.Row="2" Text="{Binding DisplayNextStep}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:OperatorTokens.InstructionSize}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" Style="{StaticResource StationInstruction}"/>
+      <TextBlock x:Name="NextStep" Text="{Binding DisplayNextStep}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:OperatorTokens.InstructionSize}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite">
+       <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource StationInstruction}">
+        <Setter Property="Grid.Row" Value="2"/><Setter Property="Grid.ColumnSpan" Value="2"/>
+        <Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions>
+         <Setter Property="Grid.Row" Value="1"/><Setter Property="Grid.Column" Value="1"/><Setter Property="Grid.ColumnSpan" Value="1"/>
+         <Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="8,0,0,0"/>
+        </MultiDataTrigger></Style.Triggers>
+       </Style></TextBlock.Style>
+      </TextBlock>
      </Grid>
     </Border>
     <!-- Site requirement: wave, task, SKU and returned quantity stay on the work surface with the confirmed chute.
@@ -147,7 +160,7 @@
      </DockPanel>
     </Grid>
     <StackPanel Grid.Row="4" x:Name="FixedActions" Style="{StaticResource StationPositionActions}">
-     <TextBlock x:Name="InputFeedback" TextWrapping="Wrap" MaxHeight="40" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationNotice}" AutomationProperties.LiveSetting="Polite"/>
+     <TextBlock x:Name="InputFeedback" TextWrapping="Wrap" MaxHeight="52" ToolTip="{Binding Text,RelativeSource={RelativeSource Self}}" Style="{StaticResource StationNotice}" AutomationProperties.LiveSetting="Polite"/>
      <Grid>
       <Grid.ColumnDefinitions>
        <ColumnDefinition Width="*"/>

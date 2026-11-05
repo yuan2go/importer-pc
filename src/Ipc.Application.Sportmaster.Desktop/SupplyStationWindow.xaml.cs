@@ -137,7 +137,7 @@ public partial class SupplyStationWindow : Window
     void ApplyLayout()
     {
         ViewModel.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;
-        ViewModel.IsTight = ClientArea.ActualHeight < 540;
+        ViewModel.IsTight = ClientArea.ActualHeight < 680;
         FontSize = UiTypography.Body; work.Margin = ViewModel.IsCompact ? new Thickness(0) : new Thickness(4);
     }
     void ViewportChanged(object sender, SizeChangedEventArgs e) => UpdateViewport();

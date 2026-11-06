@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 
 // The log grid is read by maintenance staff: the event name first, station names for devices

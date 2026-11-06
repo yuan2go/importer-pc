@@ -70,7 +70,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
             body.Children.Add(Note(vm.ReviewedConfigurationChanges.Any(c => c.Path.Length > 0) ? "双击设置可返回修改；敏感内容已隐藏。" : "敏感内容已隐藏。"));
         }
         body.Children.Add(Heading(authorizationOnly ? "维护操作条件" : "保存条件", UiTypography.Group, 16)); body.Children.Add(pauseState);
-        pause.Click += async (_, _) => { pause.IsEnabled = false; try { await vm.PauseAsync(); } finally { pause.IsEnabled = true; } }; body.Children.Add(pause);
+        pause.Click += async (_, _) => { pause.IsEnabled = false; try { await vm.PauseAsync("设置保存核对窗口主动暂停"); } finally { pause.IsEnabled = true; } }; body.Children.Add(pause);
         guidance.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.ConfigurationSaveGuidance))); body.Children.Add(guidance);
         if (vm.Application is IWorkstationAdministration administrator)
         {

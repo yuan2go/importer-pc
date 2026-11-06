@@ -57,10 +57,10 @@ static class SoftwareLogText
             using var json = JsonDocument.Parse(text);
             if (json.RootElement.ValueKind == JsonValueKind.Object && json.RootElement.TryGetProperty("Source", out var diagnosticSource) &&
                 diagnosticSource.GetString() is "RCS请求" or "相机识码" or "扫码与准入" &&
-                json.RootElement.TryGetProperty("Detail", out var diagnosticDetail) && diagnosticDetail.ValueKind == JsonValueKind.String)
+                json.RootElement.TryGetProperty("Detail", out var diagnosticDetail) && diagnosticDetail.ValueKind is JsonValueKind.String or JsonValueKind.Object)
             {
-                using var diagnosticDocument = JsonDocument.Parse(diagnosticDetail.GetString()!);
-                var d = diagnosticDocument.RootElement;
+                using var diagnosticDocument = diagnosticDetail.ValueKind == JsonValueKind.String ? JsonDocument.Parse(diagnosticDetail.GetString()!) : null;
+                var d = diagnosticDocument?.RootElement ?? diagnosticDetail;
                 string Value(string key) => d.TryGetProperty(key, out var item) && item.ValueKind is not JsonValueKind.Null ? item.ToString() : "—";
                 var side = Value("PositionId") switch { "left" => "左投递位", "right" => "右投递位", var other => other };
                 var action = json.RootElement.GetProperty("Event").GetString();

@@ -7,7 +7,7 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
     LocalManagementMode Management => LocalManagementMode.ForRoot(launch.DataRoot);
     SoftwareLogReader? logReader;
     SoftwareLogReader Logs { get { Management.Require(); if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("软件正在停止，请重新启动后查询。"); return logReader ?? throw new InvalidOperationException("软件尚未启动"); } }
-    void Diagnostic(string source, string action, string level = "信息", string? detail = null) => journal?.Write(new { At = DateTimeOffset.UtcNow, Source = source, Event = action, Level = level, Detail = detail });
+    void Diagnostic(string source, string action, string level = "信息", string? detail = null) => WriteRuntimeLog(source, action, detail, level);
     public Func<string, Task>? ManagementPasswordSetupApproval { get; set; }
     public Func<string, Task>? ManagementPasswordResetApproval { get; set; }
     public Func<Task<ManagementPasswordRecoveryReceipt?>>? ManagementPasswordRecoveryInspection { get; set; }

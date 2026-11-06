@@ -137,7 +137,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         try
         {
             repository = new(directory, Id, ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray())
-            { Boundary = point => Boundary?.Invoke(point), ProjectionChanged = InvalidatePresentation };
+            {
+                Boundary = point => Boundary?.Invoke(point),
+                ProjectionChanged = InvalidatePresentation,
+                SoftwarePauseCommitted = LogSoftwarePause,
+                SoftwarePauseActor = () => currentOperator?.Subject
+            };
+            repository.LoadSoftwarePauseEvidence();
             storageUpgradeReviewRequired = repository.StorageUpgradeNeedsReview();
             if (launch.RequireRecoveryReview)
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
@@ -151,6 +157,14 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), _ => { /* Independent diagnostic status; never business custody. */ });
+        WriteRuntimeLog("供包状态", "供包台开始启动", new
+        {
+            SoftwarePaused = repository.Paused,
+            PauseEvidence = repository.LastSoftwarePause,
+            launch.RequireRecoveryReview,
+            StorageVersion = repository.StorageVersion,
+            ConfigurationRevision = configuration.Current.Revision
+        });
         logReader = new(Path.Combine(directory, "diagnostics"), Management, Path.Combine(launch.DataRoot, "security", "diagnostics"), launch.DataRoot);
         repository.ValidateConflictHistory(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
@@ -279,10 +293,14 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 r => new PreviewReader(r.Value, ParcelConnectionSetup.IsDeferred(Effective, r.Key))));
             StartPresentationPublisher();
             StartSupervision();
+            await gate.WaitAsync(token).ConfigureAwait(false);
+            try { WriteStationState("StartupCompleted", force: true); }
+            finally { gate.Release(); }
         }
         catch (Exception ex)
         {
             FenceIngress();
+            WriteRuntimeLog("供包状态", "供包台启动失败", new { Error = ex.ToString(), SoftwarePaused = repository?.Paused }, "错误");
             // The terminal startup writer and ingress consumers share one connection.
             // Publish the failed outcome only after its configuration/audit writes end;
             // also serialize against an already-started Stop or snapshot reader.
@@ -703,7 +721,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         operations[op.Id] = op;
         if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
         if (input is not null) { latestInputs[input.PositionId] = input; LogInput(input); }
-        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Source = "作业", Level = op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", Event = eventName, Operation = op.Id, op.PositionId, op.AdmissionId, op.ParcelCode, State = op.State, Revision = repository.Revision, Detail = DiagnosticFragment(detail) });
+        WriteRuntimeLog("作业", eventName, new
+        {
+            op.PositionId,
+            op.AdmissionId,
+            op.ParcelCode,
+            State = op.State.ToString(),
+            Revision = repository!.Revision,
+            RequestId = op.Wcs?.Request.Id,
+            ProtocolRequestId = op.Wcs?.Request.IntegrationRequest?.RequestId,
+            Detail = DiagnosticFragment(detail)
+        },
+            op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.WcsRejected or ParcelState.PlcRejected ? "警告" : "信息", op.Id);
         DebugDiagnostic("作业", "作业阶段详情", () => new
         {
             Event = eventName,

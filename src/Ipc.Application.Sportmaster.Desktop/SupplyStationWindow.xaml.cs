@@ -173,7 +173,7 @@ public partial class SupplyStationWindow : Window
     bool retentionRequested;
     async Task RequestRetention()
     {
-        try { await ViewModel.RequireManagementModeAsync(); await ViewModel.PauseAsync(); await ViewModel.RefreshAsync(); if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
+        try { await ViewModel.RequireManagementModeAsync(); await ViewModel.PauseAsync("进入历史清理前暂停"); await ViewModel.RefreshAsync(); if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
         catch (Exception error) { ViewModel.Message = "尚未进入到期维护：" + error.Message; }
     }
     bool activationRequested;

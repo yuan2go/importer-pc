@@ -11,6 +11,8 @@ internal static class LogReadable
         string Entry(object value) => JsonSerializer.Serialize(value);
         var request = SoftwareLogText.Summary(Entry(new { Source = "RCS请求", Event = "开始请求格口", Detail = Entry(new { PositionId = "left", ParcelCode = "SYNTH-LOG", ProtocolRequestId = 12345, OperationId = "job" }) }));
         Check(request.Contains("左投递位") && request.Contains("SYNTH-LOG") && request.Contains("12345"), "request log identifies the position, actual barcode and RCS protocol request number");
+        var structured = SoftwareLogText.Summary(Entry(new { Source = "RCS请求", Event = "开始请求格口", Detail = new { PositionId = "left", ParcelCode = "SYNTH-LOG", ProtocolRequestId = 12345, OperationId = "job" } }));
+        Check(structured == request, "structured request metadata preserves the readable barcode and protocol number in the log list");
         var failedFrame = SoftwareLogText.Summary(Entry(new { Source = "相机识码", Event = "图像识码失败", Detail = Entry(new { PositionId = "right", FrameNumber = 17, CandidateCount = 0, FramesSinceLastLog = 6, SourceEventId = "mvid.frame.17", FailureReason = "native-recognition-failed: 0x80002200" }) }));
         Check(failedFrame.Contains("右投递位") && failedFrame.Contains("帧 17") && failedFrame.Contains("0x80002200"), "failed-frame log exposes its exact frame and known decoder failure rather than a generic connection event");
         Check(SoftwareLogText.Summary(Entry(new { Source = "相机通信", Event = "相机自动重连", Level = "信息", Detail = "sportmaster.reader.left" })) == "相机自动重连 · 左相机",

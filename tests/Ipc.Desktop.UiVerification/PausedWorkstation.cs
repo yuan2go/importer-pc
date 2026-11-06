@@ -56,7 +56,24 @@ static partial class Program
             h.Peer.ReplySlot = "";
             h.Api(h.Right).EnqueueNative(rejectedPixels, 2, [Symbol("SYNTH-UNKNOWN", 150)]);
             await Until(() => vm.Right.HasUncertainOriginal);
-            await vm.PauseAsync(); await Until(() => vm.Snapshot?.Paused == true);
+            await vm.PauseAsync("SYNTH-UI-PAUSE-REASON"); await Until(() => vm.Snapshot?.Paused == true);
+            var triggerRecorded = false;
+            await CameraRoundHarness.Until(async () =>
+            {
+                var page = await h.App.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
+                try
+                {
+                    foreach (var row in page.Entries)
+                    {
+                        using var json = System.Text.Json.JsonDocument.Parse(row.Text); var entry = json.RootElement;
+                        if (entry.TryGetProperty("Event", out var action) && action.GetString() == "软件暂停状态已记录" &&
+                            entry.GetProperty("Detail").GetProperty("Evidence").GetProperty("Reason").GetString() == "SYNTH-UI-PAUSE-REASON") triggerRecorded = true;
+                    }
+                    return triggerRecorded;
+                }
+                finally { h.App.ReleaseLogSelection(page.Selection); }
+            });
+            Check(triggerRecorded, "the UI pause call carries its actual trigger into the committed Application log");
             Check(vm.Right.DisplayStatus.Contains("未确认") && vm.Right.DisplayPresentation.Tone == ParcelPresentationTone.Unknown &&
                 vm.Right.DisplayNextStep.Contains("供包已暂停"), "software pause preserves an unconfirmed original result instead of replacing its warning");
             await SetClient(window, 1366, 768);

@@ -29,5 +29,5 @@ public static class SoftwareLogFacts
            (query.Levels.Length == 0 || query.Levels.Contains(entry.Level, StringComparer.OrdinalIgnoreCase)) &&
            (query.Sources.Length == 0 || query.Sources.Contains(entry.Source, StringComparer.OrdinalIgnoreCase)) &&
            (query.OperationId is null || query.OperationId == entry.OperationId) &&
-           (!query.KeyEvents || entry.Level is "错误" or "警告" || entry.Source is "RCS请求" or "RCS结果" or "相机识码" or "扫码与准入" or "相机通信" or "参数" or "管理模式" or "存储" or "业务控制");
+           (!query.KeyEvents || entry.Level is "错误" or "警告" || entry.Source is "RCS请求" or "RCS结果" or "相机识码" or "扫码与准入" or "相机通信" or "参数" or "管理模式" or "管理中心" or "供包状态" or "投递位启停" or "作业" or "存储" or "业务控制");
 }

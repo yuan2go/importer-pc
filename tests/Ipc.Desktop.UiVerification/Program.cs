@@ -54,6 +54,7 @@ static partial class Program
                 else if (args.Contains("--window-preference")) await VerifyWindowPreference(root, evidence, lines);
                 else if (args.Contains("--rcs-no-destination-ui")) await VerifyRcsNoDestinationUi(root, evidence, lines);
                 else if (args.Contains("--management-center")) await VerifyManagementCenter(root, evidence, lines);
+                else if (args.Contains("--management-entry-ordering")) await VerifyManagementEntryOrdering(root, evidence, lines);
                 else if (args.Contains("--restart-barcode-details")) await VerifyRestartBarcodeDetails(root, evidence, lines);
                 else if (args.Contains("--parcel-picture-copy")) await VerifyParcelPictureCopy(root, evidence, lines);
                 else if (args.Contains("--debug-no-isolation-31-ui")) await VerifyDebugNoIsolation31(root, evidence, lines);

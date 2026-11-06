@@ -96,7 +96,7 @@ static partial class Program
         await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
         await vm.RefreshAsync(); window.UpdateLayout();
         Click(window, "收起菜单"); window.UpdateLayout();
-        Check(window.IsNavigationCollapsed && navigation.ActualWidth == 64 && !ArrowPointsLeft() && entry.IsVisible && entry.ActualHeight >= 44, "collapsed rail retains the right-pointing handle and a usable management control");
+        Check(window.IsNavigationCollapsed && navigation.ActualWidth == 52 && !ArrowPointsLeft() && entry.IsVisible && entry.ActualHeight >= 44, "narrow collapsed rail retains the right-pointing handle and a usable management control");
         Check(AutomationProperties.GetName(entry).Contains("管理中心") && entry.ToolTip is not null, "icon-only management entry has an accessible name and tooltip");
         CaptureInternal(evidence, "management-main-collapsed", client, lines);
         Click(window, "展开菜单"); window.UpdateLayout();

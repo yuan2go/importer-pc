@@ -110,7 +110,7 @@ public sealed partial class SupplyStationPositionViewModel
     public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing;
     public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : "";
     public string DisplaySlotForeground => ResultForeground;
-    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : SupplyDisabled ? ParcelPresentation.Neutral("已停用") : DisplayPaused ? ParcelPresentation.Neutral("供包已暂停") : HasUncertainOriginal ? Presentation : OfflineCameraSurface ? ParcelPresentation.Neutral(ManualInputAvailable ? "等待输入条码" : "等待供包条件就绪") :
+    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : ShowCenteredState ? ParcelPresentation.Neutral(CenteredStateTitle) : DisplayPaused ? ParcelPresentation.Neutral("供包已暂停") : HasUncertainOriginal ? Presentation : OfflineCameraSurface ? ParcelPresentation.Neutral(ManualInputAvailable ? "等待输入条码" : "等待供包条件就绪") :
         CameraNoCode && !HasUncertainOriginal ? ParcelPresentation.Neutral(CameraAwaitingRead ? "等待重新扫码" : "未读到条码") : invalidReadFeedback ? ParcelPresentation.Unknown("本次读码已失效") : IsProcessing ? ParcelPresentation.Pending("处理中") : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown("未取得格口") : Presentation;
     public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
     public string ContinuityNotice => "";
@@ -185,6 +185,8 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId), (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity),
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(ResultBackground), ResultBackground), (nameof(ResultForeground), ResultForeground), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotForeground), DisplaySlotForeground), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
+            (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
+            (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction),
             (nameof(DisplayStatus), DisplayStatus), (nameof(DisplayAttentionReason), DisplayAttentionReason), (nameof(DisplayNextStep), DisplayNextStep), (nameof(ShowConfirmedTask), ShowConfirmedTask),
             (nameof(DisplaySlotFontSize), DisplaySlotFontSize), (nameof(CameraReadFeedback), CameraReadFeedback), (nameof(ReadCueLabel), ReadCueLabel), (nameof(ReadFeedbackIdentity), ReadFeedbackIdentity),
             (nameof(ReadFeedbackKey), ReadFeedbackKey), (nameof(RejectionIdentity), RejectionIdentity) })

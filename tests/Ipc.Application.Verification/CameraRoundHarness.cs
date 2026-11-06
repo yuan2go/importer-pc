@@ -230,6 +230,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public volatile bool Discovered = true;
         nint buffer; uint trigger = 1, acquisition;
         byte[]? borrowedPixels;
+        uint borrowedFrame;
+        public uint LastReturnedFrame;
         readonly ConcurrentDictionary<string, byte> returnedPixels = new();
         internal bool WasReturned(ReadOnlySpan<byte> pixels) => returnedPixels.ContainsKey(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)));
         public bool HasFrame { get; private set; }
@@ -259,14 +261,14 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             if (!queue.TryDequeue(out var frame)) { Thread.Sleep(4); return null; }
             if (HasFrame) throw new InvalidOperationException("Synthetic SDK loan leaked");
-            borrowedPixels = frame.Pixels.Data;
+            borrowedPixels = frame.Pixels.Data; borrowedFrame = frame.Number;
             buffer = Marshal.AllocHGlobal(frame.Pixels.Data.Length); Marshal.Copy(frame.Pixels.Data, 0, buffer, frame.Pixels.Data.Length); HasFrame = true;
             Interlocked.Increment(ref Acquires);
             return new(buffer, (uint)frame.Pixels.Width, (uint)frame.Pixels.Height, MvsNative.Mono8, (ulong)frame.Pixels.Data.Length, frame.Number,
                 Trigger: 0, LostPackets: (uint)Interlocked.Exchange(ref NextLostPackets, 0))
             { NativeSymbols = frame.Symbols, NativeRejection = frame.Rejection, NativeRecognitionMs = 12.5 };
         }
-        public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; Interlocked.Increment(ref Releases); }
+        public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; LastReturnedFrame = borrowedFrame; Interlocked.Increment(ref Releases); }
         public void ClearBuffers() { Interlocked.Increment(ref Clears); ClearGate.Wait(); if (FailNextClear) { FailNextClear = false; throw new IOException("Synthetic SDK cache clear failed"); } while (queue.TryDequeue(out _)) { } }
         public int HealthReads;
         public bool Connected() { Interlocked.Increment(ref HealthReads); return Discovered; }

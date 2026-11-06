@@ -37,6 +37,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/QueryTime.cs" Link="Client/QueryTime.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/SoftwareLogText.cs" Link="Client/SoftwareLogText.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/StationSlotContinuity.cs" Link="Client/StationSlotContinuity.cs"/>
+ <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/StationCenteredStates.cs" Link="Client/StationCenteredStates.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/StationPositionControl.cs" Link="Client/StationPositionControl.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs" Link="Client/SupplyStationViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs" Link="Client/SupplyStationWindow.xaml.cs"/>

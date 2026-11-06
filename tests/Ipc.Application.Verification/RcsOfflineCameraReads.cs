@@ -47,12 +47,15 @@ static class RcsOfflineCameraReads
             if (nativeResults) h.Api(h.Left).EnqueueNative(CameraRoundHarness.Barcode(code), number,
                 [new(code, "Code128", [new(10, 10), new(50, 10), new(50, 30), new(10, 30)], 0)]);
             else h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(code), number);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].ReadPreview()?.FrameNumber == number));
+            // Preview is intentionally limited to 15 FPS and can skip this frame.
+            // Synchronize the actual SDK loan; code delivery is awaited below by
+            // its matching read round or original request, never by preview rate.
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).LastReturnedFrame == number && h.Api(h.Left).Acquires == h.Api(h.Left).Releases));
         }
         var decoded = h.Factory.Decoders[h.Left].Count;
         var previewCalls = h.Api(h.Left).PreviewAcquires;
         await Frame(1, "SYNTH-OFFLINE");
-        Check(h.Api(h.Left).PreviewAcquires > previewCalls && h.Factory.Decoders[h.Left].Count == decoded && Requests() == 0 &&
+        Check(h.Factory.Sources[h.Left].ReadPreview()?.FrameNumber == 1 && h.Api(h.Left).PreviewAcquires > previewCalls && h.Factory.Decoders[h.Left].Count == decoded && Requests() == 0 &&
             (await h.App.SnapshotAsync()).Operations.Length == 0, "offline RCS permits preview but no automatic recognition, work card or destination request");
         Check((await h.App.SnapshotAsync()).Devices!.All(d => d.IsValid(DateTimeOffset.UtcNow)), "RCS loss does not mark the connected cameras offline");
         var window = Wire.Id(); await h.App.SetManagementWorkspaceAsync(window, true, default);

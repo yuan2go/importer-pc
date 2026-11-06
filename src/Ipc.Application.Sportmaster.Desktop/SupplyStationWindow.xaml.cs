@@ -158,6 +158,7 @@ public partial class SupplyStationWindow : Window
         ViewModel.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight);
     }
     void MinimizeFullScreen_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    void ExitFullScreen_Click(object sender, RoutedEventArgs e) => Close();
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     public Task ShowDetailsAsync(ParcelOperation operation) => ShowDetailsAsync(operation.Id);
     public async Task ShowDetailsAsync(string operationId) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operationId), "读取作业详情"); history.ShowTaskDetails(); }

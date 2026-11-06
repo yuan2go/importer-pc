@@ -12,6 +12,10 @@
    <ColumnDefinition Width="*"/>
   </Grid.ColumnDefinitions>
   <Grid.Resources>
+   <Style x:Key="FullScreenWindowAction" TargetType="Button" BasedOn="{StaticResource StationNavigation}">
+    <Setter Property="Background" Value="Transparent"/><Setter Property="Padding" Value="0"/><Setter Property="Visibility" Value="Collapsed"/>
+    <Style.Triggers><DataTrigger Binding="{Binding Path=(parameters:WindowOpeningPreference.IsFullScreen), RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+   </Style>
    <Style x:Key="StationIconNavigation" TargetType="Button" BasedOn="{StaticResource StationNavigation}">
     <Setter Property="HorizontalContentAlignment" Value="Center"/>
     <Setter Property="MinHeight" Value="84"/>
@@ -19,13 +23,13 @@
      <Setter.Value>
       <DataTemplate>
        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-        <Path Data="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.7" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="24" Height="24" Stretch="Uniform" HorizontalAlignment="Center" IsHitTestVisible="False"/>
+        <Path Data="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.7" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Stretch="Uniform" HorizontalAlignment="Center" IsHitTestVisible="False"><Path.Style><Style TargetType="Path"><Setter Property="Width" Value="24"/><Setter Property="Height" Value="24"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Width" Value="18"/><Setter Property="Height" Value="18"/></DataTrigger></Style.Triggers></Style></Path.Style></Path>
         <TextBlock Text="{Binding}" Margin="0,6,0,0" HorizontalAlignment="Center"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
        </StackPanel>
       </DataTemplate>
      </Setter.Value>
     </Setter>
-    <Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="MinHeight" Value="56"/></DataTrigger></Style.Triggers>
+    <Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="MinHeight" Value="44"/><Setter Property="MinWidth" Value="44"/><Setter Property="Width" Value="44"/><Setter Property="Padding" Value="4"/><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers>
    </Style>
   </Grid.Resources>
   <Grid.RowDefinitions>
@@ -36,17 +40,20 @@
   </Grid.RowDefinitions>
   <Border x:Name="TimeHeader" Grid.ColumnSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1" Padding="16,4" MinHeight="52">
    <Grid>
-    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <TextBlock x:Name="StationClock" Grid.Column="1" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
-    <Button x:Name="MinimizeFullScreen" Grid.Column="2" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
-     <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationNavigation}"><Setter Property="Background" Value="Transparent"/><Setter Property="Padding" Value="0"/><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Path=(parameters:WindowOpeningPreference.IsFullScreen), RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Button.Style>
+    <Button x:Name="MinimizeFullScreen" Grid.Column="2" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" Margin="12,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
      <Path Data="M 3,10 L 17,10" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
+    </Button>
+    <Button x:Name="ExitFullScreen" Grid.Column="3" Click="ExitFullScreen_Click" Margin="4,0,0,0" MinWidth="44" MinHeight="44" Style="{StaticResource FullScreenWindowAction}" ToolTip="退出供包台" AutomationProperties.Name="退出供包台">
+     <Path Data="M 4,4 L 16,16 M 16,4 L 4,16" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
     </Button>
    </Grid>
   </Border>
   <Border x:Name="DailyNavigation" Grid.Row="1" Grid.RowSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,1,0">
-   <Border.Style><Style TargetType="Border"><Setter Property="Width" Value="120"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Width" Value="64"/></DataTrigger></Style.Triggers></Style></Border.Style>
-   <DockPanel Margin="8,12,8,8" LastChildFill="True">
+   <Border.Style><Style TargetType="Border"><Setter Property="Width" Value="120"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Width" Value="52"/></DataTrigger></Style.Triggers></Style></Border.Style>
+   <DockPanel LastChildFill="True">
+    <DockPanel.Style><Style TargetType="DockPanel"><Setter Property="Margin" Value="8,12,8,8"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Margin" Value="4,8,4,4"/></DataTrigger></Style.Triggers></Style></DockPanel.Style>
     <StackPanel DockPanel.Dock="Bottom">
      <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationIconNavigation}" Tag="M 8,6 A 4,4 0 1 0 16,6 A 4,4 0 1 0 8,6 M 3,22 L 3,19 C 3,12 21,12 21,19 L 21,22" ToolTip="操作员身份" AutomationProperties.Name="操作员身份"/>
      <Button x:Name="ManagementCenterEntry" Content="管理中心" Click="ManagementMode_Click" Style="{StaticResource StationIconNavigation}" Tag="M 10,2 L 14,2 14.6,5 16.4,6 19.3,5 21.3,8.5 19,10.5 19,13.5 21.3,15.5 19.3,19 16.4,18 14.6,19 14,22 10,22 9.4,19 7.6,18 4.7,19 2.7,15.5 5,13.5 5,10.5 2.7,8.5 4.7,5 7.6,6 9.4,5 Z M 16,12 A 4,4 0 1 1 8,12 A 4,4 0 1 1 16,12" ToolTip="管理中心（需要管理密码）" AutomationProperties.Name="管理中心，需要管理密码"/>
@@ -61,18 +68,18 @@
     </StackPanel>
    </DockPanel>
   </Border>
-  <Button x:Name="NavigationToggle" Grid.Row="1" Grid.RowSpan="2" Panel.ZIndex="10" Click="NavigationToggle_Click" Content="收起菜单" ToolTip="收起菜单" AutomationProperties.Name="收起菜单" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-12,0" Width="44" Height="64" MinWidth="44" MinHeight="44" Cursor="Hand">
+  <Button x:Name="NavigationToggle" Grid.Row="1" Grid.RowSpan="2" Panel.ZIndex="10" Click="NavigationToggle_Click" Content="收起菜单" ToolTip="收起菜单" AutomationProperties.Name="收起菜单" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-12,0" Width="44" Height="44" MinWidth="44" MinHeight="44" FocusVisualStyle="{x:Null}" Cursor="Hand">
    <Button.Template>
     <ControlTemplate TargetType="Button">
      <Grid Background="Transparent">
-      <Border x:Name="NavigationHandle" Width="24" Height="56" CornerRadius="8" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="1">
+      <Border x:Name="NavigationHandle" Width="18" Height="36" CornerRadius="6" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="1">
        <Path x:Name="NavigationChevron" Data="M 9,3 L 3,9 L 9,15" Width="8" Height="16" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
       </Border>
      </Grid>
      <ControlTemplate.Triggers>
       <DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter TargetName="NavigationChevron" Property="Data" Value="M 3,3 L 9,9 L 3,15"/></DataTrigger>
-      <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="NavigationHandle" Property="Background" Value="{DynamicResource Soft}"/><Setter TargetName="NavigationHandle" Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
-      <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="NavigationHandle" Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
+      <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="NavigationHandle" Property="Background" Value="{DynamicResource Soft}"/><Setter TargetName="NavigationHandle" Property="BorderBrush" Value="{DynamicResource Muted}"/></Trigger>
+      <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="NavigationHandle" Property="BorderBrush" Value="{DynamicResource Ink}"/></Trigger>
      </ControlTemplate.Triggers>
     </ControlTemplate>
    </Button.Template>

@@ -95,7 +95,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             {
                 var registration = new InspectionRegistration(round.Session, false, f => ReceiveRoundFrame(round.Session, f))
                 { CaptureAllowed = device => RoundDecodeAllowed(round.Session, device), CutoverKey = round.Id };
-                foreach (var source in sources) await source.SetInspectionAsync(registration, t).ConfigureAwait(false);
+                foreach (var source in sources) await ApplyInspectionAsync(source, registration, t).ConfigureAwait(false);
                 await gate.WaitAsync(t).ConfigureAwait(false);
                 try
                 {

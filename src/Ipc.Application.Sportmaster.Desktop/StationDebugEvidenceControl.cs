@@ -191,7 +191,7 @@ internal sealed class StationDebugEvidenceControl : UserControl
         {
             var current = await Api.CameraInspectionStatusAsync(t); if (!Current(version)) return; status = current;
             banner.SetResourceReference(Border.BackgroundProperty, "Soft");
-            state.Text = (current.State == "Active" ? "调试采集 · 正常供包继续" : "调试记录 · " + SessionText(current.State)) +
+            state.Text = (current.State == "Active" ? "调试采集 · 自动供包暂停" : "调试记录 · " + SessionText(current.State)) +
                 $"\n{current.Detail}\n已记录 {current.Frames:N0} 帧 · 原图 {current.ImageBytes / 1048576d:N1} MiB" + (current.EvictedImages > 0 ? $" · 最早的 {current.EvictedImages:N0} 张原图已被覆盖" : "") +
                 (current.MissingFrames > 0 ? $" · 漏收 {current.MissingFrames:N0} 帧" : "") + (current.ExpiresAt is { } expires ? " · " + expires.ToLocalTime().ToString("HH:mm") + " 自动结束" : "");
             identity.Text = (position == "left" ? vm.LeftConnectionDiagnosis : vm.RightConnectionDiagnosis) + "  ·  " + Position.CameraAddress + "  ·  " + Position.ReaderIdentity;

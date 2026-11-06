@@ -19,7 +19,7 @@ static partial class Program
         async Task Until(Func<bool> ready)
         {
             for (int i = 0; i < 300; i++) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(25); }
-            throw new TimeoutException("Management center UI did not settle.");
+            throw new TimeoutException("Management center UI did not settle: " + string.Join(" | ", System.Windows.Application.Current.Windows.OfType<Window>().Where(w => w.IsVisible).Select(w => w.Title + ": " + string.Join("; ", Descendants(w).OfType<TextBlock>().Select(t => t.Text).Where(t => t.Contains("密码") || t.Contains("授权") || t.Contains("未能"))))) + " · " + System.Windows.Application.Current.Windows.OfType<SupplyStationWindow>().FirstOrDefault()?.ViewModel.Message);
         }
         var launch = new BusinessLaunch(Path.Combine(evidence, "config"), Path.Combine(evidence, "data"), null, null);
         Directory.CreateDirectory(launch.ConfigurationDirectory);
@@ -38,7 +38,7 @@ static partial class Program
         var navigation = (Border)window.FindName("DailyNavigation");
         var clock = (TextBlock)window.FindName("StationClock");
         var header = (Border)window.FindName("TimeHeader");
-        Check(Descendants(header).OfType<TextBlock>().Single() == clock && !Descendants(header).OfType<Button>().Any() && !Descendants(header).OfType<Image>().Any(), "top bar contains only the clock");
+        Check(Descendants(header).OfType<TextBlock>().Single() == clock && !Descendants(header).OfType<Button>().Any(b => b.IsVisible) && !Descendants(header).OfType<Image>().Any(), "top bar contains only the clock");
         var clockCenter = clock.TranslatePoint(new Point(clock.ActualWidth / 2, 0), client).X;
         Check(Math.Abs(clockCenter - client.ActualWidth / 2) <= 1, "clock is centered across the whole client area");
         var entry = (Button)window.FindName("ManagementCenterEntry");
@@ -76,8 +76,14 @@ static partial class Program
         var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
         Check(center.Owner == window && !ManagementOwnerEnabled(new System.Windows.Interop.WindowInteropHelper(window).Handle) && vm.SelectedPage == "diagnostics", "management opens as an owned modal window with diagnostics selected");
         Check(ReferenceEquals(center.DataContext, vm) && ReferenceEquals(((ContentControl)window.FindName("PageHost")).Content, page) && vm.Snapshot.RuntimeId == runtimeId, "management shares the business instance and leaves the workstation content in place");
+        var cards = Descendants(center).OfType<Border>().Where(b => AutomationProperties.GetAutomationId(b).StartsWith("DiagnosticCard.", StringComparison.Ordinal)).ToArray();
+        Check(cards.Length == 4 && cards.All(c => c.Parent is Grid) && cards.Select(Grid.GetRow).SequenceEqual(new[] { 0, 0, 1, 1 }) && cards.Select(Grid.GetColumn).SequenceEqual(new[] { 0, 1, 0, 1 }), "diagnostic cards use two fixed columns and two rows");
+        var grantId = vm.ManagementStatus.SessionId;
+        var fenced = await runtime.SnapshotAsync();
+        Check(fenced.Positions!.All(p => !p.Admit), "opening the native management window fences production admission");
         CaptureInternal(evidence, "management-center-diagnostics", center, lines);
         Click(center, "设置"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
+        Check(vm.ManagementStatus.SessionId == grantId && !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible), "switching management tabs preserves the single password grant");
         var maintenance = Descendants(center).OfType<MaintenancePage>().Single();
         var editor = Descendants(maintenance).OfType<ParameterSettingsControl>().Single();
         editor.ShowPage(0, "显示偏好"); center.UpdateLayout();
@@ -124,6 +130,16 @@ static partial class Program
         RequestEntry(); login = await LoginDialog();
         Check(!vm.IsManagementMode, "reopening requests the password again");
         Click(login, "取消"); await Until(() => !login.IsVisible && entry.IsEnabled);
+        for (var visit = 0; visit < 3; visit++)
+        {
+            RequestEntry(); login = await LoginDialog();
+            Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
+            Click(login, "进入管理中心");
+            await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
+            var currentCenter = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+            Check(vm.IsManagementMode && !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible), "visit " + visit + " opens protected pages after exactly one successful password entry");
+            Click(currentCenter, "关闭"); await Until(() => !currentCenter.IsVisible && entry.IsEnabled);
+        }
         await SetClient(window, 800, 420); CaptureInternal(evidence, "management-main-800", client, lines);
         window.Close(); await Until(() => !window.IsVisible);
         lines.Add("Windows WPF HWND/Dispatcher, synthetic ports and data. No real SDK, customer RCS or site acceptance.");

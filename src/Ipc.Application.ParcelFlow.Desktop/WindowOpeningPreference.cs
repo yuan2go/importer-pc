@@ -7,9 +7,12 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 // Local presentation only. No runtime/configuration or admission commands.
 public static class WindowOpeningPreference
 {
+    public static readonly DependencyProperty IsFullScreenProperty = DependencyProperty.RegisterAttached("IsFullScreen", typeof(bool), typeof(WindowOpeningPreference), new PropertyMetadata(false));
+    public static bool GetIsFullScreen(DependencyObject target) => (bool)target.GetValue(IsFullScreenProperty);
+    public static void SetIsFullScreen(DependencyObject target, bool value) => target.SetValue(IsFullScreenProperty, value);
     public static void Attach(Window window, string application, Action<string> report)
     {
-        var fullScreen = false;
+        var fullScreen = false; var applying = false;
         var style = window.WindowStyle;
         var resize = window.ResizeMode;
         var priorState = window.WindowState;
@@ -17,12 +20,18 @@ public static class WindowOpeningPreference
         {
             if (value == fullScreen) return;
             if (value) { style = window.WindowStyle; resize = window.ResizeMode; priorState = window.WindowState; }
+            applying = true;
             window.WindowState = WindowState.Normal;
             window.WindowStyle = value ? WindowStyle.None : style;
             window.ResizeMode = value ? ResizeMode.NoResize : resize;
             window.WindowState = value ? WindowState.Maximized : priorState;
-            fullScreen = value;
+            fullScreen = value; SetIsFullScreen(window, value); applying = false;
         }
+        window.StateChanged += (_, _) =>
+        {
+            if (application == "sportmaster" && fullScreen && !applying && window.WindowState == WindowState.Normal)
+                window.WindowState = WindowState.Maximized;
+        };
         window.Loaded += (_, _) =>
         {
             try { SetFullScreen(PresentationPreferences.ReadWindowMode(application) == PresentationPreferences.WindowOpeningMode.FullScreen); }
@@ -35,6 +44,7 @@ public static class WindowOpeningPreference
         }
         PresentationPreferences.WindowModeChanged += PreferenceChanged;
         window.Closed += (_, _) => PresentationPreferences.WindowModeChanged -= PreferenceChanged;
+        if (application == "sportmaster") return;
         var toggle = new RoutedCommand();
         window.CommandBindings.Add(new CommandBinding(toggle, (_, e) => { SetFullScreen(!fullScreen); e.Handled = true; }));
         window.InputBindings.Add(new KeyBinding(toggle, Key.F11, ModifierKeys.None));

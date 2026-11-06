@@ -13,6 +13,8 @@ public partial class SupplyStationWindow
     Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
     string dailyPage = "workstation";
     bool openingManagement, centerClosing, centerCloseReady;
+    string managementWindowId = Ipc.Platform.Wire.Id();
+    bool workspaceOpened;
     bool? navigationCollapsed;
     public static readonly DependencyProperty IsNavigationCollapsedProperty = DependencyProperty.Register(nameof(IsNavigationCollapsed), typeof(bool), typeof(SupplyStationWindow), new PropertyMetadata(false));
     public bool IsNavigationCollapsed { get => (bool)GetValue(IsNavigationCollapsedProperty); private set => SetValue(IsNavigationCollapsedProperty, value); }
@@ -30,12 +32,32 @@ public partial class SupplyStationWindow
         // Each new visit requires a password, even if another window granted a temporary lease.
         if (newEntry) await service.ExitManagementModeAsync();
         await ViewModel.RefreshManagementModeAsync();
+        if (!ViewModel.ManagementStatus.Available) throw new InvalidOperationException("管理授权服务暂时不可用，请稍后重试；原授权保留。");
         if (!ViewModel.IsManagementMode)
         {
             new ManagementModeWindow(service, "管理中心") { Owner = managementCenter is { IsVisible: true } center ? center : this }.ShowDialog();
             await ViewModel.RefreshManagementModeAsync();
         }
+        await EnsureManagementWorkspaceAsync();
         EnforceManagementModeView();
+    }
+    async Task EnsureManagementWorkspaceAsync()
+    {
+        if (ViewModel.IsManagementMode && !workspaceOpened && ViewModel.Application is IManagementWorkspace workspace)
+        {
+            managementWindowId = Ipc.Platform.Wire.Id(); workspaceOpened = true;
+            try
+            {
+                var receipt = await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, true, CancellationToken.None));
+                if (receipt.Status == "PausedWithCameraWarning") ViewModel.Message = receipt.Reason;
+            }
+            catch
+            {
+                await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
+                workspaceOpened = false;
+                throw;
+            }
+        }
     }
     async void ManagementMode_Click(object sender, RoutedEventArgs e)
     {
@@ -79,9 +101,14 @@ public partial class SupplyStationWindow
                 ViewModel.SelectedPage = dailyPage; ApplyLayout();
             };
             // Queue the native modal loop so callers can finish loading or selecting the requested page.
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
             {
-                if (managementCenter == center && !closing && !closed) center.ShowDialog();
+                try
+                {
+                    await EnsureManagementWorkspaceAsync();
+                    if (managementCenter == center && !closing && !closed) center.ShowDialog();
+                }
+                catch (Exception) { ViewModel.Message = "管理中心尚未打开；暂停采集未完成，请检查相机状态后重试。"; center.Close(); }
             }));
         }
         ViewModel.SelectedPage = page;
@@ -111,6 +138,11 @@ public partial class SupplyStationWindow
         {
             await Dispatcher.Yield();
             await ViewModel.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            if (workspaceOpened && ViewModel.Application is IManagementWorkspace workspace)
+            {
+                await ViewModel.ServiceAsync(() => workspace.SetManagementWorkspaceAsync(managementWindowId, false, CancellationToken.None));
+                workspaceOpened = false;
+            }
             if (ViewModel.Application is IWorkstationAdministration service) await service.ExitManagementModeAsync();
             await ViewModel.RefreshManagementModeAsync();
             centerCloseReady = true; center.Close();

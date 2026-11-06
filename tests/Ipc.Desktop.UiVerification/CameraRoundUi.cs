@@ -44,6 +44,8 @@ static partial class Program
             await SetClient(window, 1366, 768); await SetClient(second, 1366, 768);
             await Until(() => vm.Fresh && vm.IsManagementMode && second.ViewModel.IsManagementMode);
             window.ShowPositionDebug(vm.Left); second.ShowPositionDebug(second.ViewModel.Left); await Flush();
+            await Until(() => Descendants(window).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl") &&
+                Descendants(second).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"));
             var control = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             var other = Descendants(second).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             Field<DispatcherTimer>(control, "timer").Stop(); Field<DispatcherTimer>(other, "timer").Stop();
@@ -63,6 +65,11 @@ static partial class Program
             Check(visual.Children.Contains(fullCode) && fullCode.TranslatePoint(new Point(), visual).Y < Field<ScrollViewer>(control, "viewport").TranslatePoint(new Point(), visual).Y,
                 "complete selectable barcode is above its photo in the right-hand visual column");
             probe.LoseBeginReply = true;
+            probe.Project = value => value with { Devices = value.Devices?.Select(d => d with { ValidUntil = DateTimeOffset.UtcNow.AddSeconds(-1) }).ToArray() };
+            await vm.RefreshAsync(); await Poll(control);
+            Check(Field<Button>(control, "trigger").IsEnabled && !Field<TextBlock>(control, "readStatus").Text.Contains("相机离线"),
+                "an expired UI health confirmation permits an authoritative trigger check instead of falsely declaring the live camera offline");
+            probe.Project = null; await vm.RefreshAsync();
             ClickField(control, "trigger");
             await Until(() => !Field<bool>(control, "busy") && Field<CameraInspectionStatus>(control, "scope") is { State: "Active", BusinessFenced: false });
             Check((await h.App.ListCameraInspectionSessionsAsync(default)).Length == 1 && h.Peer.Requests.IsEmpty, "lost begin receipt is recovered as the same durable isolated scope");

@@ -25,6 +25,19 @@ static class OperatorAdministration
         var simpleGrant = simple.Require();
         await Reject<InvalidDataException>(() => Task.Run(() => simple.ChangePassword("1234")), "changing to fewer than five characters is rejected by the same service policy");
         Check(simple.Status().Authorized && !simpleGrant.IsCancellationRequested, "rejected password replacement preserves the current grant and credential");
+        var tokenField = typeof(LocalManagementMode).GetField("sessionSecret", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+        var originalToken = (string)tokenField.GetValue(simple)!;
+        var originalStatus = simple.Status();
+        Check(!simple.ObserveRemoteStatus(originalToken, null).Authorized && !simpleGrant.IsCancellationRequested && (string)tokenField.GetValue(simple)! == originalToken,
+            "transport failure denies the observation without erasing the active password token");
+        Check(simple.ObserveRemoteStatus(originalToken, originalStatus).Authorized,
+            "next confirmed status recovers the same password grant without another password entry");
+        simple.Enter("11111"); var replacementGrant = simple.Require(); var replacementToken = (string)tokenField.GetValue(simple)!;
+        Check(simple.ObserveRemoteStatus(originalToken, new(false, false, null)).Authorized && !replacementGrant.IsCancellationRequested && (string)tokenField.GetValue(simple)! == replacementToken,
+            "late status for an older token cannot revoke a newly entered password grant");
+        Check(!simple.ObserveRemoteStatus(replacementToken, new(true, false, null)).Authorized && replacementGrant.IsCancellationRequested,
+            "confirmed rejection of the current token still revokes management authority");
+        simple.Enter("11111");
         simple.ChangePassword("22222");
         Check(simpleGrant.IsCancellationRequested && !simple.Status().Authorized && !simple.Enter("11111") && simple.Enter("22222"), "five-digit replacement revokes old authorization and authenticates only the new password");
         Check(!File.ReadAllText(Path.Combine(simpleRoot, "security/management-mode.json")).Contains("\"11111\"") && !File.ReadAllText(Path.Combine(simpleRoot, "security/management-mode.json")).Contains("\"22222\""), "numeric passwords are not persisted in plaintext");

@@ -84,7 +84,7 @@ public sealed partial class ParcelRuntime
                 await ExternalAsync(async () =>
                 {
                     foreach (var (id, session) in oldSessions)
-                        try { if (ReaderSupplyActive(id)) await DeviceCallAsync(id, () => session.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false); RegisterCameraReadFeedback(session); }
+                        try { if (ReaderSupplyActive(id)) await DeviceCallAsync(id, () => session.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false); RegisterCameraReadFeedback(session); if (ManagementWorkspaceOpen && session.Source is IObservationInspectionSource restored) await ApplyInspectionAsync(restored, null, stopping.Token).ConfigureAwait(false); }
                         catch (Exception reconnect) when (reconnect is not OperationCanceledException || !stopping.IsCancellationRequested) { Diagnostic("相机通信", "保存设置时原相机未能恢复", "警告", id + ": " + reconnect.GetType().Name); }
                     if (oldWcs is not null) try { await oldWcs.StartAsync(stopping.Token).ConfigureAwait(false); } catch (Exception restart) when (restart is not OperationCanceledException || !stopping.IsCancellationRequested) { Diagnostic("设备通信", "保存设置时原 RCS 连接未能恢复", "警告", restart.GetType().Name); }
                     return true;
@@ -117,7 +117,7 @@ public sealed partial class ParcelRuntime
                     if (!ReaderSupplyActive(id)) { supplySuspendedReaders.Add(id); continue; }
                     supplySuspendedReaders.Remove(id);
                     // As at startup: an unreachable camera only takes its own position offline.
-                    try { await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false); }
+                    try { await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false); if (ManagementWorkspaceOpen && session.Source is IObservationInspectionSource startedSource) await ApplyInspectionAsync(startedSource, null, budget.Token).ConfigureAwait(false); }
                     catch (ObservationConnectionException error) { Diagnostic("相机通信", "保存设置后相机连接失败", "警告", Wire.Encode(new { Device = id, session.Epoch, Error = error.GetType().Name })); }
                     catch (Exception error) when (error is not OperationCanceledException || !stopping.IsCancellationRequested) { faults.Add(ReaderName(id)); Diagnostic("相机通信", "保存设置后相机启动失败", "警告", id + ": " + error.GetType().Name); }
                 }

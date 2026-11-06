@@ -8,6 +8,12 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class ParameterSettingsControl
 {
+    public Ipc.Platform.PresentationPreferences.WindowOpeningMode? OpeningModeDraft { get; set; }
+    public void SaveDisplayPreferences()
+    {
+        if (RuntimeContext is null && OpeningModeDraft is { } mode && Model is { } model)
+            Ipc.Platform.PresentationPreferences.SaveWindowMode(model.ApplicationId, mode);
+    }
     void BuildSystem(ParameterEditorModel m)
     {
         var station = Page(0, "供包台标识", "填写 RCS 分配给本供包台的编号，取格口和心跳都使用这些编号。");
@@ -106,12 +112,16 @@ public sealed partial class ParameterSettingsControl
                 opening.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(context.WindowModeDraft)) { Source = context, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
                 modeStatus.SetBinding(TextBlock.TextProperty, new Binding(nameof(context.WindowPreferenceStatus)) { Source = context });
             }
-            else opening.SelectedValue = Ipc.Platform.PresentationPreferences.ReadWindowMode(m.ApplicationId);
+            else
+            {
+                opening.SelectedValue = OpeningModeDraft ?? Ipc.Platform.PresentationPreferences.ReadWindowMode(m.ApplicationId);
+                opening.SelectionChanged += (_, _) => { if (opening.SelectedValue is Ipc.Platform.PresentationPreferences.WindowOpeningMode selected) OpeningModeDraft = selected; };
+            }
         }
         catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
         { modeReadable = false; modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "窗口设置未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
         opening.IsEnabled = modeReadable;
-        Field(Form(display), "默认打开方式", opening, "保存后立即生效，并记住下次打开方式。最大化（全屏）时隐藏标题栏并铺满屏幕；按 F11 临时切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
+        Field(Form(display), "默认打开方式", opening, m.ApplicationId == "sportmaster" ? "保存后立即生效，并记住下次打开方式。最大化（全屏）时隐藏标题栏并铺满屏幕；可最小化到任务栏，恢复后仍保持全屏；Esc 和 F11 不退出全屏。" : "保存后立即生效，并记住下次打开方式。按 F11 临时切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
         var saveMode = new Button { Content = "保存打开方式", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44, IsEnabled = modeReadable };
         saveMode.Click += (_, _) =>
         {
@@ -123,7 +133,7 @@ public sealed partial class ParameterSettingsControl
             catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)
             { modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "打开方式未保存；请检查本机设置文件与访问权限后重试。"); }
         };
-        if (RuntimeContext is null) display.Body.Children.Add(saveMode);
+        if (RuntimeContext is null && (!FirstConfiguration || m.ApplicationId != "sportmaster")) display.Body.Children.Add(saveMode);
         display.Body.Children.Add(modeStatus);
         if (m.ApplicationId == "sportmaster") AudioPreferences(display);
         display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));

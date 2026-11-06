@@ -25,6 +25,8 @@ public sealed class CoreRegression
     [DataRow("--mvid-reader", 83)]
     [DataRow("--rcs-heartbeat", 25)]
     [DataRow("--station-position-control", 20)]
+    [DataRow("--management-workspace", 12)]
+    [DataRow("--management-status-ownership", 6)]
     [DataRow("--sm-automatic-rcs", 57)]
     [DataRow("--live-devices-30", 23)]
     [DataRow("--mvs-network-reconnect", 20)]

@@ -72,17 +72,48 @@ public sealed partial class LocalManagementMode
         string token; lock (sync) token = sessionSecret;
         return ManagementModeBroker.Call<T>(dataRoot, request with { Token = token });
     }
+    readonly object remoteStatusSync = new();
     ManagementModeStatus RemoteStatus()
     {
-        try
+        // Serialize status transport reads. A reply for
+        // an older token must not revoke a password grant established meanwhile.
+        lock (remoteStatusSync)
         {
-            var status = Rpc<ManagementModeStatus>(new("Status"));
-            lock (sync) { remoteStatusKnown = true; knownConfigured = status.Configured; knownLegacy = status.HasUnsupportedCredentials; knownAvailable = status.Available; if (!status.Authorized) Revoke(); }
+            string token; lock (sync) token = sessionSecret;
+            try
+            {
+                var status = ManagementModeBroker.Call<ManagementModeStatus>(dataRoot, new("Status", Token: token));
+                return ObserveRemoteStatus(token, status);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return ObserveRemoteStatus(token, new(knownConfigured, false, null, knownLegacy));
+            }
+            catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException or InvalidOperationException or System.ComponentModel.Win32Exception)
+            {
+                return ObserveRemoteStatus(token, null);
+            }
+        }
+    }
+    internal ManagementModeStatus ObserveRemoteStatus(string token, ManagementModeStatus? status)
+    {
+        lock (sync)
+        {
+            if (token != sessionSecret) return CurrentRemoteGrant();
+            remoteStatusKnown = true;
+            if (status is null)
+            {
+                // A failed observation denies commands but is not a revocation receipt.
+                knownAvailable = false;
+                return new(knownConfigured, false, null, knownLegacy, false);
+            }
+            knownConfigured = status.Configured; knownLegacy = status.HasUnsupportedCredentials; knownAvailable = status.Available;
+            if (!status.Authorized) Revoke();
             return status;
         }
-        catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException or InvalidOperationException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)
-        { lock (sync) { remoteStatusKnown = true; knownAvailable = false; Revoke(); return new(knownConfigured, false, null, knownLegacy, false); } }
     }
+    ManagementModeStatus CurrentRemoteGrant() => new(knownConfigured, active && Now < expires, active ? expires : null, knownLegacy, knownAvailable)
+    { SessionId = active ? sessionId : null };
     bool RemoteEnter(string password)
     {
         var grant = Rpc<ManagementModeSessionGrant?>(new("Enter", Password: password));

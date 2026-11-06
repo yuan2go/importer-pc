@@ -536,11 +536,20 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind :
             !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : code is null ? selection.Outcome : null;
-        if (!manual && !PositionSupplyEnabled(position))
+        if (!manual && (!PositionSupplyEnabled(position) || ManagementWorkspaceOpen))
         {
             // Keep placement presence/change evidence while acquisition continues,
             // but disabled reads never replace the current input or create work.
-            if (rejection is null) _ = SamePlacementOwner(position, code!, o.ObservedAt);
+            if (rejection is null)
+            {
+                lock (placements)
+                {
+                    if (PositionControl(position).Mode == StationPositionMode.Disabling &&
+                        placements.TryGetValue(position, out var draining) && draining.Code != code)
+                        draining.EndedAt ??= o.ObservedAt;
+                    else _ = SamePlacementOwner(position, code!, o.ObservedAt);
+                }
+            }
             return;
         }
         if (rejection is not null)

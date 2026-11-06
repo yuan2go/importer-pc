@@ -70,5 +70,21 @@ static partial class Program
             CaptureInternal(evidence, "position-control-history", (Grid)window.FindName("ClientArea"), lines);
         }
         finally { window.Close(); }
+        await using var deferred = new ManualSupplyHarness(root, Path.Combine(evidence, "unconfigured-disabled"), true);
+        await deferred.StartAsync();
+        var unconfigured = new SupplyStationWindow(deferred.App, null, "standard"); unconfigured.Show();
+        try
+        {
+            var snapshot = await deferred.App.SnapshotAsync();
+            var state = snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!;
+            await deferred.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", state.Revision, false), default);
+            for (var n = 0; n < 100 && !unconfigured.ViewModel.Right.SupplyDisabled; n++) { await unconfigured.ViewModel.RefreshAsync(); await Task.Delay(25); }
+            Check(unconfigured.ViewModel.Right.SupplyDisabled && unconfigured.ViewModel.Right.DeviceLabel.Contains("待配置") && !unconfigured.ViewModel.Right.DeviceLabel.Contains("断开"),
+                "an unconfigured disabled camera stays awaiting configuration without a false disconnect or release message");
+            await SetClient(unconfigured, 1366, 768); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            CaptureInternal(evidence, "unconfigured-position-disabled", (Grid)unconfigured.FindName("ClientArea"), lines);
+        }
+        finally { unconfigured.Close(); }
+
     }
 }

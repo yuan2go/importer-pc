@@ -33,7 +33,13 @@
    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
   <Border x:Name="TimeHeader" Grid.ColumnSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1" Padding="16,8" MinHeight="48">
-   <TextBlock x:Name="StationClock" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
+   <Grid>
+    <TextBlock x:Name="StationClock" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>
+    <Button x:Name="MinimizeFullScreen" Click="MinimizeFullScreen_Click" HorizontalAlignment="Right" MinWidth="44" MinHeight="44" ToolTip="最小化到任务栏" AutomationProperties.Name="最小化到任务栏">
+     <Button.Style><Style TargetType="Button"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Path=(parameters:WindowOpeningPreference.IsFullScreen), RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Button.Style>
+     <Path Data="M 3,10 L 17,10" Stroke="{DynamicResource Ink}" StrokeThickness="1.7" Width="20" Height="20"/>
+    </Button>
+   </Grid>
   </Border>
   <Border x:Name="DailyNavigation" Grid.Row="1" Grid.RowSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,1,0">
    <Border.Style><Style TargetType="Border"><Setter Property="Width" Value="176"/><Style.Triggers><DataTrigger Binding="{Binding IsNavigationCollapsed, RelativeSource={RelativeSource AncestorType=Window}}" Value="True"><Setter Property="Width" Value="64"/></DataTrigger></Style.Triggers></Style></Border.Style>
@@ -41,7 +47,7 @@
     <Button x:Name="NavigationToggle" DockPanel.Dock="Top" Click="NavigationToggle_Click" Content="收起菜单" ToolTip="收起或展开菜单" AutomationProperties.Name="收起或展开菜单" Style="{StaticResource StationIconNavigation}" Tag="M 3,5 L 21,5 M 3,12 L 21,12 M 3,19 L 21,19" Margin="0,0,0,16"/>
     <StackPanel DockPanel.Dock="Bottom">
      <Button x:Name="OperatorAccess" Content="操作员" Click="OperatorLogin_Click" Visibility="{Binding LoginVisibility}" Style="{StaticResource StationIconNavigation}" Tag="M 8,6 A 4,4 0 1 0 16,6 A 4,4 0 1 0 8,6 M 3,22 L 3,19 C 3,12 21,12 21,19 L 21,22" ToolTip="操作员身份" AutomationProperties.Name="操作员身份"/>
-     <Button x:Name="ManagementCenterEntry" Content="管理中心" Click="ManagementMode_Click" Style="{StaticResource StationIconNavigation}" Tag="M 5,10 L 19,10 19,22 5,22 Z M 8,10 L 8,6 A 4,4 0 0 1 16,6 L 16,10 M 12,15 L 12,18" ToolTip="管理中心（需要管理密码）" AutomationProperties.Name="管理中心，需要管理密码"/>
+     <Button x:Name="ManagementCenterEntry" Content="管理中心" Click="ManagementMode_Click" Style="{StaticResource StationIconNavigation}" Tag="M 10,2 L 14,2 14.6,5 16.4,6 19.3,5 21.3,8.5 19,10.5 19,13.5 21.3,15.5 19.3,19 16.4,18 14.6,19 14,22 10,22 9.4,19 7.6,18 4.7,19 2.7,15.5 5,13.5 5,10.5 2.7,8.5 4.7,5 7.6,6 9.4,5 Z M 16,12 A 4,4 0 1 1 8,12 A 4,4 0 1 1 16,12" ToolTip="管理中心（需要管理密码）" AutomationProperties.Name="管理中心，需要管理密码"/>
     </StackPanel>
     <StackPanel>
      <Button Tag="M 3,6 L 12,2 21,6 21,18 12,22 3,18 Z M 3,6 L 12,10 21,6 M 12,10 L 12,22 M 7.5,4 L 16.5,8 16.5,12" Content="作业" Click="Workstation_Click" Margin="0,0,0,8" ToolTip="作业" AutomationProperties.Name="作业">

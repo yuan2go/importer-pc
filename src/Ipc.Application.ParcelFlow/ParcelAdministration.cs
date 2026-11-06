@@ -13,7 +13,7 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
     public Func<Task<ManagementPasswordRecoveryReceipt?>>? ManagementPasswordRecoveryInspection { get; set; }
     public Task<ManagementPasswordRecoveryReceipt?> InspectManagementPasswordRecoveryAsync() =>
         ManagementPasswordRecoveryInspection?.Invoke() ?? Task.FromResult<ManagementPasswordRecoveryReceipt?>(null);
-    Task<ManagementModeStatus>? managementStatusRead;
+    Task<ManagementModeStatus>? managementStatusRead, managementStatusTail;
     public Task<ManagementModeStatus> ManagementModeStatusAsync()
     {
         lock (readOwnership)
@@ -22,19 +22,26 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
             // Multiple pages/timers observe one actual read. Observation cannot consume
             // either reserved command slot or build a background polling backlog.
             if (managementStatusRead is { IsCompleted: false }) return managementStatusRead;
-            return managementStatusRead = OwnedOperation(async token =>
-            {
-                if (BeforeManagementStatusRead is { } before) await before(token).ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                return Management.InspectStatus();
-            }, managementStatusOperations, 1, default);
+            return managementStatusRead = managementStatusTail = ReadCurrentManagementStatusAsync(managementStatusTail is { IsCompleted: false } pending ? pending : null);
         }
     }
+    async Task<ManagementModeStatus> ReadCurrentManagementStatusAsync(Task<ManagementModeStatus>? previous)
+    {
+        if (previous is not null)
+            try { await previous.ConfigureAwait(false); } catch { /* A new read must recover a failed observation. */ }
+        return await OwnedOperation(async token =>
+        {
+            if (BeforeManagementStatusRead is { } before) await before(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            return Management.InspectStatus();
+        }, managementStatusOperations, 1, default).ConfigureAwait(false);
+    }
+    void InvalidateManagementStatus() { lock (readOwnership) managementStatusRead = null; }
     public Task ConfigureManagementPasswordAsync(string password) => OwnedAdministration(async token =>
-    { await new ParcelManagementMode(launch.DataRoot, ManagementPasswordSetupApproval).ConfigureManagementPasswordAsync(password).ConfigureAwait(false); Diagnostic("管理模式", "管理密码已设置"); return true; });
+    { await new ParcelManagementMode(launch.DataRoot, ManagementPasswordSetupApproval).ConfigureManagementPasswordAsync(password).ConfigureAwait(false); InvalidateManagementStatus(); Diagnostic("管理模式", "管理密码已设置"); return true; });
     public Task<bool> EnterManagementModeAsync(string password) => OwnedAdministration(async token =>
     {
-        var accepted = Management.Enter(password);
+        var accepted = Management.Enter(password); InvalidateManagementStatus();
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
@@ -45,10 +52,10 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
         finally { gate.Release(); }
     });
     public Task ExitManagementModeAsync()
-        => OwnedAdministration(_ => { Management.Exit(); InvalidatePresentation(); Diagnostic("管理模式", "已退出管理模式"); return Task.FromResult(true); });
+        => OwnedAdministration(_ => { Management.Exit(); InvalidateManagementStatus(); InvalidatePresentation(); Diagnostic("管理模式", "已退出管理模式"); return Task.FromResult(true); });
     public Task<ManagementModeStatus> RenewManagementModeAsync() => OwnedAdministration(async token =>
     {
-        var status = Management.Renew();
+        var status = Management.Renew(); InvalidateManagementStatus();
         await gate.WaitAsync(token).ConfigureAwait(false);
         try { repository?.Commit(null, "ManagementModeRenewed", Wire.Encode(new { status.SessionId, status.ExpiresAt, Operator = currentOperator })); }
         finally { gate.Release(); }
@@ -58,11 +65,11 @@ public sealed partial class ParcelRuntime : IWorkstationAdministration, ISoftwar
     {
         await new ParcelManagementMode(launch.DataRoot, recoveryApproval: ManagementPasswordResetApproval)
             .ResetManagementPasswordAsync(newPassword).ConfigureAwait(false);
-        InvalidatePresentation(); Diagnostic("管理模式", "Windows管理员已重置密码，原授权已撤销"); return true;
+        InvalidateManagementStatus(); InvalidatePresentation(); Diagnostic("管理模式", "Windows管理员已重置密码，原授权已撤销"); return true;
     });
     public Task ResetManagementPasswordAsync(string retiredPassword, string newPassword) =>
         Task.FromException(new UnauthorizedAccessException("共享恢复口令已停用。"));
-    public Task ChangeManagementPasswordAsync(string password) => OwnedAdministration(_ => { Management.ChangePassword(password); InvalidatePresentation(); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); return Task.FromResult(true); });
+    public Task ChangeManagementPasswordAsync(string password) => OwnedAdministration(_ => { Management.ChangePassword(password); InvalidateManagementStatus(); InvalidatePresentation(); Diagnostic("管理模式", "管理密码已修改，原授权已撤销"); return Task.FromResult(true); });
     public Task<SoftwareLogPage> QueryLogsAsync(SoftwareLogQuery query, string? selection, int offset, CancellationToken token)
         => OwnedRead(t => Logs.QueryAsync(query, selection, offset, t), token);
     public Task<SoftwareLogContext> LogContextAsync(string selection, SoftwareLogLocation location, int before, int after, CancellationToken token)

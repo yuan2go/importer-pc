@@ -91,7 +91,11 @@ public sealed partial class ParcelRuntime
                         }, budget.Token).ConfigureAwait(false);
                     }
                     foreach (var reader in selectedReaders)
+                    {
                         await DeviceCallAsync(reader.Source.DeviceId, () => reader.ReconnectAsync(Enqueue, budget.Token), budget.Token).ConfigureAwait(false);
+                        if (ManagementWorkspaceOpen && reader.Source is IObservationInspectionSource inspected)
+                            await ApplyInspectionAsync(inspected, null, budget.Token).ConfigureAwait(false);
+                    }
                     budget.Token.ThrowIfCancellationRequested();
                     return true;
                 }).ConfigureAwait(false);

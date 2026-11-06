@@ -7,11 +7,13 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
 {
     string? managementWorkspace;
     readonly System.Collections.Concurrent.ConcurrentDictionary<IObservationInspectionSource, byte> workspaceSources = new();
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> workspaceInspectionSessions = new(StringComparer.Ordinal);
     bool ManagementWorkspaceOpen => Volatile.Read(ref managementWorkspace) is not null;
     InspectionRegistration? WorkspaceRegistration(InspectionRegistration? registration)
     {
         var window = Volatile.Read(ref managementWorkspace);
         if (window is null) return registration;
+        workspaceInspectionSessions.TryAdd(registration?.Id ?? window, 0);
         return registration is null
             ? new(window, true, _ => true, false) { DecodeAllowed = _ => false }
             : registration with { Isolated = true, DecodeAllowed = registration.CaptureAllowed ?? (_ => registration.CaptureImages) };

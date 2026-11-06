@@ -507,6 +507,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         if (o.InspectionSessionId is not null)
         {
+            // Explicit management reads are retained in the diagnostic store.
+            // They must not replace the production parcel's card, even when a
+            // queued callback reaches Application just after the window closes.
+            if (workspaceInspectionSessions.ContainsKey(o.InspectionSessionId)) return;
             RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
             return;
         }

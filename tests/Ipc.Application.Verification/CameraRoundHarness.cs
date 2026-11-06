@@ -27,7 +27,6 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
     public RoundApi Api(string device) => Factory.Apis[device];
-    public Task<bool> EnterManagementAsync() => App.EnterManagementModeAsync(Password);
     // Fallback window for non-frame sources; camera positions end a placement only on an empty tray.
     public int PlacementReleaseMs { get; init; } = 300;
     public static readonly RoundPixels EmptyTray = new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);

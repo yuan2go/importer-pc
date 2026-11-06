@@ -60,7 +60,7 @@ public sealed partial class ParcelRuntime
                             diagnosticHealthWritten[port.InstanceId] = DateTimeOffset.UtcNow;
                             DebugDiagnostic("设备通信", "设备或服务确认详情", () => new { port.InstanceId, health.Ready, health.ConfirmedAt, health.ValidUntil, Evidence = DiagnosticFragment(health.Detail) });
                         }
-                        capabilityHealth[port.InstanceId] = health;
+                        RecordCapabilityHealth(health);
                         if (previous is null || previous.Ready != health.Ready) InvalidatePresentation();
                         backgroundProgress["capability:" + port.InstanceId] = (DateTimeOffset.UtcNow, health.Ready ? "Ready" : "Unavailable:" + health.Detail);
                     }

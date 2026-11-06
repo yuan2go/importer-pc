@@ -246,7 +246,16 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public long PayloadSize() => 8388608;
         public void ConfigureBuffers(uint count, uint strategy = 0) { }
         public void Start() => Interlocked.Increment(ref Starts);
-        public MvsFrame? Acquire()
+        public int RecognitionAcquires, PreviewAcquires;
+        public MvsFrame? Acquire() { Interlocked.Increment(ref RecognitionAcquires); return AcquireFrame(); }
+        public Action? BeforePreviewReturn = null;
+        public MvsFrame? AcquirePreview()
+        {
+            Interlocked.Increment(ref PreviewAcquires); var frame = AcquireFrame();
+            if (frame is not null) BeforePreviewReturn?.Invoke();
+            return frame;
+        }
+        MvsFrame? AcquireFrame()
         {
             if (!queue.TryDequeue(out var frame)) { Thread.Sleep(4); return null; }
             if (HasFrame) throw new InvalidOperationException("Synthetic SDK loan leaked");
@@ -278,6 +287,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public string? ReplyWaveNo { get; set; }
         public string? ReplyQuantity { get; set; }
         public bool ReplyVehicleStates { get; set; }
+        public volatile bool HeartbeatUnavailable = false;
         public string Endpoint { get; }
         public RoundPeer(int? selectedPort = null)
         {
@@ -297,6 +307,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); Requests.Enqueue(body);
                 var hold = Hold; if (hold is not null && (HoldWhen?.Invoke(body) ?? true)) await hold.Task.WaitAsync(stopped.Token);
                 using var json = JsonDocument.Parse(body); var id = json.RootElement.GetProperty("requestId").GetInt64();
+                if (HeartbeatUnavailable && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
+                { context.Response.StatusCode = 503; return; }
                 var reply = JsonSerializer.Serialize(new
                 {
                     requestId = id,

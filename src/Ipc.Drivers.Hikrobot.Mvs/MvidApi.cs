@@ -94,7 +94,9 @@ internal sealed class MvidApi(string charset) : IMvsApi
         MvidNative.Check(MvidNative.MVID_CR_CAM_SetImageOutPutMode(handle, 1), "SetImageOutputRaw");
     }
     public void Start() { MvidNative.Check(MvidNative.MVID_CR_CAM_StartGrabbing(handle), "StartGrabbing"); grabbing = true; }
-    public MvsFrame? Acquire()
+    public MvsFrame? Acquire() => AcquireFrame(true);
+    public MvsFrame? AcquirePreview() => AcquireFrame(false);
+    MvsFrame? AcquireFrame(bool decode)
     {
         if (HasFrame) throw new InvalidOperationException("Release MVID image borrow before acquiring another frame");
         // A successful call must replace both the image header and the list count.
@@ -102,18 +104,20 @@ internal sealed class MvidApi(string charset) : IMvsApi
         Marshal.WriteIntPtr(output, 0);
         Marshal.WriteInt32(output, MvidNative.ImageBytes, -1);
         var started = Stopwatch.GetTimestamp();
-        var status = MvidNative.MVID_CR_CAM_GetOneFrameTimeout(handle, output, 100);
+        var status = decode ? MvidNative.MVID_CR_CAM_GetOneFrameTimeout(handle, output, 100)
+            : MvidNative.MVID_CR_CAM_GetImageBuffer(handle, output, 100);
         if (status == MvidNative.NoData) return null;
-        var recognitionFailure = MvidNative.IsRecognitionFailure(status);
+        var recognitionFailure = decode && MvidNative.IsRecognitionFailure(status);
         if (recognitionFailure && Marshal.ReadIntPtr(output) == 0) return null;
-        if (!recognitionFailure) MvidNative.Check(status, "GetOneFrameTimeout");
+        if (!recognitionFailure) MvidNative.Check(status, decode ? "GetOneFrameTimeout" : "GetImageBuffer");
         HasFrame = true;
         var width = unchecked((ushort)Marshal.ReadInt16(output, 16)); var height = unchecked((ushort)Marshal.ReadInt16(output, 18));
         var frame = new MvsFrame(Marshal.ReadIntPtr(output), width, height,
             Marshal.ReadInt32(output, 12) == 1 ? MvsNative.Mono8 : 0,
             unchecked((uint)Marshal.ReadInt32(output, 8)), unchecked((uint)Marshal.ReadInt32(output, 20)), 0, 0,
             DeviceTimestampRaw: ((ulong)unchecked((uint)Marshal.ReadInt32(output, 24)) << 32) | unchecked((uint)Marshal.ReadInt32(output, 28)))
-        { NativeRecognitionMs = Stopwatch.GetElapsedTime(started).TotalMilliseconds };
+        { NativeRecognitionMs = decode ? Stopwatch.GetElapsedTime(started).TotalMilliseconds : 0 };
+        if (!decode) return frame;
         if (recognitionFailure) return frame with { NativeRejection = new MvsFrameRejection("native-recognition-failed", $"MVID single-frame recognition failed: 0x{status:X8}") };
         // Keep a valid image on a bad-code frame so preview and unchanged-scene evidence survive.
         try { return frame with { NativeSymbols = MvidNative.CopyCodes(output, width, height, encoding) }; }
@@ -130,13 +134,18 @@ internal sealed class MvidApi(string charset) : IMvsApi
     public void ClearBuffers()
     {
         if (HasFrame) throw new InvalidOperationException("Cannot drain a borrowed MVID image");
-        // No ClearImageBuffer in this ABI. A zero-timeout read drains the SDK queue.
-        // A busy/unbounded queue fails the diagnostic cutover instead of inventing success.
+        DrainRawFrames(() => MvidNative.MVID_CR_CAM_GetImageBuffer(handle, output, 0));
+    }
+    internal static void DrainRawFrames(Func<int> read)
+    {
+        // Drain image buffers without invoking barcode recognition. Decoding each
+        // discarded frame is slower than the live producer and can never empty
+        // a healthy continuous stream. The raw read has the same image ABI.
         for (var i = 0; i < 64; i++)
         {
-            var status = MvidNative.MVID_CR_CAM_GetOneFrameTimeout(handle, output, 0);
+            var status = read();
             if (status == MvidNative.NoData) return;
-            if (!MvidNative.IsRecognitionFailure(status)) MvidNative.Check(status, "DrainFrameQueue");
+            MvidNative.Check(status, "DrainFrameQueue");
         }
         throw new IOException("MVID queue did not reach a verified empty boundary");
     }

@@ -33,7 +33,7 @@ public sealed partial class ParcelRuntime
             try { health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
             catch (OperationCanceledException) when (stopping.IsCancellationRequested)
             { return operations[op.Id]; } // No delivery occurred, no failed health fact is invented on shutdown.
-            capabilityHealth[port.InstanceId] = health;
+            RecordCapabilityHealth(health);
             op = operations[op.Id];
             if (!PortMaintenanceClear(port)) return op;
             if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)

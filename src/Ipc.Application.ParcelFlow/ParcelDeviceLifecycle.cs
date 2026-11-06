@@ -68,7 +68,7 @@ public sealed partial class ParcelRuntime
             maintenanceOperations.Add(key); owns = true;
             foreach (var resource in resources) maintainedResources.TryAdd(resource, 0);
             foreach (var port in selectedPorts)
-                if (capabilityHealth.TryGetValue(port.InstanceId, out var original)) capabilityHealth[port.InstanceId] = original with { Ready = false, Detail = "Maintenance in progress; original confirmation retained" };
+                if (capabilityHealth.TryGetValue(port.InstanceId, out var original)) RecordCapabilityHealth(original with { Ready = false, Detail = "Maintenance in progress; original confirmation retained" });
             repository.Commit(null, "MaintenanceStarted", Wire.Encode(new { Device = key, Actor = ManagementEvidence, TimeoutMs = Effective.TimeoutMs }));
             var actor = ManagementEvidence!;
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, Management.Require()); budget.CancelAfter(Effective.TimeoutMs);
@@ -104,7 +104,7 @@ public sealed partial class ParcelRuntime
             }
             catch (Exception ex) when (ex is IOException or System.Net.Sockets.SocketException or TimeoutException or OperationCanceledException)
             {
-                foreach (var port in selectedPorts) { var now = DateTimeOffset.UtcNow; capabilityHealth[port.InstanceId] = new(port.InstanceId, false, now, now, "Maintenance incomplete: " + ex.GetType().Name); }
+                foreach (var port in selectedPorts) { var now = DateTimeOffset.UtcNow; RecordCapabilityHealth(new(port.InstanceId, false, now, now, "Maintenance incomplete: " + ex.GetType().Name)); }
                 repository.Commit(null, "MaintenanceIncomplete", "Device=" + key + "; " + ex.GetType().Name + "; ownership retained, no successful stop/reconnect asserted");
                 return new("MaintenanceIncomplete", "Original resources retained; inspect and explicitly retry maintenance", repository.Revision);
             }

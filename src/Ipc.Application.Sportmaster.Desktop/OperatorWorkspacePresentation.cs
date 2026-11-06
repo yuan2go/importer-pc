@@ -34,6 +34,7 @@ public sealed partial class SupplyStationViewModel
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :
         Snapshot?.Paused == true ? "本件暂勿投递，等待恢复供包。" :
+        RcsState == RcsConnectionState.Offline ? "RCS 服务离线，自动扫码已暂停；连接恢复后自动继续。" :
         Snapshot?.Positions is { } shown && shown.Any(p => p.Admit) && shown.Any(p => !p.Admit)
             ? string.Join("、", shown.Where(p => p.Admit).Select(p => PositionName(p.Id))) + "照常作业；其余投递位按卡片提示处理。" :
         Snapshot?.Positions?.Any(p => !p.Admit) == true ? "请按各投递位卡片上的提示处理。" : "";

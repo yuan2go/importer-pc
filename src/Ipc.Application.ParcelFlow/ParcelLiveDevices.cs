@@ -45,7 +45,8 @@ public sealed partial class ParcelRuntime
         if (oldWcs is not null)
         {
             portEpochs.AddOrUpdate(oldWcs.InstanceId, 1, (_, value) => value + 1);
-            if (capabilityHealth.TryGetValue(oldWcs.InstanceId, out var original)) capabilityHealth[oldWcs.InstanceId] = original with { Ready = false, Detail = "Reconnecting with saved settings" };
+            Volatile.Write(ref automaticCameraRcsHealth, null);
+            if (capabilityHealth.TryGetValue(oldWcs.InstanceId, out var original)) RecordCapabilityHealth(original with { Ready = false, Detail = "Reconnecting with saved settings" });
         }
         var names = string.Join("、", change.Readers.Select(ReaderName).Concat(oldWcs is null ? [] : ["RCS"]));
         repository.Commit(null, "LiveDeviceApplyStarted", Wire.Encode(new { Devices = resources, Actor = ManagementEvidence, CandidateHash = audit.CandidateHash }));
@@ -117,7 +118,11 @@ public sealed partial class ParcelRuntime
                     if (!ReaderSupplyActive(id)) { supplySuspendedReaders.Add(id); continue; }
                     supplySuspendedReaders.Remove(id);
                     // As at startup: an unreachable camera only takes its own position offline.
-                    try { await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false); if (ManagementWorkspaceOpen && session.Source is IObservationInspectionSource startedSource) await ApplyInspectionAsync(startedSource, null, budget.Token).ConfigureAwait(false); }
+                    try
+                    {
+                        if (Id == "sportmaster" && session.Source is IObservationInspectionSource startedSource) await ApplyInspectionAsync(startedSource, null, budget.Token).ConfigureAwait(false);
+                        await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false);
+                    }
                     catch (ObservationConnectionException error) { Diagnostic("相机通信", "保存设置后相机连接失败", "警告", Wire.Encode(new { Device = id, session.Epoch, Error = error.GetType().Name })); }
                     catch (Exception error) when (error is not OperationCanceledException || !stopping.IsCancellationRequested) { faults.Add(ReaderName(id)); Diagnostic("相机通信", "保存设置后相机启动失败", "警告", id + ": " + error.GetType().Name); }
                 }
@@ -125,7 +130,7 @@ public sealed partial class ParcelRuntime
             }).ConfigureAwait(false);
             if (built.Wcs is { } started)
             {
-                capabilityHealth[started.InstanceId] = await ExternalAsync(() => ProbeHealthAsync(started, stopping.Token)).ConfigureAwait(false);
+                RecordCapabilityHealth(await ExternalAsync(() => ProbeHealthAsync(started, stopping.Token)).ConfigureAwait(false));
                 // The replaced port's monitor exits on its own; shutdown drains the new one.
                 var monitor = Task.Run(() => MonitorAsync(started), CancellationToken.None);
                 backgroundTasks["capability:" + started.InstanceId] = monitor; auxiliary.Add(monitor);

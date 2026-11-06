@@ -21,6 +21,7 @@ internal static class MvidNative
     [DllImport(Library, ExactSpelling = true)] internal static extern int MVID_CR_CAM_StartGrabbing(nint handle);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MVID_CR_CAM_StopGrabbing(nint handle);
     [DllImport(Library, ExactSpelling = true)] internal static extern int MVID_CR_CAM_GetOneFrameTimeout(nint handle, nint output, uint milliseconds);
+    [DllImport(Library, ExactSpelling = true)] internal static extern int MVID_CR_CAM_GetImageBuffer(nint handle, nint output, uint milliseconds);
     [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MVID_CR_CAM_GetIntValue(nint handle, string key, nint value);
     [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MVID_CR_CAM_GetEnumValue(nint handle, string key, nint value);
     [DllImport(Library, ExactSpelling = true, CharSet = CharSet.Ansi)] internal static extern int MVID_CR_CAM_SetEnumValue(nint handle, string key, uint value);

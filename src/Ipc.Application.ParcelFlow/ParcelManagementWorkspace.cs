@@ -12,7 +12,7 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
     InspectionRegistration? WorkspaceRegistration(InspectionRegistration? registration)
     {
         var window = Volatile.Read(ref managementWorkspace);
-        if (window is null) return registration;
+        if (window is null) return AutomaticReadRegistration(registration);
         workspaceInspectionSessions.TryAdd(registration?.Id ?? window, 0);
         return registration is null
             ? new(window, true, _ => true, false) { DecodeAllowed = _ => false }
@@ -82,7 +82,7 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
                     }
                     else if (workspaceSources.ContainsKey(source))
                     {
-                        await source.SetInspectionAsync(null, linked.Token).ConfigureAwait(false);
+                        await source.SetInspectionAsync(AutomaticReadRegistration(null), linked.Token).ConfigureAwait(false);
                         workspaceSources.TryRemove(source, out _);
                     }
                 }

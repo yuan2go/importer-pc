@@ -38,8 +38,20 @@ static class RcsOfflineCameraReads
 
         h.Peer.ReplyVehicleStates = true; h.Peer.HeartbeatUnavailable = true;
         await h.StartAsync();
+        async Task SwitchLeft(bool enabled)
+        {
+            var snapshot = await h.App.SnapshotAsync();
+            await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "left", snapshot.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, enabled), default);
+            await CameraRoundHarness.Until(async () => enabled
+                ? (await h.App.SnapshotAsync()).Devices!.SingleOrDefault(d => d.DeviceId == h.Left)?.IsValid(DateTimeOffset.UtcNow) == true
+                : (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended);
+        }
+        await SwitchLeft(false); await h.App.DisposeAsync(); await h.StartAsync(waitForAllCameras: false);
+        Check(h.Api(h.Left).Starts == 0 && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled,
+            "a camera persisted disabled at startup stays unopened until explicitly enabled");
         async Task<bool> RcsReady() => (await h.App.SnapshotAsync()).Health.Single(c => c.InstanceId == h.Config.Wcs!.InstanceId).Ready;
         await CameraRoundHarness.Until(async () => !await RcsReady());
+        await SwitchLeft(true);
         int Requests() => h.Peer.Requests.Count(body => body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
         async Task Frame(uint number, string code)
         {
@@ -58,6 +70,19 @@ static class RcsOfflineCameraReads
         Check(h.Factory.Sources[h.Left].ReadPreview()?.FrameNumber == 1 && h.Api(h.Left).PreviewAcquires > previewCalls && h.Factory.Decoders[h.Left].Count == decoded && Requests() == 0 &&
             (await h.App.SnapshotAsync()).Operations.Length == 0, "offline RCS permits preview but no automatic recognition, work card or destination request");
         Check((await h.App.SnapshotAsync()).Devices!.All(d => d.IsValid(DateTimeOffset.UtcNow)), "RCS loss does not mark the connected cameras offline");
+        await SwitchLeft(false);
+        var beforeReplacement = await h.App.SnapshotAsync();
+        var candidateReaders = beforeReplacement.Configuration.Effective.Topology!.Readers.Select(reader => reader.DeviceId == h.Left
+            ? reader with { Parameters = new Dictionary<string, string>(reader.Parameters!) { ["device.ip"] = "192.0.2.91" } } : reader).ToArray();
+        var candidate = beforeReplacement.Configuration.Effective with { Topology = beforeReplacement.Configuration.Effective.Topology with { Readers = candidateReaders },
+            Reader = candidateReaders.Single(reader => reader.DeviceId == h.Left) };
+        h.Factory.Expect(candidate);
+        var saved = await h.App.StageConfigurationAsync(beforeReplacement.Configuration.Revision, candidate, "Synthetic disabled camera replacement");
+        Check(saved.Status == "Effective" && h.Api(h.Left).Starts == 0, "replacing a disabled camera applies its configuration without opening it");
+        await SwitchLeft(true); previewCalls = h.Api(h.Left).PreviewAcquires;
+        await Frame(1, "SYNTH-REPLACED-OFFLINE");
+        Check(h.Api(h.Left).PreviewAcquires > previewCalls && h.Factory.Decoders[h.Left].Count == 0 && Requests() == 0 &&
+            (await h.App.SnapshotAsync()).Operations.Length == 0, "enabling the disabled replacement retains the RCS read guard before its first frame");
         var window = Wire.Id(); await h.App.SetManagementWorkspaceAsync(window, true, default);
         await h.BeginAsync(); await h.ArmAsync(h.Left);
         await Frame(2, "SYNTH-OFFLINE-DEBUG");

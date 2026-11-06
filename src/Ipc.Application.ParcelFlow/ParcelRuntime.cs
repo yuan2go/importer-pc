@@ -230,11 +230,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (definition.ArchiveOriginalFrames && Effective.Mode == RunMode.Production && !ParcelConnectionSetup.IsDeferred(Effective, reader.Source.DeviceId) && reader.Source is not IOriginalFrameSource)
                     throw new InvalidDataException("Production SM reader must retain the exact original recognition frame; image fallback is forbidden");
                 if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
+                // A disabled reader may be started later without rebuilding its
+                // source. Install the read policy before deferring acquisition.
+                if (Id == "sportmaster" && reader.Source is IObservationInspectionSource source)
+                    await ApplyInspectionAsync(source, null, token).ConfigureAwait(false);
                 if (!ReaderSupplyActive(reader.Source.DeviceId)) { supplySuspendedReaders.Add(reader.Source.DeviceId); continue; }
                 try
                 {
-                    if (Id == "sportmaster" && reader.Source is IObservationInspectionSource source)
-                        await ApplyInspectionAsync(source, null, token).ConfigureAwait(false);
                     await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false);
                 }
                 catch (ObservationConnectionException ex)

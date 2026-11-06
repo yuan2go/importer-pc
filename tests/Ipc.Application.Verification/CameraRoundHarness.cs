@@ -78,12 +78,12 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);
     }
-    public async Task StartAsync()
+    public async Task StartAsync(bool waitForAllCameras = true)
     {
         Factory = new(Launch, Config);
         App = new(Launch, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
-        await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
+        if (waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         await AuthorizeAsync();
     }
     public async Task AuthorizeAsync()

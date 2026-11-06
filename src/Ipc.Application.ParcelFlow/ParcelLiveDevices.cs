@@ -115,12 +115,13 @@ public sealed partial class ParcelRuntime
                     var session = readers[id];
                     RegisterCameraReadFeedback(session);
                     if (definition.ArchiveOriginalFrames && session.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
+                    if (Id == "sportmaster" && session.Source is IObservationInspectionSource startedSource)
+                        await ApplyInspectionAsync(startedSource, null, budget.Token).ConfigureAwait(false);
                     if (!ReaderSupplyActive(id)) { supplySuspendedReaders.Add(id); continue; }
                     supplySuspendedReaders.Remove(id);
                     // As at startup: an unreachable camera only takes its own position offline.
                     try
                     {
-                        if (Id == "sportmaster" && session.Source is IObservationInspectionSource startedSource) await ApplyInspectionAsync(startedSource, null, budget.Token).ConfigureAwait(false);
                         await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false);
                     }
                     catch (ObservationConnectionException error) { Diagnostic("相机通信", "保存设置后相机连接失败", "警告", Wire.Encode(new { Device = id, session.Epoch, Error = error.GetType().Name })); }

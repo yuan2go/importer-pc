@@ -77,6 +77,7 @@ internal interface IMvsApi
     void ConfigureBuffers(uint nodes, uint strategy = 0);
     void Start();
     MvsFrame? Acquire();
+    MvsFrame? AcquirePreview() => Acquire();
     bool HasFrame { get; }
     void Release();
     void ClearBuffers() => throw new NotSupportedException("The port cannot certify an SDK buffer cutover");

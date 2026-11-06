@@ -197,11 +197,13 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 try
                 {
                     PhaseTo("get-image-buffer"); MvsFrame? frame; DateTimeOffset observedAt; long deliveredTicks;
+                    var decodeRequested = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
                     var acquireStarted = Stopwatch.GetTimestamp();
                     try
                     {
                         lock (gate) acquireCalls++;
-                        frame = api.Acquire(); observedAt = DateTimeOffset.UtcNow; deliveredTicks = Stopwatch.GetTimestamp();
+                        frame = decodeRequested ? api.Acquire() : api.AcquirePreview();
+                        observedAt = DateTimeOffset.UtcNow; deliveredTicks = Stopwatch.GetTimestamp();
                     }
                     catch (IOException error)
                     {
@@ -239,7 +241,9 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 lastFrameAt = observedAt; lastFrameTicks = deliveredTicks;
                             }
                             preview.Offer(frame.Data, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
-                            var allowDecode = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
+                            // A raw preview acquired while paused never becomes an
+                            // empty recognition fact when readiness changes mid-call.
+                            var allowDecode = decodeRequested && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
                             lock (gate) decodePaused = !allowDecode;
                             if (Recognizes && allowDecode)
                             {

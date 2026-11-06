@@ -91,6 +91,7 @@ internal static class MvidReader
         await ManualCorrection(workspace, root);
         await StopDuringCapacityWait();
         await DebugFlow(workspace, root);
+        await RcsOfflineCameraReads.Run(workspace, Path.Combine(root, "rcs-native"), nativeResults: true);
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-reader"), stillMs: "50", nativeResults: true);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);

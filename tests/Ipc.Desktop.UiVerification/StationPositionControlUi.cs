@@ -36,7 +36,7 @@ static partial class Program
             CaptureInternal(evidence, "positions-enabled-offline", (Grid)window.FindName("ClientArea"), lines);
             leftEntry.Focus(); ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyDisabled && !vm.Busy);
-            Check(leftEntry.IsReadOnly && !leftEntry.IsTabStop && !rightEntry.IsReadOnly && ((Border)left.FindName("DisabledSupplyPanel")).IsVisible,
+            Check(leftEntry.IsReadOnly && !leftEntry.IsTabStop && !rightEntry.IsReadOnly && ((Border)left.FindName("CenteredSupplyPanel")).IsVisible && vm.Left.CenteredStateTitle == "已停用",
                 "idle disable shows grey disabled panel and excludes barcode input");
             Check(vm.OperatorStatus.Contains("仅右投递位") && vm.InputTargetPosition != "left", "single enabled position is named and disabled card loses scanner target");
             ((Button)right.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Right.SupplyDisabled && !vm.Busy);

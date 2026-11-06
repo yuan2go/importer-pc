@@ -72,6 +72,8 @@ static partial class Program
                 else if (args.Contains("--startup-close")) await VerifyStartupClose(evidence, lines);
                 else if (args.Contains("--operator-ux-18")) await VerifyOperatorUx18(root, evidence, lines);
                 else if (args.Contains("--operator-workspace")) await VerifyOperatorWorkspace(root, evidence, lines);
+                else if (args.Contains("--station-exit-dialog")) await VerifyStationExitDialog(root, evidence, lines);
+                else if (args.Contains("--home-centered-states")) await VerifyHomeCenteredStates(root, evidence, lines);
                 else if (args.Contains("--station-position-control-ui")) await VerifyStationPositionControlUi(root, evidence, lines);
                 else if (args.Contains("--manual-supply-ui")) await VerifyManualSupplyUi(root, evidence, lines);
                 else if (args.Contains("--continuous-pda-input")) await VerifyContinuousPdaInput(root, evidence, lines);

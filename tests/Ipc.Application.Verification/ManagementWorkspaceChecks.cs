@@ -6,6 +6,7 @@ static class ManagementWorkspaceChecks
     public static async Task Run(string workspace, string root)
     {
         void Check(bool value, string message) { if (!value) throw new Exception(message); Console.WriteLine("PASS MANAGEMENT-WORKSPACE " + message); }
+        await RcsOfflineCameraReads.Run(workspace, Path.Combine(root, "rcs-software"), nativeResults: false);
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "workspace"));
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BEFORE-MANAGEMENT"), 0);

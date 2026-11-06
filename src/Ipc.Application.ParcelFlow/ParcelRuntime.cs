@@ -230,8 +230,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (definition.ArchiveOriginalFrames && Effective.Mode == RunMode.Production && !ParcelConnectionSetup.IsDeferred(Effective, reader.Source.DeviceId) && reader.Source is not IOriginalFrameSource)
                     throw new InvalidDataException("Production SM reader must retain the exact original recognition frame; image fallback is forbidden");
                 if (definition.ArchiveOriginalFrames && reader.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
+                // A disabled reader may be started later without rebuilding its
+                // source. Install the read policy before deferring acquisition.
+                if (Id == "sportmaster" && reader.Source is IObservationInspectionSource source)
+                    await ApplyInspectionAsync(source, null, token).ConfigureAwait(false);
                 if (!ReaderSupplyActive(reader.Source.DeviceId)) { supplySuspendedReaders.Add(reader.Source.DeviceId); continue; }
-                try { await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false); }
+                try
+                {
+                    await reader.StartAsync(Enqueue, ReaderHealthChanged, token).ConfigureAwait(false);
+                }
                 catch (ObservationConnectionException ex)
                 {
                     // A configured camera transport is a position dependency. It
@@ -239,7 +246,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     Diagnostic("相机通信", "相机启动连接失败", "警告", Wire.Encode(new { Device = reader.Source.DeviceId, Epoch = reader.Epoch, Error = ex.GetType().Name }));
                 }
             }
-            foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await ProbeHealthAsync(port, token).ConfigureAwait(false);
+            foreach (var port in CapabilityPorts()) RecordCapabilityHealth(await ProbeHealthAsync(port, token).ConfigureAwait(false));
             token.ThrowIfCancellationRequested();
             if (startupConfiguration is not null)
             {

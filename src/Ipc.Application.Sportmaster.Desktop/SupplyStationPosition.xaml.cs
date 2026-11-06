@@ -59,6 +59,7 @@ public partial class SupplyStationPosition : UserControl
     string? terminalObservationKey;
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(SupplyStationPositionViewModel.ShowCenteredState)) RefreshDraftNoticeVisibility();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.SupplyEnabled))
         {
             RefreshSubmitAvailability();
@@ -72,6 +73,7 @@ public partial class SupplyStationPosition : UserControl
         {
             RefreshBarcodeDisplay();
             if (editing && showingDraftNotice) InputFeedback.Text = DraftNotice;
+            RefreshDraftNoticeVisibility();
         }
     }
     void RefreshTaskRegionGeometry()
@@ -137,6 +139,14 @@ public partial class SupplyStationPosition : UserControl
         if (submitted is not null) available = Host?.ViewModel is { CanUseWorkspace: true, CanStartOperation: true };
         SubmitBarcode.IsEnabled = !submitting && available && (submitted is not null || editing && !overflow && BarcodeEntry.Text.Length > 0);
         RefreshPictureAvailability();
+        RefreshDraftNoticeVisibility();
+    }
+    void RefreshDraftNoticeVisibility()
+    {
+        if (InputFeedback is null) return;
+        if (showingDraftNotice && InputFeedback.Text == DraftNotice && DataContext is SupplyStationPositionViewModel { ShowCenteredState: true })
+            InputFeedback.Visibility = Visibility.Collapsed;
+        else InputFeedback.ClearValue(VisibilityProperty);
     }
     void RefreshPictureAvailability()
     {
@@ -204,6 +214,7 @@ public partial class SupplyStationPosition : UserControl
     async Task SubmitBarcodeAsync()
     {
         showingDraftNotice = false;
+        RefreshDraftNoticeVisibility();
         if (submitting || Host is not { } host || DataContext is not SupplyStationPositionViewModel p) return;
         var vm = host.ViewModel;
         if (!vm.CanStartOperation || !vm.Fresh || vm.Application is not IParcelWorkstation service)

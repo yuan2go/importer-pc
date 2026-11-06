@@ -29,6 +29,7 @@ static partial class Program
         await runtime.StartAsync(default);
         const string password = "Synthetic-Center-Only";
         await runtime.ConfigureManagementPasswordAsync(password);
+        await VerifyManagementStatusOrdering(runtime, Check);
         var window = new SupplyStationWindow(runtime, null, "standard") { ConfirmDiscardDrafts = _ => true };
         window.Show();
         var vm = window.ViewModel;
@@ -67,14 +68,14 @@ static partial class Program
         ((PasswordBox)Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword")).Password = "wrong-password";
         Click(login, "进入管理中心");
         await Until(() => Descendants(login).OfType<TextBlock>().Any(t => t.Text.Contains("管理密码不正确")));
-        Check(!vm.IsManagementMode && !System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(), "incorrect password cannot open protected pages");
+        Check(!vm.IsManagementMode && !login.Entered && !System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(), "incorrect password cannot open protected pages");
         Click(login, "取消"); await Until(() => !login.IsVisible && entry.IsEnabled);
         RequestEntry(); login = await LoginDialog();
         Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
         Click(login, "进入管理中心");
         await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
         var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
-        Check(center.Owner == window && !ManagementOwnerEnabled(new System.Windows.Interop.WindowInteropHelper(window).Handle) && vm.SelectedPage == "diagnostics", "management opens as an owned modal window with diagnostics selected");
+        Check(login.Entered && center.Owner == window && !ManagementOwnerEnabled(new System.Windows.Interop.WindowInteropHelper(window).Handle) && vm.SelectedPage == "diagnostics", "management opens as an owned modal window with diagnostics selected");
         Check(ReferenceEquals(center.DataContext, vm) && ReferenceEquals(((ContentControl)window.FindName("PageHost")).Content, page) && vm.Snapshot.RuntimeId == runtimeId, "management shares the business instance and leaves the workstation content in place");
         var cards = Descendants(center).OfType<Border>().Where(b => AutomationProperties.GetAutomationId(b).StartsWith("DiagnosticCard.", StringComparison.Ordinal)).ToArray();
         Check(cards.Length == 4 && cards.All(c => c.Parent is Grid) && cards.Select(Grid.GetRow).SequenceEqual(new[] { 0, 0, 1, 1 }) && cards.Select(Grid.GetColumn).SequenceEqual(new[] { 0, 1, 0, 1 }), "diagnostic cards use two fixed columns and two rows");
@@ -142,9 +143,90 @@ static partial class Program
         }
         await SetClient(window, 800, 420); CaptureInternal(evidence, "management-main-800", client, lines);
         window.Close(); await Until(() => !window.IsVisible);
+        var guardedService = DispatchProxy.Create<IManagementStatusUiFixture, ManagementStatusUiProbe>();
+        var guardedProbe = (ManagementStatusUiProbe)(object)guardedService; guardedProbe.Inner = runtime;
+        var guardedWindow = new SupplyStationWindow(guardedService, null, "standard"); guardedWindow.Show();
+        await Until(() => guardedWindow.ViewModel.Fresh);
+        guardedProbe.AfterOpen = async () =>
+        {
+            await runtime.ExitManagementModeAsync();
+            await guardedWindow.Dispatcher.InvokeAsync(guardedWindow.ViewModel.RefreshManagementModeAsync).Task.Unwrap();
+        };
+        _ = guardedWindow.Dispatcher.BeginInvoke(new Action(() => ((Button)guardedWindow.FindName("ManagementCenterEntry")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent))));
+        login = await LoginDialog();
+        Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
+        Click(login, "进入管理中心");
+        await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
+        var guardedCenter = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+        Check(!guardedWindow.ViewModel.IsManagementMode && ((Border)guardedCenter.FindName("AuthorizationGate")).IsVisible &&
+            (await runtime.SnapshotAsync()).Positions!.All(p => !p.Admit),
+            "authorization lost during entry still opens the owned locked window instead of silently stranding paused production");
+        Click(guardedCenter, "关闭"); await Until(() => !guardedCenter.IsVisible);
+        Check((await runtime.SnapshotAsync()).Positions!.All(p => p.Admit), "the locked entry window can close and restore production without another password");
+        guardedWindow.Close(); await Until(() => !guardedWindow.IsVisible);
         lines.Add("Windows WPF HWND/Dispatcher, synthetic ports and data. No real SDK, customer RCS or site acceptance.");
+    }
+    static async Task VerifyManagementEntryOrdering(string root, string evidence, List<string> lines)
+    {
+        var launch = new BusinessLaunch(Path.Combine(evidence, "config"), Path.Combine(evidence, "data"), null, null);
+        Directory.CreateDirectory(launch.ConfigurationDirectory);
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
+        ExtensionStore.AtomicWrite(Path.Combine(launch.ConfigurationDirectory, "business.json"), config);
+        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch))
+        { RuntimeIdentityPreflight = () => { if (config.Mode != RunMode.Simulation) throw new InvalidOperationException("Synthetic management entry fixture only"); } };
+        await runtime.StartAsync(default);
+        await VerifyManagementStatusOrdering(runtime, (valid, reason) =>
+        {
+            if (!valid) throw new InvalidOperationException(reason);
+            lines.Add("PASS MANAGEMENT-ENTRY " + reason);
+        });
+    }
+    static async Task VerifyManagementStatusOrdering(IParcelApplication runtime, Action<bool, string> check)
+    {
+        var service = DispatchProxy.Create<IManagementStatusUiFixture, ManagementStatusUiProbe>();
+        var probe = (ManagementStatusUiProbe)(object)service; probe.Inner = runtime;
+        var model = new ParcelViewModel(service, "Management status ordering", "Synthetic UI");
+        var authorized = new ManagementModeStatus(true, true, DateTimeOffset.UtcNow.AddMinutes(15)) { SessionId = Wire.Id() };
+        var shared = new TaskCompletionSource<ManagementModeStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
+        probe.StatusRead = () => shared.Task;
+        var foreground = model.RefreshManagementModeAsync();
+        var background = model.RefreshManagementModeAsync();
+        var appliedBeforeReturn = false;
+        var observation = foreground.ContinueWith(_ => appliedBeforeReturn = model.IsManagementMode,
+            CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        shared.SetResult(authorized);
+        await Task.WhenAll(foreground, background, observation);
+        check(appliedBeforeReturn, "foreground password handoff cannot return before a coalesced authorized status is applied");
+        var older = new TaskCompletionSource<ManagementModeStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var newer = new TaskCompletionSource<ManagementModeStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
+        probe.StatusRead = () => older.Task;
+        foreground = model.RefreshManagementModeAsync();
+        probe.StatusRead = () => newer.Task;
+        background = model.RefreshManagementModeAsync();
+        older.SetResult(authorized);
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+        var returnedBeforeLatest = foreground.IsCompleted;
+        newer.SetResult(new(true, false, null));
+        await Task.WhenAll(foreground, background);
+        check(!returnedBeforeLatest && !model.IsManagementMode, "superseded foreground reads await the newer status and cannot authorize after revocation");
     }
     [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "IsWindowEnabled")]
     [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
     static extern bool ManagementOwnerEnabled(nint handle);
+}
+
+public interface IManagementStatusUiFixture : IParcelApplication, IWorkstationAdministration, IManagementWorkspace { }
+public class ManagementStatusUiProbe : ProjectionProbe
+{
+    public Func<Task<ManagementModeStatus>>? StatusRead;
+    public Func<Task>? AfterOpen;
+    protected override object? Invoke(MethodInfo? method, object?[]? arguments) =>
+        method!.Name == nameof(IWorkstationAdministration.ManagementModeStatusAsync) && StatusRead is { } read ? read() :
+        method.Name == nameof(IManagementWorkspace.SetManagementWorkspaceAsync) ? Workspace(method, arguments!) : base.Invoke(method, arguments);
+    async Task<BusinessReceipt> Workspace(MethodInfo method, object?[] arguments)
+    {
+        var receipt = await (Task<BusinessReceipt>)method.Invoke(Inner, arguments)!;
+        if (arguments[1] is true && AfterOpen is { } opened) await opened();
+        return receipt;
+    }
 }

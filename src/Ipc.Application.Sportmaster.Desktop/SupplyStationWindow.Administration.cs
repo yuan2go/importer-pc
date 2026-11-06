@@ -26,20 +26,28 @@ public partial class SupplyStationWindow
         System.Windows.Automation.AutomationProperties.SetName(NavigationToggle, (string)NavigationToggle.Content);
     }
     void NavigationToggle_Click(object sender, RoutedEventArgs e) { navigationCollapsed = !IsNavigationCollapsed; ApplyNavigation(); }
-    async Task AuthenticateManagementAsync(bool newEntry = false)
+    async Task<bool> AuthenticateManagementAsync(bool newEntry = false)
     {
-        if (ViewModel.Application is not IWorkstationAdministration service) return;
+        if (ViewModel.Application is not IWorkstationAdministration service) return false;
         // Each new visit requires a password, even if another window granted a temporary lease.
         if (newEntry) await service.ExitManagementModeAsync();
         await ViewModel.RefreshManagementModeAsync();
         if (!ViewModel.ManagementStatus.Available) throw new InvalidOperationException("管理授权服务暂时不可用，请稍后重试；原授权保留。");
         if (!ViewModel.IsManagementMode)
         {
-            new ManagementModeWindow(service, "管理中心") { Owner = managementCenter is { IsVisible: true } center ? center : this }.ShowDialog();
+            var password = new ManagementModeWindow(service, "管理中心") { Owner = managementCenter is { IsVisible: true } center ? center : this };
+            password.ShowDialog();
+            if (!password.Entered) return false;
             await ViewModel.RefreshManagementModeAsync();
+            if (!ViewModel.ManagementStatus.Available) throw new InvalidOperationException("暂时无法核对管理授权，请稍后重试；原授权保留。");
+            if (!ViewModel.IsManagementMode) throw new UnauthorizedAccessException("管理授权已结束，请重新验证后进入管理中心。");
         }
         await EnsureManagementWorkspaceAsync();
+        // Once Application has paused production, retain an owned window even
+        // if a later status update locks its content during the native cutover.
+        if (workspaceOpened && managementCenter is null && !closing && !closed) ShowManagementPage("diagnostics");
         EnforceManagementModeView();
+        return true;
     }
     async Task EnsureManagementWorkspaceAsync()
     {
@@ -66,10 +74,9 @@ public partial class SupplyStationWindow
         openingManagement = true; ManagementCenterEntry.IsEnabled = false;
         try
         {
-            await AuthenticateManagementAsync(newEntry: true);
-            if (ViewModel.IsManagementMode && !closing && !closed) SetPage("diagnostics");
+            if (await AuthenticateManagementAsync(newEntry: true) && ViewModel.IsManagementMode && !closing && !closed) SetPage("diagnostics");
         }
-        catch (Exception) { ViewModel.Message = "管理中心未能打开，请稍后重试或检查管理授权服务。"; }
+        catch (Exception error) { ViewModel.Message = ChineseInterfaceText.ParameterMessage(error.Message, "管理中心未能打开，请稍后重试或检查管理授权服务。"); }
         finally { openingManagement = false; ManagementCenterEntry.IsEnabled = true; }
     }
     async Task RenewManagementAsync()
@@ -154,8 +161,7 @@ public partial class SupplyStationWindow
     {
         try
         {
-            await AuthenticateManagementAsync(newEntry: managementCenter is null);
-            if (ViewModel.IsManagementMode) SetPage("logs");
+            if (await AuthenticateManagementAsync(newEntry: managementCenter is null) && ViewModel.IsManagementMode) SetPage("logs");
         }
         catch (Exception) { ViewModel.Message = "日志未能打开，请重新验证管理密码后再试。"; }
     }

@@ -17,15 +17,22 @@ public partial class ParcelViewModel
          Snapshot.CurrentOperator is { } user ? "操作员" + (user.Simulation ? "（模拟）" : "") + "：" + user.DisplayName : "操作员未登录";
     public Visibility PauseVisibility => Snapshot?.Paused == false ? Visibility.Visible : Visibility.Collapsed;
     public Visibility ResumeVisibility => Snapshot?.Paused == true ? Visibility.Visible : Visibility.Collapsed;
-    long managementReadGeneration;
+    Task<ManagementModeStatus>? managementProjectionRead;
     public async Task RefreshManagementModeAsync()
     {
-        var generation = Interlocked.Increment(ref managementReadGeneration);
+        var read = ReadManagementStatusAsync();
+        Volatile.Write(ref managementProjectionRead, read);
         ManagementModeStatus next;
-        try { next = application is IWorkstationAdministration service ? await service.ManagementModeStatusAsync() : new ManagementModeStatus(false, false, null); }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException or System.TimeoutException)
-        { next = new(false, false, null, Available: false); }
-        if (generation != Volatile.Read(ref managementReadGeneration)) return;
+        while (true)
+        {
+            next = await read;
+            var latest = Volatile.Read(ref managementProjectionRead)!;
+            if (ReferenceEquals(read, latest)) break;
+            // Await the newest observation data, not another projection task.
+            // Password handoff and command callers must not return while the
+            // authorized result is still queued behind a background refresh.
+            read = latest;
+        }
         var previous = managementMode; var changed = previous != next; managementMode = next;
         if (!changed) return;
         // Mode is visible in the header. Revocation still fences restricted work
@@ -34,6 +41,12 @@ public partial class ParcelViewModel
         Changed(nameof(ManagementNotice)); Changed(nameof(HasManagementNotice));
         InvalidateDetailsAuthority();
         foreach (var name in new[] { nameof(IsManagementMode), nameof(ConfigurationSaveGuidance), nameof(ManagementStatus), nameof(ManagementModeVisibility), nameof(ManagementModeActionText), nameof(AccountDisplay), nameof(CanEditFormConfiguration), nameof(PauseVisibility), nameof(ResumeVisibility) }) Changed(name);
+    }
+    async Task<ManagementModeStatus> ReadManagementStatusAsync()
+    {
+        try { return application is IWorkstationAdministration service ? await service.ManagementModeStatusAsync() : new ManagementModeStatus(false, false, null); }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException or System.TimeoutException)
+        { return new(false, false, null, Available: false); }
     }
     public async Task RequireManagementModeAsync()
     { await RefreshManagementModeAsync(); if (!IsManagementMode) throw new UnauthorizedAccessException("请先进入管理模式；未保存输入保留。"); }

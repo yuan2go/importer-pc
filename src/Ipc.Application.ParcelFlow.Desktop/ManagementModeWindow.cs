@@ -11,6 +11,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed class ManagementModeWindow : Window
 {
+    public bool Entered { get; private set; }
     public ManagementModeWindow(IWorkstationAdministration service, string? entryName = null) : this(service.ManagementModeStatusAsync, service.ConfigureManagementPasswordAsync,
         service.EnterManagementModeAsync, service.ExitManagementModeAsync, service.ChangeManagementPasswordAsync, service.ResetManagementPasswordAsync, service.InspectManagementPasswordRecoveryAsync, entryName)
     { }
@@ -70,7 +71,7 @@ public sealed class ManagementModeWindow : Window
         show.Checked += (_, _) => { foreach (var pair in revealed) { pair.Plain.Text = pair.Secret.Password; pair.Secret.Visibility = Visibility.Collapsed; pair.Plain.Visibility = Visibility.Visible; } };
         show.Unchecked += (_, _) => Conceal();
         body.IsEnabled = false; enterButton.IsEnabled = false; leave.IsEnabled = false;
-        bool busy = false, refreshing = false, closeAfter = false; double lastPreferredHeight = 0; ManagementModeStatus current = new(false, false, null);
+        bool busy = false, refreshing = false, closeAfter = false, enteredThisAction = false; double lastPreferredHeight = 0; ManagementModeStatus current = new(false, false, null);
         var timer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         async Task Refresh()
         {
@@ -91,10 +92,10 @@ public sealed class ManagementModeWindow : Window
         }
         async Task Run(Func<Task> action)
         {
-            if (busy) return; busy = true; body.IsEnabled = false; actions.IsEnabled = false;
+            if (busy) return; busy = true; enteredThisAction = false; body.IsEnabled = false; actions.IsEnabled = false;
             try { await action(); feedback.Text = ""; await Refresh(); }
             catch (Exception error) { closeAfter = false; feedback.Text = error.Message; }
-            finally { ClearSecrets(); busy = false; body.IsEnabled = true; actions.IsEnabled = true; if (closeAfter) Close(); else if (proof.IsVisible) proof.Focus(); }
+            finally { ClearSecrets(); busy = false; body.IsEnabled = true; actions.IsEnabled = true; if (closeAfter) { Entered = enteredThisAction; Close(); } else if (proof.IsVisible) proof.Focus(); }
         }
         enterButton.Click += async (_, _) =>
         {
@@ -111,6 +112,7 @@ public sealed class ManagementModeWindow : Window
                 }
                 if (!await enter(password)) throw new UnauthorizedAccessException("管理密码不正确，请重新输入。");
                 if (!(await status()).Authorized) throw new UnauthorizedAccessException("管理授权尚未生效，请重新验证后继续。");
+                enteredThisAction = true;
                 closeAfter = true;
             });
         };

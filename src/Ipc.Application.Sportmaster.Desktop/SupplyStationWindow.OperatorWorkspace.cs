@@ -121,8 +121,7 @@ public partial class SupplyStationWindow
     {
         try
         {
-            await AuthenticateManagementAsync(newEntry: managementCenter is null);
-            if (!ViewModel.IsManagementMode) { ViewModel.Message = "未进入管理模式；参数未修改。"; return; }
+            if (!await AuthenticateManagementAsync(newEntry: managementCenter is null) || !ViewModel.IsManagementMode) { ViewModel.Message = "未进入管理模式；参数未修改。"; return; }
             SetPage("maintenance");
             await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取连接参数");
             if (ViewModel.SelectedPage != "maintenance" || !ViewModel.IsManagementMode || !ViewModel.HasLoadedConfiguration) return;

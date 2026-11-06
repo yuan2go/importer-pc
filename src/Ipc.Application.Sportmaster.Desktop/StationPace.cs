@@ -30,7 +30,7 @@ internal sealed class StationPace
 
 public sealed partial class SupplyStationViewModel
 {
-    string paceText = "本班取得格口 —", paceCompact = "本班 —", leftPace = "本位本班取得格口 —", rightPace = "本位本班取得格口 —";
+    string paceText = "本班取得格口 —", paceCompact = "本班 — · — 次/分", leftPace = "本位本班取得格口 —", rightPace = "本位本班取得格口 —";
     bool showPace = true;
     public Visibility PaceVisibility => showPace && SelectedPage == "workstation" ? Visibility.Visible : Visibility.Collapsed;
     public string PaceText => paceText;
@@ -41,7 +41,7 @@ public sealed partial class SupplyStationViewModel
     {
         var valid = Fresh && value is not null && Stopwatch.GetElapsedTime(value.At) < TimeSpan.FromSeconds(6);
         paceText = valid ? $"本班取得格口 {value!.Total:N0} 次 · 近10分钟 {(value.PerMinute is { } speed ? speed.ToString("F1") + " 次/分" : "—")}" : "本班取得格口 — · 近10分钟 —";
-        paceCompact = valid ? $"本班 {value!.Total:N0} 次" : "本班 —";
+        paceCompact = valid ? $"本班 {value!.Total:N0} 次 · {(value.PerMinute is { } compactSpeed ? compactSpeed.ToString("F1") : "—")} 次/分" : "本班 — · — 次/分";
         leftPace = valid ? $"本位本班取得格口 {value!.Left:N0} 次" : "本位本班取得格口 —";
         rightPace = valid ? $"本位本班取得格口 {value!.Right:N0} 次" : "本位本班取得格口 —";
         foreach (var name in new[] { nameof(PaceVisibility), nameof(PaceText), nameof(PaceCompact), nameof(LeftPaceText), nameof(RightPaceText) }) Changed(name);

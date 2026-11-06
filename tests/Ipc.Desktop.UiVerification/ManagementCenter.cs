@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
@@ -40,18 +41,66 @@ static partial class Program
         var clock = (TextBlock)window.FindName("StationClock");
         var header = (Border)window.FindName("TimeHeader");
         Check(Descendants(header).OfType<TextBlock>().Single() == clock && !Descendants(header).OfType<Button>().Any(b => b.IsVisible) && !Descendants(header).OfType<Image>().Any(), "top bar contains only the clock");
-        var clockCenter = clock.TranslatePoint(new Point(clock.ActualWidth / 2, 0), client).X;
-        Check(Math.Abs(clockCenter - client.ActualWidth / 2) <= 1, "clock is centered across the whole client area");
+        var clockRight = clock.TranslatePoint(new Point(clock.ActualWidth, 0), client).X;
+        Check(clock.HorizontalAlignment == HorizontalAlignment.Right && clockRight > client.ActualWidth * .8 && clockRight <= client.ActualWidth - 8,
+            "clock is right aligned in the brand-free header");
         var entry = (Button)window.FindName("ManagementCenterEntry");
         Check(entry.TranslatePoint(new Point(0, entry.ActualHeight), navigation).Y >= navigation.ActualHeight - 12, "management entry is anchored at the bottom");
-        Check(!window.IsNavigationCollapsed && navigation.ActualWidth == 176, "wide layout starts with expanded navigation");
+        Check(!window.IsNavigationCollapsed && navigation.ActualWidth == 120, "wide layout starts with the compact expanded navigation");
+        var toggle = (Button)window.FindName("NavigationToggle");
+        bool ArrowPointsLeft()
+        {
+            var arrow = (System.Windows.Shapes.Path)toggle.Template.FindName("NavigationChevron", toggle);
+            var figure = arrow.Data.GetFlattenedPathGeometry().Figures.Single();
+            var next = figure.Segments[0] is LineSegment line ? line.Point : ((PolyLineSegment)figure.Segments[0]).Points[0];
+            return next.X < figure.StartPoint.X;
+        }
+        var handleCenter = toggle.TranslatePoint(new Point(toggle.ActualWidth / 2, toggle.ActualHeight / 2), navigation);
+        Check(ArrowPointsLeft() && toggle.ActualWidth >= 44 && toggle.ActualHeight >= 44 && Math.Abs(handleCenter.Y - navigation.ActualHeight / 2) <= 1 &&
+            handleCenter.X >= navigation.ActualWidth - 16, "left-pointing handle sits on the navigation edge at mid height with a full-size target");
+        var entryContent = Descendants(entry).OfType<StackPanel>().Single(p => p.Children.OfType<System.Windows.Shapes.Path>().Any() && p.Children.OfType<TextBlock>().Any());
+        Check(entryContent.Orientation == Orientation.Vertical && entryContent.Children.OfType<TextBlock>().Single().Text == "管理中心",
+            "expanded navigation places labels below their icons");
+        var statusLine = (Grid)window.FindName("SupplyStatusLine");
+        var workStatus = (TextBlock)window.FindName("WorkStatus");
+        var pace = (Border)window.FindName("PaceSummary"); var rcs = (Border)window.FindName("RcsConnection");
+        var feedbackBar = (Border)window.FindName("OperationalFeedbackBar");
+        double CenterY(FrameworkElement element) => element.TranslatePoint(new Point(0, element.ActualHeight / 2), statusLine).Y;
+        Check(Math.Abs(CenterY(workStatus) - CenterY(pace)) <= 2 && Math.Abs(CenterY(workStatus) - CenterY(rcs)) <= 2,
+            "supply state, shift totals and RCS share the same row and vertical alignment");
+        Check(!feedbackBar.IsVisible && ((Grid)feedbackBar.Parent).RowDefinitions[1].ActualHeight == 0,
+            "empty feedback consumes no second row");
         CaptureInternal(evidence, "management-main-expanded", client, lines);
+        var positionSnapshot = await runtime.SnapshotAsync();
+        await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
+        await vm.RefreshAsync(); window.UpdateLayout();
+        Check(vm.OperatorStatus.Contains("仅左") && Math.Abs(CenterY(workStatus) - CenterY(rcs)) <= 2,
+            "single-position availability and its operating instruction stay on the same status row");
+        vm.Message = "管理中心未能打开，请稍后重试或检查管理授权服务。"; window.UpdateLayout();
+        Check(feedbackBar.IsVisible && ((Grid)feedbackBar.Parent).RowDefinitions[1].ActualHeight <= 44 &&
+            feedbackBar.TranslatePoint(new Point(), (Grid)feedbackBar.Parent).Y >= statusLine.ActualHeight,
+            "management errors occupy a separate narrow row below the complete status line");
+        CaptureInternal(evidence, "homepage-single-position-error", client, lines);
+        PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.FullScreen);
+        await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+        var minimize = (Button)window.FindName("MinimizeFullScreen");
+        Check(minimize.IsVisible && clock.TranslatePoint(new Point(clock.ActualWidth, 0), client).X + 8 <= minimize.TranslatePoint(new Point(), client).X,
+            "full-screen time and minimize share the right header without overlapping");
+        CaptureInternal(evidence, "homepage-fullscreen-error", client, lines);
+        PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.Window);
+        await SetClient(window, 1366, 768);
+        vm.Message = ""; window.UpdateLayout();
+        Check(!feedbackBar.IsVisible && ((Grid)feedbackBar.Parent).RowDefinitions[1].ActualHeight == 0,
+            "clearing feedback immediately returns its row height to zero");
+        positionSnapshot = await runtime.SnapshotAsync();
+        await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
+        await vm.RefreshAsync(); window.UpdateLayout();
         Click(window, "收起菜单"); window.UpdateLayout();
-        Check(window.IsNavigationCollapsed && navigation.ActualWidth == 64 && entry.IsVisible && entry.ActualHeight >= 44, "collapsed rail retains a usable management control");
+        Check(window.IsNavigationCollapsed && navigation.ActualWidth == 64 && !ArrowPointsLeft() && entry.IsVisible && entry.ActualHeight >= 44, "collapsed rail retains the right-pointing handle and a usable management control");
         Check(AutomationProperties.GetName(entry).Contains("管理中心") && entry.ToolTip is not null, "icon-only management entry has an accessible name and tooltip");
         CaptureInternal(evidence, "management-main-collapsed", client, lines);
         Click(window, "展开菜单"); window.UpdateLayout();
-        Check(!window.IsNavigationCollapsed && navigation.ActualWidth == 176, "navigation can be expanded again");
+        Check(!window.IsNavigationCollapsed && navigation.ActualWidth == 120 && ArrowPointsLeft(), "navigation can be expanded again with the left-pointing handle");
         var runtimeId = vm.Snapshot!.RuntimeId;
         var page = ((ContentControl)window.FindName("PageHost")).Content;
         // Start each native password dialog via a dispatcher action, leaving this verification free to drive its modal loop.

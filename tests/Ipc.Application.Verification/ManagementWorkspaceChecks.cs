@@ -16,6 +16,9 @@ static class ManagementWorkspaceChecks
         Check(held.Positions!.All(p => !p.Admit), "opening management fences both production positions");
         Check(held.Paused == before.Paused && held.Positions!.Select(p => p.SupplyControl).SequenceEqual(before.Positions!.Select(p => p.SupplyControl)), "window does not rewrite saved pause or position switches");
         var decoded = h.Factory.Decoders[h.Left].Count;
+        // Preview delivery is demand-driven: subscribe before the one synthetic
+        // frame can be acquired, rather than racing acquisition on a busy runner.
+        h.Factory.Sources[h.Left].ReadPreview();
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-HELD"), 1);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].ReadPreview() is { } frame && frame.FrameNumber == 1));
         Check(h.Factory.Decoders[h.Left].Count == decoded && h.Peer.Requests.Count == 1, "live frames do not decode or request a chute while management is open");

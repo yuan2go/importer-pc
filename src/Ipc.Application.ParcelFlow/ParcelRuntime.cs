@@ -597,7 +597,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
         if ((manual ? !CanManuallyAdmit(position) : !CanAdmit(position)) || Effective.Login is not null && admittedOperator is null)
-        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Position=" + position + "; paused/faulted/unresolved responsibility or operator not authorized", selection: selection), "ObservationBlocked"); return; }
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Position=" + position + "; paused/faulted/unresolved responsibility or operator not authorized; reasons=" +
+            string.Join("; ", PositionSnapshots().Single(p => p.Id == position).BlockingReasons), selection: selection), "ObservationBlocked"); return; }
         ArchiveSettled();
         if (!CapacityAvailable)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Explicit archive/retention is required", selection: selection), "RetentionBudget", paused: true); return; }

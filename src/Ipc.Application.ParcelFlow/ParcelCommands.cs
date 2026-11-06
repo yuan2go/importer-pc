@@ -360,6 +360,7 @@ public sealed partial class ParcelRuntime
                 try { await DeviceCallAsync(DeviceKey(port), () => port.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
             if (portFailures.Count != 0) throw new AggregateException("Capability stop failures; ownership retained", portFailures);
             stopped = true;
+            blockedInputPictures.Clear();
             lock (placements) foreach (var placement in placements.Values) placement.RejectedImage = null;
             if (terminalWorkerFailure is not null) throw new InvalidOperationException("Terminal worker failed; sources and ports are stopped, disposal is still required", terminalWorkerFailure);
         }

@@ -22,6 +22,7 @@ internal static class WorkCardCurrent
         await using (var h = new CameraRoundHarness(workspace, folder) { PlacementReleaseMs = 5000 })
         {
             await h.StartAsync();
+            await h.WaitForCameraAdmissionAsync();
             uint frame = 0;
             async Task<string?> Current() => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentOperation;
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-CARD-A"), ++frame);
@@ -65,5 +66,33 @@ internal static class WorkCardCurrent
             clock.Offset = TimeSpan.FromMinutes(11);
             Check((await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").CurrentOperation is null, "after ten minutes without new input the card returns to waiting");
         }
+        await PausedCameraPicture(workspace, Path.Combine(root, "paused-current-picture"));
+    }
+
+    static async Task PausedCameraPicture(string workspace, string root)
+    {
+        await using var h = new CameraRoundHarness(workspace, root);
+        await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        var before = await h.App.SnapshotAsync();
+        Check((await h.App.CommandAsync(new(Wire.Id(), before.Revision, "Pause"))).Status == "Persisted", "picture fixture confirms the original software pause");
+        var pixels = CameraRoundHarness.Barcode("SYNTH-PAUSED-PICTURE-A");
+        h.Api(h.Left).Enqueue(pixels, 1);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Outcome == ParcelInputOutcome.Blocked));
+        var input = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
+        var query = new ParcelPictureQuery(ObservationId: input.Observation.Id);
+        var image = (await h.App.ReadParcelPictureAsync(query, default)).Image;
+        Check(image is not null && image.Gray8.SequenceEqual(pixels.Data) && image.Metadata.Width == pixels.Width &&
+            image.Metadata.Height == pixels.Height && image.Metadata.SourceEventId == input.Observation.SourceEventId,
+            "a paused unadmitted scan retains its exact full original without creating a job");
+        image!.Gray8[0] ^= 255;
+        Check((await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data), "returned picture bytes cannot mutate the retained evidence");
+        Check(input.Reason.Contains("Global software pause") && (await h.App.SnapshotAsync()).Operations.Length == 0 && h.Peer.Requests.Count == 0,
+            "blocked input logs the actual pause reason and viewing a picture sends no request");
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-PAUSED-PICTURE-B"), 2);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.Observation.Codes.SequenceEqual(new[] { "SYNTH-PAUSED-PICTURE-B" })));
+        Check((await h.App.ReadParcelPictureAsync(query, default)).Image is null, "a replaced observation cannot borrow the new parcel picture");
+        await h.App.DisposeAsync(); await h.StartAsync();
+        Check((await h.App.ReadParcelPictureAsync(query, default)).Image is null && (await h.App.SnapshotAsync()).Inputs is { Length: 0 },
+            "a new shift restores neither blocked parcel pictures nor previous barcode inputs");
     }
 }

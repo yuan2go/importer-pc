@@ -121,6 +121,10 @@ public partial class SupplyStationWindow : Window
         if (ViewModel.SelectedPage == "debug") debug!.SelectPosition(position == ViewModel.Left ? "left" : "right");
     }
     void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => ViewModel.DismissGlobalOperationFeedback();
+    async void ResumeSupply_Click(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), "恢复供包");
+    }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e)

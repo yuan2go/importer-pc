@@ -33,7 +33,7 @@ public sealed partial class SupplyStationViewModel
     public string OperatorNotice => !Fresh ? OperatorCopy.StaleStep :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
             "请先登录操作员；如设备正在维护，请等待维护完成。" :
-        Snapshot?.Paused == true ? "本件暂勿投递，等待恢复供包。" :
+        Snapshot?.Paused == true ? CanResumeInViewport ? "本件暂勿投递；确认现场后，点击“恢复供包”。" : "当前供包条件尚未满足；请查看各投递位原因，或到管理中心的设备与诊断检查。" :
         RcsState == RcsConnectionState.Offline ? "RCS 服务离线，自动扫码已暂停；连接恢复后自动继续。" :
         Snapshot?.Positions is { } shown && shown.Any(p => p.Admit) && shown.Any(p => !p.Admit)
             ? string.Join("、", shown.Where(p => p.Admit).Select(p => PositionName(p.Id))) + "照常作业；其余投递位按卡片提示处理。" :

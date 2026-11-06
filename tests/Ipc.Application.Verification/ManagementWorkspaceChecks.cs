@@ -37,6 +37,17 @@ static class ManagementWorkspaceChecks
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), 3);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
         Check(h.Peer.Requests.Count == 2, "closing management resumes automatic decoding and one production request");
+        await h.AuthorizeAsync();
+        var waitingWindow = Wire.Id();
+        await h.App.SetManagementWorkspaceAsync(waitingWindow, true, default);
+        var waitingSnapshot = await h.App.SnapshotAsync();
+        var waitingScope = await h.App.BeginCameraInspectionAsync(new(Wire.Id(), waitingSnapshot.RuntimeId, waitingSnapshot.Configuration.Revision,
+            CameraInspectionMode.ObserveProduction, "Synthetic close while waiting", new()) { SingleReadRounds = true }, default);
+        var previousRound = await h.App.ReadCameraReadRoundAsync(default);
+        await h.App.ArmCameraReadAsync(new(Wire.Id(), waitingSnapshot.RuntimeId, waitingSnapshot.Configuration.Revision, waitingScope.SessionId!, h.Left, previousRound.Id), default);
+        await h.App.SetManagementWorkspaceAsync(waitingWindow, false, default).WaitAsync(TimeSpan.FromSeconds(5));
+        Check((await h.App.ReadCameraReadRoundAsync(default)).State == "Closed" && h.Peer.Requests.Count == 2,
+            "closing while waiting for a barcode cancels and drains the unsent round without waiting for a scan or sending a request");
         var current = await h.App.SnapshotAsync(); var control = current.Positions!.Single(p => p.Id == "left").SupplyControl!;
         await h.App.SetPositionEnabledAsync(new(Wire.Id(), current.RuntimeId, "left", control.Revision, false), default);
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-PARCEL"), 4);
@@ -50,6 +61,7 @@ static class ManagementWorkspaceChecks
         await h.App.SetManagementWorkspaceAsync(offlineWindow, true, default).WaitAsync(TimeSpan.FromSeconds(5));
         Check((await h.App.SnapshotAsync()).Positions!.All(p => !p.Admit), "a disconnected camera does not block management entry for repair");
         await h.App.SetManagementWorkspaceAsync(offlineWindow, false, default).WaitAsync(TimeSpan.FromSeconds(5));
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == h.Right && d.Health == DeviceHealth.Disconnected));
         Check((await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Health != DeviceHealth.Ready,
             "closing management does not invent camera connectivity when it is disconnected");
         await using var failed = new CameraRoundHarness(workspace, Path.Combine(root, "failed-sdk-boundary"));

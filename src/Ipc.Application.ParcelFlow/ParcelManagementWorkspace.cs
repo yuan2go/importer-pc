@@ -32,6 +32,7 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
         await inspectionControl.WaitAsync(linked.Token).ConfigureAwait(false);
         try
         {
+            string? closingSession = null;
             await gate.WaitAsync(linked.Token).ConfigureAwait(false);
             try
             {
@@ -42,17 +43,25 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
                 // Close needs the original window identity, not a still-valid
                 // password lease; expiry must never strand a production fence.
                 if (open) Volatile.Write(ref managementWorkspace, windowId);
-                else
+                else closingSession = collectingInspection?.Id ?? readRound?.Session ?? "";
+                InvalidatePresentation();
+            }
+            finally { gate.Release(); }
+            if (!open)
+            {
+                // The existing round closer cancels first and drains its worker
+                // outside gate. Closing an unsent scan must not wait for a code
+                // or the thirty-second scan deadline; sent requests retain their guards.
+                await EndReadRoundAsync(linked.Token, closingSession!).ConfigureAwait(false);
+                await gate.WaitAsync(linked.Token).ConfigureAwait(false);
+                try
                 {
-                    CloseUnsentRound("管理中心关闭，未发送的调试轮次已结束；原已发请求保留。");
-                    readRound?.Cancel.Cancel();
                     if (collectingInspection is { } collection)
                         inspectionStore?.State(collection.Id, "Stopped", "管理中心已关闭。", close: true);
                     Volatile.Write(ref collectingInspection, null);
                 }
-                InvalidatePresentation();
+                finally { gate.Release(); }
             }
-            finally { gate.Release(); }
             // A disconnected or unconfigured camera has no capture loop to pause.
             // It must not prevent entry to the window needed to repair its settings.
             var readPauseConfirmed = true;

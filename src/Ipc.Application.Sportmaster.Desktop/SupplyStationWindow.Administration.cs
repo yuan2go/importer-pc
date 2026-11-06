@@ -11,6 +11,7 @@ public partial class SupplyStationWindow
     SoftwareLogControl? logs;
     ManagementCenterWindow? managementCenter;
     Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
+    bool ConfirmStationExit() => new SupplyStationExitWindow(ViewModel, activationRequested) { Owner = ManagementDialogOwner }.ShowDialog() == true;
     string dailyPage = "workstation";
     bool openingManagement, centerClosing, centerCloseReady;
     string managementWindowId = Ipc.Platform.Wire.Id();

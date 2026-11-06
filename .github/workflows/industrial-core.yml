@@ -185,6 +185,20 @@ jobs:
           $lines | Write-Output
           if ($verificationExit) { exit $verificationExit }
           if (@($lines | Where-Object { $_ -like 'PASS MANAGEMENT-ENTRY *' }).Count -ne 2 -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw 'Management entry verification incomplete' }
+      - name: Verify compact exit confirmation and owner release
+        if: matrix.business == 'Sportmaster'
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path --station-exit-dialog
+          $verificationExit = $LASTEXITCODE
+          $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()
+          $lines = @(Get-Content -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log'))
+          $lines | Set-Content -LiteralPath .artifacts/station-exit.log
+          $lines | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+          $lines | Write-Output
+          if ($verificationExit) { exit $verificationExit }
+          if (@($lines | Where-Object { $_ -like 'PASS STATION-EXIT *' }).Count -ne 18 -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw 'Station exit verification incomplete' }
       - name: Verify clean Windows installation storage without registration
         if: matrix.business == 'Sportmaster'
         shell: pwsh

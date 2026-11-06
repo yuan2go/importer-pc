@@ -19,10 +19,15 @@ public partial class ParcelViewModel
         await PauseAsync(); await RefreshAsync(); await RequireManagementModeAsync();
         if (!Fresh || Snapshot?.Paused != true || Snapshot.Availability?.Configure != true) throw new InvalidOperationException("暂停或外呼排空尚未确认。原实例继续保有资源，请稍后核对。");
     }
+    public int ExitVisibleOperationCount => Operations.Length;
+    public int ExitUnknownStageCount => Operations.Sum(o => new[] { o.Wcs?.State, o.Plc?.State, o.Upload?.State, o.Capture?.State }.Count(s => s == StageState.Unknown));
+    public string ExitSnapshotStatus => Fresh ? "有效" : "已失效，请核对原记录";
+    public string ExitPendingConfiguration => Snapshot?.HasPendingConfiguration is { } pending ? pending ? "已保存，重启后生效" : "无" :
+        IsManagementMode && Snapshot is not null ? Snapshot.Configuration.Pending is null ? "无" : "已保存，重启后生效" : "待确认";
     public string ExitImpact(bool activation) =>
         (activation ? "将检查并停止原实例，再从原启动契约重新打开。新配置须启动读回后才算生效。" : "将停止整个业务实例并关闭其全部辅助窗口。") +
-        "\n当前读取：" + (Fresh ? "状态有效" : "状态已失效，不能推断原请求结果") +
-        "\n待生效配置：" + (Snapshot?.HasPendingConfiguration is { } pending ? pending ? "已保存，重连不会应用" : "无" : IsManagementMode ? Snapshot?.Configuration.Pending is null ? "无" : "已保存，重连不会应用" : "状态尚未披露，不能推断为无") +
-        "\n本次可见作业：" + Operations.Length + "；结果未知阶段：" + Operations.Sum(o => new[] { o.Wcs?.State, o.Plc?.State, o.Upload?.State, o.Capture?.State }.Count(s => s == StageState.Unknown)) +
+        "\n状态读取：" + ExitSnapshotStatus +
+        "\n待生效配置：" + ExitPendingConfiguration +
+        "\n本次可见作业：" + ExitVisibleOperationCount + "；结果未知阶段：" + ExitUnknownStageCount +
         "\n停止软件不会取消已发送请求或清偿原责任；历史责任以原账为准。草稿在下一步逐窗保护，停止失败保留原实例，不开第二实例。软件暂停不是安全急停。";
 }

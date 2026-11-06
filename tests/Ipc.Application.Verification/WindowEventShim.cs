@@ -152,6 +152,7 @@ namespace Ipc.Application.Sportmaster.Desktop
         string dailyPage = "workstation";
         System.Windows.Window? managementCenter;
         System.Windows.Window ManagementDialogOwner => managementCenter is { IsVisible: true } center ? center : this;
+        bool ConfirmStationExit() => true; // The real modal and cancellation are exercised by --station-exit-dialog on Windows.
         void ApplyNavigation() { } // Geometry and input are verified by --management-center on Windows.
         void ShowManagementPage(string page)
         {

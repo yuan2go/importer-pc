@@ -198,7 +198,7 @@ public partial class SupplyStationWindow : Window
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;
-            if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfigurationCloseGuard.ConfirmExit(ManagementDialogOwner, ViewModel.ExitImpact(activationRequested)))) { RestoreAfterClose(); return; }
+            if (stopOwner is not null && !(ConfirmOwnerExit?.Invoke(ViewModel.ExitImpact(activationRequested)) ?? ConfirmStationExit())) { RestoreAfterClose(); return; }
             if (affected.Any(x => x.statistics?.HasUnsavedChanges == true) && !(ConfirmDiscardDrafts?.Invoke(1) ??
                 ConfigurationCloseGuard.ConfirmExit(ManagementDialogOwner, "时区、自动维护设置或本机目标尚未保存。继续关闭将放弃这些修改。")))
             { RestoreAfterClose(); return; }

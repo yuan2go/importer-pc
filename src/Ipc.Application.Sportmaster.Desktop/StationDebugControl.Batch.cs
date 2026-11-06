@@ -26,7 +26,7 @@ internal sealed partial class StationDebugControl
                     var page = await Inspection.ReadCameraFramesAsync(batchSession, selected, cursor, null, Math.Min(20 - frames.Count, 20), budget.Token);
                     foreach (var frame in page.Rows.Where(f => f.DeviceId == selected)) if (!frames.Any(f => f.Id == frame.Id)) frames.Add(frame);
                     cursor = Math.Max(cursor, page.Cursor);
-                    summary.Text = $"已取得 {frames.Count}/20 帧；正常供包继续，采样不额外发送调试请求";
+                    summary.Text = $"已取得 {frames.Count}/20 帧；自动供包暂停，采样不额外发送调试请求";
                     if (frames.Count < 20) await Task.Delay(100, budget.Token);
                 }
             }
@@ -36,7 +36,7 @@ internal sealed partial class StationDebugControl
                 try { await Inspection.StopCameraInspectionCaptureAsync(batchSession, "连续试扫完成，结束采集", CancellationToken.None); }
                 catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "试扫停止结果未确认，请查看调试记录。"); }
             }
-            summary.Text += frames.Count == 0 ? "\n没有可计算的有效样本。" : $"\n样本 {frames.Count} 帧 · 有码 {frames.Count(f => f.Symbols.Length > 0)} 帧 · 有码帧占比 {100d * frames.Count(f => f.Symbols.Length > 0) / frames.Count:F1}% · 平均解码 {frames.Average(f => f.DecodeMilliseconds):F1} ms。正常供包状态未改变。";
+            summary.Text += frames.Count == 0 ? "\n没有可计算的有效样本。" : $"\n样本 {frames.Count} 帧 · 有码 {frames.Count(f => f.Symbols.Length > 0)} 帧 · 有码帧占比 {100d * frames.Count(f => f.Symbols.Length > 0) / frames.Count:F1}% · 平均解码 {frames.Average(f => f.DecodeMilliseconds):F1} ms。自动供包保持暂停，关闭管理中心后恢复。";
         });
         end.Click += async (_, _) => await Run(async token =>
         {
@@ -44,7 +44,7 @@ internal sealed partial class StationDebugControl
             if (original.SingleReadRounds || original.SessionId is null) throw new InvalidOperationException("没有连续试扫，或另一个扫码轮次正在进行。");
             if (batchSession is not null && batchSession != original.SessionId) throw new InvalidOperationException("当前采集属于其他会话，不能结束。");
             await Inspection.EndCameraInspectionAsync(new(Wire.Id(), original.SessionId, false, false, "结束连续试扫采集"), token);
-            batchSession = null; summary.Text = "连续试扫已结束，正常供包状态未改变。";
+            batchSession = null; summary.Text = "连续试扫已结束，自动供包保持暂停，关闭管理中心后恢复。";
         });
     }
 }

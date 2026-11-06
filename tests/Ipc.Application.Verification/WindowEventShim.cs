@@ -15,7 +15,7 @@ namespace System.Windows
     public class SizeChangedEventArgs : EventArgs;
     public delegate void SizeChangedEventHandler(object sender, SizeChangedEventArgs e);
     public readonly struct Thickness { public Thickness(double value) { } }
-    public enum WindowState { Normal, Maximized }
+    public enum WindowState { Normal, Minimized, Maximized }
     public class FrameworkElement;
     public static class SystemParameters { public static (double Width, double Height) WorkArea => (1440, 980); }
     public class Window

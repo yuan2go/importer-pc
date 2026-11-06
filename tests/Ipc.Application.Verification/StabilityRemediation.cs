@@ -180,10 +180,11 @@ static partial class StabilityRemediation
         try { await longQuery.WaitAsync(TimeSpan.FromSeconds(3)); throw new Exception("Long SQL ignored cancellation"); }
         catch (SqliteException ex) { Check(ex.SqliteErrorCode == 9, "active SQLite engine work interrupted by the owned reader progress handler, not just cancelled wait"); }
     }
-    static async Task OwnedManagementStatus(string workspace, string path)
+    internal static async Task OwnedManagementStatus(string workspace, string path)
     {
         var c = Config(workspace); var launch = Launch(path, c);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch))
+        { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Synthetic management ownership fixture only"); } };
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

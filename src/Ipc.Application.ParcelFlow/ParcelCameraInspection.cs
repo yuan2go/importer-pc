@@ -92,7 +92,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
                     return current?.Id == id && !current.Authority.IsCancellationRequested && current.Expires > DateTimeOffset.UtcNow &&
                         System.Diagnostics.Stopwatch.GetElapsedTime(current.StartedTicks) < current.Lifetime && InspectionStore.Offer(id!, frame);
                 });
-                foreach (var source in sources) await source.SetInspectionAsync(registration, t).ConfigureAwait(false);
+                foreach (var source in sources) await ApplyInspectionAsync(source, registration, t).ConfigureAwait(false);
             }
             authority.ThrowIfCancellationRequested(); Management.Require();
             InspectionStore.State(id!, "Active", "调试采集已开始；正常供包继续，调试请求仅在明确发送时调用实际RCS服务。");
@@ -106,7 +106,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
             {
                 if (collectingInspection?.Id == id) Volatile.Write(ref collectingInspection, null);
                 foreach (var source in sources)
-                    try { await source.SetInspectionAsync(null, CancellationToken.None).ConfigureAwait(false); }
+                    try { await ApplyInspectionAsync(source, null, CancellationToken.None).ConfigureAwait(false); }
                     catch (Exception cleanup) { Diagnostic("相机调试", "采集清理未完成", "警告", cleanup.ToString()); }
             }
             if (id is not null && inspectionStore is { } store)
@@ -133,7 +133,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
             if (command.CloseReadRounds && (!singleReadInspection || readRound?.Id != command.ExpectedRoundId))
                 throw new CameraReadRoundConflictException("扫码轮次已变化；本窗口不结束其他窗口的当前轮次。");
             await EndReadRoundAsync(t, command.SessionId).ConfigureAwait(false);
-            foreach (var source in InspectionSources()) await source.SetInspectionAsync(null, t).ConfigureAwait(false);
+            foreach (var source in InspectionSources()) await ApplyInspectionAsync(source, null, t).ConfigureAwait(false);
             if (inspectionStore is { } store) await store.FlushAsync(t).ConfigureAwait(false);
             authority.ThrowIfCancellationRequested(); Management.Require();
             Volatile.Write(ref collectingInspection, null);
@@ -174,7 +174,7 @@ public sealed partial class ParcelRuntime : ICameraInspection
             try
             {
                 if (collectingInspection is null)
-                    foreach (var source in InspectionSources()) await source.SetInspectionAsync(null, CancellationToken.None).ConfigureAwait(false);
+                    foreach (var source in InspectionSources()) await ApplyInspectionAsync(source, null, CancellationToken.None).ConfigureAwait(false);
                 inspectionStore?.State(current.Id, expired ? "Expired" : "Faulted", "调试采集已停止；原请求保留，正常供包状态未改变。", close: true);
             }
             catch (Exception error) { inspectionStoreFailure = "调试停止回执未保存，请导出诊断记录。"; Diagnostic("相机调试", "调试停止未完成", "警告", error.ToString()); }

@@ -507,6 +507,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         if (o.InspectionSessionId is not null)
         {
+            // Explicit management reads are retained in the diagnostic store.
+            // They must not replace the production parcel's card, even when a
+            // queued callback reaches Application just after the window closes.
+            if (workspaceInspectionSessions.ContainsKey(o.InspectionSessionId)) return;
             RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
             return;
         }
@@ -536,11 +540,20 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind :
             !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : code is null ? selection.Outcome : null;
-        if (!manual && !PositionSupplyEnabled(position))
+        if (!manual && (!PositionSupplyEnabled(position) || ManagementWorkspaceOpen))
         {
             // Keep placement presence/change evidence while acquisition continues,
             // but disabled reads never replace the current input or create work.
-            if (rejection is null) _ = SamePlacementOwner(position, code!, o.ObservedAt);
+            if (rejection is null)
+            {
+                lock (placements)
+                {
+                    if (PositionControl(position).Mode == StationPositionMode.Disabling &&
+                        placements.TryGetValue(position, out var draining) && draining.Code != code)
+                        draining.EndedAt ??= o.ObservedAt;
+                    else _ = SamePlacementOwner(position, code!, o.ObservedAt);
+                }
+            }
             return;
         }
         if (rejection is not null)

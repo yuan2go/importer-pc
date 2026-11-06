@@ -1,0 +1,79 @@
+using Ipc.Application.Contracts;
+using Ipc.Platform;
+
+static class ManagementWorkspaceChecks
+{
+    public static async Task Run(string workspace, string root)
+    {
+        void Check(bool value, string message) { if (!value) throw new Exception(message); Console.WriteLine("PASS MANAGEMENT-WORKSPACE " + message); }
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "workspace"));
+        await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BEFORE-MANAGEMENT"), 0);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Accepted));
+        var before = await h.App.SnapshotAsync(); var id = Wire.Id();
+        await h.App.SetManagementWorkspaceAsync(id, true, default);
+        var held = await h.App.SnapshotAsync();
+        Check(held.Positions!.All(p => !p.Admit), "opening management fences both production positions");
+        Check(held.Paused == before.Paused && held.Positions!.Select(p => p.SupplyControl).SequenceEqual(before.Positions!.Select(p => p.SupplyControl)), "window does not rewrite saved pause or position switches");
+        var decoded = h.Factory.Decoders[h.Left].Count;
+        // Preview delivery is demand-driven: subscribe before the one synthetic
+        // frame can be acquired, rather than racing acquisition on a busy runner.
+        h.Factory.Sources[h.Left].ReadPreview();
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-HELD"), 1);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].ReadPreview() is { } frame && frame.FrameNumber == 1));
+        Check(h.Factory.Decoders[h.Left].Count == decoded && h.Peer.Requests.Count == 1, "live frames do not decode or request a chute while management is open");
+        Check((await h.App.SnapshotAsync()).Devices!.All(d => d.IsValid(DateTimeOffset.UtcNow)), "pausing reads retains actual camera health");
+        var snapshot = await h.App.SnapshotAsync();
+        var scope = await h.App.BeginCameraInspectionAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision,
+            CameraInspectionMode.ObserveProduction, "Synthetic explicit management read", new()) { SingleReadRounds = true }, default);
+        var round = await h.App.ArmCameraReadAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, scope.SessionId!, h.Left, null), default);
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-DEBUG"), 2);
+        await CameraRoundHarness.Until(async () => (await h.App.ReadCameraReadRoundAsync(default)).State == "Locked");
+        Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Count(o => o.DebugRequest is null) == 1, "explicit debug reads never create an automatic production request");
+        var afterDebug = await h.App.SnapshotAsync();
+        Check(afterDebug.Inputs!.Single(p => p.PositionId == "left").Observation.Codes.SequenceEqual(new[] { "SYNTH-BEFORE-MANAGEMENT" }),
+            "explicit management reads preserve the original production parcel card and input evidence");
+        await h.App.ExitManagementModeAsync();
+        await h.App.SetManagementWorkspaceAsync(id, false, default);
+        await h.WaitForCameraAdmissionAsync();
+        Check((await h.App.SnapshotAsync()).Paused == before.Paused, "original window can restore production even after password authorization expires");
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), 3);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
+        Check(h.Peer.Requests.Count == 2, "closing management resumes automatic decoding and one production request");
+        await h.AuthorizeAsync();
+        var waitingWindow = Wire.Id();
+        await h.App.SetManagementWorkspaceAsync(waitingWindow, true, default);
+        var waitingSnapshot = await h.App.SnapshotAsync();
+        var waitingScope = await h.App.BeginCameraInspectionAsync(new(Wire.Id(), waitingSnapshot.RuntimeId, waitingSnapshot.Configuration.Revision,
+            CameraInspectionMode.ObserveProduction, "Synthetic close while waiting", new()) { SingleReadRounds = true }, default);
+        var previousRound = await h.App.ReadCameraReadRoundAsync(default);
+        await h.App.ArmCameraReadAsync(new(Wire.Id(), waitingSnapshot.RuntimeId, waitingSnapshot.Configuration.Revision, waitingScope.SessionId!, h.Left, previousRound.Id), default);
+        await h.App.SetManagementWorkspaceAsync(waitingWindow, false, default).WaitAsync(TimeSpan.FromSeconds(5));
+        Check((await h.App.ReadCameraReadRoundAsync(default)).State == "Closed" && h.Peer.Requests.Count == 2,
+            "closing while waiting for a barcode cancels and drains the unsent round without waiting for a scan or sending a request");
+        var current = await h.App.SnapshotAsync(); var control = current.Positions!.Single(p => p.Id == "left").SupplyControl!;
+        await h.App.SetPositionEnabledAsync(new(Wire.Id(), current.RuntimeId, "left", control.Revision, false), default);
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-PARCEL"), 4);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled);
+        Check(h.Peer.Requests.Count == 2, "a changed barcode completes the original draining placement without claiming the next parcel");
+        await h.AuthorizeAsync();
+        Check((await h.App.ManagementModeStatusAsync()).Authorized, "reopening uses the fixture original configured management password");
+        h.Api(h.Right).Discovered = false;
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Health == DeviceHealth.Disconnected);
+        var offlineWindow = Wire.Id();
+        await h.App.SetManagementWorkspaceAsync(offlineWindow, true, default).WaitAsync(TimeSpan.FromSeconds(5));
+        Check((await h.App.SnapshotAsync()).Positions!.All(p => !p.Admit), "a disconnected camera does not block management entry for repair");
+        await h.App.SetManagementWorkspaceAsync(offlineWindow, false, default).WaitAsync(TimeSpan.FromSeconds(5));
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == h.Right && d.Health == DeviceHealth.Disconnected));
+        Check((await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Health != DeviceHealth.Ready,
+            "closing management does not invent camera connectivity when it is disconnected");
+        await using var failed = new CameraRoundHarness(workspace, Path.Combine(root, "failed-sdk-boundary"));
+        await failed.StartAsync(); await failed.WaitForCameraAdmissionAsync();
+        failed.Api(failed.Left).FailNextClear = true;
+        var warning = await failed.App.SetManagementWorkspaceAsync(Wire.Id(), true, default);
+        Check(warning.Status == "PausedWithCameraWarning" && (await failed.App.SnapshotAsync()).Positions!.All(p => !p.Admit),
+            "an SDK cutover failure reports the pending boundary but keeps production fenced and management available for repair");
+
+
+    }
+}

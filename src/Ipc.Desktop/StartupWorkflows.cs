@@ -421,6 +421,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         if (saved.Candidate is null || Wire.Hash(Wire.Encode(saved.Candidate)) != checkedCandidateHash)
             throw new IOException("保存后的配置与本次检查的内容不一致，请重新读取配置后核对。");
+        if (initialConfiguration && saved.Candidate.ApplicationId == "sportmaster") parameterControl?.SaveDisplayPreferences();
         document = saved; draft = new(saved.Candidate, saved.Catalog);
         lastSaveConfirmed = true; startupSaveUncertain = false;
         Render(false); savedInput = Input();
@@ -591,7 +592,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Note("首次配置与日常设置使用相同的参数和检查规则。投递位数量和设备身份不在此修改。");
             deviceStart = Body.Children.Count;
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
-            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
+            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;
             if (!initialConfiguration) Field("维护原因（必填，记入审计）", reason, v => reason = v);

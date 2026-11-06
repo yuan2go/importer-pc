@@ -54,12 +54,32 @@ static partial class Program
             Check(!save.IsEnabled && !vm.HasUnsavedDisplayPreferences && vm.Snapshot.Configuration.Revision == revision, "successful local save clears dirty state without changing the business revision");
             CaptureInternal(evidence, "window-preference-fullscreen", page, lines);
             window.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window), Environment.TickCount, Key.Escape) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
-            Check(window.WindowStyle != WindowStyle.None && PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.FullScreen, "Escape temporarily exits without erasing the saved default");
+            Check(window.WindowStyle == WindowStyle.None && window.WindowState == WindowState.Maximized && PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.FullScreen, "Escape preserves full screen and its saved default");
+            window.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window), Environment.TickCount, Key.F11) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
+            Check(!window.InputBindings.OfType<KeyBinding>().Any(b => b.Key == Key.F11) && window.WindowStyle == WindowStyle.None, "F11 has no full-screen exit binding");
+            window.WindowState = WindowState.Minimized; await Flush();
+            Check(window.WindowState == WindowState.Minimized, "full screen can minimize to the taskbar");
+            window.WindowState = WindowState.Normal; await Flush();
+            Check(window.WindowState == WindowState.Maximized && window.WindowStyle == WindowStyle.None, "restoring from the taskbar returns to full screen");
             var reopened = new Window { Width = 900, Height = 640 };
             WindowOpeningPreference.Attach(reopened, "sportmaster", message => throw new InvalidOperationException(message));
             reopened.Show(); await Flush();
             Check(reopened.WindowStyle == WindowStyle.None && reopened.WindowState == WindowState.Maximized, "a newly opened native window restores the persisted default");
             reopened.Close();
+            PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.Window);
+            var firstEditor = new ParameterSettingsControl { FirstConfiguration = true, Model = vm.ParameterEditor };
+            var firstHost = new Window { Content = firstEditor, Width = 900, Height = 700 }; firstHost.Show();
+            firstEditor.ShowPage(0, "显示偏好"); await Flush();
+            var firstOpening = Descendants(firstEditor).OfType<ComboBox>().Single(b => AutomationProperties.GetAutomationId(b) == "WindowOpeningMode");
+            firstOpening.SelectedValue = PresentationPreferences.WindowOpeningMode.FullScreen; await Flush();
+            Check(PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.Window && firstEditor.OpeningModeDraft == PresentationPreferences.WindowOpeningMode.FullScreen,
+                "first configuration retains the selected full-screen draft until configuration save");
+            firstEditor.SaveDisplayPreferences(); firstHost.Close();
+            var firstWorkstation = new Ipc.Application.Sportmaster.Desktop.SupplyStationWindow(runtime, null, "standard"); firstWorkstation.Show(); await Flush();
+            Check(firstWorkstation.WindowStyle == WindowStyle.None && firstWorkstation.WindowState == WindowState.Maximized && ((Button)firstWorkstation.FindName("MinimizeFullScreen")).IsVisible,
+                "the first workstation after first-configuration save opens full screen with a taskbar minimize control");
+            firstWorkstation.Close();
+
             opening.SelectedValue = PresentationPreferences.WindowOpeningMode.Window; await Flush();
             var preference = Path.Combine(evidence, "user-preferences", "presentation", "sportmaster.window.json");
             var original = File.ReadAllBytes(preference);

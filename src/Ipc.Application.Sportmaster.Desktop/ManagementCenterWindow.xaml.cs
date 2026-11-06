@@ -24,13 +24,16 @@ public partial class ManagementCenterWindow : Window
         Width = Math.Min(Width, SystemParameters.WorkArea.Width); Height = Math.Min(Height, SystemParameters.WorkArea.Height);
         UpdateAuthorization(model.ManagementStatus);
     }
-    public void ShowPage(FrameworkElement page) => ManagementPageHost.Content = page;
+    public void ShowPage(FrameworkElement page) { if (!ReferenceEquals(ManagementPageHost.Content, page)) ManagementPageHost.Content = page; }
     public void DetachPage() => ManagementPageHost.Content = null;
     public void UpdateAuthorization(ManagementModeStatus status)
     {
         AuthorizedBody.Visibility = status.Authorized ? Visibility.Visible : Visibility.Collapsed;
         AuthorizationGate.Visibility = status.Authorized ? Visibility.Collapsed : Visibility.Visible;
         ManagementNavigation.IsEnabled = RenewAuthorization.IsEnabled = PasswordSettings.IsEnabled = status.Authorized;
+        AuthorizationTitle.Text = status.Available ? "请重新验证管理密码" : "暂时无法核对管理授权";
+        AuthorizationDetail.Text = status.Available ? "管理授权已结束，当前页面已锁定，未保存的设置保留。关闭管理中心后恢复供包。" : "授权服务通信未确认，管理操作暂时不可用；正在重新核对原授权，无需重复输入密码。自动供包及读码保持暂停。";
+        AuthenticateAuthorization.Content = status.Available ? "验证管理密码" : "重新检查授权";
         AuthorizationStatus.Text = status.Authorized ? $"授权至 {status.ExpiresAt?.ToLocalTime():HH:mm} · 关闭窗口后结束授权" : "管理授权已结束；可验证密码后继续。";
     }
     public void SetClosing(bool value) { IsEnabled = !value; if (value) AuthorizationStatus.Text = "正在结束管理操作，请稍候…"; }

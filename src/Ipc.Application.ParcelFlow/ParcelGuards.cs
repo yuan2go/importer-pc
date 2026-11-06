@@ -31,7 +31,7 @@ public sealed partial class ParcelRuntime
     bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress && !configurationSaving;
     bool CanSaveConfiguration => repository is not null && MaintenanceAuthorized && !backupInProgress && !configurationSaving &&
         (definition.AutomaticConfigurationQuiescence || repository.Paused && externalWaits == 0);
-    bool CanAdmit(string position) => PositionSupplyEnabled(position) && CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
+    bool CanAdmit(string position) => !ManagementWorkspaceOpen && PositionSupplyEnabled(position) && CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
         !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
     bool CanAdmit() => positions.Keys.Any(p => CanAdmit(p) || CanManuallyAdmit(p));
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
@@ -49,6 +49,7 @@ public sealed partial class ParcelRuntime
         if (current is not null && !MainTerminated(current) && !ReleasedForNextAdmission(current)) reasons.Add("Current entity main result is incomplete");
         if (!CapacityAvailable) reasons.Add("Unresolved capacity exhausted");
         if (repository!.Paused) reasons.Add("Global software pause");
+        if (ManagementWorkspaceOpen) reasons.Add("管理中心已打开，自动供包及读码暂停；关闭管理中心后恢复。");
         if (!PositionSupplyEnabled(p.Id)) reasons.Add("本位已请求停用，不再接收新条码。");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))

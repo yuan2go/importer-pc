@@ -12,7 +12,9 @@ public partial class SupplyStationWindow
 {
     FrameworkElement CreateDiagnosticRows()
     {
-        var panel = new StackPanel(); var cards = new WrapPanel(); panel.Children.Add(cards);
+        var panel = new StackPanel(); var cards = new Grid();
+        cards.ColumnDefinitions.Add(new()); cards.ColumnDefinitions.Add(new());
+        cards.RowDefinitions.Add(new() { Height = GridLength.Auto }); cards.RowDefinitions.Add(new() { Height = GridLength.Auto }); panel.Children.Add(cards);
         var details = new Dictionary<string, TextBlock>(); var actions = new List<Action>();
         TextBlock Bound(string property, object source)
         {
@@ -24,7 +26,8 @@ public partial class SupplyStationWindow
             var heading = new DockPanel(); DockPanel.SetDock(status, Dock.Right); heading.Children.Add(status); heading.Children.Add(ProductText(title, true)); content.Children.Add(heading);
             var card = new Border { Child = content, BorderThickness = new(1), CornerRadius = new(8), Padding = new(16), Margin = new(0, 0, 12, 12) };
             card.SetResourceReference(Border.BackgroundProperty, "Surface"); card.SetResourceReference(Border.BorderBrushProperty, "Line");
-            AutomationProperties.SetAutomationId(card, "DiagnosticCard." + key); cards.Children.Add(card); diagnosticObjects[key] = card; return content;
+            AutomationProperties.SetAutomationId(card, "DiagnosticCard." + key);
+            Grid.SetRow(card, cards.Children.Count / 2); Grid.SetColumn(card, cards.Children.Count % 2); cards.Children.Add(card); diagnosticObjects[key] = card; return content;
         }
         TextBlock Badge(object source, string prefix)
         {
@@ -90,7 +93,7 @@ public partial class SupplyStationWindow
             storageBadge.SetResourceReference(TextBlock.ForegroundProperty, capacity is null ? "Muted" : capacity.FreeStorageBytes < capacity.MinimumFreeBytes ? "Danger" : "Success");
             storageText.Text = capacity is null ? "当前存储状态不可读，旧指标已失效。" : $"剩余 {capacity.FreeStorageBytes / 1048576:N0} MiB；低于 {capacity.MinimumFreeBytes / 1048576:N0} MiB 时停止新供包。";
         });
-        cards.SizeChanged += (_, _) => { var columns = cards.ActualWidth >= 900 ? 2 : 1; foreach (var card in cards.Children.OfType<Border>()) card.Width = Math.Max(220, cards.ActualWidth / columns - 12); };
+
         var logState = ProductText("详细日志状态未确认"); var toggle = new Button { Content = "开启详细日志 30 分钟", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         var logDetails = new StackPanel(); logDetails.Children.Add(logState); logDetails.Children.Add(toggle);
         diagnosticLogDetails = logDetails; // shown inside the page's single "技术详情" section

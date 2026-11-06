@@ -24,11 +24,19 @@ public sealed partial class ParcelRuntime
                     backgroundProgress[name] = (DateTimeOffset.UtcNow, reader.Health?.Health.ToString() ?? "Unconfirmed");
                     var supplyActive = ReaderSupplyActive(id);
                     var suspended = supplySuspendedReaders.Contains(id);
-                    if (!supplyActive && suspended || supplyActive && !suspended &&
-                        (reader.Health?.Health != DeviceHealth.Disconnected || reader.Source is not IAutomaticReconnectObservationSource)) { delaySeconds = 1; continue; }
+                    var restoreWorkspace = !ManagementWorkspaceOpen && reader.Health?.Health == DeviceHealth.Ready && reader.Source is IObservationInspectionSource original && workspaceSources.ContainsKey(original);
+                    if (!restoreWorkspace && (!supplyActive && suspended || supplyActive && !suspended &&
+                        (reader.Health?.Health != DeviceHealth.Disconnected || reader.Source is not IAutomaticReconnectObservationSource))) { delaySeconds = 1; continue; }
                     if (reader.Epoch == blockedEpoch || Volatile.Read(ref accepting) != 1 || backupInProgress || configurationSaving ||
                         maintenanceOperations.Contains("*") || maintenanceOperations.Contains(id) || maintainedResources.ContainsKey(id)) continue;
                     maintenanceOperations.Add(id); maintainedResources.TryAdd(id, 0); owns = true;
+                    if (restoreWorkspace)
+                    {
+                        try { await ExternalAsync(async () => { await ApplyInspectionAsync((IObservationInspectionSource)reader.Source, null, stopping.Token).ConfigureAwait(false); return true; }).ConfigureAwait(false); }
+                        catch (OperationCanceledException) when (stopping.IsCancellationRequested) { throw; }
+                        catch (Exception error) { blockedEpoch = reader.Epoch; Diagnostic("相机通信", "恢复自动读码未确认", "错误", id + ": " + error); }
+                        continue;
+                    }
                     if (!supplyActive)
                     {
                         reader.Retire();
@@ -57,6 +65,8 @@ public sealed partial class ParcelRuntime
                             await DeviceCallAsync(id, () => suspended
                                 ? reader.StartAsync(Enqueue, ReaderHealthChanged, stopping.Token)
                                 : reader.ReconnectAsync(Enqueue, stopping.Token), stopping.Token).ConfigureAwait(false);
+                            if (reader.Source is IObservationInspectionSource inspection && (ManagementWorkspaceOpen || workspaceSources.ContainsKey(inspection)))
+                                await ApplyInspectionAsync(inspection, null, stopping.Token).ConfigureAwait(false);
                             return true;
                         }).ConfigureAwait(false);
                         supplySuspendedReaders.Remove(id);

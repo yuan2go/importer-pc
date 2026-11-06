@@ -112,8 +112,8 @@ internal sealed partial class StationDebugControl : UserControl
         };
         header.Children.Add(Flow(title, left, right)); toolbar.Children.Add(header);
         camera.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); state.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
-        toolbar.Children.Add(camera); toolbar.Children.Add(Text("调试不影响正常供包；只有点“发送请求”才会调用 RCS。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
-        trigger.ToolTip = "读码不要求 RCS 在线；读码不额外发送调试请求，正常供包继续。";
+        toolbar.Children.Add(camera); toolbar.Children.Add(Text("管理中心内自动供包及读码暂停；点击“触发扫码”读取，点击“发送请求”调用 RCS。")); toolbar.Children.Add(state); toolbar.Children.Add(feedback);
+        trigger.ToolTip = "读码不要求 RCS 在线；自动供包暂停，读码不额外发送调试请求。";
         columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); columns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         liveCard = Panel(reading); resultCard = Panel(visual); resultCard.Margin = new(14, 0, 0, 0);
@@ -309,7 +309,10 @@ internal sealed partial class StationDebugControl : UserControl
                 current.Frame is not null ? "本轮照片不可用\n图片可能已被清理。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
         // Scanning needs this camera online; a keyed-in request does not.
         var cameraOnline = vm.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == Position.ReaderId)?.IsValid(DateTimeOffset.UtcNow) == true;
-        readStatus.Text = !cameraOnline && current?.State is not ("Reading" or "Preparing" or "Sealing" or "Locked") ? "相机离线，不能扫码；可手工输入条码" :
+        var canCheckCamera = vm.Fresh && vm.Snapshot is { } snapshot && !Position.SupplyDisabled &&
+            !ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, Position.ReaderId);
+        readStatus.Text = !cameraOnline && current?.State is not ("Reading" or "Preparing" or "Sealing" or "Locked") ?
+            canCheckCamera ? "触发扫码时核对当前相机状态" : "相机待配置或本位已停用；可手工输入条码" :
             current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
         { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已锁定", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
         photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : displayedFrame is null ? "等待扫码" : "结果已锁定";
@@ -319,8 +322,8 @@ internal sealed partial class StationDebugControl : UserControl
         feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
         var waiting = observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
         trigger.Content = armCommand is not null || beginCommand is not null ? "检查触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
-        trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode && cameraOnline;
-        trigger.ToolTip = cameraOnline ? "读码不额外发送请求，正常供包继续。" : "相机离线，不能扫码；可在下方手工输入条码。";
+        trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode && canCheckCamera;
+        trigger.ToolTip = canCheckCamera ? "触发时由供包台核对实际连接；读码不额外发送请求。" : "请先配置并启用本位相机；可在下方手工输入条码。";
         ToolTipService.SetShowOnDisabled(trigger, true);
         prepare.Content = prepareCommand is null ? "准备请求" : "查看准备结果";
         prepare.IsEnabled = active && !busy && !waiting && vm.Fresh && vm.IsManagementMode && !string.IsNullOrWhiteSpace(requestBarcode.Text);

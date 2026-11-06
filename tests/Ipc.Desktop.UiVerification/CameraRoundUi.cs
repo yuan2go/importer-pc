@@ -24,6 +24,7 @@ static partial class Program
         TaskCompletionSource? heldArm = null;
         TaskCompletionSource? heldImage = null;
         second.Show(); var vm = window.ViewModel;
+        Window Surface(SupplyStationWindow owner) => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().SingleOrDefault(c => ReferenceEquals(c.Owner, owner) && c.IsVisible) ?? (Window)owner;
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); second.UpdateLayout(); }
         async Task Until(Func<bool> done)
         { for (var i = 0; i < 150; i++) { await vm.RefreshAsync(); await second.ViewModel.RefreshAsync(); await Flush(); if (done()) return; await Task.Delay(35); } throw new TimeoutException("Round native UI did not converge"); }
@@ -44,8 +45,10 @@ static partial class Program
             await SetClient(window, 1366, 768); await SetClient(second, 1366, 768);
             await Until(() => vm.Fresh && vm.IsManagementMode && second.ViewModel.IsManagementMode);
             window.ShowPositionDebug(vm.Left); second.ShowPositionDebug(second.ViewModel.Left); await Flush();
-            var control = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
-            var other = Descendants(second).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+            await Until(() => Descendants(Surface(window)).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl") &&
+                Descendants(Surface(second)).OfType<UserControl>().Any(c => c.GetType().Name == "StationDebugControl"));
+            var control = Descendants(Surface(window)).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+            var other = Descendants(Surface(second)).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             Field<DispatcherTimer>(control, "timer").Stop(); Field<DispatcherTimer>(other, "timer").Stop();
             Field<DispatcherTimer>(Field<UserControl>(control, "livePreview"), "timer").Stop();
             Field<DispatcherTimer>(Field<UserControl>(other, "livePreview"), "timer").Stop();
@@ -63,6 +66,11 @@ static partial class Program
             Check(visual.Children.Contains(fullCode) && fullCode.TranslatePoint(new Point(), visual).Y < Field<ScrollViewer>(control, "viewport").TranslatePoint(new Point(), visual).Y,
                 "complete selectable barcode is above its photo in the right-hand visual column");
             probe.LoseBeginReply = true;
+            probe.Project = value => value with { Devices = value.Devices?.Select(d => d with { ValidUntil = DateTimeOffset.UtcNow.AddSeconds(-1) }).ToArray() };
+            await vm.RefreshAsync(); await Poll(control);
+            Check(Field<Button>(control, "trigger").IsEnabled && !Field<TextBlock>(control, "readStatus").Text.Contains("相机离线"),
+                "an expired UI health confirmation permits an authoritative trigger check instead of falsely declaring the live camera offline");
+            probe.Project = null; await vm.RefreshAsync();
             ClickField(control, "trigger");
             await Until(() => !Field<bool>(control, "busy") && Field<CameraInspectionStatus>(control, "scope") is { State: "Active", BusinessFenced: false });
             Check((await h.App.ListCameraInspectionSessionsAsync(default)).Length == 1 && h.Peer.Requests.IsEmpty, "lost begin receipt is recovered as the same durable isolated scope");
@@ -100,7 +108,7 @@ static partial class Program
             Check(Field<Image>(control, "photo").Source == bitmap && Field<TextBox>(control, "barcode").Text == "UI-ROUND-A" &&
                 Field<TextBox>(control, "requestBody").Text == a.RequestBody && !Field<TextBlock>(control, "imageHint").IsVisible && h.Peer.Requests.IsEmpty,
                 "next parcel cannot replace the locked photo/barcode/request and no automatic send occurs");
-            CaptureInternal(evidence, "round-locked-native", (Grid)window.FindName("ClientArea"), lines);
+            CaptureInternal(evidence, "round-locked-native", Surface(window), lines);
             probe.FailRoundRead = true; await Poll(control);
             Check(!Field<Button>(control, "send").IsEnabled, "failed authoritative polling cannot re-enable send from a cached projection");
             probe.FailRoundRead = false; await Poll(control); probe.CancelRoundRead = true; await Poll(control);
@@ -139,11 +147,11 @@ static partial class Program
             Descendants(control).OfType<Button>().Single(b => Equals(b.Content, "1:1")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
             Check(Math.Abs(Field<double>(control, "zoom") - 1 / VisualTreeHelper.GetDpi(control).DpiScaleX) < .0001,
                 "native 1:1 maps image pixels to device pixels at the actual monitor DPI");
-            await SetClient(window, 1024, 768); await Flush(); CaptureInternal(evidence, "round-1024-native", (Grid)window.FindName("ClientArea"), lines);
-            await SetClient(window, 800, 420); await Flush();
+            await SetClient(Surface(window), 1024, 768); await Flush(); CaptureInternal(evidence, "round-1024-native", Surface(window), lines);
+            await SetClient(Surface(window), 800, 420); await Flush();
             Field<Button>(control, "send").BringIntoView(); await Flush();
-            Check(Inside(Field<Button>(control, "send"), (Grid)window.FindName("ClientArea")), "800x420 scroll route brings the real send action into the usable client viewport");
-            CaptureInternal(evidence, "round-800-native", (Grid)window.FindName("ClientArea"), lines);
+            Check(Inside(Field<Button>(control, "send"), (Grid)Surface(window).Content), "800x420 scroll route brings the real send action into the usable client viewport");
+            CaptureInternal(evidence, "round-800-native", Surface(window), lines);
             var opens = h.Factory.Apis.Values.Sum(x => x.Opens); second.Close();
             Check(h.Factory.Apis.Values.Sum(x => x.Opens) == opens && h.Factory.Apis.Values.All(x => x.Starts == 1 && x.Stops == 0), "window close does not stop or recreate the shared acquisition owner");
             await vm.RefreshAsync(); await Poll(control);

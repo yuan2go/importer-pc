@@ -98,7 +98,7 @@ public partial class ShellWindow : Window
         if (closing || closed || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
         ApplyLayout(); if (vm.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight)) QueueViewportPause();
     }
-    void QueueViewportPause() { if (!closing && !closed && pendingViewportPause.IsCompleted) pendingViewportPause = vm.PauseAsync(); }
+    void QueueViewportPause() { if (!closing && !closed && pendingViewportPause.IsCompleted) pendingViewportPause = vm.PauseAsync("窗口空间不足，自动暂停供包"); }
     void Maximize_Click(object s, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();

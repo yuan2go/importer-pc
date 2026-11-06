@@ -33,6 +33,14 @@ public sealed partial class ParcelRuntime
     {
         repository!.Commit(null, eventName, input.Reason, paused: paused, input: input, ingressIdentity: activeIngress.Value);
         latestInputs[input.PositionId] = input;
+        blockedInputPictures.Remove(input.PositionId);
+        if (Id == "sportmaster" && input is
+            {
+                Outcome: ParcelInputOutcome.Blocked, Observation.OperatorInput: null,
+                Observation.InspectionSessionId: null
+            } && readers.TryGetValue(input.Observation.DeviceId, out var reader) &&
+            RetainInputPicture(input.Observation, reader) is { } image)
+            blockedInputPictures[input.PositionId] = image;
         LogInput(input);
     }
     void LogInput(ParcelInputSnapshot input)
@@ -40,9 +48,7 @@ public sealed partial class ParcelRuntime
         RecordInputPerformance(input);
         if (input.Observation.CaptureSessionId is not null && inspectionStore is { } inspection)
             inspection.LinkInput(input.Observation, repository!.LastInputAuditSequence(), input.OperationId);
-        if (!ParcelInputReasons.IsSamePlacement(input))
-            Diagnostic("扫码与准入", "输入处理完成", input.Outcome is ParcelInputOutcome.Blocked or ParcelInputOutcome.Rejected ? "警告" : "信息",
-                Wire.Encode(new { input.PositionId, input.Outcome, input.OperationId, input.Observation.AdmissionId, input.Observation.SourceEventId, CandidateCount = input.Observation.Codes.Length, Barcode = input.BarcodeSelection?.SelectedCode, SourceKind = input.Observation.OperatorInput is null ? "相机" : "人工输入", input.Reason }));
+        if (!ParcelInputReasons.IsSamePlacement(input)) LogInputSummary(input);
         DebugDiagnostic("扫码与准入", "扫码原始候选与筛选结果", () => new
         {
             input.PositionId,

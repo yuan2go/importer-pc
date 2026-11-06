@@ -53,9 +53,12 @@ public sealed partial class ParcelRuntime
         if (!PositionSupplyEnabled(p.Id)) reasons.Add("本位已请求停用，不再接收新条码。");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
-        { BarcodeInput = manual is null ? null : new(camera, manualReady, manual), Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
+        {
+            BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
+            Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
             SupplyControl = Id == "sportmaster" ? PositionControl(p.Id) : null,
-            CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId) };
+            CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId)
+        };
     }).ToArray();
     StationVehicleState? PositionVehicle(string position, DateTimeOffset now)
     {
@@ -111,6 +114,7 @@ public sealed partial class ParcelRuntime
                     { repository!.Commit(null, "AutomaticSupplyRestored", "Retired manual pause restored after startup readiness checks", paused: false); resumePriorPause = false; }
                     if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); TryAutomaticCleanup(cleanupClock.GetUtcNow()); }
                     RefreshStorageCapacity();
+                    WriteStationState("RuntimeMonitor");
                     auxiliary.RemoveAll(task =>
                     {
                         if (!task.IsCompleted) return false;

@@ -95,6 +95,25 @@ public sealed partial class ParcelRuntime
     }
     public async Task<BusinessReceipt> CommandAsync(BusinessCommand command)
     {
+        if (command.Kind is not ("Pause" or "Resume")) return await ExecuteCommandAsync(command).ConfigureAwait(false);
+        WriteRuntimeLog("业务控制", "供包命令开始", new { CommandId = command.Id, command.Kind, command.ExpectedRevision, TriggerReason = command.Value, Actor = currentOperator?.Subject ?? "local-workstation" });
+        try
+        {
+            var receipt = await ExecuteCommandAsync(command).ConfigureAwait(false);
+            WriteRuntimeLog("业务控制", "供包命令结果", new { CommandId = command.Id, command.Kind, receipt.Status, receipt.Reason, receipt.Revision });
+            await gate.WaitAsync().ConfigureAwait(false);
+            try { WriteStationState(command.Kind + ":" + command.Id, force: true); }
+            finally { gate.Release(); }
+            return receipt;
+        }
+        catch (Exception error)
+        {
+            WriteRuntimeLog("业务控制", "供包命令异常，结果须核对", new { CommandId = command.Id, command.Kind, Error = error.ToString() }, "错误");
+            throw;
+        }
+    }
+    async Task<BusinessReceipt> ExecuteCommandAsync(BusinessCommand command)
+    {
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
@@ -112,7 +131,7 @@ public sealed partial class ParcelRuntime
                 case "ReceiptResponsibilities" when command.Owner is not null:
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
-                case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); resumePriorPause = false; break;
+                case "Pause": repository.Commit(null, "AdmissionPaused", command.Value ?? "Software pause only; caller did not supply a trigger", paused: true, command: command); resumePriorPause = false; break;
                 case "Resume" when CanResume(acknowledgeStorageUpgrade: true):
                     repository.Commit(null, storageUpgradeReviewRequired ? "StorageUpgradeReviewed" : "AdmissionResumed",
                         storageUpgradeReviewRequired ? Wire.Encode(new { Actor = ManagementEvidence, Policy = "Explicit authorized resume after additive storage upgrade; original request guards remain independent; no replay" }) : "Other stage guards remain independent",
@@ -295,6 +314,11 @@ public sealed partial class ParcelRuntime
                 {
                     await shutdown.WaitAsync().ConfigureAwait(false);
                     try { await StopCoreAsync(CancellationToken.None).ConfigureAwait(false); }
+                    catch (Exception error)
+                    {
+                        WriteRuntimeLog("供包状态", "供包台停止失败，所有权仍须核对", new { Error = error.ToString(), DevicePortsReleased = stopped, ResourcesReleased = false }, "错误");
+                        throw;
+                    }
                     finally { shutdown.Release(); }
                 });
             return stopOperation.WaitAsync(token);
@@ -306,6 +330,7 @@ public sealed partial class ParcelRuntime
         Task startup;
         lock (startupOwnership) { stopRequested = true; startup = started ? startupEnded.Task : Task.CompletedTask; }
         FenceIngress(); stopping.Cancel(); StopDebugLogging();
+        WriteRuntimeLog("供包状态", "供包台开始停止", new { ResourcesReleased = false });
         // Cancellation ends this caller's wait only. Startup may still be inside
         // an uncancellable adapter call or writing its terminal audit.
         await startup.WaitAsync(token).ConfigureAwait(false);
@@ -360,6 +385,9 @@ public sealed partial class ParcelRuntime
                 try { await DeviceCallAsync(DeviceKey(port), () => port.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
             if (portFailures.Count != 0) throw new AggregateException("Capability stop failures; ownership retained", portFailures);
             stopped = true;
+            blockedInputPictures.Clear();
+            FlushInputLogSummaries();
+            WriteStationState("StopCompleted", force: true);
             lock (placements) foreach (var placement in placements.Values) placement.RejectedImage = null;
             if (terminalWorkerFailure is not null) throw new InvalidOperationException("Terminal worker failed; sources and ports are stopped, disposal is still required", terminalWorkerFailure);
         }

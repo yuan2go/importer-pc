@@ -30,6 +30,16 @@ public sealed partial class ParcelRuntime
     {
         if (Id != "sportmaster" || input.Observation.Codes.Length == 0) return;
         var o = input.Observation;
+        var image = RetainInputPicture(o, reader);
+        // Rejected candidates may be empty or contain control characters. Keep
+        // them verbatim as evidence; the persisted draining key is a separate,
+        // bounded identity and must never borrow an invalid barcode value.
+        lock (placements)
+            placements[input.PositionId] = new("rejected." + Wire.Hash(o.Id), o.ObservedAt, true) { RejectedInput = input, RejectedImage = image, RejectedCodes = o.Codes.ToArray() };
+    }
+
+    CameraOriginalImage? RetainInputPicture(Observation o, ObservationSession reader)
+    {
         CameraOriginalImage? image = null;
         if (reader.Source is IOriginalFrameSource source)
         {
@@ -42,13 +52,9 @@ public sealed partial class ParcelRuntime
                     o.Symbols ?? [], 0, o.Id, o.SourceEventId, null, Convert.ToHexString(SHA256.HashData(pixels)), true, "Available"), pixels);
             }
             catch (Exception error) when (error is IOException or InvalidOperationException)
-            { Diagnostic("原图留档", "拒绝包裹原图不可用", "警告", "Observation=" + o.Id + "; " + error); }
+            { Diagnostic("原图留档", "当前扫码原图不可用", "警告", "Observation=" + o.Id + "; " + error); }
         }
-        // Rejected candidates may be empty or contain control characters. Keep
-        // them verbatim as evidence; the persisted draining key is a separate,
-        // bounded identity and must never borrow an invalid barcode value.
-        lock (placements)
-            placements[input.PositionId] = new("rejected." + Wire.Hash(o.Id), o.ObservedAt, true) { RejectedInput = input, RejectedImage = image, RejectedCodes = o.Codes.ToArray() };
+        return image;
     }
 
     string? RetainedRejectedFrame(string position, ObservationReadFeedback frame)

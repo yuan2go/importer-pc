@@ -252,6 +252,17 @@ public sealed partial class ParcelRepository : IDisposable
             audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$event", eventName);
             audit.Parameters.AddWithValue("$owner", positionControl is null ? operation?.Id ?? "runtime" : PositionControlOwner(positionControl.PositionId)); audit.Parameters.AddWithValue("$detail", detail); audit.ExecuteNonQuery();
         }
+        SoftwarePauseEvidence? pauseEvidence = null;
+        if (paused is { } nextPause)
+        {
+            pauseEvidence = new(DateTimeOffset.UtcNow, Revision + 1, Paused, nextPause, eventName, detail, command?.Id, command?.Kind,
+                SoftwarePauseActor?.Invoke() ?? (command is null ? "application" : "local-workstation"));
+            using var audit = db.CreateCommand(); audit.Transaction = tx;
+            audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'SoftwarePauseRecorded',$owner,$detail)";
+            audit.Parameters.AddWithValue("$at", pauseEvidence.At.ToString("O"));
+            audit.Parameters.AddWithValue("$owner", "software-pause");
+            audit.Parameters.AddWithValue("$detail", Wire.Encode(pauseEvidence)); audit.ExecuteNonQuery();
+        }
         if (input is not null)
         {
             using var audit = db.CreateCommand(); audit.Transaction = tx;
@@ -300,6 +311,7 @@ public sealed partial class ParcelRepository : IDisposable
         Boundary?.Invoke("AfterBusinessCommit:" + eventName);
         if (operation?.Wcs?.Request.IntegrationRequest is { } allocated) lastIntegrationRequestId = Math.Max(lastIntegrationRequestId, allocated.RequestId);
         Revision++; if (paused is not null) Paused = paused.Value;
+        if (pauseEvidence is not null) { LastSoftwarePause = pauseEvidence; SoftwarePauseCommitted?.Invoke(pauseEvidence); }
         ProjectionChanged?.Invoke();
     }
     public string BeginReceipt(ParcelOperation op, StageFact stage, string source)

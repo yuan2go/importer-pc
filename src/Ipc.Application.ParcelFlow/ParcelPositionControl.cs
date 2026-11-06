@@ -83,10 +83,17 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         foreach (var state in positionControls.Values.Where(s => s.Mode == StationPositionMode.Disabling).ToArray())
             if (!maintainedResources.ContainsKey(positions[state.PositionId].ReaderDeviceId) && !PositionDrainRequired(state.PositionId))
             {
-                var completed = state with { Mode = StationPositionMode.Disabled, Revision = repository.Revision + 1,
-                    ChangedAt = StationTime.GetUtcNow(), ChangedBy = "application" };
+                var completed = state with
+                {
+                    Mode = StationPositionMode.Disabled,
+                    Revision = repository.Revision + 1,
+                    ChangedAt = StationTime.GetUtcNow(),
+                    ChangedBy = "application"
+                };
                 repository.Commit(null, "PositionSupplyChanged", "", positionControl: completed);
                 positionControls[state.PositionId] = completed;
+                WriteRuntimeLog("投递位启停", "本次放置结束，投递位已停用", completed);
+                WriteStationState("PositionDrainCompleted", force: true);
             }
     }
     public async Task<BusinessReceipt> SetPositionEnabledAsync(SetStationPositionEnabled request, CancellationToken token)
@@ -130,7 +137,9 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 state.Mode == StationPositionMode.Disabling ? "停用中，不再接收新条码；等待本次放置结束及原请求确认。" : "已停用。"), state.Revision);
             repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state);
             positionControls[request.PositionId] = state;
+            WriteRuntimeLog("投递位启停", "投递位启停已记录", new { CommandId = request.CommandId, PreviousMode = previous.Mode.ToString(), State = state });
             PublishPositionHeartbeat(ports?.Wcs);
+            WriteStationState("PositionSupplyChanged:" + request.CommandId, force: true);
             return receipt;
         }
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "PositionSupplyControl"); throw; }

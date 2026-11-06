@@ -67,8 +67,8 @@ public sealed partial class ParcelRuntime : IRuntimeDiagnosticsControl
     void DebugDiagnostic(string source, string action, Func<object> detail)
     {
         ExpireDebugIfDue();
-        if (!Volatile.Read(ref diagnosticSettings).DebugEnabled || journal is not { } current) return;
-        current.WriteDebug(new { At = DateTimeOffset.UtcNow, Application = Id, Source = source, Level = "调试", Event = action, Detail = detail() });
+        if (!Volatile.Read(ref diagnosticSettings).DebugEnabled || journal is null) return;
+        WriteRuntimeLog(source, action, detail(), "调试", debug: true);
     }
     static object? DiagnosticResponse(IntegrationHttpResponse? response)
     {

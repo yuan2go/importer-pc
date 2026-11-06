@@ -34,8 +34,11 @@ public sealed partial class ParcelRuntime
         repository!.Commit(null, eventName, input.Reason, paused: paused, input: input, ingressIdentity: activeIngress.Value);
         latestInputs[input.PositionId] = input;
         blockedInputPictures.Remove(input.PositionId);
-        if (Id == "sportmaster" && input is { Outcome: ParcelInputOutcome.Blocked, Observation.OperatorInput: null,
-            Observation.InspectionSessionId: null } && readers.TryGetValue(input.Observation.DeviceId, out var reader) &&
+        if (Id == "sportmaster" && input is
+            {
+                Outcome: ParcelInputOutcome.Blocked, Observation.OperatorInput: null,
+                Observation.InspectionSessionId: null
+            } && readers.TryGetValue(input.Observation.DeviceId, out var reader) &&
             RetainInputPicture(input.Observation, reader) is { } image)
             blockedInputPictures[input.PositionId] = image;
         LogInput(input);

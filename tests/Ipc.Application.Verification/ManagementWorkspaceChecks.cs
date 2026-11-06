@@ -39,29 +39,41 @@ static class ManagementWorkspaceChecks
         var runtimeGate = (SemaphoreSlim)h.App.GetType().GetField("gate", fields)!.GetValue(h.App)!;
         var inspectionControl = (SemaphoreSlim)h.App.GetType().GetField("inspectionControl", fields)!.GetValue(h.App)!;
         var auxiliary = (List<Task>)h.App.GetType().GetField("auxiliary", fields)!.GetValue(h.App)!;
-        var clearsBeforeClose = h.Api(h.Left).Clears;
-        Task close;
-        Task[] expiryCleanup;
-        await runtimeGate.WaitAsync();
-        try
+        async Task CloseWithQueuedExpiry(string window, string reason)
         {
-            close = h.App.SetManagementWorkspaceAsync(id, false, default);
-            await CameraRoundHarness.Until(() => Task.FromResult(inspectionControl.CurrentCount == 0));
-            await h.App.ExitManagementModeAsync();
-            var previous = auxiliary.Count;
-            h.App.GetType().GetMethod("CheckCameraInspectionLease", fields)!.Invoke(h.App, null);
-            expiryCleanup = auxiliary.Skip(previous).ToArray();
+            var clearsBeforeClose = h.Api(h.Left).Clears;
+            Task close;
+            Task[] expiryCleanup;
+            await runtimeGate.WaitAsync();
+            try
+            {
+                close = h.App.SetManagementWorkspaceAsync(window, false, default);
+                await CameraRoundHarness.Until(() => Task.FromResult(inspectionControl.CurrentCount == 0));
+                await h.App.ExitManagementModeAsync();
+                var previous = auxiliary.Count;
+                h.App.GetType().GetMethod("CheckCameraInspectionLease", fields)!.Invoke(h.App, null);
+                expiryCleanup = auxiliary.Skip(previous).ToArray();
+            }
+            finally { runtimeGate.Release(); }
+            await close.WaitAsync(TimeSpan.FromSeconds(5));
+            await Task.WhenAll(expiryCleanup).WaitAsync(TimeSpan.FromSeconds(5));
+            Check(expiryCleanup.Length == 1 && h.Api(h.Left).Clears == clearsBeforeClose + 1, reason);
         }
-        finally { runtimeGate.Release(); }
-        await close.WaitAsync(TimeSpan.FromSeconds(5));
-        await Task.WhenAll(expiryCleanup).WaitAsync(TimeSpan.FromSeconds(5));
-        Check(expiryCleanup.Length == 1 && h.Api(h.Left).Clears == clearsBeforeClose + 1,
+        await CloseWithQueuedExpiry(id,
             "late expiry cleanup does not reset the camera again after the original window has restored production");
         await h.WaitForCameraAdmissionAsync();
         Check((await h.App.SnapshotAsync()).Paused == before.Paused, "original window can restore production even after password authorization expires");
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), 3);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
         Check(h.Peer.Requests.Count == 2, "closing management resumes automatic decoding and one production request");
+        await h.AuthorizeAsync();
+        var unarmedWindow = Wire.Id();
+        await h.App.SetManagementWorkspaceAsync(unarmedWindow, true, default);
+        var unarmedSnapshot = await h.App.SnapshotAsync();
+        await h.App.BeginCameraInspectionAsync(new(Wire.Id(), unarmedSnapshot.RuntimeId, unarmedSnapshot.Configuration.Revision,
+            CameraInspectionMode.ObserveProduction, "Synthetic close before arming", new()) { SingleReadRounds = true }, default);
+        await CloseWithQueuedExpiry(unarmedWindow,
+            "an inspection not yet armed also retains its management owner and cannot reset restored camera buffers");
         await h.AuthorizeAsync();
         var waitingWindow = Wire.Id();
         await h.App.SetManagementWorkspaceAsync(waitingWindow, true, default);

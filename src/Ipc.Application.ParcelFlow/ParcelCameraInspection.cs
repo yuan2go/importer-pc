@@ -76,6 +76,9 @@ public sealed partial class ParcelRuntime : ICameraInspection
                 sources = InspectionSources(); if (sources.Length == 0) throw new InvalidOperationException("请先配置至少一台海康相机。");
                 id = Wire.Id(); var expires = new[] { DateTimeOffset.UtcNow.AddMinutes(command.Limits.DurationMinutes), actor.ExpiresAt }.Min();
                 InspectionStore.Begin(id, command, actor, expires, Wire.Hash(Wire.Encode(Effective)));
+                // A single-read session can expire before it ever reaches Arm.
+                // Its cleanup still belongs to this management window.
+                if (ManagementWorkspaceOpen) workspaceInspectionSessions.TryAdd(id, 0);
                 lastInspectionSession = id;
                 Volatile.Write(ref collectingInspection, new(id, command.Mode, expires, authority,
                     System.Diagnostics.Stopwatch.GetTimestamp(), expires - DateTimeOffset.UtcNow));

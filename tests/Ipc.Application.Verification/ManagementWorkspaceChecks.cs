@@ -33,8 +33,30 @@ static class ManagementWorkspaceChecks
         var afterDebug = await h.App.SnapshotAsync();
         Check(afterDebug.Inputs!.Single(p => p.PositionId == "left").Observation.Codes.SequenceEqual(new[] { "SYNTH-BEFORE-MANAGEMENT" }),
             "explicit management reads preserve the original production parcel card and input evidence");
-        await h.App.ExitManagementModeAsync();
-        await h.App.SetManagementWorkspaceAsync(id, false, default);
+        // Force expiry cleanup to queue behind the window close, without timing
+        // sleeps: close owns inspectionControl while waiting for the runtime gate.
+        var fields = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        var runtimeGate = (SemaphoreSlim)h.App.GetType().GetField("gate", fields)!.GetValue(h.App)!;
+        var inspectionControl = (SemaphoreSlim)h.App.GetType().GetField("inspectionControl", fields)!.GetValue(h.App)!;
+        var auxiliary = (List<Task>)h.App.GetType().GetField("auxiliary", fields)!.GetValue(h.App)!;
+        var clearsBeforeClose = h.Api(h.Left).Clears;
+        Task close;
+        Task[] expiryCleanup;
+        await runtimeGate.WaitAsync();
+        try
+        {
+            close = h.App.SetManagementWorkspaceAsync(id, false, default);
+            await CameraRoundHarness.Until(() => Task.FromResult(inspectionControl.CurrentCount == 0));
+            await h.App.ExitManagementModeAsync();
+            var previous = auxiliary.Count;
+            h.App.GetType().GetMethod("CheckCameraInspectionLease", fields)!.Invoke(h.App, null);
+            expiryCleanup = auxiliary.Skip(previous).ToArray();
+        }
+        finally { runtimeGate.Release(); }
+        await close.WaitAsync(TimeSpan.FromSeconds(5));
+        await Task.WhenAll(expiryCleanup).WaitAsync(TimeSpan.FromSeconds(5));
+        Check(expiryCleanup.Length == 1 && h.Api(h.Left).Clears == clearsBeforeClose + 1,
+            "late expiry cleanup does not reset the camera again after the original window has restored production");
         await h.WaitForCameraAdmissionAsync();
         Check((await h.App.SnapshotAsync()).Paused == before.Paused, "original window can restore production even after password authorization expires");
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), 3);
@@ -59,13 +81,18 @@ static class ManagementWorkspaceChecks
         await h.AuthorizeAsync();
         Check((await h.App.ManagementModeStatusAsync()).Authorized, "reopening uses the fixture original configured management password");
         h.Api(h.Right).Discovered = false;
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Health == DeviceHealth.Disconnected);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == h.Right && d.Health == DeviceHealth.Disconnected));
         var offlineWindow = Wire.Id();
         await h.App.SetManagementWorkspaceAsync(offlineWindow, true, default).WaitAsync(TimeSpan.FromSeconds(5));
         Check((await h.App.SnapshotAsync()).Positions!.All(p => !p.Admit), "a disconnected camera does not block management entry for repair");
         await h.App.SetManagementWorkspaceAsync(offlineWindow, false, default).WaitAsync(TimeSpan.FromSeconds(5));
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == h.Right && d.Health == DeviceHealth.Disconnected));
-        Check((await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Health != DeviceHealth.Ready,
+        DeviceState? restoredOffline = null;
+        await CameraRoundHarness.Until(async () =>
+        {
+            restoredOffline = (await h.App.SnapshotAsync()).Devices!.SingleOrDefault(d => d.DeviceId == h.Right);
+            return restoredOffline?.Health == DeviceHealth.Disconnected;
+        });
+        Check(restoredOffline!.Health == DeviceHealth.Disconnected,
             "closing management does not invent camera connectivity when it is disconnected");
         await using var failed = new CameraRoundHarness(workspace, Path.Combine(root, "failed-sdk-boundary"));
         await failed.StartAsync(); await failed.WaitForCameraAdmissionAsync();

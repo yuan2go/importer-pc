@@ -173,7 +173,10 @@ public sealed partial class ParcelRuntime : ICameraInspection
             await inspectionControl.WaitAsync().ConfigureAwait(false);
             try
             {
-                if (collectingInspection is null)
+                // Closing the original management window already restores its
+                // sources under inspectionControl. A queued expiry cleanup for
+                // that closed session must not clear the live SDK buffers again.
+                if (collectingInspection is null && (!workspaceInspectionSessions.ContainsKey(current.Id) || ManagementWorkspaceOpen))
                     foreach (var source in InspectionSources()) await ApplyInspectionAsync(source, null, CancellationToken.None).ConfigureAwait(false);
                 inspectionStore?.State(current.Id, expired ? "Expired" : "Faulted", "调试采集已停止；原请求保留，正常供包状态未改变。", close: true);
             }

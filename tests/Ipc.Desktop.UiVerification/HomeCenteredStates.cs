@@ -134,18 +134,19 @@ static partial class Program
             await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.CenteredRcsRejection);
             var rejectedSnapshot = vm.Snapshot!;
             Check(vm.Left.Operation?.Id == rejectionId && h.Peer.Requests.Count == rejectionCount &&
-                vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason == "请取下包裹。多次出现请通知维护人员。" &&
+                vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason == "本件暂不能分配格口" &&
+                vm.Left.CenteredStateInstruction == "请取下包裹，可放下一件\n多次出现请通知维护人员" &&
                 vm.Left.CanViewCurrentPicture && vm.Right.SupplyDisabled, "same-placement frames preserve the default-policy rejection and its picture without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);
             ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyDisabling && !vm.Busy);
-            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason.Contains("停用中") &&
+            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\n停用中，暂不接收新条码" &&
                 !vm.Left.CanSubmitBarcode, "disabling keeps the current rejection and prevents new input");
             ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
             h.Peer.HeartbeatUnavailable = true;
             await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
-            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason.Contains("RCS 连接恢复后"),
+            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\nRCS 连接恢复后再放下一件",
                 "a later outage keeps the current rejection visible and changes the next step");
             h.Peer.HeartbeatUnavailable = false;
             await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online);

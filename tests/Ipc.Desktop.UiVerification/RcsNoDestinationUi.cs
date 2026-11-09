@@ -62,6 +62,7 @@ static partial class Program
             var configuration = h.Config with { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs!.Parameters) { ["no-dest-to-exp"] = "false" } } };
             ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), configuration);
             h.Peer.Mode = "no-destination";
+            h.Peer.RejectionMessage = "无设备可用";
             await h.StartAsync();
             var window = new SupplyStationWindow(h.App, null, "standard") { ConfirmDiscardDrafts = _ => true };
             window.Show(); await SetClient(window, 1366, 768);
@@ -71,7 +72,7 @@ static partial class Program
             window.UpdateLayout();
             CaptureInternal(evidence, "no-destination-workstation", (Grid)window.FindName("ClientArea"), lines);
             var text = Descendants(window).Select(e => e switch { TextBlock t when t.IsVisible => t.Text, TextBox t when t.IsVisible => t.Text, _ => "" });
-            Check(text.Any(t => t.Contains("合成异常：未找到可用格口")) && position.NextStep.Contains("取下包裹后人工判断") && !position.HasUncertainOriginal && !position.SlotAvailable,
+            Check(text.Any(t => t == "无设备可用") && position.NextStep.Contains("取下包裹后人工判断") && !position.HasUncertainOriginal && !position.SlotAvailable,
                 "workstation displays the original msg and manual removal instruction as a confirmed rejection: " + position.NextStep);
             var vm = window.ViewModel;
             var client = (Grid)window.FindName("ClientArea");
@@ -79,11 +80,15 @@ static partial class Program
             var left = cards.Single(c => ReferenceEquals(c.DataContext, position));
             var right = cards.Single(c => ReferenceEquals(c.DataContext, vm.Right));
             var message = (TextBox)left.FindName("CenteredRcsMessage");
-            var step = (TextBlock)left.FindName("CenteredStateReason");
+            var subtitle = (TextBlock)left.FindName("CenteredStateReason");
+            var divider = (Border)left.FindName("CenteredRcsDivider");
+            var step = (TextBlock)left.FindName("CenteredInstruction");
             var waitingTitle = (TextBlock)right.FindName("CenteredStateTitle");
             var entry = (TextBox)left.FindName("BarcodeEntry");
-            Check(message.IsVisible && message.Text == "合成异常：未找到可用格口，请人工核对包裹。" && message.FontSize == waitingTitle.FontSize &&
-                step.FontSize < message.FontSize && step.Text == position.NextStep &&
+            Check(message.IsVisible && message.Text == "无设备可用" && message.FontSize == waitingTitle.FontSize &&
+                subtitle.Text == "本件暂不能分配格口" && step.FontSize < message.FontSize &&
+                step.Text == "请取下包裹后人工判断，再放下一件\n多次出现请通知维护人员" && divider.IsVisible && divider.ActualWidth > 0 &&
+                !((Border)right.FindName("CenteredRcsDivider")).IsVisible &&
                 entry.Text == "SYNTH-NO-DEST-UI" && !((DockPanel)left.FindName("DetailedStatus")).IsVisible &&
                 position.DisplayPresentation.Tone == ParcelPresentationTone.Rejected && position.NeedsAttention &&
                 position.CenteredStateForeground == OperatorTokens.Danger && position.ResultBackground == vm.Right.ResultBackground &&
@@ -122,8 +127,11 @@ static partial class Program
                     return Inside(l, client) && Inside(r, client) && Math.Abs(l.TranslatePoint(new(), client).Y - r.TranslatePoint(new(), client).Y) <= 1 &&
                         Math.Abs(l.ActualHeight - r.ActualHeight) <= 1;
                 });
-                Check(aligned && Inside(step, client) && step.TranslatePoint(new(), client).Y >= message.TranslatePoint(new Point(0, message.ActualHeight), client).Y &&
-                    message.TextWrapping == TextWrapping.Wrap && message.ActualHeight >= message.FontSize,
+                double Top(FrameworkElement part) => part.TranslatePoint(new(), client).Y;
+                var firstLine = message.GetRectFromCharacterIndex(0);
+                Check(aligned && Inside(step, client) && Top(subtitle) >= Top(message) + message.ActualHeight &&
+                    Top(divider) >= Top(subtitle) + subtitle.ActualHeight && Top(step) >= Top(divider) + divider.ActualHeight &&
+                    message.TextWrapping == TextWrapping.Wrap && !firstLine.IsEmpty && firstLine.Bottom <= message.ActualHeight + .5,
                     $"multiline content wraps while both lanes and controls stay aligned at {width}x{height}");
                 CaptureInternal(evidence, "no-destination-multiline-" + width, client, lines);
             }
@@ -153,7 +161,7 @@ static partial class Program
             var snapshot = await h.App.SnapshotAsync();
             await h.App.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
             await Until(() => vm.Snapshot?.Paused == true);
-            Check(message.IsVisible && message.Text == longMessage && step.Text.Contains("人工判断。供包恢复后") &&
+            Check(message.IsVisible && message.Text == longMessage && step.Text == "请取下包裹后人工判断\n供包恢复后再放下一件" &&
                 !position.CanSubmitBarcode && h.Peer.Requests.Count == requestCount, "pause retains the manual refusal and its original request while restricting the next step");
             window.Close(); await Until(() => !window.IsVisible);
         }

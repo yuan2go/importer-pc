@@ -299,7 +299,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public TaskCompletionSource? Hold { get; set; }
         public Func<string, bool>? HoldWhen { get; set; }
         public string Mode = "assigned";
-        public string RejectionMessage { get; set; } = "Synthetic response";
+        public string? RejectionMessage { get; set; }
         public string ReplySlot = "SYNTH-CHUTE";
         public string? ReplyWaveNo { get; set; }
         public string? ReplyQuantity { get; set; }
@@ -333,7 +333,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 {
                     requestId = id,
                     result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
-                    message = Mode == "reject" ? RejectionMessage : "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
+                    message = Mode == "reject" ? RejectionMessage ?? "Synthetic response" : "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
                 });
                 if (Mode == "no-destination")
@@ -341,7 +341,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                     {
                         requestId = id,
                         result = new[] { new { index = 1, success = false,
-                        command = "sorter.task.dest_request", msg = "合成异常：未找到可用格口，请人工核对包裹。", data = new { chuteCode = "" } } }
+                        command = "sorter.task.dest_request", msg = RejectionMessage ?? "合成异常：未找到可用格口，请人工核对包裹。", data = new { chuteCode = "" } } }
                     });
                 if (ReplyVehicleStates && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
                     reply = JsonSerializer.Serialize(new

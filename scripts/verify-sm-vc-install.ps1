@@ -42,15 +42,19 @@ function Vc90Files {
 $before = [ordered]@{Vc2010 = Test-Path -LiteralPath $systemRuntime; Vc90 = @(Vc90Files)}
 $before | ConvertTo-Json | Set-Content -LiteralPath "$evidence/before.json"
 if ($before.Vc2010 -or $before.Vc90.Count) { throw 'Verification requires both x64 runtime families to be absent before install' }
+Write-Output 'PASS baseline: both x64 runtime families are absent.'
 
 $installer = (Get-ChildItem -LiteralPath "$verificationRoot/installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
 function Install-Verification([string]$name, [string]$expected, [string[]]$extra) {
     $id = [Guid]::NewGuid().ToString('N')
     $installerArguments = @('/quiet', '/norestart', "/operationid=$id", "/dataroot=$verificationRoot/data", "/log=$evidence/$name.jsonl") + $extra
     $process = Start-Process -FilePath $installer -ArgumentList $installerArguments -PassThru -Wait -WindowStyle Hidden
-    if ($process.ExitCode -ne 0) { throw "$name installer failed with exit code $($process.ExitCode)" }
-    $receipt = "D:/ImporterPc/deployments/sportmaster.setup-$id.json"
-    Copy-Item -LiteralPath $receipt -Destination "$evidence/$name-receipt.json"
+    $receipt = "D:/ImporterPc/Machine/deployments/sportmaster.setup-$id.json"
+    if (Test-Path -LiteralPath $receipt) { Copy-Item -LiteralPath $receipt -Destination "$evidence/$name-receipt.json" }
+    if ($process.ExitCode -ne 0) {
+        if (Test-Path -LiteralPath "$evidence/$name.jsonl") { Get-Content -LiteralPath "$evidence/$name.jsonl" -Tail 8 }
+        throw "$name installer failed with exit code $($process.ExitCode)"
+    }
     $proof = Get-Content -LiteralPath $receipt -Raw | ConvertFrom-Json
     if ($proof.Status -ne 'Completed' -or $proof.BusinessStarted -or $proof.CameraRuntime.Count -ne 2 -or
         @($proof.CameraRuntime | Where-Object Status -NE $expected).Count -ne 0) {

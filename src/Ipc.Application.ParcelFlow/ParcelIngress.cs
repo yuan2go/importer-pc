@@ -7,7 +7,12 @@ using Microsoft.Data.Sqlite;
 namespace Ipc.Application.ParcelFlow;
 
 public sealed record ParcelWorkerProgress(string Position, string State, long Received, long Processed, long Interrupted,
-    int QueueDepth, DateTimeOffset? OldestWaiting, DateTimeOffset? LastProgress, string? Failure, DateTimeOffset? ProcessingSince);
+    int QueueDepth, DateTimeOffset? OldestWaiting, DateTimeOffset? LastProgress, string? Failure, DateTimeOffset? ProcessingSince)
+{
+    public long ObservedOnly { get; init; }
+    public string ProducerStage { get; init; } = "Idle";
+    public double ProducerStageMs { get; init; }
+}
 
 public sealed partial class ParcelRuntime
 {
@@ -19,15 +24,22 @@ public sealed partial class ParcelRuntime
         Interlocked.Exchange(ref accepting, 0);
         ingressFenced.TrySetResult();
     }
-    sealed record IngressItem(string Id, object Value, DateTimeOffset At, long ReceivedTicks);
+    sealed record IngressItem(string Id, object Value, DateTimeOffset At, long ReceivedTicks)
+    {
+        public long QueuedTicks;
+        public double LaneWaitMs, CapacityWaitMs, PersistenceMs;
+        public int DepthAtEnqueue;
+    }
     sealed class IngressLane(string database) : IDisposable
     {
         public readonly object Sync = new();
         public readonly SqliteConnection Db = Database.Open(database, create: false);
         public readonly ConcurrentDictionary<string, DateTimeOffset> Waiting = new();
         public string State = "Starting";
+        public string ProducerStage = "Idle";
+        public long ProducerStageTicks;
         public string? Failure;
-        public long Received, Processed, Interrupted, ProgressTicks, ProcessingTicks;
+        public long Received, Processed, Interrupted, ProgressTicks, ProcessingTicks, ObservedOnly;
         public void Dispose() => Db.Dispose();
     }
     readonly Dictionary<string, IngressLane> ingressLanes = [];
@@ -38,10 +50,15 @@ public sealed partial class ParcelRuntime
     {
         var lane = pair.Value;
         var waiting = lane.Waiting.Values.ToArray(); var ticks = Interlocked.Read(ref lane.ProgressTicks);
+        var producerStage = Volatile.Read(ref lane.ProducerStage); var producerTicks = Interlocked.Read(ref lane.ProducerStageTicks);
         return new ParcelWorkerProgress(pair.Key, Volatile.Read(ref lane.State), Interlocked.Read(ref lane.Received),
             Interlocked.Read(ref lane.Processed), Interlocked.Read(ref lane.Interrupted), waiting.Length,
             waiting.Length == 0 ? null : waiting.Min(), ticks == 0 ? null : new DateTimeOffset(ticks, TimeSpan.Zero), Volatile.Read(ref lane.Failure),
-            Interlocked.Read(ref lane.ProcessingTicks) is var active && active != 0 ? new DateTimeOffset(active, TimeSpan.Zero) : null);
+            Interlocked.Read(ref lane.ProcessingTicks) is var active && active != 0 ? new DateTimeOffset(active, TimeSpan.Zero) : null)
+        {
+            ObservedOnly = Interlocked.Read(ref lane.ObservedOnly), ProducerStage = producerStage,
+            ProducerStageMs = producerStage != "Idle" && producerTicks > 0 ? System.Diagnostics.Stopwatch.GetElapsedTime(producerTicks).TotalMilliseconds : 0
+        };
     }).ToArray();
     void InitializeIngress()
     {

@@ -88,28 +88,24 @@ internal static class WorkCardCurrent
         Check((await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data), "returned picture bytes cannot mutate the retained evidence");
         Check(input.Reason.Contains("Global software pause") && (await h.App.SnapshotAsync()).Operations.Length == 0 && h.Peer.Requests.Count == 0,
             "blocked input logs the actual pause reason and viewing a picture sends no request");
-        var processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
-        h.Api(h.Left).Enqueue(pixels, 2);
-        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
+        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").State == "Waiting"));
+        var beforeRepeated = h.App.WorkerProgress().Single(p => p.Position == "left");
+        var writes = 0;
+        h.App.Boundary = point => { if (point == "BeforeIngressDurable") Interlocked.Increment(ref writes); };
+        for (uint frame = 2; frame <= 3; frame++)
+        {
+            h.Api(h.Left).Enqueue(pixels, frame);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").ObservedOnly >= beforeRepeated.ObservedOnly + frame - 1));
+        }
+        h.App.Boundary = null;
         Check((await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation.Id == query.ObservationId &&
             (await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data),
-            "continuous same-placement observations keep a stable exact image while the worker processes each input");
-        var delayed = 0;
-        var timeout = new SportmasterFlow().QueuedObservationTimeoutMs(h.Config);
-        h.App.Boundary = point => { if (point == "AfterIngressDurable" && Interlocked.Exchange(ref delayed, 1) == 0) Thread.Sleep(timeout + 250); };
-        processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
-        h.Api(h.Left).Enqueue(pixels, 3);
-        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
-        h.App.Boundary = null;
-        Check((await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data) && h.Peer.Requests.Count == 0,
-            "a queued expired read of the same placement preserves its original picture without admission");
-        await CameraRoundHarness.Until(async () =>
-        {
-            var page = await h.App.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddMinutes(-2), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
-            try { return page.Entries.Any(row => row.Text.Contains("ObservationExpired", StringComparison.Ordinal)); }
-            finally { h.App.ReleaseLogSelection(page.Selection); }
-        });
-        Check((await h.App.ReadParcelPictureAsync(query, default)).Status == "Available", "expiry is proven by the key log while the held original remains readable");
+            "continuous paused observations preserve a stable exact original");
+        Check(writes == 0 && h.App.WorkerProgress().Single(p => p.Position == "left").Received == beforeRepeated.Received,
+            "known paused placement observations do not enter another durable business queue");
+        Check(h.Peer.Requests.Count == 0 && (await h.App.ReadParcelPictureAsync(query, default)).Status == "Available",
+            "presence-only observations keep the image available without requesting a chute");
+        long processed;
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-PAUSED-PICTURE-B"), 4);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.Observation.Codes.SequenceEqual(new[] { "SYNTH-PAUSED-PICTURE-B" })));
         Check((await h.App.ReadParcelPictureAsync(query, default)).Image is null, "a replaced observation cannot borrow the new parcel picture");

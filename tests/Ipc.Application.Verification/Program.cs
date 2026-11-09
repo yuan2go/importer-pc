@@ -45,6 +45,7 @@ if (args.Contains("--ui-spec-24")) { await UiSpec24.Run(workspace, root); return
 if (args.Contains("--product-closure-21")) { await StationProductClosure.Run(workspace, root); return; }
 if (args.Contains("--management-status-ownership")) { await StabilityRemediation.OwnedManagementStatus(workspace, root); return; }
 if (args.Contains("--state-journal")) { await StateJournalChecks.Run(workspace, root); return; }
+if (args.Contains("--read-cadence")) { await ReadCadenceChecks.Run(workspace, root); return; }
 if (args.Contains("--management-workspace")) { await ManagementWorkspaceChecks.Run(workspace, root); return; }
 if (args.Contains("--station-position-control")) { await StationPositionControlChecks.Run(workspace, root); return; }
 if (args.Contains("--manual-supply")) { await ManualSupplyChecks.Run(workspace, root); return; }

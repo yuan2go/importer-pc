@@ -41,11 +41,12 @@ function Vc90Files {
 }
 $before = [ordered]@{Vc2010 = Test-Path -LiteralPath $systemRuntime; Vc90 = @(Vc90Files)}
 $before | ConvertTo-Json | Set-Content -LiteralPath "$evidence/before.json"
-if ($before.Vc2010 -or $before.Vc90.Count) { throw 'Verification requires both x64 runtime families to be absent before install' }
-Write-Output 'PASS baseline: both x64 runtime families are absent.'
+if ($before.Vc2010) { throw 'Verification requires the x64 VC++ 2010 runtime to be absent before install' }
+$expectedVc90 = if ($before.Vc90.Count) { 'AlreadyAvailable' } else { 'Installed' }
+Write-Output "PASS baseline: x64 VC++ 2010 is absent. VC++ 2008 assembly: $($before.Vc90 -join ', '). Expected VC++ 2008 result: $expectedVc90."
 
 $installer = (Get-ChildItem -LiteralPath "$verificationRoot/installer" -File -Filter '*.exe' | Select-Object -First 1).FullName
-function Install-Verification([string]$name, [string]$expected, [string[]]$extra) {
+function Install-Verification([string]$name, [string]$vc90, [string]$vc100, [string[]]$extra) {
     $id = [Guid]::NewGuid().ToString('N')
     $installerArguments = @('/quiet', '/norestart', "/operationid=$id", "/dataroot=$verificationRoot/data", "/log=$evidence/$name.jsonl") + $extra
     $process = Start-Process -FilePath $installer -ArgumentList $installerArguments -PassThru -Wait -WindowStyle Hidden
@@ -56,14 +57,28 @@ function Install-Verification([string]$name, [string]$expected, [string[]]$extra
         throw "$name installer failed with exit code $($process.ExitCode)"
     }
     $proof = Get-Content -LiteralPath $receipt -Raw | ConvertFrom-Json
+    $vc90Status = ($proof.CameraRuntime | Where-Object Package -EQ 'Visual C++ 2008 SP1 x64').Status
+    $vc100Status = ($proof.CameraRuntime | Where-Object Package -EQ 'Visual C++ 2010 SP1 x64').Status
     if ($proof.Status -ne 'Completed' -or $proof.BusinessStarted -or $proof.CameraRuntime.Count -ne 2 -or
-        @($proof.CameraRuntime | Where-Object Status -NE $expected).Count -ne 0) {
-        throw "$name did not record both runtimes as $expected"
+        $vc90Status -ne $vc90 -or $vc100Status -ne $vc100) {
+        throw "$name reported unexpected results: VC++ 2008=$vc90Status, VC++ 2010=$vc100Status"
     }
-    Write-Output "PASS ${name}: both runtime prerequisites reported $expected before installation commit."
+    Write-Output "PASS ${name}: VC++ 2008=$vc90Status, VC++ 2010=$vc100Status before installation commit."
 }
-Install-Verification -name 'install' -expected 'Installed' -extra @()
+Install-Verification -name 'install' -vc90 $expectedVc90 -vc100 'Installed' -extra @()
 if (!(Test-Path -LiteralPath $systemRuntime) -or @(Vc90Files).Count -eq 0) {
     throw 'Both real x64 runtime families must be present after install'
 }
-Install-Verification -name 'repair' -expected 'AlreadyAvailable' -extra @('/repair')
+Install-Verification -name 'repair' -vc90 'AlreadyAvailable' -vc100 'AlreadyAvailable' -extra @('/repair')
+
+# Windows can supply VC90 in WinSxS. Keep that system component intact and
+# exercise the bundled VC90 installer's quiet invocation separately in that case.
+if ($expectedVc90 -eq 'AlreadyAvailable') {
+    $package = Join-Path $inputRoot 'vc2008-sp1-x64.exe'
+    $process = Start-Process -FilePath $package -ArgumentList @('/q', '/norestart') -PassThru -Wait -WindowStyle Hidden
+    $products = @(Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
+        Where-Object { $_.DisplayName -match '^Microsoft Visual C\+\+ 2008\b.*x64' } | Select-Object DisplayName,DisplayVersion)
+    @{ExitCode = $process.ExitCode; Products = $products} | ConvertTo-Json | Set-Content -LiteralPath "$evidence/vc2008-standalone.json"
+    if ($process.ExitCode -notin 0,3010 -or !$products.Count) { throw "Bundled VC++ 2008 silent installation did not register: $($process.ExitCode)" }
+    Write-Output "PASS standalone: bundled VC++ 2008 registered after quiet installation, exit $($process.ExitCode)."
+}

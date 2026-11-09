@@ -1,5 +1,22 @@
 # 项目级 skills
 
+WPF 界面审查优先使用 [Hallmark-WPF](hallmark-wpf/SKILL.md)；实现资料查询可按需使用下列 UI UX Pro Max 或 Impeccable。不自动串行执行三套流程，所有建议服从根目录 AGENTS.md 和现行设计。
+
+## Hallmark-WPF（本项目）
+
+这是基于 Nutlope/hallmark 2.0.0 的轻量方法适配，不是上游全量安装。固定来源、差异与许可见 [UPSTREAM.json](hallmark-wpf/UPSTREAM.json) 和 [LICENSE](hallmark-wpf/LICENSE)。只加入文本规则，无新增运行、构建或发布依赖；不覆盖原有 skills，不安装到用户全局目录。
+
+在包含这些文件的分支/工作树中读取本 skill；合入 main 后才成为 main 的入口。直接指定 `$hallmark-wpf`，或明确要求读取 `.agents/skills/hallmark-wpf/SKILL.md`。本轮不声称已验证某台本机客户端的自动发现。
+
+```text
+$hallmark-wpf audit SM作业页、导航和退出确认；只报告问题，不修改代码。
+$hallmark-wpf refine 退出确认；保持现行紧凑布局和业务语义，落实修改并做必要原生验证。
+```
+
+`audit / refine / study` 是本地工作模式，不是 shell 命令。默认只读；只有明确授权才修改代码。审查方法、现有验证入口和短报告格式见 [WPF审查方法](../../docs/design/wpf-ui-review.md)。不运行网页主题选择、浏览器 sloplint 或设计 engine；没有 Windows 时仅报告静态结论与待验证项。
+
+## UI UX Pro Max
+
 已安装 [UI UX Pro Max](ui-ux-pro-max/SKILL.md)，供本项目的UI/UX设计、实现与审查使用。下次对话可直接指定 `$ui-ux-pro-max`，或要求使用该skill处理UI任务。
 
 ## 来源与维护

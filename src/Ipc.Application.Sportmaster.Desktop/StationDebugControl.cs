@@ -1,4 +1,7 @@
 using System.IO;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -26,8 +29,13 @@ internal sealed partial class StationDebugControl : UserControl
     readonly TextBlock readStatus = Text("尚未开始扫码"), photoState = Text("等待扫码"), fillStatus = Text("");
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Button left = Action("左相机"), right = Action("右相机"), trigger = Action("触发扫码"), prepare = Action("准备请求"), send = Action("发送请求");
+    readonly Button copyResponse = Action("复制回包");
     readonly TextBlock state = Text("点击“触发扫码”开始读取。"), feedback = Text(""), photoCaption = Text("本轮读码照片"), result = Text("本轮尚未发送请求。"), camera = Text("左相机");
     readonly TextBox barcode = Value(), requestBarcode = Value(), requestBody = Value(), responseBody = Value();
+    static readonly UTF8Encoding responseEncoding = new(false, true);
+    static readonly JsonSerializerOptions responseFormat = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
+    IntegrationHttpResponse? displayedResponse;
+    string? originalResponseText;
     readonly Image photo = new() { Stretch = Stretch.Fill, IsHitTestVisible = false };
     readonly Canvas marks = new() { IsHitTestVisible = false, ClipToBounds = true };
     readonly Grid imageLayer = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, ClipToBounds = true };
@@ -140,7 +148,10 @@ internal sealed partial class StationDebugControl : UserControl
         jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto }); jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var requestJson = new StackPanel(); var responseJson = new StackPanel { Margin = new(14, 0, 0, 0) };
         requestJson.Children.Add(Text("请求 · 实际发送的报文")); requestBody.FontFamily = UiTypography.Code; requestBody.MinHeight = 72; requestBody.MaxHeight = 220; requestBody.SetResourceReference(BackgroundProperty, "Soft"); requestJson.Children.Add(requestBody);
-        responseJson.Children.Add(result); responseBody.FontFamily = UiTypography.Code; responseBody.MinHeight = 72; responseBody.MaxHeight = 220; responseBody.SetResourceReference(BackgroundProperty, "Soft"); responseJson.Children.Add(responseBody);
+        var responseHeader = new DockPanel(); DockPanel.SetDock(copyResponse, Dock.Right);
+        copyResponse.IsEnabled = false; responseHeader.Children.Add(copyResponse); responseHeader.Children.Add(Text("RCS 原始回包"));
+        responseJson.Children.Add(responseHeader); responseJson.Children.Add(result);
+        responseBody.FontFamily = UiTypography.Code; responseBody.MinHeight = 72; responseBody.MaxHeight = 220; responseBody.SetResourceReference(BackgroundProperty, "Soft"); responseJson.Children.Add(responseBody);
         jsonColumns.Children.Add(requestJson); jsonColumns.Children.Add(responseJson); Grid.SetColumn(responseJson, 1); requestPanel.Children.Add(jsonColumns);
         InitializeBatch(body);
         adapt.Click += (_, _) => { fit = true; ApplyZoom(); }; actual.Click += (_, _) => { fit = false; zoom = 1 / VisualTreeHelper.GetDpi(viewport).DpiScaleX; ApplyZoom(); };
@@ -154,12 +165,14 @@ internal sealed partial class StationDebugControl : UserControl
         left.Click += (_, _) => SelectPosition("left"); right.Click += (_, _) => SelectPosition("right");
         trigger.Click += async (_, _) => await Run(TriggerAsync); send.Click += async (_, _) => await Run(SendAsync);
         prepare.Click += async (_, _) => await Run(PrepareManualAsync);
+        copyResponse.Click += async (_, _) => await CopyResponseAsync();
         requestBarcode.TextChanged += (_, _) =>
         {
             if (updatingRequest) return;
             requestDirty = true; manualDrafts[position] = requestBarcode.Text; Buttons();
         };
         AutomationProperties.SetName(barcode, "本轮完整条码，可选择复制"); AutomationProperties.SetName(requestBody, "本轮待发送的请求内容"); AutomationProperties.SetName(viewport, "同帧读码照片，绿色条码定位框");
+        AutomationProperties.SetName(responseBody, "RCS 原始回包"); AutomationProperties.SetLiveSetting(result, AutomationLiveSetting.Polite);
         AutomationProperties.SetLiveSetting(state, AutomationLiveSetting.Polite); AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Assertive);
         timer.Tick += async (_, _) => await PollAsync();
         Loaded += async (_, _) => { active = true; lifetime = new(); timer.Start(); LayoutColumns(); await PollAsync(); };
@@ -280,10 +293,7 @@ internal sealed partial class StationDebugControl : UserControl
         if (!sameCamera) { ClearRoundDisplay(); Buttons(); return; }
         SetText(barcode, value.Barcode ?? "");
         if (!requestDirty) { updatingRequest = true; try { SetText(requestBarcode, value.Barcode ?? ""); } finally { updatingRequest = false; } }
-        SetText(requestBody, value.RequestBody ?? ""); SetText(responseBody, value.Result ?? "");
-        result.Text = value.OperationId is null ? "响应 · 尚未准备请求" : value.State == "Sending" ? "响应 · 正在发送" : value.CanSend ? "响应 · 等待手动发送" : "响应 · 请求结果";
-        if (value.SendBlockedReason is { } blocked) result.Text = "尚未发送 · " + blocked;
-        result.ToolTip = value.OperationId is null ? null : "作业：" + value.OperationId + "\n请求编号：" + value.RequestId + "\n目标：" + value.Target;
+        SetText(requestBody, value.RequestBody ?? ""); ShowResponse(value);
         send.ToolTip = value.SendBlockedReason ?? (value.Target is null ? "等待本轮请求准备完成" : "发送到当前RCS：" + value.Target);
         ToolTipService.SetShowOnDisabled(send, true);
         if (value.Frame is { ImageAvailable: true } frame && loadedFrame != frame.Id)
@@ -300,8 +310,58 @@ internal sealed partial class StationDebugControl : UserControl
         }
         if (value.Frame is null) ClearPhoto(); Buttons();
     }
+    void ShowResponse(CameraReadRound value)
+    {
+        if (displayedResponse != value.HttpResponse)
+        {
+            displayedResponse = value.HttpResponse;
+            originalResponseText = null;
+            if (displayedResponse is { } response)
+            {
+                try { originalResponseText = responseEncoding.GetString(Convert.FromBase64String(response.BodyBase64)); }
+                catch (FormatException) { /* Stored content cannot be shown as original text. */ }
+                catch (DecoderFallbackException) { /* Do not silently replace invalid response bytes. */ }
+            }
+            var text = originalResponseText ?? "";
+            if (displayedResponse?.Complete == true && text.Length > 0)
+            {
+                try { using var json = JsonDocument.Parse(text); text = JsonSerializer.Serialize(json.RootElement, responseFormat); }
+                catch (JsonException) { /* RCS can also return a plain-text response. */ }
+            }
+            SetText(responseBody, text);
+        }
+        result.Text = displayedResponse switch
+        {
+            { Complete: false } when string.IsNullOrEmpty(originalResponseText) => "回包接收不完整，无可显示的正文。",
+            { Complete: false } => "回包接收不完整，仅显示已收到的部分。",
+            not null when originalResponseText is null => "回包正文无法按文本读取。",
+            not null when originalResponseText?.Length == 0 => "RCS 返回了空正文。",
+            not null => "",
+            _ when value.SendBlockedReason is { } blocked => "尚未发送 · " + blocked,
+            _ when value.State == "Sending" => "正在发送，等待 RCS 回包。",
+            _ when value.SendAttempts > 0 => "未收到 RCS 回包正文，请核对本轮请求结果。",
+            _ => "本轮尚未发送请求。"
+        };
+        result.Visibility = result.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    async Task CopyResponseAsync()
+    {
+        if (!copyResponse.IsEnabled || originalResponseText is not { Length: > 0 } text) return;
+        var version = generation;
+        try
+        {
+            await vm.RequireManagementModeAsync();
+            if (!active || version != generation || originalResponseText != text || displayedResponse?.Complete != true) return;
+            Clipboard.SetText(text);
+            feedback.Text = "已复制 RCS 原始回包。";
+        }
+        catch (System.Runtime.InteropServices.ExternalException) { feedback.Text = "剪贴板暂不可用，请稍后重试。"; }
+        catch (UnauthorizedAccessException) { feedback.Text = "管理授权已失效，请重新授权后复制。"; }
+        Buttons();
+    }
     void ClearPhoto() { photo.Source = null; imageHint.Visibility = Visibility.Visible; marks.Children.Clear(); displayedFrame = null; loadedFrame = ""; imageLayer.Width = imageLayer.Height = 0; }
-    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); result.ToolTip = send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
+    void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); displayedResponse = null; originalResponseText = null; copyResponse.IsEnabled = false; send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; result.Visibility = Visibility.Visible; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
         if (photo.Source is null && current?.DeviceId == Position.ReaderId)
@@ -330,6 +390,7 @@ internal sealed partial class StationDebugControl : UserControl
         send.Content = sendCommand is null ? "发送请求" : "查看发送结果";
         send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
             (sendCommand is not null || !requestDirty && current is { RequestHash: not null, SendAttempts: 0 } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
+        copyResponse.IsEnabled = active && !busy && vm.IsManagementMode && displayedResponse?.Complete == true && originalResponseText is { Length: > 0 };
         left.IsEnabled = right.IsEnabled = !busy; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");
     }
     void LayoutColumns()

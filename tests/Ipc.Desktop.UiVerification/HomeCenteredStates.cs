@@ -127,6 +127,35 @@ static partial class Program
             Check(!center.IsVisible && vm.Left.Slot == "SYNTH-CHUTE", "a confirmed chute keeps its full result instead of the waiting panel");
             h.Peer.HeartbeatUnavailable = true; await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
             Check(!center.IsVisible && vm.Left.ShowConfirmedTask, "a later RCS outage never hides a confirmed current parcel result");
+            h.Peer.HeartbeatUnavailable = false;
+            snapshot = await h.App.SnapshotAsync();
+            await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
+            await h.WaitForCameraAdmissionAsync();
+            h.Peer.Mode = "no-device";
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NO-DEVICE-2263"), 1);
+            await Until(() => vm.Left.CenteredRcsRejection && vm.Right.CenteredWaiting);
+            var title = (TextBox)left.FindName("CenteredStateTitle");
+            var reason = (TextBlock)left.FindName("CenteredStateReason");
+            var next = (TextBlock)left.FindName("CenteredStateInstruction");
+            var barcodeCue = (TextBlock)left.FindName("CenteredBarcodeCue");
+            Check(center.IsVisible && title.Text == "无设备可用" && title.IsReadOnly && title.Focusable && reason.Text == "本件暂不能分配格口" &&
+                next.Text.Contains("请取下包裹，可放下一件") && next.Text.Contains("多次出现请通知维护人员"),
+                "confirmed RCS rejection shows the original message, business meaning and operator action in the shared skeleton");
+            Check(Equals(result.Background, result.FindResource("DangerBackground")) && Equals(result.BorderBrush, result.FindResource("Danger")) &&
+                !((DockPanel)left.FindName("DetailedStatus")).IsVisible && !vm.Left.DisplaySlotVisible && !vm.Left.HasUncertainOriginal,
+                "confirmed rejection uses the soft danger surface without a duplicate title or stale chute");
+            Check(barcodeCue.IsVisible && barcodeCue.Text == "已读到 · …2263" && barcodeCue.FontSize < title.FontSize &&
+                vm.Left.DeviceLabel == "相机：在线" && vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online && vm.Right.CenteredWaiting,
+                "scanned suffix remains secondary while camera and RCS stay online and the other lane stays ready");
+            CaptureInternal(evidence, "home-centered-rcs-rejected", client, lines);
+            await SetClient(window, 800, 420); await Flush();
+            var resultScroll = (ScrollViewer)left.FindName("CenteredResultScroll");
+            var actionBounds = next.TransformToAncestor(resultScroll).TransformBounds(new Rect(next.RenderSize));
+            CaptureInternal(evidence, "home-centered-rcs-rejected-small", client, lines);
+            Check(Inside(title, client) && Inside(submit, client) && next.Text.Contains("请取下包裹") && reason.Text.Contains("…2263") &&
+                actionBounds.Bottom <= resultScroll.ViewportHeight + 1,
+                $"compact rejection shows the original message, suffix and removal instruction without scrolling (action {actionBounds.Bottom:F1}, viewport {resultScroll.ViewportHeight:F1})");
+            await SetClient(window, 1366, 768); await Flush();
             PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.FullScreen); await Flush();
             exit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => stopAttempts == 1 && window.IsEnabled && vm.Message.Contains("停止未完成"), refresh: false);

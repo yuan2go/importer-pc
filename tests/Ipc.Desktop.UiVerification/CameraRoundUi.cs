@@ -140,7 +140,7 @@ static partial class Program
             probe.CancelRoundRead = false; await vm.RefreshAsync(); await Poll(control);
             Check(Field<Button>(control, "send").IsEnabled, "successful authoritative read plus fresh host snapshot restores eligible send");
             ClickField(control, "send");
-            await Until(() => Field<TextBox>(control, "responseBody").Text.StartsWith("状态：Accepted"));
+            await Until(() => Field<TextBox>(control, "responseBody").Text.Contains("\"success\": true"));
             ClickField(control, "send"); await Until(() => Equals(Field<Button>(control, "send").Content, "查看发送结果"));
             Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == a.RequestBody, "click-send and check-result never create a second HTTP request");
             await Poll(other); ClickField(other, "trigger");

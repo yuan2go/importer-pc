@@ -29,12 +29,12 @@ public sealed partial class ParcelRepository
         catch (SqliteException error) when (error.SqliteErrorCode == 9 && token.IsCancellationRequested)
         { throw new OperationCanceledException("Maintenance inspection was cancelled", error, token); }
     }
-    internal static ParcelMaintenanceInspection InspectMaintenanceCore(string database, FlowDefinition flow, CancellationToken token = default, bool allowPreviousStorage = false)
+    internal static ParcelMaintenanceInspection InspectMaintenanceCore(string database, FlowDefinition flow, CancellationToken token = default)
     {
         if (!File.Exists(database)) throw new FileNotFoundException("Original database is required; no empty runtime is created", database);
         var directory = Path.GetDirectoryName(database)!;
         if (Path.GetFileName(database) != flow.Id + ".db") throw new InvalidDataException("Selected Application differs from original database");
-        var version = allowPreviousStorage ? ReadMaintenanceStorageVersion(database, flow.Id) : ReadStorageVersion(database, flow.Id);
+        var version = ReadStorageVersion(database, flow.Id);
         var configuration = Path.Combine(directory, "configuration.json"); RecoveryFiles.RequireOrdinaryAncestors(configuration);
         var config = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(configuration));
         var errors = flow.Validate(config.Effective);

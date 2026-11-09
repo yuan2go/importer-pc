@@ -17,6 +17,19 @@ static class RcsOfflineCameraReads
         try { MvidApi.DrainRawFrames(() => 0); } catch (IOException) { rejected = true; }
         Check(rejected, "an unbounded raw queue never reports a false empty boundary");
 
+        await using (var initial = new CameraRoundHarness(workspace, Path.Combine(root, "first-response"), heartbeatSeconds: 3600, nativeResults: nativeResults))
+        {
+            await initial.StartAsync(waitForRcs: false);
+            initial.Factory.Sources[initial.Left].ReadPreview();
+            initial.Api(initial.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BEFORE-FIRST-HEARTBEAT"), 1);
+            await CameraRoundHarness.Until(() => Task.FromResult(initial.Factory.Sources[initial.Left].ReadPreview()?.FrameNumber == 1 && initial.Api(initial.Left).Acquires == initial.Api(initial.Left).Releases));
+            var initialState = await initial.App.SnapshotAsync();
+            Check(initial.Factory.Sources[initial.Left].ReadPreview()?.FrameNumber == 1 && initial.Api(initial.Left).PreviewAcquires > 0 &&
+                initial.Factory.Decoders[initial.Left].Count == 0 && initial.Peer.Requests.IsEmpty && initial.Peer.HeartbeatRequests.IsEmpty &&
+                initialState.Operations.Length == 0 && initialState.Positions!.Single(p => p.Id == "left").BarcodeInput is { Camera: false, Manual: true },
+                "before first heartbeat response both camera routes only acquire preview, without recognition or a business request");
+        }
+
         await using var h = new CameraRoundHarness(workspace, root, heartbeatSeconds: 1, nativeResults: nativeResults);
         var readAllowed = false; var inputs = 0; using var cycleDone = new ManualResetEventSlim();
         var binding = new DeviceBinding("parcel-reader", "hikrobot-mvs-reader", "preview-race", "1.0.0")
@@ -37,7 +50,7 @@ static class RcsOfflineCameraReads
         }
 
         h.Peer.ReplyVehicleStates = true; h.Peer.HeartbeatUnavailable = true;
-        await h.StartAsync();
+        await h.StartAsync(waitForRcs: false);
         async Task SwitchLeft(bool enabled)
         {
             var snapshot = await h.App.SnapshotAsync();
@@ -46,7 +59,7 @@ static class RcsOfflineCameraReads
                 ? (await h.App.SnapshotAsync()).Devices!.SingleOrDefault(d => d.DeviceId == h.Left)?.IsValid(DateTimeOffset.UtcNow) == true
                 : (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CameraConnectionSuspended);
         }
-        await SwitchLeft(false); await h.App.DisposeAsync(); await h.StartAsync(waitForAllCameras: false);
+        await SwitchLeft(false); await h.App.DisposeAsync(); await h.StartAsync(waitForAllCameras: false, waitForRcs: false);
         Check(h.Api(h.Left).Starts == 0 && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled,
             "a camera persisted disabled at startup stays unopened until explicitly enabled");
         async Task<bool> RcsReady() => (await h.App.SnapshotAsync()).Health.Single(c => c.InstanceId == h.Config.Wcs!.InstanceId).Ready;
@@ -74,8 +87,11 @@ static class RcsOfflineCameraReads
         var beforeReplacement = await h.App.SnapshotAsync();
         var candidateReaders = beforeReplacement.Configuration.Effective.Topology!.Readers.Select(reader => reader.DeviceId == h.Left
             ? reader with { Parameters = new Dictionary<string, string>(reader.Parameters!) { ["device.ip"] = "192.0.2.91" } } : reader).ToArray();
-        var candidate = beforeReplacement.Configuration.Effective with { Topology = beforeReplacement.Configuration.Effective.Topology with { Readers = candidateReaders },
-            Reader = candidateReaders.Single(reader => reader.DeviceId == h.Left) };
+        var candidate = beforeReplacement.Configuration.Effective with
+        {
+            Topology = beforeReplacement.Configuration.Effective.Topology with { Readers = candidateReaders },
+            Reader = candidateReaders.Single(reader => reader.DeviceId == h.Left)
+        };
         h.Factory.Expect(candidate);
         var saved = await h.App.StageConfigurationAsync(beforeReplacement.Configuration.Revision, candidate, "Synthetic disabled camera replacement");
         Check(saved.Status == "Effective" && h.Api(h.Left).Starts == 0, "replacing a disabled camera applies its configuration without opening it");

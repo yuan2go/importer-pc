@@ -23,6 +23,11 @@ internal static class LiveDevices30
         long Processed(string position) => h.App.WorkerProgress().Single(p => p.Position == position).Processed;
         async Task Read(string device, string position, string code)
         {
+            await CameraRoundHarness.Until(async () =>
+            {
+                var state = await h.App.SnapshotAsync();
+                return state.Positions!.Single(p => p.Id == position).BarcodeInput?.Camera == true && state.Health.Any(c => c.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived);
+            });
             var before = Processed(position);
             h.Api(device).Enqueue(CameraRoundHarness.Barcode(code), ++frame);
             await CameraRoundHarness.Until(() => Task.FromResult(Processed(position) > before));
@@ -88,6 +93,7 @@ internal static class LiveDevices30
         // 4. A camera that cannot be found takes only its own position offline; the save still applies.
         h.Factory.DiscoverReplacements = false;
         receipt = await Save(c => WithReader(c, h.Left, "device.ip", "192.0.2.42"));
+        Check(receipt.Reason.Contains("暂未连接") && receipt.Reason.Contains("自动恢复") && !receipt.Reason.Contains("已重新连接"), "unreachable camera save reports effective settings and automatic recovery without claiming connection success");
         Check(receipt.Status == "Effective" && (await h.App.SnapshotAsync()).Configuration.Effective.Topology!.Readers.Single(r => r.DeviceId == h.Left).Parameters!["device.ip"] == "192.0.2.42",
             "an unreachable new camera address is still saved, as at startup");
         await Task.Delay(500);

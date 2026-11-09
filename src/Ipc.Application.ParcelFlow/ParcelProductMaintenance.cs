@@ -62,15 +62,14 @@ public sealed partial class ParcelStartupMaintenance
             return new(Wire.Hash(state.Hash + purpose + destination), purpose, true, "尚未创建业务库；保留原配置和数据根，未启动设备。", state.Hash, destination);
         }
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
-        var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None, allowPreviousStorage: purpose == "Upgrade");
+        var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None);
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
         var allowed = purpose is "Backup" or "Repair" or "Uninstall" || inspection.ResponsibilitiesSettled && markers.Length == 0;
         var pruningBlocker = purpose == "PruneVersions" ? VersionPruningBlocker(state.Directory, state.Envelope) : null;
         if (pruningBlocker is not null) allowed = false;
         return new(Wire.Hash(copy.SourceIdentity + state.Hash + purpose + destination), purpose, allowed,
             Wire.Encode(inspection) + "\n隔离标记：" + string.Join(",", markers) + (purpose == "Repair" ? "\n仅相同冻结发布的程序修复：原责任/标记保留，完整备份后不改账、不激活、不启动；装配层必须核对相同源码。" : "\n程序切换不回滚数据库；未决请求须原发布核对。") +
-            (pruningBlocker is null ? "" : "\n" + pruningBlocker) +
-            (inspection.DatabaseVersion is 10 or 11 ? "\n将先核验完整格式10/11备份，再事务升级至12；原配置、历史、请求与回包保留，软件保持暂停。" : ""), state.Hash, destination)
+            (pruningBlocker is null ? "" : "\n" + pruningBlocker), state.Hash, destination)
         {
             OperatorSummary = pruningBlocker ?? (!inspection.ResponsibilitiesSettled ?
                     purpose == "Uninstall" ? "仍有未完成或结果未确认的请求。卸载只移除程序，原记录和责任保留，仍须按原记录核对。" : "仍有未完成或结果未确认的请求。请先按原记录处理，所有版本和数据保留。" :
@@ -144,24 +143,13 @@ public sealed partial class ParcelStartupMaintenance
         if (copy is not null && !(purpose == "Uninstall" && string.IsNullOrEmpty(backupDestination)))
             await BackupCopy(state.Directory, backupDestination, state, copy, execution, finalOperation: change is null);
         Authorize(); execution?.Checkpoint();
-        if (change is not null && copy is not null && purpose == "Upgrade" && ParcelRepository.ReadMaintenanceStorageVersion(copy.Database, definition.Id) is 10 or 11)
-        {
-            if (ReadState().Hash != state.Hash) throw new InvalidOperationException("备份期间配置变化；保留备份，重新预检");
-            var backup = ParcelRecovery.VerifyBackup(backupDestination, Authorize, execution?.Token ?? default, allowPreviousStorage: true);
-            var original = Path.Combine(state.Directory, definition.Id + ".db");
-            // The original owner remains held across backup, schema commit and deployment.
-            // Re-observe DB/WAL before its first write; no original is opened by SQLite during planning.
-            ParcelRepository.UpgradeStorage10(original, definition.Id, backupDestination, backup.DatabaseHash,
-                copy.OriginalHashes[definition.Id + ".db"], copy.OriginalHashes.GetValueOrDefault(definition.Id + ".db-wal"),
-                Actor, Authorize, execution);
-        }
         if (change is not null) await change(); // Same application owner spans backup and deployment commit.
         return preview;
     }
     async Task BackupCopy(string directory, string destination, (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) state, Snapshot copy, MaintenanceExecution? execution = null, bool finalOperation = true)
     {
         var envelope = state.Envelope ?? throw new InvalidDataException("数据库存在而原配置账缺失");
-        _ = ParcelRepository.ReadMaintenanceStorageVersion(copy.Database, definition.Id);
+        _ = ParcelRepository.ReadStorageVersion(copy.Database, definition.Id);
         await using var ports = factory();
         using var database = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = copy.Database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); database.Open();
         // Back up the exact current-format private DB/WAL snapshot without runtime

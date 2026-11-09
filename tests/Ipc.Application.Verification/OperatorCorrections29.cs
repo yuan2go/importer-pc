@@ -12,7 +12,7 @@ internal static class OperatorCorrections29
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
         await h.StartAsync();
         var hold = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        h.Peer.Hold = hold; h.Peer.HoldWhen = body => body.Contains("TEST-LEFT-READER", StringComparison.Ordinal);
+        h.Peer.Hold = hold; h.Peer.HoldWhen = body => body.Contains("sorter.task.dest_request", StringComparison.Ordinal) && body.Contains("TEST-LEFT-READER", StringComparison.Ordinal);
         var code = CameraRoundHarness.Barcode("SYNTH-PLACEMENT-OP29");
         try
         {

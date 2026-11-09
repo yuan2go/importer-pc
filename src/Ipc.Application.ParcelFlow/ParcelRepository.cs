@@ -17,7 +17,7 @@ public sealed partial class ParcelRepository : IDisposable
     readonly Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver;
     public int StorageVersion { get; private set; }
     public const int CurrentStorageVersion = 12;
-    const string Baseline11 = """
+    const string Baseline = """
         CREATE TABLE parcel_archive_versions(operation TEXT NOT NULL,body_hash TEXT NOT NULL,body TEXT NOT NULL,recorded_at TEXT NOT NULL,PRIMARY KEY(operation,body_hash));
         CREATE TABLE parcel_archived_receipts(id TEXT PRIMARY KEY,body BLOB NOT NULL,raw_hash TEXT NOT NULL);
         CREATE TABLE parcel_archives(id TEXT PRIMARY KEY,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,body TEXT NOT NULL,body_hash TEXT NOT NULL,archived_at TEXT NOT NULL);
@@ -39,7 +39,7 @@ public sealed partial class ParcelRepository : IDisposable
         CREATE TABLE parcel_receipt_custody(occurrence TEXT PRIMARY KEY,query_occurrence TEXT,observed_at TEXT NOT NULL,evidence TEXT NOT NULL);
         CREATE TABLE parcel_receipts(id TEXT PRIMARY KEY,operation TEXT NOT NULL,stage TEXT NOT NULL,request TEXT NOT NULL,source TEXT NOT NULL,state TEXT NOT NULL,raw_hash TEXT);
         CREATE TABLE parcel_reply_identities(request TEXT NOT NULL,id TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(request,id));
-        CREATE TABLE station_metric_buckets(minute TEXT NOT NULL,position TEXT NOT NULL,recognitions INTEGER NOT NULL,requests INTEGER NOT NULL,assigned INTEGER NOT NULL,rejected INTEGER NOT NULL,unknown_count INTEGER NOT NULL,manual_requests INTEGER NOT NULL,PRIMARY KEY(minute,position));
+        CREATE TABLE station_metric_buckets(shift TEXT NOT NULL,minute TEXT NOT NULL,position TEXT NOT NULL,recognitions INTEGER NOT NULL CHECK(recognitions>=0),requests INTEGER NOT NULL CHECK(requests>=0),assigned INTEGER NOT NULL CHECK(assigned>=0),rejected INTEGER NOT NULL CHECK(rejected>=0),unknown_count INTEGER NOT NULL CHECK(unknown_count>=0),manual_requests INTEGER NOT NULL CHECK(manual_requests>=0),PRIMARY KEY(shift,minute,position));
         CREATE TABLE parcel_retention_runs(id TEXT PRIMARY KEY,at TEXT NOT NULL,days INTEGER NOT NULL,cutoff TEXT NOT NULL,backup_hash TEXT NOT NULL,summary TEXT NOT NULL);
         CREATE TABLE parcel_retired_inputs(id TEXT PRIMARY KEY,body_hash TEXT NOT NULL,state TEXT NOT NULL,at TEXT NOT NULL);
         CREATE TABLE parcel_retired_measurements(id TEXT PRIMARY KEY,admission TEXT NOT NULL,body_hash TEXT NOT NULL);
@@ -69,8 +69,7 @@ public sealed partial class ParcelRepository : IDisposable
         CREATE INDEX station_archive_time ON parcel_archives(julianday(json_extract(body,'$.Wcs.Request.PreparedAt')));
         CREATE INDEX station_recognition_time ON parcel_audit(julianday(json_extract(detail,'$.Observation.ObservedAt'))) WHERE event='InputObserved' AND json_valid(detail);
         INSERT INTO parcel_meta VALUES(1,0,0);
-        """;
-    static readonly string Baseline = Baseline11.Replace(Metric11Sql, Metric12Sql, StringComparison.Ordinal) + "\n" + StationSessionSchema;
+        """ + "\n" + StationSessionSchema;
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
     public ParcelRepository(string directory, string application)

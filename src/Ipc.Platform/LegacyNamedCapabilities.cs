@@ -18,6 +18,8 @@ public sealed record StationVehicleState(string StationCode, string CameraCode, 
 public sealed record CapabilityHealth(string InstanceId, bool Ready, DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string Detail)
 {
     public RemoteConnectionConfirmation RemoteConfirmation { get; init; }
+    public DateTimeOffset? RemoteConfirmedAt { get; init; }
+    public DateTimeOffset? RemoteValidUntil { get; init; }
     // Informational station telemetry only; never grants or refuses business admission.
     public StationVehicleState[] StationVehicles { get; init; } = [];
 }

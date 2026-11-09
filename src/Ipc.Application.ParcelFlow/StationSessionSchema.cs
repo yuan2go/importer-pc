@@ -3,8 +3,6 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
-    const string Metric11Sql = "CREATE TABLE station_metric_buckets(minute TEXT NOT NULL,position TEXT NOT NULL,recognitions INTEGER NOT NULL,requests INTEGER NOT NULL,assigned INTEGER NOT NULL,rejected INTEGER NOT NULL,unknown_count INTEGER NOT NULL,manual_requests INTEGER NOT NULL,PRIMARY KEY(minute,position));";
-    const string Metric12Sql = "CREATE TABLE station_metric_buckets(shift TEXT NOT NULL,minute TEXT NOT NULL,position TEXT NOT NULL,recognitions INTEGER NOT NULL CHECK(recognitions>=0),requests INTEGER NOT NULL CHECK(requests>=0),assigned INTEGER NOT NULL CHECK(assigned>=0),rejected INTEGER NOT NULL CHECK(rejected>=0),unknown_count INTEGER NOT NULL CHECK(unknown_count>=0),manual_requests INTEGER NOT NULL CHECK(manual_requests>=0),PRIMARY KEY(shift,minute,position));";
     const string StationSessionSchema = """
         CREATE TABLE station_run_shifts(seq INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,opened_at TEXT NOT NULL,last_seen_at TEXT NOT NULL,detected_at TEXT,closed_at TEXT,status TEXT NOT NULL CHECK(status IN ('Open','Closed','Interrupted')),elapsed_ms REAL NOT NULL CHECK(elapsed_ms>=0),clock_adjusted INTEGER NOT NULL DEFAULT 0);
         CREATE UNIQUE INDEX station_one_open_shift ON station_run_shifts(status) WHERE status='Open';

@@ -23,8 +23,8 @@ if ($Section -eq 'Core') {
   if ($buildExit) {Get-Content $buildLog -Tail 15;throw 'Release build failed'}
  }
  $testAssembly=Join-Path $verificationRoot 'tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll'
- $suiteFlags=@('--reader-ingress-terminal-22','--reader-feedback-22','--camera-chain-closure','--camera-chain-reliability','--manual-supply','--rcs-timeout-errors','--sm-original-frame','--shutdown-resources','--product-closure-21','--db11-compatible-update')
- if ($WalIntegration) { $suiteFlags=@('--reader-ingress-terminal-22','--reader-feedback-22','--camera-chain-closure','--shutdown-resources','--db11-compatible-update') }
+ $suiteFlags=@('--reader-ingress-terminal-22','--reader-feedback-22','--camera-chain-closure','--camera-chain-reliability','--manual-supply','--rcs-timeout-errors','--sm-original-frame','--shutdown-resources','--product-closure-21','--storage-schema-only')
+ if ($WalIntegration) { $suiteFlags=@('--reader-ingress-terminal-22','--reader-feedback-22','--camera-chain-closure','--shutdown-resources','--storage-schema-only') }
 } else {
  $coreSummary=Get-Content (Join-Path $evidenceRoot 'core-summary.json') -Raw | ConvertFrom-Json
  if ($coreSummary.source_commit -ne $sourceCommit -or @($coreSummary.builds).Count -ne 3 -or @($coreSummary.builds | Where-Object exit_code -ne 0).Count) {throw 'Same-source Release builds required'}

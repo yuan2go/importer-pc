@@ -34,7 +34,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     readonly TaskCompletionSource<bool> ingressStartup = new(TaskCreationOptions.RunContinuationsAsynchronously);
     sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator, DateTimeOffset ReceivedAt);
     bool started, stopped, disposed;
-    bool storageUpgradeReviewRequired;
     readonly object startupOwnership = new();
     readonly TaskCompletionSource startupEnded = new(TaskCreationOptions.RunContinuationsAsynchronously);
     bool stopRequested;
@@ -144,7 +143,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 SoftwarePauseActor = () => currentOperator?.Subject
             };
             repository.LoadSoftwarePauseEvidence();
-            storageUpgradeReviewRequired = repository.StorageUpgradeNeedsReview();
             if (launch.RequireRecoveryReview)
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
@@ -281,7 +279,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
             ingressStartup.TrySetResult(true);
-            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && !storageUpgradeReviewRequired && !launch.RequireRecoveryReview;
+            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && !launch.RequireRecoveryReview;
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
             backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));

@@ -26,6 +26,7 @@ static partial class SportmasterRcs
             await Task.Delay(300);
             Check(peer.Requests.IsEmpty, "repeated start owns one timer and default heartbeat waits for its interval");
             Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "local lifecycle cannot fabricate a typed remote connection confirmation");
+            Check((await service.HealthAsync(default)) is { RemoteConfirmedAt: null, RemoteValidUntil: null }, "health reads before first response cannot fabricate remote timestamps");
             await Until(() => peer.Requests.Count == 1);
             Check(clock.Elapsed >= TimeSpan.FromSeconds(.8) && clock.Elapsed < TimeSpan.FromSeconds(3), "omitted component interval defaults to one second");
             var exchange = peer.Requests.Single();
@@ -45,6 +46,13 @@ static partial class SportmasterRcs
             await Healthy(service);
             Check((await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived, "actual successful heartbeat sets typed response evidence independently of display wording");
             Check((await service.HealthAsync(default)).Detail.Contains("unconfirmed", StringComparison.Ordinal), "HTTP delivery never fabricates an application acknowledgement");
+            var evidence = await service.HealthAsync(default);
+            var time = new TimeStorageFaultChecks.ManualTime { Utc = evidence.RemoteValidUntil!.Value.AddTicks(1) };
+            service.HeartbeatTimeForVerification = time;
+            var expired = await service.HealthAsync(default);
+            Check(expired.RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed && expired.RemoteConfirmedAt == evidence.RemoteConfirmedAt && expired.RemoteValidUntil == evidence.RemoteValidUntil,
+                "expired remote evidence pauses recognition without health reads renewing its actual response timestamps");
+            service.HeartbeatTimeForVerification = TimeProvider.System;
             try { service.ConfigureRuntime(config); throw new Exception("Reconfigured running timer"); }
             catch (InvalidOperationException) { Check(true, "running component rejects context replacement"); }
             await service.StopAsync(default);

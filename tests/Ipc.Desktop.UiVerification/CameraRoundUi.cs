@@ -152,8 +152,11 @@ static partial class Program
             heldArm = new(TaskCreationOptions.RunContinuationsAsynchronously); probe.HoldArm = heldArm; probe.ArmEntered = new(TaskCreationOptions.RunContinuationsAsynchronously);
             ClickField(control, "trigger"); await probe.ArmEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             Check(Field<Image>(control, "photo").Source is null && Field<TextBox>(control, "requestBody").Text.Length == 0, "again-scan clears old display while the command is still waiting");
-            await h.ArmAsync(h.Right); h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-C"), 1); await h.LockedAsync();
-            heldArm.TrySetResult(); await Until(() => !Field<bool>(control, "busy")); await Poll(control);
+            await h.ArmAsync(h.Right); h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-C"), 1); var competing = await h.LockedAsync();
+            heldArm.TrySetResult();
+            // Run clears busy before its final asynchronous refresh finishes. Wait
+            // for that authoritative baseline, not only command-handler completion.
+            await Until(() => !Field<bool>(control, "busy") && !Field<bool>(control, "polling") && Field<CameraReadRound?>(control, "observed")?.Id == competing.Id);
             ClickField(control, "trigger"); await Until(() => !Field<bool>(control, "busy"));
             var retry = await ReadRound();
             Check(retry.State == "Reading" && retry.DeviceId == h.Left, "explicit retry after a known stale CAS rejection uses the newly observed round instead of trapping the old command");

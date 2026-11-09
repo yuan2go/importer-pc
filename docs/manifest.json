@@ -14437,9 +14437,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-DEBUG-CLOSURE-07; original evidence retains its own SourceCommit",
-      "sha256": "6268dc7b8075e62cc20683670428db6ab308feb994145dede78c269648839df5",
-      "size_bytes": 23315,
-      "git_blob": "4cc2694f286577807e33298946c7c8dfbaa1ca6d",
+      "sha256": "b45e9fce6dbbed2b28f2530daefc7736e76af03dc77fde3c05a1f0096b45b5b3",
+      "size_bytes": 23595,
+      "git_blob": "871661a9e7d8328c9d042204b27b941a41532f6f",
       "storage_scope": "public_repository"
     },
     {

@@ -15,7 +15,7 @@ static partial class Program
         async Task Until(Func<bool> ready, string step)
         { for (var i = 0; i < 200; i++) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(20); } throw new TimeoutException(step); }
         T? Field<T>(object target, string name) => (T?)target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(target);
-        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "ordering")); await h.StartAsync();
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "ordering")); await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("ORDER-0001"), 1);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
         var app = DispatchProxy.Create<IPresentationOrderingApplication, PresentationOrderingProxy>();
@@ -98,7 +98,7 @@ static partial class Program
                 {
                     // Ephemeral presentation-only observations; no admission, persistence
                     // or original RCS request is invented by this synthetic render fixture.
-                    record.Invoke(h.App, ["left", read, false]);
+                    record.Invoke(h.App, ["left", read, false, null]);
                     apply.Invoke(p, [new ParcelReadFeedback(measured.ViewModel.Snapshot!.RuntimeId, "left", read.Id, read.DeviceId,
                         read.Epoch, read.Codes[0], read.DecodedTicks, read.ObservedAt)]);
                 }

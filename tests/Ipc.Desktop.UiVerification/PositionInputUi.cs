@@ -73,12 +73,12 @@ static partial class Program
             // Actual OS mouse input, including a hit in empty space and on a label.
             var rightOutline = (Border)right.FindName("PositionOutline");
             window.Activate(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            var rightBody = (ScrollViewer)right.FindName("PositionBody");
+            var rightBody = (Border)right.FindName("CenteredSupplyPanel");
             await BarcodeNativeKeyboard.ClickAsync(window, rightBody, new Point(rightBody.ActualWidth / 2, rightBody.ActualHeight / 2));
-            Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "clicking the waiting card's central scroll area immediately focuses right barcode input");
-            rightBody.Focus();
+            Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "clicking the visible waiting result immediately focuses right barcode input");
+            rightBody.Focusable = true; rightBody.Focus();
             await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [(ushort)'7'], rightBody);
-            Check(rightEntry.Text == "7" && rightEntry.IsKeyboardFocused, "scanner typing from the card scroll viewer transfers to its selected barcode editor");
+            Check(rightEntry.Text == "7" && rightEntry.IsKeyboardFocused, "scanner typing from the focused result surface transfers to its selected barcode editor");
             rightEntry.Clear();
             await BarcodeNativeKeyboard.ClickAsync(window, rightOutline, new Point(4, rightOutline.ActualHeight / 2));
             Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "clicking empty right-card space selects right and focuses barcode input");

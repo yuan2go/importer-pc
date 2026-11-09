@@ -80,7 +80,8 @@ internal static class DebugNoIsolation31
             Check(picture.Status == "Available" && picture.Image?.Metadata.Id == locked.Frame.Id,
                 "operation picture uses the exact passive debug session without requiring a retired isolation tag");
             var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
-            Check(h.Peer.Requests.Count == 3 && h.Peer.Requests.Last() == locked.RequestBody && sent.Result!.Contains("Accepted"),
+            Check(h.Peer.Requests.Count == 3 && h.Peer.Requests.Last() == locked.RequestBody && sent.HttpResponse is { StatusCode: 200, Complete: true } &&
+                (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == sent.OperationId).Wcs?.State == StageState.Accepted,
                 "explicit send calls actual configured RCS using frozen JSON and a real HTTP reply");
             var performance = System.Text.Json.JsonSerializer.SerializeToElement(h.App.RuntimeProgress()).GetProperty("Flow").GetProperty("Recent").EnumerateArray().ToArray();
             Check(performance.Count(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted") == 2 &&

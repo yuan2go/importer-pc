@@ -140,8 +140,12 @@ static partial class Program
             probe.CancelRoundRead = false; await vm.RefreshAsync(); await Poll(control);
             Check(Field<Button>(control, "send").IsEnabled, "successful authoritative read plus fresh host snapshot restores eligible send");
             ClickField(control, "send");
-            await Until(() => Field<TextBox>(control, "responseBody").Text.StartsWith("状态：Accepted"));
-            ClickField(control, "send"); await Until(() => Equals(Field<Button>(control, "send").Content, "查看发送结果"));
+            // The reply can render before the sending window closes its scan scope.
+            // Let that command and its final poll finish before the next window arms.
+            await Until(() => Field<TextBox>(control, "responseBody").Text.Contains("\"success\": true") &&
+                !Field<bool>(control, "busy") && !Field<bool>(control, "polling") && Field<Button>(control, "send").IsEnabled &&
+                Equals(Field<Button>(control, "send").Content, "查看发送结果"));
+            ClickField(control, "send"); await Until(() => !Field<bool>(control, "busy") && !Field<bool>(control, "polling"));
             Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == a.RequestBody, "click-send and check-result never create a second HTTP request");
             await Poll(other); ClickField(other, "trigger");
             await Until(() => Equals(Field<Button>(other, "trigger").Content, "扫码中…"));

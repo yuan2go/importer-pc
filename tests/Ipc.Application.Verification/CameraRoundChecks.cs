@@ -101,13 +101,13 @@ internal static class CameraRoundChecks
             var send = await h.SendCommandAsync(locked);
             await Reject(async () => { await h.App.SendCameraRoundAsync(send with { RequestHash = new string('0', 64) }, default); }, "tampered request hash cannot send");
             var returned = await h.App.SendCameraRoundAsync(send, default);
-            Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == locked.RequestBody && returned.Result!.StartsWith("状态：Accepted") &&
+            Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == locked.RequestBody && returned.HttpResponse is { Complete: true, StatusCode: 200 } &&
                 (await h.App.SnapshotAsync()).Operations.Single().Wcs?.State == StageState.Accepted,
                 "explicit send posts exactly the frozen JSON once and records a genuinely Accepted stage");
             await h.App.SendCameraRoundAsync(send, default);
             await Reject(async () => { await h.App.SendCameraRoundAsync(send with { CommandId = Wire.Id() }, default); }, "fresh command cannot resend an attempted request");
             Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single().Wcs!.Attempts == 1, "same-command lookup and new-command rejection preserve one attempt");
-            var next = await h.ArmAsync(h.Left); Check(next.Frame is null && next.RequestBody is null && next.Result is null && next.Barcode is null, "again-scan clears all round evidence and results before the next frame");
+            var next = await h.ArmAsync(h.Left); Check(next.Frame is null && next.RequestBody is null && next.HttpResponse is null && next.Barcode is null, "again-scan clears all round evidence and results before the next frame");
             var changed = CameraRoundHarness.Barcode("ROUND-0001"); changed.Data[0] = 240; h.Api(h.Left).Enqueue(changed, 6);
             var second = await h.LockedAsync();
             Check(second.Frame!.Id != locked.Frame.Id && second.Frame.FrameNumber == 6 && second.Frame.OriginalSha256 != locked.Frame.OriginalSha256 && h.Peer.Requests.Count == 1,
@@ -163,7 +163,7 @@ internal static class CameraRoundChecks
             await h.StartAsync(); await PauseForDirectDebug(h.App); await h.BeginAsync(); await h.ArmAsync(h.Left); h.Peer.Mode = "reject";
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("ROUND-REJECT"), 1); var round = await h.LockedAsync();
             var command = await h.SendCommandAsync(round); var returned = await h.App.SendCameraRoundAsync(command, default);
-            Check(returned.Result!.StartsWith("状态：Rejected") && h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single().Wcs is { State: StageState.Rejected, Attempts: 1 },
+            Check(returned.HttpResponse is { Complete: true, StatusCode: 200 } && h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single().Wcs is { State: StageState.Rejected, Attempts: 1 },
                 "RCS business rejection retains its actual response and single attempt");
             await h.App.SendCameraRoundAsync(command, default); await h.EndAsync();
             Check(h.Peer.Requests.Count == 1, "rejection lookup and explicit clearance do not resubmit");

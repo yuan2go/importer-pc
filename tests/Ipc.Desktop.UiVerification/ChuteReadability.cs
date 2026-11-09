@@ -84,16 +84,15 @@ static partial class Program
                 var last = taskValue.GetRectFromCharacterIndex(task.Length - 1);
                 Check(!last.IsEmpty && last.Top >= -1 && last.Bottom <= taskValue.ActualHeight + 1, "last task character is reachable by native scrolling");
                 taskValue.ScrollToHome();
-                var reasonValue = (TextBox)right.FindName("AttentionReason");
-                var reasonViewport = (ScrollViewer)right.FindName("PositionBody");
-                Check(reasonValue.Text.Contains(reason, StringComparison.Ordinal) && reasonViewport.ViewportHeight >= reasonValue.FontSize * 1.4,
+                var reasonValue = (TextBox)right.FindName("CenteredRcsMessage");
+                var firstReason = reasonValue.GetRectFromCharacterIndex(0);
+                Check(reasonValue.IsVisible && reasonValue.Text == reason && firstReason.Height > 0 && firstReason.Bottom <= reasonValue.ActualHeight + .5,
                     "full long rejection reason is retained with at least one complete readable line");
-                reasonViewport.ScrollToBottom(); await Flush();
+                reasonValue.ScrollToEnd(); await Flush();
                 var lastReason = reasonValue.GetRectFromCharacterIndex(reasonValue.Text.Length - 1);
-                var visibleLast = reasonValue.TransformToAncestor(reasonViewport).TransformBounds(lastReason);
-                Check(visibleLast.Top >= -1 && visibleLast.Bottom <= reasonViewport.ActualHeight + 1, "last reason character is reachable in its own scroll area");
-                reasonViewport.ScrollToTop();
-                var next = (TextBlock)right.FindName("NextStep");
+                Check(!lastReason.IsEmpty && lastReason.Top >= -1 && lastReason.Bottom <= reasonValue.ActualHeight + 1, "last reason character is reachable in its own scroll area");
+                reasonValue.ScrollToHome();
+                var next = (TextBlock)right.FindName("CenteredInstruction");
                 var formatted = new FormattedText(next.Text, CultureInfo.CurrentUICulture, next.FlowDirection,
                     new Typeface(next.FontFamily, next.FontStyle, next.FontWeight, next.FontStretch), next.FontSize, next.Foreground, dpi.PixelsPerDip)
                 { MaxTextWidth = next.ActualWidth };

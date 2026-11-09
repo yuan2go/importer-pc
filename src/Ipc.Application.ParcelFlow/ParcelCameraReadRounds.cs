@@ -214,8 +214,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         if (round is null) return new(null, collectingInspection?.Id, null, "Idle", "点击触发扫码开始一轮读取；不会自动发送请求。", null, null, null, null, null, null, null, null, false, repository?.Revision ?? 0);
         var op = round.Operation is { } id ? operations.GetValueOrDefault(id) ?? repository!.ReadOperation(id) : null;
         var request = op?.Wcs?.Request;
-        var response = op?.Wcs is { } stage ? "状态：" + stage.State + " · 发送尝试：" + stage.Attempts + "\n" +
-            ClipRound(Wire.Encode(stage.Replies.LastOrDefault()), 65536) + (stage.Failure is null ? "" : "\n" + stage.Failure) : null;
+        var response = op?.Wcs?.Replies.LastOrDefault()?.HttpResponse;
         var value = new CameraReadRound(round.Id, round.Session, round.Device, round.State, round.Detail, round.Frame, round.Barcode, round.Operation,
             request?.IntegrationRequest?.RequestId.ToString() ?? request?.Id, request?.IntegrationRequest?.Body, request is null ? null : RoundRequestHash(request),
             request?.Binding.Target, response, op is not null && round.State == "Locked" && DebugRequestReady(op), repository!.Revision)
@@ -226,7 +225,6 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         };
         return Wire.Decode<CameraReadRound>(Wire.Encode(value));
     }
-    static string ClipRound(string text, int maximum) => text.Length <= maximum ? text : text[..maximum] + "\n[显示已截断，原回执仍保留]";
     static string RoundRequestHash(FrozenRequest request) => Wire.Hash(Wire.Encode(request));
     public Task<CameraReadRound> ReadCameraReadRoundAsync(CancellationToken token) => InspectionRead(async t =>
     {

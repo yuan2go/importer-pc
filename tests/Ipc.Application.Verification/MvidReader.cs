@@ -408,7 +408,8 @@ internal static class MvidReader
         Check(h.Peer.Requests.Count == 3 && (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
             "an unsent prepared native debug request cannot block the next production parcel");
         var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
-        Check(h.Peer.Requests.Count == 4 && h.Peer.Requests.Last() == locked.RequestBody && sent.Result!.Contains("Accepted"),
+        Check(h.Peer.Requests.Count == 4 && h.Peer.Requests.Last() == locked.RequestBody && sent.HttpResponse is { StatusCode: 200, Complete: true } &&
+            (await h.App.OperationAsync(sent.OperationId!))?.Wcs?.State == StageState.Accepted,
             "explicit native debug send makes one independent RCS request using the frozen body");
         h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 3, [Symbol("SYNTH-NATIVE-DEBUG-NEXT")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NATIVE-DEBUG-NEXT" && o.Wcs?.State == StageState.Accepted));

@@ -15,7 +15,7 @@ public sealed record CameraDebugRequestEvidence(string SessionId, string RoundId
     string SourceEventId, string OriginalSha256, string ManagementActor);
 public sealed record CameraReadRound(string? Id, string? SessionId, string? DeviceId, string State, string Detail,
     CameraFrameMetadata? Frame, string? Barcode, string? OperationId, string? RequestId, string? RequestBody,
-    string? RequestHash, string? Target, string? Result, bool CanSend, long Revision)
+    string? RequestHash, string? Target, IntegrationHttpResponse? HttpResponse, bool CanSend, long Revision)
 {
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
     public bool ManualRequest { get; init; }

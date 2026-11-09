@@ -112,7 +112,8 @@ public sealed partial class ParcelRuntime
                     CandidateHash = Wire.Hash(Wire.Encode(input.Observation.Codes.Order(StringComparer.Ordinal).ToArray())),
                     input.Reason
                 },
-                BlockedOriginalImageAvailable = input is not null && blockedInputPictures.TryGetValue(p.Id, out var picture) && picture.Metadata.ObservationId == input.Observation.Id,
+                BlockedOriginalImageAvailable = input is not null && ContinuingUnadmittedPlacement(p.Id, input.Observation) is { } retained &&
+                    blockedInputPictures.TryGetValue(p.Id, out var picture) && picture.Metadata.ObservationId == retained.Observation.Id,
                 CurrentOperation = current is null ? null : new
                 {
                     OperationId = current.Id,
@@ -202,6 +203,7 @@ public sealed partial class ParcelRuntime
             {
                 PositionId = p.Id,
                 ObservationId = input?.Observation.Id,
+                DisplayObservationId = input is null ? null : (ContinuingUnadmittedPlacement(p.Id, input.Observation) ?? input).Observation.Id,
                 input?.Observation.SourceEventId,
                 input?.Observation.ObservedAt,
                 input?.RecordedAt,
@@ -223,6 +225,7 @@ public sealed partial class ParcelRuntime
             Build = typeof(ParcelRuntime).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
             State = stable,
             Evidence = evidence,
+            InterruptedIngress = repository.InterruptedIngressEvidence(),
             Dependencies = capabilityHealth.Values.Select(h => new { h.InstanceId, h.ConfirmedAt, h.ValidUntil, Detail = DiagnosticFragment(h.Detail, 1024) }).ToArray(),
             Journal = journal.Status,
             Meaning = "仅证明记录时刻；原责任列表每位最多16条，以总数判断省略。日志缺口或丢失期间不得推定未发送、无包裹或已释放。"

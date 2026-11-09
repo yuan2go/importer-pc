@@ -32,15 +32,12 @@ public sealed partial class ParcelRuntime
     void RecordInput(ParcelInputSnapshot input, string eventName, bool? paused = null)
     {
         repository!.Commit(null, eventName, input.Reason, paused: paused, input: input, ingressIdentity: activeIngress.Value);
+        PublishInput(input);
+    }
+    void PublishInput(ParcelInputSnapshot input)
+    {
         latestInputs[input.PositionId] = input;
-        blockedInputPictures.Remove(input.PositionId);
-        if (Id == "sportmaster" && input is
-            {
-                Outcome: ParcelInputOutcome.Blocked, Observation.OperatorInput: null,
-                Observation.InspectionSessionId: null
-            } && readers.TryGetValue(input.Observation.DeviceId, out var reader) &&
-            RetainInputPicture(input.Observation, reader) is { } image)
-            blockedInputPictures[input.PositionId] = image;
+        RetainUnadmittedPicture(input);
         LogInput(input);
     }
     void LogInput(ParcelInputSnapshot input)

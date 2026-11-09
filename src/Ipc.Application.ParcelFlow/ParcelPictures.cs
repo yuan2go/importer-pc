@@ -30,7 +30,22 @@ public sealed partial class ParcelRuntime
         nextParcelPictureRetention = DateTimeOffset.UtcNow.AddMinutes(1);
         pictures.ScheduleParcelRetention(Effective.Retention?.HistoryDays ?? 7);
     }
-    public Task<ParcelPictureResult> ReadParcelPictureAsync(ParcelPictureQuery query, CancellationToken token) => OwnedRead(async owned =>
+    public async Task<ParcelPictureResult> ReadParcelPictureAsync(ParcelPictureQuery query, CancellationToken token)
+    {
+        try
+        {
+            var result = await ReadParcelPictureCoreAsync(query, token).ConfigureAwait(false);
+            WriteRuntimeLog("原图留档", "包裹图片读取结果", new { query.OperationId, query.ObservationId, result.Status,
+                result.Detail, ImageObservationId = result.Image?.Metadata.ObservationId, SourceEventId = result.Image?.Metadata.SourceEventId });
+            return result;
+        }
+        catch (Exception error)
+        {
+            WriteRuntimeLog("原图留档", "包裹图片读取失败", new { query.OperationId, query.ObservationId, Error = error.ToString() }, "警告");
+            throw;
+        }
+    }
+    Task<ParcelPictureResult> ReadParcelPictureCoreAsync(ParcelPictureQuery query, CancellationToken token) => OwnedRead(async owned =>
     {
         if ((query.OperationId is null) == (query.ObservationId is null) || query.OperationId?.Length > 256 || query.ObservationId?.Length > 256)
             throw new ArgumentException("必须提供一个准确原作业或当前观察身份，不能按条码猜配图像。");
@@ -55,11 +70,12 @@ public sealed partial class ParcelRuntime
             }
             else
             {
-                var input = latestInputs.Values.SingleOrDefault(i => i.Observation.Id == observationId);
+                var input = DisplayedInputs().SingleOrDefault(i => i.Observation.Id == observationId);
                 if (input is null) return new ParcelPictureResult("Missing", "当前观察已变化，请从原作业记录打开对应图片。", null, observationId, null);
                 var o = input.Observation; manual = o.OperatorInput is not null;
                 if (!manual && blockedInputPictures.TryGetValue(input.PositionId, out var blockedImage) &&
-                    blockedImage.Metadata.ObservationId == observationId)
+                    blockedImage.Metadata.ObservationId == observationId &&
+                    ContinuingUnadmittedPlacement(input.PositionId, o) is not null)
                     return new ParcelPictureResult("Available", "本次未受理条码对应的完整原图，尚未请求格口。", null, observationId,
                         CopyInputPicture(blockedImage));
                 lock (placements)

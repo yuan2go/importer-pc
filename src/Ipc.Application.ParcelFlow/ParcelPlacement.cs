@@ -26,6 +26,7 @@ public sealed partial class ParcelRuntime
         public DateTimeOffset LastSeen = lastSeen;
         public string? Operation;
         public ParcelInputSnapshot? RejectedInput;
+        public ParcelInputSnapshot? UnadmittedInput;
         public CameraOriginalImage? RejectedImage;
         public string[]? RejectedCodes;
         // A manually entered parcel may simply be unreadable; camera no-code frames

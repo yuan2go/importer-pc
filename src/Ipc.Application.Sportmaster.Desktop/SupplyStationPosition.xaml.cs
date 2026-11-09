@@ -67,7 +67,7 @@ public partial class SupplyStationPosition : UserControl
         }
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.IsProcessing) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) RefreshTaskRegionGeometry();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanSubmitBarcode)) RefreshSubmitAvailability();
-        if (e.PropertyName == nameof(SupplyStationPositionViewModel.CanViewCurrentPicture)) RefreshPictureAvailability();
+        if (e.PropertyName is nameof(SupplyStationPositionViewModel.CanViewCurrentPicture) or nameof(SupplyStationPositionViewModel.PictureUnavailableReason)) RefreshPictureAvailability();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.SuccessIdentity) or nameof(SupplyStationPositionViewModel.ReadFeedbackKey) or nameof(SupplyStationPositionViewModel.RejectionIdentity) or nameof(SupplyStationPositionViewModel.ShowConfirmedTask)) ObservePresentation();
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.Barcode) or nameof(SupplyStationPositionViewModel.HasCurrentInput) or nameof(SupplyStationPositionViewModel.BarcodeObservationKey))
         {
@@ -150,8 +150,14 @@ public partial class SupplyStationPosition : UserControl
     }
     void RefreshPictureAvailability()
     {
-        if (CurrentBarcode is not null) CurrentBarcode.IsEnabled = !editing && !terminalTextRetained && !submitting && submitted is null &&
-            DataContext is SupplyStationPositionViewModel { CanViewCurrentPicture: true };
+        if (CurrentBarcode is null || DataContext is not SupplyStationPositionViewModel position) return;
+        var reason = editing ? "Editing" : terminalTextRetained ? "ManualTextRetained" :
+            submitting || submitted is not null ? "ManualSubmissionPending" : position.PictureUnavailableReason;
+        CurrentBarcode.IsEnabled = reason == "Available";
+        if (Host?.ViewModel is { Snapshot: { } snapshot } vm && vm.Application is Ipc.Application.Contracts.IParcelPresentationDiagnostics diagnostics)
+            diagnostics.ReportPicturePresentation(new(snapshot.RuntimeId, position.PositionId, snapshot.Revision,
+                position.Input?.Observation.Id, position.ReadFeedbackIdentity, position.CurrentPictureQuery?.ObservationId,
+                CurrentBarcode.IsEnabled, reason));
     }
     void CaptureInputBasis()
     {

@@ -122,6 +122,28 @@ public sealed partial class ParcelRepository
         r.Close(); if (positions.Count != 0) Commit(null, "IngressRecoveryRequired", "Interrupted inputs retain original responsibility; no automatic replay", paused: true);
         return positions.ToArray();
     }
+    internal object InterruptedIngressEvidence()
+    {
+        using var count = db.CreateCommand();
+        count.CommandText = "SELECT COUNT(*) FROM parcel_ingress WHERE state='Interrupted'";
+        var total = (long)count.ExecuteScalar()!;
+        using var query = db.CreateCommand();
+        query.CommandText = "SELECT id,position,received_at,session,started_at,body_hash,detail FROM parcel_ingress WHERE state='Interrupted' ORDER BY received_at,id LIMIT 16";
+        using var reader = query.ExecuteReader();
+        List<object> entries = [];
+        while (reader.Read())
+            entries.Add(new
+            {
+                Id = reader.GetString(0), PositionId = reader.GetString(1), ReceivedAt = reader.GetString(2),
+                OriginalSession = reader.GetString(3), StartedAt = reader.IsDBNull(4) ? null : reader.GetString(4),
+                OriginalSha256 = reader.GetString(5),
+                Detail = reader.IsDBNull(6) ? null : reader.GetString(6)[..Math.Min(reader.GetString(6).Length, 1024)],
+                DetailTruncated = !reader.IsDBNull(6) && reader.GetString(6).Length > 1024,
+                State = "Interrupted"
+            });
+        return new { Total = total, Entries = entries, Omitted = total - entries.Count,
+            Meaning = "原输入尚未核对；不据此推定原请求未发送。核对原业务请求和现场包裹后再恢复。" };
+    }
     internal bool HasInterruptedIngress(string position)
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_ingress WHERE state IN ('Pending','Interrupted') AND position=$p)";

@@ -61,7 +61,9 @@ public sealed partial class ParcelRuntime
     {
         if (frame.Outcome == ObservationReadOutcome.Codes || frame.Scene is not { } scene) return null;
         lock (placements) return codeScenes.TryGetValue(position, out var previous) && previous == (frame.Epoch, scene) &&
-            placements.TryGetValue(position, out var placement) && placement.EndedAt is null ? placement.RejectedInput?.Observation.Id : null;
+            placements.TryGetValue(position, out var placement) && placement.EndedAt is null
+                ? placement.RejectedInput?.Observation.Id ?? (placement.UnadmittedInput is { } input &&
+                    input.Observation.DeviceId == frame.DeviceId && input.Observation.Epoch == frame.Epoch ? input.Observation.Id : null) : null;
     }
 
     void RetainRejectedPresentation(string position, Observation observation, string input)

@@ -10,7 +10,7 @@ public sealed partial class SupplyStationPositionViewModel
     ParcelReadFeedback? readFeedback;
     ParcelCameraReadFeedback? cameraRead;
     Guid cameraReadRuntime;
-    bool RetainedRejectedInput => Input is { Outcome: ParcelInputOutcome.Rejected } input &&
+    bool RetainedRejectedInput => Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked } input &&
         readFeedback?.RetainedObservationId == input.Observation.Id;
     bool ManualPlacementResult => Operation?.OperatorInput is not null && Input?.OperationId == Operation.Id &&
         (Input.Observation.OperatorInput is not null || ParcelInputReasons.IsSamePlacement(Input)) &&
@@ -82,6 +82,9 @@ public sealed partial class SupplyStationPositionViewModel
                 input.Observation.AdmissionId == current.Acquisition.AdmissionId) ? new(ObservationId: input.Observation.Id) :
         Input is null && Operation is { } operation ? new(OperationId: operation.Id) : null;
     public bool CanViewCurrentPicture => CurrentPictureQuery is not null;
+    public string PictureUnavailableReason => !owner.Fresh ? "SnapshotUnavailable" : CameraNoCode ? "NoCurrentCode" :
+        CameraObservationUnmatched ? "CameraObservationAheadOfSnapshot" : unreadFeedback ? "ReadAheadOfSnapshot" :
+        IsProcessing ? "Processing" : CurrentPictureQuery is null ? "NoPictureIdentity" : "Available";
     public string? BarcodeObservationKey => unreadFeedback ? ReadFeedbackKey : Input is { } input
         ? $"{owner.Snapshot?.RuntimeId}/{input.Observation.DeviceId}/{input.Observation.Epoch}/{input.Observation.Id}"
         : Operation is { } operation ? $"{owner.Snapshot?.RuntimeId}/{operation.Id}" : null;
@@ -97,7 +100,7 @@ public sealed partial class SupplyStationPositionViewModel
         !CameraNoCode && !invalidReadFeedback && (CameraObservationUnmatched || unreadFeedback || !InputUnadmitted && Operation?.State == ParcelState.ResolvingWcs);
     bool DisplayPaused => owner.Snapshot?.Paused == true;
     bool PausedAttention => DisplayPaused && (HasUncertainOriginal || !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback &&
-        (Input?.Outcome == ParcelInputOutcome.Rejected || Operation?.State == ParcelState.WcsRejected));
+        (Input is { Outcome: ParcelInputOutcome.Rejected } rejected && !rejected.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) || Operation?.State == ParcelState.WcsRejected));
     bool PausedReadBlocked => DisplayPaused && !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && Input?.Outcome == ParcelInputOutcome.Blocked;
     public bool ShowConfirmedTask => !SupplyDisabled && CurrentTaskAvailable && SlotAvailable && !unreadFeedback && !ReaderUnavailableForDisplay && !DisplayPaused && owner.ViewportReady;
     public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
@@ -126,7 +129,7 @@ public sealed partial class SupplyStationPositionViewModel
             "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
     public string DisplayNextStep => SupplyDisabled ? "" : DisplayPaused ? PausedAttention
         ? "供包已暂停；" + (HasUncertainOriginal ? NextStep : Input?.Outcome == ParcelInputOutcome.Rejected ? "查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep)
-        : "本件暂勿投递；确认现场后，点击顶部“恢复供包”。" : ShowConfirmedTask ? "" : OfflineCameraSurface ? ManualInputAvailable ? "输入完整条码后按回车或点击提交。" : NextStep :
+        : PauseInstruction : ShowConfirmedTask ? "" : OfflineCameraSurface ? ManualInputAvailable ? "输入完整条码后按回车或点击提交。" : NextStep :
         CameraNoCode ? HasUncertainOriginal ? NextStep : "托盘空时直接放上包裹，条码朝上；已放包裹仍未读到，请调整标签或用扫码枪/键盘补录，取得本件格口后再投递。" : invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" :
         !HasUncertainOriginal && Input is { Outcome: ParcelInputOutcome.Rejected, BarcodeSelection.SelectedCode: null } ? "本件未取得格口，请查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep;
     public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
@@ -186,12 +189,12 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(EnableBackground), EnableBackground), (nameof(EnableForeground), EnableForeground), (nameof(DisableBackground), DisableBackground), (nameof(DisableForeground), DisableForeground),
             (nameof(Barcode), Barcode), (nameof(HasCurrentInput), HasCurrentInput), (nameof(BarcodePlaceholder), BarcodePlaceholder),
             (nameof(BarcodeObservationKey), BarcodeObservationKey),
-            (nameof(CanViewCurrentPicture), CanViewCurrentPicture), (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(SlotAvailable), SlotAvailable), (nameof(Slot), Slot),
+            (nameof(CanViewCurrentPicture), CanViewCurrentPicture), (nameof(PictureUnavailableReason), PictureUnavailableReason), (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(SlotAvailable), SlotAvailable), (nameof(Slot), Slot),
             (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId), (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity),
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(ResultBackground), ResultBackground), (nameof(ResultForeground), ResultForeground), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotForeground), DisplaySlotForeground), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
             (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
-            (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction),
+            (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction), (nameof(CenteredStateFullInstruction), CenteredStateFullInstruction),
             (nameof(DisplayStatus), DisplayStatus), (nameof(DisplayAttentionReason), DisplayAttentionReason), (nameof(DisplayNextStep), DisplayNextStep), (nameof(ShowConfirmedTask), ShowConfirmedTask),
             (nameof(DisplaySlotFontSize), DisplaySlotFontSize), (nameof(CameraReadFeedback), CameraReadFeedback), (nameof(ReadCueLabel), ReadCueLabel), (nameof(ReadFeedbackIdentity), ReadFeedbackIdentity),
             (nameof(ReadFeedbackKey), ReadFeedbackKey), (nameof(RejectionIdentity), RejectionIdentity) })

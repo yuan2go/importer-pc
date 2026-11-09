@@ -26,7 +26,7 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
         {
             OperatorInput = operatorInput,
             PlacementOperationId = placementOperation,
-            RetainedObservationId = retainedInput,
+            RetainedObservationId = retainedInput ?? ContinuingUnadmittedPlacement(position, observation)?.Observation.Id,
             CandidateCount = observation.Codes?.Length ?? 0,
             SourceSequence = observation.Sequence,
             SourceEventId = observation.SourceEventId,
@@ -78,6 +78,20 @@ public sealed partial class ParcelRuntime : IParcelPresentationDiagnostics
         continuedPresentationReads.Contains(latest.ObservationId) && reads.FirstOrDefault(r => r.PositionId == camera.PositionId) is { } read &&
         presentationReadFrames.TryGetValue(read.ObservationId, out var frame) && frame.Epoch == camera.Frame.Epoch
             ? new ParcelCameraReadFeedback(camera.PositionId, frame) : camera).ToArray();
+    readonly Dictionary<string, (bool Enabled, string Reason)> picturePresentationStates = [];
+    public void ReportPicturePresentation(ParcelPicturePresentation state)
+    {
+        if (state.RuntimeId != runtimeId || stopped || stopping.IsCancellationRequested ||
+            !positions.ContainsKey(state.PositionId) || state.Reason.Length > 128 ||
+            new[] { state.InputObservationId, state.ReadObservationId, state.PictureObservationId }.Any(id => id?.Length > 256)) return;
+        lock (presentationGate)
+        {
+            var signature = (state.Enabled, state.Reason);
+            if (picturePresentationStates.TryGetValue(state.PositionId, out var previous) && previous == signature) return;
+            picturePresentationStates[state.PositionId] = signature;
+            WriteRuntimeLog("作业页面", "图片按钮状态变化", state);
+        }
+    }
     public Task ReportPresentationAsync(Guid runtime, string observation, string stage, long composedTicks, long snapshotTicks, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();

@@ -44,7 +44,7 @@ static partial class StabilityRemediation
     {
         var c = Config(workspace); var launch = Launch(path, c); var factory = new DelayedFactory(new(launch));
         var app = new ParcelRuntime(launch, new SportmasterFlow(), factory)
-        { Boundary = point => { if (point == "AfterRawDurable") throw new IOException("Synthetic T3 interruption"); } };
+        { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); }, Boundary = point => { if (point == "AfterRawDurable") throw new IOException("Synthetic T3 interruption"); } };
         await app.StartAsync(default); var database = Path.Combine(DirectoryFor(launch, c), "sportmaster.db");
         try
         {
@@ -65,7 +65,7 @@ static partial class StabilityRemediation
             factory.Release.TrySetResult();
             try { await app.DisposeAsync(); } catch (InvalidOperationException) { Check(!app.HasUnreleasedResources, "terminal failure reported after actual safe resource release"); }
         }
-        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await recovered.StartAsync(default); await ManagementModeFixture.Authorize(recovered);
         var snapshot = await recovered.SnapshotAsync();
         Check(snapshot.Operations.Single().Wcs is { State: StageState.Accepted, Attempts: 1 } &&
@@ -80,7 +80,7 @@ static partial class StabilityRemediation
     static async Task SlowMarker(string workspace, string path)
     {
         var c = Config(workspace); var launch = Launch(path, c); var factory = new DelayedFactory(new(launch));
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(default);
         Task<bool>? waiting = null;
         try
@@ -145,7 +145,7 @@ static partial class StabilityRemediation
     static async Task OwnedReads(string workspace, string path)
     {
         var c = Config(workspace); var launch = Launch(path, c);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(default);
         int entered = 0;
         app.BeforeRead = async token => { Interlocked.Increment(ref entered); await Task.Delay(Timeout.Infinite, token); };

@@ -17,7 +17,7 @@ static partial class StabilityRemediation
         draft.HistoryDays = "6";
         try { draft.ApplyParameters(c); throw new Exception("Accepted invalid retention"); } catch (InvalidOperationException) { Check(true, "retention below seven days rejected"); }
         ParcelOperation[] originals;
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)))
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } })
         {
             await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
             for (var i = 0; i < 5; i++)
@@ -63,7 +63,7 @@ static partial class StabilityRemediation
                 "each maintenance rebuilds pending-command owners from current facts; settling one command never clears another responsibility");
             repo.ValidateRawInventory();
         }
-        await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await reopened.StartAsync(default);
         Check(reopened.EmitReferenceAt("left", originals[0].AdmissionId, originals[0].ParcelCode, "retired-duplicate"), "old admission delivery remains durably accounted");
         var end = DateTimeOffset.UtcNow.AddSeconds(5); ParcelSnapshot state;

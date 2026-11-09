@@ -123,7 +123,7 @@ static class AcquisitionLifecycle
         var path = Path.Combine(root, "runtime"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var factory = new SlowFactory(new ParcelCapabilityFactory(launch));
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(CancellationToken.None);
         var left = factory.Readers![c.Topology.Readers[0].DeviceId]; var right = factory.Readers[c.Topology.Readers[1].DeviceId];
         try
@@ -182,7 +182,7 @@ static class AcquisitionLifecycle
             await app.DisposeAsync();
             Check(left.RetainedAcquisitionCount == 0 && right.RetainedAcquisitionCount == 0, "fully drained disposal terminates process-local acquisition resources");
             var reopenedFactory = new SlowFactory(new ParcelCapabilityFactory(launch));
-            await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory);
+            await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
             await reopened.StartAsync(CancellationToken.None);
             await reopened.ReconcileAsync(original.Id);
             var recovered = (await reopened.SnapshotAsync()).Operations.Single(o => o.Id == original.Id);

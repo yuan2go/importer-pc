@@ -2,11 +2,28 @@ $ErrorActionPreference = 'Stop'
 if ($env:GITHUB_ACTIONS -ne 'true' -or $env:RUNNER_ENVIRONMENT -ne 'github-hosted' -or $env:RUNNER_OS -ne 'Windows') {
     throw 'Run the clean-machine runtime installation verification on the disposable GitHub-hosted Windows runner.'
 }
+$identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+try {
+    if (-not ([Security.Principal.WindowsPrincipal]::new($identity)).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+        throw 'The quiet installation test requires an elevated Windows runner token.'
+    }
+} finally { $identity.Dispose() }
 
 $verificationRoot = 'D:/sm-vc-acceptance'
 $evidence = Join-Path $verificationRoot 'evidence'
 $inputRoot = Join-Path $verificationRoot 'redist'
 New-Item -ItemType Directory -Path $evidence,$inputRoot | Out-Null
+# Quiet deployment only writes a receipt under administrator-controlled ancestors.
+$administrators = [Security.Principal.SecurityIdentifier]::new('S-1-5-32-544')
+$system = [Security.Principal.SecurityIdentifier]::new('S-1-5-18')
+$protected = [Security.AccessControl.DirectorySecurity]::new()
+$protected.SetOwner($administrators)
+$protected.SetAccessRuleProtection($true, $false)
+foreach ($principal in $administrators,$system) {
+    $protected.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($principal, 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow'))
+}
+Set-Acl -LiteralPath $verificationRoot -AclObject $protected
+Set-Acl -LiteralPath $evidence -AclObject $protected
 $inventory = Get-Content -LiteralPath src/Ipc.Platform/sm-vc-runtime.json -Raw | ConvertFrom-Json
 foreach ($package in $inventory.Packages) {
     $file = Join-Path $inputRoot $package.File

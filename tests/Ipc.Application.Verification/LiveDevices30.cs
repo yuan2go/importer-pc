@@ -154,5 +154,31 @@ internal static class LiveDevices30
             "with an unconfirmed original request the RCS connection is not replaced; the change waits for a controlled restart");
         Check(u.Peer.Requests.Count(r => r.Contains("LIVE30-UNKNOWN", StringComparison.Ordinal)) == 1, "the unconfirmed original is not resent");
         u.Peer.Hold.TrySetResult();
+
+        await using var replacement = new CameraRoundHarness(workspace, Path.Combine(root, "live-devices-30-replacement"), timeoutMs: 1500, nativeResults: true);
+        await replacement.StartAsync();
+        var window = Wire.Id();
+        await replacement.App.SetManagementWorkspaceAsync(window, true, default);
+        var beforeReplacement = await replacement.App.SnapshotAsync();
+        var left = replacement.Api(replacement.Left);
+        var next = WithReader(beforeReplacement.Configuration.Effective, replacement.Right, "device.serial", "SYNTH-NEW-RIGHT");
+        replacement.Factory.Expect(next);
+        replacement.Factory.DiscoverReplacements = false;
+        replacement.Factory.OnLiveConfirmed = () => Thread.Sleep(next.TimeoutMs + 100);
+        var saved = await replacement.App.StageConfigurationAsync(beforeReplacement.Configuration.Revision, next, "Synthetic camera replacement after release budget");
+        var afterReplacement = await replacement.App.SnapshotAsync();
+        Check(saved.Status == "Effective" && saved.Reason.Contains("右相机暂未连接") &&
+            afterReplacement.Configuration.Revision == beforeReplacement.Configuration.Revision + 1 &&
+            afterReplacement.Configuration.Effective.Topology!.Readers.Single(r => r.DeviceId == replacement.Right).Parameters!["device.serial"] == "SYNTH-NEW-RIGHT",
+            "right camera settings commit once when the old operation budget has expired and the new native camera is unreachable");
+        Check(ReferenceEquals(left, replacement.Api(replacement.Left)) && left.Stops == 0 &&
+            afterReplacement.Devices!.Single(d => d.DeviceId == replacement.Right).Health == DeviceHealth.Disconnected,
+            "new native camera gets a connection attempt while the unchanged left camera is still running");
+        replacement.Api(replacement.Right).Discovered = true;
+        await CameraRoundHarness.Until(async () => (await replacement.App.SnapshotAsync()).Devices!.Any(d =>
+            d.DeviceId == replacement.Right && d.IsValid(DateTimeOffset.UtcNow)));
+        Check((await replacement.App.SnapshotAsync()).Configuration.Revision == afterReplacement.Configuration.Revision,
+            "automatic recovery uses the saved serial without saving a second time");
+        await replacement.App.SetManagementWorkspaceAsync(window, false, default);
     }
 }

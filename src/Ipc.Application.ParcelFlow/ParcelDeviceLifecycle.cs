@@ -106,6 +106,7 @@ public sealed partial class ParcelRuntime
             {
                 foreach (var port in selectedPorts) { var now = DateTimeOffset.UtcNow; RecordCapabilityHealth(new(port.InstanceId, false, now, now, "Maintenance incomplete: " + ex.GetType().Name)); }
                 repository.Commit(null, "MaintenanceIncomplete", "Device=" + key + "; " + ex.GetType().Name + "; ownership retained, no successful stop/reconnect asserted");
+                WriteRuntimeLog("设备通信", "手动重连未完成", new { Device = key, Error = ex.ToString() }, "错误");
                 return new("MaintenanceIncomplete", "Original resources retained; inspect and explicitly retry maintenance", repository.Revision);
             }
         }

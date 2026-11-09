@@ -61,6 +61,7 @@ static partial class Program
                 else if (args.Contains("--debug-no-isolation-31-ui")) await VerifyDebugNoIsolation31(root, evidence, lines);
                 else if (args.Contains("--audit-fixes-26")) await VerifyAuditFixes26(root, evidence, lines);
                 else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);
+                else if (args.Contains("--camera-settings-feedback")) await VerifyCameraSettingsFeedback(root, evidence, lines);
                 else if (args.Contains("--startup-defaults-ui")) await VerifyStartupDefaultsUi(root, evidence, lines);
                 else if (args.Contains("--chute-readability")) await VerifyChuteReadability(root, evidence, lines);
                 else if (args.Contains("--site-ui-refinement")) { await VerifyStartupDefaultsUi(root, evidence, lines); await VerifyFieldReadability(root, evidence, lines); }

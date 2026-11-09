@@ -52,8 +52,16 @@ public partial class SupplyStationWindow
                     if (!ViewModel.Fresh) throw new InvalidOperationException("状态读取已中断，请等待恢复后再连接。");
                     var target = position?.ReaderId ?? ViewModel.Snapshot?.Configuration.Effective.Wcs?.InstanceId ?? throw new InvalidOperationException("RCS 尚未配置。");
                     var receipt = await ViewModel.Application.ReconnectDeviceAsync(target);
-                    ViewModel.Message = receipt.Status + " · " + receipt.Reason;
-                    await ViewModel.RefreshAsync();
+                    ViewModel.Message = receipt.Status switch
+                    {
+                        "Reconnected" => name + "已完成重连操作，请查看当前连接状态。",
+                        "MaintenanceIncomplete" => name + "重新连接未完成。" + (position is null
+                            ? "请检查服务地址和网络，具体原因见日志。"
+                            : "请检查供电、网线和相机设置，具体原因见日志。"),
+                        "Rejected" => name + "暂不能重新连接。" + Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(
+                            receipt.Reason, "请等当前操作结束后重试。"),
+                        _ => name + "的重新连接结果待确认，请查看连接状态和日志。"
+                    };
                 }, "处理" + name + "连接");
             };
             buttons.Children.Add(ProductButton("调试", () => { if (position is null) SetPage("debug"); else ShowPositionDebug(position); return Task.CompletedTask; })); row.Children.Add(buttons);

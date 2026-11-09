@@ -132,21 +132,21 @@ internal static class StationPositionControlChecks
         { ["zone-id"] = "71", ["project-id"] = "83", ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["left-bcr-code"] = "SYNTH-LEFT", ["right-bcr-code"] = "SYNTH-RIGHT", ["heartbeat-interval-ms"] = "100" });
         var config = seed with { Wcs = binding, StationCode = "SYNTH-STATION" };
         await using var service = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(binding);
-        peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); peer.HoldWhen = _ => true;
         service.ConfigureRuntime(config); service.SetEnabledPositions(["right"]); await service.StartAsync(default);
-        await CameraRoundHarness.Until(() => Task.FromResult(peer.Requests.Count > 0));
-        using (var json = JsonDocument.Parse(peer.Requests.Last()))
+        await CameraRoundHarness.Until(() => Task.FromResult(peer.HeartbeatRequests.Count > 0));
+        using (var json = JsonDocument.Parse(peer.HeartbeatRequests.Last()))
         {
             var data = json.RootElement.GetProperty("data"); var parameters = data[0].GetProperty("params");
             Check(data.GetArrayLength() == 1 && parameters.GetProperty("bcrCode").GetString() == binding.Parameters["right-bcr-code"] && parameters.EnumerateObject().Count() == 3,
                 "heartbeat uses enabled position selection with unchanged stationCode bcrCode timestamp protocol");
         }
-        service.SetEnabledPositions([]); peer.Hold.TrySetResult(); peer.Hold = null; await Task.Delay(150); var count = peer.Requests.Count; await Task.Delay(250);
-        Check(peer.Requests.Count == count && (await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "both disabled sends no empty heartbeat and cannot claim fresh remote confirmation");
+        service.SetEnabledPositions([]); peer.Hold.TrySetResult(); peer.Hold = null; await Task.Delay(150); var count = peer.HeartbeatRequests.Count; await Task.Delay(250);
+        Check(peer.HeartbeatRequests.Count == count && (await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "both disabled sends no empty heartbeat and cannot claim fresh remote confirmation");
         Check((await service.HealthAsync(default)).StationVehicles.Length == 0, "late response from previous selection cannot restore disabled vehicle state");
         service.SetEnabledPositions(["left"]);
-        await CameraRoundHarness.Until(() => Task.FromResult(peer.Requests.Count > count));
-        using var last = JsonDocument.Parse(peer.Requests.Last());
+        await CameraRoundHarness.Until(() => Task.FromResult(peer.HeartbeatRequests.Count > count));
+        using var last = JsonDocument.Parse(peer.HeartbeatRequests.Last());
         Check(last.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").GetString() == binding.Parameters["left-bcr-code"], "reenabling resumes only selected position without camera state changes");
     }
 }

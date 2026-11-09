@@ -33,12 +33,18 @@ static class StateJournalChecks
         VerifyDurablePause(Path.Combine(root, "pause-evidence"));
         await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "runtime"), nativeResults: true, heartbeatSeconds: 1);
         int DestinationRequests() => h.Peer.Requests.Count(body => Parse(body).GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.dest_request");
-        await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        h.Peer.HeartbeatUnavailable = true;
+        await h.StartAsync(waitForRcs: false);
         h.App.StateCheckpointInterval = TimeSpan.FromMilliseconds(250);
         var logs = await WaitLog(h, all => all.Any(e => Event(e) is "供包台状态变化" or "供包台状态快照" && Detail(e).GetProperty("Trigger").GetString() == "StartupCompleted"));
         var startup = logs.First(e => Event(e) is "供包台状态变化" or "供包台状态快照" && Detail(e).GetProperty("Trigger").GetString() == "StartupCompleted");
-        Check(!State(startup).GetProperty("SoftwarePaused").GetBoolean() && Position(State(startup), "left").GetProperty("CameraAdmission").GetBoolean(),
-            "startup checkpoint establishes actual left camera admission and software pause baseline");
+        Check(!State(startup).GetProperty("SoftwarePaused").GetBoolean() && !Position(State(startup), "left").GetProperty("CameraAdmission").GetBoolean() &&
+            Position(State(startup), "left").GetProperty("CameraBlockers").EnumerateArray().Any(r => r.GetString() == "RcsRemoteConfirmationUnavailable"),
+            "startup checkpoint records blocked camera admission and its missing remote confirmation without claiming software pause");
+        h.Peer.HeartbeatUnavailable = false; await h.WaitForCameraAdmissionAsync();
+        logs = await WaitLog(h, all => all.Any(e => Event(e) is "供包台状态变化" or "供包台状态快照" &&
+            e.GetProperty("Sequence").GetInt64() > startup.GetProperty("Sequence").GetInt64() && Position(State(e), "left").GetProperty("CameraAdmission").GetBoolean()));
+        Check(true, "a real heartbeat response records camera admission after the blocked startup baseline");
         var snapshot = await h.App.SnapshotAsync(); var pauseId = Wire.Id();
         Check((await h.App.CommandAsync(new(pauseId, snapshot.Revision, "Pause", Value: "SYNTH-WINDOW-PROTECTION"))).Status == "Persisted", "pause command is durably committed");
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "软件暂停状态已记录"));
@@ -100,10 +106,13 @@ static class StateJournalChecks
             runtime.Select(e => e.GetProperty("Sequence").GetInt64()).SequenceEqual(runtime.Select(e => e.GetProperty("Sequence").GetInt64()).Order()),
             "runtime identity and monotonic record sequence order ordinary state, frame and request events");
         Check(DestinationRequests() == 1, "logging, queries, checkpoints and resume never replay the blocked input");
+        var beforeOutage = runtime.Max(e => e.GetProperty("Sequence").GetInt64());
         h.Peer.HeartbeatUnavailable = true;
         logs = await WaitLog(h, all => all.Any(e => Event(e) is "供包台状态变化" or "供包台状态快照" &&
+            e.GetProperty("Sequence").GetInt64() > beforeOutage &&
             Position(State(e), "left").GetProperty("Camera").GetProperty("DecodePolicy").GetString() == "RcsUnavailablePreviewOnly"));
-        var offline = logs.Last(e => Event(e) is "供包台状态变化" or "供包台状态快照");
+        var offline = logs.Last(e => Event(e) is "供包台状态变化" or "供包台状态快照" && e.GetProperty("Sequence").GetInt64() > beforeOutage &&
+            Position(State(e), "left").GetProperty("Camera").GetProperty("DecodePolicy").GetString() == "RcsUnavailablePreviewOnly");
         Check(!State(offline).GetProperty("SoftwarePaused").GetBoolean() && !Position(State(offline), "left").GetProperty("CameraAdmission").GetBoolean(),
             "RCS offline checkpoint distinguishes preview-only decode gating from software pause");
         h.Peer.HeartbeatUnavailable = false;

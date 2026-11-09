@@ -47,7 +47,6 @@ public sealed partial class ParcelRuntime
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
             if (Id == "sportmaster" && positions.Keys.All(p => !PositionSupplyEnabled(p))) reasons.Add("左右投递位均未启用，不再接收新包裹。");
-            if (storageUpgradeReviewRequired) reasons.Add("数据库已升级；请进入管理模式核对历史后，明确继续供包。原请求不会自动重发。");
             if (!RestoreConfirmed) reasons.Add("RestoreHandoffRequired: keep isolated; verify same-machine source retirement and authenticate maintenance; cross-machine evidence still required");
             reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
             if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) (Id == "sportmaster" ? auxiliaryReasons : reasons).Add("Reader confirmation missing/expired");
@@ -132,11 +131,10 @@ public sealed partial class ParcelRuntime
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
                 case "Pause": repository.Commit(null, "AdmissionPaused", command.Value ?? "Software pause only; caller did not supply a trigger", paused: true, command: command); resumePriorPause = false; break;
-                case "Resume" when CanResume(acknowledgeStorageUpgrade: true):
-                    repository.Commit(null, storageUpgradeReviewRequired ? "StorageUpgradeReviewed" : "AdmissionResumed",
-                        storageUpgradeReviewRequired ? Wire.Encode(new { Actor = ManagementEvidence, Policy = "Explicit authorized resume after additive storage upgrade; original request guards remain independent; no replay" }) : "Other stage guards remain independent",
+                case "Resume" when CanResume():
+                    repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent",
                         paused: false, command: command);
-                    storageUpgradeReviewRequired = false; resumePriorPause = false; break;
+                    resumePriorPause = false; break;
                 case "AcknowledgeOverload" when repository.Paused && overload != 0 && Volatile.Read(ref pendingOverloadWrites) == 0 && positionQueues.Values.All(q => q.Reader.Count == 0):
                     var originalOverload = OverloadIdentity();
                     repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged; original=" + originalOverload, command: command, acknowledgedOverload: originalOverload);
@@ -424,6 +422,8 @@ public sealed partial class ParcelRuntime
                 try { await reader.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { disposalFailures.Add(ex); }
             foreach (var port in CapabilityPorts())
                 try { await port.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { disposalFailures.Add(ex); }
+            foreach (var resource in pendingLiveDeviceCleanup.ToArray())
+                try { await resource.DisposeAsync().ConfigureAwait(false); pendingLiveDeviceCleanup.Remove(resource); } catch (Exception ex) { disposalFailures.Add(ex); }
             if (disposalFailures.Count != 0) throw new AggregateException("Capability disposal failures; shared factory/package/database leases retained", disposalFailures);
         }
         await factory.DisposeAsync().ConfigureAwait(false);

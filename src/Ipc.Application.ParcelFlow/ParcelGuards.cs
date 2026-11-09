@@ -6,7 +6,7 @@ public sealed partial class ParcelRuntime
 {
     bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving;
-    bool CanResume(bool acknowledgeStorageUpgrade = false) => (!storageUpgradeReviewRequired || acknowledgeStorageUpgrade && MaintenanceAuthorized) &&
+    bool CanResume() =>
         CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     // A frozen debug preview has made no external call and owns no production parcel.
     // Reuse the full unsent guard; dispatched/unknown requests keep their original responsibility.
@@ -15,6 +15,7 @@ public sealed partial class ParcelRuntime
     bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
         readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
+        (readers[positions[position].ReaderDeviceId].Source is not IObservationInspectionSource || AutomaticCameraReadsAllowed(positions[position].ReaderDeviceId)) &&
         !operations.Values.Where(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x)).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
     bool CanContinue(ParcelOperation op) => !IsDebugRequest(op) && CanDispatch(op with { RecoveryRequired = false }) && !MainTerminated(op) && (op.RecoveryRequired && WeightPending(op) || WeightReady(op) || op.Capture is { State: StageState.Prepared, Attempts: 0 }) &&
         (op.RecoveryRequired || op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null || Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 }));
@@ -69,7 +70,7 @@ public sealed partial class ParcelRuntime
             v.CameraCode == binding.Parameters.GetValueOrDefault(position + "-bcr-code") && v.ReceivedAt <= now && v.ValidUntil > now).ToArray();
         return matching.Length == 1 ? matching[0] : null;
     }
-    ParcelAvailability Availability() => new(CanAdmit(), CanResume(acknowledgeStorageUpgrade: true), CanSaveConfiguration,
+    ParcelAvailability Availability() => new(CanAdmit(), CanResume(), CanSaveConfiguration,
         operations.Values.Where(CanContinue).Select(x => x.Id).ToArray(), operations.Values.Where(CanContinueUpload).Select(x => x.Id).ToArray(), operations.Values.Where(CanAbandon).Select(x => x.Id).ToArray());
     async Task<T> ExternalAsync<T>(Func<Task<T>> action)
     {

@@ -34,7 +34,7 @@ class ReleaseDocumentTests(unittest.TestCase):
         current = str(read_storage_format(root))
         self.assertIn('PARCEL' + current + '-OPERATIONS.md', docs.SPORTMASTER_GUIDES.values())
         self.assertIn('新库直接创建格式 **' + current + '**', guide)
-        for fact in ['新库直接创建格式 **12**', '已知格式10/11', 'COMPLETED.json', '旧程序不能直接读取12', '原请求', '不得只改版本号']:
+        for fact in ['新库直接创建格式 **12**', '非当前格式在写入前拒绝', '不提供格式升级', 'COMPLETED.json', '旧程序不能直接读取12', '原请求', '不得只改版本号']:
             self.assertIn(fact, guide)
 
     def test_sm_ships_current_scan_and_diagnostic_semantics(self):

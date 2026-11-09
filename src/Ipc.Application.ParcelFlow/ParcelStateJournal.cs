@@ -79,6 +79,7 @@ public sealed partial class ParcelRuntime
             if (health?.IsValid(now) != true) cameraReasons.Add("CameraConfirmationUnavailable");
             if (!PositionMaintenanceClear(p.Id)) cameraReasons.Add("CameraResourceMaintenance");
             if (!AdmissionCapabilitiesReady(p.Id)) cameraReasons.Add("RequiredCapabilityUnavailable");
+            if (reader?.Source is IObservationInspectionSource && !AutomaticCameraReadsAllowed(p.ReaderDeviceId)) cameraReasons.Add("RcsRemoteConfirmationUnavailable");
             if (!ImageCapacityAvailable()) cameraReasons.Add("ImageCapacityUnavailable");
             return new
             {
@@ -161,13 +162,12 @@ public sealed partial class ParcelRuntime
             DevicePortsReleased = stopped,
             ApplicationOwnershipReleased = false,
             SharedReady = SharedReady(),
-            CanResume = CanResume(acknowledgeStorageUpgrade: true),
+            CanResume = CanResume(),
             SessionValid,
             ConfigurationRevision = configuration.Current.Revision,
             ConfigurationHash = Wire.Hash(Wire.Encode(Effective)),
             ConfigurationConfirmationRequired = configuration.Current.Confirmation?.Required == true,
             RestoreConfirmed,
-            storageUpgradeReviewRequired,
             backupInProgress,
             configurationSaving,
             failure,

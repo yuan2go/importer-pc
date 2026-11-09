@@ -15,6 +15,7 @@ static class StorageBaseline
     { if (!ok) throw new InvalidDataException(reason); Console.WriteLine("PASS BASELINE " + reason); }
     public static async Task Run(string workspace, string root, bool smoke)
     {
+        await CurrentStorageChecks.Run(workspace, root);
         var parcelRoot = Path.Combine(root, "baseline-parcel");
         var supplyFile = Path.Combine(root, "baseline-supply", "station.db");
         using (var parcel = new ParcelRepository(parcelRoot, "sportmaster"))
@@ -48,6 +49,19 @@ static class StorageBaseline
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");
         }
         Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel12/Supply6");
+        var analyzed = Path.Combine(root, "analyzed-current.db"); File.Copy(Path.Combine(parcelRoot, "sportmaster.db"), analyzed);
+        using (var db = new SqliteConnection("Data Source=" + analyzed + ";Pooling=False"))
+        { db.Open(); using var c = db.CreateCommand(); c.CommandText = "ANALYZE;"; c.ExecuteNonQuery(); }
+        Check(ParcelRepository.ReadStorageVersion(analyzed, "sportmaster") == ParcelRepository.CurrentStorageVersion, "SQLite-owned optimizer tables remain valid in the current schema");
+        foreach (var unexpected in new[] { "unexpected_payload", "sqliteX_payload" })
+        {
+            var file = Path.Combine(root, unexpected + ".db"); File.Copy(analyzed, file);
+            using (var db = new SqliteConnection("Data Source=" + file + ";Pooling=False"))
+            { db.Open(); using var c = db.CreateCommand(); c.CommandText = "CREATE TABLE " + unexpected + "(id TEXT);"; c.ExecuteNonQuery(); }
+            var hash = Wire.FileHash(file);
+            try { ParcelRepository.ReadStorageVersion(file, "sportmaster"); throw new Exception("Unexpected schema accepted"); }
+            catch (InvalidDataException) { Check(Wire.FileHash(file) == hash, "current schema refuses unknown and SQLite-lookalike objects without changing bytes: " + unexpected); }
+        }
         foreach (var parcel in new[] { true, false })
         {
             var directory = Path.Combine(root, parcel ? "malformed-parcel-identity" : "malformed-supply-identity"); Directory.CreateDirectory(directory);

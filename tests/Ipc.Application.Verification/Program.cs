@@ -43,7 +43,6 @@ if (args.Contains("--session-shift-crash-child")) { var i = Array.IndexOf(args, 
 if (args.Contains("--session-shift-25")) { await SessionShift25.Run(workspace, root); return; }
 if (args.Contains("--ui-spec-24")) { await UiSpec24.Run(workspace, root); return; }
 if (args.Contains("--product-closure-21")) { await StationProductClosure.Run(workspace, root); return; }
-if (args.Contains("--db11-compatible-update")) { await Database11Compatibility.Run(workspace, root); return; }
 if (args.Contains("--management-status-ownership")) { await StabilityRemediation.OwnedManagementStatus(workspace, root); return; }
 if (args.Contains("--state-journal")) { await StateJournalChecks.Run(workspace, root); return; }
 if (args.Contains("--management-workspace")) { await ManagementWorkspaceChecks.Run(workspace, root); return; }
@@ -71,7 +70,8 @@ if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run
 if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
 if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
-if (args.Contains("--live-devices-30")) { await LiveDevices30.Run(workspace, root); return; }
+if (args.Contains("--live-device-cleanup")) { await LiveDeviceCleanup.Run(workspace, root); return; }
+if (args.Contains("--live-devices-30")) { await LiveDeviceCleanup.Run(workspace, root); await LiveDevices30.Run(workspace, root); return; }
 if (args.Contains("--mvs-stop-reconnect")) { await MvsStopReconnect.Run(); return; }
 if (args.Contains("--mvs-still-frames")) { await MvsStillFrames.Run(); return; }
 if (args.Contains("--log-readable")) { LogReadable.Run(); return; }

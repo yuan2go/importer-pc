@@ -1,11 +1,9 @@
 using System.Diagnostics;
-using System.Reflection;
 using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
-using Ipc.Platform.Storage;
 using Microsoft.Data.Sqlite;
 
 static class SessionShift25
@@ -82,36 +80,10 @@ static class SessionShift25
         Check(h.Peer.Requests.Count == before && Wire.Encode((await h.App.OperationAsync(admitted.OperationId!))!.Wcs!.Request) == frozen, "opening reports and another shift never replays or replaces an original request");
         var today = await api.ReadSessionStatisticsAsync(Detail(StationReportRange.Today), default);
         Check(today.Totals.Sum(x => x.Requests) == 3, "calendar totals combine both runs without changing their shift ownership");
-        await Migration11(root); Attribution(root, h.Config); await Interrupted(workspace, root);
+        Attribution(root, h.Config); await Interrupted(workspace, root);
     }
     static SqliteConnection Open(string file, bool readOnly = false)
     { var c = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Mode = readOnly ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate, Pooling = false }.ToString()); c.Open(); return c; }
-    static async Task Migration11(string root)
-    {
-        var folder = Path.Combine(root, "predecessor11"); Directory.CreateDirectory(folder);
-        var config = new SportmasterFlow().InitialConfiguration() with { Mode = RunMode.Simulation };
-        var configDir = Path.Combine(folder, "config"); Directory.CreateDirectory(configDir); ExtensionStore.AtomicWrite(Path.Combine(configDir, "business.json"), config);
-        var launch = new BusinessLaunch(configDir, Path.Combine(folder, "data"), null, null); var directory = Path.Combine(launch.DataRoot, config.Mode.ToString(), config.StationId, "sportmaster"); Directory.CreateDirectory(directory);
-        var database = Path.Combine(directory, "sportmaster.db");
-        using (var db = Open(database))
-        {
-            var baseline = (string)typeof(ParcelRepository).GetField("Baseline11", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null)!;
-            Database.CreateBaseline(db, "sportmaster", 11, baseline);
-            using var c = db.CreateCommand(); c.CommandText = "INSERT INTO station_metric_buckets VALUES($minute,'left',9,4,3,1,0,1)"; c.Parameters.AddWithValue("$minute", DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:00Z")); c.ExecuteNonQuery();
-        }
-        ExtensionStore.AtomicWrite(Path.Combine(directory, "configuration.json"), CurrentConfigurationFixture.Create<ParcelConfiguration>(3, config, null, "Effective", null));
-        var configHash = Wire.FileHash(Path.Combine(directory, "configuration.json")); var before = Wire.FileHash(database);
-        try { ParcelRepository.ReadStorageVersion(database, "sportmaster"); throw new Exception("implicit upgrade"); } catch (InvalidDataException) { }
-        Check(Wire.FileHash(database) == before, "runtime refuses DB11 before writes instead of silently migrating it");
-        var service = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => new Ipc.Assembly.ParcelCapabilityFactory(launch), () => { }, () => "synthetic-maintainer") { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(folder, "scratch-" + Wire.Id())).FullName };
-        var backup = Path.Combine(folder, "original11.db"); var plan = await service.PlanChangeAsync("Upgrade", backup);
-        Check(plan.Allowed && plan.Summary.Contains("事务升级至12") && !File.Exists(backup), "offline review plans DB11 full backup and exact format12 without writing the original");
-        await service.ExecuteChangeAsync(plan.Identity, "Upgrade", backup, () => Task.CompletedTask);
-        Check(ParcelRepository.ReadStorageVersion(database, "sportmaster") == 12 && ParcelRepository.ReadMaintenanceStorageVersion(backup, "sportmaster") == 11, "verified backup remains format11 while the live database commits format12");
-        using (var db = Open(database, true))
-        { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM station_run_shifts"; Check(Convert.ToInt64(c.ExecuteScalar()) == 0, "upgrade never fabricates historical shifts"); c.CommandText = "SELECT sum(recognitions) FROM station_shift_totals WHERE shift=''"; Check(Convert.ToInt64(c.ExecuteScalar()) == 9, "legacy retained aggregate survives under an explicit unassigned scope"); }
-        Check(Wire.FileHash(Path.Combine(directory, "configuration.json")) == configHash, "format12 upgrade preserves exact configuration bytes");
-    }
     sealed class Clock(DateTimeOffset utc) : TimeProvider
     { long ticks; public override long TimestampFrequency => TimeSpan.TicksPerSecond; public override long GetTimestamp() => ticks; public override DateTimeOffset GetUtcNow() => utc; public void Advance(TimeSpan value) { ticks += value.Ticks; utc += value; } public void MoveUtc(TimeSpan value) => utc += value; }
     static void Attribution(string root, ParcelConfiguration config)

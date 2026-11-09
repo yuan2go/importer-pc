@@ -19,6 +19,8 @@ public sealed partial class SportmasterRcsTaskService
     Task? heartbeatTask;
     string? heartbeatFailure;
     bool heartbeatResponseReceived;
+    DateTimeOffset heartbeatReceivedAt, heartbeatValidUntil;
+    internal TimeProvider HeartbeatTimeForVerification { get; set; } = TimeProvider.System;
     string heartbeatEvidence = "RCS client stopped; upstream acceptance unconfirmed";
     StationVehicleState[] stationVehicles = [];
     static long lastHeartbeatId;
@@ -103,13 +105,15 @@ public sealed partial class SportmasterRcsTaskService
                     if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
                     var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
                     if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
-                    var vehicles = ReadHeartbeatVehicles(bytes, requestId, mapping, DateTimeOffset.UtcNow,
-                        TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3)));
+                    var receivedAt = HeartbeatTimeForVerification.GetUtcNow();
+                    var lifetime = TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3));
+                    var vehicles = ReadHeartbeatVehicles(bytes, requestId, mapping, receivedAt, lifetime);
                     lock (lifecycle)
                     {
                         if (selectionRevision != heartbeatSelectionRevision) continue; // A prior selection cannot resurrect disabled vehicle hints.
                         stationVehicles = vehicles;
                         heartbeatFailure = null; heartbeatResponseReceived = true;
+                        heartbeatReceivedAt = receivedAt; heartbeatValidUntil = receivedAt + lifetime;
                         heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; application acknowledgement unconfirmed";
                     }
                 }

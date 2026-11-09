@@ -8,9 +8,13 @@ namespace Ipc.Application.ParcelFlow;
 // usual controlled restart, so this never weakens the restart path's guards.
 public sealed partial class ParcelRuntime
 {
+    // Candidates never installed in ports still own cleanup after a failed Dispose.
+    readonly List<IAsyncDisposable> pendingLiveDeviceCleanup = [];
     internal async Task<(BusinessReceipt Receipt, ConfigurationChangeAudit Audit)?> ApplyDevicesLiveAsync(
         long expectedRevision, ParcelConfiguration candidate, LiveDeviceChange change, ConfigurationChangeAudit audit)
     {
+        if (pendingLiveDeviceCleanup.Count != 0)
+            throw new InvalidOperationException("候选设备释放尚未完成，设置未保存；请关闭供包台重试释放。");
         // Same responsibility barrier as a controlled restart, and nothing else in flight on these devices.
         if (ports is not { } current || repository is null || configuration is null ||
             configuration.Current.Revision != expectedRevision || configuration.Current.Pending is not null ||
@@ -28,12 +32,12 @@ public sealed partial class ParcelRuntime
             built.Wcs is { } replacement && (replacement.InstanceId != current.Wcs!.InstanceId ||
                 built.ImplementationHashes.GetValueOrDefault(replacement.InstanceId) is not { } hash || current.ImplementationHashes.GetValueOrDefault(replacement.InstanceId) != hash))
         {
-            await DisposeQuietlyAsync(built).ConfigureAwait(false);
+            await DisposeCandidatesAsync(built).ConfigureAwait(false);
             return null; // A different implementation could not execute existing originals; restart.
         }
         if (definition.ArchiveOriginalFrames && candidate.Mode == RunMode.Production && built.Readers.Values.Any(r => r is not IOriginalFrameSource))
         {
-            await DisposeQuietlyAsync(built).ConfigureAwait(false);
+            await DisposeCandidatesAsync(built).ConfigureAwait(false);
             throw new InvalidDataException("Production SM reader must retain the exact original recognition frame; image fallback is forbidden");
         }
 
@@ -51,6 +55,7 @@ public sealed partial class ParcelRuntime
         var names = string.Join("、", change.Readers.Select(ReaderName).Concat(oldWcs is null ? [] : ["RCS"]));
         repository.Commit(null, "LiveDeviceApplyStarted", Wire.Encode(new { Devices = resources, Actor = ManagementEvidence, CandidateHash = audit.CandidateHash }));
         var stoppedOld = false;
+        var adopted = false;
         try
         {
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, Management.Require()); budget.CancelAfter(Effective.TimeoutMs);
@@ -74,12 +79,12 @@ public sealed partial class ParcelRuntime
                 // Release before the replacements start: the same physical camera keeps its serial lease.
                 await ExternalAsync(async () =>
                 {
-                    foreach (var session in oldSessions.Values) try { await session.Source.DisposeAsync().ConfigureAwait(false); } catch (Exception error) { Diagnostic("相机通信", "旧相机连接释放失败", "警告", error.GetType().Name); }
-                    if (oldWcs is not null) try { await oldWcs.DisposeAsync().ConfigureAwait(false); } catch (Exception error) { Diagnostic("设备通信", "旧 RCS 连接释放失败", "警告", error.GetType().Name); }
+                    foreach (var session in oldSessions.Values) await session.Source.DisposeAsync().ConfigureAwait(false);
+                    if (oldWcs is not null) await oldWcs.DisposeAsync().ConfigureAwait(false);
                     return true;
                 }).ConfigureAwait(false);
             }
-            catch (Exception error) when (error is IOException or TimeoutException or OperationCanceledException or System.Net.Sockets.SocketException)
+            catch (Exception error) when (!stoppedOld && error is IOException or TimeoutException or OperationCanceledException or System.Net.Sockets.SocketException)
             {
                 // The old devices may still hold their resources: keep them, restart what can restart, change nothing.
                 await ExternalAsync(async () =>
@@ -91,7 +96,7 @@ public sealed partial class ParcelRuntime
                     return true;
                 }).ConfigureAwait(false);
                 repository.Commit(null, "LiveDeviceApplyAbandoned", "Devices=" + string.Join(",", resources) + "; " + error.GetType().Name + "; original configuration retained");
-                throw new InvalidOperationException("设备未能及时停止，设置未保存；原设置和连接保留。请在诊断页检查设备后再保存。");
+                throw new InvalidOperationException("设备未能及时停止，设置未保存；原设置保留。请在诊断页检查设备连接后再保存。", error);
             }
 
             // Swap the ports, then make the candidate effective before the replacements start,
@@ -99,6 +104,7 @@ public sealed partial class ParcelRuntime
             var readerPorts = (current.Readers ?? new Dictionary<string, IControlledObservationSource> { [current.Reader.DeviceId] = current.Reader })
                 .ToDictionary(x => x.Key, x => built.Readers.GetValueOrDefault(x.Key) ?? x.Value);
             ports = current with { Reader = readerPorts[current.Reader.DeviceId], Readers = readerPorts, Wcs = built.Wcs ?? current.Wcs };
+            adopted = true;
             foreach (var id in change.Readers) readers[id] = new(built.Readers[id]);
             configuration.ApplyLive(expectedRevision, candidate);
             factory.ConfirmLive(Effective);
@@ -124,7 +130,7 @@ public sealed partial class ParcelRuntime
                     {
                         await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false);
                     }
-                    catch (ObservationConnectionException error) { Diagnostic("相机通信", "保存设置后相机连接失败", "警告", Wire.Encode(new { Device = id, session.Epoch, Error = error.GetType().Name })); }
+                    catch (ObservationConnectionException error) { faults.Add(ReaderName(id)); Diagnostic("相机通信", "保存设置后相机连接失败", "警告", Wire.Encode(new { Device = id, session.Epoch, Error = error.ToString() })); }
                     catch (Exception error) when (error is not OperationCanceledException || !stopping.IsCancellationRequested) { faults.Add(ReaderName(id)); Diagnostic("相机通信", "保存设置后相机启动失败", "警告", id + ": " + error.GetType().Name); }
                 }
                 return true;
@@ -144,26 +150,37 @@ public sealed partial class ParcelRuntime
             }
             // Camera preview reads the current sessions.
             Volatile.Write(ref previewReaders, readers.ToDictionary(r => r.Key, r => new PreviewReader(r.Value, ParcelConnectionSetup.IsDeferred(Effective, r.Key))));
-            audit = audit with { AfterRevision = configuration.Current.Revision, Status = "Effective", Result = "Live devices reconnected: " + string.Join(",", resources) + (faults.Count == 0 ? "" : "; start faults: " + string.Join(",", faults)) };
+            audit = audit with { AfterRevision = configuration.Current.Revision, Status = "Effective", Result = "Live device settings applied: " + string.Join(",", resources) + (faults.Count == 0 ? "" : "; start faults: " + string.Join(",", faults)) };
             repository.Commit(null, "ConfigurationLiveDevicesApplied", Wire.Encode(audit), configurationAudit: audit);
-            Diagnostic("参数", "设置已保存并生效", detail: "Revision=" + configuration.Current.Revision + "; reconnected=" + string.Join(",", resources));
+            Diagnostic("参数", "设置已保存并生效", detail: "Revision=" + configuration.Current.Revision + "; applied=" + string.Join(",", resources));
             InvalidatePresentation();
             var text = faults.Count == 0
-                ? "设置已保存并生效：已重新连接" + names + "，其他设备未中断。"
-                : "设置已保存并生效，但" + string.Join("、", faults) + "未能启动，请在诊断页查看并重新连接；其他设备未中断。";
+                ? names + "设置已保存并生效，连接状态请查看设备信息；其他设备未中断。"
+                : "设置已保存并生效，但" + string.Join("、", faults) + "暂未连接；请在诊断页查看原因和自动恢复状态，其他设备未中断。";
             return (new("Effective", text, repository.Revision), audit);
         }
-        catch (Exception) when (!stoppedOld)
+        catch (Exception error) when (!adopted)
         {
-            await DisposeQuietlyAsync(built).ConfigureAwait(false);
+            Diagnostic("设备通信", "保存设置未完成", "警告", error.ToString());
+            try { await DisposeCandidatesAsync(built).ConfigureAwait(false); }
+            catch (Exception cleanup) { throw new InvalidOperationException("设备清理未完成，设置未保存；请关闭供包台重试释放后再保存。", new AggregateException(error, cleanup)); }
+            if (stoppedOld) throw new InvalidOperationException("原设备释放未完成，设置未保存；请关闭供包台重试释放后再保存。", error);
             throw;
         }
-        finally { foreach (var resource in resources) maintainedResources.TryRemove(resource, out _); }
+        finally { if (!stoppedOld || adopted) foreach (var resource in resources) maintainedResources.TryRemove(resource, out _); }
         string ReaderName(string id) => positions.Values.FirstOrDefault(p => p.ReaderDeviceId == id)?.Id switch { "left" => "左相机", "right" => "右相机", _ => "相机" };
     }
-    static async Task DisposeQuietlyAsync(ParcelLiveDevices built)
+    async Task DisposeCandidatesAsync(ParcelLiveDevices built)
     {
-        foreach (var reader in built.Readers.Values) try { await reader.DisposeAsync().ConfigureAwait(false); } catch (Exception) { /* never started */ }
-        if (built.Wcs is { } wcs) try { await wcs.DisposeAsync().ConfigureAwait(false); } catch (Exception) { /* never started */ }
+        List<Exception> failures = [];
+        foreach (var resource in built.Readers.Values.Cast<IAsyncDisposable>().Concat(built.Wcs is { } wcs ? [wcs] : []))
+            try { await resource.DisposeAsync().ConfigureAwait(false); }
+            catch (Exception error) { pendingLiveDeviceCleanup.Add(resource); failures.Add(error); }
+        if (failures.Count != 0)
+        {
+            var error = new AggregateException(failures);
+            Diagnostic("设备通信", "候选设备释放未完成", "警告", error.ToString());
+            throw new InvalidOperationException("候选设备释放未完成，设置未保存；请关闭供包台重试释放。", error);
+        }
     }
 }

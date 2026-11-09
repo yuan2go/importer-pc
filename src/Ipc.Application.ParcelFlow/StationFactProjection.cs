@@ -82,19 +82,4 @@ public sealed partial class ParcelRepository
     void RetainRecognitions(string predicate, string owner, SqliteTransaction tx)
         => RetireStationFacts("source_seq IN (SELECT seq FROM parcel_audit WHERE event='InputObserved' AND " + predicate + ")", owner, tx);
 
-    // Called once by the strict offline 10/11 -> 12 transaction. No historical
-    // shift is inferred; current raw owners are indexed under the explicit legacy scope.
-    static void BackfillStationFacts(SqliteConnection connection, SqliteTransaction tx, string application)
-    {
-        if (application != "sportmaster") return;
-        // The projection functions only require db and current shift; a lightweight
-        // connection owner avoids constructing/recovering a business repository.
-        using var commands = connection.CreateCommand(); commands.Transaction = tx;
-        commands.CommandText = "SELECT body FROM parcel_operations UNION ALL SELECT body FROM parcel_archives";
-        using (var r = commands.ExecuteReader())
-            while (r.Read()) ProjectStationRequestCore(connection, Wire.Decode<ParcelOperation>(r.GetString(0)), tx, "");
-        commands.CommandText = "SELECT seq,detail FROM parcel_audit WHERE event='InputObserved' ORDER BY seq";
-        using var rows = commands.ExecuteReader();
-        while (rows.Read()) ProjectStationObservationCore(connection, Wire.Decode<ParcelInputSnapshot>(rows.GetString(1)), rows.GetInt64(0), tx, "");
-    }
 }

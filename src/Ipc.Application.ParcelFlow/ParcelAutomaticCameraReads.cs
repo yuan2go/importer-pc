@@ -18,7 +18,8 @@ public sealed partial class ParcelRuntime
         if (Id != "sportmaster") return true;
         var health = Volatile.Read(ref automaticCameraRcsHealth);
         var now = DateTimeOffset.UtcNow;
-        return health is { Ready: true } && health.ConfirmedAt <= now && health.ValidUntil > now;
+        return health is { Ready: true, RemoteConfirmation: RemoteConnectionConfirmation.ResponseReceived } &&
+            health.ConfirmedAt <= now && health.ValidUntil > now && health.RemoteConfirmedAt <= now && health.RemoteValidUntil > now;
     }
     InspectionRegistration? AutomaticReadRegistration(InspectionRegistration? registration)
     {

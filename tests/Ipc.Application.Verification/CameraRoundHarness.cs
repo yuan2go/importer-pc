@@ -44,7 +44,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         return next;
     }
     // stillMs: "放稳后再识别" for both synthetic cameras; "0" decodes every frame.
-    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 3600, string stillMs = "0", bool nativeResults = false, BarcodeFilterPolicy? barcodeFilter = null)
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 1, string stillMs = "0", bool nativeResults = false, BarcodeFilterPolicy? barcodeFilter = null)
     {
         if (!nativeLoaded)
         {
@@ -78,13 +78,14 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);
     }
-    public async Task StartAsync(bool waitForAllCameras = true)
+    public async Task StartAsync(bool waitForAllCameras = true, bool waitForRcs = true)
     {
         Factory = new(Launch, Config);
         App = new(Launch, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
         if (waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         await AuthorizeAsync();
+        if (waitForRcs) await Until(async () => (await App.SnapshotAsync()).Health.Any(h => h.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived));
     }
     public async Task AuthorizeAsync()
     {
@@ -153,6 +154,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         // Live replacement bookkeeping: how many ports were rebuilt, and whether new cameras are found.
         public int ReaderBuilds, WcsBuilds;
         public bool DiscoverReplacements = true;
+        public bool RejectLiveReaders, FailCandidateRelease;
         public ParcelConfiguration? LiveConfirmed;
         // The fixture validates one exact configuration; a test names the next one before saving it.
         public void Expect(ParcelConfiguration next) => expected = next;
@@ -183,10 +185,11 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             {
                 readers.Add(id, Reader(c.Topology!.Readers.Single(r => r.DeviceId == id))); ReaderBuilds++;
                 Apis[id].Discovered = DiscoverReplacements;
+                if (FailCandidateRelease) Decoders[id].FailReleaseAt = 1;
             }
             SportmasterRcsTaskService? wcs = null;
             if (integration) { wcs = new(c.Wcs!); wcs.ConfigureRuntime(c); WcsBuilds++; }
-            return new(readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" });
+            return new(RejectLiveReaders ? readers.ToDictionary(r => "unexpected-" + r.Key, r => r.Value) : readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" });
         }
         public void ConfirmLive(ParcelConfiguration c) => LiveConfirmed = c;
         public ValueTask DisposeAsync() => validator.DisposeAsync();
@@ -196,6 +199,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         readonly SoftwareDecoder inner = new(parameters.GetValueOrDefault("code.encoding", "utf-8"), () => { }, settings: ReaderSettings.Read(parameters));
         public bool PreservesInput => true;
         public int Count;
+        public int ReleaseCalls, FailReleaseAt;
         // The next N decodes return no code although the frame is unchanged (the decoder missing a resting parcel).
         public int MissNext;
         public int RejectNext;
@@ -216,7 +220,11 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             if (Interlocked.Decrement(ref MissNext) >= 0) Last = []; else Interlocked.Exchange(ref MissNext, 0);
             Interlocked.Increment(ref Count); return Last;
         }
-        public void Release() => inner.Release();
+        public void Release()
+        {
+            if (++ReleaseCalls == FailReleaseAt) throw new IOException("Synthetic decoder release failure");
+            inner.Release();
+        }
     }
     internal sealed class RoundApi(DeviceBinding binding) : IMvsApi
     {
@@ -282,6 +290,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         readonly HttpListener listener = new(); readonly CancellationTokenSource stopped = new(); readonly Task loop;
         readonly ConcurrentBag<Task> handlers = [];
         public readonly ConcurrentQueue<string> Requests = new();
+        public readonly ConcurrentQueue<string> HeartbeatRequests = new();
         public TaskCompletionSource? Hold { get; set; }
         public Func<string, bool>? HoldWhen { get; set; }
         public string Mode = "assigned";
@@ -306,9 +315,12 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             try
             {
-                using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); Requests.Enqueue(body);
-                var hold = Hold; if (hold is not null && (HoldWhen?.Invoke(body) ?? true)) await hold.Task.WaitAsync(stopped.Token);
+                using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync();
                 using var json = JsonDocument.Parse(body); var id = json.RootElement.GetProperty("requestId").GetInt64();
+                var heartbeat = json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat";
+                (heartbeat ? HeartbeatRequests : Requests).Enqueue(body);
+                // Business-result uncertainty does not also simulate a heartbeat outage unless selected explicitly.
+                var hold = Hold; if (hold is not null && (HoldWhen?.Invoke(body) ?? !heartbeat)) await hold.Task.WaitAsync(stopped.Token);
                 if (HeartbeatUnavailable && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
                 { context.Response.StatusCode = 503; return; }
                 var reply = JsonSerializer.Serialize(new
@@ -319,15 +331,30 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
                 });
                 if (Mode == "no-destination")
-                    reply = JsonSerializer.Serialize(new { requestId = id, result = new[] { new { index = 1, success = false,
-                        command = "sorter.task.dest_request", msg = "合成异常：未找到可用格口，请人工核对包裹。", data = new { chuteCode = "" } } } });
-                if (ReplyVehicleStates && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
-                    reply = JsonSerializer.Serialize(new { requestId = id, result = json.RootElement.GetProperty("data").EnumerateArray().Select(item => new
+                    reply = JsonSerializer.Serialize(new
                     {
-                        index = item.GetProperty("index").GetInt32(), success = true, command = "sorter.task.station_heartbeat",
-                        data = new { stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(), bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
-                            agvNo = "SYNTH-AGV-" + item.GetProperty("index").GetInt32(), status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING" }
-                    }).ToArray() });
+                        requestId = id,
+                        result = new[] { new { index = 1, success = false,
+                        command = "sorter.task.dest_request", msg = "合成异常：未找到可用格口，请人工核对包裹。", data = new { chuteCode = "" } } }
+                    });
+                if (ReplyVehicleStates && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
+                    reply = JsonSerializer.Serialize(new
+                    {
+                        requestId = id,
+                        result = json.RootElement.GetProperty("data").EnumerateArray().Select(item => new
+                        {
+                            index = item.GetProperty("index").GetInt32(),
+                            success = true,
+                            command = "sorter.task.station_heartbeat",
+                            data = new
+                            {
+                                stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(),
+                                bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
+                                agvNo = "SYNTH-AGV-" + item.GetProperty("index").GetInt32(),
+                                status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING"
+                            }
+                        }).ToArray()
+                    });
                 var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 await context.Response.OutputStream.WriteAsync(bytes, stopped.Token);
             }

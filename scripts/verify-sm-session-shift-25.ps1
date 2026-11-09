@@ -24,7 +24,7 @@ if ($Section -eq 'Core') {
   if ($buildExit) {Get-Content $buildLog -Tail 18;throw 'Release build failed'}
  }
  $testAssembly=Join-Path $verificationRoot 'tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll'
- $suiteFlags=@('--session-shift-25','--ui-spec-24','--product-closure-21','--camera-rounds','--camera-chain-closure','--management-mode','--manual-supply','--rcs-timeout-errors','--reader-feedback-22','--parameter-guidance-startup','--db11-compatible-update','--reliability-02','--shutdown-resources')
+ $suiteFlags=@('--session-shift-25','--ui-spec-24','--product-closure-21','--camera-rounds','--camera-chain-closure','--management-mode','--manual-supply','--rcs-timeout-errors','--reader-feedback-22','--parameter-guidance-startup','--storage-schema-only','--reliability-02','--shutdown-resources')
 } else {
  $core=Get-Content (Join-Path $evidenceRoot 'core-summary.json') -Raw | ConvertFrom-Json
  if ($core.source_commit -ne $sourceCommit -or @($core.builds).Count -ne 3 -or @($core.builds | Where-Object exit_code -ne 0).Count -or @($core.suites | Where-Object exit_code -ne 0).Count -or $core.suites.Count -ne 13) {throw 'Same-source complete Core verification required'}

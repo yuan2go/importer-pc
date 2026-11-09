@@ -58,6 +58,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             if (heartbeatStations is null) throw new InvalidDataException("RCS requires the effective station/reader configuration before start");
             heartbeatStop?.Dispose(); heartbeatStop = new();
             heartbeatFailure = null; heartbeatResponseReceived = false; stationVehicles = [];
+            heartbeatReceivedAt = default; heartbeatValidUntil = default;
             heartbeatEvidence = heartbeatStations.Length == 0
                 ? "Camera heartbeat suspended: no configured camera codes; manual request client ready; upstream acceptance unconfirmed"
                 : "Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed";
@@ -70,11 +71,21 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     }
     public Task<CapabilityHealth> HealthAsync(CancellationToken token)
     {
-        token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
-        lock (lifecycle) return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed && heartbeatStations is not null && heartbeatFailure is null, now, now.AddSeconds(3),
-            "RCS client local lifecycle/configuration readiness only; " + (heartbeatFailure ?? heartbeatEvidence))
-        { RemoteConfirmation = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null ? RemoteConnectionConfirmation.ResponseReceived : RemoteConnectionConfirmation.Unconfirmed,
-            StationVehicles = running && !disposed && heartbeatFailure is null ? stationVehicles.Where(v => v.ReceivedAt <= now && v.ValidUntil > now).ToArray() : [] });
+        token.ThrowIfCancellationRequested(); var now = HeartbeatTimeForVerification.GetUtcNow();
+        lock (lifecycle)
+        {
+            var confirmed = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null && heartbeatReceivedAt <= now && heartbeatValidUntil > now;
+            // Local client readiness also serves manual input without a heartbeat identity.
+            // Remote timestamps belong to actual responses, never to this health read.
+            return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed && heartbeatStations is not null && heartbeatFailure is null,
+                now, now.AddSeconds(3), "RCS client local lifecycle/configuration readiness only; " + (heartbeatFailure ?? heartbeatEvidence))
+            {
+                RemoteConfirmation = confirmed ? RemoteConnectionConfirmation.ResponseReceived : RemoteConnectionConfirmation.Unconfirmed,
+                RemoteConfirmedAt = heartbeatResponseReceived ? heartbeatReceivedAt : null,
+                RemoteValidUntil = heartbeatResponseReceived ? heartbeatValidUntil : null,
+                StationVehicles = confirmed ? stationVehicles.Where(v => v.ReceivedAt <= now && v.ValidUntil > now).ToArray() : []
+            });
+        }
     }
     public async Task ReconnectAsync(CancellationToken token)
     { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }

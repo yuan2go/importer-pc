@@ -1,16 +1,16 @@
 # 实现与验证原则：项目审查
 
-日期：2026-11-09（Asia/Singapore）。代码基线：`5a12e2f1`；与本次核对的 `origin/main`（`67a03763`）源码树相同。本次只修改项目规则和本报告，没有修改产品行为、数据格式或测试断言。
+日期：2026-11-09（Asia/Singapore）。代码基线：`5a12e2f1`；与本次核对的 `origin/main`（`67a03763`）源码树相同。审查后按用户要求修复 A1、A2、A3，并对 R1 先做故障注入再修复；当前数据格式未变。
 
 ## 结论与证据边界
 
 现有核心设计有明确业务依据：Application 持有作业、原请求和配置状态，设备实现负责原生资源，UI 调用应用契约；请求先落账再发送，未知结果不自动重发。不能因为这些流程复杂，就删除防重、原件保留、授权复核或实际资源释放检查。
 
-需要优先处理的是 RCS 首次连接确认前的自动识码放行。真实服务实现的本机合成探针已复现 `Ready=true` 与 `RemoteConfirmation=Unconfirmed` 同时存在，且没有新心跳时读取健康状态仍刷新确认时间。另有相机配置生效提示不准确、旧格式升级代码未退出当前维护实现的问题。资源清理异常的所有权处理需要补充故障注入，尚不能宣称发生了资源泄漏。
+A1、A2、A3 已完成针对性修复。R1 故障注入复现了清理失败仍报告保存成功，以及失败对象在退出流程中失去引用，已一起修复。没有据此宣称真实 SDK 句柄泄漏；现场发生概率未知。下文保留问题的触发条件和审查证据，验证结果以文末本次修复记录为准。
 
 这是覆盖全仓结构、当前 SM 关键执行链及验证工具的审查，不是对每行代码、所有线程交错、全部设备和现场工况的穷举证明。故障在现场出现的概率均未知；没有用测试通过数推算可靠性或现场故障率。
 
-## 审查范围
+## 审查范围（修复前基线）
 
 按 Git 跟踪文件盘点，`src/` 有 469 个 C# 文件、27 个项目文件、20 个 XAML 文件；`tests/` 有 307 个 C# 文件、9 个项目文件；`scripts/` 有 32 个 PowerShell 和 59 个 Python 文件。该统计不包含生成的 `bin/obj`、未跟踪材料和外置 SDK。对工程引用、条件编译、失败处理、重试、锁、缓存、测试入口进行全仓检索；下表所列关键链进一步逐段阅读。
 
@@ -28,13 +28,13 @@
 |发布及工程工具|锁定恢复、SM 构建选择、发布源身份/哈希、文档检查、Python 测试、CI 配置|沿用现有工具可完成本次验证；未生成安装包，未刷新集成 manifest|
 |暂停开发范围|DirectPlc、WcsToPlc、Supply、Inspection、外置扩展及示例|只核查边界和是否进入 SM；按现行规则保留，不把其存在本身判成缺陷，也不新增抽象|
 
-## 确认的问题
+## 修复前确认的问题
 
-### A1 · P1 · 首次 RCS 心跳确认前，自动识码可能提前放行
+### A1 · P1 · 首次 RCS 心跳确认前，自动识码可能提前放行（已修复）
 
 依据为“RCS 离线暂停扫码”和“外部事实应通过明确类型传入内部”。
 
-定位：`src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs:71`、`src/Ipc.Application.ParcelFlow/ParcelAutomaticCameraReads.cs:16`；业务准入还有 `ParcelGuards.cs` 中的 `AdmissionCapabilitiesReady`。
+审查基线定位：`src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs:71`、`src/Ipc.Application.ParcelFlow/ParcelAutomaticCameraReads.cs:16`；业务准入还有 `ParcelGuards.cs` 中的 `AdmissionCapabilitiesReady`。
 
 `StartAsync` 在等待首个定时心跳前设置 `running=true`，同时清空 `heartbeatFailure`。`HealthAsync` 的 `Ready` 据此为真，但 `RemoteConfirmation` 仍是 `Unconfirmed`。`AutomaticCameraReadsAllowed` 只检查 Ready 和有效期。健康读取又把 `ConfirmedAt/ValidUntil` 设置成“本次读取时间 / 三秒后”，因此这些时间说明的是本地对象仍可读取，不能证明最近收到过 RCS 响应。
 
@@ -53,9 +53,9 @@ ValidityAdvancedWithoutHeartbeat = true
 
 针对性验证：尚未收到首个响应、断开后重新连接、确认过期和恢复四种边界；断连期间仅预览，恢复后同次放置不重复请求。现有离线相机测试会先等待 `Ready=false` 再送帧，不能覆盖启动前置窗口。
 
-### A2 · P2 · 相机地址不可达时，保存提示仍可能宣称已重新连接
+### A2 · P2 · 相机地址不可达时，保存提示仍可能宣称已重新连接（已修复）
 
-定位：`src/Ipc.Application.ParcelFlow/ParcelLiveDevices.cs:127`、`:151`。
+审查基线定位：`src/Ipc.Application.ParcelFlow/ParcelLiveDevices.cs:127`、`:151`。
 
 新地址不可达抛出 `ObservationConnectionException` 时，代码记录连接失败并继续使配置生效，这符合规则。但该分支没有加入 `faults`；如果没有其他启动异常，最终提示仍是“设置已保存并生效：已重新连接……”。保存成功和设备连接成功被合成了同一条成功消息。
 
@@ -63,9 +63,9 @@ ValidityAdvancedWithoutHeartbeat = true
 
 最小修复方向：保留配置立即生效和自动重连，将返回提示改为“设置已生效，相机暂未连接，正在自动恢复”，仅在已确认的情况下报告连接成功。利用现有不可达相机替身检查返回提示、该位离线及另一位继续工作，不新增整套测试框架。
 
-### A3 · P2 · 当前格式规则之外仍保留旧格式升级实现与专属测试
+### A3 · P2 · 当前格式规则之外仍保留旧格式升级实现与专属测试（已修复）
 
-定位：`src/Ipc.Application.ParcelFlow/ParcelProductMaintenance.cs:147`、`ParcelStorageUpgrade10.cs:67`、`ParcelStorageFormat.cs:7`；对应测试 `tests/Ipc.Application.Verification/Database11Compatibility.cs:80`。
+审查基线定位：`src/Ipc.Application.ParcelFlow/ParcelProductMaintenance.cs:147`、`ParcelStorageUpgrade10.cs:67`、`ParcelStorageFormat.cs:7`；对应测试 `tests/Ipc.Application.Verification/Database11Compatibility.cs:80`。
 
 规则要求只支持当前数据格式，旧格式在写入前拒绝并保留原件。运行时正常打开数据库确实先只读检查格式 12，但维护实现仍识别 10/11，能够执行 `ALTER TABLE`、回填以及格式身份更新，错误文案也引导先备份再升级；专属测试仍验证这种升级。
 
@@ -73,17 +73,19 @@ ValidityAdvancedWithoutHeartbeat = true
 
 最小修复方向：退出不再支持的升级写入分支、入口提示及其专属成功断言，保留当前格式结构校验和旧格式拒绝后 DB/WAL/配置原件不变的验证。不要删除仍用于验证当前格式的共用 schema 比较代码。已冻结请求的原字段、原报文读取，以及规则明确要求的心跳秒值换算，是另有现行依据的行为，不能一并当作旧格式兼容层删除。
 
-## 待验证风险
+## 故障注入与待验证风险
 
-### R1 · 设备热替换的清理异常没有完整保留旧所有者
+### R1 · 设备热替换的清理异常没有完整保留旧所有者（已复现并修复）
 
-定位：`src/Ipc.Application.ParcelFlow/ParcelLiveDevices.cs:77`、`:164`。
+审查基线定位：`src/Ipc.Application.ParcelFlow/ParcelLiveDevices.cs:77`、`:164`。
 
 旧设备先成功 Stop，再调用 Dispose；Dispose 抛错只记录异常类型，随后替换 `ports/readers`。未启动候选的 `DisposeQuietlyAsync` 则直接吞掉所有清理异常。
 
 已观察到的是这些异常处理方式；没有观察到真实 SDK 句柄泄漏。当前 MVS 的 Stop 主路径已经执行 Destroy/Finalize，不能把“Dispose 可能失败”直接等同于“相机仍被占用”。尚未确认的是 Dispose 独有资源、清理失败对象能否再次被停止流程访问，以及失败原因是否足够诊断。
 
-下一步应在真实实现所属的生命周期边界注入“Stop 成功、Dispose 失败”和“候选未启动、Dispose 失败”，检查所有者保留和再次关闭行为。如果清理确实尚未完成，应保留原对象并报告未完成，不允许仅凭一条日志宣称清理成功。是否需要额外容器，应由这个测试结果决定；目前不建议先建通用资源恢复框架。
+本次在真实 `MvsAcquisition` 的解码器释放边界注入两种失败：Stop 成功后的 Dispose 失败，以及从未启动的候选 Dispose 失败。修复前两种场景均返回成功保存，且正常退出没有再次清理失败对象。修复后保留原配置；旧设备仍由原 ports/readers 持有，未采用候选由一个待清理列表持有，退出成功释放前不丢弃对象或释放应用所有权。重复释放失败继续拒绝退出，之后可再次关闭。这里增加列表的依据是已复现的候选所有权丢失，成本为失败对象保留到退出，无后台清理重试或通用恢复框架。
+
+A1 将本地客户端健康与远端响应时间分开：自动识码要求 `RemoteConfirmation`、`RemoteConfirmedAt`、`RemoteValidUntil` 同时有效，实际心跳响应更新后两项；沿用心跳遥测已有的 `max(3000 ms, 3 × 心跳间隔)` 窗口。没有相机编码的人工来源仍走原独立准入。A2 保留配置生效，并明确暂未连接及自动恢复；正常保存也不把本地 RCS 启动当作连接成功。A3 删除旧格式升级、回填及专属成功断言，维护与运行共用当前格式校验；格式 12 建库 SQL 内容未变，旧格式拒绝覆盖 DB/WAL 和配置原件。
 
 ### R2 · 大历史库启动与维护成本尚未量化
 
@@ -95,9 +97,9 @@ ValidityAdvancedWithoutHeartbeat = true
 
 |原则|当前有依据的实现|需要收敛或补证的地方|
 |---|---|---|
-|最小且完整的改动|SM 内置相机/RCS，业务版本固定，非 SM 暂停开发|清理 A3 的失效行为；不全仓重构暂停模块|
-|新增机制须有失败路径和成本|相机断流自动重连、放置重复抑制、原请求冻结均有现场或契约依据|R1 先故障注入，R2 先测量；未知概率明确标注|
-|信任边界校验、明确类型|RCS JSON 配额/重复键/身份检查，原生尺寸/码值/几何检查，存储格式只读校验|A1 应消费远端确认类型；同一方法内的冗余判断可局部合并|
+|最小且完整的改动|SM 内置相机/RCS，业务版本固定，非 SM 暂停开发|A3 的失效行为已删除；不全仓重构暂停模块|
+|新增机制须有失败路径和成本|相机断流自动重连、放置重复抑制、原请求冻结均有现场或契约依据|R1 已完成故障注入及修复；R2 仍需测量；未知概率明确标注|
+|信任边界校验、明确类型|RCS JSON 配额/重复键/身份检查，原生尺寸/码值/几何检查，存储格式只读校验|A1 已消费远端确认类型与实际响应有效期；同一方法内的冗余判断可局部合并|
 |业务和关键失败路径清晰|T1/T2/T3、外部调用与原件落账有明确注释|`ParcelRuntime` 分布于 63 个 partial 文件，需沿调用链理解状态；仅数量不能作为拆类理由|
 |保留真实失败语义|未知请求不重发，回包持久化失败不伪装成网络失败，销毁失败保留占用|修复 A2 的成功提示；补证 R1；不要全局给异常加重试|
 |测试实际行为|核心测试适配器启动真实验证进程，使用真实应用和数据库，设备/网络用可控边界|补 A1 启动窗口；旧升级测试不能反过来定义现行需求|
@@ -122,35 +124,36 @@ ValidityAdvancedWithoutHeartbeat = true
 3. 对 `ParcelRuntime` 的后续修改，优先把一个业务步骤、它的状态读写和失败清理放在容易追踪的位置。暂不按函数行数或 partial 数量拆服务，也不为暂停模块增加统一调度层。
 4. 现有覆盖率脚本明确只统计四个托管产品程序集，并标注不是全产品覆盖率。这是正确的边界。若扩展覆盖，优先围绕 A1/A2/R1 对真实行为补用例，不以提高百分比或 PASS 行数为目标。
 
-## 本次验证
+## 本次修复验证
 
-所有命令先执行 `. ./scripts/project-environment.ps1`。设备相关自动测试使用 `IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME=1`，不会因此取得真实 SDK 资格。
+所有命令先执行 `. ./scripts/project-environment.ps1`。设备自动测试使用 `IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME=1`，真实 MVS 驱动和 RCS 适配器分别连接可控 SDK 替身与回环 HTTP 服务。
+
+修复前故障注入记录在 `.artifacts/cleanup-before-both.log`：两条路径都错误地报告保存成功、改变配置，并在退出时丢失失败对象。修复后验证如下，未引用其他提交的运行结果。
 
 |类别|本次结果|
 |---|---|
-|编译|SM Release 桌面构建成功，0 警告、0 错误，锁定恢复；不是对所有暂停产品的桌面构建认证|
-|本机核心测试|`tests/Ipc.Core.Tests`：46/46 通过，0 失败、0 跳过；其中 36 个行为套件输出 1114 条 PASS 检查记录，这不等于 1114 个独立 MSTest 用例|
-|本机脚本测试|全量 `test_*.py` 首次运行：131 项通过、1 个测试模块导入失败；`test_operator_print` 缺 `fontTools`，补查还缺 `pypdf`。该模块内 4 项测试未执行；不改断言、不伪报全绿|
-|文档检查|通过：8 个入口页、205 个本地链接、5 个故障码；不等于打印或页面视觉验收|
-|RCS 合成探针|真实 RCS 服务在首个心跳前的 Ready/Unconfirmed 状态与无响应续期已复现；没有发送格口请求|
-|覆盖率采集|本次未运行；未引用其他提交覆盖率|
-|CI|报告形成时未运行本次 PR CI；仓库已有自动 PR/main 工作流。后续以本次 PR 的实际检查结果为准|
-|Windows 实机交互|未运行；本次 Windows 上的编译与自动测试不等同于安装/UAC/WPF 人工操作验收|
-|真实 SDK / 真实相机|未运行|
-|客户 RCS|未运行；只有合成网络/服务验证|
-|现场验收及长稳|未运行|
+|编译|SM Release 桌面构建成功，0 警告、0 错误，使用锁定恢复|
+|本机核心测试|46/46 通过，0 失败、0 跳过；36 个行为套件、1141 条 PASS 检查记录，不等于 1141 个独立 MSTest 用例|
+|清理故障注入|旧设备 Stop 成功后 Dispose 失败、未启动候选 Dispose 失败均拒绝保存并保留原配置；再次关闭仍失败时保留所有权，之后关闭成功完成释放|
+|RCS 与相机|心跳首轮、过期、重连、恢复；软件与原生路线首轮确认前只预览、人工来源仍独立；离线及恢复保留当前放置和原请求；启停、管理窗口及状态日志回归通过|
+|配置保存|不可达相机保留生效配置，返回暂未连接及查看自动恢复状态的提示；另一位继续请求格口，未知原请求不重发|
+|存储|冻结的格式10/11 schema、其他非当前版本在运行及维护入口拒绝；DB/WAL/配置字节不变，无部署回调；当前格式结构、优化器表和伪装表拒绝检查通过；格式12建库 SQL 内容核对未变|
+|额外受影响回归|`--session-shift-25` 通过，保留班次、原请求及进程崩溃恢复断言；仅删除旧格式升级的专属成功断言|
+|脚本与文档|格式检查通过；文档检查 8 个入口、205 个链接、5 个故障码；发布说明 5 项、部署兼容 1 项 Python 测试通过|
+|CI|提交前未运行本次修复 CI；提交后以 [PR #238](https://github.com/yuan2go/importer-pc/pull/238) 对应来源提交的实际检查记录为准|
+|覆盖率|本机未运行；CI 沿用仓库现有采集及门槛，不将其解释为真实设备可靠性|
 
-可重复的主要命令：
+主要记录：`.artifacts/review-fixes-tests/core.trx`、`.artifacts/review-fixes-core.log`、`.artifacts/review-sm-build.log` 和 `.artifacts/review-*.log`。本地产物不提交；固定的旧 schema 测试输入保存在 `tests/Ipc.Application.Verification/fixtures/parcel10-schema.sql` 与 `parcel11-schema.sql`，来源和哈希在测试中核验，产品代码没有迁移实现。
 
 ```powershell
 . ./scripts/project-environment.ps1
 $env:IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME = '1'
-dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true --logger 'trx;LogFileName=core.trx' --results-directory .artifacts/implementation-principles-review
+dotnet test tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true -m:1 --logger 'trx;LogFileName=core.trx' --results-directory .artifacts/review-fixes-tests
 dotnet build src/Ipc.Desktop -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true -m:1
-python -m unittest discover -s scripts -p 'test_*.py'
+./scripts/verify-industrial-format.ps1
 python scripts/verify-industrial-docs.py
+python -m unittest discover -s scripts -p test_release_documents.py
+python -m unittest discover -s scripts -p test_deployment_compatibility.py
 ```
 
-本机原始记录在 `.artifacts/implementation-principles-review/`：`core.trx`、`core.log`、`build.log`、`python.log`、`rcs-probe.log`，探针源码在其 `Probe/` 子目录；这些为本地分析产物，不随本次文档提交上传。打印工具按现有 CI 使用独立环境和 `scripts/operator-print.requirements.txt`，本机默认 Python 3.14.3 尚不具备该环境。
-
-建议后续顺序：先修复 A1 并覆盖启动确认边界，再修正 A2；随后按调用范围清理 A3；R1 通过故障注入确定改动，R2 依据现场性能数据决定。每项独立说明行为与验证，不把本次分析扩成无依据的全仓重构。
+Windows 实机交互、真实 SDK、真实相机、客户 RCS、现场验收及长稳：未运行。仅本机合成边界验证不能代替这些验收。R2 性能测量和可选简化未实施。

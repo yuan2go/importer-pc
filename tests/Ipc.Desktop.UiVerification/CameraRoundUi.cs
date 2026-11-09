@@ -15,7 +15,10 @@ static partial class Program
     static async Task VerifyCameraRoundUi(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS ROUND-UI " + message); }
-        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "rounds")); await h.StartAsync(); var explicitPause = await h.App.SnapshotAsync();
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "rounds")); await h.StartAsync(); await h.App.DisposeAsync();
+        SeedInterruptedCameraInputs(h); await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        Check(!(await h.App.SnapshotAsync()).Paused, "old interrupted scans are skipped before explicit debug request preparation");
+        var explicitPause = await h.App.SnapshotAsync();
         if ((await h.App.CommandAsync(new(Wire.Id(), explicitPause.Revision, "Pause"))).Status != "Persisted") throw new InvalidOperationException("Explicit debug POST accounting fixture pause failed");
         var app = DispatchProxy.Create<ICameraRoundUiFixture, CameraRoundUiProbe>(); var probe = (CameraRoundUiProbe)(object)app; probe.Inner = h.App;
         var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "扫码闭环 · 合成端口" };
@@ -109,6 +112,27 @@ static partial class Program
                 Field<TextBox>(control, "requestBody").Text == a.RequestBody && !Field<TextBlock>(control, "imageHint").IsVisible && h.Peer.Requests.IsEmpty,
                 "next parcel cannot replace the locked photo/barcode/request and no automatic send occurs");
             CaptureInternal(evidence, "round-locked-native", Surface(window), lines);
+            var backupField = h.App.GetType().GetField("backupInProgress", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            backupField.SetValue(h.App, true);
+            try
+            {
+                await Poll(control);
+                Check(!Field<CameraReadRound>(control, "current").CanSend && Field<Button>(control, "send").IsEnabled,
+                    "a prepared but blocked request permits an authoritative send check instead of a silent disabled button");
+                ClickField(control, "send"); await Until(() => !Field<bool>(control, "busy"));
+                Check(Field<TextBlock>(control, "feedback").Text.Contains("正在备份") && h.Peer.Requests.IsEmpty &&
+                    (await ReadRound()).SendAttempts == 0 && Field<object?>(control, "sendCommand") is null,
+                    "actual send click explains the current guard and records no HTTP attempt or fictitious completed send");
+                await CameraRoundHarness.Until(async () =>
+                {
+                    var page = await h.App.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddMinutes(-5), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
+                    try { return page.Entries.Any(e => e.Text.Contains("调试请求未发送") && e.Text.Contains(a.OperationId!) && e.Text.Contains("正在备份")); }
+                    finally { h.App.ReleaseLogSelection(page.Selection); }
+                });
+                Check(true, "default key logs correlate the blocked send click with the original operation and concrete guard");
+            }
+            finally { backupField.SetValue(h.App, false); }
+            await Poll(control);
             probe.FailRoundRead = true; await Poll(control);
             Check(!Field<Button>(control, "send").IsEnabled, "failed authoritative polling cannot re-enable send from a cached projection");
             probe.FailRoundRead = false; await Poll(control); probe.CancelRoundRead = true; await Poll(control);

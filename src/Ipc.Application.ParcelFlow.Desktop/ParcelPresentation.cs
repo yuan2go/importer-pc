@@ -72,6 +72,7 @@ public static class ParcelPresentation
     public static bool IsInputFailure(ParcelInputSnapshot? input) => input?.Outcome is ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked;
     public static string InputText(ParcelInputSnapshot input) => input.Outcome switch
     {
+        ParcelInputOutcome.Rejected when input.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) => "本件扫码超时，已跳过",
         ParcelInputOutcome.Rejected => input.BarcodeSelection?.Outcome switch
         {
             "NoMatchingCode" => "条码不符合规则",
@@ -88,6 +89,7 @@ public static class ParcelPresentation
     };
     public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted && !ParcelInputReasons.IsSamePlacement(input);
     public static string InputReason(ParcelInputSnapshot input) =>
+        input.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) ? "请取下包裹后重新上件；本次扫码未请求格口。" :
         input.Outcome == ParcelInputOutcome.Rejected && input.BarcodeSelection is { } selection &&
         input.Reason == selection.Outcome + "; no operation or external intent created"
             ? ChineseInterfaceText.Status(selection.Outcome) + "；本件未发送。"

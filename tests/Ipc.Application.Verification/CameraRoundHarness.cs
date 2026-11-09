@@ -78,13 +78,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);
     }
-    public async Task StartAsync(bool waitForAllCameras = true, bool waitForRcs = true)
+    public async Task StartAsync(bool waitForAllCameras = true, bool waitForRcs = true, bool authorizeManagement = true, bool supervisedRestart = false)
     {
         Factory = new(Launch, Config);
-        App = new(Launch, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        App = new(Launch with { RequireRecoveryReview = supervisedRestart }, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
         if (waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
-        await AuthorizeAsync();
+        if (authorizeManagement) await AuthorizeAsync();
         if (waitForRcs) await Until(async () => (await App.SnapshotAsync()).Health.Any(h => h.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived));
     }
     public async Task AuthorizeAsync()

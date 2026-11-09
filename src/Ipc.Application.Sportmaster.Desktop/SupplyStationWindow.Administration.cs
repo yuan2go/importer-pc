@@ -145,6 +145,7 @@ public partial class SupplyStationWindow
         try
         {
             await Dispatcher.Yield();
+            if (debug is not null) await debug.CloseAsync();
             await ViewModel.DrainAsync().WaitAsync(TimeSpan.FromSeconds(5));
             if (workspaceOpened && ViewModel.Application is IManagementWorkspace workspace)
             {

@@ -144,10 +144,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 SoftwarePauseActor = () => currentOperator?.Subject
             };
             repository.LoadSoftwarePauseEvidence();
-            if (launch.RequireRecoveryReview)
+            if (launch.RequireRecoveryReview && Id != "sportmaster")
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
-            foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
+            foreach (var position in repository.RecoverIngress(Id == "sportmaster")) interruptedPositions.TryAdd(position, 0);
             InitializeCameraInspection();
             InitializeParcelPictures();
         }
@@ -156,6 +156,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), _ => { /* Independent diagnostic status; never business custody. */ });
+        if (repository.AutomaticallySkippedIngress is { } skipped)
+            WriteRuntimeLog("供包状态", "已自动跳过上次未完成的扫码", skipped);
         WriteRuntimeLog("供包状态", "供包台开始启动", new
         {
             SoftwarePaused = repository.Paused,
@@ -280,7 +282,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
             ingressStartup.TrySetResult(true);
-            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && !launch.RequireRecoveryReview;
+            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && (Id == "sportmaster" || !launch.RequireRecoveryReview);
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
             backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));
@@ -466,9 +468,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     if (!startupCompleted || stopping.IsCancellationRequested)
                     {
                         Boundary?.Invoke("BeforeStartupIngressDisposition");
-                        repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, InputId = item.Id, Reason = "StartupIncomplete/Stopping; inspect original input; no replay" }));
-                        FinishIngress(item.Id, "Interrupted", "Startup/stop barrier; original entity requires inspection");
-                        interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
+                        if (Id == "sportmaster" && item.Value is ParcelObservation)
+                        {
+                            FinishIngress(item.Id, "Processed", "SkippedAtStop; old camera input is not replayed; original requests unchanged");
+                            Interlocked.Increment(ref lane.Processed);
+                            WriteRuntimeLog("供包状态", "停止时已跳过排队扫码", new { PositionId = position, InputId = item.Id, Policy = "No replay; original requests unchanged" });
+                        }
+                        else
+                        {
+                            repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, InputId = item.Id, Reason = "StartupIncomplete/Stopping; inspect original input; no replay" }));
+                            FinishIngress(item.Id, "Interrupted", "Startup/stop barrier; original entity requires inspection");
+                            interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
+                        }
                     }
                     else
                     {
@@ -649,7 +660,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // Queue age/health must close this input's display as well as admission.
         // Existing identities above retain their original responsibility and policy.
         if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
-        { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationRejected"); return; }
+        {
+            var expired = Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; 本次扫码已跳过，请取下包裹后重新上件；未创建作业或请求", selection: selection);
+            RecordInput(expired, "ObservationRejected");
+            if (Id == "sportmaster" && !repository!.Paused) ClaimRejectedPlacement(expired, reader);
+            return;
+        }
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ReaderConfirmationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationBlocked"); return; }
         // Current-source evidence about an existing entity is processed even while

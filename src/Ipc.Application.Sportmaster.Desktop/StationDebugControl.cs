@@ -227,7 +227,7 @@ internal sealed partial class StationDebugControl : UserControl
     async Task SendAsync(CancellationToken token)
     {
         if (!authoritative || !vm.Fresh || current is not { Id: { } id, RequestHash: { } hash } value || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复轮次读取，再查看本轮请求。");
-        if (sendCommand is null && (!value.CanSend || requestDirty || !value.ManualRequest && loadedFrame != value.Frame?.Id)) throw new InvalidOperationException("请先准备当前条码的请求；扫码请求还需查看本轮图片。");
+        if (sendCommand is null && (requestDirty || !value.ManualRequest && loadedFrame != value.Frame?.Id)) throw new InvalidOperationException("请先准备当前条码的请求；扫码请求还需查看本轮图片。");
         sendCommand ??= new(Wire.Id(), snapshot.RuntimeId, id, hash);
         var returned = await vm.ServiceAsync(() => Rounds.SendCameraRoundAsync(sendCommand, token));
         if (!active || token.IsCancellationRequested || !vm.IsManagementMode) return;
@@ -329,7 +329,7 @@ internal sealed partial class StationDebugControl : UserControl
         prepare.IsEnabled = active && !busy && !waiting && vm.Fresh && vm.IsManagementMode && !string.IsNullOrWhiteSpace(requestBarcode.Text);
         send.Content = sendCommand is null ? "发送请求" : "查看发送结果";
         send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
-            (sendCommand is not null || !requestDirty && current is { CanSend: true } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
+            (sendCommand is not null || !requestDirty && current is { RequestHash: not null, SendAttempts: 0 } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
         left.IsEnabled = right.IsEnabled = !busy; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");
     }
     void LayoutColumns()
@@ -389,14 +389,15 @@ internal sealed partial class StationDebugControl : UserControl
         catch (CameraReadRoundConflictException) { /* A newer round belongs to another explicit command. */ }
         catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "人工调试退出未完成，原请求保留；请核对原调试状态。"); }
     }
-    void Deactivate()
+    void Deactivate() => _ = CloseAsync();
+    public async Task CloseAsync()
     {
         var session = ownedScanSession; var round = ownedScanRound; var manual = ownedManualRound; var runtime = ownedManualRuntime;
         ownedScanSession = ownedScanRound = ownedManualRound = null;
         ownedManualRuntime = null;
         active = false; authoritative = false; generation++; timer.Stop(); livePreview.Revoke(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay();
-        if (session is not null) _ = CloseOwnedScanAsync(session, round);
-        else if (manual is not null && runtime is { } id) _ = CloseOwnedManualAsync(manual, id);
+        if (session is not null) await CloseOwnedScanAsync(session, round);
+        else if (manual is not null && runtime is { } id) await CloseOwnedManualAsync(manual, id);
     }
     static Border Panel(UIElement child)
     {

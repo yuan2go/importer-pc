@@ -102,74 +102,66 @@ static partial class Program
         await VerifyInterruptedPauseCard(root, evidence, lines);
         lines.Add("Native WPF with synthetic camera frames and loopback RCS; physical SDK camera, customer RCS and site acceptance not run.");
     }
+    static string SeedInterruptedCameraInputs(CameraRoundHarness h)
+    {
+        var folder = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster");
+        var originalId = Wire.Id();
+        using (var db = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=" + Path.Combine(folder, "sportmaster.db")))
+        {
+            db.Open();
+            foreach (var position in new[] { "left", "right" })
+            {
+                var observation = new Observation(Wire.Id(), position == "left" ? h.Left : h.Right, "synthetic-prior-epoch", "prior.1", 1,
+                    "prior." + position, "Read", ["SYNTH-RESTART"], null, DateTimeOffset.UtcNow.AddDays(-1));
+                var body = Wire.Encode(new { Observation = observation, Operator = (object?)null, ReceivedAt = observation.ObservedAt });
+                using var insert = db.CreateCommand();
+                insert.CommandText = "INSERT INTO parcel_ingress(id,position,received_at,state,body,body_hash,session,detail) VALUES($id,$position,$at,'Interrupted',$body,$hash,'synthetic-prior-run','Synthetic old camera receipt')";
+                insert.Parameters.AddWithValue("$id", position == "left" ? originalId : Wire.Id());
+                insert.Parameters.AddWithValue("$position", position); insert.Parameters.AddWithValue("$at", observation.ObservedAt.ToString("O"));
+                insert.Parameters.AddWithValue("$body", body); insert.Parameters.AddWithValue("$hash", Wire.Hash(body)); insert.ExecuteNonQuery();
+            }
+        }
+        using var repo = new Ipc.Application.ParcelFlow.ParcelRepository(folder, "sportmaster", ["left", "right"]);
+        repo.Commit(null, "IngressRecoveryRequired", "Synthetic old software pause from interrupted scans", paused: true);
+        return originalId;
+    }
     static async Task VerifyInterruptedPauseCard(string root, string evidence, List<string> lines)
     {
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "interrupted-pause"), nativeResults: true);
-        await h.StartAsync(); await h.App.DisposeAsync();
-        var database = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster", "sportmaster.db");
-        var originalId = Wire.Id();
-        using (var db = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=" + database))
-        {
-            db.Open();
-            using var insert = db.CreateCommand();
-            insert.CommandText = "INSERT INTO parcel_ingress(id,position,received_at,state,body,body_hash,session,detail) VALUES($id,$position,$at,'Interrupted',$body,$hash,'synthetic-prior-run','Synthetic interrupted source requires inspection')";
-            insert.Parameters.AddWithValue("$id", originalId);
-            insert.Parameters.AddWithValue("$position", "left");
-            insert.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.AddDays(-1).ToString("O"));
-            insert.Parameters.AddWithValue("$body", "{}");
-            insert.Parameters.AddWithValue("$hash", Wire.Hash("{}"));
-            insert.ExecuteNonQuery();
-            insert.Parameters["$id"].Value = Wire.Id();
-            insert.Parameters["$position"].Value = "right";
-            insert.ExecuteNonQuery();
-        }
-        await h.StartAsync();
+        await h.StartAsync(); await h.App.ExitManagementModeAsync(); await h.App.DisposeAsync();
+        var originalId = SeedInterruptedCameraInputs(h);
+        await h.StartAsync(authorizeManagement: false); await h.WaitForCameraAdmissionAsync();
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
         try
         {
             var vm = window.ViewModel;
             await SetClient(window, 1366, 768);
-            await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Fresh && vm.Snapshot?.Paused == true; });
-            if (!vm.Left.ShowCenteredState || !vm.Left.CenteredStateReason.Contains("中断") ||
-                !vm.Left.CenteredStateInstruction.Contains("未处理的扫码") || vm.CanResumeInViewport)
-                throw new InvalidOperationException("Interrupted pause must identify the custody barrier and keep resume guarded: " + Wire.Encode(new
-                { vm.Left.ShowCenteredState, vm.Left.CenteredStateReason, vm.Left.CenteredStateInstruction, vm.CanResumeInViewport, vm.Snapshot!.BlockingReasons }));
-            lines.Add("PASS PAUSED-CARD interrupted pause shows its concrete reason and inspection route with resume disabled");
-            CaptureInternal(evidence, "paused-interrupted-1366", (Grid)window.FindName("ClientArea"), lines);
+            await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Fresh && vm.Snapshot?.Paused == false; });
+            if (vm.IsManagementMode || !vm.Left.ShowCenteredState || vm.Left.CenteredStateTitle != "等待投包" ||
+                vm.Right.CenteredStateTitle != "等待投包" || vm.ResumeVisibility != Visibility.Collapsed)
+                throw new InvalidOperationException("Old camera receipts must recover directly into ordinary work without management or resume: " + Wire.Encode(vm.Snapshot));
+            lines.Add("PASS PAUSED-CARD old interrupted scans return both cards to waiting without management or a resume command");
+            CaptureInternal(evidence, "automatic-scan-recovery-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420);
-            foreach (var control in Descendants(window).OfType<SupplyStationPosition>())
+            if (vm.Left.CenteredStateInstruction.Contains("管理中心") || vm.Right.CenteredStateInstruction.Contains("核对"))
+                throw new InvalidOperationException("Operator is still directed to an unavailable recovery tool");
+            lines.Add("PASS PAUSED-CARD compact recovery has no manual inspection or management instruction");
+            CaptureInternal(evidence, "automatic-scan-recovery-800", (Grid)window.FindName("ClientArea"), lines);
+            await CameraRoundHarness.Until(() =>
             {
-                var panel = (Border)control.FindName("CenteredSupplyPanel");
-                var content = (StackPanel)control.FindName("CenteredSupplyContent");
-                if (content.DesiredSize.Height > panel.ActualHeight - panel.Padding.Top - panel.Padding.Bottom + 1)
-                    throw new InvalidOperationException("Compact interrupted pause clips its reason or next step");
-            }
-            lines.Add("PASS PAUSED-CARD compact interrupted pause fits the title, cause and next step without clipping");
-            CaptureInternal(evidence, "paused-interrupted-800", (Grid)window.FindName("ClientArea"), lines);
-            var found = false;
-            await CameraRoundHarness.Until(async () =>
-            {
-                var page = await h.App.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddMinutes(-2), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
-                try
-                {
-                    foreach (var row in page.Entries)
-                    {
-                        using var json = System.Text.Json.JsonDocument.Parse(row.Text);
-                        if (!json.RootElement.TryGetProperty("Detail", out var d) || d.ValueKind != System.Text.Json.JsonValueKind.Object ||
-                            !d.TryGetProperty("InterruptedIngress", out var custody)) continue;
-                        found = custody.GetProperty("Total").GetInt64() == 2 && custody.GetProperty("Omitted").GetInt64() == 0 &&
-                            custody.GetProperty("Entries").EnumerateArray().Any(e => e.GetProperty("Id").GetString() == originalId &&
-                            e.GetProperty("OriginalSession").GetString() == "synthetic-prior-run");
-                        if (found) break;
-                    }
-                    return found;
-                }
-                finally { h.App.ReleaseLogSelection(page.Selection); }
+                var file = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster", "diagnostics", "runtime.jsonl");
+                using var reader = new StreamReader(new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete));
+                var log = reader.ReadToEnd();
+                return Task.FromResult(log.Contains("已自动跳过上次未完成的扫码") && log.Contains(originalId));
             });
-            lines.Add("PASS PAUSED-CARD default key logs identify the original interrupted input, prior run, total and omitted count");
-            if (h.Peer.Requests.Count != 0) throw new InvalidOperationException("Interrupted pause replayed a source");
+            lines.Add("PASS PAUSED-CARD automatic skip logs retain original input identity without claiming an old request was not sent");
+            if (h.Peer.Requests.Count != 0) throw new InvalidOperationException("Startup replayed an old source");
+            h.Api(h.Left).EnqueueNative(CameraRoundHarness.Barcode("SYNTH-FRESH-AFTER-RESTART"), 1,
+                [new RecognitionSymbol("SYNTH-FRESH-AFTER-RESTART", "Code128", [new(20, 20), new(120, 20), new(120, 60), new(20, 60)], 0)]);
+            await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
+            if (h.Peer.Requests.Count != 1 || vm.Snapshot!.Paused || vm.IsManagementMode) throw new InvalidOperationException("Fresh parcel failed after automatic recovery");
+            lines.Add("PASS PAUSED-CARD a fresh parcel reaches its chute in the ordinary workstation without entering management");
         }
         finally { window.Close(); }
     }
-
 }

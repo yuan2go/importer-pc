@@ -174,6 +174,17 @@ internal static class LiveDevices30
         Check(ReferenceEquals(left, replacement.Api(replacement.Left)) && left.Stops == 0 &&
             afterReplacement.Devices!.Single(d => d.DeviceId == replacement.Right).Health == DeviceHealth.Disconnected,
             "new native camera gets a connection attempt while the unchanged left camera is still running");
+        await CameraRoundHarness.Until(async () =>
+        {
+            var page = await replacement.App.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddMinutes(-5), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
+            try
+            {
+                return page.Entries.Any(e => e.Text.Contains("相机自动重连失败") && e.Text.Contains(replacement.Right) &&
+                    e.Text.Contains("engine=MVID") && e.Text.Contains("ipMatches=0, serialMatches=0, pairMatches=0"));
+            }
+            finally { replacement.App.ReleaseLogSelection(page.Selection); }
+        });
+        Check(true, "key logs identify the selected camera, SDK engine and discovery match counts on an automatic reconnect failure");
         replacement.Api(replacement.Right).Discovered = true;
         await CameraRoundHarness.Until(async () => (await replacement.App.SnapshotAsync()).Devices!.Any(d =>
             d.DeviceId == replacement.Right && d.IsValid(DateTimeOffset.UtcNow)));

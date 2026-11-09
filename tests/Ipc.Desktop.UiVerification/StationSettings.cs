@@ -47,7 +47,13 @@ static partial class Program
 
         Click(center, "设置");
         await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
-        vm.ReaderDrafts.Single(r => r.Capability.Role == "right").Capability.Parameters.Single(p => p.Field.Key == "device.serial").Value = "SYNTH-REPLACEMENT";
+        var leftSerial = vm.ReaderDrafts.Single(r => r.Capability.Role == "left").Capability.Parameters.Single(p => p.Field.Key == "device.serial");
+        var rightSerial = vm.ReaderDrafts.Single(r => r.Capability.Role == "right").Capability.Parameters.Single(p => p.Field.Key == "device.serial");
+        rightSerial.Value = leftSerial.Value;
+        Check(!await vm.PrepareConfigurationReviewAsync() && vm.Message.Contains("左右相机的序列号重复") &&
+            vm.ParameterEditor!.Issues.Count(i => i.Path.EndsWith("/device.serial") && i.Message.Contains("序列号重复")) == 2 &&
+            probe.SaveCalls == 0, "duplicate serials flag both camera fields and explain the refusal before saving");
+        rightSerial.Value = "SYNTH-REPLACEMENT";
         var before = (await h.App.SnapshotAsync()).Configuration.Revision;
         var left = h.Api(h.Left);
         h.Factory.Expect(vm.BuildStructuredConfiguration());

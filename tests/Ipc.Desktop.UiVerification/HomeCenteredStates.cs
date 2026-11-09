@@ -49,6 +49,14 @@ static partial class Program
                 "the complete title and instruction group is vertically centered");
             Check(!((DockPanel)left.FindName("DetailedStatus")).IsVisible && !((TextBlock)left.FindName("NextStep")).IsVisible &&
                 !((Button)left.FindName("CenteredEnableSupply")).IsVisible, "waiting has one instruction group and no start button or scattered status copy");
+            var production = probe.Project!;
+            probe.Project = s => production(s) with { Devices = s.Devices!.Select(d => d.DeviceId == h.Left ? d with { Health = DeviceHealth.Disconnected } : d).ToArray() };
+            await Until(() => vm.Left.CenteredStateReason == "可输入完整条码");
+            Check(center.IsVisible && ((TextBlock)left.FindName("CenteredStateReason")).Text == "可输入完整条码" &&
+                vm.Left.CenteredStateInstruction.Length == 0 && entry.IsEnabled && !entry.IsReadOnly,
+                "offline camera waiting shows one short line and the barcode entry is still editable");
+            probe.Project = production;
+            await Flush();
             var snapshot = await h.App.SnapshotAsync();
             await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
             await Until(() => vm.Right.SupplyDisabled);

@@ -124,11 +124,13 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     if (decoder is not null) { PhaseTo("initialize-recognition"); decoder.Prepare(); token.ThrowIfCancellationRequested(); }
                     PhaseTo("initialize"); initialized = true; api.Initialize(); token.ThrowIfCancellationRequested();
                     PhaseTo("enumerate");
-                    var matches = api.Enumerate().Where(d => d.Ip == ip && (serial.Length == 0 || serial == d.Serial)).ToArray();
+                    var devices = api.Enumerate();
+                    var matches = devices.Where(d => d.Ip == ip && (serial.Length == 0 || serial == d.Serial)).ToArray();
                     token.ThrowIfCancellationRequested();
                     if (matches.Length != 1 || string.IsNullOrWhiteSpace(matches[0].Serial))
-                        throw new ObservationConnectionException("配置的MVS相机未发现或设备身份不匹配；连接保持离线，原参数保留。",
-                            new InvalidDataException("Configured MVS IP/serial not uniquely discovered"));
+                        throw new ObservationConnectionException("配置的相机未发现或设备身份不匹配；连接保持离线，原参数保留。",
+                            new InvalidDataException($"Camera discovery: engine={(api.ReturnsDecodedFrames ? "MVID" : "MVS")}, discovered={devices.Length}, " +
+                                $"ipMatches={devices.Count(d => d.Ip == ip)}, serialMatches={devices.Count(d => serial.Length > 0 && d.Serial == serial)}, pairMatches={matches.Length}"));
                     if (physicalSerial.Length != 0 && physicalSerial != matches[0].Serial)
                         throw new InvalidDataException("Original MVS physical serial changed; revise the approved device binding before replacement");
                     PhaseTo("lease"); lease = acquireLease(matches[0].Serial); physicalSerial = matches[0].Serial;

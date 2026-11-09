@@ -17,6 +17,8 @@ public sealed partial class SportmasterRcsTaskService
     long heartbeatSelectionRevision;
     CancellationTokenSource? heartbeatStop;
     Task? heartbeatTask;
+    readonly SemaphoreSlim heartbeatSerial = new(1, 1);
+    bool manualHeartbeatPending;
     string? heartbeatFailure;
     bool heartbeatResponseReceived;
     DateTimeOffset heartbeatReceivedAt, heartbeatValidUntil;
@@ -72,63 +74,111 @@ public sealed partial class SportmasterRcsTaskService
         {
             while (await timer.WaitForNextTickAsync(stop).ConfigureAwait(false))
             {
-                (string Station, string Bcr)[] mapping; long selectionRevision;
-                lock (lifecycle) { mapping = enabledHeartbeatStations ?? []; selectionRevision = heartbeatSelectionRevision; }
-                if (mapping.Length == 0) continue; // Never send an empty or synthetic identity heartbeat.
-                using var timeout = CancellationTokenSource.CreateLinkedTokenSource(stop);
-                timeout.CancelAfter(TimeSpan.FromMilliseconds(Math.Min(3000, options.HeartbeatIntervalMs)));
-                try
-                {
-                    var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                    var requestId = NextHeartbeatId(timestamp);
-                    var body = JsonSerializer.Serialize(new
-                    {
-                        source = options.Source,
-                        version = 1,
-                        requestId,
-                        locale = options.Locale,
-                        data = mapping.Select((p, i) => new
-                        {
-                            index = i + 1,
-                            command = HeartbeatCommand,
-                            @params = new { stationCode = p.Station, bcrCode = p.Bcr, timestamp }
-                        }).ToArray()
-                    }, RcsDestinationProtocol.Json);
-                    using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
-                    {
-                        Version = HttpVersion.Version11,
-                        VersionPolicy = HttpVersionPolicy.RequestVersionExact,
-                        Content = new ByteArrayContent(Encoding.UTF8.GetBytes(body))
-                    };
-                    message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
-                    if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
-                    var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
-                    if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
-                    var receivedAt = HeartbeatTimeForVerification.GetUtcNow();
-                    var lifetime = TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3));
-                    var vehicles = ReadHeartbeatVehicles(bytes, requestId, mapping, receivedAt, lifetime);
-                    lock (lifecycle)
-                    {
-                        if (selectionRevision != heartbeatSelectionRevision) continue; // A prior selection cannot resurrect disabled vehicle hints.
-                        stationVehicles = vehicles;
-                        heartbeatFailure = null; heartbeatResponseReceived = true;
-                        heartbeatReceivedAt = receivedAt; heartbeatValidUntil = receivedAt + lifetime;
-                        heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; application acknowledgement unconfirmed";
-                    }
-                }
-                catch (OperationCanceledException) when (stop.IsCancellationRequested) { break; }
-                catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException or InvalidDataException)
-                {
-                    lock (lifecycle)
-                    {
-                        if (selectionRevision != heartbeatSelectionRevision) continue;
-                        stationVehicles = []; heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried";
-                    }
-                }
+                if (!heartbeatSerial.Wait(0)) continue;
+                try { await SendHeartbeatCoreAsync(stop).ConfigureAwait(false); }
+                finally { heartbeatSerial.Release(); }
             }
         }
         catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
+    }
+
+    public async Task<RcsHeartbeatResult> SendHeartbeatAsync(CancellationToken token)
+    {
+        CancellationTokenSource linked;
+        lock (lifecycle)
+        {
+            if (!running || disposed) return RcsHeartbeatResult.Unavailable;
+            if (enabledHeartbeatStations is not { Length: > 0 }) return RcsHeartbeatResult.NoPositions;
+            if (manualHeartbeatPending) return RcsHeartbeatResult.Busy;
+            linked = CancellationTokenSource.CreateLinkedTokenSource(token, heartbeatStop!.Token);
+            manualHeartbeatPending = true;
+            if (active++ == 0) drained = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        }
+        try
+        {
+            await heartbeatSerial.WaitAsync(linked.Token).ConfigureAwait(false);
+            try { return await SendHeartbeatCoreAsync(linked.Token).ConfigureAwait(false); }
+            finally { heartbeatSerial.Release(); }
+        }
+        catch (OperationCanceledException) when (linked.IsCancellationRequested && !token.IsCancellationRequested)
+        { return RcsHeartbeatResult.Unavailable; }
+        finally
+        {
+            linked.Dispose();
+            lock (lifecycle)
+            {
+                manualHeartbeatPending = false;
+                if (--active == 0) drained!.TrySetResult();
+            }
+        }
+    }
+
+    async Task<RcsHeartbeatResult> SendHeartbeatCoreAsync(CancellationToken stop)
+    {
+        stop.ThrowIfCancellationRequested();
+        (string Station, string Bcr)[] mapping; long selectionRevision;
+        lock (lifecycle)
+        {
+            if (!running || disposed) return RcsHeartbeatResult.Unavailable;
+            mapping = enabledHeartbeatStations ?? []; selectionRevision = heartbeatSelectionRevision;
+        }
+        if (mapping.Length == 0) return RcsHeartbeatResult.NoPositions;
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(stop);
+        timeout.CancelAfter(TimeSpan.FromMilliseconds(Math.Min(3000, options.HeartbeatIntervalMs)));
+        try
+        {
+            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var requestId = NextHeartbeatId(timestamp);
+            var body = JsonSerializer.Serialize(new
+            {
+                source = options.Source,
+                version = 1,
+                requestId,
+                locale = options.Locale,
+                data = mapping.Select((p, i) => new
+                {
+                    index = i + 1,
+                    command = HeartbeatCommand,
+                    @params = new { stationCode = p.Station, bcrCode = p.Bcr, timestamp }
+                }).ToArray()
+            }, RcsDestinationProtocol.Json);
+            using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
+            {
+                Version = HttpVersion.Version11,
+                VersionPolicy = HttpVersionPolicy.RequestVersionExact,
+                Content = new ByteArrayContent(Encoding.UTF8.GetBytes(body))
+            };
+            message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            using var response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, timeout.Token).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode) throw new HttpRequestException("HTTP " + (int)response.StatusCode);
+            var (bytes, complete) = await ReadBoundedAsync(response.Content, timeout.Token).ConfigureAwait(false);
+            stop.ThrowIfCancellationRequested();
+            if (!complete) throw new InvalidDataException("Incomplete or oversized heartbeat response");
+            var receivedAt = HeartbeatTimeForVerification.GetUtcNow();
+            var lifetime = TimeSpan.FromMilliseconds(Math.Max(3000, options.HeartbeatIntervalMs * 3));
+            var vehicles = ReadHeartbeatVehicles(bytes, requestId, mapping, receivedAt, lifetime);
+            lock (lifecycle)
+            {
+                if (!running || disposed) return RcsHeartbeatResult.Unavailable;
+                if (selectionRevision != heartbeatSelectionRevision) return RcsHeartbeatResult.SelectionChanged;
+                stationVehicles = vehicles;
+                heartbeatFailure = null; heartbeatResponseReceived = true;
+                heartbeatReceivedAt = receivedAt; heartbeatValidUntil = receivedAt + lifetime;
+                heartbeatEvidence = "RCS heartbeat HTTP " + (int)response.StatusCode + " at " + timestamp.ToString(CultureInfo.InvariantCulture) + "; application acknowledgement unconfirmed";
+            }
+            return RcsHeartbeatResult.Received;
+        }
+        catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException or InvalidDataException)
+        {
+            stop.ThrowIfCancellationRequested();
+            lock (lifecycle)
+            {
+                if (!running || disposed) return RcsHeartbeatResult.Unavailable;
+                if (selectionRevision != heartbeatSelectionRevision) return RcsHeartbeatResult.SelectionChanged;
+                stationVehicles = []; heartbeatFailure = "RCS heartbeat failed: " + (e is OperationCanceledException ? "timeout" : e.Message) + "; no business request was retried";
+            }
+            return RcsHeartbeatResult.Failed;
+        }
     }
 
     static long NextHeartbeatId(long timestamp)

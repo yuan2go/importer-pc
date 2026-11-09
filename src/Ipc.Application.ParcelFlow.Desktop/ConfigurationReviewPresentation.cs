@@ -41,8 +41,13 @@ public partial class ParcelViewModel
     {
         reviewedConfigurationSignature = null; NotifyConfigurationReview();
         if (HasUnconfirmedConfigurationSubmission) { Message = "上次保存结果未确认，请先查看保存结果。已填写的内容会保留。"; return false; }
-        if (configurationAuthority == "结构化表单" && ParameterEditor?.ValidateFields() == false)
-        { validationState = "有设置需要修正"; NotifyConfigurationEditorState(); Message = "请修正标出的设置后再保存；全部输入已保留。"; return false; }
+        if (configurationAuthority == "结构化表单" && ParameterEditor is { } editor && !editor.ValidateFields())
+        {
+            validationState = "有设置需要修正";
+            NotifyConfigurationEditorState();
+            Message = ChineseInterfaceText.ParameterMessage(editor.Issues[0].Message, "请修正标出的设置后再保存。") + "已填写的内容会保留。";
+            return false;
+        }
         ParcelConfiguration candidate;
         try { candidate = CurrentReviewCandidate(); }
         catch (Exception error) when (error is InvalidOperationException or JsonException or System.IO.InvalidDataException or ArgumentException)
@@ -57,7 +62,7 @@ public partial class ParcelViewModel
         { validationState = "检查期间输入已改变"; NotifyConfigurationEditorState(); Message = "输入已改变，本次检查已过期。请重新保存以检查当前更改。"; return false; }
         validationState = validation.Status == "Validated" ? "检查通过" : ChineseInterfaceText.ParameterMessage(validation.Reason, "检查未通过，请查看诊断详情并修正设置。");
         if (validation.Status != "Validated")
-        { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = "设置检查未通过，请查看参数错误与诊断详情；输入已保留。"; return false; }
+        { if (configurationAuthority == "结构化表单") ParameterEditor?.Report(validation.Reason); NotifyConfigurationEditorState(); Message = validationState + "已填写的内容会保留。"; return false; }
         // The same rules the Application applies; it may still fall back to a restart (e.g. an unconfirmed request).
         var live = Snapshot is { } snapshot && (ConfigurationActivation.RulesOnly(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate) ||
             ConfigurationActivation.LiveDevices(snapshot.ApplicationId, snapshot.Configuration.Effective, snapshot.Configuration.Pending, candidate) is not null);

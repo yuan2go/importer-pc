@@ -179,10 +179,14 @@
          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="{Binding PaceText}"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Text" Value="{Binding PaceCompact}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
        </Border>
-       <Border x:Name="RcsConnection" Grid.Column="3" VerticalAlignment="Center" Margin="12,0,0,0" Background="{Binding RcsPresentation.Background}" BorderBrush="{Binding RcsPresentation.Border}" BorderThickness="1" Padding="10,6">
-        <Border.Style><Style TargetType="Border"><Style.Triggers><DataTrigger Binding="{Binding IsSettingsWorkspace}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>
-        <TextBlock Text="{Binding RcsPresentation.Text}" Foreground="{Binding RcsPresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" AutomationProperties.Name="RCS 连接状态" AutomationProperties.LiveSetting="Polite" ToolTip="RCS 在线只表示服务可连接；每件包裹以本件返回的格口为准。"/>
-       </Border>
+       <Button x:Name="RcsConnection" Grid.Column="3" VerticalAlignment="Center" Margin="12,0,0,0"
+               Content="{Binding RcsButtonText}" Click="RcsConnection_Click" IsEnabled="{Binding CanCheckRcs}"
+               Background="{Binding RcsPresentation.Background}" BorderBrush="{Binding RcsPresentation.Border}"
+               Foreground="{Binding RcsPresentation.Foreground}" FontSize="{x:Static type:UiTypography.Label}" Padding="10,6"
+               AutomationProperties.Name="检查 RCS 心跳" AutomationProperties.ItemStatus="{Binding RcsButtonText}"
+               ToolTip="点击发送一次 RCS 心跳。每件包裹以本件返回的格口为准。">
+        <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Style.Triggers><DataTrigger Binding="{Binding IsSettingsWorkspace}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Button.Style>
+       </Button>
       </Grid>
       <Border x:Name="OperationalFeedbackBar" Grid.Row="1">
        <Border.Style><Style TargetType="Border"><Style.Triggers><DataTrigger Binding="{Binding WorkFeedback}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>

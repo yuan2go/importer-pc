@@ -42,7 +42,7 @@ static partial class Program
         foreach (var size in new[] { (1366d, 768d), (1092d, 614d), (800d, 420d) })
         {
             await SetClient(window, size.Item1, size.Item2); await Flush(window);
-            Check(((Border)window.FindName("RcsConnection")).IsVisible, "shared RCS status stays visible at " + size.Item1);
+            Check(((Button)window.FindName("RcsConnection")).IsVisible, "shared RCS status stays visible at " + size.Item1);
             foreach (var position in Descendants(window).OfType<SupplyStationPosition>())
             {
                 var badge = (TextBlock)position.FindName("CameraConnection"); var scan = (Grid)position.FindName("ScanInformation");

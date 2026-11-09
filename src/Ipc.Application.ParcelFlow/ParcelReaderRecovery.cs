@@ -10,6 +10,7 @@ public sealed partial class ParcelRuntime
         var name = "reader-reconnect:" + id;
         var delaySeconds = 1;
         string? blockedEpoch = null;
+        string? lastConnectionFailure = null;
         try
         {
             while (!stopping.IsCancellationRequested)
@@ -71,10 +72,18 @@ public sealed partial class ParcelRuntime
                         }).ConfigureAwait(false);
                         supplySuspendedReaders.Remove(id);
                         delaySeconds = 1;
+                        lastConnectionFailure = null;
                         Diagnostic("相机通信", "相机自动重连完成", "信息", id);
                     }
-                    catch (ObservationConnectionException)
-                    { supplySuspendedReaders.Remove(id); delaySeconds = Math.Min(delaySeconds * 2, 10); }
+                    catch (ObservationConnectionException error)
+                    {
+                        var reason = error.Message + "\n" + error.InnerException?.Message;
+                        if (lastConnectionFailure != reason)
+                            WriteRuntimeLog("相机通信", "相机自动重连失败", new { Device = id, reader.Epoch, Error = error.ToString() }, "警告");
+                        lastConnectionFailure = reason;
+                        supplySuspendedReaders.Remove(id);
+                        delaySeconds = Math.Min(delaySeconds * 2, 10);
+                    }
                     catch (OperationCanceledException) when (stopping.IsCancellationRequested) { throw; }
                     catch (Exception error)
                     {

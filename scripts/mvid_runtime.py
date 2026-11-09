@@ -45,7 +45,8 @@ def publish(source, output, runtime, verification_only=False):
     record = dict(Status='BUNDLED_MVID_CODEREADER', Version=inventory['Version'], Files=inventory['Files'],
                   Preload=inventory['Preload'], BusinessReady=False,
                   NoticeSha256=hashlib.sha256(notice.read_bytes()).hexdigest(),
-                  ExternalPrerequisites=['Matching x64 VC++ 2008/2010 runtime and camera transport driver'],
+                  OfflineInstallerPrerequisites=['Microsoft Visual C++ 2008 SP1 x64', 'Microsoft Visual C++ 2010 SP1 x64'],
+                  ExternalPrerequisites=['Matching camera transport driver'],
                   BusinessBoundary='Native recognition only; Application owns filtering, placement and RCS guards')
     # Validate every byte before writing anything, including the working-directory config.
     for area in ('app', 'desktop'):

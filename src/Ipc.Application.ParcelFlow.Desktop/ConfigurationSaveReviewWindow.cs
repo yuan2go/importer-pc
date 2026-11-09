@@ -21,6 +21,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
     readonly StackPanel credentials = new();
     readonly Expander authentication = new() { Header = "需要时验证管理权限", Margin = new(0, 0, 0, 12) };
     readonly Button save = new() { Name = "ConfirmSaveChanges", Content = "确认保存", MinWidth = 112 };
+    readonly Button back = new() { Content = "返回设置", Margin = new(0, 0, 8, 0) };
     readonly Button inspect = new() { Content = "查看保存结果", MinWidth = 112 };
     readonly Button activate = new() { Content = "重启软件使设置生效…", MinHeight = 44 };
     readonly TextBox reason = new() { Name = "ChangeReason", AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 72, MaxLength = 1024, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
@@ -38,19 +39,22 @@ public sealed class ConfigurationSaveReviewWindow : Window
         MaxWidth = Math.Max(540, SystemParameters.WorkArea.Width - 24); MaxHeight = Math.Max(340, SystemParameters.WorkArea.Height - 24); MinWidth = 520; MinHeight = 320;
         var root = new DockPanel { LastChildFill = true };
         var footer = new DockPanel { Margin = new(24, 12, 24, 12), LastChildFill = false };
-        var back = new Button { Content = "返回设置", Margin = new(0, 0, 8, 0) }; back.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); back.Click += (_, _) => Close();
+        back.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); back.Click += (_, _) => Close();
         save.Style = (Style)Resources["ParameterPrimaryAction"]; inspect.Style = (Style)Resources["ParameterPrimaryAction"];
         save.Click += SaveAsync; inspect.Click += async (_, _) => await vm.RunAsync(vm.InspectLastSaveAsync, "查看上次保存结果");
         DockPanel.SetDock(save, Dock.Right); DockPanel.SetDock(inspect, Dock.Right); DockPanel.SetDock(back, Dock.Right);
         DockPanel.SetDock(activate, Dock.Right); footer.Children.Add(save); footer.Children.Add(inspect); footer.Children.Add(activate); footer.Children.Add(back);
         activate.Click += async (_, _) => { if (vm.RequestActivationAsync is { } request) { Close(); await request(); } };
         back.IsCancel = true;
-        var footerChrome = new Border { BorderThickness = new(0, 1, 0, 0), Child = footer }.Themed(Border.BorderBrushProperty, "Line");
+        var footerContent = new StackPanel();
+        outcome.Margin = new(24, 12, 24, 0);
+        footerContent.Children.Add(outcome); footerContent.Children.Add(footer);
+        var footerChrome = new Border { BorderThickness = new(0, 1, 0, 0), Child = footerContent }.Themed(Border.BorderBrushProperty, "Line");
         DockPanel.SetDock(footerChrome, Dock.Bottom); root.Children.Add(footerChrome);
         var body = new StackPanel { Margin = new(28, 20, 28, 20) };
         body.Children.Add(Heading(Title, UiTypography.PageTitle, 0));
         body.Children.Add(Note(authorizationOnly ? "授权仅用于本次维护操作。" : vm.ConfigurationActivationGuidance));
-        body.Children.Add(outcome); AutomationProperties.SetLiveSetting(outcome, AutomationLiveSetting.Polite);
+        AutomationProperties.SetLiveSetting(outcome, AutomationLiveSetting.Polite);
         if (!authorizationOnly)
         {
             body.Children.Add(Heading("本次更改", UiTypography.Group, 12));
@@ -91,12 +95,6 @@ public sealed class ConfigurationSaveReviewWindow : Window
         reason.SetBinding(IsEnabledProperty, new Binding(nameof(vm.CanStartOperation))); AutomationProperties.SetName(reason, "维护变更原因");
         reason.TextChanged += (_, _) => reasonError.Visibility = Visibility.Collapsed; body.Children.Add(reason); body.Children.Add(reasonError);
         body.Children.Add(Note(authorizationOnly ? "最多 1024 字，会记入修改记录。" : "最多 1024 字，会记入修改记录。不填时自动记录本次修改了哪些设置。"));
-        var feedback = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 64, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-        feedback.SetBinding(TextBox.TextProperty, new Binding(nameof(vm.Feedback)) { Mode = BindingMode.OneWay });
-        var detail = new StackPanel(); detail.Children.Add(feedback);
-        var revision = Note(""); revision.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.DraftRevisionState))); detail.Children.Add(revision);
-        var editor = Note(""); editor.SetBinding(TextBlock.TextProperty, new Binding(nameof(vm.ConfigurationEditorState))); detail.Children.Add(editor);
-        body.Children.Add(new Expander { Header = "保存详情", Content = detail, Margin = new(0, 20, 0, 0) });
         root.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled }); Content = root;
         vm.PropertyChanged += ModelChanged; Closed += (_, _) => { proof.Clear(); vm.PropertyChanged -= ModelChanged; };
         Closing += (_, e) => { if (vm.Busy) e.Cancel = true; };
@@ -124,7 +122,8 @@ public sealed class ConfigurationSaveReviewWindow : Window
             finally { if (automatic is not null && vm.ConfigurationReason == automatic) vm.ConfigurationReason = ""; }
             completed = true;
         }, "保存并查看结果");
-        if (!completed) localFailure = "保存未完成。" + vm.Message;
+        if (!completed && vm.ConfigurationSubmissionOutcome.Length == 0)
+            localFailure = ChineseInterfaceText.ParameterMessage(vm.Message, "保存未完成，请返回设置检查后重试。");
         UpdateState();
     }
     static string AutomaticReason(IReadOnlyCollection<ConfigurationChangeItem> changes)
@@ -147,24 +146,24 @@ public sealed class ConfigurationSaveReviewWindow : Window
         authentication.Visibility = vm.IsManagementMode ? Visibility.Collapsed : Visibility.Visible;
         guidance.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;
         inspect.Visibility = !authorizationOnly && vm.HasUnconfirmedConfigurationSubmission ? Visibility.Visible : Visibility.Collapsed; inspect.IsEnabled = !vm.Busy;
-        save.Visibility = authorizationOnly || vm.HasUnconfirmedConfigurationSubmission || vm.ConfigurationSubmissionOutcome is "PendingRestart" or "Conflict" ? Visibility.Collapsed : Visibility.Visible;
+        var confirmed = vm.ConfigurationSubmissionOutcome is "Effective" or "Unchanged";
+        back.Content = confirmed && !vm.HasUnsavedWindowPreference ? "完成" : "返回设置";
+        save.Visibility = authorizationOnly || confirmed || vm.HasUnconfirmedConfigurationSubmission || vm.ConfigurationSubmissionOutcome is "PendingRestart" or "Conflict" ? Visibility.Collapsed : Visibility.Visible;
         save.IsEnabled = vm.CanSubmitReviewedConfiguration;
         activate.Visibility = !authorizationOnly && vm.Snapshot?.Configuration.Pending is not null ? Visibility.Visible : Visibility.Collapsed;
         activate.IsEnabled = vm.CanRequestActivation;
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
-            "Effective" => "设置已保存并生效，无需重启。改了相机或 RCS 时只重新连接了对应设备；已受理的作业继续使用原设置。",
+            "Effective" => vm.ConfigurationSubmissionDetail,
             "PendingRestart" => "更改已保存，尚未生效。点“重启软件使设置生效…”后才使用新设置。",
             "Unchanged" => "设置与当前一致，无需保存。",
-            "Unknown" => "暂时无法确认是否保存成功。请先查看上次保存结果，不要重复提交。",
-            "NotSaved" => "本次未保存，原设置没有改变。请查看下方原因后再保存。",
-            "Conflict" => "设置已被其他操作修改。你的输入已保留，请返回设置重新读取后再保存。",
-            "Rejected" => "保存未被接受，请查看下方原因。你的输入已保留。",
+            "Unknown" => "保存结果待确认。" + vm.ConfigurationSubmissionDetail,
+            "NotSaved" or "Conflict" or "Rejected" => vm.ConfigurationSubmissionDetail,
             _ => !authorizationOnly && !vm.ConfigurationReviewIsCurrent ? "设置又有改动，请返回重新检查。" : ""
         };
         if (vm.ConfigurationSubmissionOutcome is "Effective" or "PendingRestart" or "Unchanged" && vm.WindowPreferenceStatus.Length > 0)
             outcomeText += "\n" + vm.WindowPreferenceStatus;
-        outcome.Text = vm.Busy ? vm.OperationStatus : localFailure ?? (outcomeText + (vm.ConfigurationSubmissionOutcome is "Unknown" or "NotSaved" or "Conflict" or "Rejected" ? "\n" + vm.ConfigurationSubmissionDetail : ""));
+        outcome.Text = vm.Busy ? "正在保存或核对结果，请稍候…" : localFailure ?? outcomeText;
         outcome.Visibility = outcome.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         outcome.SetResourceReference(TextBlock.ForegroundProperty, vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "Warning" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "Success" : "Muted");
     }

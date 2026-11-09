@@ -113,25 +113,36 @@ public sealed partial class ParcelRuntime
             var faults = new List<string>();
             await ExternalAsync(async () =>
             {
+                // The saved configuration is already owned by the runtime. Connection
+                // attempts get their own budget after the old device has been released.
                 if (built.Wcs is { } wcs)
-                    try { await wcs.StartAsync(budget.Token).ConfigureAwait(false); }
-                    catch (Exception error) when (error is not OperationCanceledException || !stopping.IsCancellationRequested) { faults.Add("RCS"); Diagnostic("设备通信", "保存设置后 RCS 连接启动失败", "警告", error.GetType().Name); }
+                {
+                    using var connect = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token);
+                    connect.CancelAfter(candidate.TimeoutMs);
+                    try { await wcs.StartAsync(connect.Token).ConfigureAwait(false); }
+                    catch (Exception error) when (error is not OperationCanceledException || !stopping.IsCancellationRequested)
+                    { faults.Add("RCS"); Diagnostic("设备通信", "保存设置后 RCS 连接启动失败", "警告", error.ToString()); }
+                }
                 foreach (var id in change.Readers)
                 {
                     var session = readers[id];
                     RegisterCameraReadFeedback(session);
                     if (definition.ArchiveOriginalFrames && session.Source is IOriginalFrameSource originalFrames) originalFrames.EnableOriginalFrames();
-                    if (Id == "sportmaster" && session.Source is IObservationInspectionSource startedSource)
-                        await ApplyInspectionAsync(startedSource, null, budget.Token).ConfigureAwait(false);
-                    if (!ReaderSupplyActive(id)) { supplySuspendedReaders.Add(id); continue; }
-                    supplySuspendedReaders.Remove(id);
-                    // As at startup: an unreachable camera only takes its own position offline.
+                    using var connect = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token);
+                    connect.CancelAfter(candidate.TimeoutMs);
                     try
                     {
-                        await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, budget.Token), budget.Token).ConfigureAwait(false);
+                        if (Id == "sportmaster" && session.Source is IObservationInspectionSource startedSource)
+                            await ApplyInspectionAsync(startedSource, null, connect.Token).ConfigureAwait(false);
+                        if (!ReaderSupplyActive(id)) { supplySuspendedReaders.Add(id); continue; }
+                        supplySuspendedReaders.Remove(id);
+                        await DeviceCallAsync(id, () => session.StartAsync(Enqueue, ReaderHealthChanged, connect.Token), connect.Token).ConfigureAwait(false);
                     }
-                    catch (ObservationConnectionException error) { faults.Add(ReaderName(id)); Diagnostic("相机通信", "保存设置后相机连接失败", "警告", Wire.Encode(new { Device = id, session.Epoch, Error = error.ToString() })); }
-                    catch (Exception error) when (error is not OperationCanceledException || !stopping.IsCancellationRequested) { faults.Add(ReaderName(id)); Diagnostic("相机通信", "保存设置后相机启动失败", "警告", id + ": " + error.GetType().Name); }
+                    catch (Exception error) when (error is not OperationCanceledException || !stopping.IsCancellationRequested)
+                    {
+                        faults.Add(ReaderName(id));
+                        WriteRuntimeLog("相机通信", "保存设置后相机连接失败", new { Device = id, session.Epoch, Error = error.ToString() }, "警告");
+                    }
                 }
                 return true;
             }).ConfigureAwait(false);
@@ -156,7 +167,7 @@ public sealed partial class ParcelRuntime
             InvalidatePresentation();
             var text = faults.Count == 0
                 ? names + "设置已保存并生效，连接状态请查看设备信息；其他设备未中断。"
-                : "设置已保存并生效，但" + string.Join("、", faults) + "暂未连接；请在诊断页查看原因和自动恢复状态，其他设备未中断。";
+                : "设置已保存并生效。" + string.Join("、", faults) + "暂未连接，请在“设备与诊断”查看连接状态和自动恢复情况。";
             return (new("Effective", text, repository.Revision), audit);
         }
         catch (Exception error) when (!adopted)

@@ -143,6 +143,14 @@ public static partial class WindowsDeploymentSetup
         ApplicationRootOwnership.RequireWindowsStorage(intent.RequestedDataRoot ?? Current(intent.ApplicationId)?.DataRoot ?? @"D:\ProgramData\ImporterPc\data", @"D:\CainiaoSupplyStation");
         var sid = new SecurityIdentifier(MachineRuntimePolicy.SharedUsersSid);
         var directory = Path.Combine(MachineRoot, "deployments");
+        // A new quiet install must establish machine policy before creating its journal.
+        // The policy bootstrap deliberately refuses a machine root with existing deployment material.
+        if (intent.Action == "Install" && !Directory.Exists(directory))
+        {
+            WindowsStoragePaths.RequireExistingProtectedAncestors(Path.GetDirectoryName(intent.LogFile)!);
+            QuietDeploymentOutput.RequireNewPaths(intent.LogFile);
+            MachineRuntimeSetup.InstallForAccount(sid.Value);
+        }
         WindowsStoragePaths.PrepareProtectedDirectory(directory, sid);
         var guardFile = Path.Combine(directory, intent.ApplicationId + ".quiet.lease");
         if (!File.Exists(guardFile)) WriteProtected(guardFile, new { Purpose = "quiet-command-serialization" }, sid, overwrite: false);

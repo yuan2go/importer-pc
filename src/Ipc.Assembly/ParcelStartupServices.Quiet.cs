@@ -162,7 +162,7 @@ public static partial class ParcelStartupServices
         var account = installed?.RuntimeAccountSid ?? MachineRuntimePolicy.SharedUsersSid;
         var plan = Review(media, account, data, seed, null, [], false, installed is null ? @"D:\CainiaoSupplyStation" : Path.GetDirectoryName(Path.GetDirectoryName(installed.ReleaseRoot))!)
             with
-        { OperationId = command.OperationId };
+        { OperationId = command.OperationId, Shortcuts = installed?.Shortcuts ?? new(true, true) };
         if (command.Action == "Repair" && installed is null) throw new ArgumentException("未安装时不能选择修复。");
         operation?.FreezeInstallation(plan);
         await ExecuteBatchInstall(plan).ConfigureAwait(false);

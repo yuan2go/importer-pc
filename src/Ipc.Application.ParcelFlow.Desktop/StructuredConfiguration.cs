@@ -339,9 +339,10 @@ public partial class ParcelViewModel
         var originalAll = ParcelBindings.All(c).Select(x => x.InstanceId).ToHashSet();
         var roleIds = ConfigurationRoles.Select(x => x.Selection.Capability?.InstanceId).OfType<string>().ToHashSet();
         var inventory = bindings.Where(x => originalInventory.Contains(x.InstanceId) || !originalAll.Contains(x.InstanceId) || !roleIds.Contains(x.InstanceId)).ToArray();
+        var deferred = StartupConfigurationDraft.DeferredConnectionIds(ReaderDrafts.Select(r => r.Capability), CapabilityDrafts);
         return policy.ApplyParameters(c) with
         {
-            DeferredConnections = StartupConfigurationDraft.DeferredConnectionIds(ReaderDrafts.Select(r => r.Capability), CapabilityDrafts),
+            DeferredConnections = deferred ?? (c.DeferredConnections is { Length: 0 } ? c.DeferredConnections : null),
             Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId),
             Topology = new(readers, PositionDrafts.Select(x => x.Build()).ToArray()),
             CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory,

@@ -143,6 +143,18 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         foreach (var rcs in Components.Where(ParameterOwnership.IsRcs))
             if (rcs.Parameters.Where(p => p.Field.Key is "left-station-code" or "right-station-code").Any(p => p.Value != Policy.StationCode))
                 Issue("系统", "StationCode", "取格口和心跳的供包台编号尚未统一；请核对原值后填写同一个供包台编号。");
+        foreach (var (key, message) in new[]
+        {
+            ("device.ip", "左右相机的 IP 地址重复，请分别填写两台相机的实际 IP 地址。"),
+            ("device.serial", "左右相机的序列号重复，请分别填写两台相机的物理序列号。")
+        })
+        {
+            var cameraValues = Readers.Where(r => r.IsSimpleCamera && !r.ConfigureLater)
+                .Select(r => (Reader: r, Value: r.Parameters.FirstOrDefault(p => p.Field.Key == key)?.Value));
+            foreach (var duplicate in cameraValues.Where(x => !string.IsNullOrWhiteSpace(x.Value))
+                .GroupBy(x => x.Value, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
+                Issue("驱动", duplicate.Reader.InstanceId + "/" + key, message);
+        }
         foreach (var rcs in Components.Where(c => c.Bound && !c.ConfigureLater && ParameterOwnership.IsRcs(c)))
         {
             var codes = Readers.Where(r => !r.ConfigureLater).Select(r =>

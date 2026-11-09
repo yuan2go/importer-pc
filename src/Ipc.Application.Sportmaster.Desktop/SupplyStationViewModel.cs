@@ -56,6 +56,31 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
         RcsConnectionState.Deferred => ParcelPresentation.Unknown("RCS：待配置"),
         _ => ParcelPresentation.Unknown("RCS：待确认")
     };
+    bool checkingRcs;
+    public string RcsButtonText => checkingRcs ? "RCS：检查中" : RcsPresentation.Text;
+    public bool CanCheckRcs => !checkingRcs && Fresh && Application is IStationRcsHeartbeat &&
+        RcsState is not (RcsConnectionState.Deferred or RcsConnectionState.Simulation);
+    internal async Task CheckRcsAsync()
+    {
+        if (!CanCheckRcs || Application is not IStationRcsHeartbeat heartbeat) return;
+        checkingRcs = true;
+        Changed(nameof(CanCheckRcs)); Changed(nameof(RcsButtonText));
+        try
+        {
+            var result = await ServiceAsync(() => heartbeat.CheckRcsHeartbeatAsync(CancellationToken.None));
+            Message = result switch
+            {
+                RcsHeartbeatResult.Received => "已收到 RCS 心跳响应。",
+                RcsHeartbeatResult.Failed => "未收到有效的 RCS 心跳响应，请检查 RCS 连接后重试。",
+                RcsHeartbeatResult.NoPositions => "没有可发送心跳的投递位，请核对启用状态和相机编码。",
+                RcsHeartbeatResult.Busy => "正在检查 RCS 心跳，请稍候。",
+                RcsHeartbeatResult.SelectionChanged => "投递位已变化，请重新检查 RCS 心跳。",
+                _ => "当前无法检查 RCS 心跳，请稍后重试。"
+            };
+        }
+        catch (Exception) { Message = "RCS 心跳检查未完成，请稍后重试。"; }
+        finally { checkingRcs = false; Changed(nameof(CanCheckRcs)); Changed(nameof(RcsButtonText)); }
+    }
     // Display copy only: never infer availability or remove the original blocking facts.
     public string WorkNotice => BlockingReasons;
     public bool IsInternalWorkspace => SelectedPage != "workstation";
@@ -92,7 +117,7 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
     {
         Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
         NotifyOperatorWorkspace();
-        foreach (var name in new[] { nameof(Station), nameof(WorkNotice), nameof(WorkspaceStatusBackground), nameof(WorkspaceStatusForeground), nameof(SettingsRunMode), nameof(RcsState), nameof(RcsServiceStatus), nameof(RcsPresentation) }) Changed(name);
+        foreach (var name in new[] { nameof(Station), nameof(WorkNotice), nameof(WorkspaceStatusBackground), nameof(WorkspaceStatusForeground), nameof(SettingsRunMode), nameof(RcsState), nameof(RcsServiceStatus), nameof(RcsPresentation), nameof(RcsButtonText), nameof(CanCheckRcs) }) Changed(name);
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)

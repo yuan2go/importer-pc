@@ -1,0 +1,17 @@
+{
+  "ActivationManifest": "<assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\" manifestVersion=\"1.0\"><assemblyIdentity type=\"win32\" name=\"Ipc.Vc90.Check\" version=\"1.0.0.0\" processorArchitecture=\"amd64\"/><dependency><dependentAssembly><assemblyIdentity type=\"win32\" name=\"Microsoft.VC90.CRT\" version=\"9.0.21022.8\" processorArchitecture=\"amd64\" publicKeyToken=\"1fc8b3b9a1e18e3b\"/></dependentAssembly></dependency></assembly>",
+  "Packages": [
+    {
+      "File": "vc2008-sp1-x64.exe",
+      "Length": 5211080,
+      "Sha256": "C5E273A4A16AB4D5471E91C7477719A2F45DDADB76C7F98A38FA5074A6838654",
+      "Url": "https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe"
+    },
+    {
+      "File": "vc2010-sp1-x64.exe",
+      "Length": 10277328,
+      "Sha256": "F3B7A76D84D23F91957AA18456A14B4E90609E4CE8194C5653384ED38DADA6F3",
+      "Url": "https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe"
+    }
+  ]
+}

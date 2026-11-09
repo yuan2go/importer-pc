@@ -44,7 +44,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         return next;
     }
     // stillMs: "放稳后再识别" for both synthetic cameras; "0" decodes every frame.
-    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 1, string stillMs = "0", bool nativeResults = false, BarcodeFilterPolicy? barcodeFilter = null)
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 1, string stillMs = "0", bool nativeResults = false, BarcodeFilterPolicy? barcodeFilter = null, string? stationCode = null)
     {
         if (!nativeLoaded)
         {
@@ -68,9 +68,9 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             ["request-id-base"] = "820000000",
             ["request-id-count"] = "100000",
             ["heartbeat-interval-ms"] = (heartbeatSeconds * 1000).ToString(System.Globalization.CultureInfo.InvariantCulture),
-            ["left-station-code"] = "TEST-LEFT",
+            ["left-station-code"] = stationCode ?? "TEST-LEFT",
             ["left-bcr-code"] = "TEST-LEFT-READER",
-            ["right-station-code"] = "TEST-RIGHT",
+            ["right-station-code"] = stationCode ?? "TEST-RIGHT",
             ["right-bcr-code"] = "TEST-RIGHT-READER"
         });
         Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [], BarcodeFilter = barcodeFilter ?? seed.BarcodeFilter };
@@ -156,6 +156,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public bool DiscoverReplacements = true;
         public bool RejectLiveReaders = false, FailCandidateRelease = false;
         public ParcelConfiguration? LiveConfirmed;
+        public Action? OnLiveConfirmed { get; set; }
         // The fixture validates one exact configuration; a test names the next one before saving it.
         public void Expect(ParcelConfiguration next) => expected = next;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validator.Normalize(c);
@@ -191,7 +192,11 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             if (integration) { wcs = new(c.Wcs!); wcs.ConfigureRuntime(c); WcsBuilds++; }
             return new(RejectLiveReaders ? readers.ToDictionary(r => "unexpected-" + r.Key, r => r.Value) : readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" });
         }
-        public void ConfirmLive(ParcelConfiguration c) => LiveConfirmed = c;
+        public void ConfirmLive(ParcelConfiguration c)
+        {
+            LiveConfirmed = c;
+            OnLiveConfirmed?.Invoke();
+        }
         public ValueTask DisposeAsync() => validator.DisposeAsync();
     }
     internal sealed class RoundDecoder(RoundApi api, IReadOnlyDictionary<string, string> parameters) : IMonoBarcodeDecoder

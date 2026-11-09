@@ -1,0 +1,55 @@
+name: SM offline camera runtime installation
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/sm-runtime-install.yml'
+      - 'src/Ipc.Platform/SmVcRuntimeSetup.cs'
+      - 'src/Ipc.Platform/sm-vc-runtime.json'
+      - 'src/Ipc.Platform/WindowsDeploymentSetup.cs'
+      - 'scripts/sm_vc_runtime.py'
+      - 'scripts/package-application.py'
+      - 'scripts/verify-sm-vc-install.ps1'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sm-runtime-install.yml'
+      - 'src/Ipc.Platform/SmVcRuntimeSetup.cs'
+      - 'src/Ipc.Platform/sm-vc-runtime.json'
+      - 'src/Ipc.Platform/WindowsDeploymentSetup.cs'
+      - 'scripts/sm_vc_runtime.py'
+      - 'scripts/package-application.py'
+      - 'scripts/verify-sm-vc-install.ps1'
+permissions:
+  contents: read
+jobs:
+  missing-runtime-install:
+    runs-on: windows-2025
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        env:
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: core.protectNTFS
+          GIT_CONFIG_VALUE_0: 'false'
+          GIT_CONFIG_KEY_1: core.longpaths
+          GIT_CONFIG_VALUE_1: 'true'
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          global-json-file: global.json
+      - name: Build the installer and verify real runtime setup on disposable Windows
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          ./scripts/verify-sm-vc-install.ps1
+      - name: Retain installation and verification results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: sm-vc-install-results
+          path: D:/sm-vc-acceptance/evidence
+          if-no-files-found: error

@@ -62,7 +62,9 @@ static class StateJournalChecks
         }
         for (uint i = 1; i <= 12; i++) await Feed("SYNTH-STATE-BLOCKED", i);
         await Feed("SYNTH-STATE-CHANGED", 13);
-        logs = await WaitLog(h, all => all.Any(e => Event(e) == "输入处理完成" && Detail(e).GetProperty("Barcode").GetString() == "SYNTH-STATE-CHANGED"));
+        // The changed input's timing event is emitted after the prior observation window is flushed.
+        logs = await WaitLog(h, all => all.Any(e => Event(e) == "扫码阶段耗时与队列汇总" &&
+            Detail(e).GetProperty("First").GetProperty("Candidates").EnumerateArray().Any(c => c.GetString() == "SYNTH-STATE-CHANGED")));
         var inputs = logs.Where(e => Event(e) == "输入处理完成" && Detail(e).GetProperty("Barcode").GetString() == "SYNTH-STATE-BLOCKED").Select(Detail).ToArray();
         var observations = logs.Where(e => Event(e) == "扫码阶段耗时与队列汇总" &&
             Detail(e).GetProperty("First").GetProperty("Disposition").GetString() == "PausedSamePlacementObservation").Select(Detail).ToArray();

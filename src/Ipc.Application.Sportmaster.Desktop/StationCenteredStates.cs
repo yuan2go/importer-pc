@@ -28,8 +28,8 @@ public sealed partial class SupplyStationPositionViewModel
     public string CenteredStateTitle => SupplyDisabled ? "已停用" : CenteredSoftwarePause ? "供包已暂停" : CenteredRcsPause ? "暂不能投包" : "等待投包";
     public string CenteredStateForeground => SupplyDisabled || CenteredSoftwarePause ? OperatorTokens.Muted : CenteredRcsPause ? OperatorTokens.Danger : OperatorTokens.Success;
     public string CenteredStateReason => SupplyDisabled ? "不接收条码" : CenteredSoftwarePause ? PauseReason : CenteredRcsPause ? "RCS 服务离线" :
-        CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "放上包裹，由相机扫码" : "可用扫码枪或键盘输入完整条码";
+        CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "放上包裹，由相机扫码" : "可输入完整条码";
     public string CenteredStateInstruction => CenteredStateFullInstruction;
     public string CenteredStateFullInstruction => SupplyDisabled ? "" : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? "请检查连接，恢复后再提交" :
-        CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "也可输入完整条码后按回车" : "输入完成后按回车提交";
+        CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "也可输入完整条码后按回车" : "";
 }

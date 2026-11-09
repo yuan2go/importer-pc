@@ -166,6 +166,7 @@ public static partial class WindowsDeploymentSetup
             WriteProtected(operation, new { Status = "Prepared", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, request.SourceCommit, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data }, sid);
             progress?.Invoke(WindowsInstallationStage.CopyingFiles);
             media.CopyTo(releaseRoot, root => ProtectedDirectory(root, sid), file => new FileInfo(file).SetAccessControl(MachineRuntimeSetup.FileAcl(sid, FileSystemRights.ReadAndExecute)));
+            var cameraRuntime = SmVcRuntimeSetup.Ensure(media, releaseRoot, progress);
             progress?.Invoke(WindowsInstallationStage.PreparingConfiguration);
             ProtectedDirectory(Path.Combine(MachineRoot, "configuration"), sid);
             var config = request.RepairSeed ? Path.Combine(MachineRoot, "configuration", request.ApplicationId + "-" + Wire.Id()) :
@@ -215,7 +216,7 @@ public static partial class WindowsDeploymentSetup
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);
             if (request.ApplicationId is "sportmaster" or "direct-plc" or "wcs-to-plc") ManagementModeBroker.Install(data, Path.Combine(releaseRoot, "app"),
                 entry => AppendServiceDiagnostic(operation + ".service.jsonl", entry, sid));
-            WriteProtected(operation, new { Status = "ReadyToCommit", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, Location = location, Previous = before, BusinessStarted = false }, sid);
+            WriteProtected(operation, new { Status = "ReadyToCommit", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, Location = location, Previous = before, BusinessStarted = false, CameraRuntime = cameraRuntime }, sid);
             progress?.Invoke(WindowsInstallationStage.CommittingInstallation);
             WriteProtected(Registration(request.ApplicationId), location, sid); // Sole authoritative deployment commit.
             // Stable desktop entry is a repairable projection of the committed deployment.
@@ -226,7 +227,7 @@ public static partial class WindowsDeploymentSetup
             // registration, never by choosing a registry value as a second authority.
             progress?.Invoke(WindowsInstallationStage.RegisteringApplication);
             ProjectInstalledApplication(location);
-            WriteProtected(operation, new { Status = "Completed", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, Location = location, BusinessStarted = false }, sid);
+            WriteProtected(operation, new { Status = "Completed", RequestIdentity = InstallationRequestIdentity(request), request.ChangePlanIdentity, Location = location, BusinessStarted = false, CameraRuntime = cameraRuntime }, sid);
             return location;
         }
         catch (Exception error)

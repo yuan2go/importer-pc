@@ -38,6 +38,16 @@ static partial class Program
         try
         {
             await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online);
+            var rcs = (Button)window.FindName("RcsConnection");
+            Check(rcs.IsEnabled && rcs.Focusable && rcs.ActualHeight >= 44 && Equals(rcs.Content, "RCS：在线"),
+                "RCS connection stays visible as a keyboard-accessible heartbeat button");
+            var heartbeats = h.Peer.HeartbeatRequests.Count; var destinations = h.Peer.Requests.Count;
+            rcs.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Check(!rcs.IsEnabled && Equals(rcs.Content, "RCS：检查中"), "a manual heartbeat shows progress and disables repeat activation");
+            await Until(() => vm.WorkFeedback.Contains("已收到 RCS 心跳响应", StringComparison.Ordinal));
+            Check(rcs.IsEnabled && h.Peer.HeartbeatRequests.Count > heartbeats && h.Peer.Requests.Count == destinations,
+                "clicking the status button sends a real heartbeat and shows the response without a destination request");
+            vm.Message = "";
             var cards = Descendants(window).OfType<SupplyStationPosition>().ToArray();
             var left = cards.Single(c => ReferenceEquals(c.DataContext, vm.Left)); var right = cards.Single(c => ReferenceEquals(c.DataContext, vm.Right));
             var entry = (TextBox)left.FindName("BarcodeEntry"); var submit = (Button)left.FindName("SubmitBarcode");
@@ -49,6 +59,14 @@ static partial class Program
                 "the complete title and instruction group is vertically centered");
             Check(!((DockPanel)left.FindName("DetailedStatus")).IsVisible && !((TextBlock)left.FindName("NextStep")).IsVisible &&
                 !((Button)left.FindName("CenteredEnableSupply")).IsVisible, "waiting has one instruction group and no start button or scattered status copy");
+            var production = probe.Project!;
+            probe.Project = s => production(s) with { Devices = s.Devices!.Select(d => d.DeviceId == h.Left ? d with { Health = DeviceHealth.Disconnected } : d).ToArray() };
+            await Until(() => vm.Left.CenteredStateReason == "可输入完整条码");
+            Check(center.IsVisible && ((TextBlock)left.FindName("CenteredStateReason")).Text == "可输入完整条码" &&
+                vm.Left.CenteredStateInstruction.Length == 0 && entry.IsEnabled && !entry.IsReadOnly,
+                "offline camera waiting shows one short line and the barcode entry is still editable");
+            probe.Project = production;
+            await Flush();
             var snapshot = await h.App.SnapshotAsync();
             await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
             await Until(() => vm.Right.SupplyDisabled);
@@ -121,4 +139,4 @@ static partial class Program
     }
 }
 
-public interface IHomeStateUiFixture : IParcelApplication, IParcelWorkstation, IStationPositionControl, IWorkstationAdministration { }
+public interface IHomeStateUiFixture : IParcelApplication, IParcelWorkstation, IStationPositionControl, IStationRcsHeartbeat, IWorkstationAdministration { }

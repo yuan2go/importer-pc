@@ -63,7 +63,7 @@ static partial class Program
             "expanded navigation places labels below their icons");
         var statusLine = (Grid)window.FindName("SupplyStatusLine");
         var workStatus = (TextBlock)window.FindName("WorkStatus");
-        var pace = (Border)window.FindName("PaceSummary"); var rcs = (Border)window.FindName("RcsConnection");
+        var pace = (Border)window.FindName("PaceSummary"); var rcs = (Button)window.FindName("RcsConnection");
         var feedbackBar = (Border)window.FindName("OperationalFeedbackBar");
         double CenterY(FrameworkElement element) => element.TranslatePoint(new Point(0, element.ActualHeight / 2), statusLine).Y;
         Check(Math.Abs(CenterY(workStatus) - CenterY(pace)) <= 2 && Math.Abs(CenterY(workStatus) - CenterY(rcs)) <= 2,

@@ -258,7 +258,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 {
                     // A configured camera transport is a position dependency. It
                     // cannot invalidate an independent reader or create admission.
-                    Diagnostic("相机通信", "相机启动连接失败", "警告", Wire.Encode(new { Device = reader.Source.DeviceId, Epoch = reader.Epoch, Error = ex.GetType().Name }));
+                    WriteRuntimeLog("相机通信", "相机启动连接失败", new { Device = reader.Source.DeviceId, reader.Epoch, Error = ex.ToString() }, "警告");
                 }
             }
             foreach (var port in CapabilityPorts()) RecordCapabilityHealth(await ProbeHealthAsync(port, token).ConfigureAwait(false));

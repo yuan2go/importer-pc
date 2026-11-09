@@ -150,9 +150,14 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         var parameters = new Dictionary<string, string>(originalParameters);
         if (ParameterOwnership.IsRcs(this))
             foreach (var key in new[] { "request-id-base", "request-id-count", "specified-chute", "chute-code" }) parameters.Remove(key);
+        var nativeCamera = IsSimpleCamera && Parameters.Any(x => x.Field.Key == "reader.engine" && x.Value == "mvid-native");
         foreach (var item in Parameters)
         {
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
+            // Native recognition ignores this hidden software setting. Do not add
+            // its default to an existing reader when editing the other camera.
+            if (nativeCamera && preserveOmittedDefaults && item.Field.Key == "code.formats" &&
+                item.Value == item.Field.Default && !originalParameters.ContainsKey(item.Field.Key)) continue;
             // A required default must become part of the candidate when an
             // incomplete/deferred connection is configured. Optional omitted
             // defaults still retain the original effective meaning and bytes.

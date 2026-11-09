@@ -154,7 +154,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         // Live replacement bookkeeping: how many ports were rebuilt, and whether new cameras are found.
         public int ReaderBuilds, WcsBuilds;
         public bool DiscoverReplacements = true;
-        public bool RejectLiveReaders, FailCandidateRelease;
+        public bool RejectLiveReaders = false, FailCandidateRelease = false;
         public ParcelConfiguration? LiveConfirmed;
         // The fixture validates one exact configuration; a test names the next one before saving it.
         public void Expect(ParcelConfiguration next) => expected = next;

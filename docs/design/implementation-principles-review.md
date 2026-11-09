@@ -132,7 +132,7 @@ A1 将本地客户端健康与远端响应时间分开：自动识码要求 `Rem
 
 |类别|本次结果|
 |---|---|
-|编译|SM Release 桌面构建成功，0 警告、0 错误，使用锁定恢复|
+|编译|SM Release 桌面及 WPF 验证工程构建成功，均为0警告、0错误，使用锁定恢复|
 |本机核心测试|46/46 通过，0 失败、0 跳过；36 个行为套件、1141 条 PASS 检查记录，不等于 1141 个独立 MSTest 用例|
 |清理故障注入|旧设备 Stop 成功后 Dispose 失败、未启动候选 Dispose 失败均拒绝保存并保留原配置；再次关闭仍失败时保留所有权，之后关闭成功完成释放|
 |RCS 与相机|心跳首轮、过期、重连、恢复；软件与原生路线首轮确认前只预览、人工来源仍独立；离线及恢复保留当前放置和原请求；启停、管理窗口及状态日志回归通过|
@@ -140,7 +140,8 @@ A1 将本地客户端健康与远端响应时间分开：自动识码要求 `Rem
 |存储|冻结的格式10/11 schema、其他非当前版本在运行及维护入口拒绝；DB/WAL/配置字节不变，无部署回调；当前格式结构、优化器表和伪装表拒绝检查通过；格式12建库 SQL 内容核对未变|
 |额外受影响回归|`--session-shift-25` 通过，保留班次、原请求及进程崩溃恢复断言；仅删除旧格式升级的专属成功断言|
 |脚本与文档|格式检查通过；文档检查 8 个入口、205 个链接、5 个故障码；发布说明 5 项、部署兼容 1 项 Python 测试通过|
-|CI|提交前未运行本次修复 CI；提交后以 [PR #238](https://github.com/yuan2go/importer-pc/pull/238) 对应来源提交的实际检查记录为准|
+|Windows WPF 自动验证|管理入口授权交接2项、退出确认与资源释放18项通过；不是人工视觉或现场验收|
+|CI|首轮发现共享夹具字段未赋值导致 WPF 验证工程编译失败，已显式初始化并通过本机编译及20项WPF检查；最终提交以 [PR #238](https://github.com/yuan2go/importer-pc/pull/238) 对应来源提交的实际检查记录为准|
 |覆盖率|本机未运行；CI 沿用仓库现有采集及门槛，不将其解释为真实设备可靠性|
 
 主要记录：`.artifacts/review-fixes-tests/core.trx`、`.artifacts/review-fixes-core.log`、`.artifacts/review-sm-build.log` 和 `.artifacts/review-*.log`。本地产物不提交；固定的旧 schema 测试输入保存在 `tests/Ipc.Application.Verification/fixtures/parcel10-schema.sql` 与 `parcel11-schema.sql`，来源和哈希在测试中核验，产品代码没有迁移实现。
@@ -156,4 +157,4 @@ python -m unittest discover -s scripts -p test_release_documents.py
 python -m unittest discover -s scripts -p test_deployment_compatibility.py
 ```
 
-Windows 实机交互、真实 SDK、真实相机、客户 RCS、现场验收及长稳：未运行。仅本机合成边界验证不能代替这些验收。R2 性能测量和可选简化未实施。
+Windows 人工交互验收、真实 SDK、真实相机、客户 RCS、现场验收及长稳：未运行。仅本机合成边界验证不能代替这些验收。R2 性能测量和可选简化未实施。

@@ -226,6 +226,7 @@ public sealed partial class ParcelRuntime
             State = stable,
             Evidence = evidence,
             InterruptedIngress = repository.InterruptedIngressEvidence(),
+            Workers = WorkerProgress(),
             Dependencies = capabilityHealth.Values.Select(h => new { h.InstanceId, h.ConfirmedAt, h.ValidUntil, Detail = DiagnosticFragment(h.Detail, 1024) }).ToArray(),
             Journal = journal.Status,
             Meaning = "仅证明记录时刻；原责任列表每位最多16条，以总数判断省略。日志缺口或丢失期间不得推定未发送、无包裹或已释放。"

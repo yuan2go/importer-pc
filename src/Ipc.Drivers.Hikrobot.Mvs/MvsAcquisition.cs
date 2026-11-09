@@ -277,7 +277,8 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         }
                         if (pixels is not null)
                         {
-                            var work = new DecodeWork(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration) { Scene = scene };
+                            var work = new DecodeWork(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration)
+                            { Scene = scene, AcquireMs = Timings.LastMs("sdk.acquire") };
                             if (api.ReturnsDecodedFrames)
                             {
                                 // Native recognition already happened. Do not replace a decoded result with a newer frame.

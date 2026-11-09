@@ -46,24 +46,15 @@ static partial class Program
             Check(resume.IsVisible && resume.IsEnabled && h.Peer.Requests.Count == 0, "pause has an available guarded resume action and picture reads create no requests");
             Check(vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "供包已暂停" &&
                 vm.Left.CenteredStateInstruction.Contains("恢复供包"), "paused neutral card uses the centered disabled-card layout");
-            var processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
-            using (var release = new ManualResetEventSlim())
-            {
-                var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-                h.App.Boundary = point => { if (point == "AfterIngressDurable") { entered.TrySetResult(); release.Wait(TimeSpan.FromSeconds(10)); } };
-                try
-                {
-                    h.Api(h.Left).EnqueueNative(blockedPixels, 2, [Symbol("SYNTH-PAUSED-CODE", 50)]);
-                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-                    await vm.RefreshAsync();
-                    Check(pictureButton.IsEnabled && vm.Left.CanViewCurrentPicture && vm.Left.CurrentPictureQuery!.ObservationId == original.ObservationId,
-                        "a newer continuous read ahead of the durable snapshot leaves the same-placement picture button enabled");
-                    Check((await h.App.ReadParcelPictureAsync(vm.Left.CurrentPictureQuery!, default)).Image!.Gray8.SequenceEqual(blockedPixels.Data),
-                        "picture remains the exact retained original while the next input is waiting");
-                }
-                finally { release.Set(); h.App.Boundary = null; }
-            }
-            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").State == "Waiting"));
+            var observed = h.App.WorkerProgress().Single(p => p.Position == "left").ObservedOnly;
+            h.Api(h.Left).EnqueueNative(blockedPixels, 2, [Symbol("SYNTH-PAUSED-CODE", 50)]);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").ObservedOnly > observed));
+            await vm.RefreshAsync();
+            Check(pictureButton.IsEnabled && vm.Left.CanViewCurrentPicture && vm.Left.CurrentPictureQuery!.ObservationId == original.ObservationId,
+                "continuous paused presence feedback keeps the actual picture button enabled without a new durable snapshot");
+            Check((await h.App.ReadParcelPictureAsync(vm.Left.CurrentPictureQuery!, default)).Image!.Gray8.SequenceEqual(blockedPixels.Data),
+                "presence-only feedback keeps the exact original without substituting the latest video");
             CaptureInternal(evidence, "paused-blocked-left-rejected-right-1366", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420);
             Check(resume.IsVisible, "resume remains discoverable in the compact workstation");

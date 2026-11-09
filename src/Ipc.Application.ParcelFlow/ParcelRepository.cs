@@ -72,7 +72,8 @@ public sealed partial class ParcelRepository : IDisposable
         """;
     static readonly string Baseline = Baseline11.Replace(Metric11Sql, Metric12Sql, StringComparison.Ordinal) + "\n" + StationSessionSchema;
     public long Revision { get; private set; }
-    public bool Paused { get; private set; }
+    bool paused;
+    public bool Paused { get => Volatile.Read(ref paused); private set => Volatile.Write(ref paused, value); }
     public ParcelRepository(string directory, string application)
         : this(directory, application, CancellationToken.None) { }
     public ParcelRepository(string directory, string application, string[] positions)

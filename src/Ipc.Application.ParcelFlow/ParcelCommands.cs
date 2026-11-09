@@ -387,6 +387,7 @@ public sealed partial class ParcelRuntime
             stopped = true;
             blockedInputPictures.Clear();
             FlushInputLogSummaries();
+            FlushIngressTimings(force: true);
             WriteStationState("StopCompleted", force: true);
             lock (placements) foreach (var placement in placements.Values) placement.RejectedImage = null;
             if (terminalWorkerFailure is not null) throw new InvalidOperationException("Terminal worker failed; sources and ports are stopped, disposal is still required", terminalWorkerFailure);

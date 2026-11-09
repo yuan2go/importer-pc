@@ -115,6 +115,7 @@ public sealed partial class ParcelRuntime
                     if (!backupInProgress) { ExpireWeights(); ReleaseCompletedImages(); ArchiveSettled(); repository!.RetryArchiveCleanup(); TryScheduledBackup(DateTimeOffset.UtcNow); TryAutomaticCleanup(cleanupClock.GetUtcNow()); }
                     RefreshStorageCapacity();
                     WriteStationState("RuntimeMonitor");
+                    FlushIngressTimings();
                     auxiliary.RemoveAll(task =>
                     {
                         if (!task.IsCompleted) return false;

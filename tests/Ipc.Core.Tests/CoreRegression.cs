@@ -35,6 +35,7 @@ public sealed class CoreRegression
     [DataRow("--mvs-still-frames", 10)]
     [DataRow("--log-readable", 6)]
     [DataRow("--state-journal", 23)]
+    [DataRow("--read-cadence", 18)]
     [DataRow("--work-card-current", 14)]
     [DataRow("--history-detail-sheet", 12)]
     [DataRow("--installation-receipts-04", 9)]

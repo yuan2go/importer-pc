@@ -50,18 +50,20 @@ static class StateJournalChecks
         RecognitionSymbol Symbol(string code, int x = 20) => new(code, "Code128", [new(x, 20), new(x + 100, 20), new(x + 100, 60), new(x, 60)], 0);
         async Task Feed(string code, uint frame)
         {
-            var processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+            var before = h.App.WorkerProgress().Single(p => p.Position == "left");
             h.Api(h.Left).EnqueueNative(raw, frame, [Symbol(code)]);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
+            await CameraRoundHarness.Until(() => { var after = h.App.WorkerProgress().Single(p => p.Position == "left"); return Task.FromResult(after.Processed + after.ObservedOnly > before.Processed + before.ObservedOnly); });
         }
         for (uint i = 1; i <= 12; i++) await Feed("SYNTH-STATE-BLOCKED", i);
         await Feed("SYNTH-STATE-CHANGED", 13);
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "输入处理完成" && Detail(e).GetProperty("Barcode").GetString() == "SYNTH-STATE-CHANGED"));
         var inputs = logs.Where(e => Event(e) == "输入处理完成" && Detail(e).GetProperty("Barcode").GetString() == "SYNTH-STATE-BLOCKED").Select(Detail).ToArray();
-        Check(inputs.Length < 12 && inputs.Sum(d => d.GetProperty("ObservationCount").GetInt32()) == 12,
-            "repeated blocked scans aggregate without losing the actual delivered observation count");
+        var observations = logs.Where(e => Event(e) == "扫码阶段耗时与队列汇总" &&
+            Detail(e).GetProperty("First").GetProperty("Disposition").GetString() == "PausedSamePlacementObservation").Select(Detail).ToArray();
+        Check(inputs.Length < 12 && inputs.Sum(d => d.GetProperty("ObservationCount").GetInt32()) + observations.Sum(d => d.GetProperty("Count").GetInt32()) == 12,
+            "blocked inputs and presence-only summaries retain the complete delivered observation count without duplicate business writes");
         Check(inputs.All(d => d.GetProperty("Reason").GetString()!.Contains("Global software pause")) &&
-            inputs.Any(d => d.GetProperty("FirstSourceEventId").GetString() != d.GetProperty("SourceEventId").GetString()),
+            observations.Any(d => d.GetProperty("First").GetProperty("SourceEventId").GetString() != d.GetProperty("Last").GetProperty("SourceEventId").GetString()),
             "blocked summaries retain exact pause reason and first/last acquisition identities");
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "供包台状态变化" && Position(State(e), "left").GetProperty("Input").ValueKind == JsonValueKind.Object));
         var held = logs.Last(e => Event(e) is "供包台状态变化" or "供包台状态快照");

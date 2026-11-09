@@ -121,6 +121,10 @@ public partial class SupplyStationWindow : Window
         if (ViewModel.SelectedPage == "debug") debug!.SelectPosition(position == ViewModel.Left ? "left" : "right");
     }
     void DismissGlobalFeedback_Click(object sender, RoutedEventArgs e) => ViewModel.DismissGlobalOperationFeedback();
+    async void ResumeSupply_Click(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), "恢复供包");
+    }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); if (!ViewModel.HistoryLoaded) await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e)
@@ -169,7 +173,7 @@ public partial class SupplyStationWindow : Window
     bool retentionRequested;
     async Task RequestRetention()
     {
-        try { await ViewModel.RequireManagementModeAsync(); await ViewModel.PauseAsync(); await ViewModel.RefreshAsync(); if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
+        try { await ViewModel.RequireManagementModeAsync(); await ViewModel.PauseAsync("进入历史清理前暂停"); await ViewModel.RefreshAsync(); if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认"); if (root.OpenRetentionOwnerAsync is null) throw new InvalidOperationException("当前宿主没有独立维护入口"); root.retentionRequested = true; root.Close(); }
         catch (Exception error) { ViewModel.Message = "尚未进入到期维护：" + error.Message; }
     }
     bool activationRequested;

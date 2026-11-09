@@ -5,6 +5,9 @@ namespace Ipc.Application.ParcelFlow;
 public sealed partial class ParcelRuntime
 {
     CameraInspectionStore? parcelPictures;
+    // At most one current, unadmitted camera frame per position. These are
+    // session evidence, not jobs or an archive, and are never restored at startup.
+    readonly Dictionary<string, CameraOriginalImage> blockedInputPictures = [];
     string? parcelPictureFailure;
     DateTimeOffset nextParcelPictureRetention;
     void InitializeParcelPictures()
@@ -55,15 +58,15 @@ public sealed partial class ParcelRuntime
                 var input = latestInputs.Values.SingleOrDefault(i => i.Observation.Id == observationId);
                 if (input is null) return new ParcelPictureResult("Missing", "当前观察已变化，请从原作业记录打开对应图片。", null, observationId, null);
                 var o = input.Observation; manual = o.OperatorInput is not null;
+                if (!manual && blockedInputPictures.TryGetValue(input.PositionId, out var blockedImage) &&
+                    blockedImage.Metadata.ObservationId == observationId)
+                    return new ParcelPictureResult("Available", "本次未受理条码对应的完整原图，尚未请求格口。", null, observationId,
+                        CopyInputPicture(blockedImage));
                 lock (placements)
                     if (placements.TryGetValue(input.PositionId, out var placement) && placement.EndedAt is null &&
                         placement.RejectedInput?.Observation.Id == observationId && placement.RejectedImage is { } rejectedImage)
                         return new ParcelPictureResult("Available", "本次拒绝对应的完整原图。", null, observationId,
-                            rejectedImage with
-                            {
-                                Gray8 = rejectedImage.Gray8.ToArray(),
-                                Metadata = rejectedImage.Metadata with { Symbols = rejectedImage.Metadata.Symbols.Select(s => s with { Corners = s.Corners.ToArray() }).ToArray() }
-                            });
+                            CopyInputPicture(rejectedImage));
                 if (o.InspectionSessionId is not null) return new ParcelPictureResult("Isolated", "本次是隔离调试输入；请在获授权的调试会话查看原始证据。", null, observationId, null);
                 acquisition = manual ? null : new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt);
                 operationId = input.OperationId;
@@ -132,4 +135,10 @@ public sealed partial class ParcelRuntime
         finally { gate.Release(); }
         owned.ThrowIfCancellationRequested(); return result;
     }, token);
+
+    static CameraOriginalImage CopyInputPicture(CameraOriginalImage image) => image with
+    {
+        Gray8 = image.Gray8.ToArray(),
+        Metadata = image.Metadata with { Symbols = image.Metadata.Symbols.Select(s => s with { Corners = s.Corners.ToArray() }).ToArray() }
+    };
 }

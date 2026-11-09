@@ -29,6 +29,7 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
     {
         if (!Guid.TryParseExact(windowId, "N", out _)) throw new ArgumentException("管理窗口身份无效。");
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, owned);
+        WriteRuntimeLog("管理中心", "管理窗口切换开始", new { WindowId = windowId, Open = open });
         await inspectionControl.WaitAsync(linked.Token).ConfigureAwait(false);
         try
         {
@@ -98,9 +99,21 @@ public sealed partial class ParcelRuntime : IManagementWorkspace
                 }
                 finally { gate.Release(); }
             }
-            Diagnostic("管理中心", open ? "自动供包及读码已暂停" : "已恢复管理前的供包状态");
+            await gate.WaitAsync(linked.Token).ConfigureAwait(false);
+            try
+            {
+                WriteRuntimeLog("管理中心", open ? "自动供包及读码已暂停" : "已恢复管理前的供包状态",
+                    new { WindowId = windowId, Open = open, SoftwarePaused = repository?.Paused, ReadPauseConfirmed = readPauseConfirmed });
+                WriteStationState(open ? "ManagementOpened" : "ManagementClosed", force: true);
+            }
+            finally { gate.Release(); }
             return new BusinessReceipt(open ? readPauseConfirmed ? "Paused" : "PausedWithCameraWarning" : "Restored",
                 open ? readPauseConfirmed ? "自动供包及读码已暂停。" : "供包已暂停，部分相机的读码切换尚未确认；请在设备与诊断中查看。" : "已恢复管理前的供包状态。", repository?.Revision ?? 0);
+        }
+        catch (Exception error)
+        {
+            WriteRuntimeLog("管理中心", "管理窗口切换未完成", new { WindowId = windowId, Open = open, Error = error.ToString() }, "错误");
+            throw;
         }
         finally { inspectionControl.Release(); }
     });

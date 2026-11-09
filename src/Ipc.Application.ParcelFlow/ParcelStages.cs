@@ -56,7 +56,20 @@ public sealed partial class ParcelRuntime
             var receiptStartedAt = ReceiptTimeForVerification.GetUtcNow();
             var receiptStartedTicks = ReceiptTimeForVerification.GetTimestamp();
             if (kind == ParcelStage.Wcs)
-                Diagnostic("RCS请求", "开始请求格口", detail: Wire.Encode(new { OperationId = op.Id, op.PositionId, op.ParcelCode, RequestId = stage.Request.Id, ProtocolRequestId = stage.Request.IntegrationRequest?.RequestId, stage.Attempts, query }));
+                WriteRuntimeLog("RCS请求", "开始请求格口", new
+                {
+                    OperationId = op.Id,
+                    op.PositionId,
+                    op.ParcelCode,
+                    ObservationId = op.ObservationId,
+                    Acquisition = op.Acquisition,
+                    RequestId = stage.Request.Id,
+                    ProtocolRequestId = stage.Request.IntegrationRequest?.RequestId,
+                    Target = stage.Request.Binding.Target,
+                    PayloadHash = stage.Request.PayloadHash,
+                    stage.Attempts,
+                    query
+                }, operationId: op.Id);
             DebugDiagnostic("外部通信", "原请求发送开始", () => new
             {
                 Operation = op.Id,

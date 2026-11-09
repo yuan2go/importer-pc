@@ -16,7 +16,7 @@ public partial class ParcelViewModel
     {
         await RequireManagementModeAsync(); RequireFreshSnapshot();
         if (Snapshot?.Configuration.Pending is null || HasUnconfirmedConfigurationSubmission) throw new InvalidOperationException("先核对原保存结果，只有已保存候选可进入生效流程。");
-        await PauseAsync(); await RefreshAsync(); await RequireManagementModeAsync();
+        await PauseAsync("应用待生效配置前暂停"); await RefreshAsync(); await RequireManagementModeAsync();
         if (!Fresh || Snapshot?.Paused != true || Snapshot.Availability?.Configure != true) throw new InvalidOperationException("暂停或外呼排空尚未确认。原实例继续保有资源，请稍后核对。");
     }
     public int ExitVisibleOperationCount => Operations.Length;

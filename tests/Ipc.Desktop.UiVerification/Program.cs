@@ -57,6 +57,7 @@ static partial class Program
                 else if (args.Contains("--management-entry-ordering")) await VerifyManagementEntryOrdering(root, evidence, lines);
                 else if (args.Contains("--restart-barcode-details")) await VerifyRestartBarcodeDetails(root, evidence, lines);
                 else if (args.Contains("--parcel-picture-copy")) await VerifyParcelPictureCopy(root, evidence, lines);
+                else if (args.Contains("--paused-workstation")) await VerifyPausedWorkstation(root, evidence, lines);
                 else if (args.Contains("--debug-no-isolation-31-ui")) await VerifyDebugNoIsolation31(root, evidence, lines);
                 else if (args.Contains("--audit-fixes-26")) await VerifyAuditFixes26(root, evidence, lines);
                 else if (args.Contains("--station-settings")) await VerifyStationSettings(root, evidence, lines);

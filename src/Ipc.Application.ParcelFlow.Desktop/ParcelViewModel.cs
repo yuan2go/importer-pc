@@ -257,8 +257,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         }
         finally { SetBusy(false); runningFeedbackScope = null; }
     }
-    public Task PauseAsync() => Own(PauseCoreAsync());
-    async Task PauseCoreAsync()
+    public Task PauseAsync() => PauseAsync("操作员请求暂停供包");
+    public Task PauseAsync(string reason) => Own(PauseCoreAsync(reason));
+    async Task PauseCoreAsync(string reason)
     {
         var generation = BeginGlobalOperation("暂停供包");
         // Independent control lane: ordinary write mutual exclusion cannot hide Pause.
@@ -267,7 +268,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             for (var retry = 0; retry < 3; retry++)
             {
                 var s = retry == 0 && Snapshot is { } displayed ? displayed : await ServiceAsync(application.SnapshotAsync).WaitAsync(TimeSpan.FromSeconds(2));
-                var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, "Pause")));
+                var r = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), s.Revision, "Pause", Value: reason)));
                 if (r.Status == "Conflict") continue;
                 CompleteGlobalOperation(generation, "暂停供包", r.Status + " · " + r.Reason, r.Status == "Persisted");
                 try { await RefreshAsync().WaitAsync(TimeSpan.FromSeconds(2)); }

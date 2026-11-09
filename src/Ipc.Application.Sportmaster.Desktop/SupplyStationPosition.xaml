@@ -18,14 +18,37 @@
     </Grid.RowDefinitions>
     <DockPanel Style="{StaticResource StationPositionSection}">
      <Grid>
+      <Grid.Resources>
+       <Style x:Key="SupplySwitch" TargetType="Button" BasedOn="{StaticResource StationButton}">
+        <Setter Property="MinWidth" Value="64"/>
+        <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MinWidth" Value="52"/></DataTrigger></Style.Triggers>
+       </Style>
+      </Grid.Resources>
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
        <TextBlock Text="{Binding Heading}" VerticalAlignment="Center" FontSize="{x:Static type:UiTypography.Position}" FontWeight="{x:Static type:UiTypography.Emphasis}" AutomationProperties.Name="投递位"/>
-       <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource StationButton}" MinHeight="44" MinWidth="64" Margin="10,0,0,0" Background="{Binding EnableBackground}" Foreground="{Binding EnableForeground}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
-       <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource StationButton}" MinHeight="44" MinWidth="64" Background="{Binding DisableBackground}" Foreground="{Binding DisableForeground}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+       <Button x:Name="EnableSupply" Content="启用" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Margin="10,0,0,0" Background="{Binding EnableBackground}" Foreground="{Binding EnableForeground}" AutomationProperties.Name="启用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
+       <Button x:Name="DisableSupply" Content="{Binding DisableLabel}" Click="DisableSupply_Click" IsEnabled="{Binding CanChangeSupply}" Style="{StaticResource SupplySwitch}" Background="{Binding DisableBackground}" Foreground="{Binding DisableForeground}" AutomationProperties.Name="停用本投递位" AutomationProperties.HelpText="{Binding SupplyStateText}"/>
       </StackPanel>
-      <TextBlock x:Name="VehicleState" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding VehicleStatusText}" Foreground="{Binding VehicleStatusForeground}" FontSize="{x:Static type:UiTypography.Label}" FontWeight="{x:Static type:UiTypography.Emphasis}" TextWrapping="Wrap" AutomationProperties.Name="本位小车状态"/>
+      <Grid x:Name="VehicleState" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" ToolTip="{Binding VehicleStatusText}">
+       <Grid.Resources>
+        <Style TargetType="TextBlock">
+         <Setter Property="Foreground" Value="{Binding VehicleStatusForeground}"/>
+         <Setter Property="FontSize" Value="{x:Static type:UiTypography.Label}"/>
+         <Setter Property="FontWeight" Value="{x:Static type:UiTypography.Emphasis}"/>
+         <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+       </Grid.Resources>
+       <TextBlock Text="{Binding VehicleStatusText}" TextWrapping="Wrap" AutomationProperties.Name="{Binding VehicleStatusText}">
+        <TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+       </TextBlock>
+       <StackPanel>
+        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+        <TextBlock Text="{Binding VehicleNumberText}" TextTrimming="CharacterEllipsis" AutomationProperties.Name="{Binding VehicleNumberText}"/>
+        <TextBlock Text="{Binding CompactVehicleStatusText}" AutomationProperties.Name="{Binding VehicleStatusText}"/>
+       </StackPanel>
+      </Grid>
      </Grid>
     </DockPanel>
     <Grid Grid.Row="1" x:Name="ScanInformation" Style="{StaticResource StationPositionSection}">
@@ -142,7 +165,7 @@
          <Setter Property="Padding" Value="8"/>
          <Style.Triggers>
           <DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
-          <MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding CenteredRcsRejection}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Padding" Value="8,2"/></MultiDataTrigger>
+          <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="8,2"/></DataTrigger>
          </Style.Triggers>
         </Style>
        </Border.Style>
@@ -171,7 +194,7 @@
          </TextBox.Style>
         </TextBox>
         <TextBlock x:Name="CenteredStateReason" Grid.Row="1" Text="{Binding CenteredStateReason}" Foreground="{DynamicResource Muted}" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center">
-         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/><Setter Property="Margin" Value="0,12,0,0"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding SupplyDisabled}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></TextBlock.Style>
+          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/><Setter Property="Margin" Value="0,12,0,0"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="Margin" Value="0"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding CenteredRcsRejection}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Margin" Value="0,4,0,0"/></MultiDataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding SupplyDisabled}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
         <StackPanel Grid.Row="2">
          <Border x:Name="CenteredRcsDivider" Height="1" MaxWidth="280" Background="{DynamicResource Line}">

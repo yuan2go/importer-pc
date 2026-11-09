@@ -343,6 +343,12 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                         result = new[] { new { index = 1, success = false,
                         command = "sorter.task.dest_request", msg = RejectionMessage ?? "合成异常：未找到可用格口，请人工核对包裹。", data = new { chuteCode = "" } } }
                     });
+                if (!heartbeat && Mode == "no-device")
+                    reply = JsonSerializer.Serialize(new
+                    {
+                        requestId = id,
+                        result = new[] { new { index = 1, success = false, code = "RPC_R_NO_DEVICE", message = "无设备可用", args = new { }, command = "sorter.task.dest_request", data = (object?)null } }
+                    });
                 if (ReplyVehicleStates && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
                     reply = JsonSerializer.Serialize(new
                     {

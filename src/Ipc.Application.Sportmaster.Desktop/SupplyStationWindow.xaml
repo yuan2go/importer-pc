@@ -38,7 +38,13 @@
    <RowDefinition Height="*"/>
    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
-  <Border x:Name="TimeHeader" Grid.ColumnSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1" Padding="16,4" MinHeight="52">
+  <Border x:Name="TimeHeader" Grid.ColumnSpan="2" Background="{DynamicResource Surface}" BorderBrush="{StaticResource StationLine}" BorderThickness="0,0,0,1">
+   <Border.Style>
+    <Style TargetType="Border">
+     <Setter Property="Padding" Value="16,4"/><Setter Property="MinHeight" Value="52"/>
+     <Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="16,0"/><Setter Property="MinHeight" Value="28"/></DataTrigger></Style.Triggers>
+    </Style>
+   </Border.Style>
    <Grid>
     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <TextBlock x:Name="StationClock" Grid.Column="1" FontSize="{x:Static type:UiTypography.Body}" Foreground="{DynamicResource Ink}" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.Name="本机时间"/>

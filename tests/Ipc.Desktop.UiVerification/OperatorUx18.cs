@@ -71,53 +71,81 @@ static partial class Program
             Check(vm.Left.VehicleStatusText == "小车：待确认" && vm.Left.VehicleStatusForeground == OperatorTokens.Muted, "expired idle telemetry cannot remain green");
             await ManagementModeFixture.Authorize(h.App); await vm.RefreshManagementModeAsync(); await vm.RefreshAsync();
             var frozen = Wire.Encode(vm.Left.Operation!.Wcs!.Request);
-            foreach (var size in new[] { (1366d, 768d), (800d, 420d) })
+            foreach (var (width, height, fullScreenChrome) in new[] { (1366d, 768d, false), (800d, 420d, false), (800d, 420d, true) })
             {
-                await SetClient(window, size.Item1, size.Item2); await Flush();
+                // Keep the native test window at the requested size while exercising the full-screen header's larger buttons.
+                WindowOpeningPreference.SetIsFullScreen(window, fullScreenChrome);
+                await SetClient(window, width, height); await Flush();
                 await Vehicles();
-                Check(Inside((TextBlock)left.FindName("VehicleState"), (Grid)window.FindName("ClientArea")) && Inside((TextBlock)right.FindName("VehicleState"), (Grid)window.FindName("ClientArea")), "vehicle labels remain inside the workstation at " + size.Item1);
-                var vehicleTop = ((TextBlock)left.FindName("VehicleState")).TransformToAncestor(left).Transform(new Point()).Y;
+                var viewport = width + (fullScreenChrome ? "-full-screen-header" : "");
+                var leftVehicle = (Grid)left.FindName("VehicleState"); var rightVehicle = (Grid)right.FindName("VehicleState");
+                var client = (Grid)window.FindName("ClientArea");
+                Check(Inside(leftVehicle, client) && Inside(rightVehicle, client), "vehicle labels remain inside the workstation at " + viewport);
+                if (fullScreenChrome)
+                {
+                    Check(new[] { "MinimizeFullScreen", "ExitFullScreen" }.Select(name => (Button)window.FindName(name))
+                        .All(button => button.IsVisible && button.ActualHeight >= 44 && Inside(button, client)),
+                        "compact full-screen header keeps the minimize and exit targets usable");
+                    var waitingTitle = (TextBlock)right.FindName("CenteredStateTitle");
+                    var waitingReason = (TextBlock)right.FindName("CenteredStateReason");
+                    Check(waitingTitle.IsVisible && waitingTitle.Text == "等待投包" &&
+                        waitingTitle.ActualHeight >= waitingTitle.FontSize && waitingReason.IsVisible && waitingReason.ActualHeight >= waitingReason.FontSize,
+                        "the other position keeps its waiting title and instruction beside a compact confirmed chute");
+                }
+                if (vm.IsTight)
+                {
+                    Check(leftVehicle.ActualHeight <= 44 && rightVehicle.ActualHeight <= 44 &&
+                        Descendants(leftVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "空闲 可投包" && Inside(t, client)) &&
+                        Descendants(rightVehicle).OfType<TextBlock>().Any(t => t.IsVisible && t.Text == "工作中 勿投包" && Inside(t, client)),
+                        "compact vehicle headers keep both status instructions visible within the switch row");
+                }
+                var vehicleTop = leftVehicle.TransformToAncestor(left).Transform(new Point()).Y;
                 var cameraTop = ((TextBlock)left.FindName("CameraConnection")).TransformToAncestor(left).Transform(new Point()).Y;
                 var submitBottom = submit.TransformToAncestor(left).Transform(new Point(0, submit.ActualHeight)).Y;
                 Check(vehicleTop < entry.TransformToAncestor(left).Transform(new Point()).Y && cameraTop >= submitBottom,
-                    "frequent vehicle status leads the card while steady camera status stays in the device footer at " + size.Item1);
+                    "frequent vehicle status leads the card while steady camera status stays in the device footer at " + viewport);
                 var panel = (Border)left.FindName("ResultPanel");
-                Check(Math.Abs(panel.ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1, "chute regions stay aligned at " + size.Item1);
+                Check(Math.Abs(panel.ActualHeight - ((Border)right.FindName("ResultPanel")).ActualHeight) < 1, "chute regions stay aligned at " + viewport);
                 var actual = slot.TransformToAncestor(panel).TransformBounds(new Rect(slot.RenderSize));
-                Check(actual.Top >= 0 && actual.Bottom <= panel.ActualHeight + 1 && slot.Text == "L-07", "full current destination stays inside fixed result panel at " + size.Item1);
+                Check(actual.Top >= 0 && actual.Bottom <= panel.ActualHeight + 1 && slot.Text == "L-07", "full current destination stays inside fixed result panel at " + viewport);
                 var transform = slot.TransformToAncestor(panel);
                 var scale = (transform.Transform(new Point(0, 1)) - transform.Transform(new Point())).Length;
-                CaptureInternal(evidence, "operator18-geometry-" + (int)size.Item1, (Grid)window.FindName("ClientArea"), lines);
+                CaptureInternal(evidence, "operator18-geometry-" + viewport, client, lines);
                 lines.Add("GEOMETRY tight=" + vm.IsTight + " compact=" + vm.IsCompact + " panel=" + panel.ActualHeight + " slot=" + slot.ActualHeight + " scale=" + scale + " guidance=" + vm.Left.DisplayNextStep + " actions=" + ((StackPanel)left.FindName("FixedActions")).ActualHeight);
-                Check(slot.FontSize == UiTypography.ResponsiveSlotSize(slot.Text, vm.ChuteScale), "chute follows the bounded responsive scale at " + size.Item1);
+                Check(slot.FontSize == UiTypography.ResponsiveSlotSize(slot.Text, vm.ChuteScale), "chute follows the bounded responsive scale at " + viewport);
                 foreach (var name in new[] { "WaveValue", "TaskValue", "SkuValue", "QuantityValue" })
-                { var value = (TextBox)left.FindName(name); Check(value.IsVisible && value.FontSize == 22 && value.MaxHeight == (vm.IsTight ? 34 : 64) && value.ActualWidth > 50 && Inside(value, (Grid)window.FindName("ClientArea")), "task field stays visible and readable in its expanded area: " + name + " at " + size.Item1); }
-                Check(slot.FontSize * scale >= 32, "actually drawn short chute font is at least 32 DIP at " + size.Item1 + "; measured=" + (slot.FontSize * scale).ToString("F1"));
-                Check(submit.ActualHeight >= OperatorTokens.TouchHeight && Inside(submit, (Grid)window.FindName("ClientArea")), "primary touch action remains 64 DIP and on screen at " + size.Item1);
-                CaptureInternal(evidence, "operator18-success-" + (int)size.Item1, (Grid)window.FindName("ClientArea"), lines);
+                { var value = (TextBox)left.FindName(name); Check(value.IsVisible && value.FontSize == 22 && value.MaxHeight == (vm.IsTight ? 34 : 64) && value.ActualWidth > 50 && Inside(value, client), "task field stays visible and readable in its expanded area: " + name + " at " + viewport); }
+                Check(slot.FontSize * scale >= 32, "actually drawn short chute font is at least 32 DIP at " + viewport + "; measured=" + (slot.FontSize * scale).ToString("F1"));
+                Check(submit.ActualHeight >= OperatorTokens.TouchHeight && Inside(submit, client), "primary touch action remains 64 DIP and on screen at " + viewport);
+                CaptureInternal(evidence, "operator18-success-" + viewport, client, lines);
             }
+            WindowOpeningPreference.SetIsFullScreen(window, false); await Flush();
             await vm.PauseAsync();
             await Until(() => vm.Snapshot?.Paused == true);
-            Check(!vm.Left.ShowConfirmedTask && !vm.Left.DisplaySlotVisible && vm.Left.DisplaySlot == "" && vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Neutral && vm.Left.DisplayNextStep.Contains("暂勿投递"), "pause immediately removes green chute affordance while preserving original facts");
+            Check(!vm.Left.ShowConfirmedTask && !vm.Left.DisplaySlotVisible && vm.Left.DisplaySlot == "" && vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Neutral &&
+                vm.Left.CenteredStateTitle == "供包已暂停", "pause immediately removes the green chute and shows the paused state");
             entry.Text = "000UX180002"; await Flush();
             var calls = h.Peer.Requests.Count; Check(!submit.IsEnabled, "paused position disables new submit");
             entry.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window)!, 0, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
             await Flush(); Check(h.Peer.Requests.Count == calls, "Enter shares the availability guard and cannot bypass disabled submit");
             Check(Wire.Encode(vm.Left.Operation!.Wcs!.Request) == frozen, "pause and draft handling preserve the frozen original request");
-            var pausedPanel = (Border)left.FindName("ResultPanel"); var instruction = (TextBlock)left.FindName("NextStep");
-            Check(instruction.IsVisible && instruction.TransformToAncestor(pausedPanel).TransformBounds(new Rect(instruction.RenderSize)).Bottom <= pausedPanel.ActualHeight + 1, "pause package instruction is fully visible inside the compact result panel");
+            var pausedPanel = (Border)left.FindName("ResultPanel"); var instruction = (TextBlock)left.FindName("CenteredInstruction");
+            Check(instruction.IsVisible && instruction.Text.Contains("恢复供包") &&
+                instruction.TransformToAncestor(pausedPanel).TransformBounds(new Rect(instruction.RenderSize)).Bottom <= pausedPanel.ActualHeight + 1,
+                "pause recovery instruction is fully visible inside the compact result panel");
             CaptureInternal(evidence, "operator18-paused-800", (Grid)window.FindName("ClientArea"), lines);
             vm.DismissGlobalOperationFeedback(); await vm.CommandAsync("Resume"); await vm.RefreshAsync(); await Until(() => !vm.Snapshot!.Paused && vm.Left.CanSubmitBarcode);
-            h.Peer.Mode = "reject";
+            h.Peer.Mode = "no-device";
             entry.Clear(); entry.Text = "000UX180003"; submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.Operation?.State == ParcelState.WcsRejected && !vm.Busy);
-            Check(vm.Left.ResultBackground == OperatorTokens.Danger && !vm.Left.DisplaySlotVisible && vm.Left.DisplayNextStep == OperatorCopy.RejectedStep && vm.Left.DisplayPresentation.Icon == "!", "rejection uses red, a symbol and explicit package handling without retaining old chute");
             await Flush();
-            var reasonViewport = (ScrollViewer)left.FindName("PositionBody"); var reason = (TextBox)left.FindName("AttentionReason");
+            var reason = (TextBox)left.FindName("CenteredRcsMessage");
+            var rejectedInstruction = (TextBlock)left.FindName("CenteredInstruction");
+            Check(vm.Left.CenteredRcsRejection && vm.Left.ResultBackground == OperatorTokens.Neutral && vm.Left.CenteredStateForeground == OperatorTokens.Danger &&
+                !vm.Left.DisplaySlotVisible && reason.IsVisible && reason.Text == "无设备可用" && rejectedInstruction.IsVisible &&
+                rejectedInstruction.Text.Contains("请取下包裹"), "rejection keeps the original message and package handling on the neutral result without retaining the old chute");
             var firstLine = reason.GetRectFromCharacterIndex(0);
-            lines.Add("EXCEPTION_GEOMETRY viewport=" + reasonViewport.ViewportHeight + " firstLine=" + firstLine.Height);
-            CaptureInternal(evidence, "operator18-reason-geometry-800", (Grid)window.FindName("ClientArea"), lines);
-            Check(reasonViewport.ViewportHeight >= firstLine.Height && firstLine.Height > 0, "compact exception leaves one full rendered reason line beneath its status");
+            Check(firstLine.Height > 0 && firstLine.Bottom <= reason.ActualHeight + .5, "compact rejection shows at least one full rendered line of the original message");
             CaptureInternal(evidence, "operator18-rejected-800", (Grid)window.FindName("ClientArea"), lines);
             await SetClient(window, 800, 420); Click(window, "记录"); await Until(() => vm.SelectedPage == "history" && !vm.HistoryLoading);
             await Flush(); var history = Descendants(window).OfType<HistoryPage>().Single();

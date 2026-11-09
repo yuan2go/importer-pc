@@ -122,7 +122,7 @@ static class AcquisitionLifecycle
         };
         var path = Path.Combine(root, "runtime"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        var factory = new SlowFactory(new ParcelCapabilityFactory(launch));
+        var factory = new SlowFactory(launch);
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(CancellationToken.None);
         var left = factory.Readers![c.Topology.Readers[0].DeviceId]; var right = factory.Readers[c.Topology.Readers[1].DeviceId];
@@ -181,7 +181,7 @@ static class AcquisitionLifecycle
             var original = s.Operations.Single(o => o.AdmissionId == "restart");
             await app.DisposeAsync();
             Check(left.RetainedAcquisitionCount == 0 && right.RetainedAcquisitionCount == 0, "fully drained disposal terminates process-local acquisition resources");
-            var reopenedFactory = new SlowFactory(new ParcelCapabilityFactory(launch));
+            var reopenedFactory = new SlowFactory(launch);
             await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
             await reopened.StartAsync(CancellationToken.None);
             await reopened.ReconcileAsync(original.Id);
@@ -191,21 +191,26 @@ static class AcquisitionLifecycle
         }
         finally { factory.Release.TrySetResult(); }
     }
-    sealed class SlowFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
+    sealed class SlowFactory(BusinessLaunch launch) : IParcelCapabilityFactory
     {
+        readonly CommercialProductization.SyntheticFactory inner = new(launch);
         public Dictionary<string, ManualObservationSource>? Readers;
         public readonly TaskCompletionSource Entered = new(TaskCreationOptions.RunContinuationsAsynchronously), Release = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public bool LoseNextReply;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
-        public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
         public ParcelPorts Create(ParcelConfiguration c)
         {
             var p = inner.Create(c); Readers = p.Readers!.ToDictionary(x => x.Key, x => (ManualObservationSource)x.Value);
             var first = ParcelBindings.Camera(c, "left")!.InstanceId;
-            var devices = p.Devices!.ToDictionary(x => x.Key, x => x.Value);
+            if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only");
+            var directory = Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
+            var devices = ParcelBindings.Bound(c).Where(b => b.Kind == "camera").ToDictionary(b => b.InstanceId,
+                b => (ICapabilityPort)Readers[b.Target].BindCapture(b, directory));
+            var hashes = p.ImplementationHashes.ToDictionary(x => x.Key, x => x.Value);
+            foreach (var id in devices.Keys) hashes.Add(id, "synthetic-capture-implementation");
             var camera = new SlowCamera((IImageCamera)devices[first], this); devices[first] = camera;
-            return p with { Camera = camera, Devices = devices };
+            return p with { Camera = camera, Devices = devices, ImplementationHashes = hashes };
         }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }

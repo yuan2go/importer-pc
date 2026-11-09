@@ -65,7 +65,7 @@ static partial class StabilityRemediation
             factory.Release.TrySetResult();
             try { await app.DisposeAsync(); } catch (InvalidOperationException) { Check(!app.HasUnreleasedResources, "terminal failure reported after actual safe resource release"); }
         }
-        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await recovered.StartAsync(default); await ManagementModeFixture.Authorize(recovered);
         var snapshot = await recovered.SnapshotAsync();
         Check(snapshot.Operations.Single().Wcs is { State: StageState.Accepted, Attempts: 1 } &&
@@ -145,7 +145,7 @@ static partial class StabilityRemediation
     static async Task OwnedReads(string workspace, string path)
     {
         var c = Config(workspace); var launch = Launch(path, c);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(default);
         int entered = 0;
         app.BeforeRead = async token => { Interlocked.Increment(ref entered); await Task.Delay(Timeout.Infinite, token); };
@@ -202,7 +202,7 @@ static partial class StabilityRemediation
         using var stopped = JsonDocument.Parse(Wire.Encode(app.RuntimeProgress()));
         Check(stopped.RootElement.GetProperty("ManagementStatusOperations").GetInt32() == 0, "stop cancels and drains the coalesced authority observation");
     }
-    sealed class DelayedFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
+    sealed class DelayedFactory(CommercialProductization.SyntheticFactory inner) : IParcelCapabilityFactory
     {
         public TaskCompletionSource Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);

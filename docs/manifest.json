@@ -9168,9 +9168,9 @@
       "status": "current_source_or_separately_scoped_evidence",
       "purpose": "Password-only management mode, separate operator identity and mode authorization, protected single credential and legacy conversion; original business guards retained",
       "source": "WP-IPC-MANAGEMENT-MODE-01; immutable test/release identity recorded separately",
-      "sha256": "28623d3a24f4c1a303ff0aae7ba1b1f6adca422fe7f604cc665303a793b8abf4",
-      "size_bytes": 18507,
-      "git_blob": "cc040dc843213a476e5cf1d1880911d8a88f43bb",
+      "sha256": "bbdea8857a88c931c6877275a58f64a161c4e45350cb98dd493ddeafed4a4f89",
+      "size_bytes": 18977,
+      "git_blob": "412b8dd8e139cc41e7ca5cd18454bf8bb6bb4bb5",
       "previous_git_blob": "ee3cc93fc6aab254535f2585b8e8665dd9f632dd"
     },
     {
@@ -11511,9 +11511,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "471f7a0e8084f7444dc79a920921921051c98e0224ac3e67fb21c73480afe41f",
-      "size_bytes": 7431,
-      "git_blob": "27d8804e21fb98ff8677ae717b0f6e58d8d4c95a",
+      "sha256": "dd5da10094a6264fb7aa7e8aba8ffbe780d32d8c7579877e1f7448b2dcdff6e1",
+      "size_bytes": 7467,
+      "git_blob": "649f0abfc50667148cd8957554c9cce7a2e9443e",
       "pre_parallel_task_integration_01_identity": {
         "git_blob": "2c9884433028b00d8a6b1c4da0ada15268d6cf7e",
         "sha256": "24c390102572687687658f47911694a171a6a63e4f45bf75f074dfd5201164df",
@@ -11530,9 +11530,9 @@
       "purpose": "Stability implementation, current guide, archived original or separately scoped synthetic evidence",
       "source": "WP-IPC-PARALLEL-TASK-INTEGRATION-01; original source and failed/passed version identities retained",
       "storage_scope": "public_repository",
-      "sha256": "dd869fe15bfa9f93b6cafe55d8971a638aa3ca806093a44a0f1d652c86ccd429",
-      "size_bytes": 19473,
-      "git_blob": "b79acae478683704b73c543fb087fd89e1c64f44",
+      "sha256": "a3c00068361dcedcbe91fa13c474fa81c33f7d8bb9f9a191db293ed1d36474d4",
+      "size_bytes": 19527,
+      "git_blob": "743f3c213be18601eff221c0e9f6831c0f3b754d",
       "pre_parallel_task_integration_01_identity": {
         "git_blob": "5b28987fcc6805fa45f49c6fe4b409e5b1348376",
         "sha256": "2cb22ea686f0042f7ba7e8c0ad49e5fe985bd6b64b934f2c590fcdd61980b1e3",

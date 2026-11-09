@@ -85,7 +85,7 @@ public sealed partial class ParcelRuntime
                 if (force || Stopwatch.GetElapsedTime(pair.Value.Written) >= TimeSpan.FromSeconds(5)) FlushIngressTiming(pair.Key, pair.Value);
     }
 
-    bool CoalescePausedObservation(string position, Observation observation, IngressLane lane, long entered)
+    bool CoalescePausedObservation(string position, Observation observation, IngressLane lane, long entered, double laneWaitMs)
     {
         // A committed paused observation is presence evidence, not another parcel.
         // Never jump over a pending input, a reconnect, or the transition to resumed admission.
@@ -108,7 +108,8 @@ public sealed partial class ParcelRuntime
         RecordPresentationRead(position, observation, retainedInput: retained.Observation.Id);
         ReleaseIngressAcquisition(observation);
         Interlocked.Increment(ref lane.ObservedOnly);
-        RecordIngressTiming(position, observation, "PausedSamePlacementObservation", null, entered, [], retained: retained.Observation.Id);
+        RecordIngressTiming(position, observation, "PausedSamePlacementObservation", null, entered,
+            new() { ["LaneWait"] = laneWaitMs }, retained: retained.Observation.Id);
         return true;
     }
 }

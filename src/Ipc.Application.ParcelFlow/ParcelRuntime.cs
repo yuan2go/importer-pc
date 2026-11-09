@@ -358,10 +358,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     RecordPresentationRead(positionId, observation, retainedInput: rejected.Observation.Id);
                     ReleaseIngressAcquisition(observation);
                     Interlocked.Increment(ref lane.ObservedOnly);
-                    RecordIngressTiming(positionId, observation, "RejectedSamePlacementObservation", null, enteredTicks, [], retained: rejected.Observation.Id);
+                    RecordIngressTiming(positionId, observation, "RejectedSamePlacementObservation", null, enteredTicks,
+                        new() { ["LaneWait"] = laneWaitMs }, retained: rejected.Observation.Id);
                     return true;
                 }
-                if (CoalescePausedObservation(positionId, observation, lane, enteredTicks)) return true;
+                if (CoalescePausedObservation(positionId, observation, lane, enteredTicks, laneWaitMs)) return true;
             }
             if (observation is not null) RecordPresentationRead(positionId, observation);
             if (Id == "sportmaster" && observation is not null)

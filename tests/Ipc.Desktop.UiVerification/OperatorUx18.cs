@@ -82,9 +82,16 @@ static partial class Program
                 var client = (Grid)window.FindName("ClientArea");
                 Check(Inside(leftVehicle, client) && Inside(rightVehicle, client), "vehicle labels remain inside the workstation at " + viewport);
                 if (fullScreenChrome)
+                {
                     Check(new[] { "MinimizeFullScreen", "ExitFullScreen" }.Select(name => (Button)window.FindName(name))
                         .All(button => button.IsVisible && button.ActualHeight >= 44 && Inside(button, client)),
                         "compact full-screen header keeps the minimize and exit targets usable");
+                    var waitingTitle = (TextBlock)right.FindName("CenteredStateTitle");
+                    var waitingReason = (TextBlock)right.FindName("CenteredStateReason");
+                    Check(waitingTitle.IsVisible && waitingTitle.Text == "等待投包" &&
+                        waitingTitle.ActualHeight >= waitingTitle.FontSize && waitingReason.IsVisible && waitingReason.ActualHeight >= waitingReason.FontSize,
+                        "the other position keeps its waiting title and instruction beside a compact confirmed chute");
+                }
                 if (vm.IsTight)
                 {
                     Check(leftVehicle.ActualHeight <= 44 && rightVehicle.ActualHeight <= 44 &&

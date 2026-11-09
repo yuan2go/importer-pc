@@ -165,7 +165,7 @@
          <Setter Property="Padding" Value="8"/>
          <Style.Triggers>
           <DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
-          <MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding CenteredRcsRejection}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Padding" Value="8,2"/></MultiDataTrigger>
+          <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="8,2"/></DataTrigger>
          </Style.Triggers>
         </Style>
        </Border.Style>
@@ -194,7 +194,7 @@
          </TextBox.Style>
         </TextBox>
         <TextBlock x:Name="CenteredStateReason" Grid.Row="1" Text="{Binding CenteredStateReason}" Foreground="{DynamicResource Muted}" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center">
-         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/><Setter Property="Margin" Value="0,12,0,0"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding SupplyDisabled}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></TextBlock.Style>
+          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/><Setter Property="Margin" Value="0,12,0,0"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="Margin" Value="0"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding CenteredRcsRejection}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Margin" Value="0,4,0,0"/></MultiDataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding SupplyDisabled}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
         <StackPanel Grid.Row="2">
          <Border x:Name="CenteredRcsDivider" Height="1" MaxWidth="280" Background="{DynamicResource Line}">

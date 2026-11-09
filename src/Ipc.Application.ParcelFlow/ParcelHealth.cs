@@ -2,8 +2,31 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-public sealed partial class ParcelRuntime
+public sealed partial class ParcelRuntime : IStationRcsHeartbeat
 {
+    public async Task<RcsHeartbeatResult> CheckRcsHeartbeatAsync(CancellationToken token)
+    {
+        await gate.WaitAsync(token).ConfigureAwait(false);
+        try
+        {
+            if (Id != "sportmaster" || stopped || stopping.IsCancellationRequested || repository is null || !SessionValid ||
+                configurationSaving || ports?.Wcs is not { } wcs || wcs is not IWcsPositionHeartbeat heartbeat || !PortMaintenanceClear(wcs))
+                return RcsHeartbeatResult.Unavailable;
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token);
+            var result = await ExternalPortAsync(wcs, () => heartbeat.SendHeartbeatAsync(linked.Token)).ConfigureAwait(false);
+            WriteRuntimeLog("设备通信", "操作员检查 RCS 心跳", new
+            {
+                wcs.InstanceId, Result = result.ToString(),
+                ElapsedMs = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds
+            }, result == RcsHeartbeatResult.Received ? "信息" : "警告");
+            return result;
+        }
+        catch (OperationCanceledException) when (stopping.IsCancellationRequested && !token.IsCancellationRequested)
+        { return RcsHeartbeatResult.Unavailable; }
+        finally { gate.Release(); }
+    }
+
     readonly Dictionary<string, DateTimeOffset> diagnosticHealthWritten = new();
     readonly Dictionary<string, (string Epoch, DeviceHealth Health)> loggedReaderHealth = new();
     void ReaderHealthChanged(DeviceHealthConfirmation h)

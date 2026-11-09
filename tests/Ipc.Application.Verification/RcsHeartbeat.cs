@@ -147,12 +147,45 @@ static partial class SportmasterRcs
             Check(peer.Requests.Count > count && (await service.HealthAsync(default)).Ready,
                 "retired allocation fields do not block heartbeat or consume persisted destination IDs");
         }
+        await ManualHeartbeatChecks(peer, workspace, binding);
         await VehicleHeartbeatChecks(peer, binding, HeartbeatConfiguration(workspace, binding));
         await VehicleProjectionChecks(workspace);
         Console.WriteLine("PASS RCS HEARTBEAT COMPLETE");
     }
 
     static async Task Until(Func<bool> predicate) => await Until(() => Task.FromResult(predicate()));
+    static async Task ManualHeartbeatChecks(Peer peer, string workspace, CapabilityBinding binding)
+    {
+        var manual = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-ms"] = "60000" } };
+        await using var service = new SportmasterRcsTaskService(manual);
+        service.ConfigureRuntime(HeartbeatConfiguration(workspace, manual));
+        peer.Mode = "assigned";
+        await service.StartAsync(default);
+        service.SetEnabledPositions(["left"]);
+        var count = peer.Requests.Count;
+        Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.Received && peer.Requests.Count == count + 1,
+            "manual heartbeat immediately sends exactly one request before a scheduled tick");
+        using var request = JsonDocument.Parse(peer.Requests.Last().Body);
+        var item = request.RootElement.GetProperty("data").EnumerateArray().Single();
+        Check(item.GetProperty("command").GetString() == "sorter.task.station_heartbeat" &&
+            item.GetProperty("params").GetProperty("bcrCode").GetString() == manual.Parameters["left-bcr-code"],
+            "manual heartbeat uses the existing protocol and omits a disabled side");
+        service.SetEnabledPositions([]);
+        Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.NoPositions && peer.Requests.Count == count + 1,
+            "manual heartbeat does not send an empty batch when both sides are disabled");
+        service.SetEnabledPositions(["right"]);
+        peer.Mode = "http-error";
+        Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.Failed && peer.Requests.Count == count + 2 &&
+            (await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed,
+            "a manual connection failure reports the actual result without claiming online evidence");
+        peer.Mode = "withhold-response";
+        var pending = service.SendHeartbeatAsync(default);
+        await Until(() => peer.Requests.Count == count + 3);
+        Check(await service.SendHeartbeatAsync(default) == RcsHeartbeatResult.Busy, "repeated manual activation does not queue a duplicate");
+        await service.StopAsync(default);
+        Check(await pending == RcsHeartbeatResult.Unavailable && peer.Requests.Count == count + 3,
+            "stop cancels and drains an in-flight manual heartbeat");
+    }
     static async Task VehicleProjectionChecks(string workspace)
     {
         await using var station = new CameraRoundHarness(workspace, Path.Combine(Path.GetTempPath(), "agv-projection-" + Wire.Id()), heartbeatSeconds: 1);

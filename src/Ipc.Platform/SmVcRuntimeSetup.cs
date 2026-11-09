@@ -13,7 +13,7 @@ internal static class SmVcRuntimeSetup
     const string Vc2008 = DirectoryName + "vc2008-sp1-x64.exe";
     const string Vc2010 = DirectoryName + "vc2010-sp1-x64.exe";
     const uint SearchSystem32 = 0x800;
-    sealed record Package(string File, long Length, string Sha256);
+    sealed record Package(string File, long Length, string Sha256, string Url);
     sealed record Inventory(string ActivationManifest, Package[] Packages);
     internal sealed record Outcome(string Package, string Status, int? ExitCode = null);
 

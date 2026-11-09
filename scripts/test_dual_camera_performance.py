@@ -239,5 +239,152 @@ class Performance(unittest.TestCase):
             self.assertEqual(manifest['SamplesSha256'], p.sha_file(root / 'capture/samples.jsonl'))
 
 
+def runtime_log(seq, source, event, detail, runtime='runtime-1'):
+    return dict(Format='ImporterPc.RuntimeLog.v1', Application='sportmaster', RuntimeId=runtime,
+                At='2026-11-09T01:00:00+00:00', ElapsedMs=seq * 100, Sequence=seq,
+                Source=source, Event=event, Level='信息', OperationId=None, Detail=detail)
+
+
+def scan_window(seq, position, stages, **detail):
+    return runtime_log(seq, '扫码节奏', '扫码阶段耗时与队列汇总',
+                       dict(PositionId=position, MaximumStageMs=stages, **detail))
+
+
+def log_export(record):
+    return dict(Location=dict(FileId='file-1', Line=record['Sequence'], Hash='synthetic', File='运行/runtime.jsonl'),
+                Source=record['Source'], At=record['At'], Level=record['Level'], Text=json.dumps(record),
+                EventCode=record['Event'], OperationId=None)
+
+
+def write_jsonl(path, rows):
+    path.write_text(''.join(json.dumps(row, ensure_ascii=False) + '\n' for row in rows), encoding='utf-8-sig')
+
+
+class ScanLogAnalysis(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory(prefix='ipc-scan-logs-')
+        self.addCleanup(directory.cleanup)
+        self.root = Path(directory.name)
+
+    def analyze(self, *paths):
+        output = self.root / 'analysis'
+        before = [p.sha_file(path) for path in paths]
+        subprocess.run([sys.executable, str(Path(p.__file__)), 'analyze-logs',
+                        '--logs', *map(str, paths), '--output', str(output)], check=True, capture_output=True)
+        self.assertEqual(before, [p.sha_file(path) for path in paths])
+        self.assertCountEqual([path.name for path in output.iterdir()], ['summary.json', 'timeline.jsonl'])
+        return (json.loads((output / 'summary.json').read_text(encoding='utf-8')),
+                [json.loads(line) for line in (output / 'timeline.jsonl').read_text(encoding='utf-8').splitlines()])
+
+    def test_raw_and_export_windows_and_waiting_samples_are_separated_by_position(self):
+        left = dict(Position='left', State='WaitingBusinessGate', ProducerStage='WaitingCapacity',
+                    ProducerStageMs=5500, QueueDepth=4, OldestWaiting='2026-11-09T00:59:55+00:00')
+        right = dict(Position='right', State='Processing', ProducerStage='Idle', ProducerStageMs=0, QueueDepth=0)
+        evidence = dict(ObservationId='synthetic-observation', IngressId='input-1', Epoch='session-1',
+                        SourceEventId='mvs.frame.5', Candidates=['SYNTHETIC-NOT-FOR-OUTPUT'])
+        initial = scan_window(1, 'left', dict(CameraAcquire=75, Decode=70, DecodeQueue=5, CapacityWait=5500,
+                                             IngressPersistence=5501, BusinessGate=200, BusinessQueue=5000),
+                              Count=4, WindowMs=5000, MaximumDepth=6, First=evidence, Last=evidence,
+                              Slowest=dict(evidence, TotalMs=5600, OldestWaitingMs=5000, QueueDepth=3,
+                                           Stages=dict(IngressPersistence=10, BusinessQueue=5000)),
+                              Workers=[right, left])
+        blocked = runtime_log(3, '扫码节奏', '扫码队列等待采样', dict(Workers=[right, left]))
+        later = scan_window(5, 'left', dict(BusinessQueue=8000, BusinessGate=2700), MaximumDepth=7, Workers=[left, right])
+        other = scan_window(4, 'right', dict(Decode=100, BusinessQueue=0), MaximumDepth=0, Workers=[left, right])
+        status = runtime_log(2, '供包状态', '供包台状态快照', dict(Journal=dict(Dropped=1, DebugDropped=0)))
+        rotation, export = self.root / 'runtime.jsonl.1', self.root / 'software-logs.jsonl'
+        write_jsonl(rotation, [initial, status, blocked])
+        write_jsonl(export, [dict(Format='ImporterPc.SoftwareLog.v1', AllInTimeRange=True),
+                            *map(log_export, [later, other, blocked])])
+        summary, timeline = self.analyze(export, rotation)
+        l, r = (summary['Positions'][side] for side in ('left', 'right'))
+        self.assertEqual((l['SlowestScanStage']['Stage'], l['SlowestScanStage']['Ms'], l['MaximumDepth']),
+                         ('BusinessQueue', 8000, 7))
+        self.assertEqual((r['SlowestScanStage']['Stage'], r['SlowestScanStage']['Ms'], r['MaximumDepth']), ('Decode', 100, 0))
+        self.assertEqual([row['Sequence'] for row in timeline], [1, 3, 3, 4, 5])
+        self.assertEqual(timeline[0]['MaximumStageMs']['IngressPersistence'], 5501)
+        self.assertEqual(timeline[0]['Slowest']['Stages']['IngressPersistence'], 10)
+        self.assertEqual(timeline[0]['First']['SourceEventId'], 'mvs.frame.5')
+        self.assertEqual(timeline[0]['Last']['ObservationId'], 'synthetic-observation')
+        self.assertEqual(timeline[0]['Worker']['ProducerStageMs'], 5500)
+        self.assertEqual(timeline[2]['Worker']['ProducerStageMs'], 0)
+        self.assertEqual(timeline[3]['MaximumStageMs']['BusinessQueue'], 0)
+        self.assertNotIn('SYNTHETIC-NOT-FOR-OUTPUT', json.dumps(timeline))
+        self.assertEqual(summary['LogNotices']['DUPLICATE_RUNTIME_RECORD'], 1)
+        runtime = summary['Runtimes']['runtime-1']
+        self.assertEqual(runtime['UnobservedSequencesBetweenRecords'], 0)
+        self.assertEqual(runtime['JournalDropCountersObserved'], dict(Dropped=1, DebugDropped=0))
+
+    def test_rcs_timing_uses_nested_detail_and_keeps_unmatched_evidence(self):
+        def rcs(seq, position, start, runtime='runtime-1', **values):
+            detail = dict(PositionId=position, OperationId='operation', RequestId='request', **values)
+            return runtime_log(seq, 'RCS请求' if start else 'RCS结果', '开始请求格口' if start else '取格口结果',
+                               detail if start else json.dumps(detail), runtime)
+
+        source = self.root / 'runtime.jsonl'
+        write_jsonl(source, [rcs(1, 'left', True, Query=False), rcs(2, 'right', True, Query=True),
+                            rcs(3, 'right', False, Result='Unknown', ElapsedMs=6500),
+                            rcs(5, 'left', False, runtime='runtime-2', Result='Accepted', ElapsedMs=44),
+                            rcs(6, 'right', False, Result='Accepted', ElapsedMs=-1)])
+        summary, timeline = self.analyze(source)
+        l, r = (summary['Positions'][side] for side in ('left', 'right'))
+        self.assertEqual(l['EvidenceGaps']['RcsStartsWithoutCollectedResult'], 1)
+        self.assertIsNone(l['SlowestRcsResult']['CollectedStartSequence'])
+        self.assertEqual(r['EvidenceGaps']['RcsResultsWithoutElapsedMs'], 1)
+        self.assertEqual(r['RcsTimedResults'], 1)
+        self.assertEqual(r['SlowestRcsResult']['CollectedStartSequence'], 2)
+        self.assertEqual(r['SlowestRcsResult']['ElapsedMs'], 6500)
+        self.assertEqual(r['SlowestRcsResult']['Result'], 'Unknown')
+        self.assertIs(r['SlowestRcsResult']['Query'], True)
+        self.assertIsNone(r['SlowestScanStage'])
+        self.assertIsNone(timeline[3]['ElapsedMs'])
+        self.assertEqual(summary['Runtimes']['runtime-1']['UnobservedSequencesBetweenRecords'], 2)
+
+    def test_missing_and_invalid_fields_are_reported_without_fabricating_values(self):
+        invalid = dict(CameraAcquire=-1, Decode=float('nan'), IngressPersistence=True, CapacityWait='5000',
+                       BusinessQueue=float('inf'), BusinessGate=10**400, FrameCopy=None)
+        source = self.root / 'software-logs.jsonl'
+        write_jsonl(source, [dict(Format='ImporterPc.SoftwareLog.v1', AllInTimeRange=False),
+                            dict(At='2026-11-09T01:00:00+00:00', Source='旧日志', Detail='no timing'),
+                            log_export(scan_window(2, 'left', invalid, MaximumDepth=True)),
+                            log_export(scan_window(4, 'left', None)),
+                            log_export(scan_window(5, 'unassigned', dict(Decode=99999)))])
+        with source.open('ab') as output:
+            output.write(b'{"unfinished"\n\xff\n')
+        summary, timeline = self.analyze(source)
+        l, r = (summary['Positions'][side] for side in ('left', 'right'))
+        self.assertEqual(l['Windows'], 2)
+        self.assertEqual(l['EvidenceGaps']['WindowsWithoutStageMaxima'], 2)
+        self.assertEqual(l['EvidenceGaps']['INVALID_BusinessGate'], 1)
+        self.assertEqual(l['EvidenceGaps']['INVALID_Decode'], 1)
+        self.assertEqual(l['EvidenceGaps']['INVALID_IngressPersistence'], 1)
+        self.assertEqual(l['EvidenceGaps']['MISSING_Slowest'], 2)
+        self.assertIsNone(l['MaximumDepth'])
+        self.assertIsNone(l['SlowestScanStage'])
+        self.assertEqual(r['Windows'], 0)
+        self.assertIsNone(r['SlowestRcsResult'])
+        self.assertEqual(summary['LogNotices']['FILTERED_EXPORT'], 1)
+        self.assertEqual(summary['LogNotices']['INVALID_JSON_LINE'], 2)
+        self.assertEqual(summary['LogNotices']['UNKNOWN_Window_POSITION'], 1)
+        self.assertEqual([row['MaximumStageMs'] for row in timeline], [{}, {}])
+
+    def test_old_log_without_timing_reports_unavailable_and_diagnostic_zip_is_rejected(self):
+        source = self.root / 'runtime.jsonl'
+        write_jsonl(source, [dict(At='2026-11-09T01:00:00+00:00', Source='旧日志', Detail='no timing')])
+        summary, timeline = self.analyze(source)
+        self.assertEqual(summary['LogNotices']['NO_SM_RUNTIME_RECORDS'], 1)
+        self.assertEqual(summary['Runtimes'], {})
+        self.assertEqual(timeline, [])
+        for side in ('left', 'right'):
+            self.assertIsNone(summary['Positions'][side]['SlowestScanStage'])
+
+        result = subprocess.run([sys.executable, str(Path(p.__file__)), 'analyze-logs', '--logs',
+                                 str(self.root / 'diagnostics.zip'), '--output', str(self.root / 'unsupported')],
+                                capture_output=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn(b'diagnostic ZIPs omit timing details', result.stderr)
+        self.assertFalse((self.root / 'unsupported').exists())
+
+
 if __name__ == '__main__':
     unittest.main()

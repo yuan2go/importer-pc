@@ -1,4 +1,4 @@
-"""Passive runtime-progress collection and offline statistics; Python 3.10+, standard library only.
+"""Passive runtime-progress collection and offline log analysis; Python 3.10+, standard library only.
 
 Never opens cameras, calls RCS, reads application DBs or changes deployment/configuration.
 All artifacts are private local evidence. A scenario label is not hardware acceptance.
@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import platform
 import sqlite3
+import sys
 import time
 
 
@@ -22,6 +23,14 @@ COUNTERS = ('AcquireCalls', 'NoData', 'Frames', 'DecodeStarted', 'DecodeComplete
             'SupersededDecodeFrames', 'OriginalFrameCopies', 'SdkFrameNumberGaps', 'SdkGapEvents')
 FRAME_METRICS = ('CopyMs', 'ReleaseMs', 'DecodeMs', 'DecodeQueueMs', 'OriginalCopyMs',
                  'ObservedToReceiverMs', 'HandoffMs', 'ClearMs', 'HostDeliveryToDecodeMs')
+SCAN_STAGES = ('CameraAcquire', 'FrameCopy', 'SdkRelease', 'DecodeQueue', 'OriginalCapacity',
+               'Decode', 'OriginalCopy', 'LaneWait', 'CapacityWait', 'IngressPersistence',
+               'IngressPersistenceUntilFailure', 'BusinessQueue', 'BusinessGate', 'BeginReceipt',
+               'BusinessHandler', 'FinishReceipt', 'BusinessUntilFailure')
+SCAN_EVENTS = {('扫码节奏', '扫码阶段耗时与队列汇总'): 'Window',
+               ('扫码节奏', '扫码队列等待采样'): 'Waiting',
+               ('RCS请求', '开始请求格口'): 'RcsStart',
+               ('RCS结果', '取格口结果'): 'RcsResult'}
 
 
 def dump(path, value):
@@ -497,6 +506,243 @@ def analyze(args):
     return 0
 
 
+def log_object(value):
+    # SoftwareLog.Text and the RCS result Detail are independently serialized JSON.
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except (ValueError, RecursionError):
+            return None
+    return value if isinstance(value, dict) else None
+
+
+def log_text(value):
+    return value if isinstance(value, str) and value.strip() else None
+
+
+def log_number(value, issues, field, minimum=0, integer=False):
+    if value is None:
+        return None
+    numeric_types = (int,) if integer else (int, float)
+    maximum = 2**63 - 1 if integer else sys.float_info.max
+    if type(value) in numeric_types and minimum <= value <= maximum:
+        return value
+    issues['INVALID_' + field] += 1
+    return None
+
+
+def read_scan_logs(paths, issues):
+    sequences = defaultdict(set)
+    journal_drops = defaultdict(dict)
+    selected = []
+    for path in paths:
+        with path.open('rb') as source:
+            for line in source:
+                if not line.strip():
+                    continue
+                try:
+                    outer = log_object(line.decode('utf-8-sig'))
+                except UnicodeError:
+                    outer = None
+                if outer is None:
+                    issues['INVALID_JSON_LINE'] += 1
+                    continue
+                if outer.get('Format') == 'ImporterPc.SoftwareLog.v1':
+                    mode = 'ALL_IN_TIME_RANGE_EXPORT' if outer.get('AllInTimeRange') is True else 'FILTERED_EXPORT'
+                    issues[mode] += 1
+                    continue
+                record = log_object(outer.get('Text')) if 'Location' in outer else outer
+                if record is None:
+                    issues['INVALID_EXPORTED_TEXT'] += 1
+                    continue
+                if record.get('Format') != 'ImporterPc.RuntimeLog.v1' or record.get('Application') != 'sportmaster':
+                    continue
+                runtime = log_text(record.get('RuntimeId'))
+                sequence = log_number(record.get('Sequence'), issues, 'SEQUENCE', minimum=1, integer=True)
+                if runtime is None or sequence is None:
+                    issues['MISSING_RUNTIME_IDENTITY'] += 1
+                    continue
+                if sequence in sequences[runtime]:
+                    issues['DUPLICATE_RUNTIME_RECORD'] += 1
+                    continue
+                sequences[runtime].add(sequence)
+                origin = log_text(record.get('Source')), log_text(record.get('Event'))
+                if origin[0] == '供包状态' and origin[1] in ('供包台状态变化', '供包台状态快照'):
+                    detail = log_object(record.get('Detail')) or {}
+                    journal = log_object(detail.get('Journal')) or {}
+                    for name in ('Dropped', 'DebugDropped'):
+                        count = log_number(journal.get(name), issues, 'JOURNAL_' + name, integer=True)
+                        if count is not None:
+                            previous = journal_drops[runtime].get(name, 0)
+                            journal_drops[runtime][name] = max(count, previous)
+                if origin in SCAN_EVENTS:
+                    selected.append((runtime, sequence, SCAN_EVENTS[origin], record))
+    coverage = {}
+    for runtime, observed in sorted(sequences.items()):
+        first, last = min(observed), max(observed)
+        coverage[runtime] = dict(FirstSequence=first, LastSequence=last, Records=len(observed),
+                                 UnobservedSequencesBetweenRecords=last - first + 1 - len(observed),
+                                 JournalDropCountersObserved=journal_drops.get(runtime))
+    return sorted(selected, key=lambda row: row[:2]), coverage
+
+
+def scan_sample(value, issues, field):
+    if not isinstance(value, dict) or not log_text(value.get('ObservationId')):
+        issues['MISSING_' + field] += 1
+        return None
+    sample = {name: log_text(value.get(name)) for name in
+              ('ObservationId', 'IngressId', 'OperationId', 'RetainedObservationId', 'DeviceId',
+               'Epoch', 'SourceEventId', 'ObservedAt', 'Disposition')}
+    if field == 'Slowest':
+        for name in ('TotalMs', 'SinceDecodeMs', 'OldestWaitingMs', 'QueueDepth'):
+            sample[name] = log_number(value.get(name), issues, name, integer=name == 'QueueDepth')
+        sample['Stages'] = scan_stages(value.get('Stages'), issues)
+    return sample
+
+
+def scan_stages(value, issues):
+    if not isinstance(value, dict):
+        return {}
+    stages = {}
+    for name in SCAN_STAGES:
+        if name in value:
+            ms = log_number(value[name], issues, name)
+            if ms is not None:
+                stages[name] = ms
+    return stages
+
+
+def scan_workers(detail, issues):
+    workers = detail.get('Workers')
+    if not isinstance(workers, list):
+        return {}
+    by_position = defaultdict(list)
+    for worker in workers:
+        if isinstance(worker, dict) and worker.get('Position') in ('left', 'right'):
+            by_position[worker['Position']].append(worker)
+    result = {}
+    for position, matches in by_position.items():
+        if len(matches) != 1:
+            issues['AMBIGUOUS_WORKER_POSITION'] += 1
+            continue
+        worker = matches[0]
+        result[position] = {
+            **{name: log_text(worker.get(name)) for name in ('State', 'ProducerStage', 'OldestWaiting', 'ProcessingSince')},
+            **{name: log_number(worker.get(name), issues, name, integer=name == 'QueueDepth')
+               for name in ('ProducerStageMs', 'QueueDepth')}
+        }
+    return result
+
+
+def analyze_scan_logs(args):
+    issues = Counter()
+    records, runtimes = read_scan_logs(args.logs, issues)
+    if not runtimes:
+        issues['NO_SM_RUNTIME_RECORDS'] += 1
+    root = new_root(args.output)
+    positions = {position: dict(Windows=0, WaitingSamples=0, WindowsWithWorker=0, WindowsWithStageMaxima=0,
+                                StageWindowsObserved=Counter(), StagePeaks={}, MaximumDepth=None,
+                                RcsStarts=0, RcsResults=0, RcsTimedResults=0, SlowestRcsResult=None,
+                                EvidenceGaps=Counter()) for position in ('left', 'right')}
+    pending_rcs = defaultdict(list)
+    with (root / 'timeline.jsonl').open('x', encoding='utf-8') as output:
+        def emit(point, position, **values):
+            output.write(json.dumps(dict(point, PositionId=position, **values), ensure_ascii=False, allow_nan=False) + '\n')
+
+        for runtime, sequence, kind, record in records:
+            detail = log_object(record.get('Detail'))
+            if detail is None:
+                issues['INVALID_' + kind + '_DETAIL'] += 1
+                continue
+            point = dict(RuntimeId=runtime, Sequence=sequence, At=log_text(record.get('At')),
+                         RuntimeElapsedMs=log_number(record.get('ElapsedMs'), issues, 'RUNTIME_ELAPSED_MS'), Kind=kind)
+            if point['At'] is None or point['RuntimeElapsedMs'] is None:
+                issues['MISSING_TIMELINE_TIME'] += 1
+            if kind == 'Waiting':
+                workers = scan_workers(detail, issues)
+                for position, summary in positions.items():
+                    if position in workers:
+                        summary['WaitingSamples'] += 1
+                        emit(point, position, Worker=workers[position])
+                    else:
+                        summary['EvidenceGaps']['WaitingSamplesWithoutWorker'] += 1
+                continue
+            position = log_text(detail.get('PositionId'))
+            if position not in positions:
+                issues['UNKNOWN_' + kind + '_POSITION'] += 1
+                continue
+            summary = positions[position]
+            gaps = summary['EvidenceGaps']
+            if kind == 'Window':
+                summary['Windows'] += 1
+                maxima = scan_stages(detail.get('MaximumStageMs'), gaps)
+                if maxima:
+                    summary['WindowsWithStageMaxima'] += 1
+                else:
+                    gaps['WindowsWithoutStageMaxima'] += 1
+                worker = scan_workers(detail, issues).get(position)
+                if worker is not None:
+                    summary['WindowsWithWorker'] += 1
+                else:
+                    gaps['WindowsWithoutWorker'] += 1
+                depth = log_number(detail.get('MaximumDepth'), gaps, 'MaximumDepth', integer=True)
+                if depth is None:
+                    gaps['WindowsWithoutMaximumDepth'] += 1
+                elif summary['MaximumDepth'] is None or depth > summary['MaximumDepth']:
+                    summary['MaximumDepth'] = depth
+                for stage, ms in maxima.items():
+                    summary['StageWindowsObserved'][stage] += 1
+                    peak = summary['StagePeaks'].get(stage)
+                    if peak is None or ms > peak['Ms']:
+                        summary['StagePeaks'][stage] = dict(point, Ms=ms)
+                emit(point, position, MaximumStageMs=maxima, MaximumDepth=depth, Worker=worker,
+                     Count=log_number(detail.get('Count'), gaps, 'Count', minimum=1, integer=True),
+                     WindowMs=log_number(detail.get('WindowMs'), gaps, 'WindowMs'),
+                     **{name: scan_sample(detail.get(name), gaps, name) for name in ('First', 'Last', 'Slowest')})
+                continue
+            operation, request = (log_text(detail.get(name)) for name in ('OperationId', 'RequestId'))
+            key = runtime, position, operation, request
+            if not operation or not request:
+                gaps['RcsRecordsWithoutRequestIdentity'] += 1
+            if kind == 'RcsStart':
+                summary['RcsStarts'] += 1
+                query = detail.get('Query') if type(detail.get('Query')) is bool else None
+                if operation and request:
+                    pending_rcs[key].append((sequence, query))
+                emit(point, position, OperationId=operation, RequestId=request, Query=query)
+                continue
+            summary['RcsResults'] += 1
+            starts = pending_rcs.pop(key, []) if operation and request else []
+            start, query = starts[0] if len(starts) == 1 else (None, None)
+            if start is None:
+                gaps['RcsResultsWithoutUniqueCollectedStart'] += 1
+                if starts:
+                    gaps['AmbiguousCollectedRcsStarts'] += len(starts)
+            ms = log_number(detail.get('ElapsedMs'), gaps, 'RcsElapsedMs')
+            result = dict(OperationId=operation, RequestId=request, Result=log_text(detail.get('Result')),
+                          ElapsedMs=ms, CollectedStartSequence=start, Query=query)
+            if ms is None:
+                gaps['RcsResultsWithoutElapsedMs'] += 1
+            else:
+                summary['RcsTimedResults'] += 1
+                peak = summary['SlowestRcsResult']
+                if peak is None or ms > peak['ElapsedMs']:
+                    summary['SlowestRcsResult'] = dict(point, **result)
+            emit(point, position, **result)
+    for (_, position, _, _), starts in pending_rcs.items():
+        positions[position]['EvidenceGaps']['RcsStartsWithoutCollectedResult'] += len(starts)
+    for summary in positions.values():
+        peaks = summary['StagePeaks']
+        slowest = max(peaks, key=lambda stage: peaks[stage]['Ms'], default=None)
+        summary['SlowestScanStage'] = dict(Stage=slowest, **peaks[slowest]) if slowest else None
+        summary['StagesNotObserved'] = [stage for stage in SCAN_STAGES if stage not in peaks]
+    dump(root / 'summary.json', dict(Schema=1, PerformanceAcceptance='NOT_EVALUATED_NO_SITE_SLA',
+                                    Sources=[str(path) for path in args.logs], Runtimes=runtimes,
+                                    Positions=positions, LogNotices=dict(sorted(issues.items()))))
+    print(str(root / 'summary.json'))
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -516,11 +762,18 @@ def main():
     a.add_argument('--output', type=Path, required=True)
     a.add_argument('--stale-seconds', type=float, default=5, help='Diagnostic freshness flag, not a performance acceptance line')
     a.set_defaults(run=analyze)
+    logs = sub.add_parser('analyze-logs', help='Analyze copied SM runtime logs or SoftwareLog JSONL exports')
+    logs.add_argument('--logs', type=Path, nargs='+', required=True, help='JSONL exports and/or runtime.jsonl rotations')
+    logs.add_argument('--output', type=Path, required=True)
+    logs.set_defaults(run=analyze_scan_logs)
     args = parser.parse_args()
     if args.command == 'collect' and not (0 < args.duration <= 86400 and 0 <= args.warmup <= 3600 and .2 <= args.interval <= 60 and 0 < args.max_mib <= 1048576):
         parser.error('duration (0,86400], warmup [0,3600], interval [.2,60], max-mib (0,1048576] required')
     if args.command == 'analyze' and args.stale_seconds <= 0:
         parser.error('stale-seconds must be positive')
+    if args.command == 'analyze-logs' and any(path.suffix.lower() != '.jsonl' and
+            path.name.lower() not in ('runtime.jsonl.1', 'runtime.jsonl.2', 'runtime.jsonl.3') for path in args.logs):
+        parser.error('Use a SoftwareLog JSONL export or copied runtime.jsonl rotations; diagnostic ZIPs omit timing details')
     return args.run(args)
 
 

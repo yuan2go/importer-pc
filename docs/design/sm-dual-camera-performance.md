@@ -47,6 +47,22 @@ python $tool analyze --capture D:\IPC-Perf\dual-01 --output D:\IPC-Perf\dual-01-
 
 模拟 RCS 与客户 RCS 的轮次分别记录，不能混在一组性能数字里。脚本不发测试请求、不启动模拟器、不重放 Unknown。不要为测量临时开启详细日志、调试读码或人工补录；这些都会改变工作负载，若确实发生须单列。本包没有取得客户接口调用或现场过机授权。
 
+## 从现有日志分析扫码等待
+
+管理中心的日志页选择“导出该时段全部日志…”，保存 JSONL。也可使用已复制到独立目录的 `diagnostics/runtime.jsonl` 和轮转文件 `runtime.jsonl.1` 至 `.3`。详细诊断 ZIP 的 `event-index.json` 只保留白名单索引，缺少原文及阶段耗时。原始日志可能含条码和业务报文，输入和输出都在 D 盘私下保管。
+
+```powershell
+python $tool analyze-logs --logs D:\IPC-Perf\software-logs.jsonl --output D:\IPC-Perf\scan-log-analysis
+```
+
+`--logs` 可接收多个文件，重叠记录按运行实例和日志序号去重。旧的 `collect` 和 `analyze` 仍用于运行快照及逐帧统计。
+
+- `summary.json` 按左、右投递位列出各阶段峰值、最慢阶段、最大队列深度、RCS 最慢结果和证据缺项。每个峰值都带运行实例及日志序号；总览跨所选运行实例，比较时间趋势时按实例分开。
+- `timeline.jsonl` 按运行实例和日志序号排列。观察 `Window` 的 `MaximumStageMs` 和 `MaximumDepth`，以及 `Waiting` 和窗口里的本位 `Worker`。同一实例内用 `RuntimeElapsedMs` 作时间轴；`Waiting` 是在途采样，含生产端阶段和已等时长、等待队列深度、最老等待输入和处理中输入的时间戳。等待采样由慢等待触发，两个点之间缺少采样无法判断该区间的队列状态。
+- `CameraAcquire` 含等待下一帧，`Decode` 是识码测量，海康原生路线的识码包含在取帧调用内。`DecodeQueue`、`OriginalCapacity`、`LaneWait`、`CapacityWait` 分别表示解码队列、原图容量、投递位生产端串行和业务输入容量等待。`IngressPersistence` 是输入持久化，`BusinessQueue` 是进入队列到取出，`BusinessGate` 是取出后等待业务锁，`BusinessHandler` 可能包含 RCS 等待。阶段最大值可以来自不同输入；`Slowest` 按 Application 总耗时选取。勿把阶段相加或把窗口最大值当成逐帧分位数。
+- `RcsStart` 和 `RcsResult` 单列。结果耗时为应用记载的取格口处理耗时，可含本地处理，可能包括手工、调试和核对请求。只有同运行实例、同侧、同作业及同请求的唯一已收集开始记录才能给结果附上开始序号。缺少结果只表示没有收集到结果日志。
+- `StagesNotObserved`、空值、序号缺口及日志丢失计数反映所选证据覆盖。筛选、轮转、保留窗口、日志丢失和缺少在途完成记录都可使覆盖不全。短窗口、仅观察或中断时缺少某阶段也可能是该输入未走该阶段。空值不填为零，实测零保留。没有现场日志时，这些输出只验证分析工具，无法归因现场卡顿。
+
 ## 输出和统计口径
 
 | 文件 | 内容 |

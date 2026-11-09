@@ -56,8 +56,9 @@ static class StateJournalChecks
         RecognitionSymbol Symbol(string code, int x = 20) => new(code, "Code128", [new(x, 20), new(x + 100, 20), new(x + 100, 60), new(x, 60)], 0);
         async Task Feed(string code, uint frame)
         {
+            var processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
             h.Api(h.Left).EnqueueNative(raw, frame, [Symbol(code)]);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Observation.SourceEventId == "mvid.frame." + frame));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
         }
         for (uint i = 1; i <= 12; i++) await Feed("SYNTH-STATE-BLOCKED", i);
         await Feed("SYNTH-STATE-CHANGED", 13);

@@ -718,7 +718,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperationCommit"); throw; }
         operations[op.Id] = op;
         if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
-        if (input is not null) { latestInputs[input.PositionId] = input; LogInput(input); }
+        if (input is not null) PublishInput(input);
         WriteRuntimeLog("作业", eventName, new
         {
             op.PositionId,

@@ -19,7 +19,7 @@ static partial class Program
             throw new TimeoutException(step);
         }
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "camera-current"), 15000);
-        await h.StartAsync();
+        await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
         SupplyStationWindow? second = null;
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
@@ -99,28 +99,45 @@ static partial class Program
                 "late queued results cannot roll the main barcode back while every decoded input retains its own HTTP request");
             Check(picture.IsEnabled && tasks.IsVisible, "latest matching committed observation restores only its own picture and task fields");
             var priorId = p.Operation!.Id;
-            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             await Read(6, "SYNTH-LATEST-0005");
+            await Until(() => p.Input?.Observation.SourceEventId == "mvs.frame.6" && p.ShowConfirmedTask, "same placement fully processed");
+            Check(picture.IsEnabled && tasks.IsVisible && p.Operation!.Id == priorId && h.Peer.Requests.Count == 5,
+                "continuous same-placement reads preserve their current picture and task without another request");
+            DateTimeOffset? firstEmpty = null, lastEmpty = null;
+            for (uint frame = 7; frame <= 9; frame++)
+            {
+                h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, frame);
+                await Until(() => vm.Snapshot!.CameraReads.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == frame &&
+                    r.Frame.Outcome == ObservationReadOutcome.NoCode), "delivered empty tray frame " + frame);
+                lastEmpty = vm.Snapshot!.CameraReads.Single(r => r.PositionId == "left").Frame.ObservedAt;
+                firstEmpty ??= lastEmpty;
+                if (frame < 9) await Task.Delay(425);
+            }
+            await Until(() => !p.ShowConfirmedTask && !picture.IsEnabled, "empty tray retires current result");
+            Check(lastEmpty - firstEmpty >= TimeSpan.FromMilliseconds(800), "three delivered empty frames span the required release window");
+            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            await Read(10, "SYNTH-LATEST-0005");
             await Until(() => h.Peer.Requests.Count == 6, "same-code independent request");
             Check(entry.Text == "SYNTH-LATEST-0005" && !picture.IsEnabled && !tasks.IsVisible && !(bool)edits.GetValue(control)!,
-                "same-code new observation still retires old picture/task authority without creating a manual draft");
+                "same-code new placement after empty tray has no previous picture/task authority or manual draft");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
             await Until(() => p.ShowConfirmedTask && p.Operation!.Id != priorId, "same-code latest confirmed result");
 
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Multiple("SYNTH-MULTI-A", "SYNTH-MULTI-B"), 7);
-            await Until(() => p.Input?.Observation.SourceEventId == "mvs.frame.7", "multiple input rejected");
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Multiple("SYNTH-MULTI-A", "SYNTH-MULTI-B"), 11);
+            await Until(() => p.Input?.Observation.SourceEventId == "mvs.frame.11", "multiple input rejected");
             var placeholder = (TextBlock)control.FindName("BarcodePlaceholder");
             Check(entry.Text.Length == 0 && placeholder.IsVisible && placeholder.Text.Contains("多个条码") && p.Input!.Observation.Codes.Length == 2 &&
-                p.RawCandidates.Contains("SYNTH-MULTI-A") && p.RawCandidates.Contains("SYNTH-MULTI-B") && h.Peer.Requests.Count == 6 && !picture.IsEnabled,
-                "multiple raw candidates stay in original evidence with a clear main-field notice instead of a growing editable list");
+                p.RawCandidates.Contains("SYNTH-MULTI-A") && p.RawCandidates.Contains("SYNTH-MULTI-B") && h.Peer.Requests.Count == 6 && picture.IsEnabled &&
+                (await h.App.ReadParcelPictureAsync(p.CurrentPictureQuery!, default)).Image?.Metadata.SourceEventId == "mvs.frame.11",
+                "multiple candidates keep a clear notice and their own viewable rejection original without requesting a chute");
             await SetClient(window, 800, 420); CaptureInternal(evidence, "camera-current-multiple-compact", (Grid)window.FindName("ClientArea"), lines);
-            await Read(8, "SYNTH-AFTER-MULTI"); await Resolved("SYNTH-AFTER-MULTI");
+            await Read(12, "SYNTH-AFTER-MULTI"); await Resolved("SYNTH-AFTER-MULTI");
             Check(entry.Text == "SYNTH-AFTER-MULTI" && !placeholder.IsVisible && !(bool)edits.GetValue(control)!,
                 "single frame after multiple candidates replaces the notice and never appends older candidate text");
 
             // Intentional local editing stays separate from camera result projection.
             entry.Focus(); entry.Text = "INTENTIONAL-DRAFT"; entry.Select(3, 4);
-            await Read(9, "SYNTH-DURING-DRAFT"); await Resolved("SYNTH-DURING-DRAFT");
+            await Read(13, "SYNTH-DURING-DRAFT"); await Resolved("SYNTH-DURING-DRAFT");
             Check(entry.Text == "INTENTIONAL-DRAFT" && entry.SelectionStart == 3 && entry.SelectionLength == 4 && entry.IsKeyboardFocusWithin && !picture.IsEnabled,
                 "real manual draft, caret and focus survive camera updates while mismatched picture action stays disabled");
             ((Button)control.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -137,13 +154,15 @@ static partial class Program
             h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH\nINVALID"), 2);
             await Until(() => vm.Right.Input?.Observation.SourceEventId == "mvs.frame.2", "control-bearing candidate rejected");
             Check(rightEntry.Text.Length == 0 && vm.Right.InputFailed && vm.Right.Input!.Observation.Codes.Single().Contains('\n') &&
-                h.Peer.Requests.Count == requestCount && !((Button)rightControl.FindName("CurrentBarcode")).IsEnabled,
-                "control-bearing candidate stays in raw evidence but cannot turn the primary entry into multiple editable lines or reuse old picture");
+                h.Peer.Requests.Count == requestCount && ((Button)rightControl.FindName("CurrentBarcode")).IsEnabled &&
+                (await h.App.ReadParcelPictureAsync(vm.Right.CurrentPictureQuery!, default)).Image?.Metadata.SourceEventId == "mvs.frame.2",
+                "control-bearing candidate stays in raw evidence with its own rejection picture and cannot become editable multiline input");
             var longCode = "SYNTH-" + new string('0', 90);
             h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode(longCode), 3);
             await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Barcode == longCode, "long single-code recovery");
-            Check(rightEntry.Text == longCode && rightEntry.LineCount == 1 && !((TextBlock)rightControl.FindName("BarcodePlaceholder")).IsVisible,
-                "long valid code stays complete on one line and replaces invalid/multiple notices");
+            Check(rightEntry.Text == longCode && rightEntry.LineCount > 1 && !rightEntry.AcceptsReturn &&
+                rightEntry.VerticalScrollBarVisibility == ScrollBarVisibility.Auto && !((TextBlock)rightControl.FindName("BarcodePlaceholder")).IsVisible,
+                "long valid code remains complete in the wrapping scrollable field without manual newlines or invalid/multiple notices");
             CaptureInternal(evidence, "camera-current-long-compact", (Grid)window.FindName("ClientArea"), lines);
 
             // Explicit read-only display projections: source order remains stable if the wall clock changes.

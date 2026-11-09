@@ -185,6 +185,22 @@ jobs:
           $lines | Write-Output
           if ($verificationExit) { exit $verificationExit }
           if (@($lines | Where-Object { $_ -like 'PASS MANAGEMENT-ENTRY *' }).Count -ne 2 -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw 'Management entry verification incomplete' }
+      - name: Verify continuous pictures and paused workstation states
+        if: matrix.business == 'Sportmaster'
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          foreach ($suite in @('paused-workstation', 'home-centered-states', 'camera-barcode-current')) {
+            dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path "--$suite"
+            $verificationExit = $LASTEXITCODE
+            $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()
+            $lines = @(Get-Content -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log'))
+            $lines | Set-Content -LiteralPath ".artifacts/$suite.log"
+            $lines | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
+            $lines | Write-Output
+            if ($verificationExit) { exit $verificationExit }
+            if (!@($lines | Where-Object { $_ -like 'PASS *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw "Incomplete workstation verification: $suite" }
+          }
       - name: Verify compact exit confirmation and owner release
         if: matrix.business == 'Sportmaster'
         shell: pwsh

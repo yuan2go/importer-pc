@@ -16,6 +16,10 @@ internal static class LogReadable
         Check(structured == request, "structured request metadata preserves the readable barcode and protocol number in the log list");
         Check(SoftwareLogFacts.Matches(new(new("synthetic-file", 1, "synthetic-hash", "运行/runtime.jsonl"), "设备通信", DateTimeOffset.UtcNow, "信息", "{}"),
             new(DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }), "device recovery stays visible in default key events rather than only the preceding failure");
+        foreach (var source in new[] { "原图留档", "作业页面" })
+            Check(SoftwareLogFacts.Matches(new(new("synthetic-file", 1, "synthetic-hash", "运行/runtime.jsonl"), source, DateTimeOffset.UtcNow, "信息", "{}"),
+                new(DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }),
+                "picture retention, reads and button state are included in default key logs: " + source);
         var failedFrame = SoftwareLogText.Summary(Entry(new { Source = "相机识码", Event = "图像识码失败", Detail = Entry(new { PositionId = "right", FrameNumber = 17, CandidateCount = 0, FramesSinceLastLog = 6, SourceEventId = "mvid.frame.17", FailureReason = "native-recognition-failed: 0x80002200" }) }));
         Check(failedFrame.Contains("右投递位") && failedFrame.Contains("帧 17") && failedFrame.Contains("0x80002200"), "failed-frame log exposes its exact frame and known decoder failure rather than a generic connection event");
         Check(SoftwareLogText.Summary(Entry(new { Source = "相机通信", Event = "相机自动重连", Level = "信息", Detail = "sportmaster.reader.left" })) == "相机自动重连 · 左相机",

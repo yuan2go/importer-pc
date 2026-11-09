@@ -88,9 +88,56 @@ internal static class WorkCardCurrent
         Check((await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data), "returned picture bytes cannot mutate the retained evidence");
         Check(input.Reason.Contains("Global software pause") && (await h.App.SnapshotAsync()).Operations.Length == 0 && h.Peer.Requests.Count == 0,
             "blocked input logs the actual pause reason and viewing a picture sends no request");
-        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-PAUSED-PICTURE-B"), 2);
+        var processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+        h.Api(h.Left).Enqueue(pixels, 2);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
+        Check((await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation.Id == query.ObservationId &&
+            (await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data),
+            "continuous same-placement observations keep a stable exact image while the worker processes each input");
+        var delayed = 0;
+        var timeout = new SportmasterFlow().QueuedObservationTimeoutMs(h.Config);
+        h.App.Boundary = point => { if (point == "AfterIngressDurable" && Interlocked.Exchange(ref delayed, 1) == 0) Thread.Sleep(timeout + 250); };
+        processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+        h.Api(h.Left).Enqueue(pixels, 3);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
+        h.App.Boundary = null;
+        Check((await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data) && h.Peer.Requests.Count == 0,
+            "a queued expired read of the same placement preserves its original picture without admission");
+        await CameraRoundHarness.Until(async () =>
+        {
+            var page = await h.App.QueryLogsAsync(new(DateTimeOffset.UtcNow.AddMinutes(-2), DateTimeOffset.UtcNow.AddMinutes(1)) { KeyEvents = true }, null, 0, default);
+            try { return page.Entries.Any(row => row.Text.Contains("ObservationExpired", StringComparison.Ordinal)); }
+            finally { h.App.ReleaseLogSelection(page.Selection); }
+        });
+        Check((await h.App.ReadParcelPictureAsync(query, default)).Status == "Available", "expiry is proven by the key log while the held original remains readable");
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-PAUSED-PICTURE-B"), 4);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.Observation.Codes.SequenceEqual(new[] { "SYNTH-PAUSED-PICTURE-B" })));
         Check((await h.App.ReadParcelPictureAsync(query, default)).Image is null, "a replaced observation cannot borrow the new parcel picture");
+        var second = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
+        var secondQuery = new ParcelPictureQuery(ObservationId: second.Observation.Id);
+        Check((await h.App.ReconnectDeviceAsync(h.Left)).Status == "Reconnected" &&
+            (await h.App.ReadParcelPictureAsync(secondQuery, default)).Image is null,
+            "a new camera session cannot reuse the old blocked image");
+        processed = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-PAUSED-PICTURE-B"), 5);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > processed));
+        var reconnected = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
+        var reconnectedQuery = new ParcelPictureQuery(ObservationId: reconnected.Observation.Id);
+        Check((await h.App.ReadParcelPictureAsync(reconnectedQuery, default)).Image is not null,
+            "the reconnected camera retains its own current original");
+        DateTimeOffset? firstEmpty = null, lastEmpty = null;
+        for (uint frame = 6; frame <= 8; frame++)
+        {
+            h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, frame);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(r =>
+                r.PositionId == "left" && r.Frame.FrameNumber == frame && r.Frame.Outcome == ObservationReadOutcome.NoCode));
+            lastEmpty = (await h.App.SnapshotAsync()).CameraReads.Single(r => r.PositionId == "left").Frame.ObservedAt;
+            firstEmpty ??= lastEmpty;
+            if (frame < 8) await Task.Delay(425);
+        }
+        Check(lastEmpty - firstEmpty >= TimeSpan.FromMilliseconds(800) &&
+            (await h.App.ReadParcelPictureAsync(reconnectedQuery, default)).Image is null,
+            "three delivered empty frames spanning at least 800 ms retire the blocked placement original");
         await h.App.DisposeAsync(); await h.StartAsync();
         Check((await h.App.ReadParcelPictureAsync(query, default)).Image is null && (await h.App.SnapshotAsync()).Inputs is { Length: 0 },
             "a new shift restores neither blocked parcel pictures nor previous barcode inputs");

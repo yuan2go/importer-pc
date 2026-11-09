@@ -4,6 +4,7 @@ namespace Ipc.Application.Contracts;
 public interface IParcelPresentationDiagnostics
 {
     Task<ParcelReadFeedback[]> ReadPresentationFeedbackAsync(CancellationToken token);
+    void ReportPicturePresentation(ParcelPicturePresentation state) { }
     Task ReportPresentationAsync(Guid runtime, string observation, string stage, long composedTicks, long snapshotTicks, CancellationToken token);
 }
 public sealed record ParcelReadFeedback(Guid RuntimeId, string PositionId, string ObservationId, string DeviceId, string Epoch,
@@ -29,3 +30,7 @@ public sealed record ParcelCameraReadFeedback(string PositionId, Ipc.Platform.Ob
     public string? RetainedOperationId { get; init; }
     public string? RetainedObservationId { get; init; }
 }
+
+public sealed record ParcelPicturePresentation(Guid RuntimeId, string PositionId, long Revision,
+    string? InputObservationId, string? ReadObservationId, string? PictureObservationId,
+    bool Enabled, string Reason);

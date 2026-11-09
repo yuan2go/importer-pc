@@ -339,6 +339,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             WindowsInstallationStage.WaitingForAuthorization => "等待 Windows 授权；如有提示，请在电脑上确认。",
             WindowsInstallationStage.CheckingInstallation => "正在确认供包台已关闭",
             WindowsInstallationStage.CopyingFiles => "正在复制并校验程序文件",
+            WindowsInstallationStage.InstallingCameraRuntime => "正在检查并补齐相机运行库",
             WindowsInstallationStage.PreparingConfiguration => "正在准备配置与数据目录",
             WindowsInstallationStage.InstallingComponents => "正在安装已核验组件",
             WindowsInstallationStage.RegisteringManagementService => "正在登记管理授权服务",

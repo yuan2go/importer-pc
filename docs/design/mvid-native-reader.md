@@ -16,9 +16,9 @@
 
 ## 安装依赖
 
-仅安装 MVS 不足以启用这条原生路线。实施人员需要包含匹配 MVIDCodeReader 组件的完整安装包、匹配的 x64 VC++ 2008/2010 运行环境及相机传输驱动。操作员不需要启动额外的读码程序。缺少组件时相机明确报错，软件不会自行寻找旧客户端目录或换用另一识码方式。
+原生路线使用匹配的 MVIDCodeReader 组件、VC++ 2008 SP1 x64、VC++ 2010 SP1 x64 和相机传输驱动。包含 MVID 的完整安装包内置这两份微软官方运行库安装程序，交互安装、静默安装和修复共用同一流程。Windows 授权后检测实际加载能力，已可用的运行库直接跳过，缺失的离线补齐，确认可用后再提交供包台安装登记。共享运行库在卸载供包台后保留。
 
-打包入口 `scripts/package-application.py --mvid-runtime <已获授权的本地运行库目录>`，也可设置进程环境变量 `IPC_MVID_RUNTIME`；这是现有 MVS 构建输入之外的可选输入。目录必须有固定清单中五个 DLL 及原厂告知文件 `SDK-NOTICE.txt`。脚本逐项校验长度、SHA256 和 AMD64，全部成功后写入 `app/desktop` 的 `vendor/hikrobot-mvid`。仓库只保存清单、接口和自行编写的配置，不包含厂商二进制或客户资料。
+打包使用 `scripts/package-application.py --mvid-runtime <已获授权的本地运行库目录> --vc-redist <官方运行库安装程序目录>`。也可设置进程环境变量 `IPC_MVID_RUNTIME` 和 `IPC_SM_VC_REDIST`。MVID 目录须包含固定清单中的五个 DLL 及原厂告知文件 `SDK-NOTICE.txt`。脚本核验长度、SHA256 和 AMD64 后写入 `app/desktop` 的 `vendor/hikrobot-mvid`，并把核验后的微软安装程序写入 `prerequisites`。仓库只保存清单、接口和自行编写的配置。
 
 配置文件由项目提供，关闭 SDK 工作目录日志。SDK 及工作目录配置仍须通过现有受保护安装目录和文件完整性检查。运行库不可在进程中更换版本；更新用完整安装包及正常停止/重启流程。未提供原生构建输入的包保留软件识别能力，不能用于原生路线的现场验收。
 

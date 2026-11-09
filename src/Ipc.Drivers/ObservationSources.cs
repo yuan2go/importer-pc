@@ -19,7 +19,10 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     readonly Dictionary<AcquisitionIdentity, AcquisitionRecord> acquisitions = [];
     bool captureBound, disposed;
     readonly object callbackGate = new();
-    public int RetainedAcquisitionCount { get { lock (callbackGate) return acquisitions.Count; } }
+    // A receiver can wait for its bounded queue. The consumer must still be able
+    // to release an earlier acquisition before that wait can finish.
+    readonly object acquisitionGate = new();
+    public int RetainedAcquisitionCount { get { lock (acquisitionGate) return acquisitions.Count; } }
     public string DeviceId { get; } = deviceId;
     public string Epoch { get; private set; } = Wire.Id();
     public int StartCount { get; private set; }
@@ -65,8 +68,11 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
             var owner = "observation:" + observation.Id;
             if (captureBound)
             {
-                if (!acquisitions.TryGetValue(identity, out var record)) acquisitions.Add(identity, record = new());
-                record.Owners.Add(owner);
+                lock (acquisitionGate)
+                {
+                    if (!acquisitions.TryGetValue(identity, out var record)) acquisitions.Add(identity, record = new());
+                    record.Owners.Add(owner);
+                }
             }
             var accepted = false;
             try { return accepted = callback(observation); }
@@ -86,7 +92,7 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     public void RetainAcquisition(AcquisitionIdentity identity, string owner)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(owner);
-        lock (callbackGate)
+        lock (acquisitionGate)
         {
             if (!acquisitions.TryGetValue(identity, out var record) || record.Owners.Count == 0)
                 throw new IOException("Original acquisition unavailable; retaining a replacement is forbidden");
@@ -95,7 +101,7 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     }
     public void ReleaseAcquisition(AcquisitionIdentity identity, string owner)
     {
-        lock (callbackGate)
+        lock (acquisitionGate)
             if (acquisitions.TryGetValue(identity, out var record))
             {
                 record.Owners.Remove(owner);
@@ -112,7 +118,7 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
         {
             var acquisition = Wire.Decode<ParcelPayload>(request.Payload).Acquisition;
             AcquisitionRecord record;
-            lock (owner.callbackGate)
+            lock (owner.acquisitionGate)
             {
                 if (acquisition is null || !owner.acquisitions.TryGetValue(acquisition, out record!) || record.Owners.Count == 0)
                     throw new IOException("Original acquisition unavailable; latest frame substitution forbidden");
@@ -121,7 +127,7 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
             try { return await port.CaptureAsync(request, t).ConfigureAwait(false); }
             finally
             {
-                lock (owner.callbackGate)
+                lock (owner.acquisitionGate)
                 {
                     record.Captures--;
                     if (record.Owners.Count == 0 && record.Captures == 0) owner.acquisitions.Remove(acquisition);
@@ -148,8 +154,11 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
         await StopAsync(CancellationToken.None).ConfigureAwait(false);
         lock (callbackGate)
         {
-            if (acquisitions.Values.Any(x => x.Captures != 0)) throw new InvalidOperationException("Original captures still active; source ownership retained");
-            disposed = true; acquisitions.Clear();
+            lock (acquisitionGate)
+            {
+                if (acquisitions.Values.Any(x => x.Captures != 0)) throw new InvalidOperationException("Original captures still active; source ownership retained");
+                disposed = true; acquisitions.Clear();
+            }
         }
     }
 }

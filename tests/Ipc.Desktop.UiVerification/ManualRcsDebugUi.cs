@@ -14,7 +14,7 @@ static partial class Program
         T Field<T>(object c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
         await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "manual-debug"), deferred: true, rightCode: false, leftCode: false);
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
-        var application = DispatchProxy.Create<ICameraRoundUiFixture, ManualDebugReturnProbe>();
+        var application = DispatchProxy.Create<IManualDebugUiFixture, ManualDebugReturnProbe>();
         var probe = (ManualDebugReturnProbe)(object)application; probe.Inner = h.App;
         var window = new SupplyStationWindow(application, null, "standard") { Title = "人工请求调试 · 无相机合成验证" };
         window.Show(); var vm = window.ViewModel;
@@ -25,7 +25,9 @@ static partial class Program
         {
             await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.IsManagementMode);
             window.ShowPositionDebug(vm.Right); await Flush();
-            var control = Descendants(window).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
+            await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(c => ReferenceEquals(c.Owner, window) && c.IsVisible));
+            var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single(c => ReferenceEquals(c.Owner, window) && c.IsVisible);
+            var control = Descendants(center).OfType<UserControl>().Single(c => c.GetType().Name == "StationDebugControl");
             Field<DispatcherTimer>(window, "timer").Stop(); Field<DispatcherTimer>(control, "timer").Stop();
             Field<DispatcherTimer>(Field<UserControl>(control, "livePreview"), "timer").Stop();
             var entry = Field<TextBox>(control, "requestBarcode"); var prepare = Field<Button>(control, "prepare"); var send = Field<Button>(control, "send");
@@ -48,15 +50,15 @@ static partial class Program
             send.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => !Field<bool>(control, "busy"));
             Check(h.Peer.Requests.Count == 1, "native original-result lookup does not send a second HTTP request");
-            CaptureInternal(evidence, "manual-debug-no-camera", (Grid)window.FindName("ClientArea"), lines);
+            CaptureInternal(evidence, "manual-debug-no-camera", center, lines);
             Field<TextBox>(control, "responseBody").BringIntoView(); await Flush();
-            CaptureInternal(evidence, "manual-debug-request-response", (Grid)window.FindName("ClientArea"), lines);
-            await SetClient(window, 800, 420); prepare.BringIntoView(); await Flush();
-            Check(Inside(prepare, (Grid)window.FindName("ClientArea")), "manual preparation remains reachable in compact layout");
+            CaptureInternal(evidence, "manual-debug-request-response", center, lines);
+            await SetClient(center, 800, 420); prepare.BringIntoView(); await Flush();
+            Check(Inside(prepare, (Grid)center.Content), "manual preparation remains reachable in compact layout");
             entry.Text = "UNSENT-ON-EXIT"; prepare.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => send.IsEnabled && Field<TextBox>(control, "requestBody").Text.Contains("UNSENT-ON-EXIT"));
             typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
-            await Until(() => vm.Right.CanAdmit);
+            await Until(() => !vm.IsManagementMode && vm.Right.CanAdmit);
             Check((await h.App.SnapshotAsync()).Operations.Single(o => o.ParcelCode == "UNSENT-ON-EXIT").Wcs is { State: Ipc.Application.Contracts.StageState.Cancelled, Attempts: 0 } && h.Peer.Requests.Count == 1,
                 "leaving native debug cancels only its unsent test request and restores ordinary manual supply without an end panel");
             await LateReturn(reload: false, newer: false);
@@ -65,7 +67,9 @@ static partial class Program
 
             async Task LateReturn(bool reload, bool newer)
             {
+                await ManagementModeFixture.Authorize(h.App); await vm.RefreshAsync();
                 window.ShowPositionDebug(vm.Right); await Flush();
+                await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(c => ReferenceEquals(c.Owner, window) && c.IsVisible));
                 entry.Text = "LATE-" + Wire.Id();
                 await Until(() => !Field<bool>(control, "busy") && Field<Button>(control, "prepare").IsEnabled);
                 probe.Prepared = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -74,7 +78,7 @@ static partial class Program
                 {
                     prepare.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     var late = await probe.Prepared.Task.WaitAsync(TimeSpan.FromSeconds(10));
-                    typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
+                    typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["diagnostics"]);
                     await Flush();
                     CameraReadRound? replacement = null;
                     if (newer)
@@ -95,8 +99,9 @@ static partial class Program
                         var s = await h.App.SnapshotAsync();
                         await h.App.CloseUnsentDebugRoundAsync(new(Wire.Id(), s.RuntimeId, replacement.Id!), default);
                     }
-                    else Check((await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true), "late cleanup restores ordinary manual admission");
-                    typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
+                    else Check((await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == false) && h.Peer.Requests.Count == 1,
+                        "late cleanup preserves the open management window admission guard without sending a request");
+                    typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["diagnostics"]);
                     await Flush();
                 }
                 finally { release.TrySetResult(); probe.Release = null; }
@@ -108,6 +113,7 @@ static partial class Program
 
 // Delay only delivery of the real durable preparation result. Cancellation after
 // persistence must not hide the actual outcome from the originating window.
+public interface IManualDebugUiFixture : ICameraRoundUiFixture, IManagementWorkspace { }
 public class ManualDebugReturnProbe : ProjectionProbe
 {
     public TaskCompletionSource<CameraReadRound>? Prepared;

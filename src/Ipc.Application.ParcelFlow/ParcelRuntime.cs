@@ -1,4 +1,5 @@
 using System.Threading.Channels;
+using System.Diagnostics;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
@@ -143,10 +144,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 SoftwarePauseActor = () => currentOperator?.Subject
             };
             repository.LoadSoftwarePauseEvidence();
-            if (launch.RequireRecoveryReview)
+            if (launch.RequireRecoveryReview && Id != "sportmaster")
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
-            foreach (var position in repository.RecoverIngress()) interruptedPositions.TryAdd(position, 0);
+            foreach (var position in repository.RecoverIngress(Id == "sportmaster")) interruptedPositions.TryAdd(position, 0);
             InitializeCameraInspection();
             InitializeParcelPictures();
         }
@@ -155,6 +156,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), _ => { /* Independent diagnostic status; never business custody. */ });
+        if (repository.AutomaticallySkippedIngress is { } skipped)
+            WriteRuntimeLog("供包状态", "已自动跳过上次未完成的扫码", skipped);
         WriteRuntimeLog("供包状态", "供包台开始启动", new
         {
             SoftwarePaused = repository.Paused,
@@ -279,7 +282,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             if (Interlocked.CompareExchange(ref accepting, 1, 2) != 2) throw new IOException("Startup ingress fenced; inspect diagnostic failure before retrying");
             ingressStartup.TrySetResult(true);
-            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && !launch.RequireRecoveryReview;
+            resumePriorPause = definition.AutomaticConfigurationQuiescence && repository.Paused && (Id == "sportmaster" || !launch.RequireRecoveryReview);
             foreach (var port in CapabilityPorts()) backgroundTasks.TryAdd("capability:" + port.InstanceId, Task.Run(() => MonitorAsync(port), CancellationToken.None));
             backgroundTasks.TryAdd("maintenance", Task.Run(MaintainAsync, CancellationToken.None));
             backgroundTasks.TryAdd("wal-checkpoint", Task.Run(ObserveWalAsync, CancellationToken.None));
@@ -329,6 +332,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
 
     bool Enqueue(object item)
     {
+        var enteredTicks = Stopwatch.GetTimestamp();
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
@@ -338,6 +342,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // business gate or native callback is held while SQLite commits.
         lock (lane.Sync)
         {
+            var laneWaitMs = Stopwatch.GetElapsedTime(enteredTicks).TotalMilliseconds;
+            double capacityWaitMs = 0;
             if (Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
             var at = DateTimeOffset.UtcNow;
             if (Id == "sportmaster" && observation is not null)
@@ -353,8 +359,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 {
                     RecordPresentationRead(positionId, observation, retainedInput: rejected.Observation.Id);
                     ReleaseIngressAcquisition(observation);
+                    Interlocked.Increment(ref lane.ObservedOnly);
+                    RecordIngressTiming(positionId, observation, "RejectedSamePlacementObservation", null, enteredTicks,
+                        new() { ["LaneWait"] = laneWaitMs }, retained: rejected.Observation.Id);
                     return true;
                 }
+                if (CoalescePausedObservation(positionId, observation, lane, enteredTicks, laneWaitMs)) return true;
             }
             if (observation is not null) RecordPresentationRead(positionId, observation);
             if (Id == "sportmaster" && observation is not null)
@@ -362,8 +372,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 // Stop before the durable write when a normal bounded lane is full.
                 // The source retains this decoded observation while waiting. No business
                 // gate is held; a failed consumer/stop must break the wait, not deadlock Sync.
+                Interlocked.Exchange(ref lane.ProducerStageTicks, Stopwatch.GetTimestamp());
+                Volatile.Write(ref lane.ProducerStage, "WaitingCapacity");
                 try
                 {
+                    var capacityStarted = Stopwatch.GetTimestamp();
                     var capacity = positionQueues[positionId].Writer.WaitToWriteAsync(stopping.Token);
                     bool available;
                     if (capacity.IsCompletedSuccessfully) available = capacity.Result;
@@ -374,8 +387,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                         available = ready.GetAwaiter().GetResult();
                     }
                     if (!available || Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
+                    capacityWaitMs = Stopwatch.GetElapsedTime(capacityStarted).TotalMilliseconds;
                 }
                 catch (OperationCanceledException) when (stopping.IsCancellationRequested) { return false; }
+                finally { Volatile.Write(ref lane.ProducerStage, "Idle"); Interlocked.Exchange(ref lane.ProducerStageTicks, 0); }
             }
             if (observation is not null)
             {
@@ -389,13 +404,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 };
                 item = new ParcelObservation(observation, identity, at);
             }
-            var received = new IngressItem(Wire.Id(), item, at, System.Diagnostics.Stopwatch.GetTimestamp());
+            var received = new IngressItem(Wire.Id(), item, at, enteredTicks) { LaneWaitMs = laneWaitMs, CapacityWaitMs = capacityWaitMs };
+            var persistenceStarted = Stopwatch.GetTimestamp();
+            Interlocked.Exchange(ref lane.ProducerStageTicks, persistenceStarted); Volatile.Write(ref lane.ProducerStage, "Persisting");
             try
             {
                 WriteIngress(lane.Db, received.Id, positionId, item, at, runtimeId.ToString("N"), () => Boundary?.Invoke("BeforeIngressDurable"));
                 Boundary?.Invoke("AfterIngressDurable");
+                received.PersistenceMs = Stopwatch.GetElapsedTime(persistenceStarted).TotalMilliseconds;
+                received.QueuedTicks = Stopwatch.GetTimestamp();
                 Interlocked.Increment(ref lane.Received);
-                lane.Waiting.TryAdd(received.Id, at);
+                lane.Waiting.TryAdd(received.Id, DateTimeOffset.UtcNow);
+                received.DepthAtEnqueue = lane.Waiting.Count;
                 if (observation is not null) Interlocked.Increment(ref pendingObservations);
                 if (positionQueues[positionId].Writer.TryWrite(received)) return true;
                 lane.Waiting.TryRemove(received.Id, out _);
@@ -406,12 +426,16 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             }
             catch (Exception ex)
             {
+                if (observation is not null) RecordIngressTiming(positionId, observation, "HandoffFailedOriginalRetained", received.Id, enteredTicks,
+                    new() { ["LaneWait"] = laneWaitMs, ["CapacityWait"] = capacityWaitMs,
+                        ["IngressPersistenceUntilFailure"] = Stopwatch.GetElapsedTime(persistenceStarted).TotalMilliseconds });
                 Volatile.Write(ref failure, "Input custody persistence failed: " + ex.GetType().Name);
                 Volatile.Write(ref lane.Failure, failure); FenceIngress();
                 InvalidatePresentation();
                 if (IsStorageError(ex)) StorageFailed(ex, "IngressCustody");
                 // A possibly committed Pending is intentionally kept for recovery.
             }
+            finally { Volatile.Write(ref lane.ProducerStage, "Idle"); Interlocked.Exchange(ref lane.ProducerStageTicks, 0); }
             return false;
         }
     }
@@ -425,30 +449,53 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             await foreach (var queued in positionQueues[position].Reader.ReadAllAsync().ConfigureAwait(false))
             {
                 var item = (IngressItem)queued;
+                var dequeuedTicks = Stopwatch.GetTimestamp();
                 activeIngress.Value = item.Id;
-                lane.Waiting.TryRemove(item.Id, out _);
                 Interlocked.Exchange(ref lane.ProcessingTicks, DateTimeOffset.UtcNow.UtcTicks);
-                Volatile.Write(ref lane.State, "Processing");
+                Volatile.Write(ref lane.State, "WaitingBusinessGate");
                 await gate.WaitAsync().ConfigureAwait(false);
+                var gateTicks = Stopwatch.GetTimestamp();
+                lane.Waiting.TryRemove(item.Id, out _);
+                Volatile.Write(ref lane.State, "Processing");
+                Dictionary<string, double> stageMs = new()
+                {
+                    ["LaneWait"] = item.LaneWaitMs, ["CapacityWait"] = item.CapacityWaitMs, ["IngressPersistence"] = item.PersistenceMs,
+                    ["BusinessQueue"] = Stopwatch.GetElapsedTime(item.QueuedTicks, dequeuedTicks).TotalMilliseconds,
+                    ["BusinessGate"] = Stopwatch.GetElapsedTime(dequeuedTicks, gateTicks).TotalMilliseconds
+                };
                 try
                 {
                     if (!startupCompleted || stopping.IsCancellationRequested)
                     {
                         Boundary?.Invoke("BeforeStartupIngressDisposition");
-                        repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, InputId = item.Id, Reason = "StartupIncomplete/Stopping; inspect original input; no replay" }));
-                        FinishIngress(item.Id, "Interrupted", "Startup/stop barrier; original entity requires inspection");
-                        interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
+                        if (Id == "sportmaster" && item.Value is ParcelObservation)
+                        {
+                            FinishIngress(item.Id, "Processed", "SkippedAtStop; old camera input is not replayed; original requests unchanged");
+                            Interlocked.Increment(ref lane.Processed);
+                            WriteRuntimeLog("供包状态", "停止时已跳过排队扫码", new { PositionId = position, InputId = item.Id, Policy = "No replay; original requests unchanged" });
+                        }
+                        else
+                        {
+                            repository!.Commit(null, "StartupIngressBlocked", Wire.Encode(new { Position = position, InputId = item.Id, Reason = "StartupIncomplete/Stopping; inspect original input; no replay" }));
+                            FinishIngress(item.Id, "Interrupted", "Startup/stop barrier; original entity requires inspection");
+                            interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
+                        }
                     }
                     else
                     {
                         var processingStarted = System.Diagnostics.Stopwatch.GetTimestamp();
                         var queueMs = System.Diagnostics.Stopwatch.GetElapsedTime(item.ReceivedTicks).TotalMilliseconds;
                         repository!.BeginIngress(item.Id, queueMs);
+                        stageMs["BeginReceipt"] = Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds;
                         if (item.Value is ParcelObservation queuedObservation) RecordIngressPerformance(position, queuedObservation.Observation, "IngressQueue", queueMs);
+                        var handlerStarted = Stopwatch.GetTimestamp();
+                        Boundary?.Invoke("BeforeIngressHandler");
                         if (item.Value is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
                         else if (item.Value is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
+                        stageMs["BusinessHandler"] = Stopwatch.GetElapsedTime(handlerStarted).TotalMilliseconds;
                         var input = latestInputs.GetValueOrDefault(position);
                         if (item.Value is ParcelObservation source && (input?.Observation.SourceEventId != source.Observation.SourceEventId || input.Observation.Epoch != source.Observation.Epoch)) input = null;
+                        var receiptStarted = Stopwatch.GetTimestamp();
                         FinishIngress(item.Id, "Processed", Wire.Encode(new
                         {
                             Policy = "Business handler completed; not physical completion",
@@ -456,14 +503,20 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                             Disposition = input?.Outcome.ToString() ?? (item.Value is ParcelObservation ? "RejectedUntrustedSource" : "MeasurementHandlerCompleted"),
                             Input = input
                         }), System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
+                        stageMs["FinishReceipt"] = Stopwatch.GetElapsedTime(receiptStarted).TotalMilliseconds;
                         Interlocked.Increment(ref lane.Processed);
                         if (item.Value is ParcelObservation processedObservation) RecordIngressPerformance(position, processedObservation.Observation,
                             "IngressProcessed", System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
+                        if (item.Value is ParcelObservation timed) RecordIngressTiming(position, timed.Observation,
+                            input?.Reason.Split(';')[0] ?? "RejectedUntrustedSource", item.Id, item.ReceivedTicks, stageMs, item.DepthAtEnqueue, operation: input?.OperationId);
                     }
                     Interlocked.Exchange(ref lane.ProgressTicks, DateTimeOffset.UtcNow.UtcTicks);
                 }
                 catch
                 {
+                    stageMs["BusinessUntilFailure"] = Stopwatch.GetElapsedTime(gateTicks).TotalMilliseconds;
+                    if (item.Value is ParcelObservation failed) RecordIngressTiming(position, failed.Observation,
+                        "HandlerFailedOriginalRetained", item.Id, item.ReceivedTicks, stageMs, item.DepthAtEnqueue);
                     interruptedPositions.TryAdd(position, 0); Interlocked.Increment(ref lane.Interrupted);
                     // Original Pending exists even when the store cannot accept a failure disposition.
                     throw;
@@ -607,7 +660,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // Queue age/health must close this input's display as well as admission.
         // Existing identities above retain their original responsibility and policy.
         if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
-        { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationRejected"); return; }
+        {
+            var expired = Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; 本次扫码已跳过，请取下包裹后重新上件；未创建作业或请求", selection: selection);
+            RecordInput(expired, "ObservationRejected");
+            if (Id == "sportmaster" && !repository!.Paused) ClaimRejectedPlacement(expired, reader);
+            return;
+        }
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ReaderConfirmationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationBlocked"); return; }
         // Current-source evidence about an existing entity is processed even while

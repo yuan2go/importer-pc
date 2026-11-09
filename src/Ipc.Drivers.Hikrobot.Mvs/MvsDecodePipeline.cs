@@ -11,6 +11,8 @@ internal sealed partial class MvsAcquisition
     {
         internal MvsFrameLatency? Trace { get; set; }
         internal long? Scene { get; init; }
+        internal double AcquireMs { get; init; }
+        internal long QueuedTicks { get; init; } = Stopwatch.GetTimestamp();
         internal bool SupersededBeforeDecode { get; set; }
     }
     readonly object decodeGate = new();
@@ -91,7 +93,7 @@ internal sealed partial class MvsAcquisition
                 {
                     if (token.IsCancellationRequested || work.Registration?.DecodeAllowed?.Invoke(DeviceId) == false)
                     { work.SupersededBeforeDecode = true; continue; }
-                    Timings.Record("host.decode-queue-wait", Stopwatch.GetElapsedTime(work.DeliveredTicks).TotalMilliseconds);
+                    Timings.Record("host.decode-queue-wait", Stopwatch.GetElapsedTime(work.QueuedTicks).TotalMilliseconds);
                     ProcessDecode(work, token);
                 }
                 catch (MvsFrameRejection error)
@@ -118,9 +120,10 @@ internal sealed partial class MvsAcquisition
     {
         var pixels = work.Pixels; var length = work.Length; var frame = work.Frame;
         var observedAt = work.ObservedAt; var deliveredTicks = work.DeliveredTicks; var skippedBefore = work.SkippedBefore;
-        var queueMs = Stopwatch.GetElapsedTime(deliveredTicks).TotalMilliseconds;
+        var queueMs = Stopwatch.GetElapsedTime(work.QueuedTicks).TotalMilliseconds;
         var inspected = (Registration: work.Registration, Generation: 0L);
         long decodedTicks = 0;
+        double originalCapacityMs = 0, originalCopyMs = 0;
         MvsOriginalFrames.Frame? original = null;
         string[] codes;
         RecognitionSymbol[] symbols;
@@ -152,7 +155,7 @@ internal sealed partial class MvsAcquisition
                     using (Timings.Measure("image.original-capacity-wait"))
                         original = originals.Reserve(length, checked((int)frame.Width), checked((int)frame.Height), token);
                 }
-                finally { lock (gate) waitingOriginalCapacity = false; }
+                finally { originalCapacityMs = Timings.LastMs("image.original-capacity-wait"); lock (gate) waitingOriginalCapacity = false; }
             }
             if (original?.WaitedForCapacity == true)
             {
@@ -170,7 +173,10 @@ internal sealed partial class MvsAcquisition
             void CopyOriginal()
             {
                 if (original is null) return;
-                using (Timings.Measure("image.original-copy")) pixels.AsSpan(0, length).CopyTo(original.Pixels);
+                var copyStarted = Stopwatch.GetTimestamp();
+                pixels.AsSpan(0, length).CopyTo(original.Pixels);
+                originalCopyMs += Stopwatch.GetElapsedTime(copyStarted).TotalMilliseconds;
+                Timings.Record("image.original-copy", originalCopyMs);
                 lock (gate) originalFrameCopies++;
             }
             if (decoder is { PreservesInput: false }) CopyOriginal();
@@ -227,6 +233,9 @@ internal sealed partial class MvsAcquisition
                 InspectionSessionId = inspected.Registration is { Isolated: true } isolated ? isolated.Id : null,
                 CaptureSessionId = inspected.Registration is { CaptureImages: true } capture ? capture.Id : null
             };
+            observation = observation with { Timing = new(work.AcquireMs, work.CopyMs, work.ReleaseMs, queueMs,
+                originalCapacityMs, Timings.LastMs("decode"), originalCopyMs,
+                Stopwatch.GetElapsedTime(deliveredTicks, decodedTicks).TotalMilliseconds) };
             try { originals.Publish(acquisitionIdentity!, original); }
             catch { original?.Dispose(); throw; }
 

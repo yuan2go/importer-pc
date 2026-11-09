@@ -65,13 +65,28 @@ static class ShortcutLifecycle
             {
                 using var link = new ShellLinkFile(entry.Path);
                 Check(link.TargetPath == entry.Target && link.Arguments == entry.Arguments && link.WorkingDirectory == entry.WorkingDirectory &&
-                    link.Description == "菜鸟供包台 · " + location.ApplicationId && link.IconLocation == entry.Target + ",0", "repair restores missing entry and owned projection fields: " + Path.GetFileName(entry.Path));
+                    link.Description == "菜鸟供包台" && link.IconLocation == entry.Target + ",0", "repair restores missing entry and owned projection fields: " + Path.GetFileName(entry.Path));
             }
             var helperPath = Path.Combine(directory, "参数𠀀🙂.lnk");
             using (var helper = new ShellLinkFile()) { helper.TargetPath = plan[0].Target; helper.Arguments = "--合成参数=𠀀🙂"; helper.Save(helperPath); }
             using (var helper = new ShellLinkFile(helperPath)) Check(helper.Arguments == "--合成参数=𠀀🙂", "helper Unicode arguments round trip beyond ACP936 repertoire");
             DeploymentShortcuts.Remove(location, menu, desktop); DeploymentShortcuts.Remove(location, menu, desktop);
             Check(plan.All(entry => !File.Exists(entry.Path)), "owned Unicode entries removed and repeated uninstall is idempotent");
+        });
+        Scenario("stable-sm-names", directory =>
+        {
+            var old = Release(directory) with { Shortcuts = new(true, true) };
+            var menu = Path.Combine(directory, "菜单"); var desktop = Path.Combine(directory, "桌面");
+            var plan = DeploymentShortcuts.Plan(old, menu, desktop);
+            Check(plan.Where(e => e.Arguments == "").All(e => Path.GetFileName(e.Path) == "菜鸟供包台.lnk") &&
+                plan.All(e => !e.Path.Contains("sportmaster") && !e.Path.Contains(old.SourceCommit[..8])), "start menu and desktop use the plain product name without internal identities");
+            var legacy = Path.Combine(menu, "菜鸟供包台", "菜鸟供包台 · SM供包业务 · sportmaster · " + old.SourceCommit[..8] + " · " + Path.GetFileName(old.ReleaseRoot)[^8..] + " · 运行.lnk");
+            Directory.CreateDirectory(Path.GetDirectoryName(legacy)!); Write(plan[0] with { Path = legacy });
+            DeploymentShortcuts.Create(old, menu, desktop);
+            Check(!File.Exists(legacy) && plan.All(e => File.Exists(e.Path)), "same-version repair replaces the registered long-name entry without leaving a duplicate");
+            var next = Release(Path.Combine(directory, "新版本")) with { SourceCommit = new string('b', 40), DataRoot = old.DataRoot, Shortcuts = new(true, true) };
+            DeploymentShortcuts.Create(next, menu, desktop, old); DeploymentShortcuts.Remove(old, menu, desktop);
+            Check(DeploymentShortcuts.Plan(next, menu, desktop).All(e => ReadTarget(e.Path) == e.Target), "upgrade retargets all stable entries and old-installation cleanup preserves the new links");
         });
         Scenario("historical-and-missing-target", directory =>
         {

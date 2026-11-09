@@ -54,7 +54,7 @@ static class InstallerOptions
             foreach (var entry in DeploymentShortcuts.Plan(chosen, programs, desktop))
             {
                 using var link = new ShellLinkFile(entry.Path);
-                Check(File.Exists(entry.Path) && string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) && link.Arguments == entry.Arguments && string.Equals(link.WorkingDirectory, entry.WorkingDirectory, StringComparison.OrdinalIgnoreCase) && link.IconLocation == entry.Target + ",0" && link.Description == "菜鸟供包台 · " + chosen.ApplicationId, "actual Unicode COM shortcut readback: " + Path.GetFileName(entry.Path));
+                Check(File.Exists(entry.Path) && string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) && link.Arguments == entry.Arguments && string.Equals(link.WorkingDirectory, entry.WorkingDirectory, StringComparison.OrdinalIgnoreCase) && link.IconLocation == entry.Target + ",0" && link.Description == "菜鸟供包台", "actual Unicode COM shortcut readback: " + Path.GetFileName(entry.Path));
             }
             var upgraded = chosen with { SourceCommit = new string('b', 40), ReleaseRoot = Path.Combine(root, "升级目录-87654321") };
             ReleaseDirectory(upgraded);

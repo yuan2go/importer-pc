@@ -277,6 +277,9 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         if (Wire.Hash(Wire.Encode(Effective)) != op.ConfigurationHash || configuration!.Current.Pending is not null)
             return "生效配置已变化或存在待生效配置，请核对原请求。";
         if (!AdmissionCapabilitiesReady(op.PositionId)) return "RCS或必需业务能力当前不可用，请核对服务连接。";
+        if (interruptedPositions.ContainsKey(op.PositionId!)) return "本位运行数据无法自动恢复，请联系维护人员；本次调试请求尚未发送。";
+        if (backupInProgress || configurationSaving || !ManualPositionMaintenanceClear(op.PositionId!)) return "正在备份、保存设置或维护设备，完成后可发送本轮原请求。";
+        if (stopping.IsCancellationRequested || Volatile.Read(ref accepting) != 1 || failure is not null) return "软件尚未就绪或正在停止，本次调试请求尚未发送。";
         if (operations.Values.Any(x => x.Id != op.Id && x.PositionId == op.PositionId && !MainTerminated(x)))
             return "本位还有未结束的原作业，请先核对原责任。";
         return "当前运行、维护或原请求守卫尚未满足，请核对本位诊断。";
@@ -296,7 +299,16 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             if (command.RuntimeId != runtimeId || readRound is not { } currentRound || currentRound.Id != command.RoundId || currentRound.Operation is not { } id ||
                 currentRound.State != "Locked" || !operations.TryGetValue(id, out var op) || op.Wcs is null || RoundRequestHash(op.Wcs.Request) != command.RequestHash)
                 throw new InvalidOperationException("本轮请求已变化、已尝试或守卫关闭；不重新准备、不重发，请核对原作业。");
-            if (!DebugRequestReady(op)) throw new InvalidOperationException(DebugRequestBlockingReason(op));
+            if (op.Wcs is not { State: StageState.Prepared, Attempts: 0 }) throw new InvalidOperationException(DebugRequestBlockingReason(op));
+            if (!DebugRequestReady(op))
+            {
+                WriteRuntimeLog("RCS请求", "调试请求未发送", new
+                {
+                    command.CommandId, command.RoundId, OperationId = op.Id, op.PositionId, op.ParcelCode,
+                    Request = op.Wcs.Request, SendAttempts = op.Wcs.Attempts, Reason = DebugRequestBlockingReason(op)
+                });
+                return RoundProjection();
+            }
             t.ThrowIfCancellationRequested(); Management.Require();
             repository.Commit(null, "CameraDebugSendAdmitted", Wire.Encode(new { Command = command, Operation = op.Id, Actor = ManagementEvidence }), command: receipt,
                 commandResult: new("Pending", "手动测试发送已接纳；只核对原结果，禁止重发。", repository.Revision + 1));

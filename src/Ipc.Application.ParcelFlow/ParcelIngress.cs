@@ -7,7 +7,12 @@ using Microsoft.Data.Sqlite;
 namespace Ipc.Application.ParcelFlow;
 
 public sealed record ParcelWorkerProgress(string Position, string State, long Received, long Processed, long Interrupted,
-    int QueueDepth, DateTimeOffset? OldestWaiting, DateTimeOffset? LastProgress, string? Failure, DateTimeOffset? ProcessingSince);
+    int QueueDepth, DateTimeOffset? OldestWaiting, DateTimeOffset? LastProgress, string? Failure, DateTimeOffset? ProcessingSince)
+{
+    public long ObservedOnly { get; init; }
+    public string ProducerStage { get; init; } = "Idle";
+    public double ProducerStageMs { get; init; }
+}
 
 public sealed partial class ParcelRuntime
 {
@@ -19,15 +24,22 @@ public sealed partial class ParcelRuntime
         Interlocked.Exchange(ref accepting, 0);
         ingressFenced.TrySetResult();
     }
-    sealed record IngressItem(string Id, object Value, DateTimeOffset At, long ReceivedTicks);
+    sealed record IngressItem(string Id, object Value, DateTimeOffset At, long ReceivedTicks)
+    {
+        public long QueuedTicks;
+        public double LaneWaitMs, CapacityWaitMs, PersistenceMs;
+        public int DepthAtEnqueue;
+    }
     sealed class IngressLane(string database) : IDisposable
     {
         public readonly object Sync = new();
         public readonly SqliteConnection Db = Database.Open(database, create: false);
         public readonly ConcurrentDictionary<string, DateTimeOffset> Waiting = new();
         public string State = "Starting";
+        public string ProducerStage = "Idle";
+        public long ProducerStageTicks;
         public string? Failure;
-        public long Received, Processed, Interrupted, ProgressTicks, ProcessingTicks;
+        public long Received, Processed, Interrupted, ProgressTicks, ProcessingTicks, ObservedOnly;
         public void Dispose() => Db.Dispose();
     }
     readonly Dictionary<string, IngressLane> ingressLanes = [];
@@ -38,10 +50,15 @@ public sealed partial class ParcelRuntime
     {
         var lane = pair.Value;
         var waiting = lane.Waiting.Values.ToArray(); var ticks = Interlocked.Read(ref lane.ProgressTicks);
+        var producerStage = Volatile.Read(ref lane.ProducerStage); var producerTicks = Interlocked.Read(ref lane.ProducerStageTicks);
         return new ParcelWorkerProgress(pair.Key, Volatile.Read(ref lane.State), Interlocked.Read(ref lane.Received),
             Interlocked.Read(ref lane.Processed), Interlocked.Read(ref lane.Interrupted), waiting.Length,
             waiting.Length == 0 ? null : waiting.Min(), ticks == 0 ? null : new DateTimeOffset(ticks, TimeSpan.Zero), Volatile.Read(ref lane.Failure),
-            Interlocked.Read(ref lane.ProcessingTicks) is var active && active != 0 ? new DateTimeOffset(active, TimeSpan.Zero) : null);
+            Interlocked.Read(ref lane.ProcessingTicks) is var active && active != 0 ? new DateTimeOffset(active, TimeSpan.Zero) : null)
+        {
+            ObservedOnly = Interlocked.Read(ref lane.ObservedOnly), ProducerStage = producerStage,
+            ProducerStageMs = producerStage != "Idle" && producerTicks > 0 ? System.Diagnostics.Stopwatch.GetElapsedTime(producerTicks).TotalMilliseconds : 0
+        };
     }).ToArray();
     void InitializeIngress()
     {
@@ -108,19 +125,62 @@ public sealed partial class ParcelRepository
         c.Parameters.AddWithValue("$id", id); c.Parameters.AddWithValue("$state", state); c.Parameters.AddWithValue("$detail", detail);
         if (c.ExecuteNonQuery() != 1) throw new InvalidDataException("Original ingress responsibility changed");
     }
-    internal string[] RecoverIngress()
+    internal object? AutomaticallySkippedIngress { get; private set; }
+    internal string[] RecoverIngress(bool skipCameraInputs)
     {
         using var c = db.CreateCommand();
         c.CommandText = "SELECT body,body_hash FROM parcel_ingress WHERE state IN ('Pending','Interrupted')";
         using (var originals = c.ExecuteReader())
             while (originals.Read()) if (Wire.Hash(originals.GetString(0)) != originals.GetString(1))
                     throw new InvalidDataException("Unsettled ingress original checksum differs; preserve original database and restore its complete custody set");
+        if (skipCameraInputs) SkipPreviousCameraInputs();
         c.CommandText = "UPDATE parcel_ingress SET state='Interrupted',detail='Previous owner ended before receipt disposition; inspect original entity and business facts; no replay' WHERE state='Pending'";
         c.ExecuteNonQuery();
         c.CommandText = "SELECT DISTINCT position FROM parcel_ingress WHERE state='Interrupted'";
         using var r = c.ExecuteReader(); List<string> positions = []; while (r.Read()) positions.Add(r.GetString(0));
-        r.Close(); if (positions.Count != 0) Commit(null, "IngressRecoveryRequired", "Interrupted inputs retain original responsibility; no automatic replay", paused: true);
+        r.Close();
+        if (positions.Count != 0) Commit(null, "IngressRecoveryRequired", "Interrupted inputs retain original responsibility; no automatic replay", paused: true);
+        else if (skipCameraInputs && Paused && LastSoftwarePause?.Event == "IngressRecoveryRequired")
+            Commit(null, "InterruptedScanPauseCleared", "Previous camera inputs skipped without replay; original jobs and requests retain their own guards", paused: false);
         return positions.ToArray();
+    }
+    void SkipPreviousCameraInputs()
+    {
+        // The input receipt is not an external request. Expire old camera events,
+        // including already-Interrupted rows from previous builds, without replay.
+        // Operations, raw replies and Unknown requests remain independent owners.
+        const string eligible = "state IN ('Pending','Interrupted') AND json_valid(body) AND json_type(body,'$.Observation')='object'";
+        using var tx = db.BeginTransaction();
+        using var c = db.CreateCommand(); c.Transaction = tx;
+        c.CommandText = "SELECT count(*) FROM parcel_ingress WHERE " + eligible;
+        var total = (long)c.ExecuteScalar()!;
+        if (total == 0) { tx.Commit(); return; }
+        c.CommandText = "SELECT id,position,session,started_at,body_hash,body FROM parcel_ingress WHERE " + eligible + " ORDER BY received_at,id LIMIT 16";
+        List<object> entries = [];
+        using (var rows = c.ExecuteReader())
+            while (rows.Read())
+            {
+                using var body = System.Text.Json.JsonDocument.Parse(rows.GetString(5));
+                entries.Add(new
+                {
+                    Id = rows.GetString(0), PositionId = rows.GetString(1), OriginalSession = rows.GetString(2),
+                    StartedAt = rows.IsDBNull(3) ? null : rows.GetString(3), OriginalSha256 = rows.GetString(4),
+                    Observation = body.RootElement.GetProperty("Observation").Clone()
+                });
+            }
+        var evidence = new
+        {
+            Total = total, Entries = entries, Omitted = total - entries.Count,
+            Policy = "SkippedPreviousCameraInput; no replay; no claim of non-delivery or physical completion; original operations/requests/raw/Unknown unchanged"
+        };
+        var detail = Wire.Encode(evidence); var at = DateTimeOffset.UtcNow.ToString("O");
+        c.CommandText = "UPDATE parcel_ingress SET state='Processed',completed_at=$at,detail=$detail WHERE " + eligible;
+        c.Parameters.AddWithValue("$at", at);
+        c.Parameters.AddWithValue("$detail", "SkippedPreviousCameraInput; 请取下未完成的包裹后重新上件；旧扫码不回放，原作业和原请求保留");
+        c.ExecuteNonQuery();
+        c.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'PreviousCameraInputsSkipped','runtime',$detail)";
+        c.Parameters["$detail"].Value = detail; c.ExecuteNonQuery();
+        tx.Commit(); AutomaticallySkippedIngress = evidence;
     }
     internal object InterruptedIngressEvidence()
     {

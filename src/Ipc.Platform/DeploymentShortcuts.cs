@@ -16,7 +16,8 @@ public static class DeploymentShortcuts
         var result = new List<DeploymentShortcut>();
         if (options.StartMenu)
             foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
-                result.Add(new(System.IO.Path.Combine(programs, "菜鸟供包台", id + " · " + entry.Name + ".lnk"), target, entry.Args, location.ReleaseRoot));
+                result.Add(new(System.IO.Path.Combine(programs, "菜鸟供包台", (location.ApplicationId == "sportmaster" ?
+                    entry.Args == "" ? "菜鸟供包台" : "菜鸟供包台 · " + entry.Name : id + " · " + entry.Name) + ".lnk"), target, entry.Args, location.ReleaseRoot));
         if (options.Desktop) result.Add(new(System.IO.Path.Combine(desktop, "菜鸟供包台.lnk"), target, "", location.ReleaseRoot));
         return result.ToArray();
     }
@@ -32,12 +33,14 @@ public static class DeploymentShortcuts
             var exists = ExistingShortcutFile(entry.Path);
             using var link = new ShellLinkFile(exists ? entry.Path : null);
             if (exists && (!string.Equals(link.TargetPath, entry.Target, StringComparison.OrdinalIgnoreCase) || link.Arguments != entry.Arguments) &&
-                !(entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == "菜鸟供包台.lnk" && link.Arguments == "" &&
+                !((location.ApplicationId == "sportmaster" || entry.Arguments == "" && System.IO.Path.GetFileName(entry.Path) == "菜鸟供包台.lnk") && link.Arguments == entry.Arguments &&
                   PreviousOwnsTarget(location, previous, link.TargetPath)))
                 throw new IOException("保留目标不同的既有快捷方式：" + entry.Path);
             link.TargetPath = entry.Target; link.Arguments = entry.Arguments; link.WorkingDirectory = entry.WorkingDirectory;
-            link.Description = "菜鸟供包台 · " + location.ApplicationId; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
+            link.Description = location.ApplicationId == "sportmaster" ? "菜鸟供包台" : "菜鸟供包台 · " + location.ApplicationId; link.SetIcon(entry.Target, 0); link.Save(entry.Path);
         }
+        RemoveOwned(LegacySmMenu(location, programs));
+        if (previous is not null) RemoveOwned(LegacySmMenu(previous, programs));
     }
 
     [SupportedOSPlatform("windows")]
@@ -64,7 +67,24 @@ public static class DeploymentShortcuts
     [SupportedOSPlatform("windows")]
     public static void Remove(DeploymentLocation location, string programs, string desktop)
     {
-        var files = Plan(location with { Shortcuts = new(true, true) }, programs, desktop).ToList();
+        var files = Plan(location with { Shortcuts = new(true, true) }, programs, desktop).Concat(LegacySmMenu(location, programs));
+        RemoveOwned(files);
+    }
+
+    // Exact names from the registered installation only. Never sweep menu folders
+    // or remove a user-retargeted shortcut based on its display name.
+    static IEnumerable<DeploymentShortcut> LegacySmMenu(DeploymentLocation location, string programs)
+    {
+        if (location.ApplicationId != "sportmaster") yield break;
+        var id = "菜鸟供包台 · SM供包业务 · sportmaster · " + location.SourceCommit[..8] + " · " + System.IO.Path.GetFileName(location.ReleaseRoot)[^8..];
+        foreach (var entry in new[] { (Name: "运行", Args: ""), (Name: "启动修复", Args: "--maintenance"), (Name: "安装维护", Args: "--setup") })
+            yield return new(System.IO.Path.Combine(programs, "菜鸟供包台", id + " · " + entry.Name + ".lnk"),
+                System.IO.Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"), entry.Args, location.ReleaseRoot);
+    }
+
+    [SupportedOSPlatform("windows")]
+    static void RemoveOwned(IEnumerable<DeploymentShortcut> files)
+    {
         foreach (var entry in files)
         {
             DeploymentPaths.RequireOrdinaryAncestors(entry.Path);

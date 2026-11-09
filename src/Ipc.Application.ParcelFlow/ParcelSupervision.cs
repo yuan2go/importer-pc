@@ -124,6 +124,16 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
                     if (cameraSample.Elapsed >= TimeSpan.FromSeconds(5))
                     {
                         cameraSample.Restart();
+                        var workers = WorkerProgress();
+                        var now = DateTimeOffset.UtcNow;
+                        if (workers.Any(w => w.ProducerStageMs >= 1000 ||
+                            w.OldestWaiting is { } waiting && now - waiting >= TimeSpan.FromSeconds(1) ||
+                            w.ProcessingSince is { } processing && now - processing >= TimeSpan.FromSeconds(1)))
+                            WriteRuntimeLog("扫码节奏", "扫码队列等待采样", new
+                            {
+                                Workers = workers,
+                                Meaning = "独立于业务锁采样；处理中输入尚无完成结论。队列包含等待业务锁的输入，容量等待仍由采集端持有；不据此重发、清队列或释放原请求。"
+                            });
                         foreach (var reader in readers.Values)
                             if (reader.Source is IObservationDiagnosticsSource source)
                                 DebugDiagnostic("相机通信", "相机取帧与解码采样", () => source.ReadDiagnostics());

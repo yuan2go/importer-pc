@@ -44,7 +44,7 @@ static partial class StabilityRemediation
     {
         var c = Config(workspace); var launch = Launch(path, c); var factory = new DelayedFactory(new(launch));
         var app = new ParcelRuntime(launch, new SportmasterFlow(), factory)
-        { Boundary = point => { if (point == "AfterRawDurable") throw new IOException("Synthetic T3 interruption"); } };
+        { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); }, Boundary = point => { if (point == "AfterRawDurable") throw new IOException("Synthetic T3 interruption"); } };
         await app.StartAsync(default); var database = Path.Combine(DirectoryFor(launch, c), "sportmaster.db");
         try
         {
@@ -65,48 +65,42 @@ static partial class StabilityRemediation
             factory.Release.TrySetResult();
             try { await app.DisposeAsync(); } catch (InvalidOperationException) { Check(!app.HasUnreleasedResources, "terminal failure reported after actual safe resource release"); }
         }
-        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await recovered.StartAsync(default); await ManagementModeFixture.Authorize(recovered);
         var snapshot = await recovered.SnapshotAsync();
-        Check(snapshot.Positions!.Single(p => p.Id == "left").Admit == false && snapshot.Operations.Single().Wcs is { State: StageState.Accepted, Attempts: 1 } &&
-            Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Interrupted'") == 2,
-            "restart blocks the position with unresolved input, reconciles original raw locally and never resends or replays queued input");
-        await Command(recovered, "Pause"); // Inspection still requires its own maintenance barrier.
+        Check(snapshot.Operations.Single().Wcs is { State: StageState.Accepted, Attempts: 1 } &&
+            Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Interrupted'") == 0,
+            "restart skips old camera inputs, reconciles original raw locally and never resends or replays queued input");
         var receipt = await Command(recovered, "IngressResponsibilities");
         using var json = JsonDocument.Parse(receipt.Reason);
-        foreach (var row in json.RootElement.EnumerateArray())
-        {
-            await Until(() => recovered.WorkerProgress().All(w => w.QueueDepth == 0));
-            BusinessReceipt inspected;
-            do { inspected = await Command(recovered, "InspectInterruptedIngress", row.GetProperty("Id").GetString(), "Synthetic physical entity and original raw checked; no replay"); if (inspected.Status == "Rejected") await Task.Delay(20); }
-            while (inspected.Status == "Rejected");
-            Check(inspected.Status == "Persisted", "management inspection records actor/reason against exact input receipt");
-        }
-        Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Inspected'") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 1,
-            "inspection clears input barrier while preserving original request/attempt/entity ledger");
+        Check(json.RootElement.GetArrayLength() == 0, "old scan recovery leaves no operator input-inspection work");
+        Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 1,
+            "automatic skip clears only input barriers while preserving original request/attempt/entity ledger");
     }
     static async Task SlowMarker(string workspace, string path)
     {
         var c = Config(workspace); var launch = Launch(path, c); var factory = new DelayedFactory(new(launch));
-        using var markerEntered = new ManualResetEventSlim(); using var releaseMarker = new ManualResetEventSlim();
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory)
-        { Boundary = point => { if (point == "BeforeOverloadPersist") { markerEntered.Set(); if (!releaseMarker.Wait(10000)) throw new TimeoutException(); } } };
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(default);
+        Task<bool>? waiting = null;
         try
         {
             Check(app.EmitReferenceAt("left", "slow-first", "001", "slow-first-event"), "slow-marker first left input");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            Check(app.EmitReferenceAt("left", "slow-second", "002", "slow-second-event") && !app.EmitReferenceAt("left", "overflow", "003", "overflow-event"), "left queue overflow rejects delivery explicitly");
-            Check(markerEntered.Wait(3000), "marker owner reached injected slow durable I/O");
+            Check(app.EmitReferenceAt("left", "slow-second", "002", "slow-second-event"), "left second input fills its bounded lane");
+            waiting = Task.Run(() => app.EmitReferenceAt("left", "backpressure", "003", "waiting-event"));
+            await Until(() => app.WorkerProgress().Single(w => w.Position == "left").ProducerStage == "WaitingCapacity");
+            Check(!waiting.IsCompleted, "full left lane waits for capacity instead of losing the parcel or pausing the station");
             var watch = Stopwatch.StartNew();
-            Check(app.EmitReferenceAt("right", "independent", "004", "right-event"), "other position handoff does not acquire marker lock");
+            Check(app.EmitReferenceAt("right", "independent", "004", "right-event"), "other position handoff does not acquire the full lane lock");
             ParcelSnapshot s;
             do { s = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2)); if (s.Operations.Any(o => o.AdmissionId == "independent" && o.State == ParcelState.SlotResolved)) break; await Task.Delay(10); }
             while (watch.Elapsed < TimeSpan.FromSeconds(5));
-            Check(s.Operations.Any(o => o.AdmissionId == "independent" && o.State == ParcelState.SlotResolved) && !releaseMarker.IsSet,
-                "right business reaches actual accepted raw/T3 while left marker storage is still blocked");
+            Check(s.Operations.Any(o => o.AdmissionId == "independent" && o.State == ParcelState.SlotResolved) && !waiting.IsCompleted,
+                "right business reaches actual accepted raw/T3 while left queue capacity is still blocked");
         }
-        finally { releaseMarker.Set(); factory.Release.TrySetResult(); }
+        finally { factory.Release.TrySetResult(); }
+        Check(waiting is not null && await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "left handoff resumes once its original request releases queue capacity");
     }
     static async Task DiagnosticRecovery(string path)
     {
@@ -151,7 +145,7 @@ static partial class StabilityRemediation
     static async Task OwnedReads(string workspace, string path)
     {
         var c = Config(workspace); var launch = Launch(path, c);
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new ParcelCapabilityFactory(launch));
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(default);
         int entered = 0;
         app.BeforeRead = async token => { Interlocked.Increment(ref entered); await Task.Delay(Timeout.Infinite, token); };
@@ -208,7 +202,7 @@ static partial class StabilityRemediation
         using var stopped = JsonDocument.Parse(Wire.Encode(app.RuntimeProgress()));
         Check(stopped.RootElement.GetProperty("ManagementStatusOperations").GetInt32() == 0, "stop cancels and drains the coalesced authority observation");
     }
-    sealed class DelayedFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
+    sealed class DelayedFactory(CommercialProductization.SyntheticFactory inner) : IParcelCapabilityFactory
     {
         public TaskCompletionSource Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);

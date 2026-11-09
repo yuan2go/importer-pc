@@ -122,8 +122,8 @@ static class AcquisitionLifecycle
         };
         var path = Path.Combine(root, "runtime"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        var factory = new SlowFactory(new ParcelCapabilityFactory(launch));
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
+        var factory = new SlowFactory(launch);
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await app.StartAsync(CancellationToken.None);
         var left = factory.Readers![c.Topology.Readers[0].DeviceId]; var right = factory.Readers[c.Topology.Readers[1].DeviceId];
         try
@@ -131,12 +131,13 @@ static class AcquisitionLifecycle
             Check(app.EmitReferenceAt("left", "slow", "0001", "slow-original"), "slow left original accepted");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
             Check(app.EmitReferenceAt("left", "queued-one", "0001", "queue-1") && app.EmitReferenceAt("left", "queued-two", "0001", "queue-2"), "bounded left queue holds two original acquisitions while capture is in flight");
-            Check(!app.EmitReferenceAt("left", "overload", "0001", "overload"), "left queue overload explicitly rejects input");
-            Parallel.For(0, 5000, i => { if (app.EmitReferenceAt("left", "reject-" + i, "0001", "reject-" + i)) throw new Exception("overload admitted input"); });
-            Check(left.RetainedAcquisitionCount == 3, "concurrent rejected flood retains exactly accepted left acquisitions");
+            var waiting = Task.Run(() => app.EmitReferenceAt("left", "waiting-capacity", "0001", "waiting-capacity"));
+            await Wait(app, _ => app.WorkerProgress().Single(w => w.Position == "left").ProducerStage == "WaitingCapacity");
+            Check(!waiting.IsCompleted, "full left queue applies backpressure without inventing an overload rejection");
+            Check(left.RetainedAcquisitionCount == 4, "bounded lane preserves the active, two queued and one source-held original without locking image ownership reads");
             Check(app.EmitReferenceAt("right", "independent", "0001", "right-original"), "right accepts while left capture and queue are blocked");
             await Wait(app, s => s.Operations.Any(o => o.PositionId == "right" && o.ImageReleased));
-            Check(right.RetainedAcquisitionCount == 0 && left.RetainedAcquisitionCount == 3, "right completes and releases independently of overloaded left");
+            Check(right.RetainedAcquisitionCount == 0 && left.RetainedAcquisitionCount == 4, "right completes and releases independently of full left queue");
             await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
             var before = await app.SnapshotAsync();
             var reconnect = app.ReconnectDeviceAsync(left.DeviceId);
@@ -144,6 +145,7 @@ static class AcquisitionLifecycle
             var during = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2));
             Check(!reconnect.IsCompleted && left.Epoch == before.Devices!.Single(x => x.DeviceId == left.DeviceId).Epoch, "left reconnect waits for in-flight capture while snapshots remain readable");
             factory.Release.TrySetResult();
+            Check(await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "source-held left original hands off when the consumer releases an earlier image and queue capacity");
             Check((await reconnect).Status == "Reconnected", "left reader reconnect completes only after the original capture releases its lifecycle");
             var after = await app.SnapshotAsync();
             Check(after.Devices!.Single(x => x.DeviceId == right.DeviceId).Epoch == before.Devices!.Single(x => x.DeviceId == right.DeviceId).Epoch, "left reconnect does not change right epoch");
@@ -152,7 +154,7 @@ static class AcquisitionLifecycle
             Check(op.Image?.Acquisition == op.Acquisition && op.Acquisition!.Epoch != left.Epoch && op.Capture?.Attempts == 1, "slow capture resolves exact pre-reconnect acquisition once; blocked queued observations release");
             var durableBeforeRelease = false;
             app.Boundary = point => { if (point == "AfterImageReleaseDurable") durableBeforeRelease = left.RetainedAcquisitionCount == 1; };
-            await Command(app, "AcknowledgeOverload"); await Command(app, "Resume");
+            await Command(app, "Resume");
             await Command(app, "ContinuePrepared", op.Id);
             await Wait(app, x => x.Operations.Single(o => o.Id == op.Id).ImageReleased);
             Check(durableBeforeRelease && left.RetainedAcquisitionCount == 0, "durable main completion precedes release of the final operation acquisition");
@@ -160,7 +162,7 @@ static class AcquisitionLifecycle
 
             await Wait(app, x => x.Positions!.Single(p => p.Id == "left").Admit);
             factory.LoseNextReply = true;
-            app.EmitReferenceAt("left", "unknown", "0001", "unknown-source");
+            app.EmitReferenceAt("left", "unknown", "0002", "unknown-source");
             s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "unknown" && o.Capture?.State == StageState.Unknown));
             op = s.Operations.Single(o => o.AdmissionId == "unknown");
             Check(left.RetainedAcquisitionCount == 1 && !op.ImageReleased, "lost capture reply preserves unknown acquisition ownership");
@@ -168,19 +170,19 @@ static class AcquisitionLifecycle
             await Command(app, "ContinuePrepared", op.Id);
             await Wait(app, x => x.Operations.Single(o => o.Id == op.Id).ImageReleased);
             Check(left.RetainedAcquisitionCount == 0 && (await app.SnapshotAsync()).Operations.Single(o => o.Id == op.Id).Capture!.Attempts == 1, "original query recovers capture without resend and terminal cleanup releases owner");
-            // The overload journey already covers accepted-but-business-blocked ingress.
+            // The backpressure journey already covers accepted-but-business-blocked ingress.
             await Command(app, "Pause");
             Check(app.EmitReferenceAt("left", "paused", "0001", "paused"), "paused observation can enter queue for explicit business rejection");
             await Wait(app, _ => left.RetainedAcquisitionCount == 0);
             Check((await app.SnapshotAsync()).Operations.All(o => o.AdmissionId != "paused"), "business rejection releases ingress without inventing an operation");
             await Command(app, "Resume"); factory.LoseNextReply = true;
-            app.EmitReferenceAt("left", "restart", "0001", "restart-source");
+            app.EmitReferenceAt("left", "restart", "0003", "restart-source");
             s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "restart" && o.Capture?.State == StageState.Unknown));
             var original = s.Operations.Single(o => o.AdmissionId == "restart");
             await app.DisposeAsync();
             Check(left.RetainedAcquisitionCount == 0 && right.RetainedAcquisitionCount == 0, "fully drained disposal terminates process-local acquisition resources");
-            var reopenedFactory = new SlowFactory(new ParcelCapabilityFactory(launch));
-            await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory);
+            var reopenedFactory = new SlowFactory(launch);
+            await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
             await reopened.StartAsync(CancellationToken.None);
             await reopened.ReconcileAsync(original.Id);
             var recovered = (await reopened.SnapshotAsync()).Operations.Single(o => o.Id == original.Id);
@@ -189,21 +191,26 @@ static class AcquisitionLifecycle
         }
         finally { factory.Release.TrySetResult(); }
     }
-    sealed class SlowFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
+    sealed class SlowFactory(BusinessLaunch launch) : IParcelCapabilityFactory
     {
+        readonly CommercialProductization.SyntheticFactory inner = new(launch);
         public Dictionary<string, ManualObservationSource>? Readers;
         public readonly TaskCompletionSource Entered = new(TaskCreationOptions.RunContinuationsAsynchronously), Release = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public bool LoseNextReply;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
-        public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
         public ParcelPorts Create(ParcelConfiguration c)
         {
             var p = inner.Create(c); Readers = p.Readers!.ToDictionary(x => x.Key, x => (ManualObservationSource)x.Value);
             var first = ParcelBindings.Camera(c, "left")!.InstanceId;
-            var devices = p.Devices!.ToDictionary(x => x.Key, x => x.Value);
+            if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only");
+            var directory = Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
+            var devices = ParcelBindings.Bound(c).Where(b => b.Kind == "camera").ToDictionary(b => b.InstanceId,
+                b => (ICapabilityPort)Readers[b.Target].BindCapture(b, directory));
+            var hashes = p.ImplementationHashes.ToDictionary(x => x.Key, x => x.Value);
+            foreach (var id in devices.Keys) hashes.Add(id, "synthetic-capture-implementation");
             var camera = new SlowCamera((IImageCamera)devices[first], this); devices[first] = camera;
-            return p with { Camera = camera, Devices = devices };
+            return p with { Camera = camera, Devices = devices, ImplementationHashes = hashes };
         }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }

@@ -38,7 +38,7 @@ static partial class Program
             Check(vm.Left.Barcode == "SYNTH-PAUSED-CODE" && vm.Left.DisplayStatus.Contains("已读到条码") && vm.Left.DisplayAttentionReason.Contains("未请求格口"),
                 "left blocked scan explains that decoding succeeded but no chute request was made");
             Check(vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Neutral && vm.Right.DisplayPresentation.Tone == ParcelPresentationTone.Rejected &&
-                vm.Right.DisplayStatus.Contains("多个") && vm.Right.DisplayNextStep.Contains("移出托盘"), "software pause preserves the right multi-code refusal and its next step");
+                !vm.Right.CenteredRcsRejection && vm.Right.DisplayStatus.Contains("多个") && vm.Right.DisplayNextStep.Contains("移出托盘"), "software pause preserves the right multi-code refusal and its next step");
             var original = await h.App.ReadParcelPictureAsync(vm.Left.CurrentPictureQuery!, default);
             Check(original.Image?.Gray8.SequenceEqual(blockedPixels.Data) == true && vm.Right.CurrentPictureQuery!.ObservationId != vm.Left.CurrentPictureQuery!.ObservationId,
                 "left image matches the blocked acquisition and cannot point at the right rejection");
@@ -94,7 +94,7 @@ static partial class Program
             Check(triggerRecorded, "the UI pause call carries its actual trigger into the committed Application log");
             Check(pictureButtonRecorded && pictureReadRecorded, "default key logs contain actual UI picture availability and exact original-read results");
             Check(vm.Right.DisplayStatus.Contains("未确认") && vm.Right.DisplayPresentation.Tone == ParcelPresentationTone.Unknown &&
-                vm.Right.DisplayNextStep.Contains("供包已暂停"), "software pause preserves an unconfirmed original result instead of replacing its warning");
+                !vm.Right.CenteredRcsRejection && vm.Right.DisplayNextStep.Contains("供包已暂停"), "software pause preserves an unconfirmed original result instead of replacing its warning");
             await SetClient(window, 1366, 768);
             CaptureInternal(evidence, "paused-unknown-right-1366", (Grid)window.FindName("ClientArea"), lines);
         }

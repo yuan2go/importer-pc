@@ -299,6 +299,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public TaskCompletionSource? Hold { get; set; }
         public Func<string, bool>? HoldWhen { get; set; }
         public string Mode = "assigned";
+        public string RejectionMessage { get; set; } = "Synthetic response";
         public string ReplySlot = "SYNTH-CHUTE";
         public string? ReplyWaveNo { get; set; }
         public string? ReplyQuantity { get; set; }
@@ -332,7 +333,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 {
                     requestId = id,
                     result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
-                    message = "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
+                    message = Mode == "reject" ? RejectionMessage : "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
                 });
                 if (Mode == "no-destination")

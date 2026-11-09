@@ -137,20 +137,40 @@
       </TextBlock>
       <Border x:Name="CenteredSupplyPanel" Grid.RowSpan="3" Grid.ColumnSpan="2" Background="Transparent" Padding="8">
        <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
-       <StackPanel x:Name="CenteredSupplyContent" VerticalAlignment="Center" HorizontalAlignment="Center">
+       <Grid x:Name="CenteredSupplyContent" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+         <RowDefinition Height="*"/>
+         <RowDefinition Height="Auto"/>
+         <RowDefinition Height="Auto"/>
+         <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <TextBlock x:Name="CenteredStateTitle" Text="{Binding CenteredStateTitle}" TextAlignment="Center" TextWrapping="Wrap" FontWeight="{x:Static type:UiTypography.Emphasis}" Foreground="{Binding CenteredStateForeground}" HorizontalAlignment="Center" AutomationProperties.LiveSetting="Polite">
-         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.PageTitle}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.PageTitle}"/></DataTrigger><DataTrigger Binding="{Binding CenteredRcsRejection}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
-        <TextBlock x:Name="CenteredStateReason" Text="{Binding CenteredStateReason}" Foreground="{DynamicResource Muted}" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center">
+        <TextBox x:Name="CenteredRcsMessage" Text="{Binding CenteredStateTitle,Mode=OneWay}" Foreground="{Binding CenteredStateForeground}"
+                 TextAlignment="Center" FontWeight="{x:Static type:UiTypography.Emphasis}" IsTabStop="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                 AutomationProperties.Name="RCS 返回消息，可选择复制" AutomationProperties.LiveSetting="Polite">
+         <TextBox.Style>
+          <Style TargetType="TextBox" BasedOn="{StaticResource ReadonlyValue}">
+           <Setter Property="FontSize" Value="{x:Static type:UiTypography.Barcode}"/>
+           <Setter Property="Visibility" Value="Collapsed"/>
+           <Style.Triggers>
+            <DataTrigger Binding="{Binding CenteredRcsRejection}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+            <DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.PageTitle}"/></DataTrigger>
+           </Style.Triggers>
+          </Style>
+         </TextBox.Style>
+        </TextBox>
+        <TextBlock x:Name="CenteredStateReason" Grid.Row="1" Text="{Binding CenteredStateReason}" Foreground="{DynamicResource Muted}" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center">
          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/><Setter Property="Margin" Value="0,12,0,0"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding SupplyDisabled}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
-         <TextBlock Text="{Binding CenteredStateInstruction}" ToolTip="{Binding CenteredStateFullInstruction}" Foreground="{DynamicResource Muted}" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,8,0,0">
+         <TextBlock Grid.Row="2" Text="{Binding CenteredStateInstruction}" ToolTip="{Binding CenteredStateFullInstruction}" Foreground="{DynamicResource Muted}" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,8,0,0">
          <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontSize" Value="{x:Static type:UiTypography.TaskValue}"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="FontSize" Value="{x:Static type:UiTypography.Body}"/></DataTrigger><DataTrigger Binding="{Binding CenteredStateInstruction}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
         </TextBlock>
-        <Button x:Name="CenteredEnableSupply" Content="{Binding EnableLabel}" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" MinHeight="44" Background="{DynamicResource Success}" Foreground="{DynamicResource Surface}">
+        <Button x:Name="CenteredEnableSupply" Grid.Row="3" Content="{Binding EnableLabel}" Click="EnableSupply_Click" IsEnabled="{Binding CanChangeSupply}" MinHeight="44" Background="{DynamicResource Success}" Foreground="{DynamicResource Surface}">
          <Button.Style><Style TargetType="Button" BasedOn="{StaticResource StationButton}"><Setter Property="Margin" Value="0,12,0,0"/><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding SupplyDisabled}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0,4,0,0"/></DataTrigger></Style.Triggers></Style></Button.Style>
         </Button>
-       </StackPanel>
+       </Grid>
       </Border>
      </Grid>
     </Border>

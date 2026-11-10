@@ -56,6 +56,7 @@ public sealed partial class ParcelRuntime
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
         {
             CanConfirmPlacementRemoval = CanConfirmPlacementRemoval(p.Id, current),
+            PlacementClearedAt = confirmedEmptyTrays.TryGetValue(p.Id, out var clearedAt) ? clearedAt : null,
             BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
             SupplyControl = Id == "sportmaster" ? PositionControl(p.Id) : null,

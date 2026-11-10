@@ -37,7 +37,7 @@ public sealed class CoreRegression
     [DataRow("--state-journal", 23)]
     [DataRow("--read-cadence", 18)]
     [DataRow("--interrupted-scan-skip", 17)]
-    [DataRow("--camera-rounds", 41)]
+    [DataRow("--camera-rounds", 50)]
     [DataRow("--manual-rcs-debug", 29)]
     [DataRow("--shortcut-lifecycle", 47)]
     [DataRow("--win11-stability", 47)]

@@ -30,6 +30,7 @@ internal sealed partial class StationDebugControl : UserControl
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Button left = Action("左相机"), right = Action("右相机"), trigger = Action("触发扫码"), prepare = Action("准备请求"), send = Action("发送请求");
     readonly Button copyResponse = Action("复制回包");
+    readonly Button stopRead = Action("停止扫码");
     readonly TextBlock state = Text("点击“触发扫码”开始读取。"), feedback = Text(""), photoCaption = Text("本轮读码照片"), result = Text("本轮尚未发送请求。"), camera = Text("左相机");
     readonly TextBox barcode = Value(), requestBarcode = Value(), requestBody = Value(), responseBody = Value();
     static readonly UTF8Encoding responseEncoding = new(false, true);
@@ -109,7 +110,14 @@ internal sealed partial class StationDebugControl : UserControl
         disabledTrigger.Setters.Add(new Setter(BorderBrushProperty, new DynamicResourceExtension("Line")));
         triggerStyle.Triggers.Add(disabledTrigger); trigger.Style = triggerStyle;
         readStatus.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); readStatus.VerticalAlignment = VerticalAlignment.Center;
-        var scanActions = Flow(readStatus, trigger); DockPanel.SetDock(scanActions, Dock.Right); header.Children.Add(scanActions);
+        AutomationProperties.SetAutomationId(stopRead, "StopCameraReadRound");
+        stopRead.Click += async (_, _) => await Run(async _ =>
+        {
+            if (ownedScanSession is not { } session || ownedScanRound is not { } round) return;
+            await CloseScanScopeAsync(session, round);
+            feedback.Text = "本轮扫码已停止，可再次扫码。";
+        });
+        var scanActions = Flow(readStatus, trigger, stopRead); DockPanel.SetDock(scanActions, Dock.Right); header.Children.Add(scanActions);
         var title = new TextBlock
         {
             Text = "调试",
@@ -286,7 +294,7 @@ internal sealed partial class StationDebugControl : UserControl
         if (!active || !vm.IsManagementMode || token.IsCancellationRequested) return;
         camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus;
         var sameCamera = value.DeviceId == Position.ReaderId;
-        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，请查看采集诊断后重新触发。" :
+        var detail = !sameCamera ? "所选相机尚未触发扫码。" : value.State == "Faulted" ? "本轮扫码未完成，未发送请求。请点击“再次扫码”；也可停止试扫后返回作业。" :
             value.State == "Locked" && value.CanSend ? "结果已锁定，等待手动发送或再次扫码。" : Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(value.Detail, DebugFailure);
         state.ToolTip = detail;
         state.Text = value.Id is null ? "点击“触发扫码”开始读取。" : detail;
@@ -364,8 +372,9 @@ internal sealed partial class StationDebugControl : UserControl
     void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); displayedResponse = null; originalResponseText = null; copyResponse.IsEnabled = false; send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; result.Visibility = Visibility.Visible; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
+        var noCode = current?.DeviceId == Position.ReaderId && current.ConsecutiveNoCodeFrames >= 3 && current.Frame is null;
         if (photo.Source is null && current?.DeviceId == Position.ReaderId)
-            imageHint.Text = current.ManualRequest ? "本次为手工输入请求，无扫码照片。" : current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
+            imageHint.Text = current.ManualRequest ? "本次为手工输入请求，无扫码照片。" : noCode ? "无条码\n请调整包裹或条码朝向。" : current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
                 current.Frame is not null ? "本轮照片不可用\n图片可能已被清理。" : "等待本轮扫码照片\n点击“触发扫码”开始读取。";
         // Scanning needs this camera online; a keyed-in request does not.
         var cameraOnline = vm.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == Position.ReaderId)?.IsValid(DateTimeOffset.UtcNow) == true;
@@ -375,7 +384,7 @@ internal sealed partial class StationDebugControl : UserControl
             canCheckCamera ? "触发扫码时核对当前相机状态" : "相机待配置或本位已停用；可手工输入条码" :
             current?.DeviceId != Position.ReaderId ? "尚未开始扫码" : current?.ManualRequest == true ? "人工请求" : current?.State switch
         { "Reading" or "Preparing" or "Sealing" => "正在读取", "Locked" => "读码已锁定", "Sending" => "正在发送", "Faulted" => "读取异常", _ => "尚未开始扫码" };
-        photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : displayedFrame is null ? "等待扫码" : "结果已锁定";
+        photoState.Text = current?.ManualRequest == true ? "人工请求，无扫码照片" : noCode ? "无条码" : displayedFrame is null ? "等待扫码" : "结果已锁定";
         if (current?.ManualRequest == true) photoCaption.Text = "本次为手工输入请求。";
         fillStatus.Text = requestDirty ? "输入已更改，请准备当前条码的请求。" : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
             (current.ManualRequest ? "来自手工输入 · " : "来自本轮扫码 · ") + Position.Heading + " · 已填入请求" : "可扫码或手工输入条码。";
@@ -383,6 +392,9 @@ internal sealed partial class StationDebugControl : UserControl
         var waiting = observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
         trigger.Content = armCommand is not null || beginCommand is not null ? "检查触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
         trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode && canCheckCamera;
+        stopRead.Visibility = observed?.State is "Reading" or "Sealing" ? Visibility.Visible : Visibility.Collapsed;
+        stopRead.IsEnabled = active && !busy && vm.IsManagementMode && ownedScanSession == observed?.SessionId &&
+            ownedScanRound is not null && ownedScanRound == observed?.Id && observed?.State is "Reading" or "Sealing";
         trigger.ToolTip = canCheckCamera ? "触发时由供包台核对实际连接；读码不额外发送请求。" : "请先配置并启用本位相机；可在下方手工输入条码。";
         ToolTipService.SetShowOnDisabled(trigger, true);
         prepare.Content = prepareCommand is null ? "准备请求" : "查看准备结果";

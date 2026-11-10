@@ -10,6 +10,7 @@ public sealed partial class SupplyStationPositionViewModel
     ParcelReadFeedback? readFeedback;
     ParcelCameraReadFeedback? cameraRead;
     Guid cameraReadRuntime;
+    DateTimeOffset? PlacementClearedAt => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementClearedAt;
     bool RetainedRejectedInput => Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked } input &&
         readFeedback?.RetainedObservationId == input.Observation.Id;
     bool ManualPlacementResult => Operation?.OperatorInput is not null && Input?.OperationId == Operation.Id &&
@@ -146,6 +147,7 @@ public sealed partial class SupplyStationPositionViewModel
     internal void ApplyReadFeedback(ParcelReadFeedback value)
     {
         if (!SupplyEnabled) return;
+        if (PlacementClearedAt is { } cleared && value.ObservedAt <= cleared) return;
         if (value.RuntimeId != owner.Snapshot?.RuntimeId || value.DeviceId != ReaderId || value.PositionId != PositionId ||
             value.DetectedTicks <= 0 || value.DetectedTicks > Stopwatch.GetTimestamp() ||
             readFeedback is { } old && value.DetectedTicks < old.DetectedTicks) return;
@@ -164,6 +166,7 @@ public sealed partial class SupplyStationPositionViewModel
     internal void ApplyCameraReadFeedback(Guid runtime, ParcelCameraReadFeedback value)
     {
         if (!SupplyEnabled) return;
+        if (PlacementClearedAt is { } cleared && value.Frame.Outcome == ObservationReadOutcome.Codes && value.Frame.ObservedAt <= cleared) return;
         if (runtime != owner.Snapshot?.RuntimeId || value.PositionId != PositionId || value.Frame.DeviceId != ReaderId ||
             value.Frame.CompletedTicks <= 0 || value.Frame.CompletedTicks > Stopwatch.GetTimestamp() ||
             value.Frame.Epoch != CurrentReaderState?.Epoch ||
@@ -173,6 +176,12 @@ public sealed partial class SupplyStationPositionViewModel
     }
     void UpdateSlotMemory(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
+        // Late presentation cues must not put a removed parcel back in the input box.
+        if (PlacementClearedAt is { } cleared)
+        {
+            if (readFeedback?.ObservedAt <= cleared) readFeedback = null;
+            if (cameraRead is { Frame.Outcome: ObservationReadOutcome.Codes } old && old.Frame.ObservedAt <= cleared) cameraRead = null;
+        }
         if (readFeedback?.RuntimeId != snapshot?.RuntimeId || readFeedback?.DeviceId != ReaderId) readFeedback = null;
         if (cameraReadRuntime != snapshot?.RuntimeId || cameraRead?.Frame.DeviceId != ReaderId) cameraRead = null;
         if (fastReaderState?.DeviceId != ReaderId) fastReaderState = null;

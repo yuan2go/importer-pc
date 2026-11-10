@@ -269,10 +269,12 @@ public sealed partial class ParcelRuntime
         foreach (var op0 in operations.Values.ToArray())
         {
             var op = op0;
+            var positionScopedRecovery = Id == "sportmaster" && !IsDebugRequest(op) &&
+                (releasedPlacements.Contains(op.Id) || (op.Wcs?.Request.Binding ?? op.FrozenConfiguration.Wcs)?.Contract == RcsRequestPolicy.Contract);
             if (!IsSettled(op))
             {
                 op = op with { RecoveryRequired = !MainTerminated(op) };
-                if (Id != "sportmaster" || IsDebugRequest(op))
+                if (!positionScopedRecovery)
                     repository!.Commit(null, "RestartUnsettled", "Original entity/responsibility requires explicit operator recovery; no automatic dispatch", paused: true);
             }
             foreach (var kind in Enum.GetValues<ParcelStage>())
@@ -280,7 +282,7 @@ public sealed partial class ParcelRuntime
                 var stage = GetStage(op, kind);
                 if (stage is { State: StageState.Prepared, Attempts: 0 })
                 {
-                    if (Id != "sportmaster" || IsDebugRequest(op))
+                    if (!positionScopedRecovery)
                         repository!.Commit(null, "RestartPrepared", "Never attempted original intention retained for explicit continuation or local disposition", paused: true);
                     continue;
                 }

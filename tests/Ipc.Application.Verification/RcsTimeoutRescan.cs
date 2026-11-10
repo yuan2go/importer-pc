@@ -88,15 +88,12 @@ static partial class SportmasterRcs
             using var camera = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
             await Wait(app, s => s.Devices!.Any(d => d.DeviceId == readers[0].DeviceId && d.IsValid(DateTimeOffset.UtcNow)));
             var recovered = await app.SnapshotAsync();
-            Check(recovered.Paused && peer.Requests.Count == 3 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,
-                "restart retains both requests and normal startup pause without replaying the timeout");
+            Check(!recovered.Paused && peer.Requests.Count == 3 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,
+                "restart retains both requests without pausing supply or replaying the timeout");
             await ManagementModeFixture.Authorize(app); await app.ReconcileAsync(originalId);
-            for (var i = 0; i < 20; i++)
-            {
-                var snapshot = await app.SnapshotAsync(); var receipt = await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
-                if (receipt.Status != "Conflict") { Check(receipt.Status == "Persisted", "explicit resume accepts the retained timeout without clearing it"); break; }
-            }
-            await Wait(app, s => !s.Paused && s.Positions!.Single(p => p.Id == "left").Admit);
+            var ready = await Wait(app, s => !s.Paused && s.Positions!.Single(p => p.Id == "left").Admit);
+            Check(ready.Positions!.Single(p => p.Id == "left").CurrentOperation is null && peer.Requests.Count == 3,
+                "original inspection leaves the new shift ready without an operator resume or duplicate request");
             await Scan(camera);
             var final = await Wait(app, s => s.Operations.Length == 4 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 2);
             var last = final.Operations.Single(o => o.PositionId == "left" && o.Wcs?.Request.Id != recovered.Operations.Single(x => x.PositionId == "left" && x.Id != originalId).Wcs!.Request.Id && o.Id != originalId);

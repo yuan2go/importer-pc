@@ -23,6 +23,7 @@ public sealed record CameraReadRound(string? Id, string? SessionId, string? Devi
     public string? SendBlockedReason { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
     public int SendAttempts { get; init; }
+    public int ConsecutiveNoCodeFrames { get; init; }
 }
 public interface ICameraReadRounds
 {

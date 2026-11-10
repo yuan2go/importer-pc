@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
 
-internal static class CameraRoundChecks
+internal static partial class CameraRoundChecks
 {
     static void Check(bool ok, string detail) { if (!ok) throw new InvalidOperationException(detail); Console.WriteLine("PASS ROUND " + detail); }
     static async Task Reject(Func<Task> action, string detail)
@@ -22,6 +22,7 @@ internal static class CameraRoundChecks
     }
     public static async Task Run(string workspace, string root)
     {
+        await VerifyNoReadRecovery(workspace, root);
         Console.WriteLine("Real MVS driver/ZXing/SQLite/built-in RCS, synthetic native APIs and loopback HTTP; real hardware/customer RCS NOT_RUN");
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "frozen-offline")))
         {

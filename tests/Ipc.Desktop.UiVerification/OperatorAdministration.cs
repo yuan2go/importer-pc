@@ -90,7 +90,7 @@ static partial class Program
         await SetClient(window, 800, 420); Capture("management-logs-800", client);
         Check(grid.IsVisible && grid.ActualHeight >= 72 && grid.TranslatePoint(new Point(0, 0), client).Y + grid.ActualHeight <= client.ActualHeight + 1, "compact log results remain inside the native viewport");
         Check(Descendants(window).OfType<Button>().Where(b => b.Content is string s && s is "查询" or "上一页" or "下一页").All(b => b.IsVisible && b.TranslatePoint(new Point(0, 0), client).Y + b.ActualHeight < grid.TranslatePoint(new Point(0, 0), client).Y + 1), "default compact query and paging actions are visible above results");
-        var compactContext = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "日志原文"));
+        var compactContext = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "前后日志"));
         compactContext.IsExpanded = true; window.UpdateLayout();
         Check(grid.ActualHeight >= grid.ColumnHeaderHeight + grid.RowHeight + 2 && grid.TranslatePoint(new Point(), client).Y + grid.ActualHeight <= client.ActualHeight,
             "expanded compact log context preserves a complete result row and column header");

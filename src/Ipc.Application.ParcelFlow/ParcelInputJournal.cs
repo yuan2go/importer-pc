@@ -62,6 +62,8 @@ public sealed partial class ParcelRuntime
         Barcode = last.BarcodeSelection?.SelectedCode,
         Selection = last.BarcodeSelection,
         SourceKind = last.Observation.OperatorInput is null ? "相机" : "人工输入",
+        BlockReason = ParcelInputReasons.BlockReason(last)?.ToString(),
+        RequestDisposition = last.Outcome == ParcelInputOutcome.Admitted ? "WorkCreated" : "NoNewRequest",
         last.Reason,
         ObservationCount = count,
         FirstObservedAt = first.Observation.ObservedAt,

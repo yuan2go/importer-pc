@@ -30,19 +30,21 @@ static partial class Program
             var vm = window.ViewModel; var p = vm.Left;
             var control = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, p));
             var entry = (TextBox)control.FindName("BarcodeEntry"); var picture = (Button)control.FindName("CurrentBarcode");
+            var slot = (TextBox)control.FindName("CurrentSlot"); var recentBarcode = (TextBox)control.FindName("RecentChuteBarcode");
             var tasks = (Grid)control.FindName("TaskFields");
             var edits = typeof(SupplyStationPosition).GetField("editing", BindingFlags.Instance | BindingFlags.NonPublic)!;
             async Task Read(uint frame, string code)
             {
+                var prior = p.ReadFeedbackKey;
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(code), frame);
-                await Until(() => h.Factory.Decoders[h.Left].Last is [{ Text: var text }] && text == code && p.ReadCueLabel.EndsWith(code[^Math.Min(4, code.Length)..], StringComparison.Ordinal), "decode/feedback " + code);
+                await Until(() => p.ReadFeedbackKey is { } read && read != prior && p.Barcode == code, "camera feedback " + code);
             }
             async Task Resolved(string code) => await Until(() => p.Operation?.ParcelCode == code && p.ShowConfirmedTask, "resolved " + code);
             string State() => Wire.Encode(new
             {
                 Main = entry.Text,
                 Model = p.Barcode,
-                Read = p.ReadCueLabel,
+                Read = p.ReadFeedbackKey,
                 Decoder = h.Factory.Decoders[h.Left].Last.Select(s => s.Text),
                 Input = p.Input?.Observation.Codes,
                 Operation = p.Operation?.ParcelCode,
@@ -111,15 +113,24 @@ static partial class Program
                     r.Frame.Outcome == ObservationReadOutcome.NoCode), "delivered empty tray frame " + frame);
                 lastEmpty = vm.Snapshot!.CameraReads.Single(r => r.PositionId == "left").Frame.ObservedAt;
                 firstEmpty ??= lastEmpty;
+                if (frame == 7)
+                {
+                    await Until(() => p.ShowRecentChute && recentBarcode.IsVisible, "first changed no-code frame retains the previous result");
+                    Check(!p.ShowConfirmedTask && !p.SlotAvailable && slot.Text == "SYNTH-CHUTE" && entry.Text.Length == 0 &&
+                        recentBarcode.Text == "上一件条码 SYNTH-LATEST-0005", "changed no-code frame demotes the last chute and separates its barcode from the live entry");
+                }
                 if (frame < 9) await Task.Delay(425);
             }
-            await Until(() => !p.ShowConfirmedTask && !picture.IsEnabled, "empty tray retires current result");
+            await Until(() => vm.Snapshot!.Positions!.Single(s => s.Id == "left").PlacementClearedAt >= lastEmpty, "empty tray retires current result");
             Check(lastEmpty - firstEmpty >= TimeSpan.FromMilliseconds(800), "three delivered empty frames span the required release window");
+            Check(p.ShowRecentChute && !p.ShowConfirmedTask && !picture.IsEnabled && !tasks.IsVisible && !p.CanViewWorkDetails &&
+                p.CanSubmitBarcode && !vm.Right.ShowRecentChute && h.Peer.Requests.Count == 5,
+                "confirmed removal keeps a read-only result locally while freeing the lane and leaving the other side independent");
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             await Read(10, "SYNTH-LATEST-0005");
             await Until(() => h.Peer.Requests.Count == 6, "same-code independent request");
-            Check(entry.Text == "SYNTH-LATEST-0005" && !picture.IsEnabled && !tasks.IsVisible && !(bool)edits.GetValue(control)!,
-                "same-code new placement after empty tray has no previous picture/task authority or manual draft");
+            Check(entry.Text == "SYNTH-LATEST-0005" && !picture.IsEnabled && !tasks.IsVisible && !p.ShowRecentChute && !recentBarcode.IsVisible &&
+                !(bool)edits.GetValue(control)!, "same-code new placement immediately retires the historical result without transferring its authority");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
             await Until(() => p.ShowConfirmedTask && p.Operation!.Id != priorId, "same-code latest confirmed result");
 
@@ -180,6 +191,25 @@ static partial class Program
             Check(projection.Right.Barcode == "SYNTH-CLOCK-NEW", "late older read notification cannot replace the latest observation watermark");
             await projection.AcceptPublishedSnapshotAsync(current with { PublishedTicks = Stopwatch.GetTimestamp() });
             Check(projection.Right.Barcode == "SYNTH-CLOCK-NEW", "late complete snapshot also respects the pending source-sequence watermark");
+
+            for (uint frame = 4; frame <= 6; frame++)
+            {
+                h.Api(h.Right).Enqueue(CameraRoundHarness.EmptyTray, frame);
+                await Until(() => vm.Snapshot!.CameraReads.Any(r => r.PositionId == "right" && r.Frame.FrameNumber == frame &&
+                    r.Frame.Outcome == ObservationReadOutcome.NoCode), "right empty-tray frame " + frame);
+                if (frame < 6) await Task.Delay(425);
+            }
+            await Until(() => vm.Snapshot!.Positions!.Single(s => s.Id == "right").PlacementClearedAt is not null, "right removal confirmation");
+            var heldBarcode = (TextBox)rightControl.FindName("RecentChuteBarcode");
+            var heldAt = Stopwatch.GetTimestamp();
+            await Task.Delay(1400);
+            Check(vm.Right.ShowRecentChute && heldBarcode.IsVisible && heldBarcode.Text == "上一件条码 " + longCode &&
+                rightEntry.Text.Length == 0 && vm.Left.ShowConfirmedTask, "the confirmed removal keeps the full previous barcode and leaves the other lane unchanged");
+            await Until(() => !vm.Right.ShowRecentChute && vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "等待投包" && !heldBarcode.IsVisible,
+                "previous result expires to waiting through the existing refresh clock");
+            Check(Stopwatch.GetElapsedTime(heldAt) is { TotalSeconds: >= 2.5 and < 4.5 } &&
+                h.Peer.Requests.Count == requestCount + 1 && vm.Left.ShowConfirmedTask,
+                "previous result expires after about three seconds without creating a request");
         }
         finally
         {

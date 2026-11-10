@@ -84,7 +84,8 @@ static partial class Program
             Check(vm.InputTargetPosition == "right" && rightEntry.IsKeyboardFocused, "clicking empty right-card space selects right and focuses barcode input");
             await BarcodeNativeKeyboard.SendAsync(window, rightEntry, "000731".Select(c => (ushort)c).Append((ushort)0x0D).ToArray());
             await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Barcode == "000731");
-            Check(vm.Left.Barcode == "SYNTH-CHANGED" && h.Peer.Requests.Count == requests + 1, "PDA input after card click submits one right request with leading zeros and leaves left unchanged");
+            Check(vm.Left.Barcode == "SYNTH-CHANGED" && vm.Right.Operation?.OperatorInput?.Kind == "PdaKeyboard" && h.Peer.Requests.Count == requests + 1,
+                "native burst after card click automatically submits one PDA request with leading zeros on the right");
             var leftTitle = Descendants(left).OfType<TextBlock>().Single(t => t.Text == "左投递位");
             window.Activate(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             await BarcodeNativeKeyboard.ClickAsync(window, leftTitle, new Point(8, leftTitle.ActualHeight / 2));
@@ -97,7 +98,8 @@ static partial class Program
             Check(copied == vm.Right.DisplaySlot, "whole-card selection retains complete chute text selection for copying");
             await BarcodeNativeKeyboard.SendAsync(window, rightEntry, "000732".Select(c => (ushort)c).Append((ushort)0x0D).ToArray(), rightSlot);
             await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Barcode == "000732");
-            Check(h.Peer.Requests.Count == requests + 2 && rightEntry.IsKeyboardFocused, "scanner typing from the read-only chute reaches selected right entry before Enter and creates exactly one new request");
+            Check(h.Peer.Requests.Count == requests + 2 && rightEntry.IsKeyboardFocused && vm.Right.Operation?.OperatorInput?.Kind == "PdaKeyboard",
+                "scanner typing from the read-only chute retains PDA recognition through redirection to the right barcode editor");
             await BarcodeNativeKeyboard.SendAsync(window, rightEntry, [0x1B], rightEntry);
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Check(vm.InputTargetPosition == "" && !rightEntry.IsKeyboardFocused && !leftEntry.IsKeyboardFocused, "native Escape cancels selection and releases both barcode editors");

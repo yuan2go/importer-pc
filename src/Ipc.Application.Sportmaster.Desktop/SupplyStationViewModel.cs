@@ -254,7 +254,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string Status => !owner.Fresh ? "状态中断" : InputUnadmitted ? Input!.Outcome switch
     {
         ParcelInputOutcome.Rejected => ParcelPresentation.InputText(Input),
-        ParcelInputOutcome.Blocked => "本次扫描未受理",
+        ParcelInputOutcome.Blocked => AdmissionMessage(Input).Title,
         ParcelInputOutcome.Duplicate => "重复扫描",
         _ => Presentation.Text
     } : Operation?.Wcs?.State == StageState.Conflict ? "格口结果矛盾" : Operation?.State switch

@@ -86,7 +86,7 @@ static partial class Program
             var waitingTitle = (TextBlock)right.FindName("CenteredStateTitle");
             var entry = (TextBox)left.FindName("BarcodeEntry");
             Check(message.IsVisible && message.Text == "无设备可用" && message.FontSize == waitingTitle.FontSize &&
-                subtitle.Text == "本件暂不能分配格口　已录入 · …T-UI" && step.FontSize < message.FontSize &&
+                subtitle.Text == "本件暂不能分配格口" && step.FontSize < message.FontSize &&
                 step.Text == "请取下包裹后人工判断，再放下一件\n多次出现请通知维护人员" && divider.IsVisible && divider.ActualWidth > 0 &&
                 !((Border)right.FindName("CenteredRcsDivider")).IsVisible &&
                 entry.Text == "SYNTH-NO-DEST-UI" && !((DockPanel)left.FindName("DetailedStatus")).IsVisible &&

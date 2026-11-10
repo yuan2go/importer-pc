@@ -36,14 +36,18 @@ public partial class SupplyStationPosition : UserControl
         DataContextChanged += (_, e) =>
         {
             presentationGeneration++; feedbackShown = readMeasured = slotMeasured = rejectionShown = successShown = null;
+            ResetPdaDetection();
             if (e.OldValue is INotifyPropertyChanged old) old.PropertyChanged -= PositionChanged;
             if (e.NewValue is INotifyPropertyChanged current) current.PropertyChanged += PositionChanged;
             RefreshBarcodeDisplay(); RefreshSubmitAvailability();
         };
         Loaded += (_, _) => RefreshSubmitAvailability();
         Unloaded += (_, _) => { if (DataContext is SupplyStationPositionViewModel p) p.SetInputFocused(false); };
+        BarcodeEntry.LostKeyboardFocus += (_, _) => ResetPdaDetection();
+        BarcodeEntry.PreviewMouseDown += (_, _) => ResetPdaDetection();
         DataObject.AddPastingHandler(BarcodeEntry, (_, e) =>
         {
+            ResetPdaDetection();
             PrepareResultReplacement();
             var value = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
             if (submitting || submitted is not null || value is null || value.Any(char.IsControl) ||
@@ -52,6 +56,10 @@ public partial class SupplyStationPosition : UserControl
         });
     }
     sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation);
+    const int PdaMinimumLength = 6, PdaRapidGapMs = 35, PdaMaximumGapMs = 250, PdaEnterGapMs = 100;
+    (int At, int Length, char Character)? expectedKeyboardText;
+    int? lastKeyboardCharacterAt;
+    int rapidCharacterGaps;
     InputBasis? inputBasis;
     SubmitParcelBarcode? submitted;
     bool submitting, overflow, editing, updatingDisplay, showingDraftNotice;
@@ -62,6 +70,7 @@ public partial class SupplyStationPosition : UserControl
         if (e.PropertyName is nameof(SupplyStationPositionViewModel.ShowCenteredState) or nameof(SupplyStationPositionViewModel.CenteredAttention)) RefreshDraftNoticeVisibility();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.SupplyEnabled))
         {
+            if (DataContext is not SupplyStationPositionViewModel { SupplyEnabled: true }) ResetPdaDetection();
             RefreshSubmitAvailability();
             Host?.RefreshEnabledPositionFocus();
         }
@@ -114,14 +123,14 @@ public partial class SupplyStationPosition : UserControl
         if (!IsVisible || !IsEnabled || DataContext is not SupplyStationPositionViewModel { SupplyEnabled: true }) return;
         BarcodeEntry.Focus(); PrepareResultReplacement();
     }
-    internal bool IsBarcodeSourceDropDownOpen => BarcodeSource.IsDropDownOpen;
     internal bool IsBarcodeInputFocused => BarcodeEntry.IsKeyboardFocused;
-    internal void ReceiveScannerText(string text)
+    internal void ReceiveScannerText(string text, int? timestamp)
     {
         FocusBarcodeInput();
         if (submitting || submitted is not null || BarcodeEntry.IsReadOnly) return;
         if (BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + text.Length > 4096)
         { overflow = true; InputFeedback.Text = "条码超长，请清空后重扫。"; RefreshSubmitAvailability(); return; }
+        ExpectKeyboardText(text, timestamp);
         var caret = BarcodeEntry.SelectionStart + text.Length;
         BarcodeEntry.SelectedText = text;
         BarcodeEntry.Select(caret, 0);
@@ -137,7 +146,6 @@ public partial class SupplyStationPosition : UserControl
         var available = DataContext is SupplyStationPositionViewModel p && p.CanSubmitBarcode;
         BarcodeEntry.IsReadOnly = submitting || submitted is not null || DataContext is not SupplyStationPositionViewModel { SupplyEnabled: true };
         BarcodeEntry.IsTabStop = DataContext is SupplyStationPositionViewModel { SupplyEnabled: true };
-        BarcodeSource.IsEnabled = !BarcodeEntry.IsReadOnly;
         if (submitted is not null) available = Host?.ViewModel is { CanUseWorkspace: true, CanStartOperation: true };
         SubmitBarcode.IsEnabled = !submitting && available && (submitted is not null || editing && !overflow && BarcodeEntry.Text.Length > 0);
         RefreshPictureAvailability();
@@ -173,6 +181,21 @@ public partial class SupplyStationPosition : UserControl
     void InputChanged(object sender, TextChangedEventArgs e)
     {
         if (BarcodeEntry is null || updatingDisplay || submitting || submitted is not null) return;
+        // Track only text actually inserted by this key event. Paste, edits and
+        // programmatic changes keep the draft on the ordinary keyboard path.
+        var text = BarcodeEntry.Text;
+        if (expectedKeyboardText is { } key && text.Length == key.Length && text[^1] == key.Character)
+        {
+            expectedKeyboardText = null;
+            if (text.Length == 1) { lastKeyboardCharacterAt = key.At; rapidCharacterGaps = 0; }
+            else if (lastKeyboardCharacterAt is { } previous && WithinInputGap(key.At, previous, PdaMaximumGapMs))
+            {
+                if (WithinInputGap(key.At, previous, PdaRapidGapMs)) rapidCharacterGaps++;
+                lastKeyboardCharacterAt = key.At;
+            }
+            else ResetPdaDetection();
+        }
+        else ResetPdaDetection();
         terminalTextRetained = false; RebaseInput.Visibility = Visibility.Collapsed;
         editing = BarcodeEntry.Text.Length > 0;
         showingDraftNotice = editing; InputFeedback.Text = editing ? DraftNotice : "输入已清空，相机读码将自动更新。";
@@ -184,6 +207,7 @@ public partial class SupplyStationPosition : UserControl
     {
         showingDraftNotice = false;
         if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，请先点“查看提交结果”。"; return; }
+        ResetPdaDetection();
         terminalTextRetained = false; editing = BarcodeEntry.Text.Length > 0;
         CaptureInputBasis(); RebaseInput.Visibility = Visibility.Collapsed; InputFeedback.Text = "已确认本位包裹，请重新提交条码。"; BarcodeEntry.Focus(); RefreshSubmitAvailability();
     }
@@ -191,13 +215,16 @@ public partial class SupplyStationPosition : UserControl
     {
         showingDraftNotice = false;
         if (submitting || submitted is not null) { InputFeedback.Text = "上次提交结果未确认，暂不能清空；请先点“查看提交结果”。"; return; }
+        ResetPdaDetection();
         terminalTextRetained = false; editing = false; BarcodeEntry.Clear(); overflow = false; inputBasis = null;
         InputFeedback.Text = "输入已清空，相机读码将自动更新。"; BarcodeEntry.Focus(); RefreshSubmitAvailability();
     }
     async void BarcodeEntry_KeyDown(object sender, KeyEventArgs e)
     {
+        if (e.Key is Key.Back or Key.Delete or Key.Left or Key.Right or Key.Up or Key.Down or Key.Home or Key.End)
+            ResetPdaDetection();
         if (e.Key != Key.Enter || Keyboard.Modifiers != ModifierKeys.None) return;
-        e.Handled = true; if (!e.IsRepeat) await SubmitBarcodeAsync();
+        e.Handled = true; if (!e.IsRepeat) await SubmitBarcodeAsync(e.Timestamp);
     }
     void Entry_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
@@ -206,7 +233,19 @@ public partial class SupplyStationPosition : UserControl
         PrepareResultReplacement();
         if (BarcodeEntry.Text.Length - BarcodeEntry.SelectionLength + e.Text.Length > 4096 || e.Text.Any(char.IsControl))
         { e.Handled = true; overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "条码过长或含无效字符，已停止接收。请清空后重新输入完整条码。"; }
+        else ExpectKeyboardText(e.Text, Host?.TakeBarcodeKeyTimestamp());
     }
+    void ExpectKeyboardText(string text, int? timestamp)
+    {
+        // Keyboard-wedge scanners use the same Windows text channel as typing.
+        // Only a complete, rapid sequence followed by Enter is classified as PDA.
+        var length = BarcodeEntry.Text.Length;
+        expectedKeyboardText = timestamp is not { } at || text.Length != 1 ? null :
+            BarcodeEntry.SelectionLength == length ? (at, 1, text[0]) :
+            BarcodeEntry.SelectionLength == 0 && BarcodeEntry.SelectionStart == length ? (at, length + 1, text[0]) : null;
+    }
+    void ResetPdaDetection() { expectedKeyboardText = null; lastKeyboardCharacterAt = null; rapidCharacterGaps = 0; }
+    static bool WithinInputGap(int later, int earlier, uint maximumMs) => unchecked((uint)(later - earlier)) <= maximumMs;
     async void SubmitBarcode_Click(object sender, RoutedEventArgs e) => await SubmitBarcodeAsync();
     async void EnableSupply_Click(object sender, RoutedEventArgs e)
     {
@@ -224,7 +263,7 @@ public partial class SupplyStationPosition : UserControl
     {
         if (DataContext is SupplyStationPositionViewModel p) await p.ConfirmPlacementRemovalAsync();
     }
-    async Task SubmitBarcodeAsync()
+    async Task SubmitBarcodeAsync(int? enterTimestamp = null)
     {
         showingDraftNotice = false;
         RefreshDraftNoticeVisibility();
@@ -240,11 +279,16 @@ public partial class SupplyStationPosition : UserControl
             if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = "请输入完整条码，再按回车或点击提交。"; return; }
             if (inputBasis is null) CaptureInputBasis();
             if (inputBasis is not { } basis) { InputFeedback.Text = "本位状态未读取，请稍后再提交。"; return; }
-            submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text,
-                BarcodeSource.SelectedValue is ParcelBarcodeInputKind source ? source : ParcelBarcodeInputKind.Keyboard,
-                basis.Observation, basis.Operation);
+            // A burst is predominantly rapid. A few delayed key messages must
+            // not change its source, but a break or an edited draft must.
+            var length = BarcodeEntry.Text.Length;
+            var kind = enterTimestamp is { } entered && lastKeyboardCharacterAt is { } last && length >= PdaMinimumLength &&
+                rapidCharacterGaps >= length / 2 && WithinInputGap(entered, last, PdaEnterGapMs)
+                ? ParcelBarcodeInputKind.PdaKeyboard : ParcelBarcodeInputKind.Keyboard;
+            submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text, kind, basis.Observation, basis.Operation);
+            ResetPdaDetection();
         }
-        var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true; BarcodeSource.IsEnabled = false;
+        var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true;
         SubmitBarcode.IsEnabled = false; RebaseInput.IsEnabled = false;
         InputFeedback.Text = "正在提交，请等待结果，勿重复扫描。";
         await vm.RunAsync(async () =>
@@ -295,7 +339,7 @@ public partial class SupplyStationPosition : UserControl
     SupplyStationWindow? Host => Window.GetWindow(this) as SupplyStationWindow;
     void New_Click(object sender, RoutedEventArgs e) { if (DataContext is SupplyStationPositionViewModel p) p.NewParcel(); }
     async void Emit_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel p) await h.ViewModel.EmitPositionAsync(p); }
-    async void Details_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel { Operation: { } op }) await h.ShowDetailsAsync(op); }
+    async void Details_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel { CanViewWorkDetails: true, Operation: { } op }) await h.ShowDetailsAsync(op); }
     void Diagnostics_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel p) h.ShowPositionDiagnostics(p); }
     async void Reconcile_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel p) await h.ViewModel.ReconcilePositionAsync(p); }
     async void Continue_Click(object sender, RoutedEventArgs e) { if (Host is { } h && DataContext is SupplyStationPositionViewModel p) await h.ViewModel.ContinuePositionAsync(p); }

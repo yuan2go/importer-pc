@@ -29,17 +29,17 @@ static partial class Program
             var blank = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);
             var oldSnapshot = vm.Snapshot!;
             h.Api(h.Left).Enqueue(blank, 2);
-            await Until(() => vm.Left.DisplayStatus == "未读到条码");
+            await Until(() => vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) && vm.Left.DisplayStatus == "等待投包");
             Check(!vm.Left.ShowConfirmedTask && !vm.Left.CurrentTaskAvailable && !vm.Left.CanViewCurrentPicture && vm.Left.Barcode == "" && vm.Left.DisplaySlot == "" && vm.Left.TaskId == "—" && vm.Right.ShowConfirmedTask,
                 "no-code clears left barcode, slot, task and picture authority while preserving the right current task");
             await vm.AcceptPublishedSnapshotAsync(oldSnapshot, default);
-            Check(!vm.Left.ShowConfirmedTask && vm.Left.DisplayStatus == "未读到条码", "an older business snapshot cannot revive a superseded confirmed slot");
+            Check(!vm.Left.ShowConfirmedTask && vm.Left.DisplayStatus == "等待投包", "an older business snapshot cannot revive a superseded confirmed slot");
             foreach (var (width, height) in new[] { (1366, 768), (800, 420) })
             {
                 await SetClient(window, width, height); window.UpdateLayout();
                 var left = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Left));
-                var reason = (TextBox)left.FindName("AttentionReason");
-                Check(reason.IsVisible && reason.ActualHeight >= reason.FontSize * 1.2 && vm.Left.DisplayNextStep.Contains("补录"), width + " exposes a readable no-code reason and rescan/manual recovery");
+                var reason = (TextBlock)left.FindName("CenteredStateReason");
+                Check(reason.IsVisible && reason.ActualHeight >= reason.FontSize * 1.2 && vm.Left.CenteredStateInstruction.Contains("输入完整条码"), width + " exposes readable waiting instructions and manual input");
                 CaptureInternal(evidence, "unread27-no-code-" + width, (Grid)window.FindName("ClientArea"), lines);
             }
             await SetClient(window, 1366, 768);
@@ -49,7 +49,8 @@ static partial class Program
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-LATE-27"), 3);
                 await Until(() => vm.Left.IsProcessing);
                 h.Api(h.Left).Enqueue(blank, 4);
-                await Until(() => vm.Left.DisplayStatus == "未读到条码");
+                await Until(() => vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 4) &&
+                    vm.Left.DisplayStatus == "暂不能投包" && vm.Left.CenteredStateReason == "正在等待本件格口");
             }
             finally { h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; }
             await Until(() => vm.Left.Operation?.State == ParcelState.SlotResolved);

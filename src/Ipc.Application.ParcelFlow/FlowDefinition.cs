@@ -52,8 +52,6 @@ public interface IParcelCapabilityFactory : IAsyncDisposable
     // validated candidate whose identities are unchanged. Null: this factory cannot rebuild them
     // live, and the caller stages a controlled restart instead. The caller owns what is returned.
     ParcelLiveDevices? CreateLive(ParcelConfiguration candidate, IReadOnlyCollection<string> readers, bool integration) => null;
-    // Called once the replacements run and the candidate is the effective configuration.
-    void ConfirmLive(ParcelConfiguration effective) { }
 }
 public sealed record ParcelLiveDevices(IReadOnlyDictionary<string, IControlledObservationSource> Readers, IWcsPort? Wcs, IReadOnlyDictionary<string, string> ImplementationHashes);
 public static class WeightRules

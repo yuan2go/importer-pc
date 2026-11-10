@@ -14,6 +14,10 @@
 
 地址由binding.Target明确给出（路径 `/rcs/sorter/api`）。`locale` 固定为 `zh_CN`。取格口的 `source` 取自本次输入，读码器为 `BAR`、人工录入为 `MANUAL`、PDA 扫码为 `PDA`；心跳使用 `BAR`。仓 ID、生产线 ID、供包台编号及左右相机编码来自完整候选。每次请求数量固定为 1。默认由 RCS 分配格口（`specifiedChute=false`、`chuteCode=null`）；指定时发送布尔 `true` 和完整格口编码字符串。SM 固定使用内置 RCS HTTP 客户端，不提供本地模拟连接方式。
 
+作业页在同一个条码框接收人工录入和键盘式 PDA 扫码，根据本次按键节奏自动标记来源。来源按本次请求冻结。
+
+新取格口请求在 `params.taskId` 发送 JSON 整数，复用本次的 `requestId`。左右投递位共用本站的持久编号账，重启后继续分配。已冻结的旧请求保留原报文，按原守卫处理。
+
 ## 回包与业务
 
 保留HTTP状态、响应原始字节base64/hash及类型化结果。匹配requestId、唯一index=1、command和success；缺失/歧义/非法结构不推断成功。success=true必须有有效格口；保留taskId、skuId与可空尺寸重量。NEED_UNPACK保留barcode、skuId、scanQty、所有chutes（含remaining=0及未知phase原值），进入独立UnpackRequired状态，本位等待现有受守卫的检查移除动作，不自动下一件、不代发拆包命令。其它success=false保留code/message/args为业务拒绝。HTTP错误/超时/断连/非法JSON/关联错误保持Unknown，不重试/重定向/用POST假查询。

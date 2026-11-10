@@ -134,9 +134,10 @@ static partial class Program
             await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.CenteredRcsRejection);
             var rejectedSnapshot = vm.Snapshot!;
             Check(vm.Left.Operation?.Id == rejectionId && h.Peer.Requests.Count == rejectionCount &&
-                vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason == "本件暂不能分配格口　已读到 · …JECT" &&
+                vm.Left.CenteredStateTitle == "无设备可用" && ((TextBlock)left.FindName("CenteredStateReason")).Text == "本件暂不能分配格口" &&
                 vm.Left.CenteredStateInstruction == "请取下包裹，可放下一件\n多次出现请通知维护人员" &&
-                vm.Left.CanViewCurrentPicture && vm.Right.SupplyDisabled, "same-placement frames preserve the default-policy rejection and its picture without another request or changing the other position");
+                vm.Left.CanViewCurrentPicture && ((Button)left.FindName("WorkDetails")).IsEnabled && vm.Right.SupplyDisabled,
+                "same-placement frames preserve the rejection, picture and details without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);
             ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyDisabling && !vm.Busy);
@@ -166,6 +167,61 @@ static partial class Program
                 "the old rejection snapshot cannot replace the next parcel's chute or trigger an extra request");
             h.Peer.HeartbeatUnavailable = true; await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
             Check(!center.IsVisible && vm.Left.ShowConfirmedTask, "a later RCS outage never hides a confirmed current parcel result");
+            h.Peer.HeartbeatUnavailable = false;
+            await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online);
+            h.Peer.Mode = "reject";
+            h.Peer.RejectionMessage = "终点非法";
+            var removedCode = CameraRoundHarness.Barcode("SYNTH-REMOVE-REJECT");
+            h.Api(h.Left).Enqueue(removedCode, 4);
+            await Until(() => vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "终点非法");
+            var beforeRemoval = vm.Snapshot!;
+            var sentBeforeRemoval = h.Peer.Requests.Count;
+            CaptureInternal(evidence, "home-rejection-before-removal", client, lines);
+            async Task BlankFrame(uint number)
+            {
+                h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, number);
+                await Until(() => vm.Snapshot!.CameraReads.Any(frame => frame.PositionId == "left" && frame.Frame.FrameNumber == number));
+            }
+            await BlankFrame(5);
+            var firstEmpty = vm.Snapshot!.CameraReads.Single(frame => frame.PositionId == "left").Frame.ObservedAt;
+            CaptureInternal(evidence, "home-rejection-first-empty-frame", client, lines);
+            Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" && !vm.Left.CenteredRcsRejection &&
+                !vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture && !((Button)left.FindName("WorkDetails")).IsEnabled &&
+                !((DockPanel)left.FindName("DetailedStatus")).IsVisible,
+                "the first changed no-code frame shows centered waiting and hides the old chute, picture and details");
+            probe.Project = s => production(s) with
+            {
+                Positions = s.Positions!.Select(p => p.Id == "left" ? p with
+                {
+                    Admit = false,
+                    BarcodeInput = p.BarcodeInput! with { Camera = false, Manual = false }
+                } : p).ToArray()
+            };
+            await Until(() => vm.Left.CenteredStateTitle == "暂不能投包");
+            Check(center.IsVisible && vm.Left.CenteredStateReason == "本位暂不接收新条码" && vm.Right.SupplyDisabled,
+                "a no-code frame on a blocked position shows its admission state instead of the removed no-code screen");
+            probe.Project = production;
+            await Task.Delay(450);
+            await BlankFrame(6);
+            Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" &&
+                vm.Snapshot!.Positions!.Single(p => p.Id == "left").PlacementClearedAt is null && h.Peer.Requests.Count == sentBeforeRemoval,
+                "two blank frames keep the waiting layout but do not release the placement or send a request");
+            await Task.Delay(450);
+            await BlankFrame(7);
+            await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").PlacementClearedAt is { } cleared &&
+                cleared - firstEmpty >= TimeSpan.FromMilliseconds(800));
+            Check(center.IsVisible && !vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "等待投包" &&
+                vm.Left.Barcode.Length == 0 && !vm.Left.CanViewCurrentPicture && vm.Right.SupplyDisabled && h.Peer.Requests.Count == sentBeforeRemoval,
+                "the clearing snapshot goes directly to centered waiting and removes the old barcode, picture and refusal");
+            await vm.AcceptPublishedSnapshotAsync(beforeRemoval);
+            Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包", "a late snapshot cannot restore the removed parcel's rejection");
+            CaptureInternal(evidence, "home-rejection-cleared-waiting", client, lines);
+            h.Peer.Mode = "assigned";
+            h.Api(h.Left).Enqueue(removedCode, 8);
+            await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-REMOVE-REJECT");
+            h.Api(h.Left).Enqueue(removedCode, 9);
+            await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.9" && vm.Left.ShowConfirmedTask);
+            Check(h.Peer.Requests.Count == sentBeforeRemoval + 1, "same-code replacement after the confirmed empty tray sends once despite repeated frames");
             PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.FullScreen); await Flush();
             exit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => stopAttempts == 1 && window.IsEnabled && vm.Message.Contains("停止未完成"), refresh: false);

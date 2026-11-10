@@ -155,8 +155,9 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public int ReaderBuilds, WcsBuilds;
         public bool DiscoverReplacements = true;
         public bool RejectLiveReaders = false, FailCandidateRelease = false;
-        public ParcelConfiguration? LiveConfirmed;
-        public Action? OnLiveConfirmed { get; set; }
+        public bool CheckBuiltInProductionAdmission { get; set; }
+        public string? AdmissionFailure(ParcelConfiguration c) =>
+            CheckBuiltInProductionAdmission ? validator.AdmissionFailure(c with { Mode = RunMode.Production }) : null;
         // The fixture validates one exact configuration; a test names the next one before saving it.
         public void Expect(ParcelConfiguration next) => expected = next;
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validator.Normalize(c);
@@ -191,11 +192,6 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             SportmasterRcsTaskService? wcs = null;
             if (integration) { wcs = new(c.Wcs!); wcs.ConfigureRuntime(c); WcsBuilds++; }
             return new(RejectLiveReaders ? readers.ToDictionary(r => "unexpected-" + r.Key, r => r.Value) : readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" });
-        }
-        public void ConfirmLive(ParcelConfiguration c)
-        {
-            LiveConfirmed = c;
-            OnLiveConfirmed?.Invoke();
         }
         public ValueTask DisposeAsync() => validator.DisposeAsync();
     }
@@ -303,6 +299,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public string ReplySlot = "SYNTH-CHUTE";
         public string? ReplyWaveNo { get; set; }
         public string? ReplyQuantity { get; set; }
+        public object? AssignedData { get; set; }
         public bool ReplyVehicleStates { get; set; }
         public volatile bool HeartbeatUnavailable = false;
         public string Endpoint { get; }
@@ -333,7 +330,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 {
                     requestId = id,
                     result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
-                    message = Mode == "reject" ? RejectionMessage ?? "Synthetic response" : "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = new { chuteCode = ReplySlot, length = (decimal?)null,
+                    message = Mode == "reject" ? RejectionMessage ?? "Synthetic response" : "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = AssignedData ?? new { chuteCode = ReplySlot, length = (decimal?)null,
                         width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
                 });
                 if (Mode == "no-destination")

@@ -36,6 +36,7 @@ static partial class Program
             var entry = (TextBox)position.FindName("BarcodeEntry"); var feedback = (TextBlock)position.FindName("InputFeedback");
             var other = Descendants(window).OfType<SupplyStationPosition>().Single(p => ReferenceEquals(p.DataContext, vm.Right));
             var otherEntry = (TextBox)other.FindName("BarcodeEntry");
+            Check(position.FindName("BarcodeSource") is null && other.FindName("BarcodeSource") is null, "neither lane asks the operator to choose a source");
             var textEvents = 0; var enterEvents = 0;
             entry.PreviewTextInput += (_, _) => textEvents++;
             entry.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler((_, e) => { if (e.Key == System.Windows.Input.Key.Enter) enterEvents++; }), true);
@@ -51,8 +52,9 @@ static partial class Program
             // No Text assignment, clear, refocus or selection adjustment between A and B.
             await Text(b, enter: true); await Accepted(b);
             Check(transport.Commands.Select(c => c.Barcode).SequenceEqual(new[] { a, b }) && h.Peer.Requests.Count == 2 &&
-                vm.Left.Operation!.Id != first.Id && transport.Commands.All(c => c.Kind == ParcelBarcodeInputKind.Keyboard),
-                "consecutive PDA bursts submit exactly A then B as distinct commands/operations, never A+B");
+                vm.Left.Operation!.Id != first.Id && transport.Commands.All(c => c.Kind == ParcelBarcodeInputKind.PdaKeyboard) &&
+                h.Peer.Requests.All(body => RequestSource(body) == "PDA"),
+                "consecutive native bursts automatically send PDA for exactly A and B as distinct operations; kinds=" + string.Join(",", transport.Commands.Select(c => c.Kind)));
             Check(prepared, "A remains displayed and selected after PDA Enter without moving focus");
             var firstAfter = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == first.Id);
             Check(Wire.Encode(firstAfter.Wcs!.Request) == frozen && firstAfter.Wcs.Attempts == 1 && firstAfter.Wcs.State == StageState.Accepted,
@@ -136,12 +138,47 @@ static partial class Program
             var sentCodes = h.Peer.Requests.Select(body => { using var json = JsonDocument.Parse(body); return json.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString(); }).ToArray();
             Check(sentCodes.SequenceEqual(new[] { a, b, "000123", "000123450004", "000123450005", "000123450008", "000123450006" }),
                 "actual RCS wire loadCode values contain only complete intended barcodes, with no concatenation or repeated send");
+
+            h.Peer.Mode = "assigned"; otherEntry.Focus(); await Flush();
+            Task RightKeys(params ushort[] keys) => BarcodeNativeKeyboard.SendAsync(window, otherEntry, keys);
+            async Task RightAccepted(string code) => await Until(() => !otherEntry.IsReadOnly && !vm.Busy && vm.Right.Barcode == code && vm.Right.SlotAvailable);
+            const string typed = "000123450010", pasted = "000123450011", scanned = "000123450012";
+            foreach (var character in typed)
+            {
+                await RightKeys(character);
+                await Task.Delay(65);
+            }
+            await RightKeys(0x0D); await RightAccepted(typed);
+            Check(transport.Commands.Last() is { PositionId: "right", Kind: ParcelBarcodeInputKind.Keyboard } && RequestSource(h.Peer.Requests.Last()) == "MANUAL",
+                "ordinary native typing and Enter on the right are classified as MANUAL while the left retains its own result");
+            var previousClipboard = Clipboard.GetDataObject();
+            try
+            {
+                Clipboard.SetText(pasted); otherEntry.Paste(); await RightKeys(0x0D); await RightAccepted(pasted);
+                Check(transport.Commands.Last().Kind == ParcelBarcodeInputKind.Keyboard && RequestSource(h.Peer.Requests.Last()) == "MANUAL",
+                    "a whole pasted barcode stays MANUAL even when Enter follows immediately");
+            }
+            finally
+            {
+                if (previousClipboard is null) Clipboard.Clear();
+                else Clipboard.SetDataObject(previousClipboard, true);
+            }
+            await RightKeys([.. scanned.Select(character => (ushort)character), 0x0D]); await RightAccepted(scanned);
+            Check(transport.Commands.Last() is { PositionId: "right", Kind: ParcelBarcodeInputKind.PdaKeyboard } &&
+                RequestSource(h.Peer.Requests.Last()) == "PDA" && vm.Left.Operation?.Id == unknown.Id && h.Peer.Requests.Count == unknownSends + 3,
+                "the next right-hand burst is identified as PDA without using a previous draft or altering the left operation");
             await ManagementModeFixture.Authorize(h.App);
             var original = (await h.App.ReadCameraOperationDetailAsync(first.Id, default))!.Original;
             Check(original.Wcs!.Request.IntegrationRequest!.Body == h.Peer.Requests.First() && original.Wcs.Attempts == 1 && original.Wcs.State == StageState.Accepted,
                 "A's persisted full frozen RCS bytes still match the original wire request after all later input");
         }
         finally { window.Close(); }
+
+        static string? RequestSource(string body)
+        {
+            using var json = JsonDocument.Parse(body);
+            return json.RootElement.GetProperty("source").GetString();
+        }
     }
 }
 

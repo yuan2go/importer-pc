@@ -30,7 +30,7 @@ static partial class Program
             await Until(() => vm.Left.ShowConfirmedTask && vm.Right.ShowConfirmedTask);
             var prior = vm.Snapshot!;
             h.Api(h.Left).Enqueue(new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240), 2);
-            await Until(() => vm.Left.DisplayStatus == "未读到条码");
+            await Until(() => vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) && vm.Left.DisplayStatus == "等待投包");
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             // Simulate a delayed Render callback, not a fake business state. The
             // normal snapshot reader is still running and must remain safe alone.

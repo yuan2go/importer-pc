@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster.Desktop;
@@ -252,6 +253,8 @@ internal static class MvidReader
         basis = await h.App.SnapshotAsync();
         var updated = basis.Configuration.Effective with { BarcodeFilter = new("", "SYNTH-(VEHICLE|MATRIX|FIXED-(ONE|TWO))") };
         h.Factory.Expect(updated);
+        // Exercise the real factory's Production admission decision with synthetic devices.
+        h.Factory.CheckBuiltInProductionAdmission = true;
         var savedRule = await h.App.StageConfigurationAsync(basis.Configuration.Revision, updated, "Synthetic fixed cart-code exclusion");
         Check(savedRule.Status == "Effective", "fixed cart-code regex can be applied live without restarting the cameras");
         for (var i = 0; i < 3; i++) { await Frame(fixedCodes); if (i < 2) await Task.Delay(450); }
@@ -268,6 +271,30 @@ internal static class MvidReader
         for (var i = 0; i < 3; i++) { await Frame([qr], CameraRoundHarness.EmptyTray); if (i < 2) await Task.Delay(450); }
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled);
         Check(h.Peer.Requests.Count == 2, "confirmed removal completes disabling without sending the rejected parcel");
+
+        basis = await h.App.SnapshotAsync();
+        await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", basis.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+        await h.WaitForCameraAdmissionAsync();
+        const string leftCode = "SYNTH-RULE-SAVED-LEFT", rightCode = "SYNTH-RULE-SAVED-RIGHT";
+        var rightSource = h.Factory.Sources[h.Right];
+        h.Api(h.Right).EnqueueNative(parcel, 1, [Symbol(rightCode)]);
+        await CameraRoundHarness.Until(() => Task.FromResult(rightSource.Timings.Snapshot().RecentFrames.Any(f => f.Number == 1)));
+        await Task.Delay(80);
+        h.Api(h.Right).EnqueueNative(parcel, 2, [Symbol(rightCode)]);
+        await Frame([Symbol(leftCode)]);
+        await CameraRoundHarness.Until(async () =>
+        {
+            var work = (await h.App.SnapshotAsync()).Operations;
+            return work.Any(o => o.PositionId == "left" && o.ParcelCode == leftCode && o.Wcs?.State == StageState.Accepted) &&
+                work.Any(o => o.PositionId == "right" && o.ParcelCode == rightCode && o.Wcs?.State == StageState.Accepted);
+        });
+        Check(h.Peer.Requests.Count == 4, "after the rule save, both positions admit a fresh camera scan and send exactly one request under the built-in Production admission policy");
+        var taskIds = h.Peer.Requests.Select(body =>
+        {
+            using var request = JsonDocument.Parse(body);
+            return request.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("taskId").GetInt64();
+        });
+        Check(taskIds.Distinct().Count() == 4, "left and right camera requests use one shared task-ID sequence");
     }
     static async Task InvalidRejectedPlacement(string workspace, string root)
     {

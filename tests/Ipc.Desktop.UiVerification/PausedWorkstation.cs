@@ -36,7 +36,7 @@ static partial class Program
             await Until(() => vm.Left.CanViewCurrentPicture && vm.Right.CanViewCurrentPicture && vm.CanResumeInViewport);
             var leftControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Left));
             var pictureButton = (Button)leftControl.FindName("CurrentBarcode");
-            Check(vm.Left.Barcode == "SYNTH-PAUSED-CODE" && vm.Left.DisplayStatus.Contains("已读到条码") && vm.Left.DisplayAttentionReason.Contains("未请求格口"),
+            Check(vm.Left.Barcode == "SYNTH-PAUSED-CODE" && vm.Left.DisplayStatus.Contains("已读到条码") && vm.Left.DisplayAttentionReason.Contains("未发送请求"),
                 "left blocked scan explains that decoding succeeded but no chute request was made");
             Check(vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Neutral && vm.Right.DisplayPresentation.Tone == ParcelPresentationTone.Rejected &&
                 !vm.Right.CenteredRcsRejection && vm.Right.DisplayStatus.Contains("多个") && vm.Right.DisplayNextStep.Contains("移出托盘"), "software pause preserves the right multi-code refusal and its next step");

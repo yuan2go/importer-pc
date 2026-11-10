@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
@@ -10,31 +11,33 @@ internal static class RcsDestinationProtocol
     internal static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     internal static PreparedIntegrationRequest Prepare(RcsTaskOptions options, FrozenRequest request, long sequence)
-        => PrepareWire(options, request, sequence, options.SpecifiedChuteCode);
+        => PrepareWire(options, request, sequence, options.SpecifiedChuteCode, includeTaskId: true);
 
     internal static bool MatchesFrozen(RcsTaskOptions options, FrozenRequest request, PreparedIntegrationRequest frozen)
     {
         using var original = JsonDocument.Parse(frozen.Body);
-        var includesPolicy = original.RootElement.GetProperty("data")[0].GetProperty("params").TryGetProperty("noDestToExp", out _);
-        // Requests sent before the optional policy existed retain their exact original bytes.
+        var parameters = original.RootElement.GetProperty("data")[0].GetProperty("params");
+        var includesPolicy = parameters.TryGetProperty("noDestToExp", out _);
+        var includesTaskId = parameters.TryGetProperty("taskId", out _);
+        // Requests prepared before these fields existed retain their exact bytes.
         // An explicit policy in the frozen binding may never be dropped from its wire evidence.
-        if (!includesPolicy && (options.Binding.Parameters.ContainsKey("no-dest-to-exp") || options.SpecifiedChuteCode is not null)) return false;
-        if (PrepareWire(options, request, frozen.RequestId, options.SpecifiedChuteCode, includesPolicy) == frozen) return true;
-        if (options.SpecifiedChuteCode is not null) return false;
+        if (!includesPolicy && (includesTaskId || options.Binding.Parameters.ContainsKey("no-dest-to-exp") || options.SpecifiedChuteCode is not null)) return false;
+        if (PrepareWire(options, request, frozen.RequestId, options.SpecifiedChuteCode, includesTaskId, includesPolicy) == frozen) return true;
+        if (includesTaskId || options.SpecifiedChuteCode is not null) return false;
         // Original operator submissions used the same BAR envelope as camera reads.
         if (original.RootElement.TryGetProperty("source", out var source) && source.ValueKind == JsonValueKind.String &&
-            source.GetString() == options.Source && PrepareWire(options, request, frozen.RequestId, null, includesPolicy, legacySource: true) == frozen) return true;
+            source.GetString() == options.Source && PrepareWire(options, request, frozen.RequestId, null, false, includesPolicy, legacySource: true) == frozen) return true;
         // Only validate original wire evidence; this path cannot prepare a new
         // fixed-chute request or change the frozen bytes/target/ID.
         if (options.Binding.Parameters.GetValueOrDefault("specified-chute") != "true" ||
             !long.TryParse(options.Binding.Parameters.GetValueOrDefault("request-id-base"), out var first) ||
             !long.TryParse(options.Binding.Parameters.GetValueOrDefault("request-id-count"), out var count) ||
             first < 0 || count <= 0 || first > long.MaxValue - count || frozen.RequestId <= first || frozen.RequestId > first + count) return false;
-        return PrepareWire(options, request, frozen.RequestId, options.Text("chute-code", 64), includesPolicy, legacySource: true) == frozen;
+        return PrepareWire(options, request, frozen.RequestId, options.Text("chute-code", 64), false, includesPolicy, legacySource: true) == frozen;
     }
 
     static PreparedIntegrationRequest PrepareWire(RcsTaskOptions options, FrozenRequest request, long requestId, string? chute,
-        bool includePolicy = true, bool legacySource = false)
+        bool includeTaskId, bool includePolicy = true, bool legacySource = false)
     {
         options.ValidateOriginal(request);
         if (requestId <= 0) throw new InvalidDataException("RCS requestId must be positive");
@@ -46,6 +49,8 @@ internal static class RcsDestinationProtocol
             ["stationCode"] = position.Station, ["bcrCode"] = position.Bcr, ["specifiedChute"] = chute is not null,
             ["chuteCode"] = chute, ["quantity"] = 1
         };
+        // The two positions share one durable numeric request sequence.
+        if (includeTaskId) parameters["taskId"] = requestId;
         if (includePolicy) parameters["noDestToExp"] = options.NoDestToExp;
         var source = legacySource ? options.Source : payload.OperatorInput?.Kind switch
         {
@@ -86,7 +91,7 @@ internal static class RcsDestinationProtocol
                 var slot = Text(data, "chuteCode", 64);
                 return (true, slot, new(WcsDestinationOutcome.Assigned, code, message, args, Text(data, "taskId", 256), Text(data, "skuId", 256),
                     Measurement(data, "length"), Measurement(data, "width"), Measurement(data, "height"), Measurement(data, "weight"), null,
-                    AddedText(data, "waveNo", 256), AddedText(data, "quantity", 256)));
+                    AddedText(data, "waveNo", 256), Quantity(data)));
             }
             if (code is null && message is null) throw new InvalidDataException("RCS rejection requires an error code or message");
             if (code == "NEED_UNPACK")
@@ -119,8 +124,20 @@ internal static class RcsDestinationProtocol
     }
     static decimal? Measurement(JsonElement e, string name)
     {
-        var value = e.GetProperty(name); if (value.ValueKind == JsonValueKind.Null) return null;
-        var number = value.GetDecimal(); return number >= 0 ? number : throw new InvalidDataException("RCS negative measurement");
+        var value = e.GetProperty(name);
+        if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.String && value.GetString() == "-") return null;
+        if (value.ValueKind == JsonValueKind.Number && value.TryGetDecimal(out var number) && number >= 0) return number;
+        const NumberStyles styles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
+        if (value.ValueKind == JsonValueKind.String && decimal.TryParse(value.GetString(), styles, CultureInfo.InvariantCulture, out number) && number >= 0)
+            return number;
+        throw new InvalidDataException("RCS invalid measurement: " + name);
+    }
+    static string? Quantity(JsonElement data)
+    {
+        if (!data.TryGetProperty("quantity", out var value)) return null;
+        if (value.ValueKind != JsonValueKind.Number) return OptionalText(data, "quantity", 256);
+        if (value.TryGetInt64(out var count) && count >= 0) return value.GetRawText();
+        throw new InvalidDataException("RCS invalid quantity");
     }
     static string Text(JsonElement e, string name, int maximum) => OptionalText(e, name, maximum) ?? throw new InvalidDataException("RCS missing field: " + name);
     // Added response fields are optional for older peers/receipts. Preserve response

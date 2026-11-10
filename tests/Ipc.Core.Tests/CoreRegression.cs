@@ -23,6 +23,7 @@ public sealed class CoreRegression
     [DataRow("--reader-robustness-28", 47)]
     [DataRow("--tilted-decode", 9)]
     [DataRow("--mvid-reader", 96)]
+    [DataRow("--sm-built-in-only", 10)]
     [DataRow("--rcs-heartbeat", 25)]
     [DataRow("--station-position-control", 37)]
     [DataRow("--management-workspace", 29)]

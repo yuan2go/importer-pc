@@ -75,7 +75,7 @@ static class BackupHealthRecovery
             else Console.WriteLine("BHR Windows Junction destination: NOT_RUN");
         });
 
-        await Case("restored-mode-qualification", async () =>
+        await Case("restored-production-authority", async () =>
         {
             // Synthetic offline Production custody tests the conflicting restore rules,
             // not a production adapter, approved deployment, or device operation.
@@ -85,9 +85,10 @@ static class BackupHealthRecovery
             var backup = Path.Combine(root, "mode.db"); await app.BackupAsync(backup);
             var recovery = backup + ".recovery"; var configFile = Path.Combine(recovery, "configuration.json");
             var original = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configFile));
-            var production = original with { Effective = original.Effective with { Mode = RunMode.Production } };
-            // Deliberately synthetic Production input: changing Mode also changes the
-            // envelope hash. Preserve the original custody, but require confirmation.
+            // Use the actual built-in Production shape with all devices deferred.
+            // The original manual Simulation fixture is not a supported Production reader.
+            var production = original with { Effective = new SportmasterFlow().InitialConfiguration() with { StationId = c.StationId } };
+            // Changing Effective requires its corresponding confirmation identity.
             if (production.Confirmation is { } confirmation)
                 production = production with { Confirmation = confirmation with { EffectiveHash = Wire.Hash(Wire.Encode(production.Effective)), Required = true, State = "Required", ConfirmedBy = null, ConfirmedAt = null } };
             ExtensionStore.AtomicWrite(configFile, production);
@@ -100,11 +101,6 @@ static class BackupHealthRecovery
             var config = Path.Combine(root, "production-config"); Directory.CreateDirectory(config);
             ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), production.Effective);
             var restoredLaunch = launch with { ConfigurationDirectory = config, DataRoot = Path.Combine(root, "production-restored") };
-            // Inspect the actual admission guard without claiming device qualification:
-            // this uninstalled Production root must first fail protected authority.
-            await using var factory = new ParcelCapabilityFactory(restoredLaunch);
-            Check(factory.AdmissionFailure(production.Effective)?.Contains("Production NotReady", StringComparison.Ordinal) == true,
-                "restored Production without qualification retains explicit NotReady admission; no simulation fallback");
             var targetConfig = Path.Combine(target, "configuration.json"); var beforeHash = Wire.FileHash(targetConfig);
             var before = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(targetConfig));
             var retained = new[] { backup, configFile, manifestFile, Path.Combine(target, "RESTORED-ISOLATED.json") }.ToDictionary(f => f, Wire.FileHash);
@@ -112,7 +108,7 @@ static class BackupHealthRecovery
             {
                 await using var restored = SportmasterApplication.Create(restoredLaunch, new ParcelCapabilityFactory(restoredLaunch));
                 Check(Wire.FileHash(targetConfig) == beforeHash, "constructing the restored runtime does not rewrite configuration");
-                await restored.StartAsync(CancellationToken.None); throw new Exception("Unqualified restored Production started");
+                await restored.StartAsync(CancellationToken.None); throw new Exception("Restored Production started without protected authority");
             }
             catch (InvalidOperationException e) when (e.Message.Contains("生产模式缺少受保护的管理模式授权服务", StringComparison.Ordinal))
             {

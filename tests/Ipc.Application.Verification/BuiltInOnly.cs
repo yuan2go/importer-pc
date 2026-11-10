@@ -39,7 +39,13 @@ static partial class SportmasterRcs
         Check(new SportmasterFlow().Validate(configured).Length == 0, "single-camera built-in candidate satisfies business fields");
         factory.ValidateStructure(configured);
         factory.Validate(configured with { Mode = RunMode.Simulation });
-        Check(factory.AdmissionFailure(configured) is not null, "unconstructed Production candidate cannot inherit admission from a structural check");
+        var production = configured with { Mode = RunMode.Production };
+        var revisedRules = production with { BarcodeFilter = new("^SYNTH-PARCEL$") };
+        factory.ValidateStructure(revisedRules);
+        Check(factory.AdmissionFailure(production) is null && factory.AdmissionFailure(revisedRules) is null,
+            "built-in SM Production admission requires no external deployment qualification before or after a live barcode rule change");
+        Check(factory.AdmissionFailure(production with { ApplicationId = "other-application" }) is not null,
+            "the exemption is scoped to built-in SM and leaves the external Production qualification policy in place");
         var originalFile = Path.Combine(root, "unsupported-reader.json");
         var constructed = 0; factory.Boundary = _ => constructed++;
         foreach (var driver in new[] { "hikrobot-idmvs", "hikrobot-mvs", "tcp-line" })

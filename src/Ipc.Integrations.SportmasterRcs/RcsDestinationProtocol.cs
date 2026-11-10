@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
@@ -122,6 +123,9 @@ internal static class RcsDestinationProtocol
         var value = e.GetProperty(name);
         if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.String && value.GetString() == "-") return null;
         if (value.ValueKind == JsonValueKind.Number && value.TryGetDecimal(out var number) && number >= 0) return number;
+        const NumberStyles styles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
+        if (value.ValueKind == JsonValueKind.String && decimal.TryParse(value.GetString(), styles, CultureInfo.InvariantCulture, out number) && number >= 0)
+            return number;
         throw new InvalidDataException("RCS invalid measurement: " + name);
     }
     static string? Quantity(JsonElement data)

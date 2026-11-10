@@ -87,7 +87,7 @@ public sealed partial class SupplyStationPositionViewModel
         ? "请联系维护人员检查运行数据，操作工无需进入管理中心。"
         : owner.CanResumeInViewport ? "确认现场后，点击顶部“恢复供包”。"
         : "请通知维护人员检查设备，恢复后再上件。";
-    public bool ShowCenteredState => CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting || CenteredNoBarcodeBlocked;
+    public bool ShowCenteredState => !ShowRecentChute && (CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting || CenteredNoBarcodeBlocked);
     public string CenteredStateTitle => CenteredStale ? "状态读取中断" : CenteredOriginalAttention ? OriginalAttentionTitle : CenteredReadAttention ? ReadAttentionTitle :
         CurrentRcsRejection is { } rejection ? string.IsNullOrWhiteSpace(rejection.Message) ? "RCS 未分配格口" : rejection.Message :
         CenteredOperationAttention ? MissingConfirmedSlot ? "未取得有效格口" : Operation?.State switch

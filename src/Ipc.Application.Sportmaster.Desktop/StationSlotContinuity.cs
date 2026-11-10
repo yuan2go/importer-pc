@@ -10,6 +10,10 @@ public sealed partial class SupplyStationPositionViewModel
     ParcelReadFeedback? readFeedback;
     ParcelCameraReadFeedback? cameraRead;
     Guid cameraReadRuntime;
+    static readonly TimeSpan RecentChuteDuration = TimeSpan.FromSeconds(3);
+    sealed record RecentChute(Guid Runtime, string Epoch, string OperationId, DateTimeOffset ObservedAt, string Slot, string Barcode,
+        long? StartedTicks = null, bool RemovalConfirmed = false);
+    RecentChute? recentChute;
     DateTimeOffset? PlacementClearedAt => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementClearedAt;
     bool RetainedRejectedInput => Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked } input &&
         readFeedback?.RetainedObservationId == input.Observation.Id;
@@ -86,7 +90,7 @@ public sealed partial class SupplyStationPositionViewModel
                 input.Observation.AdmissionId == current.Acquisition.AdmissionId) ? new(ObservationId: input.Observation.Id) :
         Input is null && Operation is { } operation ? new(OperationId: operation.Id) : null;
     public bool CanViewCurrentPicture => CurrentPictureQuery is not null;
-    public bool CanViewWorkDetails => CanReconcile && !(CameraNoCode && CenteredWaiting);
+    public bool CanViewWorkDetails => CanReconcile && !ShowRecentChute && !(CameraNoCode && CenteredWaiting);
     public string PictureUnavailableReason => !owner.Fresh ? "SnapshotUnavailable" : CameraNoCode ? "NoCurrentCode" :
         CameraObservationUnmatched ? "CameraObservationAheadOfSnapshot" : unreadFeedback ? "ReadAheadOfSnapshot" :
         IsProcessing ? "Processing" : CurrentPictureQuery is null ? "NoPictureIdentity" : "Available";
@@ -108,6 +112,8 @@ public sealed partial class SupplyStationPositionViewModel
         (Input is { Outcome: ParcelInputOutcome.Rejected } rejected && !rejected.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) || Operation?.State == ParcelState.WcsRejected));
     bool PausedReadBlocked => DisplayPaused && !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && Input?.Outcome == ParcelInputOutcome.Blocked;
     public bool ShowConfirmedTask => !SupplyDisabled && CurrentTaskAvailable && SlotAvailable && !unreadFeedback && !ReaderUnavailableForDisplay && !DisplayPaused && owner.ViewportReady;
+    public bool ShowRecentChute => recentChute?.StartedTicks is { } start && Stopwatch.GetElapsedTime(start) < RecentChuteDuration;
+    public string RecentChuteBarcode => ShowRecentChute ? "上一件条码 " + recentChute!.Barcode : "";
     public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
     public string ResultBackground => CenteredAttention ? OperatorTokens.Neutral : DisplayPresentation.Tone switch
     {
@@ -118,28 +124,28 @@ public sealed partial class SupplyStationPositionViewModel
         _ => OperatorTokens.Neutral
     };
     public string ResultForeground => !CenteredAttention && DisplayPresentation.Tone is (ParcelPresentationTone.Accepted or ParcelPresentationTone.Rejected or ParcelPresentationTone.Unknown or ParcelPresentationTone.Stale) ? OperatorTokens.Surface : OperatorTokens.Ink;
-    public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing;
-    public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : "";
+    public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing || ShowRecentChute;
+    public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : ShowRecentChute ? recentChute!.Slot : "";
     public string DisplaySlotForeground => ResultForeground;
-    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : CenteredAttention
+    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : ShowRecentChute ? ParcelPresentation.Neutral("上一件格口") : CenteredAttention
         ? CenteredAttentionTone == ParcelPresentationTone.Unknown ? ParcelPresentation.Unknown(CenteredStateTitle) : ParcelPresentation.Rejected(CenteredStateTitle) :
         ShowCenteredState ? ParcelPresentation.Neutral(CenteredStateTitle) : DisplayPaused && !PausedAttention ? ParcelPresentation.Neutral(PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停") : HasUncertainOriginal ? Presentation : OfflineCameraSurface ? ParcelPresentation.Neutral(ManualInputAvailable ? "等待输入条码" : "等待供包条件就绪") :
         CameraAwaitingRead && !HasUncertainOriginal ? ParcelPresentation.Neutral("等待重新扫码") : invalidReadFeedback ? ParcelPresentation.Unknown("本次读码已失效") : IsProcessing ? ParcelPresentation.Pending("处理中") : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown("未取得格口") : Presentation;
-    public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
+    public string DisplaySlotLabel => ShowRecentChute ? "上一件格口，仅供查看" : IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
     public string ContinuityNotice => "";
-    public string DisplayStatus => SupplyDisabled ? "已停用" : ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused && !PausedAttention ? PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停" : OfflineCameraSurface ? ManualInputAvailable ? "等待输入条码" : "暂不能接收条码" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
+    public string DisplayStatus => SupplyDisabled ? "已停用" : ShowRecentChute ? "上一件格口 · 仅供查看" : ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused && !PausedAttention ? PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停" : OfflineCameraSurface ? ManualInputAvailable ? "等待输入条码" : "暂不能接收条码" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
         CameraAwaitingRead ? "等待重新扫码" : CameraNoCode ? CenteredStateTitle : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Operation?.State == ParcelState.WcsRejected ? "未取得格口" : Status;
     public string DisplayAttentionReason => CenteredAttention && !CenteredRcsRejection ? CenteredStateReason :
         SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "本次扫码未发送请求，可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
         CameraAwaitingRead ? "相机已重连，正在重新扫码。" :
         unreadFeedback ? "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
-    public string DisplayNextStep => CenteredAttention ? CenteredStateInstruction : SupplyDisabled ? "" : DisplayPaused ? PausedAttention
+    public string DisplayNextStep => ShowRecentChute ? "" : CenteredAttention ? CenteredStateInstruction : SupplyDisabled ? "" : DisplayPaused ? PausedAttention
         ? "供包已暂停；" + (HasUncertainOriginal ? NextStep : Input?.Outcome == ParcelInputOutcome.Rejected ? "查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep)
         : PauseInstruction : ShowConfirmedTask ? "" : OfflineCameraSurface ? ManualInputAvailable ? "输入完整条码后按回车或点击提交。" : NextStep :
         invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" :
         !HasUncertainOriginal && Input?.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) == true ? "本件已跳过，请取下包裹后重新上件。" :
         !HasUncertainOriginal && Input is { Outcome: ParcelInputOutcome.Rejected, BarcodeSelection.SelectedCode: null } ? "本件未取得格口，请查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep;
-    public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
+    public double DisplaySlotFontSize => ShowRecentChute ? UiTypography.ResponsiveSlotSize(recentChute!.Slot, owner.ChuteScale) : IsProcessing ? UiTypography.Placeholder : SlotFontSize;
     public string CameraReadFeedback => !CameraNoCode && (!CameraObservationUnmatched || MatchedCameraCue) && !invalidReadFeedback && readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
         ? "已读到条码，等待处理结果。" : "";
     public string? ReadFeedbackIdentity => readFeedback?.ObservationId;
@@ -196,6 +202,7 @@ public sealed partial class SupplyStationPositionViewModel
     }
     void NotifySlotDisplay()
     {
+        UpdateRecentChute();
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(SupplyEnabled), SupplyEnabled), (nameof(SupplyDisabling), SupplyDisabling), (nameof(SupplyDisabled), SupplyDisabled),
             (nameof(CanChangeSupply), CanChangeSupply), (nameof(CanConfirmPlacementRemoval), CanConfirmPlacementRemoval), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
@@ -205,6 +212,7 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(CanViewCurrentPicture), CanViewCurrentPicture), (nameof(CanViewWorkDetails), CanViewWorkDetails), (nameof(PictureUnavailableReason), PictureUnavailableReason), (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(SlotAvailable), SlotAvailable), (nameof(Slot), Slot),
             (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId), (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity),
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
+            (nameof(ShowRecentChute), ShowRecentChute), (nameof(RecentChuteBarcode), RecentChuteBarcode),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(ResultBackground), ResultBackground), (nameof(ResultForeground), ResultForeground), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotForeground), DisplaySlotForeground), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
             (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
             (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction), (nameof(CenteredStateFullInstruction), CenteredStateFullInstruction),
@@ -215,5 +223,35 @@ public sealed partial class SupplyStationPositionViewModel
             if (published.TryGetValue(name, out var prior) && Equals(prior, value)) continue;
             published[name] = value; PropertyChanged?.Invoke(this, new(name));
         }
+    }
+
+    void UpdateRecentChute()
+    {
+        if (!owner.Fresh || !owner.ViewportReady || !SupplyEnabled || DisplayPaused || RcsUnavailableForDisplay ||
+            owner.Snapshot is not { } snapshot || CurrentReaderState is not { } reader || !reader.IsValid(DateTimeOffset.UtcNow))
+        { recentChute = null; return; }
+        if (ShowConfirmedTask && Operation is { Acquisition: not null, Slot: { } slot } current)
+        {
+            if (recentChute is not { } remembered || remembered.Runtime != snapshot.RuntimeId || remembered.Epoch != reader.Epoch ||
+                remembered.OperationId != current.Id || remembered.StartedTicks is not null)
+                recentChute = new(snapshot.RuntimeId, reader.Epoch, current.Id, current.ObservedAt, slot, current.ParcelCode);
+            return;
+        }
+        if (recentChute is not { } result) return;
+        if (result.Runtime != snapshot.RuntimeId || result.Epoch != reader.Epoch || CameraAwaitingRead || CameraObservationUnmatched || unreadFeedback ||
+            Operation is { } operation && (operation.Id != result.OperationId || operation.Wcs?.State != StageState.Accepted) ||
+            Input is { Observation.Codes.Length: > 0 } input && input.OperationId != result.OperationId)
+        { recentChute = null; return; }
+
+        // The first changed no-code frame demotes the last result immediately.
+        // Only the application's empty-tray confirmation starts the full hold.
+        if (PlacementClearedAt is { } cleared && cleared > result.ObservedAt)
+        {
+            if (!result.RemovalConfirmed)
+                recentChute = result with { RemovalConfirmed = true, StartedTicks = Stopwatch.GetTimestamp() };
+            else if (!ShowRecentChute) recentChute = null;
+        }
+        else if (CameraNoCode && result.StartedTicks is null)
+            recentChute = result with { StartedTicks = Stopwatch.GetTimestamp() };
     }
 }

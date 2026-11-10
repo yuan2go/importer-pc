@@ -86,13 +86,13 @@ static partial class Program
                     leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Left.Slot == "SYNTH-NEXT" && !vm.Busy);
                     Check(vm.Left.Operation?.Id != original && h.Peer.Requests.Count == 4, "explicitly re-entering the same code sends a fresh manual request");
-                    h.Peer.AssignedData = new { chuteCode = "SYNTH-CHUTE-ACCEPTED", height = "-", length = "-", quantity = 1, skuId = "-", taskId = "SYNTH-TASK", waveNo = "-", weight = "-", width = "-" };
+                    h.Peer.AssignedData = new { chuteCode = "SYNTH-CHUTE-ACCEPTED", height = "2.5", length = "-", quantity = 1, skuId = "-", taskId = "SYNTH-TASK", waveNo = "-", weight = "-", width = "-" };
                     entry.Text = "000123459";
                     submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Slot == "SYNTH-CHUTE-ACCEPTED" && !vm.Busy);
                     Check(((TextBox)right.FindName("CurrentSlot")).Text == "SYNTH-CHUTE-ACCEPTED" && ((TextBox)right.FindName("QuantityValue")).Text == "1" &&
                         !vm.Right.HasUncertainOriginal && vm.Left.Slot == "SYNTH-NEXT" && h.Peer.Requests.Count == 5,
-                        "numeric quantity and dash measurements show the confirmed chute on the receiving position without changing the other side");
+                        "numeric quantity and string measurements show the confirmed chute on the receiving position without changing the other side");
                 }
             }
             finally { window.Close(); }

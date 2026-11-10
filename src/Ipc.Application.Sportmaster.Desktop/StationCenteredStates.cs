@@ -48,7 +48,15 @@ public sealed partial class SupplyStationPositionViewModel
         : SupplyDisabled ? "已停用" : CenteredSoftwarePause ? "供包已暂停" : CenteredRcsPause ? "暂不能投包" : "等待投包";
     public string CenteredStateForeground => CenteredRcsRejection || CenteredRcsPause ? OperatorTokens.Danger :
         SupplyDisabled || CenteredSoftwarePause ? OperatorTokens.Muted : OperatorTokens.Success;
-    public string CenteredStateReason => CenteredRcsRejection ? "本件暂不能分配格口" : SupplyDisabled ? "不接收条码" : CenteredSoftwarePause ? PauseReason : CenteredRcsPause ? "RCS 服务离线" :
+    string RcsRejectionReason()
+    {
+        const string reason = "本件暂不能分配格口";
+        if (Operation is not { ParcelCode: { Length: > 0 } code } operation || code.Any(char.IsControl))
+            return reason;
+        var source = operation.OperatorInput is null ? "已读到" : "已录入";
+        return reason + "　" + source + " · …" + code[^Math.Min(4, code.Length)..];
+    }
+    public string CenteredStateReason => CenteredRcsRejection ? RcsRejectionReason() : SupplyDisabled ? "不接收条码" : CenteredSoftwarePause ? PauseReason : CenteredRcsPause ? "RCS 服务离线" :
         CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "放上包裹，由相机扫码" : "可输入完整条码";
     public string CenteredStateInstruction => CenteredStateFullInstruction;
     public string CenteredStateFullInstruction => CenteredRcsRejection ? RcsRejectionInstruction() : SupplyDisabled ? "" : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? "请检查连接，恢复后再提交" :

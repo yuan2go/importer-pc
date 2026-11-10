@@ -134,7 +134,7 @@ static partial class Program
             await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.CenteredRcsRejection);
             var rejectedSnapshot = vm.Snapshot!;
             Check(vm.Left.Operation?.Id == rejectionId && h.Peer.Requests.Count == rejectionCount &&
-                vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason == "本件暂不能分配格口" &&
+                vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason == "本件暂不能分配格口　已读到 · …JECT" &&
                 vm.Left.CenteredStateInstruction == "请取下包裹，可放下一件\n多次出现请通知维护人员" &&
                 vm.Left.CanViewCurrentPicture && vm.Right.SupplyDisabled, "same-placement frames preserve the default-policy rejection and its picture without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);

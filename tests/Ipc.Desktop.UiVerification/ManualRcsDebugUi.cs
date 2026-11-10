@@ -13,7 +13,7 @@ static partial class Program
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS MANUAL-DEBUG-UI " + message); }
         T Field<T>(object c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
         await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "manual-debug"), deferred: true, rightCode: false, leftCode: false);
-        h.Peer.Mode = "no-device";
+        h.Peer.Mode = "reject"; h.Peer.RejectionMessage = "无设备可用";
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var application = DispatchProxy.Create<IManualDebugUiFixture, ManualDebugReturnProbe>();
         var probe = (ManualDebugReturnProbe)(object)application; probe.Inner = h.App;
@@ -52,7 +52,7 @@ static partial class Program
             using (var shown = System.Text.Json.JsonDocument.Parse(response.Text))
             {
                 var item = shown.RootElement.GetProperty("result")[0];
-                Check(response.Text.Contains("无设备可用") && item.GetProperty("code").GetString() == "RPC_R_NO_DEVICE" &&
+                Check(response.Text.Contains("无设备可用") && item.GetProperty("code").GetString() == "SYNTH_REJECT" &&
                     !item.GetProperty("success").GetBoolean() && shown.RootElement.EnumerateObject().Count() == 2 && !response.Text.Contains("BodyBase64") &&
                     send.Content?.ToString() == "查看发送结果", "debug displays only the RCS reply fields with readable Chinese");
             }

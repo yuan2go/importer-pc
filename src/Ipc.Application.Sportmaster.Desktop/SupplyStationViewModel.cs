@@ -178,8 +178,10 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string PositionId { get; private set; }
     public string Heading => requestedPosition == "left" ? "左投递位" : "右投递位";
     StationVehicleState? vehicle;
-    public string VehicleStatusText => vehicle is null ? "小车：待确认" : "小车 " + vehicle.VehicleNo + " · " + (vehicle.Status switch
+    public string VehicleNumberText => vehicle is null ? "小车" : "小车 " + vehicle.VehicleNo;
+    public string VehicleStatusText => vehicle is null ? "小车：待确认" : VehicleNumberText + " · " + (vehicle.Status switch
     { "IDLE" => "空闲，可以投包", "TASKING" => "工作中，不可以投包", _ => "状态待确认" });
+    public string CompactVehicleStatusText => vehicle?.Status switch { "IDLE" => "空闲 可投包", "TASKING" => "工作中 勿投包", _ => "待确认" };
     public string VehicleStatusForeground => vehicle?.Status switch { "IDLE" => OperatorTokens.Success, "TASKING" => OperatorTokens.Danger, _ => OperatorTokens.Muted };
     public bool InputTargetActive => owner.InputTargetPosition == PositionId;
     public string InputTargetBrush => InputTargetActive ? OperatorTokens.Accent : "Transparent";
@@ -355,7 +357,8 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         // including local drafts. Publish only changed display facts, never drafts.
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId), (nameof(ReaderIdentity), ReaderIdentity), (nameof(CameraAddress), CameraAddress), (nameof(DevicePresentation), DevicePresentation),
-            (nameof(VehicleStatusText), VehicleStatusText), (nameof(VehicleStatusForeground), VehicleStatusForeground),
+            (nameof(VehicleNumberText), VehicleNumberText), (nameof(VehicleStatusText), VehicleStatusText),
+            (nameof(CompactVehicleStatusText), CompactVehicleStatusText), (nameof(VehicleStatusForeground), VehicleStatusForeground),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(NeedsAttention), NeedsAttention), (nameof(SlotFontSize), SlotFontSize),
             (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(HasCurrentInput), HasCurrentInput), (nameof(AttentionReason), AttentionReason), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),

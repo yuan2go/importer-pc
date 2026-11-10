@@ -54,10 +54,10 @@ static partial class Program
             var center = (Border)left.FindName("CenteredSupplyPanel"); var result = (Border)left.FindName("ResultPanel");
             Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" && vm.Left.CenteredStateForeground == OperatorTokens.Success,
                 "ready camera shows a green centered waiting title on the neutral result surface");
-            var content = (StackPanel)left.FindName("CenteredSupplyContent");
+            var content = (FrameworkElement)left.FindName("CenteredSupplyContent");
             Check(Math.Abs(content.TranslatePoint(new Point(0, content.ActualHeight / 2), result).Y - result.ActualHeight / 2) <= 2,
                 "the complete title and instruction group is vertically centered");
-            Check(!((DockPanel)left.FindName("DetailedStatus")).IsVisible && !((TextBlock)left.FindName("NextStep")).IsVisible &&
+            Check(!vm.Left.CenteredRcsRejection && !((DockPanel)left.FindName("DetailedStatus")).IsVisible && !((TextBlock)left.FindName("NextStep")).IsVisible &&
                 !((Button)left.FindName("CenteredEnableSupply")).IsVisible, "waiting has one instruction group and no start button or scattered status copy");
             var production = probe.Project!;
             probe.Project = s => production(s) with { Devices = s.Devices!.Select(d => d.DeviceId == h.Left ? d with { Health = DeviceHealth.Disconnected } : d).ToArray() };
@@ -70,7 +70,7 @@ static partial class Program
             var snapshot = await h.App.SnapshotAsync();
             await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
             await Until(() => vm.Right.SupplyDisabled);
-            Check(((Border)right.FindName("CenteredSupplyPanel")).IsVisible && vm.Right.CenteredStateTitle == "已停用" &&
+            Check(((Border)right.FindName("CenteredSupplyPanel")).IsVisible && vm.Right.CenteredStateTitle == "已停用" && !vm.Right.CenteredRcsRejection &&
                 ((Button)right.FindName("CenteredEnableSupply")).IsVisible, "disabled position uses the same centered structure and retains its enable action");
             Click(window, "收起菜单"); await Flush();
             var navigation = (Border)window.FindName("DailyNavigation"); var toggle = (Button)window.FindName("NavigationToggle");
@@ -91,7 +91,7 @@ static partial class Program
             CaptureInternal(evidence, "home-centered-waiting", client, lines);
             entry.Text = "SYNTH-RCS-BARCODE"; h.Peer.HeartbeatUnavailable = true;
             await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline && vm.Left.CenteredStateTitle == "暂不能投包");
-            Check(center.IsVisible && vm.Left.CenteredStateForeground == OperatorTokens.Danger && vm.Left.ResultBackground == OperatorTokens.Neutral,
+            Check(center.IsVisible && !vm.Left.CenteredRcsRejection && vm.Left.CenteredStateForeground == OperatorTokens.Danger && vm.Left.ResultBackground == OperatorTokens.Neutral,
                 "RCS outage shows a dark red centered title without a red result background");
             Check(entry.Text == "SYNTH-RCS-BARCODE" && !submit.IsEnabled && vm.Left.CenteredStateInstruction == "请检查连接，恢复后再提交",
                 "offline state retains the typed barcode, disables submit and directs the operator to restore RCS");
@@ -125,37 +125,47 @@ static partial class Program
             Check(entry.Text == "SYNTH-RCS-BARCODE", "RCS recovery keeps the original input ready to submit");
             submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
             Check(!center.IsVisible && vm.Left.Slot == "SYNTH-CHUTE", "a confirmed chute keeps its full result instead of the waiting panel");
+            h.Peer.Mode = "reject"; h.Peer.RejectionMessage = "无设备可用";
+            var rejectedCode = CameraRoundHarness.Barcode("SYNTH-CENTERED-REJECT");
+            h.Api(h.Left).Enqueue(rejectedCode, 1);
+            await Until(() => vm.Left.CenteredRcsRejection && vm.Left.Barcode == "SYNTH-CENTERED-REJECT");
+            var rejectionId = vm.Left.Operation!.Id; var rejectionCount = h.Peer.Requests.Count;
+            h.Api(h.Left).Enqueue(rejectedCode, 2);
+            await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.CenteredRcsRejection);
+            var rejectedSnapshot = vm.Snapshot!;
+            Check(vm.Left.Operation?.Id == rejectionId && h.Peer.Requests.Count == rejectionCount &&
+                vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateReason == "本件暂不能分配格口　已读到 · …JECT" &&
+                vm.Left.CenteredStateInstruction == "请取下包裹，可放下一件\n多次出现请通知维护人员" &&
+                vm.Left.CanViewCurrentPicture && vm.Right.SupplyDisabled, "same-placement frames preserve the default-policy rejection and its picture without another request or changing the other position");
+            CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);
+            ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.SupplyDisabling && !vm.Busy);
+            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\n停用中，暂不接收新条码" &&
+                !vm.Left.CanSubmitBarcode, "disabling keeps the current rejection and prevents new input");
+            ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
+            h.Peer.HeartbeatUnavailable = true;
+            await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
+            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\nRCS 连接恢复后再放下一件",
+                "a later outage keeps the current rejection visible and changes the next step");
+            h.Peer.HeartbeatUnavailable = false;
+            await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online);
+            h.Peer.Mode = "assigned";
+            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            try
+            {
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-REJECT"), 3);
+                await Until(() => vm.Left.IsProcessing && vm.Left.Barcode == "SYNTH-AFTER-REJECT");
+                Check(!vm.Left.CenteredRcsRejection && !center.IsVisible && !vm.Left.ShowConfirmedTask,
+                    "next placement processing clears the rejection and does not revive the prior chute");
+            }
+            finally { h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; }
+            await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-AFTER-REJECT");
+            await vm.AcceptPublishedSnapshotAsync(rejectedSnapshot);
+            Check(vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-AFTER-REJECT" && h.Peer.Requests.Count == rejectionCount + 1 && !center.IsVisible,
+                "the old rejection snapshot cannot replace the next parcel's chute or trigger an extra request");
             h.Peer.HeartbeatUnavailable = true; await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
             Check(!center.IsVisible && vm.Left.ShowConfirmedTask, "a later RCS outage never hides a confirmed current parcel result");
-            h.Peer.HeartbeatUnavailable = false;
-            snapshot = await h.App.SnapshotAsync();
-            await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
-            await h.WaitForCameraAdmissionAsync();
-            h.Peer.Mode = "no-device";
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NO-DEVICE-2263"), 1);
-            await Until(() => vm.Left.CenteredRcsRejection && vm.Right.CenteredWaiting);
-            var title = (TextBox)left.FindName("CenteredStateTitle");
-            var reason = (TextBlock)left.FindName("CenteredStateReason");
-            var next = (TextBlock)left.FindName("CenteredStateInstruction");
-            var barcodeCue = (TextBlock)left.FindName("CenteredBarcodeCue");
-            Check(center.IsVisible && title.Text == "无设备可用" && title.IsReadOnly && title.Focusable && reason.Text == "本件暂不能分配格口" &&
-                next.Text.Contains("请取下包裹，可放下一件") && next.Text.Contains("多次出现请通知维护人员"),
-                "confirmed RCS rejection shows the original message, business meaning and operator action in the shared skeleton");
-            Check(Equals(result.Background, result.FindResource("DangerBackground")) && Equals(result.BorderBrush, result.FindResource("Danger")) &&
-                !((DockPanel)left.FindName("DetailedStatus")).IsVisible && !vm.Left.DisplaySlotVisible && !vm.Left.HasUncertainOriginal,
-                "confirmed rejection uses the soft danger surface without a duplicate title or stale chute");
-            Check(barcodeCue.IsVisible && barcodeCue.Text == "已读到 · …2263" && barcodeCue.FontSize < title.FontSize &&
-                vm.Left.DeviceLabel == "相机：在线" && vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online && vm.Right.CenteredWaiting,
-                "scanned suffix remains secondary while camera and RCS stay online and the other lane stays ready");
-            CaptureInternal(evidence, "home-centered-rcs-rejected", client, lines);
-            await SetClient(window, 800, 420); await Flush();
-            var resultScroll = (ScrollViewer)left.FindName("CenteredResultScroll");
-            var actionBounds = next.TransformToAncestor(resultScroll).TransformBounds(new Rect(next.RenderSize));
-            CaptureInternal(evidence, "home-centered-rcs-rejected-small", client, lines);
-            Check(Inside(title, client) && Inside(submit, client) && next.Text.Contains("请取下包裹") && reason.Text.Contains("…2263") &&
-                actionBounds.Bottom <= resultScroll.ViewportHeight + 1,
-                $"compact rejection shows the original message, suffix and removal instruction without scrolling (action {actionBounds.Bottom:F1}, viewport {resultScroll.ViewportHeight:F1})");
-            await SetClient(window, 1366, 768); await Flush();
             PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.FullScreen); await Flush();
             exit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => stopAttempts == 1 && window.IsEnabled && vm.Message.Contains("停止未完成"), refresh: false);

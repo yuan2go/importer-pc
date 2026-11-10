@@ -5,8 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Platform;
+using Ipc.Presentation.Wpf;
 
 static partial class Program
 {
@@ -20,7 +22,7 @@ static partial class Program
             using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(6));
             while (true) { var update = await subscription.ReadAsync(budget.Token); if (update.Snapshot is { } s && s.Revision >= revision) return update; }
         }
-        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "responsive"), 5000); await h.StartAsync();
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "responsive"), 5000); await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var source = (IParcelPresentationSource)h.App;
         var subscriptions = Enumerable.Range(0, 8).Select(_ => source.SubscribePresentation()).ToArray();
         try
@@ -130,8 +132,9 @@ static partial class Program
             h.Peer.Mode = "reject"; h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("RIGHT-REJECT-0002"), 2);
             await Until(() => other.Operation?.State == ParcelState.WcsRejected && !other.ShowConfirmedTask, "pushed rejection");
             await Until(() => (int)typeof(SupplyStationPosition).GetProperty("RejectionCueCount", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(rightControl)! > 0, "rejection feedback");
-            Check(!other.DisplaySlotVisible && other.DisplayPresentation.Foreground == "#B52F38" && other.RejectionIdentity is not null,
-                "explicit rejection removes the destination, displays red reason and produces a distinct identity-scoped rejection cue");
+            Check(!other.DisplaySlotVisible && other.DisplayPresentation.Tone == ParcelPresentationTone.Rejected && other.NeedsAttention &&
+                other.CenteredStateForeground == OperatorTokens.Danger && other.ResultBackground == OperatorTokens.Neutral && other.RejectionIdentity is not null,
+                "explicit rejection removes the destination, shows the reason in red on neutral, and produces a distinct identity-scoped rejection cue");
             CaptureInternal(evidence, "responsive-offline-rejection", (Grid)window.FindName("ClientArea"), lines);
             var stale = window.ViewModel.Snapshot! with { PublishedTicks = Stopwatch.GetTimestamp() - Stopwatch.Frequency * 4 };
             // A lower revision/timestamp cannot replace newer facts; use a fresh VM

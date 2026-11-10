@@ -220,9 +220,9 @@ static partial class Program
             await h.App.ExitManagementModeAsync(); await vm.RefreshAsync(); await Flush();
             Check(Field<Image>(control, "photo").Source is null && Field<TextBox>(control, "barcode").Text.Length == 0 &&
                 (await h.App.SnapshotAsync()).Paused, "management revoke clears local evidence and preserves the caller explicit pause");
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == e.OperationId && o.Wcs?.State == StageState.Unknown));
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity?.HistoricalUnknown == 1);
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; await h.AuthorizeAsync();
-            Check((await h.App.SnapshotAsync()).Operations.Single(o => o.Id == e.OperationId).Wcs is { State: StageState.Unknown, Attempts: 1 } pending &&
+            Check((await h.App.OperationAsync(e.OperationId!))?.Wcs is { State: StageState.Unknown, Attempts: 1 } pending &&
                 pending.Request.IntegrationRequest!.Body == e.RequestBody && h.Peer.Requests.Count == 2,
                 "native in-flight revoke retains original Unknown/JSON without an extra HTTP request");
         }

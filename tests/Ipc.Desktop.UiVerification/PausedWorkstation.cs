@@ -91,7 +91,8 @@ static partial class Program
             Check(vm.Right.Barcode == "SYNTH-NEXT-SINGLE" && !vm.Right.AttentionReason.Contains("Position=") &&
                 vm.Right.CenteredStateTitle == "格口结果未确认" && vm.Right.CenteredStateReason == "本件没有可用格口" &&
                 vm.Right.CanViewCurrentPicture && h.Peer.Requests.Count == sent + 1 && vm.Left.ShowConfirmedTask &&
-                Wire.Encode(vm.Snapshot!.Operations.Single(op => op.Id == prior.Id).Wcs) == Wire.Encode(prior.Wcs),
+                vm.Snapshot!.Capacity?.HistoricalUnknown == 1 && vm.Snapshot.Operations.All(op => op.Id != prior.Id) &&
+                Wire.Encode((await h.App.OperationAsync(prior.Id))?.Wcs) == Wire.Encode(prior.Wcs),
                 "a different valid barcode requests once without an empty-tray gap; its own unknown result is localized and the prior request and other lane stay intact");
             prior = vm.Right.Operation!;
             sent = h.Peer.Requests.Count;
@@ -128,9 +129,10 @@ static partial class Program
             h.Peer.ReplySlot = "B-02";
             h.Api(h.Right).EnqueueNative(rejectedPixels, 8, [Symbol("SYNTH-NEXT-SINGLE", 150)]);
             await Until(() => vm.Right.ShowConfirmedTask);
-            var historical = vm.Snapshot!.Operations.Single(op => op.Id == prior.Id);
+            var historical = await h.App.OperationAsync(prior.Id);
             Check(vm.Right.Barcode == "SYNTH-NEXT-SINGLE" && vm.Right.Operation?.Id != prior.Id && vm.Right.Slot == "B-02" &&
-                Wire.Encode(historical.Wcs) == Wire.Encode(prior.Wcs) && h.Peer.Requests.Count == sent + 1 &&
+                vm.Snapshot!.Capacity?.HistoricalUnknown == 2 && vm.Snapshot.Operations.All(op => op.Id != prior.Id) &&
+                Wire.Encode(historical?.Wcs) == Wire.Encode(prior.Wcs) && h.Peer.Requests.Count == sent + 1 &&
                 vm.Right.CanViewCurrentPicture && vm.Left.ShowConfirmedTask,
                 "same-code replacement makes one independent request and preserves the original response and request exactly");
             var triggerRecorded = false; var pictureButtonRecorded = false; var pictureReadRecorded = false;
@@ -195,7 +197,12 @@ static partial class Program
         {
             var vm = window.ViewModel;
             await SetClient(window, 1366, 768);
-            await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Fresh && vm.Snapshot?.Paused == false; });
+            await CameraRoundHarness.Until(async () =>
+            {
+                await vm.RefreshAsync();
+                return vm.Fresh && vm.Snapshot is { Paused: false, Positions: { } positions } &&
+                    positions.All(position => position.BarcodeInput?.Camera == true);
+            });
             if (vm.IsManagementMode || !vm.Left.ShowCenteredState || vm.Left.CenteredStateTitle != "等待投包" ||
                 vm.Right.CenteredStateTitle != "等待投包" || vm.ResumeVisibility != Visibility.Collapsed)
                 throw new InvalidOperationException("Old camera receipts must recover directly into ordinary work without management or resume: " + Wire.Encode(vm.Snapshot));

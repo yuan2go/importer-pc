@@ -676,6 +676,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ReaderConfirmationExpired; inspect this parcel; no operation or external intent created", selection: selection), "ObservationBlocked"); return; }
+        if (!manual) CommitChangedPlacement(position, code!, o);
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
         if ((manual ? !CanManuallyAdmit(position) : !CanAdmit(position)) || Effective.Login is not null && admittedOperator is null)

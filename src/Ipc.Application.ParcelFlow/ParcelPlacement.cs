@@ -119,6 +119,24 @@ public sealed partial class ParcelRuntime
         foreach (var position in positions.Keys) CommitEmptyTray(position);
     }
 
+    // A trusted, freshly selected different code is also a placement boundary.
+    // Run only after rejected-candidate continuity, identity, age and reader checks:
+    // partial reads of a rejected multi-code parcel must not release its owner.
+    void CommitChangedPlacement(string position, string code, Observation observation)
+    {
+        if (Id != "sportmaster" || repository!.Latest(position) is not { } previous || IsDebugRequest(previous) ||
+            previous.ParcelCode == code || previous.ObservedAt >= observation.ObservedAt) return;
+        var operationIds = operations.Values.Where(o => o.PositionId == position && !IsDebugRequest(o) &&
+            o.ObservedAt < observation.ObservedAt && (!MainTerminated(o) || NeedsReconciliation(o)) && !releasedPlacements.Contains(o.Id))
+            .Select(o => o.Id).ToArray();
+        if (operationIds.Length == 0) return;
+        var detail = new { PositionId = position, observation.ObservedAt, observation.DeviceId, observation.Epoch,
+            observation.SourceEventId, Code = code, OperationIds = operationIds, Source = "ChangedBarcode" };
+        repository.Commit(null, "StationPlacementReleased", Wire.Encode(detail));
+        releasedPlacements.UnionWith(operationIds);
+        WriteRuntimeLog("扫码与准入", "换码已确认，原作业已退出本位", detail);
+    }
+
     bool IsBeforeEmptyTray(string position, DateTimeOffset observedAt) =>
         confirmedEmptyTrays.TryGetValue(position, out var confirmed) && observedAt <= confirmed;
 

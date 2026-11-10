@@ -86,18 +86,22 @@ static partial class Program
             await SetClient(window, 1366, 768);
             CaptureInternal(evidence, "unconfirmed-original-with-multi-code", (Grid)window.FindName("ClientArea"), lines);
             h.Api(h.Right).EnqueueNative(CameraRoundHarness.Barcode("SYNTH-NEXT-SINGLE"), 4, [Symbol("SYNTH-NEXT-SINGLE", 50)]);
-            await Until(() => vm.Right.Input is { Outcome: ParcelInputOutcome.Blocked, Observation.SourceEventId: "mvid.frame.4" });
-            Check(vm.Right.Input!.Reason.Contains("Position=") && !vm.Right.AttentionReason.Contains("Position=") &&
-                vm.Right.CenteredStateTitle == "本次扫码未发送" && vm.Right.DisplayAttentionReason == "条码已读到，托盘尚未确认清空" &&
-                vm.Right.CanViewCurrentPicture && h.Peer.Requests.Count == sent,
-                "the internal guard is recorded, but the card displays only operator wording and does not send before tray release");
+            await Until(() => vm.Right.Input is { Outcome: ParcelInputOutcome.Admitted, Observation.SourceEventId: "mvid.frame.4" } &&
+                vm.Right.Operation?.Id != prior.Id && vm.Right.HasUncertainOriginal);
+            Check(vm.Right.Barcode == "SYNTH-NEXT-SINGLE" && !vm.Right.AttentionReason.Contains("Position=") &&
+                vm.Right.CenteredStateTitle == "格口结果未确认" && vm.Right.CenteredStateReason == "本件没有可用格口" &&
+                vm.Right.CanViewCurrentPicture && h.Peer.Requests.Count == sent + 1 && vm.Left.ShowConfirmedTask &&
+                Wire.Encode(vm.Snapshot!.Operations.Single(op => op.Id == prior.Id).Wcs) == Wire.Encode(prior.Wcs),
+                "a different valid barcode requests once without an empty-tray gap; its own unknown result is localized and the prior request and other lane stay intact");
+            prior = vm.Right.Operation!;
+            sent = h.Peer.Requests.Count;
             await SetClient(window, 800, 420);
             var rightControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
             var client = (Grid)window.FindName("ClientArea");
             Check(Inside((TextBlock)rightControl.FindName("CenteredInstruction"), client) &&
                 Inside(Descendants(rightControl).OfType<Button>().Single(b => Equals(b.Content, "查看详情")), client),
                 "compact exception card keeps its instructions and details button reachable");
-            CaptureInternal(evidence, "unconfirmed-original-with-blocked-scan-800", client, lines);
+            CaptureInternal(evidence, "changed-placement-own-unknown-result-800", client, lines);
             await vm.PauseAsync("SYNTH-UI-PAUSE-REASON"); await Until(() => vm.Snapshot?.Paused == true);
             Check(vm.Right.DisplayStatus.Contains("未确认") && vm.Right.DisplayPresentation.Tone == ParcelPresentationTone.Unknown &&
                 !vm.Right.CenteredRcsRejection && vm.Right.DisplayNextStep.Contains("供包恢复后"), "software pause still shows the current package result");
@@ -122,10 +126,10 @@ static partial class Program
                 h.Peer.Requests.Count == sent, "confirmed empty tray resets the right card with no action or replay");
             CaptureInternal(evidence, "waiting-after-unconfirmed-result", client, lines);
             h.Peer.ReplySlot = "B-02";
-            h.Api(h.Right).EnqueueNative(rejectedPixels, 8, [Symbol("SYNTH-UNKNOWN", 150)]);
+            h.Api(h.Right).EnqueueNative(rejectedPixels, 8, [Symbol("SYNTH-NEXT-SINGLE", 150)]);
             await Until(() => vm.Right.ShowConfirmedTask);
             var historical = vm.Snapshot!.Operations.Single(op => op.Id == prior.Id);
-            Check(vm.Right.Barcode == "SYNTH-UNKNOWN" && vm.Right.Operation?.Id != prior.Id && vm.Right.Slot == "B-02" &&
+            Check(vm.Right.Barcode == "SYNTH-NEXT-SINGLE" && vm.Right.Operation?.Id != prior.Id && vm.Right.Slot == "B-02" &&
                 Wire.Encode(historical.Wcs) == Wire.Encode(prior.Wcs) && h.Peer.Requests.Count == sent + 1 &&
                 vm.Right.CanViewCurrentPicture && vm.Left.ShowConfirmedTask,
                 "same-code replacement makes one independent request and preserves the original response and request exactly");

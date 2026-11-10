@@ -3,7 +3,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    long freeStorageBytes;
+    long? freeStorageBytes;
     string? storageCapacityFailure;
     string? storageCapacityWarning;
     string? storageCapacityEstimate;
@@ -21,14 +21,16 @@ public sealed partial class ParcelRuntime
     {
         var timestamp = StorageTimeForVerification.GetTimestamp();
         if (storageChecked != default && StorageTimeForVerification.GetElapsedTime(storageCheckedTimestamp, timestamp) < TimeSpan.FromSeconds(1)) return;
+        freeStorageBytes = null;
         try
         {
-            freeStorageBytes = StorageAvailableBytesForVerification?.Invoke() ?? ParcelStorageVolume.Plan(directory!, 0, Retention.MinimumFreeBytes).AvailableBytes;
-            storageCapacityFailure = freeStorageBytes < Retention.MinimumFreeBytes ? "Storage reserve exhausted; preserve original history and use approved external retention procedure" : null;
+            var free = StorageAvailableBytesForVerification?.Invoke() ?? ParcelStorageVolume.Plan(directory!, 0, Retention.MinimumFreeBytes).AvailableBytes;
+            freeStorageBytes = free;
+            storageCapacityFailure = free < Retention.MinimumFreeBytes ? "Storage reserve exhausted; preserve original history and use approved external retention procedure" : null;
             var warning = Retention.WarningFreeBytes ?? checked(Retention.MinimumFreeBytes * 4);
             var critical = Retention.CriticalFreeBytes ?? checked(Retention.MinimumFreeBytes * 2);
-            var level = storageCapacityFailure is not null ? "Blocked" : freeStorageBytes < critical ? "Critical" : freeStorageBytes < warning ? "Warning" : "Normal";
-            storageCapacityWarning = level == "Normal" ? null : "StorageGrowthWarning: Level=" + level + "; free=" + freeStorageBytes + "; warning=" + warning + "; critical=" + critical + "; reserve=" + Retention.MinimumFreeBytes + "; preserve originals; plan authorized maintenance/relocation";
+            var level = storageCapacityFailure is not null ? "Blocked" : free < critical ? "Critical" : free < warning ? "Warning" : "Normal";
+            storageCapacityWarning = level == "Normal" ? null : "StorageGrowthWarning: Level=" + level + "; free=" + free + "; warning=" + warning + "; critical=" + critical + "; reserve=" + Retention.MinimumFreeBytes + "; preserve originals; plan authorized maintenance/relocation";
             if (level != lastStorageLevel)
             { Diagnostic("StorageCapacity", level, level == "Normal" ? "信息" : "警告", storageCapacityWarning); lastStorageLevel = level; }
             if (repository is not null && (storageSamples.Count == 0 || StorageTimeForVerification.GetElapsedTime(storageSamples.Last().At, timestamp) >= TimeSpan.FromMinutes(1)))
@@ -40,7 +42,7 @@ public sealed partial class ParcelRuntime
                 var first = storageSamples.Peek(); var elapsed = StorageTimeForVerification.GetElapsedTime(first.At, timestamp).TotalSeconds;
                 var jobs = sequence - first.Sequence; var growth = bytes - first.Bytes;
                 double? bytesPerJob = jobs > 0 && growth > 0 ? (double)growth / jobs : null;
-                double? remainingDays = elapsed > 0 && bytesPerJob is { } perJob ? Math.Max(0, freeStorageBytes - Retention.MinimumFreeBytes) / (perJob * jobs / elapsed * 86400) : null;
+                double? remainingDays = elapsed > 0 && bytesPerJob is { } perJob ? Math.Max(0, free - Retention.MinimumFreeBytes) / (perJob * jobs / elapsed * 86400) : null;
                 storageCapacityEstimate = "StorageForecast:" + Ipc.Platform.Wire.Encode(new
                 {
                     Result = remainingDays is null ? "InsufficientSamples" : "EstimateOnly",
@@ -62,7 +64,17 @@ public sealed partial class ParcelRuntime
             }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
-        { storageCapacityFailure = "Storage capacity unavailable: " + ex.GetType().Name; }
+        {
+            storageCapacityFailure = "Storage capacity unavailable: " + ex.GetType().Name;
+            if (freeStorageBytes is null)
+            {
+                storageCapacityWarning = null;
+                storageCapacityEstimate = null;
+                if (lastStorageLevel != "Unavailable")
+                    Diagnostic("StorageCapacity", "Unavailable", "警告", ex.ToString());
+                lastStorageLevel = "Unavailable";
+            }
+        }
         storageChecked = StorageTimeForVerification.GetUtcNow();
         storageCheckedTimestamp = timestamp;
     }

@@ -21,7 +21,7 @@ public static class ParcelInputReasons
     public static string? ActionableNotice(ParcelInputBlockReason reason) => reason switch
     {
         ParcelInputBlockReason.CapacityExhausted => "当前作业已达上限。请等待请求处理完成，或按本位提示确认包裹已取下。",
-        ParcelInputBlockReason.StorageUnavailable => "作业记录空间不足或写入失败。请检查 D 盘空间和设备与诊断，保留原记录。",
+        ParcelInputBlockReason.StorageUnavailable => "作业存储异常。请检查 D 盘空间和“设备与诊断”中的存储状态，保留原记录。",
         ParcelInputBlockReason.ReceiptPersistencePending => "原请求回执尚未可靠保存。请在设备与诊断查看记录状态，并联系维护人员。",
         ParcelInputBlockReason.PreviousResultPending => "原请求正在处理。请等待处理结束。",
         ParcelInputBlockReason.PreviousResultUnconfirmed => "本位包裹格口未确认。请取下包裹并按作业卡提示确认离位。",

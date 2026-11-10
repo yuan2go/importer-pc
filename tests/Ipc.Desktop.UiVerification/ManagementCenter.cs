@@ -26,7 +26,14 @@ static partial class Program
         Directory.CreateDirectory(launch.ConfigurationDirectory);
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Login = null };
         ExtensionStore.AtomicWrite(Path.Combine(launch.ConfigurationDirectory, "business.json"), config);
-        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+        var reserve = (config.Retention ?? new ParcelRetentionPolicy()).MinimumFreeBytes;
+        long probeBytes = reserve * 8;
+        await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch))
+        {
+            RuntimeIdentityPreflight = () => { },
+            StorageAvailableBytesForVerification = () => Volatile.Read(ref probeBytes) is >= 0 and var bytes
+                ? bytes : throw new IOException("Synthetic storage probe failure")
+        };
         await runtime.StartAsync(default);
         const string password = "Synthetic-Center-Only";
         await runtime.ConfigureManagementPasswordAsync(password);
@@ -132,6 +139,26 @@ static partial class Program
         var fenced = await runtime.SnapshotAsync();
         Check(fenced.Positions!.All(p => !p.Admit), "opening the native management window fences production admission");
         CaptureInternal(evidence, "management-center-diagnostics", center, lines);
+        var storage = (StackPanel)cards.Single(card => AutomationProperties.GetAutomationId(card) == "DiagnosticCard.storage").Child;
+        var badge = (TextBlock)((DockPanel)storage.Children[0]).Children[0];
+        var reading = (TextBlock)storage.Children[1];
+        bool UsesInk(string key) => Equals(badge.Foreground, badge.FindResource(key));
+        await Until(() => badge.Text == "正常" && reading.Text.StartsWith("剩余 "));
+        Check(UsesInk("Success"), "verified storage reading uses the success theme resource");
+        Volatile.Write(ref probeBytes, -1);
+        await Until(() => badge.Text == "作业存储异常");
+        Check(UsesInk("Danger") && reading.Text.StartsWith("剩余空间未确认") &&
+            vm.Snapshot?.Capacity is { AdmissionBlock: ParcelInputBlockReason.StorageUnavailable, FreeStorageBytes: null },
+            "a failed probe shows the storage error and withdraws the previous numeric reading");
+        CaptureInternal(evidence, "management-center-storage-unavailable", center, lines);
+        Volatile.Write(ref probeBytes, reserve - 1);
+        await Until(() => vm.Snapshot?.Capacity?.FreeStorageBytes == reserve - 1);
+        Check(badge.Text == "作业存储异常" && UsesInk("Danger") && reading.Text.StartsWith("剩余 "),
+            "confirmed low space stays an error and shows its actual numeric reading");
+        Volatile.Write(ref probeBytes, reserve * 8);
+        await Until(() => badge.Text == "正常");
+        Check(UsesInk("Success") && vm.Snapshot?.Capacity?.FreeStorageBytes == reserve * 8,
+            "successful probe restores the healthy status and the confirmed reading");
         Click(center, "设置"); await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
         Check(vm.ManagementStatus.SessionId == grantId && !System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().Any(w => w.IsVisible), "switching management tabs preserves the single password grant");
         var maintenance = Descendants(center).OfType<MaintenancePage>().Single();
@@ -155,7 +182,7 @@ static partial class Program
         // External revocation exercises the same lock path as lease expiry without waiting fifteen minutes.
         await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync();
         Check(((Border)center.FindName("AuthorizationGate")).IsVisible && !maintenance.IsEnabled, "authorization revocation locks protected content immediately");
-        Check(vm.HasUnsavedConfiguration && vm.Snapshot.RuntimeId == runtimeId, "revocation preserves drafts and the running business instance");
+        Check(vm.HasUnsavedConfiguration && vm.Snapshot?.RuntimeId == runtimeId, "revocation preserves drafts and the running business instance");
         CaptureInternal(evidence, "management-center-locked", center, lines);
         _ = center.Dispatcher.BeginInvoke(new Action(() => Click(center, "验证管理密码"))); login = await LoginDialog();
         Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
@@ -167,7 +194,7 @@ static partial class Program
         var debug = Descendants(center).OfType<FrameworkElement>().Single(e => e.GetType().Name == "StationDebugControl");
         var active = debug.GetType().GetField("active", BindingFlags.Instance | BindingFlags.NonPublic)!;
         await Until(() => debug.IsLoaded && active.GetValue(debug) is true);
-        var requestCount = vm.Snapshot.Operations.Count();
+        var requestCount = vm.Snapshot!.Operations.Count();
         await runtime.ExitManagementModeAsync(); await vm.RefreshManagementModeAsync();
         await Until(() => !debug.IsLoaded && active.GetValue(debug) is false);
         _ = center.Dispatcher.BeginInvoke(new Action(() => Click(center, "验证管理密码"))); login = await LoginDialog();

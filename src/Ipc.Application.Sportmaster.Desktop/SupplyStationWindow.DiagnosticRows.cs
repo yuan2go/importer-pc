@@ -97,10 +97,15 @@ public partial class SupplyStationWindow
         actions.Add(() =>
         {
             var capacity = ViewModel.Fresh ? ViewModel.Snapshot?.Capacity : null;
-            storageBadge.Text = capacity is null ? "状态未确认" :
-                capacity.AdmissionBlock == ParcelInputBlockReason.StorageUnavailable ? "作业存储异常" : "正常";
-            storageBadge.SetResourceReference(TextBlock.ForegroundProperty, capacity is null ? "Muted" : capacity.FreeStorageBytes < capacity.MinimumFreeBytes ? "Danger" : "Success");
-            storageText.Text = capacity is null ? "当前存储状态不可读，旧指标已失效。" : $"剩余 {capacity.FreeStorageBytes / 1048576:N0} MiB；低于 {capacity.MinimumFreeBytes / 1048576:N0} MiB 时停止新供包。";
+            var unavailable = capacity?.AdmissionBlock == ParcelInputBlockReason.StorageUnavailable;
+            var free = capacity?.FreeStorageBytes;
+            var (label, ink) = unavailable ? ("作业存储异常", "Danger") :
+                free is null ? ("状态未确认", "Muted") : ("正常", "Success");
+            storageBadge.Text = label;
+            storageBadge.SetResourceReference(TextBlock.ForegroundProperty, ink);
+            storageText.Text = capacity is null ? "等待存储状态更新。" : free is { } bytes
+                ? $"剩余 {bytes / 1048576:N0} MiB。低于 {capacity.MinimumFreeBytes / 1048576:N0} MiB 时停止新供包。"
+                : "剩余空间未确认。请检查 D 盘并等待状态更新。";
         });
 
         var logState = ProductText("详细日志状态未确认"); var toggle = new Button { Content = "开启详细日志 30 分钟", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };

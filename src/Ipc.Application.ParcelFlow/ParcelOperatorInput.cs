@@ -43,10 +43,12 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                         return new("Conflict", "运行或生效配置已改变；核对当前包裹后重新提交。", null, null, repository.Revision);
                     CommitEmptyTray(request.PositionId);
                     RetainReleasedSmUnknowns();
-                    var latestInput = DisplayedInputs().SingleOrDefault(input => input.PositionId == request.PositionId);
+                    var latest = LatestWorkCardOperation(request.PositionId);
+                    var now = StationTime.GetUtcNow();
+                    var latestInput = DisplayedInput(request.PositionId, ExpiredManualResult(request.PositionId, latest, now));
                     var samePlacement = request.ExpectedOperationId is not null && latestInput?.OperationId == request.ExpectedOperationId && ParcelInputReasons.IsSamePlacement(latestInput);
                     if (latestInput?.Observation.Id != request.ExpectedObservationId && !samePlacement ||
-                        DisplayedOperation(request.PositionId)?.Id != request.ExpectedOperationId)
+                        DisplayedOperation(request.PositionId, latest, now)?.Id != request.ExpectedOperationId)
                         return new("Conflict", "输入期间本位包裹已变化；核对当前包裹及输入内容后，再明确更新输入基准。", null, null, repository.Revision);
                     var blocking = ManualInputReasons(request.PositionId);
                     if (blocking.Length != 0)

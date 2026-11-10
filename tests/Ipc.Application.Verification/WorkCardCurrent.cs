@@ -64,7 +64,15 @@ internal static class WorkCardCurrent
             clock.Offset = TimeSpan.FromMinutes(9);
             Check((await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").CurrentOperation == id, "it is still shown nine minutes later");
             clock.Offset = TimeSpan.FromMinutes(11);
-            Check((await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").CurrentOperation is null, "after ten minutes without new input the card returns to waiting");
+            var expired = await m.App.SnapshotAsync();
+            var position = expired.Positions!.Single(p => p.Id == "right");
+            Check(position.CurrentOperation is null && position.ExpiredManualResult?.OperationId == id && position.PlacementClearedAt is null &&
+                expired.Inputs!.All(i => i.PositionId != "right") && position.BarcodeInput?.Manual == true,
+                "expiry hides the settled manual chute and input without claiming the parcel left");
+            var next = await m.App.SubmitParcelBarcodeAsync(await m.Command("right", "SYNTH-CARD-NEXT"), default);
+            await CameraRoundHarness.Until(() => Task.FromResult(m.Peer.Requests.Count == 2));
+            Check(next.Status == "Admitted" && next.OperationId != id && (await m.App.OperationAsync(id))?.State == ParcelState.SlotResolved,
+                "submitting from the cleared work card admits new work and preserves the original result");
         }
         await PausedCameraPicture(workspace, Path.Combine(root, "paused-current-picture"));
     }

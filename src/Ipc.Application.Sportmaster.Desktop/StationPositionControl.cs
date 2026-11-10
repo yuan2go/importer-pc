@@ -30,15 +30,17 @@ public sealed partial class SupplyStationPositionViewModel
     public bool SupplyDisabling => SupplyControl?.Mode == StationPositionMode.Disabling;
     public bool SupplyDisabled => SupplyControl?.Mode == StationPositionMode.Disabled;
     public bool CanChangeSupply => owner.Fresh && owner.CanStartOperation && owner.Application is IStationPositionControl;
-    public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled &&
-        owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.CanConfirmPlacementRemoval == true;
+    string? PlacementRemovalOperation => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementRemovalOperation;
+    public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled && PlacementRemovalOperation is not null;
+    public bool ShowConfirmedPlacementRemoval => CanConfirmPlacementRemoval &&
+        Operation is { OperatorInput: not null, State: ParcelState.SlotResolved or ParcelState.WcsRejected };
     internal Task ConfirmPlacementRemovalAsync() => owner.RunAsync(async () =>
     {
-        if (!CanConfirmPlacementRemoval || owner.Snapshot is not { } snapshot || Operation is not { } operation) return;
+        if (!CanConfirmPlacementRemoval || owner.Snapshot is not { } snapshot || PlacementRemovalOperation is not { } operation) return;
         try
         {
             var receipt = await owner.ServiceAsync(() => owner.Application.CommandAsync(
-                new(Ipc.Platform.Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", PositionId, operation.Id)));
+                new(Ipc.Platform.Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", PositionId, operation)));
             if (receipt.Status != "Persisted")
                 owner.Message = "本位状态已变化，请查看当前提示。";
         }

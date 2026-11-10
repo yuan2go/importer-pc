@@ -157,7 +157,7 @@ internal static class StationPositionControlChecks
             var snapshot = await h.App.SnapshotAsync();
             var old = snapshot.Operations.Single();
             Check(original.Status == "Admitted" && old.State == ParcelState.WcsUnknown && h.Peer.Requests.Count == 1 &&
-                snapshot.Positions!.Single(p => p.Id == "left") is { CanConfirmPlacementRemoval: true, BarcodeInput.Manual: false },
+                snapshot.Positions!.Single(p => p.Id == "left") is { BarcodeInput.Manual: false } lane && lane.PlacementRemovalOperation == old.Id,
                 "without camera placement evidence the operator has an explicit removal action on the blocked lane");
             var removal = new BusinessCommand(Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", "left", old.Id);
             Check((await h.App.CommandAsync(removal with { Owner = "right" })).Status == "Rejected",
@@ -198,7 +198,7 @@ internal static class StationPositionControlChecks
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").BarcodeInput?.Manual == true);
         var restarted = await h.App.SnapshotAsync();
         Check(!restarted.Paused && h.Peer.Requests.Count == 2 &&
-            restarted.Positions!.Single(p => p.Id == "left") is { CanConfirmPlacementRemoval: true, BarcodeInput.Manual: false } &&
+            restarted.Positions!.Single(p => p.Id == "left") is { BarcodeInput.Manual: false } lane && lane.PlacementRemovalOperation == old.Id &&
             (await h.App.HistoryAsync()).Items.Any(row => row.Operation.Id == finished.OperationId && row.Operation.State == ParcelState.SlotResolved),
             "upgrade starts without replay, keeps the possibly occupied tray guarded, and preserves finished history");
         var repeat = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);

@@ -74,7 +74,9 @@ public sealed partial class ParcelRuntime
     bool CanAdmit() => positions.Keys.Any(p => CanAdmit(p) || CanManuallyAdmit(p));
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
     {
-        var current = DisplayedOperation(p.Id);
+        var latest = LatestWorkCardOperation(p.Id);
+        var now = StationTime.GetUtcNow();
+        var current = DisplayedOperation(p.Id, latest, now);
         var manual = Id == "sportmaster" ? ManualInputReasons(p.Id) : null;
         var camera = CanAdmit(p.Id);
         var manualReady = manual is { Length: 0 };
@@ -92,7 +94,8 @@ public sealed partial class ParcelRuntime
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
         {
-            CanConfirmPlacementRemoval = CanConfirmPlacementRemoval(p.Id, current),
+            PlacementRemovalOperation = PlacementRemovalOperation(p.Id, latest, current),
+            ExpiredManualResult = ExpiredManualResult(p.Id, latest, now),
             PlacementClearedAt = confirmedEmptyTrays.TryGetValue(p.Id, out var clearedAt) ? clearedAt : null,
             BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),

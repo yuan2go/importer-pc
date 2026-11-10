@@ -59,7 +59,8 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 positionControls[position] = state;
                 // Restart is not evidence that the draining parcel physically left.
                 // Keep only its placement guard; the new shift does not restore a finished work card.
-                if (state.Mode == StationPositionMode.Disabling && state.PlacementCode is { } code)
+                if (state.Mode == StationPositionMode.Disabling && state.PlacementCode is { } code &&
+                    (state.OperationId is not { } id || !repository.PlacementWasReleased(id)))
                     placements[position] = new(code, state.ChangedAt!.Value, state.PlacementCameraSeen) { Operation = state.OperationId };
             }
         PublishPositionHeartbeat(ports?.Wcs);

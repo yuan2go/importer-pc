@@ -17,7 +17,8 @@ public sealed partial class SupplyStationPositionViewModel
         !HasCurrentInput && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId) is { } position &&
         (position.Admit || position.BarcodeInput?.Manual == true);
     bool CenteredNoBarcodeBlocked => owner.Fresh && !SupplyDisabled && !DisplayPaused && !PreserveDetailedResult &&
-        CameraNoCode && !CameraAwaitingRead && !CenteredWaiting && !CenteredRcsPause;
+        (CameraNoCode || !HasCurrentInput && (ExpiredManualResult is not null || PlacementClearedAt is not null || CanConfirmPlacementRemoval)) &&
+        !CameraAwaitingRead && !CenteredWaiting && !CenteredRcsPause;
     bool CenteredSoftwarePause => owner.Fresh && SupplyEnabled && DisplayPaused && !PausedAttention;
     bool CurrentResultVisible => !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && !invalidReadFeedback;
     WcsDestinationResult? CurrentRcsRejection =>
@@ -76,7 +77,8 @@ public sealed partial class SupplyStationPositionViewModel
         if (SupplyDisabling) return removal + "\n停用中，暂不接收新条码";
         if (DisplayPaused) return removal + "\n供包恢复后再放下一件";
         if (RcsUnavailableForDisplay) return removal + "\nRCS 连接恢复后再放下一件";
-        if (CanAdmit || CanSubmitBarcode) removal += manual ? "，再放下一件" : "，可放下一件";
+        if (CanConfirmPlacementRemoval) removal += "，再确认";
+        else if (CanAdmit || CanSubmitBarcode) removal += manual ? "，再放下一件" : "，可放下一件";
         return removal + "\n多次出现请通知维护人员";
     }
     bool InterruptedInputBlocksResume => owner.Snapshot?.BlockingReasons.Any(r => r.StartsWith("IngressInterrupted:", StringComparison.Ordinal)) == true;
@@ -109,7 +111,7 @@ public sealed partial class SupplyStationPositionViewModel
         CenteredOperationAttention ? MissingConfirmedSlot ? "本件暂勿投递，请查看详情并通知维护人员" : Operation?.State switch
         { ParcelState.UnpackRequired => "请查看拆包明细，处理完再继续", ParcelState.Blocked => "本件暂勿投递，请查看详情", _ => RcsRejectionInstruction() } :
         SupplyDisabled ? "" : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? "请检查连接，恢复后再提交" :
-        CenteredNoBarcodeBlocked ? SupplyDisabling ? "等待确认托盘清空" : Operation?.State == ParcelState.ResolvingWcs ? "请等待结果后再上件" : "请核对本位状态，必要时通知维护人员" :
+        CenteredNoBarcodeBlocked ? SupplyDisabling ? CanConfirmPlacementRemoval ? "请先取下包裹，再确认" : "等待确认托盘清空" : Operation?.State == ParcelState.ResolvingWcs ? "请等待结果后再上件" : "请核对本位状态，必要时通知维护人员" :
         CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "也可输入完整条码后按回车" : "";
 
     static (string Title, string Instruction) AdmissionMessage(ParcelInputSnapshot input) => ParcelInputReasons.BlockReason(input) switch

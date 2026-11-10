@@ -81,8 +81,10 @@ public sealed partial class ParcelRuntime
             if ((parcelPictureFailure ?? parcelPictures?.Fault) is { } pictureFailure) auxiliaryReasons.Add("ParcelPictures:" + pictureFailure);
             if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
+            var positionSnapshots = PositionSnapshots();
+            var inputs = positionSnapshots.Select(p => DisplayedInput(p.Id, p.ExpiredManualResult)).OfType<ParcelInputSnapshot>().ToArray();
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
-                reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p, hideHistoricalUnknown: Id == "sportmaster")).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), DisplayedInputs(), BackupStatus(), configuration.Current.Pending is not null)
+                reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p, hideHistoricalUnknown: Id == "sportmaster")).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), positionSnapshots, readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), inputs, BackupStatus(), configuration.Current.Pending is not null)
             {
                 ConfigurationActivationBlock = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null
             };

@@ -70,7 +70,7 @@ public sealed partial class ParcelRuntime
             }
             else
             {
-                var input = DisplayedInputs().SingleOrDefault(i => i.Observation.Id == observationId);
+                var input = positions.Keys.Select(p => DisplayedInput(p)).SingleOrDefault(i => i?.Observation.Id == observationId);
                 if (input is null) return new ParcelPictureResult("Missing", "当前观察已变化，请从原作业记录打开对应图片。", null, observationId, null);
                 var o = input.Observation; manual = o.OperatorInput is not null;
                 if (!manual && blockedInputPictures.TryGetValue(input.PositionId, out var blockedImage) &&

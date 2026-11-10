@@ -241,7 +241,13 @@
            <Setter Property="Margin" Value="0,8,0,0"/>
            <Setter Property="Visibility" Value="Collapsed"/>
            <Style.Triggers>
-            <DataTrigger Binding="{Binding CanConfirmPlacementRemoval}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+            <MultiDataTrigger>
+             <MultiDataTrigger.Conditions>
+              <Condition Binding="{Binding CanConfirmPlacementRemoval}" Value="True"/>
+              <Condition Binding="{Binding ShowConfirmedPlacementRemoval}" Value="False"/>
+             </MultiDataTrigger.Conditions>
+             <Setter Property="Visibility" Value="Visible"/>
+            </MultiDataTrigger>
            </Style.Triggers>
           </Style>
          </Button.Style>
@@ -306,6 +312,7 @@
       <Grid.ColumnDefinitions>
        <ColumnDefinition Width="*"/>
        <ColumnDefinition Width="Auto"/>
+       <ColumnDefinition Width="Auto"/>
        <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <Border Grid.Column="1" Width="{x:Static type:OperatorTokens.TouchGap}"/>
@@ -321,7 +328,19 @@
        </Button.Style>
       </Button>
       <Button x:Name="RebaseInput" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}" ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
-      <Button x:Name="WorkDetails" Grid.Column="2" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}"/>
+      <Button x:Name="ConfirmManualPlacementRemoval" Grid.Column="2" Content="已取下包裹" Click="ConfirmPlacementRemoval_Click"
+              ToolTip="取下本件后确认，准备接收下一件">
+       <Button.Style>
+        <Style TargetType="Button" BasedOn="{StaticResource StationTouch}">
+         <Setter Property="Margin" Value="0,0,8,0"/>
+         <Setter Property="Visibility" Value="Collapsed"/>
+         <Style.Triggers>
+          <DataTrigger Binding="{Binding ShowConfirmedPlacementRemoval}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger>
+         </Style.Triggers>
+        </Style>
+       </Button.Style>
+      </Button>
+      <Button x:Name="WorkDetails" Grid.Column="3" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}"/>
      </Grid>
      <Grid Grid.Row="2" x:Name="PositionDeviceFooter">
       <Grid.Style><Style TargetType="Grid"><Setter Property="Margin" Value="0,4,0,0"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers></Style></Grid.Style>

@@ -5,14 +5,17 @@ public sealed record DeliveryPosition(string Id, string ReaderDeviceId, string? 
 public sealed record ParcelTopology(DeviceBinding[] Readers, DeliveryPosition[] Positions);
 public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Admit, string? CurrentOperation, string[] BlockingReasons, bool MainResultComplete, bool BackgroundComplete)
 {
-    public bool CanConfirmPlacementRemoval { get; init; }
+    public string? PlacementRemovalOperation { get; init; }
     public DateTimeOffset? PlacementClearedAt { get; init; }
+    public ManualWorkCardExpiry? ExpiredManualResult { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public ParcelBarcodeAvailability? BarcodeInput { get; init; }
     public StationVehicleState? Vehicle { get; init; }
     public StationPositionState? SupplyControl { get; init; }
     public bool CameraConnectionSuspended { get; init; }
 }
+// A presentation boundary only. PlacementClearedAt carries actual removal evidence.
+public sealed record ManualWorkCardExpiry(string OperationId, DateTimeOffset ObservedThrough);
 public sealed record ParcelBarcodeAvailability(bool Camera, bool Manual, string[] ManualBlockingReasons);
 // A reader may expose a capture facade over its OWN acquisition session. The facade
 // must not open another connection and must resolve the exact AcquisitionIdentity.

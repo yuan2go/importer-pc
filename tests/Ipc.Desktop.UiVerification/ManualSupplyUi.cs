@@ -9,11 +9,6 @@ using Ipc.Application.Sportmaster.Desktop;
 
 static partial class Program
 {
-    sealed class ManualWorkCardClock(TimeSpan offset) : TimeProvider
-    {
-        public override DateTimeOffset GetUtcNow() => DateTimeOffset.UtcNow + offset;
-    }
-
     static async Task VerifyManualSupplyUi(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS MANUAL-UI " + message); }
@@ -53,6 +48,9 @@ static partial class Program
                 await Until(() => vm.Left.SlotAvailable && !vm.Busy);
                 Check(vm.Left.Barcode == "000123456" && vm.Left.Slot == "SYNTH-CHUTE" && vm.Left.ScanSummary.StartsWith("手动键盘输入") && h.Peer.Requests.Count == 1,
                     "bottom submit sends the complete keyboard barcode through Application and real built-in RCS");
+                var leftOriginal = vm.Left.Operation!.Id;
+                Check(!vm.Left.CanConfirmPlacementRemoval && !((Button)left.FindName("ConfirmManualPlacementRemoval")).IsVisible,
+                    "a confirmed chute does not require a take-off confirmation in normal operation");
                 Check(left.FindName("BarcodeSource") is null && right.FindName("BarcodeSource") is null,
                     "both positions accept input through the same barcode editor with no source picker");
                 var entry = (TextBox)right.FindName("BarcodeEntry");
@@ -76,6 +74,7 @@ static partial class Program
                 }
                 entry.RaiseEvent(new KeyEventArgs(keyboard, inputSource, timestamp, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
                 await Until(() => vm.Right.SlotAvailable && !vm.Busy);
+                var rightOriginal = vm.Right.Operation!.Id;
                 var expectedKind = deferred ? "PdaKeyboard" : "Keyboard";
                 Check(vm.Right.Barcode == "000123457" && vm.Right.Operation?.OperatorInput?.Kind == expectedKind && h.Peer.Requests.Count == 2 &&
                     vm.Right.Operation!.Acquisition is null, "the native editor recognizes the key cadence as " + expectedKind + " without a camera");
@@ -90,39 +89,32 @@ static partial class Program
                 Check(Inside(submit, (Grid)window.FindName("ClientArea")) && !entry.IsReadOnly, "compact layout retains editable barcode and reachable bottom submit");
                 var leftEntry = (TextBox)left.FindName("BarcodeEntry");
                 var leftSubmit = (Button)left.FindName("SubmitBarcode");
-                if (deferred)
+                // Observe the native presentation subscription with no forced refresh or input.
+                await CameraRoundHarness.Until(async () =>
                 {
-                    var original = vm.Left.Operation!.Id;
-                    h.App.StationTime = new ManualWorkCardClock(TimeSpan.FromMinutes(11));
-                    await Until(() => vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "等待投包");
-                    Check(leftEntry.Text == "" && !vm.Left.HasCurrentInput && !vm.Left.ShowConfirmedTask && vm.Left.CanSubmitBarcode &&
-                        vm.Snapshot!.Positions!.Single(p => p.Id == "left").PlacementClearedAt is null &&
-                        (await h.App.OperationAsync(original))?.State == ParcelState.SlotResolved && h.Peer.Requests.Count == 2,
-                        "manual expiry clears the old input and chute, returns to waiting and retains the original without recording removal");
-                }
-                else
+                    await Flush();
+                    return vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "等待投包" &&
+                        vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "等待投包";
+                });
+                Check(leftEntry.Text == "" && entry.Text == "" && !vm.Left.HasCurrentInput && !vm.Left.ShowConfirmedTask && vm.Left.CanSubmitBarcode &&
+                    vm.Snapshot!.Positions!.All(p => p.PlacementClearedAt is null) &&
+                    (await h.App.OperationAsync(leftOriginal))?.State == ParcelState.SlotResolved &&
+                    (await h.App.OperationAsync(rightOriginal))?.State == ParcelState.SlotResolved && h.Peer.Requests.Count == 2,
+                    "keyboard and PDA results automatically clear from both work cards without a removal or another RCS request");
+                CaptureInternal(evidence, deferred ? "manual-deferred-waiting" : "manual-offline-waiting", (Grid)window.FindName("ClientArea"), lines);
+                if (!deferred)
                 {
-                    var confirmed = vm.Left.Operation!.Id;
-                    var removal = (Button)left.FindName("ConfirmManualPlacementRemoval");
-                    Check(removal.IsVisible && removal.IsEnabled && Inside(removal, (Grid)window.FindName("ClientArea")),
-                        "the settled manual chute offers an explicit removal action in the compact layout");
-                    CaptureInternal(evidence, "manual-confirmed-removal", (Grid)window.FindName("ClientArea"), lines);
-                    removal.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    await Until(() => vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "等待投包" && !vm.Busy);
-                    Check(leftEntry.Text == "" && vm.Left.CanSubmitBarcode && vm.Right.SlotAvailable &&
-                        (await h.App.OperationAsync(confirmed))?.State == ParcelState.SlotResolved && h.Peer.Requests.Count == 2,
-                        "confirming settled manual removal returns only this position to waiting and sends nothing");
                     h.Peer.ReplySlot = "";
                     leftEntry.Text = "000123458";
                     leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Left.HasUncertainOriginal && !vm.Busy);
                     var original = vm.Left.Operation!.Id;
-                    removal = (Button)left.FindName("ConfirmPlacementRemoval");
+                    var removal = (Button)left.FindName("ConfirmPlacementRemoval");
                     Check(removal.IsEnabled && Inside(removal, (Grid)window.FindName("ClientArea")) &&
                         vm.Left.CenteredStateInstruction == "请先取下包裹，再确认", "compact offline-camera card exposes the operator removal action without management");
                     removal.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Left.Operation is null && vm.Left.CanSubmitBarcode && !vm.Busy);
-                    Check(!removal.IsVisible && !vm.Left.HasCurrentInput && leftEntry.Text == "" && vm.Right.SlotAvailable && h.Peer.Requests.Count == 3,
+                    Check(!removal.IsVisible && !vm.Left.HasCurrentInput && leftEntry.Text == "" && vm.Right.CenteredStateTitle == "等待投包" && h.Peer.Requests.Count == 3,
                         "the removal action clears only the affected card and sends no request");
                     h.Peer.ReplySlot = "SYNTH-NEXT";
                     leftEntry.Text = "000123458";

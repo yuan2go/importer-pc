@@ -76,7 +76,8 @@ public sealed partial class ParcelRuntime
     {
         var latest = LatestWorkCardOperation(p.Id);
         var now = StationTime.GetUtcNow();
-        var current = DisplayedOperation(p.Id, latest, now);
+        var expired = ExpiredManualResult(p.Id, latest, now);
+        var current = DisplayedOperation(p.Id, latest, now, expired);
         var manual = Id == "sportmaster" ? ManualInputReasons(p.Id) : null;
         var camera = CanAdmit(p.Id);
         var manualReady = manual is { Length: 0 };
@@ -95,7 +96,7 @@ public sealed partial class ParcelRuntime
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
         {
             PlacementRemovalOperation = PlacementRemovalOperation(p.Id, latest, current),
-            ExpiredManualResult = ExpiredManualResult(p.Id, latest, now),
+            ExpiredManualResult = expired,
             PlacementClearedAt = confirmedEmptyTrays.TryGetValue(p.Id, out var clearedAt) ? clearedAt : null,
             BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),

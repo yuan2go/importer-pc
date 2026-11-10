@@ -68,14 +68,20 @@ public sealed partial class ParcelRuntime
     // A failed latest observation must not borrow a previous terminal result.
     // Unresolved original responsibility remains visible and guarded independently.
     ParcelOperation? LatestWorkCardOperation(string position) => repository!.Latest(position, hideHistoricalUnknown: Id == "sportmaster");
-    ParcelOperation? DisplayedOperation(string position) => DisplayedOperation(position, LatestWorkCardOperation(position), StationTime.GetUtcNow());
-    ParcelOperation? DisplayedOperation(string position, ParcelOperation? current, DateTimeOffset now)
+    ParcelOperation? DisplayedOperation(string position)
+    {
+        var latest = LatestWorkCardOperation(position);
+        var now = StationTime.GetUtcNow();
+        return DisplayedOperation(position, latest, now, ExpiredManualResult(position, latest, now));
+    }
+
+    ParcelOperation? DisplayedOperation(string position, ParcelOperation? current, DateTimeOffset now, ManualWorkCardExpiry? expired)
     {
         if (current is not null && IsDebugRequest(current)) return null; // Test destinations never appear as a live production parcel.
         if (current is not null && releasedPlacements.Contains(current.Id)) return null;
         if (current is null || !MainTerminated(current)) return current;
         // A finished result is an instruction only for the parcel that is on the tray now.
-        if (!ShowsFinishedResult(position, current, now)) return null;
+        if (expired is not null || !ShowsFinishedResult(position, current, now)) return null;
         var originalReader = current.ReaderBinding ?? ParcelBindings.Readers(current.FrozenConfiguration).Single(r =>
             r.DeviceId == ParcelBindings.Positions(current.FrozenConfiguration).Single(p => p.Id == position).ReaderDeviceId);
         if (Wire.Encode(originalReader) != Wire.Encode(ReaderBinding(position))) return null;

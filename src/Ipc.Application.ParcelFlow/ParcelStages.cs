@@ -186,6 +186,7 @@ public sealed partial class ParcelRuntime
             }
             else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
                 Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
+            if (kind == ParcelStage.Wcs) NoteConfirmedManualChute(op);
             LogRcsResult(op, kind, receiptStartedTicks, query);
             return op;
         }

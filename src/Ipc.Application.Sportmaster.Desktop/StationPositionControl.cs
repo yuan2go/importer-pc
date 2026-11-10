@@ -33,7 +33,7 @@ public sealed partial class SupplyStationPositionViewModel
     string? PlacementRemovalOperation => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementRemovalOperation;
     public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled && PlacementRemovalOperation is not null;
     public bool ShowConfirmedPlacementRemoval => CanConfirmPlacementRemoval &&
-        Operation is { OperatorInput: not null, State: ParcelState.SlotResolved or ParcelState.WcsRejected };
+        Operation is { OperatorInput: not null, State: ParcelState.WcsRejected };
     internal Task ConfirmPlacementRemovalAsync() => owner.RunAsync(async () =>
     {
         if (!CanConfirmPlacementRemoval || owner.Snapshot is not { } snapshot || PlacementRemovalOperation is not { } operation) return;

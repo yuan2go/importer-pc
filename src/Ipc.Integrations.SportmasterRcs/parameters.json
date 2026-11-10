@@ -54,6 +54,24 @@
     "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。"
   },
   {
+    "Key": "destination-mode",
+    "Group": "RCS 分拣任务",
+    "Label": "格口分配方式",
+    "Type": "boolean",
+    "Default": "false",
+    "Description": "左右投递位共用。可由 RCS 分配，也可向 RCS 请求指定格口。"
+  },
+  {
+    "Key": "destination-chute-code",
+    "Group": "RCS 分拣任务",
+    "Label": "格口编码",
+    "Type": "string",
+    "MaximumLength": 64,
+    "RequiredWhenKey": "destination-mode",
+    "RequiredWhenEquals": "true",
+    "Description": "填写要请求的格口编码，保留字母和前导零。实际格口以 RCS 返回为准。"
+  },
+  {
     "Key": "no-dest-to-exp",
     "Group": "RCS 分拣任务",
     "Label": "无可用格口时",

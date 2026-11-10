@@ -74,7 +74,7 @@ static partial class Program
                 {
                     Check(editor.ShowPage(category, title), "existing shared directory contains " + title);
                     await Flush(); window.UpdateLayout();
-                    Check(!Descendants(editor).Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/quantity") || AutomationProperties.GetAutomationId(t).EndsWith("/specified-chute") || AutomationProperties.GetAutomationId(t).EndsWith("/chute-code")), "quantity and fixed-chute editors remain hidden");
+                    Check(!Descendants(editor).Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/quantity") || AutomationProperties.GetAutomationId(t).EndsWith("/specified-chute") || AutomationProperties.GetAutomationId(t).EndsWith("/chute-code")), "quantity and retired chute editors remain hidden");
                     CaptureInternal(evidence, "pgs-" + title + "-" + (int)size.Item1, client, lines);
                 }
             }

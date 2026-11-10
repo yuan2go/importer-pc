@@ -24,6 +24,7 @@ public partial class SupplyStationWindow
         // so it cannot trigger these keys; other pages, dialogs and owned windows keep their own keys.
         PreviewKeyDown += (_, args) =>
         {
+            if (RecentPosition()?.IsBarcodeSourceDropDownOpen == true) return;
             if (args.Key == Key.Escape && ViewModel.SelectedPage == "workstation" && ViewModel.InputTargetPosition.Length != 0)
             { args.Handled = true; CancelBarcodeSelection(); return; }
             if (args.Key is not (Key.F2 or Key.F3) || Keyboard.Modifiers != ModifierKeys.None || !CanRestoreBarcodeFocus) return;
@@ -53,7 +54,7 @@ public partial class SupplyStationWindow
             // Explicit Tab/Enter navigation and other editors remain native.
             if (!CanRestoreBarcodeFocus || Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ||
                 args.Text.Length == 0 || args.Text.Any(char.IsControl)) return;
-            if (ViewModel.InputTargetPosition is "left" or "right" && RecentPosition() is { } position &&
+            if (ViewModel.InputTargetPosition is "left" or "right" && RecentPosition() is { IsBarcodeSourceDropDownOpen: false } position &&
                 work.IsKeyboardFocusWithin && !position.IsBarcodeInputFocused)
             { args.Handled = true; position.ReceiveScannerText(args.Text); }
         };

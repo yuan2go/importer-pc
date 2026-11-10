@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Ipc.Application.Contracts;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class ParameterSettingsControl
@@ -238,7 +239,9 @@ public sealed partial class ParameterSettingsControl
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "quantity") return;
         var path = draft.InstanceId + "/" + p.Field.Key;
         var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
-        var required = p.Field.Required || cameraCodeRequired;
+        var chuteMode = ParameterOwnership.IsRcs(draft) && p.Field.Key == RcsRequestPolicy.DestinationChuteCode
+            ? draft.Parameters.Single(x => x.Field.Key == RcsRequestPolicy.DestinationMode) : null;
+        var required = p.Field.Required || cameraCodeRequired || chuteMode is not null;
         var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-ms" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);
@@ -254,9 +257,12 @@ public sealed partial class ParameterSettingsControl
         }
         else if (p.Field.Type == "boolean")
         {
-            var values = ParameterOwnership.IsRcs(draft) && p.Field.Key == "no-dest-to-exp"
-                ? new[] { new BooleanChoice("true", "送往异常口（默认）"), new BooleanChoice("false", "留在原位，人工处理") }
-                : new[] { new BooleanChoice("false", "关闭"), new BooleanChoice("true", "启用") };
+            BooleanChoice[] values = (ParameterOwnership.IsRcs(draft), p.Field.Key) switch
+            {
+                (true, "no-dest-to-exp") => [new("true", "送往异常口（默认）"), new("false", "留在原位，人工处理")],
+                (true, RcsRequestPolicy.DestinationMode) => [new("false", "由 RCS 分配（默认）"), new("true", "指定格口")],
+                _ => [new("false", "关闭"), new("true", "启用")]
+            };
             var choice = new ComboBox { ItemsSource = values, DisplayMemberPath = "Label", SelectedValuePath = "Value", MinHeight = 44 };
             choice.SetBinding(ComboBox.SelectedValueProperty, new Binding("Value") { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
             Field(form, label, choice, help, path, page);
@@ -273,5 +279,15 @@ public sealed partial class ParameterSettingsControl
         AutomationProperties.SetHelpText(locations[path].Control, accessibleHelp);
         locations[path].Control.ToolTip = accessibleHelp;
         locations[path].Control.IsEnabled = !p.Field.ReadOnly;
+        if (chuteMode is not null)
+        {
+            var row = locations[path].Row!;
+            bool Visible() => chuteMode.Value == "true";
+            locations[path] = locations[path] with { Applicable = Visible };
+            void Update() { row.Visibility = Visible() ? Visibility.Visible : Visibility.Collapsed; RefreshSearch(); }
+            PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName == nameof(chuteMode.Value)) Update(); };
+            chuteMode.PropertyChanged += changed; unsubscribe.Add(() => chuteMode.PropertyChanged -= changed);
+            Update();
+        }
     }
 }

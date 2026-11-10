@@ -12,7 +12,7 @@
 
 `IWcsRequestPreparer` 是纯序列化的可选伴随端口：使用实际T1准备时的持久编号边界和冻结配置，生成数字requestId与完整UTF8 JSON；T1保存原JSON/hash/目标/合同/包后T2只发送原字节。当前 SM 由 Application 使用 Unix 微秒时间及永久编号下限自动分配数字 ID，不再配置编号范围；SQL7 的永久唯一 Owner 账与原 WCS 请求同事务提交，归档不删除编号归属。恢复保留原编号下限、已登记范围的退役证据和原请求，旧请求 ID/原报文不变。不得同时运行克隆数据根。未提供上游幂等保证，不声称全局恰好一次。
 
-地址由binding.Target明确给出（路径 `/rcs/sorter/api`）。source/locale 固定，仓 ID、生产线 ID、供包台编号及左右相机编码来自完整候选。每次请求数量固定为 1；不提供指定格口，specifiedChute=false、chuteCode=null。SM 固定使用内置 RCS HTTP 客户端，不提供本地模拟连接方式。
+地址由binding.Target明确给出（路径 `/rcs/sorter/api`）。`locale` 固定为 `zh_CN`。取格口的 `source` 取自本次输入，读码器为 `BAR`、人工录入为 `MANUAL`、PDA 扫码为 `PDA`；心跳使用 `BAR`。仓 ID、生产线 ID、供包台编号及左右相机编码来自完整候选。每次请求数量固定为 1。默认由 RCS 分配格口（`specifiedChute=false`、`chuteCode=null`）；指定时发送布尔 `true` 和完整格口编码字符串。SM 固定使用内置 RCS HTTP 客户端，不提供本地模拟连接方式。
 
 ## 回包与业务
 

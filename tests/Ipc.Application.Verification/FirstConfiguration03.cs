@@ -9,7 +9,7 @@ internal static class FirstConfiguration03
     {
         var initial = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
         Check(!initial.Wcs!.Parameters.Keys.Intersect(new[] { "request-id-base", "request-id-count", "specified-chute", "chute-code" }).Any(),
-            "new station configuration has no manual request allocation or fixed chute options");
+            "new station defaults to RCS assignment without retired configuration keys");
         CameraSlot Left(string ip = "", string serial = "") => new("left", ip, serial);
         CameraSlot Right(string ip = "", string serial = "") => new("right", ip, serial);
         var blank = new[] { Left(), Right() };

@@ -168,7 +168,8 @@ public partial class ParcelViewModel
             if (translateChoice)
             {
                 string Choice(string value) => parameter == "no-dest-to-exp" ? value switch
-                { "true" => "送往异常口（默认）", "false" => "留在原位，人工处理", "未设置" => "送往异常口（默认）", _ => value } : ChineseInterfaceText.Choice(value);
+                { "true" => "送往异常口（默认）", "false" => "留在原位，人工处理", "未设置" => "送往异常口（默认）", _ => value } : parameter == RcsRequestPolicy.DestinationMode ? value switch
+                { "true" => "指定格口", "false" or "未设置" or "已移除" => "由 RCS 分配（默认）", _ => value } : ChineseInterfaceText.Choice(value);
                 oldValue = Choice(oldValue);
                 newValue = Choice(newValue);
             }

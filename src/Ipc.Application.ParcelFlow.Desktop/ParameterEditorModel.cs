@@ -115,12 +115,26 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             var fieldCategory = ParameterOwnership.CategoryName(ParameterOwnership.ObjectCategory(draft));
             if (draft.ProviderChangePending) Issue(fieldCategory, draft.InstanceId + "/Provider", "请确认切换并重置参数，或取消切换；当前输入保留。");
             if (draft.Provider is null) { Issue(fieldCategory, draft.InstanceId, draft.ProviderIdentity); continue; }
+            var values = draft.Parameters.Where(p => p.Value.Length > 0).ToDictionary(p => p.Field.Key, p => p.Value);
+            var isRcs = ParameterOwnership.IsRcs(draft);
+            if (isRcs)
+            {
+                try { _ = RcsRequestPolicy.SpecifiedChuteCode(values); }
+                catch (System.IO.InvalidDataException error)
+                {
+                    var key = values.GetValueOrDefault(RcsRequestPolicy.DestinationMode) == "true" ? RcsRequestPolicy.DestinationChuteCode : RcsRequestPolicy.DestinationMode;
+                    Issue(fieldCategory, draft.InstanceId + "/" + key, error.Message);
+                }
+            }
             if (draft.ConfigureLater) continue;
             if (draft.IsSimpleCamera && !draft.Parameters.Any(p => p.Field.Key == "device.serial" && !string.IsNullOrWhiteSpace(p.Value)))
                 Issue("驱动", draft.InstanceId + "/device.serial", "请填写相机序列号。");
-            var values = draft.Parameters.Where(p => p.Value.Length > 0).ToDictionary(p => p.Field.Key, p => p.Value);
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
-                Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, error.Split(':')[0])), draft.InstanceId + "/" + error.Split(':')[0], draft.Role + " · " + error);
+            {
+                var key = error.Split(':')[0];
+                if (isRcs && key is RcsRequestPolicy.DestinationChuteCode or RcsRequestPolicy.DestinationMode) continue;
+                Issue(ParameterOwnership.CategoryName(ParameterOwnership.Category(draft, key)), draft.InstanceId + "/" + key, draft.Role + " · " + error);
+            }
             // Mirror the installed Hikrobot driver's existing address-format rule
             // before review. This is local feedback, not a connection probe or a
             // replacement for Application/driver validation at the real boundary.
@@ -133,7 +147,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             }
             if (ParameterOwnership.StationConflict(draft))
                 Issue("系统", draft.InstanceId + "/left-station-code", "供包台编号不一致；请核对原值后填写本站共同使用的编号。");
-            if (ParameterOwnership.IsRcs(draft))
+            if (isRcs)
             {
                 if (!Uri.TryCreate(draft.Target, UriKind.Absolute, out var endpoint) || endpoint.Scheme is not ("http" or "https") ||
                     endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)

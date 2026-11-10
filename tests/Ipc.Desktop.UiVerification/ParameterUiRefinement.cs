@@ -46,7 +46,7 @@ static partial class Program
         rightIp.Value = "0.0.0.0"; await Flush();
         Check(model.Issues.Single(i => i.Path == right.InstanceId + "/device.ip").Rule == "ipv4-address", "syntactically valid unspecified address has a distinct business-address rule");
         rightIp.Value = savedRight; await Flush();
-        Check(!rcs.Parameters.Any(p => p.Field.Key is "quantity" or "specified-chute" or "chute-code" or "request-id-base" or "request-id-count"), "SM exposes no quantity, fixed chute or allocation fields");
+        Check(!rcs.Parameters.Any(p => p.Field.Key is "quantity" or "specified-chute" or "chute-code" or "request-id-base" or "request-id-count"), "SM exposes neither quantity nor retired allocation or chute fields");
         var zone = Value(rcs, "zone-id"); var savedZone = zone.Value;
         editor.NavigateTo(rcs.InstanceId + "/left-station-code"); await Flush();
         Check(Box(rcs.InstanceId + "/left-station-code").Text == Value(rcs, "left-station-code").Value, "common station input reflects changes to the existing paired fields");

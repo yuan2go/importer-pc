@@ -86,7 +86,7 @@ internal static class RcsDestinationProtocol
                 var slot = Text(data, "chuteCode", 64);
                 return (true, slot, new(WcsDestinationOutcome.Assigned, code, message, args, Text(data, "taskId", 256), Text(data, "skuId", 256),
                     Measurement(data, "length"), Measurement(data, "width"), Measurement(data, "height"), Measurement(data, "weight"), null,
-                    AddedText(data, "waveNo", 256), AddedText(data, "quantity", 256)));
+                    AddedText(data, "waveNo", 256), Quantity(data)));
             }
             if (code is null && message is null) throw new InvalidDataException("RCS rejection requires an error code or message");
             if (code == "NEED_UNPACK")
@@ -119,8 +119,17 @@ internal static class RcsDestinationProtocol
     }
     static decimal? Measurement(JsonElement e, string name)
     {
-        var value = e.GetProperty(name); if (value.ValueKind == JsonValueKind.Null) return null;
-        var number = value.GetDecimal(); return number >= 0 ? number : throw new InvalidDataException("RCS negative measurement");
+        var value = e.GetProperty(name);
+        if (value.ValueKind == JsonValueKind.Null || value.ValueKind == JsonValueKind.String && value.GetString() == "-") return null;
+        if (value.ValueKind == JsonValueKind.Number && value.TryGetDecimal(out var number) && number >= 0) return number;
+        throw new InvalidDataException("RCS invalid measurement: " + name);
+    }
+    static string? Quantity(JsonElement data)
+    {
+        if (!data.TryGetProperty("quantity", out var value)) return null;
+        if (value.ValueKind != JsonValueKind.Number) return OptionalText(data, "quantity", 256);
+        if (value.TryGetInt64(out var count) && count >= 0) return value.GetRawText();
+        throw new InvalidDataException("RCS invalid quantity");
     }
     static string Text(JsonElement e, string name, int maximum) => OptionalText(e, name, maximum) ?? throw new InvalidDataException("RCS missing field: " + name);
     // Added response fields are optional for older peers/receipts. Preserve response

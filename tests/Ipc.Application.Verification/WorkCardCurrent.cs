@@ -86,7 +86,7 @@ internal static class WorkCardCurrent
             "a paused unadmitted scan retains its exact full original without creating a job");
         image!.Gray8[0] ^= 255;
         Check((await h.App.ReadParcelPictureAsync(query, default)).Image!.Gray8.SequenceEqual(pixels.Data), "returned picture bytes cannot mutate the retained evidence");
-        Check(input.Reason.Contains("Global software pause") && (await h.App.SnapshotAsync()).Operations.Length == 0 && h.Peer.Requests.Count == 0,
+        Check(ParcelInputReasons.BlockReason(input) == ParcelInputBlockReason.SoftwarePaused && (await h.App.SnapshotAsync()).Operations.Length == 0 && h.Peer.Requests.Count == 0,
             "blocked input logs the actual pause reason and viewing a picture sends no request");
         await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").State == "Waiting"));
         var beforeRepeated = h.App.WorkerProgress().Single(p => p.Position == "left");

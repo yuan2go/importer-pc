@@ -13,7 +13,7 @@ public sealed partial class SoftwareLogControl : UserControl
     readonly TextBox from = Input(DateTimeInput.SecondNow().AddHours(-1).ToString("O")), to = Input(DateTimeInput.SecondNow().AddMinutes(1).ToString("O")), keyword = Input(""), source = Input(""), context = Input("10");
     readonly CheckBox regex = new() { Content = "按正则表达式匹配", MinHeight = 44 };
     readonly ComboBox level = new() { ItemsSource = new[] { "全部", "信息", "调试", "警告", "错误", "无法解析" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 100 };
-    readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Single, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
+    readonly DataGrid results = new() { IsReadOnly = true, AutoGenerateColumns = false, SelectionMode = DataGridSelectionMode.Extended, EnableRowVirtualization = true, EnableColumnVirtualization = true, MinHeight = 32 };
     readonly ComboBox viewMode = new() { ItemsSource = new[] { "列表视图", "终端视图" }, SelectedIndex = 0, MinHeight = 44, MinWidth = 120, Margin = new(0, 0, 8, 4) };
     readonly TextBox terminal = new()
     {
@@ -33,7 +33,7 @@ public sealed partial class SoftwareLogControl : UserControl
     readonly StackPanel filters = new();
     readonly TextBox effectiveRange = new() { IsReadOnly = true, BorderThickness = new(0), Padding = new(0), MinHeight = 0, Background = System.Windows.Media.Brushes.Transparent, FontSize = UiTypography.Label, MaxHeight = 44, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
     readonly Expander advancedFilters;
-    readonly Button searchButton, previousButton, nextButton, contextButton, exportButton, rangeButton, cancel, locateExport;
+    readonly Button searchButton, previousButton, nextButton, copyOriginalButton, contextButton, exportButton, rangeButton, cancel, locateExport;
     string? exportedFile;
     readonly Expander detailPanel, diagnostics;
     readonly TextBox diagnosticText = new() { FontFamily = UiTypography.Code, FontSize = UiTypography.Log, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0) };
@@ -55,7 +55,7 @@ public sealed partial class SoftwareLogControl : UserControl
         var header = new DockPanel(); DockPanel.SetDock(header, Dock.Top); root.Children.Add(header);
         var heading = new StackPanel(); DockPanel.SetDock(heading, Dock.Top); header.Children.Add(heading);
         var title = new TextBlock { Text = "日志查询", Style = (Style)FindResource("QueryHeading") }; heading.Children.Add(title);
-        var hint = new TextBlock { Text = "默认最近1小时，每页200条；选择记录查看原文；超出呈现预算可完整导出。", Style = (Style)FindResource("QueryHint"), Margin = new(0, 0, 0, 10) }; title.ToolTip = hint.Text;
+        title.ToolTip = "默认最近1小时，每页200条。选择一条可查看原文，按 Ctrl 或 Shift 可多选并复制原文。";
         var actions = new WrapPanel { Margin = new(0, 6, 0, 4) }; DockPanel.SetDock(actions, Dock.Bottom); header.Children.Add(actions);
         Button Action(string label, Func<Task> action)
         {
@@ -66,11 +66,12 @@ public sealed partial class SoftwareLogControl : UserControl
         searchButton.Style = (Style)FindResource("ParameterPrimaryAction");
         previousButton = Action("上一页", () => Load(Math.Max(0, offset - 200)));
         nextButton = Action("下一页", () => Load(offset + 200));
+        copyOriginalButton = Action("复制所选原文", CopySelectedOriginals);
         actions.Children.Add(viewMode);
         System.Windows.Automation.AutomationProperties.SetName(viewMode, "日志显示方式");
         System.Windows.Automation.AutomationProperties.SetName(terminal, "终端日志，可选择复制，当前页最多200条");
         System.Windows.Automation.AutomationProperties.SetAutomationId(terminal, "TerminalLogView");
-        viewMode.ToolTip = "列表视图便于浏览，终端视图显示原文。";
+        viewMode.ToolTip = "列表视图便于浏览和多选复制，终端视图按顺序显示日志及位置。";
         viewMode.SelectionChanged += (_, _) => { results.Visibility = viewMode.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed; terminal.Visibility = viewMode.SelectedIndex == 1 ? Visibility.Visible : Visibility.Collapsed; RuntimeViewChanged(); UpdateEmpty(); };
         cancel = new Button { Content = "取消当前任务", Margin = new(0, 0, 0, 4) }; cancel.Click += (_, _) => pending?.Cancel(); actions.Children.Add(cancel);
         var headerScroll = new ScrollViewer { Content = filters, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled }; header.Children.Add(headerScroll);
@@ -135,6 +136,7 @@ public sealed partial class SoftwareLogControl : UserControl
         detailPanel = new Expander { Header = "日志原文", Content = detail, Visibility = Visibility.Collapsed, Margin = new(0, 8, 0, 0) }; DockPanel.SetDock(detailPanel, Dock.Bottom); root.Children.Add(detailPanel);
         detailPanel.HeaderTemplate = (DataTemplate)FindResource("QueryDisclosureHeader");
         results.Style = (Style)FindResource("QueryResultsGrid");
+        results.ToolTip = "按住 Ctrl 可选择多条，按住 Shift 可选择连续多条。";
         var cellStyle = (Style)FindResource("QueryCellText");
         results.Columns.Add(new DataGridTextColumn { Header = "时间（本地）", Binding = new Binding("At") { Converter = new LocalTimestampConverter(), StringFormat = "yyyy-MM-dd HH:mm:ss.fff" }, Width = 238, ElementStyle = cellStyle });
         results.Columns.Add(new DataGridTextColumn { Header = "来源", Binding = new Binding("Source") { Converter = new LogSourceConverter() }, Width = 130, ElementStyle = cellStyle });
@@ -164,12 +166,12 @@ public sealed partial class SoftwareLogControl : UserControl
         advancedFilters.Expanded += (_, _) => { if (compact) detailPanel.IsExpanded = false; };
         results.SelectionChanged += async (_, _) =>
         {
-            if (results.SelectedItem is SoftwareLogEntry entry) await ShowOriginal(entry);
-            else ClearDetail();
             UpdateActions();
+            if (SelectedEntry is { } entry) await ShowOriginal(entry);
+            else ClearDetail();
         };
-        results.MouseDoubleClick += async (_, _) => { if (results.SelectedItem is SoftwareLogEntry) await Run(LoadContext); };
-        results.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && results.SelectedItem is SoftwareLogEntry && !busy) { e.Handled = true; await Run(LoadContext); } };
+        results.MouseDoubleClick += async (_, _) => { if (SelectedEntry is not null) await Run(LoadContext); };
+        results.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter && SelectedEntry is not null && !busy) { e.Handled = true; await Run(LoadContext); } };
         foreach (var box in new[] { from, to }) box.TextChanged += (_, _) =>
         {
             if (updatingRelativeRange) return;
@@ -192,13 +194,16 @@ public sealed partial class SoftwareLogControl : UserControl
                 (query.Levels.Length == 0 ? "" : " · 级别 " + string.Join("/", query.Levels)) + (query.Sources.Length == 0 ? "" : " · 来源 " + string.Join("/", query.Sources))
             : "待查询：" + DateTimeInput.Display(from.Text, "请选择开始时间") + " 至 " + DateTimeInput.Display(to.Text, "请选择结束时间") + "（本机时间）";
         previousButton.IsEnabled = !busy && selection is not null && offset > 0; nextButton.IsEnabled = !busy && selection is not null && more;
-        contextButton.IsEnabled = !busy && selection is not null && results.SelectedItem is SoftwareLogEntry;
+        contextButton.IsEnabled = !busy && selection is not null && viewMode.SelectedIndex == 0 && SelectedEntry is not null;
+        copyOriginalButton.Visibility = viewMode.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
+        copyOriginalButton.IsEnabled = !busy && selection is not null && results.SelectedItems.Count > 0;
         exportMenu.IsEnabled = exportButton.IsEnabled = rangeButton.IsEnabled = !busy && selection is not null;
         locateExport.IsEnabled = !busy && exportedFile is not null;
         cancel.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
         UpdateRuntimeDiagnosticActions();
         UpdateEmpty();
     }
+    SoftwareLogEntry? SelectedEntry => results.SelectedItems.Count == 1 ? results.SelectedItem as SoftwareLogEntry : null;
     // At minimum height the status line owns the empty message; never paint it over column headers.
     void UpdateEmpty() => empty.Visibility = viewMode.SelectedIndex == 0 && results.Items.Count == 0 && results.ActualHeight >= 96 ? Visibility.Visible : Visibility.Collapsed;
     void InvalidateSelection()
@@ -213,6 +218,7 @@ public sealed partial class SoftwareLogControl : UserControl
         // Visibility alone does not raise Collapsed; restore compact filters as
         // well as clearing the previous record when its selection is revoked.
         detailVersion++; formatting?.Cancel();
+        detailPanel.Header = "日志原文";
         detailPanel.IsExpanded = false;
         detail.Clear(); detailPanel.Visibility = Visibility.Collapsed;
     }
@@ -285,15 +291,15 @@ public sealed partial class SoftwareLogControl : UserControl
     {
         var version = ++detailVersion; formatting?.Cancel();
         var owner = new CancellationTokenSource(); formatting = owner; var token = owner.Token;
-        detail.Text = "正在整理原文…"; detailPanel.Visibility = Visibility.Visible;
+        detailPanel.Header = "日志原文";
+        detail.Text = "正在读取原文…"; detailPanel.Visibility = Visibility.Visible;
         try
         {
-            var text = await Task.Run(() => SoftwareLogText.Format([entry], token), token);
             var authorized = (await service.ManagementModeStatusAsync()).Authorized;
             token.ThrowIfCancellationRequested();
-            if (version != detailVersion || !ReferenceEquals(results.SelectedItem, entry)) return;
+            if (version != detailVersion || !ReferenceEquals(SelectedEntry, entry)) return;
             if (!authorized) { Revoke(); return; }
-            detail.Text = text;
+            detail.Text = entry.Text;
         }
         catch (OperationCanceledException) { }
         catch (Exception error)
@@ -304,14 +310,34 @@ public sealed partial class SoftwareLogControl : UserControl
     }
     async Task LoadContext()
     {
-        if (selection is null || results.SelectedItem is not SoftwareLogEntry entry) throw new InvalidOperationException("请先选中一条日志。");
+        if (selection is null || SelectedEntry is not { } entry) return;
         formatting?.Cancel(); var version = ++detailVersion; var token = pending!.Token;
         var size = ContextSize(); var result = await service.LogContextAsync(selection, entry.Location, size, size, token);
         var text = await Task.Run(() => SoftwareLogText.Format(result.Entries, token), token);
         if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
         token.ThrowIfCancellationRequested();
-        if (version != detailVersion || !ReferenceEquals(results.SelectedItem, entry)) return;
+        if (version != detailVersion || !ReferenceEquals(SelectedEntry, entry)) return;
+        detailPanel.Header = "前后日志";
         detail.Text = text; detailPanel.IsExpanded = true; status.Text = string.Join("\n", result.Notices.Select(QueryTime.DisplayNotice));
+    }
+    async Task CopySelectedOriginals()
+    {
+        var selected = results.SelectedItems.OfType<SoftwareLogEntry>().ToHashSet();
+        var entries = results.Items.OfType<SoftwareLogEntry>().Where(selected.Contains).ToArray();
+        if (entries.Length == 0) return;
+        var token = pending!.Token;
+        var text = await Task.Run(() => string.Join(Environment.NewLine, entries.Select(entry => entry.Text)), token);
+        if (!(await service.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException();
+        token.ThrowIfCancellationRequested();
+        try { Clipboard.SetText(text); }
+        catch (System.Runtime.InteropServices.ExternalException error)
+        {
+            status.Text = "无法复制日志原文，请重试。";
+            diagnosticText.Text = Ipc.Platform.DiagnosticText.Protect(error.ToString());
+            diagnostics.Visibility = Visibility.Visible;
+            return;
+        }
+        status.Text = $"已复制 {entries.Length} 条日志原文。";
     }
     static string OriginalRecord(SoftwareLogEntry entry) => SoftwareLogText.Original(entry, CancellationToken.None);
     async Task Export(bool range)

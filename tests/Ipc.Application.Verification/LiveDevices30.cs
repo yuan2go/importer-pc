@@ -164,7 +164,10 @@ internal static class LiveDevices30
         var next = WithReader(beforeReplacement.Configuration.Effective, replacement.Right, "device.serial", "SYNTH-NEW-RIGHT");
         replacement.Factory.Expect(next);
         replacement.Factory.DiscoverReplacements = false;
-        replacement.Factory.OnLiveConfirmed = () => Thread.Sleep(next.TimeoutMs + 100);
+        replacement.App.Boundary = point =>
+        {
+            if (point == "AfterLiveDeviceConfigurationApplied") Thread.Sleep(next.TimeoutMs + 100);
+        };
         var saved = await replacement.App.StageConfigurationAsync(beforeReplacement.Configuration.Revision, next, "Synthetic camera replacement after release budget");
         var afterReplacement = await replacement.App.SnapshotAsync();
         Check(saved.Status == "Effective" && saved.Reason.Contains("右相机暂未连接") &&

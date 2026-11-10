@@ -70,7 +70,8 @@ static class StateJournalChecks
             Detail(e).GetProperty("First").GetProperty("Disposition").GetString() == "PausedSamePlacementObservation").Select(Detail).ToArray();
         Check(inputs.Length < 12 && inputs.Sum(d => d.GetProperty("ObservationCount").GetInt32()) + observations.Sum(d => d.GetProperty("Count").GetInt32()) == 12,
             "blocked inputs and presence-only summaries retain the complete delivered observation count without duplicate business writes");
-        Check(inputs.All(d => d.GetProperty("Reason").GetString()!.Contains("Global software pause")) &&
+        Check(inputs.All(d => d.GetProperty("BlockReason").GetString() == "SoftwarePaused" &&
+            d.GetProperty("RequestDisposition").GetString() == "NoNewRequest") &&
             observations.Any(d => d.GetProperty("First").GetProperty("SourceEventId").GetString() != d.GetProperty("Last").GetProperty("SourceEventId").GetString()),
             "blocked summaries retain exact pause reason and first/last acquisition identities");
         logs = await WaitLog(h, all => all.Any(e => Event(e) == "供包台状态变化" && Position(State(e), "left").GetProperty("Input").ValueKind == JsonValueKind.Object));

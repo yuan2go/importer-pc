@@ -95,12 +95,21 @@ static partial class SportmasterRcs
                 "actual RCS POST freezes " + source + " and preserves the specified chute as a string including leading zeroes");
         }
         Check(first.Slot == "SYNTH-CHUTE" && second.Slot == "SYNTH-CHUTE", "operator result uses the actual RCS assignment");
+        h.Peer.AssignedData = new { chuteCode = "SYNTH-CHUTE-ACCEPTED", height = "-", length = "-", quantity = 1, skuId = "-", taskId = "SYNTH-TASK", waveNo = "-", weight = "-", width = "-" };
         var firstId = first.Wcs!.Request.IntegrationRequest!.RequestId; var secondId = second.Wcs!.Request.IntegrationRequest!.RequestId;
         Check(firstId > 10000 && secondId > firstId, "runtime assigns increasing numeric IDs beyond the removed 10000 ceiling");
         var unchanged = Wire.Encode(second.Wcs.Request);
         await h.App.DisposeAsync(); await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var third = await Submit("AUTO-RESTART");
         Check(third.Wcs!.Request.IntegrationRequest!.RequestId > secondId && h.Peer.Requests.Count == 3, "restart preserves the permanent ID floor and sends only the new request");
+        var fieldReply = third.Wcs.Replies.Single();
+        Check(third.Slot == "SYNTH-CHUTE-ACCEPTED" && fieldReply is { ProtocolAcknowledged: true, BusinessAccepted: true, PhysicalCompleted: null,
+            Destination: { Quantity: "1", Length: null, Width: null, Height: null, Weight: null } },
+            "a correlated RCS success with numeric quantity and dash measurements settles the operation without claiming physical completion");
+        using var fieldBody = JsonDocument.Parse(Convert.FromBase64String(fieldReply.HttpResponse!.BodyBase64));
+        var fieldData = fieldBody.RootElement.GetProperty("result")[0].GetProperty("data");
+        Check(fieldData.GetProperty("height").GetString() == "-" && fieldData.GetProperty("quantity").GetInt32() == 1,
+            "the accepted operation retains the original RCS wire types and placeholders in its receipt");
         var snapshot = await h.App.SnapshotAsync();
         Check(Wire.Encode(snapshot.Operations.Single(o => o.Id == second.Id).Wcs!.Request) == unchanged, "reopening retains original IDs and exact wire bytes");
         Check(!snapshot.AuxiliaryReasons!.Any(r => r.StartsWith("IntegrationIdBudget:", StringComparison.Ordinal)), "SM diagnostics contain no allocation capacity or renewal requirement");

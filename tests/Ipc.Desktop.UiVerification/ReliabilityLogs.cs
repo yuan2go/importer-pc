@@ -28,7 +28,7 @@ static partial class Program
         var service = DispatchProxy.Create<IWorkstationAdministration, LogUiProbe>(); var probe = (LogUiProbe)(object)service; probe.Inner = runtime;
         var entries = Enumerable.Range(1, 401).Select(i => new SoftwareLogEntry(new("synthetic", i, "hash-" + i, "运行/runtime.jsonl"), "合成", DateTimeOffset.UtcNow, "错误",
             JsonSerializer.Serialize(new { Message = "Synthetic exception " + i, Exception = string.Concat(Enumerable.Repeat("    at Synthetic.Stack.Frame()\n", 300)), Path = @"D:\synthetic\logs" }))).ToArray();
-        probe.Query = (_, _, _) => Task.FromResult(new SoftwareLogPage("fixed", [entries[200]], false, []));
+        probe.Query = (_, _, _) => Task.FromResult(new SoftwareLogPage("fixed", [entries[200], entries[201]], false, []));
         probe.Context = () => Task.FromResult(new SoftwareLogContext(entries, ["Synthetic 401 original records; no field qualification"]));
         var control = new SoftwareLogControl(service); var window = new Window { Content = control, Width = 1000, Height = 700 }; window.Show();
         Button Button(string label) => Descendants(control).OfType<Button>().Single(b => Equals(b.Content, label));
@@ -48,26 +48,51 @@ static partial class Program
         {
             var advanced = (Expander)typeof(SoftwareLogControl).GetField("advancedFilters", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
             advanced.IsExpanded = true; await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            Descendants(advanced).OfType<Expander>().Single(e => Equals(e.Header, "时间范围")).IsExpanded = true;
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             var dates = Descendants(control).OfType<DateTimeInput>().ToArray();
             if (dates.Length != 2 || Descendants(control).OfType<DatePicker>().Count() != 2) throw new InvalidOperationException("Log dates must be native calendar/time controls");
-            Click(window, "最近7天"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            if (!DateTimeOffset.TryParse(dates[0].Timestamp, out var start) || !DateTimeOffset.TryParse(dates[1].Timestamp, out var end) || (end - start).TotalDays is < 6.99 or > 7.01) throw new InvalidOperationException("Quick log range did not update both bound native inputs");
+            Click(window, "最近24小时"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            if (!DateTimeOffset.TryParse(dates[0].Timestamp, out var start) || !DateTimeOffset.TryParse(dates[1].Timestamp, out var end) || (end - start).TotalDays is < 0.99 or > 1.01) throw new InvalidOperationException("Quick log range did not update both bound native inputs");
             Click(window, "查询"); await Settle();
             var applied = (TextBox)typeof(SoftwareLogControl).GetField("effectiveRange", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
             var actualQuery = (SoftwareLogQuery)typeof(SoftwareLogControl).GetField("query", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
-            if (!applied.Text.Contains("查询范围") || !applied.Text.Contains(start.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) || !actualQuery.From.EqualsExact(start) || !actualQuery.ToExclusive.EqualsExact(end)) throw new InvalidOperationException("Readable local range must retain both exact query instants and offsets");
+            if (!DateTimeOffset.TryParse(dates[0].Timestamp, out start) || !DateTimeOffset.TryParse(dates[1].Timestamp, out end) ||
+                !applied.Text.Contains("查询范围") || !applied.Text.Contains(start.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")) ||
+                !actualQuery.From.EqualsExact(start) || !actualQuery.ToExclusive.EqualsExact(end)) throw new InvalidOperationException("Readable local range must retain both exact query instants and offsets");
             Descendants(dates[0]).OfType<DatePicker>().Single().SelectedDate = DateTime.Today.AddDays(-2);
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            if (Button("导出筛选结果…").IsEnabled || Button("导出该时段全部日志…").IsEnabled || !applied.Text.Contains("待查询")) throw new InvalidOperationException("Native date edit must invalidate fixed export selection");
+            if (Button("导出…").IsEnabled || !applied.Text.Contains("待查询")) throw new InvalidOperationException("Native date edit must invalidate fixed export selection");
             Click(window, "最近24小时"); advanced.IsExpanded = false;
             lines.Add("PASS LIA-LOG native calendars, quick ranges and offset bind to actual query; editing date invalidates both fixed export actions");
             Click(window, "查询"); await Settle();
-            Descendants(control).OfType<DataGrid>().Single().SelectedIndex = 0;
+            var grid = Descendants(control).OfType<DataGrid>().Single();
+            grid.SelectedIndex = 1;
+            var original = (Expander)typeof(SoftwareLogControl).GetField("detailPanel", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(control)!;
+            var detail = (TextBox)original.Content;
+            for (var i = 0; i < 200 && detail.Text != entries[201].Text; i++) await Task.Delay(10);
+            if (detail.Text != entries[201].Text) throw new InvalidOperationException("Single-record original differs from the selected record");
+            grid.SelectedItems.Add(entries[200]);
+            var previousClipboard = Clipboard.GetDataObject();
+            try
+            {
+                Click(window, "复制所选原文"); await Settle();
+                if (Clipboard.GetText() != string.Join(Environment.NewLine, entries[200].Text, entries[201].Text))
+                    throw new InvalidOperationException("Copied text must contain the selected original records in display order only");
+            }
+            finally
+            {
+                if (previousClipboard is null) Clipboard.Clear();
+                else Clipboard.SetDataObject(previousClipboard, true);
+            }
+            if (original.IsVisible) throw new InvalidOperationException("Multiple selection must clear the single-record original panel");
+            lines.Add("PASS multi-select copies exactly the selected original records in display order; single selection shows its exact original");
+            grid.SelectedItems.Remove(entries[201]);
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            Descendants(control).OfType<Expander>().Single(e => Equals(e.Header, "更多筛选与导出")).IsExpanded = true;
+            advanced.IsExpanded = true;
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
             var watch = Stopwatch.StartNew(); Click(window, "查看前后日志"); await Settle();
-            var detail = Descendants(control).OfType<TextBox>().Single(t => t.IsReadOnly && t.AcceptsReturn);
+            if (!Equals(original.Header, "前后日志")) throw new InvalidOperationException("Context must be labeled separately from the selected original");
             stop.Cancel(); await monitor;
             lines.Add($"MEASURE H02 native context_records={entries.Length}; original_chars={entries.Sum(e => e.Text.Length)}; presented_chars={detail.Text.Length}; elapsed_ms={watch.Elapsed.TotalMilliseconds:F2}; dispatcher_max_ms={waits.DefaultIfEmpty().Max():F2}");
             if (detail.Text.Length > 65536) throw new InvalidOperationException("H02 context presentation exceeded the 65536-character total budget");

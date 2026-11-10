@@ -25,9 +25,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     ExtensionTrust? trustPolicy;
     string? trustFile;
     DeploymentQualification? qualification;
-    string? builtInConfigurationHash = null;
-    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production &&
-        builtInConfigurationHash != Wire.Hash(Wire.Encode(c)) && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+    static bool UsesBuiltInSportmaster(ParcelConfiguration c) =>
+#if SPORTMASTER
+        c.ApplicationId == "sportmaster";
+#else
+        false;
+#endif
+    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production && !UsesBuiltInSportmaster(c) &&
+        (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
             ? "Production NotReady: exact deployment qualification missing/expired" : null;
     public bool SimulationIdentity(CapabilityBinding b) => b.Package is null ? b.Implementation != "sportmaster-rcs" : Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
     public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
@@ -86,13 +91,13 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     public void ValidateStructure(ParcelConfiguration c) => _ = ValidateDeployment(c, false);
     DeploymentQualification? ValidateDeployment(ParcelConfiguration c, bool requireQualification = true)
     {
-        var builtInSportmaster = false;
+        var builtInSportmaster = UsesBuiltInSportmaster(c);
 #if SPORTMASTER
         // Current SM ships its drivers/components in the protected product release.
         // External package trust and per-configuration extension qualifications do
         // not apply to those built-in binaries. Never fall back from an external
         // binding: the current product explicitly refuses it.
-        if (c.ApplicationId == "sportmaster")
+        if (builtInSportmaster)
         {
             if (c.Extensions is not null || ParcelBindings.Readers(c).Any(r => r.Driver.StartsWith("extension:", StringComparison.Ordinal)) ||
                 ParcelBindings.All(c).Any(b => b.Package is not null || b.Module is not null || b.Implementation.StartsWith("extension:", StringComparison.Ordinal)))
@@ -100,7 +105,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             foreach (var reader in ParcelBindings.Readers(c))
                 if (reader.Driver != "hikrobot-mvs-reader" && !(c.Mode == RunMode.Simulation && reader.Driver is "manual" or "tcp-line"))
                     throw new InvalidDataException("SM当前只支持内置MVS采图与软件识别；不支持原相机配置，原件保留。");
-            builtInSportmaster = true;
         }
 #endif
         var setupErrors = ParcelConnectionSetup.Validate(c);
@@ -454,7 +458,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public ParcelPorts Create(ParcelConfiguration c)
     {
-        builtInConfigurationHash = null;
         qualification = ValidateDeployment(c);
         if (qualification is { } decision)
             foreach (var evidence in decision.ApprovalEvidence.Concat(decision.Prerequisites.SelectMany(x => x.Files)).DistinctBy(x => x.Path))
@@ -534,11 +537,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         var camera = c.Images is null ? null : (IImageCamera)devicePorts[c.Images.Camera.InstanceId];
         var uploader = c.Images?.Uploader is { } u ? Own<IImageUploader>(u, () => new ReferenceImageUploader(u, u.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(u.Package!, m, "upload").Create(u)) : null;
         // Software administration has its own credential store and never falls back to this port.
-#if SPORTMASTER
-        // Admission is bound to the fully validated, constructed configuration;
-        // draft edits cannot inherit this built-in runtime's validation.
-        builtInConfigurationHash = c.ApplicationId == "sportmaster" ? Wire.Hash(Wire.Encode(c)) : null;
-#endif
         transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, readers, devicePorts);
     }
     // SM: a saved camera or RCS change rebuilds only that built-in port; everything else keeps running.
@@ -576,12 +574,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         }
 #else
         return null;
-#endif
-    }
-    public void ConfirmLive(ParcelConfiguration c)
-    {
-#if SPORTMASTER
-        builtInConfigurationHash = c.ApplicationId == "sportmaster" ? Wire.Hash(Wire.Encode(c)) : null;
 #endif
     }
     static IImageCamera BindReader(IControlledObservationSource source, CapabilityBinding binding, string directory) => source is IReaderImageCapture provider

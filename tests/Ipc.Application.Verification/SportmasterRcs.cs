@@ -64,6 +64,8 @@ static partial class SportmasterRcs
         {
             "task-fields" => response.Replace("\"taskId\":", "\"waveNo\":\"0007-WAVE\",\"quantity\":\"0002\",\"taskId\":", StringComparison.Ordinal),
             "numeric-response-quantity" => response.Replace("\"taskId\":", "\"quantity\":2,\"taskId\":", StringComparison.Ordinal),
+            "fractional-response-quantity" => response.Replace("\"taskId\":", "\"quantity\":1.5,\"taskId\":", StringComparison.Ordinal),
+            "invalid-measurement" => response.Replace("\"length\":null", "\"length\":\"invalid\"", StringComparison.Ordinal),
             "numeric-wave" => response.Replace("\"taskId\":", "\"waveNo\":7,\"taskId\":", StringComparison.Ordinal),
             "duplicate" => response.Replace("\"requestId\":", "\"requestId\":0,\"requestId\":", StringComparison.Ordinal),
             "missing-chute" => response.Replace("\"chuteCode\":\"SYNTH-CHUTE\",", "", StringComparison.Ordinal),
@@ -80,7 +82,7 @@ static partial class SportmasterRcs
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
             await service.StartAsync(CancellationToken.None);
             Check((await service.HealthAsync(CancellationToken.None)).Ready && peer.Requests.Count == 0, "lifecycle readiness sends no fabricated remote health request");
-            foreach (var mode in new[] { "assigned", "task-fields", "numeric-response-quantity", "numeric-wave", "unpack", "reject", "malformed", "wrong-id", "wrong-index", "wrong-command", "http-error", "redirect", "duplicate", "missing-chute", "blank-chute", "measured" })
+            foreach (var mode in new[] { "assigned", "task-fields", "numeric-response-quantity", "fractional-response-quantity", "invalid-measurement", "numeric-wave", "unpack", "reject", "malformed", "wrong-id", "wrong-index", "wrong-command", "http-error", "redirect", "duplicate", "missing-chute", "blank-chute", "measured" })
             {
                 peer.Mode = mode; var postCount = peer.Requests.Count; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 7) };
                 var reply = await service.RequestDestinationAsync(frozen, CancellationToken.None);
@@ -101,6 +103,10 @@ static partial class SportmasterRcs
                     case "task-fields":
                         Check(reply.BusinessAccepted == true && reply.Destination is { WaveNo: "0007-WAVE", Quantity: "0002" }, "optional response wave/quantity preserve strings including leading zeros independently of request quantity");
                         Check(Wire.Decode<StageReply>(Wire.Encode(reply)).Destination == reply.Destination, "new task fields survive persisted StageReply round trip");
+                        break;
+                    case "numeric-response-quantity":
+                        Check(reply.BusinessAccepted == true && reply.Slot == "SYNTH-CHUTE" && reply.Destination?.Quantity == "2",
+                            "numeric returned quantity is accepted and shown independently of request quantity");
                         break;
                     case "measured": Check(reply.BusinessAccepted == true && reply.Destination is { Length: 12.34m, Width: 5.6m, Height: 7m, Weight: 0.89m } && reply.Destination.ArgsJson == "{\"synthetic\":[1,\"alpha\"]}", "non-null args and positive measurements preserve exact values without inferred units/conversion"); break;
                     case "assigned":

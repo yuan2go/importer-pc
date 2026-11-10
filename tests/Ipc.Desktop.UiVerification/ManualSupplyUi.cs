@@ -33,6 +33,16 @@ static partial class Program
                 var positions = Descendants(window).OfType<SupplyStationPosition>().ToArray();
                 var left = positions.Single(p => ReferenceEquals(p.DataContext, vm.Left));
                 var right = positions.Single(p => ReferenceEquals(p.DataContext, vm.Right));
+                if (!deferred)
+                {
+                    h.Factory.Cameras[vm.Left.ReaderId].Emit();
+                    await Until(() => vm.Left.Input?.Outcome == ParcelInputOutcome.Blocked);
+                    Check(vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "相机连接未确认" &&
+                        vm.Left.CenteredStateReason == "本次扫码未发送请求" &&
+                        ParcelInputReasons.BlockReason(vm.Left.Input!) == ParcelInputBlockReason.ReaderConfirmationExpired &&
+                        vm.Left.Input!.OperationId is null && vm.Right.CanAdmit && h.Peer.Requests.Count == 0,
+                        "an invalid camera session shows the exact Chinese cause and sends no request; other position remains usable");
+                }
                 ((TextBox)left.FindName("BarcodeEntry")).Text = "000123456";
                 ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 await Until(() => vm.Left.SlotAvailable && !vm.Busy);
@@ -76,6 +86,13 @@ static partial class Program
                     leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Left.Slot == "SYNTH-NEXT" && !vm.Busy);
                     Check(vm.Left.Operation?.Id != original && h.Peer.Requests.Count == 4, "explicitly re-entering the same code sends a fresh manual request");
+                    h.Peer.AssignedData = new { chuteCode = "SYNTH-CHUTE-ACCEPTED", height = "-", length = "-", quantity = 1, skuId = "-", taskId = "SYNTH-TASK", waveNo = "-", weight = "-", width = "-" };
+                    entry.Text = "000123459";
+                    submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Slot == "SYNTH-CHUTE-ACCEPTED" && !vm.Busy);
+                    Check(((TextBox)right.FindName("CurrentSlot")).Text == "SYNTH-CHUTE-ACCEPTED" && ((TextBox)right.FindName("QuantityValue")).Text == "1" &&
+                        !vm.Right.HasUncertainOriginal && vm.Left.Slot == "SYNTH-NEXT" && h.Peer.Requests.Count == 5,
+                        "numeric quantity and dash measurements show the confirmed chute on the receiving position without changing the other side");
                 }
             }
             finally { window.Close(); }

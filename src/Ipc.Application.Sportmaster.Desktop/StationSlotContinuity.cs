@@ -130,7 +130,7 @@ public sealed partial class SupplyStationPositionViewModel
     public string DisplayStatus => SupplyDisabled ? "已停用" : ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused && !PausedAttention ? PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停" : OfflineCameraSurface ? ManualInputAvailable ? "等待输入条码" : "暂不能接收条码" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
         CameraAwaitingRead ? "等待重新扫码" : CameraNoCode ? CenteredStateTitle : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Operation?.State == ParcelState.WcsRejected ? "未取得格口" : Status;
     public string DisplayAttentionReason => CenteredAttention && !CenteredRcsRejection ? CenteredStateReason :
-        SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "条码已读到，本件尚未受理，未请求格口。可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
+        SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "本次扫码未发送请求，可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
         CameraAwaitingRead ? "相机已重连，正在重新扫码。" :
         unreadFeedback ? "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
     public string DisplayNextStep => CenteredAttention ? CenteredStateInstruction : SupplyDisabled ? "" : DisplayPaused ? PausedAttention

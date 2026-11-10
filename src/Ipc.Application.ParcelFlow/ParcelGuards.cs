@@ -4,19 +4,46 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    bool SharedReady() => Volatile.Read(ref accepting) == 1 && configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && !ParcelConnectionSetup.BlocksWork(Effective) && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
-        !stopping.IsCancellationRequested && !backupInProgress && !configurationSaving;
+    bool SharedReady() => SharedAdmissionBlock() is null;
+    ParcelInputBlockReason? SharedAdmissionBlock()
+    {
+        if (Volatile.Read(ref accepting) != 1 || stopping.IsCancellationRequested) return ParcelInputBlockReason.StationStartingOrStopping;
+        if (configuration?.Current.Confirmation?.Required == true) return ParcelInputBlockReason.ConfigurationUnconfirmed;
+        if (!RestoreConfirmed) return ParcelInputBlockReason.RestoreUnconfirmed;
+        if (ParcelConnectionSetup.BlocksWork(Effective)) return ParcelInputBlockReason.ConnectionNotConfigured;
+        if (factory.AdmissionFailure(Effective) is not null) return ParcelInputBlockReason.InstallationNotReady;
+        if (!SessionValid) return ParcelInputBlockReason.OperatorSessionExpired;
+        if (failure is not null) return ParcelInputBlockReason.RuntimeFault;
+        return backupInProgress || configurationSaving ? ParcelInputBlockReason.StationMaintenance : null;
+    }
     bool CanResume() =>
         CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     // A frozen debug preview has made no external call and owns no production parcel.
     // Production placement release changes lane ownership only. Original receipts and recovery are independent.
     bool ReleasedForNextAdmission(ParcelOperation op) => releasedPlacements.Contains(op.Id) || CanCloseUnsentDebugIntent(op) || definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
-    bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
-        !(overload != 0 && overloadedPositions.IsEmpty) &&
-        readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
-        (readers[positions[position].ReaderDeviceId].Source is not IObservationInspectionSource || AutomaticCameraReadsAllowed(positions[position].ReaderDeviceId)) &&
-        !operations.Values.Where(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x)).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
+    bool PositionReady(string position) => CameraPositionBlock(position) is null;
+    ParcelInputBlockReason? CameraPositionBlock(string position)
+    {
+        if (SharedAdmissionBlock() is { } shared) return shared;
+        var device = positions[position].ReaderDeviceId;
+        if (ParcelConnectionSetup.IsDeferred(Effective, device)) return ParcelInputBlockReason.CameraNotConfigured;
+        if (!PositionMaintenanceClear(position)) return ParcelInputBlockReason.PositionMaintenance;
+        if (HasIdentityConflict(position)) return ParcelInputBlockReason.IdentityConflict;
+        if (interruptedPositions.ContainsKey(position)) return ParcelInputBlockReason.InterruptedScan;
+        if (overloadedPositions.ContainsKey(position) || overload != 0 && overloadedPositions.IsEmpty) return ParcelInputBlockReason.InputOverload;
+        var reader = readers[device];
+        if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true) return ParcelInputBlockReason.ReaderConfirmationExpired;
+        if (AdmissionCapabilityBlock(position) is { } capability) return capability;
+        if (reader.Source is IObservationInspectionSource && !AutomaticCameraReadsAllowed(device)) return ParcelInputBlockReason.RcsUnavailable;
+        var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) &&
+            (NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x)));
+        return original is null ? null : PriorWorkBlock(original);
+    }
+    static ParcelInputBlockReason PriorWorkBlock(ParcelOperation original) =>
+        original.State == ParcelState.WcsUnknown || original.Wcs?.State is StageState.Unknown or StageState.Conflict
+            ? ParcelInputBlockReason.PreviousResultUnconfirmed
+            : original.State == ParcelState.ResolvingWcs ? ParcelInputBlockReason.PreviousResultPending : ParcelInputBlockReason.PreviousWorkBlocked;
     bool CanContinue(ParcelOperation op) => !IsDebugRequest(op) && CanDispatch(op with { RecoveryRequired = false }) && !MainTerminated(op) && (op.RecoveryRequired && WeightPending(op) || WeightReady(op) || op.Capture is { State: StageState.Prepared, Attempts: 0 }) &&
         (op.RecoveryRequired || op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null || Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 }));
     bool CanContinueUpload(ParcelOperation op) => op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached &&
@@ -32,8 +59,19 @@ public sealed partial class ParcelRuntime
     bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0 && !backupInProgress && !configurationSaving;
     bool CanSaveConfiguration => repository is not null && MaintenanceAuthorized && !backupInProgress && !configurationSaving &&
         (definition.AutomaticConfigurationQuiescence || repository.Paused && externalWaits == 0);
-    bool CanAdmit(string position) => !ManagementWorkspaceOpen && PositionSupplyEnabled(position) && CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
-        !operations.Values.Any(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
+    bool CanAdmit(string position) => CameraAdmissionBlock(position) is null;
+    ParcelInputBlockReason? CameraAdmissionBlock(string position)
+    {
+        if (ManagementWorkspaceOpen) return ParcelInputBlockReason.ManagementOpen;
+        if (!PositionSupplyEnabled(position)) return ParcelInputBlockReason.PositionDisabled;
+        if (!CapacityAvailable) return CapacityBlock;
+        if (repository!.Paused) return ParcelInputBlockReason.SoftwarePaused;
+        if (CameraPositionBlock(position) is { } positionBlock) return positionBlock;
+        if (!ImageCapacityAvailable()) return ParcelInputBlockReason.ImageCapacityUnavailable;
+        var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
+        return original is null ? null : PriorWorkBlock(original);
+    }
+    ParcelInputBlockReason CapacityBlock => storageCapacityFailure is null ? ParcelInputBlockReason.CapacityExhausted : ParcelInputBlockReason.StorageUnavailable;
     bool CanAdmit() => positions.Keys.Any(p => CanAdmit(p) || CanManuallyAdmit(p));
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
     {
@@ -88,12 +126,16 @@ public sealed partial class ParcelRuntime
         _ => op.Weight is { Source: WeightSource.Measured, MeasurementId: not null, MeasuredAt: { } at } &&
             at >= op.ObservedAt && at <= DateTimeOffset.UtcNow && (op.FrozenConfiguration.WeightValidity == WeightValidity.AtAssociation || DateTimeOffset.UtcNow - at <= TimeSpan.FromMilliseconds(op.WeightPolicy.MaximumAgeMs))
     });
-    bool AdmissionCapabilitiesReady(string? position = null)
+    bool AdmissionCapabilitiesReady(string? position = null) => AdmissionCapabilityBlock(position) is null;
+    ParcelInputBlockReason? AdmissionCapabilityBlock(string? position)
     {
         var bindings = position is null ? ParcelBindings.Bound(Effective) : new[] { Effective.Wcs, Effective.Plc, Effective.Login,
             ParcelBindings.Scale(Effective, position), ParcelBindings.Camera(Effective, position), Effective.Images?.Strategy == UploadStrategy.Attached ? null : Effective.Images?.Uploader }.OfType<CapabilityBinding>();
-        return bindings.All(b =>
-            capabilityHealth.TryGetValue(b.InstanceId, out var h) && h.Ready && h.ConfirmedAt <= DateTimeOffset.UtcNow && h.ValidUntil > DateTimeOffset.UtcNow);
+        var now = DateTimeOffset.UtcNow;
+        foreach (var binding in bindings)
+            if (!capabilityHealth.TryGetValue(binding.InstanceId, out var health) || !health.Ready || health.ConfirmedAt > now || health.ValidUntil <= now)
+                return Id == "sportmaster" && binding.InstanceId == Effective.Wcs?.InstanceId ? ParcelInputBlockReason.RcsUnavailable : ParcelInputBlockReason.CapabilityUnavailable;
+        return null;
     }
     void ExpireWeights()
     {

@@ -68,8 +68,8 @@ static partial class Program
             {
                 await SetClient(window, width, height); window.UpdateLayout();
                 CaptureInternal(evidence, "reader22-expired-" + width, (Grid)window.FindName("ClientArea"), lines);
-                var reason = (TextBox)right.FindName("AttentionReason");
-                Check(reason.IsVisible && reason.ActualHeight >= reason.FontSize * 1.2 && reason.Text.Contains("没有本次有效格口"),
+                var reason = (TextBlock)right.FindName("CenteredStateReason");
+                Check(reason.IsVisible && reason.ActualHeight >= reason.FontSize * 1.2 && reason.Text.Contains("本次没有有效格口"),
                     width + " expired feedback exposes at least a complete actionable reason line");
             }
             typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(window, ["diagnostics"]);

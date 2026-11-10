@@ -153,7 +153,8 @@ static partial class Program
             await Record(name);
             Check(vm.Left.Status == status && barcode.Text == code && Slot("left").IsVisible == destination, name + " result and barcode agree with independent scenario");
             bool Fits(FrameworkElement element) { var bounds = element.TransformToAncestor(body).TransformBounds(new Rect(element.RenderSize)); return bounds.Top >= 0 && bounds.Bottom <= body.ActualHeight && bounds.Left >= 0 && bounds.Right <= body.ActualWidth; }
-            Check(Fits(barcode) && Inside((TextBlock)left.FindName("NextStep"), client), name + " barcode fits the position viewport and next action stays in the fixed footer");
+            var action = (TextBlock)left.FindName(vm.Left.ShowCenteredState ? "CenteredInstruction" : "NextStep");
+            Check(Fits(barcode) && Inside(action, client), name + " barcode fits the position viewport and next action remains reachable");
             Check(Inside((Border)left.FindName("FixedActions"), client), name + " original detail action remains reachable");
         }
 
@@ -196,7 +197,7 @@ static partial class Program
         await Observe("left", "entity-l5", "000127"); await Until(() => vm.Left.Operation?.State == ParcelState.WcsUnknown);
         await NativeResult("unknown-800", "格口未确认", "000127", false);
         var unknown = vm.Left.Operation!; posts = peer.Exchanges.Count;
-        Check(vm.Left.AttentionReason == "RCS 未返回有效格口，请查看异常信息。", "unknown explains the invalid RCS destination in the primary result");
+        Check(vm.Left.CenteredStateTitle == "格口结果未确认" && vm.Left.CenteredStateReason == "本件没有可用格口", "unknown explains the missing destination without internal response evidence");
         Check(unknown.Wcs!.State == StageState.Unknown && !vm.Left.CanAdmit && !vm.Left.CanContinue && vm.Right.CanAdmit, "response missing required taskId leaves unknown custody on left, not a usable partial result or global pause");
         // Reconciliation uses the existing Application guard. Query=false must not POST.
         await runtime.ReconcileAsync(unknown.Id); await vm.RefreshAsync();
@@ -204,13 +205,14 @@ static partial class Program
         await Observe("left", "entity-l6-blocked", "000128");
         await NativeResult("blocked-after-unknown-800", "本次扫描未受理", "000128", false);
         Check(vm.Left.OperationId == unknown.Id && vm.Left.Input!.OperationId is null && peer.Exchanges.Count == posts, "valid new barcode blocked by unknown retains original request owner");
-        Check(vm.Left.AttentionReason.Contains("原因：上一件格口未确认"), "blocked new input separates its admission outcome from current unresolved custody");
+        Check(vm.Left.CenteredStateTitle == "本次扫码未发送" && vm.Left.Input!.Reason.Contains("Position="),
+            "blocked new input displays its unsent state and retains technical detail for diagnostics");
 
         // Invalid receipt identity is injected at the capability boundary, not in a snapshot.
         // This explicitly synthetic port case is NOT a claim about an RCS query capability.
         await Observe("right", "entity-r-conflict", "000129"); await Until(() => vm.Right.Operation?.Wcs?.State == StageState.Conflict);
         Check(vm.Right.Operation!.State == ParcelState.Blocked && vm.Right.Status == "格口结果矛盾" && !vm.Right.CurrentTaskAvailable && !vm.Right.CanAdmit && !vm.Right.CanContinue, "real Application rejects invalid original-stage identity as Conflict, with no destination or repeat permission");
-        Check(vm.Right.AttentionReason.Contains("互相矛盾"), "conflict explains incompatible receipt evidence, distinct from missing acceptance");
+        Check(vm.Right.CenteredStateTitle == "格口结果有冲突", "conflict remains distinct from an unknown result");
         await Record("conflict-right-800");
 
         // A normal, fresh operation snapshot cannot prove that a global command succeeded.

@@ -104,23 +104,74 @@ internal static class StationPositionControlChecks
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 1);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
-            var originalBody = h.Peer.Requests.Single();
+            h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT-DRAIN"), 1);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.WcsUnknown));
-            for (uint number = 2; number <= 4; number++)
+            await h.App.SetPositionEnabledAsync(await Command(h.App, "right", false), default);
+            await CameraRoundHarness.Until(async () =>
             {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, number);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == number)));
-                await Task.Delay(420);
+                var state = await h.App.SnapshotAsync();
+                return state.Operations.Count(o => o.State == ParcelState.WcsUnknown) == 2 &&
+                    state.Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).RemoteConfirmation != RemoteConnectionConfirmation.ResponseReceived;
+            });
+            var originals = (await h.App.SnapshotAsync()).Operations;
+            async Task ClearTray(string position, string camera)
+            {
+                for (uint number = 2; number <= 4; number++)
+                {
+                    h.Api(camera).Enqueue(CameraRoundHarness.EmptyTray, number);
+                    await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads
+                        .Any(read => read.PositionId == position && read.Frame.FrameNumber == number));
+                    if (number < 4) await Task.Delay(425);
+                }
+                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == position) is
+                    { SupplyControl.Mode: StationPositionMode.Disabled, CameraConnectionSuspended: true, CurrentOperation: null });
             }
-            var snapshot = await h.App.SnapshotAsync();
-            Check(snapshot.Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling && snapshot.Operations.Single().State == ParcelState.WcsUnknown,
-                "empty tray cannot finish disabling before original request result is confirmed");
+            await ClearTray("left", h.Left);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Disabling,
+                "only the cleared lane disables despite both original requests being unconfirmed");
+            await ClearTray("right", h.Right);
+            Check(h.Peer.Requests.Count == 2 && h.Api(h.Left).Destroys == 1 && h.Api(h.Right).Destroys == 1,
+                "both lanes finish disabling without heartbeats or extra requests and release their camera handles");
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
-            Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == originalBody && (await h.App.SnapshotAsync()).Operations.Single().State == ParcelState.WcsUnknown,
-                "reenabling preserves Unknown original without changing its body or resending");
-            h.Peer.Hold.TrySetResult();
+            var delayedOriginals = h.Peer.Hold;
+            h.Peer.Hold = null;
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 5);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Accepted));
+            delayedOriginals!.TrySetResult();
+            await Task.Delay(200);
+            var snapshot = await h.App.SnapshotAsync();
+            Check(h.Peer.Requests.Count == 3 && originals.All(old => Wire.Encode(snapshot.Operations.Single(o => o.Id == old.Id).Wcs) == Wire.Encode(old.Wcs)) &&
+                snapshot.Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Disabled,
+                "reenabling starts a new same-code request without changing the detached originals or the other position");
+        }
+        await using (var h = new ManualSupplyHarness(workspace, Path.Combine(root, "manual-release"), false))
+        {
+            h.Peer.ReplySlot = "";
+            await h.StartAsync();
+            var original = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-MANUAL-RELEASE"), default);
+            var snapshot = await h.App.SnapshotAsync();
+            var old = snapshot.Operations.Single();
+            Check(original.Status == "Admitted" && old.State == ParcelState.WcsUnknown && h.Peer.Requests.Count == 1 &&
+                snapshot.Positions!.Single(p => p.Id == "left") is { CanConfirmPlacementRemoval: true, BarcodeInput.Manual: false },
+                "without camera placement evidence the operator has an explicit removal action on the blocked lane");
+            var removal = new BusinessCommand(Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", "left", old.Id);
+            Check((await h.App.CommandAsync(removal with { Owner = "right" })).Status == "Rejected",
+                "removal confirmation cannot release a parcel from another lane");
+            Check((await h.App.CommandAsync(removal)).Status == "Persisted" &&
+                (await h.App.CommandAsync(removal)).Status == "Persisted" && h.Peer.Requests.Count == 1,
+                "confirming removal twice only returns the committed result and does not replay the original");
+            await h.App.DisposeAsync();
+            h.Peer.ReplySlot = "SYNTH-NEXT";
+            await h.StartAsync();
+            snapshot = await h.App.SnapshotAsync();
+            Check(!snapshot.Paused && snapshot.Positions!.Single(p => p.Id == "left") is { CurrentOperation: null, BarcodeInput.Manual: true } &&
+                Wire.Encode(snapshot.Operations.Single(o => o.Id == old.Id).Wcs) == Wire.Encode(old.Wcs),
+                "a restart preserves the removal and original request without reblocking the lane");
+            var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-MANUAL-RELEASE"), default);
+            Check(next.Status == "Admitted" && next.OperationId != old.Id && h.Peer.Requests.Count == 2,
+                "a new manual same-code placement makes an independent request after removal");
         }
         await HeartbeatSelection(workspace);
     }

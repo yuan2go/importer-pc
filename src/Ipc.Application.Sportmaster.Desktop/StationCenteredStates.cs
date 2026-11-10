@@ -38,34 +38,29 @@ public sealed partial class SupplyStationPositionViewModel
         CenteredOriginalAttention || invalidReadFeedback || CenteredOperationAttention && (MissingConfirmedSlot || Operation?.State == ParcelState.UnpackRequired)
             ? ParcelPresentationTone.Unknown : ParcelPresentationTone.Rejected;
 
-    string OriginalAttentionTitle => ParcelPresentation.RcsNotDelivered(Operation) ? "取格口请求未送达" :
-        Operation?.Wcs?.State == StageState.Conflict ? "格口结果有冲突" :
-        Operation?.Wcs?.State == StageState.Unknown ? CurrentInputException is null ? "格口结果未确认" : "上一件格口未确认" : "作业结果未确认";
-    string OriginalAttentionReason
+    string OriginalAttentionTitle => CurrentInputException switch
     {
-        get
+        { Outcome: ParcelInputOutcome.Rejected } input => ParcelPresentation.InputText(input),
+        { Outcome: ParcelInputOutcome.Blocked } => "本次扫码未发送",
+        _ => ParcelPresentation.RcsNotDelivered(Operation) ? "取格口请求未送达" : Operation?.Wcs?.State switch
         {
-            if (CurrentInputException is not null && Operation?.ParcelCode is { Length: > 0 } code && !code.Any(char.IsControl))
-                return "上一件条码 · " + (code.Length > 24 ? "…" + code[^12..] : code);
-            if (ParcelPresentation.RcsNotDelivered(Operation)) return "取格口请求未到达 RCS";
-            if (ParcelPresentation.RcsTimedOut(Operation)) return "等待取格口响应超时";
-            return Operation?.Wcs?.State == StageState.Conflict ? "原请求收到不一致的结果" : "请核对本次原请求";
+            StageState.Conflict => "格口结果有冲突",
+            StageState.Unknown => "格口结果未确认",
+            _ => "作业结果未确认"
         }
-    }
-    string OriginalAttentionInstruction()
+    };
+    string OriginalAttentionReason => CameraNoCode ? "正在确认托盘是否清空" : CurrentInputException switch
     {
-        if (ParcelPresentation.RcsNotDelivered(Operation) && CurrentInputException is null)
-            return DisplayPaused ? "供包已暂停，暂勿投递\n恢复供包后取下包裹重新上件" : "本件暂勿投递\nRCS 连接恢复后取下包裹重新上件";
-        var action = DisplayPaused ? "供包已暂停，请查看详情并通知维护人员" : "暂勿投递，请查看详情并通知维护人员";
-        return CurrentInputException switch
-        {
-            { Outcome: ParcelInputOutcome.Rejected } input => ParcelPresentation.InputText(input) + "，本件未发送\n" + action,
-            { Outcome: ParcelInputOutcome.Blocked } => "本件已读码，未发送\n" + action,
-            _ => "请勿重复上件\n" + action
-        };
-    }
+        { Outcome: ParcelInputOutcome.Rejected } => "本次扫码未发送请求",
+        { Outcome: ParcelInputOutcome.Blocked } => "条码已读到，托盘尚未确认清空",
+        _ => ParcelPresentation.RcsTimedOut(Operation) ? "等待取格口响应超时" : "本件没有可用格口"
+    };
+    string OriginalAttentionInstruction => CanConfirmPlacementRemoval ? "请先取下包裹，再确认" :
+        DisplayPaused ? "请取下包裹，供包恢复后再上件" :
+        RcsUnavailableForDisplay ? "请取下包裹，RCS 连接恢复后再上件" :
+        "请取下包裹，等本位恢复后再上件\n多次出现请通知维护人员";
     string ReadAttentionTitle => invalidReadFeedback ? "本次读码已失效" : ParcelPresentation.InputText(CurrentInputException!);
-    string ReadAttentionInstruction => DisplayPaused ? "供包已暂停，请取下包裹" : SupplyDisabling ? "本位停用中，暂不接收新条码" :
+    string ReadAttentionInstruction => DisplayPaused ? "供包已暂停，请将包裹移出托盘" : SupplyDisabling ? "本位停用中，暂不接收新条码" :
         RcsUnavailableForDisplay ? "请取下包裹，RCS 恢复后再上件" : invalidReadFeedback ? "本件暂勿投递，请重新扫码" :
         CurrentInputException is { Outcome: ParcelInputOutcome.Blocked } ? "请按本位状态处理，恢复后再上件" :
         CurrentInputException?.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) == true ? "请取下包裹后重新上件" :
@@ -83,11 +78,11 @@ public sealed partial class SupplyStationPositionViewModel
     bool InterruptedInputBlocksResume => owner.Snapshot?.BlockingReasons.Any(r => r.StartsWith("IngressInterrupted:", StringComparison.Ordinal)) == true;
     public string PauseReason => InterruptedInputBlocksResume ? "上次运行的数据无法自动恢复" :
         RcsUnavailableForDisplay ? "RCS 连接尚未恢复" :
-        owner.CanResumeInViewport ? PausedReadBlocked ? "条码已读到，尚未请求格口" : "新包裹暂不受理" : BlockingReasons;
+        PausedReadBlocked ? "条码已读到，尚未请求格口" : "新包裹暂不受理";
     public string PauseInstruction => InterruptedInputBlocksResume
         ? "请联系维护人员检查运行数据，操作工无需进入管理中心。"
         : owner.CanResumeInViewport ? "确认现场后，点击顶部“恢复供包”。"
-        : "请到管理中心的设备与诊断处理阻断原因，再恢复供包。";
+        : "请通知维护人员检查设备，恢复后再上件。";
     public bool ShowCenteredState => CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting;
     public string CenteredStateTitle => CenteredStale ? "状态读取中断" : CenteredOriginalAttention ? OriginalAttentionTitle : CenteredReadAttention ? ReadAttentionTitle :
         CurrentRcsRejection is { } rejection ? string.IsNullOrWhiteSpace(rejection.Message) ? "RCS 未分配格口" : rejection.Message :
@@ -112,7 +107,7 @@ public sealed partial class SupplyStationPositionViewModel
         CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "放上包裹，由相机扫码" : "可输入完整条码";
     public string CenteredStateInstruction => CenteredStateFullInstruction;
     public string CenteredStateFullInstruction => CenteredStale ? "请等待状态恢复，暂勿按旧格口投递" :
-        CenteredOriginalAttention ? OriginalAttentionInstruction() : CenteredReadAttention ? ReadAttentionInstruction :
+        CenteredOriginalAttention ? OriginalAttentionInstruction : CenteredReadAttention ? ReadAttentionInstruction :
         CenteredOperationAttention ? MissingConfirmedSlot ? "本件暂勿投递，请查看详情并通知维护人员" : Operation?.State switch
         { ParcelState.UnpackRequired => "请查看拆包明细，处理完再继续", ParcelState.Blocked => "本件暂勿投递，请查看详情", _ => RcsRejectionInstruction() } :
         SupplyDisabled ? "" : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? "请检查连接，恢复后再提交" :

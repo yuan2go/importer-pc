@@ -56,9 +56,9 @@ static partial class SportmasterRcs
             Check(timed.Positions!.Single(p => p.Id == "left").Admit && !new SportmasterFlow().MainSettled(original) && stored.Wcs is { Attempts: 1, State: StageState.Unknown },
                 "a confirmed timeout releases admission without declaring the old request successful or settled");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
-            Check(view.Left.CanAdmit && view.Left.AttentionReason.Contains("暂勿投递", StringComparison.Ordinal) && view.Left.AttentionReason.Contains("新请求", StringComparison.Ordinal) &&
-                !view.Left.AttentionReason.Contains("重新扫描", StringComparison.Ordinal) && !view.Left.SlotAvailable,
-                "independent input remains available while the timed-out original requires reconciliation and has no chute");
+            Check(view.Left.CanAdmit && view.Left.CenteredStateReason == "等待取格口响应超时" &&
+                view.Left.CenteredStateInstruction.Contains("取下包裹", StringComparison.Ordinal) && !view.Left.SlotAvailable,
+                "the timeout card directs the operator to remove the parcel and never shows an unconfirmed chute");
             Check(!new SportmasterFlow().AllowsNextAdmissionAfter(original with { Wcs = original.Wcs! with { State = StageState.Conflict } }) &&
                 !new Ipc.Application.DirectPlc.DirectPlcFlow().AllowsNextAdmissionAfter(original), "receipt conflicts and other applications do not inherit the RCS timeout exception");
             await Task.Delay(400); // Operator lifts the timed-out parcel and places it again.

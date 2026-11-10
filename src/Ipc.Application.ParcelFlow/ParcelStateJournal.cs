@@ -100,6 +100,7 @@ public sealed partial class ParcelRuntime
                     Configured = !ParcelConnectionSetup.IsDeferred(Effective, p.ReaderDeviceId),
                     Suspended = p.CameraConnectionSuspended,
                     DecodePolicy = p.SupplyControl?.Mode == StationPositionMode.Disabled ? "Disabled" : ManagementWorkspaceOpen ? "ManagementExplicitReadOnly" :
+                        CameraDraining(p.ReaderDeviceId) ? "EmptyTrayConfirmation" :
                         AutomaticCameraReadsAllowed(p.ReaderDeviceId) ? "Automatic" : "RcsUnavailablePreviewOnly"
                 },
                 VehicleNumber = p.Vehicle?.VehicleNo,
@@ -131,13 +132,14 @@ public sealed partial class ParcelRuntime
                     PayloadHash = current.Wcs?.Request.PayloadHash,
                     Failure = current.Wcs?.Failure
                 },
-                OriginalResponsibilities = operations.Values.Where(o => o.PositionId == p.Id && !ReleasedForNextAdmission(o))
+                OriginalResponsibilities = operations.Values.Where(o => o.PositionId == p.Id && (!MainTerminated(o) || NeedsReconciliation(o)))
                     .OrderBy(o => o.Id, StringComparer.Ordinal).Take(16).Select(o => new
                     {
                         OperationId = o.Id,
                         Barcode = DiagnosticFragment(o.ParcelCode, 256),
                         State = o.State.ToString(),
                         o.RecoveryRequired,
+                        BlocksNewPlacement = !ReleasedForNextAdmission(o),
                         RequestId = o.Wcs?.Request.Id,
                         ProtocolRequestId = o.Wcs?.Request.IntegrationRequest?.RequestId,
                         Result = o.Wcs?.State.ToString(),
@@ -146,7 +148,7 @@ public sealed partial class ParcelRuntime
                         PayloadHash = o.Wcs?.Request.PayloadHash,
                         Failure = DiagnosticFragment(o.Wcs?.Failure, 512)
                     }).ToArray(),
-                OriginalResponsibilityCount = operations.Values.Count(o => o.PositionId == p.Id && !ReleasedForNextAdmission(o))
+                OriginalResponsibilityCount = operations.Values.Count(o => o.PositionId == p.Id && (!MainTerminated(o) || NeedsReconciliation(o)))
             };
         }).ToArray();
         var dependencies = capabilityHealth.Values.OrderBy(h => h.InstanceId, StringComparer.Ordinal)

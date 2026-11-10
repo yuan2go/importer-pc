@@ -177,6 +177,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             operations.Add(op.Id, op);
             if (op.PositionId is not null) admissionPositions.TryAdd(op.AdmissionId, op.PositionId);
         }
+        if (Id == "sportmaster") releasedPlacements.UnionWith(repository.ReadReleasedPlacements());
         repository.ValidateRawInventory();
         RecoverOriginalFrameArchives();
         foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
@@ -237,6 +238,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var position in positions.Keys) positionWorkers.Add(position, Task.Run(() => ProcessIngressAsync(position), CancellationToken.None));
             worker = Task.WhenAll(positionWorkers.Values);
             InitializePositionControls();
+            RestoreUnfinishedPlacements();
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
             foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
@@ -588,6 +590,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // queued callback reaches Application just after the window closes.
             if (workspaceInspectionSessions.ContainsKey(o.InspectionSessionId)) return;
             RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
+            return;
+        }
+        CommitEmptyTray(position);
+        if (!manual && IsBeforeEmptyTray(position, o.ObservedAt))
+        {
+            WriteRuntimeLog("扫码与准入", "已跳过空托盘确认前的旧扫码", new { PositionId = position, o.Epoch, o.SourceEventId, o.ObservedAt });
             return;
         }
         if (repository!.RetiredIdentity(o.AdmissionId, observationId) is { } retired)

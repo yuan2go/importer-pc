@@ -41,7 +41,8 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     }
                     if (request.RuntimeId != runtimeId || request.ConfigurationRevision != configuration!.Current.Revision)
                         return new("Conflict", "运行或生效配置已改变；核对当前包裹后重新提交。", null, null, repository.Revision);
-                    var latestInput = latestInputs.GetValueOrDefault(request.PositionId);
+                    CommitEmptyTray(request.PositionId);
+                    var latestInput = DisplayedInputs().SingleOrDefault(input => input.PositionId == request.PositionId);
                     var samePlacement = request.ExpectedOperationId is not null && latestInput?.OperationId == request.ExpectedOperationId && ParcelInputReasons.IsSamePlacement(latestInput);
                     if (latestInput?.Observation.Id != request.ExpectedObservationId && !samePlacement ||
                         DisplayedOperation(request.PositionId)?.Id != request.ExpectedOperationId)

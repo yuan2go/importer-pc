@@ -44,7 +44,7 @@ public sealed partial class ParcelRepository
 
 public sealed partial class ParcelRuntime : IStationPositionControl
 {
-    readonly Dictionary<string, StationPositionState> positionControls = new(StringComparer.Ordinal);
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, StationPositionState> positionControls = new(StringComparer.Ordinal);
     readonly HashSet<string> supplySuspendedReaders = new(StringComparer.Ordinal);
     bool ReaderSupplyActive(string reader) => Id != "sportmaster" || !positions.Values.Any(p => p.ReaderDeviceId == reader && PositionControl(p.Id).Mode == StationPositionMode.Disabled);
     StationPositionState PositionControl(string position) => positionControls.GetValueOrDefault(position)
@@ -56,7 +56,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         foreach (var position in positions.Keys)
             if (repository!.ReadPositionControl(position) is { } state)
             {
-                positionControls.Add(position, state);
+                positionControls[position] = state;
                 // Restart is not evidence that the draining parcel physically left.
                 // Keep only its placement guard; the new shift does not restore a finished work card.
                 if (state.Mode == StationPositionMode.Disabling && state.PlacementCode is { } code)
@@ -69,10 +69,11 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         if (Id == "sportmaster" && wcs is IWcsPositionHeartbeat heartbeat)
             heartbeat.SetEnabledPositions(positions.Keys.Where(PositionSupplyEnabled).ToArray());
     }
+    bool CameraDraining(string device) => positions.Values.Any(p => p.ReaderDeviceId == device && PositionControl(p.Id).Mode == StationPositionMode.Disabling);
     bool PositionDrainRequired(string position)
     {
         var pending = repository!.PendingReceipts().Select(r => r.Operation).ToHashSet(StringComparer.Ordinal);
-        if (operations.Values.Any(op => op.PositionId == position && !IsDebugRequest(op) &&
+        if (operations.Values.Any(op => op.PositionId == position && !IsDebugRequest(op) && !releasedPlacements.Contains(op.Id) &&
             (!MainTerminated(op) || NeedsReconciliation(op) || pending.Contains(op.Id)))) return true;
         lock (placements) return placements.TryGetValue(position, out var placement) &&
             (placement.CameraSeen || placement.Operation is not null) && placement.EndedAt is null;
@@ -121,6 +122,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 repository.Commit(null, "PositionSupplyUnchanged", unchanged.Reason, command: command, commandResult: unchanged);
                 return unchanged;
             }
+            CommitEmptyTray(request.PositionId);
             var current = DisplayedOperation(request.PositionId);
             string? placementCode = null; bool cameraSeen = false;
             lock (placements)
@@ -134,7 +136,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 repository.Revision + 1, StationTime.GetUtcNow(), currentOperator?.Subject ?? "local-workstation", current?.Id,
                 current?.Wcs?.Replies.LastOrDefault(r => r.Destination is not null)?.Destination?.TaskId, placementCode, cameraSeen);
             var receipt = new BusinessReceipt("Accepted", label + (state.Mode == StationPositionMode.Enabled ? "已启用。" :
-                state.Mode == StationPositionMode.Disabling ? "停用中，不再接收新条码；等待本次放置结束及原请求确认。" : "已停用。"), state.Revision);
+                state.Mode == StationPositionMode.Disabling ? "停用中，不再接收新条码；等待本次放置结束。" : "已停用。"), state.Revision);
             repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state);
             positionControls[request.PositionId] = state;
             WriteRuntimeLog("投递位启停", "投递位启停已记录", new { CommandId = request.CommandId, PreviousMode = previous.Mode.ToString(), State = state });

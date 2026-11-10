@@ -205,14 +205,14 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
             Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
             Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
     public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? OperatorCopy.NotReturned : Operation.Slot : "未取得";
-    public string AttentionReason => !owner.Fresh ? "状态中断，旧格口已失效。" : InputUnadmitted ? ParcelPresentation.InputReason(Input!) +
-        (Input!.Outcome == ParcelInputOutcome.Blocked && BlockingReasons.Length > 0 ? " 原因：" +
-            (HasUncertainOriginal ? OperatorCopy.PreviousUnconfirmed : BlockingReasons) : "") :
-        Operation?.Wcs?.State == StageState.Conflict ? "收到互相矛盾的结果；本件暂勿投递，请打开详情查看。" :
-        Operation is { } op && !CurrentTaskAvailable ? ParcelPresentation.RcsException(op) ?? ChineseInterfaceText.Notice(op.Wcs?.Failure ?? op.Reason ?? BlockingReasons) : Operation is null ? IdleReason : BlockingReasons;
+    public string AttentionReason => !owner.Fresh ? "状态中断，旧格口已失效。" :
+        ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
+        CenteredRcsRejection ? CenteredStateTitle :
+        CenteredAttention ? CenteredStateReason :
+        InputUnadmitted ? ParcelPresentation.InputReason(Input!) :
+        Operation is null ? IdleReason : "";
     string IdleReason => owner.Snapshot is not { } s ? "等待状态读取。" :
         s.Positions?.SingleOrDefault(p => p.Id == PositionId) is { Admit: true } ? "" :
-        s.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput is { ManualBlockingReasons.Length: > 0 } input ? OperatorCopy.JoinReasons(input.ManualBlockingReasons, "；") :
         ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, ReaderId) ? "相机未启用，可手动输入条码。" :
         s.Configuration.Effective.Wcs is { } w && ParcelConnectionSetup.IsDeferred(s.Configuration.Effective, w.InstanceId) ? "RCS 未配置，请联系维护人员。" :
         s.Paused ? OperatorCopy.Paused : s.Positions?.SingleOrDefault(p => p.Id == PositionId)?.Admit == true ? "" :
@@ -238,7 +238,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.ResponsiveSlotSize(Operation!.Slot!, owner.ChuteScale);
     public bool NeedsAttention => !owner.Fresh || InputUnadmitted || HasUncertainOriginal || Presentation.NeedsAttention;
     public string OperatorInstruction => !owner.Fresh ? OperatorCopy.StaleStep :
-        InputUnadmitted ? (InputFailed ? ChineseInterfaceText.Notice(Input!.Reason) + "；" + OperatorCopy.RescanStep : OperatorCopy.PreviousPendingStep) :
+        InputUnadmitted ? ParcelPresentation.InputReason(Input!) :
         Operation?.State switch
         {
             ParcelState.WcsUnknown when ParcelPresentation.RcsNotDelivered(Operation) => "RCS未连接，本次请求未送达；连接恢复后请取下包裹再重新放上。",
@@ -267,15 +267,14 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
         ParcelState.WcsRejected => "未分配格口",
         _ => Operation is null ? IdleReason.Length > 0 ? "暂不能供包" : "等待扫码或输入条码" : Presentation.Text
     };
-    public string OriginalResultSummary => InputUnadmitted && Operation is { } op ? "上一件 " + op.ParcelCode + " · " +
-        (!owner.Fresh ? "状态中断" : op.State is ParcelState.WcsUnknown or ParcelState.ImageUnknown ? "格口未确认" : ParcelPresentation.Operation(op, true).Text) : "";
-    public string OriginalResponsibility => InputUnadmitted && Operation is { } op ? "上一件仍待处理：" + op.ParcelCode + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text + "（作业 " + op.Id + "）；显示的格口属于上一件，不属于本次扫描。" : "";
+    public string OriginalResponsibility => InputUnadmitted && Operation is { } op ?
+        "关联原作业 " + op.Id + " · " + op.ParcelCode + " · " + ParcelPresentation.Operation(op, owner.Fresh).Text : "";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
     public ParcelStatusPresentation DevicePresentation { get; private set; } = ParcelPresentation.Unknown("相机：状态待确认");
     public string RcsServiceStatus => owner.RcsServiceStatus;
     public string DeviceLabel => DeviceStatus.Split(" · ", 2)[0];
     public string NextStep => !owner.Fresh ? OperatorCopy.StaleStep : InputUnadmitted ?
-        Operation is null ? OperatorCopy.RescanStep : OperatorCopy.PreviousPendingStep :
+        OperatorCopy.RescanStep :
         SlotAvailable ? "按格口投递；扫描下一件后自动更新。" :
         CurrentTaskAvailable ? "RCS 未返回格口：包裹暂放一旁，通知维护人员。" :
         Operation?.State == ParcelState.ResolvingWcs ? "等待格口返回，勿重复扫描。" :
@@ -366,7 +365,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
             (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),
             (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ScanSummary), ScanSummary), (nameof(ObservationIdentity), ObservationIdentity),
             (nameof(Presentation), Presentation), (nameof(Status), Status), (nameof(OperatorInstruction), OperatorInstruction),
-            (nameof(OriginalResultSummary), OriginalResultSummary), (nameof(OriginalResponsibility), OriginalResponsibility),
+            (nameof(OriginalResponsibility), OriginalResponsibility),
             (nameof(RcsServiceStatus), RcsServiceStatus), (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),
             (nameof(Admission), Admission), (nameof(RequestId), RequestId), (nameof(ResultReason), ResultReason),
             (nameof(ObservedAt), ObservedAt), (nameof(LatestInputSummary), LatestInputSummary), (nameof(ImageStatus), ImageStatus),

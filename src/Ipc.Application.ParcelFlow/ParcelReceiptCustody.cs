@@ -68,5 +68,5 @@ public sealed partial class ParcelRuntime
         return interruptedPositions.IsEmpty && ingressLanes.Values.All(l => l.Waiting.IsEmpty) && identityConflicts.Count == 0 &&
             operations.Values.All(op => IsSettled(op) || repository!.CustodyOnly(op, Id)) && repository!.PendingReceipts().All(x => repository.HasReceiptOutcomeBasis(x.Id));
     }
-    bool RequiresOriginalExecution(ParcelOperation op) => !IsSettled(op) && !repository!.CustodyOnly(op, Id);
+    bool RequiresOriginalExecution(ParcelOperation op) => !releasedPlacements.Contains(op.Id) && !IsSettled(op) && !repository!.CustodyOnly(op, Id);
 }

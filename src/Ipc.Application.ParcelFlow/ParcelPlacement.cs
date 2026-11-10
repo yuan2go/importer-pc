@@ -3,6 +3,19 @@ using Ipc.Platform;
 
 namespace Ipc.Application.ParcelFlow;
 
+public sealed partial class ParcelRepository
+{
+    internal string[] ReadReleasedPlacements()
+    {
+        using var command = db.CreateCommand();
+        command.CommandText = "SELECT DISTINCT o.id FROM parcel_audit a, json_each(a.detail,'$.OperationIds') i JOIN parcel_operations o ON o.id=i.value WHERE a.event='StationPlacementReleased'";
+        using var reader = command.ExecuteReader();
+        var ids = new List<string>();
+        while (reader.Read()) ids.Add(reader.GetString(0));
+        return ids.ToArray();
+    }
+}
+
 // One physical placement on a supply tray is one business request (AGENTS.md: one placement, one request).
 // Continuous acquisition sees a parcel resting on the tray in every frame; each frame
 // is still recorded as its own observation, but only the first admitted read of a
@@ -33,6 +46,7 @@ public sealed partial class ParcelRuntime
         // only end a placement whose code the camera has actually read.
         public bool CameraSeen = cameraSeen;
         public int EmptyFrames;
+        public string? EmptyEpoch;
         public DateTimeOffset? EmptySince, EndedAt;
     }
     // Written by the ingress worker (under gate) and by decode callbacks.
@@ -42,7 +56,81 @@ public sealed partial class ParcelRuntime
     // Scene of the latest camera frame that read a code at each position. Kept per position, not per placement:
     // the frame fact can arrive before the read creates its placement.
     readonly Dictionary<string, (string Epoch, long? Scene)> codeScenes = [];
+    readonly Dictionary<string, ObservationReadFeedback> pendingEmptyTrays = [];
+    readonly Dictionary<string, DateTimeOffset> confirmedEmptyTrays = [];
+    readonly HashSet<string> releasedPlacements = new(StringComparer.Ordinal);
     void RegisterPlacementFrames(string position) { lock (placements) frameFedPositions.Add(position); }
+
+    bool CanConfirmPlacementRemoval(string position, ParcelOperation? operation)
+    {
+        if (Id != "sportmaster" || operation is null || IsDebugRequest(operation) ||
+            !(NeedsReconciliation(operation) || operation.State == ParcelState.UnpackRequired) ||
+            !SessionValid || ManagementWorkspaceOpen || configurationSaving || stopping.IsCancellationRequested) return false;
+        var reader = readers[positions[position].ReaderDeviceId];
+        if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true ||
+            reader.Source is IObservationInspectionSource && !CameraDraining(reader.Source.DeviceId) && !AutomaticCameraReadsAllowed(reader.Source.DeviceId)) return true;
+        lock (placements)
+            return !frameFedPositions.Contains(position) ||
+                operation.OperatorInput is not null && (!placements.TryGetValue(position, out var placement) || !placement.CameraSeen);
+    }
+
+    bool ConfirmPlacementRemoval(BusinessCommand command)
+    {
+        if (command.Owner is not ("left" or "right") || !positions.ContainsKey(command.Owner) ||
+            DisplayedOperation(command.Owner) is not { } operation || command.Value != operation.Id ||
+            !CanConfirmPlacementRemoval(command.Owner, operation)) return false;
+        var at = DateTimeOffset.UtcNow;
+        var detail = new { PositionId = command.Owner, ObservedAt = at, OperationIds = new[] { operation.Id }, Source = "OperatorConfirmedRemoval" };
+        repository!.Commit(null, "StationPlacementReleased", Wire.Encode(detail), command: command);
+        releasedPlacements.Add(operation.Id);
+        confirmedEmptyTrays[command.Owner] = at;
+        lock (placements)
+            if (placements.TryGetValue(command.Owner, out var placement))
+            { placement.EndedAt = at; placement.RejectedImage = null; }
+        WriteRuntimeLog("扫码与准入", "操作员确认包裹已取下，原作业已退出本位", detail);
+        return true;
+    }
+
+    // Empty-tray facts arrive outside the business gate. Commit the release under
+    // that gate before admitting another parcel, without touching any original request.
+    void CommitEmptyTray(string position)
+    {
+        if (Id != "sportmaster") return;
+        ObservationReadFeedback? empty;
+        lock (placements) empty = pendingEmptyTrays.GetValueOrDefault(position);
+        if (empty is null) return;
+        var operationIds = operations.Values.Where(o => o.PositionId == position && !IsDebugRequest(o) &&
+            o.ObservedAt <= empty.ObservedAt && (!MainTerminated(o) || NeedsReconciliation(o)) && !releasedPlacements.Contains(o.Id)).Select(o => o.Id).ToArray();
+        if (operationIds.Length > 0)
+        {
+            var detail = new { PositionId = position, empty.ObservedAt, empty.DeviceId, empty.Epoch, empty.FrameNumber, OperationIds = operationIds };
+            repository!.Commit(null, "StationPlacementReleased", Wire.Encode(detail));
+            releasedPlacements.UnionWith(operationIds);
+            WriteRuntimeLog("扫码与准入", "空托盘已确认，原作业已退出本位", detail);
+        }
+        confirmedEmptyTrays[position] = empty.ObservedAt;
+        lock (placements)
+            if (pendingEmptyTrays.GetValueOrDefault(position) == empty) pendingEmptyTrays.Remove(position);
+    }
+
+    void CommitEmptyTrays()
+    {
+        if (Id != "sportmaster") return;
+        foreach (var position in positions.Keys) CommitEmptyTray(position);
+    }
+
+    bool IsBeforeEmptyTray(string position, DateTimeOffset observedAt) =>
+        confirmedEmptyTrays.TryGetValue(position, out var confirmed) && observedAt <= confirmed;
+
+    void RestoreUnfinishedPlacements()
+    {
+        if (Id != "sportmaster") return;
+        foreach (var position in positions.Keys)
+            if (DisplayedOperation(position) is { Acquisition: not null } current &&
+                (!MainTerminated(current) || NeedsReconciliation(current)) &&
+                !placements.ContainsKey(position))
+                placements[position] = new(current.ParcelCode, current.ObservedAt, cameraSeen: true) { Operation = current.Id };
+    }
 
     // Presentation may coalesce observations only while the business placement
     // ledger still owns them. This grants no admission or retry authority.
@@ -108,8 +196,7 @@ public sealed partial class ParcelRuntime
     // A finished (chute assigned/refused) result stays on the work card only while it is the
     // current parcel of this shift: never one from before this run opened (restart, previous
     // shift), never after its placement ended (empty tray) or another code took the position,
-    // and a manually entered one for at most ManualResultDisplay. Unfinished and unconfirmed
-    // operations are not affected: they stay until handled.
+    // and a manually entered one for at most ManualResultDisplay.
     bool ShowsFinishedResult(string position, ParcelOperation finished)
     {
         if (definition.SamePlacementReleaseMs <= 0) return true;
@@ -126,7 +213,7 @@ public sealed partial class ParcelRuntime
     void NotePlacementFrame(string position, ObservationReadFeedback frame)
     {
         var emptyFrames = definition.SamePlacementEmptyFrames;
-        if (definition.SamePlacementReleaseMs <= 0 || emptyFrames <= 0 || frame.Outcome == ObservationReadOutcome.RejectedFrame) return;
+        if (definition.SamePlacementReleaseMs <= 0 || emptyFrames <= 0 || ManagementWorkspaceOpen || frame.Outcome == ObservationReadOutcome.RejectedFrame) return;
         lock (placements)
         {
             if (frame.Outcome == ObservationReadOutcome.Codes) codeScenes[position] = (frame.Epoch, frame.Scene);
@@ -137,6 +224,8 @@ public sealed partial class ParcelRuntime
                 return;
             }
             if (frame.ObservedAt <= placement.LastSeen || !placement.CameraSeen) return;
+            if (placement.EmptyEpoch != frame.Epoch)
+            { placement.EmptyEpoch = frame.Epoch; placement.EmptyFrames = 0; placement.EmptySince = null; }
             // The scene is unchanged since a code was last read here: the parcel is still there and the decoder missed it.
             var rejectedBackground = placement.RejectedInput is { } rejected &&
                 CameraBarcodeCandidates.Excluded(Effective.BarcodeFilter, rejected.Observation.Codes)?.Length == rejected.Observation.Codes.Length;
@@ -144,7 +233,11 @@ public sealed partial class ParcelRuntime
             placement.EmptySince ??= frame.ObservedAt;
             if (++placement.EmptyFrames >= emptyFrames &&
                 frame.ObservedAt - placement.EmptySince.Value >= TimeSpan.FromMilliseconds(definition.SamePlacementEmptyMinimumMs))
-            { placement.EndedAt = placement.EmptySince; placement.RejectedImage = null; }
+            {
+                placement.EndedAt = placement.EmptySince;
+                placement.RejectedImage = null;
+                pendingEmptyTrays[position] = frame;
+            }
         }
     }
 

@@ -126,11 +126,9 @@ public sealed partial class SupplyStationPositionViewModel
         CameraNoCode ? CameraAwaitingRead ? "等待重新扫码" : "未读到条码" : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Operation?.State == ParcelState.WcsRejected ? "未取得格口" : Status;
     public string DisplayAttentionReason => CenteredAttention && !CenteredRcsRejection ? CenteredStateReason :
         SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "条码已读到，本件尚未受理，未请求格口。可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
-        CameraNoCode ? (CameraAwaitingRead ? "相机连接周期已变化，上一周期的格口已失效。" : cameraRead!.Frame.Outcome == ObservationReadOutcome.RejectedFrame ? "当前图像无法识别；上一件格口不可用于本件。" : "托盘上未读到条码；上一件格口不可用于本件。") +
-            (HasUncertainOriginal ? " " + AttentionReason : "") :
-        invalidReadFeedback ? "相机连接周期已变化，或本次读码等待已超时；没有本次有效格口。" : unreadFeedback ? HasUncertainOriginal ? "本次条码已读到；上一件 " + Operation?.ParcelCode + " 的格口仍未确认。" :
-            "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
-    public string DisplayNextStep => SupplyDisabled ? "" : DisplayPaused ? PausedAttention
+        CameraNoCode ? CameraAwaitingRead ? "相机已重连，正在重新扫码。" : "托盘上未读到条码。" :
+        unreadFeedback ? "已读到条码，正在保存，尚未确认接收。" : AttentionReason;
+    public string DisplayNextStep => CenteredAttention ? CenteredStateInstruction : SupplyDisabled ? "" : DisplayPaused ? PausedAttention
         ? "供包已暂停；" + (HasUncertainOriginal ? NextStep : Input?.Outcome == ParcelInputOutcome.Rejected ? "查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep)
         : PauseInstruction : ShowConfirmedTask ? "" : OfflineCameraSurface ? ManualInputAvailable ? "输入完整条码后按回车或点击提交。" : NextStep :
         CameraNoCode ? HasUncertainOriginal ? NextStep : "托盘空时直接放上包裹，条码朝上；已放包裹仍未读到，请调整标签或用扫码枪/键盘补录，取得本件格口后再投递。" : invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" :
@@ -189,7 +187,7 @@ public sealed partial class SupplyStationPositionViewModel
     {
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(SupplyEnabled), SupplyEnabled), (nameof(SupplyDisabling), SupplyDisabling), (nameof(SupplyDisabled), SupplyDisabled),
-            (nameof(CanChangeSupply), CanChangeSupply), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
+            (nameof(CanChangeSupply), CanChangeSupply), (nameof(CanConfirmPlacementRemoval), CanConfirmPlacementRemoval), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
             (nameof(EnableBackground), EnableBackground), (nameof(EnableForeground), EnableForeground), (nameof(DisableBackground), DisableBackground), (nameof(DisableForeground), DisableForeground),
             (nameof(Barcode), Barcode), (nameof(HasCurrentInput), HasCurrentInput), (nameof(BarcodePlaceholder), BarcodePlaceholder),
             (nameof(BarcodeObservationKey), BarcodeObservationKey),

@@ -123,19 +123,19 @@ internal static partial class CameraRoundChecks
             await Reject(async () => { await h.ArmAsync(h.Left); }, "sending round cannot be replaced while HTTP is in flight");
             await Reject(h.EndAsync, "scene clearance cannot erase an in-flight request");
             await h.App.ExitManagementModeAsync(); await Reject(async () => { await sending; }, "revoked management interrupts the wait without claiming no external effect");
-            var unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == right.OperationId);
-            Check(unknown.Wcs is { State: StageState.Unknown, Attempts: 1 }, "authority cancellation retains Unknown and one attempted request without exposing privileged JSON");
+            var unknown = (await h.App.OperationAsync(right.OperationId!))!;
+            Check(unknown.Wcs is { State: StageState.Unknown, Attempts: 1, Request.IntegrationRequest: null }, "authority cancellation retains Unknown and one attempted request without exposing privileged JSON");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; await h.AuthorizeAsync(); await h.App.SendCameraRoundAsync(held, default);
-            unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == right.OperationId);
+            unknown = (await h.App.OperationAsync(right.OperationId!))!;
             Check(unknown.Wcs!.Request.IntegrationRequest!.Body == right.RequestBody, "reauthorized custody exposes the unchanged original JSON");
             Check(h.Peer.Requests.Count == 2 && !(await h.App.ReadCameraReadRoundAsync(default)).CanSend, "reauthorization/query never replays Unknown");
             var unknownRequest = Wire.Encode(unknown.Wcs!.Request); await h.App.DisposeAsync(); await h.StartAsync(); await PauseForDirectDebug(h.App);
-            var recovered = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == unknown.Id);
+            var recovered = (await h.App.OperationAsync(unknown.Id))!;
             Check(recovered.Wcs is { State: StageState.Unknown, Attempts: 1 } && Wire.Encode(recovered.Wcs.Request) == unknownRequest &&
-                !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced, "restart preserves original Unknown without restoring a debug isolation fence");
+                (await h.App.SnapshotAsync()).Capacity?.HistoricalUnknown == 1 && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced, "restart preserves original Unknown in history without restoring a debug isolation fence");
             h.Api(h.Left).Enqueue(pixels, 100); await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 1));
             Check(h.Factory.Decoders[h.Left].Count >= 1 && h.Peer.Requests.Count == 2, "recognition resumes normally while explicit pause and original Unknown prevent unintended sends");
-            Check((await h.App.SnapshotAsync()).Operations.Single(o => o.Id == unknown.Id).Wcs!.State == StageState.Unknown && h.Peer.Requests.Count == 2, "retired isolation needs no clearance and keeps unresolved original responsibility");
+            Check((await h.App.SnapshotAsync()).Operations.All(o => o.Id != unknown.Id) && h.Peer.Requests.Count == 2, "the historical original does not rejoin execution when recognition resumes");
         }
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "clear-cancel")))
         {

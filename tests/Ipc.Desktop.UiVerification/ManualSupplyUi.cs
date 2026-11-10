@@ -48,19 +48,37 @@ static partial class Program
                 await Until(() => vm.Left.SlotAvailable && !vm.Busy);
                 Check(vm.Left.Barcode == "000123456" && vm.Left.Slot == "SYNTH-CHUTE" && vm.Left.ScanSummary.StartsWith("手动键盘输入") && h.Peer.Requests.Count == 1,
                     "bottom submit sends the complete keyboard barcode through Application and real built-in RCS");
-                var source = (ComboBox)right.FindName("BarcodeSource");
-                Check(source.IsVisible && source.SelectedIndex == 0, "each position defaults to manual input");
-                source.SelectedIndex = 1;
-                var entry = (TextBox)right.FindName("BarcodeEntry"); entry.Text = "000123457";
-                entry.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window)!, 0, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
+                Check(left.FindName("BarcodeSource") is null && right.FindName("BarcodeSource") is null,
+                    "both positions accept input through the same barcode editor with no source picker");
+                var entry = (TextBox)right.FindName("BarcodeEntry");
+                entry.Focus(); await Flush();
+                // Feed the actual WPF key and text paths with controlled key timestamps.
+                // Text composition can be delivered later than the native key.
+                var keyboard = Keyboard.PrimaryDevice;
+                var inputSource = PresentationSource.FromVisual(window)!;
+                var timestamp = Environment.TickCount;
+                const string rightCode = "000123457";
+                for (var i = 0; i < rightCode.Length; i++)
+                {
+                    var character = rightCode[i];
+                    entry.RaiseEvent(new KeyEventArgs(keyboard, inputSource, timestamp, KeyInterop.KeyFromVirtualKey(character))
+                        { RoutedEvent = Keyboard.PreviewKeyDownEvent });
+                    entry.RaiseEvent(new TextCompositionEventArgs(keyboard, new TextComposition(InputManager.Current, entry, character.ToString()))
+                        { RoutedEvent = TextCompositionManager.PreviewTextInputEvent });
+                    var caret = entry.SelectionStart + 1;
+                    entry.SelectedText = character.ToString(); entry.Select(caret, 0);
+                    timestamp += deferred ? i is 0 or 3 ? 110 : 10 : 65;
+                }
+                entry.RaiseEvent(new KeyEventArgs(keyboard, inputSource, timestamp, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
                 await Until(() => vm.Right.SlotAvailable && !vm.Busy);
-                Check(vm.Right.Barcode == "000123457" && vm.Right.Operation?.OperatorInput?.Kind == "PdaKeyboard" && h.Peer.Requests.Count == 2 &&
-                    vm.Right.Operation!.Acquisition is null, "PDA Enter independently supplies the other position without any camera acquisition");
+                var expectedKind = deferred ? "PdaKeyboard" : "Keyboard";
+                Check(vm.Right.Barcode == "000123457" && vm.Right.Operation?.OperatorInput?.Kind == expectedKind && h.Peer.Requests.Count == 2 &&
+                    vm.Right.Operation!.Acquisition is null, "the native editor recognizes the key cadence as " + expectedKind + " without a camera");
                 var bodies = h.Peer.Requests.ToArray();
                 using var manual = JsonDocument.Parse(bodies[0]);
                 using var pda = JsonDocument.Parse(bodies[1]);
-                Check(manual.RootElement.GetProperty("source").GetString() == "MANUAL" && pda.RootElement.GetProperty("source").GetString() == "PDA",
-                    "ordinary keyboard and explicit PDA selection reach the RCS source field");
+                Check(manual.RootElement.GetProperty("source").GetString() == "MANUAL" && pda.RootElement.GetProperty("source").GetString() == (deferred ? "PDA" : "MANUAL"),
+                    "the editor preserves the detected source in the actual RCS payload");
                 CaptureInternal(evidence, deferred ? "manual-deferred-native" : "manual-offline-native", (Grid)window.FindName("ClientArea"), lines);
                 await SetClient(window, 800, 420); await Flush();
                 var submit = (Button)right.FindName("SubmitBarcode"); submit.BringIntoView(); await Flush();

@@ -48,7 +48,8 @@ static partial class SportmasterRcs
         await using (var originalService = new SportmasterRcsTaskService(seed))
         {
             var request = Request(seed); var wire = originalService.PrepareRequest(request, 52);
-            var body = wire.Body.Replace(",\"noDestToExp\":true", "", StringComparison.Ordinal);
+            var body = wire.Body.Replace(",\"taskId\":52", "", StringComparison.Ordinal)
+                .Replace(",\"noDestToExp\":true", "", StringComparison.Ordinal);
             var oldWire = wire with { Body = body, BodyHash = Wire.Hash(body) };
             Check(RcsDestinationProtocol.MatchesFrozen(new(seed), request with { IntegrationRequest = oldWire }, oldWire), "original requests predating the policy remain valid immutable evidence");
         }

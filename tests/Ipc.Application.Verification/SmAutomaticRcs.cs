@@ -28,13 +28,16 @@ static partial class SportmasterRcs
             var wire = service.PrepareRequest(request, id);
             using var json = JsonDocument.Parse(wire.Body);
             var args = json.RootElement.GetProperty("data")[0].GetProperty("params");
-            Check(wire.RequestId == id && !args.GetProperty("specifiedChute").GetBoolean() && args.GetProperty("chuteCode").ValueKind == JsonValueKind.Null,
-                "ordinary request uses its assigned ID without a configured ceiling: " + id);
+            Check(wire.RequestId == id && args.GetProperty("taskId").GetInt64() == id &&
+                !args.GetProperty("specifiedChute").GetBoolean() && args.GetProperty("chuteCode").ValueKind == JsonValueKind.Null,
+                "ordinary request sends its assigned ID as numeric taskId without a configured ceiling: " + id);
         }
         var old = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "810000000", ["request-id-count"] = "10000", ["specified-chute"] = "true", ["chute-code"] = "OLD-CHUTE" } };
         await using var oldService = new SportmasterRcsTaskService(old);
         var oldRequest = Request(old); var seedWire = oldService.PrepareRequest(oldRequest, 810000001);
-        var originalBody = seedWire.Body.Replace("\"specifiedChute\":false", "\"specifiedChute\":true", StringComparison.Ordinal).Replace("\"chuteCode\":null", "\"chuteCode\":\"OLD-CHUTE\"", StringComparison.Ordinal);
+        var originalBody = seedWire.Body.Replace("\"taskId\":810000001,", "", StringComparison.Ordinal)
+            .Replace("\"specifiedChute\":false", "\"specifiedChute\":true", StringComparison.Ordinal)
+            .Replace("\"chuteCode\":null", "\"chuteCode\":\"OLD-CHUTE\"", StringComparison.Ordinal);
         var originalWire = seedWire with { Body = originalBody, BodyHash = Wire.Hash(originalBody) };
         var frozen = oldRequest with { IntegrationRequest = originalWire }; var originalBytes = Wire.Encode(frozen);
         Check(RcsDestinationProtocol.MatchesFrozen(new(old), frozen, originalWire), "already-frozen fixed-chute wire evidence is still validated without regeneration");
@@ -60,10 +63,18 @@ static partial class SportmasterRcs
         });
         originalOperator = originalOperator with { Payload = operatorPayload, PayloadHash = Wire.Hash(operatorPayload) };
         var operatorWire = service.PrepareRequest(originalOperator, 42);
-        var legacyBody = operatorWire.Body.Replace("\"MANUAL\"", "\"BAR\"", StringComparison.Ordinal);
+        var beforeTaskId = operatorWire.Body.Replace("\"taskId\":42,", "", StringComparison.Ordinal);
+        var legacyBody = beforeTaskId.Replace("\"MANUAL\"", "\"BAR\"", StringComparison.Ordinal);
         var legacyWire = operatorWire with { Body = legacyBody, BodyHash = Wire.Hash(legacyBody) };
         Check(RcsDestinationProtocol.MatchesFrozen(new(binding), originalOperator with { IntegrationRequest = legacyWire }, legacyWire),
             "original manual request with the historical BAR envelope remains valid exact evidence");
+        var olderWire = operatorWire with { Body = beforeTaskId, BodyHash = Wire.Hash(beforeTaskId) };
+        Check(RcsDestinationProtocol.MatchesFrozen(new(binding), originalOperator with { IntegrationRequest = olderWire }, olderWire),
+            "a frozen request without taskId remains valid without changing the original bytes");
+        var editedBody = operatorWire.Body.Replace("\"taskId\":42", "\"taskId\":43", StringComparison.Ordinal);
+        var editedWire = operatorWire with { Body = editedBody, BodyHash = Wire.Hash(editedBody) };
+        Check(!RcsDestinationProtocol.MatchesFrozen(new(binding), originalOperator with { IntegrationRequest = editedWire }, editedWire),
+            "a different taskId cannot replace the frozen assignment even with a recomputed body hash");
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "automatic-runtime"), deferred: true);
         var configured = h.Config with { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs!.Parameters)
         {
@@ -102,6 +113,14 @@ static partial class SportmasterRcs
         await h.App.DisposeAsync(); await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var third = await Submit("AUTO-RESTART");
         Check(third.Wcs!.Request.IntegrationRequest!.RequestId > secondId && h.Peer.Requests.Count == 3, "restart preserves the permanent ID floor and sends only the new request");
+        var sentTaskIds = h.Peer.Requests.Select(body =>
+        {
+            using var json = JsonDocument.Parse(body);
+            var envelope = json.RootElement;
+            return (Request: envelope.GetProperty("requestId").GetInt64(), Task: envelope.GetProperty("data")[0].GetProperty("params").GetProperty("taskId").GetInt64());
+        }).ToArray();
+        Check(sentTaskIds.Select(id => id.Task).Distinct().Count() == 3 && sentTaskIds.All(id => id.Task == id.Request),
+            "new submissions before and after restart use distinct durable task IDs on the wire");
         var fieldReply = third.Wcs.Replies.Single();
         Check(third.Slot == "SYNTH-CHUTE-ACCEPTED" && fieldReply is { ProtocolAcknowledged: true, BusinessAccepted: true, PhysicalCompleted: null,
             Destination: { Quantity: "1", Length: null, Width: null, Height: 2.5m, Weight: 0.75m } },

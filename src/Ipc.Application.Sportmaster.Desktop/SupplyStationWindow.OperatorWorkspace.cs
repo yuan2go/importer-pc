@@ -13,6 +13,13 @@ public partial class SupplyStationWindow
     string recentInputPosition = "left";
     bool focusRestoreQueued;
     bool barcodeSelectionCancelled;
+    int? barcodeKeyTimestamp;
+    internal int? TakeBarcodeKeyTimestamp()
+    {
+        var timestamp = barcodeKeyTimestamp;
+        barcodeKeyTimestamp = null;
+        return timestamp;
+    }
     void BuildOperatorWorkspace()
     {
         InitializePace();
@@ -24,7 +31,10 @@ public partial class SupplyStationWindow
         // so it cannot trigger these keys; other pages, dialogs and owned windows keep their own keys.
         PreviewKeyDown += (_, args) =>
         {
-            if (RecentPosition()?.IsBarcodeSourceDropDownOpen == true) return;
+            // Text composition can be dispatched later than the native key.
+            // Use key timestamps for characters and Enter so dispatcher delays
+            // do not turn one scanner burst into slow typing.
+            barcodeKeyTimestamp = !args.IsRepeat && args.Key != Key.Enter && ViewModel.SelectedPage == "workstation" ? args.Timestamp : null;
             if (args.Key == Key.Escape && ViewModel.SelectedPage == "workstation" && ViewModel.InputTargetPosition.Length != 0)
             { args.Handled = true; CancelBarcodeSelection(); return; }
             if (args.Key is not (Key.F2 or Key.F3) || Keyboard.Modifiers != ModifierKeys.None || !CanRestoreBarcodeFocus) return;
@@ -54,13 +64,14 @@ public partial class SupplyStationWindow
             // Explicit Tab/Enter navigation and other editors remain native.
             if (!CanRestoreBarcodeFocus || Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ||
                 args.Text.Length == 0 || args.Text.Any(char.IsControl)) return;
-            if (ViewModel.InputTargetPosition is "left" or "right" && RecentPosition() is { IsBarcodeSourceDropDownOpen: false } position &&
+            if (ViewModel.InputTargetPosition is "left" or "right" && RecentPosition() is { } position &&
                 work.IsKeyboardFocusWithin && !position.IsBarcodeInputFocused)
-            { args.Handled = true; position.ReceiveScannerText(args.Text); }
+            { args.Handled = true; position.ReceiveScannerText(args.Text, TakeBarcodeKeyTimestamp()); }
         };
     }
     void CancelBarcodeSelection()
     {
+        barcodeKeyTimestamp = null;
         barcodeSelectionCancelled = true;
         if (work.IsKeyboardFocusWithin)
         {

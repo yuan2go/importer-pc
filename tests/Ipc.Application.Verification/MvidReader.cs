@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster.Desktop;
@@ -288,6 +289,12 @@ internal static class MvidReader
                 work.Any(o => o.PositionId == "right" && o.ParcelCode == rightCode && o.Wcs?.State == StageState.Accepted);
         });
         Check(h.Peer.Requests.Count == 4, "after the rule save, both positions admit a fresh camera scan and send exactly one request under the built-in Production admission policy");
+        var taskIds = h.Peer.Requests.Select(body =>
+        {
+            using var request = JsonDocument.Parse(body);
+            return request.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("taskId").GetInt64();
+        });
+        Check(taskIds.Distinct().Count() == 4, "left and right camera requests use one shared task-ID sequence");
     }
     static async Task InvalidRejectedPlacement(string workspace, string root)
     {

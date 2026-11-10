@@ -17,6 +17,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         public string? Barcode, Operation;
         public CameraFrameMetadata? Frame;
         public bool Manual;
+        public int ConsecutiveNoCodeFrames;
     }
     ReadRound? readRound;
     readonly HashSet<Task> cameraRoundWorkers = [];
@@ -34,19 +35,29 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         if (round?.Session != session || round.Device != frame.DeviceId || !RoundDecodeAllowed(session, frame.DeviceId)) return true;
         if (round.Epoch != frame.Epoch)
         { round.Capture?.TrySetException(new InvalidOperationException("相机连接周期已改变，请明确重新触发扫码。")); return true; }
-        var accepted = InspectionStore.Offer(session, frame);
-        if (!accepted) { round.Capture?.TrySetException(new IOException("原帧留存未接纳，本轮停止；正常供包状态未改变。")); return false; }
         var observation = new Observation(frame.ObservationId ?? Wire.Id(), frame.DeviceId, frame.Epoch, frame.SourceEventId ?? "no-read", 1,
             "debug." + round.Id, "Read", frame.Symbols.Select(s => s.Text).ToArray(), null, frame.CapturedAt) { Symbols = frame.Symbols };
         var selection = definition.SelectBarcode(round.Configuration, observation);
+        var emptyFrames = frame.Symbols.Length == 0 ? Interlocked.Increment(ref round.ConsecutiveNoCodeFrames) : 0;
+        if (frame.Symbols.Length != 0) Interlocked.Exchange(ref round.ConsecutiveNoCodeFrames, 0);
         if (selection.SelectedCode is null || selection.Matches != 1)
-        { Volatile.Write(ref round.Detail, frame.Symbols.Length == 0 ? "正在等待条码…" : "未取得唯一有效条码，继续等待；未生成请求。"); return true; }
+        {
+            Volatile.Write(ref round.Detail, frame.Symbols.Length == 0
+                ? emptyFrames >= 3 ? "无条码。请调整包裹或条码朝向；本轮继续等待，也可点击“停止扫码”。" : "正在等待条码…"
+                : "未取得唯一有效条码，继续等待；未生成请求。");
+            if (emptyFrames == 3) Diagnostic("相机调试", "本轮未识别到条码", detail: Wire.Encode(new
+            { Round = round.Id, round.Session, round.Device, frame.Epoch, frame.FrameNumber, frame.CapturedAt, ConsecutiveNoCodeFrames = emptyFrames, RequestSent = false }));
+            return true;
+        }
         lock (round.Sync)
         {
             if (!RoundDecodeAllowed(session, frame.DeviceId)) return true;
             round.Barcode = selection.SelectedCode;
             Volatile.Write(ref round.State, "Sealing"); // Closes decoding before publishing the winner.
-            round.Capture?.TrySetResult(frame);
+            // Waiting frames remain live preview/read diagnostics. Only the winning
+            // frame needs durable custody; archiving every empty frame can flood it.
+            if (InspectionStore.Offer(session, frame)) round.Capture?.TrySetResult(frame);
+            else round.Capture?.TrySetException(new IOException("本轮照片未能保存。"));
         }
         return true;
     }
@@ -118,6 +129,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
     });
     async Task<bool> CompleteReadRoundAsync(ReadRound round, CancellationToken token)
     {
+        var businessStorage = false;
         using var waiting = CancellationTokenSource.CreateLinkedTokenSource(token, round.Authority, round.Cancel.Token);
         waiting.CancelAfter(TimeSpan.FromSeconds(30));
         try
@@ -132,6 +144,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                 if (readRound != round || collectingInspection?.Id != round.Session ||
                     Wire.Hash(Wire.Encode(Effective)) != Wire.Hash(Wire.Encode(round.Configuration))) throw new InvalidOperationException("本轮配置或调试会话已变化，不能准备请求。");
                 round.Frame = metadata; round.State = "Locked"; round.Detail = "本轮读码完成；照片和条码保持，等待手动发送或再次扫码。";
+                businessStorage = true;
                 repository!.Commit(null, "CameraReadRoundLocked", Wire.Encode(new { Round = round.Id, Frame = metadata, round.Barcode, Actor = ManagementEvidence }));
                 if (frame.Acquisition is not { } acquisition || acquisition.DeviceId != round.Device || acquisition.Epoch != round.Epoch ||
                     acquisition.SourceEventId != frame.SourceEventId || acquisition.ObservedAt != frame.CapturedAt || string.IsNullOrWhiteSpace(acquisition.AdmissionId) ||
@@ -163,8 +176,21 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
                 if (readRound == round)
                 {
                     round.State = error is OperationCanceledException ? "Stopped" : "Faulted";
-                    round.Detail = error is OperationCanceledException ? "本轮等待已结束或授权失效，未自动重开；请重新触发。" : "本轮处理失败：" + error.Message;
-                    if (IsStorageError(error)) StorageFailed(error, "CameraReadRound");
+                    round.Detail = error is OperationCanceledException
+                        ? "本轮读取已结束，未发送请求。请放好包裹后点击“再次扫码”。"
+                        : "本轮扫码未完成，未发送请求。请点击“再次扫码”；仍失败时可停止试扫并导出日志。";
+                    Diagnostic("相机调试", "本轮扫码已结束", error is OperationCanceledException ? "信息" : "警告", Wire.Encode(new
+                    {
+                        Round = round.Id, round.Session, round.Device, round.Epoch, round.State,
+                        Phase = businessStorage ? "PrepareBusinessIntent" : "CaptureDiagnosticFrame",
+                        Reason = error is OperationCanceledException ? round.Cancel.IsCancellationRequested ? "Stopped" : round.Authority.IsCancellationRequested ? "AuthorizationEnded" : token.IsCancellationRequested ? "RuntimeStopped" : "ReadTimeout" : "ReadFailed",
+                        DiagnosticStoreFault = inspectionStore?.Fault, DiagnosticStoreError = inspectionStore?.LastFailure?.ToString(), Dropped = inspectionStore?.Dropped,
+                        ConsecutiveNoCodeFrames = Volatile.Read(ref round.ConsecutiveNoCodeFrames),
+                        Error = error.ToString(), RequestSent = false
+                    }));
+                    // Diagnostic custody is separate from business writes. A failed
+                    // photo or full sample queue must not fence the entire runtime.
+                    if (businessStorage && IsStorageError(error)) StorageFailed(error, "CameraReadRound");
                 }
             }
             finally { gate.Release(); }
@@ -220,6 +246,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
             request?.Binding.Target, response, op is not null && round.State == "Locked" && DebugRequestReady(op), repository!.Revision)
         {
             ManualRequest = round.Manual,
+            ConsecutiveNoCodeFrames = Volatile.Read(ref round.ConsecutiveNoCodeFrames),
             SendAttempts = op?.Wcs?.Attempts ?? 0,
             SendBlockedReason = op?.Wcs is { State: StageState.Prepared, Attempts: 0 } && !DebugRequestReady(op) ? DebugRequestBlockingReason(op) : null
         };

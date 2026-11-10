@@ -184,7 +184,7 @@ internal static class MvidReader
         var rejected = vm.Left.Input!;
         Check(rejected.Observation.Codes.Length == 2 && rejected.BarcodeSelection?.Outcome == "AmbiguousCodes" && h.Peer.Requests.Count == 0,
             "camera applies the fixed-code regex before rejecting the two remaining package labels");
-        Check(vm.Left.CanViewCurrentPicture && vm.Left.DisplayNextStep.Contains("移出托盘"), "rejected parcel offers its picture and tells the operator to remove it");
+        Check(vm.Left.CanViewCurrentPicture && vm.Left.DisplayNextStep.Contains("取下包裹后再上件"), "rejected parcel offers its picture and tells the operator to remove it");
         var picture = await h.App.ReadParcelPictureAsync(vm.Left.CurrentPictureQuery!, default);
         Check(picture.Image is { } original && original.Metadata.ObservationId == rejected.Observation.Id && original.Gray8.SequenceEqual(parcel.Data),
             "multi-code picture is the exact full original frame that was rejected");

@@ -73,8 +73,7 @@ static partial class SportmasterRcs
                 new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != genericRuntimeBudget,
                 "omitted component timeout uses the displayed default independently of the generic service budget");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
-            Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && view.Left.OperatorInstruction.Contains("新请求", StringComparison.Ordinal) &&
-                view.Left.NextStep.Contains("暂勿投递", StringComparison.Ordinal) && view.Left.NextStep.Contains("原请求结果未确认", StringComparison.Ordinal) &&
+            Check(view.Left.CenteredStateReason == "等待取格口响应超时" && view.Left.CenteredStateInstruction.Contains("取下包裹", StringComparison.Ordinal) &&
                 view.Left.Slot == "未取得" && !view.Left.SlotAvailable,
                 "timeout guidance explains independent automatic reads and protects the unconfirmed original without a stale chute");
             await Task.Delay(2600);
@@ -100,7 +99,7 @@ static partial class SportmasterRcs
                 app.EmitReferenceAt("left", "rejected-after-assigned", "SYNTH-0002", Wire.Id());
                 await Wait(app, x => x.Operations.Length == 2 && x.Operations.Any(o => o.State == ParcelState.WcsRejected));
                 await view.RefreshAsync();
-                Check(!view.Left.SlotAvailable && view.Left.Slot == "未取得" && view.Left.AttentionReason == "SYNTH_OTHER_ERROR",
+                Check(!view.Left.SlotAvailable && view.Left.Slot == "未取得" && view.Left.CenteredStateTitle == "SYNTH_OTHER_ERROR",
                     "a rejected next parcel replaces the previous successful chute with its own message");
             }
             else
@@ -108,12 +107,28 @@ static partial class SportmasterRcs
                 Check(!view.Left.SlotAvailable && view.Left.Slot == "未取得", mode + " never displays an assignment");
                 Check(mode switch
                 {
-                    "unpack" => view.Left.AttentionReason.Contains("需要拆包", StringComparison.Ordinal) && op.State == ParcelState.UnpackRequired,
-                    "reject" => view.Left.AttentionReason == "请检查当前商品状态" && op.State == ParcelState.WcsRejected,
-                    "missing-chute" or "blank-chute" => view.Left.AttentionReason == "请检查当前商品状态" && op.State == ParcelState.WcsUnknown,
-                    _ => view.Left.AttentionReason == "RCS 未返回有效格口，请查看异常信息。" && op.State == ParcelState.WcsUnknown
-                }, mode + " shows the matched exception/message with safe fallback for invalid or unmatched replies");
+                    "unpack" => view.Left.CenteredStateTitle == "需要拆包检查" && op.State == ParcelState.UnpackRequired,
+                    "reject" => view.Left.CenteredStateTitle == "请检查当前商品状态" && op.State == ParcelState.WcsRejected,
+                    _ => view.Left.CenteredStateTitle == "格口结果未确认" && view.Left.CenteredStateReason == "本件没有可用格口" && op.State == ParcelState.WcsUnknown
+                }, mode + " shows a confirmed business message or localized operator guidance for an unconfirmed result");
                 if (mode != "reject") Check(!s.Positions!.Single(p => p.Id == "left").Admit, mode + " does not use the timeout-only rescan exception");
+                if (mode is "missing-chute" or "blank-chute" or "malformed" or "wrong-id")
+                {
+                    var originalRequest = Wire.Encode(op.Wcs!.Request);
+                    var sent = peer.Requests.Count;
+                    app.EmitReferenceAt("left", "same-placement-" + mode, "SYNTH-0001", Wire.Id());
+                    await Wait(app, x => x.Inputs!.Any(i => i.Observation.AdmissionId == "same-placement-" + mode));
+                    Check(peer.Requests.Count == sent, mode + " repeated observation of the same placement does not send again");
+                    peer.Mode = "assigned"; peer.ResponseTransform = null;
+                    app.EmitReferenceAt("left", "changed-placement-" + mode, "SYNTH-0002", Wire.Id());
+                    var changed = await Wait(app, x => x.Operations.Any(o => o.ParcelCode == "SYNTH-0002" && o.State == ParcelState.SlotResolved));
+                    var original = changed.Operations.Single(o => o.Id == op.Id);
+                    await view.RefreshAsync();
+                    Check(peer.Requests.Count == sent + 1 && original.State == ParcelState.WcsUnknown && original.Wcs!.Attempts == 1 &&
+                        Wire.Encode(original.Wcs.Request) == originalRequest && view.Left.SlotAvailable && view.Left.Barcode == "SYNTH-0002" &&
+                        changed.Positions!.Single(p => p.Id == "right").Admit,
+                        mode + " different barcode starts a new placement without an empty-frame gap, replaying the original or blocking the other position");
+                }
             }
         }
         peer.ResponseTransform = null;

@@ -5,6 +5,8 @@ public sealed record DeliveryPosition(string Id, string ReaderDeviceId, string? 
 public sealed record ParcelTopology(DeviceBinding[] Readers, DeliveryPosition[] Positions);
 public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Admit, string? CurrentOperation, string[] BlockingReasons, bool MainResultComplete, bool BackgroundComplete)
 {
+    public bool CanConfirmPlacementRemoval { get; init; }
+    public DateTimeOffset? PlacementClearedAt { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public ParcelBarcodeAvailability? BarcodeInput { get; init; }
     public StationVehicleState? Vehicle { get; init; }

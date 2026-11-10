@@ -30,10 +30,28 @@ public sealed partial class SupplyStationPositionViewModel
     public bool SupplyDisabling => SupplyControl?.Mode == StationPositionMode.Disabling;
     public bool SupplyDisabled => SupplyControl?.Mode == StationPositionMode.Disabled;
     public bool CanChangeSupply => owner.Fresh && owner.CanStartOperation && owner.Application is IStationPositionControl;
+    public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled &&
+        owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.CanConfirmPlacementRemoval == true;
+    internal Task ConfirmPlacementRemovalAsync() => owner.RunAsync(async () =>
+    {
+        if (!CanConfirmPlacementRemoval || owner.Snapshot is not { } snapshot || Operation is not { } operation) return;
+        try
+        {
+            var receipt = await owner.ServiceAsync(() => owner.Application.CommandAsync(
+                new(Ipc.Platform.Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", PositionId, operation.Id)));
+            if (receipt.Status != "Persisted")
+                owner.Message = "本位状态已变化，请查看当前提示。";
+        }
+        catch (Exception)
+        {
+            // The Application records the command and exception for diagnostics.
+            owner.Message = "未能确认包裹已取下，请等状态更新后查看本位提示。";
+        }
+    }, "确认已取下包裹");
     public string DisableLabel => SupplyDisabling ? "停用中…" : "停用";
     public string SupplyStateText => SupplyEnabled ? "本位已启用" : SupplyDisabling ? "本位停用中" : "本位已停用";
     public string EnableLabel => "启用" + Heading;
-    public string SupplyNotice => SupplyDisabling ? "停用中：不再接收新条码；本次放置结束且原请求确认后停用。点“启用”可取消。" : "本位已停用，不接收条码。";
+    public string SupplyNotice => SupplyDisabling ? "停用中：不再接收新条码。请取下包裹，托盘清空后自动停用。点“启用”可取消。" : "本位已停用，不接收条码。";
     public string EnableBackground => SupplyEnabled ? OperatorTokens.Success : OperatorTokens.Surface;
     public string EnableForeground => SupplyEnabled ? OperatorTokens.Surface : OperatorTokens.Muted;
     public string DisableBackground => SupplyEnabled ? OperatorTokens.Surface : SupplyDisabling ? OperatorTokens.Warning : OperatorTokens.Inactive;

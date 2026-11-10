@@ -9,6 +9,7 @@ using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster;
 using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Platform;
+using Ipc.Presentation.Wpf;
 
 static partial class Program
 {
@@ -151,8 +152,12 @@ static partial class Program
                 if (vm is SupplyStationViewModel station)
                 {
                     var left = station.Left; var right = station.Right;
-                    Check(left.Status.Contains(state == StageState.Rejected ? "未分配格口" : "格口未确认") && left.Presentation.Foreground == (state == StageState.Rejected ? "#B52F38" : "#895509"), state + " result text and semantic color agree with operation facts");
-                    Check(left.AttentionReason.Contains("合成") && left.NextStep.Contains(state == StageState.Rejected ? "按原因处理" : "勿重复上件") && !left.CanContinue, state + " explains reason and next step without permitting resend");
+                    Check(left.DisplayPresentation.Tone == (state == StageState.Rejected ? ParcelPresentationTone.Rejected : ParcelPresentationTone.Unknown) &&
+                        left.ResultBackground == OperatorTokens.Neutral, state + " keeps its semantic tone on the neutral result surface");
+                    Check(left.ShowCenteredState && left.CenteredStateTitle == (state switch
+                    {
+                        StageState.Rejected => "未分配格口", StageState.Conflict => "格口结果有冲突", _ => "格口结果未确认"
+                    }) && left.CenteredStateInstruction.Contains("取下包裹") && !left.CanContinue, state + " explains the current result without exposing internal evidence or permitting resend");
                     Check(!station.Snapshot!.Paused && right.CanAdmit && !right.HasUncertainOriginal && !right.CurrentTaskAvailable, state + " remains local to left; right idle position remains ready");
                     Check(left.CanAdmit == (state == StageState.Rejected), state + " admission follows application position availability");
                 }

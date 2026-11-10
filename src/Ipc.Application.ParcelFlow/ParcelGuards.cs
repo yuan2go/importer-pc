@@ -9,8 +9,8 @@ public sealed partial class ParcelRuntime
     bool CanResume() =>
         CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     // A frozen debug preview has made no external call and owns no production parcel.
-    // Reuse the full unsent guard; dispatched/unknown requests keep their original responsibility.
-    bool ReleasedForNextAdmission(ParcelOperation op) => CanCloseUnsentDebugIntent(op) || definition.AllowsNextAdmissionAfter(op) &&
+    // Production placement release changes lane ownership only. Original receipts and recovery are independent.
+    bool ReleasedForNextAdmission(ParcelOperation op) => releasedPlacements.Contains(op.Id) || CanCloseUnsentDebugIntent(op) || definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
     bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
@@ -55,6 +55,8 @@ public sealed partial class ParcelRuntime
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
         {
+            CanConfirmPlacementRemoval = CanConfirmPlacementRemoval(p.Id, current),
+            PlacementClearedAt = confirmedEmptyTrays.TryGetValue(p.Id, out var clearedAt) ? clearedAt : null,
             BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
             SupplyControl = Id == "sportmaster" ? PositionControl(p.Id) : null,
@@ -109,6 +111,7 @@ public sealed partial class ParcelRuntime
                 try
                 {
                     CheckCameraInspectionLease();
+                    CommitEmptyTrays();
                     MaintainParcelPictures();
                     MaintainPositionControls();
                     if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)

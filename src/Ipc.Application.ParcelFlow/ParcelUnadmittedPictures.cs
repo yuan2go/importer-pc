@@ -23,7 +23,7 @@ public sealed partial class ParcelRuntime
         }
     }
 
-    ParcelInputSnapshot[] DisplayedInputs() => latestInputs.Values.Select(input =>
+    ParcelInputSnapshot[] DisplayedInputs() => latestInputs.Values.Where(input => !IsBeforeEmptyTray(input.PositionId, input.Observation.ObservedAt)).Select(input =>
         ContinuingUnadmittedPlacement(input.PositionId, input.Observation) ?? input).ToArray();
 
     void RetainUnadmittedPicture(ParcelInputSnapshot input)

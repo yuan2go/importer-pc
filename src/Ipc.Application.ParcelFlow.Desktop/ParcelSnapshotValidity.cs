@@ -13,12 +13,13 @@ public partial class ParcelViewModel
     bool MonotonicFresh => lastReadTick != 0 && System.Diagnostics.Stopwatch.GetElapsedTime(lastReadTick) < TimeSpan.FromSeconds(3);
     public bool Fresh => fresh && MonotonicFresh && lastRead is { } at && DateTimeOffset.UtcNow >= at && DateTimeOffset.UtcNow - at < TimeSpan.FromSeconds(3);
     public string UpdatedAt => lastRead is { } at ? at.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") : "尚未取得快照";
-    public string ReadStatus => !Fresh ? "快照已失效 · " + (readFailure ?? "正在读取或读取超时") + " · 最后成功读取：" + UpdatedAt : "状态更新时间 · " + UpdatedAt;
+    string ReadFailureDisplay => ChineseInterfaceText.ParameterMessage(readFailure ?? "正在读取或读取超时", "运行状态暂未更新，请等待自动恢复；持续失败时请导出日志并联系维护人员。");
+    public string ReadStatus => !Fresh ? "快照已失效 · " + ReadFailureDisplay + " · 最后成功读取：" + UpdatedAt : "状态更新时间 · " + UpdatedAt;
     public bool CanQueryCurrent => !Busy && Fresh && Current is not null;
     protected ParcelSnapshot RequireFreshSnapshot() => Fresh && Snapshot is { } value ? value : throw new InvalidOperationException(ReadStatus);
     public void MarkReadFailure(string reason)
     {
-        readFailure = reason; readFailureMessage = "状态读取失败，旧快照仅供参考：" + reason; Message = readFailureMessage;
+        readFailure = reason; readFailureMessage = "状态读取失败，旧快照仅供参考：" + ReadFailureDisplay; Message = readFailureMessage;
         RefreshFreshness();
     }
     void SnapshotReadApplied(long id)

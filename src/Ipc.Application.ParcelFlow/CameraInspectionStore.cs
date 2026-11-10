@@ -22,6 +22,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     readonly Task writer;
     long buffered, dropped, imageBytes, imageCount;
     string? fault;
+    Exception? lastFailure;
     bool closing, disposeCompleted;
     readonly HashSet<string> exports = [];
     abstract record Work;
@@ -30,6 +31,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
     sealed record LinkWork(string Observation, string Device, string Epoch, string SourceEvent, long Sequence, string? Operation) : Work;
     sealed record RetentionWork(int Days) : Work;
     public string? Fault => Volatile.Read(ref fault);
+    public Exception? LastFailure => Volatile.Read(ref lastFailure);
     public long Dropped => Interlocked.Read(ref dropped);
     readonly bool automatic;
     readonly Func<int>? retentionDays;
@@ -164,6 +166,22 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
         var barrier = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         await queue.Writer.WriteAsync(new Barrier(barrier), token).ConfigureAwait(false); await barrier.Task.WaitAsync(token).ConfigureAwait(false);
     }
+    public async Task RetryAfterFailureAsync(CancellationToken token)
+    {
+        if (Fault is null) return;
+        // An explicit new collection retries diagnostic storage only after all old
+        // writes finish. Existing evidence and business storage are never reset.
+        await FlushAsync(token).ConfigureAwait(false);
+        lock (sync)
+        {
+            token.ThrowIfCancellationRequested();
+            if (closing) throw new InvalidOperationException("诊断记录正在关闭，请稍后再试。");
+            using var check = db.CreateCommand(); check.CommandText = "PRAGMA quick_check";
+            if (!Equals(check.ExecuteScalar(), "ok")) throw new InvalidDataException("诊断索引校验失败，原记录已保留，请导出日志后联系维护人员。");
+            Volatile.Write(ref fault, null);
+            Volatile.Write(ref lastFailure, null);
+        }
+    }
     public void LinkInput(Observation observation, long sequence, string? operation)
     {
         if (closing || Fault is not null) return;
@@ -205,6 +223,7 @@ internal sealed class CameraInspectionStore : IAsyncDisposable
             try { lock (sync) Persist(item); }
             catch (Exception error)
             {
+                Volatile.Write(ref lastFailure, error);
                 Interlocked.Increment(ref dropped); Interlocked.CompareExchange(ref fault, "诊断原图/索引写入失败：" + error.GetType().Name + "。存在证据缺口，原业务责任不变。", null);
                 try { State(item.Session, "Faulted", Fault!, close: true); }
                 catch (Exception reporting) { Volatile.Write(ref fault, Fault + "；故障回执也未持久化：" + reporting.GetType().Name); }

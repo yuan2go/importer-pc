@@ -74,6 +74,12 @@ public sealed partial class ParcelRuntime : ICameraInspection
                 if (command.ExpectedConfigurationRevision != configuration.Current.Revision || backupInProgress || configurationSaving || maintenanceOperations.Count != 0)
                     throw new InvalidOperationException("生效配置修订或维护状态已变化，请重新核对后操作。");
                 sources = InspectionSources(); if (sources.Length == 0) throw new InvalidOperationException("请先配置至少一台海康相机。");
+                if (InspectionStore.Fault is { } previousFault)
+                {
+                    var previousError = InspectionStore.LastFailure?.ToString();
+                    await InspectionStore.RetryAfterFailureAsync(t).ConfigureAwait(false);
+                    Diagnostic("相机调试", "重新尝试诊断采集", detail: Wire.Encode(new { PreviousFault = previousFault, PreviousError = previousError, Dropped = InspectionStore.Dropped }));
+                }
                 id = Wire.Id(); var expires = new[] { DateTimeOffset.UtcNow.AddMinutes(command.Limits.DurationMinutes), actor.ExpiresAt }.Min();
                 InspectionStore.Begin(id, command, actor, expires, Wire.Hash(Wire.Encode(Effective)));
                 // A single-read session can expire before it ever reaches Arm.

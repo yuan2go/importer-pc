@@ -25,11 +25,11 @@ public sealed partial class ParcelRuntime
     {
         if (Id != "sportmaster") return registration;
         if (registration is null)
-            return new(automaticCameraReadScope, false, _ => true, false) { DecodeAllowed = AutomaticCameraReadsAllowed };
+            return new(automaticCameraReadScope, false, _ => true, false) { DecodeAllowed = device => CameraDraining(device) || AutomaticCameraReadsAllowed(device) };
         // Explicit diagnostic rounds remain available without RCS. Their own
         // selected-frame predicate and explicit send guard remain authoritative.
         if (registration.CutoverKey is not null) return registration;
         var previous = registration.DecodeAllowed;
-        return registration with { DecodeAllowed = device => AutomaticCameraReadsAllowed(device) && previous?.Invoke(device) != false };
+        return registration with { DecodeAllowed = device => (CameraDraining(device) || AutomaticCameraReadsAllowed(device)) && previous?.Invoke(device) != false };
     }
 }

@@ -55,6 +55,28 @@ static partial class Program
                 await SetClient(window, 800, 420); await Flush();
                 var submit = (Button)right.FindName("SubmitBarcode"); submit.BringIntoView(); await Flush();
                 Check(Inside(submit, (Grid)window.FindName("ClientArea")) && !entry.IsReadOnly, "compact layout retains editable barcode and reachable bottom submit");
+                if (!deferred)
+                {
+                    var leftEntry = (TextBox)left.FindName("BarcodeEntry");
+                    var leftSubmit = (Button)left.FindName("SubmitBarcode");
+                    h.Peer.ReplySlot = "";
+                    leftEntry.Text = "000123458";
+                    leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    await Until(() => vm.Left.HasUncertainOriginal && !vm.Busy);
+                    var original = vm.Left.Operation!.Id;
+                    var removal = (Button)left.FindName("ConfirmPlacementRemoval");
+                    Check(removal.IsEnabled && Inside(removal, (Grid)window.FindName("ClientArea")) &&
+                        vm.Left.CenteredStateInstruction == "请先取下包裹，再确认", "compact offline-camera card exposes the operator removal action without management");
+                    removal.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    await Until(() => vm.Left.Operation is null && vm.Left.CanSubmitBarcode && !vm.Busy);
+                    Check(!removal.IsVisible && !vm.Left.HasCurrentInput && leftEntry.Text == "" && vm.Right.SlotAvailable && h.Peer.Requests.Count == 3,
+                        "the removal action clears only the affected card and sends no request");
+                    h.Peer.ReplySlot = "SYNTH-NEXT";
+                    leftEntry.Text = "000123458";
+                    leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    await Until(() => vm.Left.Slot == "SYNTH-NEXT" && !vm.Busy);
+                    Check(vm.Left.Operation?.Id != original && h.Peer.Requests.Count == 4, "explicitly re-entering the same code sends a fresh manual request");
+                }
             }
             finally { window.Close(); }
         }

@@ -66,7 +66,9 @@ static partial class Program
             proxy.Sub.Publish(Update(4, Project("MUST-NOT-REVIVE")));
             await Until(() => proxy.HeldStatus is not null, "second slow snapshot application");
             proxy.Sub.Publish(Update(5, null, "Synthetic snapshot storage failure"));
-            await Until(() => !window.ViewModel.Fresh && window.ViewModel.ReadStatus.Contains("Synthetic snapshot storage failure"), "immediate failure projection");
+            await Until(() => !window.ViewModel.Fresh && window.ViewModel.ReadStatus.Contains("运行状态暂未更新"), "immediate failure projection");
+            Check(!window.ViewModel.ReadStatus.Contains("Synthetic") && !window.ViewModel.Message.Contains("Synthetic"),
+                "snapshot storage failure is actionable Chinese in status and banner without exposing the internal exception");
             proxy.HeldStatus!.TrySetResult(status);
             await Until(() => Field<Task>(window, "presentationSnapshotApply")?.IsCompleted == true, "late failed snapshot application completion");
             Check(!window.ViewModel.Fresh && !window.ViewModel.Left.DisplaySlotVisible,

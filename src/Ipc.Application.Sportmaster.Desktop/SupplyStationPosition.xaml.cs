@@ -59,7 +59,7 @@ public partial class SupplyStationPosition : UserControl
     string? terminalObservationKey;
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(SupplyStationPositionViewModel.ShowCenteredState) or nameof(SupplyStationPositionViewModel.CenteredRcsRejection)) RefreshDraftNoticeVisibility();
+        if (e.PropertyName is nameof(SupplyStationPositionViewModel.ShowCenteredState) or nameof(SupplyStationPositionViewModel.CenteredAttention)) RefreshDraftNoticeVisibility();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.SupplyEnabled))
         {
             RefreshSubmitAvailability();
@@ -147,7 +147,7 @@ public partial class SupplyStationPosition : UserControl
     {
         if (InputFeedback is null) return;
         if (showingDraftNotice && InputFeedback.Text == DraftNotice &&
-            DataContext is SupplyStationPositionViewModel { ShowCenteredState: true, CenteredRcsRejection: false })
+            DataContext is SupplyStationPositionViewModel { ShowCenteredState: true, CenteredAttention: false })
             InputFeedback.Visibility = Visibility.Collapsed;
         else InputFeedback.ClearValue(VisibilityProperty);
     }
@@ -220,6 +220,10 @@ public partial class SupplyStationPosition : UserControl
     {
         if (DataContext is SupplyStationPositionViewModel p) await p.SetSupplyEnabledAsync(false);
     }
+    async void ConfirmPlacementRemoval_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SupplyStationPositionViewModel p) await p.ConfirmPlacementRemovalAsync();
+    }
     async Task SubmitBarcodeAsync()
     {
         showingDraftNotice = false;
@@ -248,10 +252,17 @@ public partial class SupplyStationPosition : UserControl
             try
             {
                 var receipt = await vm.ServiceAsync(() => service.SubmitParcelBarcodeAsync(request, CancellationToken.None));
-                var label = receipt.Status switch { "Admitted" => "已受理", "Rejected" => "未受理", "Blocked" => "暂不能受理", "Conflict" => "本位状态已变化，请确认后重交", "Duplicate" => "重复扫描", "Pending" => "受理结果未确认", _ => receipt.Status };
-                InputFeedback.Text = receipt.Status == "Pending" ? SubmissionUnconfirmed : label + " · " + Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.Notice(receipt.Detail);
+                InputFeedback.Text = receipt.Status switch
+                {
+                    "Admitted" => "本次条码已受理。",
+                    "Rejected" => "本次条码未受理，请核对条码和本位提示。",
+                    "Blocked" => "本位暂不能受理，请按本位提示处理。",
+                    "Conflict" => "本位状态已变化，请核对包裹和条码后再提交。",
+                    "Duplicate" => "本次条码已处理，请勿重复提交。",
+                    _ => SubmissionUnconfirmed
+                };
                 vm.ReportBarcodeFeedback(receipt, InputFeedback.Text);
-                if (receipt.Status != "Pending")
+                if (receipt.Status is "Admitted" or "Rejected" or "Blocked" or "Conflict" or "Duplicate")
                 {
                     submitted = null;
                     editing = false; inputBasis = null;

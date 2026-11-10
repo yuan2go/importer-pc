@@ -22,6 +22,7 @@ public sealed partial class ParcelRuntime
             ObjectDisposedException.ThrowIf(disposed, this);
             // Single consistent read per projection; this scope never releases the business gate.
             repository.BeginReceiptProjection();
+            CommitEmptyTrays();
             projectedCapacity = operations.Values.Count(x => !ArchiveEligible(x));
             RefreshIntegrationBudget();
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
@@ -52,8 +53,8 @@ public sealed partial class ParcelRuntime
             if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) (Id == "sportmaster" ? auxiliaryReasons : reasons).Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
             if (operations.Values.Any(x => NeedsReconciliation(x) && !ReleasedForNextAdmission(x))) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
-            var retainedTimeouts = operations.Values.Count(ReleasedForNextAdmission);
-            if (retainedTimeouts > 0) auxiliaryReasons.Add("RetainedRequestTimeouts:" + retainedTimeouts + "; outcomes unknown; new scans may create separate requests; originals are never replayed");
+            var retainedOriginals = operations.Values.Count(x => NeedsReconciliation(x) && ReleasedForNextAdmission(x));
+            if (retainedOriginals > 0) auxiliaryReasons.Add("RetainedOriginalRequests:" + retainedOriginals + "; outcomes remain unchanged; new placements do not replay originals");
             foreach (var op in operations.Values.Where(x => !ReleasedForNextAdmission(x) && (x.State == ParcelState.WeightTimedOut || WeightExpired(x) || x.Weight is not null && !WeightReady(x) && !MainTerminated(x))))
                 reasons.Add("Measurement missing/expired for admission " + op.AdmissionId);
             List<CapabilityHealth> health = [.. capabilityHealth.Values.Select(h =>
@@ -130,6 +131,7 @@ public sealed partial class ParcelRuntime
                 case "ReceiptResponsibilities" when command.Owner is not null:
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
+                case "ConfirmPlacementRemoval" when ConfirmPlacementRemoval(command): break;
                 case "Pause": repository.Commit(null, "AdmissionPaused", command.Value ?? "Software pause only; caller did not supply a trigger", paused: true, command: command); resumePriorPause = false; break;
                 case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent",

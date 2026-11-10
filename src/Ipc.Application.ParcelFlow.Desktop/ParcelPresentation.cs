@@ -88,13 +88,14 @@ public static class ParcelPresentation
         _ => "本次扫描已受理"
     };
     public static bool IsUnadmitted(ParcelInputSnapshot? input) => input is not null && input.Outcome != ParcelInputOutcome.Admitted && !ParcelInputReasons.IsSamePlacement(input);
-    public static string InputReason(ParcelInputSnapshot input) =>
-        input.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) ? "请取下包裹后重新上件；本次扫码未请求格口。" :
-        input.Outcome == ParcelInputOutcome.Rejected && input.BarcodeSelection is { } selection &&
-        input.Reason == selection.Outcome + "; no operation or external intent created"
-            ? ChineseInterfaceText.Status(selection.Outcome) + "；本件未发送。"
-            : input.Reason == "Position=" + input.PositionId + "; paused/faulted/unresolved responsibility or operator not authorized"
-                ? "本位当前不能受理新包裹。" : ChineseInterfaceText.Notice(input.Reason);
+    public static string InputReason(ParcelInputSnapshot input) => input.Outcome switch
+    {
+        ParcelInputOutcome.Rejected when input.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) => "请取下包裹后重新上件。本次扫码未请求格口。",
+        ParcelInputOutcome.Rejected => InputText(input) + "，本次未发送。",
+        ParcelInputOutcome.Blocked => "本位当前不能受理新包裹。",
+        ParcelInputOutcome.Duplicate => "本次扫码未重复发送。",
+        _ => "条码已受理，正在等待本件结果。"
+    };
     public static ParcelStatusPresentation InputPresentation(ParcelInputSnapshot input) => IsInputFailure(input) ? Rejected(InputText(input)) : Neutral(InputText(input));
     public static string InputSummary(ParcelInputSnapshot? input) => input is null ? "尚无本位可信观察" :
         "最新观察：" + InputText(input) + "\n原码：" + InputCode(input) + "\n输入方式：" + (input.Observation.OperatorInput is { } manual ?

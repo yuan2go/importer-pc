@@ -297,7 +297,9 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public bool CanSubmitBarcode => SupplyEnabled && owner.CanUseWorkspace && owner.CanStartOperation && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
     public bool CanReconcile { get; private set; }
     public bool CanQueryOriginal => owner.IsManagementMode && CanReconcile && HasUncertainOriginal;
-    public bool HasUncertainOriginal => Operation is { } op && new[] { op.Wcs, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Unknown or StageState.Conflict);
+    public bool HasUncertainOriginal => Operation is { } op &&
+        (op.Wcs?.State is StageState.Unknown or StageState.Conflict || op.Capture?.State is StageState.Unknown or StageState.Conflict ||
+            op.Upload?.State is StageState.Unknown or StageState.Conflict);
     public bool HasContinuation => Operation is { } op && owner.Snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
     public bool CanContinue { get; private set; }
     public ParcelOperation[] Recent { get; private set; } = [];

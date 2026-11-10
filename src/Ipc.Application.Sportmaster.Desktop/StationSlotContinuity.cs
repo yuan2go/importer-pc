@@ -104,7 +104,7 @@ public sealed partial class SupplyStationPositionViewModel
     bool PausedReadBlocked => DisplayPaused && !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && Input?.Outcome == ParcelInputOutcome.Blocked;
     public bool ShowConfirmedTask => !SupplyDisabled && CurrentTaskAvailable && SlotAvailable && !unreadFeedback && !ReaderUnavailableForDisplay && !DisplayPaused && owner.ViewportReady;
     public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
-    public string ResultBackground => CenteredRcsRejection ? OperatorTokens.Neutral : DisplayPresentation.Tone switch
+    public string ResultBackground => CenteredAttention ? OperatorTokens.Neutral : DisplayPresentation.Tone switch
     {
         ParcelPresentationTone.Accepted => OperatorTokens.Success,
         ParcelPresentationTone.Rejected => OperatorTokens.Danger,
@@ -112,18 +112,20 @@ public sealed partial class SupplyStationPositionViewModel
         ParcelPresentationTone.Stale => OperatorTokens.Inactive,
         _ => OperatorTokens.Neutral
     };
-    public string ResultForeground => !CenteredRcsRejection && DisplayPresentation.Tone is (ParcelPresentationTone.Accepted or ParcelPresentationTone.Rejected or ParcelPresentationTone.Unknown or ParcelPresentationTone.Stale) ? OperatorTokens.Surface : OperatorTokens.Ink;
+    public string ResultForeground => !CenteredAttention && DisplayPresentation.Tone is (ParcelPresentationTone.Accepted or ParcelPresentationTone.Rejected or ParcelPresentationTone.Unknown or ParcelPresentationTone.Stale) ? OperatorTokens.Surface : OperatorTokens.Ink;
     public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing;
     public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : "";
     public string DisplaySlotForeground => ResultForeground;
-    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : CenteredRcsRejection ? ParcelPresentation.Rejected(CenteredStateTitle) :
+    public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : CenteredAttention
+        ? CenteredAttentionTone == ParcelPresentationTone.Unknown ? ParcelPresentation.Unknown(CenteredStateTitle) : ParcelPresentation.Rejected(CenteredStateTitle) :
         ShowCenteredState ? ParcelPresentation.Neutral(CenteredStateTitle) : DisplayPaused && !PausedAttention ? ParcelPresentation.Neutral(PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停") : HasUncertainOriginal ? Presentation : OfflineCameraSurface ? ParcelPresentation.Neutral(ManualInputAvailable ? "等待输入条码" : "等待供包条件就绪") :
         CameraNoCode && !HasUncertainOriginal ? ParcelPresentation.Neutral(CameraAwaitingRead ? "等待重新扫码" : "未读到条码") : invalidReadFeedback ? ParcelPresentation.Unknown("本次读码已失效") : IsProcessing ? ParcelPresentation.Pending("处理中") : CurrentTaskAvailable && !SlotAvailable ? ParcelPresentation.Unknown("未取得格口") : Presentation;
     public string DisplaySlotLabel => IsProcessing ? "本次处理中，尚未取得有效格口" : "本次有效格口，可选择复制";
     public string ContinuityNotice => "";
     public string DisplayStatus => SupplyDisabled ? "已停用" : ShowConfirmedTask && IsTight ? "按本次格口投递" : !owner.Fresh ? "状态已失效" : DisplayPaused && !PausedAttention ? PausedReadBlocked ? "已读到条码，供包已暂停" : "供包已暂停" : OfflineCameraSurface ? ManualInputAvailable ? "等待输入条码" : "暂不能接收条码" : HasUncertainOriginal ? Operation?.State == ParcelState.WcsUnknown ? "格口结果未确认" : Status :
         CameraNoCode ? CameraAwaitingRead ? "等待重新扫码" : "未读到条码" : invalidReadFeedback ? "本次读码已失效" : IsProcessing ? "本次处理中" : Operation?.State == ParcelState.WcsRejected ? "未取得格口" : Status;
-    public string DisplayAttentionReason => SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "条码已读到，本件尚未受理，未请求格口。可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
+    public string DisplayAttentionReason => CenteredAttention && !CenteredRcsRejection ? CenteredStateReason :
+        SupplyDisabled || DisplayPaused && !PausedAttention ? PausedReadBlocked ? "条码已读到，本件尚未受理，未请求格口。可查看本次图片。" : "" : OfflineCameraSurface ? ManualInputAvailable ? "可用扫码枪或键盘输入完整条码。" : AttentionReason :
         CameraNoCode ? (CameraAwaitingRead ? "相机连接周期已变化，上一周期的格口已失效。" : cameraRead!.Frame.Outcome == ObservationReadOutcome.RejectedFrame ? "当前图像无法识别；上一件格口不可用于本件。" : "托盘上未读到条码；上一件格口不可用于本件。") +
             (HasUncertainOriginal ? " " + AttentionReason : "") :
         invalidReadFeedback ? "相机连接周期已变化，或本次读码等待已超时；没有本次有效格口。" : unreadFeedback ? HasUncertainOriginal ? "本次条码已读到；上一件 " + Operation?.ParcelCode + " 的格口仍未确认。" :
@@ -195,7 +197,7 @@ public sealed partial class SupplyStationPositionViewModel
             (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId), (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity),
             (nameof(IsProcessing), IsProcessing), (nameof(SlotProvisional), SlotProvisional), (nameof(DisplaySlotVisible), DisplaySlotVisible), (nameof(DisplaySlot), DisplaySlot),
             (nameof(DisplayPresentation), DisplayPresentation), (nameof(ResultBackground), ResultBackground), (nameof(ResultForeground), ResultForeground), (nameof(SuccessIdentity), SuccessIdentity), (nameof(DisplaySlotForeground), DisplaySlotForeground), (nameof(DisplaySlotLabel), DisplaySlotLabel), (nameof(ContinuityNotice), ContinuityNotice),
-            (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
+            (nameof(ShowCenteredState), ShowCenteredState), (nameof(CenteredAttention), CenteredAttention), (nameof(CenteredRcsRejection), CenteredRcsRejection), (nameof(CenteredStateTitle), CenteredStateTitle), (nameof(CenteredStateForeground), CenteredStateForeground),
             (nameof(CenteredStateReason), CenteredStateReason), (nameof(CenteredStateInstruction), CenteredStateInstruction), (nameof(CenteredStateFullInstruction), CenteredStateFullInstruction),
             (nameof(DisplayStatus), DisplayStatus), (nameof(DisplayAttentionReason), DisplayAttentionReason), (nameof(DisplayNextStep), DisplayNextStep), (nameof(ShowConfirmedTask), ShowConfirmedTask),
             (nameof(DisplaySlotFontSize), DisplaySlotFontSize), (nameof(CameraReadFeedback), CameraReadFeedback), (nameof(ReadCueLabel), ReadCueLabel), (nameof(ReadFeedbackIdentity), ReadFeedbackIdentity),

@@ -59,7 +59,7 @@ public partial class SupplyStationPosition : UserControl
     string? terminalObservationKey;
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(SupplyStationPositionViewModel.ShowCenteredState) or nameof(SupplyStationPositionViewModel.CenteredRcsRejection)) RefreshDraftNoticeVisibility();
+        if (e.PropertyName is nameof(SupplyStationPositionViewModel.ShowCenteredState) or nameof(SupplyStationPositionViewModel.CenteredAttention)) RefreshDraftNoticeVisibility();
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.SupplyEnabled))
         {
             RefreshSubmitAvailability();
@@ -147,7 +147,7 @@ public partial class SupplyStationPosition : UserControl
     {
         if (InputFeedback is null) return;
         if (showingDraftNotice && InputFeedback.Text == DraftNotice &&
-            DataContext is SupplyStationPositionViewModel { ShowCenteredState: true, CenteredRcsRejection: false })
+            DataContext is SupplyStationPositionViewModel { ShowCenteredState: true, CenteredAttention: false })
             InputFeedback.Visibility = Visibility.Collapsed;
         else InputFeedback.ClearValue(VisibilityProperty);
     }

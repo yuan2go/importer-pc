@@ -5,6 +5,7 @@ using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Platform;
+using Ipc.Presentation.Wpf;
 
 static partial class Program
 {
@@ -39,6 +40,8 @@ static partial class Program
                 "left blocked scan explains that decoding succeeded but no chute request was made");
             Check(vm.Left.DisplayPresentation.Tone == ParcelPresentationTone.Neutral && vm.Right.DisplayPresentation.Tone == ParcelPresentationTone.Rejected &&
                 !vm.Right.CenteredRcsRejection && vm.Right.DisplayStatus.Contains("多个") && vm.Right.DisplayNextStep.Contains("移出托盘"), "software pause preserves the right multi-code refusal and its next step");
+            Check(vm.Right.ShowCenteredState && vm.Right.ResultBackground == OperatorTokens.Neutral && vm.Right.CenteredStateTitle.Contains("多个") &&
+                vm.Right.CenteredStateReason == "本次扫码未发送请求", "a standalone multi-code refusal uses the neutral card and identifies the unsent scan");
             var original = await h.App.ReadParcelPictureAsync(vm.Left.CurrentPictureQuery!, default);
             Check(original.Image?.Gray8.SequenceEqual(blockedPixels.Data) == true && vm.Right.CurrentPictureQuery!.ObservationId != vm.Left.CurrentPictureQuery!.ObservationId,
                 "left image matches the blocked acquisition and cannot point at the right rejection");
@@ -69,6 +72,39 @@ static partial class Program
             h.Peer.ReplySlot = "";
             h.Api(h.Right).EnqueueNative(rejectedPixels, 2, [Symbol("SYNTH-UNKNOWN", 150)]);
             await Until(() => vm.Right.HasUncertainOriginal);
+            var prior = vm.Right.Operation!;
+            var sent = h.Peer.Requests.Count;
+            Check(vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "格口结果未确认" && vm.Right.CenteredStateInstruction.Contains("请勿重复上件"),
+                "an unresolved original is shown before a new package is read");
+            var multi = CameraRoundHarness.Barcode("SYNTH-NEXT-MULTI");
+            h.Api(h.Right).EnqueueNative(multi, 3, [Symbol("SYNTH-NEXT-A", 20), Symbol("SYNTH-NEXT-B", 100)]);
+            await Until(() => vm.Right.Input is { Outcome: ParcelInputOutcome.Rejected, Observation.SourceEventId: "mvs.frame.3" } &&
+                vm.Right.CenteredStateTitle == "上一件格口未确认");
+            Check(vm.Right.CenteredStateReason == "上一件条码 · SYNTH-UNKNOWN" && vm.Right.CenteredStateInstruction.Contains("多个条码，本件未发送") &&
+                vm.Right.DisplayPresentation.Tone == ParcelPresentationTone.Unknown && vm.Right.ResultBackground == OperatorTokens.Neutral && vm.Left.ShowConfirmedTask,
+                "a new multi-code scan and the earlier unresolved request are shown separately without affecting the other position");
+            CaptureInternal(evidence, "unconfirmed-original-with-multi-code", (Grid)window.FindName("ClientArea"), lines);
+            for (uint frame = 4; frame <= 6; frame++)
+            {
+                h.Api(h.Right).EnqueueNative(CameraRoundHarness.EmptyTray, frame, []);
+                await Until(() => vm.Snapshot!.CameraReads.Any(read => read.PositionId == "right" && read.Frame.FrameNumber == frame));
+                if (frame < 6) await Task.Delay(425);
+            }
+            h.Api(h.Right).EnqueueNative(rejectedPixels, 7, [Symbol("SYNTH-UNKNOWN", 150)]);
+            await Until(() => vm.Right.Input is { Outcome: ParcelInputOutcome.Blocked, Observation.SourceEventId: "mvs.frame.7" } &&
+                vm.Right.CenteredStateInstruction.StartsWith("本件已读码，未发送"));
+            Check(vm.Right.Barcode == "SYNTH-UNKNOWN" && vm.Right.Operation?.Id == prior.Id &&
+                Wire.Encode(vm.Right.Operation.Wcs!.Request) == Wire.Encode(prior.Wcs!.Request) &&
+                h.Peer.Requests.Count == sent && vm.Right.CanViewCurrentPicture && !vm.Right.CanSubmitBarcode && vm.Left.ShowConfirmedTask &&
+                !vm.Right.DisplayAttentionReason.Contains("Position=") && ParcelPresentation.InputReason(vm.Right.Input!) == "本位当前不能受理新包裹。",
+                "same-code replacement after an empty tray cannot replay an unresolved original and keeps the new image available");
+            await SetClient(window, 800, 420);
+            var rightControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
+            var client = (Grid)window.FindName("ClientArea");
+            Check(Inside((TextBlock)rightControl.FindName("CenteredInstruction"), client) &&
+                Inside(Descendants(rightControl).OfType<Button>().Single(b => Equals(b.Content, "查看详情")), client),
+                "compact pending card keeps its instructions and details button reachable");
+            CaptureInternal(evidence, "unconfirmed-original-with-same-code-800", client, lines);
             await vm.PauseAsync("SYNTH-UI-PAUSE-REASON"); await Until(() => vm.Snapshot?.Paused == true);
             var triggerRecorded = false; var pictureButtonRecorded = false; var pictureReadRecorded = false;
             await CameraRoundHarness.Until(async () =>

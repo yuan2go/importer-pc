@@ -93,7 +93,8 @@ public static class ParcelPresentation
         input.Outcome == ParcelInputOutcome.Rejected && input.BarcodeSelection is { } selection &&
         input.Reason == selection.Outcome + "; no operation or external intent created"
             ? ChineseInterfaceText.Status(selection.Outcome) + "；本件未发送。"
-            : input.Reason == "Position=" + input.PositionId + "; paused/faulted/unresolved responsibility or operator not authorized"
+            : input.Outcome == ParcelInputOutcome.Blocked && input.Reason.StartsWith(
+                "Position=" + input.PositionId + "; paused/faulted/unresolved responsibility or operator not authorized", StringComparison.Ordinal)
                 ? "本位当前不能受理新包裹。" : ChineseInterfaceText.Notice(input.Reason);
     public static ParcelStatusPresentation InputPresentation(ParcelInputSnapshot input) => IsInputFailure(input) ? Rejected(InputText(input)) : Neutral(InputText(input));
     public static string InputSummary(ParcelInputSnapshot? input) => input is null ? "尚无本位可信观察" :

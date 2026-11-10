@@ -1,3 +1,5 @@
+> 历史设计与验证。当前 SM 的取格口合同和操作见[现行说明](../runtime/sportmaster-rcs-task.md)。
+
 > 2026-10-26当前超时与异常展示增量见[工作包](../archive/work-packages/WP-IPC-RCS-TIMEOUT-ERRORS-01.md)：1.3.4增加组件请求超时、拆包/message提示。用户已确认明确超时后立即允许新扫码申请；原Unknown请求及记录保留，其他未知结果守卫保持。下文旧版本及测试范围保持历史身份。
 
 > 心跳 `sorter.task.station_heartbeat` 默认1秒、组件参数可改；响应按本站相机编码展示小车号和状态，只作提示、不限制投包。当前编码映射和响应核对规则见[心跳说明](../runtime/rcs-heartbeat-01.md)。Query仍为false，旧请求原件不改。

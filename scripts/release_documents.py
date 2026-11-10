@@ -37,7 +37,18 @@ GUIDES = {
 }
 # Current operation guides and real interface prerequisites only. Historical UI,
 # old account and support-page evidence remains in Git with its original identity.
-SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
+SM_HISTORICAL_GUIDES = {
+    'docs/runtime/commercial-productization-01-operations.md',
+    'docs/runtime/startup-deployment-02.md',
+    'docs/runtime/application-architecture-22.md',
+    'docs/runtime/latency-capacity-01.md',
+    'docs/runtime/win11-24x7-stability-remediation-01.md',
+    'docs/runtime/code-reliability-hardening-02.md',
+    'docs/runtime/windows-application-delivery.md',
+    'docs/runtime/version-compatibility-01.md',
+    'docs/design/application-architecture-22.md',
+}
+SPORTMASTER_GUIDES = {**{path: name for path, name in PARCEL_GUIDES.items() if path not in SM_HISTORICAL_GUIDES},
     'docs/design/mvid-native-reader.md': 'MVID-NATIVE-READER.md',
     'docs/design/sm-dual-camera-performance.md': 'SM-DUAL-CAMERA-PERFORMANCE.md',
     'docs/operator/quick-guide.md': 'OPERATOR-QUICK-GUIDE.md',
@@ -53,8 +64,7 @@ SPORTMASTER_GUIDES = {**PARCEL_GUIDES,
     'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',
-    'docs/runtime/mvs-software-reader-01.md': 'MVS-SOFTWARE-READER.md',
-    'docs/runtime/sportmaster-commercial-delivery-01-operations.md': 'SPORTMASTER-DELIVERY.md'}
+    'docs/runtime/mvs-software-reader-01.md': 'MVS-SOFTWARE-READER.md'}
 
 ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}
 

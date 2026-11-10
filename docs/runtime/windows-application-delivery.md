@@ -1,3 +1,5 @@
+> 本文保留形成时的设计及验证背景。当前 SM 实施及验收见[文档索引](../INDEX.md)与[实施手册](../operator/implementation-guide.md)。
+
 > 2026-11-02 DB22用户最新授权：本机保留配置/历史更新，已知Parcel10→11允许在独占离线、严格结构校验、完整备份及原责任守卫下受控升级；其他旧格式仍拒绝，不自动降级。旧从零安装限制在本次范围内由[DB22工作包](../archive/work-packages/WP-IPC-DB11-COMPATIBLE-UPDATE-22.md)替代，历史证据不改写。
 
 # 当前Windows安装与维护

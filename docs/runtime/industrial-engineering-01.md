@@ -1,3 +1,5 @@
+> 历史实施记录与验证证据。当前 SM 实施操作见[实施手册](../operator/implementation-guide.md)。
+
 # IE01实施与验证
 
 2026-11-03，初始实施基线main `38cb7dc0`，设计提交`8d3f6616`。PR184已由仓库合并，续作先整合`90d6fdc9`，当前再整合main `74bca0e0`（含PR188～192），分支`codex/industrial-engineering-02`。用户授权分阶段实现、必要验证和main PR；本任务不自行合并、不操作当前生产部署。完整设计与23项验收定义见[工作包](../archive/work-packages/WP-IPC-INDUSTRIAL-ENGINEERING-01.md)。本页持续更新实际状态，历史设计交付状态不倒写。

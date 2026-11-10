@@ -178,6 +178,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (op.PositionId is not null) admissionPositions.TryAdd(op.AdmissionId, op.PositionId);
         }
         if (Id == "sportmaster") releasedPlacements.UnionWith(repository.ReadReleasedPlacements());
+        if (Id == "sportmaster") repository.CleanupIncompatibleSmReceipts();
         repository.ValidateRawInventory();
         RecoverOriginalFrameArchives();
         foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
@@ -207,10 +208,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (startupConfiguration is null) configuration.BeginEffectiveStartup();
             factory.Validate(Effective);
             ports = factory.Create(Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective))); // Factory owns partial construction if any step fails.
-            var incompatibleOriginals = operations.Values.Where(op => RequiresOriginalExecution(op) && op.ImplementationHashes.Any(original =>
-                ports.ImplementationHashes.GetValueOrDefault(original.Key) != original.Value)).Select(op => op.Id).ToArray();
-            if (incompatibleOriginals.Length != 0)
-                throw new InvalidDataException("OriginalCapabilityUnavailable: settle unresolved originals using the matching release before changing host/implementation; no source started: " + string.Join(",", incompatibleOriginals));
+            ClassifyIncompatibleOriginals();
             if (ports.Wcs is IWcsRequestPreparer numericPreparer)
                 repository.RegisterIntegrationRequestRanges(numericPreparer, new[] { priorEffective, Effective, configuration.Current.Pending }.OfType<ParcelConfiguration>(),
                     File.Exists(Path.Combine(directory!, "RESTORED-ISOLATED.json")) ? Wire.FileHash(Path.Combine(directory!, "RESTORED-ISOLATED.json")) : null);

@@ -17,7 +17,8 @@ public sealed partial class ParcelRuntime
     static ParcelStage ParseStage(string stage) => stage switch
     { "image-capture" => ParcelStage.Capture, "image-upload" => ParcelStage.Upload, "wcs-slot" => ParcelStage.Wcs, "plc-submit" => ParcelStage.Plc, _ => throw new InvalidDataException("Unknown original stage") };
     static bool IsDebugRequest(ParcelOperation op) => op.DebugRequest is not null || op.OperatorDebugRequest is not null;
-    bool CanDispatch(ParcelOperation op) => IsDebugRequest(op) ? explicitDebugSends.Contains(op.Id) && DebugRequestReady(op) : CanDispatchNormally(op);
+    bool CanDispatch(ParcelOperation op) => !obsoleteSmOriginals.Contains(op.Id) &&
+        (IsDebugRequest(op) ? explicitDebugSends.Contains(op.Id) && DebugRequestReady(op) : CanDispatchNormally(op));
     bool CanDispatchNormally(ParcelOperation op) => !releasedPlacements.Contains(op.Id) &&
         !ManagementWorkspaceOpen && Volatile.Read(ref accepting) == 1 && !ParcelConnectionSetup.BlocksWork(Effective) && (IsManualParcel(op) || !ParcelConnectionSetup.IsDeferred(Effective, positions[op.PositionId ?? "main"].ReaderDeviceId)) && (IsManualParcel(op) ? ManualPositionMaintenanceClear(op.PositionId!) : PositionMaintenanceClear(op.PositionId ?? "main")) && !op.RecoveryRequired && !HasIdentityConflict(op.PositionId ?? "main") && !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && (overload == 0 || !overloadedPositions.ContainsKey(op.PositionId ?? "main")) && !repository!.Paused &&
         SessionValid && (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject && currentOperator is not null) &&

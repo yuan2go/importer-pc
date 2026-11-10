@@ -173,7 +173,54 @@ internal static class StationPositionControlChecks
             Check(next.Status == "Admitted" && next.OperationId != old.Id && h.Peer.Requests.Count == 2,
                 "a new manual same-code placement makes an independent request after removal");
         }
+        await UpgradeWithIncompatibleOriginal(workspace, Path.Combine(root, "upgrade-with-original"));
         await HeartbeatSelection(workspace);
+    }
+    static async Task UpgradeWithIncompatibleOriginal(string workspace, string root)
+    {
+        await using var h = new ManualSupplyHarness(workspace, root, deferred: true, mode: RunMode.Simulation);
+        await h.StartAsync(rcsImplementationFingerprint: new string('A', 64));
+        var finished = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-FINISHED"), default);
+        h.Peer.ReplySlot = "";
+        var original = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);
+        var old = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == original.OperationId);
+        Check(old.Wcs is { State: StageState.Unknown, Attempts: 1 } && h.Peer.Requests.Count == 2,
+            "old installation leaves a real frozen request with an unconfirmed RCS result");
+        await h.App.DisposeAsync();
+
+        h.Peer.ReplySlot = "SYNTH-NEW-SLOT";
+        var newFingerprint = new string('B', 64);
+        await h.StartAsync(ready: false, rcsImplementationFingerprint: newFingerprint);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").BarcodeInput?.Manual == true);
+        var restarted = await h.App.SnapshotAsync();
+        Check(!restarted.Paused && h.Peer.Requests.Count == 2 &&
+            restarted.Positions!.Single(p => p.Id == "left") is { CanConfirmPlacementRemoval: true, BarcodeInput.Manual: false } &&
+            (await h.App.HistoryAsync()).Items.Any(row => row.Operation.Id == finished.OperationId && row.Operation.State == ParcelState.SlotResolved),
+            "upgrade starts without replay, keeps the possibly occupied tray guarded, and preserves finished history");
+        var repeat = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);
+        Check(repeat.Status != "Admitted" && h.Peer.Requests.Count == 2,
+            "the old barcode on the same placement cannot issue a new request after upgrade");
+
+        restarted = await h.App.SnapshotAsync();
+        var removal = new BusinessCommand(Wire.Id(), restarted.Revision, "ConfirmPlacementRemoval", "left", old.Id);
+        Check((await h.App.CommandAsync(removal)).Status == "Persisted", "operator can confirm the old parcel was removed without management access");
+        await CameraRoundHarness.Until(async () => await h.App.OperationAsync(old.Id) is null);
+        Check((await h.App.HistoryAsync()).Items.All(row => row.Operation.Id != old.Id) &&
+            (await h.App.SnapshotAsync()).Operations.All(o => o.Id != old.Id) && h.Peer.Requests.Count == 2,
+            "after removal, the obsolete request is deleted from live work and history");
+
+        var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);
+        var current = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == next.OperationId);
+        var sent = h.Peer.Requests.ToArray();
+        using var oldMessage = JsonDocument.Parse(sent[1]);
+        using var newMessage = JsonDocument.Parse(sent[^1]);
+        Check(current.Wcs is { State: StageState.Accepted, Attempts: 1 } && current.Id != old.Id &&
+            sent.Length == 3 && newMessage.RootElement.GetProperty("requestId").GetInt64() > oldMessage.RootElement.GetProperty("requestId").GetInt64(),
+            "replacing the same barcode uses a new request number and sends only once");
+        await h.App.DisposeAsync();
+        await h.StartAsync(rcsImplementationFingerprint: newFingerprint);
+        Check((await h.App.OperationAsync(old.Id)) is null && h.Peer.Requests.Count == 3,
+            "the following startup validates retired receipt cleanup without replay or restoring the deleted request");
     }
     static async Task HeartbeatSelection(string workspace)
     {

@@ -10,10 +10,24 @@ public static class RcsRequestPolicy
     public const string ComponentVersion = "1.0.0";
     public const int DefaultTimeoutMs = 5000, MinimumTimeoutMs = 100, MaximumTimeoutMs = 30000;
     public const int DefaultHeartbeatMs = 1000, MinimumHeartbeatMs = 100, MaximumHeartbeatMs = 3600000;
+    // Retired setting keys are kept only for original wire evidence. Reusing them could activate an old site value.
+    public const string DestinationMode = "destination-mode", DestinationChuteCode = "destination-chute-code";
+    public const int MaximumChuteCodeLength = 64;
     static readonly HashSet<string> Parameters = new([
         "source", "locale", "zone-id", "project-id", "specified-chute", "request-id-base", "request-id-count",
         "left-station-code", "left-bcr-code", "right-station-code", "right-bcr-code", "chute-code",
-        "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp"], StringComparer.Ordinal);
+        "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp", DestinationMode, DestinationChuteCode], StringComparer.Ordinal);
+
+    public static string? SpecifiedChuteCode(IReadOnlyDictionary<string, string> parameters)
+    {
+        var mode = parameters.GetValueOrDefault(DestinationMode);
+        if (mode is null or "false") return null;
+        if (mode != "true") throw new InvalidDataException("格口分配方式无效，请重新选择。");
+        var chute = parameters.GetValueOrDefault(DestinationChuteCode);
+        return !string.IsNullOrWhiteSpace(chute) && chute.Length <= MaximumChuteCodeLength && !chute.Any(char.IsControl)
+            ? chute : throw new InvalidDataException("选择指定格口后，请填写1～64个非控制字符的格口编码。");
+    }
+
     public static bool NoDestToExp(CapabilityBinding binding) => !binding.Parameters.TryGetValue("no-dest-to-exp", out var value) ? true : value switch
     {
         "true" => true,

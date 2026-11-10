@@ -310,8 +310,8 @@ static partial class Program
         {
             ["zone-id"] = "71",
             ["project-id"] = "83",
-            ["specified-chute"] = "false",
-            ["chute-code"] = "OLD-CHUTE",
+            [RcsRequestPolicy.DestinationMode] = "false",
+            [RcsRequestPolicy.DestinationChuteCode] = "OLD-CHUTE",
             ["request-id-base"] = "810000000",
             ["request-id-count"] = "1000",
             ["left-station-code"] = "OLD-LEFT",
@@ -336,8 +336,8 @@ static partial class Program
         check(common.Text.Length == 0, "conflicting legacy pair is visible with blank explicit migration input"); capture("parameters-station-conflict", control);
         common.Text = "SYNTHETIC-COMMON";
         var rcsDraft = draft.Capabilities.Single(c => c.InstanceId == "rcs.one"); var built = rcsDraft.Build();
-        check(built.Parameters["left-station-code"] == "SYNTHETIC-COMMON" && built.Parameters["right-station-code"] == "SYNTHETIC-COMMON" && !built.Parameters.ContainsKey("chute-code"), "explicit shared station edit projects both keys and false specified-chute omits inactive value");
-        check(rcsDraft.Parameters.Single(p => p.Field.Key == "chute-code").Value == "OLD-CHUTE", "inactive chute input remains in the raw draft");
+        check(built.Parameters["left-station-code"] == "SYNTHETIC-COMMON" && built.Parameters["right-station-code"] == "SYNTHETIC-COMMON" && !built.Parameters.ContainsKey(RcsRequestPolicy.DestinationChuteCode), "explicit shared station edit projects both keys and automatic assignment omits inactive chute");
+        check(rcsDraft.Parameters.Single(p => p.Field.Key == RcsRequestPolicy.DestinationChuteCode).Value == "OLD-CHUTE", "inactive chute input remains in the raw draft");
         check(model.ValidateFields(), "corrected synthetic provider candidate passes field checks before normal-form captures");
         control.NavigateTo("rcs.one/quantity"); window.UpdateLayout(); capture("parameters-business-rules", control);
         check(control.NavigateTo("reader.1"), "right camera object remains a valid navigation target after the SDK-only transition"); window.UpdateLayout(); capture("parameters-right-driver", control);

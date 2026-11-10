@@ -22,7 +22,7 @@ public partial class SupplyStationPosition : UserControl
             // The rest of the card immediately becomes a barcode input surface.
             for (var source = e.OriginalSource as DependencyObject; source is not null && source != this;
                 source = source is Visual ? VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source))
-                if (source is ButtonBase or TextBoxBase or ScrollBar) return;
+                if (source is ButtonBase or TextBoxBase or ComboBox or ScrollBar) return;
             FocusBarcodeInput();
             // ScrollViewer's default mouse handling would otherwise take focus
             // back from the barcode editor after this preview event.
@@ -114,6 +114,7 @@ public partial class SupplyStationPosition : UserControl
         if (!IsVisible || !IsEnabled || DataContext is not SupplyStationPositionViewModel { SupplyEnabled: true }) return;
         BarcodeEntry.Focus(); PrepareResultReplacement();
     }
+    internal bool IsBarcodeSourceDropDownOpen => BarcodeSource.IsDropDownOpen;
     internal bool IsBarcodeInputFocused => BarcodeEntry.IsKeyboardFocused;
     internal void ReceiveScannerText(string text)
     {
@@ -136,6 +137,7 @@ public partial class SupplyStationPosition : UserControl
         var available = DataContext is SupplyStationPositionViewModel p && p.CanSubmitBarcode;
         BarcodeEntry.IsReadOnly = submitting || submitted is not null || DataContext is not SupplyStationPositionViewModel { SupplyEnabled: true };
         BarcodeEntry.IsTabStop = DataContext is SupplyStationPositionViewModel { SupplyEnabled: true };
+        BarcodeSource.IsEnabled = !BarcodeEntry.IsReadOnly;
         if (submitted is not null) available = Host?.ViewModel is { CanUseWorkspace: true, CanStartOperation: true };
         SubmitBarcode.IsEnabled = !submitting && available && (submitted is not null || editing && !overflow && BarcodeEntry.Text.Length > 0);
         RefreshPictureAvailability();
@@ -235,9 +237,10 @@ public partial class SupplyStationPosition : UserControl
             if (inputBasis is null) CaptureInputBasis();
             if (inputBasis is not { } basis) { InputFeedback.Text = "本位状态未读取，请稍后再提交。"; return; }
             submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text,
-                ParcelBarcodeInputKind.Keyboard, basis.Observation, basis.Operation);
+                BarcodeSource.SelectedValue is ParcelBarcodeInputKind source ? source : ParcelBarcodeInputKind.Keyboard,
+                basis.Observation, basis.Operation);
         }
-        var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true;
+        var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true; BarcodeSource.IsEnabled = false;
         SubmitBarcode.IsEnabled = false; RebaseInput.IsEnabled = false;
         InputFeedback.Text = "正在提交，请等待结果，勿重复扫描。";
         await vm.RunAsync(async () =>

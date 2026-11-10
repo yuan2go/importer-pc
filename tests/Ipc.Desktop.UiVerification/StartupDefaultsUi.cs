@@ -62,7 +62,18 @@ static partial class Program
                 if (firstRun) Check(editor.ShowPage(3, "RCS 服务"), "first-run RCS range page is available");
                 await Flush();
                 Check(!Descendants(editor).Any(t => removed.Any(key => AutomationProperties.GetAutomationId(t).EndsWith("/" + key, StringComparison.Ordinal))),
-                    "neither ranges nor fixed-chute controls exist in first configuration or daily settings");
+                    "retired controls are absent in first configuration and daily settings");
+                var mode = Descendants(editor).OfType<ComboBox>().Single(c => AutomationProperties.GetAutomationId(c).EndsWith("/" + RcsRequestPolicy.DestinationMode, StringComparison.Ordinal));
+                var code = Descendants(editor).OfType<TextBox>().Single(c => AutomationProperties.GetAutomationId(c).EndsWith("/" + RcsRequestPolicy.DestinationChuteCode, StringComparison.Ordinal));
+                Check(mode.IsVisible && Equals(mode.SelectedValue, "false") && !code.IsVisible, "RCS assignment is the default and hides the chute code");
+                mode.SelectedValue = "true"; await Flush();
+                Check(code.IsVisible && !model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("/" + RcsRequestPolicy.DestinationChuteCode, StringComparison.Ordinal)),
+                    "specified mode shows the required chute code even when RCS is deferred");
+                code.Text = "00123"; await Flush();
+                Check(rcsDraft.Build().Parameters[RcsRequestPolicy.DestinationChuteCode] == "00123", "chute code retains leading zeroes in the shared draft");
+                mode.SelectedValue = "false"; await Flush();
+                Check(!code.IsVisible && !rcsDraft.Build().Parameters.ContainsKey(RcsRequestPolicy.DestinationChuteCode),
+                    "returning to RCS assignment omits the inactive code");
                 Check(!model.Components.Single(ParameterOwnership.IsRcs).Parameters.Any(p => removed.Contains(p.Field.Key)),
                     "retired fields are absent from the editor model, not merely hidden");
                 Check(!Descendants(editor).OfType<ComboBox>().Any(c => AutomationProperties.GetAutomationId(c).EndsWith("/Provider", StringComparison.Ordinal)),

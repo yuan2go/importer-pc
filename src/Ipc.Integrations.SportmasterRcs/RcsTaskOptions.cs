@@ -13,6 +13,7 @@ internal sealed class RcsTaskOptions
     internal readonly int HeartbeatIntervalMs;
     internal readonly int RequestTimeoutMs;
     internal readonly bool NoDestToExp;
+    internal readonly string? SpecifiedChuteCode;
     internal static readonly string[] RequiredKeys = ["zone-id", "project-id", "left-station-code", "right-station-code"];
     // Old bindings remain readable as immutable evidence for already-sent requests.
     // These keys have no effect on new requests and are removed on candidate save.
@@ -27,7 +28,7 @@ internal sealed class RcsTaskOptions
             endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
             throw new InvalidDataException("RCS requires an enabled integration binding and an explicit HTTP(S) /rcs/sorter/api target without credentials/query/fragment");
         Endpoint = endpoint;
-        if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(RetiredKeys).Concat(["left-bcr-code", "right-bcr-code", "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp"]), StringComparer.Ordinal).Any())
+        if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(RetiredKeys).Concat(["left-bcr-code", "right-bcr-code", "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp", RcsRequestPolicy.DestinationMode, RcsRequestPolicy.DestinationChuteCode]), StringComparer.Ordinal).Any())
             throw new InvalidDataException("Unknown RCS parameter");
         foreach (var key in RequiredKeys) _ = Text(key, 256);
         Source = "BAR"; Locale = "zh_CN";
@@ -35,6 +36,7 @@ internal sealed class RcsTaskOptions
         HeartbeatIntervalMs = RcsRequestPolicy.HeartbeatMs(Binding);
         RequestTimeoutMs = RcsRequestPolicy.TimeoutMs(Binding);
         NoDestToExp = RcsRequestPolicy.NoDestToExp(Binding);
+        SpecifiedChuteCode = RcsRequestPolicy.SpecifiedChuteCode(Binding.Parameters);
     }
     internal string Text(string key, int maximum)
     {

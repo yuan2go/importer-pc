@@ -150,9 +150,11 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         var parameters = new Dictionary<string, string>(originalParameters);
         if (ParameterOwnership.IsRcs(this))
             foreach (var key in new[] { "request-id-base", "request-id-count", "specified-chute", "chute-code" }) parameters.Remove(key);
+        var rcsAutomatic = ParameterOwnership.IsRcs(this) && Parameters.FirstOrDefault(x => x.Field.Key == RcsRequestPolicy.DestinationMode)?.Value != "true";
         var nativeCamera = IsSimpleCamera && Parameters.Any(x => x.Field.Key == "reader.engine" && x.Value == "mvid-native");
         foreach (var item in Parameters)
         {
+            if (rcsAutomatic && item.Field.Key == RcsRequestPolicy.DestinationChuteCode) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
             // Native recognition ignores this hidden software setting. Do not add
             // its default to an existing reader when editing the other camera.

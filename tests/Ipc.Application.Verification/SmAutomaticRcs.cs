@@ -49,16 +49,52 @@ static partial class SportmasterRcs
             Check(!draft.Parameters.Any(p => removed.Contains(p.Field.Key)) && !draft.Build().Parameters.Keys.Intersect(removed).Any(), "daily and first-run drafts cannot save retired fields");
         }
         Check(Wire.Encode(frozen) == originalBytes && peer.Requests.Count == 0, "configuration cleanup leaves original requests byte-identical and never sends them");
-        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "automatic-runtime"), deferred: true);
-        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
-        async Task<ParcelOperation> Submit(string code)
+        var originalOperator = Request(binding);
+        var payload = Wire.Decode<ParcelPayload>(originalOperator.Payload);
+        var operatorId = Wire.Id();
+        var operatorPayload = Wire.Encode(payload with
         {
-            var receipt = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", code), default);
+            Acquisition = null,
+            AdmissionId = "manual." + operatorId,
+            OperatorInput = new(operatorId, "Keyboard", "SYNTH-OPERATOR", null, DateTimeOffset.UtcNow)
+        });
+        originalOperator = originalOperator with { Payload = operatorPayload, PayloadHash = Wire.Hash(operatorPayload) };
+        var operatorWire = service.PrepareRequest(originalOperator, 42);
+        var legacyBody = operatorWire.Body.Replace("\"MANUAL\"", "\"BAR\"", StringComparison.Ordinal);
+        var legacyWire = operatorWire with { Body = legacyBody, BodyHash = Wire.Hash(legacyBody) };
+        Check(RcsDestinationProtocol.MatchesFrozen(new(binding), originalOperator with { IntegrationRequest = legacyWire }, legacyWire),
+            "original manual request with the historical BAR envelope remains valid exact evidence");
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "automatic-runtime"), deferred: true);
+        var configured = h.Config with { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs!.Parameters)
+        {
+            [RcsRequestPolicy.DestinationMode] = "true",
+            [RcsRequestPolicy.DestinationChuteCode] = "00123"
+        } } };
+        foreach (var invalid in new[] { "", "  ", "BAD\u0001", new string('A', 65) })
+        {
+            var invalidBinding = configured.Wcs! with { Parameters = new(configured.Wcs!.Parameters) { [RcsRequestPolicy.DestinationChuteCode] = invalid } };
+            var deferred = configured with { Wcs = invalidBinding with { Target = "" }, DeferredConnections = [.. configured.DeferredConnections!, invalidBinding.InstanceId] };
+            Check(new SportmasterFlow().Validate(deferred).Any(e => e.Contains("格口编码")), "invalid specified chute fails configuration validation even with a deferred address");
+        }
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), configured);
+        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
+        async Task<ParcelOperation> Submit(string code, ParcelBarcodeInputKind kind = ParcelBarcodeInputKind.Keyboard)
+        {
+            var receipt = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", code, kind), default);
             Check(receipt.Status == "Admitted", "ordinary manual source is admitted without allocation parameters: " + code);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == receipt.OperationId && o.State == ParcelState.SlotResolved));
             return (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == receipt.OperationId);
         }
-        var first = await Submit("AUTO-FIRST"); var second = await Submit("AUTO-SECOND");
+        var first = await Submit("AUTO-FIRST"); var second = await Submit("AUTO-SECOND", ParcelBarcodeInputKind.PdaKeyboard);
+        foreach (var (sent, source) in h.Peer.Requests.Zip(new[] { "MANUAL", "PDA" }))
+        {
+            using var json = JsonDocument.Parse(sent);
+            var parameters = json.RootElement.GetProperty("data")[0].GetProperty("params");
+            Check(json.RootElement.GetProperty("source").GetString() == source && parameters.GetProperty("specifiedChute").GetBoolean() &&
+                parameters.GetProperty("chuteCode").ValueKind == JsonValueKind.String && parameters.GetProperty("chuteCode").GetString() == "00123",
+                "actual RCS POST freezes " + source + " and preserves the specified chute as a string including leading zeroes");
+        }
+        Check(first.Slot == "SYNTH-CHUTE" && second.Slot == "SYNTH-CHUTE", "operator result uses the actual RCS assignment");
         var firstId = first.Wcs!.Request.IntegrationRequest!.RequestId; var secondId = second.Wcs!.Request.IntegrationRequest!.RequestId;
         Check(firstId > 10000 && secondId > firstId, "runtime assigns increasing numeric IDs beyond the removed 10000 ceiling");
         var unchanged = Wire.Encode(second.Wcs.Request);

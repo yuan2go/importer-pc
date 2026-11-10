@@ -26,7 +26,11 @@ public static partial class ParcelConfigurationRules
         // configuration ledger/database, not only when constructing its adapter.
         foreach (var binding in ParcelBindings.All(c).Where(b => b.Contract == RcsRequestPolicy.Contract || b.Implementation == "sportmaster-rcs"))
         {
-            try { _ = RcsRequestPolicy.TimeoutMs(binding); }
+            try
+            {
+                _ = RcsRequestPolicy.TimeoutMs(binding);
+                _ = RcsRequestPolicy.SpecifiedChuteCode(binding.Parameters);
+            }
             catch (InvalidDataException error) { e.Add(error.Message); }
         }
         e.AddRange(ParcelConnectionSetup.Validate(c));

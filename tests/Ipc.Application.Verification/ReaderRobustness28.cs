@@ -162,7 +162,7 @@ internal static class ReaderRobustness28
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask && vm.Right.ShowConfirmedTask; });
         var old = vm.Snapshot!;
         h.Api(h.Left).Enqueue(new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240), 2);
-        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.DisplayStatus == "未读到条码"; });
+        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) && vm.Left.DisplayStatus == "等待投包"; });
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
         h.App.Boundary = point => { if (point == "BeforeIngressDurable") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Snapshot/stream regression gate timed out"); } };
         try

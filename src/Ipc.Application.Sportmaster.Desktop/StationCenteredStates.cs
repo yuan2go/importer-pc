@@ -7,7 +7,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public sealed partial class SupplyStationPositionViewModel
 {
     bool PreserveDetailedResult => HasUncertainOriginal || ShowConfirmedTask || CurrentTaskAvailable || IsProcessing ||
-        Operation?.State == ParcelState.WcsRejected || Input?.Outcome == ParcelInputOutcome.Rejected;
+        !CameraNoCode && (Operation?.State == ParcelState.WcsRejected || Input?.Outcome == ParcelInputOutcome.Rejected);
     bool RcsUnavailableForDisplay => owner.Snapshot is { } snapshot && snapshot.Configuration.Effective.Wcs is { } binding &&
         !ParcelConnectionSetup.IsDeferred(snapshot.Configuration.Effective, binding.InstanceId) &&
         (snapshot.Health.SingleOrDefault(h => h.InstanceId == binding.InstanceId) is not { Ready: true } health ||
@@ -16,6 +16,8 @@ public sealed partial class SupplyStationPositionViewModel
     bool CenteredWaiting => owner.Fresh && SupplyEnabled && !DisplayPaused && !PreserveDetailedResult && !RcsUnavailableForDisplay &&
         !HasCurrentInput && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId) is { } position &&
         (position.Admit || position.BarcodeInput?.Manual == true);
+    bool CenteredNoBarcodeBlocked => owner.Fresh && !SupplyDisabled && !DisplayPaused && !PreserveDetailedResult &&
+        CameraNoCode && !CameraAwaitingRead && !CenteredWaiting && !CenteredRcsPause;
     bool CenteredSoftwarePause => owner.Fresh && SupplyEnabled && DisplayPaused && !PausedAttention;
     bool CurrentResultVisible => !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && !invalidReadFeedback;
     WcsDestinationResult? CurrentRcsRejection =>
@@ -83,27 +85,21 @@ public sealed partial class SupplyStationPositionViewModel
         ? "请联系维护人员检查运行数据，操作工无需进入管理中心。"
         : owner.CanResumeInViewport ? "确认现场后，点击顶部“恢复供包”。"
         : "请通知维护人员检查设备，恢复后再上件。";
-    public bool ShowCenteredState => CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting;
+    public bool ShowCenteredState => CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting || CenteredNoBarcodeBlocked;
     public string CenteredStateTitle => CenteredStale ? "状态读取中断" : CenteredOriginalAttention ? OriginalAttentionTitle : CenteredReadAttention ? ReadAttentionTitle :
         CurrentRcsRejection is { } rejection ? string.IsNullOrWhiteSpace(rejection.Message) ? "RCS 未分配格口" : rejection.Message :
         CenteredOperationAttention ? MissingConfirmedSlot ? "未取得有效格口" : Operation?.State switch
         { ParcelState.UnpackRequired => "需要拆包检查", ParcelState.Blocked => "本件暂不能处理", _ => "未分配格口" } :
-        SupplyDisabled ? "已停用" : CenteredSoftwarePause ? "供包已暂停" : CenteredRcsPause ? "暂不能投包" : "等待投包";
+        SupplyDisabled ? "已停用" : CenteredSoftwarePause ? "供包已暂停" : CenteredRcsPause ? "暂不能投包" :
+        CenteredNoBarcodeBlocked ? SupplyDisabling ? "停用中" : "暂不能投包" : "等待投包";
     public string CenteredStateForeground => CenteredAttention ? CenteredAttentionTone switch
     { ParcelPresentationTone.Stale => OperatorTokens.Muted, ParcelPresentationTone.Unknown => OperatorTokens.Warning, _ => OperatorTokens.Danger }
-        : CenteredRcsPause ? OperatorTokens.Danger : SupplyDisabled || CenteredSoftwarePause ? OperatorTokens.Muted : OperatorTokens.Success;
-    string RcsRejectionReason()
-    {
-        const string reason = "本件暂不能分配格口";
-        if (Operation is not { ParcelCode: { Length: > 0 } code } operation || code.Any(char.IsControl))
-            return reason;
-        var source = operation.OperatorInput is null ? "已读到" : "已录入";
-        return reason + "　" + source + " · …" + code[^Math.Min(4, code.Length)..];
-    }
+        : CenteredRcsPause ? OperatorTokens.Danger : SupplyDisabled || CenteredSoftwarePause || CenteredNoBarcodeBlocked ? OperatorTokens.Muted : OperatorTokens.Success;
     public string CenteredStateReason => CenteredStale ? "旧格口已失效" : CenteredOriginalAttention ? OriginalAttentionReason :
         CenteredReadAttention ? invalidReadFeedback ? "本次没有有效格口" : "本次扫码未发送请求" :
-        CenteredRcsRejection ? RcsRejectionReason() : CenteredOperationAttention ? Operation?.State == ParcelState.UnpackRequired ? "本件需人工检查" : "本件暂不能分配格口" :
+        CenteredRcsRejection ? "本件暂不能分配格口" : CenteredOperationAttention ? Operation?.State == ParcelState.UnpackRequired ? "本件需人工检查" : "本件暂不能分配格口" :
         SupplyDisabled ? "不接收条码" : CenteredSoftwarePause ? PauseReason : CenteredRcsPause ? "RCS 服务离线" :
+        CenteredNoBarcodeBlocked ? SupplyDisabling ? "正在确认本次放置结束" : Operation?.State == ParcelState.ResolvingWcs ? "正在等待本件格口" : "本位暂不接收新条码" :
         CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "放上包裹，由相机扫码" : "可输入完整条码";
     public string CenteredStateInstruction => CenteredStateFullInstruction;
     public string CenteredStateFullInstruction => CenteredStale ? "请等待状态恢复，暂勿按旧格口投递" :
@@ -111,5 +107,6 @@ public sealed partial class SupplyStationPositionViewModel
         CenteredOperationAttention ? MissingConfirmedSlot ? "本件暂勿投递，请查看详情并通知维护人员" : Operation?.State switch
         { ParcelState.UnpackRequired => "请查看拆包明细，处理完再继续", ParcelState.Blocked => "本件暂勿投递，请查看详情", _ => RcsRejectionInstruction() } :
         SupplyDisabled ? "" : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? "请检查连接，恢复后再提交" :
+        CenteredNoBarcodeBlocked ? SupplyDisabling ? "等待确认托盘清空" : Operation?.State == ParcelState.ResolvingWcs ? "请等待结果后再上件" : "请核对本位状态，必要时通知维护人员" :
         CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "也可输入完整条码后按回车" : "";
 }

@@ -106,7 +106,6 @@
       <DockPanel x:Name="DetailedStatus" Grid.ColumnSpan="2">
        <DockPanel.Style><Style TargetType="DockPanel"><Style.Triggers><DataTrigger Binding="{Binding ShowCenteredState}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsTight}" Value="True"/><Condition Binding="{Binding ShowConfirmedTask}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Collapsed"/></MultiDataTrigger></Style.Triggers></Style></DockPanel.Style>
        <TextBlock Text="{Binding DisplayPresentation.Icon}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Exception}" Margin="0,0,8,0" AutomationProperties.Name="本位状态符号"/>
-       <TextBlock Text="{Binding ReadCueLabel}" Foreground="{Binding ResultForeground}" DockPanel.Dock="Right" Margin="8,0,0,0" AutomationProperties.LiveSetting="Polite"/>
        <TextBlock Text="{Binding DisplayStatus}" Foreground="{Binding ResultForeground}" FontSize="{x:Static type:UiTypography.Status}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
       </DockPanel>
       <Grid Grid.Row="1" x:Name="SlotViewport">
@@ -318,7 +317,7 @@
        </Button.Style>
       </Button>
       <Button x:Name="RebaseInput" Content="确认本位包裹" Click="RebaseInput_Click" Visibility="Collapsed" Style="{StaticResource StationTouch}" ToolTip="本位状态已变化。请确认手上的包裹属于本位后再提交。"/>
-      <Button Grid.Column="2" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanReconcile}" Style="{StaticResource StationTouch}"/>
+      <Button x:Name="WorkDetails" Grid.Column="2" Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanViewWorkDetails}" Style="{StaticResource StationTouch}"/>
      </Grid>
      <Grid Grid.Row="2" x:Name="PositionDeviceFooter">
       <Grid.Style><Style TargetType="Grid"><Setter Property="Margin" Value="0,4,0,0"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers></Style></Grid.Style>

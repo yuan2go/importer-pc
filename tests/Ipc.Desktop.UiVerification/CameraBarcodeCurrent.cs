@@ -34,15 +34,16 @@ static partial class Program
             var edits = typeof(SupplyStationPosition).GetField("editing", BindingFlags.Instance | BindingFlags.NonPublic)!;
             async Task Read(uint frame, string code)
             {
+                var prior = p.ReadFeedbackKey;
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(code), frame);
-                await Until(() => h.Factory.Decoders[h.Left].Last is [{ Text: var text }] && text == code && p.ReadCueLabel.EndsWith(code[^Math.Min(4, code.Length)..], StringComparison.Ordinal), "decode/feedback " + code);
+                await Until(() => p.ReadFeedbackKey is { } read && read != prior && p.Barcode == code, "camera feedback " + code);
             }
             async Task Resolved(string code) => await Until(() => p.Operation?.ParcelCode == code && p.ShowConfirmedTask, "resolved " + code);
             string State() => Wire.Encode(new
             {
                 Main = entry.Text,
                 Model = p.Barcode,
-                Read = p.ReadCueLabel,
+                Read = p.ReadFeedbackKey,
                 Decoder = h.Factory.Decoders[h.Left].Last.Select(s => s.Text),
                 Input = p.Input?.Observation.Codes,
                 Operation = p.Operation?.ParcelCode,

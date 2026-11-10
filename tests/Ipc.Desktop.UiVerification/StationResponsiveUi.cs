@@ -88,7 +88,7 @@ static partial class Program
             h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref hold, 0) == 1) { entered.Set(); release.Wait(); } };
             hold = 1; var original = p.Operation!.Id; var calls = h.Peer.Requests.Count; var clock = Stopwatch.StartNew();
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("RESPONSIVE-0001"), nextPlacementFrame);
-            await Until(() => entered.IsSet && p.IsProcessing && p.ReadCueLabel.EndsWith("0001", StringComparison.Ordinal), "read cue before durable input");
+            await Until(() => entered.IsSet && p.IsProcessing && ((TextBox)control.FindName("BarcodeEntry")).Text == "RESPONSIVE-0001", "barcode entry feedback before durable input");
             Check(!p.ShowConfirmedTask && p.DisplaySlot == "处理中…" && slot.Text == "处理中…" && !((Grid)control.FindName("TaskFields")).IsVisible &&
                 p.Operation?.Id == original && h.Peer.Requests.Count == calls && p.DisplayAttentionReason.Contains("尚未确认接收"),
                 "before FULL commit completes, a new same-code placement clears the old destination and fields without inventing custody/admission or sending RCS");

@@ -10,7 +10,7 @@ public sealed partial class ParcelRuntime
         CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     // A frozen debug preview has made no external call and owns no production parcel.
     // Production placement release changes lane ownership only. Original receipts and recovery are independent.
-    bool ReleasedForNextAdmission(ParcelOperation op) => releasedPlacements.Contains(op.Id) || CanCloseUnsentDebugIntent(op) || definition.AllowsNextAdmissionAfter(op) &&
+    bool ReleasedForNextAdmission(ParcelOperation op) => releasedPlacements.Contains(op.Id) || CanCloseUnsentDebugIntent(op) || !obsoleteSmOriginals.Contains(op.Id) && definition.AllowsNextAdmissionAfter(op) &&
         !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
     bool PositionReady(string position) => SharedReady() && !ParcelConnectionSetup.IsDeferred(Effective, positions[position].ReaderDeviceId) && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !interruptedPositions.ContainsKey(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
@@ -24,7 +24,7 @@ public sealed partial class ParcelRuntime
         (!factory.Requirements(op.FrozenConfiguration.Images.Uploader!).MeasuredWeight || WeightReady(op));
     bool CanSendUpload(ParcelOperation op) => Volatile.Read(ref accepting) == 1 && !ParcelConnectionSetup.BlocksWork(Effective) && op.Upload is { } upload && PortMaintenanceClear(Capability(upload.Request.Binding.InstanceId)) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
         !repository!.Paused && failure is null && SessionValid && (Effective.Login is null || currentOperator is not null && currentOperator.Subject == op.Operator?.Subject);
-    bool CanAbandon(ParcelOperation op) => repository!.Paused && SessionValid && !MainTerminated(op) &&
+    bool CanAbandon(ParcelOperation op) => repository!.Paused && SessionValid && !MainTerminated(op) && !obsoleteSmOriginals.Contains(op.Id) &&
         (op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 } || op.Wcs.State is StageState.Accepted or StageState.Rejected) &&
         (op.Plc is null || op.Plc is { State: StageState.Prepared, Attempts: 0 }) &&
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
@@ -112,6 +112,7 @@ public sealed partial class ParcelRuntime
                 {
                     CheckCameraInspectionLease();
                     CommitEmptyTrays();
+                    RetireObsoleteSmOriginals();
                     MaintainParcelPictures();
                     MaintainPositionControls();
                     if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)

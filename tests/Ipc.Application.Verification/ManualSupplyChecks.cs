@@ -45,9 +45,10 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), Config);
         Launch = new(config, Path.Combine(folder, "data"), null, null);
     }
-    public async Task StartAsync(bool ready = true)
+    public async Task StartAsync(bool ready = true, string? rcsImplementationFingerprint = null)
     {
         Factory = new(Launch);
+        if (rcsImplementationFingerprint is not null) Factory.RcsImplementationFingerprint = rcsImplementationFingerprint;
         App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { }, AcquireRootOwnership = RootOwnership };
         await App.StartAsync(default);
         if (ready) await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true));
@@ -66,6 +67,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public bool RcsOffline;
         public bool FailDisposal { get; set; }
         public bool FailPreparation { get; set; }
+        public string RcsImplementationFingerprint { get; set; } = "synthetic-manual-rcs-implementation";
         public int CreateCalls { get; private set; }
         public readonly Dictionary<string, SilentCamera> Cameras = [];
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validation.Normalize(c);
@@ -84,7 +86,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             }
             var wcs = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
             return new(readers[c.Reader.DeviceId], null, new RcsHealth(wcs, this), null,
-                new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-manual-rcs-implementation" }, Readers: readers);
+                new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }
         public ValueTask DisposeAsync() => FailDisposal ? ValueTask.FromException(new IOException("synthetic factory still owns resources")) : validation.DisposeAsync();
     }

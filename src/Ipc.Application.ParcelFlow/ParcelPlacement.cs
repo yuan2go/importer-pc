@@ -64,7 +64,7 @@ public sealed partial class ParcelRuntime
     bool CanConfirmPlacementRemoval(string position, ParcelOperation? operation)
     {
         if (Id != "sportmaster" || operation is null || IsDebugRequest(operation) ||
-            !(NeedsReconciliation(operation) || operation.State == ParcelState.UnpackRequired) ||
+            !(NeedsReconciliation(operation) || operation.State == ParcelState.UnpackRequired || obsoleteSmOriginals.Contains(operation.Id)) ||
             !SessionValid || ManagementWorkspaceOpen || configurationSaving || stopping.IsCancellationRequested) return false;
         var reader = readers[positions[position].ReaderDeviceId];
         if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true ||

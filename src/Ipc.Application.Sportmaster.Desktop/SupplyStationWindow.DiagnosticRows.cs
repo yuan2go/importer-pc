@@ -97,7 +97,8 @@ public partial class SupplyStationWindow
         actions.Add(() =>
         {
             var capacity = ViewModel.Fresh ? ViewModel.Snapshot?.Capacity : null;
-            storageBadge.Text = capacity is null ? "状态未确认" : capacity.FreeStorageBytes < capacity.MinimumFreeBytes ? "空间不足" : "正常";
+            storageBadge.Text = capacity is null ? "状态未确认" :
+                capacity.AdmissionBlock == ParcelInputBlockReason.StorageUnavailable ? "作业存储异常" : "正常";
             storageBadge.SetResourceReference(TextBlock.ForegroundProperty, capacity is null ? "Muted" : capacity.FreeStorageBytes < capacity.MinimumFreeBytes ? "Danger" : "Success");
             storageText.Text = capacity is null ? "当前存储状态不可读，旧指标已失效。" : $"剩余 {capacity.FreeStorageBytes / 1048576:N0} MiB；低于 {capacity.MinimumFreeBytes / 1048576:N0} MiB 时停止新供包。";
         });

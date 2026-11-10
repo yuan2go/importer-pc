@@ -28,7 +28,11 @@ public sealed partial class ParcelRuntime
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
             if (ParcelConnectionSetup.BlocksWork(Effective) && Effective.DeferredConnections is { Length: > 0 } deferred)
                 reasons.Add("连接待配置：" + string.Join("、", deferred.Select(id => Effective.Wcs?.InstanceId == id ? "RCS" : ParcelBindings.Positions(Effective).Single(p => p.ReaderDeviceId == id).Id == "left" ? "左相机" : "右相机")) + "。可进入参数设置；填写连接参数后保存并重启软件，当前不接收新包裹。");
-            if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
+            if (factory.AdmissionFailure(Effective) is { } installationFailure)
+            {
+                reasons.Add(Id == "sportmaster" ? nameof(ParcelInputBlockReason.InstallationNotReady) : installationFailure);
+                if (Id == "sportmaster") auxiliaryReasons.Add(installationFailure);
+            }
             if (failure is not null) reasons.Add(failure);
             if (backupInProgress) reasons.Add("Consistent backup in progress; original custody and configuration mutations are fenced");
             foreach (var position in interruptedPositions.Keys) reasons.Add("IngressInterrupted:" + position + "; pause, enter management mode and inspect original input responsibilities");
@@ -42,7 +46,7 @@ public sealed partial class ParcelRuntime
                 .Select(o => "OriginalFrame:" + o.Id + "; " + o.OriginalFrame!.State + "; " + o.OriginalFrame.Failure));
             auxiliaryReasons.Add("Workers:" + Wire.Encode(WorkerProgress()));
             if (configuration.Current.Confirmation?.Required == true) reasons.Add("ConfigurationConfirmationRequired: current resources must start successfully before admission");
-            if (!CapacityAvailable) reasons.Add(storageCapacityFailure ?? "Unresolved operation capacity exhausted; original responsibilities cannot be archived");
+            if (!CapacityAvailable) reasons.Add(CapacityBlock.ToString());
             foreach (var conflict in identityConflicts.Values) reasons.Add("IdentityConflict:" + conflict.Id + "; positions=" + string.Join(",", conflict.Positions));
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
@@ -52,9 +56,13 @@ public sealed partial class ParcelRuntime
             reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
             if (readers.Values.Any(r => !ParcelConnectionSetup.IsDeferred(Effective, r.Source.DeviceId) && r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) (Id == "sportmaster" ? auxiliaryReasons : reasons).Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
-            if (operations.Values.Any(x => NeedsReconciliation(x) && !ReleasedForNextAdmission(x))) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
-            var retainedOriginals = operations.Values.Count(x => NeedsReconciliation(x) && ReleasedForNextAdmission(x));
-            if (retainedOriginals > 0) auxiliaryReasons.Add("RetainedOriginalRequests:" + retainedOriginals + "; outcomes remain unchanged; new placements do not replay originals");
+            if (operations.Values.Any(x => NeedsReconciliation(x) && !ReleasedForNextAdmission(x)))
+                reasons.Add(Id == "sportmaster" ? nameof(ParcelInputBlockReason.PreviousResultUnconfirmed) : "Original stage outcome or receipt responsibility is unresolved");
+            if (Id != "sportmaster")
+            {
+                var retainedOriginals = operations.Values.Count(x => NeedsReconciliation(x) && ReleasedForNextAdmission(x));
+                if (retainedOriginals > 0) auxiliaryReasons.Add("RetainedOriginalRequests:" + retainedOriginals + "; outcomes remain unchanged; new placements do not replay originals");
+            }
             foreach (var op in operations.Values.Where(x => !ReleasedForNextAdmission(x) && (x.State == ParcelState.WeightTimedOut || WeightExpired(x) || x.Weight is not null && !WeightReady(x) && !MainTerminated(x))))
                 reasons.Add("Measurement missing/expired for admission " + op.AdmissionId);
             List<CapabilityHealth> health = [.. capabilityHealth.Values.Select(h =>
@@ -62,7 +70,11 @@ public sealed partial class ParcelRuntime
             foreach (var reader in readers.Values.Select(r => r.Health).OfType<DeviceState>()) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
             foreach (var h in health.Where(x => !x.Ready && !ParcelConnectionSetup.IsDeferred(Effective, x.InstanceId)))
                 (Id == "sportmaster" && readers.ContainsKey(h.InstanceId) || Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
-            auxiliaryReasons.AddRange(repository.PendingReceipts().Select(x => x.Operation + ": original receipt custody " + x.Id + "; stage=" + x.Stage + "; raw=" + (x.Reply is null ? "missing" : "durable pending T3") + "; outcome=" + (repository.HasReceiptOutcomeBasis(x.Id) ? "known by separate Query" : "unresolved")));
+            var receipts = repository.PendingReceipts();
+            if (Id == "sportmaster" && receipts.Any(receipt =>
+                (!operations.TryGetValue(receipt.Operation, out var owner) || !StageRunning(owner)) && !repository.HasReceiptOutcomeBasis(receipt.Id)))
+                reasons.Add(nameof(ParcelInputBlockReason.ReceiptPersistencePending));
+            auxiliaryReasons.AddRange(receipts.Select(x => x.Operation + ": original receipt custody " + x.Id + "; stage=" + x.Stage + "; raw=" + (x.Reply is null ? "missing" : "durable pending T3") + "; outcome=" + (repository.HasReceiptOutcomeBasis(x.Id) ? "known by separate Query" : "unresolved")));
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
             auxiliaryReasons.AddRange(repository.PendingCommands().Select(id => "CommandPending:" + id + "; inspect CommandAdmitted audit and original facts; this ID is never replayed"));
             if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
@@ -70,7 +82,10 @@ public sealed partial class ParcelRuntime
             if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
-                reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), DisplayedInputs(), BackupStatus(), configuration.Current.Pending is not null);
+                reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p, hideHistoricalUnknown: Id == "sportmaster")).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), DisplayedInputs(), BackupStatus(), configuration.Current.Pending is not null)
+            {
+                ConfigurationActivationBlock = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null
+            };
             encoded = EncodeSnapshot(WithReadFeedbackSnapshot(projection));
         }
         finally
@@ -193,14 +208,16 @@ public sealed partial class ParcelRuntime
         try
         {
             if (stopped || stopping.IsCancellationRequested || configuration is null || !CanSaveConfiguration) return new("Rejected", "Configuration maintenance is unavailable; enter management mode and wait for the current operation", repository?.Revision ?? 0);
+            if (fatalStorage.Task.IsCompleted) return new("Rejected", ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.StorageUnavailable)!, repository!.Revision);
             if (string.IsNullOrWhiteSpace(reason) || reason.Length > 1024) return new("Rejected", "A maintenance change reason of 1..1024 characters is required", repository!.Revision);
             if (definition.AutomaticConfigurationQuiescence)
             {
                 configurationSaving = ownsQuiescence = true;
-                var deadline = DateTimeOffset.UtcNow.AddSeconds(10);
+                var waitStarted = System.Diagnostics.Stopwatch.GetTimestamp();
                 while (externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0)
                 {
-                    if (DateTimeOffset.UtcNow >= deadline) return new("Rejected", "当前请求尚未完成，设置未保存；原配置及请求保持。", repository!.Revision);
+                    if (System.Diagnostics.Stopwatch.GetElapsedTime(waitStarted) >= TimeSpan.FromSeconds(10))
+                        return new("Rejected", "设置尚未保存。" + ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.PreviousResultPending), repository!.Revision);
                     gate.Release();
                     try { await Task.Delay(25, stopping.Token).ConfigureAwait(false); }
                     finally { await gate.WaitAsync().ConfigureAwait(false); }
@@ -232,7 +249,13 @@ public sealed partial class ParcelRuntime
                 return new("PendingRestart", "Identical candidate already saved; Effective unchanged", repository.Revision);
             }
             Management.Require();
-            if (ConfigurationActivation.RulesOnly(Id, Effective, configuration.Current.Pending, candidate))
+            if (Id == "sportmaster")
+            {
+                CommitEmptyTrays();
+                RetainReleasedSmUnknowns();
+            }
+            var activationBlock = Id == "sportmaster" ? SmConfigurationBlock() : null;
+            if (activationBlock is null && ConfigurationActivation.RulesOnly(Id, Effective, configuration.Current.Pending, candidate))
             {
                 // No queued observation may silently acquire a new interpretation.
                 // Existing operations retain their complete FrozenConfiguration.
@@ -245,15 +268,17 @@ public sealed partial class ParcelRuntime
                 return new("Effective", "条码规则已保存并生效；已受理作业及原请求保持原规则。", repository.Revision);
             }
             // Camera/RCS-only changes reconnect just those devices; anything else restarts as before.
-            if (definition.AutomaticConfigurationQuiescence && ConfigurationActivation.LiveDevices(Id, Effective, configuration.Current.Pending, candidate) is { } live &&
+            if (activationBlock is null && definition.AutomaticConfigurationQuiescence && ConfigurationActivation.LiveDevices(Id, Effective, configuration.Current.Pending, candidate) is { } live &&
                 await ApplyDevicesLiveAsync(expectedRevision, candidate, live, audit).ConfigureAwait(false) is { } applied)
                 return applied.Receipt;
             configuration.Stage(expectedRevision, candidate);
-            Diagnostic("参数", "配置已保存待重启", detail: "Revision=" + configuration.Current.Revision);
+            Diagnostic("参数", "配置已保存待重启", detail: "Revision=" + configuration.Current.Revision + "; ActivationBlock=" + activationBlock);
             Boundary?.Invoke("AfterConfigurationStaged");
             audit = audit with { AfterRevision = configuration.Current.Revision, Status = "PendingRestart", Result = "Validated and saved; Effective retained" };
             repository.Commit(null, "ConfigurationPendingRestart", Wire.Encode(audit), configurationAudit: audit);
-            return new("PendingRestart", "Saved; Effective unchanged until controlled restart and application barriers", repository.Revision);
+            return new("PendingRestart", Id != "sportmaster" ? "Saved; Effective unchanged until controlled restart and application barriers" :
+                activationBlock is { } block ? "设置已保存，尚未生效。" + ParcelInputReasons.ActionableNotice(block) + "处理后重新打开供包台。" :
+                "设置已保存，重新打开供包台后生效。", repository.Revision);
         }
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "ConfigurationCommit"); throw; }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)

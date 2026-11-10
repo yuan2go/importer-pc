@@ -73,6 +73,7 @@ if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); retu
 if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--live-device-cleanup")) { await LiveDeviceCleanup.Run(workspace, root); return; }
+if (args.Contains("--sm-runtime-responsibility")) { await SmRuntimeResponsibility.Run(workspace, root); return; }
 if (args.Contains("--live-devices-30")) { await LiveDeviceCleanup.Run(workspace, root); await LiveDevices30.Run(workspace, root); return; }
 if (args.Contains("--mvs-stop-reconnect")) { await MvsStopReconnect.Run(); return; }
 if (args.Contains("--mvs-still-frames")) { await MvsStillFrames.Run(); return; }
@@ -171,6 +172,7 @@ if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root
 if (args.Contains("--storage-format-guards")) { await ArchitectureQuality.StorageFormatChecks(workspace, root); return; }
 
 if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
+if (args.Contains("--rcs-timeout-rescan")) { await SportmasterRcs.TimeoutRescanChecks(workspace, root); return; }
 if (args.Contains("--rcs-timeout-errors")) { await SportmasterRcs.TimeoutErrorChecks(workspace, root); return; }
 if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
 

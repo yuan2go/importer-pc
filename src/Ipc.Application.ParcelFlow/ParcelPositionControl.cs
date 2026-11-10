@@ -73,8 +73,8 @@ public sealed partial class ParcelRuntime : IStationPositionControl
     bool PositionDrainRequired(string position)
     {
         var pending = repository!.PendingReceipts().Select(r => r.Operation).ToHashSet(StringComparer.Ordinal);
-        if (operations.Values.Any(op => op.PositionId == position && !IsDebugRequest(op) && !releasedPlacements.Contains(op.Id) &&
-            (!MainTerminated(op) || NeedsReconciliation(op) || pending.Contains(op.Id)))) return true;
+        if (operations.Values.Any(op => op.PositionId == position && !IsDebugRequest(op) &&
+            (StageRunning(op) || pending.Contains(op.Id) || !releasedPlacements.Contains(op.Id) && (!MainTerminated(op) || NeedsReconciliation(op))))) return true;
         lock (placements) return placements.TryGetValue(position, out var placement) &&
             (placement.CameraSeen || placement.Operation is not null) && placement.EndedAt is null;
     }

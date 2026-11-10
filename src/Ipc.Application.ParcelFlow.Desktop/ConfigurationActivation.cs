@@ -11,7 +11,7 @@ public partial class ParcelViewModel
         "\n最近检查：" + (status.CheckedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "无") + " · 下次到期：" + (status.NextDue?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "无") +
         "\n最近成功：" + (status.LastSuccessfulAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "尚无成功记录") + "\n成功位置：" + (status.LastSuccessfulBackup ?? "尚无") +
         "\n当前目录：" + status.Directory + " · 份数上限：" + status.MaximumSets + "；达到上限停止新增，保留原恢复集。\n" + status.Detail;
-    public bool CanRequestActivation => RequestActivationAsync is not null && !Busy && IsManagementMode && Fresh && Snapshot?.Configuration.Pending is not null && !HasUnconfirmedConfigurationSubmission;
+    public bool CanRequestActivation => RequestActivationAsync is not null && !Busy && IsManagementMode && Fresh && Snapshot is { Configuration.Pending: not null, ConfigurationActivationBlock: null } && !HasUnconfirmedConfigurationSubmission;
     public async Task CheckActivationAsync()
     {
         await RequireManagementModeAsync(); RequireFreshSnapshot();

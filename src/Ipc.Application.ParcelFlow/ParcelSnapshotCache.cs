@@ -7,10 +7,10 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    sealed record ArchiveCount(long Revision, long Count);
+    sealed record ArchiveCount(long Revision, long Count, long HistoricalUnknown);
     ArchiveCount? archiveCount;
     readonly object archiveCountOwnership = new();
-    Task<long>? archiveCountRead;
+    Task<(long Total, long HistoricalUnknown)>? archiveCountRead;
     long archiveCountReadRevision = -1;
     async Task RefreshArchiveCountAsync()
     {
@@ -19,19 +19,28 @@ public sealed partial class ParcelRuntime
         {
             var revision = original.ArchiveRevision;
             if (Volatile.Read(ref archiveCount)?.Revision == revision) return;
-            Task<long> read;
+            Task<(long Total, long HistoricalUnknown)> read;
             lock (archiveCountOwnership)
             {
                 if (archiveCountRead is null || archiveCountReadRevision != revision || archiveCountRead.IsFaulted || archiveCountRead.IsCanceled)
                 {
                     archiveCountReadRevision = revision;
-                    archiveCountRead = OwnedRead(token => Task.FromResult(original.ReadArchivedCount(token)));
+                    archiveCountRead = OwnedRead(token => Task.FromResult(original.ReadArchivedCount(Id == "sportmaster", token)));
                 }
                 read = archiveCountRead;
             }
             var count = await read.ConfigureAwait(false);
-            if (original.ArchiveRevision != revision) continue;
-            Volatile.Write(ref archiveCount, new(revision, count)); return;
+            // The independent reader can see the SQLite commit before the writer
+            // publishes its in-memory revision. Validate under the writer's gate.
+            await gate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                if (original.ArchiveRevision != revision) continue;
+                if (archiveCount?.Revision != revision)
+                    Volatile.Write(ref archiveCount, new(revision, count.Total, count.HistoricalUnknown));
+                return;
+            }
+            finally { gate.Release(); }
         }
     }
     long operationProjectionRevision = -1;

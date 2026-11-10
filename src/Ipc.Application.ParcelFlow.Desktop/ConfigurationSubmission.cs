@@ -46,7 +46,8 @@ public partial class ParcelViewModel
         {
             "Effective" when receipt?.Status == "Effective" => ChineseInterfaceText.ParameterMessage(receipt.Reason, "设置已保存并生效。"),
             "Effective" => "设置已保存并生效。设备连接状态请查看“设备与诊断”。",
-            "PendingRestart" => "更改已保存，重启软件后生效。",
+            "PendingRestart" when receipt?.Status == "PendingRestart" => ChineseInterfaceText.ParameterMessage(receipt.Reason, "更改已保存，重启软件后生效。"),
+            "PendingRestart" => "更改已保存。请查看待生效设置的当前状态。",
             "Unchanged" => "设置与当前一致。",
             "Unknown" => "请先查看上次保存结果。已填写的内容会保留。",
             "Conflict" => "设置已被其他操作修改。请返回设置重新读取后再保存。",

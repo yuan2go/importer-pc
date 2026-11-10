@@ -110,7 +110,7 @@ public sealed partial class SupplyStationViewModel
     public bool CanOpenConfigurationActivation => HasConfigurationActivationFailure ? CanStartOperation : CanRequestActivation;
     public string DiagnosticConfiguration => ConfigurationActivationOutcome;
     public string DiagnosticCapacity => Snapshot?.Capacity is { } c
-        ? $"待处理作业 {c.Unresolved} / {c.MaximumUnresolved}；本机保留近期记录 {c.Resident} 条、归档记录 {c.Archived} 条。"
+        ? $"当前作业 {c.Unresolved} / {c.MaximumUnresolved}。历史待核对 {c.HistoricalUnknown} 条，可在记录中查看。"
         : "尚未取得容量信息";
     public string DiagnosticBlockers
     {
@@ -120,11 +120,18 @@ public sealed partial class SupplyStationViewModel
             var reasons = new List<string>();
             if (MissingConnections.Length > 0) reasons.Add("连接参数未完成，请处理上方待配置项。");
             if (s.Paused) reasons.Add("维护处理中，等待当前操作完成。");
-            if (s.BlockingReasons.Any(x => x.Contains("qualification", StringComparison.OrdinalIgnoreCase))) reasons.Add("部署检查未完成或已过期，请联系维护人员。");
-            if (s.Capacity?.Available == false) reasons.Add("待处理作业或存储空间已达到限制，请处理积压并检查本机空间。");
-            if (s.Operations.Any(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict)) reasons.Add("有包裹格口未确认，请在“处理格口未确认的包裹”中处理；连接恢复后也不会自动确认。");
+            if (s.Capacity?.AdmissionBlock is { } capacity) reasons.Add(ParcelInputReasons.ActionableNotice(capacity)!);
+            if (s.BlockingReasons.Contains(nameof(ParcelInputBlockReason.InstallationNotReady))) reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.InstallationNotReady)!);
+            if (s.Configuration.Confirmation?.Required == true) reasons.Add("当前设置尚未确认生效，请检查设置和启动状态。");
+            if (s.BlockingReasons.Contains(nameof(ParcelInputBlockReason.ReceiptPersistencePending))) reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.ReceiptPersistencePending)!);
+            if (s.Operations.Any(op => op.Wcs?.State == StageState.Dispatching)) reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.PreviousResultPending)!);
+            if (s.ConfigurationActivationBlock is { } activation) reasons.Add(ParcelInputReasons.ActionableNotice(activation)!);
+            if (s.Positions?.Any(p => p.CurrentOperation is { } id &&
+                s.Operations.Any(o => o.Id == id && o.Wcs?.State is StageState.Unknown or StageState.Conflict)) == true)
+                reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.PreviousResultUnconfirmed)!);
+            if (RcsState == RcsConnectionState.Offline) reasons.Add("RCS 服务离线，请检查连接。");
             if (reasons.Count == 0 && s.BlockingReasons.Length > 0) reasons.Add("暂不能供包。请检查上方连接状态，或复制诊断信息发给维护支持人员。");
-            return reasons.Count == 0 ? "没有影响供包的问题。" : string.Join("\n", reasons);
+            return reasons.Count == 0 ? "没有影响供包的问题。" : string.Join("\n", reasons.Distinct(StringComparer.Ordinal));
         }
     }
     public string DiagnosticTechnicalSummary => string.Join("\n", new[] {

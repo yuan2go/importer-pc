@@ -124,7 +124,7 @@ public sealed partial class ParcelRuntime
     // partial reads of a rejected multi-code parcel must not release its owner.
     void CommitChangedPlacement(string position, string code, Observation observation)
     {
-        if (Id != "sportmaster" || repository!.Latest(position) is not { } previous || IsDebugRequest(previous) ||
+        if (Id != "sportmaster" || DisplayedOperation(position) is not { } previous ||
             previous.ParcelCode == code || previous.ObservedAt >= observation.ObservedAt) return;
         var operationIds = operations.Values.Where(o => o.PositionId == position && !IsDebugRequest(o) &&
             o.ObservedAt < observation.ObservedAt && (!MainTerminated(o) || NeedsReconciliation(o)) && !releasedPlacements.Contains(o.Id))
@@ -132,7 +132,7 @@ public sealed partial class ParcelRuntime
         if (operationIds.Length == 0) return;
         var detail = new { PositionId = position, observation.ObservedAt, observation.DeviceId, observation.Epoch,
             observation.SourceEventId, Code = code, OperationIds = operationIds, Source = "ChangedBarcode" };
-        repository.Commit(null, "StationPlacementReleased", Wire.Encode(detail));
+        repository!.Commit(null, "StationPlacementReleased", Wire.Encode(detail));
         releasedPlacements.UnionWith(operationIds);
         WriteRuntimeLog("扫码与准入", "换码已确认，原作业已退出本位", detail);
     }

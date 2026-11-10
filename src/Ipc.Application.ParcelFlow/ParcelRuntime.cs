@@ -190,7 +190,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             // Pending is activated only at a controlled startup, after recovery barriers.
             if (configuration.Current.Confirmation?.Required != true)
-                startupConfiguration = configuration.BeginActivation(candidate => { RequireSameIdentity(seed, candidate); return ConfigurationResponsibilitiesClear(); }, factory.Validate);
+            {
+                // A current responsibility can clear during normal operation. Keep the
+                // validated candidate pending so the next orderly restart can activate it.
+                var block = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null;
+                if (block is { } reason)
+                    WriteRuntimeLog("参数", "设置等待当前责任收口", new { Reason = reason.ToString(), ConfigurationRevision = configuration.Current.Revision }, "警告");
+                else
+                    startupConfiguration = configuration.BeginActivation(candidate => { RequireSameIdentity(seed, candidate); return Id == "sportmaster" || ConfigurationResponsibilitiesClear(); }, factory.Validate);
+            }
             else if (configuration.Current.InitialRepair is not null && configuration.Current.Status == "PendingRestart")
             {
                 startupConfiguration = configuration.BeginActivation(candidate =>
@@ -209,6 +217,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             factory.Validate(Effective);
             ports = factory.Create(Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective))); // Factory owns partial construction if any step fails.
             ClassifyIncompatibleOriginals();
+            RetainReleasedSmUnknowns();
             if (ports.Wcs is IWcsRequestPreparer numericPreparer)
                 repository.RegisterIntegrationRequestRanges(numericPreparer, new[] { priorEffective, Effective, configuration.Current.Pending }.OfType<ParcelConfiguration>(),
                     File.Exists(Path.Combine(directory!, "RESTORED-ISOLATED.json")) ? Wire.FileHash(Path.Combine(directory!, "RESTORED-ISOLATED.json")) : null);
@@ -675,6 +684,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, nameof(ParcelInputBlockReason.ReaderConfirmationExpired), selection: selection), "ObservationBlocked"); return; }
         if (!manual) CommitChangedPlacement(position, code!, o);
+        RetainReleasedSmUnknowns();
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
         var manualReasons = manual ? ManualInputReasons(position) : [];

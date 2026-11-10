@@ -111,7 +111,7 @@ static partial class SportmasterRcs
                     "reject" => view.Left.CenteredStateTitle == "请检查当前商品状态" && op.State == ParcelState.WcsRejected,
                     _ => view.Left.CenteredStateTitle == "格口结果未确认" && view.Left.CenteredStateReason == "本件没有可用格口" && op.State == ParcelState.WcsUnknown
                 }, mode + " shows a confirmed business message or localized operator guidance for an unconfirmed result");
-                if (mode != "reject") Check(!s.Positions!.Single(p => p.Id == "left").Admit, mode + " does not use the timeout-only rescan exception");
+                if (mode != "reject") Check(!s.Positions!.Single(p => p.Id == "left").Admit, mode + " keeps the current placement guarded");
                 if (mode is "missing-chute" or "blank-chute" or "malformed" or "wrong-id")
                 {
                     var originalRequest = Wire.Encode(op.Wcs!.Request);
@@ -122,9 +122,10 @@ static partial class SportmasterRcs
                     peer.Mode = "assigned"; peer.ResponseTransform = null;
                     app.EmitReferenceAt("left", "changed-placement-" + mode, "SYNTH-0002", Wire.Id());
                     var changed = await Wait(app, x => x.Operations.Any(o => o.ParcelCode == "SYNTH-0002" && o.State == ParcelState.SlotResolved));
-                    var original = changed.Operations.Single(o => o.Id == op.Id);
+                    var original = (await app.OperationAsync(op.Id))!;
                     await view.RefreshAsync();
-                    Check(peer.Requests.Count == sent + 1 && original.State == ParcelState.WcsUnknown && original.Wcs!.Attempts == 1 &&
+                    Check(peer.Requests.Count == sent + 1 && changed.Capacity?.HistoricalUnknown == 1 &&
+                        changed.Operations.All(o => o.Id != op.Id) && original.State == ParcelState.WcsUnknown && original.Wcs!.Attempts == 1 &&
                         Wire.Encode(original.Wcs.Request) == originalRequest && view.Left.SlotAvailable && view.Left.Barcode == "SYNTH-0002" &&
                         changed.Positions!.Single(p => p.Id == "right").Admit,
                         mode + " different barcode starts a new placement without an empty-frame gap, replaying the original or blocking the other position");

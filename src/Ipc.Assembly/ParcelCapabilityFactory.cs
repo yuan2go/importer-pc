@@ -20,6 +20,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     readonly List<IAsyncDisposable> constructed = [];
     readonly List<FileStream> prerequisiteHolds = [];
     internal Action<string>? Boundary { get; set; }
+    internal Action<string> RequireProductionManagement { get; init; } = ManagementModeBroker.RequireProduction;
     bool transferred;
     RunMode mode = RunMode.Simulation;
     ExtensionTrust? trustPolicy;
@@ -115,7 +116,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         RegisterContracts();
         if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
         mode = c.Mode;
-        if (requireQualification && c.Mode == RunMode.Production) ManagementModeBroker.RequireProduction(launch.DataRoot);
+        if (requireQualification && c.Mode == RunMode.Production) RequireProductionManagement(launch.DataRoot);
         if (requireQualification && c.Mode == RunMode.Production && (ParcelBindings.Readers(c).Any(r => r.Driver == "manual") || c.SchemaVersion != 3))
             throw new InvalidDataException("Production NotReady: real reader, provisioned software administrator and explicit schema3 topology policy are required");
         if (c.Extensions is { } malformed && (malformed.Packages is null || malformed.Instances is null || malformed.Packages.Any(x => x is null) || malformed.Instances.Any(x => x is null)))

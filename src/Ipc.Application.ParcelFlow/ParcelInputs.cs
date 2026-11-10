@@ -69,7 +69,7 @@ public sealed partial class ParcelRuntime
     // Unresolved original responsibility remains visible and guarded independently.
     ParcelOperation? DisplayedOperation(string position)
     {
-        var current = repository!.Latest(position);
+        var current = repository!.Latest(position, hideHistoricalUnknown: Id == "sportmaster");
         if (current is not null && IsDebugRequest(current)) return null; // Test destinations never appear as a live production parcel.
         if (current is not null && releasedPlacements.Contains(current.Id)) return null;
         if (current is null || !MainTerminated(current)) return current;

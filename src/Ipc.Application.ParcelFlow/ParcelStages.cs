@@ -272,6 +272,7 @@ public sealed partial class ParcelRuntime
             var op = op0;
             var positionScopedRecovery = Id == "sportmaster" && !IsDebugRequest(op) &&
                 (releasedPlacements.Contains(op.Id) || (op.Wcs?.Request.Binding ?? op.FrozenConfiguration.Wcs)?.Contract == RcsRequestPolicy.Contract);
+            positionScopedRecovery |= Id == "sportmaster" && CanRetainSmUnknown(op);
             if (!IsSettled(op))
             {
                 op = op with { RecoveryRequired = !MainTerminated(op) };

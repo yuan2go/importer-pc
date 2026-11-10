@@ -43,6 +43,8 @@ internal sealed class StationDiagnosticProjection
             Unresolved = snapshot.Capacity?.Unresolved,
             Resident = snapshot.Capacity?.Resident,
             Archived = snapshot.Capacity?.Archived,
+            HistoricalUnknown = snapshot.Capacity?.HistoricalUnknown,
+            AdmissionBlock = snapshot.Capacity?.AdmissionBlock,
             MaximumUnresolved = snapshot.Capacity?.MaximumUnresolved,
             Available = snapshot.Capacity?.Available,
             FreeStorageBytes = snapshot.Capacity?.FreeStorageBytes,

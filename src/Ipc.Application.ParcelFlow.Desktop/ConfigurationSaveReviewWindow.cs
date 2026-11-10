@@ -155,7 +155,7 @@ public sealed class ConfigurationSaveReviewWindow : Window
         var outcomeText = vm.ConfigurationSubmissionOutcome switch
         {
             "Effective" => vm.ConfigurationSubmissionDetail,
-            "PendingRestart" => "更改已保存，尚未生效。点“重启软件使设置生效…”后才使用新设置。",
+            "PendingRestart" => vm.ConfigurationActivationOutcome,
             "Unchanged" => "设置与当前一致，无需保存。",
             "Unknown" => "保存结果待确认。" + vm.ConfigurationSubmissionDetail,
             "NotSaved" or "Conflict" or "Rejected" => vm.ConfigurationSubmissionDetail,

@@ -176,6 +176,7 @@ public sealed partial class ParcelRuntime
             failure,
             DeploymentBlocker = factory.AdmissionFailure(Effective),
             CapacityAvailable,
+            HistoricalUnknown = archiveCount?.HistoricalUnknown ?? 0,
             InterruptedPositions = interruptedPositions.Keys.Order(StringComparer.Ordinal).ToArray(),
             OverloadedPositions = overloadedPositions.Keys.Order(StringComparer.Ordinal).ToArray(),
             Overload = overload != 0,

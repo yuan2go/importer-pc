@@ -19,9 +19,6 @@ public sealed partial class ParcelRuntime
         if (ports is not { } current || repository is null || configuration is null ||
             configuration.Current.Revision != expectedRevision || configuration.Current.Pending is not null ||
             configuration.Current.Status != "Effective" || configuration.Current.Confirmation is not { Required: false } ||
-            !ConfigurationResponsibilitiesClear() || maintenanceOperations.Count != 0 || !maintainedResources.IsEmpty ||
-            Volatile.Read(ref readRound) is not null || Volatile.Read(ref collectingInspection) is not null ||
-            Volatile.Read(ref pendingObservations) != 0 || positionQueues.Values.Any(q => q.Reader.CanCount && q.Reader.Count != 0) ||
             current.Camera is not null || current.Devices is { Count: > 0 } ||
             change.Readers.Any(id => !readers.ContainsKey(id)) || change.Integration && current.Wcs is null)
             return null;

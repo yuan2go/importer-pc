@@ -49,6 +49,7 @@ public sealed partial class ParcelRuntime
         {
             admissionPositions.TryRemove(operations[id].AdmissionId, out _);
             operations.Remove(id);
+            releasedPlacements.Remove(id);
             obsoleteSmOriginals.Remove(id);
         }
         WriteRuntimeLog("供包状态", "已清理新版无法处理的旧取格口请求", new { OperationIds = ready }, "警告");

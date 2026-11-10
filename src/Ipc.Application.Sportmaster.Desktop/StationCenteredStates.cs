@@ -134,7 +134,7 @@ public sealed partial class SupplyStationPositionViewModel
         ParcelInputBlockReason.RuntimeFault => ("供包台运行故障", "请取下包裹并通知维护人员"),
         ParcelInputBlockReason.CapabilityUnavailable => ("本位所需设备尚未就绪", "请等待设备恢复，持续出现时通知维护人员"),
         ParcelInputBlockReason.StorageUnavailable => ("供包台存储不可用", "请通知维护人员检查剩余空间和存储状态"),
-        ParcelInputBlockReason.CapacityExhausted => ("未结作业已达容量上限", "请通知维护人员检查未结作业"),
+        ParcelInputBlockReason.CapacityExhausted => ("当前作业已达容量上限", "请等待请求处理完成，或按本位提示确认包裹已取下"),
         ParcelInputBlockReason.ImageCapacityUnavailable => ("图片处理容量不足", "请等待本位恢复，持续出现时通知维护人员"),
         ParcelInputBlockReason.InputOverload => ("本位扫码积压", "请取下包裹，等待本位恢复后重新上件"),
         ParcelInputBlockReason.InterruptedScan => ("本位有中断的扫码记录", "请通知维护人员检查中断记录"),

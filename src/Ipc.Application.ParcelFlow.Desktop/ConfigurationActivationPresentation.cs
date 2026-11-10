@@ -25,7 +25,10 @@ public partial class ParcelViewModel
                     (c.Pending is null ? "" : " 已保存的修改保留；处理后返回设置检查并重新保存，再重启软件。不要反复重启或删除数据。");
             }
             if (c.Confirmation?.Required == true) return "设置生效情况尚未确认，请查看诊断并完成启动检查。";
-            return c.Pending is not null ? "设置已保存，重启后生效。当前作业仍使用原配置。" : "设置已生效。";
+            if (c.Pending is null) return "设置已生效。";
+            if (Snapshot.ConfigurationActivationBlock is { } block)
+                return "设置已保存，尚未生效。" + ParcelInputReasons.ActionableNotice(block) + "处理后重新打开供包台。";
+            return "设置已保存，重启后生效。当前作业仍使用原配置。";
         }
     }
 }

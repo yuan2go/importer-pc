@@ -109,6 +109,8 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelBackupScheduleStatus? BackupScheduleStatus = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] bool? HasPendingConfiguration = null)
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ParcelInputBlockReason? ConfigurationActivationBlock { get; init; }
     [JsonIgnore] public long PublishedTicks { get; init; }
     public ParcelCameraReadFeedback[] CameraReads { get; init; } = [];
     public ParcelReadFeedback[] ReadFeedbacks { get; init; } = [];

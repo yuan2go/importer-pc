@@ -63,16 +63,19 @@ public partial class SupplyStationWindow
         backToDiagnosticSettings.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
         backToDiagnosticSettings.Click += async (_, _) => await OpenOperatorSettingsAsync(diagnosticTarget?.DeviceId, diagnosticTarget?.InstanceId);
         backToDiagnosticSettings.Visibility = diagnosticTarget is null ? Visibility.Collapsed : Visibility.Visible; body.Children.Add(backToDiagnosticSettings);
+        var currentBlockers = ProductText("");
+        currentBlockers.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.DiagnosticBlockers)) { Mode = BindingMode.OneWay });
+        body.Children.Add(currentBlockers);
         var unresolved = new Border { Padding = new(12), Margin = new(0, 8, 0, 12), Visibility = Visibility.Collapsed };
-        unresolved.SetResourceReference(Border.BackgroundProperty, "WarningBackground");
+        unresolved.SetResourceReference(Border.BackgroundProperty, "Soft");
         var attention = new DockPanel(); var pending = ProductText("");
         var records = ProductButton("去记录核对", async () => { SetPage("history"); await ViewModel.OpenHistoryAsync(); });
         DockPanel.SetDock(records, Dock.Right); attention.Children.Add(records); attention.Children.Add(pending); unresolved.Child = attention; body.Children.Add(unresolved);
         void RefreshAttention()
         {
-            var count = ViewModel.Snapshot?.Operations.Count(o => o.Wcs?.State is StageState.Unknown or StageState.Conflict) ?? 0;
+            var count = ViewModel.Snapshot?.Capacity?.HistoricalUnknown ?? 0;
             unresolved.Visibility = ViewModel.Fresh && count > 0 ? Visibility.Visible : Visibility.Collapsed;
-            pending.Text = $"有 {count} 件作业的格口结果未确认，请到记录核对；不会自动重发。";
+            pending.Text = $"历史待核对 {count} 件。请在记录中查看原作业。";
         }
         System.ComponentModel.PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(ViewModel.Snapshot) or nameof(ViewModel.Fresh)) RefreshAttention(); };
         body.Loaded += (_, _) => { ViewModel.PropertyChanged += changed; RefreshAttention(); };
@@ -80,7 +83,7 @@ public partial class SupplyStationWindow
         body.Children.Add(CreateDiagnosticRows());
         var evidence = new StackPanel();
         if (diagnosticLogDetails is { } logDetails) { logDetails.Margin = new(0, 0, 0, 12); evidence.Children.Add(logDetails); }
-        foreach (var property in new[] { nameof(ViewModel.DiagnosticBlockers), nameof(ViewModel.DiagnosticConfiguration), nameof(ViewModel.DiagnosticCapacity), nameof(ViewModel.DiagnosticTechnicalSummary) })
+        foreach (var property in new[] { nameof(ViewModel.DiagnosticConfiguration), nameof(ViewModel.DiagnosticCapacity), nameof(ViewModel.DiagnosticTechnicalSummary) })
         {
             var value = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Background = System.Windows.Media.Brushes.Transparent, BorderThickness = new(0), MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(0, 8, 0, 0) };
             value.SetBinding(TextBox.TextProperty, new Binding(property) { Mode = BindingMode.OneWay }); evidence.Children.Add(value);

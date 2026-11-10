@@ -292,6 +292,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         readonly ConcurrentBag<Task> handlers = [];
         public readonly ConcurrentQueue<string> Requests = new();
         public readonly ConcurrentQueue<string> HeartbeatRequests = new();
+        int businessRepliesAttempted;
+        public int BusinessRepliesAttempted => Volatile.Read(ref businessRepliesAttempted);
         public TaskCompletionSource? Hold { get; set; }
         public Func<string, bool>? HoldWhen { get; set; }
         public string Mode = "assigned";
@@ -365,7 +367,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                         }).ToArray()
                     });
                 var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
-                await context.Response.OutputStream.WriteAsync(bytes, stopped.Token);
+                try { await context.Response.OutputStream.WriteAsync(bytes, stopped.Token); }
+                finally { if (!heartbeat) Interlocked.Increment(ref businessRepliesAttempted); }
             }
             catch (OperationCanceledException) when (stopped.IsCancellationRequested) { }
             catch (HttpListenerException) { } // A deliberate cancellation may close its client.

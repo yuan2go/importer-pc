@@ -68,5 +68,32 @@ public sealed partial class ParcelRuntime
         return interruptedPositions.IsEmpty && ingressLanes.Values.All(l => l.Waiting.IsEmpty) && identityConflicts.Count == 0 &&
             operations.Values.All(op => IsSettled(op) || repository!.CustodyOnly(op, Id)) && repository!.PendingReceipts().All(x => repository.HasReceiptOutcomeBasis(x.Id));
     }
+    // The same responsibility test applies before a live swap and before any
+    // pending configuration can take over on startup. The active-call and raw
+    // receipt checks come before placement/history classification.
+    ParcelInputBlockReason? SmConfigurationBlock()
+    {
+        if (fatalStorage.Task.IsCompleted) return ParcelInputBlockReason.StorageUnavailable;
+        if (failure is not null) return ParcelInputBlockReason.RuntimeFault;
+        if (!RestoreConfirmed) return ParcelInputBlockReason.RestoreUnconfirmed;
+        if (activeStages.Count != 0 || attachedRunning.Count != 0) return ParcelInputBlockReason.PreviousResultPending;
+        if (backupInProgress || maintenanceOperations.Count != 0 || !maintainedResources.IsEmpty ||
+            pendingLiveDeviceCleanup.Count != 0 || Volatile.Read(ref readRound) is not null || Volatile.Read(ref collectingInspection) is not null)
+            return ParcelInputBlockReason.StationMaintenance;
+        if (identityConflicts.Count != 0) return ParcelInputBlockReason.IdentityConflict;
+        if (overload != 0 || !interruptedPositions.IsEmpty || Volatile.Read(ref pendingObservations) != 0 ||
+            ingressLanes.Values.Any(l => !l.Waiting.IsEmpty) || positionQueues.Values.Any(q => q.Reader.CanCount && q.Reader.Count != 0))
+            return ParcelInputBlockReason.InputPending;
+        if (repository!.PendingReceipts().Any(receipt => !repository.HasReceiptOutcomeBasis(receipt.Id)))
+            return ParcelInputBlockReason.ReceiptPersistencePending;
+        foreach (var op in operations.Values)
+        {
+            if (op.OriginalFrame?.State == "Pending") return ParcelInputBlockReason.PreviousResultPending;
+            if (IsSettled(op) || repository.CustodyOnly(op, Id) || CanRetainSmUnknown(op)) continue;
+            return PriorWorkBlock(op);
+        }
+        return null;
+    }
+
     bool RequiresOriginalExecution(ParcelOperation op) => !releasedPlacements.Contains(op.Id) && !IsSettled(op) && !repository!.CustodyOnly(op, Id);
 }

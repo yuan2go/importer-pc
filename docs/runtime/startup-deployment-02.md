@@ -1,3 +1,5 @@
+> 本文保留形成时的设计及验证背景。当前 SM 实施及验收见[文档索引](../INDEX.md)与[实施手册](../operator/implementation-guide.md)。
+
 > 2026-10-25当前窗口操作、PR107首配规则和介质身份见[当前入口](lifecycle-ux-current-guidance-01.md)。本页保留启动/恢复机制；旧章节中的本次、NOT_RUN和DB版本按形成时语境读取，不能覆盖后续证据。原字节见归档。
 
 

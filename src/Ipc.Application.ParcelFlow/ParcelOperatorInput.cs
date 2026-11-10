@@ -42,10 +42,20 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     if (request.RuntimeId != runtimeId || request.ConfigurationRevision != configuration!.Current.Revision)
                         return new("Conflict", "运行或生效配置已改变；核对当前包裹后重新提交。", null, null, repository.Revision);
                     CommitEmptyTray(request.PositionId);
-                    var latestInput = DisplayedInputs().SingleOrDefault(input => input.PositionId == request.PositionId);
-                    var samePlacement = request.ExpectedOperationId is not null && latestInput?.OperationId == request.ExpectedOperationId && ParcelInputReasons.IsSamePlacement(latestInput);
-                    if (latestInput?.Observation.Id != request.ExpectedObservationId && !samePlacement ||
-                        DisplayedOperation(request.PositionId)?.Id != request.ExpectedOperationId)
+                    RetainReleasedSmUnknowns();
+                    var latest = LatestWorkCardOperation(request.PositionId);
+                    var now = StationTime.GetUtcNow();
+                    var expired = ExpiredManualResult(request.PositionId, latest, now);
+                    var latestInput = DisplayedInput(request.PositionId, expired);
+                    var current = DisplayedOperation(request.PositionId, latest, now, expired);
+                    bool MatchesObservation(ParcelInputSnapshot? input) => input?.Observation.Id == request.ExpectedObservationId ||
+                        request.ExpectedOperationId is not null && input?.OperationId == request.ExpectedOperationId && ParcelInputReasons.IsSamePlacement(input);
+                    // Hiding a confirmed chute does not change the draft's input basis.
+                    // A physical clear or a newer input still invalidates that basis.
+                    var sameExpiredBasis = latestInput is null && latest is not null && HasConfirmedManualChute(latest) &&
+                        expired is not null && expired.OperationId == request.ExpectedOperationId &&
+                        DisplayedInput(request.PositionId) is { } retained && retained.OperationId == expired.OperationId && MatchesObservation(retained);
+                    if (!sameExpiredBasis && (!MatchesObservation(latestInput) || current?.Id != request.ExpectedOperationId))
                         return new("Conflict", "输入期间本位包裹已变化；核对当前包裹及输入内容后，再明确更新输入基准。", null, null, repository.Revision);
                     var blocking = ManualInputReasons(request.PositionId);
                     if (blocking.Length != 0)

@@ -146,6 +146,7 @@ public static class ChineseInterfaceText
     };
     public static string Notice(string value)
     {
+        if (Enum.TryParse<ParcelInputBlockReason>(value, out var block) && value == block.ToString() && ParcelInputReasons.ActionableNotice(block) is { } notice) return notice;
         // Match only our complete local receipts; never translate remote identifiers.
         const string noIntent = "; no operation or external intent created";
         foreach (var outcome in new[] { "NoMatchingCode", "ExcludedCodes", "AmbiguousCodes", "IncompleteCandidates", "FilterTimeout", "InvalidPattern", "NoCode", "MultipleCodes", "InvalidCode", "JoinedCodeTooLong" })
@@ -178,7 +179,6 @@ public static class ChineseInterfaceText
         ("New admission requires authentication; old snapshots retained", "新包裹入场前须重新验证身份，历史记录保留"),
         ("Production NotReady: exact deployment qualification missing/expired", "生产部署检查未通过或已过期，请联系管理人员"),
         ("Position resource maintenance in progress; original intent retained", "本位设备维护中"),
-        ("Unresolved capacity exhausted", "待处理包裹已达上限，请维护人员处理积压"),
         ("Software admission paused; this is not an emergency stop", "软件已暂停接收新包裹（不是安全急停）"),
         ("Operator authentication required for new admission", "请先登录操作员"),
         ("Reader confirmation missing/expired", "相机状态未确认"),
@@ -189,7 +189,6 @@ public static class ChineseInterfaceText
         ("Contradictory or invalid original-stage receipt", "RCS 返回的结果互相矛盾，格口未确认。"),
         ("Application command committed", "操作已记录"),
         ("Unsupported command or an application guard is closed", "命令不受支持或当前执行条件未满足"),
-        ("Unresolved operation capacity exhausted; original responsibilities cannot be archived", "未完成作业已达上限，请先处理未完成的作业"),
         ("Temporary image capacity/backlog exhausted; existing originals retained", "临时图片空间或待处理队列已满"),
         ("ConfigurationConfirmationRequired: current resources must start successfully before admission", "设备或服务未启动成功，暂不能供包"),
         ("Overload: rejected callback; inspect parcel and acknowledge while paused", "输入过载，已拒收回调；暂停后检查包裹并确认"),

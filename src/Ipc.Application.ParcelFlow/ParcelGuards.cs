@@ -20,8 +20,7 @@ public sealed partial class ParcelRuntime
         CapacityAvailable && SharedReady() && positions.Keys.Any(p => PositionReady(p) || ManualInputReasons(p, includePause: false).Length == 0);
     // A frozen debug preview has made no external call and owns no production parcel.
     // Production placement release changes lane ownership only. Original receipts and recovery are independent.
-    bool ReleasedForNextAdmission(ParcelOperation op) => releasedPlacements.Contains(op.Id) || CanCloseUnsentDebugIntent(op) || !obsoleteSmOriginals.Contains(op.Id) && definition.AllowsNextAdmissionAfter(op) &&
-        !activeStages.Any(key => key.StartsWith(op.Id + ":", StringComparison.Ordinal));
+    bool ReleasedForNextAdmission(ParcelOperation op) => releasedPlacements.Contains(op.Id) || CanCloseUnsentDebugIntent(op);
     bool PositionReady(string position) => CameraPositionBlock(position) is null;
     ParcelInputBlockReason? CameraPositionBlock(string position)
     {
@@ -71,11 +70,14 @@ public sealed partial class ParcelRuntime
         var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
         return original is null ? null : PriorWorkBlock(original);
     }
-    ParcelInputBlockReason CapacityBlock => storageCapacityFailure is null ? ParcelInputBlockReason.CapacityExhausted : ParcelInputBlockReason.StorageUnavailable;
+    ParcelInputBlockReason CapacityBlock => storageCapacityFailure is null && !fatalStorage.Task.IsCompleted ? ParcelInputBlockReason.CapacityExhausted : ParcelInputBlockReason.StorageUnavailable;
     bool CanAdmit() => positions.Keys.Any(p => CanAdmit(p) || CanManuallyAdmit(p));
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
     {
-        var current = DisplayedOperation(p.Id);
+        var latest = LatestWorkCardOperation(p.Id);
+        var now = StationTime.GetUtcNow();
+        var expired = ExpiredManualResult(p.Id, latest, now);
+        var current = DisplayedOperation(p.Id, latest, now, expired);
         var manual = Id == "sportmaster" ? ManualInputReasons(p.Id) : null;
         var camera = CanAdmit(p.Id);
         var manualReady = manual is { Length: 0 };
@@ -86,14 +88,15 @@ public sealed partial class ParcelRuntime
             reasons.Add("IdentityConflict:" + conflict.Id + "; original=" + conflict.OriginalOperation + "; pause and authenticate maintenance before inspecting this entity; " + conflict.Detail);
         if (!PositionMaintenanceClear(p.Id) && !manualReady) reasons.Add("Position resource maintenance in progress; original intent retained");
         if (current is not null && !MainTerminated(current) && !ReleasedForNextAdmission(current)) reasons.Add("Current entity main result is incomplete");
-        if (!CapacityAvailable) reasons.Add("Unresolved capacity exhausted");
+        if (!CapacityAvailable) reasons.Add(CapacityBlock.ToString());
         if (repository!.Paused) reasons.Add("Global software pause");
         if (ManagementWorkspaceOpen) reasons.Add("管理中心已打开，自动供包及读码暂停；关闭管理中心后恢复。");
         if (!PositionSupplyEnabled(p.Id)) reasons.Add("本位已请求停用，不再接收新条码。");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, camera || manualReady, current?.Id, reasons.Distinct().ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled))
         {
-            CanConfirmPlacementRemoval = CanConfirmPlacementRemoval(p.Id, current),
+            PlacementRemovalOperation = PlacementRemovalOperation(p.Id, latest, current),
+            ExpiredManualResult = expired,
             PlacementClearedAt = confirmedEmptyTrays.TryGetValue(p.Id, out var clearedAt) ? clearedAt : null,
             BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
@@ -155,6 +158,7 @@ public sealed partial class ParcelRuntime
                     CheckCameraInspectionLease();
                     CommitEmptyTrays();
                     RetireObsoleteSmOriginals();
+                    RetainReleasedSmUnknowns();
                     MaintainParcelPictures();
                     MaintainPositionControls();
                     if (resumePriorPause && CanResume() && maintenanceOperations.Count == 0)

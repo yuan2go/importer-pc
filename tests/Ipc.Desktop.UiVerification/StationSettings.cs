@@ -16,6 +16,10 @@ static partial class Program
     {
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "camera-settings-feedback"), nativeResults: true, stationCode: "SYNTHETIC-STATION");
         await h.StartAsync();
+        var reserve = (h.Config.Retention ?? new ParcelRetentionPolicy()).MinimumFreeBytes;
+        long probeBytes = reserve * 8;
+        h.App.StorageAvailableBytesForVerification = () => Volatile.Read(ref probeBytes) is >= 0 and var bytes
+            ? bytes : throw new IOException("Synthetic storage probe failure");
         var service = DispatchProxy.Create<IManagementStatusUiFixture, CameraSettingsFeedbackProbe>();
         var probe = (CameraSettingsFeedbackProbe)(object)service;
         probe.Inner = h.App;
@@ -37,6 +41,28 @@ static partial class Program
         window.ShowPositionDiagnostics(vm.Left);
         await Until(() => System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Any(w => w.IsVisible));
         var center = System.Windows.Application.Current.Windows.OfType<ManagementCenterWindow>().Single();
+        var storageCard = Descendants(center).OfType<Border>()
+            .Single(card => AutomationProperties.GetAutomationId(card) == "DiagnosticCard.storage");
+        var storage = (StackPanel)storageCard.Child;
+        var badge = (TextBlock)((DockPanel)storage.Children[0]).Children[0];
+        var reading = (TextBlock)storage.Children[1];
+        bool UsesInk(string key) => Equals(badge.Foreground, badge.FindResource(key));
+        await Until(() => badge.Text == "正常" && reading.Text.StartsWith("剩余 "));
+        Check(UsesInk("Success"), "verified storage reading uses the success theme resource");
+        Volatile.Write(ref probeBytes, -1);
+        await Until(() => badge.Text == "作业存储异常");
+        Check(UsesInk("Danger") && reading.Text.StartsWith("剩余空间未确认") &&
+            vm.Snapshot?.Capacity is { AdmissionBlock: ParcelInputBlockReason.StorageUnavailable, FreeStorageBytes: null },
+            "a failed probe shows the storage error and withdraws the previous numeric reading");
+        CaptureInternal(evidence, "camera-settings-storage-unavailable", center, lines);
+        Volatile.Write(ref probeBytes, reserve - 1);
+        await Until(() => vm.Snapshot?.Capacity?.FreeStorageBytes == reserve - 1);
+        Check(badge.Text == "作业存储异常" && UsesInk("Danger") && reading.Text.StartsWith("剩余 "),
+            "confirmed low space stays an error and shows its actual numeric reading");
+        Volatile.Write(ref probeBytes, reserve * 8);
+        await Until(() => badge.Text == "正常");
+        Check(UsesInk("Success") && vm.Snapshot?.Capacity?.FreeStorageBytes == reserve * 8,
+            "successful probe restores the healthy status and the confirmed reading");
         var reconnect = Descendants(center).OfType<Button>().Single(b => AutomationProperties.GetName(b) == "左相机：重新连接");
         await Until(() => reconnect.IsEnabled);
         reconnect.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

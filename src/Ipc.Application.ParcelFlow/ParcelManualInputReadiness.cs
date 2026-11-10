@@ -27,9 +27,9 @@ public sealed partial class ParcelRuntime
         if (Volatile.Read(ref accepting) != 1 || stopping.IsCancellationRequested) reasons.Add("程序正在停止，暂不接收新包裹。");
         if (configuration?.Current.Confirmation?.Required == true) reasons.Add("当前配置尚未完成启用确认。");
         if (!RestoreConfirmed) reasons.Add("原数据恢复交接尚未核对。");
-        if (factory.AdmissionFailure(Effective) is { } installation) reasons.Add(installation);
+        if (factory.AdmissionFailure(Effective) is not null) reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.InstallationNotReady)!);
         if (!SessionValid) reasons.Add("操作员会话已失效，请重新登录。");
-        if (failure is not null) reasons.Add("运行故障：" + failure);
+        if (failure is not null && !fatalStorage.Task.IsCompleted) reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.RuntimeFault)!);
         if (includePause && repository!.Paused) reasons.Add("供包已暂停，新包裹等维护人员恢复后再扫。");
         if (backupInProgress || configurationSaving || !ManualPositionMaintenanceClear(position))
             reasons.Add("配置或维护操作正在进行，请等待完成。");
@@ -59,12 +59,14 @@ public sealed partial class ParcelRuntime
         // one audited unsent intent. Both still require the storage reserve.
         var releasingSlot = exceptOperation is { } id && operations.TryGetValue(id, out var reserved) &&
             CanCloseUnsentDebugIntent(reserved) && !ArchiveEligible(reserved) ? 1 : 0;
-        if (storageCapacityFailure is not null || requireAdmissionCapacity && UnresolvedCapacity - releasingSlot >= Effective.MaximumOperations)
-            reasons.Add("未结作业容量或存储余量不足。");
+        if (storageCapacityFailure is not null || fatalStorage.Task.IsCompleted)
+            reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.StorageUnavailable)!);
+        else if (requireAdmissionCapacity && UnresolvedCapacity - releasingSlot >= Effective.MaximumOperations)
+            reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.CapacityExhausted)!);
         if (!ImageCapacityAvailable()) reasons.Add("图像处理容量不足，原件仍保留。");
-        if (operations.Values.Where(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o)).Any(o =>
-            NeedsReconciliation(o) || !MainTerminated(o) || WeightExpired(o)))
-            reasons.Add("本位原作业尚未结束或原请求结果待核对，请先处理原责任。");
+        if (operations.Values.FirstOrDefault(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o) &&
+            (NeedsReconciliation(o) || !MainTerminated(o) || WeightExpired(o))) is { } original)
+            reasons.Add(ParcelInputReasons.ActionableNotice(PriorWorkBlock(original))!);
         return reasons.Distinct(StringComparer.Ordinal).ToArray();
     }
 }

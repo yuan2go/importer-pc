@@ -52,10 +52,14 @@ public sealed partial class ParcelRepository
         // A deferred configuration is an unfinished candidate, not an allocated
         // request range. Its missing parameters must not block later activation.
         // Durable ranges and every resident/archived original below remain intact.
-        var bindings = configurations.Where(c => c.Wcs is { } wcs && !ParcelConnectionSetup.IsDeferred(c, wcs.InstanceId))
-            .Select(c => c.Wcs).OfType<CapabilityBinding>().ToList();
-        using (var c = db.CreateCommand())
+        var bindings = new List<CapabilityBinding>();
+        // Automatic SM IDs use the permanent owners ledger, regardless of the
+        // number of historical configuration bindings.
+        if (!preparer.UsesAutomaticRequestIds)
         {
+            bindings.AddRange(configurations.Where(c => c.Wcs is { } wcs && !ParcelConnectionSetup.IsDeferred(c, wcs.InstanceId))
+                .Select(c => c.Wcs).OfType<CapabilityBinding>());
+            using var c = db.CreateCommand();
             c.CommandText = "SELECT DISTINCT json_extract(body,'$.Wcs.Request.Binding') FROM parcel_operations WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL UNION SELECT DISTINCT json_extract(body,'$.Wcs.Request.Binding') FROM parcel_archives WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL";
             using var r = c.ExecuteReader(); while (r.Read()) bindings.Add(Wire.Decode<CapabilityBinding>(r.GetString(0)));
         }

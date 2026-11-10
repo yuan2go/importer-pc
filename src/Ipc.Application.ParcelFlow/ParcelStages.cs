@@ -186,6 +186,7 @@ public sealed partial class ParcelRuntime
             }
             else Save(op, "ReceiptApplied", reply.LocalClockEvidence is null ? "T3: original raw reply, stage and downstream intent committed together" :
                 Wire.Encode(new { Policy = "T3: original raw reply, stage and downstream intent committed together", ClockAnomaly = "InFlightUtcRollbackEvidence", reply.LocalClockEvidence }), occurrence);
+            if (kind == ParcelStage.Wcs) NoteConfirmedManualChute(op);
             LogRcsResult(op, kind, receiptStartedTicks, query);
             return op;
         }
@@ -272,6 +273,7 @@ public sealed partial class ParcelRuntime
             var op = op0;
             var positionScopedRecovery = Id == "sportmaster" && !IsDebugRequest(op) &&
                 (releasedPlacements.Contains(op.Id) || (op.Wcs?.Request.Binding ?? op.FrozenConfiguration.Wcs)?.Contract == RcsRequestPolicy.Contract);
+            positionScopedRecovery |= Id == "sportmaster" && CanRetainSmUnknown(op);
             if (!IsSettled(op))
             {
                 op = op with { RecoveryRequired = !MainTerminated(op) };

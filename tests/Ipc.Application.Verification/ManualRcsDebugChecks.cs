@@ -39,14 +39,19 @@ internal static partial class ManualRcsDebugChecks
         round = await h.App.PrepareManualRcsRequestAsync(prepare with { CommandId = Wire.Id(), Barcode = "UNKNOWN", ExpectedRoundId = round.Id }, default);
         var unknownId = round.OperationId!;
         await h.App.SendCameraRoundAsync(new(Wire.Id(), snapshot.RuntimeId, round.Id!, round.RequestHash!), default);
-        Check((await h.App.SnapshotAsync()).Operations.Single(o => o.Id == unknownId).Wcs is { State: StageState.Unknown, Attempts: 1 } && h.Peer.Requests.Count == 2,
+        var unknown = (await h.App.OperationAsync(unknownId))!;
+        Check(unknown.Wcs is { State: StageState.Unknown, Attempts: 1 } && h.Peer.Requests.Count == 2,
             "unknown manual debug result retains one original attempt");
-        try { await h.App.PrepareManualRcsRequestAsync(prepare with { CommandId = Wire.Id(), ExpectedRoundId = round.Id }, default); throw new Exception("unknown bypassed"); }
-        catch (InvalidOperationException e) { Check(e.Message.Contains("原作业"), "new manual debug request cannot bypass unresolved original"); }
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity?.HistoricalUnknown == 1);
+        var independent = await h.App.PrepareManualRcsRequestAsync(prepare with { CommandId = Wire.Id(), ExpectedRoundId = round.Id }, default);
+        Check(independent.OperationId != unknownId && independent.RequestId != round.RequestId && h.Peer.Requests.Count == 2,
+            "a historical debug result allows a distinct preparation without sending the original or new request");
+        await h.App.CloseUnsentDebugRoundAsync(new(Wire.Id(), snapshot.RuntimeId, independent.Id!), default);
         var bytes = original.Wcs!.Request.IntegrationRequest!.Body;
         await h.App.DisposeAsync(); await h.StartAsync(ready: false); await ManagementModeFixture.Authorize(h.App);
         var restarted = await h.App.SnapshotAsync();
-        Check(restarted.Operations.Single(o => o.Id == unknownId).Wcs is { State: StageState.Unknown, Attempts: 1 } &&
+        Check(restarted.Capacity?.HistoricalUnknown == 1 && restarted.Operations.All(o => o.Id != unknownId) &&
+            (await h.App.OperationAsync(unknownId))?.Wcs is { State: StageState.Unknown, Attempts: 1 } &&
             (await h.App.ReadCameraOperationDetailAsync(original.Id, default))!.Original.Wcs!.Request.IntegrationRequest!.Body == bytes && h.Peer.Requests.Count == 2,
             "restart preserves manual debug frozen bytes/Unknown and never replays");
         await using var leaving = new ManualSupplyHarness(workspace, Path.Combine(root, "leaving"), deferred: true, rightCode: false, leftCode: false);

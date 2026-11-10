@@ -113,7 +113,7 @@ public sealed partial class ParcelRuntime : IDiagnosticPackageApplication
             else
             {
                 Add("overview.json", "InMemoryHealthCounts", "Partial", await DiagnosticOverview(cancellation).ConfigureAwait(false));
-                notices.Add("普通概览仅含健康计数、版本和环境摘要；未读取配置、作业、日志及受保护安装回执，不包含具体故障原因或供包资格判断。");
+                notices.Add("普通概览仅含健康计数、版本和环境摘要；未读取配置、作业、日志及受保护安装回执，不包含具体故障原因或供包准入判断。");
             }
             Add("environment.json", "LocalEnvironment", "Collected", StationDiagnosticProjection.EnvironmentSummary(launch.DataRoot));
             var release = StationDiagnosticProjection.Release(definition.GetType().Assembly, Id);

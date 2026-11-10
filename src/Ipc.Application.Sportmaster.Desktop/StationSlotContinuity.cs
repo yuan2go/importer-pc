@@ -15,6 +15,9 @@ public sealed partial class SupplyStationPositionViewModel
         long? StartedTicks = null, bool RemovalConfirmed = false);
     RecentChute? recentChute;
     DateTimeOffset? PlacementClearedAt => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementClearedAt;
+    ManualWorkCardExpiry? ExpiredManualResult => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.ExpiredManualResult;
+    bool ClearedWorkCardCue(DateTimeOffset observedAt) => PlacementClearedAt is { } cleared && observedAt <= cleared ||
+        ExpiredManualResult is { } expired && observedAt <= expired.ObservedThrough;
     bool RetainedRejectedInput => Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked } input &&
         readFeedback?.RetainedObservationId == input.Observation.Id;
     bool ManualPlacementResult => Operation?.OperatorInput is not null && Input?.OperationId == Operation.Id &&
@@ -26,6 +29,7 @@ public sealed partial class SupplyStationPositionViewModel
         read.RuntimeId == cameraReadRuntime && read.DeviceId == frame.Frame.DeviceId && read.Epoch == frame.Frame.Epoch && read.DetectedTicks == frame.Frame.CompletedTicks;
     bool CameraObservationUnmatched => !ManualPlacementResult && cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
         camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome == ObservationReadOutcome.Codes &&
+        !(ExpiredManualResult is { } expired && MatchedCameraCue && readFeedback?.PlacementOperationId == expired.OperationId) &&
         !(readFeedback is { OperatorInput: true } manual && manual.DetectedTicks > camera.Frame.CompletedTicks) &&
         !(RetainedRejectedInput && readFeedback!.DeviceId == camera.Frame.DeviceId && readFeedback.Epoch == camera.Frame.Epoch &&
             readFeedback.DetectedTicks >= camera.Frame.CompletedTicks) &&
@@ -58,6 +62,7 @@ public sealed partial class SupplyStationPositionViewModel
         }
     }
     bool unreadFeedback => !(ManualPlacementResult && readFeedback?.OperatorInput == false) && !RetainedRejectedInput && readFeedback is { } read && owner.Snapshot?.RuntimeId == read.RuntimeId &&
+        !(ExpiredManualResult is { } expired && read.PlacementOperationId == expired.OperationId) &&
         read.ObservationId != Input?.Observation.Id && (Input is null ||
             (Input.Observation.Epoch == read.Epoch && read.SourceSequence > 0 && Input.Observation.Sequence > 0
                 ? read.SourceSequence > Input.Observation.Sequence : Input.Observation.ObservedAt <= read.ObservedAt));
@@ -155,7 +160,7 @@ public sealed partial class SupplyStationPositionViewModel
     internal void ApplyReadFeedback(ParcelReadFeedback value)
     {
         if (!SupplyEnabled) return;
-        if (PlacementClearedAt is { } cleared && value.ObservedAt <= cleared) return;
+        if (ClearedWorkCardCue(value.ObservedAt)) return;
         if (value.RuntimeId != owner.Snapshot?.RuntimeId || value.DeviceId != ReaderId || value.PositionId != PositionId ||
             value.DetectedTicks <= 0 || value.DetectedTicks > Stopwatch.GetTimestamp() ||
             readFeedback is { } old && value.DetectedTicks < old.DetectedTicks) return;
@@ -174,7 +179,7 @@ public sealed partial class SupplyStationPositionViewModel
     internal void ApplyCameraReadFeedback(Guid runtime, ParcelCameraReadFeedback value)
     {
         if (!SupplyEnabled) return;
-        if (PlacementClearedAt is { } cleared && value.Frame.Outcome == ObservationReadOutcome.Codes && value.Frame.ObservedAt <= cleared) return;
+        if (value.Frame.Outcome == ObservationReadOutcome.Codes && ClearedWorkCardCue(value.Frame.ObservedAt)) return;
         if (runtime != owner.Snapshot?.RuntimeId || value.PositionId != PositionId || value.Frame.DeviceId != ReaderId ||
             value.Frame.CompletedTicks <= 0 || value.Frame.CompletedTicks > Stopwatch.GetTimestamp() ||
             value.Frame.Epoch != CurrentReaderState?.Epoch ||
@@ -184,12 +189,9 @@ public sealed partial class SupplyStationPositionViewModel
     }
     void UpdateSlotMemory(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
-        // Late presentation cues must not put a removed parcel back in the input box.
-        if (PlacementClearedAt is { } cleared)
-        {
-            if (readFeedback?.ObservedAt <= cleared) readFeedback = null;
-            if (cameraRead is { Frame.Outcome: ObservationReadOutcome.Codes } old && old.Frame.ObservedAt <= cleared) cameraRead = null;
-        }
+        // Late cues must not revive a removed parcel or an expired manual result.
+        if (readFeedback is { } previous && ClearedWorkCardCue(previous.ObservedAt)) readFeedback = null;
+        if (cameraRead is { Frame.Outcome: ObservationReadOutcome.Codes } old && ClearedWorkCardCue(old.Frame.ObservedAt)) cameraRead = null;
         if (readFeedback?.RuntimeId != snapshot?.RuntimeId || readFeedback?.DeviceId != ReaderId) readFeedback = null;
         if (cameraReadRuntime != snapshot?.RuntimeId || cameraRead?.Frame.DeviceId != ReaderId) cameraRead = null;
         if (fastReaderState?.DeviceId != ReaderId) fastReaderState = null;
@@ -205,7 +207,7 @@ public sealed partial class SupplyStationPositionViewModel
         UpdateRecentChute();
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(SupplyEnabled), SupplyEnabled), (nameof(SupplyDisabling), SupplyDisabling), (nameof(SupplyDisabled), SupplyDisabled),
-            (nameof(CanChangeSupply), CanChangeSupply), (nameof(CanConfirmPlacementRemoval), CanConfirmPlacementRemoval), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
+            (nameof(CanChangeSupply), CanChangeSupply), (nameof(CanConfirmPlacementRemoval), CanConfirmPlacementRemoval), (nameof(ShowConfirmedPlacementRemoval), ShowConfirmedPlacementRemoval), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
             (nameof(EnableBackground), EnableBackground), (nameof(EnableForeground), EnableForeground), (nameof(DisableBackground), DisableBackground), (nameof(DisableForeground), DisableForeground),
             (nameof(Barcode), Barcode), (nameof(HasCurrentInput), HasCurrentInput), (nameof(BarcodePlaceholder), BarcodePlaceholder),
             (nameof(BarcodeObservationKey), BarcodeObservationKey),

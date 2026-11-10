@@ -96,7 +96,7 @@ public sealed partial class ParcelRepository
     { get { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_archives"; return (long)c.ExecuteScalar()!; } }
     long archiveRevision;
     internal long ArchiveRevision => Interlocked.Read(ref archiveRevision);
-    internal long ReadArchivedCount(CancellationToken token)
+    internal (long Total, long HistoricalUnknown) ReadArchivedCount(bool sportmaster, CancellationToken token)
     {
         Boundary?.Invoke("ArchiveCountReading");
         using var reader = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
@@ -104,7 +104,11 @@ public sealed partial class ParcelRepository
         token.ThrowIfCancellationRequested(); reader.Open();
         SQLitePCL.raw.sqlite3_progress_handler(reader.Handle, 1000, _ => token.IsCancellationRequested ? 1 : 0, null);
         using var command = reader.CreateCommand(); command.CommandText = "SELECT count(*) FROM parcel_archives";
-        var count = (long)command.ExecuteScalar()!; token.ThrowIfCancellationRequested(); return count;
+        var count = (long)command.ExecuteScalar()!;
+        command.CommandText = "SELECT count(*) FROM parcel_history_projection p JOIN parcel_archives a ON a.id=p.id WHERE p.state='WcsUnknown'";
+        var historicalUnknown = sportmaster ? (long)command.ExecuteScalar()! : 0;
+        token.ThrowIfCancellationRequested();
+        return (count, historicalUnknown);
     }
     public bool HasOverloadAcknowledgement(string identity)
     { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_overload_ack WHERE identity=$id"; c.Parameters.AddWithValue("$id", identity); return (long)c.ExecuteScalar()! == 1; }
@@ -124,9 +128,11 @@ public sealed partial class ParcelRepository
         var body = r.GetString(0); if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");
         return Wire.Decode<ParcelOperation>(body);
     }
-    public ParcelOperation? Latest(string position)
+    public ParcelOperation? Latest(string position, bool hideHistoricalUnknown = false)
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT h.id FROM parcel_history_index h JOIN parcel_history_projection p ON p.id=h.id WHERE h.position=$position ORDER BY h.seq DESC LIMIT 1";
+        if (hideHistoricalUnknown)
+            c.CommandText = "SELECT CASE WHEN p.state='WcsUnknown' AND EXISTS(SELECT 1 FROM parcel_archives a WHERE a.id=h.id) THEN NULL ELSE h.id END FROM parcel_history_index h JOIN parcel_history_projection p ON p.id=h.id WHERE h.position=$position ORDER BY h.seq DESC LIMIT 1";
         c.Parameters.AddWithValue("$position", position); var id = c.ExecuteScalar() as string; return id is null ? null : ReadOperation(id);
     }
     public ParcelHistoryPage History(long before, int limit)
@@ -143,7 +149,10 @@ public sealed partial class ParcelRepository
         var rows = index.Take(limit).Select(x => new ParcelHistoryItem(x.Sequence, x.Archived, ReadOperation(x.Id) ?? throw new InvalidDataException("History original missing"))).ToArray();
         return new(rows, index.Count > limit ? rows[^1].Sequence : null);
     }
-    public void Archive(string[] ids, string reason, BusinessCommand? command = null)
+    public void Archive(string[] ids, string reason, BusinessCommand? command = null) =>
+        MoveToHistory(ids, "HistoryArchived", reason, command);
+
+    void MoveToHistory(string[] ids, string auditEvent, string reason, BusinessCommand? command = null)
     {
         if (ids.Length == 0)
         { if (command is not null) Commit(null, "HistoryArchiveChecked", reason, command: command); return; }
@@ -151,7 +160,7 @@ public sealed partial class ParcelRepository
         foreach (var id in ids)
         {
             maintenanceCancellation.ThrowIfCancellationRequested();
-            using var read = db.CreateCommand(); read.Transaction = tx; read.CommandText = "SELECT body FROM parcel_operations WHERE id=$id AND NOT EXISTS(SELECT 1 FROM parcel_receipts WHERE operation=$id AND state IN ('Awaiting','RawDurable'))";
+            using var read = db.CreateCommand(); read.Transaction = tx; read.CommandText = "SELECT body FROM parcel_operations WHERE id=$id AND NOT EXISTS(SELECT 1 FROM parcel_receipts WHERE operation=$id AND state NOT IN ('Committed','NoReply'))";
             read.Parameters.AddWithValue("$id", id); var body = read.ExecuteScalar() as string ?? throw new InvalidOperationException("Archive candidate changed or has original receipt responsibility");
             ArchiveRaw(id, tx);
             using var archive = db.CreateCommand(); archive.Transaction = tx;
@@ -159,8 +168,9 @@ public sealed partial class ParcelRepository
             archive.Parameters.AddWithValue("$id", id); archive.Parameters.AddWithValue("$hash", Wire.Hash(body)); archive.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); archive.ExecuteNonQuery();
         }
         using var audit = db.CreateCommand(); audit.Transaction = tx;
-        audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'HistoryArchived','runtime',$detail); UPDATE parcel_meta SET revision=revision+1 WHERE id=1";
-        audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Ids = ids, Reason = reason, Policy = "Archive retains terminal originals in the same database; expiry deletion requires separate authorized retention maintenance" })); audit.ExecuteNonQuery();
+        audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,$event,'runtime',$detail); UPDATE parcel_meta SET revision=revision+1 WHERE id=1";
+        audit.Parameters.AddWithValue("$event", auditEvent);
+        audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$detail", Wire.Encode(new { Ids = ids, Reason = reason })); audit.ExecuteNonQuery();
         if (command is not null) WriteCommand(tx, command, new("Persisted", "Application command committed", Revision + 1));
         Boundary?.Invoke("BeforeArchiveCommit"); tx.Commit(); Revision++; Interlocked.Increment(ref archiveRevision); Boundary?.Invoke("AfterArchiveCommit"); CleanupArchivedRawFiles();
     }
@@ -255,18 +265,32 @@ public sealed partial class ParcelRuntime
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
     int? projectedCapacity;
     int UnresolvedCapacity => projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
-    bool CapacityAvailable => storageCapacityFailure is null && UnresolvedCapacity < Effective.MaximumOperations;
+    bool CapacityAvailable => storageCapacityFailure is null && !fatalStorage.Task.IsCompleted && UnresolvedCapacity < Effective.MaximumOperations;
     ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, archiveCount?.Count ?? 0,
-        Effective.MaximumOperations, CapacityAvailable, "Archive retains originals; configured expiry requires stopped authorized maintenance and a complete backup; unresolved responsibility and permanent identity/numeric fences remain", freeStorageBytes, Retention.MinimumFreeBytes);
+        Effective.MaximumOperations, CapacityAvailable, "Capacity covers current operations. History and permanent request identities remain subject to storage reserve", freeStorageBytes, Retention.MinimumFreeBytes)
+    {
+        HistoricalUnknown = archiveCount?.HistoricalUnknown ?? 0,
+        AdmissionBlock = CapacityAvailable ? null : CapacityBlock
+    };
     void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)
     {
         if (!requested && operations.Count < Math.Min(Retention.ResidentHistory, Effective.MaximumOperations)) return;
         var candidates = operations.Values.Where(ArchiveEligible).OrderBy(x => x.ObservedAt).Take(256).Select(x => x.Id).ToArray();
         if (candidates.Length == 0 && command is null) return;
         repository!.Archive(candidates, reason ?? "Resident working-set high-water policy", command);
-        if (archiveCount is { } count && count.Revision + 1 == repository.ArchiveRevision)
-            Volatile.Write(ref archiveCount, new(repository.ArchiveRevision, count.Count + candidates.Length));
-        foreach (var id in candidates) { admissionPositions.TryRemove(operations[id].AdmissionId, out _); operations.Remove(id); }
+        RemoveArchivedFromRuntime(candidates);
+    }
+
+    void RemoveArchivedFromRuntime(string[] candidates, int unknowns = 0)
+    {
+        if (archiveCount is { } count && count.Revision + 1 == repository!.ArchiveRevision)
+            Volatile.Write(ref archiveCount, new(repository.ArchiveRevision, count.Count + candidates.Length, count.HistoricalUnknown + unknowns));
+        foreach (var id in candidates)
+        {
+            admissionPositions.TryRemove(operations[id].AdmissionId, out _);
+            operations.Remove(id);
+            releasedPlacements.Remove(id);
+        }
     }
     public async Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50)
     { await gate.WaitAsync().ConfigureAwait(false); try { return OperatorHistory(repository!.History(beforeSequence, limit)); } finally { gate.Release(); } }

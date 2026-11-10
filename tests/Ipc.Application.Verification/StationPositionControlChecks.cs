@@ -140,9 +140,12 @@ internal static class StationPositionControlChecks
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 5);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Accepted));
             delayedOriginals!.TrySetResult();
-            await Task.Delay(200);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.BusinessRepliesAttempted == 3));
             var snapshot = await h.App.SnapshotAsync();
-            Check(h.Peer.Requests.Count == 3 && originals.All(old => Wire.Encode(snapshot.Operations.Single(o => o.Id == old.Id).Wcs) == Wire.Encode(old.Wcs)) &&
+            var history = await h.App.HistoryAsync();
+            Check(h.Peer.Requests.Count == 3 && snapshot.Capacity?.HistoricalUnknown == 2 &&
+                originals.All(old => snapshot.Operations.All(o => o.Id != old.Id) &&
+                    history.Items.Any(item => item.Archived && item.Operation.Id == old.Id && Wire.Encode(item.Operation.Wcs) == Wire.Encode(old.Wcs))) &&
                 snapshot.Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Disabled,
                 "reenabling starts a new same-code request without changing the detached originals or the other position");
         }
@@ -154,7 +157,7 @@ internal static class StationPositionControlChecks
             var snapshot = await h.App.SnapshotAsync();
             var old = snapshot.Operations.Single();
             Check(original.Status == "Admitted" && old.State == ParcelState.WcsUnknown && h.Peer.Requests.Count == 1 &&
-                snapshot.Positions!.Single(p => p.Id == "left") is { CanConfirmPlacementRemoval: true, BarcodeInput.Manual: false },
+                snapshot.Positions!.Single(p => p.Id == "left") is { BarcodeInput.Manual: false } lane && lane.PlacementRemovalOperation == old.Id,
                 "without camera placement evidence the operator has an explicit removal action on the blocked lane");
             var removal = new BusinessCommand(Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", "left", old.Id);
             Check((await h.App.CommandAsync(removal with { Owner = "right" })).Status == "Rejected",
@@ -167,8 +170,9 @@ internal static class StationPositionControlChecks
             await h.StartAsync();
             snapshot = await h.App.SnapshotAsync();
             Check(!snapshot.Paused && snapshot.Positions!.Single(p => p.Id == "left") is { CurrentOperation: null, BarcodeInput.Manual: true } &&
-                Wire.Encode(snapshot.Operations.Single(o => o.Id == old.Id).Wcs) == Wire.Encode(old.Wcs),
-                "a restart preserves the removal and original request without reblocking the lane");
+                snapshot.Capacity?.HistoricalUnknown == 1 && snapshot.Operations.All(o => o.Id != old.Id) &&
+                Wire.Encode((await h.App.OperationAsync(old.Id))?.Wcs) == Wire.Encode(old.Wcs),
+                "a restart preserves the removal and original request in history without reblocking the lane");
             var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-MANUAL-RELEASE"), default);
             Check(next.Status == "Admitted" && next.OperationId != old.Id && h.Peer.Requests.Count == 2,
                 "a new manual same-code placement makes an independent request after removal");
@@ -194,7 +198,7 @@ internal static class StationPositionControlChecks
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").BarcodeInput?.Manual == true);
         var restarted = await h.App.SnapshotAsync();
         Check(!restarted.Paused && h.Peer.Requests.Count == 2 &&
-            restarted.Positions!.Single(p => p.Id == "left") is { CanConfirmPlacementRemoval: true, BarcodeInput.Manual: false } &&
+            restarted.Positions!.Single(p => p.Id == "left") is { BarcodeInput.Manual: false } lane && lane.PlacementRemovalOperation == old.Id &&
             (await h.App.HistoryAsync()).Items.Any(row => row.Operation.Id == finished.OperationId && row.Operation.State == ParcelState.SlotResolved),
             "upgrade starts without replay, keeps the possibly occupied tray guarded, and preserves finished history");
         var repeat = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-UPGRADE"), default);

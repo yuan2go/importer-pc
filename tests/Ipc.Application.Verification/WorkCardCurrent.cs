@@ -9,10 +9,12 @@ using Ipc.Platform;
 internal static class WorkCardCurrent
 {
     static void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); Console.WriteLine("PASS CARD " + text); }
-    sealed class Clock(DateTimeOffset start) : TimeProvider
+    sealed class Clock : TimeProvider
     {
-        public TimeSpan Offset;
-        public override DateTimeOffset GetUtcNow() => start + Offset + (DateTimeOffset.UtcNow - start);
+        long ticks;
+        public override long TimestampFrequency => TimeSpan.TicksPerSecond;
+        public override long GetTimestamp() => Interlocked.Read(ref ticks);
+        public void Advance(TimeSpan interval) => Interlocked.Add(ref ticks, interval.Ticks);
     }
 
     internal static async Task Run(string workspace, string root)
@@ -52,19 +54,53 @@ internal static class WorkCardCurrent
                 "after a restart both cards and barcode inputs are empty; earlier reads and chutes remain only in the records");
         }
 
-        // Manual entry has no empty-tray signal: its result stays for at most ten minutes.
         await using (var m = new ManualSupplyHarness(workspace, Path.Combine(root, "work-card-manual"), deferred: true))
         {
             await m.StartAsync();
-            var admitted = await m.App.SubmitParcelBarcodeAsync(await m.Command("right", "SYNTH-CARD-MANUAL"), default);
-            await CameraRoundHarness.Until(async () => (await m.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
-            var id = (await m.App.SnapshotAsync()).Operations.Single().Id;
-            Check((await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").CurrentOperation == id, "a keyed-in parcel shows its chute");
-            var clock = new Clock(DateTimeOffset.UtcNow); m.App.StationTime = clock;
-            clock.Offset = TimeSpan.FromMinutes(9);
-            Check((await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").CurrentOperation == id, "it is still shown nine minutes later");
-            clock.Offset = TimeSpan.FromMinutes(11);
-            Check((await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").CurrentOperation is null, "after ten minutes without new input the card returns to waiting");
+            var clock = new Clock();
+            m.App.StationTime = clock;
+            var hold = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            m.Peer.Hold = hold;
+            var submission = m.App.SubmitParcelBarcodeAsync(await m.Command("right", "SYNTH-CARD-MANUAL"), default);
+            try
+            {
+                await CameraRoundHarness.Until(() => Task.FromResult(m.Peer.Requests.Count == 1));
+                clock.Advance(TimeSpan.FromSeconds(6));
+                var pending = await m.App.SnapshotAsync();
+                Check(pending.Operations.Single().State == ParcelState.ResolvingWcs &&
+                    pending.Positions!.Single(p => p.Id == "right").CurrentOperation == pending.Operations.Single().Id,
+                    "the display hold does not start while the manual request is in flight");
+            }
+            finally { hold.TrySetResult(); }
+
+            var admitted = await submission;
+            var original = (await m.App.SnapshotAsync()).Operations.Single();
+            var id = original.Id;
+            Check(admitted.OperationId == id && original.State == ParcelState.SlotResolved &&
+                (await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right") is { CurrentOperation: not null, PlacementRemovalOperation: null },
+                "a keyed-in parcel shows the confirmed chute without requiring removal confirmation");
+            var draft = await m.Command("right", "SYNTH-CARD-NEXT");
+            clock.Advance(TimeSpan.FromSeconds(4));
+            Check((await m.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").CurrentOperation == id,
+                "the chute is still available four seconds after the result was committed");
+            clock.Advance(TimeSpan.FromSeconds(1));
+            var expired = await m.App.SnapshotAsync();
+            var position = expired.Positions!.Single(p => p.Id == "right");
+            Check(position.CurrentOperation is null && position.ExpiredManualResult?.OperationId == id && position.PlacementClearedAt is null &&
+                expired.Inputs!.All(i => i.PositionId != "right") && position.BarcodeInput?.Manual == true && m.Peer.Requests.Count == 1,
+                "at five seconds the card clears the chute and barcode without recording removal or sending anything");
+
+            m.Peer.ReplySlot = "";
+            var next = await m.App.SubmitParcelBarcodeAsync(draft, default);
+            Check(next.Status == "Admitted" && next.OperationId != id && m.Peer.Requests.Count == 2 &&
+                Wire.Encode((await m.App.OperationAsync(id))?.Wcs) == Wire.Encode(original.Wcs),
+                "a draft begun before the display expired submits once without changing the original result");
+            clock.Advance(TimeSpan.FromSeconds(6));
+            var unknown = await m.App.SnapshotAsync();
+            var unresolved = unknown.Positions!.Single(p => p.Id == "right");
+            Check(unresolved.CurrentOperation == next.OperationId && unresolved.ExpiredManualResult is null &&
+                unresolved.BarcodeInput?.Manual == false && unknown.Operations.Any(o => o.Id == next.OperationId && o.State == ParcelState.WcsUnknown),
+                "an unconfirmed manual request remains visible and fenced after the same interval");
         }
         await PausedCameraPicture(workspace, Path.Combine(root, "paused-current-picture"));
     }

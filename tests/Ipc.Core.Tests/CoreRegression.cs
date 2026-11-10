@@ -24,6 +24,7 @@ public sealed class CoreRegression
     [DataRow("--tilted-decode", 9)]
     [DataRow("--mvid-reader", 96)]
     [DataRow("--sm-built-in-only", 10)]
+    [DataRow("--sm-runtime-responsibility", 17)]
     [DataRow("--rcs-heartbeat", 25)]
     [DataRow("--station-position-control", 37)]
     [DataRow("--management-workspace", 29)]

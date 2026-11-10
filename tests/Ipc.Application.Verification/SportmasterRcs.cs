@@ -324,8 +324,24 @@ static partial class SportmasterRcs
             Check(left.State == ParcelState.UnpackRequired && right.State == ParcelState.SlotResolved && left.Wcs!.Attempts == 1 && right.Wcs!.Attempts == 1 &&
                 left.Wcs.Request.IntegrationRequest!.RequestId != right.Wcs.Request.IntegrationRequest!.RequestId, "same barcode on independent positions has distinct frozen numeric IDs and separate outcomes");
             Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", left.Id, "Synthetic operator inspection"))).Status == "Rejected", "unpack position cannot be released while running");
-            app.EmitReferenceAt("left", "synthetic-left-followup", "SYNTH-0002", Wire.Id()); await Task.Delay(75);
-            Check((await app.SnapshotAsync()).Operations.Length == 2, "unpack holds its original position against new entity admission");
+            var originalStage = left.Wcs!;
+            var originalWire = originalStage.Request.IntegrationRequest!;
+            var sent = peer.Requests.Count;
+            peer.Mode = "assigned";
+            Check(app.EmitReferenceAt("left", "synthetic-left-followup", "SYNTH-0002", Wire.Id()), "new observation enters the current left reader session");
+            var changed = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "synthetic-left-followup" && o.State == ParcelState.SlotResolved));
+            var next = changed.Operations.Single(o => o.AdmissionId == "synthetic-left-followup");
+            var retained = await app.OperationAsync(left.Id);
+            Check(changed.Positions!.Single(p => p.Id == "left").CurrentOperation == next.Id &&
+                next.ParcelCode == "SYNTH-0002" && next.Slot == "SYNTH-CHUTE" &&
+                next.Wcs is { State: StageState.Accepted, Attempts: 1, Request.IntegrationRequest: { } nextWire } &&
+                nextWire.RequestId != originalWire.RequestId &&
+                peer.Requests.Count == sent + 1 && peer.Requests.Count(post => post.Body == nextWire.Body) == 1,
+                "validated barcode change admits a new placement with its own chute and one request");
+            Check(retained is { State: ParcelState.UnpackRequired, Slot: null } &&
+                Wire.Encode(retained.Wcs) == Wire.Encode(originalStage) &&
+                peer.Requests.Count(post => post.Body == originalWire.Body) == 1,
+                "validated barcode change preserves the original unpack result, request and raw reply without replay");
             s = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause")); s = await app.SnapshotAsync();
             Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", left.Id))).Status == "Rejected", "paused unpack release still requires explicit entity inspection reason");
             s = await app.SnapshotAsync(); Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", left.Id, "Synthetic entity inspected and removed"))).Status == "Persisted", "paused explicit inspection releases unpack without retransmission or physical completion");
@@ -414,7 +430,7 @@ static partial class SportmasterRcs
         using (var db = new SqliteConnection("Data Source=" + file))
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)command.ExecuteScalar()! == ParcelRepository.CurrentStorageVersion, "actual ParcelRuntime startup retains numeric ownership with current DB10 input custody semantics");
+            Check((long)command.ExecuteScalar()! == ParcelRepository.CurrentStorageVersion, "actual ParcelRuntime startup retains numeric ownership with the current storage format");
         }
 
     }
@@ -438,8 +454,8 @@ static partial class SportmasterRcs
             Check(reopened.StorageVersion == ParcelRepository.CurrentStorageVersion && Wire.Encode(reopened.Load().Single()) == Wire.Encode(operation) &&
                 reopened.PendingReceipts().Length == 2 && reopened.ReceiptById(durable) is { State: "RawDurable" } &&
                 reopened.ReceiptById(awaiting) is { State: "Awaiting", RawHash: null } && File.ReadAllBytes(Path.Combine(current, "receipts", durable + ".json")).SequenceEqual(raw),
-                "current DB10 restart retains frozen Unknown, independent custody, raw bytes and one send");
-        foreach (var version in Enumerable.Range(1, 10).Append(12))
+                "current format retains frozen Unknown, independent custody, raw bytes and one send after restart");
+        foreach (var version in Enumerable.Range(1, ParcelRepository.CurrentStorageVersion - 1))
         {
             var directory = Path.Combine(root, "unsupported-format" + version);
             var file = NonCurrentStorageFixture.Create(directory, "sportmaster", version, operation);
@@ -461,8 +477,9 @@ static partial class SportmasterRcs
                 {
                     "future" => $"INSERT INTO platform_migrations VALUES('sportmaster',{ParcelRepository.CurrentStorageVersion + 1},'future')",
                     "foreign" => "UPDATE platform_migrations SET application='another-business'",
-                    _ => "UPDATE platform_migrations SET sha='changed' WHERE version=11"
-                }; command.ExecuteNonQuery();
+                    _ => $"UPDATE platform_migrations SET sha='changed' WHERE version={ParcelRepository.CurrentStorageVersion}"
+                };
+                if (command.ExecuteNonQuery() != 1) throw new InvalidOperationException("Synthetic storage damage did not change the expected row");
             }
             var hash = Wire.FileHash(file);
             try { using var denied = new ParcelRepository(directory, "sportmaster"); throw new Exception("Damaged identity accepted"); }

@@ -23,10 +23,14 @@ public sealed partial class ParcelRuntime
         }
     }
 
-    ParcelInputSnapshot[] DisplayedInputs() => latestInputs.Values.Where(input => !IsBeforeEmptyTray(input.PositionId, input.Observation.ObservedAt)).Select(input =>
-        ContinuingUnadmittedPlacement(input.PositionId, input.Observation) is { } retained
+    ParcelInputSnapshot? DisplayedInput(string position, ManualWorkCardExpiry? expired = null)
+    {
+        if (!latestInputs.TryGetValue(position, out var input) || IsBeforeEmptyTray(position, input.Observation.ObservedAt) ||
+            expired is not null && input.OperationId == expired.OperationId) return null;
+        return ContinuingUnadmittedPlacement(position, input.Observation) is { } retained
             ? retained with { Outcome = input.Outcome, Reason = input.Reason, RecordedAt = input.RecordedAt }
-            : input).ToArray();
+            : input;
+    }
 
     void RetainUnadmittedPicture(ParcelInputSnapshot input)
     {

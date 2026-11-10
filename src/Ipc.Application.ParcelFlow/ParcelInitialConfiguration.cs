@@ -22,6 +22,7 @@ public sealed partial class ParcelRepository
             foreach (var item in page.Items)
             {
                 var op = item.Operation;
+                if (flow.Id == "sportmaster" && item.Archived && IsSmUnknownHistoryCandidate(op)) continue;
                 if (!(flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) || op.RecoveryRequired ||
                     op.FrozenConfiguration.Images is not null && !op.ImageReleased ||
                     new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(x => x.State is not (StageState.Accepted or StageState.Rejected or StageState.Cancelled))) return false;
@@ -44,8 +45,9 @@ public sealed partial class ParcelStartupMaintenance
         {
             try { ports.ValidateStructure(candidate); checks.Add(new("精确包与参数闭包", "PASS", "静态检查；未加载模块/SDK")); }
             catch (Exception error) when (error is IOException or InvalidDataException or InvalidOperationException or UnauthorizedAccessException) { checks.Add(new("精确包与参数闭包", "FAIL", error.Message)); }
-            try { ports.Validate(candidate); checks.Add(new("部署资格与提交条件", "PASS", "保存Pending和激活时仍会重新检查")); }
-            catch (Exception error) when (error is IOException or InvalidDataException or InvalidOperationException or UnauthorizedAccessException) { checks.Add(new("部署资格与提交条件", "BLOCKED", error.Message)); }
+            var label = definition.Id == "sportmaster" ? "设置提交检查" : "部署资格与提交条件";
+            try { ports.Validate(candidate); checks.Add(new(label, "PASS", "保存及生效时仍会重新检查")); }
+            catch (Exception error) when (error is IOException or InvalidDataException or InvalidOperationException or UnauthorizedAccessException) { checks.Add(new(label, "BLOCKED", error.Message)); }
         }
         checks.Add(new("真实连接与实体许可", "NOT_RUN", "本入口不启动设备或发送业务请求；未提供批准的独立探测合同"));
         return new(Wire.Hash(Wire.Encode(candidate)), DateTimeOffset.UtcNow, checks.ToArray());

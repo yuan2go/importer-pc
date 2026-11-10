@@ -10,7 +10,7 @@ using Microsoft.Data.Sqlite;
 
 static partial class SportmasterRcs
 {
-    static async Task TimeoutRescanChecks(string workspace, string root)
+    internal static async Task TimeoutRescanChecks(string workspace, string root)
     {
         await using var peer = new Peer { Mode = "timeout-left" };
         using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
@@ -37,7 +37,7 @@ static partial class SportmasterRcs
         { var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open(); return db; }
         ParcelOperation Persisted(string id)
         {
-            using var db = ReadDatabase(); using var query = db.CreateCommand(); query.CommandText = "SELECT body FROM parcel_operations WHERE id=$id"; query.Parameters.AddWithValue("$id", id);
+            using var db = ReadDatabase(); using var query = db.CreateCommand(); query.CommandText = "SELECT body FROM parcel_operations WHERE id=$id UNION ALL SELECT body FROM parcel_archives WHERE id=$id"; query.Parameters.AddWithValue("$id", id);
             return Wire.Decode<ParcelOperation>((string)query.ExecuteScalar()!);
         }
         async Task Scan(TcpClient camera) => await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000123\n"));
@@ -53,17 +53,19 @@ static partial class SportmasterRcs
             var timed = await Wait(app, s => s.Operations.Length == 2 && s.Operations.Any(o => o.State == ParcelState.WcsUnknown) && s.Operations.Any(o => o.State == ParcelState.SlotResolved));
             var original = timed.Operations.Single(o => o.PositionId == "left"); originalId = original.Id;
             var stored = Persisted(originalId); originalStage = Wire.Encode(stored.Wcs); originalBody = stored.Wcs!.Request.IntegrationRequest!.Body; originalWireId = stored.Wcs.Request.IntegrationRequest.RequestId;
-            Check(timed.Positions!.Single(p => p.Id == "left").Admit && !new SportmasterFlow().MainSettled(original) && stored.Wcs is { Attempts: 1, State: StageState.Unknown },
-                "a confirmed timeout releases admission without declaring the old request successful or settled");
+            Check(!timed.Positions!.Single(p => p.Id == "left").Admit && !new SportmasterFlow().MainSettled(original) && stored.Wcs is { Attempts: 1, State: StageState.Unknown },
+                "a confirmed timeout retains placement and leaves the original result unknown");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
-            Check(view.Left.CanAdmit && view.Left.CenteredStateReason == "等待取格口响应超时" &&
+            Check(!view.Left.CanAdmit && view.Left.CenteredStateReason == "等待取格口响应超时" &&
                 view.Left.CenteredStateInstruction.Contains("取下包裹", StringComparison.Ordinal) && !view.Left.SlotAvailable,
                 "the timeout card directs the operator to remove the parcel and never shows an unconfirmed chute");
-            Check(!new SportmasterFlow().AllowsNextAdmissionAfter(original with { Wcs = original.Wcs! with { State = StageState.Conflict } }) &&
-                !new Ipc.Application.DirectPlc.DirectPlcFlow().AllowsNextAdmissionAfter(original), "receipt conflicts and other applications do not inherit the RCS timeout exception");
-            await Task.Delay(400); // Operator lifts the timed-out parcel and places it again.
+            await Task.Delay(400);
+            Check(!(await app.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Admit, "elapsed time is not evidence the old parcel left");
+            var beforeRemoval = await app.SnapshotAsync();
+            Check((await app.CommandAsync(new(Wire.Id(), beforeRemoval.Revision, "ConfirmPlacementRemoval", "left", originalId))).Status == "Persisted",
+                "operator confirms removal when the reader cannot report empty frames");
             peer.Mode = "assigned"; await Scan(camera);
-            var rescanned = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 1);
+            var rescanned = await Wait(app, s => s.Operations.Length == 2 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 1);
             var next = rescanned.Operations.Single(o => o.PositionId == "left" && o.Id != originalId); var nextStored = Persisted(next.Id); secondWireId = nextStored.Wcs!.Request.IntegrationRequest!.RequestId;
             Check(next.ParcelCode == original.ParcelCode && next.AdmissionId != original.AdmissionId && next.Wcs!.Request.Id != original.Wcs!.Request.Id && secondWireId > originalWireId &&
                 peer.Requests.Count == 3 && peer.Requests.Count(r => r.Body == originalBody) == 1 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,
@@ -71,9 +73,9 @@ static partial class SportmasterRcs
             using (var db = ReadDatabase())
             using (var query = db.CreateCommand())
             {
-                query.CommandText = "SELECT count(*) FROM parcel_audit WHERE owner=$id AND event='ParcelObserved' AND json_extract(detail,'$.PriorOperation')=$prior";
-                query.Parameters.AddWithValue("$id", next.Id); query.Parameters.AddWithValue("$prior", originalId);
-                Check((long)query.ExecuteScalar()! == 1, "new-scan audit links the retained timed-out operation without rewriting its original request");
+                query.CommandText = "SELECT count(*) FROM parcel_audit a,json_each(a.detail,'$.OperationIds') i WHERE event='StationPlacementReleased' AND i.value=$prior";
+                query.Parameters.AddWithValue("$prior", originalId);
+                Check((long)query.ExecuteScalar()! == 1, "the durable departure evidence identifies the original timed-out operation");
             }
             await Task.Delay(2700); await view.RefreshAsync();
             Check(view.Left.OperationId == next.Id && view.Left.SlotAvailable && view.Left.Slot == "SYNTH-CHUTE" && Wire.Encode(Persisted(originalId).Wcs) == originalStage && peer.Requests.Count == 3,
@@ -95,7 +97,7 @@ static partial class SportmasterRcs
             Check(ready.Positions!.Single(p => p.Id == "left").CurrentOperation is null && peer.Requests.Count == 3,
                 "original inspection leaves the new shift ready without an operator resume or duplicate request");
             await Scan(camera);
-            var final = await Wait(app, s => s.Operations.Length == 4 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 2);
+            var final = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 2);
             var last = final.Operations.Single(o => o.PositionId == "left" && o.Wcs?.Request.Id != recovered.Operations.Single(x => x.PositionId == "left" && x.Id != originalId).Wcs!.Request.Id && o.Id != originalId);
             Check(Persisted(last.Id).Wcs!.Request.IntegrationRequest!.RequestId > secondWireId && peer.Requests.Count == 4 && Wire.Encode(Persisted(originalId).Wcs) == originalStage,
                 "new scans after restart advance the durable request ID while the original timeout remains unchanged");

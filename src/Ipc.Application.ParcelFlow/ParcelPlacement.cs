@@ -14,6 +14,14 @@ public sealed partial class ParcelRepository
         while (reader.Read()) ids.Add(reader.GetString(0));
         return ids.ToArray();
     }
+
+    internal bool PlacementWasReleased(string operation)
+    {
+        using var command = db.CreateCommand();
+        command.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_audit a, json_each(a.detail,'$.OperationIds') i WHERE a.event='StationPlacementReleased' AND i.value=$operation)";
+        command.Parameters.AddWithValue("$operation", operation);
+        return (long)command.ExecuteScalar()! != 0;
+    }
 }
 
 // One physical placement on a supply tray is one business request (AGENTS.md: one placement, one request).
@@ -48,6 +56,7 @@ public sealed partial class ParcelRuntime
         public int EmptyFrames;
         public string? EmptyEpoch;
         public DateTimeOffset? EmptySince, EndedAt;
+        public (string Operation, long ConfirmedAt)? ManualChute;
     }
     // Written by the ingress worker (under gate) and by decode callbacks.
     readonly Dictionary<string, Placement> placements = [];
@@ -61,28 +70,43 @@ public sealed partial class ParcelRuntime
     readonly HashSet<string> releasedPlacements = new(StringComparer.Ordinal);
     void RegisterPlacementFrames(string position) { lock (placements) frameFedPositions.Add(position); }
 
-    bool CanConfirmPlacementRemoval(string position, ParcelOperation? operation)
+    string? PlacementRemovalOperation(string position, ParcelOperation? latest, ParcelOperation? displayed)
     {
-        if (Id != "sportmaster" || operation is null || IsDebugRequest(operation) ||
-            !(NeedsReconciliation(operation) || operation.State == ParcelState.UnpackRequired || obsoleteSmOriginals.Contains(operation.Id)) ||
-            !SessionValid || ManagementWorkspaceOpen || configurationSaving || stopping.IsCancellationRequested) return false;
+        if (Id != "sportmaster" || latest is null || IsDebugRequest(latest) || releasedPlacements.Contains(latest.Id) ||
+            !SessionValid || ManagementWorkspaceOpen || configurationSaving || stopping.IsCancellationRequested) return null;
+        var unresolved = displayed is not null &&
+            (NeedsReconciliation(displayed) || displayed.State == ParcelState.UnpackRequired || obsoleteSmOriginals.Contains(displayed.Id));
+        var draining = PositionControl(position).Mode == StationPositionMode.Disabling;
+        var confirmedManual = latest.OperatorInput is not null &&
+            (latest.State == ParcelState.SlotResolved && draining ||
+             latest.State == ParcelState.WcsRejected && (displayed is not null || draining)) && IsSettled(latest);
+        if (!unresolved && !confirmedManual) return null;
+
         var reader = readers[positions[position].ReaderDeviceId];
-        if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true ||
-            reader.Source is IObservationInspectionSource && !CameraDraining(reader.Source.DeviceId) && !AutomaticCameraReadsAllowed(reader.Source.DeviceId)) return true;
+        var cameraCanConfirm = reader.Health?.IsValid(DateTimeOffset.UtcNow) == true &&
+            (reader.Source is not IObservationInspectionSource || CameraDraining(reader.Source.DeviceId) || AutomaticCameraReadsAllowed(reader.Source.DeviceId));
         lock (placements)
-            return !frameFedPositions.Contains(position) ||
-                operation.OperatorInput is not null && (!placements.TryGetValue(position, out var placement) || !placement.CameraSeen);
+        {
+            var placement = placements.GetValueOrDefault(position);
+            if (confirmedManual && !unresolved && (placement?.Operation != latest.Id || placement.EndedAt is not null)) return null;
+            return !cameraCanConfirm || !frameFedPositions.Contains(position) || latest.OperatorInput is not null && placement?.CameraSeen != true
+                ? latest.Id : null;
+        }
     }
 
     bool ConfirmPlacementRemoval(BusinessCommand command)
     {
-        if (command.Owner is not ("left" or "right") || !positions.ContainsKey(command.Owner) ||
-            DisplayedOperation(command.Owner) is not { } operation || command.Value != operation.Id ||
-            !CanConfirmPlacementRemoval(command.Owner, operation)) return false;
+        if (command.Owner is not ("left" or "right") || !positions.ContainsKey(command.Owner)) return false;
+        CommitEmptyTray(command.Owner);
+        var operation = LatestWorkCardOperation(command.Owner);
+        var now = StationTime.GetUtcNow();
+        var expired = ExpiredManualResult(command.Owner, operation, now);
+        if (PlacementRemovalOperation(command.Owner, operation, DisplayedOperation(command.Owner, operation, now, expired)) is not { } removal ||
+            command.Value != removal) return false;
         var at = DateTimeOffset.UtcNow;
-        var detail = new { PositionId = command.Owner, ObservedAt = at, OperationIds = new[] { operation.Id }, Source = "OperatorConfirmedRemoval" };
+        var detail = new { PositionId = command.Owner, ObservedAt = at, OperationIds = new[] { removal }, Source = "OperatorConfirmedRemoval" };
         repository!.Commit(null, "StationPlacementReleased", Wire.Encode(detail), command: command);
-        releasedPlacements.Add(operation.Id);
+        if (operations.ContainsKey(removal)) releasedPlacements.Add(removal);
         confirmedEmptyTrays[command.Owner] = at;
         lock (placements)
             if (placements.TryGetValue(command.Owner, out var placement))
@@ -108,7 +132,8 @@ public sealed partial class ParcelRuntime
             releasedPlacements.UnionWith(operationIds);
             WriteRuntimeLog("扫码与准入", "空托盘已确认，原作业已退出本位", detail);
         }
-        confirmedEmptyTrays[position] = empty.ObservedAt;
+        if (empty.ObservedAt > confirmedEmptyTrays.GetValueOrDefault(position))
+            confirmedEmptyTrays[position] = empty.ObservedAt;
         lock (placements)
             if (pendingEmptyTrays.GetValueOrDefault(position) == empty) pendingEmptyTrays.Remove(position);
     }
@@ -124,7 +149,7 @@ public sealed partial class ParcelRuntime
     // partial reads of a rejected multi-code parcel must not release its owner.
     void CommitChangedPlacement(string position, string code, Observation observation)
     {
-        if (Id != "sportmaster" || repository!.Latest(position) is not { } previous || IsDebugRequest(previous) ||
+        if (Id != "sportmaster" || DisplayedOperation(position) is not { } previous ||
             previous.ParcelCode == code || previous.ObservedAt >= observation.ObservedAt) return;
         var operationIds = operations.Values.Where(o => o.PositionId == position && !IsDebugRequest(o) &&
             o.ObservedAt < observation.ObservedAt && (!MainTerminated(o) || NeedsReconciliation(o)) && !releasedPlacements.Contains(o.Id))
@@ -132,7 +157,7 @@ public sealed partial class ParcelRuntime
         if (operationIds.Length == 0) return;
         var detail = new { PositionId = position, observation.ObservedAt, observation.DeviceId, observation.Epoch,
             observation.SourceEventId, Code = code, OperationIds = operationIds, Source = "ChangedBarcode" };
-        repository.Commit(null, "StationPlacementReleased", Wire.Encode(detail));
+        repository!.Commit(null, "StationPlacementReleased", Wire.Encode(detail));
         releasedPlacements.UnionWith(operationIds);
         WriteRuntimeLog("扫码与准入", "换码已确认，原作业已退出本位", detail);
     }
@@ -208,22 +233,50 @@ public sealed partial class ParcelRuntime
         }
     }
 
-    // How long a manually entered result stays on the card when nothing else happens at the position.
-    internal static readonly TimeSpan ManualResultDisplay = TimeSpan.FromMinutes(10);
+    static readonly TimeSpan ManualChuteDisplay = TimeSpan.FromSeconds(5);
+    static readonly TimeSpan NonFrameResultDisplay = TimeSpan.FromMinutes(10);
 
-    // A finished (chute assigned/refused) result stays on the work card only while it is the
-    // current parcel of this shift: never one from before this run opened (restart, previous
-    // shift), never after its placement ended (empty tray) or another code took the position,
-    // and a manually entered one for at most ManualResultDisplay.
-    bool ShowsFinishedResult(string position, ParcelOperation finished)
+    static bool HasConfirmedManualChute(ParcelOperation operation) => operation is
+        { OperatorInput: not null, State: ParcelState.SlotResolved, Wcs.State: StageState.Accepted, Slot.Length: > 0 };
+
+    // Called after the receipt transaction commits. The timestamp belongs only
+    // to this placement's current operation, and repeated observations never renew it.
+    void NoteConfirmedManualChute(ParcelOperation operation)
+    {
+        if (Id != "sportmaster" || operation.PositionId is not { } position ||
+            !HasConfirmedManualChute(operation) || IsDebugRequest(operation)) return;
+        lock (placements)
+            if (placements.TryGetValue(position, out var placement) && placement.Operation == operation.Id &&
+                placement.EndedAt is null && placement.ManualChute?.Operation != operation.Id)
+                placement.ManualChute = (operation.Id, StationTime.GetTimestamp());
+    }
+
+    ManualWorkCardExpiry? ExpiredManualResult(string position, ParcelOperation? operation, DateTimeOffset now)
+    {
+        if (Id != "sportmaster" || operation is null || operation.OperatorInput is null ||
+            !MainTerminated(operation) || NeedsReconciliation(operation)) return null;
+        if (HasConfirmedManualChute(operation))
+        {
+            lock (placements)
+                if (placements.GetValueOrDefault(position)?.ManualChute is not { } shown || shown.Operation != operation.Id ||
+                    StationTime.GetElapsedTime(shown.ConfirmedAt) < ManualChuteDisplay) return null;
+        }
+        else if (now - operation.ObservedAt <= NonFrameResultDisplay) return null;
+        var input = latestInputs.GetValueOrDefault(position);
+        return new(operation.Id, input?.OperationId == operation.Id ? input.Observation.ObservedAt : operation.ObservedAt);
+    }
+
+    // A finished result belongs only to this shift's current placement. Its
+    // display lifetime is independent of the evidence that the parcel left.
+    bool ShowsFinishedResult(string position, ParcelOperation finished, DateTimeOffset now)
     {
         if (definition.SamePlacementReleaseMs <= 0) return true;
         if (finished.ObservedAt < stationOpeningAt) return false;
         lock (placements)
         {
             if (!placements.TryGetValue(position, out var placement) || placement.Operation != finished.Id || placement.EndedAt is not null) return false;
-            if (finished.OperatorInput is not null && StationTime.GetUtcNow() - finished.ObservedAt > ManualResultDisplay) return false;
-            return placement.CameraSeen && frameFedPositions.Contains(position) || StationTime.GetUtcNow() - placement.LastSeen <= ManualResultDisplay;
+            return HasConfirmedManualChute(finished) || placement.CameraSeen && frameFedPositions.Contains(position) ||
+                now - placement.LastSeen <= NonFrameResultDisplay;
         }
     }
 

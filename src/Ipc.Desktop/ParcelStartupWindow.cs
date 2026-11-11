@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Ipc.Presentation.Wpf;
@@ -10,6 +11,7 @@ sealed class ParcelStartupWindow : Window
     readonly TextBlock title = new() { FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis, Text = "正在启动供包台" };
     readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = "正在准备启动，请稍候。" };
     readonly TextBox diagnostic = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 120 };
+    readonly TextBox buildIdentity = new() { Name = "StartupBuildIdentity", IsReadOnly = true, FontSize = UiTypography.Label, Margin = new Thickness(0, 0, 0, 12) };
     readonly WrapPanel actions = new();
     readonly List<string> completed = [];
     Func<Task>? closeAction;
@@ -21,11 +23,23 @@ sealed class ParcelStartupWindow : Window
         Title = "菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
         Ipc.Application.ParcelFlow.Desktop.StartupAppearance.FitToWorkArea(this);
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        // Read the running binary, including the frozen SourceRevisionId used by packaging;
+        // deployment machines do not need Git or a source checkout.
+        var assembly = typeof(ParcelStartupWindow).Assembly;
+        var information = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        var parts = information?.Split('+', 2);
+        var version = parts?[0] ?? assembly.GetName().Version?.ToString(3) ?? "未记录";
+        var revision = parts is { Length: 2 } && !string.IsNullOrWhiteSpace(parts[1]) ? parts[1] : "未记录";
+        buildIdentity.Text = $"版本 {version} · Git {revision}";
+        buildIdentity.SetResourceReference(StyleProperty, "ReadonlyValue");
+        buildIdentity.SetResourceReference(ForegroundProperty, "Muted");
+        System.Windows.Automation.AutomationProperties.SetName(buildIdentity, "软件版本和 Git 提交");
         var grid = new Grid { Margin = new Thickness(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
+        grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
         grid.RowDefinitions.Add(new() { Height = new GridLength(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        Grid.SetRow(detail, 1); Grid.SetRow(diagnostic, 2); Grid.SetRow(actions, 3);
-        grid.Children.Add(title); grid.Children.Add(detail); grid.Children.Add(diagnostic); grid.Children.Add(actions); Content = grid;
+        Grid.SetRow(detail, 1); Grid.SetRow(buildIdentity, 2); Grid.SetRow(diagnostic, 3); Grid.SetRow(actions, 4);
+        grid.Children.Add(title); grid.Children.Add(detail); grid.Children.Add(buildIdentity); grid.Children.Add(diagnostic); grid.Children.Add(actions); Content = grid;
         Closing += (_, e) =>
         {
             if (AllowClose) return;
@@ -81,7 +95,7 @@ sealed class ParcelStartupWindow : Window
         title.Text = "供包台没有启动成功"; detail.Text = "原因见下方。可以重试启动，或修改参数、进入离线维护；需要支持时复制诊断交给维护人员。尚未开始作业。";
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
         var copy = new Button { Content = "复制诊断", MinHeight = 44 };
-        copy.Click += (_, _) => { try { Clipboard.SetText(diagnostic.Text); } catch (Exception error) { detail.Text = "复制失败，可选择诊断文本复制：" + error.Message; } };
+        copy.Click += (_, _) => { try { Clipboard.SetText(buildIdentity.Text + "\n\n" + diagnostic.Text); } catch (Exception error) { detail.Text = "复制失败，可选择诊断文本复制：" + error.Message; } };
         var exit = new Button { Content = "停止并退出", MinHeight = 44 };
         exit.Click += async (_, _) => await RequestCloseAsync();
         actions.Children.Add(copy);

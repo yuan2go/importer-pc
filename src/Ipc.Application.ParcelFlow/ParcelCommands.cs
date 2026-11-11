@@ -266,7 +266,7 @@ public sealed partial class ParcelRuntime
             Management.Require();
             if (Id == "sportmaster")
             {
-                    RetainReleasedSmUnknowns();
+                RetainReleasedSmUnknowns();
             }
             var activationBlock = Id == "sportmaster" ? SmConfigurationBlock() : null;
             if (activationBlock is null && ConfigurationActivation.RulesOnly(Id, Effective, configuration.Current.Pending, candidate))
@@ -327,11 +327,13 @@ public sealed partial class ParcelRuntime
             backupInProgress = true;
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
-        { GuardBackupSourceFailure(error, "BackupSourcePreparation"); throw; }
+        { GuardBackupSourceFailure(error, "BackupSourcePreparation", knownSource: true); throw; }
         finally { gate.Release(); }
         try
         {
-            foreach (var op in images) ValidateBackupImage(directory!, op, op.Image!, token);
+            try { foreach (var op in images) ValidateBackupImage(directory!, op, op.Image!, token); }
+            catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
+            { throw new RecoveryFileFailure(RecoveryFailureOrigin.Source, "SourceImageValidation", error); }
             ParcelRecovery.CreateBackup(directory!, destination, effective, pending, bytes,
                 path => original.Backup(path, token), factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); }, token, boundary: BackupBoundary);
             return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", original.Revision);

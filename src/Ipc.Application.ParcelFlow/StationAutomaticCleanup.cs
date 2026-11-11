@@ -104,7 +104,7 @@ public sealed partial class ParcelRuntime
     }
     async Task<bool> RunAutomaticCleanup(ParcelConfiguration captured, DateTimeOffset now, CancellationToken token)
     {
-        var ownsFence = false; string? backup = null; var previous = automaticCleanup?.LastCompleted;
+        var ownsFence = false; string? backup = null; var previous = automaticCleanup?.LastCompleted; long databaseBytes = 0;
         try
         {
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(token); budget.CancelAfter(TimeSpan.FromSeconds(45));
@@ -118,7 +118,10 @@ public sealed partial class ParcelRuntime
                 configurationSaving = backupInProgress = ownsFence = true;
                 var archived = repository!.PrepareAutomaticRetention(definition, now.AddDays(-captured.Retention!.HistoryDays!.Value));
                 foreach (var id in archived) operations.Remove(id);
+                databaseBytes = repository.StorageBytes;
             }
+            catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
+            { throw new RecoveryFileFailure(RecoveryFailureOrigin.Source, "RetentionSourcePreparation", error); }
             finally { gate.Release(); }
             var policy = captured.OperationsPolicy!;
             var backupRoot = Path.Combine(launch.DataRoot, "maintenance-backups", captured.Mode.ToString(), captured.StationId, Id); RecoveryFiles.RequireOrdinaryAncestors(backupRoot);
@@ -126,7 +129,7 @@ public sealed partial class ParcelRuntime
             if (Directory.EnumerateDirectories(backupRoot, "*.recovery").Take(policy.MaximumBackupSets).Count() >= policy.MaximumBackupSets)
                 throw new IOException("自动维护备份已达份数上限，请在维护中心核对并转存；原备份不自动删除");
             backup = Path.Combine(backupRoot, now.ToString("yyyyMMddTHHmmss") + "-" + Wire.Id() + ".db");
-            ParcelRecovery.CreateBackup(directory!, backup, captured, null, repository!.StorageBytes,
+            ParcelRecovery.CreateBackup(directory!, backup, captured, null, databaseBytes,
                 p =>
                 {
                     using var source = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
@@ -135,7 +138,10 @@ public sealed partial class ParcelRuntime
                         Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly,
                         Pooling = false
                     }.ToString());
-                    source.Open(); Ipc.Platform.Storage.Database.Backup(source, p, cancellation);
+                    try { source.Open(); }
+                    catch (Exception error) when (IsStorageError(error))
+                    { throw new RecoveryFileFailure(RecoveryFailureOrigin.Source, "RetentionSourceOpen", error); }
+                    Ipc.Platform.Storage.Database.Backup(source, p, cancellation);
                 }, factory.RegisterBackup, cancellation.ThrowIfCancellationRequested, cancellation);
             var manifest = ParcelRecovery.VerifyBackup(backup, cancellation.ThrowIfCancellationRequested, cancellation);
             await gate.WaitAsync(cancellation).ConfigureAwait(false);
@@ -147,6 +153,8 @@ public sealed partial class ParcelRuntime
                 repository.Commit(null, "AutomaticRetentionCompleted", Wire.Encode(new { result.Run, result.Operations, result.Inputs, result.BackupHash }));
                 Diagnostic("维护", "自动历史清理完成", detail: "Run=" + result.Run);
             }
+            catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
+            { throw new RecoveryFileFailure(RecoveryFailureOrigin.Source, "RetentionSourceCommit", error); }
             finally { gate.Release(); }
         }
         catch (Exception error) when (error is IOException or InvalidOperationException or UnauthorizedAccessException or OperationCanceledException or Microsoft.Data.Sqlite.SqliteException)

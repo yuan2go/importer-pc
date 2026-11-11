@@ -23,7 +23,8 @@ internal static class BackupConsistency
         foreach (var outcome in new[] { "complete", "cancel", "copy-failure" }) await Interleaving(workspace, Path.Combine(root, outcome), outcome == "cancel", outcome == "copy-failure");
         foreach (var mode in new[] { "corrupt", "write-failure", "disabled" }) await ScheduleFault(workspace, Path.Combine(root, mode), mode);
         await ScheduleOutcomes(workspace, Path.Combine(root, "outcomes"));
-        foreach (var mode in new[] { "full", "io" }) await CopyFailureIsolation(workspace, Path.Combine(root, "copy-" + mode), mode);
+        foreach (var mode in new[] { "full", "io", "custody-destination" }) await CopyFailureIsolation(workspace, Path.Combine(root, "copy-" + mode), mode);
+        await CustodySourceFailure(workspace, Path.Combine(root, "custody-source"));
         CopySourceFailure(Path.Combine(root, "copy-source"));
     }
     static async Task Interleaving(string workspace, string root, bool cancel, bool fail)
@@ -147,7 +148,8 @@ internal static class BackupConsistency
             if (mode == "io") throw new SqliteException("Synthetic destination I/O failure at the native backup boundary", SQLitePCL.raw.SQLITE_IOERR);
             using var limit = db.CreateCommand(); limit.CommandText = "PRAGMA max_page_count=1"; limit.ExecuteScalar();
         };
-        TargetOpened.SetValue(null, failTarget);
+        if (mode == "custody-destination") RecoveryFiles.CopyClosedForVerification = (_, destination) => File.WriteAllText(destination, "synthetic damaged destination");
+        else TargetOpened.SetValue(null, failTarget);
         try
         {
             var manualDestination = Path.Combine(root, "manual-failed.db");
@@ -160,11 +162,16 @@ internal static class BackupConsistency
                         sql.SqliteErrorCode == (mode == "full" ? SQLitePCL.raw.SQLITE_FULL : SQLitePCL.raw.SQLITE_IOERR),
                         "manual " + mode + " retains the SQLite copy failure and independently verifies the healthy source");
                 }
+                catch (RecoveryFileFailure error) when (mode == "custody-destination")
+                {
+                    Check(error is { Origin: RecoveryFailureOrigin.Destination, Phase: "DestinationChecksum", SourceBytesVerified: true } && error.InnerException is InvalidDataException,
+                        "actual custody copy verifies the original source stream and attributes damaged copied bytes to destination verification");
+                }
                 await h.App.CheckScheduledBackupAsync(success.NextDue!.Value.AddMinutes(1));
                 return true;
             });
             var failed = (await h.App.SnapshotAsync()).BackupScheduleStatus!;
-            Check(failed.Outcome == "Failed:BackupCopyFailure" && failed.LastSuccessfulBackup == success.LastSuccessfulBackup &&
+            Check(failed.Outcome == (mode == "custody-destination" ? "Failed:RecoveryFileFailure" : "Failed:BackupCopyFailure") && failed.LastSuccessfulBackup == success.LastSuccessfulBackup &&
                 failed.LastSuccessfulAt == success.LastSuccessfulAt && Wire.FileHash(success.LastSuccessfulBackup!) == originalSuccessHash &&
                 !File.Exists(manualDestination + ".recovery/COMPLETED.json") && Directory.EnumerateFiles(target, "COMPLETED.json", SearchOption.AllDirectories).Count() == 1,
                 "scheduled " + mode + " retains the actual failed receipt and previous success, never publishing a complete failed set");
@@ -172,12 +179,33 @@ internal static class BackupConsistency
             await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > progress));
             Check(!h.App.FatalFailure.IsCompleted, "target " + mode + " cannot complete business FatalFailure or terminate maintenance");
         }
-        finally { TargetOpened.SetValue(null, null); }
+        finally { TargetOpened.SetValue(null, null); RecoveryFiles.CopyClosedForVerification = null; }
         await Command(h.App, "Resume");
         var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-AFTER-COPY-FAILURE"), default);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
         Check(next.Status == "Admitted" && h.Peer.Requests.Count == 1 && !h.App.FatalFailure.IsCompleted,
             "legitimate supply resumes after " + mode + " without restarting the station or rewriting an original request");
+    }
+    static async Task CustodySourceFailure(string workspace, string root)
+    {
+        await using var h = new ManualSupplyHarness(workspace, root, deferred: true, mode: RunMode.Simulation);
+        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App); await Command(h.App, "Pause");
+        var original = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId, "configuration.json");
+        var destination = Path.Combine(root, "failed.db");
+        h.App.BackupBoundary = phase => { if (phase == "DatabaseCopied") File.WriteAllText(original, "synthetic damaged source ledger"); };
+        try
+        {
+            try { await h.App.BackupAsync(destination); throw new InvalidOperationException("Damaged source accepted"); }
+            catch (RecoveryFileFailure error)
+            {
+                Check(error is { Origin: RecoveryFailureOrigin.Source, Phase: "SourceChecksum", SourceBytesVerified: false } && h.App.FatalFailure.IsCompleted,
+                    "actual custody source mismatch reaches the production fatal source-storage guard");
+            }
+            Check(!File.Exists(destination + ".recovery/COMPLETED.json") && File.ReadAllText(original) == "synthetic damaged source ledger" &&
+                (await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-DAMAGED-SOURCE"), default)).Status != "Admitted" && h.Peer.Requests.IsEmpty,
+                "damaged original and partial set remain; no completion marker or legitimate-looking supply bypasses source protection");
+        }
+        finally { h.App.BackupBoundary = null; }
     }
     static void CopySourceFailure(string root)
     {

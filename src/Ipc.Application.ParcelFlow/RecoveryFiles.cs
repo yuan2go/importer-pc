@@ -1,6 +1,22 @@
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
+public enum RecoveryFailureOrigin { Source, Destination, Undetermined }
+public sealed class RecoveryFileFailure(RecoveryFailureOrigin origin, string phase, Exception error, bool sourceBytesVerified = false)
+    : IOException(origin switch
+    {
+        RecoveryFailureOrigin.Source => "源文件读取或校验失败；原件保留，按存储保护处理。",
+        RecoveryFailureOrigin.Destination => "目标文件写入或校验失败；残件保留，不能作为完整恢复集。",
+        _ => "文件操作未完成，故障归属尚未核实；原件和残件保留。"
+    }, error)
+{
+    public RecoveryFailureOrigin Origin { get; } = origin;
+    public string Phase { get; } = phase;
+    public bool SourceBytesVerified { get; } = sourceBytesVerified;
+    public override string ToString() => base.ToString() + Environment.NewLine +
+        $"RecoveryPhase={Phase}; Origin={Origin}; SourceBytesVerified={SourceBytesVerified}";
+}
+
 // This is the custody format, independent of the host OS. Never normalize names
 // supplied by a manifest: doing so can alias distinct originals or hide traversal.
 internal static class RecoveryFiles
@@ -93,18 +109,42 @@ internal static class RecoveryFiles
         => CopyVerified(source, destination, expectedHash, cancellationToken, null);
     public static void CopyVerified(string source, string destination, string expectedHash, CancellationToken cancellationToken, Action<long>? copied)
     {
-        // New file only. Flush original custody before a completion marker can be durable.
-        using (var input = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read))
-        using (var output = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+        var origin = RecoveryFailureOrigin.Source; var phase = "SourceOpen"; var verified = false;
+        try
         {
-            var buffer = new byte[65536]; int count;
-            cancellationToken.ThrowIfCancellationRequested();
-            while ((count = input.Read(buffer)) != 0)
-            { cancellationToken.ThrowIfCancellationRequested(); output.Write(buffer, 0, count); copied?.Invoke(count); }
-            cancellationToken.ThrowIfCancellationRequested(); output.Flush(flushToDisk: true);
+            using (var input = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                origin = RecoveryFailureOrigin.Destination; phase = "DestinationOpen";
+                using (var output = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                using (var digest = System.Security.Cryptography.IncrementalHash.CreateHash(System.Security.Cryptography.HashAlgorithmName.SHA256))
+                {
+                    var buffer = new byte[65536];
+                    while (true)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested(); origin = RecoveryFailureOrigin.Source; phase = "SourceRead";
+                        var count = input.Read(buffer); if (count == 0) break;
+                        digest.AppendData(buffer, 0, count);
+                        origin = RecoveryFailureOrigin.Destination; phase = "DestinationWrite"; output.Write(buffer, 0, count);
+                        origin = RecoveryFailureOrigin.Undetermined; phase = "CopyProgress"; copied?.Invoke(count);
+                    }
+                    phase = "SourceChecksum";
+                    if (Convert.ToHexString(digest.GetHashAndReset()) != expectedHash)
+                        throw new InvalidDataException("Original source bytes differ from verified custody");
+                    verified = true;
+                    cancellationToken.ThrowIfCancellationRequested(); origin = RecoveryFailureOrigin.Destination; phase = "DestinationFlush";
+                    output.Flush(flushToDisk: true); phase = "DestinationClose";
+                }
+                origin = RecoveryFailureOrigin.Source; phase = "SourceClose";
+            }
+            origin = RecoveryFailureOrigin.Undetermined; phase = "CopyClosed"; CopyClosedForVerification?.Invoke(source, destination);
+            origin = RecoveryFailureOrigin.Destination; phase = "DestinationChecksum";
+            if (Wire.FileHash(destination, cancellationToken) != expectedHash)
+                throw new InvalidDataException("Destination bytes differ from the verified source stream");
         }
-        if (Wire.FileHash(destination, cancellationToken) != expectedHash) throw new InvalidDataException("Recovery copy differs from verified custody; incomplete set retained");
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException)
+        { throw new RecoveryFileFailure(origin, phase, error, verified); }
     }
+    internal static Action<string, string>? CopyClosedForVerification { get; set; }
     static bool IsMaintenanceEvidence(string name)
     {
         var p = name.Split('/');

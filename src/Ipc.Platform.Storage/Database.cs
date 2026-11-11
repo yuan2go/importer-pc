@@ -3,8 +3,8 @@ namespace Ipc.Platform.Storage;
 
 // The caller owns SQL, transaction boundaries and recovery semantics. Infrastructure never
 // interprets a business state or silently recreates a corrupt/unsupported database.
-public sealed class BackupCopyFailure(SqliteException copyFailure, Exception? sourceFailure, bool sourceCheckCompleted)
-    : IOException("SQLite backup copy failed (" + copyFailure.SqliteErrorCode + "/" + copyFailure.SqliteExtendedErrorCode + "): " + copyFailure.Message + "; source check=" +
+public sealed class BackupCopyFailure(Exception copyFailure, Exception? sourceFailure, bool sourceCheckCompleted)
+    : IOException("SQLite backup copy failed: " + copyFailure.Message + "; source check=" +
         (sourceFailure is not null ? "failed: " + sourceFailure.Message : sourceCheckCompleted ? "passed" : "cancelled; source not confirmed"),
         sourceFailure is null ? copyFailure : new AggregateException(copyFailure, sourceFailure))
 {
@@ -63,14 +63,19 @@ public static class Database
     public static void Backup(SqliteConnection source, string destination, CancellationToken cancellationToken, Action<long, long>? progress)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        using (var reserve = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { }
         // Source SQL remains outside the copy boundary: these failures are business
         // store failures. The backup API itself reports destination and source errors
         // through the same status, so its exception alone cannot fence a healthy source.
-        using var pageSizeCommand = source.CreateCommand(); pageSizeCommand.CommandText = "PRAGMA page_size";
-        var pageBytes = (long)pageSizeCommand.ExecuteScalar()!;
+        long pageBytes;
         try
         {
+            using var pageSizeCommand = source.CreateCommand(); pageSizeCommand.CommandText = "PRAGMA page_size";
+            pageBytes = (long)pageSizeCommand.ExecuteScalar()!;
+        }
+        catch (SqliteException error) { throw new BackupCopyFailure(error, error, true); }
+        try
+        {
+            using (var reserve = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { }
             using var target = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = destination, Pooling = false, DefaultTimeout = 5 }.ToString());
             target.Open(); BackupTargetOpenedForVerification?.Invoke(target);
             using var copy = SQLitePCL.raw.sqlite3_backup_init(target.Handle, "main", source.Handle, "main");
@@ -94,7 +99,7 @@ public static class Database
             } while (status != SQLitePCL.raw.SQLITE_DONE);
             cancellationToken.ThrowIfCancellationRequested();
         }
-        catch (SqliteException copyError)
+        catch (Exception copyError) when (copyError is SqliteException or IOException or UnauthorizedAccessException)
         {
             // Finish/dispose the failed destination before touching either connection.
             // Only a separate source read/integrity failure proves that the source

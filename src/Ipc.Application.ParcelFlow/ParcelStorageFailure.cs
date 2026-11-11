@@ -14,10 +14,11 @@ public sealed partial class ParcelRuntime : IRuntimeFatalSource
         { StorageFailed(error, phase); throw; }
     }
     static bool IsStorageError(Exception error) => error is StorageWriteFailure or SqliteException or IOException or UnauthorizedAccessException;
-    void GuardBackupSourceFailure(Exception error, string phase)
+    void GuardBackupSourceFailure(Exception error, string phase, bool knownSource = false)
     {
         var source = error is BackupCopyFailure copy ? copy.SourceFailure :
-            error is SqliteException or StorageWriteFailure or InvalidDataException ? error : null;
+            error is RecoveryFileFailure file ? file.Origin == RecoveryFailureOrigin.Source ? file.InnerException : null :
+            knownSource ? error : null;
         if (source is not null) StorageFailed(source, phase, source is InvalidDataException);
     }
     void StorageFailed(Exception error, string phase, bool knownIntegrityFailure = false)

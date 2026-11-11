@@ -12,6 +12,7 @@ public sealed record ParcelWorkerProgress(string Position, string State, long Re
     public long ObservedOnly { get; init; }
     public string ProducerStage { get; init; } = "Idle";
     public double ProducerStageMs { get; init; }
+    public IReadOnlyDictionary<string, long> Dispositions { get; init; } = new Dictionary<string, long>();
 }
 
 public sealed partial class ParcelRuntime
@@ -40,6 +41,7 @@ public sealed partial class ParcelRuntime
         public long ProducerStageTicks;
         public string? Failure;
         public long Received, Processed, Interrupted, ProgressTicks, ProcessingTicks, ObservedOnly;
+        public readonly ConcurrentDictionary<string, long> Dispositions = new();
         public void Dispose() => Db.Dispose();
     }
     readonly Dictionary<string, IngressLane> ingressLanes = [];
@@ -56,7 +58,9 @@ public sealed partial class ParcelRuntime
             waiting.Length == 0 ? null : waiting.Min(), ticks == 0 ? null : new DateTimeOffset(ticks, TimeSpan.Zero), Volatile.Read(ref lane.Failure),
             Interlocked.Read(ref lane.ProcessingTicks) is var active && active != 0 ? new DateTimeOffset(active, TimeSpan.Zero) : null)
         {
-            ObservedOnly = Interlocked.Read(ref lane.ObservedOnly), ProducerStage = producerStage,
+            ObservedOnly = Interlocked.Read(ref lane.ObservedOnly),
+            ProducerStage = producerStage,
+            Dispositions = new Dictionary<string, long>(lane.Dispositions),
             ProducerStageMs = producerStage != "Idle" && producerTicks > 0 ? System.Diagnostics.Stopwatch.GetElapsedTime(producerTicks).TotalMilliseconds : 0
         };
     }).ToArray();
@@ -132,7 +136,7 @@ public sealed partial class ParcelRepository
         c.CommandText = "SELECT body,body_hash FROM parcel_ingress WHERE state IN ('Pending','Interrupted')";
         using (var originals = c.ExecuteReader())
             while (originals.Read()) if (Wire.Hash(originals.GetString(0)) != originals.GetString(1))
-                    throw new InvalidDataException("Unsettled ingress original checksum differs; preserve original database and restore its complete custody set");
+                throw new InvalidDataException("Unsettled ingress original checksum differs; preserve original database and restore its complete custody set");
         if (skipCameraInputs) SkipPreviousCameraInputs();
         c.CommandText = "UPDATE parcel_ingress SET state='Interrupted',detail='Previous owner ended before receipt disposition; inspect original entity and business facts; no replay' WHERE state='Pending'";
         c.ExecuteNonQuery();
@@ -163,14 +167,19 @@ public sealed partial class ParcelRepository
                 using var body = System.Text.Json.JsonDocument.Parse(rows.GetString(5));
                 entries.Add(new
                 {
-                    Id = rows.GetString(0), PositionId = rows.GetString(1), OriginalSession = rows.GetString(2),
-                    StartedAt = rows.IsDBNull(3) ? null : rows.GetString(3), OriginalSha256 = rows.GetString(4),
+                    Id = rows.GetString(0),
+                    PositionId = rows.GetString(1),
+                    OriginalSession = rows.GetString(2),
+                    StartedAt = rows.IsDBNull(3) ? null : rows.GetString(3),
+                    OriginalSha256 = rows.GetString(4),
                     Observation = body.RootElement.GetProperty("Observation").Clone()
                 });
             }
         var evidence = new
         {
-            Total = total, Entries = entries, Omitted = total - entries.Count,
+            Total = total,
+            Entries = entries,
+            Omitted = total - entries.Count,
             Policy = "SkippedPreviousCameraInput; no replay; no claim of non-delivery or physical completion; original operations/requests/raw/Unknown unchanged"
         };
         var detail = Wire.Encode(evidence); var at = DateTimeOffset.UtcNow.ToString("O");
@@ -194,15 +203,23 @@ public sealed partial class ParcelRepository
         while (reader.Read())
             entries.Add(new
             {
-                Id = reader.GetString(0), PositionId = reader.GetString(1), ReceivedAt = reader.GetString(2),
-                OriginalSession = reader.GetString(3), StartedAt = reader.IsDBNull(4) ? null : reader.GetString(4),
+                Id = reader.GetString(0),
+                PositionId = reader.GetString(1),
+                ReceivedAt = reader.GetString(2),
+                OriginalSession = reader.GetString(3),
+                StartedAt = reader.IsDBNull(4) ? null : reader.GetString(4),
                 OriginalSha256 = reader.GetString(5),
                 Detail = reader.IsDBNull(6) ? null : reader.GetString(6)[..Math.Min(reader.GetString(6).Length, 1024)],
                 DetailTruncated = !reader.IsDBNull(6) && reader.GetString(6).Length > 1024,
                 State = "Interrupted"
             });
-        return new { Total = total, Entries = entries, Omitted = total - entries.Count,
-            Meaning = "原输入尚未核对；不据此推定原请求未发送。核对原业务请求和现场包裹后再恢复。" };
+        return new
+        {
+            Total = total,
+            Entries = entries,
+            Omitted = total - entries.Count,
+            Meaning = "原输入尚未核对；不据此推定原请求未发送。核对原业务请求和现场包裹后再恢复。"
+        };
     }
     internal bool HasInterruptedIngress(string position)
     {

@@ -1,4 +1,4 @@
-﻿using System.Threading.Channels;
+using System.Threading.Channels;
 using System.Diagnostics;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
@@ -420,8 +420,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             catch (Exception ex)
             {
                 if (observation is not null) RecordIngressTiming(positionId, observation, "HandoffFailedOriginalRetained", received.Id, enteredTicks,
-                    new() { ["LaneWait"] = laneWaitMs, ["CapacityWait"] = capacityWaitMs,
-                        ["IngressPersistenceUntilFailure"] = Stopwatch.GetElapsedTime(persistenceStarted).TotalMilliseconds });
+                    new()
+                    {
+                        ["LaneWait"] = laneWaitMs,
+                        ["CapacityWait"] = capacityWaitMs,
+                        ["IngressPersistenceUntilFailure"] = Stopwatch.GetElapsedTime(persistenceStarted).TotalMilliseconds
+                    });
                 Volatile.Write(ref failure, "Input custody persistence failed: " + ex.GetType().Name);
                 Volatile.Write(ref lane.Failure, failure); FenceIngress();
                 InvalidatePresentation();
@@ -452,7 +456,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 Volatile.Write(ref lane.State, "Processing");
                 Dictionary<string, double> stageMs = new()
                 {
-                    ["LaneWait"] = item.LaneWaitMs, ["CapacityWait"] = item.CapacityWaitMs, ["IngressPersistence"] = item.PersistenceMs,
+                    ["LaneWait"] = item.LaneWaitMs,
+                    ["CapacityWait"] = item.CapacityWaitMs,
+                    ["IngressPersistence"] = item.PersistenceMs,
                     ["BusinessQueue"] = Stopwatch.GetElapsedTime(item.QueuedTicks, dequeuedTicks).TotalMilliseconds,
                     ["BusinessGate"] = Stopwatch.GetElapsedTime(dequeuedTicks, gateTicks).TotalMilliseconds
                 };
@@ -483,25 +489,28 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                         if (item.Value is ParcelObservation queuedObservation) RecordIngressPerformance(position, queuedObservation.Observation, "IngressQueue", queueMs);
                         var handlerStarted = Stopwatch.GetTimestamp();
                         Boundary?.Invoke("BeforeIngressHandler");
-                        if (item.Value is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
+                        var handled = new ObservationHandling(ObservationDisposition.DiagnosticOnly, "MeasurementHandlerCompleted");
+                        if (item.Value is ParcelObservation o) handled = await ObserveAsync(position, o.Observation, o.Operator, o.ReceivedAt).ConfigureAwait(false);
                         else if (item.Value is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                         stageMs["BusinessHandler"] = Stopwatch.GetElapsedTime(handlerStarted).TotalMilliseconds;
-                        var input = latestInputs.GetValueOrDefault(position);
-                        if (item.Value is ParcelObservation source && (input?.Observation.SourceEventId != source.Observation.SourceEventId || input.Observation.Epoch != source.Observation.Epoch)) input = null;
                         var receiptStarted = Stopwatch.GetTimestamp();
                         FinishIngress(item.Id, "Processed", Wire.Encode(new
                         {
                             Policy = "Business handler completed; not physical completion",
                             Revision = repository!.Revision,
-                            Disposition = input?.Outcome.ToString() ?? (item.Value is ParcelObservation ? "RejectedUntrustedSource" : "MeasurementHandlerCompleted"),
-                            Input = input
+                            Disposition = item.Value is ParcelObservation ? handled.Disposition.ToString() : "MeasurementHandlerCompleted",
+                            handled.Reason,
+                            handled.RoundId,
+                            handled.OperationId,
+                            handled.Input
                         }), System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
                         stageMs["FinishReceipt"] = Stopwatch.GetElapsedTime(receiptStarted).TotalMilliseconds;
                         Interlocked.Increment(ref lane.Processed);
+                        if (item.Value is ParcelObservation) lane.Dispositions.AddOrUpdate(handled.Disposition.ToString(), 1, (_, count) => count + 1);
                         if (item.Value is ParcelObservation processedObservation) RecordIngressPerformance(position, processedObservation.Observation,
                             "IngressProcessed", System.Diagnostics.Stopwatch.GetElapsedTime(processingStarted).TotalMilliseconds);
                         if (item.Value is ParcelObservation timed) RecordIngressTiming(position, timed.Observation,
-                            input?.Reason.Split(';')[0] ?? "RejectedUntrustedSource", item.Id, item.ReceivedTicks, stageMs, item.DepthAtEnqueue, operation: input?.OperationId);
+                            handled.Disposition.ToString(), item.Id, item.ReceivedTicks, stageMs, item.DepthAtEnqueue, operation: handled.OperationId);
                     }
                     Interlocked.Exchange(ref lane.ProgressTicks, DateTimeOffset.UtcNow.UtcTicks);
                 }
@@ -542,7 +551,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             throw;
         }
     }
-    async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt)
+    async Task<ObservationHandling> ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt)
     {
         DebugDiagnostic("相机输入", "开始处理扫码消息", () => new
         {
@@ -558,17 +567,19 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         });
         if (o.OperatorInput is not null || !readers.TryGetValue(o.DeviceId, out var reader) ||
             string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
-            o.ObservedAt > receivedAt || receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) || !reader.AcceptSequence(o))
+            o.ObservedAt > receivedAt || !reader.AcceptSequence(o))
         {
             // Rejection is a terminal input fact, never trusted source/admission evidence.
             // Do not link unvalidated capture/session IDs into the inspection store.
-            RecordInput(Input(position, o with { CaptureSessionId = null, InspectionSessionId = null, OperatorInput = null }, ParcelInputOutcome.Rejected,
-                "UntrustedObservation; 本次来源、连接周期、顺序或时效未通过校验；未创建作业或请求。"), "ObservationRejected");
-            return;
+            return RecordInput(Input(position, o with { CaptureSessionId = null, InspectionSessionId = null, OperatorInput = null }, ParcelInputOutcome.Rejected,
+                "UntrustedObservation; 本次来源、连接周期、顺序或时效未通过校验；未创建作业或请求。"), "ObservationRejected", disposition: ObservationDisposition.UntrustedSource);
         }
-        await ProcessTrustedObservationAsync(position, o, admittedOperator, receivedAt, reader).ConfigureAwait(false);
+        if (receivedAt - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))
+            return RecordInput(Input(position, o with { CaptureSessionId = null, InspectionSessionId = null }, ParcelInputOutcome.Rejected,
+                "ObservationExpired; 本次相机输入已经过期；未创建作业或请求。"), "ObservationRejected", disposition: ObservationDisposition.Expired);
+        return await ProcessTrustedObservationAsync(position, o, admittedOperator, receivedAt, reader).ConfigureAwait(false);
     }
-    async Task ProcessTrustedObservationAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt, ObservationSession reader)
+    async Task<ObservationHandling> ProcessTrustedObservationAsync(string position, Observation o, OperatorIdentity? admittedOperator, DateTimeOffset receivedAt, ObservationSession reader)
     {
         var manual = o.OperatorInput is { } entry && Id == "sportmaster" && activeOperatorCommands.Contains(entry.CommandId) &&
             o.AdmissionId == "manual." + entry.CommandId && o.Epoch == "operator." + runtimeId.ToString("N") && o.DeviceId == positions[position].ReaderDeviceId;
@@ -579,21 +590,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // Explicit management reads are retained in the diagnostic store.
             // They must not replace the production parcel's card, even when a
             // queued callback reaches Application just after the window closes.
-            if (workspaceInspectionSessions.ContainsKey(o.InspectionSessionId)) return;
-            RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
-            return;
+            if (workspaceInspectionSessions.ContainsKey(o.InspectionSessionId)) return new(ObservationDisposition.DiagnosticOnly, "Management camera inspection");
+            return RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
         }
         if (Id == "sportmaster")
         {
-            await ProcessSmObservationAsync(position, o, admittedOperator, reader, manual).ConfigureAwait(false);
-            return;
+            return await ProcessSmObservationAsync(position, o, admittedOperator, reader, manual).ConfigureAwait(false);
         }
         if (repository!.RetiredIdentity(o.AdmissionId, observationId) is { } retired)
         {
             if (retired.Admission != o.AdmissionId || retired.Observation != observationId || retired.Position != position)
                 RecordRetiredConflict(retired.Id, [retired.Position, position], "Expired identity reused with changed admission/observation/position; no new request");
-            RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ExpiredIdentity: terminal detail was removed under retention; permanent identity prevents re-admission; original=" + retired.Id), "RetiredIdentityObserved");
-            return;
+            return RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "ExpiredIdentity: terminal detail was removed under retention; permanent identity prevents re-admission; original=" + retired.Id), "RetiredIdentityObserved");
         }
         var priors = repository!.FindIdentities(o.AdmissionId, observationId);
         // Re-observing an existing entity uses its original policy, never a newly applied rule.
@@ -604,17 +612,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (rejection is not null)
         {
             var input = Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created", selection: selection);
-            RecordInput(input, "ObservationRejected");
-            return;
+            return RecordInput(input, "ObservationRejected");
         }
         if (priors.Length > 0)
         {
             var contradictions = priors.Where(p => p.AdmissionId != o.AdmissionId || p.ParcelCode != code || (p.PositionId ?? "main") != position).ToArray();
             foreach (var prior in contradictions)
             { RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + o.SourceEventId + "; code=" + code); }
-            RecordInput(Input(position, o, contradictions.Length == 0 ? ParcelInputOutcome.Duplicate : ParcelInputOutcome.Blocked,
+            return RecordInput(Input(position, o, contradictions.Length == 0 ? ParcelInputOutcome.Duplicate : ParcelInputOutcome.Blocked,
                 contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id, selection), "ObservationIdentityObserved");
-            return;
         }
         // This is a new event from the current registration, not an old callback.
         // Queue age/health must close this input's display as well as admission.
@@ -622,11 +628,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
         {
             var expired = Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; 本次扫码已跳过，请取下包裹后重新上件；未创建作业或请求", selection: selection);
-            RecordInput(expired, "ObservationRejected");
-            return;
+            return RecordInput(expired, "ObservationRejected");
         }
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
-        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, nameof(ParcelInputBlockReason.ReaderConfirmationExpired), selection: selection), "ObservationBlocked"); return; }
+        { return RecordInput(Input(position, o, ParcelInputOutcome.Blocked, nameof(ParcelInputBlockReason.ReaderConfirmationExpired), selection: selection), "ObservationBlocked"); }
         RetainReleasedSmUnknowns();
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
@@ -640,14 +645,14 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             var reason = manualReasons.Length == 0 ? blocked.ToString() : blocked + "; " + string.Join("; ", manualReasons);
             if (blocked == ParcelInputBlockReason.InstallationNotReady) reason += "; " + factory.AdmissionFailure(Effective);
-            RecordInput(Input(position, o, ParcelInputOutcome.Blocked, reason, selection: selection), "ObservationBlocked"); return;
+            return RecordInput(Input(position, o, ParcelInputOutcome.Blocked, reason, selection: selection), "ObservationBlocked");
         }
         ArchiveSettled();
         if (!CapacityAvailable)
-        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, CapacityBlock.ToString(), selection: selection), "RetentionBudget", paused: true); return; }
+        { return RecordInput(Input(position, o, ParcelInputOutcome.Blocked, CapacityBlock.ToString(), selection: selection), "RetentionBudget", paused: true); }
         var capabilityBlock = AdmissionCapabilityBlock(position) ?? (ImageCapacityAvailable() ? (ParcelInputBlockReason?)null : ParcelInputBlockReason.ImageCapacityUnavailable);
         if (capabilityBlock is { } unavailable)
-        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, unavailable.ToString(), selection: selection), "AdmissionCapabilityBlocked"); return; }
+        { return RecordInput(Input(position, o, ParcelInputOutcome.Blocked, unavailable.ToString(), selection: selection), "AdmissionCapabilityBlocked"); }
         var weight = WeightRules.Configured(Effective.Weight);
         var op = new ParcelOperation(Wire.Id(), o.AdmissionId, code!, observationId, o.ObservedAt,
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
@@ -680,6 +685,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         finally { originalFrame?.Dispose(); }
         await ProcessObservedParcelAsync(op).ConfigureAwait(false);
+        return new(ObservationDisposition.Admitted, "Admitted; external result independent", op.Id, Input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
     }
     async Task ProcessObservedParcelAsync(ParcelOperation op)
     {
@@ -747,8 +753,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             (op.Wcs is null || op.Wcs.Attempts == 0))
             op = op with { State = ParcelState.Abandoned, Reason = "Round ended before first RCS attempt; original stage cleanup retained" };
         var round = SmRoundAfterOperation(op);
-        try { repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command,
-            ingressIdentity: op.RoundId is not null ? op.IngressId : activeIngress.Value, round: round); }
+        try
+        {
+            repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command,
+            ingressIdentity: op.RoundId is not null ? op.IngressId : activeIngress.Value, round: round);
+        }
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperationCommit"); throw; }
         operations[op.Id] = op;
         if (round is not null) ApplySmRound(round);

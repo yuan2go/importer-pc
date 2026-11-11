@@ -305,17 +305,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             if (!(lastSaveConfirmed && !startupSaveUncertain && document?.Candidate is { } confirmed && Wire.Encode(RequireDraft()) == Wire.Encode(confirmed))) await CheckCandidate();
             savingCandidate = true;
-            try
-            {
-                await SaveCandidate();
-                if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate))
-                    throw new InvalidOperationException("尚未确认业务配置保存成功，请按提示操作。已填写的内容保留。");
-                if (draft?.DisplayPreferences?.HasChanges == true)
-                    throw new InvalidOperationException("业务配置已保存；本机偏好未全部保存，输入保留。请检查偏好文件与权限后重试，本次配置不会重复提交。" + draft.DisplayPreferences.SaveSummary);
-                if (initialConfiguration) { ConfigurationSaved = true; CompleteDialog(); }
-                else { await CheckCandidate(); await StartReviewed(); }
-            }
-            finally { savingCandidate = false; }
+            await SaveCandidate();
+            if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate))
+                throw new InvalidOperationException("尚未确认业务配置保存成功，请按提示操作。已填写的内容保留。");
+            if (draft?.DisplayPreferences?.HasChanges == true)
+                throw new InvalidOperationException("业务配置已保存；本机偏好未全部保存，输入保留。请检查偏好文件与权限后重试，本次配置不会重复提交。" + draft.DisplayPreferences.SaveSummary);
+            if (initialConfiguration) { ConfigurationSaved = true; CompleteDialog(); }
+            else { await CheckCandidate(); await StartReviewed(); }
         });
         if (initialConfiguration) Action("重新读取配置…", Read);
         Action("稍后配置", () => { Busy = false; Close(); return Task.CompletedTask; });
@@ -467,7 +463,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             diagnosticDetails += "\n保存结果：" + Ipc.Platform.DiagnosticText.Protect(error.ToString());
             var actual = await Task.Run(maintenance.ReadAsync);
             if (actual.Candidate is not null && (actual.ConfigurationStatus == "PendingRestart" || initialConfiguration && actual.ConfigurationStatus == "Seed") && Ipc.Platform.Wire.Hash(Ipc.Platform.Wire.Encode(actual.Candidate)) == checkedCandidateHash)
-            { ConfirmSaved(actual); Message("已确认本次配置保存成功，下次启动生效。保存结果：" + error.Message + "。未重复保存。"); }
+            { ConfirmSaved(actual); Message("已读回确认业务配置保存成功；本次未重复提交，下次启动核验。" + draft?.DisplayPreferences?.SaveSummary); }
             else if (actual.ConfigurationHash == expected) { startupSaveUncertain = false; Message("配置未变化，未保存；已填写的内容保留：" + error.Message); }
             else Message("保存结果未确认，请勿重复保存。保存结果：" + error.Message + "；当前配置：" + actual.ConfigurationStatus + "。重新读取前可先保存草稿。");
         }
@@ -570,6 +566,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     Action? focusAfterOperation;
     protected override void OperationCompleted()
     {
+        savingCandidate = false;
         refreshReview?.Invoke(); UpdateActions();
         // Keep a partially saved first setup visible above the scrolling form;
         // a successful business CAS must not be presented as a failed check.
@@ -582,7 +579,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (!initialConfiguration) { base.OperationFailed(error); return; }
         diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails + "\n" + error + "\n" + Status.Text);
         saveState.Text = error is UnauthorizedAccessException ? "需要重新验证" : startupSaveUncertain ? "保存结果未确认" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : savingCandidate ? "保存未完成" : "检查未通过";
-        savingCandidate = false;
         refreshReview?.Invoke();
     }
     void LocateFirstIssue()

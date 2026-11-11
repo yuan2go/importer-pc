@@ -50,14 +50,14 @@ static partial class Program
             Button Save() => Descendants(first).OfType<Button>().Single(b=>b.IsVisible && Equals(b.Content,"保存配置"));
             Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(()=>!(bool)busy.GetValue(first)! && probe.Saves>0);
-            Check(first.IsVisible && (bool)type.GetField("lastSaveConfirmed",flags)!.GetValue(first)! && !(bool)type.GetField("startupSaveUncertain",flags)!.GetValue(first)! && probe.Saves==1,
-                "actual first-configuration workflow acknowledges business persistence before a local preference failure and remains open; facts=" + Wire.Encode(new { first.IsVisible, Confirmed=type.GetField("lastSaveConfirmed",flags)!.GetValue(first), Uncertain=type.GetField("startupSaveUncertain",flags)!.GetValue(first), probe.Saves, Status=((TextBlock)type.BaseType!.GetField("Status",flags)!.GetValue(first)!).Text }));
+            Check(probe.RecoveredReads > 0 && first.IsVisible && (bool)type.GetField("lastSaveConfirmed",flags)!.GetValue(first)! && !(bool)type.GetField("startupSaveUncertain",flags)!.GetValue(first)! && probe.Saves==1,
+                "after a lost save reply, actual first configuration reads back business persistence before a local preference failure and remains open; facts=" + Wire.Encode(new { first.IsVisible, Confirmed=type.GetField("lastSaveConfirmed",flags)!.GetValue(first), Uncertain=type.GetField("startupSaveUncertain",flags)!.GetValue(first), probe.Saves, probe.RecoveredReads, Status=((TextBlock)type.BaseType!.GetField("Status",flags)!.GetValue(first)!).Text }));
             var configFile=Path.Combine(launch.ConfigurationDirectory,"business.json"); var hash=Wire.FileHash(configFile);
             Check(preferences.HasChanges && File.ReadAllText(file)=="{broken" && preferences.LastSave.Single(x=>x.Path=="ShowPace").State=="Unknown" && PresentationPreferences.ReadCueVolume("sportmaster")==25,
                 "first configuration keeps the failed original file/draft and reports independent successful preference writes");
             var status=(TextBlock)type.BaseType!.GetField("Status",flags)!.GetValue(first)!;
             await Flush(); first.UpdateLayout();
-            Check(status.IsVisible && status.Text.Contains("业务配置已保存",StringComparison.Ordinal) && status.Text.Contains("效率显示",StringComparison.Ordinal)
+            Check(status.IsVisible && status.Text.Contains("效率显示",StringComparison.Ordinal) && status.Text.Contains("保存结果未确认",StringComparison.Ordinal)
                 && ((TextBlock)type.GetField("saveState",flags)!.GetValue(first)!).Text=="业务配置已保存；本机偏好待保存",
                 "partial save shows the actual successful and uncertain items above the scrolling form, with an accurate footer");
             CaptureInternal(evidence,"first-preference-partial",first,lines);
@@ -75,11 +75,22 @@ static partial class Program
     public class FirstPreferenceMaintenanceProbe : DispatchProxy
     {
         public IStartupMaintenance Inner=null!;
-        public int Saves;
+        public int Saves, RecoveredReads;
+        static async Task<StartupMaintenanceDocument> LoseReply(Task<StartupMaintenanceDocument> pending)
+        {
+            await pending;
+            throw new IOException("Synthetic reply loss after the actual configuration commit");
+        }
         protected override object? Invoke(MethodInfo? method, object?[]? args)
         {
-            if(method!.Name is nameof(IStartupMaintenance.RepairInitialAsync) or nameof(IStartupMaintenance.StageAsync)) Interlocked.Increment(ref Saves);
-            try { return method.Invoke(Inner,args); }
+            var save = method!.Name is nameof(IStartupMaintenance.RepairInitialAsync) or nameof(IStartupMaintenance.StageAsync);
+            if(save) Interlocked.Increment(ref Saves);
+            if(Saves > 0 && method.Name == nameof(IStartupMaintenance.ReadAsync)) Interlocked.Increment(ref RecoveredReads);
+            try
+            {
+                var response = method.Invoke(Inner,args);
+                return save && Saves == 1 ? LoseReply((Task<StartupMaintenanceDocument>)response!) : response;
+            }
             catch(TargetInvocationException error) { System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error.InnerException!).Throw(); throw; }
         }
     }

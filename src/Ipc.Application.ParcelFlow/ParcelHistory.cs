@@ -265,9 +265,12 @@ public sealed partial class ParcelRuntime
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
     int? projectedCapacity;
     int UnresolvedCapacity => projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
-    bool CapacityAvailable => storageCapacityFailure is null && !fatalStorage.Task.IsCompleted && UnresolvedCapacity < Effective.MaximumOperations;
+    bool CapacityAvailable => storageCapacityFailure is null && !fatalStorage.Task.IsCompleted &&
+        (Id == "sportmaster" || UnresolvedCapacity < Effective.MaximumOperations);
     ParcelCapacity Capacity() => new(UnresolvedCapacity, operations.Count, archiveCount?.Count ?? 0,
-        Effective.MaximumOperations, CapacityAvailable, "Capacity covers current operations. History and permanent request identities remain subject to storage reserve", freeStorageBytes, Retention.MinimumFreeBytes)
+        Id == "sportmaster" ? int.MaxValue : Effective.MaximumOperations, CapacityAvailable,
+        Id == "sportmaster" ? "SM parcel admission has no unresolved-operation count limit; actual storage reserve and original request guards remain enforced"
+            : "Capacity covers current operations. History and permanent request identities remain subject to storage reserve", freeStorageBytes, Retention.MinimumFreeBytes)
     {
         HistoricalUnknown = archiveCount?.HistoricalUnknown ?? 0,
         AdmissionBlock = CapacityAvailable ? null : CapacityBlock

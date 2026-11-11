@@ -110,7 +110,7 @@ public sealed partial class SupplyStationViewModel
     public bool CanOpenConfigurationActivation => HasConfigurationActivationFailure ? CanStartOperation : CanRequestActivation;
     public string DiagnosticConfiguration => ConfigurationActivationOutcome;
     public string DiagnosticCapacity => Snapshot?.Capacity is { } c
-        ? $"当前作业 {c.Unresolved} / {c.MaximumUnresolved}。历史待核对 {c.HistoricalUnknown} 条，可在记录中查看。"
+        ? $"当前作业 {c.Unresolved}。历史待核对 {c.HistoricalUnknown} 条，可在记录中查看。"
         : "尚未取得容量信息";
     public string DiagnosticBlockers
     {

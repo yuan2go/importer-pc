@@ -83,7 +83,7 @@ internal static class DualCameraPerformance
     }
     static async Task IndependentSamePosition(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-position-independent"));
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-position-independent"), maximumOperations: 1);
         h.Config.Wcs!.Parameters["request-timeout-ms"] = "12000";
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
@@ -106,6 +106,8 @@ internal static class DualCameraPerformance
             var next = before.Operations.Single(o => o.ParcelCode == "SYNTH-NEXT-READY");
             Check(!hold.Task.IsCompleted && before.Operations.Single(o => o.Id == first.Id).Wcs!.State == StageState.Dispatching && h.Peer.Requests.Count == 2,
                 "a fresh different parcel on the same position gets its own result while the predecessor is still in flight");
+            Check(before.Configuration.Effective.MaximumOperations == 1 && before.Capacity is { Available: true, Unresolved: >= 1 },
+                "an old pending-operation limit of one cannot block the next SM parcel or rewrite the saved configuration");
             Check(before.Positions!.Single(p => p.Id == "left").CurrentOperation == next.Id,
                 "the card follows the new parcel rather than the predecessor's unfinished call");
             hold.TrySetResult();

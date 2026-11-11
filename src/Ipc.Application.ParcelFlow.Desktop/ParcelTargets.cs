@@ -39,7 +39,8 @@ public partial class ParcelViewModel
     public string HistoryCommandTarget => "记录命令目标：" + (Selected?.PositionId ?? "—") + " · " + (Selected?.ParcelCode ?? "未选择") + " · " + (Selected?.Id ?? "—");
     public bool CanHistoryContinue => !Busy && Fresh && Selected is not null && Snapshot?.Availability?.ContinuePrepared.Contains(Selected.Id) == true;
     public bool CanHistoryQuery => !Busy && Fresh && !SelectedRcsQueryUnavailable && Selected is not null && Snapshot?.Operations.Any(x => x.Id == Selected.Id && (x.Wcs?.State == StageState.Unknown || x.Plc?.State is StageState.Unknown or StageState.Accepted || x.Capture?.State == StageState.Unknown || x.Upload?.State == StageState.Unknown)) == true;
-    public string CapacityState => Snapshot?.Capacity is { } c ? $"未完成 {c.Unresolved}/{c.MaximumUnresolved} · 在库 {c.Resident} · 已归档 {c.Archived}" : "容量未取得";
+    public string CapacityState => Snapshot?.Capacity is { } c
+        ? (Snapshot.ApplicationId == "sportmaster" ? $"当前作业 {c.Unresolved}" : $"未完成 {c.Unresolved}/{c.MaximumUnresolved}") + $" · 在库 {c.Resident} · 已归档 {c.Archived}" : "容量未取得";
     public string AuxiliaryState => string.Join("\n", Snapshot?.AuxiliaryReasons ?? []);
     public string InstalledProviderParameters { get; private set; } = "";
     public async Task ValidateConfigurationDraftAsync() { var candidate = Wire.Decode<ParcelConfiguration>(ConfigurationDraft); var r = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate)); Message = r.Status + " · " + r.Reason; }

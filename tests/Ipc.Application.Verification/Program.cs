@@ -252,7 +252,9 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
         await app.ReconcileAsync(op.Id); var completed = (await app.SnapshotAsync()).Operations.Single(x => x.Id == op.Id);
         Pass(completed.State == ParcelState.PhysicalCompleted && completed.Plc!.Attempts == 1, id + " physical completion comes only from explicit original peer query");
     }
-    await Task.Delay(400); // Sportmaster: the operator lifts the parcel; a re-placement is a new entity.
+    // These are synthetic manual sources with a 300 ms release window, not
+    // camera evidence of a physical tray departure.
+    await Task.Delay(400);
     Pass(app.EmitReference("parcel-two", "000000123", "reader-event-two"), id + " same code different admitted entity queued");
     await Wait(app, x => x.Operations.Length == 2 && x.Operations.Single(o => o.Id == op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PhysicalCompleted) &&
         x.Operations.Single(o => o.Id != op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));
@@ -261,7 +263,10 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     var prior = (await app.SnapshotAsync()).Configuration;
     var invalid = prior.Effective with { Weight = prior.Effective.Weight with { Precision = 99 } };
     Pass((await app.StageConfigurationAsync(prior.Revision, invalid, "Synthetic directed configuration verification")).Status == "Rejected" && Wire.Encode((await app.SnapshotAsync()).Configuration) == Wire.Encode(prior), id + " invalid configuration leaves old authority byte-equivalent");
-    var backup = Path.Combine(root, id + ".backup.db"); Pass((await app.BackupAsync(backup)).Status == "BackupCreated" && File.Exists(backup), id + " online backup actually created");
+    var backup = Path.Combine(root, id + ".backup.db");
+    var backupReceipt = await LifecycleOptimization.AfterMonitorDrain(app, () => app.BackupAsync(backup),
+        ParcelBindings.All(Config(id)).Select(p => p.InstanceId).ToArray());
+    Pass(backupReceipt.Status == "BackupCreated" && File.Exists(backup), id + " online backup actually created: " + Wire.Encode(backupReceipt));
     var restoreData = Path.Combine(root, id + "-restored");
     ParcelRecovery.Restore(backup, Path.Combine(restoreData, "Simulation", "reference-17", id));
     Pass(File.Exists(Path.Combine(restoreData, "Simulation", "reference-17", id, "RESTORED-ISOLATED.json")), id + " full recovery set verified and copied into a new isolated application directory");

@@ -4,6 +4,9 @@ using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
+using Ipc.Platform.Storage;
+using Microsoft.Data.Sqlite;
+using System.Reflection;
 
 internal static class BackupConsistency
 {
@@ -20,6 +23,8 @@ internal static class BackupConsistency
         foreach (var outcome in new[] { "complete", "cancel", "copy-failure" }) await Interleaving(workspace, Path.Combine(root, outcome), outcome == "cancel", outcome == "copy-failure");
         foreach (var mode in new[] { "corrupt", "write-failure", "disabled" }) await ScheduleFault(workspace, Path.Combine(root, mode), mode);
         await ScheduleOutcomes(workspace, Path.Combine(root, "outcomes"));
+        foreach (var mode in new[] { "full", "io" }) await CopyFailureIsolation(workspace, Path.Combine(root, "copy-" + mode), mode);
+        CopySourceFailure(Path.Combine(root, "copy-source"));
     }
     static async Task Interleaving(string workspace, string root, bool cancel, bool fail)
     {
@@ -113,6 +118,90 @@ internal static class BackupConsistency
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity?.AdmissionBlock == ParcelInputBlockReason.StorageUnavailable);
         Check((await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-STORAGE-BLOCK"), default)).Status != "Admitted" && h.Peer.Requests.Count == 1,
             "business storage failure still blocks supply after auxiliary state isolation");
+    }
+    // Native SQLite setup seam, before backup_init owns the target connection.
+    // FULL is a real backup_step failure after the application capacity preflight.
+    static readonly PropertyInfo TargetOpened = typeof(Database).GetProperty("BackupTargetOpenedForVerification", BindingFlags.Static | BindingFlags.NonPublic)!;
+    static async Task CopyFailureIsolation(string workspace, string root, string mode)
+    {
+        await using var h = new ManualSupplyHarness(workspace, root, deferred: true, mode: RunMode.Simulation);
+        var target = Path.Combine(root, "backups"); Directory.CreateDirectory(target);
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with { BackupSchedule = new(target, 15, 10) });
+        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App); await Command(h.App, "Pause");
+        var now = DateTimeOffset.UtcNow;
+        await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+        {
+            await h.App.CheckScheduledBackupAsync(now);
+            await h.App.CheckScheduledBackupAsync(now.AddMinutes(16));
+            return true;
+        });
+        var success = (await h.App.SnapshotAsync()).BackupScheduleStatus!;
+        Check(success.Outcome == "BackupCreated", "copy " + mode + " starts with a verified earlier successful schedule");
+        var originalSuccessHash = Wire.FileHash(success.LastSuccessfulBackup!);
+        Action<SqliteConnection> failTarget = db =>
+        {
+            if (mode == "io") throw new SqliteException("Synthetic destination I/O failure at the native backup boundary", SQLitePCL.raw.SQLITE_IOERR);
+            using var limit = db.CreateCommand(); limit.CommandText = "PRAGMA max_page_count=1"; limit.ExecuteScalar();
+        };
+        TargetOpened.SetValue(null, failTarget);
+        try
+        {
+            var manualDestination = Path.Combine(root, "manual-failed.db");
+            await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+            {
+                try { await h.App.BackupAsync(manualDestination); throw new Exception("Target copy fault returned success"); }
+                catch (BackupCopyFailure error)
+                {
+                    Check(error.SourceFailure is null && error.SourceCheckCompleted && error.InnerException is SqliteException sql &&
+                        sql.SqliteErrorCode == (mode == "full" ? SQLitePCL.raw.SQLITE_FULL : SQLitePCL.raw.SQLITE_IOERR),
+                        "manual " + mode + " retains the SQLite copy failure and independently verifies the healthy source");
+                }
+                await h.App.CheckScheduledBackupAsync(success.NextDue!.Value.AddMinutes(1));
+                return true;
+            });
+            var failed = (await h.App.SnapshotAsync()).BackupScheduleStatus!;
+            Check(failed.Outcome == "Failed:BackupCopyFailure" && failed.LastSuccessfulBackup == success.LastSuccessfulBackup &&
+                failed.LastSuccessfulAt == success.LastSuccessfulAt && Wire.FileHash(success.LastSuccessfulBackup!) == originalSuccessHash &&
+                !File.Exists(manualDestination + ".recovery/COMPLETED.json") && Directory.EnumerateFiles(target, "COMPLETED.json", SearchOption.AllDirectories).Count() == 1,
+                "scheduled " + mode + " retains the actual failed receipt and previous success, never publishing a complete failed set");
+            var progress = Progress(h.App);
+            await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > progress));
+            Check(!h.App.FatalFailure.IsCompleted, "target " + mode + " cannot complete business FatalFailure or terminate maintenance");
+        }
+        finally { TargetOpened.SetValue(null, null); }
+        await Command(h.App, "Resume");
+        var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-AFTER-COPY-FAILURE"), default);
+        Check(next.Status == "Admitted" && h.Peer.Requests.Count == 1 && !h.App.FatalFailure.IsCompleted,
+            "legitimate supply resumes after " + mode + " without restarting the station or rewriting an original request");
+    }
+    static void CopySourceFailure(string root)
+    {
+        Directory.CreateDirectory(root); var file = Path.Combine(root, "source.db");
+        using var source = new SqliteConnection("Data Source=" + file + ";Pooling=False"); source.Open();
+        using (var create = source.CreateCommand()) { create.CommandText = "CREATE TABLE payload(body TEXT); INSERT INTO payload VALUES('synthetic source')"; create.ExecuteNonQuery(); }
+        string? corruptedHash = null;
+        Action<SqliteConnection> sourceDamage = _ =>
+        {
+            using var damage = new SqliteConnection("Data Source=" + file + ";Pooling=False"); damage.Open();
+            using var command = damage.CreateCommand(); command.CommandText = "PRAGMA writable_schema=ON; UPDATE sqlite_schema SET rootpage=2147483647 WHERE name='payload'; PRAGMA writable_schema=OFF";
+            command.ExecuteNonQuery(); damage.Close();
+            using (var bytes = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                corruptedHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes));
+            throw new SqliteException("Synthetic ambiguous copy I/O failure with an actually damaged source", SQLitePCL.raw.SQLITE_IOERR);
+        };
+        TargetOpened.SetValue(null, sourceDamage);
+        try
+        {
+            try { Database.Backup(source, Path.Combine(root, "partial.db"), CancellationToken.None); throw new Exception("Damaged source accepted"); }
+            catch (BackupCopyFailure error)
+            {
+                source.Close(); // Strict original-byte hashing follows the real native handle release.
+                Check(error.SourceCheckCompleted && error.SourceFailure is SqliteException or InvalidDataException &&
+                    error.InnerException is AggregateException && corruptedHash == Wire.FileHash(file),
+                    "actual source integrity failure remains distinct from destination failure, retaining both errors and damaged originals");
+            }
+        }
+        finally { TargetOpened.SetValue(null, null); }
     }
     static async Task ScheduleOutcomes(string workspace, string root)
     {

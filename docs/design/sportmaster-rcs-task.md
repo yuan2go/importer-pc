@@ -1,6 +1,6 @@
 # Sportmaster RCS 取格口合同
 
-SM 使用内置 RCS HTTP 客户端，不配置指定格口、请求编号范围或本地模拟提供者。所有新请求由 RCS 分配格口，固定 `specifiedChute=false`、`chuteCode=null`；无可用格口策略通过 `noDestToExp` 冻结到原报文。
+SM 使用内置 RCS HTTP 客户端，不配置请求编号范围或本地模拟提供者。格口分配方式由左右位共用，默认由 RCS 分配（`specifiedChute=false`、`chuteCode=null`）；选择指定格口时必填完整格口编码，新请求发送布尔 `true` 和字符串编码，实际格口以 RCS 返回为准。无可用格口策略通过 `noDestToExp` 冻结到原报文。
 
 Application 在冻结请求前按 Unix 微秒时间及永久编号下限分配 requestId，taskId 使用同一数字。编号所有权与请求同事务持久化，重启、归档、清理及恢复不复用。source 按实际来源为 BAR、MANUAL 或 PDA；人工输入不依赖相机在线或已配置，不伪造物理身份。相机编码与心跳映射共用配置。
 

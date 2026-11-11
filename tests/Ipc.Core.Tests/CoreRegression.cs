@@ -9,7 +9,7 @@ public sealed class CoreRegression
     public TestContext TestContext { get; set; } = null!;
     [TestMethod]
     [TestCategory("Core")]
-    [DataRow("--backup-consistency", 16)]
+    [DataRow("--backup-consistency", 56)]
     [DataRow("--stability-analysis", 12)]
     [DataRow("--industrial-recovery", 22)]
     [DataRow("--industrial-lifecycle", 76)]

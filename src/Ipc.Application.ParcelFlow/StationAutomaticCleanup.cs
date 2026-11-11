@@ -151,7 +151,7 @@ public sealed partial class ParcelRuntime
         }
         catch (Exception error) when (error is IOException or InvalidOperationException or UnauthorizedAccessException or OperationCanceledException or Microsoft.Data.Sqlite.SqliteException)
         {
-            if (error is Microsoft.Data.Sqlite.SqliteException or Ipc.Platform.Storage.StorageWriteFailure or InvalidDataException) StorageFailed(error, "AutomaticRetention");
+            GuardBackupSourceFailure(error, "AutomaticRetention");
             automaticCleanup = new("本轮未完成", previous, now.AddMinutes(15), "原件和已提交清理事实保留；请在维护中心查看详情。" + DiagnosticText.Protect(error.Message), backup);
             Diagnostic("维护", "自动历史清理未完成", "警告", DiagnosticText.Protect(error.Message));
         }

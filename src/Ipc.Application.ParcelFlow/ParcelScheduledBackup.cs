@@ -124,10 +124,8 @@ public sealed partial class ParcelRuntime
                 { receipt = new("Cancelled", "备份已取消；未核验的残件不能作为完整恢复集。", repository!.Revision); }
                 catch (Exception error) when (error is IOException or InvalidDataException or InvalidOperationException or UnauthorizedAccessException or Microsoft.Data.Sqlite.SqliteException)
                 {
-                    // Business database failures retain their existing station guard.
-                    // Target-volume failures affect this backup, not legitimate supply.
-                    if (error is Microsoft.Data.Sqlite.SqliteException or Ipc.Platform.Storage.StorageWriteFailure or InvalidDataException)
-                        StorageFailed(error, "ScheduledBackup");
+                    // BackupCore owns source guards; destination failure only fails this backup.
+                    Diagnostic("维护", "计划备份创建失败", "警告", error.ToString());
                     receipt = new("Failed:" + error.GetType().Name, DiagnosticText.Protect(error.Message), repository!.Revision);
                 }
                 await gate.WaitAsync().ConfigureAwait(false);

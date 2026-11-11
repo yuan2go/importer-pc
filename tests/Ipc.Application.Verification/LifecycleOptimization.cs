@@ -155,18 +155,19 @@ static class LifecycleOptimization
         for (var i = 0; i < 20; i++) { var s = await app.SnapshotAsync(); var r = await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause")); if (r.Status != "Conflict") { if (r.Status != "Persisted") throw new Exception(r.Reason); return; } }
         throw new TimeoutException("Pause CAS");
     }
-    internal static async Task<T> AfterMonitorDrain<T>(ParcelRuntime app, Func<Task<T>> action)
+    internal static async Task<T> AfterMonitorDrain<T>(ParcelRuntime app, Func<Task<T>> action, params string[] expectedPorts)
     {
         // Reuse the real pre-reservation seam. Never relax the runtime fence or
         // retry a possibly accepted action to turn a busy outcome into success.
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var arrived = new System.Collections.Concurrent.ConcurrentDictionary<string, byte>();
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var prior = app.BeforeMonitorProbe;
-        app.BeforeMonitorProbe = (_, token) => { entered.TrySetResult(); return release.Task.WaitAsync(token); };
+        app.BeforeMonitorProbe = (port, token) => { arrived.TryAdd(port, 0); entered.TrySetResult(); return release.Task.WaitAsync(token); };
         try
         {
             await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await Wait(app, s => s.Availability!.Configure);
+            await Wait(app, s => s.Availability!.Configure && expectedPorts.All(arrived.ContainsKey));
             return await action();
         }
         finally { app.BeforeMonitorProbe = prior; release.TrySetResult(); }

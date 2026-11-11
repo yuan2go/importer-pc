@@ -55,11 +55,6 @@ public sealed partial class ParcelRepository
         return new(id, r.GetString(0), r.IsDBNull(1) ? null : r.GetString(1), r.IsDBNull(2) ? null : r.GetString(2), stage,
             checked((int)r.GetInt64(4)), stage == "Accepted", r.IsDBNull(5) ? null : r.GetString(5), Revision);
     }
-    internal string? LatestLegacyCameraIsolation()
-    {
-        using var c = db.CreateCommand(); c.CommandText = "SELECT event,detail FROM parcel_audit WHERE event IN ('CameraIsolationStarted','CameraIsolationReleased','CameraIsolationRetired') ORDER BY seq DESC LIMIT 1";
-        using var r = c.ExecuteReader(); return r.Read() && r.GetString(0) == "CameraIsolationStarted" ? r.GetString(1) : null;
-    }
 }
 
 public sealed partial class ParcelRuntime

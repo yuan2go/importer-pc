@@ -47,11 +47,17 @@ static partial class ArchitectureQuality
         {
             Check((await app.SnapshotAsync()).IdentityConflicts!.Single().Id == conflictId, "identity conflict remains a stable responsibility after restart");
             await Maintenance(app); await Command(app, "AcknowledgeIdentityConflict", conflictId, "Synthetic inspection: conflicting source isolated; original entity retained");
-            await Command(app, "Resume"); Check((await app.SnapshotAsync()).Positions!.All(p => p.Admit), "authorized identity disposition recovers affected positions without resending original WCS");
+            await Command(app, "Resume");
+            var recovered = await Wait(app, s => s.Positions!.Single(p => p.Id == "right").BarcodeInput?.Camera == true);
+            Check(recovered.IdentityConflicts!.Length == 0 && recovered.Operations.Single().Wcs!.Attempts == 1,
+                "authorized identity disposition releases the conflict without resending or clearing the original placement");
         }
-        await using (var app = await Open(Config("sportmaster") with { Retention = new(MinimumFreeBytes: 1099511627776) }, "storage-reserve"))
+        await using (var app = await Open(Config("sportmaster") with { Retention = new(MinimumFreeBytes: 67108864) }, "storage-reserve",
+            beforeStart: app => app.StorageAvailableBytesForVerification = () => 33554432))
         {
-            var s = await app.SnapshotAsync(); Check(!s.Availability!.Admit && !s.Availability.Resume && !s.Capacity!.Available && s.BlockingReasons.Any(r => r.Contains("Storage reserve")), "actual disk reserve policy shares admission/Resume/projection without filling or deleting the disk");
+            var s = await app.SnapshotAsync(); Check(!s.Availability!.Admit && !s.Availability.Resume && !s.Capacity!.Available &&
+                s.Capacity.FreeStorageBytes == 33554432 && s.Capacity.MinimumFreeBytes == 67108864,
+                "actual disk reserve policy shares admission/Resume/projection with controlled volume capacity");
         }
         await OverloadChecks();
         await ConfigurationChecks();
@@ -69,7 +75,7 @@ static partial class ArchitectureQuality
         await vm.RefreshAsync(); vm.ConfigurationDraft = Wire.Encode(oldDraft with { TimeoutMs = 1802 }); vm.ConfigurationReason = "Synthetic older editor after automatic refresh";
         await vm.SaveConfigurationAsync(); var after = await app.SnapshotAsync();
         Check(after.Configuration.Revision == loaded.Configuration.Revision + 1 && after.Configuration.Pending!.TimeoutMs == 1801 && vm.ConfigurationSubmissionOutcome == "Conflict" && !vm.HasUnconfirmedConfigurationSubmission, "automatic UI refresh cannot replace the full draft CAS revision and overwrite another window's saved candidate");
-        Check(secondWindow.Message.StartsWith("PendingRestart") && Wire.Encode(after.Configuration.Pending) == Wire.Encode(loaded.Configuration.Effective with { TimeoutMs = 1801 }) && vm.ConfigurationDraft == Wire.Encode(oldDraft with { TimeoutMs = 1802 }),
+        Check(secondWindow.ConfigurationSubmissionOutcome == "PendingRestart" && Wire.Encode(after.Configuration.Pending) == Wire.Encode(loaded.Configuration.Effective with { TimeoutMs = 1801 }) && vm.ConfigurationDraft == Wire.Encode(oldDraft with { TimeoutMs = 1802 }),
             "two real window VMs retain conflicting draft and preserve the complete other position/instance topology");
         var unsupported = Config("sportmaster") with { SchemaVersion = 2, Topology = null };
         var original = Wire.Encode(unsupported);
@@ -110,19 +116,19 @@ static partial class ArchitectureQuality
         string ackId;
         await using (var app = await Open(c, "overload-durable"))
         {
-            await ManagementModeFixture.Authorize(app);
-            var before = await app.SnapshotAsync(); var originalMarker = File.ReadAllText(marker);
-            using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
+            await Maintenance(app);
+            var originalMarker = File.ReadAllText(marker);
+            using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db") + ";Pooling=False"))
             {
                 db.Open(); using var tx = db.BeginTransaction();
-                try { await Task.Run(() => app.CommandAsync(new(Wire.Id(), before.Revision, "AcknowledgeOverload"))); Check(false, "SQLite writer contention must reject acknowledgement"); }
+                try { await Task.Run(() => Command(app, "AcknowledgeOverload")); Check(false, "SQLite writer contention must reject acknowledgement"); }
                 catch (SqliteException e) { Check(e.SqliteErrorCode == 5 && File.ReadAllText(marker) == originalMarker, "AQ02 real SQLITE_BUSY preserves original marker byte-for-byte before acknowledgement commit"); }
                 tx.Rollback();
             }
             var s = await app.SnapshotAsync(); Check(s.BlockingReasons.Any(x => x.Contains("Overload")), "failed acknowledgement cannot clear in-memory overload responsibility");
             app.Boundary = p => { if (p == "AfterOverloadAcknowledged") throw new IOException("Synthetic interruption after durable ack, before marker cleanup"); };
             ackId = Wire.Id(); s = await app.SnapshotAsync();
-            try { await app.CommandAsync(new(ackId, s.Revision, "AcknowledgeOverload")); Check(false, "post-commit boundary must interrupt cleanup"); }
+            try { await Command(app, "AcknowledgeOverload", id: ackId); Check(false, "post-commit boundary must interrupt cleanup"); }
             catch (IOException) { Check(File.Exists(marker), "post-commit interruption retains marker for deterministic restart cleanup"); }
         }
         await using (var app = await Open(c, "overload-durable"))

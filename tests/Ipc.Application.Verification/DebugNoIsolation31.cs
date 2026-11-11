@@ -1,16 +1,19 @@
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Platform;
+using Microsoft.Data.Sqlite;
 
 internal static class DebugNoIsolation31
 {
     static void Check(bool condition, string reason)
     { if (!condition) throw new InvalidOperationException(reason); Console.WriteLine("PASS DEBUG31 " + reason); }
     internal static string RuntimeDirectory(BusinessLaunch launch, ParcelConfiguration c) => Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
-    internal static void SeedLegacyIsolation(string directory)
+    static string SeedHistoricalAudit(string directory)
     {
         using var repository = new ParcelRepository(directory, "sportmaster");
-        repository.Commit(null, "CameraIsolationStarted", Wire.Encode(new { Id = Wire.Id(), CommandId = Wire.Id(), Reason = "Synthetic pre-31 legacy isolation", SingleReadRounds = false }), paused: true);
+        var original = Wire.Encode(new { Id = Wire.Id(), CommandId = Wire.Id(), Reason = "Synthetic historical audit", SingleReadRounds = false });
+        repository.Commit(null, "CameraIsolationStarted", original, paused: true);
+        return original;
     }
     internal static async Task Run(string workspace, string root)
     {
@@ -20,13 +23,23 @@ internal static class DebugNoIsolation31
             var admitted = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "DEBUG31-ORIGINAL"), default);
             await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(admitted.OperationId!))?.Wcs?.State == StageState.Accepted);
             var original = Wire.Encode((await h.App.OperationAsync(admitted.OperationId!))!.Wcs);
-            await h.App.DisposeAsync(); SeedLegacyIsolation(RuntimeDirectory(h.Launch, h.Config));
+            await h.App.DisposeAsync(); var audit = SeedHistoricalAudit(RuntimeDirectory(h.Launch, h.Config));
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
             var before = await h.App.SnapshotAsync();
+            using (var db = new SqliteConnection(new SqliteConnectionStringBuilder
+            { DataSource = Path.Combine(RuntimeDirectory(h.Launch, h.Config), "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
+            {
+                db.Open(); using var query = db.CreateCommand();
+                query.CommandText = "SELECT detail FROM parcel_audit WHERE event='CameraIsolationStarted'";
+                var retained = (string?)query.ExecuteScalar();
+                query.CommandText = "SELECT count(*) FROM parcel_audit WHERE event='CameraIsolationRetired'";
+                Check(retained == audit && (long)query.ExecuteScalar()! == 0,
+                    "restart preserves historical audit bytes without interpreting or migrating retired isolation state");
+            }
             Check(before.Availability!.Configure && !(await h.App.CameraInspectionStatusAsync(default)).BusinessFenced,
                 "persisted legacy isolation cannot block an authorized save after restart");
             Check(before.BlockingReasons.All(r => !r.Contains("隔离") && !r.Contains("清场")) && Wire.Encode((await h.App.OperationAsync(admitted.OperationId!))!.Wcs) == original && h.Peer.Requests.Count == 1,
-                "retirement preserves original request/receipt bytes without replay or a clearance workflow");
+                "restart preserves original request/receipt bytes without replay or a clearance workflow");
             var endpoint = "http://127.0.0.1:9/rcs/sorter/api";
             var candidate = before.Configuration.Effective with { Wcs = before.Configuration.Effective.Wcs! with { Target = endpoint } };
             var saved = await h.App.StageConfigurationAsync(before.Configuration.Revision, candidate, "Synthetic RCS endpoint save after legacy isolation");

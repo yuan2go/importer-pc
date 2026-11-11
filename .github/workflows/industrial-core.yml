@@ -60,7 +60,7 @@ jobs:
             $matched = @($actualResults | Where-Object { $_.testName -eq $method })
             if ($matched.Count -ne 1 -or $matched[0].outcome -ne 'Passed') { throw "Required helper boundary test missing: $method" }
           }
-      - name: Incremental code format
+      - name: Verify whitespace across src and tests
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1

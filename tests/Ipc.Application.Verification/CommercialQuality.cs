@@ -70,7 +70,7 @@ static class CommercialQuality
         await vm.RefreshAsync(); Check(vm.CanAdmit && vm.Snapshot!.State == "Ready" && vm.Status == "作业就绪", "real initial snapshot ready");
         probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("synthetic read failure"));
         await vm.RunAsync(vm.RefreshAsync);
-        Check(!vm.CanAdmit && !vm.CanResume && !vm.CanConfigure && vm.Status.Contains("失效") && !vm.Health.Contains("就绪"), "classic failed read invalidates Ready, health and new actions");
+        Check(!vm.Fresh && !vm.CanAdmit && !vm.CanResume && !vm.CanConfigure && !vm.Health.Contains("就绪"), "failed read invalidates freshness, health and new actions");
         var writes = probe.Writes;
         foreach (var action in new Func<Task>[] { () => vm.CommandAsync("Resume"), vm.ReconnectAsync, vm.SaveConfigurationAsync, vm.ReconcileAsync, vm.InstallAsync, vm.ArchiveHistoryAsync })
             await vm.RunAsync(action);
@@ -81,9 +81,9 @@ static class CommercialQuality
         var pending = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Read = () => pending.Task; var read = vm.RefreshAsync();
         await Task.Delay(3100);
-        Check(!vm.CanAdmit && !vm.CanResume && vm.Status.Contains("失效"), "pending read does not renew last success deadline");
+        Check(!vm.Fresh && !vm.CanAdmit && !vm.CanResume, "pending read does not renew last success deadline");
         pending.SetResult(await app.SnapshotAsync()); await read;
-        Check(vm.Fresh && vm.Snapshot!.Paused && !vm.Status.Contains("失效") && vm.CanResume, "new successful snapshot restores permitted actions: " + Wire.Encode(new { vm.Fresh, vm.Snapshot!.Paused, vm.Status, vm.CanResume, vm.Busy, vm.Snapshot.State, vm.Snapshot.Availability }));
+        Check(vm.Fresh && vm.Snapshot!.Paused && vm.CanResume, "new successful snapshot restores permitted actions: " + Wire.Encode(new { vm.Fresh, vm.Snapshot!.Paused, vm.Status, vm.CanResume, vm.Busy, vm.Snapshot.State, vm.Snapshot.Availability }));
         var old = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Read = () => old.Task; var oldRead = vm.RefreshAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3)); probe.Read = null; await vm.RefreshAsync();
         old.SetException(new IOException("late old failure")); try { await oldRead; } catch (IOException) { }
@@ -190,9 +190,9 @@ static class CommercialQuality
             db.Commit(op, "HistoricalFixture", "Original operation with legacy recovery flag");
             if (!raw) return;
             foreach (var stage in new[] { op.Wcs, op.Plc }.OfType<StageFact>()) foreach (var reply in stage.Replies.Where(r => r.BusinessAccepted is not null))
-                {
-                    var occurrence = db.BeginReceipt(op, stage, "Query"); db.StoreRaw(occurrence, reply); db.Commit(op, "OriginalReplyFixture", "Original authoritative raw preserved", occurrence: occurrence);
-                }
+            {
+                var occurrence = db.BeginReceipt(op, stage, "Query"); db.StoreRaw(occurrence, reply); db.Commit(op, "OriginalReplyFixture", "Original authoritative raw preserved", occurrence: occurrence);
+            }
         }
     }
     sealed class TimestampFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory

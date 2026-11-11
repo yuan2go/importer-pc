@@ -25,9 +25,9 @@ static partial class ArchitectureQuality
         for (int i = 0; i < 200; i++) { var s = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2)); if (predicate(s)) return s; await Task.Delay(20); }
         throw new Exception("AQ timeout: " + Wire.Encode(await app.SnapshotAsync()));
     }
-    static async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
+    static async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null, string? id = null)
     {
-        for (int i = 0; i < 8; i++) { var s = await app.SnapshotAsync(); var result = await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); if (result.Status != "Conflict") return result; }
+        for (int i = 0; i < 8; i++) { var s = await app.SnapshotAsync(); var result = await app.CommandAsync(new(id ?? Wire.Id(), s.Revision, kind, owner, value)); if (result.Status != "Conflict") return result; }
         throw new Exception("AQ command repeatedly conflicted: " + kind);
     }
     static async Task Maintenance(ParcelRuntime app)

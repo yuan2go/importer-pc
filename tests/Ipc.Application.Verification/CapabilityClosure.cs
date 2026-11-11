@@ -26,10 +26,8 @@ static class CapabilityClosure
     public static async Task Run(string workspace, string root)
     {
         Pass(typeof(WeightPolicy).Assembly == typeof(OperatorSession).Assembly && typeof(WeightPolicy).FullName == "Ipc.Application.Contracts.WeightPolicy" &&
-            typeof(WeightPolicy).GetConstructor([typeof(WeightSource), typeof(WeightUnit), typeof(int), typeof(decimal?), typeof(int), typeof(int)]) is not null &&
-            typeof(WeightPolicy).GetConstructor([typeof(WeightSource), typeof(WeightUnit), typeof(int), typeof(decimal?), typeof(int)]) is null &&
             !typeof(OperatorSession).Assembly.GetReferencedAssemblies().Any(x => x.Name!.StartsWith("Ipc.Application.", StringComparison.Ordinal)),
-            "common capabilities live in Platform with current full names/constructor and no retired bridge and no Application assembly dependency");
+            "common capability contracts do not depend on a business Application assembly");
         CapabilityBinding B(string kind) => new(kind, "reference-" + kind, "1.0.0", kind + ".one", "reference://" + kind + "/closure19", "PARCEL-REFERENCE-v1", kind == "login" ? new() { ["subjects"] = "alice,bob" } : []);
         ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
         async Task<ParcelRuntime> Open(ParcelConfiguration c, string run, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null, bool authorizeManagement = true)

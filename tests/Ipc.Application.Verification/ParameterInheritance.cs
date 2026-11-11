@@ -24,11 +24,11 @@ static class ParameterInheritance
     static async Task RunIsolated(string workspace, string root)
     {
 
-        var legacy = new BarcodeFilterPolicy("OK[0-9]+");
-        Check(Wire.Encode(legacy) == Wire.Encode(new { Pattern = "OK[0-9]+" }), "old single-pattern bytes and fingerprint remain unchanged");
-        var rule = legacy with { ExclusionPattern = "OK00[12]" };
+        var allowOnly = new BarcodeFilterPolicy("OK[0-9]+");
+        Check(Wire.Encode(allowOnly) == Wire.Encode(new { Pattern = "OK[0-9]+" }), "optional exclusion does not change existing frozen single-pattern bytes or fingerprint");
+        var rule = allowOnly with { ExclusionPattern = "OK00[12]" };
         var selected = BarcodeFiltering.Select(rule, ["noise", "OK001", "OK003"]);
-        Check(selected.SelectedCode == "OK003" && selected.Candidates!.Select(x => x.Outcome).SequenceEqual(["NotAllowed", "Excluded", "Eligible"]) && selected.RuleHash != BarcodeFiltering.Select(legacy, ["OK003"]).RuleHash, "allow/exclude returns precise candidate reasons and freezes both rules in fingerprint");
+        Check(selected.SelectedCode == "OK003" && selected.Candidates!.Select(x => x.Outcome).SequenceEqual(["NotAllowed", "Excluded", "Eligible"]) && selected.RuleHash != BarcodeFiltering.Select(allowOnly, ["OK003"]).RuleHash, "allow/exclude returns precise candidate reasons and freezes both rules in fingerprint");
         Check(BarcodeFiltering.Select(rule, ["OK001", "OK002"]).Outcome == "ExcludedCodes" && BarcodeFiltering.Select(rule, ["OK003", "OK003"]).Outcome == "AmbiguousCodes", "excluded-only observations reject; repeated valid entries never manufacture uniqueness");
         Check(BarcodeFiltering.Select(new("OK.*", "001"), ["OK001"]).SelectedCode == "OK001", "exclusion matches the entire code rather than a substring");
         Check(BarcodeFiltering.Validate(new("OK.*", "["))!.StartsWith("BarcodeFilter.ExclusionPattern") && BarcodeFiltering.Select(new(".*", "(a+)+$"), [new string('a', 240) + "!"]).Outcome == "FilterTimeout", "invalid exclusion is field-addressable and pathological exclusion exhausts the same bounded budget");
@@ -59,8 +59,11 @@ static class ParameterInheritance
             var secondVm = new ParcelViewModel(app, "另一个窗口", "合成验证"); await secondVm.RefreshAsync();
             Check(secondVm.DisplayNameDraft == "合成站点" && secondVm.TargetEfficiencyDraft == "1800", "a new window reads the saved per-station display preference");
             vm.TargetEfficiencyDraft = "0"; Check(!vm.ApplyStationDisplay() && vm.TargetEfficiencyDraft == "0" && vm.StationDisplaySummary.Contains("1800"), "invalid display input remains editable without changing the active preference");
-            app.EmitReference("excluded", "OK001", Wire.Id()); await Wait(app, s => s.Inputs!.Any(x => x.BarcodeSelection?.Outcome == "ExcludedCodes"));
-            Check((await app.SnapshotAsync()).Operations.Length == 0, "actual exclusion creates no business operation or external request");
+            await Wait(app, s => s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+            Check(app.EmitReference("excluded", "OK001", Wire.Id()), "ready source accepts the excluded observation");
+            var background = await app.SnapshotAsync();
+            Check(background.Operations.Length == 0 && background.Inputs!.Length == 0 && app.WorkerProgress().All(w => w.Received == 0),
+                "background-only camera codes create neither parcel input nor operation or request");
             app.EmitReference("accepted", "OK003", Wire.Id()); var accepted = await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved)); frozen = Wire.Encode(accepted.Operations.Single().Wcs);
             await app.CommandAsync(new(Wire.Id(), accepted.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
             app.BeforeMonitorProbe = (_, token) => Task.Delay(Timeout.Infinite, token); await Wait(app, s => s.Availability!.Configure);

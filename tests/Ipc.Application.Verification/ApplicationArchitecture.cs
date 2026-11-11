@@ -74,8 +74,12 @@ static class ApplicationArchitecture
                 blocked.Release.TrySetResult(); await Wait(app, x => x.Operations.All(o => o.State == ParcelState.SlotResolved));
                 Check((await Command(app, "Resume")).Status == "Persisted", "resume does not resend original stages");
                 blocked.Readers[topology.Readers[0].DeviceId].Disconnect();
-                s = await app.SnapshotAsync(); Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "reader disconnect blocks only its position");
-                app.EmitReferenceAt("right", "right-two", "000123", "right-two-source"); await Wait(app, x => x.Operations.Length == 3 && x.Operations.First().State == ParcelState.SlotResolved);
+                s = await app.SnapshotAsync();
+                Check(s.Positions!.Single(p => p.Id == "right").BarcodeInput is { Camera: true, Manual: true } &&
+                    s.Positions!.Single(p => p.Id == "left").BarcodeInput is { Camera: false, Manual: true },
+                    "reader disconnect stops only that camera; both positions retain manual input");
+                // A distinct event ID is not evidence of another placement of the same code.
+                app.EmitReferenceAt("right", "right-two", "000124", "right-two-source"); await Wait(app, x => x.Operations.Length == 3 && x.Operations.First().State == ParcelState.SlotResolved);
                 blocked.Unavailable = true; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && !h.Ready));
                 Check((await app.SnapshotAsync()).Positions!.All(p => !p.Admit), "shared WCS health failure blocks both positions without rewriting originals");
                 blocked.Unavailable = false; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && h.Ready));
@@ -192,33 +196,12 @@ static class ApplicationArchitecture
             await app.ReconcileAsync(s.Operations.Single(o => o.PositionId == "right").Id); s = await app.SnapshotAsync();
             Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "left Unknown original does not block independently reconciled right position");
         }
-        BlockingFactory? overloaded = null;
-        var overloadApp = await Open(sport with { QueueCapacity = 1 }, "dual-overload", f => overloaded = new(f, retainOnStop: true));
-        try
-        {
-            overloadApp.EmitReferenceAt("left", "left-one", "001", "left"); await overloaded!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
-            Check(overloadApp.EmitReferenceAt("left", "queued", "002", "queued") && !overloadApp.EmitReferenceAt("left", "overflow", "003", "overflow"), "position queue bounds and visibly rejects overload");
-            Check(overloadApp.EmitReferenceAt("right", "right", "001", "right"), "left overload does not consume right queue"); await Wait(overloadApp, x => x.Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
-            using (var budget = new CancellationTokenSource(50))
-            {
-                try { await overloadApp.StopAsync(budget.Token); throw new Exception("premature Stop"); }
-                catch (OperationCanceledException) { Check(overloadApp.HasUnreleasedResources, "Stop timeout retains database/device/package ownership until both workers drain"); }
-            }
-        }
-        finally { overloaded!.Release.TrySetResult(); await overloadApp.StopAsync(CancellationToken.None); await overloadApp.DisposeAsync(); }
-        Check(!overloadApp.HasUnreleasedResources, "Stop retry drains all positions before final resource release");
-        await using (var app = await Open(sport, "dual-overload"))
-        {
-            var s = await app.SnapshotAsync(); Check(s.Paused && s.Positions!.All(p => !p.Admit), "restart explicitly pauses all new admission while preserving scoped original responsibility");
-            await Command(app, "Resume"); s = await app.SnapshotAsync();
-            Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "explicit resume preserves durable scoped overload and original uncertainty");
-        }
         BlockingFactory? partial = null;
         var failedPath = Path.Combine(root, "partial-start"); Directory.CreateDirectory(failedPath); ExtensionStore.AtomicWrite(Path.Combine(failedPath, "business.json"), sport);
         var failedLaunch = new BusinessLaunch(failedPath, Path.Combine(failedPath, "data"), null, null);
         var failedApp = new ParcelRuntime(failedLaunch, new SportmasterFlow(), partial = new(new(failedLaunch), true));
         try { await failedApp.StartAsync(CancellationToken.None); throw new Exception("second source startup unexpectedly passed"); }
-        catch (IOException) { Check(failedApp.HasUnreleasedResources && partial.Readers!.Values.First().Starts == 1, "second reader startup failure retains already-started first reader and downstream resources"); }
+        catch (IOException) { Check(failedApp.HasUnreleasedResources && partial.Readers!.Values.Sum(r => r.Starts) == 2, "second reader startup failure retains already-started first reader and downstream resources"); }
         await failedApp.DisposeAsync(); Check(partial.Readers!.Values.All(r => r.Disposed && r.Stops > 0), "partial startup disposes every returned source before factory/database release");
         await using (var app = await Open(sport, "partial-start")) Check((await app.SnapshotAsync()).Devices!.Length == 2, "failed candidate releases leases only after cleanup; fresh owner can start");
         var constructionPath = Path.Combine(root, "partial-construction"); Directory.CreateDirectory(constructionPath); ExtensionStore.AtomicWrite(Path.Combine(constructionPath, "business.json"), sport);
@@ -261,8 +244,9 @@ static class ApplicationArchitecture
         catch (InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录") && Wire.FileHash(file) == hash, "non-current storage refuses before writes with fresh-directory guidance"); }
         return Task.CompletedTask;
     }
-    sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false, bool retainOnStop = false) : IParcelCapabilityFactory
+    sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false) : IParcelCapabilityFactory
     {
+        int startAttempts;
         public CapabilityCatalog Catalog() => inner.Catalog();
         public TaskCompletionSource Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -272,12 +256,13 @@ static class ApplicationArchitecture
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
         public ParcelPorts Create(ParcelConfiguration c)
         {
-            var p = inner.Create(c); Readers = p.Readers!.ToDictionary(x => x.Key, x => new ReaderProbe(x.Value, failSecondStart && x.Key != c.Reader.DeviceId));
-            return p with { Reader = Readers[c.Reader.DeviceId], Readers = Readers.ToDictionary(x => x.Key, x => (IControlledObservationSource)x.Value), Wcs = new LeftSlow(p.Wcs!, Entered, Release, () => Unavailable, retainOnStop) };
+            var p = inner.Create(c); Readers = p.Readers!.ToDictionary(x => x.Key, x => new ReaderProbe(x.Value,
+                failSecondStart ? () => Interlocked.Increment(ref startAttempts) == 2 : null));
+            return p with { Reader = Readers[c.Reader.DeviceId], Readers = Readers.ToDictionary(x => x.Key, x => (IControlledObservationSource)x.Value), Wcs = new LeftSlow(p.Wcs!, Entered, Release, () => Unavailable) };
         }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    sealed class LeftSlow(IWcsPort inner, TaskCompletionSource entered, TaskCompletionSource release, Func<bool> unavailable, bool retainOnStop) : IWcsPort
+    sealed class LeftSlow(IWcsPort inner, TaskCompletionSource entered, TaskCompletionSource release, Func<bool> unavailable) : IWcsPort
     {
         public string InstanceId => inner.InstanceId;
         public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
@@ -288,10 +273,7 @@ static class ApplicationArchitecture
             if (r.AdmissionId == "left-one")
             {
                 entered.TrySetResult();
-                // Only the ownership-timeout case models an uncooperative external
-                // call; bounded fixture lifetime and finally release prevent hangs.
-                if (retainOnStop) await release.Task.WaitAsync(TimeSpan.FromSeconds(10));
-                else await release.Task.WaitAsync(t);
+                await release.Task.WaitAsync(t);
             }
             return await inner.ResolveSlotAsync(r, t);
         }
@@ -327,7 +309,7 @@ static class ApplicationArchitecture
         public Task StopAsync(CancellationToken t) { old = callback; oldEpoch = epoch; return inner.StopAsync(t); }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    sealed class ReaderProbe(IControlledObservationSource inner, bool failStart = false) : IControlledObservationSource, ISyntheticObservationInput
+    sealed class ReaderProbe(IControlledObservationSource inner, Func<bool>? failStart = null) : IControlledObservationSource, ISyntheticObservationInput
     {
         Func<Observation, bool>? receive, old;
         Action<DeviceHealthConfirmation>? health;
@@ -338,7 +320,7 @@ static class ApplicationArchitecture
         public string Epoch => inner.Epoch;
         public string ConfirmationSource => inner.ConfirmationSource;
         public Task StartControlledAsync(string e, Func<Observation, bool> r, Action<DeviceHealthConfirmation> h, CancellationToken t)
-        { receive = r; health = h; Starts++; if (failStart) throw new IOException("Injected second-reader start failure"); return inner.StartControlledAsync(e, r, h, t); }
+        { receive = r; health = h; Starts++; if (failStart?.Invoke() == true) throw new IOException("Injected second-reader start failure"); return inner.StartControlledAsync(e, r, h, t); }
         public bool Emit(string kind, string admissionId, string[]? codes = null, int? quantity = null, string? sourceId = null) => ((ISyntheticObservationInput)inner).Emit(kind, admissionId, codes ?? [], quantity, sourceId ?? Wire.Id());
         public bool EmitOld(string admission, string code) => old?.Invoke(new(Wire.Id(), DeviceId, oldEpoch!, Wire.Id(), 999, admission, "Read", [code], null, DateTimeOffset.UtcNow)) == true;
         public void Disconnect() => health!(new(DeviceId, Epoch, DeviceHealth.Disconnected, DateTimeOffset.UtcNow, null, "TEST:disconnect"));

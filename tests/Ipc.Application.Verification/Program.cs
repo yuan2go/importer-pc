@@ -8,9 +8,6 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 Console.OutputEncoding = new System.Text.UTF8Encoding(false);
-if (args.Any(a => a is "--audit03-rcs-signed" or "--sportmaster-rcs-signed" or "--rcs-heartbeat-signed" or "--mvreader-flow"))
-    throw new ArgumentException("Unsupported retired SM verification path; use built-in MVS/RCS checks");
-if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");
 if (args.FirstOrDefault() == "--ordinary-start-child") { OrdinaryRuntimeStartup.Child(args); return; }
 if (args.FirstOrDefault() == "--installation-storage-helper") { await InstallerStorageMatrix.Helper(args); return; }
 if (args.FirstOrDefault() == "--installation-storage-ordinary-child") { InstallerStorageMatrix.OrdinaryChild(args); return; }
@@ -208,14 +205,21 @@ if (args.Contains("--reliability-closure")) { await ReliabilityClosure.Run(works
 if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(workspace, root); return; }
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
+// A misspelled or retired selector must never pass by running the default suite.
+if (args.FirstOrDefault(a => a.StartsWith("--", StringComparison.Ordinal)) is { } unsupported)
+{
+    Console.Error.WriteLine("Unsupported verification selector: " + unsupported);
+    Environment.ExitCode = 2;
+    return;
+}
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
 ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
 FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow { PlacementReleaseMs = 300 }, "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
-async Task<ParcelRuntime> Open(ParcelConfiguration config, string run)
+async Task<ParcelRuntime> Open(ParcelConfiguration config, string run, Action<string>? constructed = null)
 {
     var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
     var launch = new BusinessLaunch(directory, Path.Combine(root, run, "data"), null, null);
-    var runtime = new ParcelRuntime(launch, Flow(config.ApplicationId), new ParcelCapabilityFactory(launch));
+    var runtime = new ParcelRuntime(launch, Flow(config.ApplicationId), new ParcelCapabilityFactory(launch) { Boundary = constructed });
     try { await runtime.StartAsync(CancellationToken.None); return runtime; } catch { await runtime.DisposeAsync(); throw; }
 }
 async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> predicate)
@@ -248,7 +252,9 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
         await app.ReconcileAsync(op.Id); var completed = (await app.SnapshotAsync()).Operations.Single(x => x.Id == op.Id);
         Pass(completed.State == ParcelState.PhysicalCompleted && completed.Plc!.Attempts == 1, id + " physical completion comes only from explicit original peer query");
     }
-    await Task.Delay(400); // Sportmaster: the operator lifts the parcel; a re-placement is a new entity.
+    // These are synthetic manual sources with a 300 ms release window, not
+    // camera evidence of a physical tray departure.
+    await Task.Delay(400);
     Pass(app.EmitReference("parcel-two", "000000123", "reader-event-two"), id + " same code different admitted entity queued");
     await Wait(app, x => x.Operations.Length == 2 && x.Operations.Single(o => o.Id == op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PhysicalCompleted) &&
         x.Operations.Single(o => o.Id != op.Id).State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));
@@ -257,7 +263,10 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     var prior = (await app.SnapshotAsync()).Configuration;
     var invalid = prior.Effective with { Weight = prior.Effective.Weight with { Precision = 99 } };
     Pass((await app.StageConfigurationAsync(prior.Revision, invalid, "Synthetic directed configuration verification")).Status == "Rejected" && Wire.Encode((await app.SnapshotAsync()).Configuration) == Wire.Encode(prior), id + " invalid configuration leaves old authority byte-equivalent");
-    var backup = Path.Combine(root, id + ".backup.db"); Pass((await app.BackupAsync(backup)).Status == "BackupCreated" && File.Exists(backup), id + " online backup actually created");
+    var backup = Path.Combine(root, id + ".backup.db");
+    var backupReceipt = await LifecycleOptimization.AfterMonitorDrain(app, () => app.BackupAsync(backup),
+        ParcelBindings.All(Config(id)).Select(p => p.InstanceId).ToArray());
+    Pass(backupReceipt.Status == "BackupCreated" && File.Exists(backup), id + " online backup actually created: " + Wire.Encode(backupReceipt));
     var restoreData = Path.Combine(root, id + "-restored");
     ParcelRecovery.Restore(backup, Path.Combine(restoreData, "Simulation", "reference-17", id));
     Pass(File.Exists(Path.Combine(restoreData, "Simulation", "reference-17", id, "RESTORED-ISOLATED.json")), id + " full recovery set verified and copied into a new isolated application directory");
@@ -327,8 +336,14 @@ using (var tamper = new SqliteConnection("Data Source=" + Path.Combine(mismatch,
 { tamper.Open(); using var c = tamper.CreateCommand(); c.CommandText = "UPDATE platform_migrations SET sha='changed'"; c.ExecuteNonQuery(); }
 try { using var db = new ParcelRepository(mismatch, "sportmaster"); throw new Exception("Changed SQL checksum accepted"); }
 catch (InvalidDataException) { Pass(true, "changed application baseline checksum is rejected without overwriting identity"); }
-try { await using var app = await Open(Config("sportmaster") with { Mode = RunMode.Production }, "production"); throw new Exception("Production unexpectedly started"); }
-catch (InvalidDataException ex) { Pass(ex.Message.Contains("Production"), "Production rejects missing real SDK/protocol authority without fallback"); }
+var productionResources = 0;
+try { await using var app = await Open(Config("sportmaster") with { Mode = RunMode.Production }, "production", _ => productionResources++); throw new Exception("Production unexpectedly started"); }
+catch (InvalidDataException ex)
+{
+    Console.WriteLine("Production launch refusal: " + ex.Message);
+    Pass(productionResources == 0,
+        "invalid Production launch refuses before constructing a source or starting a simulation fallback");
+}
 catch (InvalidOperationException ex) when (!OperatingSystem.IsWindows() && ex.Message == "Protected Production drafts require Windows")
 { Pass(true, "non-Windows Production refuses protected persistence before any reference device can start"); }
 catch (InvalidOperationException ex) when (OperatingSystem.IsWindows() && ex.Message == "生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。")

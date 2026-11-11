@@ -16,12 +16,6 @@ public sealed partial class ParcelRuntime : ICameraInspection
     void InitializeCameraInspection()
     {
         if (Id != "sportmaster") return;
-        if (repository!.LatestLegacyCameraIsolation() is { } original)
-            repository.Commit(null, "CameraIsolationRetired", Wire.Encode(new
-            {
-                OriginalRecordHash = Wire.Hash(original),
-                Policy = "SM-DEBUG-NO-ISOLATION-31: retire only the obsolete debug admission fence; preserve original audits, requests and pause state; no replay"
-            }));
         try { inspectionStore = new(directory!, () => Effective.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes); }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or Microsoft.Data.Sqlite.SqliteException)
         { inspectionStoreFailure = "原相机诊断集合不可用，原件保留；请导出诊断记录。"; }

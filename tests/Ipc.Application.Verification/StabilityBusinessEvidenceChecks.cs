@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json;
 using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow;
+using Ipc.Application.Sportmaster;
 using Ipc.Platform;
 
 internal static partial class StabilityAnalysis
@@ -110,5 +112,27 @@ internal static partial class StabilityAnalysis
         var denied = Path.Combine(root, "foreign.json"); var attempt = await Analyze(workspace, directory, backup, denied);
         Check(attempt.Exit != 0 && !File.Exists(denied) && !File.Exists(Path.Combine(root, "foreign-business-events.jsonl")),
             "an unrelated runtime still refuses and publishes no partial business evidence; manual support does not waive runtime ownership");
+
+        // Exercise real detail retention, not a hand-written imitation of the
+        // analyzer's missing-operation classification. Original backup stays intact.
+        await h.App.StopAsync(default);
+        var data = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId);
+        var retainedBackup = Path.Combine(root, "retained-business.db");
+        ParcelRetentionResult retention;
+        using (var repository = new ParcelRepository(data, h.Config.ApplicationId))
+        {
+            repository.Archive(repository.Load().Select(o => o.Id).ToArray(), "Synthetic analysis retention control");
+            retention = repository.ExpireHistoryCore(new SportmasterFlow(), 7, DateTimeOffset.UtcNow.AddDays(8), Wire.FileHash(backup), () => { });
+            var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(data, "configuration.json")));
+            ParcelRecovery.CreateBackup(data, retainedBackup, envelope.Effective, envelope.Pending, repository.StorageBytes, repository.Backup, (_, _) => { });
+        }
+        var retainedOutput = Path.Combine(root, "retained-analysis.json");
+        var retained = await Analyze(workspace, Path.Combine(root, "mixed"), retainedBackup, retainedOutput);
+        if (retained.Exit != 0) throw new InvalidOperationException("Actual retention backup analysis refused: " + retained.Text);
+        using (var report = JsonDocument.Parse(File.ReadAllText(retainedOutput)))
+            Check(retention.Operations == 5 && report.RootElement.GetProperty("SendAttemptsInWindow").ValueKind == JsonValueKind.Null &&
+                report.RootElement.GetProperty("Evidence").GetProperty("MissingAssociations").EnumerateArray().Count(g => g.GetProperty("Kind").GetString() == "OperationMissing") == 5 &&
+                h.Peer.Requests.Count == 5,
+                "real history retention preserves rounds and permanent request custody; missing operation details make attempt totals unknown, never zero or a resend");
     }
 }

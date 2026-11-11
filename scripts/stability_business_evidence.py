@@ -197,6 +197,7 @@ def analyze_business(db, database, collection, dispositions, events, deadline):
             stage = op.get('Wcs')
             facts[op_id] = True
             if not stage:
+                unknown_attempt_time = True
                 gap('FrozenRcsRequestMissing', OperationId=op_id)
                 continue
             request = stage['Request']
@@ -242,6 +243,7 @@ def analyze_business(db, database, collection, dispositions, events, deadline):
                     rcs['ReceiptOutsideRuntimeWindow'] += 1
 
         for operation in operations - facts.keys():
+            unknown_attempt_time = True
             gap('OperationMissing', OperationId=operation)
         for seq, at, kind, owner, detail in db.execute("SELECT seq,at,event,owner,detail FROM parcel_audit WHERE event IN ('Dispatching','CommandCompleted','ReceiptRawDurable','ReceiptApplied','RoundEnded') ORDER BY seq"):
             checkpoint()

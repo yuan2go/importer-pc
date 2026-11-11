@@ -109,7 +109,7 @@ internal static partial class StabilityAnalysis
             }
             if (defect == "path") manifest["Files"]!["receipts/../escape.json"] = new string('A', 64);
             if (defect == "active") File.WriteAllText(variant + "-wal", "retained sidecar");
-            if (defect is "version" or "forged-schema" or "application" or "wrong-runtime" or "input-hash")
+            if (defect is "version" or "forged-schema" or "application" or "input-hash")
             {
                 using var db = new SqliteConnection("Data Source=" + variant + ";Pooling=False"); db.Open(); using var command = db.CreateCommand();
                 command.CommandText = defect switch
@@ -117,7 +117,6 @@ internal static partial class StabilityAnalysis
                     "version" => "UPDATE platform_migrations SET version=11",
                     "forged-schema" => "DROP TABLE parcel_ingress_audits",
                     "application" => "UPDATE platform_migrations SET application='direct-plc'",
-                    "wrong-runtime" => "UPDATE parcel_ingress SET session='foreign-runtime'",
                     _ => "UPDATE parcel_ingress SET body_hash='CHANGED'"
                 }; command.ExecuteNonQuery();
             }

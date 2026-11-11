@@ -70,7 +70,12 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     public StationOperationsPolicy? OperationsPolicy { get; init; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string[]? DeferredConnections { get; init; }
-    public int ReadTimeoutMs { get; init; } = 1000;
+    // Preserve omission in original configuration and frozen-request bytes. The
+    // runtime default must not change the identity of an already confirmed document.
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? ReadTimeoutMs { get; init; }
+    [JsonIgnore]
+    public int EffectiveReadTimeoutMs => ReadTimeoutMs ?? 1000;
 }
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned, UnpackRequired }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
@@ -101,7 +106,9 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     public CameraDebugRequestEvidence? DebugRequest { get; init; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public OperatorDebugRequestEvidence? OperatorDebugRequest { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? RoundId { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? IngressId { get; init; }
 }
 

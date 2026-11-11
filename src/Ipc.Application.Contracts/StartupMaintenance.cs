@@ -3,7 +3,10 @@ using Ipc.Platform;
 namespace Ipc.Application.Contracts;
 
 public sealed record StartupMaintenanceDocument(ParcelConfiguration? Candidate, CapabilityCatalog Catalog,
-    string ConfigurationHash, long Revision, bool ExistingConfiguration, string? RuntimeDirectory, string[] Diagnostics, string ConfigurationStatus = "Unknown");
+    string ConfigurationHash, long Revision, bool ExistingConfiguration, string? RuntimeDirectory, string[] Diagnostics, string ConfigurationStatus = "Unknown")
+{
+    public bool NeedsSmDb12Continuation { get; init; }
+}
 public sealed record StartupClassification(bool ExistingConfiguration, bool Readable, string[] Diagnostics);
 public sealed record StartupRecoveryPreview(string BackupSha256, string Destination, string Summary, string DataRoot);
 public sealed record StartupEditorState(Dictionary<string, string> Values);
@@ -38,6 +41,8 @@ public interface IStartupMaintenance : IAsyncDisposable
     Task<StartupClassification> ClassifyAsync() => throw new NotSupportedException("Startup routing metadata unavailable");
     Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<StartupMaintenanceDocument> ReadAsync();
+    Task<StartupChangePreview> PlanSmDb12ContinuationAsync() => throw new NotSupportedException("此维护程序不支持原数据接续。");
+    Task<StartupMaintenanceDocument> ContinueSmDb12Async(string expectedIdentity) => throw new NotSupportedException("此维护程序不支持原数据接续。");
     Task<BusinessReceipt> ValidateAsync(ParcelConfiguration candidate);
     Task<StartupCheckReport> CheckAsync(ParcelConfiguration candidate);
     Task<StartupMaintenanceDocument> StageAsync(string expectedHash, ParcelConfiguration candidate, string reason);

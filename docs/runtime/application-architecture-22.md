@@ -54,7 +54,7 @@ StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保
 
 当前格式的备份经应用BackupAsync取得完整配置、一致SQLite快照、原回执、尚存原图及完成清单。恢复到全新隔离目录并暂停，保留机器来源、退役围栏和防双活。Unknown保持原报文、原目标、原实现及独立责任，不自动重发。WAL、synchronous=FULL和完整性校验保持。
 
-公共DLL变化后以实际Release重新编译业务、驱动与扩展，产生新的不可变包身份。完整包发布和当前格式覆盖安装仍须校验签名、清单、同源程序集及所有权。没有旧格式迁移或旧配置激活入口。
+公共DLL变化后以实际Release重新编译业务、驱动与扩展，产生新的不可变包身份。完整包发布和当前格式覆盖安装仍须校验签名、清单、同源程序集及所有权。正常运行没有旧格式路径；已核验的 SM DB12 仅可按[离线接续](../design/sm-db12-continuation.md)转换，不重签原配置。
 
 ## 排空与边界
 

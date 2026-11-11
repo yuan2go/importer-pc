@@ -311,6 +311,24 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (initialConfiguration) Action("重新读取配置…", Read);
         Action("稍后配置", () => { Busy = false; Close(); return Task.CompletedTask; });
         Action("配置工具…", () => { OpenTools(); return Task.CompletedTask; });
+        if (!initialConfiguration)
+        {
+            var continuation = Action("检查并接续原数据…", async () =>
+            {
+                await RequireMaintenance(); RequireDirectories();
+                Message("正在核验原数据接续条件，未启动相机或 RCS。");
+                var plan = await Task.Run(maintenance.PlanSmDb12ContinuationAsync);
+                if (!plan.Allowed) throw new InvalidOperationException(plan.Summary);
+                if (MessageBox.Show(this, plan.Summary + "\n\n接续会先保管配置和数据库原件。提交后不会自动启动供包台，继续吗？", "确认接续原数据", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK) return;
+                await RequireMaintenance();
+                document = await Task.Run(() => maintenance.ContinueSmDb12Async(plan.Identity));
+                Render();
+                Message(document.Candidate is null || document.NeedsSmDb12Continuation
+                    ? "原数据接续已提交，但当前参数仍未能载入。请查看读取失败诊断并重新核对原结果，不要覆盖原账。"
+                    : "原数据接续已完成，原参数和记录保留。请检查原请求和设备后重试正常启动；尚未连接相机或 RCS。");
+            });
+            continuation.Visibility = Visibility.Collapsed;
+        }
         if (initialConfiguration)
         {
             foreach (var button in Actions.Children.OfType<Button>().ToArray())
@@ -590,7 +608,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     : resumed ? "已继续上次未完成配置。" : "填写当前供包台，或从下方导入配置文件。" + (savedDraft is null ? "" : "草稿与当前配置不同，草稿已保留。请核对后填写。")
                 : diagnosticDetails);
         }
-        catch { Render(); throw; }
+        catch (Exception error)
+        {
+            diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(error.ToString());
+            Render(); throw;
+        }
     }
     void Render(bool replaceDraft = true)
     {
@@ -620,7 +642,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 try { return await maintenance.ReadCameraSerialAsync(ip, engine); }
                 catch (Exception error) { diagnosticDetails += "\n相机身份读取：" + Ipc.Platform.DiagnosticText.Protect(error.ToString()); throw; }
             };
-            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
+            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430, IsEnabled = document.NeedsSmDb12Continuation != true };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;
             if (!initialConfiguration) Field("维护原因（必填，记入审计）", reason, v => reason = v);
@@ -718,9 +740,21 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Section("3 参数说明", "系统、业务模块、驱动和组件的参数都在“设备与参数”页编辑；保存和启动分两步。", fields.Skip(policyStart).Take(deviceStart - policyStart));
             Section("4 检查与启动", "先检查配置，再保存并启动。配置未能生效时，可在“恢复与维护”中修复。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
             Section("恢复与维护", "备份、恢复、换机接管和程序修复都需单独确认后执行，切换到本页不会自动执行。", fields.Skip(recoveryStart));
+            if (draft is null)
+            {
+                // A read failure is not an empty configuration. Keep original
+                // directories and recovery available; never offer an empty save form.
+                var failure = (StackPanel)((TabItem)tasks!.Items[0]).Content;
+                var explanation = new TextBlock { Text = "原配置未载入，参数没有被清空。请核对原目录或查看诊断；不要重新首配或覆盖原账。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 16, 0, 12) };
+                System.Windows.Automation.AutomationProperties.SetAutomationId(explanation, "StartupReadFailure");
+                failure.Children.Insert(0, explanation);
+                failure.Children.Insert(1, new Expander { Header = "读取失败诊断", Content = new TextBox { Text = document is null ? diagnosticDetails : string.Join("\n", document.Diagnostics), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
+                for (var i = 1; i <= 3; i++) ((TabItem)tasks.Items[i]).Visibility = Visibility.Collapsed;
+                if (selectedTask is >= 1 and <= 3) selectedTask = 0;
+            }
             if (OpenRecoveryScenario) { selectedTask = 4; OpenRecoveryScenario = false; }
             tasks!.SelectedIndex = selectedTask;
-            if (SceneOnly)
+            if (SceneOnly && draft is not null && document?.NeedsSmDb12Continuation != true)
             {
                 var selectedContent = new FrameworkElementFactory(typeof(ContentPresenter));
                 selectedContent.SetBinding(ContentPresenter.ContentProperty, new System.Windows.Data.Binding("SelectedContent") { RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.TemplatedParent) });
@@ -759,7 +793,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             return;
         }
-        if (SceneOnly)
+        if (SceneOnly && draft is not null && document?.NeedsSmDb12Continuation != true)
         {
             foreach (var button in Actions.Children.OfType<Button>())
             {
@@ -768,6 +802,18 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             return;
         }
+        if (draft is null || document?.NeedsSmDb12Continuation == true)
+        {
+            foreach (var button in Actions.Children.OfType<Button>())
+            {
+                var label = button.Content as string;
+                var allowed = label is "读取所选配置" or "安装 / 修复程序…" or "配置工具…" || label == "检查并接续原数据…" && document?.NeedsSmDb12Continuation == true;
+                button.IsEnabled = allowed;
+                button.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return;
+        }
+        foreach (var button in Actions.Children.OfType<Button>()) button.IsEnabled = true;
         var groups = new[] { 0, 3, -1, 0, 4, 1, 3, 4, 4, 4, 4, -1, 4, 3, -1, -2, 4 };
         for (var i = 0; i < Actions.Children.Count; i++)
             Actions.Children[i].Visibility = i < groups.Length && (groups[i] == -1 || groups[i] == selectedTask || groups[i] == -2 && selectedTask < 3) ? Visibility.Visible : Visibility.Collapsed;

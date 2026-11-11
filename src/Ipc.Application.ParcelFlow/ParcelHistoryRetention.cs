@@ -34,7 +34,7 @@ public sealed partial class ParcelRepository
         using var c = db.CreateCommand(); c.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_history_projection WHERE observed<julianday($cutoff)) OR EXISTS(SELECT 1 FROM sm_parcel_rounds WHERE active=0 AND julianday(json_extract(body,'$.EndedAt'))<julianday($cutoff) AND (json_extract(body,'$.Observation') IS NOT NULL OR json_extract(body,'$.OriginalFrame.State') IN ('Saved','Failed','Interrupted')))";
         c.Parameters.AddWithValue("$cutoff", now.AddDays(-days).ToString("O")); return (long)c.ExecuteScalar()! != 0;
     }
-    bool RetentionSettled(ParcelOperation op, FlowDefinition flow) => (op.RoundId is null || Round(op.RoundId)?.EndedAt is not null) && op.OriginalFrame?.State != "Pending" && HasTerminalRecoveryBasis(op, flow.Id) &&
+    bool RetentionSettled(ParcelOperation op, FlowDefinition flow) => !IsSmDb12Original(op.Id) && (op.RoundId is null || Round(op.RoundId)?.EndedAt is not null) && op.OriginalFrame?.State != "Pending" && HasTerminalRecoveryBasis(op, flow.Id) &&
         (flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) && !op.RecoveryRequired &&
         (op.FrozenConfiguration.Images is null || op.ImageReleased) &&
         new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().All(s => s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled) &&
@@ -174,7 +174,7 @@ public sealed partial class ParcelRepository
                 {
                     files.CommandText = "SELECT id FROM parcel_receipts WHERE operation=$id"; files.Parameters.AddWithValue("$id", op.Id);
                     using var r = files.ExecuteReader(); while (r.Read()) if (File.Exists(Path.Combine(rawRoot, r.GetString(0) + ".json")))
-                            throw new IOException("Archived raw spool cleanup still pending; original retained");
+                        throw new IOException("Archived raw spool cleanup still pending; original retained");
                 }
                 authority(); using var tx = db.BeginTransaction();
                 using var c = db.CreateCommand(); c.Transaction = tx;

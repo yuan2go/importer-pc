@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -85,6 +85,7 @@ public sealed class CoreRegression
     [DataRow("--management-mode", 40)]
     [DataRow("--installer-storage-checks", 1)]
     [DataRow("--storage-schema-only", 1)]
+    [DataRow("--sm-db12-continuation", 24)]
     public async Task ExistingBehaviorSuite(string selector, int minimumAssertions)
     {
         var root = RepositoryRoot();

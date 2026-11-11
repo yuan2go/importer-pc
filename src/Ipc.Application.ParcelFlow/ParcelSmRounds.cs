@@ -1,4 +1,4 @@
-﻿using Ipc.Application.Contracts;
+using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
@@ -65,7 +65,7 @@ public sealed partial class ParcelRuntime
     {
         var cycle = SmCycle(position) with { AutoSuppressed = true };
         var round = new SmParcelRound(Wire.Id(), position, 1, runtimeId, StationTime.GetUtcNow(), StationTime.GetTimestamp(),
-            Effective.ReadTimeoutMs, configuration!.Current.Revision, Effective.BarcodeFilter, SmRoundState.Reading, [])
+            Effective.EffectiveReadTimeoutMs, configuration!.Current.Revision, Effective.BarcodeFilter, SmRoundState.Reading, [])
         { Manual = manual, PresenceEvidence = cycle.Evidence };
         StoreSmRound(round, "RoundStarted", cycle); return round;
     }
@@ -313,8 +313,13 @@ public sealed partial class ParcelRuntime
             round = StartSmRound(position, manual);
         }
         if (observation.InspectionSessionId is not null || observation.Kind != "Read" || !ExtensionSchema.IsId(observation.AdmissionId)) return;
-        var decision = round with { Version = round.Version + 1, FormalCodes = formal, Observation = observation,
-            ReadOutcome = round.AutoExpired ? "ReadWindowExpired" : selection.Outcome };
+        var decision = round with
+        {
+            Version = round.Version + 1,
+            FormalCodes = formal,
+            Observation = observation,
+            ReadOutcome = round.AutoExpired ? "ReadWindowExpired" : selection.Outcome
+        };
         if (selection.SelectedCode is null || !manual && round.AutoExpired)
         {
             RecordSmReadObservation(round, observation, reader, selection, formal);

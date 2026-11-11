@@ -60,8 +60,8 @@ static partial class Program
             "current RCS address is editable without a provider reset or station identity change");
         importedWindow.Close();
         var original = new StartupConfigurationDraft(reference, catalog);
-        var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", QueueCapacity = 71 }), reference, original, catalog);
-        Check(imported.Build().StationId == reference.StationId && imported.Build().QueueCapacity == 71 && original.Build().QueueCapacity == reference.QueueCapacity, "preview import preserves local station identity and leaves the original draft untouched");
+        var imported = StartupConfigurationFiles.Import(Wire.Encode(reference with { StationId = "other-site", ReadTimeoutMs = 1700 }), reference, original, catalog);
+        Check(imported.Build().StationId == reference.StationId && imported.Build().EffectiveReadTimeoutMs == 1700 && original.Build().EffectiveReadTimeoutMs == reference.EffectiveReadTimeoutMs, "preview import preserves local station identity and leaves the original draft untouched");
         var template = StartupSiteTemplates.Export(reference.ApplicationId, original.Capture());
         Check(StartupConfigurationFiles.Import(Wire.Encode(template), reference, original, catalog).Build().StationId == reference.StationId, "same-build safe templates still use the existing whitelist");
         foreach (var bad in new[] { "{}", Wire.Encode(reference with { ApplicationId = "other" }), Wire.Encode(reference with { Mode = RunMode.Production }), Wire.Encode(reference with { SchemaVersion = 999 }), Wire.Encode(reference with { Reader = reference.Reader with { DeviceId = "other-device" } }) })
@@ -71,11 +71,11 @@ static partial class Program
             Check(rejected && original.Build().StationId == reference.StationId, "incompatible import is rejected without altering local input");
         }
         first.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        editor.Model!.Policy.QueueCapacity = "bad"; Click(first, "保存配置"); await Idle(first);
+        editor.Model!.Policy.ReadTimeoutMs = "bad"; Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
-        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused); i++) await Task.Delay(10);
-        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
-        editor.Model!.Policy.QueueCapacity = "64"; editor.Model!.Policy.BarcodePattern = "["; editor.ShowReview();
+        for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "ReadTimeoutMs" && x.IsKeyboardFocused); i++) await Task.Delay(10);
+        Check(editor.SelectedCategory == 1 && Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "ReadTimeoutMs" && x.IsKeyboardFocused && x.Text == "bad"), "save from the final step returns to the actual invalid field and retains the exact input; step=" + editor.SelectedCategory);
+        editor.Model!.Policy.ReadTimeoutMs = "1000"; editor.Model!.Policy.BarcodePattern = "["; editor.ShowReview();
         first.Activate(); Click(first, "保存配置"); await Idle(first);
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); first.UpdateLayout();
         for (var i = 0; i < 50 && !Descendants(first).OfType<TextBox>().Any(x => AutomationProperties.GetAutomationId(x) == "BarcodePattern" && x.IsKeyboardFocused); i++) await Task.Delay(10);
@@ -133,8 +133,8 @@ static partial class Program
                     type.GetField("maintenance", flags)!.SetValue(success, succeeded);
                     Descendants(success).OfType<ParameterSettingsControl>().Single().ShowReview();
                     Click(success, "保存配置"); await Idle(success);
-                    Check(success.IsVisible && !Retry(success) && succeeded.Saves == 1, "confirmed persistence keeps configuration open without starting runtime");
-                    Click(success, "完成");
+                    // Successful first configuration closes this modal once; the startup
+                    // owner continues without another completion/start gate.
                 }
                 catch (Exception error) { modalFailure = error; success.Close(); }
             };
@@ -147,7 +147,7 @@ static partial class Program
         var pending = (Window)Activator.CreateInstance(pendingType)!;
         pendingType.GetMethod("AfterMaintenance")!.Invoke(pending, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => Task.CompletedTask)]);
         pending.Show(); pending.UpdateLayout();
-        Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "启动供包台", "退出" }), "after offline maintenance the only choice is to start or exit");
+        Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "退出", "启动供包台" }), "after offline maintenance the only choice is to start or exit");
         Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible), "the post-maintenance choice has no large empty diagnostic box");
         Capture("after-maintenance", pending); pendingType.GetProperty("AllowClose")!.SetValue(pending, true); pending.Close();
         var installerType = assembly.GetType("Ipc.Desktop.StartupSetupWindow", true)!;

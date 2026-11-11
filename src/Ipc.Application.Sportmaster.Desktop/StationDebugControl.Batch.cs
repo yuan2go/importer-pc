@@ -18,7 +18,7 @@ internal sealed partial class StationDebugControl
         public EndCameraInspection? End;
         public Task? Finishing;
         public bool BeginUnconfirmed, StopRequested, TimedOut;
-        public string? Failure;
+        public string? Failure, CleanupFailure;
     }
     SampleBatch? batch;
     Button batchStart = null!, batchStop = null!;
@@ -45,7 +45,7 @@ internal sealed partial class StationDebugControl
         if (batchStart is null) return;
         batchStart.IsEnabled = active && !busy && batch is null && vm.IsManagementMode;
         batchStop.IsEnabled = batch is not null && !batchStopping;
-        batchStop.Content = batchStopping ? "正在结束试扫…" : batch?.Failure is not null ? "核对并结束原试扫" : "停止试扫";
+        batchStop.Content = batchStopping ? "正在结束试扫…" : batch is { Failure: not null } or { CleanupFailure: not null } ? "核对并结束原试扫" : "停止试扫";
     }
     async Task StartBatchAsync(CancellationToken token)
     {
@@ -126,7 +126,7 @@ internal sealed partial class StationDebugControl
             if (ended.SessionId != operation.Session || ended.State is not ("Closed" or "Stopped" or "Expired"))
                 throw new InvalidOperationException("原试扫结束结果尚未确认。");
             if (!ReferenceEquals(batch, operation)) return;
-            batch = null; operation.Wait.Dispose();
+            batch = null; operation.CleanupFailure = null; operation.Wait.Dispose();
             if (active)
             {
                 var frames = operation.Frames;
@@ -138,8 +138,8 @@ internal sealed partial class StationDebugControl
         }
         catch (Exception error)
         {
-            operation.Failure ??= Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "原试扫结束结果未确认。");
-            if (active && ReferenceEquals(batch, operation)) batchSummary.Text = "试扫结束尚未确认；原会话、命令及样本保留。\n" + operation.Failure + "\n请核对并结束原试扫；不会新增RCS请求。";
+            operation.CleanupFailure = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "原试扫结束结果未确认。");
+            if (active && ReferenceEquals(batch, operation)) batchSummary.Text = "试扫结束尚未确认；原会话、命令及样本保留。\n" + (operation.Failure is null ? "" : operation.Failure + "\n") + operation.CleanupFailure + "\n请核对并结束原试扫；不会新增RCS请求。";
         }
         finally { UpdateBatchButtons(); }
     }

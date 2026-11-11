@@ -839,7 +839,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         foreach (var (kind, button) in actionButtons)
         {
-            var visible = initialConfiguration ? kind switch
+            var visible = initialConfiguration ? draft is null ? kind is RepairAction.Reload or RepairAction.Exit : kind switch
             {
                 RepairAction.Import or RepairAction.SaveDraft or RepairAction.Exit => true,
                 RepairAction.Previous => parameterControl?.HasPreviousPage == true,

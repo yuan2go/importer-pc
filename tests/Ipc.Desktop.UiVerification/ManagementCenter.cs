@@ -216,7 +216,7 @@ static partial class Program
             "authorization lost during entry still opens the owned locked window instead of silently stranding paused production");
         guardedProbe.FailCloseOnce = true;
         Click(guardedCenter, "关闭");
-        await Until(() => guardedCenter.IsEnabled && Descendants(guardedCenter).OfType<TextBlock>().Any(t => t.Text.Contains("Synthetic retained workspace resource")));
+        await Until(() => guardedCenter.IsEnabled && AutomationProperties.GetItemStatus((TextBlock)guardedCenter.FindName("AuthorizationStatus")) == "CloseFailed");
         Check(guardedCenter.IsVisible && (await runtime.SnapshotAsync()).Positions!.All(p => !p.Admit), "expired authorization and release failure retain the original window, reason and production fence");
         Click(guardedCenter, "关闭"); await Until(() => !guardedCenter.IsVisible);
         Check(guardedProbe.ClosingOwners.Count == 2 && guardedProbe.ClosingOwners.Distinct().Count() == 1, "retry closes the same original management owner after release recovers");

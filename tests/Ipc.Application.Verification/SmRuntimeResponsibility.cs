@@ -65,7 +65,8 @@ internal static class SmRuntimeResponsibility
         static async Task Remove(ParcelRuntime app, ParcelOperation op)
         {
             var s = await app.SnapshotAsync();
-            var receipt = await app.CommandAsync(new(Wire.Id(), s.Revision, "ConfirmPlacementRemoval", op.PositionId, op.Id));
+            var receipt = await app.CommandAsync(new(Wire.Id(), s.Revision, "ConfirmPlacementRemoval", op.PositionId,
+                s.Positions!.Single(p => p.Id == op.PositionId).PlacementRemovalOperation));
             Check(receipt.Status == "Persisted", "explicit removal confirms the identified original placement");
         }
 
@@ -168,8 +169,10 @@ internal static class SmRuntimeResponsibility
                 "all unknown results and original payloads remain available on demand");
         }
 
-        await using (var app = NewRuntime())
+        var faulted = NewRuntime();
+        try
         {
+            var app = faulted;
             await app.StartAsync(default);
             var snapshot = await Wait(app, s => s.Positions!.All(p => p.BarcodeInput?.Manual == true));
             Check(snapshot.Capacity is { HistoricalUnknown: 4, Unresolved: 0 } &&
@@ -187,6 +190,12 @@ internal static class SmRuntimeResponsibility
             Check(refused.Status == "Rejected" && snapshot.Capacity?.AdmissionBlock == ParcelInputBlockReason.StorageUnavailable &&
                 snapshot.Capacity.HistoricalUnknown == 4 && snapshot.Operations.Any(op => op.ParcelCode == "VALID-103"),
                 "an uncommitted durable reply retains its owner and storage failure blocks configuration");
+        }
+        finally
+        {
+            try { await faulted.DisposeAsync(); throw new InvalidOperationException("Expected original managed worker failure at shutdown"); }
+            catch (InvalidOperationException error) when (error.ToString().Contains("Synthetic receipt commit interruption", StringComparison.Ordinal))
+            { Check(true, "managed execution preserves its original storage failure through actual resource drain"); }
         }
 
         await using (var app = NewRuntime())

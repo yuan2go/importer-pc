@@ -47,6 +47,29 @@ public sealed partial class ParcelRuntime
     }
     Task<ParcelPictureResult> ReadParcelPictureCoreAsync(ParcelPictureQuery query, CancellationToken token) => OwnedRead(async owned =>
     {
+        if (query.RoundId is { } roundId)
+        {
+            if (query.OperationId is not null || query.ObservationId is not null || !Guid.TryParseExact(roundId, "N", out _))
+                throw new ArgumentException("必须提供准确的单一轮次身份。");
+            SmParcelRound? round;
+            await gate.WaitAsync(owned).ConfigureAwait(false);
+            try
+            {
+                if (Id != "sportmaster" || !SessionValid || stopped) throw new InvalidOperationException("当前轮次图片读取不可用。");
+                round = repository!.Round(roundId);
+            }
+            finally { gate.Release(); }
+            if (round?.OriginalFrame is not { State: "Saved" } original)
+                return new ParcelPictureResult("Missing", "本轮没有成功保存的原图，不能使用其他轮次图片。", null, null, null);
+            if (original.RelativeFile != "images/original-frames/round." + roundId + ".png" ||
+                original.Length is <= 0 or > 67108864 || !ProductValidation.IsSafeRelativeFile(directory!, original.RelativeFile, out var file)) throw new InvalidDataException("Round image identity differs");
+            RecoveryFiles.RequireOrdinaryAncestors(file);
+            var png = await File.ReadAllBytesAsync(file, owned).ConfigureAwait(false);
+            if (png.Length != original.Length || Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(png)) != original.FileSha256)
+                throw new InvalidDataException("Round image original hash differs");
+            return new ParcelPictureResult("Available", "本轮保存的完整原图。", null, null, null)
+            { Archived = new(null, original, png) { RoundId = roundId } };
+        }
         if ((query.OperationId is null) == (query.ObservationId is null) || query.OperationId?.Length > 256 || query.ObservationId?.Length > 256)
             throw new ArgumentException("必须提供一个准确原作业或当前观察身份，不能按条码猜配图像。");
         AcquisitionIdentity? acquisition = null; string? observationId = query.ObservationId; string? operationId = query.OperationId;
@@ -70,19 +93,22 @@ public sealed partial class ParcelRuntime
             }
             else
             {
-                var input = positions.Keys.Select(p => DisplayedInput(p)).SingleOrDefault(i => i?.Observation.Id == observationId);
+                // Diagnostic blocked input is not a current parcel, but its exact
+                // owned image remains queryable without projecting it onto a card.
+                var input = positions.Keys.Select(p => DisplayedInput(p)).OfType<ParcelInputSnapshot>()
+                    .Concat(blockedInputs.Values).Where(i => i.Observation.Id == observationId)
+                    .DistinctBy(i => new AcquisitionIdentity(i.Observation.DeviceId, i.Observation.Epoch,
+                        i.Observation.SourceEventId, i.Observation.AdmissionId, i.Observation.ObservedAt)).SingleOrDefault();
                 if (input is null) return new ParcelPictureResult("Missing", "当前观察已变化，请从原作业记录打开对应图片。", null, observationId, null);
                 var o = input.Observation; manual = o.OperatorInput is not null;
+                var round = CurrentRound(input.PositionId);
+                if (round is not null && smRoundPictures.TryGetValue(round.Id, out var roundPicture) && roundPicture.Metadata.ObservationId == observationId)
+                    return new ParcelPictureResult("Available", "本轮对应的原始图片。", null, observationId, CopyInputPicture(roundPicture));
                 if (!manual && blockedInputPictures.TryGetValue(input.PositionId, out var blockedImage) &&
                     blockedImage.Metadata.ObservationId == observationId &&
-                    ContinuingUnadmittedPlacement(input.PositionId, o) is not null)
+                    ContinuingBlockedObservation(input.PositionId, o) is not null)
                     return new ParcelPictureResult("Available", "本次未受理条码对应的完整原图，尚未请求格口。", null, observationId,
                         CopyInputPicture(blockedImage));
-                lock (placements)
-                    if (placements.TryGetValue(input.PositionId, out var placement) && placement.EndedAt is null &&
-                        placement.RejectedInput?.Observation.Id == observationId && placement.RejectedImage is { } rejectedImage)
-                        return new ParcelPictureResult("Available", "本次拒绝对应的完整原图。", null, observationId,
-                            CopyInputPicture(rejectedImage));
                 if (o.InspectionSessionId is not null) return new ParcelPictureResult("Isolated", "本次是隔离调试输入；请在获授权的调试会话查看原始证据。", null, observationId, null);
                 acquisition = manual ? null : new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt);
                 operationId = input.OperationId;

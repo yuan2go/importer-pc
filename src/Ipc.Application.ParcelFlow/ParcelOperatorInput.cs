@@ -15,6 +15,7 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                 if (!Guid.TryParseExact(request.CommandId, "N", out _) || request.PositionId is not ("left" or "right") ||
                     request.Barcode is null || request.Barcode.Length is < 1 or > 4096 || request.Barcode.Any(char.IsControl) ||
                     request.ExpectedObservationId?.Length > 256 || request.ExpectedOperationId?.Length > 256 ||
+                    request.ExpectedRoundId is { } expectedRound && !Guid.TryParseExact(expectedRound, "N", out _) ||
                     !Enum.IsDefined(request.Kind)) throw new ArgumentException("需要有效命令、左/右位置及1～4096字符的完整单条码；保留前导零，不接受控制字符或多条粘贴。");
                 var command = new BusinessCommand(request.CommandId, request.ConfigurationRevision, "OperatorBarcode", request.PositionId, Wire.Encode(request));
                 await gate.WaitAsync(owned).ConfigureAwait(false);
@@ -41,22 +42,11 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     }
                     if (request.RuntimeId != runtimeId || request.ConfigurationRevision != configuration!.Current.Revision)
                         return new("Conflict", "运行或生效配置已改变；核对当前包裹后重新提交。", null, null, repository.Revision);
-                    CommitEmptyTray(request.PositionId);
+                    MaintainSmRounds();
                     RetainReleasedSmUnknowns();
-                    var latest = LatestWorkCardOperation(request.PositionId);
-                    var now = StationTime.GetUtcNow();
-                    var expired = ExpiredManualResult(request.PositionId, latest, now);
-                    var latestInput = DisplayedInput(request.PositionId, expired);
-                    var current = DisplayedOperation(request.PositionId, latest, now, expired);
-                    bool MatchesObservation(ParcelInputSnapshot? input) => input?.Observation.Id == request.ExpectedObservationId ||
-                        request.ExpectedOperationId is not null && input?.OperationId == request.ExpectedOperationId && ParcelInputReasons.IsSamePlacement(input);
-                    // Hiding a confirmed chute does not change the draft's input basis.
-                    // A physical clear or a newer input still invalidates that basis.
-                    var sameExpiredBasis = latestInput is null && latest is not null && HasConfirmedManualChute(latest) &&
-                        expired is not null && expired.OperationId == request.ExpectedOperationId &&
-                        DisplayedInput(request.PositionId) is { } retained && retained.OperationId == expired.OperationId && MatchesObservation(retained);
-                    if (!sameExpiredBasis && (!MatchesObservation(latestInput) || current?.Id != request.ExpectedOperationId))
-                        return new("Conflict", "输入期间本位包裹已变化；核对当前包裹及输入内容后，再明确更新输入基准。", null, null, repository.Revision);
+                    var targetRound = CurrentRound(request.PositionId);
+                    if (request.ExpectedRoundId != targetRound?.Id)
+                        return new("Conflict", "本位轮次已改变，请重新核对当前包裹。", null, null, repository.Revision);
                     var blocking = ManualInputReasons(request.PositionId);
                     if (blocking.Length != 0)
                         return new("Rejected", string.Join("；", blocking) + " 输入保留，未创建作业或发送请求。", null, null, repository.Revision);

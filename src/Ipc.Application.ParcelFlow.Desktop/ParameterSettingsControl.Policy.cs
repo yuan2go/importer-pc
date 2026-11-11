@@ -199,13 +199,15 @@ public sealed partial class ParameterSettingsControl
             SessionLifetime(Form(login), login, m);
         }
         var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "设置哪些条码有效，以及一次读到多个条码时如何处理。左右相机共用。" : "编辑当前业务策略。"); var form = Form(page);
+        if (m.ApplicationId == "sportmaster") Input(form, "自动识读期限", m.Policy, "ReadTimeoutMs", "ReadTimeoutMs", page,
+            "默认1000毫秒，100～60000。帧与候选变化不续期；到期后可原位PDA补录，与RCS超时无关。");
         if (m.ApplicationId == "sportmaster")
         {
             Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "条码需完整匹配此规则（正则表达式）；留空则不筛选。", true);
             Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "用正则表达式完整匹配要忽略的小车底部固定码；可先从相机识码日志复制码值，在下方测试规则。只排除匹配的码，包裹二维码仍正常识别。只看到被排除的码时按空托盘观察；留空不排除。", true);
             var reject = new CheckBox { Content = "拒绝多个有效条码", MinHeight = 38 };
             reject.SetBinding(CheckBox.IsCheckedProperty, new Binding("RejectMultipleCodes") { Source = m.Policy, Mode = BindingMode.TwoWay });
-            Field(form, "多码处理", reject, "默认开启：读到多个有效条码时不发送，保留拒绝结果和图片，移出包裹后再放下一件。关闭后按读取顺序拼接成一个条码发给 RCS。", "RejectMultipleCodes", page);
+            Field(form, "多码处理", reject, "默认开启：筛选后仍有多个有效条码时不发送。可在本轮识读期限内调整标签；到期后可原位 PDA 补录。关闭后按读取顺序拼接有效条码，作为一份请求发给 RCS。", "RejectMultipleCodes", page);
             Input(form, "多条码分隔符", m.Policy, "MultiCodeSeparator", "MultiCodeSeparator", page, "1–16 个字符。拼接后最长 512 字符，超出则不发送。");
             // The separator only matters when several codes are joined; it is shown, searched and
             // navigated to only then. Its value is kept either way.

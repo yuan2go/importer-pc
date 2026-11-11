@@ -45,9 +45,10 @@ internal static class MvsNetworkReconnect
                     Check(h.Factory.Sources[h.Left].TeardownNotes.Contains("0x80000214", StringComparison.Ordinal), stage + " original UDP error is retained in teardown diagnostics");
                     Check(LeaseHeld(), stage + " transition error retains the physical serial lease until actual release");
                     var rightCode = "NETWORK-R-" + stage;
+                    await h.TrayAsync(h.Right, TrayPresence.Absent);
                     right.Enqueue(CameraRoundHarness.Barcode(rightCode), (uint)(stage == "StopGrabbing" ? 1 : 2));
                     await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == rightCode && o.State == ParcelState.SlotResolved));
-                    Check(right.Opens == rightOpens && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").BarcodeInput!.Camera, stage + " teardown leaves the other camera and RCS supplying");
+                    Check(right.Opens == rightOpens && (await h.App.SnapshotAsync()).Devices!.Single(p => p.DeviceId == h.Right).IsValid(DateTimeOffset.UtcNow), stage + " teardown leaves the other camera and RCS supplying");
                 }
                 finally { left.Discovered = true; releaseDestroy.Set(); }
                 await CameraRoundHarness.Until(Online);

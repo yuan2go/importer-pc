@@ -91,6 +91,7 @@ static partial class SportmasterRcs
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         async Task<ParcelOperation> Submit(string code, ParcelBarcodeInputKind kind = ParcelBarcodeInputKind.Keyboard)
         {
+            await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
             var receipt = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", code, kind), default);
             Check(receipt.Status == "Admitted", "ordinary manual source is admitted without allocation parameters: " + code);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == receipt.OperationId && o.State == ParcelState.SlotResolved));

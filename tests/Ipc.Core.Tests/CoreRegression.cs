@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -49,9 +49,11 @@ public sealed class CoreRegression
     [DataRow("--same-placement-29", 28)]
     [DataRow("--reader-robustness-28", 47)]
     [DataRow("--tilted-decode", 9)]
-    [DataRow("--mvid-reader", 96)]
+    [DataRow("--mvid-reader", 81)]
     [DataRow("--sm-built-in-only", 10)]
     [DataRow("--sm-runtime-responsibility", 17)]
+    [DataRow("--sm-round-lifecycle", 131)]
+    [DataRow("--sm-original-frame", 27)]
     [DataRow("--rcs-heartbeat", 25)]
     [DataRow("--station-position-control", 37)]
     [DataRow("--management-workspace", 29)]
@@ -61,6 +63,8 @@ public sealed class CoreRegression
     [DataRow("--mvs-network-reconnect", 20)]
     [DataRow("--mvs-offline-activation", 14)]
     [DataRow("--mvs-stop-reconnect", 9)]
+    [DataRow("--startup-camera-dependencies", 8)]
+    [DataRow("--mvs-presence", 22)]
     [DataRow("--mvs-still-frames", 10)]
     [DataRow("--log-readable", 6)]
     [DataRow("--state-journal", 23)]

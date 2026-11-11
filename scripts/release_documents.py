@@ -4,7 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
-    'docs/runtime/parcel12-operations-26.md': 'PARCEL12-OPERATIONS.md',
+    'docs/runtime/parcel12-operations-26.md': 'PARCEL13-OPERATIONS.md',
     'docs/runtime/d-drive-storage-20261021.md': 'D-DRIVE-STORAGE.md',
     'docs/runtime/d-drive-install-01.md': 'D-DRIVE-INSTALL.md',
     'docs/runtime/current-contract-cleanup-01.md': 'CURRENT-CONTRACTS.md',
@@ -49,6 +49,7 @@ SM_HISTORICAL_GUIDES = {
     'docs/design/application-architecture-22.md',
 }
 SPORTMASTER_GUIDES = {**{path: name for path, name in PARCEL_GUIDES.items() if path not in SM_HISTORICAL_GUIDES},
+    'docs/design/sm-parcel-rounds.md': 'SM-PARCEL-ROUNDS.md',
     'docs/runtime/win11-24x7-stability-remediation-01.md': 'STABILITY-QUALIFICATION.md',
     'docs/design/mvid-native-reader.md': 'MVID-NATIVE-READER.md',
     'docs/design/sm-dual-camera-performance.md': 'SM-DUAL-CAMERA-PERFORMANCE.md',

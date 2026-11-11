@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Platform;
 
 namespace Ipc.Application.Sportmaster.Desktop;
@@ -24,7 +24,9 @@ internal static class CameraAcquisitionPresentation
         var w = d.Window;
         var rates = w is null ? "窗口指标尚不可用" : $"当前连接窗口 {w.Coverage.TotalMinutes:F1} 分钟（最多60分钟） · 有码解码帧 {w.FramesWithCodes}/{w.DecodedFrames} · 有码帧占比 {(w.DecodedFrames == 0 ? "—" : (100d * w.FramesWithCodes / w.DecodedFrames).ToString("F1") + "%")} · 窗口采集 {w.Frames} 帧";
         var rejections = d.RejectedFrames == 0 ? "未记录图像丢弃" : $"本次连接累计丢弃 {d.RejectedFrames} 帧（历史记录，不代表当前无图像）";
-        return $"{status} · 有效帧 {d.Frames} · 解码完成 {d.DecodeCompleted} · 条码候选 {d.Candidates}\n{Pace(d.DecodeMedianMs)}\n{rates}\n最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {rejections}";
+        var presence = connection.IsValid(DateTimeOffset.UtcNow) && d.LastFrameAgeMs is >= 0 and < 1500
+            ? d.TrayPresenceStatus ?? "在位状态未知" : "在位状态未知";
+        return $"{presence}\n{status} · 有效帧 {d.Frames} · 解码完成 {d.DecodeCompleted} · 条码候选 {d.Candidates}\n{Pace(d.DecodeMedianMs)}\n{rates}\n最近有效帧 {d.LastFrameAt?.ToLocalTime():HH:mm:ss} · {rejections}";
     }
     // Once a parcel rests, the chute request waits for one decode; a slow decode sets the station's pace.
     internal const double SlowDecodeMs = 600;

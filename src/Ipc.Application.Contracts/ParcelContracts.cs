@@ -70,6 +70,7 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     public StationOperationsPolicy? OperationsPolicy { get; init; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string[]? DeferredConnections { get; init; }
+    public int ReadTimeoutMs { get; init; } = 1000;
 }
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned, UnpackRequired }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
@@ -100,6 +101,8 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     public CameraDebugRequestEvidence? DebugRequest { get; init; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public OperatorDebugRequestEvidence? OperatorDebugRequest { get; init; }
+    public string? RoundId { get; init; }
+    public string? IngressId { get; init; }
 }
 
 public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long Revision, string State, bool Paused,
@@ -114,10 +117,12 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
     [JsonIgnore] public long PublishedTicks { get; init; }
     public ParcelCameraReadFeedback[] CameraReads { get; init; } = [];
     public ParcelReadFeedback[] ReadFeedbacks { get; init; } = [];
+    public SmParcelRound[] Rounds { get; init; } = [];
 }
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication
 {
+    Task<SmRoundHistoryPage> RoundHistoryAsync(string? position = null, int limit = 100, string? search = null, DateTimeOffset? from = null, DateTimeOffset? to = null) => throw new NotSupportedException("Round history unavailable");
     Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
     Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid runtimeId, long expectedRevision, ParcelConfiguration candidate) => throw new NotSupportedException("Configuration submission inspection unavailable");

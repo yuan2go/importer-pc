@@ -12,7 +12,7 @@ internal static class ReaderRobustness28
     static void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); Console.WriteLine("PASS READER28 " + message); }
     internal static async Task Run(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "reader28"));
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "reader28")) { StationClock = new TimeStorageFaultChecks.ManualTime() };
         DecodeCases();
         await h.StartAsync();
         await SnapshotOrdering(h);
@@ -157,12 +157,15 @@ internal static class ReaderRobustness28
     static async Task SnapshotOrdering(CameraRoundHarness h)
     {
         var vm = new SupplyStationViewModel(h.App); await vm.RefreshAsync(); vm.SetViewport(1366, 768);
+        await h.TrayAsync(h.Left, TrayPresence.Present); await h.TrayAsync(h.Right, TrayPresence.Present);
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-RETIRED-28"), 1);
         h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT-28"), 1);
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask && vm.Right.ShowConfirmedTask; });
         var old = vm.Snapshot!;
         h.Api(h.Left).Enqueue(new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240), 2);
-        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) && vm.Left.DisplayStatus == "等待投包"; });
+        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) ; });
+        Check(vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 2, "no-code frame cannot retire current-round display authority");
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await vm.RefreshAsync();
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
         h.App.Boundary = point => { if (point == "BeforeIngressDurable") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Snapshot/stream regression gate timed out"); } };
         try
@@ -174,11 +177,11 @@ internal static class ReaderRobustness28
             Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture && vm.Left.DisplaySlot != "SYNTH-CHUTE" && vm.Left.Barcode != "SYNTH-RETIRED-28" && vm.Right.ShowConfirmedTask,
                 "snapshot before its UI stream cue cannot restore retired barcode, slot or picture; right position remains current");
             var snapshot = vm.Snapshot!; var frame = snapshot.CameraReads.Single(f => f.PositionId == "left"); var cue = snapshot.ReadFeedbacks.Single(r => r.PositionId == "left");
-            Check(frame.Frame.FrameNumber == 3 && cue.DetectedTicks == frame.Frame.CompletedTicks && cue.ObservationId != vm.Left.Input!.Observation.Id,
+            Check(frame.Frame.FrameNumber == 3 && cue.DetectedTicks == frame.Frame.CompletedTicks && vm.Left.Input is null && vm.Left.CurrentRound is null,
                 "one snapshot carries matching frame/read watermarks even while the new durable input is not yet written");
             var reopened = new SupplyStationViewModel(h.App); reopened.SetViewport(1366, 768);
             await reopened.AcceptPublishedSnapshotAsync(snapshot, default);
-            Check(!reopened.Left.ShowConfirmedTask && reopened.Left.Barcode == "SYNTH-NEW-28", "a new window renders the pending new barcode without borrowing the retired result");
+            Check(!reopened.Left.ShowConfirmedTask && reopened.Left.Barcode == "", "a new window waits for the admitted current round instead of presenting an uncommitted fast cue");
             var missingCue = new SupplyStationViewModel(h.App); missingCue.SetViewport(1366, 768);
             await missingCue.AcceptPublishedSnapshotAsync(snapshot with { ReadFeedbacks = [] }, default);
             Check(!missingCue.Left.ShowConfirmedTask && missingCue.Left.Barcode == "" && !missingCue.Left.CanViewCurrentPicture,

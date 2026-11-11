@@ -31,25 +31,22 @@ public sealed partial class SupplyStationPositionViewModel
     public bool SupplyDisabled => SupplyControl?.Mode == StationPositionMode.Disabled;
     public bool CanChangeSupply => owner.Fresh && owner.CanStartOperation && owner.Application is IStationPositionControl;
     string? PlacementRemovalOperation => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementRemovalOperation;
-    public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled && PlacementRemovalOperation is not null;
-    public bool ShowConfirmedPlacementRemoval => CanConfirmPlacementRemoval &&
-        Operation is { OperatorInput: not null, State: ParcelState.WcsRejected };
-    internal Task ConfirmPlacementRemovalAsync() => owner.RunAsync(async () =>
+    public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled && !ShowConfirmedTask && PlacementRemovalOperation is not null;
+    public bool ShowConfirmedPlacementRemoval => CanConfirmPlacementRemoval;
+    bool removalBusy;
+    internal async Task ConfirmPlacementRemovalAsync()
     {
-        if (!CanConfirmPlacementRemoval || owner.Snapshot is not { } snapshot || PlacementRemovalOperation is not { } operation) return;
+        if (removalBusy || !CanConfirmPlacementRemoval || owner.Snapshot is not { } snapshot || PlacementRemovalOperation is not { } target) return;
+        removalBusy = true;
         try
         {
             var receipt = await owner.ServiceAsync(() => owner.Application.CommandAsync(
-                new(Ipc.Platform.Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", PositionId, operation)));
-            if (receipt.Status != "Persisted")
-                owner.Message = "本位状态已变化，请查看当前提示。";
+                new(Ipc.Platform.Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", PositionId, target)));
+            if (receipt.Status != "Persisted") owner.Message = "本位状态已变化，请查看当前提示。";
         }
-        catch (Exception)
-        {
-            // The Application records the command and exception for diagnostics.
-            owner.Message = "未能确认包裹已取下，请等状态更新后查看本位提示。";
-        }
-    }, "确认已取下包裹");
+        catch (Exception) { owner.Message = "未能确认取下，请按当前轮次核对原结果，不重复提交。"; }
+        finally { removalBusy = false; await owner.RefreshAsync(); }
+    }
     public string DisableLabel => SupplyDisabling ? "停用中…" : "停用";
     public string SupplyStateText => SupplyEnabled ? "本位已启用" : SupplyDisabling ? "本位停用中" : "本位已停用";
     public string EnableLabel => "启用" + Heading;

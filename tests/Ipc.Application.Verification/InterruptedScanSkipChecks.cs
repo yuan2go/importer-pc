@@ -73,6 +73,7 @@ static class InterruptedScanSkipChecks
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single().State == ParcelState.SlotResolved,
             "a fresh parcel completes normally while continuous same-placement reads still request only once");
         h.Peer.ReplySlot = "";
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         h.Api(h.Left).EnqueueNative(pixels, 3, [Symbol("SYNTH-SKIP-UNKNOWN")]); await Delivered(h, "left", 3);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SKIP-UNKNOWN" && o.State == ParcelState.WcsUnknown));
         var unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.State == ParcelState.WcsUnknown);
@@ -101,6 +102,7 @@ static class InterruptedScanSkipChecks
     {
         await using var h = new CameraRoundHarness(workspace, root, nativeResults: true, timeoutMs: 1000);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        await h.TrayAsync(h.Left, TrayPresence.Present);
         var delay = 0; var pixels = CameraRoundHarness.Barcode("SYNTH-SLOW-A");
         using var entered = new ManualResetEventSlim();
         h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref delay, 1) == 0) { entered.Set(); Thread.Sleep(5500); } };
@@ -110,11 +112,12 @@ static class InterruptedScanSkipChecks
         h.Api(h.Right).EnqueueNative(rightPixels, 1, [Symbol("SYNTH-RIGHT-FAST")]); await Delivered(h, "right", 1);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-RIGHT-FAST" && o.State == ParcelState.SlotResolved));
         var right = (await h.App.SnapshotAsync()).Operations.Single(o => o.PositionId == "right");
-        Check(right.State == ParcelState.SlotResolved && h.App.WorkerProgress().Single(w => w.Position == "left").Processed == 0,
+        Check(right.State == ParcelState.SlotResolved && h.App.WorkerProgress().Single(w => w.Position == "left").Processed == 1,
             "right camera completes its own RCS request while left camera durable handoff is stalled for 5.5 seconds");
-        await Delivered(h, "left", 1); h.App.Boundary = null;
+        await Delivered(h, "left", 2); h.App.Boundary = null;
         var s = await h.App.SnapshotAsync();
-        var leftInput = s.Inputs!.Single(i => i.PositionId == "left");
+        var inputRows = await h.App.ReadCameraBusinessAsync(h.Left, 0, null, 100, default);
+        var leftInput = (await h.App.ReadCameraBusinessDetailAsync(inputRows.Rows.Last().Sequence, default))!;
         Check(!s.Paused && leftInput.Reason.StartsWith("ObservationExpired;") && h.Peer.Requests.Count == 1 && s.Operations.All(o => o.PositionId != "left"),
             "a 5.5 second stalled scan is skipped locally instead of pausing supply or sending an expired request");
         ParcelPictureResult? rightPicture = null;
@@ -122,9 +125,9 @@ static class InterruptedScanSkipChecks
         Check((await h.App.ReadParcelPictureAsync(new(ObservationId: leftInput.Observation.Id), default)).Image!.Gray8.SequenceEqual(pixels.Data) &&
             rightPicture!.Archived?.Metadata.RawSha256 == Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(rightPixels.Data)),
             "skipped left parcel and successful right parcel retain their own full images without cross-camera substitution");
-        var observed = h.App.WorkerProgress().Single(w => w.Position == "left").ObservedOnly;
+        var observed = h.App.WorkerProgress().Single(w => w.Position == "left").Processed;
         h.Api(h.Left).EnqueueNative(pixels, 2, [Symbol("SYNTH-SLOW-A")]);
-        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(w => w.Position == "left").ObservedOnly > observed));
+        await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(w => w.Position == "left").Processed > observed));
         Check(h.Peer.Requests.Count == 1, "the skipped parcel stays skipped until removed; a repeated read cannot silently submit it");
         for (uint f = 3; f <= 5; f++)
         {
@@ -132,10 +135,11 @@ static class InterruptedScanSkipChecks
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == f));
             if (f < 5) await Task.Delay(425);
         }
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         h.Api(h.Left).EnqueueNative(pixels, 6, [Symbol("SYNTH-SLOW-A")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SLOW-A" && o.State == ParcelState.SlotResolved));
         Check(h.Peer.Requests.Count == 2 && !(await h.App.SnapshotAsync()).Paused,
-            "three delivered empty frames spanning 800ms permit re-placement and exactly one fresh request without a resume command");
+            "independent qualified removal permits re-placement and exactly one fresh request without a resume command");
     }
     static async Task IndependentRequests(string workspace, string root)
     {

@@ -57,11 +57,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
             if (repository!.ReadPositionControl(position) is { } state)
             {
                 positionControls[position] = state;
-                // Restart is not evidence that the draining parcel physically left.
-                // Keep only its placement guard; the new shift does not restore a finished work card.
-                if (state.Mode == StationPositionMode.Disabling && state.PlacementCode is { } code &&
-                    (state.OperationId is not { } id || !repository.PlacementWasReleased(id)))
-                    placements[position] = new(code, state.ChangedAt!.Value, state.PlacementCameraSeen) { Operation = state.OperationId };
+
             }
         PublishPositionHeartbeat(ports?.Wcs);
     }
@@ -71,14 +67,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
             heartbeat.SetEnabledPositions(positions.Keys.Where(PositionSupplyEnabled).ToArray());
     }
     bool CameraDraining(string device) => positions.Values.Any(p => p.ReaderDeviceId == device && PositionControl(p.Id).Mode == StationPositionMode.Disabling);
-    bool PositionDrainRequired(string position)
-    {
-        var pending = repository!.PendingReceipts().Select(r => r.Operation).ToHashSet(StringComparer.Ordinal);
-        if (operations.Values.Any(op => op.PositionId == position && !IsDebugRequest(op) &&
-            (StageRunning(op) || pending.Contains(op.Id) || !releasedPlacements.Contains(op.Id) && (!MainTerminated(op) || NeedsReconciliation(op))))) return true;
-        lock (placements) return placements.TryGetValue(position, out var placement) &&
-            (placement.CameraSeen || placement.Operation is not null) && placement.EndedAt is null;
-    }
+    bool PositionDrainRequired(string position) => CurrentRound(position) is not null;
     void MaintainPositionControls()
     {
         if (Id != "sportmaster" || repository is null || backupInProgress) return;
@@ -123,15 +112,10 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 repository.Commit(null, "PositionSupplyUnchanged", unchanged.Reason, command: command, commandResult: unchanged);
                 return unchanged;
             }
-            CommitEmptyTray(request.PositionId);
             var current = DisplayedOperation(request.PositionId);
-            string? placementCode = null; bool cameraSeen = false;
-            lock (placements)
-                if (placements.TryGetValue(request.PositionId, out var placement) && placement.EndedAt is null)
-                {
-                    placementCode = placement.Code; cameraSeen = placement.CameraSeen;
-                    if (placement.Operation is { } owner) current = operations.GetValueOrDefault(owner) ?? current;
-                }
+            var round = CurrentRound(request.PositionId);
+            var placementCode = round?.SelectedCode;
+            var cameraSeen = round is { Manual: false };
             var state = new StationPositionState(request.PositionId, request.Enabled ? StationPositionMode.Enabled :
                 PositionDrainRequired(request.PositionId) ? StationPositionMode.Disabling : StationPositionMode.Disabled,
                 repository.Revision + 1, StationTime.GetUtcNow(), currentOperator?.Subject ?? "local-workstation", current?.Id,

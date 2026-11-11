@@ -37,7 +37,7 @@ static class StorageBaseline
             c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations" : "SELECT count(*) FROM schema_history";
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");
         }
-        Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel12/Supply6");
+        Check(ParcelRepository.ReadStorageVersion(Path.Combine(parcelRoot, "sportmaster.db"), "sportmaster") == ParcelRepository.CurrentStorageVersion && SupplyStore.InspectReadOnly(supplyFile).FormatVersion == 6, "current readers accept fresh Parcel13/Supply6");
         var analyzed = Path.Combine(root, "analyzed-current.db"); File.Copy(Path.Combine(parcelRoot, "sportmaster.db"), analyzed);
         using (var db = new SqliteConnection("Data Source=" + analyzed + ";Pooling=False"))
         { db.Open(); using var c = db.CreateCommand(); c.CommandText = "ANALYZE;"; c.ExecuteNonQuery(); }
@@ -69,7 +69,7 @@ static class StorageBaseline
                 else { using var denied = new SupplyStore(file); }
                 throw new Exception("Malformed format identity accepted");
             }
-            catch (InvalidDataException ex) when (ex.Message.Contains("请使用全新数据目录"))
+            catch (InvalidDataException ex) when (ex.Message.Contains(parcel ? "原文件已保留" : "请使用全新数据目录"))
             { Check(Wire.FileHash(file) == hash, "malformed " + (parcel ? "Parcel" : "Supply") + " identity refuses with fresh-directory guidance and unchanged database bytes"); }
         }
         var brokenRoot = Path.Combine(root, "missing-index"); Directory.CreateDirectory(brokenRoot);
@@ -78,7 +78,7 @@ static class StorageBaseline
         { db.Open(); using var c = db.CreateCommand(); c.CommandText = "DROP TABLE parcel_reply_identities"; c.ExecuteNonQuery(); }
         var before = Wire.FileHash(broken);
         try { using var denied = new ParcelRepository(brokenRoot, "sportmaster"); throw new Exception("Missing identity table accepted"); }
-        // Current DB12 verifies the complete schema before the old, narrower
+        // Current DB13 verifies the complete schema before the old, narrower
         // reply-identity check. Keep typed rejection and byte/no-directory guards;
         // a historical diagnostic phrase is not the storage safety contract.
         catch (InvalidDataException)

@@ -106,6 +106,7 @@ static partial class Program
             h.Peer.Mode = "reject";
             async Task Reject(string code, string original, string title)
             {
+                await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
                 h.Peer.RejectionMessage = original;
                 var request = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", code), default);
                 await Until(() => position.Operation?.Id == request.OperationId && position.CenteredRcsRejection && message.IsVisible && message.Text == title);

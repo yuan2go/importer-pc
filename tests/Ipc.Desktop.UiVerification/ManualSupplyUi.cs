@@ -36,12 +36,11 @@ static partial class Program
                 if (!deferred)
                 {
                     h.Factory.Cameras[vm.Left.ReaderId].Emit();
-                    await Until(() => vm.Left.Input?.Outcome == ParcelInputOutcome.Blocked);
-                    Check(vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "相机连接未确认" &&
-                        vm.Left.CenteredStateReason == "本次扫码未发送请求" &&
-                        ParcelInputReasons.BlockReason(vm.Left.Input!) == ParcelInputBlockReason.ReaderConfirmationExpired &&
-                        vm.Left.Input!.OperationId is null && vm.Right.CanAdmit && h.Peer.Requests.Count == 0,
-                        "an invalid camera session shows the exact Chinese cause and sends no request; other position remains usable");
+                    await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > 0));
+                    await vm.RefreshAsync();
+                    Check(vm.Left.CurrentRound is null && vm.Left.Barcode.Length == 0 && vm.Left.CanSubmitBarcode &&
+                        vm.Right.CanAdmit && h.Peer.Requests.Count == 0,
+                        "an unhealthy camera cannot invent a current round or prevent independent manual supply");
                 }
                 ((TextBox)left.FindName("BarcodeEntry")).Text = "000123456";
                 ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -65,9 +64,9 @@ static partial class Program
                 {
                     var character = rightCode[i];
                     entry.RaiseEvent(new KeyEventArgs(keyboard, inputSource, timestamp, KeyInterop.KeyFromVirtualKey(character))
-                        { RoutedEvent = Keyboard.PreviewKeyDownEvent });
+                    { RoutedEvent = Keyboard.PreviewKeyDownEvent });
                     entry.RaiseEvent(new TextCompositionEventArgs(keyboard, new TextComposition(InputManager.Current, entry, character.ToString()))
-                        { RoutedEvent = TextCompositionManager.PreviewTextInputEvent });
+                    { RoutedEvent = TextCompositionManager.PreviewTextInputEvent });
                     var caret = entry.SelectionStart + 1;
                     entry.SelectedText = character.ToString(); entry.Select(caret, 0);
                     timestamp += deferred ? i is 0 or 3 ? 110 : 10 : 65;
@@ -75,13 +74,13 @@ static partial class Program
                 entry.RaiseEvent(new KeyEventArgs(keyboard, inputSource, timestamp, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
                 await Until(() => vm.Right.SlotAvailable && !vm.Busy);
                 var rightOriginal = vm.Right.Operation!.Id;
-                var expectedKind = deferred ? "PdaKeyboard" : "Keyboard";
+                var expectedKind = "Keyboard";
                 Check(vm.Right.Barcode == "000123457" && vm.Right.Operation?.OperatorInput?.Kind == expectedKind && h.Peer.Requests.Count == 2 &&
-                    vm.Right.Operation!.Acquisition is null, "the native editor recognizes the key cadence as " + expectedKind + " without a camera");
+                    vm.Right.Operation!.Acquisition is null, "synthetic WPF events without native message evidence remain MANUAL; real PDA cadence is covered by continuous-pda-input");
                 var bodies = h.Peer.Requests.ToArray();
                 using var manual = JsonDocument.Parse(bodies[0]);
                 using var pda = JsonDocument.Parse(bodies[1]);
-                Check(manual.RootElement.GetProperty("source").GetString() == "MANUAL" && pda.RootElement.GetProperty("source").GetString() == (deferred ? "PDA" : "MANUAL"),
+                Check(manual.RootElement.GetProperty("source").GetString() == "MANUAL" && pda.RootElement.GetProperty("source").GetString() == "MANUAL",
                     "the editor preserves the detected source in the actual RCS payload");
                 CaptureInternal(evidence, deferred ? "manual-deferred-native" : "manual-offline-native", (Grid)window.FindName("ClientArea"), lines);
                 await SetClient(window, 800, 420); await Flush();
@@ -109,7 +108,7 @@ static partial class Program
                     leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Left.HasUncertainOriginal && !vm.Busy);
                     var original = vm.Left.Operation!.Id;
-                    var removal = (Button)left.FindName("ConfirmPlacementRemoval");
+                    var removal = (Button)left.FindName("ConfirmManualPlacementRemoval");
                     Check(removal.IsEnabled && Inside(removal, (Grid)window.FindName("ClientArea")) &&
                         vm.Left.CenteredStateInstruction == "请先取下包裹，再确认", "compact offline-camera card exposes the operator removal action without management");
                     removal.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -134,6 +133,60 @@ static partial class Program
         }
         foreach (var argumentError in new[] { false, true })
             await VerifyManualSubmissionFailure(root, evidence, lines, argumentError);
+        await VerifyRoundHistoryReasons(root, evidence, lines);
+    }
+
+    static async Task VerifyRoundHistoryReasons(string root, string evidence, List<string> lines)
+    {
+        void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS ROUND-HISTORY " + message); }
+        var clock = new PdaRoundClock();
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "round-history"), deferred: true) { StationClock = clock };
+        await h.StartAsync();
+        var window = new SupplyStationWindow(h.App, null, "standard") { ConfirmDiscardDrafts = _ => true };
+        window.Show();
+        try
+        {
+            // A structurally accepted input can still fail barcode legality. It
+            // creates a real unsubmitted round without a device or RCS request.
+            await h.App.SubmitParcelBarcodeAsync(await h.Command("left", new string('X', 300)), default);
+            var snapshot = await h.App.SnapshotAsync();
+            var rejected = snapshot.Rounds.Single(r => r.PositionId == "left");
+            var removal = await h.App.CommandAsync(new(Ipc.Platform.Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", "left",
+                snapshot.Positions!.Single(p => p.Id == "left").PlacementRemovalOperation));
+            Check(removal.Status == "Persisted" && rejected.OperationId is null && rejected.ReadOutcome == "NoMatchingCode", "invalid unsubmitted round has a real targeted removal record");
+            await SetClient(window, 1366, 768);
+            typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["history"]);
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            var expander = Descendants(window).OfType<Expander>().Single(e => Equals(e.Header, "包裹轮次（含无码与未提交）"));
+            expander.IsExpanded = true;
+            await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
+            var panel = (DockPanel)expander.Content;
+            var table = Descendants(panel).OfType<DataGrid>().Single();
+            var reason = Descendants(panel).OfType<ComboBox>().Single(c => System.Windows.Automation.AutomationProperties.GetName(c) == "轮次结果、结束原因或识读情况");
+            var load = Descendants(panel).OfType<Button>().Single(b => Equals(b.Content, "查询轮次"));
+            async Task Query(string value)
+            {
+                reason.SelectedValue = value; load.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); return load.IsEnabled; });
+                if (table.ItemsSource is null) throw new InvalidOperationException("Native history query did not populate rows: " + window.ViewModel.Message);
+            }
+            string Cell(object row, string property) => (string)row.GetType().GetProperty(property)!.GetValue(row)!;
+            await Query("OperatorConfirmedRemoval");
+            var item = table.Items.Cast<object>().Single();
+            Check(Cell(item, "Identity") == rejected.Id && Cell(item, "Read") == "无合法条码" && Cell(item, "End") == "人工确认取下" &&
+                table.Columns.OfType<DataGridTextColumn>().Any(c => Equals(c.Header, "识读情况") && ((System.Windows.Data.Binding)c.Binding).Path.Path == "Read"),
+                "native history query by removal reason displays the original unsubmitted barcode failure");
+            await Query("NoMatchingCode");
+            Check(Cell(table.Items.Cast<object>().Single(), "Identity") == rejected.Id, "native read-outcome selector queries the same round without a synthetic operation");
+            await h.App.SubmitParcelBarcodeAsync(await h.Command("left", new string('Y', 300)), default);
+            clock.Advance();
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Any(r => r.PositionId == "left" && r.AutoExpired));
+            await Query("ReadWindowExpired");
+            item = table.Items.Cast<object>().Single();
+            Check(Cell(item, "Identity") != rejected.Id && Cell(item, "Read") == "自动识读超时，未提交" && Cell(item, "End") == "本轮尚未结束" && h.Peer.Requests.Count == 0,
+                "native history distinguishes automatic timeout from invalid code and does not send an RCS request");
+        }
+        finally { window.Close(); }
     }
 
     static async Task VerifyManualSubmissionFailure(string root, string evidence, List<string> lines, bool argumentError)

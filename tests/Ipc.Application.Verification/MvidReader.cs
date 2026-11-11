@@ -93,8 +93,10 @@ internal static class MvidReader
         await StopDuringCapacityWait();
         await DebugFlow(workspace, root);
         await RcsOfflineCameraReads.Run(workspace, Path.Combine(root, "rcs-native"), nativeResults: true);
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-reader"), stillMs: "50", nativeResults: true);
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "mvid-reader"), stillMs: "50", nativeResults: true)
+            { StationClock = new TimeStorageFaultChecks.ManualTime() };
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        await h.TrayAsync(h.Left, TrayPresence.Present);
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)100, 640 * 240).ToArray(), 640, 240);
         for (var y = 50; y < 170; y++) for (var x = 150; x < 450; x++) parcel.Data[y * parcel.Width + x] = 230;
@@ -132,13 +134,15 @@ internal static class MvidReader
         await h.App.ReconnectDeviceAsync(h.Left);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Epoch != epoch));
         await Show(h.Left, parcel, []); await vm.RefreshAsync();
-        Check(!vm.Left.ShowConfirmedTask, "a new camera session cannot retain the previous scene before rereading");
+        Check(vm.Left.ShowConfirmedTask, "a new camera session cannot replace current-round authority or grant another first call");
         await Show(h.Left, parcel, [Symbol("SYNTH-NATIVE-A")]);
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
         Check(h.Peer.Requests.Count == 2, "native reconnect restores the old placement result without another RCS request");
         for (var i = 0; i < 4; i++) { await Show(h.Left, CameraRoundHarness.EmptyTray, []); await Task.Delay(300); }
         await vm.RefreshAsync();
-        Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture, "changed empty-tray frames release the native placement and picture");
+        Check(vm.Left.ShowConfirmedTask, "changed no-code frames alone cannot release a native current round");
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await vm.RefreshAsync();
+        Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture, "qualified removal releases the native current projection and picture");
         await Show(h.Left, parcel, [Symbol("SYNTH-NATIVE-A")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
         Check(h.Peer.Requests.Count == 3, "replacing the same native-read parcel requests exactly once again");
@@ -153,148 +157,71 @@ internal static class MvidReader
     }
     static async Task RejectedPlacement(string workspace, string root)
     {
-        var exclusion = new BarcodeFilterPolicy("", "SYNTH-(VEHICLE|MATRIX)");
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "native-rejected-placement"), stillMs: "50", nativeResults: true, barcodeFilter: exclusion);
+        var exclusion = new BarcodeFilterPolicy("(?:SYNTH-PACKAGE-[0-9]+|SYNTH-VEHICLE)", "SYNTH-VEHICLE");
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "native-rejected-placement"), nativeResults: true, barcodeFilter: exclusion)
+            { StationClock = new TimeStorageFaultChecks.ManualTime() };
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)95, 640 * 240).ToArray(), 640, 240);
-        for (var y = 50; y < 170; y++) for (var x = 150; x < 450; x++) parcel.Data[y * parcel.Width + x] = 230;
         var qr = Symbol("SYNTH-VEHICLE") with { Format = "QRCode" };
-        var dm = Symbol("SYNTH-MATRIX") with { Format = "DataMatrix" };
         uint number = 0;
-        async Task Frame(RecognitionSymbol[] symbols, CameraRoundHarness.RoundPixels? image = null)
+        async Task Frame(params RecognitionSymbol[] symbols)
         {
-            for (var attempt = 0; attempt < 3; attempt++)
-            {
-                var next = ++number;
-                h.Api(h.Left).EnqueueNative(image ?? parcel, next, symbols);
-                MvsFrameLatency? trace = null;
-                await CameraRoundHarness.Until(() => Task.FromResult((trace = h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.SingleOrDefault(f => f.Number == next)) is not null));
-                if (trace!.DecodeAttempted) return;
-                await Task.Delay(80);
-            }
-            throw new TimeoutException("Synthetic frame did not settle");
-        }
-        long Received() => h.App.WorkerProgress().Single(p => p.Position == "left").Received;
-        await Frame([qr, dm], CameraRoundHarness.EmptyTray); await vm.RefreshAsync();
-        Check(Received() == 0 && h.Peer.Requests.Count == 0 && !vm.Left.IsProcessing && vm.Left.DisplayPresentation.Tone != Ipc.Application.ParcelFlow.Desktop.ParcelPresentationTone.Rejected,
-            "only explicitly excluded cart codes are no-code frames: no durable parcel input, multi-code alarm or request");
-        await Frame([Symbol("SYNTH-REJECT-A"), Symbol("SYNTH-REJECT-B", 120), qr]);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Outcome == ParcelInputOutcome.Rejected));
-        await vm.RefreshAsync();
-        var rejected = vm.Left.Input!;
-        Check(rejected.Observation.Codes.Length == 2 && rejected.BarcodeSelection?.Outcome == "AmbiguousCodes" && h.Peer.Requests.Count == 0,
-            "camera applies the fixed-code regex before rejecting the two remaining package labels");
-        Check(vm.Left.CanViewCurrentPicture && vm.Left.DisplayNextStep.Contains("取下包裹后再上件"), "rejected parcel offers its picture and tells the operator to remove it");
-        var picture = await h.App.ReadParcelPictureAsync(vm.Left.CurrentPictureQuery!, default);
-        Check(picture.Image is { } original && original.Metadata.ObservationId == rejected.Observation.Id && original.Gray8.SequenceEqual(parcel.Data),
-            "multi-code picture is the exact full original frame that was rejected");
-        var received = Received();
-        for (var i = 0; i < 6; i++)
-        {
-            await Frame(i % 2 == 0 ? [Symbol("SYNTH-REJECT-B", 120), Symbol("SYNTH-REJECT-A"), qr] : [Symbol("SYNTH-REJECT-A"), qr]);
-            vm.Left.ApplyReadFeedback((await h.App.ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left"));
-            Check(!vm.Left.IsProcessing && vm.Left.CanViewCurrentPicture, "immediate read cue retains the rejection before any refreshed business snapshot");
+            var next = ++number;
+            h.Api(h.Left).EnqueueNative(parcel, next, symbols);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == next)));
             await vm.RefreshAsync();
-            Check(vm.Left.Input!.Observation.Id == rejected.Observation.Id && !vm.Left.IsProcessing && vm.Left.CanViewCurrentPicture &&
-                vm.Left.DisplayPresentation.Tone == Ipc.Application.ParcelFlow.Desktop.ParcelPresentationTone.Rejected,
-                "repeated/reordered/partial reads keep the rejected placement and picture without a processing flash");
         }
-        Check(Received() == received && h.Peer.Requests.Count == 0, "rejected resting parcel does not refill the durable lane or send a single-label partial read");
-        await Frame([]); await vm.RefreshAsync();
-        Check(vm.Left.CanViewCurrentPicture && vm.Left.DisplayPresentation.Tone == Ipc.Application.ParcelFlow.Desktop.ParcelPresentationTone.Rejected,
-            "a missed decode of the unchanged rejected parcel retains its result and picture");
+        await Frame(qr, Symbol("ordinary-invalid"));
+        Check(vm.Left.CurrentRound is null && h.Peer.Requests.IsEmpty && !vm.Left.IsProcessing,
+            "native raw background/invalid candidates are retained as observations without manufacturing a parcel or timeout");
+        await Frame(Symbol("SYNTH-PACKAGE-1"), Symbol("SYNTH-PACKAGE-2", 120), qr, Symbol("ordinary-invalid"));
+        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.CurrentRound is { FormalCodes.Length: 2 }; });
+        var round = vm.Left.CurrentRound!; var rejected = vm.Left.Input!;
+        Check(round.OperationId is null && rejected.Observation.Codes.Length == 4 && round.FormalCodes.Length == 2 && h.Peer.Requests.IsEmpty,
+            "native complete raw evidence precedes formal quantity selection; invalid/background labels do not join the formal pair");
+        var picture = await h.App.ReadParcelPictureAsync(new(ObservationId: rejected.Observation.Id), default);
+        Check(picture.Image?.Gray8.SequenceEqual(parcel.Data) == true, "native multi-code round retains the exact full original frame");
+        await Frame(Symbol("SYNTH-PACKAGE-2", 120), Symbol("SYNTH-PACKAGE-1"), qr);
+        Check(vm.Left.CurrentRound?.Id == round.Id && !vm.Left.IsProcessing && h.Peer.Requests.IsEmpty,
+            "reordered multi-code observations stay correctable in the original round");
+        await Frame(Symbol("SYNTH-PACKAGE-1") with { Format = "QRCode" }, qr, Symbol("ordinary-invalid"));
+        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
+        Check(vm.Left.CurrentRound?.Id == round.Id && vm.Left.Barcode == "SYNTH-PACKAGE-1" && h.Peer.Requests.Count == 1,
+            "a unique legal QR correction within the native round produces exactly one first request");
+        await Frame(Symbol("SYNTH-PACKAGE-9"));
+        Check(vm.Left.Barcode == "SYNTH-PACKAGE-1" && h.Peer.Requests.Count == 1, "changed native payload without removal cannot override a claimed round");
+        await Frame(); await Frame(qr); await Frame(qr);
+        Check(vm.Left.CurrentRound?.Id == round.Id && h.Peer.Requests.Count == 1, "no-code/background frames cannot certify native physical removal");
         var epoch = h.Factory.Sources[h.Left].Epoch;
         await h.App.ReconnectDeviceAsync(h.Left);
-        await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Epoch != epoch));
-        await Frame([Symbol("SYNTH-REJECT-A"), Symbol("SYNTH-REJECT-B", 120), qr]); await vm.RefreshAsync();
-        Check(!vm.Left.IsProcessing && vm.Left.CanViewCurrentPicture && Received() == received, "reconnect rereads the rejected parcel without restarting processing");
-        var emptyStart = DateTimeOffset.UtcNow;
-        for (var i = 0; i < 3; i++) { await Frame([qr], CameraRoundHarness.EmptyTray); if (i < 2) await Task.Delay(450); }
-        await vm.RefreshAsync();
-        Check(DateTimeOffset.UtcNow - emptyStart >= TimeSpan.FromMilliseconds(800) && !vm.Left.CanViewCurrentPicture &&
-            vm.Left.DisplayPresentation.Tone == Ipc.Application.ParcelFlow.Desktop.ParcelPresentationTone.Neutral,
-            "three completed QR-only empty-tray frames over 800ms clear the rejected result and picture");
-        Check((await h.App.ReadParcelPictureAsync(new(ObservationId: rejected.Observation.Id), default)).Image is null,
-            "an old rejected observation cannot borrow a later image after removal");
-        await Frame([Symbol("SYNTH-REJECT-A") with { Format = "QRCode" }, qr]);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
-        await vm.RefreshAsync();
-        Check(h.Peer.Requests.Count == 1 && vm.Left.Barcode == "SYNTH-REJECT-A" && vm.Left.ShowConfirmedTask,
-            "after removal, the PACKAGE QR plus the excluded vehicle QR requests a chute exactly once");
-        Check(CameraBarcodeCandidates.Excluded(null, [qr.Text]) is null && CameraBarcodeCandidates.Excluded(exclusion, ["SYNTH-VEHICLE-EXTRA"]) is { Length: 0 },
-            "no guessed exclusion is installed and regex matching covers the complete code rather than a substring");
-        var manual = rejected.Observation with { Codes = ["SYNTH-MANUAL"], Symbols = [qr], OperatorInput = new(Wire.Id(), "Keyboard", "synthetic", null, DateTimeOffset.UtcNow) };
-        Check(CameraBarcodeCandidates.WithoutBackground(exclusion, manual).Codes.SequenceEqual(manual.Codes), "camera background normalization does not alter independent manual input");
-        Check(CameraBarcodeCandidates.Excluded(new("", "["), [qr.Text]) is null &&
-            CameraBarcodeCandidates.Excluded(exclusion, [qr.Text], "incomplete") is null,
-            "invalid or incomplete filtering cannot turn a frame into an empty-tray observation");
-        await CameraRoundHarness.Until(async () => (await h.App.ReadDiagnosticTailAsync(null, null, default)).Entries.Any(e => e.Text.Contains("SYNTH-VEHICLE") && e.Text.Contains("Candidates") && e.Text.Contains("QRCode") && e.Text.Contains("Excluded")));
-        Check(true, "normal diagnostic log retains full raw cart/package candidates, symbology and exclusion decisions");
-        var protectedText = DiagnosticText.Protect(Wire.Encode(new { Codes = new[] { "SYNTH-CANDIDATE" }, Barcode = "SYNTH-BARCODE", token = "SYNTH-CREDENTIAL", Body = Wire.Encode(new { loadCode = "SYNTH-LOAD", password = "SYNTH-PASSWORD" }) }));
-        Check(protectedText.Contains("SYNTH-CANDIDATE") && protectedText.Contains("SYNTH-BARCODE") && protectedText.Contains("SYNTH-LOAD") &&
-            !protectedText.Contains("SYNTH-CREDENTIAL") && !protectedText.Contains("SYNTH-PASSWORD"),
-            "diagnostic redaction preserves barcode values in nested JSON while still hiding credentials");
-
-        await Frame([Symbol("SYNTH-CORRECT-A"), Symbol("SYNTH-CORRECT-B", 120), qr]);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.Observation.Codes.Contains("SYNTH-CORRECT-A") && i.Outcome == ParcelInputOutcome.Rejected));
-        var basis = await h.App.SnapshotAsync();
-        var manualReceipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-MANUAL-REJECT", ParcelBarcodeInputKind.Keyboard,
-            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, basis.Positions!.Single(p => p.Id == "left").CurrentOperation), default);
-        Check(manualReceipt.Status == "Admitted", "operator can correct a rejected multi-code parcel with independent manual input");
-        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(manualReceipt.OperationId!))?.Wcs?.State == StageState.Accepted);
-        await Frame([Symbol("SYNTH-CORRECT-A"), Symbol("SYNTH-CORRECT-B", 120), qr]);
+        await Frame(Symbol("SYNTH-PACKAGE-1"));
+        Check(h.Factory.Sources[h.Left].Epoch != epoch && vm.Left.CurrentRound?.Id == round.Id && h.Peer.Requests.Count == 1,
+            "native reconnect preserves current round and automatic suppression");
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await vm.RefreshAsync();
+        Check(vm.Left.CurrentRound is null && !vm.Left.CanViewCurrentPicture, "qualified removal clears native current projection without deleting the original record");
+        await Frame(Symbol("SYNTH-PACKAGE-1"));
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
-        Check(h.Peer.Requests.Count == 2 && vm.Left.Barcode == "SYNTH-MANUAL-REJECT", "same rejected labels cannot overwrite the manual correction or create another request");
-
-        RecognitionSymbol[] fixedCodes = [Symbol("SYNTH-FIXED-ONE") with { Format = "QRCode" }, Symbol("SYNTH-FIXED-TWO", 120) with { Format = "QRCode" }];
-        await Frame(fixedCodes);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.Observation.Codes.Contains("SYNTH-FIXED-ONE") && i.Outcome == ParcelInputOutcome.Rejected));
-        basis = await h.App.SnapshotAsync();
-        var updated = basis.Configuration.Effective with { BarcodeFilter = new("", "SYNTH-(VEHICLE|MATRIX|FIXED-(ONE|TWO))") };
-        h.Factory.Expect(updated);
-        // Exercise the real factory's Production admission decision with synthetic devices.
-        h.Factory.CheckBuiltInProductionAdmission = true;
-        var savedRule = await h.App.StageConfigurationAsync(basis.Configuration.Revision, updated, "Synthetic fixed cart-code exclusion");
-        Check(savedRule.Status == "Effective", "fixed cart-code regex can be applied live without restarting the cameras");
-        for (var i = 0; i < 3; i++) { await Frame(fixedCodes); if (i < 2) await Task.Delay(450); }
-        await vm.RefreshAsync();
-        Check(!vm.Left.CanViewCurrentPicture && vm.Left.DisplayPresentation.Tone == Ipc.Application.ParcelFlow.Desktop.ParcelPresentationTone.Neutral && h.Peer.Requests.Count == 2,
-            "newly excluded fixed cart codes clear their old rejection after three empty observations even though the cart image did not move");
-
-        await Frame([Symbol("SYNTH-DRAIN-A"), Symbol("SYNTH-DRAIN-B", 120), qr]);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.Observation.Codes.Contains("SYNTH-DRAIN-A") && i.Outcome == ParcelInputOutcome.Rejected));
-        basis = await h.App.SnapshotAsync();
-        await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", basis.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, false), default);
+        Check(h.Peer.Requests.Count == 2 && vm.Left.CurrentRound?.Id != round.Id, "the same native code in a qualified new cycle is a new request");
+        Check(CameraBarcodeCandidates.Excluded(null, [qr.Text]) is null && CameraBarcodeCandidates.Excluded(exclusion, ["SYNTH-VEHICLE-EXTRA"]) is { Length: 0 },
+            "no guessed exclusion is installed and fixed-code regex remains a complete-string match");
+        Check(CameraBarcodeCandidates.Excluded(new("", "["), [qr.Text]) is null && CameraBarcodeCandidates.Excluded(exclusion, [qr.Text], "incomplete") is null,
+            "invalid/incomplete filtering cannot manufacture a qualified physical absence");
+        await CameraRoundHarness.Until(async () => (await h.App.ReadDiagnosticTailAsync(null, null, default)).Entries.Any(e => e.Text.Contains("SYNTH-VEHICLE") && e.Text.Contains("Candidates") && e.Text.Contains("QRCode") && e.Text.Contains("Excluded")));
+        Check(true, "native diagnostics preserve complete candidates, symbology and selection decisions");
+        var protectedText = DiagnosticText.Protect(Wire.Encode(new { Codes = new[] { "SYNTH-CANDIDATE" }, Barcode = "SYNTH-BARCODE", token = "SYNTH-CREDENTIAL", Body = Wire.Encode(new { loadCode = "SYNTH-LOAD", password = "SYNTH-PASSWORD" }) }));
+        Check(protectedText.Contains("SYNTH-CANDIDATE") && protectedText.Contains("SYNTH-LOAD") && !protectedText.Contains("SYNTH-CREDENTIAL") && !protectedText.Contains("SYNTH-PASSWORD"),
+            "native diagnostic redaction preserves barcodes and hides credentials");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await Frame(Symbol("SYNTH-PACKAGE-3"), Symbol("SYNTH-PACKAGE-4", 120));
+        var basis = await h.App.SnapshotAsync();
+        var state = basis.Positions!.Single(p => p.Id == "left").SupplyControl!;
+        await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", state.Revision, false), default);
         Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabling,
-            "disabling a rejected parcel waits for removal even though no business operation was created");
-        for (var i = 0; i < 3; i++) { await Frame([qr], CameraRoundHarness.EmptyTray); if (i < 2) await Task.Delay(450); }
+            "native unread multi-code round retains its physical responsibility while disabling");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled);
-        Check(h.Peer.Requests.Count == 2, "confirmed removal completes disabling without sending the rejected parcel");
-
-        basis = await h.App.SnapshotAsync();
-        await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", basis.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
-        await h.WaitForCameraAdmissionAsync();
-        const string leftCode = "SYNTH-RULE-SAVED-LEFT", rightCode = "SYNTH-RULE-SAVED-RIGHT";
-        var rightSource = h.Factory.Sources[h.Right];
-        h.Api(h.Right).EnqueueNative(parcel, 1, [Symbol(rightCode)]);
-        await CameraRoundHarness.Until(() => Task.FromResult(rightSource.Timings.Snapshot().RecentFrames.Any(f => f.Number == 1)));
-        await Task.Delay(80);
-        h.Api(h.Right).EnqueueNative(parcel, 2, [Symbol(rightCode)]);
-        await Frame([Symbol(leftCode)]);
-        await CameraRoundHarness.Until(async () =>
-        {
-            var work = (await h.App.SnapshotAsync()).Operations;
-            return work.Any(o => o.PositionId == "left" && o.ParcelCode == leftCode && o.Wcs?.State == StageState.Accepted) &&
-                work.Any(o => o.PositionId == "right" && o.ParcelCode == rightCode && o.Wcs?.State == StageState.Accepted);
-        });
-        Check(h.Peer.Requests.Count == 4, "after the rule save, both positions admit a fresh camera scan and send exactly one request under the built-in Production admission policy");
-        var taskIds = h.Peer.Requests.Select(body =>
-        {
-            using var request = JsonDocument.Parse(body);
-            return request.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("taskId").GetInt64();
-        });
-        Check(taskIds.Distinct().Count() == 4, "left and right camera requests use one shared task-ID sequence");
+        Check(h.Peer.Requests.Count == 2, "qualified removal completes disabling without sending the rejected native round");
     }
     static async Task InvalidRejectedPlacement(string workspace, string root)
     {
@@ -303,6 +230,7 @@ internal static class MvidReader
             await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "invalid-rejected-" + name), stillMs: "0", nativeResults: true);
             await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
             var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)190, 640 * 240).ToArray(), 640, 240);
+            await h.TrayAsync(h.Left, TrayPresence.Present);
             h.Api(h.Left).EnqueueNative(parcel, 1, [Symbol(invalid)]);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Outcome == ParcelInputOutcome.Rejected));
             var basis = await h.App.SnapshotAsync();
@@ -311,7 +239,7 @@ internal static class MvidReader
                 "invalid " + name + " candidate remains exact rejection evidence");
             var receipt = await h.App.SetPositionEnabledAsync(new(Wire.Id(), basis.RuntimeId, "left", basis.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, false), default);
             var state = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!;
-            Check(receipt.Status == "Accepted" && state.Mode == StationPositionMode.Disabling && state.PlacementCode is { Length: > 0 } key && !key.Any(char.IsControl),
+            Check(receipt.Status == "Accepted" && state.Mode == StationPositionMode.Disabling && state.PlacementCode is null && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentRoundId is not null,
                 "invalid " + name + " barcode can persist a safe draining identity without throwing");
             Check((await h.App.ReadParcelPictureAsync(new(ObservationId: rejected.Observation.Id), default)).Image?.Gray8.SequenceEqual(parcel.Data) == true,
                 "disabling retains the invalid " + name + " parcel original until removal");
@@ -321,54 +249,43 @@ internal static class MvidReader
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame && f.DecodeAttempted)));
                 if (frame < 4) await Task.Delay(450);
             }
+            await h.TrayAsync(h.Left, TrayPresence.Absent);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl!.Mode == StationPositionMode.Disabled);
             Check(h.Peer.Requests.Count == 0, "invalid " + name + " parcel drains after confirmed removal without sending a request");
         }
     }
     static async Task ManualCorrection(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "native-manual-correction"), stillMs: "0", nativeResults: true);
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "native-manual-correction"), nativeResults: true)
+            { StationClock = new TimeStorageFaultChecks.ManualTime() };
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var parcel = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)90, 640 * 240).ToArray(), 640, 240);
-        async Task Frame(uint number, RecognitionSymbol[] symbols, CameraRoundHarness.RoundPixels? pixels = null)
+        async Task Frame(uint number, params RecognitionSymbol[] symbols)
         {
-            h.Api(h.Left).EnqueueNative(pixels ?? parcel, number, symbols);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads?.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == number) == true);
+            h.Api(h.Left).EnqueueNative(parcel, number, symbols);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == number)));
         }
-        await Frame(1, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Accepted));
-        var basis = await h.App.SnapshotAsync();
-        await Frame(2, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation.SourceEventId == "mvid.frame.2");
+        await Frame(1, Symbol("SYNTH-CAMERA-ORIGINAL"), Symbol("SYNTH-OTHER-LABEL", 120));
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.SingleOrDefault() is { OperationId: null });
+        var basis = await h.App.SnapshotAsync(); var id = basis.Rounds.Single().Id;
+        await Frame(2, Symbol("SYNTH-CAMERA-ORIGINAL"), Symbol("SYNTH-OTHER-LABEL", 120));
         var receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-MANUAL-CORRECTION", ParcelBarcodeInputKind.Keyboard,
-            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, basis.Positions!.Single(p => p.Id == "left").CurrentOperation), default);
-        Check(receipt.Status == "Admitted", "continuous same-placement camera reads do not invalidate the operator's manual input basis");
+            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, null) { ExpectedRoundId = id }, default);
+        Check(receipt.Status == "Admitted", "native unresolved multi-code round permits manual correction using its round identity");
         await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
-        var requests = h.Peer.Requests.Count;
-        await Frame(3, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left").Observation.SourceEventId == "mvid.frame.3");
+        await Frame(3, Symbol("SYNTH-CAMERA-ORIGINAL"));
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768); await vm.RefreshAsync();
-        Check((await h.App.ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left").PlacementOperationId == receipt.OperationId &&
-            h.Peer.Requests.Count == requests && vm.Left.Operation?.Id == receipt.OperationId && vm.Left.Barcode == "SYNTH-MANUAL-CORRECTION" && vm.Left.ShowConfirmedTask,
-            "unchanged camera code cannot replace the manual barcode/chute or send another request");
-        for (uint n = 4; n <= 6; n++) { await Frame(n, [], CameraRoundHarness.EmptyTray); if (n < 6) await Task.Delay(450); }
-        await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return !vm.Left.ShowConfirmedTask; });
-        Check(!vm.Left.ShowConfirmedTask, "removing the physical parcel releases its manual correction and result");
-        await Frame(7, [Symbol("SYNTH-CAMERA-ORIGINAL")]);
-        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == requests + 1));
-        Check(h.Peer.Requests.Count == requests + 1, "replacing the parcel permits exactly one new camera request");
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Acquisition?.SourceEventId == "mvid.frame.7" && o.Wcs?.State == StageState.Accepted));
-        basis = await h.App.SnapshotAsync();
-        receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-SECOND-CORRECTION", ParcelBarcodeInputKind.Keyboard,
-            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, basis.Positions!.Single(p => p.Id == "left").CurrentOperation), default);
-        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
-        await vm.RefreshAsync();
-        Check(vm.Left.ShowConfirmedTask, "second manual correction has its own confirmed result before changing parcels");
-        await Frame(8, [Symbol("SYNTH-NEXT-PARCEL")]);
-        var changedRead = (await h.App.ReadPresentationFeedbackAsync(default)).Single(r => r.PositionId == "left");
-        vm.Left.ApplyReadFeedback(changedRead);
-        Check(changedRead.SingleCode == "SYNTH-NEXT-PARCEL" && changedRead.PlacementOperationId is null && !vm.Left.ShowConfirmedTask,
-            "a genuinely different camera code immediately invalidates the previous manual chute before the next snapshot");
+        Check(h.Peer.Requests.Count == 1 && vm.Left.CurrentRound?.Id == id && vm.Left.Operation?.Id == receipt.OperationId && vm.Left.Barcode == "SYNTH-MANUAL-CORRECTION" && vm.Left.ShowConfirmedTask,
+            "native camera observations cannot overwrite manual barcode/chute or acquire another request");
+        await Frame(4, Symbol("SYNTH-NEXT-PARCEL")); await vm.RefreshAsync();
+        Check(vm.Left.CurrentRound?.Id == id && vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 1, "changed native payload alone cannot retire the manual round");
+        var blocked = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-SECOND-CORRECTION", ParcelBarcodeInputKind.Keyboard, null, receipt.OperationId) { ExpectedRoundId = id }, default);
+        Check(blocked.Status == "Rejected" && h.Peer.Requests.Count == 1, "manual input cannot append a second first call to an already claimed native round");
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await vm.RefreshAsync();
+        Check(vm.Left.CurrentRound is null && !vm.Left.ShowConfirmedTask, "qualified removal ends a manual success before its display timer");
+        await Frame(5, Symbol("SYNTH-CAMERA-ORIGINAL"));
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
+        Check(h.Peer.Requests.Count == 2, "qualified re-placement permits one independent native camera request");
     }
     static async Task FreshFramesProveLiveness()
     {
@@ -430,6 +347,7 @@ internal static class MvidReader
         Check(image is not null && image.Metadata.SourceEventId == "mvid.frame.1" && image.Metadata.Symbols.Single().Text == locked.Barcode &&
             image.Metadata.Symbols.Single().Corners.SequenceEqual(Symbol(locked.Barcode!).Corners) && h.Peer.Requests.Count == 2,
             "native debug locks the same-frame original and barcode geometry while both positions continue supplying");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 2, [Symbol("SYNTH-NATIVE-BEFORE-SEND")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NATIVE-BEFORE-SEND" && o.Wcs?.State == StageState.Accepted));
         Check(h.Peer.Requests.Count == 3 && (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
@@ -438,6 +356,7 @@ internal static class MvidReader
         Check(h.Peer.Requests.Count == 4 && h.Peer.Requests.Last() == locked.RequestBody && sent.HttpResponse is { StatusCode: 200, Complete: true } &&
             (await h.App.OperationAsync(sent.OperationId!))?.Wcs?.State == StageState.Accepted,
             "explicit native debug send makes one independent RCS request using the frozen body");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, 3, [Symbol("SYNTH-NATIVE-DEBUG-NEXT")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NATIVE-DEBUG-NEXT" && o.Wcs?.State == StageState.Accepted));
         Check((await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id && h.Factory.Decoders[h.Left].Count == 0 && h.Peer.Requests.Count == 5,

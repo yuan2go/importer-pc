@@ -1,4 +1,4 @@
-using System.Buffers;
+﻿using System.Buffers;
 using System.Diagnostics;
 using Ipc.Platform;
 
@@ -132,7 +132,7 @@ internal sealed partial class MvsAcquisition
         if (api.ReturnsDecodedFrames && frame.NativeRejection is null && frame.NativeSymbols is { Length: > 0 } nativeSymbols)
         {
             var nativeSource = FramePrefix + ".frame." + frame.Number;
-            nativeObservation = new(Wire.Id(), DeviceId, Epoch, nativeSource, ++sequence,
+            nativeObservation = new(Wire.Id(), DeviceId, Epoch, nativeSource, Interlocked.Increment(ref sequence),
                 FramePrefix + ".read." + Wire.Hash(DeviceId + ":" + Epoch + ":" + nativeSource)[..40].ToLowerInvariant(),
                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", nativeSymbols.Select(s => s.Text).ToArray(), null, observedAt)
             {
@@ -225,7 +225,7 @@ internal sealed partial class MvsAcquisition
         {
             var source = sourceEvent!;
             var admission = admissionIdentity!;
-            var observation = nativeObservation is not null ? nativeObservation with { DecodedTicks = decodedTicks } : new Observation(observationIdentity!, DeviceId, Epoch, source, ++sequence, admission,
+            var observation = nativeObservation is not null ? nativeObservation with { DecodedTicks = decodedTicks } : new Observation(observationIdentity!, DeviceId, Epoch, source, Interlocked.Increment(ref sequence), admission,
                 entityMode == "read-result" ? "Read" : "UncorrelatedRead", codes, null, observedAt)
             {
                 DecodedTicks = decodedTicks,
@@ -247,7 +247,7 @@ internal sealed partial class MvsAcquisition
             try
             {
                 using (Timings.Measure("application.durable-handoff"))
-                    delivered = receiver?.Invoke(observation) == true;
+                    delivered = DeliverObservation(observation);
                 if (!delivered) throw new IOException("Application rejected decoded input; original decoded observation retained; source fenced");
             }
             finally

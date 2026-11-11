@@ -12,7 +12,8 @@ static partial class Program
     static async Task VerifyHomeCenteredStates(string root, string evidence, List<string> lines)
     {
         void Check(bool yes, string message) { if (!yes) throw new InvalidOperationException(message); lines.Add("PASS HOME-CENTER " + message); }
-        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "home"), heartbeatSeconds: 1);
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "home"), heartbeatSeconds: 1)
+            { StationClock = new PdaRoundClock() };
         h.Peer.ReplyVehicleStates = true; await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var application = DispatchProxy.Create<IHomeStateUiFixture, ProjectionProbe>();
         var probe = (ProjectionProbe)(object)application; probe.Inner = h.App;
@@ -125,17 +126,19 @@ static partial class Program
             Check(entry.Text == "SYNTH-RCS-BARCODE", "RCS recovery keeps the original input ready to submit");
             submit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Left.ShowConfirmedTask && !vm.Busy);
             Check(!center.IsVisible && vm.Left.Slot == "SYNTH-CHUTE", "a confirmed chute keeps its full result instead of the waiting panel");
+            await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
             h.Peer.Mode = "reject"; h.Peer.RejectionMessage = "无设备可用";
             var rejectedCode = CameraRoundHarness.Barcode("SYNTH-CENTERED-REJECT");
             h.Api(h.Left).Enqueue(rejectedCode, 1);
             await Until(() => vm.Left.CenteredRcsRejection && vm.Left.Barcode == "SYNTH-CENTERED-REJECT");
             var rejectionId = vm.Left.Operation!.Id; var rejectionCount = h.Peer.Requests.Count;
             h.Api(h.Left).Enqueue(rejectedCode, 2);
-            await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.2" && vm.Left.CenteredRcsRejection);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == 2)));
+            await Until(() => vm.Left.CenteredRcsRejection);
             var rejectedSnapshot = vm.Snapshot!;
             Check(vm.Left.Operation?.Id == rejectionId && h.Peer.Requests.Count == rejectionCount &&
                 vm.Left.CenteredStateTitle == "无设备可用" && ((TextBlock)left.FindName("CenteredStateReason")).Text == "本件暂不能分配格口" &&
-                vm.Left.CenteredStateInstruction == "请取下包裹，可放下一件\n多次出现请通知维护人员" &&
+                vm.Left.CenteredStateInstruction == "请取下包裹\n多次出现请通知维护人员" &&
                 vm.Left.CanViewCurrentPicture && ((Button)left.FindName("WorkDetails")).IsEnabled && vm.Right.SupplyDisabled,
                 "same-placement frames preserve the rejection, picture and details without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);
@@ -155,6 +158,7 @@ static partial class Program
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             try
             {
+                await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-REJECT"), 3);
                 await Until(() => vm.Left.IsProcessing && vm.Left.Barcode == "SYNTH-AFTER-REJECT");
                 Check(!vm.Left.CenteredRcsRejection && !center.IsVisible && !vm.Left.ShowConfirmedTask,
@@ -172,6 +176,7 @@ static partial class Program
             h.Peer.Mode = "reject";
             h.Peer.RejectionMessage = "终点非法";
             var removedCode = CameraRoundHarness.Barcode("SYNTH-REMOVE-REJECT");
+            await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present);
             h.Api(h.Left).Enqueue(removedCode, 4);
             await Until(() => vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "终点非法");
             var beforeRemoval = vm.Snapshot!;
@@ -183,12 +188,15 @@ static partial class Program
                 await Until(() => vm.Snapshot!.CameraReads.Any(frame => frame.PositionId == "left" && frame.Frame.FrameNumber == number));
             }
             await BlankFrame(5);
-            var firstEmpty = vm.Snapshot!.CameraReads.Single(frame => frame.PositionId == "left").Frame.ObservedAt;
-            CaptureInternal(evidence, "home-rejection-first-empty-frame", client, lines);
+            Check(vm.Left.CenteredRcsRejection && vm.Left.CurrentRound?.Id == beforeRemoval.Positions!.Single(p => p.Id == "left").CurrentRoundId &&
+                vm.Left.CanViewCurrentPicture && h.Peer.Requests.Count == sentBeforeRemoval,
+                "a changed no-code frame preserves the current round's refusal and image without claiming physical removal");
+            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await Until(() => vm.Left.CurrentRound is null && vm.Left.CanSubmitBarcode);
             Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" && !vm.Left.CenteredRcsRejection &&
                 !vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture && !((Button)left.FindName("WorkDetails")).IsEnabled &&
                 !((DockPanel)left.FindName("DetailedStatus")).IsVisible,
-                "the first changed no-code frame shows centered waiting and hides the old chute, picture and details");
+                "qualified removal clears the exact current round immediately without a previous result card");
             probe.Project = s => production(s) with
             {
                 Positions = s.Positions!.Select(p => p.Id == "left" ? p with
@@ -199,28 +207,20 @@ static partial class Program
             };
             await Until(() => vm.Left.CenteredStateTitle == "暂不能投包");
             Check(center.IsVisible && vm.Left.CenteredStateReason == "本位暂不接收新条码" && vm.Right.SupplyDisabled,
-                "a no-code frame on a blocked position shows its admission state instead of the removed no-code screen");
+                "a blocked empty position shows its admission state without inventing a no-code parcel");
             probe.Project = production;
-            await Task.Delay(450);
-            await BlankFrame(6);
-            Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" &&
-                vm.Snapshot!.Positions!.Single(p => p.Id == "left").PlacementClearedAt is null && h.Peer.Requests.Count == sentBeforeRemoval,
-                "two blank frames keep the waiting layout but do not release the placement or send a request");
-            await Task.Delay(450);
-            await BlankFrame(7);
-            await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").PlacementClearedAt is { } cleared &&
-                cleared - firstEmpty >= TimeSpan.FromMilliseconds(800));
-            Check(center.IsVisible && !vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "等待投包" &&
-                vm.Left.Barcode.Length == 0 && !vm.Left.CanViewCurrentPicture && vm.Right.SupplyDisabled && h.Peer.Requests.Count == sentBeforeRemoval,
-                "the clearing snapshot goes directly to centered waiting and removes the old barcode, picture and refusal");
+            await Until(() => vm.Left.CenteredStateTitle == "等待投包");
             await vm.AcceptPublishedSnapshotAsync(beforeRemoval);
-            Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包", "a late snapshot cannot restore the removed parcel's rejection");
+            Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" && h.Peer.Requests.Count == sentBeforeRemoval,
+                "a late snapshot cannot restore an ended round's refusal or send another request");
             CaptureInternal(evidence, "home-rejection-cleared-waiting", client, lines);
+            await h.TrayAsync(h.Left, TrayPresence.Present);
             h.Peer.Mode = "assigned";
             h.Api(h.Left).Enqueue(removedCode, 8);
             await Until(() => vm.Left.ShowConfirmedTask && vm.Left.Barcode == "SYNTH-REMOVE-REJECT");
             h.Api(h.Left).Enqueue(removedCode, 9);
-            await Until(() => vm.Left.Input?.Observation.SourceEventId == "mvs.frame.9" && vm.Left.ShowConfirmedTask);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == 9)));
+            await Until(() => vm.Left.ShowConfirmedTask);
             Check(h.Peer.Requests.Count == sentBeforeRemoval + 1, "same-code replacement after the confirmed empty tray sends once despite repeated frames");
             PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.FullScreen); await Flush();
             exit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

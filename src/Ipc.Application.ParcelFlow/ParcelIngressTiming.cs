@@ -87,24 +87,18 @@ public sealed partial class ParcelRuntime
 
     bool CoalescePausedObservation(string position, Observation observation, IngressLane lane, long entered, double laneWaitMs)
     {
-        // A committed paused observation is presence evidence, not another parcel.
+        // A committed paused observation is diagnostic evidence, never a physical boundary.
         // Never jump over a pending input, a reconnect, or the transition to resumed admission.
         if (repository?.Paused != true || !lane.Waiting.IsEmpty || Interlocked.Read(ref lane.ProcessingTicks) != 0 ||
             observation.CaptureSessionId is not null || !ExtensionSchema.IsId(observation.AdmissionId) || observation.ObservedAt > DateTimeOffset.UtcNow ||
             DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
             string.IsNullOrWhiteSpace(observation.SourceEventId) || observation.SourceEventId.Length > 256 || observation.SourceEventId.Any(char.IsControl) ||
-            ContinuingUnadmittedPlacement(position, observation) is not { } retained) return false;
+            ContinuingBlockedObservation(position, observation) is not { } retained) return false;
         if (observation.Sequence <= retained.Observation.Sequence || observation.SourceEventId == retained.Observation.SourceEventId ||
             observation.AdmissionId == retained.Observation.AdmissionId ||
-            definition.SelectBarcode(Effective, observation).SelectedCode != observation.Codes[0]) return false;
-        lock (placements)
-        {
-            if (repository.Paused != true || !placements.TryGetValue(position, out var placement) ||
-                placement.EndedAt is not null || placement.UnadmittedInput != retained) return false;
-            if (!readers[observation.DeviceId].AcceptSequence(observation)) return false;
-            if (observation.ObservedAt > placement.LastSeen) placement.LastSeen = observation.ObservedAt;
-            placement.EmptyFrames = 0; placement.EmptySince = null;
-        }
+            observation.Codes is not [var single] || definition.SelectBarcode(Effective, observation).SelectedCode != single) return false;
+        if (repository.Paused != true || blockedInputs.GetValueOrDefault(position) != retained ||
+            !readers[observation.DeviceId].AcceptSequence(observation)) return false;
         RecordPresentationRead(position, observation, retainedInput: retained.Observation.Id);
         ReleaseIngressAcquisition(observation);
         Interlocked.Increment(ref lane.ObservedOnly);

@@ -18,16 +18,16 @@ static partial class Program
         FilterPreviewCase C(string name, string text, string[] codes, string outcome, string? code, int matches) => new(name, text, codes, outcome, code, matches);
         var groups = new (string Name, BarcodeFilterPolicy? Policy, FilterPreviewCase[] Cases)[] {
             ("absent", null, [
-                C("trailing-LF", "ABC\n", ["ABC", ""], "MultipleCodes", null, 2),
-                C("single", "ABC", ["ABC"], "StrictSingleCode", "ABC", 1),
-                C("trailing-CRLF", "ABC\r\n", ["ABC", ""], "MultipleCodes", null, 2),
-                C("leading-empty", "\nABC", ["", "ABC"], "MultipleCodes", null, 2),
-                C("multiple", "ABC\nDEF", ["ABC", "DEF"], "MultipleCodes", null, 2),
-                C("repeated", "ABC\nABC", ["ABC", "ABC"], "MultipleCodes", null, 2),
-                C("empty", "", [""], "InvalidCode", null, 0),
-                C("bare-CR-separator", "ABC\rDEF", ["ABC", "DEF"], "MultipleCodes", null, 2),
-                C("trailing-CR", "ABC\r", ["ABC", ""], "MultipleCodes", null, 2),
-                C("embedded-tab", "ABC\tDEF", ["ABC\tDEF"], "InvalidCode", null, 0)]),
+                C("trailing-LF", "ABC\n", ["ABC", ""], "Selected", "ABC", 1),
+                C("single", "ABC", ["ABC"], "Selected", "ABC", 1),
+                C("trailing-CRLF", "ABC\r\n", ["ABC", ""], "Selected", "ABC", 1),
+                C("leading-empty", "\nABC", ["", "ABC"], "Selected", "ABC", 1),
+                C("multiple", "ABC\nDEF", ["ABC", "DEF"], "AmbiguousCodes", null, 2),
+                C("repeated", "ABC\nABC", ["ABC", "ABC"], "AmbiguousCodes", null, 2),
+                C("empty", "", [""], "NoMatchingCode", null, 0),
+                C("bare-CR-separator", "ABC\rDEF", ["ABC", "DEF"], "AmbiguousCodes", null, 2),
+                C("trailing-CR", "ABC\r", ["ABC", ""], "Selected", "ABC", 1),
+                C("embedded-tab", "ABC\tDEF", ["ABC\tDEF"], "NoMatchingCode", null, 0)]),
             ("explicit-empty", new(""), [
                 C("single", "ABC", ["ABC"], "Selected", "ABC", 1),
                 C("trailing-LF", "ABC\n", ["ABC", ""], "Selected", "ABC", 1),
@@ -42,7 +42,7 @@ static partial class Program
             ("explicit-join", new("", RejectMultipleCodes: false, MultiCodeSeparator: "|"), [
                 C("ordered-repeats", "B\nA\nA", ["B", "A", "A"], "JoinedCodes", "B|A|A", 3)]),
             ("inactive-separator", new("", MultiCodeSeparator: "|"), [
-                C("strict-still-rejects", "ABC\n", ["ABC", ""], "MultipleCodes", null, 2)])
+                C("legality-before-count", "ABC\n", ["ABC", ""], "Selected", "ABC", 1)])
         };
         foreach (var group in groups)
         {

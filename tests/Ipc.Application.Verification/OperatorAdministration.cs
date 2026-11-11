@@ -152,6 +152,7 @@ static class OperatorAdministration
         Check(state.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2 && state.Operations.Single(o => o.PositionId == "left").ParcelCode == "LEFT-CODE" && state.Operations.Single(o => o.PositionId == "right").ParcelCode == "RIGHT-CODE", "both feeding positions advance correctly while querying logs without the business gate: " + string.Join("; ", state.BlockingReasons));
         var all = await reader.QueryAsync(q, null, 0, default);
         var streaming = reader.ExportAsync(all.Selection, Path.Combine(root, "feeding-export.jsonl"), false, 0, default);
+        await SmRoundFixture.ConfirmRemovedAsync(app, "left");
         app.EmitReferenceAt("left", "ops-left-next", "LEFT-NEXT", "ops-left-next-event");
         for (int i = 0; i < 150; i++) { state = await app.SnapshotAsync(); if (state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved)) break; await Task.Delay(20); }
         Check(await streaming == 15000 && state.Operations.Any(o => o.ParcelCode == "LEFT-NEXT" && o.State == ParcelState.SlotResolved), "streaming complete export and another admitted parcel both finish without sharing the business lock");

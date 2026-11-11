@@ -1,8 +1,28 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Assembly;
 using Ipc.Platform;
+
+internal static class SmRoundFixture
+{
+    // Deliberate operator removal through the real guarded command; never infer
+    // a boundary from a changed test barcode or retry any external request.
+    public static async Task ConfirmRemovedAsync(ParcelRuntime app, string position)
+    {
+        var first = await app.SnapshotAsync();
+        var id = first.Positions!.Single(p => p.Id == position).CurrentRoundId;
+        if (id is null) return;
+        await CameraRoundHarness.Until(async () =>
+        {
+            var snapshot = await app.SnapshotAsync(); var current = snapshot.Positions!.Single(p => p.Id == position);
+            if (current.CurrentRoundId is null) return true;
+            if (current.CurrentRoundId != id) throw new InvalidOperationException("Fixture must not end a different round");
+            if (current.PlacementRemovalOperation is null) throw new InvalidOperationException("Fixture needs qualified physical evidence instead of manual removal");
+            return (await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", position, current.PlacementRemovalOperation))).Status == "Persisted";
+        });
+    }
+}
 
 internal sealed class ManualSupplyHarness : IAsyncDisposable
 {
@@ -12,6 +32,8 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public ManualFactory Factory = null!;
     public ParcelRuntime App = null!;
     public Func<IDisposable?>? RootOwnership { get; set; }
+    public TimeProvider? StationClock { get; init; }
+    public Func<DeviceBinding, IControlledObservationSource>? CameraSource { get; init; }
     public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true, int? maximumOperations = null, RunMode mode = RunMode.Production)
     {
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
@@ -47,9 +69,10 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     }
     public async Task StartAsync(bool ready = true, string? rcsImplementationFingerprint = null)
     {
-        Factory = new(Launch);
+        Factory = new(Launch) { CameraSource = CameraSource };
         if (rcsImplementationFingerprint is not null) Factory.RcsImplementationFingerprint = rcsImplementationFingerprint;
         App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { }, AcquireRootOwnership = RootOwnership };
+        if (StationClock is not null) App.StationTime = StationClock;
         await App.StartAsync(default);
         if (ready) await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true));
     }
@@ -57,13 +80,15 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     {
         var s = await App.SnapshotAsync();
         return new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, position, code, kind,
-            s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation);
+            s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation)
+        { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId };
     }
     public async ValueTask DisposeAsync() { if (App is not null) await App.DisposeAsync(); await Peer.DisposeAsync(); }
 
     public sealed class ManualFactory(BusinessLaunch launch) : IParcelCapabilityFactory
     {
         readonly ParcelCapabilityFactory validation = new(launch);
+        public Func<DeviceBinding, IControlledObservationSource>? CameraSource { get; init; }
         public bool RcsOffline;
         public bool FailDisposal { get; set; }
         public bool FailPreparation { get; set; }
@@ -82,10 +107,11 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             foreach (var reader in ParcelBindings.Readers(c))
             {
                 if (ParcelConnectionSetup.IsDeferred(c, reader.DeviceId)) readers.Add(reader.DeviceId, new DeferredObservationSource(reader.DeviceId));
+                else if (CameraSource is not null) readers.Add(reader.DeviceId, CameraSource(reader));
                 else { var source = new SilentCamera(reader.DeviceId); readers.Add(reader.DeviceId, source); Cameras.Add(reader.DeviceId, source); }
             }
             var wcs = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
-            return new(readers[c.Reader.DeviceId], null, new RcsHealth(wcs, this), null,
+            return new(readers[c.Reader.DeviceId], null, CameraSource is null ? new RcsHealth(wcs, this) : wcs, null,
                 new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }
         public ValueTask DisposeAsync() => FailDisposal ? ValueTask.FromException(new IOException("synthetic factory still owns resources")) : validation.DisposeAsync();
@@ -110,10 +136,33 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public string Epoch => epoch;
         public string ConfirmationSource => "synthetic-disconnected";
         string epoch = ""; Func<Observation, bool>? receive;
+        Action<DeviceHealthConfirmation>? publishHealth;
+        long sequence;
+        readonly Dictionary<string, byte[]> frames = [];
         public Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> accept, Action<DeviceHealthConfirmation> health, CancellationToken t)
-        { epoch = registeredEpoch; receive = accept; health(new(device, epoch, DeviceHealth.Disconnected, DateTimeOffset.UtcNow, null, "synthetic disconnected camera")); return Task.CompletedTask; }
+        { epoch = registeredEpoch; receive = accept; publishHealth = health; sequence = 0; health(new(device, epoch, DeviceHealth.Disconnected, DateTimeOffset.UtcNow, null, "synthetic disconnected camera")); return Task.CompletedTask; }
+        public void ConfirmConnected() => publishHealth!(new(device, epoch, DeviceHealth.Ready, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddHours(1), "synthetic qualified source"));
+        public bool Read(string[] codes, TrayPresenceEvidence? presence = null, DateTimeOffset? observedAt = null)
+        {
+            var id = Wire.Id();
+            frames[id] = Enumerable.Repeat(unchecked((byte)(sequence + 1)), 256).ToArray();
+            return receive!(new(id, device, epoch, id, Interlocked.Increment(ref sequence), "round." + id,
+                presence is null ? "Read" : "Presence", codes, null, observedAt ?? DateTimeOffset.UtcNow) { TrayPresence = presence });
+        }
         public void EnableOriginalFrames() { }
-        public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity) => throw new InvalidOperationException("Disconnected synthetic camera has no frame");
+        public Action? BeforeRetainOriginalFrame { get; set; }
+        public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity)
+        {
+            BeforeRetainOriginalFrame?.Invoke();
+            return frames.TryGetValue(identity.SourceEventId, out var pixels)
+                ? new Frame(pixels) : throw new InvalidOperationException("Disconnected synthetic camera has no frame");
+        }
+        sealed class Frame(byte[] pixels) : IOriginalFrameLease
+        {
+            public int Width => 16; public int Height => 16;
+            public ReadOnlyMemory<byte> Pixels => pixels;
+            public void Dispose() { }
+        }
         public void ReleaseOriginalFrame(AcquisitionIdentity identity) { }
         public void Emit() => receive!(new(Wire.Id(), device, epoch, Wire.Id(), 1, "camera." + Wire.Id(), "Read", ["CAMERA-OFFLINE"], null, DateTimeOffset.UtcNow));
         public Task StopAsync(CancellationToken t) => Task.CompletedTask;

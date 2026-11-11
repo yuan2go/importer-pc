@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Security.Principal;
@@ -125,6 +125,21 @@ public static partial class ParcelStartupServices
         using var identity = WindowsIdentity.GetCurrent(); return MachineRuntimePolicy.MatchesRuntimeAccount(identity.User?.Value, location.RuntimeAccountSid, identity.Claims);
     }
     public static IStartupMaintenance Maintenance(BusinessLaunch launch) => new ElevatedMaintenance(launch);
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public static async Task<bool> EnsureCameraDependenciesAsync(string desktopDirectory)
+    {
+        if (!OperatingSystem.IsWindows() || ApplicationId != "sportmaster") return false;
+        var registration = WindowsDeploymentSetup.Registration(ApplicationId);
+        if (!File.Exists(registration)) return false;
+        var expected = Wire.FileHash(registration);
+        var inspection = await Task.Run(() => WindowsDeploymentSetup.InspectCameraDependencies(desktopDirectory));
+        if (!inspection.NeedsRepair) return false;
+        await ElevateAsync(new("RepairCameraDependencies", ExpectedHash: expected));
+        if (Wire.FileHash(registration) != expected) throw new InvalidOperationException("安装登记已变化，请重新启动核对。");
+        if ((await Task.Run(() => WindowsDeploymentSetup.InspectCameraDependencies(desktopDirectory))).NeedsRepair)
+            throw new IOException("相机依赖恢复后仍未就绪，请使用同版完整安装包修复。");
+        return true;
+    }
     internal static async Task ExecuteBatchInstall(WindowsDeploymentRequest request) => _ = await ExecuteAsync(new("Install", Deployment: request));
     public static Task RepairRegistrationAsync(string expectedRegistrationHash, WindowsDeploymentRequest? original = null)
         => RepairRegistrationAsync(expectedRegistrationHash, original, null, CancellationToken.None);
@@ -192,6 +207,10 @@ public static partial class ParcelStartupServices
         execution?.Checkpoint();
         switch (request.Action)
         {
+            case "RepairCameraDependencies":
+                if (!OperatingSystem.IsWindows() || ApplicationId != "sportmaster") throw new PlatformNotSupportedException();
+                WindowsDeploymentSetup.RepairCameraDependencies(request.ExpectedHash ?? throw new InvalidDataException("缺少原安装身份。"));
+                break;
             case "MediaUninstall":
                 RequireMatchingMedia(request.Deployment ?? throw new InvalidDataException("缺少完整安装包。"), execution?.Token ?? default);
                 _ = DeploymentMedia.Inspect(request.Deployment.MediaRoot, ApplicationId, execution?.Token ?? default);

@@ -194,16 +194,15 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public ParcelInputSnapshot? Input { get; private set; }
     public bool InputUnadmitted => ParcelPresentation.IsUnadmitted(Input);
     public string LatestInputSummary => ParcelPresentation.InputSummary(Input);
-    public bool InputFailed => ParcelPresentation.IsInputFailure(Input);
-    public bool HasCurrentInput => !CameraNoCode && (unreadFeedback || Operation is not null || Input is not null);
+    public bool InputFailed => (!RoundReadActive || CurrentRound?.AutoExpired == true) && ParcelPresentation.IsInputFailure(Input);
+    public SmParcelRound? CurrentRound => owner.Snapshot?.Rounds.SingleOrDefault(r => r.Id == owner.Snapshot.Positions?.SingleOrDefault(p => p.Id == PositionId)?.CurrentRoundId);
+    public bool HasCurrentInput => CurrentRound is not null;
     public bool IsCompact => owner.IsCompact;
     public bool IsTight => owner.IsTight;
     public bool CanStartOperation => owner.CanStartOperation;
     public string Barcode => ObservedBarcode;
-    public bool CurrentTaskAvailable => !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
-        (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null || ParcelInputReasons.IsSamePlacement(Input) ||
-            Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
-            Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
+    public bool CurrentTaskAvailable => owner.Fresh && CurrentRound is { } round && Operation?.RoundId == round.Id &&
+        Operation.Wcs?.State == StageState.Accepted && round.SuccessAt is not null;
     public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? string.IsNullOrWhiteSpace(Operation!.Slot) ? OperatorCopy.NotReturned : Operation.Slot : "未取得";
     public string AttentionReason => !owner.Fresh ? "状态中断，旧格口已失效。" :
         ParcelPresentation.RcsTimedOut(Operation) ? OperatorCopy.TimeoutUnconfirmed :
@@ -236,7 +235,7 @@ public sealed partial class SupplyStationPositionViewModel : INotifyPropertyChan
     public string ScanSummary => Input is null ? "等待相机扫码或输入条码" : (Input.Observation.OperatorInput is { } entry ? (entry.Kind == "PdaKeyboard" ? "PDA键盘输入 " : "手动键盘输入 ") : "相机读取 ") + ScanTime + " · 条码 " + Input.Observation.Codes.Length + " 项";
     public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
     public double SlotFontSize => !SlotAvailable ? UiTypography.Placeholder : UiTypography.ResponsiveSlotSize(Operation!.Slot!, owner.ChuteScale);
-    public bool NeedsAttention => !owner.Fresh || InputUnadmitted || HasUncertainOriginal || Presentation.NeedsAttention;
+    public bool NeedsAttention => !owner.Fresh || CurrentRound?.AutoExpired == true || HasUncertainOriginal || !RoundReadActive && (InputUnadmitted || Presentation.NeedsAttention);
     public string OperatorInstruction => !owner.Fresh ? OperatorCopy.StaleStep :
         InputUnadmitted ? ParcelPresentation.InputReason(Input!) :
         Operation?.State switch

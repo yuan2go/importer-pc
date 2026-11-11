@@ -23,21 +23,7 @@ public sealed class SportmasterFlow : FlowDefinition
         { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
     }
     public override string[] PositionRoles => ["left", "right"];
-    // Continuous acquisition reads a tray parcel in every frame. One placement is one
-    // RCS request: the code must leave this position's reads for this long (operator
-    // lifts it after a failure, or the vehicle carries it away) before it is requested again.
-    public const int DefaultSamePlacementReleaseMs = 2000;
-    public int PlacementReleaseMs { get; init; } = DefaultSamePlacementReleaseMs;
-    public override int SamePlacementReleaseMs => PlacementReleaseMs;
-    // Empty tray: lift-and-replace or the next vehicle. With 1D symbologies decoding runs
-    // at roughly 7-9 frames/s; glare on glossy bags can hide a resting label for a few
-    // frames, so the empty run must also last 800 ms (a lift or vehicle swap takes longer).
-    public const int DefaultSamePlacementEmptyFrames = 3, DefaultSamePlacementEmptyMinimumMs = 800;
-    public int PlacementEmptyFrames { get; init; } = DefaultSamePlacementEmptyFrames;
-    public int PlacementEmptyMinimumMs { get; init; } = DefaultSamePlacementEmptyMinimumMs;
-    public override int SamePlacementEmptyFrames => PlacementEmptyFrames;
-    public override int SamePlacementEmptyMinimumMs => PlacementEmptyMinimumMs;
-    public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter, o.Codes, o.CandidateIssue);
+    public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter ?? new BarcodeFilterPolicy(""), o.Codes, o.CandidateIssue);
     public override string[] ValidateBusiness(ParcelConfiguration c) => [.. c.Wcs is null || c.Plc is not null ? new[] { "Sportmaster capability dependencies do not match its flow" } : [], .. BarcodeFiltering.Validate(c.BarcodeFilter) is { } error ? new[] { error } : []];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs;
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>

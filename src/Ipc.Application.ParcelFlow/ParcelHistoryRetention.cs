@@ -31,10 +31,10 @@ public sealed partial class ParcelRepository
     }
     internal bool RetentionDue(int days, DateTimeOffset now)
     {
-        using var c = db.CreateCommand(); c.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_history_projection WHERE observed<julianday($cutoff))";
+        using var c = db.CreateCommand(); c.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_history_projection WHERE observed<julianday($cutoff)) OR EXISTS(SELECT 1 FROM sm_parcel_rounds WHERE active=0 AND julianday(json_extract(body,'$.EndedAt'))<julianday($cutoff) AND (json_extract(body,'$.Observation') IS NOT NULL OR json_extract(body,'$.OriginalFrame.State') IN ('Saved','Failed','Interrupted')))";
         c.Parameters.AddWithValue("$cutoff", now.AddDays(-days).ToString("O")); return (long)c.ExecuteScalar()! != 0;
     }
-    bool RetentionSettled(ParcelOperation op, FlowDefinition flow) => op.OriginalFrame?.State != "Pending" && HasTerminalRecoveryBasis(op, flow.Id) &&
+    bool RetentionSettled(ParcelOperation op, FlowDefinition flow) => (op.RoundId is null || Round(op.RoundId)?.EndedAt is not null) && op.OriginalFrame?.State != "Pending" && HasTerminalRecoveryBasis(op, flow.Id) &&
         (flow.MainSettled(op) || op.State is ParcelState.Abandoned or ParcelState.ImageRejected) && !op.RecoveryRequired &&
         (op.FrozenConfiguration.Images is null || op.ImageReleased) &&
         new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().All(s => s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled) &&
@@ -107,7 +107,7 @@ public sealed partial class ParcelRepository
         var envelope = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(Path.Combine(directory, "configuration.json")));
         if (envelope.Effective.ApplicationId != flow.Id || envelope.Effective.Retention?.HistoryDays is not (>= 7 and <= 30) || envelope.Confirmation?.Required == true)
             throw new InvalidOperationException("Activate a confirmed 7..30 day retention policy first; no implicit default deletion");
-        if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Use the current DB11 format; use a fresh data directory");
+        if (ReadStorageVersion(database, flow.Id) != ParcelRepository.CurrentStorageVersion) throw new InvalidDataException("Storage format differs; preserve originals and verify permanent numbering with the matching release before preparing a separate current-format directory");
         phase("InitializeRepository");
         using var repository = new ParcelRepository(directory, flow.Id, cancellationToken);
         if (!repository.Paused) throw new InvalidOperationException("Pause and fully stop the application before retention");
@@ -231,6 +231,7 @@ public sealed partial class ParcelRepository
             Boundary?.Invoke("AfterRetentionInputCommit");
         }
         authority();
+        RetireSmRoundEvidence(cutoff, authority);
         CleanupRetiredOriginalFrames(authority);
         using var finish = db.CreateCommand(); finish.CommandText = "UPDATE parcel_retention_runs SET summary=$summary WHERE id=$id";
         finish.Parameters.AddWithValue("$id", run); finish.Parameters.AddWithValue("$summary", Wire.Encode(new { Status = "Completed", Operations = removed, Inputs = inputs, Policy = "Permanent identity/reply/measurement/numeric ownership retained; no replay" })); finish.ExecuteNonQuery();
@@ -246,6 +247,14 @@ public sealed partial class ParcelRepository
         {
             authority();
             var name = Path.GetFileName(relative); var dot = name.IndexOf('.');
+            if (name.StartsWith("round.", StringComparison.Ordinal))
+            {
+                var parts = name.Split('.');
+                if (parts.Length is < 3 or > 4 || !Guid.TryParseExact(parts[1], "N", out _) || parts[2] != "png" || parts.Length == 4 && parts[3] != "pending") continue;
+                if (Round(parts[1]) is { EndedAt: not null, OriginalFrame.State: "Retired" })
+                    File.Delete(RecoveryFiles.Resolve(directory, relative));
+                continue;
+            }
             if (dot < 0 || !Guid.TryParseExact(name[..dot], "N", out _) || name[dot..] is not (".png" or ".png.pending")) continue;
             using var check = db.CreateCommand(); check.CommandText = "SELECT EXISTS(SELECT 1 FROM parcel_retired_operations WHERE id=$id)";
             check.Parameters.AddWithValue("$id", name[..dot]);

@@ -1,6 +1,6 @@
 # SM 长稳采集与完整备份分析
 
-本页是当前操作说明，不授予生产资格。当前 Parcel DB12 只接受真实基线与结构；非当前格式在写入前拒绝并保留原件，不提供升级、迁移或双路径。历史规模、短测与失败结果见[原验证记录](../archive/runtime/validation/win11-24x7-stability-remediation-01.md)，仅适用于各自来源提交，不表示当前版本或连续24/72小时现场已通过。
+本页是当前操作说明，不授予生产资格。当前 Parcel DB13 只接受真实基线与结构；非当前格式在写入前拒绝并保留原件，不提供升级、迁移或双路径。历史规模、短测与失败结果见[原验证记录](../archive/runtime/validation/win11-24x7-stability-remediation-01.md)，仅适用于各自来源提交，不表示当前版本或连续24/72小时现场已通过。
 
 ## 运行和维护边界
 
@@ -29,7 +29,7 @@ python scripts/stability-qualification.py collect --plan D:/stability/plan.json 
 
 ## 完整离线分析
 
-先通过同源应用生成完整备份，停止或等待备份完成，不接受活动库、WAL/SHM/journal侧文件、缺件集合或仅改版本号的伪 DB12。`--verifier` 指向同源介质中的 `app/Ipc.Assembly.exe`（开发可用同一入口的 DLL）。核验复用 Application 的 ParcelRecovery 和 Repository，检查完成标记、路径及完整文件集合/哈希、配置与应用身份、当前数据库基线/真实结构和完整性。分析前后各核验一次，SQLite 用不可变只读方式打开，不创建侧文件。
+先通过同源应用生成完整备份，停止或等待备份完成，不接受活动库、WAL/SHM/journal侧文件、缺件集合或仅改版本号的伪 DB13。`--verifier` 指向同源介质中的 `app/Ipc.Assembly.exe`（开发可用同一入口的 DLL）。核验复用 Application 的 ParcelRecovery 和 Repository，检查完成标记、路径及完整文件集合/哈希、配置与应用身份、当前数据库基线/真实结构和完整性。分析前后各核验一次，SQLite 用不可变只读方式打开，不创建侧文件。
 
 ```powershell
 python scripts/stability-qualification.py analyze --collection D:/stability/新24h目录 --database D:/backups/完整备份.db --verifier D:/releases/固定候选/app/Ipc.Assembly.exe --output D:/stability/分析.json

@@ -53,6 +53,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string MinimumWeight { get => Get<string>(); set => Set(value); }
     public string MaximumWeight { get => Get<string>(); set => Set(value); }
     public string QueueCapacity { get => Get<string>(); set => Set(value); }
+    public string ReadTimeoutMs { get => Get<string>(); set => Set(value); }
     public string TimeoutMs { get => Get<string>(); set => Set(value); }
     public string MaximumOperations { get => Get<string>(); set => Set(value); }
     public string ResidentHistory { get => Get<string>(); set => Set(value); }
@@ -75,6 +76,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
             BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) && RejectMultipleCodes && MultiCodeSeparator == ";" ? null : BuildBarcodePolicy(),
             WeightRange = BuildWeightRange(),
             QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
+            ReadTimeoutMs = Integer(ReadTimeoutMs, "业务模块/ReadTimeoutMs", 100, 60000),
             TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
             Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention,
@@ -110,6 +112,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         MinimumWeight = c.WeightRange?.Minimum.ToString(CultureInfo.InvariantCulture) ?? "",
         MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture),
+        ReadTimeoutMs = c.ReadTimeoutMs.ToString(CultureInfo.InvariantCulture),
         TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture),
         MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
         ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture),

@@ -15,7 +15,7 @@ public sealed partial class ParcelRuntime
         Diagnostic("相机识码", outcome, frame.Outcome is ObservationReadOutcome.Codes or ObservationReadOutcome.NoCode ? "信息" : "警告",
             Wire.Encode(new { PositionId = position, frame.DeviceId, frame.Epoch, frame.FrameNumber, frame.SourceEventId, frame.ObservedAt, frame.Outcome, frame.CandidateCount,
                 RawCandidateCount = frame.Codes?.Length ?? frame.CandidateCount, Candidates = frame.Codes, frame.Formats,
-                Selection = frame.Codes is { } codes ? BarcodeFiltering.Select(Effective.BarcodeFilter, codes) : null,
+                Selection = frame.Codes is { } codes ? BarcodeFiltering.Select(Effective.BarcodeFilter ?? new BarcodeFilterPolicy(""), codes) : null,
                 frame.Scene, frame.FailureReason, FramesSinceLastLog = count, RetainedOperationId = retainedOperation }));
     }
     readonly List<(IObservationReadFeedbackSource Source, Action<ObservationReadFeedback> Handler)> cameraReadSubscriptions = [];
@@ -34,12 +34,13 @@ public sealed partial class ParcelRuntime
             if (frame.Outcome == ObservationReadOutcome.Codes && frame.Codes is { } codes)
             {
                 if (codes.Length != frame.CandidateCount) return;
-                var eligible = codes.Length - (CameraBarcodeCandidates.Excluded(Effective.BarcodeFilter, codes)?.Length ?? 0);
+                var selected = BarcodeFiltering.Select(Effective.BarcodeFilter ?? new BarcodeFilterPolicy(""), codes);
+                var eligible = selected.Candidates?.Count(c => c.Outcome == "Eligible") ?? selected.Matches;
                 frame = frame with { CandidateCount = eligible, Outcome = eligible == 0 ? ObservationReadOutcome.NoCode : ObservationReadOutcome.Codes };
             }
-            NotePlacementFrame(position, frame);
-            var retainedOperation = RetainedCameraPlacement(position, frame);
-            var retainedInput = RetainedRejectedFrame(position, frame);
+            // Decode feedback is not a qualified tray-presence classifier.
+            string? retainedOperation = null;
+            string? retainedInput = null;
             lock (cameraLogWindows)
             {
                 var signature = Wire.Hash(Wire.Encode(new { frame.Epoch, frame.Outcome, frame.CandidateCount, frame.FailureReason,
@@ -79,7 +80,6 @@ public sealed partial class ParcelRuntime
                 if (changed) OfferPresentation();
             }
         };
-        foreach (var fed in positions.Values.Where(p => p.ReaderDeviceId == session.Source.DeviceId)) RegisterPlacementFrames(fed.Id);
         source.ReadFeedback += handler;
         cameraReadSubscriptions.Add((source, handler));
     }

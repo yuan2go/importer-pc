@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -100,6 +100,7 @@ public partial class App : System.Windows.Application
         {
             startup.Show(); MainWindow = startup;
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
+            startup.BeginAttempt();
             var options = selected!; var launch = options.Business;
             var ordinaryArguments = new List<string>();
             ordinaryArguments.AddRange(["--config", Path.GetFullPath(launch.ConfigurationDirectory), "--data-root", Path.GetFullPath(launch.DataRoot), "--ui", options.Ui]);
@@ -109,6 +110,11 @@ public partial class App : System.Windows.Application
             // A supervised child must never replace its registered process ID.
             if (!recoveryChild && OrdinaryRuntimeProcess.RelaunchCurrentIfElevated(ordinaryArguments.ToArray()))
             { startup.AllowClose = true; Shutdown(0); return; }
+#if SPORTMASTER
+            startup.Phase("检查相机依赖", "正在检查相机组件与系统运行库。缺失时从同版维护缓存恢复，系统安装可能需要 Windows 授权。", "开始核验相机启动依赖");
+            if (await ParcelStartupServices.EnsureCameraDependenciesAsync(AppContext.BaseDirectory))
+                startup.Phase("相机依赖已恢复", "正在继续启动检查，尚未连接设备。", "相机启动依赖已恢复并复查");
+#endif
             if (!recoveryChild && OperatingSystem.IsWindows() && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")) &&
                 DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is { LifecycleState: "Installed", Recovery.Enabled: true } installed &&
                 Path.GetFullPath(launch.DataRoot).Equals(Path.GetFullPath(installed.DataRoot), StringComparison.OrdinalIgnoreCase) &&
@@ -131,7 +137,6 @@ public partial class App : System.Windows.Application
                     return;
                 }
             }
-            startup.BeginAttempt();
             startup.Phase("读取配置与本地记录", "正在检查配置和上次未处理完的作业，尚未开始供包。", "启动配置入口已判定");
             var starting = await Task.Run(() => ParcelAssembly.Create(launch)); runtime = starting;
             if (starting is IRuntimeFatalSource fatalSource)

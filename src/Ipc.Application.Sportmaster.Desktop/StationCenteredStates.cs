@@ -30,7 +30,7 @@ public sealed partial class SupplyStationPositionViewModel
     ParcelInputSnapshot? CurrentInputException => CurrentResultVisible && InputUnadmitted &&
         Input is { Outcome: ParcelInputOutcome.Blocked or ParcelInputOutcome.Rejected } input ? input : null;
     bool CenteredOriginalAttention => owner.Fresh && !SupplyDisabled && HasUncertainOriginal;
-    bool CenteredReadAttention => owner.Fresh && !SupplyDisabled && (!DisplayPaused || PausedAttention) &&
+    bool CenteredReadAttention => !RoundReadActive && owner.Fresh && !SupplyDisabled && (!DisplayPaused || PausedAttention) &&
         (invalidReadFeedback || CurrentInputException is not null);
     bool MissingConfirmedSlot => CurrentTaskAvailable && !SlotAvailable;
     bool CenteredOperationAttention => owner.Fresh && !SupplyDisabled && CurrentResultVisible && !InputUnadmitted &&
@@ -89,8 +89,10 @@ public sealed partial class SupplyStationPositionViewModel
         ? "请联系维护人员检查运行数据，操作工无需进入管理中心。"
         : owner.CanResumeInViewport ? "确认现场后，点击顶部“恢复供包”。"
         : "请通知维护人员检查设备，恢复后再上件。";
-    public bool ShowCenteredState => !ShowRecentChute && (CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting || CenteredNoBarcodeBlocked);
-    public string CenteredStateTitle => CenteredStale ? "状态读取中断" : CenteredOriginalAttention ? OriginalAttentionTitle : CenteredReadAttention ? ReadAttentionTitle :
+    bool AutoSuppressedWaiting => CurrentRound is null && owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.AutomaticSuppressed == true;
+    bool RoundReadActive => CurrentRound is { OperationId: null };
+    public bool ShowCenteredState => RoundReadActive || !ShowRecentChute && (CenteredAttention || SupplyDisabled || CenteredSoftwarePause || CenteredRcsPause || CenteredWaiting || CenteredNoBarcodeBlocked);
+    public string CenteredStateTitle => RoundReadActive ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? "本位在途资源已满" : CurrentRound.AutoExpired ? "识读异常，可补录" : "正在识读" : CenteredStale ? "状态读取中断" : CenteredOriginalAttention ? OriginalAttentionTitle : CenteredReadAttention ? ReadAttentionTitle :
         CurrentRcsRejection is { } rejection ? string.IsNullOrWhiteSpace(rejection.Message) ? "RCS 未分配格口" : rejection.Message :
         CenteredOperationAttention ? MissingConfirmedSlot ? "未取得有效格口" : Operation?.State switch
         { ParcelState.UnpackRequired => "需要拆包检查", ParcelState.Blocked => "本件暂不能处理", _ => "未分配格口" } :
@@ -99,20 +101,20 @@ public sealed partial class SupplyStationPositionViewModel
     public string CenteredStateForeground => CenteredAttention ? CenteredAttentionTone switch
     { ParcelPresentationTone.Stale => OperatorTokens.Muted, ParcelPresentationTone.Unknown => OperatorTokens.Warning, _ => OperatorTokens.Danger }
         : CenteredRcsPause ? OperatorTokens.Danger : SupplyDisabled || CenteredSoftwarePause || CenteredNoBarcodeBlocked ? OperatorTokens.Muted : OperatorTokens.Success;
-    public string CenteredStateReason => CenteredStale ? "旧格口已失效" : CenteredOriginalAttention ? OriginalAttentionReason :
+    public string CenteredStateReason => RoundReadActive ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? "本轮尚未提交；本位旧调用仍在收尾" : CurrentRound.FormalCodes.Length > 1 ? "本轮有多个有效条码，尚未请求RCS" : "本轮尚未取得可提交条码，尚未请求RCS" : CenteredStale ? "旧格口已失效" : CenteredOriginalAttention ? OriginalAttentionReason :
         CenteredReadAttention ? invalidReadFeedback ? "本次没有有效格口" : "本次扫码未发送请求" :
         CenteredRcsRejection ? "本件暂不能分配格口" : CenteredOperationAttention ? Operation?.State == ParcelState.UnpackRequired ? "本件需人工检查" : "本件暂不能分配格口" :
         SupplyDisabled ? "不接收条码" : CenteredSoftwarePause ? PauseReason : CenteredRcsPause ? "RCS 服务离线" :
         CenteredNoBarcodeBlocked ? SupplyDisabling ? "正在确认本次放置结束" : Operation?.State == ParcelState.ResolvingWcs ? "正在等待本件格口" : "本位暂不接收新条码" :
-        CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "放上包裹，由相机扫码" : "可输入完整条码";
+        AutoSuppressedWaiting ? "本次自动识读机会已使用" : CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "放上包裹，由相机扫码" : "可输入完整条码";
     public string CenteredStateInstruction => CenteredStateFullInstruction;
-    public string CenteredStateFullInstruction => CenteredStale ? "请等待状态恢复，暂勿按旧格口投递" :
+    public string CenteredStateFullInstruction => RoundReadActive ? CurrentRound!.ReadOutcome == "ExecutionCapacityBlocked" ? "请等待本位在途调用收尾后重新提交；另一位仍可独立供包" : CurrentRound.AutoExpired ? "可原位使用PDA补录；取下包裹后可点击本轮取下确认" : "请调整标签，或使用PDA补录；本轮识读期限不会刷新" : CenteredStale ? "请等待状态恢复，暂勿按旧格口投递" :
         CenteredOriginalAttention ? OriginalAttentionInstruction : CenteredReadAttention ? ReadAttentionInstruction :
         CenteredOperationAttention ? MissingConfirmedSlot ? "本件暂勿投递，请查看详情并通知维护人员" : Operation?.State switch
         { ParcelState.UnpackRequired => "请查看拆包明细，处理完再继续", ParcelState.Blocked => "本件暂勿投递，请查看详情", _ => RcsRejectionInstruction() } :
         SupplyDisabled ? "" : CenteredSoftwarePause ? PauseInstruction : CenteredRcsPause ? "请检查连接，恢复后再提交" :
         CenteredNoBarcodeBlocked ? SupplyDisabling ? CanConfirmPlacementRemoval ? "请先取下包裹，再确认" : "等待确认托盘清空" : Operation?.State == ParcelState.ResolvingWcs ? "请等待结果后再上件" : "请核对本位状态，必要时通知维护人员" :
-        CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "也可输入完整条码后按回车" : "";
+        AutoSuppressedWaiting ? "可用PDA提交下一件；自动识读须先确认可信的取下再上件" : CurrentReaderState?.IsValid(DateTimeOffset.UtcNow) == true ? "也可输入完整条码后按回车" : "";
 
     static (string Title, string Instruction) AdmissionMessage(ParcelInputSnapshot input) => ParcelInputReasons.BlockReason(input) switch
     {

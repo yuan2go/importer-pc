@@ -8,50 +8,13 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public sealed partial class SupplyStationPositionViewModel
 {
     ParcelReadFeedback? readFeedback;
-    ParcelCameraReadFeedback? cameraRead;
-    Guid cameraReadRuntime;
-    static readonly TimeSpan RecentChuteDuration = TimeSpan.FromSeconds(3);
-    sealed record RecentChute(Guid Runtime, string Epoch, string OperationId, DateTimeOffset ObservedAt, string Slot, string Barcode,
-        long? StartedTicks = null, bool RemovalConfirmed = false);
-    RecentChute? recentChute;
     DateTimeOffset? PlacementClearedAt => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementClearedAt;
-    ManualWorkCardExpiry? ExpiredManualResult => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.ExpiredManualResult;
-    bool ClearedWorkCardCue(DateTimeOffset observedAt) => PlacementClearedAt is { } cleared && observedAt <= cleared ||
-        ExpiredManualResult is { } expired && observedAt <= expired.ObservedThrough;
-    bool RetainedRejectedInput => Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked } input &&
-        readFeedback?.RetainedObservationId == input.Observation.Id;
-    bool ManualPlacementResult => Operation?.OperatorInput is not null && Input?.OperationId == Operation.Id &&
-        (Input.Observation.OperatorInput is not null || ParcelInputReasons.IsSamePlacement(Input)) &&
-        (readFeedback is not { OperatorInput: false } read || read.ObservedAt <= Operation.ObservedAt || read.PlacementOperationId == Operation.Id) &&
-        !(cameraRead is { Frame.Outcome: ObservationReadOutcome.Codes } camera && camera.Frame.ObservedAt > Operation.ObservedAt &&
-            camera.Frame.CompletedTicks > (readFeedback?.DetectedTicks ?? 0));
-    bool MatchedCameraCue => cameraRead is { } frame && readFeedback is { OperatorInput: false } read &&
-        read.RuntimeId == cameraReadRuntime && read.DeviceId == frame.Frame.DeviceId && read.Epoch == frame.Frame.Epoch && read.DetectedTicks == frame.Frame.CompletedTicks;
-    bool CameraObservationUnmatched => !ManualPlacementResult && cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
-        camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome == ObservationReadOutcome.Codes &&
-        !(ExpiredManualResult is { } expired && MatchedCameraCue && readFeedback?.PlacementOperationId == expired.OperationId) &&
-        !(readFeedback is { OperatorInput: true } manual && manual.DetectedTicks > camera.Frame.CompletedTicks) &&
-        !(RetainedRejectedInput && readFeedback!.DeviceId == camera.Frame.DeviceId && readFeedback.Epoch == camera.Frame.Epoch &&
-            readFeedback.DetectedTicks >= camera.Frame.CompletedTicks) &&
-        !(Input is { } input && input.Observation.OperatorInput is null && input.Observation.DeviceId == camera.Frame.DeviceId &&
-            input.Observation.Epoch == camera.Frame.Epoch && input.Observation.SourceEventId == camera.Frame.SourceEventId);
-    bool CameraAwaitingRead => !unreadFeedback && Input?.Observation.OperatorInput is null &&
-        Operation?.Acquisition is { } acquired && CurrentReaderState is { } current &&
-        (acquired.DeviceId != current.DeviceId || acquired.Epoch != current.Epoch) &&
-        // After a reconnect the new connection re-read the same parcel still resting on the tray: the runtime
-        // kept it as the same placement (no new request), so its original result stands again.
-        !(ParcelInputReasons.IsSamePlacement(Input) && Input!.OperationId == Operation.Id &&
-            Input.Observation.DeviceId == current.DeviceId && Input.Observation.Epoch == current.Epoch);
+    ManualWorkCardExpiry? ExpiredManualResult => null;
+    bool CameraObservationUnmatched => false;
+    bool CameraAwaitingRead => false;
     // No-code is a frame fact, not a declaration that a parcel exists or has left.
     // Manual input has its own source and remains usable while the camera sees no code.
-    bool CameraNoCode => CameraAwaitingRead ||
-        Input is { Outcome: ParcelInputOutcome.Rejected, Observation: { OperatorInput: null, Codes.Length: 0 } } &&
-        !unreadFeedback && !CameraObservationUnmatched ||
-        cameraReadRuntime == owner.Snapshot?.RuntimeId && cameraRead is { } camera &&
-        camera.Frame.Epoch == CurrentReaderState?.Epoch && camera.Frame.Outcome != ObservationReadOutcome.Codes &&
-        !(Operation is { } placed && camera.RetainedOperationId == placed.Id) &&
-        !(Input is { } rejected && camera.RetainedObservationId == rejected.Observation.Id) &&
-        !(unreadFeedback ? readFeedback?.OperatorInput == true : Input?.Observation.OperatorInput is not null);
+    bool CameraNoCode => false;
     DeviceState? fastReaderState;
     DeviceState? CurrentReaderState
     {
@@ -61,31 +24,14 @@ public sealed partial class SupplyStationPositionViewModel
             return fastReaderState is { } fast && (published is null || fast.UpdatedAt >= published.UpdatedAt) ? fast : published;
         }
     }
-    bool unreadFeedback => !(ManualPlacementResult && readFeedback?.OperatorInput == false) && !RetainedRejectedInput && readFeedback is { } read && owner.Snapshot?.RuntimeId == read.RuntimeId &&
-        !(ExpiredManualResult is { } expired && read.PlacementOperationId == expired.OperationId) &&
-        read.ObservationId != Input?.Observation.Id && (Input is null ||
-            (Input.Observation.Epoch == read.Epoch && read.SourceSequence > 0 && Input.Observation.Sequence > 0
-                ? read.SourceSequence > Input.Observation.Sequence : Input.Observation.ObservedAt <= read.ObservedAt));
-    bool invalidReadFeedback
-    {
-        get
-        {
-            if (CameraObservationUnmatched && cameraRead is { } camera && Stopwatch.GetElapsedTime(camera.Frame.CompletedTicks) >=
-                TimeSpan.FromMilliseconds(Math.Clamp(readFeedback?.PendingDisplayBudgetMs ?? 10000, 1000, 120000))) return true;
-            if (!unreadFeedback || readFeedback is not { } read) return false;
-            var current = CurrentReaderState;
-            return !read.OperatorInput && current is not null && current.Epoch != read.Epoch ||
-                Stopwatch.GetElapsedTime(read.DetectedTicks) >= TimeSpan.FromMilliseconds(Math.Clamp(read.PendingDisplayBudgetMs, 1000, 120000));
-        }
-    }
+    bool unreadFeedback => false;
+    bool invalidReadFeedback => false;
     static string SingleDisplayCode(string? code) => code is { Length: > 0 and <= 4096 } && !code.Any(char.IsControl) ? code : "";
-    string ObservedBarcode => ManualPlacementResult ? Operation!.ParcelCode : CameraNoCode ? "" : CameraObservationUnmatched ? MatchedCameraCue ? SingleDisplayCode(readFeedback!.SingleCode) : "" : unreadFeedback ? SingleDisplayCode(readFeedback!.SingleCode) : Input is { } input
-        ? SingleDisplayCode(input.BarcodeSelection?.SelectedCode ?? (input.Observation.Codes is [var single] ? single : null))
-        : Operation?.ParcelCode ?? "等待包裹";
+    string ObservedBarcode => CurrentRound?.SelectedCode ?? (CurrentRound is { } round ? string.Join(";", round.FormalCodes.Select(SingleDisplayCode)) : "");
     // Manual entry is an independent source (AGENTS.md): an offline camera does not pause it.
     bool ManualInputAvailable => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
-    public string BarcodePlaceholder => !SupplyEnabled ? SupplyDisabling ? "停用中，不再接收新条码" : "本位已停用，不接收条码" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线，可扫码枪或键盘输入条码" : "相机离线" : CameraAwaitingRead ? "相机已重连，请重新扫码" : CameraNoCode ? "等待放件；已放包裹请将条码朝上" : CameraObservationUnmatched && !MatchedCameraCue ? "正在核对本次条码" : (unreadFeedback ? readFeedback!.CandidateCount : Input?.Observation.Codes.Length ?? 0) > 1
-        ? "本次读到多个条码，请查看图片" : HasCurrentInput ? "本次条码无效，请检查包裹" : "等待相机扫码或输入条码";
+    public string BarcodePlaceholder => !SupplyEnabled ? SupplyDisabling ? "停用中，不再接收新条码" : "本位已停用，不接收条码" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线，可扫码枪或键盘输入条码" : "相机离线" : (CurrentRound?.FormalCodes.Length ?? 0) > 1
+        ? "本次读到多个条码，请查看图片" : RoundReadActive ? CurrentRound!.AutoExpired ? "识读超时，可原位PDA补录" : "正在识读，可调整标签或PDA补录" : HasCurrentInput ? "本轮条码" : "等待相机扫码或输入条码";
     public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || CameraNoCode || CameraObservationUnmatched || unreadFeedback || IsProcessing ? null :
         Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked, Observation.OperatorInput: null } unadmitted ? new(ObservationId: unadmitted.Observation.Id) : InputUnadmitted ? null :
         Input is { } resting && Operation is { } placed && ParcelInputReasons.IsSamePlacement(resting) && resting.OperationId == placed.Id ? new(OperationId: placed.Id) :
@@ -105,20 +51,20 @@ public sealed partial class SupplyStationPositionViewModel
     bool FastReaderBlocked => fastReaderState is { } state && (
         owner.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId) is not { } published ||
         published.Epoch != state.Epoch || published.UpdatedAt < state.UpdatedAt);
-    bool ReaderUnavailableForDisplay => owner.Fresh && (Input is not null || owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual != true) && Input?.Observation.OperatorInput is null && !(unreadFeedback && readFeedback?.OperatorInput == true) &&
+    bool ReaderUnavailableForDisplay => CurrentRound is null && owner.Fresh && (Input is not null || owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual != true) && Input?.Observation.OperatorInput is null && !(unreadFeedback && readFeedback?.OperatorInput == true) &&
         (FastReaderBlocked || owner.Snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId)?.IsValid(DateTimeOffset.UtcNow) != true);
     bool OfflineCameraSurface => ReaderUnavailableForDisplay && !HasUncertainOriginal && Operation?.State != ParcelState.WcsRejected && Input?.Outcome != ParcelInputOutcome.Rejected;
     // Retained property names are display contracts only; no previous destination is cached.
     public bool SlotProvisional => false;
-    public bool IsProcessing => !SupplyDisabled && owner.Fresh && !DisplayPaused && !ReaderUnavailableForDisplay && !HasUncertainOriginal &&
-        !CameraNoCode && !invalidReadFeedback && (CameraObservationUnmatched || unreadFeedback || !InputUnadmitted && Operation?.State == ParcelState.ResolvingWcs);
+    public bool IsProcessing => CurrentRound?.State == SmRoundState.Submitted && !SupplyDisabled && owner.Fresh && !DisplayPaused && !ReaderUnavailableForDisplay && !HasUncertainOriginal &&
+        !CameraNoCode && !invalidReadFeedback && (CurrentRound?.State == SmRoundState.Submitted);
     bool DisplayPaused => owner.Snapshot?.Paused == true;
     bool PausedAttention => DisplayPaused && (HasUncertainOriginal || !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback &&
         (Input is { Outcome: ParcelInputOutcome.Rejected } rejected && !rejected.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) || Operation?.State == ParcelState.WcsRejected));
     bool PausedReadBlocked => DisplayPaused && !CameraNoCode && !CameraObservationUnmatched && !unreadFeedback && Input?.Outcome == ParcelInputOutcome.Blocked;
     public bool ShowConfirmedTask => !SupplyDisabled && CurrentTaskAvailable && SlotAvailable && !unreadFeedback && !ReaderUnavailableForDisplay && !DisplayPaused && owner.ViewportReady;
-    public bool ShowRecentChute => recentChute?.StartedTicks is { } start && Stopwatch.GetElapsedTime(start) < RecentChuteDuration;
-    public string RecentChuteBarcode => ShowRecentChute ? "上一件条码 " + recentChute!.Barcode : "";
+    public bool ShowRecentChute => false;
+    public string RecentChuteBarcode => "";
     public string? SuccessIdentity => ShowConfirmedTask ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Operation?.Id}/{Operation?.Wcs?.Request.Id}" : null;
     public string ResultBackground => CenteredAttention ? OperatorTokens.Neutral : DisplayPresentation.Tone switch
     {
@@ -130,7 +76,7 @@ public sealed partial class SupplyStationPositionViewModel
     };
     public string ResultForeground => !CenteredAttention && DisplayPresentation.Tone is (ParcelPresentationTone.Accepted or ParcelPresentationTone.Rejected or ParcelPresentationTone.Unknown or ParcelPresentationTone.Stale) ? OperatorTokens.Surface : OperatorTokens.Ink;
     public bool DisplaySlotVisible => ShowConfirmedTask || IsProcessing || ShowRecentChute;
-    public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : ShowRecentChute ? recentChute!.Slot : "";
+    public string DisplaySlot => IsProcessing ? "处理中…" : ShowConfirmedTask ? Slot : "";
     public string DisplaySlotForeground => ResultForeground;
     public ParcelStatusPresentation DisplayPresentation => !owner.Fresh ? ParcelPresentation.Stale() : ShowRecentChute ? ParcelPresentation.Neutral("上一件格口") : CenteredAttention
         ? CenteredAttentionTone == ParcelPresentationTone.Unknown ? ParcelPresentation.Unknown(CenteredStateTitle) : ParcelPresentation.Rejected(CenteredStateTitle) :
@@ -150,17 +96,16 @@ public sealed partial class SupplyStationPositionViewModel
         invalidReadFeedback ? "本件暂勿投递；请重新扫描并等待有效格口，未确认的原请求仍需核对。" : !HasUncertainOriginal && IsProcessing ? "等待本件格口，勿按上一件格口投递。" :
         !HasUncertainOriginal && Input?.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal) == true ? "本件已跳过，请取下包裹后重新上件。" :
         !HasUncertainOriginal && Input is { Outcome: ParcelInputOutcome.Rejected, BarcodeSelection.SelectedCode: null } ? "本件未取得格口，请查看图片核对条码；将包裹移出托盘后，再放下一件。" : NextStep;
-    public double DisplaySlotFontSize => ShowRecentChute ? UiTypography.ResponsiveSlotSize(recentChute!.Slot, owner.ChuteScale) : IsProcessing ? UiTypography.Placeholder : SlotFontSize;
-    public string CameraReadFeedback => !CameraNoCode && (!CameraObservationUnmatched || MatchedCameraCue) && !invalidReadFeedback && readFeedback is { } read && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
+    public double DisplaySlotFontSize => IsProcessing ? UiTypography.Placeholder : SlotFontSize;
+    public string CameraReadFeedback => readFeedback is { } read && CurrentRound?.Observation?.Id == read.ObservationId && Stopwatch.GetElapsedTime(read.DetectedTicks) < TimeSpan.FromSeconds(1)
         ? "已读到条码，等待处理结果。" : "";
-    public string? ReadFeedbackIdentity => readFeedback?.ObservationId;
-    public string? ReadFeedbackKey => readFeedback is { } read ? $"{read.RuntimeId}/{read.DeviceId}/{read.Epoch}/{read.ObservationId}" : null;
+    public string? ReadFeedbackIdentity => CurrentRound?.Observation?.Id == readFeedback?.ObservationId ? readFeedback?.ObservationId : null;
+    public string? ReadFeedbackKey => ReadFeedbackIdentity is not null && readFeedback is { } read ? $"{read.RuntimeId}/{read.DeviceId}/{read.Epoch}/{read.ObservationId}" : null;
     public string? RejectionIdentity => !OfflineCameraSurface && (!CameraNoCode || HasUncertainOriginal) && !unreadFeedback && (InputFailed || Operation?.State is ParcelState.WcsRejected or ParcelState.WcsUnknown or ParcelState.UnpackRequired || Operation?.Wcs?.State == StageState.Conflict)
         ? $"{owner.Snapshot?.RuntimeId}/{ReaderId}/{Input?.Observation.Epoch}/{Input?.Observation.Id ?? Operation?.Id}" : null;
     internal void ApplyReadFeedback(ParcelReadFeedback value)
     {
         if (!SupplyEnabled) return;
-        if (ClearedWorkCardCue(value.ObservedAt)) return;
         if (value.RuntimeId != owner.Snapshot?.RuntimeId || value.DeviceId != ReaderId || value.PositionId != PositionId ||
             value.DetectedTicks <= 0 || value.DetectedTicks > Stopwatch.GetTimestamp() ||
             readFeedback is { } old && value.DetectedTicks < old.DetectedTicks) return;
@@ -176,35 +121,17 @@ public sealed partial class SupplyStationPositionViewModel
         fastReaderState = value;
         Update(owner.Snapshot, DateTimeOffset.UtcNow, owner.Fresh, owner.ViewportReady);
     }
-    internal void ApplyCameraReadFeedback(Guid runtime, ParcelCameraReadFeedback value)
-    {
-        if (!SupplyEnabled) return;
-        if (value.Frame.Outcome == ObservationReadOutcome.Codes && ClearedWorkCardCue(value.Frame.ObservedAt)) return;
-        if (runtime != owner.Snapshot?.RuntimeId || value.PositionId != PositionId || value.Frame.DeviceId != ReaderId ||
-            value.Frame.CompletedTicks <= 0 || value.Frame.CompletedTicks > Stopwatch.GetTimestamp() ||
-            value.Frame.Epoch != CurrentReaderState?.Epoch ||
-            cameraReadRuntime == runtime && cameraRead is { } old && (old.Frame.CompletedTicks >= value.Frame.CompletedTicks ||
-                old.Frame.Epoch == value.Frame.Epoch && old.Frame.FrameNumber >= value.Frame.FrameNumber)) return;
-        cameraReadRuntime = runtime; cameraRead = value; NotifySlotDisplay();
-    }
+    internal void ApplyCameraReadFeedback(Guid runtime, ParcelCameraReadFeedback value) { }
     void UpdateSlotMemory(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
-        // Late cues must not revive a removed parcel or an expired manual result.
-        if (readFeedback is { } previous && ClearedWorkCardCue(previous.ObservedAt)) readFeedback = null;
-        if (cameraRead is { Frame.Outcome: ObservationReadOutcome.Codes } old && ClearedWorkCardCue(old.Frame.ObservedAt)) cameraRead = null;
         if (readFeedback?.RuntimeId != snapshot?.RuntimeId || readFeedback?.DeviceId != ReaderId) readFeedback = null;
-        if (cameraReadRuntime != snapshot?.RuntimeId || cameraRead?.Frame.DeviceId != ReaderId) cameraRead = null;
         if (fastReaderState?.DeviceId != ReaderId) fastReaderState = null;
         if (fastReaderState is { } state && snapshot?.Devices?.SingleOrDefault(d => d.DeviceId == ReaderId) is { } acknowledged &&
             acknowledged.Epoch == state.Epoch && acknowledged.UpdatedAt >= state.UpdatedAt) fastReaderState = null;
-        if (snapshot?.ReadFeedbacks.SingleOrDefault(r => r.PositionId == PositionId) is { } read)
-            ApplyReadFeedback(read);
-        if (snapshot?.CameraReads.SingleOrDefault(f => f.PositionId == PositionId) is { } frame)
-            ApplyCameraReadFeedback(snapshot.RuntimeId, frame);
+        if (snapshot?.ReadFeedbacks.SingleOrDefault(r => r.PositionId == PositionId) is { } read) ApplyReadFeedback(read);
     }
     void NotifySlotDisplay()
     {
-        UpdateRecentChute();
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(SupplyEnabled), SupplyEnabled), (nameof(SupplyDisabling), SupplyDisabling), (nameof(SupplyDisabled), SupplyDisabled),
             (nameof(CanChangeSupply), CanChangeSupply), (nameof(CanConfirmPlacementRemoval), CanConfirmPlacementRemoval), (nameof(ShowConfirmedPlacementRemoval), ShowConfirmedPlacementRemoval), (nameof(DisableLabel), DisableLabel), (nameof(EnableLabel), EnableLabel), (nameof(SupplyNotice), SupplyNotice), (nameof(SupplyStateText), SupplyStateText),
@@ -227,33 +154,5 @@ public sealed partial class SupplyStationPositionViewModel
         }
     }
 
-    void UpdateRecentChute()
-    {
-        if (!owner.Fresh || !owner.ViewportReady || !SupplyEnabled || DisplayPaused || RcsUnavailableForDisplay ||
-            owner.Snapshot is not { } snapshot || CurrentReaderState is not { } reader || !reader.IsValid(DateTimeOffset.UtcNow))
-        { recentChute = null; return; }
-        if (ShowConfirmedTask && Operation is { Acquisition: not null, Slot: { } slot } current)
-        {
-            if (recentChute is not { } remembered || remembered.Runtime != snapshot.RuntimeId || remembered.Epoch != reader.Epoch ||
-                remembered.OperationId != current.Id || remembered.StartedTicks is not null)
-                recentChute = new(snapshot.RuntimeId, reader.Epoch, current.Id, current.ObservedAt, slot, current.ParcelCode);
-            return;
-        }
-        if (recentChute is not { } result) return;
-        if (result.Runtime != snapshot.RuntimeId || result.Epoch != reader.Epoch || CameraAwaitingRead || CameraObservationUnmatched || unreadFeedback ||
-            Operation is { } operation && (operation.Id != result.OperationId || operation.Wcs?.State != StageState.Accepted) ||
-            Input is { Observation.Codes.Length: > 0 } input && input.OperationId != result.OperationId)
-        { recentChute = null; return; }
 
-        // The first changed no-code frame demotes the last result immediately.
-        // Only the application's empty-tray confirmation starts the full hold.
-        if (PlacementClearedAt is { } cleared && cleared > result.ObservedAt)
-        {
-            if (!result.RemovalConfirmed)
-                recentChute = result with { RemovalConfirmed = true, StartedTicks = Stopwatch.GetTimestamp() };
-            else if (!ShowRecentChute) recentChute = null;
-        }
-        else if (CameraNoCode && result.StartedTicks is null)
-            recentChute = result with { StartedTicks = Stopwatch.GetTimestamp() };
-    }
 }

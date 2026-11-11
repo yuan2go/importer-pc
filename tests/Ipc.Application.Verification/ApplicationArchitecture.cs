@@ -241,7 +241,7 @@ static class ApplicationArchitecture
         var path = Path.Combine(root, "noncurrent-storage"); var file = NonCurrentStorageFixture.Create(path, "sportmaster", 9);
         var hash = Wire.FileHash(file);
         try { using var denied = new ParcelRepository(path, "sportmaster"); Check(false, "non-current storage accepted"); }
-        catch (InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录") && Wire.FileHash(file) == hash, "non-current storage refuses before writes with fresh-directory guidance"); }
+        catch (InvalidDataException ex) { Check(ex.Message.Contains("原文件已保留") && Wire.FileHash(file) == hash, "non-current storage refuses before writes with original-custody guidance"); }
         return Task.CompletedTask;
     }
     sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false) : IParcelCapabilityFactory

@@ -64,9 +64,11 @@ static class ManagementWorkspaceChecks
             "late expiry cleanup does not reset the camera again after the original window has restored production");
         await h.WaitForCameraAdmissionAsync();
         Check((await h.App.SnapshotAsync()).Paused == before.Paused, "original window can restore production even after password authorization expires");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-CLOSE"), 3);
         await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
         Check(h.Peer.Requests.Count == 2, "closing management resumes automatic decoding and one production request");
+        await h.TrayAsync(h.Left, TrayPresence.Present);
         await h.AuthorizeAsync();
         var unarmedWindow = Wire.Id();
         await h.App.SetManagementWorkspaceAsync(unarmedWindow, true, default);
@@ -89,8 +91,12 @@ static class ManagementWorkspaceChecks
         var current = await h.App.SnapshotAsync(); var control = current.Positions!.Single(p => p.Id == "left").SupplyControl!;
         await h.App.SetPositionEnabledAsync(new(Wire.Id(), current.RuntimeId, "left", control.Revision, false), default);
         h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-PARCEL"), 4);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == 4)));
+        Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling,
+            "changed barcode alone cannot complete a reliable current round while draining");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled);
-        Check(h.Peer.Requests.Count == 2, "a changed barcode completes the original draining placement without claiming the next parcel");
+        Check(h.Peer.Requests.Count == 2, "qualified removal completes the original draining round without claiming the next parcel");
         await h.AuthorizeAsync();
         Check((await h.App.ManagementModeStatusAsync()).Authorized, "reopening uses the fixture original configured management password");
         h.Api(h.Right).Discovered = false;

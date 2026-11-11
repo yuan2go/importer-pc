@@ -43,6 +43,11 @@ static class ReadCadenceChecks
         await SlowPersistenceAndRepeats(workspace, Path.Combine(root, "durable"));
         await QueueAndGate(workspace, Path.Combine(root, "queued"));
     }
+    static async Task<ParcelInputSnapshot> LastInput(CameraRoundHarness h)
+    {
+        var rows = await h.App.ReadCameraBusinessAsync(h.Left, 0, null, 100, default);
+        return (await h.App.ReadCameraBusinessDetailAsync(rows.Rows.Last().Sequence, default))!;
+    }
     static async Task SlowPersistenceAndRepeats(string workspace, string root)
     {
         await using var h = new CameraRoundHarness(workspace, root, timeoutMs: 1000, nativeResults: true);
@@ -52,7 +57,7 @@ static class ReadCadenceChecks
         h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref delayed, 1) == 0) Thread.Sleep(5500); };
         h.Api(h.Left).EnqueueNative(pixels, 1, [Symbol("SYNTH-CADENCE-A")]);
         await Idle(h, "left", 1); h.App.Boundary = null;
-        var input = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
+        var input = await LastInput(h);
         Check(input.Reason.StartsWith("ObservationExpired;") && (input.RecordedAt - input.Observation.ObservedAt).TotalSeconds >= 5,
             "a 5.5 second durable handoff reproduces the field expired observation without an RCS request");
         var logs = await WaitStages(h, "IngressPersistence");
@@ -93,9 +98,11 @@ static class ReadCadenceChecks
         Check(h.Peer.Requests.Count == 1 && Wire.Encode((await h.App.OperationAsync(op.Id))!.Wcs) == frozen,
             "same-placement read after an unknown response preserves the original request and never resends");
         await Pause(h);
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
         h.Api(h.Left).EnqueueNative(pixels, 104, [Symbol("SYNTH-CADENCE-B")]);
-        await Idle(h, "left", baseline.Processed + 3);
-        var changed = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
+        await Idle(h, "left", baseline.Processed + 4);
+        var changed = await LastInput(h);
         Check(changed.Observation.Codes.Single() == "SYNTH-CADENCE-B" && (await h.App.ReadParcelPictureAsync(original, default)).Image is null,
             "a changed barcode remains a real input and retires the old image instead of being coalesced");
         h.Api(h.Left).EnqueueNative(pixels, 105, [Symbol("SYNTH-CADENCE-B")]);

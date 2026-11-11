@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Application.DirectPlc;
@@ -21,9 +21,12 @@ if (args.FirstOrDefault() == "--action" && args.ElementAtOrDefault(1) == "verify
 }
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
+if (args.Contains("--sm-round-lifecycle")) { await Ipc.Verification.SmRoundLifecycle.Run(workspace, root); return; }
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--startup-camera-dependencies")) { StartupCameraDependencies.Run(root); return; }
 if (args.Contains("--backup-consistency")) { await BackupConsistency.Run(workspace, root); return; }
 if (args.Contains("--stability-analysis")) { await StabilityAnalysis.Run(workspace, root); return; }
 if (args.Contains("--debug-no-isolation-31")) { await DebugNoIsolation31.Run(workspace, root); return; }
@@ -214,7 +217,7 @@ if (args.FirstOrDefault(a => a.StartsWith("--", StringComparison.Ordinal)) is { 
 }
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
 ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
-FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow { PlacementReleaseMs = 300 }, "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
+FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow(), "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
 async Task<ParcelRuntime> Open(ParcelConfiguration config, string run, Action<string>? constructed = null)
 {
     var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);

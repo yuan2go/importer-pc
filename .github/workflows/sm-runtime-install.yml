@@ -1,9 +1,12 @@
-name: SM offline camera runtime installation
+﻿name: SM offline camera runtime installation
 on:
   pull_request:
     paths:
       - '.github/workflows/sm-runtime-install.yml'
       - 'src/Ipc.Platform/SmVcRuntimeSetup.cs'
+      - 'src/Ipc.Platform/DeploymentCameraDependencies.cs'
+      - 'src/Ipc.Assembly/ParcelStartupServices.cs'
+      - 'src/Ipc.Desktop/ParcelApp.xaml.cs'
       - 'src/Ipc.Platform/sm-vc-runtime.json'
       - 'src/Ipc.Platform/WindowsDeploymentSetup.cs'
       - 'scripts/sm_vc_runtime.py'
@@ -14,6 +17,9 @@ on:
     paths:
       - '.github/workflows/sm-runtime-install.yml'
       - 'src/Ipc.Platform/SmVcRuntimeSetup.cs'
+      - 'src/Ipc.Platform/DeploymentCameraDependencies.cs'
+      - 'src/Ipc.Assembly/ParcelStartupServices.cs'
+      - 'src/Ipc.Desktop/ParcelApp.xaml.cs'
       - 'src/Ipc.Platform/sm-vc-runtime.json'
       - 'src/Ipc.Platform/WindowsDeploymentSetup.cs'
       - 'scripts/sm_vc_runtime.py'

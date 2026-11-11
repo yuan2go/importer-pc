@@ -1,4 +1,4 @@
-namespace Ipc.Platform;
+﻿namespace Ipc.Platform;
 
 // Passive, bounded counters from the acquisition owner; never probes a device or grants admission.
 public interface IObservationDiagnosticsSource
@@ -16,6 +16,7 @@ public sealed record ObservationDiagnostics(string DeviceId, string Epoch, strin
     long EmptyFrames, long Candidates, long Delivered, long Rejected, bool DecodePaused,
     DateTimeOffset? LastFrameAt, double? LastFrameAgeMs, DateTimeOffset? LastDecodeAt, string? Failure)
 {
+    public string? TrayPresenceStatus { get; init; }
     public DecodeWindowSnapshot? Window { get; init; }
     public long SupersededDecodeFrames { get; init; }
     public long RejectedFrames { get; init; }

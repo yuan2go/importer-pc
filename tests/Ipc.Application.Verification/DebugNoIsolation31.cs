@@ -83,9 +83,9 @@ internal static class DebugNoIsolation31
             Check(locked.Frame is not null && locked.RequestBody is not null && h.Peer.Requests.Count == 2,
                 "both positions continue production HTTP while the separate debug request stays unsent");
             var unsent = await h.App.SnapshotAsync();
-            Check(unsent.Positions!.All(p => p.BarcodeInput is { Camera: true, Manual: true }) &&
+            Check(unsent.Positions!.All(p => p.CurrentRoundId is not null && p.BarcodeInput is { Camera: false, Manual: false }) &&
                 (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
-                "a prepared unsent debug request leaves camera and manual admission ready on both positions");
+                "an unsent debug request adds no production round; both real claimed parcels retain their own submission guards");
             var pixels = await h.App.ReadCameraOriginalAsync(locked.Frame!.Id, default);
             Check(pixels is not null && pixels.Metadata.SourceEventId == locked.Frame.SourceEventId && pixels.Metadata.Symbols.Single().Text == locked.Barcode,
                 "debug result retains the exact original image, barcode and recognition geometry");
@@ -101,6 +101,7 @@ internal static class DebugNoIsolation31
                 performance.Count(e => e.GetProperty("Kind").GetString() == "DebugRcsSubmitCompleted") == 1,
                 "debug and production requests sharing a camera frame remain separate performance cohorts");
             var decoded = h.Factory.Decoders[h.Left].Count;
+            await h.TrayAsync(h.Left, TrayPresence.Absent);
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DEBUG31-NEXT"), 2);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "DEBUG31-NEXT" && o.Wcs?.State == StageState.Accepted));
             Check(h.Factory.Decoders[h.Left].Count > decoded && (await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id,

@@ -94,11 +94,11 @@ static class ParameterGuidanceStartup
             Check(vm.HasUnsavedConfiguration && vm.GetConfigurationChangeItems().Any(i => i.Label == "稍后配置的连接"), "daily deferred-state edits participate in dirty tracking and save review");
             foreach (var p in vm.ReaderDrafts[0].Capability.Parameters.Where(p => p.Field.Key is "device.ip" or "device.serial")) p.Value = "";
             Check(vm.BuildStructuredConfiguration().DeferredConnections?.Length == 3, "the daily editor preserves the same complete deferred candidate");
-            vm.StructuredPolicy!.QueueCapacity = "65"; vm.ConfigurationReason = "synthetic deferred revision";
+            vm.StructuredPolicy!.ResidentHistory = "65"; vm.ConfigurationReason = "synthetic deferred revision";
             await vm.SaveStructuredConfigurationAsync();
             var pending = await app.SnapshotAsync();
             Check(pending.Configuration.Pending?.DeferredConnections?.Length == 3 && pending.Configuration.Effective.QueueCapacity == c.QueueCapacity &&
-                pending.Configuration.Pending.QueueCapacity == 65 && pending.Operations.Length == 0,
+                pending.Configuration.Pending.Retention!.ResidentHistory == 65 && pending.Operations.Length == 0,
                 "daily deferred configuration saves through the existing Pending revision without applying it or creating requests");
             await app.StopAsync(default);
         }

@@ -67,9 +67,10 @@ static partial class Program
             Check(reopened.WindowStyle == WindowStyle.None && reopened.WindowState == WindowState.Maximized, "a newly opened native window restores the persisted default");
             reopened.Close();
             PresentationPreferences.SaveWindowMode("sportmaster", PresentationPreferences.WindowOpeningMode.Window);
-            var firstEditor = new ParameterSettingsControl { FirstConfiguration = true, Model = vm.ParameterEditor };
+            var firstDraft = new StartupConfigurationDraft(vm.Snapshot!.Configuration.Effective, await runtime.CapabilitiesAsync());
+            var firstEditor = new ParameterSettingsControl { FirstConfiguration = true, Model = firstDraft.CreateParameterEditor((p, codes) => Task.FromResult(BarcodeFiltering.Select(p, codes))) };
             var firstHost = new Window { Content = firstEditor, Width = 900, Height = 700 }; firstHost.Show();
-            firstEditor.ShowPage(0, "显示偏好"); await Flush();
+            firstEditor.NavigateTo("WindowOpeningMode"); await Flush();
             var firstOpening = Descendants(firstEditor).OfType<ComboBox>().Single(b => AutomationProperties.GetAutomationId(b) == "WindowOpeningMode");
             firstOpening.SelectedValue = PresentationPreferences.WindowOpeningMode.FullScreen; await Flush();
             Check(PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.Window && firstEditor.OpeningModeDraft == PresentationPreferences.WindowOpeningMode.FullScreen,
@@ -85,13 +86,16 @@ static partial class Program
             var original = File.ReadAllBytes(preference);
             File.WriteAllText(preference, "{broken");
             await Save();
-            Check(vm.HasUnsavedWindowPreference && save.IsEnabled && File.ReadAllText(preference) == "{broken" && vm.WindowPreferenceStatus.Contains("未保存"), "failed save preserves both the original file and the visible draft for retry");
+            Check(vm.HasUnsavedWindowPreference && save.IsEnabled && File.ReadAllText(preference) == "{broken" && vm.WindowPreferenceStatus.Contains("草稿保留"), "failed save preserves both the original file and the visible draft for retry");
             File.WriteAllBytes(preference, original); await Save();
             Check(PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.Window && window.WindowStyle != WindowStyle.None && !vm.HasUnsavedWindowPreference, "retry saves the window default and clears pending changes");
             vm.StructuredPolicy!.BarcodePattern = "SYNTHETIC[0-9]+";
             vm.WindowModeDraft = PresentationPreferences.WindowOpeningMode.FullScreen;
             Check(await vm.PrepareConfigurationReviewAsync() && vm.ReviewedConfigurationChanges.Any(c => c.Path == "WindowOpeningMode") && vm.ReviewedConfigurationChanges.Any(c => c.Path == "BarcodePattern"),
                 "mixed review includes both the barcode rule and the local opening mode");
+            vm.SmPreferences.ShowPace = false; vm.SmPreferences.CueVolume = 25;
+            Check(await vm.PrepareConfigurationReviewAsync() && vm.ReviewedConfigurationChanges.Any(c => c.Path == "ShowPace") && vm.ReviewedConfigurationChanges.Any(c => c.Path == "CueVolume"), "mixed review includes pace and audio in the same draft");
+            File.WriteAllText(preference, "{broken");
             var review = new ConfigurationSaveReviewWindow(window, vm);
             try
             {
@@ -101,9 +105,17 @@ static partial class Program
                 confirm.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 var until = DateTime.UtcNow.AddSeconds(15);
                 do { await Task.Delay(20); await Flush(); } while (vm.Busy && DateTime.UtcNow < until);
-                Check(!vm.Busy && !vm.HasUnsavedConfiguration && !vm.HasUnsavedWindowPreference &&
+                Check(!vm.Busy && !vm.HasUnsavedConfiguration && vm.HasUnsavedDisplayPreferences && vm.HasPreferenceSaveFailure &&
+                    PresentationPreferences.ReadCueVolume("sportmaster") == 25 && PresentationPreferences.Read("sportmaster", "pace") == false && File.ReadAllText(preference) == "{broken",
+                    "mixed save confirms the business revision and the two successful local files while retaining only the failed window draft");
+                var committedRevision = vm.Snapshot!.Configuration.Revision;
+                File.WriteAllBytes(preference, original);
+                Check(await vm.PrepareConfigurationReviewAsync() && vm.ReviewedConfigurationChanges.Single().Path == "WindowOpeningMode", "partial retry reviews only the remaining local preference");
+                confirm.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                do { await Task.Delay(20); await Flush(); } while (vm.Busy && DateTime.UtcNow < until);
+                Check(!vm.HasUnsavedDisplayPreferences && vm.Snapshot!.Configuration.Revision == committedRevision &&
                     PresentationPreferences.ReadWindowMode("sportmaster") == PresentationPreferences.WindowOpeningMode.FullScreen && window.WindowStyle == WindowStyle.None,
-                    "mixed save applies the window choice immediately while the review remains open");
+                    "retry applies the remaining local file immediately without submitting the successful business configuration again");
             }
             finally { review.Close(); }
         }

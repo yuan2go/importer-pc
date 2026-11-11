@@ -46,7 +46,7 @@ jobs:
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
           if ([int]$testCounters.executed -lt 25 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--sm-round-lifecycle', '--sm-db12-continuation', '--sm-runtime-responsibility', '--sm-dispatch-resources', '--backup-consistency', '--stability-analysis', '--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--state-journal', '--read-cadence', '--interrupted-scan-skip', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode', '--mvid-reader')
+          $requiredSuites = @('--sm-parameters', '--rcs-timeout-errors', '--parameter-refactor', '--parameter-guidance-startup', '--sm-round-lifecycle', '--sm-db12-continuation', '--sm-runtime-responsibility', '--sm-dispatch-resources', '--backup-consistency', '--stability-analysis', '--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--state-journal', '--read-cadence', '--interrupted-scan-skip', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode', '--mvid-reader')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
@@ -228,3 +228,51 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --clean-storage-defaults
           exit $LASTEXITCODE
+
+  product-branch-evidence:
+    runs-on: windows-2025
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        env:
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: core.protectNTFS
+          GIT_CONFIG_VALUE_0: 'false'
+          GIT_CONFIG_KEY_1: core.longpaths
+          GIT_CONFIG_VALUE_1: 'true'
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          global-json-file: global.json
+      - name: Build the measured production and verification compositions
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet build tests/Ipc.Core.Tests -c Release -p:RestoreLockedMode=true -m:1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build src/Ipc.Desktop -c Release -p:BusinessModule=Sportmaster -p:RestoreLockedMode=true -m:1
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build tests/Ipc.Desktop.UiVerification -c Release -p:RestoreLockedMode=true -m:1
+          exit $LASTEXITCODE
+      - name: Collect actual branches on isolated binary copies
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          ./scripts/measure-product-branches.ps1 -Configuration Release -IncludeWpf -Output .artifacts/product-branches
+      - name: Keep actual branch reports and incomplete coverage inventory
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: product-branches-${{ github.sha }}
+          path: |
+            .artifacts/product-branches/*.json
+            .artifacts/product-branches/*.opencover.xml
+            .artifacts/product-branches/*.md
+            .artifacts/product-branches/*.log
+            .artifacts/product-branches/tests/*.trx
+          if-no-files-found: error
+          retention-days: 14

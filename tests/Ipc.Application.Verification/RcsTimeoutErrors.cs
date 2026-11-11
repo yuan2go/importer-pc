@@ -16,7 +16,8 @@ static partial class SportmasterRcs
     {
         var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
         Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(p => p.Key == "request-timeout-ms") is
-        { Default: "5000", Minimum: 100, Maximum: 30000, Unit: "毫秒" }, "request timeout schema has units, default and bounds");
+        { Default: "1000", Minimum: 100, Maximum: 30000, Unit: "毫秒" }, "request timeout schema has units, default and bounds");
+        await ExactRequestDeadlineChecks(workspace);
         await CurrentRequestTimeoutChecks(workspace);
         await using var peer = new Peer();
         var binding = Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs", Version = "1.0.0", Parameters = new(Binding(peer.Endpoint).Parameters) { ["request-timeout-ms"] = "300" } };
@@ -69,7 +70,7 @@ static partial class SportmasterRcs
                 "configured RCS deadline overrides the shorter generic service budget and retains one attempt");
             var omitted = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "request-timeout-ms")) };
             ParcelOperation WithBinding(CapabilityBinding value) => op with { Wcs = op.Wcs! with { Request = op.Wcs.Request with { Binding = value } } };
-            Check(new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) == 5000 &&
+            Check(new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) == 1000 &&
                 new SportmasterFlow().RequestTimeoutMs(WithBinding(omitted), ParcelStage.Wcs) != genericRuntimeBudget,
                 "omitted component timeout uses the displayed default independently of the generic service budget");
             var view = new SupplyStationViewModel(app); await view.RefreshAsync();
@@ -95,6 +96,7 @@ static partial class SportmasterRcs
             if (mode == "assigned")
             {
                 Check(view.Left.SlotAvailable && view.Left.Slot == "SYNTH-CHUTE", "valid assignment still displays its exact chute");
+                await SmRoundFixture.ConfirmRemovedAsync(app, "left");
                 peer.Mode = "reject";
                 app.EmitReferenceAt("left", "rejected-after-assigned", "SYNTH-0002", Wire.Id());
                 await Wait(app, x => x.Operations.Length == 2 && x.Operations.Any(o => o.State == ParcelState.WcsRejected));
@@ -116,19 +118,21 @@ static partial class SportmasterRcs
                 {
                     var originalRequest = Wire.Encode(op.Wcs!.Request);
                     var sent = peer.Requests.Count;
+                    var processed = app.WorkerProgress().Single(w => w.Position == "left").Processed;
                     app.EmitReferenceAt("left", "same-placement-" + mode, "SYNTH-0001", Wire.Id());
-                    await Wait(app, x => x.Inputs!.Any(i => i.Observation.AdmissionId == "same-placement-" + mode));
+                    await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
                     Check(peer.Requests.Count == sent, mode + " repeated observation of the same placement does not send again");
+                    await SmRoundFixture.ConfirmRemovedAsync(app, "left");
                     peer.Mode = "assigned"; peer.ResponseTransform = null;
                     app.EmitReferenceAt("left", "changed-placement-" + mode, "SYNTH-0002", Wire.Id());
-                    var changed = await Wait(app, x => x.Operations.Any(o => o.ParcelCode == "SYNTH-0002" && o.State == ParcelState.SlotResolved));
+                    var changed = await Wait(app, x => x.Operations.Any(o => o.ParcelCode == "SYNTH-0002" && o.State == ParcelState.SlotResolved) && x.Capacity?.HistoricalUnknown == 1);
                     var original = (await app.OperationAsync(op.Id))!;
                     await view.RefreshAsync();
                     Check(peer.Requests.Count == sent + 1 && changed.Capacity?.HistoricalUnknown == 1 &&
                         changed.Operations.All(o => o.Id != op.Id) && original.State == ParcelState.WcsUnknown && original.Wcs!.Attempts == 1 &&
                         Wire.Encode(original.Wcs.Request) == originalRequest && view.Left.SlotAvailable && view.Left.Barcode == "SYNTH-0002" &&
                         changed.Positions!.Single(p => p.Id == "right").Admit,
-                        mode + " different barcode starts a new placement without an empty-frame gap, replaying the original or blocking the other position");
+                        mode + " confirmed removal permits the next independent parcel while preserving original Unknown and the other position; facts=" + Wire.Encode(new { Requests=peer.Requests.Count, Sent=sent, changed.Capacity, OriginalState=original.State, Attempts=original.Wcs!.Attempts, Frozen=Wire.Encode(original.Wcs.Request)==originalRequest, Slot=view.Left.SlotAvailable, Barcode=view.Left.Barcode, Right=changed.Positions!.Single(p=>p.Id=="right").Admit }));
                 }
             }
         }
@@ -145,7 +149,7 @@ static partial class SportmasterRcs
             Check(view.Left.AttentionReason == OperatorCopy.TimeoutUnconfirmed && persisted.Wcs!.Replies.Single().HttpResponse is { Complete: false } &&
                 Encoding.UTF8.GetString(Convert.FromBase64String(persisted.Wcs.Replies.Single().HttpResponse!.BodyBase64)) == "{\"requestId\":" &&
                 op.Wcs!.Replies.Single().HttpResponse is null,
-                "application/component deadline race preserves the response prefix and still shows rescan guidance");
+                "application/component deadline race preserves the response prefix and original-request custody guidance");
         }
         await TimeoutRescanChecks(workspace, root);
         Console.WriteLine("PASS RCS TIMEOUT AND ERROR PRESENTATION COMPLETE");
@@ -162,22 +166,15 @@ static partial class SportmasterRcs
             Check(new Ipc.Application.Sportmaster.SportmasterFlow().Validate(HeartbeatConfiguration(workspace, binding with { Version = version })).Any(x => x.Contains("RCS组件版本")),
                 "current configuration validation refuses old RCS before startup ledger/database writes: " + version);
         }
-        foreach (var explicitTimeout in new[] { false, true })
         {
-            var selected = explicitTimeout ? binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = "10000" } } : binding;
+            var selected = binding with { Parameters = new(binding.Parameters) { ["request-timeout-ms"] = "10000" } };
             await using var service = new SportmasterRcsTaskService(selected);
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, selected)); await service.StartAsync(default);
             var request = Request(selected); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
             using var caller = new CancellationTokenSource(10000);
             var before = peer.Requests.Count; var watch = Stopwatch.StartNew();
-            if (explicitTimeout)
-                Check((await service.ResolveSlotAsync(request, caller.Token)).BusinessAccepted == true && watch.ElapsedMilliseconds >= 5000,
-                    "explicit ten-second budget accepts a valid response beyond five seconds");
-            else
-            {
-                try { await service.ResolveSlotAsync(request, caller.Token); throw new Exception("Default budget extended by caller"); }
-                catch (TimeoutException) { Check(watch.ElapsedMilliseconds >= 4500 && watch.ElapsedMilliseconds < 8000, "default five-second deadline overrides a ten-second caller budget"); }
-            }
+            Check((await service.ResolveSlotAsync(request, caller.Token)).BusinessAccepted == true && watch.ElapsedMilliseconds >= 5000,
+                "explicit ten-second budget accepts a valid response beyond five seconds");
             Check(peer.Requests.Count == before + 1, "one request per frozen intent without retries");
         }
         peer.Mode = "assigned";

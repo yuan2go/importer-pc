@@ -43,4 +43,4 @@
 
 当前参数流程见[首配与保存](parameter-guidance-startup-01.md)和[参数清单](parameter-inheritance-02.md)。取格口默认1000ms；自动识读独立1000ms，不按RCS期限丢弃合法输入。参数回归使用`sm-parameters`、`rcs-timeout-errors`、`parameter-refactor`（已含inheritance）和`parameter-guidance-startup`，Windows增加首配默认与统一偏好部分保存验证。过期“换码即新件”、无正式候选必须产生UI输入和队列设置可编辑等预期改为当前轮次/处理回执契约。
 
-原`industrial-coverage.runsettings`和`verify_product_coverage.py`仍只负责四程序集的实际子进程行覆盖门槛。`scripts/measure-product-branches.ps1`在独立二进制副本上使用固定Coverlet 10.1.0采集真实OpenCover分支，输出原报告、运行命令/退出码、源身份及`branches.json/md`。所有自有`src/**/*.cs`纳入源清单；缺采集的分支数为未知，未命中的分支逐项列明，不假定不可达，不缩小分母宣称全覆盖。不同程序集字节版本分别记账；纯WPF测试程序集中的链接生产代码不伪装成生产程序集覆盖。完整可达分支覆盖仍须以实际报告和缺口为准，硬件/权限/现场未运行不能签合格。
+原`industrial-coverage.runsettings`和`verify_product_coverage.py`仍只负责四程序集的实际子进程行覆盖门槛。`scripts/measure-product-branches.ps1`在独立二进制副本上使用固定Coverlet 10.1.0采集真实分支，保留OpenCover与完整JSON（[收集器源码](https://github.com/coverlet-coverage/coverlet/blob/v10.1.0/src/coverlet.core/Reporters/OpenCoverReporter.cs)的OpenCover明细会省略没有顺序行的方法，因此按配套JSON保留全部分支并核对总数），输出原报告、运行命令/退出码、源身份及`branches.json/md`。所有自有`src/**/*.cs`纳入源清单；缺采集的分支数为未知，未命中的分支逐项列明，不假定不可达，不缩小分母宣称全覆盖。不同程序集字节版本分别记账；纯WPF测试程序集中的链接生产代码不伪装成生产程序集覆盖。完整可达分支覆盖仍须以实际报告和缺口为准，硬件/权限/现场未运行不能签合格。

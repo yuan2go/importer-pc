@@ -166,6 +166,7 @@ if (args.Contains("--aqa01-crash-child")) { var i = Array.IndexOf(args, "--aqa01
 if (args.Contains("--architecture-quality-remediation")) { await ArchitectureQualityRemediation.Run(workspace, root); return; }
 if (args.Contains("--administrator-broker-boundary")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); AdministratorBoundary.Run(args[Array.IndexOf(args, "--administrator-broker-boundary") + 1], root); return; }
 if (args.Contains("--management-mode")) { await OperatorAdministration.Run(workspace, root); return; }
+if (args.Contains("--sm-parameters")) { await SmParameters.Run(workspace, root); return; }
 if (args.Contains("--parameter-refactor")) { await ParameterRefactor.Run(workspace, root); await ParameterInheritance.Run(workspace, root); return; }
 if (args.Contains("--installer-options")) { if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); InstallerOptions.Run(root); return; }
 if (args.Contains("--shortcut-lifecycle")) { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); if (args.Contains("--expected-acp")) InstallerOptions.RequireCodePage(args[Array.IndexOf(args, "--expected-acp") + 1]); ShortcutLifecycle.Run(root); return; }

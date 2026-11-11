@@ -88,6 +88,64 @@ if (!(Test-Path -LiteralPath $systemRuntime) -or @(Vc90Files).Count -eq 0) {
 }
 Install-Verification -name 'repair' -vc90 'AlreadyAvailable' -vc100 'AlreadyAvailable' -extra @('/repair')
 
+# Exercise startup dependency repair without starting cameras, RCS or business data.
+# Only this disposable runner removes a real runtime and an installed decoder DLL.
+$registration = 'D:/ImporterPc/Machine/deployments/sportmaster.json'
+$deployment = Get-Content -LiteralPath $registration -Raw | ConvertFrom-Json
+$probeRoot = Join-Path $verificationRoot 'dependency-probe'
+New-Item -ItemType Directory -Path $probeRoot | Out-Null
+$platformReference = [Security.SecurityElement]::Escape((Join-Path $deployment.ReleaseRoot 'app/Ipc.Platform.dll'))
+@"
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+  <ItemGroup><Reference Include="Ipc.Platform"><HintPath>$platformReference</HintPath></Reference></ItemGroup>
+</Project>
+"@ | Set-Content -LiteralPath "$probeRoot/Probe.csproj"
+@'
+using Ipc.Platform;
+var location = WindowsDeploymentSetup.Current("sportmaster")!;
+var desktop = Path.Combine(location.ReleaseRoot, "desktop");
+var registration = WindowsDeploymentSetup.Registration("sportmaster");
+var original = Wire.FileHash(registration);
+var seed = Path.Combine(location.ConfigurationDirectory, "business.json");
+var seedHash = Wire.FileHash(seed);
+var marker = Path.Combine(location.DataRoot, "dependency-repair-synthetic-marker");
+File.WriteAllText(marker, "original synthetic data retained");
+var markerHash = Wire.FileHash(marker);
+var before = WindowsDeploymentSetup.InspectCameraDependencies(desktop);
+if (!before.Files.Contains("desktop/vendor/zxing-cpp/ZXing.dll") || !before.Runtimes.Contains("Visual C++ 2010 SP1 x64"))
+    throw new Exception("Startup inspection failed to find the missing DLL and real VC++ runtime");
+WindowsDeploymentSetup.RepairCameraDependencies(original);
+if (WindowsDeploymentSetup.InspectCameraDependencies(desktop).NeedsRepair || Wire.FileHash(registration) != original ||
+    Wire.FileHash(seed) != seedHash || Wire.FileHash(marker) != markerHash)
+    throw new Exception("Startup dependency repair did not preserve the installation/configuration/data identity");
+Console.WriteLine("PASS STARTUP-DEPENDENCIES missing DLL and real VC++ runtime recovered; original registration, configuration and data retained; no business startup");
+'@ | Set-Content -LiteralPath "$probeRoot/Program.cs"
+dotnet build "$probeRoot/Probe.csproj" -c Release -v quiet > "$evidence/build-dependency-probe.log" 2>&1
+if ($LASTEXITCODE) { Get-Content "$evidence/build-dependency-probe.log" -Tail 20; throw 'Dependency probe build failed' }
+$decoder = Join-Path $deployment.ReleaseRoot 'desktop/vendor/zxing-cpp/ZXing.dll'
+if (![IO.Path]::GetFullPath($decoder).StartsWith([IO.Path]::GetFullPath($deployment.ReleaseRoot) + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+    throw 'Synthetic missing-file target escaped the installed release'
+}
+Remove-Item -LiteralPath $decoder
+$vc100Products = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
+    Where-Object { $_.DisplayName -match '^Microsoft Visual C\+\+ 2010\b.*x64' -and $_.PSChildName -match '^\{[0-9a-fA-F-]{36}\}$' }
+foreach ($product in $vc100Products) {
+    $removed = Start-Process msiexec.exe -ArgumentList @('/x', $product.PSChildName, '/qn', '/norestart') -PassThru -Wait -WindowStyle Hidden
+    if ($removed.ExitCode -notin 0,1605,3010) { throw 'Could not remove the disposable VC++ 2010 runtime' }
+}
+if (Test-Path -LiteralPath $systemRuntime) { throw 'Startup repair requires the real VC++ 2010 runtime to be missing' }
+dotnet "$probeRoot/bin/Release/net10.0-windows/Probe.dll" > "$evidence/startup-dependency-repair.log" 2>&1
+if ($LASTEXITCODE) { Get-Content "$evidence/startup-dependency-repair.log" -Tail 25; throw 'Startup dependency recovery failed' }
+Get-Content "$evidence/startup-dependency-repair.log"
+# A registered product with one missing C++ DLL must also be repaired, rather
+# than treating the still-loadable C runtime or product registration as healthy.
+Remove-Item -LiteralPath (Join-Path $env:WINDIR 'System32/msvcp100.dll')
+Remove-Item -LiteralPath $decoder
+dotnet "$probeRoot/bin/Release/net10.0-windows/Probe.dll" > "$evidence/startup-partial-runtime-repair.log" 2>&1
+if ($LASTEXITCODE) { Get-Content "$evidence/startup-partial-runtime-repair.log" -Tail 25; throw 'Partial runtime repair failed' }
+Get-Content "$evidence/startup-partial-runtime-repair.log"
+
 # Windows can supply VC90 in WinSxS. Keep that system component intact and
 # exercise the bundled VC90 installer's quiet invocation separately in that case.
 if ($expectedVc90 -eq 'AlreadyAvailable') {

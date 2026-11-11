@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -16,6 +16,21 @@ internal static class SmVcRuntimeSetup
     sealed record Package(string File, long Length, string Sha256, string Url);
     sealed record Inventory(string ActivationManifest, Package[] Packages);
     internal sealed record Outcome(string Package, string Status, int? ExitCode = null);
+
+    internal static string[] Missing(DeploymentMedia media)
+    {
+        if (media.ApplicationId != "sportmaster" || !media.Files.ContainsKey("desktop/vendor/hikrobot-mvid/MVIDCodeReader.dll") && !media.Files.ContainsKey(ActivationFile)) return [];
+        using var resource = typeof(SmVcRuntimeSetup).Assembly.GetManifestResourceStream("Ipc.SmVcRuntime.json")!;
+        using var reader = new StreamReader(resource);
+        var inventory = Wire.Decode<Inventory>(reader.ReadToEnd());
+        var manifest = Path.Combine(media.Root, ActivationFile);
+        MachineRuntimePolicy.RequireProtectedEvidence(manifest);
+        using var hold = OpenPinned(manifest, Wire.Hash(inventory.ActivationManifest));
+        var missing = new List<string>();
+        if (!CanLoadVc90(manifest)) missing.Add("Visual C++ 2008 SP1 x64");
+        if (!CanLoadVc100()) missing.Add("Visual C++ 2010 SP1 x64");
+        return missing.ToArray();
+    }
 
     internal static Outcome[] Ensure(DeploymentMedia media, string release, Action<WindowsInstallationStage>? progress)
     {
@@ -39,8 +54,7 @@ internal static class SmVcRuntimeSetup
         return
         [
             EnsureOne("Visual C++ 2008 SP1 x64", old, () => CanLoadVc90(manifest)),
-            EnsureOne("Visual C++ 2010 SP1 x64", next, () =>
-                CanLoad(Path.Combine(Environment.SystemDirectory, "msvcr100.dll")))
+            EnsureOne("Visual C++ 2010 SP1 x64", next, CanLoadVc100)
         ];
 
         string Verify(string relative, string hash, long? bytes = null)
@@ -69,17 +83,16 @@ internal static class SmVcRuntimeSetup
     static Outcome EnsureOne(string name, string installer, Func<bool> available)
     {
         if (available()) return new(name, "AlreadyAvailable");
-        using var child = Process.Start(new ProcessStartInfo(installer, "/q /norestart")
-        {
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(installer)!
-        }) ?? throw new IOException("无法启动相机运行库安装：" + name);
-        // The elevated installation already owns the deployment transaction.
-        // Do not report success or release it while the vendor installer runs.
-        child.WaitForExit();
-        var result = child.ExitCode;
+        var result = RunInstaller(name, installer, "/q /norestart");
         if (result is 0 or 1638 or 3010 && available()) return new(name, "Installed", result);
+        // Windows Installer can retain a registered product after one runtime
+        // DLL was deleted. One explicit vendor repair is justified by the failed
+        // load check; this is not a retry of an uncertain business operation.
+        if (result is 0 or 1638)
+        {
+            result = RunInstaller(name, installer, "/repair /q /norestart");
+            if (result is 0 or 1638 or 3010 && available()) return new(name, "Repaired", result);
+        }
         var guidance = result switch
         {
             1618 => "Windows 正在执行另一项安装，请等待完成后重试。",
@@ -88,6 +101,18 @@ internal static class SmVcRuntimeSetup
         };
         throw new IOException($"相机运行库 {name} 未能就绪。{guidance}（安装退出码 {result}）");
     }
+
+    static int RunInstaller(string name, string installer, string arguments)
+    {
+        using var child = Process.Start(new ProcessStartInfo(installer, arguments)
+        { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = Path.GetDirectoryName(installer)! })
+            ?? throw new IOException("无法启动相机运行库安装：" + name);
+        // Keep the owner until the actual Windows Installer operation exits.
+        child.WaitForExit(); return child.ExitCode;
+    }
+
+    static bool CanLoadVc100() => CanLoad(Path.Combine(Environment.SystemDirectory, "msvcr100.dll")) &&
+        CanLoad(Path.Combine(Environment.SystemDirectory, "msvcp100.dll"));
 
     // Check the same amd64 side-by-side assembly identity requested by MVID.
     // An x86 package or an unrelated VC runtime cannot satisfy this activation.

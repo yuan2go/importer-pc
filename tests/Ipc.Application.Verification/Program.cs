@@ -26,6 +26,7 @@ if (args.Contains("--sm-round-lifecycle")) { await Ipc.Verification.SmRoundLifec
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--startup-camera-dependencies")) { StartupCameraDependencies.Run(root); return; }
 if (args.Contains("--backup-consistency")) { await BackupConsistency.Run(workspace, root); return; }
 if (args.Contains("--stability-analysis")) { await StabilityAnalysis.Run(workspace, root); return; }
 if (args.Contains("--debug-no-isolation-31")) { await DebugNoIsolation31.Run(workspace, root); return; }

@@ -63,6 +63,7 @@ public sealed class CoreRegression
     [DataRow("--mvs-network-reconnect", 20)]
     [DataRow("--mvs-offline-activation", 14)]
     [DataRow("--mvs-stop-reconnect", 9)]
+    [DataRow("--startup-camera-dependencies", 8)]
     [DataRow("--mvs-presence", 22)]
     [DataRow("--mvs-still-frames", 10)]
     [DataRow("--log-readable", 6)]

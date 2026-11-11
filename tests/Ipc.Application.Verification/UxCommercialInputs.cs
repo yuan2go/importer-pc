@@ -139,7 +139,7 @@ static class UxCommercialInputs
             "blocked next entity records input without resending Unknown");
         ExtensionStore.AtomicWrite(Path.Combine(root, "unknown-input.json"), new { Before = before, After = after });
     }
-    internal sealed class InputFactory(ParcelCapabilityFactory inner, bool loseReply = false) : IParcelCapabilityFactory
+    internal sealed class InputFactory(IParcelCapabilityFactory inner, bool loseReply = false) : IParcelCapabilityFactory
     {
         public Dictionary<string, InputSource> Readers { get; } = [];
         public bool Emit(string device, string kind, string admission, string[] codes, string source) => Readers[device].Emit(kind, admission, codes, null, source);

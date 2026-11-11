@@ -91,7 +91,7 @@ static class SmParameters
         seed = seed with { MaximumOperations = 1, Retention = (seed.Retention ?? new()) with { ResidentHistory = 3 } };
         var cfg = Path.Combine(root,"runtime"); Directory.CreateDirectory(cfg); ExtensionStore.AtomicWrite(Path.Combine(cfg,"business.json"),seed);
         var launch = new BusinessLaunch(cfg,Path.Combine(cfg,"data"),null,null);
-        await using var app = new ParcelRuntime(launch,new SportmasterFlow(),new ParcelCapabilityFactory(launch)) { RuntimeIdentityPreflight=()=>{} };
+        await using var app = new ParcelRuntime(launch,new SportmasterFlow(),new P0SimulationFactory(launch)) { RuntimeIdentityPreflight=()=>{} };
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var vm = new ParcelViewModel(app,"参数","合成验证"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync(); vm.LoadWindowPreference("sportmaster");
         Check(vm.Snapshot!.AutomaticCleanup is { Enabled:false,NextCheck:null,State:"未启用自动清理" } && vm.AutomaticCleanupStatusText.Contains("未启用"), "disabled cleanup is projected as off, without a fictitious next execution");

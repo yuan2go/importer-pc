@@ -64,7 +64,7 @@ static class ParameterRefactor
         Check(defaults.Policy.StationCode == c.StationId && defaults.Build().StationCode == c.StationId && defaults.Policy.BackupIntervalMinutes == "60" && defaults.Policy.BackupMaximumSets == "10" && !defaults.Policy.BackupEnabled, "mandatory system values have explicit defaults; optional scheduled backup remains off");
         var path = Path.Combine(root, "parameters"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c with { BarcodeFilter = new("OK[0-9]+") });
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
-        var factory = new UxCommercialInputs.InputFactory(new ParcelCapabilityFactory(launch));
+        var factory = new UxCommercialInputs.InputFactory(new P0SimulationFactory(launch));
         await using var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } };
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         var reader = c.Topology!.Readers[0].DeviceId;

@@ -12,6 +12,7 @@ using Ipc.Platform;
 sealed class P0SimulationFactory(BusinessLaunch launch) : IParcelCapabilityFactory
 {
     readonly ParcelCapabilityFactory validation = new(launch);
+    public CapabilityCatalog Catalog() => validation.Catalog();
     public ParcelConfiguration Normalize(ParcelConfiguration c) => validation.Normalize(c);
     public void ValidateStructure(ParcelConfiguration c) => validation.ValidateStructure(c);
     public void Validate(ParcelConfiguration c)
@@ -29,8 +30,14 @@ sealed class P0SimulationFactory(BusinessLaunch launch) : IParcelCapabilityFacto
         IWcsPort? wcs = c.Wcs is not { } b ? null : ParcelConnectionSetup.IsDeferred(c, b.InstanceId) ? new DeferredWcsPort(b.InstanceId)
             : b.Implementation == "sportmaster-rcs" ? new SportmasterRcsTaskService(b) : new ReferenceWcs(b, Path.Combine(launch.DataRoot, "synthetic-peer"));
         if (wcs is IWcsRuntimeConfiguration configured) configured.ConfigureRuntime(c);
-        return new(readers[c.Reader.DeviceId], null, wcs, null,
-            wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = "isolated-simulation-fixture" }, Readers: readers);
+        // Shared parameter regressions retain the real reference weight/PLC
+        // consumers without relying on a developer machine's installed lease root.
+        if (c.Scale is { Implementation: not "reference-weight" } || c.Plc is { Implementation: not "reference-plc" })
+            throw new InvalidOperationException("Only controlled reference device ports belong in this fixture");
+        var weight = c.Scale is { } scale ? new ReferenceWeightSource(scale) : null;
+        var plc = c.Plc is { } binding ? new ReferencePlc(binding, Path.Combine(launch.DataRoot, "synthetic-peer")) : null;
+        var fingerprints = new[] { c.Wcs, c.Scale, c.Plc }.OfType<CapabilityBinding>().ToDictionary(b => b.InstanceId, _ => "isolated-simulation-fixture");
+        return new(readers[c.Reader.DeviceId], weight, wcs, plc, fingerprints, Readers: readers);
     }
     public ValueTask DisposeAsync() => validation.DisposeAsync();
 }

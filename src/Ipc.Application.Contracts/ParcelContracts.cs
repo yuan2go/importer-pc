@@ -118,6 +118,7 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication
 {
+    Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
     Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid runtimeId, long expectedRevision, ParcelConfiguration candidate) => throw new NotSupportedException("Configuration submission inspection unavailable");
     Task<ParcelSnapshot> SnapshotAsync();

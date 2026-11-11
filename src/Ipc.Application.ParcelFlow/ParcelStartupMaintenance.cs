@@ -4,12 +4,39 @@ using Ipc.Platform.Storage;
 
 namespace Ipc.Application.ParcelFlow;
 
-// Application-owned offline operations. Never constructs a runtime, port or SDK.
+// Application-owned offline operations. Only an explicit camera identity lookup
+// enumerates the SDK; it never creates an acquisition handle or starts a runtime.
 public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefinition definition,
     Func<IParcelCapabilityFactory> factory, Action? requireAuthority = null, Func<string?>? authorizedActor = null) : IStartupMaintenance
 {
     internal Func<string> MaintenanceWorkspace { get; set; } = MachineRuntimeSetup.CreateMaintenanceWorkspace;
     string Seed => Path.Combine(Path.GetFullPath(launch.ConfigurationDirectory), "business.json");
+    readonly SemaphoreSlim identityGate = new(1, 1);
+    IParcelCapabilityFactory? identityFactory;
+    bool identityClosing;
+    public async Task<string> ReadCameraSerialAsync(string ip, string readerEngine)
+    {
+        Authorize();
+        await identityGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            ObjectDisposedException.ThrowIf(identityClosing, this);
+            identityFactory ??= factory();
+            return await Task.Run(() => { Authorize(); return identityFactory.ReadCameraSerial(ip, readerEngine); }).ConfigureAwait(false);
+        }
+        finally { identityGate.Release(); }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await identityGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            identityClosing = true;
+            if (identityFactory is not null) await identityFactory.DisposeAsync().ConfigureAwait(false);
+            identityFactory = null;
+        }
+        finally { identityGate.Release(); }
+    }
     void Authorize() { if (requireAuthority is not null) requireAuthority(); else LocalManagementMode.ForRoot(launch.DataRoot).Require(); }
     string Actor => authorizedActor?.Invoke() ?? LocalManagementMode.ForRoot(launch.DataRoot).Evidence?.AuditActor ?? Environment.UserName;
     static byte[] ReadBytes(string path)

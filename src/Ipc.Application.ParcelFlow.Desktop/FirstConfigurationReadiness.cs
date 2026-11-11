@@ -26,7 +26,9 @@ public static class FirstConfigurationReadiness
                 ? new(Side(camera.Role), "已填写，保存后启动时连接并采图", false)
                 : camera.Empty
                     ? new(Side(camera.Role), "未配置，不使用这台相机", false)
-                    : new(Side(camera.Role), "网络地址和序列号只填了一项，保存会被拒绝", true));
+                    : camera.Ip.Trim().Length > 0
+                        ? new(Side(camera.Role), "已填写 IP，保存时自动读取序列号；请保持相机联网", false)
+                        : new(Side(camera.Role), "缺少 IP，请填写相机地址", true));
         }
         var rcs = rcsTarget.Trim().Length > 0;
         lines.Add(rcs ? new("RCS", "已填写地址，保存后启动时连接；心跳确认后才算连通", false) : new("RCS", "尚未配置——没有 RCS 时不能取格口", true));

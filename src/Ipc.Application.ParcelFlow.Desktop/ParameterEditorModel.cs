@@ -44,6 +44,36 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     }
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
+    public Func<string, string, Task<string>>? CameraSerialReader { get; set; }
+    public async Task ReadCameraIdentityAsync(CapabilityDraft reader)
+    {
+        if (!Readers.Contains(reader) || !reader.IsSimpleCamera) throw new InvalidOperationException("请选择本页的内置相机。");
+        var ip = reader.Parameters.Single(p => p.Field.Key == "device.ip").Value;
+        var engine = reader.Parameters.Single(p => p.Field.Key == "reader.engine").Value;
+        var serial = reader.Parameters.Single(p => p.Field.Key == "device.serial");
+        var originalSerial = serial.Value; var provider = reader.Provider;
+        var read = CameraSerialReader ?? throw new InvalidOperationException("当前窗口不能读取相机身份，请重新打开设置。");
+        var value = await read(ip, engine);
+        if (reader.Provider != provider || reader.Parameters.Single(p => p.Field.Key == "device.ip").Value != ip ||
+            reader.Parameters.Single(p => p.Field.Key == "reader.engine").Value != engine || serial.Value != originalSerial)
+            throw new InvalidOperationException("读取期间相机设置已改变，本次结果未采用；请重新保存。");
+        serial.Value = value;
+    }
+    public async Task<bool> PrepareCameraIdentitiesAsync()
+    {
+        foreach (var reader in Readers.Where(r => r.IsSimpleCamera && !r.ConfigureLater &&
+            string.IsNullOrWhiteSpace(r.Parameters.Single(p => p.Field.Key == "device.serial").Value)))
+        {
+            try { await ReadCameraIdentityAsync(reader); }
+            catch (Exception error)
+            {
+                ReportField("驱动", reader.InstanceId + "/device.ip", ChineseInterfaceText.ParameterMessage(error.Message,
+                    "无法读取相机序列号，请检查 IP、网络和相机供电后重新保存。"));
+                return false;
+            }
+        }
+        return true;
+    }
     public event EventHandler? ValidationChanged;
     bool validationRequested;
     int? validationScope;
@@ -127,8 +157,6 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
                 }
             }
             if (draft.ConfigureLater) continue;
-            if (draft.IsSimpleCamera && !draft.Parameters.Any(p => p.Field.Key == "device.serial" && !string.IsNullOrWhiteSpace(p.Value)))
-                Issue("驱动", draft.InstanceId + "/device.serial", "请填写相机序列号。");
             foreach (var error in ExtensionSchema.Validate(draft.Provider.Parameters, values))
             {
                 var key = error.Split(':')[0];
@@ -160,7 +188,7 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         foreach (var (key, message) in new[]
         {
             ("device.ip", "左右相机的 IP 地址重复，请分别填写两台相机的实际 IP 地址。"),
-            ("device.serial", "左右相机的序列号重复，请分别填写两台相机的物理序列号。")
+            ("device.serial", "左右相机对应同一序列号，请检查 IP 和实际连接的设备。")
         })
         {
             var cameraValues = Readers.Where(r => r.IsSimpleCamera && !r.ConfigureLater)

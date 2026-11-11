@@ -11,6 +11,7 @@ internal static class DualCameraPerformance
     internal static async Task Run(string workspace, string root)
     {
         Console.WriteLine("Synthetic MVS APIs, actual ZXing/SQLite/built-in RCS loopback; composition reports are synthetic, physical MVS/customer RCS/IPC NOT_RUN.");
+        await IndependentSamePosition(workspace, root);
         await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "dual-performance")))
         {
             foreach (var reader in h.Config.Topology!.Readers) reader.Parameters!["code.formats"] = "[\"Code128\"]";
@@ -79,5 +80,43 @@ internal static class DualCameraPerformance
                 "held HTTP response produces Unknown/deadline metrics and never retries the original submit");
             h.Peer.Hold.TrySetResult();
         }
+    }
+    static async Task IndependentSamePosition(string workspace, string root)
+    {
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-position-independent"), maximumOperations: 1);
+        h.Config.Wcs!.Parameters["request-timeout-ms"] = "12000";
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
+        await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+        var hold = h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        h.Peer.HoldWhen = body => body.Contains("SYNTH-FIRST-HELD", StringComparison.Ordinal);
+        try
+        {
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-FIRST-HELD"), 1);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1 && h.App.WorkerProgress().Single(p => p.Position == "left").Processed >= 1));
+            var first = (await h.App.SnapshotAsync()).Operations.Single(o => o.ParcelCode == "SYNTH-FIRST-HELD");
+            var original = Wire.Encode(first.Wcs!.Request);
+            Check(!hold.Task.IsCompleted && first.Wcs.State == StageState.Dispatching,
+                "camera input completes without waiting for this parcel's held RCS response");
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-FIRST-HELD"), 2);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed >= 2));
+            Check(h.Peer.Requests.Count == 1, "reobserving the held parcel creates no second request");
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-READY"), 3);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NEXT-READY" && o.State == ParcelState.SlotResolved));
+            var before = await h.App.SnapshotAsync();
+            var next = before.Operations.Single(o => o.ParcelCode == "SYNTH-NEXT-READY");
+            Check(!hold.Task.IsCompleted && before.Operations.Single(o => o.Id == first.Id).Wcs!.State == StageState.Dispatching && h.Peer.Requests.Count == 2,
+                "a fresh different parcel on the same position gets its own result while the predecessor is still in flight");
+            Check(before.Configuration.Effective.MaximumOperations == 1 && before.Capacity is { Available: true, Unresolved: >= 1 },
+                "an old pending-operation limit of one cannot block the next SM parcel or rewrite the saved configuration");
+            Check(before.Positions!.Single(p => p.Id == "left").CurrentOperation == next.Id,
+                "the card follows the new parcel rather than the predecessor's unfinished call");
+            hold.TrySetResult();
+            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(first.Id))?.State == ParcelState.SlotResolved);
+            var after = await h.App.SnapshotAsync();
+            Check(Wire.Encode((await h.App.OperationAsync(first.Id))!.Wcs!.Request) == original &&
+                after.Positions!.Single(p => p.Id == "left").CurrentOperation == next.Id && h.Peer.Requests.Count == 2,
+                "the late reply updates only its frozen original request and does not replace the new parcel's card or resend either request");
+        }
+        finally { hold.TrySetResult(); }
     }
 }

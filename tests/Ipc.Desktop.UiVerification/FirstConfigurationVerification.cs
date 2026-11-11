@@ -35,6 +35,7 @@ static partial class Program
         editor.ShowPage(2, "左右相机"); window.UpdateLayout();
         foreach (var value in new[] { "mvid-native", "zxing-cpp", "mvid-native" })
         {
+            check(editor.NavigateTo(editor.Model!.Readers[0].InstanceId + "/reader.engine"), "first configuration opens advanced recognition settings before changing engine");
             var engine = Descendants(editor).OfType<ComboBox>().First(t => AutomationProperties.GetAutomationId(t).EndsWith("/reader.engine", StringComparison.Ordinal));
             engine.SelectedItem = value; window.UpdateLayout();
         }

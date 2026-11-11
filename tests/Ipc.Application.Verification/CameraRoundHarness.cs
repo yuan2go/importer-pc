@@ -44,7 +44,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         return next;
     }
     // stillMs: "放稳后再识别" for both synthetic cameras; "0" decodes every frame.
-    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 1, string stillMs = "0", bool nativeResults = false, BarcodeFilterPolicy? barcodeFilter = null, string? stationCode = null)
+    public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 1, string stillMs = "0", bool nativeResults = false, BarcodeFilterPolicy? barcodeFilter = null, string? stationCode = null, int? maximumOperations = null)
     {
         if (!nativeLoaded)
         {
@@ -73,7 +73,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             ["right-station-code"] = stationCode ?? "TEST-RIGHT",
             ["right-bcr-code"] = "TEST-RIGHT-READER"
         });
-        Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [], BarcodeFilter = barcodeFilter ?? seed.BarcodeFilter };
+        Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, MaximumOperations = maximumOperations ?? seed.MaximumOperations, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [], BarcodeFilter = barcodeFilter ?? seed.BarcodeFilter };
         var configuration = Path.Combine(folder, "config"); Directory.CreateDirectory(configuration);
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);

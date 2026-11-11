@@ -737,6 +737,34 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (originalFrame is not null) { ScheduleOriginalFrame(op, originalFrame); originalFrame = null; }
         }
         finally { originalFrame?.Dispose(); }
+        if (Id == "sportmaster" && !manual)
+        {
+            // Reserve the aggregate gate now, before the ingress worker releases
+            // it. Dispatch then starts independently of subsequent observations;
+            // a held RCS response cannot hold this position's input worker.
+            activeStages.Add(op.Id + ":CameraParcel");
+            auxiliary.Add(ProcessCameraParcelAsync(op));
+            return;
+        }
+        await ProcessObservedParcelAsync(op).ConfigureAwait(false);
+    }
+    async Task ProcessCameraParcelAsync(ParcelOperation op)
+    {
+        activeIngress.Value = null;
+        await gate.WaitAsync().ConfigureAwait(false);
+        try { await ProcessObservedParcelAsync(operations[op.Id]).ConfigureAwait(false); }
+        catch (Exception error)
+        {
+            failure = "Camera parcel execution failed: " + error;
+            FenceIngress();
+            if (IsStorageError(error)) StorageFailed(error, "CameraParcelExecution");
+            WriteRuntimeLog("作业", "相机包裹处理失败，原请求保留", new { OperationId = op.Id, op.PositionId, Error = error.ToString() }, "错误", op.Id);
+            throw;
+        }
+        finally { activeStages.Remove(op.Id + ":CameraParcel"); gate.Release(); }
+    }
+    async Task ProcessObservedParcelAsync(ParcelOperation op)
+    {
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await CaptureOriginalAsync(op).ConfigureAwait(false);

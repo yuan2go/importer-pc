@@ -41,6 +41,8 @@ public partial class ParcelViewModel
     {
         reviewedConfigurationSignature = null; NotifyConfigurationReview();
         if (HasUnconfirmedConfigurationSubmission) { Message = "上次保存结果未确认，请先查看保存结果。已填写的内容会保留。"; return false; }
+        if (configurationAuthority == "结构化表单" && ParameterEditor is { } identityEditor && !await identityEditor.PrepareCameraIdentitiesAsync())
+        { Message = "未能读取相机序列号，请检查标出的相机设置；输入已保留。"; return false; }
         if (configurationAuthority == "结构化表单" && ParameterEditor is { } editor && !editor.ValidateFields())
         {
             validationState = "有设置需要修正";

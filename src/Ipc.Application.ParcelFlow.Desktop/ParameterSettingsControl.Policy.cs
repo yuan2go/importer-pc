@@ -178,23 +178,26 @@ public sealed partial class ParameterSettingsControl
     }
     void BuildBusiness(ParameterEditorModel m)
     {
-        var login = Page(1, "作业登录", "操作员登录用于记录作业人员，与管理密码无关。");
-        if (m.OperatorLoginRole is { } role)
+        if (m.ApplicationId != "sportmaster")
         {
-            var caption = new FrameworkElementFactory(typeof(TextBlock));
-            caption.SetBinding(TextBlock.TextProperty, new Binding { Converter = new OperatorLoginChoiceText(m) });
-            caption.SetBinding(ToolTipProperty, new Binding("Label"));
-            var selection = new ComboBox { ItemsSource = role.Choices, ItemTemplate = new DataTemplate { VisualTree = caption }, MinHeight = 38 };
-            selection.SetBinding(ComboBox.SelectedItemProperty, new Binding("Selection") { Source = role, Mode = BindingMode.TwoWay });
-            Field(Form(login), "操作员登录服务", selection, "不选择登录服务时，无需登录即可作业。", "OperatorLogin", login);
+            var login = Page(1, "作业登录", "操作员登录用于记录作业人员，与管理密码无关。");
+            if (m.OperatorLoginRole is { } role)
+            {
+                var caption = new FrameworkElementFactory(typeof(TextBlock));
+                caption.SetBinding(TextBlock.TextProperty, new Binding { Converter = new OperatorLoginChoiceText(m) });
+                caption.SetBinding(ToolTipProperty, new Binding("Label"));
+                var selection = new ComboBox { ItemsSource = role.Choices, ItemTemplate = new DataTemplate { VisualTree = caption }, MinHeight = 38 };
+                selection.SetBinding(ComboBox.SelectedItemProperty, new Binding("Selection") { Source = role, Mode = BindingMode.TwoWay });
+                Field(Form(login), "操作员登录服务", selection, "不选择登录服务时，无需登录即可作业。", "OperatorLogin", login);
+            }
+            else if (m.Components.SingleOrDefault(c => c.Role == "operator-login") is { } optionalLogin)
+            {
+                var enable = new CheckBox { Content = "要求操作员登录", MinHeight = 38 };
+                enable.SetBinding(CheckBox.IsCheckedProperty, new Binding("Bound") { Source = optionalLogin, Mode = BindingMode.TwoWay });
+                Field(Form(login), "作业登录要求", enable, "启用前需要先安装并配置操作员登录服务。", "OperatorLogin", login);
+            }
+            SessionLifetime(Form(login), login, m);
         }
-        else if (m.Components.SingleOrDefault(c => c.Role == "operator-login") is { } optionalLogin)
-        {
-            var enable = new CheckBox { Content = "要求操作员登录", MinHeight = 38 };
-            enable.SetBinding(CheckBox.IsCheckedProperty, new Binding("Bound") { Source = optionalLogin, Mode = BindingMode.TwoWay });
-            Field(Form(login), "作业登录要求", enable, "启用前需要先安装并配置操作员登录服务。", "OperatorLogin", login);
-        }
-        SessionLifetime(Form(login), login, m);
         var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "设置哪些条码有效，以及一次读到多个条码时如何处理。左右相机共用。" : "编辑当前业务策略。"); var form = Form(page);
         if (m.ApplicationId == "sportmaster")
         {
@@ -234,10 +237,13 @@ public sealed partial class ParameterSettingsControl
                 foreach (var f in new[] { ("单件图像最大字节", "ImageBytes"), ("图像缓存总字节", "TotalBytes"), ("图像待处理件数", "MaximumPending") }) Input(form, f.Item1, m.Policy, f.Item2, f.Item2, page);
             }
         }
-        var budget = Page(1, "接收与等待限制", "一般保持默认值。出现积压或超时，应先检查相机和 RCS 连接。"); form = Form(budget);
-        Input(form, "扫码消息缓冲上限", m.Policy, "QueueCapacity", "QueueCapacity", budget, "等待处理的扫码最多可排队多少条，1–4096。排满后新扫码会被拒收。");
-        if (m.ApplicationId != "sportmaster") Input(form, "外部服务等待时间", m.Policy, "TimeoutMs", "TimeoutMs", budget, "调用外部系统时最多等待多久，100–30000 毫秒。超时后结果未确认，系统不会自动重发。");
-        Input(form, "待处理作业上限", m.Policy, "MaximumOperations", "MaximumOperations", budget, "未处理完的作业最多保留多少个，1–100000。达到上限后暂停接收新包裹。");
+        if (m.ApplicationId != "sportmaster")
+        {
+            var budget = Page(1, "接收与等待限制", "一般保持默认值。出现积压或超时，应先检查相机和 RCS 连接。"); form = Form(budget);
+            Input(form, "扫码消息缓冲上限", m.Policy, "QueueCapacity", "QueueCapacity", budget, "等待处理的扫码最多可排队多少条，1–4096。排满后新扫码会被拒收。");
+            Input(form, "外部服务等待时间", m.Policy, "TimeoutMs", "TimeoutMs", budget, "调用外部系统时最多等待多久，100–30000 毫秒。超时后结果未确认，系统不会自动重发。");
+            Input(form, "待处理作业上限", m.Policy, "MaximumOperations", "MaximumOperations", budget, "未处理完的作业最多保留多少个，1–100000。达到上限后暂停接收新包裹。");
+        }
     }
     void Preview(ObjectPage page, ParameterEditorModel m)
     {

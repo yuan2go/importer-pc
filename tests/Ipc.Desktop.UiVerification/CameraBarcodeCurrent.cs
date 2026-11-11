@@ -19,6 +19,8 @@ static partial class Program
             throw new TimeoutException(step);
         }
         await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "camera-current"), 15000);
+        h.Config.Wcs!.Parameters["request-timeout-ms"] = "15000";
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
         SupplyStationWindow? second = null;
@@ -85,20 +87,32 @@ static partial class Program
             second.Close(); second = null;
             Check(Wire.Encode((await h.App.OperationAsync(first.Id))!.Wcs!.Request) == frozen, "immediate presentation never rewrites the first frozen request");
 
-            // Same position serially processes already-custodied observations while a prior RCS call is held.
+            // Each placement dispatches independently while this position's first response is held.
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            await Read(3, "SYNTH-RCS-0003"); await Until(() => h.Peer.Requests.Count == 3, "held RCS call");
+            h.Peer.HoldWhen = body => body.Contains("SYNTH-RCS-0003", StringComparison.Ordinal);
+            await Read(3, "SYNTH-RCS-0003");
+            await Until(() => h.Peer.Requests.Count == 3 && vm.Snapshot!.Operations.Any(o => o.ParcelCode == "SYNTH-RCS-0003" && o.Wcs?.State == StageState.Dispatching), "held RCS call reflected in business snapshot");
+            var heldOriginal = vm.Snapshot!.Operations.Single(o => o.ParcelCode == "SYNTH-RCS-0003");
+            var heldRequest = Wire.Encode(heldOriginal.Wcs!.Request);
             await Read(4, "SYNTH-QUEUED-0004");
+            await Resolved("SYNTH-QUEUED-0004");
             await Read(5, "SYNTH-LATEST-0005");
-            Check(entry.Text == "SYNTH-LATEST-0005" && !picture.IsEnabled && !tasks.IsVisible && h.Peer.Requests.Count == 3,
-                "latest decoded parcel replaces two queued predecessors without dropping or dispatching their business responsibility");
+            await Resolved("SYNTH-LATEST-0005");
+            Check(entry.Text == "SYNTH-LATEST-0005" && picture.IsEnabled && tasks.IsVisible && h.Peer.Requests.Count == 5 &&
+                !h.Peer.Hold.Task.IsCompleted && vm.Snapshot!.Operations.Single(o => o.Id == heldOriginal.Id).Wcs!.State == StageState.Dispatching,
+                "later parcels independently receive results while this position's earlier response remains pending");
             var regressions = new List<string>();
             TextChangedEventHandler changed = (_, _) => regressions.Add(entry.Text);
             entry.TextChanged += changed;
-            h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-            await Resolved("SYNTH-LATEST-0005"); entry.TextChanged -= changed;
-            Check(regressions.All(t => t == "SYNTH-LATEST-0005") && h.Peer.Requests.Count == 5,
-                "late queued results cannot roll the main barcode back while every decoded input retains its own HTTP request");
+            h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null;
+            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(heldOriginal.Id))?.Wcs?.State == StageState.Accepted);
+            var completedOriginal = (await h.App.OperationAsync(heldOriginal.Id))!;
+            var completedRevision = (await h.App.SnapshotAsync()).Revision;
+            await Until(() => vm.Snapshot!.Revision >= completedRevision, "late original result has reached the live UI snapshot");
+            entry.TextChanged -= changed;
+            Check(regressions.All(t => t == "SYNTH-LATEST-0005") && entry.Text == "SYNTH-LATEST-0005" && h.Peer.Requests.Count == 5 &&
+                Wire.Encode(completedOriginal.Wcs!.Request) == heldRequest,
+                "late original response cannot roll the main barcode back, replace the latest task or rewrite/resend any frozen request");
             Check(picture.IsEnabled && tasks.IsVisible, "latest matching committed observation restores only its own picture and task fields");
             var priorId = p.Operation!.Id;
             await Read(6, "SYNTH-LATEST-0005");
@@ -128,7 +142,8 @@ static partial class Program
                 "confirmed removal keeps a read-only result locally while freeing the lane and leaving the other side independent");
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             await Read(10, "SYNTH-LATEST-0005");
-            await Until(() => h.Peer.Requests.Count == 6, "same-code independent request");
+            await Until(() => h.Peer.Requests.Count == 6 && p.Operation?.Id != priorId && p.Operation?.Wcs?.State == StageState.Dispatching &&
+                p.Input?.Observation.SourceEventId == "mvs.frame.10", "same-code independent request and its current input snapshot");
             Check(entry.Text == "SYNTH-LATEST-0005" && !picture.IsEnabled && !tasks.IsVisible && !p.ShowRecentChute && !recentBarcode.IsVisible &&
                 !(bool)edits.GetValue(control)!, "same-code new placement immediately retires the historical result without transferring its authority");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;

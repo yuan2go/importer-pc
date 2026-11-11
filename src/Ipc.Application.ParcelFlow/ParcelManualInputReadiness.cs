@@ -61,7 +61,7 @@ public sealed partial class ParcelRuntime
             CanCloseUnsentDebugIntent(reserved) && !ArchiveEligible(reserved) ? 1 : 0;
         if (storageCapacityFailure is not null || fatalStorage.Task.IsCompleted)
             reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.StorageUnavailable)!);
-        else if (requireAdmissionCapacity && UnresolvedCapacity - releasingSlot >= Effective.MaximumOperations)
+        else if (Id != "sportmaster" && requireAdmissionCapacity && UnresolvedCapacity - releasingSlot >= Effective.MaximumOperations)
             reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.CapacityExhausted)!);
         if (!ImageCapacityAvailable()) reasons.Add("图像处理容量不足，原件仍保留。");
         if (operations.Values.FirstOrDefault(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o) &&

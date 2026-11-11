@@ -160,6 +160,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
     IStartupMaintenance maintenance = null!;
+    bool maintenanceReleased, maintenanceClosing;
     StartupMaintenanceDocument? document;
     StartupConfigurationDraft? draft;
     StartupSavedDraft? savedDraft;
@@ -327,7 +328,24 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         editEvents.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler((_, _) => Changed()));
         editEvents.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler((_, _) => Changed()));
         editEvents.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
-        Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
+        Closing += async (_, e) =>
+        {
+            if (e.Cancel || maintenanceReleased) return;
+            e.Cancel = true;
+            if (Busy || maintenanceClosing || !RetryRequested && !ReplacementLaunched && !MayDiscard()) return;
+            maintenanceClosing = true;
+            try
+            {
+                await System.Windows.Threading.Dispatcher.Yield();
+                await Run(async () =>
+                {
+                    if (maintenance is not null) await maintenance.DisposeAsync();
+                    maintenanceReleased = true;
+                });
+                if (maintenanceReleased) Close();
+            }
+            finally { maintenanceClosing = false; }
+        };
         var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         async Task RefreshAuthorization()
         {
@@ -377,6 +395,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     async Task CheckCandidate()
     {
         if (startupSaveUncertain) throw new InvalidOperationException("上次保存结果未确认，请先点击“重新读取配置…”。已填写的内容保留，未重复保存。");
+        if (parameterEditor is { } editor && !await editor.PrepareCameraIdentitiesAsync())
+        { LocateFirstIssue(); throw new InvalidOperationException("未能读取相机序列号，请检查标出的相机设置后重新保存。"); }
         var candidate = RequireDraft();
         await ValidateBarcodeRule();
         var report = await Task.Run(() => maintenance.CheckAsync(candidate));
@@ -542,6 +562,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     async Task Read(bool discardAccepted)
     {
         if (!discardAccepted && !MayDiscard()) return;
+        // Do not discard the old service (or its failed SDK owner) when rereading
+        // another directory. Failed cleanup leaves this window available to retry.
+        if (maintenance is not null) await maintenance.DisposeAsync();
         document = null; draft = null; savedDraft = null; lastSaveConfirmed = false; maintenance = null!; checkedInput = savedInput = null;
         try
         {
@@ -592,6 +615,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Note("首次配置与日常设置使用相同的参数和检查规则。投递位数量和设备身份不在此修改。");
             deviceStart = Body.Children.Count;
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
+            parameterEditor.CameraSerialReader = async (ip, engine) =>
+            {
+                try { return await maintenance.ReadCameraSerialAsync(ip, engine); }
+                catch (Exception error) { diagnosticDetails += "\n相机身份读取：" + Ipc.Platform.DiagnosticText.Protect(error.ToString()); throw; }
+            };
             sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;

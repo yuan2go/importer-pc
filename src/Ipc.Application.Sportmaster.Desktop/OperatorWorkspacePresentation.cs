@@ -32,7 +32,7 @@ public sealed partial class SupplyStationViewModel
             ? (positions.All(p => p.Admit || p.BarcodeInput?.Manual == true) ? positions.All(p => p.Admit) ? "可以供包" : "可输入条码取格口" : string.Join("、", positions.Where(p => !p.Admit && p.BarcodeInput?.Manual != true).Select(p => PositionName(p.Id))) + "暂不能供包") : "暂不能供包";
     public string OperatorNotice => !Fresh ? OperatorCopy.StaleStep :
         Snapshot?.BlockingReasons.Any(x => x.Contains("authentication required", StringComparison.OrdinalIgnoreCase)) == true ?
-            "请先登录操作员；如设备正在维护，请等待维护完成。" :
+            "本站身份配置需要核对，请进入管理中心检查；设备维护期间请等待维护完成。" :
         Snapshot?.Paused == true ? CanResumeInViewport ? "本件暂勿投递；确认现场后，点击“恢复供包”。" : Left.PauseReason + "；" + Left.PauseInstruction :
         RcsState == RcsConnectionState.Offline ? "RCS 服务离线，自动扫码已暂停；连接恢复后自动继续。" :
         Snapshot?.Positions is { } shown && shown.Any(p => p.Admit) && shown.Any(p => !p.Admit)
@@ -110,7 +110,7 @@ public sealed partial class SupplyStationViewModel
     public bool CanOpenConfigurationActivation => HasConfigurationActivationFailure ? CanStartOperation : CanRequestActivation;
     public string DiagnosticConfiguration => ConfigurationActivationOutcome;
     public string DiagnosticCapacity => Snapshot?.Capacity is { } c
-        ? $"当前作业 {c.Unresolved} / {c.MaximumUnresolved}。历史待核对 {c.HistoricalUnknown} 条，可在记录中查看。"
+        ? $"当前作业 {c.Unresolved}。历史待核对 {c.HistoricalUnknown} 条，可在记录中查看。"
         : "尚未取得容量信息";
     public string DiagnosticBlockers
     {

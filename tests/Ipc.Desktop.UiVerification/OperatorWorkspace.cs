@@ -24,6 +24,8 @@ static partial class Program
         var probe = (HierarchyProjectionProbe)(object)app; probe.Inner = runtime;
         var window = new SupplyStationWindow(app, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "供包界面 · 合成场景验证" };
         window.Show(); var vm = window.ViewModel; var client = (Grid)window.FindName("ClientArea");
+        Check(window.FindName("OperatorAccess") is null && window.FindName("ManagementCenterEntry") is Button,
+            "SM workstation has no operator login entry and retains its independent management-password entry");
         async Task Flush() { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); }
         async Task Until(Func<bool> ready)
         {

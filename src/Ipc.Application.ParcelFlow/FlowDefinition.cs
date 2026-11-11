@@ -35,6 +35,7 @@ public sealed record ParcelPorts(IControlledObservationSource Reader, IControlle
     IReadOnlyDictionary<string, IControlledObservationSource>? Readers = null, IReadOnlyDictionary<string, ICapabilityPort>? Devices = null);
 public interface IParcelCapabilityFactory : IAsyncDisposable
 {
+    string ReadCameraSerial(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
     CapabilityRequirements Requirements(CapabilityBinding binding) => new(Query: true);
     bool SimulationIdentity(CapabilityBinding binding) => true;
     string? AdmissionFailure(ParcelConfiguration configuration) => null;

@@ -35,19 +35,7 @@ public static class BundledMvs
 #endif
     static IControlledObservationSource CreateCore(DeviceBinding binding, bool recognize)
     {
-        lock (resolverGate)
-        {
-            if (!resolverSet)
-            {
-                NativeLibrary.SetDllImportResolver(typeof(BundledMvs).Assembly, (name, _, _) =>
-                    name == MvsNative.Library ? runtime.Value :
-#if !MVS_ACQUISITION_EXTENSION
-                    name == MvidNative.Library ? MvidRuntime.Load() :
-#endif
-                    0);
-                resolverSet = true;
-            }
-        }
+        EnsureNativeResolver();
 #if MVS_ACQUISITION_EXTENSION
         // The existing independent module exports acquisition only. Its frozen
         // extension closure has no software-reader contract or decoder dependency.
@@ -63,4 +51,27 @@ public static class BundledMvs
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.
         return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi(), decoder: decoder);
     }
+    static void EnsureNativeResolver()
+    {
+        lock (resolverGate)
+        {
+            if (!resolverSet)
+            {
+                NativeLibrary.SetDllImportResolver(typeof(BundledMvs).Assembly, (name, _, _) =>
+                    name == MvsNative.Library ? runtime.Value :
+#if !MVS_ACQUISITION_EXTENSION
+                    name == MvidNative.Library ? MvidRuntime.Load() :
+#endif
+                    0);
+                resolverSet = true;
+            }
+        }
+    }
+#if !MVS_ACQUISITION_EXTENSION
+    internal static IMvsApi CreateIdentityApi(string readerEngine)
+    {
+        EnsureNativeResolver();
+        return readerEngine == "mvid-native" ? new MvidApi("utf-8") : new MvsApi();
+    }
+#endif
 }

@@ -20,10 +20,12 @@ internal static partial class ManualRcsDebugChecks
             var s = await h.App.SnapshotAsync();
             var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "CAPACITY-ONE", null);
             var first = await h.App.PrepareManualRcsRequestAsync(command, default);
-            Check(first.CanSend && !(await h.App.SnapshotAsync()).Capacity!.Available,
-                "last reserved slot can send while new ordinary admissions remain blocked");
+            Check(first.CanSend && (await h.App.SnapshotAsync()).Capacity!.Available && h.Peer.Requests.IsEmpty,
+                "an unsent debug intention remains sendable without occupying normal SM admission capacity");
             var other = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "OTHER"), default);
-            Check(other.Status == "Rejected" && h.Peer.Requests.IsEmpty, "ordinary other-position admission cannot consume a full capacity slot");
+            Check(other.Status == "Admitted" && h.Peer.Requests.Count == 1 &&
+                (await h.App.OperationAsync(other.OperationId!))?.State == ParcelState.SlotResolved && (await Original(h, first)).Wcs is { State: StageState.Prepared, Attempts: 0 },
+                "the other position completes its own manual request while the original debug intention remains unsent");
             var replacement = await h.App.PrepareManualRcsRequestAsync(command with { CommandId = Wire.Id(), Barcode = "REPLACEMENT", ExpectedRoundId = first.Id }, default);
             Check(replacement.CanSend && (await Original(h, first)).State == ParcelState.Abandoned,
                 "replacing this unsent intent releases its reservation before admitting the replacement");
@@ -32,8 +34,9 @@ internal static partial class ManualRcsDebugChecks
             Check((await h.App.ReadCameraReadRoundAsync(default)).Id == replacement.Id && replacement.CanSend, "newer round survives stale cleanup");
             var send = new SendCameraRound(Wire.Id(), s.RuntimeId, replacement.Id!, replacement.RequestHash!);
             await h.App.SendCameraRoundAsync(send, default); await h.App.SendCameraRoundAsync(send, default);
-            Check(h.Peer.Requests.Count == 1 && (await Original(h, replacement)).Wcs is { State: StageState.Accepted, Attempts: 1 },
-                "capacity-one request sends once; repeated send only reads original facts");
+            Check(h.Peer.Requests.Count == 2 && h.Peer.Requests.Count(body => body.Contains("REPLACEMENT", StringComparison.Ordinal)) == 1 &&
+                (await Original(h, replacement)).Wcs is { State: StageState.Accepted, Attempts: 1 },
+                "the independent debug request sends once; repeated send only reads original facts");
             await Reject(() => h.App.CloseUnsentDebugRoundAsync(new(Wire.Id(), s.RuntimeId, replacement.Id!), default), "accepted original cannot be cancelled by page exit");
             h.Peer.Mode = "malformed";
             var unknown = await h.App.PrepareManualRcsRequestAsync(command with { CommandId = Wire.Id(), Barcode = "UNKNOWN", ExpectedRoundId = replacement.Id }, default);

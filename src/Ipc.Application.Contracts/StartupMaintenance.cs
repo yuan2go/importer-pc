@@ -31,8 +31,10 @@ public interface IStartupRetentionMaintenance
 }
 
 // Independent of IBusinessRuntime: no device/session is required to inspect or repair startup.
-public interface IStartupMaintenance
+public interface IStartupMaintenance : IAsyncDisposable
 {
+    ValueTask IAsyncDisposable.DisposeAsync() => ValueTask.CompletedTask;
+    Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => throw new NotSupportedException("相机身份读取不可用");
     Task<StartupClassification> ClassifyAsync() => throw new NotSupportedException("Startup routing metadata unavailable");
     Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy? policy, string[] candidates) => throw new NotSupportedException("Barcode filter preview unavailable");
     Task<StartupMaintenanceDocument> ReadAsync();

@@ -86,8 +86,8 @@ internal static class SmRuntimeResponsibility
             var submit = Submit(app, "left", oldBarcode);
             await CameraRoundHarness.Until(() => Task.FromResult(station.Peer.Requests.Any(body => body.Contains(oldBarcode))));
             var active = await Wait(app, s => s.Operations.Any(op => op.Wcs?.State == StageState.Dispatching));
-            Check(active.Capacity is { Unresolved: 1, AdmissionBlock: ParcelInputBlockReason.CapacityExhausted } &&
-                !active.Positions!.Single(p => p.Id == "right").Admit, "a real in-flight request consumes the last slot and fences the other position");
+            Check(active.Capacity is { Unresolved: 1, Available: true, AdmissionBlock: null } &&
+                active.Positions!.Single(p => p.Id == "right").Admit, "a real in-flight request retains its responsibility without the old count limit fencing the other position");
             var saving = app.StageConfigurationAsync(active.Configuration.Revision, candidate with { TimeoutMs = seed.TimeoutMs + 1 }, "Synthetic rule and station setting");
             Check(!saving.IsCompleted, "an in-flight external call fences activation while the save waits for quiescence");
             await submit;

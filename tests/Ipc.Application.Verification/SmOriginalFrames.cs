@@ -24,8 +24,11 @@ static partial class SportmasterRcs
         Check(Wire.Encode(new BarcodeFilterPolicy("A.*")) == Wire.Encode(new { Pattern = "A.*" }), "default new options preserve original frozen policy bytes and hash");
         Check(BarcodeFiltering.Select(null, ["A", "A"]).Outcome == "MultipleCodes" &&
             BarcodeFiltering.Select(new(""), ["A", "B"]).Outcome == "AmbiguousCodes", "default strict multi-code refusal remains unchanged");
-        Check(BarcodeFiltering.Select(new("", MultiCodeSeparator: "|"), ["A", "bad\0code"]).SelectedCode is null,
-            "editing an inactive separator alone cannot relax the original strict no-filter guard");
+        var inactiveSeparator = BarcodeFiltering.Select(new("", MultiCodeSeparator: "|"), ["A", "bad\0code"]);
+        Check(inactiveSeparator.SelectedCode == "A" && inactiveSeparator.Matches == 1 &&
+            inactiveSeparator.Candidates is [{ Outcome: "Eligible" }, { Outcome: "InvalidCode" }] &&
+            BarcodeFiltering.Select(new("", MultiCodeSeparator: "|"), ["A", "A"]).Outcome == "AmbiguousCodes",
+            "an inactive separator preserves per-candidate legality filtering and two physical same-text labels remain multiple");
         var joined = BarcodeFiltering.Select(new("", RejectMultipleCodes: false, MultiCodeSeparator: "|"), ["B", "A", "A"]);
         Check(joined.SelectedCode == "B|A|A" && joined.Matches == 3 && joined.Outcome == "JoinedCodes", "explicit join preserves SDK order and duplicate multiplicity");
         Check(BarcodeFiltering.Select(new("A.*", "AX", false, ";"), ["B", "A1", "AX", "A2"]).SelectedCode == "A1;A2", "allow/exclusion filters run on each candidate before joining");
@@ -35,6 +38,13 @@ static partial class SportmasterRcs
             BarcodeFiltering.Select(new("", RejectMultipleCodes: false), ["A", "B"], "Incomplete").SelectedCode is null,
             "invalid delimiter, overlong joined payload and incomplete candidates refuse without truncation");
         await using var peer = new Peer();
+        async Task CameraReady(ParcelRuntime app)
+        {
+            peer.Mode = "heartbeat-vehicles";
+            if (await app.CheckRcsHeartbeatAsync(default) != RcsHeartbeatResult.Received) throw new InvalidOperationException("Synthetic RCS heartbeat was not confirmed");
+            peer.Mode = "assigned";
+            await Wait(app, s => s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+        }
         var seed = HeartbeatConfiguration(workspace, Binding(peer.Endpoint) with { Implementation = "sportmaster-rcs" });
         var readers = seed.Topology!.Readers.Select((r, i) => r with
         {
@@ -60,19 +70,20 @@ static partial class SportmasterRcs
         ParcelOperation[] saved;
         var raw = new byte[] { 30, 70, 140, 210 };
         var rawByFrame = Enumerable.Range(1, 3).ToDictionary(n => (uint)n, n => raw.Select(b => (byte)(b + n - 1)).ToArray());
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow() /* archive custody only; placement covered by --same-placement-29 */, factory) { RuntimeIdentityPreflight = () => { } })
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), factory) { RuntimeIdentityPreflight = () => { } })
         {
             app.Boundary = point => { if (point == "BeforeOriginalFrameWrite") { entered.Set(); release.Wait(); } };
             try
             {
                 await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
-                await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
+                await CameraReady(app);
                 for (uint n = 1; n <= 3; n++)
                 {
                     decoder.Results.Enqueue(["B", "A", "A"]); fake.Enqueue(new(rawByFrame[n], 2, 2), n);
                     // Hold image IO, not the recognition boundary: all three completed
                     // recognitions must survive, while unrecognized video may be superseded.
                     await Wait(app, s => s.Operations.Length == n && s.Operations.All(o => o.State == ParcelState.SlotResolved));
+                    if (n < 3) await SmRoundFixture.ConfirmRemovedAsync(app, "left");
                 }
                 Check(entered.Wait(5000), "background writer enters with owned raw pixels");
                 var pending = await Wait(app, s => s.Operations.Length == 3 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
@@ -168,17 +179,19 @@ static partial class SportmasterRcs
             await using (var app = new ParcelRuntime(run, new SportmasterFlow(), f) { RuntimeIdentityPreflight = () => { } })
             {
                 if (archiveCase == "failed") app.Boundary = point => { if (point == "BeforeOriginalFrameWrite") throw new IOException("Synthetic archive IO failure"); };
-                await app.StartAsync(default); await ManagementModeFixture.Authorize(app); await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
+                await app.StartAsync(default); await ManagementModeFixture.Authorize(app); await CameraReady(app);
                 var sent = peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
                 if (!reject) peer.Mode = "timeout";
                 dec.Results.Enqueue(["A", "B"]); api.Enqueue(new(raw, 2, 2), 1);
                 if (reject)
                 {
-                    var s = await Wait(app, s => s.Inputs!.Any(i => i.Outcome == ParcelInputOutcome.Rejected));
+                    var s = await Wait(app, s => s.Rounds.SingleOrDefault() is { OriginalFrame.State: "Saved" });
+                    var round = s.Rounds.Single();
                     Check(s.Operations.Length == 0 && f.Source!.RetainedOriginalFrames == 0 &&
                         peer.Requests.Count(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == sent &&
-                        !Directory.Exists(Path.Combine(run.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, "images/original-frames")),
-                        "strictly rejected multi-code frame releases the driver lease and produces no task, disk archive or HTTP request");
+                        round is { OperationId: null, FormalCodes.Length: 2 } &&
+                        (await app.ReadParcelPictureAsync(new(RoundId: round.Id), default)).Archived is { } archive && DecodeOriginalPng(archive.Png).SequenceEqual(raw),
+                        "unsubmitted multi-code round releases the driver lease and retains its exact archived evidence without a task or HTTP request");
                     var rejectedPicture = await app.ReadParcelPictureAsync(new(ObservationId: s.Inputs!.Single(i => i.Outcome == ParcelInputOutcome.Rejected).Observation.Id), default);
                     Check(rejectedPicture.Image?.Gray8.SequenceEqual(raw) == true,
                         "rejected multi-code frame remains available as a bounded current-placement original picture");

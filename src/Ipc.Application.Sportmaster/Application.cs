@@ -23,7 +23,7 @@ public sealed class SportmasterFlow : FlowDefinition
         { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
     }
     public override string[] PositionRoles => ["left", "right"];
-    public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter, o.Codes, o.CandidateIssue);
+    public override BarcodeFilterResult SelectBarcode(ParcelConfiguration c, Observation o) => BarcodeFiltering.Select(c.BarcodeFilter ?? new BarcodeFilterPolicy(""), o.Codes, o.CandidateIssue);
     public override string[] ValidateBusiness(ParcelConfiguration c) => [.. c.Wcs is null || c.Plc is not null ? new[] { "Sportmaster capability dependencies do not match its flow" } : [], .. BarcodeFiltering.Validate(c.BarcodeFilter) is { } error ? new[] { error } : []];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs;
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>

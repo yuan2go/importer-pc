@@ -66,7 +66,7 @@ public sealed partial class ParcelRepository
         if (position is not null) { conditions.Add("position=$position"); q.Parameters.AddWithValue("$position", position); }
         if (!string.IsNullOrEmpty(search))
         {
-            conditions.Add("(id=$search OR json_extract(body,'$.SelectedCode')=$search OR json_extract(body,'$.RequestId')=$search OR json_extract(body,'$.ProtocolRequestId')=$number OR json_extract(body,'$.RcsOutcome')=$search OR EXISTS(SELECT 1 FROM json_each(sm_parcel_rounds.body,'$.FormalCodes') WHERE value=$search))");
+            conditions.Add("(id=$search OR json_extract(body,'$.SelectedCode')=$search OR json_extract(body,'$.RequestId')=$search OR json_extract(body,'$.ProtocolRequestId')=$number OR json_extract(body,'$.RcsOutcome')=$search OR json_extract(body,'$.EndReason')=$search OR json_extract(body,'$.ReadOutcome')=$search OR ($search='Unknown' AND json_extract(body,'$.RcsOutcome')='Conflict') OR EXISTS(SELECT 1 FROM json_each(sm_parcel_rounds.body,'$.FormalCodes') WHERE value=$search))");
             q.Parameters.AddWithValue("$search", search); q.Parameters.AddWithValue("$number", long.TryParse(search, out var number) ? number : -1);
         }
         if (from is not null) { conditions.Add("started>=$from"); q.Parameters.AddWithValue("$from", from.Value.ToUniversalTime().ToString("O")); }

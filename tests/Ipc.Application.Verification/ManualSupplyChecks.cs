@@ -147,8 +147,13 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
                 presence is null ? "Read" : "Presence", codes, null, observedAt ?? DateTimeOffset.UtcNow) { TrayPresence = presence });
         }
         public void EnableOriginalFrames() { }
-        public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity) => frames.TryGetValue(identity.SourceEventId, out var pixels)
-            ? new Frame(pixels) : throw new InvalidOperationException("Disconnected synthetic camera has no frame");
+        public Action? BeforeRetainOriginalFrame { get; set; }
+        public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity)
+        {
+            BeforeRetainOriginalFrame?.Invoke();
+            return frames.TryGetValue(identity.SourceEventId, out var pixels)
+                ? new Frame(pixels) : throw new InvalidOperationException("Disconnected synthetic camera has no frame");
+        }
         sealed class Frame(byte[] pixels) : IOriginalFrameLease
         {
             public int Width => 16; public int Height => 16;

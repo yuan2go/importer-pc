@@ -12,8 +12,12 @@ internal static class SmRoundLifecycle
     {
         var clock = new TimeStorageFaultChecks.ManualTime();
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "round-lifecycle"), deferred: false, mode: RunMode.Simulation) { StationClock = clock };
-        var config = h.Config with { BarcodeFilter = new("(?:GOOD-[0-9]+|BG[0-9]+)", "BG[0-9]+"), ReadTimeoutMs = 1000,
-            Retention = h.Config.Retention! with { HistoryDays = 7 } };
+        var config = h.Config with
+        {
+            BarcodeFilter = new("(?:GOOD-[0-9]+|BG[0-9]+)", "BG[0-9]+"),
+            ReadTimeoutMs = 1000,
+            Retention = h.Config.Retention! with { HistoryDays = 7 }
+        };
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), config);
         await h.StartAsync();
         foreach (var camera in h.Factory.Cameras.Values) camera.ConfirmConnected();
@@ -227,7 +231,8 @@ internal static class SmRoundLifecycle
         var requiring = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-801"), default); await Resolved(requiring.OperationId!);
         var requiredId = Current(await h.App.SnapshotAsync())!.Id;
         await h.App.DisposeAsync(); await h.StartAsync(ready: false);
-        Check(Current(await h.App.SnapshotAsync()) is { RequireRemoval: true } restored && restored.Id == requiredId && h.Peer.Requests.Count == beforeRestart + 1,
+        Check(Current(await h.App.SnapshotAsync()) is { RequireRemoval: true } restored && restored.Id == requiredId && h.Peer.Requests.Count == beforeRestart + 1 &&
+            (await h.App.RoundHistoryAsync(search: "ReadWindowExpired")).Items.All(r => r.Id != requiredId),
             "T15/T16 restart restores the exact current manual-removal responsibility without a second call");
         await Remove(); h.Peer.Mode = "assigned";
         left = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId]; left.ConfirmConnected();
@@ -314,8 +319,12 @@ internal static class SmRoundLifecycle
         using (var repo = new ParcelRepository(directory, "sportmaster"))
         {
             var evidence = repo.Round(readEvidenceRound!)!;
-            repo.Commit(null, "SyntheticRoundAge", "Isolated retention chronology only", round: evidence with { Version = evidence.Version + 1,
-                StartedAt = DateTimeOffset.UtcNow.AddDays(-10), EndedAt = DateTimeOffset.UtcNow.AddDays(-10).AddSeconds(1) });
+            repo.Commit(null, "SyntheticRoundAge", "Isolated retention chronology only", round: evidence with
+            {
+                Version = evidence.Version + 1,
+                StartedAt = DateTimeOffset.UtcNow.AddDays(-10),
+                EndedAt = DateTimeOffset.UtcNow.AddDays(-10).AddSeconds(1)
+            });
         }
         var database = Path.Combine(directory, "sportmaster.db");
         var retentionBackup = Path.Combine(root, "round-retention.db");
@@ -330,6 +339,66 @@ internal static class SmRoundLifecycle
                 "T17 round image deletion follows the completed original backup, whose original custody still verifies");
         }
         await VerifySlowReaders(workspace, root);
+        await VerifyAdmissionDeadline(workspace, root);
+    }
+
+    static async Task VerifyAdmissionDeadline(string workspace, string root)
+    {
+        var clock = new TimeStorageFaultChecks.ManualTime();
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "admission-deadline"), deferred: false, mode: RunMode.Simulation) { StationClock = clock };
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with
+        { BarcodeFilter = new("", MultiCodeSeparator: "|"), ReadTimeoutMs = 1000 });
+        await h.StartAsync();
+        foreach (var camera in h.Factory.Cameras.Values) camera.ConfirmConnected();
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Camera == true));
+        var left = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId];
+        await ManagementModeFixture.Authorize(h.App);
+        var preview = await h.App.TestBarcodeFilterAsync(null, ["GOOD-960", "bad\0code"]);
+        var debug = new Ipc.Application.Sportmaster.SportmasterFlow().SelectBarcode(h.Config with { BarcodeFilter = null },
+            new(Wire.Id(), left.DeviceId, left.Epoch, Wire.Id(), 1, Wire.Id(), "Read", ["GOOD-960", "bad\0code"], null, DateTimeOffset.UtcNow));
+        await h.App.ExitManagementModeAsync();
+        Check(preview.SelectedCode == "GOOD-960" && debug.SelectedCode == preview.SelectedCode && debug.Candidates!.SequenceEqual(preview.Candidates!),
+            "T01 SM diagnostic and settings previews share production legality filtering even without an allow/exclude policy");
+        async Task<SmParcelRound?> Observe(string[] codes, TrayPresence? presence = null)
+        {
+            var before = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+            if (!left.Read(codes, presence is { } fact ? new(fact, "synthetic-qualified-presence") : null)) throw new InvalidOperationException("Source handoff refused");
+            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > before));
+            return Current(await h.App.SnapshotAsync());
+        }
+        var selected = (await Observe(["GOOD-960", "bad\0code"]))!;
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(selected.OperationId!))?.State == ParcelState.SlotResolved);
+        Check(selected.FormalCodes.SequenceEqual(["GOOD-960"]) && selected.SelectedCode == "GOOD-960" && h.Peer.Requests.Count == 1,
+            "T01 an inactive custom separator cannot bypass legality filtering in the actual SM admission chain");
+        await Observe([], TrayPresence.Absent);
+        var multiple = (await Observe(["GOOD-961", "GOOD-961"]))!;
+        Check(multiple is { OperationId: null, FormalCodes.Length: 2, ReadOutcome: "AmbiguousCodes" } && h.Peer.Requests.Count == 1,
+            "T02 the same configuration retains two physical same-text labels without a second POST");
+        clock.Elapse(TimeSpan.FromMilliseconds(999));
+        var crossed = false;
+        left.BeforeRetainOriginalFrame = () =>
+        {
+            left.BeforeRetainOriginalFrame = null;
+            clock.Elapse(TimeSpan.FromMilliseconds(2)); crossed = true;
+        };
+        var expired = (await Observe(["GOOD-962"]))!;
+        Check(crossed && expired.Id == multiple.Id && expired is { AutoExpired: true, OperationId: null, ReadOutcome: "ReadWindowExpired" } && h.Peer.Requests.Count == 1,
+            "T04 expiry during original-frame retention is rechecked immediately before the durable claim; zero late POSTs");
+        Check((await h.App.RoundHistoryAsync(search: "ReadWindowExpired")).Items.Single().Id == expired.Id,
+            "T17 automatic expiry is queryable while the unsubmitted round is current");
+        var supplemented = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-963", ParcelBarcodeInputKind.PdaKeyboard), default);
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(supplemented.OperationId!))?.State == ParcelState.SlotResolved);
+        Check(supplemented.Status == "Admitted" && Current(await h.App.SnapshotAsync())?.Id == expired.Id && h.Peer.Requests.Count == 2,
+            "T04 the refused late automatic claim leaves exactly one PDA supplementation opportunity in the same round");
+        clock.Elapse(TimeSpan.FromMilliseconds(3000));
+        Check(Current(await h.App.SnapshotAsync()) is null &&
+            (await h.App.RoundHistoryAsync(search: "ReadWindowExpired")).Items.Single().Id == expired.Id &&
+            (await h.App.RoundHistoryAsync("left", search: "SuccessDisplayElapsed")).Items.Single().Id == expired.Id &&
+            (await h.App.RoundHistoryAsync("right", search: "SuccessDisplayElapsed")).Items.Length == 0,
+            "T17 outcome/end-reason filters retain expired-then-supplemented history and respect the selected position");
+        Check((await h.App.RoundHistoryAsync(search: "TrustedRemoval")).Items.Single().Id == selected.Id &&
+            (await h.App.RoundHistoryAsync(search: "OperatorConfirmedRemoval")).Items.Length == 0,
+            "T17 trusted removal is searchable and is not conflated with an operator confirmation or display expiry");
     }
 
     // A controlled qualified presence producer decorates the real acquisition

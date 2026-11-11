@@ -34,15 +34,6 @@ public static class BarcodeFiltering
             decisions.Count == 0 ? null : decisions.ToArray());
         if (issue is not null || candidates.Length > MaximumCandidates || candidates.Any(x => x is null || x.Length > MaximumRawLength))
             return Result("IncompleteCandidates", null, 0, issue ?? "候选超出完整性配额，禁止按截断集合准入");
-        // Remembering an inactive separator must not turn a previously null,
-        // strict no-filter policy into an implicit candidate filter.
-        if (policy is { MultiCodeSeparator: not null } && policy.RejectMultipleCodes != false &&
-            string.IsNullOrWhiteSpace(policy.Pattern) && policy.ExclusionPattern is null)
-        {
-            if (Validate(policy) is { } separatorError) return Result("InvalidPattern", null, 0, separatorError);
-            return candidates.Length != 1 ? Result(candidates.Length == 0 ? "NoCode" : "MultipleCodes", null, candidates.Length, "多码拒绝启用；未应用筛选规则") :
-                !ValidCode(candidates[0]) ? Result("InvalidCode", null, 0, "条码长度或控制字符不合法") : Result("StrictSingleCode", candidates[0], 1, "严格单码；分隔符仅保存待用");
-        }
         if (policy is null)
             return candidates.Length != 1 ? Result(candidates.Length == 0 ? "NoCode" : "MultipleCodes", null, candidates.Length, "未设置筛选规则：仅接受一个原始码") :
                 !ValidCode(candidates[0]) ? Result("InvalidCode", null, 0, "条码长度或控制字符不合法") : Result("StrictSingleCode", candidates[0], 1, "严格单码；未应用筛选规则");

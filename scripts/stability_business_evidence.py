@@ -266,6 +266,10 @@ def analyze_business(db, database, collection, dispositions, events, deadline):
             if not identity:
                 continue
             if kind == 'Dispatching':
+                # Capture/upload have their own durable attempts on the same
+                # operation; they are not missing or conflicting RCS attempts.
+                if evidence.get('Stage') not in (None, 'wcs-slot'):
+                    continue
                 if runtime(evidence.get('RuntimeId')) != selected or evidence.get('RequestId') != identity['RequestId']:
                     unknown_attempt_time = True
                     gap('AttemptRuntimeClockMissing', OperationId=owner, AuditSequence=seq)

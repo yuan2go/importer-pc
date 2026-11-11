@@ -19,8 +19,7 @@ internal static class PresenceSampleReplay
         var relativeOutput = Path.GetRelativePath(root, output);
         if (!Path.IsPathRooted(relativeOutput) && relativeOutput != ".." && !relativeOutput.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal))
             throw new InvalidDataException("Replay output must be outside original sample custody");
-        var manifestBytes = File.ReadAllBytes(manifest);
-        if (manifestBytes.Length > 4194304) throw new InvalidDataException("Manifest changed or exceeds replay quota");
+        var manifestBytes = ReadBounded(manifest, 4194304);
         var manifestHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(manifestBytes));
         var plan = Wire.Decode<Plan>(System.Text.Encoding.UTF8.GetString(manifestBytes));
         if (plan.Schema != 1 || !Regex.IsMatch(plan.SourceCommit, "^[a-f0-9]{40}$", RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(100)) ||
@@ -47,9 +46,8 @@ internal static class PresenceSampleReplay
             if (previous != 0 && frame.FrameNumber != previous + 1) model.BreakContinuity();
             previous = frame.FrameNumber; elapsed = frame.HostElapsedMs;
             var file = RecoveryFiles.Resolve(root, frame.RelativeFile); RecoveryFiles.RequireOrdinaryAncestors(file);
-            var size = new FileInfo(file).Length; bytes = checked(bytes + size);
-            if (size > 67108864 || bytes > 2147483648 || Wire.FileHash(file) != frame.Sha256) throw new InvalidDataException("Captured frame hash/size differs");
-            var original = File.ReadAllBytes(file);
+            var original = ReadBounded(file, 67108864); bytes = checked(bytes + original.Length);
+            if (bytes > 2147483648) throw new InvalidDataException("Captured sample set exceeds replay quota");
             if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(original)) != frame.Sha256) throw new InvalidDataException("Frame changed during replay read");
             byte[] pixels;
             if (file.EndsWith(".pgm", StringComparison.OrdinalIgnoreCase))
@@ -78,17 +76,46 @@ internal static class PresenceSampleReplay
             if (snapshot.Presence == TrayPresence.Unknown) unknown++;
             if (frame.OperatorExpected is null) unlabeled++;
             if (frame.OperatorExpected == TrayPresence.Present && snapshot.Presence == TrayPresence.Absent) falseEmpty++;
-            evidence.Add(new { frame.SessionId, frame.FrameNumber, frame.HostElapsedMs, frame.RelativeFile, frame.Sha256,
-                frame.OperatorExpected, EmittedPresence = emitted?.State, Model = snapshot });
+            evidence.Add(new
+            {
+                frame.SessionId,
+                frame.FrameNumber,
+                frame.HostElapsedMs,
+                frame.RelativeFile,
+                frame.Sha256,
+                frame.OperatorExpected,
+                EmittedPresence = emitted?.State,
+                Model = snapshot
+            });
         }
-        if (Wire.FileHash(manifest) != manifestHash) throw new InvalidDataException("Manifest changed during replay");
-        var result = Wire.Encode(new { Status = "SAMPLE_REPLAY_REVIEW_REQUIRED", plan.SourceCommit, plan.SourceKind, plan.DeviceId, plan.ReaderEngine, plan.ClockBasis,
-            ManifestSha256 = manifestHash, ReplaySourceIdentity = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(typeof(MvsTrayPresence).Assembly)?.InformationalVersion,
-            Frames = evidence, UnknownFrames = unknown, UnlabeledFrames = unlabeled, FalseEmptyAgainstDeclaredLabels = falseEmpty,
-            Scope = "Production Mono8 model only; no SDK/camera/RCS; labels require independent verification; no automatic or 24/72-hour field qualification" });
+        if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(ReadBounded(manifest, 4194304))) != manifestHash) throw new InvalidDataException("Manifest changed during replay");
+        var result = Wire.Encode(new
+        {
+            Status = "SAMPLE_REPLAY_REVIEW_REQUIRED",
+            plan.SourceCommit,
+            plan.SourceKind,
+            plan.DeviceId,
+            plan.ReaderEngine,
+            plan.ClockBasis,
+            ManifestSha256 = manifestHash,
+            ReplaySourceIdentity = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(typeof(MvsTrayPresence).Assembly)?.InformationalVersion,
+            Frames = evidence,
+            UnknownFrames = unknown,
+            UnlabeledFrames = unlabeled,
+            FalseEmptyAgainstDeclaredLabels = falseEmpty,
+            Scope = "Production Mono8 model only; no SDK/camera/RCS; labels require independent verification; no automatic or 24/72-hour field qualification"
+        });
         var staged = output + "." + Wire.Id() + ".new";
         using (var target = new FileStream(staged, FileMode.CreateNew, FileAccess.Write, FileShare.None))
         { var encoded = System.Text.Encoding.UTF8.GetBytes(result); target.Write(encoded); target.Flush(true); }
         File.Move(staged, output, overwrite: false);
+    }
+    static byte[] ReadBounded(string path, int maximum)
+    {
+        using var source = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        if (source.Length > maximum) throw new InvalidDataException("Captured original exceeds replay read quota");
+        var bytes = new byte[checked((int)source.Length)]; source.ReadExactly(bytes);
+        if (source.ReadByte() != -1) throw new InvalidDataException("Captured original changed during bounded read");
+        return bytes;
     }
 }

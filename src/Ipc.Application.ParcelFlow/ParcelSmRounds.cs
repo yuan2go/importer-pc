@@ -48,13 +48,14 @@ public sealed partial class ParcelRuntime
         { Manual = manual, PresenceEvidence = cycle.Evidence };
         StoreSmRound(round, "RoundStarted", cycle); return round;
     }
-    void EndSmRound(SmParcelRound round, string reason, bool physicallyRemoved = false, BusinessCommand? command = null)
+    void EndSmRound(SmParcelRound round, string reason, bool physicallyRemoved = false, BusinessCommand? command = null, DateTimeOffset? removalAt = null)
     {
         if (CurrentRound(round.PositionId)?.Id != round.Id) return;
         var cycle = SmCycle(round.PositionId);
         if (physicallyRemoved)
         {
-            cycle = cycle with { AutoSuppressed = false, Generation = Wire.Id(), Presence = TrayPresence.Absent };
+            cycle = cycle with { AutoSuppressed = false, Generation = Wire.Id(), Presence = TrayPresence.Absent,
+                ClearedAt = removalAt ?? StationTime.GetUtcNow() };
             blockedInputs.TryRemove(round.PositionId, out _); blockedInputPictures.Remove(round.PositionId);
         }
         var ended = round with { Version = round.Version + 1, State = SmRoundState.Ended, EndedAt = StationTime.GetUtcNow(), EndReason = reason };
@@ -69,7 +70,7 @@ public sealed partial class ParcelRuntime
         }
         StoreSmRound(ended, "RoundEnded", cycle, operation, command);
         if (round.OperationId is { } released) releasedPlacements.Add(released);
-        if (physicallyRemoved) confirmedEmptyTrays[round.PositionId] = ended.EndedAt!.Value;
+        if (physicallyRemoved) confirmedEmptyTrays[round.PositionId] = cycle.ClearedAt!.Value;
         smRoundPictures.Remove(round.Id);
     }
     void MaintainSmRounds()
@@ -97,7 +98,8 @@ public sealed partial class ParcelRuntime
                 StoreSmRound(round with { Version = round.Version + 1, OriginalFrame = round.OriginalFrame! with
                 { State = "Interrupted", Failure = "Previous image write interrupted; original files retained; no replay" } }, "RoundImageInterrupted");
         foreach (var position in positions.Keys)
-            if (repository!.Cycle(position) is { } cycle) smCycles[position] = cycle with { Presence = TrayPresence.Unknown };
+            if (repository!.Cycle(position) is { } cycle)
+                smCycles[position] = cycle with { Presence = TrayPresence.Unknown };
         foreach (var round in repository!.Rounds(currentOnly: true))
         {
             ApplySmRound(round);
@@ -138,11 +140,12 @@ public sealed partial class ParcelRuntime
         if (fact.State == TrayPresence.Absent && round is not { RequireRemoval: true })
         {
             blockedInputs.TryRemove(position, out _); blockedInputPictures.Remove(position);
-            if (round is not null) { smCycles[position] = cycle; EndSmRound(round, "TrustedRemoval", physicallyRemoved: true); }
+            if (round is not null) { smCycles[position] = cycle; EndSmRound(round, "TrustedRemoval", physicallyRemoved: true, removalAt: observation.ObservedAt); }
             else
             {
-                cycle = cycle with { AutoSuppressed = false, Generation = Wire.Id() };
+                cycle = cycle with { AutoSuppressed = false, Generation = Wire.Id(), ClearedAt = observation.ObservedAt };
                 repository!.Commit(null, "TrayRemovalObserved", Wire.Encode(cycle), cycle: cycle); smCycles[position] = cycle;
+                confirmedEmptyTrays[position] = observation.ObservedAt;
             }
             return;
         }
@@ -152,12 +155,20 @@ public sealed partial class ParcelRuntime
     }
     async Task ProcessSmObservationAsync(string position, Observation observation, OperatorIdentity? actor, ObservationSession reader, bool manual)
     {
+        if (!manual && (SmCycle(position).ClearedAt is { } cleared && observation.ObservedAt <= cleared ||
+            CurrentRound(position) is { } target && observation.ObservedAt < target.StartedAt))
+        {
+            // A unique acquisition identity is not a new physical parcel. A frame
+            // can finish decoding after the operator/qualified source cleared A.
+            RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
+                "BeforeRoundBoundary; 取下或当前轮次边界前的相机观察只留证，不建轮或提交。"), "ObservationBeforeRoundBoundary");
+            return;
+        }
         if (observation.TrayPresence is not null && !manual)
         {
             // A physical frame captured before this round (or left in delivery
             // too long) cannot remove a later deliberately submitted parcel.
-            if (DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)) ||
-                CurrentRound(position) is { } current && observation.ObservedAt < current.StartedAt)
+            if (DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
             {
                 RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
                     "PhysicalEvidenceExpired; 旧物理观察只留证，不改变当前轮次。"), "PhysicalEvidenceIgnored");

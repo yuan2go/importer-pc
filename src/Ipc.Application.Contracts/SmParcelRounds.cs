@@ -26,5 +26,8 @@ public sealed record SmParcelRound(string Id, string PositionId, long Version, G
     public string? RcsOutcome { get; init; }
 }
 public sealed record SmPositionCycle(string PositionId, bool AutoSuppressed, TrayPresence Presence,
-    string? Epoch, long Sequence, string Generation, string? Evidence);
+    string? Epoch, long Sequence, string Generation, string? Evidence)
+{
+    public DateTimeOffset? ClearedAt { get; init; }
+}
 public sealed record SmRoundHistoryPage(SmParcelRound[] Items);

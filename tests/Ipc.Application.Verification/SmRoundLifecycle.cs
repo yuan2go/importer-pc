@@ -53,11 +53,24 @@ internal static class SmRoundLifecycle
         clock.Elapse(TimeSpan.FromSeconds(2));
         Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.IsEmpty, "T05 unknown presence and no formal candidates create neither a parcel nor a timeout");
 
+        clock.Utc = DateTimeOffset.UtcNow;
+        var beforeNewManualRound = clock.Utc.AddMilliseconds(-1);
+        await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "ordinary-invalid"), default);
+        var manualReading = Current(await h.App.SnapshotAsync())!;
+        await Observe(["GOOD-099"], observedAt: beforeNewManualRound);
+        Check(Current(await h.App.SnapshotAsync()) is { OperationId: null } unchanged && unchanged.Id == manualReading.Id && h.Peer.Requests.IsEmpty,
+            "T10 a camera frame captured before a deliberate new manual round cannot claim that round");
+        await Remove();
+
         s = await Observe(["ordinary-invalid", "BG123", "GOOD-100"]);
         var r = Current(s)!; var first = await Resolved(r.OperationId!);
         Check(r.FormalCodes.SequenceEqual(["GOOD-100"]) && first.ParcelCode == "GOOD-100" && h.Peer.Requests.Count == 1,
             "T01 all candidates are filtered before quantity/UI/request selection and produce one actual POST");
+        var capturedBeforeRemoval = DateTimeOffset.UtcNow;
         await Observe([], TrayPresence.Absent);
+        await Observe(["GOOD-100"], observedAt: capturedBeforeRemoval);
+        Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == 1,
+            "T10 a previous parcel's frame finishing after qualified removal cannot create or claim a new round");
         s = await Observe([], TrayPresence.Present); var correction = Current(s)!;
         s = await Observe(["GOOD-200", "GOOD-200"]);
         Check(Current(s) is { OperationId: null, FormalCodes.Length: 2 } duplicate && duplicate.Id == correction.Id,
@@ -92,10 +105,15 @@ internal static class SmRoundLifecycle
             await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             var unsent = (await h.App.OperationAsync(prepared.OperationId!))!;
             Check(unsent.Wcs is { Attempts: 0, State: StageState.Prepared }, "T07 frozen request exists before the executor's final send decision");
+            clock.Utc = DateTimeOffset.UtcNow;
+            var capturedBeforeClick = clock.Utc.AddMilliseconds(-1);
             await Remove(); ready.TrySetResult();
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
             Check(h.Peer.Requests.Count == 3 && (await h.App.OperationAsync(unsent.Id))!.Wcs is { Attempts: 0, State: StageState.Cancelled },
                 "T07 ending before first attempt closes the intent with zero external calls");
+            await Observe(["GOOD-351"], observedAt: capturedBeforeClick);
+            Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == 3,
+                "T10 a fresh but pre-click camera frame cannot rearm after explicit manual removal");
         }
         finally { ready.TrySetResult(); h.App.BeforeSmAttemptForVerification = null; }
 
@@ -131,6 +149,11 @@ internal static class SmRoundLifecycle
         clock.Elapse(TimeSpan.FromMilliseconds(1)); Check(Current(await h.App.SnapshotAsync()) is null, "T11 manual/unknown-visual result ends at 3000 ms");
         await Observe(["GOOD-500"]);
         Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == count, "T11 continued camera reads remain suppressed after display reset");
+        var capturedBeforeIdleRemoval = DateTimeOffset.UtcNow;
+        await Observe([], TrayPresence.Absent);
+        await Observe(["GOOD-500"], observedAt: capturedBeforeIdleRemoval);
+        Check(Current(await h.App.SnapshotAsync()) is null && h.Peer.Requests.Count == count,
+            "T10 qualified removal after display reset also fences late frames when no current round exists");
         var replay = await h.App.SubmitParcelBarcodeAsync(command, default);
         Check(replay.OperationId == success.OperationId && h.Peer.Requests.Count == count, "T15 original CommandId replay returns its durable receipt without resending");
         var sameCodeNew = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-500"), default); await Resolved(sameCodeNew.OperationId!);

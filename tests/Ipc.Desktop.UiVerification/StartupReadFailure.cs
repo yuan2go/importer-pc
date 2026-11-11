@@ -113,12 +113,22 @@ static partial class Program
         Action("Next").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         Check(AutomationProperties.GetAutomationId((TabItem)navigation.SelectedItem) == "StartupTask.Parameters", "navigation executes by action identity even when its caption changes");
         navigation.SelectedItem = navigation.Items.Cast<TabItem>().Single(t => AutomationProperties.GetAutomationId(t) == "StartupTask.Recovery"); normal.UpdateLayout();
-        Check(!Action("Next").IsVisible && !Action("Previous").IsVisible && Action("Backup").IsVisible, "recovery is an independent task with no stuck or backward next action");
+        Check(!Action("Next").IsVisible && !Action("Previous").IsVisible && Action("PlanRestore").IsVisible && !Action("PlanRestore").IsEnabled, "recovery is an independent task with no stuck or backward next action");
         Check(!Descendants(normal).OfType<Button>().Any(b => Equals(b.Content, "维护操作")), "the dead maintenance toggle is removed");
         normal.Width = 800; normal.Height = 500; normal.UpdateLayout();
         var footer = (WrapPanel)type.BaseType!.GetField("Actions", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(normal)!;
         Check(footer.HorizontalAlignment == HorizontalAlignment.Right && footer.Children.OfType<Button>().Where(b => b.IsVisible).All(b => b.TransformToAncestor(normal).TransformBounds(new Rect(b.RenderSize)).Bottom <= normal.ActualHeight), "offline task footer stays right aligned and visible at low height");
         CaptureInternal(evidence, "startup-recovery-800", normal, lines);
+        var backupInput = Descendants(normal).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.RestoreBackup");
+        var destinationInput = Descendants(normal).OfType<TextBox>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.RestoreDestination");
+        var missingBackup = Path.Combine(evidence, "missing-backup.db"); var target = Path.Combine(evidence, "not-restored");
+        backupInput.Text = missingBackup; destinationInput.Text = target; normal.UpdateLayout();
+        Check(Action("PlanRestore").IsEnabled && !Action("ExecuteRestore").IsVisible, "restore planning becomes available from actual paths while execution requires a verified plan");
+        Action("PlanRestore").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        var busy = type.BaseType!.GetField("Busy", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        await WaitUntil(() => busy.GetValue(normal) is false);
+        Check(normal.IsVisible && type.GetField("recovery", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(normal) is null && backupInput.Text == missingBackup && !Directory.Exists(target), "failed real restore planning preserves inputs and creates no destination or executable plan");
+        backupInput.Clear(); Check(!Action("PlanRestore").IsEnabled, "clearing a restore source withdraws the original plan action immediately");
         normal.Close(); await WaitUntil(() => !normal.IsVisible);
 
     }

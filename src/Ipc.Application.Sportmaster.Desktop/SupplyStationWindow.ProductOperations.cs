@@ -57,7 +57,7 @@ public partial class SupplyStationWindow
         ViewModel.Message = receipt.Status + " · " + receipt.Reason;
         await ViewModel.RefreshAsync();
         if (receipt.Status != "BackupCreated") return;
-        if (MessageBox.Show(ManagementDialogOwner, "完整备份已完成。现在检查连接、未确认作业和存储条件，并恢复供包？", "备份完成", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+        if (MessageBox.Show(ManagementDialogOwner, "完整备份已完成。现在检查连接、未确认作业和存储条件，并恢复供包？", "备份完成", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes) return;
         await ViewModel.RequireManagementModeAsync();
         var snapshot = await ViewModel.Application.SnapshotAsync();
         var resumed = await ViewModel.Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
@@ -85,7 +85,7 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         if (root.OpenMaintenanceOwnerAsync is null) throw new InvalidOperationException("当前版本不支持离线维护");
-        if (MessageBox.Show(ManagementDialogOwner, "将完全停止软件并关闭所有窗口，然后打开离线维护。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        if (MessageBox.Show(ManagementDialogOwner, "将完全停止软件并关闭所有窗口，然后打开离线维护。业务数据保留。", "进入离线维护", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
         await ViewModel.PauseAsync("进入离线维护前暂停"); await ViewModel.RefreshAsync();
         if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停结果未确认，软件未停止");
         root.offlineMaintenanceRequested = true; root.Close();

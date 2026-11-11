@@ -130,12 +130,19 @@ static partial class Program
                     var candidate = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(success)!;
                     FillInitial(Descendants(success).OfType<ParameterSettingsControl>().Single().Model!);
                     var candidateDraft = (StartupConfigurationDraft)type.GetField("draft", flags)!.GetValue(success)!;
-                    succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost };
+                    succeeded = new(candidate with { Candidate = candidateDraft.Build() }) { LoseReceipt = receiptLost, FailDispose = !receiptLost };
                     type.GetField("maintenance", flags)!.SetValue(success, succeeded);
                     Descendants(success).OfType<ParameterSettingsControl>().Single().ShowReview();
                     Click(success, "保存配置"); await Idle(success);
-                    // Successful first configuration closes this modal once; the startup
-                    // owner continues without another completion/start gate.
+                    if (!receiptLost)
+                    {
+                        Check(success.IsVisible && succeeded.Saves == 1 && succeeded.DisposeCalls == 1 && !(bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!,
+                            "failed SDK cleanup retains the original modal and its saved candidate without publishing completion");
+                        succeeded.FailDispose = false;
+                        Descendants(success).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.SaveAndStart").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    }
+                    // Successful cleanup closes this modal once; the owner continues
+                    // without another completion gate or a repeated business save.
                 }
                 catch (Exception error) { modalFailure = error; success.Close(); }
             };

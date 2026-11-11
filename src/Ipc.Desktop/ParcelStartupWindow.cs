@@ -19,7 +19,7 @@ sealed class ParcelStartupWindow : Window
     public bool AllowClose { get; set; }
     public ParcelStartupWindow()
     {
-        Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this);
+        Ipc.Application.ParcelFlow.Desktop.ProductBrand.Apply(this); UiTypography.Apply(this);
         Title = "菜鸟供包台"; Width = 760; Height = 520; MinWidth = 500; MinHeight = 360;
         Ipc.Application.ParcelFlow.Desktop.StartupAppearance.FitToWorkArea(this);
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -71,9 +71,10 @@ sealed class ParcelStartupWindow : Window
         title.Text = "维护已结束 · 供包台未启动";
         detail.Text = "点击“启动供包台”后连接相机和 RCS；也可以直接退出。";
         diagnostic.Visibility = Visibility.Collapsed; actions.Children.Clear(); Height = 280; MinHeight = 260;
-        foreach (var (label, run) in new[] { ("退出", close), ("启动供包台", start) })
+        foreach (var (label, run, primary) in new[] { ("退出", close, false), ("启动供包台", start, true) })
         {
-            var button = new Button { Content = label, IsDefault = run == start, MinHeight = 44, Margin = new(0, 8, 12, 0) };
+            var button = new Button { Content = label, IsDefault = primary, MinHeight = 44, Margin = new(0, 8, 12, 0) };
+            if (primary) button.SetResourceReference(StyleProperty, "Primary");
             button.Click += async (_, _) =>
             {
                 actions.IsEnabled = false;
@@ -99,9 +100,10 @@ sealed class ParcelStartupWindow : Window
         var exit = new Button { Content = "停止并退出", MinHeight = 44 };
         exit.Click += async (_, _) => await RequestCloseAsync();
         actions.Children.Add(copy);
-        void Add(string label, Func<Task> action)
+        void Add(string label, Func<Task> action, bool primary = false)
         {
-            var button = new Button { Content = label, MinHeight = 44, IsDefault = action == retry };
+            var button = new Button { Content = label, MinHeight = 44, IsDefault = primary };
+            if (primary) button.SetResourceReference(StyleProperty, "Primary");
             button.Click += async (_, _) =>
             {
                 actions.IsEnabled = false;
@@ -111,6 +113,6 @@ sealed class ParcelStartupWindow : Window
             };
             actions.Children.Add(button);
         }
-        Add("重试启动", retry); Add("修改参数 / 离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
+        Add("重试启动", retry, primary: true); Add("修改参数 / 离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
     }
 }

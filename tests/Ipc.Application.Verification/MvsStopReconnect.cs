@@ -1,6 +1,9 @@
 using System.Collections.Concurrent;
 using Ipc.Drivers.Hikrobot.Mvs;
 using Ipc.Platform;
+using Ipc.Assembly;
+using Ipc.Application.ParcelFlow;
+using Ipc.Application.Sportmaster;
 
 // Field report: GigE packet loss, then StopGrabbing returns 0x80000214 (UDP receive) on the broken
 // stream, and automatic reconnect stayed blocked although the camera was rediscovered. The actual
@@ -20,10 +23,11 @@ internal static class MvsStopReconnect
         public readonly ConcurrentQueue<string> Calls = new();
         public volatile bool FailAcquire;
         public MvsDevice[]? Discovered;
-        public bool FailEnumeration, FailShutdown;
+        public bool FailInitialize, FailEnumeration, FailShutdown;
+        public ManualResetEventSlim? EnumerationEntered, EnumerationRelease;
         public bool HasFrame => false;
-        public void Initialize() => Calls.Enqueue("initialize");
-        public MvsDevice[] Enumerate() { Calls.Enqueue("enumerate"); if (FailEnumeration) throw new IOException("Synthetic enumeration failure"); return Discovered ?? (Online ? [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])] : []); }
+        public void Initialize() { Calls.Enqueue("initialize"); if (FailInitialize) throw new IOException("Synthetic initialization failure"); }
+        public MvsDevice[] Enumerate() { Calls.Enqueue("enumerate"); EnumerationEntered?.Set(); EnumerationRelease?.Wait(); if (FailEnumeration) throw new IOException("Synthetic enumeration failure"); return Discovered ?? (Online ? [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])] : []); }
         public void Create(MvsDevice device) => Calls.Enqueue("create");
         public void Open() { Calls.Enqueue("open"); if (!Online) throw new IOException("MVS OpenDevice exclusive failed: 0x80000206"); }
         public void SetEnumValue(string key, uint value) { }
@@ -53,7 +57,7 @@ internal static class MvsStopReconnect
 
     internal static async Task Run()
     {
-        VerifyIdentityLookup();
+        await VerifyIdentityLookup();
         var api = new Api(); var lease = new Lease();
         var parameters = new Dictionary<string, string> { ["device.ip"] = Api.Ip, ["device.serial"] = Api.Serial };
         await using var source = new MvsAcquisition(new("left-camera", "left-camera", parameters), api, _ => lease);
@@ -102,22 +106,70 @@ internal static class MvsStopReconnect
         await source.StopAsync(default);
         Check(lease.Releases == 4 && api.Calls.Last() == "finalize", "retrying the stop completes the original release exactly once");
     }
-    static void VerifyIdentityLookup()
+    static async Task VerifyIdentityLookup()
     {
         var api = new Api();
-        Check(BundledMvs.ReadCameraSerial(Api.Ip, api) == Api.Serial && api.Calls.SequenceEqual(new[] { "initialize", "enumerate", "finalize" }),
+        await using var lookup = new CameraIdentityLookup(_ => api);
+        Check(lookup.Read(Api.Ip, "zxing-cpp") == Api.Serial && api.Calls.SequenceEqual(new[] { "initialize", "enumerate", "finalize" }),
             "IP lookup returns the actual serial without creating, opening or acquiring a camera handle");
         foreach (var devices in new MvsDevice[][] { [], [new(Api.Ip, "ONE", "", "", []), new(Api.Ip, "TWO", "", "", [])], [new(Api.Ip, "", "", "", [])] })
         {
             var rejected = new Api { Discovered = devices }; var failed = false;
-            try { BundledMvs.ReadCameraSerial(Api.Ip, rejected); } catch (InvalidDataException) { failed = true; }
+            await using var rejectedLookup = new CameraIdentityLookup(_ => rejected);
+            try { rejectedLookup.Read(Api.Ip, "zxing-cpp"); } catch (InvalidDataException) { failed = true; }
             Check(failed && rejected.Calls.Last() == "finalize", "missing, ambiguous or invalid camera identity is rejected and SDK ownership is released");
         }
-        foreach (var enumerationFailure in new[] { true, false })
+        foreach (var failedApi in new[] { new Api { FailInitialize = true }, new Api { FailEnumeration = true }, new Api { FailShutdown = true } })
         {
-            var failedApi = new Api { FailEnumeration = enumerationFailure, FailShutdown = !enumerationFailure }; var failed = false;
-            try { BundledMvs.ReadCameraSerial(Api.Ip, failedApi); } catch (IOException) { failed = true; }
-            Check(failed && failedApi.Calls.Last() == "finalize", "enumeration and release failures remain real failures; enumerationFailure=" + enumerationFailure);
+            var failed = false;
+            await using var failedLookup = new CameraIdentityLookup(_ => failedApi);
+            try { failedLookup.Read(Api.Ip, "zxing-cpp"); } catch (IOException) { failed = true; }
+            Check(failed && failedApi.Calls.Last() == "finalize", "initialization, enumeration and release failures remain real failures with cleanup attempted");
+            if (failedApi.FailShutdown)
+            {
+                failedApi.FailShutdown = false;
+                Check(failedLookup.Read(Api.Ip, "zxing-cpp") == Api.Serial &&
+                    failedApi.Calls.SequenceEqual(new[] { "initialize", "enumerate", "finalize", "finalize", "initialize", "enumerate", "finalize" }),
+                    "a successful retry releases the original SDK reference before initializing the next lookup");
+            }
+            failedApi.FailShutdown = false;
         }
+        var retained = new Api { FailEnumeration = true, FailShutdown = true }; var builds = 0;
+        var owned = new CameraIdentityLookup(_ => { builds++; return retained; });
+        var launch = new BusinessLaunch(Path.Combine(Path.GetTempPath(), "identity-config-" + Wire.Id()), Path.Combine(Path.GetTempPath(), "identity-data-" + Wire.Id()), null, null);
+        var factory = new ParcelCapabilityFactory(launch) { CameraIdentity = owned };
+        var factoryCalls = 0;
+        var maintenance = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => { factoryCalls++; return factory; }, () => { });
+        try { await maintenance.ReadCameraSerialAsync(Api.Ip, "zxing-cpp"); throw new Exception("lookup failure was hidden"); }
+        catch (AggregateException error) { Check(error.InnerExceptions.Count == 2, "enumeration and finalization failures are both retained"); }
+        retained.FailEnumeration = false;
+        try { await maintenance.ReadCameraSerialAsync(Api.Ip, "zxing-cpp"); throw new Exception("failed owner was replaced"); }
+        catch (IOException) { }
+        Check(builds == 1 && factoryCalls == 1 && retained.Calls.Count(c => c == "initialize") == 1 && retained.Calls.Count(c => c == "enumerate") == 1,
+            "offline retry retains the original factory and retries its failed SDK owner before any new initialization or enumeration");
+        try { await maintenance.DisposeAsync(); throw new Exception("failed SDK release reported as closed"); }
+        catch (IOException) { }
+        retained.FailShutdown = false;
+        var releases = retained.Calls.Count(c => c == "finalize");
+        await maintenance.DisposeAsync(); await maintenance.DisposeAsync();
+        Check(retained.Calls.Count(c => c == "finalize") == releases + 1 && builds == 1,
+            "exit cleanup retries the exact retained SDK owner and releases it once; repeated disposal is harmless");
+        try { owned.Read(Api.Ip, "zxing-cpp"); throw new Exception("disposed lookup was reopened"); }
+        catch (ObjectDisposedException) { }
+
+        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
+        var blockedApi = new Api { EnumerationEntered = entered, EnumerationRelease = release };
+        var blockedLookup = new CameraIdentityLookup(_ => blockedApi);
+        var reading = Task.Run(() => blockedLookup.Read(Api.Ip, "zxing-cpp"));
+        Task? closing = null;
+        try
+        {
+            Check(entered.Wait(TimeSpan.FromSeconds(5)), "identity lookup reaches the controlled native enumeration");
+            closing = blockedLookup.DisposeAsync().AsTask();
+            Check(!closing.IsCompleted && !reading.IsCompleted, "exit waits for the actual native enumeration, not a cancelled wrapper");
+        }
+        finally { release.Set(); await reading; await (closing ?? blockedLookup.DisposeAsync().AsTask()); }
+        Check(blockedApi.Calls.SequenceEqual(new[] { "initialize", "enumerate", "finalize" }), "in-flight lookup and exit share one release without creating a second SDK owner");
+
     }
 }

@@ -23,10 +23,13 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     internal Action<string> RequireProductionManagement { get; init; } = ManagementModeBroker.RequireProduction;
     bool transferred;
     RunMode mode = RunMode.Simulation;
+#if SPORTMASTER
+    internal Ipc.Drivers.Hikrobot.Mvs.CameraIdentityLookup CameraIdentity { get; init; } = new();
+#endif
     public string ReadCameraSerial(string ip, string readerEngine)
     {
 #if SPORTMASTER
-        return Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReadCameraSerial(ip, readerEngine);
+        return CameraIdentity.Read(ip, readerEngine);
 #else
         throw new NotSupportedException("相机身份读取仅适用于 SM 内置相机。");
 #endif
@@ -603,6 +606,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     }
     public async ValueTask DisposeAsync()
     {
+#if SPORTMASTER
+        // Lookups are factory-owned even when normal device ports were transferred
+        // to the runtime. A failed release must retain all enclosing leases.
+        await CameraIdentity.DisposeAsync().ConfigureAwait(false);
+#endif
         if (!transferred)
         {
             List<Exception> failures = [];

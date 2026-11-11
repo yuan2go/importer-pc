@@ -496,6 +496,8 @@ public static partial class ParcelStartupServices
     sealed class ElevatedMaintenance(BusinessLaunch launch) : IStartupMaintenance, IStartupRetentionMaintenance
     {
         readonly ParcelStartupMaintenance core = Core(launch);
+        public Task<string> ReadCameraSerialAsync(string ip, string readerEngine) => core.ReadCameraSerialAsync(ip, readerEngine);
+        public ValueTask DisposeAsync() => core.DisposeAsync();
         public Task<StartupRetentionPlan> PlanRetentionAsync(string destination, CancellationToken token = default) => core.PlanRetentionAsync(destination, token);
         public Task<StartupRetentionOutcome> InspectRetentionAsync(StartupRetentionPlan plan) => core.InspectRetentionAsync(plan);
         public async Task<StartupRetentionOutcome> ExecuteRetentionAsync(StartupRetentionPlan plan)

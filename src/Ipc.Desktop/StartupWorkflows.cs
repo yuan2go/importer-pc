@@ -160,6 +160,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
     IStartupMaintenance maintenance = null!;
+    bool maintenanceReleased, maintenanceClosing;
     StartupMaintenanceDocument? document;
     StartupConfigurationDraft? draft;
     StartupSavedDraft? savedDraft;
@@ -327,7 +328,24 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         editEvents.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler((_, _) => Changed()));
         editEvents.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler((_, _) => Changed()));
         editEvents.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
-        Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
+        Closing += async (_, e) =>
+        {
+            if (e.Cancel || maintenanceReleased) return;
+            e.Cancel = true;
+            if (Busy || maintenanceClosing || !RetryRequested && !ReplacementLaunched && !MayDiscard()) return;
+            maintenanceClosing = true;
+            try
+            {
+                await System.Windows.Threading.Dispatcher.Yield();
+                await Run(async () =>
+                {
+                    if (maintenance is not null) await maintenance.DisposeAsync();
+                    maintenanceReleased = true;
+                });
+                if (maintenanceReleased) Close();
+            }
+            finally { maintenanceClosing = false; }
+        };
         var authorizationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         async Task RefreshAuthorization()
         {
@@ -544,6 +562,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     async Task Read(bool discardAccepted)
     {
         if (!discardAccepted && !MayDiscard()) return;
+        // Do not discard the old service (or its failed SDK owner) when rereading
+        // another directory. Failed cleanup leaves this window available to retry.
+        if (maintenance is not null) await maintenance.DisposeAsync();
         document = null; draft = null; savedDraft = null; lastSaveConfirmed = false; maintenance = null!; checkedInput = savedInput = null;
         try
         {

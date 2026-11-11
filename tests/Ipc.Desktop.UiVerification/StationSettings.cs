@@ -74,18 +74,37 @@ static partial class Program
         Click(center, "设置");
         await Until(() => vm.HasLoadedConfiguration && !vm.Busy);
         var leftSerial = vm.ReaderDrafts.Single(r => r.Capability.Role == "left").Capability.Parameters.Single(p => p.Field.Key == "device.serial");
-        var rightSerial = vm.ReaderDrafts.Single(r => r.Capability.Role == "right").Capability.Parameters.Single(p => p.Field.Key == "device.serial");
-        rightSerial.Value = leftSerial.Value;
-        Check(!await vm.PrepareConfigurationReviewAsync() && vm.Message.Contains("左右相机的序列号重复") &&
-            vm.ParameterEditor!.Issues.Count(i => i.Path.EndsWith("/device.serial") && i.Message.Contains("序列号重复")) == 2 &&
-            probe.SaveCalls == 0, "duplicate serials flag both camera fields and explain the refusal before saving");
-        rightSerial.Value = "SYNTH-REPLACEMENT";
+        var rightDraft = vm.ReaderDrafts.Single(r => r.Capability.Role == "right").Capability;
+        var rightSerial = rightDraft.Parameters.Single(p => p.Field.Key == "device.serial");
+        var editor = Descendants(center).OfType<ParameterSettingsControl>().Single();
+        editor.NavigateTo(rightDraft.InstanceId + "/device.ip"); center.UpdateLayout();
+        var serialInput = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == rightDraft.InstanceId + "/device.serial");
+        Check(serialInput.IsReadOnly, "camera serial is read-only; device identity can only be obtained through the IP lookup boundary");
+        var rightIp = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == rightDraft.InstanceId + "/device.ip");
+        var lookupCalls = 0; var discoveredSerial = leftSerial.Value;
+        vm.ParameterEditor!.CameraSerialReader = (ip, engine) =>
+        {
+            if (ip != "192.0.2.99" || engine != "mvid-native") throw new InvalidOperationException("Unexpected synthetic discovery identity");
+            lookupCalls++; return Task.FromResult(discoveredSerial);
+        };
+        rightIp.Text = "192.0.2.99";
+        Check(rightSerial.Value == "" && !await vm.PrepareConfigurationReviewAsync() && lookupCalls == 1 &&
+            vm.ParameterEditor.Issues.Count(i => i.Path.EndsWith("/device.serial") && i.Message.Contains("同一序列号")) == 2 &&
+            probe.SaveCalls == 0, "different IPs returning the same SDK serial flag both camera identities and refuse saving");
+        var factoryRejected = false;
+        try { h.Factory.ValidateStructure(vm.BuildStructuredConfiguration()); }
+        catch (InvalidDataException error) { factoryRejected = error.Message.Contains("同一物理序列号"); }
+        Check(factoryRejected, "Application composition rejects duplicate physical identities independently of the read-only editor");
+        discoveredSerial = "SYNTH-REPLACEMENT";
+        Descendants(editor).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == rightDraft.InstanceId + "/ReadCameraSerial")
+            .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await Until(() => rightSerial.Value == discoveredSerial && lookupCalls == 2);
         var before = (await h.App.SnapshotAsync()).Configuration.Revision;
         var left = h.Api(h.Left);
         h.Factory.Expect(vm.BuildStructuredConfiguration());
         h.Factory.DiscoverReplacements = false;
         var reviewed = await vm.PrepareConfigurationReviewAsync();
-        Check(reviewed, reviewed ? "right camera serial edit is ready to save" :
+        Check(reviewed, reviewed ? "right camera identity discovered from its IP is ready to save" :
             vm.Message + " " + string.Join(" | ", vm.ParameterEditor?.Issues.Select(i => i.Message) ?? []));
         var review = new ConfigurationSaveReviewWindow(center, vm);
         review.Show();
@@ -98,7 +117,7 @@ static partial class Program
             !vm.HasUnsavedConfiguration && !vm.HasUnconfirmedConfigurationSubmission,
             "a cancelled save response reads back the exact committed serial and never submits it twice. Outcome: " + vm.ConfigurationSubmissionOutcome);
         Check(h.Factory.ReaderBuilds == 1 && ReferenceEquals(left, h.Api(h.Left)) && left.Stops == 0,
-            "editing the right native serial does not add hidden defaults or reconnect the left camera");
+            "adopting the right camera's discovered identity does not add hidden defaults or reconnect the left camera");
         Check(!save.IsVisible && Descendants(review).OfType<Button>().Any(b => Equals(b.Content, "完成") && b.IsEnabled) &&
             Descendants(review).OfType<TextBlock>().Any(t => t.Text.StartsWith("设置已保存并生效。") && t.IsVisible) &&
             !Descendants(review).OfType<Expander>().Any(e => Equals(e.Header, "保存详情")) &&
@@ -108,6 +127,37 @@ static partial class Program
         Click(center, "关闭");
         await Until(() => !center.IsVisible);
         window.Close();
+        await VerifyStartupIdentityCleanup(root, evidence, lines);
+    }
+
+    static async Task VerifyStartupIdentityCleanup(string root, string evidence, List<string> lines)
+    {
+        void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS CAMERA-SETTINGS " + text); }
+        var desktop = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") ?? throw new InvalidOperationException("Set same-build desktop assembly"));
+        var type = desktop.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
+        var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        var busy = type.BaseType!.GetField("Busy", flags)!;
+        var launch = new BusinessLaunch(Path.Combine(evidence, "identity-startup-config"), Path.Combine(evidence, "identity-startup-data"), null, null);
+        ManagementModeFixture.AuthorizeRoot(launch.DataRoot);
+        var first = (Window)Activator.CreateInstance(type, [launch, null, true])!;
+        type.GetProperty("ConfirmDiscardInputs", flags)!.SetValue(first, (Func<bool>)(() => true));
+        first.Show(); await FirstConfigurationReady(first, busy, Check);
+        var field = type.GetField("maintenance", flags)!;
+        var startup = (IStartupMaintenance)field.GetValue(first)!;
+        var reachedLookup = false;
+        try { await startup.ReadCameraSerialAsync("invalid-ip", "zxing-cpp"); }
+        catch (InvalidDataException) { reachedLookup = true; }
+        Check(reachedLookup, "first-configuration service forwards identity lookup without loading an SDK for invalid input");
+        await startup.DisposeAsync();
+        var document = (StartupMaintenanceDocument)type.GetField("document", flags)!.GetValue(first)!;
+        var retained = new StartupMaintenanceProbe(document) { FailDispose = true };
+        field.SetValue(first, retained);
+        first.Close();
+        await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); return retained.DisposeCalls == 1 && !(bool)busy.GetValue(first)!; });
+        Check(first.IsVisible && ReferenceEquals(field.GetValue(first), retained), "failed startup cleanup retains the same service and the open window for an explicit retry");
+        retained.FailDispose = false; first.Close();
+        await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); return !first.IsVisible; });
+        Check(retained.DisposeCalls == 2, "closing startup again retries the original owner before the window can exit");
     }
 
     static async Task VerifyStationSettings(string root, string evidence, List<string> lines)

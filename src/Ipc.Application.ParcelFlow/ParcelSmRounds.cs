@@ -155,20 +155,13 @@ public sealed partial class ParcelRuntime
     }
     async Task ProcessSmObservationAsync(string position, Observation observation, OperatorIdentity? actor, ObservationSession reader, bool manual)
     {
-        if (!manual && (SmCycle(position).ClearedAt is { } cleared && observation.ObservedAt <= cleared ||
-            CurrentRound(position) is { } target && observation.ObservedAt < target.StartedAt))
-        {
-            // A unique acquisition identity is not a new physical parcel. A frame
-            // can finish decoding after the operator/qualified source cleared A.
-            RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
-                "BeforeRoundBoundary; 取下或当前轮次边界前的相机观察只留证，不建轮或提交。"), "ObservationBeforeRoundBoundary");
-            return;
-        }
+        var beforeRound = !manual && (SmCycle(position).ClearedAt is { } cleared && observation.ObservedAt <= cleared ||
+            CurrentRound(position) is { } target && observation.ObservedAt < target.StartedAt);
         if (observation.TrayPresence is not null && !manual)
         {
             // A physical frame captured before this round (or left in delivery
             // too long) cannot remove a later deliberately submitted parcel.
-            if (DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
+            if (beforeRound || DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)))
             {
                 RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
                     "PhysicalEvidenceExpired; 旧物理观察只留证，不改变当前轮次。"), "PhysicalEvidenceIgnored");
@@ -203,6 +196,14 @@ public sealed partial class ParcelRuntime
             foreach (var prior in contradictions) RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + observation.SourceEventId);
             RecordInput(Input(position, observation, contradictions.Length == 0 ? ParcelInputOutcome.Duplicate : ParcelInputOutcome.Blocked,
                 contradictions.Length == 0 ? "DuplicateIdentity; original retained" : "IdentityConflict; original retained", priors[0].Id, originalSelection), "ObservationIdentityObserved");
+            return;
+        }
+        // Keep original identity/conflict checks above this boundary. A unique
+        // acquisition can still finish decoding after the parcel was removed.
+        if (beforeRound)
+        {
+            RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
+                "BeforeRoundBoundary; 取下或当前轮次边界前的相机观察只留证，不建轮或提交。", selection: selection), "ObservationBeforeRoundBoundary");
             return;
         }
         // Source freshness is an input trust guard, not a round timeout. A stale

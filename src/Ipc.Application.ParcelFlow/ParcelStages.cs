@@ -40,6 +40,7 @@ public sealed partial class ParcelRuntime
                 await ExternalAsync(async () => { await beforeAttempt(op.Id).ConfigureAwait(false); return true; }).ConfigureAwait(false);
             op = operations[op.Id];
             stage = GetStage(op, kind)!;
+            if (!query && op.RoundId is not null && !SmRoundOwns(op)) return op;
             if (!PortMaintenanceClear(port)) return op;
             if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
             { op = StageFailure(op, kind, stage, "Original capability is not healthy; reconnect and reconcile"); Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }

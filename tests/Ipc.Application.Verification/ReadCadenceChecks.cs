@@ -99,6 +99,7 @@ static class ReadCadenceChecks
             "same-placement read after an unknown response preserves the original request and never resends");
         await Pause(h);
         await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
         h.Api(h.Left).EnqueueNative(pixels, 104, [Symbol("SYNTH-CADENCE-B")]);
         await Idle(h, "left", baseline.Processed + 4);
         var changed = await LastInput(h);

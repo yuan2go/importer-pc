@@ -93,8 +93,11 @@ internal static class BackupConsistency
                 "isolated restore retains exact original request and receipt collection");
         }
         h.App.BackupBoundary = null;
+        // Restart restored an uncertain current round. Qualified absence does
+        // not replace its required click; the backup fence must close first.
+        await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
         await CameraRoundHarness.Until(async () => await h.App.OperationAsync(original!.Id) is null);
-        Check(files.Keys.All(f => !File.Exists(f)) && h.Peer.Requests.Count == 1, "success/cancellation/failure releases the fence; obsolete cleanup resumes without replay");
+        Check(files.Keys.All(f => !File.Exists(f)) && h.Peer.Requests.Count == 1, "success/cancellation/failure releases the fence; targeted removal then permits obsolete cleanup without replay");
     }
     static async Task ScheduleFault(string workspace, string root, string mode)
     {

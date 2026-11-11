@@ -184,8 +184,9 @@ public sealed class ConfigurationRevisions<T> where T : class
     {
         if (current.Confirmation is { } existing)
         {
-            if (existing.EffectiveHash != Wire.Hash(Wire.Encode(current.Effective)) ||
-                existing.Source != "Seed" ||
+            if (existing.EffectiveHash != Wire.Hash(Wire.Encode(current.Effective)))
+                throw new InvalidDataException("配置确认记录与当前内容不一致；原文件保留，请核对原配置和软件来源，不要覆盖原账。");
+            if (existing.Source != "Seed" ||
                 existing.State is not ("Required" or "InProgress" or "Confirmed") ||
                 existing.Required == (existing.State == "Confirmed") || existing.Attempts is null ||
                 existing.State == "InProgress" && existing.Attempts.LastOrDefault() is not { FinishedAt: null })

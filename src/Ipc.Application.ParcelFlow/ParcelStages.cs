@@ -11,7 +11,7 @@ public sealed partial class ParcelRuntime
         try
         {
             op = operations[op.Id];
-            if (obsoleteSmOriginals.Contains(op.Id)) return op;
+            if (repository!.IsSmDb12Original(op.Id) || obsoleteSmOriginals.Contains(op.Id)) return op;
             var stage = GetStage(op, kind)!;
             var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
             var binding = BindingFor(Effective, kind, op.PositionId);
@@ -101,14 +101,17 @@ public sealed partial class ParcelRuntime
                 reply = await ExternalPortAsync(port, () => PortCallAsync(port, async () =>
                 {
                     var calledAt = ReceiptTimeForVerification.GetTimestamp();
-                    try { return kind switch
+                    try
                     {
-                    ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
-                    ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
-                    ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
-                    ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(deliveryRequest, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
-                    _ => throw new InvalidOperationException("Unregistered stage")
-                    }; }
+                        return kind switch
+                        {
+                            ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                            ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                            ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                            ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(deliveryRequest, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
+                            _ => throw new InvalidOperationException("Unregistered stage")
+                        };
+                    }
                     finally { callMs = ReceiptTimeForVerification.GetElapsedTime(calledAt).TotalMilliseconds; }
                 }, budget.Token)).ConfigureAwait(false);
                 op = operations[op.Id];

@@ -17,7 +17,7 @@ public sealed partial class ParcelRuntime
     static ParcelStage ParseStage(string stage) => stage switch
     { "image-capture" => ParcelStage.Capture, "image-upload" => ParcelStage.Upload, "wcs-slot" => ParcelStage.Wcs, "plc-submit" => ParcelStage.Plc, _ => throw new InvalidDataException("Unknown original stage") };
     static bool IsDebugRequest(ParcelOperation op) => op.DebugRequest is not null || op.OperatorDebugRequest is not null;
-    bool CanDispatch(ParcelOperation op) => !obsoleteSmOriginals.Contains(op.Id) &&
+    bool CanDispatch(ParcelOperation op) => !repository!.IsSmDb12Original(op.Id) && !obsoleteSmOriginals.Contains(op.Id) &&
         (IsDebugRequest(op) ? explicitDebugSends.Contains(op.Id) && DebugRequestReady(op) : CanDispatchNormally(op));
     // Departure frees the tray, not an already admitted execution. This marker
     // lives only for that call; it cannot authorize replay after stop or restart.

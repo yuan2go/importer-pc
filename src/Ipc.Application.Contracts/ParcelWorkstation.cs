@@ -1,4 +1,5 @@
 using Ipc.Platform;
+using System.Text.Json.Serialization;
 namespace Ipc.Application.Contracts;
 
 public enum ParcelBarcodeInputKind { Keyboard, PdaKeyboard }
@@ -6,6 +7,7 @@ public enum ParcelBarcodeInputKind { Keyboard, PdaKeyboard }
 public sealed record SubmitParcelBarcode(string CommandId, Guid RuntimeId, long ConfigurationRevision,
     string PositionId, string Barcode, ParcelBarcodeInputKind Kind, string? ExpectedObservationId, string? ExpectedOperationId)
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ExpectedRoundId { get; init; }
 }
 public sealed record ParcelBarcodeReceipt(string Status, string Detail, string? OperationId, string? ObservationId, long Revision);

@@ -60,10 +60,11 @@ static class ParameterInheritance
             Check(secondVm.DisplayNameDraft == "合成站点" && secondVm.TargetEfficiencyDraft == "1800", "a new window reads the saved per-station display preference");
             vm.TargetEfficiencyDraft = "0"; Check(!vm.ApplyStationDisplay() && vm.TargetEfficiencyDraft == "0" && vm.StationDisplaySummary.Contains("1800"), "invalid display input remains editable without changing the active preference");
             await Wait(app, s => s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+            var processed = app.WorkerProgress().Sum(w => w.Processed);
             Check(app.EmitReference("excluded", "OK001", Wire.Id()), "ready source accepts the excluded observation");
-            var background = await app.SnapshotAsync();
-            Check(background.Operations.Length == 0 && background.Inputs!.Length == 0 && app.WorkerProgress().All(w => w.Received == 0),
-                "background-only camera codes create neither parcel input nor operation or request");
+            var background = await Wait(app, _ => app.WorkerProgress().Sum(w => w.Processed) > processed);
+            Check(background.Operations.Length == 0 && background.Rounds.Length == 0 && background.Capacity!.ExecutingRequests == 0,
+                "a completely processed excluded-only observation creates no parcel round, operation or RCS execution; diagnostic observation evidence is allowed");
             app.EmitReference("accepted", "OK003", Wire.Id()); var accepted = await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved)); frozen = Wire.Encode(accepted.Operations.Single().Wcs);
             await app.CommandAsync(new(Wire.Id(), accepted.Revision, "Pause")); await ManagementModeFixture.Authorize(app);
             app.BeforeMonitorProbe = (_, token) => Task.Delay(Timeout.Infinite, token); await Wait(app, s => s.Availability!.Configure);

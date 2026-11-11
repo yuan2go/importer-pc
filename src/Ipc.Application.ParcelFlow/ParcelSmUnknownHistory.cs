@@ -19,7 +19,7 @@ public sealed partial class ParcelRuntime
         if (Id != "sportmaster" || backupInProgress || failure is not null) return;
         while (true)
         {
-            var batch = operations.Values.Where(op => !obsoleteSmOriginals.Contains(op.Id) && CanRetainSmUnknown(op)).Take(128).ToArray();
+            var batch = operations.Values.Where(op => !repository!.IsSmDb12Original(op.Id) && !obsoleteSmOriginals.Contains(op.Id) && CanRetainSmUnknown(op)).Take(128).ToArray();
             if (batch.Length == 0) return;
             repository!.ArchiveSmUnknowns(batch);
             RemoveArchivedFromRuntime(batch.Select(op => op.Id).ToArray(), unknowns: batch.Length);

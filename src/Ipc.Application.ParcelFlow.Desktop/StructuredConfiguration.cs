@@ -60,6 +60,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string MinimumFreeMiB { get => Get<string>(); set => Set(value); }
     internal ParcelConfiguration ApplyParameters(ParcelConfiguration c)
     {
+        var readTimeout = Integer(ReadTimeoutMs, "业务模块/ReadTimeoutMs", 100, 60000);
         if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
         var retention = (c.Retention ?? new ParcelRetentionPolicy()) with
@@ -76,7 +77,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
             BarcodeFilter = string.IsNullOrWhiteSpace(BarcodePattern) && string.IsNullOrWhiteSpace(BarcodeExclusionPattern) && RejectMultipleCodes && MultiCodeSeparator == ";" ? null : BuildBarcodePolicy(),
             WeightRange = BuildWeightRange(),
             QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096),
-            ReadTimeoutMs = Integer(ReadTimeoutMs, "业务模块/ReadTimeoutMs", 100, 60000),
+            ReadTimeoutMs = readTimeout == c.EffectiveReadTimeoutMs ? c.ReadTimeoutMs : readTimeout,
             TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
             Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention,
@@ -112,7 +113,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         MinimumWeight = c.WeightRange?.Minimum.ToString(CultureInfo.InvariantCulture) ?? "",
         MaximumWeight = c.WeightRange?.Maximum.ToString(CultureInfo.InvariantCulture) ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture),
-        ReadTimeoutMs = c.ReadTimeoutMs.ToString(CultureInfo.InvariantCulture),
+        ReadTimeoutMs = c.EffectiveReadTimeoutMs.ToString(CultureInfo.InvariantCulture),
         TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture),
         MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
         ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture),

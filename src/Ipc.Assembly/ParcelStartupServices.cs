@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Security.Principal;
@@ -33,7 +33,7 @@ public static partial class ParcelStartupServices
         password => ResetManagementPassword(launch, password), () => InspectManagementPasswordRecovery(launch));
     static readonly AsyncLocal<Action?> delegatedAuthority = new();
     static readonly AsyncLocal<string?> delegatedPrincipal = new();
-    static bool RequiresManagementMode(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore" or "ExpireHistory";
+    static bool RequiresManagementMode(string action) => action is "Stage" or "RepairInitial" or "SaveDraft" or "PlanChange" or "PrepareChange" or "Backup" or "Restore" or "AdoptRestore" or "ExpireHistory" or "PlanSmDb12Continuation" or "ContinueSmDb12";
     static string ManagementRequestHash(StartupMaintenanceRequest r) => Wire.Hash(Wire.Encode(r with { ManagementGrant = null }));
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool GetNamedPipeClientProcessId(Microsoft.Win32.SafeHandles.SafePipeHandle pipe, out uint processId);
@@ -247,6 +247,8 @@ public static partial class ParcelStartupServices
             case "SaveDraft": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).SaveDraftAsync(request.ExpectedHash!, request.DraftHash, request.Editor!); break;
             case "PlanChange": return Wire.Encode(await Core(request.Launch!, installer: true).PlanChangeAsync(request.Reason!, request.Destination, execution ?? throw new InvalidOperationException("Missing plan execution")));
             case "PrepareChange": return Wire.Encode(await Core(request.Launch!, installer: true).ExecuteChangeAsync(request.ExpectedHash!, request.Reason!, request.Destination!, null, execution));
+            case "PlanSmDb12Continuation": return Wire.Encode(await Core(request.Launch!, installer: true).PlanSmDb12ContinuationAsync());
+            case "ContinueSmDb12": await Core(request.Launch!, installer: true).ContinueSmDb12Async(request.ExpectedHash!); break;
             case "Backup":
                 if (execution is null) await Core(request.Launch!, installer: true).BackupAsync(request.Destination!);
                 else await Core(request.Launch!, installer: true).BackupAsync(request.Destination!, execution);
@@ -424,7 +426,7 @@ public static partial class ParcelStartupServices
             request = request with
             {
                 ManagementGrant = request.Action == "ExpireHistory"
-                ? mode.DelegateOperation(identity, ParcelRepository.RetentionMaintenanceBudget) : CancellableMaintenance(request.Action) ? mode.DelegateOperation(identity, TimeSpan.FromMinutes(10)) : mode.Delegate(identity)
+                ? mode.DelegateOperation(identity, ParcelRepository.RetentionMaintenanceBudget) : CancellableMaintenance(request.Action) || request.Action is "PlanSmDb12Continuation" or "ContinueSmDb12" ? mode.DelegateOperation(identity, TimeSpan.FromMinutes(10)) : mode.Delegate(identity)
             };
         }
         ProtectedDraftPayload.Write(path, Wire.Encode(request), false);
@@ -528,6 +530,23 @@ public static partial class ParcelStartupServices
         void RequireManagementMode() => LocalManagementMode.ForRoot(launch.DataRoot).Require();
         public Task<StartupClassification> ClassifyAsync() => core.ClassifyAsync();
         public Task<StartupMaintenanceDocument> ReadAsync() => core.ReadAsync();
+        public async Task<StartupChangePreview> PlanSmDb12ContinuationAsync()
+        {
+            RequireManagementMode();
+            if (!OperatingSystem.IsWindows()) return await core.PlanSmDb12ContinuationAsync();
+            return Wire.Decode<StartupChangePreview>(await ElevateAsync(new("PlanSmDb12Continuation", launch)) ?? throw new IOException("原数据接续计划缺失。"));
+        }
+        public async Task<StartupMaintenanceDocument> ContinueSmDb12Async(string expectedIdentity)
+        {
+            RequireManagementMode();
+            if (!OperatingSystem.IsWindows()) return await core.ContinueSmDb12Async(expectedIdentity);
+            // Follow Stage's transport: acknowledge the fixed operation, then read
+            // the document locally. A complete capability catalog is not a bounded pipe receipt.
+            await ElevateAsync(new("ContinueSmDb12", launch, expectedIdentity));
+            try { return await core.ReadAsync(); }
+            catch (Exception error)
+            { throw new InstallationOutcomeUnknownException("原数据接续已提交，但参数读回未完成；请关闭后重新打开核对原结果，原件和原请求保留。", error); }
+        }
         public async Task AdoptRestoreAsync(string backup, string restoredDataRoot, string expectedBackupHash, string expectedRegistrationHash)
         {
             RequireManagementMode();

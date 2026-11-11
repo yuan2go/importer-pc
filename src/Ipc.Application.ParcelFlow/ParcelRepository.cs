@@ -5,6 +5,7 @@ using Microsoft.Data.Sqlite;
 namespace Ipc.Application.ParcelFlow;
 
 internal enum RepositoryOpenPhase { OriginalRow, BeforeWritableOpen }
+public sealed record ParcelCallEvidence(Guid RuntimeId, string RequestId, DateTimeOffset StartedAt, DateTimeOffset CompletedAt, double ElapsedMs, int DeadlineMs);
 
 // Application owns SQL, aggregate semantics and the T1/T2/T3 transaction boundaries.
 public sealed partial class ParcelRepository : IDisposable
@@ -331,7 +332,7 @@ public sealed partial class ParcelRepository : IDisposable
         cmd.Parameters.AddWithValue("$id", id); cmd.Parameters.AddWithValue("$op", op.Id); cmd.Parameters.AddWithValue("$stage", stage.Request.Stage);
         cmd.Parameters.AddWithValue("$request", stage.Request.Id); cmd.Parameters.AddWithValue("$source", source); cmd.ExecuteNonQuery(); return id;
     }
-    public void StoreRaw(string occurrence, StageReply reply)
+    public void StoreRaw(string occurrence, StageReply reply, ParcelCallEvidence? call = null)
     {
         ExtensionStore.AtomicWrite(Path.Combine(rawRoot, occurrence + ".json"), reply);
         if (Boundary is not null)
@@ -344,12 +345,36 @@ public sealed partial class ParcelRepository : IDisposable
         cmd.Parameters.AddWithValue("$id", occurrence); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
         if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Receipt occurrence cannot be reused");
         RegisterReplyIdentity(OccurrenceRequest(occurrence, tx), reply, tx);
+        RecordReceiptCall(tx, occurrence, call, "ReceiptRawDurable", Wire.Hash(Wire.Encode(reply)));
         tx.Commit();
     }
-    public void NoReply(string occurrence)
+    void RecordReceiptCall(SqliteTransaction tx, string occurrence, ParcelCallEvidence? call, string name, string? rawHash = null)
     {
-        using var cmd = db.CreateCommand(); cmd.CommandText = "UPDATE parcel_receipts SET state='NoReply' WHERE id=$id AND state='Awaiting'";
-        cmd.Parameters.AddWithValue("$id", occurrence); cmd.ExecuteNonQuery();
+        if (call is null) return;
+        using var audit = db.CreateCommand(); audit.Transaction = tx;
+        audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) SELECT $at,$event,operation,$detail FROM parcel_receipts WHERE id=$id";
+        audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$id", occurrence); audit.Parameters.AddWithValue("$event", name);
+        audit.Parameters.AddWithValue("$detail", Wire.Encode(new
+        {
+            call.RuntimeId,
+            call.RequestId,
+            call.StartedAt,
+            call.CompletedAt,
+            call.ElapsedMs,
+            call.DeadlineMs,
+            OccurrenceId = occurrence,
+            RawSha256 = rawHash,
+            Meaning = "Observed local port call and receipt custody; not peer receipt or physical completion"
+        }));
+        audit.ExecuteNonQuery();
+    }
+    public void NoReply(string occurrence, ParcelCallEvidence? call = null)
+    {
+        using var tx = db.BeginTransaction();
+        using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='NoReply' WHERE id=$id AND state='Awaiting'";
+        cmd.Parameters.AddWithValue("$id", occurrence);
+        if (cmd.ExecuteNonQuery() == 1) RecordReceiptCall(tx, occurrence, call, "CallCompletedNoReply");
+        tx.Commit();
     }
     public void ValidateRawInventory()
     {
@@ -441,10 +466,10 @@ public sealed partial class ParcelRepository : IDisposable
             commandResult: new("Pending", "Command identity persisted; inspect business/configuration/receipt facts before a new command; this ID never re-executes", Revision + 1));
         Boundary?.Invoke("AfterCommandAdmitted");
     }
-    internal BusinessReceipt CompleteCommand(BusinessCommand c, BusinessReceipt result)
+    internal BusinessReceipt CompleteCommand(BusinessCommand c, BusinessReceipt result, object? evidence = null)
     {
         result = result with { Revision = Revision + 1 };
-        Commit(null, "CommandCompleted", Wire.Encode(new { c.Id, Result = result.Status }), command: c, commandResult: result);
+        Commit(null, "CommandCompleted", Wire.Encode(new { c.Id, Result = result.Status, Evidence = evidence }), command: c, commandResult: result);
         return result;
     }
     internal string[] PendingCommands()

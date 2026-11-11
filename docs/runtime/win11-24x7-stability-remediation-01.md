@@ -37,7 +37,11 @@ python scripts/stability-qualification.py collect --plan D:/stability/plan.json 
 python scripts/stability-qualification.py analyze --collection D:/stability/新24h目录 --database D:/backups/完整备份.db --verifier D:/releases/固定候选/app/Ipc.Assembly.exe --output D:/stability/分析.json
 ```
 
-没有独立来源证据时报告 `NOT_RECONCILED`；实际放置数、外部RCS接收请求/响应数及正确率为未知，不补零。只分析正常时间窗内、同一运行实例的输入，按输入关联的 OperationId/RequestId读取原作业与回执，绝不按条码把重复观察算成重复请求。备份时的结果标为 Snapshot；调用完成和HTTP响应须有同一运行实例、本时间窗的本地回执时钟证据，缺失单列，不能把时间窗后收到的结果算入本段。清理导致缺少明细时列出缺项，不从统计汇总猜配原件。人工命令、帧和来源实际件数不能由该输入账完整重建时仍须补证。
+没有独立来源证据时报告 `NOT_RECONCILED`；实际放置数、外部RCS接收请求/响应数及正确率为未知，不补零。分别读取相机输入账、持久人工命令及其审计、轮次、作业、冻结请求和原始回执，按 RuntimeId、RoundId、CommandId、OperationId 和 RequestId 关联，不按条码猜配。没有相机输入的纯人工窗口仍可有合法业务；身份或时钟证据缺失时明确列入 MissingAssociations，不补造关联。
+
+`BusinessEventsInWindow` 分别计相机接收/处置、人工命令接纳/决策、轮次开始/结束、请求准备、首次尝试、调用完成、原始回执落盘及结果应用，各用自己的实际发生时间入窗。窗口前准备、窗口内完成的调用计本窗完成；窗口内准备、窗后收到的回执不计本窗完成。`*-business-events.jsonl` 标明 WindowEvent、CrossWindowContext 和 TimeEvidenceMissing；Snapshot 字段只描述备份时最终状态。旧记录缺发送尝试的运行/时钟证据时，SendAttemptsInWindow 为未知，保留已知事实和缺项；不能从最终 Attempts 倒推出本窗发送数。
+
+正常端口调用的起止和单调耗时记在现有回执审计事务中；没有回包的本地调用也单独留证。原始回包保持原件，LocalClockEvidence 仍只用于原有时钟回拨证明，不把它当作所有调用必有的计时字段。RCS耗时只统计有同一原请求、运行和本窗完成证据的实际端口调用；轮次耗时来自同轮单调记录，缺失仍为未知。清理造成明细缺项时不从统计汇总补配；输入完成不等于RCS或物理完成。
 
 现有回环发生器每个位置使用唯一合成条码时，可明确增加 `--source-kind loopback-unique-code --source-events D:/stability/source-events.jsonl`，输出仅为 `SYNTHETIC_LOOPBACK_ONLY`。socket 写出不等于应用接收；缺失、重复、未写出、未处置及窗口边界差异单列。真实标签、同码重放和实际相机不能套用此关联。
 

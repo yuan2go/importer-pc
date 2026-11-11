@@ -35,7 +35,7 @@ public sealed class CoreRegression
     [TestMethod]
     [TestCategory("Core")]
     [DataRow("--backup-consistency", 66)]
-    [DataRow("--stability-analysis", 12)]
+    [DataRow("--stability-analysis", 23)]
     [DataRow("--industrial-recovery", 22)]
     [DataRow("--industrial-lifecycle", 76)]
     [DataRow("--industrial-rollback", 49)]

@@ -63,6 +63,7 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     // command is inspectable but is never replayed as a fresh camera event.
                     repository.Commit(null, "OperatorBarcodeSubmitted", Wire.Encode(new { Command = request, Evidence = evidence, Observation = observation }),
                         command: command, commandResult: new("Pending", "人工输入已持久接纳；结果尚待核对，禁止以新命令盲重发。", repository.Revision + 1));
+                    Interlocked.Increment(ref manualCommandsSubmitted);
                     activeOperatorCommands.Add(request.CommandId);
                     ObservationHandling handled;
                     try { handled = await ProcessTrustedObservationAsync(request.PositionId, observation, currentOperator, at, readers[position.ReaderDeviceId]).ConfigureAwait(false); }
@@ -71,7 +72,9 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     var result = new ParcelBarcodeReceipt(admitted is not null ? "Admitted" : handled.Input?.Outcome.ToString() ?? handled.Disposition.ToString(),
                         admitted is not null ? "人工输入已创建独立作业；RCS结果以该作业为准。" : handled.Reason,
                         admitted?.Id ?? handled.OperationId, observation.Id, repository.Revision + 1);
-                    repository.CompleteCommand(command, new("BarcodeResult", Wire.Encode(result), result.Revision));
+                    repository.CompleteCommand(command, new("BarcodeResult", Wire.Encode(result), result.Revision),
+                        new { RuntimeId = runtimeId, request.CommandId, handled.RoundId, result.OperationId, handled.Disposition, Meaning = "Input decision and durable handoff only; external result independent" });
+                    Interlocked.Increment(ref manualCommandsCompleted);
                     return result;
                 }
                 catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperatorBarcode"); throw; }

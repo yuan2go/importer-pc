@@ -7,7 +7,7 @@ using Ipc.Application.Sportmaster;
 using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
-internal static class StabilityAnalysis
+internal static partial class StabilityAnalysis
 {
     static void Check(bool ok, string detail) { if (!ok) throw new InvalidOperationException(detail); Console.WriteLine("PASS ANALYSIS " + detail); }
     public static async Task Run(string workspace, string root)
@@ -89,7 +89,7 @@ internal static class StabilityAnalysis
         using (var pairedReport = JsonDocument.Parse(File.ReadAllText(pairedOutput)))
             Check(pairedReport.RootElement.GetProperty("LatencyMilliseconds").GetProperty("left").GetProperty("input_queue_decision_and_handoff_ms").GetProperty("P95").GetDouble() == 110,
                 "anti-correlated phases yield measured paired P95=110ms, not summed phase P95=200ms");
-        foreach (var defect in new[] { "missing", "tampered", "version", "forged-schema", "application", "configuration", "path", "active", "wrong-runtime", "input-hash" })
+        foreach (var defect in new[] { "missing", "tampered", "version", "forged-schema", "application", "configuration", "path", "active", "input-hash" })
         {
             var variant = Path.Combine(root, defect + ".db"); CopySet(backup, variant);
             var manifestPath = variant + ".recovery/COMPLETED.json";
@@ -122,6 +122,7 @@ internal static class StabilityAnalysis
             Check(attempt.Exit != 0 && !File.Exists(refused) && !File.Exists(Path.Combine(root, defect + "-analysis-input-dispositions.jsonl")) &&
                 before.OrderBy(x => x.Key).SequenceEqual(Inventory(variant).OrderBy(x => x.Key)), defect + " refuses without source changes or publishing a successful/partial analysis");
         }
+        await VerifyManualBusinessEvidence(workspace, Path.Combine(root, "manual-business"));
     }
     static Dictionary<string, string> Inventory(string database) => new[] { database }.Concat(Directory.GetFiles(database + ".recovery", "*", SearchOption.AllDirectories))
         .Concat(new[] { database + "-wal", database + "-shm", database + "-journal" }.Where(File.Exists)).ToDictionary(p => p, p => Wire.FileHash(p));

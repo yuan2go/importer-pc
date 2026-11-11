@@ -35,6 +35,8 @@ public sealed partial class ParcelRuntime
             round.State,
             round.EndReason,
             round.ReadOutcome,
+            RuntimeId = runtimeId,
+            RoundElapsedMs = round.ClockRuntime == runtimeId ? StationTime.GetElapsedTime(round.StartedTicks).TotalMilliseconds : (double?)null,
             OperationIds = round.OperationId is { } id ? new[] { id } : []
         }),
             round: round, cycle: cycle, command: command);
@@ -61,12 +63,12 @@ public sealed partial class ParcelRuntime
         if (round.EndedAt is null) smCurrentRounds[round.PositionId] = round.Id;
         else if (smCurrentRounds.GetValueOrDefault(round.PositionId) == round.Id) smCurrentRounds.Remove(round.PositionId);
     }
-    SmParcelRound StartSmRound(string position, bool manual)
+    SmParcelRound StartSmRound(string position, bool manual, string? commandId = null)
     {
         var cycle = SmCycle(position) with { AutoSuppressed = true };
         var round = new SmParcelRound(Wire.Id(), position, 1, runtimeId, StationTime.GetUtcNow(), StationTime.GetTimestamp(),
             Effective.EffectiveReadTimeoutMs, configuration!.Current.Revision, Effective.BarcodeFilter, SmRoundState.Reading, [])
-        { Manual = manual, PresenceEvidence = cycle.Evidence };
+        { Manual = manual, PresenceEvidence = cycle.Evidence, CommandId = commandId };
         StoreSmRound(round, "RoundStarted", cycle); return round;
     }
     void EndSmRound(SmParcelRound round, string reason, bool physicallyRemoved = false, BusinessCommand? command = null, DateTimeOffset? removalAt = null)
@@ -311,7 +313,7 @@ public sealed partial class ParcelRuntime
             if (!manual && formal.Length == 0) return new(ObservationDisposition.NoFormalCandidates, selection.Outcome);
             var block = manual ? ManualInputReasons(position) : CameraAdmissionBlock(position) is { } reason ? new[] { reason.ToString() } : [];
             if (block.Length != 0) return RecordInput(Input(position, observation, ParcelInputOutcome.Blocked, string.Join("; ", block), selection: selection), "ObservationBlocked");
-            round = StartSmRound(position, manual);
+            round = StartSmRound(position, manual, observation.OperatorInput?.CommandId);
         }
         if (observation.InspectionSessionId is not null || observation.Kind != "Read" || !ExtensionSchema.IsId(observation.AdmissionId))
             return new(ObservationDisposition.Rejected, "Invalid observation kind or admission identity", RoundId: round.Id);

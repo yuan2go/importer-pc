@@ -136,7 +136,7 @@ static partial class Program
                     Click(success, "保存配置"); await Idle(success);
                     if (!receiptLost)
                     {
-                        Check(success.IsVisible && succeeded.Saves == 1 && succeeded.DisposeCalls == 1 && !(bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!,
+                        Check(success.IsVisible && ((TextBlock)type.BaseType!.GetField("Status", flags)!.GetValue(success)!).IsVisible && succeeded.Saves == 1 && succeeded.DisposeCalls == 1 && !(bool)type.GetProperty("ConfigurationSaved")!.GetValue(success)!,
                             "failed SDK cleanup retains the original modal and its saved candidate without publishing completion");
                         succeeded.FailDispose = false;
                         Descendants(success).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.SaveAndStart").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -156,7 +156,7 @@ static partial class Program
         pendingType.GetMethod("AfterMaintenance")!.Invoke(pending, [(Func<Task>)(() => Task.CompletedTask), (Func<Task>)(() => Task.CompletedTask)]);
         pending.Show(); pending.UpdateLayout();
         Check(Descendants(pending).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "退出", "启动供包台" }), "after offline maintenance the only choice is to start or exit");
-        Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible), "the post-maintenance choice has no large empty diagnostic box");
+        Check(!Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible && x.Name != "StartupBuildIdentity") && Descendants(pending).OfType<TextBox>().Any(x => x.IsVisible && x.Name == "StartupBuildIdentity"), "post-maintenance keeps source identity visible without a large empty diagnostic box");
         Capture("after-maintenance", pending); pendingType.GetProperty("AllowClose")!.SetValue(pending, true); pending.Close();
         var installerType = assembly.GetType("Ipc.Desktop.StartupSetupWindow", true)!;
         var businessVersion = BusinessCompatibility.VersionOf(typeof(Ipc.Application.Sportmaster.SportmasterFlow).Assembly);

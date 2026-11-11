@@ -167,7 +167,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     Action? refreshReview;
     internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
     IStartupMaintenance maintenance = null!;
-    bool maintenanceReleased, maintenanceClosing;
+    bool maintenanceReleased, maintenanceClosing, maintenanceReleasePending;
     StartupMaintenanceDocument? document;
     StartupConfigurationDraft? draft;
     StartupSavedDraft? savedDraft;
@@ -311,7 +311,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         });
         Action(RepairAction.Start, initialConfiguration ? "按此配置启动" : "重试正常启动", async () => { if (checkedInput != Input()) await CheckCandidate(); await StartReviewed(); });
         Action(RepairAction.Previous, "上一步", () => { if (initialConfiguration) parameterControl?.MovePrevious(); else SelectTask(selectedTask == RepairTask.Review ? RepairTask.Parameters : RepairTask.Directory); return Task.CompletedTask; });
-        var next = Action(RepairAction.Next, "下一步", async () =>
+        Action(RepairAction.Next, "下一步", async () =>
         {
             if (initialConfiguration)
             {
@@ -498,8 +498,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     async Task ReleaseMaintenanceAsync()
     {
         if (maintenanceReleased) return;
+        maintenanceReleasePending = true;
         if (maintenance is not null) await maintenance.DisposeAsync();
-        maintenanceReleased = true;
+        maintenanceReleased = true; maintenanceReleasePending = false;
     }
     async Task StartReviewed()
     {
@@ -626,7 +627,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         refreshReview?.Invoke(); UpdateActions();
         // Keep a partially saved first setup visible above the scrolling form;
         // a successful business CAS must not be presented as a failed check.
-        if (initialConfiguration) Status.Visibility = lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? Visibility.Visible : Visibility.Collapsed;
+        if (initialConfiguration) Status.Visibility = maintenanceReleasePending || lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? Visibility.Visible : Visibility.Collapsed;
         var focus = focusAfterOperation; focusAfterOperation = null;
         if (focus is not null) Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, focus);
     }
@@ -634,6 +635,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         if (!initialConfiguration) { base.OperationFailed(error); return; }
         diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails + "\n" + error + "\n" + Status.Text);
+        if (maintenanceReleasePending)
+        {
+            saveState.Text = lastSaveConfirmed ? "配置已保存；维护资源待释放" : "维护资源待释放";
+            Message((startupSaveUncertain ? "上次保存结果仍未确认。" : lastSaveConfirmed ? "业务配置已保存。" : "原配置和填写内容保留。") +
+                "维护服务尚未释放，原服务和窗口保留。处理原因后再次完成或关闭，将重试原服务。" + ChineseInterfaceText.ParameterMessage(error.Message));
+            refreshReview?.Invoke(); return;
+        }
         saveState.Text = error is UnauthorizedAccessException ? "需要重新验证" : startupSaveUncertain ? "保存结果未确认" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : savingCandidate ? "保存未完成" : "检查未通过";
         refreshReview?.Invoke();
     }
@@ -783,7 +791,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 review.Children.Add(new Expander { Header = "配置检查诊断详情", Content = diagnostic, Margin = new(0, 16, 0, 0) });
                 refreshReview = () =>
                 {
-                    state.Text = startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : SaveIsComplete ? "配置已保存，完成后自动检查并启动供包台。" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好尚未全部保存，请重试保存。本次不会重复提交业务配置。" : "检查填写内容并保存配置，完成后自动检查并启动。";
+                    state.Text = maintenanceReleasePending ? "维护资源尚未释放；处理原因后再次完成或关闭，原服务和保存结果保留。" : startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : SaveIsComplete ? "配置已保存，完成后自动检查并启动供包台。" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好尚未全部保存，请重试保存。本次不会重复提交业务配置。" : "检查填写内容并保存配置，完成后自动检查并启动。";
                     diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails);
                     sections.Children.Clear();
                     foreach (var section in StartupConfigurationFiles.ReviewSections(draft!))

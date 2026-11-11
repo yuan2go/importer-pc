@@ -84,6 +84,7 @@ static class ReadCadenceChecks
         h.Peer.ReplySlot = "";
         h.Api(h.Left).EnqueueNative(pixels, 102, [Symbol("SYNTH-CADENCE-A")]);
         await Idle(h, "left", baseline.Processed + 1);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.WcsUnknown));
         var op = (await h.App.SnapshotAsync()).Operations.Single();
         Check(op.State == ParcelState.WcsUnknown && h.Peer.Requests.Count == 1, "first current read after resume creates one request and retains an unknown response");
         var frozen = Wire.Encode(op.Wcs);

@@ -124,7 +124,7 @@ public sealed partial class SupplyStationPositionViewModel
         ParcelInputBlockReason.SoftwarePaused => ("供包已暂停", "确认现场后恢复供包，再重新上件"),
         ParcelInputBlockReason.ManagementOpen => ("管理中心正在使用", "关闭管理中心后再上件"),
         ParcelInputBlockReason.PositionDisabled => ("本位已停用或正在停用", "请启用本投递位后再上件"),
-        ParcelInputBlockReason.OperatorSessionExpired => ("操作员登录已失效", "请重新登录后再上件"),
+        ParcelInputBlockReason.OperatorSessionExpired => ("本站配置需要核对", "SM 不使用操作员登录，请进入管理中心核对本站配置"),
         ParcelInputBlockReason.PositionMaintenance => ("本位设备正在维护", "请等待设备恢复后再上件"),
         ParcelInputBlockReason.StationMaintenance => ("供包台正在保存设置或备份", "请等待操作结束后再上件"),
         ParcelInputBlockReason.StationStartingOrStopping => ("供包台尚未就绪", "请等待供包台启动完成"),

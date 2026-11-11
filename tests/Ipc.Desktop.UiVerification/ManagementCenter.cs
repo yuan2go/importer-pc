@@ -45,6 +45,8 @@ static partial class Program
         Check(clock.HorizontalAlignment == HorizontalAlignment.Right && clockRight > client.ActualWidth * .8 && clockRight <= client.ActualWidth - 8,
             "clock is right aligned in the brand-free header");
         var entry = (Button)window.FindName("ManagementCenterEntry");
+        Check(window.FindName("OperatorAccess") is null && entry.IsVisible,
+            "SM has no operator login entry and retains independent management-password access");
         Check(entry.TranslatePoint(new Point(0, entry.ActualHeight), navigation).Y >= navigation.ActualHeight - 12, "management entry is anchored at the bottom");
         Check(!window.IsNavigationCollapsed && navigation.ActualWidth == 120, "wide layout starts with the compact expanded navigation");
         var toggle = (Button)window.FindName("NavigationToggle");

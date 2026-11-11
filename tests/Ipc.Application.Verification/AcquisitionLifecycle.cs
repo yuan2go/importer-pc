@@ -130,14 +130,14 @@ static class AcquisitionLifecycle
         {
             Check(app.EmitReferenceAt("left", "slow", "0001", "slow-original"), "slow left original accepted");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
-            Check(app.EmitReferenceAt("left", "queued-one", "0001", "queue-1") && app.EmitReferenceAt("left", "queued-two", "0001", "queue-2"), "bounded left queue holds two original acquisitions while capture is in flight");
+            Check(app.EmitReferenceAt("left", "queued-one", "0001", "queue-1") && app.EmitReferenceAt("left", "queued-two", "0001", "queue-2"), "same-placement observations retain their own delivery evidence while capture is in flight");
             var waiting = Task.Run(() => app.EmitReferenceAt("left", "waiting-capacity", "0001", "waiting-capacity"));
-            await Wait(app, _ => app.WorkerProgress().Single(w => w.Position == "left").ProducerStage == "WaitingCapacity");
-            Check(!waiting.IsCompleted, "full left queue applies backpressure without inventing an overload rejection");
-            Check(left.RetainedAcquisitionCount == 4, "bounded lane preserves the active, two queued and one source-held original without locking image ownership reads");
-            Check(app.EmitReferenceAt("right", "independent", "0001", "right-original"), "right accepts while left capture and queue are blocked");
+            Check(await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "a held capture does not delay the next observation's handoff");
+            await Wait(app, _ => app.WorkerProgress().Single(w => w.Position == "left").Processed == 4 && left.RetainedAcquisitionCount == 1);
+            Check(left.RetainedAcquisitionCount == 1 && !factory.Release.Task.IsCompleted, "duplicate observations release their images while the original acquisition remains owned by its active capture");
+            Check(app.EmitReferenceAt("right", "independent", "0001", "right-original"), "right accepts while left capture remains in flight");
             await Wait(app, s => s.Operations.Any(o => o.PositionId == "right" && o.ImageReleased));
-            Check(right.RetainedAcquisitionCount == 0 && left.RetainedAcquisitionCount == 4, "right completes and releases independently of full left queue");
+            Check(right.RetainedAcquisitionCount == 0 && left.RetainedAcquisitionCount == 1, "right completes and releases independently of the left original capture");
             await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
             var before = await app.SnapshotAsync();
             var reconnect = app.ReconnectDeviceAsync(left.DeviceId);
@@ -145,7 +145,7 @@ static class AcquisitionLifecycle
             var during = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2));
             Check(!reconnect.IsCompleted && left.Epoch == before.Devices!.Single(x => x.DeviceId == left.DeviceId).Epoch, "left reconnect waits for in-flight capture while snapshots remain readable");
             factory.Release.TrySetResult();
-            Check(await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "source-held left original hands off when the consumer releases an earlier image and queue capacity");
+            Check(waiting.IsCompletedSuccessfully && await waiting, "the later handoff already completed before the original capture was released");
             Check((await reconnect).Status == "Reconnected", "left reader reconnect completes only after the original capture releases its lifecycle");
             var after = await app.SnapshotAsync();
             Check(after.Devices!.Single(x => x.DeviceId == right.DeviceId).Epoch == before.Devices!.Single(x => x.DeviceId == right.DeviceId).Epoch, "left reconnect does not change right epoch");

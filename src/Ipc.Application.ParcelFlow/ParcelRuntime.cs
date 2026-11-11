@@ -742,6 +742,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // Reserve the aggregate gate now, before the ingress worker releases
             // it. Dispatch then starts independently of subsequent observations;
             // a held RCS response cannot hold this position's input worker.
+            activeStages.Add(op.Id + ":CameraParcel");
             auxiliary.Add(ProcessCameraParcelAsync(op));
             return;
         }
@@ -760,7 +761,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             WriteRuntimeLog("作业", "相机包裹处理失败，原请求保留", new { OperationId = op.Id, op.PositionId, Error = error.ToString() }, "错误", op.Id);
             throw;
         }
-        finally { gate.Release(); }
+        finally { activeStages.Remove(op.Id + ":CameraParcel"); gate.Release(); }
     }
     async Task ProcessObservedParcelAsync(ParcelOperation op)
     {

@@ -189,8 +189,9 @@ public partial class ParcelViewModel
     bool SupportsNewKind(string kind)
     {
         var id = structuredBase?.ApplicationId ?? Snapshot?.ApplicationId;
+        if (id == "sportmaster") return false;
         if (kind == "login") return !CapabilityDrafts.Any(c => c.Kind == kind);
-        if (id == "sportmaster" || kind == "observation") return false;
+        if (kind == "observation") return false;
         if (kind is "weight" or "camera") return CapabilityDrafts.Count(c => c.Kind == kind) < (structuredBase?.Topology?.Positions.Length ?? 1) + 1;
         return kind is "plc" or "upload" or "integration" && !(id == "direct-plc" && kind == "integration") && !CapabilityDrafts.Any(c => c.Kind == kind);
     }

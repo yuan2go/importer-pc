@@ -30,27 +30,6 @@ public partial class SupplyStationWindow
         UpdateLayout();
         if (diagnosticObjects.TryGetValue(target.DeviceId ?? "shared", out var anchor)) { anchor.BringIntoView(new Rect(0, 0, 1, 1)); }
     }
-    void OperatorLogin_Click(object sender, RoutedEventArgs e)
-    {
-        var body = new StackPanel { Margin = new(20) };
-        body.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)));
-        body.Children.Add(new TextBlock { Text = "操作员账号" });
-        var subject = new TextBox(); subject.SetBinding(TextBox.TextProperty, new Binding(nameof(ViewModel.OperatorSubject)) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); body.Children.Add(subject);
-        body.Children.Add(new TextBlock { Text = "操作员口令" }); var proof = new PasswordBox(); body.Children.Add(proof);
-        var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap };
-        var actions = new WrapPanel(); var login = new Button { Content = "验证身份" }; var logout = new Button { Content = "登出" };
-        login.Click += async (_, _) => { var value = proof.Password; proof.Clear(); feedback.Text = "正在验证身份…"; await ViewModel.RunAsync(() => ViewModel.LoginAsync(value), "认证操作员"); feedback.Text = ViewModel.OperatorFeedback; };
-        logout.Click += async (_, _) => { feedback.Text = "正在登出…"; await ViewModel.RunAsync(ViewModel.LogoutAsync, "登出"); feedback.Text = ViewModel.OperatorFeedback; };
-        actions.Children.Add(login); actions.Children.Add(logout); body.Children.Add(actions);
-        var status = new TextBlock(); status.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.Session))); body.Children.Add(status);
-        body.Children.Add(feedback);
-        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, DataContext = ViewModel, Title = "操作员身份", Width = 520, Height = 440, WindowStartupLocation = WindowStartupLocation.CenterOwner };
-        var close = new Button { Content = "关闭", IsCancel = true, MinHeight = 44 }; close.Click += (_, _) => dialog.Close(); actions.Children.Add(close);
-        subject.MinHeight = proof.MinHeight = 44;
-        var visibleFeedback = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; dialog.Content = visibleFeedback;
-        dialog.Loaded += (_, _) => { if (string.IsNullOrEmpty(subject.Text)) subject.Focus(); else proof.Focus(); };
-        dialog.Closed += (_, _) => proof.Clear(); dialog.Show();
-    }
     void Diagnostics_Click(object sender, RoutedEventArgs e)
         => SetPage("diagnostics");
     FrameworkElement CreateDiagnostics()

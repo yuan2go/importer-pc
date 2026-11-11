@@ -23,7 +23,7 @@ static partial class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        if (args.Contains("--operator-administration")) { Console.Error.WriteLine("Unsupported verification argument; use --management-mode"); return 2; }
+        if (args.Contains("--operator-administration") || args.Contains("--login-session")) { Console.Error.WriteLine("Unsupported verification argument; use --management-mode for management authorization"); return 2; }
 #if P0_CRASH_HOOKS
         if (args.FirstOrDefault() == "--p0-dispatcher-child") return P0Dispatcher.Child(args[1]);
         if (args.Contains("--p0-crash-hooks")) return P0Dispatcher.Parent();
@@ -128,7 +128,6 @@ static partial class Program
                 else if (args.Contains("--hikrobot-sdk-editing")) await VerifyHikrobotSdkEditing(root, evidence, lines);
                 else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterExperience(root, evidence, lines, false, false); await VerifyParameterRefactor(root, evidence, lines, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
-                else if (args.Contains("--login-session")) await VerifyLoginSession(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--task-redesign")) await VerifyTaskRedesign(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--audit-performance")) await VerifyAuditPerformance(root, evidence, lines);

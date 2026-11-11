@@ -128,8 +128,8 @@ static partial class Program
         window.UpdateLayout();
         Check(((TextBlock)window.FindName("ActiveBlockingReasons")).IsVisible &&
             ((TextBlock)window.FindName("ActiveBlockingReasons")).Text.Contains("维护") && vm.WorkNotice.Contains("maintenance in progress") &&
-            ((Button)window.FindName("OperatorAccess")).IsVisible,
-            "workstation shows actionable human guidance and required login while preserving all original blockers");
+            window.FindName("OperatorAccess") is null,
+            "SM workstation preserves original blockers without exposing an operator login feature");
         Capture("workstation-blocked-login", window);
         probe.Project = null; await classicVm.RefreshAsync(); Capture("classic-1366", classic); classic.Close();
         await Fit(1100, 650); Capture("normal-1100");

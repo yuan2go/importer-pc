@@ -15,6 +15,7 @@ static partial class Program
         Check(Ipc.Platform.PresentationPreferences.ReadCueVolume("sportmaster") == 0, "new user preferences default to muted operator cues");
         var initial = new SportmasterFlow().InitialConfiguration();
         var seed = Ipc.Platform.Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        Check(initial.Login is null && seed.Login is null, "generated and packaged SM stations have no operator login dependency");
         string[] removed = ["request-id-base", "request-id-count", "specified-chute", "chute-code"];
         Check(new[] { initial, seed }.All(c => !c.Wcs!.Parameters.Keys.Intersect(removed).Any()),
             "generated and packaged new stations contain neither request ranges nor fixed-chute configuration");
@@ -41,6 +42,8 @@ static partial class Program
             Check(!rcsDraft.ProviderChangePending && Ipc.Platform.Wire.Encode(rcsDraft.Build()) == originalRcs,
                 "removed simulation proposal is cancelled without resetting the current RCS binding");
             var editor = new ParameterSettingsControl { FirstConfiguration = firstRun, Model = model };
+            Check(!editor.ShowPage(1, "作业登录") && !editor.NavigateTo("OperatorLogin") && !editor.NavigateTo("SessionLifetimeMs"),
+                "SM first configuration and daily settings expose no operator login service or session-duration settings");
             Check(!editor.NavigateTo("QueueCapacity") && !editor.NavigateTo("MaximumOperations") && !editor.ShowPage(1, "接收与等待限制"),
                 "SM first configuration and daily settings expose no parcel queue or pending-operation limit settings");
             var client = new Grid(); client.Children.Add(editor);

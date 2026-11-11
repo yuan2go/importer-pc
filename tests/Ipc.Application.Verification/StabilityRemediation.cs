@@ -51,30 +51,33 @@ static partial class StabilityRemediation
             Check(app.EmitReferenceAt("left", "first", "001", "first-event"), "first delivery accepted durably");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             Check(app.EmitReferenceAt("left", "second", "002", "second-event"), "second delivery accepted before first T3 fails");
-            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Pending'") == 2, "both successful handoffs already have persistent receipts");
+            await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Count(o => o.Wcs?.State == StageState.Dispatching) == 2 &&
+                app.WorkerProgress().Single(w => w.Position == "left").Processed == 2);
+            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
+                "both input receipts and independent original requests are durable before either T3 finishes");
             factory.Release.TrySetResult();
-            await Until(() => app.WorkerProgress().Single(x => x.Position == "left").State == "Faulted");
-            await Until(() => Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Interrupted'") == 1);
+            await app.FatalFailure.WaitAsync(TimeSpan.FromSeconds(5));
             Check(app.WorkerProgress().Single(x => x.Position == "right").State == "Waiting" && app.HasActiveWork,
-                "healthy waiter and failed worker are separately visible; aggregate active work is not health");
-            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 1,
-                "failed current input stays Pending, queued input becomes Interrupted, no invented second entity");
+                "request persistence failure remains fatal independently of the input worker's completed handoffs");
+            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
+                "T3 failure retains both input receipts and each parcel's original entity without deleting or merging either responsibility");
         }
         finally
         {
             factory.Release.TrySetResult();
             try { await app.DisposeAsync(); } catch (InvalidOperationException) { Check(!app.HasUnreleasedResources, "terminal failure reported after actual safe resource release"); }
         }
-        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        var recoveryFactory = new CommercialProductization.SyntheticFactory(launch);
+        await using var recovered = new ParcelRuntime(launch, new SportmasterFlow(), recoveryFactory) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await recovered.StartAsync(default); await ManagementModeFixture.Authorize(recovered);
         var snapshot = await recovered.SnapshotAsync();
-        Check(snapshot.Operations.Single().Wcs is { State: StageState.Accepted, Attempts: 1 } &&
+        Check(snapshot.Operations.Length == 2 && snapshot.Operations.All(o => o.Wcs is { State: StageState.Accepted, Attempts: 1 }) && recoveryFactory.Sends == 0 &&
             Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Interrupted'") == 0,
             "restart skips old camera inputs, reconciles original raw locally and never resends or replays queued input");
         var receipt = await Command(recovered, "IngressResponsibilities");
         using var json = JsonDocument.Parse(receipt.Reason);
         Check(json.RootElement.GetArrayLength() == 0, "old scan recovery leaves no operator input-inspection work");
-        Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 1,
+        Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
             "automatic skip clears only input barriers while preserving original request/attempt/entity ledger");
     }
     static async Task SlowMarker(string workspace, string path)
@@ -87,20 +90,21 @@ static partial class StabilityRemediation
         {
             Check(app.EmitReferenceAt("left", "slow-first", "001", "slow-first-event"), "slow-marker first left input");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            Check(app.EmitReferenceAt("left", "slow-second", "002", "slow-second-event"), "left second input fills its bounded lane");
+            Check(app.EmitReferenceAt("left", "slow-second", "002", "slow-second-event"), "left second input is admitted while its predecessor awaits RCS");
             waiting = Task.Run(() => app.EmitReferenceAt("left", "backpressure", "003", "waiting-event"));
-            await Until(() => app.WorkerProgress().Single(w => w.Position == "left").ProducerStage == "WaitingCapacity");
-            Check(!waiting.IsCompleted, "full left lane waits for capacity instead of losing the parcel or pausing the station");
+            Check(await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "a held predecessor does not block the third parcel's input handoff");
+            await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Count(o => o.PositionId == "left" && o.Wcs?.State == StageState.Dispatching) == 3);
             var watch = Stopwatch.StartNew();
             Check(app.EmitReferenceAt("right", "independent", "004", "right-event"), "other position handoff does not acquire the full lane lock");
             ParcelSnapshot s;
             do { s = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2)); if (s.Operations.Any(o => o.AdmissionId == "independent" && o.State == ParcelState.SlotResolved)) break; await Task.Delay(10); }
             while (watch.Elapsed < TimeSpan.FromSeconds(5));
-            Check(s.Operations.Any(o => o.AdmissionId == "independent" && o.State == ParcelState.SlotResolved) && !waiting.IsCompleted,
-                "right business reaches actual accepted raw/T3 while left queue capacity is still blocked");
+            Check(s.Operations.Any(o => o.AdmissionId == "independent" && o.State == ParcelState.SlotResolved) && !factory.Release.Task.IsCompleted,
+                "right business reaches actual accepted raw/T3 while all three left originals independently await their responses");
         }
         finally { factory.Release.TrySetResult(); }
-        Check(waiting is not null && await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "left handoff resumes once its original request releases queue capacity");
+        await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Count(o => o.PositionId == "left" && o.State == ParcelState.SlotResolved) == 3);
+        Check(waiting is { IsCompletedSuccessfully: true } && await waiting, "all three independent left results finish without replaying an input or releasing a business queue");
     }
     static async Task DiagnosticRecovery(string path)
     {

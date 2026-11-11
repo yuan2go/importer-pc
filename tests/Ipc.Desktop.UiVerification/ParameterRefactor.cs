@@ -32,7 +32,6 @@ static partial class Program
         }
         var configPath = Path.Combine(evidence, "config"); Directory.CreateDirectory(configPath);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { StationId = "native-inherit-" + Wire.Id() };
-        c = c with { CapabilityInstances = ParcelBindings.All(c).Append(new CapabilityBinding("login", "reference-login", "1.0.0", "operator-spare", "reference://operator", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "operator" })).ToArray() };
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
         var launch = new BusinessLaunch(configPath, Path.Combine(evidence, "data"), null, null);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -46,8 +45,7 @@ static partial class Program
         {
             (Category: "系统", Path: "StationCode"),
             (Category: "业务模块", Path: "BarcodePattern"),
-            (Category: "驱动", Path: vm.ReaderDrafts[0].Capability.InstanceId + "/Provider"),
-            (Category: "组件", Path: vm.CapabilityDrafts.Single(c => c.InstanceId == "operator-spare").InstanceId + "/Target")
+            (Category: "驱动", Path: vm.ReaderDrafts[0].Capability.InstanceId + "/Provider")
         };
         foreach (var target in categoryTargets)
         {
@@ -120,24 +118,16 @@ static partial class Program
         Check(!Descendants(control).OfType<Button>().Any(x => Equals(x.Content, "保存打开方式")), "daily window preference uses the shared bottom save action");
         Check(!vm.HasUnsavedDisplayPreferences && vm.Snapshot.Configuration.Revision == configRevision, "local window preference does not create a business revision or hidden display draft");
         Capture("parameters-display");
-        Check(control.NavigateTo("OperatorLogin"), "optional operator login belongs to business and has a native binding selector");
-        var login = Descendants(control).OfType<ComboBox>().Single(x => AutomationProperties.GetAutomationId(x) == "OperatorLogin");
-        var role = vm.ConfigurationRoles.Single(x => x.Role == "登录");
-        var maintenanceBefore = Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin);
-        login.SelectedItem = role.Choices.First(x => x.Capability is not null); window.UpdateLayout();
-        Check(vm.ParameterEditor.HasOperatorLogin && control.NavigateTo("SessionLifetimeMs") && Wire.Encode(vm.BuildStructuredConfiguration().MaintenanceLogin) == maintenanceBefore, "selecting operator login reveals its session policy without creating the removed maintenance role");
-        login.SelectedItem = role.Choices.First(x => x.Capability is null); window.UpdateLayout();
-        Check(!vm.ParameterEditor.HasOperatorLogin && !control.NavigateTo("SessionLifetimeMs"), "unbinding operator login hides only the inapplicable session policy");
-        Capture("parameters-login");
-        vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields();
-        Check(vm.ParameterEditor.Issues.Any(i => i.Path == "QueueCapacity"), "complete validation retains the real invalid queue field");
+        Check(!control.NavigateTo("OperatorLogin") && !control.NavigateTo("SessionLifetimeMs"), "SM exposes no operator login or operator session policy");
+        days.Text = "bad"; vm.ParameterEditor!.ValidateFields();
+        Check(vm.ParameterEditor.Issues.Any(i => i.Path == "DiagnosticLogDays"), "complete validation retains the real invalid retention field");
         control.ShowReview();
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); window.UpdateLayout();
-        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("扫码消息缓冲上限") && !text.Text.Contains("QueueCapacity"));
+        var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("日志保留天数") && !text.Text.Contains("DiagnosticLogDays"));
         Check(error.IsVisible && error.IsEnabled, "the current check-results page exposes the real field-location action");
         error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
-        Check(Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetAutomationId(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
-        Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();
+        Check(days.IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects data settings and focuses the invalid field while preserving barcode inputs");
+        Capture("parameters-error"); days.Text = "14"; vm.ParameterEditor.ValidateFields();
         foreach (var size in new[] { (1366d, 768d), (900d, 640d), (800d, 420d) })
         {
             window.Width = size.Item1; window.Height = size.Item2; window.UpdateLayout();

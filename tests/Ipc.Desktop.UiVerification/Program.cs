@@ -123,6 +123,8 @@ static partial class Program
                 else if (args.Contains("--installer-first-run-ui")) { await VerifyInstallerFirstRunUi(root, evidence, lines); await VerifyMaintenanceProgressNative(evidence, lines); }
                 else if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
                 else if (args.Contains("--management-mode")) await VerifyOperatorAdministration(root, evidence, lines);
+                else if (args.Contains("--complete-backup-ui")) await VerifyCompleteBackupUi(root, evidence, lines);
+                else if (args.Contains("--management-close-read-race")) await VerifyManagementCloseReadRace(root, evidence, lines);
                 else if (args.Contains("--debug-batch-actions")) await VerifyDebugBatchActions(root, evidence, lines);
                 else if (args.Contains("--startup-read-failure")) await VerifyStartupReadFailure(evidence, lines);
                 else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);

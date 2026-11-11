@@ -38,7 +38,8 @@ public partial class SupplyStationWindow
         var body = new StackPanel();
         body.Children.Add(ProductText("备份和诊断导出在软件运行中完成；恢复备份、换机、修复及卸载需先完全停止软件。"));
         var actions = new WrapPanel();
-        actions.Children.Add(ProductButton("创建完整备份…", CreateProductBackup));
+        var backupAction = ProductButton("创建完整备份…", CreateProductBackup);
+        System.Windows.Automation.AutomationProperties.SetAutomationId(backupAction, "CompleteBackup.Diagnostic"); actions.Children.Add(backupAction);
         actions.Children.Add(ProductButton("导出诊断包…", ExportProductDiagnostics));
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);

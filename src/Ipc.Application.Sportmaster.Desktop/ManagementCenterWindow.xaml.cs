@@ -40,11 +40,12 @@ public partial class ManagementCenterWindow : Window
     public void SetClosing(bool value)
     {
         IsEnabled = !value;
-        if (value) { closeFailure = null; AuthorizationStatus.Text = "正在结束管理操作，请稍候…"; System.Windows.Automation.AutomationProperties.SetItemStatus(AuthorizationStatus, "Closing"); }
+        if (value) { closeFailure = null; AuthorizationStatus.ToolTip = null; AuthorizationStatus.Text = "正在结束管理操作，请稍候…"; System.Windows.Automation.AutomationProperties.SetItemStatus(AuthorizationStatus, "Closing"); }
     }
-    public void ShowCloseFailure(string reason)
+    public void ShowCloseFailure(string reason, string detail)
     {
         AuthorizationStatus.Text = closeFailure = "管理窗口尚未关闭，原资源及未保存设置保留。请处理原因后再次关闭：" + reason;
+        AuthorizationStatus.ToolTip = detail;
         System.Windows.Automation.AutomationProperties.SetItemStatus(AuthorizationStatus, "CloseFailed");
     }
     void Navigate_Click(object sender, RoutedEventArgs e) => navigate((string)((Button)sender).Tag);

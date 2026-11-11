@@ -161,7 +161,7 @@ public partial class SupplyStationWindow
             await ViewModel.RefreshManagementModeAsync();
             centerCloseReady = true; center.Close();
         }
-        catch (Exception error) { center.ShowCloseFailure(ChineseInterfaceText.ParameterMessage(error.Message, "资源释放或结果核对未完成。")); }
+        catch (Exception error) { center.ShowCloseFailure(ChineseInterfaceText.ParameterMessage(error.Message, "资源释放或结果核对未完成。"), Ipc.Platform.DiagnosticText.Protect(error.ToString())); }
         finally { centerClosing = false; center.SetClosing(false); }
     }
     async void Logs_Click(object sender, RoutedEventArgs e)

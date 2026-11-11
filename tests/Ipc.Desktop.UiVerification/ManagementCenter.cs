@@ -161,7 +161,9 @@ static partial class Program
         CaptureInternal(evidence, "management-center-locked", center, lines);
         _ = center.Dispatcher.BeginInvoke(new Action(() => Click(center, "验证管理密码"))); login = await LoginDialog();
         Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
-        Click(login, "进入管理中心"); await Until(() => vm.IsManagementMode);
+        // The grant is published before the modal dialog returns; wait until
+        // the operator can actually interact with the management window again.
+        Click(login, "进入管理中心"); await Until(() => vm.IsManagementMode && !login.IsVisible);
         Check(maintenance.IsEnabled && vm.HasUnsavedConfiguration, "reauthentication restores the same unsaved editor");
         await SetClient(center, 800, 420); CaptureInternal(evidence, "management-center-800", center, lines);
         Click(center, "调试");
@@ -175,7 +177,7 @@ static partial class Program
         _ = center.Dispatcher.BeginInvoke(new Action(() => Click(center, "验证管理密码"))); login = await LoginDialog();
         Descendants(login).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = password;
         Click(login, "进入管理中心");
-        await Until(() => vm.IsManagementMode && debug.IsLoaded && active.GetValue(debug) is true);
+        await Until(() => vm.IsManagementMode && !login.IsVisible && debug.IsLoaded && active.GetValue(debug) is true);
         Check(vm.Snapshot.Operations.Count() == requestCount, "debug reauthentication restarts the same control without creating requests");
         Click(center, "关闭"); await Until(() => !center.IsVisible && window.IsEnabled);
         Check(!vm.IsManagementMode && vm.SelectedPage == "workstation" && vm.HasUnsavedConfiguration && vm.Snapshot.RuntimeId == runtimeId, "closing ends authorization, preserves the draft and returns to the same workstation");

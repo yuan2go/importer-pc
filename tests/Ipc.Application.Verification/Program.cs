@@ -24,6 +24,7 @@ if (args.Contains("--sm-db12-crash-child")) { var i = Array.IndexOf(args, "--sm-
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-round-lifecycle")) { await Ipc.Verification.SmRoundLifecycle.Run(workspace, root); return; }
+if (args.Contains("--sm-dispatch-resources")) { await SmDispatchResources.Run(workspace, root); return; }
 if (args.Contains("--sm-db12-continuation")) { await Ipc.Verification.SmDb12ContinuationChecks.Run(workspace, root); return; }
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;

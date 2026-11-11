@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using Ipc.Platform;
+using Ipc.Application.Contracts;
 
 namespace Ipc.Application.ParcelFlow;
 
@@ -75,6 +76,7 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
             Presentation = PresentationProgress(),
             Workers = WorkerProgress(),
             ManualCommands = new { Submitted = Interlocked.Read(ref manualCommandsSubmitted), Completed = Interlocked.Read(ref manualCommandsCompleted), Meaning = "Durable command acceptance/decision; not RCS completion" },
+            RcsDispatch = (ports?.Wcs as IWcsDispatchResources)?.DispatchProgress,
             Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new
             {

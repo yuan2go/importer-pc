@@ -8,6 +8,8 @@ public sealed partial class ParcelRuntime
     {
         var key = op.Id + ":" + kind;
         if (!activeStages.Add(key)) return operations[op.Id];
+        IWcsDispatchPermit? dispatchPermit = null;
+        FrozenRequest? reservedRequest = null;
         try
         {
             op = operations[op.Id];
@@ -30,6 +32,29 @@ public sealed partial class ParcelRuntime
             }
             var port = PortFor(op, kind);
             if (!PortMaintenanceClear(port)) return op;
+            if (Id == "sportmaster" && kind == ParcelStage.Wcs && !query && port is IWcsDispatchResources resources)
+            {
+                reservedRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
+                using var wait = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token, IsDebugRequest(op) ? Management.Require() : CancellationToken.None);
+                wait.CancelAfter(definition.RequestTimeoutMs(op, kind));
+                if (op.RoundId is not null) smSendWaits.Add(op.Id, wait);
+                var waitingAt = System.Diagnostics.Stopwatch.GetTimestamp();
+                WriteRuntimeLog("RCS请求", "等待发送资源", new { OperationId = op.Id, op.RoundId, op.PositionId, RequestId = stage.Request.Id, AttemptStarted = false });
+                try
+                {
+                    dispatchPermit = await ExternalPortAsync(port, () => resources.ReserveDispatchAsync(reservedRequest, wait.Token)).ConfigureAwait(false);
+                    WriteRuntimeLog("RCS请求", "发送资源已就绪", new { OperationId = op.Id, op.RoundId, op.PositionId, RequestId = stage.Request.Id, WaitMs = System.Diagnostics.Stopwatch.GetElapsedTime(waitingAt).TotalMilliseconds, Meaning = "Local permit only; final round check and attempt have not occurred" });
+                }
+                catch (Exception error) when (error is OperationCanceledException or IOException or TimeoutException)
+                {
+                    op = operations[op.Id];
+                    if (stopping.IsCancellationRequested || !SmRoundOwns(op)) return op;
+                    op = StageFailure(op, kind, GetStage(op, kind)!, "未取得发送资源，本件尚未发送；请按本位提示处理包裹后重新上件。");
+                    Save(op, "SendResourcesUnavailable", Wire.Encode(new { RuntimeId = runtimeId, OperationId = op.Id, op.RoundId, RequestId = stage.Request.Id, AttemptStarted = false, Error = error.ToString() }));
+                    return op;
+                }
+                finally { if (op.RoundId is not null) smSendWaits.Remove(op.Id); }
+            }
             CapabilityHealth health;
             try { health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
             catch (OperationCanceledException) when (stopping.IsCancellationRequested)
@@ -49,7 +74,7 @@ public sealed partial class ParcelRuntime
             if (stopping.IsCancellationRequested) return op;
             var deliveryAuthority = query || IsDebugRequest(op) ? Management.Require() : CancellationToken.None;
             // Adapter dictionaries are mutable; never expose the owned original intent.
-            var deliveryRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
+            var deliveryRequest = reservedRequest ?? Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
             if (!query)
             {
                 if (stage.State != StageState.Prepared || stage.Attempts != 0) throw new InvalidOperationException("Only a never-attempted prepared intent can be dispatched");
@@ -120,7 +145,8 @@ public sealed partial class ParcelRuntime
                     {
                         return kind switch
                         {
-                            ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                            ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) :
+                                dispatchPermit is not null ? await dispatchPermit.SendAsync(budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
                             ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
                             ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
                             ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(deliveryRequest, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
@@ -228,7 +254,7 @@ public sealed partial class ParcelRuntime
             LogRcsResult(op, kind, receiptStartedTicks, query, callMs);
             return op;
         }
-        finally { activeStages.Remove(key); }
+        finally { dispatchPermit?.Dispose(); activeStages.Remove(key); }
     }
     void LogRcsResult(ParcelOperation operation, ParcelStage kind, long startedTicks, bool query, double? callMs)
     {

@@ -9,6 +9,7 @@ public sealed partial class ParcelRuntime
     readonly Dictionary<string, SmPositionCycle> smCycles = [];
     readonly Dictionary<string, CameraOriginalImage> smRoundPictures = [];
     readonly HashSet<string> smExecutions = [];
+    readonly Dictionary<string, CancellationTokenSource> smSendWaits = [];
     // Rounds can end before HTTP finishes. Bound retained tasks per position so
     // a stalled peer cannot grow memory indefinitely or consume the other lane.
     const int MaximumSmExecutionsPerPosition = 128;
@@ -93,12 +94,15 @@ public sealed partial class ParcelRuntime
             // No cancellation is invented after T2. A never-attempted intent can
             // be closed locally without modifying its original frozen identity.
             if (op.Wcs is null || op.Wcs is { Attempts: 0, State: StageState.Prepared })
+            {
+                if (smSendWaits.TryGetValue(op.Id, out var wait)) wait.Cancel();
                 operation = op with
                 {
                     State = ParcelState.Abandoned,
                     Reason = "Round ended before first RCS attempt; no dispatch",
                     Wcs = op.Wcs is { } wcs ? wcs with { State = StageState.Cancelled } : null
                 };
+            }
         }
         StoreSmRound(ended, "RoundEnded", cycle, operation, command);
         if (round.OperationId is { } released) releasedPlacements.Add(released);

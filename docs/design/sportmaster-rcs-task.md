@@ -1,39 +1,11 @@
-> 历史设计与验证。当前 SM 的取格口合同和操作见[现行说明](../runtime/sportmaster-rcs-task.md)。
+# Sportmaster RCS 取格口合同
 
-> 2026-10-26当前超时与异常展示增量见[工作包](../archive/work-packages/WP-IPC-RCS-TIMEOUT-ERRORS-01.md)：1.3.4增加组件请求超时、拆包/message提示。用户已确认明确超时后立即允许新扫码申请；原Unknown请求及记录保留，其他未知结果守卫保持。下文旧版本及测试范围保持历史身份。
+SM 使用内置 RCS HTTP 客户端，不配置指定格口、请求编号范围或本地模拟提供者。所有新请求由 RCS 分配格口，固定 `specifiedChute=false`、`chuteCode=null`；无可用格口策略通过 `noDestToExp` 冻结到原报文。
 
-> 心跳 `sorter.task.station_heartbeat` 默认1秒、组件参数可改；响应按本站相机编码展示小车号和状态，只作提示、不限制投包。当前编码映射和响应核对规则见[心跳说明](../runtime/rcs-heartbeat-01.md)。Query仍为false，旧请求原件不改。
+Application 在冻结请求前按 Unix 微秒时间及永久编号下限分配 requestId，taskId 使用同一数字。编号所有权与请求同事务持久化，重启、归档、清理及恢复不复用。source 按实际来源为 BAR、MANUAL 或 PDA；人工输入不依赖相机在线或已配置，不伪造物理身份。相机编码与心跳映射共用配置。
 
-# Sportmaster RCS 分拣任务服务 · 01
+一次放置只创建一次请求，重复观察不重发。原请求的目标、报文、参数、编号及原始回执是业务事实，不用当前配置重写。结果未知保留 Unknown；确认离位且调用及回执责任收口后转历史保管，合法下一件使用独立请求。没有权威查询合同，不盲重发或用 POST 伪造查询。
 
-2026-10-19用户已确认实现、必要验证、提交推送及main PR。开工基线main `4afe2afacde9e2acab7648fff3440fa3cc331b6e`；当时PR26并行，执行中其已由独立授权合入main，本分支整合经过见末段。命名 `SportmasterRcsTaskService` / `sportmaster-rcs-task`。本增量继承22与质量闭环01，原D/RV、Supply CAPI含义及历史报告不改。
+响应须核对原 requestId、command、唯一结果 index 和身份。真实业务拒绝显示原消息；超时、错配、无效响应或成功但格口为空保持未确认。心跳状态只提示小车状态，不代表本件业务接受或物理完成。
 
-## 组件与事务
-
-新独立集成程序集实现 `IWcsExtension`、`IWcsPort`，由既有签名安装、配置修订、受控重启链装配。HTTP不进入业务/UI/基座。首项只实现POST目标地址上的 `sorter.task.dest_request`；不实现RCS服务器、PLC控制、认证/查询/拆包提交或物理完成。
-
-`IWcsRequestPreparer` 是纯序列化的可选伴随端口：使用实际T1准备时的持久编号边界和冻结配置，生成数字requestId与完整UTF8 JSON；T1保存原JSON/hash/目标/合同/包后T2只发送原字节。当前 SM 由 Application 使用 Unix 微秒时间及永久编号下限自动分配数字 ID，不再配置编号范围；SQL7 的永久唯一 Owner 账与原 WCS 请求同事务提交，归档不删除编号归属。恢复保留原编号下限、已登记范围的退役证据和原请求，旧请求 ID/原报文不变。不得同时运行克隆数据根。未提供上游幂等保证，不声称全局恰好一次。
-
-地址由binding.Target明确给出（路径 `/rcs/sorter/api`）。`locale` 固定为 `zh_CN`。取格口的 `source` 取自本次输入，读码器为 `BAR`、人工录入为 `MANUAL`、PDA 扫码为 `PDA`；心跳使用 `BAR`。仓 ID、生产线 ID、供包台编号及左右相机编码来自完整候选。每次请求数量固定为 1。默认由 RCS 分配格口（`specifiedChute=false`、`chuteCode=null`）；指定时发送布尔 `true` 和完整格口编码字符串。SM 固定使用内置 RCS HTTP 客户端，不提供本地模拟连接方式。
-
-作业页在同一个条码框接收人工录入和键盘式 PDA 扫码，根据本次按键节奏自动标记来源。来源按本次请求冻结。
-
-新取格口请求在 `params.taskId` 发送 JSON 整数，复用本次的 `requestId`。左右投递位共用本站的持久编号账，重启后继续分配。已冻结的旧请求保留原报文，按原守卫处理。
-
-## 回包与业务
-
-保留HTTP状态、响应原始字节base64/hash及类型化结果。匹配requestId、唯一index=1、command和success；缺失/歧义/非法结构不推断成功。success=true必须有有效格口；保留taskId、skuId与可空尺寸重量。NEED_UNPACK保留barcode、skuId、scanQty、所有chutes（含remaining=0及未知phase原值），进入独立UnpackRequired状态，本位等待现有受守卫的检查移除动作，不自动下一件、不代发拆包命令。其它success=false保留code/message/args为业务拒绝。HTTP错误/超时/断连/非法JSON/关联错误保持Unknown，不重试/重定向/用POST假查询。
-
-共享StageReply增加可省略的目的地结果及HTTP原件，旧参考回执序列化字节不变。整合main PR26/28后新数据库语义6追加迁移，SQL1-5原样继承；DB4/5仍按main已获授权的raw核验/原请求核对链保留恢复能力，DB2/3原未结门禁不改；旧宿主拒读6。公共契约精确指纹改变，旧包不重签覆盖。
-
-## 验证与公开边界
-
-必要基线/定向HTTP夹具覆盖三种结果、空字段、关联/结构/HTTP失败、超时、双位并行、原请求持久化、重启Unknown无重发、拆包本位阻断及历史/迁移；实际签名包装配和选装portable发布启动。Windows仅交叉构建，实际Windows/真实RCS/设备/现场分别NOT_RUN/BLOCKED。测试只用合成标识，不复制用户接口全文或示例业务标识，不上传客户原稿/凭据/真实地址。
-
-编号归属在实际T1提交，准备失败不外呼；范围耗尽/退役须暂停检查原实体并沿原配置账切换外部分配的新范围。旧格式数字意图只读预检后回填唯一Owner账，矛盾不先写未来reader标记。范围耗尽或准备校验失败只持久阻断原实体，Wcs意图/attempt仍未创建；可暂停检查并本地处置后再受控修改配置，不使输入worker崩溃。
-
-2026-10-19执行中main推进至baac260，PR26/28已合并；继承其SQL5接收责任、原件查询/缺件保管及发布链。RCS追加SQL6，恢复主投影保持UnpackRequired，不因旧业务拒绝投影释放本位。初轮4c9d51c/组件1.0.0为历史候选；整合组件采用新不可变1.0.1，未改写旧包。
-
-并发整合兼容说明：当前CLI recover-legacy-receipt显式迁移至Parcel DB6；内部API默认DB5调用保持兼容。两者均保留永久回复身份、持久Query原件依据和完整备份，未清原raw/图像/包责任；普通启动在任何未来reader标记前拒绝DB2–5未结责任。原SQL1–5和历史发布指令按其固定版本保留。
-
-审查03执行增量：当前契约ABI1.8.0、业务1.2.7及DB7；SQL1～6原字节保留。恢复/编号语义变化要求旧DB6读者拒读7。普通DB2～6未结先匹配发布清偿；专用custody CLI选择7，旧API默认5。原RCS合同未新增Query或人工成功清责能力。
+完整操作及测试入口见[内置 RCS](../runtime/sportmaster-rcs-task.md)和[心跳](../runtime/rcs-heartbeat-01.md)。历史版本、迁移及验证仅保留于 Git 和 archive，不作为当前格式或现场已通过的证据。

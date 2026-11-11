@@ -22,6 +22,14 @@ static class ParcelCli
         if (map["--action"].StartsWith("extension-", StringComparison.Ordinal))
             throw new NotSupportedException("SM当前全部使用内置驱动和组件，外置扩展已停用。");
 #endif
+        if (map["--action"] == "verify-analysis-backup")
+        {
+            using var budget = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            try { Console.WriteLine(Wire.Encode(ParcelRecovery.InspectAnalysisBackup(map["--file"], ParcelAssembly.Definition(), budget.Token))); }
+            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or OperationCanceledException or Microsoft.Data.Sqlite.SqliteException)
+            { Console.Error.WriteLine(Wire.Encode(new { Status = "BackupRefused", Reason = error.Message })); Environment.ExitCode = 2; }
+            return true;
+        }
         if (map["--action"] == "installed-location")
         {
             Console.WriteLine(Wire.Encode(DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ParcelAssembly.Definition().Id)));

@@ -137,7 +137,7 @@ public sealed partial class ParcelRepository
 public static partial class ParcelRecovery
 {
     internal static void CreateBackup(string directory, string destination, ParcelConfiguration effective, ParcelConfiguration? pending,
-        long databaseBytes, Action<string> backupDatabase, Action<string, ParcelConfiguration> registerBackup, Action? requireAuthority = null, CancellationToken cancellationToken = default, MaintenanceExecution? execution = null, bool finalOperation = true)
+        long databaseBytes, Action<string> backupDatabase, Action<string, ParcelConfiguration> registerBackup, Action? requireAuthority = null, CancellationToken cancellationToken = default, MaintenanceExecution? execution = null, bool finalOperation = true, Action<string>? boundary = null)
     {
         requireAuthority?.Invoke();
         destination = Path.GetFullPath(destination); directory = Path.GetFullPath(directory);
@@ -153,6 +153,7 @@ public static partial class ParcelRecovery
         names.AddRange(RecoveryFiles.MaintenanceEvidence(directory, cancellationToken));
         if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
         RecoveryFiles.ValidateNames(directory, names, cancellationToken);
+        boundary?.Invoke("Inventory");
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n), cancellationToken), StringComparer.Ordinal);
         var bytes = checked(databaseBytes + names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length) + RecoveryFiles.MaximumManifestBytes);
         if (!ParcelStorageVolume.Plan(destination, bytes, effective.Retention?.MinimumFreeBytes ?? 67108864).Fits) throw new IOException("Backup requires database/custody capacity plus manifest and configured reserve");
@@ -160,6 +161,7 @@ public static partial class ParcelRecovery
         registerBackup(destination, effective); if (pending is not null) registerBackup(destination, pending);
         requireAuthority?.Invoke(); execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase);
         backupDatabase(destination);
+        boundary?.Invoke("DatabaseCopied");
         long copiedBytes = 0; var totalBytes = names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory, n)).Length);
         execution?.Report(MaintenanceStage.CopyingCustody, 0, totalBytes);
         foreach (var name in names)
@@ -170,6 +172,7 @@ public static partial class ParcelRecovery
                 count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingCustody, copiedBytes, totalBytes); });
         }
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
+        boundary?.Invoke("CustodyCopied");
         var manifest = new ParcelRecoveryManifest(effective.ApplicationId, Path.GetFileName(destination), Wire.FileHash(destination, cancellationToken), RecoveryFiles.Inventory(recovery, cancellationToken), DateTimeOffset.UtcNow,
             "Isolated original-deployment restore; reconcile external effects before admission; retire original numeric ranges");
         if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");

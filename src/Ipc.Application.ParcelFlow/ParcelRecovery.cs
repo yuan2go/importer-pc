@@ -20,6 +20,10 @@ public static partial class ParcelRecovery
     internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default)
     {
         token.ThrowIfCancellationRequested(); source = Path.GetFullPath(source); authority?.Invoke();
+        RecoveryFiles.RequireOrdinaryAncestors(source);
+        foreach (var suffix in new[] { "-wal", "-shm", "-journal" })
+            if (File.Exists(source + suffix) || Directory.Exists(source + suffix))
+                throw new InvalidDataException("完整离线备份不得带活动数据库侧文件");
         if (File.GetAttributes(source).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked database backup is unsafe");
         var recovery = source + ".recovery";
         var manifestPath = RecoveryFiles.Resolve(recovery, "COMPLETED.json");
@@ -35,7 +39,7 @@ public static partial class ParcelRecovery
         if (!ExtensionSchema.IsId(manifest.Application) || manifest.Database != Path.GetFileName(source) || Wire.FileHash(source, token) != manifest.DatabaseHash ||
             manifest.Files is null || !manifest.Files.ContainsKey("configuration.json") || manifest.Files.Count > RecoveryFiles.MaximumFiles || !ExtensionSchema.IsHash(manifest.DatabaseHash))
             throw new InvalidDataException("Incomplete or changed backup custody manifest");
-        _ = ParcelRepository.ReadStorageVersion(source, manifest.Application);
+        _ = ParcelRepository.ReadStorageVersion(source, manifest.Application, immutable: true);
         foreach (var file in manifest.Files)
         {
             authority?.Invoke();

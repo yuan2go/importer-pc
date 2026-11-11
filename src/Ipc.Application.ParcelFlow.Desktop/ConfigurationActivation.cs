@@ -7,7 +7,7 @@ public partial class ParcelViewModel
     public Func<Task>? RequestActivationAsync { get; set; }
     public Func<Task>? RequestRetentionAsync { get; set; }
     public string BackupStatusText => !IsManagementMode ? "进入管理模式后查看备份状态。" : Snapshot?.BackupScheduleStatus is not { } status ? "尚未取得备份运行状态；计划保存不等于备份成功。" :
-        "当前运行计划：" + (status.Enabled ? "已启用" : "已关闭") + " · " + (status.Outcome == "BackupCreated" ? "最近检查成功" : status.Outcome.StartsWith("Failed:", StringComparison.Ordinal) ? "最近检查失败" : status.Outcome.StartsWith("Pending:", StringComparison.Ordinal) ? "等待执行条件" : "尚未执行") +
+        "当前运行计划：" + (status.Enabled ? "已启用" : "已关闭") + " · " + (status.Outcome == "BackupCreated" ? "最近检查成功" : status.Outcome == "ScheduleStateFault" ? "计划状态故障，已停止" : status.Outcome == "ResultUnconfirmed" ? "结果未确认" : status.Outcome == "Rejected" ? "本次备份未受理" : status.Outcome == "Cancelled" ? "本次备份已取消" : status.Outcome.StartsWith("Running:", StringComparison.Ordinal) ? "正在备份" : status.Outcome.StartsWith("Failed:", StringComparison.Ordinal) ? "最近检查失败" : status.Outcome.StartsWith("Pending:", StringComparison.Ordinal) ? "等待执行条件" : "尚未执行") +
         "\n最近检查：" + (status.CheckedAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "无") + " · 下次到期：" + (status.NextDue?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "无") +
         "\n最近成功：" + (status.LastSuccessfulAt?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "尚无成功记录") + "\n成功位置：" + (status.LastSuccessfulBackup ?? "尚无") +
         "\n当前目录：" + status.Directory + " · 份数上限：" + status.MaximumSets + "；达到上限停止新增，保留原恢复集。\n" + status.Detail;

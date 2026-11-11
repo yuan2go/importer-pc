@@ -1,10 +1,11 @@
 {
   "TargetHardware": "REQUIRED: actual 4-core / 8 GiB IPC, disk/NIC/driver/Windows build and maintenance window",
-  "Combination": "REQUIRED: frozen application, TCP or exact SDK package, real or synthetic RCS, configuration hash",
+  "Combination": "REQUIRED: frozen application, MVS/ZXing or MVID SDK package, real or synthetic RCS, configuration hash",
   "SourceCommit": "REQUIRED: exact frozen Release commit",
   "DeviceEvidence": "REQUIRED: authorized fixture identity; never infer real-device qualification",
   "RcsContractEvidence": "REQUIRED: contract identity, known Unknown recovery limitations",
   "NormalHours": 24,
+  "InputRateMeaning": "Application input receipts per second; camera frames, observations, placements and new RCS requests are separate",
   "WarmupSeconds": 900,
   "MinimumFreeBytes": null,
   "MaxEvidenceBytes": null,

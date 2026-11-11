@@ -16,11 +16,19 @@ if (args.FirstOrDefault() == "--installation-storage-helper") { await InstallerS
 if (args.FirstOrDefault() == "--installation-storage-ordinary-child") { InstallerStorageMatrix.OrdinaryChild(args); return; }
 if (args.FirstOrDefault() == "--maintenance-authority-probe") { await MaintenanceAuthorizationStartup.Probe(args); return; }
 if (args.FirstOrDefault() == "--ordinary-maintenance-child") { await MaintenanceAuthorizationStartup.OrdinaryChild(args); return; }
+if (args.FirstOrDefault() == "--action" && args.ElementAtOrDefault(1) == "verify-analysis-backup")
+{
+    try { Console.WriteLine(Wire.Encode(ParcelRecovery.InspectAnalysisBackup(args[3], new SportmasterFlow()))); }
+    catch (Exception error) { Console.Error.WriteLine(error); Environment.ExitCode = 2; }
+    return;
+}
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
+if (args.Contains("--backup-consistency")) { await BackupConsistency.Run(workspace, root); return; }
+if (args.Contains("--stability-analysis")) { await StabilityAnalysis.Run(workspace, root); return; }
 if (args.Contains("--debug-no-isolation-31")) { await DebugNoIsolation31.Run(workspace, root); return; }
 if (args.Contains("--installer-storage-checks")) { InstallerStorageChecks.Run(root); return; }
 if (args.Contains("--installer-storage-matrix"))

@@ -17,7 +17,7 @@ public sealed partial class ParcelRuntime
             if (Id == "sportmaster" && op.FrozenConfiguration is { Images: null, Plc: null } &&
                 op.Capture is null && op.Upload is null && op.Plc is null &&
                 (op.Wcs?.Request.Binding ?? op.FrozenConfiguration.Wcs) is
-                    { Package: null, Implementation: "sportmaster-rcs", Contract: RcsRequestPolicy.Contract })
+                { Package: null, Implementation: "sportmaster-rcs", Contract: RcsRequestPolicy.Contract })
             {
                 // Locally recovered final results still belong to history. An
                 // obsolete unfinished request can neither be sent nor queried.
@@ -41,7 +41,9 @@ public sealed partial class ParcelRuntime
 
     void RetireObsoleteSmOriginals()
     {
-        if (obsoleteSmOriginals.Count == 0) return;
+        // All callers share the backup fence, including startup classification and
+        // maintenance. Enumeration, SQLite snapshot and custody copy must see one set.
+        if (backupInProgress || obsoleteSmOriginals.Count == 0) return;
         var ready = obsoleteSmOriginals.Where(id => releasedPlacements.Contains(id) || IsDebugRequest(operations[id])).ToArray();
         if (ready.Length == 0) return;
         repository!.RetireIncompatibleSmOriginals(ready.Select(id => operations[id]).ToArray());

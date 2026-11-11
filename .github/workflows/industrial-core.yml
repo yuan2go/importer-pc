@@ -46,7 +46,7 @@ jobs:
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
           if ([int]$testCounters.executed -lt 25 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--state-journal', '--read-cadence', '--interrupted-scan-skip', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode', '--mvid-reader')
+          $requiredSuites = @('--backup-consistency', '--stability-analysis', '--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--state-journal', '--read-cadence', '--interrupted-scan-skip', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode', '--mvid-reader')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
@@ -79,6 +79,8 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           python -m unittest discover -s scripts -p test_dual_camera_performance.py -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_stability_qualification.py -v
           exit $LASTEXITCODE
       - name: Release policy unit boundaries (no publisher qualification)
         shell: pwsh

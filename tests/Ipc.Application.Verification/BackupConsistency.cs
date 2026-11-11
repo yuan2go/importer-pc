@@ -1,0 +1,168 @@
+using System.Diagnostics;
+using System.Text.Json;
+using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow;
+using Ipc.Application.Sportmaster;
+using Ipc.Platform;
+
+internal static class BackupConsistency
+{
+    static void Check(bool ok, string detail) { if (!ok) throw new InvalidOperationException(detail); Console.WriteLine("PASS BACKUP " + detail); }
+    static DateTimeOffset Progress(ParcelRuntime app)
+    {
+        using var json = JsonDocument.Parse(Wire.Encode(app.RuntimeProgress()));
+        return json.RootElement.GetProperty("Background").EnumerateArray().Single(b => b.GetProperty("Name").GetString() == "maintenance").GetProperty("LastProgress").GetDateTimeOffset();
+    }
+    static async Task Command(ParcelRuntime app, string kind)
+    { var s = await app.SnapshotAsync(); Check((await app.CommandAsync(new(Wire.Id(), s.Revision, kind))).Status == "Persisted", kind + " uses actual application command"); }
+    public static async Task Run(string workspace, string root)
+    {
+        foreach (var outcome in new[] { "complete", "cancel", "copy-failure" }) await Interleaving(workspace, Path.Combine(root, outcome), outcome == "cancel", outcome == "copy-failure");
+        foreach (var mode in new[] { "corrupt", "write-failure", "disabled" }) await ScheduleFault(workspace, Path.Combine(root, mode), mode);
+        await ScheduleOutcomes(workspace, Path.Combine(root, "outcomes"));
+    }
+    static async Task Interleaving(string workspace, string root, bool cancel, bool fail)
+    {
+        await using var h = new CameraRoundHarness(workspace, root);
+        h.Peer.ReplySlot = "";
+        await h.StartAsync(rcsImplementationFingerprint: new string('A', 64)); await h.WaitForCameraAdmissionAsync();
+        h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BACKUP"), 1);
+        ParcelOperation? original = null;
+        await CameraRoundHarness.Until(async () => (original = (await h.App.SnapshotAsync()).Operations.SingleOrDefault())?.Wcs?.State == StageState.Unknown);
+        await h.App.DisposeAsync();
+        await h.StartAsync(waitForRcs: true, rcsImplementationFingerprint: new string('B', 64));
+        await Command(h.App, "Pause");
+        var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId);
+        var files = Directory.GetFiles(Path.Combine(directory, "receipts"), "*.json").ToDictionary(p => p, p => Wire.FileHash(p));
+        Check(files.Count > 0, "real SQLite request has original receipt files before backup");
+        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim(); using var cancellation = new CancellationTokenSource();
+        h.App.BackupBoundary = phase =>
+        {
+            if (phase != (cancel || fail ? "DatabaseCopied" : "Inventory")) return;
+            entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Backup interleaving not released");
+        };
+        var backup = Path.Combine(root, "external.db"); Task<BusinessReceipt> work = null!;
+        await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+        {
+            work = h.App.BackupAsync(backup, cancellation.Token);
+            Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup entered custody boundary after real monitor reservation drained");
+            return true;
+        });
+        try
+        {
+            Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(10))), "backup reached deterministic " + (cancel || fail ? "snapshot" : "inventory") + " boundary");
+            // Real driver/decoder empty-frame completion, not decode-start counts.
+            var first = DateTimeOffset.UtcNow;
+            for (uint frame = 2; frame <= 4; frame++)
+            {
+                h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, frame);
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame)));
+                if (frame < 4) await Task.Delay(420);
+            }
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").PlacementClearedAt is not null);
+            Check(DateTimeOffset.UtcNow - first >= TimeSpan.FromMilliseconds(800), "empty evidence contains three delivered frames spanning at least 800ms");
+            var before = Progress(h.App);
+            await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > before));
+            Check(await h.App.OperationAsync(original!.Id) is not null && files.All(f => File.Exists(f.Key) && Wire.FileHash(f.Key) == f.Value),
+                "maintenance advances without gate starvation and retains original DB/file dependencies throughout backup");
+            if (cancel) cancellation.Cancel();
+            if (fail) File.WriteAllText(backup + ".recovery/configuration.json", "synthetic destination collision");
+        }
+        finally { release.Set(); }
+        if (cancel || fail)
+        {
+            try { await work; throw new Exception("Incomplete backup returned success"); }
+            catch (OperationCanceledException) when (cancel) { }
+            catch (IOException) when (fail) { }
+            Check(!File.Exists(backup + ".recovery/COMPLETED.json"), (cancel ? "cancellation" : "real custody-copy failure") + " does not publish a complete recovery set");
+        }
+        else
+        {
+            Check((await work).Status == "BackupCreated", "interleaved backup returns only actual completion");
+            Check(ParcelRecovery.InspectAnalysisBackup(backup, new SportmasterFlow()).DatabaseVersion == ParcelRepository.CurrentStorageVersion,
+                "complete recovery set passes production custody and DB schema verifier");
+            var target = Path.Combine(root, "restored", h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId);
+            ParcelRecovery.Restore(backup, target);
+            using var repo = new ParcelRepository(target, h.Config.ApplicationId);
+            Check(repo.ReadOperation(original!.Id)?.Wcs?.Request.Id == original.Wcs!.Request.Id && files.All(f => File.Exists(Path.Combine(target, "receipts", Path.GetFileName(f.Key)))),
+                "isolated restore retains exact original request and receipt collection");
+        }
+        h.App.BackupBoundary = null;
+        await CameraRoundHarness.Until(async () => await h.App.OperationAsync(original!.Id) is null);
+        Check(files.Keys.All(f => !File.Exists(f)) && h.Peer.Requests.Count == 1, "success/cancellation/failure releases the fence; obsolete cleanup resumes without replay");
+    }
+    static async Task ScheduleFault(string workspace, string root, string mode)
+    {
+        await using var h = new ManualSupplyHarness(workspace, root, deferred: true, mode: RunMode.Simulation);
+        var policy = mode == "disabled" ? null : new ParcelBackupSchedule(Path.Combine(root, "backups"), 15, 5);
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with { BackupSchedule = policy });
+        var directory = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId);
+        Directory.CreateDirectory(directory); var state = Path.Combine(directory, "backup-schedule.json");
+        if (mode == "write-failure") Directory.CreateDirectory(state); else File.WriteAllText(state, "{broken-original");
+        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
+        await h.App.CheckScheduledBackupAsync(DateTimeOffset.UtcNow);
+        var s = await h.App.SnapshotAsync();
+        Check(s.BackupScheduleStatus?.Outcome == (mode == "disabled" ? "Disabled" : "ScheduleStateFault") &&
+            (mode == "write-failure" ? Directory.Exists(state) : File.ReadAllText(state) == "{broken-original"), "auxiliary " + mode + " preserves original and reports plan state accurately");
+        var progress = Progress(h.App);
+        await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > progress));
+        var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-AFTER-STATE-FAULT"), default);
+        Check(next.Status == "Admitted" && h.Peer.Requests.Count == 1, "auxiliary " + mode + " leaves maintenance and legitimate new supply running");
+        // Actual volume availability is an independent guard even with the plan fault.
+        h.App.StorageAvailableBytesForVerification = () => throw new IOException("synthetic business volume unavailable");
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity?.AdmissionBlock == ParcelInputBlockReason.StorageUnavailable);
+        Check((await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "SYNTH-STORAGE-BLOCK"), default)).Status != "Admitted" && h.Peer.Requests.Count == 1,
+            "business storage failure still blocks supply after auxiliary state isolation");
+    }
+    static async Task ScheduleOutcomes(string workspace, string root)
+    {
+        await using var h = new ManualSupplyHarness(workspace, root, deferred: true, mode: RunMode.Simulation);
+        var target = Path.Combine(root, "backups"); Directory.CreateDirectory(target);
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with { BackupSchedule = new(target, 15, 10) });
+        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App); await Command(h.App, "Pause");
+        var now = DateTimeOffset.UtcNow; await h.App.CheckScheduledBackupAsync(now);
+        for (var i = 0; i < 10 && (await h.App.SnapshotAsync()).BackupScheduleStatus!.Outcome != "BackupCreated"; i++)
+            await h.App.CheckScheduledBackupAsync(now.AddMinutes(16 + i));
+        var success = (await h.App.SnapshotAsync()).BackupScheduleStatus!;
+        Check(success.Outcome == "BackupCreated" && success.LastSuccessfulBackup is not null, "scheduled success updates only the real complete recovery set");
+        var due = success.NextDue!.Value.AddMinutes(1);
+        // A concurrent actual backup owns the fence when the schedule tries to run.
+        using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
+        h.App.BackupBoundary = phase => { if (phase == "Inventory") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException(); } };
+        await LifecycleOptimization.AfterMonitorDrain(h.App, async () =>
+        {
+            var manual = h.App.BackupAsync(Path.Combine(root, "manual.db"));
+            try
+            {
+                Check(await Task.Run(() => entered.Wait(TimeSpan.FromSeconds(5))), "manual backup holds custody fence while schedule is due");
+                await h.App.CheckScheduledBackupAsync(due);
+            }
+            finally { release.Set(); }
+            await manual;
+            return true;
+        });
+        h.App.BackupBoundary = null;
+        var rejected = (await h.App.SnapshotAsync()).BackupScheduleStatus!;
+        var state = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, h.Config.ApplicationId, "backup-schedule.json");
+        using var json = JsonDocument.Parse(File.ReadAllText(state));
+        Check(rejected.Outcome == "Rejected" && !rejected.Detail!.Contains("完整恢复集已创建") && rejected.LastSuccessfulAt == success.LastSuccessfulAt &&
+            rejected.LastSuccessfulBackup == success.LastSuccessfulBackup && json.RootElement.GetProperty("Receipt").GetProperty("Status").GetString() == "Rejected",
+            "rejected backup preserves full real receipt and earlier success in projection and durable state");
+        // A write failure after a known successful state must preserve that success.
+        File.Move(state, state + ".retained"); Directory.CreateDirectory(state);
+        await h.App.CheckScheduledBackupAsync(due.AddMinutes(1));
+        var fault = (await h.App.SnapshotAsync()).BackupScheduleStatus!;
+        Check(fault.Outcome == "ScheduleStateFault" && fault.LastSuccessfulBackup == success.LastSuccessfulBackup && File.Exists(state + ".retained"),
+            "state write failure stops only the plan and retains last successful information and original file");
+        await h.App.DisposeAsync();
+        Directory.Delete(state); File.Move(state + ".retained", state);
+        var interrupted = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(state))!;
+        interrupted["Outcome"] = "Running: owned backup";
+        File.WriteAllText(state, interrupted.ToJsonString()); var retainedHash = Wire.FileHash(state);
+        await h.StartAsync(ready: false); await ManagementModeFixture.Authorize(h.App);
+        await h.App.CheckScheduledBackupAsync(due.AddMinutes(5));
+        var uncertain = (await h.App.SnapshotAsync()).BackupScheduleStatus!;
+        Check(uncertain.Outcome == "ResultUnconfirmed" && uncertain.NextDue is null && uncertain.LastSuccessfulBackup == success.LastSuccessfulBackup && Wire.FileHash(state) == retainedHash,
+            "interrupted scheduled execution retains its original target/success and stops repetition until maintenance verification");
+    }
+}

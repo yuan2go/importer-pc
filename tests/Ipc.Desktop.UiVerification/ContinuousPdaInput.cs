@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -183,7 +183,17 @@ static partial class Program
             try
             {
                 var round = vm.Right.CurrentRound!.Id; var sends = h.Peer.Requests.Count;
-                otherWindow.Show(); await otherWindow.ViewModel.RefreshAsync(); await Flush();
+                otherWindow.Show();
+                // Showing the window starts its own asynchronous refresh. RefreshAsync
+                // may join the UI polling guard, so one dispatcher flush is not a
+                // completed projection. Wait for the actual shared-round result.
+                for (var i = 0; i < 150; i++)
+                {
+                    await otherWindow.ViewModel.RefreshAsync(); await Flush();
+                    if (otherWindow.ViewModel.Fresh && otherWindow.ViewModel.Right.CurrentRound?.Id == round &&
+                        otherWindow.ViewModel.Right.Operation?.Id == vm.Right.Operation?.Id) break;
+                    await Task.Delay(25);
+                }
                 Check(otherWindow.ViewModel.Right.CurrentRound?.Id == round && otherWindow.ViewModel.Right.Operation?.Id == vm.Right.Operation?.Id,
                     "two native WPF windows project the same Application-owned current round");
                 var duplicate = await h.Command("right", scanned, ParcelBarcodeInputKind.PdaKeyboard);

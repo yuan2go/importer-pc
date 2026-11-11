@@ -48,8 +48,8 @@ public partial class SupplyStationWindow
     {
         await ViewModel.RequireManagementModeAsync();
         var dialog = new SaveFileDialog { Filter = "完整备份数据库|*.db", InitialDirectory = "D:\\", FileName = "station-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db" };
-        if (dialog.ShowDialog(ManagementDialogOwner) != true) return;
-        if (MessageBox.Show(ManagementDialogOwner, "将暂停新供包并创建完整备份。备份完成后可检查并恢复供包。", "创建完整备份", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        if (dialog.ShowDialog(ManagementDialogOwner) != true) { ViewModel.Message = "已取消选择备份位置；尚未暂停或创建备份。"; return; }
+        if (MessageBox.Show(ManagementDialogOwner, "将暂停新供包并创建完整备份。备份完成后可检查并恢复供包。", "创建完整备份", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
         await ViewModel.PauseAsync("创建完整备份前暂停"); await ViewModel.RefreshAsync();
         if (ViewModel.Snapshot?.Paused != true || !ViewModel.Fresh) throw new InvalidOperationException("暂停尚未确认，未创建备份。");
         var receipt = await ViewModel.Application.BackupAsync(dialog.FileName);

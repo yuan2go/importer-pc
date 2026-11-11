@@ -36,6 +36,7 @@ public partial class SupplyStationWindow : Window
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.CameraPreviewFactory = instance => { var preview = new StationCameraPreviewControl(ViewModel, 110, false); preview.SelectDevice(ViewModel.ReaderDrafts.FirstOrDefault(r => r.Capability.InstanceId == instance)?.Original.DeviceId ?? instance); return preview; };
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
+        maintenance.CompleteBackupAsync = CreateProductBackup;
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         maintenance.DiagnosticsRequested += (_, target) => ShowObjectDiagnostics(target);
         history.LogsRequested += async (_, id) => { SetPage("logs"); if (ViewModel.SelectedPage == "logs") await ViewModel.RunAsync(() => logs!.ShowOperationAsync(id), "读取所选作业日志"); };
@@ -150,7 +151,9 @@ public partial class SupplyStationWindow : Window
     void ApplyLayout()
     {
         ViewModel.ChuteScale = Math.Min(ClientArea.ActualWidth / 1366, ClientArea.ActualHeight / 768);
-        ViewModel.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;
+        var constrained = ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;
+        ViewModel.IsCompact = compact || constrained;
+        ViewModel.LayoutDescription = "布局偏好：" + (compact ? "紧凑" : "标准") + (constrained ? "；当前窗口小于 1280×680 DIP，实际使用紧凑布局。放大窗口后按偏好显示。" : "；当前按偏好显示。");
         ViewModel.IsTight = ClientArea.ActualHeight < 680;
         ApplyNavigation();
         FontSize = UiTypography.Body; work.Margin = ViewModel.IsCompact ? new Thickness(0) : new Thickness(4);

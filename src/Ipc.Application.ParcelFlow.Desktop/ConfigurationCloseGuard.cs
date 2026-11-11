@@ -39,12 +39,14 @@ public static class ConfigurationCloseGuard
         "未保存的配置草稿", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel) == MessageBoxResult.OK;
     public static Task<bool> ReviewUnsavedAsync(Window owner, int count, Func<Task>? save, string action)
     {
-        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = owner, Title = "保留未完成设置", Width = 620, SizeToContent = SizeToContent.Height, MaxHeight = 600, WindowStartupLocation = WindowStartupLocation.CenterOwner, ResizeMode = ResizeMode.NoResize };
+        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = owner, Title = "保留未完成设置", Width = 620, Height = 360, MinHeight = 260, MaxHeight = 600, WindowStartupLocation = WindowStartupLocation.CenterOwner, ResizeMode = ResizeMode.CanResize };
         var body = new StackPanel { Margin = new(24) };
         body.Children.Add(new TextBlock { Text = count + " 个窗口有未保存输入。请选择如何继续" + action + "。配置保存、草稿保留与运行生效是不同操作。", TextWrapping = TextWrapping.Wrap, FontSize = UiTypography.Body });
         var status = new TextBlock { Text = count > 1 ? "多个窗口可能包含不同候选。请返回后逐窗核对和保留；不会合并或覆盖它们。" : "加密保留可包含无效输入；不写入待生效配置，也不启动设备。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 16, 0, 16) };
         body.Children.Add(status);
-        var actions = new WrapPanel();
+        var root = new DockPanel { Margin = new(24) };
+        body.Margin = new(0);
+        var actions = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 16, 0, 0) };
         var back = new Button { Content = "继续编辑", IsCancel = true, MinHeight = 44, Margin = new(0, 0, 8, 8) };
         var keep = new Button { Content = "加密保留后" + action, IsEnabled = count == 1 && save is not null, MinHeight = 44, Margin = new(0, 0, 8, 8) };
         var discard = new Button { Content = "放弃未保存输入并" + action, MinHeight = 44, Margin = new(0, 0, 8, 8) };
@@ -58,7 +60,9 @@ public static class ConfigurationCloseGuard
             finally { busy = false; actions.IsEnabled = true; }
         };
         dialog.Closing += (_, e) => { if (busy) e.Cancel = true; };
-        actions.Children.Add(back); actions.Children.Add(keep); actions.Children.Add(discard); body.Children.Add(actions); dialog.Content = body;
+        actions.Children.Add(back); actions.Children.Add(keep); actions.Children.Add(discard); DockPanel.SetDock(actions, Dock.Bottom); root.Children.Add(actions);
+        root.Children.Add(new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); dialog.Content = root;
+        dialog.Loaded += (_, _) => back.Focus();
         return Task.FromResult(dialog.ShowDialog() == true);
     }
 }

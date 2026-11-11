@@ -95,7 +95,7 @@ public abstract partial class StartupWorkflowWindow
             return result;
         }
         catch (MaintenanceCancelledException)
-        { maintenanceReadout.Text = "已取消，未做更改。已生成的备份或临时目录会保留；重新执行时请选择新的目标目录。\n" + context; throw; }
+        { maintenanceReadout.Text = "已确认取消本次操作。已生成的备份或临时目录保留；取消不回滚已完成的步骤，请按原回执核对，重新执行时选择新的目标目录。\n" + context; throw; }
         catch (InstallationOutcomeUnknownException)
         { UnknownOutcome = true; unknownMaintenanceContext ??= originalContext; maintenanceReadout.Text = "结果未确认，请勿重复执行。\n" + context; throw; }
         catch

@@ -160,7 +160,9 @@ public sealed partial class ParameterSettingsControl
         if (RuntimeContext is null && m.ApplicationId != "sportmaster") display.Body.Children.Add(saveMode);
         display.Body.Children.Add(modeStatus);
         if (m.ApplicationId == "sportmaster") AudioPreferences(display, m.DisplayPreferences!);
-        display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));
+        var layoutStatus = Text("小窗口会自动使用紧凑布局。");
+        if (RuntimeContext is { } layoutContext) layoutStatus.SetBinding(TextBlock.TextProperty, new Binding(nameof(ParcelViewModel.LayoutDescription)) { Source = layoutContext });
+        display.Body.Children.Add(layoutStatus);
         if (DisplayPreferencesRequested is not null)
         {
             var change = new Button { Content = "切换标准 / 紧凑布局", HorizontalAlignment = HorizontalAlignment.Left };

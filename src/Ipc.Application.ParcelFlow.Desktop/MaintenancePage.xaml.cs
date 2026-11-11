@@ -19,6 +19,7 @@ public partial class MaintenancePage : UserControl
     }
     CapabilityDraft? selectedReader, selectedInstance;
     bool lastCanEditForm;
+    public Func<Task>? CompleteBackupAsync { get; set; }
     public event EventHandler? DisplayPreferencesRequested;
     public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested;
     public Func<string, FrameworkElement>? CameraPreviewFactory { get => MainParameterEditor.CameraPreviewFactory; set => MainParameterEditor.CameraPreviewFactory = value; }
@@ -27,7 +28,7 @@ public partial class MaintenancePage : UserControl
         InitializeComponent();
         MainParameterEditor.PageValidationFailed += (_, _) => { if (DataContext is ParcelViewModel vm) vm.Message = "请修正当前页标出的参数；输入已保留。"; };
         MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
-        MainParameterEditor.BackupRequested += (_, _) => ShowTechnicalTool(8);
+        MainParameterEditor.BackupRequested += async (_, _) => { if (CompleteBackupAsync is { } backup && DataContext is ParcelViewModel vm) await vm.RunAsync(backup, "创建完整备份"); else ShowTechnicalTool(MaintenanceTool.Backup); };
         MainParameterEditor.DisplayPreferencesRequested += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty);
         MainParameterEditor.DiagnosticsRequested += (_, target) =>
         {
@@ -50,7 +51,7 @@ public partial class MaintenancePage : UserControl
     void AdvancedToggle_SubmenuOpened(object sender, RoutedEventArgs e)
     {
         var sm = DataContext is ParcelViewModel { Snapshot.ApplicationId: "sportmaster" };
-        foreach (var item in new FrameworkElement[] { CompareTool, ModulesTool, InventoryTool, InstallationTool, BindingsTool, JsonTool, AdvancedSeparator, ConditionsTool, StashDraftTool, ResumeDraftTool })
+        foreach (var item in new FrameworkElement[] { ManagementPasswordTool, CompareTool, ModulesTool, InventoryTool, InstallationTool, BindingsTool, JsonTool, AdvancedSeparator, ConditionsTool, StashDraftTool, ResumeDraftTool })
             item.Visibility = sm ? Visibility.Collapsed : Visibility.Visible;
     }
     void EditorStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -181,11 +182,11 @@ public partial class MaintenancePage : UserControl
         }.Themed(Control.BackgroundProperty, "Surface");
         dialog.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Application.ParcelFlow.Desktop;component/ParameterSettingsTheme.xaml", UriKind.Relative) });
         var body = new DockPanel { Margin = new(24) }; var actions = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new(0, 16, 0, 0) };
-        var cancel = new Button { Content = "返回设置", Margin = new(0, 0, 8, 0), IsCancel = true }; cancel.Click += (_, _) => dialog.DialogResult = false;
+        var cancel = new Button { Content = "返回设置", Margin = new(0, 0, 8, 0), IsCancel = true, IsDefault = true }; cancel.Click += (_, _) => dialog.DialogResult = false;
         var apply = new Button { Content = "应用到当前设置", Style = (Style)dialog.Resources["ParameterPrimaryAction"] }; apply.Click += (_, _) => dialog.DialogResult = true;
         actions.Children.Add(cancel); actions.Children.Add(apply); DockPanel.SetDock(actions, Dock.Bottom); body.Children.Add(actions);
         body.Children.Add(new TextBox { IsReadOnly = true, Text = preview.Description, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-        dialog.Content = body;
+        dialog.Content = body; dialog.Loaded += (_, _) => cancel.Focus();
         if (dialog.ShowDialog() != true) return;
         try { vm.ApplySiteTemplate(preview); ShowParameterEditor(); }
         catch (Exception error) { vm.Message = "模板未应用：" + error.Message + "；当前输入保留。"; }
@@ -226,7 +227,7 @@ public partial class MaintenancePage : UserControl
 
     async void Reconnect_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ReconnectAsync, "手动重连"); }
     async void Overload_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(() => vm.CommandAsync("AcknowledgeOverload"), "确认已检查积压的包裹"); }
-    async void Backup_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.BackupAsync, "创建备份"); }
+    async void Backup_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(CompleteBackupAsync ?? vm.BackupAsync, "创建完整备份"); }
 
     async void Install_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InstallAsync, "验证签名并安装"); }
     async void Upload_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueUploadAsync, "继续未尝试附加上传"); }

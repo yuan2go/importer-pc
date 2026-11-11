@@ -203,10 +203,10 @@ public sealed class ConfigurationSaveReviewWindow : Window
     }
     public static void ShowChanges(Window? owner, ConfigurationChangeItem[] changes, string revision)
     {
-        var body = new DockPanel { Margin = new(24) }; var close = new Button { Content = "返回设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Right, Padding = new(16, 8, 16, 8), Margin = new(0, 12, 0, 0) };
+        var body = new DockPanel { Margin = new(24) }; var close = new Button { Content = "返回设置", IsCancel = true, IsDefault = true, MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Right, Padding = new(16, 8, 16, 8), Margin = new(0, 12, 0, 0) };
         var window = new Window { Owner = owner, Title = "查看修改", FontFamily = UiTypography.Interface, Content = body, FontSize = UiTypography.Body, Width = Math.Min(880, SystemParameters.WorkArea.Width - 24), Height = Math.Min(640, SystemParameters.WorkArea.Height - 24), WindowStartupLocation = WindowStartupLocation.CenterOwner }.Themed(Control.BackgroundProperty, "Surface");
         DockPanel.SetDock(close, Dock.Bottom); close.Click += (_, _) => window.Close(); body.Children.Add(close);
         var heading = new StackPanel(); heading.Children.Add(Heading(changes.Length == 0 ? "没有设置差异" : "本次更改", UiTypography.PageTitle, 0)); heading.Children.Add(Note(revision));
-        DockPanel.SetDock(heading, Dock.Top); body.Children.Add(heading); body.Children.Add(ChangeTable(changes)); window.ShowDialog();
+        DockPanel.SetDock(heading, Dock.Top); body.Children.Add(heading); body.Children.Add(ChangeTable(changes)); window.Loaded += (_, _) => close.Focus(); window.ShowDialog();
     }
 }

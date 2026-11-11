@@ -43,7 +43,7 @@ static partial class Program
         window.Show();
         await WaitUntil(() => Descendants(window).OfType<TextBlock>().Any(x => AutomationProperties.GetAutomationId(x) == "StartupReadFailure"));
         var tasks = Descendants(window).OfType<TabControl>().Single(x => x.Name == "StartupTasks");
-        Check(tasks.Items.Cast<TabItem>().Where(t => t.Visibility == Visibility.Visible).Select(t => (string)t.Header).SequenceEqual(["1 目录与工位", "恢复与维护"]),
+        Check(tasks.Items.Cast<TabItem>().Where(t => t.Visibility == Visibility.Visible).Select(t => AutomationProperties.GetAutomationId(t)).SequenceEqual(["StartupTask.Directory", "StartupTask.Recovery"]),
             "failed reads expose directories and recovery, not empty parameter/review tabs");
         Check(!Descendants(window).OfType<ParameterSettingsControl>().Any() &&
             Descendants(window).OfType<TextBlock>().Any(x => x.Text.Contains("参数没有被清空", StringComparison.Ordinal)), "failure is explicit and never constructs a blank configuration editor");
@@ -102,5 +102,24 @@ static partial class Program
             Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "重试正常启动")),
             "rereading current data restores SceneOnly check/start actions in the same window");
         db12.Close(); await WaitUntil(() => !db12.IsVisible);
+        var normal = (Window)Activator.CreateInstance(type, [readyLaunch, null, false])!;
+        type.GetProperty("ConfirmDiscardInputs", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(normal, (Func<bool>)(() => true));
+        normal.Show();
+        await WaitUntil(() => Descendants(normal).OfType<TabControl>().Any(x => x.Name == "StartupTasks"));
+        var navigation = Descendants(normal).OfType<TabControl>().Single(x => x.Name == "StartupTasks");
+        Check(navigation.Items.Cast<TabItem>().Select(AutomationProperties.GetAutomationId).SequenceEqual(new[] { "StartupTask.Directory", "StartupTask.Parameters", "StartupTask.Review", "StartupTask.Recovery" }), "offline tasks have explicit identities and no explanation-only page");
+        Button Action(string id) => Descendants(normal).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup." + id);
+        Action("Next").Content = "renamed navigation";
+        Action("Next").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(AutomationProperties.GetAutomationId((TabItem)navigation.SelectedItem) == "StartupTask.Parameters", "navigation executes by action identity even when its caption changes");
+        navigation.SelectedItem = navigation.Items.Cast<TabItem>().Single(t => AutomationProperties.GetAutomationId(t) == "StartupTask.Recovery"); normal.UpdateLayout();
+        Check(!Action("Next").IsVisible && !Action("Previous").IsVisible && Action("Backup").IsVisible, "recovery is an independent task with no stuck or backward next action");
+        Check(!Descendants(normal).OfType<Button>().Any(b => Equals(b.Content, "维护操作")), "the dead maintenance toggle is removed");
+        normal.Width = 800; normal.Height = 500; normal.UpdateLayout();
+        var footer = (WrapPanel)type.BaseType!.GetField("Actions", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(normal)!;
+        Check(footer.HorizontalAlignment == HorizontalAlignment.Right && footer.Children.OfType<Button>().Where(b => b.IsVisible).All(b => b.TransformToAncestor(normal).TransformBounds(new Rect(b.RenderSize)).Bottom <= normal.ActualHeight), "offline task footer stays right aligned and visible at low height");
+        CaptureInternal(evidence, "startup-recovery-800", normal, lines);
+        normal.Close(); await WaitUntil(() => !normal.IsVisible);
+
     }
 }

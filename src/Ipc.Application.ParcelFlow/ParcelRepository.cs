@@ -16,7 +16,7 @@ public sealed partial class ParcelRepository : IDisposable
     readonly CancellationToken maintenanceCancellation;
     readonly Action<RepositoryOpenPhase, SqliteConnection?, bool>? openObserver;
     public int StorageVersion { get; private set; }
-    public const int CurrentStorageVersion = 12;
+    public const int CurrentStorageVersion = 13;
     const string Baseline = """
         CREATE TABLE parcel_archive_versions(operation TEXT NOT NULL,body_hash TEXT NOT NULL,body TEXT NOT NULL,recorded_at TEXT NOT NULL,PRIMARY KEY(operation,body_hash));
         CREATE TABLE parcel_archived_receipts(id TEXT PRIMARY KEY,body BLOB NOT NULL,raw_hash TEXT NOT NULL);
@@ -34,6 +34,15 @@ public sealed partial class ParcelRepository : IDisposable
         CREATE TABLE parcel_integration_id_restores(identity TEXT PRIMARY KEY,ceiling INTEGER NOT NULL CHECK(ceiling>=0));
         CREATE TABLE parcel_measurements(id TEXT PRIMARY KEY,admission TEXT NOT NULL,body TEXT NOT NULL);
         CREATE TABLE parcel_meta(id INTEGER PRIMARY KEY CHECK(id=1),revision INTEGER NOT NULL,paused INTEGER NOT NULL);
+        CREATE TABLE sm_parcel_rounds(id TEXT PRIMARY KEY,position TEXT NOT NULL,active INTEGER NOT NULL CHECK(active IN(0,1)),operation TEXT UNIQUE,started TEXT NOT NULL,body TEXT NOT NULL,hash TEXT NOT NULL);
+        CREATE UNIQUE INDEX sm_current_round ON sm_parcel_rounds(position) WHERE active=1;
+        CREATE INDEX sm_round_history ON sm_parcel_rounds(position,started,id);
+        CREATE INDEX sm_round_started ON sm_parcel_rounds(started,id);
+        CREATE INDEX sm_round_barcode ON sm_parcel_rounds(json_extract(body,'$.SelectedCode'));
+        CREATE INDEX sm_round_request ON sm_parcel_rounds(json_extract(body,'$.RequestId'));
+        CREATE INDEX sm_round_protocol_request ON sm_parcel_rounds(json_extract(body,'$.ProtocolRequestId'));
+        CREATE INDEX sm_round_outcome ON sm_parcel_rounds(json_extract(body,'$.RcsOutcome'));
+        CREATE TABLE sm_position_cycles(position TEXT PRIMARY KEY,body TEXT NOT NULL,hash TEXT NOT NULL);
         CREATE TABLE parcel_operations(id TEXT PRIMARY KEY,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,body TEXT NOT NULL);
         CREATE TABLE parcel_overload_ack(identity TEXT PRIMARY KEY,command TEXT NOT NULL);
         CREATE TABLE parcel_receipt_custody(occurrence TEXT PRIMARY KEY,query_occurrence TEXT,observed_at TEXT NOT NULL,evidence TEXT NOT NULL);
@@ -155,7 +164,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null, SmParcelRound? round = null, SmPositionCycle? cycle = null)
     {
         if (positionControl is not null)
         {
@@ -172,6 +181,7 @@ public sealed partial class ParcelRepository : IDisposable
         if ((operation is not null && RetiredIdentity(operation.AdmissionId, operation.ObservationId) is not null || measurement is not null && RetiredMeasurement(measurement) is not null))
             throw new InvalidDataException("Expired identity cannot be recreated; permanent retention evidence remains authoritative");
         using var tx = db.BeginTransaction();
+        WriteRound(tx, round, cycle);
         if (inspectedIngress is not null)
         {
             using var inspected = db.CreateCommand(); inspected.Transaction = tx;

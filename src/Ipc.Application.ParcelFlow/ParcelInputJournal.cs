@@ -72,8 +72,8 @@ public sealed partial class ParcelRuntime
         last.RecordedAt,
         ObservationAgeMs = (last.RecordedAt - last.Observation.ObservedAt).TotalMilliseconds,
         QueuedObservationTimeoutMs = definition.QueuedObservationTimeoutMs(Effective),
-        DisplayObservationId = ContinuingUnadmittedPlacement(last.PositionId, last.Observation)?.Observation.Id,
-        UnadmittedOriginalImageAvailable = ContinuingUnadmittedPlacement(last.PositionId, last.Observation) is { } retained &&
+        DisplayObservationId = ContinuingBlockedObservation(last.PositionId, last.Observation)?.Observation.Id,
+        UnadmittedOriginalImageAvailable = ContinuingBlockedObservation(last.PositionId, last.Observation) is { } retained &&
             blockedInputPictures.TryGetValue(last.PositionId, out var picture) && picture.Metadata.ObservationId == retained.Observation.Id
     }, last.Outcome is ParcelInputOutcome.Blocked or ParcelInputOutcome.Rejected ? "警告" : "信息", last.OperationId);
 }

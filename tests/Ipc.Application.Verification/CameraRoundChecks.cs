@@ -85,8 +85,9 @@ internal static partial class CameraRoundChecks
             Check(original.Gray8.SequenceEqual(pixels.Data) && original.Metadata.OriginalSha256 == Convert.ToHexString(SHA256.HashData(pixels.Data)), "persisted original equals pre-contrast bytes for the selected frame");
             Check(original.Metadata.Symbols.Length == 1 && original.Metadata.Symbols[0].Corners.Length == 4 &&
                 Wire.Encode(original.Metadata.Symbols) == Wire.Encode(h.Factory.Decoders[h.Left].Last), "image geometry equals actual ZXing coordinates from that one frame");
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Inputs!.Any(i => i.PositionId == "left" && i.Observation.SourceEventId == locked.Frame.SourceEventId));
-            var blocked = (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left" && i.Observation.SourceEventId == locked.Frame.SourceEventId);
+            CameraBusinessRow? blockedRow = null;
+            await CameraRoundHarness.Until(async () => (blockedRow = (await h.App.ReadCameraBusinessAsync(h.Left, 0, null, 100, default)).Rows.LastOrDefault(i => i.Outcome == "Blocked")) is not null);
+            var blocked = (await h.App.ReadCameraBusinessDetailAsync(blockedRow!.Sequence, default))!;
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("NEXT-PARCEL"), 5);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Decoders[h.Left].Count >= 5 && h.Factory.Decoders[h.Right].Count >= 1));
             var frozen = await h.App.ReadCameraReadRoundAsync(default);
@@ -94,8 +95,8 @@ internal static partial class CameraRoundChecks
                 "later parcels and the other camera continue decoding without overwriting the debug winner");
             var op = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == locked.OperationId);
             Check(blocked.Outcome == ParcelInputOutcome.Blocked && op.Acquisition is { } capture && capture.DeviceId == blocked.Observation.DeviceId &&
-                capture.Epoch == blocked.Observation.Epoch && capture.SourceEventId == blocked.Observation.SourceEventId && capture.AdmissionId == blocked.Observation.AdmissionId &&
-                capture.ObservedAt == blocked.Observation.ObservedAt && op.AdmissionId != capture.AdmissionId,
+                capture.Epoch == blocked.Observation.Epoch && capture.SourceEventId == locked.Frame.SourceEventId && ExtensionSchema.IsId(capture.AdmissionId) &&
+                capture.ObservedAt == locked.Frame.CapturedAt && op.AdmissionId != capture.AdmissionId,
                 "independent debug intent carries the genuine source acquisition while the original observation remains blocked");
             Check(op.DebugRequest?.FrameId == locked.Frame.Id && op.Wcs is { State: StageState.Prepared, Attempts: 0 } && h.Peer.Requests.IsEmpty &&
                 op.Wcs.Request.IntegrationRequest?.Body == locked.RequestBody && locked.RequestBody!.Contains("ROUND-0001"), "request JSON auto-fill is the actual frozen T1 with zero HTTP attempts");

@@ -36,7 +36,12 @@ public sealed record Observation(string Id, string DeviceId, string Epoch, strin
     public string? CaptureSessionId { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public OperatorInputEvidence? OperatorInput { get; init; }
+    public TrayPresenceEvidence? TrayPresence { get; init; }
 }
+// Supplied only by a source with independently qualified physical evidence.
+// Decoder absence, scene hashes and barcode changes must never populate this fact.
+public enum TrayPresence { Unknown, Present, Absent }
+public sealed record TrayPresenceEvidence(TrayPresence State, string Evidence);
 // Same-process monotonic measurements; no camera/host clock synchronization is implied.
 public sealed record ObservationTiming(double AcquireMs, double FrameCopyMs, double ReleaseMs, double DecodeQueueMs,
     double OriginalCapacityMs, double DecodeMs, double OriginalCopyMs, double HostToDecodeMs);

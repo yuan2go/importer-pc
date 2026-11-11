@@ -23,6 +23,7 @@ internal static partial class ManualRcsDebugChecks
             Check(first.CanSend && (await h.App.SnapshotAsync()).Capacity!.Available && h.Peer.Requests.IsEmpty,
                 "an unsent debug intention remains sendable without occupying normal SM admission capacity");
             var other = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "OTHER"), default);
+            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(other.OperationId!))?.State == ParcelState.SlotResolved);
             Check(other.Status == "Admitted" && h.Peer.Requests.Count == 1 &&
                 (await h.App.OperationAsync(other.OperationId!))?.State == ParcelState.SlotResolved && (await Original(h, first)).Wcs is { State: StageState.Prepared, Attempts: 0 },
                 "the other position completes its own manual request while the original debug intention remains unsent");

@@ -17,7 +17,8 @@ static partial class Program
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS PDA-NATIVE " + message); }
         lines.Add("Windows SendInput -> HWND -> WPF text/key events; real Application/SQLite/built-in RCS with synthetic loopback peer. Physical PDA/customer RCS/site NOT_RUN.");
-        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "continuous-pda"), deferred: true);
+        var clock = new PdaRoundClock();
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "continuous-pda"), deferred: true) { StationClock = clock };
         await h.StartAsync();
         var application = DispatchProxy.Create<IBarcodeTransportFixture, BarcodeTransportProbe>();
         var transport = (BarcodeTransportProbe)(object)application; transport.Inner = h.App;
@@ -44,13 +45,18 @@ static partial class Program
             Task Text(string value, bool enter = false) => BarcodeNativeKeyboard.SendAsync(window, entry, value.Select(c => (ushort)c).Concat(enter ? new ushort[] { 0x0D } : []).ToArray());
             Task Key(ushort key) => BarcodeNativeKeyboard.SendAsync(window, entry, [key]);
             async Task Accepted(string code) => await Until(() => !entry.IsReadOnly && !vm.Busy && vm.Left.Barcode == code && vm.Left.SlotAvailable);
+            async Task NextRound(string side = "left")
+            {
+                clock.Advance();
+                await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == side).CurrentRoundId is null);
+            }
 
             const string a = "000123450001", b = "000123450002";
             await Text(a, enter: true); await Accepted(a);
             var first = vm.Left.Operation!; var frozen = Wire.Encode(first.Wcs!.Request);
             var prepared = entry.IsKeyboardFocused && entry.Text == a && entry.SelectionLength == a.Length;
             // No Text assignment, clear, refocus or selection adjustment between A and B.
-            await Text(b, enter: true); await Accepted(b);
+            await NextRound(); await Text(b, enter: true); await Accepted(b);
             Check(transport.Commands.Select(c => c.Barcode).SequenceEqual(new[] { a, b }) && h.Peer.Requests.Count == 2 &&
                 vm.Left.Operation!.Id != first.Id && transport.Commands.All(c => c.Kind == ParcelBarcodeInputKind.PdaKeyboard) &&
                 h.Peer.Requests.All(body => RequestSource(body) == "PDA"),
@@ -88,6 +94,7 @@ static partial class Program
                 Check(entry.Text == "000123" && entry.SelectionStart == offset && entry.SelectionLength == 0 && transport.Commands.Count == 2 && h.Peer.Requests.Count == 2,
                     "acknowledged native insertion/Backspace preserves draft/caret without submission; round=" + round + "; offset=" + offset);
             }
+            await NextRound();
             ((Button)position.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Accepted("000123");
             Check(transport.Commands.Last().Kind == ParcelBarcodeInputKind.Keyboard && h.Peer.Requests.Count == 3,
                 "manual bottom submit uses the same guarded path and preserves the unified character-input channel");
@@ -96,10 +103,11 @@ static partial class Program
             // Rechecking must forward the identical command, never authorize a second request.
             foreach (var reply in new[] { "Pending", "Lost" })
             {
-                entry.Focus(); await Flush(); transport.NextReply = reply;
+                await NextRound(); entry.Focus(); await Flush(); transport.NextReply = reply;
+                var expectedRequests = h.Peer.Requests.Count + 1;
                 var code = reply == "Pending" ? "000123450004" : "000123450005";
                 await Text(code, enter: true);
-                await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains("提交结果未确认"));
+                await Until(() => !vm.Busy && entry.IsReadOnly && feedback.Text.Contains("提交结果未确认") && h.Peer.Requests.Count == expectedRequests);
                 var command = transport.Commands.Last(); var sends = h.Peer.Requests.Count; var calls = transport.Commands.Count;
                 await Text("999"); await Flush();
                 Check(entry.Text == code && entry.IsReadOnly && transport.Commands.Count == calls && h.Peer.Requests.Count == sends,
@@ -113,18 +121,18 @@ static partial class Program
             h.Peer.Hold = hold;
             try
             {
-                await Text("000123450008", enter: true);
-                for (var i = 0; i < 150 && h.Peer.Requests.Count != 6; i++) { await Flush(); await Task.Delay(25); }
-                Check(h.Peer.Requests.Count == 6 && vm.Busy && entry.IsReadOnly, "in-flight RCS request retains its original locked input");
+                await NextRound(); await Text("000123450008", enter: true);
+                await Until(() => h.Peer.Requests.Count == 6 && !vm.Busy && !entry.IsReadOnly && vm.Right.CanSubmitBarcode);
+                Check(h.Peer.Requests.Count == 6 && !vm.Busy && !entry.IsReadOnly && vm.Right.CanSubmitBarcode, "durable acceptance releases global UI Busy while the original RCS call remains in flight");
                 var calls = transport.Commands.Count;
                 await Text("999", enter: true); await Flush();
-                Check(entry.Text == "000123450008" && transport.Commands.Count == calls && h.Peer.Requests.Count == 6,
+                Check(entry.Text == "999" && transport.Commands.Count == calls && h.Peer.Requests.Count == 6,
                     "scanner text and Enter during submission cannot create a second command");
             }
             finally { hold.TrySetResult(); h.Peer.Hold = null; }
             await Accepted("000123450008");
 
-            h.Peer.Mode = "malformed"; entry.Focus(); await Flush(); await Text("000123450006", enter: true);
+            await NextRound(); h.Peer.Mode = "malformed"; entry.Focus(); await Flush(); await Text("000123450006", enter: true);
             await Until(() => !entry.IsReadOnly && !vm.Busy && vm.Left.Operation?.Wcs?.State == StageState.Unknown);
             var unknown = vm.Left.Operation!; var unknownSends = h.Peer.Requests.Count;
             await Text("000123450007", enter: true);
@@ -154,7 +162,7 @@ static partial class Program
             var previousClipboard = Clipboard.GetDataObject();
             try
             {
-                Clipboard.SetText(pasted); otherEntry.Paste(); await RightKeys(0x0D); await RightAccepted(pasted);
+                await NextRound("right"); Clipboard.SetText(pasted); otherEntry.Paste(); await RightKeys(0x0D); await RightAccepted(pasted);
                 Check(transport.Commands.Last().Kind == ParcelBarcodeInputKind.Keyboard && RequestSource(h.Peer.Requests.Last()) == "MANUAL",
                     "a whole pasted barcode stays MANUAL even when Enter follows immediately");
             }
@@ -163,14 +171,27 @@ static partial class Program
                 if (previousClipboard is null) Clipboard.Clear();
                 else Clipboard.SetDataObject(previousClipboard, true);
             }
-            await RightKeys([.. scanned.Select(character => (ushort)character), 0x0D]); await RightAccepted(scanned);
+            await NextRound("right"); await RightKeys([.. scanned.Select(character => (ushort)character), 0x0D]); await RightAccepted(scanned);
             Check(transport.Commands.Last() is { PositionId: "right", Kind: ParcelBarcodeInputKind.PdaKeyboard } &&
                 RequestSource(h.Peer.Requests.Last()) == "PDA" && vm.Left.Operation?.Id == unknown.Id && h.Peer.Requests.Count == unknownSends + 3,
-                "the next right-hand burst is identified as PDA without using a previous draft or altering the left operation");
+                "the next right-hand burst is identified as PDA without using a previous draft or altering the left operation; kind=" + transport.Commands.Last().Kind + "; source=" + RequestSource(h.Peer.Requests.Last()) + "; left=" + vm.Left.Operation?.Id + "/" + unknown.Id + "; sends=" + h.Peer.Requests.Count + "/" + (unknownSends + 3));
             await ManagementModeFixture.Authorize(h.App);
             var original = (await h.App.ReadCameraOperationDetailAsync(first.Id, default))!.Original;
             Check(original.Wcs!.Request.IntegrationRequest!.Body == h.Peer.Requests.First() && original.Wcs.Attempts == 1 && original.Wcs.State == StageState.Accepted,
                 "A's persisted full frozen RCS bytes still match the original wire request after all later input");
+            var otherWindow = new SupplyStationWindow(application, null, "standard") { ConfirmDiscardDrafts = _ => true, Title = "菜鸟供包台 · 同实例第二窗口" };
+            try
+            {
+                var round = vm.Right.CurrentRound!.Id; var sends = h.Peer.Requests.Count;
+                otherWindow.Show(); await otherWindow.ViewModel.RefreshAsync(); await Flush();
+                Check(otherWindow.ViewModel.Right.CurrentRound?.Id == round && otherWindow.ViewModel.Right.Operation?.Id == vm.Right.Operation?.Id,
+                    "two native WPF windows project the same Application-owned current round");
+                var duplicate = await h.Command("right", scanned, ParcelBarcodeInputKind.PdaKeyboard);
+                var receipts = await Task.WhenAll(h.App.SubmitParcelBarcodeAsync(duplicate, default), h.App.SubmitParcelBarcodeAsync(duplicate, default));
+                Check(receipts.All(r => r.Status == "Rejected") && h.Peer.Requests.Count == sends && vm.Right.CurrentRound.Id == round,
+                    "multiple subscribers and competing same-round commands cannot acquire another first call");
+            }
+            finally { otherWindow.Close(); await Flush(); window.Activate(); }
         }
         finally { window.Close(); }
 
@@ -296,4 +317,12 @@ static class BarcodeNativeKeyboard
         }
         finally { acknowledgementOwner.RemoveHandler(Keyboard.KeyUpEvent, acknowledged); }
     }
+}
+
+sealed class PdaRoundClock : TimeProvider
+{
+    long ticks;
+    public override long TimestampFrequency => TimeSpan.TicksPerSecond;
+    public override long GetTimestamp() => Interlocked.Read(ref ticks);
+    public void Advance() => Interlocked.Add(ref ticks, TimeSpan.FromMilliseconds(3000).Ticks);
 }

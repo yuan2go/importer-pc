@@ -29,7 +29,7 @@ static partial class ArchitectureQuality
         try { await using var unexpected = await Open(c, name); }
         catch (InvalidDataException ex) { refusal = ex.Message; }
         Console.WriteLine($"DB{storageVersion} preflight: " + Wire.Encode(new { name, refusal, Version = NonCurrentStorageFixture.Version(file), Changed = files.Where(p => !File.Exists(p.Key) || Wire.FileHash(p.Key) != p.Value).Select(p => Path.GetRelativePath(DirectoryFor(name, c), p.Key)).ToArray() }));
-        Check(refusal?.Contains("全新数据目录") == true && NonCurrentStorageFixture.Version(file) == storageVersion,
+        Check(refusal?.Contains("原文件已保留") == true && NonCurrentStorageFixture.Version(file) == storageVersion,
             $"{name}: unresolved DB{storageVersion} refuses BEFORE future reader marker, not after provider construction");
         Check(files.All(p => File.Exists(p.Key) && Wire.FileHash(p.Key) == p.Value), name + ": refusal preserves original DB/config/raw/image bytes");
         try { using var old = new ParcelRepository(DirectoryFor(name, c), c.ApplicationId); Check(false, name + ": historical writer must refuse"); }
@@ -74,7 +74,7 @@ static partial class ArchitectureQuality
             writer.Open(); using var q = writer.CreateCommand(); q.CommandText = "PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; UPDATE parcel_meta SET revision=revision+1"; q.ExecuteNonQuery();
             var dbHash = StableOpenFixtureHash(walDb); var walHash = StableOpenFixtureHash(walDb + "-wal"); var configHash = Wire.FileHash(Path.Combine(DirectoryFor(walName, changed), "configuration.json"));
             try { await using var unexpected = await Open(changed, walName); Check(false, "non-current database with nonempty WAL must refuse"); }
-            catch (InvalidDataException ex) { Check(ex.Message.Contains("全新数据目录") && StableOpenFixtureHash(walDb) == dbHash && StableOpenFixtureHash(walDb + "-wal") == walHash && Wire.FileHash(Path.Combine(DirectoryFor(walName, changed), "configuration.json")) == configHash, "read-only preflight preserves exact nonempty DB/WAL/config originals"); }
+            catch (InvalidDataException ex) { Check(ex.Message.Contains("原文件已保留") && StableOpenFixtureHash(walDb) == dbHash && StableOpenFixtureHash(walDb + "-wal") == walHash && Wire.FileHash(Path.Combine(DirectoryFor(walName, changed), "configuration.json")) == configHash, "read-only preflight preserves exact nonempty DB/WAL/config originals"); }
         }
         var settled = Config("sportmaster"); var terminal = "db4-terminal";
         await using (var app = await Open(settled, terminal)) { app.EmitReference("settled-upgrade", "00082", "settled-upgrade-source"); await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); }

@@ -160,6 +160,7 @@ static class AcquisitionLifecycle
             Check(durableBeforeRelease && left.RetainedAcquisitionCount == 0, "durable main completion precedes release of the final operation acquisition");
             app.Boundary = null;
 
+            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
             await Wait(app, x => x.Positions!.Single(p => p.Id == "left").Admit);
             factory.LoseNextReply = true;
             app.EmitReferenceAt("left", "unknown", "0002", "unknown-source");
@@ -175,7 +176,7 @@ static class AcquisitionLifecycle
             Check(app.EmitReferenceAt("left", "paused", "0001", "paused"), "paused observation can enter queue for explicit business rejection");
             await Wait(app, _ => left.RetainedAcquisitionCount == 0);
             Check((await app.SnapshotAsync()).Operations.All(o => o.AdmissionId != "paused"), "business rejection releases ingress without inventing an operation");
-            await Command(app, "Resume"); factory.LoseNextReply = true;
+            await Command(app, "Resume"); await SmRoundFixture.ConfirmRemovedAsync(app, "left"); factory.LoseNextReply = true;
             app.EmitReferenceAt("left", "restart", "0003", "restart-source");
             s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "restart" && o.Capture?.State == StageState.Unknown));
             var original = s.Operations.Single(o => o.AdmissionId == "restart");

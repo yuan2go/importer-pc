@@ -30,7 +30,9 @@ SCAN_STAGES = ('CameraAcquire', 'FrameCopy', 'SdkRelease', 'DecodeQueue', 'Origi
 SCAN_EVENTS = {('扫码节奏', '扫码阶段耗时与队列汇总'): 'Window',
                ('扫码节奏', '扫码队列等待采样'): 'Waiting',
                ('RCS请求', '开始请求格口'): 'RcsStart',
-               ('RCS结果', '取格口结果'): 'RcsResult'}
+               ('RCS结果', '取格口结果'): 'RcsResult',
+               ('包裹轮次', 'RoundStarted'): 'RoundStarted',
+               ('包裹轮次', 'RoundEnded'): 'RoundEnded'}
 
 
 def dump(path, value):
@@ -642,6 +644,7 @@ def analyze_scan_logs(args):
     root = new_root(args.output)
     positions = {position: dict(Windows=0, WaitingSamples=0, WindowsWithWorker=0, WindowsWithStageMaxima=0,
                                 StageWindowsObserved=Counter(), StagePeaks={}, MaximumDepth=None,
+                                RoundStarts=0, RoundEnds=0, RoundDurationsMs=[], RoundEndReasons=Counter(),
                                 RcsStarts=0, RcsResults=0, RcsTimedResults=0, SlowestRcsResult=None,
                                 EvidenceGaps=Counter()) for position in ('left', 'right')}
     pending_rcs = defaultdict(list)
@@ -700,6 +703,15 @@ def analyze_scan_logs(args):
                      WindowMs=log_number(detail.get('WindowMs'), gaps, 'WindowMs'),
                      **{name: scan_sample(detail.get(name), gaps, name) for name in ('First', 'Last', 'Slowest')})
                 continue
+            if kind in ('RoundStarted', 'RoundEnded'):
+                summary['RoundStarts' if kind == 'RoundStarted' else 'RoundEnds'] += 1
+                duration = log_number(detail.get('RoundElapsedMs'), gaps, 'RoundElapsedMs')
+                if kind == 'RoundEnded':
+                    summary['RoundEndReasons'][log_text(detail.get('EndReason')) or 'UNCONFIRMED'] += 1
+                    if duration is not None:
+                        summary['RoundDurationsMs'].append(duration)
+                emit(point, position, RoundId=log_text(detail.get('RoundId')), EndReason=detail.get('EndReason'), RoundElapsedMs=duration)
+                continue
             operation, request = (log_text(detail.get(name)) for name in ('OperationId', 'RequestId'))
             key = runtime, position, operation, request
             if not operation or not request:
@@ -738,6 +750,8 @@ def analyze_scan_logs(args):
         summary['StagesNotObserved'] = [stage for stage in SCAN_STAGES if stage not in peaks]
     dump(root / 'summary.json', dict(Schema=1, PerformanceAcceptance='NOT_EVALUATED_NO_SITE_SLA',
                                     Sources=[str(path) for path in args.logs], Runtimes=runtimes,
+                                    InputCompletionMeaning='Short input decision and managed execution handoff; excludes RCS completion',
+                                    RcsElapsedMeaning='Actual port call; AttemptAndReceiptMs separately includes local receipt work',
                                     Positions=positions, LogNotices=dict(sorted(issues.items()))))
     print(str(root / 'summary.json'))
     return 0

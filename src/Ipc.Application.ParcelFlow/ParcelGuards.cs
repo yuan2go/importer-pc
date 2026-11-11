@@ -35,6 +35,7 @@ public sealed partial class ParcelRuntime
         if (reader.Health?.IsValid(DateTimeOffset.UtcNow) != true) return ParcelInputBlockReason.ReaderConfirmationExpired;
         if (AdmissionCapabilityBlock(position) is { } capability) return capability;
         if (reader.Source is IObservationInspectionSource && !AutomaticCameraReadsAllowed(device)) return ParcelInputBlockReason.RcsUnavailable;
+        if (Id == "sportmaster") return null;
         var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) &&
             (NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x)));
         return original is null ? null : PriorWorkBlock(original);
@@ -67,6 +68,7 @@ public sealed partial class ParcelRuntime
         if (repository!.Paused) return ParcelInputBlockReason.SoftwarePaused;
         if (CameraPositionBlock(position) is { } positionBlock) return positionBlock;
         if (!ImageCapacityAvailable()) return ParcelInputBlockReason.ImageCapacityUnavailable;
+        if (Id == "sportmaster") return CurrentRound(position)?.OperationId is not null ? ParcelInputBlockReason.PreviousResultPending : null;
         var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
         return original is null ? null : PriorWorkBlock(original);
     }
@@ -76,7 +78,7 @@ public sealed partial class ParcelRuntime
     {
         var latest = LatestWorkCardOperation(p.Id);
         var now = StationTime.GetUtcNow();
-        var expired = ExpiredManualResult(p.Id, latest, now);
+        ManualWorkCardExpiry? expired = null;
         var current = DisplayedOperation(p.Id, latest, now, expired);
         var manual = Id == "sportmaster" ? ManualInputReasons(p.Id) : null;
         var camera = CanAdmit(p.Id);
@@ -101,7 +103,10 @@ public sealed partial class ParcelRuntime
             BarcodeInput = manual is null ? null : new(camera, manualReady, manual),
             Vehicle = PositionVehicle(p.Id, DateTimeOffset.UtcNow),
             SupplyControl = Id == "sportmaster" ? PositionControl(p.Id) : null,
-            CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId)
+            CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId),
+            CurrentRoundId = CurrentRound(p.Id)?.Id,
+            RoundVersion = CurrentRound(p.Id)?.Version,
+            AutomaticSuppressed = Id == "sportmaster" && SmCycle(p.Id).AutoSuppressed
         };
     }).ToArray();
     StationVehicleState? PositionVehicle(string position, DateTimeOffset now)
@@ -156,7 +161,7 @@ public sealed partial class ParcelRuntime
                 try
                 {
                     CheckCameraInspectionLease();
-                    CommitEmptyTrays();
+                    MaintainSmRounds();
                     RetireObsoleteSmOriginals();
                     RetainReleasedSmUnknowns();
                     MaintainParcelPictures();

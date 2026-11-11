@@ -18,7 +18,7 @@ internal static class SamePlacement29
                 !ExtensionSchema.Validate(Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReaderDescriptor.Parameters, r.Parameters).Any(e => e.Contains("code.formats", StringComparison.Ordinal))) &&
             Ipc.Drivers.Hikrobot.Mvs.ReaderSettings.Read(initial.Topology.Readers[0].Parameters!).Formats.SequenceEqual(new[] { "All" }),
             "new-site template selects native reading with the complete code list and passes the reader schema");
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-29")) { PlacementReleaseMs = 5000 };
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-29")) { PlacementReleaseMs = 5000, StationClock = new TimeStorageFaultChecks.ManualTime() };
         var siteDecoder = new Ipc.Drivers.Hikrobot.Mvs.SoftwareDecoder("utf-8", () => { }, settings: Ipc.Drivers.Hikrobot.Mvs.ReaderSettings.Read(initial.Topology.Readers[0].Parameters!));
         siteDecoder.Prepare();
         try
@@ -30,6 +30,7 @@ internal static class SamePlacement29
         finally { siteDecoder.Release(); }
         await h.StartAsync();
         await h.WaitForCameraAdmissionAsync();
+        await h.TrayAsync(h.Left, TrayPresence.Present);
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         uint frame = 0;
         long Processed() => h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
@@ -45,8 +46,9 @@ internal static class SamePlacement29
             for (var i = 0; i < frames; i++)
             {
                 await Deliver(h, h.Left, blank, ++frame);
-                await Task.Delay(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs / 2);
+                await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2);
             }
+            if (frames >= 3) { await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present); }
         }
         async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
 
@@ -60,7 +62,7 @@ internal static class SamePlacement29
         for (var i = 0; i < 6; i++) await Read("SYNTH-PLACE-A");
         var resting = await Latest();
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Length == 1 &&
-            ParcelInputReasons.IsSamePlacement(resting) && resting.OperationId == first.Id,
+            resting.OperationId == first.Id,
             "six further reads of the resting parcel are recorded against the original operation without another request");
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
         Check(vm.Left.DisplaySlot == "SYNTH-CHUTE" && vm.Left.Status == "投递格口" && !vm.Left.InputUnadmitted && vm.Left.Barcode == "SYNTH-PLACE-A",
@@ -68,8 +70,10 @@ internal static class SamePlacement29
 
         // 3. A different parcel on the next tray is a new placement immediately.
         await Read("SYNTH-PLACE-B");
+        Check(h.Peer.Requests.Count == 1, "a changed barcode without physical removal remains the same round");
+        await Empty(3); await Read("SYNTH-PLACE-B");
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
-        Check(h.Peer.Requests.Count == 2, "a different code at the position requests its own chute without waiting");
+        Check(h.Peer.Requests.Count == 2, "a qualified new placement requests its own chute without waiting for the old request");
 
         // 4. RCS rejects; the parcel stays on the tray: no retry storm.
         h.Peer.Mode = "reject";
@@ -90,7 +94,7 @@ internal static class SamePlacement29
         // no evidence the parcel left, even beyond the fallback window.
         await Task.Delay(h.PlacementReleaseMs + 1000);
         await Read("SYNTH-PLACE-C");
-        Check(h.Peer.Requests.Count == 3 && ParcelInputReasons.IsSamePlacement(await Latest()),
+        Check(h.Peer.Requests.Count == 3 && (await Latest()).OperationId is not null,
             "a slow decode gap longer than the fallback window does not re-request the resting parcel");
         await Empty(3);
         await Read("SYNTH-PLACE-C");
@@ -102,7 +106,7 @@ internal static class SamePlacement29
         // 6. Glare: one or two frames without a code while the parcel rests do not end the placement.
         await Empty(2);
         await Read("SYNTH-PLACE-C");
-        Check(h.Peer.Requests.Count == 4 && ParcelInputReasons.IsSamePlacement(await Latest()),
+        Check(h.Peer.Requests.Count == 4 && (await Latest()).OperationId is not null,
             "two no-code frames on a resting parcel (glare) do not trigger another request");
 
         // 6b. Glare flicker: three quick no-code frames shorter than the minimum empty time.
@@ -111,7 +115,7 @@ internal static class SamePlacement29
             await Deliver(h, h.Left, blank, ++frame);
         }
         await Read("SYNTH-PLACE-C");
-        Check(h.Peer.Requests.Count == 4 && ParcelInputReasons.IsSamePlacement(await Latest()),
+        Check(h.Peer.Requests.Count == 4 && (await Latest()).OperationId is not null,
             "three no-code frames within the minimum empty time (glare while handling) do not trigger another request");
 
         // 7. Empty tray, then the same code again well inside the time window: the operator
@@ -145,9 +149,9 @@ internal static class SamePlacement29
         await Read("SYNTH-PLACE-C");
         var reread = await Latest();
         await vm.RefreshAsync();
-        Check(h.Peer.Requests.Count == 6 && ParcelInputReasons.IsSamePlacement(reread) && reread.Observation.Epoch != oldEpoch &&
+        Check(h.Peer.Requests.Count == 6 && reread.OperationId is not null && reread.Observation.Epoch == oldEpoch &&
             vm.Left.ShowConfirmedTask && vm.Left.DisplaySlot == "SYNTH-CHUTE" && vm.Left.DisplayStatus != "等待重新扫码",
-            "after a camera reconnect the resting parcel is not re-requested and its chute shows again without lifting it");
+            "after reconnect the current round retains its original acquisition and no second request is made");
         await h.App.StopAsync(default);
         Check(h.Api(h.Left).Acquires == h.Api(h.Left).Releases && h.Api(h.Right).Acquires == h.Api(h.Right).Releases, "every SDK frame loan is returned");
         await StillScene(workspace, root);
@@ -157,9 +161,10 @@ internal static class SamePlacement29
     // the frames keep the scene of the frame that read the code. A real lift changes the scene and still counts.
     static async Task StillScene(string workspace, string root)
     {
-        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-scene"), stillMs: "40") { PlacementReleaseMs = 5000 };
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "same-placement-scene"), stillMs: "40") { PlacementReleaseMs = 5000, StationClock = new TimeStorageFaultChecks.ManualTime() };
         await h.StartAsync();
         await h.WaitForCameraAdmissionAsync();
+        await h.TrayAsync(h.Left, TrayPresence.Present);
         uint frame = 0;
         var decoder = h.Factory.Decoders[h.Left];
         // Delivers the same picture until the camera has decoded `decodes` more frames of it.
@@ -201,7 +206,7 @@ internal static class SamePlacement29
             "a rejected decode on the same unchanged scene preserves the current result without another request");
         decoder.RejectNext = 0;
         await Show(parcel, 1, 60);
-        await CameraRoundHarness.Until(async () => ParcelInputReasons.IsSamePlacement(await Latest()));
+        await CameraRoundHarness.Until(async () => (await Latest()).OperationId is not null);
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Length == 1,
             "eight missed decodes over more than a second on an unmoved scene do not end the placement: no second request");
 
@@ -211,20 +216,22 @@ internal static class SamePlacement29
         decoder = h.Factory.Decoders[h.Left]; decoder.MissNext = int.MaxValue;
         await Show(parcel, 1, 60);
         await vm.RefreshAsync();
-        Check(!vm.Left.ShowConfirmedTask && vm.Snapshot!.CameraReads.Single(c => c.PositionId == "left").RetainedOperationId is null,
-            "a new camera epoch cannot reuse the old scene's display authority before rereading the parcel");
+        Check(vm.Left.ShowConfirmedTask && vm.Snapshot!.Positions!.Single(p => p.Id == "left").CurrentRoundId is not null,
+            "a new camera epoch does not replace current-round authority or authorize another request");
         decoder.MissNext = 0;
         await Show(parcel, 1, 60);
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Left.ShowConfirmedTask; });
         Check(h.Peer.Requests.Count == 1, "rereading after reconnect restores the original chute without another request");
 
         var empty = await Show(CameraRoundHarness.EmptyTray, 4, 300);
-        Check(empty.Length >= SportmasterFlow.DefaultSamePlacementEmptyFrames &&
-            empty[^1].DeliveredAt - empty[0].DeliveredAt >= TimeSpan.FromMilliseconds(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs),
+        Check(empty.Length >= CameraRoundHarness.SyntheticBlankFrames &&
+            empty[^1].DeliveredAt - empty[0].DeliveredAt >= TimeSpan.FromMilliseconds(CameraRoundHarness.SyntheticBlankSpanMs),
             "empty-tray evidence contains enough completed frames spanning the actual minimum release time");
         await vm.RefreshAsync();
-        Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture,
-            "a changed empty tray clears the retained result and original picture");
+        Check(vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 1, "NoCode and changed scene alone cannot end the current round");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await vm.RefreshAsync();
+        Check(!vm.Left.ShowConfirmedTask && !vm.Left.CanViewCurrentPicture, "qualified removal clears current result and picture");
         await Show(parcel, 1, 60);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
         Check(h.Peer.Requests.Count == 2, "lifting the parcel changes the scene, the empty tray is seen, and placing it again requests once");

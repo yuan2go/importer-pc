@@ -245,7 +245,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var position in positions.Keys) positionWorkers.Add(position, Task.Run(() => ProcessIngressAsync(position), CancellationToken.None));
             worker = Task.WhenAll(positionWorkers.Values);
             InitializePositionControls();
-            RestoreUnfinishedPlacements();
+            RestoreSmRounds();
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
             foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
@@ -355,24 +355,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             double capacityWaitMs = 0;
             if (Volatile.Read(ref accepting) == 0 || overloadedPositions.ContainsKey(positionId)) return false;
             var at = DateTimeOffset.UtcNow;
-            if (Id == "sportmaster" && observation is not null)
+            if (Id == "sportmaster" && observation is { TrayPresence: null })
             {
-                var originalCount = observation.Codes.Length;
-                observation = CameraBarcodeCandidates.WithoutBackground(Effective.BarcodeFilter, observation);
-                // A complete camera result containing only configured background codes is
-                // a no-code frame, already delivered through frame feedback. It
-                // owns no parcel input/request and must not fill the durable lane.
-                if (originalCount > 0 && observation.Codes.Length == 0 && observation.CandidateIssue is null && observation.InspectionSessionId is null)
-                { ReleaseIngressAcquisition(observation); return true; }
-                if (ContinuingRejectedPlacement(positionId, observation) is { } rejected)
-                {
-                    RecordPresentationRead(positionId, observation, retainedInput: rejected.Observation.Id);
-                    ReleaseIngressAcquisition(observation);
-                    Interlocked.Increment(ref lane.ObservedOnly);
-                    RecordIngressTiming(positionId, observation, "RejectedSamePlacementObservation", null, enteredTicks,
-                        new() { ["LaneWait"] = laneWaitMs }, retained: rejected.Observation.Id);
-                    return true;
-                }
                 if (CoalescePausedObservation(positionId, observation, lane, enteredTicks, laneWaitMs)) return true;
             }
             if (observation is not null) RecordPresentationRead(positionId, observation);
@@ -599,10 +583,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "CameraInspectionIsolated:" + o.InspectionSessionId + "; 实机调试输入，仅留证，不创建作业或请求，结束后不回放", selection: definition.SelectBarcode(Effective, o)), "CameraInspectionInputBlocked");
             return;
         }
-        CommitEmptyTray(position);
-        if (!manual && IsBeforeEmptyTray(position, o.ObservedAt))
+        if (Id == "sportmaster")
         {
-            WriteRuntimeLog("扫码与准入", "已跳过空托盘确认前的旧扫码", new { PositionId = position, o.Epoch, o.SourceEventId, o.ObservedAt });
+            await ProcessSmObservationAsync(position, o, admittedOperator, reader, manual).ConfigureAwait(false);
             return;
         }
         if (repository!.RetiredIdentity(o.AdmissionId, observationId) is { } retired)
@@ -616,43 +599,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         // Re-observing an existing entity uses its original policy, never a newly applied rule.
         var selection = definition.SelectBarcode(priors.FirstOrDefault()?.FrozenConfiguration ?? Effective, o);
         var code = selection.SelectedCode;
-        if (!manual && ContinuingRejectedPlacement(position, o) is { } heldRejection)
-        {
-            RetainRejectedPresentation(position, o, heldRejection.Observation.Id);
-            return;
-        }
-        // Manual correction of a rejected multi-label parcel owns that same
-        // physical placement, including later partial/multiple camera reads.
-        if (!manual && priors.Length == 0 && ExtensionSchema.IsId(o.AdmissionId) && ContinuingCameraPlacementOwner(position, o) is { } correctedOwner &&
-            operations.GetValueOrDefault(correctedOwner)?.OperatorInput is not null)
-        {
-            RecordInput(Input(position, o, ParcelInputOutcome.Duplicate, ParcelInputReasons.SamePlacement + "; 人工补录已处理本次放置；未创建作业或请求。", correctedOwner, selection), "SamePlacementObserved");
-            return;
-        }
         var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind :
             !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : code is null ? selection.Outcome : null;
-        if (!manual && (!PositionSupplyEnabled(position) || ManagementWorkspaceOpen))
-        {
-            // Keep placement presence/change evidence while acquisition continues,
-            // but disabled reads never replace the current input or create work.
-            if (rejection is null)
-            {
-                lock (placements)
-                {
-                    if (PositionControl(position).Mode == StationPositionMode.Disabling &&
-                        placements.TryGetValue(position, out var draining) && draining.Code != code)
-                        draining.EndedAt ??= o.ObservedAt;
-                    else _ = SamePlacementOwner(position, code!, o.ObservedAt);
-                }
-            }
-            return;
-        }
         if (rejection is not null)
         {
             var input = Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created", selection: selection);
             RecordInput(input, "ObservationRejected");
-            if (!manual && rejection == selection.Outcome && selection.Outcome is "MultipleCodes" or "AmbiguousCodes" or "NoMatchingCode" or "ExcludedCodes" or "InvalidCode")
-                ClaimRejectedPlacement(input, reader);
             return;
         }
         if (priors.Length > 0)
@@ -664,13 +616,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id, selection), "ObservationIdentityObserved");
             return;
         }
-        // A parcel resting on the tray is read in every frame; only its first admitted
-        // read is a request. Lift and re-place (or a different code) starts a new placement.
-        if (!manual && SamePlacementOwner(position, code!, o.ObservedAt) is { } placementOwner)
-        {
-            RecordInput(Input(position, o, ParcelInputOutcome.Duplicate, ParcelInputReasons.SamePlacement + "; 同一包裹仍在本位托盘上，已由原作业处理；未创建作业或请求。取下并重新放置后才再次请求格口", placementOwner, selection), "SamePlacementObserved");
-            return;
-        }
         // This is a new event from the current registration, not an old callback.
         // Queue age/health must close this input's display as well as admission.
         // Existing identities above retain their original responsibility and policy.
@@ -678,12 +623,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             var expired = Input(position, o, ParcelInputOutcome.Rejected, "ObservationExpired; 本次扫码已跳过，请取下包裹后重新上件；未创建作业或请求", selection: selection);
             RecordInput(expired, "ObservationRejected");
-            if (Id == "sportmaster" && !repository!.Paused) ClaimRejectedPlacement(expired, reader);
             return;
         }
         if (!manual && reader.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, nameof(ParcelInputBlockReason.ReaderConfirmationExpired), selection: selection), "ObservationBlocked"); return; }
-        if (!manual) CommitChangedPlacement(position, code!, o);
         RetainReleasedSmUnknowns();
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
@@ -733,35 +676,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 };
             }
             Save(op, "ParcelObserved", admissionDetail, input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id, selection));
-            ClaimPlacement(position, code!, o.ObservedAt, op.Id, camera: o.OperatorInput is null);
             if (originalFrame is not null) { ScheduleOriginalFrame(op, originalFrame); originalFrame = null; }
         }
         finally { originalFrame?.Dispose(); }
-        if (Id == "sportmaster" && !manual)
-        {
-            // Reserve the aggregate gate now, before the ingress worker releases
-            // it. Dispatch then starts independently of subsequent observations;
-            // a held RCS response cannot hold this position's input worker.
-            activeStages.Add(op.Id + ":CameraParcel");
-            auxiliary.Add(ProcessCameraParcelAsync(op));
-            return;
-        }
         await ProcessObservedParcelAsync(op).ConfigureAwait(false);
-    }
-    async Task ProcessCameraParcelAsync(ParcelOperation op)
-    {
-        activeIngress.Value = null;
-        await gate.WaitAsync().ConfigureAwait(false);
-        try { await ProcessObservedParcelAsync(operations[op.Id]).ConfigureAwait(false); }
-        catch (Exception error)
-        {
-            failure = "Camera parcel execution failed: " + error;
-            FenceIngress();
-            if (IsStorageError(error)) StorageFailed(error, "CameraParcelExecution");
-            WriteRuntimeLog("作业", "相机包裹处理失败，原请求保留", new { OperationId = op.Id, op.PositionId, Error = error.ToString() }, "错误", op.Id);
-            throw;
-        }
-        finally { activeStages.Remove(op.Id + ":CameraParcel"); gate.Release(); }
     }
     async Task ProcessObservedParcelAsync(ParcelOperation op)
     {
@@ -825,14 +743,21 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null, WeightMeasurement? measurement = null, BusinessCommand? command = null)
     {
-        try { repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command, ingressIdentity: activeIngress.Value); }
+        if (op.RoundId is { } roundId && (smRounds.GetValueOrDefault(roundId) ?? repository!.Round(roundId))?.EndedAt is not null &&
+            (op.Wcs is null || op.Wcs.Attempts == 0))
+            op = op with { State = ParcelState.Abandoned, Reason = "Round ended before first RCS attempt; original stage cleanup retained" };
+        var round = SmRoundAfterOperation(op);
+        try { repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command,
+            ingressIdentity: op.RoundId is not null ? op.IngressId : activeIngress.Value, round: round); }
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperationCommit"); throw; }
         operations[op.Id] = op;
+        if (round is not null) ApplySmRound(round);
         if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
         if (input is not null) PublishInput(input);
         WriteRuntimeLog("作业", eventName, new
         {
             op.PositionId,
+            op.RoundId,
             op.AdmissionId,
             op.ParcelCode,
             State = op.State.ToString(),

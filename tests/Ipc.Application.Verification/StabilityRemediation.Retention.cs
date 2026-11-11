@@ -22,11 +22,13 @@ static partial class StabilityRemediation
             await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
             for (var i = 0; i < 5; i++)
             {
+                await SmRoundFixture.ConfirmRemovedAsync(app, "left");
                 Check(app.EmitReferenceAt("left", "retention-" + i, "000" + i, "retention-event-" + i), "retention fixture uses actual accepted ingress " + i);
                 var deadline = DateTimeOffset.UtcNow.AddSeconds(5);
                 while (!(await app.SnapshotAsync()).Operations.Any(o => o.AdmissionId == "retention-" + i && o.State == ParcelState.SlotResolved))
                 { if (DateTimeOffset.UtcNow > deadline) throw new TimeoutException(); await Task.Delay(10); }
             }
+            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
             await Command(app, "Pause"); originals = (await app.SnapshotAsync()).Operations.OrderBy(o => o.AdmissionId).ToArray();
         }
         var directory = DirectoryFor(launch, c); var database = Path.Combine(directory, "sportmaster.db");
@@ -66,9 +68,10 @@ static partial class StabilityRemediation
         await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { if (c.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await reopened.StartAsync(default);
         Check(reopened.EmitReferenceAt("left", originals[0].AdmissionId, originals[0].ParcelCode, "retired-duplicate"), "old admission delivery remains durably accounted");
-        var end = DateTimeOffset.UtcNow.AddSeconds(5); ParcelSnapshot state;
-        do { state = await reopened.SnapshotAsync(); if (state.Inputs!.Any(i => i.Reason.StartsWith("ExpiredIdentity:"))) break; await Task.Delay(10); } while (DateTimeOffset.UtcNow < end);
-        Check(state.Inputs!.Any(i => i.Reason.StartsWith("ExpiredIdentity:")) && Scalar(database, "SELECT count(*) FROM parcel_history_index") == 5,
+        var end = DateTimeOffset.UtcNow.AddSeconds(5);
+        const string retiredInput = "SELECT count(*) FROM parcel_audit WHERE event='InputObserved' AND json_extract(detail,'$.Reason') LIKE 'ExpiredIdentity:%'";
+        while (Scalar(database, retiredInput) == 0 && DateTimeOffset.UtcNow < end) await Task.Delay(10);
+        Check(Scalar(database, retiredInput) == 1 && Scalar(database, "SELECT count(*) FROM parcel_history_index") == 5,
             "actual restarted runtime blocks expired entity before new intent or numeric ID");
     }
 }

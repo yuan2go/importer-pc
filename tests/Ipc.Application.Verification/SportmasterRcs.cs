@@ -166,7 +166,7 @@ static partial class SportmasterRcs
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
         var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
         const int release = 400;
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow { PlacementReleaseMs = release }, new Factory(new ParcelCapabilityFactory(launch)));
+        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
         await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
         using var camera = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
         await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);

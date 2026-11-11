@@ -28,6 +28,7 @@ internal static class LiveDevices30
                 var state = await h.App.SnapshotAsync();
                 return state.Positions!.Single(p => p.Id == position).BarcodeInput?.Camera == true && state.Health.Any(c => c.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived);
             });
+            await h.TrayAsync(device, TrayPresence.Absent);
             var before = Processed(position);
             h.Api(device).Enqueue(CameraRoundHarness.Barcode(code), ++frame);
             await CameraRoundHarness.Until(() => Task.FromResult(Processed(position) > before));
@@ -41,7 +42,11 @@ internal static class LiveDevices30
         }
         async Task<BusinessReceipt> Save(Func<ParcelConfiguration, ParcelConfiguration> change)
         {
-            var snapshot = await h.App.SnapshotAsync(); var candidate = change(snapshot.Configuration.Effective);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
+            var snapshot = await h.App.SnapshotAsync();
+            foreach (var round in snapshot.Rounds)
+                await h.TrayAsync(snapshot.Positions!.Single(p => p.Id == round.PositionId).ReaderDeviceId, TrayPresence.Absent);
+            snapshot = await h.App.SnapshotAsync(); var candidate = change(snapshot.Configuration.Effective);
             h.Factory.Expect(candidate);
             return await h.App.StageConfigurationAsync(snapshot.Configuration.Revision, candidate, "LIVE30 synthetic change");
         }

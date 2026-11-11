@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
@@ -14,6 +15,26 @@ public partial class SupplyStationWindow
     bool focusRestoreQueued;
     bool barcodeSelectionCancelled;
     int? barcodeKeyTimestamp;
+    int? barcodeEnterTimestamp;
+    readonly Queue<(int Key, int At)> barcodeNativeKeys = new();
+    IntPtr barcodeWindowHandle;
+    void CaptureBarcodeKey(ref MSG message, ref bool handled)
+    {
+        if (message.hwnd != barcodeWindowHandle || message.message is not (0x100 or 0x104)) return;
+        if (barcodeNativeKeys.Count >= 8192) barcodeNativeKeys.Clear();
+        barcodeNativeKeys.Enqueue((message.wParam.ToInt32(), message.time));
+    }
+    int? TakeNativeBarcodeKeyTime(Key key)
+    {
+        var code = KeyInterop.VirtualKeyFromKey(key);
+        while (barcodeNativeKeys.TryDequeue(out var packet))
+            if (packet.Key == code) return packet.At;
+        return null;
+    }
+    internal int? TakeBarcodeEnterTimestamp()
+    {
+        var at = barcodeEnterTimestamp; barcodeEnterTimestamp = null; return at;
+    }
     internal int? TakeBarcodeKeyTimestamp()
     {
         var timestamp = barcodeKeyTimestamp;
@@ -22,6 +43,9 @@ public partial class SupplyStationWindow
     }
     void BuildOperatorWorkspace()
     {
+        SourceInitialized += (_, _) => barcodeWindowHandle = new WindowInteropHelper(this).Handle;
+        ComponentDispatcher.ThreadFilterMessage += CaptureBarcodeKey;
+        Closed += (_, _) => { ComponentDispatcher.ThreadFilterMessage -= CaptureBarcodeKey; barcodeNativeKeys.Clear(); };
         InitializePace();
         workContent.Children.Add(work);
         Deactivated += (_, _) => CancelBarcodeSelection();
@@ -34,7 +58,13 @@ public partial class SupplyStationWindow
             // Text composition can be dispatched later than the native key.
             // Use key timestamps for characters and Enter so dispatcher delays
             // do not turn one scanner burst into slow typing.
-            barcodeKeyTimestamp = !args.IsRepeat && args.Key != Key.Enter && ViewModel.SelectedPage == "workstation" ? args.Timestamp : null;
+            // WPF can stage a KeyEventArgs after its native message was dispatched.
+            // Capture MSG.time before staging rather than using dispatch-time stamps
+            // or GetMessageTime(), which may already belong to a later message.
+            var at = TakeNativeBarcodeKeyTime(args.Key);
+            var eligible = !args.IsRepeat && ViewModel.SelectedPage == "workstation";
+            barcodeKeyTimestamp = eligible && args.Key != Key.Enter ? at : null;
+            barcodeEnterTimestamp = eligible && args.Key == Key.Enter ? at : null;
             if (args.Key == Key.Escape && ViewModel.SelectedPage == "workstation" && ViewModel.InputTargetPosition.Length != 0)
             { args.Handled = true; CancelBarcodeSelection(); return; }
             if (args.Key is not (Key.F2 or Key.F3) || Keyboard.Modifiers != ModifierKeys.None || !CanRestoreBarcodeFocus) return;
@@ -72,6 +102,8 @@ public partial class SupplyStationWindow
     void CancelBarcodeSelection()
     {
         barcodeKeyTimestamp = null;
+        barcodeEnterTimestamp = null;
+        barcodeNativeKeys.Clear();
         barcodeSelectionCancelled = true;
         if (work.IsKeyboardFocusWithin)
         {

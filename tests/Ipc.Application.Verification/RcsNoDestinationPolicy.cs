@@ -69,7 +69,7 @@ static partial class SportmasterRcs
         Check(repeated.OperationId == receipt.OperationId && h.Peer.Requests.Count == 1, "same original command retains the rejection without another no-destination request");
         await ManagementModeFixture.Authorize(h.App);
         var frozen = Wire.Encode((await h.App.SnapshotAsync()).Operations.Single(o => o.Id == op.Id).Wcs!.Request);
-        await h.App.DisposeAsync(); await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
+        await h.App.DisposeAsync(); await h.StartAsync(ready: false); await ManagementModeFixture.Authorize(h.App);
         var restored = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == op.Id);
         Check(restored.State == ParcelState.WcsRejected && Wire.Encode(restored.Wcs!.Request) == frozen && h.Peer.Requests.Count == 1,
             "restart preserves the confirmed rejection, policy and original bytes without resend");

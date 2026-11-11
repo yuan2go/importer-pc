@@ -87,6 +87,13 @@ public sealed partial class ParcelRuntime
                 SupplyMode = p.SupplyControl?.Mode.ToString(),
                 CameraAdmission = p.BarcodeInput?.Camera ?? p.Admit,
                 ManualAdmission = p.BarcodeInput?.Manual ?? false,
+                p.CurrentRoundId,
+                p.RoundVersion,
+                p.AutomaticSuppressed,
+                Round = CurrentRound(p.Id) is { } round ? new { round.Id, round.Version, round.State, round.StartedAt, round.ReadTimeoutMs,
+                    round.SelectedCode, FormalCandidateCount = round.FormalCodes.Length, round.OperationId, round.CommandId, round.AttemptStarted,
+                    round.AutoExpired, round.RequireRemoval, round.SuccessAt, round.PresenceEvidence } : null,
+                VisualReliable = Id == "sportmaster" && SmVisualReliable(p.Id),
                 CameraBlockers = cameraReasons.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray(),
                 ManualBlockers = p.BarcodeInput?.ManualBlockingReasons,
                 Camera = new
@@ -114,7 +121,7 @@ public sealed partial class ParcelRuntime
                     CandidateHash = Wire.Hash(Wire.Encode(input.Observation.Codes.Order(StringComparer.Ordinal).ToArray())),
                     input.Reason
                 },
-                BlockedOriginalImageAvailable = input is not null && ContinuingUnadmittedPlacement(p.Id, input.Observation) is { } retained &&
+                BlockedOriginalImageAvailable = input is not null && ContinuingBlockedObservation(p.Id, input.Observation) is { } retained &&
                     blockedInputPictures.TryGetValue(p.Id, out var picture) && picture.Metadata.ObservationId == retained.Observation.Id,
                 CurrentOperation = current is null ? null : new
                 {
@@ -189,24 +196,12 @@ public sealed partial class ParcelRuntime
         var evidence = projected.Select(p =>
         {
             var input = latestInputs.GetValueOrDefault(p.Id);
-            object? placementEvidence;
-            lock (placements)
-                placementEvidence = placements.TryGetValue(p.Id, out var placed) ? new
-                {
-                    placed.Operation,
-                    placed.LastSeen,
-                    placed.CameraSeen,
-                    placed.EmptyFrames,
-                    placed.EmptySince,
-                    placed.EndedAt,
-                    RejectedObservationId = placed.RejectedInput?.Observation.Id,
-                    RejectedImageAvailable = placed.RejectedImage is not null
-                } : null;
+            object? placementEvidence = Id == "sportmaster" ? SmCycle(p.Id) : null;
             return new
             {
                 PositionId = p.Id,
                 ObservationId = input?.Observation.Id,
-                DisplayObservationId = input is null ? null : (ContinuingUnadmittedPlacement(p.Id, input.Observation) ?? input).Observation.Id,
+                DisplayObservationId = input is null ? null : (ContinuingBlockedObservation(p.Id, input.Observation) ?? input).Observation.Id,
                 input?.Observation.SourceEventId,
                 input?.Observation.ObservedAt,
                 input?.RecordedAt,

@@ -55,7 +55,7 @@ public partial class SupplyStationPosition : UserControl
             { e.CancelCommand(); overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "粘贴无效：只能粘贴一个完整条码（不含换行或Tab，最多4096字符）。请清空后重新输入。"; }
         });
     }
-    sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation);
+    sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation, string? Round);
     const int PdaMinimumLength = 6, PdaRapidGapMs = 35, PdaMaximumGapMs = 250, PdaEnterGapMs = 100;
     (int At, int Length, char Character)? expectedKeyboardText;
     int? lastKeyboardCharacterAt;
@@ -63,7 +63,7 @@ public partial class SupplyStationPosition : UserControl
     InputBasis? inputBasis;
     SubmitParcelBarcode? submitted;
     bool submitting, overflow, editing, updatingDisplay, showingDraftNotice;
-    bool terminalTextRetained;
+    bool terminalTextRetained, completedInputBurst;
     string? terminalObservationKey;
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -116,7 +116,12 @@ public partial class SupplyStationPosition : UserControl
     // ordinary selection, corrections and snapshot refreshes keep the draft.
     void PrepareResultReplacement()
     {
-        if (!editing && !submitting && submitted is null) BarcodeEntry.SelectAll();
+        if (completedInputBurst && !submitting && submitted is null)
+        {
+            completedInputBurst = false; editing = false; inputBasis = null; ResetPdaDetection();
+            BarcodeEntry.SelectAll();
+        }
+        else if (!editing && !submitting && submitted is null) BarcodeEntry.SelectAll();
     }
     internal void FocusBarcodeInput()
     {
@@ -173,7 +178,7 @@ public partial class SupplyStationPosition : UserControl
     void CaptureInputBasis()
     {
         if (Host?.ViewModel is not { Fresh: true, Snapshot: { } snapshot } || DataContext is not SupplyStationPositionViewModel p) return;
-        inputBasis = new(snapshot.RuntimeId, snapshot.Configuration.Revision, p.Input?.Observation.Id, p.Operation?.Id);
+        inputBasis = new(snapshot.RuntimeId, snapshot.Configuration.Revision, p.Input?.Observation.Id, p.Operation?.Id, p.CurrentRound?.Id);
     }
     string DraftNotice => DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p
         ? p.ShowConfirmedTask ? "输入未提交；下方格口属于 " + p.Barcode + "。" : "输入未提交；本位当前读码：" + (p.Barcode.Length == 0 ? "多个或无效条码" : p.Barcode) + "。"
@@ -224,7 +229,7 @@ public partial class SupplyStationPosition : UserControl
         if (e.Key is Key.Back or Key.Delete or Key.Left or Key.Right or Key.Up or Key.Down or Key.Home or Key.End)
             ResetPdaDetection();
         if (e.Key != Key.Enter || Keyboard.Modifiers != ModifierKeys.None) return;
-        e.Handled = true; if (!e.IsRepeat) await SubmitBarcodeAsync(e.Timestamp);
+        e.Handled = true; if (!e.IsRepeat) { completedInputBurst = true; await SubmitBarcodeAsync(Host?.TakeBarcodeEnterTimestamp() ?? e.Timestamp); }
     }
     void Entry_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
@@ -277,7 +282,7 @@ public partial class SupplyStationPosition : UserControl
             if (!editing) { InputFeedback.Text = "框内是上一件的条码；请输入本件条码后再提交。"; return; }
             if (overflow) { InputFeedback.Text = "条码不完整，请清空后重扫或重新输入。"; return; }
             if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = "请输入完整条码，再按回车或点击提交。"; return; }
-            if (inputBasis is null) CaptureInputBasis();
+            if (inputBasis is null || inputBasis.Round is not null && p.CurrentRound is null) CaptureInputBasis();
             if (inputBasis is not { } basis) { InputFeedback.Text = "本位状态未读取，请稍后再提交。"; return; }
             // A burst is predominantly rapid. A few delayed key messages must
             // not change its source, but a break or an edited draft must.
@@ -285,14 +290,13 @@ public partial class SupplyStationPosition : UserControl
             var kind = enterTimestamp is { } entered && lastKeyboardCharacterAt is { } last && length >= PdaMinimumLength &&
                 rapidCharacterGaps >= length / 2 && WithinInputGap(entered, last, PdaEnterGapMs)
                 ? ParcelBarcodeInputKind.PdaKeyboard : ParcelBarcodeInputKind.Keyboard;
-            submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text, kind, basis.Observation, basis.Operation);
+            submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text, kind, basis.Observation, basis.Operation) { ExpectedRoundId = basis.Round };
             ResetPdaDetection();
         }
         var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true;
         SubmitBarcode.IsEnabled = false; RebaseInput.IsEnabled = false;
         InputFeedback.Text = "正在提交，请等待结果，勿重复扫描。";
-        await vm.RunAsync(async () =>
-        {
+        // Submission ownership is local to this position; management Busy remains global.
             try
             {
                 var receipt = await vm.ServiceAsync(() => service.SubmitParcelBarcodeAsync(request, CancellationToken.None));
@@ -324,7 +328,7 @@ public partial class SupplyStationPosition : UserControl
                 InputFeedback.Text = SubmissionUnconfirmed;
                 vm.Message = InputFeedback.Text;
             }
-        }, "提交或核对本位条码");
+        await vm.RefreshAsync();
         submitting = false; BarcodeEntry.IsReadOnly = submitted is not null;
         SubmitBarcode.Content = submitted is null ? "提交" : "查看提交结果";
         RefreshSubmitAvailability(); RebaseInput.IsEnabled = submitted is null; RefreshBarcodeDisplay(); PrepareResultReplacement();

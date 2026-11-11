@@ -48,6 +48,20 @@ public static partial class ParcelRecovery
         }
         var actual = RecoveryFiles.Inventory(recovery, token);
         if (!actual.Keys.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
+        using (var rounds = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
+        { DataSource = new Uri(source).AbsoluteUri + "?immutable=1", Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
+        {
+            rounds.Open(); using var query = rounds.CreateCommand(); query.CommandText = "SELECT body FROM sm_parcel_rounds WHERE json_extract(body,'$.OriginalFrame.State')='Saved'";
+            using var rows = query.ExecuteReader();
+            while (rows.Read())
+            {
+                var round = Wire.Decode<Ipc.Application.Contracts.SmParcelRound>(rows.GetString(0)); var frame = round.OriginalFrame!;
+                if (frame.RelativeFile != "images/original-frames/round." + round.Id + ".png" ||
+                    !manifest.Files.TryGetValue(frame.RelativeFile, out var hash) || hash != frame.FileSha256 ||
+                    new FileInfo(RecoveryFiles.Resolve(recovery, frame.RelativeFile)).Length != frame.Length)
+                    throw new InvalidDataException("Round original image custody differs; original backup retained");
+            }
+        }
         authority?.Invoke(); return manifest;
     }
     static ParcelRecoveryCapacity RestoreCore(string databaseBackup, string newApplicationDirectory, bool planOnly, Action? authority = null, CancellationToken token = default, MaintenanceExecution? execution = null)

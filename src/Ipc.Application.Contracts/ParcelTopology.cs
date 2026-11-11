@@ -13,6 +13,9 @@ public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Adm
     public StationVehicleState? Vehicle { get; init; }
     public StationPositionState? SupplyControl { get; init; }
     public bool CameraConnectionSuspended { get; init; }
+    public string? CurrentRoundId { get; init; }
+    public long? RoundVersion { get; init; }
+    public bool AutomaticSuppressed { get; init; }
 }
 // A presentation boundary only. PlacementClearedAt carries actual removal evidence.
 public sealed record ManualWorkCardExpiry(string OperationId, DateTimeOffset ObservedThrough);

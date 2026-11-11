@@ -64,8 +64,8 @@ internal static class BackupConsistency
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame)));
                 if (frame < 4) await Task.Delay(420);
             }
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").PlacementClearedAt is not null);
-            Check(DateTimeOffset.UtcNow - first >= TimeSpan.FromMilliseconds(800), "empty evidence contains three delivered frames spanning at least 800ms");
+            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            Check(DateTimeOffset.UtcNow - first >= TimeSpan.FromMilliseconds(800), "three delivered no-code frames are followed by an independent qualified removal fact");
             var before = Progress(h.App);
             await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > before));
             Check(await h.App.OperationAsync(original!.Id) is not null && files.All(f => File.Exists(f.Key) && Wire.FileHash(f.Key) == f.Value),
@@ -112,6 +112,7 @@ internal static class BackupConsistency
         var progress = Progress(h.App);
         await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > progress));
         var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-AFTER-STATE-FAULT"), default);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
         Check(next.Status == "Admitted" && h.Peer.Requests.Count == 1, "auxiliary " + mode + " leaves maintenance and legitimate new supply running");
         // Actual volume availability is an independent guard even with the plan fault.
         h.App.StorageAvailableBytesForVerification = () => throw new IOException("synthetic business volume unavailable");
@@ -171,6 +172,7 @@ internal static class BackupConsistency
         finally { TargetOpened.SetValue(null, null); }
         await Command(h.App, "Resume");
         var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SYNTH-AFTER-COPY-FAILURE"), default);
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
         Check(next.Status == "Admitted" && h.Peer.Requests.Count == 1 && !h.App.FatalFailure.IsCompleted,
             "legitimate supply resumes after " + mode + " without restarting the station or rewriting an original request");
     }

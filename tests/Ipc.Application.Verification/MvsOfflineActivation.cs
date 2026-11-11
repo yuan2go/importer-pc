@@ -100,8 +100,9 @@ static partial class SportmasterRcs
             s = await Wait(app, s => s.Availability!.Admit && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
             Check(!s.Paused && s.Operations.Single().Wcs!.Attempts == 1,
                 "runtime unplug/replug automatically gets a new epoch without pausing software or replaying the original RCS request");
+            var deliveredBefore = returnedFactory.Source!.ReadDiagnostics().Delivered;
             returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);
-            s = await Wait(app, s => s.Inputs!.Single(i => i.PositionId == "left").Outcome == ParcelInputOutcome.Duplicate);
+            s = await Wait(app, _ => returnedFactory.Source!.ReadDiagnostics().Delivered > deliveredBefore);
             Check(s.Operations.Length == 1 && s.Operations.Single().Wcs!.Attempts == 1,
                 "a new camera epoch alone does not invent a new physical placement or replay the resting parcel");
             for (uint frame = 2; frame <= 4; frame++)
@@ -109,11 +110,20 @@ static partial class SportmasterRcs
                 var decoded = returnedFactory.Source!.ReadDiagnostics().DecodeCompleted;
                 returned.Enqueue(new(Enumerable.Repeat((byte)220, 200 * 100).ToArray(), 200, 100), frame);
                 await Wait(app, _ => returnedFactory.Source.ReadDiagnostics().DecodeCompleted > decoded);
-                await Task.Delay(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs / 2 + 50);
+                await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2 + 50);
             }
-            returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 5);
+            s = await app.SnapshotAsync();
+            Check(s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 1, "blank frames after reconnect do not prove physical removal or release automatic suppression");
+            var position = s.Positions!.Single(p => p.Id == "left");
+            if (position.CurrentRoundId is not null)
+            {
+                var removed = await app.CommandAsync(new(Wire.Id(), s.Revision, "ConfirmPlacementRemoval", "left", position.PlacementRemovalOperation));
+                Check(removed.Status == "Persisted", "unknown physical evidence permits explicit round-owned removal");
+            }
+            s = await app.SnapshotAsync();
+            var manual = await app.SubmitParcelBarcodeAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "SYNTH-OFFLINE-RETURN", ParcelBarcodeInputKind.Keyboard, null, null), default);
             s = await Wait(app, s => s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
-            Check(s.Operations.All(o => o.Wcs!.Attempts == 1), "three confirmed empty frames release the placement; a new placement creates one new request with no original replay");
+            Check(manual.Status == "Admitted" && s.Operations.All(o => o.Wcs!.Attempts == 1), "a deliberate new manual same-code submission creates one request without replaying the original");
             await ManagementModeFixture.Authorize(app);
             s = await app.SnapshotAsync();
             Check(!s.Paused && s.Availability!.Configure, "running SM exposes parameter save without a manual pause");

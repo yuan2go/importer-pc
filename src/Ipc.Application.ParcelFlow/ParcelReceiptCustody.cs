@@ -92,7 +92,7 @@ public sealed partial class ParcelRuntime
             if (IsSettled(op) || repository.CustodyOnly(op, Id) || CanRetainSmUnknown(op)) continue;
             return PriorWorkBlock(op);
         }
-        return null;
+        return smCurrentRounds.Count != 0 ? ParcelInputBlockReason.PreviousWorkBlocked : null;
     }
 
     bool RequiresOriginalExecution(ParcelOperation op) => !releasedPlacements.Contains(op.Id) && !IsSettled(op) && !repository!.CustodyOnly(op, Id);

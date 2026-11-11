@@ -5,29 +5,30 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    // Keep the first exact image for this physical placement. Subsequent source
-    // observations still pass the ordinary admission and original-request guards.
-    ParcelInputSnapshot? ContinuingUnadmittedPlacement(string position, Observation observation)
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, ParcelInputSnapshot> blockedInputs = new();
+    ParcelInputSnapshot? ContinuingBlockedObservation(string position, Observation observation)
     {
         if (Id != "sportmaster" || observation.OperatorInput is not null || observation.InspectionSessionId is not null ||
             observation.Kind != "Read" || observation.CandidateIssue is not null ||
-            !readers.TryGetValue(observation.DeviceId, out var reader) || reader.Epoch != observation.Epoch) return null;
-        lock (placements)
-        {
-            if (!frameFedPositions.Contains(position) || !placements.TryGetValue(position, out var placement) ||
-                placement.EndedAt is not null || placement.UnadmittedInput is not { } input ||
-                input.Observation.DeviceId != observation.DeviceId || input.Observation.Epoch != observation.Epoch ||
-                observation.Codes is not [var code] || placement.Code != code ||
-                !input.Observation.Codes.SequenceEqual(observation.Codes, StringComparer.Ordinal)) return null;
-            return input;
-        }
+            !readers.TryGetValue(observation.DeviceId, out var reader) || reader.Epoch != observation.Epoch ||
+            !blockedInputs.TryGetValue(position, out var input) || input.Observation.Epoch != observation.Epoch ||
+            input.Observation.DeviceId != observation.DeviceId || !input.Observation.Codes.SequenceEqual(observation.Codes, StringComparer.Ordinal)) return null;
+        return input;
     }
 
     ParcelInputSnapshot? DisplayedInput(string position, ManualWorkCardExpiry? expired = null)
     {
-        if (!latestInputs.TryGetValue(position, out var input) || IsBeforeEmptyTray(position, input.Observation.ObservedAt) ||
+        if (Id == "sportmaster")
+        {
+            var round = CurrentRound(position);
+            return round?.Observation is { } observation ? new(position, observation,
+                round.OperationId is null ? ParcelInputOutcome.Rejected : ParcelInputOutcome.Admitted,
+                round.ReadOutcome ?? "正在识读", round.OperationId, round.StartedAt, ReaderBinding(position),
+                BarcodeFiltering.Select(round.Filter ?? new BarcodeFilterPolicy(""), observation.Codes, observation.CandidateIssue)) : null;
+        }
+        if (!latestInputs.TryGetValue(position, out var input) ||
             expired is not null && input.OperationId == expired.OperationId) return null;
-        return ContinuingUnadmittedPlacement(position, input.Observation) is { } retained
+        return ContinuingBlockedObservation(position, input.Observation) is { } retained
             ? retained with { Outcome = input.Outcome, Reason = input.Reason, RecordedAt = input.RecordedAt }
             : input;
     }
@@ -37,17 +38,13 @@ public sealed partial class ParcelRuntime
         var eligible = input.Observation.OperatorInput is null && input.Observation.InspectionSessionId is null &&
             (input.Outcome == ParcelInputOutcome.Blocked ||
              input.Outcome == ParcelInputOutcome.Rejected && input.Reason.StartsWith("ObservationExpired;", StringComparison.Ordinal));
-        if (eligible && ContinuingUnadmittedPlacement(input.PositionId, input.Observation) is not null) return;
+        if (eligible && ContinuingBlockedObservation(input.PositionId, input.Observation) is not null) return;
         blockedInputPictures.Remove(input.PositionId);
-        lock (placements)
-            if (placements.TryGetValue(input.PositionId, out var old)) old.UnadmittedInput = null;
+        blockedInputs.TryRemove(input.PositionId, out _);
         if (Id != "sportmaster" || !eligible || !readers.TryGetValue(input.Observation.DeviceId, out var reader) ||
             RetainInputPicture(input.Observation, reader) is not { } image) return;
         blockedInputPictures[input.PositionId] = image;
-        lock (placements)
-            if (placements.TryGetValue(input.PositionId, out var placement) && placement.EndedAt is null &&
-                input.Observation.Codes is [var code] && placement.Code == code)
-                placement.UnadmittedInput = input;
+        blockedInputs[input.PositionId] = input;
         WriteRuntimeLog("原图留档", "受阻扫码原图已保留", new
         {
             input.PositionId, ObservationId = input.Observation.Id, input.Observation.SourceEventId,

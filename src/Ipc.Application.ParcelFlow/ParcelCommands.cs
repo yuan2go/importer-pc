@@ -18,11 +18,11 @@ public sealed partial class ParcelRuntime
         try
         {
             Boundary?.Invoke("SnapshotGateAcquired");
+            MaintainSmRounds();
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
             ObjectDisposedException.ThrowIf(disposed, this);
             // Single consistent read per projection; this scope never releases the business gate.
             repository.BeginReceiptProjection();
-            CommitEmptyTrays();
             projectedCapacity = operations.Values.Count(x => !ArchiveEligible(x));
             RefreshIntegrationBudget();
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
@@ -85,9 +85,10 @@ public sealed partial class ParcelRuntime
             var positionSnapshots = PositionSnapshots();
             var inputs = positionSnapshots.Select(p => DisplayedInput(p.Id, p.ExpiredManualResult)).OfType<ParcelInputSnapshot>().ToArray();
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
-                reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p, hideHistoricalUnknown: Id == "sportmaster")).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), positionSnapshots, readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), inputs, BackupStatus(), configuration.Current.Pending is not null)
+                reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(LatestWorkCardOperation).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), positionSnapshots, readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), inputs, BackupStatus(), configuration.Current.Pending is not null)
             {
-                ConfigurationActivationBlock = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null
+                ConfigurationActivationBlock = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null,
+                Rounds = Id == "sportmaster" ? smCurrentRounds.Values.Select(id => smRounds[id]).ToArray() : []
             };
             encoded = EncodeSnapshot(WithReadFeedbackSnapshot(projection));
         }
@@ -140,7 +141,10 @@ public sealed partial class ParcelRuntime
             if (repository.PriorCommand(command) is { } prior) return prior;
             if (backupInProgress && command.Kind is not ("RuntimeProgress" or "InspectRestore" or "ReceiptResponsibilities" or "IngressResponsibilities"))
                 return new("Rejected", "Consistent backup is in progress; original responsibility and configuration remain fenced", repository.Revision);
-            if (command.ExpectedRevision != repository.Revision) return new("Conflict", "Refresh the current application projection", repository.Revision);
+            // Removal uses its exact round/version token below. An unrelated lane's
+            // receipt must not invalidate this operator's correctly targeted click.
+            if (command.ExpectedRevision != repository.Revision && !(Id == "sportmaster" && command.Kind == "ConfirmPlacementRemoval"))
+                return new("Conflict", "Refresh the current application projection", repository.Revision);
             switch (command.Kind)
             {
                 case "RuntimeProgress": return new("RuntimeProgress", Wire.Encode(RuntimeProgress()), repository.Revision);
@@ -254,8 +258,7 @@ public sealed partial class ParcelRuntime
             Management.Require();
             if (Id == "sportmaster")
             {
-                CommitEmptyTrays();
-                RetainReleasedSmUnknowns();
+                    RetainReleasedSmUnknowns();
             }
             var activationBlock = Id == "sportmaster" ? SmConfigurationBlock() : null;
             if (activationBlock is null && ConfigurationActivation.RulesOnly(Id, Effective, configuration.Current.Pending, candidate))
@@ -427,7 +430,7 @@ public sealed partial class ParcelRuntime
             FlushInputLogSummaries();
             FlushIngressTimings(force: true);
             WriteStationState("StopCompleted", force: true);
-            lock (placements) foreach (var placement in placements.Values) placement.RejectedImage = null;
+            blockedInputs.Clear(); smRoundPictures.Clear();
             if (terminalWorkerFailure is not null) throw new InvalidOperationException("Terminal worker failed; sources and ports are stopped, disposal is still required", terminalWorkerFailure);
         }
         finally { gate.Release(); }

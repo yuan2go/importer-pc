@@ -375,8 +375,8 @@ def analyze(args):
         latencies = {}
         for position in ('left', 'right'):
             timing = {}
-            for label, expression in [('queue_ms', 'queue_ms'), ('processing_ms', 'processing_ms'),
-                                      ('input_queue_and_processing_ms', '(queue_ms+processing_ms)')]:
+            for label, expression in [('queue_ms', 'queue_ms'), ('input_decision_and_handoff_ms', 'processing_ms'),
+                                      ('input_queue_decision_and_handoff_ms', '(queue_ms+processing_ms)')]:
                 n, maximum = db.execute(f'SELECT count({expression}),max({expression}) FROM parcel_ingress WHERE {where} AND position=?', (*params, position)).fetchone()
                 timing[label] = dict(Samples=n, Maximum=maximum)
                 for percentile, fraction in [('P95', .95), ('P99', .99)]:
@@ -384,6 +384,9 @@ def analyze(args):
                                      (*params, position, max(0, math.ceil(n * fraction) - 1))).fetchone()
                     timing[label][percentile] = row[0] if row else None
             latencies[position] = timing
+        round_where = "replace(json_extract(body,'$.ClockRuntime'),'-','')=? AND julianday(started)>=julianday(?) AND julianday(started)<=julianday(?)"
+        round_counts = db.execute('SELECT position,active,count(*) FROM sm_parcel_rounds WHERE ' + round_where + ' GROUP BY position,active', params).fetchall()
+        round_ends = db.execute("SELECT position,json_extract(body,'$.EndReason'),count(*) FROM sm_parcel_rounds WHERE active=0 AND " + round_where + " GROUP BY position,json_extract(body,'$.EndReason')", params).fetchall()
         # Bounded scratch outputs are private until every validation succeeds. A refusal
         # publishes no report or partial dispositions and never mutates the backup.
         with tempfile.TemporaryDirectory(prefix='stability-analysis-', dir=output.parent) as scratch:
@@ -480,7 +483,8 @@ def analyze(args):
                             Coverage='Retained input ledger only; coalesced observations and expired history require independent evidence')
             report = dict(Status='ANALYZED_REVIEW_REQUIRED', SourceCommit=collection['SourceCommit'], RuntimeId=collection['RuntimeId'], Backup=verified,
                           ActualNormalSeconds=actual, NormalStart=collection['NormalStart'], NormalEnd=collection['NormalEnd'], CollectionStatus=collection['Status'],
-                          Counts=counts, Dispositions=dict(inventory), LatencyMilliseconds=latencies, Ui=collection.get('Ui'), Evidence=evidence,
+                          Counts=counts, Dispositions=dict(inventory), LatencyMilliseconds=latencies, RoundCounts=round_counts, RoundEndReasons=round_ends,
+                          InputCompletionMeaning='Input decision and managed handoff; not RCS completion', Ui=collection.get('Ui'), Evidence=evidence,
                           Counters=dict(ReceivedInputDelta=observed_delta(collection, 'Received'), ObservedOnlyDelta=observed_delta(collection, 'ObservedOnly'),
                                         CameraFrames=None, PhysicalPlacements=None, RcsFacts=dict(rcs), LinkedRequestIds=operation_facts,
                                         ActualPeerReceivedRequests=None, ActualPeerResponses=None), SourceDeliveryReconciliation=reconciliation,

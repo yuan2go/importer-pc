@@ -46,7 +46,7 @@ jobs:
           [xml]$testResult = Get-Content -LiteralPath .artifacts/core/core.trx -Raw
           $testCounters = $testResult.TestRun.ResultSummary.Counters
           if ([int]$testCounters.executed -lt 25 -or [int]$testCounters.failed -ne 0 -or [int]$testCounters.notExecuted -ne 0) { throw 'Core test discovery/execution is incomplete' }
-          $requiredSuites = @('--backup-consistency', '--stability-analysis', '--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--state-journal', '--read-cadence', '--interrupted-scan-skip', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode', '--mvid-reader')
+          $requiredSuites = @('--sm-round-lifecycle', '--sm-runtime-responsibility', '--backup-consistency', '--stability-analysis', '--industrial-recovery', '--industrial-lifecycle', '--industrial-rollback', '--industrial-version-pruning', '--permanent-deletion-02', '--industrial-opaque-removal', '--industrial-quiet-deployment', '--industrial-diagnostics', '--station-single-camera', '--same-placement-29', '--live-devices-30', '--mvs-stop-reconnect', '--mvs-still-frames', '--state-journal', '--read-cadence', '--interrupted-scan-skip', '--work-card-current', '--history-detail-sheet', '--installation-receipts-04', '--first-configuration-03', '--dual-camera-performance', '--debug-no-isolation-31', '--management-mode', '--installer-storage-checks', '--storage-schema-only', '--log-readable', '--tilted-decode', '--mvid-reader')
           $actualResults = @($testResult.TestRun.Results.UnitTestResult)
           foreach ($suite in $requiredSuites) {
             $matched = @($actualResults | Where-Object { $_.testName.Contains($suite) })
@@ -193,7 +193,7 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           $env:IPC_FROZEN_DESKTOP = Join-Path $PWD.Path 'src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll'
-          foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback')) {
+          foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback', 'continuous-pda-input')) {
             dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path "--$suite"
             $verificationExit = $LASTEXITCODE
             $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()

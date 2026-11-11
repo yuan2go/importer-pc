@@ -199,6 +199,8 @@ public sealed partial class ParameterSettingsControl
             SessionLifetime(Form(login), login, m);
         }
         var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "设置哪些条码有效，以及一次读到多个条码时如何处理。左右相机共用。" : "编辑当前业务策略。"); var form = Form(page);
+        if (m.ApplicationId == "sportmaster") Input(form, "自动识读期限", m.Policy, "ReadTimeoutMs", "ReadTimeoutMs", page,
+            "默认1000毫秒，100～60000。帧与候选变化不续期；到期后可原位PDA补录，与RCS超时无关。");
         if (m.ApplicationId == "sportmaster")
         {
             Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "条码需完整匹配此规则（正则表达式）；留空则不筛选。", true);

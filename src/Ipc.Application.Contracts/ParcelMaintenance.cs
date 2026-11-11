@@ -18,6 +18,9 @@ public sealed record ParcelCapacity(int Unresolved, int Resident, long Archived,
 {
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
     public long HistoricalUnknown { get; init; }
+    public int CurrentRounds { get; init; }
+    public int ExecutingRequests { get; init; }
+    public int ManagedExecutions { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public ParcelInputBlockReason? AdmissionBlock { get; init; }
 }

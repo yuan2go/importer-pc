@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
-    const string UnsupportedStorage = "仅支持当前数据格式，旧格式原文件保留，请使用全新数据目录。";
+    const string UnsupportedStorage = "仅支持当前数据格式，原文件已保留；请用匹配版本核对原记录和永久请求编号，勿清空或覆盖原数据。";
     public static int ReadStorageVersion(string database, string application)
         => ReadStorageVersion(database, application, immutable: false);
     internal static int ReadStorageVersion(string database, string application, bool immutable)
@@ -28,6 +28,7 @@ public sealed partial class ParcelRepository
                 r.GetInt64(1) != CurrentStorageVersion || r.GetString(2) != Database.BaselineHash(Baseline) || r.Read())
                 throw new InvalidDataException(UnsupportedStorage);
             r.Close(); RequireSchema(db, actual, tx);
+            ValidateRoundHistory(db, tx);
             return actual;
         }
         catch (Exception ex) when (ex is SqliteException or InvalidCastException or InvalidOperationException or FormatException)

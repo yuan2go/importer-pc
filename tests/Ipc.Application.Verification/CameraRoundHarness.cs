@@ -19,10 +19,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
 {
     static readonly string Password = "Fixture-" + Guid.NewGuid().ToString("N");
     static bool nativeLoaded;
+    public const int SyntheticBlankFrames = 3, SyntheticBlankSpanMs = 800;
     public readonly RoundPeer Peer = new();
     public readonly BusinessLaunch Launch;
     public readonly ParcelConfiguration Config;
     public ParcelRuntime App { get; private set; } = null!;
+    public Action<RoundFactory>? ConfigureFactory { get; init; }
+    public TimeProvider? StationClock { get; init; }
     public RoundFactory Factory { get; private set; } = null!;
     public string Left => Config.Topology!.Readers[0].DeviceId;
     public string Right => Config.Topology!.Readers[1].DeviceId;
@@ -30,18 +33,27 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     // Fallback window for non-frame sources; camera positions end a placement only on an empty tray.
     public int PlacementReleaseMs { get; init; } = 300;
     public static readonly RoundPixels EmptyTray = new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);
-    // Lift and re-place: the camera decodes enough empty-tray frames to end the placement.
+    // Synthetic lift includes an explicit qualified physical fact, independent of
+    // decoded blank frames. No production image classifier is claimed by this fixture.
     // Returns the next frame number for the caller's own sequence.
     public async Task<uint> ReplaceParcelAsync(string device, uint next)
     {
-        for (var i = 0; i < SportmasterFlow.DefaultSamePlacementEmptyFrames; i++)
+        for (var i = 0; i < CameraRoundHarness.SyntheticBlankFrames; i++)
         {
             var decoded = Factory.Decoders[device].Count;
             Api(device).Enqueue(EmptyTray, next++);
             await Until(() => Task.FromResult(Factory.Decoders[device].Count > decoded));
-            await Task.Delay(SportmasterFlow.DefaultSamePlacementEmptyMinimumMs / 2);
+            await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2);
         }
+        await TrayAsync(device, TrayPresence.Absent);
         return next;
+    }
+    public async Task TrayAsync(string device, TrayPresence presence)
+    {
+        var position = Config.Topology!.Positions.Single(p => p.ReaderDeviceId == device).Id;
+        var before = App.WorkerProgress().Single(p => p.Position == position).Processed;
+        if (!Factory.Trays[device].Observe(presence)) throw new InvalidOperationException("Qualified fixture presence was not admitted");
+        await Until(() => Task.FromResult(App.WorkerProgress().Single(p => p.Position == position).Processed > before));
     }
     // stillMs: "放稳后再识别" for both synthetic cameras; "0" decodes every frame.
     public CameraRoundHarness(string workspace, string folder, int? timeoutMs = null, int? queueCapacity = null, string? rcsEndpoint = null, int heartbeatSeconds = 1, string stillMs = "0", bool nativeResults = false, BarcodeFilterPolicy? barcodeFilter = null, string? stationCode = null, int? maximumOperations = null)
@@ -81,8 +93,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public async Task StartAsync(bool waitForAllCameras = true, bool waitForRcs = true, bool authorizeManagement = true, bool supervisedRestart = false, string? rcsImplementationFingerprint = null)
     {
         Factory = new(Launch, Config);
+        ConfigureFactory?.Invoke(Factory);
         if (rcsImplementationFingerprint is not null) Factory.RcsImplementationFingerprint = rcsImplementationFingerprint;
-        App = new(Launch with { RequireRecoveryReview = supervisedRestart }, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        App = new(Launch with { RequireRecoveryReview = supervisedRestart }, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
+        if (StationClock is not null) App.StationTime = StationClock;
         await App.StartAsync(default);
         if (waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         if (authorizeManagement) await AuthorizeAsync();
@@ -146,15 +160,49 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     }
     public async ValueTask DisposeAsync() { if (App is not null) await App.DisposeAsync(); await Peer.DisposeAsync(); }
     internal sealed record RoundPixels(byte[] Data, int Width, int Height);
+    internal sealed class QualifiedTraySource(MvsAcquisition inner) : IAutomaticReconnectObservationSource, IOriginalFrameSource,
+        IObservationPreviewSource, IObservationPreviewLeaseSource, IObservationInspectionSource, IObservationReadFeedbackSource,
+        IObservationDiagnosticsSource, IObservationPerformanceSource
+    {
+        Func<Observation, bool>? receiver; long sequence;
+        public string DeviceId => inner.DeviceId;
+        public string Epoch => inner.Epoch;
+        public string ConfirmationSource => inner.ConfirmationSource;
+        public Task StartControlledAsync(string epoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> health, CancellationToken token)
+        {
+            receiver = receive; sequence = 0;
+            return inner.StartControlledAsync(epoch, value => receive(value with { Sequence = Interlocked.Increment(ref sequence) }), health, token);
+        }
+        public bool Observe(TrayPresence presence)
+        {
+            var id = Wire.Id();
+            return receiver!(new(id, DeviceId, Epoch, "physical." + id, Interlocked.Increment(ref sequence), "physical." + id, "Presence", [], null, DateTimeOffset.UtcNow)
+            { TrayPresence = new(presence, "controlled-qualified-fixture-event") });
+        }
+        public void EnableOriginalFrames() => inner.EnableOriginalFrames();
+        public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity id) => inner.RetainOriginalFrame(id);
+        public void ReleaseOriginalFrame(AcquisitionIdentity id) => inner.ReleaseOriginalFrame(id);
+        public ObservationPreview? ReadPreview() => inner.ReadPreview();
+        public ObservationPreviewLease? ReadPreviewLease() => inner.ReadPreviewLease();
+        public Task SetInspectionAsync(InspectionRegistration? registration, CancellationToken token) => inner.SetInspectionAsync(registration, token);
+        public string? InspectionFailure => inner.InspectionFailure;
+        public event Action<ObservationReadFeedback>? ReadFeedback { add => inner.ReadFeedback += value; remove => inner.ReadFeedback -= value; }
+        public ObservationDiagnostics ReadDiagnostics() => inner.ReadDiagnostics();
+        public object ReadPerformance() => inner.ReadPerformance();
+        public Task StopAsync(CancellationToken token) => inner.StopAsync(token);
+        public ValueTask DisposeAsync() => inner.DisposeAsync();
+    }
     internal sealed class RoundFactory(BusinessLaunch launch, ParcelConfiguration expected) : IParcelCapabilityFactory
     {
         readonly ParcelCapabilityFactory validator = new(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
         public readonly Dictionary<string, RoundApi> Apis = [];
         public readonly Dictionary<string, MvsAcquisition> Sources = [];
         public readonly Dictionary<string, RoundDecoder> Decoders = [];
+        public readonly Dictionary<string, QualifiedTraySource> Trays = [];
         // Live replacement bookkeeping: how many ports were rebuilt, and whether new cameras are found.
         public int ReaderBuilds, WcsBuilds;
         public bool DiscoverReplacements = true;
+        public Func<IControlledObservationSource, IControlledObservationSource>? DecorateReader { get; set; }
         public bool RejectLiveReaders = false, FailCandidateRelease = false;
         public bool CheckBuiltInProductionAdmission { get; set; }
         public string? AdmissionFailure(ParcelConfiguration c) =>
@@ -178,7 +226,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public ParcelPorts Create(ParcelConfiguration c)
         {
             Validate(c); var readers = new Dictionary<string, IControlledObservationSource>();
-            foreach (var binding in c.Topology!.Readers) readers.Add(binding.DeviceId, Reader(binding));
+            foreach (var binding in c.Topology!.Readers)
+            { var source = new QualifiedTraySource(Reader(binding)); Trays[binding.DeviceId] = source; readers.Add(binding.DeviceId, DecorateReader?.Invoke(source) ?? source); }
             var wcs = new SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
             return new(readers[c.Reader.DeviceId], null, wcs, null, new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }
@@ -187,7 +236,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             Validate(c); var readers = new Dictionary<string, IControlledObservationSource>();
             foreach (var id in readerIds)
             {
-                readers.Add(id, Reader(c.Topology!.Readers.Single(r => r.DeviceId == id))); ReaderBuilds++;
+                var source = new QualifiedTraySource(Reader(c.Topology!.Readers.Single(r => r.DeviceId == id))); Trays[id] = source;
+                readers.Add(id, DecorateReader?.Invoke(source) ?? source); ReaderBuilds++;
                 Apis[id].Discovered = DiscoverReplacements;
                 if (FailCandidateRelease) Decoders[id].FailReleaseAt = 1;
             }
@@ -207,12 +257,14 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public int MissNext;
         public int RejectNext;
         public RecognitionSymbol[] Last = [];
+        public Action? BeforeDecode { get; set; }
         public MvsTimingSnapshot? TimingSnapshot => inner.TimingSnapshot;
         public void Prepare() => inner.Prepare();
         public string[] Decode(byte[] p, int length, int width, int height) => DecodeDetailed(p, length, width, height).Select(s => s.Text).ToArray();
         public RecognitionSymbol[] DecodeDetailed(byte[] p, int length, int width, int height)
         {
             if (!api.WasReturned(p.AsSpan(0, length))) throw new InvalidOperationException("Recognition must follow its own SDK loan return");
+            BeforeDecode?.Invoke();
             if (Interlocked.Decrement(ref RejectNext) >= 0)
             {
                 Interlocked.Increment(ref Count);
@@ -262,6 +314,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public int RecognitionAcquires, PreviewAcquires;
         public MvsFrame? Acquire() { Interlocked.Increment(ref RecognitionAcquires); return AcquireFrame(); }
         public Action? BeforePreviewReturn = null;
+        public Action? BeforeAcquireReturn { get; set; }
         public MvsFrame? AcquirePreview()
         {
             Interlocked.Increment(ref PreviewAcquires); var frame = AcquireFrame();
@@ -275,9 +328,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             borrowedPixels = frame.Pixels.Data; borrowedFrame = frame.Number;
             buffer = Marshal.AllocHGlobal(frame.Pixels.Data.Length); Marshal.Copy(frame.Pixels.Data, 0, buffer, frame.Pixels.Data.Length); HasFrame = true;
             Interlocked.Increment(ref Acquires);
+            var started = System.Diagnostics.Stopwatch.GetTimestamp(); BeforeAcquireReturn?.Invoke();
             return new(buffer, (uint)frame.Pixels.Width, (uint)frame.Pixels.Height, MvsNative.Mono8, (ulong)frame.Pixels.Data.Length, frame.Number,
                 Trigger: 0, LostPackets: (uint)Interlocked.Exchange(ref NextLostPackets, 0))
-            { NativeSymbols = frame.Symbols, NativeRejection = frame.Rejection, NativeRecognitionMs = 12.5 };
+            { NativeSymbols = frame.Symbols, NativeRejection = frame.Rejection, NativeRecognitionMs = 12.5 + (BeforeAcquireReturn is null ? 0 : System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds) };
         }
         public void Release() { if (!HasFrame) throw new InvalidOperationException("Double SDK return"); Marshal.FreeHGlobal(buffer); HasFrame = false; returnedPixels.TryAdd(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(borrowedPixels!)), 0); borrowedPixels = null; LastReturnedFrame = borrowedFrame; Interlocked.Increment(ref Releases); }
         public void ClearBuffers() { Interlocked.Increment(ref Clears); ClearGate.Wait(); if (FailNextClear) { FailNextClear = false; throw new IOException("Synthetic SDK cache clear failed"); } while (queue.TryDequeue(out _)) { } }

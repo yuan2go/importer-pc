@@ -131,7 +131,7 @@ public sealed class ParcelPictureWindow : Window
             var bitmap = BitmapSource.Create(frame.Width, frame.Height, 96, 96, PixelFormats.Gray8, null, original.Gray8, frame.Width); bitmap.Freeze();
             image.Source = bitmap; image.Width = scene.Width = frame.Width; image.Height = scene.Height = frame.Height;
             copyImage.IsEnabled = true;
-            provenance.Text = "作业：" + (result.OperationId ?? "本次扫描未受理") + "\n观察：" + result.ObservationId + "\n相机：" + frame.DeviceId +
+            provenance.Text = (result.Archived?.RoundId is { } round ? "轮次：" + round : "作业：" + (result.OperationId ?? "本次扫描未受理")) + "\n观察：" + result.ObservationId + "\n相机：" + frame.DeviceId +
                 " · 周期：" + frame.Epoch + " · 帧：" + frame.FrameNumber + "\n采集：" + frame.CapturedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") +
                 "\n像素：" + frame.Width + " × " + frame.Height + " · SHA256：" + frame.OriginalSha256;
             DrawAnnotations(); fit = true; Fit();
@@ -155,7 +155,7 @@ public sealed class ParcelPictureWindow : Window
         if (Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(pixels)) != info.RawSha256) throw new InvalidDataException("图片校验未通过，可能已损坏。");
         var source = info.Acquisition; var numberText = source.SourceEventId.StartsWith("mvs.frame.", StringComparison.Ordinal) ? source.SourceEventId[10..] : source.SourceEventId.StartsWith("mvid.frame.", StringComparison.Ordinal) ? source.SourceEventId[11..] : "";
         _ = long.TryParse(numberText, out var number);
-        return new(new("business-original:" + archived.OperationId, "business-original", source.DeviceId, source.Epoch, number,
+        return new(new("business-original:" + (archived.RoundId ?? archived.OperationId), "business-original", source.DeviceId, source.Epoch, number,
             source.ObservedAt, info.Width, info.Height, [], 0, null, source.SourceEventId, null, info.RawSha256!, true,
             "原始图片；没有识别位置信息时不画框", OperationId: archived.OperationId), pixels);
     }

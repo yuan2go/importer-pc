@@ -128,6 +128,7 @@ static class StateJournalChecks
             Position(State(e), "left").GetProperty("Camera").GetProperty("DecodePolicy").GetString() == "Automatic"));
         Check(DestinationRequests() == 1, "RCS recovery records automatic decode restoration without a new parcel request");
         h.Peer.ReplySlot = "";
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
         await Feed("SYNTH-STATE-UNKNOWN", 15);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Unknown));
         var unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.Wcs?.State == StageState.Unknown);

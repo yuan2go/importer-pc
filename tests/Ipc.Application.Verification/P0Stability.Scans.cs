@@ -27,7 +27,7 @@ static partial class SportmasterRcs
         c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers } };
         Directory.CreateDirectory(root); ExtensionStore.AtomicWrite(Path.Combine(root, "business.json"), c);
         var launch = new BusinessLaunch(root, Path.Combine(root, "data"), null, null);
-        await using (var app = new ParcelRuntime(launch, new SportmasterFlow { PlacementReleaseMs = 300 }, new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } })
+        await using (var app = new ParcelRuntime(launch, new SportmasterFlow(), new P0SimulationFactory(launch)) { RuntimeIdentityPreflight = () => { } })
         {
             await app.StartAsync(default);
             using var camera = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));

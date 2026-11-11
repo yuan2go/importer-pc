@@ -64,7 +64,8 @@ public sealed partial class ParcelRuntime
         else if (Id != "sportmaster" && requireAdmissionCapacity && UnresolvedCapacity - releasingSlot >= Effective.MaximumOperations)
             reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.CapacityExhausted)!);
         if (!ImageCapacityAvailable()) reasons.Add("图像处理容量不足，原件仍保留。");
-        if (operations.Values.FirstOrDefault(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o) &&
+        if (!debugRequest && CurrentRound(position)?.OperationId is not null) reasons.Add("本轮已提交，请先结束本轮，不得重复取格口。");
+        if (Id != "sportmaster" && operations.Values.FirstOrDefault(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o) &&
             (NeedsReconciliation(o) || !MainTerminated(o) || WeightExpired(o))) is { } original)
             reasons.Add(ParcelInputReasons.ActionableNotice(PriorWorkBlock(original))!);
         return reasons.Distinct(StringComparer.Ordinal).ToArray();

@@ -11,6 +11,7 @@ public static partial class ParcelConfigurationRules
         if (c.SchemaVersion != CurrentConfigurationSchema || c.Topology is null) return ["仅支持第三版完整拓扑配置；请保留原配置并使用当前模板。"];
         if (c.MaintenanceLogin is not null) return ["旧维护认证配置不再支持；管理密码由管理模式保护，原配置不得自动转换。"];
         List<string> e = [];
+        if (c.ReadTimeoutMs is < 100 or > 60000) e.Add("ReadTimeoutMs: 自动识读期限须为100～60000毫秒");
         if (c.OperationsPolicy is { } operations)
         {
             if (application != "sportmaster") e.Add("班次与自动维护策略仅用于SM");

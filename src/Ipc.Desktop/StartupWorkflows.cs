@@ -565,19 +565,26 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         System.Windows.Automation.AutomationProperties.SetAutomationId(button, "Startup." + kind);
         actionButtons.Add(kind, button); return button;
     }
-    bool CanExecute(RepairAction kind) => kind switch
+    bool CanExecute(RepairAction kind)
     {
-        RepairAction.Read or RepairAction.Reload or RepairAction.Install or RepairAction.Tools or RepairAction.Exit => true,
-        RepairAction.Start => draft is not null && document?.NeedsSmDb12Continuation != true && !startupSaveUncertain && savedInput == Input() && draft.DisplayPreferences?.HasChanges != true,
-        RepairAction.Save or RepairAction.Repair => draft is not null && checkedInput == Input() && !startupSaveUncertain,
-        RepairAction.ContinueData => document?.NeedsSmDb12Continuation == true,
-        RepairAction.Previous or RepairAction.Next => draft is not null && document?.NeedsSmDb12Continuation != true,
-        RepairAction.PlanRestore => maintenance is not null && !string.IsNullOrWhiteSpace(backup) && !string.IsNullOrWhiteSpace(restoreRoot),
-        RepairAction.ExecuteRestore => recovery is not null && !UnknownOutcome,
-        RepairAction.AdoptRestore => restoredPreview is not null && restoredBackup is not null,
-        RepairAction.ContinueDraft => draft is not null && savedDraft is not null,
-        _ => draft is not null && document?.NeedsSmDb12Continuation != true && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
-    };
+        // A failed Dispose still owns the original SDK object. Permit only
+        // retrying that cleanup or completing its already-confirmed save.
+        if (maintenanceReleasePending && kind is not (RepairAction.Read or RepairAction.Reload or RepairAction.Exit or RepairAction.Tools) &&
+            !(kind == RepairAction.SaveAndStart && SaveIsComplete) && !(kind == RepairAction.Start && savedInput == Input() && checkedInput == Input())) return false;
+        return kind switch
+        {
+            RepairAction.Read or RepairAction.Reload or RepairAction.Install or RepairAction.Tools or RepairAction.Exit => true,
+            RepairAction.Start => draft is not null && document?.NeedsSmDb12Continuation != true && !startupSaveUncertain && savedInput == Input() && draft.DisplayPreferences?.HasChanges != true,
+            RepairAction.Save or RepairAction.Repair => draft is not null && checkedInput == Input() && !startupSaveUncertain,
+            RepairAction.ContinueData => document?.NeedsSmDb12Continuation == true,
+            RepairAction.Previous or RepairAction.Next => draft is not null && document?.NeedsSmDb12Continuation != true,
+            RepairAction.PlanRestore => maintenance is not null && !string.IsNullOrWhiteSpace(backup) && !string.IsNullOrWhiteSpace(restoreRoot),
+            RepairAction.ExecuteRestore => recovery is not null && !UnknownOutcome,
+            RepairAction.AdoptRestore => restoredPreview is not null && restoredBackup is not null,
+            RepairAction.ContinueDraft => draft is not null && savedDraft is not null,
+            _ => draft is not null && document?.NeedsSmDb12Continuation != true && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
+        };
+    }
     void InvalidateRestorePlan()
     {
         var hadPlan = recovery is not null; recovery = null;

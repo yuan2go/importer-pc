@@ -42,12 +42,16 @@ static partial class Program
             Click("StopCameraSampleBatch"); await Until(() => probe.EndCommands.Count == 1);
             Check(Field("batch") is not null && !Button("StopCameraSampleBatch").IsEnabled && !Button("StartCameraSampleBatch").IsEnabled,
                 "stop waits for real Application closure and blocks duplicate starts and stops");
+            Button("StopCameraSampleBatch").BringIntoView(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            CaptureInternal(evidence, "debug-batch-stopping", window, lines);
             probe.HoldEnd.SetResult(); await Until(() => Field("batch") is null && Field("busy") is false);
             Check((await runtime.CameraInspectionStatusAsync(default)).State == "Closed", "stopping closes the original durable inspection session");
             probe.Reset(); probe.FailEndOnce = true;
             Click("StartCameraSampleBatch"); await probe.ReadEntered.Task.WaitAsync(TimeSpan.FromSeconds(10)); Click("StopCameraSampleBatch");
             await Until(() => Field("busy") is false && Button("StopCameraSampleBatch").IsEnabled);
             Check(Field("batch") is not null && !Button("StartCameraSampleBatch").IsEnabled, "release failure retains original identity, samples and an explicit retry");
+            Button("StopCameraSampleBatch").BringIntoView(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+            CaptureInternal(evidence, "debug-batch-release-failed", window, lines);
             var original = probe.EndCommands.Single(); Click("StopCameraSampleBatch"); await Until(() => Field("batch") is null);
             Check(probe.EndCommands.Count == 2 && probe.EndCommands.All(c => c == original), "retry reconciles the same End command and session without another Begin");
             probe.Reset(); probe.CompleteFrames = true;

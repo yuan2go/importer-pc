@@ -26,7 +26,7 @@ $env:IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME='1'
 $env:IPC_FROZEN_DESKTOP=Join-Path $repo "src/Ipc.Desktop/bin/$Configuration/net10.0-windows/Ipc.Desktop.dll"
 $executions=[Collections.Generic.List[object]]::new()
 $sourceIdentity=[ordered]@{commit=(& git -C $repo rev-parse HEAD); diffSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes((& git -C $repo diff HEAD | Out-String))))); configuration=$Configuration; collector='coverlet.console 10.1.0'; startedUtc=[DateTimeOffset]::UtcNow.ToString('o')}
-function Measure([string]$name,[string]$directory,[string]$target,[string]$arguments){
+function Invoke-BranchMeasurement([string]$name,[string]$directory,[string]$target,[string]$arguments){
  $report=Join-Path $run $name
  $started=[DateTimeOffset]::UtcNow
  $modules=@(Get-ChildItem -LiteralPath $directory -Filter 'Ipc.*.dll' | ForEach-Object { [ordered]@{name=$_.BaseName; sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash; pdbSha256=$(if(Test-Path -LiteralPath ([IO.Path]::ChangeExtension($_.FullName,'.pdb'))){(Get-FileHash -LiteralPath ([IO.Path]::ChangeExtension($_.FullName,'.pdb')) -Algorithm SHA256).Hash}else{$null})} })
@@ -40,7 +40,7 @@ function Measure([string]$name,[string]$directory,[string]$target,[string]$argum
 try {
  $sourceIdentity | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run 'source.json') -Encoding utf8
  $coreArgs='test "'+(Join-Path $core 'Ipc.Core.Tests.dll')+'" --logger "trx;LogFileName=core.trx" --results-directory "'+(Join-Path $run 'tests')+'"'
- $failed=Measure 'core' $child (Get-Command dotnet).Source $coreArgs
+ $failed=Invoke-BranchMeasurement 'core' $child (Get-Command dotnet).Source $coreArgs
  if($IncludeWpf){
   $ui=Join-Path $run 'binaries/wpf'; New-Item -ItemType Directory -Path $ui | Out-Null
   Copy-Item -Path (Join-Path $repo "tests/Ipc.Desktop.UiVerification/bin/$Configuration/net10.0-windows/*") -Destination $ui -Recurse
@@ -51,7 +51,7 @@ try {
   }
   $env:IPC_FROZEN_DESKTOP=Join-Path $ui 'Ipc.Desktop.dll'
   foreach($suite in @('startup-defaults-ui','window-preference','parameter-guidance-startup','startup-read-failure','station-settings')){
-   $code=Measure "wpf-$suite" $ui (Get-Command dotnet).Source ('"'+(Join-Path $ui 'Ipc.Desktop.UiVerification.dll')+'" "'+$repo+'" --'+$suite)
+   $code=Invoke-BranchMeasurement "wpf-$suite" $ui (Get-Command dotnet).Source ('"'+(Join-Path $ui 'Ipc.Desktop.UiVerification.dll')+'" "'+$repo+'" --'+$suite)
    if($code){$failed=1}
   }
  }

@@ -184,8 +184,8 @@ static partial class Program
             {
                 var round = vm.Right.CurrentRound!.Id; var sends = h.Peer.Requests.Count;
                 otherWindow.Show();
-                // Showing the window starts its own asynchronous refresh. RefreshAsync
-                // may join the UI polling guard, so one dispatcher flush is not a
+                // Showing the window starts its own asynchronous refresh. A concurrent push can
+                // supersede RefreshAsync, so one dispatcher flush is not a
                 // completed projection. Wait for the actual shared-round result.
                 for (var i = 0; i < 150; i++)
                 {

@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -165,18 +165,23 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         IObservationDiagnosticsSource, IObservationPerformanceSource
     {
         Func<Observation, bool>? receiver; long sequence;
+        readonly object publication = new();
+        bool Deliver(Observation value)
+        {
+            lock (publication) return receiver!(value with { Sequence = ++sequence });
+        }
         public string DeviceId => inner.DeviceId;
         public string Epoch => inner.Epoch;
         public string ConfirmationSource => inner.ConfirmationSource;
         public Task StartControlledAsync(string epoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> health, CancellationToken token)
         {
             receiver = receive; sequence = 0;
-            return inner.StartControlledAsync(epoch, value => receive(value with { Sequence = Interlocked.Increment(ref sequence) }), health, token);
+            return inner.StartControlledAsync(epoch, Deliver, health, token);
         }
         public bool Observe(TrayPresence presence)
         {
             var id = Wire.Id();
-            return receiver!(new(id, DeviceId, Epoch, "physical." + id, Interlocked.Increment(ref sequence), "physical." + id, "Presence", [], null, DateTimeOffset.UtcNow)
+            return Deliver(new(id, DeviceId, Epoch, "physical." + id, 0, "physical." + id, "Presence", [], null, DateTimeOffset.UtcNow)
             { TrayPresence = new(presence, "controlled-qualified-fixture-event") });
         }
         public void EnableOriginalFrames() => inner.EnableOriginalFrames();

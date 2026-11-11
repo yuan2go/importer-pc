@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Platform;
 using System.Text.Json;
 
@@ -108,17 +108,41 @@ internal static class StationPositionControlChecks
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
             await h.TrayAsync(h.Left, TrayPresence.Present); await h.TrayAsync(h.Right, TrayPresence.Present);
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 1);
-            h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT-DRAIN"), 1);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
-            await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
-            await h.App.SetPositionEnabledAsync(await Command(h.App, "right", false), default);
-            await CameraRoundHarness.Until(async () =>
+            // This scenario supplies a qualified independent presence source. Keep
+            // that source fresh while the two software decoders finish; a single
+            // startup fact must not act as permanently reliable physical evidence.
+            using var leftPresence = new CancellationTokenSource();
+            using var rightPresence = new CancellationTokenSource();
+            async Task MaintainPresence(string camera, CancellationToken token)
             {
-                var state = await h.App.SnapshotAsync();
-                return state.Operations.Count(o => o.State == ParcelState.WcsUnknown) == 2 &&
-                    state.Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).RemoteConfirmation != RemoteConnectionConfirmation.ResponseReceived;
-            });
+                while (!token.IsCancellationRequested)
+                {
+                    await h.TrayAsync(camera, TrayPresence.Present);
+                    await Task.Delay(200, token);
+                }
+            }
+            var leftUpdates = MaintainPresence(h.Left, leftPresence.Token);
+            var rightUpdates = MaintainPresence(h.Right, rightPresence.Token);
+            async Task StopPresence(string camera)
+            {
+                var lifetime = camera == h.Left ? leftPresence : rightPresence;
+                lifetime.Cancel();
+                try { await (camera == h.Left ? leftUpdates : rightUpdates); }
+                catch (OperationCanceledException) when (lifetime.IsCancellationRequested) { }
+            }
+            try
+            {
+                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 1);
+                h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT-DRAIN"), 1);
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
+                await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
+                await h.App.SetPositionEnabledAsync(await Command(h.App, "right", false), default);
+                await CameraRoundHarness.Until(async () =>
+                {
+                    var state = await h.App.SnapshotAsync();
+                    return state.Operations.Count(o => o.State == ParcelState.WcsUnknown) == 2 &&
+                        state.Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).RemoteConfirmation != RemoteConnectionConfirmation.ResponseReceived;
+                });
             var originals = (await h.App.SnapshotAsync()).Operations;
             async Task ClearTray(string position, string camera)
             {
@@ -129,6 +153,7 @@ internal static class StationPositionControlChecks
                         .Any(read => read.PositionId == position && read.Frame.FrameNumber == number));
                     if (number < 4) await Task.Delay(425);
                 }
+                await StopPresence(camera);
                 await h.TrayAsync(camera, TrayPresence.Absent);
                 await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == position) is
                     { SupplyControl.Mode: StationPositionMode.Disabled, CameraConnectionSuspended: true, CurrentOperation: null });
@@ -154,7 +179,14 @@ internal static class StationPositionControlChecks
                     history.Items.Any(item => item.Archived && item.Operation.Id == old.Id && Wire.Encode(item.Operation.Wcs) == Wire.Encode(old.Wcs))) &&
                 snapshot.Positions!.Single(p => p.Id == "right").SupplyControl?.Mode == StationPositionMode.Disabled,
                 "reenabling starts a new same-code request without changing the detached originals or the other position");
+            }
+            finally
+            {
+                await StopPresence(h.Left);
+                await StopPresence(h.Right);
+            }
         }
+
         await using (var h = new ManualSupplyHarness(workspace, Path.Combine(root, "manual-release"), false))
         {
             h.Peer.ReplySlot = "";

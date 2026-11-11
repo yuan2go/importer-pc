@@ -55,6 +55,11 @@ static partial class Program
             var configFile=Path.Combine(launch.ConfigurationDirectory,"business.json"); var hash=Wire.FileHash(configFile);
             Check(preferences.HasChanges && File.ReadAllText(file)=="{broken" && preferences.LastSave.Single(x=>x.Path=="ShowPace").State=="Unknown" && PresentationPreferences.ReadCueVolume("sportmaster")==25,
                 "first configuration keeps the failed original file/draft and reports independent successful preference writes");
+            var status=(TextBlock)type.BaseType!.GetField("Status",flags)!.GetValue(first)!;
+            await Flush(); first.UpdateLayout();
+            Check(status.IsVisible && status.Text.Contains("业务配置已保存",StringComparison.Ordinal) && status.Text.Contains("效率显示",StringComparison.Ordinal)
+                && ((TextBlock)type.GetField("saveState",flags)!.GetValue(first)!).Text=="业务配置已保存；本机偏好待保存",
+                "partial save shows the actual successful and uncertain items above the scrolling form, with an accurate footer");
             CaptureInternal(evidence,"first-preference-partial",first,lines);
             File.WriteAllText(file,Wire.Encode(new { Schema=1,Compact=true }));
             Save().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

@@ -571,6 +571,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     protected override void OperationCompleted()
     {
         refreshReview?.Invoke(); UpdateActions();
+        // Keep a partially saved first setup visible above the scrolling form;
+        // a successful business CAS must not be presented as a failed check.
+        if (initialConfiguration) Status.Visibility = lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? Visibility.Visible : Visibility.Collapsed;
         var focus = focusAfterOperation; focusAfterOperation = null;
         if (focus is not null) Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, focus);
     }
@@ -578,7 +581,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         if (!initialConfiguration) { base.OperationFailed(error); return; }
         diagnosticDetails = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails + "\n" + error + "\n" + Status.Text);
-        saveState.Text = error is UnauthorizedAccessException ? "需要重新验证" : startupSaveUncertain ? "保存结果未确认" : savingCandidate ? "保存未完成" : "检查未通过";
+        saveState.Text = error is UnauthorizedAccessException ? "需要重新验证" : startupSaveUncertain ? "保存结果未确认" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : savingCandidate ? "保存未完成" : "检查未通过";
         savingCandidate = false;
         refreshReview?.Invoke();
     }

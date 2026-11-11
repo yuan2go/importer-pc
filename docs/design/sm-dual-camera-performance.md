@@ -59,7 +59,7 @@ python $tool analyze-logs --logs D:\IPC-Perf\software-logs.jsonl --output D:\IPC
 
 - `summary.json` 按左、右投递位列出各阶段峰值、最慢阶段、最大队列深度、RCS 最慢结果和证据缺项。每个峰值都带运行实例及日志序号；总览跨所选运行实例，比较时间趋势时按实例分开。
 - `timeline.jsonl` 按运行实例和日志序号排列。观察 `Window` 的 `MaximumStageMs` 和 `MaximumDepth`，以及 `Waiting` 和窗口里的本位 `Worker`。同一实例内用 `RuntimeElapsedMs` 作时间轴；`Waiting` 是在途采样，含生产端阶段和已等时长、等待队列深度、最老等待输入和处理中输入的时间戳。等待采样由慢等待触发，两个点之间缺少采样无法判断该区间的队列状态。
-- `CameraAcquire` 含等待下一帧，`Decode` 是识码测量，海康原生路线的识码包含在取帧调用内。`DecodeQueue`、`OriginalCapacity`、`LaneWait`、`CapacityWait` 分别表示解码队列、原图容量、投递位生产端串行和业务输入容量等待。`IngressPersistence` 是输入持久化，`BusinessQueue` 是进入队列到取出，`BusinessGate` 是取出后等待业务锁，`BusinessHandler` 可能包含 RCS 等待。阶段最大值可以来自不同输入；`Slowest` 按 Application 总耗时选取。勿把阶段相加或把窗口最大值当成逐帧分位数。
+- `CameraAcquire` 含等待下一帧，`Decode` 是识码测量，海康原生路线的识码包含在取帧调用内。`DecodeQueue`、`OriginalCapacity`、`LaneWait`、`CapacityWait` 分别表示解码队列、原图容量、投递位生产端串行和业务输入容量等待。`IngressPersistence` 是输入持久化，`BusinessQueue` 是进入队列到取出，`BusinessGate` 是取出后等待业务锁，`BusinessHandler` 是短输入决策及持久交接，不包含异步 RCS 等待。阶段最大值可以来自不同输入；`Slowest` 按 Application 总耗时选取。勿把阶段相加或把窗口最大值当成逐帧分位数。
 - `RcsStart` 和 `RcsResult` 单列。结果耗时为应用记载的取格口处理耗时，可含本地处理，可能包括手工、调试和核对请求。只有同运行实例、同侧、同作业及同请求的唯一已收集开始记录才能给结果附上开始序号。缺少结果只表示没有收集到结果日志。
 - `StagesNotObserved`、空值、序号缺口及日志丢失计数反映所选证据覆盖。筛选、轮转、保留窗口、日志丢失和缺少在途完成记录都可使覆盖不全。短窗口、仅观察或中断时缺少某阶段也可能是该输入未走该阶段。空值不填为零，实测零保留。没有现场日志时，这些输出只验证分析工具，无法归因现场卡顿。
 
@@ -85,7 +85,7 @@ Pq 用精确 nearest-rank：排序后第 `ceil(q × N)` 个样本；无样本不
 | 帧替换 | `SupersededDecodeFrames` 包括最新待解码帧替换、停止/边界丢弃、容量等待后选择更新帧，不能单独归因为 CPU；只表示尚未形成识别责任的帧被退还 |
 | 解码 | `DecodeMs` 分位数只统计成功完成解码的逐帧样本（含成功解码但无码的帧）；跳过、暂停和拒收不伪装成 0 ms；失败成本可看所有尝试的内部 `decode` 阶段窗口与均值 |
 | 有效识别 | `DecodeCompleted - EmptyFrames` 为有候选帧数，`Candidates` 是候选总数；还需经过筛选、完整性及准入。`Delivered` 是交接，不等于新放置或 RCS 接受 |
-| Application | `HandoffMs` 是驱动到持久交接耗时；`IngressQueueMs`、`IngressProcessedMs` 是消费等待和处理（可能包含 RCS/持久化）的分布；worker 队列深度单列 |
+| Application | `HandoffMs` 是驱动到持久交接耗时；`IngressQueueMs`、`IngressProcessedMs` 是消费等待和输入决策及持久交接（不包含异步RCS等待）的分布；worker 队列深度单列 |
 | 放置/请求 | `InputAdmitted`、`SamePlacement`、`InputRejected/Blocked/Duplicate` 分开；只有新放置才发起一次请求。`RcsSubmitStarted/Completed` 与 `RcsQueryStarted/Completed` 分开，查询不计作新提交 |
 | RCS/格口 | `RcsSubmitCompletedMs` 包含调用边界及结果提交，不是纯网络 RTT；`DecodeToRcsResultMs` 用同一原始观察的单调时钟。`SlotComposedMs` 是解码至现有 DWM 呈现报告；结果至格口差值只在同一观察与工位匹配时可计算 |
 
@@ -124,11 +124,11 @@ Pq 用精确 nearest-rank：排序后第 `ceil(q × N)` 个样本；无样本不
 
 ### 当前 SM 的接件节奏
 
-相机持续采图，放稳时间控制何时交付识码结果；业务按投递位维护当前放置和原请求。不同条码进入下一次放置，同码重新上件须确认连续 3 帧、至少 800 ms 的空托盘；画面未变的漏读不能释放防重。800 ms 不是每件处理结束后的固定等待，也不等待小车 IDLE 或旧系统来源未确认的 LCKU。
+相机持续采图，放稳时间只控制识码交付，不延长当前轮次识读窗口。正式候选变化、NoCode、Scene和会话改变不能独立证明换件；可信移出结束当前轮次，未知时按人工及3000ms成功降级路径处理。自动抑制与原请求执行责任独立保留。
 
 左右相机分别拥有采集、解码、交接队列、原图与放置身份。同码出现在两侧仍是两个独立放置。外部请求等待释放业务锁；一位 RCS 请求未确认、交接慢或本件过期不能成为另一可用位的暂停条件。公共业务事务仍使用一致性锁，共用磁盘或全站 RCS 故障不属于可凭软件假定消失的单相机延迟，须用各位阶段耗时及队列日志区别。
 
-启动核验后自动跳过上次未完成的相机输入收据，保留原记录，不回放，不改写已发请求。正常运行中排队过期的一件显示“已跳过”，同次放置的连续观察不新发请求，取下重上或新码后再处理。已有 Unknown 仍按原请求守卫处理，不能把跳过扫码当作包裹已运走或 RCS 未收到。日志分别记录跳过、取格口发送及结果，不能用“扫码成功”代替“作业完成”。
+启动核验后自动跳过上次未完成的相机输入收据，保留原记录，不回放，不改写已发请求。正常运行中排队过期的一件显示“已跳过”，同次放置的连续观察不新发请求，取下重上或可信移出并新轮接纳后再处理。已有 Unknown 仍按原请求守卫处理，不能把跳过扫码当作包裹已运走或 RCS 未收到。日志分别记录跳过、取格口发送及结果，不能用“扫码成功”代替“作业完成”。
 
 `--interrupted-scan-skip` 覆盖自动恢复、5.5 秒交接停顿、左右同码、单边 RCS 等待、原图归属和取下重上；`--read-cadence` 覆盖重复观察与 5～8 秒队列停顿的分阶段证据。这些是合成故障复现，不是已经测得现场延迟的唯一根因或节拍上限。
 
@@ -144,3 +144,7 @@ Windows 本机验证记录见 [verification.json](../archive/validation/dual-cam
 原RCS“未来版本”夹具硬编码12撞到当前版本，已改为当前版本+1，保留只读拒绝及原件不变断言；MVS暂停预览夹具曾在SDK归还前断言，现等待真实归还边界，原断言不变。开发回归还发现并修正了规范化作业身份与原始观察ID的关联差异。最终源码重新完整验证，不用早期结果代记。新 main 恢复的原有 CI 增加本包两组实际链路 selector 及 Python 回归；最终 PR 的远端结果需单独读取，不能用本机通过冒充。
 
 原生采集探针只运行 `--mvs-self-test`/`--mvs-pipeline` 合成端口，不能运行 `--mvs-connect`/`--mvs-throughput` 代替授权。真实设备、目标工控机双相机连续过机、真实运动模糊、客户 RCS、现场长期成功率及验收：**NOT_RUN**。本轮没有修改生产部署或真实设备，也没有生成应用安装包。
+
+## 当前轮次口径
+
+输入完成指本位短决策与受管理异步交接完成，不代表RCS完成。按RoundId另记轮次起止、结束原因和原请求实际尝试耗时，当前轮次、真实在途和历史Unknown分开统计。场景必须以可信移出结束A后再接纳B，换码或NoCode/Scene不单独充当物理边界；详见[轮次生命周期](sm-parcel-rounds.md)。

@@ -151,6 +151,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     bool lastSaveConfirmed;
     SmDisplayPreferenceDraft? observedPreferences;
     string? preservedDraftInput;
+    bool SaveIsComplete => lastSaveConfirmed && !startupSaveUncertain && savedInput == Input() && draft?.DisplayPreferences?.HasChanges != true;
     bool savingCandidate;
     string? checkedCandidateHash;
     int selectedTask;
@@ -293,7 +294,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (initialConfiguration)
             {
                 if (parameterControl is null || !await parameterControl.MoveNextAsync()) { LocateFirstIssue(); throw new InvalidOperationException("请修正当前页标出的参数后再继续；其他输入保留。"); }
-                saveState.Text = lastSaveConfirmed && savedInput == Input() ? "已保存，启动时检查" : "未保存";
+                saveState.Text = SaveIsComplete ? "已保存，启动时检查" : "未保存";
                 if (parameterControl.IsReviewPage) await CheckCandidate();
             }
             else if (tasks is not null) tasks.SelectedIndex = Math.Min(3, tasks.SelectedIndex + 1);
@@ -435,7 +436,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             throw new InvalidOperationException("配置检查未通过：" + string.Join("；", report.Checks.Where(c => c.Status == "FAIL").Select(c => ChineseInterfaceText.ParameterMessage(c.Reason))));
         }
         checkedInput = Input(); checkedCandidateHash = report.CandidateHash;
-        if (initialConfiguration) saveState.Text = lastSaveConfirmed && savedInput == Input() ? "已保存，启动时检查" : report.Checks.Any(c => c.Status == "BLOCKED") ? "部署条件未满足" : "检查通过 · 未保存";
+        if (initialConfiguration) saveState.Text = SaveIsComplete ? "已保存，启动时检查" : report.Checks.Any(c => c.Status == "BLOCKED") ? "部署条件未满足" : "检查通过 · 未保存";
         Message(report.Checks.Any(c => c.Status == "BLOCKED") ? "参数检查通过，但部署条件未满足。可以先保存，启动前需处理部署条件。" : "参数检查通过。保存和启动时还会检查实际运行条件。");
         diagnosticDetails = string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason));
     }
@@ -736,7 +737,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 review.Children.Add(new Expander { Header = "配置检查诊断详情", Content = diagnostic, Margin = new(0, 16, 0, 0) });
                 refreshReview = () =>
                 {
-                    state.Text = startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : lastSaveConfirmed && savedInput == Input() ? "配置已保存，点击“完成”后自动检查并启动供包台。" : "检查填写内容并保存配置，完成后自动检查并启动。";
+                    state.Text = startupSaveUncertain ? "上次保存结果未确认，暂不重复保存。" : SaveIsComplete ? "配置已保存，完成后自动检查并启动供包台。" : lastSaveConfirmed && draft?.DisplayPreferences?.HasChanges == true ? "业务配置已保存；本机偏好尚未全部保存，请重试保存。本次不会重复提交业务配置。" : "检查填写内容并保存配置，完成后自动检查并启动。";
                     diagnostic.Text = Ipc.Platform.DiagnosticText.Protect(diagnosticDetails);
                     sections.Children.Clear();
                     foreach (var section in StartupConfigurationFiles.ReviewSections(draft!))
@@ -817,7 +818,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 var label = (string)button.Content;
                 var next = label == "下一步" || label.StartsWith("继续：", StringComparison.Ordinal) || label == "检查配置";
                 if (next) button.Content = parameterControl?.NextPageTitle is { } title ? title == "检查与完成" ? "检查配置" : "继续：" + title : "下一步";
-                var confirmed = lastSaveConfirmed && !startupSaveUncertain && savedInput == Input();
+                var confirmed = SaveIsComplete;
                 button.Visibility = next && parameterControl?.NextPageTitle is not null && !startupSaveUncertain || label == "上一步" && parameterControl?.HasPreviousPage == true || label == "保存配置" && selectedTask == 4 && !confirmed && !startupSaveUncertain || label == "完成" && selectedTask == 4 && confirmed || label == "重新读取配置…" && startupSaveUncertain ? Visibility.Visible : Visibility.Collapsed;
                 if (label is "保存配置" or "完成" or "重新读取配置…") StartupAppearance.Primary(button);
             }

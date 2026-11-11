@@ -25,6 +25,12 @@ $env:IPC_VERIFICATION_EXECUTABLE=Join-Path $child 'Ipc.Application.Verification.
 $env:IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME='1'
 $env:IPC_FROZEN_DESKTOP=Join-Path $repo "src/Ipc.Desktop/bin/$Configuration/net10.0-windows/Ipc.Desktop.dll"
 $executions=[Collections.Generic.List[object]]::new()
+function Get-BranchSourceInputs {
+ $items=@(Get-ChildItem -LiteralPath (Join-Path $repo 'src'),(Join-Path $repo 'config') -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' -and $_.Extension -in @('.cs','.json','.xaml','.csproj','.props','.targets') } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName.Substring($repo.Length+1).Replace('\','/'); sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash} })
+ return ($items | ConvertTo-Json -Compress)
+}
+$originalInputs=Get-BranchSourceInputs
+$originalInputs | Set-Content -LiteralPath (Join-Path $run 'source-inputs.json') -Encoding utf8
 $sourceIdentity=[ordered]@{commit=(& git -C $repo rev-parse HEAD); diffSha256=([Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes((& git -C $repo diff HEAD | Out-String))))); configuration=$Configuration; collector='coverlet.console 10.1.0'; startedUtc=[DateTimeOffset]::UtcNow.ToString('o')}
 function Invoke-BranchMeasurement([string]$name,[string]$directory,[string]$target,[string]$arguments){
  $report=Join-Path $run $name
@@ -50,13 +56,17 @@ try {
    foreach($extension in @('.dll','.pdb')){ Copy-Item -LiteralPath (Join-Path $repo "src/Ipc.Desktop/bin/$Configuration/net10.0-windows/$name$extension") -Destination $ui }
   }
   $env:IPC_FROZEN_DESKTOP=Join-Path $ui 'Ipc.Desktop.dll'
-  foreach($suite in @('startup-defaults-ui','window-preference','parameter-guidance-startup','startup-read-failure','station-settings')){
+  foreach($suite in @('startup-defaults-ui','window-preference','first-preference-save','parameter-guidance-startup','startup-read-failure','station-settings')){
    $code=Invoke-BranchMeasurement "wpf-$suite" $ui (Get-Command dotnet).Source ('"'+(Join-Path $ui 'Ipc.Desktop.UiVerification.dll')+'" "'+$repo+'" --'+$suite)
    if($code){$failed=1}
   }
  }
+ $sourceIdentity['endCommit']=(& git -C $repo rev-parse HEAD)
+ $sourceIdentity['sourceInputsChanged']=($originalInputs -cne (Get-BranchSourceInputs))
+ $sourceIdentity | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run 'source.json') -Encoding utf8
  python (Join-Path $PSScriptRoot 'report-product-branches.py') --root $repo --results $run
  if($LASTEXITCODE){throw 'Actual branch report validation failed'}
+ if($sourceIdentity.sourceInputsChanged){throw 'Production inputs changed during measurement; keep raw evidence but rerun a frozen checkout'}
  if($failed){throw 'Regression failed; branch evidence retained but is not a passing qualification'}
 } finally {
  Remove-Item Env:IPC_VERIFICATION_EXECUTABLE -ErrorAction SilentlyContinue

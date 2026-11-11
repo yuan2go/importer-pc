@@ -98,6 +98,11 @@ def main():
         executions = json.loads(executions_file.read_text(encoding='utf-8-sig'))
         result['executions'] = executions if isinstance(executions, list) else [executions]
         result['regressionsPassed'] = all(e['exitCode'] == 0 for e in result['executions'])
+    source_file = args.results / 'source.json'
+    if source_file.exists():
+        result['sourceState'] = json.loads(source_file.read_text(encoding='utf-8-sig'))
+        if result['sourceState'].get('sourceInputsChanged', False):
+            result['regressionsPassed'] = False
     trx = args.results / 'tests/core.trx'
     if trx.exists():
         counters = ET.parse(trx).getroot().find('./{*}ResultSummary/{*}Counters')

@@ -59,6 +59,17 @@ try {
   foreach($suite in @('startup-defaults-ui','window-preference','first-preference-save','parameter-guidance-startup','startup-read-failure','station-settings')){
    $code=Invoke-BranchMeasurement "wpf-$suite" $ui (Get-Command dotnet).Source ('"'+(Join-Path $ui 'Ipc.Desktop.UiVerification.dll')+'" "'+$repo+'" --'+$suite)
    if($code){$failed=1}
+   # Preserve native assertions, actual DPI and captures, not just collector exits.
+   $pointer=Join-Path $repo '.artifacts/WINDOWS-WPF-EVIDENCE.txt'
+   $evidence=if(Test-Path -LiteralPath $pointer){(Get-Content -LiteralPath $pointer -Raw).Trim()}else{$null}
+   $nativeLog=if($evidence){Join-Path $evidence 'WINDOWS-WPF.log'}else{$null}
+   if(!$nativeLog -or !(Test-Path -LiteralPath $nativeLog) -or (Get-Item -LiteralPath $nativeLog).LastWriteTimeUtc -lt [DateTimeOffset]::Parse($executions[-1].startedUtc).UtcDateTime){
+    $failed=1; "Missing current native evidence: $suite" | Add-Content -LiteralPath (Join-Path $run "wpf-$suite.log")
+   }else{
+    $native=Join-Path $run "windows/$suite"; New-Item -ItemType Directory -Path $native -Force | Out-Null
+    Copy-Item -LiteralPath $nativeLog -Destination $native
+    Get-ChildItem -LiteralPath $evidence -File -Filter '*.png' | Copy-Item -Destination $native
+   }
   }
  }
  $sourceIdentity['endCommit']=(& git -C $repo rev-parse HEAD)

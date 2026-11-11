@@ -71,6 +71,8 @@ jobs:
           . ./scripts/project-environment.ps1
           python -m unittest discover -s scripts -p test_product_coverage.py -v
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_product_branches.py -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python scripts/verify_product_coverage.py --results .artifacts/core
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Get-Content -LiteralPath .artifacts/core/product-coverage/summary.md | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
@@ -93,6 +95,8 @@ jobs:
           python -m unittest discover -s scripts -p test_release_documents.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_mvid_runtime.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_build_process.py -v
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           ./scripts/test-signature-policy.ps1
       - name: Keep actual results including failures
@@ -274,5 +278,7 @@ jobs:
             .artifacts/product-branches/*.md
             .artifacts/product-branches/*.log
             .artifacts/product-branches/tests/*.trx
+            .artifacts/product-branches/windows/**/*.log
+            .artifacts/product-branches/windows/**/*.png
           if-no-files-found: error
           retention-days: 14

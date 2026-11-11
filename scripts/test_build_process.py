@@ -25,13 +25,16 @@ class BuildProcessTests(unittest.TestCase):
                                 ' time.sleep(.01)\nsys.exit(2)\n')
             driver = root / 'driver.py'
             scripts = Path(__file__).resolve().parent
-            driver.write_text('import sys,signal\nsys.path.insert(0,' + repr(str(scripts)) + ')\nfrom build_process import run\nsignal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))\nrun([sys.executable,' + repr(str(compiler)) + '])\n')
-            process = subprocess.Popen([sys.executable, str(driver)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            driver.write_text('import sys,signal\nsys.path.insert(0,' + repr(str(scripts)) + ')\nfrom build_process import run\nsignal.signal(signal.SIGBREAK if sys.platform=="win32" else signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))\nrun([sys.executable,' + repr(str(compiler)) + '])\n')
+            process = subprocess.Popen([sys.executable, str(driver)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                       creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0)
             try:
                 deadline = time.monotonic() + 5
                 while not marker.exists() and time.monotonic() < deadline: time.sleep(.01)
                 self.assertTrue(marker.exists(), 'Real descendant must run before exercising cancellation')
-                if cancel: process.send_signal(signal.SIGTERM)
+                # Windows SIGTERM is TerminateProcess and bypasses Python finally.
+                # Exercise an actual handled console cancellation instead.
+                if cancel: process.send_signal(signal.CTRL_BREAK_EVENT if os.name == 'nt' else signal.SIGTERM)
                 else: fail.touch()  # Fail only after the actual descendant has begun writing.
                 self.assertNotEqual(process.wait(timeout=8), 0)
                 before = marker.read_bytes()

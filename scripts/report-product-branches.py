@@ -41,7 +41,7 @@ def analyze(root: Path, results: Path):
         raw_count = 0
         for module, documents in data.items():
             name = Path(module).stem
-            if not name.startswith('Ipc.') or name.endswith('.Verification') or name == 'Ipc.Core.Tests':
+            if not name.startswith('Ipc.') or name.endswith('Verification') or name == 'Ipc.Core.Tests':
                 raise ValueError('Non-product module in measurement: ' + name)
             identity = identities.get(name)
             if not identity or len(identity) != 64 or any(c not in '0123456789abcdef' for c in identity):

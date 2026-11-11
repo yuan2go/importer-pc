@@ -42,6 +42,15 @@ class BranchEvidence(unittest.TestCase):
         ET.ElementTree(tree).write(self.results / (name + '.opencover.xml'), encoding='utf-8')
         (self.results / (name + '.modules.json')).write_text(json.dumps([{'name': 'Ipc.Example', 'sha256': hashlib.sha256(identity.encode()).hexdigest()}]), encoding='utf-8')
 
+    def test_ui_wrapper_with_linked_product_sources_is_rejected(self):
+        self.report('one', 1)
+        data = self.results / 'one.json'
+        records = json.loads(data.read_text(encoding='utf-8'))
+        records['Ipc.Desktop.UiVerification.dll'] = records.pop('Ipc.Example.dll')
+        data.write_text(json.dumps(records), encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'Non-product module'):
+            branches.analyze(self.root, self.results)
+
     def test_actual_paths_and_unknown_source_stay_distinct(self):
         self.report('one', 1)
         result = branches.analyze(self.root, self.results)

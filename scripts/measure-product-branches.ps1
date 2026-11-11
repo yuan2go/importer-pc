@@ -37,7 +37,7 @@ function Invoke-BranchMeasurement([string]$name,[string]$directory,[string]$targ
  $started=[DateTimeOffset]::UtcNow
  $modules=@(Get-ChildItem -LiteralPath $directory -Filter 'Ipc.*.dll' | ForEach-Object { [ordered]@{name=$_.BaseName; sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash; pdbSha256=$(if(Test-Path -LiteralPath ([IO.Path]::ChangeExtension($_.FullName,'.pdb'))){(Get-FileHash -LiteralPath ([IO.Path]::ChangeExtension($_.FullName,'.pdb')) -Algorithm SHA256).Hash}else{$null})} })
  $modules | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $run "$name.modules.json") -Encoding utf8
- & $collector $directory --target $target --targetargs $arguments --include '[Ipc.*]*' --exclude '[Ipc.*.Verification]*' --exclude '[Ipc.Core.Tests]*' --format opencover --format json --output $report *> (Join-Path $run "$name.log")
+ & $collector $directory --target $target --targetargs $arguments --include '[Ipc.*]*' --exclude '[Ipc.*Verification]*' --exclude '[Ipc.Core.Tests]*' --format opencover --format json --output $report *> (Join-Path $run "$name.log")
  $code=$LASTEXITCODE
  $executions.Add([ordered]@{name=$name; target=$target; arguments=$arguments; exitCode=$code; startedUtc=$started.ToString('o'); endedUtc=[DateTimeOffset]::UtcNow.ToString('o')})
  $executions | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $run 'executions.json') -Encoding utf8

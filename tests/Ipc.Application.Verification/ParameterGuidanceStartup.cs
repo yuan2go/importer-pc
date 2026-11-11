@@ -84,6 +84,11 @@ static class ParameterGuidanceStartup
             await vm.RefreshAsync();
             await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
             await ManagementModeFixture.Authorize(app); await vm.LoadCapabilitiesAsync();
+            var requestDeadline = vm.CapabilityDrafts.Single(ParameterOwnership.IsRcs).Parameters.Single(p => p.Field.Key == "request-timeout-ms");
+            requestDeadline.Value = "1500";
+            Check(vm.GetConfigurationChangeItems().Any(i => i.Path.EndsWith("/request-timeout-ms", StringComparison.Ordinal) && i.Before == "1000 毫秒" && i.After == "1500 毫秒"),
+                "RCS review uses the effective omitted default and milliseconds, matching the actual schema/editor");
+            requestDeadline.Value = "1000";
             var scanCandidate = vm.BuildStructuredConfiguration();
             var policySnapshot = await app.SnapshotAsync();
             Check(vm.HasUnsavedConfiguration && scanCandidate.Reader.Parameters?.GetValueOrDefault("entity.mode") == "read-result" &&

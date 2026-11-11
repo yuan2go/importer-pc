@@ -20,11 +20,11 @@ public static class ChineseInterfaceText
         "timeout" or "TimeoutMs" => "外部服务等待时间",
         "ReadTimeoutMs" => "自动识读期限",
         "operations" or "MaximumOperations" => "待处理作业上限",
-        "resident" or "ResidentHistory" => "常驻记录条数",
-        "reserveMiB" or "MinimumFreeMiB" => "磁盘保留空间",
+        "resident" or "ResidentHistory" => "运行记录归档阈值",
+        "reserveMiB" or "MinimumFreeMiB" => "磁盘预留",
         "StationCode" => "供包台编号",
-        "DiagnosticLogDays" => "诊断日志保留天数",
-        "HistoryDays" => "已结数据保留天数",
+        "DiagnosticLogDays" => "日志最长保留时间",
+        "HistoryDays" => "已结记录清理期限",
         "SessionLifetimeMs" => "登录会话时长",
         "WeightRange.MinimumWeight" or "MinimumWeight" => "包裹重量下限",
         "WeightRange.MaximumWeight" or "MaximumWeight" => "包裹重量上限",
@@ -43,7 +43,11 @@ public static class ChineseInterfaceText
         "BackupEnabled" => "自动备份",
         "BackupDirectory" => "备份目录",
         "BackupIntervalMinutes" => "备份间隔",
-        "BackupMaximumSets" => "备份保留份数",
+        "BackupMaximumSets" => "备份份数上限",
+        "AutomaticHistoryCleanup" => "自动清理已结记录",
+        "CleanupTimeZoneId" => "清理时区",
+        "CleanupHour" => "清理时刻",
+        "CleanupMaximumBackupSets" => "清理前备份份数上限",
         "device.ip" => "相机网络地址",
         "device.serial" => "相机序列号",
         "code.encoding" => "条码字符编码",
@@ -82,7 +86,7 @@ public static class ChineseInterfaceText
         if (text.Contains(": required", StringComparison.Ordinal) || text.Contains(": invalid value", StringComparison.Ordinal))
             return "有参数尚未设置或格式不正确，请修正标出的字段。";
         if (text.Contains("Invalid pattern", StringComparison.Ordinal)) return "条码规则格式不正确，请检查括号、符号和转义。";
-        foreach (var key in new[] { "BarcodeFilter.MultiCodeSeparator", "BarcodeFilter.RejectMultipleCodes", "MultiCodeSeparator", "RejectMultipleCodes", "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "HistoryDays", "ReadTimeoutMs", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-station-code", "right-station-code", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "source", "locale", "reply-mode", "decision" })
+        foreach (var key in new[] { "BarcodeFilter.MultiCodeSeparator", "BarcodeFilter.RejectMultipleCodes", "MultiCodeSeparator", "RejectMultipleCodes", "BarcodeFilter.ExclusionPattern", "BarcodeFilter.Pattern", "BarcodeExclusionPattern", "BarcodePattern", "WeightRange.MinimumWeight", "WeightRange.MaximumWeight", "BackupIntervalMinutes", "BackupMaximumSets", "CleanupMaximumBackupSets", "AutomaticHistoryCleanup", "CleanupTimeZoneId", "CleanupHour", "BackupDirectory", "BackupEnabled", "DisplayNameDraft", "TargetEfficiencyDraft", "MaximumAgeMs", "WaitTimeoutMs", "ConfiguredWeight", "MinimumWeight", "MaximumWeight", "WeightSource", "ImageBytes", "TotalBytes", "MaximumPending", "Precision", "SessionLifetimeMs", "QueueCapacity", "MaximumOperations", "ResidentHistory", "MinimumFreeMiB", "DiagnosticLogDays", "HistoryDays", "ReadTimeoutMs", "TimeoutMs", "StationCode", "device.ip", "device.serial", "entity.mode", "queue.capacity", "code.encoding", "left-station-code", "right-station-code", "left-bcr-code", "right-bcr-code", "request-id-base", "request-id-count", "specified-chute", "chute-code", "zone-id", "project-id", "quantity", "source", "locale", "reply-mode", "decision" })
             text = text.Replace(key, ParameterName(key), StringComparison.Ordinal);
         text = System.Text.RegularExpressions.Regex.Replace(text, @"^\w*Exception:\s*", "");
         // Raw property paths and exception types belong to diagnostic details.
@@ -98,6 +102,7 @@ public static class ChineseInterfaceText
         "LoggedOut" => "操作员已退出",
         "Authorized" => "授权通过",
         "Unavailable" => "服务暂不可用",
+        "Seed" => "首配已保存，待启动检查",
         "Prepared" => "已准备",
         "Dispatching" => "发送中",
         "Unknown" => "结果未确认",

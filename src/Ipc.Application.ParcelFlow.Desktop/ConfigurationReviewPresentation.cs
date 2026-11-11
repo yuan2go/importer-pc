@@ -28,7 +28,7 @@ public partial class ParcelViewModel
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
     public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration || HasUnsavedDisplayPreferences ? "有未保存的更改" : "没有未保存的更改";
     public bool HasPreferenceSaveFailure => Snapshot?.ApplicationId == "sportmaster" && !SmPreferences.LastSaveComplete;
-    public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "条码规则、相机和 RCS 设置保存后立即生效，只重新连接对应设备；其他设置保存后需重启。以保存结果为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
+    public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "条码规则、相机和 RCS 设置符合当前责任条件时可热生效，只重新连接对应设备；受阻或混合其他设置时待重启。以保存回执为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
     public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" : Snapshot?.Configuration.Failure is not null ? ConfigurationActivationOutcome :
         Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "设置已保存并生效" : ConfigurationActivationGuidance;
     string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature()) + "\n" + WindowModeDraft + (Snapshot?.ApplicationId == "sportmaster" ? "\n" + SmPreferences.Signature : "");
@@ -114,13 +114,13 @@ public partial class ParcelViewModel
         void Add(JsonElement left, JsonElement right, string path, string? instance, string? parameter)
         {
             var category = "高级设置"; var owner = "全部设置"; var label = "其他配置项"; var fieldPath = ""; var showValues = false;
-            var translateChoice = false;
+            var translateChoice = false; string? unit = null, defaultValue = null;
             if (instance is not null && drafts.TryGetValue(instance, out var draft))
             {
                 owner = draft.Kind == "observation" ? draft.Role switch { "left" => "左相机", "right" => "右相机", _ => draft.Role } : ParameterOwnership.IsRcs(draft) ? "RCS 服务" : ParameterEditor?.ComponentLabel(draft) ?? draft.InstanceId;
                 category = ParameterOwnership.CategoryName(parameter is null ? ParameterOwnership.ObjectCategory(draft) : ParameterOwnership.Category(draft, parameter));
                 if (parameter is not null && draft.Parameters.FirstOrDefault(x => x.Field.Key == parameter) is { } p)
-                { label = ChineseInterfaceText.ParameterName(parameter, p.EditorLabel); fieldPath = draft.InstanceId + "/" + parameter; showValues = !p.IsSensitive; translateChoice = p.Field.Type is "choice" or "boolean"; }
+                { label = ChineseInterfaceText.ParameterName(parameter, p.EditorLabel); fieldPath = draft.InstanceId + "/" + parameter; showValues = !p.IsSensitive; translateChoice = p.Field.Type is "choice" or "boolean"; unit = p.Field.Unit; defaultValue = p.Field.Default; }
                 else if (path.EndsWith(".Target", StringComparison.Ordinal)) { label = "连接目标"; fieldPath = draft.InstanceId + "/Target"; showValues = true; }
                 else label = path.Split('.').Last() switch
                 {
@@ -152,7 +152,7 @@ public partial class ParcelViewModel
                     "Retention.DiagnosticLogDays" => ("系统", "数据与记录", "日志最长保留时间", "DiagnosticLogDays"),
                     "Retention.HistoryDays" => ("系统", "数据与记录", "已结记录清理期限", "HistoryDays"),
                     "Retention.ResidentHistory" => ("系统", "数据与记录", "运行记录归档阈值", "ResidentHistory"),
-                    "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘保留空间（字节）", "MinimumFreeMiB"),
+                    "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘预留", "MinimumFreeMiB"),
                     "BarcodeFilter.Pattern" => ("业务模块", "条码筛选", "条码筛选规则", "BarcodePattern"),
                     "BarcodeFilter" => ("业务模块", "条码筛选", "条码处理规则", "BarcodePattern"),
                     "BarcodeFilter.ExclusionPattern" => ("业务模块", "条码筛选", "条码排除规则", "BarcodeExclusionPattern"),
@@ -180,6 +180,30 @@ public partial class ParcelViewModel
             }
             var oldValue = showValues ? Read(left) : left.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined ? "未设置" : "已设置";
             var newValue = showValues ? Read(right) : right.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined ? "已移除" : "已更改（内容不显示）";
+            if (showValues && defaultValue is not null)
+            {
+                if (left.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined) oldValue = defaultValue;
+                if (right.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined) newValue = defaultValue;
+            }
+            unit ??= path switch
+            {
+                "Retention.DiagnosticLogDays" or "Retention.HistoryDays" => "天",
+                "Retention.ResidentHistory" => "条",
+                "BackupSchedule.IntervalMinutes" => "分钟",
+                "BackupSchedule.MaximumSets" or "OperationsPolicy.MaximumBackupSets" => "份",
+                "OperationsPolicy.CleanupHour" => "时",
+                _ => null
+            };
+            if (showValues && !string.IsNullOrEmpty(unit))
+            {
+                if (decimal.TryParse(oldValue, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out _)) oldValue += " " + unit;
+                if (decimal.TryParse(newValue, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out _)) newValue += " " + unit;
+            }
+            if (path == "Retention.MinimumFreeBytes")
+            {
+                oldValue = ((original.Retention ?? new()).MinimumFreeBytes / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture) + " MiB";
+                newValue = ((candidate.Retention ?? new()).MinimumFreeBytes / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture) + " MiB";
+            }
             if (path == "ReadTimeoutMs")
             {
                 oldValue = original.EffectiveReadTimeoutMs + " 毫秒";

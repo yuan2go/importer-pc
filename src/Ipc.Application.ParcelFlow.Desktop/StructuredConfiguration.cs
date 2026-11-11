@@ -66,7 +66,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     {
         var readTimeout = Integer(ReadTimeoutMs, "业务模块/ReadTimeoutMs", SystemParameterDefaults.MinimumReadTimeoutMs, SystemParameterDefaults.MaximumReadTimeoutMs);
         if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
-            throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
+            throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘预留须为1～1048576 MiB");
         var retention = (c.Retention ?? new ParcelRetentionPolicy()) with
         {
             ResidentHistory = Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000),

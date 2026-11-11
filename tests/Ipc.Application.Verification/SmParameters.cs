@@ -102,6 +102,10 @@ static class SmParameters
         Check(!vm.HasUnsavedDisplayPreferences && vm.Snapshot!.Configuration.Revision==revision && PresentationPreferences.ReadCueVolume("sportmaster")==40, "local save immediately applies to this Windows user and creates no business CAS revision");
         vm.StructuredPolicy!.ReadTimeoutMs="1100";
         Check(vm.GetConfigurationChangeItems().Any(i=>i.Path=="ReadTimeoutMs" && i.Before=="1000 毫秒" && i.After=="1100 毫秒"), "read deadline diff uses the same effective default, name and milliseconds as runtime");
+        vm.StructuredPolicy.MinimumFreeMiB="512.5";
+        var units=vm.GetConfigurationChangeItems();
+        Check(units.Any(i=>i.Path=="MinimumFreeMiB" && i.Label=="磁盘预留" && i.Before=="64 MiB" && i.After=="512.5 MiB"),
+            "review uses exact MiB rather than raw bytes, consistently with the editable disk reserve");
         for (var n = 0; n < 2; n++)
         {
             var code = "ARCHIVE-" + n;

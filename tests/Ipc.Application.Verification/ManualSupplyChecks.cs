@@ -139,12 +139,12 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> accept, Action<DeviceHealthConfirmation> health, CancellationToken t)
         { epoch = registeredEpoch; receive = accept; publishHealth = health; sequence = 0; health(new(device, epoch, DeviceHealth.Disconnected, DateTimeOffset.UtcNow, null, "synthetic disconnected camera")); return Task.CompletedTask; }
         public void ConfirmConnected() => publishHealth!(new(device, epoch, DeviceHealth.Ready, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddHours(1), "synthetic qualified source"));
-        public bool Read(string[] codes, TrayPresenceEvidence? presence = null)
+        public bool Read(string[] codes, TrayPresenceEvidence? presence = null, DateTimeOffset? observedAt = null)
         {
             var id = Wire.Id();
             frames[id] = Enumerable.Repeat(unchecked((byte)(sequence + 1)), 256).ToArray();
             return receive!(new(id, device, epoch, id, Interlocked.Increment(ref sequence), "round." + id,
-                presence is null ? "Read" : "Presence", codes, null, DateTimeOffset.UtcNow) { TrayPresence = presence });
+                presence is null ? "Read" : "Presence", codes, null, observedAt ?? DateTimeOffset.UtcNow) { TrayPresence = presence });
         }
         public void EnableOriginalFrames() { }
         public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity) => frames.TryGetValue(identity.SourceEventId, out var pixels)

@@ -107,6 +107,7 @@ internal static class StationPositionControlChecks
         {
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
+            await h.TrayAsync(h.Left, TrayPresence.Present); await h.TrayAsync(h.Right, TrayPresence.Present);
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 1);
             h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT-DRAIN"), 1);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));

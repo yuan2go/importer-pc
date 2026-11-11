@@ -135,7 +135,7 @@ public sealed partial class ParcelRuntime
             throw new InvalidDataException("Physical evidence is incomplete");
         var cycle = SmCycle(position) with { Presence = fact.State, Epoch = observation.Epoch, Sequence = observation.Sequence, Evidence = fact.Evidence };
         var round = CurrentRound(position);
-        if (fact.State == TrayPresence.Absent && round is not { RequireRemoval: true, Manual: true })
+        if (fact.State == TrayPresence.Absent && round is not { RequireRemoval: true })
         {
             blockedInputs.TryRemove(position, out _); blockedInputPictures.Remove(position);
             if (round is not null) { smCycles[position] = cycle; EndSmRound(round, "TrustedRemoval", physicallyRemoved: true); }
@@ -154,6 +154,15 @@ public sealed partial class ParcelRuntime
     {
         if (observation.TrayPresence is not null && !manual)
         {
+            // A physical frame captured before this round (or left in delivery
+            // too long) cannot remove a later deliberately submitted parcel.
+            if (DateTimeOffset.UtcNow - observation.ObservedAt > TimeSpan.FromMilliseconds(definition.QueuedObservationTimeoutMs(Effective)) ||
+                CurrentRound(position) is { } current && observation.ObservedAt < current.StartedAt)
+            {
+                RecordInput(Input(position, observation, ParcelInputOutcome.Rejected,
+                    "PhysicalEvidenceExpired; 旧物理观察只留证，不改变当前轮次。"), "PhysicalEvidenceIgnored");
+                return;
+            }
             if (reader.Health?.IsValid(DateTimeOffset.UtcNow) == true && reader.Epoch == observation.Epoch)
                 ObserveSmPresence(position, observation);
             return;

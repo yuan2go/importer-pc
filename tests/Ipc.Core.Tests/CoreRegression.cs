@@ -52,7 +52,7 @@ public sealed class CoreRegression
     [DataRow("--mvid-reader", 81)]
     [DataRow("--sm-built-in-only", 10)]
     [DataRow("--sm-runtime-responsibility", 17)]
-    [DataRow("--sm-round-lifecycle", 105)]
+    [DataRow("--sm-round-lifecycle", 112)]
     [DataRow("--rcs-heartbeat", 25)]
     [DataRow("--station-position-control", 37)]
     [DataRow("--management-workspace", 29)]

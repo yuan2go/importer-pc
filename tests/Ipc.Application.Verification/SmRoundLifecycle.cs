@@ -19,10 +19,10 @@ internal static class SmRoundLifecycle
         foreach (var camera in h.Factory.Cameras.Values) camera.ConfirmConnected();
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Camera == true));
         var left = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId];
-        async Task<ParcelSnapshot> Observe(string[] codes, TrayPresence? presence = null)
+        async Task<ParcelSnapshot> Observe(string[] codes, TrayPresence? presence = null, DateTimeOffset? observedAt = null)
         {
             var before = h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
-            Check(left.Read(codes, presence is { } fact ? new(fact, "synthetic-qualified-presence") : null), "controlled source hands off a complete observation");
+            Check(left.Read(codes, presence is { } fact ? new(fact, "synthetic-qualified-presence") : null, observedAt), "controlled source hands off a complete observation");
             await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > before));
             return await h.App.SnapshotAsync();
         }
@@ -142,9 +142,21 @@ internal static class SmRoundLifecycle
         var failedRound = Current(await h.App.SnapshotAsync())!;
         s = await Observe([], TrayPresence.Absent);
         Check(Current(s)?.Id == failedRound.Id && Current(s)?.RequireRemoval == true, "T12 visual absence cannot replace current manual failure confirmation");
+        await Remove();
+        s = await Observe(["GOOD-601"]);
+        await Resolved(Current(s)!.OperationId!);
+        var degradedFailure = Current(await h.App.SnapshotAsync())!;
+        s = await Observe([], TrayPresence.Absent);
+        Check(!degradedFailure.Manual && degradedFailure.RequireRemoval && Current(s)?.Id == degradedFailure.Id,
+            "T12 a degraded automatic failure already requiring manual confirmation also retains that responsibility after visual absence");
         await Remove(); h.Peer.Mode = "assigned";
 
-        await Observe([], TrayPresence.Present); clock.Elapse(TimeSpan.FromMilliseconds(1001));
+        clock.Utc = DateTimeOffset.UtcNow;
+        var beforeOldPresence = Current(await Observe([], TrayPresence.Present))!;
+        await Observe([], TrayPresence.Absent, beforeOldPresence.StartedAt.AddMilliseconds(-1));
+        Check(Current(await h.App.SnapshotAsync())?.Id == beforeOldPresence.Id,
+            "T10 an older physical frame delivered after a newer round cannot end that round or rearm automatic submission");
+        clock.Elapse(TimeSpan.FromMilliseconds(1001));
         s = await h.App.SnapshotAsync();
         await Observe([], TrayPresence.Unknown);
         await Remove();

@@ -12,224 +12,120 @@ static partial class Program
     static async Task VerifyCameraBarcodeCurrent(string root, string evidence, List<string> lines)
     {
         void Check(bool ok, string text) { if (!ok) throw new InvalidOperationException(text); lines.Add("PASS CAMERA-CURRENT " + text); }
-        async Task Until(Func<bool> ready, string step)
-        {
-            for (var i = 0; i < 400; i++)
-            { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(20); }
-            throw new TimeoutException(step);
-        }
-        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "camera-current"), 15000);
+        await using var h = new CameraRoundHarness(root, Path.Combine(evidence, "camera-current"), 15000)
+            { StationClock = new PdaRoundClock() };
         h.Config.Wcs!.Parameters["request-timeout-ms"] = "15000";
         ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
         await h.StartAsync(); await h.WaitForCameraAdmissionAsync();
         var window = new SupplyStationWindow(h.App, null, "standard"); window.Show();
         SupplyStationWindow? second = null;
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
-        var blocked = 0;
         try
         {
-            await SetClient(window, 1366, 768); await Until(() => window.ViewModel.Fresh, "initial snapshot");
             var vm = window.ViewModel; var p = vm.Left;
+            async Task Until(Func<bool> ready, string step)
+            {
+                for (var i = 0; i < 400; i++)
+                { await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); if (ready()) return; await Task.Delay(20); }
+                throw new TimeoutException(step);
+            }
+            await SetClient(window, 1366, 768); await Until(() => vm.Fresh, "initial snapshot");
             var control = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, p));
             var entry = (TextBox)control.FindName("BarcodeEntry"); var picture = (Button)control.FindName("CurrentBarcode");
-            var slot = (TextBox)control.FindName("CurrentSlot"); var recentBarcode = (TextBox)control.FindName("RecentChuteBarcode");
-            var tasks = (Grid)control.FindName("TaskFields");
-            var edits = typeof(SupplyStationPosition).GetField("editing", BindingFlags.Instance | BindingFlags.NonPublic)!;
-            async Task Read(uint frame, string code)
+            var tasks = (Grid)control.FindName("TaskFields"); var placeholder = (TextBlock)control.FindName("BarcodePlaceholder");
+            uint left = 0, right = 0;
+            async Task Frame(string device, CameraRoundHarness.RoundPixels pixels)
             {
-                var prior = p.ReadFeedbackKey;
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(code), frame);
-                await Until(() => p.ReadFeedbackKey is { } read && read != prior && p.Barcode == code, "camera feedback " + code);
+                var position = device == h.Left ? "left" : "right";
+                var before = h.App.WorkerProgress().Single(p => p.Position == position).Processed;
+                h.Api(device).Enqueue(pixels, device == h.Left ? ++left : ++right);
+                await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == position).Processed > before));
+                await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             }
-            async Task Resolved(string code) => await Until(() => p.Operation?.ParcelCode == code && p.ShowConfirmedTask, "resolved " + code);
-            string State() => Wire.Encode(new
-            {
-                Main = entry.Text,
-                Model = p.Barcode,
-                Read = p.ReadFeedbackKey,
-                Decoder = h.Factory.Decoders[h.Left].Last.Select(s => s.Text),
-                Input = p.Input?.Observation.Codes,
-                Operation = p.Operation?.ParcelCode,
-                p.ShowConfirmedTask,
-                PictureEnabled = picture.IsEnabled,
-                Editing = edits.GetValue(control)
-            });
+            async Task Next(string device)
+            { await h.TrayAsync(device, TrayPresence.Absent); await h.TrayAsync(device, TrayPresence.Present); await vm.RefreshAsync(); }
+            async Task Resolved(string code) => await Until(() => p.Barcode == code && p.ShowConfirmedTask, "resolved " + code);
 
-            // The first read has no older Input/Operation to make HasCurrentInput true.
+            // A decode cue has no authority to create a current business round.
+            var blocked = 1;
             h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref blocked, 0) == 1) { entered.Set(); release.Wait(); } };
-            blocked = 1;
-            await Read(1, "SYNTH-FIRST-0001"); await Until(() => entered.IsSet, "first durable boundary");
-            lines.Add("FIRST_BEFORE_DURABLE " + State());
-            Check(entry.Text == "SYNTH-FIRST-0001" && !picture.IsEnabled && !tasks.IsVisible && h.Peer.Requests.Count == 0 && !(bool)edits.GetValue(control)!,
-                "first decoded code reaches main entry before persistence without creating draft, picture, task or RCS request");
-            release.Set(); await Resolved("SYNTH-FIRST-0001");
-            Check(entry.Text == p.Operation!.ParcelCode && picture.IsEnabled && tasks.IsVisible, "committed first result owns barcode, picture and task fields");
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-FIRST-0001"), ++left);
+            await CameraRoundHarness.Until(() => Task.FromResult(entered.IsSet));
+            Check(entry.Text.Length == 0 && !picture.IsEnabled && !tasks.IsVisible && h.Peer.Requests.Count == 0,
+                "a pre-admission decode cannot invent current-round barcode, image, task or request authority");
+            release.Set(); h.App.Boundary = null; await Resolved("SYNTH-FIRST-0001");
+            Check(entry.Text == p.Operation!.ParcelCode && picture.IsEnabled && tasks.IsVisible, "accepted current round owns its barcode, exact picture and task");
             var first = p.Operation!; var frozen = Wire.Encode(first.Wcs!.Request); var basis = vm.Snapshot!;
+            await h.TrayAsync(h.Left, TrayPresence.Present);
+            await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-CHANGED-OBSERVATION"));
+            Check(p.Operation?.Id == first.Id && entry.Text == first.ParcelCode && h.Peer.Requests.Count == 1,
+                "changed code alone cannot create a second round or replace the resting parcel result");
 
-            entered.Reset(); release.Reset(); blocked = 1;
-            await Read(2, "SYNTH-SECOND-0002"); await Until(() => entered.IsSet, "second durable boundary");
-            Check(entry.Text == "SYNTH-SECOND-0002" && !picture.IsEnabled && !tasks.IsVisible && !p.CurrentTaskAvailable && p.WaveNo == "—" &&
-                p.Operation!.Id == first.Id && h.Peer.Requests.Count == 1, "new read replaces old main barcode and clears old task values/picture before durable admission");
-            await vm.AcceptPublishedSnapshotAsync(basis with { PublishedTicks = Stopwatch.GetTimestamp() });
-            Check(entry.Text == "SYNTH-SECOND-0002" && !picture.IsEnabled && !p.ShowConfirmedTask,
-                "an older-input snapshot arriving after a newer read cannot restore old barcode, picture or destination");
-            await Task.Delay(3200); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-            Check(entry.Text == "SYNTH-SECOND-0002" && p.CameraReadFeedback.Length == 0 && !picture.IsEnabled,
-                "short read cue expiry never revives the old barcode or picture");
-            second = new SupplyStationWindow(h.App, null, "compact"); second.Show();
-            await Until(() => second.ViewModel.Fresh, "new window during older-than-three-second pending read");
-            var secondControl = Descendants(second).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, second.ViewModel.Left));
-            await Until(() => ((TextBox)secondControl.FindName("BarcodeEntry")).Text == "SYNTH-SECOND-0002", "new window gets latest pending read watermark");
-            Check(!((Button)secondControl.FindName("CurrentBarcode")).IsEnabled && !second.ViewModel.Left.ShowConfirmedTask,
-                "new window receives latest observed code even after transient cue expires, without inheriting old result authority");
-            CaptureInternal(evidence, "camera-current-before-durable", (Grid)window.FindName("ClientArea"), lines);
-            release.Set(); await Resolved("SYNTH-SECOND-0002"); h.App.Boundary = null;
+            await Next(h.Left); await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-SECOND-0002")); await Resolved("SYNTH-SECOND-0002");
+            await vm.AcceptPublishedSnapshotAsync(basis);
+            Check(entry.Text == "SYNTH-SECOND-0002" && p.ShowConfirmedTask && Wire.Encode((await h.App.OperationAsync(first.Id))!.Wcs!.Request) == frozen,
+                "a stale old-round snapshot cannot restore its card or rewrite the original frozen request");
+            second = new SupplyStationWindow(h.App, null, "compact"); second.Show(); await second.ViewModel.RefreshAsync();
+            Check(second.ViewModel.Left.CurrentRound?.Id == p.CurrentRound?.Id && second.ViewModel.Left.Operation?.Id == p.Operation?.Id,
+                "a second native window projects the same Application-owned current round");
             second.Close(); second = null;
-            Check(Wire.Encode((await h.App.OperationAsync(first.Id))!.Wcs!.Request) == frozen, "immediate presentation never rewrites the first frozen request");
 
-            // Each placement dispatches independently while this position's first response is held.
-            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            await Next(h.Left); h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             h.Peer.HoldWhen = body => body.Contains("SYNTH-RCS-0003", StringComparison.Ordinal);
-            await Read(3, "SYNTH-RCS-0003");
-            await Until(() => h.Peer.Requests.Count == 3 && vm.Snapshot!.Operations.Any(o => o.ParcelCode == "SYNTH-RCS-0003" && o.Wcs?.State == StageState.Dispatching), "held RCS call reflected in business snapshot");
-            var heldOriginal = vm.Snapshot!.Operations.Single(o => o.ParcelCode == "SYNTH-RCS-0003");
-            var heldRequest = Wire.Encode(heldOriginal.Wcs!.Request);
-            await Read(4, "SYNTH-QUEUED-0004");
-            await Resolved("SYNTH-QUEUED-0004");
-            await Read(5, "SYNTH-LATEST-0005");
-            await Resolved("SYNTH-LATEST-0005");
-            Check(entry.Text == "SYNTH-LATEST-0005" && picture.IsEnabled && tasks.IsVisible && h.Peer.Requests.Count == 5 &&
-                !h.Peer.Hold.Task.IsCompleted && vm.Snapshot!.Operations.Single(o => o.Id == heldOriginal.Id).Wcs!.State == StageState.Dispatching,
-                "later parcels independently receive results while this position's earlier response remains pending");
-            var regressions = new List<string>();
-            TextChangedEventHandler changed = (_, _) => regressions.Add(entry.Text);
-            entry.TextChanged += changed;
+            await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-RCS-0003"));
+            await Until(() => p.Operation?.Wcs?.State == StageState.Dispatching, "held original");
+            var held = p.Operation!; var heldRequest = Wire.Encode(held.Wcs!.Request);
+            await Next(h.Left); await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-LATEST-0004")); await Resolved("SYNTH-LATEST-0004");
+            var currentId = p.CurrentRound!.Id;
+            Check(!h.Peer.Hold.Task.IsCompleted && h.Peer.Requests.Count == 4 && picture.IsEnabled && tasks.IsVisible,
+                "next same-position round receives its result while the removed original remains in flight");
             h.Peer.Hold.TrySetResult(); h.Peer.Hold = null; h.Peer.HoldWhen = null;
-            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(heldOriginal.Id))?.Wcs?.State == StageState.Accepted);
-            var completedOriginal = (await h.App.OperationAsync(heldOriginal.Id))!;
-            var completedRevision = (await h.App.SnapshotAsync()).Revision;
-            await Until(() => vm.Snapshot!.Revision >= completedRevision, "late original result has reached the live UI snapshot");
-            entry.TextChanged -= changed;
-            Check(regressions.All(t => t == "SYNTH-LATEST-0005") && entry.Text == "SYNTH-LATEST-0005" && h.Peer.Requests.Count == 5 &&
-                Wire.Encode(completedOriginal.Wcs!.Request) == heldRequest,
-                "late original response cannot roll the main barcode back, replace the latest task or rewrite/resend any frozen request");
-            Check(picture.IsEnabled && tasks.IsVisible, "latest matching committed observation restores only its own picture and task fields");
-            var priorId = p.Operation!.Id;
-            await Read(6, "SYNTH-LATEST-0005");
-            await Until(() => p.Input?.Observation.SourceEventId == "mvs.frame.6" && p.ShowConfirmedTask, "same placement fully processed");
-            Check(picture.IsEnabled && tasks.IsVisible && p.Operation!.Id == priorId && h.Peer.Requests.Count == 5,
-                "continuous same-placement reads preserve their current picture and task without another request");
-            DateTimeOffset? firstEmpty = null, lastEmpty = null;
-            for (uint frame = 7; frame <= 9; frame++)
-            {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, frame);
-                await Until(() => vm.Snapshot!.CameraReads.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == frame &&
-                    r.Frame.Outcome == ObservationReadOutcome.NoCode), "delivered empty tray frame " + frame);
-                lastEmpty = vm.Snapshot!.CameraReads.Single(r => r.PositionId == "left").Frame.ObservedAt;
-                firstEmpty ??= lastEmpty;
-                if (frame == 7)
-                {
-                    await Until(() => p.ShowRecentChute && recentBarcode.IsVisible, "first changed no-code frame retains the previous result");
-                    Check(!p.ShowConfirmedTask && !p.SlotAvailable && slot.Text == "SYNTH-CHUTE" && entry.Text.Length == 0 &&
-                        recentBarcode.Text == "上一件条码 SYNTH-LATEST-0005", "changed no-code frame demotes the last chute and separates its barcode from the live entry");
-                }
-                if (frame < 9) await Task.Delay(425);
-            }
-            await Until(() => vm.Snapshot!.Positions!.Single(s => s.Id == "left").PlacementClearedAt >= lastEmpty, "empty tray retires current result");
-            Check(lastEmpty - firstEmpty >= TimeSpan.FromMilliseconds(800), "three delivered empty frames span the required release window");
-            Check(p.ShowRecentChute && !p.ShowConfirmedTask && !picture.IsEnabled && !tasks.IsVisible && !p.CanViewWorkDetails &&
-                p.CanSubmitBarcode && !vm.Right.ShowRecentChute && h.Peer.Requests.Count == 5,
-                "confirmed removal keeps a read-only result locally while freeing the lane and leaving the other side independent");
-            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            await Read(10, "SYNTH-LATEST-0005");
-            await Until(() => h.Peer.Requests.Count == 6 && p.Operation?.Id != priorId && p.Operation?.Wcs?.State == StageState.Dispatching &&
-                p.Input?.Observation.SourceEventId == "mvs.frame.10", "same-code independent request and its current input snapshot");
-            Check(entry.Text == "SYNTH-LATEST-0005" && !picture.IsEnabled && !tasks.IsVisible && !p.ShowRecentChute && !recentBarcode.IsVisible &&
-                !(bool)edits.GetValue(control)!, "same-code new placement immediately retires the historical result without transferring its authority");
-            h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-            await Until(() => p.ShowConfirmedTask && p.Operation!.Id != priorId, "same-code latest confirmed result");
+            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(held.Id))?.Wcs?.State == StageState.Accepted);
+            await vm.RefreshAsync();
+            Check(p.CurrentRound?.Id == currentId && entry.Text == "SYNTH-LATEST-0004" && Wire.Encode((await h.App.OperationAsync(held.Id))!.Wcs!.Request) == heldRequest && h.Peer.Requests.Count == 4,
+                "late old success only completes its record and leaves the current image, task and barcode intact");
+            await Frame(h.Left, CameraRoundHarness.EmptyTray);
+            Check(p.CurrentRound?.Id == currentId && p.ShowConfirmedTask, "a no-code frame is not qualified removal");
+            await h.TrayAsync(h.Left, TrayPresence.Absent); await vm.RefreshAsync();
+            Check(p.CurrentRound is null && !p.ShowConfirmedTask && !p.ShowRecentChute && !picture.IsEnabled && !tasks.IsVisible && p.CanSubmitBarcode,
+                "qualified removal clears the current result and image without previous-chute authority");
 
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Multiple("SYNTH-MULTI-A", "SYNTH-MULTI-B"), 11);
-            await Until(() => p.Input?.Observation.SourceEventId == "mvs.frame.11", "multiple input rejected");
-            var placeholder = (TextBlock)control.FindName("BarcodePlaceholder");
-            Check(entry.Text.Length == 0 && placeholder.IsVisible && placeholder.Text.Contains("多个条码") && p.Input!.Observation.Codes.Length == 2 &&
-                p.RawCandidates.Contains("SYNTH-MULTI-A") && p.RawCandidates.Contains("SYNTH-MULTI-B") && h.Peer.Requests.Count == 6 && picture.IsEnabled &&
-                (await h.App.ReadParcelPictureAsync(p.CurrentPictureQuery!, default)).Image?.Metadata.SourceEventId == "mvs.frame.11",
-                "multiple candidates keep a clear notice and their own viewable rejection original without requesting a chute");
-            await SetClient(window, 800, 420); CaptureInternal(evidence, "camera-current-multiple-compact", (Grid)window.FindName("ClientArea"), lines);
-            await Read(12, "SYNTH-AFTER-MULTI"); await Resolved("SYNTH-AFTER-MULTI");
-            Check(entry.Text == "SYNTH-AFTER-MULTI" && !placeholder.IsVisible && !(bool)edits.GetValue(control)!,
-                "single frame after multiple candidates replaces the notice and never appends older candidate text");
+            await h.TrayAsync(h.Left, TrayPresence.Present);
+            await Frame(h.Left, CameraRoundHarness.Multiple("SYNTH-MULTI-A", "SYNTH-MULTI-B"));
+            var correcting = p.CurrentRound!.Id;
+            Check(p.CurrentRound.FormalCodes.Length == 2 && entry.Text.Contains("SYNTH-MULTI-A") && entry.Text.Contains("SYNTH-MULTI-B") &&
+                p.CenteredStateReason.Contains("多个") && picture.IsEnabled && h.Peer.Requests.Count == 4,
+                "multiple formal labels have their exact image and a correctable unsent round");
+            await SetClient(window, 800, 420); CaptureInternal(evidence, "camera-round-multiple-compact", (Grid)window.FindName("ClientArea"), lines);
+            await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-CORRECTED")); await Resolved("SYNTH-CORRECTED");
+            Check(p.CurrentRound?.Id == correcting && entry.Text == "SYNTH-CORRECTED" && !placeholder.IsVisible && h.Peer.Requests.Count == 5,
+                "a corrected unique label submits once within the same round instead of locking permanent rejection");
 
-            // Intentional local editing stays separate from camera result projection.
             entry.Focus(); entry.Text = "INTENTIONAL-DRAFT"; entry.Select(3, 4);
-            await Read(13, "SYNTH-DURING-DRAFT"); await Resolved("SYNTH-DURING-DRAFT");
-            Check(entry.Text == "INTENTIONAL-DRAFT" && entry.SelectionStart == 3 && entry.SelectionLength == 4 && entry.IsKeyboardFocusWithin && !picture.IsEnabled,
-                "real manual draft, caret and focus survive camera updates while mismatched picture action stays disabled");
+            await Next(h.Left); await Frame(h.Left, CameraRoundHarness.Barcode("SYNTH-DURING-DRAFT")); await Resolved("SYNTH-DURING-DRAFT");
+            Check(entry.Text == "INTENTIONAL-DRAFT" && entry.SelectionStart == 3 && entry.SelectionLength == 4 && !picture.IsEnabled,
+                "camera round replacement preserves a manual draft and caret without lending the camera picture");
             ((Button)control.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => ((TextBlock)control.FindName("InputFeedback")).Text.StartsWith("本位状态已变化"), "original draft basis conflict");
-            Check(entry.Text == "INTENTIONAL-DRAFT" && h.Peer.Requests.Count == 8, "camera replacement does not rebase or submit a stale manual draft");
-            // The other position never shares main entry or observation identity.
-            h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-RIGHT-ONLY"), 1);
-            await Until(() => vm.Right.ShowConfirmedTask, "independent right result");
-            Check(vm.Right.Barcode == "SYNTH-RIGHT-ONLY" && p.Barcode == "SYNTH-DURING-DRAFT" && entry.Text == "INTENTIONAL-DRAFT",
-                "left draft and latest camera facts remain independent from the right position");
+            Check(h.Peer.Requests.Count == 6, "a stale draft cannot append a first call in an already submitted new round");
+            await h.TrayAsync(h.Right, TrayPresence.Present);
+            await Frame(h.Right, CameraRoundHarness.Barcode("SYNTH\nINVALID"));
             var rightControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
             var rightEntry = (TextBox)rightControl.FindName("BarcodeEntry");
-            var requestCount = h.Peer.Requests.Count;
-            h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH\nINVALID"), 2);
-            await Until(() => vm.Right.Input?.Observation.SourceEventId == "mvs.frame.2", "control-bearing candidate rejected");
-            Check(rightEntry.Text.Length == 0 && vm.Right.InputFailed && vm.Right.Input!.Observation.Codes.Single().Contains('\n') &&
-                h.Peer.Requests.Count == requestCount && ((Button)rightControl.FindName("CurrentBarcode")).IsEnabled &&
-                (await h.App.ReadParcelPictureAsync(vm.Right.CurrentPictureQuery!, default)).Image?.Metadata.SourceEventId == "mvs.frame.2",
-                "control-bearing candidate stays in raw evidence with its own rejection picture and cannot become editable multiline input");
+            Check(rightEntry.Text.Length == 0 && vm.Right.CurrentRound is { FormalCodes.Length: 0, OperationId: null } &&
+                vm.Right.RawCandidates.Contains('\n') && vm.Right.CanViewCurrentPicture && h.Peer.Requests.Count == 6,
+                "a control-bearing candidate remains raw evidence with its exact image and never becomes an editable multiline barcode or request");
             var longCode = "SYNTH-" + new string('0', 90);
-            h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode(longCode), 3);
-            await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Barcode == longCode, "long single-code recovery");
-            Check(rightEntry.Text == longCode && rightEntry.LineCount > 1 && !rightEntry.AcceptsReturn &&
-                rightEntry.VerticalScrollBarVisibility == ScrollBarVisibility.Auto && !((TextBlock)rightControl.FindName("BarcodePlaceholder")).IsVisible,
-                "long valid code remains complete in the wrapping scrollable field without manual newlines or invalid/multiple notices");
-            CaptureInternal(evidence, "camera-current-long-compact", (Grid)window.FindName("ClientArea"), lines);
-
-            // Explicit read-only display projections: source order remains stable if the wall clock changes.
-            var projection = new SupplyStationViewModel(h.App);
-            var current = await h.App.SnapshotAsync(); await projection.AcceptPublishedSnapshotAsync(current);
+            await Frame(h.Right, CameraRoundHarness.Barcode(longCode)); await Until(() => vm.Right.ShowConfirmedTask, "independent long right result");
+            Check(rightEntry.Text == longCode && rightEntry.LineCount > 1 && !rightEntry.AcceptsReturn && rightEntry.VerticalScrollBarVisibility == ScrollBarVisibility.Auto && entry.Text == "INTENTIONAL-DRAFT",
+                "the other lane keeps a complete wrapping long code while the left retains its draft");
+            var projection = new SupplyStationViewModel(h.App); var snapshot = await h.App.SnapshotAsync(); await projection.AcceptPublishedSnapshotAsync(snapshot);
             var input = projection.Right.Input!.Observation;
-            var read = new ParcelReadFeedback(current.RuntimeId, "right", Wire.Id(), input.DeviceId, input.Epoch,
-                "SYNTH-CLOCK-NEW", Stopwatch.GetTimestamp(), input.ObservedAt.AddHours(-1))
-            { SourceSequence = input.Sequence + 1 };
-            var apply = projection.Right.GetType().GetMethod("ApplyReadFeedback", BindingFlags.Instance | BindingFlags.NonPublic)!;
-            apply.Invoke(projection.Right, [read]);
-            Check(projection.Right.Barcode == "SYNTH-CLOCK-NEW" && !projection.Right.ShowConfirmedTask,
-                "same-epoch source sequence prevents wall-clock rollback from restoring an older parcel");
-            apply.Invoke(projection.Right, [read with { ObservationId = input.Id, SingleCode = longCode, DetectedTicks = read.DetectedTicks - 1 }]);
-            Check(projection.Right.Barcode == "SYNTH-CLOCK-NEW", "late older read notification cannot replace the latest observation watermark");
-            await projection.AcceptPublishedSnapshotAsync(current with { PublishedTicks = Stopwatch.GetTimestamp() });
-            Check(projection.Right.Barcode == "SYNTH-CLOCK-NEW", "late complete snapshot also respects the pending source-sequence watermark");
-
-            for (uint frame = 4; frame <= 6; frame++)
-            {
-                h.Api(h.Right).Enqueue(CameraRoundHarness.EmptyTray, frame);
-                await Until(() => vm.Snapshot!.CameraReads.Any(r => r.PositionId == "right" && r.Frame.FrameNumber == frame &&
-                    r.Frame.Outcome == ObservationReadOutcome.NoCode), "right empty-tray frame " + frame);
-                if (frame < 6) await Task.Delay(425);
-            }
-            await Until(() => vm.Snapshot!.Positions!.Single(s => s.Id == "right").PlacementClearedAt is not null, "right removal confirmation");
-            var heldBarcode = (TextBox)rightControl.FindName("RecentChuteBarcode");
-            var heldAt = Stopwatch.GetTimestamp();
-            await Task.Delay(1400);
-            Check(vm.Right.ShowRecentChute && heldBarcode.IsVisible && heldBarcode.Text == "上一件条码 " + longCode &&
-                rightEntry.Text.Length == 0 && vm.Left.ShowConfirmedTask, "the confirmed removal keeps the full previous barcode and leaves the other lane unchanged");
-            await Until(() => !vm.Right.ShowRecentChute && vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "等待投包" && !heldBarcode.IsVisible,
-                "previous result expires to waiting through the existing refresh clock");
-            Check(Stopwatch.GetElapsedTime(heldAt) is { TotalSeconds: >= 2.5 and < 4.5 } &&
-                h.Peer.Requests.Count == requestCount + 1 && vm.Left.ShowConfirmedTask,
-                "previous result expires after about three seconds without creating a request");
+            var cue = new ParcelReadFeedback(snapshot.RuntimeId, "right", Wire.Id(), input.DeviceId, input.Epoch, "UNOWNED-CODE", Stopwatch.GetTimestamp(), input.ObservedAt.AddHours(-1)) { SourceSequence = input.Sequence + 1 };
+            projection.Right.GetType().GetMethod("ApplyReadFeedback", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(projection.Right, [cue]);
+            Check(projection.Right.Barcode == longCode && projection.Right.CurrentRound?.Id == vm.Right.CurrentRound?.Id,
+                "a later source cue with a changed clock cannot replace current-round authority");
+            CaptureInternal(evidence, "camera-current-rounds", (Grid)window.FindName("ClientArea"), lines);
         }
-        finally
-        {
-            release.Set(); h.App.Boundary = null; h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null;
-            second?.Close(); window.Close();
-        }
+        finally { release.Set(); h.App.Boundary = null; h.Peer.Hold?.TrySetResult(); second?.Close(); window.Close(); }
     }
 }

@@ -193,6 +193,7 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           $env:IPC_FROZEN_DESKTOP = Join-Path $PWD.Path 'src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll'
+          $failedSuites = @()
           foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback', 'continuous-pda-input')) {
             dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path "--$suite"
             $verificationExit = $LASTEXITCODE
@@ -201,9 +202,9 @@ jobs:
             $lines | Set-Content -LiteralPath ".artifacts/$suite.log"
             $lines | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
             $lines | Write-Output
-            if ($verificationExit) { exit $verificationExit }
-            if (!@($lines | Where-Object { $_ -like 'PASS *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw "Incomplete workstation verification: $suite" }
+            if ($verificationExit -or !@($lines | Where-Object { $_ -like 'PASS *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { $failedSuites += $suite }
           }
+          if ($failedSuites.Count) { throw "Failed workstation verification: $($failedSuites -join ', ')" }
       - name: Verify compact exit confirmation and owner release
         if: matrix.business == 'Sportmaster'
         shell: pwsh

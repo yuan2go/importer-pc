@@ -25,23 +25,23 @@ class ReleaseDocumentTests(unittest.TestCase):
         referenced = set(re.findall(r'\b[A-Z][A-Z0-9-]+\.md\b', generated))
         self.assertLessEqual(referenced, set(docs.SPORTMASTER_GUIDES.values()), 'Generated launch instructions must reference shipped current guides')
 
-    def test_parcel12_is_the_shipped_current_guide(self):
+    def test_parcel13_is_the_shipped_current_guide(self):
         root = Path(__file__).resolve().parent.parent
         self.assertNotIn('DB11-UPGRADE.md', docs.SPORTMASTER_GUIDES.values())
-        self.assertIn('PARCEL12-OPERATIONS.md', docs.PARCEL_GUIDES.values())
+        self.assertIn('PARCEL13-OPERATIONS.md', docs.PARCEL_GUIDES.values())
         self.assertIn('SM-SESSION-SHIFTS.md', docs.SPORTMASTER_GUIDES.values())
         guide = docs.render(root, 'docs/runtime/parcel12-operations-26.md', 'a' * 40)
         current = str(read_storage_format(root))
         self.assertIn('PARCEL' + current + '-OPERATIONS.md', docs.SPORTMASTER_GUIDES.values())
         self.assertIn('新库直接创建格式 **' + current + '**', guide)
-        for fact in ['新库直接创建格式 **12**', '非当前格式在写入前拒绝', '不提供格式升级', 'COMPLETED.json', '旧程序不能直接读取12', '原请求', '不得只改版本号']:
+        for fact in ['新库直接创建格式 **13**', '非当前格式在写入前拒绝', '不提供格式升级', 'COMPLETED.json', '旧程序不能直接读取13', '原请求', '不得只改版本号']:
             self.assertIn(fact, guide)
 
     def test_sm_ships_current_scan_and_diagnostic_semantics(self):
         root = Path(__file__).resolve().parent.parent
         self.assertEqual(docs.SPORTMASTER_GUIDES['docs/runtime/sm-operator-corrections-29.md'], 'SM-SCAN-AND-DEBUG.md')
         guide = docs.render(root, 'docs/runtime/sm-operator-corrections-29.md', 'a' * 40)
-        for fact in ['一次托盘放置只创建一次RCS请求', '连续3帧无码且跨度至少800毫秒', '相机采集、视频和识别继续运行', '升级时保留已有站点码制', '不提供结果查询', 'RCS离线时仍可触发调试读取', '管理中心打开时暂停自动供包和识码', 'Unknown 在可靠离位且调用与回执收口后进入历史保管', '只有点击“发送请求”才调用', '当前生效配置中的实际RCS服务', '不申请预览缩略图', '历史丢帧不会否定']:
+        for fact in ['每轮最多一次首次RCS调用', '无码、Scene、候选变化和重连不能单独证明离位', '相机采集、视频和识别继续运行', '升级时保留已有站点码制', '不提供结果查询', 'RCS离线时仍可触发调试读取', '管理中心打开时暂停自动供包和识码', 'Unknown 在可靠离位且调用与回执收口后进入历史保管', '只有点击“发送请求”才调用', '当前生效配置中的实际RCS服务', '不申请预览缩略图', '历史丢帧不会否定']:
             self.assertIn(fact, guide)
 
     def test_current_links_standalone_and_evidence_links_immutable(self):

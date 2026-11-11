@@ -31,7 +31,7 @@ public sealed partial class SupplyStationPositionViewModel
     public bool SupplyDisabled => SupplyControl?.Mode == StationPositionMode.Disabled;
     public bool CanChangeSupply => owner.Fresh && owner.CanStartOperation && owner.Application is IStationPositionControl;
     string? PlacementRemovalOperation => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementRemovalOperation;
-    public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled && PlacementRemovalOperation is not null;
+    public bool CanConfirmPlacementRemoval => owner.Fresh && !SupplyDisabled && !ShowConfirmedTask && PlacementRemovalOperation is not null;
     public bool ShowConfirmedPlacementRemoval => CanConfirmPlacementRemoval;
     bool removalBusy;
     internal async Task ConfirmPlacementRemovalAsync()

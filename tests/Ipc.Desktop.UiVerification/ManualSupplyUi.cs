@@ -36,12 +36,11 @@ static partial class Program
                 if (!deferred)
                 {
                     h.Factory.Cameras[vm.Left.ReaderId].Emit();
-                    await Until(() => vm.Left.Input?.Outcome == ParcelInputOutcome.Blocked);
-                    Check(vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "相机连接未确认" &&
-                        vm.Left.CenteredStateReason == "本次扫码未发送请求" &&
-                        ParcelInputReasons.BlockReason(vm.Left.Input!) == ParcelInputBlockReason.ReaderConfirmationExpired &&
-                        vm.Left.Input!.OperationId is null && vm.Right.CanAdmit && h.Peer.Requests.Count == 0,
-                        "an invalid camera session shows the exact Chinese cause and sends no request; other position remains usable");
+                    await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed > 0));
+                    await vm.RefreshAsync();
+                    Check(vm.Left.CurrentRound is null && vm.Left.Barcode.Length == 0 && vm.Left.CanSubmitBarcode &&
+                        vm.Right.CanAdmit && h.Peer.Requests.Count == 0,
+                        "an unhealthy camera cannot invent a current round or prevent independent manual supply");
                 }
                 ((TextBox)left.FindName("BarcodeEntry")).Text = "000123456";
                 ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -75,13 +74,13 @@ static partial class Program
                 entry.RaiseEvent(new KeyEventArgs(keyboard, inputSource, timestamp, Key.Enter) { RoutedEvent = Keyboard.PreviewKeyDownEvent });
                 await Until(() => vm.Right.SlotAvailable && !vm.Busy);
                 var rightOriginal = vm.Right.Operation!.Id;
-                var expectedKind = deferred ? "PdaKeyboard" : "Keyboard";
+                var expectedKind = "Keyboard";
                 Check(vm.Right.Barcode == "000123457" && vm.Right.Operation?.OperatorInput?.Kind == expectedKind && h.Peer.Requests.Count == 2 &&
-                    vm.Right.Operation!.Acquisition is null, "the native editor recognizes the key cadence as " + expectedKind + " without a camera");
+                    vm.Right.Operation!.Acquisition is null, "synthetic WPF events without native message evidence remain MANUAL; real PDA cadence is covered by continuous-pda-input");
                 var bodies = h.Peer.Requests.ToArray();
                 using var manual = JsonDocument.Parse(bodies[0]);
                 using var pda = JsonDocument.Parse(bodies[1]);
-                Check(manual.RootElement.GetProperty("source").GetString() == "MANUAL" && pda.RootElement.GetProperty("source").GetString() == (deferred ? "PDA" : "MANUAL"),
+                Check(manual.RootElement.GetProperty("source").GetString() == "MANUAL" && pda.RootElement.GetProperty("source").GetString() == "MANUAL",
                     "the editor preserves the detected source in the actual RCS payload");
                 CaptureInternal(evidence, deferred ? "manual-deferred-native" : "manual-offline-native", (Grid)window.FindName("ClientArea"), lines);
                 await SetClient(window, 800, 420); await Flush();

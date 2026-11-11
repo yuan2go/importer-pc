@@ -23,8 +23,6 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     string? originalRegistration;
     string? originalScope;
 
-    internal ProductMaintenanceWindow(WindowsRemovalReceipt completed, string retainedDataRoot) : this()
-        => ShowResult(new(completed, null, false));
     // Installer cleanup uses the protected installation inventory, not new media.
     internal ProductMaintenanceWindow(DeploymentMedia media) : this()
         => ExecuteUninstall = (hash, delete, progress, token) => ParcelStartupServices.UninstallAsync(hash, delete, progress, token, media);

@@ -190,8 +190,13 @@ static partial class Program
         foreach (var restart in new[] { false, true })
         {
             var receipt = new WindowsRemovalReceipt(restart ? "RestartRequired" : "RemovedDataRetained", Path.Combine(evidence, "synthetic-retirement.json"), ["D:/synthetic-retained-data"], restart, [], "D:/synthetic-release");
-            var removal = (Window)Activator.CreateInstance(removalType, BindingFlags.Instance | BindingFlags.NonPublic, null, [receipt, "D:/synthetic-retained-data"], null)!;
-            removal.Show(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle); removal.UpdateLayout();
+            var removal = (Window)Activator.CreateInstance(removalType)!;
+            removalType.GetProperty("RegistrationIdentity", flags)!.SetValue(removal, (Func<string>)(() => "synthetic-registration"));
+            removalType.GetProperty("RegistrationScope", flags)!.SetValue(removal, (Func<string>)(() => "synthetic-installation"));
+            removalType.GetProperty("ExecuteUninstall", flags)!.SetValue(removal,
+                (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((_, _, _, _) => Task.FromResult(new ProgramUninstallResult(receipt, null, false))));
+            removal.Show(); await Idle(removal);
+            Click(removal, "卸载"); await Idle(removal);
             Descendants(removal).OfType<Expander>().Single(e => Equals(e.Header, "卸载详情")).IsExpanded = true; removal.UpdateLayout();
             Check(Descendants(removal).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(restart ? new[] { "重试卸载", "关闭" } : new[] { "关闭" }) &&
                 Descendants(removal).OfType<TextBox>().Any(t => t.IsVisible && t.IsReadOnly && t.Text.Contains("程序目录")), "retired product exposes read-only receipt inventory, original inspection and close, with no repeated repair or authentication entry");

@@ -155,7 +155,7 @@ public sealed partial class ParcelRuntime
             ApplySmRound(round);
             var operation = round.OperationId is { } id ? operations.GetValueOrDefault(id) ?? repository.ReadOperation(id) : null;
             if (operation?.State != ParcelState.SlotResolved && (round.RequireRemoval || operation is { Wcs.Attempts: > 0 } &&
-                (round.Manual || SmCycle(round.PositionId).Presence == TrayPresence.Unknown) && operation.State != ParcelState.SlotResolved)
+                (operation.OperatorInput is not null || SmCycle(round.PositionId).Presence == TrayPresence.Unknown) && operation.State != ParcelState.SlotResolved)
                 )
                 StoreSmRound(round with
                 {
@@ -191,7 +191,7 @@ public sealed partial class ParcelRuntime
             };
         if (op.Wcs?.State is StageState.Rejected or StageState.Unknown or StageState.Conflict || op.State is ParcelState.Blocked or ParcelState.ImageRejected)
         {
-            var confirm = round.Manual || !SmVisualReliable(round.PositionId);
+            var confirm = op.OperatorInput is not null || !SmVisualReliable(round.PositionId);
             return next with { State = confirm ? SmRoundState.AwaitingRemoval : SmRoundState.Result, RequireRemoval = confirm };
         }
         return next with { State = SmRoundState.Submitted };
@@ -344,7 +344,6 @@ public sealed partial class ParcelRuntime
         {
             OperationId = op.Id,
             CommandId = observation.OperatorInput?.CommandId,
-            Manual = manual,
             SelectedCode = selection.SelectedCode,
             State = SmRoundState.Submitted
         };

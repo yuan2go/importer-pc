@@ -96,6 +96,14 @@ internal static class SmRoundLifecycle
         var supplemented = await Resolved(pda.OperationId!);
         Check(pda.Status == "Admitted" && supplemented.RoundId == expiredId && supplemented.OperatorInput?.Kind == "PdaKeyboard" && h.Peer.Requests.Count == 3,
             "T04 PDA supplements the same expired round without moving the parcel");
+        for (var second = 0; second < 4; second++)
+        {
+            clock.Elapse(TimeSpan.FromMilliseconds(1000));
+            await Observe([], TrayPresence.Present);
+        }
+        var repeatedPda = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-304", ParcelBarcodeInputKind.PdaKeyboard), default);
+        Check(Current(await h.App.SnapshotAsync()) is { Manual: false } visual && visual.Id == expiredId && repeatedPda.Status == "Rejected" && h.Peer.Requests.Count == 3,
+            "T04 reliable in-place PDA success preserves its visual round beyond 3 seconds and another same-code command cannot dispatch");
         await Observe(["GOOD-305"]);
         Check(h.Peer.Requests.Count == 3, "T06 camera cannot append another submission after PDA owns the round");
         await Observe([], TrayPresence.Absent);
@@ -105,10 +113,11 @@ internal static class SmRoundLifecycle
         h.App.BeforeSmAttemptForVerification = _ => { entered.TrySetResult(); return ready.Task; };
         try
         {
-            var prepared = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-350"), default);
+            var prepared = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-304"), default);
             await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             var unsent = (await h.App.OperationAsync(prepared.OperationId!))!;
-            Check(unsent.Wcs is { Attempts: 0, State: StageState.Prepared }, "T07 frozen request exists before the executor's final send decision");
+            Check(prepared.Status == "Admitted" && unsent.RoundId != expiredId && unsent.Wcs is { Attempts: 0, State: StageState.Prepared },
+                "T07 trusted removal allows a new same-code round; its frozen request exists before the executor's final send decision");
             clock.Utc = DateTimeOffset.UtcNow;
             var capturedBeforeClick = clock.Utc.AddMilliseconds(-1);
             await Remove(); ready.TrySetResult();
@@ -176,6 +185,18 @@ internal static class SmRoundLifecycle
         s = await Observe([], TrayPresence.Absent);
         Check(!degradedFailure.Manual && degradedFailure.RequireRemoval && Current(s)?.Id == degradedFailure.Id,
             "T12 a degraded automatic failure already requiring manual confirmation also retains that responsibility after visual absence");
+        await Remove(); h.Peer.Mode = "assigned";
+
+        await Observe([], TrayPresence.Present);
+        clock.Elapse(TimeSpan.FromMilliseconds(1001));
+        _ = await h.App.SnapshotAsync();
+        h.Peer.Mode = "reject";
+        var visualPdaFailure = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-602", ParcelBarcodeInputKind.PdaKeyboard), default);
+        await Resolved(visualPdaFailure.OperationId!);
+        var visualFailureRound = Current(await h.App.SnapshotAsync())!;
+        s = await Observe([], TrayPresence.Absent);
+        Check(!visualFailureRound.Manual && visualFailureRound.RequireRemoval && Current(s)?.Id == visualFailureRound.Id,
+            "T12 PDA failure in a reliable visual round still requires the targeted manual removal click despite observed absence");
         await Remove(); h.Peer.Mode = "assigned";
 
         clock.Utc = DateTimeOffset.UtcNow;

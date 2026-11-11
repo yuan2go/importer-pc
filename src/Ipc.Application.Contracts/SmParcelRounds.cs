@@ -10,6 +10,8 @@ public sealed record SmParcelRound(string Id, string PositionId, long Version, G
     public Observation? Observation { get; init; }
     public string? OperationId { get; init; }
     public string? CommandId { get; init; }
+    // Establishment basis, frozen when the round starts. The submitted request's
+    // OperatorInput identifies keyboard/PDA supplementation independently.
     public bool Manual { get; init; }
     public bool AttemptStarted { get; init; }
     public bool AutoExpired { get; init; }

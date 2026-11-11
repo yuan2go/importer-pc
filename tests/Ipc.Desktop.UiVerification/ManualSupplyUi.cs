@@ -168,6 +168,7 @@ static partial class Program
             {
                 reason.SelectedValue = value; load.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 await CameraRoundHarness.Until(async () => { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); return load.IsEnabled; });
+                if (table.ItemsSource is null) throw new InvalidOperationException("Native history query did not populate rows: " + window.ViewModel.Message);
             }
             string Cell(object row, string property) => (string)row.GetType().GetProperty(property)!.GetValue(row)!;
             await Query("OperatorConfirmedRemoval");

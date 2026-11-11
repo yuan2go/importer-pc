@@ -110,8 +110,12 @@ public partial class SupplyStationWindow
             {
                 var term = reason.SelectedValue is string { Length: > 0 } selected ? selected : search.Text.Trim() switch
                 { "格口已取得" => "Accepted", "业务拒绝" => "Rejected", "结果未知" => "Unknown", "调用中" => "Dispatching", "" => null, var text => text };
-                var result = await ViewModel.ServiceAsync(() => ViewModel.Application.RoundHistoryAsync(side.SelectedIndex == 0 ? null : side.SelectedIndex == 1 ? "left" : "right", 100, term,
-                    from.SelectedDate is { } first ? new DateTimeOffset(first) : null, to.SelectedDate is { } last ? new DateTimeOffset(last.AddDays(1)) : null));
+                // ServiceAsync runs off the dispatcher. Freeze control values on
+                // their owner thread before handing the read to Application.
+                var position = side.SelectedIndex == 0 ? null : side.SelectedIndex == 1 ? "left" : "right";
+                DateTimeOffset? startedFrom = from.SelectedDate is { } first ? new DateTimeOffset(first) : null;
+                DateTimeOffset? startedTo = to.SelectedDate is { } last ? new DateTimeOffset(last.AddDays(1)) : null;
+                var result = await ViewModel.ServiceAsync(() => ViewModel.Application.RoundHistoryAsync(position, 100, term, startedFrom, startedTo));
                 table.ItemsSource = result.Items.Select(r => new RoundRow(r)).ToArray();
             }
             catch (Exception) { ViewModel.Message = "轮次记录未能读取，请保留原数据，稍后重试。"; }

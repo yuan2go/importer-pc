@@ -28,6 +28,9 @@ internal static class MvsPresenceChecks
             finally { Marshal.FreeHGlobal(memory); }
         }
         Check(Sample(true, 100) is null, "startup with a parcel never learns a false empty reference");
+        model.Teach(); Sample(false, 100); Sample(true, 100);
+        for (var i = 0; i < 20; i++) Sample(true, 100);
+        Check(model.Status.Contains("校准失败"), "a parcel placed during teaching cannot become a newly learned empty background");
         model.Teach();
         for (var i = 0; i < 20; i++) Sample(false, 100);
         Check(model.Status == "空托盘已确认", "explicit empty teaching requires stable multi-frame evidence");

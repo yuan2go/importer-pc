@@ -21,7 +21,16 @@ internal sealed class MvsTrayPresence
     public bool CanDecode { get { lock (gate) return !requested && (reference is null || published == TrayPresence.Present); } }
     public void BreakContinuity()
     {
-        lock (gate) { teaching = null; count = 0; previous = 0; pending = published = TrayPresence.Unknown; lastPublished = 0; }
+        lock (gate)
+        {
+            if (requested && teaching is not null) FailTeaching();
+            teaching = null; count = 0; previous = 0; pending = published = TrayPresence.Unknown; lastPublished = 0;
+        }
+    }
+    void FailTeaching()
+    {
+        requested = false; teaching = reference = null;
+        Status = "校准失败；请保持空托盘和稳定图像后重新校准";
     }
     public void Teach()
     {
@@ -36,7 +45,7 @@ internal sealed class MvsTrayPresence
     {
         lock (gate)
         {
-            if (!requested && reference is null && lastPublished == 0) return null;
+            if (!requested && reference is null) return null;
             var samples = new byte[Columns * Rows];
             var row = new byte[w];
             for (var y = 0; y < Rows; y++)
@@ -46,16 +55,30 @@ internal sealed class MvsTrayPresence
             }
             if (width != w || height != h)
             {
+                if (width != 0 && requested && teaching is not null) FailTeaching();
                 reference = teaching = null; count = 0; width = w; height = h;
                 Status = requested ? Status : "图像尺寸变化；请重新校准空托盘";
             }
-            if (previous != 0 && Elapsed(previous, ticks) > 500) { teaching = null; count = 0; first = ticks; pending = published = TrayPresence.Unknown; lastPublished = 0; }
+            if (previous != 0 && Elapsed(previous, ticks) > 500)
+            {
+                if (requested && teaching is not null) FailTeaching();
+                teaching = null; count = 0; first = ticks; pending = published = TrayPresence.Unknown; lastPublished = 0;
+            }
             previous = ticks;
             if (requested)
             {
+                if (samples.Count(v => v is < 5 or > 250) >= samples.Length * .2)
+                {
+                    FailTeaching();
+                    return new(TrayPresence.Unknown, "EmptyTeachingExposureInvalid; explicit calibration must be repeated");
+                }
                 var delta = teaching is null ? (Changed: 1d, Shift: 0) : Difference(teaching, samples);
-                if (teaching is null || delta.Changed > .001 || Math.Abs(delta.Shift) > 12)
-                { teaching = samples; first = ticks; count = 0; }
+                if (teaching is null) { teaching = samples; first = ticks; count = 0; }
+                else if (delta.Changed > .001 || Math.Abs(delta.Shift) > 12)
+                {
+                    FailTeaching();
+                    return new(TrayPresence.Unknown, "EmptyTeachingChanged; explicit calibration must be repeated");
+                }
                 count++;
                 if (count >= 3 && Elapsed(first, ticks) >= 800)
                 {
@@ -79,7 +102,7 @@ internal sealed class MvsTrayPresence
                 ? TrayPresence.Present : TrayPresence.Unknown;
             // Hysteresis retains the last confirmed occupied state while a matching
             // empty image accumulates its removal interval. True invalidity is Unknown.
-            Status = requested ? Status : reference is null ? "未校准；在位状态未知" : output switch
+            Status = requested || reference is null ? Status : output switch
             { TrayPresence.Absent => "空托盘已确认", TrayPresence.Present => "包裹在位", _ => "在位状态未知；等待可靠图像" };
             if (published == output && lastPublished != 0 && Elapsed(lastPublished, ticks) < 1000) return null;
             published = output; lastPublished = ticks;

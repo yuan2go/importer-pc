@@ -79,6 +79,7 @@ public sealed partial class ParcelRuntime
             auxiliaryReasons.AddRange(repository.PendingCommands().Select(id => "CommandPending:" + id + "; inspect CommandAdmitted audit and original facts; this ID is never replayed"));
             if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
             if ((parcelPictureFailure ?? parcelPictures?.Fault) is { } pictureFailure) auxiliaryReasons.Add("ParcelPictures:" + pictureFailure);
+            if (backupScheduleFault is { } scheduleFault) auxiliaryReasons.Add(scheduleFault);
             if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var positionSnapshots = PositionSnapshots();
@@ -296,8 +297,10 @@ public sealed partial class ParcelRuntime
     }
     public Task<BusinessReceipt> ReconnectAsync() => MaintainDevicesAsync(null);
     public Task<BusinessReceipt> ReconnectDeviceAsync(string deviceId) => MaintainDevicesAsync(deviceId);
-    public Task<BusinessReceipt> BackupAsync(string destination) => OwnedRead(token => BackupCoreAsync(destination, token));
+    public Task<BusinessReceipt> BackupAsync(string destination) => BackupAsync(destination, CancellationToken.None);
+    internal Task<BusinessReceipt> BackupAsync(string destination, CancellationToken token) => OwnedRead(owned => BackupCoreAsync(destination, owned), token);
     bool backupInProgress;
+    internal Action<string>? BackupBoundary { get; set; }
     async Task<BusinessReceipt> BackupCoreAsync(string destination, CancellationToken token)
     {
         ParcelRepository original; ParcelConfiguration effective; ParcelConfiguration? pending; ParcelOperation[] images; long bytes;
@@ -307,18 +310,26 @@ public sealed partial class ParcelRuntime
             if (operations.Values.Any(o => o.OriginalFrame?.State == "Pending"))
                 return new("Rejected", "等待识码原图后台保存完成后再创建一致性备份；原任务和原请求保留。", repository?.Revision ?? 0);
             if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || backupInProgress)
-                return new("Rejected", "Pause and drain external work before consistent maintenance backup", repository?.Revision ?? 0);
+                return new("Rejected", "当前尚未满足完整备份条件。请先暂停供包、验证管理授权，并等待在途任务、设备调用或另一项备份结束；原请求和原回执保留。", repository?.Revision ?? 0);
             original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;
             images = operations.Values.Where(x => x.Image is not null && !x.ImageReleased).ToArray();
             backupInProgress = true;
         }
+        catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
+        { GuardBackupSourceFailure(error, "BackupSourcePreparation"); throw; }
         finally { gate.Release(); }
         try
         {
             foreach (var op in images) ValidateBackupImage(directory!, op, op.Image!, token);
             ParcelRecovery.CreateBackup(directory!, destination, effective, pending, bytes,
-                path => original.Backup(path, token), factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); }, token);
+                path => original.Backup(path, token), factory.RegisterBackup, () => { token.ThrowIfCancellationRequested(); Management.Require(); }, token, boundary: BackupBoundary);
             return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", original.Revision);
+        }
+        catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
+        {
+            // Fence proven source failure before releasing the backup admission fence.
+            GuardBackupSourceFailure(error, "BackupSourceCopy");
+            throw;
         }
         finally
         {

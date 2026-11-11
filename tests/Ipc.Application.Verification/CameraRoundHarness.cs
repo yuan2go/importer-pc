@@ -78,9 +78,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);
     }
-    public async Task StartAsync(bool waitForAllCameras = true, bool waitForRcs = true, bool authorizeManagement = true, bool supervisedRestart = false)
+    public async Task StartAsync(bool waitForAllCameras = true, bool waitForRcs = true, bool authorizeManagement = true, bool supervisedRestart = false, string? rcsImplementationFingerprint = null)
     {
         Factory = new(Launch, Config);
+        if (rcsImplementationFingerprint is not null) Factory.RcsImplementationFingerprint = rcsImplementationFingerprint;
         App = new(Launch with { RequireRecoveryReview = supervisedRestart }, new SportmasterFlow { PlacementReleaseMs = PlacementReleaseMs }, Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         await App.StartAsync(default);
         if (waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
@@ -173,12 +174,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                 serial => new ResourceLease(Path.Combine(launch.DataRoot, "synthetic-device-leases"), [serial]), decoder: api.ReturnsDecodedFrames ? null : decoder);
             Sources[binding.DeviceId] = source; return source;
         }
+        public string RcsImplementationFingerprint { get; set; } = "synthetic-round-rcs-implementation";
         public ParcelPorts Create(ParcelConfiguration c)
         {
             Validate(c); var readers = new Dictionary<string, IControlledObservationSource>();
             foreach (var binding in c.Topology!.Readers) readers.Add(binding.DeviceId, Reader(binding));
             var wcs = new SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
-            return new(readers[c.Reader.DeviceId], null, wcs, null, new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" }, Readers: readers);
+            return new(readers[c.Reader.DeviceId], null, wcs, null, new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }
         public ParcelLiveDevices? CreateLive(ParcelConfiguration c, IReadOnlyCollection<string> readerIds, bool integration)
         {
@@ -191,7 +193,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             }
             SportmasterRcsTaskService? wcs = null;
             if (integration) { wcs = new(c.Wcs!); wcs.ConfigureRuntime(c); WcsBuilds++; }
-            return new(RejectLiveReaders ? readers.ToDictionary(r => "unexpected-" + r.Key, r => r.Value) : readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = "synthetic-round-rcs-implementation" });
+            return new(RejectLiveReaders ? readers.ToDictionary(r => "unexpected-" + r.Key, r => r.Value) : readers, wcs, wcs is null ? new Dictionary<string, string>() : new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint });
         }
         public ValueTask DisposeAsync() => validator.DisposeAsync();
     }

@@ -57,17 +57,12 @@ class QualificationChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, '24..168'):
             q.validate_plan(plan)
 
-    def test_backup_requires_complete_unchanged_original_set(self):
+    def test_verifier_refusal_never_falls_back_to_python_format_rules(self):
         with tempfile.TemporaryDirectory() as folder:
-            db = Path(folder) / 'backup.db'; db.write_bytes(b'synthetic database bytes')
-            recovery = Path(str(db) + '.recovery'); recovery.mkdir()
-            config = recovery / 'configuration.json'; config.write_text('{}')
-            manifest = recovery / 'COMPLETED.json'
-            manifest.write_text(json.dumps(dict(Database=db.name, DatabaseHash=q.sha(db), Files={'configuration.json': q.sha(config)})))
-            q.verify_backup(db)
-            config.write_text('{"changed": true}')
-            with self.assertRaisesRegex(ValueError, 'original differs'):
-                q.verify_backup(db)
+            db = Path(folder) / 'backup.db'; db.write_bytes(b'not a current database')
+            with patch.object(q.subprocess, 'run', return_value=SimpleNamespace(returncode=1, stdout='', stderr='actual schema differs')):
+                with self.assertRaisesRegex(ValueError, 'verification refused'):
+                    q.verify_backup(db, Path(folder) / 'verifier.dll')
 
     def test_json_duplicate_keys_and_bounded_input(self):
         with tempfile.TemporaryDirectory() as folder:

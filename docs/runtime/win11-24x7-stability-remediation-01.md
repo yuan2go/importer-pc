@@ -1,102 +1,46 @@
-> 本文保留形成时的设计及验证背景。当前 SM 实施及验收见[文档索引](../INDEX.md)与[实施手册](../operator/implementation-guide.md)。
+# SM 长稳采集与完整备份分析
 
-当前配置仅schema3，Parcel数据库仅10，Supply仅6/6；其他格式拒绝并提示使用全新数据目录。程序集版本与包身份以当前项目声明和本次构建清单为准。旧指南原字节及形成时证据索引见收口前归档，不用于当前操作。
+本页是当前操作说明，不授予生产资格。当前 Parcel DB12 只接受真实基线与结构；非当前格式在写入前拒绝并保留原件，不提供升级、迁移或双路径。历史规模、短测与失败结果见[原验证记录](../archive/runtime/validation/win11-24x7-stability-remediation-01.md)，仅适用于各自来源提交，不表示当前版本或连续24/72小时现场已通过。
 
-> TCP存活语义由[P0-STABILITY-01/ST06](p0-stability-01.md#st06-tcp存活第一阶段)更新：keepalive和有限入站确认；旧本地定时续Ready说明只保留形成时适用范围。自动重连仍未启用，实际资格见新回执。
->
-> 崩溃闭环现由[P0-STABILITY-01/ST14](p0-stability-01.md#st14-崩溃闭环)实现全局钩子、受控WER、有限外部重启及SCM恢复；下文“未自动修改WER”描述原包形成时的实现。挂起/现场运维政策继续有效，新系统登记验收仍NOT_RUN，不能继承本页历史PASS。
+## 运行和维护边界
 
-# 长期稳定性运行、维护及资格
+相机帧、观察、持久输入接收与处置、实际放置、RCS 请求意图、发送预登记、原始回执和外部接受是不同事实。SM 同次放置只请求一次；重复观察可以合并，不按相同条码推断同一件。人工键盘/PDA 独立准入；RCS 离线暂停自动识码并保留预览。新站默认海康原生识码，已有站点保留已保存路线。管理中心打开时暂停自动供包和识码，明确调试读取与发送各自执行。
 
-当前历史维护采用[输入分页及完整预算](../archive/runtime/retention-ingress-02.md)。最新完整规模与受保护CLI实测见[PR106记录](../archive/runtime/validation/retention-ingress-full-retest-03.md)；PR103超预算FAIL及后续UAC取消是历史证据，未被删除，也不再表示最新实现状态。2592000、目标工控机、真实设备和24h/72h仍单独待验。
+Unknown 保留原请求、原目标、原报文及尝试，不盲重发。确认离位且调用及回执责任收口后进入历史，不占当前放置。新请求默认由 RCS 分配格口，也可按左右位共用设置指定格口；Application 自动持久分配请求编号，重启不复用；不配置编号范围。永久编号所有权及原始回执不能通过清理、恢复或新建目录绕过。
 
-当前可靠性与存储分别按本次程序集及Parcel 10基线验证；历史源码、冻结介质及24h资格记录保留原身份。真实设备和现场资格不能由结构等价证明替代。
+业务库、原请求、必要回执损坏或实际存储不可用继续阻断业务。SQLite 备份复制错误可能来自目标盘，不能仅凭异常类型判定业务库已损坏；复制失败后在原操作预算内独立只读核验源库，只有源库自身的读取或完整性失败才进入业务存储致命守卫，目标失败保留失败回执与残件、不发布完整集。源库核验因本次取消而未完成时保留未确认事实，不伪报源库损坏或备份成功。备份计划状态是辅助信息，其读取、解析、写回失败时停止该计划并告警，保留原文件，其他维护和合法供包在业务存储正常时继续。未启用计划不读取残留辅助文件。恢复方法见[实施手册](../operator/implementation-guide.md)。上次运行中断、结果尚未核对时保留原目标，不自动再次备份。
 
-## 输入、故障和关闭
+完整备份包含数据库和同名 `.recovery` 目录，只有 `COMPLETED.json` 发布且全部文件校验成功才可使用。在线备份的枚举、快照和文件复制共用现有围栏，期间不删除依赖的原件；文件复制不长期占用业务锁，成功、失败和取消均释放围栏。只有 `BackupCreated` 更新最近成功信息，拒绝、取消、失败及结果未确认保留完整回执和真实原因。
 
-来源取得帧→驱动排队→Application持久Pending→业务Admitted→外部接受→物理完成是不同事实。true回调意味着原SQLite已经承担输入责任，不表示已准入或完成。每位同序；过期Epoch仍拒绝。消费者异常、停止、异常退出的输入保留Pending/Interrupted，启动暂停；维护页“原作业与接收责任”列出原输入ID、内容哈希和有界预览。逐笔检查实体及业务原件后填写说明确认，仅清该输入检查阻断，不重放、不改RCS未知结果。预览截断会明确标示，原DB内容保持。
+备份份数到限停止新增，不自动删除旧集；完整集和恢复工作区单独规划容量，64MiB 技术保留值不代表现场充足。恢复到新隔离目录，核对机器身份、原根退役和外部效果后才能启用；不能撤销已经发送的请求。到期维护继续保留永久身份、历史 Unknown 和未收口责任，具体入口见[生命周期维护](lifecycle-ux-current-guidance-01.md)。
 
-普通诊断使用256项有界队列，拥塞/写失败公开Dropped、State、Failure、LastFailure、LastProgress；恢复必须实际写入探测成功，不清空业务故障。业务SQLite/raw失败仍关闭相关共享准入。过载marker有独立有界写者，不在双位共享锁内落盘；写失败不会伪造接受。
+## 采集
 
-Stop关闭接收后等真实任务排空；读者最多4个、管理命令另有2个保留席位，管理状态多页观察合并为独立的一个在途读取（ManagementStatusOperations），不占命令席位、不缓存已完成状态。日志授权/扫描/导出、历史SQLite执行、状态观察、备份和最终Dispose均有所有者。UI超时只报告尚未停止，同一停止任务继续保有资源/租约。不得删lease、同时启动第二实例、杀进程后把原Unknown当失败。SDK已开始的native调用不能由托管token强行结束；Stop取消只取消等待，委托、缓冲、handle保有至native实际结束。若一直未结束，按下面挂起诊断保全证据，在获授权的维护窗口协调设备和进程处置。
-
-TCP EOF/读错误按位隔离；无数据可能是无来件，本地Ready不证明远端仍活着，不发送虚构相机心跳。SDK1.0.4补缺单机ConfiguredReaderMissing分类、帧Received=Delivered+Rejected+InFlight及公开错误原因。真实SDK停止、重连、驱动/网卡断电与双机吞吐仍须目标组合实测。
-
-## RCS Unknown和编号
-
-用户本轮明确Unknown先保留。它表示已有外发尝试但没有确定结果；保留原ID、报文/hash、目标、合同、尝试及raw。真实适配器仍Query=false，不提供虚构查询或“改ID重投”。心跳恢复不解除Unknown。只有收到支持原请求关联、权威结果、时效、冲突和处置规则的真实合同，才能实现相应恢复；当前该项外部BLOCKED。
-
-IntegrationIdBudget显示范围、永久高水位、Remaining；余量不高于范围10%提示RenewalRequired，0为Exhausted。按1件/秒峰值，剩余86400号仅对应约一天的业务请求额度（另核合同哪些操作消耗号码）。提前由外部系统分配独占新范围，暂停、管理模式保存完整候选、受控重启；旧请求保持原范围。恢复退役整个原范围，永久owner/range/retirement及回复哈希不随历史明细删除。
-
-## 7～30天到期维护
-
-用户确认4核/8GB，双位合计峰值30～60件/分钟，现场自行选择7～30天。系统参数“已结历史保留”填写HistoryDays，沿同一配置账/保存核对/首配共模生效。当前可选保留期为空时保持原保留策略，不隐式启动删除。修改后重启激活；运行中的旧请求保持其冻结配置。到期提示HistoryRetentionMaintenanceDue表示有达到年龄的记录，维护仍逐笔检查是否真正可删。
-
-当前用户入口为“停止并打开到期维护”，按原计划预检、备份和核对执行；[现行维护指南](lifecycle-ux-current-guidance-01.md)区分只读核对、已知失败与未知结果。未知原操作必须先查原回执，不能把下列“当前 hash”说明当作直接重试授权。
-
-执行前暂停并完全退出业务，在已登记的普通D盘路径保全资料；维护helper按既定安装者权限运行，不以链接绕过ACL。示例所有路径须换成现场确认值：
-
-```powershell
-# 源码开发命令先加载本项目D盘环境；安装介质不依赖源码脚本。
-. ./scripts/project-environment.ps1
-$release = 'D:\ImporterPc\releases\实际固定版本'
-$db = 'D:\ImporterPcData\Production\实际站标识\sportmaster\sportmaster.db'
-& "$release\app\Ipc.Assembly.exe" --action maintenance-inspect --file $db
-# 使用刚检查的DatabaseSha256，不从旧记录猜测；destination必须为新路径。
-& "$release\app\Ipc.Assembly.exe" --action expire-history --file $db --sha256 '实际原库SHA256' --destination 'D:\ImporterPcBackups\维护时间.db'
-```
-
-命令不启动reader/SDK/RCS。独占原库租约，检查已激活7～30天策略、暂停、Parcel 10、预期hash及无未关闭WAL，完整校验原库/raw，先把可归档终态转同库原件并生成完整COMPLETED备份，再执行分批删除。只有主链终态有真实Committed raw依据、附加图像/上传已清、无未决回执/冲突/命令/输入，且最后业务变更早于期限，才删除明细。新Parcel 10逐笔输入审计与接收账关联；到期已处理输入删除后保留接收ID/原哈希/终态凭据。旧未关联的审计不猜测归属删除。
-
-保留永久Admission/Observation/Position索引、回复哈希、测量ID/hash、数值请求owner/range/retirement和每次删除凭据。已删除实体再次输入明确Blocked；身份矛盾形成可见冲突。中断前事务无删除，中断后已提交凭据不撤销；使用当前hash重新检查可继续。备份里的旧明细仍存在，备份留存/销毁独立管理，不能把删除线上明细称作备份也已销毁。
-
-`expire-history-compact`额外在停止状态执行VACUUM；要求空闲空间至少两倍原DB加配置reserve，并在前后运行完整性核验。删除释放SQLite可复用页，不等于文件立刻缩小；VACUUM可缩卷，不代表SSD物理擦除。依据：[SQLite VACUUM](https://www.sqlite.org/lang_vacuum.html)。SQL清理/压缩有2小时执行预算，超时保留已提交凭据和完整备份，报告实际失败；不能回退旧编号或宣称全部完成。
-
-## 容量、备份及恢复时限
-
-按全天峰值做上界规划：7天302400～604800件；30天1296000～2592000件。实际全天平均节拍、每件原报文/图像尺寸须另测，不能只数操作行。MaximumOperations仅限制未结责任；ResidentHistory限制工作集，均不是总历史额度。
-
-|对象|预算和维护责任|
-|---|---|
-|DB详情/归档raw|用固定Release完整链路测每件净增长，乘峰值日量×保留天数；另外预留一次维护超期增长。归档仍占同一DB。|
-|永久索引/Unknown/图像|单独按设备使用年限及最长未决持续时间预算；不得到期删未决换容量。|
-|WAL|独立观测；读者最多4个、2分钟预算，底层SQLite有progress中断。长读结束后复核checkpoint；不删除活动WAL。|
-|普通日志|256项队列；原4×约5MB轮转及可选天数，丢失计数留可见。业务审计不由诊断轮转控制。|
-|导出|每次10万行/64MiB/2分钟；目的路径新建，失败/取消有回执。|
-|备份|完整集数量由计划MaximumSets控制，到限提示维护，不删除旧集腾空间；完整集含DB/raw/配置/原图/维护证据。COMPLETED之前不可用。|
-|维护临时/压缩|完整新备份的空间加DB双倍临时空间及reserve；所有临时/cache在D盘。|
-
-reserve是硬准入围栏；低于2×reserve提前提示。现场根据实测每小时增长G、维护响应时限T和备份/压缩成本设置reserve，至少覆盖G×T与恢复工作区，不能沿用64MiB技术默认宣称现场足够。备份继续暂停+管理授权+外呼排空的维护窗口；软件公开计划到期/失败，到期未做须纳入班次运维。恢复时间目标由现场确定，记录扫描校验、复制、启动复核、重新联调各阶段实际时长，未测为NOT_RUN。
-
-当前格式恢复使用recovery-plan/restore：容量预检、完整hash、原根退役、防双活、机器来源与新根隔离。较早备份不能退役含更新责任的根，不能绕过恢复交接。非当前数据库拒绝；禁止业务账倒退或号码复用。
-
-## Windows运行政策和独立诊断
-
-GUI和application.ps1统一原生x64系统/进程、内核10.0 build14393功能门禁。该门禁兼容旧现场启动，不是Windows生命周期或24×7批准。Windows11版本很多，逐组合登记edition、完整build/累计补丁、CPU/RAM、磁盘/NIC/固件、x64厂商SDK2.0.0.4及文件hash；供应商约束和系统支持周期以[Microsoft发布信息](https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information)及厂商依据为准。ARM仿真不作为本SDK交付组合。
-
-本机记录为Windows11家庭版22631、4核/8线程、约16GB；仅本机执行项可用其结果。22000/22621、其他22631补丁、26100/26200/26300等x64家族需按现场实际版本独立验证，未测不标PASS。26H1等新硬件平台不因名称相似继承x64 SDK资格。8GB目标内存压力、Windows更新前后、跨日、锁屏/解锁、RDP连接/断开、多屏热插拔/DPI切换、NIC短断/静默断路、睡眠/唤醒均须独立用例。
-
-日常仅已登记普通权限账户；管理员维护ACL/HKLM的D盘程序、数据、机器策略根，禁止映射/符号链接绕过保护。供包期间由现场批准的电源策略禁止自动睡眠/休眠及设备节能断链；更新、重启及驱动变更进入维护窗口，先暂停/Stop/完整备份。唤醒或断链不自动重发未知结果。软件暂停不是安全急停。
-
-每个窗口独立500ms调度探针记录Dispatcher等待P95/P99上界及最大值；业务实例独立1秒写runtime-progress.json，公开每位State/LastProgress/ProcessingSince/QueueDepth/OldestWaiting、后台任务、查询/管理任务、诊断丢弃和进程/DB/WAL资源。不依赖UI定时器，也不以WhenAll未完成判健康。外部采集持有PID的kernel handle并核对冻结EXE路径、RuntimeId和SourceCommit，进程退出、重启、采集间隙或监督过期均不能拼接成连续段。
-
-崩溃转储可由管理员按[WER LocalDumps](https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps)为Ipc.Desktop.exe单独配置D盘受控目录，DumpCount建议现场明确小上限（例如2），保留足够磁盘并限制ACL。挂起用经批准的[ProcDump](https://learn.microsoft.com/en-us/sysinternals/downloads/procdump)在原PID仍在时抓取一次完整dump；完整转储可能含原报文/凭据，仅本地受控保管。工具未随本包安装，未自动修改WER/电源/更新策略。工具退出/超时不代表业务native线程结束；先保留租约、记录worker/native状态和堆栈，再按批准的现场停止程序处置。
-
-## 长稳和数据规模验证
-
-复制[计划模板](../../config/stability-target-plan.example.json)到D盘证据目录，填写实际SourceCommit、硬件/Windows/SDK/RCS组合、阈值、磁盘与证据预算及维护窗口。模板默认双位各0.5Hz仅对应用户确认的合计峰值60/min；低负载或偏载另开独立场景。空白条件会拒绝采集，不虚构批准人。真实相机测试需要已授权现场条件。
+复制[计划模板](../../config/stability-target-plan.example.json)到 D 盘，填写实际来源提交、硬件、Windows完整版本、SDK/RCS组合、阈值、磁盘与证据预算。工具不启动或控制设备，不拼接重启前后的运行实例。正常段、故障注入和各次重启分别用新目录。
 
 ```powershell
 . ./scripts/project-environment.ps1
 python scripts/stability-qualification.py collect --plan D:/stability/plan.json --release D:/releases/固定候选 --progress D:/data/Simulation/站标识/sportmaster/runtime-progress.json --output D:/stability/新24h目录
-# 完整正常段结束后停止并用同发布生成完整离线备份；source-events为独立来源日志。
-python scripts/stability-qualification.py analyze --collection D:/stability/新24h目录 --database D:/backups/完整备份.db --source-events D:/stability/source-events.jsonl --output D:/stability/分析.json
 ```
 
-`collect --smoke-seconds 30`只检查采集器，永远SMOKE_ONLY。正常段默认15分钟预热后连续24h；故障注入另开目录，不计入正常段；按风险执行72h及多次跨日。使用原独立loopback负载脚本时保持127.0.0.1、双位独立节拍，负载总时长须覆盖预热+完整正常段+两端核对余量。socket-write只是来源写出，分析通过唯一合成条码/位与接收账逐笔核对；重复/多码/跨边界/缺失均单列，不静默丢弃。真实SDK来源需提供同等可关联的原来源日志后按其合同适配，不冒用合成条码结论。
+`--smoke-seconds 30` 永远标记为 `SMOKE_ONLY`。正常段默认预热900秒、连续24小时；72小时按现场计划另行执行。计划里的输入速率是 Application 接收速率，不是相机帧率、物理件数或新请求速率。真实相机连续观察的节拍与回环合成负载不同，不能沿用合成输入目标作为现场漏件率。
 
-分析先校验COMPLETED全文件hash、DB完整性及Parcel 10，再流式导出输入ID/原hash/来源Epoch/序列/去向，计算逐位排队和业务处理P95/P99/最大值。统计业务处理完成不代表RCS接受或物理完成；并发源日志/RCS日志/原业务账继续核对。采集提供UI延迟、worker状态、资源趋势、最老等待与节拍，仍需审查性能阈值、真实设备合同和故障恢复证据。工具只给COLLECTED_REQUIRES_RECONCILIATION或ANALYZED_REVIEW_REQUIRED，不自动授予生产PASS。
+采集保留 PID、RuntimeId、SourceCommit、实际单调时长、资源、UI探针和后台任务进度。进程退出、身份改变、采集间隙、时钟异常及监督过期分别留缺项。软件停止等待真正的SDK和后台任务退出；超时只取消等待，不伪报资源已释放，也不清除 Unknown。Windows电源、更新、网卡和SDK组合须在目标机单独验证。
 
-当前没有完整24h/72h、目标8GB、多Windows版本和实际双SDK/RCS组合证据，这些资格均NOT_RUN/BLOCKED。规模预置与短时原生验证单独记录，不能累计或改标为长稳。
+## 完整离线分析
 
-实际构建、冻结SHA及原始证据见[本轮验证记录](../archive/runtime/validation/win11-24x7-stability-remediation-01.md)。
+先通过同源应用生成完整备份，停止或等待备份完成，不接受活动库、WAL/SHM/journal侧文件、缺件集合或仅改版本号的伪 DB12。`--verifier` 指向同源介质中的 `app/Ipc.Assembly.exe`（开发可用同一入口的 DLL）。核验复用 Application 的 ParcelRecovery 和 Repository，检查完成标记、路径及完整文件集合/哈希、配置与应用身份、当前数据库基线/真实结构和完整性。分析前后各核验一次，SQLite 用不可变只读方式打开，不创建侧文件。
+
+```powershell
+python scripts/stability-qualification.py analyze --collection D:/stability/新24h目录 --database D:/backups/完整备份.db --verifier D:/releases/固定候选/app/Ipc.Assembly.exe --output D:/stability/分析.json
+```
+
+没有独立来源证据时报告 `NOT_RECONCILED`；实际放置数、外部RCS接收请求/响应数及正确率为未知，不补零。只分析正常时间窗内、同一运行实例的输入，按输入关联的 OperationId/RequestId读取原作业与回执，绝不按条码把重复观察算成重复请求。备份时的结果标为 Snapshot；调用完成和HTTP响应须有同一运行实例、本时间窗的本地回执时钟证据，缺失单列，不能把时间窗后收到的结果算入本段。清理导致缺少明细时列出缺项，不从统计汇总猜配原件。人工命令、帧和来源实际件数不能由该输入账完整重建时仍须补证。
+
+现有回环发生器每个位置使用唯一合成条码时，可明确增加 `--source-kind loopback-unique-code --source-events D:/stability/source-events.jsonl`，输出仅为 `SYNTHETIC_LOOPBACK_ONLY`。socket 写出不等于应用接收；缺失、重复、未写出、未处置及窗口边界差异单列。真实标签、同码重放和实际相机不能套用此关联。
+
+排队、处理和 UI 各自统计。输入排队加处理的 P95/P99 是逐条相加后再排序，仍不等于曝光至格口显示；阶段 P95 不相加。相机主机交付至格口结果的同观察端到端统计见[双相机性能](../design/sm-dual-camera-performance.md)，MVID 调用包含等图，不能与 ZXing 纯解码直接比较。
+
+输出新文件，不覆盖先前分析。容量、路径、格式、原件哈希或关联身份校验失败不发布成功报告。报告始终为 `ANALYZED_REVIEW_REQUIRED`，保留采集状态、来源提交、运行实例、实际时长及缺项，不签发生产资格，不恢复已退出的运行时资格门禁。烟测、合成验证及重启分段不能累计为连续24/72小时现场运行。
+
+当前任务不执行真实24/72小时测试。编译、本机测试、CI、Windows实机、真实SDK、客户RCS与现场长稳分别报告，未运行明确标注。

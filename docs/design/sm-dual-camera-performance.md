@@ -1,6 +1,6 @@
 # 双相机读码性能测量
 
-2026-11-03。开发开始基线 main `38cb7dc0`，交付整合 main `90d6fdc9`（含调试、设置和当前文档规则）。当前为内置 MVS 采图、进程内软件解码、内置 RCS；沿用 [28 识别规则](../runtime/sm-reader-robustness-28.md) 和 [29 一次放置规则](../archive/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)。本方案不改变读码搜索、相机参数、放置判定、请求、权限或生产配置；只用合成数据回归，D/RV及历史验收保持原身份。
+2026-11-03。开发开始基线 main `38cb7dc0`，交付整合 main `90d6fdc9`（含调试、设置和当前文档规则）。本页原测量针对内置 MVS 采图、进程内软件解码、内置 RCS；当前新站默认 MVID 原生识码，两种路线计时边界分别解释；沿用 [28 识别规则](../runtime/sm-reader-robustness-28.md) 和 [29 一次放置规则](../archive/work-packages/WP-IPC-SM-SAME-PLACEMENT-29.md)。本方案不改变读码搜索、相机参数、放置判定、请求、权限或生产配置；只用合成数据回归，D/RV及历史验收保持原身份。
 
 ## 执行前
 
@@ -98,6 +98,8 @@ Pq 用精确 nearest-rank：排序后第 `ceil(q × N)` 个样本；无样本不
 管理窗口打开时暂停正常自动供包，只在明确操作时执行调试读取和发送。即使两条请求来自同一相机帧，调试请求也只能进入 `DebugRcs*` 计数/事件，不能计入正常提交分位数或借用正常作业的 `SlotComposed`。采到此类事件会报告 `DEBUG_RCS_FLOW_EVENT`，应按实验记录另轮测量；采集器不会干预正在执行的调试请求。
 
 同一观察有完整关联时，另输出 `HostFrameToRcsResultMs` 和 `HostFrameToSlotComposedMs`：用驱动单调时钟的 `HostDeliveryToDecodeMs` 加同一观察的解码后耗时。边界从 SDK 已将帧交给主机起算，不含曝光和未标定的相机传输年龄；不把 SDK 原始时间戳当主机时间，不把 `ObservedToReceiverMs` 与解码后耗时相加造成重叠计时。
+
+阶段 P95/P99 不能相加冒充端到端分位数；只对同一观察身份完整关联的样本计算端到端值，缺证据明确未核对。
 
 ## 异常和判定
 

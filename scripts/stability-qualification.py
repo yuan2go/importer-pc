@@ -17,6 +17,8 @@ from pathlib import Path
 import platform
 import shutil
 import sqlite3
+import subprocess
+import tempfile
 import time
 
 
@@ -240,27 +242,18 @@ def collect(args):
         print(json.dumps(report, ensure_ascii=False))
 
 
-def verify_backup(database):
-    root = ordinary(str(database) + '.recovery'); manifest_file = ordinary(root / 'COMPLETED.json')
-    manifest = read_json(manifest_file, 16 * 1024 * 1024)
-    if manifest['Database'] != database.name or manifest['DatabaseHash'].lower() != sha(database) or 'configuration.json' not in manifest['Files'] or len(manifest['Files']) > 100000:
-        raise ValueError('Incomplete backup identity')
-    expected = set()
-    for name, digest in manifest['Files'].items():
-        p = ordinary(root / name)
-        if not p.is_relative_to(root) or not re.fullmatch('[a-fA-F0-9]{64}', digest) or sha(p) != digest.lower():
-            raise ValueError('Backup original differs: ' + name)
-        expected.add(p.relative_to(root).as_posix())
-    actual = set()
-    for p in root.rglob('*'):
-        ordinary(p)
-        if p.is_file() and p.name != 'COMPLETED.json':
-            actual.add(p.relative_to(root).as_posix())
-        if len(actual) > 100000:
-            raise ValueError('Backup inventory quota exceeded')
-    if actual != expected:
-        raise ValueError('Backup file inventory differs')
-    return sha(manifest_file)
+def verify_backup(database, verifier):
+    """The Application owns DB baseline/schema and recovery custody contracts."""
+    verifier = ordinary(verifier)
+    command = (['dotnet', str(verifier)] if verifier.suffix.lower() == '.dll' else [str(verifier)])
+    result = subprocess.run(command + ['--action', 'verify-analysis-backup', '--file', str(database)],
+                            capture_output=True, text=True, encoding='utf-8-sig', timeout=310)
+    if result.returncode:
+        raise ValueError('Application backup verification refused; originals retained: ' + result.stderr[-4096:])
+    verified = json.loads(result.stdout)
+    if verified.get('Status') != 'BackupVerified' or verified.get('Application') != 'sportmaster':
+        raise ValueError('Requires current Sportmaster complete backup')
+    return verified
 
 
 def json_lines(path):
@@ -322,58 +315,195 @@ def reconcile_source(source, dispositions, collection, destination):
         db.close()
 
 
+def observed_delta(collection, field):
+    result = {}
+    for position in ('left', 'right'):
+        before = next((w for w in collection.get('FirstNormal', {}).get('Workers', []) if w['Position'] == position), {})
+        after = next((w for w in collection.get('LastNormal', {}).get('Workers', []) if w['Position'] == position), {})
+        value = after.get(field, -1) - before.get(field, 0)
+        result[position] = value if field in before and field in after and value >= 0 else None
+    return result
+
+
 def analyze(args):
-    collection = read_json(ordinary(args.collection) / 'collection.json')
+    collection_root = ordinary(args.collection)
+    collection = read_json(collection_root / 'collection.json')
+    identity = read_json(collection_root / 'identity.json')
     database = ordinary(args.database); output = ordinary(args.output)
-    if output.exists():
+    products = [output, output.parent / (output.stem + '-input-dispositions.jsonl'), output.with_suffix('.reconciliation.db')]
+    if len(set(products)) != len(products) or any(p.exists() for p in products):
         raise FileExistsError('Preserve prior analysis')
-    # Explicit offline copy only. A live WAL database must use the application's complete backup first.
-    if Path(str(database) + '-wal').exists():
-        raise ValueError('Use a completed offline backup with its complete custody set, not a live WAL file')
-    backup_identity = verify_backup(database)
-    db = sqlite3.connect(database.as_uri() + '?mode=ro', uri=True)
+    if not collection.get('NormalStart') or not collection.get('NormalEnd'):
+        raise ValueError('No complete observed normal interval to analyze')
+    if (identity['RuntimeId'], identity['SourceCommit']) != (collection['RuntimeId'], collection['SourceCommit']):
+        raise ValueError('Collection runtime/source identity differs')
+    start = dt.datetime.fromisoformat(collection['NormalStart']); end = dt.datetime.fromisoformat(collection['NormalEnd'])
+    if start.tzinfo is None or end.tzinfo is None or end < start or not re.fullmatch('[a-f0-9]{40}', collection['SourceCommit']):
+        raise ValueError('Invalid observation interval/source identity')
+    actual = collection['ActualNormalSeconds']
+    if not isinstance(actual, (int, float)) or not math.isfinite(actual) or actual < 0:
+        raise ValueError('Invalid actual observation duration')
+    sample_file = collection_root / 'samples.jsonl'
+    sample_count = 0
+    sample_issues = []
+    if sample_file.exists():
+        for sample in json_lines(sample_file):
+            sample_count += 1
+            progress = sample.get('Progress') or {}
+            if progress.get('RuntimeId') != collection['RuntimeId']:
+                raise ValueError('Sample runtime identity differs; restart segments cannot be joined')
+    else:
+        sample_issues.append('Missing raw samples')
+    if collection.get('Samples') is not None and collection['Samples'] != sample_count:
+        sample_issues.append('Raw sample count differs from collector receipt')
+    for segment in ('FirstNormal', 'LastNormal'):
+        if collection.get(segment, {}).get('RuntimeId') != collection['RuntimeId']:
+            raise ValueError('Normal segment runtime identity differs')
+    verified = verify_backup(database, args.verifier)
+    if shutil.disk_usage(output.parent).free < verified['MinimumFreeBytes']:
+        raise ValueError('Analysis volume reserve unavailable; preserve backup')
+    # The verifier rejects sidecars; immutable read prevents analysis creating SHM/WAL.
+    db = sqlite3.connect(database.as_uri() + '?mode=ro&immutable=1', uri=True)
     db.execute('PRAGMA query_only=ON'); deadline = time.monotonic() + 300
     db.set_progress_handler(lambda: time.monotonic() > deadline, 1000)
     try:
-        if db.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
-            raise ValueError('Database integrity failed; preserve originals')
-        if db.execute('SELECT max(version) FROM platform_migrations').fetchone()[0] != 11:
-            raise ValueError('Requires current DB11 backup; use a fresh data directory')
-        if not collection.get('NormalStart') or not collection.get('NormalEnd'):
-            raise ValueError('No complete observed normal interval to analyze')
         params = (collection['RuntimeId'].replace('-', ''), collection['NormalStart'], collection['NormalEnd'])
-        # ISO strings are normalized to UTC by the runtime, but compare instants explicitly.
         where = 'session=? AND julianday(received_at)>=julianday(?) AND julianday(received_at)<=julianday(?)'
         counts = db.execute('SELECT position,state,count(*) FROM parcel_ingress WHERE ' + where + ' GROUP BY position,state', params).fetchall()
+        if not counts:
+            raise ValueError('Backup has no input evidence for this runtime and interval')
         latencies = {}
         for position in ('left', 'right'):
             timing = {}
-            for metric in ('queue_ms', 'processing_ms'):
-                n, maximum = db.execute(f'SELECT count({metric}),max({metric}) FROM parcel_ingress WHERE {where} AND position=?', (*params, position)).fetchone()
-                timing[metric] = dict(Samples=n, Maximum=maximum)
-                for label, fraction in [('P95', .95), ('P99', .99)]:
-                    row = db.execute(f'SELECT {metric} FROM parcel_ingress WHERE {where} AND position=? AND {metric} IS NOT NULL ORDER BY {metric} LIMIT 1 OFFSET ?',
+            for label, expression in [('queue_ms', 'queue_ms'), ('processing_ms', 'processing_ms'),
+                                      ('input_queue_and_processing_ms', '(queue_ms+processing_ms)')]:
+                n, maximum = db.execute(f'SELECT count({expression}),max({expression}) FROM parcel_ingress WHERE {where} AND position=?', (*params, position)).fetchone()
+                timing[label] = dict(Samples=n, Maximum=maximum)
+                for percentile, fraction in [('P95', .95), ('P99', .99)]:
+                    row = db.execute(f'SELECT {expression} FROM parcel_ingress WHERE {where} AND position=? AND {expression} IS NOT NULL ORDER BY {expression} LIMIT 1 OFFSET ?',
                                      (*params, position, max(0, math.ceil(n * fraction) - 1))).fetchone()
-                    timing[metric][label] = row[0] if row else None
+                    timing[label][percentile] = row[0] if row else None
             latencies[position] = timing
-        inventory = collections.Counter()
-        with (output.parent / (output.stem + '-input-dispositions.jsonl')).open('x', encoding='utf-8') as lines:
-            for identity, position, state, body, digest, detail in db.execute('SELECT id,position,state,body,body_hash,detail FROM parcel_ingress WHERE ' + where + ' ORDER BY received_at,id', params):
-                if hashlib.sha256(body.encode('utf-8')).hexdigest().upper() != digest:
-                    raise ValueError('Input original hash differs')
-                decoded = json.loads(body); observation = decoded.get('Observation', {})
-                outcome = json.loads(detail).get('Disposition') if state == 'Processed' and detail else state
-                inventory[position + ':' + str(outcome)] += 1
-                lines.write(json.dumps(dict(Id=identity, Position=position, State=state, Outcome=outcome,
-                                           SourceEvent=observation.get('SourceEventId'), Epoch=observation.get('Epoch'),
-                                           Sequence=observation.get('Sequence'), Codes=observation.get('Codes'), OriginalSha256=digest), ensure_ascii=False) + '\n')
-        reconciliation = reconcile_source(ordinary(args.source_events), output.parent / (output.stem + '-input-dispositions.jsonl'), collection, output.with_suffix('.reconciliation.db'))
-        report = dict(Status='ANALYZED_REVIEW_REQUIRED', SourceCommit=collection['SourceCommit'], DatabaseSha256=sha(database), BackupManifestSha256=backup_identity,
-                      ActualNormalSeconds=collection['ActualNormalSeconds'], CollectionStatus=collection['Status'], Counts=counts,
-                      Dispositions=dict(inventory), LatencyMilliseconds=latencies, Ui=collection['Ui'],
-                      SourceDeliveryReconciliation=reconciliation,
-                      Qualification='NOT_GRANTED; this analysis does not authenticate device/contract approvals or replace recovery tests')
-        output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding='utf-8'); print(json.dumps(report, ensure_ascii=False))
+        # Bounded scratch outputs are private until every validation succeeds. A refusal
+        # publishes no report or partial dispositions and never mutates the backup.
+        with tempfile.TemporaryDirectory(prefix='stability-analysis-', dir=output.parent) as scratch:
+            scratch = Path(scratch); dispositions = scratch / 'inputs.jsonl'
+            inventory = collections.Counter(); operations = set(); written = 0
+            with dispositions.open('x', encoding='utf-8') as lines:
+                for input_id, position, state, body, digest, detail in db.execute('SELECT id,position,state,body,body_hash,detail FROM parcel_ingress WHERE ' + where + ' ORDER BY received_at,id', params):
+                    if hashlib.sha256(body.encode('utf-8')).hexdigest().upper() != digest:
+                        raise ValueError('Input original hash differs')
+                    decoded = json.loads(body); observation = decoded.get('Observation', {})
+                    resolved = json.loads(detail) if detail and state == 'Processed' else {}
+                    outcome = resolved.get('Disposition', state)
+                    linked = resolved.get('Input') or {}
+                    if linked.get('OperationId'):
+                        operations.add(linked['OperationId'])
+                    inventory[position + ':' + str(outcome)] += 1
+                    line = json.dumps(dict(Id=input_id, Position=position, State=state, Outcome=outcome,
+                        OperationId=linked.get('OperationId'), SourceEvent=observation.get('SourceEventId'),
+                        Device=observation.get('DeviceId'), Epoch=observation.get('Epoch'), Sequence=observation.get('Sequence'),
+                        Codes=observation.get('Codes'), OriginalSha256=digest), ensure_ascii=False) + '\n'
+                    written += len(line.encode('utf-8'))
+                    if written > 2 * 1024**3 or len(operations) > 1000000:
+                        raise ValueError('Analysis evidence capacity exceeded')
+                    lines.write(line)
+            rcs = collections.Counter(); operation_facts = {}; missing = []
+            for op_id in operations:
+                row = db.execute('SELECT body,NULL FROM parcel_operations WHERE id=? UNION ALL SELECT body,body_hash FROM parcel_archives WHERE id=?', (op_id, op_id)).fetchone()
+                if row is None:
+                    missing.append(op_id); continue
+                body, digest = row
+                if digest and hashlib.sha256(body.encode()).hexdigest().upper() != digest:
+                    raise ValueError('Archived operation hash differs')
+                op = json.loads(body)
+                if op['Id'] != op_id:
+                    raise ValueError('Operation identity differs')
+                stage = op.get('Wcs')
+                if not stage:
+                    continue
+                request = stage['Request']; prepared = dt.datetime.fromisoformat(request['PreparedAt'])
+                if not start <= prepared <= end:
+                    rcs['PriorWindowOriginalsObserved'] += 1; continue
+                operation_facts[op_id] = dict(RequestId=request['Id'], ProtocolRequestId=(request.get('IntegrationRequest') or {}).get('RequestId'))
+                rcs['FrozenNewIntents'] += 1
+                rcs['PreRegisteredAttempts'] += stage['Attempts']
+                rcs['SnapshotOutcome:' + stage['State']] += 1
+                for occurrence, receipt_state, raw_hash in db.execute('SELECT id,state,raw_hash FROM parcel_receipts WHERE operation=? AND stage=? AND request=?', (op_id, 'wcs-slot', request['Id'])):
+                    rcs['SnapshotReceipt:' + receipt_state] += 1
+                    if raw_hash is None:
+                        continue
+                    if not re.fullmatch('[a-fA-F0-9]{32}', occurrence):
+                        raise ValueError('Invalid original receipt identity')
+                    raw_file = database.parent / (database.name + '.recovery') / 'receipts' / (occurrence + '.json')
+                    if raw_file.exists():
+                        with raw_file.open('rb') as original:
+                            raw = original.read(8 * 1024 * 1024 + 1)
+                    else:
+                        archived = db.execute('SELECT CASE WHEN length(body)<=8388608 THEN body ELSE NULL END FROM parcel_archived_receipts WHERE id=?', (occurrence,)).fetchone()
+                        if archived is None or archived[0] is None:
+                            raise ValueError('Receipt original missing or exceeds bounded analysis read')
+                        raw = archived[0]
+                    if len(raw) > 8 * 1024 * 1024:
+                        raise ValueError('Receipt exceeds bounded analysis read')
+                    if hashlib.sha256(raw).hexdigest().upper() != raw_hash:
+                        raise ValueError('Receipt original differs from database custody hash')
+                    reply = json.loads(raw); clock = reply.get('LocalClockEvidence')
+                    if reply['RequestId'] != request['Id']:
+                        raise ValueError('Receipt request identity differs')
+                    if not clock:
+                        rcs['ReceiptTimeEvidenceMissing'] += 1
+                        continue
+                    if clock['RuntimeId'] == collection['RuntimeId'] and start <= dt.datetime.fromisoformat(clock['CompletedAt']) <= end:
+                        rcs['LocalCompletedCallsInWindow'] += 1
+                        if reply.get('HttpResponse') is not None:
+                            rcs['HttpResponsesInWindow'] += 1
+                    else:
+                        rcs['ReceiptOutsideRuntimeWindow'] += 1
+            source_kind = getattr(args, 'source_kind', 'unavailable')
+            reconciliation = dict(Status='NOT_RECONCILED', Missing=['Independent placement/source identities', 'RCS peer receive/response journal'],
+                                  PhysicalPlacements=None, Accuracy=None)
+            if source_kind == 'loopback-unique-code':
+                if not args.source_events:
+                    raise ValueError('Explicit loopback reconciliation requires source events')
+                reconciliation = reconcile_source(ordinary(args.source_events), dispositions, collection, scratch / 'reconciliation.db')
+                reconciliation.update(Status='SYNTHETIC_LOOPBACK_ONLY', PhysicalPlacements=None, Accuracy=None)
+            elif getattr(args, 'source_events', None):
+                raise ValueError('Declare loopback-unique-code scope; arbitrary real barcodes are not placement identities')
+            # Reuse the authoritative verifier after analysis as well: replacement or
+            # tampering during a long read cannot publish an apparently valid report.
+            if verify_backup(database, args.verifier) != verified:
+                raise ValueError('Backup changed during analysis')
+            evidence = dict(IdentitySha256=sha(collection_root / 'identity.json'), CollectionSha256=sha(collection_root / 'collection.json'),
+                            SamplesSha256=sha(collection_root / 'samples.jsonl') if (collection_root / 'samples.jsonl').exists() else None,
+                            CollectionFailures=collection.get('Failures'), MissingOperations=missing, SampleCount=sample_count, SampleIssues=sample_issues,
+                            Coverage='Retained input ledger only; coalesced observations and expired history require independent evidence')
+            report = dict(Status='ANALYZED_REVIEW_REQUIRED', SourceCommit=collection['SourceCommit'], RuntimeId=collection['RuntimeId'], Backup=verified,
+                          ActualNormalSeconds=actual, NormalStart=collection['NormalStart'], NormalEnd=collection['NormalEnd'], CollectionStatus=collection['Status'],
+                          Counts=counts, Dispositions=dict(inventory), LatencyMilliseconds=latencies, Ui=collection.get('Ui'), Evidence=evidence,
+                          Counters=dict(ReceivedInputDelta=observed_delta(collection, 'Received'), ObservedOnlyDelta=observed_delta(collection, 'ObservedOnly'),
+                                        CameraFrames=None, PhysicalPlacements=None, RcsFacts=dict(rcs), LinkedRequestIds=operation_facts,
+                                        ActualPeerReceivedRequests=None, ActualPeerResponses=None), SourceDeliveryReconciliation=reconciliation,
+                          RcsScope='Intent prepared in selected runtime window; Snapshot fields describe backup time; local responses require matching receipt clock; peer receipt remains unverified',
+                          TimingScope='Per-input queue+processing; no exposure-to-slot measurement; stage percentiles are never added',
+                          Qualification='NOT_GRANTED; smoke, synthetic and restart segments never establish continuous field qualification')
+            staged_report = scratch / 'report.json'; staged_report.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding='utf-8')
+            # Preserve existing destinations even if another analyzer raced this run.
+            published = []
+            try:
+                pairs = [(dispositions, products[1])]
+                if source_kind == 'loopback-unique-code':
+                    pairs.append((scratch / 'reconciliation.db', products[2]))
+                pairs.append((staged_report, output))  # Atomic final report publication, last.
+                for src, dst in pairs:
+                    os.link(src, dst)
+                    published.append((src, dst))
+            except BaseException:
+                for src, dst in reversed(published):
+                    if dst.exists() and os.path.samefile(src, dst):
+                        dst.unlink()
+                raise
+            print(json.dumps(report, ensure_ascii=False))
     finally:
         db.close()
 
@@ -386,8 +516,10 @@ def main():
         p.add_argument('--' + name, required=True)
     p.add_argument('--smoke-seconds', type=int, choices=range(1, 121), metavar='1..120', help='Explicit short script check; always SMOKE_ONLY')
     p = commands.add_parser('analyze')
-    for name in ('collection', 'database', 'output', 'source-events'):
+    for name in ('collection', 'database', 'output', 'verifier'):
         p.add_argument('--' + name, required=True)
+    p.add_argument('--source-events', help='Independent synthetic loopback journal; requires explicit source kind')
+    p.add_argument('--source-kind', choices=('unavailable', 'loopback-unique-code'), default='unavailable')
     args = parser.parse_args()
     (collect if args.command == 'collect' else analyze)(args)
 

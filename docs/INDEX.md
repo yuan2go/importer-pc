@@ -14,6 +14,7 @@
 - [MVS 软件识别](runtime/mvs-software-reader-01.md)
 - [海康原生识码与安装依赖](design/mvid-native-reader.md)
 - [SM RCS 参数生效与原请求](design/rcs-parameter-description-compatibility.md)
+- [长稳采集、完整备份分析与证据边界](runtime/win11-24x7-stability-remediation-01.md)
 - [双相机性能测量、采集与统计](design/sm-dual-camera-performance.md)
 - [现场打印稿生成与排版核查](runtime/industrial-print-guides-01.md)
 

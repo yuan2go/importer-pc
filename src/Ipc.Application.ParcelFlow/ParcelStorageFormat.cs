@@ -6,8 +6,10 @@ public sealed partial class ParcelRepository
 {
     const string UnsupportedStorage = "仅支持当前数据格式，旧格式原文件保留，请使用全新数据目录。";
     public static int ReadStorageVersion(string database, string application)
+        => ReadStorageVersion(database, application, immutable: false);
+    internal static int ReadStorageVersion(string database, string application, bool immutable)
     {
-        using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
+        using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = immutable ? new Uri(Path.GetFullPath(database)).AbsoluteUri + "?immutable=1" : database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
         RequireCurrentStorage(db, application);
         return CurrentStorageVersion;
     }

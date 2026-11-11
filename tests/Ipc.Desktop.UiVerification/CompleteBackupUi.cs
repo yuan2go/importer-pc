@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
+using Ipc.Platform;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
 
@@ -37,13 +38,16 @@ static partial class Program
                 if (id.EndsWith("Settings", StringComparison.Ordinal))
                 {
                     Descendants(center).OfType<Button>().Single(b => Equals(b.Tag, "maintenance")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                    await Until(() => window.ViewModel.HasLoadedConfiguration && Descendants(center).OfType<ParameterSettingsControl>().Any(e => e.Model is not null));
-                    Descendants(center).OfType<ParameterSettingsControl>().Single().NavigateTo("BackupEnabled");
+                    await Until(() => window.ViewModel.HasLoadedConfiguration && !window.ViewModel.Busy && Descendants(center).OfType<ParameterSettingsControl>().Any(e => e.Model is not null));
+                    await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                    Check(Descendants(center).OfType<ParameterSettingsControl>().Single().NavigateTo("BackupEnabled"), "manual backup settings resolve through the current parameter directory");
                 }
-                else Descendants(center).OfType<Expander>().Single(e => Descendants(e).OfType<Button>().Any(b => AutomationProperties.GetAutomationId(b) == id)).IsExpanded = true;
+                else Descendants(center).OfType<Expander>().Single(e => e.Content is FrameworkElement content && Descendants(content).OfType<Button>().Any(b => AutomationProperties.GetAutomationId(b) == id)).IsExpanded = true;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); center.UpdateLayout();
                 var action = Descendants(center).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == id);
                 action.BringIntoView(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
-                Check(action.IsVisible && action.IsEnabled, id + " is reachable in its actual native page");
+                await Until(() => action.IsVisible && action.IsEnabled);
+                Check(action.IsVisible && action.IsEnabled, id + " is reachable in its actual native page; visible=" + action.IsVisible + "; enabled=" + action.IsEnabled + "; busy=" + window.ViewModel.Busy);
                 bool cancelled = false, duplicateDisabled = false;
                 var owner = new WindowInteropHelper(center).Handle;
                 var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };

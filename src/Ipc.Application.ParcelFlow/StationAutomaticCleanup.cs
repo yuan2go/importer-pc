@@ -42,10 +42,16 @@ public sealed partial class ParcelRuntime
         try
         {
             Management.Require();
-            return new(Effective.OperationsPolicy?.AutomaticHistoryCleanup == true, automaticCleanup?.State ?? "尚未执行",
-                automaticCleanup?.LastCompleted, automaticCleanup?.NextCheck, automaticCleanup?.Detail);
+            return CleanupStatusSnapshot();
         }
         finally { gate.Release(); }
+    }
+    StationCleanupStatus CleanupStatusSnapshot()
+    {
+        var enabled = Effective.OperationsPolicy?.AutomaticHistoryCleanup == true;
+        return new(enabled, !enabled ? "未启用自动清理" : cleanupStateFault ? "执行状态读取失败" : automaticCleanup?.State ?? "尚未执行",
+            automaticCleanup?.LastCompleted, enabled ? automaticCleanup?.NextCheck : null,
+            !enabled ? "关闭期间不会自动清理；最近完成时间仅表示历史结果。" : automaticCleanup?.Detail);
     }
     void TryAutomaticCleanup(DateTimeOffset now)
     {

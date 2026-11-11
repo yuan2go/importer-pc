@@ -75,7 +75,7 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ReadTimeoutMs { get; init; }
     [JsonIgnore]
-    public int EffectiveReadTimeoutMs => ReadTimeoutMs ?? 1000;
+    public int EffectiveReadTimeoutMs => ReadTimeoutMs ?? SystemParameterDefaults.ReadTimeoutMs;
 }
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned, UnpackRequired }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
@@ -125,6 +125,8 @@ public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long R
     public ParcelCameraReadFeedback[] CameraReads { get; init; } = [];
     public ParcelReadFeedback[] ReadFeedbacks { get; init; } = [];
     public SmParcelRound[] Rounds { get; init; } = [];
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public StationCleanupStatus? AutomaticCleanup { get; init; }
 }
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication

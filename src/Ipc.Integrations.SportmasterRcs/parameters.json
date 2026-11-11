@@ -2,22 +2,24 @@
   {
     "Key": "zone-id",
     "Group": "RCS 分拣任务",
-    "Label": "区域数字标识",
+    "Label": "仓ID",
     "Type": "integer",
     "Required": true,
     "MaximumLength": 32,
     "Minimum": 1,
-    "Maximum": 9223372036854775807
+    "Maximum": 9223372036854775807,
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "project-id",
     "Group": "RCS 分拣任务",
-    "Label": "项目数字标识",
+    "Label": "生产线ID",
     "Type": "integer",
     "Required": true,
     "MaximumLength": 32,
     "Minimum": 1,
-    "Maximum": 9223372036854775807
+    "Maximum": 9223372036854775807,
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "left-station-code",
@@ -25,7 +27,8 @@
     "Label": "左位工位编号",
     "Type": "string",
     "Required": true,
-    "MaximumLength": 256
+    "MaximumLength": 256,
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "left-bcr-code",
@@ -34,7 +37,8 @@
     "Type": "string",
     "Required": false,
     "MaximumLength": 256,
-    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。"
+    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "right-station-code",
@@ -42,7 +46,8 @@
     "Label": "右位工位编号",
     "Type": "string",
     "Required": true,
-    "MaximumLength": 256
+    "MaximumLength": 256,
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "right-bcr-code",
@@ -51,7 +56,8 @@
     "Type": "string",
     "Required": false,
     "MaximumLength": 256,
-    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。"
+    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "destination-mode",
@@ -59,7 +65,8 @@
     "Label": "格口分配方式",
     "Type": "boolean",
     "Default": "false",
-    "Description": "左右投递位共用。可由 RCS 分配，也可向 RCS 请求指定格口。"
+    "Description": "左右投递位共用。可由 RCS 分配，也可向 RCS 请求指定格口。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "destination-chute-code",
@@ -69,7 +76,8 @@
     "MaximumLength": 64,
     "RequiredWhenKey": "destination-mode",
     "RequiredWhenEquals": "true",
-    "Description": "填写要请求的格口编码，保留字母和前导零。实际格口以 RCS 返回为准。"
+    "Description": "填写要请求的格口编码，保留字母和前导零。实际格口以 RCS 返回为准。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "no-dest-to-exp",
@@ -77,30 +85,33 @@
     "Label": "无可用格口时",
     "Type": "boolean",
     "Default": "true",
-    "Description": "送往异常口：小车前往 RCS 返回的异常口。\n留在原位，人工处理：小车不动，页面显示异常原因，请取下包裹判断。"
+    "Description": "送往异常口：小车前往 RCS 返回的异常口。\n留在原位，人工处理：小车不动，页面显示异常原因，请取下包裹判断。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "request-timeout-ms",
     "Group": "RCS 分拣任务",
     "Label": "取格口请求超时",
     "Type": "integer",
-    "Default": "5000",
+    "Default": "1000",
     "Minimum": 100,
     "Maximum": 30000,
     "MaximumLength": 5,
     "Unit": "毫秒",
-    "Description": "单次取格口请求的总时限，包含连接及响应读取；默认5000毫秒。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。超时提示操作员重新扫描。"
+    "Description": "单次取格口请求的总期限，连接、发送与完整响应读取共用；默认1000毫秒，范围100～30000毫秒。只影响新请求，原请求保留创建时的期限。符合条件时热生效，受阻或混合修改时按保存回执处理。超时表示结果未确认，请核对原请求并按本位提示处理包裹；不会自动重发。",
+    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "heartbeat-interval-ms",
     "Group": "RCS 心跳",
-    "Label": "心跳请求间隔",
+    "Label": "心跳间隔",
     "Type": "integer",
     "Default": "1000",
     "Minimum": 100,
     "Maximum": 3600000,
     "MaximumLength": 7,
     "Unit": "毫秒",
-    "Description": "默认1000毫秒，可按现场需要精确调整。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。小车状态只提示托盘放包，不限制条码受理或格口申请。取格口与心跳共用同一相机编码，不重发旧心跳。"
+    "Description": "默认1000毫秒，可按现场需要精确调整。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。小车状态只提示托盘放包，不限制条码受理或格口申请。取格口与心跳共用同一相机编码，不重发旧心跳。",
+    "ApplyLevel": "GuardedLive"
   }
 ]

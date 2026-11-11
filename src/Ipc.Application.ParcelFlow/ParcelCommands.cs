@@ -88,7 +88,8 @@ public sealed partial class ParcelRuntime
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(LatestWorkCardOperation).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), positionSnapshots, readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), inputs, BackupStatus(), configuration.Current.Pending is not null)
             {
                 ConfigurationActivationBlock = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null,
-                Rounds = Id == "sportmaster" ? smCurrentRounds.Values.Select(id => smRounds[id]).ToArray() : []
+                Rounds = Id == "sportmaster" ? smCurrentRounds.Values.Select(id => smRounds[id]).ToArray() : [],
+                AutomaticCleanup = Id == "sportmaster" ? CleanupStatusSnapshot() : null
             };
             encoded = EncodeSnapshot(WithReadFeedbackSnapshot(projection));
         }

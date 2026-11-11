@@ -20,6 +20,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     public const string Contract = RcsConfigurationValidation.Contract;
     public const int MaximumResponseBytes = 262144;
     internal TimeProvider ReceiptTimeForVerification { get; set; } = TimeProvider.System;
+    internal TimeProvider RequestTimeForVerification { get; set; } = TimeProvider.System;
+    internal Action<string, int>? ResponseBodyProgressForVerification { get; set; }
     readonly RcsTaskOptions options;
     readonly HttpClient client;
     readonly HttpClient heartbeatClient;
@@ -121,8 +123,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     {
         var frozen = request.IntegrationRequest!;
         lock (lifecycle) if (!running || disposed) throw new IOException("RCS client is stopped");
-            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
-            deadline.CancelAfter(options.RequestTimeoutMs);
+            using var expiry = new CancellationTokenSource(TimeSpan.FromMilliseconds(options.RequestTimeoutMs), RequestTimeForVerification);
+            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token, expiry.Token);
             using var content = new TrackedRequestContent(Encoding.UTF8.GetBytes(body));
             using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
             {
@@ -145,7 +147,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             catch (HttpRequestException e) { throw new IOException("RCS HTTP delivery/outcome is unknown", e); }
             using (response)
             {
-                var (bytes, complete) = await ReadBoundedAsync(response.Content, deadline.Token).ConfigureAwait(false);
+                var (bytes, complete) = await ReadBoundedAsync(response.Content, deadline.Token,
+                    count => ResponseBodyProgressForVerification?.Invoke(request.Id, count)).ConfigureAwait(false);
                 var original = new IntegrationHttpResponse((int)response.StatusCode, Convert.ToBase64String(bytes), Convert.ToHexString(SHA256.HashData(bytes)), complete);
                 StageReply Unknown(string detail) => new(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, detail,
                     ReceiptTimeForVerification.GetUtcNow(), HttpResponse: original);
@@ -183,7 +186,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
             await stream.WriteAsync(bytes, token).ConfigureAwait(false);
         }
     }
-    static async Task<(byte[] Bytes, bool Complete)> ReadBoundedAsync(HttpContent content, CancellationToken token)
+    static async Task<(byte[] Bytes, bool Complete)> ReadBoundedAsync(HttpContent content, CancellationToken token, Action<int>? progress = null)
     {
         using var bytes = new MemoryStream();
         try
@@ -195,6 +198,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                 var read = await stream.ReadAsync(buffer.AsMemory(0, (int)Math.Min(buffer.Length, MaximumResponseBytes + 1L - bytes.Length)), token).ConfigureAwait(false);
                 if (read == 0) return (bytes.ToArray(), true);
                 bytes.Write(buffer, 0, read);
+                progress?.Invoke(checked((int)bytes.Length));
             }
         }
         catch (Exception e) when (e is IOException or HttpRequestException or OperationCanceledException)

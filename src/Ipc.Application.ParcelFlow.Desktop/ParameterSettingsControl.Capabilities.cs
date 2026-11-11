@@ -163,8 +163,7 @@ public sealed partial class ParameterSettingsControl
         foreach (var p in draft.Parameters.Where(p => ParameterOwnership.Category(draft, p.Field.Key) == page.Category))
         {
             if (Model!.ApplicationId == "sportmaster" && draft.Provider.Implementation == "hikrobot-mvs-reader" && p.Field.Key is "entity.mode" or "acquisition.trigger") continue;
-            if (engine?.Value == "mvid-native" && p.Field.Key == "code.try-invert") continue;
-            if (engine?.Value == "mvid-native" && p.Field.Key == "code.formats") continue;
+            if (!Ipc.Platform.ExtensionSchema.IsApplicable(draft.Provider.Parameters, draft.Parameters.ToDictionary(x => x.Field.Key, x => x.Value), p.Field)) continue;
             if (draft.IsSimpleCamera && p.Field.Key == "reader.engine") advanced.Add(p);
             else if (p.Field.Key is "decision" or "reply-mode" or "complete-on-query") advanced.Add(p);
             else if (draft.Kind == "observation" && !p.Field.Required && (p.Field.Key is "queue.capacity" or "queue.maximum-code-bytes" or "code.encoding" or "image.nodes" or "image.maximum-payload-bytes" or "motion.still-ms")) advanced.Add(p);
@@ -228,7 +227,7 @@ public sealed partial class ParameterSettingsControl
         "code.formats" => "只勾选面单实际使用的条码种类：勾得越少识别越快，也越不容易读到包装上的其他条码（如商品码）而整帧拒收。没勾的种类不会被识别。",
         "code.try-invert" => "识别白底黑条以外的浅色条码配深色背景。面单都是白底黑条时可关闭以提速；关闭前请用真实面单确认。",
         "motion.still-ms" => "包裹放稳多久后才接收识别结果，默认 200 毫秒，可填 0–2000 毫秒。放置过程中的结果不进入供包业务；画面一直不稳时仍会间隔接收。填 0 表示每帧接收。",
-        "request-timeout-ms" => "一次取格口最多等待多久，默认 5000 毫秒，可填 100–30000 毫秒。超时后结果未确认，请到记录核对；不会自动重发。",
+        "request-timeout-ms" => "连接、发送和完整响应共用一次期限，默认1000毫秒，可填100～30000毫秒。只影响新请求；超时结果未确认，请核对原请求并按本位提示处理包裹，不会自动重发。",
         "source" => "RCS 接口约定的来源标记，按接口文档填写。",
         "locale" => "RCS 接口约定的语言标记，按接口文档填写（不影响本软件界面语言）。",
         _ => p.EditorHelp

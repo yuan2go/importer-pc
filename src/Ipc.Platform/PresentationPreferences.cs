@@ -12,6 +12,19 @@ public static class PresentationPreferences
     public static event Action<string, int>? CueVolumeChanged;
     public static event Action<string, WindowOpeningMode>? WindowModeChanged;
     public static event Action<string, string, bool>? DisplayChanged;
+    // Reconciliation can prove that an earlier atomic write committed even when
+    // its notification was lost. Reapply that exact saved preference without
+    // rewriting the file or touching another preference's failed draft.
+    public static void RefreshSaved(string application, string surface)
+    {
+        switch (surface)
+        {
+            case "window": WindowModeChanged?.Invoke(application, ReadWindowMode(application)); break;
+            case "audio": CueVolumeChanged?.Invoke(application, ReadCueVolume(application)); break;
+            case "pace": DisplayChanged?.Invoke(application, surface, Read(application, surface) ?? true); break;
+            default: throw new ArgumentException("Unsupported saved preference surface", nameof(surface));
+        }
+    }
     public static int ReadCueVolume(string application)
     {
         var file = FileFor(application, "audio");

@@ -19,7 +19,8 @@
     "Parameters": {
       "entity.mode": "read-result",
       "acquisition.trigger": "off",
-      "code.formats": "[\"Code128\",\"Code39\",\"EAN13\"]"
+      "code.formats": "[\"All\"]",
+      "reader.engine": "mvid-native"
     }
   },
   "Scale": null,
@@ -33,7 +34,8 @@
     "Parameters": {
       "left-station-code": "station-01",
       "right-station-code": "station-01",
-      "no-dest-to-exp": "true"
+      "no-dest-to-exp": "true",
+      "request-timeout-ms": "1000"
     }
   },
   "Plc": null,
@@ -56,7 +58,8 @@
         "Parameters": {
           "entity.mode": "read-result",
           "acquisition.trigger": "off",
-          "code.formats": "[\"Code128\",\"Code39\",\"EAN13\"]"
+          "code.formats": "[\"All\"]",
+          "reader.engine": "mvid-native"
         }
       },
       {
@@ -68,7 +71,8 @@
         "Parameters": {
           "entity.mode": "read-result",
           "acquisition.trigger": "off",
-          "code.formats": "[\"Code128\",\"Code39\",\"EAN13\"]"
+          "code.formats": "[\"All\"]",
+          "reader.engine": "mvid-native"
         }
       }
     ],
@@ -85,7 +89,9 @@
   },
   "Retention": {
     "ResidentHistory": 200,
-    "MinimumFreeBytes": 67108864
+    "MinimumFreeBytes": 536870912,
+    "DiagnosticLogDays": 7,
+    "HistoryDays": 7
   },
   "StationCode": "",
   "DeferredConnections": [

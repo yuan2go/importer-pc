@@ -15,7 +15,9 @@ public sealed record ParameterField(string Key, string Group, string Label, stri
     string? Default = null, int MaximumLength = 256, long? Minimum = null, long? Maximum = null,
     string[]? Choices = null, bool Sensitive = false, string? Description = null, string? Unit = null,
     bool ReadOnly = false, string ApplyLevel = "Restart", string EditRole = "Maintenance",
-    string? RequiredWhenKey = null, string? RequiredWhenEquals = null, int MaximumItems = 32);
+    string? RequiredWhenKey = null, string? RequiredWhenEquals = null, int MaximumItems = 32,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? AppliesWhenKey = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? AppliesWhenEquals = null);
 public sealed record ExtensionModule(string Id, string Assembly, string EntryType, string Kind,
     int MaximumInstances, ParameterField[] Parameters,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] CapabilityRequirements? Requirements = null,
@@ -67,8 +69,11 @@ public static class ExtensionSchema
                 f.Type is not ("string" or "integer" or "boolean" or "choice" or "secret-reference" or "string-list") ||
                 f.MaximumLength is < 1 or > 4096 || f.Minimum > f.Maximum ||
                 f.Type != "integer" && (f.Minimum is not null || f.Maximum is not null) ||
-                f.ApplyLevel != "Restart" || f.EditRole != "Maintenance" || f.Unit?.Length > 32 || f.MaximumItems is < 1 or > 128 ||
+                f.ApplyLevel is not ("Restart" or "GuardedLive") || f.EditRole != "Maintenance" || f.Unit?.Length > 32 || f.MaximumItems is < 1 or > 128 ||
                 f.RequiredWhenKey is not null && (!fields.Any(x => x.Key == f.RequiredWhenKey && x.Key != f.Key) || f.RequiredWhenEquals is null) ||
+                (f.AppliesWhenKey is null) != (f.AppliesWhenEquals is null) ||
+                f.AppliesWhenKey is not null && (!fields.Any(x => x.Key == f.AppliesWhenKey && x.Key != f.Key) ||
+                    ValidateValue(fields.First(x => x.Key == f.AppliesWhenKey), f.AppliesWhenEquals!).Any()) ||
                 f.Sensitive != (f.Type == "secret-reference") ||
                 (f.Type == "choice" || f.Type == "string-list" && f.Choices is not null) && (f.Choices is null || f.Choices.Length is < 1 or > 100 ||
                     f.Choices.Any(x => string.IsNullOrWhiteSpace(x) || x.Length > f.MaximumLength) || f.Choices.Distinct().Count() != f.Choices.Length) ||
@@ -86,14 +91,23 @@ public static class ExtensionSchema
         if (values.Keys.Any(x => !fields.Any(f => f.Key == x))) errors.Add("Unknown parameter");
         foreach (var f in fields)
         {
+            if (!IsApplicable(fields, values, f)) continue;
             var value = values.GetValueOrDefault(f.Key) ?? f.Default;
             var conditionValue = f.RequiredWhenKey is null ? null : values.GetValueOrDefault(f.RequiredWhenKey) ?? fields.FirstOrDefault(x => x.Key == f.RequiredWhenKey)?.Default;
-            if (string.IsNullOrEmpty(value)) { if (f.Required || f.RequiredWhenKey is not null && conditionValue == f.RequiredWhenEquals) errors.Add(f.Key + ": required"); continue; }
+            if (string.IsNullOrEmpty(value))
+            {
+                if (values.ContainsKey(f.Key) && f.Type is "integer" or "boolean" or "choice" or "string-list") errors.Add(f.Key + ": invalid value (value omitted)");
+                else if (f.Required || f.RequiredWhenKey is not null && conditionValue == f.RequiredWhenEquals) errors.Add(f.Key + ": required");
+                continue;
+            }
             if (f.ReadOnly && value != f.Default) errors.Add(f.Key + ": read-only schema value changed");
             errors.AddRange(ValidateValue(f, value));
         }
         return errors.ToArray();
     }
+    public static bool IsApplicable(ParameterField[] fields, IReadOnlyDictionary<string, string> values, ParameterField field) =>
+        field.AppliesWhenKey is null || (values.GetValueOrDefault(field.AppliesWhenKey) ??
+            fields.FirstOrDefault(x => x.Key == field.AppliesWhenKey)?.Default) == field.AppliesWhenEquals;
     static IEnumerable<string> ValidateValue(ParameterField f, string value)
     {
         var valid = f.Type == "string-list"

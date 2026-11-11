@@ -8,12 +8,13 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed partial class ParameterSettingsControl
 {
-    public Ipc.Platform.PresentationPreferences.WindowOpeningMode? OpeningModeDraft { get; set; }
-    public void SaveDisplayPreferences()
+    Ipc.Platform.PresentationPreferences.WindowOpeningMode? openingModeDraft;
+    public Ipc.Platform.PresentationPreferences.WindowOpeningMode? OpeningModeDraft
     {
-        if (RuntimeContext is null && OpeningModeDraft is { } mode && Model is { } model)
-            Ipc.Platform.PresentationPreferences.SaveWindowMode(model.ApplicationId, mode);
+        get => Model?.DisplayPreferences?.OpeningMode ?? openingModeDraft;
+        set { openingModeDraft = value; if (value is { } mode && Model?.DisplayPreferences is { } preferences) preferences.OpeningMode = mode; }
     }
+    public PreferenceSaveItem[] SaveDisplayPreferences() => Model?.DisplayPreferences?.Save() ?? [];
     void BuildSystem(ParameterEditorModel m)
     {
         var station = Page(0, "供包台标识", "填写 RCS 分配给本供包台的编号，取格口和心跳都使用这些编号。");
@@ -38,11 +39,28 @@ public sealed partial class ParameterSettingsControl
         }
         if (!hasRcs) Input(Form(station), "供包台编号 *", m.Policy, "StationCode", "StationCode", station, "用于向外部系统识别当前供包台。");
         var data = Page(0, "数据与记录", ""); form = Form(data);
-        Input(form, "常驻记录", m.Policy, "ResidentHistory", "ResidentHistory", data, "本机保留的近期记录条数，1～10000。");
-        Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "剩余空间低于此值时暂停接收新包裹，1～1048576 MiB。");
-        Input(form, "日志保留天数", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "默认 7 天。只清理诊断日志，不删除作业记录；留空则按容量自动轮换。");
-        Input(form, "已结数据保留天数", m.Policy, "HistoryDays", "HistoryDays", data, "默认 7 天，可填 7–30 天。到期后清理已完成的作业明细，未处理完的作业始终保留；留空则不清理。");
+        Input(form, "运行记录归档阈值", m.Policy, "ResidentHistory", "ResidentHistory", data, "默认200条，1～10000。达到后归档可收口记录，仍可查询；不限制SM新件，不删除原请求。");
+        Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, m.ApplicationId == "sportmaster" ? "新站默认512 MiB，1～1048576 MiB；低于此值拒绝新件并保留原责任。备份、原图及诊断仍分别核对实际所需空间，512 MiB不是长期容量配额。" : "剩余空间低于此值时暂停接收新包裹，1～1048576 MiB。");
+        Input(form, "日志最长保留时间", m.Policy, "DiagnosticLogDays", "DiagnosticLogDays", data, "默认7天，1～3650天；容量轮替可能更早删除日志，不保证至少保留7天。留空只按容量轮替，不删除业务库、原请求或回执。");
+        Input(form, "已结记录清理期限", m.Policy, "HistoryDays", "HistoryDays", data, "默认7天，7～30天。仅在手动清理或已启用自动清理且通过完整备份/责任围栏后，清理安全的已结详情；未结责任及永久防重保留，留空不按天清理。");
         data.Body.Children.Add(Text("保留天数保存并重启后生效。只有明确启用自动清理并满足空闲、备份和责任保护条件时，才会后台清理。"));
+        if (m.ApplicationId == "sportmaster")
+        {
+            var cleanup = new CheckBox { Content = "启用自动清理已结记录", MinHeight = 44 };
+            cleanup.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(m.Policy.AutomaticHistoryCleanup)) { Source = m.Policy, Mode = BindingMode.TwoWay });
+            Field(Form(data), "自动清理", cleanup, "默认关闭。启用后仍需空闲、完整备份及原请求责任检查；开关的保存草稿和当前执行状态分别显示。", "AutomaticHistoryCleanup", data);
+            var schedule = AdvancedForm(data, "自动清理计划与执行预算");
+            Choice(schedule, "清理时区", m.Policy, "CleanupTimeZoneId", TimeZoneInfo.GetSystemTimeZones().Select(z => z.Id).ToArray(), "CleanupTimeZoneId", data, "只用于安排每日清理，不改变业务时间或当前班次。");
+            Input(schedule, "清理时刻", m.Policy, "CleanupHour", "CleanupHour", data, "默认3时，0～23时；当前时区下每日检查，条件不满足不强制清理。");
+            Input(schedule, "清理前备份份数上限", m.Policy, "CleanupMaximumBackupSets", "CleanupMaximumBackupSets", data, "默认7份，1～100份。到达上限停止新增清理备份及本次清理；不会删除旧备份，独立于计划备份目录。");
+            if (RuntimeContext is { } cleanupContext)
+            {
+                var actual = Text("");
+                actual.SetBinding(TextBlock.TextProperty, new Binding(nameof(ParcelViewModel.AutomaticCleanupStatusText)) { Source = cleanupContext });
+                data.Body.Children.Add(actual);
+            }
+            else data.Body.Children.Add(Text("当前未启动；这里修改的是待保存的计划，不表示已执行自动清理。"));
+        }
         if (RuntimeContext is { } retentionContext)
         {
             var maintain = new Button { Content = "停止软件并清理到期记录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
@@ -66,7 +84,7 @@ public sealed partial class ParameterSettingsControl
         Input(form, "备份目录", m.Policy, "BackupDirectory", "BackupDirectory", backup, "填写完整的文件夹路径。");
         form = Form(backup); form.SetBinding(IsEnabledProperty, new Binding("BackupEnabled") { Source = m.Policy });
         Input(form, "备份间隔", m.Policy, "BackupIntervalMinutes", "BackupIntervalMinutes", backup, "15～10080");
-        Input(form, "保留份数", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "可填 1–1000 份，旧备份不会自动删除。");
+        Input(form, "计划备份份数上限", m.Policy, "BackupMaximumSets", "BackupMaximumSets", backup, "默认10份，1～1000份。达到上限停止新增并报告原因，不滚动删除旧备份。");
         if (BackupRequested is not null)
         {
             backup.Body.Children.Add(Text("手动备份", true));
@@ -78,14 +96,11 @@ public sealed partial class ParameterSettingsControl
         var display = Page(0, "显示偏好", m.ApplicationId == "sportmaster" ? "设置本机窗口的打开方式和布局。" : "仅影响本机显示。");
         if (m.ApplicationId == "sportmaster")
         {
-            var pace = new CheckBox { Content = "作业页显示本班取得格口次数与近十分钟速度", MinHeight = 44 };
-            bool readable = true;
-            try { pace.IsChecked = Ipc.Platform.PresentationPreferences.Read("sportmaster", "pace") ?? true; }
-            catch (Exception error) { readable = false; display.Body.Children.Add(Text(ChineseInterfaceText.ParameterMessage(error.Message, "效率偏好未能读取，原文件保留；请检查本机设置文件与访问权限。"))); }
-            pace.IsEnabled = readable; display.Body.Children.Add(pace);
-            var savePace = new Button { Content = "应用效率显示", MinHeight = 44, IsEnabled = readable, HorizontalAlignment = HorizontalAlignment.Left };
-            savePace.Click += async (_, _) => { try { if (RuntimeContext is { } context) await context.RequireManagementModeAsync(); Ipc.Platform.PresentationPreferences.Save("sportmaster", "pace", pace.IsChecked == true); } catch (Exception error) { if (RuntimeContext is { } context) context.Message = ChineseInterfaceText.ParameterMessage(error.Message, "效率偏好未保存；请检查本机设置文件与访问权限后重试。"); } };
-            display.Body.Children.Add(savePace);
+            var preferences = m.DisplayPreferences ??= RuntimeContext?.SmPreferences ?? new();
+            var pace = new CheckBox { Content = "显示本班取得格口次数与近十分钟速度", MinHeight = 44, IsEnabled = preferences.CanEdit("ShowPace") };
+            pace.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(preferences.ShowPace)) { Source = preferences, Mode = BindingMode.TwoWay });
+            Field(Form(display), "效率显示", pace, "仅影响当前Windows用户；使用底部“保存设置”，与窗口方式和提示音一同保存。", "ShowPace", display);
+            if (preferences.ReadFailure("ShowPace").Length > 0) display.Body.Children.Add(Text(preferences.ReadFailure("ShowPace")));
         }
         if (m.ApplicationId != "sportmaster" && RuntimeContext is { } runtime)
         {
@@ -112,6 +127,14 @@ public sealed partial class ParameterSettingsControl
                 opening.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(context.WindowModeDraft)) { Source = context, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
                 modeStatus.SetBinding(TextBlock.TextProperty, new Binding(nameof(context.WindowPreferenceStatus)) { Source = context });
             }
+            else if (m.ApplicationId == "sportmaster")
+            {
+                var preferences = m.DisplayPreferences ??= new();
+                if (openingModeDraft is { } selected) preferences.OpeningMode = selected;
+                opening.SetBinding(ComboBox.SelectedValueProperty, new Binding(nameof(preferences.OpeningMode)) { Source = preferences, Mode = BindingMode.TwoWay });
+                modeReadable = preferences.CanEdit("WindowOpeningMode");
+                modeStatus.Text = preferences.ReadFailure("WindowOpeningMode");
+            }
             else
             {
                 opening.SelectedValue = OpeningModeDraft ?? Ipc.Platform.PresentationPreferences.ReadWindowMode(m.ApplicationId);
@@ -120,6 +143,7 @@ public sealed partial class ParameterSettingsControl
         }
         catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
         { modeReadable = false; modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "窗口设置未能读取，原文件保留；请检查本机设置文件与访问权限。"); }
+        if (m.ApplicationId == "sportmaster" && m.DisplayPreferences is { } local) modeReadable = local.CanEdit("WindowOpeningMode");
         opening.IsEnabled = modeReadable;
         Field(Form(display), "默认打开方式", opening, m.ApplicationId == "sportmaster" ? "保存后立即生效，并记住下次打开方式。最大化（全屏）时隐藏标题栏并铺满屏幕；可最小化到任务栏，恢复后仍保持全屏；Esc 和 F11 不退出全屏。" : "保存后立即生效，并记住下次打开方式。按 F11 临时切换，按 Esc 返回窗口。", "WindowOpeningMode", display);
         var saveMode = new Button { Content = "保存打开方式", HorizontalAlignment = HorizontalAlignment.Left, MinHeight = 44, IsEnabled = modeReadable };
@@ -133,9 +157,9 @@ public sealed partial class ParameterSettingsControl
             catch (Exception error) when (error is System.IO.IOException or System.IO.InvalidDataException or UnauthorizedAccessException or InvalidOperationException or System.Text.Json.JsonException)
             { modeStatus.Text = ChineseInterfaceText.ParameterMessage(error.Message, "打开方式未保存；请检查本机设置文件与访问权限后重试。"); }
         };
-        if (RuntimeContext is null && (!FirstConfiguration || m.ApplicationId != "sportmaster")) display.Body.Children.Add(saveMode);
+        if (RuntimeContext is null && m.ApplicationId != "sportmaster") display.Body.Children.Add(saveMode);
         display.Body.Children.Add(modeStatus);
-        if (m.ApplicationId == "sportmaster") AudioPreferences(display);
+        if (m.ApplicationId == "sportmaster") AudioPreferences(display, m.DisplayPreferences!);
         display.Body.Children.Add(Text("小窗口会自动使用紧凑布局。"));
         if (DisplayPreferencesRequested is not null)
         {
@@ -204,7 +228,7 @@ public sealed partial class ParameterSettingsControl
         if (m.ApplicationId == "sportmaster")
         {
             Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "条码需完整匹配此规则（正则表达式）；留空则不筛选。", true);
-            Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "用正则表达式完整匹配要忽略的小车底部固定码；可先从相机识码日志复制码值，在下方测试规则。只排除匹配的码，包裹二维码仍正常识别。只看到被排除的码时按空托盘观察；留空不排除。", true);
+            Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "整串正则匹配要忽略的小车底码，不按二维码码制排除。只看到排除码时正式候选为空，不能证明空盘或上件；留空不排除。可用下方样例核对。", true);
             var reject = new CheckBox { Content = "拒绝多个有效条码", MinHeight = 38 };
             reject.SetBinding(CheckBox.IsCheckedProperty, new Binding("RejectMultipleCodes") { Source = m.Policy, Mode = BindingMode.TwoWay });
             Field(form, "多码处理", reject, "默认开启：筛选后仍有多个有效条码时不发送。可在本轮识读期限内调整标签；到期后可原位 PDA 补录。关闭后按读取顺序拼接有效条码，作为一份请求发给 RCS。", "RejectMultipleCodes", page);
@@ -219,6 +243,19 @@ public sealed partial class ParameterSettingsControl
                 PropertyChangedEventHandler separatorChanged = (_, e) => { if (e.PropertyName == "RejectMultipleCodes") SyncSeparator(); };
                 m.Policy.PropertyChanged += separatorChanged; unsubscribe.Add(() => m.Policy.PropertyChanged -= separatorChanged);
             }
+            var timing = Text(""); timing.SetResourceReference(TextBlock.ForegroundProperty, "Warning");
+            void TimingRisk()
+            {
+                var risky = int.TryParse(m.Policy.ReadTimeoutMs, out var limit) ? m.Readers.Where(r => !r.ConfigureLater &&
+                    int.TryParse(r.Parameters.FirstOrDefault(p => p.Field.Key == "motion.still-ms")?.Value, out var still) && still >= limit).Select(r => r.Role == "left" ? "左相机" : "右相机").ToArray() : [];
+                timing.Text = risky.Length == 0 ? "" : string.Join("、", risky) + "的放稳时间不小于自动识读期限，可能来不及自动提交。请核对相机高级设置；识读期限包含放稳、筛选及持久接纳，不会自动延长。";
+                timing.Visibility = risky.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+            }
+            PropertyChangedEventHandler timingChanged = (_, _) => TimingRisk();
+            m.Policy.PropertyChanged += timingChanged; unsubscribe.Add(() => m.Policy.PropertyChanged -= timingChanged);
+            foreach (var parameter in m.Readers.SelectMany(r => r.Parameters).Where(p => p.Field.Key == "motion.still-ms"))
+            { parameter.PropertyChanged += timingChanged; unsubscribe.Add(() => parameter.PropertyChanged -= timingChanged); }
+            TimingRisk(); page.Body.Children.Add(timing);
             Preview(page, m);
         }
         else

@@ -8,7 +8,7 @@ public static class RcsRequestPolicy
 {
     public const string Contract = "SPORTMASTER-RCS-SORTER-v1";
     public const string ComponentVersion = "1.0.0";
-    public const int DefaultTimeoutMs = 5000, MinimumTimeoutMs = 100, MaximumTimeoutMs = 30000;
+    public const int DefaultTimeoutMs = 1000, MinimumTimeoutMs = 100, MaximumTimeoutMs = 30000;
     public const int DefaultHeartbeatMs = 1000, MinimumHeartbeatMs = 100, MaximumHeartbeatMs = 3600000;
     // Retired setting keys are kept only for original wire evidence. Reusing them could activate an old site value.
     public const string DestinationMode = "destination-mode", DestinationChuteCode = "destination-chute-code";

@@ -115,8 +115,9 @@ public sealed class ConfigurationSaveReviewWindow : Window
             if (automatic is not null) vm.ConfigurationReason = automatic;
             try
             {
-                if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync();
-                if (!vm.HasUnconfirmedConfigurationSubmission && !vm.HasUnsavedConfiguration && vm.HasUnsavedWindowPreference)
+                if (vm.HasUnsavedConfiguration)
+                { if (vm.CanEditFormConfiguration) await vm.SaveCapabilitiesAsync(); else await vm.SaveAdvancedConfigurationAsync(); }
+                if (!vm.HasUnconfirmedConfigurationSubmission && !vm.HasUnsavedConfiguration && vm.HasUnsavedDisplayPreferences)
                     await vm.SaveWindowPreferenceAsync();
             }
             finally { if (automatic is not null && vm.ConfigurationReason == automatic) vm.ConfigurationReason = ""; }
@@ -147,8 +148,8 @@ public sealed class ConfigurationSaveReviewWindow : Window
         guidance.Visibility = qualified ? Visibility.Collapsed : Visibility.Visible;
         inspect.Visibility = !authorizationOnly && vm.HasUnconfirmedConfigurationSubmission ? Visibility.Visible : Visibility.Collapsed; inspect.IsEnabled = !vm.Busy;
         var confirmed = vm.ConfigurationSubmissionOutcome is "Effective" or "Unchanged";
-        back.Content = confirmed && !vm.HasUnsavedWindowPreference ? "完成" : "返回设置";
-        save.Visibility = authorizationOnly || confirmed || vm.HasUnconfirmedConfigurationSubmission || vm.ConfigurationSubmissionOutcome is "PendingRestart" or "Conflict" ? Visibility.Collapsed : Visibility.Visible;
+        back.Content = confirmed && !vm.HasUnsavedDisplayPreferences ? "完成" : "返回设置";
+        save.Visibility = authorizationOnly || confirmed && !vm.HasUnsavedDisplayPreferences || vm.HasUnconfirmedConfigurationSubmission || vm.ConfigurationSubmissionOutcome == "PendingRestart" && !vm.HasUnsavedDisplayPreferences || vm.ConfigurationSubmissionOutcome == "Conflict" ? Visibility.Collapsed : Visibility.Visible;
         save.IsEnabled = vm.CanSubmitReviewedConfiguration;
         activate.Visibility = !authorizationOnly && vm.Snapshot?.Configuration.Pending is not null ? Visibility.Visible : Visibility.Collapsed;
         activate.IsEnabled = vm.CanRequestActivation;
@@ -161,11 +162,11 @@ public sealed class ConfigurationSaveReviewWindow : Window
             "NotSaved" or "Conflict" or "Rejected" => vm.ConfigurationSubmissionDetail,
             _ => !authorizationOnly && !vm.ConfigurationReviewIsCurrent ? "设置又有改动，请返回重新检查。" : ""
         };
-        if (vm.ConfigurationSubmissionOutcome is "Effective" or "PendingRestart" or "Unchanged" && vm.WindowPreferenceStatus.Length > 0)
+        if (vm.WindowPreferenceStatus.Length > 0)
             outcomeText += "\n" + vm.WindowPreferenceStatus;
         outcome.Text = vm.Busy ? "正在保存或核对结果，请稍候…" : localFailure ?? outcomeText;
         outcome.Visibility = outcome.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        outcome.SetResourceReference(TextBlock.ForegroundProperty, vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "Warning" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "Success" : "Muted");
+        outcome.SetResourceReference(TextBlock.ForegroundProperty, vm.HasPreferenceSaveFailure || vm.ConfigurationSubmissionOutcome is "Unknown" or "Conflict" or "NotSaved" or "Rejected" ? "Warning" : vm.ConfigurationSubmissionOutcome == "PendingRestart" ? "Success" : "Muted");
     }
     static TextBlock Heading(string value, double size, double top) => new TextBlock { Text = value, FontSize = size, FontWeight = UiTypography.Emphasis, Margin = new(0, top, 0, 8), TextWrapping = TextWrapping.Wrap }.Themed(TextBlock.ForegroundProperty, "Ink");
     static TextBlock Note(string value) => new TextBlock { Text = value, FontSize = UiTypography.Body, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 8) }.Themed(TextBlock.ForegroundProperty, "Muted");

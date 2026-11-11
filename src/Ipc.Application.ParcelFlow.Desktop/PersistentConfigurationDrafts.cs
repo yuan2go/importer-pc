@@ -27,6 +27,7 @@ public partial class ParcelViewModel
         foreach (var p in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite)) values["policy." + p.Name] = p.GetValue(StructuredPolicy)?.ToString() ?? "";
         foreach (var role in ConfigurationRoles) values["role." + role.Role] = role.Selection.Capability?.InstanceId ?? "";
         foreach (var position in PositionDrafts) { values["position." + position.Id + ".scale"] = position.Scale.Capability?.InstanceId ?? ""; values["position." + position.Id + ".camera"] = position.Camera.Capability?.InstanceId ?? ""; }
+        if (structuredBase.ApplicationId == "sportmaster") SmPreferences.Capture(values);
         availableEditorDraft = await ServiceAsync(() => access.SaveEditorDraftAsync(editorConfigurationHash, savedEditorHash, new(values)));
         savedEditorHash = availableEditorDraft.DraftHash;
         Message = "未完成设置已加密保存（含尚无效的输入）；不是Pending，不生效、不重连、不发请求。";
@@ -62,6 +63,11 @@ public partial class ParcelViewModel
         foreach (var role in roles) { var choices = Choices(role.Kind); temporary.ConfigurationRoles.Add(new(role.Role, role.Kind, choices, choices.Single(c => (c.Capability?.InstanceId ?? "") == v["role." + role.Role]), role.Visibility == System.Windows.Visibility.Visible)); }
         var positions = temporary.PositionDrafts.ToArray(); temporary.PositionDrafts.Clear();
         foreach (var p in positions) { var restored = new PositionConfigurationDraft(p.Original, Choices("weight"), Choices("camera")); restored.Scale = restored.Scales.Single(c => (c.Capability?.InstanceId ?? "") == v["position." + p.Id + ".scale"]); restored.Camera = restored.Cameras.Single(c => (c.Capability?.InstanceId ?? "") == v["position." + p.Id + ".camera"]); temporary.PositionDrafts.Add(restored); }
+        if (temporary.structuredBase!.ApplicationId == "sportmaster")
+        {
+            // Validate in isolation before replacing either business or local drafts.
+            temporary.SmPreferences.Restore(v);
+        }
         structuredBase = temporary.structuredBase; StructuredPolicy = temporary.StructuredPolicy;
         ReaderDrafts.Clear(); foreach (var r in temporary.ReaderDrafts) ReaderDrafts.Add(r);
         CapabilityDrafts.Clear(); foreach (var c in temporary.CapabilityDrafts) CapabilityDrafts.Add(c);
@@ -73,6 +79,7 @@ public partial class ParcelViewModel
         configurationAuthority = v["authority"]; ConfigurationDraft = v["json"]; ConfigurationReason = v["reason"];
         DisplayNameDraft = v["display.name"];
         TargetEfficiencyDraft = v["display.target"];
+        if (structuredBase!.ApplicationId == "sportmaster") SmPreferences.Restore(v);
         RebuildParameterEditor(); NotifyConfigurationEditorState(); Message = "已继续加密草稿；当前编辑来源和无效输入保留。校验后才能保存Pending。";
     }
 }

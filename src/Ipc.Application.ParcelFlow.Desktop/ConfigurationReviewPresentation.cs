@@ -22,15 +22,16 @@ public partial class ParcelViewModel
     public string ConfigurationSubmissionOutcome => configurationSubmissionOutcome;
     public string ConfigurationSubmissionDetail => configurationSubmissionDetail;
     public bool ConfigurationReviewIsCurrent => reviewedConfigurationSignature is not null && reviewedConfigurationSignature == CurrentReviewSignature();
-    public bool CanReviewConfiguration => !Busy && (HasUnconfirmedConfigurationSubmission || HasUnsavedConfiguration || HasUnsavedWindowPreference);
+    public bool CanReviewConfiguration => !Busy && (HasUnconfirmedConfigurationSubmission || HasUnsavedConfiguration || HasUnsavedDisplayPreferences);
     public string ConfigurationSaveActionText => HasUnconfirmedConfigurationSubmission ? "查看保存结果…" : "保存设置…";
-    public bool CanSubmitReviewedConfiguration => CanConfigure && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission;
+    public bool CanSubmitReviewedConfiguration => (CanConfigure || IsManagementMode && !HasUnsavedConfiguration && HasUnsavedDisplayPreferences) && ConfigurationReviewIsCurrent && reviewedConfigurationChanges.Length > 0 && !HasUnconfirmedConfigurationSubmission && (HasUnsavedConfiguration || HasUnsavedDisplayPreferences);
     public ConfigurationChangeItem[] ReviewedConfigurationChanges => reviewedConfigurationChanges;
-    public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration || HasUnsavedWindowPreference ? "有未保存的更改" : "没有未保存的更改";
+    public string ConfigurationDraftStatusText => HasUnconfirmedConfigurationSubmission ? "保存结果未确认" : HasUnsavedConfiguration || HasUnsavedDisplayPreferences ? "有未保存的更改" : "没有未保存的更改";
+    public bool HasPreferenceSaveFailure => Snapshot?.ApplicationId == "sportmaster" && !SmPreferences.LastSaveComplete;
     public string ConfigurationActivationGuidance => Snapshot?.ApplicationId == "sportmaster" ? "条码规则、相机和 RCS 设置保存后立即生效，只重新连接对应设备；其他设置保存后需重启。以保存结果为准。" : "保存后需重启软件生效；重启前继续使用当前设置。";
     public string ConfigurationSavedStatusText => HasUnconfirmedConfigurationSubmission ? "请先查看上次保存结果" : Snapshot?.Configuration.Failure is not null ? ConfigurationActivationOutcome :
         Snapshot?.Configuration.Pending is not null ? "已保存 · 重启软件后生效" : configurationSubmissionOutcome == "Effective" ? "设置已保存并生效" : ConfigurationActivationGuidance;
-    string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature()) + "\n" + WindowModeDraft;
+    string CurrentReviewSignature() => configurationAuthority + "\n" + (configurationAuthority == "高级JSON" ? ConfigurationDraft : ConfigurationEditSignature()) + "\n" + WindowModeDraft + (Snapshot?.ApplicationId == "sportmaster" ? "\n" + SmPreferences.Signature : "");
     ParcelConfiguration CurrentReviewCandidate() => configurationAuthority switch
     {
         "高级JSON" => Wire.Decode<ParcelConfiguration>(ConfigurationDraft),
@@ -41,6 +42,13 @@ public partial class ParcelViewModel
     {
         reviewedConfigurationSignature = null; NotifyConfigurationReview();
         if (HasUnconfirmedConfigurationSubmission) { Message = "上次保存结果未确认，请先查看保存结果。已填写的内容会保留。"; return false; }
+        if (!HasUnsavedConfiguration && HasUnsavedDisplayPreferences && Snapshot?.ApplicationId == "sportmaster")
+        {
+            if (SmPreferences.Validate() is { } error) { Message = error; return false; }
+            reviewedConfigurationSignature = CurrentReviewSignature();
+            reviewedConfigurationChanges = SmPreferences.Changes();
+            configurationSubmissionOutcome = ""; NotifyConfigurationReview(); return true;
+        }
         if (configurationAuthority == "结构化表单" && ParameterEditor is { } identityEditor && !await identityEditor.PrepareCameraIdentitiesAsync())
         { Message = "未能读取相机序列号，请检查标出的相机设置；输入已保留。"; return false; }
         if (configurationAuthority == "结构化表单" && ParameterEditor is { } editor && !editor.ValidateFields())
@@ -134,15 +142,16 @@ public partial class ParcelViewModel
                 var policy = path switch
                 {
                     "StationCode" => ("系统", "供包台标识", "供包台编号", "StationCode"),
+                    "ReadTimeoutMs" => ("业务模块", "条码筛选", "自动识读期限", "ReadTimeoutMs"),
                     "QueueCapacity" => ("业务模块", "接收与等待限制", "扫码消息缓冲上限", "QueueCapacity"),
                     "TimeoutMs" => ("业务模块", "接收与等待限制", "外部服务等待时间（毫秒）", "TimeoutMs"),
                     "MaximumOperations" => ("业务模块", "接收与等待限制", "待处理作业上限", "MaximumOperations"),
                     "DeferredConnections" => ("系统", "连接配置状态", "稍后配置的连接", ""),
                     "SessionLifetimeMs" => ("业务模块", "作业登录", "操作员会话时长（毫秒）", "SessionLifetimeMs"),
                     "Login" => ("业务模块", "作业登录", "操作员登录绑定", "OperatorLogin"),
-                    "Retention.DiagnosticLogDays" => ("系统", "数据与记录", "诊断日志保留天数", "DiagnosticLogDays"),
-                    "Retention.HistoryDays" => ("系统", "数据与记录", "已结数据保留天数", "HistoryDays"),
-                    "Retention.ResidentHistory" => ("系统", "数据与记录", "常驻记录条数", "ResidentHistory"),
+                    "Retention.DiagnosticLogDays" => ("系统", "数据与记录", "日志最长保留时间", "DiagnosticLogDays"),
+                    "Retention.HistoryDays" => ("系统", "数据与记录", "已结记录清理期限", "HistoryDays"),
+                    "Retention.ResidentHistory" => ("系统", "数据与记录", "运行记录归档阈值", "ResidentHistory"),
                     "Retention.MinimumFreeBytes" => ("系统", "数据与记录", "磁盘保留空间（字节）", "MinimumFreeMiB"),
                     "BarcodeFilter.Pattern" => ("业务模块", "条码筛选", "条码筛选规则", "BarcodePattern"),
                     "BarcodeFilter" => ("业务模块", "条码筛选", "条码处理规则", "BarcodePattern"),
@@ -158,6 +167,10 @@ public partial class ParcelViewModel
                     "Weight.MaximumAgeMs" => ("业务模块", "业务策略", "测量新鲜度（ms）", "MaximumAgeMs"),
                     "Weight.WaitTimeoutMs" => ("业务模块", "业务策略", "本件等待期限（ms）", "WaitTimeoutMs"),
                     "WeightValidity" => ("业务模块", "业务策略", "重量有效性时机", "Validity"),
+                    "OperationsPolicy.AutomaticHistoryCleanup" => ("系统", "数据与记录", "自动清理已结记录", "AutomaticHistoryCleanup"),
+                    "OperationsPolicy.CleanupHour" => ("系统", "数据与记录", "清理时刻", "CleanupHour"),
+                    "OperationsPolicy.TimeZoneId" => ("系统", "数据与记录", "清理时区", "CleanupTimeZoneId"),
+                    "OperationsPolicy.MaximumBackupSets" => ("系统", "数据与记录", "清理前备份份数上限", "CleanupMaximumBackupSets"),
                     "BackupSchedule.Directory" => ("系统", "自动备份", "备份目录", "BackupDirectory"),
                     "BackupSchedule.IntervalMinutes" => ("系统", "自动备份", "备份间隔（分钟）", "BackupIntervalMinutes"),
                     "BackupSchedule.MaximumSets" => ("系统", "自动备份", "备份份数上限", "BackupMaximumSets"),
@@ -167,6 +180,11 @@ public partial class ParcelViewModel
             }
             var oldValue = showValues ? Read(left) : left.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined ? "未设置" : "已设置";
             var newValue = showValues ? Read(right) : right.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined ? "已移除" : "已更改（内容不显示）";
+            if (path == "ReadTimeoutMs")
+            {
+                oldValue = original.EffectiveReadTimeoutMs + " 毫秒";
+                newValue = candidate.EffectiveReadTimeoutMs + " 毫秒";
+            }
             if (translateChoice)
             {
                 string Choice(string value) => parameter == "no-dest-to-exp" ? value switch

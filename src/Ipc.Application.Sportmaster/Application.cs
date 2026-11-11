@@ -19,7 +19,7 @@ public sealed class SportmasterFlow : FlowDefinition
             WeightValidity: Ipc.Application.Contracts.WeightValidity.UntilDispatch,
             Topology: new(readers, [new("left", readers[0].DeviceId), new("right", readers[1].DeviceId)]),
             StationCode: SystemParameterDefaults.StationCode(SystemParameterDefaults.InitialStationId),
-            Retention: new(DiagnosticLogDays: SystemParameterDefaults.DiagnosticLogDays, HistoryDays: SystemParameterDefaults.HistoryDays))
+            Retention: new(MinimumFreeBytes: SystemParameterDefaults.SmMinimumFreeBytes, DiagnosticLogDays: SystemParameterDefaults.DiagnosticLogDays, HistoryDays: SystemParameterDefaults.HistoryDays))
         { DeferredConnections = [readers[0].DeviceId, readers[1].DeviceId, "sportmaster.integration"] };
     }
     public override string[] PositionRoles => ["left", "right"];
@@ -35,8 +35,9 @@ public sealed class SportmasterFlow : FlowDefinition
             return base.RequestTimeoutMs(op, stage);
         return RcsRequestPolicy.TimeoutMs(binding);
     }
-    public override int QueuedObservationTimeoutMs(ParcelConfiguration configuration) => Math.Max(configuration.TimeoutMs,
-        configuration.Wcs is { Contract: "SPORTMASTER-RCS-SORTER-v1" } binding ? RcsRequestPolicy.TimeoutMs(binding) : configuration.TimeoutMs);
+    // Input delivery has its own bounded budget. A remote request's deadline
+    // cannot expire a legitimate queued observation or extend its read round.
+    public override int QueuedObservationTimeoutMs(ParcelConfiguration configuration) => Math.Max(configuration.TimeoutMs, configuration.EffectiveReadTimeoutMs);
     public override ParcelOperation RestoreMainProjection(ParcelOperation op)
     {
         if (op.Wcs is not { State: StageState.Accepted or StageState.Rejected } wcs) return op;

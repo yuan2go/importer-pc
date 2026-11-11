@@ -149,6 +149,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     ParameterSettingsControl? parameterControl;
     bool startupSaveUncertain;
     bool lastSaveConfirmed;
+    SmDisplayPreferenceDraft? observedPreferences;
+    string? preservedDraftInput;
     bool savingCandidate;
     string? checkedCandidateHash;
     int selectedTask;
@@ -227,7 +229,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (draft is null || document is null) throw new InvalidOperationException("请先读取配置");
             RequireDirectories();
             savedDraft = await Task.Run(() => maintenance.SaveDraftAsync(document.ConfigurationHash, savedDraft?.DraftHash, draft.Capture()));
-            savedInput = Input();
+            preservedDraftInput = savedInput = Input();
             Message("未完成输入已保存；下次打开可继续填写。");
             if (initialConfiguration) { Busy = false; Close(); }
         });
@@ -236,6 +238,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (savedDraft is null || draft is null) throw new InvalidOperationException("没有可继续草稿");
             if (savedDraft.BaseChanged) throw new InvalidOperationException("草稿保存后配置已被修改，草稿未自动套用。请先对比当前配置。");
             if (savedDraft.Editor.Values.GetValueOrDefault("editor") == "live-v2") throw new InvalidOperationException("这是软件运行时保存的设置草稿，请在软件的“参数设置”页继续。当前输入和草稿均保留。");
+            if (document?.Candidate?.ApplicationId == "sportmaster") (draft.DisplayPreferences ??= new()).Restore(savedDraft.Editor.Values);
             draft = draft.WithRestored(savedDraft.Editor); Render(false); Message("已恢复上次未完成的输入。参数有改动，请重新检查。"); return Task.CompletedTask;
         });
         Action("导出设置模板…", () =>
@@ -299,14 +302,19 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Action("维护操作", () => { showMaintenanceActions = !showMaintenanceActions; UpdateActions(); return Task.CompletedTask; });
         Action(initialConfiguration ? "保存配置" : "保存并启动", async () =>
         {
-            await CheckCandidate();
+            if (!(lastSaveConfirmed && !startupSaveUncertain && document?.Candidate is { } confirmed && Wire.Encode(RequireDraft()) == Wire.Encode(confirmed))) await CheckCandidate();
             savingCandidate = true;
-            await SaveCandidate();
-            if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate))
-                throw new InvalidOperationException("尚未确认保存成功，请按提示操作。已填写的内容保留。");
-            savingCandidate = false;
-            if (initialConfiguration) { ConfigurationSaved = true; CompleteDialog(); }
-            else { await CheckCandidate(); await StartReviewed(); }
+            try
+            {
+                await SaveCandidate();
+                if (!lastSaveConfirmed || startupSaveUncertain || savedInput != Input() || Wire.Encode(RequireDraft()) != Wire.Encode(document!.Candidate))
+                    throw new InvalidOperationException("尚未确认业务配置保存成功，请按提示操作。已填写的内容保留。");
+                if (draft?.DisplayPreferences?.HasChanges == true)
+                    throw new InvalidOperationException("业务配置已保存；本机偏好未全部保存，输入保留。请检查偏好文件与权限后重试，本次配置不会重复提交。" + draft.DisplayPreferences.SaveSummary);
+                if (initialConfiguration) { ConfigurationSaved = true; CompleteDialog(); }
+                else { await CheckCandidate(); await StartReviewed(); }
+            }
+            finally { savingCandidate = false; }
         });
         if (initialConfiguration) Action("重新读取配置…", Read);
         Action("稍后配置", () => { Busy = false; Close(); return Task.CompletedTask; });
@@ -396,7 +404,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             finally { checkingAuthority = false; }
         }
         authorizationTimer.Tick += async (_, _) => await RefreshAuthorization();
-        Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => authorizationTimer.Stop();
+        Loaded += (_, _) => authorizationTimer.Start(); Closed += (_, _) => { authorizationTimer.Stop(); if (observedPreferences is { } preferences) preferences.PropertyChanged -= PreferencesChanged; };
         Loaded += async (_, _) => { await RefreshAuthorization(); if (authorityAllowed) await Run(Read); };
     }
     async Task ValidateBarcodeRule()
@@ -434,6 +442,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     string diagnosticDetails = "";
     async Task SaveCandidate()
     {
+        if (lastSaveConfirmed && !startupSaveUncertain && draft is not null && document?.Candidate is { } confirmed && Wire.Encode(RequireDraft()) == Wire.Encode(confirmed))
+        {
+            await RequireMaintenance();
+            var preferences = draft.DisplayPreferences;
+            preferences?.Save(); savedInput = Input();
+            saveState.Text = preferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : "已保存，启动时检查";
+            Message("业务配置已保存，本次未重复提交。" + (preferences?.SaveSummary ?? "本机偏好未修改。"));
+            refreshReview?.Invoke(); UpdateActions(); return;
+        }
         lastSaveConfirmed = false;
         RequireChecked(); var candidate = RequireDraft(); var expected = document!.ConfigurationHash;
         if (startupSaveUncertain) throw new InvalidOperationException("上次保存结果未确认，请先重新读取配置，勿重复保存");
@@ -442,7 +459,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             var saved = await Task.Run(() => initialConfiguration ? maintenance.RepairInitialAsync(expected, candidate, reason) : maintenance.StageAsync(expected, candidate, reason));
             ConfirmSaved(saved);
-            Message("已保存，下次启动生效；" + ChineseInterfaceText.Status(saved.ConfigurationStatus) + "。草稿保留，设备尚未启动。");
+            Message("业务配置已保存，下次启动检查生效；" + ChineseInterfaceText.Status(saved.ConfigurationStatus) + "。设备尚未启动。" + draft?.DisplayPreferences?.SaveSummary);
         }
         catch (Exception error)
         {
@@ -459,15 +476,17 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     {
         if (saved.Candidate is null || Wire.Hash(Wire.Encode(saved.Candidate)) != checkedCandidateHash)
             throw new IOException("保存后的配置与本次检查的内容不一致，请重新读取配置后核对。");
-        if (initialConfiguration && saved.Candidate.ApplicationId == "sportmaster") parameterControl?.SaveDisplayPreferences();
-        document = saved; draft = new(saved.Candidate, saved.Catalog);
+        var preferences = draft?.DisplayPreferences;
+        document = saved; draft = new(saved.Candidate, saved.Catalog) { DisplayPreferences = preferences };
         lastSaveConfirmed = true; startupSaveUncertain = false;
+        if (saved.Candidate.ApplicationId == "sportmaster") preferences?.Save();
         Render(false); savedInput = Input();
+        saveState.Text = preferences?.HasChanges == true ? "业务配置已保存；本机偏好待保存" : "已保存，启动时检查";
     }
     Task StartReviewed()
     {
         RequireChecked(); var candidate = RequireDraft();
-        if ((initialConfiguration && !lastSaveConfirmed) || startupSaveUncertain || savedInput != Input() || Wire.Encode(candidate) != Wire.Encode(document!.Candidate))
+        if ((initialConfiguration && !lastSaveConfirmed) || startupSaveUncertain || savedInput != Input() || draft?.DisplayPreferences?.HasChanges == true || Wire.Encode(candidate) != Wire.Encode(document!.Candidate))
             throw new InvalidOperationException("配置尚未保存，请先保存。");
         SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text };
         RetryRequested = true; CompleteDialog(); return Task.CompletedTask;
@@ -522,7 +541,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (!(await ManagementMode.ManagementModeStatusAsync()).Authorized) throw new UnauthorizedAccessException("请先进入管理模式；已填写的内容保留。");
         if (maintenance is null) throw new InvalidOperationException("请先读取所选目录。");
     }
-    bool MayDiscard() => savedInput is null || savedInput == Input() || ConfirmDiscardInputs();
+    bool MayDiscard() => preservedDraftInput == Input() || draft?.DisplayPreferences?.HasChanges != true && (savedInput is null || savedInput == Input()) || ConfirmDiscardInputs();
+    void PreferencesChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(SmDisplayPreferenceDraft.OpeningMode) or nameof(SmDisplayPreferenceDraft.ShowPace) or nameof(SmDisplayPreferenceDraft.CueVolume)) Changed();
+    }
     void Changed()
     {
         if (rendering || Busy) return;
@@ -600,8 +623,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             Render();
             var resumed = initialConfiguration && savedDraft is { BaseChanged: false } && draft is not null && savedDraft.Editor.Values.GetValueOrDefault("editor") != "live-v2";
-            if (resumed) { draft = draft!.WithRestored(savedDraft!.Editor); Render(false); savedInput = Input(); }
-            diagnosticDetails = string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft;
+            if (resumed) { if (document?.Candidate?.ApplicationId == "sportmaster") (draft!.DisplayPreferences ??= new()).Restore(savedDraft!.Editor.Values); draft = draft!.WithRestored(savedDraft!.Editor); Render(false); preservedDraftInput = savedInput = Input(); }
+            diagnosticDetails = string.Join("\n", document!.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft;
             Message(initialConfiguration
                 ? document.Candidate is null ? "无法读取配置，原文件已保留。请使用启动修复处理后重新打开。"
                     : unavailableDraft is not null ? "草稿不可用：原文件已保留，请重新填写。"
@@ -637,6 +660,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Note("首次配置与日常设置使用相同的参数和检查规则。投递位数量和设备身份不在此修改。");
             deviceStart = Body.Children.Count;
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
+            if (!ReferenceEquals(observedPreferences, parameterEditor.DisplayPreferences))
+            {
+                if (observedPreferences is { } prior) prior.PropertyChanged -= PreferencesChanged;
+                observedPreferences = parameterEditor.DisplayPreferences;
+                if (observedPreferences is { } current) current.PropertyChanged += PreferencesChanged;
+            }
             parameterEditor.CameraSerialReader = async (ip, engine) =>
             {
                 try { return await maintenance.ReadCameraSerialAsync(ip, engine); }
@@ -748,7 +777,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 var explanation = new TextBlock { Text = "原配置未载入，参数没有被清空。请核对原目录或查看诊断；不要重新首配或覆盖原账。", TextWrapping = TextWrapping.Wrap, Margin = new(0, 16, 0, 12) };
                 System.Windows.Automation.AutomationProperties.SetAutomationId(explanation, "StartupReadFailure");
                 failure.Children.Insert(0, explanation);
-                failure.Children.Insert(1, new Expander { Header = "读取失败诊断", Content = new TextBox { Text = document is null ? diagnosticDetails : string.Join("\n", document.Diagnostics), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
+                failure.Children.Insert(1, new Expander { Header = "读取失败诊断", Content = new TextBox { Text = document is null ? diagnosticDetails : string.Join("\n", document!.Diagnostics), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
                 for (var i = 1; i <= 3; i++) ((TabItem)tasks.Items[i]).Visibility = Visibility.Collapsed;
                 if (selectedTask is >= 1 and <= 3) selectedTask = 0;
             }

@@ -12,6 +12,12 @@ public sealed record ParameterConnectionPresentation(string Status, string Addre
 
 public partial class ParcelViewModel
 {
+    public string AutomaticCleanupStatusText => Snapshot?.AutomaticCleanup is not { } state ? "尚未取得自动清理执行状态。" :
+        "当前生效：" + (state.Enabled ? "已启用" : "未启用自动清理") + " · " + state.State +
+        (state.LastCompleted is { } last ? "\n历史最近完成：" + last.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "\n尚未取得已确认的历史清理结果") +
+        (state.NextCheck is { } next ? "\n下次检查：" + next.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") : "") +
+        (string.IsNullOrWhiteSpace(state.Detail) ? "" : "\n" + ChineseInterfaceText.ParameterMessage(state.Detail));
+
     public string ParameterRuntimeSummary(ParameterDiagnosticTarget target) => ParameterConnection(target).Summary;
     public ParameterConnectionPresentation ParameterConnection(ParameterDiagnosticTarget target)
     {

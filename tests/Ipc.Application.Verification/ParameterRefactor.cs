@@ -20,8 +20,8 @@ static class ParameterRefactor
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var oldReaders = ParcelBindings.Readers(c); var fixtureReaders = oldReaders.Select((r, i) => r with { DeviceId = "parameter." + Wire.Id() + "." + i }).ToArray();
         c = c with { Reader = fixtureReaders[0], Topology = c.Topology! with { Readers = fixtureReaders, Positions = c.Topology.Positions.Select(p => p with { ReaderDeviceId = fixtureReaders[Array.FindIndex(oldReaders, r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() } };
-        Check(!Wire.Encode(c).Contains("BarcodeFilter") && Wire.Encode(Wire.Decode<ParcelConfiguration>(Wire.Encode(c))) == Wire.Encode(c), "missing legacy policy is omitted and round-trips without manufacturing a production rule");
-        Check(BarcodeFiltering.Select(null, ["X", "Y"]).Outcome == "MultipleCodes", "legacy policy retains strict single-code compatibility");
+        Check(!Wire.Encode(c).Contains("BarcodeFilter") && Wire.Encode(Wire.Decode<ParcelConfiguration>(Wire.Encode(c))) == Wire.Encode(c), "optional policy is omitted and round-trips without manufacturing a production rule");
+        Check(BarcodeFiltering.Select(null, ["X", "Y"]).Outcome == "MultipleCodes", "current configuration without an optional filter still requires a single code");
         Check(BarcodeFiltering.Select(null, ["000123 "]).SelectedCode == "000123 ", "business selection preserves leading zeroes and trailing space without normalization");
         foreach (var controlCode in new[] { "00\0" + "123", "00\u001d123" })
         {
@@ -102,7 +102,7 @@ static class ParameterRefactor
         app.Boundary = stage => { if (stage == "AfterConfigurationStaged") throw new InvalidOperationException("Synthetic post-stage audit refusal"); };
         await vm.SaveStructuredConfigurationAsync();
         var saved = (await app.SnapshotAsync()).Configuration;
-        Check(vm.Message.StartsWith("PendingRestart") && saved.Revision == revision + 1 && saved.Pending!.StationCode == "SYSTEM-EDIT" && saved.Effective.BarcodeFilter!.Pattern == "OK[0-9]+", "post-write Rejected is reconciled from authority; saving does not apply the new rule");
+        Check(vm.ConfigurationSubmissionOutcome == "PendingRestart" && saved.Revision == revision + 1 && saved.Pending!.StationCode == "SYSTEM-EDIT" && saved.Effective.BarcodeFilter!.Pattern == "OK[0-9]+", "post-write Rejected is reconciled from authority; saving does not apply the new rule");
         Check(!vm.HasUnsavedConfiguration && Wire.Encode((await app.SnapshotAsync()).Operations.Single(o => o.Id == original.Id).Wcs) == frozen, "confirmed save accepts only its draft baseline and preserves the original request bytes");
         app.Boundary = null;
         var pendingRepeat = await app.StageConfigurationAsync(saved.Revision, saved.Pending!, "Synthetic existing Pending");
@@ -114,15 +114,17 @@ static class ParameterRefactor
         var proxy = DispatchProxy.Create<IManagementParcelFixture, SaveProbe>(); var probe = (SaveProbe)(object)proxy; probe.Inner = app; probe.FailInspection = true;
         var pendingVm = new ParcelViewModel(proxy, "待核对", "合成验证"); await pendingVm.RefreshAsync(); await pendingVm.LoadCapabilitiesAsync(); pendingVm.ConfigurationReason = "Synthetic uncertain result"; pendingVm.StructuredPolicy!.TimeoutMs = "1700";
         await pendingVm.SaveStructuredConfigurationAsync();
-        Check(pendingVm.Message.Contains("重复提交") && pendingVm.HasUnsavedConfiguration, "unavailable authority inspection retains raw input and an explicit uncertain-save state");
+        Check(pendingVm.HasUnconfirmedConfigurationSubmission && pendingVm.ConfigurationSubmissionOutcome == "Unknown" &&
+            pendingVm.HasUnsavedConfiguration && pendingVm.StructuredPolicy.TimeoutMs == "1700",
+            "unavailable authority inspection retains raw input and an explicit uncertain-save state");
         var blocked = false; try { await pendingVm.SaveStructuredConfigurationAsync(); } catch (InvalidOperationException) { blocked = true; }
         Check(blocked && probe.StageCalls == 1, "uncertain result prevents a second stage submission");
         probe.FailInspection = false; await pendingVm.InspectLastSaveAsync();
-        Check(!pendingVm.HasUnsavedConfiguration && pendingVm.Message.StartsWith("PendingRestart") && probe.StageCalls == 1, "later authority inspection confirms the original submission without resubmitting");
+        Check(!pendingVm.HasUnsavedConfiguration && pendingVm.ConfigurationSubmissionOutcome == "PendingRestart" && probe.StageCalls == 1, "later authority inspection confirms the original submission without resubmitting");
         var stale = new ParcelViewModel(app, "旧CAS", "合成验证"); await stale.RefreshAsync(); await stale.LoadCapabilitiesAsync();
         pendingVm.StructuredPolicy.TimeoutMs = "1800"; pendingVm.ConfigurationReason = "Synthetic newer revision for CAS conflict"; await pendingVm.SaveStructuredConfigurationAsync();
         stale.StructuredPolicy!.TimeoutMs = "1900"; stale.ConfigurationReason = "Synthetic stale CAS"; await stale.SaveStructuredConfigurationAsync();
-        Check(stale.Message.StartsWith("Conflict") && stale.HasUnsavedConfiguration && stale.StructuredPolicy.TimeoutMs == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
+        Check(stale.ConfigurationSubmissionOutcome == "Conflict" && stale.HasUnsavedConfiguration && stale.StructuredPolicy.TimeoutMs == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
         var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.QueueCapacity = "bad"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
         stale.StructuredPolicy.QueueCapacity = "64"; stale.StructuredPolicy.BackupEnabled = true;

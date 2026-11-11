@@ -32,7 +32,7 @@ static partial class ArchitectureQuality
         ReviewFactory? factory = null;
         await using (var app = await Open(c, "review-reply", f => factory = new(f) { OriginalReply = reply }))
         {
-            using (var db = new SqliteConnection("Data Source=" + Path.Combine(directory, c.ApplicationId + ".db")))
+            using (var db = new SqliteConnection("Data Source=" + Path.Combine(directory, c.ApplicationId + ".db") + ";Pooling=False"))
             { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT hash FROM parcel_reply_identities WHERE request=$r AND id=$id"; q.Parameters.AddWithValue("$r", reply.RequestId); q.Parameters.AddWithValue("$id", reply.Id); Check(q.ExecuteScalar() as string == Wire.Hash(Wire.Encode(reply)), "R01 startup restores permanent original reply identity from Awaiting raw bytes"); }
             for (int i = 0; i < 65; i++) await app.ReconcileAsync(original.Id);
             var before = (await app.SnapshotAsync()).Operations.Single(); Check(!before.Plc!.Replies.Any(r => r.Id == reply.Id), "R01 raw identity test actually passes bounded reply eviction");
@@ -56,7 +56,7 @@ static partial class ArchitectureQuality
         await using (var app = await Open(attached, "review-attached"))
         { app.EmitReference("review-attached-original", "002", "review-attached-source"); var op = (await Wait(app, s => s.Operations.FirstOrDefault() is { State: ParcelState.PlcAccepted, Upload.State: StageState.Unknown })).Operations.Single(); await app.ReconcileAsync(op.Id, "plc-submit"); id = op.Id; }
         // Model abrupt exit while upload is in flight after the independent PLC completion.
-        using (var db = new SqliteConnection("Data Source=" + Path.Combine(DirectoryFor("review-attached", attached), "direct-plc.db")))
+        using (var db = new SqliteConnection("Data Source=" + Path.Combine(DirectoryFor("review-attached", attached), "direct-plc.db") + ";Pooling=False"))
         { db.Open(); using var q = db.CreateCommand(); q.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.Upload.State','Dispatching','$.Reason',NULL) WHERE id=$id"; q.Parameters.AddWithValue("$id", id); q.ExecuteNonQuery(); }
         await using (var app = await Open(attached, "review-attached"))
         { var op = (await app.SnapshotAsync()).Operations.Single(); Check(op.State == ParcelState.PhysicalCompleted && op.Reason is null && op.Upload!.State == StageState.Unknown && op.Upload.Failure is not null, "R02 interrupted Attached upload preserves completed main result and null main Reason"); }
@@ -72,7 +72,7 @@ static partial class ArchitectureQuality
         }
         var directory = DirectoryFor("review-archived-identities", c); var file = Path.Combine(directory, c.ApplicationId + ".db");
         string archivedHash;
-        using (var db = new SqliteConnection("Data Source=" + file))
+        using (var db = new SqliteConnection("Data Source=" + file + ";Pooling=False"))
         {
             db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT raw_hash FROM parcel_archived_receipts WHERE id IN (SELECT id FROM parcel_receipts WHERE operation=$op)"; q.Parameters.AddWithValue("$op", original.Id); archivedHash = (string)q.ExecuteScalar()!;
             q.CommandText = "DELETE FROM parcel_reply_identities WHERE request=$request"; q.Parameters.AddWithValue("$request", original.Wcs!.Request.Id); q.ExecuteNonQuery();
@@ -86,7 +86,7 @@ static partial class ArchitectureQuality
         foreach (var sourceFile in Directory.EnumerateFiles(source, "*", SearchOption.AllDirectories))
         { var destination = Path.Combine(target, Path.GetRelativePath(source, sourceFile)); Directory.CreateDirectory(Path.GetDirectoryName(destination)!); File.Copy(sourceFile, destination); }
         var badDb = Path.Combine(target, "direct-plc.db");
-        using (var db = new SqliteConnection("Data Source=" + badDb))
+        using (var db = new SqliteConnection("Data Source=" + badDb + ";Pooling=False"))
         { db.Open(); using var q = db.CreateCommand(); q.CommandText = "DELETE FROM parcel_reply_identities; UPDATE parcel_operations SET body=json_set(body,'$.State','PhysicalCompleted','$.Plc.State','Accepted','$.Reason',NULL)"; q.ExecuteNonQuery(); }
         var raw = Directory.EnumerateFiles(Path.Combine(target, "receipts"), "*.json").ToDictionary(p => p, Wire.FileHash); var before = Wire.FileHash(badDb);
         try { using var repository = new ParcelRepository(target, live.ApplicationId); Check(false, "R01 inconsistent completion must refuse repository startup"); }
@@ -182,13 +182,13 @@ static partial class ArchitectureQuality
             try { ExtensionConsumerReaders.Inspect(Path.Combine(link, Path.GetFileName(database))); Check(false, "R04 linked consumer ancestor must block"); } catch (InvalidDataException) { Check(Wire.FileHash(database) == parcelHash, "R04 linked consumer ancestor is rejected before opening database"); }
         }
         var ambiguous = Path.Combine(root, "review-ambiguous.db"); File.Copy(database, ambiguous);
-        using (var db = new SqliteConnection("Data Source=" + ambiguous)) { db.Open(); using var q = db.CreateCommand(); q.CommandText = "CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT,applied TEXT)"; q.ExecuteNonQuery(); }
+        using (var db = new SqliteConnection("Data Source=" + ambiguous + ";Pooling=False")) { db.Open(); using var q = db.CreateCommand(); q.CommandText = "CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT,applied TEXT)"; q.ExecuteNonQuery(); }
         var before = Wire.FileHash(ambiguous);
         try { ExtensionConsumerReaders.Inspect(ambiguous); Check(false, "R04 ambiguous consumer must block"); } catch (InvalidDataException) { Check(Wire.FileHash(ambiguous) == before, "R04 ambiguous consumer remains blocked without mutation"); }
         // Unknown future frozen operation semantics may not erase package responsibility.
         await using (var app = await Open(c, "review-consumer-frozen")) { app.EmitReference("frozen-consumer", "004", "frozen-consumer-source"); await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.PlcAccepted); }
         var frozenDb = Path.Combine(DirectoryFor("review-consumer-frozen", c), c.ApplicationId + ".db");
-        using (var db = new SqliteConnection("Data Source=" + frozenDb)) { db.Open(); using var q = db.CreateCommand(); q.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.FrozenConfiguration.SchemaVersion',999)"; q.ExecuteNonQuery(); }
+        using (var db = new SqliteConnection("Data Source=" + frozenDb + ";Pooling=False")) { db.Open(); using var q = db.CreateCommand(); q.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.FrozenConfiguration.SchemaVersion',999)"; q.ExecuteNonQuery(); }
         before = Wire.FileHash(frozenDb);
         try { ExtensionConsumerReaders.Inspect(frozenDb); Check(false, "R03 future frozen configuration must block"); } catch (InvalidDataException) { Check(Wire.FileHash(frozenDb) == before, "R03 future frozen configuration blocks retirement without rewriting originals"); }
     }

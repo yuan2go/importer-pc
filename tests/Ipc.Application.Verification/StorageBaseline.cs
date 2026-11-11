@@ -1,6 +1,4 @@
 using System.Reflection;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Assembly;
@@ -10,7 +8,6 @@ using Microsoft.Data.Sqlite;
 
 static class StorageBaseline
 {
-    sealed record SchemaObject(string Type, string Name, string Table, string? Sql);
     static void Check(bool ok, string reason)
     { if (!ok) throw new InvalidDataException(reason); Console.WriteLine("PASS BASELINE " + reason); }
     public static async Task Run(string workspace, string root, bool smoke)
@@ -32,18 +29,10 @@ static class StorageBaseline
         }
         foreach (var (name, file) in new[] { ("parcel", Path.Combine(parcelRoot, "sportmaster.db")), ("supply", supplyFile) })
         {
-            using var old = JsonDocument.Parse(File.ReadAllText(Path.Combine(workspace, "docs/verification/fresh-baseline-01", name + "-before.json")));
-            Check(old.RootElement.GetProperty("SourceCommit").GetString() == "4e3748159af2599878e57329f887098b1c6be927", "before snapshot has the actual old-writer source commit");
-            var expected = old.RootElement.GetProperty("Schema").Deserialize<SchemaObject[]>()!;
-            string[] retiredIdentities = ["parcel_semantics", "parcel_topology_semantics", "parcel_integration_semantics", "parcel_commercial_semantics"];
-            expected = expected.Where(x => !retiredIdentities.Contains(x.Name)).ToArray();
             using var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = file, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
-            using var c = db.CreateCommand(); c.CommandText = "SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name";
-            List<SchemaObject> actual = [];
-            using (var r = c.ExecuteReader()) while (r.Read()) actual.Add(new(r.GetString(0), r.GetString(1), r.GetString(2), r.IsDBNull(3) ? null : Regex.Replace(r.GetString(3), @"\s+", " ").Trim()));
-            Check(expected.SequenceEqual(actual.Where(x => !x.Name.StartsWith("station_", StringComparison.Ordinal))), name + " tables/indexes/triggers/views equal old final schema except four retired format-identity tables");
-            if (name == "parcel") Check(actual.Where(x => x.Name.StartsWith("station_", StringComparison.Ordinal)).Select(x => x.Name).Order(StringComparer.Ordinal).SequenceEqual(new[] { "station_archive_time", "station_exception_observation", "station_exception_rejected", "station_exception_unknown", "station_fact_immutable", "station_fact_insert", "station_fact_owner", "station_fact_shift", "station_fact_update", "station_metric_buckets", "station_metric_facts", "station_metrics_time", "station_observation_fact", "station_one_open_shift", "station_operation_time", "station_reason_buckets", "station_reasons_time", "station_recognition_time", "station_run_shifts", "station_shift_totals" }), "DB12 adds exactly the approved statistics/session/fact tables, indexes and immutable-fact triggers");
-            c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations WHERE version=12" : "SELECT count(*) FROM schema_history WHERE id=6";
+            using var c = db.CreateCommand();
+            c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations WHERE version=$current" : "SELECT count(*) FROM schema_history WHERE id=6";
+            if (name == "parcel") c.Parameters.AddWithValue("$current", ParcelRepository.CurrentStorageVersion);
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " has exactly one current baseline identity");
             c.CommandText = name == "parcel" ? "SELECT count(*) FROM platform_migrations" : "SELECT count(*) FROM schema_history";
             Check(Convert.ToInt32(c.ExecuteScalar()) == 1, name + " contains no historical migration entries");

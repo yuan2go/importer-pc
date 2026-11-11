@@ -9,6 +9,31 @@ public sealed class CoreRegression
     public TestContext TestContext { get; set; } = null!;
     [TestMethod]
     [TestCategory("Core")]
+    public async Task UnsupportedSelectorCannotRunDefaultSuite()
+    {
+        var root = RepositoryRoot();
+        var configuration = typeof(CoreRegression).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()!.Configuration;
+        var executable = Path.Combine(root, "tests", "Ipc.Application.Verification", "bin", configuration, "net10.0", "Ipc.Application.Verification.dll");
+        var start = new ProcessStartInfo("dotnet")
+        {
+            WorkingDirectory = root,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
+        start.ArgumentList.Add(executable); start.ArgumentList.Add(root); start.ArgumentList.Add("--misspelled-current-suite");
+        using var process = Process.Start(start)!;
+        using var budget = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
+        try { await process.WaitForExitAsync(budget.Token); }
+        catch (OperationCanceledException) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(); throw; }
+        Assert.AreEqual(2, process.ExitCode, await stderr);
+        StringAssert.Contains(await stderr, "Unsupported verification selector");
+        Assert.IsFalse((await stdout).Split('\n').Any(line => line.StartsWith("PASS ", StringComparison.Ordinal)), "An unknown selector ran a business fixture.");
+    }
+    [TestMethod]
+    [TestCategory("Core")]
     [DataRow("--backup-consistency", 56)]
     [DataRow("--stability-analysis", 12)]
     [DataRow("--industrial-recovery", 22)]

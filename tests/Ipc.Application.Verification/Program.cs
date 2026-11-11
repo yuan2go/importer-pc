@@ -8,9 +8,6 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 Console.OutputEncoding = new System.Text.UTF8Encoding(false);
-if (args.Any(a => a is "--audit03-rcs-signed" or "--sportmaster-rcs-signed" or "--rcs-heartbeat-signed" or "--mvreader-flow"))
-    throw new ArgumentException("Unsupported retired SM verification path; use built-in MVS/RCS checks");
-if (args.Contains("--operator-administration")) throw new ArgumentException("Unsupported verification argument; use --management-mode");
 if (args.FirstOrDefault() == "--ordinary-start-child") { OrdinaryRuntimeStartup.Child(args); return; }
 if (args.FirstOrDefault() == "--installation-storage-helper") { await InstallerStorageMatrix.Helper(args); return; }
 if (args.FirstOrDefault() == "--installation-storage-ordinary-child") { InstallerStorageMatrix.OrdinaryChild(args); return; }
@@ -208,6 +205,13 @@ if (args.Contains("--reliability-closure")) { await ReliabilityClosure.Run(works
 if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(workspace, root); return; }
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
+// A misspelled or retired selector must never pass by running the default suite.
+if (args.FirstOrDefault(a => a.StartsWith("--", StringComparison.Ordinal)) is { } unsupported)
+{
+    Console.Error.WriteLine("Unsupported verification selector: " + unsupported);
+    Environment.ExitCode = 2;
+    return;
+}
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
 ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
 FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow { PlacementReleaseMs = 300 }, "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
@@ -328,7 +332,12 @@ using (var tamper = new SqliteConnection("Data Source=" + Path.Combine(mismatch,
 try { using var db = new ParcelRepository(mismatch, "sportmaster"); throw new Exception("Changed SQL checksum accepted"); }
 catch (InvalidDataException) { Pass(true, "changed application baseline checksum is rejected without overwriting identity"); }
 try { await using var app = await Open(Config("sportmaster") with { Mode = RunMode.Production }, "production"); throw new Exception("Production unexpectedly started"); }
-catch (InvalidDataException ex) { Pass(ex.Message.Contains("Production"), "Production rejects missing real SDK/protocol authority without fallback"); }
+catch (InvalidDataException ex)
+{
+    Console.WriteLine("Production launch refusal: " + ex.Message);
+    Pass(!Directory.EnumerateFiles(Path.Combine(root, "production"), "*.db", SearchOption.AllDirectories).Any(),
+        "invalid Production launch refuses before creating a business database or starting a simulation fallback");
+}
 catch (InvalidOperationException ex) when (!OperatingSystem.IsWindows() && ex.Message == "Protected Production drafts require Windows")
 { Pass(true, "non-Windows Production refuses protected persistence before any reference device can start"); }
 catch (InvalidOperationException ex) when (OperatingSystem.IsWindows() && ex.Message == "生产模式缺少受保护的管理模式授权服务；请使用同版安装器安装或修复。")

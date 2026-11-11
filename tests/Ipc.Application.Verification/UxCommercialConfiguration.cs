@@ -26,12 +26,12 @@ static partial class ArchitectureQuality
             Check(first.HasUnsavedConfiguration, "P2 raw structured parameter edits are protected before validation");
             first.ConfigurationReason = "Synthetic exact right-position scale target maintenance";
             await first.ValidateStructuredConfigurationAsync();
-            Check(first.Message.Contains("Validated") && (await app.SnapshotAsync()).Configuration.Pending is null,
+            Check(first.Message.Contains("检查通过") && (await app.SnapshotAsync()).Configuration.Pending is null,
                 "UXC03 full candidate validation is real Application validation and does not save or activate");
             await first.SaveStructuredConfigurationAsync(); await first.RefreshAsync();
             Console.WriteLine("UXC03 submission diagnostic: " + first.Message + "; issues=" + string.Join("|", first.ParameterEditor?.Issues.Select(i => i.Path + "=" + i.Message) ?? []));
             var saved = (await app.SnapshotAsync()).Configuration;
-            Check(saved.Pending is not null && first.Message.StartsWith("PendingRestart") && Wire.Encode(saved.Effective) == Wire.Encode(effective),
+            Check(saved.Pending is not null && first.ConfigurationSubmissionOutcome == "PendingRestart" && Wire.Encode(saved.Effective) == Wire.Encode(effective),
                 "UXC03 same Application CAS saves Pending and preserves Effective until controlled restart");
             Check(!first.HasUnsavedConfiguration, "P2 only a successful Pending receipt accepts the submitted form baseline");
             var pending = saved.Pending!;
@@ -43,25 +43,17 @@ static partial class ArchitectureQuality
                 "UXC03 editing one position retains the other position, all unrelated inventory, login, image, weight and retention fields");
             await second.RefreshAsync(); second.ConfigurationReason = "Synthetic stale second-window candidate";
             second.StructuredPolicy!.WaitTimeoutMs = "16001";
-            // The reference health pulse briefly owns an external wait. Reach the
-            // actual stale-CAS check; never retry a staged/unknown write or advance
-            // this window's loaded configuration revision.
-            for (var attempt = 0; ; attempt++)
-            {
-                await second.SaveStructuredConfigurationAsync();
-                if (second.Message != "Rejected · Pause and authenticate maintenance before configuration" || attempt >= 9) break;
-                Console.WriteLine("UXC03 pre-CAS guard receipt: " + second.Message);
-                await Wait(app, state => state.Availability?.Configure == true);
-            }
+            await second.SaveStructuredConfigurationAsync();
             File.WriteAllText(Path.Combine(diagnostics, "stale-window-result.txt"), second.Message);
-            Check(second.Message.StartsWith("Conflict") && second.Message.Contains("配置修订已变化", StringComparison.Ordinal) && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
+            Check(second.ConfigurationSubmissionOutcome == "Conflict" && !second.HasUnconfirmedConfigurationSubmission && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
                 "UXC03 automatic refresh cannot replace a second window's loaded configuration CAS");
             Check(second.HasUnsavedConfiguration, "P2 stale CAS rejection retains the unsaved second-window draft");
             first.StructuredPolicy!.Precision = "bad";
             Check(first.HasUnsavedConfiguration, "P2 invalid numeric text remains a protected draft without requiring a build");
             var invalidBlocked = false;
             try { await first.SaveStructuredConfigurationAsync(); } catch (InvalidOperationException) { invalidBlocked = true; }
-            Check(invalidBlocked && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
+            Check(invalidBlocked && first.StructuredPolicy.Precision == "bad" &&
+                Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
                 "UXC03 local numeric validation rejects invalid units/precision without saving");
             first.StructuredPolicy.Precision = effective.Weight.Precision.ToString(System.Globalization.CultureInfo.InvariantCulture);
             await first.SwitchToAdvancedConfigurationAsync();
@@ -87,7 +79,7 @@ static partial class ArchitectureQuality
             Check(unsupportedBlocked && first.BuildStructuredConfiguration().Topology!.Positions.Single(x => x.Id == "right").ScaleInstanceId == right.InstanceId,
                 "UXC03 Sportmaster rejects new unrelated hardware while preserving the original optional fixture binding");
             first.ConfigurationReason = "Synthetic explicit authority transfer"; await first.SaveStructuredConfigurationAsync();
-            Check(first.Message.StartsWith("PendingRestart") && (await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1703,
+            Check(first.ConfigurationSubmissionOutcome == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1703,
                 "UXC03 own successful save advances only this window CAS and permits later explicit candidate staging");
         }
         await using (var reopened = await Open(c, "uxc03-complete-topology"))
@@ -192,7 +184,7 @@ static partial class ArchitectureQuality
         Check(vm.AdvancedConfigurationReadOnly && vm.BuildStructuredConfiguration().TimeoutMs == 1802 && vm.DraftRevisionState == draftRevision,
             "UXC03 corrected JSON remains recoverable and explicitly transfers to a complete form using the saved original CAS");
         vm.ConfigurationReason = "Synthetic corrected draft uses its own advanced-save CAS"; await vm.SaveStructuredConfigurationAsync(); await vm.RefreshAsync();
-        Check((await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1802 && vm.Message.StartsWith("PendingRestart"),
+        Check((await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1802 && vm.ConfigurationSubmissionOutcome == "PendingRestart",
             "UXC03 correcting a rejected form transfer stages the retained B with the actual configuration CAS");
         vm.StructuredPolicy!.WaitTimeoutMs = "16007"; var unsavedForm = Wire.Encode(vm.BuildStructuredConfiguration());
         await vm.EnsureMaintenanceLoadedAsync();

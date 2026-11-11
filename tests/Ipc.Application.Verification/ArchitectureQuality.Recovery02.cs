@@ -126,7 +126,9 @@ static partial class ArchitectureQuality
             var fenced = await Command(app, "ReconcileReceipt", occurrence, "Capability health is still in flight; retain original responsibility");
             var fencedSnapshot = await app.SnapshotAsync();
             var fencedInventory = await Command(app, "ReceiptResponsibilities", op.Id);
-            Check(fenced.Status == "Rejected" && fencedSnapshot.Availability?.Configure == false && recoveryFactory.QueryCalls == 0 &&
+            // SM may save a Pending candidate during an external wait. That
+            // permission does not authorize a Query of the original receipt.
+            Check(fenced.Status == "Rejected" && recoveryFactory.QueryCalls == 0 &&
                 Wire.Encode(fencedSnapshot.Operations.Single().Upload) == Wire.Encode(op.Upload) && !fencedSnapshot.Operations.Single().ImageReleased &&
                 fencedInventory.Reason == inventory.Reason,
                 "in-flight health fences original recovery before Query without changing receipt custody, upload facts or image ownership");

@@ -453,7 +453,7 @@ internal sealed partial class StationDebugControl : UserControl
         }
     }
     public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons(); }
-    public void Revoke() { Deactivate(); evidence.Revoke(); }
+    public void Revoke() { Deactivate(); ClearRoundDisplay(); evidence.Revoke(); }
     async Task CloseScanScopeAsync(string session, string? round)
     {
         var closed = await vm.ServiceAsync(() => Inspection.EndCameraInspectionAsync(new(Wire.Id(), session, false, true, "结束单次扫码调试")

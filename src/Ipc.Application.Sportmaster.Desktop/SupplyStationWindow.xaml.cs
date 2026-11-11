@@ -10,6 +10,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public partial class SupplyStationWindow : Window
 {
     partial void InitializePresentationFeedback();
+    partial void InitializeMaintenanceActions();
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     readonly Grid work = new();
     readonly HistoryPage history = new();
@@ -36,7 +37,7 @@ public partial class SupplyStationWindow : Window
         // Inherited DataContext would transiently clear/rebuild the draft controls.
         maintenance.CameraPreviewFactory = instance => { var preview = new StationCameraPreviewControl(ViewModel, 110, false); preview.SelectDevice(ViewModel.ReaderDrafts.FirstOrDefault(r => r.Capability.InstanceId == instance)?.Original.DeviceId ?? instance); return preview; };
         maintenance.DataContext = ViewModel; history.DataContext = ViewModel;
-        maintenance.CompleteBackupAsync = CreateProductBackup;
+        InitializeMaintenanceActions();
         maintenance.DisplayPreferencesRequested += (_, _) => Layout_Click(this, new RoutedEventArgs());
         maintenance.DiagnosticsRequested += (_, target) => ShowObjectDiagnostics(target);
         history.LogsRequested += async (_, id) => { SetPage("logs"); if (ViewModel.SelectedPage == "logs") await ViewModel.RunAsync(() => logs!.ShowOperationAsync(id), "读取所选作业日志"); };

@@ -11,6 +11,7 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
 {
+    partial void InitializeMaintenanceActions() => maintenance.CompleteBackupAsync = CreateProductBackup;
     StationStatisticsControl? statistics;
     FrameworkElement? exceptions;
     public Func<Task>? OpenMaintenanceOwnerAsync { get; set; }

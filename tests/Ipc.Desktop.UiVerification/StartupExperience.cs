@@ -29,6 +29,7 @@ static partial class Program
         Check(first.Title.StartsWith("首次配置") && Descendants(first).OfType<TextBlock>().Where(x => x.IsVisible).All(x => !x.Text.Contains("首次工位配置")), "compact first-configuration heading uses the supply-station name");
         Check(Descendants(first).OfType<Button>().Any(x => x.IsVisible && (x.Content as string) == "导入配置"), "configuration file import is visible on step one");
         FillInitial(editor.Model!);
+        editor.Model!.CameraSerialReader = (ip, _) => Task.FromResult("SYNTH-" + ip.Replace('.', '-'));
         await VerifyParameterUiRefinement(first, editor, evidence, lines);
         await VerifyLeafNavigation(first, editor, evidence, lines);
         for (var i = 0; i < 5; i++)
@@ -94,7 +95,7 @@ static partial class Program
         Descendants(loginWindow!).OfType<PasswordBox>().Single(p => p.Name == "ManagementPassword").Password = reauthenticationPassword; Click(loginWindow!, "进入管理模式");
         for (var i = 0; i < 100 && !LocalManagementMode.ForRoot(launch.DataRoot).Status().Authorized; i++) await Task.Delay(20);
         await Task.Delay(200); loginWindow!.Close(); await Task.Delay(1250); first.UpdateLayout();
-        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model!.Policy) && editor.Model!.Policy.QueueCapacity == "64" && !Status(first).Contains("管理模式未开启或已到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
+        Check(protectedBody.Visibility == Visibility.Visible && ReferenceEquals(preservedPolicy, editor.Model!.Policy) && editor.Model!.Policy.ReadTimeoutMs == "1000" && !Status(first).Contains("管理模式未开启或已到期"), "reauthentication restores the same unsaved complete candidate and clears the obsolete expiry prompt without restarting configuration");
         Capture("startup-session-restored", first);
         await using (var staticFactory = new Ipc.Assembly.ParcelCapabilityFactory(launch))
         {

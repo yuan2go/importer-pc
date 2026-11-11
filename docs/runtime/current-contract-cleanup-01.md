@@ -28,7 +28,7 @@
 | 存储身份、旧格式和篡改 | `storage-schema-only` / `storage-baseline` 使用真实 Repository；保留旧 DB/WAL 拒绝、当前结构篡改、应用身份及原件不变。删除与历史结构快照相等、仅豁免指定新增表的约束；历史快照本身保留。 |
 | 历史调试审计 | `debug-no-isolation-31` 核验旧审计原文及原请求保留、权限和新调试独立发送。启动不解释旧隔离记录，也不追加退役转换记录；历史帧关联字段仍用于证据读取，不能按名称删除。 |
 | 队列与停止 | SM 当前队列满时背压等待，不按慢 RCS 推断同步消费者溢出。删除旧架构中的同步溢出/重启全站暂停测试及其专用替身分支；`read-cadence` 核验真实受控队列等待、计数及恢复，`interrupted-scan-skip` 核验重启不回放，`ResourceRisks` 和 `capability-closure` 保留取消后的所有权及排空释放。 |
-| 配置与快照 | 检查 Pending/Effective、Conflict/Unknown、完整草稿、CAS、实际提交次数和动作可用性；不要求中文界面返回英文状态码或旧提示词。磁盘余量用已有卷容量边界控制，不假设测试机磁盘一定小于固定容量。 |
+| 配置与快照 | 检查 Pending/Effective、Conflict/Unknown、完整草稿、CAS、实际提交次数和动作可用性；不要求中文界面返回英文状态码或旧提示词。SM 可保存 Pending 不表示外部调用已排空；原回执恢复夹具在所有实际端口到达探测前边界后才继续，不重试已受理查询。磁盘余量用已有卷容量边界控制，不假设测试机磁盘一定小于固定容量。 |
 | 验证入口 | 未知或退休选择器返回失败，不落入默认测试。手动 CI 使用内置 SM/MVID 验证；`parameter-refactor` 已包含 `parameter-inheritance`，同一次运行不重复执行；Windows `installer-options` 保留独立 COM 步骤。 |
 
 跨 Application 的现有验证、真实协议拒绝和无法证明无效的检查保留。Windows 符号链接权限、受保护目录及安装授权属于环境条件，不能将其失败归为过期预期或通过放宽生产校验消除。

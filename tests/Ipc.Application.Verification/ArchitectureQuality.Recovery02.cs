@@ -133,8 +133,12 @@ static partial class ArchitectureQuality
                 fencedInventory.Reason == inventory.Reason,
                 "in-flight health fences original recovery before Query without changing receipt custody, upload facts or image ownership");
             recoveryFactory.ReleaseHealth();
-            await Wait(app, s => s.Availability?.Configure == true);
-            var inconclusive = await Command(app, "ReconcileReceipt", occurrence, "Synthetic authority returned no result; retain original");
+            // Wait for every configured port in this fixture to reach the
+            // pre-reservation boundary. Configure now allows Pending saves and
+            // no longer proves that external receipt recovery has drained.
+            var inconclusive = await LifecycleOptimization.AfterMonitorDrain(app,
+                () => Command(app, "ReconcileReceipt", occurrence, "Synthetic authority returned no result; retain original"),
+                c.CapabilityInstances!.Select(p => p.InstanceId).ToArray());
             Console.WriteLine("AQ original receipt recovery after health drain: " + Wire.Encode(inconclusive));
             Check(recoveryFactory.QueryCalls == 1, "drained explicit recovery executes exactly one original upload Query");
             Check(inconclusive.Status == "Unresolved" && !(await app.SnapshotAsync()).Operations.Single().ImageReleased, "inconclusive original Query never dispositions missing raw or releases its image");
@@ -143,7 +147,9 @@ static partial class ArchitectureQuality
             await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "unrelated-right" && o.State == ParcelState.SlotResolved));
             Check((await app.OperationAsync(op.Id))!.Wcs!.Attempts == 1, "unrelated position continues while old attachment retains one original WCS attempt");
             await Maintenance(app); await Wait(app, s => s.Availability?.Configure == true);
-            await app.BackupAsync(Path.Combine(root, "legacy-before.backup.db"));
+            Check((await LifecycleOptimization.AfterMonitorDrain(app,
+                () => app.BackupAsync(Path.Combine(root, "legacy-before.backup.db")),
+                c.CapabilityInstances!.Select(p => p.InstanceId).ToArray())).Status == "BackupCreated", "complete original-custody backup is confirmed after every health call drains");
         }
         // Current-format restart keeps the proven main result and missing upload custody.
         // Format identity is checked before recovery writes.
@@ -156,7 +162,9 @@ static partial class ArchitectureQuality
             await app.ExitManagementModeAsync();
             var denied = await Command(app, "ReconcileReceipt", occurrence, "Must authenticate first"); Check(denied.Status == "Rejected", "missing receipt recovery requires paused authenticated maintenance");
             await Maintenance(app); await Wait(app, s => s.Availability?.Configure == true);
-            var result = await Command(app, "ReconcileReceipt", occurrence, "Original receiver queried; authoritative upload result and image verified");
+            var result = await LifecycleOptimization.AfterMonitorDrain(app,
+                () => Command(app, "ReconcileReceipt", occurrence, "Original receiver queried; authoritative upload result and image verified"),
+                c.CapabilityInstances!.Select(p => p.InstanceId).ToArray());
             Check(result.Status == "OutcomeKnownRawMissing", "explicit recovery links business outcome to its own Query/T3 while original raw responsibility remains");
             Check(!(await app.OperationAsync(before.Id))!.ImageReleased, "known business outcome does not release missing original raw/image custody");
             var rows = Wire.Decode<ParcelReceiptResponsibility[]>((await Command(app, "ReceiptResponsibilities", before.Id)).Reason);

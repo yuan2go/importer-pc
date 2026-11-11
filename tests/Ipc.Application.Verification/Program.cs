@@ -215,11 +215,11 @@ if (args.FirstOrDefault(a => a.StartsWith("--", StringComparison.Ordinal)) is { 
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
 ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText((id == "sportmaster" ? Path.Combine(workspace, "tests", "Ipc.Application.Verification", "sportmaster.synthetic.json") : Path.Combine(workspace, "config", id, "business.json"))));
 FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow { PlacementReleaseMs = 300 }, "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
-async Task<ParcelRuntime> Open(ParcelConfiguration config, string run)
+async Task<ParcelRuntime> Open(ParcelConfiguration config, string run, Action<string>? constructed = null)
 {
     var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
     var launch = new BusinessLaunch(directory, Path.Combine(root, run, "data"), null, null);
-    var runtime = new ParcelRuntime(launch, Flow(config.ApplicationId), new ParcelCapabilityFactory(launch));
+    var runtime = new ParcelRuntime(launch, Flow(config.ApplicationId), new ParcelCapabilityFactory(launch) { Boundary = constructed });
     try { await runtime.StartAsync(CancellationToken.None); return runtime; } catch { await runtime.DisposeAsync(); throw; }
 }
 async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> predicate)
@@ -331,12 +331,13 @@ using (var tamper = new SqliteConnection("Data Source=" + Path.Combine(mismatch,
 { tamper.Open(); using var c = tamper.CreateCommand(); c.CommandText = "UPDATE platform_migrations SET sha='changed'"; c.ExecuteNonQuery(); }
 try { using var db = new ParcelRepository(mismatch, "sportmaster"); throw new Exception("Changed SQL checksum accepted"); }
 catch (InvalidDataException) { Pass(true, "changed application baseline checksum is rejected without overwriting identity"); }
-try { await using var app = await Open(Config("sportmaster") with { Mode = RunMode.Production }, "production"); throw new Exception("Production unexpectedly started"); }
+var productionResources = 0;
+try { await using var app = await Open(Config("sportmaster") with { Mode = RunMode.Production }, "production", _ => productionResources++); throw new Exception("Production unexpectedly started"); }
 catch (InvalidDataException ex)
 {
     Console.WriteLine("Production launch refusal: " + ex.Message);
-    Pass(!Directory.EnumerateFiles(Path.Combine(root, "production"), "*.db", SearchOption.AllDirectories).Any(),
-        "invalid Production launch refuses before creating a business database or starting a simulation fallback");
+    Pass(productionResources == 0,
+        "invalid Production launch refuses before constructing a source or starting a simulation fallback");
 }
 catch (InvalidOperationException ex) when (!OperatingSystem.IsWindows() && ex.Message == "Protected Production drafts require Windows")
 { Pass(true, "non-Windows Production refuses protected persistence before any reference device can start"); }

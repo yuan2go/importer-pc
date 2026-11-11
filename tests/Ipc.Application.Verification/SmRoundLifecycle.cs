@@ -261,8 +261,11 @@ internal static class SmRoundLifecycle
             await CameraRoundHarness.Until(async () => (await h.App.RoundHistoryAsync()).Items.Single(r => r.Id == oldImageRound).OriginalFrame?.State == "Saved");
             Check(Current(await h.App.SnapshotAsync())?.Id == nextImageRound.Id && (await h.App.ReadParcelPictureAsync(new(RoundId: oldImageRound), default)).Archived?.RoundId == oldImageRound,
                 "T10 late image completion updates only its ended original round and remains exactly queryable");
-            Check((await h.App.RoundHistoryAsync(search: "GOOD-910")).Items.Single().Id == oldImageRound,
-                "T17 formal-candidate search includes an unsubmitted multi-code round without inventing a selected barcode");
+            var historyRound = (await h.App.RoundHistoryAsync(search: "GOOD-910")).Items.Single();
+            Check(historyRound.Id == oldImageRound && (await h.App.RoundHistoryAsync("left", search: "GOOD-910",
+                from: historyRound.StartedAt.AddMilliseconds(-1).ToOffset(TimeSpan.FromHours(8)),
+                to: historyRound.StartedAt.AddMilliseconds(1).ToOffset(TimeSpan.FromHours(8)))).Items.Single().Id == oldImageRound,
+                "T17 formal-candidate and local-time date search find an unsubmitted multi-code round without inventing a selected barcode");
         }
         finally { imageRelease.TrySetResult(); h.App.BeforeSmRoundImageForVerification = null; }
         await Remove();

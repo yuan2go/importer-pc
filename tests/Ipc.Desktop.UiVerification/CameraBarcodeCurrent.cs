@@ -69,7 +69,14 @@ static partial class Program
             await vm.AcceptPublishedSnapshotAsync(basis);
             Check(entry.Text == "SYNTH-SECOND-0002" && p.ShowConfirmedTask && Wire.Encode((await h.App.OperationAsync(first.Id))!.Wcs!.Request) == frozen,
                 "a stale old-round snapshot cannot restore its card or rewrite the original frozen request");
-            second = new SupplyStationWindow(h.App, null, "compact"); second.Show(); await second.ViewModel.RefreshAsync();
+            second = new SupplyStationWindow(h.App, null, "compact"); second.Show();
+            await CameraRoundHarness.Until(async () =>
+            {
+                // Loaded can already own the first refresh; an overlapping
+                // RefreshAsync call is not evidence that its snapshot arrived.
+                await second.ViewModel.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                return second.ViewModel.Fresh && second.ViewModel.Left.CurrentRound?.Id == p.CurrentRound?.Id;
+            });
             Check(second.ViewModel.Left.CurrentRound?.Id == p.CurrentRound?.Id && second.ViewModel.Left.Operation?.Id == p.Operation?.Id,
                 "a second native window projects the same Application-owned current round");
             second.Close(); second = null;

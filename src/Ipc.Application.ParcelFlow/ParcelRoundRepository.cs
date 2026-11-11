@@ -69,8 +69,8 @@ public sealed partial class ParcelRepository
             conditions.Add("(id=$search OR json_extract(body,'$.SelectedCode')=$search OR json_extract(body,'$.RequestId')=$search OR json_extract(body,'$.ProtocolRequestId')=$number OR json_extract(body,'$.RcsOutcome')=$search OR EXISTS(SELECT 1 FROM json_each(sm_parcel_rounds.body,'$.FormalCodes') WHERE value=$search))");
             q.Parameters.AddWithValue("$search", search); q.Parameters.AddWithValue("$number", long.TryParse(search, out var number) ? number : -1);
         }
-        if (from is not null) { conditions.Add("started>=$from"); q.Parameters.AddWithValue("$from", from.Value.ToString("O")); }
-        if (to is not null) { conditions.Add("started<$to"); q.Parameters.AddWithValue("$to", to.Value.ToString("O")); }
+        if (from is not null) { conditions.Add("started>=$from"); q.Parameters.AddWithValue("$from", from.Value.ToUniversalTime().ToString("O")); }
+        if (to is not null) { conditions.Add("started<$to"); q.Parameters.AddWithValue("$to", to.Value.ToUniversalTime().ToString("O")); }
         q.CommandText = "SELECT id,position,body,hash FROM sm_parcel_rounds" + (conditions.Count == 0 ? "" : " WHERE " + string.Join(" AND ", conditions)) + " ORDER BY started DESC,id DESC LIMIT $limit";
         q.Parameters.AddWithValue("$limit", Math.Clamp(limit, 1, 1000));
         using var r = q.ExecuteReader(); List<SmParcelRound> result = [];

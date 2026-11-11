@@ -756,6 +756,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             tasks!.SelectedIndex = selectedTask;
             if (SceneOnly && draft is not null && document?.NeedsSmDb12Continuation != true)
             {
+                if (selectedTask is 1 or 2) { selectedTask = 0; tasks.SelectedIndex = 0; }
                 var selectedContent = new FrameworkElementFactory(typeof(ContentPresenter));
                 selectedContent.SetBinding(ContentPresenter.ContentProperty, new System.Windows.Data.Binding("SelectedContent") { RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.TemplatedParent) });
                 tasks.Template = new ControlTemplate(typeof(TabControl)) { VisualTree = selectedContent };
@@ -793,15 +794,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             return;
         }
-        if (SceneOnly && draft is not null && document?.NeedsSmDb12Continuation != true)
-        {
-            foreach (var button in Actions.Children.OfType<Button>())
-            {
-                var label = button.Content as string;
-                button.Visibility = selectedTask == 0 && label == "读取所选配置" || selectedTask == 3 && label is "检查并预览更改" or "重试正常启动" || selectedTask == 4 && label == "换机：接管已恢复的数据目录…" ? Visibility.Visible : Visibility.Collapsed;
-            }
-            return;
-        }
         if (draft is null || document?.NeedsSmDb12Continuation == true)
         {
             foreach (var button in Actions.Children.OfType<Button>())
@@ -814,6 +806,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             return;
         }
         foreach (var button in Actions.Children.OfType<Button>()) button.IsEnabled = true;
+        if (SceneOnly)
+        {
+            foreach (var button in Actions.Children.OfType<Button>())
+            {
+                var label = button.Content as string;
+                button.Visibility = selectedTask == 0 && label == "读取所选配置" || selectedTask == 3 && label is "检查并预览更改" or "重试正常启动" || selectedTask == 4 && label == "换机：接管已恢复的数据目录…" ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return;
+        }
         var groups = new[] { 0, 3, -1, 0, 4, 1, 3, 4, 4, 4, 4, -1, 4, 3, -1, -2, 4 };
         for (var i = 0; i < Actions.Children.Count; i++)
             Actions.Children[i].Visibility = i < groups.Length && (groups[i] == -1 || groups[i] == selectedTask || groups[i] == -2 && selectedTask < 3) ? Visibility.Visible : Visibility.Collapsed;

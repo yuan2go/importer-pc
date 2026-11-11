@@ -67,6 +67,7 @@ static partial class Program
         }
         var original = Wire.FileHash(ledger);
         var db12 = (Window)Activator.CreateInstance(type, [launch, null, false])!;
+        type.GetProperty("SceneOnly")!.SetValue(db12, true);
         db12.ShowActivated = false; db12.ShowInTaskbar = false; db12.WindowStartupLocation = WindowStartupLocation.Manual; db12.Left = -12000; db12.Top = -12000;
         type.GetProperty("ConfirmDiscardInputs", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(db12, (Func<bool>)(() => true));
         db12.Show();
@@ -81,6 +82,25 @@ static partial class Program
         Check(!Descendants(db12).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "重试正常启动") || (b.Content as string)?.StartsWith("保存", StringComparison.Ordinal) == true)),
             "DB12 cannot save over the original ledger or bypass the continuation gate");
         Check(Wire.FileHash(ledger) == original, "displaying DB12 parameters preserves exact configuration bytes");
+        // Exercise the real reread/navigation path after the DB12 page disabled
+        // actions. A new current-format directory stands in for completed maintenance.
+        var readyLaunch = new BusinessLaunch(Path.Combine(evidence, "ready-config"), Path.Combine(evidence, "ready-data"), null, null);
+        Directory.CreateDirectory(readyLaunch.ConfigurationDirectory);
+        ExtensionStore.AtomicWrite(Path.Combine(readyLaunch.ConfigurationDirectory, "business.json"), seed);
+        var readyDirectory = Path.Combine(readyLaunch.DataRoot, seed.Mode.ToString(), seed.StationId, "sportmaster"); Directory.CreateDirectory(readyDirectory);
+        ExtensionStore.AtomicWrite(Path.Combine(readyDirectory, "configuration.json"), CurrentConfigurationFixture.Create<ParcelConfiguration>(3, seed, null, "Effective", null));
+        using (var repository = new ParcelRepository(readyDirectory, "sportmaster")) { }
+        ManagementModeFixture.AuthorizeRoot(readyLaunch.DataRoot);
+        originalParameters.SelectedIndex = 0; db12.UpdateLayout();
+        Descendants(db12).OfType<TextBox>().Single(b => b.Text == launch.ConfigurationDirectory).Text = readyLaunch.ConfigurationDirectory;
+        Descendants(db12).OfType<TextBox>().Single(b => b.Text == launch.DataRoot).Text = readyLaunch.DataRoot;
+        Descendants(db12).OfType<Button>().Single(b => Equals(b.Content, "读取所选配置")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await WaitUntil(() => Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "检查并启动")));
+        Descendants(db12).OfType<Button>().Single(b => Equals(b.Content, "检查并启动")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        Check(Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "检查并预览更改")) &&
+            Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "重试正常启动")),
+            "rereading current data restores SceneOnly check/start actions in the same window");
         db12.Close(); await WaitUntil(() => !db12.IsVisible);
     }
 }

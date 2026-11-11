@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -63,6 +63,7 @@ public sealed class CoreRegression
     [DataRow("--mvs-network-reconnect", 20)]
     [DataRow("--mvs-offline-activation", 14)]
     [DataRow("--mvs-stop-reconnect", 9)]
+    [DataRow("--mvs-presence", 21)]
     [DataRow("--mvs-still-frames", 10)]
     [DataRow("--log-readable", 6)]
     [DataRow("--state-journal", 23)]

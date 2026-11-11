@@ -1,4 +1,4 @@
-using System.Buffers;
+﻿using System.Buffers;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Net;
@@ -17,6 +17,9 @@ public sealed class MvsAcquisitionModule : IObservationExtension
 // One acquisition/resource owner. Legacy acquisition has no decoder; the current
 // reader injects an actual in-process decoder and emits only decoded candidates.
 internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSource, IOriginalFrameSource, IObservationPreviewSource, IObservationPreviewLeaseSource
+#if !MVS_ACQUISITION_EXTENSION
+    , ITrayPresenceSource
+#endif
 
 {
     readonly MvsPreview preview = new();
@@ -46,9 +49,20 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     readonly Action<string>? phaseChanged;
     readonly SemaphoreSlim lifecycle = new(1, 1);
     readonly object gate = new();
+    readonly object observationPublication = new();
     readonly string ip, serial, triggerRequirement;
     readonly int nodes, maximumPayload, stillMs;
     MvsStillness stillness = new(0, 0);
+    MvsTrayPresence trayPresence = new();
+    public string TrayPresenceStatus => trayPresence.Status;
+    public void CalibrateEmptyTray()
+    {
+        lock (gate)
+        {
+            if (!Recognizes || worker is null || failure.Length != 0 || disposeRequested) throw new InvalidOperationException("Camera is not ready for empty-tray teaching");
+            trayPresence.Teach();
+        }
+    }
     long movingFrames, fallbackDecodes;
     IDisposable? lease;
     CancellationTokenSource? cancel;
@@ -66,7 +80,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     public string Failure { get { lock (gate) return failure; } }
     // SDK errors from StopGrabbing/CloseDevice in the last teardown that did complete; empty when clean.
     public string TeardownNotes { get { lock (gate) return teardown; } }
-    public string ConfirmationSource { get { lock (gate) return $"SDK:{(api.ReturnsDecodedFrames ? "hikrobot-mvid-native" : !Recognizes ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(!Recognizes ? "Unavailable" : api.ReturnsDecodedFrames ? "MVIDCodeReader-1.1.4.0" : "ZXingCpp-3.1.1")}; businessReady={(!Recognizes ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; stillMs={stillMs}; movingFrames={movingFrames}; fallbackDecodes={fallbackDecodes}; failure={failure}; teardown={teardown}"; } }
+    public string ConfirmationSource { get { lock (gate) return $"SDK:{(api.ReturnsDecodedFrames ? "hikrobot-mvid-native" : !Recognizes ? "hikrobot-mvs" : "hikrobot-mvs-reader")}; phase={phase}; frames={frames}; bytes={bytes}; decoder={(!Recognizes ? "Unavailable" : api.ReturnsDecodedFrames ? "MVIDCodeReader-1.1.4.0" : "ZXingCpp-3.1.1")}; businessReady={(!Recognizes ? "false" : "ApplicationGuardsRequired")}; readResults={recognized}; candidates={candidates}; emptyFrames={emptyFrames}; skippedVideoFrames={skippedVideoFrames}; videoGapEvents={videoGapEvents}; rejectedFrames={rejectedFrames}; lastFrameRejection={lastFrameRejection}; stillMs={stillMs}; movingFrames={movingFrames}; fallbackDecodes={fallbackDecodes}; trayPresence={TrayPresenceStatus}; failure={failure}; teardown={teardown}"; } }
     internal MvsAcquisition(ExtensionContext context, IMvsApi api, Func<string, IDisposable>? acquireLease = null, Action<string>? phaseChanged = null, IMonoBarcodeDecoder? decoder = null, bool diagnosticVideoSampling = false)
     {
         this.context = context; this.api = api; this.phaseChanged = phaseChanged; this.decoder = decoder;
@@ -115,6 +129,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
             lock (gate) { epoch = registeredEpoch; failure = ""; teardown = ""; frames = bytes = recognized = candidates = sequence = skippedVideoFrames = videoGapEvents = emptyFrames = movingFrames = fallbackDecodes = 0; receiver = receive; priorFrame = null; health = onHealth; stopping = null; ResetDiagnostics(); }
             // A new session starts from a new reference frame; nothing from the old stream is compared.
             stillness = new(stillMs, Math.Max(1500, 3 * stillMs));
+            trayPresence = new();
             try
             {
                 preview.Clear();
@@ -219,6 +234,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                     else
                     {
                         byte[]? pixels = null; var length = 0; long skippedBefore = 0; double copyMs = 0, releaseMs; long? scene = null;
+                        TrayPresenceEvidence? presence = null;
                         if (previousDelivery != 0) Timings.Record("host.delivery-interval", Stopwatch.GetElapsedTime(previousDelivery, deliveredTicks).TotalMilliseconds);
                         previousDelivery = deliveredTicks;
                         try
@@ -243,9 +259,14 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                                 lastFrameAt = observedAt; lastFrameTicks = deliveredTicks;
                             }
                             preview.Offer(frame.Data, checked((int)frame.Width), checked((int)frame.Height), DeviceId, Epoch, frame.Number, observedAt);
+                            if (Recognizes)
+                            {
+                                if (skippedBefore > 0) trayPresence.BreakContinuity();
+                                presence = trayPresence.Observe(frame.Data, checked((int)frame.Width), checked((int)frame.Height), deliveredTicks);
+                            }
                             // A raw preview acquired while paused never becomes an
                             // empty recognition fact when readiness changes mid-call.
-                            var allowDecode = decodeRequested && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
+                            var allowDecode = (trayPresence.CanDecode || inspected.Registration?.CutoverKey is not null) && decodeRequested && inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
                             lock (gate) decodePaused = !allowDecode;
                             if (Recognizes && allowDecode)
                             {
@@ -266,6 +287,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         }
                         catch (MvsFrameRejection error)
                         {
+                            trayPresence.BreakContinuity();
                             if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; }
                             RejectFrame(frame.Number, error, false);
                         }
@@ -276,6 +298,19 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             try { api.Release(); }
                             catch { if (pixels is not null) { ArrayPool<byte>.Shared.Return(pixels, true); pixels = null; } throw; }
                             finally { releaseMs = Stopwatch.GetElapsedTime(releaseStarted).TotalMilliseconds; Timings.Record("sdk.release", releaseMs); }
+                        }
+                        // Release the borrowed SDK image before calling Application. Presence
+                        // continues while recognition is paused, including drain/management.
+                        if (presence is not null)
+                        {
+                            var source = FramePrefix + ".presence." + frame.Number;
+                            var observation = new Observation(Wire.Id(), DeviceId, Epoch, source, Interlocked.Increment(ref sequence),
+                                Wire.Hash(DeviceId + ":" + Epoch + ":" + source), "TrayPresence", [], null, observedAt) { TrayPresence = presence };
+                            try
+                            {
+                                if (!DeliverObservation(observation)) throw new IOException("Application rejected physical evidence; source fenced");
+                            }
+                            catch { if (pixels is not null) ArrayPool<byte>.Shared.Return(pixels, true); throw; }
                         }
                         if (pixels is not null)
                         {
@@ -324,6 +359,11 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
         }
         catch (Exception error) { CaptureFailed(error); }
         finally { CompleteDecodePipeline(); }
+    }
+    bool DeliverObservation(Observation observation)
+    {
+        lock (observationPublication)
+            return receiver?.Invoke(observation with { Sequence = Interlocked.Increment(ref sequence) }) == true;
     }
     void CaptureFailed(Exception error)
     {

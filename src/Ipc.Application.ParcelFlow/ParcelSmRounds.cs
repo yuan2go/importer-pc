@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
@@ -19,9 +19,11 @@ public sealed partial class ParcelRuntime
     SmParcelRound? CurrentRound(string position) => smCurrentRounds.TryGetValue(position, out var id) ? smRounds.GetValueOrDefault(id) : null;
     SmPositionCycle SmCycle(string position) => smCycles.GetValueOrDefault(position) ?? new(position, false, TrayPresence.Unknown, null, 0, Wire.Id(), null);
     bool SmRoundOwns(ParcelOperation op) => op.RoundId is null || CurrentRound(op.PositionId!)?.Id == op.RoundId;
+    readonly Dictionary<string, DateTimeOffset> smPresenceTimes = [];
     bool SmVisualReliable(string position) => SmCycle(position) is { Presence: TrayPresence.Present } cycle &&
         readers.TryGetValue(positions[position].ReaderDeviceId, out var reader) && reader.Epoch == cycle.Epoch &&
-        reader.Health?.IsValid(DateTimeOffset.UtcNow) == true;
+        reader.Health?.IsValid(DateTimeOffset.UtcNow) == true &&
+        smPresenceTimes.TryGetValue(position, out var at) && DateTimeOffset.UtcNow - at < TimeSpan.FromMilliseconds(1500);
     void StoreSmRound(SmParcelRound round, string name, SmPositionCycle? cycle = null, ParcelOperation? operation = null, BusinessCommand? command = null)
     {
         repository!.Commit(operation, name, Wire.Encode(new
@@ -199,6 +201,7 @@ public sealed partial class ParcelRuntime
         var fact = observation.TrayPresence!;
         if (!Enum.IsDefined(fact.State) || string.IsNullOrWhiteSpace(fact.Evidence) || fact.Evidence.Length > 1024 || fact.Evidence.Any(char.IsControl))
             throw new InvalidDataException("Physical evidence is incomplete");
+        smPresenceTimes[position] = observation.ObservedAt;
         var cycle = SmCycle(position) with { Presence = fact.State, Epoch = observation.Epoch, Sequence = observation.Sequence, Evidence = fact.Evidence };
         var round = CurrentRound(position);
         if (fact.State == TrayPresence.Absent && round is not { RequireRemoval: true })

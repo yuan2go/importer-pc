@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -70,6 +70,21 @@ public partial class SupplyStationWindow
             var edit = new Button { Content = "修改连接设置", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             edit.SetBinding(IsEnabledProperty, new Binding(nameof(ViewModel.CanStartOperation)) { Source = ViewModel });
             edit.Click += async (_, _) => await Configure(); facts.Children.Add(edit);
+            if (position is not null)
+            {
+                facts.Children.Add(ProductText("清空托盘后校准在位判断。校准后可连续自动供包；重连或重启后须重新校准。校准期间保持空盘，等待详情显示空托盘已确认。"));
+                var teach = new Button { Content = "确认空托盘并校准", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+                AutomationProperties.SetAutomationId(teach, "CalibrateEmptyTray." + id);
+                teach.Click += async (_, _) => await ViewModel.RunAsync(async () =>
+                {
+                    await ViewModel.RequireManagementModeAsync();
+                    var snapshot = ViewModel.Snapshot ?? throw new InvalidOperationException("请等待状态读取恢复。");
+                    var result = await ViewModel.Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "CalibrateEmptyTray", position.ReaderId));
+                    ViewModel.Message = result.Status == "Persisted" ? "空托盘校准已开始，请保持画面稳定并查看设备详情。" : "校准未开始。请确认本位没有当前包裹、相机已连接，并刷新后重试。";
+                }, "校准空托盘");
+                actions.Add(() => teach.IsEnabled = ViewModel.IsManagementMode && ViewModel.Fresh && !ViewModel.Busy);
+                facts.Children.Add(teach);
+            }
             row.Children.Add(new Expander { Header = "详情", Content = facts, Margin = new(0, 8, 0, 0) });
             actions.Add(() =>
             {

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Ipc.Platform;
 namespace Ipc.Drivers.Hikrobot.Mvs;
 
@@ -55,7 +55,8 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
                 OriginalFrameCopies = originalFrameCopies,
                 WaitingForOriginalCapacity = waitingOriginalCapacity,
                 SdkFrameNumberGaps = skippedVideoFrames,
-                SdkGapEvents = videoGapEvents
+                SdkGapEvents = videoGapEvents,
+                TrayPresenceStatus = trayPresence.Status
 #endif
             };
         }

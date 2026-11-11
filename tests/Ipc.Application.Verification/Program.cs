@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Application.DirectPlc;
@@ -21,6 +21,7 @@ if (args.FirstOrDefault() == "--action" && args.ElementAtOrDefault(1) == "verify
 }
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-round-lifecycle")) { await Ipc.Verification.SmRoundLifecycle.Run(workspace, root); return; }
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;

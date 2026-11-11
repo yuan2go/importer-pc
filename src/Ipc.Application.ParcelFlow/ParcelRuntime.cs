@@ -1,4 +1,4 @@
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using System.Diagnostics;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
@@ -359,7 +359,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             {
                 if (CoalescePausedObservation(positionId, observation, lane, enteredTicks, laneWaitMs)) return true;
             }
-            if (observation is not null) RecordPresentationRead(positionId, observation);
+            if (observation is { TrayPresence: null }) RecordPresentationRead(positionId, observation);
             if (Id == "sportmaster" && observation is not null)
             {
                 // Stop before the durable write when a normal bounded lane is full.

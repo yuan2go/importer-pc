@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Assembly;
@@ -33,6 +33,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public ParcelRuntime App = null!;
     public Func<IDisposable?>? RootOwnership { get; set; }
     public TimeProvider? StationClock { get; init; }
+    public Func<DeviceBinding, IControlledObservationSource>? CameraSource { get; init; }
     public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true, int? maximumOperations = null, RunMode mode = RunMode.Production)
     {
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
@@ -68,7 +69,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     }
     public async Task StartAsync(bool ready = true, string? rcsImplementationFingerprint = null)
     {
-        Factory = new(Launch);
+        Factory = new(Launch) { CameraSource = CameraSource };
         if (rcsImplementationFingerprint is not null) Factory.RcsImplementationFingerprint = rcsImplementationFingerprint;
         App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { }, AcquireRootOwnership = RootOwnership };
         if (StationClock is not null) App.StationTime = StationClock;
@@ -87,6 +88,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public sealed class ManualFactory(BusinessLaunch launch) : IParcelCapabilityFactory
     {
         readonly ParcelCapabilityFactory validation = new(launch);
+        public Func<DeviceBinding, IControlledObservationSource>? CameraSource { get; init; }
         public bool RcsOffline;
         public bool FailDisposal { get; set; }
         public bool FailPreparation { get; set; }
@@ -105,10 +107,11 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             foreach (var reader in ParcelBindings.Readers(c))
             {
                 if (ParcelConnectionSetup.IsDeferred(c, reader.DeviceId)) readers.Add(reader.DeviceId, new DeferredObservationSource(reader.DeviceId));
+                else if (CameraSource is not null) readers.Add(reader.DeviceId, CameraSource(reader));
                 else { var source = new SilentCamera(reader.DeviceId); readers.Add(reader.DeviceId, source); Cameras.Add(reader.DeviceId, source); }
             }
             var wcs = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(c.Wcs!); wcs.ConfigureRuntime(c);
-            return new(readers[c.Reader.DeviceId], null, new RcsHealth(wcs, this), null,
+            return new(readers[c.Reader.DeviceId], null, CameraSource is null ? new RcsHealth(wcs, this) : wcs, null,
                 new Dictionary<string, string> { [wcs.InstanceId] = RcsImplementationFingerprint }, Readers: readers);
         }
         public ValueTask DisposeAsync() => FailDisposal ? ValueTask.FromException(new IOException("synthetic factory still owns resources")) : validation.DisposeAsync();

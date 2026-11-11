@@ -56,7 +56,10 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
                 WaitingForOriginalCapacity = waitingOriginalCapacity,
                 SdkFrameNumberGaps = skippedVideoFrames,
                 SdkGapEvents = videoGapEvents,
-                TrayPresenceStatus = trayPresence.Status
+                TrayPresenceStatus = trayPresence.Status,
+                TrayPresenceModel = trayPresence.Snapshot(),
+                NativeBufferBorrowed = api.HasFrame,
+                RetainedNativeFrameBytes = Volatile.Read(ref retainedNativeWork)?.Length ?? 0
 #endif
             };
         }
@@ -67,7 +70,10 @@ internal sealed partial class MvsAcquisition : IObservationDiagnosticsSource
         lock (gate) return new
         {
             Epoch = epoch,
+            ReaderEngine = api.ReturnsDecodedFrames ? "mvid-native" : "zxing-cpp",
+            DecodeTimingScope = api.ReturnsDecodedFrames ? "GetOneFrameTimeout includes SDK frame waiting; not pure algorithm time" : "In-process decoder call; acquisition measured separately",
             Acquisition = Timings.Snapshot(),
+            OriginalFrames = originals.Snapshot(),
             Decoder = DecoderTimings,
             DecoderConfiguration = (decoder as SoftwareDecoder)?.DiagnosticConfiguration
         };

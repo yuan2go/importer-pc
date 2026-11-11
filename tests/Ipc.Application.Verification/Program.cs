@@ -8,6 +8,11 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 Console.OutputEncoding = new System.Text.UTF8Encoding(false);
+if (args.FirstOrDefault() == "--sm-presence-replay")
+{
+    if (args.Length != 3) throw new ArgumentException("--sm-presence-replay <captured-manifest.json> <new-output.json>");
+    PresenceSampleReplay.Run(args[1], args[2]); return;
+}
 if (args.FirstOrDefault() == "--ordinary-start-child") { OrdinaryRuntimeStartup.Child(args); return; }
 if (args.FirstOrDefault() == "--installation-storage-helper") { await InstallerStorageMatrix.Helper(args); return; }
 if (args.FirstOrDefault() == "--installation-storage-ordinary-child") { InstallerStorageMatrix.OrdinaryChild(args); return; }

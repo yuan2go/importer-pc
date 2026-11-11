@@ -40,6 +40,7 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
     Task? supervisor;
     string? supervisionFailure;
     long manualCommandsSubmitted, manualCommandsCompleted;
+    readonly ConcurrentDictionary<string, long> manualSubmittedByPosition = new(), manualCompletedByPosition = new();
     public void RegisterUi(string id)
     {
         if (!Guid.TryParseExact(id, "N", out _) || uiProgress.Count >= 8) throw new InvalidOperationException("UI progress registration limit/identity");
@@ -75,8 +76,19 @@ public sealed partial class ParcelRuntime : IRuntimeProgress
             Flow = FlowPerformance(),
             Presentation = PresentationProgress(),
             Workers = WorkerProgress(),
-            ManualCommands = new { Submitted = Interlocked.Read(ref manualCommandsSubmitted), Completed = Interlocked.Read(ref manualCommandsCompleted), Meaning = "Durable command acceptance/decision; not RCS completion" },
+            ManualCommands = new
+            {
+                Submitted = Interlocked.Read(ref manualCommandsSubmitted), Completed = Interlocked.Read(ref manualCommandsCompleted),
+                Positions = positions.Keys.Select(position => new { Position = position, Submitted = manualSubmittedByPosition.GetValueOrDefault(position), Completed = manualCompletedByPosition.GetValueOrDefault(position) }).ToArray(),
+                Meaning = "Durable command acceptance/decision; not RCS completion"
+            },
             RcsDispatch = (ports?.Wcs as IWcsDispatchResources)?.DispatchProgress,
+            Execution = new
+            {
+                ManagedExecutions = smExecutions.Count, BeforeAttemptWaits = smSendWaits.Count,
+                ActiveStageOwners = activeStages.Count, RetainedAuxiliaryTasks = auxiliary.Count,
+                Meaning = "Independently sampled local owners, including retained completed tasks; not remote acceptance or parcel counts"
+            },
             Ui = uiProgress.Select(p => p.Value.Snapshot(p.Key)).ToArray(),
             Background = backgroundTasks.Select(p => new
             {

@@ -5,7 +5,7 @@
   "DeviceEvidence": "REQUIRED: authorized fixture identity; never infer real-device qualification",
   "RcsContractEvidence": "REQUIRED: contract identity, known Unknown recovery limitations",
   "NormalHours": 24,
-  "InputRateMeaning": "Application input receipts per second; camera frames, observations, placements and new RCS requests are separate",
+  "InputRateMeaning": "Durable camera ingress plus manual command acceptances per second, reported separately; not frames, parcels or RCS requests",
   "WarmupSeconds": 900,
   "MinimumFreeBytes": null,
   "MaxEvidenceBytes": null,

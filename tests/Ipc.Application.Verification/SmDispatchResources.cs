@@ -63,6 +63,31 @@ internal static class SmDispatchResources
                 "original started calls finish, canceled round never calls later, and every real send owner drains");
             await SmRoundFixture.ConfirmRemovedAsync(h.App, "left"); await SmRoundFixture.ConfirmRemovedAsync(h.App, "right");
 
+            var beforeLoad = h.Peer.Requests.Count;
+            var loadClock = System.Diagnostics.Stopwatch.StartNew();
+            List<object> loadSamples = [];
+            for (var i = 0; i < 100; i++)
+            {
+                var side = i % 2 == 0 ? "left" : "right";
+                var receipt = await Submit(side, "SYNTH-SUSTAINED-" + i);
+                await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
+                await SmRoundFixture.ConfirmRemovedAsync(h.App, side);
+                using var process = System.Diagnostics.Process.GetCurrentProcess(); process.Refresh();
+                var progress = h.Factory.Rcs.DispatchProgress;
+                if (progress.Occupied > progress.Capacity || progress.ActiveSends > progress.Occupied || progress.LeftWaiting > 128 || progress.RightWaiting > 128)
+                    throw new InvalidOperationException("Actual local send ownership exceeded its documented bound");
+                loadSamples.Add(new { ElapsedMs = loadClock.Elapsed.TotalMilliseconds, progress,
+                    process.PrivateMemorySize64, process.WorkingSet64, process.HandleCount, Threads = process.Threads.Count, Runtime = h.App.RuntimeProgress() });
+            }
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity?.ManagedExecutions == 0);
+            Check(h.Peer.Requests.Count == beforeLoad + 100 && h.Factory.Rcs.DispatchProgress is { Occupied: 0, ActiveSends: 0, LeftWaiting: 0, RightWaiting: 0 },
+                "100 alternating independent manual rounds each make one actual POST and all managed send owners drain");
+            ExtensionStore.AtomicWrite(Path.Combine(root, "send-resource-load.json"), new
+            {
+                Scope = "SYNTHETIC_SHORT_LOAD_ONLY; loopback peer shares this process; no field 24/72-hour qualification",
+                Rounds = 100, ElapsedMs = loadClock.Elapsed.TotalMilliseconds, Samples = loadSamples
+            });
+
             // Exercise actual Stop with both network calls and a queued unsent round.
             var beforeStop = h.Peer.Requests.Count;
             await Fill("SYNTH-STOP-", beforeStop);

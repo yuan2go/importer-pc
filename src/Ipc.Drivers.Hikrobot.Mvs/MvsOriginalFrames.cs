@@ -13,6 +13,8 @@ internal sealed class MvsOriginalFrames : IDisposable
     int count;
     long bytes;
     internal int Count { get { lock (gate) return count; } }
+    internal object Snapshot()
+    { lock (gate) return new { Frames = count, Bytes = bytes, MaximumFrames, MaximumBytes, Leases = frames.Values.Sum(f => f.Leases), RegisteredIdentities = frames.Count }; }
     internal void Enable() { lock (gate) { ObjectDisposedException.ThrowIf(disposed, this); enabled = true; } }
     internal Frame? Reserve(int length, int width, int height, CancellationToken token)
     {

@@ -9,7 +9,19 @@ public sealed partial class SportmasterRcsTaskService : IWcsDispatchResources
     // plus an independent one-connection heartbeat pool.
     internal const int MaximumDestinationSends = 7;
     readonly RcsSendSlots sendSlots = new();
-    public WcsDispatchProgress DispatchProgress => sendSlots.Snapshot();
+    public WcsDispatchProgress DispatchProgress
+    {
+        get
+        {
+            lock (lifecycle) return sendSlots.Snapshot() with
+            {
+                Running = running && !disposed,
+                RemoteConfirmed = running && !disposed && heartbeatResponseReceived && heartbeatFailure is null &&
+                    heartbeatReceivedAt <= HeartbeatTimeForVerification.GetUtcNow() && heartbeatValidUntil > HeartbeatTimeForVerification.GetUtcNow(),
+                RemoteValidUntil = heartbeatResponseReceived ? heartbeatValidUntil : null
+            };
+        }
+    }
     public async Task<IWcsDispatchPermit> ReserveDispatchAsync(FrozenRequest request, CancellationToken token)
     {
         var owned = Wire.Decode<FrozenRequest>(Wire.Encode(request));

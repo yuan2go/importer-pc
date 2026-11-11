@@ -320,6 +320,13 @@ internal static class MvidReader
         }
         api.EnqueueNative(CameraRoundHarness.EmptyTray, 33, [Symbol("SYNTH-ALREADY-DECODED")]);
         await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().WaitingForOriginalCapacity));
+        using (var performance = JsonDocument.Parse(Wire.Encode(source.ReadPerformance())))
+        {
+            var pool = performance.RootElement.GetProperty("OriginalFrames");
+            Check(pool.GetProperty("Frames").GetInt32() == 32 && pool.GetProperty("Bytes").GetInt64() <= pool.GetProperty("MaximumBytes").GetInt64() &&
+                source.ReadDiagnostics() is { NativeBufferBorrowed: false, RetainedNativeFrameBytes: > 0 },
+                "actual pool and retained native frame telemetry account for bounded capacity without retaining the SDK borrowed buffer");
+        }
         await source.StopAsync(default);
         Check(inputs.Count == 32 && source.Undelivered is { SourceEventId: "mvid.frame.33" } pending && pending.Codes.Single() == "SYNTH-ALREADY-DECODED",
             "stopping during image capacity wait retains the already decoded native input and its original identity");

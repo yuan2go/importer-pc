@@ -64,6 +64,7 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     repository.Commit(null, "OperatorBarcodeSubmitted", Wire.Encode(new { Command = request, Evidence = evidence, Observation = observation }),
                         command: command, commandResult: new("Pending", "人工输入已持久接纳；结果尚待核对，禁止以新命令盲重发。", repository.Revision + 1));
                     Interlocked.Increment(ref manualCommandsSubmitted);
+                    manualSubmittedByPosition.AddOrUpdate(request.PositionId, 1, (_, count) => count + 1);
                     activeOperatorCommands.Add(request.CommandId);
                     ObservationHandling handled;
                     try { handled = await ProcessTrustedObservationAsync(request.PositionId, observation, currentOperator, at, readers[position.ReaderDeviceId]).ConfigureAwait(false); }
@@ -75,6 +76,7 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     repository.CompleteCommand(command, new("BarcodeResult", Wire.Encode(result), result.Revision),
                         new { RuntimeId = runtimeId, request.CommandId, handled.RoundId, result.OperationId, handled.Disposition, Meaning = "Input decision and durable handoff only; external result independent" });
                     Interlocked.Increment(ref manualCommandsCompleted);
+                    manualCompletedByPosition.AddOrUpdate(request.PositionId, 1, (_, count) => count + 1);
                     return result;
                 }
                 catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperatorBarcode"); throw; }

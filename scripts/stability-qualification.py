@@ -117,6 +117,69 @@ def validate_plan(plan):
         raise ValueError('Set an explicit throughput deficit tolerance 0..10 percent')
 
 
+def compact_sample(sample):
+    """Keep long-run counters/models; detailed frame traces use the existing short collector."""
+    result = dict(sample)
+    progress = result['Progress'] = dict(sample['Progress'])
+    if isinstance(progress.get('Flow'), dict):
+        progress['Flow'] = {key: value for key, value in progress['Flow'].items() if key != 'Recent'}
+    connections = []
+    for source in progress.get('Connections', []):
+        item = dict(source)
+        if isinstance(item.get('Performance'), dict):
+            item['Performance'] = dict(item['Performance'])
+            if isinstance(item['Performance'].get('Acquisition'), dict):
+                item['Performance']['Acquisition'] = {key: value for key, value in item['Performance']['Acquisition'].items() if key != 'RecentFrames'}
+        connections.append(item)
+    progress['Connections'] = connections
+    result['TraceScope'] = 'Long-run counters, calibration and owners; frame/flow details use dual-camera-performance.py and original backup journals'
+    return result
+
+
+def observe_resources(sample, trends, cameras):
+    def metric(name, value):
+        entry = trends.setdefault(name, dict(Samples=0, Missing=0, Start=None, End=None, Minimum=None, Maximum=None))
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+            entry['Missing'] += 1
+            return
+        if not entry['Samples']:
+            entry['Start'] = entry['Minimum'] = entry['Maximum'] = value
+        entry['Samples'] += 1; entry['End'] = value
+        entry['Minimum'] = min(entry['Minimum'], value); entry['Maximum'] = max(entry['Maximum'], value)
+    for key in ('WorkingSet64', 'PrivateMemorySize64', 'ManagedBytes', 'HandleCount', 'Threads', 'CpuTotalMs', 'DatabaseBytes', 'WalBytes'):
+        metric('Process.' + key, (sample.get('Resource') or {}).get(key))
+    progress = sample['Progress']
+    for section, fields in [('Execution', ('ManagedExecutions', 'BeforeAttemptWaits', 'ActiveStageOwners', 'RetainedAuxiliaryTasks')),
+                            ('RcsDispatch', ('Capacity', 'Occupied', 'ActiveSends', 'LeftWaiting', 'RightWaiting')),
+                            ('Diagnostics', ('Written', 'WrittenBytes', 'QueueDepth', 'Dropped'))]:
+        for key in fields:
+            metric(section + '.' + key, (progress.get(section) or {}).get(key))
+    for source in progress.get('Connections', []):
+        device = source.get('DeviceId')
+        if not isinstance(device, str) or not device:
+            raise ValueError('Camera resource sample has no device identity')
+        state = cameras.setdefault(device, dict(Samples=0, Epoch=None, EpochChanges=0, MissingModelSamples=0,
+                                               CalibratedSamples=0, UncalibratedSamples=0, UnknownPresenceSamples=0, HealthCounts={}))
+        state['Samples'] += 1
+        if state['Epoch'] is not None and state['Epoch'] != source.get('Epoch'):
+            state['EpochChanges'] += 1
+        state['Epoch'] = source.get('Epoch')
+        health = source.get('Health') or 'Unknown'
+        state['HealthCounts'][health] = state['HealthCounts'].get(health, 0) + 1
+        model = (source.get('Acquisition') or {}).get('TrayPresenceModel')
+        if not isinstance(model, dict):
+            state['MissingModelSamples'] += 1
+        else:
+            if model.get('Calibrated') is True: state['CalibratedSamples'] += 1
+            elif model.get('Calibrated') is False: state['UncalibratedSamples'] += 1
+            else: state['MissingModelSamples'] += 1
+            if model.get('Presence') == 'Unknown': state['UnknownPresenceSamples'] += 1
+        original = (source.get('Performance') or {}).get('OriginalFrames') or {}
+        for key in ('Frames', 'Bytes', 'Leases', 'MaximumFrames', 'MaximumBytes'):
+            metric('Camera.' + device + '.Original.' + key, original.get(key))
+        metric('Camera.' + device + '.RetainedNativeFrameBytes', (source.get('Acquisition') or {}).get('RetainedNativeFrameBytes'))
+
+
 def collect(args):
     if platform.system() != 'Windows':
         raise RuntimeError('NOT_RUN: target Windows required')
@@ -133,6 +196,7 @@ def collect(args):
     started = time.monotonic(); last = started; normal_start = None; normal_end = None; normal_tick = None; last_normal_tick = None
     failures = collections.Counter(); samples = 0; written = 0; first_normal = None; last_normal = None
     windows = {}; window_start = {}; window_last = {}; resource_start = None; resource_end = None
+    resource_trends = {}; camera_states = {}
     metadata = dict(Started=utc(), RuntimeId=runtime, ProcessId=pid, Executable=str(process.executable),
                     SourceCommit=identity['SourceCommit'], ReleaseManifestSha256=sha(release / 'SHA256SUMS'),
                     Plan=plan, OS=platform.platform(), Scope='ACTUAL_SINGLE_PROCESS_OBSERVATION; no automatic business/qualification PASS')
@@ -153,7 +217,7 @@ def collect(args):
                 if shutil.disk_usage(output).free < plan['MinimumFreeBytes']:
                     failures['EvidenceVolumeReserve'] += 1; break
                 try:
-                    sample = read_json(progress_file); progress = sample['Progress']
+                    sample = compact_sample(read_json(progress_file)); progress = sample['Progress']
                     if progress['RuntimeId'] != runtime or progress['ProcessId'] != pid:
                         failures['RuntimeIdentityChanged'] += 1; break
                     stale = (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(progress['At'])).total_seconds()
@@ -161,6 +225,7 @@ def collect(args):
                         failures['SupervisionStaleOrClockChanged'] += 1
                     is_normal = now - started >= warmup
                     if is_normal:
+                        observe_resources(sample, resource_trends, camera_states)
                         if normal_start is None:
                             normal_start = utc(); first_normal = progress; resource_start = sample['Resource']; normal_tick = now
                         normal_end = utc(); last_normal = progress; resource_end = sample['Resource']; last_normal_tick = now
@@ -209,7 +274,7 @@ def collect(args):
     finally:
         process.close()
         actual = max(0, (last_normal_tick or started) - (normal_tick or started))
-        rates = {}
+        rates = {}; camera_rates = {}; manual_rates = {}
         normal_ui = []
         for window_id, last_ui in windows.items():
             bins = {upper: count - window_start[window_id].get(upper, 0) for upper, count in window_last[window_id].items()}
@@ -229,14 +294,28 @@ def collect(args):
                 after = next((w for w in last_normal['Workers'] if w['Position'] == position), None)
                 if not before or not after:
                     failures['MissingPosition:' + position] += 1; continue
-                rate = (after['Received'] - before['Received']) / actual; rates[position] = rate
+                camera_delta = after['Received'] - before['Received']
+                first_manual = next((p for p in first_normal.get('ManualCommands', {}).get('Positions', []) if p['Position'] == position), {})
+                last_manual = next((p for p in last_normal.get('ManualCommands', {}).get('Positions', []) if p['Position'] == position), {})
+                manual_delta = last_manual.get('Submitted', -1) - first_manual.get('Submitted', 0)
+                camera_rates[position] = camera_delta / actual if camera_delta >= 0 else None
+                manual_rates[position] = manual_delta / actual if 'Submitted' in first_manual and 'Submitted' in last_manual and manual_delta >= 0 else None
+                if camera_rates[position] is None or manual_rates[position] is None:
+                    rates[position] = None; failures['InputCounterEvidenceMissingOrReset:' + position] += 1; continue
+                rate = camera_rates[position] + manual_rates[position]; rates[position] = rate
                 if rate < target * (1 - plan['MaximumRateDeficitPercent'] / 100):
                     failures['InputRateBelowPlan:' + position] += 1
+        for trend in resource_trends.values():
+            trend['Delta'] = trend['End'] - trend['Start'] if trend['Samples'] >= 2 else None
+            trend['DeltaPerHour'] = trend['Delta'] * 3600 / actual if trend['Delta'] is not None and actual else None
         report = dict(Status='SMOKE_ONLY' if args.smoke_seconds else 'COLLECTED_REQUIRES_RECONCILIATION' if actual >= normal_seconds and not failures else 'NOT_QUALIFIED',
                       ActualNormalSeconds=actual, RequiredNormalSeconds=plan['NormalHours'] * 3600, WarmupSeconds=warmup, ObservedInputHz=rates,
                       NormalStart=normal_start, NormalEnd=normal_end, Samples=samples, Bytes=written, Failures=dict(failures),
                       RuntimeId=runtime, SourceCommit=identity['SourceCommit'], FirstNormal=first_normal, LastNormal=last_normal,
                       Ui=normal_ui, ResourceStart=resource_start, ResourceEnd=resource_end,
+                      CameraInputHz=camera_rates, ManualCommandHz=manual_rates, ResourceTrends=resource_trends, CameraStates=camera_states,
+                      RateScope='Durable camera inputs plus manual command acceptances, counted separately; not parcels, frames or RCS calls',
+                      ResourceScope='Observed process/SQLite, local task/send/image owners and journal bytes; camera states are sampled evidence, not physical counts or field qualification',
                       Qualification='REVIEW_REQUIRED; source-to-receipt, target hardware, real devices/contracts and recovery evidence are independent')
         (output / 'collection.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
         print(json.dumps(report, ensure_ascii=False))

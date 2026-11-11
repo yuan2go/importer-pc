@@ -1,0 +1,21 @@
+{
+  "Schema": 1,
+  "SourceCommit": "REPLACE_WITH_CAPTURE_SOURCE_FULL_COMMIT",
+  "SourceKind": "FieldCaptured",
+  "DeviceId": "sm-camera-left",
+  "ReaderEngine": "mvid-native",
+  "ClockBasis": "CaptureWallClockOnly",
+  "Frames": [
+    {
+      "SessionId": "REPLACE_WITH_CAPTURE_EPOCH",
+      "FrameNumber": 1,
+      "HostElapsedMs": 0,
+      "RelativeFile": "images/REPLACE_WITH_EXPORTED_FRAME_ID.pgm",
+      "Sha256": "REPLACE_WITH_EXPORTED_FILE_SHA256",
+      "Width": 1280,
+      "Height": 1024,
+      "ConfirmEmptyCalibration": true,
+      "OperatorExpected": "Absent"
+    }
+  ]
+}

@@ -38,3 +38,9 @@
 跨 Application 的现有验证、真实协议拒绝和无法证明无效的检查保留。Windows 符号链接权限、受保护目录及安装授权属于环境条件，不能将其失败归为过期预期或通过放宽生产校验消除。
 
 格式和版本见 [版本规则](version-compatibility-01.md)，运行见 [入门](getting-started.md)，备份分析证据见 [长稳说明](win11-24x7-stability-remediation-01.md)。
+
+## 参数与分支证据入口
+
+当前参数流程见[首配与保存](parameter-guidance-startup-01.md)和[参数清单](parameter-inheritance-02.md)。取格口默认1000ms；自动识读独立1000ms，不按RCS期限丢弃合法输入。参数回归使用`sm-parameters`、`rcs-timeout-errors`、`parameter-refactor`（已含inheritance）和`parameter-guidance-startup`，Windows增加首配默认与统一偏好部分保存验证。过期“换码即新件”、无正式候选必须产生UI输入和队列设置可编辑等预期改为当前轮次/处理回执契约。
+
+原`industrial-coverage.runsettings`和`verify_product_coverage.py`仍只负责四程序集的实际子进程行覆盖门槛。`scripts/measure-product-branches.ps1`在独立二进制副本上使用固定Coverlet 10.1.0采集真实OpenCover分支，输出原报告、运行命令/退出码、源身份及`branches.json/md`。所有自有`src/**/*.cs`纳入源清单；缺采集的分支数为未知，未命中的分支逐项列明，不假定不可达，不缩小分母宣称全覆盖。不同程序集字节版本分别记账；纯WPF测试程序集中的链接生产代码不伪装成生产程序集覆盖。完整可达分支覆盖仍须以实际报告和缺口为准，硬件/权限/现场未运行不能签合格。

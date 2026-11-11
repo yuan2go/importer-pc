@@ -1,3 +1,5 @@
+> 历史记录：本文保留PR73及后续原提交的结论，不定义当前字段、布局、默认值或生效方式。当前入口为[参数归属与生效](parameter-inheritance-02.md)和[首配规则](parameter-guidance-startup-01.md)。下文所有旧规则仅描述当时版本。
+
 > 2026-11-02 当前任务导航、双相机/统一RCS、完整候选生效和查询边界见[SM-UI-SPEC-CLOSURE-24](../runtime/sm-ui-spec-closure-24.md)。旧页面摆放保留形成时范围；系统/业务/驱动/组件字段所有权、原请求及历史证据不变。
 
 > 2026-10-29 当前 SM 自动重连、参数自动等待保存、移除暂停/恢复及 RCS 延后勾选、离线退出修复见 [SM-AUTO-CONNECTION-WORKFLOW-01](../archive/work-packages/WP-IPC-SM-AUTO-CONNECTION-WORKFLOW-01.md)。下文冲突操作保留形成时范围，原请求和资源责任不变。
@@ -18,7 +20,7 @@
 
 # PARAM-01 参数正式重构：实现与验证
 
-2026-10-20。参数及必要联动实现完成，受影响构建和下列定向验证已通过；真实设备、RCS 和现场验收仍待执行。本页是现行参数操作入口，原型和旧发行证据保留各自身份。设计边界见 [现行裁决](../archive/design/parameter-refactor-01.md)，完整 UI 余项见 [工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
+2026-10-20。参数及必要联动实现完成，受影响构建和下列定向验证已通过；真实设备、RCS 和现场验收仍待执行。本页仅保留PR73形成时的历史参数、实现及验证身份；当前操作从参数归属与生效文档进入。设计边界见 [现行裁决](../archive/design/parameter-refactor-01.md)，完整 UI 余项见 [工作包](../archive/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)。
 
 ## 来源与并行保护
 

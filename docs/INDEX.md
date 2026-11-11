@@ -10,6 +10,7 @@
 
 - [运行入门](runtime/getting-started.md)、[D 盘环境](runtime/d-drive-storage-20261021.md)
 - [当前代码与验证边界](runtime/current-contract-cleanup-01.md)、[当前格式与版本](runtime/version-compatibility-01.md)
+- [SM参数、默认与保存](runtime/parameter-inheritance-02.md)、[首次配置与日常设置](runtime/parameter-guidance-startup-01.md)
 - [管理模式](runtime/management-mode-01.md)
 - [安装、卸载与生命周期](runtime/lifecycle-ux-current-guidance-01.md)
 - [MVS 软件识别](runtime/mvs-software-reader-01.md)

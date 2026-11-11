@@ -29,7 +29,7 @@ static partial class Program
         if (args.Contains("--p0-crash-hooks")) return P0Dispatcher.Parent();
 #endif
         var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-        var evidence = (args.Contains("--task-redesign") || args.Contains("--management-mode"))
+        var evidence = (args.Contains("--unsaved-window-actions") || args.Contains("--management-mode"))
             ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
             : Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
         Directory.CreateDirectory(evidence);
@@ -123,6 +123,7 @@ static partial class Program
                 else if (args.Contains("--installer-first-run-ui")) { await VerifyInstallerFirstRunUi(root, evidence, lines); await VerifyMaintenanceProgressNative(evidence, lines); }
                 else if (args.Contains("--clean-install-bootstrap")) await VerifyCleanInstallBootstrap(evidence, lines);
                 else if (args.Contains("--management-mode")) await VerifyOperatorAdministration(root, evidence, lines);
+                else if (args.Contains("--debug-batch-actions")) await VerifyDebugBatchActions(root, evidence, lines);
                 else if (args.Contains("--startup-read-failure")) await VerifyStartupReadFailure(evidence, lines);
                 else if (args.Contains("--startup-experience")) await VerifyStartupExperience(root, evidence, lines);
                 else if (args.Contains("--parameter-shell-polish")) await VerifyParameterShellPolish(root, evidence, lines, args.Contains("--baseline"));
@@ -130,6 +131,7 @@ static partial class Program
                 else if (args.Contains("--hikrobot-sdk-editing")) await VerifyHikrobotSdkEditing(root, evidence, lines);
                 else if (args.Contains("--parameter-v3-only")) await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--parameter-v3")) { await VerifyTaskRedesign(root, evidence, lines, false); await VerifyParameterExperience(root, evidence, lines, false, false); await VerifyParameterRefactor(root, evidence, lines, false); await VerifyParameterV3(root, evidence, lines, args.Contains("--interactive")); }
+                else if (args.Contains("--unsaved-window-actions")) await VerifyUnsavedWindowActions(evidence, lines);
                 else if (args.Contains("--task-redesign")) await VerifyTaskRedesign(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--audit-performance")) await VerifyAuditPerformance(root, evidence, lines);

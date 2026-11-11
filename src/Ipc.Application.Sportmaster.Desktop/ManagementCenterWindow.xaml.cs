@@ -37,7 +37,7 @@ public partial class ManagementCenterWindow : Window
         AuthorizationStatus.Text = status.Authorized ? $"授权至 {status.ExpiresAt?.ToLocalTime():HH:mm} · 关闭窗口后结束授权" : "管理授权已结束；可验证密码后继续。";
     }
     public void SetClosing(bool value) { IsEnabled = !value; if (value) AuthorizationStatus.Text = "正在结束管理操作，请稍候…"; }
-    public void ShowCloseFailure() => AuthorizationStatus.Text = "管理窗口尚未关闭，请稍后重试；未保存的设置保留。";
+    public void ShowCloseFailure(string reason) => AuthorizationStatus.Text = "管理窗口尚未关闭，原资源及未保存设置保留。请处理原因后再次关闭：" + reason;
     void Navigate_Click(object sender, RoutedEventArgs e) => navigate((string)((Button)sender).Tag);
     async void Authenticate_Click(object sender, RoutedEventArgs e) => await authenticate();
     async void Renew_Click(object sender, RoutedEventArgs e) => await renew();

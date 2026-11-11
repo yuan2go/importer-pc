@@ -214,7 +214,12 @@ static partial class Program
         Check(!guardedWindow.ViewModel.IsManagementMode && ((Border)guardedCenter.FindName("AuthorizationGate")).IsVisible &&
             (await runtime.SnapshotAsync()).Positions!.All(p => !p.Admit),
             "authorization lost during entry still opens the owned locked window instead of silently stranding paused production");
+        guardedProbe.FailCloseOnce = true;
+        Click(guardedCenter, "关闭");
+        await Until(() => guardedCenter.IsEnabled && Descendants(guardedCenter).OfType<TextBlock>().Any(t => t.Text.Contains("Synthetic retained workspace resource")));
+        Check(guardedCenter.IsVisible && (await runtime.SnapshotAsync()).Positions!.All(p => !p.Admit), "expired authorization and release failure retain the original window, reason and production fence");
         Click(guardedCenter, "关闭"); await Until(() => !guardedCenter.IsVisible);
+        Check(guardedProbe.ClosingOwners.Count == 2 && guardedProbe.ClosingOwners.Distinct().Count() == 1, "retry closes the same original management owner after release recovers");
         Check((await runtime.SnapshotAsync()).Positions!.All(p => p.Admit), "the locked entry window can close and restore production without another password");
         guardedWindow.Close(); await Until(() => !guardedWindow.IsVisible);
         lines.Add("Windows WPF HWND/Dispatcher, synthetic ports and data. No real SDK, customer RCS or site acceptance.");
@@ -273,11 +278,18 @@ public class ManagementStatusUiProbe : ProjectionProbe
 {
     public Func<Task<ManagementModeStatus>>? StatusRead;
     public Func<Task>? AfterOpen;
+    public bool FailCloseOnce;
+    public readonly List<string> ClosingOwners = [];
     protected override object? Invoke(MethodInfo? method, object?[]? arguments) =>
         method!.Name == nameof(IWorkstationAdministration.ManagementModeStatusAsync) && StatusRead is { } read ? read() :
         method.Name == nameof(IManagementWorkspace.SetManagementWorkspaceAsync) ? Workspace(method, arguments!) : base.Invoke(method, arguments);
     async Task<BusinessReceipt> Workspace(MethodInfo method, object?[] arguments)
     {
+        if (arguments[1] is false)
+        {
+            ClosingOwners.Add((string)arguments[0]!);
+            if (FailCloseOnce) { FailCloseOnce = false; throw new IOException("Synthetic retained workspace resource"); }
+        }
         var receipt = await (Task<BusinessReceipt>)method.Invoke(Inner, arguments)!;
         if (arguments[1] is true && AfterOpen is { } opened) await opened();
         return receipt;

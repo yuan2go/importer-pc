@@ -73,6 +73,9 @@ internal sealed partial class StationDebugControl : UserControl
     Guid? ownedManualRuntime;
     bool active, busy, polling, fit = true, authoritative;
     long generation;
+    TaskCompletionSource? actionFinished;
+    Task deactivation = Task.CompletedTask;
+    long activation;
     double zoom = 1;
     Point? pan;
     double panX, panY;
@@ -183,7 +186,12 @@ internal sealed partial class StationDebugControl : UserControl
         AutomationProperties.SetName(responseBody, "RCS 原始回包"); AutomationProperties.SetLiveSetting(result, AutomationLiveSetting.Polite);
         AutomationProperties.SetLiveSetting(state, AutomationLiveSetting.Polite); AutomationProperties.SetLiveSetting(feedback, AutomationLiveSetting.Assertive);
         timer.Tick += async (_, _) => await PollAsync();
-        Loaded += async (_, _) => { active = true; lifetime = new(); timer.Start(); LayoutColumns(); await PollAsync(); };
+        Loaded += async (_, _) =>
+        {
+            var requested = ++activation; await deactivation;
+            if (!IsLoaded || requested != activation) return;
+            active = true; lifetime = new(); timer.Start(); LayoutColumns(); Buttons(); await PollAsync();
+        };
         Unloaded += (_, _) => Deactivate();
     }
     async Task PrepareManualAsync(CancellationToken token)
@@ -265,15 +273,17 @@ internal sealed partial class StationDebugControl : UserControl
     }
     async Task Run(Func<CancellationToken, Task> action)
     {
-        if (!active || busy) return; busy = true; var ownership = lifetime; Buttons();
-        try { await vm.RequireManagementModeAsync(); await action(lifetime!.Token); }
+        if (!active || busy || batch is not null) return;
+        busy = true; var ownership = lifetime!; var token = ownership.Token;
+        var completion = actionFinished = new(TaskCreationOptions.RunContinuationsAsynchronously); Buttons();
+        try { await vm.RequireManagementModeAsync(); await action(token); }
         catch (OperationCanceledException) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = "已停止等待。请求可能已发出，调试状态未变；请查看本轮结果。"; } }
         catch (Exception error) { if (active && ReferenceEquals(ownership, lifetime)) { authoritative = false; feedback.Text = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, DebugFailure); } }
-        finally { busy = false; if (active) { Buttons(); await PollAsync(); } }
+        finally { busy = false; completion.TrySetResult(); if (active) { Buttons(); await PollAsync(); } }
     }
     public async Task PollAsync()
     {
-        if (!active || busy || polling || tabs.SelectedIndex == 1 || !vm.IsManagementMode || rounds is null || inspection is null) return;
+        if (!active || busy || batch is not null || polling || tabs.SelectedIndex == 1 || !vm.IsManagementMode || rounds is null || inspection is null) return;
         polling = true; var version = generation; var token = lifetime!.Token;
         try
         {
@@ -372,6 +382,7 @@ internal sealed partial class StationDebugControl : UserControl
     void ClearRoundDisplay() { ClearPhoto(); barcode.Clear(); updatingRequest = true; try { SetText(requestBarcode, manualDrafts.GetValueOrDefault(position, "")); } finally { updatingRequest = false; } requestDirty = manualDrafts.ContainsKey(position); requestBody.Clear(); responseBody.Clear(); displayedResponse = null; originalResponseText = null; copyResponse.IsEnabled = false; send.ToolTip = state.ToolTip = null; result.Text = "本轮尚未发送请求。"; result.Visibility = Visibility.Visible; photoCaption.Text = "等待本轮对应读码照片…"; imageHint.Text = "等待本轮扫码照片\n点击“触发扫码”开始读取。"; }
     void Buttons()
     {
+        UpdateBatchButtons();
         var noCode = current?.DeviceId == Position.ReaderId && current.ConsecutiveNoCodeFrames >= 3 && current.Frame is null;
         if (photo.Source is null && current?.DeviceId == Position.ReaderId)
             imageHint.Text = current.ManualRequest ? "本次为手工输入请求，无扫码照片。" : noCode ? "无条码\n请调整包裹或条码朝向。" : current.State is "Preparing" or "Reading" or "Sealing" ? "正在读取本轮条码…\n读到单码后自动锁定照片。" :
@@ -389,7 +400,7 @@ internal sealed partial class StationDebugControl : UserControl
         fillStatus.Text = requestDirty ? "输入已更改，请准备当前条码的请求。" : current?.DeviceId == Position.ReaderId && current.RequestBody is not null ?
             (current.ManualRequest ? "来自手工输入 · " : "来自本轮扫码 · ") + Position.Heading + " · 已填入请求" : "可扫码或手工输入条码。";
         feedback.Visibility = string.IsNullOrWhiteSpace(feedback.Text) ? Visibility.Collapsed : Visibility.Visible;
-        var waiting = observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
+        var waiting = batch is not null || observed?.State is "Preparing" or "Reading" or "Sealing" or "Sending";
         trigger.Content = armCommand is not null || beginCommand is not null ? "检查触发" : current?.State is "Preparing" or "Reading" or "Sealing" ? "扫码中…" : current?.Id is null || current.ManualRequest ? "触发扫码" : "再次扫码";
         trigger.IsEnabled = active && !busy && !waiting && vm.IsManagementMode && canCheckCamera;
         stopRead.Visibility = observed?.State is "Reading" or "Sealing" ? Visibility.Visible : Visibility.Collapsed;
@@ -403,7 +414,7 @@ internal sealed partial class StationDebugControl : UserControl
         send.IsEnabled = active && !busy && authoritative && vm.Fresh && vm.IsManagementMode && current?.Id == observed?.Id && current?.DeviceId == Position.ReaderId &&
             (sendCommand is not null || !requestDirty && current is { RequestHash: not null, SendAttempts: 0 } && (current.ManualRequest || current.Frame is { } frame && loadedFrame == frame.Id));
         copyResponse.IsEnabled = active && !busy && vm.IsManagementMode && displayedResponse?.Complete == true && originalResponseText is { Length: > 0 };
-        left.IsEnabled = right.IsEnabled = !busy; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");
+        left.IsEnabled = right.IsEnabled = !busy && batch is null; left.SetResourceReference(BackgroundProperty, position == "left" ? "AccentBackground" : "Surface"); right.SetResourceReference(BackgroundProperty, position == "right" ? "AccentBackground" : "Surface");
     }
     void LayoutColumns()
     {
@@ -442,7 +453,7 @@ internal sealed partial class StationDebugControl : UserControl
         }
     }
     public void SelectPosition(string value) { position = value == "right" ? "right" : "left"; generation++; authoritative = false; ClearRoundDisplay(); livePreview.SelectDevice(Position.ReaderId); camera.Text = Position.Heading + " · " + Position.DeviceLabel + "    " + vm.RcsServiceStatus; evidence.SelectPosition(position); Buttons(); }
-    public void Revoke() { Deactivate(); evidence.Revoke(); manualDrafts.Clear(); prepareCommand = null; current = observed = null; scope = null; beginCommand = null; armCommand = null; sendCommand = null; }
+    public void Revoke() { Deactivate(); evidence.Revoke(); }
     async Task CloseScanScopeAsync(string session, string? round)
     {
         var closed = await vm.ServiceAsync(() => Inspection.EndCameraInspectionAsync(new(Wire.Id(), session, false, true, "结束单次扫码调试")
@@ -462,15 +473,62 @@ internal sealed partial class StationDebugControl : UserControl
         catch (CameraReadRoundConflictException) { /* A newer round belongs to another explicit command. */ }
         catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "人工调试退出未完成，原请求保留；请核对原调试状态。"); }
     }
-    void Deactivate() => _ = CloseAsync();
+    void Deactivate()
+    {
+        activation++;
+        if (deactivation.IsCompleted) deactivation = ObserveDeactivationAsync();
+    }
+    async Task ObserveDeactivationAsync()
+    {
+        try { await CloseAsync(); }
+        catch (Exception error) { vm.Message = Ipc.Application.ParcelFlow.Desktop.ChineseInterfaceText.ParameterMessage(error.Message, "本窗调试结束尚未确认，原身份和证据保留；请核对或再次关闭。"); }
+    }
+    // Quiescing UI waits is distinct from the Application confirming scope closure.
+    public async Task QuiesceAsync()
+    {
+        active = false; authoritative = false; generation++; timer.Stop(); livePreview.Revoke();
+        var owner = lifetime; lifetime = null; owner?.Cancel();
+        var operation = batch;
+        if (operation is not null) { operation.StopRequested = true; operation.Wait.Cancel(); }
+        try
+        {
+            if (actionFinished is { } action) await action.Task;
+            if (operation is not null)
+            {
+                await operation.Completed.Task;
+                if (operation.Finishing is { } finishing) await finishing;
+            }
+        }
+        finally { owner?.Dispose(); }
+    }
+    public void ConfirmWorkspaceClosed(BusinessReceipt receipt)
+    {
+        if (receipt.Status != "Restored") throw new InvalidOperationException("管理窗口结束结果尚未确认。");
+        batch?.Wait.Dispose(); batch = null;
+        ownedScanSession = ownedScanRound = ownedManualRound = null; ownedManualRuntime = null;
+        beginCommand = null; armCommand = null; prepareCommand = null;
+        ClearRoundDisplay(); UpdateBatchButtons();
+    }
     public async Task CloseAsync()
     {
-        var session = ownedScanSession; var round = ownedScanRound; var manual = ownedManualRound; var runtime = ownedManualRuntime;
-        ownedScanSession = ownedScanRound = ownedManualRound = null;
-        ownedManualRuntime = null;
-        active = false; authoritative = false; generation++; timer.Stop(); livePreview.Revoke(); lifetime?.Cancel(); lifetime?.Dispose(); lifetime = null; ClearRoundDisplay();
-        if (session is not null) await CloseOwnedScanAsync(session, round);
-        else if (manual is not null && runtime is { } id) await CloseOwnedManualAsync(manual, id);
+        await QuiesceAsync();
+        if (batch is not null)
+        {
+            await StopBatchAsync();
+            if (batch is not null) throw new InvalidOperationException("原试扫结束未确认，窗口责任保留。");
+        }
+        if (ownedScanSession is { } session)
+        {
+            try { await CloseScanScopeAsync(session, ownedScanRound); }
+            catch (CameraReadRoundConflictException) { ownedScanSession = ownedScanRound = null; }
+        }
+        if (ownedManualRound is { } manual && ownedManualRuntime is { } runtime)
+        {
+            try { await vm.ServiceAsync(() => Rounds.CloseUnsentDebugRoundAsync(new(Wire.Id(), runtime, manual), CancellationToken.None)); }
+            catch (CameraReadRoundConflictException) { /* The newer round remains owned by its original request. */ }
+            ownedManualRound = null; ownedManualRuntime = null;
+        }
+        ClearRoundDisplay();
     }
     static Border Panel(UIElement child)
     {

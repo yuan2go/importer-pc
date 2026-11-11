@@ -644,7 +644,7 @@ def analyze_scan_logs(args):
     root = new_root(args.output)
     positions = {position: dict(Windows=0, WaitingSamples=0, WindowsWithWorker=0, WindowsWithStageMaxima=0,
                                 StageWindowsObserved=Counter(), StagePeaks={}, MaximumDepth=None,
-                                RoundStarts=0, RoundEnds=0, RoundDurationsMs=[], RoundEndReasons=Counter(),
+                                RoundStarts=0, RoundEnds=0, RoundTimedEnds=0, RoundTotalMs=0, RoundMinimumMs=None, RoundMaximumMs=None, RoundEndReasons=Counter(),
                                 RcsStarts=0, RcsResults=0, RcsTimedResults=0, SlowestRcsResult=None,
                                 EvidenceGaps=Counter()) for position in ('left', 'right')}
     pending_rcs = defaultdict(list)
@@ -709,7 +709,10 @@ def analyze_scan_logs(args):
                 if kind == 'RoundEnded':
                     summary['RoundEndReasons'][log_text(detail.get('EndReason')) or 'UNCONFIRMED'] += 1
                     if duration is not None:
-                        summary['RoundDurationsMs'].append(duration)
+                        summary['RoundTimedEnds'] += 1
+                        summary['RoundTotalMs'] += duration
+                        summary['RoundMinimumMs'] = duration if summary['RoundMinimumMs'] is None else min(summary['RoundMinimumMs'], duration)
+                        summary['RoundMaximumMs'] = duration if summary['RoundMaximumMs'] is None else max(summary['RoundMaximumMs'], duration)
                 emit(point, position, RoundId=log_text(detail.get('RoundId')), EndReason=detail.get('EndReason'), RoundElapsedMs=duration)
                 continue
             operation, request = (log_text(detail.get(name)) for name in ('OperationId', 'RequestId'))

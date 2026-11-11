@@ -52,7 +52,7 @@ internal static class StabilityAnalysis
                 receipt = await app.BackupAsync(backup); if (receipt.Status == "BackupCreated") break;
                 await Task.Delay(20);
             }
-            Check(receipt?.Status == "BackupCreated", "real Application/Repository generated the DB12 complete analysis input");
+            Check(receipt?.Status == "BackupCreated", "real Application/Repository generated the DB13 complete analysis input");
         }
         var original = Inventory(backup);
         var output = Path.Combine(root, "analysis.json");
@@ -62,7 +62,8 @@ internal static class StabilityAnalysis
         {
             var counters = report.RootElement.GetProperty("Counters");
             Check(counters.GetProperty("RcsFacts").GetProperty("FrozenNewIntents").GetInt32() == 1 &&
-                counters.GetProperty("PhysicalPlacements").ValueKind == JsonValueKind.Null && report.RootElement.GetProperty("CollectionStatus").GetString() == "SMOKE_ONLY",
+                counters.GetProperty("PhysicalPlacements").ValueKind == JsonValueKind.Null && report.RootElement.GetProperty("CollectionStatus").GetString() == "SMOKE_ONLY" &&
+                report.RootElement.GetProperty("RoundCounts").EnumerateArray().Single().EnumerateArray().Select(x => x.ToString()).SequenceEqual(["left", "1", "1"]),
                 "duplicate observations remain one request intent; missing placement evidence is null and smoke identity is retained");
             Check(report.RootElement.GetProperty("SourceDeliveryReconciliation").GetProperty("Status").GetString() == "NOT_RECONCILED" &&
                 report.RootElement.GetProperty("LatencyMilliseconds").GetProperty("left").GetProperty("input_queue_decision_and_handoff_ms").GetProperty("Samples").GetInt32() >= 1,

@@ -340,6 +340,23 @@ class ScanLogAnalysis(unittest.TestCase):
         self.assertIsNone(timeline[3]['ElapsedMs'])
         self.assertEqual(summary['Runtimes']['runtime-1']['UnobservedSequencesBetweenRecords'], 2)
 
+    def test_round_duration_and_call_duration_remain_independent(self):
+        source = self.root / 'rounds.jsonl'
+        write_jsonl(source, [
+            runtime_log(1, '包裹轮次', 'RoundStarted', dict(PositionId='left', RoundId='round-a', RoundElapsedMs=0)),
+            runtime_log(2, 'RCS请求', '开始请求格口', dict(PositionId='left', OperationId='op', RequestId='req')),
+            runtime_log(3, 'RCS结果', '取格口结果', dict(PositionId='left', OperationId='op', RequestId='req', ElapsedMs=40, AttemptAndReceiptMs=55)),
+            runtime_log(4, '包裹轮次', 'RoundEnded', dict(PositionId='left', RoundId='round-a', RoundElapsedMs=3000, EndReason='SuccessDisplayElapsed')),
+            runtime_log(5, '包裹轮次', 'RoundEnded', dict(PositionId='right', RoundId='round-b', RoundElapsedMs=None, EndReason='InterruptedOnRestart'))])
+        summary, timeline = self.analyze(source)
+        left, right = (summary['Positions'][side] for side in ('left', 'right'))
+        self.assertEqual((left['RoundStarts'], left['RoundEnds'], left['RoundTimedEnds'], left['RoundTotalMs']), (1, 1, 1, 3000))
+        self.assertEqual((left['RoundMinimumMs'], left['RoundMaximumMs'], left['SlowestRcsResult']['ElapsedMs']), (3000, 3000, 40))
+        self.assertEqual(left['RoundEndReasons'], {'SuccessDisplayElapsed': 1})
+        self.assertEqual((right['RoundEnds'], right['RoundTimedEnds'], right['RoundMaximumMs']), (1, 0, None))
+        self.assertEqual(timeline[3]['RoundId'], 'round-a')
+        self.assertNotIn('RoundDurationsMs', left)  # Summary memory does not grow per parcel; exact durations remain in the streamed timeline.
+
     def test_missing_and_invalid_fields_are_reported_without_fabricating_values(self):
         invalid = dict(CameraAcquire=-1, Decode=float('nan'), IngressPersistence=True, CapacityWait='5000',
                        BusinessQueue=float('inf'), BusinessGate=10**400, FrameCopy=None)

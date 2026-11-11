@@ -138,7 +138,7 @@ static partial class Program
             var rejectedSnapshot = vm.Snapshot!;
             Check(vm.Left.Operation?.Id == rejectionId && h.Peer.Requests.Count == rejectionCount &&
                 vm.Left.CenteredStateTitle == "无设备可用" && ((TextBlock)left.FindName("CenteredStateReason")).Text == "本件暂不能分配格口" &&
-                vm.Left.CenteredStateInstruction == "请取下包裹，可放下一件\n多次出现请通知维护人员" &&
+                vm.Left.CenteredStateInstruction == "请取下包裹\n多次出现请通知维护人员" &&
                 vm.Left.CanViewCurrentPicture && ((Button)left.FindName("WorkDetails")).IsEnabled && vm.Right.SupplyDisabled,
                 "same-placement frames preserve the rejection, picture and details without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);

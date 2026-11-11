@@ -69,7 +69,7 @@ static partial class Program
             h.Api(h.Right).EnqueueNative(rejectedPixels, 2, [Symbol("SYNTH-UNKNOWN", 150)]);
             await Until(() => vm.Right.HasUncertainOriginal);
             var prior = vm.Right.Operation!; var round = vm.Right.CurrentRound!.Id; var sent = h.Peer.Requests.Count;
-            Check(vm.Right.CanConfirmPlacementRemoval && vm.Right.CenteredStateInstruction.Contains("请取下包裹"),
+            Check(vm.Right.CanConfirmPlacementRemoval && vm.Right.CenteredStateInstruction == "请先取下包裹，再确认",
                 "the visual-degraded unresolved round exposes targeted manual removal");
             h.Api(h.Right).EnqueueNative(rejectedPixels, 3, [Symbol("SYNTH-NEXT-A", 20), Symbol("SYNTH-NEXT-B", 100)]);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Right].Timings.Snapshot().RecentFrames.Any(f => f.Number == 3)));

@@ -108,7 +108,7 @@ static partial class Program
                     leftSubmit.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Left.HasUncertainOriginal && !vm.Busy);
                     var original = vm.Left.Operation!.Id;
-                    var removal = (Button)left.FindName("ConfirmPlacementRemoval");
+                    var removal = (Button)left.FindName("ConfirmManualPlacementRemoval");
                     Check(removal.IsEnabled && Inside(removal, (Grid)window.FindName("ClientArea")) &&
                         vm.Left.CenteredStateInstruction == "请先取下包裹，再确认", "compact offline-camera card exposes the operator removal action without management");
                     removal.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

@@ -38,8 +38,12 @@ static partial class Program
             {
                 var position = device == h.Left ? "left" : "right";
                 var before = h.App.WorkerProgress().Single(p => p.Position == position).Processed;
-                h.Api(device).Enqueue(pixels, device == h.Left ? ++left : ++right);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == position).Processed > before));
+                var number = device == h.Left ? ++left : ++right;
+                h.Api(device).Enqueue(pixels, number);
+                // No-code frames publish recognition feedback, not business inputs.
+                if (ReferenceEquals(pixels, CameraRoundHarness.EmptyTray))
+                    await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[device].Timings.Snapshot().RecentFrames.Any(f => f.Number == number)));
+                else await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == position).Processed > before));
                 await vm.RefreshAsync(); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             }
             async Task Next(string device)

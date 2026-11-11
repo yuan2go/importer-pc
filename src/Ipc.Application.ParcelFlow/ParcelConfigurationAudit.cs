@@ -13,6 +13,29 @@ public sealed partial class ParcelRepository
 }
 public sealed partial class ParcelRuntime
 {
+    public async Task<string> ReadCameraSerialAsync(string ip, string readerEngine)
+    {
+        await gate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            Management.Require();
+            if (stopped || stopping.IsCancellationRequested) throw new InvalidOperationException("供包台正在关闭，不能读取相机身份。");
+            // Join the existing external-call drain so shutdown waits for SDK
+            // finalization, while snapshots and the other position remain usable.
+            try
+            {
+                var serial = await ExternalAsync(() => Task.Run(() => factory.ReadCameraSerial(ip, readerEngine))).ConfigureAwait(false);
+                WriteRuntimeLog("设备", "相机序列号已读取，尚未保存", new { Ip = ip, ReaderEngine = readerEngine, Serial = serial });
+                return serial;
+            }
+            catch (Exception error)
+            {
+                WriteRuntimeLog("设备", "读取相机序列号失败", new { Ip = ip, ReaderEngine = readerEngine, Error = error.ToString() }, "错误");
+                throw;
+            }
+        }
+        finally { gate.Release(); }
+    }
     public async Task<BusinessReceipt> ValidateConfigurationAsync(ParcelConfiguration candidate)
     {
         await gate.WaitAsync().ConfigureAwait(false);

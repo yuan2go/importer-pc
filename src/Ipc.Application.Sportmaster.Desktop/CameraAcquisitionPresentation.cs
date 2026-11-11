@@ -7,7 +7,7 @@ internal static class CameraAcquisitionPresentation
 {
     internal static string Describe(CameraAcquisitionResult value)
     {
-        if (value.Deferred) return "相机待配置，请填写 IP 和物理序列号后保存并应用。";
+        if (value.Deferred) return "相机待配置，请填写 IP 后保存；软件会自动读取序列号。";
         if (!value.Supported) return "当前相机来源未提供采集诊断。";
         if (value.Connection is not { } connection || connection.Epoch != value.Epoch)
             return "相机当前未连接或连接确认已过期，请检查相机连接。";

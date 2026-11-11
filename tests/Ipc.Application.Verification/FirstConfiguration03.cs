@@ -19,7 +19,7 @@ internal static class FirstConfiguration03
         var summary = FirstConfigurationReadiness.Summary(lines);
         Check(summary.Contains("左相机已填写") && summary.Contains("请先处理RCS") && !summary.Contains("可以开始"), "summary names actual missing connections without claiming production readiness");
         Check(FirstConfigurationReadiness.Lines([Left("10.0.0.5", "SN1"), Right("10.0.0.6", "SN2")], "http://rcs.example").All(l => !l.NeedsAttention), "filled cameras and RCS require no separate plan confirmation");
-        Check(FirstConfigurationReadiness.Lines([Left("10.0.0.5"), Right()], "")[0].State.Contains("只填了一项"), "half-filled camera remains a real configuration error");
+        Check(FirstConfigurationReadiness.Lines([Left("10.0.0.5"), Right()], "")[0] is { NeedsAttention: false } identity && identity.State.Contains("自动读取序列号"), "IP-only draft explains automatic identity lookup at save without claiming a live connection");
         Check(FirstConfigurationReadiness.Lines(blank, "http://rcs.example").Single(l => l.Source == "人工输入") is { NeedsAttention: false }, "manual input works with RCS and no configured cameras");
 
         var pinged = new List<string>(); var connected = new List<string>();

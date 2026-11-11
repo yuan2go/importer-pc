@@ -35,19 +35,7 @@ public static class BundledMvs
 #endif
     static IControlledObservationSource CreateCore(DeviceBinding binding, bool recognize)
     {
-        lock (resolverGate)
-        {
-            if (!resolverSet)
-            {
-                NativeLibrary.SetDllImportResolver(typeof(BundledMvs).Assembly, (name, _, _) =>
-                    name == MvsNative.Library ? runtime.Value :
-#if !MVS_ACQUISITION_EXTENSION
-                    name == MvidNative.Library ? MvidRuntime.Load() :
-#endif
-                    0);
-                resolverSet = true;
-            }
-        }
+        EnsureNativeResolver();
 #if MVS_ACQUISITION_EXTENSION
         // The existing independent module exports acquisition only. Its frozen
         // extension closure has no software-reader contract or decoder dependency.
@@ -63,4 +51,45 @@ public static class BundledMvs
         // Construction never loads native code. Actual loading remains on the source lifecycle worker.
         return new MvsAcquisition(new(binding.DeviceId, binding.DeviceId, binding.Parameters ?? throw new InvalidDataException("MVS parameters required")), new MvsApi(), decoder: decoder);
     }
+    static void EnsureNativeResolver()
+    {
+        lock (resolverGate)
+        {
+            if (!resolverSet)
+            {
+                NativeLibrary.SetDllImportResolver(typeof(BundledMvs).Assembly, (name, _, _) =>
+                    name == MvsNative.Library ? runtime.Value :
+#if !MVS_ACQUISITION_EXTENSION
+                    name == MvidNative.Library ? MvidRuntime.Load() :
+#endif
+                    0);
+                resolverSet = true;
+            }
+        }
+    }
+#if !MVS_ACQUISITION_EXTENSION
+    public static string ReadCameraSerial(string ip, string readerEngine)
+    {
+        if (!System.Net.IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork ||
+            address.ToString() != ip || ip is "0.0.0.0" or "255.255.255.255") throw new InvalidDataException("请填写具体相机的完整 IPv4 地址。");
+        if (readerEngine is not ("mvid-native" or "zxing-cpp")) throw new InvalidDataException("识码方式无效，请重新选择。");
+        EnsureNativeResolver();
+        return ReadCameraSerial(ip, readerEngine == "mvid-native" ? new MvidApi("utf-8") : new MvsApi());
+    }
+    internal static string ReadCameraSerial(string ip, IMvsApi api)
+    {
+        try
+        {
+            api.Initialize();
+            var matches = api.Enumerate().Where(d => d.Ip == ip).ToArray();
+            if (matches.Length == 0) throw new InvalidDataException("未找到此 IP 的相机，请检查地址、网络和相机供电后重新保存。");
+            if (matches.Length != 1) throw new InvalidDataException("此 IP 对应多台相机，请先处理地址冲突后重新保存。");
+            var serial = matches[0].Serial;
+            if (string.IsNullOrWhiteSpace(serial) || serial.Length > 32 || serial.Any(char.IsControl))
+                throw new InvalidDataException("相机未返回有效序列号，请检查设备后重新保存。");
+            return serial;
+        }
+        finally { api.Shutdown(); }
+    }
+#endif
 }

@@ -45,12 +45,12 @@ public sealed partial class ParameterSettingsControl
         var cameraPages = pages.Where(p => p.Category == 2 && p.Title is "左相机" or "右相机").ToArray();
         if (cameraPages.Length > 0)
         {
-            var combined = Page(2, "左右相机", "IP 用于找到相机，物理序列号用于确认设备。不使用的位置两项都留空。保存后只重新连接改动的那台相机。");
+            var combined = Page(2, "左右相机", "填写 IP 后，保存时自动读取并保存序列号；已有设备身份保持不变。不使用的位置清空 IP。保存后只重新连接改动的那台相机。");
             var columns = new Grid(); columns.ColumnDefinitions.Add(new()); columns.ColumnDefinitions.Add(new()); columns.RowDefinitions.Add(new() { Height = GridLength.Auto }); columns.RowDefinitions.Add(new() { Height = GridLength.Auto });
             combined.Body.Children.Add(columns);
             foreach (var (page, index) in cameraPages.Select((p, i) => (p, i)))
             {
-                foreach (var note in page.Body.Children.OfType<TextBlock>().Where(t => t.Text.StartsWith("填写要使用的相机", StringComparison.Ordinal) || t.Text.StartsWith("通过 IP 地址找到", StringComparison.Ordinal) || t.Text.StartsWith("填写 IP 和序列号", StringComparison.Ordinal) || t.Text.StartsWith("相机连续读码", StringComparison.Ordinal)).ToArray()) page.Body.Children.Remove(note);
+                foreach (var note in page.Body.Children.OfType<TextBlock>().Where(t => t.Text.StartsWith("填写要使用的相机", StringComparison.Ordinal) || t.Text.StartsWith("填写相机 IP", StringComparison.Ordinal) || t.Text.StartsWith("相机连续读码", StringComparison.Ordinal)).ToArray()) page.Body.Children.Remove(note);
                 var cameraDraft = Model!.Readers.First(r => (r.Role == "left" ? "左相机" : "右相机") == page.Title);
                 if (cameraDraft.Provider?.Implementation == "hikrobot-mvs-reader" && locations.TryGetValue(cameraDraft.InstanceId + "/Provider", out var provider) && provider.Row is { } providerRow && providerRow.Parent is Panel providerParent)
                 {

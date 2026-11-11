@@ -4,12 +4,19 @@ using Ipc.Platform.Storage;
 
 namespace Ipc.Application.ParcelFlow;
 
-// Application-owned offline operations. Never constructs a runtime, port or SDK.
+// Application-owned offline operations. Only an explicit camera identity lookup
+// enumerates the SDK; it never creates an acquisition handle or starts a runtime.
 public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefinition definition,
     Func<IParcelCapabilityFactory> factory, Action? requireAuthority = null, Func<string?>? authorizedActor = null) : IStartupMaintenance
 {
     internal Func<string> MaintenanceWorkspace { get; set; } = MachineRuntimeSetup.CreateMaintenanceWorkspace;
     string Seed => Path.Combine(Path.GetFullPath(launch.ConfigurationDirectory), "business.json");
+    public async Task<string> ReadCameraSerialAsync(string ip, string readerEngine)
+    {
+        Authorize();
+        await using var ports = factory();
+        return await Task.Run(() => { Authorize(); return ports.ReadCameraSerial(ip, readerEngine); }).ConfigureAwait(false);
+    }
     void Authorize() { if (requireAuthority is not null) requireAuthority(); else LocalManagementMode.ForRoot(launch.DataRoot).Require(); }
     string Actor => authorizedActor?.Invoke() ?? LocalManagementMode.ForRoot(launch.DataRoot).Evidence?.AuditActor ?? Environment.UserName;
     static byte[] ReadBytes(string path)

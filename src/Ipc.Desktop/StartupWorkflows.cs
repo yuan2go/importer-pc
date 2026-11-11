@@ -377,6 +377,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     async Task CheckCandidate()
     {
         if (startupSaveUncertain) throw new InvalidOperationException("上次保存结果未确认，请先点击“重新读取配置…”。已填写的内容保留，未重复保存。");
+        if (parameterEditor is { } editor && !await editor.PrepareCameraIdentitiesAsync())
+        { LocateFirstIssue(); throw new InvalidOperationException("未能读取相机序列号，请检查标出的相机设置后重新保存。"); }
         var candidate = RequireDraft();
         await ValidateBarcodeRule();
         var report = await Task.Run(() => maintenance.CheckAsync(candidate));
@@ -592,6 +594,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Note("首次配置与日常设置使用相同的参数和检查规则。投递位数量和设备身份不在此修改。");
             deviceStart = Body.Children.Count;
             parameterEditor = draft.CreateParameterEditor((p, samples) => maintenance.TestBarcodeFilterAsync(p, samples), new(config.Text, data.Text));
+            parameterEditor.CameraSerialReader = async (ip, engine) =>
+            {
+                try { return await maintenance.ReadCameraSerialAsync(ip, engine); }
+                catch (Exception error) { diagnosticDetails += "\n相机身份读取：" + Ipc.Platform.DiagnosticText.Protect(error.ToString()); throw; }
+            };
             sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;

@@ -20,6 +20,7 @@ static partial class Program
             "generated and packaged new stations contain neither request ranges nor fixed-chute configuration");
         await using var factory = new ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), Path.Combine(evidence, "data"), null, null));
         var catalog = factory.Catalog();
+        await VerifyCameraIdentityEditing(catalog, lines);
         var incomplete = initial.Wcs! with { Parameters = new() { ["left-station-code"] = "NEW-STATION", ["right-station-code"] = "NEW-STATION" } };
         var completing = new CapabilityDraft("integration", catalog.Providers, incomplete, true) { ConfigureLater = false, Target = "http://127.0.0.1:18849/rcs/sorter/api" };
         foreach (var parameter in completing.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) parameter.Value = "1";
@@ -40,6 +41,8 @@ static partial class Program
             Check(!rcsDraft.ProviderChangePending && Ipc.Platform.Wire.Encode(rcsDraft.Build()) == originalRcs,
                 "removed simulation proposal is cancelled without resetting the current RCS binding");
             var editor = new ParameterSettingsControl { FirstConfiguration = firstRun, Model = model };
+            Check(!editor.NavigateTo("QueueCapacity") && !editor.NavigateTo("MaximumOperations") && !editor.ShowPage(1, "接收与等待限制"),
+                "SM first configuration and daily settings expose no parcel queue or pending-operation limit settings");
             var client = new Grid(); client.Children.Add(editor);
             var window = new Window { Content = client, Title = firstRun ? "首次配置 · 默认值验证" : "日常参数 · 相机编码验证", Width = 1280, Height = 800 };
             NameScope.SetNameScope(window, new NameScope()); window.RegisterName("ClientArea", client);

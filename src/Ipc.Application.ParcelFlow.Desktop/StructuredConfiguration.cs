@@ -170,7 +170,7 @@ public partial class ParcelViewModel
 {
     ParcelConfiguration? structuredBase;
     public ParameterEditorModel? ParameterEditor { get; private set; }
-    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()); Changed(nameof(ParameterEditor)); }
+    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations, ConfigurationRoles.Single(r => r.Role == "登录"), ConfigurationRoles.ToArray()) { CameraSerialReader = (ip, engine) => ServiceAsync(() => application.ReadCameraSerialAsync(ip, engine)) }; Changed(nameof(ParameterEditor)); }
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
@@ -389,6 +389,7 @@ public partial class ParcelViewModel
     }
     public async Task ValidateStructuredConfigurationAsync()
     {
+        if (ParameterEditor is { } identityEditor && !await identityEditor.PrepareCameraIdentitiesAsync()) return;
         if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
         if (ConfigurationEditSignature() != signature) { validationState = "输入已改变，原校验结果过期；请重新检查"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
@@ -399,6 +400,7 @@ public partial class ParcelViewModel
     public async Task SaveStructuredConfigurationAsync()
     {
         RequireFreshSnapshot();
+        if (ParameterEditor is { } identityEditor && !await identityEditor.PrepareCameraIdentitiesAsync()) return;
         if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature();
         var result = await SubmitConfigurationAsync(expected, candidate);

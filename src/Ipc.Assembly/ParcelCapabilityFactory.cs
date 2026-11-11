@@ -23,6 +23,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     internal Action<string> RequireProductionManagement { get; init; } = ManagementModeBroker.RequireProduction;
     bool transferred;
     RunMode mode = RunMode.Simulation;
+    public string ReadCameraSerial(string ip, string readerEngine)
+    {
+#if SPORTMASTER
+        return Ipc.Drivers.Hikrobot.Mvs.BundledMvs.ReadCameraSerial(ip, readerEngine);
+#else
+        throw new NotSupportedException("相机身份读取仅适用于 SM 内置相机。");
+#endif
+    }
     ExtensionTrust? trustPolicy;
     string? trustFile;
     DeploymentQualification? qualification;

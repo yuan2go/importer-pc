@@ -69,10 +69,12 @@ static class InterruptedScanSkipChecks
         Check(true, "key logs identify automatic skips and the preserved original input identities without granting operator management access");
         h.Api(h.Left).EnqueueNative(pixels, 1, [Symbol("SYNTH-SKIP-A")]); await Delivered(h, "left", 1);
         h.Api(h.Left).EnqueueNative(pixels, 2, [Symbol("SYNTH-SKIP-A")]); await Delivered(h, "left", 2);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SKIP-A" && o.State == ParcelState.SlotResolved));
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single().State == ParcelState.SlotResolved,
             "a fresh parcel completes normally while continuous same-placement reads still request only once");
         h.Peer.ReplySlot = "";
         h.Api(h.Left).EnqueueNative(pixels, 3, [Symbol("SYNTH-SKIP-UNKNOWN")]); await Delivered(h, "left", 3);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SKIP-UNKNOWN" && o.State == ParcelState.WcsUnknown));
         var unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.State == ParcelState.WcsUnknown);
         var request = Wire.Encode(unknown.Wcs!.Request); var replies = Wire.Encode(unknown.Wcs.Replies);
         await h.App.DisposeAsync();
@@ -91,6 +93,7 @@ static class InterruptedScanSkipChecks
             "skip does not claim non-delivery, change the original request or reply, or resend an unknown result");
         h.Peer.ReplySlot = "SYNTH-NEXT";
         h.Api(h.Right).EnqueueNative(pixels, 1, [Symbol("SYNTH-SKIP-NEXT")]); await Delivered(h, "right", 1);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SKIP-NEXT" && o.State == ParcelState.SlotResolved));
         Check(h.Peer.Requests.Count == 3 && (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SKIP-NEXT" && o.State == ParcelState.SlotResolved),
             "the healthy position continues processing new parcels without entering management");
     }
@@ -105,6 +108,7 @@ static class InterruptedScanSkipChecks
         await CameraRoundHarness.Until(() => Task.FromResult(entered.IsSet));
         var rightPixels = CameraRoundHarness.Barcode("SYNTH-RIGHT-FAST");
         h.Api(h.Right).EnqueueNative(rightPixels, 1, [Symbol("SYNTH-RIGHT-FAST")]); await Delivered(h, "right", 1);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-RIGHT-FAST" && o.State == ParcelState.SlotResolved));
         var right = (await h.App.SnapshotAsync()).Operations.Single(o => o.PositionId == "right");
         Check(right.State == ParcelState.SlotResolved && h.App.WorkerProgress().Single(w => w.Position == "left").Processed == 0,
             "right camera completes its own RCS request while left camera durable handoff is stalled for 5.5 seconds");
@@ -145,15 +149,18 @@ static class InterruptedScanSkipChecks
             h.Api(h.Left).EnqueueNative(pixels, 1, [Symbol("SYNTH-BOTH-SAME")]);
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
             h.Api(h.Right).EnqueueNative(pixels, 1, [Symbol("SYNTH-BOTH-SAME")]); await Delivered(h, "right", 1);
+            await Delivered(h, "left", 1);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.PositionId == "right" && o.State == ParcelState.SlotResolved));
             var s = await h.App.SnapshotAsync();
             Check(h.Peer.Requests.Count == 2 && s.Operations.Single(o => o.PositionId == "right").State == ParcelState.SlotResolved &&
-                s.Operations.Single(o => o.PositionId == "left").Wcs!.Attempts == 1 && h.App.WorkerProgress().Single(w => w.Position == "left").Processed == 0,
-                "left RCS response wait does not serialize right requests; identical codes in different positions remain independent placements");
+                s.Operations.Single(o => o.PositionId == "left").Wcs is { Attempts: 1, State: StageState.Dispatching } && h.App.WorkerProgress().Single(w => w.Position == "left").Processed == 1,
+                "left input completes while its RCS response remains pending; identical codes in different positions remain independent placements");
             h.Api(h.Right).EnqueueNative(pixels, 2, [Symbol("SYNTH-BOTH-SAME")]); await Delivered(h, "right", 2);
             Check(h.Peer.Requests.Count == 2, "right repeated observation is deduplicated locally while left original response remains pending");
         }
         finally { held.TrySetResult(); h.Peer.Hold = null; }
         await Delivered(h, "left", 1);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.All(o => o.State == ParcelState.SlotResolved));
         Check((await h.App.SnapshotAsync()).Operations.All(o => o.State == ParcelState.SlotResolved) && h.Peer.Requests.Count == 2,
             "late left response completes its original task without replacing right result or resubmitting either parcel");
     }

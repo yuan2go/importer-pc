@@ -94,7 +94,30 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     bool simpleCamera;
     internal bool IsSimpleCamera => simpleCamera && Provider?.Implementation == "hikrobot-mvs-reader";
     public bool ConfigureLater { get => IsSimpleCamera ? !Parameters.Any(p => p.Field.Key is "device.ip" or "device.serial" && !string.IsNullOrWhiteSpace(p.Value)) : Provider?.Implementation == "sportmaster-rcs" ? string.IsNullOrWhiteSpace(Target) : configureLater; set { configureLater = value; Notify(); } }
-    internal void UseSimpleCameraConfiguration() { simpleCamera = true; CameraDefaults(); }
+    internal void UseSimpleCameraConfiguration()
+    {
+        if (!simpleCamera)
+        {
+            TrackCameraAddress();
+            if (!preserveOmittedDefaults && Parameters.FirstOrDefault(p => p.Field.Key == "reader.engine") is { } engine)
+                engine.Value = "mvid-native";
+        }
+        simpleCamera = true; CameraDefaults();
+    }
+    void TrackCameraAddress()
+    {
+        var ip = Parameters.FirstOrDefault(p => p.Field.Key == "device.ip");
+        if (ip is null) return;
+        var previous = ip.Value;
+        ip.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName != nameof(CapabilityParameter.Value) || previous == ip.Value || !Parameters.Contains(ip)) return;
+            previous = ip.Value;
+            // A new address must not inherit the previous camera's identity.
+            var serial = Parameters.FirstOrDefault(p => p.Field.Key == "device.serial");
+            if (serial is not null) serial.Value = "";
+        };
+    }
     void CameraDefaults()
     {
         if (!IsSimpleCamera) return;
@@ -124,6 +147,11 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
             proposedProvider = null;
             provider = value; Parameters.Clear(); originalParameters.Clear(); preserveOmittedDefaults = false;
             if (value is not null) foreach (var parameter in value.Parameters) { var item = new CapabilityParameter(parameter, parameter.Default ?? ""); item.PropertyChanged += (_, _) => Notify(nameof(Parameters)); Parameters.Add(item); }
+            if (simpleCamera)
+            {
+                TrackCameraAddress();
+                if (IsSimpleCamera && Parameters.FirstOrDefault(p => p.Field.Key == "reader.engine") is { } engine) engine.Value = "mvid-native";
+            }
             CameraDefaults();
             Contract = value?.Contract ?? "";
             Notify(nameof(Provider)); Notify(nameof(Contract)); Notify(nameof(ProviderIdentity));
@@ -169,7 +197,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         {
             parameters["entity.mode"] = "read-result"; parameters["acquisition.trigger"] = "off";
             if (!ConfigureLater && string.IsNullOrWhiteSpace(parameters.GetValueOrDefault("device.serial")))
-                throw new InvalidOperationException(InstanceId + "/device.serial: 请填写相机序列号。");
+                throw new InvalidOperationException(InstanceId + "/device.serial: 请根据 IP 读取相机序列号后保存。");
         }
         if (!ConfigureLater && ParameterOwnership.StationConflict(this))
             throw new InvalidOperationException("供包台编号不一致；请在系统配置核对原值并填写共同编号");

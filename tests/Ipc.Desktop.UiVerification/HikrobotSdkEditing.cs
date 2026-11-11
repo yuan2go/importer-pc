@@ -13,6 +13,7 @@ static partial class Program
         void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); lines.Add("PASS BUNDLED SDK NATIVE " + reason); }
         var config = new Ipc.Application.Sportmaster.SportmasterFlow().InitialConfiguration();
         var catalog = new Ipc.Assembly.ParcelCapabilityFactory(new(Path.Combine(root, "config/sportmaster"), evidence, null, null)).Catalog();
+        await VerifyCameraIdentityEditing(catalog, lines);
         var existingReaders = config.Topology!.Readers.Select(reader => reader with { Parameters = reader.Parameters!.Where(pair => pair.Key != "code.formats").ToDictionary(pair => pair.Key, pair => pair.Value) }).ToArray();
         var existing = config with { Reader = existingReaders[0], Topology = config.Topology with { Readers = existingReaders } };
         var existingBefore = Wire.Encode(existing);
@@ -41,6 +42,14 @@ static partial class Program
         {
             var names = Descendants(control).OfType<FrameworkElement>().Select(AutomationProperties.GetAutomationId).ToArray();
             Check(names.Contains(reader.InstanceId + "/device.ip") && names.Contains(reader.InstanceId + "/device.serial"), "actual SDK IP and serial fields available");
+            Check(Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/device.serial").IsReadOnly,
+                "discovered camera serial is selectable but cannot be typed manually");
+            Check(control.NavigateTo(reader.InstanceId + "/reader.engine"), "recognition mode can be reached by opening advanced settings");
+            control.UpdateLayout();
+            var recognition = Descendants(control).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == reader.InstanceId + "/reader.engine");
+            DependencyObject? ancestor = recognition;
+            while (ancestor is not null && ancestor is not Expander) ancestor = System.Windows.Media.VisualTreeHelper.GetParent(ancestor);
+            Check(ancestor is Expander { Header: "高级设置" }, "recognition mode belongs to the camera advanced settings");
             Check(!names.Any(n => n == reader.InstanceId + "/acquisition.trigger" || n == reader.InstanceId + "/entity.mode" || n == reader.InstanceId + "/ConfigureLater") && !Descendants(control).OfType<FrameworkElement>().Any(e => AutomationProperties.GetAutomationId(e) == reader.InstanceId + "/RuntimeSummary"), "camera page has no trigger/result policy or configuration-state block");
             Check(!names.Contains(reader.InstanceId + "/device.port") && !Descendants(control).OfType<TextBlock>().Any(t => t.Text.Contains("独立驱动包") || t.Text.Contains("TCP")) &&
                 !Descendants(control).OfType<TextBox>().Any(t => t.Text.Contains("TCP")), "camera page has no TCP copy, fields or separate driver installation");
@@ -102,6 +111,7 @@ static partial class Program
             startup.ShowPage(2, "左相机"); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout(); Fields(startup, left);
             foreach (var selection in new[] { "zxing-cpp", "mvid-native", "zxing-cpp", "mvid-native" })
             {
+                Check(startup.NavigateTo(left.InstanceId + "/reader.engine"), "advanced recognition selection can be reopened after rendering");
                 Descendants(startup).OfType<ComboBox>().Single(t => AutomationProperties.GetAutomationId(t) == left.InstanceId + "/reader.engine").SelectedItem = selection;
                 await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); window.UpdateLayout();
                 Fields(startup, left);

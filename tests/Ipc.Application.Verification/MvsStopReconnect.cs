@@ -19,9 +19,11 @@ internal static class MvsStopReconnect
         public volatile bool FailDestroy;
         public readonly ConcurrentQueue<string> Calls = new();
         public volatile bool FailAcquire;
+        public MvsDevice[]? Discovered;
+        public bool FailEnumeration, FailShutdown;
         public bool HasFrame => false;
         public void Initialize() => Calls.Enqueue("initialize");
-        public MvsDevice[] Enumerate() => Online ? [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])] : [];
+        public MvsDevice[] Enumerate() { Calls.Enqueue("enumerate"); if (FailEnumeration) throw new IOException("Synthetic enumeration failure"); return Discovered ?? (Online ? [new(Ip, Serial, "SYNTHETIC", "SYNTHETIC", [])] : []); }
         public void Create(MvsDevice device) => Calls.Enqueue("create");
         public void Open() { Calls.Enqueue("open"); if (!Online) throw new IOException("MVS OpenDevice exclusive failed: 0x80000206"); }
         public void SetEnumValue(string key, uint value) { }
@@ -40,7 +42,7 @@ internal static class MvsStopReconnect
         public void Stop() { Calls.Enqueue("stop"); MvsNative.Check(StopResult, "StopGrabbing"); }
         public void Close() { Calls.Enqueue("close"); MvsNative.Check(CloseResult, "CloseDevice"); }
         public void Destroy() { Calls.Enqueue("destroy"); if (FailDestroy) throw new IOException("MVS DestroyHandle failed: synthetic"); }
-        public void Shutdown() => Calls.Enqueue("finalize");
+        public void Shutdown() { Calls.Enqueue("finalize"); if (FailShutdown) throw new IOException("Synthetic SDK release failure"); }
     }
 
     static async Task Until(Func<bool> condition, string what)
@@ -51,6 +53,7 @@ internal static class MvsStopReconnect
 
     internal static async Task Run()
     {
+        VerifyIdentityLookup();
         var api = new Api(); var lease = new Lease();
         var parameters = new Dictionary<string, string> { ["device.ip"] = Api.Ip, ["device.serial"] = Api.Serial };
         await using var source = new MvsAcquisition(new("left-camera", "left-camera", parameters), api, _ => lease);
@@ -98,5 +101,23 @@ internal static class MvsStopReconnect
         api.FailDestroy = false;
         await source.StopAsync(default);
         Check(lease.Releases == 4 && api.Calls.Last() == "finalize", "retrying the stop completes the original release exactly once");
+    }
+    static void VerifyIdentityLookup()
+    {
+        var api = new Api();
+        Check(BundledMvs.ReadCameraSerial(Api.Ip, api) == Api.Serial && api.Calls.SequenceEqual(new[] { "initialize", "enumerate", "finalize" }),
+            "IP lookup returns the actual serial without creating, opening or acquiring a camera handle");
+        foreach (var devices in new MvsDevice[][] { [], [new(Api.Ip, "ONE", "", "", []), new(Api.Ip, "TWO", "", "", [])], [new(Api.Ip, "", "", "", [])] })
+        {
+            var rejected = new Api { Discovered = devices }; var failed = false;
+            try { BundledMvs.ReadCameraSerial(Api.Ip, rejected); } catch (InvalidDataException) { failed = true; }
+            Check(failed && rejected.Calls.Last() == "finalize", "missing, ambiguous or invalid camera identity is rejected and SDK ownership is released");
+        }
+        foreach (var enumerationFailure in new[] { true, false })
+        {
+            var failedApi = new Api { FailEnumeration = enumerationFailure, FailShutdown = !enumerationFailure }; var failed = false;
+            try { BundledMvs.ReadCameraSerial(Api.Ip, failedApi); } catch (IOException) { failed = true; }
+            Check(failed && failedApi.Calls.Last() == "finalize", "enumeration and release failures remain real failures; enumerationFailure=" + enumerationFailure);
+        }
     }
 }

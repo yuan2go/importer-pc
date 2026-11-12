@@ -238,7 +238,7 @@ public static partial class WindowsDeploymentSetup
         { throw new InstallationOutcomeUnknownException("清理结果未确认；只核对原清单，不能创建新范围。", failure); }
     }
 
-    internal static void ValidatePruneFiles(DeploymentVersionFiles[] areas)
+    internal static void ValidatePruneFiles(DeploymentVersionFiles[] areas, CancellationToken cancellationToken = default)
     {
         if (areas.Length is 0 or > 256 || areas.Select(a => Path.GetFullPath(a.Root)).Distinct(StringComparer.OrdinalIgnoreCase).Count() != areas.Length)
             throw new InvalidDataException("清理目录数量或范围重复。");
@@ -251,11 +251,12 @@ public static partial class WindowsDeploymentSetup
                 throw new InvalidDataException("清理库存范围无效或重叠。");
             foreach (var file in area.Files)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var full = ResolvePruneFile(area.Root, file.Key);
                 if (!ExtensionSchema.IsHash(file.Value))
                     throw new InvalidDataException("清理文件路径或字节身份无效。");
                 DeploymentPaths.RequireOrdinaryAncestors(full);
-                if (Directory.Exists(full) || File.Exists(full) && Wire.FileHash(full) != file.Value)
+                if (Directory.Exists(full) || File.Exists(full) && Wire.FileHash(full, cancellationToken) != file.Value)
                     throw new InvalidDataException("旧文件已变化；删除前保留整个原清单。");
             }
         }

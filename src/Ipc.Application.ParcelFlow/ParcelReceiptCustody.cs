@@ -89,12 +89,11 @@ public sealed partial class ParcelRuntime
         foreach (var op in operations.Values)
         {
             if (op.OriginalFrame?.State == "Pending") return ParcelInputBlockReason.PreviousResultPending;
-            if (IsSettled(op) || repository.CustodyOnly(op, Id) || Db12CustodyOnly(op) || CanRetainSmUnknown(op)) continue;
+            if (IsSettled(op) || repository.CustodyOnly(op, Id) || CanRetainSmUnknown(op)) continue;
             return PriorWorkBlock(op);
         }
         return smCurrentRounds.Count != 0 ? ParcelInputBlockReason.PreviousWorkBlocked : null;
     }
 
-    bool Db12CustodyOnly(ParcelOperation op) => repository!.IsSmDb12Original(op.Id) && op.OriginalFrame?.State != "Pending" && !repository.HasPendingReceipt(op.Id);
-    bool RequiresOriginalExecution(ParcelOperation op) => !Db12CustodyOnly(op) && !releasedPlacements.Contains(op.Id) && !IsSettled(op) && !repository!.CustodyOnly(op, Id);
+    bool RequiresOriginalExecution(ParcelOperation op) => !releasedPlacements.Contains(op.Id) && !IsSettled(op) && !repository!.CustodyOnly(op, Id);
 }

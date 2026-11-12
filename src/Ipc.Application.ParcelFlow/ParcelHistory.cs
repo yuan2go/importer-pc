@@ -264,7 +264,7 @@ public sealed partial class ParcelRuntime
     bool ArchiveEligible(ParcelOperation op) => op.OriginalFrame?.State != "Pending" && IsSettled(op) && !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) &&
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id) && op.Upload?.State is not (StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
     int? projectedCapacity;
-    long HistoricalUnknownCount => (archiveCount?.HistoricalUnknown ?? 0) + operations.Values.Count(op => op.State == ParcelState.WcsUnknown && Db12CustodyOnly(op));
+    long HistoricalUnknownCount => (archiveCount?.HistoricalUnknown ?? 0);
     int UnresolvedCapacity => Id == "sportmaster" ? smCurrentRounds.Count : projectedCapacity ?? operations.Values.Count(x => !ArchiveEligible(x));
     bool CapacityAvailable => storageCapacityFailure is null && !fatalStorage.Task.IsCompleted &&
         (Id == "sportmaster" || UnresolvedCapacity < Effective.MaximumOperations);
@@ -276,7 +276,7 @@ public sealed partial class ParcelRuntime
         HistoricalUnknown = HistoricalUnknownCount,
         CurrentRounds = smCurrentRounds.Count,
         ManagedExecutions = smExecutions.Count,
-        ExecutingRequests = operations.Values.Count(op => !Db12CustodyOnly(op) && (op.Wcs?.State == StageState.Dispatching || repository!.PendingReceipts().Any(r => r.Operation == op.Id))),
+        ExecutingRequests = operations.Values.Count(op => (op.Wcs?.State == StageState.Dispatching || repository!.PendingReceipts().Any(r => r.Operation == op.Id))),
         AdmissionBlock = CapacityAvailable ? null : CapacityBlock
     };
     void ArchiveSettled(bool requested = false, string? reason = null, BusinessCommand? command = null)

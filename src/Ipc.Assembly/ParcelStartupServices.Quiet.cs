@@ -120,8 +120,20 @@ public static partial class ParcelStartupServices
             WindowsRemovalReceipt? receipt = null;
             if (ApplicationId == "sportmaster")
             {
+                if (original.LifecycleState == "Purged")
+                {
+                    operation?.FreezeRetiredAssets(original, hash);
+                    var retiredAssets = CleanAssets(null);
+                    return (retiredAssets.Status == "Completed" ? 0 : retiredAssets.Status == "RestartRequired" ? 3010 : 1603, retiredAssets);
+                }
                 operation?.FreezeRemoval(original, hash);
                 receipt = WindowsDeploymentSetup.UninstallProgram(ApplicationId, hash, RemoveShortcuts, null, command.OperationId);
+                if (receipt.Status == "RemovedDataRetained")
+                {
+                    var assets = CleanAssets(null);
+                    return (assets.Status == "Completed" ? 0 : assets.Status == "RestartRequired" ? 3010 : 1603,
+                        new ProgramUninstallResult(receipt, null, false) { Assets = assets });
+                }
             }
             else if (original.LifecycleState != "Installed")
             {

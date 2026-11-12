@@ -52,10 +52,6 @@ static partial class Program
         Check(Descendants(window).OfType<TextBox>().Any(b => b.Text == launch.ConfigurationDirectory) &&
             Descendants(window).OfType<TextBox>().Any(b => b.Text == launch.DataRoot), "the original directory fields remain available for correction");
         Check(Wire.FileHash(ledger) == before, "native error-page construction does not alter the original ledger");
-        var helper = AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "Ipc.Assembly");
-        var permission = helper.GetType("Ipc.Assembly.ParcelStartupServices", true)!.GetMethod("RequiresManagementMode", BindingFlags.NonPublic | BindingFlags.Static)!;
-        Check((bool)permission.Invoke(null, ["PlanSmDb12Continuation"])! && (bool)permission.Invoke(null, ["ContinueSmDb12"])!,
-            "both privileged continuation commands require the original delegated management grant");
         var tools = Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.Tools");
         tools.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         var diagnostics = tools.ContextMenu!.Items.OfType<MenuItem>().SelectMany(m => m.Items.OfType<MenuItem>()).Single(m => AutomationProperties.GetAutomationId(m) == "Startup.OpenDiagnosticDetails");
@@ -72,31 +68,20 @@ static partial class Program
         window.Close(); await WaitUntil(() => !window.IsVisible);
 
         ExtensionStore.AtomicWrite(ledger, CurrentConfigurationFixture.Create<ParcelConfiguration>(3, seed, null, "Effective", null));
-        var database = Path.Combine(directory, "sportmaster.db");
-        using (var db = Database.Open(database))
-        {
-            using var stream = typeof(ParcelRepository).Assembly.GetManifestResourceStream("Ipc.Application.ParcelFlow.Storage.sm-db12.sql")!;
-            using var reader = new StreamReader(stream); Database.CreateBaseline(db, "sportmaster", 12, reader.ReadToEnd());
-        }
+        var oldDatabase = NonCurrentStorageFixture.Create(directory, "sportmaster", 12);
+        var originalDatabase = Wire.FileHash(oldDatabase);
         var original = Wire.FileHash(ledger);
-        var db12 = (Window)Activator.CreateInstance(type, [launch, null, false])!;
-        type.GetProperty("SceneOnly")!.SetValue(db12, true);
-        db12.ShowActivated = false; db12.ShowInTaskbar = false; db12.WindowStartupLocation = WindowStartupLocation.Manual; db12.Left = -12000; db12.Top = -12000;
-        type.GetProperty("ConfirmDiscardInputs", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(db12, (Func<bool>)(() => true));
-        db12.Show();
-        await WaitUntil(() => Descendants(db12).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "检查并接续原数据…")));
-        var originalParameters = Descendants(db12).OfType<TabControl>().Single(x => x.Name == "StartupTasks");
-        originalParameters.SelectedIndex = 1;
-        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        db12.UpdateLayout();
-        await WaitUntil(() => Descendants(db12).OfType<Button>().Any(b => b.IsEnabled && Equals(b.Content, "读取所选配置")));
-        var editor = Descendants(db12).OfType<ParameterSettingsControl>().Single();
-        Check(editor.Model is not null && !editor.IsEnabled, "pinned DB12 displays original parameters read-only until continuation finishes");
-        Check(!Descendants(db12).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "重试正常启动") || (b.Content as string)?.StartsWith("保存", StringComparison.Ordinal) == true)),
-            "DB12 cannot save over the original ledger or bypass the continuation gate");
-        Check(Wire.FileHash(ledger) == original, "displaying DB12 parameters preserves exact configuration bytes");
-        // Exercise the real reread/navigation path after the DB12 page disabled
-        // actions. A new current-format directory stands in for completed maintenance.
+        var noncurrent = (Window)Activator.CreateInstance(type, [launch, null, false])!;
+        type.GetProperty("SceneOnly")!.SetValue(noncurrent, true);
+        noncurrent.ShowActivated = false; noncurrent.ShowInTaskbar = false; noncurrent.WindowStartupLocation = WindowStartupLocation.Manual; noncurrent.Left = -12000; noncurrent.Top = -12000;
+        type.GetProperty("ConfirmDiscardInputs", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(noncurrent, (Func<bool>)(() => true));
+        noncurrent.Show();
+        await WaitUntil(() => Descendants(noncurrent).OfType<TextBlock>().Any(x => AutomationProperties.GetAutomationId(x) == "StartupReadFailure"));
+        var originalParameters = Descendants(noncurrent).OfType<TabControl>().Single(x => x.Name == "StartupTasks");
+        Check(!Descendants(noncurrent).OfType<ParameterSettingsControl>().Any(), "noncurrent storage is rejected without constructing an editor or migration action");
+        Check(!Descendants(noncurrent).OfType<Button>().Any(b => b.IsVisible && (Equals(b.Content, "重试正常启动") || (b.Content as string)?.StartsWith("保存", StringComparison.Ordinal) == true)), "noncurrent storage cannot overwrite its original ledger or start a runtime");
+        Check(Wire.FileHash(ledger) == original && Wire.FileHash(oldDatabase) == originalDatabase, "noncurrent-format refusal preserves the original database and configuration bytes");
+        // Reread valid current-format data in the same error window.
         var readyLaunch = new BusinessLaunch(Path.Combine(evidence, "ready-config"), Path.Combine(evidence, "ready-data"), null, null);
         Directory.CreateDirectory(readyLaunch.ConfigurationDirectory);
         ExtensionStore.AtomicWrite(Path.Combine(readyLaunch.ConfigurationDirectory, "business.json"), seed);
@@ -104,17 +89,17 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(readyDirectory, "configuration.json"), CurrentConfigurationFixture.Create<ParcelConfiguration>(3, seed, null, "Effective", null));
         using (var repository = new ParcelRepository(readyDirectory, "sportmaster")) { }
         ManagementModeFixture.AuthorizeRoot(readyLaunch.DataRoot);
-        originalParameters.SelectedIndex = 0; db12.UpdateLayout();
-        Descendants(db12).OfType<TextBox>().Single(b => b.Text == launch.ConfigurationDirectory).Text = readyLaunch.ConfigurationDirectory;
-        Descendants(db12).OfType<TextBox>().Single(b => b.Text == launch.DataRoot).Text = readyLaunch.DataRoot;
-        Descendants(db12).OfType<Button>().Single(b => Equals(b.Content, "读取所选配置")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        await WaitUntil(() => Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "检查并启动")));
-        Descendants(db12).OfType<Button>().Single(b => Equals(b.Content, "检查并启动")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        originalParameters.SelectedIndex = 0; noncurrent.UpdateLayout();
+        Descendants(noncurrent).OfType<TextBox>().Single(b => b.Text == launch.ConfigurationDirectory).Text = readyLaunch.ConfigurationDirectory;
+        Descendants(noncurrent).OfType<TextBox>().Single(b => b.Text == launch.DataRoot).Text = readyLaunch.DataRoot;
+        Descendants(noncurrent).OfType<Button>().Single(b => Equals(b.Content, "读取所选配置")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await WaitUntil(() => Descendants(noncurrent).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "检查并启动")));
+        Descendants(noncurrent).OfType<Button>().Single(b => Equals(b.Content, "检查并启动")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        Check(Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "检查并预览更改")) &&
-            Descendants(db12).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "重试正常启动")),
+        Check(Descendants(noncurrent).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "检查并预览更改")) &&
+            Descendants(noncurrent).OfType<Button>().Any(b => b.IsVisible && b.IsEnabled && Equals(b.Content, "重试正常启动")),
             "rereading current data restores SceneOnly check/start actions in the same window");
-        db12.Close(); await WaitUntil(() => !db12.IsVisible);
+        noncurrent.Close(); await WaitUntil(() => !noncurrent.IsVisible);
         var normal = (Window)Activator.CreateInstance(type, [readyLaunch, null, false])!;
         type.GetProperty("ConfirmDiscardInputs", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(normal, (Func<bool>)(() => true));
         normal.Show();

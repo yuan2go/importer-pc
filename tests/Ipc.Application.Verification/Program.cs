@@ -25,12 +25,10 @@ if (args.FirstOrDefault() == "--action" && args.ElementAtOrDefault(1) == "verify
     return;
 }
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-if (args.Contains("--sm-db12-crash-child")) { var i = Array.IndexOf(args, "--sm-db12-crash-child"); await Ipc.Verification.SmDb12ContinuationChecks.CrashChild(args[i + 1], args[i + 2], args[i + 3]); return; }
 var root = args.Contains("--management-mode") ? Path.Combine(workspace, ".artifacts", "operator-admin-" + Wire.Id()) : Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (args.Contains("--mvs-presence")) { await MvsPresenceChecks.Run(workspace, root); return; }
 if (args.Contains("--sm-round-lifecycle")) { await Ipc.Verification.SmRoundLifecycle.Run(workspace, root); return; }
 if (args.Contains("--sm-dispatch-resources")) { await SmDispatchResources.Run(workspace, root); return; }
-if (args.Contains("--sm-db12-continuation")) { await Ipc.Verification.SmDb12ContinuationChecks.Run(workspace, root); return; }
 // Backup custody rejects link ancestors; macOS temp is exposed through /var.
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
@@ -82,6 +80,7 @@ if (args.Contains("--industrial-rollback")) { await IndustrialRollback.Run(works
 if (args.Contains("--industrial-version-pruning")) { await IndustrialVersionPruning.Run(workspace, root); return; }
 if (args.Contains("--permanent-deletion-02")) { await PermanentDeletion02.Run(workspace, root); return; }
 if (args.Contains("--uninstall-data-boundary")) { await UninstallDataBoundary.Run(root); return; }
+if (args.Contains("--uninstall-assets")) { await UninstallAssetsChecks.Run(root); return; }
 if (args.Contains("--industrial-opaque-removal")) { await IndustrialOpaqueRemoval.Run(workspace, root); return; }
 if (args.Contains("--industrial-quiet-deployment")) { IndustrialQuietDeployment.Run(root); return; }
 if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }

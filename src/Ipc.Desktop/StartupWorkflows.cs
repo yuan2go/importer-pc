@@ -155,7 +155,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     bool savingCandidate;
     string? checkedCandidateHash;
     enum RepairTask { Directory, Parameters, Review, Recovery }
-    enum RepairAction { Read, Check, SaveDraft, ContinueDraft, ExportTemplate, Import, Save, Repair, Backup, Retention, PlanRestore, ExecuteRestore, AdoptRestore, Install, Start, Previous, Next, SaveAndStart, Reload, Exit, Tools, ContinueData }
+    enum RepairAction { Read, Check, SaveDraft, ContinueDraft, ExportTemplate, Import, Save, Repair, Backup, Retention, PlanRestore, ExecuteRestore, AdoptRestore, Install, Start, Previous, Next, SaveAndStart, Reload, Exit, Tools }
     readonly Dictionary<RepairAction, Button> actionButtons = [];
     readonly Dictionary<RepairTask, TabItem> taskPages = [];
     RepairTask selectedTask;
@@ -337,24 +337,6 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (initialConfiguration) Action(RepairAction.Reload, "重新读取配置…", Read);
         Action(RepairAction.Exit, initialConfiguration ? "稍后配置" : "关闭", () => { Busy = false; Close(); return Task.CompletedTask; });
         Action(RepairAction.Tools, "配置工具…", () => { OpenTools(); return Task.CompletedTask; });
-        if (!initialConfiguration)
-        {
-            var continuation = Action(RepairAction.ContinueData, "检查并接续原数据…", async () =>
-            {
-                await RequireMaintenance(); RequireDirectories();
-                Message("正在核验原数据接续条件，未启动相机或 RCS。");
-                var plan = await Task.Run(maintenance.PlanSmDb12ContinuationAsync);
-                if (!plan.Allowed) throw new InvalidOperationException(plan.Summary);
-                if (MessageBox.Show(this, plan.Summary + "\n\n接续会先保管配置和数据库原件。提交后不会自动启动供包台，继续吗？", "确认接续原数据", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) != MessageBoxResult.OK) return;
-                await RequireMaintenance();
-                document = await Task.Run(() => maintenance.ContinueSmDb12Async(plan.Identity));
-                Render();
-                Message(document.Candidate is null || document.NeedsSmDb12Continuation
-                    ? "原数据接续已提交，但当前参数仍未能载入。请查看读取失败诊断并重新核对原结果，不要覆盖原账。"
-                    : "原数据接续已完成，原参数和记录保留。请检查原请求和设备后重试正常启动；尚未连接相机或 RCS。");
-            });
-            continuation.Visibility = Visibility.Collapsed;
-        }
         if (initialConfiguration)
         {
             foreach (var (kind, button) in actionButtons)
@@ -590,15 +572,14 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         return kind switch
         {
             RepairAction.Read or RepairAction.Reload or RepairAction.Install or RepairAction.Tools or RepairAction.Exit => true,
-            RepairAction.Start => draft is not null && document?.NeedsSmDb12Continuation != true && !startupSaveUncertain && savedInput == Input() && draft.DisplayPreferences?.HasChanges != true,
+            RepairAction.Start => draft is not null && !startupSaveUncertain && savedInput == Input() && draft.DisplayPreferences?.HasChanges != true,
             RepairAction.Save or RepairAction.Repair => draft is not null && checkedInput == Input() && !startupSaveUncertain,
-            RepairAction.ContinueData => document?.NeedsSmDb12Continuation == true,
-            RepairAction.Previous or RepairAction.Next => draft is not null && document?.NeedsSmDb12Continuation != true,
+            RepairAction.Previous or RepairAction.Next => draft is not null,
             RepairAction.PlanRestore => maintenance is not null && !string.IsNullOrWhiteSpace(backup) && !string.IsNullOrWhiteSpace(restoreRoot),
             RepairAction.ExecuteRestore => recovery is not null && !UnknownOutcome,
             RepairAction.AdoptRestore => restoredPreview is not null && restoredBackup is not null,
             RepairAction.ContinueDraft => draft is not null && savedDraft is not null,
-            _ => draft is not null && document?.NeedsSmDb12Continuation != true && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
+            _ => draft is not null && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
         };
     }
     void InvalidateRestorePlan()
@@ -756,7 +737,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 try { return await maintenance.ReadCameraSerialAsync(ip, engine); }
                 catch (Exception error) { diagnosticDetails += "\n相机身份读取：" + Ipc.Platform.DiagnosticText.Protect(error.ToString()); throw; }
             };
-            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430, IsEnabled = document.NeedsSmDb12Continuation != true };
+            sharedEditor = parameterControl = new ParameterSettingsControl { FirstConfiguration = initialConfiguration, OpeningModeDraft = parameterControl?.OpeningModeDraft, Model = parameterEditor, MinHeight = initialConfiguration ? 0 : 300, Height = initialConfiguration ? double.NaN : 430 };
             Body.Children.Add(sharedEditor);
             reviewStart = Body.Children.Count;
             if (!initialConfiguration) Field("维护原因（必填，记入审计）", reason, v => reason = v);
@@ -860,7 +841,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             }
             if (OpenRecoveryScenario) { selectedTask = RepairTask.Recovery; OpenRecoveryScenario = false; }
             tasks!.SelectedItem = taskPages[selectedTask];
-            if (SceneOnly && draft is not null && document?.NeedsSmDb12Continuation != true)
+            if (SceneOnly && draft is not null)
             {
                 if (selectedTask == RepairTask.Parameters) SelectTask(RepairTask.Directory);
                 var selectedContent = new FrameworkElementFactory(typeof(ContentPresenter));
@@ -897,8 +878,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 RepairAction.SaveAndStart => parameterControl?.IsReviewPage == true && !startupSaveUncertain,
                 RepairAction.Reload => startupSaveUncertain,
                 _ => false
-            } : draft is null || document?.NeedsSmDb12Continuation == true ?
-                kind is RepairAction.Read or RepairAction.Install or RepairAction.Tools or RepairAction.Exit || kind == RepairAction.ContinueData && document?.NeedsSmDb12Continuation == true || selectedTask == RepairTask.Recovery && kind is RepairAction.PlanRestore or RepairAction.ExecuteRestore :
+            } : draft is null ?
+                kind is RepairAction.Read or RepairAction.Install or RepairAction.Tools or RepairAction.Exit || selectedTask == RepairTask.Recovery && kind is RepairAction.PlanRestore or RepairAction.ExecuteRestore :
                 kind is RepairAction.Tools or RepairAction.Exit || kind switch
                 {
                     RepairAction.Read => selectedTask == RepairTask.Directory,
@@ -928,7 +909,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             if (button.Visibility != Visibility.Visible) continue;
             button.ClearValue(StyleProperty); button.ClearValue(Button.BackgroundProperty); button.ClearValue(Button.ForegroundProperty); button.ClearValue(Button.BorderBrushProperty);
-            if (kind == primary) { button.SetResourceReference(StyleProperty, initialConfiguration ? "StartupPrimary" : "Primary"); button.IsDefault = kind is not (RepairAction.Backup or RepairAction.ContinueData or RepairAction.Install or RepairAction.ExecuteRestore or RepairAction.AdoptRestore); }
+            if (kind == primary) { button.SetResourceReference(StyleProperty, initialConfiguration ? "StartupPrimary" : "Primary"); button.IsDefault = kind is not (RepairAction.Backup or RepairAction.Install or RepairAction.ExecuteRestore or RepairAction.AdoptRestore); }
         }
     }
 }

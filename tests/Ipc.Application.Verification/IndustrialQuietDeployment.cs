@@ -72,6 +72,16 @@ static class IndustrialQuietDeployment
             Check(removal.Finish(1603).ExitCode == 0, "confirmed original removal may resolve a lost acknowledgement");
         }
         var removalRecord = saved;
+        using (var assets = new QuietDeploymentOperation(new(1, uninstall with { OperationId = Wire.Id() }, "Reserved"), false, new ResourceLease(root, ["assets"]), Save,
+            record => WindowsDeploymentSetup.ProjectQuietOutcome(record, "RemovedDataRetained")))
+        {
+            assets.FreezeRetiredAssets(installed with { LifecycleState = "Purged" }, new string('d', 64));
+            WindowsDeploymentSetup.ValidateQuietRecord(saved, saved.Intent);
+            Check(saved.RetiredAssetsScope == WindowsDeploymentSetup.UninstallScope(installed with { LifecycleState = "Purged" }), "cleanup of a previously purged installation freezes its own original asset scope");
+            Check(assets.Finish(1603).ExitCode == 0, "confirmed asset cleanup reconciles a lost acknowledgement without a second removal");
+            Check(WindowsDeploymentSetup.ProjectQuietOutcome(saved, "RestartRequired").ExitCode == 3010 &&
+                WindowsDeploymentSetup.ProjectQuietOutcome(saved, "RemovedWithRetainedFiles").ExitCode == 1603, "asset queue and actual leftovers remain distinct silent outcomes");
+        }
         Check(WindowsDeploymentSetup.ProjectQuietOutcome(removalRecord, "NotCommitted").ExitCode == 1603, "explicitly closed original removal cannot be reported as removed");
         Check(WindowsDeploymentSetup.ProjectQuietOutcome(removalRecord, "RemovedWithRetainedFiles").ExitCode == 1603, "known residual program files are not a false zero exit");
         Check(WindowsDeploymentSetup.ProjectQuietOutcome(removalRecord, "RestartRequired").ExitCode == 3010, "historical restart obligation remains a distinct original result");

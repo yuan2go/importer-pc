@@ -13,7 +13,7 @@ public sealed partial class ParcelRuntime
         try
         {
             op = operations[op.Id];
-            if (repository!.IsSmDb12Original(op.Id) || obsoleteSmOriginals.Contains(op.Id)) return op;
+            if (obsoleteSmOriginals.Contains(op.Id)) return op;
             var stage = GetStage(op, kind)!;
             var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
             var binding = BindingFor(Effective, kind, op.PositionId);

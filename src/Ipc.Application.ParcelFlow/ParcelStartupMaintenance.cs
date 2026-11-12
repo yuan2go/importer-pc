@@ -96,16 +96,11 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             var state = ReadState();
             var candidate = state.Envelope?.Pending ?? state.Envelope?.Effective ?? state.Seed;
             var database = Path.Combine(state.Directory, definition.Id + ".db");
-            var continuation = false;
-            if (File.Exists(database))
-            {
-                continuation = ReadVersionFromCopy(database, allowSmDb12: definition.Id == "sportmaster") == 12;
-            }
+            if (File.Exists(database)) _ = ReadVersionFromCopy(database, displayOnly: true);
             _ = ports.Normalize(candidate); // Select the original mode's inventory without constructing ports.
             return new(candidate, ports.Catalog(), state.Hash,
                 state.Envelope?.Revision ?? 0, state.Envelope is not null, state.Directory,
-                [continuation ? "原参数已读取；原业务数据需要离线接续。请先检查并接续原数据，不要重新首配或清空目录。" : "离线维护：未启动设备或业务；保存只生成待生效修订。", .. (state.Envelope?.Failure is { } failure ? new[] { failure } : Array.Empty<string>())], state.Envelope?.Status ?? (File.Exists(Seed) ? "Seed" : "MissingConfiguration"))
-            { NeedsSmDb12Continuation = continuation };
+                ["离线维护：未启动设备或业务；保存只生成待生效修订。", .. (state.Envelope?.Failure is { } failure ? new[] { failure } : Array.Empty<string>())], state.Envelope?.Status ?? (File.Exists(Seed) ? "Seed" : "MissingConfiguration"));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or Microsoft.Data.Sqlite.SqliteException)
         { return new(null, ports.Catalog(), "", 0, false, null, [ex.Message, "原配置未载入，参数没有被清空。请核对下方原目录或查看诊断；程序修复不能转换原数据格式。原件保留，不能覆盖原账。"]); }
@@ -181,7 +176,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         ExtensionStore.AtomicWrite(Path.Combine(operation, "operation.json"), new { audit.At, audit.Reason, audit.BeforeHash, audit.CandidateHash, audit.Actor, Status = "PendingRestart", AfterHash = Wire.FileHash(state.File) });
         return await ReadAsync();
     }
-    int ReadVersionFromCopy(string database, bool allowSmDb12 = false)
+    int ReadVersionFromCopy(string database, bool displayOnly = false)
     {
         // SQLite read-only WAL connections may create SHM/WAL sidecars. Inspect a private
         // DB+WAL snapshot instead; ordinary previews reject a changing pair and
@@ -191,7 +186,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         var originalHashes = sources.ToDictionary(p => p, Wire.FileHash);
         // Merely displaying an existing configuration must not require Windows
         // elevation. This private read cache is never trusted as repair media.
-        var scratch = allowSmDb12 ? CreateReadInspectionWorkspace() : MaintenanceWorkspace();
+        var scratch = displayOnly ? CreateReadInspectionWorkspace() : MaintenanceWorkspace();
         try
         {
             if (!ParcelStorageVolume.Plan(scratch, sources.Sum(p => new FileInfo(p).Length), 67108864).Fits)
@@ -200,13 +195,6 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
             if (sources.Any(p => Wire.FileHash(p) != originalHashes[p]) || File.Exists(database + "-wal") != originalHashes.ContainsKey(database + "-wal"))
                 throw new IOException("读取期间原库发生变化；请关闭供包台后重新读取，原文件保留。");
             var copied = Path.Combine(scratch, Path.GetFileName(database));
-            if (allowSmDb12)
-            {
-                using var db = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder
-                { DataSource = copied, Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
-                using var q = db.CreateCommand(); q.CommandText = "SELECT version FROM platform_migrations WHERE application='sportmaster'";
-                if (Convert.ToInt64(q.ExecuteScalar()) == 12) { ParcelRepository.RequireSmDb12(db); return 12; }
-            }
             return ParcelRepository.ReadStorageVersion(copied, definition.Id);
         }
         finally { Directory.Delete(scratch, recursive: true); }

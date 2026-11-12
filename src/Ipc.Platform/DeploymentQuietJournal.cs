@@ -28,12 +28,22 @@ public sealed record QuietDeploymentIntent(string ApplicationId, string Operatio
 public sealed record QuietDeploymentReplay(string OperationId, string Status, int ExitCode, string Detail, string LogStatus);
 internal sealed record QuietDeploymentRecord(int Schema, QuietDeploymentIntent Intent, string Status,
     WindowsDeploymentRequest? Installation = null, string? RemovalFile = null, string? ExpectedRegistrationHash = null,
-    int? ExitCode = null, string? LogSha256 = null);
+    int? ExitCode = null, string? LogSha256 = null)
+{
+    public string? RetiredAssetsScope { get; init; }
+}
 
 // This is an acknowledgement/index of the original setup/removal, never a
 // second deployment authority. Every replay derives facts from original records.
 public sealed class QuietDeploymentOperation : IDisposable
 {
+    public void FreezeRetiredAssets(DeploymentLocation original, string hash)
+    {
+        RequireNew();
+        if (record.Intent.Action != "Uninstall" || original.ApplicationId != record.Intent.ApplicationId || original.LifecycleState != "Purged" || !ExtensionSchema.IsHash(hash))
+            throw new InvalidDataException("历史资产清理必须绑定原退役安装。");
+        Update(record with { Status = "Executing", ExpectedRegistrationHash = hash, RetiredAssetsScope = WindowsDeploymentSetup.UninstallScope(original) });
+    }
     readonly IDisposable guard;
     readonly Action<QuietDeploymentRecord> save;
     readonly Func<QuietDeploymentRecord, QuietDeploymentReplay> inspect;
@@ -117,9 +127,11 @@ public static partial class WindowsDeploymentSetup
             if (intent.Action != "Uninstall" || record.ExpectedRegistrationHash is null) throw new InvalidDataException("原卸载缺少固定前置身份。");
             _ = QuietOriginalRemovalFile(record);
         }
-        if (record.Installation is not null && record.RemovalFile is not null ||
-            record.Status == "Reserved" && (record.Installation is not null || record.RemovalFile is not null) ||
-            (record.Status is "Executing" or "Completed") && record.Installation is null && record.RemovalFile is null ||
+        if (record.RetiredAssetsScope is { } assetsScope && (intent.Action != "Uninstall" || !ExtensionSchema.IsHash(assetsScope) || record.ExpectedRegistrationHash is null))
+            throw new InvalidDataException("历史资产清理缺少固定的原安装身份。");
+        var authorities = (record.Installation is null ? 0 : 1) + (record.RemovalFile is null ? 0 : 1) + (record.RetiredAssetsScope is null ? 0 : 1);
+        if (authorities > 1 || record.Status == "Reserved" && authorities != 0 ||
+            (record.Status is "Executing" or "Completed") && authorities != 1 ||
             record.ExpectedRegistrationHash is { } registration && (registration.Length != 64 || !registration.All(char.IsAsciiHexDigit)) ||
             record.LogSha256 is { } hash && (hash.Length != 64 || !hash.All(char.IsAsciiHexDigit)))
             throw new InvalidDataException("原静默记录状态或摘要无效。");
@@ -214,11 +226,19 @@ public static partial class WindowsDeploymentSetup
     static QuietDeploymentReplay InspectQuietRecord(QuietDeploymentRecord record)
     {
         ValidateQuietRecord(record, record.Intent);
-        if (record.Status == "Failed" && record.Installation is null && record.RemovalFile is null)
+        if (record.Status == "Failed" && record.Installation is null && record.RemovalFile is null && record.RetiredAssetsScope is null)
             return new(record.Intent.OperationId, "Failed", record.ExitCode ?? 1603, "原命令在提交程序事务前失败；不重新执行。", QuietLogStatus(record));
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", record.Intent.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         var current = Current(record.Intent.ApplicationId);
         var hash = current is null ? null : Wire.FileHash(Registration(record.Intent.ApplicationId));
+        if (record.RetiredAssetsScope is { } scope)
+        {
+            if (current is null || current.LifecycleState == "Installed" || UninstallScope(current) != scope)
+                return ProjectQuietOutcome(record, "Unknown");
+            var assets = InspectUninstallAssetsCore(current);
+            return ProjectQuietOutcome(record, assets is null ? hash == record.ExpectedRegistrationHash ? "NotStarted" : "Unknown"
+                : assets.Status == "Completed" ? "RemovedDataRetained" : assets.Status == "RestartRequired" ? "RestartRequired" : "RemovedWithRetainedFiles");
+        }
         if (record.Installation is null && record.RemovalFile is null)
         {
             var noOriginal = !File.Exists(RemovalOperationFile(record.Intent.ApplicationId, record.Intent.OperationId)) &&
@@ -237,7 +257,13 @@ public static partial class WindowsDeploymentSetup
         {
             if (!File.Exists(removal)) return ProjectQuietOutcome(record, hash == record.ExpectedRegistrationHash ? "NotStarted" : "Unknown");
             var original = RemovalRecords(record.Intent.ApplicationId).Single(item => item.File == removal).State;
-            return ProjectQuietOutcome(record, ProjectRemoval(original, removal, current, hash!).Status);
+            var state = ProjectRemoval(original, removal, current, hash!).Status;
+            if (current.ApplicationId == "sportmaster" && state == "RemovedDataRetained")
+            {
+                var assets = InspectUninstallAssetsCore(current);
+                state = assets?.Status == "Completed" ? state : assets?.Status == "RestartRequired" ? "RestartRequired" : "RemovedWithRetainedFiles";
+            }
+            return ProjectQuietOutcome(record, state);
         }
         return ProjectQuietOutcome(record, "Unknown");
     }
@@ -247,9 +273,9 @@ public static partial class WindowsDeploymentSetup
         var (status, code) = originalStatus switch
         {
             "Completed" when record.Installation is not null => ("Completed", 0),
-            "RemovedDataRetained" when record.RemovalFile is not null => ("Completed", 0),
-            "RestartRequired" when record.RemovalFile is not null => ("Completed", 3010),
-            "RemovedWithRetainedFiles" when record.RemovalFile is not null => ("Completed", 1603),
+            "RemovedDataRetained" when record.RemovalFile is not null || record.RetiredAssetsScope is not null => ("Completed", 0),
+            "RestartRequired" when record.RemovalFile is not null || record.RetiredAssetsScope is not null => ("Completed", 3010),
+            "RemovedWithRetainedFiles" when record.RemovalFile is not null || record.RetiredAssetsScope is not null => ("Completed", 1603),
             "Failed" or "NotStarted" => ("Failed", 1603),
             "NotCommitted" when record.RemovalFile is not null => ("Failed", 1603),
             _ => ("Unknown", 1627)

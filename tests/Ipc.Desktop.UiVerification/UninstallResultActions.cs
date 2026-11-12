@@ -14,6 +14,7 @@ static partial class Program
         var type = assembly.GetType("Ipc.Desktop.ProductMaintenanceWindow", true)!;
         var workflow = type.BaseType!;
         var clean = new WindowsRemovalReceipt("RemovedDataRetained", "D:/synthetic-remove.json", ["D:/synthetic-data"], false, [], "D:/synthetic-release");
+        var assetsComplete = new UninstallAssetsReceipt("Completed", "D:/synthetic-assets.json", [], []);
         var partial = clean with { Status = "RemovedWithRetainedFiles", RemainingFiles = ["app/locked.dll"] };
         var calls = 0; var inspections = 0; var selectedDelete = false;
         void Check(bool ok, string why) { if (!ok) throw new InvalidOperationException(why); lines.Add("PASS UNINSTALL " + why); }
@@ -38,7 +39,7 @@ static partial class Program
             await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             Check(!Busy(w), "operation returned to the native dispatcher within its wait budget"); w.UpdateLayout();
         }
-        var keep = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false)));
+        var keep = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false) { Assets = assetsComplete }));
         keep.Show(); await Idle(keep);
         Check(calls == 0 && inspections == 0, "opening uninstall neither reads business data nor starts maintenance");
         Check(Descendants(keep).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked == true,
@@ -59,7 +60,7 @@ static partial class Program
         CaptureInternal(evidence, "uninstall-retained", keep, lines); Click(keep, "关闭");
 
         var deletion = new DeploymentPurgeReceipt("synthetic-purge", "Purged", "本站数据已删除。", [], "D:/synthetic-purge.json");
-        var delete = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true)));
+        var delete = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true) { Assets = assetsComplete }));
         delete.Show(); await Idle(delete);
         Descendants(delete).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
         Click(delete, "卸载"); await Idle(delete);
@@ -67,6 +68,29 @@ static partial class Program
         Check(Descendants(delete).OfType<TextBox>().All(b => !b.Text.Contains("保留数据：")), "deleted data is never described as retained");
         CaptureInternal(evidence, "uninstall-deleted", delete, lines); Click(delete, "关闭");
 
+        var residualAssets = assetsComplete with { Status = "Partial", Remaining = ["D:/synthetic-cache"], TotalRemaining = 1 };
+        var uncheckedAssets = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true)));
+        uncheckedAssets.Show(); await Idle(uncheckedAssets); Click(uncheckedAssets, "卸载"); await Idle(uncheckedAssets);
+        Check(!Status(uncheckedAssets).StartsWith("卸载完成", StringComparison.Ordinal) && Button(uncheckedAssets, "重试卸载").IsEnabled,
+            "a missing historical asset receipt is not substituted with a successful purge result");
+        Click(uncheckedAssets, "关闭");
+        var oldAssets = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true) { Assets = residualAssets }));
+        oldAssets.Show(); await Idle(oldAssets); Click(oldAssets, "卸载"); await Idle(oldAssets);
+        Check(Status(oldAssets).Contains("历史程序或维护缓存尚未全部清理") && Button(oldAssets, "重试卸载").IsEnabled &&
+            !Descendants(oldAssets).OfType<TextBox>().Any(t => t.IsVisible && System.Windows.Automation.AutomationProperties.GetAutomationId(t) == "Maintenance.Progress"),
+            "a successful data purge cannot hide incomplete historical assets");
+        CaptureInternal(evidence, "uninstall-assets-partial", oldAssets, lines); Click(oldAssets, "关闭");
+        var waitingAssets = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, deletion, true) { Assets = residualAssets with { Status = "RestartRequired" } }));
+        waitingAssets.Show(); await Idle(waitingAssets); Click(waitingAssets, "卸载"); await Idle(waitingAssets);
+        Check(Status(waitingAssets).Contains("重启") && !Descendants(waitingAssets).OfType<Button>().Any(b => Equals(b.Content, "重试卸载")),
+            "a queued self-cache stays visibly incomplete without a duplicate queue action");
+        CaptureInternal(evidence, "uninstall-assets-restart", waitingAssets, lines); Click(waitingAssets, "关闭");
+        var pendingData = Make(_ => Task.FromResult(new ProgramUninstallResult(null, deletion with { Status = "PartiallyPurged" }, true)
+        { Assets = residualAssets with { Status = "RestartRequired" } }));
+        pendingData.Show(); await Idle(pendingData); Click(pendingData, "卸载"); await Idle(pendingData);
+        Check(Button(pendingData, "重试卸载").IsEnabled && Status(pendingData).Contains("部分数据尚未删除"),
+            "an independent pending data purge remains retryable while a cache waits for reboot");
+        Click(pendingData, "关闭");
         var open = Make(_ => Task.FromException<ProgramUninstallResult>(new InvalidOperationException("请先关闭供包台，再卸载。程序和数据未删除。")));
         open.Show(); await Idle(open); Click(open, "卸载"); await Idle(open);
         Check(Status(open).Contains("请先关闭供包台") && Button(open, "卸载").IsEnabled && !Status(open).Contains("卸载完成"),
@@ -81,7 +105,7 @@ static partial class Program
         pending.SetResult(new(partial, null, false)); await Idle(busy);
         Check(Status(busy).Contains("尚未删除") && Button(busy, "重试卸载").IsEnabled, "locked files remain an incomplete result with a single retry");
         type.GetProperty("ExecuteUninstall", flags)!.SetValue(busy,
-            (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((_, _, _, _) => Task.FromResult(new ProgramUninstallResult(clean, null, false))));
+            (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<ProgramUninstallResult>>)((_, _, _, _) => Task.FromResult(new ProgramUninstallResult(clean, null, false) { Assets = assetsComplete })));
         Click(busy, "重试卸载"); await Idle(busy);
         Check(Status(busy).Contains("卸载完成"), "retry completes the same installation cleanup"); Click(busy, "关闭");
 
@@ -95,7 +119,7 @@ static partial class Program
         CaptureInternal(evidence, "uninstall-partial", unknown, lines); Click(unknown, "关闭");
 
         var changedChoice = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")),
-            () => new(clean, null, false));
+            () => new(clean, null, false) { Assets = assetsComplete });
         changedChoice.Show(); await Idle(changedChoice);
         Descendants(changedChoice).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
         Click(changedChoice, "卸载"); await Idle(changedChoice);
@@ -107,7 +131,7 @@ static partial class Program
         var purgeAttempts = 0;
         var purgeRetry = Make(_ => ++purgeAttempts == 1
                 ? Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic purge interruption"))
-                : Task.FromResult(new ProgramUninstallResult(null, deletion, true)),
+                : Task.FromResult(new ProgramUninstallResult(null, deletion, true) { Assets = assetsComplete }),
             () => new(null, deletion with { Status = "PartiallyPurged" }, true));
         purgeRetry.Show(); await Idle(purgeRetry);
         Descendants(purgeRetry).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
@@ -117,21 +141,21 @@ static partial class Program
         Click(purgeRetry, "重试卸载"); await Idle(purgeRetry);
         Check(selectedDelete && Status(purgeRetry).Contains("本站数据已删除"), "an explicit retry continues a committed partial deletion rather than silently claiming retention");
         Click(purgeRetry, "关闭");
-        var stale = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false)));
+        var stale = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false) { Assets = assetsComplete }));
         stale.Show(); await Idle(stale); before = calls;
         type.GetProperty("RegistrationIdentity", flags)!.SetValue(stale, (Func<string>)(() => "replacement-registration"));
         Click(stale, "卸载"); await Idle(stale);
         Check(calls == before && Status(stale).Contains("重新打开"), "a registration changed after opening cannot authorize another uninstall");
         Click(stale, "取消");
 
-        var replaced = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")), () => new(clean, null, false));
+        var replaced = Make(_ => Task.FromException<ProgramUninstallResult>(new InstallationOutcomeUnknownException("synthetic lost receipt")), () => new(clean, null, false) { Assets = assetsComplete });
         replaced.Show(); await Idle(replaced); Click(replaced, "卸载"); await Idle(replaced); before = inspections;
         type.GetProperty("RegistrationScope", flags)!.SetValue(replaced, (Func<string>)(() => "replacement-installation"));
         Click(replaced, "查看结果"); await Idle(replaced);
         Check(inspections == before && Status(replaced).Contains("重新打开"), "result inspection cannot rebind an old window to another installation");
         Click(replaced, "取消");
 
-        var reopened = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false)));
+        var reopened = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false) { Assets = assetsComplete }));
         reopened.Show(); await Idle(reopened);
         Check(Descendants(reopened).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked == true,
             "a newly opened window does not inherit an earlier deletion choice");

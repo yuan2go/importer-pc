@@ -23,7 +23,6 @@
 ## 设计
 
 - [SM 包裹轮次与原请求生命周期](design/sm-parcel-rounds.md)
-- [SM DB12 到 DB13 离线接续](design/sm-db12-continuation.md)
 
 - [框架](design/framework.md)、[框架决策](design/framework-decisions.md)
 - [SM RCS 取格口任务](runtime/sportmaster-rcs-task.md)

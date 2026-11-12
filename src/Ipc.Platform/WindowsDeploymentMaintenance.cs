@@ -9,6 +9,31 @@ public sealed record WindowsRemovalReceipt(string Status, string OperationFile, 
 {
     public bool WithoutBusinessInspection { get; init; }
     public string? OperationId { get; init; }
+    // Paused Applications retain their existing data-root switch. SM uses the
+    // protected original restore intent and deterministic CommitRestore above.
+    [SupportedOSPlatform("windows")]
+    public static void SwitchDataRoot(string application, string expectedRegistrationHash, string newDataRoot, string handoffHash, DesktopRecoveryMigration recovery)
+    {
+        if (application == "sportmaster") throw new InvalidOperationException("SM 恢复使用原次交接提交入口。");
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        if (!ExtensionSchema.IsHash(handoffHash)) throw new InvalidDataException("Missing restore handoff identity");
+        DeploymentPaths.RequireOrdinaryAncestors(newDataRoot);
+        recovery.RequireRegistration(Registration(application), expectedRegistrationHash);
+        if (Wire.FileHash(Registration(application)) != expectedRegistrationHash) throw new InvalidOperationException("原部署在接管前变化；原根围栏保留，重新核对后继续");
+        var current = Current(application) ?? throw new InvalidDataException("原机部署登记缺失");
+        if (current.LifecycleState != "Installed") throw new InvalidOperationException("只有已安装原机部署可接管恢复根");
+        recovery.Require(current, newDataRoot); PreviewDataAccess(newDataRoot, current.RuntimeAccountSid);
+        var sid = new SecurityIdentifier(current.RuntimeAccountSid);
+        var operation = Path.Combine(MachineRoot, "deployments", application + ".migration-" + Wire.Id() + ".json");
+        var next = current with { DataRoot = Path.GetFullPath(newDataRoot), MaintenanceOperation = operation, RestoreHandoffHash = handoffHash };
+        WriteProtected(operation, new { Status = "Prepared", Previous = current, Next = next, HandoffSha256 = handoffHash, SupervisionLedgerSha256 = recovery.LedgerSha256 }, sid);
+        if (application is "direct-plc" or "wcs-to-plc")
+        { ManagementModeBroker.CopyCredentialsForMigration(current.DataRoot, newDataRoot); ManagementModeBroker.Install(newDataRoot, Path.Combine(current.ReleaseRoot, "app")); }
+        WriteProtected(Path.Combine(current.ReleaseRoot, "deployment-location.json"), next, sid); WriteProtected(Registration(application), next, sid);
+        ProjectInstalledApplication(next);
+        if (application is "direct-plc" or "wcs-to-plc") ManagementModeBroker.RemoveIfUnused(current.DataRoot);
+        WriteProtected(operation, new { Status = "CompletedIsolated", Previous = current, Next = next, HandoffSha256 = handoffHash, SupervisionLedgerSha256 = recovery.LedgerSha256 }, sid);
+    }
 }
 public static partial class WindowsDeploymentSetup
 {

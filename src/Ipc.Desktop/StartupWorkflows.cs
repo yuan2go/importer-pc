@@ -954,6 +954,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     RepairAction.Next => !SceneOnly && selectedTask is RepairTask.Directory or RepairTask.Parameters,
                     _ => false
                 };
+            if (kind is RepairAction.ReadRestore or RepairAction.OpenRestore && ParcelStartupServices.ApplicationId != "sportmaster") visible = false;
             button.Visibility = (RestoreAdopted ? kind == RepairAction.Exit : visible) ? Visibility.Visible : Visibility.Collapsed;
             button.IsEnabled = CanExecute(kind);
             button.IsDefault = false;

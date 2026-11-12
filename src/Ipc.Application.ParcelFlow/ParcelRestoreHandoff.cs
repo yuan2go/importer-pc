@@ -37,7 +37,7 @@ public sealed partial class ParcelStartupMaintenance
         var manifest = ReadIsolatedRestore(target, expectedBackupHash, verifyCopy: true);
         if (!manifest.Files.TryGetValue(ParcelMachineOrigin.FileName, out var originHash) || !manifest.Files.TryGetValue("configuration.json", out var configurationHash))
             throw new InvalidDataException("恢复缺少原机器或配置保管证据，不能补盖来源。");
-        if (intent is null && evidence.RequireRegistration && HandoffMachineIdentity is null)
+        if (definition.Id == "sportmaster" && intent is null && evidence.RequireRegistration && HandoffMachineIdentity is null)
             throw new InvalidDataException("隔离副本没有受保护原恢复意图，请核对当前恢复入口，不能猜测接管。");
         var sourceExists = Directory.Exists(source);
         if (definition.Id == "sportmaster" && Directory.Exists(launch.DataRoot) && OtherRootBlocker(source) is { } otherRoot)

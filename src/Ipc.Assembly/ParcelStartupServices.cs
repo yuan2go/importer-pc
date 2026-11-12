@@ -276,9 +276,14 @@ public static partial class ParcelStartupServices
                     }
                     using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!);
                     var restoreCore = Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true);
-                    var routingSeed = restoreCore.RestoredSeed(request.Destination!, request.ExpectedHash!);
+                    var routingSeed = ApplicationId == "sportmaster" ? restoreCore.RestoredSeed(request.Destination!, request.ExpectedHash!) : null;
                     await restoreCore.AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>
-                    { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); WindowsDeploymentSetup.CommitRestore(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), proof.Id, routingSeed, recoveryMigration); return Task.CompletedTask; }, recoveryMigration);
+                    {
+                        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                        if (ApplicationId == "sportmaster") WindowsDeploymentSetup.CommitRestore(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), proof.Id, routingSeed!, recoveryMigration);
+                        else WindowsDeploymentSetup.SwitchDataRoot(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), recoveryMigration);
+                        return Task.CompletedTask;
+                    }, recoveryMigration);
                     break;
                 }
             case "RepairSystem":

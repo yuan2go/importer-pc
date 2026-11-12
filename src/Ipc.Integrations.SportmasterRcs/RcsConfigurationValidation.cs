@@ -27,9 +27,9 @@ internal static class RcsConfigurationValidation
         }
         // A configured logical barcode source also serves operator input. Its
         // business code remains valid while the optional physical camera is deferred.
-        var mapping = readers.Where(r => !ParcelConnectionSetup.IsDeferred(configuration, r.DeviceId) ||
-                ParcelBindings.Positions(configuration).Single(p => p.ReaderDeviceId == r.DeviceId) is { } p &&
-                ValidCode(configuration.Wcs?.Parameters.GetValueOrDefault(p.Id + "-bcr-code")))
+        var mapping = readers
+            .Where(r => ParcelBindings.Positions(configuration).Single(p => p.ReaderDeviceId == r.DeviceId) is { } p &&
+                !string.IsNullOrWhiteSpace(configuration.Wcs?.Parameters.GetValueOrDefault(p.Id + "-bcr-code")))
             // A disabled selected extension cannot assert a live reader identity.
             .Where(r => configuration.Extensions?.Instances.SingleOrDefault(i => "extension:" + i.Id == r.Driver && i.DeviceId == r.DeviceId)?.Enabled != false)
             .Select(r => (Station: station!, Bcr: BcrCode(r))).ToArray();

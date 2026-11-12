@@ -50,12 +50,26 @@ public sealed partial class ParcelRuntime : IStationPositionControl
     StationPositionState PositionControl(string position) => positionControls.GetValueOrDefault(position)
         ?? new(position, StationPositionMode.Enabled, 0, null, null, null, null);
     bool PositionSupplyEnabled(string position) => Id != "sportmaster" || PositionControl(position).Mode == StationPositionMode.Enabled;
+    bool PositionHasRcsCode(string position) => !UsesSmArrival(position) ||
+        !string.IsNullOrWhiteSpace(Effective.Wcs!.Parameters.GetValueOrDefault(position + "-bcr-code"));
     void InitializePositionControls()
     {
         if (Id != "sportmaster") return;
         foreach (var position in positions.Keys)
             if (repository!.ReadPositionControl(position) is { } state)
                 positionControls[position] = state;
+        DisableUnconfiguredPositions();
+    }
+    void DisableUnconfiguredPositions()
+    {
+        if (Id != "sportmaster") return;
+        foreach (var position in positions.Keys.Where(p => !PositionHasRcsCode(p) && PositionControl(p).Mode != StationPositionMode.Disabled))
+        {
+            var state = new StationPositionState(position, StationPositionMode.Disabled, repository!.Revision + 1,
+                StationTime.GetUtcNow(), "configuration", null, null, null);
+            repository.Commit(null, "PositionSupplyChanged", "相机编码留空，本位停用；填写后可启用。", positionControl: state);
+            positionControls[position] = state;
+        }
     }
     bool PositionDrainRequired(string position)
     {
@@ -100,6 +114,8 @@ public sealed partial class ParcelRuntime : IStationPositionControl
                 return new("Rejected", "供包台尚未就绪或操作员会话已失效。", repository?.Revision ?? 0);
             if (repository.PriorCommand(command) is { } prior) return prior;
             var previous = PositionControl(request.PositionId);
+            if (request.Enabled && !PositionHasRcsCode(request.PositionId))
+                return new("Rejected", "本位相机编码未配置，保持停用；填写编码后可启用。", repository.Revision);
             if (request.RuntimeId != runtimeId || request.ExpectedControlRevision != previous.Revision)
                 return new("Conflict", "本位启停状态已变化，请核对当前状态后重试。", repository.Revision);
             if (backupInProgress || configurationSaving || !positions.ContainsKey(request.PositionId) ||

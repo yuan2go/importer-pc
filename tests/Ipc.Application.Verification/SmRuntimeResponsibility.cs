@@ -58,7 +58,7 @@ internal static class SmRuntimeResponsibility
         {
             var s = await app.SnapshotAsync();
             var command = new SubmitParcelBarcode(Wire.Id(), s.RuntimeId, s.Configuration.Revision, position, code, ParcelBarcodeInputKind.Keyboard,
-                s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation);
+                s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation) { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival!.Generation };
             return await app.SubmitParcelBarcodeAsync(command, default);
         }
 
@@ -68,6 +68,7 @@ internal static class SmRuntimeResponsibility
             var receipt = await app.CommandAsync(new(Wire.Id(), s.Revision, "ConfirmPlacementRemoval", op.PositionId,
                 s.Positions!.Single(p => p.Id == op.PositionId).PlacementRemovalOperation));
             Check(receipt.Status == "Persisted", "explicit removal confirms the identified original placement");
+            await SmRoundFixture.NextVehicleAsync(app, op.PositionId!);
         }
 
         const string oldBarcode = "HIST-HELD";

@@ -265,12 +265,9 @@ public sealed partial class ParameterSettingsControl : UserControl
         var draft = Model?.Readers.Concat(Model.Components).FirstOrDefault(d => path.StartsWith(d.InstanceId + "/", StringComparison.Ordinal));
         if (draft is not null && path != draft.InstanceId + "/ConfigureLater" && !path.EndsWith("-station-code", StringComparison.Ordinal))
         {
-            var cameraCode = path.Split('/').Last() is "left-bcr-code" or "right-bcr-code";
-            var camera = cameraCode ? Model!.Readers.SingleOrDefault(r => path.EndsWith("/" + r.Role + "-bcr-code", StringComparison.Ordinal)) : null;
-            void RefreshRequirement() => caption.Text = draft.ConfigureLater || cameraCode && (!draft.Bound || camera is null || camera.ConfigureLater) ? label.TrimEnd(' ', '*') : label;
+            void RefreshRequirement() => caption.Text = draft.ConfigureLater ? label.TrimEnd(' ', '*') : label;
             PropertyChangedEventHandler changed = (_, e) => { if (e.PropertyName is nameof(CapabilityDraft.ConfigureLater) or nameof(CapabilityDraft.Bound)) RefreshRequirement(); };
             draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed); RefreshRequirement();
-            if (camera is not null) { camera.PropertyChanged += changed; unsubscribe.Add(() => camera.PropertyChanged -= changed); }
         }
         // The control's cap sizes the field (its creator may still lower it, so it is read on every layout):
         // short numbers 200, ordinary values 320, wide values the full card width.

@@ -1,4 +1,4 @@
-﻿using Ipc.Application.Contracts;
+using Ipc.Application.Contracts;
 using Ipc.Platform;
 using System.Text.Json;
 
@@ -84,13 +84,13 @@ internal static class StationPositionControlChecks
             Check(h.Api(h.Left).Destroys == 1 && h.Api(h.Left).Finalizes == 1 && h.Api(h.Left).Opens == opens && h.Peer.Requests.Count == 1,
                 "disabled position actually releases camera handle and SDK and suppresses automatic reconnect");
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CameraConnectionSuspended: false, BarcodeInput.Camera: true });
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CameraConnectionSuspended: false, Arrival.Confirmed: true });
             Check(h.Api(h.Left).Opens == opens + 1 && (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Epoch == rightEpoch,
                 "enabling reconnects only the selected camera with a new session");
             await Deliver(CameraRoundHarness.Barcode("SYNTH-DRAIN"));
             Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").CurrentRoundId is null,
                 "reenabling over the same placement does not manufacture an empty tray or resend the resting parcel");
-            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await Deliver(CameraRoundHarness.Barcode("SYNTH-REENABLED"));
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.Wcs?.State == StageState.Accepted) == 2);
             Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Operations.Any(o => o.Id == original.Id), "reenabled camera admits next placement and preserves historical original");

@@ -12,7 +12,7 @@ static partial class Program
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS MANUAL-DEBUG-UI " + message); }
         T Field<T>(object c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
-        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "manual-debug"), deferred: true, rightCode: false, leftCode: false);
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "manual-debug"), deferred: true);
         h.Peer.Mode = "reject"; h.Peer.RejectionMessage = "无设备可用";
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var application = DispatchProxy.Create<IManualDebugUiFixture, ManualDebugReturnProbe>();

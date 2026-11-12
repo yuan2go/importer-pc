@@ -73,7 +73,7 @@ static class InterruptedScanSkipChecks
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single().State == ParcelState.SlotResolved,
             "a fresh parcel completes normally while continuous same-placement reads still request only once");
         h.Peer.ReplySlot = "";
-        await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
         h.Api(h.Left).EnqueueNative(pixels, 3, [Symbol("SYNTH-SKIP-UNKNOWN")]); await Delivered(h, "left", 3);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SKIP-UNKNOWN" && o.State == ParcelState.WcsUnknown));
         var unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.State == ParcelState.WcsUnknown);
@@ -135,7 +135,7 @@ static class InterruptedScanSkipChecks
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == f));
             if (f < 5) await Task.Delay(425);
         }
-        await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
         h.Api(h.Left).EnqueueNative(pixels, 6, [Symbol("SYNTH-SLOW-A")]);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-SLOW-A" && o.State == ParcelState.SlotResolved));
         Check(h.Peer.Requests.Count == 2 && !(await h.App.SnapshotAsync()).Paused,

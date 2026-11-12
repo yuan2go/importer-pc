@@ -51,7 +51,7 @@ internal static class DualCameraPerformance
             Check(h.Peer.Requests.Count == beforeRequests && Events(h).Count(e => e.GetProperty("Kind").GetString() == "RcsSubmitStarted") == 2,
                 "same-placement observation increases its own counter and causes no extra submit");
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            await h.TrayAsync(h.Right, TrayPresence.Absent);
+            await h.TrayAsync(h.Right, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "right");
             h.Api(h.Right).Enqueue(CameraRoundHarness.Barcode("SYNTH-PERF-RIGHT-NEW"), 2);
             await CameraRoundHarness.Until(() => Task.FromResult(Events(h).Count(e => e.GetProperty("Kind").GetString() == "RcsSubmitStarted") == 3));
             Check(Events(h).Count(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted") == 2,
@@ -101,7 +101,7 @@ internal static class DualCameraPerformance
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-FIRST-HELD"), 2);
             await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed >= 2));
             Check(h.Peer.Requests.Count == 1, "reobserving the held parcel creates no second request");
-            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEXT-READY"), 3);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NEXT-READY" && o.State == ParcelState.SlotResolved));
             var before = await h.App.SnapshotAsync();

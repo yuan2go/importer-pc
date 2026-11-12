@@ -48,7 +48,7 @@ internal static class SamePlacement29
                 await Deliver(h, h.Left, blank, ++frame);
                 await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2);
             }
-            if (frames >= 3) { await h.TrayAsync(h.Left, TrayPresence.Absent); await h.TrayAsync(h.Left, TrayPresence.Present); }
+            if (frames >= 3) { await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present); }
         }
         async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
 

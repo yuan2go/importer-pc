@@ -13,7 +13,8 @@ internal static class SmArrivalRecoveryChecks
         await SameVehicle(workspace, root);
         await LateMembership(workspace, root);
         await BackupHeartbeat(workspace, root);
-        await SharedTarget(workspace, root);
+        await DebugTarget(workspace, root);
+        await UnconfiguredLane(workspace, root);
     }
     static async Task SameVehicle(string workspace, string root)
     {
@@ -103,8 +104,11 @@ internal static class SmArrivalRecoveryChecks
     }
     static async Task BackupHeartbeat(string workspace, string root)
     {
-        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "backup-heartbeat"), deferred: true);
-        await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "backup-heartbeat"), deferred: false, mode: RunMode.Simulation);
+        await h.StartAsync();
+        foreach (var source in h.Factory.Cameras.Values) source.ConfirmConnected();
+        await CameraRoundHarness.Until(async () => Lane(await h.App.SnapshotAsync()).Arrival?.CameraBoundaryReady == true);
+        await ManagementModeFixture.Authorize(h.App);
         var s = await h.App.SnapshotAsync();
         await h.App.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
@@ -120,6 +124,8 @@ internal static class SmArrivalRecoveryChecks
         try
         {
             var revision = (await h.App.SnapshotAsync()).Revision;
+            var source = h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId];
+            Check(source.Read([], new(TrayPresence.Present, "backup-preview-only")), "physical preview during backup retires normally without a durable camera write");
             for (var i = 0; i < 2; i++)
                 Check(await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received,
                     "actual heartbeat continues during frozen backup without changing the business snapshot");
@@ -128,37 +134,60 @@ internal static class SmArrivalRecoveryChecks
         finally { release.Set(); h.App.BackupBoundary = null; }
         Check((await backup).Status == "BackupCreated" && ParcelRecovery.InspectAnalysisBackup(path, new Ipc.Application.Sportmaster.SportmasterFlow()).DatabaseVersion == ParcelRepository.CurrentStorageVersion,
             "current-format complete backup retains heartbeat uncertainty and original recovery boundaries");
+        await h.App.DisposeAsync();
+        var sourceDatabase = Path.Combine(h.Launch.DataRoot, h.Config.Mode.ToString(), h.Config.StationId, "sportmaster", "sportmaster.db");
+        ParcelRepository.RequireHandoffSourceEquivalent(sourceDatabase, path);
+        Check(true, "normal close and unchanged-member heartbeat custody can finish after backup without making that complete restore source unusable");
     }
-    static async Task SharedTarget(string workspace, string root)
+    static async Task DebugTarget(string workspace, string root)
     {
-        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "shared-target"), deferred: true, leftCode: false);
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "debug-target"), deferred: true);
         await h.StartAsync();
-        var held = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        h.Peer.Hold = held;
-        try
-        {
-            var left = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "NO-BCR-REAL-001"), default);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 1));
-            var right = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "SAME-PHYSICAL-002"), default);
-            Check(left.Status == "Admitted" && right.Status == "Rejected" && h.Peer.Requests.Count == 1,
-                "no-bcr manual remains legal but its real target is coordinated with the same station's coded lane");
-            await ManagementModeFixture.Authorize(h.App);
-            var s = await h.App.SnapshotAsync();
-            var debug = await h.App.PrepareManualRcsRequestAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "right", "DEBUG-SAME-TARGET", null)
-            { ExpectedArrivalGeneration = Lane(s, "right").Arrival!.Generation }, default);
-            Check(!debug.CanSend && h.Peer.Requests.Count == 1,
-                "independent debug preparation cannot bypass real target ownership");
-            try { await h.App.SendCameraRoundAsync(new(Wire.Id(), s.RuntimeId, debug.Id!, debug.RequestHash!), default); throw new Exception("unsafe debug send accepted"); }
-            catch (InvalidOperationException) { Check(h.Peer.Requests.Count == 1, "actual debug send rechecks shared physical responsibility before HTTP"); }
-            held.TrySetResult(); h.Peer.Hold = null;
-            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(left.OperationId!))?.Wcs?.State == StageState.Accepted);
-            await h.NextVehicleAsync("right");
-            var changed = await h.App.SnapshotAsync();
-            Check(changed.Rounds.All(r => r.PositionId != "left") && !Lane(changed, "right").Arrival!.Submitted,
-                "trusted target vehicle change immediately ends the no-bcr source's old presentation and releases the new arrival");
-            var next = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "NEXT-TARGET-003"), default);
-            Check(next.Status == "Admitted", "new confirmed target permits production while the old unsent debug intention remains independent");
-        }
-        finally { held.TrySetResult(); h.Peer.Hold = null; }
+        var first = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "PRODUCTION-CLAIM"), default);
+        await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(first.OperationId!))?.Wcs?.State == StageState.Accepted);
+        await ManagementModeFixture.Authorize(h.App);
+        var s = await h.App.SnapshotAsync();
+        var command = new PrepareManualRcsRequest(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "DEBUG-SAME-CAR", null)
+        { ExpectedArrivalGeneration = Lane(s).Arrival!.Generation };
+        var prepared = await h.App.PrepareManualRcsRequestAsync(command, default);
+        Check(!prepared.CanSend, "independent debug preparation cannot take a second real submission on the same physical arrival");
+        var blocked = await h.App.SendCameraRoundAsync(new(Wire.Id(), s.RuntimeId, prepared.Id!, prepared.RequestHash!), default);
+        Check(blocked.SendAttempts == 0 && !blocked.CanSend && h.Peer.Requests.Count == 1, "actual debug send rechecks same-position ownership before HTTP");
+        await h.NextVehicleAsync();
+        s = await h.App.SnapshotAsync();
+        var next = await h.App.PrepareManualRcsRequestAsync(command with { CommandId = Wire.Id(), ExpectedRoundId = prepared.Id, ExpectedArrivalGeneration = Lane(s).Arrival!.Generation }, default);
+        await h.App.SendCameraRoundAsync(new(Wire.Id(), s.RuntimeId, next.Id!, next.RequestHash!), default);
+        var competing = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "PRODUCTION-AFTER-DEBUG"), default);
+        Check(competing.Status == "Rejected" && h.Peer.Requests.Count == 2, "real debug takes this arrival's claim and production cannot bypass it");
+        var right = await h.App.SubmitParcelBarcodeAsync(await h.Command("right", "RIGHT-INDEPENDENT"), default);
+        Check(right.Status == "Admitted", "mandatory distinct camera identities preserve the other physical lane's independent input");
+    }
+    static async Task UnconfiguredLane(string workspace, string root)
+    {
+        await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "unconfigured-lane"), deferred: false, mode: RunMode.Simulation);
+        var blank = h.Config with { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs.Parameters) { ["left-bcr-code"] = "" } } };
+        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), blank);
+        await h.StartAsync(); var s = await h.App.SnapshotAsync();
+        Check(Lane(s) is { SupplyControl.Mode: StationPositionMode.Disabled, Arrival.Configured: false } && h.Factory.Cameras[h.Config.Topology!.Readers[0].DeviceId].Epoch.Length == 0,
+            "empty camera code disables that lane without starting even its configured camera");
+        var enabled = await h.App.SetPositionEnabledAsync(new(Wire.Id(), s.RuntimeId, "left", Lane(s).SupplyControl!.Revision, true), default);
+        var input = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "NO-CODE-NO-SEND"), default);
+        Check(enabled.Status == "Rejected" && input.Status == "Rejected" && h.Peer.Requests.IsEmpty,
+            "unconfigured lane has no manual fallback or enable shortcut");
+        Check(h.Peer.HeartbeatRequests.All(body => !body.Contains("MANUAL-LEFT", StringComparison.Ordinal)) && Lane(s, "right").Arrival?.Confirmed == true,
+            "only configured lane participates in actual heartbeat and remains independent");
+        await ManagementModeFixture.Authorize(h.App);
+        var filled = blank with { Wcs = blank.Wcs! with { Parameters = new(blank.Wcs.Parameters) { ["left-bcr-code"] = "FILLED-LEFT" } } };
+        var saved = await h.App.StageConfigurationAsync(s.Configuration.Revision, filled, "Configure unused lane");
+        Check(saved.Status is "Effective" or "PendingRestart", "filling an unused lane uses the existing guarded configuration flow");
+        if (saved.Status == "PendingRestart") { await h.App.DisposeAsync(); await h.StartAsync(); }
+        await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+        s = await h.App.SnapshotAsync();
+        enabled = await h.App.SetPositionEnabledAsync(new(Wire.Id(), s.RuntimeId, "left", Lane(s).SupplyControl!.Revision, true), default);
+        Check(enabled.Status == "Accepted", "configured code permits deliberate enable while keeping its old disabled state until then");
+        await ((IStationRcsHeartbeat)h.App).CheckRcsHeartbeatAsync(default);
+        await CameraRoundHarness.Until(async () => Lane(await h.App.SnapshotAsync()).Arrival?.Confirmed == true);
+        var admitted = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "FILLED-MANUAL"), default);
+        Check(admitted.Status == "Admitted", "configured arrival restores legal manual input even with the physical camera disconnected");
     }
 }

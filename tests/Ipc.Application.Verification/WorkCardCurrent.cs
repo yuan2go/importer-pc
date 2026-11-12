@@ -89,15 +89,18 @@ internal static class WorkCardCurrent
             var expired = await m.App.SnapshotAsync();
             var position = expired.Positions!.Single(p => p.Id == "right");
             Check(position.CurrentOperation is null && position.CurrentRoundId is null && position.AutomaticSuppressed && position.PlacementClearedAt is null &&
-                expired.Inputs!.All(i => i.PositionId != "right") && position.BarcodeInput?.Manual == true && m.Peer.Requests.Count == 1,
+                expired.Inputs!.All(i => i.PositionId != "right") && position.BarcodeInput?.Manual == false && position.Arrival?.Submitted == true && m.Peer.Requests.Count == 1,
                 "at 3000 ms the card clears the chute and barcode without recording removal or sending anything");
 
+            var oldEnter = await m.App.SubmitParcelBarcodeAsync(draft with { ExpectedRoundId = null }, default);
+            Check(oldEnter.Status == "Rejected" && m.Peer.Requests.Count == 1, "display expiry does not rearm the submitted vehicle");
+            await m.NextVehicleAsync("right");
             m.Peer.ReplySlot = "";
-            var next = await m.App.SubmitParcelBarcodeAsync(draft with { ExpectedRoundId = null }, default);
+            var next = await m.App.SubmitParcelBarcodeAsync(await m.Command("right", "SYNTH-CARD-NEXT"), default);
             await CameraRoundHarness.Until(async () => (await m.App.OperationAsync(next.OperationId!))?.Wcs?.State == StageState.Unknown);
             Check(next.Status == "Admitted" && next.OperationId != id && m.Peer.Requests.Count == 2 &&
                 Wire.Encode((await m.App.OperationAsync(id))?.Wcs) == Wire.Encode(original.Wcs),
-                "a draft begun before the display expired submits once without changing the original result");
+                "explicit submission on a changed vehicle sends once without changing the original result");
             clock.Advance(TimeSpan.FromSeconds(6));
             var unknown = await m.App.SnapshotAsync();
             var unresolved = unknown.Positions!.Single(p => p.Id == "right");

@@ -29,7 +29,8 @@ public sealed partial class SupplyStationPositionViewModel
     public bool SupplyEnabled => SupplyControl?.Mode is null or StationPositionMode.Enabled;
     public bool SupplyDisabling => SupplyControl?.Mode == StationPositionMode.Disabling;
     public bool SupplyDisabled => SupplyControl?.Mode == StationPositionMode.Disabled;
-    public bool CanChangeSupply => owner.Fresh && owner.CanStartOperation && owner.Application is IStationPositionControl;
+    public bool SupplyConfigured => Arrival?.Configured != false;
+    public bool CanChangeSupply => SupplyConfigured && owner.Fresh && owner.CanStartOperation && owner.Application is IStationPositionControl;
     string? PlacementRemovalOperation => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.PlacementRemovalOperation;
     public bool CanConfirmPlacementRemoval => owner.Fresh && SupplyEnabled && !ShowConfirmedTask && PlacementRemovalOperation is not null;
     public bool ShowConfirmedPlacementRemoval => CanConfirmPlacementRemoval;
@@ -52,7 +53,7 @@ public sealed partial class SupplyStationPositionViewModel
     public string EnableLabel => "启用" + Heading;
     public string SupplyNotice => SupplyDisabling
         ? "停用中：不再接收新条码。本轮请求及结果保存结束后自动停用。点“启用”可取消。"
-        : "本位已停用，不接收条码。";
+        : SupplyConfigured ? "本位已停用，不接收条码。" : "相机编码未配置，本位停用；在设置填写后可启用。";
     public string EnableBackground => SupplyEnabled ? OperatorTokens.Success : OperatorTokens.Surface;
     public string EnableForeground => SupplyEnabled ? OperatorTokens.Surface : OperatorTokens.Muted;
     public string DisableBackground => SupplyEnabled ? OperatorTokens.Surface : SupplyDisabling ? OperatorTokens.Warning : OperatorTokens.Inactive;

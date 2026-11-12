@@ -113,6 +113,7 @@ static partial class SportmasterRcs
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, precise));
             var count = peer.Requests.Count; var elapsed = Stopwatch.StartNew();
             await service.StartAsync(default); await Until(() => peer.Requests.Count > count);
+            count = peer.Requests.Count; elapsed.Restart(); await Until(() => peer.Requests.Count > count);
             Check(elapsed.Elapsed.TotalMilliseconds >= interval * .8 && elapsed.Elapsed.TotalMilliseconds < interval + 1500,
                 "actual heartbeat timer uses millisecond interval " + interval);
         }
@@ -132,8 +133,8 @@ static partial class SportmasterRcs
             var instance = new ExtensionInstance("synthetic-reader", "synthetic.reader", "reader", hardware.DeviceId, true, new() { });
             var selected = config with { Wcs = sharedBinding, StationCode = "SYNTH-NEW-STATION", Topology = config.Topology with { Readers = [hardware] }, Extensions = new([], [instance]) };
             var missing = sharedBinding with { Parameters = new(sharedBinding.Parameters.Where(p => p.Key != "left-bcr-code")) };
-            try { _ = RcsConfigurationValidation.HeartbeatMapping(selected with { Wcs = missing }); throw new Exception("Missing shared camera code accepted"); }
-            catch (InvalidDataException ex) when (ex.Message.Contains("left-bcr-code")) { Check(true, "active hardware reader without shared camera code refuses configuration"); }
+            Check(RcsConfigurationValidation.HeartbeatMapping(selected with { Wcs = missing }).All(p => p.Bcr != sharedBinding.Parameters["left-bcr-code"]),
+                "empty camera code is omitted from heartbeat rather than blocking the configured lane");
             service.ConfigureRuntime(selected);
             var count = peer.Requests.Count; await service.StartAsync(default); await Until(() => peer.Requests.Count > count);
             using var json = JsonDocument.Parse(peer.Requests.Last().Body); var data = json.RootElement.GetProperty("data");
@@ -194,7 +195,7 @@ static partial class SportmasterRcs
         Check(snapshot.Configuration.Effective.Wcs!.Parameters.Count == 0 && snapshot.Positions!.Single(p => p.Id == "left").Vehicle?.Status == "IDLE" &&
             snapshot.Positions!.Single(p => p.Id == "right").Vehicle?.Status == "TASKING",
             "Application projects the correct vehicle per position without exposing editable configuration to operators");
-        var receipt = await station.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "SYNTH-WORKING-AGV", ParcelBarcodeInputKind.Keyboard, null, null), default);
+        var receipt = await station.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "SYNTH-WORKING-AGV", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.Generation }, default);
         Check(receipt.Status == "Admitted", "a working vehicle is informational and cannot block a real manual admission");
         await Until(async () => (await station.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
         station.Peer.ReplyVehicleStates = false;

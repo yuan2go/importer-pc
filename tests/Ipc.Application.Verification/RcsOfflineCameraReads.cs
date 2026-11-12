@@ -19,6 +19,7 @@ static class RcsOfflineCameraReads
 
         await using (var initial = new CameraRoundHarness(workspace, Path.Combine(root, "first-response"), heartbeatSeconds: 3600, nativeResults: nativeResults))
         {
+            initial.Peer.HeartbeatUnavailable = true;
             await initial.StartAsync(waitForRcs: false);
             initial.Factory.Sources[initial.Left].ReadPreview();
             initial.Api(initial.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-BEFORE-FIRST-HEARTBEAT"), 1);

@@ -165,7 +165,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null, SmParcelRound? round = null, SmPositionCycle? cycle = null, SmPositionCycle[]? cycles = null, SmParcelRound[]? rounds = null, RestoreNumberFloor? restoreFloor = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null, SmParcelRound? round = null, SmPositionCycle? cycle = null, SmPositionCycle[]? cycles = null, RestoreNumberFloor? restoreFloor = null)
     {
         if (positionControl is not null)
         {
@@ -194,7 +194,6 @@ public void Commit(ParcelOperation? operation, string eventName, string detail, 
         }
         WriteRound(tx, round, cycle);
         foreach (var additional in cycles ?? []) WriteRound(tx, null, additional);
-        foreach (var additional in rounds ?? []) WriteRound(tx, additional, null);
         if (inspectedIngress is not null)
         {
             using var inspected = db.CreateCommand(); inspected.Transaction = tx;

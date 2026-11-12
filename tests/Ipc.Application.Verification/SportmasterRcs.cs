@@ -34,7 +34,7 @@ static partial class SportmasterRcs
         var payload = Wire.Encode(new ParcelPayload(barcode, "synthetic-admission", null, null, null, Acquisition: acquisition, PositionId: position, ReaderBinding: reader));
         return new(Wire.Id(), "sportmaster", Wire.Id(), "synthetic-admission", "wcs-slot", binding, Wire.Hash("synthetic-provider"), Wire.Hash("synthetic-configuration"), payload, Wire.Hash(payload), DateTimeOffset.UtcNow);
     }
-    static string Response(string request, string mode)
+    static string Response(string request, string mode, IReadOnlyDictionary<string, string>? vehicles = null)
     {
         using var j = JsonDocument.Parse(request); var id = j.RootElement.GetProperty("requestId").GetInt64();
         var heartbeat = j.RootElement.GetProperty("data").GetArrayLength() == 0 || j.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat";
@@ -42,7 +42,7 @@ static partial class SportmasterRcs
         {
             index = item.GetProperty("index").GetInt32(), success = true, command = "sorter.task.station_heartbeat",
             data = new { stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(), bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
-                agvNo = "SYNTH-AGV-" + item.GetProperty("index").GetInt32(), status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING" }
+                agvNo = vehicles?.GetValueOrDefault(item.GetProperty("params").GetProperty("bcrCode").GetString()!) ?? "SYNTH-AGV-" + (item.GetProperty("params").GetProperty("bcrCode").GetString()!.Contains("RIGHT", StringComparison.OrdinalIgnoreCase) ? 2 : 1), status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING" }
         }).ToArray() });
         if (mode.StartsWith("no-destination", StringComparison.Ordinal))
         {
@@ -514,6 +514,7 @@ static partial class SportmasterRcs
     sealed record Exchange(string Method, string ContentType, string Body, int StatusCode, string Response);
     sealed class Peer : IAsyncDisposable
     {
+        public readonly ConcurrentDictionary<string, string> Vehicles = new();
         readonly HttpListener listener = new(); readonly CancellationTokenSource stop = new(); readonly Task loop;
         readonly ConcurrentBag<Task> pending = [];
         public ConcurrentQueue<Exchange> Requests { get; } = new();
@@ -524,7 +525,7 @@ static partial class SportmasterRcs
         public Peer()
         {
             var reserve = new TcpListener(IPAddress.Loopback, 0); reserve.Start(); var port = ((IPEndPoint)reserve.LocalEndpoint).Port; reserve.Stop();
-            Endpoint = "http://127.0.0.1:" + port + "/rcs/sorter/api"; listener.Prefixes.Add("http://127.0.0.1:" + port + "/"); listener.Start(); loop = Loop();
+            Endpoint = "http://127.0.0.1:" + port + "/rcs/sorter/api"; listener.Prefixes.Add("http://127.0.0.1:" + port + "/"); listener.Start(); SmRoundFixture.VehiclePeers[Endpoint] = (code, vehicle) => Vehicles[code] = vehicle; loop = Loop();
         }
         async Task Loop()
         {
@@ -543,7 +544,7 @@ static partial class SportmasterRcs
             using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); var mode = Mode;
             if (mode == "by-position") { using var j = JsonDocument.Parse(body); mode = j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("stationCode").GetString() == "TEST-LEFT" ? "unpack" : "assigned"; }
             if (mode == "timeout-left") { using var j = JsonDocument.Parse(body); mode = j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("stationCode").GetString() == "TEST-LEFT" ? "timeout" : "assigned"; }
-            var response = Response(body, mode); response = ResponseTransform?.Invoke(response) ?? response;
+            var response = Response(body, mode, Vehicles); response = ResponseTransform?.Invoke(response) ?? response;
             var status = mode == "http-error" ? 503 : mode == "redirect" ? 302 : 200;
             Requests.Enqueue(new(context.Request.HttpMethod, context.Request.ContentType ?? "", body, status, response));
             try
@@ -575,6 +576,6 @@ static partial class SportmasterRcs
             }
         }
         public async ValueTask DisposeAsync()
-        { stop.Cancel(); listener.Close(); await loop; await Task.WhenAll(pending); stop.Dispose(); }
+        { SmRoundFixture.VehiclePeers.TryRemove(Endpoint, out _); stop.Cancel(); listener.Close(); await loop; await Task.WhenAll(pending); stop.Dispose(); }
     }
 }

@@ -40,11 +40,11 @@ internal static partial class StabilityAnalysis
         await Observe([], TrayPresence.Present);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Any(r => r.PositionId == "left" && r.AutoExpired));
         var pda = await Submit("left", "SYNTH-TIMEOUT-PDA", ParcelBarcodeInputKind.PdaKeyboard); await Complete(pda.OperationId!);
-        await Observe([], TrayPresence.Absent);
+        await Observe([], TrayPresence.Absent); await h.NextVehicleAsync();
         await Observe(["SYNTH-AUTOMATIC"]);
         string? automatic = null;
         await CameraRoundHarness.Until(async () => (automatic = (await h.App.SnapshotAsync()).Rounds.SingleOrDefault(r => r.PositionId == "left")?.OperationId) is not null);
-        await Complete(automatic!); await Observe([], TrayPresence.Absent);
+        await Complete(automatic!); await Observe([], TrayPresence.Absent); await h.NextVehicleAsync();
 
         h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
         h.Peer.HoldWhen = body => body.Contains("SYNTH-LATE", StringComparison.Ordinal);

@@ -51,8 +51,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
     bool SmHeartbeatChangeUnconfirmed(ParcelConfiguration candidate) => smCycles.Values.Any(c =>
         (c.HeartbeatPending is not null || c.UncertainMembership is not null || c.HeartbeatMaintenanceLease) &&
         c.HeartbeatConfiguration != SmHeartbeatPositionConfiguration(c.PositionId, candidate));
-    bool UsesSmArrival(string position) => Id == "sportmaster" && Effective.Wcs?.Contract == RcsRequestPolicy.Contract &&
-        !string.IsNullOrWhiteSpace(Effective.Wcs?.Parameters.GetValueOrDefault(position + "-bcr-code"));
+    bool UsesSmArrival(string position) => Id == "sportmaster" && Effective.Wcs?.Contract == RcsRequestPolicy.Contract;
     bool HeartbeatIncludes(string position) => PositionControl(position).Mode != StationPositionMode.Disabled;
     void StoreSmCycle(SmPositionCycle cycle, string reason)
     {
@@ -72,28 +71,11 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
     bool SmArrivalConfirmed(string position) => PositionSupplyEnabled(position) && SmMembershipConfirmed(position, true) &&
         arrivalConfirmations.TryGetValue(position, out var vehicle) && vehicle.VehicleNo == SmCycle(position).VehicleNo &&
         vehicle.ReceivedAt <= DateTimeOffset.UtcNow && vehicle.ValidUntil > DateTimeOffset.UtcNow;
-    string[] SmTargetPositions(string position)
-    {
-        if (Effective.Wcs?.Contract != RcsRequestPolicy.Contract) return [position];
-        var own = Effective.Wcs?.Parameters.GetValueOrDefault(position + "-bcr-code");
-        var station = Effective.Wcs?.Parameters.GetValueOrDefault(position + "-station-code");
-        return positions.Keys.Where(p => p == position ||
-            Effective.Wcs?.Parameters.GetValueOrDefault(p + "-station-code") == station &&
-            (string.IsNullOrWhiteSpace(own) || string.IsNullOrWhiteSpace(Effective.Wcs?.Parameters.GetValueOrDefault(p + "-bcr-code")))).ToArray();
-    }
     string? SmTargetBlock(string position, string? exceptOperation = null, bool debug = false)
     {
         if (Id != "sportmaster") return null;
+        if (!PositionHasRcsCode(position)) return "本位相机编码未配置，保持停用；填写后可启用。";
         var cycle = SmCycle(position);
-        foreach (var related in SmTargetPositions(position).Where(p => p != position))
-        {
-            var other = SmCycle(related);
-            if (other.RecoveryReason is not null || other.TargetOperation is { } targetId && targetId != exceptOperation ||
-                other.SubmittedOperation is { } submittedId && submittedId != exceptOperation ||
-                UsesSmArrival(related) && !SmArrivalConfirmed(related) ||
-                CurrentRound(related)?.OperationId is { } currentId && currentId != exceptOperation)
-                return "本请求与同站另位可能指向同一目标；请先处理对应投递位原责任，再明确接管，不可并行重发。";
-        }
         if (cycle.RecoveryReason is not null) return cycle.RecoveryReason;
         if (cycle.TargetOperation is { } target && target != exceptOperation)
             return "本位原请求的远端目标责任未确认；请停用本位并联系维护核对原请求，勿重复提交。";
@@ -215,25 +197,13 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
                         AutoSuppressed = false, Presence = TrayPresence.Unknown, Epoch = null, Sequence = 0,
                         Evidence = null, ClearedAt = vehicle.ReceivedAt, Withdrawn = false
                     };
-                    var boundOperation = cycle.TargetOperation ?? cycle.SubmittedOperation;
-                    var siblings = boundOperation is { } bound ? smCycles.Values.Where(c => c.PositionId != position && c.TargetOperation == bound)
-                        .Select(c => c with { TargetOperation = null, RecoveryCause = c.RecoveryCause & ~SmRemoteRecoveryCause.RequestMayBind }).ToArray() : [];
-                    var ended = boundOperation is { } target ? smCurrentRounds.Values.Select(id => smRounds[id])
-                        .Where(r => r.PositionId != position && r.OperationId == target)
-                        .Select(r => r with { Version = r.Version + 1, State = SmRoundState.Ended, EndedAt = StationTime.GetUtcNow(), EndReason = "TargetVehicleChanged" }).ToArray() : [];
                     if (CurrentRound(position) is { } round)
-                        EndSmRound(round, "VehicleChanged", replacementCycle: next, relatedCycles: siblings, relatedRounds: ended);
+                        EndSmRound(round, "VehicleChanged", replacementCycle: next);
                     else
                     {
-                        repository!.Commit(null, "VehicleArrived", Wire.Encode(new { Cycle = next, BoundOperation = boundOperation, Proof = "RCS binds current car before releasing it; this lane was not withdrawn" }), cycle: next, cycles: siblings, rounds: ended);
+                        repository!.Commit(null, "VehicleArrived", Wire.Encode(new { Cycle = next, BoundOperation = cycle.TargetOperation ?? cycle.SubmittedOperation, Proof = "RCS binds current car before releasing it; this lane was not withdrawn" }), cycle: next);
                         smCycles[position] = next;
-                        foreach (var sibling in siblings) smCycles[sibling.PositionId] = sibling;
-                        foreach (var retired in ended)
-                        {
-                            ApplySmRound(retired); smRoundPictures.Remove(retired.Id);
-                            if (retired.OperationId is { } released) releasedPlacements.Add(released);
-                        }
-                        WriteRuntimeLog("小车到位", "车辆到位与原目标绑定已核对", new { Position = position, Cycle = next, BoundOperation = boundOperation });
+                        WriteRuntimeLog("小车到位", "车辆到位与原目标绑定已核对", new { Position = position, Cycle = next, BoundOperation = cycle.TargetOperation ?? cycle.SubmittedOperation });
                     }
                     arrivalVisualBaselines.Remove(position);
                     smPresenceTimes.Remove(position); smPresenceCaptureTicks.Remove(position); blockedInputs.TryRemove(position, out _); blockedInputPictures.Remove(position);
@@ -304,14 +274,14 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             SmArrivalConfirmed(position) && capture is { Ready: true } && capture.Generation == cycle.Generation &&
                 capture.Epoch == readers[positions[position].ReaderDeviceId].Epoch && capture.Until > DateTimeOffset.UtcNow,
             cycle.RecoveryReason ?? (CurrentRound(position) is null && cycle.TargetOperation is not null ? "原请求的远端目标责任待核对；请停用本位，维护核对后恢复。" : null), cycle.TargetOperation)
-        { CaptureFailure = capture?.Failure is not null ? "相机换车边界未确认；可核对后人工提交，或联系维护检查相机。" : null,
+        { Configured = PositionHasRcsCode(position), CaptureFailure = capture?.Failure is not null ? "相机换车边界未确认；可核对后人工提交，或联系维护检查相机。" : null,
             SubmissionAttempted = cycle.SubmissionAttempted, RecoveryToken = cycle.RecoveryToken, PlacementClosed = UsesSmArrival(position) && cycle.AutoSuppressed && cycle.SubmittedOperation is null && CurrentRound(position) is null };
     }
     SmPositionCycle[] SmCyclesAfterOperation(ParcelOperation op, bool firstAttempt)
     {
         if (Id != "sportmaster" || op.PositionId is not { } position) return [];
         var result = new List<SmPositionCycle>();
-        foreach (var target in SmTargetPositions(position))
+        foreach (var target in new[] { position })
         {
             var cycle = SmCycle(target);
             if (firstAttempt && op.Wcs is { Attempts: 1, State: StageState.Dispatching } &&
@@ -339,8 +309,7 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             var command = new BusinessCommand(request.CommandId, 0, "ConfirmRemoteRecovery", request.PositionId, Wire.Encode(request));
             if (repository!.PriorCommand(command) is { } prior) return prior;
             var cycle = SmCycle(request.PositionId);
-            var related = cycle.TargetOperation is { } target
-                ? smCycles.Values.Where(c => c.TargetOperation == target).Select(c => c.PositionId).ToArray() : [request.PositionId];
+            string[] related = [request.PositionId];
             if (backupInProgress || configurationSaving || stopping.IsCancellationRequested || request.RuntimeId != runtimeId ||
                 cycle.Generation != request.ExpectedGeneration || cycle.TargetOperation != request.ExpectedTargetOperation ||
                 cycle.RecoveryToken != request.ExpectedRecoveryToken || PositionControl(request.PositionId).Revision != request.ExpectedControlRevision || related.Any(p =>

@@ -312,6 +312,8 @@ public sealed partial class ParcelRuntime
     public Task<BusinessReceipt> BackupAsync(string destination) => BackupAsync(destination, CancellationToken.None);
     internal Task<BusinessReceipt> BackupAsync(string destination, CancellationToken token) => OwnedRead(owned => BackupCoreAsync(destination, owned), token);
     bool backupInProgress;
+    readonly object backupIngressSync = new();
+    int activeBackupIngress;
     internal Action<string>? BackupBoundary { get; set; }
     async Task<BusinessReceipt> BackupCoreAsync(string destination, CancellationToken token)
     {
@@ -325,8 +327,13 @@ public sealed partial class ParcelRuntime
                 return new("Rejected", "当前尚未满足完整备份条件。请先暂停供包、验证管理授权，并等待在途任务、设备调用或另一项备份结束；原请求和原回执保留。", repository?.Revision ?? 0);
             original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;
             images = operations.Values.Where(x => x.Image is not null && !x.ImageReleased).ToArray();
+            lock (backupIngressSync)
+            {
+                if (activeBackupIngress != 0 || Volatile.Read(ref pendingObservations) != 0)
+                    return new("Rejected", "等待相机输入交付收口后再创建完整备份；预览不受影响。", repository.Revision);
+                backupInProgress = true;
+            }
             PrepareSmHeartbeatMaintenance();
-            backupInProgress = true;
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
         { GuardBackupSourceFailure(error, "BackupSourcePreparation", knownSource: true); throw; }
@@ -349,7 +356,7 @@ public sealed partial class ParcelRuntime
         finally
         {
             await gate.WaitAsync().ConfigureAwait(false);
-            try { CompleteSmHeartbeatMaintenance(); backupInProgress = false; }
+            try { CompleteSmHeartbeatMaintenance(); lock (backupIngressSync) backupInProgress = false; }
             catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "HeartbeatMaintenanceRelease"); throw; }
             finally { gate.Release(); }
         }
@@ -428,17 +435,20 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync(token).ConfigureAwait(false);
         try { drain = externalDrained?.Task ?? Task.CompletedTask; } finally { gate.Release(); }
         await drain.WaitAsync(token).ConfigureAwait(false);
+        // The heartbeat owner must persist its final remote uncertainty, and an
+        // SDK stop may await capture/decode delivery. Neither can drain while
+        // this aggregate's business gate is held.
+        List<Exception> portFailures = [];
+        foreach (var reader in ReaderPorts())
+            try { await DeviceCallAsync(reader.DeviceId, () => reader.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
+        foreach (var port in CapabilityPorts())
+            try { await DeviceCallAsync(DeviceKey(port), () => port.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
+        if (portFailures.Count != 0) throw new AggregateException("Capability stop failures; ownership retained", portFailures);
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {
-            List<Exception> portFailures = [];
             // A reconnect already in flight when Stop began may finish after the first
             // source stop. External drain has now fenced all registrations.
-            foreach (var reader in ReaderPorts())
-                try { await DeviceCallAsync(reader.DeviceId, () => reader.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
-            foreach (var port in CapabilityPorts())
-                try { await DeviceCallAsync(DeviceKey(port), () => port.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
-            if (portFailures.Count != 0) throw new AggregateException("Capability stop failures; ownership retained", portFailures);
             stopped = true;
             blockedInputPictures.Clear();
             FlushInputLogSummaries();

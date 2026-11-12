@@ -286,6 +286,11 @@ static partial class SportmasterRcs
         public void SetEnumValue(string key, uint value) { Calls.Add("set:" + key + "=" + value); if (FailConfigure) throw new IOException("Synthetic camera write failure"); if (IgnoreConfigure) return; if (key == "TriggerMode") trigger = value; else if (key == "AcquisitionMode") acquisition = value; else throw new Exception("Unexpected camera write"); }
         public long PayloadSize() => 8388608;
         public void ConfigureBuffers(uint count, uint strategy = 0) { }
+        public void ClearBuffers()
+        {
+            if (HasFrame) throw new InvalidOperationException("SDK clear must follow actual borrowed-frame release");
+            while (waiting.TryDequeue(out _)) { }
+        }
         public void Start() => Calls.Add("start");
         public MvsFrame? Acquire()
         {

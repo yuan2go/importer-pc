@@ -45,7 +45,7 @@ internal static class LiveDevices30
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
             var snapshot = await h.App.SnapshotAsync();
             foreach (var round in snapshot.Rounds)
-                await h.TrayAsync(snapshot.Positions!.Single(p => p.Id == round.PositionId).ReaderDeviceId, TrayPresence.Absent);
+                await SmRoundFixture.NextVehicleAsync(h.App, round.PositionId);
             snapshot = await h.App.SnapshotAsync(); var candidate = change(snapshot.Configuration.Effective);
             h.Factory.Expect(candidate);
             return await h.App.StageConfigurationAsync(snapshot.Configuration.Revision, candidate, "LIVE30 synthetic change");

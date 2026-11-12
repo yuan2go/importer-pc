@@ -456,15 +456,18 @@ internal static class SmRoundLifecycle
             (await h.App.RoundHistoryAsync("left", search: "SuccessDisplayElapsed")).Items.Single().Id == expired.Id &&
             (await h.App.RoundHistoryAsync("right", search: "SuccessDisplayElapsed")).Items.Length == 0,
             "T17 outcome/end-reason filters retain expired-then-supplemented history and respect the selected position");
-        Check((await h.App.RoundHistoryAsync(search: "TrustedRemoval")).Items.Single().Id == selected.Id &&
+        Check((await h.App.RoundHistoryAsync(search: "VehicleChanged")).Items.Single().Id == selected.Id &&
             (await h.App.RoundHistoryAsync(search: "OperatorConfirmedRemoval")).Items.Length == 0,
-            "T17 trusted removal is searchable and is not conflated with an operator confirmation or display expiry");
+            "T17 trusted vehicle change is searchable and is not conflated with an operator confirmation or display expiry");
     }
 
     // A controlled qualified presence producer decorates the real acquisition
     // source; it does not classify pixels or change the driver's SDK/decoder.
-    sealed class PresenceSource(IControlledObservationSource inner) : IControlledObservationSource, IOriginalFrameSource
+    sealed class PresenceSource(IControlledObservationSource inner) : IControlledObservationSource, IOriginalFrameSource, IProductionArrivalSource
     {
+        ProductionArrivalCapture? arrival;
+        public async Task SetArrivalAsync(ProductionArrivalCapture boundary, CancellationToken token)
+        { await ((IProductionArrivalSource)inner).SetArrivalAsync(boundary, token); arrival = boundary; }
         Func<Observation, bool>? receiver; long sequence;
         public string DeviceId => inner.DeviceId; public string Epoch => inner.Epoch; public string ConfirmationSource => inner.ConfirmationSource;
         public Task StartControlledAsync(string epoch, Func<Observation, bool> receive, Action<DeviceHealthConfirmation> health, CancellationToken token)
@@ -476,7 +479,7 @@ internal static class SmRoundLifecycle
         {
             var id = Wire.Id();
             return receiver!(new(id, DeviceId, Epoch, "presence." + id, Interlocked.Increment(ref sequence), "presence." + id, "Presence", [], null, DateTimeOffset.UtcNow)
-            { TrayPresence = new(TrayPresence.Present, "synthetic-qualified-presence-before-decode") });
+            { TrayPresence = new(TrayPresence.Present, "synthetic-qualified-presence-before-decode"), ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = System.Diagnostics.Stopwatch.GetTimestamp() });
         }
         public void EnableOriginalFrames() => ((IOriginalFrameSource)inner).EnableOriginalFrames();
         public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity identity) => ((IOriginalFrameSource)inner).RetainOriginalFrame(identity);

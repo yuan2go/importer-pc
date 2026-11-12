@@ -29,7 +29,7 @@ public sealed partial class ParcelRuntime
             System.Diagnostics.Stopwatch.GetElapsedTime(ticks) is var age && age >= TimeSpan.Zero && age < TimeSpan.FromMilliseconds(1500) :
             smPresenceTimes.TryGetValue(position, out var at) && DateTimeOffset.UtcNow - at < TimeSpan.FromMilliseconds(1500));
     void StoreSmRound(SmParcelRound round, string name, SmPositionCycle? cycle = null, ParcelOperation? operation = null, BusinessCommand? command = null,
-        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null, SmPositionCycle[]? relatedCycles = null, SmParcelRound[]? relatedRounds = null)
+        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null)
     {
         repository!.Commit(operation, positionControl is null ? name : "PositionSupplyChanged", Wire.Encode(new
         {
@@ -45,15 +45,9 @@ public sealed partial class ParcelRuntime
             RoundElapsedMs = round.ClockRuntime == runtimeId ? StationTime.GetElapsedTime(round.StartedTicks).TotalMilliseconds : (double?)null,
             OperationIds = round.OperationId is { } id ? new[] { id } : []
         }),
-            round: round, cycle: cycle, command: command, positionControl: positionControl, commandResult: commandResult, cycles: relatedCycles, rounds: relatedRounds);
+            round: round, cycle: cycle, command: command, positionControl: positionControl, commandResult: commandResult);
         ApplySmRound(round);
         if (cycle is not null) smCycles[cycle.PositionId] = cycle;
-        foreach (var related in relatedCycles ?? []) smCycles[related.PositionId] = related;
-        foreach (var related in relatedRounds ?? [])
-        {
-            ApplySmRound(related); smRoundPictures.Remove(related.Id);
-            if (related.OperationId is { } released) releasedPlacements.Add(released);
-        }
         if (operation is not null) operations[operation.Id] = operation;
         WriteRuntimeLog("包裹轮次", name, new
         {
@@ -90,7 +84,7 @@ public sealed partial class ParcelRuntime
         StoreSmRound(round, "RoundStarted", cycle); return round;
     }
     void EndSmRound(SmParcelRound round, string reason, bool physicallyRemoved = false, BusinessCommand? command = null, DateTimeOffset? removalAt = null,
-        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null, SmPositionCycle? replacementCycle = null, SmPositionCycle[]? relatedCycles = null, SmParcelRound[]? relatedRounds = null)
+        StationPositionState? positionControl = null, BusinessReceipt? commandResult = null, SmPositionCycle? replacementCycle = null)
     {
         if (CurrentRound(round.PositionId)?.Id != round.Id) return;
         var cycle = replacementCycle ?? SmCycle(round.PositionId);
@@ -122,7 +116,7 @@ public sealed partial class ParcelRuntime
                 };
             }
         }
-        StoreSmRound(ended, "RoundEnded", cycle, operation, command, positionControl, commandResult, relatedCycles, relatedRounds);
+        StoreSmRound(ended, "RoundEnded", cycle, operation, command, positionControl, commandResult);
         if (round.OperationId is { } released) releasedPlacements.Add(released);
         if (physicallyRemoved) confirmedEmptyTrays[round.PositionId] = cycle.ClearedAt!.Value;
         smRoundPictures.Remove(round.Id);

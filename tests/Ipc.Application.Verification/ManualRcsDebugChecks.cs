@@ -9,14 +9,14 @@ internal static partial class ManualRcsDebugChecks
         Console.WriteLine("EvidenceRoot=" + root);
         await Lifecycle(workspace, Path.Combine(root, "lifecycle"));
         Console.WriteLine("Synthetic camera ports; real SQLite and built-in RCS HTTP. No real hardware/site acceptance.");
-        await using var h = new ManualSupplyHarness(workspace, root, deferred: true, rightCode: false, leftCode: false);
+        await using var h = new ManualSupplyHarness(workspace, root, deferred: true);
         await h.StartAsync();
         await ManagementModeFixture.Authorize(h.App);
         var snapshot = await h.App.SnapshotAsync();
-        var prepare = new PrepareManualRcsRequest(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "0000011111", null);
+        var prepare = new PrepareManualRcsRequest(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "0000011111", null) { ExpectedArrivalGeneration = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.Generation };
         var round = await h.App.PrepareManualRcsRequestAsync(prepare, default);
         Check(round.ManualRequest && round.Frame is null && round.Barcode == "0000011111" && round.CanSend && h.Peer.Requests.IsEmpty,
-            "prepare with no cameras/camera codes freezes a manual request without image or HTTP effect");
+            "prepare with mandatory logical codes and deferred physical cameras freezes a manual request without image or HTTP effect");
         Check((await h.App.PrepareManualRcsRequestAsync(prepare, default)).OperationId == round.OperationId && h.Peer.Requests.IsEmpty,
             "same prepare command retains the same original request");
         try { await h.App.PrepareManualRcsRequestAsync(prepare with { Barcode = "CHANGED" }, default); throw new Exception("changed prepare command accepted"); }
@@ -26,8 +26,8 @@ internal static partial class ManualRcsDebugChecks
         Check(original.Acquisition is null && original.DebugRequest is null && original.OperatorDebugRequest?.RoundId == round.Id && original.OperatorInput?.CommandId == prepare.CommandId,
             "manual debug keeps operator evidence separate from physical camera evidence");
         using var body = System.Text.Json.JsonDocument.Parse(round.RequestBody!);
-        Check(body.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").ValueKind == System.Text.Json.JsonValueKind.Null,
-            "no camera code is invented in manual debug HTTP payload");
+        Check(body.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").GetString() == "MANUAL-RIGHT",
+            "manual debug freezes the same mandatory camera code used by heartbeat");
         var send = new SendCameraRound(Wire.Id(), snapshot.RuntimeId, round.Id!, round.RequestHash!);
         round = await h.App.SendCameraRoundAsync(send, default);
         Check(!round.CanSend && h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == round.OperationId).Wcs is { State: StageState.Accepted, Attempts: 1 },
@@ -35,6 +35,8 @@ internal static partial class ManualRcsDebugChecks
         await h.App.SendCameraRoundAsync(send, default);
         Check(h.Peer.Requests.Count == 1 && (await h.App.SnapshotAsync()).Positions!.All(p => p.CurrentOperation is null),
             "repeat send does not replay; test destination is not projected as a production parcel");
+        await h.NextVehicleAsync("right");
+        prepare = prepare with { ExpectedArrivalGeneration = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "right").Arrival!.Generation };
         h.Peer.Mode = "malformed";
         round = await h.App.PrepareManualRcsRequestAsync(prepare with { CommandId = Wire.Id(), Barcode = "UNKNOWN", ExpectedRoundId = round.Id }, default);
         var unknownId = round.OperationId!;
@@ -54,9 +56,9 @@ internal static partial class ManualRcsDebugChecks
             (await h.App.OperationAsync(unknownId))?.Wcs is { State: StageState.Unknown, Attempts: 1 } &&
             (await h.App.ReadCameraOperationDetailAsync(original.Id, default))!.Original.Wcs!.Request.IntegrationRequest!.Body == bytes && h.Peer.Requests.Count == 2,
             "restart preserves manual debug frozen bytes/Unknown and never replays");
-        await using var leaving = new ManualSupplyHarness(workspace, Path.Combine(root, "leaving"), deferred: true, rightCode: false, leftCode: false);
+        await using var leaving = new ManualSupplyHarness(workspace, Path.Combine(root, "leaving"), deferred: true);
         await leaving.StartAsync(); await ManagementModeFixture.Authorize(leaving.App); var state = await leaving.App.SnapshotAsync();
-        var unsent = await leaving.App.PrepareManualRcsRequestAsync(new(Wire.Id(), state.RuntimeId, state.Configuration.Revision, "left", "UNSENT", null), default);
+        var unsent = await leaving.App.PrepareManualRcsRequestAsync(new(Wire.Id(), state.RuntimeId, state.Configuration.Revision, "left", "UNSENT", null) { ExpectedArrivalGeneration = state.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
         var close = new CloseUnsentDebugRound(Wire.Id(), state.RuntimeId, unsent.Id!);
         await leaving.App.CloseUnsentDebugRoundAsync(close, default); await leaving.App.CloseUnsentDebugRoundAsync(close, default);
         var cleaned = await leaving.App.SnapshotAsync();

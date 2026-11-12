@@ -348,6 +348,27 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
 
     bool Enqueue(object item)
     {
+        if (Id != "sportmaster" || item is not Observation observation) return EnqueueCore(item);
+        lock (backupIngressSync)
+        {
+            if (backupInProgress)
+            {
+                ReleaseIngressAcquisition(observation);
+                var position = positions.Values.Single(p => p.ReaderDeviceId == observation.DeviceId).Id;
+                if (ingressLanes.TryGetValue(position, out var lane))
+                {
+                    Interlocked.Increment(ref lane.ObservedOnly);
+                    lane.Dispositions.AddOrUpdate("BackupPreviewOnly", 1, (_, n) => n + 1);
+                }
+                return true;
+            }
+            activeBackupIngress++;
+        }
+        try { return EnqueueCore(item); }
+        finally { lock (backupIngressSync) activeBackupIngress--; }
+    }
+    bool EnqueueCore(object item)
+    {
         var enteredTicks = Stopwatch.GetTimestamp();
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
@@ -877,4 +898,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         Volatile.Read(ref accepting) == 1 && positions.TryGetValue(positionId, out var position) && readers[position.ReaderDeviceId].Source is ISyntheticObservationInput input && input.Emit("Read", admissionId, [code], null, sourceEventId);
     public bool EmitReferenceWeight(WeightMeasurement measurement) => Effective.Mode == RunMode.Simulation &&
         Volatile.Read(ref accepting) == 1 && CapabilityPorts().OfType<ISyntheticWeightInput>().Any(input => input.Emit(measurement));
+    internal bool EmitReferencePresenceAt(string positionId, TrayPresence state) => Effective.Mode == RunMode.Simulation &&
+        Volatile.Read(ref accepting) == 1 && positions.TryGetValue(positionId, out var position) && readers[position.ReaderDeviceId].Source is ISyntheticObservationInput input && input.EmitPresence(state);
 }

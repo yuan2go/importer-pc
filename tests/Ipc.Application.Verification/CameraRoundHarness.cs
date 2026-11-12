@@ -99,6 +99,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         App = new(Launch with { RequireRecoveryReview = supervisedRestart }, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         if (StationClock is not null) App.StationTime = StationClock;
         await App.StartAsync(default);
+        SmRoundFixture.Register(App, Launch, Config);
         if (waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         if (authorizeManagement) await AuthorizeAsync();
         if (waitForRcs) await Until(async () => (await App.SnapshotAsync()).Health.Any(h => h.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived));

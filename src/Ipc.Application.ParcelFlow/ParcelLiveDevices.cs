@@ -105,6 +105,7 @@ public sealed partial class ParcelRuntime
             adopted = true;
             foreach (var id in change.Readers) readers[id] = new(built.Readers[id]);
             configuration.ApplyLive(expectedRevision, candidate);
+            DisableUnconfiguredPositions();
             if (built.Wcs is not null)
             {
                 membershipConfirmations.Clear(); arrivalConfirmations.Clear(); arrivalCaptures.Clear();

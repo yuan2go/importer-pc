@@ -88,7 +88,7 @@ static partial class SportmasterRcs
             s = await Wait(app, s => !s.Paused && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId)?.Health == DeviceHealth.Ready);
             Check(SavedEffective() == original && returned.OpenAttempts == 2,
                 "returning camera reconnects without management authorization or changes to the retained configuration");
-            s = await Wait(app, s => s.Availability!.Admit);
+            s = await Wait(app, s => s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
             returned.Enqueue(MakeSoftwareBarcode("SYNTH-OFFLINE-RETURN"), 1);
             s = await Wait(app, s => s.Operations.Any(o => o.State == ParcelState.SlotResolved));
             Check(s.Operations.Single().Wcs!.Attempts == 1 && SavedEffective() == original,
@@ -97,7 +97,7 @@ static partial class SportmasterRcs
             returned.Discovered = false;
             await Wait(app, s => s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId)?.Health == DeviceHealth.Disconnected);
             returned.Discovered = true;
-            s = await Wait(app, s => s.Availability!.Admit && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
+            s = await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true && s.Devices!.SingleOrDefault(d => d.DeviceId == readers[0].DeviceId) is { Health: DeviceHealth.Ready } d && d.Epoch != priorEpoch);
             Check(!s.Paused && s.Operations.Single().Wcs!.Attempts == 1,
                 "runtime unplug/replug automatically gets a new epoch without pausing software or replaying the original RCS request");
             var deliveredBefore = returnedFactory.Source!.ReadDiagnostics().Delivered;
@@ -114,14 +114,9 @@ static partial class SportmasterRcs
             }
             s = await app.SnapshotAsync();
             Check(s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 1, "blank frames after reconnect do not prove physical removal or release automatic suppression");
-            var position = s.Positions!.Single(p => p.Id == "left");
-            if (position.CurrentRoundId is not null)
-            {
-                var removed = await app.CommandAsync(new(Wire.Id(), s.Revision, "ConfirmPlacementRemoval", "left", position.PlacementRemovalOperation));
-                Check(removed.Status == "Persisted", "unknown physical evidence permits explicit round-owned removal");
-            }
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             s = await app.SnapshotAsync();
-            var manual = await app.SubmitParcelBarcodeAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "SYNTH-OFFLINE-RETURN", ParcelBarcodeInputKind.Keyboard, null, null), default);
+            var manual = await app.SubmitParcelBarcodeAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "SYNTH-OFFLINE-RETURN", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
             s = await Wait(app, s => s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
             Check(manual.Status == "Admitted" && s.Operations.All(o => o.Wcs!.Attempts == 1), "a deliberate new manual same-code submission creates one request without replaying the original");
             await ManagementModeFixture.Authorize(app);

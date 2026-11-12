@@ -28,6 +28,7 @@ public sealed record SmArrivalSnapshot(string? VehicleNo, string Generation, boo
     public bool SubmissionAttempted { get; init; }
     public bool PlacementClosed { get; init; }
     public string? RecoveryToken { get; init; }
+    public bool Configured { get; init; } = true;
 }
 public sealed record ConfirmSmRemoteRecovery(string CommandId, Guid RuntimeId, string PositionId,
     string ExpectedGeneration, string ExternalEvidence)

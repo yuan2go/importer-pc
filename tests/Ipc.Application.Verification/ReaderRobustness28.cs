@@ -165,7 +165,7 @@ internal static class ReaderRobustness28
         h.Api(h.Left).Enqueue(new(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240), 2);
         await CameraRoundHarness.Until(async () => { await vm.RefreshAsync(); return vm.Snapshot!.CameraReads.Any(f => f.PositionId == "left" && f.Frame.FrameNumber == 2) ; });
         Check(vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 2, "no-code frame cannot retire current-round display authority");
-        await h.TrayAsync(h.Left, TrayPresence.Absent); await vm.RefreshAsync();
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
         using var entered = new ManualResetEventSlim(); using var release = new ManualResetEventSlim();
         h.App.Boundary = point => { if (point == "BeforeIngressDurable") { entered.Set(); if (!release.Wait(TimeSpan.FromSeconds(15))) throw new TimeoutException("Snapshot/stream regression gate timed out"); } };
         try

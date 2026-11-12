@@ -214,8 +214,8 @@ public sealed partial class ParameterSettingsControl
         "decision" or "reply-mode" or "complete-on-query" => "仅用于模拟服务调试，不代表真实业务结果。",
         "zone-id" => "RCS 分配的仓库编号。",
         "project-id" => "RCS 分配的产线编号。",
-        "left-bcr-code" => "左投递位使用的相机编码，取格口与心跳共用；不能与右相机编码相同。",
-        "right-bcr-code" => "右投递位使用的相机编码，取格口与心跳共用；不能与左相机编码相同。",
+        "left-bcr-code" => "左投递位取格口与心跳共用的相机编码；留空时本位停用，填写后可启用。",
+        "right-bcr-code" => "右投递位取格口与心跳共用的相机编码；留空时本位停用，填写后可启用。",
         "device.ip" => "相机的 IP 地址（软件不会修改相机设置）。",
         "device.serial" => "根据 IP 自动读取并随设置保存；已有设备身份保持不变。更换同一 IP 的相机后，可点击“重新读取”。",
         "code.encoding" => "与相机输出条码报文的字符编码一致；编码不匹配会导致条码无法正确解码。",
@@ -237,10 +237,9 @@ public sealed partial class ParameterSettingsControl
     {
         if (ParameterOwnership.IsRcs(draft) && p.Field.Key == "quantity") return;
         var path = draft.InstanceId + "/" + p.Field.Key;
-        var cameraCodeRequired = ParameterOwnership.IsRcs(draft) && p.Field.Key is "left-bcr-code" or "right-bcr-code";
         var chuteMode = ParameterOwnership.IsRcs(draft) && p.Field.Key == RcsRequestPolicy.DestinationChuteCode
             ? draft.Parameters.Single(x => x.Field.Key == RcsRequestPolicy.DestinationMode) : null;
-        var required = p.Field.Required || cameraCodeRequired || chuteMode is not null;
+        var required = p.Field.Required || chuteMode is not null;
         var label = (draft.Provider?.Implementation is "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? "读码结果处理" : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode" ? "包裹关联方式" : ParameterLabel(p)) + (string.IsNullOrEmpty(p.Field.Unit) || p.Field.Key is "heartbeat-interval-ms" or "request-timeout-ms" ? "" : "（" + p.Field.Unit + "）") + (required ? " *" : "");
         var help = draft.Provider?.Implementation is "hikrobot-mvs" or "hikrobot-idmvs" or "hikrobot-mvs-reader" && p.Field.Key == "entity.mode" ? p.Field.Description : draft.Provider?.Implementation == "tcp-line" && p.Field.Key == "entity.mode"
             ? "仅观察不创建作业；每行一个包裹须先确认完整报文与包裹一一对应。" : draft.Provider?.Implementation == "extension:hikrobot.mvs-acquisition/mvs-acquisition" ? p.EditorHelp : ParameterHint(p);

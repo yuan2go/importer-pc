@@ -93,15 +93,15 @@ internal static class DebugNoIsolation31
             Check(picture.Status == "Available" && picture.Image?.Metadata.Id == locked.Frame.Id,
                 "operation picture uses the exact passive debug session without requiring a retired isolation tag");
             var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
-            Check(h.Peer.Requests.Count == 3 && h.Peer.Requests.Last() == locked.RequestBody && sent.HttpResponse is { StatusCode: 200, Complete: true } &&
-                (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == sent.OperationId).Wcs?.State == StageState.Accepted,
-                "explicit send calls actual configured RCS using frozen JSON and a real HTTP reply");
+            Check(h.Peer.Requests.Count == 2 && sent.SendAttempts == 0 && sent.HttpResponse is null && !sent.CanSend &&
+                (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
+                "an explicit debug send cannot add a second real request to a production-claimed arrival");
             var performance = System.Text.Json.JsonSerializer.SerializeToElement(h.App.RuntimeProgress()).GetProperty("Flow").GetProperty("Recent").EnumerateArray().ToArray();
             Check(performance.Count(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted") == 2 &&
-                performance.Count(e => e.GetProperty("Kind").GetString() == "DebugRcsSubmitCompleted") == 1,
-                "debug and production requests sharing a camera frame remain separate performance cohorts");
+                performance.Count(e => e.GetProperty("Kind").GetString() == "DebugRcsSubmitCompleted") == 0,
+                "a blocked debug intention is never counted as an actual debug submission");
             var decoded = h.Factory.Decoders[h.Left].Count;
-            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DEBUG31-NEXT"), 2);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "DEBUG31-NEXT" && o.Wcs?.State == StageState.Accepted));
             Check(h.Factory.Decoders[h.Left].Count > decoded && (await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id,

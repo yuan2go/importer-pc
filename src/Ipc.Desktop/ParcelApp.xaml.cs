@@ -70,7 +70,10 @@ public partial class App : System.Windows.Application
         try
         {
             var mode = arguments.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" or "--after-install" ? arguments[0] : null;
-            if (mode == "--product-maintenance") { new ProductMaintenanceWindow().ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
+            if (mode == "--product-maintenance")
+            {
+                await OpenUninstaller(arguments); return;
+            }
             selected = DesktopLaunchOptions.Parse(mode is null ? arguments : arguments[1..], ApplicationId, recoveryChild);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
@@ -93,6 +96,26 @@ public partial class App : System.Windows.Application
             await StartSelected();
         }
         catch (Exception ex) { await Failed(ex); }
+    }
+    async Task OpenUninstaller(string[] arguments)
+    {
+        startup.BeginAttempt(); startup.Phase("正在打开卸载程序", "正在核验维护入口并等待原窗口退出；尚未删除程序或数据。"); startup.Show();
+        try
+        {
+            var installation = WindowsDeploymentSetup.Current(ApplicationId);
+            if (installation is not null && TrustedProgramRoots.Contains(installation.ReleaseRoot, AppContext.BaseDirectory))
+                await Task.Run(() => WindowsDeploymentSetup.LaunchUninstaller(ApplicationId));
+            else
+            {
+                await WindowsDeploymentSetup.WaitForUninstallHostAsync(arguments);
+                startup.Hide(); new ProductMaintenanceWindow().ShowDialog();
+            }
+            startup.AllowClose = true; Shutdown();
+        }
+        catch (Exception error)
+        {
+            startup.Show(); startup.UninstallFailed(error.ToString(), () => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => OpenUninstaller(arguments));
+        }
     }
     async Task StartSelected(bool firstConfigurationReviewed = false)
     {
@@ -237,7 +260,8 @@ public partial class App : System.Windows.Application
             var center = new MaintenanceCenterWindow(selected!.Business); MainWindow = center; center.ShowDialog();
             selected = selected with { Business = center.SelectedLaunch };
             MainWindow = startup;
-            if (center.RetryRequested) await StartSelected();
+            if (center.UninstallLaunched) { startup.AllowClose = true; Shutdown(); }
+            else if (center.RetryRequested) await StartSelected();
             else { startup.AfterMaintenance(() => { startup.AllowClose = true; Shutdown(); return Task.CompletedTask; }, () => StartSelected()); startup.Show(); }
         }));
         return Task.CompletedTask;

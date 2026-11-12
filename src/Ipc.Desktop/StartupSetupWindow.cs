@@ -78,7 +78,16 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             await RunMaintenance("修复开始菜单和程序入口\n安装位置：" + reviewed.OperationId + "\n数据和配置不变。", (progress, token) => RepairRegistration(reviewed, progress, token));
             installed = current.Location; outcomeUnknown = false; step = 3; Render();
         }, readOnly: true);
-        resumeRemoval = Action("卸载程序…", () => { new ProductMaintenanceWindow(media!) { Owner = this }.ShowDialog(); Render(); return Task.CompletedTask; }, readOnly: true);
+        resumeRemoval = Action("卸载程序…", async () =>
+        {
+            var current = CurrentInstallation(ParcelStartupServices.ApplicationId);
+            if (current is not null && TrustedProgramRoots.Contains(current.ReleaseRoot, AppContext.BaseDirectory))
+            {
+                await Task.Run(() => WindowsDeploymentSetup.LaunchUninstaller(ParcelStartupServices.ApplicationId));
+                Launched = true; Busy = false; Close();
+            }
+            else { new ProductMaintenanceWindow(media!) { Owner = this }.ShowDialog(); Render(); }
+        }, readOnly: true);
         cancel = Action("取消", () => { Busy = false; Close(); return Task.CompletedTask; }, readOnly: true);
         next.IsDefault = false; cancel.IsCancel = true;
         AutomationProperties.SetLiveSetting(recordFeedback, AutomationLiveSetting.Polite);

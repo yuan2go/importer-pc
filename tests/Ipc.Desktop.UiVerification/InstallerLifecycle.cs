@@ -14,10 +14,37 @@ static partial class Program
         var type = Assembly.LoadFrom(Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP")!).GetType("Ipc.Desktop.StartupSetupWindow", true)!;
         var workflow = type.BaseType!;
         void Check(bool ok, string why) { if (!ok) throw new InvalidOperationException(why); lines.Add("PASS INSTALLER-LIFECYCLE " + why); }
+        async Task WaitUntil(Func<bool> condition, string reason)
+        {
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            while (!condition()) { await Task.Delay(10, deadline.Token); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); }
+            Check(true, reason);
+        }
         var source = new string('a', 40);
         using var identity = WindowsIdentity.GetCurrent();
         var installed = new DeploymentLocation("sportmaster", source, "D:/synthetic/releases/current-12345678", "D:/synthetic/config", "D:/synthetic/data", identity.User!.Value);
         var launch = new BusinessLaunch(Path.Combine(evidence, "no-config"), Path.Combine(evidence, "no-data"), null, null);
+        var centerType = type.Assembly.GetType("Ipc.Desktop.MaintenanceCenterWindow", true)!;
+        var center = (Window)Activator.CreateInstance(centerType, [launch])!;
+        var handoff = new TaskCompletionSource<uint>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var attempts = 0;
+        centerType.GetProperty("LaunchUninstaller", flags)!.SetValue(center, (Func<uint>)(() =>
+        {
+            if (Interlocked.Increment(ref attempts) == 1) throw new IOException("synthetic protected cache unavailable");
+            return handoff.Task.GetAwaiter().GetResult();
+        }));
+        center.Show();
+        var uninstall = Descendants(center).OfType<Button>().Single(b => System.Windows.Automation.AutomationProperties.GetAutomationId(b) == "Maintenance.Uninstall");
+        uninstall.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await WaitUntil(() => uninstall.IsEnabled, "failed uninstall handoff restores the offline action");
+        Check(center.IsVisible && !(bool)centerType.GetProperty("UninstallLaunched")!.GetValue(center)!, "cache launch failure retains original window and does not claim removal");
+        uninstall.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        uninstall.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        center.Close();
+        Check(center.IsVisible, "pending handoff retains original host until launch result is known");
+        handoff.SetResult(42);
+        await WaitUntil(() => !center.IsVisible, "successful detached handoff closes the offline host");
+        Check(attempts == 2 && (bool)centerType.GetProperty("UninstallLaunched")!.GetValue(center)!, "retry launches exactly once and returns explicit host-exit routing");
         Window Make(DeploymentLocation? current)
         {
             var window = (Window)Activator.CreateInstance(type, [launch, null, "1.0.0"])!;

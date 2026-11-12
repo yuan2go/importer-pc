@@ -10,6 +10,8 @@ public sealed class MaintenanceCenterWindow : Window
 {
     public BusinessLaunch SelectedLaunch { get; private set; }
     public bool RetryRequested { get; private set; }
+    public bool UninstallLaunched { get; private set; }
+    internal Func<uint> LaunchUninstaller { get; set; } = () => WindowsDeploymentSetup.LaunchUninstaller(Ipc.Assembly.ParcelStartupServices.ApplicationId);
     public MaintenanceCenterWindow(BusinessLaunch launch)
     {
         SelectedLaunch = launch; Title = "维护中心 · 菜鸟供包台"; Width = 820; Height = 620; MinWidth = 620; MinHeight = 420;
@@ -26,7 +28,23 @@ public sealed class MaintenanceCenterWindow : Window
             var service = (Ipc.Application.Contracts.IStartupRetentionMaintenance)Ipc.Assembly.ParcelStartupServices.Maintenance(SelectedLaunch);
             new HistoryRetentionWindow(service, Ipc.Assembly.ParcelStartupServices.ManagementMode(SelectedLaunch)) { Owner = this }.ShowDialog();
         });
-        Add("卸载程序", () => new ProductMaintenanceWindow { Owner = this }.ShowDialog());
+        var uninstall = new Button { Content = "卸载程序", MinHeight = 48, Margin = new(0, 12, 0, 0), HorizontalContentAlignment = HorizontalAlignment.Left, Padding = new(16, 4, 16, 4) };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(uninstall, "Maintenance.Uninstall");
+        var handingOff = false;
+        Closing += (_, e) => { if (handingOff) e.Cancel = true; };
+        uninstall.Click += async (_, _) =>
+        {
+            if (handingOff) return;
+            handingOff = true; body.IsEnabled = false; feedback.Text = "正在核验独立卸载程序…";
+            try
+            {
+                await Task.Run(LaunchUninstaller);
+                UninstallLaunched = true; handingOff = false; Close();
+            }
+            catch (Exception error) { feedback.Text = "卸载入口未打开：" + error.Message; }
+            finally { handingOff = false; body.IsEnabled = true; }
+        };
+        body.Children.Add(uninstall);
         Add("检查后启动软件", () => { RetryRequested = true; Close(); });
         var expert = new Expander { Header = "专家模式（供应商指导）", Margin = new(0, 16, 0, 0) };
         var advanced = new Button { Content = "打开启动修复全部操作…", MinHeight = 48 };

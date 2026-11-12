@@ -9,6 +9,12 @@ static class IndustrialOpaqueRemoval
         void Reject<T>(Action action, string detail) where T : Exception
         { try { action(); } catch (T) { Check(true, detail); return; } throw new Exception("Expected " + typeof(T).Name + ": " + detail); }
         var data = Path.Combine(root, "opaque-original-data"); var leaseRoot = Path.Combine(root, "synthetic-machine-leases");
+        var release = Path.Combine(root, "release");
+        var location = new DeploymentLocation("sportmaster", new string('a', 40), release, "config", data, "synthetic");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.RequireDetachedUninstaller(location, Path.Combine(release, "desktop")), "loaded release host cannot uninstall itself after business ownership was released");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.RequireDetachedUninstaller(location, root), "uninstaller cannot own an ancestor of the deletion target");
+        WindowsDeploymentSetup.RequireDetachedUninstaller(location, Path.Combine(root, "maintenance"));
+        Check(true, "separate maintenance host remains usable without reopening original business data");
         var old = Path.Combine(data, "Production", "old-station", "sportmaster");
         var simulation = Path.Combine(data, "Simulation", "other-station", "sportmaster");
         Directory.CreateDirectory(old); Directory.CreateDirectory(simulation);

@@ -63,7 +63,7 @@ public static partial class WindowsDeploymentSetup
         key.SetValue("DisplayIcon", executable); key.SetValue("UninstallString", "\"" + executable + "\" --product-maintenance");
         key.DeleteValue("ModifyPath", false);
         key.SetValue("URLInfoAbout", "https://github.com/yuan2go/importer-pc"); key.SetValue("NoModify", 1, RegistryValueKind.DWord);
-        key.SetValue("Comments", "卸载不创建备份，默认保留本站数据；可选择同时删除已结清的本站数据。共享驱动保留。");
+        key.SetValue("Comments", "卸载不创建备份，默认保留本站数据；可选择同时删除本站数据。共享驱动保留。");
         key.Flush();
     }
     [SupportedOSPlatform("windows")]

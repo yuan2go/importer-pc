@@ -16,17 +16,15 @@ public interface IStationPositionControl
     Task<StationPositionControlRecord[]> ReadPositionControlHistoryAsync(long beforeSequence, int limit, CancellationToken token);
 }
 
-public enum RcsHeartbeatResult { Received, Failed, Unavailable, NoPositions, Busy, SelectionChanged }
+public enum RcsHeartbeatResult { Received, Failed, Unavailable, NoPositions, Busy }
 
 public interface IStationRcsHeartbeat
 {
     Task<RcsHeartbeatResult> CheckRcsHeartbeatAsync(CancellationToken token);
 }
 
-// Application supplies operational position state; the RCS integration owns its
-// existing heartbeat protocol and never infers this state from camera health.
-public interface IWcsPositionHeartbeat
+// RCS connectivity is independent of supply switches and camera lifecycle.
+public interface IWcsHeartbeat
 {
-    void SetEnabledPositions(string[] positionIds);
     Task<RcsHeartbeatResult> SendHeartbeatAsync(CancellationToken token);
 }

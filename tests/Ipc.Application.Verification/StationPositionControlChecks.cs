@@ -137,6 +137,7 @@ internal static class StationPositionControlChecks
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
                 await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
                 await h.App.SetPositionEnabledAsync(await Command(h.App, "right", false), default);
+                h.Peer.HeartbeatUnavailable = true;
                 await CameraRoundHarness.Until(async () =>
                 {
                     var state = await h.App.SnapshotAsync();
@@ -163,10 +164,11 @@ internal static class StationPositionControlChecks
                 "only the cleared lane disables despite both original requests being unconfirmed");
             await ClearTray("right", h.Right);
             Check(h.Peer.Requests.Count == 2 && h.Api(h.Left).Destroys == 1 && h.Api(h.Right).Destroys == 1,
-                "both lanes finish disabling without heartbeats or extra requests and release their camera handles");
+                "both lanes finish disabling during a real heartbeat outage without extra requests and release their camera handles");
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
             var delayedOriginals = h.Peer.Hold;
             h.Peer.Hold = null;
+            h.Peer.HeartbeatUnavailable = false;
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-UNKNOWN-DRAIN"), 5);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Accepted));
@@ -218,7 +220,7 @@ internal static class StationPositionControlChecks
                 "a new manual same-code placement makes an independent request after removal");
         }
         await UpgradeWithIncompatibleOriginal(workspace, Path.Combine(root, "upgrade-with-original"));
-        await HeartbeatSelection(workspace);
+        await HeartbeatWhileDisabled(workspace, Path.Combine(root, "heartbeat-disabled"));
     }
     static async Task UpgradeWithIncompatibleOriginal(string workspace, string root)
     {
@@ -269,29 +271,51 @@ internal static class StationPositionControlChecks
         Check((await h.App.OperationAsync(old.Id)) is null && h.Peer.Requests.Count == 3,
             "the following startup validates retired receipt cleanup without replay or restoring the deleted request");
     }
-    static async Task HeartbeatSelection(string workspace)
+    static async Task HeartbeatWhileDisabled(string workspace, string root)
     {
-        await using var peer = new CameraRoundHarness.RoundPeer { ReplyVehicleStates = true };
-        var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
-        var binding = new CapabilityBinding("integration", "sportmaster-rcs", "1.0.0", seed.Wcs!.InstanceId, peer.Endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
-        { ["zone-id"] = "71", ["project-id"] = "83", ["left-station-code"] = "SYNTH-STATION", ["right-station-code"] = "SYNTH-STATION", ["left-bcr-code"] = "SYNTH-LEFT", ["right-bcr-code"] = "SYNTH-RIGHT", ["heartbeat-interval-ms"] = "100" });
-        var config = seed with { Wcs = binding, StationCode = "SYNTH-STATION" };
-        await using var service = new Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService(binding);
-        peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); peer.HoldWhen = _ => true;
-        service.ConfigureRuntime(config); service.SetEnabledPositions(["right"]); await service.StartAsync(default);
-        await CameraRoundHarness.Until(() => Task.FromResult(peer.HeartbeatRequests.Count > 0));
-        using (var json = JsonDocument.Parse(peer.HeartbeatRequests.Last()))
+        await using var h = new CameraRoundHarness(workspace, root);
+        h.Peer.ReplyVehicleStates = true;
+        await h.StartAsync(); await h.App.ExitManagementModeAsync(); await h.WaitForCameraAdmissionAsync();
+        await h.App.SetPositionEnabledAsync(await Command(h.App, "left", false), default);
+        var count = h.Peer.HeartbeatRequests.Count;
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > count));
+        using (var json = JsonDocument.Parse(h.Peer.HeartbeatRequests.Last()))
         {
-            var data = json.RootElement.GetProperty("data"); var parameters = data[0].GetProperty("params");
-            Check(data.GetArrayLength() == 1 && parameters.GetProperty("bcrCode").GetString() == binding.Parameters["right-bcr-code"] && parameters.EnumerateObject().Count() == 3,
-                "heartbeat uses enabled position selection with unchanged stationCode bcrCode timestamp protocol");
+            var data = json.RootElement.GetProperty("data");
+            Check(data.GetArrayLength() == 2 && data.EnumerateArray().All(item => item.GetProperty("params").EnumerateObject().Count() == 3) &&
+                data.EnumerateArray().Select(item => item.GetProperty("params").GetProperty("bcrCode").GetString()).SequenceEqual(
+                    new[] { h.Config.Wcs!.Parameters["left-bcr-code"], h.Config.Wcs.Parameters["right-bcr-code"] }),
+                "disabling one lane retains both configured identities and the unchanged heartbeat protocol");
         }
-        service.SetEnabledPositions([]); peer.Hold.TrySetResult(); peer.Hold = null; await Task.Delay(150); var count = peer.HeartbeatRequests.Count; await Task.Delay(250);
-        Check(peer.HeartbeatRequests.Count == count && (await service.HealthAsync(default)).RemoteConfirmation == RemoteConnectionConfirmation.Unconfirmed, "both disabled sends no empty heartbeat and cannot claim fresh remote confirmation");
-        Check((await service.HealthAsync(default)).StationVehicles.Length == 0, "late response from previous selection cannot restore disabled vehicle state");
-        service.SetEnabledPositions(["left"]);
-        await CameraRoundHarness.Until(() => Task.FromResult(peer.HeartbeatRequests.Count > count));
-        using var last = JsonDocument.Parse(peer.HeartbeatRequests.Last());
-        Check(last.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").GetString() == binding.Parameters["left-bcr-code"], "reenabling resumes only selected position without camera state changes");
+        // Hold a real in-flight response across the second switch. It still
+        // confirms RCS connectivity but cannot give a disabled lane a green cue.
+        h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously); h.Peer.HoldWhen = _ => true;
+        count = h.Peer.HeartbeatRequests.Count;
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > count));
+        await h.App.SetPositionEnabledAsync(await Command(h.App, "right", false), default);
+        h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.All(p =>
+            p.SupplyControl?.Mode == StationPositionMode.Disabled && p.CameraConnectionSuspended));
+        count = h.Peer.HeartbeatRequests.Count;
+        await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.HeartbeatRequests.Count > count));
+        var snapshot = await h.App.SnapshotAsync();
+        Check(snapshot.Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived &&
+            snapshot.Positions!.All(p => p.Vehicle is null && p.BarcodeInput?.Manual == false),
+            "both disabled cameras keep scheduled RCS connectivity without restoring vehicle cues or input admission");
+        count = h.Peer.HeartbeatRequests.Count;
+        Check(await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received && h.Peer.HeartbeatRequests.Count == count + 1,
+            "manual heartbeat also works when both lanes and their cameras are disabled");
+        h.Peer.HeartbeatUnavailable = true;
+        await CameraRoundHarness.Until(async () => !(await h.App.SnapshotAsync()).Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).Ready);
+        h.Peer.HeartbeatUnavailable = false;
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Health.Single(health => health.InstanceId == h.Config.Wcs!.InstanceId).RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived);
+        Check((await h.App.SnapshotAsync()).Positions!.All(p => p.SupplyControl?.Mode == StationPositionMode.Disabled),
+            "a real RCS outage recovers automatically while both supply switches remain disabled");
+        await h.App.DisposeAsync();
+        count = h.Peer.HeartbeatRequests.Count;
+        await h.StartAsync(waitForAllCameras: false);
+        Check(h.Peer.HeartbeatRequests.Count > count && (await h.App.SnapshotAsync()).Positions!.All(p =>
+            p.SupplyControl?.Mode == StationPositionMode.Disabled && p.CameraConnectionSuspended),
+            "restart with both durable switches disabled starts heartbeat without opening cameras");
     }
 }

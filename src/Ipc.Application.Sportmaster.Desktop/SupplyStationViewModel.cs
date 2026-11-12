@@ -72,9 +72,8 @@ public sealed partial class SupplyStationViewModel : ParcelViewModel
             {
                 RcsHeartbeatResult.Received => "已收到 RCS 心跳响应。",
                 RcsHeartbeatResult.Failed => "未收到有效的 RCS 心跳响应，请检查 RCS 连接后重试。",
-                RcsHeartbeatResult.NoPositions => "没有可发送心跳的投递位，请核对启用状态和相机编码。",
+                RcsHeartbeatResult.NoPositions => "没有可发送心跳的相机编码，请检查 RCS 相机编码配置。",
                 RcsHeartbeatResult.Busy => "正在检查 RCS 心跳，请稍候。",
-                RcsHeartbeatResult.SelectionChanged => "投递位已变化，请重新检查 RCS 心跳。",
                 _ => "当前无法检查 RCS 心跳，请稍后重试。"
             };
         }

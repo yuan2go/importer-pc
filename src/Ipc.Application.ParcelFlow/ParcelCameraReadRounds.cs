@@ -290,7 +290,7 @@ public sealed partial class ParcelRuntime : ICameraReadRounds
         if (!MaintenanceAuthorized || !SessionValid) return "管理模式或操作员会话已失效，请重新授权后核对原请求。";
         if (op.OperatorDebugRequest is not null)
         {
-            var reasons = ManualInputReasons(op.PositionId!, exceptOperation: op.Id, debugRequest: true, requireAdmissionCapacity: false);
+            var reasons = ManualInputReasons(op.PositionId!, debugRequest: true);
             return reasons.Length != 0 ? string.Join("；", reasons) : "人工请求的轮次或配置已变化，请核对原请求。";
         }
         if (readRound is not { } round || op.DebugRequest is not { } evidence || round.Id != evidence.RoundId || round.Operation != op.Id)

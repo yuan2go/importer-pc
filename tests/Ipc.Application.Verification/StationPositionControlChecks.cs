@@ -84,7 +84,10 @@ internal static class StationPositionControlChecks
             Check(h.Api(h.Left).Destroys == 1 && h.Api(h.Left).Finalizes == 1 && h.Api(h.Left).Opens == opens && h.Peer.Requests.Count == 1,
                 "disabled position actually releases camera handle and SDK and suppresses automatic reconnect");
             await h.App.SetPositionEnabledAsync(await Command(h.App, "left", true), default);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CameraConnectionSuspended: false, Arrival.Confirmed: true });
+            // Heartbeat confirmation precedes the asynchronous SDK cache cutover.
+            // A frame queued before that boundary is intentionally discarded.
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
+                { CameraConnectionSuspended: false, Arrival: { Confirmed: true, CameraBoundaryReady: true } });
             Check(h.Api(h.Left).Opens == opens + 1 && (await h.App.SnapshotAsync()).Devices!.Single(d => d.DeviceId == h.Right).Epoch == rightEpoch,
                 "enabling reconnects only the selected camera with a new session");
             await Deliver(CameraRoundHarness.Barcode("SYNTH-DRAIN"));

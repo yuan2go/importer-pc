@@ -40,8 +40,11 @@ public sealed class StartupConfigurationDraft
         bindings = all.DistinctBy(b => b.InstanceId).ToDictionary(b => b.InstanceId);
         var capabilities = bindings.Values.Select(b => new CapabilityDraft(b.Kind, catalog.Providers, b, true,
             b.InstanceId == c.Login?.InstanceId ? "operator-login" : b.InstanceId == c.Scale?.InstanceId ? "default-scale" : b.Kind)).ToList();
-        if (c.Login is null) capabilities.Add(new("login", catalog.Providers, null, false, "operator-login") { InstanceId = "operator.login", Enabled = true });
-        if (c.Scale is null) capabilities.Add(new("weight", catalog.Providers, null, false, "default-scale") { InstanceId = "default.scale", Enabled = true });
+        if (c.ApplicationId != "sportmaster")
+        {
+            if (c.Login is null) capabilities.Add(new("login", catalog.Providers, null, false, "operator-login") { InstanceId = "operator.login", Enabled = true });
+            if (c.Scale is null) capabilities.Add(new("weight", catalog.Providers, null, false, "default-scale") { InstanceId = "default.scale", Enabled = true });
+        }
         Capabilities = capabilities.ToArray();
         Readers = ParcelBindings.Readers(c).Select((reader, index) =>
         {
@@ -52,8 +55,6 @@ public sealed class StartupConfigurationDraft
         foreach (var item in Readers.Concat(Capabilities)) item.ConfigureLater = ParcelConnectionSetup.IsDeferred(c, item.Kind == "observation" ? item.Target : item.InstanceId) ||
             initializeDefaults && c.ApplicationId == "sportmaster" && c.DeferredConnections is null && (item.Kind == "observation" || ParameterOwnership.IsRcs(item));
         if (c.ApplicationId == "sportmaster") foreach (var reader in Readers) reader.UseSimpleCameraConfiguration();
-        QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
-        ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(); MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
     public ParameterEditorModel CreateParameterEditor(Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, ParcelConfigurationLocations? locations = null) => new(Policy, original.ApplicationId, Readers, Capabilities, preview, original.StationId, locations)
     { DisplayPreferences = original.ApplicationId == "sportmaster" ? DisplayPreferences ??= new() : null };
@@ -81,11 +82,8 @@ public sealed class StartupConfigurationDraft
             Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
             Weight = c.ApplicationId == "sportmaster" ? c.Weight : Policy.BuildWeight(),
             WeightValidity = c.ApplicationId == "sportmaster" ? c.WeightValidity : Policy.Validity,
-            QueueCapacity = c.ApplicationId == "sportmaster" ? c.QueueCapacity : ConfigurationPolicyDraft.Integer(QueueCapacity, "输入队列容量", 1, 4096),
-            TimeoutMs = c.ApplicationId == "sportmaster" ? c.TimeoutMs : ConfigurationPolicyDraft.Integer(TimeoutMs, "调用超时(ms)", 100, 30000),
-            MaximumOperations = c.ApplicationId == "sportmaster" ? c.MaximumOperations : ConfigurationPolicyDraft.Integer(MaximumOperations, "作业容量", 1, 100000),
-            Login = Capabilities.Single(d => d.Role == "operator-login") is { Bound: true } login ? replacements[login.InstanceId] : null,
-            Scale = Policy.WeightSource == WeightSource.Measured && Capabilities.Single(d => d.Role == "default-scale") is { Bound: true } scale ? replacements[scale.InstanceId] : null,
+            Login = Capabilities.SingleOrDefault(d => d.Role == "operator-login") is { Bound: true } login ? replacements[login.InstanceId] : null,
+            Scale = Policy.WeightSource == WeightSource.Measured && Capabilities.SingleOrDefault(d => d.Role == "default-scale") is { Bound: true } scale ? replacements[scale.InstanceId] : null,
             Wcs = Map(c.Wcs),
             Plc = Map(c.Plc),
             CapabilityInstances = c.CapabilityInstances?.Select(b => Map(b)!).ToArray(),
@@ -100,7 +98,7 @@ public sealed class StartupConfigurationDraft
     }
     public StartupEditorState Capture()
     {
-        Dictionary<string, string> values = new() { ["queue"] = QueueCapacity, ["timeout"] = TimeoutMs, ["operations"] = MaximumOperations, ["resident"] = ResidentHistory, ["reserveMiB"] = MinimumFreeMiB };
+        Dictionary<string, string> values = new();
         foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite)) values["policy." + property.Name] = property.GetValue(Policy)?.ToString() ?? "";
         foreach (var (draft, index) in Readers.Concat(Capabilities).Select((d, i) => (d, i)))
         {
@@ -118,8 +116,6 @@ public sealed class StartupConfigurationDraft
     {
         var v = state.Values;
         if (original.ApplicationId == "sportmaster" && v.Keys.Any(k => k.StartsWith("preference.", StringComparison.Ordinal))) (DisplayPreferences ??= new()).Restore(v);
-        QueueCapacity = v.GetValueOrDefault("queue", QueueCapacity); TimeoutMs = v.GetValueOrDefault("timeout", TimeoutMs); MaximumOperations = v.GetValueOrDefault("operations", MaximumOperations);
-        ResidentHistory = v.GetValueOrDefault("resident", ResidentHistory); MinimumFreeMiB = v.GetValueOrDefault("reserveMiB", MinimumFreeMiB);
         foreach (var property in typeof(ConfigurationPolicyDraft).GetProperties().Where(p => p.CanRead && p.CanWrite))
             if (v.TryGetValue("policy." + property.Name, out var value)) property.SetValue(Policy, property.PropertyType.IsEnum ? Enum.Parse(property.PropertyType, value) : property.PropertyType == typeof(bool) ? bool.Parse(value) : value);
         foreach (var (draft, index) in Readers.Concat(Capabilities).Select((d, i) => (d, i)))

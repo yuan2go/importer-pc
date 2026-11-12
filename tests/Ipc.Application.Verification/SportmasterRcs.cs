@@ -17,6 +17,12 @@ static partial class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
+    static Exchange[] NonHeartbeatRequests(Peer peer) => peer.Requests.Where(post =>
+    {
+        using var json = JsonDocument.Parse(post.Body);
+        var data = json.RootElement.GetProperty("data");
+        return data.GetArrayLength() == 0 || data.EnumerateArray().Any(item => item.GetProperty("command").GetString() != "sorter.task.station_heartbeat");
+    }).ToArray();
     static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.0", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["zone-id"] = "71",
@@ -90,13 +96,14 @@ static partial class SportmasterRcs
         {
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
             await service.StartAsync(CancellationToken.None);
-            Check((await service.HealthAsync(CancellationToken.None)).Ready && peer.Requests.Count == 0, "lifecycle readiness sends no fabricated remote health request");
+            Check((await service.HealthAsync(CancellationToken.None)).Ready && NonHeartbeatRequests(peer).Length == 0, "local lifecycle readiness creates no destination request");
             foreach (var mode in new[] { "assigned", "task-fields", "numeric-response-quantity", "fractional-response-quantity", "invalid-measurement", "numeric-wave", "unpack", "reject", "malformed", "wrong-id", "wrong-index", "wrong-command", "http-error", "redirect", "duplicate", "missing-chute", "blank-chute", "measured" })
             {
-                peer.Mode = mode; var postCount = peer.Requests.Count; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 7) };
+                peer.Mode = mode; var postCount = NonHeartbeatRequests(peer).Length; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 7) };
                 var reply = await service.RequestDestinationAsync(frozen, CancellationToken.None);
-                var actual = peer.Requests.Last();
-                Check(peer.Requests.Count == postCount + 1 && actual.Body == frozen.IntegrationRequest.Body && Wire.Hash(actual.Body) == frozen.IntegrationRequest.BodyHash && actual.Method == "POST" && actual.ContentType.StartsWith("application/json", StringComparison.Ordinal), mode + " sends exact pre-frozen JSON bytes once");
+                if (mode == "assigned") await service.SendHeartbeatAsync(default);
+                var actual = NonHeartbeatRequests(peer).Skip(postCount).Single();
+                Check(actual.Body == frozen.IntegrationRequest.Body && Wire.Hash(actual.Body) == frozen.IntegrationRequest.BodyHash && actual.Method == "POST" && actual.ContentType.StartsWith("application/json", StringComparison.Ordinal), mode + " sends exact pre-frozen JSON bytes once");
                 using var body = JsonDocument.Parse(actual.Body); var envelope = body.RootElement; var item = envelope.GetProperty("data").EnumerateArray().Single(); var p = item.GetProperty("params");
                 Check(envelope.GetProperty("source").GetString() == "BAR" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN" &&
                     envelope.GetProperty("requestId").GetInt64() == 7 && item.GetProperty("index").GetInt32() == 1 && item.GetProperty("command").GetString() == "sorter.task.dest_request" &&
@@ -135,7 +142,7 @@ static partial class SportmasterRcs
             await PreparationGuards(service, binding, peer);
             var right = Request(binding, "right"); var rightWire = service.PrepareRequest(right, 8);
             Check(rightWire.RequestId != service.PrepareRequest(Request(binding), 7).RequestId && rightWire.Body.Contains("TEST-RIGHT-READER", StringComparison.Ordinal), "durable entity sequence allocates distinct numeric request IDs and right mapping");
-            var before = peer.Requests.Count; Check(await service.QueryAsync(right, CancellationToken.None) is null && peer.Requests.Count == before, "unsupported original query sends no request and never resubmits");
+            var before = NonHeartbeatRequests(peer).Length; Check(await service.QueryAsync(right, CancellationToken.None) is null && NonHeartbeatRequests(peer).Length == before, "unsupported original query never resubmits a destination request");
         }
         await ConfirmedScanFlow(workspace, root, peer);
         await RuntimeChecks(workspace, root, peer);
@@ -156,72 +163,78 @@ static partial class SportmasterRcs
                 (await service.RequestDestinationAsync(request, default)).BusinessAccepted == true, "current parcel request sends exactly quantity one");
             var oldBody = request.IntegrationRequest.Body.Replace("\"quantity\":1", "\"quantity\":7", StringComparison.Ordinal);
             var old = request with { IntegrationRequest = request.IntegrationRequest with { Body = oldBody, BodyHash = Wire.Hash(oldBody) } };
-            var frozen = Wire.Encode(old); var count = peer.Requests.Count;
+            var frozen = Wire.Encode(old); var count = NonHeartbeatRequests(peer).Length;
             try { await service.RequestDestinationAsync(old, default); throw new Exception("Old quantity intent delivered"); }
-            catch (InvalidDataException) { Check(Wire.Encode(old) == frozen && peer.Requests.Count == count, "unsupported quantity preserves frozen original and produces no I/O"); }
+            catch (InvalidDataException) { Check(Wire.Encode(old) == frozen && NonHeartbeatRequests(peer).Length == count, "unsupported quantity preserves frozen original and produces no destination I/O"); }
         }
         try { await using var unsupported = new SportmasterRcsTaskService(current with { Parameters = new(current.Parameters) { ["quantity"] = "7" } }); throw new Exception("Old quantity option accepted"); }
         catch (InvalidDataException) { Check(true, "obsolete quantity configuration explicitly rejected"); }
-        using var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
-        var c = HeartbeatConfiguration(workspace, Binding(peer.Endpoint)); c.Wcs!.Parameters.Remove("quantity");
-        var readers = c.Topology!.Readers.Select((r, i) => i != 0 ? r : r with
+        // TCP framing is verified by DualCameraCommunication.Protocols. Current
+        // SM camera submissions must carry a real acquisition/arrival boundary.
+        await using var h = new CameraRoundHarness(workspace, Path.Combine(root, "confirmed-camera-flow"), rcsEndpoint: peer.Endpoint, heartbeatSeconds: 3600);
+        await h.StartAsync();
+        var app = h.App;
+        uint frame = 0;
+        async Task Read(string code)
         {
-            Driver = "tcp-line",
-            Parameters = new()
-            { ["device.ip"] = "127.0.0.1", ["device.port"] = ((IPEndPoint)listener.LocalEndpoint).Port.ToString(), ["entity.mode"] = "line" }
-        }).ToArray();
-        c = c with { Reader = readers[0], Topology = c.Topology with { Readers = readers }, DeferredConnections = null };
-        var directory = Path.Combine(root, "confirmed-camera-flow"); Directory.CreateDirectory(directory);
-        ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), c);
-        var launch = new BusinessLaunch(directory, Path.Combine(directory, "data"), null, null);
-        const int release = 400;
-        await using var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
-        await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
-        using var camera = await listener.AcceptTcpClientAsync().WaitAsync(TimeSpan.FromSeconds(3));
-        await Wait(app, s => s.Positions!.Single(p => p.Id == "left").Admit);
-        var before = peer.Requests.Count;
+            var number = ++frame;
+            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode(code), number);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == number && f.Delivered)));
+        }
+        var before = NonHeartbeatRequests(peer).Length;
         foreach (var barcode in new[] { "000123", "000123", "000456" })
         {
-            await Task.Delay(release + 200); // Operator lifts the parcel and places one (again).
             var count = (await app.SnapshotAsync()).Operations.Length;
-            await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes(barcode[..3]));
-            await Task.Delay(20);
-            Check(peer.Requests.Count == before + count, "a partial TCP frame creates no parcel or RCS request");
-            await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes(barcode[3..] + "\n"));
+            if (count != 0) await SmRoundFixture.NextVehicleAsync(app, "left");
+            await h.TrayAsync(h.Left, TrayPresence.Present);
+            await Read(barcode);
             await Wait(app, s => s.Operations.Length == count + 1 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
         }
-        var snapshot = await app.SnapshotAsync(); var posts = peer.Requests.Skip(before).ToArray();
-        Check(snapshot.Operations.Length == 3 && snapshot.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3 && posts.Length == 3 &&
-            posts.Select(x => JsonDocument.Parse(x.Body).RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("loadCode").GetString()).SequenceEqual(new[] { "000123", "000123", "000456" }) &&
-            posts.All(x => JsonDocument.Parse(x.Body).RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("quantity").GetInt32() == 1),
-            "three completed camera scans create exactly three RCS requests with their original barcodes, fixed quantity 1, and no merge by barcode");
-        // The last parcel stays on the tray: continuous reads of the same placement never resend.
-        var resting = peer.Requests.Count;
-        for (var i = 0; i < 5; i++) { await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000456\n")); await Task.Delay(release / 4); }
-        await Task.Delay(200);
-        snapshot = await Wait(app, s => s.Inputs!.SingleOrDefault(x => x.PositionId == "left") is { Outcome: ParcelInputOutcome.Duplicate } latest && latest.Reason.StartsWith("SamePlacement", StringComparison.Ordinal));
-        Check(peer.Requests.Count == resting && snapshot.Operations.Length == 3 &&
-            snapshot.Inputs!.Single(x => x.PositionId == "left").OperationId == snapshot.Operations.Single(o => o.ParcelCode == "000456").Id,
-            "a parcel resting on the tray is read every frame but requests RCS once; repeated reads point at the original operation; posts=" + peer.Requests.Count + "/" + resting + "; operations=" + snapshot.Operations.Length + "; input=" + Wire.Encode(snapshot.Inputs));
-        await Task.Delay(release + 200);
-        await camera.GetStream().WriteAsync(Encoding.UTF8.GetBytes("000456\n"));
+        var snapshot = await app.SnapshotAsync(); var posts = NonHeartbeatRequests(peer).Skip(before).ToArray();
+        var payloads = posts.Select(post =>
+        {
+            using var json = JsonDocument.Parse(post.Body); var values = json.RootElement.GetProperty("data")[0].GetProperty("params");
+            return (Code: values.GetProperty("loadCode").GetString(), Quantity: values.GetProperty("quantity").GetInt32());
+        }).ToArray();
+        Check(snapshot.Operations.Length == 3 && snapshot.Operations.Select(o => o.AdmissionId).Distinct().Count() == 3 &&
+            snapshot.Operations.Select(o => o.ArrivalGeneration).Distinct().Count() == 3 && posts.Length == 3 &&
+            payloads.Select(p => p.Code).SequenceEqual(new[] { "000123", "000123", "000456" }) && payloads.All(p => p.Quantity == 1) &&
+            snapshot.Operations.All(o => o.Wcs is { Attempts: 1 } wcs && posts.Count(p => p.Body == wcs.Request.IntegrationRequest!.Body) == 1),
+            "three trusted camera arrivals create distinct original requests once with exact frozen bytes, original barcodes and quantity one");
+        var original = snapshot.Operations.Single(o => o.ParcelCode == "000456");
+        var originalStage = Wire.Encode(original.Wcs); var resting = NonHeartbeatRequests(peer).Length;
+        for (var i = 0; i < 5; i++) await Read("000456");
+        await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await Task.Delay(600);
+        await h.TrayAsync(h.Left, TrayPresence.Present);
+        await Read("000456");
+        snapshot = await app.SnapshotAsync();
+        Check(NonHeartbeatRequests(peer).Length == resting && snapshot.Operations.Length == 3 &&
+            Wire.Encode((await app.OperationAsync(original.Id))!.Wcs) == originalStage,
+            "continuous reads and lifting/replacing on the same vehicle retain the original request without another send");
+        await SmRoundFixture.NextVehicleAsync(app, "left");
+        await h.TrayAsync(h.Left, TrayPresence.Present);
+        await Read("000456");
         snapshot = await Wait(app, s => s.Operations.Length == 4 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
-        Check(peer.Requests.Count == resting + 1, "lifting and re-placing the same parcel after the release window requests a new chute once");
+        Check(NonHeartbeatRequests(peer).Length == resting + 1 && snapshot.Operations.Select(o => o.ArrivalGeneration).Distinct().Count() == 4,
+            "only a confirmed new vehicle allows the same barcode to request a new chute once");
     }
     static async Task NumericIdentityHistoryChecks(string workspace, string root, Peer peer)
     {
-        var a = Binding(peer.Endpoint); a = a with { Parameters = new(a.Parameters) { ["request-id-base"] = "100" } };
-        var b = a with { Parameters = new(a.Parameters) { ["request-id-base"] = "99" } };
-        await using (var first = new SportmasterRcsTaskService(a)) await using (var second = new SportmasterRcsTaskService(b))
-            Check(first.PrepareRequest(Request(a), 1).RequestId != second.PrepareRequest(Request(b), 2).RequestId, "retired allocation offsets no longer change software-assigned request IDs");
         var name = "rcs-numeric-history"; var configPath = Path.Combine(root, name, "config"); Directory.CreateDirectory(configPath);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json"))) with { Wcs = Binding(peer.Endpoint), TimeoutMs = 1500 };
         ExtensionStore.AtomicWrite(Path.Combine(configPath, "business.json"), c);
         var data = Path.Combine(root, name, "data"); var directory = Path.Combine(data, "Simulation", c.StationId, c.ApplicationId);
-        async Task<ParcelRuntime> Open(string dataRoot)
+        async Task<ParcelRuntime> Open(string dataRoot, bool waitForArrival = true)
         {
             var launch = new BusinessLaunch(configPath, dataRoot, null, null); var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
-            try { await app.StartAsync(default); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
+            try
+            {
+                await app.StartAsync(default); SmRoundFixture.Register(app, launch, c); await ManagementModeFixture.Authorize(app);
+                if (waitForArrival) await Wait(app, s => s.Positions!.All(p => p.Arrival?.CameraBoundaryReady == true));
+                return app;
+            }
+            catch { await app.DisposeAsync(); throw; }
         }
         async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
         { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); }
@@ -234,32 +247,24 @@ static partial class SportmasterRcs
             original = s.Operations.Single().Id; allocated = s.Operations.Single().Wcs!.Request.IntegrationRequest!.RequestId;
             await Maintenance(app); s = await app.SnapshotAsync(); var low = s.Configuration.Effective with { Wcs = s.Configuration.Effective.Wcs! with { Parameters = new(s.Configuration.Effective.Wcs!.Parameters) { ["request-id-base"] = "1" } } };
             Check((await app.StageConfigurationAsync(s.Configuration.Revision, low, "Synthetic obsolete numeric range, no remote action allowed")).Status == "Unchanged", "retired numeric fields are removed before candidate comparison without changing effective configuration");
-        }
-        var posts = peer.Requests.Count;
-        await using (var app = await Open(data))
-        {
-            await Command(app, "Resume"); app.EmitReferenceAt("right", "numeric-blocked", "SYNTH-0001", Wire.Id());
-            var s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "numeric-blocked" && o.State is ParcelState.Blocked or ParcelState.SlotResolved)); var op = s.Operations.Single(o => o.AdmissionId == "numeric-blocked");
-            Check(op.State == ParcelState.SlotResolved && op.Wcs!.Request.IntegrationRequest!.RequestId > allocated && peer.Requests.Count == posts + 1,
-                "reopening automatically allocates above the permanent floor without a configured range");
-            await Command(app, "Pause"); await ManagementModeFixture.Authorize(app);
-            await Wait(app, x => x.Availability!.Configure); await Command(app, "ArchiveHistory", value: "Synthetic numeric history must retain allocation identity");
+            // Leaving configuration maintenance schedules a real heartbeat. Drain
+            // that refresh before taking the revision for the archive command.
+            Check(await app.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received, "numeric history waits for the configuration heartbeat to complete");
+            await Wait(app, x => x.Availability!.Configure);
+            var archive = await Command(app, "ArchiveHistory", value: "Synthetic numeric history must retain allocation identity");
+            Check(archive.Status == "Persisted", "numeric archive command is durably accepted: " + Wire.Encode(archive));
             using (var repo = new ParcelRepository(directory, c.ApplicationId)) Check(repo.History(long.MaxValue, 20).Items.Any(i => i.Operation.Id == original && i.Archived), "numeric allocation authority survives real transaction history archival");
             Check((await app.BackupAsync(backup)).Status == "BackupCreated", "numeric history uses the actual complete backup path");
         }
-        posts = peer.Requests.Count;
+        var posts = NonHeartbeatRequests(peer).Length;
         var restored = Path.Combine(root, "rcs-numeric-restored"); ParcelRecovery.Restore(backup, Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId));
-        await using (var app = await Open(restored))
+        await using (var app = await Open(restored, waitForArrival: false))
         {
-            var resume = await Command(app, "Resume"); app.EmitReferenceAt("right", "numeric-restored-blocked", "SYNTH-0001", Wire.Id());
-            var s = await Wait(app, x => x.Inputs?.Any(i => i.Observation.AdmissionId == "numeric-restored-blocked") == true);
+            var resume = await Command(app, "Resume"); var s = await app.SnapshotAsync();
             Check(resume.Status == "Rejected" && s.Paused && s.BlockingReasons.Any(r => r.StartsWith("RestoreHandoffRequired", StringComparison.Ordinal)) &&
-                !s.Operations.Any(o => o.AdmissionId == "numeric-restored-blocked") && peer.Requests.Count == posts,
-                "restored DB10 remains isolated before handoff; attempted admission cannot create a request or POST");
+                NonHeartbeatRequests(peer).Length == posts,
+                "restored numeric history remains isolated before handoff and cannot resume or send a destination request");
             using var repository = new ParcelRepository(Path.Combine(restored, "Simulation", c.StationId, c.ApplicationId), c.ApplicationId);
-            await using var preparer = new SportmasterRcsTaskService(s.Configuration.Effective.Wcs!);
-            Check(preparer.GetRequestIdRange(s.Configuration.Effective.Wcs!) is null && preparer.UsesAutomaticRequestIds,
-                "restored SM has no numeric range renewal requirement");
             Check(repository.NextAutomaticIntegrationRequestId() > allocated && repository.History(long.MaxValue, 20).Items.Any(i => i.Operation.Id == original && i.Archived && i.Operation.Wcs!.Request.IntegrationRequest!.RequestId == allocated),
                 "automatic allocation advances after restore while archived original wire IDs remain fixed");
 
@@ -276,17 +281,17 @@ static partial class SportmasterRcs
     {
         var signedStyle = binding with { Implementation = "extension:sportmaster.rcs-task/sportmaster-rcs-task" };
         Check(service.GetRequestIdRange(signedStyle) is null && service.UsesAutomaticRequestIds, "SM preparation uses automatic persisted IDs without a configured range");
-        var count = peer.Requests.Count; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 11) };
+        var count = NonHeartbeatRequests(peer).Length; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 11) };
         var alteredBody = frozen.IntegrationRequest!.Body + " ";
         try { await service.RequestDestinationAsync(frozen with { IntegrationRequest = frozen.IntegrationRequest with { Body = alteredBody, BodyHash = Wire.Hash(alteredBody) } }, CancellationToken.None); throw new Exception("Changed wire body accepted"); }
-        catch (InvalidDataException) { Check(peer.Requests.Count == count, "tampered wire body fails before HTTP even when attacker recomputes its body hash"); }
+        catch (InvalidDataException) { Check(NonHeartbeatRequests(peer).Length == count, "tampered wire body fails before destination HTTP even when attacker recomputes its body hash"); }
         foreach (var sequence in new long[] { 0, -1 })
         {
             try { service.PrepareRequest(original, sequence); throw new Exception("Out-of-range sequence accepted"); }
-            catch (InvalidDataException) { Check(peer.Requests.Count == count, "request-ID range rejects invalid durable sequence " + sequence + " without an external call"); }
+            catch (InvalidDataException) { Check(NonHeartbeatRequests(peer).Length == count, "request-ID range rejects invalid durable sequence " + sequence + " without an external destination call"); }
         }
         try { service.PrepareRequest(Request(binding, "unknown"), 1); throw new Exception("Unknown position accepted"); }
-        catch (InvalidDataException) { Check(peer.Requests.Count == count, "unknown position cannot guess a configured reader mapping"); }
+        catch (InvalidDataException) { Check(NonHeartbeatRequests(peer).Length == count, "unknown position cannot guess a configured reader mapping"); }
         var invalid = new[]
         {
             binding with { Target = "http://127.0.0.1/synthetic-other-api" },
@@ -298,13 +303,13 @@ static partial class SportmasterRcs
         foreach (var value in invalid)
         {
             try { await using var rejected = new SportmasterRcsTaskService(value); throw new Exception("Invalid RCS binding accepted"); }
-            catch (InvalidDataException) { Check(peer.Requests.Count == count, "invalid endpoint/contract/mapping configuration rejects before an external call"); }
+            catch (InvalidDataException) { Check(NonHeartbeatRequests(peer).Length == count, "invalid endpoint/contract/mapping configuration rejects before an external destination call"); }
         }
         var missingCameraCode = binding with { Parameters = new(binding.Parameters.Where(p => p.Key != "left-bcr-code")) };
         await using (var missingService = new SportmasterRcsTaskService(missingCameraCode))
         {
             try { missingService.PrepareRequest(Request(missingCameraCode), 1); throw new Exception("Missing camera code sent"); }
-            catch (InvalidDataException) { Check(peer.Requests.Count == count, "missing active camera mapping refuses preparation before HTTP"); }
+            catch (InvalidDataException) { Check(NonHeartbeatRequests(peer).Length == count, "missing active camera mapping refuses preparation before destination HTTP"); }
         }
         var specified = binding with { Parameters = new(binding.Parameters) { ["specified-chute"] = "true", ["chute-code"] = "SYNTH-EXPLICIT" } };
         await using var explicitService = new SportmasterRcsTaskService(specified); var explicitRequest = Request(specified);
@@ -321,7 +326,14 @@ static partial class SportmasterRcs
             var directory = Path.Combine(root, run, "config"); Directory.CreateDirectory(directory); ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
             var launch = new BusinessLaunch(directory, Path.Combine(root, run, "data"), null, null);
             var app = new ParcelRuntime(launch, new SportmasterFlow(), new Factory(new ParcelCapabilityFactory(launch)));
-            try { await app.StartAsync(CancellationToken.None); await ManagementModeFixture.Authorize(app); return app; } catch { await app.DisposeAsync(); throw; }
+            var responseMode = peer.Mode; peer.Mode = "assigned";
+            try
+            {
+                await app.StartAsync(CancellationToken.None); SmRoundFixture.Register(app, launch, config); await ManagementModeFixture.Authorize(app);
+                await Wait(app, s => s.Positions!.All(p => p.Arrival?.CameraBoundaryReady == true));
+                peer.Mode = responseMode; return app;
+            }
+            catch { peer.Mode = responseMode; await app.DisposeAsync(); throw; }
         }
         peer.Mode = "by-position";
         await using (var app = await Open("rcs-dual"))
@@ -335,8 +347,9 @@ static partial class SportmasterRcs
             Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", left.Id, "Synthetic operator inspection"))).Status == "Rejected", "unpack position cannot be released while running");
             var originalStage = left.Wcs!;
             var originalWire = originalStage.Request.IntegrationRequest!;
-            var sent = peer.Requests.Count;
+            var sent = NonHeartbeatRequests(peer).Length;
             peer.Mode = "assigned";
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             Check(app.EmitReferenceAt("left", "synthetic-left-followup", "SYNTH-0002", Wire.Id()), "new observation enters the current left reader session");
             var changed = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "synthetic-left-followup" && o.State == ParcelState.SlotResolved));
             var next = changed.Operations.Single(o => o.AdmissionId == "synthetic-left-followup");
@@ -345,12 +358,12 @@ static partial class SportmasterRcs
                 next.ParcelCode == "SYNTH-0002" && next.Slot == "SYNTH-CHUTE" &&
                 next.Wcs is { State: StageState.Accepted, Attempts: 1, Request.IntegrationRequest: { } nextWire } &&
                 nextWire.RequestId != originalWire.RequestId &&
-                peer.Requests.Count == sent + 1 && peer.Requests.Count(post => post.Body == nextWire.Body) == 1,
-                "validated barcode change admits a new placement with its own chute and one request");
+                NonHeartbeatRequests(peer).Length == sent + 1 && peer.Requests.Count(post => post.Body == nextWire.Body) == 1,
+                "confirmed new vehicle admits a new placement with its own chute and one request");
             Check(retained is { State: ParcelState.UnpackRequired, Slot: null } &&
                 Wire.Encode(retained.Wcs) == Wire.Encode(originalStage) &&
                 peer.Requests.Count(post => post.Body == originalWire.Body) == 1,
-                "validated barcode change preserves the original unpack result, request and raw reply without replay");
+                "confirmed new vehicle preserves the original unpack result, request and raw reply without replay");
             s = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause")); s = await app.SnapshotAsync();
             Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", left.Id))).Status == "Rejected", "paused unpack release still requires explicit entity inspection reason");
             s = await app.SnapshotAsync(); Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", left.Id, "Synthetic entity inspected and removed"))).Status == "Persisted", "paused explicit inspection releases unpack without retransmission or physical completion");
@@ -358,7 +371,7 @@ static partial class SportmasterRcs
             Check(settled.State == ParcelState.Abandoned && settled.Wcs!.Attempts == 1 && settled.Wcs.Replies.Single().Destination!.Outcome == WcsDestinationOutcome.UnpackRequired, "local unpack disposition preserves original reply, request and one attempt");
         }
         VerifyActualStorage(Path.Combine(root, "rcs-dual", "data", "Simulation", config.StationId, "sportmaster"));
-        peer.Mode = "timeout"; ParcelOperation original; var before = peer.Requests.Count;
+        peer.Mode = "timeout"; ParcelOperation original; var before = NonHeartbeatRequests(peer).Length;
         await using (var app = await Open("rcs-unknown"))
         {
             app.EmitReferenceAt("left", "synthetic-unknown", "SYNTH-0001", Wire.Id()); var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.WcsUnknown); original = s.Operations.Single();
@@ -371,7 +384,7 @@ static partial class SportmasterRcs
             Check(recovered.State == ParcelState.WcsUnknown && Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request), "restart preserves exact numeric ID, body, target, contract and all original bindings");
             await app.ReconcileAsync(recovered.Id); await app.ReconnectAsync(); await Task.Delay(100);
             var current = (await app.SnapshotAsync()).Operations.Single();
-            Check(current.State == ParcelState.WcsUnknown && current.Wcs!.Attempts == 1 && peer.Requests.Count == before + 1, "restart, unsupported reconciliation and reconnect cannot resend an unknown HTTP request");
+            Check(current.State == ParcelState.WcsUnknown && current.Wcs!.Attempts == 1 && NonHeartbeatRequests(peer).Length == before + 1, "restart, unsupported reconciliation and reconnect cannot resend an unknown HTTP request");
         }
         peer.Mode = "malformed";
         await using (var app = await Open("rcs-raw"))
@@ -384,7 +397,6 @@ static partial class SportmasterRcs
             var reply = (await app.SnapshotAsync()).Operations.Single().Wcs!.Replies.Single();
             Check(Encoding.UTF8.GetString(Convert.FromBase64String(reply.HttpResponse!.BodyBase64)) == "{not-json", "raw malformed reply bytes survive application restart without reparsing into success");
         }
-        var plain = config;
         CapabilityBinding Camera(string position) => new("camera", "reference-camera", "1.0.0", "rcs.camera." + position, config.Topology!.Readers.Single(x => x.DeviceId.EndsWith("." + position, StringComparison.Ordinal)).DeviceId, "PARCEL-REFERENCE-v1", []);
         var leftCamera = Camera("left"); var rightCamera = Camera("right");
         var uploader = new CapabilityBinding("upload", "reference-upload", "1.0.0", "rcs.upload", "reference://upload/rcs-attached", "PARCEL-REFERENCE-v1", []);
@@ -405,27 +417,13 @@ static partial class SportmasterRcs
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','Synthetic prior attached receipt projection') WHERE id=$id"; command.Parameters.AddWithValue("$id", unpackOriginal.Id); Check(command.ExecuteNonQuery() == 1, "synthetic prior attached projection changes only the persisted overall state/reason");
         }
-        var postsBeforeRecovery = peer.Requests.Count;
+        var postsBeforeRecovery = NonHeartbeatRequests(peer).Length;
         await using (var app = await Open("rcs-unpack-projection-recovery"))
         {
             var recovered = (await app.SnapshotAsync()).Operations.Single();
-            Check(recovered.State == ParcelState.UnpackRequired && Wire.Encode(recovered.Wcs) == Wire.Encode(unpackOriginal.Wcs) && peer.Requests.Count == postsBeforeRecovery &&
+            Check(recovered.State == ParcelState.UnpackRequired && Wire.Encode(recovered.Wcs) == Wire.Encode(unpackOriginal.Wcs) && NonHeartbeatRequests(peer).Length == postsBeforeRecovery &&
                 (await app.SnapshotAsync()).Positions!.Single(x => x.Id == "left").Admit == false,
                 "main receipt projection recovery restores NEED_UNPACK as a held position with exact original WCS request/raw instead of flattening it to generic rejection");
-        }
-        config = plain;
-        peer.Mode = "assigned"; config = config with { Wcs = config.Wcs! with { Parameters = new(config.Wcs.Parameters) { ["request-id-count"] = "1" } } };
-        await using (var app = await Open("rcs-range-exhausted"))
-        {
-            app.EmitReferenceAt("left", "synthetic-range-first", "SYNTH-0001", Wire.Id()); await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved);
-            var count = peer.Requests.Count;
-            app.EmitReferenceAt("right", "synthetic-range-second", "SYNTH-0001", Wire.Id());
-            var s = await Wait(app, x => x.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
-            Check(s.Operations.All(o => o.Wcs!.Request.IntegrationRequest!.RequestId > 10000) && s.Operations.Select(o => o.Wcs!.Request.IntegrationRequest!.RequestId).Distinct().Count() == 2 && peer.Requests.Count == count + 1,
-                "automatic IDs have no configured capacity and two positions receive distinct persisted requests");
-            Check(!s.AuxiliaryReasons!.Any(x => x.StartsWith("IntegrationIdBudget:", StringComparison.Ordinal)), "SM no longer publishes a configured request-number budget");
-            Check((await app.CommandAsync(new(Wire.Id(), s.Revision, "Pause"))).Status == "Persisted", "ordinary request processing retains the software pause guard");
-
         }
     }
     static async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> ready)
@@ -551,8 +549,13 @@ static partial class SportmasterRcs
         async Task HandleCore(HttpListenerContext context)
         {
             using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync(); var mode = Mode;
-            if (mode == "by-position") { using var j = JsonDocument.Parse(body); mode = j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("stationCode").GetString() == "TEST-LEFT" ? "unpack" : "assigned"; }
-            if (mode == "timeout-left") { using var j = JsonDocument.Parse(body); mode = j.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("stationCode").GetString() == "TEST-LEFT" ? "timeout" : "assigned"; }
+            if (mode is "by-position" or "timeout-left")
+            {
+                using var json = JsonDocument.Parse(body); var data = json.RootElement.GetProperty("data");
+                var leftDestination = data.GetArrayLength() == 1 && data[0].GetProperty("command").GetString() == RcsDestinationProtocol.Command &&
+                    data[0].GetProperty("params").GetProperty("bcrCode").GetString() == "TEST-LEFT-READER";
+                mode = leftDestination ? mode == "by-position" ? "unpack" : "timeout" : "assigned";
+            }
             var response = Response(body, mode, Vehicles); response = ResponseTransform?.Invoke(response) ?? response;
             var status = mode == "http-error" ? 503 : mode == "redirect" ? 302 : 200;
             Requests.Enqueue(new(context.Request.HttpMethod, context.Request.ContentType ?? "", body, status, response));

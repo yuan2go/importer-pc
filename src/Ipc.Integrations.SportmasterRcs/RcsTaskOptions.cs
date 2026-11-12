@@ -30,12 +30,9 @@ internal sealed class RcsTaskOptions
         Endpoint = endpoint;
         if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(RetiredKeys).Concat(["left-bcr-code", "right-bcr-code", "heartbeat-interval-ms", "heartbeat-interval-seconds", "request-timeout-ms", "no-dest-to-exp", RcsRequestPolicy.DestinationMode, RcsRequestPolicy.DestinationChuteCode]), StringComparer.Ordinal).Any())
             throw new InvalidDataException("Unknown RCS parameter");
-        foreach (var key in RequiredKeys) _ = Text(key, 256);
         Source = "BAR"; Locale = "zh_CN";
         ZoneId = Number("zone-id", 1, long.MaxValue); ProjectId = Number("project-id", 1, long.MaxValue);
-        HeartbeatIntervalMs = RcsRequestPolicy.HeartbeatMs(Binding);
-        RequestTimeoutMs = RcsRequestPolicy.TimeoutMs(Binding);
-        NoDestToExp = RcsRequestPolicy.NoDestToExp(Binding);
+        (RequestTimeoutMs, HeartbeatIntervalMs, NoDestToExp) = RcsRequestPolicy.ReadSettings(Binding);
         SpecifiedChuteCode = RcsRequestPolicy.SpecifiedChuteCode(Binding.Parameters);
     }
     internal string Text(string key, int maximum)

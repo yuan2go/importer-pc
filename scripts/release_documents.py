@@ -50,6 +50,7 @@ SM_HISTORICAL_GUIDES = {
 }
 SPORTMASTER_GUIDES = {**{path: name for path, name in PARCEL_GUIDES.items() if path not in SM_HISTORICAL_GUIDES},
     'docs/design/sm-parcel-rounds.md': 'SM-PARCEL-ROUNDS.md',
+    'docs/design/sm-vehicle-arrival-rounds.md': 'SM-VEHICLE-ARRIVAL-ROUNDS.md',
     'docs/runtime/win11-24x7-stability-remediation-01.md': 'STABILITY-QUALIFICATION.md',
     'docs/design/mvid-native-reader.md': 'MVID-NATIVE-READER.md',
     'docs/design/sm-dual-camera-performance.md': 'SM-DUAL-CAMERA-PERFORMANCE.md',

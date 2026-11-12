@@ -18,8 +18,8 @@ public static partial class ParcelConfigurationRules
             e.AddRange(StationShiftSchedule.Validate(operations));
             if (operations.AutomaticHistoryCleanup && c.Retention?.HistoryDays is not (>= 7 and <= 30)) e.Add("启用自动清理前须配置7～30天历史保留期");
         }
-        if (c.Reader is null || c.Weight is null || c.CapabilityInstances?.Any(x => x is null) == true || c.Images is { Camera: null })
-            return ["Malformed configuration: missing reader/weight/camera or null capability inventory"];
+        if (c.Reader is null || c.Weight is null || c.Images is { Camera: null })
+            return ["Malformed configuration: missing reader/weight/camera"];
         if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
         e.AddRange(ValidateCapabilityInventory(c));
         if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.
@@ -35,7 +35,7 @@ public static partial class ParcelConfigurationRules
             catch (InvalidDataException error) { e.Add(error.Message); }
         }
         e.AddRange(ParcelConnectionSetup.Validate(c));
-        if (c.SchemaVersion != 3 || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("应用/站点/模式或格式无效；仅支持当前schema3，请使用全新数据目录");
+        if (c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("应用/站点/模式无效；请使用全新数据目录");
         if (c.StationCode is not null && (string.IsNullOrWhiteSpace(c.StationCode) || c.StationCode.Length > 256 || c.StationCode.Any(char.IsControl))) e.Add("Invalid system station code");
         if (c.Weight.Source != WeightSource.Disabled && (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value))) e.Add("重量有效期必须明确配置。");
         if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || application != "sportmaster" && c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
@@ -53,7 +53,6 @@ public static partial class ParcelConfigurationRules
         }
         if (application != "sportmaster" && c.Weight.Source != WeightSource.Disabled && c.WeightRange is { } range)
         {
-            if (application == "sportmaster" || c.Weight.Source == WeightSource.Disabled) e.Add("WeightRange: 当前业务未启用称重，不能配置重量范围");
             if (range.Minimum < 0 || range.Maximum <= 0 || range.Maximum > 100000 || range.Minimum > range.Maximum ||
                 c.Weight.Precision is < 0 or > 6 || decimal.Round(range.Minimum, c.Weight.Precision) != range.Minimum || decimal.Round(range.Maximum, c.Weight.Precision) != range.Maximum)
                 e.Add("WeightRange: 使用所选重量单位与精度，须满足0≤最小重量≤最大重量≤100000且最大重量大于0");
@@ -61,18 +60,19 @@ public static partial class ParcelConfigurationRules
                 e.Add("WeightRange: 显式配置重量超出本业务允许范围");
         }
         if (c.BackupSchedule is { } backup && (!Path.IsPathFullyQualified(backup.Directory) || backup.IntervalMinutes is < 15 or > 10080 || backup.MaximumSets is < 1 or > 1000)) e.Add("备份计划须指定绝对目录、15～10080分钟周期和1～1000份容量上限；不会自动删除原件");
-        if (c.Reader is null || string.IsNullOrWhiteSpace(c.Reader.DeviceId) || c.Reader.Role != "parcel-reader" || string.IsNullOrWhiteSpace(c.Reader.Driver) || string.IsNullOrWhiteSpace(c.Reader.Revision)) e.Add("A stable parcel reader binding is required");
-        if (c.Weight is not { } w || !Enum.IsDefined(w.Source) || w.Source != WeightSource.Disabled && (!Enum.IsDefined(w.Unit) || w.Precision is < 0 or > 6 || w.MaximumAgeMs is < 100 or > 60000 || w.WaitTimeoutMs is < 100 or > 300000)) e.Add("Invalid weight policy");
+        if (string.IsNullOrWhiteSpace(c.Reader.DeviceId) || c.Reader.Role != "parcel-reader" || string.IsNullOrWhiteSpace(c.Reader.Driver) || string.IsNullOrWhiteSpace(c.Reader.Revision)) e.Add("A stable parcel reader binding is required");
+        var w = c.Weight;
+        if (!Enum.IsDefined(w.Source) || w.Source != WeightSource.Disabled && (!Enum.IsDefined(w.Unit) || w.Precision is < 0 or > 6 || w.MaximumAgeMs is < 100 or > 60000 || w.WaitTimeoutMs is < 100 or > 300000)) e.Add("Invalid weight policy");
         else
         {
             if (w.Source == WeightSource.Configured && (w.ConfiguredValue is null or <= 0 or > 100000 || decimal.Round(w.ConfiguredValue.Value, w.Precision) != w.ConfiguredValue)) e.Add("Configured weight requires positive value at declared precision");
             if (w.Source is not (WeightSource.Configured or WeightSource.Disabled) && w.ConfiguredValue is not null) e.Add("Only configured weight may contain a configured value");
             if ((w.Source == WeightSource.Measured) != (c.Scale is not null)) e.Add("Measured weight requires exactly one scale binding");
         }
-        if (c.Images is { } images && (images.Camera is null || images.MaximumBytes is < 1 or > 4194304 || !Enum.IsDefined(images.Strategy) || images.TotalBytes < images.MaximumBytes || images.TotalBytes > 268435456 || images.MaximumPending is < 1 or > 256)) e.Add("Image capture requires a binding and a bounded byte quota");
+        if (c.Images is { } images && (images.MaximumBytes is < 1 or > 4194304 || !Enum.IsDefined(images.Strategy) || images.TotalBytes < images.MaximumBytes || images.TotalBytes > 268435456 || images.MaximumPending is < 1 or > 256)) e.Add("Image capture requires a binding and a bounded byte quota");
         e.AddRange(ValidateTopology(c, positionRoles));
         if (c.Scale is not null && c.Scale.Kind != "weight" || c.Plc is not null && c.Plc.Kind != "plc" || c.Wcs is not null && c.Wcs.Kind != "integration") e.Add("Wrong capability binding kind");
-        if (c.MaintenanceLogin is not null && c.MaintenanceLogin.Kind != "login" || c.Login is not null && c.Login.Kind != "login" || c.Images is { } i && (i.Camera?.Kind != "camera" || i.Uploader is not null && i.Uploader.Kind != "upload")) e.Add("Wrong optional capability kind");
+        if (c.Login is not null && c.Login.Kind != "login" || c.Images is { } i && (i.Camera.Kind != "camera" || i.Uploader is not null && i.Uploader.Kind != "upload")) e.Add("Wrong optional capability kind");
         if (c.Login is not null && c.SessionLifetimeMs is < 100 or > 86400000) e.Add("Invalid session lifetime");
         return e.ToArray();
     }

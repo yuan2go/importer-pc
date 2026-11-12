@@ -218,7 +218,7 @@ static class CommercialProductization
         var read = await service.ReadAsync();
         Check(read is { Candidate: not null, ExistingConfiguration: false, ConfigurationStatus: "Seed" } && !File.Exists(Path.Combine(directory, seed.ApplicationId + ".db")), "new-site authoritative discovery offers first configuration without starting a runtime or creating a database");
         var editor = new StartupConfigurationDraft(read.Candidate!, read.Catalog) { TimeoutMs = "my-unsaved-input" };
-        var before = Wire.Encode(editor.Capture()); var foreign = editor.Capture(); foreign.Values["timeout"] = "other-draft"; foreign.Values["cap.0.provider"] = "unavailable-precise-provider";
+        var before = Wire.Encode(editor.Capture()); var foreign = editor.Capture(); foreign.Values["policy.TimeoutMs"] = "other-draft"; foreign.Values["cap.0.provider"] = "unavailable-precise-provider";
         await Reject<InvalidOperationException>(() => { _ = editor.WithRestored(foreign); return Task.CompletedTask; }, "unavailable saved provider rejects the entire replacement draft");
         Check(Wire.Encode(editor.Capture()) == before, "failed offline resume preserves every current unsaved field");
         var candidate = read.Candidate! with { TimeoutMs = 2000 };

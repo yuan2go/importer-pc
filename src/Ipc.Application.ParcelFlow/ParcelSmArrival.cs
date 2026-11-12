@@ -81,9 +81,8 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
             return "本位原请求的远端目标责任未确认；请停用本位并联系维护核对原请求，勿重复提交。";
         if (debug && CurrentRound(position)?.OperationId is { } production && production != exceptOperation)
             return "本位生产请求尚未结束；请先处理本位原责任，再明确接管调试。";
-        if (!UsesSmArrival(position)) return null;
         if (!SmArrivalConfirmed(position)) return "等待小车确认；保留输入，确认后再提交。";
-        if (UsesSmArrival(position) && cycle.AutoSuppressed && CurrentRound(position) is null && cycle.SubmittedOperation is null)
+        if (cycle.AutoSuppressed && CurrentRound(position) is null && cycle.SubmittedOperation is null)
             return "本车当前放置已结束；请取件、停用并等撤车确认后再启用，等待新车，不重开自动识读期限。";
         if (cycle.SubmittedOperation is { } submitted && submitted != exceptOperation)
             return "本车已处理；等待换车。需留车处理时，取下包裹、停用本位，待撤车确认后再启用。";
@@ -280,18 +279,14 @@ public sealed partial class ParcelRuntime : ISmHeartbeatOwner, ISmRemoteRecovery
     SmPositionCycle[] SmCyclesAfterOperation(ParcelOperation op, bool firstAttempt)
     {
         if (op.PositionId is not { } position || !UsesSmArrival(position)) return [];
-        var result = new List<SmPositionCycle>();
-        foreach (var target in new[] { position })
-        {
-            var cycle = SmCycle(target);
-            if (firstAttempt && op.Wcs is { Attempts: 1, State: StageState.Dispatching } &&
-                (cycle.TargetOperation is null || cycle.TargetOperation == op.Id))
-                result.Add(cycle with { TargetOperation = op.Id, SubmissionAttempted = true, SubmittedOperation = UsesSmArrival(target) ? op.Id : cycle.SubmittedOperation });
-            else if (cycle.TargetOperation == op.Id && op.Wcs is { } stage &&
-                (stage.State is StageState.Accepted or StageState.Rejected || stage.Replies.Any(r => r.SenderDelivery == SenderDeliveryEvidence.ConnectionRefusedBeforeBody)))
-                result.Add(cycle with { TargetOperation = null });
-        }
-        return result.ToArray();
+        var cycle = SmCycle(position);
+        if (firstAttempt && op.Wcs is { Attempts: 1, State: StageState.Dispatching } &&
+            (cycle.TargetOperation is null || cycle.TargetOperation == op.Id))
+            return [cycle with { TargetOperation = op.Id, SubmissionAttempted = true, SubmittedOperation = op.Id }];
+        if (cycle.TargetOperation == op.Id && op.Wcs is { } stage &&
+            (stage.State is StageState.Accepted or StageState.Rejected || stage.Replies.Any(r => r.SenderDelivery == SenderDeliveryEvidence.ConnectionRefusedBeforeBody)))
+            return [cycle with { TargetOperation = null }];
+        return [];
     }
     bool SmTargetDispatchAllowed(ParcelOperation op) => Id != "sportmaster" ||
         SmTargetBlock(op.PositionId!, op.Id, IsDebugRequest(op)) is null &&

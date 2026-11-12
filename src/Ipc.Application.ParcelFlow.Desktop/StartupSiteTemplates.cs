@@ -6,7 +6,7 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public static class StartupSiteTemplates
 {
-    static bool Allowed(string key) => key is "queue" or "timeout" or "operations" or "resident" or "reserveMiB" || key.StartsWith("policy.", StringComparison.Ordinal) && !key.StartsWith("policy.Backup", StringComparison.Ordinal) && key != "policy.StationCode" ||
+    static bool Allowed(string key) => key.StartsWith("policy.", StringComparison.Ordinal) && !key.StartsWith("policy.Backup", StringComparison.Ordinal) && key != "policy.StationCode" ||
         key.StartsWith("cap.", StringComparison.Ordinal) && key.EndsWith(".provider", StringComparison.Ordinal);
     public static StartupSiteTemplate Export(string application, StartupEditorState editor) => new(1, application,
         Wire.FileHash(typeof(StartupSiteTemplates).Assembly.Location), new(editor.Values.Where(v => Allowed(v.Key)).ToDictionary(v => v.Key, v => v.Value)));

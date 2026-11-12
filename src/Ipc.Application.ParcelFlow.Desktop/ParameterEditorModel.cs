@@ -202,8 +202,6 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
         {
             var codes = Readers.Where(r => !r.ConfigureLater).Select(r =>
                 (Path: rcs.InstanceId + "/" + r.Role + "-bcr-code", Code: rcs.Parameters.SingleOrDefault(p => p.Field.Key == r.Role + "-bcr-code")?.Value)).ToArray();
-            foreach (var item in codes.Where(c => string.IsNullOrWhiteSpace(c.Code)))
-                Issue("驱动", item.Path, "请填写相机编码；本相机取格口与心跳共用这一编码。");
             foreach (var duplicate in codes.Where(c => !string.IsNullOrWhiteSpace(c.Code)).GroupBy(c => c.Code, StringComparer.Ordinal).Where(g => g.Count() > 1).SelectMany(g => g))
                 Issue("驱动", duplicate.Path, "左右相机编码不能重复；取格口与心跳共用各自的编码。");
         }

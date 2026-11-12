@@ -128,10 +128,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
         mode = c.Mode;
         if (requireQualification && c.Mode == RunMode.Production) RequireProductionManagement(launch.DataRoot);
-        if (requireQualification && c.Mode == RunMode.Production && (ParcelBindings.Readers(c).Any(r => r.Driver == "manual") || c.SchemaVersion != 3))
-            throw new InvalidDataException("Production NotReady: real reader, provisioned software administrator and explicit schema3 topology policy are required");
-        if (c.Extensions is { } malformed && (malformed.Packages is null || malformed.Instances is null || malformed.Packages.Any(x => x is null) || malformed.Instances.Any(x => x is null)))
-            throw new InvalidDataException("Malformed application extension deployment");
+        if (requireQualification && c.Mode == RunMode.Production && ParcelBindings.Readers(c).Any(r => r.Driver == "manual"))
+            throw new InvalidDataException("Production NotReady: a real reader is required");
         DeploymentQualification? candidateQualification = null;
         if (requiresActiveQualification && (c.Mode == RunMode.Production || c.Extensions?.Packages.Any(p => Store().VerifyInstalled(p).Manifest.Prerequisites.Length > 0) == true))
         {
@@ -171,10 +169,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             throw new InvalidDataException("device.ip: 左右相机不能连接同一个 IP 和端口");
         if (c.Extensions is not null)
         {
-            if (c.Extensions.Packages is null || c.Extensions.Instances is null || c.Extensions.Packages.Any(x => x is null) || c.Extensions.Instances.Any(x => x is null) ||
-                c.Extensions.Packages.Length > 64 || c.Extensions.Instances.Length > 64 || c.Extensions.Packages.Select(x => x.Id).Distinct().Count() != c.Extensions.Packages.Length)
-                throw new InvalidDataException("Malformed or oversized application extension deployment");
-            if (c.Extensions.Services is { Length: > 0 } || c.Extensions.Ports is { Length: > 0 }) throw new InvalidDataException("Parcel capabilities are owned by their typed bindings; duplicate service binding authority is forbidden");
             var readerBindings = ParcelBindings.Readers(c).Where(r => r.Driver.StartsWith("extension:", StringComparison.Ordinal)).ToArray();
             // Existing validator checks signatures/closure/reader role. New device kinds have
             // their own typed bindings below, never counterfeit observation DeviceIds.
@@ -222,7 +216,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (deviceCapabilities.GroupBy(b => b.Target).Any(g => g.Count() > 1) || deviceCapabilities.Any(b => b.Kind != "camera" && ParcelBindings.Readers(c).Any(r => r.DeviceId == b.Target)))
             throw new InvalidDataException("Physical device cannot be occupied by incompatible capability roles");
         if (bound.Any(x => !x.Enabled)) throw new InvalidDataException("A bound provider must be enabled");
-        foreach (var b in bindings.DistinctBy(x => x.InstanceId))
+        foreach (var b in bindings)
         {
             if (ParcelConnectionSetup.IsDeferred(c, b.InstanceId))
             {
@@ -234,7 +228,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
 #if !DIRECTPLC
             if (b.Package is null && b.Implementation == "sportmaster-rcs" && b.Version == RcsRequestPolicy.ComponentVersion && b.Contract == Ipc.Integrations.SportmasterRcs.RcsConfigurationValidation.Contract)
             {
-                _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(b);
+                // The selected integration was checked with its heartbeat mapping.
+                // Only other inventory entries need their own options validation.
+                if (b.InstanceId != c.Wcs?.InstanceId) _ = new Ipc.Integrations.SportmasterRcs.RcsTaskOptions(b);
                 if (requireQualification && c.Mode == RunMode.Production && candidateQualification is null && !builtInSportmaster) throw new InvalidDataException("RCS生产部署资格尚未完成");
                 continue;
             }

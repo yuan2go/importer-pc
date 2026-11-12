@@ -2,15 +2,27 @@ name: Sportmaster commercial engineering
 on:
   # Specialized/manual qualification; automatic PR/main regression is industrial-core.yml.
   workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Verification scope; all also builds the complete delivery medium'
+        type: choice
+        default: contracts
+        options:
+          - contracts
+          - installation
+          - delivery
+          - entrypoints
+          - all
 env:
   IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME: '1'
 permissions:
   contents: read
 concurrency:
-  group: sportmaster-${{ github.event.pull_request.number || github.ref }}
+  group: sportmaster-${{ github.ref }}-${{ inputs.suite }}
   cancel-in-progress: true
 jobs:
   windows-installation-lifecycle:
+    if: inputs.suite == 'all' || inputs.suite == 'installation'
     runs-on: windows-2025
     timeout-minutes: 20
     env:
@@ -50,6 +62,7 @@ jobs:
           name: installation-lifecycle-${{ github.sha }}
           path: .artifacts/installation-lifecycle
   build-test-entrypoints:
+    if: inputs.suite == 'all' || inputs.suite == 'entrypoints'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -73,6 +86,7 @@ jobs:
           path: .artifacts/entrypoint-ci/*.log
           retention-days: 30
   supply-build-entrypoint:
+    if: inputs.suite == 'all' || inputs.suite == 'entrypoints'
     runs-on: windows-2025
     timeout-minutes: 15
     steps:
@@ -108,6 +122,7 @@ jobs:
           path: .artifacts/supply-build-ci/*.log
           retention-days: 30
   current-contract-boundaries:
+    if: inputs.suite == 'all' || inputs.suite == 'contracts'
     # Current contracts only. Historical inputs are exercised as read-only refusals.
     # Linux uses canonical Git source bytes for the immutable SQL checks.
     runs-on: ubuntu-latest
@@ -135,7 +150,9 @@ jobs:
           for case in storage-baseline parcel-recovery-p2 backup-health-recovery review-closure application-architecture capability-closure architecture-quality commercial-quality commercial-productization audit03-rcs history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode station-single-camera sm-built-in-only mvid-reader; do
             if ! dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"; then failed=1; fi
           done
-          for case in current-contracts receipt-preflight-product query-fixture architecture conformance operation-closure closure data extensions maintainability review-followup followup; do
+          # The default above includes data, conformance, operation/receipt closure,
+          # query-fixture, extensions and followups; run only its independent scopes here.
+          for case in current-contracts receipt-preflight-product architecture maintainability; do
             if ! dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/supply-$case.log"; then failed=1; fi
           done
           if ! PYTHONPATH=scripts python3 -m unittest test_application_compatibility test_release_documents test_application_bundles test_commercial_delivery test_stability_qualification 2>&1 | tee .artifacts/current-contract-ci/publication.log; then failed=1; fi
@@ -149,6 +166,7 @@ jobs:
           path: .artifacts/current-contract-ci/*.log
           retention-days: 30
   aqa01-boundaries:
+    if: inputs.suite == 'all' || inputs.suite == 'contracts'
     # Portable runtime/SQLite/loopback evidence complements the Windows medium
     # below; it is not vendor-protocol or field acceptance.
     runs-on: ubuntu-latest
@@ -163,20 +181,19 @@ jobs:
       - name: Exercise ingress and command durability boundaries
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --architecture-quality-remediation 2>&1 | tee aqa01-boundaries.log
       - name: Exercise stability custody, isolation, reads and retention
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --win11-stability 2>&1 | tee stability-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --storage-format-guards 2>&1 | tee storage-format-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --retention-ingress 2>&1 | tee retention-ingress.log
-          python3 -m unittest discover -s scripts -p test_stability_qualification.py -v 2>&1 | tee stability-collector.log
       - name: Exercise dual-camera startup failure and cancellation ownership
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --dual-camera-communication 2>&1 | tee dual-camera-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --parameter-guidance-startup 2>&1 | tee parameter-guidance-startup.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --deferred-connections 2>&1 | tee deferred-connections.log
@@ -185,7 +202,7 @@ jobs:
       - name: Exercise process death, monotonic time, storage and ownership
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --receipt-custody 2>&1 | tee receipt-custody.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
@@ -210,7 +227,6 @@ jobs:
             stability-boundaries.log
             storage-format-boundaries.log
             retention-ingress.log
-            stability-collector.log
             dual-camera-boundaries.log
             parameter-guidance-startup.log
             deferred-connections.log
@@ -224,6 +240,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
   p0-stability-boundaries:
+    if: inputs.suite == 'all' || inputs.suite == 'contracts'
     runs-on: windows-2025
     timeout-minutes: 15
     steps:
@@ -250,10 +267,6 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
-          if ($env:GITHUB_EVENT_NAME -eq 'push') {
-            dotnet build ImporterPc.slnx -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false
-            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          }
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           foreach ($case in @('windows-client-compatibility','stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards','shortcut-lifecycle')) {
@@ -292,6 +305,7 @@ jobs:
           path: .artifacts/p0-stability
           retention-days: 30
   frozen-sportmaster:
+    if: inputs.suite == 'all' || inputs.suite == 'delivery'
     runs-on: windows-2025
     env:
       DOTNET_INSTALL_DIR: D:/tools/dotnet
@@ -323,13 +337,16 @@ jobs:
       - name: Clean installation protected-directory regression
         run: |
           . ./scripts/project-environment.ps1
-          dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --initialize-isolated-ci-storage
+          dotnet build tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -m:1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --clean-storage-bootstrap-elevated
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --initialize-isolated-ci-storage
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --clean-storage-bootstrap-elevated
+          exit $LASTEXITCODE
       - name: Read-only uninstall inventory regression
         run: |
           . ./scripts/project-environment.ps1
-          dotnet run --project tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -- --commercial-removal
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --commercial-removal
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Policy rejection tests
         run: |
@@ -342,16 +359,14 @@ jobs:
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          # PR checkout is GitHub's exact merge commit, not an ancestor of main.
-          # --source is reserved for main-ancestor historical publication/reuse.
-          # A local runner branch gives the installer a verifiable source name
-          # while retaining GitHub's exact checked merge commit; never pushed.
+          # Manual verification may target a development ref. A local runner branch
+          # records that exact checked source without claiming main release ancestry.
           git switch -c codex/ci-sportmaster-${{ github.run_id }}
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/release-windows.py --profile sportmaster --output D:/scd/release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
-          if ($release.SourceCommit -ne '${{ github.sha }}') { throw 'Frozen PR release differs from the checked merge commit' }
+          if ($release.SourceCommit -ne '${{ github.sha }}') { throw 'Frozen release differs from the checked source commit' }
       - name: Protected local administrator boundary on Windows
         shell: pwsh
         run: |

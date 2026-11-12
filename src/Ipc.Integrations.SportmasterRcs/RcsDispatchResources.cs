@@ -26,8 +26,7 @@ public sealed partial class SportmasterRcsTaskService : IWcsDispatchResources
     {
         var owned = Wire.Decode<FrozenRequest>(Wire.Encode(request));
         var body = ValidateDestination(owned);
-        var position = Wire.Decode<ParcelPayload>(owned.Payload).PositionId;
-        if (position is not ("left" or "right")) throw new InvalidDataException("RCS destination requires an actual station position");
+        var position = Wire.Decode<ParcelPayload>(owned.Payload).PositionId!;
         CancellationToken stop;
         lock (lifecycle)
         {

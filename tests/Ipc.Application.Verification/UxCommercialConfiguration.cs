@@ -42,20 +42,20 @@ static partial class ArchitectureQuality
                 Wire.Encode(pending.CapabilityInstances!.Where(x => x.InstanceId != right.InstanceId)) == Wire.Encode(effective.CapabilityInstances!.Where(x => x.InstanceId != right.InstanceId)),
                 "UXC03 editing one position retains the other position, all unrelated inventory, login, image, weight and retention fields");
             await second.RefreshAsync(); second.ConfigurationReason = "Synthetic stale second-window candidate";
-            second.StructuredPolicy!.WaitTimeoutMs = "16001";
+            second.StructuredPolicy!.ReadTimeoutMs = "16001";
             await second.SaveStructuredConfigurationAsync();
             File.WriteAllText(Path.Combine(diagnostics, "stale-window-result.txt"), second.Message);
             Check(second.ConfigurationSubmissionOutcome == "Conflict" && !second.HasUnconfirmedConfigurationSubmission && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
                 "UXC03 automatic refresh cannot replace a second window's loaded configuration CAS");
             Check(second.HasUnsavedConfiguration, "P2 stale CAS rejection retains the unsaved second-window draft");
-            first.StructuredPolicy!.Precision = "bad";
+            first.StructuredPolicy!.ReadTimeoutMs = "bad";
             Check(first.HasUnsavedConfiguration, "P2 invalid numeric text remains a protected draft without requiring a build");
-            var invalidBlocked = false;
-            try { await first.SaveStructuredConfigurationAsync(); } catch (InvalidOperationException) { invalidBlocked = true; }
-            Check(invalidBlocked && first.StructuredPolicy.Precision == "bad" &&
-                Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
-                "UXC03 local numeric validation rejects invalid units/precision without saving");
-            first.StructuredPolicy.Precision = effective.Weight.Precision.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            await first.SaveStructuredConfigurationAsync();
+            var afterInvalid = (await app.SnapshotAsync()).Configuration;
+            Check(first.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && first.StructuredPolicy.ReadTimeoutMs == "bad" && first.HasUnsavedConfiguration &&
+                afterInvalid.Revision == saved.Revision && Wire.Encode(afterInvalid.Pending) == Wire.Encode(pending),
+                "UXC03 local numeric validation retains invalid read timeout and its field error without saving or advancing the revision");
+            first.StructuredPolicy.ReadTimeoutMs = effective.EffectiveReadTimeoutMs.ToString(System.Globalization.CultureInfo.InvariantCulture);
             await first.SwitchToAdvancedConfigurationAsync();
             var advanced = Wire.Decode<ParcelConfiguration>(first.ConfigurationDraft) with { TimeoutMs = 1703 };
             first.ConfigurationDraft = "SYNTHETIC malformed JSON";
@@ -99,14 +99,14 @@ static partial class ArchitectureQuality
         {
             await Maintenance(app); var held = new HeldConfigurationApplication(app);
             var vm = new ParcelViewModel(held, "并发草稿", "合成回归"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
-            vm.StructuredPolicy!.WaitTimeoutMs = "16011"; vm.ConfigurationReason = "Synthetic structured save while editing";
+            vm.StructuredPolicy!.ReadTimeoutMs = "16011"; vm.ConfigurationReason = "Synthetic structured save while editing";
             held.HoldNextStage = true; var save = vm.SaveStructuredConfigurationAsync();
             await held.StageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            vm.StructuredPolicy.WaitTimeoutMs = "16012"; held.StageRelease.TrySetResult(); await save;
-            Check(vm.HasUnsavedConfiguration && vm.StructuredPolicy.WaitTimeoutMs == "16012" &&
-                (await app.SnapshotAsync()).Configuration.Pending!.Weight.WaitTimeoutMs == 16011,
+            vm.StructuredPolicy.ReadTimeoutMs = "16012"; held.StageRelease.TrySetResult(); await save;
+            Check(vm.HasUnsavedConfiguration && vm.StructuredPolicy.ReadTimeoutMs == "16012" &&
+                (await app.SnapshotAsync()).Configuration.Pending!.ReadTimeoutMs == 16011,
                 "P2 structured save accepts only the captured draft and preserves newer unsaved edits");
-            vm.StructuredPolicy.WaitTimeoutMs = "16011";
+            vm.StructuredPolicy.ReadTimeoutMs = "16011";
             Check(!vm.HasUnsavedConfiguration, "P2 reverting to the successfully submitted structured draft restores its clean baseline");
         }
         var field = new ParameterField("input.labels", "输入", "来源标签（每行一项）", "string-list", Default: "[]", MaximumLength: 256, MaximumItems: 16);
@@ -186,12 +186,12 @@ static partial class ArchitectureQuality
         vm.ConfigurationReason = "Synthetic corrected draft uses its own advanced-save CAS"; await vm.SaveStructuredConfigurationAsync(); await vm.RefreshAsync();
         Check((await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1802 && vm.ConfigurationSubmissionOutcome == "PendingRestart",
             "UXC03 correcting a rejected form transfer stages the retained B with the actual configuration CAS");
-        vm.StructuredPolicy!.WaitTimeoutMs = "16007"; var unsavedForm = Wire.Encode(vm.BuildStructuredConfiguration());
+        vm.StructuredPolicy!.ReadTimeoutMs = "16007"; var unsavedForm = Wire.Encode(vm.BuildStructuredConfiguration());
         await vm.EnsureMaintenanceLoadedAsync();
         Check(held.CatalogReads == 1 && Wire.Encode(vm.BuildStructuredConfiguration()) == unsavedForm,
             "UXC03 repeated navigation also preserves an unsaved structured form");
         await vm.LoadCapabilitiesAsync();
-        Check(held.CatalogReads == 2 && vm.StructuredPolicy!.WaitTimeoutMs != "16007", "UXC03 only explicit reload replaces the current draft from saved Pending/Effective");
+        Check(held.CatalogReads == 2 && vm.StructuredPolicy!.ReadTimeoutMs != "16007", "UXC03 only explicit reload replaces the current draft from saved Pending/Effective");
     }
     sealed class HeldConfigurationApplication(IParcelApplication inner) : IParcelApplication, IManagementModeFixtureForwarder
     {

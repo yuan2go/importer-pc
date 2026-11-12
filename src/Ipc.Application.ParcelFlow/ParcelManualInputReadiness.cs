@@ -17,12 +17,12 @@ public sealed partial class ParcelRuntime
 
     // This is the Application's readiness for an explicit operator command. It
     // deliberately does not consult the acquisition device's connection/epoch.
-    string[] ManualInputReasons(string position, bool includePause = true, string? exceptOperation = null, bool debugRequest = false, bool requireAdmissionCapacity = true)
+    string[] ManualInputReasons(string position, bool includePause = true, bool debugRequest = false)
     {
         if (Id != "sportmaster") return ["当前业务不提供人工供包。"];
         if (!positions.ContainsKey(position)) return ["投递位不存在，请重新读取运行配置。"];
         var reasons = new List<string>();
-        if (!debugRequest && SmTargetBlock(position, exceptOperation) is { } targetReason) reasons.Add(targetReason);
+        if (!debugRequest && SmTargetBlock(position) is { } targetReason) reasons.Add(targetReason);
         if (!debugRequest && ManagementWorkspaceOpen) reasons.Add("管理中心已打开，供包暂停；关闭管理中心后恢复。");
         if (!debugRequest && !PositionSupplyEnabled(position)) reasons.Add("本位已请求停用，不再接收新条码。");
         if (Volatile.Read(ref accepting) != 1 || stopping.IsCancellationRequested) reasons.Add("程序正在停止，暂不接收新包裹。");
@@ -55,19 +55,10 @@ public sealed partial class ParcelRuntime
         if (HasIdentityConflict(position)) reasons.Add("本位存在身份冲突，需先核对原包裹。");
         if (interruptedPositions.ContainsKey(position)) reasons.Add("本位存在未核对的中断输入责任。");
         if (overloadedPositions.ContainsKey(position) || overload != 0 && overloadedPositions.IsEmpty) reasons.Add("本位输入过载责任尚未核对。");
-        // Sending consumes the existing reservation; replacement retires exactly
-        // one audited unsent intent. Both still require the storage reserve.
-        var releasingSlot = exceptOperation is { } id && operations.TryGetValue(id, out var reserved) &&
-            CanCloseUnsentDebugIntent(reserved) && !ArchiveEligible(reserved) ? 1 : 0;
         if (storageCapacityFailure is not null || fatalStorage.Task.IsCompleted)
             reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.StorageUnavailable)!);
-        else if (Id != "sportmaster" && requireAdmissionCapacity && UnresolvedCapacity - releasingSlot >= Effective.MaximumOperations)
-            reasons.Add(ParcelInputReasons.ActionableNotice(ParcelInputBlockReason.CapacityExhausted)!);
         if (!ImageCapacityAvailable()) reasons.Add("图像处理容量不足，原件仍保留。");
         if (!debugRequest && CurrentRound(position)?.OperationId is not null) reasons.Add("本轮已提交，请先结束本轮，不得重复取格口。");
-        if (Id != "sportmaster" && operations.Values.FirstOrDefault(o => o.Id != exceptOperation && (o.PositionId ?? "main") == position && !ReleasedForNextAdmission(o) &&
-            (NeedsReconciliation(o) || !MainTerminated(o) || WeightExpired(o))) is { } original)
-            reasons.Add(ParcelInputReasons.ActionableNotice(PriorWorkBlock(original))!);
         return reasons.Distinct(StringComparer.Ordinal).ToArray();
     }
 }

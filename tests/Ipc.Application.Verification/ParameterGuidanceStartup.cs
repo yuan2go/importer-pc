@@ -26,10 +26,11 @@ static class ParameterGuidanceStartup
         var launch = new BusinessLaunch(Path.Combine(root, "config"), Path.Combine(root, "data"), null, null);
         await using var factory = new ParcelCapabilityFactory(launch);
         factory.ValidateStructure(initial);
-        var draft = new StartupConfigurationDraft(initial, factory.Catalog());
+        var catalog = factory.Catalog();
+        var draft = new StartupConfigurationDraft(initial, catalog with { Providers = catalog.Providers.Where(p => p.Kind is not ("login" or "weight")).ToArray() });
         var editor = draft.CreateParameterEditor((p, codes) => Task.FromResult(BarcodeFiltering.Select(p, codes)));
         Check(editor.ValidateFields() && Wire.Encode(draft.Build()) == Wire.Encode(initial),
-            "incomplete connection fields are preserved and an untouched deferred candidate round-trips without defaults added");
+            "SM startup requires no unused login or weight provider; incomplete connections round-trip without defaults added");
         var rcs = draft.Capabilities.Single(ParameterOwnership.IsRcs);
         Check(!rcs.Parameters.Any(p => p.Field.Key == "quantity") && !draft.Build().Wcs!.Parameters.ContainsKey("quantity") &&
             ParcelBindings.Readers(draft.Build()).All(r => r.Driver == "hikrobot-mvs-reader" && r.Parameters!["entity.mode"] == "read-result"),

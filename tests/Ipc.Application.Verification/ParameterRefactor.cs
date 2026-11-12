@@ -75,11 +75,14 @@ static class ParameterRefactor
         await SmRoundFixture.NextVehicleAsync(app, "left");
         foreach (var (codes, outcome) in new[] { (new[] { "noise" }, "NoMatchingCode"), (new[] { "OK004", "OK005" }, "AmbiguousCodes") })
         {
-            var processed = app.WorkerProgress().Single(w => w.Position == "left").Processed;
+            var noFormalBefore = app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates");
             var source = Wire.Id(); factory.Emit(reader, "Read", "rejected-" + source, codes, source);
-            await CameraRoundHarness.Until(() => Task.FromResult(app.WorkerProgress().Single(w => w.Position == "left").Processed > processed));
-            var rejected = await app.SnapshotAsync();
-            Check((outcome == "NoMatchingCode" ? app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates") == 1 : rejected.Inputs!.Single().BarcodeSelection?.Outcome == outcome) && rejected.Operations.Length == 1 && rejected.Positions!.Single(p => p.Id == "left").CurrentOperation is null, outcome + " creates no request and cannot reuse a previous slot; no-formal-candidate evidence does not manufacture a UI input");
+            // A queued physical-boundary observation can also advance Processed.
+            // Wait for this input's actual decision, not unrelated worker progress.
+            var rejected = await Wait(app, s => outcome == "NoMatchingCode"
+                ? app.WorkerProgress().Single(w => w.Position == "left").Dispositions.GetValueOrDefault("NoFormalCandidates") == noFormalBefore + 1
+                : s.Inputs!.Any(i => i.Observation.SourceEventId == source));
+            Check((outcome == "NoMatchingCode" ? rejected.Inputs!.All(i => i.Observation.SourceEventId != source) : rejected.Inputs!.Single(i => i.Observation.SourceEventId == source).BarcodeSelection?.Outcome == outcome) && rejected.Operations.Length == 1 && rejected.Positions!.Single(p => p.Id == "left").CurrentOperation is null, outcome + " creates no request and cannot reuse a previous slot; no-formal-candidate evidence does not manufacture a UI input");
             await SmRoundFixture.NextVehicleAsync(app, "left");
         }
         factory.Emit(c.Topology.Readers[1].DeviceId, "Read", "right-entity", ["OK003"], "right-source");
@@ -130,11 +133,15 @@ static class ParameterRefactor
         pendingVm.StructuredPolicy.ResidentHistory = "1800"; pendingVm.ConfigurationReason = "Synthetic newer revision for CAS conflict"; await pendingVm.SaveStructuredConfigurationAsync();
         stale.StructuredPolicy!.ResidentHistory = "1900"; stale.ConfigurationReason = "Synthetic stale CAS"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.ConfigurationSubmissionOutcome == "Conflict" && stale.HasUnsavedConfiguration && stale.StructuredPolicy.ResidentHistory == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
-        var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad"; await stale.SaveStructuredConfigurationAsync();
-        Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
+        var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad";
+        _ = stale.ConfigurationEditorState;
+        await stale.SaveStructuredConfigurationAsync();
+        Check(stale.HasUnsavedConfiguration && stale.StructuredPolicy.ReadTimeoutMs == "bad" && stale.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
+            "reading editor status preserves invalid dirty text; explicit save locates the field error without saving or contacting a device");
         stale.StructuredPolicy.ReadTimeoutMs = "1000"; stale.StructuredPolicy.BackupEnabled = true;
+        stale.StructuredPolicy.BackupDirectory = Path.Combine(root, "scheduled-backups");
         stale.StructuredPolicy.BackupIntervalMinutes = "bad"; stale.StructuredPolicy.BackupMaximumSets = "0";
-        stale.ParameterEditor.ValidateFields();
+        stale.ParameterEditor!.ValidateFields();
         Check(stale.ParameterEditor.Issues.Any(i => i.Path == "BackupIntervalMinutes") && stale.ParameterEditor.Issues.Any(i => i.Path == "BackupMaximumSets") && !stale.ParameterEditor.Issues.Any(i => i.Path == "BackupDirectory") && stale.StructuredPolicy.BackupIntervalMinutes == "bad" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
             "backup numeric errors locate their actual fields, retain invalid text and never blame a valid directory or save");
         stale.StructuredPolicy.BackupEnabled = false;

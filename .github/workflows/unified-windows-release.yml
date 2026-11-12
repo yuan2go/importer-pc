@@ -30,7 +30,8 @@ jobs:
       - name: Build and verify the complete frozen set
         shell: pwsh
         run: |
-          python scripts/release-windows.py --source '${{ github.sha }}' --output 'C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}'
+          . ./scripts/project-environment.ps1
+          python scripts/release-windows.py --source '${{ github.sha }}' --output 'D:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}'
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Retain build logs including failures
         if: always()
@@ -38,9 +39,9 @@ jobs:
         with:
           name: build-evidence-${{ github.sha }}-${{ github.run_attempt }}
           path: |
-            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.json
-            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.log
-            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/SHA256SUMS
+            D:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            D:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.log
+            D:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/SHA256SUMS
           retention-days: 30
           if-no-files-found: error
       - name: Retain verified media only after the complete build succeeds
@@ -49,9 +50,9 @@ jobs:
         with:
           name: windows-reference-${{ github.sha }}-${{ github.run_attempt }}
           path: |
-            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.zip
-            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/RELEASE.json
-            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/SHA256SUMS
+            D:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.zip
+            D:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/RELEASE.json
+            D:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/SHA256SUMS
           compression-level: 0
           retention-days: 30
           if-no-files-found: error

@@ -56,17 +56,21 @@ public static class RcsRequestPolicy
         parameters["heartbeat-interval-ms"] = value.ToString(CultureInfo.InvariantCulture);
         return binding with { Parameters = parameters };
     }
-    public static int TimeoutMs(CapabilityBinding binding)
+    public static int TimeoutMs(CapabilityBinding binding) => ReadSettings(binding).RequestTimeoutMs;
+
+    // The adapter consumes all three values; parse the same frozen parameters once.
+    public static (int RequestTimeoutMs, int HeartbeatIntervalMs, bool NoDestToExp) ReadSettings(CapabilityBinding binding)
     {
         if (binding.Contract != Contract || binding.Version != ComponentVersion || binding.Parameters is null)
             throw new InvalidDataException("RCS组件版本或请求契约不受支持；保留原配置并使用当前模板。");
         if (binding.Parameters.Keys.Any(key => !Parameters.Contains(key)))
             throw new InvalidDataException("RCS包含不受支持的参数；数量固定为每次扫码一个包裹。");
-        _ = HeartbeatMs(binding);
-        _ = NoDestToExp(binding);
-        if (!binding.Parameters.TryGetValue("request-timeout-ms", out var value)) return DefaultTimeoutMs;
-        return int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var timeout) &&
-            timeout is >= MinimumTimeoutMs and <= MaximumTimeoutMs ? timeout :
+        var heartbeat = HeartbeatMs(binding);
+        var noDestToExp = NoDestToExp(binding);
+        var timeout = DefaultTimeoutMs;
+        if (binding.Parameters.TryGetValue("request-timeout-ms", out var value) &&
+            (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out timeout) || timeout is < MinimumTimeoutMs or > MaximumTimeoutMs))
             throw new InvalidDataException("RCS请求超时须为100～30000毫秒。");
+        return (timeout, heartbeat, noDestToExp);
     }
 }

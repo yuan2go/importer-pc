@@ -30,12 +30,17 @@ static partial class SportmasterRcs
             foreach (var mode in new[] { "no-destination", "no-destination-null", "no-destination-without-data" })
             {
                 peer.Mode = mode;
+                var beforeRequest = peer.Requests.Count;
                 var reply = await service.RequestDestinationAsync(request, default);
+                // Heartbeats share the peer, not the destination request's evidence.
+                // Force the interleaving instead of depending on scheduler timing.
+                await service.SendHeartbeatAsync(default);
+                var exchange = peer.Requests.Skip(beforeRequest).Single(sent => sent.Body == wire.Body);
                 Check(reply.ProtocolAcknowledged == true && reply.BusinessAccepted == false && reply.Slot is null &&
                     reply.Destination is { Outcome: WcsDestinationOutcome.Rejected, Code: null, Message: "合成异常：未找到可用格口，请人工核对包裹。" },
                     "success=false with msg confirms rejection without inventing a code or slot: " + value + "/" + mode);
                 Check(reply.Destination!.ManualHandlingRequired == (value == "false"), "manual-handling fact follows the frozen request policy");
-                Check(Convert.FromBase64String(reply.HttpResponse!.BodyBase64).SequenceEqual(System.Text.Encoding.UTF8.GetBytes(peer.Requests.Last().Response)), "rejection retains complete original response evidence");
+                Check(Convert.FromBase64String(reply.HttpResponse!.BodyBase64).SequenceEqual(System.Text.Encoding.UTF8.GetBytes(exchange.Response)), "rejection retains its complete original response evidence across an interleaved heartbeat");
             }
             peer.Mode = "assigned";
             Check((await service.RequestDestinationAsync(request, default)).BusinessAccepted == true, "normal assigned destinations still work with " + value);

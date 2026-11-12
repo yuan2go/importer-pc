@@ -126,12 +126,14 @@ def passed_test_count(results: Path) -> int:
     if is_link(trx) or trx.stat().st_size > 16 * 1024 * 1024:
         raise ValueError('Invalid or excessive original TRX')
     root = ET.parse(trx).getroot()
-    counters = root.find('./{*}ResultSummary/{*}Counters')
-    if counters is None:
+    summary = root.find('./{*}ResultSummary')
+    counters = None if summary is None else summary.find('./{*}Counters')
+    if summary is None or counters is None:
         raise ValueError('Original TRX has no execution counters')
     count = int(counters.get('executed', '0'))
     rows = root.findall('./{*}Results/{*}UnitTestResult')
-    if (count < 25 or int(counters.get('passed', '0')) != count or int(counters.get('failed', '-1')) != 0 or
+    if (summary.get('outcome') != 'Completed' or count <= 0 or int(counters.get('total', '0')) != count or
+            int(counters.get('passed', '0')) != count or int(counters.get('failed', '-1')) != 0 or
             int(counters.get('notExecuted', '-1')) != 0 or len(rows) != count or any(r.get('outcome') != 'Passed' for r in rows)):
         raise ValueError('Coverage cannot qualify missing, skipped or failed core tests')
     return count

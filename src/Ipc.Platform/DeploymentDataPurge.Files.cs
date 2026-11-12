@@ -8,17 +8,28 @@ namespace Ipc.Platform;
 
 public static partial class WindowsDeploymentSetup
 {
+    internal static string[] DataPurgeRoots(DeploymentLocation location, string machineRoot)
+    {
+        var roots = new[] { Path.GetFullPath(location.DataRoot), Path.GetFullPath(location.ConfigurationDirectory) };
+        // The service keys its credential store by the canonical data root. Use
+        // that same mapping, never a caller-supplied credential deletion path.
+        return location.ApplicationId == "sportmaster"
+            ? [.. roots, ManagementModeBroker.ProtectedRoot(location.DataRoot, Path.Combine(Path.GetDirectoryName(Path.GetFullPath(machineRoot))!, "Administrators"))]
+            : roots;
+    }
     static void RequirePurgeScope(DeploymentLocation location, string machineRoot)
     {
-        var roots = new[] { location.DataRoot, location.ConfigurationDirectory }.Select(Path.GetFullPath).ToArray();
+        var roots = DataPurgeRoots(location, machineRoot);
         machineRoot = Path.GetFullPath(machineRoot);
         foreach (var root in roots)
             if (Path.GetPathRoot(root) == root || TrustedProgramRoots.Contains(root, machineRoot) ||
                 TrustedProgramRoots.Contains(root, Path.Combine(machineRoot, "deployments")) || TrustedProgramRoots.Contains(Path.Combine(machineRoot, "deployments"), root) ||
                 TrustedProgramRoots.Contains(root, location.ReleaseRoot) || TrustedProgramRoots.Contains(location.ReleaseRoot, root))
                 throw new InvalidDataException("数据目录与磁盘根、部署记录或程序目录重叠，拒绝永久删除。");
-        if (TrustedProgramRoots.Contains(roots[0], roots[1]) || TrustedProgramRoots.Contains(roots[1], roots[0]))
-            throw new InvalidDataException("数据目录与配置目录互相包含，拒绝永久删除。");
+        for (var i = 0; i < roots.Length; i++)
+            for (var j = i + 1; j < roots.Length; j++)
+                if (TrustedProgramRoots.Contains(roots[i], roots[j]) || TrustedProgramRoots.Contains(roots[j], roots[i]))
+                    throw new InvalidDataException("数据、配置或管理凭据目录互相包含，拒绝永久删除。");
         RequireExclusivePurgeRoots(location.ApplicationId, roots, machineRoot);
     }
 
@@ -66,7 +77,7 @@ public static partial class WindowsDeploymentSetup
             if (new FileInfo(file).Length > 1024 * 1024) throw new InvalidDataException("其他安装登记无法核对，数据保留。");
             var other = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
             if (other.ApplicationId != Path.GetFileNameWithoutExtension(file)) throw new InvalidDataException("其他安装登记身份无法核对，数据保留。");
-            if (roots.Any(root => new[] { other.DataRoot, other.ConfigurationDirectory, other.ReleaseRoot }.Any(owned =>
+            if (roots.Any(root => DataPurgeRoots(other, machineRoot).Append(other.ReleaseRoot).Any(owned =>
                 TrustedProgramRoots.Contains(root, owned) || TrustedProgramRoots.Contains(owned, root))))
                 throw new InvalidDataException("本站目录与其他安装共用，无法单独删除本站数据。程序可卸载，数据保留，请交实施人员处理。");
         }

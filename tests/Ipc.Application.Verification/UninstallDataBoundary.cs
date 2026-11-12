@@ -22,7 +22,7 @@ static class UninstallDataBoundary
             return new("sportmaster", new string('a', 40), Path.Combine(root, name, "program"), config, data, "synthetic", "RemovedDataRetained");
         }
         DeploymentPurgePlan Plan(DeploymentLocation location) => WindowsDeploymentSetup.PlanDataPurgeCore(location, "registration", Wire.Id(), machine);
-        DeploymentPurgeRecord Record(DeploymentPurgePlan plan) => new(1, DateTimeOffset.UtcNow, plan, "Prepared", [], "synthetic");
+        DeploymentPurgeRecord Record(DeploymentPurgePlan plan) => new(2, DateTimeOffset.UtcNow, plan, "Prepared", [], "synthetic");
 
         var shared = Station("shared");
         var foreign = Path.Combine(shared.DataRoot, "Production", "OTHER", "direct-plc", "direct-plc.db");

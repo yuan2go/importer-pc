@@ -42,6 +42,9 @@ static partial class Program
         var keep = Make(_ => Task.FromResult(new ProgramUninstallResult(clean, null, false) { Assets = assetsComplete }));
         keep.Show(); await Idle(keep);
         Check(calls == 0 && inspections == 0, "opening uninstall neither reads business data nor starts maintenance");
+        Check(Descendants(keep).OfType<TextBlock>().Any(t => t.Text.Contains("管理密码") && t.Text.Contains("保留")) &&
+            Descendants(keep).OfType<TextBlock>().Any(t => t.Text.Contains("管理密码") && t.Text.Contains("创建新密码")),
+            "both uninstall choices state exactly whether the management password survives");
         Check(Descendants(keep).OfType<RadioButton>().Single(b => Equals(b.Content, "保留本站数据")).IsChecked == true,
             "data retention is the default");
         Check(Descendants(keep).OfType<Button>().Where(b => b.IsVisible).Select(b => b.Content).SequenceEqual(new[] { "卸载", "取消" }),
@@ -65,6 +68,8 @@ static partial class Program
         Descendants(delete).OfType<RadioButton>().Single(b => Equals(b.Content, "同时删除本站数据")).IsChecked = true;
         Click(delete, "卸载"); await Idle(delete);
         Check(calls == 2 && selectedDelete && Status(delete).Contains("本站数据已删除"), "explicit deletion choice reaches the application in the same uninstall action");
+        Check(Status(delete).Contains("管理密码已清除") && !Descendants(delete).OfType<TextBlock>().Any(t => t.Text.Contains("管理安全信息")),
+            "successful deletion reports password removal instead of claiming security information is retained");
         Check(Descendants(delete).OfType<TextBox>().All(b => !b.Text.Contains("保留数据：")), "deleted data is never described as retained");
         CaptureInternal(evidence, "uninstall-deleted", delete, lines); Click(delete, "关闭");
 

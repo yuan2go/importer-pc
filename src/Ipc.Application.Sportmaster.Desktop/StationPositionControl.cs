@@ -50,7 +50,9 @@ public sealed partial class SupplyStationPositionViewModel
     public string DisableLabel => SupplyDisabling ? "停用中…" : "停用";
     public string SupplyStateText => SupplyEnabled ? "本位已启用" : SupplyDisabling ? "本位停用中" : "本位已停用";
     public string EnableLabel => "启用" + Heading;
-    public string SupplyNotice => SupplyDisabling ? "停用中：不再接收新条码。请取下包裹，托盘清空后自动停用。点“启用”可取消。" : "本位已停用，不接收条码。";
+    public string SupplyNotice => !SupplyDisabling ? "本位已停用，不接收条码。" : CanConfirmPlacementRemoval
+        ? "停用中：不再接收新条码。请取下包裹后点击“已取下包裹”完成停用。点“启用”可取消。"
+        : "停用中：不再接收新条码。请取下包裹，确认托盘清空后自动停用。点“启用”可取消。";
     public string EnableBackground => SupplyEnabled ? OperatorTokens.Success : OperatorTokens.Surface;
     public string EnableForeground => SupplyEnabled ? OperatorTokens.Surface : OperatorTokens.Muted;
     public string DisableBackground => SupplyEnabled ? OperatorTokens.Surface : SupplyDisabling ? OperatorTokens.Warning : OperatorTokens.Inactive;

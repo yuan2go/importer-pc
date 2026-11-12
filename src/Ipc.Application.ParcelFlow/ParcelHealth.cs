@@ -10,7 +10,7 @@ public sealed partial class ParcelRuntime : IStationRcsHeartbeat
         try
         {
             if (Id != "sportmaster" || stopped || stopping.IsCancellationRequested || repository is null || !SessionValid ||
-                configurationSaving || ports?.Wcs is not { } wcs || wcs is not IWcsPositionHeartbeat heartbeat || !PortMaintenanceClear(wcs))
+                configurationSaving || ports?.Wcs is not { } wcs || wcs is not IWcsHeartbeat heartbeat || !PortMaintenanceClear(wcs))
                 return RcsHeartbeatResult.Unavailable;
             var started = System.Diagnostics.Stopwatch.GetTimestamp();
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token);

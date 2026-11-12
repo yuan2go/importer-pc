@@ -55,16 +55,7 @@ public sealed partial class ParcelRuntime : IStationPositionControl
         if (Id != "sportmaster") return;
         foreach (var position in positions.Keys)
             if (repository!.ReadPositionControl(position) is { } state)
-            {
                 positionControls[position] = state;
-
-            }
-        PublishPositionHeartbeat(ports?.Wcs);
-    }
-    void PublishPositionHeartbeat(IWcsPort? wcs)
-    {
-        if (Id == "sportmaster" && wcs is IWcsPositionHeartbeat heartbeat)
-            heartbeat.SetEnabledPositions(positions.Keys.Where(PositionSupplyEnabled).ToArray());
     }
     bool CameraDraining(string device) => positions.Values.Any(p => p.ReaderDeviceId == device && PositionControl(p.Id).Mode == StationPositionMode.Disabling);
     bool PositionDrainRequired(string position) => CurrentRound(position) is not null;
@@ -125,7 +116,6 @@ public sealed partial class ParcelRuntime : IStationPositionControl
             repository.Commit(null, "PositionSupplyChanged", "", command: command, commandResult: receipt, positionControl: state);
             positionControls[request.PositionId] = state;
             WriteRuntimeLog("投递位启停", "投递位启停已记录", new { CommandId = request.CommandId, PreviousMode = previous.Mode.ToString(), State = state });
-            PublishPositionHeartbeat(ports?.Wcs);
             WriteStationState("PositionSupplyChanged:" + request.CommandId, force: true);
             return receipt;
         }

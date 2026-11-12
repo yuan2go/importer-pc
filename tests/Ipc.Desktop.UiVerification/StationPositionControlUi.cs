@@ -68,6 +68,20 @@ static partial class Program
             await Until(() => !vm.Busy && vm.SupplyHistory.Length == 5);
             Check(Descendants(controls).OfType<DataGrid>().Single().Items.Count == 5, "history page renders durable position switch records");
             CaptureInternal(evidence, "position-control-history", (Grid)window.FindName("ClientArea"), lines);
+            typeof(SupplyStationWindow).GetMethod("SetPage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.Invoke(window, ["workstation"]);
+            await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").CurrentRoundId is null);
+            h.Peer.Mode = "no-destination";
+            leftEntry.Text = "SYNTH-REJECT-DISABLE"; ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.CanConfirmPlacementRemoval && !vm.Busy);
+            ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.SupplyDisabling && !vm.Busy);
+            Check(vm.Left.SupplyNotice.Contains("点击“已取下包裹”") && ((Button)left.FindName("ConfirmManualPlacementRemoval")).IsVisible,
+                "draining with manual removal responsibility explicitly names the required confirmation action");
+            CaptureInternal(evidence, "positions-draining-manual-confirmation", (Grid)window.FindName("ClientArea"), lines);
+            ((Button)left.FindName("ConfirmManualPlacementRemoval")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            await Until(() => vm.Left.SupplyDisabled);
+            Check(h.Peer.Requests.Count == 2 && vm.Left.CenteredStateTitle == "已停用",
+                "clicking confirmed removal completes disable without replaying either original request");
         }
         finally { window.Close(); }
         await using var deferred = new ManualSupplyHarness(root, Path.Combine(evidence, "unconfigured-disabled"), true);

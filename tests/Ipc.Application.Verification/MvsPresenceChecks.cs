@@ -116,9 +116,28 @@ internal static class MvsPresenceChecks
                 "actual frame evidence ends the round without manual confirmation");
             camera.Parcel = true;
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
-            Check((await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left").Id != first.Id,
+            var second = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
+            Check(second.Id != first.Id,
                 "same code on a new physical placement automatically starts one independent request");
+            await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(second.OperationId!))?.State == ParcelState.SlotResolved);
+            async Task Switch(string position, bool enabled)
+            {
+                var snapshot = await h.App.SnapshotAsync();
+                var control = snapshot.Positions!.Single(p => p.Id == position).SupplyControl!;
+                var result = await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, position, control.Revision, enabled), default);
+                if (result.Status != "Accepted") throw new InvalidOperationException(result.Reason);
+            }
+            await Switch("right", false); await Switch("left", false);
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling &&
+                await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received,
+                "stopping supply keeps RCS heartbeat online while a calibrated tray still holds its parcel");
             camera.Parcel = false;
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
+                { CurrentRoundId: null, SupplyControl.Mode: StationPositionMode.Disabled, CameraConnectionSuspended: true });
+            Check((await h.App.RoundHistoryAsync(search: second.Id)).Items.Single().EndReason == "TrustedRemoval",
+                "actual frame evidence ends the round and finishes disabling without clicking parcel removal");
+            Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Positions!.All(p => p.Vehicle is null),
+                "disabled lanes retain the original requests and never show an idle vehicle cue");
             await CameraRoundHarness.Until(async () => !(await h.App.SnapshotAsync()).Rounds.Any(r => r.PositionId == "left") &&
                 (await h.App.SnapshotAsync()).Capacity!.ManagedExecutions == 0);
         }

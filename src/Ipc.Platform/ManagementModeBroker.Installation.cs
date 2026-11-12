@@ -18,7 +18,7 @@ public static partial class ManagementModeBroker
         var present = names.Where(n => File.Exists(Path.Combine(original, n))).ToArray(); if (present.Length == 0) return;
         if (present.Contains("MODE-CONFIGURED") && !present.Contains("management-mode.json") || present.Contains("PROVISIONED") && !present.Contains("administrators.json")) throw new InvalidDataException("原管理模式或历史凭据缺失，保留原根修复，不能创建新密码覆盖。");
         ProtectedDirectory(Path.GetDirectoryName(target)!, true); ProtectedDirectory(target, true);
-        if (names.Any(n => File.Exists(Path.Combine(target, n)))) throw new InvalidOperationException("恢复目标已有管理密码或历史凭据，不能覆盖；请核对原责任。");
+        if (names.Except(present).Any(n => File.Exists(Path.Combine(target, n)))) throw new InvalidOperationException("恢复目标有来源中不存在的管理凭据，不能覆盖；请核对原责任。");
         var inputs = new List<(string Name, FileStream Stream)>();
         try
         {
@@ -32,6 +32,14 @@ public static partial class ManagementModeBroker
             }
             foreach (var item in inputs)
             {
+                var targetFile = Path.Combine(target, item.Name);
+                if (File.Exists(targetFile))
+                {
+                    MachineRuntimePolicy.RequireProtectedEvidence(targetFile);
+                    if (Wire.FileHash(targetFile) != Wire.FileHash(Path.Combine(original, item.Name)))
+                        throw new InvalidDataException("恢复目标的原凭据与来源不同，不覆盖或重置密码。");
+                    continue; // Original copy completed before its result was lost.
+                }
                 using var output = new FileInfo(Path.Combine(target, item.Name)).Create(FileMode.CreateNew, FileSystemRights.FullControl, FileShare.None, 16384, FileOptions.WriteThrough, MachineRuntimeSetup.FileAcl(new("S-1-5-18")));
                 item.Stream.CopyTo(output); output.Flush(true);
             }

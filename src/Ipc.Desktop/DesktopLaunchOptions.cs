@@ -32,7 +32,10 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
         var ui = options.GetValueOrDefault("--ui", DefaultUi(applicationId));
         if (ui != DefaultUi(applicationId))
             throw new ArgumentException("此业务不支持指定UI：" + ui);
-        var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId);
+        // Selecting a maintenance root is not permission to start. Keep the
+        // authoritative root available when an original lifecycle is unfinished;
+        // the normal startup and runtime still require InstalledReady.
+        var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId, requireReady: false);
         return new(new(
             options.GetValueOrDefault("--config", installed?.ConfigurationDirectory ?? Path.Combine(AppContext.BaseDirectory, "config")),
             options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(WindowsStoragePaths.UserRoot, "data")),

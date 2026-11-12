@@ -30,6 +30,7 @@ static partial class Program
         try
         {
             var editor = await FirstConfigurationReady(first,busy,Check);
+            Check(Descendants(first).OfType<Button>().Any(b => AutomationProperties.GetAutomationId(b) == "Startup.OpenRestore" && b.IsVisible), "first configuration can open complete-backup restore before creating business data");
             var maintenanceField=type.GetField("maintenance",flags)!;
             var proxy=DispatchProxy.Create<IStartupMaintenance,FirstPreferenceMaintenanceProbe>();
             var probe=(FirstPreferenceMaintenanceProbe)(object)proxy;

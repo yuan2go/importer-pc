@@ -12,11 +12,19 @@ public sealed class DesktopRecoveryMigration : IDisposable
     readonly List<IDisposable> owners;
     string? registrationFile, registrationHash;
     bool disposed;
+    bool stoppedSource;
     public string? LedgerSha256 { get; }
     internal DesktopRecoveryMigration(DeploymentLocation source, string targetRoot, string? hash, Action verify, params ResourceLease[] owners)
     { this.source = source; this.targetRoot = Path.GetFullPath(targetRoot); LedgerSha256 = hash; this.verify = verify; this.owners = [.. owners]; }
     internal void HoldRegistration(FileStream owner, string file, string hash)
     { owners.Insert(0, owner); registrationFile = file; registrationHash = hash; }
+    internal void HoldStoppedSource(IDisposable owner) { owners.Insert(0, owner); stoppedSource = true; }
+    public void RequireStoppedSource(string application, string dataRoot)
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        if (!stoppedSource || source.ApplicationId != application || Path.GetFullPath(source.DataRoot) != Path.GetFullPath(dataRoot))
+            throw new InvalidOperationException("恢复接管没有持有原应用的真实停机所有权。");
+    }
     internal void RequireRegistration(string file, string hash)
     { ObjectDisposedException.ThrowIf(disposed, this); if (file != registrationFile || hash != registrationHash) throw new InvalidOperationException("Migration does not hold the reviewed registration"); }
     internal void Require(DeploymentLocation current, string target)
@@ -96,15 +104,18 @@ public static partial class WindowsDeploymentSetup
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var file = Registration(source.ApplicationId);
-        var owner = new FileStream(Path.Combine(MachineRoot, "deployments", source.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+        var stopped = source.ApplicationId == "sportmaster" ? new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), source.ApplicationId, source.DataRoot, default) : null;
+        FileStream? owner = null;
         try
         {
+            owner = new FileStream(Path.Combine(MachineRoot, "deployments", source.ApplicationId + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
             if (Wire.FileHash(file) != expectedRegistrationHash || Wire.Encode(Current(source.ApplicationId)) != Wire.Encode(source))
                 throw new InvalidOperationException("Reviewed deployment changed before migration; no business fence written");
             if (source.LifecycleState != "Installed") throw new InvalidOperationException("Only an installed deployment can begin data-root migration; no business fence written");
             var migration = DesktopRecoverySupervisor.HoldMigration(source, targetRoot);
+            if (stopped is not null) migration.HoldStoppedSource(stopped);
             migration.HoldRegistration(owner, file, expectedRegistrationHash); return migration;
         }
-        catch { owner.Dispose(); throw; }
+        catch { owner?.Dispose(); stopped?.Dispose(); throw; }
     }
 }

@@ -118,7 +118,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             if (!File.Exists(Path.Combine(directory, Id + ".db")) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(directory, n)).Any()))
                 throw new InvalidDataException("缺少业务库但存在原件；保留原根，不创建空库代替原责任");
             if (!File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json")))
-                ParcelMachineOrigin.EnsureNew(directory, seed);
+                ParcelMachineOrigin.EnsureNew(directory, seed, RestoreEvidence);
             overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
             if (overload != 0)
             {

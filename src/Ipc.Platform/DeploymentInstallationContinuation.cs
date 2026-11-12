@@ -19,7 +19,7 @@ public static partial class WindowsDeploymentSetup
         RequireCurrentInstallationRequest(request);
         if (request.ApplicationId != application || request.OperationId != operation ||
             root.GetProperty("RequestIdentity").GetString() != InstallationRequestIdentity(request) ||
-            !Path.IsPathFullyQualified(request.DataRoot) || request.SourceCommit.Length != 40 || !request.SourceCommit.All(char.IsAsciiHexDigit))
+            !Path.IsPathFullyQualified(request.DataRoot) || request.SourceCommit is not { Length: 40 } || !request.SourceCommit.All(char.IsAsciiHexDigit))
             throw new InvalidDataException("原安装请求与受保护操作身份不一致。");
         return request;
     }
@@ -70,8 +70,8 @@ public static partial class WindowsDeploymentSetup
             }
             var operation = Path.GetFileName(file)[(application.Length + ".setup-".Length)..^5];
             var request = ReadInstallationRequest(application, operation, json);
-            if (state == "Failed") continue; // A closed failed operation cannot own a later installation.
             var changePlan = document.RootElement.TryGetProperty("ChangePlanIdentity", out var change) ? change.GetString() : null;
+            if (state == "Failed" && current?.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = changePlan }))) continue;
             if (state == "Completed" && current?.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = changePlan }))) continue;
             var inspection = ProjectInstallation(request, json, current);
             var item = new InstallationContinuation(request, inspection, file);

@@ -143,6 +143,21 @@ public static partial class WindowsDeploymentSetup
         return new(actual.OperationId, "Completed", "已切换到上一版本；原数据和请求事实保留，未启动作业或设备。", file);
     }
 
+    [SupportedOSPlatform("windows")]
+    public static DeploymentRollbackReceipt RecordUnstartedRollback(DeploymentRollbackPlan reviewed, string failure)
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        var app = reviewed.Current.ApplicationId;
+        using var owner = new FileStream(Path.Combine(MachineRoot, "deployments", app + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        var file = RollbackFile(app, reviewed.OperationId);
+        if (File.Exists(file)) throw new InstallationOutcomeUnknownException("原回滚记录已存在，核对原结果，不补写未开始。");
+        var actual = PlanRollbackCore(app, reviewed.OperationId);
+        if (!actual.Allowed || actual.Identity != reviewed.Identity) throw new InstallationOutcomeUnknownException("准备失败后部署状态变化，原回滚结果待核实。");
+        var target = actual.Target! with { LifecycleOperation = file, DeploymentPlanIdentity = actual.Identity };
+        WriteProtected(file, new DeploymentRollbackRecord(1, "NotCommitted", DateTimeOffset.UtcNow, actual, target), new SecurityIdentifier(actual.Current.RuntimeAccountSid));
+        return new(actual.OperationId, "NotCommitted", "准备未完成，尚未调用程序切换。原部署保留；备份残件及维护回执保管。原因：" + failure, file) { ClosedWithoutCommit = true };
+    }
+
     internal static void ApplyRollback(DeploymentRollbackRecord prepared, Func<(DeploymentLocation Location, string Hash)> observe,
         Action<DeploymentLocation> commitRegistration, Action<DeploymentRollbackRecord> save,
         Action<DeploymentLocation> repairProjection)
@@ -204,6 +219,7 @@ public static partial class WindowsDeploymentSetup
     public static void RequireInstalledReady(DeploymentLocation location)
     {
         RequireNoUnresolvedRemoval(location.ApplicationId);
+        if (location.ApplicationId == "sportmaster") RequireNoUnresolvedRestore(location.ApplicationId);
         if (location.LifecycleOperation is null) return;
         var name = Path.GetFileNameWithoutExtension(location.LifecycleOperation);
         var prefix = location.ApplicationId + ".rollback-";
@@ -221,6 +237,7 @@ public static partial class WindowsDeploymentSetup
 
     static void RequireNoUnresolvedLifecycle(string application)
     {
+        if (application == "sportmaster") RequireNoUnresolvedRestore(application);
         RequireNoUnresolvedRemoval(application);
         RequireNoUnresolvedPruning(application);
         var removed = RemovedRollbackOperations(application);

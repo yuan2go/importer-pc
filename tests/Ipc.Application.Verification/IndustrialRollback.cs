@@ -14,7 +14,7 @@ static class IndustrialRollback
         { try { action(); } catch (T) { Check(true, message); return; } throw new Exception("Expected " + typeof(T).Name + ": " + message); }
         var files = new Dictionary<string, string> { ["Ipc.Own.dll"] = new string('a', 64), ["native/vendor.dll"] = new string('b', 64) };
         var release = new ApplicationRelease(2, "sportmaster", new string('a', 40), [], [], files, "1.2.0", CompatibilitySha256: new string('c', 64));
-        var compatibility = new DeploymentRuntimeCompatibility(1, 12, 3, 2, 3, 1, 4, "1.0.0", release.CompatibilitySha256!, DeploymentRuntimeCompatibility.DependencyHash(files));
+        var compatibility = new DeploymentRuntimeCompatibility(1, ParcelRepository.CurrentStorageVersion, 3, 2, 3, 1, DeploymentRuntimeCompatibility.CurrentLifecycleProtocol, "1.0.0", release.CompatibilitySha256!, DeploymentRuntimeCompatibility.DependencyHash(files));
         compatibility.Validate(release);
         var currentSmBuild = release with { BusinessVersion = "1.0.0" };
         Check(WindowsDeploymentSetup.RollbackVersionAllowed("sportmaster", currentSmBuild, currentSmBuild with { SourceCommit = new string('b', 40) }), "two fixed 1.0.0 SM builds may switch back to the registered previous source");

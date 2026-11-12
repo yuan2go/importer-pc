@@ -44,6 +44,7 @@ public partial class SupplyStationWindow
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);
         actions.Children.Add(ProductButton("离线维护…", RequestOfflineMaintenance)); body.Children.Add(actions);
+        actions.Children.Add(ProductButton("恢复本站核对…", () => OpenProductTool(MaintenanceTool.RestoreHandoff)));
         return body;
     }
     async Task CreateProductBackup()

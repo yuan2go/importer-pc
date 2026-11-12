@@ -80,7 +80,11 @@ public sealed partial class ParcelRuntime
     }
 }
 
-public sealed record ParcelRecoveryCapacity(long CopyBytes, long MinimumFreeBytes, long AvailableBytes, long RemainingGrowthBytes, bool Fits);
+public sealed record ParcelRecoveryCapacity(long CopyBytes, long MinimumFreeBytes, long AvailableBytes, long RemainingGrowthBytes, bool Fits)
+{
+    public string State { get; init; } = "Planned";
+    public string? RetainedPartialDirectory { get; init; }
+}
 internal static class ParcelStorageVolume
 {
     public static ParcelRecoveryCapacity Plan(string destination, long copyBytes, long reserve)

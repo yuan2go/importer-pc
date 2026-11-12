@@ -267,13 +267,18 @@ public static partial class ParcelStartupServices
                         if (new FileInfo(proofFile).Length > 65536) throw new InvalidDataException("交接证据超出预算");
                         var committedProof = Wire.Decode<StartupRestoreHandoff>(File.ReadAllText(proofFile));
                         if (originalDeployment.RestoreHandoffHash != Wire.Hash(Wire.Encode(committedProof)) || committedProof.BackupIdentity != request.ExpectedHash ||
-                            !File.Exists(Path.Combine(committedProof.SourceDirectory, "MIGRATION-SOURCE-FENCED.json")) || Wire.FileHash(proofFile) != Wire.FileHash(Path.Combine(committedProof.SourceDirectory, "MIGRATION-SOURCE-FENCED.json")))
+                            committedProof.TargetDirectory != Path.GetDirectoryName(proofFile))
                             throw new InvalidDataException("登记已指向新根但交接身份不符；保留隔离，不重复迁移");
+                        _ = ParcelRestoreEvidence.Require(Path.GetDirectoryName(proofFile)!, restoredSeed, RestoreMachineEvidence.For(restoredSeed));
+                        if (WindowsDeploymentSetup.RestoreCommitStatus(ApplicationId, committedProof.Id) == "ProjectionPending")
+                            WindowsDeploymentSetup.RepairRestoreCommit(ApplicationId, committedProof.Id, request.ExpectedHash!);
                         break; // Previous commit succeeded; receipt loss must not create a second handoff.
                     }
                     using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!);
-                    await Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true).AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>
-                    { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); WindowsDeploymentSetup.SwitchDataRoot(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), recoveryMigration); return Task.CompletedTask; });
+                    var restoreCore = Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true);
+                    var routingSeed = restoreCore.RestoredSeed(request.Destination!, request.ExpectedHash!);
+                    await restoreCore.AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>
+                    { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); WindowsDeploymentSetup.CommitRestore(ApplicationId, request.ChangePlanIdentity!, request.Destination!, Wire.Hash(Wire.Encode(proof)), proof.Id, routingSeed, recoveryMigration); return Task.CompletedTask; }, recoveryMigration);
                     break;
                 }
             case "RepairSystem":
@@ -531,6 +536,7 @@ public static partial class ParcelStartupServices
         void RequireManagementMode() => LocalManagementMode.ForRoot(launch.DataRoot).Require();
         public Task<StartupClassification> ClassifyAsync() => core.ClassifyAsync();
         public Task<StartupMaintenanceDocument> ReadAsync() => core.ReadAsync();
+        public Task<StartupRecoveryPreview[]> ReadRestoreOperationsAsync() => core.ReadRestoreOperationsAsync();
         public async Task AdoptRestoreAsync(string backup, string restoredDataRoot, string expectedBackupHash, string expectedRegistrationHash)
         {
             RequireManagementMode();

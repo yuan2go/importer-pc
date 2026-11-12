@@ -150,6 +150,50 @@ static partial class Program
             CaptureInternal(evidence, "installer-continuation-" + status, resumed, lines); resumed.Close();
         }
         Check(continuationCalls == 2, "reopened operations perform only one original closure and one successful original repair");
+        var rollbackType = type.Assembly.GetType("Ipc.Desktop.StartupRollbackWindow", true)!;
+        var authority = new LifecycleAuthority();
+        var rollback = (Window)Activator.CreateInstance(rollbackType, [authority])!;
+        rollbackType.GetProperty("LastOperation", flags)!.SetValue(rollback, (Func<string?>)(() => null));
+        rollback.Show(); await Idle(rollback);
+        var pending = new TaskCompletionSource<DeploymentRollbackReceipt>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var rollbackId = Wire.Id(); var executions = 0; var repairCalls = 0;
+        var rollbackPlan = new DeploymentRollbackPlan(Wire.Hash("plan"), rollbackId, Wire.Hash("registration"), installed,
+            installed with { SourceCommit = new string('b', 40), ReleaseRoot = "D:/synthetic/releases/previous-12345678" }, true, "verified current format", "1.0.0", "1.0.0");
+        rollbackType.GetField("reviewed", flags)!.SetValue(rollback, new StartupRollbackReview(rollbackPlan, new("business", "Rollback", true, "historical Unknown retained", "config", "D:/synthetic/before.db")));
+        rollbackType.GetField("frozenBackup", flags)!.SetValue(rollback, "D:/synthetic/before.db");
+        ((TextBox)rollbackType.GetField("destination", flags)!.GetValue(rollback)!).Text = "D:/synthetic/before.db";
+        // Editing invalidates a review; install the controlled review afterward.
+        rollbackType.GetField("reviewed", flags)!.SetValue(rollback, new StartupRollbackReview(rollbackPlan, new("business", "Rollback", true, "historical Unknown retained", "config", "D:/synthetic/before.db")));
+        rollbackType.GetProperty("ExecuteRollback", flags)!.SetValue(rollback,
+            (Func<StartupRollbackReview, string, IProgress<MaintenanceProgress>?, CancellationToken, Task<DeploymentRollbackReceipt>>)((review, _, _, _) =>
+            { executions++; Check(review.Deployment.OperationId == rollbackId, "rollback executes the frozen original identity"); return pending.Task; }));
+        Button RollbackButton(string id) => Descendants(rollback).OfType<Button>().Single(b => System.Windows.Automation.AutomationProperties.GetAutomationId(b) == "Rollback." + id);
+        rollbackType.GetMethod("UpdateActions", flags)!.Invoke(rollback, null);
+        RollbackButton("Execute").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+        await WaitUntil(() => executions == 1, "native rollback starts one managed operation");
+        RollbackButton("Execute").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+        rollback.Close(); Check(rollback.IsVisible && executions == 1, "busy rollback prevents duplicate switch and closing before original result");
+        pending.SetResult(new(rollbackId, "CommittedNeedsSystemRepair", "original registration committed", "D:/synthetic/original-rollback.json")); await Idle(rollback);
+        rollbackType.GetProperty("InspectRollback", flags)!.SetValue(rollback,
+            (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<DeploymentRollbackReceipt>>)((id, repair, _, _) =>
+            { Check(id == rollbackId, "original rollback inspection retains identity"); if (repair && ++repairCalls == 1) throw new IOException("synthetic projection failure"); return Task.FromResult(new DeploymentRollbackReceipt(id, repair ? "Completed" : "CommittedNeedsSystemRepair", "original result", "D:/synthetic/original-rollback.json")); }));
+        RollbackButton("Repair").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(rollback);
+        Check(rollback.IsVisible && RollbackButton("Inspect").IsVisible && executions == 1, "failed projection repair retains inspectable original and no duplicate switch");
+        RollbackButton("Repair").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(rollback);
+        Check(repairCalls == 2 && executions == 1, "retry only repairs the original system entry");
+        rollback.Height = 440; rollback.UpdateLayout(); CaptureInternal(evidence, "rollback-original-result", rollback, lines);
+        authority.Active = false;
+        RollbackButton("Close").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(rollback);
+        Check(!rollback.IsVisible, "management expiry does not prevent closing the original rollback window");
         lines.Add("BOUNDARY actual WPF HWND/Dispatcher; synthetic installation and launch callbacks. Real token and protected lifecycle are separate Windows checks; no device/UAC dialog was automated.");
+    }
+    sealed class LifecycleAuthority : IManagementMode
+    {
+        public bool Active = true;
+        public Task<ManagementModeStatus> ManagementModeStatusAsync() => Task.FromResult(new ManagementModeStatus(true, Active, DateTimeOffset.UtcNow.AddMinutes(5)));
+        public Task ConfigureManagementPasswordAsync(string _) => throw new NotSupportedException();
+        public Task<bool> EnterManagementModeAsync(string _) => throw new NotSupportedException();
+        public Task ExitManagementModeAsync() { Active = false; return Task.CompletedTask; }
+        public Task ChangeManagementPasswordAsync(string _) => throw new NotSupportedException();
     }
 }

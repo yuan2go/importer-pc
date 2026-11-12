@@ -105,20 +105,8 @@ public sealed partial class ParcelStartupMaintenance
 public sealed partial class ParcelRuntime
 {
     bool RestoreConfirmed => !File.Exists(Path.Combine(directory!, "RESTORED-ISOLATED.json")) || RestoreConfirmationValid();
-    bool RestoreConfirmationValid()
-    {
-        var file = Path.Combine(directory!, "RESTORE-CONFIRMED.json");
-        if (!File.Exists(file)) return false;
-        try
-        {
-            var proof = ReadRestoreHandoff();
-            var json = File.ReadAllText(file);
-            var confirmation = Wire.Decode<RestoreConfirmation>(json);
-            return confirmation.HandoffId == proof.Id && confirmation.VerifiedRequestIdHighWater >= proof.MinimumIntegrationId && repository?.HasRestoreConfirmation(proof.Id, Wire.Hash(json)) == true;
-        }
-        catch (Exception error) when (error is IOException or InvalidDataException or System.Text.Json.JsonException or UnauthorizedAccessException) { return false; }
-    }
-    sealed record RestoreConfirmation(string HandoffId, string Actor, string Reason, DateTimeOffset At, long VerifiedRequestIdHighWater);
+    bool RestoreConfirmationValid() => ParcelRestoreEvidence.ConfirmationValid(directory!, ReadRestoreHandoff,
+        (id, hash) => repository?.HasRestoreConfirmation(id, hash) == true);
     internal RestoreMachineEvidence? RestoreEvidence { get; set; }
     StartupRestoreHandoff ReadRestoreHandoff() => ParcelRestoreEvidence.Require(directory!, Effective, RestoreEvidence ?? RestoreMachineEvidence.For(Effective));
     void ConfirmRestore(BusinessCommand command)
@@ -144,7 +132,7 @@ public sealed partial class ParcelRuntime
             throw new InvalidOperationException("协议请求编号已耗尽，不能确认启用；原账与隔离状态保留，需核对真实 RCS 编号责任。");
         using var sourceOwner = proof.PurgedSource is null ? new ResourceLease(proof.SourceDirectory, ["application-owner"]) : null;
         repository.AdmitCommand(command);
-        var confirmation = new RestoreConfirmation(proof.Id, ManagementEvidence!.AuditActor, reason, DateTimeOffset.UtcNow, input.VerifiedRequestIdHighWater);
+        var confirmation = new ParcelRestoreEvidence.Confirmation(proof.Id, ManagementEvidence!.AuditActor, reason, DateTimeOffset.UtcNow, input.VerifiedRequestIdHighWater);
         ExtensionStore.AtomicWrite(Path.Combine(directory!, "RESTORE-CONFIRMED.json"), confirmation);
         repository!.Commit(null, "RestoreHandoffConfirmed", Wire.Encode(new { HandoffId = proof.Id, ConfirmationHash = Wire.Hash(Wire.Encode(confirmation)), Actor = confirmation.Actor, Reason = reason, confirmation.VerifiedRequestIdHighWater }), paused: true, command: command,
             restoreFloor: new RestoreNumberFloor(proof.Id, input.VerifiedRequestIdHighWater));
@@ -154,7 +142,7 @@ public sealed partial class ParcelRepository
 {
     internal static string HandoffDatabaseIdentity(string database, IReadOnlySet<string>? omitRows = null)
     {
-        using var db = new Microsoft.Data.Sqlite.SqliteConnection(new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder { DataSource = new Uri(Path.GetFullPath(database)).AbsoluteUri + "?immutable=1", Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); db.Open();
+        using var db = OpenHandoffSnapshot(database);
         using var tx = db.BeginTransaction(deferred: true);
         using var hash = System.Security.Cryptography.IncrementalHash.CreateHash(System.Security.Cryptography.HashAlgorithmName.SHA256);
         void Add(string value) { var bytes = System.Text.Encoding.UTF8.GetBytes(value); hash.AppendData(BitConverter.GetBytes(bytes.Length)); hash.AppendData(bytes); }
@@ -176,9 +164,10 @@ public sealed partial class ParcelRepository
         }
         return Convert.ToHexString(hash.GetHashAndReset());
     }
-    internal bool HasRestoreConfirmation(string id, string hash)
+    internal bool HasRestoreConfirmation(string id, string hash) => HasRestoreConfirmation(db, id, hash);
+    internal static bool HasRestoreConfirmation(Microsoft.Data.Sqlite.SqliteConnection connection, string id, string hash)
     {
-        using var c = db.CreateCommand(); c.CommandText = "SELECT 1 FROM parcel_audit WHERE event='RestoreHandoffConfirmed' AND json_valid(detail) AND json_extract(detail,'$.HandoffId')=$id AND json_extract(detail,'$.ConfirmationHash')=$hash ORDER BY seq DESC LIMIT 1";
+        using var c = connection.CreateCommand(); c.CommandText = "SELECT 1 FROM parcel_audit WHERE event='RestoreHandoffConfirmed' AND json_valid(detail) AND json_extract(detail,'$.HandoffId')=$id AND json_extract(detail,'$.ConfirmationHash')=$hash ORDER BY seq DESC LIMIT 1";
         c.Parameters.AddWithValue("$id", id); c.Parameters.AddWithValue("$hash", hash); return c.ExecuteScalar() is not null;
     }
 }

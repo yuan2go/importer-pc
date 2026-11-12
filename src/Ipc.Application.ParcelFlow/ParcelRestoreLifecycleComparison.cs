@@ -69,9 +69,15 @@ public sealed partial class ParcelRepository
             double.IsFinite(after.GetDouble(4)) && after.GetDouble(4) >= before.GetDouble(4) && closedElapsed >= after.GetDouble(4) &&
             after.GetInt64(5) is 0 or 1 && after.GetInt64(5) >= before.GetInt64(5) && DateTimeOffset.TryParse(after.GetString(6), out _));
     }
-    static SqliteConnection OpenHandoffSnapshot(string database)
+    internal static SqliteConnection OpenHandoffSnapshot(string database)
     {
-        var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = new Uri(Path.GetFullPath(database)).AbsoluteUri + "?immutable=1", Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
+        // Callers hold a stable private maintenance DB/WAL copy, or a verified
+        // standalone backup. Immutable omits committed WAL facts, so use normal
+        // read-only recovery when a WAL exists. Any SHM belongs only to the copy;
+        // a standalone backup must not acquire side files during inspection.
+        database = Path.GetFullPath(database);
+        var source = File.Exists(database + "-wal") ? database : new Uri(database).AbsoluteUri + "?immutable=1";
+        var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = source, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
         try { db.Open(); return db; } catch { db.Dispose(); throw; }
     }
 }

@@ -2,6 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.Sportmaster;
 using Ipc.Platform;
+using Microsoft.Data.Sqlite;
 
 static class LifecycleRestore
 {
@@ -71,6 +72,10 @@ static class LifecycleRestore
         Check((await service.ReadRestoreOperationsAsync()).Single().State == "AdoptedIsolated" && calls == 1, "positive committed original returns its result without another handoff");
         Check(ParcelRepository.HandoffDatabaseIdentity(backup) == originalHash, "all copy and handoff attempts preserve original backup database facts");
         var restoredLaunch = h.Launch with { DataRoot = targetRoot };
+        await using var restoredMaintenance = new ParcelStartupMaintenance(restoredLaunch, new SportmasterFlow(), () => new CommercialProductization.SyntheticFactory(restoredLaunch), () => { })
+        { RestoreEvidence = evidence with { RequireRegistration = true }, MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "restored-inspection-" + Wire.Id())).FullName };
+        Check(!(await restoredMaintenance.PlanChangeAsync("Rollback", Path.Combine(root, "before-unconfirmed-rollback.db"))).Allowed,
+            "actual offline rollback remains blocked before restored external responsibility is confirmed");
         var restoredFactory = new CommercialProductization.SyntheticFactory(restoredLaunch);
         await using (var restored = new ParcelRuntime(restoredLaunch, new SportmasterFlow(), restoredFactory)
         { RuntimeIdentityPreflight = () => { }, RestoreEvidence = evidence with { RequireRegistration = true } })
@@ -115,6 +120,22 @@ static class LifecycleRestore
             Check(!(await reopened.SnapshotAsync()).Paused && reopenedFactory.Sends == 0,
                 "a verified and explicitly resumed restored station reopens normally without replay or another forced restore confirmation");
         }
+        var rollbackBackup = Path.Combine(root, "before-confirmed-rollback.db");
+        var restoredReview = await restoredMaintenance.PlanChangeAsync("Rollback", rollbackBackup);
+        Check(restoredReview.Allowed, "actual offline rollback admits the confirmed, explicitly enabled and normally stopped restored station without deleting its custody markers");
+        var switched = false;
+        await restoredMaintenance.ExecuteChangeAsync(restoredReview.Identity, "Rollback", rollbackBackup, () => { switched = true; return Task.CompletedTask; });
+        Check(switched && ParcelRecovery.VerifyBackup(rollbackBackup).Application == c.ApplicationId,
+            "confirmed restore can complete the actual rollback backup and guarded program-switch callback");
+        var confirmationFile = Path.Combine(preview.Destination, "RESTORE-CONFIRMED.json"); var confirmationBytes = File.ReadAllBytes(confirmationFile);
+        var changedConfirmation = System.Text.Json.Nodes.JsonNode.Parse(confirmationBytes)!;
+        changedConfirmation["Reason"] = "same handoff and floor, no matching committed audit";
+        File.WriteAllText(confirmationFile, changedConfirmation.ToJsonString());
+        Check(!(await restoredMaintenance.PlanChangeAsync("Rollback", Path.Combine(root, "before-unverified-marker.db"))).Allowed,
+            "a well-formed confirmation with the original handoff and floor but no matching transaction cannot release the restored rollback guard");
+        File.WriteAllBytes(confirmationFile, confirmationBytes);
+        Check((await restoredMaintenance.PlanChangeAsync("Rollback", Path.Combine(root, "before-reverified-rollback.db"))).Allowed,
+            "restoring the exact committed confirmation permits a fresh legal rollback review after rejection");
 
         var machine = Path.Combine(root, "controlled-machine"); Directory.CreateDirectory(Path.Combine(machine, "deployments"));
         var retired = intent.Source with { LifecycleState = "RemovedDataRetained" };
@@ -180,8 +201,81 @@ static class LifecycleRestore
             repo.Commit(null, "RestoreHandoffConfirmed", "lower repeat", command: confirm with { Id = Wire.Id(), ExpectedRevision = repo.Revision }, restoreFloor: new(proof.Id, 1));
             Check(repo.IntegrationRequestIdFloor() == 900000000000000000, "repeated lower proof never lowers permanent numbering");
         }
+        await WalSourceChecks(workspace, Path.Combine(root, "wal-source-custody"), Check);
         CommitInterruptions(root, Check);
         Console.WriteLine("RESTORE checks=" + checks + "; real SQLite/copy/handoff and controlled machine boundary; real registry/SCM/UAC/reboot NOT_RUN");
+    }
+    static async Task WalSourceChecks(string workspace, string root, Action<bool, string> check)
+    {
+        // Capture a real committed DB/WAL pair before the writer closes. Restore
+        // those isolated fixture bytes after close to reproduce a lost process,
+        // without killing or checkpointing any installed application.
+        foreach (var numberFact in new[] { false, true })
+        {
+            var area = Path.Combine(root, numberFact ? "number" : "audit"); Directory.CreateDirectory(area);
+            using var h = new RestoreHarness(workspace, area); var c = h.Configuration;
+            await using (var app = new ParcelRuntime(h.Launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(h.Launch)) { RuntimeIdentityPreflight = () => { } })
+                await app.StartAsync(default);
+            await using var service = h.Service();
+            var backup = Path.Combine(area, "before.db"); await service.BackupAsync(backup);
+            var source = Path.Combine(h.Launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
+            var database = Path.Combine(source, c.ApplicationId + ".db");
+            byte[] ReadOpen(string file)
+            {
+                using var input = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var bytes = new MemoryStream(); input.CopyTo(bytes); return bytes.ToArray();
+            }
+            var mainHash = Wire.FileHash(database); byte[] main, wal;
+            using (var repo = new ParcelRepository(source, c.ApplicationId))
+            {
+                if (numberFact)
+                {
+                    var handoff = Wire.Id();
+                    repo.Commit(null, "RestoreHandoffConfirmed", "new permanent floor after backup",
+                        command: new(Wire.Id(), repo.Revision, "ConfirmRestore", handoff, "controlled external confirmation"), restoreFloor: new(handoff, 900000000000000000));
+                }
+                else repo.Commit(null, "ExternalFactAfterBackup", "committed responsibility must not disappear");
+                main = ReadOpen(database); wal = ReadOpen(database + "-wal");
+                check(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(main)) == mainHash && wal.Length > 32, "new " + (numberFact ? "permanent number" : "audit fact") + " is committed only in WAL, not the old main database");
+            }
+            File.WriteAllBytes(database, main); File.WriteAllBytes(database + "-wal", wal);
+            var originals = new[] { database, database + "-wal", Path.Combine(source, "configuration.json"), Path.Combine(h.Launch.ConfigurationDirectory, "business.json") }
+                .ToDictionary(file => file, file => Wire.FileHash(file));
+            var targetRoot = Path.Combine(area, "isolated"); var preview = await service.PlanRestoreAsync(backup, targetRoot);
+            var deployed = new DeploymentLocation(c.ApplicationId, new string('a', 40), Path.Combine(area, "program"), h.Launch.ConfigurationDirectory, h.Launch.DataRoot, "synthetic");
+            var intent = WindowsDeploymentSetup.NewRestoreIntent(deployed, backup, preview.BackupSha256, targetRoot, preview.Destination);
+            var leaseRoot = Directory.CreateDirectory(Path.Combine(area, "leases")).FullName;
+            service.RestoreIntentReader = () => [intent];
+            service.RestoreIntentWriter = (_, _, _, _) => new(intent, new ResourceLease(leaseRoot, ["restore-writer"]), new StoppedApplicationOwnership(leaseRoot, c.ApplicationId, h.Launch.DataRoot, default));
+            service.RestoreEvidence = new(() => Wire.Hash("test-machine"), _ => deployed, _ => throw new Exception("No purge expected"), (_, _, _, _) => throw new Exception("No purge expected")) { RequireRegistration = false };
+            await service.RestoreAsync(backup, preview.Destination, preview.BackupSha256);
+            var committed = false; var refused = false;
+            using (var migration = h.Own(deployed, targetRoot, leaseRoot))
+            {
+                try { await service.AdoptRestoreOwnedAsync(backup, targetRoot, preview.BackupSha256, _ => { committed = true; return Task.CompletedTask; }, migration); }
+                catch (InvalidDataException) { refused = true; }
+            }
+            check(refused && !committed && !File.Exists(Path.Combine(source, "MIGRATION-SOURCE-FENCED.json")) && !File.Exists(Path.Combine(preview.Destination, "restore-handoff.json")),
+                "actual maintenance copy and adoption reject the older backup before fencing or committing when newer " + (numberFact ? "numbers" : "audit facts") + " exist only in WAL");
+            check(originals.All(p => Wire.FileHash(p.Key) == p.Value) && !File.Exists(database + "-shm"), "WAL rejection leaves the original DB/WAL/configuration byte exact and never opens it with SQLite");
+            var newer = Path.Combine(area, "current.db"); await service.BackupAsync(newer);
+            check(ParcelRepository.HandoffDatabaseIdentity(newer) != ParcelRepository.HandoffDatabaseIdentity(backup) && originals.All(p => Wire.FileHash(p.Key) == p.Value),
+                "normal offline backup can still preserve the complete newer WAL facts without changing the original");
+        }
+        var legal = Directory.CreateDirectory(Path.Combine(root, "legal-close")).FullName;
+        var old = Path.Combine(root, "open.db"); var snapshot = Path.Combine(root, "closed-wal.db");
+        using (var repo = new ParcelRepository(legal, "sportmaster"))
+        {
+            repo.OpenStationShift(Guid.NewGuid(), TimeProvider.System, DateTimeOffset.UtcNow, TimeProvider.System.GetTimestamp());
+            using (var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(legal, "sportmaster.db"), Pooling = false }.ToString()))
+            { db.Open(); using var q = db.CreateCommand(); q.CommandText = "PRAGMA wal_checkpoint(TRUNCATE)"; q.ExecuteNonQuery(); }
+            repo.Backup(old); repo.CloseStationShift(true);
+            File.Copy(Path.Combine(legal, "sportmaster.db"), snapshot); File.Copy(Path.Combine(legal, "sportmaster.db-wal"), snapshot + "-wal");
+        }
+        var originalBytes = Wire.FileHash(snapshot); var originalWal = Wire.FileHash(snapshot + "-wal");
+        ParcelRepository.RequireHandoffSourceEquivalent(snapshot, old);
+        check(Wire.FileHash(snapshot) == originalBytes && Wire.FileHash(snapshot + "-wal") == originalWal,
+            "normal shift closure only in WAL remains a legal source and both files stay unchanged");
     }
     static void CommitInterruptions(string root, Action<bool, string> check)
     {

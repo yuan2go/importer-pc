@@ -25,6 +25,18 @@ internal sealed record RestoreMachineEvidence(Func<string> PolicyIdentity, Func<
 
 internal static class ParcelRestoreEvidence
 {
+    internal sealed record Confirmation(string HandoffId, string Actor, string Reason, DateTimeOffset At, long VerifiedRequestIdHighWater);
+    internal static bool ConfirmationValid(string directory, Func<StartupRestoreHandoff> readHandoff, Func<string, string, bool> committed)
+    {
+        var file = Path.Combine(directory, "RESTORE-CONFIRMED.json");
+        if (!File.Exists(file)) return false;
+        try
+        {
+            var proof = readHandoff(); var json = Read(file); var confirmation = Wire.Decode<Confirmation>(json);
+            return confirmation.HandoffId == proof.Id && confirmation.VerifiedRequestIdHighWater >= proof.MinimumIntegrationId && committed(proof.Id, Wire.Hash(json));
+        }
+        catch (Exception error) when (error is IOException or InvalidDataException or System.Text.Json.JsonException or UnauthorizedAccessException) { return false; }
+    }
     internal static string Read(string file)
     {
         RecoveryFiles.RequireOrdinaryAncestors(file);

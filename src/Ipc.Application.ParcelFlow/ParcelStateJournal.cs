@@ -121,7 +121,7 @@ public sealed partial class ParcelRuntime
                     Configured = !ParcelConnectionSetup.IsDeferred(Effective, p.ReaderDeviceId),
                     Suspended = p.CameraConnectionSuspended,
                     DecodePolicy = p.SupplyControl?.Mode == StationPositionMode.Disabled ? "Disabled" : ManagementWorkspaceOpen ? "ManagementExplicitReadOnly" :
-                        CameraDraining(p.ReaderDeviceId) ? "EmptyTrayConfirmation" :
+                        p.SupplyControl?.Mode == StationPositionMode.Disabling ? "CurrentRequestDrainPreviewOnly" :
                         AutomaticCameraReadsAllowed(p.ReaderDeviceId) ? "Automatic" : "RcsUnavailablePreviewOnly"
                 },
                 VehicleNumber = p.Vehicle?.VehicleNo,

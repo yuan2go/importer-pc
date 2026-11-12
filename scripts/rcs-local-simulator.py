@@ -22,13 +22,43 @@ def main():
     if not args.data_root.is_absolute():
         raise ValueError('An explicit absolute private data root is required')
     root.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(root / 'simulator.sqlite', check_same_thread=False)
-    db.executescript('''CREATE TABLE IF NOT EXISTS requests (
+    database = root / 'simulator.sqlite'
+    existing = database.exists()
+    db = sqlite3.connect(database, check_same_thread=False)
+    if existing and db.execute('PRAGMA user_version').fetchone()[0] != 1:
+        db.close()
+        raise ValueError('Unsupported simulator ledger; keep the original and use a new data root')
+    db.executescript('''BEGIN;
+        CREATE TABLE IF NOT EXISTS requests (
         id INTEGER PRIMARY KEY AUTOINCREMENT, request_id INTEGER, received TEXT,
-        sha256 TEXT, body TEXT, response TEXT, mode TEXT);
+        sha256 TEXT, body TEXT, response TEXT, mode TEXT,
+        UNIQUE(request_id));
         CREATE TABLE IF NOT EXISTS assignments (
-        barcode TEXT PRIMARY KEY, task TEXT NOT NULL, chute TEXT NOT NULL);''')
+        request_id INTEGER, item_index INTEGER, barcode TEXT NOT NULL, bcr TEXT NOT NULL,
+        vehicle TEXT NOT NULL, next_vehicle TEXT NOT NULL, task TEXT NOT NULL, chute TEXT NOT NULL,
+        PRIMARY KEY(request_id,item_index));
+        CREATE TABLE IF NOT EXISTS vehicles (
+        bcr TEXT PRIMARY KEY, agv TEXT NOT NULL, prefix TEXT NOT NULL, sequence INTEGER NOT NULL,
+        status TEXT NOT NULL);
+        PRAGMA user_version=1;
+        COMMIT;''')
     lock = threading.Lock()
+    vehicle_file = root / 'vehicles.json'
+    seeds = json.loads(vehicle_file.read_text(encoding='utf-8-sig')) if vehicle_file.exists() else {}
+
+    def vehicle_for(bcr):
+        if not isinstance(bcr, str) or not bcr or len(bcr) > 256:
+            raise ValueError('bcrCode required')
+        row = db.execute('SELECT agv,prefix,sequence,status FROM vehicles WHERE bcr=?', (bcr,)).fetchone()
+        if row is None:
+            seed = seeds.get(bcr, {})
+            agv = seed.get('agvNo', 'SIM-AGV-' + hashlib.sha256(bcr.encode()).hexdigest()[:12] + '-0001')
+            prefix, _, suffix = agv.rpartition('-')
+            sequence = int(suffix) if suffix.isdigit() else 1
+            prefix = prefix if suffix.isdigit() else agv
+            row = (agv, prefix, sequence, seed.get('status', 'IDLE'))
+            db.execute('INSERT INTO vehicles VALUES(?,?,?,?,?)', (bcr, *row))
+        return row
 
     class Handler(BaseHTTPRequestHandler):
         protocol_version = 'HTTP/1.1'
@@ -76,15 +106,17 @@ def main():
                 if mode not in ('assigned', 'timeout', 'reject', 'wrong-id', 'malformed'):
                     raise ValueError('unsupported simulation mode')
                 response = dict(requestId=request_id + (1 if mode == 'wrong-id' else 0), result=[])
-                vehicle_file = root / 'vehicles.json'
-                vehicles = json.loads(vehicle_file.read_text()) if vehicle_file.exists() else {}
-                with lock:
-                    prior = db.execute('SELECT sha256 FROM requests WHERE request_id=? LIMIT 1', (request_id,)).fetchone()
+                items = request['data']
+                if not isinstance(items, list) or len(items) > 64 or len({item['index'] for item in items}) != len(items):
+                    raise ValueError('bounded data with distinct indexes required')
+                conflict = False
+                with lock, db:
+                    prior = db.execute('SELECT sha256,response,mode FROM requests WHERE request_id=?', (request_id,)).fetchone()
                     digest = hashlib.sha256(raw).hexdigest()
-                    if prior and prior[0] != digest:
-                        self.send(409, {'error': 'request-id-payload-conflict'})
-                        return
-                    for item in request['data']:
+                    if prior:
+                        conflict = prior[0] != digest
+                        response, mode = json.loads(prior[1]), prior[2]
+                    for item in items if not prior else []:
                         command = item['command']
                         params = item['params']
                         data = None
@@ -92,27 +124,35 @@ def main():
                             barcode = params['loadCode']
                             if not isinstance(barcode, str) or not barcode or len(barcode) > 4096 or params['quantity'] != 1:
                                 raise ValueError('invalid barcode/quantity')
-                            assigned = db.execute('SELECT task,chute FROM assignments WHERE barcode=?', (barcode,)).fetchone()
-                            if assigned is None and mode != 'reject':
+                            bcr = params['bcrCode']
+                            vehicle, prefix, sequence, _ = vehicle_for(bcr)
+                            if mode != 'reject':
                                 count = db.execute('SELECT count(*) FROM assignments').fetchone()[0] + 1
                                 assigned = (f'SIM-TASK-{count:06d}', f'SIM-CHUTE-{(count - 1) % 6 + 1:02d}')
-                                db.execute('INSERT INTO assignments VALUES(?,?,?)', (barcode, *assigned))
-                            if assigned:
+                                following = f'{prefix}-{sequence + 1:04d}'
+                                # Binding and next-car scheduling commit together. A delayed
+                                # HTTP reply cannot retarget this original request to the new car.
+                                db.execute('INSERT INTO assignments VALUES(?,?,?,?,?,?,?,?)',
+                                           (request_id, item['index'], barcode, bcr, vehicle, following, *assigned))
+                                db.execute('UPDATE vehicles SET agv=?,sequence=?,status=? WHERE bcr=?',
+                                           (following, sequence + 1, 'IDLE', bcr))
                                 data = dict(taskId=assigned[0], chuteCode=assigned[1], skuId='SIM-SKU',
                                             length=None, width=None, height=None, weight=None)
                         elif command == 'sorter.task.station_heartbeat':
-                            vehicle = vehicles.get(params['bcrCode'], {})
+                            vehicle, _, _, status = vehicle_for(params['bcrCode'])
                             data = dict(stationCode=params['stationCode'], bcrCode=params['bcrCode'], timestamp=int(time.time() * 1000),
-                                        agvNo=vehicle.get('agvNo', f"SIM-AGV-{50019 + item['index']}"),
-                                        status=vehicle.get('status', 'IDLE' if item['index'] % 2 else 'TASKING'))
+                                        agvNo=vehicle, status=status)
                         else:
                             raise ValueError('unsupported command')
                         rejected = mode == 'reject' and command == 'sorter.task.dest_request'
                         response['result'].append(dict(index=item['index'], command=command, success=not rejected,
                             code='SIM_REJECT' if rejected else None, message='SIMULATED', args=None, data=data))
-                    db.execute('INSERT INTO requests(request_id,received,sha256,body,response,mode) VALUES(?,datetime("now"),?,?,?,?)',
-                               (request_id, digest, raw.decode('utf-8'), json.dumps(response, ensure_ascii=False), mode))
-                    db.commit()
+                    if not prior:
+                        db.execute('INSERT INTO requests(request_id,received,sha256,body,response,mode) VALUES(?,datetime("now"),?,?,?,?)',
+                                   (request_id, digest, raw.decode('utf-8'), json.dumps(response, ensure_ascii=False), mode))
+                if conflict:
+                    self.send(409, {'error': 'request-id-payload-conflict'})
+                    return
                 if mode == 'timeout':
                     time.sleep(8)
                 self.send(200, response if mode != 'malformed' else {'simulated': 'invalid-response-shape'})

@@ -20,6 +20,7 @@ public partial class MaintenancePage : UserControl
     CapabilityDraft? selectedReader, selectedInstance;
     bool lastCanEditForm;
     public Func<Task>? CompleteBackupAsync { get; set; }
+    public Func<Task>? ManageBackupSetsAsync { get; set; }
     public event EventHandler? DisplayPreferencesRequested;
     public event EventHandler<ParameterDiagnosticTarget>? DiagnosticsRequested;
     public Func<string, FrameworkElement>? CameraPreviewFactory { get => MainParameterEditor.CameraPreviewFactory; set => MainParameterEditor.CameraPreviewFactory = value; }
@@ -28,6 +29,7 @@ public partial class MaintenancePage : UserControl
         InitializeComponent();
         MainParameterEditor.PageValidationFailed += (_, _) => { if (DataContext is ParcelViewModel vm) vm.Message = "请修正当前页标出的参数；输入已保留。"; };
         MainParameterEditor.MaintenanceRequested += (_, _) => ShowTechnicalTool(0);
+        MainParameterEditor.BackupSetsRequested += async (_, _) => { if (ManageBackupSetsAsync is { } manage && DataContext is ParcelViewModel vm) await vm.RunAsync(manage, "完整备份保管"); };
         MainParameterEditor.BackupRequested += async (_, _) => { if (CompleteBackupAsync is { } backup && DataContext is ParcelViewModel vm) await vm.RunAsync(backup, "创建完整备份"); else ShowTechnicalTool(MaintenanceTool.Backup); };
         MainParameterEditor.DisplayPreferencesRequested += (_, _) => DisplayPreferencesRequested?.Invoke(this, EventArgs.Empty);
         MainParameterEditor.DiagnosticsRequested += (_, target) =>

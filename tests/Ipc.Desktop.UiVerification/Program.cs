@@ -117,6 +117,7 @@ static partial class Program
                 }
                 else if (args.Contains("--dual-camera-diagnostics")) await VerifyDualCameraDiagnostics(root, evidence, lines);
                 else if (args.Contains("--internal-pages")) await VerifyInternalPages(root, evidence, lines);
+                else if (args.Contains("--lifecycle-maintenance-ui")) await VerifyLifecycleMaintenanceUi(evidence, lines);
                 else if (args.Contains("--installer-lifecycle")) await VerifyInstallerLifecycle(evidence, lines);
                 else if (args.Contains("--maintenance-progress-ui")) await VerifyMaintenanceProgressNative(evidence, lines);
                 else if (args.Contains("--industrial-maintenance-ui")) await VerifyIndustrialMaintenanceUi(evidence, lines, args.Contains("--baseline"));

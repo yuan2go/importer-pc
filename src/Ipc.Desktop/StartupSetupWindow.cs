@@ -250,11 +250,12 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 selectedProgram = reviewed!.ProgramRoot ?? selectedProgram;
                 enteredData = reviewed.DataRoot;
             }
+            ShowBuildIdentity(current, media);
             installationKind = current is null ? "安装" : current.LifecycleState != "Installed" ? "重新安装" : current.SourceCommit == media?.SourceCommit ? "修复安装" : "更新";
             if (InlineReviewReady)
             {
                 Section("本次安装影响");
-                Note(current?.LifecycleState == "Purged" ? "原本站数据已删除。本次沿用原登记位置重新配置，不恢复已删除的业务记录；管理安全信息仍保留。"
+                Note(current?.LifecycleState == "Purged" ? "原本站数据和管理密码已删除。本次沿用原登记位置重新配置，不恢复已删除的业务记录；机器部署和审计证据保留。"
                     : "本次操作：" + installationKind + "。保留现有账户、数据与配置；请先关闭供包台。安装会核验程序已退出并释放资源，不要求清空作业或暂停供包。");
                 Note("安装需要 Windows 管理员授权，与软件管理密码无关。");
                 foreach (var component in components.Where(c => c.Prerequisites.Length > 0)) Note("安装所需依赖：" + string.Join("；", component.Prerequisites));
@@ -298,7 +299,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
                 if (current.LifecycleState == "Purged")
                 {
                     Message("本次操作：重新安装。原本站数据已删除，将沿用原登记位置重新配置。");
-                    Note("不恢复已删除的业务记录；管理安全信息和个人偏好仍保留。请先关闭供包台，安装时会确认资源已释放。");
+                    Note("不恢复已删除的业务记录和管理密码；机器部署及审计证据、个人偏好保留。请先关闭供包台，安装时会确认资源已释放。");
                 }
                 else
                 {

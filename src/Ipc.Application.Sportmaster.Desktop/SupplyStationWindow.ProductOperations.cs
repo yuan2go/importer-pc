@@ -11,7 +11,18 @@ namespace Ipc.Application.Sportmaster.Desktop;
 
 public partial class SupplyStationWindow
 {
-    partial void InitializeMaintenanceActions() => maintenance.CompleteBackupAsync = CreateProductBackup;
+    partial void InitializeMaintenanceActions()
+    {
+        maintenance.CompleteBackupAsync = CreateProductBackup;
+        maintenance.ManageBackupSetsAsync = ManageProductBackupSets;
+    }
+    public Func<string?, Task>? OpenBackupSetsAsync { get; set; }
+    string? latestBackupDirectory;
+    async Task ManageProductBackupSets()
+    {
+        await ViewModel.RequireManagementModeAsync();
+        await (root.OpenBackupSetsAsync ?? throw new InvalidOperationException("完整备份保管入口不可用"))(latestBackupDirectory);
+    }
     StationStatisticsControl? statistics;
     FrameworkElement? exceptions;
     public Func<Task>? OpenMaintenanceOwnerAsync { get; set; }
@@ -40,6 +51,7 @@ public partial class SupplyStationWindow
         var actions = new WrapPanel();
         var backupAction = ProductButton("创建完整备份…", CreateProductBackup);
         System.Windows.Automation.AutomationProperties.SetAutomationId(backupAction, "CompleteBackup.Diagnostic"); actions.Children.Add(backupAction);
+        actions.Children.Add(ProductButton("完整备份核验、交付与保管…", ManageProductBackupSets));
         actions.Children.Add(ProductButton("导出诊断包…", ExportProductDiagnostics));
         cancelProductDiagnostic = new Button { Content = "取消导出", MinHeight = 44, Visibility = Visibility.Collapsed, Margin = new(0, 6, 12, 6) };
         cancelProductDiagnostic.Click += (_, _) => productDiagnosticCancellation?.Cancel(); actions.Children.Add(cancelProductDiagnostic);
@@ -64,6 +76,7 @@ public partial class SupplyStationWindow
         ViewModel.Message = receipt.Status + " · " + receipt.Reason;
         await ViewModel.RefreshAsync();
         if (receipt.Status != "BackupCreated") return;
+        latestBackupDirectory = Path.GetDirectoryName(dialog.FileName);
         if (MessageBox.Show(ManagementDialogOwner, "完整备份已完成。现在检查连接、未确认作业和存储条件，并恢复供包？", "备份完成", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes) return;
         await ViewModel.RequireManagementModeAsync();
         var snapshot = await ViewModel.Application.SnapshotAsync();

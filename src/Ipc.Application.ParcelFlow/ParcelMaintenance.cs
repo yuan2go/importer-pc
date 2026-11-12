@@ -160,7 +160,8 @@ public static partial class ParcelRecovery
             var relative = Path.GetRelativePath(directory, destination);
             if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new IOException("Backup must be outside the live application directory");
             var recovery = destination + ".recovery";
-            if (Directory.Exists(recovery) || File.Exists(recovery) || File.Exists(destination) || Directory.Exists(destination)) throw new IOException("Backup destination must be new");
+            using var backupOwner = HoldBackupSet(destination);
+            if (Directory.Exists(recovery) || File.Exists(recovery) || File.Exists(destination) || Directory.Exists(destination) || File.Exists(destination + ".deleting.json")) throw new IOException("Backup destination must be new, including its original deletion receipt");
             origin = RecoveryFailureOrigin.Undetermined; phase = "ConfigurationOwnership";
             using var editor = new ResourceLease(Path.Combine(directory, "startup-maintenance"), ["configuration-editor"]);
             origin = RecoveryFailureOrigin.Source; phase = "SourceInventory";

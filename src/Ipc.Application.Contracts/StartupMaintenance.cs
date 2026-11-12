@@ -12,12 +12,21 @@ public sealed record StartupRecoveryPreview(string BackupSha256, string Destinat
     public string? Station { get; init; }
     public RunMode? Mode { get; init; }
     public string? Backup { get; init; }
+    public string? ResponsibilityStatus { get; init; }
+    public bool? EverEnabled { get; init; }
+    public bool? BusinessPaused { get; init; }
 }
 public sealed record StartupEditorState(Dictionary<string, string> Values);
 public sealed record StartupSavedDraft(string BaseConfigurationHash, string DraftHash, DateTimeOffset At, StartupEditorState Editor, bool BaseChanged, string? SourceIdentity = null);
 public sealed record StartupCheck(string Layer, string Status, string Reason);
 public sealed record StartupCheckReport(string CandidateHash, DateTimeOffset At, StartupCheck[] Checks);
-public sealed record StartupBackupItem(string Path, string Status, DateTimeOffset? At, long Bytes, string? Identity, string Summary);
+public sealed record StartupBackupItem(string Path, string Status, DateTimeOffset? At, long Bytes, string? Identity, string Summary)
+{
+    public bool CanRestore => Status == "Verified";
+    public bool CanDelete => Identity is not null && Status is "Verified" or "Deleting" or "OrphanDatabase" or "InvalidOrIncomplete";
+    public string StatusText => Status switch { "Verified" => "完整，已核验", "OrphanDatabase" => "孤立数据库", "Deleting" => "删除未完成", "Deleted" => "已删除", _ => "残缺或无法核验" };
+}
+public sealed record StartupBackupSetResult(string Status, string Path, string Identity, string Detail, string[] Remaining);
 public sealed record StartupChangePreview(string Identity, string Purpose, bool Allowed, string Summary, string ConfigurationHash, string? BackupDestination)
 {
     public string? OperatorSummary { get; init; }
@@ -66,6 +75,12 @@ public interface IStartupMaintenance : IAsyncDisposable
     Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token);
     Task<StartupBackupItem[]> ListBackupsAsync(string directory, IProgress<MaintenanceProgress>? progress, CancellationToken token)
         => throw new NotSupportedException("此维护实现不支持真实进度与取消");
+    Task<StartupBackupSetResult> InspectBackupDeliveryAsync(string backup, string identity, string destination)
+        => throw new NotSupportedException("原完整备份交付核对不可用");
+    Task<StartupBackupSetResult> ExportBackupSetAsync(string backup, string identity, string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("完整备份集交付不可用");
+    Task<StartupBackupSetResult> DeleteBackupSetAsync(string backup, string identity, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => throw new NotSupportedException("完整备份集删除不可用");
     Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination);
     Task<StartupChangePreview> PrepareChangeAsync(string expectedPlan, string purpose, string backupDestination);
     Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination, IProgress<MaintenanceProgress>? progress, CancellationToken token)

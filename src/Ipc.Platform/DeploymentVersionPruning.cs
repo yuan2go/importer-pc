@@ -37,8 +37,8 @@ public static partial class WindowsDeploymentSetup
         var hash = Wire.FileHash(Registration(application));
         DeploymentPrunePlan Denied(string why) => new("", operation, application, hash, false, why, [], [], ordinaryStartupConfirmed);
         if (!ordinaryStartupConfirmed) return Denied("须先由管理员确认当前版本已普通启动并完成必要观察；此确认不代表设备或现场验收。");
-        if (current.LifecycleState != "Installed" || current.RestoreHandoffHash is not null)
-            return Denied("当前不是可直接清理的已安装本站；恢复或旧根引用须先核对，所有版本保留。");
+        if (current.LifecycleState != "Installed")
+            return Denied("当前程序已退役，不能发起版本清理。");
         RequireInstalledReady(current); RequireNoUnresolvedInstallation(application, null); RequireNoUnresolvedLifecycle(application);
         var left = RuntimeCompatibility(Path.Combine(current.ReleaseRoot, "app"));
         var leftDesktop = RuntimeCompatibility(Path.Combine(current.ReleaseRoot, "desktop"));
@@ -46,11 +46,12 @@ public static partial class WindowsDeploymentSetup
         var directory = Path.Combine(MachineRoot, "deployments");
         var journals = Directory.EnumerateFiles(directory, application + ".setup-*.json").Order(StringComparer.Ordinal).Take(129).ToArray();
         if (journals.Length > 128) return Denied("原安装记录超出清理预算，保留版本并由实施人员核对。");
-        var candidates = new List<(DeploymentLocation Location, string Version, DeploymentVersionFiles[] Files)>();
+        var history = ReadDeploymentHistory(application);
+        var candidates = new List<(DeploymentLocation Location, int Distance, DeploymentVersionFiles[] Files)>();
         var retained = new List<DeploymentVersionRetention> { new(current.ReleaseRoot, "当前版本") };
         if (current.PreviousDeployment is { } previous) retained.Add(new(previous.ReleaseRoot, "保留的上一版本"));
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { Path.GetFullPath(current.ReleaseRoot) };
-        var immediateCompatible = false;
+        var verifiedPredecessor = false;
         var references = ReadVersionReferences(directory);
         var pinned = Directory.EnumerateFiles(directory, application + ".prune-*.json").Take(129)
             .Select(file => ReadPrune(application, Path.GetFileNameWithoutExtension(file)[(application.Length + ".prune-".Length)..]))
@@ -65,21 +66,22 @@ public static partial class WindowsDeploymentSetup
             if (!seen.Add(Path.GetFullPath(location.ReleaseRoot)) || !Directory.Exists(location.ReleaseRoot)) continue;
             try
             {
-                if (location.ApplicationId != application || location.DataRoot != current.DataRoot || location.ConfigurationDirectory != current.ConfigurationDirectory ||
-                    location.RuntimeAccountSid != current.RuntimeAccountSid || location.RestoreHandoffHash is not null || location.LifecycleState != "Installed")
+                if (location.ApplicationId != application || location.ConfigurationDirectory != current.ConfigurationDirectory ||
+                    location.RuntimeAccountSid != current.RuntimeAccountSid || location.LifecycleState != "Installed")
                     throw new InvalidDataException("其他根或身份的历史版本");
                 var boundary = TrustedProgramRoots.RequireBoundary(location.ReleaseRoot);
                 RequireVersionDirectory(boundary, location);
                 var release = RuntimeCompatibility(Path.Combine(location.ReleaseRoot, "app"));
                 var desktop = RuntimeCompatibility(Path.Combine(location.ReleaseRoot, "desktop"));
-                if (ReleaseVersionPolicy.Compare(release.Release.BusinessVersion!, left.Release.BusinessVersion!) >= 0)
-                    throw new InvalidDataException("相同或较新版本，不能作为过期版本删除");
+                var distance = DeploymentDistance(location, current, history);
+                if (distance is not > 0) throw new InvalidDataException("不能证明是当前部署之前的历史构建，保留原目录");
                 if (DeploymentRuntimeCompatibility.Incompatibility(left.Compatibility, release.Compatibility) is not null ||
                     DeploymentRuntimeCompatibility.Incompatibility(leftDesktop.Compatibility, desktop.Compatibility) is not null)
                     throw new InvalidDataException("兼容/原实现引用不能证明，保留版本");
                 var cache = RequireMaintenanceCache(location);
                 if (pinned.Contains(location.ReleaseRoot) || pinned.Contains(cache))
                     throw new InvalidDataException("原清理已明确保留余项，不纳入新的删除范围");
+                RequirePruneNotExecuting([location.ReleaseRoot, cache]);
                 var media = DeploymentMedia.Inspect(location.ReleaseRoot, application);
                 if (media.SourceCommit != location.SourceCommit) throw new InvalidDataException("程序源身份与原库存不同");
                 _ = InstalledInventory(location);
@@ -94,7 +96,8 @@ public static partial class WindowsDeploymentSetup
                 var described = Wire.Decode<DeploymentLocation>(File.ReadAllText(descriptor));
                 if (described.ApplicationId != application || described.SourceCommit != location.SourceCommit || described.ReleaseRoot != location.ReleaseRoot)
                     throw new InvalidDataException("原版本描述不属于库存");
-                if (location.ReleaseRoot.Equals(current.PreviousDeployment?.ReleaseRoot, StringComparison.OrdinalIgnoreCase)) immediateCompatible = true;
+                if (location.ReleaseRoot.Equals(current.PreviousDeployment?.ReleaseRoot, StringComparison.OrdinalIgnoreCase))
+                { verifiedPredecessor = true; retained.Add(new(location.ReleaseRoot, "已核验完整的上一部署回滚候选")); }
                 if (references.Any(r => r.ReleaseRoot.Equals(location.ReleaseRoot, StringComparison.OrdinalIgnoreCase) ||
                     r.MaintenanceRoot?.Equals(cache, StringComparison.OrdinalIgnoreCase) == true ||
                     r.PreviousDeployment?.ReleaseRoot.Equals(location.ReleaseRoot, StringComparison.OrdinalIgnoreCase) == true))
@@ -102,21 +105,44 @@ public static partial class WindowsDeploymentSetup
                 programFiles.Add("deployment-location.json", Wire.FileHash(descriptor));
                 var cacheFiles = new Dictionary<string, string>(original, StringComparer.OrdinalIgnoreCase)
                 { ["installed-inventory.json"] = location.InventorySha256! };
-                candidates.Add((location, release.Release.BusinessVersion!, [new(location.ReleaseRoot, programFiles), new(cache, cacheFiles)]));
+                candidates.Add((location, distance.Value, [new(location.ReleaseRoot, programFiles), new(cache, cacheFiles)]));
             }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException or JsonException)
             { retained.Add(new(location.ReleaseRoot, "保留：" + WindowsInstallationError.Safe(error.Message))); }
         }
-        // Preserve an independently compatible predecessor even when the immediate
-        // PreviousDeployment is missing/incompatible. Never delete by folder age.
-        var fallback = immediateCompatible ? default : candidates.OrderByDescending(c => c.Version, Comparer<string>.Create(ReleaseVersionPolicy.Compare)).FirstOrDefault();
-        if (fallback.Location is not null) retained.Add(new(fallback.Location.ReleaseRoot, "最近一个可核验兼容候选"));
-        var remove = candidates.Where(c => c.Location != fallback.Location).SelectMany(c => c.Files).ToArray();
-        var identity = VersionPruneIdentity(application, operation, hash, remove, ordinaryStartupConfirmed);
+        return BuildVersionPruningPlan(application, operation, ordinaryStartupConfirmed, current, hash, history,
+            candidates.Select(c => (c.Location, c.Files)).ToArray(), retained.ToArray(), verifiedPredecessor);
+    }
+
+    // Both the normal entry and regression tests generate the executable plan
+    // here. File/ACL/media checks above produce candidates, never allowed plans.
+    internal static DeploymentPrunePlan BuildVersionPruningPlan(string application, string operation, bool observed,
+        DeploymentLocation current, string hash, DeploymentTransition[] history,
+        (DeploymentLocation Location, DeploymentVersionFiles[] Files)[] candidates, DeploymentVersionRetention[] retained, bool verifiedPredecessor = false)
+    {
+        if (!observed || current.LifecycleState != "Installed")
+            return new("", operation, application, hash, false, "当前部署尚未确认普通启动，或已退役；原构建保留。", [], retained, observed);
+        var keep = retained.ToList();
+        var eligible = new List<(DeploymentLocation Location, DeploymentVersionFiles[] Files, int Distance)>();
+        foreach (var candidate in candidates)
+        {
+            var distance = DeploymentDistance(candidate.Location, current, history);
+            if (candidate.Location.ApplicationId != application || candidate.Location.RuntimeAccountSid != current.RuntimeAccountSid || distance is not > 0)
+                keep.Add(new(candidate.Location.ReleaseRoot, "无法证明是本站当前部署之前的构建，保留原件"));
+            else eligible.Add((candidate.Location, candidate.Files, distance.Value));
+        }
+        // The ordinary reader has already verified and retained a directly
+        // registered predecessor. Otherwise keep the closest verified ancestor.
+        var fallback = verifiedPredecessor ? default : eligible.OrderBy(c => c.Distance).FirstOrDefault();
+        if (fallback.Location is not null) keep.Add(new(fallback.Location.ReleaseRoot, "最近一个可核验兼容回滚候选"));
+        var remove = eligible.Where(c => c.Location != fallback.Location && !keep.Any(r => r.Root.Equals(c.Location.ReleaseRoot, StringComparison.OrdinalIgnoreCase)))
+            .SelectMany(c => c.Files).ToArray();
+        var identity = VersionPruneIdentity(application, operation, hash, remove, observed);
         var result = new DeploymentPrunePlan(identity, operation, application, hash, remove.Length > 0,
-            remove.Length > 0 ? "仅删除列出的旧程序和对应维护缓存；完整备份后执行，业务数据及原回执保留。" : "没有可安全删除的旧版本；当前、上一版本和归属不明项均保留。",
-            remove, retained.ToArray(), ordinaryStartupConfirmed);
-        if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(result)) > 3 * 1024 * 1024) return Denied("清理清单超过固定预算，保留所有版本。");
+            remove.Length > 0 ? "仅删除列出的历史构建和维护缓存；完整备份后执行，业务数据及原回执保留。" : "没有可安全删除的旧构建；当前、回滚候选及证据不足项保留。",
+            remove, keep.ToArray(), observed);
+        if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(result)) > 3 * 1024 * 1024)
+            return new("", operation, application, hash, false, "清理清单超过固定预算，保留所有版本。", [], keep.ToArray(), observed);
         return result;
     }
 
@@ -147,6 +173,19 @@ public static partial class WindowsDeploymentSetup
             var value = document.RootElement;
             if (value.TryGetProperty("ApplicationId", out _) && value.TryGetProperty("ReleaseRoot", out _) && value.TryGetProperty("RuntimeAccountSid", out _))
                 references.Add(Wire.Decode<DeploymentLocation>(value.GetRawText()));
+            else if (Path.GetFileName(file).StartsWith("sportmaster.restore-", StringComparison.Ordinal))
+            {
+                var intent = Wire.Decode<DeploymentRestoreIntent>(value.GetRawText()); ValidateRestoreIntent(intent);
+                if (file != RestoreIntentFile(intent.ApplicationId, intent.OperationId)) throw new InvalidDataException("恢复引用不属于原操作。");
+                var committed = File.Exists(RestoreCommitFile(intent.ApplicationId, intent.OperationId)) ? ReadRestoreCommit(intent.ApplicationId, intent.OperationId) : null;
+                if (committed?.Status == "CompletedIsolated") continue;
+                var active = Current(intent.ApplicationId); var history = ReadDeploymentHistory(intent.ApplicationId);
+                var rootChanged = active is not null && active.DataRoot != intent.Source.DataRoot && DeploymentPrecedes(intent.Source, active, history);
+                var retired = history.Any(e => e.Next.LifecycleState != "Installed" &&
+                    (DeploymentNode(intent.Source) == DeploymentNode(e.Previous) || DeploymentPrecedes(intent.Source, e.Previous, history)) &&
+                    (active is not null && DeploymentNode(e.Next) == DeploymentNode(active) || DeploymentPrecedes(e.Next, active, history)));
+                if (!rootChanged && !retired) references.Add(intent.Source);
+            }
         }
         return references.ToArray();
     }
@@ -158,6 +197,7 @@ public static partial class WindowsDeploymentSetup
         using var lease = new FileStream(Path.Combine(MachineRoot, "deployments", reviewed.ApplicationId + ".lease"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         var path = PruneFile(reviewed.ApplicationId, reviewed.OperationId);
         if (File.Exists(path)) throw new InstallationOutcomeUnknownException("原清理记录已存在，请核对或续办原次，不能换清单重复提交。");
+        using var otherDeployments = AcquireOtherPurgeDeployments(reviewed.ApplicationId, MachineRoot);
         var actual = PlanVersionPruningCore(reviewed.ApplicationId, reviewed.OperationId, reviewed.OrdinaryStartupConfirmed);
         if (!actual.Allowed || actual.Identity != reviewed.Identity) throw new InvalidOperationException("版本清理计划已变化，请重新检查。");
         using var identity = WindowsIdentity.GetCurrent();
@@ -165,9 +205,38 @@ public static partial class WindowsDeploymentSetup
         var current = Current(actual.ApplicationId)!;
         using var rootOwnership = actual.ApplicationId == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(actual.ApplicationId, current.DataRoot) : null;
         RequirePruneExcludesCurrent(actual, current);
+        RequirePruneNotExecuting(actual.Delete.Select(a => a.Root));
         RequireProtectedPruneFiles(actual.Delete);
         return ApplyVersionPruning(record, path, () => Wire.FileHash(Registration(actual.ApplicationId)),
             state => SavePrune(path, state, current.RuntimeAccountSid), execution);
+    }
+
+    static void RequirePruneNotExecuting(IEnumerable<string> roots)
+    {
+        var areas = roots.ToArray();
+        if (areas.Any(root => TrustedProgramRoots.Contains(root, AppContext.BaseDirectory)))
+            throw new InvalidOperationException("此历史构建或缓存仍是当前维护宿主，保留全部原文件。");
+        // Installed hosts have fixed executable names. Do not terminate them or
+        // remove their not-yet-loaded files while a maintenance process is alive.
+        foreach (var name in new[] { "Ipc.Assembly", "Ipc.Desktop", "Ipc.Installer" })
+        {
+            var processes = System.Diagnostics.Process.GetProcessesByName(name);
+            try
+            {
+                if (processes.Length > 128) throw new InvalidOperationException("维护进程超过核对预算，旧构建保留。");
+                foreach (var process in processes)
+                {
+                    try
+                    {
+                        if (process.HasExited) continue;
+                        var executable = process.MainModule?.FileName ?? throw new InvalidOperationException("运行中维护宿主路径待核实，旧构建保留。");
+                        if (areas.Any(root => TrustedProgramRoots.Contains(root, executable))) throw new InvalidOperationException("历史构建或缓存仍有运行进程，关闭原宿主后再清理。");
+                    }
+                    catch (System.ComponentModel.Win32Exception error) { throw new InvalidOperationException("无法核对运行中的维护宿主，旧构建保留。", error); }
+                }
+            }
+            finally { foreach (var process in processes) process.Dispose(); }
+        }
     }
 
     static string VersionPruneIdentity(string application, string operation, string hash, DeploymentVersionFiles[] remove, bool ordinaryStartupConfirmed)
@@ -205,9 +274,9 @@ public static partial class WindowsDeploymentSetup
     }
 
     internal static DeploymentPruneReceipt ApplyVersionPruning(DeploymentPruneRecord record, string path, Func<string> registrationHash,
-        Action<DeploymentPruneRecord> save, MaintenanceExecution? execution = null)
+        Action<DeploymentPruneRecord> save, MaintenanceExecution? execution = null, bool referencesRevalidated = false)
     {
-        if (!record.Plan.Allowed || !record.Plan.OrdinaryStartupConfirmed || registrationHash() != record.Plan.ExpectedRegistrationHash)
+        if (!record.Plan.Allowed || !record.Plan.OrdinaryStartupConfirmed || !referencesRevalidated && registrationHash() != record.Plan.ExpectedRegistrationHash)
             throw new InvalidOperationException("登记或普通启动确认不符合原清理计划。");
         if (record.Plan.Delete.Any(d => record.Plan.Retain.Any(r => TrustedProgramRoots.Contains(d.Root, r.Root) || TrustedProgramRoots.Contains(r.Root, d.Root))))
             throw new InvalidDataException("删除范围与保留版本重叠。");
@@ -222,7 +291,7 @@ public static partial class WindowsDeploymentSetup
         }
         try
         {
-            var remaining = record.Plan.Delete.SelectMany(area => CleanRemovalInventory(area.Root, area.Files.Keys.ToArray(), _ => false)
+            var remaining = record.Plan.Delete.SelectMany(area => CleanRemovalInventory(area.Root, area.Files.Keys.ToArray(), _ => false, reviewedHashes: area.Files)
                 .Remaining.Select(name => Path.IsPathFullyQualified(name) ? name : Path.Combine(area.Root, name))).ToArray();
             var pending = record.Plan.Delete.Any(area => area.Files.Keys.Any(name => File.Exists(Path.Combine(area.Root, name))));
             var status = pending ? "Partial" : remaining.Length == 0 ? "Completed" : "CompletedWithRetainedFiles";
@@ -283,6 +352,21 @@ public static partial class WindowsDeploymentSetup
         return record;
     }
 
+    internal static string[] ObserveVersionPruneRemaining(DeploymentPruneRecord record)
+    {
+        var remaining = new List<string>();
+        foreach (var area in record.Plan.Delete)
+        {
+            var observed = ObserveRemoval(new("Unknown", "", [], false, [], area.Root), area.Files.Keys.ToArray());
+            foreach (var name in observed.RemainingFiles ?? [])
+            {
+                if (remaining.Count >= 32768) throw new InvalidDataException("原清理余项超过核对预算，原范围保留。");
+                remaining.Add(Path.Combine(area.Root, name));
+            }
+        }
+        return remaining.ToArray();
+    }
+
     [SupportedOSPlatform("windows")]
     public static DeploymentPruneReceipt InspectVersionPruning(string application, string operation, bool resume, MaintenanceExecution? execution = null)
     {
@@ -293,18 +377,22 @@ public static partial class WindowsDeploymentSetup
         {
             var current = Current(application) ?? throw new InvalidDataException("原登记缺失，不能扩大清理范围。");
             using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
+            using var otherLeases = AcquireOtherPurgeDeployments(application, MachineRoot);
             RequirePruneExcludesCurrent(record.Plan, current);
+            foreach (var reference in ReadVersionReferences(Path.Combine(MachineRoot, "deployments"))) RequirePruneExcludesCurrent(record.Plan, reference);
+            RequirePruneNotExecuting(record.Plan.Delete.Select(a => a.Root));
             RequireProtectedPruneFiles(record.Plan.Delete);
             return ApplyVersionPruning(record, path, () => Wire.FileHash(Registration(application)),
-                state => SavePrune(path, state, current.RuntimeAccountSid), execution);
+                state => SavePrune(path, state, current.RuntimeAccountSid), execution, referencesRevalidated: true);
         }
+        var observedRemaining = ObserveVersionPruneRemaining(record);
         return new(operation, record.Status, record.Status switch
         {
             "Completed" or "CompletedWithRetainedFiles" => "原清单清理已完成；清单外保留项见详情。",
             "RetainedUnverified" => "管理员已选择保留原范围余项；未逐项核对，不代表文件全部清理完成。",
             "NotStarted" => "原清理已在删除前取消，原版本全部保留；重新检查后可发起新计划。",
             _ => "原清理未完成；只允许按原固定清单继续，不能重选目录。"
-        }, record.Remaining, path);
+        }, observedRemaining, path);
     }
 
     [SupportedOSPlatform("windows")]

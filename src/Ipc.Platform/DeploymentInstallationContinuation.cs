@@ -48,6 +48,7 @@ public static partial class WindowsDeploymentSetup
         if (files.Length == 0) return null;
         using var lease = new FileStream(Path.Combine(directory, application + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
         var current = Current(application);
+        var history = ReadDeploymentHistory(application);
         var pending = new List<InstallationContinuation>();
         InstallationContinuation? completed = null;
         long bytes = 0;
@@ -73,7 +74,7 @@ public static partial class WindowsDeploymentSetup
             var changePlan = document.RootElement.TryGetProperty("ChangePlanIdentity", out var change) ? change.GetString() : null;
             if (state == "Failed" && current?.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = changePlan }))) continue;
             if (state == "Completed" && current?.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = changePlan }))) continue;
-            var inspection = ProjectInstallation(request, json, current);
+            var inspection = ProjectInstallation(request, json, current, history);
             var item = new InstallationContinuation(request, inspection, file);
             if (inspection.Status is "Completed")
             {
@@ -99,7 +100,7 @@ public static partial class WindowsDeploymentSetup
         var request = ReadInstallationRequest(application, operation);
         var json = File.ReadAllText(file);
         var current = Current(application);
-        var inspection = ProjectInstallation(request, json, current);
+        var inspection = ProjectInstallation(request, json, current, ReadDeploymentHistory(application));
         if (inspection.Status == "Failed") return;
         if (inspection.Status != "NotCommitted") throw new InstallationOutcomeUnknownException("原安装不能确证未提交；保持原操作，请重新核对。");
         using var ownership = new StoppedApplicationOwnership(MachineRuntimePolicy.InstallerLeaseRoot(""), application, request.DataRoot, execution?.Token ?? default);

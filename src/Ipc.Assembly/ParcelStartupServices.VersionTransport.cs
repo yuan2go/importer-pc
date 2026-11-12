@@ -7,7 +7,7 @@ namespace Ipc.Assembly;
 public static partial class ParcelStartupServices
 {
     internal static string MaintenanceFailureStatus(Exception error) => error is InstallationOutcomeUnknownException ? "Unknown" : "Failed";
-    internal static bool CancellableMaintenance(string action) => action is "Backup" or "Restore" or "PlanChange" or "PrepareChange" or "Install" or "InstallWithPreflight" or "RepairSystem" or
+    internal static bool CancellableMaintenance(string action) => action is "ResumeHistoricalAssets" or "Backup" or "Restore" or "PlanChange" or "PrepareChange" or "Install" or "InstallWithPreflight" or "RepairSystem" or
         "ReviewRollback" or "Rollback" or "ReviewVersionPruning" or "PruneVersions" or "ResumeVersionPruning" or "SimpleUninstall" or "MediaUninstall" or "MediaConcludeInstallation" or "MediaRepairInstallation";
     internal static (string Status, string? Error, string? Result) BoundMaintenanceTerminal(string status, string hash, string? error, string? result)
     {

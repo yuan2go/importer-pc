@@ -116,6 +116,8 @@ static class LifecycleRestore
                 return true;
             }, expectedPorts);
         }
+        Check((await service.ReadRestoreOperationsAsync()).Single() is { State: "Enabled", ResponsibilityStatus: "Confirmed", EverEnabled: true, BusinessPaused: false },
+            "reopened maintenance projects actual confirmed and explicitly enabled restore facts from persisted audit");
         var reopenedFactory = new CommercialProductization.SyntheticFactory(restoredLaunch);
         await using (var reopened = new ParcelRuntime(restoredLaunch, new SportmasterFlow(), reopenedFactory)
         { RuntimeIdentityPreflight = () => { }, RestoreEvidence = evidence with { RequireRegistration = true } })
@@ -123,7 +125,12 @@ static class LifecycleRestore
             await reopened.StartAsync(default);
             Check(!(await reopened.SnapshotAsync()).Paused && reopenedFactory.Sends == 0,
                 "a verified and explicitly resumed restored station reopens normally without replay or another forced restore confirmation");
+            _ = await reopened.CommandAsync(new(Wire.Id(), (await reopened.SnapshotAsync()).Revision, "Pause", Value: "normal later pause"));
         }
+        Check((await service.ReadRestoreOperationsAsync()).Single() is { State: "EnabledPaused", ResponsibilityStatus: "Confirmed", EverEnabled: true, BusinessPaused: true },
+            "a later normal pause remains distinct from restore never enabled after close and reopen");
+        Check((await restoredMaintenance.PlanChangeAsync("PruneVersions", Path.Combine(root, "after-confirmed-prune.db"))).Allowed,
+            "real Application pruning admission accepts a confirmed restored site without removing permanent handoff markers");
         var rollbackBackup = Path.Combine(root, "before-confirmed-rollback.db");
         var restoredReview = await restoredMaintenance.PlanChangeAsync("Rollback", rollbackBackup);
         Check(restoredReview.Allowed, "actual offline rollback admits the confirmed, explicitly enabled and normally stopped restored station without deleting its custody markers");

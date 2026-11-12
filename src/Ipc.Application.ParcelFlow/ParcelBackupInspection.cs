@@ -13,10 +13,12 @@ public static partial class ParcelRecovery
     // Shared by offline analysis and its CLI. No repository writable open, restore,
     // runtime or device activation; the format and custody rules have one owner.
     public static ParcelBackupInspection InspectAnalysisBackup(string source, FlowDefinition flow, CancellationToken token = default)
+        => InspectAnalysisBackup(source, flow, token, null);
+    internal static ParcelBackupInspection InspectAnalysisBackup(string source, FlowDefinition flow, CancellationToken token, Action? authority)
     {
         source = Path.GetFullPath(source);
         RecoveryFiles.RequireOrdinaryAncestors(source);
-        var manifest = VerifyBackup(source, token: token);
+        var manifest = VerifyBackup(source, authority, token);
         if (manifest.Application != flow.Id) throw new InvalidDataException("备份所属业务不符");
         var root = source + ".recovery";
         var config = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(RecoveryFiles.Resolve(root, "configuration.json")));
@@ -32,7 +34,7 @@ public static partial class ParcelRecovery
             using var rows = command.ExecuteReader();
             if (!rows.Read() || rows.GetString(0) != "ok" || rows.Read()) throw new InvalidDataException("备份数据库完整性核验失败");
         }
-        token.ThrowIfCancellationRequested();
+        authority?.Invoke(); token.ThrowIfCancellationRequested();
         var manifestFile = Path.Combine(root, "COMPLETED.json");
         var bytes = checked(new FileInfo(source).Length + new FileInfo(manifestFile).Length + manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(root, f.Key)).Length));
         return new("BackupVerified", manifest.Application, config.Effective.StationId, config.Effective.Mode, ParcelRepository.CurrentStorageVersion,

@@ -22,10 +22,12 @@ public static partial class ParcelRecovery
         => RestoreCore(backup, target, true, authority, execution.Token, execution);
     // One custody verifier for restore and original-maintenance inspection.
     // Read-only: no target directory or cleanup intent is created here.
-    internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default)
+    internal static ParcelRecoveryManifest VerifyBackup(string source, Action? authority = null, CancellationToken token = default, bool unpublishedDelivery = false)
     {
         token.ThrowIfCancellationRequested(); source = Path.GetFullPath(source); authority?.Invoke();
         RecoveryFiles.RequireOrdinaryAncestors(source);
+        if (!unpublishedDelivery && File.Exists(Path.Combine(Path.GetDirectoryName(source)!, DeliveryMarker))) throw new InvalidDataException("完整备份交付尚未发布，选择原完整集和原目标继续；不能用于恢复。");
+        if (File.Exists(source + ".deleting.json") && ReadSetDeletion(source).Status != "NotStarted") throw new InvalidDataException("此备份已开始删除，不能作为完整恢复集；请核对原删除结果。");
         foreach (var suffix in new[] { "-wal", "-shm", "-journal" })
             if (File.Exists(source + suffix) || Directory.Exists(source + suffix))
                 throw new InvalidDataException("完整离线备份不得带活动数据库侧文件");
@@ -74,6 +76,7 @@ public static partial class ParcelRecovery
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         var source = Path.GetFullPath(databaseBackup); var target = Path.GetFullPath(newApplicationDirectory);
         if (File.Exists(target)) throw new IOException("恢复目标被文件占用，原件保留。");
+        using var sourceOwner = HoldBackupSet(source);
         var manifest = VerifyBackup(source, authority, token);
         var recovery = source + ".recovery";
         var manifestPath = RecoveryFiles.Resolve(recovery, "COMPLETED.json");

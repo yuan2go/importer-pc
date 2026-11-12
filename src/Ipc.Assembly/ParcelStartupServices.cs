@@ -18,6 +18,8 @@ public sealed record StartupMaintenanceRequest(string Action, BusinessLaunch? La
     public DeploymentRollbackPlan? RollbackPlan { get; init; }
     public string? RollbackOperationId { get; init; }
     public DeploymentPrunePlan? VersionPrunePlan { get; init; }
+    public string? HistoryKind { get; init; }
+    public int HistoryOffset { get; init; }
     public bool OrdinaryStartupConfirmed { get; init; }
     public bool DeleteData { get; init; }
     public string? RemovalOperationId { get; init; }
@@ -219,6 +221,35 @@ public static partial class ParcelStartupServices
                 _ = DeploymentMedia.Inspect(request.Deployment.MediaRoot, ApplicationId, execution?.Token ?? default);
                 return Wire.Encode(SimpleUninstallCore(request, execution));
             case "SimpleUninstall": return Wire.Encode(SimpleUninstallCore(request, execution));
+            case "ReadMaintenanceHistory":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+                return Wire.Encode(WindowsDeploymentSetup.ReadMaintenanceHistory(ApplicationId, request.HistoryOffset));
+            case "InspectMaintenanceHistory":
+            {
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+                var item = WindowsDeploymentSetup.InspectMaintenanceHistory(ApplicationId, request.HistoryKind!, request.RollbackOperationId!);
+                if (request.HistoryKind is "restore" or "migration")
+                {
+                    try
+                    {
+                        var current = WindowsDeploymentSetup.Current(ApplicationId) ?? throw new InvalidDataException("当前登记缺失");
+                        var hash = Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId));
+                        await using var historyCore = Core(new(current.ConfigurationDirectory, current.DataRoot, null, null), installer: true);
+                        var original = (await historyCore.ReadRestoreOperationsAsync()).SingleOrDefault(p => p.OperationId == request.RollbackOperationId)
+                            ?? throw new InvalidDataException("原恢复意图未找到");
+                        if (Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) != hash) throw new InvalidOperationException("核对期间当前登记发生变化");
+                        item = item with { RestoreSummary = original.Summary, RestoreState = original.State, EverEnabled = original.EverEnabled, BusinessPaused = original.BusinessPaused };
+                    }
+                    catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or InvalidOperationException or System.Text.Json.JsonException)
+                    { item = item with { RestoreSummary = "恢复责任和业务事实尚未核对：" + error.Message + "；原提交结果保留，不据此推断启用或暂停。", RestoreState = "Unknown" }; }
+                }
+                return Wire.Encode(item);
+            }
+            case "ResumeHistoricalAssets":
+                if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                return Wire.Encode(WindowsDeploymentSetup.ResumeHistoricalAssets(ApplicationId, request.RollbackOperationId!, execution));
             case "ReviewRollback": return await ReviewRollbackCore(request, execution);
             case "ReviewVersionPruning": return await ReviewVersionPruningCore(request, execution);
             case "PruneVersions": return await ExecuteVersionPruningCore(request, execution);
@@ -550,6 +581,12 @@ public static partial class ParcelStartupServices
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("登记接管仅适用于原机Windows安装；portable恢复继续隔离");
             await ElevateAsync(new("AdoptRestore", launch, expectedBackupHash, Backup: backup, Destination: restoredDataRoot, ChangePlanIdentity: expectedRegistrationHash));
         }
+        public Task<StartupBackupSetResult> InspectBackupDeliveryAsync(string backup, string identity, string destination)
+            => core.InspectBackupDeliveryAsync(backup, identity, destination);
+        public Task<StartupBackupSetResult> ExportBackupSetAsync(string backup, string identity, string destination, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+            => core.ExportBackupSetAsync(backup, identity, destination, progress, token);
+        public Task<StartupBackupSetResult> DeleteBackupSetAsync(string backup, string identity, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+            => core.DeleteBackupSetAsync(backup, identity, progress, token);
         public Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token) => core.ListBackupsAsync(directory, token);
         public Task<StartupBackupItem[]> ListBackupsAsync(string directory, IProgress<MaintenanceProgress>? progress, CancellationToken token) => core.ListBackupsAsync(directory, progress, token);
         public Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination) => PlanChangeAsync(purpose, backupDestination, null, CancellationToken.None);

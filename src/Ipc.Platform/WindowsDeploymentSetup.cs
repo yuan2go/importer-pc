@@ -161,6 +161,7 @@ public static partial class WindowsDeploymentSetup
         var operation = request.OperationId is null ? Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".setup-" + Wire.Id() + ".json") : InstallationOperationFile(request);
         if (File.Exists(operation)) throw new InvalidOperationException("原安装操作已存在；只能核对原回执，不能重复提交");
         var releaseRoot = Path.Combine(vendor, "releases", request.ApplicationId + "-" + media.SourceCommit[..12] + "-" + Wire.Id());
+        DeploymentLocation? preparedLocation = null;
         try
         {
             WriteProtected(operation, new { Status = "Prepared", RequestIdentity = InstallationRequestIdentity(request), Request = request, request.ChangePlanIdentity, request.SourceCommit, Previous = before, ReleaseRoot = releaseRoot, DataRoot = data }, sid);
@@ -211,6 +212,7 @@ public static partial class WindowsDeploymentSetup
                 before.SourceCommit == location.SourceCommit ? before.PreviousDeployment : before with { PreviousDeployment = null }
             };
             location = CacheMaintenance(location, media, sid);
+            preparedLocation = location;
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
             progress?.Invoke(WindowsInstallationStage.RegisteringManagementService);
@@ -244,6 +246,7 @@ public static partial class WindowsDeploymentSetup
                     Error = WindowsInstallationError.Capture(error),
                     ServiceDiagnosticFile = operation + ".service.jsonl",
                     Previous = before,
+                    Location = committed ? preparedLocation : null,
                     ReleaseRoot = releaseRoot,
                     DataRoot = data,
                     Retained = "Previous deployment, seed, database and leases retained; retry creates another side-by-side release"
@@ -254,6 +257,7 @@ public static partial class WindowsDeploymentSetup
                 throw new InstallationOutcomeUnknownException("安装失败且原失败回执未能保存；保留原操作，先只读核对。原错误：" + WindowsInstallationError.Safe(error.Message) +
                     "；回执错误：" + WindowsInstallationError.Safe(receiptFailure.Message), new AggregateException(error, receiptFailure));
             }
+            if (committed) throw new InstallationOutcomeUnknownException("原安装登记已提交，系统入口或最终回执未完成；请核对原结果，不重新安装。", error);
             throw;
         }
     }

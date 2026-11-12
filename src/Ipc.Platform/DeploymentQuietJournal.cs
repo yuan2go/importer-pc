@@ -251,7 +251,7 @@ public static partial class WindowsDeploymentSetup
             if (!File.Exists(file)) return ProjectQuietOutcome(record, hash == record.ExpectedRegistrationHash ? "NotStarted" : "Unknown");
             MachineRuntimePolicy.RequireProtectedEvidence(file);
             if (new FileInfo(file).Length > 4 * 1024 * 1024) throw new InvalidDataException("原安装回执超出预算。");
-            return ProjectQuietOutcome(record, ProjectInstallation(request, File.ReadAllText(file), current).Status);
+            return ProjectQuietOutcome(record, ProjectInstallation(request, File.ReadAllText(file), current, ReadDeploymentHistory(request.ApplicationId)).Status);
         }
         if (record.RemovalFile is { } removal && current is not null)
         {

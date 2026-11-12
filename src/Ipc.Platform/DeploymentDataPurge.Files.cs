@@ -85,6 +85,12 @@ public static partial class WindowsDeploymentSetup
 
     // Hash and delete the same Windows handle. FileShare.Read excludes writers
     // and renames until disposition is set; a pathname is never reopened to delete.
+    public static void DeleteReviewedFile(string path, string expectedSha256)
+    {
+        if (!ExtensionSchema.IsHash(expectedSha256)) throw new InvalidDataException("删除文件缺少实际字节身份。");
+        DeleteReviewedPath(path, expectedSha256);
+    }
+
     internal static void DeleteReviewedPath(string path, string? expectedHash)
     {
         path = Path.GetFullPath(path);

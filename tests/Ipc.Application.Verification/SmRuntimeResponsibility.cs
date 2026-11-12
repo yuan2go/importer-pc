@@ -59,7 +59,7 @@ internal static class SmRuntimeResponsibility
         {
             var s = await app.SnapshotAsync();
             var command = new SubmitParcelBarcode(Wire.Id(), s.RuntimeId, s.Configuration.Revision, position, code, ParcelBarcodeInputKind.Keyboard,
-                s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation) { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival!.Generation };
+                s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation) { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival!.Generation, ExpectedPlacementBoundary = s.Positions!.Single(p => p.Id == position).Arrival!.PlacementBoundary };
             return await app.SubmitParcelBarcodeAsync(command, default);
         }
 

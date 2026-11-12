@@ -47,6 +47,8 @@ public sealed partial class ParcelRuntime : IParcelWorkstation
                     var targetRound = CurrentRound(request.PositionId);
                     if (UsesSmArrival(request.PositionId) && request.ExpectedArrivalGeneration != SmCycle(request.PositionId).Generation)
                         return new("Conflict", "本位小车已变化；旧输入只保留为草稿，请重新核对后提交。", null, null, repository.Revision);
+                    if (UsesSmArrival(request.PositionId) && request.ExpectedPlacementBoundary != (SmCycle(request.PositionId).PlacementGeneration ?? SmCycle(request.PositionId).Generation))
+                        return new("Conflict", "本位包裹边界已变化；旧输入只保留为草稿，请重新核对当前件。", null, null, repository.Revision);
                     if (request.ExpectedRoundId != targetRound?.Id)
                         return new("Conflict", "本位轮次已改变，请重新核对当前包裹。", null, null, repository.Revision);
                     var blocking = ManualInputReasons(request.PositionId);

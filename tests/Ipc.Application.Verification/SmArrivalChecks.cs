@@ -10,6 +10,7 @@ internal static class SmArrivalChecks
     static PositionSnapshot Lane(ParcelSnapshot s, string position = "left") => s.Positions!.Single(p => p.Id == position);
     public static async Task Run(string workspace, string root)
     {
+        await SmContinuousInductionChecks.Run(workspace, root);
         await SmArrivalRecoveryChecks.Run(workspace, root);
         Console.WriteLine("Synthetic RCS applies target binding separately from response delivery; real SDK/customer/site NOT_RUN");
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "arrivals"), deferred: false, mode: RunMode.Simulation);
@@ -84,6 +85,8 @@ internal static class SmArrivalChecks
         await SetEnabled(false);
         await CameraRoundHarness.Until(() => Task.FromResult(!h.Peer.RemoteMembers.Contains("MANUAL-LEFT")));
         Check(Lane(await h.App.SnapshotAsync()).SupplyControl!.Mode == StationPositionMode.Disabled, "confirmed refusal can withdraw without waiting for empty vision");
+        Check(Lane(await h.App.SnapshotAsync()).Arrival!.RecoveryReason is not null, "business refusal without a no-side-effect contract retains remote protection");
+        await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer has completed REFUSED-005 and applied withdrawal; no pending remote effects");
         h.Peer.Vehicles["MANUAL-LEFT"] = "CAR-AFTER-REFUSAL";
         h.Peer.Mode = "assigned";
         await SetEnabled(true);
@@ -112,8 +115,8 @@ internal static class SmArrivalChecks
             bindRelease.TrySetResult();
             var originalRequestId = JsonDocument.Parse(h.Peer.Requests.Single(x => x.Contains("LATE-BIND-007", StringComparison.Ordinal))).RootElement.GetProperty("requestId").GetInt64();
             await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.RemoteBindings.Any(x => x.Request == originalRequestId)));
-            if (!(await h.App.ManagementModeStatusAsync()).Configured) await h.App.ConfigureManagementPasswordAsync("Synthetic-Management-007!");
-            Check(await h.App.EnterManagementModeAsync("Synthetic-Management-007!"), "remote recovery requires current management authority");
+            await ManagementModeFixture.Authorize(h.App);
+            Check((await h.App.ManagementModeStatusAsync()).Active, "remote recovery requires current management authority");
             var recovery = await h.App.ConfirmRemoteRecoveryAsync(new(Wire.Id(), disabled.RuntimeId, "left", Lane(disabled).Arrival!.Generation,
                 "SYNTHETIC peer original binding completed while lane withdrawn; no pending remote execution")
             { ExpectedControlRevision = Lane(disabled).SupplyControl!.Revision, ExpectedTargetOperation = Lane(disabled).Arrival!.TargetOperation, ExpectedRecoveryToken = Lane(disabled).Arrival!.RecoveryToken }, default);

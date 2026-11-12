@@ -56,16 +56,25 @@ internal static class SmRoundLifecycle
         {
             var snapshot = await h.App.SnapshotAsync();
             var target = snapshot.Positions!.Single(p => p.Id == "left").PlacementRemovalOperation;
-            Check(target is not null, "unknown visual evidence exposes a targeted round-removal action");
-            var id = Current(snapshot)!.Id;
+            Check(Current(snapshot) is null || target is not null, "current visually unknown parcel exposes a targeted removal action");
+            var id = Current(snapshot)?.Id;
             await CameraRoundHarness.Until(async () =>
             {
                 var latest = await h.App.SnapshotAsync();
-                if (Current(latest)?.Id != id) return Current(latest) is null;
+                if (Current(latest) is null) return true;
+                if (Current(latest)?.Id != id) throw new InvalidOperationException("Removal fixture must not end a newer parcel");
                 var receipt = await h.App.CommandAsync(new(Wire.Id(), latest.Revision, "ConfirmPlacementRemoval", "left", latest.Positions!.Single(p => p.Id == "left").PlacementRemovalOperation));
                 return receipt.Status == "Persisted" && Current(await h.App.SnapshotAsync()) is null;
             });
             Check(Current(await h.App.SnapshotAsync()) is null, "explicit removal ends only its target round");
+            var lane = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left");
+            if (lane.Arrival!.TargetOperation is { } targetOperation && (await h.App.OperationAsync(targetOperation))?.Wcs?.State == StageState.Rejected)
+            {
+                Check(!lane.Admit, "physical removal does not erase the refusal's unspecified remote effects");
+                await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC refusal response fully completed; peer confirms original task settled and withdrawal applied");
+                var state = await h.App.SnapshotAsync();
+                await h.App.SetPositionEnabledAsync(new(Wire.Id(), state.RuntimeId, "left", state.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+            }
             await NextVehicle();
         }
         var s = await Observe([]);
@@ -213,14 +222,14 @@ internal static class SmRoundLifecycle
         var refused = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "GOOD-600"), default); await Resolved(refused.OperationId!);
         var failedRound = Current(await h.App.SnapshotAsync())!;
         s = await Observe([], TrayPresence.Absent);
-        Check(Current(s)?.Id == failedRound.Id && Current(s)?.RequireRemoval == true, "T12 visual absence cannot replace current manual failure confirmation");
+        Check(Current(s) is null && !s.Positions!.Single(p => p.Id == "left").Admit, "T12 reliable absence ends manual failure automatically while remote refusal remains protected");
         await Remove();
         s = await Observe(["GOOD-601"]);
         await Resolved(Current(s)!.OperationId!);
         var degradedFailure = Current(await h.App.SnapshotAsync())!;
         s = await Observe([], TrayPresence.Absent);
-        Check(!degradedFailure.Manual && degradedFailure.RequireRemoval && Current(s)?.Id == degradedFailure.Id,
-            "T12 a degraded automatic failure already requiring manual confirmation also retains that responsibility after visual absence");
+        Check(!degradedFailure.Manual && Current(s) is null && !s.Positions!.Single(p => p.Id == "left").Admit,
+            "T12 fresh reliable absence automatically ends a formerly degraded camera failure, not its remote responsibility");
         await Remove(); h.Peer.Mode = "assigned";
 
         await Observe([], TrayPresence.Present);
@@ -231,8 +240,8 @@ internal static class SmRoundLifecycle
         await Resolved(visualPdaFailure.OperationId!);
         var visualFailureRound = Current(await h.App.SnapshotAsync())!;
         s = await Observe([], TrayPresence.Absent);
-        Check(!visualFailureRound.Manual && visualFailureRound.RequireRemoval && Current(s)?.Id == visualFailureRound.Id,
-            "T12 PDA failure in a reliable visual round still requires the targeted manual removal click despite observed absence");
+        Check(!visualFailureRound.Manual && Current(s) is null && !s.Positions!.Single(p => p.Id == "left").Admit,
+            "T12 PDA origin does not require another click after reliable empty evidence ends its round");
         await Remove(); h.Peer.Mode = "assigned";
 
         clock.Utc = DateTimeOffset.UtcNow;

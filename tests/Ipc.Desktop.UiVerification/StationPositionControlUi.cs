@@ -73,13 +73,15 @@ static partial class Program
             await h.NextVehicleAsync(); await Flush();
             h.Peer.Mode = "no-destination";
             leftEntry.Text = "SYNTH-REJECT-DISABLE"; ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => vm.Left.CanConfirmPlacementRemoval && !vm.Busy);
+            await Until(() => vm.Left.CanConfirmPlacementRemoval && vm.Left.Operation?.Wcs?.State == StageState.Rejected && !vm.Busy);
             ((Button)left.FindName("DisableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyDisabled && !vm.Busy);
             Check(!vm.Left.CanConfirmPlacementRemoval && !((Button)left.FindName("ConfirmManualPlacementRemoval")).IsVisible &&
                 vm.Left.CenteredStateTitle == "已停用" && h.Peer.Requests.Count == 2,
                 "one disable click also ends the rejected manual round without a separate removal confirmation or resend");
             CaptureInternal(evidence, "positions-disabled-rejected-manual", (Grid)window.FindName("ClientArea"), lines);
+            Check(!vm.Left.CanChangeSupply || vm.Left.Arrival?.RecoveryReason is not null, "refusal cannot be released by toggling supply");
+            await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer confirms refused original settled and withdrawal applied");
             ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
             await h.NextVehicleAsync(); await Flush();

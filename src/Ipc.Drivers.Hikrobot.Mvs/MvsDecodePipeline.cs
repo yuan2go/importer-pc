@@ -13,6 +13,7 @@ internal sealed partial class MvsAcquisition
         internal long? Scene { get; init; }
         internal string? ArrivalGeneration { get; init; }
         internal string? CaptureBoundaryId { get; init; }
+        internal long? ContinuousPresenceTicks { get; init; }
         internal double AcquireMs { get; init; }
         internal long QueuedTicks { get; init; } = Stopwatch.GetTimestamp();
         internal bool SupersededBeforeDecode { get; set; }
@@ -236,7 +237,7 @@ internal sealed partial class MvsAcquisition
                 InspectionSessionId = inspected.Registration is { Isolated: true } isolated ? isolated.Id : null,
                 CaptureSessionId = inspected.Registration is { CaptureImages: true } capture ? capture.Id : null
             };
-            observation = observation with { ArrivalGeneration = work.ArrivalGeneration, CaptureBoundaryId = work.CaptureBoundaryId, CaptureTicks = deliveredTicks, FrameNumber = frame.Number, Timing = new(work.AcquireMs, work.CopyMs, work.ReleaseMs, queueMs,
+            observation = observation with { ArrivalGeneration = work.ArrivalGeneration, CaptureBoundaryId = work.CaptureBoundaryId, CaptureTicks = deliveredTicks, ContinuousPresenceTicks = work.ContinuousPresenceTicks, FrameNumber = frame.Number, Timing = new(work.AcquireMs, work.CopyMs, work.ReleaseMs, queueMs,
                 originalCapacityMs, Timings.LastMs("decode"), originalCopyMs,
                 Stopwatch.GetElapsedTime(deliveredTicks, decodedTicks).TotalMilliseconds) };
             try { originals.Publish(acquisitionIdentity!, original); }

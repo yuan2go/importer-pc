@@ -52,7 +52,8 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     public async Task TrayAsync(string device, TrayPresence presence)
     {
         var position = Config.Topology!.Positions.Single(p => p.ReaderDeviceId == device).Id;
-        await Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
+        await Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival is { } current &&
+            (current.CameraBoundaryReady || current.RecoveryReason is not null && Factory.Trays[device].ArrivalGeneration == current.Generation));
         var before = App.WorkerProgress().Single(p => p.Position == position).Processed;
         if (!Factory.Trays[device].Observe(presence)) throw new InvalidOperationException("Qualified fixture presence was not admitted");
         await Until(() => Task.FromResult(App.WorkerProgress().Single(p => p.Position == position).Processed > before));
@@ -169,6 +170,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         IObservationDiagnosticsSource, IObservationPerformanceSource, IProductionArrivalSource
     {
         ProductionArrivalCapture? arrival;
+        internal string? ArrivalGeneration => Volatile.Read(ref arrival)?.ArrivalGeneration;
         public async Task SetArrivalAsync(ProductionArrivalCapture boundary, CancellationToken token)
         { await inner.SetArrivalAsync(boundary, token); arrival = boundary; }
         Func<Observation, bool>? receiver; long sequence;
@@ -464,6 +466,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             catch (IOException) { }
             finally { try { context.Response.Close(); } catch (ObjectDisposedException) when (stopped.IsCancellationRequested) { } }
         }
-        public async ValueTask DisposeAsync() { Peers.TryRemove(Endpoint, out _); stopped.Cancel(); Hold?.TrySetResult(); listener.Close(); await loop; await Task.WhenAll(handlers); stopped.Dispose(); }
+        bool disposed;
+        public async ValueTask DisposeAsync() { if (disposed) return; disposed = true; Peers.TryRemove(Endpoint, out _); stopped.Cancel(); Hold?.TrySetResult(); listener.Close(); await loop; await Task.WhenAll(handlers); stopped.Dispose(); }
     }
 }

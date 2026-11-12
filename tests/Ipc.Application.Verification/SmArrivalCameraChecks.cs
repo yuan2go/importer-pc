@@ -1,5 +1,7 @@
 using Ipc.Application.Contracts;
 using Ipc.Platform;
+using System.Diagnostics;
+using System.Text.Json;
 namespace Ipc.Verification;
 
 internal static class SmArrivalCameraChecks
@@ -68,7 +70,7 @@ internal static class SmArrivalCameraChecks
                 Check(s.Rounds.All(r => r.PositionId != "left") && s.Positions!.Single(p => p.Id == "left").Arrival is { CameraBoundaryReady: false },
                     "empty B inherits neither A's round nor ready capture while SDK is borrowed: native=" + native);
                 var right = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "right", "RIGHT-MANUAL", ParcelBarcodeInputKind.Keyboard, null, null)
-                { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "right").Arrival!.Generation }, default);
+                { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "right").Arrival!.Generation, ExpectedPlacementBoundary = s.Positions!.Single(p => p.Id == "right").Arrival!.PlacementBoundary }, default);
                 Check(right.Status == "Admitted", "SDK drain does not hold business gate or lock the other lane: native=" + native);
             }
             finally { api.BeforeAcquireReturn = null; acquireRelease.Set(); }
@@ -116,15 +118,76 @@ internal static class SmArrivalCameraChecks
                 await Ready();
                 Check(h.Peer.Requests.Count == 3, "late old decoder cannot claim C and does not fence the source");
             }
+            // Same-car physical removal and safe continuation through both real
+            // acquisition implementations, independent of barcode recognition.
+            await Arrive("CONTINUOUS-SAME-CAR"); await Ready();
+            var occupiedBytes = (byte[])empty.Data.Clone();
+            for (var y = 10; y < barcode.Height - 10; y++)
+                for (var x = barcode.Width / 4; x < barcode.Width * 3 / 4; x++) occupiedBytes[y * barcode.Width + x] = 50;
+            var unread = new CameraRoundHarness.RoundPixels(occupiedBytes, barcode.Width, barcode.Height);
+            async Task Frames(CameraRoundHarness.RoundPixels pixels, RecognitionSymbol[] nativeCodes, int count)
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    var before = api.Acquires;
+                    if (native) api.EnqueueNative(pixels, frame++, nativeCodes); else api.Enqueue(pixels, frame++);
+                    await CameraRoundHarness.Until(() => Task.FromResult(api.Acquires > before && api.Releases == api.Acquires));
+                    await Task.Delay(100);
+                }
+            }
+            await Frames(empty, [], 11); await Frames(unread, [], 4);
+            var unreadRound = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
+            Check(unreadRound.OperationId is null && h.Peer.Requests.Count == 3, "E01 real image presence creates an unread parcel without HTTP: native=" + native);
+            await Frames(empty, [], 11); await Ready();
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is { CurrentRoundId: null, BarcodeInput.Camera: true } nextLane &&
+                nextLane.Arrival!.Generation == unreadRound.ArrivalGeneration && h.Peer.Requests.Count == 3,
+                "N03/E01 actual 800ms empty evidence closes unread parcel and readies same car: native=" + native);
+            await Frames(unread, [], 14);
+            Check((await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left") is { AutoExpired: true, SafeContinuation: true },
+                "E09 capture continuity survives the fast deadline without inventing a new parcel: native=" + native);
+            await Frames(barcode, symbols, 8);
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 4));
+            Check((await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left").Id != unreadRound.Id,
+                "N01/E09 same-car next parcel automatically dispatches once after bounded continuation: native=" + native);
             api.FailNextClear = true;
             await Arrive("CAMERA-FAIL");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CaptureFailure is not null);
             Check(!(await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival!.CameraBoundaryReady,
                 "failed SDK clear never fabricates readiness: native=" + native);
             await Arrive("CAMERA-AFTER-FAIL"); await Ready();
-            Queue(); await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 4));
+            Queue(); await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 5));
             Check(api.Opens == 1 && api.Destroys == 0 && api.Releases == api.Acquires,
                 "new arrival recovers on original owner without per-car reconnect or leaked SDK loan: native=" + native);
+            // Short measured run of the same-code automatic path. Timing comes
+            // from the exact acquisition/result event, not this polling loop.
+            List<object> samples = [];
+            double[] captureToResult = new double[30], rcs = new double[30];
+            for (var i = 0; i < captureToResult.Length; i++)
+            {
+                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left").RcsOutcome == "Accepted");
+                await Arrive("MEASURE-" + i); await Ready(); Queue();
+                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Rounds.SingleOrDefault(r => r.PositionId == "left")?.RcsOutcome == "Accepted");
+                var measured = (await h.App.SnapshotAsync()).Rounds.Single(r => r.PositionId == "left");
+                var events = JsonSerializer.SerializeToElement(h.App.RuntimeProgress()).GetProperty("Flow").GetProperty("Recent");
+                var result = events.EnumerateArray().Single(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted" && e.GetProperty("OperationId").GetString() == measured.OperationId).Clone();
+                captureToResult[i] = result.GetProperty("CaptureToEventMs").GetDouble(); rcs[i] = result.GetProperty("ElapsedMs").GetDouble();
+                using var process = Process.GetCurrentProcess();
+                samples.Add(new { Round = measured.Id, Result = result, Frames = source.Timings.Snapshot().RecentFrames.Where(f => f.ObservationId == result.GetProperty("ObservationId").GetString()).ToArray(),
+                    process.PrivateMemorySize64, process.HandleCount, CpuMs = process.TotalProcessorTime.TotalMilliseconds });
+            }
+            Check(h.Peer.Requests.Count == 35 && api.Opens == 1 && api.Destroys == 0 && api.Acquires == api.Releases,
+                "30 measured same-code automatic arrivals each make exactly one POST with one camera owner and balanced SDK loans: native=" + native);
+            static object Percentiles(double[] values)
+            {
+                var sorted = values.Order().ToArray();
+                double At(double p) => sorted[(int)Math.Ceiling(p * sorted.Length) - 1];
+                return new { Count = sorted.Length, P50 = At(.50), P95 = At(.95), P99 = At(.99) };
+            }
+            var measurement = new { Native = native, Scope = "Synthetic SDK and physical frames; actual acquisition pipeline, SQLite and loopback HTTP; short sample, not field throughput or 24h qualification",
+                CaptureToDurableResultMs = Percentiles(captureToResult), RcsCallMs = Percentiles(rcs), Samples = samples };
+            var output = Path.Combine(root, native ? "continuous-native-performance.json" : "continuous-software-performance.json");
+            ExtensionStore.AtomicWrite(output, measurement);
+            Console.WriteLine("MEASURE " + output + " " + Wire.Encode(measurement.CaptureToDurableResultMs));
         }
     }
 }

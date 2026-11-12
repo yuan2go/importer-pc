@@ -116,7 +116,7 @@ static partial class SportmasterRcs
             Check(s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 1, "blank frames after reconnect do not prove physical removal or release automatic suppression");
             await SmRoundFixture.NextVehicleAsync(app, "left");
             s = await app.SnapshotAsync();
-            var manual = await app.SubmitParcelBarcodeAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "SYNTH-OFFLINE-RETURN", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
+            var manual = await app.SubmitParcelBarcodeAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "left", "SYNTH-OFFLINE-RETURN", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "left").Arrival!.Generation, ExpectedPlacementBoundary = s.Positions!.Single(p => p.Id == "left").Arrival!.PlacementBoundary }, default);
             s = await Wait(app, s => s.Operations.Count(o => o.State == ParcelState.SlotResolved) == 2);
             Check(manual.Status == "Admitted" && s.Operations.All(o => o.Wcs!.Attempts == 1), "a deliberate new manual same-code submission creates one request without replaying the original");
             await ManagementModeFixture.Authorize(app);

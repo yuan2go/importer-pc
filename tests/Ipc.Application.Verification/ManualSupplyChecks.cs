@@ -35,7 +35,9 @@ internal static class SmRoundFixture
         if (CameraRoundHarness.RoundPeer.Peers.TryGetValue(binding!.Target, out var peer))
         {
             var lane = s.Positions!.Single(p => p.Id == position);
-            if (s.Rounds.SingleOrDefault(r => r.Id == lane.CurrentRoundId) is { AttemptStarted: true, ProtocolRequestId: { } requestId })
+            var requestId = s.Rounds.SingleOrDefault(r => r.Id == lane.CurrentRoundId) is { AttemptStarted: true } round ? round.ProtocolRequestId :
+                lane.Arrival?.TargetOperation is { } target ? (await app.OperationAsync(target))?.Wcs?.Request.IntegrationRequest?.RequestId : null;
+            if (requestId is not null)
                 await CameraRoundHarness.Until(() => Task.FromResult(peer.RemoteBindings.Any(x => x.Request == requestId)));
             peer.Vehicles[code] = vehicle;
         }
@@ -61,6 +63,25 @@ internal static class SmRoundFixture
             if (current.PlacementRemovalOperation is null) throw new InvalidOperationException("Fixture needs qualified physical evidence instead of manual removal");
             return (await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "ConfirmPlacementRemoval", position, current.PlacementRemovalOperation))).Status == "Persisted";
         });
+    }
+    // Explicit synthetic customer reconciliation, only called by scenarios that
+    // have settled their peer. Never hide this inside NextVehicleAsync.
+    public static async Task ReconcileRemoteAsync(ParcelRuntime app, string position, string evidence)
+    {
+        if (!(await app.ManagementModeStatusAsync()).Active) await ManagementModeFixture.Authorize(app);
+        var s = await app.SnapshotAsync(); var lane = s.Positions!.Single(p => p.Id == position);
+        if (lane.SupplyControl!.Mode != StationPositionMode.Disabled)
+        {
+            var disabled = await app.SetPositionEnabledAsync(new(Wire.Id(), s.RuntimeId, position, lane.SupplyControl.Revision, false), default);
+            if (disabled.Status != "Accepted") throw new InvalidOperationException(disabled.Reason);
+        }
+        await ((IStationRcsHeartbeat)app).CheckRcsHeartbeatAsync(default);
+        s = await app.SnapshotAsync(); lane = s.Positions!.Single(p => p.Id == position);
+        var arrival = lane.Arrival!;
+        var confirmed = await app.ConfirmRemoteRecoveryAsync(new(Wire.Id(), s.RuntimeId, position, arrival.Generation, evidence)
+        { ExpectedControlRevision = lane.SupplyControl!.Revision, ExpectedTargetOperation = arrival.TargetOperation, ExpectedRecoveryToken = arrival.RecoveryToken }, default);
+        if (confirmed.Status != "Accepted") throw new InvalidOperationException(confirmed.Reason);
+        Console.WriteLine("PASS RECOVERY explicit synthetic external evidence recorded; original request not replayed");
     }
 }
 
@@ -131,7 +152,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         var s = await App.SnapshotAsync();
         return new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, position, code, kind,
             s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation)
-        { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival?.Generation };
+        { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival?.Generation, ExpectedPlacementBoundary = s.Positions!.Single(p => p.Id == position).Arrival?.PlacementBoundary };
     }
     public async ValueTask DisposeAsync() { if (App is not null) await App.DisposeAsync(); await Peer.DisposeAsync(); }
 

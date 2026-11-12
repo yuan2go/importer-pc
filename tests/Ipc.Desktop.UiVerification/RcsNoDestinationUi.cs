@@ -87,13 +87,13 @@ static partial class Program
             var entry = (TextBox)left.FindName("BarcodeEntry");
             Check(message.IsVisible && message.Text == "无设备可用" && message.FontSize == waitingTitle.FontSize &&
                 subtitle.Text == "本件暂不能分配格口" && step.FontSize < message.FontSize &&
-                step.Text == "请取下包裹后人工判断，再确认\n多次出现请通知维护人员" && divider.IsVisible && divider.ActualWidth > 0 &&
+                step.Text == "请取下包裹后人工判断，再确认\n本位请求待核对，请通知维护人员；取件不会撤销原调度" && divider.IsVisible && divider.ActualWidth > 0 &&
                 ((Button)left.FindName("ConfirmManualPlacementRemoval")).IsVisible &&
                 !((Border)right.FindName("CenteredRcsDivider")).IsVisible &&
                 entry.Text == "SYNTH-NO-DEST-UI" && !((DockPanel)left.FindName("DetailedStatus")).IsVisible &&
                 position.DisplayPresentation.Tone == ParcelPresentationTone.Rejected && position.NeedsAttention &&
                 position.CenteredStateForeground == OperatorTokens.Danger && position.ResultBackground == vm.Right.ResultBackground &&
-                position.ResultBackground == OperatorTokens.Neutral && vm.Right.CenteredStateTitle == "等待投包" && vm.Right.CanSubmitBarcode,
+                position.ResultBackground == OperatorTokens.Neutral && vm.Right.CenteredStateTitle == "相机不可用，可人工扫码" && vm.Right.CanSubmitBarcode,
                 "confirmed refusal has one original title with waiting-size typography, a quieter manual next step, and an independent ready position");
 
             var basis = (await h.App.SnapshotAsync()) with { PublishedTicks = System.Diagnostics.Stopwatch.GetTimestamp() };
@@ -106,7 +106,11 @@ static partial class Program
             h.Peer.Mode = "reject";
             async Task Reject(string code, string original, string title)
             {
-                await SmRoundFixture.ConfirmRemovedAsync(h.App, "left"); await h.NextVehicleAsync("left");
+                await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+                await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer confirms refused original settled and withdrawal applied");
+                var state = await h.App.SnapshotAsync();
+                await h.App.SetPositionEnabledAsync(new(Wire.Id(), state.RuntimeId, "left", state.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+                await h.NextVehicleAsync("left");
                 h.Peer.RejectionMessage = original;
                 var request = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", code), default);
                 await Until(() => position.Operation?.Id == request.OperationId && position.CenteredRcsRejection && message.IsVisible && message.Text == title);
@@ -163,8 +167,8 @@ static partial class Program
             var snapshot = await h.App.SnapshotAsync();
             await h.App.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause"));
             await Until(() => vm.Snapshot?.Paused == true);
-            Check(message.IsVisible && message.Text == longMessage && step.Text == "请取下包裹后人工判断\n供包恢复后再放下一件" &&
-                !position.CanSubmitBarcode && h.Peer.Requests.Count == requestCount, "pause retains the manual refusal and its original request while restricting the next step");
+            Check(message.IsVisible && message.Text == longMessage && step.Text == "请取下包裹后人工判断，再确认\n本位请求待核对，请通知维护人员；取件不会撤销原调度" &&
+                !position.CanSubmitBarcode && h.Peer.Requests.Count == requestCount, "pause retains the manual refusal and its original request while allowing physical removal: " + step.Text);
             window.Close(); await Until(() => !window.IsVisible);
         }
     }

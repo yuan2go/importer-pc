@@ -267,7 +267,7 @@ internal static class MvidReader
         var basis = await h.App.SnapshotAsync(); var id = basis.Rounds.Single().Id;
         await Frame(2, Symbol("SYNTH-CAMERA-ORIGINAL"), Symbol("SYNTH-OTHER-LABEL", 120));
         var receipt = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-MANUAL-CORRECTION", ParcelBarcodeInputKind.Keyboard,
-            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, null) { ExpectedRoundId = id, ExpectedArrivalGeneration = basis.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
+            basis.Inputs!.Single(i => i.PositionId == "left").Observation.Id, null) { ExpectedRoundId = id, ExpectedArrivalGeneration = basis.Positions!.Single(p => p.Id == "left").Arrival!.Generation, ExpectedPlacementBoundary = basis.Positions!.Single(p => p.Id == "left").Arrival!.PlacementBoundary }, default);
         Check(receipt.Status == "Admitted", "native unresolved multi-code round permits manual correction using its round identity");
         await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
         await Frame(3, Symbol("SYNTH-CAMERA-ORIGINAL"));
@@ -276,7 +276,7 @@ internal static class MvidReader
             "native camera observations cannot overwrite manual barcode/chute or acquire another request");
         await Frame(4, Symbol("SYNTH-NEXT-PARCEL")); await vm.RefreshAsync();
         Check(vm.Left.CurrentRound?.Id == id && vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == 1, "changed native payload alone cannot retire the manual round");
-        var blocked = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-SECOND-CORRECTION", ParcelBarcodeInputKind.Keyboard, null, receipt.OperationId) { ExpectedRoundId = id, ExpectedArrivalGeneration = basis.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
+        var blocked = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), basis.RuntimeId, basis.Configuration.Revision, "left", "SYNTH-SECOND-CORRECTION", ParcelBarcodeInputKind.Keyboard, null, receipt.OperationId) { ExpectedRoundId = id, ExpectedArrivalGeneration = basis.Positions!.Single(p => p.Id == "left").Arrival!.Generation, ExpectedPlacementBoundary = basis.Positions!.Single(p => p.Id == "left").Arrival!.PlacementBoundary }, default);
         Check(blocked.Status == "Rejected" && h.Peer.Requests.Count == 1, "manual input cannot append a second first call to an already claimed native round");
         await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left"); await vm.RefreshAsync();
         Check(vm.Left.CurrentRound is null && !vm.Left.ShowConfirmedTask, "qualified removal ends a manual success before its display timer");

@@ -13,6 +13,7 @@ internal sealed class MvsTrayPresence
     byte[]? reference, teaching;
     int width, height, count;
     long first, previous, lastPublished;
+    long? publishedFirstPresentTicks;
     bool requested;
     TrayPresence pending, published;
     string referenceId = "";
@@ -22,6 +23,7 @@ internal sealed class MvsTrayPresence
     string status = "未校准；在位状态未知";
     public string Status { get { lock (gate) return status; } private set => status = value; }
     public bool CanDecode { get { lock (gate) return !requested && (reference is null || published == TrayPresence.Present); } }
+    public long? ContinuousPresenceTicks { get { lock (gate) return pending == TrayPresence.Present && published == TrayPresence.Present ? first : null; } }
     public TrayPresenceModelSnapshot Snapshot()
     {
         lock (gate) return new(Status, reference is not null, requested, reference is null ? null : referenceId,
@@ -121,10 +123,14 @@ internal sealed class MvsTrayPresence
             // empty image accumulates its removal interval. True invalidity is Unknown.
             Status = requested || reference is null ? Status : output switch
             { TrayPresence.Absent => "空托盘已确认", TrayPresence.Present => "包裹在位", _ => "在位状态未知；等待可靠图像" };
-            if (published == output && lastPublished != 0 && Elapsed(lastPublished, ticks) < 1000) return null;
+            var continuousStart = output == TrayPresence.Present && state == TrayPresence.Present ? first : (long?)null;
+            // Loss of continuity invalidates late-decode authority immediately;
+            // the independent 800ms empty hysteresis still decides physical removal.
+            if (published == output && publishedFirstPresentTicks == continuousStart && lastPublished != 0 && Elapsed(lastPublished, ticks) < 1000) return null;
+            publishedFirstPresentTicks = continuousStart;
             published = output; lastPublished = ticks;
             return new(output, $"TaughtMono8-v1;reference={referenceId};size={w}x{h};changed={changed:F5};shift={shift};frames={count};spanMs={Elapsed(first, ticks):F0}")
-            { ReferenceSha256 = reference is null ? null : referenceId, FirstPresentTicks = output == TrayPresence.Present ? first : null };
+            { ReferenceSha256 = reference is null ? null : referenceId, FirstPresentTicks = continuousStart };
         }
     }
     static double Elapsed(long a, long b) => (b - a) * 1000d / Stopwatch.Frequency;

@@ -65,29 +65,8 @@ internal static class CameraChainReliability
             Check(h.Peer.Requests.Count == 1 && source.Failure.Length == 0 && source.ReadDiagnostics().OriginalFrameCopies == 1,
                 "next valid frame resolves on same camera and copies its original exactly once");
         }
-        await Backpressure(workspace, Path.Combine(root, "capacity"), 64);
-        await Backpressure(workspace, Path.Combine(root, "queue"), 1);
-        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "full-lane-stop"), 30000, 1))
-        {
-            h.Config.Wcs!.Parameters!["request-timeout-ms"] = "30000";
-            ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
-            await h.StartAsync(); h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            try
-            {
-                var source = h.Factory.Sources[h.Left];
-                for (uint n = 1; n <= 3; n++)
-                {
-                    h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-STOP-FULL-LANE"), n);
-                    await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().DecodeCompleted >= n));
-                    if (n < 3) await CameraRoundHarness.Until(() => Task.FromResult(source.Undelivered is null));
-                }
-                Check(source.Undelivered is not null && source.Failure.Length == 0, "full-lane source owns the third decoded observation before shutdown");
-                await h.App.StopAsync(default).WaitAsync(TimeSpan.FromSeconds(6));
-                Check(source.Undelivered is not null && h.Peer.Requests.Count == 1 && h.Api(h.Left).Stops == 1 && !h.Api(h.Left).HasFrame,
-                    "shutdown cancels full-lane wait without deadlock, returns SDK loan and retains undelivered responsibility without another POST");
-            }
-            finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
-        }
+        // Managed HTTP ownership and queue/stop boundaries are exercised by
+        // SmDispatchResources, SmRoundLifecycle and SmArrivalCameraChecks.
         using (var pool = new MvsOriginalFrames())
         {
             pool.Enable(); var held = Enumerable.Range(0, 32).Select(_ => pool.Reserve(4096, 64, 64, default)!).ToArray();
@@ -96,70 +75,6 @@ internal static class CameraChainReliability
             catch (OperationCanceledException) { Check(pool.Count == 32, "full original pool wait cancels without allocating an extra frame or leaking ownership"); }
             foreach (var frame in held) frame.Dispose(); Check(pool.Count == 0, "all reserved frame owners release cleanly after cancellation");
         }
-        await using (var h = new CameraRoundHarness(workspace, Path.Combine(root, "queue-age"), 1500))
-        {
-            await h.StartAsync();
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-WARMUP"), 1);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.State == ParcelState.SlotResolved));
-            h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-            try
-            {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-SLOW"), 2);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.Peer.Requests.Count == 2));
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-QUEUED"), 3);
-                await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].ReadDiagnostics().Delivered == 3));
-                await Task.Delay(1900); h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-                await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Count(o => o.State == ParcelState.SlotResolved) == 3);
-                Check(h.Peer.Requests.Count == 3, "fresh-at-ingress observation survives a 1.9-second queue wait under the 5-second RCS budget");
-            }
-            finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
-            var epoch = h.Factory.Sources[h.Left].Epoch;
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-ROLLBACK-DISCARDED"), 1);
-            // SDK Start is earlier than Application accepting the new session's
-            // health/identity. Offer the single synthetic frame only once that
-            // real boundary is ready; a continuous camera supplies later frames.
-            await CameraRoundHarness.Until(async () => h.Factory.Sources[h.Left].Epoch != epoch && h.Api(h.Left).Starts == 2 &&
-                (await h.App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == h.Left && d.Epoch == h.Factory.Sources[h.Left].Epoch && d.IsValid(DateTimeOffset.UtcNow)));
-            h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-NEW-EPOCH"), 1);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "SYNTH-NEW-EPOCH" && o.State == ParcelState.SlotResolved));
-            Check(h.Peer.Requests.Count == 4 && h.Api(h.Left).Opens == 2, "frame-number rollback rebinds a fresh camera epoch without sending the rollback frame or replaying old requests");
-        }
         await SportmasterRcs.ConnectionEvidenceChecks(workspace, Path.Combine(root, "connection"));
-    }
-    static async Task Backpressure(string workspace, string folder, int capacity)
-    {
-        await using var h = new CameraRoundHarness(workspace, folder, 30000, capacity);
-        h.Config.Wcs!.Parameters!["request-timeout-ms"] = "30000";
-        ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config);
-        await h.StartAsync(); var source = h.Factory.Sources[h.Left]; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        try
-        {
-            // A frame at a time: await the prior handoff before offering another,
-            // until the bounded original pool or lane applies backpressure.
-            var admitted = capacity == 1 ? 3 : 32;
-            for (uint n = 1; n <= admitted; n++)
-            {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-REPEATED"), n);
-                await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().DecodeCompleted >= n));
-                if (n < admitted) await CameraRoundHarness.Until(() => Task.FromResult(source.Undelivered is null));
-            }
-            if (capacity != 1)
-            {
-                h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-REPEATED"), 33);
-                await CameraRoundHarness.Until(() => Task.FromResult(source.ReadDiagnostics().WaitingForOriginalCapacity));
-            }
-            await Task.Delay(150);
-            Check(source.Failure.Length == 0 && h.Peer.Requests.Count == 1,
-                $"bounded {(capacity == 1 ? "ingress lane" : "original frame pool")} waits without overload fence or duplicate send");
-            Check(capacity != 1 || source.Undelivered is not null, "decoded observation retains delivery ownership while its lane is full");
-            h.Peer.Hold.TrySetResult(); h.Peer.Hold = null;
-            var expected = capacity == 1 ? 3 : 33;
-            await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").Processed == expected));
-            var operations = (await h.App.SnapshotAsync()).Operations;
-            Check(source.Failure.Length == 0 && h.Peer.Requests.Count == 1 && operations.Length == 1 && operations.Single() is { State: ParcelState.SlotResolved, Wcs.Attempts: 1 } &&
-                (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left") is { Outcome: ParcelInputOutcome.Duplicate } latest && latest.OperationId == operations.Single().Id,
-                $"all {expected} reads of one resting parcel drain without loss and send exactly once; later reads point at the original request");
-        }
-        finally { h.Peer.Hold?.TrySetResult(); h.Peer.Hold = null; }
     }
 }

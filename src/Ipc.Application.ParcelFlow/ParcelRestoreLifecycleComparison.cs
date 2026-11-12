@@ -60,6 +60,14 @@ public sealed partial class ParcelRepository
                 Require(rows.GetString(1) == "runtime");
                 if (name == "HeartbeatMaintenanceReleased")
                 { Require(rows.GetString(2) == "Original heartbeat uncertainty retained; backup does not cancel remote effects"); continue; }
+                if (name == "HeartbeatCustodyStopped")
+                {
+                    var stoppedCycles = Wire.Decode<SmPositionCycle[]>(rows.GetString(2));
+                    Require(stoppedCycles.Length == leaseCycles.Count && stoppedCycles.Select(c => c.PositionId).Distinct().Count() == leaseCycles.Count);
+                    foreach (var stoppedCycle in stoppedCycles)
+                        Require(leaseCycles.TryGetValue(stoppedCycle.PositionId, out var originalCycle) && HeartbeatCustody(stoppedCycle) == HeartbeatCustody(originalCycle));
+                    continue;
+                }
                 Require(name is "HeartbeatIntentPrepared" or "HeartbeatProtocolConfirmed" or "HeartbeatUnconfirmed");
                 var cycle = Wire.Decode<SmPositionCycle>(rows.GetString(2));
                 Require(leaseCycles.TryGetValue(cycle.PositionId, out var prior) && HeartbeatCustody(cycle) == HeartbeatCustody(prior));

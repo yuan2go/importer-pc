@@ -89,6 +89,9 @@ static partial class Program
             CaptureInternal(evidence, "manual-debug-request-response", center, lines);
             await SetClient(center, 800, 420); prepare.BringIntoView(); await Flush();
             Check(Inside(prepare, (Grid)center.Content), "manual preparation remains reachable in compact layout");
+            await SmRoundFixture.ReconcileRemoteAsync(h.App, "right", "SYNTHETIC debug refusal settled and withdrawal applied");
+            var recovered = await h.App.SnapshotAsync();
+            await h.App.SetPositionEnabledAsync(new(Wire.Id(), recovered.RuntimeId, "right", recovered.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
             await h.NextVehicleAsync("right"); await vm.RefreshAsync(); await (Task)control.GetType().GetMethod("PollAsync")!.Invoke(control, null)!;
             entry.Text = "UNSENT-ON-EXIT"; prepare.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => send.IsEnabled && Field<TextBox>(control, "requestBody").Text.Contains("UNSENT-ON-EXIT"));

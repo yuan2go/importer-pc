@@ -17,7 +17,10 @@ public sealed partial class ParcelRuntime
     sealed record FlowPerformanceEvent(long Sequence, DateTimeOffset At, DateTimeOffset? ObservedAt, string Position, string Kind,
         string? ObservationId, string? DeviceId, string? Epoch, string? SourceEventId, string? OperationId,
         string? RequestId, string? State, string? LocalFailure, double? ElapsedMs, double? SinceDecodeMs)
-    { public string? RoundId { get; init; } }
+    {
+        public string? RoundId { get; init; }
+        public double? CaptureToEventMs { get; init; }
+    }
 
     void RecordFlowPerformance(string position, string kind, string? observation, AcquisitionIdentity? acquisition,
         string? operation = null, string? request = null, string? state = null, string? localFailure = null,
@@ -31,7 +34,12 @@ public sealed partial class ParcelRuntime
             counts[kind] = counts.GetValueOrDefault(kind) + 1;
             if (performanceEvents.Count == PerformanceWindow) performanceEvents.Dequeue();
             performanceEvents.Enqueue(new(++performanceSequence, DateTimeOffset.UtcNow, acquisition?.ObservedAt, position, kind, observation,
-                acquisition?.DeviceId, acquisition?.Epoch, acquisition?.SourceEventId, operation, request, state, localFailure, elapsed, sinceDecode) { RoundId = roundId });
+                acquisition?.DeviceId, acquisition?.Epoch, acquisition?.SourceEventId, operation, request, state, localFailure, elapsed, sinceDecode)
+            {
+                RoundId = roundId,
+                CaptureToEventMs = decodedTicks > 0 && acquisition?.CaptureTicks is > 0 && acquisition.CaptureTicks <= decodedTicks
+                    ? Stopwatch.GetElapsedTime(acquisition.CaptureTicks).TotalMilliseconds : null
+            });
         }
     }
     void RecordInputPerformance(ParcelInputSnapshot input)

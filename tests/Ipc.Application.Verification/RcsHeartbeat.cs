@@ -195,7 +195,7 @@ static partial class SportmasterRcs
         Check(snapshot.Configuration.Effective.Wcs!.Parameters.Count == 0 && snapshot.Positions!.Single(p => p.Id == "left").Vehicle?.Status == "IDLE" &&
             snapshot.Positions!.Single(p => p.Id == "right").Vehicle?.Status == "TASKING",
             "Application projects the correct vehicle per position without exposing editable configuration to operators");
-        var receipt = await station.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "SYNTH-WORKING-AGV", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.Generation }, default);
+        var receipt = await station.App.SubmitParcelBarcodeAsync(new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, "right", "SYNTH-WORKING-AGV", ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.Generation, ExpectedPlacementBoundary = snapshot.Positions!.Single(p => p.Id == "right").Arrival!.PlacementBoundary }, default);
         Check(receipt.Status == "Admitted", "a working vehicle is informational and cannot block a real manual admission");
         await Until(async () => (await station.App.OperationAsync(receipt.OperationId!))?.Wcs?.State == StageState.Accepted);
         station.Peer.ReplyVehicleStates = false;

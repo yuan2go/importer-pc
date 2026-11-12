@@ -14,15 +14,17 @@ public static class BarcodeFiltering
             throw new ArgumentException("条码筛选正则须为1～2048字符；不提供生产默认规则");
         return new Regex("\\A(?:" + pattern + ")\\z", RegexOptions.CultureInvariant, timeout);
     }
-    public static string? Validate(BarcodeFilterPolicy? policy)
+    public static string? Validate(BarcodeFilterPolicy? policy) => Prepare(policy, out _, out _);
+    static string? Prepare(BarcodeFilterPolicy? policy, out Regex? allow, out Regex? exclude)
     {
+        allow = exclude = null;
         if (policy is null) return null; // current strict single-candidate policy, never match-all
         if (policy.MultiCodeSeparator is { } separator && (separator.Length > 16 || separator.Any(char.IsControl)) ||
             policy.RejectMultipleCodes == false && string.IsNullOrWhiteSpace(policy.MultiCodeSeparator ?? ";"))
             return "BarcodeFilter.MultiCodeSeparator: 不拒绝多码时请填写1～16个可见字符的分隔符，不允许控制字符";
-        try { if (!string.IsNullOrWhiteSpace(policy.Pattern) || policy.Pattern?.Length > MaximumPatternLength) _ = Compile(policy.Pattern!, TimeSpan.FromMilliseconds(25)); }
+        try { if (!string.IsNullOrWhiteSpace(policy.Pattern) || policy.Pattern?.Length > MaximumPatternLength) allow = Compile(policy.Pattern!, TimeSpan.FromMilliseconds(25)); }
         catch (ArgumentException ex) { return "BarcodeFilter.Pattern: " + ex.Message; }
-        try { if (policy.ExclusionPattern is not null) _ = Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25)); }
+        try { if (policy.ExclusionPattern is not null) exclude = Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25)); }
         catch (ArgumentException ex) { return "BarcodeFilter.ExclusionPattern: " + ex.Message; }
         return null;
     }
@@ -37,12 +39,12 @@ public static class BarcodeFiltering
         if (policy is null)
             return candidates.Length != 1 ? Result(candidates.Length == 0 ? "NoCode" : "MultipleCodes", null, candidates.Length, "未设置筛选规则：仅接受一个原始码") :
                 !ValidCode(candidates[0]) ? Result("InvalidCode", null, 0, "条码长度或控制字符不合法") : Result("StrictSingleCode", candidates[0], 1, "严格单码；未应用筛选规则");
-        if (Validate(policy) is { } invalid) return Result("InvalidPattern", null, 0, invalid);
         var timer = Stopwatch.StartNew();
+        // Compile once per selection, within the same total budget as matching.
+        if (Prepare(policy, out var regex, out var exclude) is { } invalid) return Result("InvalidPattern", null, 0, invalid);
+        if (timer.ElapsedMilliseconds >= 100) return Result("FilterTimeout", null, 0, "筛选总预算100ms已耗尽；没有准入或外呼");
         try
         {
-            var regex = string.IsNullOrWhiteSpace(policy.Pattern) ? null : Compile(policy.Pattern, TimeSpan.FromMilliseconds(25));
-            var exclude = policy.ExclusionPattern is null ? null : Compile(policy.ExclusionPattern, TimeSpan.FromMilliseconds(25));
             List<string> matches = [];
             for (var index = 0; index < candidates.Length; index++)
             {

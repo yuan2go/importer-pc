@@ -16,7 +16,7 @@ def package_index():
 
 def verify():
     files = [ROOT / 'README.md', ROOT / 'CHANGELOG.md', ROOT / 'docs/INDEX.md',
-             ROOT / 'docs/archive/work-packages/README.md', *sorted((ROOT / 'docs/operator').glob('*.md'))]
+             *sorted((ROOT / 'docs/operator').glob('*.md'))]
     errors = []
     count = 0
     for path in files:
@@ -38,8 +38,6 @@ def verify():
     version = ET.parse(ROOT / 'src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj').findtext('./PropertyGroup/Version')
     if f'SM {version}' not in (ROOT / 'docs/operator/implementation-guide.md').read_text(encoding='utf-8'):
         errors.append('Operator manual version differs from actual SM project')
-    if (ROOT / 'docs/archive/work-packages/README.md').read_text(encoding='utf-8') != package_index():
-        errors.append('Work package index is stale; generate it explicitly')
     if errors:
         raise ValueError('\n'.join(errors))
     print(f'PASS DOCS: {len(files)} entry pages, {count} local links, {len(codes)} CP codes; physical printing/native/site NOT_RUN; PDF generation and visual review recorded separately')

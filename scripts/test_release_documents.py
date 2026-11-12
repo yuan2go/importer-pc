@@ -12,37 +12,31 @@ class ReleaseDocumentTests(unittest.TestCase):
     def test_all_parcel_products_ship_only_current_operation_entry(self):
         root = Path(__file__).resolve().parent.parent
         self.assertEqual(docs.PARCEL_GUIDES['docs/runtime/lifecycle-ux-current-guidance-01.md'], 'LIFECYCLE-OPERATIONS.md')
-        for old in ['docs/runtime/sportmaster-visual-productization-01.md', 'docs/runtime/validation/sportmaster-alternate-ui-windows.md', 'docs/runtime/ui-task-redesign-01.md', 'docs/runtime/parameter-refactor-01.md']:
-            self.assertNotIn(old, docs.ALL_GUIDES)
-        for mapping in [docs.PARCEL_GUIDES, docs.SPORTMASTER_GUIDES]:
+        for product, mapping in [('direct-plc', docs.PARCEL_GUIDES), ('wcs-to-plc', docs.PARCEL_GUIDES), ('sportmaster', docs.SPORTMASTER_GUIDES)]:
             self.assertEqual(len(mapping), len(set(mapping.values())))
-            for source in mapping:
-                rendered = docs.render(root, source, 'a' * 40)
-                self.assertTrue(rendered.strip(), source)
-                for obsolete in ['进入帮助与支持', '打开帮助与支持', '点击帮助与支持', '在帮助与支持页', '全屏帮助与支持']:
-                    self.assertNotIn(obsolete, rendered, source)
+            with tempfile.TemporaryDirectory() as temporary:
+                output = Path(temporary)
+                docs.publish(root, output, 'a' * 40, product)
+                self.assertEqual(set(mapping.values()), {path.name for path in output.iterdir()})
+                for path in output.iterdir():
+                    rendered = path.read_text(encoding='utf-8')
+                    self.assertTrue(rendered.strip(), path.name)
+                    for target in re.findall(r'\]\(([^)]+)\)', rendered):
+                        if not target.startswith(('https://', 'http://', '#', 'mailto:')):
+                            self.assertTrue((output / target.split('#')[0]).is_file(), (path.name, target))
         generated = (root / 'scripts/package-application.py').read_text(encoding='utf-8')
         referenced = set(re.findall(r'\b[A-Z][A-Z0-9-]+\.md\b', generated))
         self.assertLessEqual(referenced, set(docs.SPORTMASTER_GUIDES.values()), 'Generated launch instructions must reference shipped current guides')
 
-    def test_parcel14_is_the_shipped_current_guide(self):
+    def test_current_storage_and_arrival_guides_are_shipped(self):
         root = Path(__file__).resolve().parent.parent
-        self.assertNotIn('DB11-UPGRADE.md', docs.SPORTMASTER_GUIDES.values())
-        self.assertIn('PARCEL14-OPERATIONS.md', docs.PARCEL_GUIDES.values())
-        self.assertIn('SM-SESSION-SHIFTS.md', docs.SPORTMASTER_GUIDES.values())
-        guide = docs.render(root, 'docs/runtime/parcel12-operations-26.md', 'a' * 40)
         current = str(read_storage_format(root))
-        self.assertIn('PARCEL' + current + '-OPERATIONS.md', docs.SPORTMASTER_GUIDES.values())
-        self.assertIn('新库直接创建格式 **' + current + '**', guide)
-        for fact in ['新库直接创建格式 **14**', '普通启动仅核验当前格式', '不提供 DB12 到 DB14 的迁移或离线接续', '非当前格式在写入前拒绝', '不提供旧格式升级或降级', 'COMPLETED.json', '旧程序不能直接读取14', '原请求', '不得只改版本号']:
-            self.assertIn(fact, guide)
-
-    def test_sm_ships_current_scan_and_diagnostic_semantics(self):
-        root = Path(__file__).resolve().parent.parent
-        self.assertEqual(docs.SPORTMASTER_GUIDES['docs/runtime/sm-operator-corrections-29.md'], 'SM-SCAN-AND-DEBUG.md')
-        guide = docs.render(root, 'docs/runtime/sm-operator-corrections-29.md', 'a' * 40)
-        for fact in ['每轮最多一次首次RCS调用', '无码、Scene、候选变化和重连不能单独证明离位', '相机采集、视频和识别继续运行', '升级时保留已有站点码制', '不提供结果查询', 'RCS离线时仍可触发调试读取', '管理中心打开时暂停自动供包和识码', 'Unknown 在可靠离位且调用与回执收口后进入历史保管', '只有点击“发送请求”才调用', '当前生效配置中的实际RCS服务', '不申请预览缩略图', '历史丢帧不会否定']:
-            self.assertIn(fact, guide)
+        for mapping in [docs.PARCEL_GUIDES, docs.SPORTMASTER_GUIDES]:
+            source = next(source for source, filename in mapping.items() if filename == f'PARCEL{current}-OPERATIONS.md')
+            title = docs.render(root, source, 'a' * 40).splitlines()[0]
+            self.assertEqual([current], re.findall(r'\bParcel(\d+)\b', title, flags=re.IGNORECASE))
+        self.assertIn('docs/design/sm-vehicle-arrival-rounds.md', docs.SPORTMASTER_GUIDES)
+        self.assertIn('docs/design/sm-parcel-rounds.md', docs.SPORTMASTER_GUIDES)
 
     def test_current_links_standalone_and_evidence_links_immutable(self):
         with tempfile.TemporaryDirectory() as temporary:

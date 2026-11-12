@@ -133,6 +133,7 @@ static class ParameterRefactor
         var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
         stale.StructuredPolicy.ReadTimeoutMs = "1000"; stale.StructuredPolicy.BackupEnabled = true;
+        stale.StructuredPolicy.BackupDirectory = Path.Combine(root, "scheduled-backups");
         stale.StructuredPolicy.BackupIntervalMinutes = "bad"; stale.StructuredPolicy.BackupMaximumSets = "0";
         stale.ParameterEditor.ValidateFields();
         Check(stale.ParameterEditor.Issues.Any(i => i.Path == "BackupIntervalMinutes") && stale.ParameterEditor.Issues.Any(i => i.Path == "BackupMaximumSets") && !stale.ParameterEditor.Issues.Any(i => i.Path == "BackupDirectory") && stale.StructuredPolicy.BackupIntervalMinutes == "bad" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,

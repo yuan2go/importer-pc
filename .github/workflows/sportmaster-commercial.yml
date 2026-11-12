@@ -7,7 +7,7 @@ env:
 permissions:
   contents: read
 concurrency:
-  group: sportmaster-${{ github.event.pull_request.number || github.ref }}
+  group: sportmaster-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   windows-installation-lifecycle:
@@ -135,7 +135,9 @@ jobs:
           for case in storage-baseline parcel-recovery-p2 backup-health-recovery review-closure application-architecture capability-closure architecture-quality commercial-quality commercial-productization audit03-rcs history-session-contract version-compatibility configuration-confirmation parameter-refactor management-mode station-single-camera sm-built-in-only mvid-reader; do
             if ! dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/$case.log"; then failed=1; fi
           done
-          for case in current-contracts receipt-preflight-product query-fixture architecture conformance operation-closure closure data extensions maintainability review-followup followup; do
+          # The default above includes data, conformance, operation/receipt closure,
+          # query-fixture, extensions and followups; run only its independent scopes here.
+          for case in current-contracts receipt-preflight-product architecture maintainability; do
             if ! dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll . "--$case" 2>&1 | tee ".artifacts/current-contract-ci/supply-$case.log"; then failed=1; fi
           done
           if ! PYTHONPATH=scripts python3 -m unittest test_application_compatibility test_release_documents test_application_bundles test_commercial_delivery test_stability_qualification 2>&1 | tee .artifacts/current-contract-ci/publication.log; then failed=1; fi
@@ -172,7 +174,6 @@ jobs:
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --win11-stability 2>&1 | tee stability-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --storage-format-guards 2>&1 | tee storage-format-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --retention-ingress 2>&1 | tee retention-ingress.log
-          python3 -m unittest discover -s scripts -p test_stability_qualification.py -v 2>&1 | tee stability-collector.log
       - name: Exercise dual-camera startup failure and cancellation ownership
         shell: bash
         run: |
@@ -210,7 +211,6 @@ jobs:
             stability-boundaries.log
             storage-format-boundaries.log
             retention-ingress.log
-            stability-collector.log
             dual-camera-boundaries.log
             parameter-guidance-startup.log
             deferred-connections.log
@@ -250,10 +250,6 @@ jobs:
         run: |
           . ./scripts/project-environment.ps1
           New-Item -ItemType Directory -Force .artifacts/p0-stability | Out-Null
-          if ($env:GITHUB_EVENT_NAME -eq 'push') {
-            dotnet build ImporterPc.slnx -c Release -p:BusinessModule=Sportmaster -p:SelfContained=false -p:RestoreLockedMode=true -m:1 -nr:false
-            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          }
           dotnet build tests/Ipc.Application.Verification -c Release -p:RestoreLockedMode=true
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           foreach ($case in @('windows-client-compatibility','stability-audit-fixes','time-storage-fault-checks','time-storage-atomic-checks','time-storage-supervisor-checks','time-storage-process-checks','p0-provider-identity','p0-deferred','p0-cleanup','p0-tcp','p0-tcp-components','p0-rcs','rcs-timeout-errors','p0-recovery','p0-supervisor','p0-unknown-restart','p0-task-validate','p0-task-lookup','installer-change-guards','shortcut-lifecycle')) {
@@ -342,16 +338,14 @@ jobs:
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
-          # PR checkout is GitHub's exact merge commit, not an ancestor of main.
-          # --source is reserved for main-ancestor historical publication/reuse.
-          # A local runner branch gives the installer a verifiable source name
-          # while retaining GitHub's exact checked merge commit; never pushed.
+          # Manual verification may target a development ref. A local runner branch
+          # records that exact checked source without claiming main release ancestry.
           git switch -c codex/ci-sportmaster-${{ github.run_id }}
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/release-windows.py --profile sportmaster --output D:/scd/release
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $release = Get-Content D:/scd/release/RELEASE.json -Raw | ConvertFrom-Json
-          if ($release.SourceCommit -ne '${{ github.sha }}') { throw 'Frozen PR release differs from the checked merge commit' }
+          if ($release.SourceCommit -ne '${{ github.sha }}') { throw 'Frozen release differs from the checked source commit' }
       - name: Protected local administrator boundary on Windows
         shell: pwsh
         run: |

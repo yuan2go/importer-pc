@@ -180,9 +180,4 @@ public sealed partial class ParcelRuntime : IParcelHistorySessionApplication, IP
         finally { Interlocked.Exchange(ref historyExportInProgress, 0); }
     }
     string? lastExportFailure;
-    async Task ObserveExport(Task task)
-    {
-        try { await task.ConfigureAwait(false); }
-        catch (Exception error) { Volatile.Write(ref lastExportFailure, error.GetType().Name + "; export caller/receipt owns details; runtime facts unchanged"); }
-    }
 }

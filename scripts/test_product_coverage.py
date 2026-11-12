@@ -90,20 +90,42 @@ class ProductCoverage(unittest.TestCase):
 
     def test_failed_or_missing_execution_cannot_qualify_coverage(self):
         root = ET.Element('TestRun')
-        summary = ET.SubElement(root, 'ResultSummary')
-        counters = ET.SubElement(summary, 'Counters', executed='25', passed='25', failed='0', notExecuted='0')
+        summary = ET.SubElement(root, 'ResultSummary', outcome='Completed')
+        counters = ET.SubElement(summary, 'Counters', total='3', executed='3', passed='3', failed='0', notExecuted='0')
         rows = ET.SubElement(root, 'Results')
-        for i in range(25):
+        for i in range(3):
             ET.SubElement(rows, 'UnitTestResult', testName=str(i), outcome='Passed')
         trx = self.root / 'core.trx'
         ET.ElementTree(root).write(trx)
-        self.assertEqual(25, passed_test_count(self.root))
+        self.assertEqual(3, passed_test_count(self.root))
+        summary.set('outcome', 'Aborted')
+        ET.ElementTree(root).write(trx)
+        with self.assertRaisesRegex(ValueError, 'failed core tests'):
+            passed_test_count(self.root)
+        summary.set('outcome', 'Completed')
+        counters.set('total', '4')
+        ET.ElementTree(root).write(trx)
+        with self.assertRaisesRegex(ValueError, 'failed core tests'):
+            passed_test_count(self.root)
+        counters.set('total', '3')
         counters.set('failed', '1')
         ET.ElementTree(root).write(trx)
         with self.assertRaisesRegex(ValueError, 'failed core tests'):
             passed_test_count(self.root)
         counters.set('failed', '0')
+        counters.set('notExecuted', '1')
+        ET.ElementTree(root).write(trx)
+        with self.assertRaisesRegex(ValueError, 'failed core tests'):
+            passed_test_count(self.root)
+        counters.set('notExecuted', '0')
         rows.remove(list(rows)[0])
+        ET.ElementTree(root).write(trx)
+        with self.assertRaisesRegex(ValueError, 'failed core tests'):
+            passed_test_count(self.root)
+        counters.set('executed', '0')
+        counters.set('passed', '0')
+        counters.set('total', '0')
+        rows.clear()
         ET.ElementTree(root).write(trx)
         with self.assertRaisesRegex(ValueError, 'failed core tests'):
             passed_test_count(self.root)

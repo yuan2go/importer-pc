@@ -244,7 +244,6 @@ public sealed partial class ParcelRuntime
             audit = new(Wire.Id(), DateTimeOffset.UtcNow, currentOperator, reason, configuration.Current.Revision, configuration.Current.Revision,
                 Wire.Hash(Wire.Encode(Effective)), Wire.Hash(Wire.Encode(candidate)), "Prepared", BeforeEffective: Effective, BeforePending: configuration.Current.Pending, Candidate: candidate, Authorization: ManagementEvidence);
             repository!.Commit(null, "ConfigurationChangePrepared", Wire.Encode(audit), configurationAudit: audit);
-            if (candidate.SchemaVersion != 3) throw new InvalidDataException("Topology schema downgrade/flattening is forbidden");
             var errors = definition.Validate(candidate);
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             RequireSameIdentity(Effective, candidate); candidate = factory.Normalize(candidate);

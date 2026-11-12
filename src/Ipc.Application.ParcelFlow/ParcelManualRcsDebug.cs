@@ -64,9 +64,7 @@ public sealed partial class ParcelRuntime
                     throw new CameraReadRoundConflictException("当前轮次已变化或仍在读取/发送；核对原轮次后再准备请求。");
                 if (UsesSmArrival(command.PositionId) && command.ExpectedArrivalGeneration != SmCycle(command.PositionId).Generation)
                     throw new CameraReadRoundConflictException("目标小车已变化；请重新核对本位后准备请求。");
-                var replaceable = readRound?.Operation is { } priorId && operations.TryGetValue(priorId, out var prior) &&
-                    CanCloseUnsentDebugIntent(prior) ? priorId : null;
-                var reasons = ManualInputReasons(command.PositionId, exceptOperation: replaceable, debugRequest: true);
+                var reasons = ManualInputReasons(command.PositionId, debugRequest: true);
                 if (reasons.Length != 0) throw new CameraReadRoundConflictException(string.Join("；", reasons));
                 if (ports?.Wcs is not IWcsRequestPreparer) throw new CameraReadRoundConflictException("当前RCS不支持冻结请求。");
                 var at = DateTimeOffset.UtcNow;
@@ -107,7 +105,7 @@ public sealed partial class ParcelRuntime
         op.Wcs is { State: StageState.Prepared, Attempts: 0, Request.IntegrationRequest: not null } &&
         configuration?.Current.Pending is null && Wire.Hash(Wire.Encode(Effective)) == op.ConfigurationHash &&
         SmTargetDispatchAllowed(op) &&
-        ManualInputReasons(op.PositionId!, exceptOperation: op.Id, debugRequest: true, requireAdmissionCapacity: false).Length == 0 && WeightReady(op) &&
+        ManualInputReasons(op.PositionId!, debugRequest: true).Length == 0 && WeightReady(op) &&
         (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject) &&
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id);
 }

@@ -277,8 +277,6 @@ static partial class Program
             [RcsRequestPolicy.DestinationChuteCode] = "OLD-CHUTE",
             ["request-id-base"] = "810000000",
             ["request-id-count"] = "1000",
-            ["left-station-code"] = "OLD-LEFT",
-            ["right-station-code"] = "OLD-RIGHT",
             ["left-bcr-code"] = "TAKE-L",
             ["right-bcr-code"] = "TAKE-R"
         });
@@ -293,13 +291,12 @@ static partial class Program
             new([reader, rcs, .. (await runtime.CapabilitiesAsync()).Providers.Where(p => p.Kind is not ("observation" or "integration"))], [package.Id], Packages: [new(package, [])]));
         var model = draft.CreateParameterEditor(runtime.TestBarcodeFilterAsync); var control = new ParameterSettingsControl { Model = model };
         window.Content = control; window.Width = 1366; window.Height = 768; window.UpdateLayout();
-        check(!model.ValidateFields() && model.Issues.Any(i => i.Path.EndsWith("left-station-code")), "old unequal station codes block saving without silently choosing a side");
-        control.NavigateTo("rcs.one/left-station-code"); window.UpdateLayout();
-        var common = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "rcs.one/left-station-code");
-        check(common.Text.Length == 0, "conflicting legacy pair is visible with blank explicit migration input"); capture("parameters-station-conflict", control);
+        control.NavigateTo("StationCode"); window.UpdateLayout();
+        var common = Descendants(control).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode");
+        check(common.Text == draft.Policy.StationCode, "station input uses the one complete-configuration value"); capture("parameters-single-station", control);
         common.Text = "SYNTHETIC-COMMON";
         var rcsDraft = draft.Capabilities.Single(c => c.InstanceId == "rcs.one"); var built = rcsDraft.Build();
-        check(built.Parameters["left-station-code"] == "SYNTHETIC-COMMON" && built.Parameters["right-station-code"] == "SYNTHETIC-COMMON" && !built.Parameters.ContainsKey(RcsRequestPolicy.DestinationChuteCode), "explicit shared station edit projects both keys and automatic assignment omits inactive chute");
+        check(draft.Build().StationCode == "SYNTHETIC-COMMON" && built.Parameters.All(p => !p.Key.EndsWith("-station-code")) && !built.Parameters.ContainsKey(RcsRequestPolicy.DestinationChuteCode), "one station edit creates no per-position station parameters and automatic assignment omits inactive chute");
         check(rcsDraft.Parameters.Single(p => p.Field.Key == RcsRequestPolicy.DestinationChuteCode).Value == "OLD-CHUTE", "inactive chute input remains in the raw draft");
         check(model.ValidateFields(), "corrected synthetic provider candidate passes field checks before normal-form captures");
         control.NavigateTo("rcs.one/quantity"); window.UpdateLayout(); capture("parameters-business-rules", control);

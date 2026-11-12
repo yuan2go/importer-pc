@@ -24,13 +24,13 @@ public static partial class WindowsDeploymentSetup
         var record = Wire.Decode<DeploymentPurgeRecord>(File.ReadAllText(path));
         if (path != PurgeFile(application, record.Plan.OperationId))
             throw new InstallationOutcomeUnknownException("数据删除结果尚未确认，请稍后再次查看。");
-        return ProjectDataPurge(record, path, current);
+        return ProjectDataPurge(record, path, current, MachineRoot);
     }
 
-    internal static DeploymentPurgeReceipt ProjectDataPurge(DeploymentPurgeRecord record, string path, DeploymentLocation current)
+    internal static DeploymentPurgeReceipt ProjectDataPurge(DeploymentPurgeRecord record, string path, DeploymentLocation current, string machineRoot)
     {
-        var roots = new[] { current.DataRoot, current.ConfigurationDirectory }.Select(Path.GetFullPath).Order(StringComparer.OrdinalIgnoreCase);
-        if (record.SchemaVersion != 1 || !record.Plan.Allowed || record.Plan.ApplicationId != current.ApplicationId ||
+        var roots = DataPurgeRoots(current, machineRoot).Order(StringComparer.OrdinalIgnoreCase);
+        if (record.SchemaVersion != 2 || !record.Plan.Allowed || record.Plan.ApplicationId != current.ApplicationId ||
             current.MaintenanceOperation != path || Path.GetFileName(path) != current.ApplicationId + ".purge-" + record.Plan.OperationId + ".json" ||
             !record.Plan.Delete.Select(area => Path.GetFullPath(area.Root)).Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(roots, StringComparer.OrdinalIgnoreCase) ||
             current.LifecycleState is not ("Purging" or "PartiallyPurged" or "Purged") ||
@@ -97,7 +97,7 @@ public static partial class WindowsDeploymentSetup
         if (location.LifecycleState == "Purged") return Denied("本站数据已永久删除。");
         if (location.LifecycleState != "RemovedDataRetained")
             return Denied("程序尚未卸载，请先关闭供包台后卸载。");
-        var roots = new[] { location.DataRoot, location.ConfigurationDirectory }.Select(Path.GetFullPath).ToArray();
+        var roots = DataPurgeRoots(location, machineRoot);
         machineRoot = Path.GetFullPath(machineRoot);
         try { RequirePurgeScope(location, machineRoot); }
         catch (InvalidDataException error) { return Denied(error.Message); }
@@ -107,18 +107,19 @@ public static partial class WindowsDeploymentSetup
             return Denied("数据目录内有名称无法核对的文件，拒绝永久删除；请交实施人员处理。");
         var identity = Wire.Hash(Wire.Encode(new { location.ApplicationId, operation, registrationHash, delete }));
         return new(identity, operation, location.ApplicationId, registrationHash, true,
-            "将删除本站的配置、数据库、图片、回包和日志（共 " + delete.Sum(d => d.Files.Count) + " 个文件），不可撤销。", delete, PurgeRetained);
+            "将删除本站的配置、数据库、图片、回包、日志和管理密码（共 " + delete.Sum(d => d.Files.Count) + " 个文件），不可撤销。", delete, PurgeRetained);
     }
 
     // markRegistration(state): writes Purging before the first delete, then Purged or PartiallyPurged.
     internal static DeploymentPurgeReceipt ApplyDataPurge(DeploymentPurgeRecord record, string path, Func<string> registrationHash,
         Action<DeploymentPurgeRecord> save, Action<string> markRegistration, MaintenanceExecution? execution = null)
     {
+        if (record.SchemaVersion != 2) throw new InvalidDataException("数据删除记录格式不受支持；保留原件，不能扩展或改写原清单。");
         var plan = record.Plan;
         var resume = record.Status is "Purging" or "PartiallyPurged" or "Purged";
         if (!plan.Allowed || !resume && registrationHash() != plan.ExpectedRegistrationHash)
             throw new InvalidOperationException("登记已变化或计划不允许，请重新检查永久删除。");
-        if (plan.Delete.Length is 0 or > 2 || plan.Delete.Select(d => Path.GetFullPath(d.Root)).Distinct(StringComparer.OrdinalIgnoreCase).Count() != plan.Delete.Length)
+        if (plan.Delete.Length is 0 or > 3 || plan.Delete.Select(d => Path.GetFullPath(d.Root)).Distinct(StringComparer.OrdinalIgnoreCase).Count() != plan.Delete.Length)
             throw new InvalidDataException("永久删除范围无效。");
         foreach (var area in plan.Delete)
         {
@@ -217,7 +218,7 @@ public static partial class WindowsDeploymentSetup
         if (!actual.Allowed || actual.Identity != reviewed.Identity) throw new InvalidOperationException("永久删除计划已变化，请重新检查。");
         using var identity = WindowsIdentity.GetCurrent();
         var sid = new SecurityIdentifier(current.RuntimeAccountSid);
-        var record = new DeploymentPurgeRecord(1, DateTimeOffset.UtcNow, actual, "Prepared", [], identity.User!.Value);
+        var record = new DeploymentPurgeRecord(2, DateTimeOffset.UtcNow, actual, "Prepared", [], identity.User!.Value);
         return ApplyDataPurge(record, path, () => Wire.FileHash(Registration(actual.ApplicationId)),
             state => WriteProtected(path, state, sid), state => WriteProtected(Registration(actual.ApplicationId), current with { LifecycleState = state, MaintenanceOperation = path }, sid), execution);
     }
@@ -234,11 +235,11 @@ public static partial class WindowsDeploymentSetup
         if (new FileInfo(path).Length > 8 * 1024 * 1024) throw new InvalidDataException("永久删除记录超过读取预算。");
         var record = Wire.Decode<DeploymentPurgeRecord>(File.ReadAllText(path));
         var current = Current(application) ?? throw new InvalidDataException("缺少唯一部署登记。");
-        using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
         if (record.Plan.OperationId != operation)
             throw new InvalidOperationException("没有可继续的原永久删除。");
-        var observed = ProjectDataPurge(record, path, current);
+        var observed = ProjectDataPurge(record, path, current, MachineRoot);
         if (observed.Status == "Purged") return observed;
+        using var rootOwnership = application == "sportmaster" ? ApplicationRootOwnership.AcquireMaintenance(application, current.DataRoot) : null;
         RequirePurgeScope(current, MachineRoot);
         var sid = new SecurityIdentifier(current.RuntimeAccountSid);
         return ApplyDataPurge(record with { Status = "Purging" }, path, () => Wire.FileHash(Registration(application)),

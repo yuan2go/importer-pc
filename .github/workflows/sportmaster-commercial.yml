@@ -2,15 +2,27 @@ name: Sportmaster commercial engineering
 on:
   # Specialized/manual qualification; automatic PR/main regression is industrial-core.yml.
   workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Verification scope; all also builds the complete delivery medium'
+        type: choice
+        default: contracts
+        options:
+          - contracts
+          - installation
+          - delivery
+          - entrypoints
+          - all
 env:
   IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME: '1'
 permissions:
   contents: read
 concurrency:
-  group: sportmaster-${{ github.ref }}
+  group: sportmaster-${{ github.ref }}-${{ inputs.suite }}
   cancel-in-progress: true
 jobs:
   windows-installation-lifecycle:
+    if: inputs.suite == 'all' || inputs.suite == 'installation'
     runs-on: windows-2025
     timeout-minutes: 20
     env:
@@ -50,6 +62,7 @@ jobs:
           name: installation-lifecycle-${{ github.sha }}
           path: .artifacts/installation-lifecycle
   build-test-entrypoints:
+    if: inputs.suite == 'all' || inputs.suite == 'entrypoints'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -73,6 +86,7 @@ jobs:
           path: .artifacts/entrypoint-ci/*.log
           retention-days: 30
   supply-build-entrypoint:
+    if: inputs.suite == 'all' || inputs.suite == 'entrypoints'
     runs-on: windows-2025
     timeout-minutes: 15
     steps:
@@ -108,6 +122,7 @@ jobs:
           path: .artifacts/supply-build-ci/*.log
           retention-days: 30
   current-contract-boundaries:
+    if: inputs.suite == 'all' || inputs.suite == 'contracts'
     # Current contracts only. Historical inputs are exercised as read-only refusals.
     # Linux uses canonical Git source bytes for the immutable SQL checks.
     runs-on: ubuntu-latest
@@ -151,6 +166,7 @@ jobs:
           path: .artifacts/current-contract-ci/*.log
           retention-days: 30
   aqa01-boundaries:
+    if: inputs.suite == 'all' || inputs.suite == 'contracts'
     # Portable runtime/SQLite/loopback evidence complements the Windows medium
     # below; it is not vendor-protocol or field acceptance.
     runs-on: ubuntu-latest
@@ -165,19 +181,19 @@ jobs:
       - name: Exercise ingress and command durability boundaries
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --architecture-quality-remediation 2>&1 | tee aqa01-boundaries.log
       - name: Exercise stability custody, isolation, reads and retention
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --win11-stability 2>&1 | tee stability-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --storage-format-guards 2>&1 | tee storage-format-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --retention-ingress 2>&1 | tee retention-ingress.log
       - name: Exercise dual-camera startup failure and cancellation ownership
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --dual-camera-communication 2>&1 | tee dual-camera-boundaries.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --parameter-guidance-startup 2>&1 | tee parameter-guidance-startup.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --deferred-connections 2>&1 | tee deferred-connections.log
@@ -186,7 +202,7 @@ jobs:
       - name: Exercise process death, monotonic time, storage and ownership
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --reliability-02 2>&1 | tee reliability-02.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --receipt-custody 2>&1 | tee receipt-custody.log
           dotnet tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll . --h02-crashes 2>&1 | tee reliability-02-crashes.log
@@ -224,6 +240,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
   p0-stability-boundaries:
+    if: inputs.suite == 'all' || inputs.suite == 'contracts'
     runs-on: windows-2025
     timeout-minutes: 15
     steps:
@@ -288,6 +305,7 @@ jobs:
           path: .artifacts/p0-stability
           retention-days: 30
   frozen-sportmaster:
+    if: inputs.suite == 'all' || inputs.suite == 'delivery'
     runs-on: windows-2025
     env:
       DOTNET_INSTALL_DIR: D:/tools/dotnet
@@ -319,13 +337,16 @@ jobs:
       - name: Clean installation protected-directory regression
         run: |
           . ./scripts/project-environment.ps1
-          dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --initialize-isolated-ci-storage
+          dotnet build tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -m:1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet run --project tests/Ipc.Verification/Ipc.Verification.csproj -- --clean-storage-bootstrap-elevated
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --initialize-isolated-ci-storage
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --clean-storage-bootstrap-elevated
+          exit $LASTEXITCODE
       - name: Read-only uninstall inventory regression
         run: |
           . ./scripts/project-environment.ps1
-          dotnet run --project tests/Ipc.Verification -c Release -p:RestoreLockedMode=true -- --commercial-removal
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --commercial-removal
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Policy rejection tests
         run: |

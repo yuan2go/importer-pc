@@ -4,15 +4,52 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Run regression, branch measurement, printable guides, or all'
+        type: choice
+        default: regression
+        options:
+          - regression
+          - branches
+          - print
+          - all
 permissions:
   contents: read
 concurrency:
-  group: industrial-core-${{ github.workflow }}-${{ github.ref }}
+  group: industrial-core-${{ github.workflow }}-${{ github.ref }}-${{ inputs.scope || 'automatic' }}
   cancel-in-progress: true
 env:
   IPC_VERIFICATION_WITHOUT_VENDOR_RUNTIME: '1'
+  PYTHONUTF8: '1'
 jobs:
+  repository-checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      core: ${{ steps.plan.outputs.core }}
+      desktops: ${{ steps.plan.outputs.desktops }}
+      branches: ${{ steps.plan.outputs.branches }}
+      print: ${{ steps.plan.outputs.print }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Select verification from the complete Git diff
+        id: plan
+        run: python scripts/industrial_ci.py plan
+      - name: Verify selection, current guide links and delivered documents
+        run: |
+          python -m unittest discover -s scripts -p test_industrial_ci.py -v
+          python scripts/verify-industrial-docs.py
+          python -m unittest discover -s scripts -p test_release_documents.py -v
   core-regression:
+    needs: repository-checks
+    if: needs.repository-checks.outputs.core == 'true'
     runs-on: windows-2025
     timeout-minutes: 20
     steps:
@@ -31,12 +68,6 @@ jobs:
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           global-json-file: global.json
-      - name: Verify current offline guide links and fault coverage
-        shell: pwsh
-        run: |
-          . ./scripts/project-environment.ps1
-          python scripts/verify-industrial-docs.py
-          exit $LASTEXITCODE
       - name: Locked restore and core regression
         shell: pwsh
         run: |
@@ -59,13 +90,15 @@ jobs:
           python scripts/verify_product_coverage.py --results .artifacts/core
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Get-Content -LiteralPath .artifacts/core/product-coverage/summary.md | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY
-      - name: Passive performance collector and statistics regression
+      - name: Performance, stability and local RCS simulator regression
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
           python -m unittest discover -s scripts -p test_dual_camera_performance.py -v
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_stability_qualification.py -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -m unittest discover -s scripts -p test_rcs_local_simulator.py -v
           exit $LASTEXITCODE
       - name: Release policy unit boundaries (no publisher qualification)
         shell: pwsh
@@ -74,8 +107,6 @@ jobs:
           python -m unittest discover -s scripts -p test_commercial_delivery.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_deployment_compatibility.py
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m unittest discover -s scripts -p test_release_documents.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m unittest discover -s scripts -p test_mvid_runtime.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
@@ -96,7 +127,8 @@ jobs:
           retention-days: 14
   operator-print:
     # Printable deliverables are generated on demand; source/link checks stay automatic.
-    if: github.event_name == 'workflow_dispatch'
+    needs: repository-checks
+    if: needs.repository-checks.outputs.print == 'true'
     runs-on: windows-2025
     timeout-minutes: 10
     steps:
@@ -130,12 +162,14 @@ jobs:
           if-no-files-found: error
           retention-days: 14
   windows-build:
+    needs: repository-checks
+    if: needs.repository-checks.outputs.desktops != '[]'
     runs-on: windows-2025
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        business: [Sportmaster, DirectPlc, WcsToPlc]
+        business: ${{ fromJSON(needs.repository-checks.outputs.desktops) }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         env:
@@ -161,7 +195,7 @@ jobs:
           dotnet build src/Ipc.Desktop -c Release "-p:BusinessModule=$env:IPC_BUSINESS" -p:RestoreLockedMode=true -m:1
           exit $LASTEXITCODE
       - name: Verify management entry status handoff
-        if: matrix.business == 'Sportmaster'
+        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
@@ -177,7 +211,7 @@ jobs:
           if ($verificationExit) { exit $verificationExit }
           if (!@($lines | Where-Object { $_ -like 'PASS MANAGEMENT-ENTRY *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw 'Management entry verification incomplete' }
       - name: Verify workstation, configuration and window behavior
-        if: matrix.business == 'Sportmaster'
+        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
@@ -200,7 +234,7 @@ jobs:
           }
           if ($failedSuites.Count) { throw "Failed workstation verification: $($failedSuites -join ', ')" }
       - name: Verify compact exit confirmation and owner release
-        if: matrix.business == 'Sportmaster'
+        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
@@ -214,7 +248,7 @@ jobs:
           if ($verificationExit) { exit $verificationExit }
           if (!@($lines | Where-Object { $_ -like 'PASS STATION-EXIT *' }).Count -or @($lines | Where-Object { $_ -like 'FAIL *' }).Count) { throw 'Station exit verification incomplete' }
       - name: Verify clean Windows installation storage without registration
-        if: matrix.business == 'Sportmaster'
+        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         shell: pwsh
         run: |
           . ./scripts/project-environment.ps1
@@ -224,7 +258,7 @@ jobs:
           exit $LASTEXITCODE
 
       - name: Keep source-bound native window evidence
-        if: always() && matrix.business == 'Sportmaster'
+        if: always() && matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: sm-window-native-${{ github.run_id }}
@@ -237,7 +271,8 @@ jobs:
 
   product-branch-evidence:
     # Instrumented measurement repeats the behavior suites; request it explicitly.
-    if: github.event_name == 'workflow_dispatch'
+    needs: repository-checks
+    if: needs.repository-checks.outputs.branches == 'true'
     runs-on: windows-2025
     timeout-minutes: 45
     steps:
@@ -286,3 +321,19 @@ jobs:
             .artifacts/product-branches/windows/**/*.png
           if-no-files-found: error
           retention-days: 14
+
+  industrial-ci:
+    # A stable required context also checks routing failures and intentional skips.
+    name: ${{ github.event_name == 'workflow_dispatch' && format('industrial-ci-manual-{0}', inputs.scope) || 'industrial-ci' }}
+    if: always()
+    needs: [repository-checks, core-regression, windows-build, operator-print, product-branch-evidence]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Require every selected job to complete successfully
+        env:
+          IPC_CI_NEEDS: ${{ toJSON(needs) }}
+        run: python scripts/industrial_ci.py gate

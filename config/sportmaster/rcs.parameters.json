@@ -2,9 +2,7 @@
   "zone-id": "1",
   "project-id": "1",
   "destination-mode": "false",
-  "left-station-code": "station-01",
   "left-bcr-code": "",
-  "right-station-code": "station-01",
   "right-bcr-code": "",
   "heartbeat-interval-ms": "1000"
 }

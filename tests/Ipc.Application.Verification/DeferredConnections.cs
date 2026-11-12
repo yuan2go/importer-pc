@@ -47,8 +47,6 @@ static partial class SportmasterRcs
                 Version = c.Wcs.Version,
                 Parameters = new(b.Parameters)
                 {
-                    ["left-station-code"] = c.StationCode!,
-                    ["right-station-code"] = c.StationCode!,
                     ["heartbeat-interval-ms"] = "1000",
                     ["zone-id"] = (mask & 4) != 0 ? "" : "71",
                     ["left-bcr-code"] = (mask & 1) != 0 ? "" : "SYNTH-BCR-0",

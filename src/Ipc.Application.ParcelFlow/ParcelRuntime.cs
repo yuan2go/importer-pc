@@ -808,7 +808,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         WriteRuntimeLog("作业", eventName, new
         {
             op.PositionId,
-            op.RoundId, op.ArrivalGeneration, op.VehicleNo,
+            op.RoundId,
+            op.ArrivalGeneration,
+            op.VehicleNo,
             op.AdmissionId,
             op.ParcelCode,
             State = op.State.ToString(),
@@ -840,7 +842,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         (op.FrozenConfiguration.Images is null || op.ImageReleased) && repository?.PendingReceipts().Any(x => x.Operation == op.Id) != true;
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
-        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding) { OperatorInput = op.OperatorInput });
+        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding)
+        { OperatorInput = op.OperatorInput, StationCode = op.FrozenConfiguration.ApplicationId == "sportmaster" ? op.FrozenConfiguration.StationCode : null });
         return new(Wire.Id(), Id, op.Id, op.AdmissionId, stage, binding, op.ImplementationHashes[binding.InstanceId],
             op.ConfigurationHash, payload, Wire.Hash(payload), ReceiptTimeForVerification.GetUtcNow());
     }

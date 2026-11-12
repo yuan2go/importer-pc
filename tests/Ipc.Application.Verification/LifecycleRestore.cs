@@ -96,8 +96,12 @@ static class LifecycleRestore
                 var repeated = await restored.CommandAsync(command);
                 Check(confirmed.Status == "Persisted" && confirmed == repeated && restoredFactory.Sends == 0, "one confirmation command is durable and replay-safe and never calls RCS");
                 var latest = await restored.SnapshotAsync();
-                await Reject<InvalidOperationException>(() => restored.CommandAsync(command with { Id = Wire.Id(), ExpectedRevision = latest.Revision,
-                    Value = Wire.Encode(new RestoreVerificationInput("cannot lower", 1)) }), "actual runtime refuses a lower externally claimed number floor after confirmation");
+                await Reject<InvalidOperationException>(() => restored.CommandAsync(command with
+                {
+                    Id = Wire.Id(),
+                    ExpectedRevision = latest.Revision,
+                    Value = Wire.Encode(new RestoreVerificationInput("cannot lower", 1))
+                }), "actual runtime refuses a lower externally claimed number floor after confirmation");
                 DateTimeOffset LastCycle()
                 {
                     using var progress = System.Text.Json.JsonDocument.Parse(Wire.Encode(restored.RuntimeProgress()));
@@ -143,18 +147,18 @@ static class LifecycleRestore
         Check(purgePlan.Allowed, "real purge planner inventories exact original station evidence for the controlled OS boundary");
         var purgeFile = Path.Combine(WindowsDeploymentSetup.MachineRoot, "deployments", "sportmaster.purge-" + purgePlan.OperationId + ".json");
         retired = retired with { LifecycleState = "Purged", MaintenanceOperation = purgeFile };
-        var purgeRecord = new DeploymentPurgeRecord(1, DateTimeOffset.UtcNow, purgePlan, "Purged", [], "synthetic-admin");
+        var purgeRecord = new DeploymentPurgeRecord(2, DateTimeOffset.UtcNow, purgePlan, "Purged", [], "synthetic-admin");
         var purgeJson = Wire.Encode(purgeRecord);
         var purge = WindowsDeploymentSetup.ProjectPurgedRestoreSource(retired, purgeFile, purgeJson, Wire.Hash(purgeJson), source,
-            Wire.FileHash(Path.Combine(source, "configuration.json")), Wire.FileHash(Path.Combine(source, "machine-origin.bin")));
+            Wire.FileHash(Path.Combine(source, "configuration.json")), Wire.FileHash(Path.Combine(source, "machine-origin.bin")), machine);
         await Reject<InvalidDataException>(() =>
         {
-            _ = WindowsDeploymentSetup.ProjectPurgedRestoreSource(retired, purgeFile, Wire.Encode(purgeRecord with { Status = "PartiallyPurged" }), Wire.Hash(purgeJson), source, purge.ConfigurationSha256, purge.MachineOriginSha256);
+            _ = WindowsDeploymentSetup.ProjectPurgedRestoreSource(retired, purgeFile, Wire.Encode(purgeRecord with { Status = "PartiallyPurged" }), Wire.Hash(purgeJson), source, purge.ConfigurationSha256, purge.MachineOriginSha256, machine);
             return Task.CompletedTask;
         }, "pending deletion cannot masquerade as source retirement");
         await Reject<InvalidDataException>(() =>
         {
-            _ = WindowsDeploymentSetup.ProjectPurgedRestoreSource(retired, purgeFile, purgeJson, Wire.Hash(purgeJson), source, Wire.Hash("different station"), purge.MachineOriginSha256);
+            _ = WindowsDeploymentSetup.ProjectPurgedRestoreSource(retired, purgeFile, purgeJson, Wire.Hash(purgeJson), source, Wire.Hash("different station"), purge.MachineOriginSha256, machine);
             return Task.CompletedTask;
         }, "different backup identity cannot borrow a valid purge receipt");
         // Preserve rather than delete even these test originals. No machine
@@ -171,7 +175,8 @@ static class LifecycleRestore
         afterPurge.RestoreIntentReader = () => [purgeIntent];
         afterPurge.RestoreIntentWriter = (_, _, _, _) => new(purgeIntent, new ResourceLease(leaseRoot, ["purged-copy"]), new StoppedApplicationOwnership(leaseRoot, c.ApplicationId, reinstalled.DataRoot, default));
         var purgeEvidence = new RestoreMachineEvidence(() => Wire.Hash("test-machine"), _ => newDeployment,
-            p => { Check(p == purge, "same protected purge proof remains bound to the restored original"); }, (_, _, _, _) => purge) { RequireRegistration = false };
+            p => { Check(p == purge, "same protected purge proof remains bound to the restored original"); }, (_, _, _, _) => purge)
+        { RequireRegistration = false };
         afterPurge.RestoreEvidence = purgeEvidence;
         await afterPurge.RestoreAsync(backup, purgePreview.Destination, purgePreview.BackupSha256);
         using (var migration = h.Own(newDeployment, purgedTarget, leaseRoot))

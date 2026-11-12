@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Assembly;
 using Ipc.Platform;
 
@@ -42,12 +43,14 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         Title = "菜鸟供包台 · 卸载"; WorkflowHeading.Text = "卸载菜鸟供包台";
         Body.Children.Clear(); Actions.Children.Clear(); SessionActions.Children.Clear();
         Body.Children.Add(keepData);
-        var retained = new TextBlock { Text = "保留配置、记录、图片和日志。", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap, Margin = new(24, 0, 0, 16) };
+        var retained = new TextBlock { Text = "保留配置、记录、图片、日志和管理密码。", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap, Margin = new(24, 0, 0, 16) };
         retained.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); Body.Children.Add(retained);
         Body.Children.Add(deleteData);
-        var warning = new TextBlock { Text = "删除配置、记录、图片和日志，不可撤销。", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap, Margin = new(24, 0, 0, 8) };
+        var warning = new TextBlock { Text = "删除配置、记录、图片、日志和管理密码，不可撤销。重新安装后创建新密码。", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap, Margin = new(24, 0, 0, 8) };
         warning.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); Body.Children.Add(warning);
-        var uninstall = Action("卸载", Uninstall);
+        // An unknown outcome routes this same action to inspection below. Only
+        // RunMaintenance may start an actual uninstall after that guard clears.
+        var uninstall = Action("卸载", Uninstall, readOnly: true);
         AutomationProperties.SetAutomationId(uninstall, "Uninstall.Execute");
         CloseAction("取消");
         Message("卸载前请先关闭供包台。");
@@ -55,12 +58,13 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
 
     async Task Uninstall()
     {
+        if (UnknownOutcome) { await InspectResult(); return; }
         RequireOriginalScope();
         var hash = RegistrationIdentity();
         if (originalRegistration is null || originalRegistration != hash)
             throw new InvalidOperationException("安装信息已变化，请关闭并重新打开卸载程序。");
         var deletionRequested = deleteData.IsChecked == true;
-        var context = deletionRequested ? "卸载程序并删除本站数据；不创建备份。" : "卸载程序，保留本站数据；不创建备份。";
+        var context = deletionRequested ? "卸载程序并删除本站数据和管理密码；不创建备份。" : "卸载程序，保留本站数据；不创建备份。";
         var result = await RunMaintenance(context, (progress, token) => ExecuteUninstall(hash, deletionRequested, progress, token));
         // The operation itself changes registration. A verified result may retry
         // that retired installation; an unconfirmed result must first be inspected.
@@ -105,10 +109,10 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         var deleted = result.DataDeletion?.Status == "Purged";
         var baseComplete = deleted || removal?.Status == "RemovedDataRetained" && !result.DeleteData;
         var complete = baseComplete && result.Assets?.Status == "Completed";
-        var dataState = deleted ? "本站数据已删除。" : "本站数据保留。";
+        var dataState = deleted ? "本站数据已删除，管理密码已清除。" : "本站数据保留。";
         var text = baseComplete && result.Assets?.Status == "RestartRequired" ? dataState + "历史清理尚未完成：维护程序正在使用缓存，已登记重启清理。重启后请用完整安装包核对原结果。"
             : baseComplete && !complete ? dataState + "历史程序或维护缓存尚未全部清理，请查看详情后重试。无法核验的文件保留。"
-            : deleted ? "卸载完成，本站数据已删除，历史程序和维护缓存已清理。" : result.DataDeletion is not null ? "程序已卸载，部分数据尚未删除。请关闭占用文件的程序后重试卸载。"
+            : deleted ? "卸载完成，本站数据已删除，管理密码已清除，历史程序和维护缓存已清理。" : result.DataDeletion is not null ? "程序已卸载，部分数据尚未删除。请关闭占用文件的程序后重试卸载。"
             : removal?.Status == "RestartRequired" ? "程序已卸载。部分文件将在重启电脑后删除。"
             : removal?.Status == "RemovedDataRetained" ? result.DeleteData ? "程序已卸载，本站数据尚未删除。可重试卸载以完成数据清理。" : "卸载完成，本站数据已保留。"
             : "程序已卸载，部分文件尚未删除。请关闭占用文件的程序后重试卸载。";
@@ -120,16 +124,19 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
                 (result.Assets is null ? "" : "历史清理记录：" + result.Assets.OperationFile + "\n") +
                 "剩余文件或目录：\n" + string.Join("\n", (result.DataDeletion?.Remaining ?? []).Concat(removal?.RemainingFiles ?? []).Concat(result.Assets?.Remaining ?? [])) +
                 "\n保留的未核验项：\n" + string.Join("\n", (result.Assets?.Retained ?? []).Select(x => x.Root + "：" + x.Reason)),
-            IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 160
+            IsReadOnly = true,
+            TextWrapping = TextWrapping.Wrap,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            MaxHeight = 160
         };
         Body.Children.Add(new Expander { Header = "卸载详情", Content = details });
         if (result.Assets is { DetailsTruncated: true } assets)
             Note("历史清理尚有 " + assets.TotalRemaining + " 个目录、" + assets.TotalRetained + " 个保留项；此处仅显示摘要，完整清单见历史清理记录。");
-        Note("共享驱动和系统运行库、管理安全信息、个人偏好、安全回执和本站以外的备份保留。");
+        Note(result.DeleteData ? "本站管理密码包含在数据清理范围内。共享驱动和系统运行库、个人偏好、安全回执和本站以外的备份保留。" : "管理密码、共享驱动和系统运行库、个人偏好、安全回执和本站以外的备份保留。");
         if (!complete && (!baseComplete || result.Assets?.Status != "RestartRequired"))
         {
             deleteData.IsChecked = result.DeleteData; keepData.IsChecked = !result.DeleteData;
-            Action("重试卸载", Uninstall);
+            Action("重试卸载", Uninstall, readOnly: true);
         }
         CloseAction("关闭");
     }
@@ -143,7 +150,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     protected override void OperationFailed(Exception error)
     {
         base.OperationFailed(error);
-        if (UnknownOutcome && !Actions.Children.OfType<Button>().Any(b => Equals(b.Content, "查看结果")))
-            Action("查看结果", InspectResult, readOnly: true);
+        if (UnknownOutcome)
+            Status.Text = "卸载结果未确认。再次点击卸载按钮只核对原结果，不会重复执行。\n" + ChineseInterfaceText.ParameterMessage(error.Message);
     }
 }

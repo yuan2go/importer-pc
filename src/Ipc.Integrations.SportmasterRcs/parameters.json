@@ -24,15 +24,6 @@
     "Default": "1"
   },
   {
-    "Key": "left-station-code",
-    "Group": "RCS 分拣任务",
-    "Label": "左位工位编号",
-    "Type": "string",
-    "Required": true,
-    "MaximumLength": 256,
-    "ApplyLevel": "GuardedLive"
-  },
-  {
     "Key": "left-bcr-code",
     "Group": "RCS 分拣任务",
     "Label": "左相机编码",
@@ -42,15 +33,6 @@
     "Description": "取格口与心跳共用的本位编码；留空时本位停用，填写后可启用。",
     "ApplyLevel": "GuardedLive",
     "Default": ""
-  },
-  {
-    "Key": "right-station-code",
-    "Group": "RCS 分拣任务",
-    "Label": "右位工位编号",
-    "Type": "string",
-    "Required": true,
-    "MaximumLength": 256,
-    "ApplyLevel": "GuardedLive"
   },
   {
     "Key": "right-bcr-code",

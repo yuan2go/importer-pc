@@ -35,6 +35,7 @@ public sealed class CoreRegression
     [TestMethod]
     [TestCategory("Core")]
     [DataRow("--sm-parameters")]
+    [DataRow("--sm-single-station")]
     [DataRow("--rcs-timeout-errors")]
     [DataRow("--parameter-refactor")]
     [DataRow("--parameter-guidance-startup")]

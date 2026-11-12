@@ -24,6 +24,9 @@ on:
       - 'scripts/verify-sm-vc-install.ps1'
 permissions:
   contents: read
+concurrency:
+  group: sm-runtime-install-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   missing-runtime-install:
     runs-on: windows-2025

@@ -122,7 +122,7 @@ static class RetentionQualification
                     var reader = template.FrozenConfiguration.Topology!.Readers[n % 2 == 0 ? 0 : 1];
                     var observed = new Observation(observation, reader.DeviceId, Id(8, n % 2 + 1), "synthetic-qualification-event-" + n, n, admission, "Read", ["SYNTHETIC-RETENTION-" + n], null, at);
                     var acquisition = new AcquisitionIdentity(reader.DeviceId, observed.Epoch, observed.SourceEventId, admission, at);
-                    var payload = new ParcelPayload(observed.Codes[0], admission, template.Weight, null, null, Acquisition: acquisition, PositionId: position, ReaderBinding: reader);
+                    var payload = new ParcelPayload(observed.Codes[0], admission, template.Weight, null, null, Acquisition: acquisition, PositionId: position, ReaderBinding: reader) { StationCode = template.FrozenConfiguration.StationCode };
                     var payloadJson = Wire.Encode(payload); var request = seedWcs.Request with { Id = Id(2, n), OperationId = opId, AdmissionId = admission, Payload = payloadJson, PayloadHash = Wire.Hash(payloadJson), PreparedAt = at.AddMilliseconds(3) };
                     var reply = seedWcs.Replies.Single() with { Id = Id(3, n), RequestId = request.Id, PayloadHash = request.PayloadHash, At = at.AddMilliseconds(20), Evidence = "Synthetic accepted reference reply; not customer wire. " + new string('R', 1024) };
                     var unknown = guard == 4;

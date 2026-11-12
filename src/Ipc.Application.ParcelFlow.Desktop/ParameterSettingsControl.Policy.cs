@@ -18,26 +18,10 @@ public sealed partial class ParameterSettingsControl
     void BuildSystem(ParameterEditorModel m)
     {
         var station = Page(0, "供包台标识", "填写 RCS 分配给本供包台的编号，取格口和心跳都使用这些编号。");
-        var hasRcs = m.Components.Any(ParameterOwnership.IsRcs);
         var form = Form(station);
         foreach (var rcs in m.Components.Where(ParameterOwnership.IsRcs))
-        {
             foreach (var p in rcs.Parameters.Where(p => p.Field.Key is "zone-id" or "project-id")) Parameter(form, station, rcs, p);
-            var left = rcs.Parameters.FirstOrDefault(p => p.Field.Key == "left-station-code"); var right = rcs.Parameters.FirstOrDefault(p => p.Field.Key == "right-station-code");
-            if (left is not null && right is not null)
-            {
-                var pair = new CommonStationParameter(left, right, m.Policy); unsubscribe.Add(pair.Dispose);
-                if (ParameterOwnership.StationConflict(rcs) || left.Value != m.Policy.StationCode)
-                {
-                    var conflict = Text("请确认统一供包台编号。" + pair.OriginalValues + "。在下方填写后，会同时用于新取格口请求和心跳；旧请求保留原编号。");
-                    conflict.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); station.Body.Children.Add(conflict);
-                }
-                Input(Form(station), "供包台编号 *", pair, "Value", rcs.InstanceId + "/left-station-code", station, "RCS 分配给本供包台的编号，左右投递位共用。");
-                locations[rcs.InstanceId + "/right-station-code"] = locations[rcs.InstanceId + "/left-station-code"];
-                locations["StationCode"] = locations[rcs.InstanceId + "/left-station-code"];
-            }
-        }
-        if (!hasRcs) Input(Form(station), "供包台编号 *", m.Policy, "StationCode", "StationCode", station, "用于向外部系统识别当前供包台。");
+        Input(form, "供包台编码 *", m.Policy, "StationCode", "StationCode", station, "RCS 分配给整台供包台的编码，左右取格口和心跳共用。");
         var data = Page(0, "数据与记录", ""); form = Form(data);
         Input(form, "运行记录归档阈值", m.Policy, "ResidentHistory", "ResidentHistory", data, "默认200条，1～10000。达到后归档可收口记录，仍可查询；不限制SM新件，不删除原请求。");
         Input(form, "磁盘预留", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, m.ApplicationId == "sportmaster" ? "新站默认512 MiB，1～1048576 MiB；低于此值拒绝新件并保留原责任。备份、原图及诊断仍分别核对实际所需空间，512 MiB不是长期容量配额。" : "剩余空间低于此值时暂停接收新包裹，1～1048576 MiB。");
@@ -190,9 +174,9 @@ public sealed partial class ParameterSettingsControl
             role.PropertyChanged += changed; unsubscribe.Add(() => role.PropertyChanged -= changed);
         }
         else foreach (var draft in m.Components.Where(c => c.Role == "operator-login"))
-            {
-                draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed);
-            }
+        {
+            draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed);
+        }
         EventHandler validated = (_, _) => Refresh();
         m.ValidationChanged += validated; unsubscribe.Add(() => m.ValidationChanged -= validated);
         Refresh();

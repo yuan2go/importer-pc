@@ -110,8 +110,9 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
     }
     string ValidateDestination(FrozenRequest request)
     {
-        options.ValidateOriginal(request);
         var frozen = request.IntegrationRequest ?? throw new InvalidDataException("Persist the RCS wire intent before delivery");
+        // A successful wire match validates the original binding, payload and
+        // left/right position through PrepareWire before this snapshot can send.
         if (frozen.RequestId <= 0 || frozen.ContentType != "application/json" ||
             Wire.Hash(frozen.Body) != frozen.BodyHash || Encoding.UTF8.GetByteCount(frozen.Body) > 65536 ||
             !RcsDestinationProtocol.MatchesFrozen(options, request, frozen))

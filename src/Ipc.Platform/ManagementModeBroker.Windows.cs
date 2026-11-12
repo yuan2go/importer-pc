@@ -14,7 +14,8 @@ public static partial class ManagementModeBroker
 {
     static string Key(string root) => Wire.Hash(CanonicalRoot(root).TrimEnd(Path.DirectorySeparatorChar).ToUpperInvariant())[..24];
     static string CanonicalRoot(string root) => WindowsStoragePaths.CanonicalDirectory(root);
-    public static string ProtectedRoot(string root) => Path.Combine(WindowsStoragePaths.AdministratorRoot, Key(root));
+    public static string ProtectedRoot(string root) => ProtectedRoot(root, WindowsStoragePaths.AdministratorRoot);
+    internal static string ProtectedRoot(string root, string administratorRoot) => Path.Combine(administratorRoot, Key(root));
     static string ServiceName(string root) => "ImporterPc.Administrator." + Key(root);
     internal static string PipeName(string root) => "ImporterPc.ManagementMode.v" + ProtocolVersion.ToString(System.Globalization.CultureInfo.InvariantCulture) + "." + Key(root);
     public static bool IsManaged(string root)

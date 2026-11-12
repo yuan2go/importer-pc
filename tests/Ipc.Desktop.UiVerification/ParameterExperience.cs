@@ -44,8 +44,6 @@ static partial class Program
             ["specified-chute"] = "false",
             ["request-id-base"] = "810000000",
             ["request-id-count"] = "1000",
-            ["left-station-code"] = "SYNTHETIC-COMMON",
-            ["right-station-code"] = "SYNTHETIC-COMMON",
             ["left-bcr-code"] = "TAKE-L",
             ["right-bcr-code"] = "TAKE-R"
         });

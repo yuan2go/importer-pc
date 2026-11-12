@@ -243,10 +243,8 @@ public partial class ParcelViewModel
         get
         {
             var state = "未加载";
-            if (configurationAuthority == "高级JSON") state = !HasUnsavedConfiguration ? "已加载/已保存" : "已修改未保存";
-            else if (configurationAuthority == "结构化表单")
-                try { state = Wire.Encode(BuildStructuredConfiguration()) == savedCandidate ? "已加载/已保存" : "已修改未保存"; }
-                catch (InvalidOperationException) { state = "已修改，局部字段未通过"; }
+            if (configurationAuthority is "高级JSON" or "结构化表单")
+                state = HasUnsavedConfiguration ? "已修改未保存" : "已加载/已保存";
             return "编辑来源：" + configurationAuthority + " · " + state + " · " + validationState + "\n" + DraftRevisionState + "\n当前应用：" + (Snapshot?.Configuration.Status ?? "未读取") + " · 运行中与待重启内容见运行输入页；生效结果以当前配置状态为准。";
         }
     }

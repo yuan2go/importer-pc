@@ -79,10 +79,10 @@ static partial class Program
                 }
             }
             editor.ShowPage(0, "本站与 RCS"); await Flush();
-            var input = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "sportmaster.integration/left-station-code");
+            var input = Descendants(editor).OfType<TextBox>().Single(t => AutomationProperties.GetAutomationId(t) == "StationCode");
             input.Text = "SYNTHETIC-SHARED"; await Flush();
-            Check(draft.Policy.StationCode == input.Text && draft.Capabilities.Single(ParameterOwnership.IsRcs).Parameters.Where(p => p.Field.Key.EndsWith("-station-code")).All(p => p.Value == input.Text), "one real WPF input updates request and heartbeat station identities");
-            Check(!Descendants(editor).OfType<TextBox>().Any(t => AutomationProperties.GetAutomationId(t) == "StationCode"), "no second heartbeat station editor remains");
+            Check(draft.Policy.StationCode == input.Text && draft.Build().StationCode == input.Text && draft.Capabilities.Single(ParameterOwnership.IsRcs).Parameters.All(p => !p.Field.Key.EndsWith("-station-code")), "one real WPF input updates request and heartbeat station identities");
+            Check(Descendants(editor).OfType<TextBox>().Count(t => AutomationProperties.GetAutomationId(t) == "StationCode") == 1, "exactly one station editor remains for both RCS paths");
             Check(draft.Policy.DiagnosticLogDays == "7" && draft.Policy.HistoryDays == "7", "first-run retention editors contain seven days");
             editor.ShowPage(2, "左相机"); await Flush();
             Check(!Descendants(editor).OfType<ComboBox>().Any(t => AutomationProperties.GetAutomationId(t).EndsWith("/entity.mode") || AutomationProperties.GetAutomationId(t).EndsWith("/acquisition.trigger")) &&

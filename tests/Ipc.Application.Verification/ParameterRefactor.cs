@@ -52,7 +52,7 @@ static class ParameterRefactor
             Reader = bootstrapReaders[0],
             Topology = missing.Candidate.Topology with { Readers = bootstrapReaders },
             BarcodeFilter = new("OK[0-9]+"),
-            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["zone-id"] = "1", ["project-id"] = "1", ["left-station-code"] = "SYNTHETIC", ["right-station-code"] = "SYNTHETIC", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } }
+            Wcs = missing.Candidate.Wcs! with { Target = "http://127.0.0.1:1/rcs/sorter/api", Parameters = new() { ["zone-id"] = "1", ["project-id"] = "1", ["left-bcr-code"] = "L", ["right-bcr-code"] = "R" } }
         };
         var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, bootstrap, "Synthetic initial defaults and explicit synthetic connection settings");
         Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && (!Directory.Exists(missingLaunch.DataRoot) || !Directory.EnumerateFiles(missingLaunch.DataRoot, "*.db", SearchOption.AllDirectories).Any()) && (!Directory.Exists(missingLaunch.DataRoot) || Directory.EnumerateFiles(missingLaunch.DataRoot, "*lease*", SearchOption.AllDirectories).All(p => Path.GetFullPath(p) == Path.GetFullPath(Path.Combine(missingLaunch.DataRoot, "security/diagnostics/rotation.lease")))), "explicit first save persists parameters without starting SDK, creating a business database/device lease, or inventing qualification; administrator custody and diagnostic rotation are separate");
@@ -133,12 +133,15 @@ static class ParameterRefactor
         pendingVm.StructuredPolicy.ResidentHistory = "1800"; pendingVm.ConfigurationReason = "Synthetic newer revision for CAS conflict"; await pendingVm.SaveStructuredConfigurationAsync();
         stale.StructuredPolicy!.ResidentHistory = "1900"; stale.ConfigurationReason = "Synthetic stale CAS"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.ConfigurationSubmissionOutcome == "Conflict" && stale.HasUnsavedConfiguration && stale.StructuredPolicy.ResidentHistory == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
-        var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad"; await stale.SaveStructuredConfigurationAsync();
-        Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
+        var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.ReadTimeoutMs = "bad";
+        _ = stale.ConfigurationEditorState;
+        await stale.SaveStructuredConfigurationAsync();
+        Check(stale.HasUnsavedConfiguration && stale.StructuredPolicy.ReadTimeoutMs == "bad" && stale.ParameterEditor!.Issues.Any(i => i.Path == "ReadTimeoutMs") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
+            "reading editor status preserves invalid dirty text; explicit save locates the field error without saving or contacting a device");
         stale.StructuredPolicy.ReadTimeoutMs = "1000"; stale.StructuredPolicy.BackupEnabled = true;
         stale.StructuredPolicy.BackupDirectory = Path.Combine(root, "scheduled-backups");
         stale.StructuredPolicy.BackupIntervalMinutes = "bad"; stale.StructuredPolicy.BackupMaximumSets = "0";
-        stale.ParameterEditor.ValidateFields();
+        stale.ParameterEditor!.ValidateFields();
         Check(stale.ParameterEditor.Issues.Any(i => i.Path == "BackupIntervalMinutes") && stale.ParameterEditor.Issues.Any(i => i.Path == "BackupMaximumSets") && !stale.ParameterEditor.Issues.Any(i => i.Path == "BackupDirectory") && stale.StructuredPolicy.BackupIntervalMinutes == "bad" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
             "backup numeric errors locate their actual fields, retain invalid text and never blame a valid directory or save");
         stale.StructuredPolicy.BackupEnabled = false;

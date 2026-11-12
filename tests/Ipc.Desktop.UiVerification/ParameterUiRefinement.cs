@@ -50,8 +50,8 @@ static partial class Program
         rightIp.Value = savedRight; await Flush();
         Check(!rcs.Parameters.Any(p => p.Field.Key is "quantity" or "request-id-base" or "request-id-count"), "SM keeps request numbering internal and exposes no unused quantity field");
         var zone = Value(rcs, "zone-id"); var savedZone = zone.Value;
-        editor.NavigateTo(rcs.InstanceId + "/left-station-code"); await Flush();
-        Check(Box(rcs.InstanceId + "/left-station-code").Text == Value(rcs, "left-station-code").Value, "common station input reflects changes to the existing paired fields");
+        editor.NavigateTo("StationCode"); await Flush();
+        Check(Box("StationCode").Text == model.Policy.StationCode, "station input binds directly to the one configuration value");
         var savedTarget = rcs.Target;
         zone.Value = ""; rightIp.Value = "111"; rcs.Target = "http://192.0.2.1/wrong"; model.Policy.ReadTimeoutMs = "bad"; model.ValidateFields();
         editor.ShowReview(); await Flush(); Capture("refine-check-errors");

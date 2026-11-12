@@ -62,8 +62,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     {
         if (!nativeLoaded)
         {
-            var cache = Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? throw new InvalidOperationException("D-drive restored cache required");
-            var library = NativeLibrary.Load(Path.Combine(cache, OperatingSystem.IsWindows() ? "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll" : "zxingcpp/0.5.3/runtimes/linux-x64/native/libZXing.so"));
+            var libraryPath = OperatingSystem.IsWindows()
+                ? Path.Combine(Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? throw new InvalidOperationException("D-drive restored cache required"), "zxingcpp/0.5.3/runtimes/win-x64/native/ZXing.dll")
+                : Path.Combine(AppContext.BaseDirectory, "runtimes/linux-x64/native/libZXing.so");
+            var library = NativeLibrary.Load(libraryPath);
             NativeLibrary.SetDllImportResolver(typeof(BarcodeReader).Assembly, (name, _, _) => name is "ZXing" or "ZXing.dll" ? library : 0);
             nativeLoaded = true;
         }
@@ -82,12 +84,10 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             ["request-id-base"] = "820000000",
             ["request-id-count"] = "100000",
             ["heartbeat-interval-ms"] = (heartbeatSeconds * 1000).ToString(System.Globalization.CultureInfo.InvariantCulture),
-            ["left-station-code"] = stationCode ?? "TEST-LEFT",
             ["left-bcr-code"] = "TEST-LEFT-READER",
-            ["right-station-code"] = stationCode ?? "TEST-RIGHT",
             ["right-bcr-code"] = "TEST-RIGHT-READER"
         });
-        Config = seed with { TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, MaximumOperations = maximumOperations ?? seed.MaximumOperations, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [], BarcodeFilter = barcodeFilter ?? seed.BarcodeFilter };
+        Config = seed with { StationCode = stationCode ?? seed.StationCode, TimeoutMs = timeoutMs ?? seed.TimeoutMs, QueueCapacity = queueCapacity ?? seed.QueueCapacity, MaximumOperations = maximumOperations ?? seed.MaximumOperations, Reader = readers[0], Topology = seed.Topology with { Readers = readers }, Wcs = binding, Login = null, DeferredConnections = [], BarcodeFilter = barcodeFilter ?? seed.BarcodeFilter };
         var configuration = Path.Combine(folder, "config"); Directory.CreateDirectory(configuration);
         ExtensionStore.AtomicWrite(Path.Combine(configuration, "business.json"), Config);
         Launch = new(configuration, Path.Combine(folder, "data"), null, null);

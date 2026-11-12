@@ -18,8 +18,8 @@ public static partial class ParcelConfigurationRules
             e.AddRange(StationShiftSchedule.Validate(operations));
             if (operations.AutomaticHistoryCleanup && c.Retention?.HistoryDays is not (>= 7 and <= 30)) e.Add("启用自动清理前须配置7～30天历史保留期");
         }
-        if (c.Reader is null || c.Weight is null || c.CapabilityInstances?.Any(x => x is null) == true || c.Images is { Camera: null })
-            return ["Malformed configuration: missing reader/weight/camera or null capability inventory"];
+        if (c.Reader is null || c.Weight is null || c.Images is { Camera: null })
+            return ["Malformed configuration: missing reader/weight/camera"];
         if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
         e.AddRange(ValidateCapabilityInventory(c));
         if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.

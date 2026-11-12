@@ -23,10 +23,9 @@ public static partial class ParcelConfigurationRules
         {
             if (inventory.Select(b => b.InstanceId).Distinct(StringComparer.Ordinal).Count() != inventory.Length)
                 errors.Add("Capability inventory identities must be unique before deduplication");
-            if (roles.Any(role => !inventory.Any(b => Wire.Encode(b) == Wire.Encode(role))))
+            var originals = inventory.Select(b => Wire.Encode(b)).ToHashSet(StringComparer.Ordinal);
+            if (roles.Any(role => !originals.Contains(Wire.Encode(role))))
                 errors.Add("Capability inventory must contain each complete authoritative role binding");
-            if (roles.Any(role => inventory.Any(b => b.InstanceId == role.InstanceId && Wire.Encode(b) != Wire.Encode(role))))
-                errors.Add("Role and inventory identity have contradictory binding content");
         }
         var deployment = configuration.Extensions;
         if (deployment is not null && (deployment.Packages is null || deployment.Instances is null ||
@@ -37,7 +36,9 @@ public static partial class ParcelConfigurationRules
             deployment.Instances.Select(i => i.Id).Distinct(StringComparer.Ordinal).Count() != deployment.Instances.Length ||
             deployment.Services is { Length: > 0 } || deployment.Ports is { Length: > 0 }))
             return [.. errors, "Invalid exact capability deployment closure"];
-        foreach (var binding in roles.Concat(inventory ?? []))
+        // A declared inventory must contain the complete role bindings above;
+        // inspect their originals once rather than validating each mirror again.
+        foreach (var binding in inventory ?? roles)
         {
             var deferredRcs = configuration.ApplicationId == "sportmaster" && binding.InstanceId == configuration.Wcs?.InstanceId &&
                 binding.Contract == "SPORTMASTER-RCS-SORTER-v1" && ParcelConnectionSetup.IsDeferred(configuration, binding.InstanceId);

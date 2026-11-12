@@ -42,9 +42,11 @@ if ($LASTEXITCODE -ne 0) { throw 'Frozen lifecycle review fixture source is unav
 $entry = @'
 using Ipc.Platform;
 using Ipc.Assembly;
+using Ipc.Application.ParcelFlow;
 var media = Path.GetFullPath(args[0]); var root = Path.GetFullPath(args[1]); var evidence = Path.GetFullPath(args[2]);
 var inventory = DeploymentMedia.Inspect(media, "sportmaster");
 Directory.CreateDirectory(evidence);
+ParcelRecovery.BackupSetLeaseRoot = () => Path.Combine(evidence, "backup-leases");
 await OperatorAdministration.Run(root, Path.Combine(evidence, "operator-admin"));
 await CommercialProductization.Run(root, evidence);
 var lifecycleEvidence = Path.Combine(evidence, "lifecycle-maintenance"); Directory.CreateDirectory(lifecycleEvidence);

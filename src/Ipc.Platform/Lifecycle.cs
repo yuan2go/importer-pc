@@ -93,6 +93,7 @@ public sealed class ResourceLease : IDisposable
     readonly string[] resources;
     public string[] Resources => locks.Count == resources.Length ? resources.ToArray() : [];
     public ResourceLease(string root, IEnumerable<string> resources) : this(root, resources, createDirectory: true) { }
+    public static ResourceLease Existing(string root, IEnumerable<string> resources) => new(root, resources, createDirectory: false);
     internal ResourceLease(string root, IEnumerable<string> resources, bool createDirectory, bool removeOnClose = false)
     {
         this.resources = resources.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();

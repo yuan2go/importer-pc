@@ -31,6 +31,7 @@
 - [WPF 工业桌面 UI 审查方法（Hallmark-WPF）](design/wpf-ui-review.md)
 - [作业卡状态与现场验收](design/work-card-states.md)
 - [供包台导航、设备诊断及安装呈现](design/operator-navigation-20261103.md)
+- [当前安装与维护设计](design/industrial-lifecycle-01.md)、[本站管理密码与机器维护权限](design/industrial-security-recovery-01.md)
 - [工业化交付（安全恢复、生命周期、诊断、发布门禁）](design/industrial-engineering-01.md)
 - [企业打包选型与新版本提示](design/enterprise-packaging-07.md)
 - [代码签名证书接入](design/code-signing-onboarding-06.md)

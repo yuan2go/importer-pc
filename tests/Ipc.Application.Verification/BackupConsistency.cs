@@ -167,6 +167,10 @@ internal static class BackupConsistency
                     Check(error is { Origin: RecoveryFailureOrigin.Destination, Phase: "DestinationChecksum", SourceBytesVerified: true } && error.InnerException is InvalidDataException,
                         "actual custody copy verifies the original source stream and attributes damaged copied bytes to destination verification");
                 }
+                // Releasing the manual backup requests a real membership refresh.
+                // Await its applied response before exercising another backup;
+                // do not mistake a legitimate heartbeat guard for the copy fault.
+                await CameraRoundHarness.Until(async () => await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received);
                 await h.App.CheckScheduledBackupAsync(success.NextDue!.Value.AddMinutes(1));
                 return true;
             });
@@ -174,7 +178,7 @@ internal static class BackupConsistency
             Check(failed.Outcome == (mode == "custody-destination" ? "Failed:RecoveryFileFailure" : "Failed:BackupCopyFailure") && failed.LastSuccessfulBackup == success.LastSuccessfulBackup &&
                 failed.LastSuccessfulAt == success.LastSuccessfulAt && Wire.FileHash(success.LastSuccessfulBackup!) == originalSuccessHash &&
                 !File.Exists(manualDestination + ".recovery/COMPLETED.json") && Directory.EnumerateFiles(target, "COMPLETED.json", SearchOption.AllDirectories).Count() == 1,
-                "scheduled " + mode + " retains the actual failed receipt and previous success, never publishing a complete failed set");
+                "scheduled " + mode + " retains the actual failed receipt and previous success, never publishing a complete failed set; " + Wire.Encode(failed));
             var progress = Progress(h.App);
             await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > progress));
             Check(!h.App.FatalFailure.IsCompleted, "target " + mode + " cannot complete business FatalFailure or terminate maintenance");

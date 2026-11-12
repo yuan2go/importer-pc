@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.Versioning;
 using System.Security.Principal;
 using Microsoft.Win32;
@@ -95,7 +95,7 @@ public static partial class WindowsDeploymentSetup
             operation = InstallationOperationFile(original);
             MachineRuntimePolicy.RequireProtectedEvidence(operation);
             if (new FileInfo(operation).Length > 4 * 1024 * 1024) throw new InvalidDataException("原安装回执超出读取预算");
-            inspection = ProjectInstallation(original, File.ReadAllText(operation), location);
+            inspection = ProjectInstallation(original, File.ReadAllText(operation), location, ReadDeploymentHistory(original.ApplicationId));
             if (inspection.Status is not ("Completed" or "CommittedNeedsSystemRepair") || inspection.Location is null)
                 throw new InvalidOperationException("原安装尚无可核验的已提交登记；保留原操作，不修复其他安装");
             if (inspection.Previous is { } previous) _ = TrustedProgramRoots.RequireBoundary(previous.ReleaseRoot);

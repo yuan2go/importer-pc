@@ -47,6 +47,18 @@ internal static class RecoveryFiles
             !ProductValidation.IsSafeRelativeFile(root, name, out var path)) throw new InvalidDataException("Nonportable or unsafe recovery custody path: " + name);
         return path;
     }
+    // Frozen deletion evidence remains readable after its physical roots vanish.
+    // Execution separately checks every existing ancestor and the deletion handle.
+    internal static string ResolveRecorded(string root, string name)
+    {
+        if (string.IsNullOrEmpty(name) || name.Length > 1024 || name.Split('/').Any(InvalidComponent))
+            throw new InvalidDataException("Nonportable recorded recovery path: " + name);
+        var fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar);
+        var path = Path.GetFullPath(Path.Combine(fullRoot, name.Replace('/', Path.DirectorySeparatorChar)));
+        if (!path.StartsWith(fullRoot + Path.DirectorySeparatorChar, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+            throw new InvalidDataException("Recorded recovery path leaves its original range");
+        return path;
+    }
     static bool InvalidComponent(string component)
     {
         if (component.Length is 0 or > 255 || component.EndsWith('.') || component.EndsWith(' ') ||
@@ -57,7 +69,7 @@ internal static class RecoveryFiles
             stem.Length == 4 && (stem.StartsWith("COM", StringComparison.OrdinalIgnoreCase) || stem.StartsWith("LPT", StringComparison.OrdinalIgnoreCase)) && "123456789¹²³".Contains(stem[3]);
     }
     public static void ValidateNames(string root, IEnumerable<string> names) => ValidateNames(root, names, CancellationToken.None);
-    public static void ValidateNames(string root, IEnumerable<string> names, CancellationToken token)
+    public static void ValidateNames(string root, IEnumerable<string> names, CancellationToken token, bool recordedOnly = false)
     {
         token.ThrowIfCancellationRequested();
         Dictionary<string, (string Original, bool Directory)> identities = new(StringComparer.OrdinalIgnoreCase);
@@ -66,7 +78,7 @@ internal static class RecoveryFiles
         {
             token.ThrowIfCancellationRequested();
             if (++count > MaximumFiles) throw new InvalidDataException("Recovery file inventory quota exceeded");
-            _ = Resolve(root, name);
+            _ = recordedOnly ? ResolveRecorded(root, name) : Resolve(root, name);
             if (name is not ("configuration.json" or "overload.json" or ParcelMachineOrigin.FileName) && !name.StartsWith("receipts/", StringComparison.Ordinal) && !name.StartsWith("images/", StringComparison.Ordinal) && !IsMaintenanceEvidence(name))
                 throw new InvalidDataException("Unexpected recovery custody file: " + name);
             var parts = name.Split('/'); var prefix = "";

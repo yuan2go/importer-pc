@@ -217,13 +217,13 @@ jobs:
           . ./scripts/project-environment.ps1
           $env:IPC_FROZEN_DESKTOP = Join-Path $PWD.Path 'src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll'
           $failedSuites = @()
-          foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback', 'camera-filter-preview', 'continuous-pda-input', 'startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-defaults-ui', 'window-preference', 'first-preference-save', 'parameter-guidance-startup', 'station-settings', 'startup-experience', 'startup-close', 'management-center', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions')) {
+          foreach ($suite in @('operator-ux-18', 'rcs-no-destination-ui', 'paused-workstation', 'home-centered-states', 'camera-barcode-current', 'camera-round-ui', 'manual-supply-ui', 'manual-rcs-debug-ui', 'camera-settings-feedback', 'camera-filter-preview', 'continuous-pda-input', 'startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-defaults-ui', 'window-preference', 'first-preference-save', 'parameter-guidance-startup', 'station-settings', 'startup-experience', 'startup-close', 'management-center', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions', 'lifecycle-maintenance-ui')) {
             dotnet tests/Ipc.Desktop.UiVerification/bin/Release/net10.0-windows/Ipc.Desktop.UiVerification.dll $PWD.Path "--$suite"
             $verificationExit = $LASTEXITCODE
             $evidence = (Get-Content -LiteralPath .artifacts/WINDOWS-WPF-EVIDENCE.txt -Raw).Trim()
             $lines = @(Get-Content -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log'))
             $lines | Set-Content -LiteralPath ".artifacts/$suite.log"
-            if ($suite -in @('startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-defaults-ui', 'window-preference', 'first-preference-save', 'parameter-guidance-startup', 'station-settings', 'startup-experience', 'startup-close', 'management-center', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions')) {
+            if ($suite -in @('startup-read-failure', 'debug-batch-actions', 'unsaved-window-actions', 'startup-defaults-ui', 'window-preference', 'first-preference-save', 'parameter-guidance-startup', 'station-settings', 'startup-experience', 'startup-close', 'management-center', 'management-close-read-race', 'complete-backup-ui', 'uninstall-result-actions', 'lifecycle-maintenance-ui')) {
               $captureDirectory = Join-Path '.artifacts/window-native' $suite
               New-Item -ItemType Directory -Path $captureDirectory -Force | Out-Null
               Get-ChildItem -LiteralPath $evidence -Filter '*.png' -File | Copy-Item -Destination $captureDirectory
@@ -256,6 +256,18 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --clean-storage-defaults
           exit $LASTEXITCODE
+
+      - name: Verify protected deployment succession and cleanup on disposable Windows
+        if: matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'
+        shell: pwsh
+        run: |
+          . ./scripts/project-environment.ps1
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --initialize-isolated-ci-storage
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet tests/Ipc.Verification/bin/Release/net10.0/Ipc.Verification.dll --installed-lifecycle-windows *> .artifacts/protected-lifecycle.log
+          $verificationExit = $LASTEXITCODE
+          Get-Content .artifacts/protected-lifecycle.log
+          exit $verificationExit
 
       - name: Keep source-bound native window evidence
         if: always() && matrix.business == 'Sportmaster' && needs.repository-checks.outputs.core == 'true'

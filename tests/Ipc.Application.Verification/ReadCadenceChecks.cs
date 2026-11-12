@@ -7,10 +7,20 @@ static class ReadCadenceChecks
 {
     static void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); Console.WriteLine("PASS READ-CADENCE " + message); }
     static RecognitionSymbol Symbol(string code) => new(code, "Code128", [new(20, 20), new(120, 20), new(120, 60), new(20, 60)], 0);
-    static async Task Pause(CameraRoundHarness h)
+    static async Task SetPaused(CameraRoundHarness h, bool paused)
     {
-        var snapshot = await h.App.SnapshotAsync();
-        Check((await h.App.CommandAsync(new(Wire.Id(), snapshot.Revision, "Pause", Value: "SYNTH-CADENCE"))).Status == "Persisted", "pause is committed before the observation-only load");
+        var id = Wire.Id();
+        for (var attempt = 0; attempt < 20; attempt++)
+        {
+            var snapshot = await h.App.SnapshotAsync();
+            var receipt = await h.App.CommandAsync(new(id, snapshot.Revision, paused ? "Pause" : "Resume", Value: "SYNTH-CADENCE"));
+            // A late receipt may advance CAS after the snapshot. Conflict means
+            // this command was not admitted; never retry an accepted/unknown result.
+            if (receipt.Status == "Conflict") continue;
+            Check(receipt.Status == "Persisted" && (await h.App.SnapshotAsync()).Paused == paused, (paused ? "pause is committed before the observation-only load; " : "resume still executes the existing command guard; ") + Wire.Encode(receipt));
+            return;
+        }
+        throw new TimeoutException("Synthetic pause/resume did not obtain a current revision");
     }
     static Task Idle(CameraRoundHarness h, string position, long processed) => CameraRoundHarness.Until(() =>
     {
@@ -51,7 +61,7 @@ static class ReadCadenceChecks
     static async Task SlowPersistenceAndRepeats(string workspace, string root)
     {
         await using var h = new CameraRoundHarness(workspace, root, timeoutMs: 1000, nativeResults: true);
-        await h.StartAsync(); await h.WaitForCameraAdmissionAsync(); await Pause(h);
+        await h.StartAsync(); await h.WaitForCameraAdmissionAsync(); await SetPaused(h, true);
         var pixels = CameraRoundHarness.Barcode("SYNTH-CADENCE-A");
         var delayed = 0;
         h.App.Boundary = point => { if (point == "BeforeIngressDurable" && Interlocked.Exchange(ref delayed, 1) == 0) Thread.Sleep(5500); };
@@ -76,15 +86,19 @@ static class ReadCadenceChecks
         await CameraRoundHarness.Until(() => Task.FromResult(h.App.WorkerProgress().Single(p => p.Position == "left").ObservedOnly == baseline.ObservedOnly + 100));
         var after = h.App.WorkerProgress().Single(p => p.Position == "left");
         var burstMs = Stopwatch.GetElapsedTime(start).TotalMilliseconds;
-        Console.WriteLine("READ-CADENCE-MEASUREMENT " + Wire.Encode(new { RepeatedFrames = 100, BurstMs = burstMs,
-            AdditionalDurableInputs = after.Received - baseline.Received, after.QueueDepth }));
+        Console.WriteLine("READ-CADENCE-MEASUREMENT " + Wire.Encode(new
+        {
+            RepeatedFrames = 100,
+            BurstMs = burstMs,
+            AdditionalDurableInputs = after.Received - baseline.Received,
+            after.QueueDepth
+        }));
         Check(after.Received == baseline.Received && after.Processed == baseline.Processed && after.QueueDepth == 0,
             "100 repeated paused observations add zero durable inputs and zero queued business work");
         Check(burstMs < 5000 && h.Peer.Requests.Count == 0,
             "repeat observation load completes below the field expiry window and sends no request");
         Check((await h.App.ReadParcelPictureAsync(original, default)).Image!.Gray8.SequenceEqual(pixels.Data), "the first exact image survives the presence-only burst");
-        var s = await h.App.SnapshotAsync();
-        Check((await h.App.CommandAsync(new(Wire.Id(), s.Revision, "Resume"))).Status == "Persisted", "resume still executes the existing command guard");
+        await SetPaused(h, false);
         await h.WaitForCameraAdmissionAsync();
         h.Peer.ReplySlot = "";
         h.Api(h.Left).EnqueueNative(pixels, 102, [Symbol("SYNTH-CADENCE-A")]);
@@ -97,7 +111,7 @@ static class ReadCadenceChecks
         await Idle(h, "left", baseline.Processed + 2);
         Check(h.Peer.Requests.Count == 1 && Wire.Encode((await h.App.OperationAsync(op.Id))!.Wcs) == frozen,
             "same-placement read after an unknown response preserves the original request and never resends");
-        await Pause(h);
+        await SetPaused(h, true);
         await h.TrayAsync(h.Left, TrayPresence.Absent);
         await SmRoundFixture.NextVehicleAsync(h.App, "left");
         h.Api(h.Left).EnqueueNative(pixels, 104, [Symbol("SYNTH-CADENCE-B")]);
@@ -113,7 +127,7 @@ static class ReadCadenceChecks
     static async Task QueueAndGate(string workspace, string root)
     {
         await using var h = new CameraRoundHarness(workspace, root, timeoutMs: 1000, queueCapacity: 2, nativeResults: true);
-        await h.StartAsync(); await h.WaitForCameraAdmissionAsync(); await Pause(h);
+        await h.StartAsync(); await h.WaitForCameraAdmissionAsync(); await SetPaused(h, true);
         var pixels = CameraRoundHarness.Barcode("SYNTH-QUEUE");
         h.Api(h.Left).EnqueueNative(pixels, 1, [Symbol("SYNTH-QUEUE-A")]);
         await Idle(h, "left", 1);

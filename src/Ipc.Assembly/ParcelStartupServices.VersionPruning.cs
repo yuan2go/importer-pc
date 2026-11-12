@@ -28,6 +28,14 @@ public static partial class ParcelStartupServices
         => Wire.Decode<DeploymentPruneReceipt>(await ElevateAsync(new("KeepVersionPruningRemainder") { RollbackOperationId = operation },
             maintenanceProgress: progress, cancellationToken: token) ?? throw new InstallationOutcomeUnknownException("缺少原版本保留余项回执。"));
 
+    public static async Task<DeploymentHistoryPage> ReadMaintenanceHistoryAsync(int offset = 0)
+        => Wire.Decode<DeploymentHistoryPage>(await ElevateAsync(new("ReadMaintenanceHistory") { HistoryOffset = offset }) ?? throw new IOException("缺少历史维护记录。"));
+    public static async Task<DeploymentHistoryItem> InspectMaintenanceHistoryAsync(string kind, string operation)
+        => Wire.Decode<DeploymentHistoryItem>(await ElevateAsync(new("InspectMaintenanceHistory") { HistoryKind = kind, RollbackOperationId = operation }) ?? throw new IOException("缺少原维护结果。"));
+    public static async Task<UninstallAssetsReceipt> ResumeHistoricalAssetsAsync(string operation, IProgress<MaintenanceProgress>? progress, CancellationToken token)
+        => Wire.Decode<UninstallAssetsReceipt>(await ElevateAsync(new("ResumeHistoricalAssets") { RollbackOperationId = operation }, maintenanceProgress: progress, cancellationToken: token)
+            ?? throw new InstallationOutcomeUnknownException("原资产清理结果未确认。"));
+
     static async Task<string> ReviewVersionPruningCore(StartupMaintenanceRequest request, MaintenanceExecution? execution)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();

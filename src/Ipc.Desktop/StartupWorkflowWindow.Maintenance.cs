@@ -77,6 +77,7 @@ public abstract partial class StartupWorkflowWindow
                 MaintenanceStage.PublishingBackup => "正在保存完整备份结果",
                 MaintenanceStage.PublishingRestore => "正在保存恢复结果",
                 MaintenanceStage.RetiringDeployment => "正在卸载程序",
+                MaintenanceStage.RemovingBackupSet => "正在删除所选完整备份清单",
                 MaintenanceStage.RemovingProgram => "正在清理本次安装的程序与系统入口",
                 MaintenanceStage.InstallingMachine => "已进入机器变更；正在安装程序和系统入口",
                 MaintenanceStage.RepairingSystem => "正在修复开始菜单和程序入口",

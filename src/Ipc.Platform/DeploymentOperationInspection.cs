@@ -10,6 +10,8 @@ public static partial class WindowsDeploymentSetup
     static void RequireNoUnresolvedInstallation(string application, string? operationId, bool closeUncommitted = false)
     {
         var directory = Path.Combine(MachineRoot, "deployments");
+        var current = Current(application);
+        var history = ReadDeploymentHistory(application);
         foreach (var file in Directory.EnumerateFiles(directory, application + ".setup-*.json"))
         {
             MachineRuntimePolicy.RequireProtectedEvidence(file);
@@ -29,7 +31,17 @@ public static partial class WindowsDeploymentSetup
                     continue;
             }
             var status = document.RootElement.GetProperty("Status").GetString();
-            if (closeUncommitted && CanCloseUncommittedInstallation(document.RootElement, Current(application)))
+            if (document.RootElement.TryGetProperty("Request", out _))
+            {
+                var operation = Path.GetFileName(file)[(application.Length + ".setup-".Length)..^5];
+                var originalRequest = ReadInstallationRequest(application, operation, document.RootElement.GetRawText());
+                var inspection = ProjectInstallation(originalRequest, document.RootElement.GetRawText(), current, history);
+                if (inspection.Status == "Superseded") continue;
+                var change = document.RootElement.TryGetProperty("ChangePlanIdentity", out var plan) ? plan.GetString() : null;
+                if (inspection.Status == "Unknown" && current?.DeploymentPlanIdentity == Wire.Hash(Wire.Encode(originalRequest with { ChangePlanIdentity = change })))
+                    throw new InstallationOutcomeUnknownException("原安装与当前登记存在冲突，须先核对原结果，不能用新安装覆盖证据。");
+            }
+            if (closeUncommitted && CanCloseUncommittedInstallation(document.RootElement, current))
             {
                 var closed = System.Text.Json.Nodes.JsonNode.Parse(document.RootElement.GetRawText())!;
                 closed["Status"] = "Failed";
@@ -88,12 +100,12 @@ public static partial class WindowsDeploymentSetup
             using var guard = new FileStream(Path.Combine(MachineRoot, "deployments", request.ApplicationId + ".lease"), FileMode.Open, FileAccess.Read, FileShare.None);
             MachineRuntimePolicy.RequireProtectedEvidence(file);
             if (new FileInfo(file).Length > 4 * 1024 * 1024) throw new InvalidDataException("安装记录超出读取预算");
-            return ProjectInstallation(request, File.ReadAllText(file), Current(request.ApplicationId));
+            return ProjectInstallation(request, File.ReadAllText(file), Current(request.ApplicationId), ReadDeploymentHistory(request.ApplicationId));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or JsonException)
         { return new("Unknown", "尚未取得可核验的原操作终态。安装记录缺失或暂时无法读取；请稍后再次核对，禁止重复提交。"); }
     }
-    internal static InstallationInspection ProjectInstallation(WindowsDeploymentRequest request, string journal, DeploymentLocation? current)
+    internal static InstallationInspection ProjectInstallation(WindowsDeploymentRequest request, string journal, DeploymentLocation? current, DeploymentTransition[]? history = null)
     {
         using var document = JsonDocument.Parse(journal); var root = document.RootElement;
         if (!root.TryGetProperty("RequestIdentity", out var identity) || identity.GetString() != InstallationRequestIdentity(request))
@@ -101,11 +113,24 @@ public static partial class WindowsDeploymentSetup
         var state = root.GetProperty("Status").GetString();
         var plan = root.TryGetProperty("ChangePlanIdentity", out var value) ? value.GetString() : null;
         var committedIdentity = Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = plan }));
-        if (current is not null &&
-            (current.DeploymentPlanIdentity == committedIdentity && current.LifecycleState != "Installed" ||
-             current.DeploymentPlanIdentity == committedIdentity && current.RestoreHandoffHash is not null && !string.Equals(Path.GetFullPath(current.DataRoot), Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase) ||
-             current.PreviousDeployment?.DeploymentPlanIdentity == committedIdentity))
-            return new("Superseded", "原安装已被后续卸载或部署取代；仅保留原结果，不修复或启用退役程序。");
+        DeploymentLocation? original = null;
+        if (root.TryGetProperty("Location", out var installed) && installed.ValueKind == JsonValueKind.Object)
+        {
+            original = Wire.Decode<DeploymentLocation>(installed.GetRawText());
+            if (!InstallationLocationMatches(request, root, original, committedIdentity))
+                return new("Unknown", "原安装目标与请求身份冲突，保留原件，不推断取代或完成。");
+        }
+        else if (history is not null)
+        {
+            // Some current-format failure receipts retain target paths but not
+            // Location. The protected successor may still contain that exact
+            // committed predecessor; never reconstruct it from directory names.
+            var originals = history.Select(e => e.Previous).Where(l => l.LifecycleState == "Installed" && InstallationLocationMatches(request, root, l, committedIdentity))
+                .DistinctBy(DeploymentNode).ToArray();
+            if (originals.Length == 1) original = originals[0];
+        }
+        if (state != "Failed" && history is not null && original is not null && DeploymentPrecedes(original, current, history))
+            return new("Superseded", "原安装已被后续卸载、安装或恢复接管取代；原提交证据保留，不修复或启用退役程序。", original, plan);
         if (current?.DeploymentPlanIdentity == committedIdentity && current.SourceCommit != request.SourceCommit)
             return new("Unknown", "原安装身份与当前程序来源冲突；保留原记录，不能推断安装完成。");
         DeploymentLocation? Previous()
@@ -137,6 +162,15 @@ public static partial class WindowsDeploymentSetup
         if (current is null || current.LifecycleState != "Installed" || current.DeploymentPlanIdentity != committedIdentity)
             return new("Unknown", "原操作记录与唯一部署登记不一致；请核对，不重复提交。");
         return new(state, state == "Completed" ? "原安装回执及唯一登记已核对一致。" : "原安装登记已提交，系统入口尚需按原登记修复；不要重新安装。", current, plan, Previous());
+    }
+
+    static bool InstallationLocationMatches(WindowsDeploymentRequest request, JsonElement record, DeploymentLocation location, string committedIdentity)
+    {
+        if (location.ApplicationId != request.ApplicationId || location.RuntimeAccountSid != request.RuntimeAccountSid ||
+            location.SourceCommit != request.SourceCommit || location.DeploymentPlanIdentity != committedIdentity ||
+            !Path.GetFullPath(location.DataRoot).Equals(Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase)) return false;
+        return !record.TryGetProperty("ReleaseRoot", out var release) || release.ValueKind != JsonValueKind.String ||
+            Path.GetFullPath(location.ReleaseRoot).Equals(Path.GetFullPath(release.GetString()!), StringComparison.OrdinalIgnoreCase);
     }
 
     public static WindowsRemovalReceipt InspectRemoval(string application)

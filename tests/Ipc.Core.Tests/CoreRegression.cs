@@ -39,6 +39,7 @@ public sealed class CoreRegression
     [DataRow("--rcs-timeout-errors")]
     [DataRow("--parameter-refactor")]
     [DataRow("--parameter-guidance-startup")]
+    [DataRow("--backup-set-delivery")]
     [DataRow("--backup-consistency")]
     [DataRow("--stability-analysis")]
     [DataRow("--industrial-recovery")]

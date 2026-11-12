@@ -25,6 +25,16 @@ public abstract partial class StartupWorkflowWindow : Window
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected readonly TextBlock InstallationHeading = new() { Text = "安装菜鸟供包台", FontSize = UiTypography.PageTitle, FontWeight = UiTypography.Emphasis };
     protected readonly TextBlock VersionLabel = new() { FontSize = UiTypography.Body, Margin = new(0, 8, 0, 0), Visibility = Visibility.Collapsed };
+    protected readonly TextBox BuildIdentityDetails = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 140, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+    protected void ShowBuildIdentity(DeploymentLocation? registered, DeploymentMedia? target = null)
+    {
+        var running = WindowsDeploymentSetup.RunningBuild(typeof(StartupWorkflowWindow).Assembly);
+        var current = registered is null ? null : WindowsDeploymentSetup.RegisteredBuild(registered);
+        var targetBuild = target is null ? null : WindowsDeploymentSetup.MediaBuild(target);
+        BuildIdentityDetails.Text = "实际运行维护宿主：" + running.BusinessVersion + "\n" + running.SourceCommit +
+            "\n\n当前登记部署：" + (current is null ? "未登记" : current.BusinessVersion + "\n" + current.SourceCommit + "\n" + current.Detail) +
+            (targetBuild is null ? "" : "\n\n所选目标介质：" + targetBuild.BusinessVersion + "\n" + targetBuild.SourceCommit + "\n" + targetBuild.Detail + "\n当前构建 → 目标构建：\n" + (current?.SourceCommit ?? "未登记") + " → " + targetBuild.SourceCommit);
+    }
     readonly TextBlock[] installationSteps = new TextBlock[3];
     protected void InstallationStep(int step)
     {
@@ -47,6 +57,14 @@ public abstract partial class StartupWorkflowWindow : Window
         VersionLabel.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         Title = title; FontSize = UiTypography.Body; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         SetResourceReference(BackgroundProperty, "Background"); SetResourceReference(ForegroundProperty, "Ink");
+        var buildIdentity = new Expander { Header = "构建身份（可选择复制）", Content = BuildIdentityDetails, Margin = new(0, 4, 0, 4) };
+        System.Windows.Automation.AutomationProperties.SetAutomationId(BuildIdentityDetails, "Maintenance.BuildIdentity");
+        Loaded += (_, _) =>
+        {
+            if (BuildIdentityDetails.Text.Length != 0) return;
+            try { ShowBuildIdentity(WindowsDeploymentSetup.Current(ParcelStartupServices.ApplicationId)); }
+            catch (Exception error) { BuildIdentityDetails.Text = "实际运行维护宿主：" + WindowsDeploymentSetup.RunningBuild(typeof(StartupWorkflowWindow).Assembly) + "\n当前登记未读取：" + error.Message; }
+        };
         if (installation)
         {
             Width = 880; Height = 560; MinWidth = 600; MinHeight = 380; StartupAppearance.Apply(this);
@@ -62,7 +80,7 @@ public abstract partial class StartupWorkflowWindow : Window
             var sidebar = new Border { Child = rail }.Themed(Border.BackgroundProperty, "Soft"); layout.Children.Add(sidebar);
             var content = new Grid { Margin = new(28, 24, 28, 20) }; Grid.SetColumn(content, 1);
             content.RowDefinitions.Add(new() { Height = GridLength.Auto }); content.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); content.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            var header = new StackPanel(); header.Children.Add(InstallationHeading); header.Children.Add(VersionLabel); header.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 48, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); header.Children.Add(CreateMaintenancePanel(compact: true));
+            var header = new StackPanel(); header.Children.Add(InstallationHeading); header.Children.Add(VersionLabel); header.Children.Add(buildIdentity); header.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 48, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); header.Children.Add(CreateMaintenancePanel(compact: true));
             var options = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(options, 1);
             InstallationOptionsScroll = options;
             Actions.HorizontalAlignment = HorizontalAlignment.Right; Grid.SetRow(Actions, 2);
@@ -73,7 +91,7 @@ public abstract partial class StartupWorkflowWindow : Window
         var grid = new Grid { Margin = new(20, 12, 20, 16) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var heading = new StackPanel(); WorkflowHeading.Text = title.Split(" · ")[0]; heading.Children.Add(WorkflowHeading);
-        heading.Children.Add(WorkflowBusinessName);
+        heading.Children.Add(WorkflowBusinessName); heading.Children.Add(buildIdentity);
         heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 64, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
@@ -155,7 +173,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     bool savingCandidate;
     string? checkedCandidateHash;
     enum RepairTask { Directory, Parameters, Review, Recovery }
-    enum RepairAction { Read, Check, SaveDraft, ContinueDraft, ExportTemplate, Import, Save, Repair, Backup, Retention, PlanRestore, ReadRestore, OpenRestore, ExecuteRestore, AdoptRestore, Rollback, Install, Start, Previous, Next, SaveAndStart, Reload, Exit, Tools }
+    enum RepairAction { Read, Check, SaveDraft, ContinueDraft, ExportTemplate, Import, Save, Repair, Backup, Retention, PlanRestore, ReadRestore, OpenRestore, ExecuteRestore, AdoptRestore, Rollback, VersionPrune, History, Install, Start, Previous, Next, SaveAndStart, Reload, Exit, Tools }
     readonly Dictionary<RepairAction, Button> actionButtons = [];
     readonly Dictionary<RepairTask, TabItem> taskPages = [];
     RepairTask selectedTask;
@@ -270,7 +288,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (picker.ShowDialog(this) != true) return;
             await RunMaintenance("创建完整备份\n数据：" + (document?.RuntimeDirectory ?? launch.DataRoot) + "\n目标：" + picker.FileName + " 及同名 .recovery 目录",
                 (progress, token) => maintenance.BackupAsync(picker.FileName, progress, token)); backupCatalogRoot = Path.GetDirectoryName(picker.FileName)!;
-            Message("完整备份已完成。请把数据库文件和同名 .recovery 目录一起保存。");
+            Message("完整备份已完成。可在完整备份列表中交付整份备份，无需手工拼装文件。");
         });
         Action(RepairAction.Retention, "清理过期记录…", () =>
         {
@@ -343,6 +361,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             new StartupRollbackWindow(ManagementMode) { Owner = this }.ShowDialog();
             return Task.CompletedTask;
         });
+        Action(RepairAction.VersionPrune, "清理旧程序构建…", () => { new StartupVersionPruneWindow(ManagementMode) { Owner = this }.ShowDialog(); return Task.CompletedTask; });
+        Action(RepairAction.History, "历史维护结果…", () => { new MaintenanceHistoryWindow() { Owner = this }.ShowDialog(); return Task.CompletedTask; });
         Action(RepairAction.Install, "安装 / 修复程序…", async () =>
         {
             if (!MayDiscard()) return;
@@ -588,8 +608,18 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
 
     void ShowStartupDiagnostics()
     {
-        var dialog = new Window { FontFamily = UiTypography.Interface, FontSize = UiTypography.Body, Owner = this, Title = "启动诊断",
-            Width = 760, Height = 520, MinWidth = 520, MinHeight = 320, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var dialog = new Window
+        {
+            FontFamily = UiTypography.Interface,
+            FontSize = UiTypography.Body,
+            Owner = this,
+            Title = "启动诊断",
+            Width = 760,
+            Height = 520,
+            MinWidth = 520,
+            MinHeight = 320,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner
+        };
         StartupAppearance.FitToWorkArea(dialog);
         System.Windows.Automation.AutomationProperties.SetAutomationId(dialog, "StartupDiagnosticDetails");
         var content = new DockPanel { Margin = new(20) };
@@ -631,18 +661,18 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             RepairAction.ReadRestore or RepairAction.OpenRestore => maintenance is not null,
             RepairAction.ExecuteRestore => recovery is not null && !UnknownOutcome,
             RepairAction.AdoptRestore => restoredPreview?.State is "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated" && restoredBackup is not null,
-            RepairAction.Rollback => ParcelStartupServices.ApplicationId == "sportmaster",
+            RepairAction.Rollback or RepairAction.VersionPrune or RepairAction.History => ParcelStartupServices.ApplicationId == "sportmaster",
             RepairAction.ContinueDraft => draft is not null && savedDraft is not null,
             _ => draft is not null && (!startupSaveUncertain || kind is RepairAction.SaveDraft or RepairAction.ExportTemplate)
         };
     }
     void SelectRestoreStage(StartupRecoveryPreview original)
     {
-        if (original.State is "Planned" or "CopyIncomplete" or "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated") ResolveKnownMaintenanceOutcome();
+        if (original.State is "Planned" or "CopyIncomplete" or "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated" or "ConfirmedPaused" or "Enabled" or "EnabledPaused") ResolveKnownMaintenanceOutcome();
         if (original.State is "Isolated" or "HandoffPrepared" or "ProjectionPending" or "AdoptedIsolated")
         { restoredPreview = original; restoredBackup = original.Backup ?? backup; recovery = null; }
         else { recovery = original.State is "Planned" or "CopyIncomplete" ? original : null; restoredPreview = null; restoredBackup = null; }
-        if (original.State == "AdoptedIsolated") { RestoreAdopted = true; SelectedLaunch = SelectedLaunch with { DataRoot = original.DataRoot }; }
+        if (original.State is "AdoptedIsolated" or "ConfirmedPaused" or "Enabled" or "EnabledPaused") { RestoreAdopted = true; SelectedLaunch = SelectedLaunch with { DataRoot = original.DataRoot }; }
         if (restorePlanPreview is not null) restorePlanPreview.Text = original.Summary + "\n目标：" + original.Destination;
     }
     void InvalidateRestorePlan()
@@ -814,20 +844,32 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             var backupFolder = Folder("备份目录（最多显示 256 份）", backupCatalogRoot);
             backupFolder.TextChanged += (_, _) => backupCatalogRoot = backupFolder.Text;
             var backupRows = new DataGrid { AutoGenerateColumns = false, IsReadOnly = true, CanUserAddRows = false, MinHeight = 100, MaxHeight = 260, RowHeight = 44 };
-            foreach (var column in new[] { ("时间", "At"), ("完整性", "Status"), ("字节", "Bytes"), ("备份", "Path") }) backupRows.Columns.Add(new DataGridTextColumn { Header = column.Item1, Binding = new System.Windows.Data.Binding(column.Item2), Width = column.Item2 == "Path" ? new DataGridLength(1, DataGridLengthUnitType.Star) : DataGridLength.Auto });
+            foreach (var column in new[] { ("时间", "At"), ("完整性", "StatusText"), ("字节", "Bytes"), ("备份", "Path") }) backupRows.Columns.Add(new DataGridTextColumn { Header = column.Item1, Binding = new System.Windows.Data.Binding(column.Item2), Width = column.Item2 == "Path" ? new DataGridLength(1, DataGridLengthUnitType.Star) : DataGridLength.Auto });
             var listBackups = new Button { Content = "读取并校验备份列表", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-            listBackups.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await RunMaintenance("校验备份目录\n目录：" + selected + "\n不修改任何文件。", (progress, token) => maintenance.ListBackupsAsync(selected, progress, token), readOnly: true); Message("已读取备份列表。“Verified”表示备份文件完整，可用于恢复。"); });
+            listBackups.Click += async (_, _) => await Run(async () => { await RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await RunMaintenance("校验备份目录\n目录：" + selected + "\n不修改任何文件。", (progress, token) => maintenance.ListBackupsAsync(selected, progress, token), readOnly: true); Message("已核验备份列表。只有完整集可恢复或交付，孤立数据库及残缺集保留并说明原因。"); });
             Body.Children.Add(listBackups); Body.Children.Add(backupRows);
             var backupBox = Field("完整备份数据库", backup, v => { backup = v; InvalidateRestorePlan(); });
             System.Windows.Automation.AutomationProperties.SetAutomationId(backupBox, "Startup.RestoreBackup");
-            backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.Status + " · " + item.Summary); } };
+            backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.StatusText + " · " + item.Summary); } };
+            var manageSets = new Button { Content = "完整备份核验、交付与保管…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            manageSets.Click += async (_, _) => await Run(async () =>
+            {
+                await RequireMaintenance();
+                var manager = new BackupSetsWindow(maintenance, backupCatalogRoot, selectForRestore: true) { Owner = this };
+                if (manager.ShowDialog() == true && manager.SelectedBackup is { } selected) backupBox.Text = selected;
+            }); Body.Children.Add(manageSets);
             var choose = new Button { Content = "选择完整备份…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             choose.Click += (_, _) => { var selected = FilePick(this, "选择完整备份数据库", "SQLite 备份|*.db;*.sqlite;*.backup|所有文件|*.*"); if (selected is not null) backupBox.Text = selected; }; Body.Children.Add(choose);
             var destination = Folder("恢复到新目录（不覆盖原目录）", restoreRoot);
             System.Windows.Automation.AutomationProperties.SetAutomationId(destination, "Startup.RestoreDestination");
             destination.TextChanged += (_, _) => { restoreRoot = destination.Text; InvalidateRestorePlan(); };
-            restorePlanPreview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80,
-                Text = (recovery ?? restoredPreview) is { } prior ? prior.Summary + "\n目标：" + prior.Destination : "选择完整备份和独立恢复目录，或读取原恢复。检查不会复制、接管或启动。" };
+            restorePlanPreview = new TextBox
+            {
+                IsReadOnly = true,
+                TextWrapping = TextWrapping.Wrap,
+                MinHeight = 80,
+                Text = (recovery ?? restoredPreview) is { } prior ? prior.Summary + "\n目标：" + prior.Destination : "选择完整备份和独立恢复目录，或读取原恢复。检查不会复制、接管或启动。"
+            };
             Body.Children.Add(restorePlanPreview);
         }
         var fields = Body.Children.Cast<UIElement>().ToArray(); Body.Children.Clear();
@@ -944,7 +986,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 RepairAction.Reload => startupSaveUncertain,
                 _ => false
             } : draft is null ?
-                kind is RepairAction.Read or RepairAction.Install or RepairAction.Tools or RepairAction.Exit || selectedTask == RepairTask.Recovery && kind is RepairAction.PlanRestore or RepairAction.ReadRestore or RepairAction.ExecuteRestore or RepairAction.AdoptRestore or RepairAction.Rollback :
+                kind is RepairAction.Read or RepairAction.Install or RepairAction.Tools or RepairAction.Exit || selectedTask == RepairTask.Recovery && kind is RepairAction.PlanRestore or RepairAction.ReadRestore or RepairAction.ExecuteRestore or RepairAction.AdoptRestore or RepairAction.Rollback or RepairAction.VersionPrune or RepairAction.History :
                 kind is RepairAction.Tools or RepairAction.Exit || kind switch
                 {
                     RepairAction.Read => selectedTask == RepairTask.Directory,
@@ -953,7 +995,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     RepairAction.Check or RepairAction.Start => selectedTask == RepairTask.Review,
                     RepairAction.SaveAndStart => selectedTask == RepairTask.Review && !SceneOnly && savedInput != Input(),
                     RepairAction.Install or RepairAction.PlanRestore or RepairAction.ReadRestore => selectedTask == RepairTask.Recovery,
-                    RepairAction.Rollback => selectedTask == RepairTask.Recovery && document?.Candidate?.ApplicationId == "sportmaster",
+                    RepairAction.Rollback or RepairAction.VersionPrune or RepairAction.History => selectedTask == RepairTask.Recovery && document?.Candidate?.ApplicationId == "sportmaster",
                     RepairAction.ExecuteRestore => selectedTask == RepairTask.Recovery && recovery is not null,
                     RepairAction.AdoptRestore => selectedTask == RepairTask.Recovery && restoredPreview is not null,
                     RepairAction.Previous => !SceneOnly && selectedTask is RepairTask.Parameters or RepairTask.Review,

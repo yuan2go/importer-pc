@@ -78,6 +78,12 @@ public sealed partial class ParameterSettingsControl
             AutomationProperties.SetAutomationId(open, "CompleteBackup.Settings");
             open.Click += (_, _) => BackupRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(open);
         }
+        if (m.ApplicationId == "sportmaster" && BackupSetsRequested is not null)
+        {
+            var manage = new Button { Content = "完整备份核验、交付与保管…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+            AutomationProperties.SetAutomationId(manage, "BackupSet.Settings");
+            manage.Click += (_, _) => BackupSetsRequested?.Invoke(this, EventArgs.Empty); backup.Body.Children.Add(manage);
+        }
         backup.Body.Children.Add(Text("完整备份包括数据库文件和同名恢复文件夹，恢复时两者都需要；关闭自动备份不会删除已有备份。"));
         var display = Page(0, "显示偏好", m.ApplicationId == "sportmaster" ? "设置本机窗口的打开方式和布局。" : "仅影响本机显示。");
         if (m.ApplicationId == "sportmaster")

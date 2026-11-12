@@ -10,6 +10,30 @@ public sealed class MaintenanceVersionBoundary
     const string Hash = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     [TestMethod]
+    public void BuildDisplayUsesReviewedMediaBytesAndDisclosesMissingEvidence()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ipc-build-display-" + Wire.Id());
+        Directory.CreateDirectory(Path.Combine(root, "desktop"));
+        try
+        {
+            var source = new string('a', 40);
+            var file = Path.Combine(root, "desktop", "application-release.json");
+            var release = new ApplicationRelease(2, "sportmaster", source, [], [], [], "1.0.0");
+            File.WriteAllText(file, Wire.Encode(release));
+            var media = new DeploymentMedia(root, "sportmaster", source, new() { ["desktop/application-release.json"] = Wire.FileHash(file) });
+            Assert.AreEqual("1.0.0", WindowsDeploymentSetup.MediaBuild(media).BusinessVersion);
+            File.WriteAllText(file, Wire.Encode(release with { BusinessVersion = "9.0.0" }));
+            var changed = WindowsDeploymentSetup.MediaBuild(media);
+            Assert.AreEqual("未核验", changed.BusinessVersion);
+            Assert.AreEqual(source, changed.SourceCommit, "The original reviewed source remains identifiable without endorsing the changed target.");
+            File.Delete(file);
+            Assert.AreEqual("未核验", WindowsDeploymentSetup.MediaBuild(media).BusinessVersion);
+            Assert.AreEqual("未核验", WindowsDeploymentSetup.RegisteredBuild(new("sportmaster", source, root, root, root, "synthetic")).BusinessVersion);
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
     [DataRow("ReviewRollback")]
     [DataRow("Rollback")]
     [DataRow("ReviewVersionPruning")]

@@ -4,7 +4,7 @@ public enum MaintenanceStage
 {
     Checking, CopyingSnapshot, CopyingDatabase, CopyingCustody, Verifying,
     PublishingBackup, PublishingRestore, RetiringDeployment, RemovingProgram,
-    CancelAccepted, CancelTooLate, InstallingMachine, RepairingSystem
+    CancelAccepted, CancelTooLate, InstallingMachine, RepairingSystem, RemovingBackupSet
 }
 public sealed record MaintenanceProgress(MaintenanceStage Stage, long? ProcessedBytes, long? TotalBytes, bool CanCancel);
 public sealed class MaintenanceCancelledException(string message) : OperationCanceledException(message);

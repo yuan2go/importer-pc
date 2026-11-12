@@ -28,6 +28,93 @@ static class InstalledLifecycleWindows
         ExtensionStore.AtomicWrite(options["--receipt"], new ChildReceipt(admin, denied,
             !OrdinaryRuntimeProcess.RelaunchCurrentIfElevated([]), source, data));
     }
+    static void VerifyProtectedPruningAndSupersession(string evidence, string dataParent, string programRoot, SecurityIdentifier sid)
+    {
+        void Check(bool ok, string reason) { if (!ok) throw new Exception(reason); Console.WriteLine("PASS INSTALLED-MAINTENANCE " + reason); }
+        var application = "maintenance-" + Wire.Id()[..12];
+        var data = Path.Combine(dataParent, application); var seeds = Directory.CreateDirectory(Path.Combine(evidence, application + "-seed")).FullName;
+        File.WriteAllText(Path.Combine(seeds, "business.json"), "{\"SyntheticMaintenance\":true}");
+        DeploymentMedia Media(char source)
+        {
+            var root = Directory.CreateDirectory(Path.Combine(evidence, application + "-media-" + source)).FullName;
+            foreach (var area in new[] { "app", "desktop" })
+            {
+                var directory = Directory.CreateDirectory(Path.Combine(root, area)).FullName;
+                var names = area == "app" ? new[] { "Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll", "config/business.json" } : new[] { "Ipc.Desktop.exe", "config/business.json" };
+                foreach (var name in names)
+                {
+                    var file = Path.Combine(directory, name); Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+                    if (name.EndsWith("business.json", StringComparison.Ordinal)) File.Copy(Path.Combine(seeds, "business.json"), file);
+                    else File.WriteAllText(file, "SYNTHETIC NEVER EXECUTED " + source);
+                }
+                var files = names.ToDictionary(n => n, n => Wire.FileHash(Path.Combine(directory, n)));
+                var contract = Wire.Hash("same current contract");
+                var compatibility = new DeploymentRuntimeCompatibility(1, 14, 3, LocalManagementMode.CredentialSchemaVersion,
+                    ManagementModeBroker.ProtocolVersion, RecoverySecurityPolicy.CurrentEpoch, DeploymentRuntimeCompatibility.CurrentLifecycleProtocol,
+                    "1.0.0", contract, DeploymentRuntimeCompatibility.DependencyHash(files));
+                ExtensionStore.AtomicWrite(Path.Combine(directory, DeploymentRuntimeCompatibility.FileName), compatibility);
+                files.Add(DeploymentRuntimeCompatibility.FileName, Wire.FileHash(Path.Combine(directory, DeploymentRuntimeCompatibility.FileName)));
+                ExtensionStore.AtomicWrite(Path.Combine(directory, "application-release.json"), new ApplicationRelease(2, application, new string(source, 40), ["synthetic"], ["standard"], files, "1.0.0", CompatibilitySha256: contract));
+            }
+            return DeploymentMedia.Inspect(root, application);
+        }
+        WindowsDeploymentRequest Request(DeploymentMedia medium) => new(medium.Root, application, medium.SourceCommit, sid.Value, data, seeds, RunMode.Simulation,
+            null, null, [], ConfigurationHashes: new() { ["business.json"] = Wire.FileHash(Path.Combine(seeds, "business.json")) }, ProgramRoot: programRoot,
+            ExpectedRegistrationHash: File.Exists(WindowsDeploymentSetup.Registration(application)) ? Wire.FileHash(WindowsDeploymentSetup.Registration(application)) : null,
+            Shortcuts: new(false, false), OperationId: Wire.Id())
+        { Recovery = new() };
+        DeploymentLocation Install(WindowsDeploymentRequest request, Action<DeploymentLocation>? projection = null) => WindowsDeploymentSetup.Install(request, _ => { }, _ => { }, projection ?? (_ => { }));
+        var oldest = Install(Request(Media('c'))); var previous = Install(Request(Media('a'))); var current = Install(Request(Media('b')));
+        var plan = WindowsDeploymentSetup.PlanVersionPruning(application, Wire.Id(), true);
+        Check(plan.Allowed && plan.Delete.Any(a => a.Root == oldest.ReleaseRoot) && !plan.Delete.Any(a => a.Root == previous.ReleaseRoot || a.Root == current.ReleaseRoot),
+            "normal protected planner admits three 1.0.0 builds by actual deployment order and preserves current and rollback");
+        var cleared = WindowsDeploymentSetup.PruneVersions(plan);
+        Check(cleared.Status == "Completed" && !Directory.Exists(oldest.ReleaseRoot) && Directory.Exists(previous.ReleaseRoot) && Directory.Exists(current.ReleaseRoot), "normal execution rechecks real plan and deletes only old inventoried build and cache");
+        var missingReply = Request(Media('d')); var interrupted = false;
+        try { Install(missingReply, _ => throw new IOException("controlled system projection failure after real registration commit")); }
+        catch (InstallationOutcomeUnknownException) { interrupted = true; }
+        Check(interrupted && WindowsDeploymentSetup.InspectInstallation(missingReply).Status == "CommittedNeedsSystemRepair", "real postcommit projection failure retains original installation instead of fabricating precommit failure");
+        var originalFile = WindowsDeploymentSetup.InstallationOperationFile(missingReply); var originalBytes = Wire.FileHash(originalFile);
+        var marker = Path.Combine(data, "retained-original-request.txt"); File.WriteAllText(marker, "original business evidence never read by installation");
+        var removed = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
+        Check(WindowsDeploymentSetup.InspectInstallation(missingReply).Status == "Superseded" && WindowsDeploymentSetup.DiscoverInstallation(application, missingReply.SourceCommit) is null,
+            "normal uninstall supersedes committed installation missing final reply in both inspection and discovery");
+        var reinstalled = Install(Request(Media('e')));
+        Check(File.Exists(marker) && reinstalled.LifecycleState == "Installed" && Wire.FileHash(originalFile) == originalBytes, "real new-install admission agrees with discovery after uninstall, preserves data and leaves original committed receipt untouched");
+        var removalArchive = removed.OperationFile + ".verification-retained"; File.Move(removed.OperationFile, removalArchive);
+        try
+        {
+            Check(WindowsDeploymentSetup.InspectInstallation(missingReply).Status == "Unknown", "missing protected uninstall proof keeps original installation result unresolved");
+            var blocked = false; try { Install(Request(Media('f'))); } catch (InstallationOutcomeUnknownException) { blocked = true; }
+            Check(blocked && WindowsDeploymentSetup.Current(application)?.ReleaseRoot == reinstalled.ReleaseRoot, "normal new-install admission rejects missing supersession proof without changing current registration");
+        }
+        finally { File.Move(removalArchive, removed.OperationFile); }
+        _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
+        var cleanRequest = Request(Media('2')); var cleanInterrupted = false;
+        try { Install(cleanRequest, _ => throw new IOException("controlled final reply loss before cleanup uninstall")); }
+        catch (InstallationOutcomeUnknownException) { cleanInterrupted = true; }
+        var cleanOriginal = WindowsDeploymentSetup.InstallationOperationFile(cleanRequest); var cleanBytes = Wire.FileHash(cleanOriginal);
+        _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
+        var purgePlan = WindowsDeploymentSetup.PlanDataPurge(application, Wire.Id(), WindowsDeploymentSetup.Current(application)!);
+        Check(cleanInterrupted && purgePlan.Allowed, "normal cleanup uninstall generates a real purge plan after a committed install lost its final reply");
+        var purged = WindowsDeploymentSetup.PurgeData(purgePlan);
+        Check(purged.Status == "Purged" && !File.Exists(marker) && WindowsDeploymentSetup.InspectInstallation(cleanRequest).Status == "Superseded",
+            "actual frozen data purge retains protected supersession evidence after deleting the station roots");
+        var cleanInstalled = Install(Request(Media('1')));
+        Check(cleanInstalled.LifecycleState == "Installed" && !File.Exists(marker) && Wire.FileHash(cleanOriginal) == cleanBytes,
+            "normal reinstall after cleanup agrees with discovery without restoring deleted data or rewriting committed history");
+        Check(WindowsDeploymentSetup.InspectVersionPruning(application, plan.OperationId, false).Status == "Completed",
+            "original cleanup result remains readable after retained-data and clean-data reinstalls");
+        _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
+        var originalHistory = WindowsDeploymentSetup.InspectMaintenanceHistory(application, "prune", plan.OperationId);
+        Check(originalHistory.Deployment?.ReleaseRoot == current.ReleaseRoot && originalHistory.OriginalScope == plan.ExpectedRegistrationHash && originalHistory.At is not null,
+            "historical result resolves original deployment identity and time from protected evidence after reinstallation");
+        var purgeHistory = WindowsDeploymentSetup.InspectMaintenanceHistory(application, "purge", purgePlan.OperationId);
+        Check(purgeHistory.Deployment?.SourceCommit == cleanRequest.SourceCommit && purgeHistory.RecordedStatus == "Purged",
+            "historical purge result retains the retired original deployment rather than substituting the new program");
+        Console.WriteLine("BOUNDARY protected unique test product; real platform plan/admission/files/registration including retained and purged data. Real SM full-medium, SDK, UAC cancellation and reboot require the target matrix.");
+    }
+
     public static void Run()
     {
         void Check(bool ok, string reason) { if (!ok) throw new Exception(reason); Console.WriteLine("PASS INSTALLED-LIFECYCLE " + reason); }
@@ -167,6 +254,7 @@ static class InstalledLifecycleWindows
         VerifyShortcuts(reinstall); VerifyOrdinary(reinstall, "reinstall-after-remove");
         Check(reinstall.ConfigurationDirectory == first.ConfigurationDirectory && Wire.FileHash(data) == dataHash && File.Exists(foreign), "uninstall then reinstall retains original seed/data/evidence and starts with ordinary privileges again");
         _ = WindowsDeploymentSetup.Remove(appId, Wire.FileHash(WindowsDeploymentSetup.Registration(appId)), _ => { }, d => DeploymentShortcuts.Remove(d, menu, desktop));
+        VerifyProtectedPruningAndSupersession(privateRoot, dataParent, programRoot, sid);
         Check(Wire.FileHash(policyFile) == originalPolicy && (File.Exists(productionFile) ? Wire.FileHash(productionFile) : null) == originalProduction && Wire.FileHash(rootsFile) == rootsHash,
             "complete lifecycle leaves the real sportmaster deployment, machine runtime policy and trusted-root bytes unchanged");
         Console.WriteLine("EVIDENCE " + privateRoot);

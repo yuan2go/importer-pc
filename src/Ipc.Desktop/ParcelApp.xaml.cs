@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -194,7 +194,7 @@ public partial class App : System.Windows.Application
 #endif
             if (window is Ipc.Application.ParcelFlow.Desktop.ShellWindow shell) { shell.ReopenOwnerAsync = ReopenStopped; shell.OpenRetentionOwnerAsync = OpenRetentionStopped; }
 #if SPORTMASTER
-            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) { station.ReopenOwnerAsync = ReopenStopped; station.OpenRetentionOwnerAsync = OpenRetentionStopped; station.OpenMaintenanceOwnerAsync = OpenMaintenanceStopped; }
+            if (window is Ipc.Application.Sportmaster.Desktop.SupplyStationWindow station) { station.ReopenOwnerAsync = ReopenStopped; station.OpenRetentionOwnerAsync = OpenRetentionStopped; station.OpenMaintenanceOwnerAsync = OpenMaintenanceStopped; station.OpenBackupSetsAsync = path => { new BackupSetsWindow(ParcelStartupServices.Maintenance(launch), path ?? @"D:\") { Owner = station }.ShowDialog(); return Task.CompletedTask; }; }
 #endif
             MainWindow = window; window.Show(); startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;
         }

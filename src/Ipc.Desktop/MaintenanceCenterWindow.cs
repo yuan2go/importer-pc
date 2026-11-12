@@ -23,6 +23,11 @@ public sealed class MaintenanceCenterWindow : Window
         var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 0) }; body.Children.Add(feedback);
         Add("软件打不开：检查配置与启动", () => Repair(false));
         Add("恢复本站备份／上一部署回滚", () => Repair(true));
+        if (Ipc.Assembly.ParcelStartupServices.ApplicationId == "sportmaster")
+        {
+            Add("清理旧程序构建", () => new StartupVersionPruneWindow(Ipc.Assembly.ParcelStartupServices.ManagementMode(SelectedLaunch)) { Owner = this }.ShowDialog());
+            Add("历史维护结果与原清单余项", () => new MaintenanceHistoryWindow() { Owner = this }.ShowDialog());
+        }
         Add("清理过期记录", () =>
         {
             var service = (Ipc.Application.Contracts.IStartupRetentionMaintenance)Ipc.Assembly.ParcelStartupServices.Maintenance(SelectedLaunch);

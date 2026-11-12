@@ -56,6 +56,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     int? categoryScope;
     public event EventHandler? MaintenanceRequested;
     public event EventHandler? BackupRequested;
+    public event EventHandler? BackupSetsRequested;
     public event EventHandler? DisplayPreferencesRequested;
     public ParameterSettingsControl()
     {

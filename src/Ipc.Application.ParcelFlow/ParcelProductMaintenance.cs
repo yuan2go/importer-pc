@@ -64,7 +64,7 @@ public sealed partial class ParcelStartupMaintenance
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Verifying);
         var inspection = ParcelRepository.InspectMaintenanceCore(copy.Database, definition, execution?.Token ?? CancellationToken.None);
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
-        if (purpose == "Rollback" && definition.Id == "sportmaster" && markers.Contains("RESTORED-ISOLATED.json"))
+        if (purpose is "Rollback" or "PruneVersions" && definition.Id == "sportmaster" && markers.Contains("RESTORED-ISOLATED.json"))
         {
             var c = state.Envelope?.Effective ?? state.Seed;
             using var snapshot = ParcelRepository.OpenHandoffSnapshot(copy.Database);
@@ -193,20 +193,72 @@ public sealed partial class ParcelStartupMaintenance
         Authorize();
         directory = Path.GetFullPath(directory); RecoveryFiles.RequireOrdinaryAncestors(directory);
         var result = new List<StartupBackupItem>();
-        foreach (var recovery in Directory.EnumerateDirectories(directory, "*.recovery").Take(257))
+        var selections = Directory.EnumerateDirectories(directory, "*.recovery").Select(p => p[..^".recovery".Length])
+            .Concat(Directory.EnumerateFiles(directory).Where(p => new[] { ".db", ".sqlite", ".backup" }.Contains(Path.GetExtension(p).ToLowerInvariant())))
+            .Concat(Directory.EnumerateFiles(directory, "*.deleting.json").Select(p => p[..^".deleting.json".Length]))
+            .Distinct(StringComparer.OrdinalIgnoreCase).Take(257).ToArray();
+        if (selections.Length > 256) throw new IOException("单目录超过256份备份；按交付目录分组后重试");
+        foreach (var backup in selections)
         {
-            token.ThrowIfCancellationRequested(); if (result.Count == 256) throw new IOException("单目录超过256份备份；按交付目录分组后重试");
-            var backup = recovery[..^".recovery".Length];
+            token.ThrowIfCancellationRequested();
+            using var selectionOwner = ParcelRecovery.HoldBackupSet(backup);
+            var recovery = backup + ".recovery";
+            BackupSetDeletion? originalDeletion = null;
+            if (File.Exists(backup + ".deleting.json"))
+            {
+                try { originalDeletion = ParcelRecovery.ReadSetDeletion(backup); }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
+                {
+                    Authorize(); result.Add(new(backup, "InvalidOrIncomplete", null, 0, null, "原删除记录无法核验，原件保留：" + error.Message)); continue;
+                }
+                if (originalDeletion.Status != "NotStarted")
+                {
+                    var detail = originalDeletion.Status == "Deleted" ? "原完整集已删除；保留删除回执。" + (File.Exists(backup) || Directory.Exists(recovery) ? "原位置后来出现内容，未沿旧清单处理。" : "")
+                        : "原完整集删除未完成，只能沿原冻结范围重试。";
+                    result.Add(new(backup, originalDeletion.Status == "Deleted" ? "Deleted" : "Deleting", null, 0, originalDeletion.Identity,
+                        detail + "\n" + string.Join("\n", originalDeletion.Remaining))
+                    { OriginalDeletionStatus = originalDeletion.Status }); continue;
+                }
+            }
+            if (!Directory.Exists(recovery))
+            {
+                if (originalDeletion is not null)
+                {
+                    result.Add(new(backup, "Deleting", null, 0, originalDeletion.Identity, "原删除在提交前取消；当前位置缺少完整恢复内容，缺失原因未推断。明确办理仍沿原冻结范围。") { OriginalDeletionStatus = originalDeletion.Status }); continue;
+                }
+                string? deletionIdentity = null; var deletionReason = "";
+                try { deletionIdentity = ParcelRecovery.PlanSetDeletion(backup, definition.Id, Authorize, token).Identity; }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException)
+                { Authorize(); deletionReason = error.Message; }
+                result.Add(new(backup, "OrphanDatabase", null, new FileInfo(backup).Length, deletionIdentity, "缺少同名恢复目录；不能恢复或交付。" + (deletionIdentity is null ? "业务身份无法核验，原文件保留：" + deletionReason : "可明确删除这一个已核验业务身份的孤立数据库，其他内容保留。"))); continue;
+            }
             try
             {
                 var config = BackupConfiguration(backup);
-                var target = Path.Combine(Path.GetTempPath(), "ipc-backup-preview-" + Wire.Id(), config.Mode.ToString(), config.StationId, definition.Id);
-                var plan = ParcelRecovery.PlanRestore(backup, target, Authorize, execution);
+                var verified = ParcelRecovery.InspectAnalysisBackup(backup, definition, token, Authorize);
                 var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(Path.Combine(recovery, "COMPLETED.json")));
-                result.Add(new(backup, "Verified", manifest.At, new FileInfo(backup).Length + manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length), BackupIdentity(backup, token), Wire.Encode(plan)));
+                var identity = BackupIdentity(backup, token);
+                var originalStatus = originalDeletion is not null && originalDeletion.Identity == identity ? originalDeletion.Status : null;
+                result.Add(new(backup, "Verified", manifest.At, verified.RequiredBytes, identity,
+                    (originalStatus == "NotStarted" ? "原删除已在提交前取消。" : "") + "完整备份已核验：" + config.StationId + " · " + config.Mode + "；数据库及恢复文件须作为一份保管。")
+                { OriginalDeletionStatus = originalStatus });
             }
             catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or System.Text.Json.JsonException)
-            { result.Add(new(backup, "InvalidOrIncomplete", null, 0, null, error.GetType().Name + "；保留原备份，重新取得完整集合")); }
+            {
+                Authorize();
+                string? deletionIdentity = null; var deletionDetail = "范围无法核验，原件保留。";
+                try
+                {
+                    var deletion = originalDeletion ?? ParcelRecovery.PlanSetDeletion(backup, definition.Id, Authorize, token);
+                    deletionIdentity = deletion.Identity;
+                    deletionDetail = "可明确删除原清单内仍存在的已核验范围；清单外内容保留。";
+                }
+                catch (Exception scopeError) when (scopeError is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or KeyNotFoundException)
+                { Authorize(); deletionDetail += "原因：" + scopeError.Message; }
+                result.Add(new(backup, originalDeletion is null ? "InvalidOrIncomplete" : "Deleting", null, 0, deletionIdentity,
+                    "完整集核验失败：" + error.Message + "；" + deletionDetail)
+                { OriginalDeletionStatus = originalDeletion?.Status });
+            }
         }
         return Task.FromResult(result.OrderByDescending(x => x.At).ToArray());
     }

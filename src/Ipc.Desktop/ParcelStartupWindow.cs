@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Ipc.Presentation.Wpf;
@@ -25,12 +24,8 @@ sealed class ParcelStartupWindow : Window
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
         // Read the running binary, including the frozen SourceRevisionId used by packaging;
         // deployment machines do not need Git or a source checkout.
-        var assembly = typeof(ParcelStartupWindow).Assembly;
-        var information = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-        var parts = information?.Split('+', 2);
-        var version = parts?[0] ?? assembly.GetName().Version?.ToString(3) ?? "未记录";
-        var revision = parts is { Length: 2 } && !string.IsNullOrWhiteSpace(parts[1]) ? parts[1] : "未记录";
-        buildIdentity.Text = $"版本 {version} · Git {revision}";
+        var identity = Ipc.Platform.WindowsDeploymentSetup.RunningBuild(typeof(ParcelStartupWindow).Assembly);
+        buildIdentity.Text = $"版本 {identity.BusinessVersion} · Git {identity.SourceCommit}";
         buildIdentity.SetResourceReference(StyleProperty, "ReadonlyValue");
         buildIdentity.SetResourceReference(ForegroundProperty, "Muted");
         System.Windows.Automation.AutomationProperties.SetName(buildIdentity, "软件版本和 Git 提交");

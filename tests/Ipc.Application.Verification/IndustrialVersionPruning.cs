@@ -36,6 +36,15 @@ static class IndustrialVersionPruning
         var writes = 0;
         Reject<InvalidDataException>(() => WindowsDeploymentSetup.ApplyVersionPruning(changed, "receipt", () => "registration", _ => writes++), "changed bytes reject entire list before receipt/deletion");
         Check(writes == 0 && File.ReadAllText(Path.Combine(changedArea, "app", "Ipc.Synthetic.dll")) == "changed bytes", "changed original retained");
+        var swapped = Record("changed-at-commit", out var swappedArea); var swappedFile = Path.Combine(swappedArea, "app", "Ipc.Synthetic.dll");
+        DeploymentPruneRecord? swappedSaved = null;
+        Reject<InstallationOutcomeUnknownException>(() => WindowsDeploymentSetup.ApplyVersionPruning(swapped, "receipt", () => "registration", state =>
+        {
+            swappedSaved = state;
+            if (state.Status == "Prepared") File.WriteAllText(swappedFile, "different bytes after initial validation");
+        }), "replacement after irreversible boundary preserves original unknown operation rather than a false completed receipt");
+        Check(swappedSaved?.Status == "Prepared" && File.ReadAllText(swappedFile) == "different bytes after initial validation",
+            "real deletion checks reviewed bytes on the same Windows deletion handle and retains the replaced file");
         var stale = Record("stale", out var staleArea);
         Reject<InvalidOperationException>(() => WindowsDeploymentSetup.ApplyVersionPruning(stale, "receipt", () => "other-registration", _ => writes++), "registration CAS protects scope before first deletion");
         Check(writes == 0 && File.Exists(Path.Combine(staleArea, "app", "Ipc.Synthetic.dll")), "stale plan has no write side effects");
@@ -86,6 +95,37 @@ static class IndustrialVersionPruning
         WindowsDeploymentSetup.RequireVersionDirectory(Path.Combine(root, "programs"), location);
         Check(true, "actual installer version-directory grammar accepted");
         Reject<InvalidDataException>(() => WindowsDeploymentSetup.RequireVersionDirectory(Path.Combine(root, "programs"), location with { ReleaseRoot = Path.Combine(root, "programs") }), "program root cannot be used as a version deletion root");
+
+        var graphRoot = Directory.CreateDirectory(Path.Combine(root, "generated-plan")).FullName;
+        DeploymentLocation Build(char source) => new("sportmaster", new string(source, 40), Path.Combine(graphRoot, source.ToString()),
+            Path.Combine(graphRoot, "config"), Path.Combine(graphRoot, "data"), "synthetic", DeploymentPlanIdentity: Wire.Hash("build-" + source));
+        var a = Build('c'); var b = Build('a'); var currentBuild = Build('b') with { PreviousDeployment = b };
+        DeploymentVersionFiles[] Inventory(DeploymentLocation deployment)
+        {
+            Directory.CreateDirectory(deployment.ReleaseRoot); var file = Path.Combine(deployment.ReleaseRoot, "Ipc.Synthetic.dll");
+            File.WriteAllText(file, "1.0.0 source " + deployment.SourceCommit);
+            return [new(deployment.ReleaseRoot, new() { ["Ipc.Synthetic.dll"] = Wire.FileHash(file) })];
+        }
+        var aFiles = Inventory(a); var bFiles = Inventory(b); _ = Inventory(currentBuild);
+        DeploymentTransition[] chain = [new(a, b), new(b, currentBuild)];
+        var generated = WindowsDeploymentSetup.BuildVersionPruningPlan("sportmaster", Wire.Id(), true, currentBuild, "registration", chain,
+            [(a, aFiles), (b, bFiles)], [new(currentBuild.ReleaseRoot, "current"), new(b.ReleaseRoot, "registered rollback")], verifiedPredecessor: true);
+        Check(generated.Allowed && generated.Delete.Single().Root == a.ReleaseRoot && generated.Retain.Any(r => r.Root == b.ReleaseRoot),
+            "real plan generator selects oldest deployment among three same-version builds despite deliberately reversed commit ordering");
+        var restoredCurrent = currentBuild with { DataRoot = Path.Combine(graphRoot, "restored-root"), RestoreHandoffHash = Wire.Hash("confirmed handoff") };
+        var restoredChain = chain.Append(new DeploymentTransition(currentBuild, restoredCurrent)).ToArray();
+        var afterRestore = WindowsDeploymentSetup.BuildVersionPruningPlan("sportmaster", Wire.Id(), true, restoredCurrent, "registration", restoredChain,
+            [(a, aFiles), (b, bFiles)], [new(currentBuild.ReleaseRoot, "current"), new(b.ReleaseRoot, "rollback")], verifiedPredecessor: true);
+        Check(afterRestore.Allowed && afterRestore.Delete.Single().Root == a.ReleaseRoot, "generated pruning plan preserves old-root ancestry after a verified restore changes data root");
+        var noProof = WindowsDeploymentSetup.BuildVersionPruningPlan("sportmaster", Wire.Id(), true, restoredCurrent, "registration", chain,
+            [(a, aFiles), (b, bFiles)], [new(currentBuild.ReleaseRoot, "current"), new(b.ReleaseRoot, "rollback")], verifiedPredecessor: true);
+        Check(!noProof.Allowed && noProof.Retain.Any(r => r.Root == a.ReleaseRoot), "missing restore edge retains old builds rather than guessing a deployment order");
+        var pinnedPlan = WindowsDeploymentSetup.BuildVersionPruningPlan("sportmaster", Wire.Id(), true, currentBuild, "registration", chain,
+            [(a, aFiles), (b, bFiles)], [new(a.ReleaseRoot, "actual unresolved reference"), new(b.ReleaseRoot, "rollback")], verifiedPredecessor: true);
+        Check(!pinnedPlan.Allowed, "a real retained reference wins over historical deployment eligibility in generated plan");
+        var actualDeletion = WindowsDeploymentSetup.ApplyVersionPruning(new(1, DateTimeOffset.UtcNow, generated, "Prepared", [], "synthetic"), "generated-receipt", () => "registration", _ => { });
+        Check(actualDeletion.Status == "Completed" && !Directory.Exists(a.ReleaseRoot) && Directory.Exists(b.ReleaseRoot) && Directory.Exists(currentBuild.ReleaseRoot),
+            "generated plan drives actual deletion while current and registered rollback stay intact");
 
         await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, "sqlite"), deferred: true);
         await h.StartAsync(); await h.App.DisposeAsync();

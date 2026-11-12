@@ -87,7 +87,9 @@ static partial class Program
         await Task.Delay(1250); first.UpdateLayout();
         var sessionLogin = Descendants(first).OfType<Button>().Single(b => Equals(b.Content, "进入管理模式…"));
         var protectedBody = (FrameworkElement)type.BaseType!.GetField("WorkflowBody", flags)!.GetValue(first)!;
-        Check(protectedBody.Visibility == Visibility.Collapsed && sessionLogin.IsVisible && !((Panel)type.BaseType!.GetField("Actions", flags)!.GetValue(first)!).Children.Contains(sessionLogin), "revoked first-configuration session preserves an accessible login outside hidden fields and the four-action footer");
+        Check(protectedBody.Visibility == Visibility.Collapsed && sessionLogin.IsVisible && !((Panel)type.BaseType!.GetField("Actions", flags)!.GetValue(first)!).Children.Contains(sessionLogin) &&
+            !Descendants(first).OfType<Button>().Any(b => AutomationProperties.GetAutomationId(b) == "Startup.OpenRestore" && b.IsVisible),
+            "revoked first-configuration session keeps login reachable, hides the restore entry and preserves the four-action footer");
         _ = first.Dispatcher.BeginInvoke(new Action(() => Click(first, "进入管理模式…")));
         ManagementModeWindow? loginWindow = null;
         for (var i = 0; i < 100 && loginWindow is null; i++) { await Task.Delay(20); loginWindow = System.Windows.Application.Current.Windows.OfType<ManagementModeWindow>().FirstOrDefault(); }

@@ -49,9 +49,7 @@ sealed class StartupRollbackWindow : StartupWorkflowWindow
                 (progress, token) => ReviewRollback(RegistrationHash(), frozenBackup, progress, token), readOnly: true);
             receipt = null; originalOperation = null;
             var deployment = reviewed.Deployment;
-            evidence.Text = "当前：" + deployment.CurrentVersion + "\n" + deployment.Current.SourceCommit +
-                "\n上一部署：" + (deployment.TargetVersion ?? "不可用") + "\n" + deployment.Target?.SourceCommit +
-                "\n\n程序检查：" + deployment.Reason + "\n运行责任：" + reviewed.Business?.OperatorSummary;
+            evidence.Text = Describe(deployment) + "\n运行责任：" + reviewed.Business?.OperatorSummary;
             Message(deployment.Allowed && reviewed.Business?.Allowed == true ? "检查通过。请核对当前和目标构建后明确回滚。" : "尚不能回滚，原程序和数据保留，请查看检查结果。");
         });
         execute = Action("回滚到上一部署", async () =>
@@ -102,10 +100,13 @@ sealed class StartupRollbackWindow : StartupWorkflowWindow
     void ShowReceipt()
     {
         if (receipt is null) return;
-        evidence.Text = (evidence.Text.Length == 0 ? "" : evidence.Text + "\n\n") + "原操作：" + receipt.OperationId + "\n" + receipt.Detail + "\n回执：" + receipt.OperationFile;
+        var originalPlan = receipt.Plan ?? reviewed?.Deployment;
+        evidence.Text = (originalPlan is null ? "" : Describe(originalPlan) + "\n\n") + "原操作：" + receipt.OperationId + "\n" + receipt.Detail + "\n回执：" + receipt.OperationFile;
         Message(receipt.Detail);
         if (!UnknownOutcome) HideCompletedMaintenanceProgress();
     }
+    static string Describe(DeploymentRollbackPlan plan) => "原当前部署：" + plan.CurrentVersion + "\n" + plan.Current.SourceCommit +
+        "\n原目标部署：" + (plan.TargetVersion ?? "不可用") + "\n" + plan.Target?.SourceCommit + "\n\n程序检查：" + plan.Reason;
     void UpdateActions()
     {
         if (plan is null) return; // Field callback can run while constructing the form.

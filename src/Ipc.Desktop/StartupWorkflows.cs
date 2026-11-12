@@ -439,12 +439,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                 AuthorizationGate.Visibility = allowed ? Visibility.Collapsed : Visibility.Visible;
                 FooterHost.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
                 if (initialConfiguration && headerImport is not null) headerImport.Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
+                if (initialConfiguration) actionButtons[RepairAction.OpenRestore].Visibility = allowed ? Visibility.Visible : Visibility.Collapsed;
                 StartupAppearance.Primary(administratorLogin);
                 if (!allowed && !authorityWasBlocked) { statusBeforeAuthorityBlock = Status.Text; Message(""); }
                 else if (allowed && authorityWasBlocked) Message(statusBeforeAuthorityBlock ?? "已进入管理模式，已填写的内容已恢复。");
                 authorityWasBlocked = !allowed;
             }
-            catch (Exception error) { if (RestoreAdopted) return; authorityAllowed = false; managementMenu.Status = new(false, false, null, Available: false); WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; if (initialConfiguration && headerImport is not null) headerImport.Visibility = Visibility.Collapsed; AuthorizationGate.Visibility = Visibility.Visible; gateTitle.Text = "管理授权状态无法读取"; gateDescription.Text = "已填写的内容暂存在本窗口。" + error.Message; }
+            catch (Exception error) { if (RestoreAdopted) return; authorityAllowed = false; managementMenu.Status = new(false, false, null, Available: false); WorkflowBody.Visibility = Visibility.Collapsed; FooterHost.Visibility = Visibility.Collapsed; if (initialConfiguration && headerImport is not null) headerImport.Visibility = Visibility.Collapsed; if (initialConfiguration) actionButtons[RepairAction.OpenRestore].Visibility = Visibility.Collapsed; AuthorizationGate.Visibility = Visibility.Visible; gateTitle.Text = "管理授权状态无法读取"; gateDescription.Text = "已填写的内容暂存在本窗口。" + error.Message; }
             finally { checkingAuthority = false; }
         }
         authorizationTimer.Tick += async (_, _) => await RefreshAuthorization();

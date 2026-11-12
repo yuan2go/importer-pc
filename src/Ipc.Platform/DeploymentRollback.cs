@@ -9,6 +9,7 @@ public sealed record DeploymentRollbackPlan(string Identity, string OperationId,
 public sealed record DeploymentRollbackReceipt(string OperationId, string Status, string Detail, string? OperationFile = null)
 {
     public bool ClosedWithoutCommit { get; init; }
+    public DeploymentRollbackPlan? Plan { get; init; }
 }
 internal sealed record DeploymentRollbackRecord(int SchemaVersion, string Status, DateTimeOffset At,
     DeploymentRollbackPlan Plan, DeploymentLocation Target, string? ErrorCode = null);
@@ -141,7 +142,7 @@ public static partial class WindowsDeploymentSetup
         ApplyRollback(record, () => (Current(application)!, Wire.FileHash(Registration(application))),
             location => { execution?.BeginCommit(MaintenanceStage.RepairingSystem); WriteProtected(Registration(application), location, sid); },
             state => WriteProtected(file, state, sid), location => RepairRollbackProjection(location, projectShortcuts));
-        return new(actual.OperationId, "Completed", "已切换到上一版本；原数据和请求事实保留，未启动作业或设备。", file);
+        return new(actual.OperationId, "Completed", "已切换到上一版本；原数据和请求事实保留，未启动作业或设备。", file) { Plan = actual };
     }
 
     [SupportedOSPlatform("windows")]
@@ -156,7 +157,7 @@ public static partial class WindowsDeploymentSetup
         if (!actual.Allowed || actual.Identity != reviewed.Identity) throw new InstallationOutcomeUnknownException("准备失败后部署状态变化，原回滚结果待核实。");
         var target = actual.Target! with { LifecycleOperation = file, DeploymentPlanIdentity = actual.Identity };
         WriteProtected(file, new DeploymentRollbackRecord(1, "NotCommitted", DateTimeOffset.UtcNow, actual, target), new SecurityIdentifier(actual.Current.RuntimeAccountSid));
-        return new(actual.OperationId, "NotCommitted", "准备未完成，尚未调用程序切换。原部署保留；备份残件及维护回执保管。原因：" + failure, file) { ClosedWithoutCommit = true };
+        return new(actual.OperationId, "NotCommitted", "准备未完成，尚未调用程序切换。原部署保留；备份残件及维护回执保管。原因：" + failure, file) { ClosedWithoutCommit = true, Plan = actual };
     }
 
     internal static void ApplyRollback(DeploymentRollbackRecord prepared, Func<(DeploymentLocation Location, string Hash)> observe,
@@ -294,6 +295,6 @@ public static partial class WindowsDeploymentSetup
             "NotCommitted" => "取得独占核对权后确认原登记未切换；原版本仍有效。",
             "CommittedNeedsSystemRepair" => "程序登记已切换，须修复原系统入口；不要再次回退。",
             _ => "原记录与当前登记不一致，请保留原件联系实施人员。"
-        }, file) { ClosedWithoutCommit = status == "NotCommitted" && (repair || record.Status == "NotCommitted") };
+        }, file) { ClosedWithoutCommit = status == "NotCommitted" && (repair || record.Status == "NotCommitted"), Plan = record.Plan };
     }
 }

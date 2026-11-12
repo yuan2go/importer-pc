@@ -173,14 +173,16 @@ static partial class Program
         await WaitUntil(() => executions == 1, "native rollback starts one managed operation");
         RollbackButton("Execute").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
         rollback.Close(); Check(rollback.IsVisible && executions == 1, "busy rollback prevents duplicate switch and closing before original result");
-        pending.SetResult(new(rollbackId, "CommittedNeedsSystemRepair", "original registration committed", "D:/synthetic/original-rollback.json")); await Idle(rollback);
+        pending.SetResult(new(rollbackId, "CommittedNeedsSystemRepair", "original registration committed", "D:/synthetic/original-rollback.json") { Plan = rollbackPlan }); await Idle(rollback);
         rollbackType.GetProperty("InspectRollback", flags)!.SetValue(rollback,
             (Func<string, bool, IProgress<MaintenanceProgress>?, CancellationToken, Task<DeploymentRollbackReceipt>>)((id, repair, _, _) =>
-            { Check(id == rollbackId, "original rollback inspection retains identity"); if (repair && ++repairCalls == 1) throw new IOException("synthetic projection failure"); return Task.FromResult(new DeploymentRollbackReceipt(id, repair ? "Completed" : "CommittedNeedsSystemRepair", "original result", "D:/synthetic/original-rollback.json")); }));
+            { Check(id == rollbackId, "original rollback inspection retains identity"); if (repair && ++repairCalls == 1) throw new IOException("synthetic projection failure"); return Task.FromResult(new DeploymentRollbackReceipt(id, repair ? "Completed" : "CommittedNeedsSystemRepair", "original result", "D:/synthetic/original-rollback.json") { Plan = rollbackPlan }); }));
         RollbackButton("Repair").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(rollback);
         Check(rollback.IsVisible && RollbackButton("Inspect").IsVisible && executions == 1, "failed projection repair retains inspectable original and no duplicate switch");
         RollbackButton("Repair").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(rollback);
         Check(repairCalls == 2 && executions == 1, "retry only repairs the original system entry");
+        var sourceEvidence = ((TextBox)rollbackType.GetField("evidence", flags)!.GetValue(rollback)!).Text;
+        Check(sourceEvidence.Contains(rollbackPlan.Current.SourceCommit) && sourceEvidence.Contains(rollbackPlan.Target!.SourceCommit), "original result inspection retains both exact build identities after repair");
         rollback.Height = 440; rollback.UpdateLayout(); CaptureInternal(evidence, "rollback-original-result", rollback, lines);
         authority.Active = false;
         RollbackButton("Close").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent)); await Idle(rollback);

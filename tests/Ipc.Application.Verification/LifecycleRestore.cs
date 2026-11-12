@@ -89,10 +89,21 @@ static class LifecycleRestore
                 var command = new BusinessCommand(Wire.Id(), (await restored.SnapshotAsync()).Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("controlled external verification", 900000000000000000)));
                 var confirmed = await restored.CommandAsync(command);
                 var repeated = await restored.CommandAsync(command);
-                Check(confirmed.Status == "Persisted" && confirmed == repeated && (await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "one confirmation command is durable and replay-safe, retains pause, and never calls RCS");
+                Check(confirmed.Status == "Persisted" && confirmed == repeated && restoredFactory.Sends == 0, "one confirmation command is durable and replay-safe and never calls RCS");
                 var latest = await restored.SnapshotAsync();
                 await Reject<InvalidOperationException>(() => restored.CommandAsync(command with { Id = Wire.Id(), ExpectedRevision = latest.Revision,
                     Value = Wire.Encode(new RestoreVerificationInput("cannot lower", 1)) }), "actual runtime refuses a lower externally claimed number floor after confirmation");
+                DateTimeOffset LastCycle()
+                {
+                    using var progress = System.Text.Json.JsonDocument.Parse(Wire.Encode(restored.RuntimeProgress()));
+                    return progress.RootElement.GetProperty("Background").EnumerateArray().Single(p => p.GetProperty("Name").GetString() == "maintenance").GetProperty("LastProgress").GetDateTimeOffset();
+                }
+                var confirmedCycle = LastCycle();
+                await CameraRoundHarness.Until(() => Task.FromResult(LastCycle() > confirmedCycle));
+                Check((await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "restore confirmation remains paused after an actual background maintenance cycle, with no automatic supply or RCS send");
+                var ready = await restored.SnapshotAsync();
+                var resumed = await restored.CommandAsync(new(Wire.Id(), ready.Revision, "Resume"));
+                Check(resumed.Status == "Persisted" && !(await restored.SnapshotAsync()).Paused && restoredFactory.Sends == 0, "explicit Resume remains legal after verified restore and never replays an original request");
                 return true;
             }, expectedPorts);
         }

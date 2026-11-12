@@ -39,7 +39,10 @@ public static partial class WindowsDeploymentSetup
     public static string? RestoreCommitStatus(string app, string id)
         => File.Exists(RestoreCommitFile(app, id)) ? RestoreCommitState(ReadRestoreCommit(app, id), Current(app)) : null;
 
-    static void RequireNoUnresolvedRestore(string app)
+    internal static bool RestoreBlocksAnotherOperation(DeploymentRestoreCommit record, DeploymentLocation? current, string? continuingOperation)
+        => record.Status == "Prepared" && record.OperationId != continuingOperation && RestoreCommitState(record, current) != "Superseded";
+
+    static void RequireNoUnresolvedRestore(string app, string? continuingOperation = null)
     {
         var directory = Path.Combine(MachineRoot, "deployments");
         if (!Directory.Exists(directory)) return;
@@ -50,7 +53,7 @@ public static partial class WindowsDeploymentSetup
         {
             var id = Path.GetFileNameWithoutExtension(file)[(app.Length + ".migration-".Length)..];
             var record = ReadRestoreCommit(app, id);
-            if (record.Status == "Prepared" && RestoreCommitState(record, current) != "Superseded")
+            if (RestoreBlocksAnotherOperation(record, current, continuingOperation))
                 throw new InstallationOutcomeUnknownException("原恢复接管尚未收口，请在离线维护读取原恢复并修复入口；不重新安装或启动。");
         }
     }
@@ -62,6 +65,7 @@ public static partial class WindowsDeploymentSetup
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var file = RestoreCommitFile(app, operation);
         var current = Current(app) ?? throw new InvalidDataException("缺少当前登记。");
+        RequireNoUnresolvedRestore(app, operation);
         recovery.RequireStoppedSource(app, current.DataRoot);
         recovery.RequireRegistration(Registration(app), expectedRegistrationHash);
         recovery.Require(current, newRoot);

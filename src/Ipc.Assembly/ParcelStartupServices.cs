@@ -274,7 +274,9 @@ public static partial class ParcelStartupServices
                             WindowsDeploymentSetup.RepairRestoreCommit(ApplicationId, committedProof.Id, request.ExpectedHash!);
                         break; // Previous commit succeeded; receipt loss must not create a second handoff.
                     }
-                    using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!);
+                    var originalRestore = ApplicationId == "sportmaster" ? WindowsDeploymentSetup.ReadRestoreIntents(ApplicationId)
+                        .Single(i => i.BackupIdentity == request.ExpectedHash && i.TargetRoot == Path.GetFullPath(request.Destination!)).OperationId : null;
+                    using var recoveryMigration = WindowsDeploymentSetup.PrepareRecoveryMigration(originalDeployment, request.Destination!, request.ChangePlanIdentity!, originalRestore);
                     var restoreCore = Core(new(originalDeployment.ConfigurationDirectory, originalDeployment.DataRoot, null, null), installer: true);
                     var routingSeed = ApplicationId == "sportmaster" ? restoreCore.RestoredSeed(request.Destination!, request.ExpectedHash!) : null;
                     await restoreCore.AdoptRestoreOwnedAsync(request.Backup!, request.Destination!, request.ExpectedHash!, proof =>

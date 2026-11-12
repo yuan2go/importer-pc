@@ -161,6 +161,12 @@ static class LifecycleRestore
             var next = before with { DataRoot = Path.Combine(root, "restored"), MaintenanceOperation = file, RestoreHandoffHash = Wire.Hash("proof") };
             var record = new DeploymentRestoreCommit("Prepared", id, before, next, next.RestoreHandoffHash!, null, Convert.ToBase64String("old seed"u8), "restored seed");
             WindowsDeploymentSetup.ValidateRestoreCommit(record, "sportmaster", file);
+            if (cut == "seed")
+            {
+                check(WindowsDeploymentSetup.RestoreBlocksAnotherOperation(record, before, Wire.Id()), "an unresolved original handoff blocks a new restore operation before source commit");
+                check(!WindowsDeploymentSetup.RestoreBlocksAnotherOperation(record, before, id), "the same original handoff can resume its prepared commit");
+                check(!WindowsDeploymentSetup.RestoreBlocksAnotherOperation(record, before with { LifecycleState = "Purged" }, Wire.Id()), "explicit later uninstall supersedes an old handoff without reviving it");
+            }
             DeploymentLocation? current = before; var seed = "old seed"u8.ToArray(); var interrupt = true;
             void Boundary(string phase) { if (interrupt && cut == phase) throw new IOException("synthetic process boundary " + phase); }
             void Execute() => WindowsDeploymentSetup.ExecuteRestoreCommit(record, () => current, () => seed,

@@ -100,7 +100,7 @@ public static partial class DesktopRecoverySupervisor
 public static partial class WindowsDeploymentSetup
 {
     [SupportedOSPlatform("windows")]
-    public static DesktopRecoveryMigration PrepareRecoveryMigration(DeploymentLocation source, string targetRoot, string expectedRegistrationHash)
+    public static DesktopRecoveryMigration PrepareRecoveryMigration(DeploymentLocation source, string targetRoot, string expectedRegistrationHash, string? restoreOperation = null)
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         var file = Registration(source.ApplicationId);
@@ -112,6 +112,11 @@ public static partial class WindowsDeploymentSetup
             if (Wire.FileHash(file) != expectedRegistrationHash || Wire.Encode(Current(source.ApplicationId)) != Wire.Encode(source))
                 throw new InvalidOperationException("Reviewed deployment changed before migration; no business fence written");
             if (source.LifecycleState != "Installed") throw new InvalidOperationException("Only an installed deployment can begin data-root migration; no business fence written");
+            if (source.ApplicationId == "sportmaster")
+            {
+                var original = ReadRestoreIntents(source.ApplicationId).Single(i => i.OperationId == restoreOperation && i.TargetRoot == Path.GetFullPath(targetRoot));
+                RequireNoUnresolvedRestore(source.ApplicationId, original.OperationId);
+            }
             var migration = DesktopRecoverySupervisor.HoldMigration(source, targetRoot);
             if (stopped is not null) migration.HoldStoppedSource(stopped);
             migration.HoldRegistration(owner, file, expectedRegistrationHash); return migration;

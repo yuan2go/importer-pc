@@ -61,7 +61,9 @@ public static partial class ParcelStartupServices
             // Positive in-process evidence: the program switch callback was
             // never entered. Persist that fact before returning another review.
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
-            return Wire.Encode(WindowsDeploymentSetup.RecordUnstartedRollback(plan, DiagnosticText.Protect(error.Message)));
+            try { return Wire.Encode(WindowsDeploymentSetup.RecordUnstartedRollback(plan, DiagnosticText.Protect(error.Message))); }
+            catch (Exception receiptError)
+            { throw new InstallationOutcomeUnknownException("回滚准备失败且原次收口回执未确认；保留原备份残件并核对同一原操作。", new AggregateException(error, receiptError)); }
         }
         return Wire.Encode(receipt ?? throw new InstallationOutcomeUnknownException("回退提交结果缺失。"));
     }

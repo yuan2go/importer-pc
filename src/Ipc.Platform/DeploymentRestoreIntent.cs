@@ -110,11 +110,13 @@ public static partial class WindowsDeploymentSetup
         if (existing.Length > 1) throw new InstallationOutcomeUnknownException("同一目标对应多个原恢复意图，须先核对。");
         if (existing.SingleOrDefault() is { } original)
         {
+            RequireNoUnresolvedRestore(application, original.OperationId);
             if (original.BackupIdentity != backupIdentity || original.Backup != Path.GetFullPath(backup) || original.Source.ApplicationId != current.ApplicationId ||
                 original.Source.RuntimeAccountSid != current.RuntimeAccountSid || Path.GetFullPath(original.Source.DataRoot) != Path.GetFullPath(current.DataRoot))
                 throw new InvalidOperationException("原恢复的来源、目标或当前登记已改变；保留原意图，不创建新范围覆盖。");
             return original;
         }
+        RequireNoUnresolvedRestore(application);
         if (Directory.Exists(targetDirectory) || File.Exists(targetDirectory)) throw new InvalidOperationException("已有目标缺少受保护原恢复意图，不能覆盖或猜测续办。");
         var intent = NewRestoreIntent(current, backup, backupIdentity, targetRoot, targetDirectory); ValidateRestoreIntent(intent);
         WriteProtected(RestoreIntentFile(application, intent.OperationId), intent, new SecurityIdentifier(current.RuntimeAccountSid));

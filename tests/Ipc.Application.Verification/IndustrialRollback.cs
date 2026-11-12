@@ -63,7 +63,19 @@ static class IndustrialRollback
             else
             {
                 Check(Observe().Item1.ReleaseRoot == target.ReleaseRoot && Observe().Item1.DeploymentPlanIdentity == plan.Identity, "exactly one target registration after commit: " + cut);
-                if (cut == "success") { WindowsDeploymentSetup.RequireRollbackReady(target, observed); Check(observed.Status == "Completed", "completed original permits ordinary startup"); }
+                if (cut == "success")
+                {
+                    WindowsDeploymentSetup.RequireRollbackReady(target, observed); Check(observed.Status == "Completed", "completed original permits ordinary startup");
+                    var returnJournal = Path.Combine(area, "return-to-A.json");
+                    var backPlan = new DeploymentRollbackPlan(Wire.Hash("return-current-format-A"), Wire.Id(), Observe().Item2, target, before, true, "same 1.0.0 current protocol", "1.0.0", "1.0.0");
+                    var backTarget = before with { LifecycleOperation = returnJournal, DeploymentPlanIdentity = backPlan.Identity, PreviousDeployment = target };
+                    var backRecord = new DeploymentRollbackRecord(1, "Prepared", DateTimeOffset.UtcNow, backPlan, backTarget);
+                    WindowsDeploymentSetup.ApplyRollback(backRecord, Observe, next => ExtensionStore.AtomicWrite(registration, next), state => ExtensionStore.AtomicWrite(returnJournal, state), _ => { });
+                    var final = Wire.Decode<DeploymentRollbackRecord>(File.ReadAllText(returnJournal));
+                    WindowsDeploymentSetup.RequireRollbackReady(Observe().Item1, final);
+                    Check(Observe().Item1.SourceCommit == before.SourceCommit && Observe().Item1.ReleaseRoot == before.ReleaseRoot && final.Status == "Completed" && Wire.FileHash(database) == dataHash,
+                        "production switch engine completes A to B to A for current-format 1.0.0 source builds without replacing business facts");
+                }
                 else Reject<InvalidOperationException>(() => WindowsDeploymentSetup.RequireRollbackReady(target, observed), "pending system projections block ordinary startup: " + cut);
             }
             Reject<InvalidOperationException>(() => WindowsDeploymentSetup.ApplyRollback(record with { Plan = plan with { ExpectedRegistrationHash = new string('0', 64) } },

@@ -102,8 +102,12 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         Body.Children.Clear(); Actions.Children.Clear(); SessionActions.Children.Clear();
         var removal = result.Removal;
         var deleted = result.DataDeletion?.Status == "Purged";
-        var complete = deleted || removal?.Status == "RemovedDataRetained" && !result.DeleteData;
-        var text = deleted ? "本站数据已删除。" : result.DataDeletion is not null ? "程序已卸载，部分数据尚未删除。请关闭占用文件的程序后重试卸载。"
+        var baseComplete = deleted || removal?.Status == "RemovedDataRetained" && !result.DeleteData;
+        var complete = baseComplete && result.Assets?.Status == "Completed";
+        var dataState = deleted ? "本站数据已删除。" : "本站数据保留。";
+        var text = baseComplete && result.Assets?.Status == "RestartRequired" ? dataState + "历史清理尚未完成：维护程序正在使用缓存，已登记重启清理。重启后请用完整安装包核对原结果。"
+            : baseComplete && !complete ? dataState + "历史程序或维护缓存尚未全部清理，请查看详情后重试。无法核验的文件保留。"
+            : deleted ? "卸载完成，本站数据已删除，历史程序和维护缓存已清理。" : result.DataDeletion is not null ? "程序已卸载，部分数据尚未删除。请关闭占用文件的程序后重试卸载。"
             : removal?.Status == "RestartRequired" ? "程序已卸载。部分文件将在重启电脑后删除。"
             : removal?.Status == "RemovedDataRetained" ? result.DeleteData ? "程序已卸载，本站数据尚未删除。可重试卸载以完成数据清理。" : "卸载完成，本站数据已保留。"
             : "程序已卸载，部分文件尚未删除。请关闭占用文件的程序后重试卸载。";
@@ -112,12 +116,16 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         {
             Text = (removal is null ? "" : "程序目录：" + removal.ReleaseRoot + (deleted ? "" : "\n保留数据：" + string.Join("；", removal.Retained)) + "\n卸载记录：" + removal.OperationFile + "\n") +
                 (result.DataDeletion is null ? "" : "数据清理记录：" + result.DataDeletion.OperationFile + "\n") +
-                "剩余文件：\n" + string.Join("\n", result.DataDeletion?.Remaining ?? removal?.RemainingFiles ?? []),
+                (result.Assets is null ? "" : "历史清理记录：" + result.Assets.OperationFile + "\n") +
+                "剩余文件或目录：\n" + string.Join("\n", (result.DataDeletion?.Remaining ?? []).Concat(removal?.RemainingFiles ?? []).Concat(result.Assets?.Remaining ?? [])) +
+                "\n保留的未核验项：\n" + string.Join("\n", (result.Assets?.Retained ?? []).Select(x => x.Root + "：" + x.Reason)),
             IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 160
         };
         Body.Children.Add(new Expander { Header = "卸载详情", Content = details });
-        if (deleted) Note("程序已移除。共享驱动、安装回执和本站以外的备份保留。");
-        if (!complete)
+        if (result.Assets is { DetailsTruncated: true } assets)
+            Note("历史清理尚有 " + assets.TotalRemaining + " 个目录、" + assets.TotalRetained + " 个保留项；此处仅显示摘要，完整清单见历史清理记录。");
+        Note("共享驱动和系统运行库、管理安全信息、个人偏好、安全回执和本站以外的备份保留。");
+        if (!complete && result.Assets?.Status != "RestartRequired")
         {
             deleteData.IsChecked = result.DeleteData; keepData.IsChecked = !result.DeleteData;
             Action("重试卸载", Uninstall);

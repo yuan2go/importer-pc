@@ -74,13 +74,14 @@ static partial class Program
         foreach (var (current, purpose) in new (DeploymentLocation?, string)[]
         {
             (null, "安装"), (installed, "修复安装"), (installed with { SourceCommit = new string('b', 40) }, "更新"),
-            (installed with { LifecycleState = "RemovedDataRetained" }, "重新安装")
+            (installed with { LifecycleState = "RemovedDataRetained" }, "重新安装"), (installed with { LifecycleState = "Purged" }, "重新安装")
         })
         {
             var w = Make(current); w.Show(); await Idle(w);
             Set(w, "media", new DeploymentMedia("D:/synthetic/media", "sportmaster", source, [])); Set(w, "step", 1); Render(w);
             var text = string.Join("\n", Descendants(w).OfType<TextBlock>().Select(t => t.Text));
-            if (current is not null) Check(text.Contains("本次" + purpose + "将保留账户、数据目录和配置"), "options identify " + purpose + " from source and retirement state while preserving the retained data purpose");
+            if (current?.LifecycleState == "Purged") Check(((TextBlock)workflow.GetField("Status", flags)!.GetValue(w)!).Text.Contains("原本站数据已删除") && !text.Contains("重新安装不会清除已有业务记录"), "reinstalling a purged station does not imply deleted records were retained or will be restored");
+            else if (current is not null) Check(text.Contains("本次" + purpose + "将保留账户、数据目录和配置"), "options identify " + purpose + " from source and retirement state while preserving the retained data purpose");
             Set(w, "reviewed", new WindowsDeploymentRequest("D:/synthetic/media", "sportmaster", source, identity.User.Value, current?.DataRoot ?? launch.DataRoot,
                 launch.ConfigurationDirectory, RunMode.Simulation, null, null, [], ProgramRoot: "D:/synthetic/program", Shortcuts: new(true, true), OperationId: Wire.Id()));
             Set(w, "step", 2); Render(w);

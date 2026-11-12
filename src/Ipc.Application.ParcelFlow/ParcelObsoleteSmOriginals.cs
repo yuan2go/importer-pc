@@ -11,9 +11,6 @@ public sealed partial class ParcelRuntime
     {
         foreach (var op in operations.Values)
         {
-            // DB12 custody retains the original request even if the new host's
-            // fingerprint differs. It grants neither execution nor deletion.
-            if (repository!.IsSmDb12Original(op.Id)) continue;
             if (IsSettled(op) || !op.ImplementationHashes.Any(original =>
                 ports!.ImplementationHashes.GetValueOrDefault(original.Key) != original.Value)) continue;
 

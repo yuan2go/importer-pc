@@ -46,6 +46,7 @@ public sealed class CoreRegression
     [DataRow("--industrial-version-pruning", 33)]
     [DataRow("--permanent-deletion-02", 35)]
     [DataRow("--uninstall-data-boundary", 14)]
+    [DataRow("--uninstall-assets", 26)]
     [DataRow("--industrial-opaque-removal", 48)]
     [DataRow("--industrial-quiet-deployment", 60)]
     [DataRow("--industrial-diagnostics", 53)]
@@ -90,7 +91,6 @@ public sealed class CoreRegression
     [DataRow("--management-mode", 40)]
     [DataRow("--installer-storage-checks", 1)]
     [DataRow("--storage-schema-only", 1)]
-    [DataRow("--sm-db12-continuation", 24)]
     public async Task ExistingBehaviorSuite(string selector, int minimumAssertions)
     {
         var root = RepositoryRoot();

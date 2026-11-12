@@ -177,7 +177,10 @@ public static partial class WindowsDeploymentSetup
             RequireUninstallAssetRoot(area.Root, original, MachineRoot, references);
             if (!record.Plan.Caches.Contains(area.Root, StringComparer.OrdinalIgnoreCase)) _ = TrustedProgramRoots.RequireBoundary(area.Root);
         }
-        RequirePruneNotExecuting(record.Plan.Delete.Where(a => !record.Plan.Caches.Contains(a.Root, StringComparer.OrdinalIgnoreCase)).Select(a => a.Root));
+        // The current helper's own cache follows the existing restart queue.
+        // Another live helper must keep its whole cache, including DLLs not loaded yet.
+        RequirePruneNotExecuting(record.Plan.Delete.Where(a => !record.Plan.Caches.Contains(a.Root, StringComparer.OrdinalIgnoreCase) ||
+            !TrustedProgramRoots.Contains(a.Root, AppContext.BaseDirectory)).Select(a => a.Root));
         RequireProtectedPruneFiles(record.Plan.Delete);
         return ApplyUninstallAssets(record, AssetRecordFile(application, operation), original,
             state => WriteProtected(AssetRecordFile(application, operation), state, new SecurityIdentifier(original.RuntimeAccountSid)),

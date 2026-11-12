@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Assembly;
 using Ipc.Platform;
 
@@ -47,7 +48,9 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         Body.Children.Add(deleteData);
         var warning = new TextBlock { Text = "删除配置、记录、图片、日志和管理密码，不可撤销。重新安装后创建新密码。", FontSize = UiTypography.Label, TextWrapping = TextWrapping.Wrap, Margin = new(24, 0, 0, 8) };
         warning.SetResourceReference(TextBlock.ForegroundProperty, "Warning"); Body.Children.Add(warning);
-        var uninstall = Action("卸载", Uninstall);
+        // An unknown outcome routes this same action to inspection below. Only
+        // RunMaintenance may start an actual uninstall after that guard clears.
+        var uninstall = Action("卸载", Uninstall, readOnly: true);
         AutomationProperties.SetAutomationId(uninstall, "Uninstall.Execute");
         CloseAction("取消");
         Message("卸载前请先关闭供包台。");
@@ -55,6 +58,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
 
     async Task Uninstall()
     {
+        if (UnknownOutcome) { await InspectResult(); return; }
         RequireOriginalScope();
         var hash = RegistrationIdentity();
         if (originalRegistration is null || originalRegistration != hash)
@@ -132,7 +136,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
         if (!complete && (!baseComplete || result.Assets?.Status != "RestartRequired"))
         {
             deleteData.IsChecked = result.DeleteData; keepData.IsChecked = !result.DeleteData;
-            Action("重试卸载", Uninstall);
+            Action("重试卸载", Uninstall, readOnly: true);
         }
         CloseAction("关闭");
     }
@@ -146,7 +150,7 @@ sealed class ProductMaintenanceWindow : StartupWorkflowWindow
     protected override void OperationFailed(Exception error)
     {
         base.OperationFailed(error);
-        if (UnknownOutcome && !Actions.Children.OfType<Button>().Any(b => Equals(b.Content, "查看结果")))
-            Action("查看结果", InspectResult, readOnly: true);
+        if (UnknownOutcome)
+            Status.Text = "卸载结果未确认。再次点击卸载按钮只核对原结果，不会重复执行。\n" + ChineseInterfaceText.ParameterMessage(error.Message);
     }
 }

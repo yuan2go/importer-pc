@@ -1886,9 +1886,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "86f6a07aaf009d7b53552cdc04b482c1a12ec4473e99dda3c17eb28f7a211fbf",
-      "size_bytes": 50749,
-      "git_blob": "f3c8795201716dbfeaaf5fdcf13683075cfa5fa5",
+      "sha256": "ff5fa2e72b0b0eb00e4c967e07bdb9325370bea4a2b6fe87f79d0c4a9bafe20d",
+      "size_bytes": 50869,
+      "git_blob": "79512f1258ce9e6181aef50eddbd30282d63f06c",
       "version": "parameter-guidance-startup-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Parameter purpose, shared station identity, seven-day defaults, native window mode and explicit deferred connections",
@@ -7264,9 +7264,9 @@
     },
     {
       "path": "src/Ipc.Desktop/ProductMaintenanceWindow.cs",
-      "sha256": "35e4e6dd96f2537699990948ec2b14618e6d7aa4f8f32203b5b34467bab30344",
-      "size_bytes": 9721,
-      "git_blob": "a805e07f7760cebea224e5167933696ea23c8b14",
+      "sha256": "61ddd4dd7c4612842c4a979e905269d1a388fbf239a72946f2fd985c7549a710",
+      "size_bytes": 10047,
+      "git_blob": "6007c37a16e8146a9cfa731c690bc38730ab20e8",
       "version": "OPS-ADMIN-LOGS-01",
       "status": "current_source_or_bounded_synthetic_evidence",
       "purpose": "Unified operator UI, software administrator authorization and original software log query/export; historical source preserved where marked",
@@ -12484,9 +12484,9 @@
       "status": "tracked_source_or_preserved_artifact",
       "source": "Already tracked public Git artifact; original evidence identity remains in artifact",
       "purpose": "Canonical inventory, no validation claim",
-      "sha256": "9041a8ea2e79526ebac5d429f8a40d437d3377cc4eb01c1d22c78605e6d9c24c",
-      "size_bytes": 14399,
-      "git_blob": "0bccae1289733bdfd916fbb708ab4f863520aec9"
+      "sha256": "f8aa5aa5492ed6a63daf013a5729fdbe258906145fdbb5521b2a5613ed69614b",
+      "size_bytes": 14459,
+      "git_blob": "bcb4b8305f8e22ac5bb21b7538d92e09c8fb3ccb"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationActivation.cs",
@@ -13462,9 +13462,9 @@
       "status": "current_guidance_or_scoped_evidence",
       "purpose": "Reconciliation inventory; not a runtime validation claim",
       "source": "WP-IPC-INTEGRATION-20261028; original evidence identities retained",
-      "sha256": "cc1bf7783d2885fba47f84770a80312740aa25aa19ecb997cf6e6f85fc570ec3",
-      "size_bytes": 16327,
-      "git_blob": "fda3f756d69541f90c30f101d2714675a340673f",
+      "sha256": "febbc151bd4b3ca975e75855654b47c47e5ed657344c1dbc3e63c29a893ab8c6",
+      "size_bytes": 17491,
+      "git_blob": "10e4ef6f5e213d33bc095f2dac6c02ec882d6cba",
       "storage_scope": "public_repository"
     },
     {
@@ -21019,9 +21019,9 @@
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Integrated source and bounded verification",
       "source": "WP-IPC-SM-SECONDARY-ENTRIES-32; original evidence retains its own SourceCommit",
-      "sha256": "aefccb8783e771b4d2e562c4b80fe1b6d5e1583c2fb0f685d43c92cbdfc9d053",
-      "size_bytes": 17380,
-      "git_blob": "6925d5178b5bf37a1aed1ec3cf5e6f8255ad23dd",
+      "sha256": "9a7eb3b13b713abff7434ddf90b3e252b329d9124ef553ab2b4b568a212470a4",
+      "size_bytes": 17455,
+      "git_blob": "a534e03dfe8c43e4bbf84b6f0fabb56782801bdf",
       "storage_scope": "public_repository"
     },
     {
@@ -26350,8 +26350,8 @@
   ],
   "integration_sources": [
     {
-      "commit": "8cb2cc3f24584c26ff3c2f36f1bc5356fe8cf9b5",
-      "manifest_sha256": "1f35b49cd471efccda894bd3db7092348c2528569bcf0364387a64db20e9bed5",
+      "commit": "7af6c88699b28edcf9ec64df8293b97b2bd734af",
+      "manifest_sha256": "fa8a35307fb0e23f3260523d67082084964e97128a6208ca6122d3b26c77f3e5",
       "work_package": "WP-IPC-SM-SECONDARY-ENTRIES-32"
     }
   ],

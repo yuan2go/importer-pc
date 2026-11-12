@@ -386,6 +386,8 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             DockPanel.SetDock(saveState, Dock.Left); FooterHost.Children.Insert(0, saveState);
             Actions.HorizontalAlignment = HorizontalAlignment.Right;
             Actions.Children.Remove(headerImport); headerImport.Content = "导入配置"; headerImport.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, headerImport);
+            var restoreEntry = actionButtons[RepairAction.OpenRestore];
+            Actions.Children.Remove(restoreEntry); restoreEntry.Margin = new(0, 0, 12, 0); SessionActions.Children.Insert(0, restoreEntry);
         }
         var editEvents = initialConfiguration ? (UIElement)WorkflowBody : Body;
         editEvents.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (e.OriginalSource is TextBox { IsReadOnly: false }) Changed(); }));
@@ -958,6 +960,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     _ => false
                 };
             if (kind is RepairAction.ReadRestore or RepairAction.OpenRestore && ParcelStartupServices.ApplicationId != "sportmaster") visible = false;
+            if (initialConfiguration && kind == RepairAction.OpenRestore && !authorityAllowed) visible = false;
             button.Visibility = (RestoreAdopted ? kind == RepairAction.Exit : visible) ? Visibility.Visible : Visibility.Collapsed;
             button.IsEnabled = CanExecute(kind);
             button.IsDefault = false;

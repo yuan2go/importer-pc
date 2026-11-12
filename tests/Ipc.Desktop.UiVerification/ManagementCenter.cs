@@ -28,6 +28,18 @@ static partial class Program
         ExtensionStore.AtomicWrite(Path.Combine(launch.ConfigurationDirectory, "business.json"), config);
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default);
+        async Task<ParcelSnapshot> WaitSnapshot(Func<ParcelSnapshot, bool> ready)
+        {
+            ParcelSnapshot current = await runtime.SnapshotAsync();
+            for (var i = 0; i < 300; i++)
+            {
+                if (ready(current)) return current;
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                await Task.Delay(25);
+                current = await runtime.SnapshotAsync();
+            }
+            throw new TimeoutException("Management fixture runtime did not settle: " + Wire.Encode(current));
+        }
         const string password = "Synthetic-Center-Only";
         await runtime.ConfigureManagementPasswordAsync(password);
         await VerifyManagementStatusOrdering(runtime, Check);
@@ -74,7 +86,8 @@ static partial class Program
             "empty feedback consumes no second row");
         CaptureInternal(evidence, "management-main-expanded", client, lines);
         var positionSnapshot = await runtime.SnapshotAsync();
-        await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
+        var disable = await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
+        Check(disable.Status == "Accepted", "right-position fixture disable is durably accepted: " + disable.Reason);
         await vm.RefreshAsync(); window.UpdateLayout();
         Check(vm.OperatorStatus.Contains("仅左") && Math.Abs(CenterY(workStatus) - CenterY(rcs)) <= 2,
             "single-position availability and its operating instruction stay on the same status row");
@@ -94,8 +107,14 @@ static partial class Program
         vm.Message = ""; window.UpdateLayout();
         Check(!feedbackBar.IsVisible && ((Grid)feedbackBar.Parent).RowDefinitions[1].ActualHeight == 0,
             "clearing feedback immediately returns its row height to zero");
-        positionSnapshot = await runtime.SnapshotAsync();
-        await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
+        // Disabling schedules the real asynchronous camera release. Wait for its
+        // public completion evidence before issuing a new control command; an
+        // ignored maintenance rejection would poison later close assertions.
+        positionSnapshot = await WaitSnapshot(s => s.Positions!.Single(p => p.Id == "right").CameraConnectionSuspended &&
+            !s.BlockingReasons.Any(r => r.StartsWith("MaintenanceInProgress:", StringComparison.Ordinal)));
+        var enable = await runtime.SetPositionEnabledAsync(new(Wire.Id(), positionSnapshot.RuntimeId, "right", positionSnapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, true), default);
+        Check(enable.Status == "Accepted", "right-position fixture re-enable is durably accepted: " + enable.Reason);
+        await WaitSnapshot(s => s.Positions!.All(p => p.Admit && !p.CameraConnectionSuspended));
         await vm.RefreshAsync(); window.UpdateLayout();
         Click(window, "收起菜单"); window.UpdateLayout();
         Check(window.IsNavigationCollapsed && navigation.ActualWidth == 52 && !ArrowPointsLeft() && entry.IsVisible && entry.ActualHeight >= 44, "narrow collapsed rail retains the right-pointing handle and a usable management control");

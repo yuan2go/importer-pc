@@ -41,7 +41,13 @@ static class LifecycleRestore
         try { await Reject<RecoveryFileFailure>(() => service.RestoreAsync(backup, preview.Destination, preview.BackupSha256), "real copy rejects damaged target without publishing complete marker"); }
         finally { RecoveryFiles.CopyClosedForVerification = null; }
         Check((await service.ReadRestoreOperationsAsync()).Single().State == "CopyIncomplete", "fresh service can discover original incomplete copy");
-        await service.RestoreAsync(backup, preview.Destination, preview.BackupSha256);
+        var movedBackup = Path.Combine(root, "moved-source", Path.GetFileName(backup)); Directory.CreateDirectory(Path.GetDirectoryName(movedBackup)!);
+        File.Move(backup, movedBackup); Directory.Move(backup + ".recovery", movedBackup + ".recovery");
+        var movedPlan = await service.PlanRestoreAsync(movedBackup, targetRoot);
+        Check(movedPlan.OperationId == intent.OperationId && movedPlan.State == "CopyIncomplete", "reselecting the same complete identity at a new path retains original copy ownership");
+        await service.RestoreAsync(movedBackup, preview.Destination, preview.BackupSha256);
+        Check((await service.ReadRestoreOperationsAsync()).Single().State == "Isolated", "completed original copy remains inspectable when its historical backup path is offline");
+        File.Move(movedBackup, backup); Directory.Move(movedBackup + ".recovery", backup + ".recovery");
         var retained = Directory.EnumerateDirectories(Path.GetDirectoryName(preview.Destination)!, "sportmaster.restore-interrupted-*").Single();
         Check(File.ReadAllText(Path.Combine(retained, "sportmaster.db")) == "preserved interrupted bytes" && Wire.FileHash(Path.Combine(preview.Destination, "sportmaster.db")) == Wire.FileHash(backup), "original damaged bytes retained while same operation completes an exact verified copy");
         Check((await service.ReadRestoreOperationsAsync()).Single() is { State: "Isolated", OperationId: var id } && id == intent.OperationId, "complete isolated result reconstructs without minting another operation");
@@ -74,6 +80,8 @@ static class LifecycleRestore
             {
                 var state = await restored.SnapshotAsync();
                 await Reject<InvalidDataException>(() => restored.CommandAsync(new(Wire.Id(), state.Revision, "ConfirmRestore", proof.Id, "{\"Reason\":\"no actual floor\"}")), "missing external-number evidence is rejected by the real runtime, never defaulted to zero");
+                await Reject<InvalidOperationException>(() => restored.CommandAsync(new(Wire.Id(), state.Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("exhausted protocol", long.MaxValue)))),
+                    "exhausted Int64 request space cannot be confirmed as usable after restore");
                 var command = new BusinessCommand(Wire.Id(), (await restored.SnapshotAsync()).Revision, "ConfirmRestore", proof.Id, Wire.Encode(new RestoreVerificationInput("controlled external verification", 900000000000000000)));
                 var confirmed = await restored.CommandAsync(command);
                 var repeated = await restored.CommandAsync(command);

@@ -140,6 +140,8 @@ public sealed partial class ParcelRuntime
         if (factory.AdmissionFailure(Effective) is { } readinessFailure) throw new InvalidOperationException(readinessFailure);
         if (input.VerifiedRequestIdHighWater < Math.Max(proof.MinimumIntegrationId, repository!.IntegrationRequestIdFloor()))
             throw new InvalidOperationException("核实的请求编号高水位不能低于原永久编号账；原记录和隔离状态保留。");
+        if (input.VerifiedRequestIdHighWater == long.MaxValue)
+            throw new InvalidOperationException("协议请求编号已耗尽，不能确认启用；原账与隔离状态保留，需核对真实 RCS 编号责任。");
         using var sourceOwner = proof.PurgedSource is null ? new ResourceLease(proof.SourceDirectory, ["application-owner"]) : null;
         repository.AdmitCommand(command);
         var confirmation = new RestoreConfirmation(proof.Id, ManagementEvidence!.AuditActor, reason, DateTimeOffset.UtcNow, input.VerifiedRequestIdHighWater);

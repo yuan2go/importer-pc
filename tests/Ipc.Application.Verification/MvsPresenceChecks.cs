@@ -128,14 +128,13 @@ internal static class MvsPresenceChecks
                 if (result.Status != "Accepted") throw new InvalidOperationException(result.Reason);
             }
             await Switch("right", false); await Switch("left", false);
-            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabling &&
+            Check((await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").SupplyControl?.Mode == StationPositionMode.Disabled &&
                 await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received,
-                "stopping supply keeps RCS heartbeat online while a calibrated tray still holds its parcel");
-            camera.Parcel = false;
+                "operator disable completes immediately with an occupied calibrated tray and keeps RCS heartbeat online");
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left") is
                 { CurrentRoundId: null, SupplyControl.Mode: StationPositionMode.Disabled, CameraConnectionSuspended: true });
-            Check((await h.App.RoundHistoryAsync(search: second.Id)).Items.Single().EndReason == "TrustedRemoval",
-                "actual frame evidence ends the round and finishes disabling without clicking parcel removal");
+            Check((await h.App.RoundHistoryAsync(search: second.Id)).Items.Single().EndReason == "OperatorDisabledPosition",
+                "operator disable ends the round without empty frames or a second confirmation");
             Check(h.Peer.Requests.Count == 2 && (await h.App.SnapshotAsync()).Positions!.All(p => p.Vehicle is null),
                 "disabled lanes retain the original requests and never show an idle vehicle cue");
             await CameraRoundHarness.Until(async () => !(await h.App.SnapshotAsync()).Rounds.Any(r => r.PositionId == "left") &&

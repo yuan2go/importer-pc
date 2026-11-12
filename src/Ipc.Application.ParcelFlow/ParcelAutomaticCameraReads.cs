@@ -16,6 +16,7 @@ public sealed partial class ParcelRuntime
     bool AutomaticCameraReadsAllowed(string device)
     {
         if (Id != "sportmaster") return true;
+        if (positions.Values.Any(p => p.ReaderDeviceId == device && !PositionSupplyEnabled(p.Id))) return false;
         var health = Volatile.Read(ref automaticCameraRcsHealth);
         var now = DateTimeOffset.UtcNow;
         return health is { Ready: true, RemoteConfirmation: RemoteConnectionConfirmation.ResponseReceived } &&
@@ -25,11 +26,11 @@ public sealed partial class ParcelRuntime
     {
         if (Id != "sportmaster") return registration;
         if (registration is null)
-            return new(automaticCameraReadScope, false, _ => true, false) { DecodeAllowed = device => CameraDraining(device) || AutomaticCameraReadsAllowed(device) };
+            return new(automaticCameraReadScope, false, _ => true, false) { DecodeAllowed = AutomaticCameraReadsAllowed };
         // Explicit diagnostic rounds remain available without RCS. Their own
         // selected-frame predicate and explicit send guard remain authoritative.
         if (registration.CutoverKey is not null) return registration;
         var previous = registration.DecodeAllowed;
-        return registration with { DecodeAllowed = device => (CameraDraining(device) || AutomaticCameraReadsAllowed(device)) && previous?.Invoke(device) != false };
+        return registration with { DecodeAllowed = device => AutomaticCameraReadsAllowed(device) && previous?.Invoke(device) != false };
     }
 }

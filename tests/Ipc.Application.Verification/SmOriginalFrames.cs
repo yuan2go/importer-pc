@@ -181,7 +181,7 @@ static partial class SportmasterRcs
             {
                 if (archiveCase == "failed") app.Boundary = point => { if (point == "BeforeOriginalFrameWrite") throw new IOException("Synthetic archive IO failure"); };
                 await app.StartAsync(default); await ManagementModeFixture.Authorize(app); await CameraReady(app);
-                var sent = Sent()(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
+                var sent = Sent();
                 if (!reject) peer.Mode = "timeout";
                 dec.Results.Enqueue(["A", "B"]); api.Enqueue(new(raw, 2, 2), 1);
                 if (reject)
@@ -189,7 +189,7 @@ static partial class SportmasterRcs
                     var s = await Wait(app, s => s.Rounds.SingleOrDefault() is { OriginalFrame.State: "Saved" });
                     var round = s.Rounds.Single();
                     Check(s.Operations.Length == 0 && f.Source!.RetainedOriginalFrames == 0 &&
-                        Sent()(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == sent &&
+                        Sent() == sent &&
                         round is { OperationId: null, FormalCodes.Length: 2 } &&
                         (await app.ReadParcelPictureAsync(new(RoundId: round.Id), default)).Archived is { } archive && DecodeOriginalPng(archive.Png).SequenceEqual(raw),
                         "unsubmitted multi-code round releases the driver lease and retains its exact archived evidence without a task or HTTP request");
@@ -219,12 +219,12 @@ static partial class SportmasterRcs
             }
             if (unknown is not null)
             {
-                peer.Mode = "assigned"; var count = Sent()(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
+                peer.Mode = "assigned"; var count = Sent();
                 await using var app = new ParcelRuntime(run, new SportmasterFlow(), new SoftwareFlowFactory(run, c, new SoftwareFrameApi(readers[0]), false, new OriginalDecoder())) { RuntimeIdentityPreflight = () => { } };
                 await app.StartAsync(default); await ManagementModeFixture.Authorize(app);
                 var restored = (await app.SnapshotAsync()).Operations.Single();
                 Check(restored.State == ParcelState.WcsUnknown && Wire.Encode(restored.Wcs) == Wire.Encode(unknown.Wcs) && Wire.Encode(restored.OriginalFrame) == Wire.Encode(unknown.OriginalFrame) &&
-                    Sent()(r => r.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == count,
+                    Sent() == count,
                     "restart retains " + archiveCase + " image and original Unknown independently without automatic replay");
                 await app.StopAsync(default);
             }

@@ -305,7 +305,7 @@ public sealed partial class ParcelRuntime
             }
             return new("Rejected", ex.Message, repository?.Revision ?? 0);
         }
-        finally { if (ownsQuiescence) configurationSaving = false; gate.Release(); }
+        finally { if (ownsQuiescence) { configurationSaving = false; RefreshSmHeartbeat(); } gate.Release(); }
     }
     public Task<BusinessReceipt> ReconnectAsync() => MaintainDevicesAsync(null);
     public Task<BusinessReceipt> ReconnectDeviceAsync(string deviceId) => MaintainDevicesAsync(deviceId);
@@ -314,6 +314,16 @@ public sealed partial class ParcelRuntime
     bool backupInProgress;
     readonly object backupIngressSync = new();
     int activeBackupIngress;
+    bool TryFenceBackupIngress()
+    {
+        lock (backupIngressSync)
+        {
+            if (activeBackupIngress != 0 || Volatile.Read(ref pendingObservations) != 0) return false;
+            backupInProgress = true;
+            return true;
+        }
+    }
+    void ReleaseBackupIngress() { lock (backupIngressSync) backupInProgress = false; }
     internal Action<string>? BackupBoundary { get; set; }
     async Task<BusinessReceipt> BackupCoreAsync(string destination, CancellationToken token)
     {
@@ -327,12 +337,8 @@ public sealed partial class ParcelRuntime
                 return new("Rejected", "当前尚未满足完整备份条件。请先暂停供包、验证管理授权，并等待在途任务、设备调用或另一项备份结束；原请求和原回执保留。", repository?.Revision ?? 0);
             original = repository; effective = Effective; pending = configuration!.Current.Pending; bytes = original.StorageBytes;
             images = operations.Values.Where(x => x.Image is not null && !x.ImageReleased).ToArray();
-            lock (backupIngressSync)
-            {
-                if (activeBackupIngress != 0 || Volatile.Read(ref pendingObservations) != 0)
-                    return new("Rejected", "等待相机输入交付收口后再创建完整备份；预览不受影响。", repository.Revision);
-                backupInProgress = true;
-            }
+            if (!TryFenceBackupIngress())
+                return new("Rejected", "等待相机输入交付收口后再创建完整备份；预览不受影响。", repository.Revision);
             PrepareSmHeartbeatMaintenance();
         }
         catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
@@ -356,7 +362,7 @@ public sealed partial class ParcelRuntime
         finally
         {
             await gate.WaitAsync().ConfigureAwait(false);
-            try { CompleteSmHeartbeatMaintenance(); lock (backupIngressSync) backupInProgress = false; }
+            try { CompleteSmHeartbeatMaintenance(); ReleaseBackupIngress(); }
             catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "HeartbeatMaintenanceRelease"); throw; }
             finally { gate.Release(); }
         }

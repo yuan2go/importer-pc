@@ -73,15 +73,23 @@ public partial class HistoryPage : UserControl
         var row = double.IsFinite(HistoryRows.RowHeight) ? HistoryRows.RowHeight : 40;
         var fixedHeight = HistoryLayout.Margin.Top + HistoryLayout.Margin.Bottom + (HistoryHeading.IsVisible ? HistoryHeading.ActualHeight + HistoryHeading.Margin.Bottom : 0) +
             HistoryQueryActions.ActualHeight + HistoryQueryActions.Margin.Top + HistoryQueryActions.Margin.Bottom + (AllHistoryFilters.IsVisible ? 32 : 0) +
-            ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight +
-            (HistoryDetailPanel.IsVisible && Grid.GetRow(HistoryDetailPanel) == 1
-                ? HistoryDetailPanel.ActualHeight + HistoryDetailPanel.Margin.Top + HistoryDetailPanel.Margin.Bottom : 0);
+            ((FrameworkElement)HistoryStatusLine.Parent).ActualHeight;
         // Global receipts and custody reasons change the page's available height.
         // Keep the real header and one full result row; filters retain their own scroll.
         var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this).DpiScaleY;
-        var resultHeight = Math.Ceiling((header + row + HistoryRows.BorderThickness.Top + HistoryRows.BorderThickness.Bottom) * dpi) / dpi;
+        var resultHeight = Math.Ceiling((header + row + HistoryRows.BorderThickness.Top + HistoryRows.BorderThickness.Bottom + SystemParameters.HorizontalScrollBarHeight) * dpi) / dpi;
         // Header/cell borders snap independently at fractional DPI; reserve six pixels.
         var filterBudget = Math.Max(0, ActualHeight - fixedHeight - resultHeight - 6 / dpi);
+        if (HistoryDetailPanel.IsVisible && Grid.GetRow(HistoryDetailPanel) == 1)
+        {
+            // Wide record columns need a horizontal scrollbar. Bound the detail
+            // below the table so opening it cannot consume the last record row.
+            var detailChrome = Math.Max(0, HistoryDetailPanel.ActualHeight - HistoryDetailsScroll.ActualHeight) +
+                HistoryDetailPanel.Margin.Top + HistoryDetailPanel.Margin.Bottom;
+            HistoryDetailsScroll.MaxHeight = Math.Min(100, Math.Max(0, filterBudget - detailChrome));
+            filterBudget = Math.Max(0, filterBudget - detailChrome - HistoryDetailsScroll.MaxHeight);
+        }
+        else HistoryDetailsScroll.ClearValue(MaxHeightProperty);
         HistoryFilterScroll.MaxHeight = Math.Min(shortPage ? 96 : 160, filterBudget);
     }
     void ClearFilters_Click(object sender, RoutedEventArgs e)

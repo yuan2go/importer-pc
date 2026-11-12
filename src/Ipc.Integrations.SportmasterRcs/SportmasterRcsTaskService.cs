@@ -68,9 +68,8 @@ public sealed partial class SportmasterRcsTaskService : IWcsPort, IWcsRequestPre
                 ? "Camera heartbeat suspended: no configured camera codes; manual request client ready; upstream acceptance unconfirmed"
                 : "Heartbeat waiting for first scheduled send; upstream acceptance unconfirmed";
             running = true;
-            // No configured reader means no valid heartbeat item. Do not send an
-            // empty batch or invent an identity for the deferred cameras.
-            heartbeatTask = heartbeatStations.Length == 0 ? Task.CompletedTask : HeartbeatLoopAsync(heartbeatStop.Token);
+            heartbeatTask = Task.Run(() => HeartbeatLoopAsync(heartbeatStop.Token), CancellationToken.None);
+            RefreshHeartbeat();
         }
         return Task.CompletedTask;
     }

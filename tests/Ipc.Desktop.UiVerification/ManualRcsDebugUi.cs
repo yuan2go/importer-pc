@@ -12,7 +12,7 @@ static partial class Program
     {
         void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); lines.Add("PASS MANUAL-DEBUG-UI " + message); }
         T Field<T>(object c, string name) => (T)c.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(c)!;
-        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "manual-debug"), deferred: true, rightCode: false, leftCode: false);
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "manual-debug"), deferred: true);
         h.Peer.Mode = "reject"; h.Peer.RejectionMessage = "无设备可用";
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var application = DispatchProxy.Create<IManualDebugUiFixture, ManualDebugReturnProbe>();
@@ -89,6 +89,7 @@ static partial class Program
             CaptureInternal(evidence, "manual-debug-request-response", center, lines);
             await SetClient(center, 800, 420); prepare.BringIntoView(); await Flush();
             Check(Inside(prepare, (Grid)center.Content), "manual preparation remains reachable in compact layout");
+            await h.NextVehicleAsync("right"); await vm.RefreshAsync(); await (Task)control.GetType().GetMethod("PollAsync")!.Invoke(control, null)!;
             entry.Text = "UNSENT-ON-EXIT"; prepare.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => send.IsEnabled && Field<TextBox>(control, "requestBody").Text.Contains("UNSENT-ON-EXIT"));
             typeof(SupplyStationWindow).GetMethod("SetPage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, ["workstation"]);
@@ -118,7 +119,7 @@ static partial class Program
                     if (newer)
                     {
                         var s = await h.App.SnapshotAsync();
-                        replacement = await h.App.PrepareManualRcsRequestAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "right", "OTHER-WINDOW", late.Id), default);
+                        replacement = await h.App.PrepareManualRcsRequestAsync(new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, "right", "OTHER-WINDOW", late.Id) { ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == "right").Arrival!.Generation }, default);
                     }
                     if (reload) { window.ShowPositionDebug(vm.Right); await Flush(); }
                     release.TrySetResult();

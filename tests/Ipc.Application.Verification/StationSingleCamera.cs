@@ -62,6 +62,7 @@ static partial class SportmasterRcs
             }
             await app.CommandAsync(new(Wire.Id(), snapshot.Revision, "Resume"));
             var selected = (mask & 1) == 0 ? "left" : "right";
+            snapshot = await Wait(s => s.Positions!.Single(p => p.Id == selected).BarcodeInput?.Camera == true);
             Check(app.EmitReferenceAt(selected, "single-entity", "000123456", Wire.Id()), "configured " + selected + " accepts its own synthetic observation");
             snapshot = await Wait(s => s.Operations.Any(o => o.Wcs?.State == StageState.Accepted));
             await ManagementModeFixture.Authorize(app);

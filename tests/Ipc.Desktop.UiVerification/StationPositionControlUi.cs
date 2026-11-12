@@ -70,6 +70,7 @@ static partial class Program
             CaptureInternal(evidence, "position-control-history", (Grid)window.FindName("ClientArea"), lines);
             typeof(SupplyStationWindow).GetMethod("SetPage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.Invoke(window, ["workstation"]);
             await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == "left").CurrentRoundId is null);
+            await h.NextVehicleAsync(); await Flush();
             h.Peer.Mode = "no-destination";
             leftEntry.Text = "SYNTH-REJECT-DISABLE"; ((Button)left.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.CanConfirmPlacementRemoval && !vm.Busy);
@@ -81,6 +82,7 @@ static partial class Program
             CaptureInternal(evidence, "positions-disabled-rejected-manual", (Grid)window.FindName("ClientArea"), lines);
             ((Button)left.FindName("EnableSupply")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Left.SupplyEnabled && !vm.Busy);
+            await h.NextVehicleAsync(); await Flush();
             h.Peer.Mode = "assigned"; h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             try
             {
@@ -100,6 +102,7 @@ static partial class Program
         }
         finally { window.Close(); }
         await using var deferred = new ManualSupplyHarness(root, Path.Combine(evidence, "unconfigured-disabled"), true);
+        ExtensionStore.AtomicWrite(Path.Combine(deferred.Launch.ConfigurationDirectory, "business.json"), deferred.Config with { Wcs = deferred.Config.Wcs! with { Parameters = new(deferred.Config.Wcs.Parameters) { ["right-bcr-code"] = "" } } });
         await deferred.StartAsync();
         var unconfigured = new SupplyStationWindow(deferred.App, null, "standard"); unconfigured.Show();
         try
@@ -108,7 +111,7 @@ static partial class Program
             var state = snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!;
             await deferred.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", state.Revision, false), default);
             for (var n = 0; n < 100 && !unconfigured.ViewModel.Right.SupplyDisabled; n++) { await unconfigured.ViewModel.RefreshAsync(); await Task.Delay(25); }
-            Check(unconfigured.ViewModel.Right.SupplyDisabled && unconfigured.ViewModel.Right.DeviceLabel.Contains("待配置") && !unconfigured.ViewModel.Right.DeviceLabel.Contains("断开"),
+            Check(!unconfigured.ViewModel.Right.CanChangeSupply && unconfigured.ViewModel.Right.CenteredStateTitle == "未配置，已停用" && unconfigured.ViewModel.Right.SupplyDisabled && unconfigured.ViewModel.Right.DeviceLabel.Contains("待配置") && !unconfigured.ViewModel.Right.DeviceLabel.Contains("断开"),
                 "an unconfigured disabled camera stays awaiting configuration without a false disconnect or release message");
             await SetClient(unconfigured, 1366, 768); await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
             CaptureInternal(evidence, "unconfigured-position-disabled", (Grid)unconfigured.FindName("ClientArea"), lines);

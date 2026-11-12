@@ -22,6 +22,7 @@ public sealed partial class ParcelRuntime
             current.Camera is not null || current.Devices is { Count: > 0 } ||
             change.Readers.Any(id => !readers.ContainsKey(id)) || change.Integration && current.Wcs is null)
             return null;
+        if (change.Integration && SmHeartbeatChangeUnconfirmed(candidate)) return null;
         factory.Validate(candidate);
         var built = factory.CreateLive(candidate, change.Readers, change.Integration);
         if (built is null) return null;
@@ -104,6 +105,12 @@ public sealed partial class ParcelRuntime
             adopted = true;
             foreach (var id in change.Readers) readers[id] = new(built.Readers[id]);
             configuration.ApplyLive(expectedRevision, candidate);
+            DisableUnconfiguredPositions();
+            if (built.Wcs is not null)
+            {
+                membershipConfirmations.Clear(); arrivalConfirmations.Clear(); arrivalCaptures.Clear();
+                BindSmHeartbeat(built.Wcs);
+            }
             Boundary?.Invoke("AfterLiveDeviceConfigurationApplied");
             RefreshIntegrationBudget();
             var faults = new List<string>();

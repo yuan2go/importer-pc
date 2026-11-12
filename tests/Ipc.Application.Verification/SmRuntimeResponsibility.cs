@@ -50,7 +50,8 @@ internal static class SmRuntimeResponsibility
         static async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> done)
         {
             ParcelSnapshot? snapshot = null;
-            await CameraRoundHarness.Until(async () => done(snapshot = await app.SnapshotAsync()));
+            try { await CameraRoundHarness.Until(async () => done(snapshot = await app.SnapshotAsync())); }
+            catch (TimeoutException) { Console.WriteLine("ResponsibilityWait=" + Wire.Encode(new { snapshot!.BlockingReasons, snapshot.Positions, snapshot.Capacity })); throw; }
             return snapshot!;
         }
 
@@ -58,7 +59,7 @@ internal static class SmRuntimeResponsibility
         {
             var s = await app.SnapshotAsync();
             var command = new SubmitParcelBarcode(Wire.Id(), s.RuntimeId, s.Configuration.Revision, position, code, ParcelBarcodeInputKind.Keyboard,
-                s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation);
+                s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation) { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival!.Generation };
             return await app.SubmitParcelBarcodeAsync(command, default);
         }
 
@@ -68,6 +69,7 @@ internal static class SmRuntimeResponsibility
             var receipt = await app.CommandAsync(new(Wire.Id(), s.Revision, "ConfirmPlacementRemoval", op.PositionId,
                 s.Positions!.Single(p => p.Id == op.PositionId).PlacementRemovalOperation));
             Check(receipt.Status == "Persisted", "explicit removal confirms the identified original placement");
+            await SmRoundFixture.NextVehicleAsync(app, op.PositionId!);
         }
 
         const string oldBarcode = "HIST-HELD";
@@ -77,7 +79,7 @@ internal static class SmRuntimeResponsibility
         string originalId, originalRequest;
         await using (var app = NewRuntime())
         {
-            await app.StartAsync(default);
+            await app.StartAsync(default); SmRoundFixture.Register(app, station.Launch, seed);
             var ready = await Wait(app, s => s.Positions!.All(p => p.BarcodeInput?.Manual == true));
             var candidate = seed with { BarcodeFilter = new(pattern) };
             var unauthorized = await app.StageConfigurationAsync(ready.Configuration.Revision, candidate, "Synthetic unauthorized rule change");
@@ -106,7 +108,7 @@ internal static class SmRuntimeResponsibility
 
         await using (var app = NewRuntime())
         {
-            await app.StartAsync(default);
+            await app.StartAsync(default); SmRoundFixture.Register(app, station.Launch, seed);
             await Authorize(app);
             var pending = await app.SnapshotAsync();
             Check(pending.Configuration.Status == "PendingRestart" && pending.ConfigurationActivationBlock == ParcelInputBlockReason.PreviousResultUnconfirmed &&
@@ -120,7 +122,7 @@ internal static class SmRuntimeResponsibility
 
         await using (var app = NewRuntime())
         {
-            await app.StartAsync(default);
+            await app.StartAsync(default); SmRoundFixture.Register(app, station.Launch, seed);
             await Authorize(app);
             var activated = await Wait(app, s => s.Positions!.All(p => p.BarcodeInput?.Manual == true));
             Check(activated.Configuration.Pending is null && activated.Configuration.Effective.BarcodeFilter?.Pattern == pattern &&
@@ -169,18 +171,19 @@ internal static class SmRuntimeResponsibility
                 "all unknown results and original payloads remain available on demand");
         }
 
-        var faulted = NewRuntime();
+        var faulted = NewRuntime(); var faultTriggered = false;
         try
         {
             var app = faulted;
-            await app.StartAsync(default);
-            var snapshot = await Wait(app, s => s.Positions!.All(p => p.BarcodeInput?.Manual == true));
+            await app.StartAsync(default); SmRoundFixture.Register(app, station.Launch, seed);
+            await SmRoundFixture.NextVehicleAsync(app, "left");
+            var snapshot = await Wait(app, s => s.Positions!.Single(p => p.Id == "left").BarcodeInput?.Manual == true && s.Positions!.Single(p => p.Id == "right").Arrival is { Confirmed: true, Submitted: true });
             Check(snapshot.Capacity is { HistoricalUnknown: 4, Unresolved: 0 } &&
                 snapshot.Operations.All(op => op.Wcs?.State != StageState.Unknown) &&
                 station.Peer.Requests.Count == 5, "restart after multiple historical results preserves classification and sends nothing");
 
             await Authorize(app);
-            app.Boundary = point => { if (point == "AfterRawDurable") throw new IOException("Synthetic receipt commit interruption"); };
+            app.Boundary = point => { if (point == "AfterRawDurable") { faultTriggered = true; throw new IOException("Synthetic receipt commit interruption"); } };
             try { await Submit(app, "left", "VALID-103"); }
             catch (IOException error) when (error.Message == "Synthetic receipt commit interruption") { }
             await app.FatalFailure.WaitAsync(TimeSpan.FromSeconds(5));
@@ -193,15 +196,15 @@ internal static class SmRuntimeResponsibility
         }
         finally
         {
-            try { await faulted.DisposeAsync(); throw new InvalidOperationException("Expected original managed worker failure at shutdown"); }
+            try { await faulted.DisposeAsync(); if (faultTriggered) throw new InvalidOperationException("Expected original managed worker failure at shutdown"); }
             catch (InvalidOperationException error) when (error.ToString().Contains("Synthetic receipt commit interruption", StringComparison.Ordinal))
             { Check(true, "managed execution preserves its original storage failure through actual resource drain"); }
         }
 
         await using (var app = NewRuntime())
         {
-            await app.StartAsync(default);
-            var snapshot = await Wait(app, s => s.Capacity?.HistoricalUnknown == 4 && s.Positions!.All(p => p.BarcodeInput?.Manual == true));
+            await app.StartAsync(default); SmRoundFixture.Register(app, station.Launch, seed);
+            var snapshot = await Wait(app, s => s.Capacity?.HistoricalUnknown == 4 && s.Positions!.All(p => p.Arrival?.Confirmed == true));
             Check(snapshot.Capacity?.HistoricalUnknown == 4 && (await app.HistoryAsync()).Items.Any(item => item.Operation is { ParcelCode: "VALID-103", Slot: "CURRENT-CHUTE" }) && station.Peer.Requests.Count == 6,
                 "restart commits the original durable reply without resending or recategorizing it as historical Unknown");
         }

@@ -19,6 +19,7 @@ internal static class DebugNoIsolation31
     {
         await using (var h = new ManualSupplyHarness(workspace, Path.Combine(root, "legacy"), true, mode: RunMode.Simulation))
         {
+            ExtensionStore.AtomicWrite(Path.Combine(h.Launch.ConfigurationDirectory, "business.json"), h.Config with { Wcs = h.Config.Wcs! with { Parameters = new(h.Config.Wcs.Parameters) { ["heartbeat-interval-ms"] = "3600000" } } });
             await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
             var admitted = await h.App.SubmitParcelBarcodeAsync(await h.Command("left", "DEBUG31-ORIGINAL"), default);
             await CameraRoundHarness.Until(async () => (await h.App.OperationAsync(admitted.OperationId!))?.Wcs?.State == StageState.Accepted);
@@ -40,13 +41,16 @@ internal static class DebugNoIsolation31
                 "persisted legacy isolation cannot block an authorized save after restart");
             Check(before.BlockingReasons.All(r => !r.Contains("隔离") && !r.Contains("清场")) && Wire.Encode((await h.App.OperationAsync(admitted.OperationId!))!.Wcs) == original && h.Peer.Requests.Count == 1,
                 "restart preserves original request/receipt bytes without replay or a clearance workflow");
+            await h.NextVehicleAsync();
             var endpoint = "http://127.0.0.1:9/rcs/sorter/api";
             var candidate = before.Configuration.Effective with { Wcs = before.Configuration.Effective.Wcs! with { Target = endpoint } };
             var saved = await h.App.StageConfigurationAsync(before.Configuration.Revision, candidate, "Synthetic RCS endpoint save after legacy isolation");
             var pending = await h.App.SnapshotAsync();
             Check(saved.Status == "PendingRestart" && pending.Configuration.Pending!.Wcs!.Target == endpoint && pending.Configuration.Effective.Wcs!.Target == h.Peer.Endpoint,
                 "actual RCS address save persists a complete Pending candidate and retains old Effective");
+            await CameraRoundHarness.Until(async () => await h.App.CheckRcsHeartbeatAsync(default) == RcsHeartbeatResult.Received);
             await h.App.DisposeAsync(); await h.StartAsync(ready: false); await ManagementModeFixture.Authorize(h.App);
+            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Configuration.Pending is null);
             var applied = await h.App.SnapshotAsync();
             Check(applied.Configuration.Pending is null && applied.Configuration.Effective.Wcs!.Target == endpoint && applied.Configuration.Status == "Effective",
                 "controlled restart activates the saved RCS address without obsolete isolation barriers");
@@ -93,15 +97,15 @@ internal static class DebugNoIsolation31
             Check(picture.Status == "Available" && picture.Image?.Metadata.Id == locked.Frame.Id,
                 "operation picture uses the exact passive debug session without requiring a retired isolation tag");
             var sent = await h.App.SendCameraRoundAsync(await h.SendCommandAsync(locked), default);
-            Check(h.Peer.Requests.Count == 3 && h.Peer.Requests.Last() == locked.RequestBody && sent.HttpResponse is { StatusCode: 200, Complete: true } &&
-                (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == sent.OperationId).Wcs?.State == StageState.Accepted,
-                "explicit send calls actual configured RCS using frozen JSON and a real HTTP reply");
+            Check(h.Peer.Requests.Count == 2 && sent.SendAttempts == 0 && sent.HttpResponse is null && !sent.CanSend &&
+                (await h.App.OperationAsync(locked.OperationId!))?.Wcs is { State: StageState.Prepared, Attempts: 0 },
+                "an explicit debug send cannot add a second real request to a production-claimed arrival");
             var performance = System.Text.Json.JsonSerializer.SerializeToElement(h.App.RuntimeProgress()).GetProperty("Flow").GetProperty("Recent").EnumerateArray().ToArray();
             Check(performance.Count(e => e.GetProperty("Kind").GetString() == "RcsSubmitCompleted") == 2 &&
-                performance.Count(e => e.GetProperty("Kind").GetString() == "DebugRcsSubmitCompleted") == 1,
-                "debug and production requests sharing a camera frame remain separate performance cohorts");
+                performance.Count(e => e.GetProperty("Kind").GetString() == "DebugRcsSubmitCompleted") == 0,
+                "a blocked debug intention is never counted as an actual debug submission");
             var decoded = h.Factory.Decoders[h.Left].Count;
-            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("DEBUG31-NEXT"), 2);
             await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.ParcelCode == "DEBUG31-NEXT" && o.Wcs?.State == StageState.Accepted));
             Check(h.Factory.Decoders[h.Left].Count > decoded && (await h.App.ReadCameraReadRoundAsync(default)).Frame!.Id == locked.Frame.Id,

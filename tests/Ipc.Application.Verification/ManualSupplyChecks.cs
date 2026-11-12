@@ -6,6 +6,46 @@ using Ipc.Platform;
 
 internal static class SmRoundFixture
 {
+    internal static readonly System.Collections.Concurrent.ConcurrentDictionary<string, Action<string, string>> VehiclePeers = new();
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ParcelRuntime, Func<CapabilityBinding?>> bindings = new();
+    internal static void Register(ParcelRuntime app, BusinessLaunch launch, ParcelConfiguration seed)
+    {
+        var file = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId, "configuration.json");
+        bindings.Add(app, () => ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(File.ReadAllText(file)).Effective.Wcs);
+    }
+    // An explicit synthetic physical vehicle transition, never inferred from
+    // a changed barcode or a successful request. No protocol request is replayed.
+    public static async Task NextVehicleAsync(ParcelRuntime app, string position)
+    {
+        var s = await app.SnapshotAsync();
+        // Operator snapshots intentionally remove editable connection parameters.
+        // Use this fixture's own persisted configuration, never change authority
+        // or production redaction just to move its synthetic RCS vehicle.
+        var binding = bindings.TryGetValue(app, out var owned) ? owned() : s.Configuration.Effective.Wcs;
+        var code = binding?.Parameters.GetValueOrDefault(position + "-bcr-code");
+        if (binding?.Contract != RcsRequestPolicy.Contract)
+        {
+            if (s.Positions!.Single(p => p.Id == position).PlacementRemovalOperation is not null) await ConfirmRemovedAsync(app, position);
+            if (!app.EmitReferencePresenceAt(position, TrayPresence.Absent)) throw new InvalidOperationException("Reference fixture needs an explicit qualified physical source");
+            await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).CurrentRoundId is null);
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(code)) throw new InvalidOperationException("Unconfigured camera code is a disabled lane, not a manual fallback");
+        var vehicle = "CAR-" + Wire.Id();
+        if (CameraRoundHarness.RoundPeer.Peers.TryGetValue(binding!.Target, out var peer))
+        {
+            var lane = s.Positions!.Single(p => p.Id == position);
+            if (s.Rounds.SingleOrDefault(r => r.Id == lane.CurrentRoundId) is { AttemptStarted: true, ProtocolRequestId: { } requestId })
+                await CameraRoundHarness.Until(() => Task.FromResult(peer.RemoteBindings.Any(x => x.Request == requestId)));
+            peer.Vehicles[code] = vehicle;
+        }
+        else if (VehiclePeers.TryGetValue(binding.Target, out var setVehicle)) setVehicle(code, vehicle);
+        else throw new InvalidOperationException("Fixture must explicitly advance its own RCS vehicle boundary");
+        await ((IStationRcsHeartbeat)app).CheckRcsHeartbeatAsync(default);
+        await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.VehicleNo == vehicle);
+        if (s.Devices?.Any(d => d.DeviceId == s.Positions!.Single(p => p.Id == position).ReaderDeviceId && d.IsValid(DateTimeOffset.UtcNow)) == true)
+            await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
+    }
     // Deliberate operator removal through the real guarded command; never infer
     // a boundary from a changed test barcode or retry any external request.
     public static async Task ConfirmRemovedAsync(ParcelRuntime app, string position)
@@ -34,7 +74,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
     public Func<IDisposable?>? RootOwnership { get; set; }
     public TimeProvider? StationClock { get; init; }
     public Func<DeviceBinding, IControlledObservationSource>? CameraSource { get; init; }
-    public ManualSupplyHarness(string workspace, string folder, bool deferred, bool rightCode = true, bool leftCode = true, int? maximumOperations = null, RunMode mode = RunMode.Production)
+    public ManualSupplyHarness(string workspace, string folder, bool deferred, int? maximumOperations = null, RunMode mode = RunMode.Production)
     {
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/sportmaster.synthetic.json")));
         var readers = seed.Topology!.Readers.Select((r, i) => r with
@@ -50,8 +90,8 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             ["heartbeat-interval-ms"] = "3600000",
             ["left-station-code"] = "MANUAL-STATION",
             ["right-station-code"] = "MANUAL-STATION",
-            ["left-bcr-code"] = leftCode ? "MANUAL-LEFT" : "",
-            ["right-bcr-code"] = rightCode ? "MANUAL-RIGHT" : ""
+            ["left-bcr-code"] = "MANUAL-LEFT",
+            ["right-bcr-code"] = "MANUAL-RIGHT"
         });
         Config = seed with
         {
@@ -73,15 +113,27 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         if (rcsImplementationFingerprint is not null) Factory.RcsImplementationFingerprint = rcsImplementationFingerprint;
         App = new(Launch, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { }, AcquireRootOwnership = RootOwnership };
         if (StationClock is not null) App.StationTime = StationClock;
-        await App.StartAsync(default);
-        if (ready) await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.All(p => p.BarcodeInput?.Manual == true));
+        try { await App.StartAsync(default); }
+        catch (Exception error) { Console.WriteLine("ManualHarnessStartFailure=" + error); throw; }
+        SmRoundFixture.Register(App, Launch, Config);
+        if (ready) await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.All(p => p.SupplyControl?.Mode == StationPositionMode.Disabled || p.Arrival?.Confirmed == true));
+    }
+    public async Task NextVehicleAsync(string position = "left", string? vehicle = null)
+    {
+        if (vehicle is null) { await SmRoundFixture.NextVehicleAsync(App, position); return; }
+        var code = Config.Wcs!.Parameters[position + "-bcr-code"];
+        Peer.Vehicles[code] = vehicle ?? "CAR-" + Wire.Id();
+        await ((IStationRcsHeartbeat)App).CheckRcsHeartbeatAsync(default);
+        await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.VehicleNo == Peer.Vehicles[code]);
+        if (Factory.Cameras.TryGetValue(Config.Topology!.Positions.Single(p => p.Id == position).ReaderDeviceId, out var source) && source.Epoch.Length > 0 && (await App.SnapshotAsync()).Devices!.Any(d => d.DeviceId == source.DeviceId && d.IsValid(DateTimeOffset.UtcNow)))
+            await CameraRoundHarness.Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
     }
     public async Task<SubmitParcelBarcode> Command(string position, string code, ParcelBarcodeInputKind kind = ParcelBarcodeInputKind.Keyboard)
     {
         var s = await App.SnapshotAsync();
         return new(Wire.Id(), s.RuntimeId, s.Configuration.Revision, position, code, kind,
             s.Inputs?.SingleOrDefault(i => i.PositionId == position)?.Observation.Id, s.Positions!.Single(p => p.Id == position).CurrentOperation)
-        { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId };
+        { ExpectedRoundId = s.Positions!.Single(p => p.Id == position).CurrentRoundId, ExpectedArrivalGeneration = s.Positions!.Single(p => p.Id == position).Arrival?.Generation };
     }
     public async ValueTask DisposeAsync() { if (App is not null) await App.DisposeAsync(); await Peer.DisposeAsync(); }
 
@@ -117,8 +169,11 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         }
         public ValueTask DisposeAsync() => FailDisposal ? ValueTask.FromException(new IOException("synthetic factory still owns resources")) : validation.DisposeAsync();
     }
-    sealed class RcsHealth(Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService inner, ManualFactory owner) : IWcsPort, IWcsRequestPreparer, IWcsDispatchResources
+    sealed class RcsHealth(Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskService inner, ManualFactory owner) : IWcsPort, IWcsRequestPreparer, IWcsDispatchResources, ISmHeartbeatControl, IWcsHeartbeat
     {
+        public void SetHeartbeatOwner(ISmHeartbeatOwner owner) => inner.SetHeartbeatOwner(owner);
+        public void RefreshHeartbeat() => inner.RefreshHeartbeat();
+        public Task<RcsHeartbeatResult> SendHeartbeatAsync(CancellationToken token) => inner.SendHeartbeatAsync(token);
         public WcsDispatchProgress DispatchProgress => inner.DispatchProgress;
         public string InstanceId => inner.InstanceId;
         public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
@@ -133,11 +188,13 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    public sealed class SilentCamera(string device) : IControlledObservationSource, IOriginalFrameSource
+    public sealed class SilentCamera(string device) : IControlledObservationSource, IOriginalFrameSource, IProductionArrivalSource
     {
         public string DeviceId => device;
         public string Epoch => epoch;
         public string ConfirmationSource => "synthetic-disconnected";
+        ProductionArrivalCapture? arrival;
+        public Task SetArrivalAsync(ProductionArrivalCapture boundary, CancellationToken token) { token.ThrowIfCancellationRequested(); arrival = boundary; return Task.CompletedTask; }
         string epoch = ""; Func<Observation, bool>? receive;
         Action<DeviceHealthConfirmation>? publishHealth;
         long sequence;
@@ -145,13 +202,15 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
         public Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> accept, Action<DeviceHealthConfirmation> health, CancellationToken t)
         { epoch = registeredEpoch; receive = accept; publishHealth = health; sequence = 0; health(new(device, epoch, DeviceHealth.Disconnected, DateTimeOffset.UtcNow, null, "synthetic disconnected camera")); return Task.CompletedTask; }
         public void ConfirmConnected() => publishHealth!(new(device, epoch, DeviceHealth.Ready, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddHours(1), "synthetic qualified source"));
-        public bool Read(string[] codes, TrayPresenceEvidence? presence = null, DateTimeOffset? observedAt = null)
+        public bool Read(string[] codes, TrayPresenceEvidence? presence = null, DateTimeOffset? observedAt = null) => Deliver(Capture(codes, presence, observedAt));
+        public bool Deliver(Observation observation) => receive!(observation);
+        public Observation Capture(string[] codes, TrayPresenceEvidence? presence = null, DateTimeOffset? observedAt = null)
         {
             var id = Wire.Id();
             frames[id] = Enumerable.Repeat(unchecked((byte)(sequence + 1)), 256).ToArray();
-            return receive!(new(id, device, epoch, id, Interlocked.Increment(ref sequence), "round." + id,
+            return new(id, device, epoch, id, Interlocked.Increment(ref sequence), "round." + id,
                 presence is null ? "Read" : "Presence", codes, null, observedAt ?? DateTimeOffset.UtcNow)
-            { TrayPresence = presence });
+            { TrayPresence = presence, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = System.Diagnostics.Stopwatch.GetTimestamp() - (long)((DateTimeOffset.UtcNow - (observedAt ?? DateTimeOffset.UtcNow)).TotalSeconds * System.Diagnostics.Stopwatch.Frequency), FrameNumber = sequence };
         }
         public void EnableOriginalFrames() { }
         public Action? BeforeRetainOriginalFrame { get; set; }
@@ -168,7 +227,7 @@ internal sealed class ManualSupplyHarness : IAsyncDisposable
             public void Dispose() { }
         }
         public void ReleaseOriginalFrame(AcquisitionIdentity identity) { }
-        public void Emit() => receive!(new(Wire.Id(), device, epoch, Wire.Id(), 1, "camera." + Wire.Id(), "Read", ["CAMERA-OFFLINE"], null, DateTimeOffset.UtcNow));
+        public void Emit() => receive!(new(Wire.Id(), device, epoch, Wire.Id(), 1, "camera." + Wire.Id(), "Read", ["CAMERA-OFFLINE"], null, DateTimeOffset.UtcNow) { ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = System.Diagnostics.Stopwatch.GetTimestamp() });
         public Task StopAsync(CancellationToken t) => Task.CompletedTask;
         public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
@@ -181,22 +240,6 @@ internal static class ManualSupplyChecks
     {
         Console.WriteLine("EvidenceRoot=" + root);
         Console.WriteLine("Production configuration, explicit synthetic disconnected/deferred camera ports, real SQLite and built-in RCS over loopback; real SDK/site NOT_RUN.");
-        await using (var partial = new ManualSupplyHarness(workspace, Path.Combine(root, "missing-code"), deferred: true, rightCode: false))
-        {
-            await partial.StartAsync(ready: false);
-            await CameraRoundHarness.Until(async () => (await partial.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Admit);
-            var status = await partial.App.SnapshotAsync();
-            var admitted = await partial.App.SubmitParcelBarcodeAsync(await partial.Command("right", "NO-SOURCE-CODE"), default);
-            var after = await partial.App.SnapshotAsync();
-            var op = after.Operations.Single(o => o.Id == admitted.OperationId);
-            await ManagementModeFixture.Authorize(partial.App);
-            op = (await partial.App.ReadCameraOperationDetailAsync(op.Id, default))!.Original;
-            using var sent = System.Text.Json.JsonDocument.Parse(op.Wcs!.Request.IntegrationRequest!.Body);
-            Check(status.Positions!.All(p => p.Admit) && admitted.Status == "Admitted" &&
-                op.Wcs is { State: StageState.Accepted, Attempts: 1 } && op.Slot == "SYNTH-CHUTE" && partial.Peer.Requests.Count == 1 &&
-                sent.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").ValueKind == System.Text.Json.JsonValueKind.Null && op.Acquisition is null,
-                "manual input without a camera/source code reaches RCS with an explicit null code and no fabricated acquisition");
-        }
         foreach (var deferred in new[] { true, false })
         {
             await using var h = new ManualSupplyHarness(workspace, Path.Combine(root, deferred ? "deferred" : "offline"), deferred);

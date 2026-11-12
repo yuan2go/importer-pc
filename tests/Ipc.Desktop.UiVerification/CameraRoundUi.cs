@@ -83,7 +83,7 @@ static partial class Program
                 "trigger enters a clean reading round without a photo/request or HTTP call");
             var isolated = await h.App.SnapshotAsync();
             var denied = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), isolated.RuntimeId, isolated.Configuration.Revision, "left", "ISOLATED-MANUAL",
-                ParcelBarcodeInputKind.Keyboard, null, null), default);
+                ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = isolated.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
             Check(denied.Status == "Rejected" && denied.Detail.Contains("暂停") && h.Peer.Requests.IsEmpty, "explicit fixture pause blocks ordinary supply without sending; debugging itself creates no station fence");
             Check(Field<TextBlock>(control, "imageHint").Text.Contains("正在读取"), "reading placeholder describes the current round");
             for (uint number = 1; number <= 3; number++)
@@ -163,6 +163,7 @@ static partial class Program
                 Equals(Field<Button>(control, "send").Content, "查看发送结果"));
             ClickField(control, "send"); await Until(() => !Field<bool>(control, "busy") && !Field<bool>(control, "polling"));
             Check(h.Peer.Requests.Count == 1 && h.Peer.Requests.Single() == a.RequestBody, "click-send and check-result never create a second HTTP request");
+            await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await Poll(other); ClickField(other, "trigger");
             await Until(() => Equals(Field<Button>(other, "trigger").Content, "扫码中…"));
             h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("UI-ROUND-B"), 6); await h.LockedAsync(); await Poll(other); await Poll(control);

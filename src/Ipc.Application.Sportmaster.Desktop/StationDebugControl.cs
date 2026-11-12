@@ -154,7 +154,7 @@ internal sealed partial class StationDebugControl : UserControl
         send.SetResourceReference(ForegroundProperty, "Accent"); send.SetResourceReference(BorderBrushProperty, "Line");
         var entry = Flow(Text("请求条码"), requestBarcode, prepare, send); DockPanel.SetDock(entry, Dock.Right); requestHeader.Children.Add(entry); requestHeader.Children.Add(Heading("请求调试")); requestPanel.Children.Add(requestHeader);
         fillStatus.SetResourceReference(TextBlock.ForegroundProperty, "Success"); requestPanel.Children.Add(fillStatus);
-        requestPanel.Children.Add(Text("扫码后自动填入条码，也可以手工输入；先“准备请求”查看报文，再“发送请求”。"));
+        requestPanel.Children.Add(Text("扫码后自动填入条码，也可以手工输入；先“准备请求”查看报文，再“发送请求”。实际发送将接管所选小车本次到位，本车不可重复取格口。"));
         jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) }); jsonColumns.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto }); jsonColumns.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var requestJson = new StackPanel(); var responseJson = new StackPanel { Margin = new(14, 0, 0, 0) };
@@ -197,7 +197,8 @@ internal sealed partial class StationDebugControl : UserControl
     async Task PrepareManualAsync(CancellationToken token)
     {
         if (!vm.Fresh || vm.Snapshot is not { } snapshot) throw new InvalidOperationException("请先恢复当前运行状态读取。");
-        var command = prepareCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, position, requestBarcode.Text, observed?.Id);
+        var command = prepareCommand ??= new(Wire.Id(), snapshot.RuntimeId, snapshot.Configuration.Revision, position, requestBarcode.Text, observed?.Id)
+        { ExpectedArrivalGeneration = snapshot.Positions?.SingleOrDefault(p => p.Id == position)?.Arrival?.Generation };
         var owner = lifetime; var version = generation; var scanSession = ownedScanSession;
         CameraReadRound value;
         try { value = await vm.ServiceAsync(() => Rounds.PrepareManualRcsRequestAsync(command, token)); }

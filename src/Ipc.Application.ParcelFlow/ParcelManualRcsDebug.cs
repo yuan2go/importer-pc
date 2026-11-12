@@ -62,6 +62,8 @@ public sealed partial class ParcelRuntime
                     throw new CameraReadRoundConflictException("运行或生效配置已变化，请重新核对请求。");
                 if (readRound?.Id != command.ExpectedRoundId || readRound?.State is "Preparing" or "Reading" or "Sealing" or "Sending" || readRound?.Worker is { IsCompleted: false })
                     throw new CameraReadRoundConflictException("当前轮次已变化或仍在读取/发送；核对原轮次后再准备请求。");
+                if (UsesSmArrival(command.PositionId) && command.ExpectedArrivalGeneration != SmCycle(command.PositionId).Generation)
+                    throw new CameraReadRoundConflictException("目标小车已变化；请重新核对本位后准备请求。");
                 var replaceable = readRound?.Operation is { } priorId && operations.TryGetValue(priorId, out var prior) &&
                     CanCloseUnsentDebugIntent(prior) ? priorId : null;
                 var reasons = ManualInputReasons(command.PositionId, exceptOperation: replaceable, debugRequest: true);
@@ -84,7 +86,7 @@ public sealed partial class ParcelRuntime
                     Wire.Hash(Wire.Encode(Effective)), round.Configuration, new(ports.ImplementationHashes), Effective.Weight,
                     WeightRules.Configured(Effective.Weight), ParcelState.Prepared, null, null, null, "独立人工调试意图；未发送",
                     Operator: currentOperator, PositionId: command.PositionId, ReaderBinding: ReaderBinding(command.PositionId), BarcodeSelection: selection)
-                { OperatorInput = evidence, OperatorDebugRequest = new(round.Id, ManagementEvidence.AuditActor) };
+                { ArrivalGeneration = SmCycle(command.PositionId).Generation, VehicleNo = SmCycle(command.PositionId).VehicleNo, OperatorInput = evidence, OperatorDebugRequest = new(round.Id, ManagementEvidence.AuditActor) };
                 Save(op, "OperatorDebugIntentCreated", "明确人工输入；无相机采集身份，不发送请求。");
                 round.Operation = op.Id; Volatile.Write(ref readRound, round); retired?.Cancel.Dispose();
                 op = ((IParcelExecution)this).PrepareWcs(op);
@@ -104,6 +106,7 @@ public sealed partial class ParcelRuntime
         MaintenanceAuthorized && !op.RecoveryRequired && IsManualParcel(op) &&
         op.Wcs is { State: StageState.Prepared, Attempts: 0, Request.IntegrationRequest: not null } &&
         configuration?.Current.Pending is null && Wire.Hash(Wire.Encode(Effective)) == op.ConfigurationHash &&
+        SmTargetDispatchAllowed(op) &&
         ManualInputReasons(op.PositionId!, exceptOperation: op.Id, debugRequest: true, requireAdmissionCapacity: false).Length == 0 && WeightReady(op) &&
         (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject) &&
         !repository!.PendingReceipts().Any(x => x.Operation == op.Id);

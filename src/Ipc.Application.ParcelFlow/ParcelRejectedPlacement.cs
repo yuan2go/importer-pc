@@ -13,7 +13,7 @@ public sealed partial class ParcelRuntime
         {
             try
             {
-                using var original = source.RetainOriginalFrame(new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt));
+                using var original = source.RetainOriginalFrame(o.Acquisition);
                 var pixels = original.Pixels.ToArray();
                 _ = uint.TryParse(o.SourceEventId.Split('.').Last(), out var frame);
                 image = new(new(o.Id, "", o.DeviceId, o.Epoch, frame, o.ObservedAt, original.Width, original.Height,

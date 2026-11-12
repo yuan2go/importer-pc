@@ -7,9 +7,9 @@ public sealed partial class ParcelRuntime
     void ReleaseIngressAcquisition(Observation o)
     {
         if (readers.GetValueOrDefault(o.DeviceId)?.Source is IOriginalFrameSource originals)
-            originals.ReleaseOriginalFrame(new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt));
+            originals.ReleaseOriginalFrame(o.Acquisition);
         if (readers.GetValueOrDefault(o.DeviceId)?.Source is IReaderImageCapture source)
-            source.ReleaseAcquisition(new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt), "observation:" + o.Id);
+            source.ReleaseAcquisition(o.Acquisition, "observation:" + o.Id);
     }
     void ReleaseOperationAcquisition(ParcelOperation op)
     {

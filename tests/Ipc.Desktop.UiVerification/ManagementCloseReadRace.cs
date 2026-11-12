@@ -15,7 +15,7 @@ static partial class Program
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(15));
             while (!ready()) { await Dispatcher.Yield(DispatcherPriority.ApplicationIdle); await Task.Delay(10, deadline.Token); }
         }
-        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "close-read"), deferred: true, rightCode: false, leftCode: false);
+        await using var h = new ManualSupplyHarness(root, Path.Combine(evidence, "close-read"), deferred: true);
         await h.StartAsync(); await ManagementModeFixture.Authorize(h.App);
         var api = DispatchProxy.Create<IManualDebugUiFixture, ClosingReadBoundary>();
         var probe = (ClosingReadBoundary)(object)api; probe.Inner = h.App;

@@ -23,6 +23,7 @@
 ## 设计
 
 - [SM 包裹轮次与原请求生命周期](design/sm-parcel-rounds.md)
+- [SM 按小车到位分轮、启停心跳与异常恢复](design/sm-vehicle-arrival-rounds.md)
 
 - [框架](design/framework.md)、[框架决策](design/framework-decisions.md)
 - [SM RCS 取格口任务](runtime/sportmaster-rcs-task.md)

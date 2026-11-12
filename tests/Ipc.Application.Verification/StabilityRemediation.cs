@@ -50,18 +50,18 @@ static partial class StabilityRemediation
         {
             Check(app.EmitReferenceAt("left", "first", "001", "first-event"), "first delivery accepted durably");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             Check(app.EmitReferenceAt("left", "second", "002", "second-event"), "second delivery accepted before first T3 fails");
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Count(o => o.Wcs?.State == StageState.Dispatching) == 2 &&
-                app.WorkerProgress().Single(w => w.Position == "left").Processed == 2);
-            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
-                "both input receipts and independent original requests are durable before either T3 finishes");
+                app.WorkerProgress().Single(w => w.Position == "left").Processed == 3);
+            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 3 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
+                "both parcel inputs, explicit physical boundary and independent original requests are durable before either T3 finishes");
             factory.Release.TrySetResult();
             await app.FatalFailure.WaitAsync(TimeSpan.FromSeconds(5));
             Check(app.WorkerProgress().Single(x => x.Position == "right").State == "Waiting" && app.HasActiveWork,
                 "request persistence failure remains fatal independently of the input worker's completed handoffs");
-            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
-                "T3 failure retains both input receipts and each parcel's original entity without deleting or merging either responsibility");
+            Check(Scalar(database, "SELECT count(*) FROM parcel_ingress") == 3 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
+                "T3 failure retains both parcel inputs, physical evidence and each parcel's original entity without deleting or merging either responsibility");
         }
         finally
         {
@@ -78,7 +78,7 @@ static partial class StabilityRemediation
         var receipt = await Command(recovered, "IngressResponsibilities");
         using var json = JsonDocument.Parse(receipt.Reason);
         Check(json.RootElement.GetArrayLength() == 0, "old scan recovery leaves no operator input-inspection work");
-        Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 2 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
+        Check(Scalar(database, "SELECT count(*) FROM parcel_ingress WHERE state='Processed'") == 3 && Scalar(database, "SELECT count(*) FROM parcel_operations") == 2,
             "automatic skip clears only input barriers while preserving original request/attempt/entity ledger");
     }
     static async Task SlowMarker(string workspace, string path)
@@ -91,10 +91,10 @@ static partial class StabilityRemediation
         {
             Check(app.EmitReferenceAt("left", "slow-first", "001", "slow-first-event"), "slow-marker first left input");
             await factory.Entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             Check(app.EmitReferenceAt("left", "slow-second", "002", "slow-second-event"), "left second input is admitted while its predecessor awaits RCS");
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Any(o => o.AdmissionId == "slow-second" && o.Wcs?.State == StageState.Dispatching));
-            await SmRoundFixture.ConfirmRemovedAsync(app, "left");
+            await SmRoundFixture.NextVehicleAsync(app, "left");
             waiting = Task.Run(() => app.EmitReferenceAt("left", "backpressure", "003", "waiting-event"));
             Check(await waiting.WaitAsync(TimeSpan.FromSeconds(5)), "a held predecessor does not block the third parcel's input handoff");
             await CameraRoundHarness.Until(async () => (await app.SnapshotAsync()).Operations.Count(o => o.PositionId == "left" && o.Wcs?.State == StageState.Dispatching) == 3);

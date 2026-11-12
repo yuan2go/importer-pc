@@ -52,7 +52,7 @@ internal static partial class StabilityAnalysis
                 receipt = await app.BackupAsync(backup); if (receipt.Status == "BackupCreated") break;
                 await Task.Delay(20);
             }
-            Check(receipt?.Status == "BackupCreated", "real Application/Repository generated the DB13 complete analysis input");
+            Check(receipt?.Status == "BackupCreated", "real Application/Repository generated the DB14 complete analysis input");
         }
         var original = Inventory(backup);
         var output = Path.Combine(root, "analysis.json");

@@ -38,7 +38,7 @@ public sealed partial class ParcelRuntime
     {
         var o = input.Observation;
         RecordFlowPerformance(input.PositionId, ParcelInputReasons.IsSamePlacement(input) ? "SamePlacement" : "Input" + input.Outcome,
-            o.Id, o.OperatorInput is null ? new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt) : null,
+            o.Id, o.OperatorInput is null ? o.Acquisition : null,
             input.OperationId, state: input.Outcome.ToString(), decodedTicks: o.DecodedTicks,
             roundId: input.OperationId is { } id ? operations.GetValueOrDefault(id)?.RoundId : CurrentRound(input.PositionId)?.Id);
     }
@@ -53,7 +53,7 @@ public sealed partial class ParcelRuntime
     }
     void RecordIngressPerformance(string position, Observation observation, string kind, double elapsed)
         => RecordFlowPerformance(position, kind, observation.Id,
-            observation.OperatorInput is null ? new(observation.DeviceId, observation.Epoch, observation.SourceEventId, observation.AdmissionId, observation.ObservedAt) : null,
+            observation.OperatorInput is null ? observation.Acquisition : null,
             elapsed: elapsed, decodedTicks: observation.DecodedTicks);
     object FlowPerformance()
     {

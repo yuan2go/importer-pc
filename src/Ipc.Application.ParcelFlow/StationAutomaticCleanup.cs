@@ -119,11 +119,13 @@ public sealed partial class ParcelRuntime
             try
             {
                 if (Wire.Encode(Effective) != Wire.Encode(captured) || configuration!.Current.Pending is not null || configurationSaving || backupInProgress ||
-                    externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 || Volatile.Read(ref pendingObservations) != 0)
+                    externalWaits != 0 || activeStages.Count != 0 || attachedRunning.Count != 0 ||
+                    smCycles.Values.Any(c => c.HeartbeatPending is not null) || arrivalBoundaryWorkers.Count != 0 || !TryFenceBackupIngress())
                     throw new InvalidOperationException("运行状态已变化，本次自动清理延后");
-                configurationSaving = backupInProgress = ownsFence = true;
+                configurationSaving = ownsFence = true;
                 var archived = repository!.PrepareAutomaticRetention(definition, now.AddDays(-captured.Retention!.HistoryDays!.Value));
                 foreach (var id in archived) operations.Remove(id);
+                PrepareSmHeartbeatMaintenance();
                 databaseBytes = repository.StorageBytes;
             }
             catch (Exception error) when (IsStorageError(error) || error is InvalidDataException)
@@ -174,9 +176,10 @@ public sealed partial class ParcelRuntime
             await gate.WaitAsync().ConfigureAwait(false);
             try
             {
-                if (ownsFence) { configurationSaving = false; backupInProgress = false; }
+                if (ownsFence) { CompleteSmHeartbeatMaintenance(); configurationSaving = false; ReleaseBackupIngress(); }
                 if (automaticCleanup is not null) _ = PersistAutomaticCleanup();
             }
+            catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "HeartbeatRetentionRelease"); throw; }
             finally { gate.Release(); }
         }
         return true;

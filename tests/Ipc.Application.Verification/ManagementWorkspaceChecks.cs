@@ -62,6 +62,7 @@ static class ManagementWorkspaceChecks
         }
         await CloseWithQueuedExpiry(id,
             "late expiry cleanup does not reset the camera again after the original window has restored production");
+        await SmRoundFixture.NextVehicleAsync(h.App, "left");
         await h.WaitForCameraAdmissionAsync();
         Check((await h.App.SnapshotAsync()).Paused == before.Paused, "original window can restore production even after password authorization expires");
         await h.TrayAsync(h.Left, TrayPresence.Absent);

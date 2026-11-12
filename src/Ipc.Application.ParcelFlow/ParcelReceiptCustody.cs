@@ -80,6 +80,8 @@ public sealed partial class ParcelRuntime
         if (backupInProgress || maintenanceOperations.Count != 0 || !maintainedResources.IsEmpty ||
             pendingLiveDeviceCleanup.Count != 0 || Volatile.Read(ref readRound) is not null || Volatile.Read(ref collectingInspection) is not null)
             return ParcelInputBlockReason.StationMaintenance;
+        if (configuration?.Current.Pending is { } pending && SmHeartbeatChangeUnconfirmed(pending)) return ParcelInputBlockReason.PreviousResultUnconfirmed;
+        if (smCycles.Values.Any(c => c.TargetOperation is not null || c.RecoveryReason is not null)) return ParcelInputBlockReason.PreviousResultUnconfirmed;
         if (identityConflicts.Count != 0) return ParcelInputBlockReason.IdentityConflict;
         if (overload != 0 || !interruptedPositions.IsEmpty || Volatile.Read(ref pendingObservations) != 0 ||
             ingressLanes.Values.Any(l => !l.Waiting.IsEmpty) || positionQueues.Values.Any(q => q.Reader.CanCount && q.Reader.Count != 0))

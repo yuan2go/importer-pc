@@ -89,9 +89,10 @@ static partial class Program
                 Inside(Descendants(rightControl).OfType<Button>().Single(b => Equals(b.Content, "查看详情")), client),
                 "compact exception keeps its instructions and details reachable");
             ((Button)rightControl.FindName("ConfirmManualPlacementRemoval")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            await Until(() => vm.Right.CurrentRound is null && vm.Right.CanSubmitBarcode);
-            Check(vm.Right.CenteredStateTitle == "等待投包" && !vm.Right.CanViewCurrentPicture && vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == sent,
+            await Until(() => vm.Right.CurrentRound is null && !vm.Right.CanSubmitBarcode);
+            Check(vm.Right.CenteredStateTitle == "需人工恢复" && !vm.Right.CanViewCurrentPicture && vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == sent,
                 "targeted confirmation resets only that round without replay");
+            await SmRoundFixture.NextVehicleAsync(h.App, "right");
             h.Peer.ReplySlot = "B-02";
             h.Api(h.Right).EnqueueNative(rejectedPixels, 4, [Symbol("SYNTH-UNKNOWN", 150)]);
             await Until(() => vm.Right.ShowConfirmedTask && vm.Right.Slot == "B-02");

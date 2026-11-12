@@ -4,8 +4,15 @@ using Ipc.Drivers;
 
 namespace Ipc.Adapters;
 
-public sealed class ManualObservationSource(string deviceId, string confirmationSource = "SIMULATION:manual") : IControlledObservationSource, ISyntheticObservationInput, IReaderImageCapture
+public sealed class ManualObservationSource(string deviceId, string confirmationSource = "SIMULATION:manual") : IControlledObservationSource, ISyntheticObservationInput, IReaderImageCapture, IProductionArrivalSource
 {
+    ProductionArrivalCapture? arrival;
+    public Task SetArrivalAsync(ProductionArrivalCapture boundary, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        lock (callbackGate) { ObjectDisposedException.ThrowIf(disposed, this); arrival = boundary; }
+        return Task.CompletedTask;
+    }
     Func<Observation, bool>? receive;
     Action<DeviceHealthConfirmation>? health;
     CancellationTokenSource? heartbeatStop;
@@ -58,13 +65,18 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
         health?.Invoke(new(DeviceId, Epoch, state, at, state == DeviceHealth.Ready ? at.AddSeconds(5) : null, confirmationSource));
     }
     public bool Emit(string kind, string admissionId, string[]? codes = null, int? quantity = null, string? sourceId = null)
+        => EmitObservation(kind, admissionId, codes, quantity, sourceId, null);
+    public bool EmitPresence(TrayPresence state) => EmitObservation("Presence", "synthetic-presence." + Wire.Id(), [], null, null,
+        new(state, "SIMULATION:explicit-qualified-physical-state"));
+    bool EmitObservation(string kind, string admissionId, string[]? codes, int? quantity, string? sourceId, TrayPresenceEvidence? presence)
     {
         lock (callbackGate)
         {
             var callback = receive ?? throw new InvalidOperationException("Source stopped");
             var observation = new Observation(Wire.Id(), DeviceId, Epoch, sourceId ?? Wire.Id(), Interlocked.Increment(ref sequence), admissionId,
-                kind, codes ?? [], quantity, DateTimeOffset.UtcNow);
-            var identity = new AcquisitionIdentity(DeviceId, observation.Epoch, observation.SourceEventId, admissionId, observation.ObservedAt);
+                kind, codes ?? [], quantity, DateTimeOffset.UtcNow)
+            { TrayPresence = presence, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = arrival is null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp(), FrameNumber = arrival is null ? null : sequence };
+            var identity = observation.Acquisition;
             var owner = "observation:" + observation.Id;
             if (captureBound)
             {

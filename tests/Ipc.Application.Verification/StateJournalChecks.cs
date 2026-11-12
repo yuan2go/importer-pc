@@ -122,13 +122,13 @@ static class StateJournalChecks
         Check(!State(offline).GetProperty("SoftwarePaused").GetBoolean() && !Position(State(offline), "left").GetProperty("CameraAdmission").GetBoolean(),
             "RCS offline checkpoint distinguishes preview-only decode gating from software pause");
         h.Peer.HeartbeatUnavailable = false;
-        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").BarcodeInput?.Camera == true);
+        await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left").Arrival?.CameraBoundaryReady == true);
         logs = await WaitLog(h, all => all.Any(e => Event(e) is "供包台状态变化" or "供包台状态快照" &&
             e.GetProperty("Sequence").GetInt64() > offline.GetProperty("Sequence").GetInt64() &&
             Position(State(e), "left").GetProperty("Camera").GetProperty("DecodePolicy").GetString() == "Automatic"));
         Check(DestinationRequests() == 1, "RCS recovery records automatic decode restoration without a new parcel request");
         h.Peer.ReplySlot = "";
-        await h.TrayAsync(h.Left, TrayPresence.Absent);
+        await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");
         await Feed("SYNTH-STATE-UNKNOWN", 15);
         await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).Operations.Any(o => o.Wcs?.State == StageState.Unknown));
         var unknown = (await h.App.SnapshotAsync()).Operations.Single(o => o.Wcs?.State == StageState.Unknown);

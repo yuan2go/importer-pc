@@ -8,7 +8,8 @@
     "MaximumLength": 32,
     "Minimum": 1,
     "Maximum": 9223372036854775807,
-    "ApplyLevel": "GuardedLive"
+    "ApplyLevel": "GuardedLive",
+    "Default": "1"
   },
   {
     "Key": "project-id",
@@ -19,7 +20,8 @@
     "MaximumLength": 32,
     "Minimum": 1,
     "Maximum": 9223372036854775807,
-    "ApplyLevel": "GuardedLive"
+    "ApplyLevel": "GuardedLive",
+    "Default": "1"
   },
   {
     "Key": "left-station-code",
@@ -37,8 +39,9 @@
     "Type": "string",
     "Required": false,
     "MaximumLength": 256,
-    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。",
-    "ApplyLevel": "GuardedLive"
+    "Description": "取格口与心跳共用的本位编码；留空时本位停用，填写后可启用。",
+    "ApplyLevel": "GuardedLive",
+    "Default": ""
   },
   {
     "Key": "right-station-code",
@@ -56,8 +59,9 @@
     "Type": "string",
     "Required": false,
     "MaximumLength": 256,
-    "Description": "本相机取格口与心跳共用的唯一编码；启用本相机和RCS时必填，左右不得重复。",
-    "ApplyLevel": "GuardedLive"
+    "Description": "取格口与心跳共用的本位编码；留空时本位停用，填写后可启用。",
+    "ApplyLevel": "GuardedLive",
+    "Default": ""
   },
   {
     "Key": "destination-mode",
@@ -111,7 +115,7 @@
     "Maximum": 3600000,
     "MaximumLength": 7,
     "Unit": "毫秒",
-    "Description": "默认1000毫秒，可按现场需要精确调整。SM符合即时生效条件时，保存后重连RCS生效；其他情况受控重启后生效，以保存回执为准。小车状态只提示托盘放包，不限制条码受理或格口申请。取格口与心跳共用同一相机编码，不重发旧心跳。",
+    "Description": "默认1000毫秒，按允许频率及实测节拍调整。周期与3000毫秒总响应预算独立；相邻可信车号变化决定到位代次，状态文字只作提示。取格口与心跳共用本位编码。",
     "ApplyLevel": "GuardedLive"
   }
 ]

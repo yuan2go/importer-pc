@@ -65,7 +65,7 @@ internal static class BackupConsistency
                 await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == frame)));
                 if (frame < 4) await Task.Delay(420);
             }
-            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            Check(h.Factory.Trays[h.Left].Observe(TrayPresence.Absent), "qualified observation retires normally at the backup ingress fence");
             Check(DateTimeOffset.UtcNow - first >= TimeSpan.FromMilliseconds(800), "three delivered no-code frames are followed by an independent qualified removal fact");
             var before = Progress(h.App);
             await CameraRoundHarness.Until(() => Task.FromResult(Progress(h.App) > before));
@@ -96,7 +96,7 @@ internal static class BackupConsistency
         h.App.BackupBoundary = null;
         // Restart restored an uncertain current round. Qualified absence does
         // not replace its required click; the backup fence must close first.
-        await SmRoundFixture.ConfirmRemovedAsync(h.App, "left");
+        await SmRoundFixture.NextVehicleAsync(h.App, "left");
         await CameraRoundHarness.Until(async () => await h.App.OperationAsync(original!.Id) is null);
         Check(files.Keys.All(f => !File.Exists(f)) && h.Peer.Requests.Count == 1, "success/cancellation/failure releases the fence; targeted removal then permits obsolete cleanup without replay");
     }

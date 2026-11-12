@@ -48,10 +48,17 @@ static partial class Program
             async Task NextRound(string side = "left")
             {
                 clock.Advance();
+                await h.NextVehicleAsync(side);
                 await Until(() => vm.Snapshot!.Positions!.Single(p => p.Id == side).CurrentRoundId is null);
             }
 
             const string a = "000123450001", b = "000123450002";
+            await Text("123456");
+            await NextRound(); await Key(0x0D); await Flush();
+            Check(transport.Commands.Count == 0 && h.Peer.Requests.IsEmpty && entry.Text == "123456" && ((Button)position.FindName("RebaseInput")).IsVisible,
+                "unfinished native PDA burst and its old Enter cannot submit to a replacement car");
+            CaptureInternal(evidence, "arrival-old-pda-draft", (Grid)window.FindName("ClientArea"), lines);
+            entry.ContextMenu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, "清空输入")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             await Text(a, enter: true); await Accepted(a);
             var first = vm.Left.Operation!; var frozen = Wire.Encode(first.Wcs!.Request);
             var prepared = entry.IsKeyboardFocused && entry.Text == a && entry.SelectionLength == a.Length;
@@ -65,7 +72,7 @@ static partial class Program
             var firstAfter = (await h.App.SnapshotAsync()).Operations.Single(o => o.Id == first.Id);
             Check(Wire.Encode(firstAfter.Wcs!.Request) == frozen && firstAfter.Wcs.Attempts == 1 && firstAfter.Wcs.State == StageState.Accepted,
                 "B leaves A's frozen request and accepted responsibility intact");
-            Check(textEvents == a.Length + b.Length && enterEvents == 2,
+            Check(textEvents == 6 + a.Length + b.Length && enterEvents == 3,
                 "both scans traverse real WPF PreviewTextInput and Enter events character by character");
             await Key(0x0D); await Flush();
             Check(transport.Commands.Count == 2 && h.Peer.Requests.Count == 2, "extra Enter on a retained result creates no new command");
@@ -95,6 +102,12 @@ static partial class Program
                     "acknowledged native insertion/Backspace preserves draft/caret without submission; round=" + round + "; offset=" + offset);
             }
             await NextRound();
+            Check(entry.Text == "000123" && ((Button)position.FindName("RebaseInput")).IsVisible,
+                "a vehicle change preserves an unfinished draft and requires explicit confirmation for the new car");
+            ((Button)position.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Flush();
+            Check(transport.Commands.Count == 2 && h.Peer.Requests.Count == 2,
+                "queued Enter or submit on the old arrival cannot silently redirect the draft");
+            ((Button)position.FindName("RebaseInput")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             ((Button)position.FindName("SubmitBarcode")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Accepted("000123");
             Check(transport.Commands.Last().Kind == ParcelBarcodeInputKind.Keyboard && h.Peer.Requests.Count == 3,
                 "manual bottom submit uses the same guarded path and preserves the unified character-input channel");

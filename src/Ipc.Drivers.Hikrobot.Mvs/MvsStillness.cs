@@ -27,6 +27,7 @@ internal sealed class MvsStillness(int stillMs, int fallbackMs)
     long referenceTicks, lastDecodableTicks;
     public bool Enabled => stillMs > 0;
     public int StillMs => stillMs;
+    public void Reset() { reference = current = row = null; width = height = 0; referenceTicks = lastDecodableTicks = 0; }
     // Identity of the scene the last observed frame belongs to: the monotonic time its reference was taken.
     // Two frames with the same value show the same unmoved scene. Unique across instances and cameras in a
     // process because it is a Stopwatch timestamp; null while the gate is off or before the first frame.

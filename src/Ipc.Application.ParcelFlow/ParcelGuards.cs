@@ -68,7 +68,13 @@ public sealed partial class ParcelRuntime
         if (repository!.Paused) return ParcelInputBlockReason.SoftwarePaused;
         if (CameraPositionBlock(position) is { } positionBlock) return positionBlock;
         if (!ImageCapacityAvailable()) return ParcelInputBlockReason.ImageCapacityUnavailable;
-        if (Id == "sportmaster") return CurrentRound(position)?.OperationId is not null ? ParcelInputBlockReason.PreviousResultPending : null;
+        if (Id == "sportmaster")
+        {
+            if (SmTargetBlock(position) is not null) return ParcelInputBlockReason.VehicleUnconfirmed;
+            if (UsesSmArrival(position) && (!arrivalCaptures.TryGetValue(positions[position].ReaderDeviceId, out var capture) || !capture.Ready || capture.Epoch != readers[positions[position].ReaderDeviceId].Epoch))
+                return ParcelInputBlockReason.ArrivalCapturePending;
+            return CurrentRound(position)?.OperationId is not null ? ParcelInputBlockReason.PreviousResultPending : null;
+        }
         var original = operations.Values.FirstOrDefault(x => (x.PositionId ?? "main") == position && !ReleasedForNextAdmission(x) && !MainTerminated(x));
         return original is null ? null : PriorWorkBlock(original);
     }
@@ -106,6 +112,7 @@ public sealed partial class ParcelRuntime
             CameraConnectionSuspended = supplySuspendedReaders.Contains(p.ReaderDeviceId),
             CurrentRoundId = CurrentRound(p.Id)?.Id,
             RoundVersion = CurrentRound(p.Id)?.Version,
+            Arrival = SmArrivalProjection(p.Id),
             AutomaticSuppressed = Id == "sportmaster" && SmCycle(p.Id).AutoSuppressed
         };
     }).ToArray();
@@ -161,6 +168,7 @@ public sealed partial class ParcelRuntime
                 try
                 {
                     CheckCameraInspectionLease();
+                    MaintainSmArrivalCaptures();
                     MaintainSmRounds();
                     RetireObsoleteSmOriginals();
                     RetainReleasedSmUnknowns();

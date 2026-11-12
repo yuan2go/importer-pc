@@ -32,7 +32,7 @@ static partial class SportmasterRcs
             }) { RequestTimeForVerification = clock, ResponseBodyProgressForVerification = (_, bytes) => { if (bytes > 0) prefix.TrySetResult(); } };
             service.ConfigureRuntime(configuration); await service.StartAsync(default);
             var request = Request(binding); request = request with { IntegrationRequest = service.PrepareRequest(request, 1) };
-            var original = Wire.Encode(request); var before = peer.Requests.Count;
+            var original = Wire.Encode(request); var before = peer.Requests.Count(x => x.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal));
             using var caller = new CancellationTokenSource();
             peer.Mode = outcome == "body-timeout" ? "body-timeout" : "assigned";
             var pending = service.ResolveSlotAsync(request, caller.Token);
@@ -48,7 +48,7 @@ static partial class SportmasterRcs
             if (outcome == "before")
             {
                 connect.TrySetResult();
-                Check((await pending.WaitAsync(TimeSpan.FromSeconds(3))).BusinessAccepted == true && peer.Requests.Count == before + 1,
+                Check((await pending.WaitAsync(TimeSpan.FromSeconds(3))).BusinessAccepted == true && peer.Requests.Count(x => x.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == before + 1,
                     "valid response at logical 999ms is accepted once using the original 1000ms default");
             }
             else if (outcome == "body-timeout")
@@ -56,20 +56,20 @@ static partial class SportmasterRcs
                 clock.Advance(1);
                 var result = await pending.WaitAsync(TimeSpan.FromSeconds(3));
                 Check(result.BusinessAccepted is null && result.HttpResponse is { Complete: false } raw &&
-                    Encoding.UTF8.GetString(Convert.FromBase64String(raw.BodyBase64)) == "{\"requestId\":" && peer.Requests.Count == before + 1,
+                    Encoding.UTF8.GetString(Convert.FromBase64String(raw.BodyBase64)) == "{\"requestId\":" && peer.Requests.Count(x => x.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == before + 1,
                     "connection consumes 600ms; body expires at total 1000ms without restarting its timer, retaining the actual prefix and one POST");
             }
             else if (outcome == "caller-cancel")
             {
                 caller.Cancel();
                 try { await pending.WaitAsync(TimeSpan.FromSeconds(3)); throw new InvalidOperationException("Caller cancellation lost"); }
-                catch (OperationCanceledException) { Check(peer.Requests.Count == before, "caller cancellation before connection stays cancellation, never a business rejection or retry"); }
+                catch (OperationCanceledException) { Check(peer.Requests.Count(x => x.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == before, "caller cancellation before connection stays cancellation, never a business rejection or retry"); }
             }
             else
             {
                 clock.Advance(1);
                 try { await pending.WaitAsync(TimeSpan.FromSeconds(3)); throw new InvalidOperationException("Connection deadline restarted"); }
-                catch (TimeoutException) { Check(peer.Requests.Count == before, "connection waiting expires exactly at 1000ms without writing a body or retrying"); }
+                catch (TimeoutException) { Check(peer.Requests.Count(x => x.Body.Contains("sorter.task.dest_request", StringComparison.Ordinal)) == before, "connection waiting expires exactly at 1000ms without writing a body or retrying"); }
             }
             Check(Wire.Encode(request) == original, "deadline handling preserves the frozen request, payload, target and permanent protocol identity");
         }

@@ -86,7 +86,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token);
             linked.Token.ThrowIfCancellationRequested();
             await StartCoreAsync(linked.Token).ConfigureAwait(false);
-            stationStartupCompleted = true;
+            Volatile.Write(ref stationStartupCompleted, true);
+            RefreshSmHeartbeat();
         }
         catch (Exception error) when (error is Ipc.Platform.Storage.StorageWriteFailure or Microsoft.Data.Sqlite.SqliteException)
         { StorageFailed(error, "Startup"); throw; }
@@ -148,6 +149,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 repository.Commit(null, "ProcessRecoveryReviewRequired", "Supervised startup retains software pause; inspect original entities and storage before explicit Resume; no replay", paused: true);
             await RefreshArchiveCountAsync().ConfigureAwait(false); // Startup has not acquired the business gate.
             foreach (var position in repository.RecoverIngress(Id == "sportmaster")) interruptedPositions.TryAdd(position, 0);
+            if (Id == "sportmaster")
+                foreach (var position in ParcelBindings.Positions(Effective))
+                    if (repository.Cycle(position.Id) is { } cycle) smCycles[position.Id] = cycle with { Presence = TrayPresence.Unknown };
             InitializeCameraInspection();
             InitializeParcelPictures();
         }
@@ -247,6 +251,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             worker = Task.WhenAll(positionWorkers.Values);
             InitializePositionControls();
             RestoreSmRounds();
+            BindSmHeartbeat(ports.Wcs);
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
             foreach (var scale in CapabilityPorts().OfType<IControlledWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values)
@@ -343,12 +348,40 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
 
     bool Enqueue(object item)
     {
+        if (Id != "sportmaster" || item is not Observation observation) return EnqueueCore(item);
+        lock (backupIngressSync)
+        {
+            if (backupInProgress)
+            {
+                ReleaseIngressAcquisition(observation);
+                var position = positions.Values.Single(p => p.ReaderDeviceId == observation.DeviceId).Id;
+                if (ingressLanes.TryGetValue(position, out var lane))
+                {
+                    Interlocked.Increment(ref lane.ObservedOnly);
+                    lane.Dispositions.AddOrUpdate("BackupPreviewOnly", 1, (_, n) => n + 1);
+                }
+                return true;
+            }
+            activeBackupIngress++;
+        }
+        try { return EnqueueCore(item); }
+        finally { lock (backupIngressSync) activeBackupIngress--; }
+    }
+    bool EnqueueCore(object item)
+    {
         var enteredTicks = Stopwatch.GetTimestamp();
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
         var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
             item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
         if (positionId is null || !ingressLanes.TryGetValue(positionId, out var lane)) return false;
+        if (Id == "sportmaster" && observation is not null && !SmCameraArrivalCurrent(positionId, observation))
+        {
+            ReleaseIngressAcquisition(observation);
+            Interlocked.Increment(ref lane.ObservedOnly);
+            lane.Dispositions.AddOrUpdate("OldArrivalGeneration", 1, (_, count) => count + 1);
+            return true; // Normal retirement of an old generation, not source failure.
+        }
         // One position owns this synchronous durable handoff. No shared callback lock,
         // business gate or native callback is held while SQLite commits.
         lock (lane.Sync)
@@ -660,7 +693,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
-            Operator: admittedOperator, Acquisition: o.OperatorInput is null ? new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt) : null,
+            Operator: admittedOperator, Acquisition: o.OperatorInput is null ? o.Acquisition : null,
             PositionId: position, ReaderBinding: ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId), BarcodeSelection: selection)
         { OperatorInput = o.OperatorInput };
         admissionPositions.TryAdd(op.AdmissionId, position);
@@ -755,20 +788,27 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             (op.Wcs is null || op.Wcs.Attempts == 0))
             op = op with { State = ParcelState.Abandoned, Reason = "Round ended before first RCS attempt; original stage cleanup retained" };
         var round = SmRoundAfterOperation(op);
+        var takeover = Id == "sportmaster" && IsDebugRequest(op) && op.Wcs is { State: StageState.Dispatching, Attempts: 1 } &&
+            CurrentRound(op.PositionId!) is { OperationId: null } current ? current : null;
+        if (takeover is not null) round = takeover with
+        { Version = takeover.Version + 1, State = SmRoundState.Ended, EndedAt = StationTime.GetUtcNow(), EndReason = "DebugTookPosition" };
+        var cycles = SmCyclesAfterOperation(op, eventName == "Dispatching");
         try
         {
             repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input, measurement: measurement, command: command,
-            ingressIdentity: op.RoundId is not null ? op.IngressId : activeIngress.Value, round: round);
+            ingressIdentity: op.RoundId is not null ? op.IngressId : activeIngress.Value, round: round, cycles: cycles);
         }
         catch (Exception error) when (IsStorageError(error)) { StorageFailed(error, "OperationCommit"); throw; }
         operations[op.Id] = op;
+        foreach (var cycle in cycles) smCycles[cycle.PositionId] = cycle;
         if (round is not null) ApplySmRound(round);
+        if (takeover is not null) smRoundPictures.Remove(takeover.Id);
         if (op.Wcs?.Request.IntegrationRequest is not null) RefreshIntegrationBudget();
         if (input is not null) PublishInput(input);
         WriteRuntimeLog("作业", eventName, new
         {
             op.PositionId,
-            op.RoundId,
+            op.RoundId, op.ArrivalGeneration, op.VehicleNo,
             op.AdmissionId,
             op.ParcelCode,
             State = op.State.ToString(),
@@ -858,4 +898,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         Volatile.Read(ref accepting) == 1 && positions.TryGetValue(positionId, out var position) && readers[position.ReaderDeviceId].Source is ISyntheticObservationInput input && input.Emit("Read", admissionId, [code], null, sourceEventId);
     public bool EmitReferenceWeight(WeightMeasurement measurement) => Effective.Mode == RunMode.Simulation &&
         Volatile.Read(ref accepting) == 1 && CapabilityPorts().OfType<ISyntheticWeightInput>().Any(input => input.Emit(measurement));
+    internal bool EmitReferencePresenceAt(string positionId, TrayPresence state) => Effective.Mode == RunMode.Simulation &&
+        Volatile.Read(ref accepting) == 1 && positions.TryGetValue(positionId, out var position) && readers[position.ReaderDeviceId].Source is ISyntheticObservationInput input && input.EmitPresence(state);
 }

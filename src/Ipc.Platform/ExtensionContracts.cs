@@ -48,6 +48,7 @@ public interface IObservationExtension
 public interface ISyntheticObservationInput
 {
     bool Emit(string kind, string admissionId, string[] codes, int? quantity, string sourceEventId);
+    bool EmitPresence(TrayPresence state) => false;
 }
 
 public static class ExtensionSchema

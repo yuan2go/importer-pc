@@ -9,7 +9,7 @@ public enum ParcelInputBlockReason
     StationStartingOrStopping, ConfigurationUnconfirmed, RestoreUnconfirmed, ConnectionNotConfigured, InstallationNotReady,
     OperatorSessionExpired, RuntimeFault, StationMaintenance, ManagementOpen, PositionDisabled, SoftwarePaused,
     PositionMaintenance, IdentityConflict, InterruptedScan, InputOverload, CameraNotConfigured, ReaderConfirmationExpired,
-    RcsUnavailable, CapabilityUnavailable, PreviousResultPending, PreviousResultUnconfirmed, PreviousWorkBlocked,
+    VehicleUnconfirmed, ArrivalCapturePending, RcsUnavailable, CapabilityUnavailable, PreviousResultPending, PreviousResultUnconfirmed, PreviousWorkBlocked,
     StorageUnavailable, CapacityExhausted, ImageCapacityUnavailable, CameraInspectionIsolated, ExpiredIdentity, ManualConditionsChanged, InputPending, ReceiptPersistencePending
 }
 // A later read of the parcel still resting on the tray: recorded, owned by the
@@ -20,6 +20,8 @@ public static class ParcelInputReasons
 
     public static string? ActionableNotice(ParcelInputBlockReason reason) => reason switch
     {
+        ParcelInputBlockReason.VehicleUnconfirmed => "等待本位小车或远端责任确认；请按作业卡处理，保留有效输入。",
+        ParcelInputBlockReason.ArrivalCapturePending => "相机换车边界尚未确认；等待恢复，或核对当前小车后人工补录。",
         ParcelInputBlockReason.CapacityExhausted => "当前作业已达上限。请等待请求处理完成，或按本位提示确认包裹已取下。",
         ParcelInputBlockReason.StorageUnavailable => "作业存储异常。请检查 D 盘空间和“设备与诊断”中的存储状态，保留原记录。",
         ParcelInputBlockReason.ReceiptPersistencePending => "原请求回执尚未可靠保存。请在设备与诊断查看记录状态，并联系维护人员。",

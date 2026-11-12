@@ -8,7 +8,10 @@ public sealed record ArmCameraRead(string CommandId, Guid RuntimeId, long Config
     string DeviceId, string? ExpectedRoundId);
 public sealed record SendCameraRound(string CommandId, Guid RuntimeId, string RoundId, string RequestHash);
 public sealed record PrepareManualRcsRequest(string CommandId, Guid RuntimeId, long ConfigurationRevision,
-    string PositionId, string Barcode, string? ExpectedRoundId);
+    string PositionId, string Barcode, string? ExpectedRoundId)
+{
+    public string? ExpectedArrivalGeneration { get; init; }
+}
 public sealed record CloseUnsentDebugRound(string CommandId, Guid RuntimeId, string RoundId);
 public sealed record OperatorDebugRequestEvidence(string RoundId, string ManagementActor);
 public sealed record CameraDebugRequestEvidence(string SessionId, string RoundId, string FrameId, string DeviceId, string Epoch,

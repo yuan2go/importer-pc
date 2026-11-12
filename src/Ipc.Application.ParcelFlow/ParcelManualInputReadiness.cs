@@ -22,6 +22,7 @@ public sealed partial class ParcelRuntime
         if (Id != "sportmaster") return ["当前业务不提供人工供包。"];
         if (!positions.ContainsKey(position)) return ["投递位不存在，请重新读取运行配置。"];
         var reasons = new List<string>();
+        if (!debugRequest && SmTargetBlock(position, exceptOperation) is { } targetReason) reasons.Add(targetReason);
         if (!debugRequest && ManagementWorkspaceOpen) reasons.Add("管理中心已打开，供包暂停；关闭管理中心后恢复。");
         if (!debugRequest && !PositionSupplyEnabled(position)) reasons.Add("本位已请求停用，不再接收新条码。");
         if (Volatile.Read(ref accepting) != 1 || stopping.IsCancellationRequested) reasons.Add("程序正在停止，暂不接收新包裹。");

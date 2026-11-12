@@ -46,11 +46,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2);
         }
         await TrayAsync(device, TrayPresence.Absent);
+        await SmRoundFixture.NextVehicleAsync(App, Config.Topology!.Positions.Single(p => p.ReaderDeviceId == device).Id);
         return next;
     }
     public async Task TrayAsync(string device, TrayPresence presence)
     {
         var position = Config.Topology!.Positions.Single(p => p.ReaderDeviceId == device).Id;
+        await Until(async () => (await App.SnapshotAsync()).Positions!.Single(p => p.Id == position).Arrival?.CameraBoundaryReady == true);
         var before = App.WorkerProgress().Single(p => p.Position == position).Processed;
         if (!Factory.Trays[device].Observe(presence)) throw new InvalidOperationException("Qualified fixture presence was not admitted");
         await Until(() => Task.FromResult(App.WorkerProgress().Single(p => p.Position == position).Processed > before));
@@ -98,9 +100,11 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         App = new(Launch with { RequireRecoveryReview = supervisedRestart }, new SportmasterFlow(), Factory) { RuntimeIdentityPreflight = () => { if (Config.Mode != RunMode.Simulation) throw new InvalidOperationException("Simulation fixture only"); } };
         if (StationClock is not null) App.StationTime = StationClock;
         await App.StartAsync(default);
+        SmRoundFixture.Register(App, Launch, Config);
         if (waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Devices?.Count(d => d.IsValid(DateTimeOffset.UtcNow)) == 2);
         if (authorizeManagement) await AuthorizeAsync();
         if (waitForRcs) await Until(async () => (await App.SnapshotAsync()).Health.Any(h => h.RemoteConfirmation == RemoteConnectionConfirmation.ResponseReceived));
+        if (waitForRcs && waitForAllCameras) await Until(async () => (await App.SnapshotAsync()).Positions!.All(p => p.Arrival?.CameraBoundaryReady == true));
     }
     public async Task AuthorizeAsync()
     {
@@ -162,8 +166,11 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     internal sealed record RoundPixels(byte[] Data, int Width, int Height);
     internal sealed class QualifiedTraySource(MvsAcquisition inner) : IAutomaticReconnectObservationSource, IOriginalFrameSource,
         IObservationPreviewSource, IObservationPreviewLeaseSource, IObservationInspectionSource, IObservationReadFeedbackSource,
-        IObservationDiagnosticsSource, IObservationPerformanceSource
+        IObservationDiagnosticsSource, IObservationPerformanceSource, IProductionArrivalSource
     {
+        ProductionArrivalCapture? arrival;
+        public async Task SetArrivalAsync(ProductionArrivalCapture boundary, CancellationToken token)
+        { await inner.SetArrivalAsync(boundary, token); arrival = boundary; }
         Func<Observation, bool>? receiver; long sequence;
         readonly object publication = new();
         bool Deliver(Observation value)
@@ -182,7 +189,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         {
             var id = Wire.Id();
             return Deliver(new(id, DeviceId, Epoch, "physical." + id, 0, "physical." + id, "Presence", [], null, DateTimeOffset.UtcNow)
-            { TrayPresence = new(presence, "controlled-qualified-fixture-event") });
+            { TrayPresence = new(presence, "controlled-qualified-fixture-event"), ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, CaptureTicks = System.Diagnostics.Stopwatch.GetTimestamp() });
         }
         public void EnableOriginalFrames() => inner.EnableOriginalFrames();
         public IOriginalFrameLease RetainOriginalFrame(AcquisitionIdentity id) => inner.RetainOriginalFrame(id);
@@ -349,11 +356,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
     }
     internal sealed class RoundPeer : IAsyncDisposable
     {
+        internal static readonly ConcurrentDictionary<string, RoundPeer> Peers = new();
         readonly HttpListener listener = new(); readonly CancellationTokenSource stopped = new(); readonly Task loop;
         readonly ConcurrentBag<Task> handlers = [];
         public readonly ConcurrentQueue<string> Requests = new();
         public readonly ConcurrentQueue<string> HeartbeatRequests = new();
         public Func<string, Task>? BusinessGate { get; set; }
+        public Func<string, Task>? ResponseGate { get; set; }
         int businessRepliesAttempted;
         public int BusinessRepliesAttempted => Volatile.Read(ref businessRepliesAttempted);
         public TaskCompletionSource? Hold { get; set; }
@@ -361,16 +370,23 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
         public string Mode = "assigned";
         public string? RejectionMessage { get; set; }
         public string ReplySlot = "SYNTH-CHUTE";
+        public string? ReplyTaskId { get; set; } = "SYNTH-TASK";
         public string? ReplyWaveNo { get; set; }
         public string? ReplyQuantity { get; set; }
         public object? AssignedData { get; set; }
-        public bool ReplyVehicleStates { get; set; }
+        public bool ReplyVehicleStates { get; set; } = true;
+        public readonly ConcurrentDictionary<string, string> Vehicles = new();
+        public Func<string, Task>? HeartbeatGate { get; set; }
+        public Func<string, string, string>? VehicleReply { get; set; }
+        public readonly ConcurrentQueue<(long Request, string Bcr, string Vehicle)> RemoteBindings = new();
+        public string[] RemoteMembers = [];
+        public Func<string, string>? HeartbeatTransform { get; set; }
         public volatile bool HeartbeatUnavailable = false;
         public string Endpoint { get; }
         public RoundPeer(int? selectedPort = null)
         {
             var reserve = new TcpListener(IPAddress.Loopback, selectedPort ?? 0); reserve.Start(); var port = ((IPEndPoint)reserve.LocalEndpoint).Port; reserve.Stop();
-            Endpoint = "http://127.0.0.1:" + port + "/rcs/sorter/api"; listener.Prefixes.Add("http://127.0.0.1:" + port + "/"); listener.Start(); loop = Loop();
+            Endpoint = "http://127.0.0.1:" + port + "/rcs/sorter/api"; listener.Prefixes.Add("http://127.0.0.1:" + port + "/"); listener.Start(); Peers[Endpoint] = this; loop = Loop();
         }
         async Task Loop()
         {
@@ -384,19 +400,28 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             {
                 using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8); var body = await reader.ReadToEndAsync();
                 using var json = JsonDocument.Parse(body); var id = json.RootElement.GetProperty("requestId").GetInt64();
-                var heartbeat = json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat";
+                var heartbeat = json.RootElement.GetProperty("data").GetArrayLength() == 0 || json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat";
                 (heartbeat ? HeartbeatRequests : Requests).Enqueue(body);
+                if (heartbeat && HeartbeatGate is { } heartbeatGate) await heartbeatGate(body).WaitAsync(stopped.Token);
                 if (!heartbeat && BusinessGate is { } gate) await gate(body).WaitAsync(stopped.Token);
+                if (!heartbeat)
+                {
+                    var target = json.RootElement.GetProperty("data")[0].GetProperty("params").GetProperty("bcrCode").GetString() ?? "";
+                    RemoteBindings.Enqueue((id, target, Vehicles.GetValueOrDefault(target, "SYNTH-AGV-" + (target.Contains("RIGHT", StringComparison.Ordinal) ? 2 : 1))));
+                }
+                if (!heartbeat && ResponseGate is { } responseGate) await responseGate(body).WaitAsync(stopped.Token);
                 // Business-result uncertainty does not also simulate a heartbeat outage unless selected explicitly.
                 var hold = Hold; if (hold is not null && (HoldWhen?.Invoke(body) ?? !heartbeat)) await hold.Task.WaitAsync(stopped.Token);
-                if (HeartbeatUnavailable && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
+                if (HeartbeatUnavailable && heartbeat)
                 { context.Response.StatusCode = 503; return; }
+                if (heartbeat) RemoteMembers = json.RootElement.GetProperty("data").EnumerateArray()
+                    .Select(i => i.GetProperty("params").GetProperty("bcrCode").GetString()!).ToArray();
                 var reply = JsonSerializer.Serialize(new
                 {
                     requestId = id,
                     result = new[] { new { index = 1, success = Mode != "reject", code = Mode == "reject" ? "SYNTH_REJECT" : null,
                     message = Mode == "reject" ? RejectionMessage ?? "Synthetic response" : "Synthetic response", args = (object?)null, command = "sorter.task.dest_request", data = AssignedData ?? new { chuteCode = ReplySlot, length = (decimal?)null,
-                        width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = "SYNTH-TASK", skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
+                        width = (decimal?)null, height = (decimal?)null, weight = (decimal?)null, taskId = ReplyTaskId, skuId = "SYNTH-SKU", waveNo = ReplyWaveNo, quantity = ReplyQuantity } } }
                 });
                 if (Mode == "no-destination")
                     reply = JsonSerializer.Serialize(new
@@ -411,7 +436,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                         requestId = id,
                         result = new[] { new { index = 1, success = false, code = "RPC_R_NO_DEVICE", message = "无设备可用", args = new { }, command = "sorter.task.dest_request", data = (object?)null } }
                     });
-                if (ReplyVehicleStates && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat")
+                if (heartbeat)
                     reply = JsonSerializer.Serialize(new
                     {
                         requestId = id,
@@ -424,12 +449,13 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
                             {
                                 stationCode = item.GetProperty("params").GetProperty("stationCode").GetString(),
                                 bcrCode = item.GetProperty("params").GetProperty("bcrCode").GetString(),
-                                agvNo = "SYNTH-AGV-" + item.GetProperty("index").GetInt32(),
+                                agvNo = !ReplyVehicleStates ? null : Vehicles.GetValueOrDefault(item.GetProperty("params").GetProperty("bcrCode").GetString()!,
+                                    VehicleReply?.Invoke(item.GetProperty("params").GetProperty("bcrCode").GetString()!, body) ?? "SYNTH-AGV-" + (item.GetProperty("params").GetProperty("bcrCode").GetString()!.Contains("RIGHT", StringComparison.Ordinal) ? 2 : 1)),
                                 status = item.GetProperty("index").GetInt32() == 1 ? "IDLE" : "TASKING"
                             }
                         }).ToArray()
                     });
-                var bytes = Encoding.UTF8.GetBytes(Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
+                var bytes = Encoding.UTF8.GetBytes(heartbeat && HeartbeatTransform is { } transform ? transform(reply) : !heartbeat && Mode == "malformed" ? "{\"invalid\":true}" : reply); context.Response.ContentType = "application/json"; context.Response.ContentLength64 = bytes.Length;
                 try { await context.Response.OutputStream.WriteAsync(bytes, stopped.Token); }
                 finally { if (!heartbeat) Interlocked.Increment(ref businessRepliesAttempted); }
             }
@@ -438,6 +464,6 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             catch (IOException) { }
             finally { try { context.Response.Close(); } catch (ObjectDisposedException) when (stopped.IsCancellationRequested) { } }
         }
-        public async ValueTask DisposeAsync() { stopped.Cancel(); Hold?.TrySetResult(); listener.Close(); await loop; await Task.WhenAll(handlers); stopped.Dispose(); }
+        public async ValueTask DisposeAsync() { Peers.TryRemove(Endpoint, out _); stopped.Cancel(); Hold?.TrySetResult(); listener.Close(); await loop; await Task.WhenAll(handlers); stopped.Dispose(); }
     }
 }

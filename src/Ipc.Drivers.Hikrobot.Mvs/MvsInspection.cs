@@ -94,14 +94,21 @@ internal sealed partial class MvsAcquisition : IObservationInspectionSource
             if (grabbing) { PhaseTo("inspection-sdk-buffer-cutover"); api.ClearBuffers(); }
             lock (inspectionGate)
             {
+                if (pendingArrival is { } arrival)
+                {
+                    productionArrival = arrival; pendingArrival = null;
+                    stillness.Reset(); trayPresence.BreakContinuity();
+                }
                 inspection = afterCacheCutover; afterCacheCutover = null; cacheCutover = null; inspectionGeneration++; inspectionFailure = null;
             }
             completion.TrySetResult();
         }
         catch (Exception error)
         {
-            lock (inspectionGate) { cacheCutover = null; afterCacheCutover = null; inspectionFailure = "SDK缓存切换未完成；保留隔离：" + error.GetType().Name; }
-            completion.TrySetException(error); throw;
+            var production = pendingArrival is not null;
+            lock (inspectionGate) { pendingArrival = null; cacheCutover = null; afterCacheCutover = null; inspectionFailure = "SDK缓存切换未完成；保留隔离：" + error.GetType().Name; }
+            completion.TrySetException(error);
+            if (!production) throw;
         }
     }
     (InspectionRegistration? Registration, long Generation) BeginInspectedCycle()

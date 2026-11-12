@@ -10,6 +10,7 @@ public partial class HistoryPage
     {
         if (taskFiltersArranged || DataContext is not ParcelViewModel { Snapshot.ApplicationId: "sportmaster" }) return;
         taskFiltersArranged = true;
+        RcsTaskColumn.Visibility = Visibility.Visible;
         // Reparent existing editors; each filter still has one binding and one query contract.
         foreach (var group in PrimaryHistoryFilters.Children.OfType<StackPanel>().Reverse().ToArray())
         {

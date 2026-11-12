@@ -107,6 +107,14 @@ static class LifecycleRestore
                 return true;
             }, expectedPorts);
         }
+        var reopenedFactory = new CommercialProductization.SyntheticFactory(restoredLaunch);
+        await using (var reopened = new ParcelRuntime(restoredLaunch, new SportmasterFlow(), reopenedFactory)
+        { RuntimeIdentityPreflight = () => { }, RestoreEvidence = evidence with { RequireRegistration = true } })
+        {
+            await reopened.StartAsync(default);
+            Check(!(await reopened.SnapshotAsync()).Paused && reopenedFactory.Sends == 0,
+                "a verified and explicitly resumed restored station reopens normally without replay or another forced restore confirmation");
+        }
 
         var machine = Path.Combine(root, "controlled-machine"); Directory.CreateDirectory(Path.Combine(machine, "deployments"));
         var retired = intent.Source with { LifecycleState = "RemovedDataRetained" };

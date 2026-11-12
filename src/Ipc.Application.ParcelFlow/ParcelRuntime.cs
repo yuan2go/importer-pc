@@ -171,7 +171,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
         RecoverOverloadAcknowledgement();
-        if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"))) repository!.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
+        if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !RestoreConfirmed)
+            repository!.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
         foreach (var op in repository.Load())
         {
             operations.Add(op.Id, op);

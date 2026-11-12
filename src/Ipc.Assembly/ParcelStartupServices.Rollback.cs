@@ -45,15 +45,26 @@ public static partial class ParcelStartupServices
         if (Wire.FileHash(WindowsDeploymentSetup.Registration(ApplicationId)) != plan.ExpectedRegistrationHash)
             throw new InvalidOperationException("部署登记已变化，请重新检查回退条件。");
         DeploymentRollbackReceipt? receipt = null;
-        await Core(new(current.ConfigurationDirectory, current.DataRoot, null, null), installer: true)
+        var switchStarted = false;
+        try { await Core(new(current.ConfigurationDirectory, current.DataRoot, null, null), installer: true)
             .ExecuteChangeAsync(request.ChangePlanIdentity!, "Rollback", request.Destination!, () =>
             {
                 if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+                switchStarted = true;
                 receipt = WindowsDeploymentSetup.Rollback(plan, location =>
                 {
                     if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); CreateShortcuts(location);
                 }, execution); return Task.CompletedTask;
-            }, execution);
+            }, execution); }
+        catch (Exception error) when (!switchStarted && error is not OutOfMemoryException)
+        {
+            // Positive in-process evidence: the program switch callback was
+            // never entered. Persist that fact before returning another review.
+            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+            try { return Wire.Encode(WindowsDeploymentSetup.RecordUnstartedRollback(plan, DiagnosticText.Protect(error.Message))); }
+            catch (Exception receiptError)
+            { throw new InstallationOutcomeUnknownException("回滚准备失败且原次收口回执未确认；保留原备份残件并核对同一原操作。", new AggregateException(error, receiptError)); }
+        }
         return Wire.Encode(receipt ?? throw new InstallationOutcomeUnknownException("回退提交结果缺失。"));
     }
 

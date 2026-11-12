@@ -5,7 +5,14 @@ namespace Ipc.Application.Contracts;
 public sealed record StartupMaintenanceDocument(ParcelConfiguration? Candidate, CapabilityCatalog Catalog,
     string ConfigurationHash, long Revision, bool ExistingConfiguration, string? RuntimeDirectory, string[] Diagnostics, string ConfigurationStatus = "Unknown");
 public sealed record StartupClassification(bool ExistingConfiguration, bool Readable, string[] Diagnostics);
-public sealed record StartupRecoveryPreview(string BackupSha256, string Destination, string Summary, string DataRoot);
+public sealed record StartupRecoveryPreview(string BackupSha256, string Destination, string Summary, string DataRoot)
+{
+    public string State { get; init; } = "Planned";
+    public string? OperationId { get; init; }
+    public string? Station { get; init; }
+    public RunMode? Mode { get; init; }
+    public string? Backup { get; init; }
+}
 public sealed record StartupEditorState(Dictionary<string, string> Values);
 public sealed record StartupSavedDraft(string BaseConfigurationHash, string DraftHash, DateTimeOffset At, StartupEditorState Editor, bool BaseChanged, string? SourceIdentity = null);
 public sealed record StartupCheck(string Layer, string Status, string Reason);
@@ -23,7 +30,13 @@ public sealed record ProgramUninstallResult(WindowsRemovalReceipt? Removal, Depl
 }
 public sealed record StartupSiteTemplate(int SchemaVersion, string Application, string SourceIdentity, StartupEditorState Defaults);
 public sealed record StartupRestoreHandoff(string Id, string SourceDirectory, string TargetDirectory, string BackupIdentity,
-    string SourceConfigurationHash, string TargetManifestHash, string MachinePolicyHash, DateTimeOffset At);
+    string SourceConfigurationHash, string TargetManifestHash, string MachinePolicyHash, DateTimeOffset At)
+{
+    public DeploymentPurgedRestoreSource? PurgedSource { get; init; }
+    public long MinimumIntegrationId { get; init; }
+}
+public sealed record RestoreVerificationInput(string Reason, long VerifiedRequestIdHighWater);
+public sealed record RestoreNumberFloor(string Identity, long Value);
 public sealed record StartupRetentionPlan(string Identity, string ConfigurationHash, string DatabaseHash, string BackupDestination, int Days, string Summary);
 public sealed record StartupRetentionOutcome(string Status, string Identity, string Detail, string? Run = null, string? BackupHash = null);
 public interface IStartupRetentionMaintenance
@@ -48,6 +61,7 @@ public interface IStartupMaintenance : IAsyncDisposable
     Task<StartupSavedDraft?> ReadDraftAsync();
     Task<StartupSavedDraft> SaveDraftAsync(string expectedConfigurationHash, string? expectedDraftHash, StartupEditorState editor);
     Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination);
+    Task<StartupRecoveryPreview[]> ReadRestoreOperationsAsync() => Task.FromResult(Array.Empty<StartupRecoveryPreview>());
     Task RestoreAsync(string backup, string destination, string expectedBackupHash);
     Task<StartupBackupItem[]> ListBackupsAsync(string directory, CancellationToken token);
     Task<StartupBackupItem[]> ListBackupsAsync(string directory, IProgress<MaintenanceProgress>? progress, CancellationToken token)

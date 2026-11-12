@@ -57,6 +57,24 @@ static class IndustrialLifecycle
         Check(!CanClose("Completed", priorInstall, priorInstall), "completed original operations are never rewritten by interruption recovery");
         using (var incomplete = System.Text.Json.JsonDocument.Parse("{\"Status\":\"Prepared\"}"))
             Check(!WindowsDeploymentSetup.CanCloseUncommittedInstallation(incomplete.RootElement, null), "incomplete journal is not proof of an uncommitted installation");
+        var resumable = new WindowsDeploymentRequest(Path.Combine(root, "original-medium"), "sportmaster", new string('b', 40), "synthetic", priorInstall.DataRoot,
+            priorInstall.ConfigurationDirectory, RunMode.Production, null, null, [], ProgramRoot: Path.Combine(root, "program"),
+            ExpectedRegistrationHash: Wire.Hash(Wire.Encode(priorInstall)), Shortcuts: new(true, false), OperationId: Wire.Id());
+        var committedInstall = priorInstall with { SourceCommit = resumable.SourceCommit, ReleaseRoot = interruptedTarget, DeploymentPlanIdentity = Wire.Hash(Wire.Encode(resumable)) };
+        string InstallationRecord(string status) => Wire.Encode(new { Status = status, Request = resumable, RequestIdentity = Wire.Hash(Wire.Encode(resumable)),
+            ChangePlanIdentity = (string?)null, Previous = priorInstall, Location = committedInstall, ReleaseRoot = interruptedTarget, resumable.DataRoot });
+        var durableInstallation = Path.Combine(root, "persisted-original-installation.json");
+        File.WriteAllText(durableInstallation, InstallationRecord("ReadyToCommit"));
+        var recoveredRequest = WindowsDeploymentSetup.ReadInstallationRequest("sportmaster", resumable.OperationId!, File.ReadAllText(durableInstallation));
+        Check(Wire.Encode(recoveredRequest) == Wire.Encode(resumable), "reopening durable bytes recovers the exact original installation and shortcut choices without a new operation ID");
+        Check(WindowsDeploymentSetup.ProjectInstallation(recoveredRequest, File.ReadAllText(durableInstallation), priorInstall).Status == "NotCommitted", "reopened precommit installation proves unchanged original registration");
+        Check(WindowsDeploymentSetup.ProjectInstallation(recoveredRequest, File.ReadAllText(durableInstallation), committedInstall).Status == "CommittedNeedsSystemRepair", "reopened committed registration requires original system repair instead of installation replay");
+        Check(WindowsDeploymentSetup.ProjectInstallation(recoveredRequest, InstallationRecord("Completed"), committedInstall).Status == "Completed", "completed durable original is readable after the initiating process is gone");
+        Check(WindowsDeploymentSetup.ProjectInstallation(recoveredRequest, InstallationRecord("ReadyToCommit"), committedInstall with { LifecycleState = "Purged" }).Status == "Superseded", "later purge cannot be mistaken for a committed installation needing reactivation");
+        Check(WindowsDeploymentSetup.ProjectInstallation(recoveredRequest, InstallationRecord("Completed"), priorInstall with { PreviousDeployment = committedInstall }).Status == "Superseded", "a retained previous deployment proves the old installation was superseded without switching the current registration");
+        Check(WindowsDeploymentSetup.ProjectInstallation(recoveredRequest, InstallationRecord("Failed"), committedInstall).Status == "Unknown", "a contradictory failed journal cannot authorize reinstallation over a committed target");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ReadInstallationRequest("sportmaster", Wire.Id(), InstallationRecord("ReadyToCommit")), "another operation ID cannot adopt a protected original request");
+        Reject<InvalidDataException>(() => WindowsDeploymentSetup.ReadInstallationRequest("sportmaster", resumable.OperationId!, InstallationRecord("ReadyToCommit").Replace(resumable.SourceCommit, new string('c', 40))), "changed persisted request bytes are not reconstructed by guessing missing inputs");
         var leaseRoot = Path.Combine(root, "ended-session-leases"); Directory.CreateDirectory(leaseRoot);
         var dataRoot = Path.Combine(root, "stopped-station"); Directory.CreateDirectory(dataRoot);
         var original = Path.Combine(dataRoot, "sportmaster.db"); File.WriteAllText(original, "SYNTHETIC original requests and historical inputs");

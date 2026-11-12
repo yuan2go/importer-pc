@@ -217,6 +217,7 @@ public partial class App : System.Windows.Application
         await StopAsync(); selected ??= DesktopLaunchOptions.Parse([], ApplicationId);
         var repair = new StartupRepairWindow(selected.Business, failure, initialConfiguration);
         startup.Hide(); repair.ShowDialog();
+        if (repair.RestoreAdopted) selected = selected with { Business = repair.SelectedLaunch };
         if (repair.ReplacementLaunched) { startup.AllowClose = true; Shutdown(); return; }
         if (repair.RetryRequested) { selected = selected with { Business = repair.SelectedLaunch }; await StartSelected(firstConfigurationReviewed: initialConfiguration); }
         else if (initialConfiguration)

@@ -39,10 +39,17 @@ public sealed partial class ParcelRepository
         if (floor >= range.Last) throw new InvalidDataException($"External numeric request ID range exhausted/retired; durable floor {floor}; allocate a new disjoint range");
         return checked(Math.Max(range.First, checked(floor + 1)) - range.First + 1);
     }
-    long IntegrationRequestIdFloor()
+    const string IntegrationFloorSql = "SELECT max(value) FROM (SELECT coalesce(max(id),0) value FROM parcel_integration_id_owners UNION ALL SELECT coalesce(max(ceiling),0) value FROM parcel_integration_id_restores)";
+    internal static long ReadIntegrationRequestIdFloor(string database)
+    {
+        using var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
+        connection.Open(); using var query = connection.CreateCommand(); query.CommandText = IntegrationFloorSql;
+        return Convert.ToInt64(query.ExecuteScalar());
+    }
+    internal long IntegrationRequestIdFloor()
     {
         using var c = db.CreateCommand();
-        c.CommandText = "SELECT max(value) FROM (SELECT coalesce(max(id),0) value FROM parcel_integration_id_owners UNION ALL SELECT coalesce(max(ceiling),0) value FROM parcel_integration_id_restores)";
+        c.CommandText = IntegrationFloorSql;
         return Math.Max(lastIntegrationRequestId, Convert.ToInt64(c.ExecuteScalar()));
     }
     internal void RegisterIntegrationRequestRanges(IWcsRequestPreparer preparer, IEnumerable<ParcelConfiguration> configurations, string? restoreIdentity)

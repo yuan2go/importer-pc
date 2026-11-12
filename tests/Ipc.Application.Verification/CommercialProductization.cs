@@ -1,4 +1,4 @@
-using Ipc.Application.Contracts;
+﻿using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster;
@@ -70,6 +70,7 @@ static class CommercialProductization
         Check(authority.Confirmation is { Required: true } && authority.Confirmation.Attempts.Last().Outcome == "Failed", "failed startup is durable and does not confirm Effective");
         var service = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => new SyntheticFactory(launch), () => { })
         { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "scratch-" + Wire.Id())).FullName };
+        ConfigureRestoreBoundary(service, launch, root);
         var document = await service.ReadAsync();
         var editor = new StartupConfigurationDraft(document.Candidate!, document.Catalog); editor.TimeoutMs = "unfinished-value";
         var captured = editor.Capture(); captured.Values["synthetic.secret"] = "SYNTHETIC-SECRET-COMM-01";
@@ -124,7 +125,10 @@ static class CommercialProductization
             var s = await repaired.SnapshotAsync(); await repaired.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
             Check((await ManagementModeFixture.Authorize(repaired)).Status == "Authorized" && (await repaired.SnapshotAsync()).Availability!.Configure, "synthetic maintenance authentication grants the existing backup permission");
             vm.StructuredPolicy!.Precision = "unfinished-precision";
-            vm.NewCapabilityKind = "login"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
+            var originalInstances = vm.CapabilityDrafts.Select(d => d.InstanceId).ToArray();
+            vm.NewCapabilityKind = "login";
+            await Reject<InvalidOperationException>(() => vm.AddCapabilityInstanceAsync(), "SM has no login or externally added capability instance");
+            Check(vm.CapabilityDrafts.Select(d => d.InstanceId).SequenceEqual(originalInstances), "rejected retired login leaves the complete capability draft intact");
             repairedFactory.HoldHealth = true; monitorPermit.Release();
             await repairedFactory.HealthEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
             var configurationBeforeBusy = Wire.FileHash(Path.Combine(directory, "configuration.json"));
@@ -149,8 +153,8 @@ static class CommercialProductization
             Check(releasedResult?.Status == "BackupCreated" && File.Exists(releasedBackup + ".recovery/COMPLETED.json"), "consistent maintenance becomes available only after the actual external reservation drains");
             await vm.SaveIncompleteEditorAsync();
             var resumedVm = new ParcelViewModel(repaired, "synthetic", "sportmaster"); await resumedVm.RefreshAsync(); await resumedVm.LoadCapabilitiesAsync(); await resumedVm.ContinueIncompleteEditorAsync();
-            Check(resumedVm.StructuredPolicy!.Precision == "unfinished-precision" && resumedVm.CapabilityDrafts.Any(c => c.InstanceId == extraInstance) && (await repaired.SnapshotAsync()).Configuration.Effective.TimeoutMs == 2000,
-                "running settings resume invalid fields and added inventory from the same encrypted CAS store without activating configuration");
+            Check(resumedVm.StructuredPolicy!.Precision == "unfinished-precision" && resumedVm.CapabilityDrafts.Select(c => c.InstanceId).SequenceEqual(originalInstances) && (await repaired.SnapshotAsync()).Configuration.Effective.TimeoutMs == 2000,
+                "running settings resume invalid fields and complete retained inventory from the same encrypted CAS store without activating configuration");
             var backupAt = now.AddMinutes(42);
             for (int attempt = 0; attempt < 30; attempt++)
             {
@@ -194,7 +198,12 @@ static class CommercialProductization
         var legacyBackup = Path.Combine(root, "legacy-handoff.db"); var legacyHash = Wire.FileHash(legacyDatabase);
         await Reject<InvalidDataException>(() => legacyService.BackupAsync(legacyBackup), "non-current format refuses backup before creating output");
         Check(Wire.FileHash(legacyDatabase) == legacyHash && !File.Exists(legacyBackup) && !File.Exists(Path.Combine(legacyDirectory, "MIGRATION-SOURCE-FENCED.json")), "non-current refusal preserves original bytes and creates no backup or fence");
-        await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "current root without original machine custody cannot be certified by copying a policy");
+        var missingSource = new DeploymentLocation(seed.ApplicationId, new string('a', 40), Path.Combine(root, "synthetic-missing-source"), launch.ConfigurationDirectory, launch.DataRoot, "synthetic");
+        using (var missingOwnership = new DesktopRecoveryMigration(missingSource, target, null, () => { }))
+        {
+            missingOwnership.HoldStoppedSource(new StoppedApplicationOwnership(Path.Combine(root, "missing-origin-lease"), seed.ApplicationId, launch.DataRoot, default));
+            await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit"), missingOwnership), "current root without original machine custody cannot be certified by copying a policy");
+        }
         Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "refused restore adoption never mints a new machine claim or a false source fence");
         Check(Convert.FromBase64String(repairedEnvelope).Length > original.Length, "repair preserves the full later envelope including ordinary stage and failed retry history");
         Console.WriteLine("PASS COMM CORE COMPLETE");
@@ -259,6 +268,7 @@ static class CommercialProductization
         }
         var service = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => new SyntheticFactory(launch), () => { })
         { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "unknown-scratch-" + Wire.Id())).FullName };
+        ConfigureRestoreBoundary(service, launch, root);
         var read = await service.ReadAsync(); var changed = read.Candidate! with { Wcs = read.Candidate!.Wcs! with { Target = "reference://integration/new-target" } };
         await Reject<InvalidOperationException>(() => service.RepairInitialAsync(read.ConfigurationHash, changed, "blocked by original request"), "initial repair refuses existing Unknown responsibility");
         Check(!(await service.PlanChangeAsync("Upgrade", Path.Combine(root, "unknown-upgrade.db"))).Allowed, "upgrade/uninstall preflight cannot bypass original Unknown responsibility");
@@ -292,16 +302,39 @@ static class CommercialProductization
         var target = Path.Combine(root, "unknown-handoff-before-root"); var plan = await service.PlanRestoreAsync(backup, target); await service.RestoreAsync(backup, plan.Destination, plan.BackupSha256);
         Check(File.ReadAllBytes(Path.Combine(read.RuntimeDirectory!, "machine-origin.bin")).SequenceEqual(File.ReadAllBytes(Path.Combine(plan.Destination, "machine-origin.bin"))), "full restore preserves the exact machine-bound source ciphertext");
         using (var advanced = new ParcelRepository(read.RuntimeDirectory!, c.ApplicationId)) advanced.Commit(null, "SyntheticAfterBackup", "original advanced after snapshot");
-        try { await service.AdoptRestoreOwnedAsync(backup, target, plan.BackupSha256, _ => throw new Exception("Must not commit")); throw new Exception("Stale backup accepted"); }
-        catch (InvalidDataException error) { Check(error.Message.Contains("原根在备份后已变化"), "historical backup cannot retire a source containing newer facts; exact stale-data guard is exercised"); }
+        using var staleOwnership = HandoffOwnership(target);
+        try { await service.AdoptRestoreOwnedAsync(backup, target, plan.BackupSha256, _ => throw new Exception("Must not commit"), staleOwnership); throw new Exception("Stale backup accepted"); }
+        catch (InvalidDataException error) { Check(!File.Exists(Path.Combine(read.RuntimeDirectory!, "MIGRATION-SOURCE-FENCED.json")) && error.Message.Contains("备份后"), "historical backup cannot retire a source containing newer facts; exact stale-data guard is exercised"); }
+        staleOwnership.Dispose();
         var fresh = Path.Combine(root, "unknown-handoff-fresh.db"); await service.BackupAsync(fresh);
         var freshRoot = Path.Combine(root, "unknown-handoff-fresh-root"); var freshPlan = await service.PlanRestoreAsync(fresh, freshRoot); await service.RestoreAsync(fresh, freshPlan.Destination, freshPlan.BackupSha256);
         bool committed = false;
-        await service.AdoptRestoreOwnedAsync(fresh, freshRoot, freshPlan.BackupSha256, _ => { committed = File.Exists(Path.Combine(read.RuntimeDirectory!, "MIGRATION-SOURCE-FENCED.json")); return Task.CompletedTask; });
+        using (var freshOwnership = HandoffOwnership(freshRoot))
+            await service.AdoptRestoreOwnedAsync(fresh, freshRoot, freshPlan.BackupSha256, _ => { committed = File.Exists(Path.Combine(read.RuntimeDirectory!, "MIGRATION-SOURCE-FENCED.json")); return Task.CompletedTask; }, freshOwnership);
         Check(committed && File.Exists(Path.Combine(freshPlan.Destination, "RESTORED-ISOLATED.json")), "matching full backup fences the original Unknown owner before handoff commit and keeps the target isolated");
+        DesktopRecoveryMigration HandoffOwnership(string targetRoot)
+        {
+            var source = new DeploymentLocation(c.ApplicationId, new string('a', 40), Path.Combine(root, "synthetic-source-program"), launch.ConfigurationDirectory, launch.DataRoot, "synthetic");
+            var migration = new DesktopRecoveryMigration(source, targetRoot, null, () => { });
+            migration.HoldStoppedSource(new StoppedApplicationOwnership(Path.Combine(root, "handoff-lease"), c.ApplicationId, launch.DataRoot, default)); return migration;
+        }
         ParcelMachineOrigin.Require(freshPlan.Destination, c); Check(true, "same-machine source provenance follows the bounded original fenced lineage without issuing a replacement claim");
         await using (var fenced = new ParcelRuntime(launch, new SportmasterFlow(), new SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } })
             await Reject<InvalidOperationException>(() => fenced.StartAsync(default), "retired original Unknown root cannot start a second business owner");
+    }
+    static void ConfigureRestoreBoundary(ParcelStartupMaintenance service, BusinessLaunch launch, string root)
+    {
+        var intents = new List<DeploymentRestoreIntent>();
+        var source = new DeploymentLocation("sportmaster", new string('a', 40), Path.Combine(root, "controlled-program"), launch.ConfigurationDirectory, launch.DataRoot, "synthetic");
+        service.RestoreIntentReader = () => intents.ToArray();
+        service.RestoreIntentWriter = (backup, identity, targetRoot, target) =>
+        {
+            var intent = intents.SingleOrDefault(i => i.TargetDirectory == target);
+            if (intent is null) { intent = WindowsDeploymentSetup.NewRestoreIntent(source, backup, identity, targetRoot, target); WindowsDeploymentSetup.ValidateRestoreIntent(intent); intents.Add(intent); }
+            return new(intent, new ResourceLease(Path.Combine(root, "controlled-restore-writer"), ["writer"]),
+                new StoppedApplicationOwnership(Path.Combine(root, "controlled-restore-owner"), source.ApplicationId, launch.DataRoot, default));
+        };
+        service.RestoreEvidence = new(() => Wire.Hash("controlled-machine"), _ => source, _ => throw new InvalidDataException("No purge proof in live-source fixture"), (_, _, _, _) => throw new InvalidDataException("No purge proof in live-source fixture")) { RequireRegistration = false };
     }
     static async Task History(ParcelConfiguration c, string root)
     {

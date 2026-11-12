@@ -65,6 +65,22 @@ static partial class Program
             Descendants(details).OfType<TextBox>().Single().IsReadOnly, "read-failure diagnostics have an owned read-only body and a fixed cancel/default close action at low height");
         dismiss.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await WaitUntil(() => !details.IsVisible);
         Check(window.IsVisible && Wire.FileHash(ledger) == before, "closing diagnostics returns to the original protected failure page without altering its ledger");
+        tasks.SelectedItem = tasks.Items.Cast<TabItem>().Single(t => AutomationProperties.GetAutomationId(t) == "StartupTask.Recovery");
+        var originalRestore = new StartupRecoveryPreview(Wire.Hash("original backup"), Path.Combine(evidence, "isolated", "Production", "ORIGINAL", "sportmaster"), "原次完整副本已核验", Path.Combine(evidence, "isolated"))
+        { State = "Isolated", OperationId = Wire.Id(), Backup = Path.Combine(evidence, "original-complete.db"), Station = "ORIGINAL" };
+        type.GetMethod("SelectRestoreStage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [originalRestore]);
+        type.GetMethod("UpdateActions", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, null);
+        Check(Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.AdoptRestore").IsVisible &&
+            Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.ReadRestore").IsVisible,
+            "unreadable seed still exposes original restore discovery and a positively isolated original handoff without constructing blank parameters");
+        type.GetMethod("SelectRestoreStage", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [originalRestore with { State = "Unknown", Summary = "原证据冲突" }]);
+        type.GetMethod("UpdateActions", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, null);
+        Check(!Descendants(window).OfType<Button>().Single(b => AutomationProperties.GetAutomationId(b) == "Startup.AdoptRestore").IsEnabled && Wire.FileHash(ledger) == before,
+            "conflicting original evidence removes handoff eligibility while retaining unreadable original ledger bytes");
+        type.GetProperty("RestoreAdopted")!.SetValue(window, true);
+        type.GetMethod("UpdateActions", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, null);
+        Check(Descendants(window).OfType<Button>().Where(b => b.IsVisible && AutomationProperties.GetAutomationId(b).StartsWith("Startup.", StringComparison.Ordinal)).All(b => AutomationProperties.GetAutomationId(b) == "Startup.Exit"),
+            "completed handoff exposes only close rather than saving or starting the retired root");
         window.Close(); await WaitUntil(() => !window.IsVisible);
 
         ExtensionStore.AtomicWrite(ledger, CurrentConfigurationFixture.Create<ParcelConfiguration>(3, seed, null, "Effective", null));

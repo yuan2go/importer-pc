@@ -226,11 +226,18 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     {
         execution.Checkpoint(); execution.Report(MaintenanceStage.Verifying);
         Authorize();
+        var originalIntent = OriginalRestoreIntents().SingleOrDefault(i => i.Backup == Path.GetFullPath(backup) && i.TargetRoot == Path.GetFullPath(destination));
+        if (originalIntent is not null && File.Exists(Path.Combine(originalIntent.TargetDirectory, "RESTORED-ISOLATED.json")))
+            return Task.FromResult(ProjectRestore(originalIntent));
         var original = BackupConfiguration(backup);
         var target = Path.Combine(Path.GetFullPath(destination), original.Mode.ToString(), original.StationId, definition.Id);
-        var plan = ParcelRecovery.PlanRestore(backup, target, Authorize, execution);
+        var identity = BackupIdentity(backup, execution.Token);
+        var intent = ReadOriginalRestoreIntent(identity, target);
+        var plan = ParcelRecovery.PlanRestore(backup, target, Authorize, execution, intent);
         Authorize(); execution.Checkpoint();
-        return Task.FromResult(new StartupRecoveryPreview(BackupIdentity(backup, execution.Token), target, Wire.Encode(plan), Path.GetFullPath(destination)));
+        return Task.FromResult(new StartupRecoveryPreview(identity, target,
+            "原站点：" + original.StationId + " · " + original.Mode + "\n" + Wire.Encode(plan), Path.GetFullPath(destination))
+        { State = plan.State, OperationId = intent?.OperationId, Station = original.StationId, Mode = original.Mode, Backup = backup });
     }
     public Task RestoreAsync(string backup, string destination, string expectedBackupHash)
         => RestoreAsync(backup, destination, expectedBackupHash, null, CancellationToken.None);
@@ -251,16 +258,24 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         var original = BackupConfiguration(backup);
         var originalDirectory = Path.Combine(launch.DataRoot, original.Mode.ToString(), original.StationId, definition.Id);
         RecoveryFiles.RequireOrdinaryAncestors(originalDirectory);
-        using var originalOwner = Directory.Exists(originalDirectory) ? new ResourceLease(originalDirectory, ["application-owner"]) : null;
-        _ = ParcelRecovery.PlanRestore(backup, destination, Authorize, execution);
-        if (OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")))
+        var ownedCopy = definition.Id == "sportmaster" && (RestoreIntentWriter is not null || OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")));
+        using var originalOwner = !ownedCopy && Directory.Exists(originalDirectory) ? new ResourceLease(originalDirectory, ["application-owner"]) : null;
+        var suffix = Path.Combine(original.Mode.ToString(), original.StationId, definition.Id);
+        var full = Path.GetFullPath(destination);
+        if (!full.EndsWith(Path.DirectorySeparatorChar + suffix, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("恢复目标须为已预览的模式/站/Application完整路径");
+        var targetRoot = full[..^(suffix.Length + 1)];
+        var intent = ReadOriginalRestoreIntent(expectedBackupHash, full);
+        _ = ParcelRecovery.PlanRestore(backup, destination, Authorize, execution, intent);
+        using var operation = ownedCopy ? OpenOriginalRestoreCopy(backup, expectedBackupHash, targetRoot, full) : null;
+        if (operation is not null)
         {
-            var suffix = Path.Combine(original.Mode.ToString(), original.StationId, definition.Id);
-            var full = Path.GetFullPath(destination);
-            if (!full.EndsWith(Path.DirectorySeparatorChar + suffix, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("恢复目标须为已预览的模式/站/Application完整路径");
-            WindowsDeploymentSetup.PrepareRestoreDataRoot(full[..^(suffix.Length + 1)]);
+            intent = operation.Intent;
+            if (Path.GetFullPath(intent.Source.DataRoot) != Path.GetFullPath(launch.DataRoot)) throw new InvalidOperationException("所选原目录与受保护恢复来源不一致，未复制文件。");
         }
-        ParcelRecovery.RestoreAuthorized(backup, destination, Authorize, execution);
+        if (RestoreIntentWriter is null && OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")))
+            WindowsDeploymentSetup.PrepareRestoreDataRoot(targetRoot);
+        if (intent is null) ParcelRecovery.RestoreAuthorized(backup, destination, Authorize, execution);
+        else ParcelRecovery.RestoreAuthorized(backup, destination, Authorize, execution, intent);
         return Task.CompletedTask;
     }
     string BackupIdentity(string backup) => BackupIdentity(backup, CancellationToken.None);
@@ -269,8 +284,18 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
     {
         var c = ConfigurationRevisions<ParcelConfiguration>.ReadCurrentEnvelope(Text(ReadBytes(Path.Combine(backup + ".recovery", "configuration.json")))).Effective;
         if (c.ApplicationId != definition.Id) throw new InvalidDataException("完整备份不属于当前Application");
-        var seed = Wire.Decode<ParcelConfiguration>(Text(ReadBytes(Seed))); RequireIdentity(seed, c);
+        // A complete current-format backup supplies its own station identity.
+        // It is not an editable candidate for the current seed; adoption later
+        // binds it to the protected deployment/source-retirement evidence.
+        if (definition.Id != "sportmaster") RequireIdentity(Wire.Decode<ParcelConfiguration>(Text(ReadBytes(Seed))), c);
         var errors = definition.Validate(c); if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
         return c;
+    }
+    DeploymentRestoreIntent? ReadOriginalRestoreIntent(string backupIdentity, string target)
+    {
+        var originals = OriginalRestoreIntents()
+            .Where(i => i.BackupIdentity == backupIdentity && string.Equals(i.TargetDirectory, target, StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (originals.Length > 1) throw new InvalidDataException("同一恢复目标有多个原意图，须先核对原记录。");
+        return originals.SingleOrDefault();
     }
 }

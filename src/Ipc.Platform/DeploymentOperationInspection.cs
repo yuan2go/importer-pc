@@ -100,6 +100,14 @@ public static partial class WindowsDeploymentSetup
             return new("Unknown", "操作记录与本次审阅不匹配；保留原身份，不重新安装。");
         var state = root.GetProperty("Status").GetString();
         var plan = root.TryGetProperty("ChangePlanIdentity", out var value) ? value.GetString() : null;
+        var committedIdentity = Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = plan }));
+        if (current is not null &&
+            (current.DeploymentPlanIdentity == committedIdentity && current.LifecycleState != "Installed" ||
+             current.DeploymentPlanIdentity == committedIdentity && current.RestoreHandoffHash is not null && !string.Equals(Path.GetFullPath(current.DataRoot), Path.GetFullPath(request.DataRoot), StringComparison.OrdinalIgnoreCase) ||
+             current.PreviousDeployment?.DeploymentPlanIdentity == committedIdentity))
+            return new("Superseded", "原安装已被后续卸载或部署取代；仅保留原结果，不修复或启用退役程序。");
+        if (current?.DeploymentPlanIdentity == committedIdentity && current.SourceCommit != request.SourceCommit)
+            return new("Unknown", "原安装身份与当前程序来源冲突；保留原记录，不能推断安装完成。");
         DeploymentLocation? Previous()
         {
             if (!root.TryGetProperty("Previous", out var previous) || previous.ValueKind == JsonValueKind.Null) return null;
@@ -115,15 +123,18 @@ public static partial class WindowsDeploymentSetup
         {
             // The caller holds the deployment lease exclusively: this writer can no
             // longer commit behind the inspection. Registration remains the sole commit.
-            if (current?.DeploymentPlanIdentity == Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = plan })))
+            if (current is { LifecycleState: "Installed" } && current.DeploymentPlanIdentity == committedIdentity)
                 return new("CommittedNeedsSystemRepair", "原登记已提交，但原回执未完成。请修复原系统入口，不重新安装。", current, plan, Previous());
             if (current is null && request.ExpectedRegistrationHash is null || current is not null && Wire.Hash(Wire.Encode(current)) == request.ExpectedRegistrationHash)
                 return new("NotCommitted", "已取得独占部署核对权，原登记未改变；原操作在提交前中断。原暂存文件保留，可返回选项重新审阅。");
             return new("Unknown", "原登记已由其他操作改变；请核对原记录，禁止重复提交。");
         }
-        if (state == "Failed") return new("Failed", "原操作记录为提交前失败；数据及原登记保留。检查原记录后重新审阅。");
+        if (state == "Failed")
+            return current is null && request.ExpectedRegistrationHash is null || current is not null && Wire.Hash(Wire.Encode(current)) == request.ExpectedRegistrationHash
+                ? new("Failed", "原操作记录为提交前失败；数据及原登记保留。检查原记录后重新审阅。")
+                : new("Unknown", "原失败记录与当前登记不一致；保留原操作，不能据此重新安装。");
         if (state is not ("Completed" or "CommittedNeedsSystemRepair")) return new("Unknown", "无法识别原操作终态；保持原身份。");
-        if (current is null || current.LifecycleState != "Installed" || current.DeploymentPlanIdentity != Wire.Hash(Wire.Encode(request with { ChangePlanIdentity = plan })))
+        if (current is null || current.LifecycleState != "Installed" || current.DeploymentPlanIdentity != committedIdentity)
             return new("Unknown", "原操作记录与唯一部署登记不一致；请核对，不重复提交。");
         return new(state, state == "Completed" ? "原安装回执及唯一登记已核对一致。" : "原安装登记已提交，系统入口尚需按原登记修复；不要重新安装。", current, plan, Previous());
     }

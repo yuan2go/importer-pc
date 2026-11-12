@@ -19,10 +19,10 @@ public sealed class MaintenanceCenterWindow : Window
         FontSize = Ipc.Presentation.Wpf.UiTypography.Body;
         var body = new StackPanel { Margin = new(28) }; Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         body.Children.Add(new TextBlock { Text = "选择维护任务", FontSize = 24, Margin = new(0, 0, 0, 16) });
-        body.Children.Add(new TextBlock { Text = "软件已停止。每项任务执行前都会检查管理权限和备份；任务取消或失败时，请先查看结果，不要直接重做。", TextWrapping = TextWrapping.Wrap });
+        body.Children.Add(new TextBlock { Text = "软件已停止。每项任务执行前核验所需管理权限、所有权及证据；任务取消或失败时，先核对原结果，不要直接重做。", TextWrapping = TextWrapping.Wrap });
         var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 0) }; body.Children.Add(feedback);
         Add("软件打不开：检查配置与启动", () => Repair(false));
-        Add("恢复备份／迁移到新电脑", () => Repair(true));
+        Add("恢复本站备份／上一部署回滚", () => Repair(true));
         Add("清理过期记录", () =>
         {
             var service = (Ipc.Application.Contracts.IStartupRetentionMaintenance)Ipc.Assembly.ParcelStartupServices.Maintenance(SelectedLaunch);
@@ -60,6 +60,7 @@ public sealed class MaintenanceCenterWindow : Window
     {
         var window = new StartupRepairWindow(SelectedLaunch) { Owner = this, OpenRecoveryScenario = recovery, SceneOnly = !expert };
         window.ShowDialog(); SelectedLaunch = window.SelectedLaunch;
+        if (window.RestoreAdopted) { Close(); return; }
         if (window.RetryRequested) { RetryRequested = true; Close(); }
     }
 }

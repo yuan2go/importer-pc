@@ -1,4 +1,5 @@
 using Ipc.Platform;
+using Ipc.Platform.Storage;
 using System.Text.Json;
 namespace Ipc.Application.ParcelFlow;
 
@@ -13,6 +14,10 @@ public static partial class ParcelRecovery
     internal static void RestoreAuthorized(string backup, string target, Action authority) => RestoreCore(backup, target, false, authority);
     internal static void RestoreAuthorized(string backup, string target, Action authority, MaintenanceExecution execution)
         => RestoreCore(backup, target, false, authority, execution.Token, execution);
+    internal static void RestoreAuthorized(string backup, string target, Action authority, MaintenanceExecution execution, DeploymentRestoreIntent intent)
+        => RestoreCore(backup, target, false, authority, execution.Token, execution, intent);
+    internal static ParcelRecoveryCapacity PlanRestore(string backup, string target, Action authority, MaintenanceExecution execution, DeploymentRestoreIntent? intent)
+        => RestoreCore(backup, target, true, authority, execution.Token, execution, intent);
     internal static ParcelRecoveryCapacity PlanRestore(string backup, string target, Action authority, MaintenanceExecution execution)
         => RestoreCore(backup, target, true, authority, execution.Token, execution);
     // One custody verifier for restore and original-maintenance inspection.
@@ -64,11 +69,11 @@ public static partial class ParcelRecovery
         }
         authority?.Invoke(); return manifest;
     }
-    static ParcelRecoveryCapacity RestoreCore(string databaseBackup, string newApplicationDirectory, bool planOnly, Action? authority = null, CancellationToken token = default, MaintenanceExecution? execution = null)
+    static ParcelRecoveryCapacity RestoreCore(string databaseBackup, string newApplicationDirectory, bool planOnly, Action? authority = null, CancellationToken token = default, MaintenanceExecution? execution = null, DeploymentRestoreIntent? intent = null)
     {
         execution?.Checkpoint(); execution?.Report(MaintenanceStage.Checking);
         var source = Path.GetFullPath(databaseBackup); var target = Path.GetFullPath(newApplicationDirectory);
-        if (Directory.Exists(target) || File.Exists(target)) throw new IOException("Restore requires a new isolated application directory");
+        if (File.Exists(target)) throw new IOException("恢复目标被文件占用，原件保留。");
         var manifest = VerifyBackup(source, authority, token);
         var recovery = source + ".recovery";
         var manifestPath = RecoveryFiles.Resolve(recovery, "COMPLETED.json");
@@ -79,19 +84,72 @@ public static partial class ParcelRecovery
             config.Pending is { } pending && (pending.ApplicationId != config.Effective.ApplicationId || pending.StationId != config.Effective.StationId || pending.Mode != config.Effective.Mode))
             throw new InvalidDataException("Original application/mode/directory identity must be preserved");
         RecoveryFiles.RequireOrdinaryAncestors(target);
-        var bytes = checked(new FileInfo(source).Length + new FileInfo(manifestPath).Length +
-            manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length));
+        var expected = manifest.Files.ToDictionary(f => f.Key, f => f.Value, StringComparer.Ordinal);
+        expected.Add(manifest.Application + ".db", manifest.DatabaseHash);
+        if (intent is not null && (intent.TargetDirectory != target || intent.ApplicationId != manifest.Application ||
+            intent.BackupIdentity != Wire.Hash(manifest.DatabaseHash + Wire.FileHash(manifestPath, token))))
+            throw new InvalidDataException("原恢复意图与已核验备份或目标不一致。");
+        (string State, bool Damaged) InspectCopy()
+        {
+            if (!Directory.Exists(target)) return ("Planned", false);
+            if (intent is null) throw new InvalidDataException("已有目标缺少受保护原恢复意图，不能覆盖或猜测续办。");
+            var incomplete = Path.Combine(target, "RESTORE-INCOMPLETE.json");
+            var isolated = Path.Combine(target, "RESTORED-ISOLATED.json");
+            if (File.Exists(incomplete) && File.Exists(isolated)) throw new InvalidDataException("原恢复标记冲突，目标保留。");
+            if (!File.Exists(incomplete) && !File.Exists(isolated))
+            {
+                var residual = RecoveryFiles.Enumerate(target).ToArray();
+                if (residual.Any(n => !n.StartsWith("RESTORE-INCOMPLETE.json.", StringComparison.Ordinal) || !n.EndsWith(".new", StringComparison.Ordinal) ||
+                    !Guid.TryParseExact(n["RESTORE-INCOMPLETE.json.".Length..^4], "N", out _)))
+                    throw new InvalidDataException("恢复标记缺失且存在未知文件；原目标保留，不覆盖或移动。");
+                return ("CopyIncomplete", true); // Interrupted original marker publication; preserve the owned residual.
+            }
+            var marker = File.Exists(incomplete) ? incomplete : isolated;
+            RecoveryFiles.RequireOrdinaryAncestors(marker);
+            var markerDamaged = Wire.FileHash(marker, token) != Wire.FileHash(manifestPath, token);
+            var actual = RecoveryFiles.Enumerate(target, null, false, token).Where(n => n != Path.GetFileName(marker)).ToArray();
+            if (actual.Any(n => !expected.ContainsKey(n))) throw new InvalidDataException("原恢复目标中存在清单外文件；不覆盖或移动未知原件。");
+            var damaged = markerDamaged || actual.Any(n => Wire.FileHash(RecoveryFiles.Resolve(target, n), token) != expected[n]);
+            if (marker == isolated && (damaged || actual.Length != expected.Count)) throw new InvalidDataException("已完成隔离恢复的文件缺失或变化，请核对原结果，不覆盖原件。");
+            return (marker == isolated ? "Isolated" : "CopyIncomplete", damaged);
+        }
+        var existing = InspectCopy();
+        var bytes = existing.State == "Isolated" ? 0 : checked(new FileInfo(manifestPath).Length + expected.Where(f => existing.State == "Planned" || existing.Damaged || !File.Exists(RecoveryFiles.Resolve(target, f.Key)))
+            .Sum(f => f.Key == manifest.Application + ".db" ? new FileInfo(source).Length : new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length));
         var reserve = config.Effective.Retention?.MinimumFreeBytes ?? 67108864;
         var capacity = ParcelStorageVolume.Plan(target, bytes, reserve);
-        if (planOnly) return capacity;
+        capacity = capacity with { State = existing.State };
+        if (planOnly || existing.State == "Isolated") return capacity;
         if (!capacity.Fits) throw new IOException("Restore capacity insufficient: " + Wire.Encode(capacity));
         authority?.Invoke();
         execution?.Checkpoint(); token.ThrowIfCancellationRequested();
+        // The lease is outside the new application directory so an interrupted
+        // owned copy can be preserved atomically without moving an open lease.
+        using var targetOwner = new ResourceLease(Path.GetDirectoryName(target)!, ["restore-target:" + target]);
+        var rechecked = InspectCopy();
+        if (rechecked != existing) throw new InvalidDataException("恢复目标在检查后发生变化，请重新核对原次。");
+        string? retained = null;
+        if (existing.Damaged)
+        {
+            retained = target + ".restore-interrupted-" + intent!.OperationId + "-" + Wire.Id();
+            RecoveryFiles.RequireOrdinaryAncestors(retained);
+            if (!TrustedProgramRoots.Contains(intent.TargetRoot, retained)) throw new InvalidDataException("恢复残件保管目录超出原范围。");
+            Directory.Move(target, retained); // Positive protected intent; preserve every owned partial byte.
+        }
         Directory.CreateDirectory(target);
-        ExtensionStore.AtomicWrite(Path.Combine(target, "RESTORE-INCOMPLETE.json"), manifest);
+        if (!File.Exists(Path.Combine(target, "RESTORE-INCOMPLETE.json"))) ExtensionStore.AtomicWriteBytes(Path.Combine(target, "RESTORE-INCOMPLETE.json"), File.ReadAllBytes(manifestPath));
+        void CopyOrKeep(string from, string to, string hash, Action<long> copied)
+        {
+            if (File.Exists(to))
+            {
+                if (Wire.FileHash(to, token) != hash) throw new InvalidDataException("原恢复文件在继续期间变化；保留原件，重新核对。");
+                return;
+            }
+            RecoveryFiles.CopyVerified(from, to, hash, token, copied);
+        }
         long databaseCopied = 0; var databaseBytes = new FileInfo(source).Length;
         execution?.Report(MaintenanceStage.CopyingDatabase, 0, databaseBytes);
-        RecoveryFiles.CopyVerified(source, Path.Combine(target, manifest.Application + ".db"), manifest.DatabaseHash, token,
+        CopyOrKeep(source, Path.Combine(target, manifest.Application + ".db"), manifest.DatabaseHash,
             count => { databaseCopied += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingDatabase, databaseCopied, databaseBytes); });
         long copiedBytes = 0; var totalBytes = manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length);
         execution?.Report(MaintenanceStage.CopyingCustody, 0, totalBytes);
@@ -99,12 +157,12 @@ public static partial class ParcelRecovery
         {
             authority?.Invoke();
             var destination = RecoveryFiles.Resolve(target, file.Key); Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
-            RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(recovery, file.Key), destination, file.Value, token,
+            CopyOrKeep(RecoveryFiles.Resolve(recovery, file.Key), destination, file.Value,
                 count => { copiedBytes += count; execution?.Checkpoint(); execution?.Report(MaintenanceStage.CopyingCustody, copiedBytes, totalBytes); });
         }
         authority?.Invoke();
         token.ThrowIfCancellationRequested(); execution?.Checkpoint(); execution?.BeginCommit(MaintenanceStage.PublishingRestore);
         File.Move(Path.Combine(target, "RESTORE-INCOMPLETE.json"), Path.Combine(target, "RESTORED-ISOLATED.json"));
-        return capacity;
+        return capacity with { State = "Isolated", RetainedPartialDirectory = retained };
     }
 }

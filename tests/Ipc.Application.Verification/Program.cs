@@ -85,6 +85,7 @@ if (args.Contains("--industrial-opaque-removal")) { await IndustrialOpaqueRemova
 if (args.Contains("--industrial-quiet-deployment")) { IndustrialQuietDeployment.Run(root); return; }
 if (args.Contains("--industrial-diagnostics")) { await IndustrialDiagnostics.Run(workspace, root); return; }
 if (args.Contains("--industrial-recovery")) { IndustrialRecovery.Run(root); return; }
+if (args.Contains("--lifecycle-restore")) { await LifecycleRestore.Run(workspace, root); return; }
 if (args.Contains("--operator-corrections-29")) { await OperatorCorrections29.Run(workspace, root); return; }
 if (args.Contains("--same-placement-29")) { await SamePlacement29.Run(workspace, root); return; }
 if (args.Contains("--live-device-cleanup")) { await LiveDeviceCleanup.Run(workspace, root); return; }

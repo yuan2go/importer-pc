@@ -165,7 +165,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null, SmParcelRound? round = null, SmPositionCycle? cycle = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null, BusinessReceipt? commandResult = null, string? interruptedCommand = null, string? inspectedIngress = null, string? ingressIdentity = null, StationPositionState? positionControl = null, SmParcelRound? round = null, SmPositionCycle? cycle = null, RestoreNumberFloor? restoreFloor = null)
     {
         if (positionControl is not null)
         {
@@ -184,6 +184,14 @@ public sealed partial class ParcelRepository : IDisposable
         if ((operation is not null && RetiredIdentity(operation.AdmissionId, operation.ObservationId) is not null || measurement is not null && RetiredMeasurement(measurement) is not null))
             throw new InvalidDataException("Expired identity cannot be recreated; permanent retention evidence remains authoritative");
         using var tx = db.BeginTransaction();
+        if (restoreFloor is { } floor)
+        {
+            if (eventName != "RestoreHandoffConfirmed" || command?.Kind != "ConfirmRestore" || floor.Value < 0 || command.Owner != floor.Identity)
+                throw new InvalidDataException("恢复编号下限必须与同一确认命令和回执一起提交。");
+            using var reserve = db.CreateCommand(); reserve.Transaction = tx;
+            reserve.CommandText = "INSERT INTO parcel_integration_id_restores VALUES($id,$ceiling) ON CONFLICT(identity) DO UPDATE SET ceiling=max(ceiling,excluded.ceiling)";
+            reserve.Parameters.AddWithValue("$id", floor.Identity); reserve.Parameters.AddWithValue("$ceiling", floor.Value); reserve.ExecuteNonQuery();
+        }
         WriteRound(tx, round, cycle);
         if (inspectedIngress is not null)
         {

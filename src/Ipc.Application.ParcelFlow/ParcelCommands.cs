@@ -454,7 +454,7 @@ public sealed partial class ParcelRuntime
         {
             // A reconnect already in flight when Stop began may finish after the first
             // source stop. External drain has now fenced all registrations.
-            if (Id == "sportmaster" && repository is not null && !fatalStorage.Task.IsCompleted)
+            if (Id == "sportmaster" && ports?.Wcs is ISmHeartbeatControl && repository is not null && !fatalStorage.Task.IsCompleted)
                 repository.Commit(null, "HeartbeatCustodyStopped", Wire.Encode(smCycles.Values.ToArray()),
                     cycles: smCycles.Values.ToArray());
             stopped = true;

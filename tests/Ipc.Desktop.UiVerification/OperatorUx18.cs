@@ -88,7 +88,7 @@ static partial class Program
                         "compact full-screen header keeps the minimize and exit targets usable");
                     var waitingTitle = (TextBlock)right.FindName("CenteredStateTitle");
                     var waitingReason = (TextBlock)right.FindName("CenteredStateReason");
-                    Check(waitingTitle.IsVisible && waitingTitle.Text == "等待投包" &&
+                    Check(waitingTitle.IsVisible && waitingTitle.Text == "相机不可用，可人工扫码" &&
                         waitingTitle.ActualHeight >= waitingTitle.FontSize && waitingReason.IsVisible && waitingReason.ActualHeight >= waitingReason.FontSize,
                         "the other position keeps its waiting title and instruction beside a compact confirmed chute");
                 }

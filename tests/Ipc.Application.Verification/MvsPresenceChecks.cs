@@ -41,7 +41,9 @@ internal static class MvsPresenceChecks
             "structured model evidence identifies the calibrated reference, actual empty state and measured scene difference");
         Sample(true, 100); Sample(true, 100); Sample(true, 100);
         Check(model.Status == "包裹在位", "parcel pixels establish presence independently of barcode results");
-        Sample(false, 100); Sample(false, 100); Sample(false, 700);
+        Check(Sample(false, 100) is { State: TrayPresence.Present, FirstPresentTicks: null },
+            "first empty candidate immediately withdraws continuation evidence while retaining the occupied removal hysteresis");
+        Sample(false, 100); Sample(false, 700);
         Check(model.Status != "空托盘已确认", "a frame gap resets the continuous removal span");
         for (var i = 0; i < 10; i++) Sample(false, 100);
         Check(model.Status == "空托盘已确认", "return to the taught reference confirms removal after 800ms");

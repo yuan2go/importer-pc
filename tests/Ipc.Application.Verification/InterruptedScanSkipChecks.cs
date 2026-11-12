@@ -132,7 +132,7 @@ static class InterruptedScanSkipChecks
         for (uint f = 3; f <= 5; f++)
         {
             h.Api(h.Left).EnqueueNative(CameraRoundHarness.EmptyTray, f, []);
-            await CameraRoundHarness.Until(async () => (await h.App.SnapshotAsync()).CameraReads.Any(r => r.PositionId == "left" && r.Frame.FrameNumber == f));
+            await CameraRoundHarness.Until(async () => h.Api(h.Left).Acquires == h.Api(h.Left).Releases && h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(r => r.Number == f));
             if (f < 5) await Task.Delay(425);
         }
         await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left");

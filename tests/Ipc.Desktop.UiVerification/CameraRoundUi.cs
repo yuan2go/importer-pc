@@ -83,7 +83,7 @@ static partial class Program
                 "trigger enters a clean reading round without a photo/request or HTTP call");
             var isolated = await h.App.SnapshotAsync();
             var denied = await h.App.SubmitParcelBarcodeAsync(new(Wire.Id(), isolated.RuntimeId, isolated.Configuration.Revision, "left", "ISOLATED-MANUAL",
-                ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedArrivalGeneration = isolated.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
+                ParcelBarcodeInputKind.Keyboard, null, null) { ExpectedPlacementBoundary = isolated.Positions!.Single(p => p.Id == "left").Arrival!.PlacementBoundary, ExpectedArrivalGeneration = isolated.Positions!.Single(p => p.Id == "left").Arrival!.Generation }, default);
             Check(denied.Status == "Rejected" && denied.Detail.Contains("暂停") && h.Peer.Requests.IsEmpty, "explicit fixture pause blocks ordinary supply without sending; debugging itself creates no station fence");
             Check(Field<TextBlock>(control, "imageHint").Text.Contains("正在读取"), "reading placeholder describes the current round");
             for (uint number = 1; number <= 3; number++)

@@ -81,16 +81,15 @@ static partial class Program
                 "software pause preserves the current unresolved original and submit guard");
             resume.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await Until(() => vm.Snapshot?.Paused == false);
             await h.TrayAsync(h.Right, TrayPresence.Absent); await vm.RefreshAsync();
-            Check(vm.Right.CurrentRound?.Id == round && vm.Right.CanConfirmPlacementRemoval,
-                "later visual absence does not replace the already required manual confirmation");
+            Check(vm.Right.CurrentRound is null && !vm.Right.CanConfirmPlacementRemoval && !vm.Right.CanSubmitBarcode,
+                "trusted absence ends the local round while preserving the original remote fence");
             var rightControl = Descendants(window).OfType<SupplyStationPosition>().Single(c => ReferenceEquals(c.DataContext, vm.Right));
             var client = (Grid)window.FindName("ClientArea");
             Check(Inside((TextBlock)rightControl.FindName("CenteredInstruction"), client) &&
                 Inside(Descendants(rightControl).OfType<Button>().Single(b => Equals(b.Content, "查看详情")), client),
                 "compact exception keeps its instructions and details reachable");
-            ((Button)rightControl.FindName("ConfirmManualPlacementRemoval")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             await Until(() => vm.Right.CurrentRound is null && !vm.Right.CanSubmitBarcode);
-            Check(vm.Right.CenteredStateTitle == "需人工恢复" && !vm.Right.CanViewCurrentPicture && vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == sent,
+            Check(vm.Right.CenteredStateTitle == "请求待核对" && !vm.Right.CanViewCurrentPicture && vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == sent,
                 "targeted confirmation resets only that round without replay");
             await SmRoundFixture.NextVehicleAsync(h.App, "right");
             h.Peer.ReplySlot = "B-02";

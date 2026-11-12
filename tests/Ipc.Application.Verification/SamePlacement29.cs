@@ -33,11 +33,12 @@ internal static class SamePlacement29
         await h.TrayAsync(h.Left, TrayPresence.Present);
         var vm = new SupplyStationViewModel(h.App); vm.SetViewport(1366, 768);
         uint frame = 0;
-        long Processed() => h.App.WorkerProgress().Single(p => p.Position == "left").Processed;
+        long Processed() { var progress = h.App.WorkerProgress().Single(p => p.Position == "left"); return progress.Processed + progress.ObservedOnly; }
         async Task Read(string code)
         {
             var before = Processed();
-            await Deliver(h, h.Left, CameraRoundHarness.Barcode(code), ++frame);
+            var completed = await Deliver(h, h.Left, CameraRoundHarness.Barcode(code), ++frame);
+            if (!completed.DecodeAttempted) return;
             await CameraRoundHarness.Until(() => Task.FromResult(Processed() > before));
         }
         var blank = new CameraRoundHarness.RoundPixels(Enumerable.Repeat((byte)180, 640 * 240).ToArray(), 640, 240);
@@ -48,7 +49,15 @@ internal static class SamePlacement29
                 await Deliver(h, h.Left, blank, ++frame);
                 await Task.Delay(CameraRoundHarness.SyntheticBlankSpanMs / 2);
             }
-            if (frames >= 3) { await h.TrayAsync(h.Left, TrayPresence.Absent); await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present); }
+            if (frames >= 3) { await h.TrayAsync(h.Left, TrayPresence.Absent);
+                var lane = (await h.App.SnapshotAsync()).Positions!.Single(p => p.Id == "left");
+                if (lane.Arrival!.RecoveryReason is not null) {
+                    await h.AuthorizeAsync();
+                    await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer refusal settled; withdrawal applied");
+                    var state = await h.App.SnapshotAsync();
+                    await h.App.SetPositionEnabledAsync(new(Wire.Id(), state.RuntimeId, "left", state.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+                }
+                await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present); }
         }
         async Task<ParcelInputSnapshot> Latest() => (await h.App.SnapshotAsync()).Inputs!.Single(i => i.PositionId == "left");
 

@@ -90,7 +90,7 @@ static class InstalledLifecycleWindows
         }
         finally { File.Move(removalArchive, removed.OperationFile); }
         _ = WindowsDeploymentSetup.Remove(application, Wire.FileHash(WindowsDeploymentSetup.Registration(application)), _ => { }, _ => { });
-        var cleanRequest = Request(Media('f')); var cleanInterrupted = false;
+        var cleanRequest = Request(Media('2')); var cleanInterrupted = false;
         try { Install(cleanRequest, _ => throw new IOException("controlled final reply loss before cleanup uninstall")); }
         catch (InstallationOutcomeUnknownException) { cleanInterrupted = true; }
         var cleanOriginal = WindowsDeploymentSetup.InstallationOperationFile(cleanRequest); var cleanBytes = Wire.FileHash(cleanOriginal);

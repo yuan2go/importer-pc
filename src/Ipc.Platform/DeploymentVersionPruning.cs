@@ -107,7 +107,7 @@ public static partial class WindowsDeploymentSetup
                 { ["installed-inventory.json"] = location.InventorySha256! };
                 candidates.Add((location, distance.Value, [new(location.ReleaseRoot, programFiles), new(cache, cacheFiles)]));
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException or JsonException)
+            catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or InvalidOperationException or JsonException)
             { retained.Add(new(location.ReleaseRoot, "保留：" + WindowsInstallationError.Safe(error.Message))); }
         }
         return BuildVersionPruningPlan(application, operation, ordinaryStartupConfirmed, current, hash, history,

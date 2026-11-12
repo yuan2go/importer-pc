@@ -40,6 +40,9 @@ public sealed record Observation(string Id, string DeviceId, string Epoch, strin
     public string? ArrivalGeneration { get; init; }
     public string? CaptureBoundaryId { get; init; }
     public long CaptureTicks { get; init; }
+    // Continuous occupied interval measured at capture, not at decode completion.
+    // Null includes empty-candidate hysteresis, invalid exposure and broken frames.
+    public long? ContinuousPresenceTicks { get; init; }
     public long? FrameNumber { get; init; }
     [System.Text.Json.Serialization.JsonIgnore]
     public AcquisitionIdentity Acquisition => new(DeviceId, Epoch, SourceEventId, AdmissionId, ObservedAt)

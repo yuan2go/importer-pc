@@ -464,6 +464,7 @@ internal sealed class CameraRoundHarness : IAsyncDisposable
             catch (IOException) { }
             finally { try { context.Response.Close(); } catch (ObjectDisposedException) when (stopped.IsCancellationRequested) { } }
         }
-        public async ValueTask DisposeAsync() { Peers.TryRemove(Endpoint, out _); stopped.Cancel(); Hold?.TrySetResult(); listener.Close(); await loop; await Task.WhenAll(handlers); stopped.Dispose(); }
+        bool disposed;
+        public async ValueTask DisposeAsync() { if (disposed) return; disposed = true; Peers.TryRemove(Endpoint, out _); stopped.Cancel(); Hold?.TrySetResult(); listener.Close(); await loop; await Task.WhenAll(handlers); stopped.Dispose(); }
     }
 }

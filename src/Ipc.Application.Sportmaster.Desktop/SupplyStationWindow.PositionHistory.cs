@@ -38,7 +38,7 @@ public partial class SupplyStationWindow
         public string Identity => Round.Id;
         public string Request => Round.ProtocolRequestId?.ToString() ?? Round.RequestId ?? "未提交";
         public string Result => Round.RcsOutcome switch { "Accepted" => "格口已取得", "Rejected" => "业务拒绝", "Unknown" or "Conflict" => "结果未知", "Dispatching" => "调用中", "Prepared" => "已准备", _ => "未提交" };
-        public string Read => Round.ReadOutcome == "ReadWindowExpired" ? Round.OperationId is null ? "自动识读超时，未提交" : "自动识读超时后人工补录" : Round.ReadOutcome switch
+        public string Read => Round.ReadOutcome == "ReadWindowExpired" ? Round.OperationId is null ? "自动识读超时，未提交" : "快速识读超时后提交" : Round.ReadOutcome switch
         {
             "AmbiguousCodes" or "MultipleCodes" => "多个有效条码",
             "NoMatchingCode" or "InvalidCode" => "无合法条码",

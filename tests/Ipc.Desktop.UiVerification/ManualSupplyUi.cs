@@ -93,8 +93,8 @@ static partial class Program
                 await CameraRoundHarness.Until(async () =>
                 {
                     await Flush();
-                    return vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "本车已处理" &&
-                        vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "本车已处理";
+                    return vm.Left.ShowCenteredState && vm.Left.CenteredStateTitle == "等待下一车" &&
+                        vm.Right.ShowCenteredState && vm.Right.CenteredStateTitle == "等待下一车";
                 });
                 Check(leftEntry.Text == "" && entry.Text == "" && !vm.Left.HasCurrentInput && !vm.Left.ShowConfirmedTask && !vm.Left.CanSubmitBarcode &&
                     vm.Snapshot!.Positions!.All(p => p.PlacementClearedAt is null) &&
@@ -115,7 +115,7 @@ static partial class Program
                         vm.Left.CenteredStateInstruction == "请先取下包裹，再确认", "compact offline-camera card exposes the operator removal action without management");
                     removal.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     await Until(() => vm.Left.Operation is null && !vm.Left.CanSubmitBarcode && !vm.Busy);
-                    Check(!removal.IsVisible && !vm.Left.HasCurrentInput && leftEntry.Text == "" && vm.Right.CenteredStateTitle == "等待投包" && h.Peer.Requests.Count == 3,
+                    Check(!removal.IsVisible && !vm.Left.HasCurrentInput && leftEntry.Text == "" && vm.Right.CenteredStateTitle == "相机不可用，可人工扫码" && h.Peer.Requests.Count == 3,
                         "the removal action clears only the affected card and sends no request");
                     await h.NextVehicleAsync("left"); await Until(() => vm.Left.CanSubmitBarcode);
                     h.Peer.ReplySlot = "SYNTH-NEXT";

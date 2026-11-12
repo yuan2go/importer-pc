@@ -218,14 +218,14 @@ public sealed partial class ParameterSettingsControl
         }
         var page = Page(1, m.ApplicationId == "sportmaster" ? "条码筛选" : "业务策略", m.ApplicationId == "sportmaster" ? "设置哪些条码有效，以及一次读到多个条码时如何处理。左右相机共用。" : "编辑当前业务策略。"); var form = Form(page);
         if (m.ApplicationId == "sportmaster") Input(form, "自动识读期限", m.Policy, "ReadTimeoutMs", "ReadTimeoutMs", page,
-            "默认1000毫秒，100～60000。帧与候选变化不续期；到期后可原位PDA补录，与RCS超时无关。");
+            "默认1000毫秒，100～60000，作为快速识读目标。帧与候选变化不重置；同件连续在位可靠时降频续读，否则原位PDA补录或取下。与RCS超时无关。");
         if (m.ApplicationId == "sportmaster")
         {
             Input(form, "匹配规则（可选）", m.Policy, "BarcodePattern", "BarcodePattern", page, "条码需完整匹配此规则（正则表达式）；留空则不筛选。", true);
             Input(form, "排除规则（可选）", m.Policy, "BarcodeExclusionPattern", "BarcodeExclusionPattern", page, "整串正则匹配要忽略的小车底码，不按二维码码制排除。只看到排除码时正式候选为空，不能证明空盘或上件；留空不排除。可用下方样例核对。", true);
             var reject = new CheckBox { Content = "拒绝多个有效条码", MinHeight = 38 };
             reject.SetBinding(CheckBox.IsCheckedProperty, new Binding("RejectMultipleCodes") { Source = m.Policy, Mode = BindingMode.TwoWay });
-            Field(form, "多码处理", reject, "默认开启：筛选后仍有多个有效条码时不发送。可在本轮识读期限内调整标签；到期后可原位 PDA 补录。关闭后按读取顺序拼接有效条码，作为一份请求发给 RCS。", "RejectMultipleCodes", page);
+            Field(form, "多码处理", reject, "默认开启：筛选后仍有多个有效条码时不发送。可调整标签，同件连续在位可靠时继续识读，也可原位PDA补录或取下。关闭后按读取顺序拼接有效条码，作为一份请求发给 RCS。", "RejectMultipleCodes", page);
             Input(form, "多条码分隔符", m.Policy, "MultiCodeSeparator", "MultiCodeSeparator", page, "1–16 个字符。拼接后最长 512 字符，超出则不发送。");
             // The separator only matters when several codes are joined; it is shown, searched and
             // navigated to only then. Its value is kept either way.
@@ -242,7 +242,7 @@ public sealed partial class ParameterSettingsControl
             {
                 var risky = int.TryParse(m.Policy.ReadTimeoutMs, out var limit) ? m.Readers.Where(r => !r.ConfigureLater &&
                     int.TryParse(r.Parameters.FirstOrDefault(p => p.Field.Key == "motion.still-ms")?.Value, out var still) && still >= limit).Select(r => r.Role == "left" ? "左相机" : "右相机").ToArray() : [];
-                timing.Text = risky.Length == 0 ? "" : string.Join("、", risky) + "的放稳时间不小于自动识读期限，可能来不及自动提交。请核对相机高级设置；识读期限包含放稳、筛选及持久接纳，不会自动延长。";
+                timing.Text = risky.Length == 0 ? "" : string.Join("、", risky) + "的放稳时间不小于自动识读期限，可能来不及自动提交。请核对相机高级设置；快速识读包含放稳、筛选及持久接纳；超时仅在同件连续在位可靠时降频续读。";
                 timing.Visibility = risky.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
             }
             PropertyChangedEventHandler timingChanged = (_, _) => TimingRisk();

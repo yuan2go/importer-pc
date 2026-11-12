@@ -22,6 +22,7 @@ internal sealed class MvsTrayPresence
     string status = "未校准；在位状态未知";
     public string Status { get { lock (gate) return status; } private set => status = value; }
     public bool CanDecode { get { lock (gate) return !requested && (reference is null || published == TrayPresence.Present); } }
+    public long? ContinuousPresenceTicks { get { lock (gate) return pending == TrayPresence.Present && published == TrayPresence.Present ? first : null; } }
     public TrayPresenceModelSnapshot Snapshot()
     {
         lock (gate) return new(Status, reference is not null, requested, reference is null ? null : referenceId,
@@ -124,7 +125,7 @@ internal sealed class MvsTrayPresence
             if (published == output && lastPublished != 0 && Elapsed(lastPublished, ticks) < 1000) return null;
             published = output; lastPublished = ticks;
             return new(output, $"TaughtMono8-v1;reference={referenceId};size={w}x{h};changed={changed:F5};shift={shift};frames={count};spanMs={Elapsed(first, ticks):F0}")
-            { ReferenceSha256 = reference is null ? null : referenceId, FirstPresentTicks = output == TrayPresence.Present ? first : null };
+            { ReferenceSha256 = reference is null ? null : referenceId, FirstPresentTicks = output == TrayPresence.Present && state == TrayPresence.Present ? first : null };
         }
     }
     static double Elapsed(long a, long b) => (b - a) * 1000d / Stopwatch.Frequency;

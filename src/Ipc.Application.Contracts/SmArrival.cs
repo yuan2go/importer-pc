@@ -27,6 +27,7 @@ public sealed record SmArrivalSnapshot(string? VehicleNo, string Generation, boo
     public string? CaptureFailure { get; init; }
     public bool SubmissionAttempted { get; init; }
     public bool PlacementClosed { get; init; }
+    public string? PlacementBoundary { get; init; }
     public string? RecoveryToken { get; init; }
     public bool Configured { get; init; } = true;
 }

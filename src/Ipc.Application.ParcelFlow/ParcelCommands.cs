@@ -88,7 +88,7 @@ public sealed partial class ParcelRuntime
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(LatestWorkCardOperation).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), positionSnapshots, readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), inputs, BackupStatus(), configuration.Current.Pending is not null)
             {
                 ConfigurationActivationBlock = Id == "sportmaster" && configuration.Current.Pending is not null ? SmConfigurationBlock() : null,
-                Rounds = Id == "sportmaster" ? smCurrentRounds.Values.Select(id => smRounds[id]).ToArray() : [],
+                Rounds = Id == "sportmaster" ? smCurrentRounds.Values.Select(id => smRounds[id] with { SafeContinuation = SmSafeContinuation(smRounds[id]) }).ToArray() : [],
                 AutomaticCleanup = Id == "sportmaster" ? CleanupStatusSnapshot() : null
             };
             encoded = EncodeSnapshot(WithReadFeedbackSnapshot(projection));
@@ -454,6 +454,9 @@ public sealed partial class ParcelRuntime
         {
             // A reconnect already in flight when Stop began may finish after the first
             // source stop. External drain has now fenced all registrations.
+            if (Id == "sportmaster" && repository is not null && !fatalStorage.Task.IsCompleted)
+                repository.Commit(null, "HeartbeatCustodyStopped", Wire.Encode(smCycles.Values.ToArray()),
+                    cycles: smCycles.Values.ToArray());
             stopped = true;
             blockedInputPictures.Clear();
             FlushInputLogSummaries();

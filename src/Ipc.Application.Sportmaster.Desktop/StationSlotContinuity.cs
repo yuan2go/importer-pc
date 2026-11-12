@@ -31,7 +31,7 @@ public sealed partial class SupplyStationPositionViewModel
     // Manual entry is an independent source (AGENTS.md): an offline camera does not pause it.
     bool ManualInputAvailable => owner.Snapshot?.Positions?.SingleOrDefault(p => p.Id == PositionId)?.BarcodeInput?.Manual == true;
     public string BarcodePlaceholder => !SupplyEnabled ? SupplyDisabling ? "停用中，不再接收新条码" : "本位已停用，不接收条码" : ReaderUnavailableForDisplay ? ManualInputAvailable ? "相机离线，可扫码枪或键盘输入条码" : "相机离线" : (CurrentRound?.FormalCodes.Length ?? 0) > 1
-        ? "本次读到多个条码，请查看图片" : RoundReadActive ? CurrentRound!.AutoExpired ? "识读超时，可原位PDA补录" : "正在识读，可调整标签或PDA补录" : HasCurrentInput ? "本轮条码" : "等待相机扫码或输入条码";
+        ? "本次读到多个条码，请查看图片" : RoundReadActive ? CurrentRound!.AutoExpired ? CurrentRound.SafeContinuation ? "同件继续识读，可PDA补录" : "识读超时，可原位PDA补录" : "正在识读，可调整标签或PDA补录" : HasCurrentInput ? "本轮条码" : "等待相机扫码或输入条码";
     public ParcelPictureQuery? CurrentPictureQuery => !owner.Fresh || CameraNoCode || CameraObservationUnmatched || unreadFeedback || IsProcessing ? null :
         Input is { Outcome: ParcelInputOutcome.Rejected or ParcelInputOutcome.Blocked, Observation.OperatorInput: null } unadmitted ? new(ObservationId: unadmitted.Observation.Id) : InputUnadmitted ? null :
         Input is { } resting && Operation is { } placed && ParcelInputReasons.IsSamePlacement(resting) && resting.OperationId == placed.Id ? new(OperationId: placed.Id) :

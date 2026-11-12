@@ -204,7 +204,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
     }
     void Capture(CancellationToken token)
     {
-        var poll = Stopwatch.StartNew(); long healthFrames = 0, previousDelivery = 0;
+        var poll = Stopwatch.StartNew(); long healthFrames = 0, previousDelivery = 0, lastRecognition = 0;
         try
         {
             while (!token.IsCancellationRequested)
@@ -215,13 +215,16 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                 try
                 {
                     PhaseTo("get-image-buffer"); MvsFrame? frame; DateTimeOffset observedAt; long deliveredTicks;
-                    var decodeRequested = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false;
+                    var interval = inspected.Registration?.MinimumDecodeIntervalMs?.Invoke(DeviceId) ?? 0;
+                    var decodeRequested = inspected.Registration?.DecodeAllowed?.Invoke(DeviceId) != false &&
+                        (interval <= 0 || lastRecognition == 0 || Stopwatch.GetElapsedTime(lastRecognition).TotalMilliseconds >= interval);
                     var acquireStarted = Stopwatch.GetTimestamp();
                     try
                     {
                         lock (gate) acquireCalls++;
                         frame = decodeRequested ? api.Acquire() : api.AcquirePreview();
                         observedAt = DateTimeOffset.UtcNow; deliveredTicks = Stopwatch.GetTimestamp();
+                        if (decodeRequested && frame is not null) lastRecognition = deliveredTicks;
                     }
                     catch (IOException error)
                     {
@@ -280,6 +283,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                             }
                             if (Recognizes && allowDecode)
                             {
+                                lastRecognition = deliveredTicks;
                                 var copyStarted = Stopwatch.GetTimestamp();
                                 length = checked((int)(frame.Width * frame.Height)); pixels = ArrayPool<byte>.Shared.Rent(length);
                                 Marshal.Copy(frame.Data, pixels, 0, length);
@@ -316,7 +320,7 @@ internal sealed partial class MvsAcquisition : IAutomaticReconnectObservationSou
                         if (pixels is not null)
                         {
                             var work = new DecodeWork(pixels, length, frame with { Data = 0 }, observedAt, deliveredTicks, copyMs, releaseMs, skippedBefore, inspected.Registration)
-                            { Scene = scene, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, AcquireMs = Timings.LastMs("sdk.acquire") };
+                            { Scene = scene, ArrivalGeneration = arrival?.ArrivalGeneration, CaptureBoundaryId = arrival?.BoundaryId, ContinuousPresenceTicks = trayPresence.ContinuousPresenceTicks, AcquireMs = Timings.LastMs("sdk.acquire") };
                             if (api.ReturnsDecodedFrames)
                             {
                                 // Native recognition already happened. Do not replace a decoded result with a newer frame.

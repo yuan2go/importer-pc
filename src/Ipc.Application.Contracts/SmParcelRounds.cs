@@ -17,6 +17,8 @@ public sealed record SmParcelRound(string Id, string PositionId, long Version, G
     public bool Manual { get; init; }
     public bool AttemptStarted { get; init; }
     public bool AutoExpired { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+    public bool SafeContinuation { get; init; }
     public bool RequireRemoval { get; init; }
     public DateTimeOffset? SuccessAt { get; init; }
     public long? SuccessTicks { get; init; }
@@ -39,6 +41,10 @@ public sealed record SmPositionCycle(string PositionId, bool AutoSuppressed, Tra
     [System.Text.Json.Serialization.JsonRequired]
     public string RecoveryToken { get; init; } = Wire.Id();
     public DateTimeOffset? ClearedAt { get; init; }
+    // Separate physical endings on one vehicle need a unique identity even if
+    // the wall clock is corrected. Existing unseparated cycles use Generation.
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? PlacementGeneration { get; init; }
     public string? VehicleNo { get; init; }
     public string? ArrivalEvidence { get; init; }
     public DateTimeOffset? ArrivalAt { get; init; }

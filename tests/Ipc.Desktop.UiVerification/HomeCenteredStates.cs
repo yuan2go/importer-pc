@@ -36,6 +36,12 @@ static partial class Program
             }
             throw new TimeoutException("Home state did not settle: " + vm.Left.CenteredStateTitle + "; " + vm.Left.DisplayAttentionReason);
         }
+        async Task ReconcileRefusal()
+        {
+            await SmRoundFixture.ReconcileRemoteAsync(h.App, "left", "SYNTHETIC peer completed refusal and confirms original target settled; withdrawal applied");
+            var state = await h.App.SnapshotAsync();
+            await h.App.SetPositionEnabledAsync(new(Wire.Id(), state.RuntimeId, "left", state.Positions!.Single(p => p.Id == "left").SupplyControl!.Revision, true), default);
+        }
         try
         {
             await SetClient(window, 1366, 768); await Until(() => vm.Fresh && vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online);
@@ -68,6 +74,14 @@ static partial class Program
                 "offline camera waiting shows one short line and the barcode entry is still editable");
             probe.Project = production;
             await Flush();
+            var emptyVehicle = vm.Left.Arrival!.Generation;
+            await h.TrayAsync(h.Left, TrayPresence.Present);
+            await Until(() => vm.Left.CurrentRound is not null);
+            await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await Until(() => vm.Left.CurrentRound is null && vm.Left.CenteredStateTitle == "等待投包");
+            Check(vm.Left.Arrival!.Generation == emptyVehicle && vm.Left.CanSubmitBarcode &&
+                vm.Left.CenteredStateForeground == OperatorTokens.Success && h.Peer.Requests.Count == destinations,
+                "trusted removal of unread parcel restores actual native waiting and input on the same vehicle without toggling supply or HTTP");
             var snapshot = await h.App.SnapshotAsync();
             await h.App.SetPositionEnabledAsync(new(Wire.Id(), snapshot.RuntimeId, "right", snapshot.Positions!.Single(p => p.Id == "right").SupplyControl!.Revision, false), default);
             await Until(() => vm.Right.SupplyDisabled);
@@ -132,13 +146,14 @@ static partial class Program
             h.Api(h.Left).Enqueue(rejectedCode, 1);
             await Until(() => vm.Left.CenteredRcsRejection && vm.Left.Barcode == "SYNTH-CENTERED-REJECT");
             var rejectionId = vm.Left.Operation!.Id; var rejectionCount = h.Peer.Requests.Count;
+            var previewBefore = h.Api(h.Left).Acquires;
             h.Api(h.Left).Enqueue(rejectedCode, 2);
-            await CameraRoundHarness.Until(() => Task.FromResult(h.Factory.Sources[h.Left].Timings.Snapshot().RecentFrames.Any(f => f.Number == 2)));
+            await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Acquires > previewBefore && h.Api(h.Left).Releases == h.Api(h.Left).Acquires));
             await Until(() => vm.Left.CenteredRcsRejection);
             var rejectedSnapshot = vm.Snapshot!;
             Check(vm.Left.Operation?.Id == rejectionId && h.Peer.Requests.Count == rejectionCount &&
                 vm.Left.CenteredStateTitle == "无设备可用" && ((TextBlock)left.FindName("CenteredStateReason")).Text == "本件暂不能分配格口" &&
-                vm.Left.CenteredStateInstruction == "请取下包裹\n多次出现请通知维护人员" &&
+                vm.Left.CenteredStateInstruction == "请取下包裹\n本位请求待核对，请通知维护人员；取件不会撤销原调度" &&
                 vm.Left.CanViewCurrentPicture && ((Button)left.FindName("WorkDetails")).IsEnabled && vm.Right.SupplyDisabled,
                 "same-placement frames preserve the rejection, picture and details without another request or changing the other position");
             CaptureInternal(evidence, "home-centered-rcs-refusal", client, lines);
@@ -168,14 +183,15 @@ static partial class Program
             rejectionCount = h.Peer.Requests.Count;
             h.Peer.HeartbeatUnavailable = true;
             await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Offline);
-            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\nRCS 连接恢复后再放下一件",
-                "a later outage keeps the current rejection visible and changes the next step");
+            Check(vm.Left.CenteredRcsRejection && vm.Left.CenteredStateTitle == "无设备可用" && vm.Left.CenteredStateInstruction == "请取下包裹\n本位请求待核对，请通知维护人员；取件不会撤销原调度",
+                "a later outage keeps the current rejection and its unresolved remote responsibility visible");
             h.Peer.HeartbeatUnavailable = false;
             await Until(() => vm.RcsState == SupplyStationViewModel.RcsConnectionState.Online);
             h.Peer.Mode = "assigned";
             h.Peer.Hold = new(TaskCreationOptions.RunContinuationsAsynchronously);
             try
             {
+                await ReconcileRefusal();
                 await SmRoundFixture.NextVehicleAsync(h.App, "left"); await h.TrayAsync(h.Left, TrayPresence.Present);
                 h.Api(h.Left).Enqueue(CameraRoundHarness.Barcode("SYNTH-AFTER-REJECT"), 4);
                 await Until(() => vm.Left.IsProcessing && vm.Left.Barcode == "SYNTH-AFTER-REJECT");
@@ -202,14 +218,21 @@ static partial class Program
             CaptureInternal(evidence, "home-rejection-before-removal", client, lines);
             async Task BlankFrame(uint number)
             {
+                var before = h.Api(h.Left).Acquires;
                 h.Api(h.Left).Enqueue(CameraRoundHarness.EmptyTray, number);
-                await Until(() => vm.Snapshot!.CameraReads.Any(frame => frame.PositionId == "left" && frame.Frame.FrameNumber == number));
+                await CameraRoundHarness.Until(() => Task.FromResult(h.Api(h.Left).Acquires > before && h.Api(h.Left).Releases == h.Api(h.Left).Acquires));
+                await Flush();
             }
             await BlankFrame(6);
             Check(vm.Left.CenteredRcsRejection && vm.Left.CurrentRound?.Id == beforeRemoval.Positions!.Single(p => p.Id == "left").CurrentRoundId &&
                 vm.Left.CanViewCurrentPicture && h.Peer.Requests.Count == sentBeforeRemoval,
                 "a changed no-code frame preserves the current round's refusal and image without claiming physical removal");
             await h.TrayAsync(h.Left, TrayPresence.Absent);
+            await Until(() => vm.Left.CurrentRound is null && vm.Left.CenteredStateTitle == "请求待核对");
+            Check(!vm.Left.CanSubmitBarcode && !vm.Left.ShowConfirmedTask && h.Peer.Requests.Count == sentBeforeRemoval,
+                "reliable empty ends the refused parcel automatically; native UI retains the real remote fence");
+            CaptureInternal(evidence, "home-removed-remote-fence", client, lines);
+            await ReconcileRefusal();
             await SmRoundFixture.NextVehicleAsync(h.App, "left");
             await Until(() => vm.Left.CurrentRound is null && vm.Left.CanSubmitBarcode);
             Check(center.IsVisible && vm.Left.CenteredStateTitle == "等待投包" && !vm.Left.CenteredRcsRejection &&

@@ -55,7 +55,7 @@ public partial class SupplyStationPosition : UserControl
             { e.CancelCommand(); overflow = true; showingDraftNotice = false; RefreshSubmitAvailability(); InputFeedback.Text = "粘贴无效：只能粘贴一个完整条码（不含换行或Tab，最多4096字符）。请清空后重新输入。"; }
         });
     }
-    sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation, string? Round, string? Arrival);
+    sealed record InputBasis(Guid Runtime, long Configuration, string? Observation, string? Operation, string? Round, string? Arrival, string? Placement);
     const int PdaMinimumLength = 6, PdaRapidGapMs = 35, PdaMaximumGapMs = 250, PdaEnterGapMs = 100;
     (int At, int Length, char Character)? expectedKeyboardText;
     int? lastKeyboardCharacterAt;
@@ -68,7 +68,7 @@ public partial class SupplyStationPosition : UserControl
     void PositionChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(SupplyStationPositionViewModel.Arrival) && inputBasis is { } basis &&
-            DataContext is SupplyStationPositionViewModel current && basis.Arrival != current.Arrival?.Generation)
+            DataContext is SupplyStationPositionViewModel current && (basis.Arrival != current.Arrival?.Generation || basis.Placement != current.Arrival?.PlacementBoundary))
         {
             ResetPdaDetection();
             if (editing && submitted is null)
@@ -188,7 +188,7 @@ public partial class SupplyStationPosition : UserControl
     void CaptureInputBasis()
     {
         if (Host?.ViewModel is not { Fresh: true, Snapshot: { } snapshot } || DataContext is not SupplyStationPositionViewModel p) return;
-        inputBasis = new(snapshot.RuntimeId, snapshot.Configuration.Revision, p.Input?.Observation.Id, p.Operation?.Id, p.CurrentRound?.Id, p.Arrival?.Generation);
+        inputBasis = new(snapshot.RuntimeId, snapshot.Configuration.Revision, p.Input?.Observation.Id, p.Operation?.Id, p.CurrentRound?.Id, p.Arrival?.Generation, p.Arrival?.PlacementBoundary);
     }
     string DraftNotice => DataContext is SupplyStationPositionViewModel { HasCurrentInput: true } p
         ? p.ShowConfirmedTask ? "输入未提交；下方格口属于 " + p.Barcode + "。" : "输入未提交；本位当前读码：" + (p.Barcode.Length == 0 ? "多个或无效条码" : p.Barcode) + "。"
@@ -293,7 +293,7 @@ public partial class SupplyStationPosition : UserControl
             if (overflow) { InputFeedback.Text = "条码不完整，请清空后重扫或重新输入。"; return; }
             if (BarcodeEntry.Text.Length == 0) { InputFeedback.Text = "请输入完整条码，再按回车或点击提交。"; return; }
             if (inputBasis is null) CaptureInputBasis();
-            if (inputBasis?.Arrival != p.Arrival?.Generation)
+            if (inputBasis?.Arrival != p.Arrival?.Generation || inputBasis?.Placement != p.Arrival?.PlacementBoundary)
             {
                 ResetPdaDetection(); RebaseInput.Visibility = Visibility.Visible;
                 InputFeedback.Text = "小车已变化，输入保留为草稿；请核对当前包裹后点击重新确认。";
@@ -306,7 +306,7 @@ public partial class SupplyStationPosition : UserControl
             var kind = enterTimestamp is { } entered && lastKeyboardCharacterAt is { } last && length >= PdaMinimumLength &&
                 rapidCharacterGaps >= length / 2 && WithinInputGap(entered, last, PdaEnterGapMs)
                 ? ParcelBarcodeInputKind.PdaKeyboard : ParcelBarcodeInputKind.Keyboard;
-            submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text, kind, basis.Observation, basis.Operation) { ExpectedRoundId = basis.Round, ExpectedArrivalGeneration = basis.Arrival };
+            submitted = new(Wire.Id(), basis.Runtime, basis.Configuration, p.PositionId, BarcodeEntry.Text, kind, basis.Observation, basis.Operation) { ExpectedRoundId = basis.Round, ExpectedArrivalGeneration = basis.Arrival, ExpectedPlacementBoundary = basis.Placement };
             ResetPdaDetection();
         }
         var request = submitted; submitting = true; BarcodeEntry.IsReadOnly = true;
